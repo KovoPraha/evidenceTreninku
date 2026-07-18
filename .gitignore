@@ -1,0 +1,16 @@
+*.sql
+*.log
+*.zip
+*.bak
+*.old
+*.php3
+
+/reports/
+/nahrane_obrazky/
+/nahrane_zavody/
+/uploads/
+/stories/
+/loga_story/
+
+.DS_Store
+Thumbs.db

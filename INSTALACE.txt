@@ -1,0 +1,213 @@
+Dokumentace k projektu: Evidence tréninkù sportovního klubu
+
+1. Úvod
+
+Tato aplikace slouží k evidenci sportovních tréninkù, úèasti sportovcù, dalších aktivit trenérù a generování výkazù a vizuálních stories. Je urèena pro více trenérù s možností správy práv (hlavní trenér / trenér).
+
+2. Pøehled souborù a jejich funkce
+
+Autentizace
+
+login.php – Pøihlašovací formuláø pro trenéry.
+
+logout.php – Odhlášení uživatele a zrušení session.
+
+Základní navigace a pøipojení
+
+hlavicka.php – Navigaèní panel dostupný na všech stránkách, zobrazuje odkazy podle pøihlášení a role.
+
+db.php – Pøipojení k databázi pomocí PDO.
+
+index.php – Rozcestník po pøihlášení uživatele.
+
+Správa tréninkù
+
+formular.php – Vstupní formuláø pro zadání nového tréninku, vèetnì skupin, podskupin, mìøení a obrázkù.
+
+ulozit_trenink.php – Zpracuje formuláø, uloží trénink a vytvoøí související záznamy.
+
+edit_trenink.php – Formuláø pro úpravu existujícího tréninku.
+
+update_trenink.php – Uloží zmìny do databáze.
+
+smazat_trenink.php – Smaže trénink z databáze.
+
+Zobrazení tréninkù
+
+prehled_trenera.php – Pøehled tréninkù podle mìsíce a trenéra s exportem do XLS.
+
+moje_treninky.php – Výpis všech tréninkù pøihlášeného trenéra s možností úpravy a mazání.
+
+moje_skupiny.php – Výpis tréninkù podle skupin, kde trenér vedl alespoò jeden trénink.
+
+verejny_prehled.php – Veøejný pøehled všech tréninkù s filtrováním.
+
+sportovec_treninky.php – Výpis všech tréninkù konkrétního sportovce podle jeho ID.
+
+Správa skupin a podskupin
+
+sprava_skupin.php – Správa struktury skupin a podskupin s možností pøidání, smazání a øazení.
+
+Správa trenérù
+
+sprava_treneru.php – Pøidání nových trenérù, jejich hesla, e-maily a role.
+
+Podpora dynamiky
+
+nacti_podskupiny.php – AJAX naèítání podskupin na základì vybrané skupiny.
+
+Evidence èinností mimo tréninky
+
+nova_cinnost.php – Formuláø pro zadání dalších èinností (napø. školení, porady).
+
+vypis_vykazu.php – Výkaz všech aktivit daného trenéra za daný mìsíc s exportem do XLS.
+
+Generování vizuálního výstupu
+
+generuj_story.php – Vytvoøí obrázek (story) ze zvoleného tréninku pro použití na sociálních sítích.
+
+nastaveni_story.php – Umožòuje trenérùm pøidat logo a barvy pro jednotlivé skupiny.
+
+prehled_stories.php – Výpis story obrázkù s možností stažení.
+
+3. Databázová logika
+
+Hlavní tabulky:
+
+treneri, treninky, skupiny, podskupiny, sportovci, dalsi_cinnosti
+
+Spojovací tabulky:
+
+trenink_skupina, trenink_podskupina, trenink_sportovec
+
+Konfiguraèní tabulky:
+
+story_nastaveni – vzhled a znaèení jednotlivých skupin/podskupin pro story
+
+4. Práva a pøístup
+
+Trenér – vidí a upravuje pouze své tréninky.
+
+Hlavní trenér – má pøístup ke všem tréninkùm, mùže pøidávat trenéry a upravovat strukturu skupin.
+
+5. Funkce navíc
+
+Export výkazù do Excelu pomocí PhpSpreadsheet.
+
+Automatické vytvoøení sportovcù pøi novém mìøení.
+
+Možnost více skupin i podskupin u jednoho tréninku.
+
+Generování obrázkù (story) s vlastním nastavením vzhledu.
+
+6. Instalaèní požadavky
+
+PHP 8+
+
+MySQL 5.7+
+
+Composer (pro PhpSpreadsheet)
+
+Web server s povoleným zápisem do složek nahrane_obrazky, loga_story, stories
+
+7. Úvodní pøístup
+
+Po importu instalaèního SQL jsou vytvoøeni dva trenéøi:
+
+hlavni / heslo123 (hlavní trenér)
+
+trenér1 / heslo456 (bìžný trenér)
+
+
+
+
+
+CREATE TABLE treneri (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    jmeno VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    heslo VARCHAR(100) NOT NULL,
+    role ENUM('trener','hlavni') DEFAULT 'trener'
+);
+
+CREATE TABLE skupiny (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nazev VARCHAR(100) NOT NULL,
+    poradi INT DEFAULT 0
+);
+
+CREATE TABLE podskupiny (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nazev VARCHAR(100) NOT NULL,
+    skupina_id INT NOT NULL,
+    poradi INT DEFAULT 0,
+    FOREIGN KEY (skupina_id) REFERENCES skupiny(id)
+);
+
+CREATE TABLE treninky (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    trener_id INT NOT NULL,
+    datum DATE NOT NULL,
+    napln TEXT NOT NULL,
+    poznamka TEXT,
+    delka DECIMAL(5,2) DEFAULT 0,
+    obrazky TEXT,
+    mereni TEXT,
+    FOREIGN KEY (trener_id) REFERENCES treneri(id)
+);
+
+CREATE TABLE trenink_skupina (
+    trenink_id INT NOT NULL,
+    skupina_id INT NOT NULL,
+    PRIMARY KEY (trenink_id, skupina_id),
+    FOREIGN KEY (trenink_id) REFERENCES treninky(id),
+    FOREIGN KEY (skupina_id) REFERENCES skupiny(id)
+);
+
+CREATE TABLE trenink_podskupina (
+    trenink_id INT NOT NULL,
+    podskupina_id INT NOT NULL,
+    PRIMARY KEY (trenink_id, podskupina_id),
+    FOREIGN KEY (trenink_id) REFERENCES treninky(id),
+    FOREIGN KEY (podskupina_id) REFERENCES podskupiny(id)
+);
+
+CREATE TABLE sportovci (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    jmeno VARCHAR(100) NOT NULL,
+    hash VARCHAR(64) NOT NULL
+);
+
+CREATE TABLE trenink_sportovec (
+    trenink_id INT NOT NULL,
+    sportovec_id INT NOT NULL,
+    PRIMARY KEY (trenink_id, sportovec_id),
+    FOREIGN KEY (trenink_id) REFERENCES treninky(id),
+    FOREIGN KEY (sportovec_id) REFERENCES sportovci(id)
+);
+
+CREATE TABLE dalsi_cinnosti (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    trener_id INT NOT NULL,
+    nazev VARCHAR(255) NOT NULL,
+    delka DECIMAL(5,2) DEFAULT 0,
+    poznamka TEXT,
+    datum DATE NOT NULL,
+    FOREIGN KEY (trener_id) REFERENCES treneri(id)
+);
+
+CREATE TABLE story_nastaveni (
+    typ ENUM('skupina','podskupina') NOT NULL,
+    entita_id INT NOT NULL,
+    barva VARCHAR(10),
+    hlavicka VARCHAR(255),
+    paticka VARCHAR(255),
+    barva_textu VARCHAR(10),
+    logo VARCHAR(255),
+    PRIMARY KEY (typ, entita_id)
+);
+
+-- Pøíklad dvou trenérù
+INSERT INTO treneri (jmeno, email, heslo, role) VALUES
+('hlavni', 'hlavni@example.com', 'heslo123', 'hlavni'),
+('trenér1', 'trener1@example.com', 'heslo456', 'trener');

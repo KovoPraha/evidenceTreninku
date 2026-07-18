@@ -1,0 +1,53 @@
+<?php
+/**
+ * push_subscribe.php
+ * Uloží/odstraní Web Push subscription pro přihlášeného trenéra.
+ * POST JSON: { action: 'subscribe'|'unsubscribe', subscription: { endpoint, keys: { p256dh, auth } } }
+ */
+session_start();
+if (!isset($_SESSION['trener_id'])) { http_response_code(403); exit; }
+require_once 'db.php';
+require_once 'csrf_helper.php';
+
+header('Content-Type: application/json; charset=utf-8');
+
+$data  = json_decode(file_get_contents('php://input'), true) ?: [];
+
+if (!csrf_verify($data['csrf_token'] ?? '')) {
+    http_response_code(403);
+    echo json_encode(['ok'=>false,'msg'=>'Neplatný CSRF token']);
+    exit;
+}
+
+$akce  = $data['action'] ?? 'subscribe';
+$sub   = $data['subscription'] ?? null;
+$tid   = (int)$_SESSION['trener_id'];
+
+if (!$sub || empty($sub['endpoint'])) {
+    echo json_encode(['ok'=>false,'msg'=>'Chybí subscription']); exit;
+}
+
+$endpoint = $sub['endpoint'];
+$p256dh   = $sub['keys']['p256dh'] ?? '';
+$auth     = $sub['keys']['auth']   ?? '';
+$ua       = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255);
+
+if ($akce === 'unsubscribe') {
+    $pdo->prepare("DELETE FROM push_subscriptions WHERE trener_id=? AND endpoint=?")
+        ->execute([$tid, $endpoint]);
+    echo json_encode(['ok'=>true]);
+    exit;
+}
+
+// Upsert — pokud endpoint existuje, aktualizuj klíče; jinak vlož nový
+$existing = $pdo->prepare("SELECT id FROM push_subscriptions WHERE endpoint=?");
+$existing->execute([$endpoint]);
+if ($existing->fetchColumn()) {
+    $pdo->prepare("UPDATE push_subscriptions SET p256dh=?, auth=?, trener_id=?, user_agent=? WHERE endpoint=?")
+        ->execute([$p256dh, $auth, $tid, $ua, $endpoint]);
+} else {
+    $pdo->prepare("INSERT INTO push_subscriptions (trener_id, endpoint, p256dh, auth, user_agent) VALUES (?,?,?,?,?)")
+        ->execute([$tid, $endpoint, $p256dh, $auth, $ua]);
+}
+
+echo json_encode(['ok'=>true]);

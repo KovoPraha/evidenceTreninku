@@ -1,0 +1,10 @@
+Options -Indexes
+
+<FilesMatch "(^\.|\.sql$|\.log$|\.zip$|\.bak$|\.old$|\.php3$|composer\.(json|lock)$|CLAUDE\.md$|INSTALACE\.txt$)">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule (^|/)\.git(/|$) - [F,L]
+</IfModule>

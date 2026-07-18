@@ -1,0 +1,128 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/kis_match_lib.php';
+
+function kisImportJson(array $value): string
+{
+    return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}';
+}
+
+function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warnings, array $sourceNames, ?int $userId): int
+{
+    $stats = [
+        'rows' => count($people),
+        'warnings' => count($warnings),
+        'created_from' => $meta,
+    ];
+    $stmt = $pdo->prepare("
+        INSERT INTO kis_import_runs
+            (created_by, status, source_users, source_payments, source_rosters, stats_json, warnings_json)
+        VALUES
+            (:created_by, 'preview', :source_users, :source_payments, :source_rosters, :stats_json, :warnings_json)
+    ");
+    $stmt->execute([
+        ':created_by' => $userId,
+        ':source_users' => $sourceNames['users'] ?? null,
+        ':source_payments' => $sourceNames['payments'] ?? null,
+        ':source_rosters' => $sourceNames['rosters'] ?? null,
+        ':stats_json' => kisImportJson($stats),
+        ':warnings_json' => kisImportJson($warnings),
+    ]);
+    $runId = (int)$pdo->lastInsertId();
+
+    kisImportStoreRowsAndMatches($pdo, $runId, $people);
+    return $runId;
+}
+
+function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people): array
+{
+    $counts = ['new' => 0, 'matched' => 0, 'ambiguous' => 0, 'conflict' => 0, 'ignored' => 0];
+    $rowStmt = $pdo->prepare("
+        INSERT INTO kis_import_rows
+            (run_id, person_key, jmeno, prijmeni, narozeni, email, uciid, oddil,
+             kis_aktivni, kis_platebne_aktivni, kis_neuhrazeno, kis_posledni_uhrada, kis_soupisky, raw_json)
+        VALUES
+            (:run_id, :person_key, :jmeno, :prijmeni, :narozeni, :email, :uciid, :oddil,
+             :kis_aktivni, :kis_platebne_aktivni, :kis_neuhrazeno, :kis_posledni_uhrada, :kis_soupisky, :raw_json)
+    ");
+    $matchStmt = $pdo->prepare("
+        INSERT INTO kis_import_matches
+            (run_id, row_id, sportovec_id, match_status, confidence, reason, candidate_json)
+        VALUES
+            (:run_id, :row_id, :sportovec_id, :match_status, :confidence, :reason, :candidate_json)
+    ");
+
+    foreach ($people as $person) {
+        $personKey = kisMatchPersonKey($person);
+        $rowStmt->execute([
+            ':run_id' => $runId,
+            ':person_key' => $personKey,
+            ':jmeno' => trim((string)($person['jmeno'] ?? '')),
+            ':prijmeni' => trim((string)($person['prijmeni'] ?? '')),
+            ':narozeni' => $person['narozeni'] ?: null,
+            ':email' => trim((string)($person['email'] ?? '')),
+            ':uciid' => trim((string)($person['uciid'] ?? '')),
+            ':oddil' => trim((string)($person['oddil'] ?? '')),
+            ':kis_aktivni' => (int)($person['kis_aktivni'] ?? 0),
+            ':kis_platebne_aktivni' => (int)($person['kis_platebne_aktivni'] ?? 0),
+            ':kis_neuhrazeno' => (float)($person['kis_neuhrazeno'] ?? 0),
+            ':kis_posledni_uhrada' => $person['kis_posledni_uhrada'] ?: null,
+            ':kis_soupisky' => (string)($person['kis_soupisky'] ?? ''),
+            ':raw_json' => kisImportJson($person),
+        ]);
+        $rowId = (int)$pdo->lastInsertId();
+        $match = kisMatchResolve($pdo, $person);
+        $status = (string)$match['status'];
+        $counts[$status] = ($counts[$status] ?? 0) + 1;
+        $matchStmt->execute([
+            ':run_id' => $runId,
+            ':row_id' => $rowId,
+            ':sportovec_id' => $match['sportovec_id'],
+            ':match_status' => $status,
+            ':confidence' => (int)$match['confidence'],
+            ':reason' => $match['reason'],
+            ':candidate_json' => kisMatchJson($match['candidates'] ?? []),
+        ]);
+    }
+
+    $stmt = $pdo->prepare("UPDATE kis_import_runs SET stats_json = :stats WHERE id = :id");
+    $stmt->execute([':stats' => kisImportJson(['rows' => count($people), 'matches' => $counts]), ':id' => $runId]);
+    return $counts;
+}
+
+function kisImportLatestRuns(PDO $pdo, int $limit = 20): array
+{
+    $stmt = $pdo->query("
+        SELECT r.*, t.jmeno AS created_by_name,
+               (SELECT COUNT(*) FROM kis_import_matches m WHERE m.run_id = r.id AND m.match_status = 'ambiguous') AS ambiguous_count,
+               (SELECT COUNT(*) FROM kis_import_matches m WHERE m.run_id = r.id AND m.match_status = 'conflict') AS conflict_count,
+               (SELECT COUNT(*) FROM kis_import_rows rr WHERE rr.run_id = r.id) AS row_count
+        FROM kis_import_runs r
+        LEFT JOIN treneri t ON t.id = r.created_by
+        ORDER BY r.created_at DESC, r.id DESC
+        LIMIT " . max(1, min(100, $limit))
+    );
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function kisImportRunDetail(PDO $pdo, int $runId): array
+{
+    $runStmt = $pdo->prepare("SELECT * FROM kis_import_runs WHERE id = ?");
+    $runStmt->execute([$runId]);
+    $run = $runStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$run) {
+        return ['run' => null, 'rows' => []];
+    }
+    $rowsStmt = $pdo->prepare("
+        SELECT ir.*, im.match_status, im.confidence, im.reason, im.sportovec_id, im.candidate_json,
+               s.jmeno AS db_jmeno, s.prijmeni AS db_prijmeni
+        FROM kis_import_rows ir
+        LEFT JOIN kis_import_matches im ON im.row_id = ir.id
+        LEFT JOIN sportovci s ON s.id = im.sportovec_id
+        WHERE ir.run_id = ?
+        ORDER BY FIELD(im.match_status, 'ambiguous','conflict','new','matched','ignored'), ir.prijmeni, ir.jmeno
+    ");
+    $rowsStmt->execute([$runId]);
+    return ['run' => $run, 'rows' => $rowsStmt->fetchAll(PDO::FETCH_ASSOC)];
+}
