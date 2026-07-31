@@ -17,6 +17,12 @@
 // define('DB_USER', 'kovoprahacz010');     // DB uživatel
 // define('DB_PASS', 'heslo-sem');          // DB heslo — NIKDY nepřidávat do gitu
 
+// ── Nasazení (GitHub Actions) ────────────────────────────────────────────────
+
+// Token pro chráněné deploy endpointy /bin/stav.php a /bin/zaloha.php.
+// Vygenerujte náhodný řetězec a tentýž uložte do GitHub Secrets (DEPLOY_TOKEN).
+// define('DEPLOY_TOKEN', 'sem-nahodny-retezec');
+
 // ── Integrace s Velocotou ─────────────────────────────────────────────────────
 
 // true  = produkce s Velocotou (SSO, sdílená navigace)

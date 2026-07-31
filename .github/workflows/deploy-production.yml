@@ -1,185 +1,139 @@
+# ============================================================
+# Nasazení na produkci jedním tlačítkem
+# GitHub → Actions → „Nasadit produkci" → Run workflow
+#
+# Postup:
+#   1. kontrola PHP syntaxe všech souborů
+#   2. záloha produkční databáze (přes chráněný endpoint)
+#   3. nahrání souborů z větve main přes rsync/SSH
+#      (config.php, uploady, obrázky a stories na serveru zůstávají)
+#   4. načtení webu → automaticky proběhne auto-migrace DB
+#   5. kontrola, že verze schématu v DB odpovídá verzi v kódu
+#
+# Potřebné Secrets (Settings → Secrets and variables → Actions):
+#   SSH_HOST         – adresa serveru (např. replikant3544.thinline.cz)
+#   SSH_PORT         – port SSH (Český hosting: bez vyhrazené IPv4 bývá jiný než 22)
+#   SSH_USER         – uživatel hlavního přístupu hostingu
+#   SSH_PRIVATE_KEY  – privátní SSH klíč (párový k authorized_keys na serveru)
+#   DEPLOY_TOKEN     – stejná hodnota jako DEPLOY_TOKEN v config.php na serveru
+# ============================================================
+
 name: Nasadit produkci
 
 on:
   workflow_dispatch:
-    inputs:
-      potvrzeni:
-        description: "Pro potvrzení napište NASADIT"
-        required: true
-        type: string
 
 concurrency:
-  group: evidence-production
+  group: produkce-evidence
   cancel-in-progress: false
 
-permissions:
-  contents: read
+env:
+  WEB_URL: https://data.kovopraha.cz/evidence
+  REMOTE_DIR: data.kovopraha.cz/evidence   # adresář vzhledem k SSH domovu
 
 jobs:
-  deploy:
-    name: Záloha, nasazení a kontrola
+  nasadit:
+    name: Nasazení evidence tréninků
     runs-on: ubuntu-latest
-    environment: production
-    timeout-minutes: 15
-
-    env:
-      PROD_SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
-      PROD_SSH_USER: ${{ secrets.PROD_SSH_USER }}
-      PROD_SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
-      PROD_SSH_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
-      PROD_SSH_PORT: ${{ vars.PROD_SSH_PORT || '22' }}
-      PROD_APP_DIR: ${{ vars.PROD_APP_DIR || 'data.kovopraha.cz/evidence' }}
-      PROD_URL: ${{ vars.PROD_URL || 'https://data.kovopraha.cz/evidence/index.php' }}
 
     steps:
-      - name: Ověřit potvrzení
-        shell: bash
-        env:
-          POTVRZENI: ${{ inputs.potvrzeni }}
+      - name: Stáhnout kód (main)
+        uses: actions/checkout@v4
+
+      - name: PHP pro kontrolu syntaxe
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Kontrola PHP syntaxe
         run: |
-          if [[ "$POTVRZENI" != "NASADIT" ]]; then
-            echo "Nasazení nebylo potvrzeno slovem NASADIT." >&2
+          CHYBY=0
+          while IFS= read -r -d '' f; do
+            php -l "$f" > /dev/null || CHYBY=1
+          done < <(find . -name '*.php' -not -path './.git/*' -not -path './vendor/*' -print0)
+          [ "$CHYBY" -eq 0 ] && echo "✅ Syntaxe v pořádku."
+
+      - name: Připravit SSH klíč
+        env:
+          SSH_KLIC: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          # normalizace: pryč s windowsovskými konci řádků, doplnit koncový řádek
+          printf '%s\n' "$SSH_KLIC" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          if ! ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null 2>&1; then
+            echo "❌ Secret SSH_PRIVATE_KEY neobsahuje platný privátní klíč."
+            echo "   Musí to být celý obsah souboru s privátním klíčem —"
+            echo "   začíná řádkem '-----BEGIN OPENSSH PRIVATE KEY-----'"
+            echo "   a končí řádkem '-----END OPENSSH PRIVATE KEY-----'."
+            echo "   (Soubor authorized_keys je veřejný klíč a patří na server, ne sem.)"
+            exit 1
+          fi
+          echo "✅ SSH klíč je platný."
+
+      - name: Přidat server mezi známé
+        env:
+          SSH_PORT_TAJNY: ${{ secrets.SSH_PORT }}
+        run: |
+          PORT="${SSH_PORT_TAJNY:-22}"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          ssh-keyscan -p "$PORT" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+          if ! grep -q . ~/.ssh/known_hosts; then
+            echo "❌ Server ${{ secrets.SSH_HOST }} neodpovídá na SSH portu $PORT."
+            echo "   Český hosting: na serverech bez vyhrazené IPv4 běží SSH na jiném portu než 22."
+            echo "   Správný port najdete v zákaznické sekci u nastavení FTP/SFTP"
+            echo "   a uložte ho jako Secret SSH_PORT."
+            exit 1
+          fi
+          echo "✅ Server je dostupný na portu $PORT."
+
+      - name: Záloha produkční databáze
+        run: |
+          ODPOVED=$(curl -fsS --max-time 480 "$WEB_URL/bin/zaloha.php?token=${{ secrets.DEPLOY_TOKEN }}" || true)
+          echo "$ODPOVED"
+          if echo "$ODPOVED" | grep -q '"ok": *true'; then
+            echo "✅ Záloha vytvořena."
+          else
+            echo "⚠️ Zálohu se nepodařilo vytvořit (při úplně prvním nasazení je to v pořádku — endpoint na serveru ještě není)."
+          fi
+
+      - name: Nahrát soubory (rsync)
+        run: |
+          # Bez --delete: produkční složka obsahuje i soubory mimo repozitář
+          # (staré exporty, logy). Soubory smazané z gitu je proto nutné
+          # na serveru odstranit ručně — je to bezpečnější než automatické mazání.
+          rsync -az --itemize-changes \
+            -e "ssh -p $SSH_PORT" \
+            --exclude='.git*' \
+            --exclude='config.php' \
+            --exclude='uploads/' \
+            --exclude='nahrane_obrazky/' \
+            --exclude='nahrane_zavody/' \
+            --exclude='stories/' \
+            --exclude='loga_story/' \
+            --exclude='reports/' \
+            --exclude='bin/zalohy/' \
+            --exclude='*.log' \
+            ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$REMOTE_DIR/"
+          echo "✅ Soubory nahrány."
+
+      - name: Spustit web a DB migrace
+        run: |
+          KOD=$(curl -s -o /dev/null -w '%{http_code}' --max-time 120 -L "$WEB_URL/index.php")
+          echo "Web odpověděl: HTTP $KOD"
+          if [ "$KOD" != "200" ] && [ "$KOD" != "302" ]; then
+            echo "❌ Web neodpovídá správně (HTTP $KOD)."
             exit 1
           fi
 
-      - name: Stáhnout přesný commit
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Zjistit nasazovaný commit
-        shell: bash
+      - name: Ověřit verzi databázového schématu
         run: |
-          echo "DEPLOY_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
-
-      - name: Ověřit nastavení produkce
-        shell: bash
-        run: |
-          missing=0
-          for name in \
-            PROD_SSH_HOST \
-            PROD_SSH_USER \
-            PROD_SSH_PRIVATE_KEY \
-            PROD_SSH_KNOWN_HOSTS
-          do
-            if [[ -z "${!name}" ]]; then
-              echo "Chybí GitHub secret: $name" >&2
-              missing=1
-            fi
-          done
-          exit "$missing"
-
-      - name: Připravit SSH
-        shell: bash
-        run: |
-          install -d -m 700 "$HOME/.ssh"
-          printf '%s\n' "$PROD_SSH_PRIVATE_KEY" | tr -d '\r' \
-            > "$HOME/.ssh/evidence_production"
-          chmod 600 "$HOME/.ssh/evidence_production"
-          printf '%s\n' "$PROD_SSH_KNOWN_HOSTS" \
-            > "$HOME/.ssh/known_hosts"
-          chmod 600 "$HOME/.ssh/known_hosts"
-
-      - name: Připravit deploy balíček
-        shell: bash
-        run: |
-          git archive \
-            --format=tar.gz \
-            --output="$RUNNER_TEMP/evidence-release.tar.gz" \
-            "$DEPLOY_SHA"
-          git ls-files | LC_ALL=C sort \
-            > "$RUNNER_TEMP/evidence-manifest.txt"
-          sha256sum "$RUNNER_TEMP/evidence-release.tar.gz" \
-            | awk '{print $1}' \
-            > "$RUNNER_TEMP/evidence-release.sha256"
-
-      - name: Nahrát balíček na hosting
-        id: upload
-        shell: bash
-        run: |
-          remote_dir=".evidence-deploy/incoming/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          echo "remote_dir=$remote_dir" >> "$GITHUB_OUTPUT"
-
-          ssh \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            -i "$HOME/.ssh/evidence_production" \
-            -p "$PROD_SSH_PORT" \
-            "$PROD_SSH_USER@$PROD_SSH_HOST" \
-            "mkdir -p -- '$remote_dir' && chmod 700 -- '$remote_dir'"
-
-          scp \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            -i "$HOME/.ssh/evidence_production" \
-            -P "$PROD_SSH_PORT" \
-            "$RUNNER_TEMP/evidence-release.tar.gz" \
-            "$RUNNER_TEMP/evidence-manifest.txt" \
-            "bin/db-backup.php" \
-            "$PROD_SSH_USER@$PROD_SSH_HOST:$remote_dir/"
-
-      - name: Nasadit a spustit migrace
-        shell: bash
-        env:
-          REMOTE_DIR: ${{ steps.upload.outputs.remote_dir }}
-        run: |
-          archive_sha256=$(cat "$RUNNER_TEMP/evidence-release.sha256")
-          remote_command=$(printf \
-            'bash -s -- %q %q %q %q %q %q' \
-            "$PROD_APP_DIR" \
-            "$REMOTE_DIR/evidence-release.tar.gz" \
-            "$REMOTE_DIR/evidence-manifest.txt" \
-            "$REMOTE_DIR/db-backup.php" \
-            "$archive_sha256" \
-            "$DEPLOY_SHA")
-
-          ssh \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            -i "$HOME/.ssh/evidence_production" \
-            -p "$PROD_SSH_PORT" \
-            "$PROD_SSH_USER@$PROD_SSH_HOST" \
-            "$remote_command" \
-            < "bin/remote-deploy.sh"
-
-      - name: Ověřit produkční web
-        shell: bash
-        run: |
-          curl \
-            --fail \
-            --location \
-            --silent \
-            --show-error \
-            --max-time 30 \
-            --retry 2 \
-            --output /dev/null \
-            "$PROD_URL"
-          echo "Produkční web odpovídá: $PROD_URL"
-
-      - name: Zapsat výsledek
-        if: success()
-        shell: bash
-        run: |
-          {
-            echo "## Produkce byla úspěšně nasazena"
-            echo
-            echo "- Commit: \`$DEPLOY_SHA\`"
-            echo "- URL: $PROD_URL"
-            echo "- DB záloha a migrace: OK"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Uklidit dočasné soubory na hostingu
-        if: always() && steps.upload.outputs.remote_dir != ''
-        continue-on-error: true
-        shell: bash
-        env:
-          REMOTE_DIR: ${{ steps.upload.outputs.remote_dir }}
-        run: |
-          remote_command=$(printf 'rm -rf -- %q' "$REMOTE_DIR")
-          ssh \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            -i "$HOME/.ssh/evidence_production" \
-            -p "$PROD_SSH_PORT" \
-            "$PROD_SSH_USER@$PROD_SSH_HOST" \
-            "$remote_command"
+          STAV=$(curl -fsS --max-time 120 "$WEB_URL/bin/stav.php?token=${{ secrets.DEPLOY_TOKEN }}")
+          echo "$STAV"
+          if echo "$STAV" | grep -q '"vse_aplikovano": *true'; then
+            echo "✅ Databáze má správnou verzi schématu. Nasazení dokončeno."
+          else
+            echo "❌ Verze schématu v databázi neodpovídá verzi v kódu —"
+            echo "   migrace neproběhla nebo skončila chybou (viz výpis výše a PHP error log)."
+            exit 1
+          fi

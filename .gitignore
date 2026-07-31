@@ -7,6 +7,11 @@
 
 /config.php
 
+# Zálohy DB a deploy klíče
+/bin/zalohy/
+/_deploy_klice/
+/evidence-deploy-ssh/
+
 /reports/
 /nahrane_obrazky/
 /nahrane_zavody/
