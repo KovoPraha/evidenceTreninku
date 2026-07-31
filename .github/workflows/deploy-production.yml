@@ -16,6 +16,7 @@
 #   SSH_USER         – uživatel hlavního přístupu hostingu
 #   SSH_PRIVATE_KEY  – privátní SSH klíč (párový k authorized_keys na serveru)
 #   DEPLOY_TOKEN     – stejná hodnota jako DEPLOY_TOKEN v config.php na serveru
+#   PROD_CONFIG      – (nepovinné) celý obsah config.php; když na serveru chybí, vytvoří se z něj
 # ============================================================
 
 name: Nasadit produkci
@@ -86,6 +87,34 @@ jobs:
             exit 1
           fi
           echo "✅ Server je dostupný na portu $PORT."
+
+      - name: Zkontrolovat config.php na serveru
+        env:
+          PROD_CONFIG: ${{ secrets.PROD_CONFIG }}
+        run: |
+          CIL="$REMOTE_DIR/config.php"
+          SSH="ssh -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+          if $SSH "test -f '$CIL'"; then
+            echo "✅ config.php na serveru existuje."
+          elif [ -n "$PROD_CONFIG" ]; then
+            # config na serveru chybí, ale je uložený v Secretu → vytvoříme ho
+            printf '%s\n' "$PROD_CONFIG" | tr -d '\r' | $SSH "cat > '$CIL'"
+            if $SSH "php -l '$CIL' > /dev/null 2>&1 || true; test -s '$CIL'"; then
+              echo "✅ config.php vytvořen na serveru ze Secretu PROD_CONFIG."
+            else
+              echo "❌ Nepodařilo se vytvořit config.php na serveru."
+              exit 1
+            fi
+          else
+            echo "❌ Na serveru chybí $CIL."
+            echo "   Bez něj by web po nasazení přestal fungovat — proto končíme dřív,"
+            echo "   než se cokoli změní. Máte dvě možnosti:"
+            echo "   a) nahrát config.php na server ručně (Total Commander), nebo"
+            echo "   b) vložit celý jeho obsah do GitHub Secretu PROD_CONFIG —"
+            echo "      nasazení ho pak na server vytvoří samo."
+            echo "   Vzor je config.example.php v repozitáři."
+            exit 1
+          fi
 
       - name: Záloha produkční databáze
         run: |

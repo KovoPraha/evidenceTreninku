@@ -53,22 +53,30 @@ New repository secret**. Vytvořit pět:
 | `SSH_PORT` | port SSH podle zákaznické sekce hostingu (bez vyhrazené IPv4 nebývá 22) |
 | `SSH_USER` | uživatelské jméno hlavního přístupu |
 | `SSH_PRIVATE_KEY` | celý obsah souboru s privátním klíčem |
-| `DEPLOY_TOKEN` | hodnota `DEPLOY_TOKEN` z `config.php` na serveru |
+| `DEPLOY_TOKEN` | hodnota `DEPLOY_TOKEN` z `config.php` |
+| `PROD_CONFIG` | *(nepovinné)* celý obsah `config.php` — když na serveru chybí, vytvoří se z něj |
 
 První čtyři jsou stejné jako u projektu bar.kovopraha.cz, `DEPLOY_TOKEN`
 má každý projekt vlastní.
 
-### 3. `config.php` na serveru
+### 3. `config.php`
 
-`config.php` se nenasazuje (není v gitu) — na serveru musí existovat ručně
-vytvořený podle `config.example.php`. Kromě DB údajů musí obsahovat řádek:
+`config.php` je **jeden a tentýž soubor pro localhost i produkci** — pozná
+si sám, kde běží (Windows/XAMPP a adresy typu `localhost` = vývoj, cokoli
+jiného = produkce), a podle toho vybere správnou databázi. Není tedy co
+rozlišovat: stejný soubor leží v `C:\xampp\htdocs\evidencePavel\config.php`
+i v `data.kovopraha.cz/evidence/config.php`. Vzor je `config.example.php`.
 
-```php
-define('DEPLOY_TOKEN', 'sem-stejnou-hodnotu-jako-do-github-secrets');
-```
+Do gitu nepatří (jsou v něm hesla) a nasazení ho nepřepisuje. Na server se
+dostane jednou z těchto dvou cest:
 
-Bez něj vrací `/bin/zaloha.php` i `/bin/stav.php` chybu a nasazení skončí
-červeně.
+- **ručně** — nahrát Total Commanderem, nebo
+- **přes Secret `PROD_CONFIG`** — vložit do něj celý obsah `config.php`;
+  když soubor na serveru chybí, nasazení ho z něj vytvoří samo.
+
+Kdyby `config.php` na serveru chyběl a `PROD_CONFIG` nebyl vyplněný,
+nasazení **se zastaví hned na začátku** a nic nezmění — dřív než by se
+vyměnil `db.php`, který config vyžaduje.
 
 ### 4. Adresa a adresář
 
