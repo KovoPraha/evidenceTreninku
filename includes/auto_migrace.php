@@ -12,7 +12,7 @@
  *  3. Nahraj soubor na produkci — migrace proběhne automaticky
  */
 
-define('SCHEMA_VERSION', '2.20.2');
+require_once __DIR__ . '/schema_version.php';
 
 (function (PDO $pdo): void {
 

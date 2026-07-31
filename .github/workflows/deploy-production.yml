@@ -1,0 +1,185 @@
+name: Nasadit produkci
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: "Pro potvrzení napište NASADIT"
+        required: true
+        type: string
+
+concurrency:
+  group: evidence-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Záloha, nasazení a kontrola
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+
+    env:
+      PROD_SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
+      PROD_SSH_USER: ${{ secrets.PROD_SSH_USER }}
+      PROD_SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+      PROD_SSH_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+      PROD_SSH_PORT: ${{ vars.PROD_SSH_PORT || '22' }}
+      PROD_APP_DIR: ${{ vars.PROD_APP_DIR || 'data.kovopraha.cz/evidence' }}
+      PROD_URL: ${{ vars.PROD_URL || 'https://data.kovopraha.cz/evidence/index.php' }}
+
+    steps:
+      - name: Ověřit potvrzení
+        shell: bash
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          if [[ "$POTVRZENI" != "NASADIT" ]]; then
+            echo "Nasazení nebylo potvrzeno slovem NASADIT." >&2
+            exit 1
+          fi
+
+      - name: Stáhnout přesný commit
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Zjistit nasazovaný commit
+        shell: bash
+        run: |
+          echo "DEPLOY_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Ověřit nastavení produkce
+        shell: bash
+        run: |
+          missing=0
+          for name in \
+            PROD_SSH_HOST \
+            PROD_SSH_USER \
+            PROD_SSH_PRIVATE_KEY \
+            PROD_SSH_KNOWN_HOSTS
+          do
+            if [[ -z "${!name}" ]]; then
+              echo "Chybí GitHub secret: $name" >&2
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Připravit SSH
+        shell: bash
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$PROD_SSH_PRIVATE_KEY" | tr -d '\r' \
+            > "$HOME/.ssh/evidence_production"
+          chmod 600 "$HOME/.ssh/evidence_production"
+          printf '%s\n' "$PROD_SSH_KNOWN_HOSTS" \
+            > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Připravit deploy balíček
+        shell: bash
+        run: |
+          git archive \
+            --format=tar.gz \
+            --output="$RUNNER_TEMP/evidence-release.tar.gz" \
+            "$DEPLOY_SHA"
+          git ls-files | LC_ALL=C sort \
+            > "$RUNNER_TEMP/evidence-manifest.txt"
+          sha256sum "$RUNNER_TEMP/evidence-release.tar.gz" \
+            | awk '{print $1}' \
+            > "$RUNNER_TEMP/evidence-release.sha256"
+
+      - name: Nahrát balíček na hosting
+        id: upload
+        shell: bash
+        run: |
+          remote_dir=".evidence-deploy/incoming/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "remote_dir=$remote_dir" >> "$GITHUB_OUTPUT"
+
+          ssh \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -i "$HOME/.ssh/evidence_production" \
+            -p "$PROD_SSH_PORT" \
+            "$PROD_SSH_USER@$PROD_SSH_HOST" \
+            "mkdir -p -- '$remote_dir' && chmod 700 -- '$remote_dir'"
+
+          scp \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -i "$HOME/.ssh/evidence_production" \
+            -P "$PROD_SSH_PORT" \
+            "$RUNNER_TEMP/evidence-release.tar.gz" \
+            "$RUNNER_TEMP/evidence-manifest.txt" \
+            "bin/db-backup.php" \
+            "$PROD_SSH_USER@$PROD_SSH_HOST:$remote_dir/"
+
+      - name: Nasadit a spustit migrace
+        shell: bash
+        env:
+          REMOTE_DIR: ${{ steps.upload.outputs.remote_dir }}
+        run: |
+          archive_sha256=$(cat "$RUNNER_TEMP/evidence-release.sha256")
+          remote_command=$(printf \
+            'bash -s -- %q %q %q %q %q %q' \
+            "$PROD_APP_DIR" \
+            "$REMOTE_DIR/evidence-release.tar.gz" \
+            "$REMOTE_DIR/evidence-manifest.txt" \
+            "$REMOTE_DIR/db-backup.php" \
+            "$archive_sha256" \
+            "$DEPLOY_SHA")
+
+          ssh \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -i "$HOME/.ssh/evidence_production" \
+            -p "$PROD_SSH_PORT" \
+            "$PROD_SSH_USER@$PROD_SSH_HOST" \
+            "$remote_command" \
+            < "bin/remote-deploy.sh"
+
+      - name: Ověřit produkční web
+        shell: bash
+        run: |
+          curl \
+            --fail \
+            --location \
+            --silent \
+            --show-error \
+            --max-time 30 \
+            --retry 2 \
+            --output /dev/null \
+            "$PROD_URL"
+          echo "Produkční web odpovídá: $PROD_URL"
+
+      - name: Zapsat výsledek
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo "## Produkce byla úspěšně nasazena"
+            echo
+            echo "- Commit: \`$DEPLOY_SHA\`"
+            echo "- URL: $PROD_URL"
+            echo "- DB záloha a migrace: OK"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Uklidit dočasné soubory na hostingu
+        if: always() && steps.upload.outputs.remote_dir != ''
+        continue-on-error: true
+        shell: bash
+        env:
+          REMOTE_DIR: ${{ steps.upload.outputs.remote_dir }}
+        run: |
+          remote_command=$(printf 'rm -rf -- %q' "$REMOTE_DIR")
+          ssh \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -i "$HOME/.ssh/evidence_production" \
+            -p "$PROD_SSH_PORT" \
+            "$PROD_SSH_USER@$PROD_SSH_HOST" \
+            "$remote_command"

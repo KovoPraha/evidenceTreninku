@@ -5,6 +5,8 @@
 *.old
 *.php3
 
+/config.php
+
 /reports/
 /nahrane_obrazky/
 /nahrane_zavody/
