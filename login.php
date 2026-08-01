@@ -2,9 +2,9 @@
 /**
  * login.php
  * Přihlášení trenéra.
- * Podporuje postupnou migraci hesel z plaintext → bcrypt:
- *  - Pokud heslo v DB začíná "$2y$" → ověř pomocí password_verify()
- *  - Jinak porovnej plaintext; při shodě okamžitě přehashuj a ulož
+ * Podporuje postupnou migraci hesel z plaintextu na PASSWORD_DEFAULT:
+ *  - Moderní hash ověří pomocí password_verify().
+ *  - Legacy plaintext dočasně porovná přesně a až po shodě přehashuje.
  */
 session_start();
 
@@ -15,6 +15,7 @@ if (isset($_SESSION['trener_id'])) {
 }
 
 require_once 'db.php';
+require_once __DIR__ . '/includes/password_security.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -29,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             // Načteme uživatele podle jména NEBO emailu
-            $stmt = $pdo->prepare("SELECT id, jmeno, heslo, role FROM treneri WHERE jmeno = ? OR email = ? LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id, jmeno, heslo, role FROM treneri WHERE aktivni = 1 AND (jmeno = ? OR email = ?) LIMIT 1");
             $stmt->execute([$login, $login]);
             $uzivatel = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -38,18 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($uzivatel) {
                 $storedHash = (string)($uzivatel['heslo'] ?? '');
 
-                if (str_starts_with($storedHash, '$2y$')) {
-                    // Heslo je již zahashováno (bcrypt)
-                    $authenticated = password_verify($heslo, $storedHash);
-                } else {
-                    // Plaintext heslo – staré heslo; porovnej a pokud sedí, přehashuj
-                    if (hash_equals($storedHash, $heslo)) {
-                        $authenticated = true;
-                        // Automatická migrace na bcrypt
-                        $newHash = password_hash($heslo, PASSWORD_BCRYPT);
-                        $pdo->prepare("UPDATE treneri SET heslo = ? WHERE id = ? LIMIT 1")
-                            ->execute([$newHash, $uzivatel['id']]);
-                    }
+                $authenticated = trainer_password_verify($heslo, $storedHash);
+                if ($authenticated && trainer_password_needs_rehash($storedHash)) {
+                    $newHash = trainer_password_hash($heslo);
+                    $pdo->prepare("UPDATE treneri SET heslo = ? WHERE id = ? AND heslo = ? LIMIT 1")
+                        ->execute([$newHash, $uzivatel['id'], $storedHash]);
                 }
             }
 
