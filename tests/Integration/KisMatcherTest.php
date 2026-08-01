@@ -124,6 +124,131 @@ final class KisMatcherTest extends TestCase
         self::assertSame(85, $emailMatch['confidence']);
     }
 
+    public function testSharedEmailAndNameDoNotAutoMatchWithoutConfirmedBirthDate(): void
+    {
+        $pdo = KisMatcherDatabase::create([
+            [
+                'id' => 607,
+                'jmeno' => 'Family',
+                'prijmeni' => 'Member',
+                'narozeni' => null,
+                'email' => 'shared-family@example.invalid',
+            ],
+        ]);
+
+        $match = \kisMatchResolve($pdo, [
+            'jmeno' => 'Family',
+            'prijmeni' => 'Member',
+            'narozeni' => '2013-07-08',
+            'email' => 'shared-family@example.invalid',
+        ]);
+
+        self::assertSame('conflict', $match['status']);
+        self::assertNull($match['sportovec_id']);
+        self::assertSame(100, $match['confidence']);
+        self::assertSame('email, jmeno+prijmeni', $match['candidates'][0]['_match_reason']);
+    }
+
+    public function testEmailMaySupportButNotReplaceExactNameAndBirthEvidence(): void
+    {
+        $pdo = KisMatcherDatabase::create([
+            [
+                'id' => 608,
+                'jmeno' => 'Confirmed',
+                'prijmeni' => 'Member',
+                'narozeni' => '2014-09-10',
+                'email' => 'shared-family@example.invalid',
+            ],
+        ]);
+
+        $match = \kisMatchResolve($pdo, [
+            'jmeno' => 'Confirmed',
+            'prijmeni' => 'Member',
+            'narozeni' => '2014-09-10',
+            'email' => 'shared-family@example.invalid',
+        ]);
+
+        self::assertSame('matched', $match['status']);
+        self::assertSame(608, $match['sportovec_id']);
+        self::assertSame(100, $match['confidence']);
+    }
+
+    public function testExactUciIdRemainsIndependentStrongEvidence(): void
+    {
+        $pdo = KisMatcherDatabase::create([
+            [
+                'id' => 609,
+                'jmeno' => 'Uci',
+                'prijmeni' => 'Member',
+                'narozeni' => null,
+                'email' => 'shared-family@example.invalid',
+                'uciid' => 'UCI-STRONG-609',
+            ],
+        ]);
+
+        $match = \kisMatchResolve($pdo, [
+            'jmeno' => 'Uci',
+            'prijmeni' => 'Member',
+            'narozeni' => '2015-11-12',
+            'email' => 'shared-family@example.invalid',
+            'uciid' => 'UCI-STRONG-609',
+        ]);
+
+        self::assertSame('matched', $match['status']);
+        self::assertSame(609, $match['sportovec_id']);
+        self::assertSame(100, $match['confidence']);
+    }
+
+    public function testExactNameAndBirthCannotOverrideDifferentNonEmptyUciIds(): void
+    {
+        $pdo = KisMatcherDatabase::create([
+            [
+                'id' => 610,
+                'jmeno' => 'Strong',
+                'prijmeni' => 'Conflict',
+                'narozeni' => '2016-01-02',
+                'uciid' => 'UCI-DB-610',
+            ],
+        ]);
+
+        $match = \kisMatchResolve($pdo, [
+            'jmeno' => 'Strong',
+            'prijmeni' => 'Conflict',
+            'narozeni' => '2016-01-02',
+            'uciid' => 'UCI-IMPORT-610',
+        ]);
+
+        self::assertSame('conflict', $match['status']);
+        self::assertNull($match['sportovec_id']);
+        self::assertSame(95, $match['confidence']);
+        self::assertStringContainsString('UCI ID se lisi', $match['reason']);
+    }
+
+    public function testExactUciIdCannotOverrideDifferentNonEmptyBirthDates(): void
+    {
+        $pdo = KisMatcherDatabase::create([
+            [
+                'id' => 611,
+                'jmeno' => 'Database',
+                'prijmeni' => 'Identity',
+                'narozeni' => '2016-03-04',
+                'uciid' => 'UCI-SAME-611',
+            ],
+        ]);
+
+        $match = \kisMatchResolve($pdo, [
+            'jmeno' => 'Imported',
+            'prijmeni' => 'Identity',
+            'narozeni' => '2017-05-06',
+            'uciid' => 'UCI-SAME-611',
+        ]);
+
+        self::assertSame('conflict', $match['status']);
+        self::assertNull($match['sportovec_id']);
+        self::assertSame(95, $match['confidence']);
+        self::assertStringContainsString('Datum narozeni se lisi', $match['reason']);
+    }
+
     public function testStrongMatchRequiresMarginOverSecondCandidate(): void
     {
         $pdo = KisMatcherDatabase::create([

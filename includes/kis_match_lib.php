@@ -60,7 +60,10 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
     foreach ($rowsByPdo[$pdo] as $row) {
         $score = 0;
         $reasons = [];
-        if ($uciid !== '' && kisMatchNormalizeText((string)($row['uciid'] ?? '')) === $uciid) {
+        $rowUciid = kisMatchNormalizeText((string)($row['uciid'] ?? ''));
+        $rowBirth = trim((string)($row['narozeni'] ?? ''));
+        $hasExactUciId = $uciid !== '' && $rowUciid === $uciid;
+        if ($hasExactUciId) {
             $score += 95;
             $reasons[] = 'UCI ID';
         }
@@ -70,24 +73,20 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
         }
         $rowFirst = kisMatchNormalizeText((string)($row['first_name_norm'] ?? $row['jmeno'] ?? ''));
         $rowLast = kisMatchNormalizeText((string)($row['last_name_norm'] ?? $row['prijmeni'] ?? ''));
-        if ($jmeno !== '' && $prijmeni !== '' && $rowFirst === $jmeno && $rowLast === $prijmeni) {
+        $hasExactName = $jmeno !== '' && $prijmeni !== '' && $rowFirst === $jmeno && $rowLast === $prijmeni;
+        if ($hasExactName) {
             $score += 60;
             $reasons[] = 'jmeno+prijmeni';
-            if ($narozeni !== '' && (string)($row['narozeni'] ?? '') === $narozeni) {
+            if ($narozeni !== '' && $rowBirth === $narozeni) {
                 $score += 35;
                 $reasons[] = 'datum narozeni';
             }
         }
-        if (
-            $jmeno !== ''
-            && $prijmeni !== ''
-            && $rowFirst === $jmeno
-            && $rowLast === $prijmeni
-            && $narozeni !== ''
-            && trim((string)($row['narozeni'] ?? '')) !== ''
-            && (string)$row['narozeni'] !== $narozeni
-        ) {
+        if (($hasExactName || $hasExactUciId) && $narozeni !== '' && $rowBirth !== '' && $rowBirth !== $narozeni) {
             $reasons[] = 'datum narozeni se lisi';
+        }
+        if ($hasExactName && $uciid !== '' && $rowUciid !== '' && $rowUciid !== $uciid) {
+            $reasons[] = 'UCI ID se lisi';
         }
         $matchScore = min(100, $score);
         if ($matchScore > 0) {
@@ -126,7 +125,8 @@ function kisMatchResolve(PDO $pdo, array $person): array
     $bestScore = (int)($best['_match_score'] ?? 0);
     $secondScore = isset($candidates[1]) ? (int)($candidates[1]['_match_score'] ?? 0) : 0;
     $bestReason = (string)($best['_match_reason'] ?? '');
-    if (str_contains($bestReason, 'datum narozeni se lisi')) {
+    $bestReasons = array_map('trim', explode(',', $bestReason));
+    if (in_array('datum narozeni se lisi', $bestReasons, true)) {
         return [
             'status' => 'conflict',
             'sportovec_id' => null,
@@ -135,7 +135,23 @@ function kisMatchResolve(PDO $pdo, array $person): array
             'candidates' => array_slice($candidates, 0, 5),
         ];
     }
-    if ($bestScore >= 90 && ($bestScore - $secondScore) >= 10) {
+    if (in_array('UCI ID se lisi', $bestReasons, true)) {
+        return [
+            'status' => 'conflict',
+            'sportovec_id' => null,
+            'confidence' => $bestScore,
+            'reason' => 'UCI ID se lisi, vyzaduje rucni potvrzeni',
+            'candidates' => array_slice($candidates, 0, 5),
+        ];
+    }
+    $hasExactUciId = in_array('UCI ID', $bestReasons, true);
+    $hasExactNameAndBirth = in_array('jmeno+prijmeni', $bestReasons, true)
+        && in_array('datum narozeni', $bestReasons, true);
+    $hasStrongIdentityEvidence = $hasExactUciId || $hasExactNameAndBirth;
+
+    // Skóre je jen pořadí kandidátů. Slabé signály se nesmí jejich součtem
+    // proměnit v automatické propojení (typicky sdílený rodinný e-mail + jméno).
+    if ($hasStrongIdentityEvidence && $bestScore >= 90 && ($bestScore - $secondScore) >= 10) {
         return [
             'status' => 'matched',
             'sportovec_id' => (int)$best['id'],
