@@ -1,0 +1,5 @@
+code;pairCode;name;price;currency;includingVat;percentVat;variant:Velikost;variant:Barva
+$0100;DRESMATRIX;Fiktivní dres;1 234,50;CZK;1;21;S;Červená
+DRES-M-C;DRESMATRIX;Fiktivní dres;1 234,50;CZK;1;21;M;Červená
+DRES-S-M;DRESMATRIX;Fiktivní dres;1 234,50;CZK;1;21;S;Modrá
+LAHEV-MATRIX;;Fiktivní lahev;249;CZK;1;21;;

@@ -92,6 +92,157 @@ final class ShopCatalogContractTest extends TestCase
         self::assertContains('missing_currency', array_column($result['issues'], 'code'));
     }
 
+    public function testSyntheticVariantMatrixIsGroupedAndSortedDeterministically(): void
+    {
+        $parsed = \ShoptetProductCsv::read(self::FIXTURES . '/products-variant-matrix.csv');
+        $first = \ShopCatalogContract::build($parsed);
+        $second = \ShopCatalogContract::build($parsed);
+
+        self::assertTrue($first['summary']['contract_ready']);
+        self::assertSame(2, $first['summary']['products']);
+        self::assertSame(4, $first['summary']['variants']);
+        self::assertSame(0, $first['summary']['errors']);
+        self::assertSame($first, $second);
+
+        $dres = $this->product($first, 'shoptet:pair:DRESMATRIX');
+        self::assertSame(['0100', 'DRES-M-C', 'DRES-S-M'], array_column($dres['variants'], 'sku'));
+        self::assertSame(
+            ['Barva' => 'Červená', 'Velikost' => 'S'],
+            $dres['variants'][0]['attributes']
+        );
+        self::assertSame(123450, $dres['variants'][0]['price']['amount_minor']);
+    }
+
+    public function testDuplicateSkuFixtureReportsEveryCollisionWithoutOverwrite(): void
+    {
+        $result = \ShopCatalogContract::build(
+            \ShoptetProductCsv::read(self::FIXTURES . '/products-duplicate-sku.csv')
+        );
+        $duplicates = array_values(array_filter(
+            $result['issues'],
+            static fn (array $issue): bool => $issue['code'] === 'duplicate_sku'
+        ));
+
+        self::assertFalse($result['summary']['contract_ready']);
+        self::assertCount(2, $duplicates);
+        self::assertSame([3, 5], array_column($duplicates, 'row'));
+        self::assertStringContainsString('radku 2', $duplicates[0]['message']);
+        self::assertStringContainsString('radku 4', $duplicates[1]['message']);
+        self::assertSame(2, $result['summary']['products']);
+        self::assertSame(2, $result['summary']['variants']);
+    }
+
+    public function testCatalogMoneyAndVatFixtureKeepsExactTypedValues(): void
+    {
+        $result = \ShopCatalogContract::build(
+            \ShoptetProductCsv::read(self::FIXTURES . '/products-money-vat.csv')
+        );
+
+        self::assertTrue($result['summary']['contract_ready']);
+        self::assertSame(4, $result['summary']['products']);
+        self::assertSame(4, $result['summary']['variants']);
+        self::assertSame(0, $result['summary']['errors']);
+
+        $zero = $this->product($result, 'shoptet:sku:ZERO')['variants'][0]['price'];
+        self::assertSame(0, $zero['amount_minor']);
+        self::assertTrue($zero['includes_vat']);
+        self::assertSame(0, $zero['vat_rate_basis_points']);
+
+        $gross = $this->product($result, 'shoptet:sku:GROSS')['variants'][0]['price'];
+        self::assertSame(123450, $gross['amount_minor']);
+        self::assertSame('CZK', $gross['currency']);
+        self::assertTrue($gross['includes_vat']);
+        self::assertSame(2100, $gross['vat_rate_basis_points']);
+
+        $net = $this->product($result, 'shoptet:sku:NET')['variants'][0]['price'];
+        self::assertSame(999999, $net['amount_minor']);
+        self::assertFalse($net['includes_vat']);
+        self::assertSame(1250, $net['vat_rate_basis_points']);
+
+        $unknown = $this->product($result, 'shoptet:sku:VATUNKNOWN')['variants'][0]['price'];
+        self::assertNull($unknown['includes_vat']);
+        self::assertNull($unknown['vat_rate_basis_points']);
+        self::assertSame(1, count(array_filter(
+            $result['issues'],
+            static fn (array $issue): bool => $issue['code'] === 'vat_basis_unknown'
+        )));
+    }
+
+    public function testUnsupportedCurrencyDoesNotProduceMisleadingMinorAmount(): void
+    {
+        $result = \ShopCatalogContract::build($this->parsedRow([
+            'code' => 'EUR-PRICE',
+            'pairCode' => '',
+            'name' => 'Fiktivní cizí měna',
+            'price' => '10,00',
+            'currency' => 'EUR',
+            'includingVat' => '1',
+        ]));
+        $price = $result['products'][0]['variants'][0]['price'];
+
+        self::assertFalse($result['summary']['contract_ready']);
+        self::assertContains('unsupported_currency_minor_unit', array_column($result['issues'], 'code'));
+        self::assertNull($price['amount_minor']);
+        self::assertSame('EUR', $price['currency']);
+        self::assertSame('10,00', $price['source_price_decimal']);
+    }
+
+    public function testMalformedMoneyCurrencyAndVatFailClosed(): void
+    {
+        $cases = [
+            ['price', '-1', 'invalid_price'],
+            ['price', '0.001', 'invalid_price'],
+            ['price', '1.234,50', 'invalid_price'],
+            ['currency', '', 'missing_currency'],
+            ['currency', 'CZ', 'invalid_currency'],
+            ['includingVat', '2', 'invalid_including_vat'],
+            ['percentVat', '-1', 'invalid_vat_rate'],
+            ['percentVat', '100.01', 'invalid_vat_rate'],
+        ];
+
+        foreach ($cases as [$field, $value, $expectedCode]) {
+            $row = [
+                'code' => 'MALFORMED-1',
+                'pairCode' => '',
+                'name' => 'Fiktivní neplatná hodnota',
+                'price' => '100',
+                'currency' => 'CZK',
+                'includingVat' => '1',
+                'percentVat' => '21',
+            ];
+            $row[$field] = $value;
+            $result = \ShopCatalogContract::build($this->parsedRow($row));
+
+            self::assertFalse($result['summary']['contract_ready'], $field . '=' . $value);
+            self::assertContains($expectedCode, array_column($result['issues'], 'code'), $field . '=' . $value);
+            if ($field === 'currency') {
+                self::assertNull($result['products'][0]['variants'][0]['price']['amount_minor']);
+            }
+        }
+    }
+
+    public function testOrderPaymentWalletAndDeliveryColumnsRemainOutsideCatalogContract(): void
+    {
+        $result = \ShopCatalogContract::build(
+            \ShoptetProductCsv::read(self::FIXTURES . '/products-catalog-scope-boundary.csv')
+        );
+        $unsupported = array_values(array_filter(
+            $result['issues'],
+            static fn (array $issue): bool => $issue['code'] === 'unsupported_nonempty_header'
+        ));
+        $fields = array_column($unsupported, 'field');
+        sort($fields, SORT_STRING);
+
+        self::assertFalse($result['summary']['contract_ready']);
+        self::assertSame(4, $result['summary']['errors']);
+        self::assertSame(
+            ['deliveryMethod', 'orderStatus', 'paymentMethod', 'walletCredit'],
+            $fields
+        );
+        self::assertSame(1, $result['summary']['products']);
+        self::assertSame(1, $result['summary']['variants']);
+    }
+
     /** @return array<string,mixed> */
     private function resultForPrice(string $price): array
     {

@@ -1,0 +1,5 @@
+code;pairCode;name;price;currency;includingVat;percentVat
+ZERO;;Fiktivní nulová cena;0,00;CZK;1;0
+GROSS;;Fiktivní cena s DPH;1 234,50;CZK;1;21
+NET;;Fiktivní cena bez DPH;9999,99;CZK;0;12,5
+VATUNKNOWN;;Fiktivní cena s neznámým DPH;50;CZK;;
