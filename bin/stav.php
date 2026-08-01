@@ -1,53 +1,74 @@
 <?php
+declare(strict_types=1);
+
 /**
- * Kontrolní endpoint pro nasazení: stav databázových migrací.
- * Volá ho GitHub Actions po nahrání souborů — ověří, že se migrace
- * opravdu aplikovaly (auto_migrace.php běží při načtení db.php).
- *
- * GET /bin/stav.php?token=<DEPLOY_TOKEN z config.php>
- * Odpověď: JSON { ok, verze_db, verze_kod, vse_aplikovano }
+ * Zpetne kompatibilni read-only kontrolni endpoint.
+ * Nespousti db.php, auto-migraci ani zadny zapis. Pro deploy se preferuje
+ * SSH prikaz: APP_HOST=<host> php bin/migrate.php --check --json
  */
 
 header('Content-Type: application/json; charset=utf-8');
 
-$koren = dirname(__DIR__);
+$root = dirname(__DIR__);
+$respond = static function (array $payload, int $httpCode = 200): never {
+    http_response_code($httpCode);
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    exit;
+};
 
-if (!is_file($koren . '/config.php')) {
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'chyba' => 'Na serveru chybí config.php.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-require_once $koren . '/config.php';
-
-if (!defined('DEPLOY_TOKEN') || DEPLOY_TOKEN === '') {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'chyba' => 'V config.php chybí konstanta DEPLOY_TOKEN.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-if (!hash_equals((string)DEPLOY_TOKEN, (string)($_GET['token'] ?? ''))) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'chyba' => 'Neplatný token.'], JSON_UNESCAPED_UNICODE);
-    exit;
+if (!is_file($root . '/config.php')) {
+    $respond(['ok' => false, 'chyba' => 'Na serveru chybi config.php.'], 500);
 }
 
-// Načtení db.php spustí auto-migraci (includes/auto_migrace.php)
-require $koren . '/db.php';
-require_once $koren . '/includes/schema_version.php';
-
-$verze_db = '';
 try {
-    $stmt = $pdo->query("SELECT hodnota FROM nastaveni WHERE klic = 'schema_version'");
-    $verze_db = (string)($stmt ? $stmt->fetchColumn() : '');
-} catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'chyba' => 'Nelze přečíst verzi schématu: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
-    exit;
-}
+    require_once $root . '/config.php';
 
-echo json_encode([
-    'ok'             => true,
-    'verze_db'       => $verze_db !== '' ? $verze_db : '(nenastavena)',
-    'verze_kod'      => SCHEMA_VERSION,
-    'vse_aplikovano' => $verze_db === SCHEMA_VERSION,
-    'php'            => PHP_VERSION,
-], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    if (!defined('DEPLOY_TOKEN') || DEPLOY_TOKEN === '') {
+        $respond(['ok' => false, 'chyba' => 'V config.php chybi DEPLOY_TOKEN.'], 403);
+    }
+    if (!hash_equals((string)DEPLOY_TOKEN, (string)($_GET['token'] ?? ''))) {
+        $respond(['ok' => false, 'chyba' => 'Neplatny token.'], 403);
+    }
+
+    require_once $root . '/includes/migration_runner.php';
+    foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS'] as $constant) {
+        if (!defined($constant)) {
+            throw new RuntimeException('missing_database_configuration');
+        }
+    }
+
+    $pdo = new PDO(
+        'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+        DB_USER,
+        DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]
+    );
+    $catalog = EvidenceMigrationCatalog::load($root . '/migrations');
+    $result = (new EvidenceMigrationRunner($pdo, $catalog))->check();
+
+    $respond([
+        'ok' => true,
+        'verze_db' => $result['legacy_version'] ?? '(nenastavena)',
+        'verze_kod' => LEGACY_SCHEMA_VERSION,
+        'vse_aplikovano' => $result['current'],
+        'duvod' => $result['reason'],
+        'cekajici_migrace' => $result['pending'],
+        'php' => PHP_VERSION,
+    ]);
+} catch (EvidenceMigrationException $exception) {
+    $respond([
+        'ok' => false,
+        'chyba' => $exception->getMessage(),
+        'duvod' => $exception->reason,
+    ], 409);
+} catch (Throwable $exception) {
+    error_log('stav.php: ' . $exception->getMessage());
+    $respond([
+        'ok' => false,
+        'chyba' => 'Stav migraci nelze bezpecne precist.',
+    ], 500);
+}

@@ -3,13 +3,11 @@
  * Auto-migrace databázového schématu — Evidence tréninků
  *
  * Spouští se automaticky z db.php při každém requestu.
- * Pokud verze schématu odpovídá konstantě SCHEMA_VERSION, nic se neděje (1 SELECT).
- * Pokud ne, spustí se potřebné ALTER TABLE / CREATE TABLE.
+ * Tato legacy migrace obsluhuje pouze pevny baseline 2.20.2. Pokud je verze
+ * shodna, vyssi nebo neplatna, nic nemeni a nikdy tracker nesnizuje.
  *
- * Postup při přidání nové migrace:
- *  1. Přidej SQL krok do sekce "Migrace" níže
- *  2. Zvyš SCHEMA_VERSION (sem-ver: major.minor.patch)
- *  3. Nahraj soubor na produkci — migrace proběhne automaticky
+ * Nove zmeny patri do cislovanych migraci v migrations/ a spousti se pres
+ * bin/migrate.php. Tento soubor ani LEGACY_SCHEMA_VERSION uz nezvysovat.
  */
 
 require_once __DIR__ . '/schema_version.php';
@@ -33,8 +31,12 @@ require_once __DIR__ . '/schema_version.php';
     try {
         $stmt   = $pdo->query("SELECT hodnota FROM nastaveni WHERE klic = 'schema_version'");
         $verze  = $stmt ? (string)$stmt->fetchColumn() : '';
-        if ($verze === SCHEMA_VERSION) {
-            return; // Schéma je aktuální — konec
+        $legacyState = evidence_legacy_schema_state($verze);
+        if (!in_array($legacyState, ['missing', 'pending'], true)) {
+            if ($legacyState === 'invalid') {
+                error_log('auto_migrace: invalid schema_version; refusing to change database');
+            }
+            return; // Baseline je aktualni/vyssi, nebo tracker neni bezpecne citelny.
         }
     } catch (PDOException $e) {
         return;
@@ -966,7 +968,7 @@ require_once __DIR__ . '/schema_version.php';
                 "INSERT INTO nastaveni (klic, hodnota)
                  VALUES ('schema_version', ?)
                  ON DUPLICATE KEY UPDATE hodnota = VALUES(hodnota), upraveno = CURRENT_TIMESTAMP"
-            )->execute([SCHEMA_VERSION]);
+            )->execute([LEGACY_SCHEMA_VERSION]);
         } catch (PDOException $e) {
             error_log('auto_migrace version save: ' . $e->getMessage());
         }
