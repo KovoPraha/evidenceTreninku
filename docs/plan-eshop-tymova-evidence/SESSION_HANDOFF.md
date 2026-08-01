@@ -10,7 +10,7 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `codex/foundation`
-- Aktuální HEAD: ověřit živě; ověřený kódový tip je `cf89dcd`, za ním
+- Aktuální HEAD: ověřit živě; ověřený kódový tip je `220bdc3`, za ním
   následuje pouze tento evidence/handoff commit
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
@@ -37,14 +37,14 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `58ec8ec985d447dfe901481ac8bb24b944b03d08` | 2026-08-01 | fetch + rev-parse | ano |
-| integrační branch | `codex/foundation`; ověřený kódový tip `cf89dcd` | 2026-08-01 | Git | ano |
+| integrační branch | `codex/foundation`; ověřený kódový tip `220bdc3` | 2026-08-01 | Git | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | přesný sloučený kódový strom `cf89dcd`: 29/119 | 2026-08-01 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
+| testy | sloučený strom `cf89dcd`: 29/119; fix `220bdc3`: YAML/lint/backup/re-audit P0=0, P1=0 | 2026-08-01 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
-| lokální backup drill | 59 tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků | 2026-08-01 | izolovaná XAMPP DB | zopakovat s produkčním artefaktem |
+| lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-01.2` obsahuje i lokálně nepřítomné `ucto_gs_*` | 2026-08-01 | izolovaná XAMPP DB | zopakovat s produkčním artefaktem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
