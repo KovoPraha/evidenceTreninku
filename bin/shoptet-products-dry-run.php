@@ -30,6 +30,7 @@ function shopDryRunUsage(string $message = ''): void
 function shopDryRunArguments(array $arguments): array
 {
     $input = '';
+    $inputSeen = false;
     $json = false;
     for ($index = 1, $count = count($arguments); $index < $count; $index++) {
         $argument = (string)$arguments[$index];
@@ -41,20 +42,36 @@ function shopDryRunArguments(array $arguments): array
             continue;
         }
         if ($argument === '--input') {
+            if ($inputSeen) {
+                shopDryRunUsage('Parametr --input smi byt uveden pouze jednou.');
+            }
             if (!isset($arguments[$index + 1]) || str_starts_with((string)$arguments[$index + 1], '--')) {
                 shopDryRunUsage('Za --input chybi cesta.');
             }
             $input = (string)$arguments[++$index];
+            $inputSeen = true;
             continue;
         }
         if (str_starts_with($argument, '--input=')) {
+            if ($inputSeen) {
+                shopDryRunUsage('Parametr --input smi byt uveden pouze jednou.');
+            }
             $input = substr($argument, strlen('--input='));
+            $inputSeen = true;
             continue;
         }
         shopDryRunUsage('Neznamy parametr: ' . $argument);
     }
     if ($input === '') {
         shopDryRunUsage('Parametr --input je povinny.');
+    }
+    if (str_contains($input, '://')
+        || strtolower(pathinfo($input, PATHINFO_EXTENSION)) !== 'csv'
+        || is_link($input)
+        || !is_file($input)
+        || !is_readable($input)
+    ) {
+        shopDryRunUsage('Vstup musi byt citelny lokalni regularni .csv soubor.');
     }
     return ['input' => $input, 'json' => $json];
 }

@@ -41,30 +41,40 @@ final class ShoptetProductCsv
         if ($sample === false) {
             throw new ShoptetProductCsvException('CSV soubor nelze nacist.');
         }
+        if (strlen($sample) > self::MAX_BYTES) {
+            throw new ShoptetProductCsvException('CSV soubor prekrocil limit 10 MiB.');
+        }
         if (str_contains($sample, "\0")) {
             throw new ShoptetProductCsvException('CSV soubor obsahuje nepovolene nulove bajty.');
         }
 
         $encoding = mb_check_encoding($sample, 'UTF-8') ? 'UTF-8' : 'Windows-1250';
+        $utf8Snapshot = $sample;
         if ($encoding === 'Windows-1250') {
             $converted = iconv('WINDOWS-1250', 'UTF-8', $sample);
             if ($converted === false || !mb_check_encoding($converted, 'UTF-8')) {
                 throw new ShoptetProductCsvException('CSV soubor neni platny UTF-8 ani Windows-1250.');
             }
+            $utf8Snapshot = $converted;
         }
 
-        $delimiter = self::detectDelimiter($sample);
-        $handle = fopen($input, 'rb');
+        $delimiter = self::detectDelimiter($utf8Snapshot);
+        $handle = fopen('php://memory', 'w+b');
         if ($handle === false) {
-            throw new ShoptetProductCsvException('CSV soubor nelze otevrit.');
+            throw new ShoptetProductCsvException('Nelze pripravit pametovy CSV snapshot.');
         }
+        if (fwrite($handle, $utf8Snapshot) !== strlen($utf8Snapshot)) {
+            fclose($handle);
+            throw new ShoptetProductCsvException('Nelze pripravit pametovy CSV snapshot.');
+        }
+        rewind($handle);
 
         try {
             $headerRow = fgetcsv($handle, 0, $delimiter, '"', '');
             if ($headerRow === false) {
                 throw new ShoptetProductCsvException('CSV soubor nema hlavicku.');
             }
-            $headerRow = self::convertRow($headerRow, $encoding);
+            $headerRow = self::convertRow($headerRow);
             if (isset($headerRow[0])) {
                 $headerRow[0] = preg_replace('/^\x{FEFF}/u', '', $headerRow[0]) ?? $headerRow[0];
             }
@@ -87,7 +97,7 @@ final class ShoptetProductCsv
             $physicalRow = 1;
             while (($row = fgetcsv($handle, 0, $delimiter, '"', '')) !== false) {
                 $physicalRow++;
-                $row = self::convertRow($row, $encoding);
+                $row = self::convertRow($row);
                 if (count($row) > self::MAX_COLUMNS) {
                     throw new ShoptetProductCsvException('Radek ' . $physicalRow . ' prekrocil limit sloupcu.');
                 }
@@ -117,7 +127,7 @@ final class ShoptetProductCsv
         return [
             'source' => [
                 'filename' => basename($input),
-                'sha256' => hash_file('sha256', $input) ?: '',
+                'sha256' => hash('sha256', $sample),
                 'encoding' => $encoding,
                 'delimiter' => $delimiter === ';' ? 'semicolon' : 'comma',
                 'rows' => count($rows),
@@ -146,18 +156,11 @@ final class ShoptetProductCsv
     }
 
     /** @param list<string|null> $row @return list<string> */
-    private static function convertRow(array $row, string $encoding): array
+    private static function convertRow(array $row): array
     {
         $converted = [];
         foreach ($row as $field) {
             $value = (string)($field ?? '');
-            if ($encoding === 'Windows-1250') {
-                $convertedValue = iconv('WINDOWS-1250', 'UTF-8', $value);
-                if ($convertedValue === false) {
-                    throw new ShoptetProductCsvException('CSV obsahuje neplatny Windows-1250 retezec.');
-                }
-                $value = $convertedValue;
-            }
             if (!mb_check_encoding($value, 'UTF-8')) {
                 throw new ShoptetProductCsvException('CSV obsahuje neplatny textovy retezec.');
             }

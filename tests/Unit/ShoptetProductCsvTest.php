@@ -20,6 +20,18 @@ final class ShoptetProductCsvTest extends TestCase
         self::assertSame('semicolon', $parsed['source']['delimiter']);
         self::assertSame(3, $parsed['source']['rows']);
         self::assertSame('$000123', $parsed['rows'][0]['values']['code']);
+        self::assertSame(hash('sha256', (string)file_get_contents(self::FIXTURE)), $parsed['source']['sha256']);
+    }
+
+    public function testParserAndHashUseOneInMemorySnapshot(): void
+    {
+        $source = file_get_contents(dirname(__DIR__, 2) . '/includes/shoptet_product_csv.php');
+
+        self::assertIsString($source);
+        self::assertStringContainsString("fopen('php://memory', 'w+b')", $source);
+        self::assertStringContainsString("hash('sha256', \$sample)", $source);
+        self::assertStringNotContainsString("fopen(\$input, 'rb')", $source);
+        self::assertStringNotContainsString("hash_file('sha256', \$input)", $source);
     }
 
     public function testReadsUtf8BomAndWindows1250(): void
@@ -98,6 +110,32 @@ final class ShoptetProductCsvTest extends TestCase
         self::assertSame(2, $this->runCli(['--input=' . $invalid, '--json'])['exit']);
         self::assertSame(64, $this->runCli(['--input=' . $invalid, '--apply'])['exit']);
         self::assertSame(64, $this->runCli(['--input=' . $invalid, '--report=out.json'])['exit']);
+    }
+
+    public function testCliRejectsDuplicateInputAndInvalidLocalPathsAsUsage(): void
+    {
+        $valid = realpath(self::FIXTURE);
+        self::assertIsString($valid);
+        $duplicate = $this->runCli(['--input=' . $valid, '--input', $valid, '--json']);
+        self::assertSame(64, $duplicate['exit']);
+        self::assertStringContainsString('pouze jednou', $duplicate['stderr']);
+
+        $missing = $this->runCli(['--input=' . sys_get_temp_dir() . '/shop-does-not-exist.csv', '--json']);
+        self::assertSame(64, $missing['exit']);
+        self::assertStringContainsString('regularni .csv', $missing['stderr']);
+
+        $base = tempnam(sys_get_temp_dir(), 'shop-wrong-ext-');
+        self::assertIsString($base);
+        $text = $base . '.txt';
+        file_put_contents($text, "code;pairCode;name;price\nTEST-1;;Test;100\n");
+        try {
+            $wrongExtension = $this->runCli(['--input=' . $text, '--json']);
+            self::assertSame(64, $wrongExtension['exit']);
+            self::assertStringContainsString('regularni .csv', $wrongExtension['stderr']);
+        } finally {
+            @unlink($text);
+            @unlink($base);
+        }
     }
 
     /** @param list<string> $arguments @return array{exit:int,stdout:string,stderr:string} */

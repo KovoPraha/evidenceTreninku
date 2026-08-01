@@ -26,8 +26,9 @@ odmítnuty s exit kódem `64`.
 Exit kódy:
 
 - `0` – soubor splnil prozatímní katalogový kontrakt,
-- `2` – soubor byl přečten, ale obsahuje blokující validační problém,
-- `64` – chybný nebo zakázaný parametr příkazové řádky.
+- `2` – existující CSV byl přečten, ale obsahuje blokující obsahový problém,
+- `64` – chybný nebo zakázaný parametr, duplicitní `--input`, neexistující či
+  nečitelná lokální cesta nebo cesta k jinému typu souboru než `.csv`.
 
 ## Bezpečnostní hranice
 
