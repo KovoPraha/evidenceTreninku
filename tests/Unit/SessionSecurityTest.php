@@ -27,13 +27,21 @@ final class SessionSecurityTest extends TestCase
 
     public function testSecureCookieDetectionCoversLocalAndProductionRequests(): void
     {
-        self::assertFalse(\app_session_policy(['HTTP_HOST' => 'localhost'])['cookie_secure']);
-        self::assertFalse(\app_session_policy(['HTTP_HOST' => 'evidence.test:8080'])['cookie_secure']);
+        self::assertTrue(\app_session_request_is_local(['HTTP_HOST' => 'localhost'], 'Windows'));
+        self::assertFalse(\app_session_policy(['HTTP_HOST' => 'localhost'], [], 'Windows')['cookie_secure']);
+        self::assertFalse(\app_session_policy(['HTTP_HOST' => 'evidence.test:8080'], [], 'Windows')['cookie_secure']);
         self::assertTrue(\app_session_policy([
             'HTTP_HOST' => 'localhost',
             'HTTPS' => 'on',
-        ])['cookie_secure']);
+        ], [], 'Windows')['cookie_secure']);
         self::assertTrue(\app_session_policy(['HTTP_HOST' => 'data.kovopraha.cz'])['cookie_secure']);
+    }
+
+    public function testLinuxRequestCannotDisableSecureCookieWithLocalHostHeader(): void
+    {
+        self::assertFalse(\app_session_request_is_local(['HTTP_HOST' => 'localhost'], 'Linux'));
+        self::assertTrue(\app_session_policy(['HTTP_HOST' => 'localhost'], [], 'Linux')['cookie_secure']);
+        self::assertTrue(\app_session_policy(['HTTP_HOST' => 'evidence.test'], [], 'Linux')['cookie_secure']);
     }
 
     public function testIdleExpiryHasPriorityOverRotation(): void
@@ -121,6 +129,27 @@ final class SessionSecurityTest extends TestCase
         self::assertSame(1001, $_SESSION[APP_SESSION_ROTATED_AT]);
 
         \app_session_destroy(1002);
+    }
+
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function testAddingSecondIdentityPreservesOriginalAbsoluteTimeoutStart(): void
+    {
+        \app_session_start(['HTTP_HOST' => 'localhost'], 1000);
+        $_SESSION = $this->authenticatedState(1000, 4000, 4000) + [
+            'csrf_token' => 'old-csrf-token',
+        ];
+        $oldId = session_id();
+
+        \app_session_mark_authenticated(5000);
+
+        self::assertSame(1000, $_SESSION[APP_SESSION_AUTHENTICATED_AT]);
+        self::assertSame(5000, $_SESSION[APP_SESSION_LAST_ACTIVITY_AT]);
+        self::assertSame(5000, $_SESSION[APP_SESSION_ROTATED_AT]);
+        self::assertNotSame($oldId, session_id());
+        self::assertNotSame('old-csrf-token', $_SESSION['csrf_token']);
+
+        \app_session_destroy(5001);
     }
 
     #[RunInSeparateProcess]

@@ -10,7 +10,8 @@ jej lze bezpečně zavolat z hlavního souboru i z následně vložené hlavičk
 - vlastní název cookie `EVIDENCESESSID`,
 - `session.use_strict_mode=1` a `session.use_only_cookies=1`,
 - cookie má `HttpOnly`, `SameSite=Lax` a cestu `/`,
-- `Secure` je zapnuté pro každý nelokální host a také pro lokální HTTPS,
+- `Secure` je zapnuté vždy na Linuxu, pro každý nelokální host a také pro
+  lokální HTTPS,
 - odpověď posílá `Referrer-Policy: strict-origin-when-cross-origin`,
 - autentizovaná session expiruje po 7 200 sekundách neaktivity,
 - autentizovaná session expiruje nejpozději po 43 200 sekundách od přihlášení,
@@ -19,9 +20,11 @@ jej lze bezpečně zavolat z hlavního souboru i z následně vložené hlavičk
 - po expiraci se stará session i cookie odstraní a request dostane novou
   anonymní session bez původních dat.
 
-Lokální host je `localhost`, loopback adresa nebo jméno končící `.local` či
-`.test`. Na běžné produkční doméně je proto cookie `Secure` i v případě, že
-proxy nepředá PHP informaci o HTTPS.
+Výjimka pro HTTP bez `Secure` platí pouze na důvěryhodně lokálním Windows a jen
+pro `localhost`, loopback adresu nebo jméno končící `.local` či `.test`. Samotný
+podvržený Host header proto na produkčním Linuxu cookie neoslabí. Na běžné
+produkční doméně je `Secure` zapnuté i v případě, že proxy nepředá PHP informaci
+o HTTPS.
 
 Hodnoty 7 200 / 43 200 / 900 sekund jsou pro první bezpečnostní increment
 **prozatímní a konfigurovatelné**. Helper je čte z konstant
@@ -34,7 +37,10 @@ vědomé provozní rozhodnutí a doplnit regresní test.
 
 `app_session_mark_authenticated()` se volá po úspěšném přihlášení trenéra,
 veřejného uživatele, ověření emailu a při vytvoření Evidence identity ze SSO.
-Nastaví počátek absolutního limitu, poslední aktivitu a čas poslední rotace.
+U nové autentizované session nastaví počátek absolutního limitu, poslední
+aktivitu a čas poslední rotace. Pokud se do stejné session přidává druhá
+identita, zachová nejstarší počátek absolutního limitu; druhé přihlášení tedy
+nemůže prodloužit maximální životnost původní identity.
 Autentizovaná session pod novým názvem cookie, které pouze chybějí časová
 metadata, dostane metadata při prvním requestu. Přechod z dřívější výchozí
 cookie `PHPSESSID` na `EVIDENCESESSID` ale znamená záměrné jednorázové odhlášení

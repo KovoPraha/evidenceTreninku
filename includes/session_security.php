@@ -11,9 +11,14 @@ const APP_SESSION_LAST_ACTIVITY_AT = '__app_last_activity_at';
 const APP_SESSION_ROTATED_AT = '__app_rotated_at';
 
 /** @param array<string, mixed>|null $server */
-function app_session_request_is_local(?array $server = null): bool
+function app_session_request_is_local(?array $server = null, ?string $platform = null): bool
 {
     $server ??= $_SERVER;
+    $platform ??= PHP_OS_FAMILY;
+    if (strcasecmp($platform, 'Windows') !== 0) {
+        return false;
+    }
+
     $host = strtolower(trim((string)($server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? '')));
 
     if (str_starts_with($host, '[')) {
@@ -45,7 +50,7 @@ function app_session_request_is_https(?array $server = null): bool
  * @param array<string, int|string|bool> $overrides
  * @return array{name:string,idle_timeout:int,absolute_timeout:int,rotation_interval:int,cookie_path:string,cookie_secure:bool,cookie_httponly:bool,cookie_samesite:string}
  */
-function app_session_policy(?array $server = null, array $overrides = []): array
+function app_session_policy(?array $server = null, array $overrides = [], ?string $platform = null): array
 {
     $server ??= $_SERVER;
     $policy = [
@@ -54,7 +59,7 @@ function app_session_policy(?array $server = null, array $overrides = []): array
         'absolute_timeout' => (int)APP_SESSION_ABSOLUTE_TIMEOUT,
         'rotation_interval' => (int)APP_SESSION_ROTATION_INTERVAL,
         'cookie_path' => '/',
-        'cookie_secure' => !app_session_request_is_local($server) || app_session_request_is_https($server),
+        'cookie_secure' => !app_session_request_is_local($server, $platform) || app_session_request_is_https($server),
         'cookie_httponly' => true,
         'cookie_samesite' => 'Lax',
     ];
@@ -73,9 +78,9 @@ function app_session_policy(?array $server = null, array $overrides = []): array
  * @param array<string, int|string|bool> $overrides
  * @return array{lifetime:int,path:string,secure:bool,httponly:bool,samesite:string}
  */
-function app_session_cookie_options(?array $server = null, array $overrides = []): array
+function app_session_cookie_options(?array $server = null, array $overrides = [], ?string $platform = null): array
 {
-    $policy = app_session_policy($server, $overrides);
+    $policy = app_session_policy($server, $overrides, $platform);
 
     return [
         'lifetime' => 0,
@@ -216,13 +221,17 @@ function app_session_mark_authenticated(?int $now = null): void
     if (session_status() !== PHP_SESSION_ACTIVE) {
         app_session_start(null, $now);
     }
+    $preserveAbsoluteStart = app_session_has_authenticated_identity()
+        && isset($_SESSION[APP_SESSION_AUTHENTICATED_AT]);
 
     if (!session_regenerate_id(true)) {
         throw new RuntimeException('Session identifier could not be rotated after authentication.');
     }
 
     app_session_rotate_csrf_token();
-    $_SESSION[APP_SESSION_AUTHENTICATED_AT] = $now;
+    $_SESSION[APP_SESSION_AUTHENTICATED_AT] = $preserveAbsoluteStart
+        ? min((int)$_SESSION[APP_SESSION_AUTHENTICATED_AT], $now)
+        : $now;
     $_SESSION[APP_SESSION_LAST_ACTIVITY_AT] = $now;
     $_SESSION[APP_SESSION_ROTATED_AT] = $now;
 }
