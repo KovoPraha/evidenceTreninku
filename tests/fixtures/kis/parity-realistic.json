@@ -1,0 +1,61 @@
+{
+  "contract": "kis-parity-v1",
+  "run_ref": "synthetic:realistic-run-001",
+  "missing_in_run_count": 3,
+  "rows": [
+    {
+      "source_ref": "kis:missing:result-01",
+      "category": "unexplained",
+      "reason": "missing_match_result"
+    },
+    {
+      "source_ref": "kis:duplicate:b",
+      "category": "matched_different",
+      "target_ref": "evidence:member-010",
+      "reason": "signals_differ"
+    },
+    {
+      "source_ref": "kis:family-a:child-02",
+      "category": "ambiguous",
+      "reason": "multiple_candidates"
+    },
+    {
+      "source_ref": "kis:strong-id:birth-conflict",
+      "category": "conflict",
+      "reason": "strong_signal_conflict"
+    },
+    {
+      "source_ref": "kis:matched:stable-01",
+      "category": "matched_same",
+      "target_ref": "evidence:member-001",
+      "reason": "signals_equal"
+    },
+    {
+      "source_ref": "kis:new:member-01",
+      "category": "new",
+      "reason": "no_candidate"
+    },
+    {
+      "source_ref": "kis:family-a:child-01",
+      "category": "ambiguous",
+      "reason": "multiple_candidates"
+    },
+    {
+      "source_ref": "kis:matched:signals-changed-01",
+      "category": "matched_different",
+      "target_ref": "evidence:member-002",
+      "reason": "signals_differ"
+    },
+    {
+      "source_ref": "kis:duplicate:a",
+      "category": "matched_same",
+      "target_ref": "evidence:member-010",
+      "reason": "signals_equal"
+    },
+    {
+      "source_ref": "kis:strong-id:uci-conflict",
+      "category": "conflict",
+      "reason": "strong_signal_conflict"
+    }
+  ]
+}
