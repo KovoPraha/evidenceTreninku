@@ -1,113 +1,127 @@
-# Nasazení na produkci (jedním tlačítkem)
+# Nasazení na produkci
 
-Nasazení běží přes **GitHub Actions**: GitHub → záložka **Actions** →
-**Nasadit produkci** → **Run workflow**. Nic jiného není potřeba —
-workflow sám zazálohuje databázi, nahraje soubory, spustí DB migrace
-a ověří, že vše proběhlo. Na konci svítí zelená ✅, nebo červená ❌
-s popisem, co se nepovedlo.
+Produkční adresa je <https://data.kovopraha.cz/evidence/>. Nasazení se spouští
+ručně na GitHubu; samotný push do `main` produkci nezmění.
 
-Produkce se **nemění při pouhém uložení kódu do GitHubu** — nasazuje se
-vždy jen ručním spuštěním workflow.
+## Běžné nasazení krok za krokem
 
-Produkční adresa: <https://data.kovopraha.cz/evidence/>
+1. Otevřete repozitář na GitHubu a kartu **Actions**.
+2. Vlevo vyberte **Nasadit produkci**.
+3. Klikněte na **Run workflow** a ponechte větev **main**.
+4. Do potvrzovacího pole napište přesně `NASADIT`.
+5. Klikněte na zelené **Run workflow** a počkejte, až jsou všechny kroky zelené.
 
-## Co nasazení dělá
+Workflow před změnou produkčních souborů vždy:
 
-1. Zkontroluje PHP syntaxi všech souborů (chybný kód se vůbec nenahraje).
-2. Zavolá `/bin/zaloha.php` — na serveru vznikne komprimovaná záloha
-   databáze evidence, přednostně mimo webový adresář (`db_zalohy` vedle
-   webu). Drží se posledních 20 záloh. (Tabulky prodejního terminálu
-   `jidlo_*` a `bar_*` do zálohy nepatří, mají vlastní.)
-3. Nahraje soubory větve `main` přes rsync/SSH. Na serveru **zůstávají**:
-   `config.php` (hesla), `uploads/`, `nahrane_obrazky/`, `nahrane_zavody/`,
-   `stories/`, `loga_story/`, `reports/`, logy a zálohy.
-4. Načte `index.php` — tím se spustí auto-migrace databáze
-   (`includes/auto_migrace.php`).
-5. Zavolá `/bin/stav.php` a ověří, že verze schématu v databázi odpovídá
-   konstantě `SCHEMA_VERSION` v kódu.
+1. zkontroluje PHP a automatické testy;
+2. ověří identitu SSH serveru proti předem uloženému otisku;
+3. ověří existující `config.php` a PHP rozšíření na serveru;
+4. vytvoří konzistentní databázovou zálohu mimo webový adresář a ověří její
+   kompresi, kontrolní součet a manifest;
+5. zastaví se, pokud záloha není úplná nebo ověřitelná.
 
-Poznámka: nasazení soubory **nemaže** (rsync běží bez `--delete`), protože
-v produkční složce jsou i soubory mimo repozitář. Když nějaký soubor
-z projektu odstraníte, smažte ho na serveru ručně přes Total Commander.
+Teprve potom nahraje kód přes `rsync`, spustí migrace příkazem na SSH a provede
+veřejný HTTP test. Tajné údaje se neposílají v URL.
 
-## Jednorázové nastavení
+> Workflow zatím nepoužívá atomické přepnutí adresářů. Pokud `rsync` selže
+> uprostřed, produkční adresář může krátce obsahovat směs verzí. Opravou je
+> odstranit příčinu a workflow spustit znovu. Atomické release adresáře lze
+> přidat až po ověření podpory symlinků a struktury webrootu na hostingu.
 
-### 1. SSH klíč na hostingu
+## Jednorázové nastavení GitHubu
 
-V administraci hostingu u domény povolit **„Používání SSH klíčů"**.
-Na serveru vznikne adresář `.ssh` — do něj nahrát (Total Commanderem)
-soubor **`authorized_keys`** s veřejným klíčem.
+V repozitáři otevřete **Settings → Secrets and variables → Actions** a vytvořte:
 
-Používá se **stejný klíč i stejné přihlášení jako u projektu
-bar.kovopraha.cz** — hlavní uživatel domény vidí adresáře všech subdomén,
-takže stačí jeden `authorized_keys` pro obě aplikace.
-
-### 2. GitHub Secrets
-
-GitHub → repozitář → **Settings → Secrets and variables → Actions →
-New repository secret**. Vytvořit pět:
-
-| Secret | Hodnota |
+| Secret | Co do něj patří |
 |---|---|
-| `SSH_HOST` | adresa serveru pro SFTP/SSH (např. `replikant3544.thinline.cz`) |
-| `SSH_PORT` | port SSH podle zákaznické sekce hostingu (bez vyhrazené IPv4 nebývá 22) |
-| `SSH_USER` | uživatelské jméno hlavního přístupu |
-| `SSH_PRIVATE_KEY` | celý obsah souboru s privátním klíčem |
-| `DEPLOY_TOKEN` | hodnota `DEPLOY_TOKEN` z `config.php` |
-| `PROD_CONFIG` | *(nepovinné)* celý obsah `config.php` — když na serveru chybí, vytvoří se z něj |
+| `SSH_HOST` | SSH/SFTP adresa z administrace hostingu |
+| `SSH_PORT` | SSH port z administrace hostingu; pokud je skutečně 22, může být `22` |
+| `SSH_USER` | hlavní uživatel domény |
+| `SSH_PRIVATE_KEY` | celý soukromý klíč odpovídající `authorized_keys` na serveru |
+| `SSH_KNOWN_HOSTS` | ověřený řádek veřejného hostitelského klíče serveru |
 
-První čtyři jsou stejné jako u projektu bar.kovopraha.cz, `DEPLOY_TOKEN`
-má každý projekt vlastní.
+`DEPLOY_TOKEN` ani `PROD_CONFIG` se už nepoužívají. `config.php` musí být na
+serveru nahraný před prvním nasazením, například přes Total Commander. Workflow
+jej nikdy nevytváří ani nepřepisuje, protože před první ověřenou zálohou nesmí
+měnit aplikační adresář.
 
-### 3. `config.php`
+### Jak připravit `SSH_KNOWN_HOSTS`
 
-`config.php` je **jeden a tentýž soubor pro localhost i produkci** — pozná
-si sám, kde běží (Windows/XAMPP a adresy typu `localhost` = vývoj, cokoli
-jiného = produkce), a podle toho vybere správnou databázi. Není tedy co
-rozlišovat: stejný soubor leží v `C:\xampp\htdocs\evidencePavel\config.php`
-i v `data.kovopraha.cz/evidence/config.php`. Vzor je `config.example.php`.
+Tento Secret brání tomu, aby se workflow připojilo k podvrženému serveru.
+Samotné spuštění `ssh-keyscan` není ověření identity. Správný SHA256 fingerprint
+hostitelského klíče nejdřív potvrďte nezávisle v administraci nebo u podpory
+hostingu. Teprve potom na svém počítači načtěte veřejný klíč:
 
-Do gitu nepatří (jsou v něm hesla) a nasazení ho nepřepisuje. Na server se
-dostane jednou z těchto dvou cest:
+```powershell
+ssh-keyscan -p SSH_PORT SSH_HOST
+```
 
-- **ručně** — nahrát Total Commanderem, nebo
-- **přes Secret `PROD_CONFIG`** — vložit do něj celý obsah `config.php`;
-  když soubor na serveru chybí, nasazení ho z něj vytvoří samo.
+Porovnejte fingerprint získaného klíče s hodnotou potvrzenou hostingem. Ověřený
+celý řádek z `ssh-keyscan` vložte do `SSH_KNOWN_HOSTS`. Pro jiný port než 22 má
+hostitel v řádku tvar `[server.example.cz]:2222`. Workflow si klíč samo nikdy
+nestahuje a při chybějícím nebo jiném záznamu skončí před připojením.
 
-Kdyby `config.php` na serveru chyběl a `PROD_CONFIG` nebyl vyplněný,
-nasazení **se zastaví hned na začátku** a nic nezmění — dřív než by se
-vyměnil `db.php`, který config vyžaduje.
+## Co zůstává na serveru
 
-### 4. Adresa a adresář
+`rsync` záměrně nepoužívá `--delete` a nepřepisuje:
 
-Jsou přímo ve workflow (`.github/workflows/deploy-production.yml`,
-sekce `env`): `WEB_URL: https://data.kovopraha.cz/evidence` a
-`REMOTE_DIR: data.kovopraha.cz/evidence`. Kdyby se lišily, upraví se tam.
+- `config.php`;
+- uploady, obrázky, stories a reporty;
+- logy a staré zálohy;
+- testy a vývojové nastavení PHPUnit.
 
-## Běžný pracovní postup
+Soubory odstraněné z Gitu proto na serveru automaticky nezmizí. Jejich ruční
+mazání přes Total Commander provádějte jen podle konkrétního release pokynu.
 
-1. Změny v kódu → commit → push do `main` (produkce se ještě nemění).
-2. Změna databáze = nový krok v `includes/auto_migrace.php` **a** zvýšení
-   `SCHEMA_VERSION` v `includes/schema_version.php`.
-3. GitHub → Actions → **Nasadit produkci** → **Run workflow**.
-4. Počkat na zelenou ✅.
+## Databázová záloha
 
-## Když se něco pokazí
+Před každým deployem se aktuální `bin/db-backup.php` nahraje do
+`~/.evidence-deploy/` a spustí se ještě proti staré produkční aplikaci. Zálohy
+jsou v `~/.evidence-backups/`, tedy mimo veřejný web, s právy 0700/0600. Každá
+záloha má tři soubory:
 
-- Červený krok „Kontrola PHP syntaxe" → v kódu je chyba, na produkci se
-  nic nenahrálo.
-- Červený krok „Připravit SSH klíč" / „Přidat server mezi známé" → špatný
-  Secret (klíč, adresa, port). Hláška v logu říká přesně co.
-- Červený krok „Ověřit verzi databázového schématu" → migrace neproběhla
-  nebo selhala; podrobnost je v PHP error logu na hostingu. Databáze má
-  čerstvou zálohu z kroku 2 (`db_zalohy/evidence_*.sql.gz` na serveru),
-  kterou lze nahrát zpět přes phpMyAdmin.
-- Vrácení kódu: v GitHubu otevřít starší commit → `Revert` → push →
-  spustit nasazení znovu.
+- `evidence_*.sql.gz` – komprimovaný SQL dump;
+- `evidence_*.sha256` – kontrolní součet;
+- `evidence_*.manifest.json` – seznam tabulek, počty řádků, triggery a metadata.
 
-## Ruční kontrola
+Platná je pouze kompletní trojice se stejným názvem a shodným SHA256. Manifest
+se přejmenuje jako poslední dokončovací marker; při chybě nástroj nově vzniklé
+části sady uklidí a deploy zastaví.
 
-V prohlížeči:
+Drží se posledních 20 sad. Databáze je sdílená: nástroj používá explicitní
+seznam tabulek vlastněných Evidencí. Nezahrnuje `jidlo_*`, `bar_*`, `results_*`
+ani legacy/archivní tabulky. Nová tabulka Evidence musí být přidána do konstanty
+`EVIDENCE_TABLES` v `bin/db-backup.php` současně s migrací.
 
-- stav migrací: `https://data.kovopraha.cz/evidence/bin/stav.php?token=<DEPLOY_TOKEN>`
-- ruční záloha: `https://data.kovopraha.cz/evidence/bin/zaloha.php?token=<DEPLOY_TOKEN>`
+Záloha se zastaví, pokud narazí na view, jiný engine než InnoDB, cizí klíč přes
+hranici aplikací nebo nepodporovanou definici triggeru. Triggery vlastněných
+tabulek jsou součástí dumpu.
+
+## Když workflow zčervená
+
+- Před krokem **Nahrát soubory aplikace**: produkční kód ani databáze se
+  nezměnily. Opravte uvedený Secret, konfiguraci, test nebo problém zálohy.
+- V kroku `rsync`: nová databázová záloha existuje, ale kód může být nahrán jen
+  částečně. Po opravě spojení spusťte stejné nasazení znovu.
+- V migracích: nic neobnovujte automaticky. Uložte log běhu, zastavte další
+  deploy a postupujte podle [OBNOVA-DATABAZE.md](OBNOVA-DATABAZE.md).
+- V HTTP testu: migrace i upload už proběhly. Zkontrolujte PHP error log a
+  nespouštějte další změnu naslepo.
+
+Vrácení staršího commitu vrátí pouze kód. Nevrací automaticky databázové změny.
+Produkční obnova databáze je vždy ruční, řízený zásah.
+
+## Ruční CLI záloha přes SSH
+
+Pokročilý správce ji může spustit bez URL tokenu:
+
+```bash
+umask 077
+APP_HOST=data.kovopraha.cz php "$HOME/.evidence-deploy/db-backup.php" \
+  --app-root="$HOME/data.kovopraha.cz/evidence" \
+  --backup-dir="$HOME/.evidence-backups" \
+  --keep=20 --json
+```
+
+`bin/.htaccess` zůstává `Require all denied` a `bin/zaloha.php` vrací přes web
+404 i v případě, že hosting `.htaccess` nepoužije.

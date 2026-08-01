@@ -13,10 +13,11 @@
 // Lokální vývoj = Windows/XAMPP nebo adresa localhost.
 // Vše ostatní (Linux hosting, ostrá doména) = produkce.
 
+$appHost = trim((string)getenv('APP_HOST'));
 $hostitel = strtolower((string)preg_replace(
     '/:\d+$/',
     '',
-    $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '')
+    $appHost !== '' ? $appHost : ($_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? ''))
 ));
 
 $jeLokalne = PHP_OS_FAMILY === 'Windows'
@@ -41,12 +42,6 @@ if ($jeLokalne) {
     define('DB_USER', 'db_uzivatel');
     define('DB_PASS', 'heslo-sem');       // NIKDY nepřidávat do gitu
 }
-
-// ── Nasazení (GitHub Actions) ────────────────────────────────────────────────
-
-// Token pro chráněné deploy endpointy /bin/stav.php a /bin/zaloha.php.
-// Vygenerujte náhodný řetězec a tentýž uložte do GitHub Secrets (DEPLOY_TOKEN).
-define('DEPLOY_TOKEN', 'sem-nahodny-retezec');
 
 // ── Integrace s Velocotou ─────────────────────────────────────────────────────
 
