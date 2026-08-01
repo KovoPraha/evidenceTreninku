@@ -15,11 +15,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: lokální integrace W0-E migrací, fail-closed deploye
-  a lokálního restore drillu; produkce ani GitHub nebyly změněny
-- Další přesná akce: vyžádat od hostingu ověřený SSH fingerprint, uložit celý
-  ověřený known-hosts řádek jako Secret `SSH_KNOWN_HOSTS` a s výslovným
-  souhlasem rozhodnout o pushnutí `codex/foundation`/PR; deploy stále nespouštět
+- Poslední dokončená akce: `codex/foundation` pushnuta, vytvořen draft PR #1 a
+  GitHub test run `30718098799` skončil úspěšně; produkce nebyla změněna
+- Další přesná akce: vyžádat od hostingu ověřený SSH fingerprint a uložit celý
+  ověřený known-hosts řádek jako Secret `SSH_KNOWN_HOSTS`; potom s výslovným
+  souhlasem označit PR #1 jako ready/merge, deploy stále nespouštět
 
 ## Pořadí autority
 
@@ -37,7 +37,8 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `58ec8ec985d447dfe901481ac8bb24b944b03d08` | 2026-08-01 | fetch + rev-parse | ano |
-| integrační branch | `codex/foundation`; ověřený kódový tip `220bdc3` | 2026-08-01 | Git | ano |
+| integrační branch | `codex/foundation`; pushnuta, draft PR #1 | 2026-08-01 | GitHub | ano |
+| PR / remote CI | PR #1 draft; run `30718098799` success | 2026-08-01 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
@@ -85,7 +86,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | W0-A | accepted | `58ec8ec` | řídicí task | Git reconciliation | nic |
 | W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
 | W0-C | partial accepted | `2ed5278`, `1a9af03` | security worker | hesla + dependencies | session/token a produkční password apply |
-| W0-D | accepted | `0d50584` | test worker | Composer dev, tests, CI/deploy gate | první GitHub CI run |
+| W0-D | accepted | `0d50584`, run `30718098799` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
 
@@ -103,9 +104,10 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 6 | W0-E migrations `664745e` | přijato lokálně; 29 testů / 119 assertions |
 | 7 | W0-E deploy/backup `cd0c0e1` | přijato lokálně; restore drill prošel, GitHub/produkce čekají |
 
-Foundation větev není produkční release a nebyla pushnuta. Produkční migrace,
-migrace hesel ani deploy se v této session nespustily. Nový workflow je navíc
-záměrně nepoužitelný bez ověřeného Secretu `SSH_KNOWN_HOSTS`.
+Foundation větev je pushnuta pouze do draft PR #1 a není sloučena do `main`.
+Produkční migrace, migrace hesel ani deploy se v této session nespustily. Nový
+workflow je navíc záměrně nepoužitelný bez ověřeného Secretu
+`SSH_KNOWN_HOSTS`.
 
 ## Stop podmínky
 

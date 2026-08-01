@@ -13,12 +13,12 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | lokální commit | kódový tip `220bdc3`; za ním následuje pouze tento evidence/handoff commit |
-| foundation branch | `codex/foundation`; W0-E integrováno a lokálně ověřeno; bez pushnutí |
+| foundation branch | `codex/foundation`; pushnuta do originu, draft PR #1 otevřený proti `main` |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 177 first-party PHP souborů viditelných v aktuálním worktree prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | sloučený strom `cf89dcd`: 29 testů / 119 assertions; následný backup fix `220bdc3` prošel YAML, lintem, backupem a read-only auditem; remote CI zatím neproběhl |
+| automatické testy | 29 testů / 119 assertions lokálně; GitHub run `30718098799` na PR #1 úspěšný |
 | migrace | číslovaný runner, immutable checksumy, DB-specifický lock a read-only `--check` integrovány lokálně; produkční apply neproběhl |
 | deploy/backup | fail-closed CLI záloha, připnutý host key a ruční potvrzení integrovány lokálně; chybí Secret `SSH_KNOWN_HOSTS` a první GitHub běh |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-01.2` navíc pokrývá tři `ucto_gs_*` tabulky, které v lokální DB nejsou; produkční artefakt nebyl testován |
@@ -49,7 +49,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | W0-A | Repo a deploy reconciliation | nic | dokončeno | lokální práce zachována, main sjednocen, workflow pravdivě zdokumentovaný |
 | W0-B | KIS matcher safety | dokončeno `7106930` | přijato | pořadově nezávislé testy a neměnný cache snapshot |
 | W0-C | Dependencies a auth hardening | částečně `2ed5278`, `1a9af03` | session/token zbývá | 0 advisories; helper a bezpečný CLI migrátor hesel |
-| W0-D | Test harness a CI | dokončeno `0d50584` | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
+| W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
 | W0-E | Migrace a deploy hardening | implementováno lokálně `664745e`, `cd0c0e1` | produkční ověření čeká | runner/check, fail-closed backup a lokální restore drill jsou doloženy; zbývá Secret, remote CI a autorizovaný deploy |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
 | W0-G | Realistické anonymizované fixtures | pravidla privacy | ano | pokrývají rodinu, duplicitu, KIS konflikt, shop varianty a platby |
@@ -69,7 +69,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 - [x] KIS matcher opraven a otestován na foundation,
 - [x] dependency audit foundation bez advisories,
 - [ ] legacy hesla a session mají schválenou a ověřenou nápravu,
-- [ ] unit/integration testy existují; čeká první zelený běh na GitHubu a migrační fixture,
+- [x] unit/integration testy a migrační fixture existují; první GitHub běh `30718098799` je zelený,
 - [x] číslované migrace a read-only `--check` existují lokálně,
 - [ ] staging/test DB a realistické fixtures existují,
 - [ ] deploy kód selže při chybě zálohy; skutečný host key ještě není uložen jako `SSH_KNOWN_HOSTS` a workflow neproběhl,
