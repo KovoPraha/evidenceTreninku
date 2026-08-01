@@ -10,14 +10,16 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `codex/foundation`
-- Aktuální HEAD: ověřit živě; poslední kódový commit je `1a9af03`, za ním je
-  pouze aktualizace tohoto handoffu
+- Aktuální HEAD: ověřit živě; poslední integrační kódový commit je `cd0c0e1`,
+  za ním následuje pouze controller fix a aktualizace dokumentace
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: integrace W0-D, W0-B a první části W0-C
-- Další přesná akce: dokončit řídicí post-check, poté rozhodnout o pushnutí
-  `codex/foundation`/PR; následně otevřít W0-E deploy/migration hardening
+- Poslední dokončená akce: lokální integrace W0-E migrací, fail-closed deploye
+  a lokálního restore drillu; produkce ani GitHub nebyly změněny
+- Další přesná akce: na čistém worktree ověřit přesný finální HEAD, potom
+  vyžádat od hostingu ověřený SSH fingerprint a s výslovným souhlasem rozhodnout
+  o pushnutí `codex/foundation`/PR; deploy stále nespouštět
 
 ## Pořadí autority
 
@@ -35,13 +37,15 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `58ec8ec985d447dfe901481ac8bb24b944b03d08` | 2026-08-01 | fetch + rev-parse | ano |
-| integrační branch | `codex/foundation`; poslední kódový commit `1a9af03` | 2026-08-01 | Git | ano |
+| integrační branch | `codex/foundation`; W0-E integrační commit `cd0c0e1` | 2026-08-01 | Git | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | 16 testů / 75 assertions, worker run | 2026-08-01 | PHPUnit 11.5.56 | zopakovat v GitHub CI |
+| testy | migrace 29/119; backup větev 16/75; přesný finální HEAD čeká na čisté ověření | 2026-08-01 | PHPUnit 11.5.56 | ano + zopakovat v GitHub CI |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
+| lokální backup drill | 59 tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků | 2026-08-01 | izolovaná XAMPP DB | zopakovat s produkčním artefaktem |
+| GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
 jednoho se nesmí vydávat za důkaz druhého.
@@ -82,7 +86,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
 | W0-C | partial accepted | `2ed5278`, `1a9af03` | security worker | hesla + dependencies | session/token a produkční password apply |
 | W0-D | accepted | `0d50584` | test worker | Composer dev, tests, CI/deploy gate | první GitHub CI run |
-| W0-E | queued | až po D-015 | integrační vlastník | migrace + deploy hardening | finanční schéma |
+| W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
 
 Řídicí task aktualizuje IDs, větve, commity a testy po každém worker handoffu.
@@ -96,10 +100,12 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 3 | W0-B KIS safety `7106930` | přijato; 10 testů / 61 assertions v tomto kroku |
 | 4 | W0-C passwords `2ed5278` | přijato; produkční `--apply` výslovně neprovedeno |
 | 5 | W0-C dependencies `1a9af03` | přijato; 0 advisories, celkem 16 testů / 75 assertions |
-| 6 | W0-E deploy/migrations | další fronta: backup fail-closed, migrační check, restore drill |
+| 6 | W0-E migrations `664745e` | přijato lokálně; 29 testů / 119 assertions |
+| 7 | W0-E deploy/backup `cd0c0e1` | přijato lokálně; restore drill prošel, GitHub/produkce čekají |
 
-Foundation větev není produkční release a nebyla pushnuta. Produkční migrace
-hesel ani deploy se v této session nespustily.
+Foundation větev není produkční release a nebyla pushnuta. Produkční migrace,
+migrace hesel ani deploy se v této session nespustily. Nový workflow je navíc
+záměrně nepoužitelný bez ověřeného Secretu `SSH_KNOWN_HOSTS`.
 
 ## Stop podmínky
 

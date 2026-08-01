@@ -13,12 +13,15 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | lokální commit | `c4617330499076bf052f0078a60137fc7692aaeb` |
-| foundation branch | `codex/foundation`; poslední kódový commit `1a9af03`, tip obsahuje tento handoff; bez pushnutí |
+| foundation branch | `codex/foundation`; W0-E integrováno do `cd0c0e1`, následuje integrační/handoff commit; bez pushnutí |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
-| syntax | 167 PHP souborů viditelných v aktuálním worktree prošlo lintem |
+| syntax | 177 first-party PHP souborů viditelných v aktuálním worktree prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | 16 testů / 75 assertions; GitHub workflow připraven, zatím neproběhl na remote |
+| automatické testy | migrační větev 29 testů / 119 assertions; přesný sloučený HEAD ještě čeká na čistý ověřovací worktree a remote CI |
+| migrace | číslovaný runner, immutable checksumy, DB-specifický lock a read-only `--check` integrovány lokálně; produkční apply neproběhl |
+| deploy/backup | fail-closed CLI záloha, připnutý host key a ruční potvrzení integrovány lokálně; chybí Secret `SSH_KNOWN_HOSTS` a první GitHub běh |
+| restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; produkční artefakt nebyl testován |
 | KIS matcher | opraven a regresně otestován na foundation; ostrý import čeká na integraci/release |
 | lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
 
@@ -37,7 +40,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | D-009: reward vs cash kredit | blokující | ekonom + právní/účetní konzultace |
 | D-010 až D-013: platby, částky, checkout a doprava | čeká na potvrzení | produkt + ekonom |
 | D-014: integrační hranice Velocoty | doporučeno | technický vlastník |
-| D-015: číslované migrace | blokující | technický vlastník |
+| D-015: číslované migrace | technicky přijato ve W0-E; produkční ověření čeká | technický vlastník |
 
 ## Backlog F0
 
@@ -47,7 +50,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | W0-B | KIS matcher safety | dokončeno `7106930` | přijato | pořadově nezávislé testy a neměnný cache snapshot |
 | W0-C | Dependencies a auth hardening | částečně `2ed5278`, `1a9af03` | session/token zbývá | 0 advisories; helper a bezpečný CLI migrátor hesel |
 | W0-D | Test harness a CI | dokončeno `0d50584` | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
-| W0-E | Migrace a deploy hardening | W0-A, návrh D-015 | ne se změnou workflow jinde | numbered runner, backup fail-closed, pinned host key, restore drill |
+| W0-E | Migrace a deploy hardening | implementováno lokálně `664745e`, `cd0c0e1` | produkční ověření čeká | runner/check, fail-closed backup a lokální restore drill jsou doloženy; zbývá Secret, remote CI a autorizovaný deploy |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
 | W0-G | Realistické anonymizované fixtures | pravidla privacy | ano | pokrývají rodinu, duplicitu, KIS konflikt, shop varianty a platby |
 
@@ -67,10 +70,10 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 - [x] dependency audit foundation bez advisories,
 - [ ] legacy hesla a session mají schválenou a ověřenou nápravu,
 - [ ] unit/integration testy existují; čeká první zelený běh na GitHubu a migrační fixture,
-- [ ] číslované migrace a `--check` existují,
+- [x] číslované migrace a read-only `--check` existují lokálně,
 - [ ] staging/test DB a realistické fixtures existují,
-- [ ] deploy selže při chybě zálohy a host key je připnutý,
-- [ ] restore drill je doložen,
+- [ ] deploy kód selže při chybě zálohy; skutečný host key ještě není uložen jako `SSH_KNOWN_HOSTS` a workflow neproběhl,
+- [x] lokální restore drill je doložen; před prvním finančním schématem zopakovat s produkčním backup artefaktem,
 - [ ] identity, KIS ownership a wallet pravidla jsou schválena.
 
 Pokud chybí jediná položka, F0 zůstává červená. „Deploy proběhl“ není náhradou

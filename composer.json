@@ -16,7 +16,7 @@
         }
     },
     "scripts": {
-        "test": "phpunit --configuration phpunit.xml.dist",
-        "test:unit": "phpunit --configuration phpunit.xml.dist --testsuite unit"
+        "test": "@php vendor/bin/phpunit --configuration phpunit.xml.dist",
+        "test:unit": "@php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite unit"
     }
 }
