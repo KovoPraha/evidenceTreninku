@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-01';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-01.2';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -76,6 +76,9 @@ const EVIDENCE_TABLES = [
     'trenink_trener',
     'ucto_audit_log',
     'ucto_dokumenty',
+    'ucto_gs_kategorie',
+    'ucto_gs_link_targets',
+    'ucto_gs_linky',
     'ucto_jizdy',
     'ucto_servis',
     'ucto_tankovani',

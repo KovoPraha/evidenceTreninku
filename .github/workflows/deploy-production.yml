@@ -125,6 +125,16 @@ jobs:
             test -s '$REMOTE_DIR/config.php'
             command -v php >/dev/null
             php -r 'foreach ([\"pdo_mysql\",\"zlib\",\"json\",\"hash\"] as \$e) { if (!extension_loaded(\$e)) { fwrite(STDERR, \"missing extension: \".\$e.PHP_EOL); exit(1); } }'
+            APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php -r '
+              \$host = (string)getenv(\"APP_HOST\");
+              \$_SERVER[\"HTTP_HOST\"] = \$host;
+              \$_SERVER[\"SERVER_NAME\"] = \$host;
+              require getenv(\"APP_ROOT\").\"/config.php\";
+              if (!defined(\"JE_LOKALNE\") || JE_LOKALNE) { exit(1); }
+              foreach ([\"DB_HOST\",\"DB_NAME\",\"DB_USER\",\"DB_PASS\"] as \$constant) {
+                if (!defined(\$constant)) { exit(1); }
+              }
+            '
             mkdir -p \"\$HOME/.evidence-deploy\"
             chmod 700 \"\$HOME/.evidence-deploy\"
           "
