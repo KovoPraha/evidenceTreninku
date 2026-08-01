@@ -1,6 +1,6 @@
 # 02 – Zadání a rozhodnutí
 
-Stav: produktový návrh k potvrzení  
+Stav: produktový návrh k potvrzení
 Pravidlo: pracovní vlákno nesmí samo změnit rozhodnutí označené jako blokující.
 
 ## Produktová vize

@@ -10,12 +10,14 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `codex/foundation`
-- Base SHA: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
+- Aktuální HEAD: ověřit živě; poslední kódový commit je `1a9af03`, za ním je
+  pouze aktualizace tohoto handoffu
+- Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: W0-A – bezpečné sjednocení repozitáře
-- Další přesná akce: commitnout řídicí dokumentaci, poté otevřít izolované W0-B
-  a W0-D pracovní větve z potvrzeného base
+- Poslední dokončená akce: integrace W0-D, W0-B a první části W0-C
+- Další přesná akce: dokončit řídicí post-check, poté rozhodnout o pushnutí
+  `codex/foundation`/PR; následně otevřít W0-E deploy/migration hardening
 
 ## Pořadí autority
 
@@ -33,13 +35,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `58ec8ec985d447dfe901481ac8bb24b944b03d08` | 2026-08-01 | fetch + rev-parse | ano |
-| integrační branch | `codex/foundation` z `58ec8ec` | 2026-08-01 | Git | ano |
+| integrační branch | `codex/foundation`; poslední kódový commit `1a9af03` | 2026-08-01 | Git | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| PHP syntax | 167 viditelných PHP souborů, 0 chyb | 2026-08-01 | `php -l` | po změně kódu |
-| dependencies | 12 advisories, z toho 3 HIGH | 2026-08-01 | `composer audit --locked` | po změně locku |
+| testy | 16 testů / 75 assertions, worker run | 2026-08-01 | PHPUnit 11.5.56 | zopakovat v GitHub CI |
+| dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
 jednoho se nesmí vydávat za důkaz druhého.
@@ -77,9 +79,9 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | ID | Stav | Base/branch | Vlastník | Povolený rozsah | Blokuje |
 |---|---|---|---|---|---|
 | W0-A | accepted | `58ec8ec` | řídicí task | Git reconciliation | nic |
-| W0-B | queued | připravit z foundation | samostatný worker | KIS matcher + jeho testy | ostrý KIS import |
-| W0-C | queued | po rozdělení rozsahu | samostatný worker | dependencies/auth hardening | finanční a členské funkce |
-| W0-D | návrh hotoví worker | připravit z foundation | test worker | Composer dev, tests, CI | všechny feature workstreamy |
+| W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
+| W0-C | partial accepted | `2ed5278`, `1a9af03` | security worker | hesla + dependencies | session/token a produkční password apply |
+| W0-D | accepted | `0d50584` | test worker | Composer dev, tests, CI/deploy gate | první GitHub CI run |
 | W0-E | queued | až po D-015 | integrační vlastník | migrace + deploy hardening | finanční schéma |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
 
@@ -89,14 +91,15 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 
 | Pořadí | Práce | Podmínka přijetí |
 |---:|---|---|
-| 1 | foundation dokumentace | odkazy, UTF-8, čistý diff, samostatný commit |
-| 2 | W0-D test baseline | CI bez produkčních credentials, opakovatelné testy |
-| 3 | W0-B KIS safety | pořadově nezávislý matcher a regresní test |
-| 4 | W0-C security | kompatibilní dependency update a auth migrační plán/test |
-| 5 | W0-E deploy/migrations | backup fail-closed, migrační check, restore drill |
+| 1 | foundation dokumentace `6c7956c` | přijato |
+| 2 | W0-D test baseline `0d50584` | přijato; remote CI čeká na push |
+| 3 | W0-B KIS safety `7106930` | přijato; 10 testů / 61 assertions v tomto kroku |
+| 4 | W0-C passwords `2ed5278` | přijato; produkční `--apply` výslovně neprovedeno |
+| 5 | W0-C dependencies `1a9af03` | přijato; 0 advisories, celkem 16 testů / 75 assertions |
+| 6 | W0-E deploy/migrations | další fronta: backup fail-closed, migrační check, restore drill |
 
-Skutečné pořadí 2 a 3 lze změnit podle závislosti jejich commitů. KIS oprava se
-nesmí přijmout bez automatického regresního testu.
+Foundation větev není produkční release a nebyla pushnuta. Produkční migrace
+hesel ani deploy se v této session nespustily.
 
 ## Stop podmínky
 

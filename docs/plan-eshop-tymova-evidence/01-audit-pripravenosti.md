@@ -1,7 +1,11 @@
 # 01 – Audit připravenosti
 
-Datum: 1. 8. 2026  
+Datum: 1. 8. 2026
 Režim: read-only audit kódu, lokální DB a GitHub/produkčního deploy důkazu
+
+> Tento dokument zachovává výchozí auditní snapshot. Následné opravy jsou vedené
+> v `06-program-board.md` a `SESSION_HANDOFF.md`; dokud nejsou sloučené a
+> nasazené, nemění zde popsaný stav `origin/main` ani produkce.
 
 ## Výsledek
 

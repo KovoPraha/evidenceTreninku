@@ -1,8 +1,8 @@
 # 06 – Program board
 
-Aktualizováno: 1. 8. 2026  
-Aktuální programová brána: **F0 – červená**  
-Povolená práce: plánování a odstranění blokátorů F0  
+Aktualizováno: 1. 8. 2026
+Aktuální programová brána: **F0 – červená**
+Povolená práce: plánování a odstranění blokátorů F0
 Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 
 ## Ověřený výchozí stav
@@ -13,13 +13,13 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | lokální commit | `c4617330499076bf052f0078a60137fc7692aaeb` |
-| foundation base | `58ec8ec985d447dfe901481ac8bb24b944b03d08` na `codex/foundation` |
+| foundation branch | `codex/foundation`; poslední kódový commit `1a9af03`, tip obsahuje tento handoff; bez pushnutí |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 167 PHP souborů viditelných v aktuálním worktree prošlo lintem |
-| dependency audit | 12 advisories: 3 HIGH, 9 MEDIUM |
-| automatické testy | chybí |
-| KIS matcher | kritická chyba shrinking-cache, ostrý import STOP |
+| dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
+| automatické testy | 16 testů / 75 assertions; GitHub workflow připraven, zatím neproběhl na remote |
+| KIS matcher | opraven a regresně otestován na foundation; ostrý import čeká na integraci/release |
 | lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
 
 Hodnoty lokální DB nejsou produkční statistika. Slouží pouze k posouzení, zda
@@ -44,9 +44,9 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | ID | Úkol | Závisí na | Smí běžet paralelně | Hotovo znamená |
 |---|---|---|---|---|
 | W0-A | Repo a deploy reconciliation | nic | dokončeno | lokální práce zachována, main sjednocen, workflow pravdivě zdokumentovaný |
-| W0-B | KIS matcher safety | base po W0-A | W0-C | oprava + pořadově nezávislé testy `matched/new/ambiguous/conflict` |
-| W0-C | Dependencies a auth hardening | base po W0-A | W0-B | 0 HIGH advisories; plán/migrace hesel; bezpečné session a tokeny |
-| W0-D | Test harness a CI | base po W0-A | po rozdělení souborů s W0-C | unit, DB integration a migration fixture běží v GitHub Actions |
+| W0-B | KIS matcher safety | dokončeno `7106930` | přijato | pořadově nezávislé testy a neměnný cache snapshot |
+| W0-C | Dependencies a auth hardening | částečně `2ed5278`, `1a9af03` | session/token zbývá | 0 advisories; helper a bezpečný CLI migrátor hesel |
+| W0-D | Test harness a CI | dokončeno `0d50584` | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
 | W0-E | Migrace a deploy hardening | W0-A, návrh D-015 | ne se změnou workflow jinde | numbered runner, backup fail-closed, pinned host key, restore drill |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
 | W0-G | Realistické anonymizované fixtures | pravidla privacy | ano | pokrývají rodinu, duplicitu, KIS konflikt, shop varianty a platby |
@@ -63,10 +63,10 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 ## Brána F0 – aktuální checklist
 
 - [x] lokální a vzdálený main bezpečně sjednocen,
-- [ ] KIS matcher opraven a otestován,
-- [ ] dependency audit bez HIGH,
+- [x] KIS matcher opraven a otestován na foundation,
+- [x] dependency audit foundation bez advisories,
 - [ ] legacy hesla a session mají schválenou a ověřenou nápravu,
-- [ ] automatické unit/integration/migration testy běží v CI,
+- [ ] unit/integration testy existují; čeká první zelený běh na GitHubu a migrační fixture,
 - [ ] číslované migrace a `--check` existují,
 - [ ] staging/test DB a realistické fixtures existují,
 - [ ] deploy selže při chybě zálohy a host key je připnutý,

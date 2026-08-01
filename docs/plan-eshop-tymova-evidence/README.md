@@ -1,7 +1,7 @@
 # Program rozšíření Evidence: e-shop a týmová evidence
 
-Stav dokumentu: návrh k rozhodnutí  
-Datum auditu: 1. 8. 2026  
+Stav dokumentu: návrh k rozhodnutí
+Datum auditu: 1. 8. 2026
 Implementace nových funkcí: **nezahájena**
 
 ## Účel
@@ -36,6 +36,11 @@ Před funkční implementací musí proběhnout **Fáze 0 – foundation gate**:
 - přijmout doménové a integrační kontrakty v této dokumentaci.
 
 Po splnění těchto bodů lze bezpečně spouštět pracovní vlákna po vertikálách.
+
+První technická část Fáze 0 už vznikla na lokální větvi `codex/foundation`:
+testovací základ, oprava KIS matcheru, bezpečnější trenérská hesla a aktualizace
+zranitelných knihoven. Tato práce zatím není v `origin/main` ani v produkci;
+aktuální stav je vždy v `SESSION_HANDOFF.md`.
 
 ## Dokumenty
 
