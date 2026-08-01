@@ -6,25 +6,25 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 
 ## Metadata
 
-- Aktualizováno: 2026-08-01, Europe/Prague
+- Aktualizováno: 2026-08-02, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `codex/kis-shop-first-step`, založená na
-  `codex/foundation`
+- Aktivní integrační větev: `codex/f0-fixtures-session`, založená na
+  `codex/kis-shop-first-step`
 - Aktuální HEAD: ověřit živě; před aktualizací tohoto handoffu byly integrovány
-  commity `98ff91d`, `82eac98` (Shoptet CSV dry-run) a `0537adf`, `b4207be`
-  (KIS parity + identity hardening)
+  commity `168d132` (KIS fixture matrix), `8f0cbe8` (shop fixture matrix),
+  `dfce1ea` a `af49d57` (session lifecycle + audit fixes)
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: sloučen první bezpečný KIS/shop přírůstek; lokálně
-  prošlo 61 testů / 284 assertions a lint 185/185 PHP souborů; draft PR #2 je
-  otevřený a GitHub kódový run `30720065210` skončil úspěšně; produkce ani
-  skutečná DB nebyly změněny
-- Další přesná akce: dodat malý anonymizovaný CSV export produktů ze Shoptetu
-  se skutečnou hlavičkou a reprezentativní variantou. Souběžně potvrdit stabilní
-  KIS identifikátor, retenční dobu preview dat a jednorázové atomické promote.
-  Secret `SSH_KNOWN_HOSTS` stále chybí a deploy se nespouští
+- Poslední dokončená akce: sloučen druhý F0 přírůstek; lokálně prošlo 82 testů /
+  441 assertions a lint 187/187 PHP souborů, oba závěrečné read-only audity daly
+  ACCEPT; produkce ani skutečná DB nebyly změněny
+- Další přesná akce: otevřít stacked draft PR nad PR #2 a ověřit GitHub CI.
+  Potom dodat malý anonymizovaný CSV export produktů ze Shoptetu a potvrdit
+  stabilní KIS identifikátor, retenci a single-use promote. Samostatně navrhnout
+  auth migraci pro session revokaci, rate limit a expirované tokeny. Secret
+  `SSH_KNOWN_HOSTS` stále chybí a deploy se nespouští
 
 ## Pořadí autority
 
@@ -48,7 +48,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | první KIS/shop přírůstek: 61/284; lint 185/185; CLI KIS `0/2/2/64`, shop `0/2/64` | 2026-08-01 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
+| testy | druhý F0 přírůstek: 82/441; lint 187/187; KIS realistic `2`, shop matrix `0/0/2/2` | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
 | lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-01.2` obsahuje i lokálně nepřítomné `ucto_gs_*` | 2026-08-01 | izolovaná XAMPP DB | zopakovat s produkčním artefaktem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
@@ -90,11 +90,11 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 |---|---|---|---|---|---|
 | W0-A | accepted | `58ec8ec` | řídicí task | Git reconciliation | nic |
 | W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
-| W0-C | partial accepted | `2ed5278`, `1a9af03` | security worker | hesla + dependencies | session/token a produkční password apply |
+| W0-C | partial accepted | `2ed5278`, `1a9af03`, `dfce1ea`, `af49d57` | security worker | hesla, dependencies, session lifecycle | DB revokace, rate limit, tokeny a produkční password apply |
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
-| W0-G | partial accepted | `98ff91d`, `0537adf`, `82eac98`, `b4207be` | KIS/shop workeři | syntetické fixtures + read-only dry-run | reálný anonymizovaný Shoptet vzorek, realistický KIS kontrakt a platby |
+| W0-G | partial accepted | `98ff91d`, `0537adf`, `82eac98`, `b4207be`, `168d132`, `8f0cbe8` | KIS/shop workeři | syntetické fixture matice + read-only dry-run | reálný anonymizovaný Shoptet/KIS vzorek a platby |
 
 Řídicí task aktualizuje IDs, větve, commity a testy po každém worker handoffu.
 
@@ -112,6 +112,9 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 8 | W0-G Shoptet katalog `98ff91d` | přijato lokálně; provisional CSV-only dry-run, 2 produkty / 3 varianty |
 | 9 | W0-G KIS parity `0537adf` | přijato lokálně; matcher/preview hardening + syntetický read-only kontrakt |
 | 10 | Audit fixes `82eac98`, `b4207be` | přijato lokálně; jedno-snapshot CSV a pouze silné KIS identity signály |
+| 11 | W0-G realistic KIS `168d132` | přijato lokálně; 10 opaque scénářů, 9 blockerů, missing nikdy nearchivuje |
+| 12 | W0-G shop matrix `8f0cbe8` | přijato lokálně; varianty, kolize SKU, exact money/VAT a scope hranice |
+| 13 | W0-C session lifecycle `dfce1ea`, `af49d57` | přijato lokálně; 102 entrypointů, bezpečné cookie/timeout/rotace/logout |
 
 Foundation větev je pushnuta pouze do draft PR #1 a není sloučena do `main`.
 Produkční migrace, migrace hesel ani deploy se v této session nespustily. Nový
@@ -121,6 +124,12 @@ workflow je navíc záměrně nepoužitelný bez ověřeného Secretu
 Feature větev zůstává bezpečným F0-enabling krokem: nemá shop tabulky, UI,
 checkout, KIS apply ani produkční cutover. Shoptet kontrakt je provisionalní,
 dokud nebude ověřen proti reálnému anonymizovanému exportu.
+
+Session increment používá vlastní cookie `EVIDENCESESSID`; jeho budoucí deploy
+jednorázově odhlásí existující relace. `VELOCOTA_INTEGRATION` musí zůstat vypnutá,
+dokud nebude ověřen cookie/session kontrakt nebo navržen auth-code bridge.
+Databázová revokace session, rate limiting, expirované hashované tokeny a
+POST+CSRF logout zůstávají otevřené, takže W0-C ani F0 ještě nejsou uzavřené.
 
 ## Stop podmínky
 
