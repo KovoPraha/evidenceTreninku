@@ -9,18 +9,21 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-01, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `codex/foundation`
-- Aktuální HEAD: ověřit živě; ověřený kódový tip je `3937835`, za ním
-  následuje pouze tento evidence/handoff commit
+- Aktivní integrační větev: `codex/kis-shop-first-step`, založená na
+  `codex/foundation`
+- Aktuální HEAD: ověřit živě; před aktualizací tohoto handoffu byly integrovány
+  commity `98ff91d`, `82eac98` (Shoptet CSV dry-run) a `0537adf`, `b4207be`
+  (KIS parity + identity hardening)
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: `codex/foundation` pushnuta, vytvořen draft PR #1,
-  checkout aktualizován na v7 a GitHub run `30718185103` skončil úspěšně;
-  produkce nebyla změněna
-- Další přesná akce: vyžádat od hostingu ověřený SSH fingerprint a uložit celý
-  ověřený known-hosts řádek jako Secret `SSH_KNOWN_HOSTS`; potom s výslovným
-  souhlasem označit PR #1 jako ready/merge, deploy stále nespouštět
+- Poslední dokončená akce: sloučen první bezpečný KIS/shop přírůstek; lokálně
+  prošlo 61 testů / 284 assertions a lint 185/185 PHP souborů; produkce ani
+  skutečná DB nebyly změněny
+- Další přesná akce: dodat malý anonymizovaný CSV export produktů ze Shoptetu
+  se skutečnou hlavičkou a reprezentativní variantou. Souběžně potvrdit stabilní
+  KIS identifikátor, retenční dobu preview dat a jednorázové atomické promote.
+  Secret `SSH_KNOWN_HOSTS` stále chybí a deploy se nespouští
 
 ## Pořadí autority
 
@@ -44,7 +47,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | sloučený strom `cf89dcd`: 29/119; fix `220bdc3`: YAML/lint/backup/re-audit P0=0, P1=0 | 2026-08-01 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
+| testy | první KIS/shop přírůstek: 61/284; lint 185/185; CLI KIS `0/2/2/64`, shop `0/2/64` | 2026-08-01 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
 | lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-01.2` obsahuje i lokálně nepřítomné `ucto_gs_*` | 2026-08-01 | izolovaná XAMPP DB | zopakovat s produkčním artefaktem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
@@ -90,6 +93,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
+| W0-G | partial accepted | `98ff91d`, `0537adf`, `82eac98`, `b4207be` | KIS/shop workeři | syntetické fixtures + read-only dry-run | reálný anonymizovaný Shoptet vzorek, realistický KIS kontrakt a platby |
 
 Řídicí task aktualizuje IDs, větve, commity a testy po každém worker handoffu.
 
@@ -104,11 +108,18 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 5 | W0-C dependencies `1a9af03` | přijato; 0 advisories, celkem 16 testů / 75 assertions |
 | 6 | W0-E migrations `664745e` | přijato lokálně; 29 testů / 119 assertions |
 | 7 | W0-E deploy/backup `cd0c0e1` | přijato lokálně; restore drill prošel, GitHub/produkce čekají |
+| 8 | W0-G Shoptet katalog `98ff91d` | přijato lokálně; provisional CSV-only dry-run, 2 produkty / 3 varianty |
+| 9 | W0-G KIS parity `0537adf` | přijato lokálně; matcher/preview hardening + syntetický read-only kontrakt |
+| 10 | Audit fixes `82eac98`, `b4207be` | přijato lokálně; jedno-snapshot CSV a pouze silné KIS identity signály |
 
 Foundation větev je pushnuta pouze do draft PR #1 a není sloučena do `main`.
 Produkční migrace, migrace hesel ani deploy se v této session nespustily. Nový
 workflow je navíc záměrně nepoužitelný bez ověřeného Secretu
 `SSH_KNOWN_HOSTS`.
+
+Feature větev zůstává bezpečným F0-enabling krokem: nemá shop tabulky, UI,
+checkout, KIS apply ani produkční cutover. Shoptet kontrakt je provisionalní,
+dokud nebude ověřen proti reálnému anonymizovanému exportu.
 
 ## Stop podmínky
 
