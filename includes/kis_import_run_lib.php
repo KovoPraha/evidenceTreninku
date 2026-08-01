@@ -15,27 +15,52 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
         'warnings' => count($warnings),
         'created_from' => $meta,
     ];
-    $stmt = $pdo->prepare("
-        INSERT INTO kis_import_runs
-            (created_by, status, source_users, source_payments, source_rosters, stats_json, warnings_json)
-        VALUES
-            (:created_by, 'preview', :source_users, :source_payments, :source_rosters, :stats_json, :warnings_json)
-    ");
-    $stmt->execute([
-        ':created_by' => $userId,
-        ':source_users' => $sourceNames['users'] ?? null,
-        ':source_payments' => $sourceNames['payments'] ?? null,
-        ':source_rosters' => $sourceNames['rosters'] ?? null,
-        ':stats_json' => kisImportJson($stats),
-        ':warnings_json' => kisImportJson($warnings),
-    ]);
-    $runId = (int)$pdo->lastInsertId();
+    $ownsTransaction = !$pdo->inTransaction();
+    $savepoint = 'kis_import_create_run';
 
-    kisImportStoreRowsAndMatches($pdo, $runId, $people);
-    return $runId;
+    if ($ownsTransaction) {
+        $pdo->beginTransaction();
+    } else {
+        $pdo->exec('SAVEPOINT ' . $savepoint);
+    }
+
+    try {
+        $stmt = $pdo->prepare("
+            INSERT INTO kis_import_runs
+                (created_by, status, source_users, source_payments, source_rosters, stats_json, warnings_json)
+            VALUES
+                (:created_by, 'preview', :source_users, :source_payments, :source_rosters, :stats_json, :warnings_json)
+        ");
+        $stmt->execute([
+            ':created_by' => $userId,
+            ':source_users' => $sourceNames['users'] ?? null,
+            ':source_payments' => $sourceNames['payments'] ?? null,
+            ':source_rosters' => $sourceNames['rosters'] ?? null,
+            ':stats_json' => kisImportJson($stats),
+            ':warnings_json' => kisImportJson($warnings),
+        ]);
+        $runId = (int)$pdo->lastInsertId();
+
+        kisImportStoreRowsAndMatches($pdo, $runId, $people, $stats);
+
+        if ($ownsTransaction) {
+            $pdo->commit();
+        } else {
+            $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
+        }
+        return $runId;
+    } catch (Throwable $e) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        } elseif (!$ownsTransaction && $pdo->inTransaction()) {
+            $pdo->exec('ROLLBACK TO SAVEPOINT ' . $savepoint);
+            $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
+        }
+        throw $e;
+    }
 }
 
-function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people): array
+function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array $baseStats = []): array
 {
     $counts = ['new' => 0, 'matched' => 0, 'ambiguous' => 0, 'conflict' => 0, 'ignored' => 0];
     $rowStmt = $pdo->prepare("
@@ -67,9 +92,11 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people): arra
             ':kis_aktivni' => (int)($person['kis_aktivni'] ?? 0),
             ':kis_platebne_aktivni' => (int)($person['kis_platebne_aktivni'] ?? 0),
             ':kis_neuhrazeno' => (float)($person['kis_neuhrazeno'] ?? 0),
-            ':kis_posledni_uhrada' => $person['kis_posledni_uhrada'] ?: null,
+            ':kis_posledni_uhrada' => ($person['kis_posledni_uhrada'] ?? null) ?: null,
             ':kis_soupisky' => (string)($person['kis_soupisky'] ?? ''),
-            ':raw_json' => kisImportJson($person),
+            // Celý zdrojový řádek obsahuje kontakty, adresu nebo rodné číslo.
+            // Preview tabulky je pro současný matching nepotřebují.
+            ':raw_json' => '{}',
         ]);
         $rowId = (int)$pdo->lastInsertId();
         $match = kisMatchResolve($pdo, $person);
@@ -86,8 +113,9 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people): arra
         ]);
     }
 
+    $stats = array_merge($baseStats, ['rows' => count($people), 'matches' => $counts]);
     $stmt = $pdo->prepare("UPDATE kis_import_runs SET stats_json = :stats WHERE id = :id");
-    $stmt->execute([':stats' => kisImportJson(['rows' => count($people), 'matches' => $counts]), ':id' => $runId]);
+    $stmt->execute([':stats' => kisImportJson($stats), ':id' => $runId]);
     return $counts;
 }
 

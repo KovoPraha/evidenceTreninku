@@ -78,19 +78,30 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
                 $reasons[] = 'datum narozeni';
             }
         }
-        if ($jmeno !== '' && $prijmeni !== '') {
-            $rowFreeText = kisMatchNormalizeText(trim((string)($row['jmeno'] ?? '') . ' ' . (string)($row['prijmeni'] ?? '')));
-            $kisLastFirst = trim($prijmeni . ' ' . $jmeno);
-            $kisFirstLast = trim($jmeno . ' ' . $prijmeni);
-            if ($rowFreeText !== '' && (str_contains($rowFreeText, $kisLastFirst) || str_contains($rowFreeText, $kisFirstLast))) {
-                $score += 70;
-                $reasons[] = 'volny text jmena';
-            }
+        if (
+            $jmeno !== ''
+            && $prijmeni !== ''
+            && $rowFirst === $jmeno
+            && $rowLast === $prijmeni
+            && $narozeni !== ''
+            && trim((string)($row['narozeni'] ?? '')) !== ''
+            && (string)$row['narozeni'] !== $narozeni
+        ) {
+            $reasons[] = 'datum narozeni se lisi';
         }
-        $row['_match_score'] = min(100, $score);
-        $row['_match_reason'] = implode(', ', $reasons);
-        if ($row['_match_score'] > 0) {
-            $candidates[] = $row;
+        $matchScore = min(100, $score);
+        if ($matchScore > 0) {
+            // Kandidátní payload se ukládá do kis_import_matches. Nikdy do něj
+            // neposílej celý řádek sportovce s kontakty, adresou nebo rodným číslem.
+            $candidates[] = [
+                'id' => (int)$row['id'],
+                'jmeno' => (string)($row['jmeno'] ?? ''),
+                'prijmeni' => (string)($row['prijmeni'] ?? ''),
+                'narozeni' => $row['narozeni'] ?? null,
+                'uciid' => (string)($row['uciid'] ?? ''),
+                '_match_score' => $matchScore,
+                '_match_reason' => implode(', ', $reasons),
+            ];
         }
     }
 
@@ -115,12 +126,12 @@ function kisMatchResolve(PDO $pdo, array $person): array
     $bestScore = (int)($best['_match_score'] ?? 0);
     $secondScore = isset($candidates[1]) ? (int)($candidates[1]['_match_score'] ?? 0) : 0;
     $bestReason = (string)($best['_match_reason'] ?? '');
-    if (str_contains($bestReason, 'volny text jmena')) {
+    if (str_contains($bestReason, 'datum narozeni se lisi')) {
         return [
-            'status' => 'ambiguous',
+            'status' => 'conflict',
             'sportovec_id' => null,
             'confidence' => $bestScore,
-            'reason' => 'Volny text jmena vyzaduje rucni potvrzeni',
+            'reason' => 'Datum narozeni se lisi, vyzaduje rucni potvrzeni',
             'candidates' => array_slice($candidates, 0, 5),
         ];
     }
@@ -133,16 +144,6 @@ function kisMatchResolve(PDO $pdo, array $person): array
             'candidates' => array_slice($candidates, 0, 5),
         ];
     }
-    if ($bestScore >= 60 && count($candidates) === 1) {
-        return [
-            'status' => 'matched',
-            'sportovec_id' => (int)$best['id'],
-            'confidence' => $bestScore,
-            'reason' => (string)($best['_match_reason'] ?? 'jedina shoda'),
-            'candidates' => array_slice($candidates, 0, 5),
-        ];
-    }
-
     return [
         'status' => count($candidates) > 1 ? 'ambiguous' : 'conflict',
         'sportovec_id' => null,
