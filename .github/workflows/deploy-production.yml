@@ -35,6 +35,7 @@ env:
 jobs:
   nasadit:
     name: Nasazení evidence tréninků
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -45,6 +46,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: mbstring, gd, zip, pdo_sqlite
+          coverage: none
+          tools: composer:v2
 
       - name: Kontrola PHP syntaxe
         run: |
@@ -53,6 +57,12 @@ jobs:
             php -l "$f" > /dev/null || CHYBY=1
           done < <(find . -name '*.php' -not -path './.git/*' -not -path './vendor/*' -print0)
           [ "$CHYBY" -eq 0 ] && echo "✅ Syntaxe v pořádku."
+
+      - name: Nainstalovat závislosti a spustit testy
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress
+          composer test
+          composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
       - name: Připravit SSH klíč
         env:
@@ -142,6 +152,9 @@ jobs:
             --exclude='loga_story/' \
             --exclude='reports/' \
             --exclude='bin/zalohy/' \
+            --exclude='tests/' \
+            --exclude='phpunit.xml*' \
+            --exclude='.phpunit.cache/' \
             --exclude='*.log' \
             ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$REMOTE_DIR/"
           echo "✅ Soubory nahrány."

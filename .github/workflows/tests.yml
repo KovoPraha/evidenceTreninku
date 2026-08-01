@@ -1,0 +1,38 @@
+name: Testy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phpunit:
+    name: PHPUnit na PHP 8.2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Stáhnout kód
+        uses: actions/checkout@v4
+
+      - name: Připravit PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+
+      - name: Ověřit Composer konfiguraci
+        run: composer validate --strict
+
+      - name: Nainstalovat závislosti
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Spustit testy
+        run: composer test
