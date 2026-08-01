@@ -1,7 +1,8 @@
 <?php
+require_once dirname(__DIR__) . '/includes/session_security.php';
 // Endpoint pro potvrzení/zamítnutí žluté rezervace z emailu trenéra
 // GET ?token=xxx&akce=potvrdit|zamit
-session_start();
+app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/waiting_list.php';
 

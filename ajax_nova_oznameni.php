@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * ajax_nova_oznameni.php
  * Rychlé vytvoření oznámení pro skupiny z plánovače.
  * POST JSON: csrf_token, nazev, obsah, datum, skupiny_ids[]
  */
-session_start();
+app_session_start();
 if (!isset($_SESSION['trener_id'])) { http_response_code(403); echo json_encode(['ok'=>false,'msg'=>'Nepřihlášen']); exit; }
 require_once 'includes/funkce.php';
 if (!canAccess('oznameni')) { http_response_code(403); echo json_encode(['ok'=>false,'msg'=>'Přístup odepřen']); exit; }

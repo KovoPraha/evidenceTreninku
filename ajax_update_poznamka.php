@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * AJAX endpoint: inline editace poznámky tréninku
  * POST: trenink_id (int), poznamka (string)
  * Odpovídá JSON: {ok: bool, message: string}
  */
-session_start();
+app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/csrf_helper.php';
 header('Content-Type: application/json; charset=utf-8');

@@ -1,5 +1,6 @@
-﻿<?php
-session_start();
+<?php
+require_once __DIR__ . '/includes/session_security.php';
+app_session_start();
 if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
     exit;

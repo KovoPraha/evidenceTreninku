@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 // ajax_sportovci.php
 // Našeptávač sportovců pro výběr více sportovců (JSON)
 // Volání: ajax_sportovci.php?q=mar
 // Vrací: [{id, label, jmeno, prijmeni, uciid, narozeni}...]
 
-session_start();
+app_session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 if (!isset($_SESSION['trener_id'])) {

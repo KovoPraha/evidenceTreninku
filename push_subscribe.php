@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * push_subscribe.php
  * Uloží/odstraní Web Push subscription pro přihlášeného trenéra.
  * POST JSON: { action: 'subscribe'|'unsubscribe', subscription: { endpoint, keys: { p256dh, auth } } }
  */
-session_start();
+app_session_start();
 if (!isset($_SESSION['trener_id'])) { http_response_code(403); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';

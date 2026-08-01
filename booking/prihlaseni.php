@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/includes/session_security.php';
+app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 
@@ -27,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (!$uzivatel['email_overeno']) {
             $errors[] = 'Email není ověřen. Zkontrolujte svou schránku.';
         } else {
-            session_regenerate_id(true);
+            app_session_mark_authenticated();
             $_SESSION['verejny_uzivatel_id']  = $uzivatel['id'];
             $_SESSION['verejny_uzivatel_jmeno'] = $uzivatel['jmeno'] . ' ' . $uzivatel['prijmeni'];
             // Jen interní relativní cíl (žádné //host, http://, zpětná lomítka) — prevence open redirect

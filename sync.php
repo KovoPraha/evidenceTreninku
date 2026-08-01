@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-session_start();
+require_once __DIR__ . '/includes/session_security.php';
+app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) {
     header('Location: login.php');

@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 // 1) Hlavička JSON
 header('Content-Type: application/json; charset=UTF-8');
 
 // Přístup jen pro přihlášené trenéry
-session_start();
+app_session_start();
 if (!isset($_SESSION['trener_id'])) {
     http_response_code(401);
     echo json_encode(['error' => 'Neautorizováno']);

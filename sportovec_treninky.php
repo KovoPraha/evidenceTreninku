@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * sportovec_treninky.php
  * Veřejná karta sportovce – přístup přes hash (bez přihlášení)
  */
-session_start();
+app_session_start();
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/db.php';
 

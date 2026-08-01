@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * AJAX endpoint: globální vyhledávání
  * GET ?q=... — vrací JSON s výsledky pro sportovce, tréninky, závody
  */
-session_start();
+app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id'])) {
     http_response_code(403);
