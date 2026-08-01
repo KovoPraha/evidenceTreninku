@@ -12,13 +12,13 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | produkční commit | `58ec8ec985d447dfe901481ac8bb24b944b03d08` |
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
-| lokální commit | `c4617330499076bf052f0078a60137fc7692aaeb` |
-| foundation branch | `codex/foundation`; W0-E integrováno do `cd0c0e1`, následuje integrační/handoff commit; bez pushnutí |
+| lokální commit | kódový tip `cf89dcd`; za ním následuje pouze tento evidence/handoff commit |
+| foundation branch | `codex/foundation`; W0-E integrováno a lokálně ověřeno; bez pushnutí |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 177 first-party PHP souborů viditelných v aktuálním worktree prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | migrační větev 29 testů / 119 assertions; přesný sloučený HEAD ještě čeká na čistý ověřovací worktree a remote CI |
+| automatické testy | přesný sloučený kódový strom `cf89dcd`: 29 testů / 119 assertions; remote CI zatím neproběhl |
 | migrace | číslovaný runner, immutable checksumy, DB-specifický lock a read-only `--check` integrovány lokálně; produkční apply neproběhl |
 | deploy/backup | fail-closed CLI záloha, připnutý host key a ruční potvrzení integrovány lokálně; chybí Secret `SSH_KNOWN_HOSTS` a první GitHub běh |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; produkční artefakt nebyl testován |
