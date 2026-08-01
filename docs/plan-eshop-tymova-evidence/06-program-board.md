@@ -14,12 +14,12 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | lokální commit | ověřený kódový tip `3937835`; za ním následuje pouze evidence/handoff commit |
 | foundation branch | `codex/foundation`; pushnuta do originu, draft PR #1 otevřený proti `main` |
-| první KIS/shop přírůstek | větev `codex/kis-shop-first-step`; syntetické dry-run nástroje integrovány, bez migrace a bez produkčních změn |
+| první KIS/shop přírůstek | větev `codex/kis-shop-first-step`; draft PR #2 nad foundation, bez migrace a bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 185 first-party PHP souborů sloučeného prvního přírůstku prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | sloučený první KIS/shop přírůstek: 61 testů / 284 assertions lokálně; vzdálené CI tohoto přírůstku ještě čeká |
+| automatické testy | první KIS/shop přírůstek: 61 testů / 284 assertions lokálně; GitHub kódový run `30720065210` úspěšný |
 | migrace | číslovaný runner, immutable checksumy, DB-specifický lock a read-only `--check` integrovány lokálně; produkční apply neproběhl |
 | deploy/backup | fail-closed CLI záloha, připnutý host key a ruční potvrzení integrovány lokálně; chybí Secret `SSH_KNOWN_HOSTS` a první GitHub běh |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-01.2` navíc pokrývá tři `ucto_gs_*` tabulky, které v lokální DB nejsou; produkční artefakt nebyl testován |
