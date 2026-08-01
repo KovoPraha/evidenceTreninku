@@ -19,12 +19,12 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Produkční DB změny bez výslovného souhlasu: zakázány
 - Poslední dokončená akce: sloučen druhý F0 přírůstek; lokálně prošlo 82 testů /
   441 assertions a lint 187/187 PHP souborů, oba závěrečné read-only audity daly
-  ACCEPT; produkce ani skutečná DB nebyly změněny
-- Další přesná akce: otevřít stacked draft PR nad PR #2 a ověřit GitHub CI.
-  Potom dodat malý anonymizovaný CSV export produktů ze Shoptetu a potvrdit
-  stabilní KIS identifikátor, retenci a single-use promote. Samostatně navrhnout
-  auth migraci pro session revokaci, rate limit a expirované tokeny. Secret
-  `SSH_KNOWN_HOSTS` stále chybí a deploy se nespouští
+  ACCEPT; draft PR #3 je otevřený a GitHub kódový run `30722989933` skončil
+  úspěšně; produkce ani skutečná DB nebyly změněny
+- Další přesná akce: dodat malý anonymizovaný CSV export produktů ze Shoptetu a
+  potvrdit stabilní KIS identifikátor, retenci a single-use promote. Samostatně
+  navrhnout auth migraci pro session revokaci, rate limit a expirované tokeny.
+  Secret `SSH_KNOWN_HOSTS` stále chybí a deploy se nespouští
 
 ## Pořadí autority
 
@@ -43,7 +43,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `58ec8ec985d447dfe901481ac8bb24b944b03d08` | 2026-08-01 | fetch + rev-parse | ano |
 | integrační branch | `codex/foundation`; pushnuta, draft PR #1 | 2026-08-01 | GitHub | ano |
-| PR / remote CI | PR #1 foundation a PR #2 KIS/shop draft; kódové runy `30718185103` a `30720065210` success | 2026-08-01 | GitHub | ano |
+| PR / remote CI | PR #1 foundation, PR #2 KIS/shop a PR #3 F0 fixtures/session draft; kódový run PR #3 `30722989933` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
