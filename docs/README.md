@@ -11,6 +11,8 @@ Webová aplikace pro správu tréninků, sportovců a závodů cyklistického kl
 | [Databázové schéma](databazove-schema.md) | Popis všech tabulek, sloupců a vztahů |
 | [Vývojářský průvodce](vyvojarsky-pruvodce.md) | Instalace, konvence kódu, přidání nových stránek, nasazení |
 | [Instalace](instalace.md) | Krok za krokem — XAMPP (Windows), Linux/Apache, shell příkazy |
+| [Produkční nasazení](NASAZENI.md) | Aktuální návod k ručnímu nasazení z GitHub Actions |
+| [Program e-shop + týmová evidence](plan-eshop-tymova-evidence/README.md) | Audit, rozhodnutí, architektura, roadmapa a řízení pracovních tasků |
 | [Integrace Velocota](integrace-velocota.md) | SSO bridge, session kontrakt, fáze integrace s klubovým portálem |
 | [Roadmapa rozšíření](roadmapa-rozsireni.md) | Plánované změny — profily sportovců, kreditní wallet, e-shop API |
 | [Implementační prompt: funkční vylepšení 1-8](implementacni-prompt-funkcni-vylepseni-1-8.md) | Připravené zadání pro kartu člena, KIS centrum, chytré párování, workflow aktivity, historii, hromadné akce a dashboard |
