@@ -1,0 +1,4 @@
+code;pairCode;name;price;priceRatio;currency;includingVat;percentVat;ean;stock;decimalCount;negativeAmount;productVisibility;variantVisibility;defaultCategory;shortDescription;description;itemType;variant:Velikost;image
+$000123;DRES2026;Klubový dres;1290,00;1;CZK;1;21;8590000000001;5;0;0;visible;1;Oblečení;Dres Kovo Praha;<p>Fiktivní testovací dres.</p>;product;S;https://example.invalid/dres-s.jpg
+DRES-M;DRES2026;Klubový dres;1290,00;1;CZK;1;21;8590000000002;3;0;0;visible;1;Oblečení;Dres Kovo Praha;<p>Fiktivní testovací dres.</p>;product;M;https://example.invalid/dres-m.jpg
+LAHEV-750;;Klubová lahev;249,00;1;CZK;1;21;8590000000003;12;0;0;visible;1;Doplňky;Fiktivní lahev;Bez osobních údajů.;product;;https://example.invalid/lahev.jpg
