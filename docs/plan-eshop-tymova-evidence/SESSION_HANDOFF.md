@@ -10,13 +10,14 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `codex/foundation`
-- Aktuální HEAD: ověřit živě; ověřený kódový tip je `220bdc3`, za ním
+- Aktuální HEAD: ověřit živě; ověřený kódový tip je `3937835`, za ním
   následuje pouze tento evidence/handoff commit
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: `codex/foundation` pushnuta, vytvořen draft PR #1 a
-  GitHub test run `30718098799` skončil úspěšně; produkce nebyla změněna
+- Poslední dokončená akce: `codex/foundation` pushnuta, vytvořen draft PR #1,
+  checkout aktualizován na v7 a GitHub run `30718185103` skončil úspěšně;
+  produkce nebyla změněna
 - Další přesná akce: vyžádat od hostingu ověřený SSH fingerprint a uložit celý
   ověřený known-hosts řádek jako Secret `SSH_KNOWN_HOSTS`; potom s výslovným
   souhlasem označit PR #1 jako ready/merge, deploy stále nespouštět
@@ -38,7 +39,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `58ec8ec985d447dfe901481ac8bb24b944b03d08` | 2026-08-01 | fetch + rev-parse | ano |
 | integrační branch | `codex/foundation`; pushnuta, draft PR #1 | 2026-08-01 | GitHub | ano |
-| PR / remote CI | PR #1 draft; run `30718098799` success | 2026-08-01 | GitHub | ano |
+| PR / remote CI | PR #1 draft; kódový run `30718185103` success | 2026-08-01 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
@@ -86,7 +87,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | W0-A | accepted | `58ec8ec` | řídicí task | Git reconciliation | nic |
 | W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
 | W0-C | partial accepted | `2ed5278`, `1a9af03` | security worker | hesla + dependencies | session/token a produkční password apply |
-| W0-D | accepted | `0d50584`, run `30718098799` | test worker | Composer dev, tests, CI/deploy gate | nic |
+| W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
 
