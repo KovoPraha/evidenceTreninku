@@ -1,0 +1,18 @@
+{
+  "contract": "kis-parity-v1",
+  "run_ref": "synthetic:run-001",
+  "missing_in_run_count": 2,
+  "rows": [
+    {
+      "source_ref": "kis:row-002",
+      "category": "ignored",
+      "reason": "explicitly_ignored"
+    },
+    {
+      "source_ref": "kis:row-001",
+      "category": "matched_same",
+      "target_ref": "evidence:member-001",
+      "reason": "signals_equal"
+    }
+  ]
+}

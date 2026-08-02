@@ -1,0 +1,4 @@
+code;pairCode;name;price;currency;includingVat;mystery
+$000123;DRES2026;Klubový dres;1290,00;CZK;1;data
+000123;DRES2026;Klubový dres;1290,00;CZK;1;data
+;X;Chybějící SKU;-10;CZK;1;data
