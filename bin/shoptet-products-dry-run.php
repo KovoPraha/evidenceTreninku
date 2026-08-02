@@ -103,6 +103,12 @@ function shopDryRunSummary(array $result): string
         'Soubor: ' . $source['filename'] . ' | SHA-256: ' . $source['sha256'],
         'Kodovani: ' . $source['encoding'] . ' | oddelovac: ' . $source['delimiter'],
         'Produkty: ' . $summary['products'] . ' | varianty: ' . $summary['variants'],
+        'Typy nabidky: ' . implode(', ', array_map(
+            static fn (string $type, int $count): string => $type . '=' . $count,
+            array_keys($summary['offer_type_counts']),
+            array_values($summary['offer_type_counts'])
+        )),
+        'Rucni kontrola klasifikace: ' . $summary['manual_review_products'],
         'Blokatory: ' . $summary['errors'] . ' | varovani: ' . $summary['warnings'],
         'Stav kontraktu: ' . ($summary['contract_ready'] ? 'pripraven pro kontrolu' : 'vyzaduje opravu vstupu'),
         'Kontrakt je provisionalni do overeni realneho anonymizovaneho exportu.',
@@ -140,6 +146,8 @@ try {
             'warnings' => 0,
             'contract_ready' => false,
             'database_writes' => 0,
+            'offer_type_counts' => array_fill_keys(ShopOfferClassifier::TYPES, 0),
+            'manual_review_products' => 0,
         ],
         'normalizations' => [],
         'issues' => [[

@@ -243,6 +243,79 @@ final class ShopCatalogContractTest extends TestCase
         self::assertSame(1, $result['summary']['variants']);
     }
 
+    public function testOfferTypeMatrixClassifiesRealShopShapesDeterministically(): void
+    {
+        $parsed = \ShoptetProductCsv::read(self::FIXTURES . '/products-offer-types.csv');
+        $first = \ShopCatalogContract::build($parsed);
+        $second = \ShopCatalogContract::build($parsed);
+
+        self::assertSame($first, $second);
+        self::assertTrue($first['summary']['contract_ready']);
+        self::assertSame([
+            'goods' => 2,
+            'club_event' => 1,
+            'camp' => 1,
+            'bookable_service' => 2,
+            'rental' => 1,
+            'custom_quote' => 1,
+            'unclassified' => 1,
+        ], $first['summary']['offer_type_counts']);
+        self::assertSame(1, $first['summary']['manual_review_products']);
+
+        self::assertSame(
+            'club_event',
+            $this->product($first, 'shoptet:sku:CLUB-ZEBRY')['offer_classification']['type']
+        );
+        self::assertSame(
+            'rental',
+            $this->product($first, 'shoptet:sku:RENTAL-BIKE')['offer_classification']['type']
+        );
+        $ambiguous = $this->product($first, 'shoptet:sku:AMBIGUOUS-1')['offer_classification'];
+        self::assertSame('unclassified', $ambiguous['type']);
+        self::assertTrue($ambiguous['needs_manual_review']);
+        self::assertContains('candidate:club_event', $ambiguous['signals']);
+        self::assertContains('candidate:rental', $ambiguous['signals']);
+    }
+
+    public function testClubShirtCategoryRemainsPhysicalGoods(): void
+    {
+        $result = \ShopCatalogContract::build($this->parsedRow([
+            'code' => 'CLUB-SHIRT',
+            'pairCode' => '',
+            'name' => 'Cyklo kroužek - tričko',
+            'price' => '250',
+            'currency' => 'CZK',
+            'includingVat' => '1',
+            'defaultCategory' => 'Volnočasové oblečení > Cyklo kroužek - trička',
+            'itemType' => 'product',
+        ]));
+        $classification = $result['products'][0]['offer_classification'];
+
+        self::assertSame('goods', $classification['type']);
+        self::assertSame('high', $classification['confidence']);
+        self::assertFalse($classification['needs_manual_review']);
+        self::assertNotContains('category:club_event', $classification['signals']);
+    }
+
+    public function testUnknownServiceFailsSafeToManualScheduleReview(): void
+    {
+        $result = \ShopCatalogContract::build($this->parsedRow([
+            'code' => 'SERVICE-UNKNOWN',
+            'pairCode' => '',
+            'name' => 'Fiktivní služba',
+            'price' => '500',
+            'currency' => 'CZK',
+            'includingVat' => '1',
+            'itemType' => 'service',
+        ]));
+        $classification = $result['products'][0]['offer_classification'];
+
+        self::assertSame('bookable_service', $classification['type']);
+        self::assertSame('low', $classification['confidence']);
+        self::assertTrue($classification['needs_manual_review']);
+        self::assertSame(1, $result['summary']['manual_review_products']);
+    }
+
     /** @return array<string,mixed> */
     private function resultForPrice(string $price): array
     {

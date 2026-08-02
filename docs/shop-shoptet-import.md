@@ -6,6 +6,9 @@ Tento krok pouze lokálně přečte produktový CSV export, zkontroluje SKU, var
 ceny a podporovaná pole a vypíše náhled. Nevytváří katalog, nepřipojuje databázi,
 nemění Shoptet a nemá režim `--apply`.
 
+Dry-run také navrhne provozní typ každé nabídky. Jde pouze o klasifikaci pro
+ruční kontrolu, nikoliv o oprávnění k importu nebo založení objednávky.
+
 ## Použití
 
 ```powershell
@@ -101,10 +104,44 @@ skutečných produktů:
   desetinná sazba a explicitně neznámé VAT údaje,
 - `products-catalog-scope-boundary.csv` – syntetická order/payment/wallet/delivery
   pole, která katalog povinně odmítne jako nepodporovaná.
+- `products-offer-types.csv` – zboží, kroužek, tábor, rezervovaná služba,
+  půjčovna, individuální nabídka a záměrně konfliktní klasifikace.
 
 Tato matice nevytváří objednávkový ani platební model. Dokazuje pouze katalogový
 kontrakt a jeho hranice. Bez schválení D-009 až D-013 se nepřidávají payment
 stavy, wallet operace, checkout, storno ani doprava.
+
+## Návrh typu nabídky
+
+Každý produkt ve výstupu obsahuje `offer_classification`:
+
+```json
+{
+  "type": "club_event",
+  "confidence": "high",
+  "needs_manual_review": false,
+  "signals": ["category:club_event"]
+}
+```
+
+Podporované staging typy jsou:
+
+- `goods` – fyzické zboží, knihy a doplňky,
+- `club_event` – kroužek nebo jiná opakovaná klubová aktivita,
+- `camp` – tábor s pevným termínem,
+- `bookable_service` – trénink, zážitek nebo test vyžadující rezervaci,
+- `rental` – půjčovna nebo pronájem zdroje,
+- `custom_quote` – individuálně domlouvaná nabídka,
+- `unclassified` – chybějící nebo konfliktní signály; povinná ruční kontrola.
+
+Klasifikátor používá přesné segmenty kategorií, nikoliv pouhý výskyt slova v
+názvu. Kategorie `Volnočasové oblečení > Cyklo kroužek - trička` proto zůstane
+zbožím. Pokud jedna položka současně odpovídá více doménám, výsledek je vždy
+`unclassified`; dry-run žádnou z možností sám neupřednostní.
+
+Souhrn obsahuje počty `offer_type_counts` a `manual_review_products`. Ani vysoká
+jistota klasifikace nemění read-only povahu nástroje: produkční import, DB zápis,
+registrace dítěte, rezervace termínu ani skladový pohyb se neprovedou.
 
 ## Co získat ze Shoptetu
 

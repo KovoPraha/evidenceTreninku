@@ -1,0 +1,10 @@
+code;pairCode;name;price;currency;includingVat;defaultCategory;itemType;stock
+GOODS-DRES;;Fiktivní klubový dres;1290;CZK;1;CYKLISTICKÉ OBLEČENÍ > DRESY;product;12
+GOODS-BOOK;;Fiktivní kniha o cyklistice;490;CZK;1;Knihy;product;4
+CLUB-ZEBRY;;Zebry 6 - 7 let školní rok 2026/2027;7200;CZK;1;Kroužky > Úterý;product;20
+CAMP-AUG;;Příměstský tábor - 17.8. - 21.8. 2026;5290;CZK;1;Příměstské tábory;product;8
+SERVICE-TRACK;;Zážitek - trénink na velodromu;2200;CZK;1;TRÉNINKY A ZÁŽITKY;service;20
+SERVICE-TEST;;Zátěžový test;3000;CZK;1;Zátěžové testování;service;20
+RENTAL-BIKE;;Dolan ODM velikost 50;1000;CZK;1;Půjčovna kol - ODM 2026;product;1
+QUOTE-LECTURE;;Individuální domluva;5000;CZK;1;Přednášky a školení;service;20
+AMBIGUOUS-1;;Fiktivní konfliktní nabídka;100;CZK;1;Kroužky > Půjčovna kol;product;1

@@ -98,6 +98,8 @@ final class ShoptetProductCsvTest extends TestCase
             self::assertSame(2, $decoded['summary']['products']);
             self::assertSame(3, $decoded['summary']['variants']);
             self::assertSame(0, $decoded['summary']['database_writes']);
+            self::assertArrayHasKey('offer_type_counts', $decoded['summary']);
+            self::assertArrayHasKey('manual_review_products', $decoded['summary']);
         } finally {
             rmdir($directory);
         }

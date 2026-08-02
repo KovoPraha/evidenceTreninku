@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/shop_offer_classifier.php';
+
 final class ShopCatalogContract
 {
-    public const VERSION = 'evidence.shop.catalog-candidate.v1';
+    public const VERSION = 'evidence.shop.catalog-candidate.v2';
 
     /** @var list<string> */
     private const REQUIRED_HEADERS = ['code', 'pairCode', 'name', 'price'];
@@ -407,6 +409,7 @@ final class ShopCatalogContract
                 $product['variants'],
                 static fn (array $left, array $right): int => strcmp($left['sku'], $right['sku'])
             );
+            $product['offer_classification'] = ShopOfferClassifier::classify($product);
         }
         unset($product);
 
@@ -423,6 +426,15 @@ final class ShopCatalogContract
             static fn (array $product): int => count($product['variants']),
             $products
         ));
+        $offerTypeCounts = array_fill_keys(ShopOfferClassifier::TYPES, 0);
+        $manualReviewProducts = 0;
+        foreach ($products as $product) {
+            $classification = $product['offer_classification'];
+            $offerTypeCounts[$classification['type']]++;
+            if ($classification['needs_manual_review']) {
+                $manualReviewProducts++;
+            }
+        }
 
         return [
             'contract_version' => self::VERSION,
@@ -435,6 +447,8 @@ final class ShopCatalogContract
                 'warnings' => $warnings,
                 'contract_ready' => $errors === 0,
                 'database_writes' => 0,
+                'offer_type_counts' => $offerTypeCounts,
+                'manual_review_products' => $manualReviewProducts,
             ],
             'normalizations' => $normalizations,
             'issues' => $issues,
