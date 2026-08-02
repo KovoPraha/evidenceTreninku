@@ -43,15 +43,21 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
     // Snímek tabulky se načte jen jednou za request (O(N) místo O(N²) při importu 1500 osob).
     // Bonus: čerstvě vložené osoby ve stejném běhu nejsou v cache → dva různí lidé se stejným
     // jménem (otec/syn) se nesloučí do jednoho záznamu.
-    static $rows = null;
-    if ($rows === null) {
+    /** @var WeakMap<PDO, array<int, array<string, mixed>>>|null $rowsByPdo */
+    static $rowsByPdo = null;
+    if (!$rowsByPdo instanceof WeakMap) {
+        $rowsByPdo = new WeakMap();
+    }
+    if (!$rowsByPdo->offsetExists($pdo)) {
         $rows = [];
         foreach ($pdo->query("SELECT * FROM sportovci")->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $rows[(int)$row['id']] = $row;
         }
+        $rowsByPdo[$pdo] = $rows;
     }
 
-    foreach ($rows as $id => &$row) {
+    $candidates = [];
+    foreach ($rowsByPdo[$pdo] as $row) {
         $score = 0;
         $reasons = [];
         if ($uciid !== '' && kisMatchNormalizeText((string)($row['uciid'] ?? '')) === $uciid) {
@@ -83,14 +89,13 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
         }
         $row['_match_score'] = min(100, $score);
         $row['_match_reason'] = implode(', ', $reasons);
-        if ($row['_match_score'] <= 0) {
-            unset($rows[$id]);
+        if ($row['_match_score'] > 0) {
+            $candidates[] = $row;
         }
     }
-    unset($row);
 
-    usort($rows, static fn(array $a, array $b): int => ($b['_match_score'] ?? 0) <=> ($a['_match_score'] ?? 0));
-    return $rows;
+    usort($candidates, static fn(array $a, array $b): int => ($b['_match_score'] ?? 0) <=> ($a['_match_score'] ?? 0));
+    return $candidates;
 }
 
 function kisMatchResolve(PDO $pdo, array $person): array

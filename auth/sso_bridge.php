@@ -22,6 +22,8 @@
  *   $_SESSION['opravneni']     — array z tabulky opravneni
  */
 
+require_once dirname(__DIR__) . '/includes/password_security.php';
+
 // ── Mapování Velocota rolí na Evidence role ───────────────────────────────────
 const VELO_ROLE_MAP = [
     'admin'          => 'admin',
@@ -47,21 +49,23 @@ function velocotaSsoBridge(PDO $pdo): void
         return;
     }
 
-    // Pokud já jsem již přihlášený stejným Velocota uživatelem → nic nedělat
-    if (
-        isset($_SESSION['trener_id'])
-        && isset($_SESSION['velo_user_id_cached'])
-        && (int)$_SESSION['velo_user_id_cached'] === (int)$veloId
-    ) {
-        return;
-    }
-
     // Najít nebo vytvořit záznam v treneri tabulce
     $trenerId = _syncTrener($pdo, (int)$veloId, $veloJmeno, $veloEmail);
     if (!$trenerId) {
         _clearEvidenceSession();
         return;
     }
+
+    // Aktivitu účtu ověřujeme při každém requestu, i u již přihlášeného uživatele.
+    if (
+        isset($_SESSION['trener_id'], $_SESSION['velo_user_id_cached'])
+        && (int)$_SESSION['trener_id'] === $trenerId
+        && (int)$_SESSION['velo_user_id_cached'] === (int)$veloId
+    ) {
+        return;
+    }
+
+    session_regenerate_id(true);
 
     // Zapsat Evidence session
     $evidenceRole = VELO_ROLE_MAP[$veloRole];
@@ -89,18 +93,25 @@ function _syncTrener(PDO $pdo, int $veloId, string $jmeno, string $email): ?int
     try {
         // Zkus najít podle velo_user_id
         if (_colExists($pdo, 'treneri', 'velo_user_id')) {
-            $stmt = $pdo->prepare("SELECT id FROM treneri WHERE velo_user_id=? LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id, aktivni FROM treneri WHERE velo_user_id=? LIMIT 1");
             $stmt->execute([$veloId]);
-            $id = $stmt->fetchColumn();
-            if ($id) return (int)$id;
+            $trener = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($trener) {
+                return (int)$trener['aktivni'] === 1 ? (int)$trener['id'] : null;
+            }
         }
 
         // Fallback: hledat podle emailu
         if ($email) {
-            $stmt = $pdo->prepare("SELECT id FROM treneri WHERE email=? LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id, aktivni FROM treneri WHERE email=? LIMIT 1");
             $stmt->execute([$email]);
-            $id = $stmt->fetchColumn();
-            if ($id) {
+            $trener = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($trener) {
+                if ((int)$trener['aktivni'] !== 1) {
+                    return null;
+                }
+
+                $id = (int)$trener['id'];
                 // Zpětně propojit velo_user_id
                 if (_colExists($pdo, 'treneri', 'velo_user_id')) {
                     $pdo->prepare("UPDATE treneri SET velo_user_id=? WHERE id=?")
@@ -112,7 +123,7 @@ function _syncTrener(PDO $pdo, int $veloId, string $jmeno, string $email): ?int
 
         // Vytvořit nový shadow účet
         // Heslo: náhodný hash (login přes SSO, heslo se nevyužívá)
-        $fakeHash = password_hash(bin2hex(random_bytes(16)), PASSWORD_BCRYPT);
+        $fakeHash = trainer_password_hash(bin2hex(random_bytes(16)));
         $cols = 'jmeno, email, heslo, role, aktivni';
         $vals = [substr($jmeno, 0, 80), $email ?: null, $fakeHash, 'trener', 1];
 

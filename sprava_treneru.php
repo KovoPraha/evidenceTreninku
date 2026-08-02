@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/password_security.php';
 
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header("Location: login.php");
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Úprava existujícího
             if ($heslo !== '') {
                 $stmt = $pdo->prepare("UPDATE treneri SET jmeno = ?, email = ?, heslo = ?, role = ? WHERE id = ?");
-                $stmt->execute([$jmeno, $email, password_hash($heslo, PASSWORD_BCRYPT), $role, $id]);
+                $stmt->execute([$jmeno, $email, trainer_password_hash($heslo), $role, $id]);
             } else {
                 $stmt = $pdo->prepare("UPDATE treneri SET jmeno = ?, email = ?, role = ? WHERE id = ?");
                 $stmt->execute([$jmeno, $email, $role, $id]);
@@ -49,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             $stmt = $pdo->prepare("INSERT INTO treneri (jmeno, email, heslo, role) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$jmeno, $email, password_hash($heslo, PASSWORD_BCRYPT), $role]);
+            $stmt->execute([$jmeno, $email, trainer_password_hash($heslo), $role]);
             $_SESSION['flash_success'] = 'Trenér přidán.';
         }
         header("Location: sprava_treneru.php");

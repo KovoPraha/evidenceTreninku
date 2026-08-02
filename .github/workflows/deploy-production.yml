@@ -1,138 +1,179 @@
-# ============================================================
-# Nasazení na produkci jedním tlačítkem
-# GitHub → Actions → „Nasadit produkci" → Run workflow
-#
-# Postup:
-#   1. kontrola PHP syntaxe všech souborů
-#   2. záloha produkční databáze (přes chráněný endpoint)
-#   3. nahrání souborů z větve main přes rsync/SSH
-#      (config.php, uploady, obrázky a stories na serveru zůstávají)
-#   4. načtení webu → automaticky proběhne auto-migrace DB
-#   5. kontrola, že verze schématu v DB odpovídá verzi v kódu
-#
-# Potřebné Secrets (Settings → Secrets and variables → Actions):
-#   SSH_HOST         – adresa serveru (např. replikant3544.thinline.cz)
-#   SSH_PORT         – port SSH (Český hosting: bez vyhrazené IPv4 bývá jiný než 22)
-#   SSH_USER         – uživatel hlavního přístupu hostingu
-#   SSH_PRIVATE_KEY  – privátní SSH klíč (párový k authorized_keys na serveru)
-#   DEPLOY_TOKEN     – stejná hodnota jako DEPLOY_TOKEN v config.php na serveru
-#   PROD_CONFIG      – (nepovinné) celý obsah config.php; když na serveru chybí, vytvoří se z něj
-# ============================================================
-
 name: Nasadit produkci
 
 on:
   workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro nasazení napište přesně NASADIT'
+        required: true
+        type: string
+
+permissions:
+  contents: read
 
 concurrency:
   group: produkce-evidence
   cancel-in-progress: false
 
 env:
+  APP_HOST: data.kovopraha.cz
   WEB_URL: https://data.kovopraha.cz/evidence
-  REMOTE_DIR: data.kovopraha.cz/evidence   # adresář vzhledem k SSH domovu
+  REMOTE_DIR: data.kovopraha.cz/evidence
 
 jobs:
   nasadit:
     name: Nasazení evidence tréninků
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-      - name: Stáhnout kód (main)
-        uses: actions/checkout@v4
+      - name: Ověřit ruční potvrzení
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          if [ "$POTVRZENI" != 'NASADIT' ]; then
+            echo '❌ Nasazení nebylo potvrzeno přesným slovem NASADIT.'
+            exit 1
+          fi
 
-      - name: PHP pro kontrolu syntaxe
+      - name: Stáhnout kód z main
+        uses: actions/checkout@v7
+
+      - name: Připravit PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: mbstring, gd, zip, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
 
       - name: Kontrola PHP syntaxe
         run: |
           CHYBY=0
-          while IFS= read -r -d '' f; do
-            php -l "$f" > /dev/null || CHYBY=1
+          while IFS= read -r -d '' soubor; do
+            php -l "$soubor" > /dev/null || CHYBY=1
           done < <(find . -name '*.php' -not -path './.git/*' -not -path './vendor/*' -print0)
-          [ "$CHYBY" -eq 0 ] && echo "✅ Syntaxe v pořádku."
-
-      - name: Připravit SSH klíč
-        env:
-          SSH_KLIC: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          # normalizace: pryč s windowsovskými konci řádků, doplnit koncový řádek
-          printf '%s\n' "$SSH_KLIC" | tr -d '\r' > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          if ! ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null 2>&1; then
-            echo "❌ Secret SSH_PRIVATE_KEY neobsahuje platný privátní klíč."
-            echo "   Musí to být celý obsah souboru s privátním klíčem —"
-            echo "   začíná řádkem '-----BEGIN OPENSSH PRIVATE KEY-----'"
-            echo "   a končí řádkem '-----END OPENSSH PRIVATE KEY-----'."
-            echo "   (Soubor authorized_keys je veřejný klíč a patří na server, ne sem.)"
+          if [ "$CHYBY" -ne 0 ]; then
+            echo '❌ Některý PHP soubor nemá platnou syntaxi.'
             exit 1
           fi
-          echo "✅ SSH klíč je platný."
+          echo '✅ PHP syntaxe je v pořádku.'
 
-      - name: Přidat server mezi známé
-        env:
-          SSH_PORT_TAJNY: ${{ secrets.SSH_PORT }}
+      - name: Nainstalovat závislosti a spustit testy
         run: |
-          PORT="${SSH_PORT_TAJNY:-22}"
-          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
-          ssh-keyscan -p "$PORT" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
-          if ! grep -q . ~/.ssh/known_hosts; then
-            echo "❌ Server ${{ secrets.SSH_HOST }} neodpovídá na SSH portu $PORT."
-            echo "   Český hosting: na serverech bez vyhrazené IPv4 běží SSH na jiném portu než 22."
-            echo "   Správný port najdete v zákaznické sekci u nastavení FTP/SFTP"
-            echo "   a uložte ho jako Secret SSH_PORT."
-            exit 1
-          fi
-          echo "✅ Server je dostupný na portu $PORT."
+          composer validate --strict
+          composer install --prefer-dist --no-interaction --no-progress
+          composer audit --locked
+          composer check-platform-reqs
+          composer test
+          composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
-      - name: Zkontrolovat config.php na serveru
+      - name: Připravit ověřené SSH spojení
         env:
-          PROD_CONFIG: ${{ secrets.PROD_CONFIG }}
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
         run: |
-          CIL="$REMOTE_DIR/config.php"
-          SSH="ssh -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
-          if $SSH "test -f '$CIL'"; then
-            echo "✅ config.php na serveru existuje."
-          elif [ -n "$PROD_CONFIG" ]; then
-            # config na serveru chybí, ale je uložený v Secretu → vytvoříme ho
-            printf '%s\n' "$PROD_CONFIG" | tr -d '\r' | $SSH "cat > '$CIL'"
-            if $SSH "php -l '$CIL' > /dev/null 2>&1 || true; test -s '$CIL'"; then
-              echo "✅ config.php vytvořen na serveru ze Secretu PROD_CONFIG."
-            else
-              echo "❌ Nepodařilo se vytvořit config.php na serveru."
+          for promenna in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
+            if [ -z "${!promenna}" ]; then
+              echo "❌ Chybí povinný GitHub Secret: ${promenna%_SECRET}."
               exit 1
             fi
-          else
-            echo "❌ Na serveru chybí $CIL."
-            echo "   Bez něj by web po nasazení přestal fungovat — proto končíme dřív,"
-            echo "   než se cokoli změní. Máte dvě možnosti:"
-            echo "   a) nahrát config.php na server ručně (Total Commander), nebo"
-            echo "   b) vložit celý jeho obsah do GitHub Secretu PROD_CONFIG —"
-            echo "      nasazení ho pak na server vytvoří samo."
-            echo "   Vzor je config.example.php v repozitáři."
+          done
+
+          PORT="${SSH_PORT_SECRET:-22}"
+          if ! [[ "$PORT" =~ ^[0-9]+$ ]] || [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
+            echo '❌ SSH_PORT není platný port.'
             exit 1
           fi
 
-      - name: Záloha produkční databáze
-        run: |
-          ODPOVED=$(curl -fsS --max-time 480 "$WEB_URL/bin/zaloha.php?token=${{ secrets.DEPLOY_TOKEN }}" || true)
-          echo "$ODPOVED"
-          if echo "$ODPOVED" | grep -q '"ok": *true'; then
-            echo "✅ Záloha vytvořena."
-          else
-            echo "⚠️ Zálohu se nepodařilo vytvořit (při úplně prvním nasazení je to v pořádku — endpoint na serveru ještě není)."
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+
+          if ! ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null 2>&1; then
+            echo '❌ SSH_PRIVATE_KEY neobsahuje platný privátní klíč.'
+            exit 1
           fi
 
-      - name: Nahrát soubory (rsync)
+          if [ "$PORT" = '22' ]; then
+            HLEDAT="$SSH_HOST_SECRET"
+          else
+            HLEDAT="[$SSH_HOST_SECRET]:$PORT"
+          fi
+          if ! ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null; then
+            echo '❌ SSH_KNOWN_HOSTS neobsahuje záznam pro nastavený server a port.'
+            echo '   Otisk klíče musí být ověřen mimo tento workflow u hostingu.'
+            exit 1
+          fi
+
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Předletová kontrola serveru bez změny aplikace
         run: |
-          # Bez --delete: produkční složka obsahuje i soubory mimo repozitář
-          # (staré exporty, logy). Soubory smazané z gitu je proto nutné
-          # na serveru odstranit ručně — je to bezpečnější než automatické mazání.
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          "${SSH[@]}" "
+            set -eu
+            umask 077
+            test -d '$REMOTE_DIR'
+            test -s '$REMOTE_DIR/config.php'
+            command -v php >/dev/null
+            php -r 'foreach ([\"pdo_mysql\",\"zlib\",\"json\",\"hash\"] as \$e) { if (!extension_loaded(\$e)) { fwrite(STDERR, \"missing extension: \".\$e.PHP_EOL); exit(1); } }'
+            APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php -r '
+              \$host = (string)getenv(\"APP_HOST\");
+              \$_SERVER[\"HTTP_HOST\"] = \$host;
+              \$_SERVER[\"SERVER_NAME\"] = \$host;
+              require getenv(\"APP_ROOT\").\"/config.php\";
+              if (!defined(\"JE_LOKALNE\") || JE_LOKALNE) { exit(1); }
+              foreach ([\"DB_HOST\",\"DB_NAME\",\"DB_USER\",\"DB_PASS\"] as \$constant) {
+                if (!defined(\$constant)) { exit(1); }
+              }
+            '
+            mkdir -p \"\$HOME/.evidence-deploy\"
+            chmod 700 \"\$HOME/.evidence-deploy\"
+          "
+          echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
+
+      - name: Nahrát zálohovací nástroj mimo aplikaci
+        run: |
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:.evidence-deploy/db-backup.php.partial"
+          "${SSH[@]}" '
+            set -eu
+            umask 077
+            php -l "$HOME/.evidence-deploy/db-backup.php.partial" >/dev/null
+            chmod 600 "$HOME/.evidence-deploy/db-backup.php.partial"
+            mv "$HOME/.evidence-deploy/db-backup.php.partial" "$HOME/.evidence-deploy/db-backup.php"
+          '
+
+      - name: Vytvořit a ověřit produkční zálohu
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          VYSLEDEK=$("${SSH[@]}" "
+            set -eu
+            umask 077
+            APP_HOST='$APP_HOST' DEPLOY_GIT_SHA='$GITHUB_SHA' DEPLOY_RUN_ID='$GITHUB_RUN_ID' \\
+              php \"\$HOME/.evidence-deploy/db-backup.php\" \\
+              --app-root='$REMOTE_DIR' \\
+              --backup-dir=\"\$HOME/.evidence-backups\" \\
+              --keep=20 \\
+              --json
+          ")
+          echo "$VYSLEDEK"
+          echo "$VYSLEDEK" | jq -e '.ok == true and .tables > 0 and (.sha256 | length == 64)' >/dev/null
+          echo '✅ Ověřená záloha vznikla mimo webový adresář. Teprve nyní se smí měnit aplikace.'
+
+      - name: Nahrát soubory aplikace
+        run: |
           rsync -az --itemize-changes \
-            -e "ssh -p $SSH_PORT" \
+            -e "ssh -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts" \
             --exclude='.git*' \
             --exclude='config.php' \
             --exclude='uploads/' \
@@ -142,27 +183,26 @@ jobs:
             --exclude='loga_story/' \
             --exclude='reports/' \
             --exclude='bin/zalohy/' \
+            --exclude='tests/' \
+            --exclude='phpunit.xml*' \
+            --exclude='.phpunit.cache/' \
             --exclude='*.log' \
-            ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$REMOTE_DIR/"
-          echo "✅ Soubory nahrány."
+            ./ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"
+          echo '✅ Soubory byly nahrány. rsync záměrně nepoužívá --delete.'
 
-      - name: Spustit web a DB migrace
+      - name: Aplikovat databázové migrace přes SSH CLI
         run: |
-          KOD=$(curl -s -o /dev/null -w '%{http_code}' --max-time 120 -L "$WEB_URL/index.php")
-          echo "Web odpověděl: HTTP $KOD"
-          if [ "$KOD" != "200" ] && [ "$KOD" != "302" ]; then
-            echo "❌ Web neodpovídá správně (HTTP $KOD)."
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          "${SSH[@]}" "cd '$REMOTE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --apply --json"
+          "${SSH[@]}" "cd '$REMOTE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --check --json"
+          echo '✅ Migrace byly aplikovány a následná kontrola je čistá.'
+
+      - name: HTTP smoke test bez tajného tokenu
+        run: |
+          KOD=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 120 "$WEB_URL/index.php")
+          echo "Web odpověděl HTTP $KOD."
+          if [ "$KOD" != '200' ] && [ "$KOD" != '302' ]; then
+            echo '❌ Veřejný web po nasazení neodpovídá očekávaně.'
             exit 1
           fi
-
-      - name: Ověřit verzi databázového schématu
-        run: |
-          STAV=$(curl -fsS --max-time 120 "$WEB_URL/bin/stav.php?token=${{ secrets.DEPLOY_TOKEN }}")
-          echo "$STAV"
-          if echo "$STAV" | grep -q '"vse_aplikovano": *true'; then
-            echo "✅ Databáze má správnou verzi schématu. Nasazení dokončeno."
-          else
-            echo "❌ Verze schématu v databázi neodpovídá verzi v kódu —"
-            echo "   migrace neproběhla nebo skončila chybou (viz výpis výše a PHP error log)."
-            exit 1
-          fi
+          echo '✅ Nasazení dokončeno.'
