@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
+require_once __DIR__ . '/csrf_helper.php';
 $is_logged_in = isset($_SESSION['trener_id']);
 if ($is_logged_in && file_exists(__DIR__ . '/includes/funkce.php')) {
     require_once __DIR__ . '/includes/funkce.php';
@@ -611,8 +612,12 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
           <!-- Odhlášení -->
           <div class="card section-card">
             <div class="list-group list-group-flush">
-              <a href="logout.php" class="list-group-item list-group-item-action text-danger">
-                <i class="bi bi-box-arrow-right text-danger"></i>Odhlásit se</a>
+              <form method="post" action="logout.php">
+                <?= csrf_field() ?>
+                <button type="submit" class="list-group-item list-group-item-action text-danger border-0 text-start w-100">
+                  <i class="bi bi-box-arrow-right text-danger"></i>Odhlásit se
+                </button>
+              </form>
             </div>
           </div>
 

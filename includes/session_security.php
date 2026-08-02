@@ -258,7 +258,11 @@ function app_session_destroy(?int $now = null): void
 function app_session_logout_public_identity(?int $now = null): void
 {
     $now ??= time();
-    unset($_SESSION['verejny_uzivatel_id'], $_SESSION['verejny_uzivatel_jmeno']);
+    unset(
+        $_SESSION['verejny_uzivatel_id'],
+        $_SESSION['verejny_uzivatel_jmeno'],
+        $_SESSION['verejny_uzivatel_session_version']
+    );
 
     if (!isset($_SESSION['trener_id'])) {
         app_session_destroy($now);

@@ -50,10 +50,52 @@ final class AuthWiringTest extends TestCase
         $verification = $this->source('booking/overeni.php');
         $sso = $this->source('auth/sso_bridge.php');
 
-        self::assertStringContainsString('SELECT id, session_version', $verification);
+        self::assertStringContainsString('one_time_email_verification_consume', $verification);
         self::assertStringContainsString('auth_session_bind_public_user', $verification);
         self::assertStringContainsString('auth_session_active_version', $sso);
         self::assertStringContainsString('auth_session_bind_trainer', $sso);
+    }
+
+    public function testSensitiveLinksUseFragmentsAndLogoutRequiresPostWithCsrf(): void
+    {
+        $registration = $this->source('booking/registrace.php');
+        $reservation = $this->source('booking/rezervovat.php');
+        $waitingList = $this->source('booking/waiting_list.php');
+        $verification = $this->source('booking/overeni.php');
+        $approval = $this->source('booking/potvrdit.php');
+        $trainerLogout = $this->source('logout.php');
+        $publicLogout = $this->source('booking/odhlaseni.php');
+
+        self::assertStringContainsString("overeni.php#token=", $registration);
+        self::assertStringContainsString("#token=", $reservation);
+        self::assertStringContainsString("#token=", $waitingList);
+        self::assertStringNotContainsString("overeni.php?token=", $registration);
+        self::assertStringContainsString('history.replaceState', $verification);
+        self::assertStringContainsString('csrf_verify', $verification);
+        self::assertStringContainsString("\$_GET['token']", $verification);
+        self::assertStringNotContainsString('.submit()', $verification);
+        self::assertStringContainsString('history.replaceState', $approval);
+        self::assertStringContainsString('csrf_verify', $approval);
+        self::assertStringContainsString("\$_GET['token']", $approval);
+        self::assertStringNotContainsString('.submit()', $approval);
+        self::assertStringContainsString("!== 'POST'", $trainerLogout);
+        self::assertStringContainsString('csrf_verify', $trainerLogout);
+        self::assertStringContainsString("!== 'POST'", $publicLogout);
+        self::assertStringContainsString('csrf_verify', $publicLogout);
+    }
+
+    public function testBookingAndWaitlistFailClosedUnderTheSameSlotLock(): void
+    {
+        $booking = $this->source('booking/rezervovat.php');
+        $waitingList = $this->source('booking/waiting_list.php');
+
+        self::assertStringContainsString("'rez_' . \$lekceId", $booking);
+        self::assertStringContainsString('(int)$lockStatement->fetchColumn() === 1', $booking);
+        self::assertStringContainsString("'rez_' . \$lekceId", $waitingList);
+        self::assertStringContainsString('(int)$lockStatement->fetchColumn() !== 1', $waitingList);
+        self::assertStringContainsString("WHERE id=? AND stav='cekaci_listina'", $waitingList);
+        self::assertStringContainsString("active.stav IN ('ceka','potvrzena')", $waitingList);
+        self::assertStringContainsString('SELECT RELEASE_LOCK(?)', $waitingList);
     }
 
     public function testTrainerPasswordAndRoleChangesRevokeButTransparentRehashDoesNot(): void

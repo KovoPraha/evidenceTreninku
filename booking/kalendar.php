@@ -2,6 +2,7 @@
 require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../csrf_helper.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function timeToMin(string $t): int { return (int)substr($t,0,2)*60 + (int)substr($t,3,2); }
@@ -267,7 +268,10 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
             <?php if ($prihlaseny): ?>
                 <span class="text-muted small d-none d-md-inline"><?= h($uzivatelJmeno) ?></span>
                 <a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a>
-                <a href="odhlaseni.php" class="btn btn-outline-danger btn-sm">Odhlásit</a>
+                <form method="post" action="odhlaseni.php" class="d-inline">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Odhlásit</button>
+                </form>
             <?php else: ?>
                 <a href="prihlaseni.php" class="btn btn-outline-primary btn-sm">Přihlásit</a>
                 <a href="registrace.php" class="btn btn-primary btn-sm">Registrace</a>
