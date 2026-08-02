@@ -9,8 +9,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-02, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `main`; shop admin kódový tip před tímto stavovým commitem:
-  `3845eab` (`Add audited shop catalog administration`)
+- Aktivní integrační větev: `main`; kanonický katalog kódový tip před tímto stavovým commitem:
+  `b77f8c3` (`Promote reviewed catalog into canonical drafts`)
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -18,14 +18,14 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: staging dostal admin UI, ruční schválení/vyřazení a
-  neměnnou auditní historii; commit `3845eab`, 131/787 testů, SQLite i dočasná
-  MariaDB nad reálnými 241/807 prošly. Produkční workflow ani lokální/produkční
-  DB se nezměnily
+- Poslední dokončená akce: schválený staging lze jednou transakčně převést do
+  kanonického draft katalogu; commit `b77f8c3`, 134/826 testů, SQLite i dočasná
+  MariaDB nad reálnými 241/807 prošly. Druhý převod byl idempotentní, veřejně
+  aktivních produktů zůstalo 0. Produkční workflow ani lokální/produkční DB se nezměnily
 - Další přesná akce: doplnit GitHub Secret `SSH_KNOWN_HOSTS` a produkční
   `AUTH_RATE_LIMIT_PEPPER`, poté provést pouze autorizovaný první release.
-  Paralelně potvrdit KIS identifikátor, retenci a vazbu rodič–dítě; u shopu
-  implementovat K1 kanonický katalog a explicitní single-use publikaci stagingu
+  Potvrdit KIS identifikátor, retenci a vazbu rodič–dítě; následně implementovat
+  K2 účet–osoba–guardian a připravit řízenou aktivaci draft produktů
 
 ## Pořadí autority
 
@@ -43,14 +43,14 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | shop admin kódový tip `3845eab`; následuje pouze tento stavový commit | 2026-08-02 | Git | ano |
+| integrační branch | kanonický katalog kódový tip `b77f8c3`; následuje pouze tento stavový commit | 2026-08-02 | Git | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | 131/787; staging + review SQLite a izolovaná MariaDB OK; poslední vzdálený main CI důkaz zůstává zelený | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 + GitHub | ano |
-| Shoptet staging | 241 produktů, 807 variant, 0 blokátorů, 1 ruční kontrola; opakovaný staging bez duplicity, ruční rozhodnutí auditováno | 2026-08-02 | reálný XML + SQLite/MariaDB | před publikací |
+| testy | 134/826; staging + review + promotion SQLite a izolovaná MariaDB OK; poslední vzdálený main CI důkaz zůstává zelený | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 + GitHub | ano |
+| Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
 | lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-02.3` obsahuje `auth_login_limits` i lokálně nepřítomné `ucto_gs_*` | 2026-08-02 | izolovaná XAMPP DB + code audit | zopakovat s produkčním artefaktem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
@@ -96,7 +96,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | code accepted / production pending | `664745e`, `cd0c0e1`, PR #6 | integrační vlastník | migrace + deploy hardening | `SSH_KNOWN_HOSTS`, produkční pepper, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
-| W0-G | partial accepted | `98ff91d`, `168d132`, `8f0cbe8`, `699ddd4`, `d99a79e`, `2ba0782`, `f0370a3`, `3845eab` | KIS/shop workeři | fixture matice + reálný Shoptet staging a admin review | reálný KIS vzorek, publikace katalogu a platby |
+| W0-G | partial accepted | `98ff91d`, `168d132`, `8f0cbe8`, `699ddd4`, `d99a79e`, `2ba0782`, `f0370a3`, `3845eab`, `b77f8c3` | KIS/shop workeři | fixture matice + reálný Shoptet staging, review a draft katalog | reálný KIS vzorek, veřejná aktivace a platby |
 
 Řídicí task aktualizuje IDs, větve, commity a testy po každém worker handoffu.
 
@@ -122,6 +122,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 16 | W0-E release ordering `7361e48` | přijato v PR #6; 112/647, migrace před aktivací PHP, run `30743017895` success |
 | 17 | Shoptet XML a katalogový staging `699ddd4`, `d99a79e`, `2ba0782`, `f0370a3` | přijato lokálně; reálných 241/807, 1 ruční kontrola, idempotentní SQLite/MariaDB staging, 127/762 |
 | 18 | Auditovaný shop admin + KIS plán `3845eab` | přijato lokálně; admin-only, CSRF, audit změn, reálný MariaDB review smoke, 131/787 |
+| 19 | Kanonický draft katalog `b77f8c3` | přijato lokálně; single-use transakce, collision rollback, reálných 241/807, 3 free varianty, 134/826 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
