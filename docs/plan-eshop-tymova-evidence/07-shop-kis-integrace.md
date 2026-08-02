@@ -88,6 +88,18 @@ zpět a veřejná aktivace zatím záměrně neexistuje.
 Brána: rodič vidí pouze ověřené děti; dvě podobné osoby se nikdy automaticky
 nesloučí.
 
+Implementováno jako bezpečný administrátorský základ: tabulky
+`account_person_roles` a `account_person_role_events` oddělují veřejný účet od
+sportovce, podporují role `self` a `guardian`, platnost, zrušení i neměnnou historii
+rozhodnutí. Administrace je dostupná jen roli `admin`; každé schválení a zrušení
+vyžaduje textový podklad. Pro výběr účastníka se vracejí pouze aktivní schválené
+vazby aktivního účtu s ověřeným e-mailem. Shoda jména či e-mailu nic automaticky
+nezaloží a tato etapa nic nezapisuje do KIS.
+
+Zbývá doplnit uživatelský požadavek na vazbu (claim), jeho administrační frontu a
+bezpečné párování KIS importu přes stabilní identifikátory. Do té doby vazbu po
+ověření podkladů zakládá přímo administrátor.
+
 ### K3 – Klubové akce, termíny a přihlášky
 
 - `club_events`, cílové skupiny, ceny, termíny a kapacity,
@@ -131,7 +143,7 @@ Před příslušnou etapou musí vlastník potvrdit:
 ## Nejbližší implementační pořadí
 
 1. doplnit řízenou aktivaci jednotlivých `draft` produktů pro budoucí storefront,
-2. vytvořit model účet–osoba–rodič K2,
+2. doplnit uživatelský claim workflow nad implementovaný model K2,
 3. navrhnout klubové akce a mapování produktu na kroužek K3,
 4. implementovat bezplatný kroužek jako první vertikální průchod,
 5. teprve poté přidat objednávku a placenou variantu.

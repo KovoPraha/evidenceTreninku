@@ -338,6 +338,8 @@ if ($is_logged_in) {
                             <li><h6 class="dropdown-header">Administrace</h6></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_admin.php') ?>" href="eshop_admin.php">
                                 <i class="bi bi-shop me-2 text-primary"></i>Administrace e-shopu</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('eshop_identity_admin.php') ?>" href="eshop_identity_admin.php">
+                                <i class="bi bi-people me-2 text-primary"></i>Účty, rodiče a sportovci</a></li>
                             <li><a class="dropdown-item<?= _dropActive('sprava_sportovist.php') ?>" href="sprava_sportovist.php">
                                 <i class="bi bi-building-gear me-2"></i>Správa sportovišť</a></li>
                             <li><a class="dropdown-item<?= _dropActive('sprava_treneru.php') ?>" href="sprava_treneru.php">

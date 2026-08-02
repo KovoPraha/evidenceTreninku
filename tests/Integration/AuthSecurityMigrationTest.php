@@ -30,6 +30,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260802170000_shop_catalog_staging',
                 '20260802190000_shop_catalog_review',
                 '20260802210000_shop_canonical_catalog',
+                '20260802230000_account_person_roles',
             ],
             array_keys($catalog)
         );
@@ -73,6 +74,7 @@ final class AuthSecurityMigrationTest extends TestCase
 
         $pdo->exec('CREATE TABLE treneri (id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1)');
         $pdo->exec('INSERT INTO treneri (id, aktivni) VALUES (1, 1)');
+        $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY)');
         $pdo->exec(
             'CREATE TABLE verejni_uzivatele ('
             . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1, '

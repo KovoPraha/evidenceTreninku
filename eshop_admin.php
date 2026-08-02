@@ -108,7 +108,10 @@ $statusLabels = [
             <h1 class="h4 mb-0"><i class="bi bi-shop me-2 text-primary"></i>Administrace e-shopu</h1>
             <div class="text-muted small">Kontrola importovaného katalogu před budoucí publikací.</div>
         </div>
-        <a href="admin_dashboard.php" class="btn btn-outline-secondary btn-sm">Admin dashboard</a>
+        <div class="d-flex gap-2">
+            <a href="eshop_identity_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-people me-1"></i>Účty a sportovci</a>
+            <a href="admin_dashboard.php" class="btn btn-outline-secondary btn-sm">Admin dashboard</a>
+        </div>
     </div>
 
     <div class="alert alert-info">

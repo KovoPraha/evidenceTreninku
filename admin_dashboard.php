@@ -82,6 +82,21 @@ if (roleAtLeast('admin')) {
         'href' => 'eshop_admin.php' . ($lastShopRun ? '?run_id=' . (int)$lastShopRun['id'] : ''),
         'class' => $lastShopRun && (int)$lastShopRun['pending_count'] === 0 ? 'border-success' : 'border-warning',
     ];
+    $approvedAccountRelations = (int)$pdo->query(
+        "SELECT COUNT(*) FROM account_person_roles WHERE status='approved' AND valid_to IS NULL"
+    )->fetchColumn();
+    $accountsWithoutRelation = (int)$pdo->query(
+        "SELECT COUNT(*) FROM verejni_uzivatele vu WHERE vu.aktivni=1 AND NOT EXISTS ("
+        . "SELECT 1 FROM account_person_roles r WHERE r.account_id=vu.id "
+        . "AND r.status='approved' AND r.valid_to IS NULL)"
+    )->fetchColumn();
+    $cards[] = [
+        'label' => 'Účty a sportovci',
+        'value' => $approvedAccountRelations . ' vazeb',
+        'hint' => $accountsWithoutRelation . ' aktivních účtů bez schválené osoby',
+        'href' => 'eshop_identity_admin.php',
+        'class' => $accountsWithoutRelation > 0 ? 'border-warning' : 'border-success',
+    ];
 }
 ?>
 <!doctype html>
