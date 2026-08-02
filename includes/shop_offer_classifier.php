@@ -70,7 +70,7 @@ final class ShopOfferClassifier
             if (self::containsAny($segments, [
                 'cyklistické oblečení', 'volnočasové oblečení', 'doplňky',
                 'knihy', 'výprodej',
-            ])) {
+            ]) || self::containsCollapsed($segments, 'výprodej')) {
                 $strong[self::GOODS][] = 'category:goods';
             }
         }
@@ -178,6 +178,17 @@ final class ShopOfferClassifier
     {
         foreach ($haystack as $value) {
             if ($value === $prefix || str_starts_with($value, $prefix . ' - ')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** @param list<string> $haystack */
+    private static function containsCollapsed(array $haystack, string $needle): bool
+    {
+        foreach ($haystack as $value) {
+            if (str_replace(' ', '', $value) === $needle) {
                 return true;
             }
         }

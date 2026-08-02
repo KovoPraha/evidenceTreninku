@@ -23,5 +23,9 @@
 /phpunit.xml
 /.phpunit.cache/
 
+# Lokalni importy a prilohy z pracovnich vlaken
+/var/imports/
+/.codex-remote-attachments/
+
 .DS_Store
 Thumbs.db

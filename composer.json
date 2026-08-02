@@ -4,6 +4,8 @@
     "license": "proprietary",
     "require": {
         "php": "^8.2",
+        "ext-libxml": "*",
+        "ext-simplexml": "*",
         "phpoffice/phpspreadsheet": "^5.3",
         "minishlink/web-push": "^9.0"
     },

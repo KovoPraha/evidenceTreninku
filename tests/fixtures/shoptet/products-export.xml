@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SHOP>
+  <SHOPITEM id="100">
+    <NAME>Příměstský tábor – červenec</NAME>
+    <CODE>CAMP-100</CODE>
+    <PRICE>1000</PRICE>
+    <PRICE_RATIO>1</PRICE_RATIO>
+    <CURRENCY>CZK</CURRENCY>
+    <VAT>21</VAT>
+    <STOCK><AMOUNT>12</AMOUNT></STOCK>
+    <DECIMAL_COUNT>0</DECIMAL_COUNT>
+    <NEGATIVE_AMOUNT>0</NEGATIVE_AMOUNT>
+    <VISIBLE>1</VISIBLE>
+    <VISIBILITY>visible</VISIBILITY>
+    <ITEM_TYPE>service</ITEM_TYPE>
+    <SHORT_DESCRIPTION>Fiktivní tábor.</SHORT_DESCRIPTION>
+    <DESCRIPTION><![CDATA[<p>Fiktivní testovací tábor.</p>]]></DESCRIPTION>
+    <CATEGORIES>
+      <CATEGORY id="10">Příměstské tábory</CATEGORY>
+      <DEFAULT_CATEGORY id="10">Příměstské tábory</DEFAULT_CATEGORY>
+    </CATEGORIES>
+  </SHOPITEM>
+  <SHOPITEM id="200">
+    <NAME>Fiktivní klubový dres</NAME>
+    <VISIBILITY>visible</VISIBILITY>
+    <ITEM_TYPE>product</ITEM_TYPE>
+    <DESCRIPTION><![CDATA[<p>Fiktivní dres bez skutečných zákaznických dat.</p>]]></DESCRIPTION>
+    <CATEGORIES>
+      <CATEGORY id="20">CYKLISTICKÉ OBLEČENÍ &gt; DRESY</CATEGORY>
+      <DEFAULT_CATEGORY id="20">CYKLISTICKÉ OBLEČENÍ &gt; DRESY</DEFAULT_CATEGORY>
+    </CATEGORIES>
+    <IMAGES>
+      <IMAGE>https://example.invalid/dres.jpg</IMAGE>
+    </IMAGES>
+    <VARIANTS>
+      <VARIANT id="201">
+        <CODE>DRES-S</CODE>
+        <PRICE>1500</PRICE>
+        <PRICE_RATIO>1</PRICE_RATIO>
+        <CURRENCY>CZK</CURRENCY>
+        <VAT>21</VAT>
+        <STOCK><AMOUNT>2</AMOUNT></STOCK>
+        <DECIMAL_COUNT>0</DECIMAL_COUNT>
+        <NEGATIVE_AMOUNT>0</NEGATIVE_AMOUNT>
+        <VISIBLE>1</VISIBLE>
+        <PARAMETERS>
+          <PARAMETER><NAME>Velikost</NAME><VALUE>S</VALUE></PARAMETER>
+          <PARAMETER><NAME>Barva</NAME><VALUE>Červená</VALUE></PARAMETER>
+        </PARAMETERS>
+      </VARIANT>
+      <VARIANT id="202">
+        <CODE>DRES-M</CODE>
+        <PRICE>1500</PRICE>
+        <PRICE_RATIO>1</PRICE_RATIO>
+        <CURRENCY>CZK</CURRENCY>
+        <VAT>21</VAT>
+        <STOCK><AMOUNT>0</AMOUNT></STOCK>
+        <DECIMAL_COUNT>0</DECIMAL_COUNT>
+        <NEGATIVE_AMOUNT>0</NEGATIVE_AMOUNT>
+        <VISIBLE>1</VISIBLE>
+        <PARAMETERS>
+          <PARAMETER><NAME>Velikost</NAME><VALUE>M</VALUE></PARAMETER>
+          <PARAMETER><NAME>Barva</NAME><VALUE>Červená</VALUE></PARAMETER>
+        </PARAMETERS>
+      </VARIANT>
+    </VARIANTS>
+  </SHOPITEM>
+</SHOP>

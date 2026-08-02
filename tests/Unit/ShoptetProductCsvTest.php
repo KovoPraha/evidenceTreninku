@@ -124,7 +124,7 @@ final class ShoptetProductCsvTest extends TestCase
 
         $missing = $this->runCli(['--input=' . sys_get_temp_dir() . '/shop-does-not-exist.csv', '--json']);
         self::assertSame(64, $missing['exit']);
-        self::assertStringContainsString('regularni .csv', $missing['stderr']);
+        self::assertStringContainsString('.csv nebo .xml', $missing['stderr']);
 
         $base = tempnam(sys_get_temp_dir(), 'shop-wrong-ext-');
         self::assertIsString($base);
@@ -133,9 +133,33 @@ final class ShoptetProductCsvTest extends TestCase
         try {
             $wrongExtension = $this->runCli(['--input=' . $text, '--json']);
             self::assertSame(64, $wrongExtension['exit']);
-            self::assertStringContainsString('regularni .csv', $wrongExtension['stderr']);
+            self::assertStringContainsString('.csv nebo .xml', $wrongExtension['stderr']);
         } finally {
             @unlink($text);
+            @unlink($base);
+        }
+    }
+
+    public function testCliAcceptsXmlAndXmlSavedWithCsvExtension(): void
+    {
+        $xml = realpath(__DIR__ . '/../fixtures/shoptet/products-export.xml');
+        self::assertIsString($xml);
+        $base = tempnam(sys_get_temp_dir(), 'shop-cli-xml-');
+        self::assertIsString($base);
+        $mislabeled = $base . '.csv';
+        self::assertTrue(copy($xml, $mislabeled));
+
+        try {
+            foreach ([$xml, $mislabeled] as $input) {
+                $run = $this->runCli(['--input=' . $input, '--json']);
+                self::assertSame(0, $run['exit']);
+                $decoded = json_decode($run['stdout'], true, 512, JSON_THROW_ON_ERROR);
+                self::assertSame('xml', $decoded['source']['delimiter']);
+                self::assertSame(2, $decoded['summary']['products']);
+                self::assertSame(3, $decoded['summary']['variants']);
+            }
+        } finally {
+            @unlink($mislabeled);
             @unlink($base);
         }
     }

@@ -6,7 +6,7 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
-require_once dirname(__DIR__) . '/includes/shoptet_product_csv.php';
+require_once dirname(__DIR__) . '/includes/shoptet_product_input.php';
 require_once dirname(__DIR__) . '/includes/shop_catalog_contract.php';
 
 const SHOP_DRY_RUN_USAGE = 64;
@@ -20,7 +20,7 @@ function shopDryRunUsage(string $message = ''): void
     }
     fwrite(
         STDERR,
-        "Pouziti: php bin/shoptet-products-dry-run.php --input=<lokalni-soubor.csv> [--json]\n"
+        "Pouziti: php bin/shoptet-products-dry-run.php --input=<lokalni-soubor.csv|xml> [--json]\n"
         . "Nastroj provadi pouze read-only dry-run. Neobsahuje zapis do DB ani apply rezim.\n"
     );
     exit(SHOP_DRY_RUN_USAGE);
@@ -66,12 +66,12 @@ function shopDryRunArguments(array $arguments): array
         shopDryRunUsage('Parametr --input je povinny.');
     }
     if (str_contains($input, '://')
-        || strtolower(pathinfo($input, PATHINFO_EXTENSION)) !== 'csv'
+        || !in_array(strtolower(pathinfo($input, PATHINFO_EXTENSION)), ['csv', 'xml'], true)
         || is_link($input)
         || !is_file($input)
         || !is_readable($input)
     ) {
-        shopDryRunUsage('Vstup musi byt citelny lokalni regularni .csv soubor.');
+        shopDryRunUsage('Vstup musi byt citelny lokalni regularni .csv nebo .xml soubor.');
     }
     return ['input' => $input, 'json' => $json];
 }
@@ -101,7 +101,8 @@ function shopDryRunSummary(array $result): string
     $lines = [
         'Shoptet katalogovy dry-run (bez zapisu)',
         'Soubor: ' . $source['filename'] . ' | SHA-256: ' . $source['sha256'],
-        'Kodovani: ' . $source['encoding'] . ' | oddelovac: ' . $source['delimiter'],
+        'Format: ' . ($source['delimiter'] === 'xml' ? 'XML' : 'CSV (' . $source['delimiter'] . ')')
+            . ' | kodovani: ' . $source['encoding'],
         'Produkty: ' . $summary['products'] . ' | varianty: ' . $summary['variants'],
         'Typy nabidky: ' . implode(', ', array_map(
             static fn (string $type, int $count): string => $type . '=' . $count,
@@ -111,23 +112,28 @@ function shopDryRunSummary(array $result): string
         'Rucni kontrola klasifikace: ' . $summary['manual_review_products'],
         'Blokatory: ' . $summary['errors'] . ' | varovani: ' . $summary['warnings'],
         'Stav kontraktu: ' . ($summary['contract_ready'] ? 'pripraven pro kontrolu' : 'vyzaduje opravu vstupu'),
-        'Kontrakt je provisionalni do overeni realneho anonymizovaneho exportu.',
+        'Kontrakt zustava provisionalni do vyreseni nalezenych blokatoru.',
     ];
-    foreach ($result['issues'] as $issue) {
+    $displayedIssues = array_slice($result['issues'], 0, 50);
+    foreach ($displayedIssues as $issue) {
         $location = $issue['row'] === null ? '' : ' radek ' . $issue['row'];
         if ($issue['field'] !== null) {
             $location .= ' [' . $issue['field'] . ']';
         }
         $lines[] = strtoupper($issue['severity']) . ' ' . $issue['code'] . $location . ': ' . $issue['message'];
     }
+    $hiddenIssues = count($result['issues']) - count($displayedIssues);
+    if ($hiddenIssues > 0) {
+        $lines[] = '... dalsich ' . $hiddenIssues . ' problemu je dostupnych ve vystupu --json.';
+    }
     return implode(PHP_EOL, $lines) . PHP_EOL;
 }
 
 $options = shopDryRunArguments($argv);
 try {
-    $parsed = ShoptetProductCsv::read($options['input']);
+    $parsed = ShoptetProductInput::read($options['input']);
     $result = ShopCatalogContract::build($parsed);
-} catch (ShoptetProductCsvException $exception) {
+} catch (ShoptetProductCsvException | ShoptetProductXmlException $exception) {
     $result = [
         'contract_version' => ShopCatalogContract::VERSION,
         'provisional' => true,
@@ -152,7 +158,7 @@ try {
         'normalizations' => [],
         'issues' => [[
             'severity' => 'error',
-            'code' => 'invalid_csv_input',
+            'code' => 'invalid_catalog_input',
             'message' => $exception->getMessage(),
             'row' => null,
             'field' => null,

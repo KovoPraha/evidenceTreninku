@@ -316,6 +316,25 @@ final class ShopCatalogContractTest extends TestCase
         self::assertSame(1, $result['summary']['manual_review_products']);
     }
 
+    public function testSpacedSaleCategoryIsRecognizedAsGoods(): void
+    {
+        $result = \ShopCatalogContract::build($this->parsedRow([
+            'code' => 'SALE-JERSEY',
+            'pairCode' => '',
+            'name' => 'Fiktivní výprodejový dres',
+            'price' => '500',
+            'currency' => 'CZK',
+            'includingVat' => '1',
+            'defaultCategory' => 'V Ý P R O D E J > Dresy',
+            'itemType' => 'product',
+        ]));
+        $classification = $result['products'][0]['offer_classification'];
+
+        self::assertSame('goods', $classification['type']);
+        self::assertSame('high', $classification['confidence']);
+        self::assertFalse($classification['needs_manual_review']);
+    }
+
     /** @return array<string,mixed> */
     private function resultForPrice(string $price): array
     {

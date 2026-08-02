@@ -1,8 +1,9 @@
 # Shoptet katalog – první read-only dry-run
 
-Stav: **prozatímní kontrakt do ověření reálného anonymizovaného exportu**.
+Stav: **reálný XML export ověřen; kontrakt zůstává prozatímní do vyřešení
+explicitně nalezených blokátorů**.
 
-Tento krok pouze lokálně přečte produktový CSV export, zkontroluje SKU, varianty,
+Tento krok pouze lokálně přečte produktový CSV nebo XML export, zkontroluje SKU, varianty,
 ceny a podporovaná pole a vypíše náhled. Nevytváří katalog, nepřipojuje databázi,
 nemění Shoptet a nemá režim `--apply`.
 
@@ -13,6 +14,13 @@ ruční kontrolu, nikoliv o oprávnění k importu nebo založení objednávky.
 
 ```powershell
 php bin/shoptet-products-dry-run.php --input="C:\cesta\produkty.csv"
+```
+
+Podporovaný je také systémový XML export. Nástroj jej rozpozná podle obsahu i tehdy,
+když byl z Google Drive uložen s příponou `.csv`:
+
+```powershell
+php bin/shoptet-products-dry-run.php --input="C:\cesta\shoptet-products.xml"
 ```
 
 Výchozí výstup je stručný lidsky čitelný souhrn. Pro deterministický JSON na
@@ -29,20 +37,23 @@ odmítnuty s exit kódem `64`.
 Exit kódy:
 
 - `0` – soubor splnil prozatímní katalogový kontrakt,
-- `2` – existující CSV byl přečten, ale obsahuje blokující obsahový problém,
+- `2` – existující CSV nebo XML byl přečten, ale obsahuje blokující obsahový problém,
 - `64` – chybný nebo zakázaný parametr, duplicitní `--input`, neexistující či
-  nečitelná lokální cesta nebo cesta k jinému typu souboru než `.csv`.
+  nečitelná lokální cesta nebo cesta k jinému typu souboru než `.csv`/`.xml`.
 
 ## Bezpečnostní hranice
 
 - pouze CLI, při webovém spuštění vrací skript 404,
-- pouze lokální regulární `.csv` soubor, nikdy URL ani symlink,
+- pouze lokální regulární `.csv` nebo `.xml` soubor, nikdy URL ani symlink,
 - nejvýše 10 MiB, 10 000 datových řádků, 200 sloupců a 64 KiB na pole,
 - podporované kódování je UTF-8 (včetně BOM) a Windows-1250,
 - žádný `db.php`, `config.php`, session, síťový požadavek nebo zápis souboru,
 - obrázky se pouze evidují jako textové URL a nestahují se,
 - hodnoty podobné tabulkové formuli se nikdy nevyhodnocují a vyvolají varování,
 - HTML popis zůstává nedůvěryhodným textem a nesmí se bez sanitizace vykreslit.
+
+XML navíc odmítá `DOCTYPE` a deklarace entit a používá zákaz síťového načítání přes
+libxml. Elementy obrázků jsou pouze zaznamenány jako URL; soubory se nestahují.
 
 Zdrojový export nepatří do Gitu. Permanentní exportní URL Shoptetu může obsahovat
 přístupový hash; nevkládejte ji do repozitáře, issue, chatu ani CI logu.
@@ -91,6 +102,29 @@ rozhodnutí jiné měny zakázat; jejich minor-unit pravidla musí nejdříve po
 reálný export a produktové rozhodnutí. Chybějící `includingVat` je viditelné
 varování a hodnoty DPH zůstávají `null`; dry-run žádnou sazbu ani daň nedopočítává.
 
+## Normalizace systémového XML exportu
+
+Každý `SHOPITEM` se seskupuje podle stabilního atributu `id`. Produkty bez variant
+vytvoří jednu katalogovou variantu; elementy `VARIANTS/VARIANT` vytvoří samostatná
+SKU. Přenášejí se názvy, SKU, cena, měna, sklad, viditelnost, kategorie, obrázky a
+nejvýše tři parametry varianty.
+
+`PRICE` je podle kontraktu Shoptetu cena bez DPH a dry-run proto nastaví
+`includes_vat=false`. Pokud export obsahuje `PRICE_VAT`, označí cenu jako cenu s
+DPH. `PURCHASE_VAT` je sazba nákupní ceny a záměrně se nepoužívá jako sazba DPH
+prodejní ceny. Dry-run žádnou chybějící sazbu nedopočítává.
+
+Komerčně významná XML pole, která současný katalogový model ještě neumí bezpečně
+přenést, se nezahazují potichu. `ACTION_PRICE`, `STANDARD_PRICE`, jednotka,
+dostupnost a aktivní bezplatná doprava nebo platba se převedou na explicitní
+nepodporované sloupce a kontrakt je zablokuje do jejich vědomého namodelování.
+
+Ověřený klubový export z 2. srpna 2026 obsahuje 241 produktů a 807 variant. Tři
+položky půjčovny mají `PRICE_RATIO=0` a vyžadují rozhodnutí o skutečné ceně. Dvě
+položky zůstávají záměrně v ruční klasifikaci: tričko zařazené současně mezi
+oblečení a kroužky a pronájem velodromu zařazený současně mezi zážitky a pronájem.
+Skutečný export zůstává v `var/imports/` a nepatří do Gitu.
+
 ## Syntetická W0-G contract matrix
 
 Repozitář obsahuje pouze fiktivní testovací data bez osob, adres, objednávek a
@@ -105,7 +139,9 @@ skutečných produktů:
 - `products-catalog-scope-boundary.csv` – syntetická order/payment/wallet/delivery
   pole, která katalog povinně odmítne jako nepodporovaná.
 - `products-offer-types.csv` – zboží, kroužek, tábor, rezervovaná služba,
-  půjčovna, individuální nabídka a záměrně konfliktní klasifikace.
+  půjčovna, individuální nabídka a záměrně konfliktní klasifikace,
+- `products-export.xml` – fiktivní XML produkt bez variant a produkt se dvěma
+  variantami, kategoriemi, obrázkem, skladem a DPH.
 
 Tato matice nevytváří objednávkový ani platební model. Dokazuje pouze katalogový
 kontrakt a jeho hranice. Bez schválení D-009 až D-013 se nepřidávají payment
@@ -143,10 +179,11 @@ Souhrn obsahuje počty `offer_type_counts` a `manual_review_products`. Ani vysok
 jistota klasifikace nemění read-only povahu nástroje: produkční import, DB zápis,
 registrace dítěte, rezervace termínu ani skladový pohyb se neprovedou.
 
-## Co získat ze Shoptetu
+## Jak export později obnovit ze Shoptetu
 
-V administraci vytvořte malý vlastní produktový export ve formátu CSV. Pro první
-ověření stačí fiktivní nebo anonymizovaný výběr zahrnující:
+Pro další kontrolu lze v administraci vytvořit vlastní produktový export ve formátu
+CSV nebo znovu stáhnout kompletní systémový XML export. Menší kontrolní výběr má
+zahrnovat:
 
 - produkt bez variant,
 - produkt s velikostí nebo barvou,
