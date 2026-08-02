@@ -45,8 +45,8 @@ if (!auth_session_validate($pdo)) {
     exit('Přihlášení již není platné. Přihlaste se znovu.');
 }
 
-// Velocota SSO bridge — mapuje Velocota session → Evidence session
-// Aktivní pouze pokud je VELOCOTA_INTEGRATION = true v config.php
+// Legacy Velocota bridge není součástí cílové architektury Evidence.
+// Feature flag musí zůstat false bez nového explicitního rozhodnutí a review.
 if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {
     require_once __DIR__ . '/auth/sso_bridge.php';
     if (session_status() === PHP_SESSION_NONE) app_session_start();

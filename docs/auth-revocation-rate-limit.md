@@ -38,10 +38,9 @@ Chybějící nebo odlišná verze je neplatná. Identita se odstraní, ID sessio
 CSRF token se změní a aktuální request skončí HTTP 401. Ukončení requestu je
 záměrné: některé historické endpointy kontrolují roli ještě před načtením
 `db.php` a pouhé odstranění session klíče by nezabránilo pokračování mutace.
-Stejný kontrakt platí pro SSO bridge: pokud chybějící Velocota identita nebo
-odebraná role odstraní již existující trenérskou identitu, `db.php` aktuální
-request ukončí. Request, který žádnou trenérskou identitu neměl, může zůstat
-anonymní.
+Legacy SSO bridge je v cílové konfiguraci vypnutý. Pokud by byl po novém
+samostatném rozhodnutí někdy aktivován, jeho bezpečnostní kontrakt při odebrání
+identity ukončí aktuální request; nejde však o plánovanou provozní integraci.
 
 Změna hesla trenéra a změna jeho role ve `sprava_treneru.php` zvýší verzi.
 Úprava pouze jména nebo emailu ji nezvýší. Smazaný účet přestane validací

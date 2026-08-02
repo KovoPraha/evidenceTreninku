@@ -945,7 +945,9 @@ Výchozí záznamy pro tabulku `opravneni` jsou v poli `$defaultOpravneni` v `au
    - `.claude/`, `docs/` (volitelné)
    - testovacích souborů (`test.php`)
 
-2. **Databáze** — při prvním nasazení importovat SQL dump; při aktualizacích stačí nahrát soubory — auto-migrace se spustí automaticky při prvním requestu.
+2. **Databáze** — před aktualizací vytvořit zálohu, spustit read-only
+   `php bin/migrate.php --check` a následně autorizovaný `--apply`. Nové
+   číslované migrace se nesmějí odkládat na první webový request.
 
 3. **db.php** — produkční větev se aktivuje automaticky (detekce `SERVER_NAME != localhost`)
 
@@ -962,7 +964,7 @@ Výchozí záznamy pro tabulku `opravneni` jsou v poli `$defaultOpravneni` v `au
 ### 12.2 Checklist nasazení
 
 - [ ] `db.php` — produkční údaje nastaveny
-- [ ] `config.php` vytvořen z `config.example.php` (Velocota přepínač, API klíče)
+- [ ] `config.php` vytvořen z `config.example.php` (DB, bezpečnostní tajemství, API klíče)
 - [ ] `composer install --no-dev` provedeno
 - [ ] Upload složky mají správná oprávnění (`chmod 755`)
 - [ ] `display_errors = Off` v php.ini
@@ -970,31 +972,26 @@ Výchozí záznamy pro tabulku `opravneni` jsou v poli `$defaultOpravneni` v `au
 - [ ] Hesla trenérů změněna z výchozích
 - [ ] VAPID klíče vygenerovány a uloženy do `nastaveni` tabulky (pokud chcete Web Push)
 - [ ] Cron pro upomínky nastaven: `0 7 * * * php /cesta/cron_upominky.php`
-- [ ] ~~Manuální SQL migrace~~ — **není potřeba**, `includes/auto_migrace.php` se spustí automaticky
+- [ ] záloha + `php bin/migrate.php --check` + autorizovaný `--apply` proběhly před novým PHP
 
 > **Viz také:** `docs/instalace.md` pro detailní shell příkazy krok za krokem.
 
 ---
 
-## 13. config.php — lokální konfigurace
+## 13. config.php — samostatná konfigurace Evidence
 
 Soubor `config.php` v kořeni aplikace (není v gitu, vzor v `config.example.php`):
 
 ```php
 <?php
-// Integrace s Velocotou
-define('VELOCOTA_INTEGRATION', false);  // true = produkce, false = standalone
-define('VELOCOTA_ROOT', '/var/www/html/velocota');
-define('VELOCOTA_EVIDENCE_BASE_URL', 'https://kovopraha.cz/evidence');
+// Evidence je samostatná aplikace.
+define('VELOCOTA_INTEGRATION', false); // legacy bridge zůstává vypnutý
 
-// Session klíče z Velocoty (NEMĚNIT bez koordinace s Velocota týmem)
-define('VELO_SESSION_USER_ID',  'velo_user_id');
-define('VELO_SESSION_ROLE',     'velo_role');
-define('VELO_SESSION_JMENO',    'velo_jmeno');
-define('VELO_SESSION_EMAIL',    'velo_email');
+// Příklad dalších povinných produkčních hodnot je v config.example.php.
 ```
 
-Bez `config.php` aplikace funguje normálně v standalone módu — soubor je volitelný.
+Produkce vyžaduje vlastní ignorovaný `config.php` s DB údaji a bezpečnostními
+tajemstvími. Velocota není zdroj konfigurace ani produkčního přihlášení Evidence.
 
 ---
 

@@ -38,11 +38,12 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | Rozhodnutí | Stav | Vlastník |
 |---|---|---|
 | D-001 až D-004: tvar aplikace, shop, Shoptet a KIS přechod | doporučeno | vlastník produktu |
-| D-005 až D-007: účet, rodina a budoucí Velocota login | čeká na potvrzení | produkt + bezpečnost |
+| D-005 až D-006: účet a rodina | čeká na potvrzení | produkt + bezpečnost |
+| D-007: případné budoucí sdílení uživatelů | potvrzeno: pouze identita, mimo MVP | vlastník produktu |
 | D-008: nová doména klubových akcí | doporučeno | vlastník produktu |
 | D-009: reward vs cash kredit | blokující | ekonom + právní/účetní konzultace |
 | D-010 až D-013: platby, částky, checkout a doprava | čeká na potvrzení | produkt + ekonom |
-| D-014: integrační hranice Velocoty | doporučeno | technický vlastník |
+| D-014: hranice vůči Velocotě | potvrzeno: žádná širší integrace | vlastník produktu |
 | D-015: číslované migrace | technicky přijato ve W0-E; produkční ověření čeká | technický vlastník |
 
 ## Backlog F0

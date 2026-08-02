@@ -3,7 +3,9 @@ require_once dirname(__DIR__) . '/includes/session_security.php';
 require_once dirname(__DIR__) . '/includes/auth_session.php';
 /**
  * auth/sso_bridge.php
- * SSO bridge — čte Velocota session a mapuje na Evidence session.
+ * Legacy SSO bridge — čte Velocota session a mapuje na Evidence session.
+ * Evidence je samostatný produkt; bridge není součástí cílové architektury a
+ * nesmí se zapnout bez nového explicitního rozhodnutí a security review.
  *
  * INCLUDOVAT přes db.php (podmíněně dle VELOCOTA_INTEGRATION):
  *   if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {

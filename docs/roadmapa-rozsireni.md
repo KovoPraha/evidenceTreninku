@@ -360,7 +360,7 @@ Nová stránka `muj_ucet.php` v `booking/`:
 ```
 [ ] 3a. Kredit za lekce (zákazník zaplatí, část se vrátí jako kredit)
 [ ] 3b. Push notifikace na nabití kreditů
-[ ] 3c. Sjednocení s Velocota uživateli (pokud probíhá Velocota integrace)
+[ ] 3c. Případné sdílení identity s jiným klubovým systémem jen po samostatném rozhodnutí
 ```
 
 ---
@@ -396,7 +396,9 @@ Změny v těchto oblastech dotýkají se rozšíření a vyžadují koordinaci:
 
 ## Neměnit bez koordinace (mezisystémové kontrakty)
 
-Po implementaci Fáze 2 se přidají nové kontrakty. Aktuálně relevantní z Velocota integrace — viz `docs/integrace-velocota.md`.
+Po implementaci Fáze 2 se přidají pouze kontrakty uvnitř Evidence a jejího
+shopového modulu. Velocota není součástí této integrační roadmapy; viz
+`docs/integrace-velocota.md`.
 
 Po Fázi 2 budou přibývat:
 - `api/` endpointy — kontrakt s e-shopem (URL, parametry, response formát)

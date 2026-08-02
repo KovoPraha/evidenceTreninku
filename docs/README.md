@@ -1,19 +1,20 @@
 # Evidence Tréninků — Dokumentace
 
-Webová aplikace pro správu tréninků, sportovců a závodů cyklistického klubu. Sub-modul platformy **Velocota** (Kovopraha).
+Samostatná webová aplikace pro správu tréninků, sportovců, závodů a navazujících
+klubových agend Kovoprahy.
 
 ## Dokumenty
 
 | Dokument | Popis |
 |----------|-------|
 | [Uživatelská příručka](uzivatelska-prirucka.md) | Návod pro trenéry a administrátory — přihlášení, tréninky, sportovci, reporty, exporty |
-| [Technická dokumentace](technicka-dokumentace.md) | Architektura, AJAX endpointy, autentizace, CSRF, export systém, audit log, Web Push, SSO |
+| [Technická dokumentace](technicka-dokumentace.md) | Architektura, AJAX endpointy, autentizace, CSRF, export systém, audit log a Web Push |
 | [Databázové schéma](databazove-schema.md) | Popis všech tabulek, sloupců a vztahů |
 | [Vývojářský průvodce](vyvojarsky-pruvodce.md) | Instalace, konvence kódu, přidání nových stránek, nasazení |
 | [Instalace](instalace.md) | Krok za krokem — XAMPP (Windows), Linux/Apache, shell příkazy |
 | [Produkční nasazení](NASAZENI.md) | Aktuální návod k ručnímu nasazení z GitHub Actions |
 | [Program e-shop + týmová evidence](plan-eshop-tymova-evidence/README.md) | Audit, rozhodnutí, architektura, roadmapa a řízení pracovních tasků |
-| [Integrace Velocota](integrace-velocota.md) | SSO bridge, session kontrakt, fáze integrace s klubovým portálem |
+| [Hranice vůči Velocotě](integrace-velocota.md) | Rozhodnutí o samostatnosti Evidence a jediném možném budoucím sdílení identity |
 | [Roadmapa rozšíření](roadmapa-rozsireni.md) | Plánované změny — profily sportovců, kreditní wallet, e-shop API |
 | [Implementační prompt: funkční vylepšení 1-8](implementacni-prompt-funkcni-vylepseni-1-8.md) | Připravené zadání pro kartu člena, KIS centrum, chytré párování, workflow aktivity, historii, hromadné akce a dashboard |
 
@@ -64,7 +65,7 @@ Webová aplikace pro správu tréninků, sportovců a závodů cyklistického kl
 
 ## Integrace
 
-- **Velocota SSO** — `auth/sso_bridge.php` mapuje Velocota session na Evidence session; přepínač v `config.php` (`VELOCOTA_INTEGRATION`)
+- **Legacy Velocota bridge** — vypnutý kompatibilní experiment; není součástí cílové architektury
 - **Web Push** — Service Worker `sw.js` + `push_subscribe.php`; push notifikace při nové rezervaci lekce
 - **E-shop** *(plánováno, Fáze 2)* — API bridge pro kredity a SSO tokeny
 

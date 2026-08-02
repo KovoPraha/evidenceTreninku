@@ -25,7 +25,6 @@ flowchart LR
     STRIPE["Stripe"] <--> PAY
     FIO["Fio API"] <--> PAY
     PACKETA["Packeta"] <--> FUL
-    VELO["Velocota API"] <--> OUT
 ```
 
 ## Vlastnictví domén
@@ -43,10 +42,11 @@ flowchart LR
 
 ## Identita a rodinné vztahy
 
-Pro klubové MVP zůstane Evidence vlastníkem veřejných účtů. `auth_users` ve
-Velocotě je zaměstnanecká identita a nemá se naplnit 253 sportovci. Současně
-nelze spoléhat na sdílenou cookie, protože Evidence a Velocota běží na jiných
-doménách.
+Evidence je samostatná aplikace a pro klubové MVP vlastní své účty, session,
+role i vazby na osoby. Velocota není zdroj členských, shopových, platebních ani
+provozních dat. Výhledově lze samostatně navrhnout sdílenou/federovanou identitu
+uživatele, ale bez sdílené cookie, přímého zápisu do cizích aplikačních tabulek
+nebo rozšiřování integrace do dalších domén.
 
 Doporučený minimální model:
 
@@ -153,9 +153,9 @@ se povolí až po účetním a právním rozhodnutí.
 
 ## Integrace a asynchronní práce
 
-Dokud Evidence nemá bezpečné společné API s Velocotou, používá vlastní DB outbox.
-Worker/cron vybírá nezpracované události, zvyšuje počet pokusů a po limitu je
-přesune do administrátorské fronty. Každý consumer je idempotentní.
+Evidence používá vlastní DB outbox pro své skutečné externí integrace. Worker/cron
+vybírá nezpracované události, zvyšuje počet pokusů a po limitu je přesune do
+administrátorské fronty. Každý consumer je idempotentní.
 
 | Systém | Směr | Kontrakt |
 |---|---|---|
@@ -164,7 +164,9 @@ přesune do administrátorské fronty. Každý consumer je idempotentní.
 | Stripe | obousměrně | Checkout Session + podepsané webhooky + event dedup |
 | Fio | příjem | cursor/date window, transaction ID, VS/částka/měna, bezpečný retry |
 | Packeta | obousměrně | pickup-point feed + shipment adapter, test sender |
-| Velocota | později obousměrně | versionované API, external ID, idempotency key; žádné sdílené tabulky |
+
+Velocota v této tabulce záměrně není. Případné budoucí sdílení uživatelské
+identity je samostatná IAM otázka, nikoli obecná integrační cesta.
 
 ## Migrace a konzistence
 

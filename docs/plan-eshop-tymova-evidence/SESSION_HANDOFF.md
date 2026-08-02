@@ -131,9 +131,11 @@ dokud nebude ověřen proti reálnému anonymizovanému exportu.
 Session increment používá vlastní cookie `EVIDENCESESSID`; jeho budoucí deploy
 jednorázově odhlásí existující relace. DB revokace a atomický HMAC rate limit jsou
 lokálně hotové, ale deploy je fail-closed bez externího `AUTH_RATE_LIMIT_PEPPER`.
-`VELOCOTA_INTEGRATION` musí zůstat vypnutá, dokud nebude ověřen cookie/session
-kontrakt nebo navržen auth-code bridge. Expirované hashované tokeny, permission
-cache a POST+CSRF logout zůstávají otevřené, takže W0-C ani F0 nejsou uzavřené.
+Evidence je samostatný produkt. `VELOCOTA_INTEGRATION` musí zůstat `false`;
+širší provozní nebo doménová integrace s Velocotou není plánovaná. Výhledově lze
+samostatným rozhodnutím řešit pouze sdílenou/federovanou identitu uživatele.
+Expirované hashované tokeny, permission cache a POST+CSRF logout zůstávají
+otevřené, takže W0-C ani F0 nejsou uzavřené.
 
 ## Stop podmínky
 

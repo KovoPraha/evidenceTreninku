@@ -51,15 +51,12 @@ Veřejné odhlášení odstraní pouze veřejnou identitu. Pokud ve stejné sess
 zůstává trenérská identita, zachová ji, ale změní session ID a CSRF token. Pokud
 žádná jiná identita nezůstává, session i cookie úplně zničí.
 
-## Záměrně mimo tento increment
+## Navazující stav
 
-Tato změna nepřidává databázovou `session_version`, rate limiting, reset hesla,
-tokenové migrace, CSRF/POST variantu logoutu ani novou politiku SSO linkování.
-Do zavedení databázové revokace proto změna hesla, role nebo aktivity účtu sama
-o sobě okamžitě nezruší již vydanou session. Tyto body zůstávají samostatnými
-blokátory W0-C.
+Následující auth přírůstek už přidal databázovou `session_version` a atomický
+login rate limit; viz `docs/auth-revocation-rate-limit.md`. Stále zbývají
+tokenové migrace, reset hesla a CSRF/POST varianta logoutu.
 
-Současný volitelný SSO bridge očekává klíče `velo_*` ve stejné PHP session.
-Před zapnutím `VELOCOTA_INTEGRATION` je proto nutné integračně potvrdit společný
-název a rozsah cookie, nebo bridge nahradit výměnou jednorázového autorizačního
-kódu. Samostatný provoz Evidence má ve vzorové konfiguraci integraci vypnutou.
+Evidence je samostatný produkt. Volitelný legacy SSO bridge očekávající klíče
+`velo_*` není součástí cílové architektury a `VELOCOTA_INTEGRATION` musí zůstat
+`false`. Případné budoucí sdílení identity vyžaduje nové samostatné rozhodnutí.
