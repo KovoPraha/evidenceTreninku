@@ -13,6 +13,12 @@ spustit migrační runner a teprve potom zpřístupnit nový PHP kód. Samotné 
 souboru do `migrations/` produkční databázi nemění a tato práce produkční apply
 neprovádí.
 
+**Nový PHP kód se nesmí nasadit, dokud hosting nemá nastavený
+`AUTH_RATE_LIMIT_PEPPER`.** Musí jít o tajný, náhodný řetězec dlouhý nejméně
+32 znaků, uložený mimo Git — přednostně v environment proměnné, případně pouze
+v ignorovaném produkčním `config.php`. Chybějící nebo krátká hodnota způsobí
+bezpečné odmítnutí loginu. Hodnotu nevypisujte do logu ani do deploy reportu.
+
 Migrace přidává `session_version` s výchozí hodnotou `1` do tabulek `treneri` a
 `verejni_uzivatele`. Dále vytváří `auth_login_limits`. Migrace je idempotentní,
 má read-only `verify` a její SQLite větev slouží pro izolovaný integrační test;
@@ -48,8 +54,8 @@ V aktuálním kódu není samostatný flow pro deaktivaci trenéra nebo veřejn�
 
 Trenérský a veřejný login kontrolují dvě dimenze: normalizovaný přihlašovací
 údaj a `REMOTE_ADDR`. Do databáze se neukládá původní email, uživatelské jméno
-ani IP; ukládá se pouze SHA-256 hash oddělený scope a typem dimenze. Aplikace
-nedůvěřuje `X-Forwarded-For`.
+ani IP; ukládá se pouze HMAC-SHA-256 s povinným tajným pepperem, oddělený verzí,
+scope a typem dimenze. Aplikace nedůvěřuje `X-Forwarded-For`.
 
 Pokus se rezervuje atomicky v jedné databázové transakci ještě před ověřením
 hesla. Zámek obou hashovaných dimenzí zaručí, že souběžný burst nemůže nejprve
@@ -57,6 +63,11 @@ projít oddělenou kontrolou a až následně zapsat neúspěch. Rezervace neús
 ověření už sama tvoří pokus; po úspěchu se limiter účtu smaže a ze sdílené IP
 dimenze se vrátí právě rezervace úspěšného requestu. Předchozí neúspěchy z téže
 IP zůstávají započtené.
+
+Rezervace i dokončení úspěchu zamykají oba existující buckety podle vzestupně
+seřazeného `key_hash`. Úspěch je nejprve oba uzamkne a teprve potom maže bucket
+účtu a upravuje IP bucket. Stejné deterministické pořadí `SELECT ... FOR UPDATE`
+na InnoDB odstraňuje opačný lock cycle `identifier → IP` proti rezervaci.
 
 Prozatímní konfigurovatelné výchozí hodnoty jsou:
 
@@ -76,9 +87,8 @@ jediné úspěšné rezervace, takže jej nelze vymazat přihlášením do jiné
 - Změna globální tabulky oprávnění se stále nepromítne do již nacachovaného
   `$_SESSION['opravneni']`; samostatný increment má zavést globální permission
   version nebo přestat oprávnění dlouhodobě cachovat.
-- Hash bez tajného pepperu neobsahuje raw PII, ale u známých emailů je možné
-  kandidátní hodnotu offline ověřit. Před vyšší privacy úrovní lze přejít na
-  HMAC s produkčním pepperem a rotací.
+- Rotace `AUTH_RATE_LIMIT_PEPPER` změní všechny klíče limiteru. Vyžaduje
+  koordinovaný provozní postup a následný úklid starých neodpovídajících řádků.
 - Tabulka limiteru potřebuje provozní retenční úklid starých řádků; není součástí
   přihlašovacího requestu ani tohoto incrementu.
 - Reset hesla, remember-me, expirované emailové/booking tokeny a redesign SSO

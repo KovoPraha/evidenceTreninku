@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: ' . $redirect);
                 exit;
             }
-        } catch (PDOException $exception) {
-            error_log('Public login database error: ' . $exception->getMessage());
+        } catch (Throwable $exception) {
+            error_log('Public login authentication error: ' . $exception->getMessage());
             $errors[] = 'Přihlášení momentálně není dostupné. Zkuste to znovu.';
         }
     }

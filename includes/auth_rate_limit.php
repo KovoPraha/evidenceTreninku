@@ -47,11 +47,30 @@ function auth_rate_limit_normalize_ip(string $ipAddress): string
     return $packed === false ? 'unknown' : (string)inet_ntop($packed);
 }
 
+function auth_rate_limit_validate_pepper(mixed $pepper): string
+{
+    if (!is_string($pepper) || strlen($pepper) < 32) {
+        throw new RuntimeException(
+            'Authentication rate-limit pepper is missing or shorter than 32 characters.'
+        );
+    }
+
+    return $pepper;
+}
+
+function auth_rate_limit_pepper(): string
+{
+    return auth_rate_limit_validate_pepper(
+        defined('AUTH_RATE_LIMIT_PEPPER') ? constant('AUTH_RATE_LIMIT_PEPPER') : null
+    );
+}
+
 function auth_rate_limit_hash(string $scope, string $dimension, string $value): string
 {
-    return hash(
+    return hash_hmac(
         'sha256',
-        "evidence-auth-rate-limit-v1\0{$scope}\0{$dimension}\0{$value}"
+        "evidence-auth-rate-limit-v2\0{$scope}\0{$dimension}\0{$value}",
+        auth_rate_limit_pepper()
     );
 }
 
@@ -70,6 +89,17 @@ function auth_rate_limit_keys(string $scope, string $identifier, string $ipAddre
             auth_rate_limit_normalize_ip($ipAddress)
         ),
     ];
+}
+
+/** @return array{identifier:string,ip:string} */
+function auth_rate_limit_ordered_keys(
+    string $scope,
+    string $identifier,
+    string $ipAddress
+): array {
+    $keys = auth_rate_limit_keys($scope, $identifier, $ipAddress);
+    asort($keys, SORT_STRING);
+    return $keys;
 }
 
 /** @param array<string, mixed>|null $server */
@@ -107,8 +137,7 @@ function auth_rate_limit_reserve_attempt(
     }
 
     try {
-        $keys = auth_rate_limit_keys($scope, $identifier, $ipAddress);
-        asort($keys, SORT_STRING);
+        $keys = auth_rate_limit_ordered_keys($scope, $identifier, $ipAddress);
 
         /** @var array<string, array{window_started_at:int,attempts:int,blocked_until:int}> $rows */
         $rows = [];
@@ -221,13 +250,27 @@ function auth_rate_limit_record_success(
         throw new RuntimeException('Unsupported database driver for authentication rate limiting.');
     }
 
-    $keys = auth_rate_limit_keys($scope, $identifier, $ipAddress);
+    $keys = auth_rate_limit_ordered_keys($scope, $identifier, $ipAddress);
     $ownsTransaction = !$pdo->inTransaction();
     if ($ownsTransaction) {
         $pdo->beginTransaction();
     }
 
     try {
+        /** @var array<string, array<string, mixed>|null> $rows */
+        $rows = [];
+        foreach ($keys as $dimension => $keyHash) {
+            $selectSql = 'SELECT window_started_at, attempts, blocked_until '
+                . 'FROM auth_login_limits WHERE scope = :scope AND key_hash = :key_hash';
+            if ($driver === 'mysql') {
+                $selectSql .= ' FOR UPDATE';
+            }
+            $select = $pdo->prepare($selectSql);
+            $select->execute(['scope' => $scope, 'key_hash' => $keyHash]);
+            $row = $select->fetch(PDO::FETCH_ASSOC);
+            $rows[$dimension] = is_array($row) ? $row : null;
+        }
+
         $deleteIdentifier = $pdo->prepare(
             'DELETE FROM auth_login_limits WHERE scope = :scope AND key_hash = :key_hash'
         );
@@ -236,14 +279,7 @@ function auth_rate_limit_record_success(
             'key_hash' => $keys['identifier'],
         ]);
 
-        $selectSql = 'SELECT window_started_at, attempts, blocked_until '
-            . 'FROM auth_login_limits WHERE scope = :scope AND key_hash = :key_hash';
-        if ($driver === 'mysql') {
-            $selectSql .= ' FOR UPDATE';
-        }
-        $select = $pdo->prepare($selectSql);
-        $select->execute(['scope' => $scope, 'key_hash' => $keys['ip']]);
-        $row = $select->fetch(PDO::FETCH_ASSOC);
+        $row = $rows['ip'] ?? null;
 
         if (is_array($row)) {
             $windowStartedAt = (int)$row['window_started_at'];

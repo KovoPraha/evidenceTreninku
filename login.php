@@ -86,9 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Úmyslně neurčitá zpráva – neprozrazuje, zda přihlašovací údaj existuje
                 $error = 'Neplatné přihlašovací jméno / email nebo heslo.';
             }
-        } catch (PDOException $e) {
-            // Nezobrazujeme detaily DB chyby uživateli
-            error_log('Login PDO error: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            // Nezobrazujeme detaily autentizační ani DB chyby uživateli.
+            error_log('Login authentication error: ' . $e->getMessage());
             $error = 'Přihlášení momentálně není dostupné. Zkuste to znovu.';
         }
     }

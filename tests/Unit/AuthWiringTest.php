@@ -27,6 +27,7 @@ final class AuthWiringTest extends TestCase
         self::assertStringContainsString('auth_rate_limit_record_success', $trainer);
         self::assertStringNotContainsString('auth_rate_limit_is_allowed', $trainer);
         self::assertStringNotContainsString('auth_rate_limit_record_failure', $trainer);
+        self::assertStringContainsString('catch (Throwable $e)', $trainer);
         self::assertStringContainsString('auth_session_bind_trainer', $trainer);
         self::assertStringContainsString('session_version', $trainer);
         self::assertStringContainsString(
@@ -39,6 +40,7 @@ final class AuthWiringTest extends TestCase
         self::assertStringContainsString('auth_rate_limit_record_success', $public);
         self::assertStringNotContainsString('auth_rate_limit_is_allowed', $public);
         self::assertStringNotContainsString('auth_rate_limit_record_failure', $public);
+        self::assertStringContainsString('catch (Throwable $exception)', $public);
         self::assertStringContainsString('auth_session_bind_public_user', $public);
         self::assertStringContainsString('Nesprávný email nebo heslo.', $public);
     }

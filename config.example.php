@@ -27,6 +27,16 @@ $jeLokalne = PHP_OS_FAMILY === 'Windows'
 
 define('JE_LOKALNE', $jeLokalne);
 
+// ── Bezpečnost přihlášení ───────────────────────────────────────────────────
+// POVINNÉ PŘED DEPLOYEM: unikátní náhodný secret o délce nejméně 32 znaků.
+// Preferovaně jej nastavte na hostingu jako environment proměnnou, mimo webroot.
+$authRateLimitPepper = getenv('AUTH_RATE_LIMIT_PEPPER');
+if (is_string($authRateLimitPepper) && $authRateLimitPepper !== '') {
+    define('AUTH_RATE_LIMIT_PEPPER', $authRateLimitPepper);
+}
+// Pokud hosting environment proměnné neumí, přidejte pouze do ignorovaného config.php:
+// define('AUTH_RATE_LIMIT_PEPPER', '<NAHODNY-SECRET-ALESPOŇ-32-ZNAKU>');
+
 // ── Databáze ─────────────────────────────────────────────────────────────────
 
 if ($jeLokalne) {

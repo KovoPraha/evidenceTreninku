@@ -20,6 +20,21 @@ final class AuthRateLimitTest extends TestCase
         self::assertSame(3, \auth_rate_limit_policy(['max_attempts' => 3])['max_attempts']);
     }
 
+    public function testPepperIsRequiredAndMustHaveAtLeastThirtyTwoCharacters(): void
+    {
+        foreach ([null, '', str_repeat('x', 31)] as $invalidPepper) {
+            try {
+                \auth_rate_limit_validate_pepper($invalidPepper);
+                self::fail('Invalid rate-limit pepper was accepted.');
+            } catch (\RuntimeException) {
+                self::addToAssertionCount(1);
+            }
+        }
+
+        $validPepper = str_repeat('x', 32);
+        self::assertSame($validPepper, \auth_rate_limit_validate_pepper($validPepper));
+    }
+
     public function testAtomicReservationPermitsOnlyConfiguredNumberOfEvaluations(): void
     {
         $pdo = $this->database();
@@ -132,6 +147,31 @@ final class AuthRateLimitTest extends TestCase
         self::assertSame($first['identifier'], $second['identifier']);
         self::assertSame($first['ip'], $second['ip']);
         self::assertNotSame($first['identifier'], $first['ip']);
+        self::assertNotSame(
+            hash('sha256', "evidence-auth-rate-limit-v2\0trainer_login\0identifier\0coach"),
+            $first['identifier']
+        );
+    }
+
+    public function testBothMutationFlowsShareHashSortedLockOrder(): void
+    {
+        $keys = \auth_rate_limit_keys('trainer_login', 'Coach', '192.0.2.1');
+        $expected = $keys;
+        asort($expected, SORT_STRING);
+
+        self::assertSame(
+            $expected,
+            \auth_rate_limit_ordered_keys('trainer_login', 'Coach', '192.0.2.1')
+        );
+
+        $source = file_get_contents(dirname(__DIR__, 2) . '/includes/auth_rate_limit.php');
+        self::assertIsString($source);
+        self::assertSame(3, substr_count($source, 'auth_rate_limit_ordered_keys('));
+        $success = substr($source, (int)strpos($source, 'function auth_rate_limit_record_success('));
+        self::assertLessThan(
+            strpos($success, '$deleteIdentifier ='),
+            strpos($success, 'foreach ($keys as $dimension => $keyHash)')
+        );
     }
 
     private function database(): PDO
