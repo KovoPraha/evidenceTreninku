@@ -16,10 +16,12 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringContainsString("roleAtLeast('admin')", $source);
         self::assertStringContainsString('csrf_verify', $source);
         self::assertStringContainsString('shopCatalogReviewProduct', $source);
+        self::assertStringContainsString('shopCatalogPromote', $source);
+        self::assertStringContainsString('confirm_promotion', $source);
         self::assertStringNotContainsString('description_html_untrusted', $source);
         self::assertStringNotContainsString('INSERT INTO shop_products', $source);
         self::assertStringNotContainsString('INSERT INTO shop_orders', $source);
-        self::assertStringContainsString('Publikační krok zatím neexistuje', $source);
+        self::assertStringContainsString('ve stavu draft', $source);
     }
 
     public function testAdminNavigationLinksToShopReview(): void

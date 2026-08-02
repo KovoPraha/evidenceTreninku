@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/shop_catalog_review.php';
+require_once __DIR__ . '/includes/shop_catalog_promotion.php';
 
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
@@ -30,6 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $runId = (int)($_POST['run_id'] ?? 0);
         try {
+            if (($_POST['action'] ?? '') === 'promote_run') {
+                $promotion = shopCatalogPromote(
+                    $pdo,
+                    $runId,
+                    (int)$_SESSION['trener_id'],
+                    isset($_POST['confirm_promotion']) && $_POST['confirm_promotion'] === '1'
+                );
+                $_SESSION['flash_success'] = sprintf(
+                    'Do pracovního katalogu bylo převedeno %d produktů a %d variant.',
+                    $promotion['products'],
+                    $promotion['variants']
+                );
+                header('Location: eshop_admin.php?run_id=' . $runId);
+                exit;
+            }
             $result = shopCatalogReviewProduct(
                 $pdo,
                 $runId,
@@ -44,6 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 : 'Produkt byl vyřazen z budoucí publikace.';
             header('Location: eshop_admin.php?run_id=' . $runId);
             exit;
+        } catch (PDOException $exception) {
+            error_log('eshop_admin.php: ' . $exception->getMessage());
+            $errors[] = 'Databázová operace selhala. Nebyla uložena částečná změna.';
         } catch (InvalidArgumentException | RuntimeException $exception) {
             $errors[] = $exception->getMessage();
         }
@@ -64,6 +83,7 @@ $detail = $runId > 0
     ? shopCatalogReviewDetail($pdo, $runId, $statusFilter, $typeFilter, $search)
     : ['run' => null, 'products' => [], 'events' => []];
 $offerTypes = shopCatalogReviewOfferTypes();
+$canonicalSummary = shopCanonicalCatalogSummary($pdo);
 $statusLabels = [
     'pending' => ['Čeká na kontrolu', 'bg-warning text-dark'],
     'auto_classified' => ['Automaticky zařazeno', 'bg-secondary'],
@@ -92,8 +112,9 @@ $statusLabels = [
     </div>
 
     <div class="alert alert-info">
-        <strong>Bezpečný staging:</strong> schválení zde ještě nevystaví produkt na webu,
-        nevytvoří rezervaci, objednávku ani platbu. Publikační krok zatím neexistuje.
+        <strong>Bezpečný katalog:</strong> kontrola ani převod nevystaví produkt na veřejném webu.
+        Produkty přecházejí pouze do pracovního stavu <code>draft</code>; nevzniká rezervace,
+        objednávka, platba ani skladový pohyb.
     </div>
     <?php foreach ($errors as $error): ?>
         <div class="alert alert-danger"><?= shopAdminH($error) ?></div>
@@ -109,6 +130,11 @@ $statusLabels = [
             <p class="text-muted mb-0">Nejprve spusťte ověření a explicitní staging Shoptet exportu.</p>
         </div></div>
     <?php else: ?>
+        <div class="row g-3 mb-3">
+            <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Pracovní katalog</div><div class="h3 mb-0"><?= $canonicalSummary['products'] ?> produktů</div></div></div></div>
+            <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Varianty</div><div class="h3 mb-0"><?= $canonicalSummary['variants'] ?></div></div></div></div>
+            <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Veřejně aktivní</div><div class="h3 mb-0">0</div><div class="small text-muted">veřejný storefront zatím neexistuje</div></div></div></div>
+        </div>
         <div class="row g-3 mb-3">
             <?php foreach ($runs as $run): ?>
                 <div class="col-sm-6 col-xl-3">
@@ -129,6 +155,22 @@ $statusLabels = [
         </div>
 
         <?php if ($detail['run']): ?>
+            <?php if ($detail['run']['status'] === 'ready_for_promotion'): ?>
+                <form method="post" class="card border-success shadow-sm mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div><strong>Kontrola je dokončená.</strong><div class="small text-muted">Převod vytvoří kanonické produkty a varianty ve stavu draft. Při jediné kolizi se vše vrátí zpět.</div></div>
+                        <div class="d-flex align-items-center gap-3">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="run_id" value="<?= $runId ?>">
+                            <input type="hidden" name="action" value="promote_run">
+                            <div class="form-check"><input class="form-check-input" type="checkbox" value="1" name="confirm_promotion" id="confirmPromotion" required><label class="form-check-label" for="confirmPromotion">Potvrzuji převod</label></div>
+                            <button class="btn btn-success"><i class="bi bi-arrow-right-circle me-1"></i>Převést do pracovního katalogu</button>
+                        </div>
+                    </div>
+                </form>
+            <?php elseif ($detail['run']['status'] === 'promoted'): ?>
+                <div class="alert alert-success"><i class="bi bi-check-circle me-1"></i>Tento běh už byl jednorázově převeden do pracovního katalogu. Opakovaný převod nevytvoří duplicity.</div>
+            <?php endif; ?>
             <form method="get" class="card border-0 shadow-sm mb-3">
                 <div class="card-body row g-2 align-items-end">
                     <input type="hidden" name="run_id" value="<?= $runId ?>">

@@ -73,8 +73,27 @@ variant. Konfliktní položku lze:
 
 Každá ruční akce ukládá původní a nový typ, administrátora, čas a poznámku do
 neměnné historie `shop_catalog_review_events`. Po vyřešení všech povinných
-kontrol dostane běh stav `ready_for_promotion`. Tento stav neznamená zveřejnění;
-kanonický katalog ani publikační akce v této etapě neexistují.
+kontrol dostane běh stav `ready_for_promotion`. Tento stav sám nic nezapisuje do
+kanonického katalogu a neznamená zveřejnění na webu.
+
+## Převod do pracovního katalogu
+
+Po dokončení kontroly lze celý běh jednou převést do kanonických tabulek
+`shop_products`, `shop_variants`, `shop_product_categories` a
+`shop_product_images`. Administrátor musí zaškrtnout výslovné potvrzení.
+
+Převod probíhá v jedné DB transakci:
+
+- čekající nebo `unclassified` produkt převod zablokuje,
+- vyřazené kandidáty přeskočí,
+- kolize stabilního produktového klíče nebo SKU vrátí celý převod zpět,
+- druhé spuštění stejného běhu je idempotentní a nevytvoří duplicity,
+- produkt i varianta vznikají výhradně ve stavu `draft`.
+
+Záznam v `shop_catalog_promotions` uchovává importní běh, administrátora, čas a
+počty převedených produktů a variant. `draft` katalog není veřejný storefront;
+stále neexistuje veřejný detail produktu, košík, objednávka, platba, rezervace
+ani skladový pohyb.
 
 ## Bezpečnostní hranice
 

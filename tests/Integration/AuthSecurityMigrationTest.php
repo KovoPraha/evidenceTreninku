@@ -29,6 +29,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260802133000_one_time_tokens',
                 '20260802170000_shop_catalog_staging',
                 '20260802190000_shop_catalog_review',
+                '20260802210000_shop_canonical_catalog',
             ],
             array_keys($catalog)
         );

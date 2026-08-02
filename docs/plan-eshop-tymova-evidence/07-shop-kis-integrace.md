@@ -1,7 +1,8 @@
 # 07 – Plán napojení e-shopu na členské a KIS funkce
 
-Stav: implementační plán po katalogovém stagingu. Evidence zůstává samostatnou
-aplikací; Velocota není součástí tohoto propojení.
+Stav: K1 pracovní kanonický katalog je implementovaný; další je řízená aktivace
+produktů a K2 identita osob. Evidence zůstává samostatnou aplikací; Velocota
+není součástí tohoto propojení.
 
 ## Cíl
 
@@ -63,15 +64,19 @@ rozhodnutí před ostrým spuštěním.
 
 ## Implementační etapy
 
-### K1 – Kanonický katalog a explicitní publikace
+### K1 – Kanonický katalog a explicitní převod stagingu
 
 - tabulky `shop_products`, `shop_variants`, ceny a obrázky,
 - vazba na schválený stagingový kandidát a audit publikace,
 - opakovatelná publikace podle stabilního klíče a SKU,
 - žádný checkout ani KIS zápis.
 
-Brána: stejný staging nelze publikovat dvakrát, vyřazené a nezkontrolované
+Brána: stejný staging nelze převést dvakrát, vyřazené a nezkontrolované
 položky se nepřenášejí a změna zdroje nikdy tiše nepřepíše ruční rozhodnutí.
+
+Implementováno: schválený běh lze jednou transakčně převést do kanonického
+katalogu. Produkty a varianty vznikají ve stavu `draft`, kolize vrací celý běh
+zpět a veřejná aktivace zatím záměrně neexistuje.
 
 ### K2 – Účty, osoby a rodiče
 
@@ -125,11 +130,11 @@ Před příslušnou etapou musí vlastník potvrdit:
 
 ## Nejbližší implementační pořadí
 
-1. dokončit administrátorskou kontrolu staging katalogu,
-2. navrhnout a migračně otestovat kanonický katalog K1,
-3. přidat explicitní publikaci jednoho schváleného běhu,
-4. vytvořit model účet–osoba–rodič K2,
-5. teprve poté implementovat kroužek jako první vertikální průchod K3.
+1. doplnit řízenou aktivaci jednotlivých `draft` produktů pro budoucí storefront,
+2. vytvořit model účet–osoba–rodič K2,
+3. navrhnout klubové akce a mapování produktu na kroužek K3,
+4. implementovat bezplatný kroužek jako první vertikální průchod,
+5. teprve poté přidat objednávku a placenou variantu.
 
 Stripe, Fio, kredit, Packeta a ostrý KIS cutover nejsou součástí nejbližšího
 přírůstku.
