@@ -1,7 +1,7 @@
 # 07 – Plán napojení e-shopu na členské a KIS funkce
 
-Stav: K1 pracovní kanonický katalog je implementovaný; další je řízená aktivace
-produktů a K2 identita osob. Evidence zůstává samostatnou aplikací; Velocota
+Stav: K1 pracovní katalog i řízená aktivace běžného zboží jsou implementované;
+K2 identita a claim jsou implementované. Další je K3 klubových akcí. Evidence zůstává samostatnou aplikací; Velocota
 není součástí tohoto propojení.
 
 ## Cíl
@@ -76,7 +76,14 @@ položky se nepřenášejí a změna zdroje nikdy tiše nepřepíše ruční roz
 
 Implementováno: schválený běh lze jednou transakčně převést do kanonického
 katalogu. Produkty a varianty vznikají ve stavu `draft`, kolize vrací celý běh
-zpět a veřejná aktivace zatím záměrně neexistuje.
+zpět a bez samostatného rozhodnutí zůstávají neaktivní.
+
+Implementována je následná ruční aktivace jednotlivého produktu. V této etapě je
+povoleno pouze `goods` s alespoň jednou neskrývanou variantou, platným SKU a
+platnou pevnou nebo nulovou cenou. Administrátor zadává nový veřejný název a
+prostý text popisu, výslovně potvrzuje konkrétní produkt a uvádí důvod. Aktivace,
+deaktivace i reaktivace mají audit. K3 typy zůstávají blokované. Stav `active`
+zatím znamená jen připravenost; storefront ani checkout stále neexistují.
 
 ### K2 – Účty, osoby a rodiče
 
@@ -143,10 +150,9 @@ Před příslušnou etapou musí vlastník potvrdit:
 
 ## Nejbližší implementační pořadí
 
-1. doplnit řízenou aktivaci jednotlivých `draft` produktů pro budoucí storefront,
-2. navrhnout klubové akce a mapování produktu na kroužek K3,
-3. implementovat bezplatný kroužek jako první vertikální průchod,
-4. teprve poté přidat objednávku a placenou variantu.
+1. navrhnout klubové akce a mapování produktu na kroužek K3,
+2. implementovat bezplatný kroužek jako první vertikální průchod,
+3. teprve poté přidat objednávku a placenou variantu.
 
 Stripe, Fio, kredit, Packeta a ostrý KIS cutover nejsou součástí nejbližšího
 přírůstku.

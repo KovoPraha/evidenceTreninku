@@ -109,6 +109,7 @@ $statusLabels = [
             <div class="text-muted small">Kontrola importovaného katalogu před budoucí publikací.</div>
         </div>
         <div class="d-flex gap-2">
+            <a href="eshop_catalog_publication_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-eye me-1"></i>Aktivace katalogu</a>
             <a href="eshop_identity_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-people me-1"></i>Účty a sportovci</a>
             <a href="admin_dashboard.php" class="btn btn-outline-secondary btn-sm">Admin dashboard</a>
         </div>
@@ -136,7 +137,7 @@ $statusLabels = [
         <div class="row g-3 mb-3">
             <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Pracovní katalog</div><div class="h3 mb-0"><?= $canonicalSummary['products'] ?> produktů</div></div></div></div>
             <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Varianty</div><div class="h3 mb-0"><?= $canonicalSummary['variants'] ?></div></div></div></div>
-            <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Veřejně aktivní</div><div class="h3 mb-0">0</div><div class="small text-muted">veřejný storefront zatím neexistuje</div></div></div></div>
+            <div class="col-md-4"><a href="eshop_catalog_publication_admin.php" class="text-decoration-none text-reset"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Připravené jako aktivní</div><div class="h3 mb-0"><?= $canonicalSummary['active_products'] ?></div><div class="small text-muted">storefront zatím neexistuje</div></div></div></a></div>
         </div>
         <div class="row g-3 mb-3">
             <?php foreach ($runs as $run): ?>

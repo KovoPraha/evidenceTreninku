@@ -7,7 +7,7 @@ final class ShopCatalogPromotionException extends RuntimeException
 {
 }
 
-/** @return array{products:int,variants:int,draft_products:int,last_promotion:?array<string,mixed>} */
+/** @return array{products:int,variants:int,draft_products:int,active_products:int,last_promotion:?array<string,mixed>} */
 function shopCanonicalCatalogSummary(PDO $pdo): array
 {
     $last = $pdo->query(
@@ -20,6 +20,9 @@ function shopCanonicalCatalogSummary(PDO $pdo): array
         'variants' => (int)$pdo->query('SELECT COUNT(*) FROM shop_variants')->fetchColumn(),
         'draft_products' => (int)$pdo->query(
             "SELECT COUNT(*) FROM shop_products WHERE catalog_status='draft'"
+        )->fetchColumn(),
+        'active_products' => (int)$pdo->query(
+            "SELECT COUNT(*) FROM shop_products WHERE catalog_status='active'"
         )->fetchColumn(),
         'last_promotion' => $last ?: null,
     ];
