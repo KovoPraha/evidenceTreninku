@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-01.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-02.3';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -29,6 +29,7 @@ const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-01.2';
  * jidlo_*, bar_*, results_* and legacy/archive tables are not owned here.
  */
 const EVIDENCE_TABLES = [
+    'auth_login_limits',
     'cviky',
     'dalsi_cinnosti',
     'email_log',

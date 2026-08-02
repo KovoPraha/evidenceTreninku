@@ -19,6 +19,7 @@ env:
   APP_HOST: data.kovopraha.cz
   WEB_URL: https://data.kovopraha.cz/evidence
   REMOTE_DIR: data.kovopraha.cz/evidence
+  RELEASE_DIR: .evidence-deploy/releases/${{ github.sha }}-${{ github.run_id }}
 
 jobs:
   nasadit:
@@ -124,6 +125,7 @@ jobs:
             test -d '$REMOTE_DIR'
             test -s '$REMOTE_DIR/config.php'
             command -v php >/dev/null
+            command -v rsync >/dev/null
             php -r 'foreach ([\"pdo_mysql\",\"zlib\",\"json\",\"hash\"] as \$e) { if (!extension_loaded(\$e)) { fwrite(STDERR, \"missing extension: \".\$e.PHP_EOL); exit(1); } }'
             APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php -r '
               \$host = (string)getenv(\"APP_HOST\");
@@ -134,9 +136,14 @@ jobs:
               foreach ([\"DB_HOST\",\"DB_NAME\",\"DB_USER\",\"DB_PASS\"] as \$constant) {
                 if (!defined(\$constant)) { exit(1); }
               }
+              \$pepper = defined(\"AUTH_RATE_LIMIT_PEPPER\") ? constant(\"AUTH_RATE_LIMIT_PEPPER\") : null;
+              if (!is_string(\$pepper) || strlen(\$pepper) < 32) {
+                fwrite(STDERR, \"AUTH_RATE_LIMIT_PEPPER is missing or too short.\".PHP_EOL);
+                exit(1);
+              }
             '
-            mkdir -p \"\$HOME/.evidence-deploy\"
-            chmod 700 \"\$HOME/.evidence-deploy\"
+            mkdir -p \"\$HOME/.evidence-deploy/releases\"
+            chmod 700 \"\$HOME/.evidence-deploy\" \"\$HOME/.evidence-deploy/releases\"
           "
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
@@ -170,8 +177,15 @@ jobs:
           echo "$VYSLEDEK" | jq -e '.ok == true and .tables > 0 and (.sha256 | length == 64)' >/dev/null
           echo '✅ Ověřená záloha vznikla mimo webový adresář. Teprve nyní se smí měnit aplikace.'
 
-      - name: Nahrát soubory aplikace
+      - name: Připravit kompletní release mimo webroot
         run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          "${SSH[@]}" "
+            set -eu
+            umask 077
+            mkdir -p \"\$HOME/$RELEASE_DIR\"
+            chmod 700 \"\$HOME/$RELEASE_DIR\"
+          "
           rsync -az --itemize-changes \
             -e "ssh -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts" \
             --exclude='.git*' \
@@ -187,15 +201,42 @@ jobs:
             --exclude='phpunit.xml*' \
             --exclude='.phpunit.cache/' \
             --exclude='*.log' \
-            ./ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"
-          echo '✅ Soubory byly nahrány. rsync záměrně nepoužívá --delete.'
+            ./ "$SSH_USER@$SSH_HOST:$RELEASE_DIR/"
+          "${SSH[@]}" "
+            set -eu
+            umask 077
+            cp '$REMOTE_DIR/config.php' \"\$HOME/$RELEASE_DIR/config.php\"
+            chmod 600 \"\$HOME/$RELEASE_DIR/config.php\"
+            test -s \"\$HOME/$RELEASE_DIR/bin/migrate.php\"
+            test -s \"\$HOME/$RELEASE_DIR/config.php\"
+          "
+          echo '✅ Kompletní release je připravený mimo veřejný webroot.'
 
-      - name: Aplikovat databázové migrace přes SSH CLI
+      - name: Aplikovat migrace z připraveného release
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "cd '$REMOTE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --apply --json"
-          "${SSH[@]}" "cd '$REMOTE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --check --json"
-          echo '✅ Migrace byly aplikovány a následná kontrola je čistá.'
+          "${SSH[@]}" "cd \"\$HOME/$RELEASE_DIR\" && APP_HOST='$APP_HOST' php bin/migrate.php --apply --json"
+          "${SSH[@]}" "cd \"\$HOME/$RELEASE_DIR\" && APP_HOST='$APP_HOST' php bin/migrate.php --check --json"
+          echo '✅ Migrace jsou aktuální; produkční PHP zatím nebylo aktivováno.'
+
+      - name: Aktivovat ověřený release
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          "${SSH[@]}" "
+            set -eu
+            rsync -a --itemize-changes \\
+              --exclude='config.php' \\
+              --exclude='uploads/' \\
+              --exclude='nahrane_obrazky/' \\
+              --exclude='nahrane_zavody/' \\
+              --exclude='stories/' \\
+              --exclude='loga_story/' \\
+              --exclude='reports/' \\
+              --exclude='bin/zalohy/' \\
+              --exclude='*.log' \\
+              \"\$HOME/$RELEASE_DIR/\" '$REMOTE_DIR/'
+          "
+          echo '✅ Ověřený release byl aktivován. rsync záměrně nepoužívá --delete.'
 
       - name: HTTP smoke test bez tajného tokenu
         run: |
@@ -206,3 +247,10 @@ jobs:
             exit 1
           fi
           echo '✅ Nasazení dokončeno.'
+
+      - name: Odstranit kopii produkční konfigurace z release
+        if: always()
+        continue-on-error: true
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          "${SSH[@]}" "rm -f -- \"\$HOME/$RELEASE_DIR/config.php\""
