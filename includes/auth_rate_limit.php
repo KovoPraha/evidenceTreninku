@@ -79,39 +79,21 @@ function auth_rate_limit_request_ip(?array $server = null): string
     return auth_rate_limit_normalize_ip((string)($server['REMOTE_ADDR'] ?? ''));
 }
 
-function auth_rate_limit_is_allowed(
-    PDO $pdo,
-    string $scope,
-    string $identifier,
-    string $ipAddress,
-    ?int $now = null
-): bool {
-    $now ??= time();
-    $statement = $pdo->prepare(
-        'SELECT blocked_until FROM auth_login_limits '
-        . 'WHERE scope = :scope AND key_hash = :key_hash LIMIT 1'
-    );
-
-    foreach (auth_rate_limit_keys($scope, $identifier, $ipAddress) as $keyHash) {
-        $statement->execute(['scope' => $scope, 'key_hash' => $keyHash]);
-        $blockedUntil = $statement->fetchColumn();
-        if ($blockedUntil !== false && (int)$blockedUntil > $now) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/** @param array<string, int>|null $policy */
-function auth_rate_limit_record_failure(
+/**
+ * Atomically reserve one credential evaluation for both the account and IP
+ * dimensions. The reservation itself counts as an attempt, so callers must
+ * not perform a separate pre-check followed by a failure write.
+ *
+ * @param array<string, int>|null $policy
+ */
+function auth_rate_limit_reserve_attempt(
     PDO $pdo,
     string $scope,
     string $identifier,
     string $ipAddress,
     ?int $now = null,
     ?array $policy = null
-): void {
+): bool {
     $now ??= time();
     $policy = auth_rate_limit_policy($policy ?? []);
     $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -125,7 +107,12 @@ function auth_rate_limit_record_failure(
     }
 
     try {
-        foreach (auth_rate_limit_keys($scope, $identifier, $ipAddress) as $keyHash) {
+        $keys = auth_rate_limit_keys($scope, $identifier, $ipAddress);
+        asort($keys, SORT_STRING);
+
+        /** @var array<string, array{window_started_at:int,attempts:int,blocked_until:int}> $rows */
+        $rows = [];
+        foreach ($keys as $dimension => $keyHash) {
             if ($driver === 'mysql') {
                 $insert = $pdo->prepare(
                     'INSERT IGNORE INTO auth_login_limits '
@@ -153,19 +140,36 @@ function auth_rate_limit_record_failure(
                 throw new RuntimeException('Rate-limit row could not be locked.');
             }
 
-            $windowStartedAt = (int)$row['window_started_at'];
-            $attempts = (int)$row['attempts'];
-            $blockedUntil = (int)$row['blocked_until'];
+            $rows[$dimension] = [
+                'window_started_at' => (int)$row['window_started_at'],
+                'attempts' => (int)$row['attempts'],
+                'blocked_until' => (int)$row['blocked_until'],
+            ];
+        }
 
-            if ($now - $windowStartedAt >= $policy['window_seconds']) {
-                $windowStartedAt = $now;
-                $attempts = 0;
-                $blockedUntil = 0;
+        $allowed = true;
+        foreach ($rows as $dimension => $row) {
+            if ($now - $row['window_started_at'] >= $policy['window_seconds']) {
+                $row = [
+                    'window_started_at' => $now,
+                    'attempts' => 0,
+                    'blocked_until' => 0,
+                ];
             }
 
-            $attempts++;
-            if ($attempts >= $policy['max_attempts']) {
-                $blockedUntil = max($blockedUntil, $now + $policy['block_seconds']);
+            if ($row['blocked_until'] > $now) {
+                $allowed = false;
+            } elseif ($row['attempts'] >= $policy['max_attempts']) {
+                $row['blocked_until'] = $now + $policy['block_seconds'];
+                $allowed = false;
+            }
+
+            $rows[$dimension] = $row;
+        }
+
+        foreach ($rows as $dimension => $row) {
+            if ($allowed) {
+                $row['attempts']++;
             }
 
             $update = $pdo->prepare(
@@ -175,13 +179,101 @@ function auth_rate_limit_record_failure(
                 . 'WHERE scope = :scope AND key_hash = :key_hash'
             );
             $update->execute([
-                'window_started_at' => $windowStartedAt,
-                'attempts' => $attempts,
-                'blocked_until' => $blockedUntil,
+                'window_started_at' => $row['window_started_at'],
+                'attempts' => $row['attempts'],
+                'blocked_until' => $row['blocked_until'],
                 'updated_at' => $now,
                 'scope' => $scope,
-                'key_hash' => $keyHash,
+                'key_hash' => $keys[$dimension],
             ]);
+        }
+
+        if ($ownsTransaction) {
+            $pdo->commit();
+        }
+        return $allowed;
+    } catch (Throwable $exception) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $exception;
+    }
+}
+
+/**
+ * Complete a successful reserved evaluation. Account failures are cleared;
+ * only this request's reservation is refunded from the shared IP dimension.
+ *
+ * @param array<string, int>|null $policy
+ */
+function auth_rate_limit_record_success(
+    PDO $pdo,
+    string $scope,
+    string $identifier,
+    string $ipAddress,
+    ?int $now = null,
+    ?array $policy = null
+): void {
+    $now ??= time();
+    $policy = auth_rate_limit_policy($policy ?? []);
+    $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+    if (!in_array($driver, ['mysql', 'sqlite'], true)) {
+        throw new RuntimeException('Unsupported database driver for authentication rate limiting.');
+    }
+
+    $keys = auth_rate_limit_keys($scope, $identifier, $ipAddress);
+    $ownsTransaction = !$pdo->inTransaction();
+    if ($ownsTransaction) {
+        $pdo->beginTransaction();
+    }
+
+    try {
+        $deleteIdentifier = $pdo->prepare(
+            'DELETE FROM auth_login_limits WHERE scope = :scope AND key_hash = :key_hash'
+        );
+        $deleteIdentifier->execute([
+            'scope' => $scope,
+            'key_hash' => $keys['identifier'],
+        ]);
+
+        $selectSql = 'SELECT window_started_at, attempts, blocked_until '
+            . 'FROM auth_login_limits WHERE scope = :scope AND key_hash = :key_hash';
+        if ($driver === 'mysql') {
+            $selectSql .= ' FOR UPDATE';
+        }
+        $select = $pdo->prepare($selectSql);
+        $select->execute(['scope' => $scope, 'key_hash' => $keys['ip']]);
+        $row = $select->fetch(PDO::FETCH_ASSOC);
+
+        if (is_array($row)) {
+            $windowStartedAt = (int)$row['window_started_at'];
+            $attempts = (int)$row['attempts'];
+            $blockedUntil = (int)$row['blocked_until'];
+
+            if ($now - $windowStartedAt >= $policy['window_seconds'] || $attempts <= 1) {
+                $deleteIp = $pdo->prepare(
+                    'DELETE FROM auth_login_limits WHERE scope = :scope AND key_hash = :key_hash'
+                );
+                $deleteIp->execute(['scope' => $scope, 'key_hash' => $keys['ip']]);
+            } else {
+                $attempts--;
+                if ($attempts < $policy['max_attempts']) {
+                    $blockedUntil = 0;
+                }
+
+                $update = $pdo->prepare(
+                    'UPDATE auth_login_limits SET attempts = :attempts, '
+                    . 'blocked_until = :blocked_until, updated_at = :updated_at '
+                    . 'WHERE scope = :scope AND key_hash = :key_hash'
+                );
+                $update->execute([
+                    'attempts' => $attempts,
+                    'blocked_until' => $blockedUntil,
+                    'updated_at' => $now,
+                    'scope' => $scope,
+                    'key_hash' => $keys['ip'],
+                ]);
+            }
         }
 
         if ($ownsTransaction) {
@@ -193,22 +285,4 @@ function auth_rate_limit_record_failure(
         }
         throw $exception;
     }
-}
-
-function auth_rate_limit_clear_identifier(
-    PDO $pdo,
-    string $scope,
-    string $identifier
-): void {
-    $statement = $pdo->prepare(
-        'DELETE FROM auth_login_limits WHERE scope = :scope AND key_hash = :identifier_hash'
-    );
-    $statement->execute([
-        'scope' => $scope,
-        'identifier_hash' => auth_rate_limit_hash(
-            $scope,
-            'identifier',
-            auth_rate_limit_normalize_identifier($identifier)
-        ),
-    ]);
 }

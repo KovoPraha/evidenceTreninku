@@ -32,6 +32,10 @@ Chybějící nebo odlišná verze je neplatná. Identita se odstraní, ID sessio
 CSRF token se změní a aktuální request skončí HTTP 401. Ukončení requestu je
 záměrné: některé historické endpointy kontrolují roli ještě před načtením
 `db.php` a pouhé odstranění session klíče by nezabránilo pokračování mutace.
+Stejný kontrakt platí pro SSO bridge: pokud chybějící Velocota identita nebo
+odebraná role odstraní již existující trenérskou identitu, `db.php` aktuální
+request ukončí. Request, který žádnou trenérskou identitu neměl, může zůstat
+anonymní.
 
 Změna hesla trenéra a změna jeho role ve `sprava_treneru.php` zvýší verzi.
 Úprava pouze jména nebo emailu ji nezvýší. Smazaný účet přestane validací
@@ -47,6 +51,13 @@ Trenérský a veřejný login kontrolují dvě dimenze: normalizovaný přihlaš
 ani IP; ukládá se pouze SHA-256 hash oddělený scope a typem dimenze. Aplikace
 nedůvěřuje `X-Forwarded-For`.
 
+Pokus se rezervuje atomicky v jedné databázové transakci ještě před ověřením
+hesla. Zámek obou hashovaných dimenzí zaručí, že souběžný burst nemůže nejprve
+projít oddělenou kontrolou a až následně zapsat neúspěch. Rezervace neúspěšného
+ověření už sama tvoří pokus; po úspěchu se limiter účtu smaže a ze sdílené IP
+dimenze se vrátí právě rezervace úspěšného requestu. Předchozí neúspěchy z téže
+IP zůstávají započtené.
+
 Prozatímní konfigurovatelné výchozí hodnoty jsou:
 
 - nejvýše 5 neúspěšných pokusů,
@@ -56,8 +67,9 @@ Prozatímní konfigurovatelné výchozí hodnoty jsou:
 Konstanty `AUTH_RATE_LIMIT_MAX_ATTEMPTS`, `AUTH_RATE_LIMIT_WINDOW_SECONDS` a
 `AUTH_RATE_LIMIT_BLOCK_SECONDS` lze definovat před načtením helperu. Blokace i
 neplatné heslo vracejí stejnou obecnou uživatelskou zprávu. Úspěšné ověření
-hesla smaže limiter konkrétního účtu. IP limiter zůstává nezávislý, aby jej
-nešlo vymazat přihlášením do jiného platného účtu ze stejné adresy.
+hesla smaže limiter konkrétního účtu. IP limiter zůstává nezávislý kromě vrácení
+jediné úspěšné rezervace, takže jej nelze vymazat přihlášením do jiného platného
+účtu ze stejné adresy.
 
 ## Otevřené body
 

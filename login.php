@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $rateScope = 'trainer_login';
             $clientIp = auth_rate_limit_request_ip();
-            $rateAllowed = auth_rate_limit_is_allowed($pdo, $rateScope, $login, $clientIp);
+            $rateAllowed = auth_rate_limit_reserve_attempt($pdo, $rateScope, $login, $clientIp);
             $uzivatel = false;
 
             if ($rateAllowed) {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($authenticated && $uzivatel) {
-                auth_rate_limit_clear_identifier($pdo, $rateScope, $login);
+                auth_rate_limit_record_success($pdo, $rateScope, $login, $clientIp);
                 // Nová autentizace rotuje session ID, CSRF token a nastaví časové limity.
                 app_session_mark_authenticated();
 
@@ -83,9 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php');
                 exit;
             } else {
-                if ($rateAllowed) {
-                    auth_rate_limit_record_failure($pdo, $rateScope, $login, $clientIp);
-                }
                 // Úmyslně neurčitá zpráva – neprozrazuje, zda přihlašovací údaj existuje
                 $error = 'Neplatné přihlašovací jméno / email nebo heslo.';
             }

@@ -50,6 +50,13 @@ if (!auth_session_validate($pdo)) {
 if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {
     require_once __DIR__ . '/auth/sso_bridge.php';
     if (session_status() === PHP_SESSION_NONE) app_session_start();
-    velocotaSsoBridge($pdo);
+    if (!velocotaSsoBridge($pdo)) {
+        http_response_code(401);
+        if (!headers_sent()) {
+            header('Cache-Control: no-store');
+            header('Content-Type: text/plain; charset=utf-8');
+        }
+        exit('Přihlášení již není platné. Přihlaste se znovu.');
+    }
 }
 ?>

@@ -20,21 +20,19 @@ final class AuthRateLimitTest extends TestCase
         self::assertSame(3, \auth_rate_limit_policy(['max_attempts' => 3])['max_attempts']);
     }
 
-    public function testOnlyScopedHashesArePersistedAndFifthFailureBlocksBothDimensions(): void
+    public function testAtomicReservationPermitsOnlyConfiguredNumberOfEvaluations(): void
     {
         $pdo = $this->database();
         $scope = 'public_login';
         $email = 'Person@example.test';
         $ip = '192.0.2.44';
 
-        for ($attempt = 0; $attempt < 4; $attempt++) {
-            self::assertTrue(\auth_rate_limit_is_allowed($pdo, $scope, $email, $ip, 1000 + $attempt));
-            \auth_rate_limit_record_failure($pdo, $scope, $email, $ip, 1000 + $attempt);
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            self::assertTrue(
+                \auth_rate_limit_reserve_attempt($pdo, $scope, $email, $ip, 1000 + $attempt)
+            );
         }
-        self::assertTrue(\auth_rate_limit_is_allowed($pdo, $scope, $email, $ip, 1004));
-        \auth_rate_limit_record_failure($pdo, $scope, $email, $ip, 1004);
-
-        self::assertFalse(\auth_rate_limit_is_allowed($pdo, $scope, $email, $ip, 1004));
+        self::assertFalse(\auth_rate_limit_reserve_attempt($pdo, $scope, $email, $ip, 1005));
         self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM auth_login_limits')->fetchColumn());
 
         $rows = $pdo->query(
@@ -46,33 +44,84 @@ final class AuthRateLimitTest extends TestCase
             self::assertStringNotContainsString(strtolower($email), (string)$row['key_hash']);
             self::assertStringNotContainsString($ip, (string)$row['key_hash']);
             self::assertSame(5, (int)$row['attempts']);
-            self::assertSame(1904, (int)$row['blocked_until']);
+            self::assertSame(1905, (int)$row['blocked_until']);
         }
     }
 
-    public function testExpiredWindowResetsAndSuccessfulLoginClearsOnlyIdentifierDimension(): void
+    public function testSuccessClearsAccountAndRefundsOnlyItsSharedIpReservation(): void
     {
         $pdo = $this->database();
         $scope = 'trainer_login';
-        $identifier = 'Trainer';
+        $identifier = 'Successful Trainer';
         $ip = '2001:db8::1';
 
-        for ($attempt = 0; $attempt < 5; $attempt++) {
-            \auth_rate_limit_record_failure($pdo, $scope, $identifier, $ip, 1000 + $attempt);
+        for ($attempt = 0; $attempt < 4; $attempt++) {
+            self::assertTrue(\auth_rate_limit_reserve_attempt(
+                $pdo,
+                $scope,
+                'failed-' . $attempt,
+                $ip,
+                1000 + $attempt
+            ));
         }
-        self::assertFalse(\auth_rate_limit_is_allowed($pdo, $scope, $identifier, $ip, 1500));
-        self::assertTrue(\auth_rate_limit_is_allowed($pdo, $scope, $identifier, $ip, 1904));
+        self::assertTrue(\auth_rate_limit_reserve_attempt($pdo, $scope, $identifier, $ip, 1004));
+        \auth_rate_limit_record_success($pdo, $scope, $identifier, $ip, 1005);
 
-        \auth_rate_limit_record_failure($pdo, $scope, $identifier, $ip, 1904);
+        $keys = \auth_rate_limit_keys($scope, $identifier, $ip);
+        $identifierQuery = $pdo->prepare(
+            'SELECT COUNT(*) FROM auth_login_limits WHERE scope = ? AND key_hash = ?'
+        );
+        $identifierQuery->execute([$scope, $keys['identifier']]);
+        self::assertSame(0, (int)$identifierQuery->fetchColumn());
+
+        $ipQuery = $pdo->prepare(
+            'SELECT attempts, blocked_until FROM auth_login_limits WHERE scope = ? AND key_hash = ?'
+        );
+        $ipQuery->execute([$scope, $keys['ip']]);
+        self::assertSame(['attempts' => 4, 'blocked_until' => 0], array_map(
+            'intval',
+            $ipQuery->fetch(PDO::FETCH_ASSOC)
+        ));
+        self::assertTrue(\auth_rate_limit_reserve_attempt(
+            $pdo,
+            $scope,
+            'next-valid-account',
+            $ip,
+            1006
+        ));
+    }
+
+    public function testExpiredWindowIsResetDuringReservation(): void
+    {
+        $pdo = $this->database();
+
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            self::assertTrue(\auth_rate_limit_reserve_attempt(
+                $pdo,
+                'trainer_login',
+                'Trainer',
+                '192.0.2.12',
+                1000 + $attempt
+            ));
+        }
+        self::assertFalse(\auth_rate_limit_reserve_attempt(
+            $pdo,
+            'trainer_login',
+            'Trainer',
+            '192.0.2.12',
+            1005
+        ));
+        self::assertTrue(\auth_rate_limit_reserve_attempt(
+            $pdo,
+            'trainer_login',
+            'Trainer',
+            '192.0.2.12',
+            1905
+        ));
         self::assertSame(
             1,
             (int)$pdo->query('SELECT MIN(attempts) FROM auth_login_limits')->fetchColumn()
         );
-
-        \auth_rate_limit_clear_identifier($pdo, $scope, $identifier);
-        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM auth_login_limits')->fetchColumn());
-        $remaining = (string)$pdo->query('SELECT key_hash FROM auth_login_limits')->fetchColumn();
-        self::assertSame(\auth_rate_limit_keys($scope, $identifier, $ip)['ip'], $remaining);
     }
 
     public function testIdentifierHashIsCaseNormalizedAndSeparatedFromIpHash(): void

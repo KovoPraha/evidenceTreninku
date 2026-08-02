@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $rateScope = 'public_login';
             $clientIp = auth_rate_limit_request_ip();
-            $rateAllowed = auth_rate_limit_is_allowed($pdo, $rateScope, $email, $clientIp);
+            $rateAllowed = auth_rate_limit_reserve_attempt($pdo, $rateScope, $email, $clientIp);
             $uzivatel = false;
 
             if ($rateAllowed) {
@@ -33,15 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (!$rateAllowed || !$uzivatel || !password_verify($heslo, $uzivatel['heslo_hash'])) {
-                if ($rateAllowed) {
-                    auth_rate_limit_record_failure($pdo, $rateScope, $email, $clientIp);
-                }
                 $errors[] = 'Nesprávný email nebo heslo.';
             } elseif (!$uzivatel['email_overeno']) {
-                auth_rate_limit_clear_identifier($pdo, $rateScope, $email);
+                auth_rate_limit_record_success($pdo, $rateScope, $email, $clientIp);
                 $errors[] = 'Email není ověřen. Zkontrolujte svou schránku.';
             } else {
-                auth_rate_limit_clear_identifier($pdo, $rateScope, $email);
+                auth_rate_limit_record_success($pdo, $rateScope, $email, $clientIp);
                 app_session_mark_authenticated();
                 auth_session_bind_public_user(
                     (int)$uzivatel['id'],
