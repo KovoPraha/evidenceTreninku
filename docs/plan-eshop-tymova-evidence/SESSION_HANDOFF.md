@@ -6,11 +6,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 
 ## Metadata
 
-- Aktualizováno: 2026-08-02, Europe/Prague
+- Aktualizováno: 2026-08-03, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `main`; K2 claim kódový tip před tímto stavovým commitem:
-  `d32fc08` (`Add reviewed account person claims`)
+- Aktivní integrační větev: `main`; řízená aktivace katalogu před tímto stavovým commitem:
+  `5500927` (`Add controlled catalog publication`)
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -18,15 +18,15 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: veřejný účet může poslat claim bez zpřístupnění seznamu
-  sportovců; admin jej ručně spáruje, zamítne nebo schválí. Commit `d32fc08`,
-  145/907 testů a izolovaná MariaDB prošly. Schválení claimu a vazby je atomické,
-  duplicity jsou idempotentní a cizí účet žádost nezruší. Produkční workflow ani
-  lokální/produkční DB se nezměnily
+- Poslední dokončená akce: jednotlivé draft `goods` lze po ruční kontrole označit
+  jako aktivní pro budoucí storefront; commit `5500927`, 151/956 testů a izolovaná
+  MariaDB prošly. K3 typy, neplatné ceny a explicitně skryté varianty jsou blokované,
+  aktivace/deaktivace je transakční a auditovaná. Storefront ani checkout nevznikl.
+  Produkční workflow ani lokální/produkční DB se nezměnily
 - Další přesná akce: doplnit GitHub Secret `SSH_KNOWN_HOSTS` a produkční
   `AUTH_RATE_LIMIT_PEPPER`, poté provést pouze autorizovaný první release.
-  Potvrdit KIS identifikátor, retenci a pravidla publikace; následně připravit
-  řízenou aktivaci draft produktů a model klubových akcí K3
+  Potvrdit KIS identifikátor a retenci; následně vytvořit model klubových akcí K3,
+  mapování produktu na akci a první bezplatný kroužek
 
 ## Pořadí autority
 
@@ -44,13 +44,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | K2 claim kódový tip `d32fc08`; následuje pouze tento stavový commit | 2026-08-02 | Git | ano |
+| integrační branch | řízená aktivace katalogu `5500927`; následuje pouze tento stavový commit | 2026-08-03 | Git | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | 145/907; staging + review + promotion i K2 identity/claim SQLite a izolovaná MariaDB OK; poslední vzdálený main CI důkaz zůstává zelený | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 + GitHub | ano |
+| testy | 151/956; staging, review, promotion, publikace i K2 identity/claim SQLite a izolovaná MariaDB OK; poslední vzdálený main CI důkaz zůstává zelený | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + GitHub | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
 | lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-02.3` obsahuje `auth_login_limits` i lokálně nepřítomné `ucto_gs_*` | 2026-08-02 | izolovaná XAMPP DB + code audit | zopakovat s produkčním artefaktem |
@@ -97,7 +97,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | code accepted / production pending | `664745e`, `cd0c0e1`, PR #6 | integrační vlastník | migrace + deploy hardening | `SSH_KNOWN_HOSTS`, produkční pepper, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
-| W0-G | partial accepted | `98ff91d`, `168d132`, `8f0cbe8`, `699ddd4`, `d99a79e`, `2ba0782`, `f0370a3`, `3845eab`, `b77f8c3`, `8c374a4`, `d32fc08` | KIS/shop workeři | fixture matice + reálný Shoptet staging, review, draft katalog a K2 claim | reálný KIS vzorek, veřejná aktivace a platby |
+| W0-G | partial accepted | `98ff91d`, `168d132`, `8f0cbe8`, `699ddd4`, `d99a79e`, `2ba0782`, `f0370a3`, `3845eab`, `b77f8c3`, `8c374a4`, `d32fc08`, `5500927` | KIS/shop workeři | fixture matice + Shoptet staging, review, draft katalog, K2 claim a řízená goods aktivace | reálný KIS vzorek, K3 a platby |
 
 Řídicí task aktualizuje IDs, větve, commity a testy po každém worker handoffu.
 
@@ -126,6 +126,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 19 | Kanonický draft katalog `b77f8c3` | přijato lokálně; single-use transakce, collision rollback, reálných 241/807, 3 free varianty, 134/826 |
 | 20 | K2 účet–osoba `8c374a4` | přijato lokálně; admin-only `self`/`guardian`, ověřený e-mail, revoke + audit, SQLite/MariaDB, 138/859 |
 | 21 | K2 veřejný claim `d32fc08` | přijato lokálně; bez enumerace osob, admin review, atomické schválení, idempotence a limit, SQLite/MariaDB, 145/907 |
+| 22 | Řízená aktivace katalogu `5500927` | přijato lokálně; pouze `goods`, explicitní potvrzení, plain-text snapshot, audit, K3 fail-closed, SQLite/MariaDB, 151/956 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
@@ -133,8 +134,8 @@ workflow stále nesmí být spuštěno bez ověřeného `SSH_KNOWN_HOSTS`, exter
 `AUTH_RATE_LIMIT_PEPPER` a výslovného souhlasu vlastníka.
 
 Shop přírůstek zůstává bezpečným F0-enabling krokem: má staging, kontrolní UI,
-kanonický katalog pouze ve stavu `draft` a administrátorské K2 vazby účtů na
-sportovce. Nemá veřejnou publikaci, checkout, rezervaci, platbu ani produkční
+kanonický katalog, řízenou aktivaci pouze běžného zboží a K2 vazby účtů na
+sportovce. Nemá veřejný storefront, checkout, rezervaci, platbu ani produkční
 import. Veřejný claim je implementovaný, ale KIS párování zůstává výhradně ruční.
 
 Session increment používá vlastní cookie `EVIDENCESESSID`; jeho budoucí deploy
