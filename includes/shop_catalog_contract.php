@@ -5,7 +5,7 @@ require_once __DIR__ . '/shop_offer_classifier.php';
 
 final class ShopCatalogContract
 {
-    public const VERSION = 'evidence.shop.catalog-candidate.v2';
+    public const VERSION = 'evidence.shop.catalog-candidate.v3';
 
     /** @var list<string> */
     private const REQUIRED_HEADERS = ['code', 'pairCode', 'name', 'price'];
@@ -16,6 +16,8 @@ final class ShopCatalogContract
         'includingVat', 'percentVat', 'ean', 'stock', 'decimalCount',
         'negativeAmount', 'productVisibility', 'variantVisibility',
         'defaultCategory', 'shortDescription', 'description', 'itemType',
+        'standardPrice', 'unit', 'availabilityInStock', 'availabilityOutOfStock',
+        'freeShipping', 'freeBilling',
     ];
 
     /** @var list<string> */
@@ -157,6 +159,15 @@ final class ShopCatalogContract
                 $issues[] = self::issue('error', 'empty_name', 'Nazev produktu nesmi byt prazdny.', $line, 'name');
             }
 
+            $categories = self::readNumberedValues($values, 'categoryText');
+            $itemType = trim((string)($values['itemType'] ?? ''));
+            $classificationProbe = ShopOfferClassifier::classify([
+                'name' => $name,
+                'default_category_path' => self::nullIfEmpty((string)($values['defaultCategory'] ?? '')),
+                'additional_category_paths' => $categories,
+                'item_type' => self::nullIfEmpty($itemType),
+            ]);
+
             $price = self::parseMoney((string)($values['price'] ?? ''));
             if ($price === null) {
                 $issues[] = self::issue(
@@ -168,13 +179,40 @@ final class ShopCatalogContract
                 );
             }
             $priceRatio = trim((string)($values['priceRatio'] ?? ''));
-            if ($priceRatio !== '' && !preg_match('/^1(?:[.,]0+)?$/D', $priceRatio)) {
+            $priceMode = 'fixed';
+            $zeroPriceRatio = $priceRatio !== '' && (bool)preg_match('/^0(?:[.,]0+)?$/D', $priceRatio);
+            if ($zeroPriceRatio
+                && $classificationProbe['type'] === ShopOfferClassifier::RENTAL
+                && !$classificationProbe['needs_manual_review']
+            ) {
+                $price = 0;
+                $priceMode = 'free';
+                $normalizations[] = [
+                    'row' => $line,
+                    'field' => 'priceRatio',
+                    'rule' => 'interpret_zero_ratio_as_free_rental',
+                ];
+            } elseif ($priceRatio !== '' && !preg_match('/^1(?:[.,]0+)?$/D', $priceRatio)) {
                 $issues[] = self::issue(
                     'error',
                     'unsupported_price_ratio',
-                    'Dry-run zatim podporuje pouze prazdny cenovy koeficient nebo hodnotu 1.',
+                    'Nulovy koeficient je povolen pouze u jednoznacne klasifikovane bezplatne pujcovny.',
                     $line,
                     'priceRatio'
+                );
+                $price = null;
+                $priceMode = 'unsupported';
+            }
+
+            $standardPriceRaw = trim((string)($values['standardPrice'] ?? ''));
+            $standardPrice = $standardPriceRaw === '' ? null : self::parseMoney($standardPriceRaw);
+            if ($standardPriceRaw !== '' && $standardPrice === null) {
+                $issues[] = self::issue(
+                    'error',
+                    'invalid_standard_price',
+                    'Standardni cena musi byt nezaporne cislo s nejvyse dvema desetinnymi misty.',
+                    $line,
+                    'standardPrice'
                 );
             }
 
@@ -203,6 +241,7 @@ final class ShopCatalogContract
             }
             if (!$currencyHasKnownMinorUnit) {
                 $price = null;
+                $standardPrice = null;
             }
 
             $includingVat = self::parseBoolean((string)($values['includingVat'] ?? ''));
@@ -234,7 +273,6 @@ final class ShopCatalogContract
                 );
             }
 
-            $itemType = trim((string)($values['itemType'] ?? ''));
             if ($itemType !== '' && !in_array($itemType, ['product', 'service'], true)) {
                 $issues[] = self::issue(
                     'error',
@@ -295,6 +333,23 @@ final class ShopCatalogContract
                 $issues[] = self::issue('error', 'invalid_negative_amount', 'negativeAmount smi byt jen 0 nebo 1.', $line, 'negativeAmount');
             }
 
+            $unit = trim((string)($values['unit'] ?? ''));
+            $unitCode = self::canonicalUnit($unit);
+            if ($unit !== '' && $unitCode === 'other') {
+                $issues[] = self::issue(
+                    'warning',
+                    'nonstandard_unit_preserved',
+                    'Nestandardni jednotka zustava zachovana pro rucni kontrolu.',
+                    $line,
+                    'unit'
+                );
+            }
+            $availabilityInStock = self::nullIfEmpty((string)($values['availabilityInStock'] ?? ''));
+            $availabilityOutOfStock = self::nullIfEmpty((string)($values['availabilityOutOfStock'] ?? ''));
+
+            $freeShipping = self::optionalBoolean($values, 'freeShipping', $line, $issues);
+            $freeBilling = self::optionalBoolean($values, 'freeBilling', $line, $issues);
+
             $description = (string)($values['description'] ?? '');
             if ($description !== '' && preg_match('/<[^>]+>/', $description)) {
                 $issues[] = self::issue(
@@ -336,7 +391,6 @@ final class ShopCatalogContract
                     );
                 }
             }
-            $categories = self::readNumberedValues($values, 'categoryText');
             $key = $pairCode !== '' ? 'shoptet:pair:' . $pairCode : 'shoptet:sku:' . $sku;
             $productFields = [
                 'name' => $name,
@@ -385,6 +439,8 @@ final class ShopCatalogContract
                 'attributes' => $attributes,
                 'price' => [
                     'amount_minor' => $price,
+                    'compare_at_amount_minor' => $standardPrice,
+                    'mode' => $priceMode,
                     'currency' => $currency === '' ? null : $currency,
                     'includes_vat' => $includingVat,
                     'vat_rate_basis_points' => $vatBasisPoints,
@@ -395,6 +451,16 @@ final class ShopCatalogContract
                     'quantity_decimal' => $stock,
                     'decimal_count' => $decimalCount,
                     'allow_negative' => $allowNegative,
+                    'availability_in_stock' => $availabilityInStock,
+                    'availability_out_of_stock' => $availabilityOutOfStock,
+                ],
+                'unit' => [
+                    'code' => $unitCode,
+                    'source' => self::nullIfEmpty($unit),
+                ],
+                'fulfillment' => [
+                    'free_shipping' => $freeShipping,
+                    'free_billing' => $freeBilling,
                 ],
                 'visible' => $variantVisible,
             ];
@@ -504,6 +570,39 @@ final class ShopCatalogContract
             '0' => false,
             '1' => true,
             default => null,
+        };
+    }
+
+    /**
+     * @param array<string,string> $values
+     * @param list<array{severity:string,code:string,message:string,row:?int,field:?string}> $issues
+     */
+    private static function optionalBoolean(array $values, string $field, int $line, array &$issues): ?bool
+    {
+        if (!array_key_exists($field, $values) || trim($values[$field]) === '') {
+            return null;
+        }
+        $value = self::parseBoolean($values[$field]);
+        if ($value === null) {
+            $codeField = strtolower((string)preg_replace('/(?<!^)[A-Z]/', '_$0', $field));
+            $issues[] = self::issue(
+                'error',
+                'invalid_' . $codeField,
+                $field . ' smi byt jen 0 nebo 1.',
+                $line,
+                $field
+            );
+        }
+        return $value;
+    }
+
+    private static function canonicalUnit(string $unit): ?string
+    {
+        return match (mb_strtolower(trim($unit), 'UTF-8')) {
+            '' => null,
+            'ks' => 'piece',
+            'sada' => 'set',
+            default => 'other',
         };
     }
 

@@ -269,8 +269,8 @@ final class ShoptetProductXml
             'unit' => self::text($variant, 'UNIT'),
             'availabilityInStock' => self::text($variant, 'AVAILABILITY_IN_STOCK'),
             'availabilityOutOfStock' => self::text($variant, 'AVAILABILITY_OUT_OF_STOCK'),
-            'freeShipping' => self::text($variant, 'FREE_SHIPPING') === '1' ? '1' : '',
-            'freeBilling' => self::text($variant, 'FREE_BILLING') === '1' ? '1' : '',
+            'freeShipping' => self::text($variant, 'FREE_SHIPPING'),
+            'freeBilling' => self::text($variant, 'FREE_BILLING'),
         ];
     }
 

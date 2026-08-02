@@ -112,7 +112,7 @@ function shopDryRunSummary(array $result): string
         'Rucni kontrola klasifikace: ' . $summary['manual_review_products'],
         'Blokatory: ' . $summary['errors'] . ' | varovani: ' . $summary['warnings'],
         'Stav kontraktu: ' . ($summary['contract_ready'] ? 'pripraven pro kontrolu' : 'vyzaduje opravu vstupu'),
-        'Kontrakt zustava provisionalni do vyreseni nalezenych blokatoru.',
+        'Rezim: read-only staging | DB zapisy: ' . $summary['database_writes'],
     ];
     $displayedIssues = array_slice($result['issues'], 0, 50);
     foreach ($displayedIssues as $issue) {

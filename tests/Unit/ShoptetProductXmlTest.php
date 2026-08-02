@@ -31,13 +31,20 @@ final class ShoptetProductXmlTest extends TestCase
         $camp = $this->product($result, 'shoptet:pair:100');
         self::assertSame('camp', $camp['offer_classification']['type']);
         self::assertSame(100000, $camp['variants'][0]['price']['amount_minor']);
+        self::assertSame(120000, $camp['variants'][0]['price']['compare_at_amount_minor']);
+        self::assertSame('fixed', $camp['variants'][0]['price']['mode']);
         self::assertFalse($camp['variants'][0]['price']['includes_vat']);
         self::assertSame(2100, $camp['variants'][0]['price']['vat_rate_basis_points']);
+        self::assertSame(['code' => 'piece', 'source' => 'ks'], $camp['variants'][0]['unit']);
+        self::assertSame('Skladem', $camp['variants'][0]['stock']['availability_in_stock']);
+        self::assertTrue($camp['variants'][0]['fulfillment']['free_billing']);
+        self::assertFalse($camp['variants'][0]['fulfillment']['free_shipping']);
 
         $jersey = $this->product($result, 'shoptet:pair:200');
         self::assertSame('goods', $jersey['offer_classification']['type']);
         self::assertSame(['DRES-M', 'DRES-S'], array_column($jersey['variants'], 'sku'));
         self::assertSame(['Barva' => 'Červená', 'Velikost' => 'M'], $jersey['variants'][0]['attributes']);
+        self::assertSame(180000, $jersey['variants'][0]['price']['compare_at_amount_minor']);
         self::assertSame(['https://example.invalid/dres.jpg'], $jersey['images']);
     }
 

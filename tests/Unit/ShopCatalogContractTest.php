@@ -335,6 +335,63 @@ final class ShopCatalogContractTest extends TestCase
         self::assertFalse($classification['needs_manual_review']);
     }
 
+    public function testZeroPriceRatioIsAcceptedOnlyAsExplicitFreeRental(): void
+    {
+        $result = \ShopCatalogContract::build($this->parsedRow([
+            'code' => 'FREE-BIKE',
+            'pairCode' => '',
+            'name' => 'Půjčovna kola zdarma',
+            'price' => '1',
+            'priceRatio' => '0',
+            'standardPrice' => '',
+            'currency' => 'CZK',
+            'includingVat' => '0',
+            'defaultCategory' => 'Půjčovna kol - praktické půjčování',
+            'itemType' => 'product',
+            'unit' => 'ks',
+            'availabilityInStock' => 'Skladem',
+            'availabilityOutOfStock' => 'Momentálně nedostupné',
+            'freeShipping' => '0',
+            'freeBilling' => '1',
+        ]));
+        $variant = $result['products'][0]['variants'][0];
+
+        self::assertTrue($result['summary']['contract_ready']);
+        self::assertSame('rental', $result['products'][0]['offer_classification']['type']);
+        self::assertSame(0, $variant['price']['amount_minor']);
+        self::assertSame('free', $variant['price']['mode']);
+        self::assertSame('1', $variant['price']['source_price_decimal']);
+        self::assertSame('0', $variant['price']['source_price_ratio_decimal']);
+        self::assertSame(['code' => 'piece', 'source' => 'ks'], $variant['unit']);
+        self::assertSame('Skladem', $variant['stock']['availability_in_stock']);
+        self::assertTrue($variant['fulfillment']['free_billing']);
+        self::assertContains(
+            'interpret_zero_ratio_as_free_rental',
+            array_column($result['normalizations'], 'rule')
+        );
+    }
+
+    public function testZeroPriceRatioOutsideRentalRemainsBlocking(): void
+    {
+        $result = \ShopCatalogContract::build($this->parsedRow([
+            'code' => 'FREE-JERSEY',
+            'pairCode' => '',
+            'name' => 'Fiktivní dres',
+            'price' => '1',
+            'priceRatio' => '0',
+            'currency' => 'CZK',
+            'includingVat' => '1',
+            'defaultCategory' => 'CYKLISTICKÉ OBLEČENÍ > DRESY',
+            'itemType' => 'product',
+        ]));
+        $price = $result['products'][0]['variants'][0]['price'];
+
+        self::assertFalse($result['summary']['contract_ready']);
+        self::assertContains('unsupported_price_ratio', array_column($result['issues'], 'code'));
+        self::assertNull($price['amount_minor']);
+        self::assertSame('unsupported', $price['mode']);
+    }
+
     /** @return array<string,mixed> */
     private function resultForPrice(string $price): array
     {

@@ -1,7 +1,7 @@
 # Shoptet katalog – první read-only dry-run
 
-Stav: **reálný XML export ověřen; kontrakt zůstává prozatímní do vyřešení
-explicitně nalezených blokátorů**.
+Stav: **reálný XML export ověřen; katalogový kontrakt je připravený pro stagingovou
+kontrolu, nikoliv pro produkční zápis**.
 
 Tento krok pouze lokálně přečte produktový CSV nebo XML export, zkontroluje SKU, varianty,
 ceny a podporovaná pole a vypíše náhled. Nevytváří katalog, nepřipojuje databázi,
@@ -72,7 +72,9 @@ hodnotu. Podporované volitelné sloupce:
 ```text
 priceRatio, currency, includingVat, percentVat, ean, stock, decimalCount,
 negativeAmount, productVisibility, variantVisibility, defaultCategory,
-categoryText*, shortDescription, description, itemType, variant:*, image*
+categoryText*, shortDescription, description, itemType, standardPrice, unit,
+availabilityInStock, availabilityOutOfStock, freeShipping, freeBilling,
+variant:*, image*
 ```
 
 Popisky `imageDesc*` zatím nejsou mapované; pokud obsahují data, dry-run je stejně
@@ -102,6 +104,13 @@ rozhodnutí jiné měny zakázat; jejich minor-unit pravidla musí nejdříve po
 reálný export a produktové rozhodnutí. Chybějící `includingVat` je viditelné
 varování a hodnoty DPH zůstávají `null`; dry-run žádnou sazbu ani daň nedopočítává.
 
+Výstup ceny obsahuje `mode=fixed|free`. Nulový `priceRatio` se smí převést na
+`mode=free` a nulovou efektivní cenu pouze tehdy, když přesné kategorie nebo název
+současně dávají jednoznačnou klasifikaci `rental`. U zboží, kroužku nebo konfliktní
+klasifikace zůstává nulový koeficient blokátorem. Zdrojová cena i koeficient se
+vždy zachovají pro audit. `standardPrice` se ukládá odděleně jako
+`compare_at_amount_minor`.
+
 ## Normalizace systémového XML exportu
 
 Každý `SHOPITEM` se seskupuje podle stabilního atributu `id`. Produkty bez variant
@@ -114,13 +123,15 @@ nejvýše tři parametry varianty.
 DPH. `PURCHASE_VAT` je sazba nákupní ceny a záměrně se nepoužívá jako sazba DPH
 prodejní ceny. Dry-run žádnou chybějící sazbu nedopočítává.
 
-Komerčně významná XML pole, která současný katalogový model ještě neumí bezpečně
-přenést, se nezahazují potichu. `ACTION_PRICE`, `STANDARD_PRICE`, jednotka,
-dostupnost a aktivní bezplatná doprava nebo platba se převedou na explicitní
-nepodporované sloupce a kontrakt je zablokuje do jejich vědomého namodelování.
+XML jednotka, dostupnost pro skladovou i vyprodanou položku, standardní cena a
+příznaky bezplatné dopravy/platby jsou zachovány jako typovaná stagingová data.
+Známé jednotky `ks` a `sada` mají kanonický kód `piece` a `set`; jiná hodnota se
+neztratí, ale vyvolá varování pro ruční kontrolu. `ACTION_PRICE` zatím zůstává
+explicitně nepodporovaný blokátor, pokud by byl v budoucím exportu neprázdný.
 
 Ověřený klubový export z 2. srpna 2026 obsahuje 241 produktů a 807 variant. Tři
-položky půjčovny mají `PRICE_RATIO=0` a vyžadují rozhodnutí o skutečné ceně. Dvě
+položky půjčovny s `PRICE_RATIO=0` jsou podle potvrzení provozovatele bezplatné
+praktické zápůjčky a normalizují se na `mode=free`. Dvě
 položky zůstávají záměrně v ruční klasifikaci: tričko zařazené současně mezi
 oblečení a kroužky a pronájem velodromu zařazený současně mezi zážitky a pronájem.
 Skutečný export zůstává v `var/imports/` a nepatří do Gitu.
