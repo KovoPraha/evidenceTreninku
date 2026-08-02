@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/includes/session_security.php';
+app_session_start();
 require_once __DIR__ . '/../db.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -14,7 +15,7 @@ if ($token !== '') {
     if ($uid) {
         $pdo->prepare("UPDATE verejni_uzivatele SET email_overeno=1, verifikacni_token=NULL WHERE id=?")
             ->execute([$uid]);
-        session_regenerate_id(true);   // prevence session fixation po autentizaci
+        app_session_mark_authenticated();
         $_SESSION['verejny_uzivatel_id'] = $uid;
         $ok = true;
     }

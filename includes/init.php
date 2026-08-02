@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/session_security.php';
 
-session_start();
+app_session_start();
 
 // Sdílené funkce (roleAtLeast, audit log)
 require_once __DIR__ . '/funkce.php';

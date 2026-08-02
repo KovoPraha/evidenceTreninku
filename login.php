@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * login.php
  * Přihlášení trenéra.
@@ -6,7 +7,7 @@
  *  - Moderní hash ověří pomocí password_verify().
  *  - Legacy plaintext dočasně porovná přesně a až po shodě přehashuje.
  */
-session_start();
+app_session_start();
 
 // Pokud je již přihlášen, přesměruj rovnou
 if (isset($_SESSION['trener_id'])) {
@@ -48,8 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($authenticated && $uzivatel) {
-                // Regenerace session ID – ochrana proti session fixation
-                session_regenerate_id(true);
+                // Nová autentizace rotuje session ID, CSRF token a nastaví časové limity.
+                app_session_mark_authenticated();
 
                 $_SESSION['trener_id']   = $uzivatel['id'];
                 $_SESSION['trener_jmeno'] = $uzivatel['jmeno'];

@@ -52,6 +52,26 @@ final class KisParityCliTest extends TestCase
         self::assertStringNotContainsString('must-not-be-echoed', $output);
     }
 
+    public function testRealisticFixtureExitsTwoWithExpectedSafetySummary(): void
+    {
+        [$exitCode, $output] = $this->runCli([
+            '--input', $this->fixture('parity-realistic.json'), '--json',
+        ]);
+
+        self::assertSame(2, $exitCode, $output);
+        $decoded = json_decode($output, true, 64, JSON_THROW_ON_ERROR);
+        self::assertSame('blocked', $decoded['status']);
+        self::assertSame(10, $decoded['summary']['total_rows']);
+        self::assertSame(9, $decoded['summary']['blocker_rows']);
+        self::assertSame(4, $decoded['summary']['counts']['conflict']);
+        self::assertSame(2, $decoded['summary']['counts']['ambiguous']);
+        self::assertSame([
+            'count' => 3,
+            'informational_only' => true,
+            'archive_action' => 'never',
+        ], $decoded['summary']['missing_in_run']);
+    }
+
     /** @param list<string> $arguments @return array{int, string} */
     private function runCli(array $arguments): array
     {

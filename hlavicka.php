@@ -1,5 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . '/includes/session_security.php';
+if (session_status() === PHP_SESSION_NONE) app_session_start();
 require_once __DIR__ . '/db.php';
 if (file_exists(__DIR__ . '/includes/funkce.php')) {
     require_once __DIR__ . '/includes/funkce.php';

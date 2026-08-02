@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 // download_import.php
 // Stáhne importovaný soubor výsledků závodu
 
-session_start();
+app_session_start();
 if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
     exit;

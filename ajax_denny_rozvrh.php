@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * ajax_denny_rozvrh.php
  * Vrátí HTML s vertikální časovou osou (10:00–20:00) pro dané sportoviště a datum.
  * GET: sportoviste_id, datum, ghost_od, ghost_do (volitelné — preview výběru)
  */
-session_start();
+app_session_start();
 if (!isset($_SESSION['trener_id'])) { http_response_code(403); exit; }
 require_once __DIR__ . '/db.php';
 

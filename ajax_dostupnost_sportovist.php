@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/session_security.php';
+app_session_start();
 if (!isset($_SESSION['trener_id'])) { http_response_code(403); echo json_encode(['error' => 'Unauthorized']); exit; }
 require_once 'db.php';
 header('Content-Type: application/json; charset=utf-8');

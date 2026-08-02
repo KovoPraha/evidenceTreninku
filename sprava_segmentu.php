@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 // sprava_segmentu.php — správa segmentů pro kolo-kroužek / kolo-silnice
-session_start();
+app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id']) || !canAccess('segmenty')) {
     header('Location: login.php');

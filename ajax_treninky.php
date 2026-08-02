@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * AJAX endpoint: vrací HTML accordion-items pro tréninky trenéra
  * GET params: skupina_id (int|''), mesic (1-12|''), rok (int|'')
  */
-session_start();
+app_session_start();
 if (!isset($_SESSION['trener_id'])) {
     http_response_code(403);
     exit;

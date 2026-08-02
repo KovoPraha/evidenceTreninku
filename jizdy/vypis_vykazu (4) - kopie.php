@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/includes/session_security.php';
+app_session_start();
 require_once 'db.php';
 
 // Autoload a import tříd pro Excel export

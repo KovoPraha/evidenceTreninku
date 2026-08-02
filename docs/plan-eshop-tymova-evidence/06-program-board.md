@@ -1,6 +1,6 @@
 # 06 – Program board
 
-Aktualizováno: 1. 8. 2026
+Aktualizováno: 2. 8. 2026
 Aktuální programová brána: **F0 – červená**
 Povolená práce: plánování a odstranění blokátorů F0
 Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
@@ -15,11 +15,12 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | lokální commit | ověřený kódový tip `3937835`; za ním následuje pouze evidence/handoff commit |
 | foundation branch | `codex/foundation`; pushnuta do originu, draft PR #1 otevřený proti `main` |
 | první KIS/shop přírůstek | větev `codex/kis-shop-first-step`; draft PR #2 nad foundation, bez migrace a bez produkčních změn |
+| druhý F0 přírůstek | větev `codex/f0-fixtures-session`; draft PR #3 nad PR #2, bez migrace a bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
-| syntax | 185 first-party PHP souborů sloučeného prvního přírůstku prošlo lintem |
+| syntax | 187 first-party PHP souborů sloučeného druhého přírůstku prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | první KIS/shop přírůstek: 61 testů / 284 assertions lokálně; GitHub kódový run `30720065210` úspěšný |
+| automatické testy | druhý F0 přírůstek: 82 testů / 441 assertions lokálně; GitHub kódový run `30722989933` úspěšný |
 | migrace | číslovaný runner, immutable checksumy, DB-specifický lock a read-only `--check` integrovány lokálně; produkční apply neproběhl |
 | deploy/backup | fail-closed CLI záloha, připnutý host key a ruční potvrzení integrovány lokálně; chybí Secret `SSH_KNOWN_HOSTS` a první GitHub běh |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-01.2` navíc pokrývá tři `ucto_gs_*` tabulky, které v lokální DB nejsou; produkční artefakt nebyl testován |
@@ -49,11 +50,11 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 |---|---|---|---|---|
 | W0-A | Repo a deploy reconciliation | nic | dokončeno | lokální práce zachována, main sjednocen, workflow pravdivě zdokumentovaný |
 | W0-B | KIS matcher safety | dokončeno `7106930` | přijato | pořadově nezávislé testy a neměnný cache snapshot |
-| W0-C | Dependencies a auth hardening | částečně `2ed5278`, `1a9af03` | session/token zbývá | 0 advisories; helper a bezpečný CLI migrátor hesel |
+| W0-C | Dependencies a auth hardening | částečně `2ed5278`, `1a9af03`, `dfce1ea`, `af49d57` | ano, jediný vlastník auth | session cookies/timeout/rotace hotové; zbývá DB revokace, rate limit, expirované tokeny a produkční odstranění legacy hesel |
 | W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
 | W0-E | Migrace a deploy hardening | implementováno lokálně `664745e`, `cd0c0e1` | produkční ověření čeká | runner/check, fail-closed backup a lokální restore drill jsou doloženy; zbývá Secret, remote CI a autorizovaný deploy |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
-| W0-G | Realistické anonymizované fixtures | částečně: syntetické KIS a Shoptet fixture + deterministický dry-run `98ff91d`, `0537adf`, `82eac98`, `b4207be` | ano | zbývá ověřit anonymizovaný reálný Shoptet export a doplnit rodinu, platby a realistický KIS kontrakt |
+| W0-G | Realistické anonymizované fixtures | částečně: KIS/shop matice `168d132`, `8f0cbe8` nad prvním dry-run přírůstkem | ano | syntetická rodina, konflikty, varianty, money/VAT a scope hranice pokryty; zbývá reálný anonymizovaný Shoptet/KIS formát a platební scénáře |
 
 ## Bezpečný merge order
 
@@ -69,10 +70,10 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 - [x] lokální a vzdálený main bezpečně sjednocen,
 - [x] KIS matcher opraven a otestován na foundation,
 - [x] dependency audit foundation bez advisories,
-- [ ] legacy hesla a session mají schválenou a ověřenou nápravu,
+- [ ] legacy hesla a session mají schválenou a ověřenou nápravu; transport/lifecycle je hotový, ale DB revokace, rate limit, tokeny a produkční password apply zbývají,
 - [x] unit/integration testy a migrační fixture existují; první GitHub běh `30718098799` je zelený,
 - [x] číslované migrace a read-only `--check` existují lokálně,
-- [ ] staging/test DB a kompletní realistické fixtures existují; syntetické KIS/Shoptet fixtures a read-only dry-run už jsou doložené,
+- [ ] staging/test DB a kompletní realistické fixtures existují; rozšířené syntetické KIS/Shoptet matice a read-only dry-run už jsou doložené,
 - [ ] deploy kód selže při chybě zálohy; skutečný host key ještě není uložen jako `SSH_KNOWN_HOSTS` a workflow neproběhl,
 - [x] lokální restore drill je doložen; před prvním finančním schématem zopakovat s produkčním backup artefaktem,
 - [ ] identity, KIS ownership a wallet pravidla jsou schválena.
@@ -80,10 +81,12 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 Pokud chybí jediná položka, F0 zůstává červená. „Deploy proběhl“ není náhradou
 za splnění této brány.
 
-První KIS/shop přírůstek nepřidává tabulky, košík ani produkční import. Další
-bezpečný krok je získat malý anonymizovaný CSV export produktů ze Shoptetu a
-potvrdit stabilní KIS identifikátor, retenční dobu preview dat a jednorázové
-atomické pravidlo pro budoucí promote.
+Druhá F0 větev nepřidává tabulky, košík ani produkční import. Další bezpečný krok
+je získat malý anonymizovaný CSV export produktů ze Shoptetu a potvrdit stabilní
+KIS identifikátor, retenční dobu preview dat a jednorázové atomické pravidlo pro
+budoucí promote. Samostatný auth krok musí přidat číslovanou migraci pro
+revokovatelné session, rate limiting a expirované jednorázové tokeny; nesmí se
+smíchat s produktovou implementací.
 
 ## Pokyn pro příští řídicí task
 

@@ -12,6 +12,7 @@ není napojený na reálné KIS exporty ani produkční data.
 ```powershell
 php bin/kis-parity-dry-run.php --input tests/fixtures/kis/parity-valid.json
 php bin/kis-parity-dry-run.php --input tests/fixtures/kis/parity-valid.json --json
+php bin/kis-parity-dry-run.php --input tests/fixtures/kis/parity-realistic.json --json
 ```
 
 CLI pouze čte jeden lokální běžný soubor. Odmítá stream/network URL, symbolické
@@ -82,3 +83,16 @@ důvod.
 Chybění v jednom KIS běhu tedy nikdy neznamená archivaci, deaktivaci ani jiný
 zápis. CLI nemá příkaz `apply`, nepoužívá produkční identitu a není rozhodnutím
 o KIS cutoveru.
+
+## Realistická syntetická fixture W0-G
+
+`tests/fixtures/kis/parity-realistic.json` skládá deset neprůhledných řádků do
+jednoho reprezentativního blokujícího běhu. Pokrývá rodinný collision scénář,
+rozpory silných identifikátorů, duplicate target, nový a nevysvětlený řádek,
+provozní rozdíl a čistou shodu. Očekávaný výsledek je devět blocker řádků a jedna
+čistá shoda; tři členové nezahrnutí v běhu zůstávají pouze informační.
+
+Fixture neobsahuje skutečné hodnoty identitních signálů. Výsledky matcheru jsou
+předklasifikované a kontrolují kontrakt paritního reportu, nikoliv formát KIS
+XLSX exportu. Podrobná mapa scénářů a privacy pravidla jsou v
+`tests/fixtures/kis/README.md`.

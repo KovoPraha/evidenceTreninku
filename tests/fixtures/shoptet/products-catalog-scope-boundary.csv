@@ -1,0 +1,2 @@
+code;pairCode;name;price;currency;includingVat;paymentMethod;walletCredit;deliveryMethod;orderStatus
+BOUNDARY-1;;Fiktivní hranice katalogu;100;CZK;1;PAYMENT_SENTINEL;WALLET_SENTINEL;DELIVERY_SENTINEL;ORDER_SENTINEL

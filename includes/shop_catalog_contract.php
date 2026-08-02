@@ -177,6 +177,7 @@ final class ShopCatalogContract
             }
 
             $currency = strtoupper(trim((string)($values['currency'] ?? '')));
+            $currencyHasKnownMinorUnit = false;
             if ($currency === '') {
                 $issues[] = self::issue(
                     'error',
@@ -187,6 +188,19 @@ final class ShopCatalogContract
                 );
             } elseif (!preg_match('/^[A-Z]{3}$/D', $currency)) {
                 $issues[] = self::issue('error', 'invalid_currency', 'Mena musi byt tri velka pismena.', $line, 'currency');
+            } elseif ($currency !== 'CZK') {
+                $issues[] = self::issue(
+                    'error',
+                    'unsupported_currency_minor_unit',
+                    'Prozatimni kontrakt umi bezpecne prevest na minor units pouze CZK.',
+                    $line,
+                    'currency'
+                );
+            } else {
+                $currencyHasKnownMinorUnit = true;
+            }
+            if (!$currencyHasKnownMinorUnit) {
+                $price = null;
             }
 
             $includingVat = self::parseBoolean((string)($values['includingVat'] ?? ''));

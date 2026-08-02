@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 
 // Načti config.php PŘED DB připojením (definuje DB_*, VELOCOTA_INTEGRATION, …)
 if (file_exists(__DIR__ . '/config.php')) {
@@ -36,7 +37,7 @@ require_once __DIR__ . '/includes/auto_migrace.php';
 // Aktivní pouze pokud je VELOCOTA_INTEGRATION = true v config.php
 if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {
     require_once __DIR__ . '/auth/sso_bridge.php';
-    if (session_status() === PHP_SESSION_NONE) session_start();
+    if (session_status() === PHP_SESSION_NONE) app_session_start();
     velocotaSsoBridge($pdo);
 }
 ?>

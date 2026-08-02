@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 // import_vysledku_zavodu.php
 // Skript pro parsování a import výsledků (XLS/XLSX) do tabulky zavod_sportovec
 
-session_start();
+app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_zavodu')) {
     http_response_code(403);

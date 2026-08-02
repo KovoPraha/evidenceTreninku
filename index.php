@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/session_security.php';
+app_session_start();
 $is_logged_in = isset($_SESSION['trener_id']);
 if ($is_logged_in && file_exists(__DIR__ . '/includes/funkce.php')) {
     require_once __DIR__ . '/includes/funkce.php';

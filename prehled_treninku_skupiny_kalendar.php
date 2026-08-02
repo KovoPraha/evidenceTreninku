@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 // prehled_treninku_skupiny_kalendar.php
-session_start();
+app_session_start();
 if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
     exit;

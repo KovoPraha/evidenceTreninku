@@ -81,7 +81,30 @@ Ceny se převádějí přes přesnou desetinnou reprezentaci na integer haléře
 `float`. Hodnoty `1234,50`, `1 234,50`, `1 234,50` a `1 234,50` tedy znamenají
 `123450` haléřů. Měna musí být v této první verzi vždy explicitně přítomná v
 každém řádku. Chybějící `currency` je vědomý prozatímní blokátor; nástroj nikdy
-skrytě nepředpokládá CZK. Chybějící `includingVat` je viditelné varování.
+skrytě nepředpokládá CZK. Pouze explicitní `CZK` má nyní známý převod na haléře.
+Jiná syntakticky platná měna zůstane ve výstupu, ale vyvolá blokátor
+`unsupported_currency_minor_unit` a její `amount_minor` bude `null`. Nejde o
+rozhodnutí jiné měny zakázat; jejich minor-unit pravidla musí nejdříve potvrdit
+reálný export a produktové rozhodnutí. Chybějící `includingVat` je viditelné
+varování a hodnoty DPH zůstávají `null`; dry-run žádnou sazbu ani daň nedopočítává.
+
+## Syntetická W0-G contract matrix
+
+Repozitář obsahuje pouze fiktivní testovací data bez osob, adres, objednávek a
+skutečných produktů:
+
+- `products-variant-matrix.csv` – dvě variantní osy, tři varianty a jeden produkt
+  bez variant,
+- `products-duplicate-sku.csv` – dvě nezávislé SKU kolize včetně kolize po
+  odstranění Shoptet prefixu `$`,
+- `products-money-vat.csv` – přesné CZK haléře, cena s/bez DPH, nulová a
+  desetinná sazba a explicitně neznámé VAT údaje,
+- `products-catalog-scope-boundary.csv` – syntetická order/payment/wallet/delivery
+  pole, která katalog povinně odmítne jako nepodporovaná.
+
+Tato matice nevytváří objednávkový ani platební model. Dokazuje pouze katalogový
+kontrakt a jeho hranice. Bez schválení D-009 až D-013 se nepřidávají payment
+stavy, wallet operace, checkout, storno ani doprava.
 
 ## Co získat ze Shoptetu
 

@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/includes/session_security.php';
 /**
  * smazat_trenink.php
  * Smaže trénink včetně všech vazeb.
  * Vyžaduje POST (ne GET) + CSRF token → ochrana před nechtěným smazáním.
  */
-session_start();
+app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
