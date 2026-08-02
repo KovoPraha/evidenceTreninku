@@ -9,14 +9,20 @@ $token = trim($_GET['token'] ?? '');
 $ok = false;
 
 if ($token !== '') {
-    $st = $pdo->prepare("SELECT id FROM verejni_uzivatele WHERE verifikacni_token=? AND email_overeno=0");
+    $st = $pdo->prepare(
+        "SELECT id, session_version FROM verejni_uzivatele "
+        . "WHERE verifikacni_token=? AND email_overeno=0 AND aktivni=1"
+    );
     $st->execute([$token]);
-    $uid = $st->fetchColumn();
-    if ($uid) {
+    $uzivatel = $st->fetch(PDO::FETCH_ASSOC);
+    if ($uzivatel) {
         $pdo->prepare("UPDATE verejni_uzivatele SET email_overeno=1, verifikacni_token=NULL WHERE id=?")
-            ->execute([$uid]);
+            ->execute([$uzivatel['id']]);
         app_session_mark_authenticated();
-        $_SESSION['verejny_uzivatel_id'] = $uid;
+        auth_session_bind_public_user(
+            (int)$uzivatel['id'],
+            (int)$uzivatel['session_version']
+        );
         $ok = true;
     }
 }

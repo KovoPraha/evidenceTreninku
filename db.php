@@ -33,6 +33,18 @@ try {
 // Auto-migrace DB schématu — spustí se vždy, ale provede ALTER jen pokud verze nesedí
 require_once __DIR__ . '/includes/auto_migrace.php';
 
+// Každá existující identita musí být aktivní a mít stejnou revokační verzi jako DB.
+// Při neplatnosti request ukončíme: část legacy endpointů autorizuje ještě před db.php.
+require_once __DIR__ . '/includes/auth_session.php';
+if (!auth_session_validate($pdo)) {
+    http_response_code(401);
+    if (!headers_sent()) {
+        header('Cache-Control: no-store');
+        header('Content-Type: text/plain; charset=utf-8');
+    }
+    exit('Přihlášení již není platné. Přihlaste se znovu.');
+}
+
 // Velocota SSO bridge — mapuje Velocota session → Evidence session
 // Aktivní pouze pokud je VELOCOTA_INTEGRATION = true v config.php
 if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {

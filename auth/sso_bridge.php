@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/includes/session_security.php';
+require_once dirname(__DIR__) . '/includes/auth_session.php';
 /**
  * auth/sso_bridge.php
  * SSO bridge — čte Velocota session a mapuje na Evidence session.
@@ -66,11 +67,17 @@ function velocotaSsoBridge(PDO $pdo): void
         return;
     }
 
+    $sessionVersion = auth_session_active_version($pdo, 'trainer', $trenerId);
+    if ($sessionVersion === null) {
+        _clearEvidenceSession();
+        return;
+    }
+
     app_session_mark_authenticated();
 
     // Zapsat Evidence session
     $evidenceRole = VELO_ROLE_MAP[$veloRole];
-    $_SESSION['trener_id']          = $trenerId;
+    auth_session_bind_trainer($trenerId, $sessionVersion);
     $_SESSION['trener_jmeno']       = $veloJmeno;
     $_SESSION['role']               = $evidenceRole;
     $_SESSION['velo_user_id_cached']= (int)$veloId;
@@ -169,6 +176,7 @@ function _clearEvidenceSession(): void
         $_SESSION['trener_jmeno'],
         $_SESSION['role'],
         $_SESSION['opravneni'],
-        $_SESSION['velo_user_id_cached']
+        $_SESSION['velo_user_id_cached'],
+        $_SESSION[AUTH_SESSION_TRAINER_VERSION_KEY]
     );
 }

@@ -3,6 +3,7 @@ require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/auth_rate_limit.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -19,25 +20,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = strtolower(trim($_POST['email'] ?? ''));
         $heslo = $_POST['heslo'] ?? '';
 
-        $st = $pdo->prepare("SELECT * FROM verejni_uzivatele WHERE email=? AND aktivni=1");
-        $st->execute([$email]);
-        $uzivatel = $st->fetch(PDO::FETCH_ASSOC);
+        try {
+            $rateScope = 'public_login';
+            $clientIp = auth_rate_limit_request_ip();
+            $rateAllowed = auth_rate_limit_is_allowed($pdo, $rateScope, $email, $clientIp);
+            $uzivatel = false;
 
-        if (!$uzivatel || !password_verify($heslo, $uzivatel['heslo_hash'])) {
-            $errors[] = 'Nesprávný email nebo heslo.';
-        } elseif (!$uzivatel['email_overeno']) {
-            $errors[] = 'Email není ověřen. Zkontrolujte svou schránku.';
-        } else {
-            app_session_mark_authenticated();
-            $_SESSION['verejny_uzivatel_id']  = $uzivatel['id'];
-            $_SESSION['verejny_uzivatel_jmeno'] = $uzivatel['jmeno'] . ' ' . $uzivatel['prijmeni'];
-            // Jen interní relativní cíl (žádné //host, http://, zpětná lomítka) — prevence open redirect
-            $redirect = $_GET['redirect'] ?? 'kalendar.php';
-            if (!preg_match('~^[a-z0-9_]+\.php(\?[^\r\n]*)?$~i', $redirect)) {
-                $redirect = 'kalendar.php';
+            if ($rateAllowed) {
+                $st = $pdo->prepare("SELECT * FROM verejni_uzivatele WHERE email=? AND aktivni=1");
+                $st->execute([$email]);
+                $uzivatel = $st->fetch(PDO::FETCH_ASSOC);
             }
-            header('Location: ' . $redirect);
-            exit;
+
+            if (!$rateAllowed || !$uzivatel || !password_verify($heslo, $uzivatel['heslo_hash'])) {
+                if ($rateAllowed) {
+                    auth_rate_limit_record_failure($pdo, $rateScope, $email, $clientIp);
+                }
+                $errors[] = 'Nesprávný email nebo heslo.';
+            } elseif (!$uzivatel['email_overeno']) {
+                auth_rate_limit_clear_identifier($pdo, $rateScope, $email);
+                $errors[] = 'Email není ověřen. Zkontrolujte svou schránku.';
+            } else {
+                auth_rate_limit_clear_identifier($pdo, $rateScope, $email);
+                app_session_mark_authenticated();
+                auth_session_bind_public_user(
+                    (int)$uzivatel['id'],
+                    (int)$uzivatel['session_version']
+                );
+                $_SESSION['verejny_uzivatel_jmeno'] = $uzivatel['jmeno'] . ' ' . $uzivatel['prijmeni'];
+                // Jen interní relativní cíl (žádné //host, http://, zpětná lomítka) — prevence open redirect
+                $redirect = $_GET['redirect'] ?? 'kalendar.php';
+                if (!preg_match('~^[a-z0-9_]+\.php(\?[^\r\n]*)?$~i', $redirect)) {
+                    $redirect = 'kalendar.php';
+                }
+                header('Location: ' . $redirect);
+                exit;
+            }
+        } catch (PDOException $exception) {
+            error_log('Public login database error: ' . $exception->getMessage());
+            $errors[] = 'Přihlášení momentálně není dostupné. Zkuste to znovu.';
         }
     }
 }

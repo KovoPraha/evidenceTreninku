@@ -17,6 +17,7 @@ if (isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once __DIR__ . '/includes/password_security.php';
+require_once __DIR__ . '/includes/auth_rate_limit.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -30,10 +31,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Vyplňte přihlašovací údaje i heslo.';
     } else {
         try {
-            // Načteme uživatele podle jména NEBO emailu
-            $stmt = $pdo->prepare("SELECT id, jmeno, heslo, role FROM treneri WHERE aktivni = 1 AND (jmeno = ? OR email = ?) LIMIT 1");
-            $stmt->execute([$login, $login]);
-            $uzivatel = $stmt->fetch(PDO::FETCH_ASSOC);
+            $rateScope = 'trainer_login';
+            $clientIp = auth_rate_limit_request_ip();
+            $rateAllowed = auth_rate_limit_is_allowed($pdo, $rateScope, $login, $clientIp);
+            $uzivatel = false;
+
+            if ($rateAllowed) {
+                // Načteme uživatele podle jména NEBO emailu
+                $stmt = $pdo->prepare(
+                    "SELECT id, jmeno, heslo, role, session_version FROM treneri "
+                    . "WHERE aktivni = 1 AND (jmeno = ? OR email = ?) LIMIT 1"
+                );
+                $stmt->execute([$login, $login]);
+                $uzivatel = $stmt->fetch(PDO::FETCH_ASSOC);
+            }
 
             $authenticated = false;
 
@@ -49,10 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($authenticated && $uzivatel) {
+                auth_rate_limit_clear_identifier($pdo, $rateScope, $login);
                 // Nová autentizace rotuje session ID, CSRF token a nastaví časové limity.
                 app_session_mark_authenticated();
 
-                $_SESSION['trener_id']   = $uzivatel['id'];
+                auth_session_bind_trainer(
+                    (int)$uzivatel['id'],
+                    (int)$uzivatel['session_version']
+                );
                 $_SESSION['trener_jmeno'] = $uzivatel['jmeno'];
                 $_SESSION['role']        = $uzivatel['role'];
                 $_SESSION['login_time']  = time();
@@ -68,6 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php');
                 exit;
             } else {
+                if ($rateAllowed) {
+                    auth_rate_limit_record_failure($pdo, $rateScope, $login, $clientIp);
+                }
                 // Úmyslně neurčitá zpráva – neprozrazuje, zda přihlašovací údaj existuje
                 $error = 'Neplatné přihlašovací jméno / email nebo heslo.';
             }
