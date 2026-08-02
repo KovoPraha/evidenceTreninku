@@ -56,8 +56,8 @@ function shopCatalogStage(PDO $pdo, array $catalog): array
         $insertProduct = $pdo->prepare(
             'INSERT INTO shop_catalog_product_candidates '
             . '(run_id, external_product_key, source_pair_code, name, offer_type, '
-            . 'classification_confidence, needs_manual_review, payload_json) '
-            . 'VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            . 'classification_confidence, needs_manual_review, review_status, payload_json) '
+            . 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
         $insertVariant = $pdo->prepare(
             'INSERT INTO shop_catalog_variant_candidates '
@@ -75,6 +75,7 @@ function shopCatalogStage(PDO $pdo, array $catalog): array
                 (string)$classification['type'],
                 (string)$classification['confidence'],
                 $classification['needs_manual_review'] ? 1 : 0,
+                $classification['needs_manual_review'] ? 'pending' : 'auto_classified',
                 shopCatalogJson($product),
             ]);
             $productId = (int)$pdo->lastInsertId();

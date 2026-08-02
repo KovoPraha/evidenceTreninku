@@ -17,10 +17,15 @@ final class ShopCatalogStageTest extends TestCase
         $pdo = $this->database();
         $migration = require dirname(__DIR__, 2)
             . '/migrations/20260802170000_shop_catalog_staging.php';
+        $reviewMigration = require dirname(__DIR__, 2)
+            . '/migrations/20260802190000_shop_catalog_review.php';
 
         $migration['up']($pdo);
         $migration['up']($pdo);
         self::assertTrue($migration['verify']($pdo));
+        $reviewMigration['up']($pdo);
+        $reviewMigration['up']($pdo);
+        self::assertTrue($reviewMigration['verify']($pdo));
 
         $input = dirname(__DIR__) . '/fixtures/shoptet/products-offer-types.csv';
         $catalog = \ShopCatalogContract::build(\ShoptetProductInput::read($input));
@@ -61,6 +66,9 @@ final class ShopCatalogStageTest extends TestCase
         $migration = require dirname(__DIR__, 2)
             . '/migrations/20260802170000_shop_catalog_staging.php';
         $migration['up']($pdo);
+        $reviewMigration = require dirname(__DIR__, 2)
+            . '/migrations/20260802190000_shop_catalog_review.php';
+        $reviewMigration['up']($pdo);
 
         $this->expectException(InvalidArgumentException::class);
         try {

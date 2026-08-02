@@ -67,6 +67,22 @@ $cards = [
         'class' => 'border-0',
     ],
 ];
+if (roleAtLeast('admin')) {
+    $lastShopRun = $pdo->query(
+        "SELECT r.*, (SELECT COUNT(*) FROM shop_catalog_product_candidates p "
+        . "WHERE p.run_id=r.id AND p.review_status='pending') AS pending_count "
+        . 'FROM shop_catalog_import_runs r ORDER BY r.created_at DESC, r.id DESC LIMIT 1'
+    )->fetch(PDO::FETCH_ASSOC);
+    $cards[] = [
+        'label' => 'E-shop katalog',
+        'value' => $lastShopRun ? (int)$lastShopRun['product_count'] . ' produktů' : 'bez importu',
+        'hint' => $lastShopRun
+            ? (int)$lastShopRun['pending_count'] . ' položek čeká na kontrolu'
+            : 'nejprve uložte Shoptet export do stagingu',
+        'href' => 'eshop_admin.php' . ($lastShopRun ? '?run_id=' . (int)$lastShopRun['id'] : ''),
+        'class' => $lastShopRun && (int)$lastShopRun['pending_count'] === 0 ? 'border-success' : 'border-warning',
+    ];
+}
 ?>
 <!doctype html>
 <html lang="cs">

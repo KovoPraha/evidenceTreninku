@@ -61,6 +61,21 @@ Tabulky `shop_catalog_import_runs`, `shop_catalog_product_candidates` a
 `shop_catalog_variant_candidates` vytváří číslovaná migrace. Nejsou součástí
 legacy `auto_migrace.php` a nesmějí se odkládat na první webový request.
 
+## Administrátorská kontrola
+
+Po přihlášení administrátora je staging dostupný na `eshop_admin.php`. Stránka
+zobrazuje jednotlivé importní běhy, filtry podle stavu a typu, ceny a počet
+variant. Konfliktní položku lze:
+
+- schválit s výsledným typem,
+- změnit na jiný typ s povinným zdůvodněním,
+- vyřadit z budoucí publikace s povinným zdůvodněním.
+
+Každá ruční akce ukládá původní a nový typ, administrátora, čas a poznámku do
+neměnné historie `shop_catalog_review_events`. Po vyřešení všech povinných
+kontrol dostane běh stav `ready_for_promotion`. Tento stav neznamená zveřejnění;
+kanonický katalog ani publikační akce v této etapě neexistují.
+
 ## Bezpečnostní hranice
 
 - pouze CLI, při webovém spuštění vrací skript 404,

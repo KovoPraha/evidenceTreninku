@@ -1,8 +1,8 @@
 # Program rozšíření Evidence: e-shop a týmová evidence
 
-Stav dokumentu: návrh k rozhodnutí
+Stav dokumentu: živý programový plán
 Datum auditu: 1. 8. 2026
-Implementace nových funkcí: **nezahájena**
+Implementace nových funkcí: **zahájena bezpečným Shoptet stagingem a jeho administrací**
 
 ## Účel
 
@@ -52,6 +52,7 @@ aktuální stav je vždy v `SESSION_HANDOFF.md`.
 | [04 – Roadmapa a brány](04-roadmapa-a-brany.md) | Etapy, závislosti a měřitelná akceptační kritéria |
 | [05 – Řízení vláken](05-rizeni-vlaken.md) | Pravidla pro řídicí a pracovní vlákna, předávací protokol |
 | [06 – Program board](06-program-board.md) | Aktuální stav, pořadí prvních úkolů a podmínky jejich startu |
+| [07 – Shop a KIS](07-shop-kis-integrace.md) | Konkrétní integrační tok katalogu, kroužků, účastníků, rezervací a KIS shadow mode |
 | [Session handoff](SESSION_HANDOFF.md) | Obnovitelný stav řídicího tasku, aktivní práce a další krok |
 | [Prompt nového řídicího tasku](PROMPT-NOVE-RIDICI-VLAKNO.md) | Text ke zkopírování při otevření pokračujícího tasku |
 

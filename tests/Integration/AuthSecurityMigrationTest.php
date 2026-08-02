@@ -28,6 +28,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260802120000_auth_revocation_rate_limit',
                 '20260802133000_one_time_tokens',
                 '20260802170000_shop_catalog_staging',
+                '20260802190000_shop_catalog_review',
             ],
             array_keys($catalog)
         );

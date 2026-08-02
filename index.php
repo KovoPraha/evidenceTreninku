@@ -584,6 +584,9 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <i class="bi bi-shield-lock me-2"></i>Administrace
             </div>
             <div class="list-group list-group-flush">
+              <a href="eshop_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-shop text-primary"></i>Administrace e-shopu
+                <span class="role-badge role-admin">admin</span></a>
               <a href="sprava_sportovist.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-building-gear text-danger"></i>Správa sportovišť
                 <?= roleBadge('sprava_sportovist') ?></a>
