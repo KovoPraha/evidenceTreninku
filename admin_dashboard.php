@@ -90,12 +90,16 @@ if (roleAtLeast('admin')) {
         . "SELECT 1 FROM account_person_roles r WHERE r.account_id=vu.id "
         . "AND r.status='approved' AND r.valid_to IS NULL)"
     )->fetchColumn();
+    $pendingIdentityClaims = (int)$pdo->query(
+        "SELECT COUNT(*) FROM account_person_claim_requests WHERE status='pending'"
+    )->fetchColumn();
     $cards[] = [
         'label' => 'Účty a sportovci',
         'value' => $approvedAccountRelations . ' vazeb',
-        'hint' => $accountsWithoutRelation . ' aktivních účtů bez schválené osoby',
+        'hint' => $pendingIdentityClaims . ' žádostí čeká; '
+            . $accountsWithoutRelation . ' aktivních účtů bez schválené osoby',
         'href' => 'eshop_identity_admin.php',
-        'class' => $accountsWithoutRelation > 0 ? 'border-warning' : 'border-success',
+        'class' => $pendingIdentityClaims > 0 ? 'border-warning' : 'border-success',
     ];
 }
 ?>

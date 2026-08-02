@@ -31,6 +31,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260802190000_shop_catalog_review',
                 '20260802210000_shop_canonical_catalog',
                 '20260802230000_account_person_roles',
+                '20260802233000_account_person_claim_requests',
             ],
             array_keys($catalog)
         );

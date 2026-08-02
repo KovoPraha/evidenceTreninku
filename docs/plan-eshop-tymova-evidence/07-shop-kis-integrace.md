@@ -96,9 +96,10 @@ vyžaduje textový podklad. Pro výběr účastníka se vracejí pouze aktivní 
 vazby aktivního účtu s ověřeným e-mailem. Shoda jména či e-mailu nic automaticky
 nezaloží a tato etapa nic nezapisuje do KIS.
 
-Zbývá doplnit uživatelský požadavek na vazbu (claim), jeho administrační frontu a
-bezpečné párování KIS importu přes stabilní identifikátory. Do té doby vazbu po
-ověření podkladů zakládá přímo administrátor.
+Implementována je také uživatelská žádost o vazbu (claim) a administrační fronta.
+Veřejná stránka neukazuje seznam sportovců; uživatel zadá identifikační údaje a
+administrátor ručně vybere ověřenou osobu. Schválení žádosti a vytvoření vazby je
+jedna transakce. Zbývá bezpečné párování KIS importu přes stabilní identifikátory.
 
 ### K3 – Klubové akce, termíny a přihlášky
 
@@ -143,10 +144,9 @@ Před příslušnou etapou musí vlastník potvrdit:
 ## Nejbližší implementační pořadí
 
 1. doplnit řízenou aktivaci jednotlivých `draft` produktů pro budoucí storefront,
-2. doplnit uživatelský claim workflow nad implementovaný model K2,
-3. navrhnout klubové akce a mapování produktu na kroužek K3,
-4. implementovat bezplatný kroužek jako první vertikální průchod,
-5. teprve poté přidat objednávku a placenou variantu.
+2. navrhnout klubové akce a mapování produktu na kroužek K3,
+3. implementovat bezplatný kroužek jako první vertikální průchod,
+4. teprve poté přidat objednávku a placenou variantu.
 
 Stripe, Fio, kredit, Packeta a ostrý KIS cutover nejsou součástí nejbližšího
 přírůstku.

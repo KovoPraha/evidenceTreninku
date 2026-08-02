@@ -67,7 +67,10 @@ function accountPersonRoleApprove(
 ): array {
     accountPersonRoleValidateDecision($accountId, $sportovecId, $role, $actorTrainerId, $note);
 
-    $pdo->beginTransaction();
+    $ownsTransaction = !$pdo->inTransaction();
+    if ($ownsTransaction) {
+        $pdo->beginTransaction();
+    }
     try {
         $account = $pdo->prepare('SELECT id FROM verejni_uzivatele WHERE id=?');
         $account->execute([$accountId]);
@@ -94,7 +97,9 @@ function accountPersonRoleApprove(
                     'Účet už má k této osobě jinou aktivní roli. Nejprve ji zrušte.'
                 );
             }
-            $pdo->commit();
+            if ($ownsTransaction) {
+                $pdo->commit();
+            }
             return [
                 'relation_id' => (int)$relation['id'],
                 'created' => false,
@@ -136,7 +141,9 @@ function accountPersonRoleApprove(
             $role,
             trim($note)
         );
-        $pdo->commit();
+        if ($ownsTransaction) {
+            $pdo->commit();
+        }
         return [
             'relation_id' => $relationId,
             'created' => $created,
@@ -144,7 +151,7 @@ function accountPersonRoleApprove(
             'relation_role' => $role,
         ];
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
         if ($exception instanceof InvalidArgumentException

@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/account_person_role.php';
+require_once __DIR__ . '/includes/account_person_claim.php';
 
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
@@ -44,6 +45,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['flash_success'] = $result['changed']
                     ? 'Vazba byla zrušena.'
                     : 'Vazba už byla zrušena.';
+            } elseif ($action === 'approve_claim') {
+                accountPersonClaimApprove(
+                    $pdo,
+                    (int)($_POST['request_id'] ?? 0),
+                    (int)($_POST['sportovec_id'] ?? 0),
+                    (int)$_SESSION['trener_id'],
+                    (string)($_POST['note'] ?? '')
+                );
+                $_SESSION['flash_success'] = 'Žádost byla schválena a vazba je aktivní.';
+            } elseif ($action === 'reject_claim') {
+                accountPersonClaimReject(
+                    $pdo,
+                    (int)($_POST['request_id'] ?? 0),
+                    (int)$_SESSION['trener_id'],
+                    (string)($_POST['note'] ?? '')
+                );
+                $_SESSION['flash_success'] = 'Žádost byla zamítnuta.';
             } else {
                 throw new InvalidArgumentException('Neplatná akce.');
             }
@@ -52,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $exception) {
             error_log('eshop_identity_admin.php: ' . $exception->getMessage());
             $errors[] = 'Databázová operace selhala. Nebyla uložena částečná změna.';
-        } catch (InvalidArgumentException | AccountPersonRoleException $exception) {
+        } catch (InvalidArgumentException | AccountPersonRoleException | AccountPersonClaimException $exception) {
             $errors[] = $exception->getMessage();
         }
     }
@@ -70,6 +88,9 @@ $people = $pdo->query(
 )->fetchAll(PDO::FETCH_ASSOC);
 $relations = accountPersonRoleList($pdo);
 $events = accountPersonRoleEvents($pdo);
+$claims = accountPersonClaimListForAdmin($pdo);
+$pendingClaims = array_values(array_filter($claims, static fn (array $claim): bool => $claim['status'] === 'pending'));
+$closedClaims = array_values(array_filter($claims, static fn (array $claim): bool => $claim['status'] !== 'pending'));
 $activeRelations = count(array_filter(
     $relations,
     static fn (array $relation): bool => $relation['status'] === 'approved' && $relation['valid_to'] === null
@@ -104,6 +125,16 @@ $activeRelations = count(array_filter(
         <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Aktivní schválené vazby</div><div class="h3 mb-0"><?= $activeRelations ?></div></div></div></div>
         <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Sportovci v evidenci</div><div class="h3 mb-0"><?= count($people) ?></div></div></div></div>
     </div>
+
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white fw-semibold">Žádosti čekající na ověření <span class="badge bg-warning text-dark ms-1"><?= count($pendingClaims) ?></span></div>
+        <div class="table-responsive"><table class="table table-sm table-hover align-middle mb-0"><thead class="table-dark"><tr><th>Účet</th><th>Uvedená osoba</th><th>Vztah</th><th>Poznámka</th><th style="min-width:470px">Rozhodnutí administrátora</th></tr></thead><tbody>
+        <?php foreach ($pendingClaims as $claim): ?><tr><td><?= identityAdminH($claim['account_prijmeni'] . ' ' . $claim['account_jmeno']) ?><div class="small text-muted"><?= identityAdminH($claim['account_email']) ?></div></td><td><strong><?= identityAdminH($claim['claimed_prijmeni'] . ' ' . $claim['claimed_jmeno']) ?></strong><div class="small text-muted">nar. <?= identityAdminH($claim['claimed_narozeni']) ?></div></td><td><code><?= identityAdminH($claim['requested_role']) ?></code></td><td><?= identityAdminH($claim['requester_message']) ?></td><td><form method="post" class="row g-1 mb-1"><?= csrf_field() ?><input type="hidden" name="action" value="approve_claim"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>"><div class="col-6"><select class="form-select form-select-sm" name="sportovec_id" required><option value="">Ručně ověřený sportovec</option><?php foreach ($people as $person): ?><option value="<?= (int)$person['id'] ?>"><?= identityAdminH($person['prijmeni'] . ' ' . $person['jmeno'] . ' – ' . $person['narozeni']) ?></option><?php endforeach; ?></select></div><div class="col-4"><input class="form-control form-control-sm" name="note" maxlength="1000" required placeholder="Podklad ověření"></div><div class="col-2 d-grid"><button class="btn btn-sm btn-success">Schválit</button></div></form><form method="post" class="d-flex gap-1"><?= csrf_field() ?><input type="hidden" name="action" value="reject_claim"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>"><input class="form-control form-control-sm" name="note" maxlength="1000" required placeholder="Důvod zamítnutí"><button class="btn btn-sm btn-outline-danger">Zamítnout</button></form></td></tr><?php endforeach; ?>
+        <?php if ($pendingClaims === []): ?><tr><td colspan="5" class="text-center text-muted py-4">Žádná žádost nyní nečeká na kontrolu.</td></tr><?php endif; ?>
+        </tbody></table></div>
+    </div>
+
+    <?php if ($closedClaims !== []): ?><div class="card border-0 shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Historie vyřízených žádostí</div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Účet</th><th>Uvedená osoba</th><th>Stav</th><th>Propojená osoba</th><th>Rozhodnutí</th></tr></thead><tbody><?php foreach ($closedClaims as $claim): ?><tr><td><?= identityAdminH($claim['account_email']) ?></td><td><?= identityAdminH($claim['claimed_prijmeni'] . ' ' . $claim['claimed_jmeno']) ?><div class="small text-muted"><?= identityAdminH($claim['claimed_narozeni']) ?></div></td><td><span class="badge <?= $claim['status'] === 'approved' ? 'bg-success' : 'bg-secondary' ?>"><?= identityAdminH($claim['status']) ?></span></td><td><?= $claim['matched_sportovec_id'] ? identityAdminH($claim['matched_prijmeni'] . ' ' . $claim['matched_jmeno']) : '—' ?></td><td><?= identityAdminH($claim['decision_note']) ?><div class="small text-muted"><?= identityAdminH($claim['decider_name'] ?: $claim['decided_at']) ?></div></td></tr><?php endforeach; ?></tbody></table></div></div><?php endif; ?>
 
     <div class="card border-0 shadow-sm mb-3">
         <div class="card-header bg-white fw-semibold">Schválit vazbu</div>
