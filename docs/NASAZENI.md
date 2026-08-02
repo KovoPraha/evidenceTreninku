@@ -15,18 +15,23 @@ Workflow před změnou produkčních souborů vždy:
 
 1. zkontroluje PHP a automatické testy;
 2. ověří identitu SSH serveru proti předem uloženému otisku;
-3. ověří existující `config.php` a PHP rozšíření na serveru;
+3. ověří existující `config.php`, `AUTH_RATE_LIMIT_PEPPER`, PHP rozšíření a
+   dostupnost `rsync` na serveru;
 4. vytvoří konzistentní databázovou zálohu mimo webový adresář a ověří její
    kompresi, kontrolní součet a manifest;
 5. zastaví se, pokud záloha není úplná nebo ověřitelná.
 
-Teprve potom nahraje kód přes `rsync`, spustí migrace příkazem na SSH a provede
-veřejný HTTP test. Tajné údaje se neposílají v URL.
+Teprve potom připraví celý release v neveřejném adresáři
+`~/.evidence-deploy/releases/<commit>-<běh>`, dočasně do něj s právy 0600 zkopíruje
+produkční `config.php`, spustí migrace z tohoto release a až po jejich úspěchu
+aktivuje PHP soubory do webrootu. Nakonec provede veřejný HTTP test a kopii
+konfigurace z release odstraní. Tajné údaje se neposílají v URL ani v logu.
 
-> Workflow zatím nepoužívá atomické přepnutí adresářů. Pokud `rsync` selže
-> uprostřed, produkční adresář může krátce obsahovat směs verzí. Opravou je
-> odstranit příčinu a workflow spustit znovu. Atomické release adresáře lze
-> přidat až po ověření podpory symlinků a struktury webrootu na hostingu.
+> Aktivace do současného webrootu stále používá `rsync` bez `--delete`, protože
+> podpora atomického přepnutí symlinkem není na hostingu potvrzená. Release je
+> ale předem kompletní a migrace nikdy neběží z napůl nahraného webrootu. Pokud
+> aktivace selže, produkční záloha existuje a stejný workflow lze po odstranění
+> příčiny bezpečně zopakovat.
 
 ## Jednorázové nastavení GitHubu
 
@@ -44,6 +49,25 @@ V repozitáři otevřete **Settings → Secrets and variables → Actions** a vy
 serveru nahraný před prvním nasazením, například přes Total Commander. Workflow
 jej nikdy nevytváří ani nepřepisuje, protože před první ověřenou zálohou nesmí
 měnit aplikační adresář.
+
+### Povinný pepper v produkčním `config.php`
+
+Před nasazením auth změn musí produkční `config.php` obsahovat unikátní tajný
+řetězec dlouhý nejméně 32 znaků:
+
+```php
+define('AUTH_RATE_LIMIT_PEPPER', 'sem-patří-dlouhá-náhodná-hodnota');
+```
+
+Bezpečnou hodnotu lze lokálně vygenerovat příkazem:
+
+```powershell
+php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
+```
+
+Výsledek vložte přes SFTP pouze do produkčního `config.php`. Nikdy jej
+nevkládejte do Gitu, GitHub Secrets tohoto workflow, dokumentace ani chatu.
+Workflow kontroluje pouze existenci a minimální délku; hodnotu nevypisuje.
 
 ### Jak připravit `SSH_KNOWN_HOSTS`
 
@@ -99,13 +123,15 @@ tabulek jsou součástí dumpu.
 
 ## Když workflow zčervená
 
-- Před krokem **Nahrát soubory aplikace**: produkční kód ani databáze se
+- Před krokem **Připravit kompletní release**: produkční kód ani databáze se
   nezměnily. Opravte uvedený Secret, konfiguraci, test nebo problém zálohy.
-- V kroku `rsync`: nová databázová záloha existuje, ale kód může být nahrán jen
-  částečně. Po opravě spojení spusťte stejné nasazení znovu.
-- V migracích: nic neobnovujte automaticky. Uložte log běhu, zastavte další
+- V kroku **Připravit kompletní release**: webroot ani databáze se ještě
+  nezměnily a ověřená záloha existuje. Po opravě spojení spusťte workflow znovu.
+- V migracích: webroot stále obsahuje předchozí PHP. Nic neobnovujte automaticky.
+  Uložte log běhu, zastavte další
   deploy a postupujte podle [OBNOVA-DATABAZE.md](OBNOVA-DATABAZE.md).
-- V HTTP testu: migrace i upload už proběhly. Zkontrolujte PHP error log a
+- V kroku **Aktivovat ověřený release** nebo v HTTP testu: migrace už proběhly.
+  Zkontrolujte PHP error log a
   nespouštějte další změnu naslepo.
 
 Vrácení staršího commitu vrátí pouze kód. Nevrací automaticky databázové změny.
