@@ -12,16 +12,16 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | produkční commit | `58ec8ec985d447dfe901481ac8bb24b944b03d08` |
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
-| vzdálený `main` | PR #1 až #4 sloučeny po vrstvách; `71ab49c982526ce83ea2f197fb21bd52699158ad`, finální run `30741297367` úspěšný |
-| lokální práce | `4b683ee` na `codex/auth-one-time-tokens` nad `71ab49c`; hashované expirované single-use tokeny, POST+CSRF logout a atomické waiting-list zamykání, bez produkčních změn |
+| vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
+| lokální práce | čistý `main` na `7f48b50`; tokenový a deploy-order přírůstek jsou sloučené, bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 195 first-party PHP souborů auth přírůstku prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | tokenový přírůstek: 110 testů / 626 assertions lokálně; GitHub CI čeká na push |
-| migrace | revokace/limiter jsou v `main`; nová tokenová migrace prošla idempotentně na SQLite i izolované MariaDB, produkční apply neproběhl |
-| deploy/backup | fail-closed záloha a ruční workflow jsou v `main`; chybí `SSH_KNOWN_HOSTS`, externí `AUTH_RATE_LIMIT_PEPPER`, preflight pepperu a bezpečné pořadí migrace/aktivace PHP |
-| restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-01.2` navíc pokrývá tři `ucto_gs_*` tabulky, které v lokální DB nejsou; produkční artefakt nebyl testován |
+| automatické testy | 112 testů / 647 assertions lokálně i v GitHub CI runu `30743017895` |
+| migrace | revokace/limiter i tokenová migrace jsou v `main`; SQLite a izolovaná MariaDB prošly, produkční apply neproběhl |
+| deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
+| restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-02.3` navíc pokrývá `auth_login_limits` a tři lokálně nepřítomné `ucto_gs_*` tabulky; produkční artefakt nebyl testován |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
 
@@ -49,9 +49,9 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 |---|---|---|---|---|
 | W0-A | Repo a deploy reconciliation | nic | dokončeno | lokální práce zachována, main sjednocen, workflow pravdivě zdokumentovaný |
 | W0-B | KIS matcher safety | dokončeno `7106930` | přijato | pořadově nezávislé testy a neměnný cache snapshot |
-| W0-C | Dependencies a auth hardening | částečně v `main`; tokenový přírůstek `4b683ee` | ano, jediný vlastník auth | session lifecycle, DB revokace, limiter, expirované single-use tokeny a POST+CSRF logout hotové; zbývá permission cache, reset hesla a produkční odstranění legacy hesel |
+| W0-C | Dependencies a auth hardening | částečně v `main`, včetně tokenového přírůstku PR #5 | ano, jediný vlastník auth | session lifecycle, DB revokace, limiter, expirované single-use tokeny a POST+CSRF logout hotové; zbývá permission cache, reset hesla a produkční odstranění legacy hesel |
 | W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
-| W0-E | Migrace a deploy hardening | kód v `main`, produkční ověření čeká | produkční ověření čeká | runner/check, fail-closed backup a lokální restore drill jsou doloženy; před deployem opravit preflight pepperu a aktivaci PHP až po migraci |
+| W0-E | Migrace a deploy hardening | PR #6 v `main`, produkční ověření čeká | produkční ověření čeká | runner/check, fail-closed backup, lokální restore drill, preflight pepperu a migrace před aktivací PHP jsou doloženy; zbývá Secret/config a autorizovaný první deploy |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
 | W0-G | Realistické anonymizované fixtures | částečně: KIS/shop matice `168d132`, `8f0cbe8` nad prvním dry-run přírůstkem | ano | syntetická rodina, konflikty, varianty, money/VAT a scope hranice pokryty; zbývá reálný anonymizovaný Shoptet/KIS formát a platební scénáře |
 
@@ -73,7 +73,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 - [x] unit/integration testy a migrační fixture existují; první GitHub běh `30718098799` je zelený,
 - [x] číslované migrace a read-only `--check` existují lokálně,
 - [ ] staging/test DB a kompletní realistické fixtures existují; rozšířené syntetické KIS/Shoptet matice a read-only dry-run už jsou doložené,
-- [ ] deploy kód selže při chybě zálohy; chybí `SSH_KNOWN_HOSTS`, preflight `AUTH_RATE_LIMIT_PEPPER` a release pořadí migrace před aktivací nového PHP,
+- [ ] deploy kód selže při chybě zálohy a v `main` ověřuje pepper i pořadí migrace před aktivací PHP; provozně chybí `SSH_KNOWN_HOSTS`, produkční pepper a autorizovaný první release,
 - [x] lokální restore drill je doložen; před prvním finančním schématem zopakovat s produkčním backup artefaktem,
 - [ ] identity, KIS ownership a wallet pravidla jsou schválena.
 
@@ -82,7 +82,7 @@ za splnění této brány.
 
 Auth F0 větve přidávají pouze bezpečnostní schéma a přihlašovací infrastrukturu;
 nepřidávají košík, platby ani produkční import. Hashované, expirované a atomicky
-jednorázové e-mailové/booking tokeny jsou implementované na samostatné větvi.
+jednorázové e-mailové/booking tokeny jsou implementované v `main`.
 Produktově stále chybí malý anonymizovaný CSV export ze Shoptetu a potvrzení
 stabilního KIS identifikátoru, retenční doby preview dat a single-use promote.
 Před budoucím auth deployem musí být mimo Git nastaven `AUTH_RATE_LIMIT_PEPPER`.
@@ -94,8 +94,9 @@ Pracuj jako řídicí task programu Evidence e-shop + týmová evidence.
 Nezačínej produktovou implementaci. Nejdřív načti dokumenty v
 docs/plan-eshop-tymova-evidence a ověř git status, HEAD a origin/main.
 Zachovej všechny cizí změny. Řiď Backlog F0 z 06-program-board.md.
-Jako první bezpečně vyřeš W0-A. Potom zadávej pouze nekolidující pracovní tasky
-podle 05-rizeni-vlaken.md. Každý task musí vrátit base/commit SHA, jmenované
+W0-A až W0-E nejdřív živě ověř; znovu je neimplementuj. Potom zadávej pouze
+nekolidující tasky pro zbývající W0-C, W0-F a W0-G podle 05-rizeni-vlaken.md.
+Každý task musí vrátit base/commit SHA, jmenované
 soubory, migrace, testy, rizika a akceptační důkaz. Produkční deploy spouští
 ručně vlastník až po integrační kontrole; pracovní task jej nespouští.
 ```
