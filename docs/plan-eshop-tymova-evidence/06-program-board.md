@@ -13,17 +13,17 @@ Zakázaný start: checkout, Stripe, Fio, wallet, publikace katalogu a ostrý KIS
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | shop kódový tip `f0370a3`; Shoptet XML kontrakt v4 a izolovaný katalogový staging jsou commitnuté, tento board následuje samostatně; bez produkčních změn |
+| lokální práce | shop admin kódový tip `3845eab`; staging, auditovaná ruční kontrola a shop–KIS plán jsou commitnuté, tento board následuje samostatně; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 195 first-party PHP souborů auth přírůstku prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | 127 testů / 762 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | tři číslované migrace včetně katalogového stagingu; SQLite a izolovaná MariaDB prošly, lokální ani produkční apply neproběhl |
+| automatické testy | 131 testů / 787 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | čtyři číslované migrace včetně stagingu a katalogové kontroly; SQLite a izolovaná MariaDB prošly, lokální ani produkční apply neproběhl |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-02.3` navíc pokrývá `auth_login_limits` a tři lokálně nepřítomné `ucto_gs_*` tabulky; produkční artefakt nebyl testován |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
-| Shoptet katalog | reálný XML export: 241 produktů / 807 variant, 0 blokátorů, 1 ruční klasifikace; staging idempotentně ověřen, publikace neexistuje |
+| Shoptet katalog | reálný XML export: 241 produktů / 807 variant, 0 blokátorů, 1 ruční klasifikace; admin ji auditovaně vyřešil v izolovaném smoke, publikace neexistuje |
 | lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
 
 Hodnoty lokální DB nejsou produkční statistika. Slouží pouze k posouzení, zda
@@ -54,7 +54,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
 | W0-E | Migrace a deploy hardening | PR #6 v `main`, produkční ověření čeká | produkční ověření čeká | runner/check, fail-closed backup, lokální restore drill, preflight pepperu a migrace před aktivací PHP jsou doloženy; zbývá Secret/config a autorizovaný první deploy |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
-| W0-G | Realistické anonymizované fixtures | částečně: reálný Shoptet XML ověřen a staging `f0370a3`; KIS/shop matice `168d132`, `8f0cbe8` | ano | Shoptet formát, konflikty, varianty, money/VAT a scope hranice pokryty; zbývá reálný KIS formát a platební scénáře |
+| W0-G | Realistické anonymizované fixtures | částečně: reálný Shoptet XML, staging `f0370a3` a admin `3845eab`; KIS/shop matice `168d132`, `8f0cbe8` | ano | Shoptet formát, konflikty, admin review, varianty, money/VAT a scope hranice pokryty; zbývá reálný KIS formát a platební scénáře |
 
 ## Bezpečný merge order
 
