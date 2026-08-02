@@ -13,17 +13,18 @@ Zakázaný start: checkout, Stripe, Fio, wallet, publikace katalogu a ostrý KIS
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | kanonický katalog kódový tip `b77f8c3`; jednorázový transakční převod do draftů je commitnutý, tento board následuje samostatně; bez produkčních změn |
+| lokální práce | K2 identity kódový tip `8c374a4`; admin-only vazby účtů na sportovce jsou commitnuté, tento board následuje samostatně; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 195 first-party PHP souborů auth přírůstku prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | 134 testů / 826 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | pět číslovaných migrací včetně kanonického draft katalogu; SQLite a izolovaná MariaDB prošly, lokální ani produkční apply neproběhl |
+| automatické testy | 138 testů / 859 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | šest číslovaných migrací včetně kanonického draft katalogu a K2 vazeb; SQLite a izolovaná MariaDB prošly, lokální ani produkční apply neproběhl |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-02.3` navíc pokrývá `auth_login_limits` a tři lokálně nepřítomné `ucto_gs_*` tabulky; produkční artefakt nebyl testován |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | Shoptet katalog | reálných 241/807 bylo po auditované kontrole transakčně převedeno do izolovaného draft katalogu; opakování bez duplicity, veřejně aktivních produktů 0 |
+| K2 identita | `8c374a4`: účet je oddělen od sportovce; vazby `self`/`guardian` schvaluje pouze admin s důvodem a auditem; neověřený účet ani zrušená vazba účastníka nezpřístupní |
 | lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
 
 Hodnoty lokální DB nejsou produkční statistika. Slouží pouze k posouzení, zda
@@ -54,7 +55,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
 | W0-E | Migrace a deploy hardening | PR #6 v `main`, produkční ověření čeká | produkční ověření čeká | runner/check, fail-closed backup, lokální restore drill, preflight pepperu a migrace před aktivací PHP jsou doloženy; zbývá Secret/config a autorizovaný první deploy |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
-| W0-G | Realistické anonymizované fixtures | částečně: reálný Shoptet XML, staging `f0370a3`, admin `3845eab` a draft promotion `b77f8c3`; KIS/shop matice `168d132`, `8f0cbe8` | ano | Shoptet formát, review a kanonický převod pokryty; zbývá reálný KIS formát a platební scénáře |
+| W0-G | Realistické anonymizované fixtures | částečně: reálný Shoptet XML, staging `f0370a3`, admin `3845eab`, draft promotion `b77f8c3` a K2 vazby `8c374a4`; KIS/shop matice `168d132`, `8f0cbe8` | ano | Shoptet formát, review, kanonický převod a K2 oprávnění pokryty; zbývá reálný KIS formát, claim a platební scénáře |
 
 ## Bezpečný merge order
 
@@ -86,7 +87,7 @@ nepřidávají košík, platby ani produkční import. Hashované, expirované a
 jednorázové e-mailové/booking tokeny jsou implementované v `main`.
 Shoptet export a bezpečný katalogový staging jsou doložené. Produktově stále
 chybí potvrzení stabilního KIS identifikátoru, retenční doby preview dat,
-single-use promote a pravidel publikace katalogu.
+claim workflow a pravidel publikace katalogu.
 Před budoucím auth deployem musí být mimo Git nastaven `AUTH_RATE_LIMIT_PEPPER`.
 
 ## Pokyn pro příští řídicí task
