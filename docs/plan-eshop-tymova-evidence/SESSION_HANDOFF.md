@@ -20,11 +20,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Produkční DB změny bez výslovného souhlasu: zakázány
 - Poslední dokončená akce: PR #1 až #4 byly bezpečně sloučeny do `main`; čtyři
   navazující main CI runy prošly a produkční workflow se nespustilo. Tokenový
-  přírůstek lokálně prochází 110 testy / 626 assertions a izolovanou MariaDB
-  migrací/runtime kontrolou; běžná lokální ani produkční DB nebyly změněny
-- Další přesná akce: dokončit audit, commit/push tokenové větve a otevřít PR.
-  Potom samostatně opravit deploy preflight/order. Paralelně dodat anonymizovaný
-  Shoptet export a potvrdit KIS identifikátor, retenci a single-use promote
+  commit `4b683ee` prochází 110 testy / 626 assertions, izolovanou MariaDB
+  migrací/runtime kontrolou a finální bezpečnostní re-audit jej přijal; běžná
+  lokální ani produkční DB nebyly změněny
+- Další přesná akce: pushnout tokenovou větev, otevřít draft PR a ověřit remote
+  CI. Potom samostatně opravit deploy preflight/order. Paralelně dodat
+  anonymizovaný Shoptet export a potvrdit KIS identifikátor, retenci a
+  single-use promote
 
 ## Pořadí autority
 
@@ -90,7 +92,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 |---|---|---|---|---|---|
 | W0-A | accepted | `58ec8ec` | řídicí task | Git reconciliation | nic |
 | W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
-| W0-C | partial accepted | auth commity v `main`; `codex/auth-one-time-tokens` aktivní | security worker | hesla, dependencies, lifecycle, revokace, limiter, tokeny, logout | permission cache, reset hesla a produkční password apply |
+| W0-C | partial accepted | auth commity v `main`; tokeny `4b683ee` | security worker | hesla, dependencies, lifecycle, revokace, limiter, tokeny, logout | permission cache, reset hesla a produkční password apply |
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
@@ -116,6 +118,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 12 | W0-G shop matrix `8f0cbe8` | přijato lokálně; varianty, kolize SKU, exact money/VAT a scope hranice |
 | 13 | W0-C session lifecycle `dfce1ea`, `af49d57` | přijato lokálně; 102 entrypointů, bezpečné cookie/timeout/rotace/logout |
 | 14 | W0-C DB revokace + rate limit `a3c2239`, `10c2cf9`, `9977b4d` | přijato; 103/569, MariaDB apply/runtime, dva finální audity ACCEPT a run `30740138748` success |
+| 15 | W0-C one-time tokeny + booking lock `4b683ee` | přijato lokálně; 110/626, SQLite + MariaDB, finální re-audit ACCEPT; remote CI čeká |
 
 PR #1 až #4 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Workflow nesmí být spuštěno bez ověřeného

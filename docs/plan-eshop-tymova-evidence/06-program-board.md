@@ -13,7 +13,7 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #4 sloučeny po vrstvách; `71ab49c982526ce83ea2f197fb21bd52699158ad`, finální run `30741297367` úspěšný |
-| lokální práce | větev `codex/auth-one-time-tokens` nad `71ab49c`; hashované expirované single-use tokeny a POST+CSRF logout, bez produkčních změn |
+| lokální práce | `4b683ee` na `codex/auth-one-time-tokens` nad `71ab49c`; hashované expirované single-use tokeny, POST+CSRF logout a atomické waiting-list zamykání, bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 195 first-party PHP souborů auth přírůstku prošlo lintem |
@@ -49,7 +49,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 |---|---|---|---|---|
 | W0-A | Repo a deploy reconciliation | nic | dokončeno | lokální práce zachována, main sjednocen, workflow pravdivě zdokumentovaný |
 | W0-B | KIS matcher safety | dokončeno `7106930` | přijato | pořadově nezávislé testy a neměnný cache snapshot |
-| W0-C | Dependencies a auth hardening | částečně v `main`; tokenový přírůstek na `codex/auth-one-time-tokens` | ano, jediný vlastník auth | session lifecycle, DB revokace, limiter, expirované single-use tokeny a POST+CSRF logout hotové; zbývá permission cache, reset hesla a produkční odstranění legacy hesel |
+| W0-C | Dependencies a auth hardening | částečně v `main`; tokenový přírůstek `4b683ee` | ano, jediný vlastník auth | session lifecycle, DB revokace, limiter, expirované single-use tokeny a POST+CSRF logout hotové; zbývá permission cache, reset hesla a produkční odstranění legacy hesel |
 | W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
 | W0-E | Migrace a deploy hardening | kód v `main`, produkční ověření čeká | produkční ověření čeká | runner/check, fail-closed backup a lokální restore drill jsou doloženy; před deployem opravit preflight pepperu a aktivaci PHP až po migraci |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |

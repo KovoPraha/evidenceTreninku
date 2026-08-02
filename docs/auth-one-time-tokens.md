@@ -1,7 +1,7 @@
 # Jednorázové tokeny a bezpečné odhlášení
 
-Stav: implementováno na větvi `codex/auth-one-time-tokens`, bez produkčního
-nasazení.
+Stav: implementováno v commitu `4b683ee` na větvi
+`codex/auth-one-time-tokens`, bez produkčního nasazení.
 
 ## Pokryté odkazy
 
