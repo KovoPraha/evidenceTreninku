@@ -9,22 +9,24 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-02, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `codex/f0-fixtures-session`, založená na
-  `codex/kis-shop-first-step`
-- Aktuální HEAD: ověřit živě; před aktualizací tohoto handoffu byly integrovány
-  commity `168d132` (KIS fixture matrix), `8f0cbe8` (shop fixture matrix),
-  `dfce1ea` a `af49d57` (session lifecycle + audit fixes)
+- Aktivní integrační větev: `codex/auth-revocation-rate-limit`, založená na
+  `codex/f0-fixtures-session`
+- Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
+  auth přírůstek tvoří
+  `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
+  `9977b4d` (HMAC pepper + sjednocené pořadí zámků)
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: sloučen druhý F0 přírůstek; lokálně prošlo 82 testů /
-  441 assertions a lint 187/187 PHP souborů, oba závěrečné read-only audity daly
-  ACCEPT; draft PR #3 je otevřený a GitHub kódový run `30722989933` skončil
-  úspěšně; produkce ani skutečná DB nebyly změněny
-- Další přesná akce: dodat malý anonymizovaný CSV export produktů ze Shoptetu a
-  potvrdit stabilní KIS identifikátor, retenci a single-use promote. Samostatně
-  navrhnout auth migraci pro session revokaci, rate limit a expirované tokeny.
-  Secret `SSH_KNOWN_HOSTS` stále chybí a deploy se nespouští
+- Poslední dokončená akce: auth přírůstek prošel 103 testy / 569 assertions,
+  lintem 195/195 PHP souborů, izolovanou SQLite i MariaDB migrací a MariaDB
+  runtime testem limiteru; finální SSO i shop/security audity daly ACCEPT.
+  Draft PR #4 je otevřený nad PR #3 a run `30740138748` je úspěšný; produkce ani
+  běžná lokální DB nebyly změněny
+- Další přesná akce: samostatně navrhnout migraci hashovaných, expirovaných a
+  jednorázových e-mailových/booking tokenů. Paralelně dodat anonymizovaný Shoptet
+  export a potvrdit KIS identifikátor, retenci a single-use promote. Před auth
+  deployem nastavit mimo Git `AUTH_RATE_LIMIT_PEPPER`; `SSH_KNOWN_HOSTS` chybí
 
 ## Pořadí autority
 
@@ -43,12 +45,12 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `58ec8ec985d447dfe901481ac8bb24b944b03d08` | 2026-08-01 | fetch + rev-parse | ano |
 | integrační branch | `codex/foundation`; pushnuta, draft PR #1 | 2026-08-01 | GitHub | ano |
-| PR / remote CI | PR #1 foundation, PR #2 KIS/shop a PR #3 F0 fixtures/session draft; kódový run PR #3 `30722989933` success | 2026-08-02 | GitHub | ano |
+| PR / remote CI | PR #1 foundation, PR #2 KIS/shop, PR #3 F0 fixtures/session a PR #4 auth draft; run PR #4 `30740138748` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | druhý F0 přírůstek: 82/441; lint 187/187; KIS realistic `2`, shop matrix `0/0/2/2` | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
+| testy | auth přírůstek: 103/569; lint 195/195; migrace SQLite + MariaDB a MariaDB limiter runtime OK | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
 | lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-01.2` obsahuje i lokálně nepřítomné `ucto_gs_*` | 2026-08-01 | izolovaná XAMPP DB | zopakovat s produkčním artefaktem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
@@ -90,7 +92,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 |---|---|---|---|---|---|
 | W0-A | accepted | `58ec8ec` | řídicí task | Git reconciliation | nic |
 | W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
-| W0-C | partial accepted | `2ed5278`, `1a9af03`, `dfce1ea`, `af49d57` | security worker | hesla, dependencies, session lifecycle | DB revokace, rate limit, tokeny a produkční password apply |
+| W0-C | partial accepted | `2ed5278`, `1a9af03`, `dfce1ea`, `af49d57`, `a3c2239`, `10c2cf9`, `9977b4d` | security worker | hesla, dependencies, session lifecycle, DB revokace, rate limit | tokeny, permission cache a produkční password apply |
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
@@ -115,6 +117,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 11 | W0-G realistic KIS `168d132` | přijato lokálně; 10 opaque scénářů, 9 blockerů, missing nikdy nearchivuje |
 | 12 | W0-G shop matrix `8f0cbe8` | přijato lokálně; varianty, kolize SKU, exact money/VAT a scope hranice |
 | 13 | W0-C session lifecycle `dfce1ea`, `af49d57` | přijato lokálně; 102 entrypointů, bezpečné cookie/timeout/rotace/logout |
+| 14 | W0-C DB revokace + rate limit `a3c2239`, `10c2cf9`, `9977b4d` | přijato; 103/569, MariaDB apply/runtime, dva finální audity ACCEPT a run `30740138748` success |
 
 Foundation větev je pushnuta pouze do draft PR #1 a není sloučena do `main`.
 Produkční migrace, migrace hesel ani deploy se v této session nespustily. Nový
@@ -126,10 +129,13 @@ checkout, KIS apply ani produkční cutover. Shoptet kontrakt je provisionalní,
 dokud nebude ověřen proti reálnému anonymizovanému exportu.
 
 Session increment používá vlastní cookie `EVIDENCESESSID`; jeho budoucí deploy
-jednorázově odhlásí existující relace. `VELOCOTA_INTEGRATION` musí zůstat vypnutá,
-dokud nebude ověřen cookie/session kontrakt nebo navržen auth-code bridge.
-Databázová revokace session, rate limiting, expirované hashované tokeny a
-POST+CSRF logout zůstávají otevřené, takže W0-C ani F0 ještě nejsou uzavřené.
+jednorázově odhlásí existující relace. DB revokace a atomický HMAC rate limit jsou
+lokálně hotové, ale deploy je fail-closed bez externího `AUTH_RATE_LIMIT_PEPPER`.
+Evidence je samostatný produkt. `VELOCOTA_INTEGRATION` musí zůstat `false`;
+širší provozní nebo doménová integrace s Velocotou není plánovaná. Výhledově lze
+samostatným rozhodnutím řešit pouze sdílenou/federovanou identitu uživatele.
+Expirované hashované tokeny, permission cache a POST+CSRF logout zůstávají
+otevřené, takže W0-C ani F0 nejsou uzavřené.
 
 ## Stop podmínky
 

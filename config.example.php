@@ -27,6 +27,16 @@ $jeLokalne = PHP_OS_FAMILY === 'Windows'
 
 define('JE_LOKALNE', $jeLokalne);
 
+// ── Bezpečnost přihlášení ───────────────────────────────────────────────────
+// POVINNÉ PŘED DEPLOYEM: unikátní náhodný secret o délce nejméně 32 znaků.
+// Preferovaně jej nastavte na hostingu jako environment proměnnou, mimo webroot.
+$authRateLimitPepper = getenv('AUTH_RATE_LIMIT_PEPPER');
+if (is_string($authRateLimitPepper) && $authRateLimitPepper !== '') {
+    define('AUTH_RATE_LIMIT_PEPPER', $authRateLimitPepper);
+}
+// Pokud hosting environment proměnné neumí, přidejte pouze do ignorovaného config.php:
+// define('AUTH_RATE_LIMIT_PEPPER', '<NAHODNY-SECRET-ALESPOŇ-32-ZNAKU>');
+
 // ── Databáze ─────────────────────────────────────────────────────────────────
 
 if ($jeLokalne) {
@@ -43,23 +53,9 @@ if ($jeLokalne) {
     define('DB_PASS', 'heslo-sem');       // NIKDY nepřidávat do gitu
 }
 
-// ── Integrace s Velocotou ─────────────────────────────────────────────────────
+// ── Legacy Velocota bridge ───────────────────────────────────────────────────
 
-// true  = provoz s Velocotou (SSO, sdílená navigace)
-// false = samostatný provoz s vlastním login.php
+// Evidence je samostatná aplikace. Toto je pouze vypnutá kompatibilní možnost
+// pro starší experiment; není součástí cílové architektury ani deploy plánu.
+// Nezapínat bez nového výslovného rozhodnutí a samostatného security review.
 define('VELOCOTA_INTEGRATION', false);
-
-// Cesta ke kořeni Velocota aplikace na serveru (pro include headeru)
-define('VELOCOTA_ROOT', '/var/www/html/velocota');
-
-// Base URL Evidence v kontextu Velocota (pro generování odkazů)
-define('VELOCOTA_EVIDENCE_BASE_URL', $jeLokalne
-    ? 'http://localhost/evidencePavel'
-    : 'https://data.kovopraha.cz/evidence');
-
-// ── Session klíče z Velocoty (NEMĚNIT bez koordinace s Velocota týmem) ────────
-define('VELO_SESSION_USER_ID',  'velo_user_id');
-define('VELO_SESSION_ROLE',     'velo_role');
-define('VELO_SESSION_JMENO',    'velo_jmeno');
-define('VELO_SESSION_EMAIL',    'velo_email');
-define('VELO_SESSION_KLUB_ID',  'velo_klub_id');

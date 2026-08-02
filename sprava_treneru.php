@@ -35,11 +35,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id > 0) {
             // Úprava existujícího
             if ($heslo !== '') {
-                $stmt = $pdo->prepare("UPDATE treneri SET jmeno = ?, email = ?, heslo = ?, role = ? WHERE id = ?");
+                $stmt = $pdo->prepare(
+                    "UPDATE treneri SET jmeno = ?, email = ?, heslo = ?, role = ?, "
+                    . "session_version = session_version + 1 WHERE id = ?"
+                );
                 $stmt->execute([$jmeno, $email, trainer_password_hash($heslo), $role, $id]);
             } else {
-                $stmt = $pdo->prepare("UPDATE treneri SET jmeno = ?, email = ?, role = ? WHERE id = ?");
-                $stmt->execute([$jmeno, $email, $role, $id]);
+                $stmt = $pdo->prepare(
+                    "UPDATE treneri SET jmeno = ?, email = ?, "
+                    . "session_version = session_version + CASE WHEN role <> ? THEN 1 ELSE 0 END, "
+                    . "role = ? WHERE id = ?"
+                );
+                $stmt->execute([$jmeno, $email, $role, $role, $id]);
             }
             $_SESSION['flash_success'] = 'Trenér aktualizován.';
         } else {

@@ -275,3 +275,30 @@ function app_session_logout_public_identity(?int $now = null): void
     $_SESSION[APP_SESSION_LAST_ACTIVITY_AT] = $now;
     $_SESSION[APP_SESSION_ROTATED_AT] = $now;
 }
+
+function app_session_mark_identity_changed(?int $now = null): void
+{
+    $now ??= time();
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        return;
+    }
+
+    if (!session_regenerate_id(true)) {
+        app_session_destroy($now);
+        return;
+    }
+
+    app_session_rotate_csrf_token();
+    if (!app_session_has_authenticated_identity()) {
+        unset(
+            $_SESSION[APP_SESSION_AUTHENTICATED_AT],
+            $_SESSION[APP_SESSION_LAST_ACTIVITY_AT],
+            $_SESSION[APP_SESSION_ROTATED_AT]
+        );
+        return;
+    }
+
+    $_SESSION[APP_SESSION_AUTHENTICATED_AT] ??= $now;
+    $_SESSION[APP_SESSION_LAST_ACTIVITY_AT] = $now;
+    $_SESSION[APP_SESSION_ROTATED_AT] = $now;
+}

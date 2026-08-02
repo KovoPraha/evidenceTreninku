@@ -72,14 +72,14 @@ kterém lze vysvětlit každou změnu člena, objednávky, platby i kreditu.
 | D-004 | KIS | nejdříve shadow mode a paritní report; cutover až samostatným rozhodnutím | blokuje ostré nahrazení |
 | D-005 | Účet člena | pro MVP Evidence `verejni_uzivatele`; účet se aktivuje postupně | doporučeno |
 | D-006 | Rodina | vazební tabulka účet ↔ osoba s rolí a platností; ne jediný `sportovec_id` | blokuje návrh identity |
-| D-007 | Velocota login | případný budoucí jednorázový autorizační kód; nesdílet cookie mezi doménami | odložit za MVP identity |
+| D-007 | Budoucí sdílení uživatelů | Evidence zůstává samostatná; případně lze později federovat nebo propojit pouze identitu, bez sdílení doménových dat | potvrzeno 2. 8. 2026; mimo MVP |
 | D-008 | Klubové akce | nová doména; nepoužívat účetní `ucto_udalosti` | doporučeno |
 | D-009 | Kredit | neměnný ledger; reward a peněžní dobití jako oddělené kapsy | vyžaduje účetní/právní potvrzení |
 | D-010 | Platby | jedna společná platební vrstva, ale oddělený stav objednávky a platby | doporučeno |
 | D-011 | Částky | ukládat v haléřích jako integer, vždy s měnou | doporučeno |
 | D-012 | První checkout | právě jedna platební metoda na objednávku; kombinaci kredit + karta odložit | doporučeno |
 | D-013 | Doprava | osobní odběr v MVP, Packeta až po stabilní objednávce | doporučeno |
-| D-014 | Integrace s Velocotou | přes stabilní API/external ID; nikdy přímým zápisem do jejích tabulek | doporučeno |
+| D-014 | Hranice vůči Velocotě | žádná provozní/doménová integrace se neplánuje; případné sdílení uživatelů je jediný samostatný budoucí kontrakt | potvrzeno 2. 8. 2026 |
 | D-015 | Migrace | číslované migrace s ledgerem, CLI kontrolou a zálohou před spuštěním | blokuje finanční schéma |
 
 ## Otevřené otázky pro vlastníka produktu
@@ -120,7 +120,8 @@ kterém lze vysvětlit každou změnu člena, objednávky, platby i kreditu.
 - věrnostní program nad rámec klubového kreditu,
 - mobilní aplikace,
 - současné zrušení Shoptetu a KIS bez přechodného provozu,
-- mikroslužby a přímé sdílení databází mezi Evidence a Velocotou.
+- mikroslužby a provozní/doménové propojení Evidence s Velocotou,
+- sdílené cookies nebo přímé sdílení aplikačních tabulek s Velocotou.
 
 ## Definition of Ready pro implementační úkol
 

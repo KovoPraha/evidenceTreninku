@@ -1,8 +1,11 @@
 <?php
 require_once dirname(__DIR__) . '/includes/session_security.php';
+require_once dirname(__DIR__) . '/includes/auth_session.php';
 /**
  * auth/sso_bridge.php
- * SSO bridge — čte Velocota session a mapuje na Evidence session.
+ * Legacy SSO bridge — čte Velocota session a mapuje na Evidence session.
+ * Evidence je samostatný produkt; bridge není součástí cílové architektury a
+ * nesmí se zapnout bez nového explicitního rozhodnutí a security review.
  *
  * INCLUDOVAT přes db.php (podmíněně dle VELOCOTA_INTEGRATION):
  *   if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {
@@ -37,7 +40,7 @@ const VELO_ROLE_MAP = [
  * Hlavní bridge funkce — volána z db.php při každém requestu.
  * Pokud Velocota session neexistuje, nastaví prázdné Evidence session (logout).
  */
-function velocotaSsoBridge(PDO $pdo): void
+function velocotaSsoBridge(PDO $pdo): bool
 {
     $veloId    = $_SESSION['velo_user_id'] ?? null;
     $veloRole  = $_SESSION['velo_role']    ?? '';
@@ -46,15 +49,14 @@ function velocotaSsoBridge(PDO $pdo): void
 
     // Velocota session neexistuje nebo role nemá přístup → clear Evidence session
     if (!$veloId || !isset(VELO_ROLE_MAP[$veloRole])) {
-        _clearEvidenceSession();
-        return;
+        return !_clearEvidenceSession();
     }
+    $evidenceRole = VELO_ROLE_MAP[$veloRole];
 
     // Najít nebo vytvořit záznam v treneri tabulce
     $trenerId = _syncTrener($pdo, (int)$veloId, $veloJmeno, $veloEmail);
     if (!$trenerId) {
-        _clearEvidenceSession();
-        return;
+        return !_clearEvidenceSession();
     }
 
     // Aktivitu účtu ověřujeme při každém requestu, i u již přihlášeného uživatele.
@@ -62,15 +64,20 @@ function velocotaSsoBridge(PDO $pdo): void
         isset($_SESSION['trener_id'], $_SESSION['velo_user_id_cached'])
         && (int)$_SESSION['trener_id'] === $trenerId
         && (int)$_SESSION['velo_user_id_cached'] === (int)$veloId
+        && ($_SESSION['role'] ?? null) === $evidenceRole
     ) {
-        return;
+        return true;
+    }
+
+    $sessionVersion = auth_session_active_version($pdo, 'trainer', $trenerId);
+    if ($sessionVersion === null) {
+        return !_clearEvidenceSession();
     }
 
     app_session_mark_authenticated();
 
     // Zapsat Evidence session
-    $evidenceRole = VELO_ROLE_MAP[$veloRole];
-    $_SESSION['trener_id']          = $trenerId;
+    auth_session_bind_trainer($trenerId, $sessionVersion);
     $_SESSION['trener_jmeno']       = $veloJmeno;
     $_SESSION['role']               = $evidenceRole;
     $_SESSION['velo_user_id_cached']= (int)$veloId;
@@ -82,6 +89,8 @@ function velocotaSsoBridge(PDO $pdo): void
     } catch (PDOException $e) {
         $_SESSION['opravneni'] = [];
     }
+
+    return true;
 }
 
 /**
@@ -162,13 +171,13 @@ function _colExists(PDO $pdo, string $table, string $col): bool
 }
 
 /** Vymaže Evidence session (udrží ostatní klíče z Velocoty). */
-function _clearEvidenceSession(): void
+function _clearEvidenceSession(): bool
 {
-    unset(
-        $_SESSION['trener_id'],
-        $_SESSION['trener_jmeno'],
-        $_SESSION['role'],
-        $_SESSION['opravneni'],
-        $_SESSION['velo_user_id_cached']
-    );
+    $hadEvidenceIdentity = isset($_SESSION['trener_id']);
+    auth_session_clear_identity('trainer');
+    if ($hadEvidenceIdentity) {
+        app_session_mark_identity_changed();
+    }
+
+    return $hadEvidenceIdentity;
 }

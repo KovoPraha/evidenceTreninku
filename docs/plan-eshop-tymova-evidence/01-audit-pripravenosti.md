@@ -67,8 +67,10 @@ proces.
 
 Existují sportovci, skupiny/podskupiny, tréninky, KIS stavové signály,
 admin karta člena, historie, hromadné akce, veřejný booking, sportoviště,
-lekce a web push. SSO bridge dnes mapuje centrální Velocota session do
-Evidence trenérských rolí (`auth/sso_bridge.php:11-21`, `:39-78`).
+lekce a web push. V repozitáři existuje také starší volitelný SSO bridge pro
+Velocotu (`auth/sso_bridge.php`), ale není součástí cílové architektury a musí
+zůstat vypnutý. Evidence je samostatná aplikace; případné budoucí sdílení
+uživatelské identity vyžaduje samostatný kontrakt a rozhodnutí.
 
 ## Co lokální DB skutečně ukazuje
 
@@ -146,7 +148,7 @@ alespoň jejich kompatibilní runner s transakčním/provozním reportem.
 
 ### 4. Identita je rozštěpená
 
-- `treneri` používají interní přihlášení nebo Velocota SSO bridge,
+- `treneri` používají interní přihlášení; legacy Velocota bridge je vypnutý,
 - `sportovci` jsou evidované osoby bez loginu,
 - `verejni_uzivatele` mají vlastní heslo pro booking,
 - lokální sportovci nemají e-mail a veřejné účty jsou prázdné.

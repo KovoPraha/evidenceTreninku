@@ -23,7 +23,7 @@
 19. [Čekací listina](#19-čekací-listina-2140) *(2.14.0)*
 20. [UX balík](#20-ux-balík-2160) *(2.16.0)*
 21. [Web Push notifikace](#21-web-push-notifikace-2170) *(2.17.0)*
-22. [Velocota SSO integrace](#22-velocota-sso-integrace-2180) *(2.18.0)*
+22. [Legacy Velocota SSO bridge](#22-legacy-velocota-sso-bridge-2180) *(2.18.0)*
 
 ---
 
@@ -219,7 +219,9 @@ Připojení: `PDO("mysql:host=...;dbname=...;charset=utf8mb4")`
 
 Nastavení: `PDO::ATTR_ERRMODE → PDO::ERRMODE_EXCEPTION`
 
-Na konci `db.php` se volá `require_once __DIR__ . '/includes/auto_migrace.php'` a podmíněně `auth/sso_bridge.php` (pokud `VELOCOTA_INTEGRATION === true` v `config.php`).
+Na konci `db.php` se volá `require_once __DIR__ . '/includes/auto_migrace.php'`.
+Soubor obsahuje také podmínku pro legacy `auth/sso_bridge.php`, ale cílová
+konfigurace drží `VELOCOTA_INTEGRATION === false`.
 
 ### Auto-migrace schématu
 
@@ -1466,16 +1468,17 @@ Generátor: `vendor/bin/web-push generate-vapid-keys` nebo https://vapidkeys.com
 
 ---
 
-## 22. Velocota SSO integrace *(2.18.0)*
+## 22. Legacy Velocota SSO bridge *(2.18.0)*
 
-Viz `docs/integrace-velocota.md` pro kompletní integrační spec.
+Tento povrch je historický experiment a není součástí cílové architektury.
+Evidence je samostatná aplikace; `VELOCOTA_INTEGRATION` musí zůstat `false`.
+Aktuální rozhodnutí a hranice popisuje `docs/integrace-velocota.md`.
 
 ### 22a. Přepínač integrace
 
 `config.php` (z `config.example.php`, není v gitu):
 ```php
 define('VELOCOTA_INTEGRATION', false);  // standalone mód (lokální vývoj)
-define('VELOCOTA_INTEGRATION', true);   // produkce s Velocotou
 ```
 
 ### 22b. SSO bridge
@@ -1495,7 +1498,8 @@ define('VELOCOTA_INTEGRATION', true);   // produkce s Velocotou
 | `velo_jmeno` | string | `$_SESSION['trener_jmeno']` |
 | `velo_email` | string | lookup v `treneri.email` |
 
-**Tyto klíče nesmíš přejmenovat bez koordinace s Velocota týmem.**
+Kontrakt se nesmí aktivovat ani rozšiřovat bez nového rozhodnutí vlastníka
+produktu a samostatného security review.
 
 ### 22d. DB migrace
 

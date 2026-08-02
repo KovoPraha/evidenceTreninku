@@ -30,10 +30,10 @@ Uživatelské účty trenérů.
 | Sloupec | Typ | Popis |
 |---------|-----|-------|
 | `id` | int PK | |
-| `velo_user_id` | int NULL | Reference na Velocota uživatele (SSO) — **přidáno v 2.18.0** |
+| `velo_user_id` | int NULL | Legacy nullable reference ze starého SSO experimentu; cílová architektura ji nepoužívá |
 | `jmeno` | varchar(100) | Přihlašovací jméno (nebo email) |
 | `email` | varchar(255) | |
-| `heslo` | varchar(255) | Heslo (bcrypt hash) — při SSO módu se nevyužívá |
+| `heslo` | varchar(255) | Heslo (moderní password hash) |
 | `role` | enum('trener','hlavni','admin') | Role: trenér / správce / administrátor |
 | `aktivni` | tinyint(1) DEFAULT 1 | Aktivní účet |
 
