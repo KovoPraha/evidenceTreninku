@@ -24,13 +24,30 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($first['current']);
         self::assertTrue($second['current']);
         self::assertSame(
-            ['20260802120000_auth_revocation_rate_limit'],
+            [
+                '20260802120000_auth_revocation_rate_limit',
+                '20260802133000_one_time_tokens',
+            ],
             array_keys($catalog)
         );
         self::assertSame(1, $this->sessionVersion($pdo, 'treneri', 1));
         self::assertSame(1, $this->sessionVersion($pdo, 'verejni_uzivatele', 1));
         self::assertTrue($this->tableExists($pdo, 'auth_login_limits'));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
+        self::assertSame(
+            one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),
+            $pdo->query('SELECT verifikacni_token FROM verejni_uzivatele WHERE id = 1')->fetchColumn()
+        );
+        self::assertSame(
+            one_time_token_hash(ONE_TIME_TOKEN_BOOKING_APPROVAL, str_repeat('b', 48)),
+            $pdo->query('SELECT potvrzovaci_token FROM verejne_rezervace WHERE id = 1')->fetchColumn()
+        );
+        self::assertNotFalse(
+            $pdo->query('SELECT verifikacni_token_expires_at FROM verejni_uzivatele WHERE id = 1')->fetchColumn()
+        );
+        self::assertNotFalse(
+            $pdo->query('SELECT potvrzovaci_token_expires_at FROM verejne_rezervace WHERE id = 1')->fetchColumn()
+        );
         self::assertSame(
             1,
             (int)$pdo->query(
@@ -54,9 +71,21 @@ final class AuthSecurityMigrationTest extends TestCase
         $pdo->exec('INSERT INTO treneri (id, aktivni) VALUES (1, 1)');
         $pdo->exec(
             'CREATE TABLE verejni_uzivatele ('
-            . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1)'
+            . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1, '
+            . 'verifikacni_token TEXT NULL, registrovan TEXT NOT NULL)'
         );
-        $pdo->exec('INSERT INTO verejni_uzivatele (id, aktivni) VALUES (1, 1)');
+        $pdo->exec(
+            "INSERT INTO verejni_uzivatele (id, aktivni, verifikacni_token, registrovan) "
+            . "VALUES (1, 1, '" . str_repeat('a', 64) . "', '2026-08-02 08:00:00')"
+        );
+        $pdo->exec(
+            'CREATE TABLE verejne_rezervace ('
+            . 'id INTEGER PRIMARY KEY, potvrzovaci_token TEXT NULL, cas_rezervace TEXT NOT NULL)'
+        );
+        $pdo->exec(
+            "INSERT INTO verejne_rezervace (id, potvrzovaci_token, cas_rezervace) "
+            . "VALUES (1, '" . str_repeat('b', 48) . "', '2026-08-02 08:00:00')"
+        );
 
         return $pdo;
     }

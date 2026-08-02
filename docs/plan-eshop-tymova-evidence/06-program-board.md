@@ -12,18 +12,15 @@ Zakázaný start: shop, Stripe, Fio, wallet a ostrý KIS cutover
 | produkční commit | `58ec8ec985d447dfe901481ac8bb24b944b03d08` |
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
-| lokální commit | auth přírůstek `9977b4d` na větvi `codex/auth-revocation-rate-limit` |
-| foundation branch | `codex/foundation`; pushnuta do originu, draft PR #1 otevřený proti `main` |
-| první KIS/shop přírůstek | větev `codex/kis-shop-first-step`; draft PR #2 nad foundation, bez migrace a bez produkčních změn |
-| druhý F0 přírůstek | větev `codex/f0-fixtures-session`; draft PR #3 nad PR #2, bez migrace a bez produkčních změn |
-| auth F0 přírůstek | větev `codex/auth-revocation-rate-limit`; draft PR #4 nad PR #3, produkční apply ani deploy neproběhl |
+| vzdálený `main` | PR #1 až #4 sloučeny po vrstvách; `71ab49c982526ce83ea2f197fb21bd52699158ad`, finální run `30741297367` úspěšný |
+| lokální práce | `4b683ee` na `codex/auth-one-time-tokens` nad `71ab49c`; hashované expirované single-use tokeny, POST+CSRF logout a atomické waiting-list zamykání, bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 195 first-party PHP souborů auth přírůstku prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | auth přírůstek: 103 testů / 569 assertions lokálně; GitHub run `30740138748` úspěšný |
-| migrace | první immutable auth migrace přidává revokovatelné session a limiter; idempotentní apply/verify prošel na izolované SQLite i MariaDB, produkční apply neproběhl |
-| deploy/backup | fail-closed CLI záloha, připnutý host key a ruční potvrzení integrovány lokálně; chybí Secret `SSH_KNOWN_HOSTS` a první GitHub běh |
+| automatické testy | tokenový přírůstek: 110 testů / 626 assertions lokálně; GitHub CI čeká na push |
+| migrace | revokace/limiter jsou v `main`; nová tokenová migrace prošla idempotentně na SQLite i izolované MariaDB, produkční apply neproběhl |
+| deploy/backup | fail-closed záloha a ruční workflow jsou v `main`; chybí `SSH_KNOWN_HOSTS`, externí `AUTH_RATE_LIMIT_PEPPER`, preflight pepperu a bezpečné pořadí migrace/aktivace PHP |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-01.2` navíc pokrývá tři `ucto_gs_*` tabulky, které v lokální DB nejsou; produkční artefakt nebyl testován |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
@@ -52,9 +49,9 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 |---|---|---|---|---|
 | W0-A | Repo a deploy reconciliation | nic | dokončeno | lokální práce zachována, main sjednocen, workflow pravdivě zdokumentovaný |
 | W0-B | KIS matcher safety | dokončeno `7106930` | přijato | pořadově nezávislé testy a neměnný cache snapshot |
-| W0-C | Dependencies a auth hardening | částečně `2ed5278`, `1a9af03`, `dfce1ea`, `af49d57`, `a3c2239`, `10c2cf9`, `9977b4d` | ano, jediný vlastník auth | session lifecycle, DB revokace a atomický HMAC rate limit hotové lokálně; zbývají expirované tokeny, permission cache a produkční odstranění legacy hesel |
+| W0-C | Dependencies a auth hardening | částečně v `main`; tokenový přírůstek `4b683ee` | ano, jediný vlastník auth | session lifecycle, DB revokace, limiter, expirované single-use tokeny a POST+CSRF logout hotové; zbývá permission cache, reset hesla a produkční odstranění legacy hesel |
 | W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
-| W0-E | Migrace a deploy hardening | implementováno lokálně `664745e`, `cd0c0e1` | produkční ověření čeká | runner/check, fail-closed backup a lokální restore drill jsou doloženy; zbývá Secret, remote CI a autorizovaný deploy |
+| W0-E | Migrace a deploy hardening | kód v `main`, produkční ověření čeká | produkční ověření čeká | runner/check, fail-closed backup a lokální restore drill jsou doloženy; před deployem opravit preflight pepperu a aktivaci PHP až po migraci |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
 | W0-G | Realistické anonymizované fixtures | částečně: KIS/shop matice `168d132`, `8f0cbe8` nad prvním dry-run přírůstkem | ano | syntetická rodina, konflikty, varianty, money/VAT a scope hranice pokryty; zbývá reálný anonymizovaný Shoptet/KIS formát a platební scénáře |
 
@@ -72,20 +69,20 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 - [x] lokální a vzdálený main bezpečně sjednocen,
 - [x] KIS matcher opraven a otestován na foundation,
 - [x] dependency audit foundation bez advisories,
-- [ ] legacy hesla a session mají schválenou a ověřenou nápravu; transport/lifecycle, DB revokace a rate limit jsou hotové lokálně, ale tokeny, permission cache a produkční password apply zbývají,
+- [ ] legacy hesla a session mají schválenou a ověřenou nápravu; tokeny, logout, lifecycle, DB revokace a limiter jsou hotové lokálně, ale permission cache, reset hesla a produkční password apply zbývají,
 - [x] unit/integration testy a migrační fixture existují; první GitHub běh `30718098799` je zelený,
 - [x] číslované migrace a read-only `--check` existují lokálně,
 - [ ] staging/test DB a kompletní realistické fixtures existují; rozšířené syntetické KIS/Shoptet matice a read-only dry-run už jsou doložené,
-- [ ] deploy kód selže při chybě zálohy; skutečný host key ještě není uložen jako `SSH_KNOWN_HOSTS` a workflow neproběhl,
+- [ ] deploy kód selže při chybě zálohy; chybí `SSH_KNOWN_HOSTS`, preflight `AUTH_RATE_LIMIT_PEPPER` a release pořadí migrace před aktivací nového PHP,
 - [x] lokální restore drill je doložen; před prvním finančním schématem zopakovat s produkčním backup artefaktem,
 - [ ] identity, KIS ownership a wallet pravidla jsou schválena.
 
 Pokud chybí jediná položka, F0 zůstává červená. „Deploy proběhl“ není náhradou
 za splnění této brány.
 
-Auth F0 větev přidává pouze bezpečnostní schéma a přihlašovací infrastrukturu;
-nepřidává košík, platby ani produkční import. Další bezpečný auth krok má řešit
-hashované, expirované a atomicky jednorázové e-mailové/booking tokeny odděleně.
+Auth F0 větve přidávají pouze bezpečnostní schéma a přihlašovací infrastrukturu;
+nepřidávají košík, platby ani produkční import. Hashované, expirované a atomicky
+jednorázové e-mailové/booking tokeny jsou implementované na samostatné větvi.
 Produktově stále chybí malý anonymizovaný CSV export ze Shoptetu a potvrzení
 stabilního KIS identifikátoru, retenční doby preview dat a single-use promote.
 Před budoucím auth deployem musí být mimo Git nastaven `AUTH_RATE_LIMIT_PEPPER`.

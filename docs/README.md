@@ -57,6 +57,7 @@ klubových agend Kovoprahy.
 ## Bezpečnost
 
 - CSRF ochrana na všech formulářích (`csrf_helper.php`)
+- [Jednorázové tokeny a bezpečné odhlášení](auth-one-time-tokens.md)
 - Prepared statements (PDO) proti SQL injection
 - XSS ochrana (`htmlspecialchars()`)
 - MIME validace uploadů (`finfo_file()`)

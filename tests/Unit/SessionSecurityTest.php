@@ -178,6 +178,7 @@ final class SessionSecurityTest extends TestCase
             'trener_id' => 7,
             'verejny_uzivatel_id' => 9,
             'verejny_uzivatel_jmeno' => 'Test User',
+            'verejny_uzivatel_session_version' => 4,
             'csrf_token' => 'old-csrf-token',
         ];
         $oldId = session_id();
@@ -188,6 +189,7 @@ final class SessionSecurityTest extends TestCase
         self::assertSame(7, $_SESSION['trener_id']);
         self::assertArrayNotHasKey('verejny_uzivatel_id', $_SESSION);
         self::assertArrayNotHasKey('verejny_uzivatel_jmeno', $_SESSION);
+        self::assertArrayNotHasKey('verejny_uzivatel_session_version', $_SESSION);
         self::assertNotSame($oldId, session_id());
         self::assertNotSame('old-csrf-token', $_SESSION['csrf_token']);
         self::assertSame(1100, $_SESSION[APP_SESSION_LAST_ACTIVITY_AT]);

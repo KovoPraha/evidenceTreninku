@@ -850,7 +850,8 @@ Zákaznické účty pro veřejný booking systém. Odděleni od `treneri`.
 | `email` | varchar(160) UNIQUE | |
 | `heslo_hash` | varchar(255) | `password_hash()` / `password_verify()` |
 | `telefon` | varchar(20) NULL | |
-| `verifikacni_token` | varchar(64) NULL | Token pro ověření emailu |
+| `verifikacni_token` | varchar(64) NULL | SHA-256 hash jednorázového tokenu pro ověření e-mailu |
+| `verifikacni_token_expires_at` | datetime NULL | Expirace ověřovacího tokenu v UTC |
 | `email_overeno` | tinyint(1) DEFAULT 0 | 1 = email ověřen, lze se přihlásit |
 | `aktivni` | tinyint(1) DEFAULT 1 | |
 | `registrovan` | timestamp | |
@@ -894,7 +895,8 @@ Zákazníkovo zarezervování individuální lekce (nebo konkrétního slotu v r
 | `zaplaceno` | tinyint(1) DEFAULT 0 | Manuálně označí trenér |
 | `poznamka_klienta` | text NULL | |
 | `poznamka_trenera` | text NULL | |
-| `potvrzovaci_token` | varchar(64) NULL | Token v emailu trenérovi pro one-click potvrzení/zamítnutí |
+| `potvrzovaci_token` | varchar(64) NULL | SHA-256 hash jednorázového tokenu pro rozhodnutí trenéra |
+| `potvrzovaci_token_expires_at` | datetime NULL | Expirace booking tokenu v UTC |
 | `slot_cas_od` | time NULL | Začátek konkrétního slotu zákazníka — **přidáno v 2.9.0** (NULL = celá lekce) |
 | `slot_cas_do` | time NULL | Konec konkrétního slotu zákazníka — **přidáno v 2.9.0** (NULL = celá lekce) |
 | `cas_rezervace` | timestamp | |

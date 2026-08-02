@@ -3,6 +3,7 @@ require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/one_time_token.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -40,15 +41,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (empty($errors)) {
-            $token = bin2hex(random_bytes(32));
+            $verification = one_time_token_issue(ONE_TIME_TOKEN_EMAIL_VERIFICATION, 86400);
             $pdo->prepare("
                 INSERT INTO verejni_uzivatele
-                    (jmeno, prijmeni, email, heslo_hash, telefon, verifikacni_token)
-                VALUES (?,?,?,?,?,?)
-            ")->execute([$jmeno, $prijmeni, $email, password_hash($heslo, PASSWORD_DEFAULT), $telefon ?: null, $token]);
+                    (jmeno, prijmeni, email, heslo_hash, telefon, verifikacni_token,
+                     verifikacni_token_expires_at)
+                VALUES (?,?,?,?,?,?,?)
+            ")->execute([
+                $jmeno,
+                $prijmeni,
+                $email,
+                password_hash($heslo, PASSWORD_DEFAULT),
+                $telefon ?: null,
+                $verification['hash'],
+                $verification['expires_at'],
+            ]);
 
             // Verifikační email
-            $link = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/evidence/booking/overeni.php?token=' . $token;
+            $link = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
+                . '/evidence/booking/overeni.php#token=' . rawurlencode($verification['token']);
             @mail($email, 'Ověření registrace — Kovopraha',
                 "Dobrý den {$jmeno},\n\nPro dokončení registrace klikněte na odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",
                 "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");

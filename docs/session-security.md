@@ -50,12 +50,18 @@ Hlavní `logout.php` odstraní všechna session data, serverovou session i cooki
 Veřejné odhlášení odstraní pouze veřejnou identitu. Pokud ve stejné session
 zůstává trenérská identita, zachová ji, ale změní session ID a CSRF token. Pokud
 žádná jiná identita nezůstává, session i cookie úplně zničí.
+Oba endpointy přijímají pouze `POST` s platným CSRF tokenem.
+
+Ověření e-mailu a potvrzení žluté rezervace používají pouze hash tokenu v DB,
+pevnou expiraci a atomickou single-use spotřebu. Token je v e-mailu ve fragmentu
+URL a server ho dostane až přes `POST` s CSRF. Booking odkaz před změnou vždy
+zobrazí náhled. Viz [auth-one-time-tokens.md](auth-one-time-tokens.md).
 
 ## Navazující stav
 
-Následující auth přírůstek už přidal databázovou `session_version` a atomický
-login rate limit; viz `docs/auth-revocation-rate-limit.md`. Stále zbývají
-tokenové migrace, reset hesla a CSRF/POST varianta logoutu.
+Databázová `session_version`, atomický login rate limit, tokenové migrace a
+CSRF/POST logout jsou implementované v navazujících F0 větvích. Stále zbývá
+samostatný bezpečný reset hesla, permission cache a produkční ověření migrací.
 
 Evidence je samostatný produkt. Volitelný legacy SSO bridge očekávající klíče
 `velo_*` není součástí cílové architektury a `VELOCOTA_INTEGRATION` musí zůstat

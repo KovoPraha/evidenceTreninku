@@ -405,9 +405,12 @@ if ($is_logged_in) {
                         </span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="logout.php">
-                            <i class="bi bi-box-arrow-right me-1"></i>Odhlásit
-                        </a>
+                        <form method="post" action="logout.php" class="d-inline">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="nav-link text-danger border-0 bg-transparent">
+                                <i class="bi bi-box-arrow-right me-1"></i>Odhlásit
+                            </button>
+                        </form>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">

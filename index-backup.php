@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
+require_once __DIR__ . '/csrf_helper.php';
 $is_logged_in = isset($_SESSION['trener_id']);
 $is_hlavni    = $is_logged_in && ($_SESSION['role'] === 'hlavni');
 ?>
@@ -71,9 +72,12 @@ $is_hlavni    = $is_logged_in && ($_SESSION['role'] === 'hlavni');
             <a href="prehled_skupin.php" class="list-group-item list-group-item-action">
               <i class="bi bi-list-check feature-icon"></i>Seznam skupin
             </a>
-            <a href="logout.php" class="list-group-item list-group-item-action text-danger">
-              <i class="bi bi-box-arrow-right feature-icon"></i>Odhlásit se
-            </a>
+            <form method="post" action="logout.php">
+              <?= csrf_field() ?>
+              <button type="submit" class="list-group-item list-group-item-action text-danger border-0 text-start w-100">
+                <i class="bi bi-box-arrow-right feature-icon"></i>Odhlásit se
+              </button>
+            </form>
           </div>
         </div>
 

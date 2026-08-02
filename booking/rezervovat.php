@@ -6,6 +6,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 }
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/one_time_token.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -101,13 +102,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $poznamka = trim($_POST['poznamka_klienta'] ?? '');
         $stavNovy = $waitlist ? 'cekaci_listina'
                     : ($lekce['typ'] === 'zelena' ? 'potvrzena' : 'ceka');
-        $token    = bin2hex(random_bytes(24));
+        $approval = (!$waitlist && $lekce['typ'] === 'zluta')
+            ? one_time_token_issue(ONE_TIME_TOKEN_BOOKING_APPROVAL, 172800)
+            : null;
 
         // Serializuj souběžné rezervace téhož slotu — jinak dva zákazníci obsadí
         // poslední místo současně (kontrola kapacity výše je mimo transakci).
         $lockName = 'rez_' . $lekceId . '_' . preg_replace('/[^0-9]/', '', $slotOd);
-        $pdo->prepare("SELECT GET_LOCK(?, 5)")->execute([$lockName]);
-        try {
+        $lockStatement = $pdo->prepare("SELECT GET_LOCK(?, 5)");
+        $lockStatement->execute([$lockName]);
+        $lockAcquired = (int)$lockStatement->fetchColumn() === 1;
+        if (!$lockAcquired) {
+            $errors[] = 'Rezervaci se nyní nepodařilo bezpečně uzamknout. Zkuste to prosím znovu.';
+        } else {
+          try {
             // Re-check kapacity pod zámkem
             $stKap2 = $pdo->prepare("SELECT COUNT(*) FROM verejne_rezervace WHERE lekce_id=? AND slot_cas_od=? AND stav IN ('ceka','potvrzena')");
             $stKap2->execute([$lekceId, $slotOd]);
@@ -127,12 +135,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->prepare("
                 INSERT INTO verejne_rezervace
-                    (lekce_id, uzivatel_id, stav, poznamka_klienta, potvrzovaci_token, slot_cas_od, slot_cas_do)
-                VALUES (?,?,?,?,?,?,?)
-            ")->execute([$lekceId, $uzivatelId, $stavNovy, $poznamka ?: null, $token, $slotOd, $slotDo]);
-        } finally {
+                    (lekce_id, uzivatel_id, stav, poznamka_klienta, potvrzovaci_token,
+                     potvrzovaci_token_expires_at, slot_cas_od, slot_cas_do)
+                VALUES (?,?,?,?,?,?,?,?)
+            ")->execute([
+                $lekceId,
+                $uzivatelId,
+                $stavNovy,
+                $poznamka ?: null,
+                $approval['hash'] ?? null,
+                $approval['expires_at'] ?? null,
+                $slotOd,
+                $slotDo,
+            ]);
+          } finally {
             $pdo->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
-        }
+          }
 
         // Načtení jména uživatele pro email
         $stUz = $pdo->prepare("SELECT jmeno, prijmeni FROM verejni_uzivatele WHERE id=?");
@@ -173,8 +191,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Trenér musí potvrdit
             $host = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/evidence/booking/potvrdit.php';
-            $linkPotvrdit = $host . '?token=' . $token . '&akce=potvrdit';
-            $linkZamit    = $host . '?token=' . $token . '&akce=zamit';
+            $rawApprovalToken = (string)($approval['token'] ?? '');
+            $linkPotvrdit = $host . '#token=' . rawurlencode($rawApprovalToken) . '&akce=potvrdit';
+            $linkZamit    = $host . '#token=' . rawurlencode($rawApprovalToken) . '&akce=zamit';
 
             $subject = "Žádost o rezervaci (Žlutá): {$lekce['nazev']}";
             $body = "Zákazník {$uzJmeno} žádá o rezervaci:\n"
@@ -190,6 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         header('Location: moje_rezervace.php');
         exit;
+        }
     }
 }
 
