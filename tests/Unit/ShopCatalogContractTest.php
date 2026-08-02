@@ -256,6 +256,7 @@ final class ShopCatalogContractTest extends TestCase
             'club_event' => 1,
             'camp' => 1,
             'bookable_service' => 2,
+            'bookable_rental' => 1,
             'rental' => 1,
             'custom_quote' => 1,
             'unclassified' => 1,
@@ -270,6 +271,14 @@ final class ShopCatalogContractTest extends TestCase
             'rental',
             $this->product($first, 'shoptet:sku:RENTAL-BIKE')['offer_classification']['type']
         );
+        $bookableRental = $this->product(
+            $first,
+            'shoptet:sku:RENTAL-TRACK'
+        )['offer_classification'];
+        self::assertSame('bookable_rental', $bookableRental['type']);
+        self::assertSame('high', $bookableRental['confidence']);
+        self::assertFalse($bookableRental['needs_manual_review']);
+        self::assertContains('combination:bookable_service+rental', $bookableRental['signals']);
         $ambiguous = $this->product($first, 'shoptet:sku:AMBIGUOUS-1')['offer_classification'];
         self::assertSame('unclassified', $ambiguous['type']);
         self::assertTrue($ambiguous['needs_manual_review']);

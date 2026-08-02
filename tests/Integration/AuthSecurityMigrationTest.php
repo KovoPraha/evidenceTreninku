@@ -27,12 +27,14 @@ final class AuthSecurityMigrationTest extends TestCase
             [
                 '20260802120000_auth_revocation_rate_limit',
                 '20260802133000_one_time_tokens',
+                '20260802170000_shop_catalog_staging',
             ],
             array_keys($catalog)
         );
         self::assertSame(1, $this->sessionVersion($pdo, 'treneri', 1));
         self::assertSame(1, $this->sessionVersion($pdo, 'verejni_uzivatele', 1));
         self::assertTrue($this->tableExists($pdo, 'auth_login_limits'));
+        self::assertTrue($this->tableExists($pdo, 'shop_catalog_import_runs'));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
         self::assertSame(
             one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),

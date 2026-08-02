@@ -5,7 +5,7 @@ require_once __DIR__ . '/shop_offer_classifier.php';
 
 final class ShopCatalogContract
 {
-    public const VERSION = 'evidence.shop.catalog-candidate.v3';
+    public const VERSION = 'evidence.shop.catalog-candidate.v4';
 
     /** @var list<string> */
     private const REQUIRED_HEADERS = ['code', 'pairCode', 'name', 'price'];

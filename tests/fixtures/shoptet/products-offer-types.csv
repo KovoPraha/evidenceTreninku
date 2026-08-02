@@ -6,5 +6,6 @@ CAMP-AUG;;Příměstský tábor - 17.8. - 21.8. 2026;5290;CZK;1;Příměstské t
 SERVICE-TRACK;;Zážitek - trénink na velodromu;2200;CZK;1;TRÉNINKY A ZÁŽITKY;service;20
 SERVICE-TEST;;Zátěžový test;3000;CZK;1;Zátěžové testování;service;20
 RENTAL-BIKE;;Dolan ODM velikost 50;1000;CZK;1;Půjčovna kol - ODM 2026;product;1
+RENTAL-TRACK;;Pronájem velodromu;1000;CZK;1;TRÉNINKY A ZÁŽITKY;product;0
 QUOTE-LECTURE;;Individuální domluva;5000;CZK;1;Přednášky a školení;service;20
 AMBIGUOUS-1;;Fiktivní konfliktní nabídka;100;CZK;1;Kroužky > Půjčovna kol;product;1

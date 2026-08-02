@@ -1,11 +1,10 @@
-# Shoptet katalog – první read-only dry-run
+# Shoptet katalog – ověření a bezpečný staging
 
-Stav: **reálný XML export ověřen; katalogový kontrakt je připravený pro stagingovou
-kontrolu, nikoliv pro produkční zápis**.
+Stav: **reálný XML export ověřen; katalogový kontrakt lze uložit do odděleného
+stagingu, nikoliv ještě publikovat jako produkční katalog**.
 
-Tento krok pouze lokálně přečte produktový CSV nebo XML export, zkontroluje SKU, varianty,
-ceny a podporovaná pole a vypíše náhled. Nevytváří katalog, nepřipojuje databázi,
-nemění Shoptet a nemá režim `--apply`.
+Dry-run pouze lokálně přečte produktový CSV nebo XML export, zkontroluje SKU,
+varianty, ceny a podporovaná pole a vypíše náhled. Nemění Shoptet ani databázi.
 
 Dry-run také navrhne provozní typ každé nabídky. Jde pouze o klasifikaci pro
 ruční kontrolu, nikoliv o oprávnění k importu nebo založení objednávky.
@@ -40,6 +39,27 @@ Exit kódy:
 - `2` – existující CSV nebo XML byl přečten, ale obsahuje blokující obsahový problém,
 - `64` – chybný nebo zakázaný parametr, duplicitní `--input`, neexistující či
   nečitelná lokální cesta nebo cesta k jinému typu souboru než `.csv`/`.xml`.
+
+## Uložení do stagingu
+
+Po úspěšném dry-runu, záloze a aplikaci číslovaných migrací lze stejný soubor
+explicitně uložit do kontrolních tabulek:
+
+```powershell
+$env:APP_HOST = "localhost"
+php bin/migrate.php --check
+php bin/migrate.php --apply
+php bin/shoptet-products-stage.php --input="C:\cesta\produkty.xml" --apply
+```
+
+`--apply` je povinný a nelze jej zaměnit za dry-run. Staging ukládá neměnný běh,
+návrhy produktů a návrhy variant. Stejný SHA-256 otisk ve stejné verzi kontraktu
+nevytvoří druhý běh. Stav je vždy `pending_review`; nástroj nevytváří tabulky
+produkčního katalogu, rezervace, objednávky, platby ani skladové pohyby.
+
+Tabulky `shop_catalog_import_runs`, `shop_catalog_product_candidates` a
+`shop_catalog_variant_candidates` vytváří číslovaná migrace. Nejsou součástí
+legacy `auto_migrace.php` a nesmějí se odkládat na první webový request.
 
 ## Bezpečnostní hranice
 
@@ -131,9 +151,9 @@ explicitně nepodporovaný blokátor, pokud by byl v budoucím exportu neprázdn
 
 Ověřený klubový export z 2. srpna 2026 obsahuje 241 produktů a 807 variant. Tři
 položky půjčovny s `PRICE_RATIO=0` jsou podle potvrzení provozovatele bezplatné
-praktické zápůjčky a normalizují se na `mode=free`. Dvě
-položky zůstávají záměrně v ruční klasifikaci: tričko zařazené současně mezi
-oblečení a kroužky a pronájem velodromu zařazený současně mezi zážitky a pronájem.
+praktické zápůjčky a normalizují se na `mode=free`. Pronájem velodromu se
+normalizuje na `bookable_rental`. V ruční klasifikaci zůstává jedna položka:
+tričko zařazené současně mezi oblečení a kroužky.
 Skutečný export zůstává v `var/imports/` a nepatří do Gitu.
 
 ## Syntetická W0-G contract matrix
@@ -177,13 +197,15 @@ Podporované staging typy jsou:
 - `club_event` – kroužek nebo jiná opakovaná klubová aktivita,
 - `camp` – tábor s pevným termínem,
 - `bookable_service` – trénink, zážitek nebo test vyžadující rezervaci,
+- `bookable_rental` – pronájem zdroje v konkrétním termínu, například velodrom,
 - `rental` – půjčovna nebo pronájem zdroje,
 - `custom_quote` – individuálně domlouvaná nabídka,
 - `unclassified` – chybějící nebo konfliktní signály; povinná ruční kontrola.
 
 Klasifikátor používá přesné segmenty kategorií, nikoliv pouhý výskyt slova v
 názvu. Kategorie `Volnočasové oblečení > Cyklo kroužek - trička` proto zůstane
-zbožím. Pokud jedna položka současně odpovídá více doménám, výsledek je vždy
+zbožím. Jedinou bezpečně popsanou kombinací je `bookable_service` + `rental`,
+která se normalizuje na `bookable_rental`. Ostatní souběhy více domén zůstávají
 `unclassified`; dry-run žádnou z možností sám neupřednostní.
 
 Souhrn obsahuje počty `offer_type_counts` a `manual_review_products`. Ani vysoká

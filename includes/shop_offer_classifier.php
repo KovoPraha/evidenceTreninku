@@ -7,6 +7,7 @@ final class ShopOfferClassifier
     public const CLUB_EVENT = 'club_event';
     public const CAMP = 'camp';
     public const BOOKABLE_SERVICE = 'bookable_service';
+    public const BOOKABLE_RENTAL = 'bookable_rental';
     public const RENTAL = 'rental';
     public const CUSTOM_QUOTE = 'custom_quote';
     public const UNCLASSIFIED = 'unclassified';
@@ -17,6 +18,7 @@ final class ShopOfferClassifier
         self::CLUB_EVENT,
         self::CAMP,
         self::BOOKABLE_SERVICE,
+        self::BOOKABLE_RENTAL,
         self::RENTAL,
         self::CUSTOM_QUOTE,
         self::UNCLASSIFIED,
@@ -87,6 +89,20 @@ final class ShopOfferClassifier
 
         foreach ($strong as $type => $signals) {
             $strong[$type] = array_values(array_unique($signals, SORT_STRING));
+        }
+        if (count($strong) === 2
+            && isset($strong[self::BOOKABLE_SERVICE], $strong[self::RENTAL])
+        ) {
+            return self::result(
+                self::BOOKABLE_RENTAL,
+                'high',
+                false,
+                array_merge(
+                    $strong[self::BOOKABLE_SERVICE],
+                    $strong[self::RENTAL],
+                    ['combination:bookable_service+rental']
+                )
+            );
         }
         if (count($strong) > 1) {
             $signals = [];
