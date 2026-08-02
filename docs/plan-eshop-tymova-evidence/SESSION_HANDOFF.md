@@ -9,8 +9,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-02, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `codex/auth-one-time-tokens`, založená na sloučeném
-  `main` `71ab49c982526ce83ea2f197fb21bd52699158ad`
+- Aktivní integrační větev: `main`
+  `7f48b50b128b65f7340442ba33bfb9c66c27703a`
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -18,15 +18,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
-- Poslední dokončená akce: PR #1 až #4 byly bezpečně sloučeny do `main`; čtyři
-  navazující main CI runy prošly a produkční workflow se nespustilo. Tokenový
-  commit `4b683ee` prochází 110 testy / 626 assertions, izolovanou MariaDB
-  migrací/runtime kontrolou a finální bezpečnostní re-audit jej přijal; běžná
-  lokální ani produkční DB nebyly změněny
-- Další přesná akce: pushnout tokenovou větev, otevřít draft PR a ověřit remote
-  CI. Potom samostatně opravit deploy preflight/order. Paralelně dodat
-  anonymizovaný Shoptet export a potvrdit KIS identifikátor, retenci a
-  single-use promote
+- Poslední dokončená akce: PR #5 (jednorázové tokeny) a PR #6 (bezpečné pořadí
+  release) byly sloučeny do `main`; main CI run `30743017895` prošel. Produkční
+  workflow ani produkční DB se nespustily
+- Další přesná akce: doplnit GitHub Secret `SSH_KNOWN_HOSTS` a produkční
+  `AUTH_RATE_LIMIT_PEPPER`, poté provést pouze autorizovaný první release.
+  Paralelně dodat anonymizovaný Shoptet export a potvrdit KIS identifikátor,
+  retenci a single-use promote
 
 ## Pořadí autority
 
@@ -43,16 +41,16 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | Oblast | Poslední známá hodnota | Ověřeno | Zdroj | Obnovit při resume |
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
-| `origin/main` | `71ab49c982526ce83ea2f197fb21bd52699158ad` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | `codex/auth-one-time-tokens` nad sloučeným main | 2026-08-02 | Git | ano |
-| PR / remote CI | PR #1 až #4 merged; finální main run `30741297367` success | 2026-08-02 | GitHub | ano |
+| `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
+| integrační branch | čistý `main`; stavový dokument vzniká samostatně | 2026-08-02 | Git | ano |
+| PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | tokenový přírůstek: 110/626; migrace/runtime SQLite + izolovaná MariaDB OK | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 | zopakovat v GitHub CI |
+| testy | 112/647; migrace/runtime SQLite + izolovaná MariaDB OK; main CI zelené | 2026-08-02 | PHP 8.2.12 / PHPUnit 11.5.56 + GitHub | ano |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0; 0 advisories | 2026-08-01 | Composer audit | ano |
-| lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-01.2` obsahuje i lokálně nepřítomné `ucto_gs_*` | 2026-08-01 | izolovaná XAMPP DB | zopakovat s produkčním artefaktem |
+| lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-02.3` obsahuje `auth_login_limits` i lokálně nepřítomné `ucto_gs_*` | 2026-08-02 | izolovaná XAMPP DB + code audit | zopakovat s produkčním artefaktem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
@@ -92,9 +90,9 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 |---|---|---|---|---|---|
 | W0-A | accepted | `58ec8ec` | řídicí task | Git reconciliation | nic |
 | W0-B | accepted | `7106930` | KIS worker | matcher + integration testy | release do main |
-| W0-C | partial accepted | auth commity v `main`; tokeny `4b683ee` | security worker | hesla, dependencies, lifecycle, revokace, limiter, tokeny, logout | permission cache, reset hesla a produkční password apply |
+| W0-C | partial accepted | auth commity v `main`, včetně PR #5 | security worker | hesla, dependencies, lifecycle, revokace, limiter, tokeny, logout | permission cache, reset hesla a produkční password apply |
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
-| W0-E | local accepted / remote pending | `664745e`, `cd0c0e1` | integrační vlastník | migrace + deploy hardening | Secret, remote CI, autorizovaný první deploy |
+| W0-E | code accepted / production pending | `664745e`, `cd0c0e1`, PR #6 | integrační vlastník | migrace + deploy hardening | `SSH_KNOWN_HOSTS`, produkční pepper, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
 | W0-G | partial accepted | `98ff91d`, `0537adf`, `82eac98`, `b4207be`, `168d132`, `8f0cbe8` | KIS/shop workeři | syntetické fixture matice + read-only dry-run | reálný anonymizovaný Shoptet/KIS vzorek a platby |
 
@@ -105,7 +103,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | Pořadí | Práce | Podmínka přijetí |
 |---:|---|---|
 | 1 | foundation dokumentace `6c7956c` | přijato |
-| 2 | W0-D test baseline `0d50584` | přijato; remote CI čeká na push |
+| 2 | W0-D test baseline `0d50584` | přijato; pozdější main CI běhy zelené |
 | 3 | W0-B KIS safety `7106930` | přijato; 10 testů / 61 assertions v tomto kroku |
 | 4 | W0-C passwords `2ed5278` | přijato; produkční `--apply` výslovně neprovedeno |
 | 5 | W0-C dependencies `1a9af03` | přijato; 0 advisories, celkem 16 testů / 75 assertions |
@@ -118,12 +116,13 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 12 | W0-G shop matrix `8f0cbe8` | přijato lokálně; varianty, kolize SKU, exact money/VAT a scope hranice |
 | 13 | W0-C session lifecycle `dfce1ea`, `af49d57` | přijato lokálně; 102 entrypointů, bezpečné cookie/timeout/rotace/logout |
 | 14 | W0-C DB revokace + rate limit `a3c2239`, `10c2cf9`, `9977b4d` | přijato; 103/569, MariaDB apply/runtime, dva finální audity ACCEPT a run `30740138748` success |
-| 15 | W0-C one-time tokeny + booking lock `4b683ee` | přijato lokálně; 110/626, SQLite + MariaDB, finální re-audit ACCEPT; remote CI čeká |
+| 15 | W0-C one-time tokeny + booking lock `4b683ee` | přijato v PR #5; 110/626, SQLite + MariaDB, finální re-audit ACCEPT |
+| 16 | W0-E release ordering `7361e48` | přijato v PR #6; 112/647, migrace před aktivací PHP, run `30743017895` success |
 
-PR #1 až #4 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
-se v této session nespustily. Workflow nesmí být spuštěno bez ověřeného
-`SSH_KNOWN_HOSTS`, externího `AUTH_RATE_LIMIT_PEPPER` a opravy pořadí, aby se
-nové PHP neaktivovalo před úspěšnou migrací.
+PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
+se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
+workflow stále nesmí být spuštěno bez ověřeného `SSH_KNOWN_HOSTS`, externího
+`AUTH_RATE_LIMIT_PEPPER` a výslovného souhlasu vlastníka.
 
 Feature větev zůstává bezpečným F0-enabling krokem: nemá shop tabulky, UI,
 checkout, KIS apply ani produkční cutover. Shoptet kontrakt je provisionalní,
@@ -135,7 +134,7 @@ lokálně hotové, ale deploy je fail-closed bez externího `AUTH_RATE_LIMIT_PEP
 Evidence je samostatný produkt. `VELOCOTA_INTEGRATION` musí zůstat `false`;
 širší provozní nebo doménová integrace s Velocotou není plánovaná. Výhledově lze
 samostatným rozhodnutím řešit pouze sdílenou/federovanou identitu uživatele.
-Expirované hashované tokeny a POST+CSRF logout jsou hotové na aktivní větvi.
+Expirované hashované tokeny a POST+CSRF logout jsou hotové v `main`.
 Permission cache, reset hesla a produkční ověření zůstávají otevřené, takže
 W0-C ani F0 nejsou uzavřené.
 
