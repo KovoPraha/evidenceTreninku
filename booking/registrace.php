@@ -4,6 +4,7 @@ app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
+require_once __DIR__ . '/../includes/public_profile.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -22,12 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $prijmeni = trim($_POST['prijmeni'] ?? '');
         $email    = strtolower(trim($_POST['email']  ?? ''));
         $telefon  = trim($_POST['telefon']  ?? '');
+        $narozeni = trim($_POST['narozeni'] ?? '');
         $heslo    = $_POST['heslo']         ?? '';
         $heslo2   = $_POST['heslo2']        ?? '';
 
         if (!$jmeno)    $errors[] = 'Zadejte jméno.';
         if (!$prijmeni) $errors[] = 'Zadejte příjmení.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Neplatná emailová adresa.';
+        $birth = DateTimeImmutable::createFromFormat('!Y-m-d', $narozeni);
+        if (!$birth || $birth->format('Y-m-d') !== $narozeni
+            || $birth > new DateTimeImmutable('today') || $birth < new DateTimeImmutable('1900-01-01')) {
+            $errors[] = 'Zadejte platné datum narození.';
+        }
         if (strlen($heslo) < 8) $errors[] = 'Heslo musí mít alespoň 8 znaků.';
         if ($heslo !== $heslo2) $errors[] = 'Hesla se neshodují.';
 
@@ -42,29 +49,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($errors)) {
             $verification = one_time_token_issue(ONE_TIME_TOKEN_EMAIL_VERIFICATION, 86400);
-            $pdo->prepare("
-                INSERT INTO verejni_uzivatele
-                    (jmeno, prijmeni, email, heslo_hash, telefon, verifikacni_token,
-                     verifikacni_token_expires_at)
-                VALUES (?,?,?,?,?,?,?)
-            ")->execute([
-                $jmeno,
-                $prijmeni,
-                $email,
-                password_hash($heslo, PASSWORD_DEFAULT),
-                $telefon ?: null,
-                $verification['hash'],
-                $verification['expires_at'],
-            ]);
+            try {
+                $pdo->beginTransaction();
+                $pdo->prepare("
+                    INSERT INTO verejni_uzivatele
+                        (jmeno, prijmeni, email, heslo_hash, telefon, verifikacni_token,
+                         verifikacni_token_expires_at)
+                    VALUES (?,?,?,?,?,?,?)
+                ")->execute([
+                    $jmeno,
+                    $prijmeni,
+                    $email,
+                    password_hash($heslo, PASSWORD_DEFAULT),
+                    $telefon ?: null,
+                    $verification['hash'],
+                    $verification['expires_at'],
+                ]);
+                publicProfileSave(
+                    $pdo,
+                    (int)$pdo->lastInsertId(),
+                    $jmeno,
+                    $prijmeni,
+                    $narozeni,
+                    $telefon
+                );
+                $pdo->commit();
+            } catch (Throwable $exception) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                error_log('booking/registrace.php public profile: ' . $exception->getMessage());
+                $errors[] = 'Účet se nepodařilo vytvořit bez částečného zápisu.';
+            }
 
             // Verifikační email
-            $link = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-                . '/evidence/booking/overeni.php#token=' . rawurlencode($verification['token']);
-            @mail($email, 'Ověření registrace — Kovopraha',
-                "Dobrý den {$jmeno},\n\nPro dokončení registrace klikněte na odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",
-                "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
+            if (empty($errors)) {
+                $link = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
+                    . '/evidence/booking/overeni.php#token=' . rawurlencode($verification['token']);
+                @mail($email, 'Ověření registrace — Kovopraha',
+                    "Dobrý den {$jmeno},\n\nPro dokončení registrace klikněte na odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",
+                    "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
 
-            $success = true;
+                $success = true;
+            }
         }
     }
 }
@@ -122,6 +149,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control"
                                value="<?= h($_POST['email'] ?? '') ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Datum narození</label>
+                        <input type="date" name="narozeni" class="form-control"
+                               value="<?= h($_POST['narozeni'] ?? '') ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Telefon (nepovinný)</label>
