@@ -68,6 +68,16 @@ $participants = accountPersonEligibleParticipants($pdo, $accountId);
 $events = clubEventOpenFreeList($pdo);
 $registrations = clubEventMyRegistrations($pdo, $accountId);
 $activeByEventAndPerson = [];
+$eligibleByEventAndPerson = [];
+foreach ($events as &$event) {
+    $event['roster_targets'] = clubEventRosterTargets($pdo, (int)$event['id']);
+    foreach ($participants as $person) {
+        if (clubEventRosterEligibility($pdo, (int)$event['id'], (int)$person['sportovec_id'])) {
+            $eligibleByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']] = true;
+        }
+    }
+}
+unset($event);
 foreach ($registrations as $registration) {
     if (in_array($registration['status'], ['confirmed', 'waitlisted'], true)) {
         $activeByEventAndPerson[(int)$registration['event_id']][(int)$registration['sportovec_id']] = true;
@@ -101,14 +111,15 @@ foreach ($registrations as $registration) {
             <div class="d-flex justify-content-between gap-2"><div><h2 class="h5 mb-1"><?= clubRegistrationH($event['name']) ?></h2><div class="small text-muted"><?= clubRegistrationH($event['audience_label']) ?></div></div><span class="badge text-bg-success align-self-start">zdarma</span></div>
             <?php if ($event['description_plain'] !== ''): ?><p class="mt-3 mb-2"><?= nl2br(clubRegistrationH($event['description_plain'])) ?></p><?php endif; ?>
             <div class="small mb-3"><strong>Volná místa:</strong> <?= (int)$event['remaining_capacity'] ?> z <?= (int)$event['effective_capacity'] ?> · <strong>čeká:</strong> <?= (int)$event['waitlist_count'] ?></div>
+            <?php if ($event['roster_targets'] !== []): ?><div class="alert alert-info small py-2">Určeno pro soupisky: <?= clubRegistrationH(implode(', ', array_column($event['roster_targets'], 'team_name'))) ?></div><?php endif; ?>
             <?php foreach ($event['sessions'] as $session): ?><div class="border-top py-2 small"><i class="bi bi-calendar3 me-1"></i><?= clubRegistrationH($session['starts_at']) ?>–<?= clubRegistrationH($session['ends_at']) ?><br><span class="text-muted"><i class="bi bi-geo-alt me-1"></i><?= clubRegistrationH($session['location']) ?></span></div><?php endforeach; ?>
-            <?php if ($participants !== []): ?><form method="post" class="row g-2 mt-2">
+            <?php if (!empty($eligibleByEventAndPerson[(int)$event['id']])): ?><form method="post" class="row g-2 mt-2">
                 <?= csrf_field() ?><input type="hidden" name="action" value="register"><input type="hidden" name="event_id" value="<?= (int)$event['id'] ?>"><input type="hidden" name="consent_version" value="<?= clubRegistrationH($event['terms_version']) ?>">
-                <div class="col-8"><label class="visually-hidden" for="person-<?= (int)$event['id'] ?>">Dítě</label><select class="form-select" id="person-<?= (int)$event['id'] ?>" name="sportovec_id" required><option value="">Vyberte dítě</option><?php foreach ($participants as $person): ?><option value="<?= (int)$person['sportovec_id'] ?>" <?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? 'disabled' : '' ?>><?= clubRegistrationH($person['prijmeni'] . ' ' . $person['jmeno']) ?><?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? ' — již přihlášeno' : '' ?></option><?php endforeach; ?></select></div>
+                <div class="col-8"><label class="visually-hidden" for="person-<?= (int)$event['id'] ?>">Dítě</label><select class="form-select" id="person-<?= (int)$event['id'] ?>" name="sportovec_id" required><option value="">Vyberte dítě</option><?php foreach ($participants as $person):if(!isset($eligibleByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]))continue; ?><option value="<?= (int)$person['sportovec_id'] ?>" <?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? 'disabled' : '' ?>><?= clubRegistrationH($person['prijmeni'] . ' ' . $person['jmeno']) ?><?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? ' — již přihlášeno' : '' ?></option><?php endforeach; ?></select></div>
                 <div class="col-4 d-grid"><button class="btn btn-primary"><?= (int)$event['remaining_capacity'] > 0 ? 'Přihlásit' : 'Zařadit do čekací listiny' ?></button></div>
                 <div class="col-12"><div class="border rounded bg-light p-2 small"><strong>Souhlas <?= clubRegistrationH($event['terms_version']) ?></strong><br><?= nl2br(clubRegistrationH($event['consent_text_plain'])) ?><hr class="my-2"><strong>Bezplatné storno do <?= clubRegistrationH($event['cancellation_deadline_at']) ?></strong><br><?= nl2br(clubRegistrationH($event['cancellation_policy_plain'])) ?></div></div>
                 <div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="consented" value="1" id="consent-<?= (int)$event['id'] ?>" required><label class="form-check-label" for="consent-<?= (int)$event['id'] ?>">Potvrzuji souhlas a storno podmínky pro vybrané dítě.</label></div>
-            </form><?php endif; ?>
+            </form><?php elseif($event['roster_targets'] !== []): ?><div class="alert alert-secondary small mb-0">Žádná z vašich schválených osob není v cílové soupisce.</div><?php endif; ?>
         </div></section></div>
     <?php endforeach; ?>
     <?php if ($events === []): ?><div class="col-12"><div class="alert alert-secondary">Momentálně není otevřen žádný bezplatný kroužek.</div></div><?php endif; ?>

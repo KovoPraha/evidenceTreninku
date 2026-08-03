@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/club_event.php';
 require_once __DIR__ . '/account_person_role.php';
 require_once __DIR__ . '/club_event_notification.php';
+require_once __DIR__ . '/club_event_roster_target.php';
 
 final class ClubEventRegistrationException extends RuntimeException
 {
@@ -283,6 +284,15 @@ function clubEventRegisterParticipant(
             'Přihlášení vyžaduje kroužek, účet, schválenou osobu a potvrzený aktuální souhlas.'
         );
     }
+    // Reject IDOR and roster-ineligible requests before touching the event capacity mutex.
+    $relation = clubEventEligibleRelation($pdo, $accountId, $sportovecId);
+    if (!$relation) {
+        throw new ClubEventRegistrationException('Tuto osobu nemáte v K2 schválenou pro přihlášení.');
+    }
+    $eligibility = clubEventRosterEligibility($pdo, $eventId, $sportovecId);
+    if (!$eligibility) {
+        throw new ClubEventRegistrationException('Vybraná osoba není členem žádné cílové soupisky této události.');
+    }
     $pdo->beginTransaction();
     try {
         // The event row is the capacity mutex in MariaDB. Every registration and reactivation locks it first.
@@ -305,6 +315,13 @@ function clubEventRegisterParticipant(
         $relation = clubEventEligibleRelation($pdo, $accountId, $sportovecId);
         if (!$relation) {
             throw new ClubEventRegistrationException('Tuto osobu nemáte v K2 schválenou pro přihlášení.');
+        }
+        // Recheck both mutable authorizations inside the transaction to close the preflight race.
+        $eligibility = clubEventRosterEligibility($pdo, $eventId, $sportovecId);
+        if (!$eligibility) {
+            throw new ClubEventRegistrationException(
+                'Vybraná osoba není členem žádné cílové soupisky této události.'
+            );
         }
         clubEventAssertAge($pdo, $eventId, $relation, $event);
 
@@ -333,6 +350,7 @@ function clubEventRegisterParticipant(
                 . 'registered_at=CURRENT_TIMESTAMP, cancelled_at=NULL, cancellation_note=NULL, '
                 . 'consent_version_snapshot=?,consent_text_snapshot=?,consented_at=CURRENT_TIMESTAMP, '
                 . 'cancellation_policy_snapshot=?,cancellation_deadline_snapshot=?, '
+                . 'eligibility_team_ids_snapshot=?,eligibility_reason_snapshot=?, '
                 . "waitlisted_at=CASE WHEN ?='waitlisted' THEN CURRENT_TIMESTAMP ELSE NULL END,promoted_at=NULL, "
                 . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
             );
@@ -340,6 +358,7 @@ function clubEventRegisterParticipant(
                 $accountId, $relation['relation_role'], $targetStatus,
                 $event['terms_version'], $event['consent_text_plain'],
                 $event['cancellation_policy_plain'], $event['cancellation_deadline_at'],
+                clubEventRosterEligibilityJson($eligibility), $eligibility['reason'],
                 $targetStatus, (int)$existing['id'],
             ]);
             $registrationId = (int)$existing['id'];
@@ -350,14 +369,16 @@ function clubEventRegisterParticipant(
                 'INSERT INTO club_event_registrations '
                 . '(event_id,account_id,sportovec_id,relation_role_snapshot,status,registered_at, '
                 . 'consent_version_snapshot,consent_text_snapshot,consented_at, '
-                . 'cancellation_policy_snapshot,cancellation_deadline_snapshot,waitlisted_at) '
-                . "VALUES (?,?,?,?,?,CURRENT_TIMESTAMP,?,?,CURRENT_TIMESTAMP,?,?,"
+                . 'cancellation_policy_snapshot,cancellation_deadline_snapshot, '
+                . 'eligibility_team_ids_snapshot,eligibility_reason_snapshot,waitlisted_at) '
+                . "VALUES (?,?,?,?,?,CURRENT_TIMESTAMP,?,?,CURRENT_TIMESTAMP,?,?,?,?,"
                 . "CASE WHEN ?='waitlisted' THEN CURRENT_TIMESTAMP ELSE NULL END)"
             );
             $insert->execute([
                 $eventId, $accountId, $sportovecId, $relation['relation_role'], $targetStatus,
                 $event['terms_version'], $event['consent_text_plain'],
-                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'], $targetStatus,
+                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'],
+                clubEventRosterEligibilityJson($eligibility), $eligibility['reason'], $targetStatus,
             ]);
             $registrationId = (int)$pdo->lastInsertId();
             $action = $targetStatus === 'confirmed' ? 'register' : 'waitlist';
@@ -371,9 +392,10 @@ function clubEventRegisterParticipant(
             $action,
             $fromStatus,
             $targetStatus,
-            $targetStatus === 'confirmed'
-                ? 'Bezplatná přihláška schválené osoby z K2.'
-                : 'Kapacita je plná; schválená osoba z K2 byla zařazena na čekací listinu.'
+            ($targetStatus === 'confirmed'
+                ? 'Bezplatná přihláška oprávněné osoby.'
+                : 'Kapacita je plná; oprávněná osoba byla zařazena na čekací listinu.')
+            . ' ' . $eligibility['reason']
         );
         $pdo->commit();
         return ['id' => $registrationId, 'status' => $targetStatus, 'created' => true];
@@ -599,10 +621,15 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
             (int)$candidate['account_id'],
             (int)$candidate['sportovec_id']
         );
-        if (!$relation || empty($candidate['consent_version_snapshot'])) {
+        $rosterEligibility = clubEventRosterEligibility(
+            $pdo,
+            $eventId,
+            (int)$candidate['sportovec_id']
+        );
+        if (!$relation || !$rosterEligibility || empty($candidate['consent_version_snapshot'])) {
             $pdo->prepare(
                 "UPDATE club_event_registrations SET status='cancelled',cancelled_at=CURRENT_TIMESTAMP, "
-                . "cancellation_note='Automaticky vyřazeno: K2 vazba nebo souhlas už není platný.', "
+                . "cancellation_note='Automaticky vyřazeno: vztah, soupiska nebo souhlas už nejsou platné.', "
                 . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
             )->execute([(int)$candidate['id']]);
             clubEventRegistrationAudit(
@@ -613,7 +640,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
                 'waitlist_ineligible',
                 'waitlisted',
                 'cancelled',
-                'Automaticky vyřazeno při uvolnění místa: K2 vazba nebo souhlas už není platný.'
+                'Automaticky vyřazeno při uvolnění místa: vztah, soupiska nebo souhlas už nejsou platné.'
             );
             continue;
         }
