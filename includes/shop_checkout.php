@@ -8,6 +8,7 @@ final class ShopCheckoutException extends RuntimeException
 }
 
 require_once __DIR__.'/shop_beneficiary.php';
+require_once __DIR__.'/club_program.php';
 
 /** @return list<array<string,mixed>> */
 function shopStorefrontProducts(PDO $pdo): array
@@ -354,7 +355,9 @@ function shopOrderAdminConfirmBankPayment(PDO $pdo,int $paymentId,int $actorTrai
         if(!$order)throw new ShopCheckoutException('Objednávka platby nebyla nalezena.');
         if($payment['status']==='paid'){
             if($order['payment_status']!=='paid'||!in_array($order['status'],['processing','ready','completed'],true))throw new ShopCheckoutException('Stav potvrzené platby a objednávky není konzistentní.');
-            $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>false];
+            $programSync=['program_items'=>0,'created'=>0];
+            if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+            $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>false]+$programSync;
         }
         if($payment['status']!=='pending'||$order['payment_status']!=='pending'||$order['status']!=='placed')throw new ShopCheckoutException('Platbu nebo objednávku v tomto stavu nelze potvrdit.');
         $pdo->prepare("UPDATE payments SET status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
@@ -363,7 +366,9 @@ function shopOrderAdminConfirmBankPayment(PDO $pdo,int $paymentId,int $actorTrai
             ->execute([$orderId]);
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_bank_payment\',\'placed\',\'processing\',?)')
             ->execute([$orderId,$actorTrainerId,$reason]);
-        $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>true];
+        $programSync=['program_items'=>0,'created'=>0];
+        if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>true]+$programSync;
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
@@ -397,7 +402,9 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
         $note=$paid?$reason.' Platba vyžaduje samostatné vrácení zákazníkovi.':$reason;
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'cancel\',?,\'cancelled\',?)')
             ->execute([$orderId,$actorTrainerId,(string)$order['status'],$note]);
-        $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>$paymentStatus,'restocked_items'=>$restocked,'changed'=>true];
+        $programSync=['cancelled'=>0,'rosters_ended'=>0];
+        if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>$paymentStatus,'restocked_items'=>$restocked,'changed'=>true]+$programSync;
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
@@ -419,6 +426,7 @@ function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,s
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
         $order=shopOrderAdminLockOrder($pdo,$orderId);
         if(!$payment||!$order||$payment['method']!=='bank_transfer')throw new ShopCheckoutException('Objednávka nebo její bankovní platba nebyla nalezena.');
+        if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         if($payment['status']==='refunded'){
             if($order['status']!=='cancelled'||$order['payment_status']!=='refunded'||$payment['refund_sent_at']===null||$payment['refund_reference']===null)throw new ShopCheckoutException('Dokončená vratka má nekonzistentní stav.');
             $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>false];

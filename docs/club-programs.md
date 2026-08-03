@@ -27,11 +27,20 @@ Po aktivaci se sportovec právě jednou přidá do cílové školní soupisky se
 1. Správce připraví školní sezonu a soupisku v `kis_rosters_admin.php`.
 2. V `club_programs_admin.php` vytvoří stabilní program a nabídku období. Vybere existující publikovanou variantu e-shopu, termíny, kapacitu a cílovou soupisku.
 3. Rodič v `booking/eshop.php` přidá položku a zvolí jedno ze schválených dětí. Běžné fyzické zboží zůstává kompatibilní bez beneficiary.
-4. Po potvrzení platby otevře `booking/moje_programy.php` a účast aktivuje.
+4. Potvrzení bankovní platby aktivuje účast automaticky a idempotentně ve stejné transakci jako změnu stavů platby a objednávky. Ruční tlačítko zůstává jako bezpečný fallback a pro bezplatné/admin scénáře.
 5. Stejná stránka zachovává přehled minulých i současných období.
+
+## Životní cyklus platby, storna a vratky
+
+- `shopOrderAdminConfirmBankPayment()` po přechodu objednávky do `processing/paid` aktivuje všechny její programové položky ještě před commitem. Neplatný beneficiary nebo vyčerpaná kapacita vrátí zpět i potvrzení platby; nevznikne tedy stav zaplaceno bez odpovídající účasti.
+- Opakované potvrzení již zaplacené objednávky službu spustí znovu, ale unikátní zdrojová položka a účast způsobí nulový další zápis.
+- `shopOrderAdminCancel()` označí související aktivní účasti jako `cancelled` a uloží `ended_at`, důvod a administrátora. Jde o auditovaný konec, nikoliv smazání historie.
+- Systémem vytvořené členství v soupisce se ukončí pouze tehdy, když pro stejného sportovce a tým nezůstává jiná aktivní programová účast. Ruční členství se automaticky neukončuje.
+- `shopOrderAdminConfirmRefund()` účast znovu nemění. Pouze fail-closed ověří, že stornovaná objednávka už nemá aktivní účast, a potom auditovaně potvrdí skutečné odeslání vratky.
+
+Stavy `shop_orders`, `payments`, `club_program_enrollments` a `club_roster_members` zůstávají samostatné. Přechody jsou koordinované transakcí, ale žádný stav se neodvozuje přepisem jiného záznamu.
 
 ## Omezení první verze
 
 - Stávající checkout umí prodat pouze katalogový `offer_type=goods` a vyžaduje kladný celkový bankovní checkout. Programová nabídka proto dočasně mapuje existující prodejnou variantu; nulovou položku umí bezpečně aktivovat doménová služba, ale běžné UI zatím nevytvoří samostatnou nulovou objednávku.
-- Potvrzená platba zatím automaticky nespouští aktivaci. Rodič ji bezpečně spustí v části Moje kroužky. Pozdější worker může volat stejnou idempotentní službu.
-- Storno nebo vratka již aktivované účasti se automaticky nepropíše. Bude vyžadovat samostatný auditovaný lifecycle krok.
+- Automatické storno řeší jen objednávkový lifecycle. Samostatné administrátorské ukončení účasti bez storna objednávky zatím nemá vlastní UI.
