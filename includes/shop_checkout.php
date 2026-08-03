@@ -212,11 +212,24 @@ function shopCheckoutPlace(
 /** @return array<string,mixed> */
 function shopOrderByCode(PDO $pdo,int $accountId,string $publicCode): array
 {
-    $statement=$pdo->prepare('SELECT o.*,p.id AS payment_id,p.method,p.status AS payment_record_status,p.variable_symbol,p.iban_snapshot,p.bic_snapshot,p.account_label_snapshot,p.spd_payload,p.due_at FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id WHERE o.account_id=? AND o.public_code=?');
+    $statement=$pdo->prepare('SELECT o.*,p.id AS payment_id,p.method,p.status AS payment_record_status,p.variable_symbol,p.iban_snapshot,p.bic_snapshot,p.account_label_snapshot,p.spd_payload,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id WHERE o.account_id=? AND o.public_code=?');
     $statement->execute([$accountId,$publicCode]);$order=$statement->fetch(PDO::FETCH_ASSOC);
     if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
     $items=$pdo->prepare('SELECT * FROM shop_order_items WHERE order_id=? ORDER BY id');$items->execute([(int)$order['id']]);
     $order['items']=$items->fetchAll(PDO::FETCH_ASSOC);return $order;
+}
+
+/** @return list<array<string,mixed>> */
+function shopOrderListForAccount(PDO $pdo,int $accountId,int $limit=100):array
+{
+    if($accountId<1)throw new InvalidArgumentException('Přehled objednávek vyžaduje přihlášený účet.');
+    $limit=max(1,min(200,$limit));
+    $statement=$pdo->prepare('SELECT o.id,o.public_code,o.status,o.payment_status,o.total_minor,o.currency,o.placed_at,o.created_at,o.cancelled_at,o.ready_at,o.completed_at,'
+        .'p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,'
+        .'(SELECT COUNT(*) FROM shop_order_items oi WHERE oi.order_id=o.id) AS item_count '
+        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id '
+        .'WHERE o.account_id=? ORDER BY o.created_at DESC,o.id DESC LIMIT '.$limit);
+    $statement->execute([$accountId]);return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /** @return array{iban:string,bic:string,account_label:string,due_days:int} */
@@ -288,7 +301,7 @@ function shopCartFingerprint(array $items):string
 function shopOrderAdminList(PDO $pdo,int $limit=200):array
 {
     $limit=max(1,min(500,$limit));
-    return $pdo->query('SELECT o.*,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,'
+    return $pdo->query('SELECT o.*,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,'
         .'e.action AS last_event_action,e.actor_id AS last_event_actor_id,e.note AS last_event_note,e.created_at AS last_event_at '
         .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id '
         .'LEFT JOIN shop_order_events e ON e.id=(SELECT MAX(e2.id) FROM shop_order_events e2 WHERE e2.order_id=o.id) '
@@ -341,7 +354,7 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
         $order=shopOrderAdminLockOrder($pdo,$orderId);
         if(!$payment||!$order)throw new ShopCheckoutException('Objednávka nebo její platba nebyla nalezena.');
         if($order['status']==='cancelled'){
-            if(!in_array($payment['status'],['cancelled','refund_required'],true)||$order['payment_status']!==$payment['status'])throw new ShopCheckoutException('Stornovaná objednávka má nekonzistentní stav platby.');
+            if(!in_array($payment['status'],['cancelled','refund_required','refunded'],true)||$order['payment_status']!==$payment['status'])throw new ShopCheckoutException('Stornovaná objednávka má nekonzistentní stav platby.');
             $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>(string)$payment['status'],'restocked_items'=>0,'changed'=>false];
         }
         if(!in_array($order['status'],['placed','processing','ready'],true))throw new ShopCheckoutException('Objednávku v tomto stavu nelze stornovat.');
@@ -360,6 +373,39 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         throw new ShopCheckoutException('Storno selhalo bez částečného zápisu.',0,$exception);
+    }
+}
+
+/** @return array{order_id:int,payment_status:string,changed:bool} */
+function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,string $reference,string $reason,bool $confirmed):array
+{
+    $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Potvrzení vratky');
+    $reference=trim($reference);
+    $referenceControlCheck=preg_match('/[\x00-\x1F\x7F]/u',$reference);
+    if($reference===''||mb_strlen($reference,'UTF-8')>255||$referenceControlCheck!==0)throw new InvalidArgumentException('Vratka vyžaduje platnou bankovní referenci bez řídicích znaků, nejvýše 255 znaků.');
+    $pdo->beginTransaction();
+    try{
+        $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
+        if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
+        $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
+        $order=shopOrderAdminLockOrder($pdo,$orderId);
+        if(!$payment||!$order||$payment['method']!=='bank_transfer')throw new ShopCheckoutException('Objednávka nebo její bankovní platba nebyla nalezena.');
+        if($payment['status']==='refunded'){
+            if($order['status']!=='cancelled'||$order['payment_status']!=='refunded'||$payment['refund_sent_at']===null||$payment['refund_reference']===null)throw new ShopCheckoutException('Dokončená vratka má nekonzistentní stav.');
+            $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>false];
+        }
+        if($payment['status']!=='refund_required'||$order['status']!=='cancelled'||$order['payment_status']!=='refund_required')throw new ShopCheckoutException('Vratku lze potvrdit pouze u stornované zaplacené objednávky čekající na vrácení peněz.');
+        $pdo->prepare("UPDATE payments SET status='refunded',refund_sent_at=CURRENT_TIMESTAMP,refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
+            ->execute([$reference,$actorTrainerId,$reason,(int)$payment['id']]);
+        $pdo->prepare("UPDATE shop_orders SET payment_status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
+        $note='Bankovní reference: '.$reference.'. '.$reason;
+        $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
+            ->execute([$orderId,$actorTrainerId,$note]);
+        $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>true];
+    }catch(Throwable $exception){
+        if($pdo->inTransaction())$pdo->rollBack();
+        if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
+        throw new ShopCheckoutException('Potvrzení vratky selhalo bez částečného zápisu.',0,$exception);
     }
 }
 

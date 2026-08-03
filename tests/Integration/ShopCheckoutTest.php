@@ -39,6 +39,7 @@ final class ShopCheckoutTest extends TestCase
         self::assertMatchesRegularExpression('/^SPD\*1\.0\*ACC:CZ6508000000192000145399\*AM:260\.00\*CC:CZK\*X-VS:[0-9]{10}\*MSG:/',(string)$order['spd_payload']);
         self::assertStringStartsWith('data:image/svg+xml',\shopPaymentQrDataUri((string)$order['spd_payload']));
         try{\shopOrderByCode($pdo,11,(string)$order['public_code']);self::fail('Foreign order must not be readable.');}catch(\ShopCheckoutException){}
+        self::assertCount(1,\shopOrderListForAccount($pdo,10));self::assertSame((string)$order['public_code'],\shopOrderListForAccount($pdo,10)[0]['public_code']);self::assertSame([],\shopOrderListForAccount($pdo,11));
     }
 
     public function testInvalidBankOrInsufficientStockRollsBackEverything():void
@@ -99,6 +100,14 @@ final class ShopCheckoutTest extends TestCase
         self::assertTrue($result['changed']);self::assertSame('refund_required',$result['payment_status']);self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
         self::assertSame('refund_required',$pdo->query('SELECT status FROM payments')->fetchColumn());self::assertSame('refund_required',$pdo->query('SELECT payment_status FROM shop_orders')->fetchColumn());
         self::assertStringContainsString('samostatné vrácení',$pdo->query("SELECT note FROM shop_order_events WHERE action='cancel'")->fetchColumn());
+        try{\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'FIO-REF-2026-001','Ověřeno ve Fio.',false);self::fail('Refund confirmation must be explicit.');}catch(\InvalidArgumentException){}
+        try{\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,"bad\nref",'Ověřeno ve Fio.',true);self::fail('Control characters must be rejected.');}catch(\InvalidArgumentException){}
+        $refund=\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'FIO-REF-2026-001','Vratku odeslala a ověřila účetní.',true);self::assertTrue($refund['changed']);self::assertSame('refunded',$refund['payment_status']);
+        $payment=$pdo->query('SELECT status,refund_sent_at,refund_reference,refund_confirmed_by_trainer_id,refund_confirmation_note FROM payments')->fetch(PDO::FETCH_ASSOC);self::assertSame('refunded',$payment['status']);self::assertNotNull($payment['refund_sent_at']);self::assertSame('FIO-REF-2026-001',$payment['refund_reference']);self::assertSame(7,(int)$payment['refund_confirmed_by_trainer_id']);self::assertStringContainsString('účetní',$payment['refund_confirmation_note']);
+        self::assertSame('refunded',$pdo->query('SELECT payment_status FROM shop_orders')->fetchColumn());self::assertSame('cancelled',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());self::assertSame('confirm_refund',$pdo->query('SELECT action FROM shop_order_events ORDER BY id DESC LIMIT 1')->fetchColumn());
+        self::assertFalse(\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'JINÁ-REFERENCE','Opakování.',true)['changed']);self::assertSame(4,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());
+        self::assertFalse(\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Opakované storno po vratce.',true)['changed']);
+        $mine=\shopOrderListForAccount($pdo,10);self::assertSame('refunded',$mine[0]['payment_record_status']);self::assertSame('FIO-REF-2026-001',$mine[0]['refund_reference']);
     }
 
     public function testPaidOrderMovesThroughReadyAndCompletedWithAudit():void
@@ -128,6 +137,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants VALUES(601,501,'TRIKO-M','{\"size\":\"M\"}','fixed',12500,'CZK',1,2100,'5.000000',1,'active',CURRENT_TIMESTAMP),(602,502,'EVENT','{}','fixed',100,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP),(603,503,'OLD','{}','fixed',100,'CZK',1,0,NULL,1,'inactive',CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');
         $pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Tričko KOVO','Klubové tričko.'),(502,'active','Kroužek','Nejde do košíku.'),(503,'inactive','Staré','Neaktivní.')");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

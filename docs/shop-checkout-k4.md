@@ -46,6 +46,8 @@ externí QR služby.
 ## Stránky a stavy
 
 - `booking/eshop.php`: katalog a košík přihlášeného zákazníka,
+- `booking/moje_objednavky.php`: seznam objednávek filtrovaný v databázi podle
+  přihlášeného účtu,
 - `booking/objednavka.php?code=...`: vlastníkova objednávka, platební údaje a QR,
 - `eshop_orders_admin.php`: administrativní seznam a ruční potvrzení platby.
 
@@ -66,10 +68,17 @@ dvojím vrácením. Nezaplacený předpis přejde na `cancelled`. U přijaté pl
 nastaví `refund_required`, protože samotné storno nesmí předstírat, že peníze už
 byly zákazníkovi skutečně vráceny.
 
+Úplná bankovní vratka se uzavře pouze ručně po skutečném odeslání. Administrátor
+musí zadat bankovní referenci, kontrolní poznámku, CSRF token a výslovně potvrdit
+odeslání. Platba a objednávkový platební stav pak atomicky přejdou na `refunded`,
+objednávka zůstane `cancelled` a audit dostane akci `confirm_refund`. Čas,
+reference, administrátor a poznámka se ukládají na platebním záznamu. Opakované
+potvrzení je idempotentní a původní doklad nemění.
+
 ## Migrace a další krok
 
-Schéma vyžaduje migrace `20260803230000_shop_checkout` a
-`20260804010000_shop_order_fulfillment`. Před aktivací PHP musí
-být aplikována migračním runnerem. Další přírůstek musí doplnit auditované storno
-vratky peněz, zákaznický seznam objednávek a teprve potom kupón nebo automatické
-Fio párování.
+Schéma vyžaduje migrace `20260803230000_shop_checkout`,
+`20260804010000_shop_order_fulfillment` a
+`20260804030000_shop_order_refunds`. Před aktivací PHP musí být aplikovány
+migračním runnerem. Částečné vratky má další přírůstek řešit jen tehdy, pokud je
+produktově potřebujeme; jinak následuje kupón nebo automatické Fio párování.
