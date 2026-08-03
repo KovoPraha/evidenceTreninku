@@ -2,8 +2,9 @@
 
 První vertikála K4 je záměrně úzká: přihlášený veřejný účet může koupit pouze
 aktivní kanonický produkt typu `goods`, zvolí osobní odběr a dostane bankovní
-platební předpis v CZK s QR kódem. Anonymní checkout, kupóny, Stripe, Fio import,
-Packeta a placený kroužek zatím nejsou zapnuté.
+platební předpis v CZK s QR kódem. Fio import je implementován jen v bezpečném
+shadow režimu bez automatické změny platby. Anonymní checkout, Stripe, Packeta a
+placený kroužek zatím nejsou zapnuté.
 
 ## Bezpečnostní a účetní kontrakt
 
@@ -99,6 +100,7 @@ podtržítko a porovnává se bez ohledu na velikost písmen.
 
 Schéma vyžaduje migrace `20260803230000_shop_checkout`,
 `20260804010000_shop_order_fulfillment` a
-`20260804030000_shop_order_refunds` a `20260804050000_shop_coupons`. Před aktivací PHP musí být aplikovány
+`20260804030000_shop_order_refunds`, `20260804050000_shop_coupons` a
+`20260804070000_fio_readonly_import`. Před aktivací PHP musí být aplikovány
 migračním runnerem. Částečné vratky má další přírůstek řešit jen tehdy, pokud je
 produktově potřebujeme; jinak následuje kupón nebo automatické Fio párování.

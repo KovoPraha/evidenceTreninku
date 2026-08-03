@@ -71,3 +71,12 @@ if (is_string($shopBankIban) && $shopBankIban !== '') define('SHOP_BANK_IBAN', $
 if (is_string($shopBankBic) && $shopBankBic !== '') define('SHOP_BANK_BIC', $shopBankBic);
 if (is_string($shopBankAccountLabel) && $shopBankAccountLabel !== '') define('SHOP_BANK_ACCOUNT_LABEL', $shopBankAccountLabel);
 if (is_string($shopBankDueDays) && preg_match('/^[0-9]{1,2}$/D', $shopBankDueDays) === 1) define('SHOP_BANK_DUE_DAYS', (int)$shopBankDueDays);
+
+// Read-only Fio import v shadow rezimu. Pouzijte vyhradne token typu "Sledovani uctu".
+// Token nikdy neukladejte do tohoto souboru ani do Gitu; patri do FIO_API_TOKEN v prostredi.
+$fioImportEnabled = getenv('FIO_IMPORT_ENABLED');
+$fioImportLookbackDays = getenv('FIO_IMPORT_LOOKBACK_DAYS');
+define('FIO_IMPORT_ENABLED', is_string($fioImportEnabled) && $fioImportEnabled === '1');
+if (is_string($fioImportLookbackDays) && preg_match('/^(?:[1-9]|[12][0-9]|30)$/D', $fioImportLookbackDays) === 1) {
+    define('FIO_IMPORT_LOOKBACK_DAYS', (int)$fioImportLookbackDays);
+}
