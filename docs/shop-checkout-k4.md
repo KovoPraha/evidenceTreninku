@@ -75,10 +75,30 @@ objednávka zůstane `cancelled` a audit dostane akci `confirm_refund`. Čas,
 reference, administrátor a poznámka se ukládají na platebním záznamu. Opakované
 potvrzení je idempotentní a původní doklad nemění.
 
+## Slevové kupóny
+
+První verze podporuje pevnou slevu v CZK a celočíselnou procentní slevu. Kupón
+může mít minimum objednávky, u procent také maximální slevu, celkový limit
+použití a interval platnosti. Kód používá pouze `A-Z`, číslice, pomlčku a
+podtržítko a porovnává se bez ohledu na velikost písmen.
+
+- Ekonomická pravidla kupónu jsou po vytvoření neměnná. Administrátor může přes
+  `eshop_coupons_admin.php` pouze auditovaně změnit aktivní stav; všechny mutace
+  jsou POST + CSRF + důvod + potvrzení.
+- Košík zobrazuje pouze náhled. Checkout pod zámkem znovu ověří aktivitu,
+  platnost, minimum i zbývající limit a započítá kupón do fingerprintu košíku.
+- Objednávka ukládá `subtotal_minor`, `discount_minor` a `total_minor` a
+  `shop_coupon_redemptions` drží snapshot kódu, typu, hodnoty a skutečné slevy.
+- Čítač použití se zvýší ve stejné transakci jako objednávka. Idempotentní replay
+  jej nezvýší znovu a podmíněný update zabrání souběžnému přečerpání limitu.
+- První bankovní checkout nepřijme kupón, který by objednávku uhradil celou.
+  Stornovaná objednávka použití kupónu nevrací, aby nešlo limit obcházet
+  opakovaným objednáváním; administrátor může místo toho vydat nový kód.
+
 ## Migrace a další krok
 
 Schéma vyžaduje migrace `20260803230000_shop_checkout`,
 `20260804010000_shop_order_fulfillment` a
-`20260804030000_shop_order_refunds`. Před aktivací PHP musí být aplikovány
+`20260804030000_shop_order_refunds` a `20260804050000_shop_coupons`. Před aktivací PHP musí být aplikovány
 migračním runnerem. Částečné vratky má další přírůstek řešit jen tehdy, pokud je
 produktově potřebujeme; jinak následuje kupón nebo automatické Fio párování.

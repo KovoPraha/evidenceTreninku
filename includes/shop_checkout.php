@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/shop_coupon.php';
+
 final class ShopCheckoutException extends RuntimeException
 {
 }
@@ -49,7 +51,7 @@ function shopCartGetOrCreate(PDO $pdo, int $accountId): array
     return $cart;
 }
 
-/** @return array{cart:array<string,mixed>,items:list<array<string,mixed>>,total_minor:int,currency:?string} */
+/** @return array<string,mixed> */
 function shopCartDetail(PDO $pdo, int $accountId): array
 {
     $cart = shopCartGetOrCreate($pdo, $accountId);
@@ -70,7 +72,10 @@ function shopCartDetail(PDO $pdo, int $accountId): array
         $decoded = json_decode((string)$item['attributes_json'], true);
         $item['attributes'] = is_array($decoded) ? $decoded : [];
     }
-    return ['cart'=>$cart,'items'=>$items,'total_minor'=>$total,'currency'=>$currency,'fingerprint'=>shopCartFingerprint($items)];
+    $coupon=null;$couponError=null;
+    if($cart['coupon_id']!==null){try{$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$total);}catch(ShopCouponException $exception){$couponError=$exception->getMessage();}}
+    $discount=$coupon!==null?(int)$coupon['discount_minor']:0;
+    return ['cart'=>$cart,'items'=>$items,'subtotal_minor'=>$total,'discount_minor'=>$discount,'total_minor'=>$total-$discount,'currency'=>$currency,'coupon'=>$coupon,'coupon_error'=>$couponError,'fingerprint'=>shopCartFingerprint($items,$coupon)];
 }
 
 function shopCartSetQuantity(PDO $pdo, int $accountId, int $variantId, int $quantity): void
@@ -165,12 +170,15 @@ function shopCheckoutPlace(
             $line=$unit*$quantity;if($line<0||$total>PHP_INT_MAX-$line) throw new ShopCheckoutException('Celková částka je mimo podporovaný rozsah.');
             $total+=$line;
         }
-        if(!hash_equals($expectedCartFingerprint,shopCartFingerprint($items)))throw new ShopCheckoutException('Cena nebo obsah košíku se změnily. Zkontrolujte nový souhrn a odešlete jej znovu.');
+        $subtotal=$total;$coupon=null;$discount=0;
+        if($cart['coupon_id']!==null){try{$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$subtotal,true);$discount=(int)$coupon['discount_minor'];}catch(ShopCouponException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}}
+        $total=$subtotal-$discount;
+        if(!hash_equals($expectedCartFingerprint,shopCartFingerprint($items,$coupon)))throw new ShopCheckoutException('Cena, obsah nebo kupón košíku se změnily. Zkontrolujte nový souhrn a odešlete jej znovu.');
         if($currency!=='CZK'||$total<1) throw new ShopCheckoutException('První bankovní checkout podporuje pouze kladnou částku v CZK.');
         $publicCode='KP'.date('ymd').strtoupper(bin2hex(random_bytes(5)));
         $insert=$pdo->prepare('INSERT INTO shop_orders(public_code,account_id,source_cart_id,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at) '
-            . "VALUES (?,?,?,?,'placed','pending','personal_pickup',?,?,?,0,?,?,CURRENT_TIMESTAMP)");
-        $insert->execute([$publicCode,$accountId,(int)$cart['id'],$keyHash,trim((string)$account['jmeno'].' '.(string)$account['prijmeni']),(string)$account['email'],$total,$total,$currency]);
+            . "VALUES (?,?,?,?,'placed','pending','personal_pickup',?,?,?,?,?,?,CURRENT_TIMESTAMP)");
+        $insert->execute([$publicCode,$accountId,(int)$cart['id'],$keyHash,trim((string)$account['jmeno'].' '.(string)$account['prijmeni']),(string)$account['email'],$subtotal,$discount,$total,$currency]);
         $orderId=(int)$pdo->lastInsertId();
         foreach($items as $item){
             $quantity=(int)$item['quantity'];$line=(int)$item['amount_minor']*$quantity;
@@ -189,15 +197,20 @@ function shopCheckoutPlace(
                     ->execute([(int)$item['id'],$orderId,$orderItemId,(string)(-$quantity),$stockAfter]);
             }
         }
+        if($coupon!==null){
+            $usage=$pdo->prepare('UPDATE shop_coupons SET usage_count=usage_count+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND (usage_limit_total IS NULL OR usage_count<usage_limit_total)');$usage->execute([(int)$coupon['id']]);
+            if($usage->rowCount()!==1)throw new ShopCheckoutException('Limit použití kupónu byl mezitím vyčerpán.');
+            $pdo->prepare('INSERT INTO shop_coupon_redemptions(coupon_id,order_id,account_id,code_snapshot,discount_type_snapshot,value_snapshot,discount_minor) VALUES (?,?,?,?,?,?,?)')
+                ->execute([(int)$coupon['id'],$orderId,$accountId,(string)$coupon['code'],(string)$coupon['discount_type'],(int)$coupon['value_minor_or_basis_points'],$discount]);
+        }
         $variableSymbol=shopPaymentVariableSymbol($orderId);
         $dueAt=(new DateTimeImmutable('now +'.$bank['due_days'].' days'))->setTime(23,59,59)->format('Y-m-d H:i:s');
         $spd=shopPaymentSpdPayload($bank['iban'],$total,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
         $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) '
             . "VALUES ('shop_order',?,'bank_transfer','pending',?,?,?,?,?,?,?,?)")
             ->execute([$orderId,$total,$currency,$variableSymbol,$bank['iban'],$bank['bic']!==''?$bank['bic']:null,$bank['account_label'],$spd,$dueAt]);
-        $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) '
-            . "VALUES (?,'account',?,'place',NULL,'placed','Objednávka vytvořena serverovým checkoutem.')")
-            ->execute([$orderId,$accountId]);
+        $placeNote='Objednávka vytvořena serverovým checkoutem.'.($coupon!==null?' Kupón '.$coupon['code'].' poskytl slevu '.$discount.' minor units.':'');
+        $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'account\',?,\'place\',NULL,\'placed\',?)')->execute([$orderId,$accountId,$placeNote]);
         $pdo->prepare("UPDATE shop_carts SET status='converted',active_account_id=NULL,converted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?")
             ->execute([(int)$cart['id']]);
         $pdo->commit();
@@ -212,7 +225,7 @@ function shopCheckoutPlace(
 /** @return array<string,mixed> */
 function shopOrderByCode(PDO $pdo,int $accountId,string $publicCode): array
 {
-    $statement=$pdo->prepare('SELECT o.*,p.id AS payment_id,p.method,p.status AS payment_record_status,p.variable_symbol,p.iban_snapshot,p.bic_snapshot,p.account_label_snapshot,p.spd_payload,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id WHERE o.account_id=? AND o.public_code=?');
+    $statement=$pdo->prepare('SELECT o.*,p.id AS payment_id,p.method,p.status AS payment_record_status,p.variable_symbol,p.iban_snapshot,p.bic_snapshot,p.account_label_snapshot,p.spd_payload,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS coupon_code_snapshot,r.discount_minor AS coupon_discount_minor FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id WHERE o.account_id=? AND o.public_code=?');
     $statement->execute([$accountId,$publicCode]);$order=$statement->fetch(PDO::FETCH_ASSOC);
     if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
     $items=$pdo->prepare('SELECT * FROM shop_order_items WHERE order_id=? ORDER BY id');$items->execute([(int)$order['id']]);
@@ -225,9 +238,9 @@ function shopOrderListForAccount(PDO $pdo,int $accountId,int $limit=100):array
     if($accountId<1)throw new InvalidArgumentException('Přehled objednávek vyžaduje přihlášený účet.');
     $limit=max(1,min(200,$limit));
     $statement=$pdo->prepare('SELECT o.id,o.public_code,o.status,o.payment_status,o.total_minor,o.currency,o.placed_at,o.created_at,o.cancelled_at,o.ready_at,o.completed_at,'
-        .'p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,'
+        .'p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS coupon_code_snapshot,'
         .'(SELECT COUNT(*) FROM shop_order_items oi WHERE oi.order_id=o.id) AS item_count '
-        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id '
+        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '
         .'WHERE o.account_id=? ORDER BY o.created_at DESC,o.id DESC LIMIT '.$limit);
     $statement->execute([$accountId]);return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -283,8 +296,8 @@ function shopPaymentQrDataUri(string $payload): string
     return $writer->write($qrCode)->getDataUri();
 }
 
-/** @param list<array<string,mixed>> $items */
-function shopCartFingerprint(array $items):string
+/** @param list<array<string,mixed>> $items @param array<string,mixed>|null $coupon */
+function shopCartFingerprint(array $items,?array $coupon=null):string
 {
     $contract=[];
     foreach($items as$item)$contract[]=[
@@ -294,16 +307,17 @@ function shopCartFingerprint(array $items):string
         'currency'=>(string)$item['currency'],
     ];
     usort($contract,static fn(array $a,array $b):int=>$a['variant_id']<=>$b['variant_id']);
-    return hash('sha256',(string)json_encode($contract,JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR));
+    $couponContract=$coupon===null?null:['id'=>(int)$coupon['id'],'code'=>(string)$coupon['code'],'discount_minor'=>(int)$coupon['discount_minor']];
+    return hash('sha256',(string)json_encode(['items'=>$contract,'coupon'=>$couponContract],JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR));
 }
 
 /** @return list<array<string,mixed>> */
 function shopOrderAdminList(PDO $pdo,int $limit=200):array
 {
     $limit=max(1,min(500,$limit));
-    return $pdo->query('SELECT o.*,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,'
+    return $pdo->query('SELECT o.*,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
         .'e.action AS last_event_action,e.actor_id AS last_event_actor_id,e.note AS last_event_note,e.created_at AS last_event_at '
-        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id '
+        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '
         .'LEFT JOIN shop_order_events e ON e.id=(SELECT MAX(e2.id) FROM shop_order_events e2 WHERE e2.order_id=o.id) '
         .'ORDER BY CASE p.status WHEN \'pending\' THEN 0 WHEN \'refund_required\' THEN 1 ELSE 2 END,o.created_at DESC,o.id DESC LIMIT '.$limit)->fetchAll(PDO::FETCH_ASSOC);
 }

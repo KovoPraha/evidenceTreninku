@@ -125,6 +125,28 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(4.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
     }
 
+    public function testFixedCouponIsServerValidatedSnapshottedAndCountedOnce():void
+    {
+        $pdo=$this->database();$coupon=\shopCouponAdminCreate($pdo,7,' LETO-500 ','fixed',5000,20000,null,2,'','','Letní klubová akce.',true);self::assertSame('LETO-500',$coupon['code']);
+        \shopCartSetQuantity($pdo,10,601,2);$quote=\shopCouponApplyToCart($pdo,10,'leto-500');self::assertSame(5000,(int)$quote['discount_minor']);
+        $cart=\shopCartDetail($pdo,10);self::assertSame(25000,$cart['subtotal_minor']);self::assertSame(5000,$cart['discount_minor']);self::assertSame(20000,$cart['total_minor']);
+        $key=bin2hex(random_bytes(16));$order=\shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint']);self::assertSame(25000,(int)$order['subtotal_minor']);self::assertSame(5000,(int)$order['discount_minor']);self::assertSame(20000,(int)$order['total_minor']);self::assertSame('LETO-500',$order['coupon_code_snapshot']);
+        $redemption=$pdo->query('SELECT code_snapshot,discount_type_snapshot,value_snapshot,discount_minor FROM shop_coupon_redemptions')->fetch(PDO::FETCH_ASSOC);self::assertSame(['code_snapshot'=>'LETO-500','discount_type_snapshot'=>'fixed','value_snapshot'=>5000,'discount_minor'=>5000],$redemption);self::assertSame(1,(int)$pdo->query('SELECT usage_count FROM shop_coupons')->fetchColumn());
+        $replay=\shopCheckoutPlace($pdo,10,$key,self::BANK,str_repeat('0',64));self::assertTrue($replay['replayed']);self::assertSame(1,(int)$pdo->query('SELECT usage_count FROM shop_coupons')->fetchColumn());
+    }
+
+    public function testCouponValidityLimitToggleAndFingerprintFailClosed():void
+    {
+        $pdo=$this->database();$coupon=\shopCouponAdminCreate($pdo,7,'PERCENT10','percentage',1000,10000,1000,1,'','','Schválená desetiprocentní sleva.',true);
+        self::assertCount(1,\shopCouponAdminList($pdo));try{\shopCouponAdminSetActive($pdo,(int)$coupon['id'],7,false,'Test bez potvrzení.',false);self::fail('Toggle must be explicit.');}catch(\InvalidArgumentException){}
+        \shopCartSetQuantity($pdo,10,601,1);\shopCouponApplyToCart($pdo,10,'PERCENT10');$fingerprint=\shopCartDetail($pdo,10)['fingerprint'];
+        self::assertTrue(\shopCouponAdminSetActive($pdo,(int)$coupon['id'],7,false,'Pozastavení kampaně.',true)['changed']);try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$fingerprint);self::fail('Inactive coupon must fail checkout.');}catch(\ShopCheckoutException){}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());self::assertTrue(\shopCouponAdminSetActive($pdo,(int)$coupon['id'],7,true,'Obnovení kampaně.',true)['changed']);
+        $cart=\shopCartDetail($pdo,10);self::assertSame(1000,$cart['discount_minor']);\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint']);self::assertSame(1,(int)$pdo->query('SELECT usage_count FROM shop_coupons')->fetchColumn());
+        \shopCartSetQuantity($pdo,11,601,1);try{\shopCouponApplyToCart($pdo,11,'PERCENT10');self::fail('Usage limit must be enforced.');}catch(\ShopCouponException){}
+        self::assertSame(3,(int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_events')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
@@ -137,6 +159,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants VALUES(601,501,'TRIKO-M','{\"size\":\"M\"}','fixed',12500,'CZK',1,2100,'5.000000',1,'active',CURRENT_TIMESTAMP),(602,502,'EVENT','{}','fixed',100,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP),(603,503,'OLD','{}','fixed',100,'CZK',1,0,NULL,1,'inactive',CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');
         $pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Tričko KOVO','Klubové tričko.'),(502,'active','Kroužek','Nejde do košíku.'),(503,'inactive','Staré','Neaktivní.')");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

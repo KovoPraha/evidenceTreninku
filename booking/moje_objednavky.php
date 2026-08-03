@@ -24,7 +24,7 @@ $orders=shopOrderListForAccount($pdo,(int)$_SESSION['verejny_uzivatel_id']);
 <div class="col-md-3"><strong><?=myOrdersH($order['public_code'])?></strong><div class="small text-muted"><?=myOrdersH($order['placed_at'])?></div></div>
 <div class="col-md-2"><span class="badge text-bg-<?=$style?>"><?=myOrdersH($label)?></span></div>
 <div class="col-md-3"><div><?=myOrdersH(myOrdersPayment((string)$order['payment_record_status']))?></div><?php if($order['refund_sent_at']!==null):?><div class="small text-muted">Vráceno <?=myOrdersH($order['refund_sent_at'])?></div><?php endif;?></div>
-<div class="col-md-2"><strong><?=myOrdersMoney((int)$order['total_minor'],(string)$order['currency'])?></strong><div class="small text-muted"><?=(int)$order['item_count']?> položek</div></div>
+<div class="col-md-2"><strong><?=myOrdersMoney((int)$order['total_minor'],(string)$order['currency'])?></strong><div class="small text-muted"><?=(int)$order['item_count']?> položek<?php if($order['coupon_code_snapshot']!==null):?> · kupón <?=myOrdersH($order['coupon_code_snapshot'])?><?php endif;?></div></div>
 <div class="col-md-2 text-md-end"><a class="btn btn-sm btn-outline-primary" href="objednavka.php?code=<?=rawurlencode((string)$order['public_code'])?>">Detail</a></div>
 </div></div></article></div><?php endforeach;?></div>
 </main></body></html>
