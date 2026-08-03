@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.3';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -39,9 +39,14 @@ const EVIDENCE_TABLES = [
     'club_event_notifications',
     'club_event_registration_events',
     'club_event_registrations',
+    'club_event_roster_targets',
     'club_event_sessions',
     'club_event_term_versions',
     'club_events',
+    'club_program_enrollment_events',
+    'club_program_enrollments',
+    'club_program_offers',
+    'club_programs',
     'club_roster_events',
     'club_roster_members',
     'club_seasons',
@@ -116,6 +121,8 @@ const EVIDENCE_TABLES = [
     'trenink_sportovec',
     'trenink_tag',
     'trenink_trener',
+    'training_roster_expected',
+    'training_roster_links',
     'ucto_audit_log',
     'ucto_dokumenty',
     'ucto_gs_kategorie',

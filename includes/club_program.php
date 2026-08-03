@@ -102,6 +102,13 @@ function clubProgramOfferForVariant(PDO $pdo, int $variantId): array|false
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+function clubProgramProductHasActiveOffer(PDO $pdo, int $productId): bool
+{
+    $stmt = $pdo->prepare('SELECT 1 FROM club_program_offers o JOIN club_programs p ON p.id = o.program_id WHERE o.product_id = ? AND o.status = \'active\' AND p.status = \'active\' LIMIT 1');
+    $stmt->execute([$productId]);
+    return $stmt->fetchColumn() !== false;
+}
+
 /** @param array<string,mixed> $offer */
 function clubProgramOfferIsOnSale(array $offer, ?DateTimeImmutable $now = null): bool
 {

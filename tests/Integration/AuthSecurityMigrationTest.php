@@ -47,6 +47,9 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804090000_kis_teams_rosters',
                 '20260804110000_kis_roster_policies',
                 '20260804120000_shop_item_beneficiaries',
+                '20260804130000_training_roster_bridge',
+                '20260804140000_club_programs',
+                '20260804150000_club_event_roster_targets',
             ],
             array_keys($catalog)
         );

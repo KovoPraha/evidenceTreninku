@@ -332,6 +332,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>KIS centrum</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_rosters_admin.php') ?>" href="kis_rosters_admin.php">
                                 <i class="bi bi-people-fill me-2 text-primary"></i>KIS týmy a soupisky</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('club_programs_admin.php') ?>" href="club_programs_admin.php">
+                                <i class="bi bi-calendar-range me-2 text-primary"></i>Kroužkové programy</a></li>
                             <li><a class="dropdown-item<?= _dropActive('sprava_segmentu.php') ?>" href="sprava_segmentu.php">
                                 <i class="bi bi-signpost-split me-2"></i>Správa segmentů</a></li>
 
@@ -345,7 +347,7 @@ if ($is_logged_in) {
                             <li><a class="dropdown-item<?= _dropActive('eshop_catalog_publication_admin.php') ?>" href="eshop_catalog_publication_admin.php">
                                 <i class="bi bi-eye me-2 text-success"></i>Aktivace katalogu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_events_admin.php') ?>" href="eshop_events_admin.php">
-                                <i class="bi bi-calendar-event me-2 text-primary"></i>Klubové akce K3</a></li>
+                                <i class="bi bi-calendar-event me-2 text-primary"></i>Klubové akce a soupisky</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_notifications_admin.php') ?>" href="eshop_notifications_admin.php">
                                 <i class="bi bi-envelope-exclamation me-2 text-warning"></i>Fronta e-mailů K3</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_identity_admin.php') ?>" href="eshop_identity_admin.php">

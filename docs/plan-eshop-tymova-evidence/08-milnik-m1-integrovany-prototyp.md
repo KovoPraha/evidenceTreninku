@@ -327,21 +327,21 @@ MariaDB procesy.
 
 Procenta jsou odhad pokrytí akceptačních cest M1, nikoliv množství kódu.
 
-| Proud | Stav po prvním paralelním přírůstku | Hlavní mezera |
+| Proud | Stav po druhém paralelním přírůstku | Hlavní mezera |
 |---|---:|---|
-| stávající tréninková Evidence | 82 % | most z nových soupisek do plánování tréninku |
+| stávající tréninková Evidence | 92 % | dotažení zápisu skutečné docházky a produktová prohlídka |
 | účty, rodič a osoby | 78 % | vlastní účet dítěte v seedu a mutační self/guardian cesty |
-| běžné zboží a objednávka | 85 % | UI výběru příjemce služby a sjednocený portál |
-| programy/kroužky | 15 % | dlouhodobá účast oddělená od jednorázové události |
-| sezóny a soupisky | 60 % | auditované provedení rolloveru, výjimky a most do Evidence |
-| události a přihlášky | 55 % | cílení na soupisky a placená integrace |
+| běžné zboží a objednávka | 88 % | sjednocený portál a produkční UX |
+| programy/kroužky | 60 % | automatizace aktivace po úhradě, storno/refund a celý A03–A04 průchod |
+| sezóny a soupisky | 68 % | auditované provedení rolloveru a individuální výjimky |
+| události a přihlášky | 78 % | placený scénář a UX validace časové platnosti soupisky |
 | veřejnost a velodrom přes e-shop | 15 % | jednotný onboarding, slot a účastníci |
-| integrovaný demo průchod | 48 % | programové účasti, tréninkový most a scénáře A01–A10 |
+| integrovaný demo průchod | 65 % | dokončení A03–A07, veřejný scénář A09 a stránka testovacích scénářů |
 
-Celý M1 je po prvním paralelním přírůstku přibližně na 48 %. E-shopový základ je
-testovatelný a rodina, objednávkový příjemce a soupisové politiky mají první
-integrované řezy. Největší produktová mezera je nyní propojení programových
-služeb a soupisek se stávající docházkou.
+Celý M1 je po druhém paralelním přírůstku přibližně na 65 %. E-shopový základ,
+rodinný rozsah, soupisky, plánování tréninku, kroužkové nabídky a cílené události
+mají integrované localhost řezy. Největší mezery jsou nyní automatický životní
+cyklus programové účasti po úhradě, provedení rolloveru a veřejná rezervace.
 
 ## Co následuje po M1
 

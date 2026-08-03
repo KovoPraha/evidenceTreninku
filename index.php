@@ -573,6 +573,9 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a href="kis_sync_center.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-diagram-3 text-primary"></i>KIS centrum
                 <?= roleBadge('sync_evidence') ?></a>
+              <a href="club_programs_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-calendar-range text-primary"></i>Kroužkové programy
+                <?= roleBadge('sync_evidence') ?></a>
             </div>
           </div>
           <?php endif; ?>
@@ -591,7 +594,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
                 <i class="bi bi-eye text-success"></i>Aktivace katalogu
                 <span class="role-badge role-admin">admin</span></a>
               <a href="eshop_events_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-event text-primary"></i>Klubové akce K3
+                <i class="bi bi-calendar-event text-primary"></i>Klubové akce a soupisky
                 <span class="role-badge role-admin">admin</span></a>
               <a href="eshop_identity_admin.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-people text-primary"></i>Účty, rodiče a sportovci

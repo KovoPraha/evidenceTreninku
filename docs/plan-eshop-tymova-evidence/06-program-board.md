@@ -1,6 +1,6 @@
 # 06 – Program board
 
-Aktualizováno: 3. 8. 2026 (první paralelní M1 přírůstek)
+Aktualizováno: 3. 8. 2026 (druhý paralelní M1 přírůstek)
 Aktuální produkční brána: **F0 – červená**
 Aktuální lokální produktový milník: **M1 – integrovaný testovatelný prototyp**
 Povolená práce: localhost přírůstky M1 podle
@@ -16,15 +16,15 @@ wallet, exporty a ostrý KIS/Shoptet cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | první paralelní M1 přírůstek: rodinný portál `d42a30c`, beneficiary snapshot `82b42a3` a série/rollover preview `18b81a3`; bez produkčních změn |
+| lokální práce | druhý paralelní M1 přírůstek: tréninkový most `9f7e531`, programy `e6fad8e` a cílené události `218bfd3`; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | všechny soubory jednotlivých paralelních přírůstků a integrační PHP soubory prošly lintem |
 | dependency audit | 0 advisories lokálně; produkční stav nebyl v tomto přírůstku měněn |
-| automatické testy | 213 testů / 1583 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | 22 číslovaných migrací; obě nové M1 migrace byly aplikovány pouze na localhost a katalog je 22/22 current |
+| automatické testy | 236 testů / 1779 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | 25 číslovaných migrací; nové M1 migrace `130000`, `140000`, `150000` byly aplikovány pouze na localhost a katalog je 25/25 current |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
-| restore drill | post-migration localhost backup má 102 tabulek / 1 trigger a ověřený checksum; ownership kontrakt `2026-08-03.2` zahrnuje `club_team_series`; produkční artefakt nebyl testován |
+| restore drill | post-migration localhost backup má 109 tabulek / 1 trigger a ověřený checksum; ownership kontrakt `2026-08-03.3` zahrnuje nové M1 tabulky; produkční artefakt nebyl testován |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | Shoptet katalog | reálných 241/807 bylo po auditované kontrole transakčně převedeno do izolovaného draft katalogu; opakování bez duplicity, veřejně aktivních produktů 0 |
 | Aktivace katalogu | `5500927`: jednotlivé `goods` lze ručně aktivovat s plain-text veřejným snapshotem a auditem; K3 typy jsou fail-closed; veřejný storefront stále neexistuje |
@@ -43,6 +43,15 @@ wallet, exporty a ostrý KIS/Shoptet cutover
 
 Hodnoty lokální DB nejsou produkční statistika. Slouží pouze k posouzení, zda
 současné vývojové prostředí dokáže ověřit navrhované scénáře.
+
+## Druhý paralelní přírůstek M1
+
+| Proud | Commit v `main` | Přijatý důkaz |
+|---|---|---|
+| M1.3 tréninkový most | `9f7e531` | více soupisek na plán, snapshot očekávaných osob, deduplikace a žádný automatický zápis docházky |
+| M1.4 kroužkové programy | `e6fad8e` | nabídka/období, beneficiary, kapacita, oddělená účast, audit a aktivace potvrzené položky |
+| M1.6 cílení událostí | `218bfd3` | více soupisek, transakční kontrola oprávnění, jeden zápis při překryvu a snapshot důvodu |
+| integrační brána | následující commit | katalog 25/25, 236/1779, audit 0 advisories, 296 lintů, 109 tabulek a browser smoke všech tří cest |
 
 ## Aktivní rozhodnutí
 

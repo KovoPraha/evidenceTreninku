@@ -7,7 +7,7 @@ final class ClubProgramWiringTest extends TestCase
     public function testPublicPagesUseSessionCsrfBeneficiaryAndActivationServices():void
     {
         $root=dirname(__DIR__,2);$shop=(string)file_get_contents($root.'/booking/eshop.php');$mine=(string)file_get_contents($root.'/booking/moje_programy.php');
-        self::assertStringContainsString("isset(\$_SESSION['verejny_uzivatel_id'])",$shop);self::assertStringContainsString('csrf_verify',$shop);self::assertStringContainsString('shopCartSetBeneficiary',$shop);self::assertStringContainsString('clubProgramOfferForVariant',$shop);
+        self::assertStringContainsString("isset(\$_SESSION['verejny_uzivatel_id'])",$shop);self::assertStringContainsString('csrf_verify',$shop);self::assertStringContainsString('shopCartSetBeneficiary',$shop);self::assertStringContainsString('clubProgramOfferForVariant',$shop);self::assertStringContainsString('clubProgramProductHasActiveOffer',$shop);
         self::assertStringContainsString('csrf_verify',$mine);self::assertStringContainsString('clubProgramActivateOrderItem',$mine);self::assertStringContainsString('clubProgramEnrollmentsForAccount',$mine);
     }
     public function testAdminRequiresPermissionAndProgramServiceUsesTransactions():void

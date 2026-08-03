@@ -76,13 +76,28 @@ Pořadí migrací je určeno jejich ID, nikoliv okamžikem dokončení pracovní
 - pracovní strom obsahuje nevysvětlené změny,
 - vznikl požadavek na push, deploy nebo produkční DB bez nového výslovného souhlasu.
 
+## Druhé paralelní kolo
+
+Společný base: `0d5e89c2760d0e657bc1da17fb5f7b83deb90f35`
+
+| Proud | Branch | Přijatý commit | Výsledek |
+|---|---|---|---|
+| M1.3 tréninkový most | `codex/m1-training-bridge` | `acb5883` → `9f7e531` v `main` | M:N vazba plánů na soupisky a deduplikovaný snapshot očekávaných osob |
+| M1.4 kroužkové programy | `codex/m1-club-programs` | `3e670f9` → `e6fad8e` v `main` | program, nabídka, účast, audit, kapacita a aktivace uhrazené položky |
+| M1.6 cílení událostí | `codex/m1-event-rosters` | `cd0e014` → `218bfd3` v `main` | M:N cíle, transakční kontrola oprávnění a snapshot důvodu |
+| integrace | `main` | následující integrační commit | seed, backup kontrakt, navigace, plné testy, MariaDB a browser smoke |
+
+Všechny tři pracovní větve skončily čisté, bez push/deploy a bez změny produkční
+databáze. Číslované migrace `130000`, `140000` a `150000` byly aplikovány jen na
+localhost.
+
 ## Další vhodné paralelní kolo
 
-Po přijetí prvního kola lze opět oddělit:
+Po přijetí druhého kola lze opět oddělit:
 
-- most soupisek do stávajících tréninků,
-- kroužkové programy a aktivaci služby z potvrzené objednávky,
-- M:N cílení událostí na soupisky.
+- M1.4 automatickou aktivaci/storno programové účasti podle životního cyklu platby,
+- M1.5 auditované provedení rolloveru a přechod kroužek → závodní tým,
+- M1.7 veřejný profil a rezervaci velodromu.
 
 Veřejný onboarding a rezervace velodromu začnou až po stabilizaci společného
 profilu a příjemce služby, protože oba proudy používají stejné identity a

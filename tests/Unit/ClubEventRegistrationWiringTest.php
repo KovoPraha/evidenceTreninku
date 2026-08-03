@@ -19,7 +19,8 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringContainsString('consent_version', $page);
         self::assertStringNotContainsString('shop_orders', $page);
         self::assertStringNotContainsString('payments', $page);
-        self::assertStringNotContainsString('soupisk', $page);
+        self::assertStringContainsString('clubEventRosterEligibility', $page);
+        self::assertStringContainsString('roster_targets', $page);
     }
 
     public function testRegistrationServiceContainsMariaDbCapacityLockAndUniqueMigration(): void

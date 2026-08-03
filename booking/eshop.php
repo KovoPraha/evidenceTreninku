@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     catch (InvalidArgumentException|ShopCheckoutException|ShopCouponException|ClubProgramException $exception) { $errors[] = $exception->getMessage(); }
 }
 $success = (string)($_SESSION['flash_shop'] ?? '');unset($_SESSION['flash_shop']);
-$products = array_values(array_filter(shopStorefrontProducts($pdo),static function(array $product)use($pdo):bool{$offer=clubProgramOfferForVariant($pdo,(int)$product['variant_id']);return !$offer||clubProgramOfferIsOnSale($offer);}));$cart = shopCartDetail($pdo,$accountId);$people = familyPortalAuthorizedPeople($pdo,$accountId);
+$products = array_values(array_filter(shopStorefrontProducts($pdo),static function(array $product)use($pdo):bool{$offer=clubProgramOfferForVariant($pdo,(int)$product['variant_id']);if (!$offer && clubProgramProductHasActiveOffer($pdo,(int)$product['product_id'])) return false;return !$offer||clubProgramOfferIsOnSale($offer);}));$cart = shopCartDetail($pdo,$accountId);$people = familyPortalAuthorizedPeople($pdo,$accountId);
 if (!isset($_SESSION['shop_checkout_key']) || preg_match('/^[a-f0-9]{32}$/D',(string)$_SESSION['shop_checkout_key']) !== 1) $_SESSION['shop_checkout_key'] = bin2hex(random_bytes(16));
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Klubový e-shop</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"></head><body class="bg-light"><main class="container py-4">
