@@ -29,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo,
                     (int)($_POST['event_id'] ?? 0),
                     $accountId,
-                    (int)($_POST['sportovec_id'] ?? 0)
+                    (int)($_POST['sportovec_id'] ?? 0),
+                    (string)($_POST['consent_version'] ?? ''),
+                    ($_POST['consented'] ?? '') === '1'
                 );
                 $_SESSION['flash_club_registration'] = $result['created']
                     ? 'Dítě bylo na kroužek přihlášeno.'
@@ -99,9 +101,11 @@ foreach ($registrations as $registration) {
             <div class="small mb-3"><strong>Volná místa:</strong> <?= (int)$event['remaining_capacity'] ?> z <?= (int)$event['effective_capacity'] ?></div>
             <?php foreach ($event['sessions'] as $session): ?><div class="border-top py-2 small"><i class="bi bi-calendar3 me-1"></i><?= clubRegistrationH($session['starts_at']) ?>–<?= clubRegistrationH($session['ends_at']) ?><br><span class="text-muted"><i class="bi bi-geo-alt me-1"></i><?= clubRegistrationH($session['location']) ?></span></div><?php endforeach; ?>
             <?php if ($participants !== []): ?><form method="post" class="row g-2 mt-2">
-                <?= csrf_field() ?><input type="hidden" name="action" value="register"><input type="hidden" name="event_id" value="<?= (int)$event['id'] ?>">
+                <?= csrf_field() ?><input type="hidden" name="action" value="register"><input type="hidden" name="event_id" value="<?= (int)$event['id'] ?>"><input type="hidden" name="consent_version" value="<?= clubRegistrationH($event['terms_version']) ?>">
                 <div class="col-8"><label class="visually-hidden" for="person-<?= (int)$event['id'] ?>">Dítě</label><select class="form-select" id="person-<?= (int)$event['id'] ?>" name="sportovec_id" required><option value="">Vyberte dítě</option><?php foreach ($participants as $person): ?><option value="<?= (int)$person['sportovec_id'] ?>" <?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? 'disabled' : '' ?>><?= clubRegistrationH($person['prijmeni'] . ' ' . $person['jmeno']) ?><?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? ' — již přihlášeno' : '' ?></option><?php endforeach; ?></select></div>
                 <div class="col-4 d-grid"><button class="btn btn-primary" <?= (int)$event['remaining_capacity'] < 1 ? 'disabled' : '' ?>>Přihlásit</button></div>
+                <div class="col-12"><div class="border rounded bg-light p-2 small"><strong>Souhlas <?= clubRegistrationH($event['terms_version']) ?></strong><br><?= nl2br(clubRegistrationH($event['consent_text_plain'])) ?><hr class="my-2"><strong>Bezplatné storno do <?= clubRegistrationH($event['cancellation_deadline_at']) ?></strong><br><?= nl2br(clubRegistrationH($event['cancellation_policy_plain'])) ?></div></div>
+                <div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="consented" value="1" id="consent-<?= (int)$event['id'] ?>" required><label class="form-check-label" for="consent-<?= (int)$event['id'] ?>">Potvrzuji souhlas a storno podmínky pro vybrané dítě.</label></div>
             </form><?php endif; ?>
         </div></section></div>
     <?php endforeach; ?>
@@ -109,7 +113,7 @@ foreach ($registrations as $registration) {
     </div>
 
     <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje přihlášky na kroužky</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Kroužek</th><th>Dítě</th><th>Stav</th><th></th></tr></thead><tbody>
-    <?php foreach ($registrations as $registration): ?><tr><td><strong><?= clubRegistrationH($registration['event_name']) ?></strong><div class="small text-muted"><?= clubRegistrationH($registration['registered_at']) ?></div></td><td><?= clubRegistrationH($registration['prijmeni'] . ' ' . $registration['jmeno']) ?></td><td><span class="badge <?= $registration['status'] === 'confirmed' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= $registration['status'] === 'confirmed' ? 'přihlášeno' : 'zrušeno' ?></span></td><td><?php if ($registration['status'] === 'confirmed'): ?><form method="post" class="d-flex gap-2 justify-content-end"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="registration_id" value="<?= (int)$registration['id'] ?>"><input class="form-control form-control-sm" style="max-width:220px" name="note" maxlength="1000" required placeholder="Důvod zrušení"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php endif; ?></td></tr><?php endforeach; ?>
+    <?php foreach ($registrations as $registration):$canCancel=$registration['status']==='confirmed'&&!empty($registration['cancellation_deadline_snapshot'])&&new DateTimeImmutable('now')<=new DateTimeImmutable((string)$registration['cancellation_deadline_snapshot']);?><tr><td><strong><?= clubRegistrationH($registration['event_name']) ?></strong><div class="small text-muted"><?= clubRegistrationH($registration['registered_at']) ?></div><div class="small text-muted">Souhlas <?=clubRegistrationH($registration['consent_version_snapshot']??'')?> · storno do <?=clubRegistrationH($registration['cancellation_deadline_snapshot']??'')?></div></td><td><?= clubRegistrationH($registration['prijmeni'] . ' ' . $registration['jmeno']) ?></td><td><span class="badge <?= $registration['status'] === 'confirmed' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= $registration['status'] === 'confirmed' ? 'přihlášeno' : 'zrušeno' ?></span></td><td><?php if ($canCancel): ?><form method="post" class="d-flex gap-2 justify-content-end"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="registration_id" value="<?= (int)$registration['id'] ?>"><input class="form-control form-control-sm" style="max-width:220px" name="note" maxlength="1000" required placeholder="Důvod zrušení"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php elseif($registration['status']==='confirmed'):?><span class="small text-muted">Bezplatné storno skončilo</span><?php endif; ?></td></tr><?php endforeach; ?>
     <?php if ($registrations === []): ?><tr><td colspan="4" class="text-center text-muted py-3">Zatím nemáte žádnou přihlášku.</td></tr><?php endif; ?>
     </tbody></table></div></section>
 </main>

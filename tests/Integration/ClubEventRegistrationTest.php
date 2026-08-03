@@ -16,17 +16,23 @@ final class ClubEventRegistrationTest extends TestCase
         $pdo = $this->database();
         $eventId = $this->openFreeEvent($pdo, 1);
 
-        $first = \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
-        $duplicate = \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
+        $first = \clubEventRegisterParticipant($pdo, $eventId, 10, 100, '2026.1', true);
+        $duplicate = \clubEventRegisterParticipant($pdo, $eventId, 10, 100, '2026.1', true);
         self::assertTrue($first['created']);
         self::assertFalse($duplicate['created']);
         self::assertSame($first['id'], $duplicate['id']);
         self::assertSame(1, (int)$pdo->query(
             "SELECT COUNT(*) FROM club_event_registrations WHERE status='confirmed'"
         )->fetchColumn());
+        $snapshot=$pdo->query('SELECT consent_version_snapshot,consent_text_snapshot,cancellation_policy_snapshot,cancellation_deadline_snapshot,consented_at FROM club_event_registrations WHERE id='.$first['id'])->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('2026.1',$snapshot['consent_version_snapshot']);
+        self::assertSame('Souhlasím s účastí dítěte.',$snapshot['consent_text_snapshot']);
+        self::assertSame('Bezplatné storno je možné do uvedeného termínu.',$snapshot['cancellation_policy_snapshot']);
+        self::assertNotEmpty($snapshot['cancellation_deadline_snapshot']);
+        self::assertNotEmpty($snapshot['consented_at']);
 
         try {
-            \clubEventRegisterParticipant($pdo, $eventId, 10, 101);
+            \clubEventRegisterParticipant($pdo, $eventId, 10, 101, '2026.1', true);
             self::fail('The second child must not take the same last place.');
         } catch (\ClubEventRegistrationException $exception) {
             self::assertStringContainsString('Kapacita', $exception->getMessage());
@@ -35,7 +41,7 @@ final class ClubEventRegistrationTest extends TestCase
 
         $cancelled = \clubEventCancelRegistration($pdo, $first['id'], 10, 'Dítě se nemůže účastnit.');
         self::assertTrue($cancelled['changed']);
-        $second = \clubEventRegisterParticipant($pdo, $eventId, 10, 101);
+        $second = \clubEventRegisterParticipant($pdo, $eventId, 10, 101, '2026.1', true);
         self::assertTrue($second['created']);
         self::assertSame(1, (int)$pdo->query(
             "SELECT COUNT(*) FROM club_event_registrations WHERE status='confirmed'"
@@ -57,7 +63,7 @@ final class ClubEventRegistrationTest extends TestCase
 
         foreach ([[11, 100], [12, 102]] as [$accountId, $sportovecId]) {
             try {
-                \clubEventRegisterParticipant($pdo, $eventId, $accountId, $sportovecId);
+                \clubEventRegisterParticipant($pdo, $eventId, $accountId, $sportovecId, '2026.1', true);
                 self::fail('Only an approved K2 relation on an active verified account is allowed.');
             } catch (\ClubEventRegistrationException $exception) {
                 self::assertStringContainsString('K2', $exception->getMessage());
@@ -67,25 +73,57 @@ final class ClubEventRegistrationTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
     }
 
+    public function testCurrentConsentIsMandatoryAndCancellationDeadlineIsFailClosed(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,2);
+        try {
+            \clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',false);
+            self::fail('Explicit consent is required.');
+        } catch (\InvalidArgumentException) {
+        }
+        try {
+            \clubEventRegisterParticipant($pdo,$eventId,10,100,'old-version',true);
+            self::fail('A stale consent version must fail.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('změnily',$exception->getMessage());
+        }
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
+        $registration=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        try {
+            \clubEventConfigureRegistrationTerms($pdo,$eventId,7,'2026.2','Nový souhlas.','Nové storno.',((int)date('Y')+1).'-08-20T10:00',true);
+            self::fail('Terms must be immutable after opening.');
+        } catch (\ClubEventRegistrationException) {
+        }
+        $pdo->exec("UPDATE club_event_registrations SET cancellation_deadline_snapshot='2000-01-01 00:00:00' WHERE id=".$registration['id']);
+        try {
+            \clubEventCancelRegistration($pdo,$registration['id'],10,'Pozdní storno.');
+            self::fail('Cancellation after the snapshotted deadline must fail.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('uplynul',$exception->getMessage());
+        }
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$registration['id'])->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
+    }
+
     public function testAgeWindowAndOwnershipChecksRollBackCleanly(): void
     {
         $pdo = $this->database();
         $eventId = $this->openFreeEvent($pdo, 3, 6, 10);
         try {
-            \clubEventRegisterParticipant($pdo, $eventId, 12, 102);
+            \clubEventRegisterParticipant($pdo, $eventId, 12, 102, '2026.1', true);
             self::fail('Unverified account is blocked before age evaluation.');
         } catch (\ClubEventRegistrationException) {
         }
         $pdo->exec('UPDATE verejni_uzivatele SET email_overeno=1 WHERE id=12');
         try {
-            \clubEventRegisterParticipant($pdo, $eventId, 12, 102);
+            \clubEventRegisterParticipant($pdo, $eventId, 12, 102, '2026.1', true);
             self::fail('Age limit must be enforced on the first session date.');
         } catch (\ClubEventRegistrationException $exception) {
             self::assertStringContainsString('věkové', $exception->getMessage());
         }
         $pdo->exec("UPDATE club_events SET registration_ends_at='2000-01-01 00:00:00' WHERE id=$eventId");
         try {
-            \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
+            \clubEventRegisterParticipant($pdo, $eventId, 10, 100, '2026.1', true);
             self::fail('Closed registration window must be enforced.');
         } catch (\ClubEventRegistrationException $exception) {
             self::assertStringContainsString('skončilo', $exception->getMessage());
@@ -93,7 +131,7 @@ final class ClubEventRegistrationTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
 
         $pdo->exec('UPDATE club_events SET registration_ends_at=NULL,min_age=NULL,max_age=NULL WHERE id=' . $eventId);
-        $registration = \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
+        $registration = \clubEventRegisterParticipant($pdo, $eventId, 10, 100, '2026.1', true);
         try {
             \clubEventCancelRegistration($pdo, $registration['id'], 11, 'Cizí účet.');
             self::fail('Another account must not cancel the registration.');
@@ -129,6 +167,14 @@ final class ClubEventRegistrationTest extends TestCase
         $sessionYear=(int)date('Y')+1;
         \clubEventAddSession($pdo,$event['id'],7,$sessionYear.'-09-02T16:00',$sessionYear.'-09-02T17:00','Velodrom',2);
         \clubEventLinkProduct($pdo,$event['id'],501,7,'Bezplatný produkt.');
+        \clubEventConfigureRegistrationTerms($pdo,$event['id'],7,'2026.1','Souhlasím s účastí dítěte.','Bezplatné storno je možné do uvedeného termínu.',$sessionYear.'-08-30T16:00',true);
+        try {
+            \clubEventConfigureRegistrationTerms($pdo,$event['id'],7,'2026.1','Jiný text pod stejnou verzí.','Bezplatné storno je možné do uvedeného termínu.',$sessionYear.'-08-30T16:00',true);
+            self::fail('A consent version must be immutable.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('novou verzi',$exception->getMessage());
+        }
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_event_term_versions')->fetchColumn());
         $pdo->exec("UPDATE shop_variants SET price_mode='fixed',amount_minor=100 WHERE id=601");
         try {
             \clubEventOpenFreeRegistration($pdo,$event['id'],7,'Cena se změnila.',true);
@@ -157,6 +203,16 @@ final class ClubEventRegistrationTest extends TestCase
             1
         );
         \clubEventLinkProduct($pdo, $event['id'], 501, 7, 'Bezplatný produkt kroužku.');
+        \clubEventConfigureRegistrationTerms(
+            $pdo,
+            $event['id'],
+            7,
+            '2026.1',
+            'Souhlasím s účastí dítěte.',
+            'Bezplatné storno je možné do uvedeného termínu.',
+            ((int)date('Y') + 1) . '-08-30T16:00',
+            true
+        );
         \clubEventOpenFreeRegistration($pdo, $event['id'], 7, 'Schválený provozní start.', true);
         return $event['id'];
     }
@@ -203,6 +259,7 @@ final class ClubEventRegistrationTest extends TestCase
             '20260802230000_account_person_roles.php',
             '20260803110000_club_events.php',
             '20260803130000_club_event_registrations.php',
+            '20260803150000_club_event_terms.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);

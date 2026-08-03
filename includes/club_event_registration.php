@@ -8,6 +8,122 @@ final class ClubEventRegistrationException extends RuntimeException
 {
 }
 
+/** @return array{id:int,terms_version:string,changed:bool} */
+function clubEventConfigureRegistrationTerms(
+    PDO $pdo,
+    int $eventId,
+    int $actorTrainerId,
+    string $termsVersion,
+    string $consentText,
+    string $cancellationPolicy,
+    string $cancellationDeadline,
+    bool $confirmed
+): array {
+    $termsVersion = trim($termsVersion);
+    $consentText = trim($consentText);
+    $cancellationPolicy = trim($cancellationPolicy);
+    if ($eventId < 1 || $actorTrainerId < 1 || !$confirmed
+        || preg_match('/^[A-Za-z0-9._-]{1,64}$/D', $termsVersion) !== 1
+        || $consentText === '' || $cancellationPolicy === ''
+    ) {
+        throw new InvalidArgumentException(
+            'Podmínky vyžadují akci, administrátora, verzi, oba texty a výslovné potvrzení.'
+        );
+    }
+    if (mb_strlen($consentText, 'UTF-8') > 4000 || mb_strlen($cancellationPolicy, 'UTF-8') > 4000) {
+        throw new InvalidArgumentException('Text souhlasu a storna smí mít každý nejvýše 4000 znaků.');
+    }
+    $deadline = clubEventDateTime($cancellationDeadline);
+    if (new DateTimeImmutable($deadline) <= new DateTimeImmutable('now')) {
+        throw new InvalidArgumentException('Termín bezplatného storna musí být v budoucnosti.');
+    }
+
+    $pdo->beginTransaction();
+    try {
+        $event = clubEventLock($pdo, $eventId);
+        if (!$event || $event['status'] !== 'draft' || $event['event_type'] !== 'club_event'
+            || $event['pricing_policy'] !== 'free'
+        ) {
+            throw new ClubEventRegistrationException(
+                'Podmínky lze nastavit pouze bezplatnému kroužku ve stavu draft.'
+            );
+        }
+        $session = $pdo->prepare(
+            "SELECT starts_at FROM club_event_sessions WHERE event_id=? AND status='scheduled' "
+            . 'ORDER BY starts_at,id LIMIT 1'
+        );
+        $session->execute([$eventId]);
+        $firstSession = $session->fetchColumn();
+        if (!$firstSession) {
+            throw new ClubEventRegistrationException('Před nastavením podmínek přidejte alespoň jeden termín.');
+        }
+        if (new DateTimeImmutable($deadline) >= new DateTimeImmutable((string)$firstSession)) {
+            throw new ClubEventRegistrationException('Termín bezplatného storna musí být před prvním termínem.');
+        }
+
+        $versionStatement = $pdo->prepare(
+            'SELECT * FROM club_event_term_versions WHERE event_id=? AND terms_version=?'
+        );
+        $versionStatement->execute([$eventId, $termsVersion]);
+        $storedVersion = $versionStatement->fetch(PDO::FETCH_ASSOC);
+        if ($storedVersion) {
+            if ($storedVersion['consent_text_plain'] !== $consentText
+                || $storedVersion['cancellation_policy_plain'] !== $cancellationPolicy
+                || $storedVersion['cancellation_deadline_at'] !== $deadline
+            ) {
+                throw new ClubEventRegistrationException(
+                    'Tato verze už označuje jiné neměnné znění. Pro změnu použijte novou verzi.'
+                );
+            }
+        } else {
+            $insertVersion = $pdo->prepare(
+                'INSERT INTO club_event_term_versions '
+                . '(event_id,terms_version,consent_text_plain,cancellation_policy_plain, '
+                . 'cancellation_deadline_at,actor_trainer_id) VALUES (?,?,?,?,?,?)'
+            );
+            $insertVersion->execute([
+                $eventId, $termsVersion, $consentText, $cancellationPolicy, $deadline, $actorTrainerId,
+            ]);
+        }
+
+        $changed = $event['terms_version'] !== $termsVersion
+            || $event['consent_text_plain'] !== $consentText
+            || $event['cancellation_policy_plain'] !== $cancellationPolicy
+            || $event['cancellation_deadline_at'] !== $deadline;
+        if (!$changed) {
+            $pdo->commit();
+            return ['id' => $eventId, 'terms_version' => $termsVersion, 'changed' => false];
+        }
+        $update = $pdo->prepare(
+            'UPDATE club_events SET terms_version=?,consent_text_plain=?,cancellation_policy_plain=?, '
+            . 'cancellation_deadline_at=?,terms_configured_at=CURRENT_TIMESTAMP, '
+            . 'terms_configured_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+        );
+        $update->execute([
+            $termsVersion, $consentText, $cancellationPolicy, $deadline, $actorTrainerId, $eventId,
+        ]);
+        clubEventAudit($pdo, $eventId, $actorTrainerId, 'configure_terms', 'event', $eventId,
+            'Nastaveny podmínky registrace a storna.', [
+                'terms_version' => $termsVersion,
+                'cancellation_deadline_at' => $deadline,
+                'consent_sha256' => hash('sha256', $consentText),
+                'cancellation_sha256' => hash('sha256', $cancellationPolicy),
+            ]);
+        $pdo->commit();
+        return ['id' => $eventId, 'terms_version' => $termsVersion, 'changed' => true];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($exception instanceof InvalidArgumentException
+            || $exception instanceof ClubEventRegistrationException
+        ) {
+            throw $exception;
+        }
+        throw new ClubEventRegistrationException('Podmínky se nepodařilo uložit bez částečného zápisu.', 0, $exception);
+    }
+}
+
 /** @return array{id:int,status:string,changed:bool} */
 function clubEventOpenFreeRegistration(
     PDO $pdo,
@@ -40,12 +156,32 @@ function clubEventOpenFreeRegistration(
         ) {
             throw new ClubEventRegistrationException('Otevřít lze pouze bezplatný kroužek ve stavu draft.');
         }
+        if (empty($event['terms_version']) || empty($event['consent_text_plain'])
+            || empty($event['cancellation_policy_plain']) || empty($event['cancellation_deadline_at'])
+        ) {
+            throw new ClubEventRegistrationException('Před otevřením nastavte verzi souhlasu a storno podmínky.');
+        }
         $sessions = $pdo->prepare(
             "SELECT COUNT(*) FROM club_event_sessions WHERE event_id=? AND status='scheduled'"
         );
         $sessions->execute([$eventId]);
         if ((int)$sessions->fetchColumn() < 1) {
             throw new ClubEventRegistrationException('Před otevřením přidejte alespoň jeden termín.');
+        }
+        $firstSessionStatement = $pdo->prepare(
+            "SELECT MIN(starts_at) FROM club_event_sessions WHERE event_id=? AND status='scheduled'"
+        );
+        $firstSessionStatement->execute([$eventId]);
+        $firstSession = $firstSessionStatement->fetchColumn();
+        if (!$firstSession || new DateTimeImmutable((string)$event['cancellation_deadline_at'])
+            >= new DateTimeImmutable((string)$firstSession)
+        ) {
+            throw new ClubEventRegistrationException(
+                'Termín bezplatného storna musí zůstat před prvním termínem kroužku.'
+            );
+        }
+        if (new DateTimeImmutable((string)$event['cancellation_deadline_at']) <= new DateTimeImmutable('now')) {
+            throw new ClubEventRegistrationException('Kroužek nelze otevřít po termínu bezplatného storna.');
         }
         $products = $pdo->prepare('SELECT COUNT(*) FROM shop_product_event_links WHERE event_id=?');
         $products->execute([$eventId]);
@@ -131,10 +267,20 @@ function clubEventCloseRegistration(PDO $pdo, int $eventId, int $actorTrainerId,
 }
 
 /** @return array{id:int,status:string,created:bool} */
-function clubEventRegisterParticipant(PDO $pdo, int $eventId, int $accountId, int $sportovecId): array
+function clubEventRegisterParticipant(
+    PDO $pdo,
+    int $eventId,
+    int $accountId,
+    int $sportovecId,
+    string $consentVersion,
+    bool $consented
+): array
 {
-    if ($eventId < 1 || $accountId < 1 || $sportovecId < 1) {
-        throw new InvalidArgumentException('Přihlášení vyžaduje kroužek, účet a schválenou osobu.');
+    $consentVersion = trim($consentVersion);
+    if ($eventId < 1 || $accountId < 1 || $sportovecId < 1 || !$consented || $consentVersion === '') {
+        throw new InvalidArgumentException(
+            'Přihlášení vyžaduje kroužek, účet, schválenou osobu a potvrzený aktuální souhlas.'
+        );
     }
     $pdo->beginTransaction();
     try {
@@ -146,6 +292,14 @@ function clubEventRegisterParticipant(PDO $pdo, int $eventId, int $accountId, in
             throw new ClubEventRegistrationException('Kroužek není otevřený pro bezplatné přihlášení.');
         }
         clubEventAssertRegistrationWindow($event);
+        if (empty($event['terms_version']) || !hash_equals((string)$event['terms_version'], $consentVersion)
+            || empty($event['consent_text_plain']) || empty($event['cancellation_policy_plain'])
+            || empty($event['cancellation_deadline_at'])
+        ) {
+            throw new ClubEventRegistrationException(
+                'Podmínky kroužku se změnily. Obnovte stránku a potvrďte aktuální znění.'
+            );
+        }
 
         $relation = clubEventEligibleRelation($pdo, $accountId, $sportovecId);
         if (!$relation) {
@@ -178,19 +332,30 @@ function clubEventRegisterParticipant(PDO $pdo, int $eventId, int $accountId, in
             $update = $pdo->prepare(
                 "UPDATE club_event_registrations SET account_id=?, relation_role_snapshot=?, status='confirmed', "
                 . 'registered_at=CURRENT_TIMESTAMP, cancelled_at=NULL, cancellation_note=NULL, '
+                . 'consent_version_snapshot=?,consent_text_snapshot=?,consented_at=CURRENT_TIMESTAMP, '
+                . 'cancellation_policy_snapshot=?,cancellation_deadline_snapshot=?, '
                 . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
             );
-            $update->execute([$accountId, $relation['relation_role'], (int)$existing['id']]);
+            $update->execute([
+                $accountId, $relation['relation_role'], $event['terms_version'], $event['consent_text_plain'],
+                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'], (int)$existing['id'],
+            ]);
             $registrationId = (int)$existing['id'];
             $action = 'reactivate';
             $fromStatus = (string)$existing['status'];
         } else {
             $insert = $pdo->prepare(
                 'INSERT INTO club_event_registrations '
-                . '(event_id,account_id,sportovec_id,relation_role_snapshot,status,registered_at) '
-                . "VALUES (?,?,?,?,'confirmed',CURRENT_TIMESTAMP)"
+                . '(event_id,account_id,sportovec_id,relation_role_snapshot,status,registered_at, '
+                . 'consent_version_snapshot,consent_text_snapshot,consented_at, '
+                . 'cancellation_policy_snapshot,cancellation_deadline_snapshot) '
+                . "VALUES (?,?,?,?,'confirmed',CURRENT_TIMESTAMP,?,?,CURRENT_TIMESTAMP,?,?)"
             );
-            $insert->execute([$eventId, $accountId, $sportovecId, $relation['relation_role']]);
+            $insert->execute([
+                $eventId, $accountId, $sportovecId, $relation['relation_role'],
+                $event['terms_version'], $event['consent_text_plain'],
+                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'],
+            ]);
             $registrationId = (int)$pdo->lastInsertId();
             $action = 'register';
             $fromStatus = null;
@@ -255,6 +420,14 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
         }
         if ($registration['status'] !== 'confirmed') {
             throw new ClubEventRegistrationException('Přihlášku v tomto stavu nelze zrušit.');
+        }
+        if (empty($registration['cancellation_deadline_snapshot'])) {
+            throw new ClubEventRegistrationException('U přihlášky chybí auditované storno pravidlo.');
+        }
+        if (new DateTimeImmutable('now') > new DateTimeImmutable((string)$registration['cancellation_deadline_snapshot'])) {
+            throw new ClubEventRegistrationException(
+                'Termín bezplatného storna již uplynul. Kontaktujte administrátora.'
+            );
         }
         $pdo->prepare(
             "UPDATE club_event_registrations SET status='cancelled', cancelled_at=CURRENT_TIMESTAMP, "

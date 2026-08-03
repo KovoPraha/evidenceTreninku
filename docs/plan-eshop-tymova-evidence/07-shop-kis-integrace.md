@@ -130,7 +130,14 @@ přihlášky až po explicitním potvrzení. Přihlásit lze jen aktivní schvá
 z K2; kontroluje se registrační okno, věk k prvnímu termínu a efektivní kapacita.
 Zámek akce a unikátní klíč účastníka chrání poslední místo a duplicitu. Storno
 uvolní kapacitu, ale zachová audit. Tento průchod nevytváří objednávku, platbu,
-soupisku ani KIS zápis. Čekací listina a souhlasy zatím neexistují.
+soupisku ani KIS zápis.
+
+Souhlas a storno jsou nyní verzované. Administrátor před otevřením nastaví oba
+prosté texty, verzi a budoucí deadline před prvním termínem. Rodič výslovně
+potvrdí právě aktuální verzi a přihláška uloží neměnný snapshot textů, verze,
+času souhlasu i storno termínu. Uživatelské storno po tomto termínu selže bez
+částečného zápisu. Čekací listina a administrační výjimka pozdního storna zatím
+neexistují.
 
 ### K4 – Společná objednávka a platební předpis
 
@@ -164,8 +171,8 @@ Před příslušnou etapou musí vlastník potvrdit:
 
 ## Nejbližší implementační pořadí
 
-1. doplnit souhlasy a pravidla storna bezplatného kroužku,
-2. přidat čekací listinu se stejně transakčním přidělením místa,
+1. přidat čekací listinu se stejně transakčním přidělením místa,
+2. doplnit auditovanou administrační výjimku pozdního storna,
 3. teprve poté přidat objednávku a placenou variantu.
 
 Stripe, Fio, kredit, Packeta a ostrý KIS cutover nejsou součástí nejbližšího

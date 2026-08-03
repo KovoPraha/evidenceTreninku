@@ -43,15 +43,23 @@ Databázový unikátní klíč `(event_id, sportovec_id)` je druhá ochrana prot
 duplicitě. Opakované odeslání již potvrzené přihlášky je idempotentní. Storno
 uvolní místo a zachová přihlášku i samostatnou auditní historii.
 
+Před otevřením administrátor povinně nastaví verzi a prostý text souhlasu,
+prostý text storno podmínek a přesný termín bezplatného storna. Termín musí být
+v budoucnosti a před prvním termínem kroužku. Rodič musí potvrdit právě aktuální
+verzi. Přihláška ukládá snapshot verze, obou textů, času souhlasu a storno termínu,
+takže pozdější změna jiné akce nepřepíše historické rozhodnutí. Po snapshotovaném
+termínu je uživatelské storno fail-closed a vyžaduje kontakt s administrátorem.
+
 ## Záměrně chybí v tomto průchodu
 
-- souhlasy zákonného zástupce a čekací listina,
+- čekací listina a administrační řešení pozdního storna,
 - placený kroužek a košík,
 - objednávka, platba, soupiska nebo zápis do KIS.
 
 ## Nasazení
 
 Model vyžaduje migrace `20260803110000_club_events` a
-`20260803130000_club_event_registrations`. Read-only kontrola je
+`20260803130000_club_event_registrations` a `20260803150000_club_event_terms`.
+Read-only kontrola je
 `php bin/migrate.php --check`; produkční migrace musí proběhnout před aktivací
 nové verze PHP.
