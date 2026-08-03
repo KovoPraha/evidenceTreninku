@@ -118,6 +118,13 @@ jedna transakce. Zbývá bezpečné párování KIS importu přes stabilní iden
 Brána: kapacita, duplicita a čekací listina jsou transakční; přihláška zatím
 nepotřebuje Stripe a umí i nulovou cenu.
 
+Implementován je první administrační základ K3: pracovní akce typu `club_event`
+nebo `camp`, cílová skupina a věkové rozmezí, kapacita, registrační okno, cenová
+politika, samostatné termíny a auditované mapování kanonického produktu. Termíny
+jedné akce se nesmějí překrývat, typ a měna produktu musí odpovídat akci a
+bezplatná akce nepřijme placenou variantu. Vše zůstává `draft`; přihlášky,
+čekací listina, soupiska, platby i KIS zápis zatím neexistují.
+
 ### K4 – Společná objednávka a platební předpis
 
 - košík a objednávka ukládající cenový snapshot,
@@ -150,8 +157,8 @@ Před příslušnou etapou musí vlastník potvrdit:
 
 ## Nejbližší implementační pořadí
 
-1. navrhnout klubové akce a mapování produktu na kroužek K3,
-2. implementovat bezplatný kroužek jako první vertikální průchod,
+1. implementovat bezplatný kroužek jako první vertikální průchod,
+2. doplnit transakční kapacitu, duplicitu, souhlasy a čekací listinu,
 3. teprve poté přidat objednávku a placenou variantu.
 
 Stripe, Fio, kredit, Packeta a ostrý KIS cutover nejsou součástí nejbližšího
