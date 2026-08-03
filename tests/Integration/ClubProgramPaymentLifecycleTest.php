@@ -66,6 +66,16 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260804160000_club_program_lifecycle.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
     }
 
+    public function testPendingProgramOrderCanExpireWithoutInventingTrainerActor():void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'OFFER-A');$order=$this->checkout($pdo,10,101,601);
+        $pdo->exec("UPDATE shop_orders SET payment_expires_at='2030-01-01 12:00:00'");
+        $result=\shopOrderExpirePending($pdo,(int)$order['id'],new \DateTimeImmutable('2030-01-02 12:00:00'),true);
+        self::assertTrue($result['changed']);self::assertSame('cancelled',$result['payment_status']);
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        self::assertSame('system',$pdo->query("SELECT actor_type FROM shop_order_events WHERE action='expire'")->fetchColumn());
+    }
+
     private function checkout(PDO $pdo,int $accountId,int $sportovecId,int $variantId):array
     {
         \shopCartSetQuantity($pdo,$accountId,$variantId,1);$cart=\shopCartDetail($pdo,$accountId);\shopCartSetBeneficiary($pdo,$accountId,(int)$cart['items'][0]['cart_item_id'],$sportovecId);$cart=\shopCartDetail($pdo,$accountId);return \shopCheckoutPlace($pdo,$accountId,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint']);
@@ -88,6 +98,7 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804090000_kis_teams_rosters.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'SCHOOL','Školní rok','2026-09-01','2027-08-31','active',7)");$pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(10,1,'A','Kroužek A','vše','děti','active',7)");
         foreach(['20260804140000_club_programs.php','20260804160000_club_program_lifecycle.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
+        $expiration=require dirname(__DIR__,2).'/migrations/20260804210000_shop_order_expiration.php';$expiration['up']($pdo);self::assertTrue($expiration['verify']($pdo));
         return$pdo;
     }
 }

@@ -76,6 +76,20 @@ objednávka zůstane `cancelled` a audit dostane akci `confirm_refund`. Čas,
 reference, administrátor a poznámka se ukládají na platebním záznamu. Opakované
 potvrzení je idempotentní a původní doklad nemění.
 
+## Expirace nezaplacených objednávek
+
+Checkout ukládá neměnný deadline `payment_expires_at`; u starších objednávek jej
+migrace doplní z `payments.due_at`. Správce na `eshop_order_expiry_admin.php`
+nejprve vidí pouze náhled a změnu musí výslovně potvrdit. Pro CRON je určen
+`bin/expire-shop-orders.php`: bez přepínače vždy jen vypíše dry-run, zápis povolí
+až `--apply`.
+
+Expirace přijme výhradně `placed` + `pending` po deadline. Pod stejnými zámky jako
+ruční potvrzení a storno zruší platební předpis, právě jednou vrátí sklad, ověří,
+že pending objednávka nevytvořila programovou účast, a uvolní velodromovou kapacitu. Zaplacené, vydané, budoucí nebo
+nekonzistentní objednávky odmítne. Auditní akce `expire` má aktéra `system` a
+opakované spuštění již nic nezmění.
+
 ## Slevové kupóny
 
 První verze podporuje pevnou slevu v CZK a celočíselnou procentní slevu. Kupón
@@ -100,7 +114,8 @@ podtržítko a porovnává se bez ohledu na velikost písmen.
 
 Schéma vyžaduje migrace `20260803230000_shop_checkout`,
 `20260804010000_shop_order_fulfillment` a
-`20260804030000_shop_order_refunds`, `20260804050000_shop_coupons` a
-`20260804070000_fio_readonly_import`. Před aktivací PHP musí být aplikovány
+`20260804030000_shop_order_refunds`, `20260804050000_shop_coupons`,
+`20260804070000_fio_readonly_import` a `20260804210000_shop_order_expiration`.
+Před aktivací PHP musí být aplikovány
 migračním runnerem. Částečné vratky má další přírůstek řešit jen tehdy, pokud je
 produktově potřebujeme; jinak následuje kupón nebo automatické Fio párování.

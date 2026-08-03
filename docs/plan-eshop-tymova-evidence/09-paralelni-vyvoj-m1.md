@@ -129,3 +129,18 @@ Po vlastníkova průchodu M1.8 lze opět oddělit:
 
 Expirace pending objednávek smí uvolnit rezervaci pouze přes stejný auditovaný
 storno lifecycle jako ruční storno; nesmí přímo mazat rezervace ani platby.
+
+## Páté paralelní kolo – M1.9
+
+Společný base: `d86b4e8`
+
+| Proud | Branch | Přijatý commit | Výsledek |
+|---|---|---|---|
+| A05 přechod kroužek → závodní tým | `codex/m19-a05-transition` | `d6c8b5b` → `d3e7e96` | read-only náhled, stale fingerprint, auditovaný a idempotentní přechod stejné osoby |
+| A10 auditní osa osoby | `codex/m19-a10-audit-timeline` | `3d4f377` → `e363d86` | admin-only agregace devíti existujících auditních zdrojů bez nové mutační tabulky |
+| expirace pending objednávek | `codex/m19-pending-expiry` | `c9aeabf` → `c50e572` | deadline snapshot, dry-run CLI, explicitní admin potvrzení, kontrola nulové programové účasti a uvolnění skladu/velodromu |
+| integrace | `main` | tento integrační commit | deterministický A05 seed, navigace, A01–A10 ready, MariaDB/browser regresní opravy a dokumentace |
+
+Migrace `210000` byla aplikována pouze na localhost. Produkce, push, Fio, Stripe
+ani externí KIS se nezměnily. Pravidlo kupónů pro služby zůstává vědomě otevřené
+produktové rozhodnutí.

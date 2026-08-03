@@ -605,6 +605,15 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a href="kis_child_access_admin.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-person-badge text-primary"></i>Přístupy sportovců
                 <span class="role-badge role-admin">admin</span></a>
+              <a href="kis_transition_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-arrow-left-right text-primary"></i>Přechod do závodního týmu
+                <span class="role-badge role-admin">admin</span></a>
+              <a href="person_audit_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-clock-history text-primary"></i>Auditní osa osoby
+                <span class="role-badge role-admin">admin</span></a>
+              <a href="eshop_order_expiry_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-hourglass-split text-warning"></i>Expirace nezaplacených objednávek
+                <span class="role-badge role-admin">admin</span></a>
               <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
               <a href="testovaci_scenare.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-check2-square text-warning"></i>Testovací scénáře M1

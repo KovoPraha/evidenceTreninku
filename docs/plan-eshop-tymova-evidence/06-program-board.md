@@ -1,6 +1,6 @@
 # 06 – Program board
 
-Aktualizováno: 3. 8. 2026 (M1.8 integrovaný akceptační přírůstek)
+Aktualizováno: 3. 8. 2026 (M1.9 provozní a akceptační přírůstek)
 Aktuální produkční brána: **F0 – červená**
 Aktuální lokální produktový milník: **M1 – integrovaný testovatelný prototyp**
 Povolená práce: localhost přírůstky M1 podle
@@ -16,21 +16,21 @@ wallet, exporty a ostrý KIS/Shoptet cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | M1.8: akceptační rozcestník `bf3caa2`, omezený sportovní přístup `91b105f` a placený velodrom přes shop `664f855`; bez produkčních změn |
+| lokální práce | M1.9: A05 `d3e7e96`, A10 `e363d86` a expirace pending objednávek `c50e572`; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | všechny soubory jednotlivých paralelních přírůstků a integrační PHP soubory prošly lintem |
 | dependency audit | 0 advisories lokálně; produkční stav nebyl v tomto přírůstku měněn |
-| automatické testy | 281 testů / 2251 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | 30 číslovaných migrací; nové M1.8 migrace `190000`, `200000` byly aplikovány pouze na localhost a katalog je 30/30 current |
+| automatické testy | 298 testů / 2435 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | 31 číslovaných migrací; nová M1.9 migrace `210000` byla aplikována pouze na localhost a katalog je 31/31 current |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
-| restore drill | post-M1.8 záloha má 121 tabulek / 2 triggery, ověřený checksum a ownership kontrakt `2026-08-03.5` se čtyřmi novými tabulkami |
+| restore drill | post-M1.9 záloha `evidence_2026-08-03_220119_ec3f47b7.sql.gz` má 121 tabulek / 2 triggery a SHA-256 `c0506765ff6b0690302548841785fff5b0e638368e84313e1bcab5e4c0dd0f7c`; migrace přidala jen sloupce, ownership kontrakt zůstává `.5` |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | Shoptet katalog | reálných 241/807 bylo po auditované kontrole transakčně převedeno do izolovaného draft katalogu; opakování bez duplicity, veřejně aktivních produktů 0 |
 | Aktivace katalogu | `5500927`: jednotlivé `goods` lze ručně aktivovat s plain-text veřejným snapshotem a auditem; K3 typy jsou fail-closed; veřejný storefront stále neexistuje |
 | K3 akce | `4ef5690`, `88f5b97`, `e5fcaa0`, `a949c38`: navíc FIFO čekací listina a atomické povýšení nejstarší oprávněné osoby po stornu; bez objednávky, plateb, soupisky a KIS zápisu |
 | K2 identita | `8c374a4`, `d32fc08`: účet je oddělen od sportovce; veřejný claim neenumeruje osoby, vazby `self`/`guardian` schvaluje pouze admin s důvodem a auditem; neověřený účet ani zrušená vazba účastníka nezpřístupní |
-| lokální data | localhost demo obsahuje rodiče se dvěma oprávněnými profily, školní i kalendářní sezonu, věkovou a disciplínovou soupisku a cíle read-only rolloveru |
+| lokální data | localhost demo obsahuje rodiče, dva běžné profily a samostatného věkově vhodného sportovce `LOCALHOST Přechod U17` pro opakovatelný A05 náhled |
 
 ## První paralelní přírůstek M1
 
@@ -70,6 +70,15 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | omezený sportovní přístup | `91b105f` | vlastní session a revokace, DB-scoped read-only přehled, žádní sourozenci ani rodičovské mutace |
 | placený velodrom přes shop | `664f855` | standardní order/payment/QR, snapshot slotu, paid aktivace, storno/refund a uvolnění kapacity |
 | integrační brána | následující commit | katalog 30/30, opakovaný seed, plná sada, backup `.5` a browser A02/A09 včetně lifecycle |
+
+## M1.9 provozní a akceptační přírůstek
+
+| Proud | Commit v `main` | Přijatý důkaz |
+|---|---|---|
+| A05 přechod kroužek → závodní tým | `d3e7e96` | preview-first, stejná osoba, kontrola věku, stale fingerprint, volitelné ukončení kroužku, idempotence a MariaDB smoke |
+| A10 auditní osa osoby | `e363d86` | admin-only read-only agregace devíti zdrojů, pravdivě chybějící aktér/důvod, omezené stránkování a MariaDB/browser smoke |
+| expirace pending objednávek | `c50e572` | defaultní dry-run, explicitní potvrzení, payment-first lock order, kontrola nulové programové účasti a právě-jednou uvolnění skladu i velodromu |
+| integrační brána | tento commit | 31/31, 298/2435, 26 změněných PHP lintů, audit 0, opakovaný seed, reálná idempotentní expirace a backup 121/2 |
 
 ## Aktivní rozhodnutí
 

@@ -16,8 +16,8 @@ function pah(mixed $value): string
 $query = mb_substr(trim((string)($_GET['q'] ?? '')), 0, 100, 'UTF-8');
 $sportovecId = max(0, (int)($_GET['sportovec_id'] ?? 0));
 $page = max(1, min(100, (int)($_GET['page'] ?? 1)));
-$pageSize = in_array((int)($_GET['page_size'] ?? 50), [25, 50, 100], true)
-    ? (int)$_GET['page_size'] : 50;
+$requestedPageSize = (int)($_GET['page_size'] ?? 50);
+$pageSize = in_array($requestedPageSize, [25, 50, 100], true) ? $requestedPageSize : 50;
 $searchResults = $query !== '' ? personAuditSearch($pdo, $query) : [];
 $timeline = null;
 $error = '';

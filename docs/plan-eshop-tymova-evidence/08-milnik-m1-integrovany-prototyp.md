@@ -331,20 +331,21 @@ Procenta jsou odhad pokrytí akceptačních cest M1, nikoliv množství kódu.
 |---|---:|---|
 | stávající tréninková Evidence | 92 % | dotažení zápisu skutečné docházky a produktová prohlídka |
 | účty, rodič a osoby | 94 % | self-service obnova hesla sportovce a produktová prohlídka oprávnění |
-| běžné zboží a objednávka | 90 % | produkční UX a pravidlo kupónů pro služby |
+| běžné zboží a objednávka | 93 % | produkční UX a pravidlo kupónů pro služby |
 | programy/kroužky | 86 % | celý vlastníkům provedený A03–A04 průchod a produktová kontrola textů |
-| sezóny a soupisky | 85 % | akceptační provedení nad kopií dat a doladění administračního UX |
+| sezóny a soupisky | 91 % | vlastníkovo provedení A05 nad kopií dat a doladění administračního UX |
 | události a přihlášky | 78 % | placený scénář a UX validace časové platnosti soupisky |
-| veřejnost a velodrom přes e-shop | 90 % | expirace nezaplacených rezervací a rozhodnutí, zda kupóny platí na sloty |
-| integrovaný demo průchod | 88 % | vlastníkova prohlídka A01–A10; průvodce A05 a jednotná auditní časová osa A10 |
+| veřejnost a velodrom přes e-shop | 94 % | rozhodnutí, zda kupóny platí na sloty, a produktová prohlídka |
+| integrovaný demo průchod | 94 % | vlastníkova prohlídka A01–A10 a zapracování připomínek |
 
-Celý M1 je po M1.8 akceptačním přírůstku přibližně na 86 %. E-shopový základ,
+Celý M1 je po M1.9 provozním přírůstku přibližně na 90 %. E-shopový základ,
 rodinný rozsah, soupisky, plánování tréninku, kroužkové nabídky, cílené události,
 automatický životní cyklus programové účasti, provedení rolloveru a veřejná
 rezervace mají integrované localhost řezy. Přibyly A01–A10 rozcestník, omezený
-sportovní login a shop objednávka s QR pro placený velodrom. Největší mezery jsou
-nyní vlastníkova ruční prohlídka, průvodce A05, auditní časová osa A10 a expirace
-nezaplacených rezervací.
+sportovní login a shop objednávka s QR pro placený velodrom. M1.9 doplnilo
+preview-first průvodce A05, jednotnou read-only auditní osu A10 a bezpečnou expiraci
+nezaplacených objednávek přes stejný storno lifecycle. Největší mezera je nyní
+vlastníkova ruční prohlídka A01–A10 a zapracování jejích výsledků.
 
 ## Co následuje po M1
 

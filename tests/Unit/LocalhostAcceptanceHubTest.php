@@ -40,9 +40,9 @@ final class LocalhostAcceptanceHubTest extends TestCase
 
         self::assertSame(['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10'], array_column($scenarios, 'id'));
         self::assertSame('ready', $scenarios[1]['status']);
-        self::assertSame('partial', $scenarios[4]['status']);
+        self::assertSame('ready', $scenarios[4]['status']);
         self::assertSame('ready', $scenarios[8]['status']);
-        self::assertSame('partial', $scenarios[9]['status']);
+        self::assertSame('ready', $scenarios[9]['status']);
         foreach ($scenarios as $scenario) {
             self::assertNotSame('', $scenario['expected']);
             self::assertNotSame([], $scenario['steps']);

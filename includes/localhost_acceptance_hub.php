@@ -229,11 +229,12 @@ function localhostAcceptanceScenarios(string $root): array
             ],
         ],
         [
-            'id' => 'A05', 'role' => 'Administrátor', 'area' => 'Administrace', 'declared_status' => 'partial',
-            'steps' => ['V soupisce kroužku vyberte existujícího sportovce.', 'Připravte individuální cílovou výjimku do závodní soupisky.', 'Proveďte potvrzený přechod pouze nad demo daty.'],
+            'id' => 'A05', 'role' => 'Administrátor', 'area' => 'Administrace', 'declared_status' => 'ready',
+            'steps' => ['V průvodci vyberte existujícího sportovce z kroužku a cílovou závodní soupisku.', 'Zkontrolujte náhled bez zápisu.', 'Proveďte potvrzený přechod s důvodem pouze nad demo daty.'],
             'expected' => 'Sportovec zůstane stejnou osobou a získá závodní členství a věkovou soupisku.',
-            'note' => 'Datový přechod existuje v rolloveru, ale samostatný průvodce přechodem kroužek → závodní tým ještě chybí.',
+            'note' => 'Průvodce zachovává identitu osoby; ukončení kroužkové soupisky je volitelné a všechny změny jsou auditované.',
             'links' => [
+                ['label' => 'Průvodce přechodem', 'path' => 'kis_transition_admin.php', 'scope' => 'admin'],
                 ['label' => 'Soupisky a rollover', 'path' => 'kis_rosters_admin.php', 'scope' => 'admin'],
             ],
         ],
@@ -277,11 +278,12 @@ function localhostAcceptanceScenarios(string $root): array
             ],
         ],
         [
-            'id' => 'A10', 'role' => 'Administrátor', 'area' => 'Administrace', 'declared_status' => 'partial',
-            'steps' => ['Najděte audit vazby účtu a osoby.', 'Porovnejte audit objednávky, programu a soupisky.', 'U rezervace zkontrolujte historii ručního potvrzení nebo storna.'],
+            'id' => 'A10', 'role' => 'Administrátor', 'area' => 'Administrace', 'declared_status' => 'ready',
+            'steps' => ['Vyhledejte jednu demo osobu v auditní časové ose.', 'Porovnejte události účtu, objednávky, programu a soupisky.', 'U rezervace zkontrolujte historii ručního potvrzení nebo storna.'],
             'expected' => 'U každé významné změny lze dohledat kdo, kdy, co a proč provedl.',
-            'note' => 'Audit je dostupný v jednotlivých modulech; jednotná časová osa jedné osoby zatím chybí.',
+            'note' => 'Časová osa je pouze ke čtení a skládá existující audity; u zdrojů bez důvodu žádný důvod nedoplňuje.',
             'links' => [
+                ['label' => 'Auditní osa osoby', 'path' => 'person_audit_admin.php', 'scope' => 'admin'],
                 ['label' => 'Účty a osoby', 'path' => 'eshop_identity_admin.php', 'scope' => 'admin'],
                 ['label' => 'Objednávky', 'path' => 'eshop_orders_admin.php', 'scope' => 'admin'],
                 ['label' => 'Soupisky', 'path' => 'kis_rosters_admin.php', 'scope' => 'admin'],

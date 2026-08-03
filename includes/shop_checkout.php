@@ -381,7 +381,7 @@ function shopOrderExpirationAvailable(PDO $pdo):bool
 /** @return list<array<string,mixed>> */
 function shopOrderExpirationPreview(PDO $pdo,DateTimeImmutable $now,int $limit=200):array
 {
-    if(!shopOrderExpirationAvailable($pdo))throw new ShopCheckoutException('Expirace objednavek zatim neni migrovana.');
+    if(!shopOrderExpirationAvailable($pdo))throw new ShopCheckoutException('Expirace objednávek zatím není migrována.');
     $limit=max(1,min(500,$limit));
     $velodromeCount=publicVelodromeShopAvailable($pdo)
         ? '(SELECT COUNT(*) FROM public_velodrome_order_items vi WHERE vi.order_id=o.id)'
@@ -419,30 +419,29 @@ function shopOrderExpireBatch(PDO $pdo,DateTimeImmutable $now,bool $apply=false,
 /** @return array<string,mixed> */
 function shopOrderExpirePending(PDO $pdo,int $orderId,DateTimeImmutable $now,bool $confirmed):array
 {
-    if($orderId<1||!$confirmed)throw new InvalidArgumentException('Expirace vyzaduje objednavku a vyslovne potvrzeni.');
+    if($orderId<1||!$confirmed)throw new InvalidArgumentException('Expirace vyžaduje objednávku a výslovné potvrzení.');
     $pdo->beginTransaction();
     try{
         $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
         $order=shopOrderAdminLockOrder($pdo,$orderId);
-        if(!$payment||!$order)throw new ShopCheckoutException('Objednavka nebo jeji platba nebyla nalezena.');
+        if(!$payment||!$order)throw new ShopCheckoutException('Objednávka nebo její platba nebyla nalezena.');
         if($order['status']==='cancelled'&&$order['payment_status']==='cancelled'&&$payment['status']==='cancelled'){
             $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'cancelled','changed'=>false,'restocked_items'=>0,'velodrome_items'=>0,'velodrome_cancelled'=>0];
         }
         if($order['status']!=='placed'||$order['payment_status']!=='pending'||$payment['status']!=='pending'){
-            throw new ShopCheckoutException('Expirovat lze pouze nezaplacenou objednavku cekajici na platbu.');
+            throw new ShopCheckoutException('Expirovat lze pouze nezaplacenou objednávku čekající na platbu.');
         }
         $deadline=(string)($order['payment_expires_at']??$payment['due_at']??'');
-        if($deadline===''||new DateTimeImmutable($deadline)>$now)throw new ShopCheckoutException('Lhuta pro zaplaceni objednavky jeste neuplynula.');
-        if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-        $reason='Automaticka expirace nezaplacene objednavky po lhute '.$deadline.'.';
+        if($deadline===''||new DateTimeImmutable($deadline)>$now)throw new ShopCheckoutException('Lhůta pro zaplacení objednávky ještě neuplynula.');
+        $reason='Automatická expirace nezaplacené objednávky po lhůtě '.$deadline.'.';
         $result=shopOrderCancelLocked($pdo,$payment,$order,'system',null,$reason,'expire',$now);
         $pdo->commit();return $result;
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
-        throw new ShopCheckoutException('Expirace selhala bez castecneho zapisu.',0,$exception);
+        throw new ShopCheckoutException('Expirace selhala bez částečného zápisu.',0,$exception);
     }
 }
 
@@ -536,8 +535,10 @@ function shopOrderCancelLocked(PDO $pdo,array $payment,array $order,string $acto
     if($actorType!=='system'||$action!=='expire')throw new LogicException('Toto jadro je vyhrazeno pro auditovanou expiraci.');
     $orderId=(int)$order['id'];
     if($order['status']!=='placed'||$order['payment_status']!=='pending'||$payment['status']!=='pending'){
-        throw new ShopCheckoutException('Expirovat lze pouze nezaplacenou objednavku cekajici na platbu.');
+        throw new ShopCheckoutException('Expirovat lze pouze nezaplacenou objednávku čekající na platbu.');
     }
+    $programSync=['cancelled'=>0,'rosters_ended'=>0];
+    if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
     $timestamp=$now->format('Y-m-d H:i:s');
     $restocked=shopOrderAdminRestock($pdo,$orderId);
     $pdo->prepare("UPDATE payments SET status='cancelled',updated_at=? WHERE id=?")
@@ -546,9 +547,7 @@ function shopOrderCancelLocked(PDO $pdo,array $payment,array $order,string $acto
         ->execute([$timestamp,$timestamp,$timestamp,$orderId]);
     $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note,created_at) VALUES (?,? ,?,'expire','placed','cancelled',?,?)")
         ->execute([$orderId,$actorType,$actorId,$reason,$timestamp]);
-    // Pending orders must not have activated program enrollments; the assertion is made before mutation.
-    $programSync=['cancelled'=>0,'rosters_ended'=>0];
-    if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramCancelOrderInTransaction($pdo,$orderId,0,$reason);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    // Pending orders never activate program enrollment; the pre-mutation assertion above enforces it.
     try{$velodromeSync=publicVelodromeShopCancelOrderInTransaction($pdo,$orderId,$actorId,$reason,$actorType,$now);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
     return ['order_id'=>$orderId,'payment_status'=>'cancelled','restocked_items'=>$restocked,'changed'=>true]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_cancelled'=>$velodromeSync['cancelled']];
 }

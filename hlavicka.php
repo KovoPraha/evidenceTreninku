@@ -356,6 +356,12 @@ if ($is_logged_in) {
                                 <i class="bi bi-people me-2 text-primary"></i>Účty, rodiče a sportovci</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_child_access_admin.php') ?>" href="kis_child_access_admin.php">
                                 <i class="bi bi-person-badge me-2 text-primary"></i>Přístupy sportovců</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('kis_transition_admin.php') ?>" href="kis_transition_admin.php">
+                                <i class="bi bi-arrow-left-right me-2 text-primary"></i>Přechod do závodního týmu</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('person_audit_admin.php') ?>" href="person_audit_admin.php">
+                                <i class="bi bi-clock-history me-2 text-primary"></i>Auditní osa osoby</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('eshop_order_expiry_admin.php') ?>" href="eshop_order_expiry_admin.php">
+                                <i class="bi bi-hourglass-split me-2 text-warning"></i>Expirace nezaplacených objednávek</a></li>
                             <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
                             <li><a class="dropdown-item<?= _dropActive('testovaci_scenare.php') ?>" href="testovaci_scenare.php">
                                 <i class="bi bi-check2-square me-2 text-warning"></i>Testovací scénáře M1</a></li>
