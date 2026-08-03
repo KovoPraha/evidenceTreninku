@@ -7,6 +7,8 @@ final class ShopCheckoutException extends RuntimeException
 {
 }
 
+require_once __DIR__.'/shop_beneficiary.php';
+
 /** @return list<array<string,mixed>> */
 function shopStorefrontProducts(PDO $pdo): array
 {
@@ -55,8 +57,11 @@ function shopCartGetOrCreate(PDO $pdo, int $accountId): array
 function shopCartDetail(PDO $pdo, int $accountId): array
 {
     $cart = shopCartGetOrCreate($pdo, $accountId);
+    $beneficiarySelect = shopBeneficiaryColumnExists($pdo,'shop_cart_items')
+        ? 'ci.beneficiary_sportovec_id'
+        : 'NULL AS beneficiary_sportovec_id';
     $statement = $pdo->prepare(
-        'SELECT ci.id AS cart_item_id,ci.quantity,p.id AS product_id,pub.public_name,'
+        'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,pub.public_name,'
         . 'v.id AS variant_id,v.sku,v.attributes_json,v.amount_minor,v.currency,v.catalog_status '
         . 'FROM shop_cart_items ci JOIN shop_variants v ON v.id=ci.variant_id '
         . 'JOIN shop_products p ON p.id=v.product_id '
@@ -153,7 +158,10 @@ function shopCheckoutPlace(
             || !filter_var((string)$account['email'],FILTER_VALIDATE_EMAIL)) {
             throw new ShopCheckoutException('Objednávku může vytvořit pouze aktivní účet s ověřeným e-mailem.');
         }
-        $sql = 'SELECT ci.quantity,p.id AS product_id,p.offer_type,p.catalog_status AS product_status,'
+        $beneficiarySelect=shopBeneficiaryColumnExists($pdo,'shop_cart_items')
+            ? 'ci.beneficiary_sportovec_id'
+            : 'NULL AS beneficiary_sportovec_id';
+        $sql = 'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,p.catalog_status AS product_status,'
             . 'pub.status AS publication_status,pub.public_name,v.id AS variant_id,v.* FROM shop_cart_items ci '
             . 'JOIN shop_variants v ON v.id=ci.variant_id JOIN shop_products p ON p.id=v.product_id '
             . 'JOIN shop_product_publications pub ON pub.product_id=p.id WHERE ci.cart_id=? ORDER BY v.id';
@@ -163,6 +171,7 @@ function shopCheckoutPlace(
         if ($items===[]) throw new ShopCheckoutException('Prázdný košík nelze objednat.');
         $total=0;$currency=null;
         foreach($items as $item){
+            if($item['beneficiary_sportovec_id']!==null)shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$item['beneficiary_sportovec_id'],true);
             if(!shopCheckoutVariantIsSaleable($item)) throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
             $quantity=(int)$item['quantity'];$unit=(int)$item['amount_minor'];
             if($quantity<1||$quantity>99||$unit<0) throw new ShopCheckoutException('Košík obsahuje neplatné množství nebo cenu.');
@@ -188,8 +197,13 @@ function shopCheckoutPlace(
                 $reserve->execute([$quantity,(int)$item['id'],$quantity]);
                 if($reserve->rowCount()!==1) throw new ShopCheckoutException('Mezitím se vyprodala položka '.$item['sku'].'. Objednávka nebyla vytvořena.');
             }
-            $orderItem=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
-            $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
+            if(shopBeneficiaryColumnExists($pdo,'shop_order_items')){
+                $orderItem=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,beneficiary_sportovec_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
+                $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],$item['beneficiary_sportovec_id']!==null?(int)$item['beneficiary_sportovec_id']:null,(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
+            }else{
+                $orderItem=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
+                $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
+            }
             $orderItemId=(int)$pdo->lastInsertId();
             if($managedStock){
                 $stock=$pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE id=?');$stock->execute([(int)$item['id']]);$stockAfter=(string)$stock->fetchColumn();
@@ -305,6 +319,7 @@ function shopCartFingerprint(array $items,?array $coupon=null):string
         'quantity'=>(int)$item['quantity'],
         'amount_minor'=>(int)$item['amount_minor'],
         'currency'=>(string)$item['currency'],
+        'beneficiary_sportovec_id'=>$item['beneficiary_sportovec_id']===null?null:(int)$item['beneficiary_sportovec_id'],
     ];
     usort($contract,static fn(array $a,array $b):int=>$a['variant_id']<=>$b['variant_id']);
     $couponContract=$coupon===null?null:['id'=>(int)$coupon['id'],'code'=>(string)$coupon['code'],'discount_minor'=>(int)$coupon['discount_minor']];
