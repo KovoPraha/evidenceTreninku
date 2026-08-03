@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
-require_once __DIR__ . '/includes/public_velodrome.php';
+require_once __DIR__ . '/includes/public_velodrome_shop.php';
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
     exit;

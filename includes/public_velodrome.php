@@ -110,11 +110,19 @@ function publicVelodromeReservationsForAccount(PDO $pdo, int $accountId): array
     if ($accountId < 1) {
         return [];
     }
+    $shopAvailable = function_exists('publicVelodromeShopAvailable') && publicVelodromeShopAvailable($pdo);
+    $shopSelect = $shopAvailable
+        ? ',voi.order_id AS shop_order_id,o.public_code AS shop_order_code '
+        : ',NULL AS shop_order_id,NULL AS shop_order_code ';
+    $shopJoin = $shopAvailable
+        ? 'LEFT JOIN public_velodrome_order_items voi ON voi.reservation_id=r.id LEFT JOIN shop_orders o ON o.id=voi.order_id '
+        : '';
     $statement = $pdo->prepare(
-        'SELECT r.*,il.nazev,il.datum,il.cas_od,il.cas_do,il.cena_kc, '
-        . 's.nazev AS sportoviste_name,sp.jmeno,sp.prijmeni '
+        'SELECT r.*,il.nazev,il.datum,il.cas_od,il.cas_do,il.cena_kc '
+        . $shopSelect . ',s.nazev AS sportoviste_name,sp.jmeno,sp.prijmeni '
         . 'FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id '
         . 'JOIN sportovist s ON s.id=il.sportoviste_id JOIN sportovci sp ON sp.id=r.sportovec_id '
+        . $shopJoin
         . "WHERE r.uzivatel_id=? AND s.kod='velodrom' AND r.sportovec_id IS NOT NULL "
         . 'ORDER BY il.datum DESC,il.cas_od DESC,r.id DESC'
     );
@@ -125,13 +133,21 @@ function publicVelodromeReservationsForAccount(PDO $pdo, int $accountId): array
 /** @return list<array<string,mixed>> */
 function publicVelodromeAdminReservations(PDO $pdo): array
 {
+    $shopAvailable = function_exists('publicVelodromeShopAvailable') && publicVelodromeShopAvailable($pdo);
+    $shopSelect = $shopAvailable
+        ? ',voi.order_id AS shop_order_id,o.public_code AS shop_order_code '
+        : ',NULL AS shop_order_id,NULL AS shop_order_code ';
+    $shopJoin = $shopAvailable
+        ? 'LEFT JOIN public_velodrome_order_items voi ON voi.reservation_id=r.id LEFT JOIN shop_orders o ON o.id=voi.order_id '
+        : '';
     return $pdo->query(
-        'SELECT r.*,il.nazev,il.datum,il.cas_od,il.cas_do,il.cena_kc, '
-        . 'vu.email,sp.jmeno,sp.prijmeni FROM verejne_rezervace r '
+        'SELECT r.*,il.nazev,il.datum,il.cas_od,il.cas_do,il.cena_kc '
+        . $shopSelect . ',vu.email,sp.jmeno,sp.prijmeni FROM verejne_rezervace r '
         . 'JOIN individualni_lekce il ON il.id=r.lekce_id '
         . 'JOIN sportovist s ON s.id=il.sportoviste_id '
         . 'JOIN verejni_uzivatele vu ON vu.id=r.uzivatel_id '
         . 'JOIN sportovci sp ON sp.id=r.sportovec_id '
+        . $shopJoin
         . "WHERE s.kod='velodrom' AND r.sportovec_id IS NOT NULL ORDER BY r.id DESC LIMIT 200"
     )->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -152,6 +168,11 @@ function publicVelodromeManualConfirm(
     }
     $pdo->beginTransaction();
     try {
+        if (function_exists('publicVelodromeShopReservationIsOrderLinked')
+            && publicVelodromeShopReservationIsOrderLinked($pdo, $reservationId)
+        ) {
+            throw new PublicVelodromeException('Platbu této rezervace potvrďte na příslušné objednávce.');
+        }
         $actor = $pdo->prepare("SELECT id FROM treneri WHERE id=? AND aktivni=1 AND role='admin'");
         $actor->execute([$actorTrainerId]);
         if (!$actor->fetchColumn()) {
@@ -229,6 +250,9 @@ function publicVelodromeReserve(PDO $pdo, int $lessonId, int $accountId, string 
             || (int)$lesson['aktivni'] !== 1 || $lesson['stav'] !== 'aktivni'
         ) {
             throw new PublicVelodromeException('Veřejný termín velodromu nebyl nalezen.');
+        }
+        if ((float)$lesson['cena_kc'] > 0.0) {
+            throw new PublicVelodromeException('Placený termín vložte do košíku; platba proběhne objednávkou s QR kódem.');
         }
         $startsAt = new DateTimeImmutable((string)$lesson['datum'] . ' ' . (string)$lesson['cas_od']);
         if ($startsAt <= new DateTimeImmutable('now')) {
@@ -313,6 +337,11 @@ function publicVelodromeCancel(PDO $pdo, int $reservationId, int $accountId, str
     }
     $pdo->beginTransaction();
     try {
+        if (function_exists('publicVelodromeShopReservationIsOrderLinked')
+            && publicVelodromeShopReservationIsOrderLinked($pdo, $reservationId)
+        ) {
+            throw new PublicVelodromeException('Tato rezervace je součástí objednávky; storno musí proběhnout přes objednávku.');
+        }
         $sql = 'SELECT r.* FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id '
             . "JOIN sportovist s ON s.id=il.sportoviste_id WHERE r.id=? AND s.kod='velodrom' "
             . 'AND r.sportovec_id IS NOT NULL';

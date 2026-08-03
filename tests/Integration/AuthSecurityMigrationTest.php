@@ -54,6 +54,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804170000_kis_roster_rollover_execution',
                 '20260804180000_public_velodrome',
                 '20260804190000_child_access_accounts',
+                '20260804200000_public_velodrome_shop',
             ],
             array_keys($catalog)
         );
@@ -63,6 +64,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_catalog_import_runs'));
         self::assertTrue($this->tableExists($pdo, 'child_access_accounts'));
         self::assertTrue($this->tableExists($pdo, 'child_access_events'));
+        self::assertTrue($this->tableExists($pdo, 'public_velodrome_cart_items'));
+        self::assertTrue($this->tableExists($pdo, 'public_velodrome_order_items'));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
         self::assertSame(
             one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),

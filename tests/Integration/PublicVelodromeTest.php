@@ -115,50 +115,18 @@ final class PublicVelodromeTest extends TestCase
         self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM public_velodrome_reservation_events')->fetchColumn());
     }
 
-    public function testPaidSlotUsesExistingManualConfirmationStateWithoutParallelPayment(): void
+    public function testPaidSlotCannotBypassShopCheckout(): void
     {
         $pdo = $this->database();
         \publicProfileSave($pdo, 10, 'Anna', 'První', '2010-01-01', '777111222');
         $slot = $this->slot($pdo, 2, false, 25000);
-        $reservation = \publicVelodromeReserve($pdo, $slot, 10);
-
-        self::assertSame('ceka', $reservation['status']);
-        $row = $pdo->query('SELECT stav,zaplaceno FROM verejne_rezervace')->fetch(PDO::FETCH_ASSOC);
-        self::assertSame('ceka', $row['stav']);
-        self::assertSame(0, (int)$row['zaplaceno']);
         try {
-            \publicVelodromeManualConfirm($pdo, $reservation['id'], 7, 'Přijato převodem.', false);
-            self::fail('Explicit manual confirmation is required.');
-        } catch (InvalidArgumentException) {
+            \publicVelodromeReserve($pdo, $slot, 10);
+            self::fail('Paid slot must be routed through shop checkout.');
+        } catch (PublicVelodromeException $exception) {
+            self::assertStringContainsString('košíku', $exception->getMessage());
         }
-        $confirmed = \publicVelodromeManualConfirm(
-            $pdo,
-            $reservation['id'],
-            7,
-            'Přijato převodem, reference TEST-1.',
-            true
-        );
-        self::assertTrue($confirmed['changed']);
-        self::assertFalse(\publicVelodromeManualConfirm(
-            $pdo,
-            $reservation['id'],
-            7,
-            'Opakované potvrzení.',
-            true
-        )['changed']);
-        $paid = $pdo->query('SELECT stav,zaplaceno FROM verejne_rezervace')->fetch(PDO::FETCH_ASSOC);
-        self::assertSame('potvrzena', $paid['stav']);
-        self::assertSame(1, (int)$paid['zaplaceno']);
-        self::assertSame(1, (int)$pdo->query(
-            "SELECT COUNT(*) FROM public_velodrome_reservation_events "
-            . "WHERE action='manual_payment_confirm' AND actor_type='trainer' AND actor_id=7"
-        )->fetchColumn());
-        \publicVelodromeCancel($pdo, $reservation['id'], 10, 'Storno po potvrzení.');
-        try {
-            \publicVelodromeManualConfirm($pdo, $reservation['id'], 7, 'Neplatný stav.', true);
-            self::fail('Cancelled reservation must not be manually confirmed.');
-        } catch (PublicVelodromeException) {
-        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM verejne_rezervace')->fetchColumn());
     }
 
     public function testOverlappingReservationForSameParticipantIsRejected(): void
