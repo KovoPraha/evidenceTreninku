@@ -1,0 +1,89 @@
+# Paralelní vývoj M1
+
+Stav: pracovní protokol řídicího tasku
+
+## Zásada
+
+Paralelní práce probíhá jen v samostatných Git worktrees a větvích vytvořených
+ze stejného integračního SHA. Pracovní task nesmí editovat hlavní worktree ani
+sdílené řídicí dokumenty. Výsledek vždy končí lokálním commitem; push, merge do
+`main`, produkční deploy a produkční DB změny provádí pouze řídicí task po
+integrační kontrole.
+
+## První paralelní kolo
+
+Společný base: `87f3ce3f039c53d7df44f488e44f5716c42e4d12`
+
+| Proud | Branch | Worktree | Vlastněné povrchy |
+|---|---|---|---|
+| rodinný portál | `codex/m1-family-portal` | `C:\xampp\htdocs\evidencePavel-m1-family` | nový family helper/page, odkaz z `booking/moje_osoby.php`, vlastní testy |
+| politiky soupisek | `codex/m1-roster-policies` | `C:\xampp\htdocs\evidencePavel-m1-rosters` | vlastní migrace, `includes/kis_roster.php`, `kis_rosters_admin.php`, vlastní testy/doc |
+| příjemce shop položky | `codex/m1-shop-beneficiary` | `C:\xampp\htdocs\evidencePavel-m1-shop` | vlastní migrace, shop beneficiary/checkout helper, vlastní testy/doc |
+| integrace | `main` | `C:\xampp\htdocs\evidencePavel` | řídicí dokumentace, backup/seed kontrakt, cherry-pick, společné portály a plná verifikace |
+
+Pracovní proudy nesmějí měnit `bin/db-backup.php`, `bin/seed-local-demo.php`,
+program board ani session handoff. Tyto sdílené soubory upraví integrace jednou
+po přijetí všech migrací.
+
+## Povinný prompt pracovního tasku
+
+Každé zadání obsahuje:
+
+1. absolutní cestu worktree, branch a base SHA,
+2. jediný funkční výstup a co výslovně není součástí,
+3. přesný seznam vlastněných a zakázaných souborů,
+4. datový kontrakt a pravidla kompatibility,
+5. bezpečnostní invariantu a akceptační scénáře,
+6. požadované SQLite/MariaDB/test/lint důkazy,
+7. zákaz push/deploy/produkční DB,
+8. požadavek na lokální commit, SHA, seznam souborů, rizika a integrační pokyn.
+
+Pokud se ukáže nutnost změnit nevlastněný soubor, pracovní task zastaví tuto
+část a vrátí integrační požadavek. Nesmí si sám rozšířit rozsah.
+
+## Přijetí výsledku
+
+Řídicí task u každé větve provede:
+
+1. kontrolu stavu worktree a jediného očekávaného commitu,
+2. `git diff --check` a kontrolu seznamu souborů proti vlastnictví,
+3. source review migrace, autorizace, transakcí a kompatibility,
+4. cílené testy v pracovním worktree,
+5. cherry-pick do `main` v určeném pořadí,
+6. doplnění společných backup/seed/UI povrchů jedním integračním commitem,
+7. migration check/apply pouze na localhostu,
+8. plný PHPUnit, lint, dependency audit, MariaDB a browser průchod,
+9. aktualizaci M1 scénářů, boardu a handoffu.
+
+První merge order je:
+
+1. rodinný portál – nemění schéma,
+2. politiky soupisek – první nová migrace,
+3. příjemce shop položky – druhá nová migrace,
+4. integrační úpravy seed/backup/portálu.
+
+Pořadí migrací je určeno jejich ID, nikoliv okamžikem dokončení pracovního tasku.
+
+## Stop podmínky
+
+- větev nezačíná na deklarovaném base SHA,
+- pracovní task změnil nevlastněný soubor,
+- dvě větve přidaly stejné ID migrace,
+- změna vyžaduje přepis již aplikované migrace místo nové forward migrace,
+- test vyžaduje produkční osobní údaje nebo externí volání,
+- autorizace je založena jen na ID z URL,
+- finanční nebo členský stav se mění bez auditu/transakce,
+- pracovní strom obsahuje nevysvětlené změny,
+- vznikl požadavek na push, deploy nebo produkční DB bez nového výslovného souhlasu.
+
+## Další vhodné paralelní kolo
+
+Po přijetí prvního kola lze opět oddělit:
+
+- most soupisek do stávajících tréninků,
+- kroužkové programy a aktivaci služby z potvrzené objednávky,
+- M:N cílení událostí na soupisky.
+
+Veřejný onboarding a rezervace velodromu začnou až po stabilizaci společného
+profilu a příjemce služby, protože oba proudy používají stejné identity a
+objednávkové kontrakty.

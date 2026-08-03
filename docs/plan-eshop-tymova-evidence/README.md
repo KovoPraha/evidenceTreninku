@@ -55,6 +55,7 @@ aktuální stav je vždy v `SESSION_HANDOFF.md`.
 | [06 – Program board](06-program-board.md) | Aktuální stav, pořadí prvních úkolů a podmínky jejich startu |
 | [07 – Shop a KIS](07-shop-kis-integrace.md) | Technická historie katalogu, kroužků, účastníků, rezervací a původního KIS shadow návrhu |
 | [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md) | Kanonický plán integrovaného localhost prototypu, implementační pořadí a akceptační prohlídka |
+| [09 – Paralelní vývoj M1](09-paralelni-vyvoj-m1.md) | Worktrees, vlastnictví souborů, prompt kontrakt, merge order a stop podmínky |
 | [Session handoff](SESSION_HANDOFF.md) | Obnovitelný stav řídicího tasku, aktivní práce a další krok |
 | [Prompt nového řídicího tasku](PROMPT-NOVE-RIDICI-VLAKNO.md) | Text ke zkopírování při otevření pokračujícího tasku |
 
