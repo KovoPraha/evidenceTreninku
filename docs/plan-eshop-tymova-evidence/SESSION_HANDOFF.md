@@ -9,8 +9,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-03, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `main`; auditovaný K4 fulfillment před tímto stavovým
-  commitem: `1763531` (`Add audited order fulfillment workflow`)
+- Aktivní integrační větev: `main`; zákaznické objednávky a vratky před tímto
+  stavovým commitem: `f8b12a4` (`Add customer orders and refund confirmation`)
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -27,12 +27,15 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   vrácení skladu, bezpečný stav `refund_required` a tok příprava → připraveno →
   osobní výdej. Celkem 186/1339 testů, 257 PHP lintů, Composer audit bez
   advisories a izolovaný MariaDB průchod dokončením i stornem prošly.
-  Zákaznický seznam, dokončení vratky, kupón, Fio a Stripe zatím nevznikají.
+  `f8b12a4` doplňuje databázově vlastnicky filtrovaný zákaznický seznam a detail
+  a auditované jednorázové potvrzení celé bankovní vratky `refunded` s referencí.
+  Celkem 187/1376 testů, 259 PHP lintů a izolovaný MariaDB tok vratky i IDOR
+  hranice prošly. Kupón, automatické Fio párování a Stripe zatím nevznikají.
   Produkční workflow ani lokální/produkční DB se nezměnily
 - Další přesná akce: doplnit GitHub Secret `SSH_KNOWN_HOSTS` a produkční
   `AUTH_RATE_LIMIT_PEPPER`, poté provést pouze autorizovaný první release.
-  Potvrdit KIS identifikátor a retenci; v K4 následně doplnit zákaznický seznam
-  objednávek a auditované potvrzení skutečně odeslané vratky
+  Potvrdit KIS identifikátor a retenci; v K4 následně rozhodnout a implementovat
+  kupóny, nebo upřednostnit automatické párování plateb z Fio
 
 ## Stav etap podle akceptačních bran
 
@@ -44,7 +47,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | K1 – katalog a publikace | 92 % | obrázky/detail produktu, finální produktová pravidla a případný anonymní storefront |
 | K2 – účty, osoby a rodič–dítě | 75 % | stabilní KIS identifikátor, bezpečné párování reálného exportu a hraniční review |
 | K3 – akce a přihlášky | 88 % | rozhodnutí o ručních změnách čekací listiny, export účastníků a produkční UX |
-| K4 – objednávky a platby | 45 % | dokončení vratky, zákaznický přehled, kupón, následně Fio/Stripe |
+| K4 – objednávky a platby | 55 % | kupón, automatické Fio párování a následně Stripe |
 | K5 – KIS shadow mode a cutover | 15 % | paritní reporty, export změn, řízený shadow provoz a samostatně schválený cutover |
 
 ## Pořadí autority
@@ -63,13 +66,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | K4 checkout `5750dd0` + fulfillment/storno `1763531`; následuje pouze tento stavový commit | 2026-08-03 | Git | ano |
+| integrační branch | K4 fulfillment `1763531` + zákaznické objednávky/vratky `f8b12a4`; následuje pouze tento stavový commit | 2026-08-03 | Git | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | 186/1339; K4 cena/snapshot/idempotence/sklad/QR/manual paid/storno/výdej mají SQLite testy; izolovaný MariaDB checkout, dokončení, storno a migrace prošly; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
+| testy | 187/1376; K4 cena/snapshot/idempotence/sklad/QR/manual paid/storno/výdej/refund i vlastnický seznam mají SQLite testy; izolovaný MariaDB refund a IDOR průchod prošel; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-02.3` obsahuje `auth_login_limits` i lokálně nepřítomné `ucto_gs_*` | 2026-08-02 | izolovaná XAMPP DB + code audit | zopakovat s produkčním artefaktem |
@@ -116,7 +119,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | W0-D | accepted | `0d50584`, run `30718185103` | test worker | Composer dev, tests, CI/deploy gate | nic |
 | W0-E | code accepted / production pending | `664745e`, `cd0c0e1`, PR #6 | integrační vlastník | migrace + deploy hardening | `SSH_KNOWN_HOSTS`, produkční pepper, autorizovaný první deploy |
 | W0-F | waiting decision | dokumentace | produkt/ekonom | D-004 až D-011 | identity a wallet |
-| W0-G | partial accepted | `98ff91d`, `168d132`, `8f0cbe8`, `699ddd4`, `d99a79e`, `2ba0782`, `f0370a3`, `3845eab`, `b77f8c3`, `8c374a4`, `d32fc08`, `5500927`, `4ef5690`, `88f5b97`, `e5fcaa0`, `a949c38`, `fb5e137`, `4cd0eae`, `5750dd0`, `1763531` | KIS/shop workeři | Shoptet katalog, K2, bezplatný K3 a K4 checkout/storno/výdej | reálný KIS vzorek, zákaznické objednávky a automatické platby |
+| W0-G | partial accepted | `98ff91d`, `168d132`, `8f0cbe8`, `699ddd4`, `d99a79e`, `2ba0782`, `f0370a3`, `3845eab`, `b77f8c3`, `8c374a4`, `d32fc08`, `5500927`, `4ef5690`, `88f5b97`, `e5fcaa0`, `a949c38`, `fb5e137`, `4cd0eae`, `5750dd0`, `1763531`, `f8b12a4` | KIS/shop workeři | Shoptet katalog, K2, bezplatný K3 a K4 checkout/storno/výdej/refund | reálný KIS vzorek, kupóny a automatické platby |
 
 Řídicí task aktualizuje IDs, větve, commity a testy po každém worker handoffu.
 
@@ -154,6 +157,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 28 | K3 provozní fronta `4cd0eae` | přijato lokálně; admin přehled, CSRF, auditované retry a zákaz zásahu do `processing`/`sent`; SQLite/MariaDB |
 | 29 | K4 bankovní checkout `5750dd0` | přijato lokálně; serverová cena + fingerprint, snapshot, idempotence, skladový pohyb, QR/SPD a ruční paid; SQLite/MariaDB, 182/1287 |
 | 30 | K4 fulfillment/storno `1763531` | přijato lokálně; transakční restock právě jednou, `refund_required`, příprava/výdej a audit; SQLite/MariaDB, 186/1339 |
+| 31 | K4 zákaznické objednávky/vratky `f8b12a4` | přijato lokálně; account-scoped seznam/detail, `refunded`, bankovní reference a idempotentní audit; SQLite/MariaDB, 187/1376 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
