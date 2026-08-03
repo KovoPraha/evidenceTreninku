@@ -109,6 +109,7 @@ $statusLabels = [
             <div class="text-muted small">Kontrola importovaného katalogu před budoucí publikací.</div>
         </div>
         <div class="d-flex gap-2">
+            <a href="eshop_orders_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-receipt me-1"></i>Objednávky K4</a>
             <a href="eshop_notifications_admin.php" class="btn btn-outline-warning btn-sm"><i class="bi bi-envelope-exclamation me-1"></i>Fronta e-mailů</a>
             <a href="eshop_events_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-calendar-event me-1"></i>Klubové akce K3</a>
             <a href="eshop_catalog_publication_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-eye me-1"></i>Aktivace katalogu</a>

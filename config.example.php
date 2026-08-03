@@ -59,3 +59,15 @@ if ($jeLokalne) {
 // pro starší experiment; není součástí cílové architektury ani deploy plánu.
 // Nezapínat bez nového výslovného rozhodnutí a samostatného security review.
 define('VELOCOTA_INTEGRATION', false);
+
+// ── První bankovní checkout e-shopu ─────────────────────────────────────────
+// Na produkci preferujte environment proměnné. Bez platného IBAN a názvu účtu
+// checkout záměrně selže před vytvořením objednávky.
+$shopBankIban = getenv('SHOP_BANK_IBAN');
+$shopBankBic = getenv('SHOP_BANK_BIC');
+$shopBankAccountLabel = getenv('SHOP_BANK_ACCOUNT_LABEL');
+$shopBankDueDays = getenv('SHOP_BANK_DUE_DAYS');
+if (is_string($shopBankIban) && $shopBankIban !== '') define('SHOP_BANK_IBAN', $shopBankIban);
+if (is_string($shopBankBic) && $shopBankBic !== '') define('SHOP_BANK_BIC', $shopBankBic);
+if (is_string($shopBankAccountLabel) && $shopBankAccountLabel !== '') define('SHOP_BANK_ACCOUNT_LABEL', $shopBankAccountLabel);
+if (is_string($shopBankDueDays) && preg_match('/^[0-9]{1,2}$/D', $shopBankDueDays) === 1) define('SHOP_BANK_DUE_DAYS', (int)$shopBankDueDays);

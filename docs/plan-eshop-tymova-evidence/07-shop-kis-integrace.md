@@ -159,6 +159,17 @@ selhání a po pěti pokusech ponechá položku ve stavu `failed` pro kontrolu.
 Brána: objednávka, platba a přihláška mají oddělené stavové automaty a každá
 externí událost je idempotentní.
 
+První vertikála K4 je implementována pro přihlášený účet, aktivní `goods`,
+osobní odběr a bankovní převod v CZK. Košík při checkoutu znovu zamkne varianty
+a cenu počítá výhradně z kanonických dat. Objednávka ukládá neměnný snapshot
+názvu, SKU, atributů, ceny, měny a DPH. Jednorázový hashovaný klíč chrání před
+duplicitním submittem. Spravovaný sklad se rezervuje atomickým pohybem. Platba
+obsahuje unikátní variabilní symbol a lokálně generovaný QR/SPD payload; stav
+`paid` vznikne pouze auditovaným potvrzením administrátora po kontrole banky.
+
+Zatím chybí storno s vrácením skladu, příprava a potvrzení výdeje, kupón,
+anonymní checkout, automatické Fio párování a Stripe.
+
 ### K5 – KIS shadow mode a cutover
 
 - paritní report: osoby, soupisky, přihlášky a předpisy,

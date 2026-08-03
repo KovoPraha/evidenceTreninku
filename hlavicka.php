@@ -338,6 +338,8 @@ if ($is_logged_in) {
                             <li><h6 class="dropdown-header">Administrace</h6></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_admin.php') ?>" href="eshop_admin.php">
                                 <i class="bi bi-shop me-2 text-primary"></i>Administrace e-shopu</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('eshop_orders_admin.php') ?>" href="eshop_orders_admin.php">
+                                <i class="bi bi-receipt me-2 text-success"></i>Objednávky K4</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_catalog_publication_admin.php') ?>" href="eshop_catalog_publication_admin.php">
                                 <i class="bi bi-eye me-2 text-success"></i>Aktivace katalogu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_events_admin.php') ?>" href="eshop_events_admin.php">

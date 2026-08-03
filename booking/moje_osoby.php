@@ -79,7 +79,7 @@ $statusLabels = [
 <body class="bg-light">
 <nav class="navbar navbar-light bg-white border-bottom shadow-sm"><div class="container">
     <a class="navbar-brand fw-bold" href="kalendar.php"><i class="bi bi-bicycle me-2 text-primary"></i>Rezervace Kovopraha</a>
-    <div class="d-flex gap-2"><a href="kalendar.php" class="btn btn-outline-primary btn-sm">Kalendář</a><a href="krouzky.php" class="btn btn-outline-secondary btn-sm">Kroužky</a><a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a></div>
+    <div class="d-flex gap-2"><a href="eshop.php" class="btn btn-outline-success btn-sm">E-shop</a><a href="kalendar.php" class="btn btn-outline-primary btn-sm">Kalendář</a><a href="krouzky.php" class="btn btn-outline-secondary btn-sm">Kroužky</a><a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a></div>
 </div></nav>
 <main class="container py-4" style="max-width:900px">
     <h1 class="h4 mb-1"><i class="bi bi-people me-2 text-primary"></i>Moje osoby</h1>
