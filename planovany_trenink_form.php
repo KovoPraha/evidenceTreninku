@@ -6,6 +6,7 @@ require_once 'includes/funkce.php';
 if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -26,6 +27,7 @@ if ($editId) {
 
 // ── Vybrané podskupiny (editace / fallback) ───────────────────────────────────
 $selectedPodskupiny = [];
+$selectedTeamIds = [];
 if ($editId && $existujici) {
     $stPs = $pdo->prepare("SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=?");
     $stPs->execute([$editId]);
@@ -34,6 +36,7 @@ if ($editId && $existujici) {
     if (empty($selectedPodskupiny) && !empty($existujici['podskupina_id'])) {
         $selectedPodskupiny = [(int)$existujici['podskupina_id']];
     }
+    $selectedTeamIds = trainingRosterBridgePlanTeamIds($pdo, $editId);
 }
 
 // ── Výchozí hodnoty ───────────────────────────────────────────────────────────
@@ -57,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $kategorie     = $_POST['kategorie'] ?? '';
         $skupinaId     = (int)($_POST['skupina_id'] ?? 0);
         $podskupinyIds = array_values(array_filter(array_map('intval', $_POST['podskupiny_ids'] ?? [])));
+        $teamIds        = array_values(array_unique(array_filter(array_map('intval', $_POST['team_ids'] ?? []))));
         $podskupinaId  = !empty($podskupinyIds) ? $podskupinyIds[0] : null; // legacy FK
         $datum         = trim($_POST['datum'] ?? '');
         $casOd         = trim($_POST['cas_od'] ?? '') ?: null;
@@ -93,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmtPs = $pdo->prepare("INSERT IGNORE INTO planovane_treninky_podskupiny (plan_id, podskupina_id) VALUES (?, ?)");
                         foreach ($podskupinyIds as $psId) { $stmtPs->execute([$editId, $psId]); }
                     }
+                    trainingRosterBridgeReplacePlanTeams($pdo, $editId, $teamIds, $trenerId);
                     $pdo->commit();
                     $_SESSION['flash_success'] = 'Plánovaný trénink upraven.';
                 } catch (Exception $e) {
@@ -149,6 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($stmtPs) {
                             foreach ($podskupinyIds as $psId) { $stmtPs->execute([$planId, $psId]); }
                         }
+                        trainingRosterBridgeReplacePlanTeams($pdo, $planId, $teamIds, $trenerId);
                     }
                     // Nastavit serie_id = ID prvního záznamu pro všechny instance série
                     if ($jeSerie && $prveId) {
@@ -174,6 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Zachovat hodnoty z POST pro opětovné zobrazení formuláře
         $selectedPodskupiny = $podskupinyIds ?? [];
+        $selectedTeamIds = $teamIds ?? [];
         $def = compact('nazev','kategorie','skupinaId','datum','casOd','casDo','sportId','popis');
         $def['skupina_id']     = $skupinaId;
         $def['sportoviste_id'] = $sportId;
@@ -190,6 +197,12 @@ if (!empty($def['skupina_id'])) {
     $stPs = $pdo->prepare("SELECT id, nazev FROM podskupiny WHERE skupina_id=? ORDER BY poradi, nazev");
     $stPs->execute([$def['skupina_id']]);
     $podskupiny = $stPs->fetchAll(PDO::FETCH_ASSOC);
+}
+$eligibleTeams = [];
+try {
+    $eligibleTeams = trainingRosterBridgeEligibleTeams($pdo, (string)$def['datum']);
+} catch (Throwable $exception) {
+    error_log('planovany_trenink_form roster teams: ' . $exception->getMessage());
 }
 
 $kategorieMeta = [
@@ -289,6 +302,28 @@ $kategorieMeta = [
                             <?php endif; ?>
                         </div>
                     </div>
+                </div>
+
+                <!-- KIS soupisky pouze doplňují očekávané účastníky; legacy skupiny zůstávají zachované. -->
+                <div class="mb-3">
+                    <label class="form-label">KIS soupisky <span class="text-muted small">(volitelné)</span></label>
+                    <div class="border rounded p-2 bg-white" style="max-height:180px;overflow-y:auto">
+                        <?php if ($eligibleTeams === []): ?>
+                            <span class="text-muted small">Pro datum tréninku není dostupná aktivní soupiska.</span>
+                        <?php else: ?>
+                            <?php foreach ($eligibleTeams as $team): ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="team_ids[]"
+                                           value="<?= (int)$team['id'] ?>" id="team_<?= (int)$team['id'] ?>"
+                                           <?= in_array((int)$team['id'], $selectedTeamIds, true) ? 'checked' : '' ?>>
+                                    <label class="form-check-label small" for="team_<?= (int)$team['id'] ?>">
+                                        <?= h($team['name']) ?> · <?= h($team['season_name']) ?>
+                                    </label>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="form-text">Členové soupisek se uloží jako očekávaní účastníci. Docházka vznikne až ručním uložením evidence tréninku.</div>
                 </div>
 
                 <!-- Datum + Časy -->

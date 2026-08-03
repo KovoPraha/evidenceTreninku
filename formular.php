@@ -8,6 +8,7 @@ if (!isset($_SESSION['trener_id'])) {
 }
 require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
 
 $currentTrener = (int)$_SESSION['trener_id'];
 $isAdmin       = canAccess('formular');
@@ -47,6 +48,7 @@ try {
 
 // ── Předvyplnění z plánovaného tréninku (?plan_id=X) ─────────────────────
 $planPrefill = null;
+$planExpectedParticipants = [];
 if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
     $stPlan = $pdo->prepare("
         SELECT pt.*, sk.nazev AS skupina_nazev
@@ -56,6 +58,9 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
     ");
     $stPlan->execute([(int)$_GET['plan_id']]);
     $planPrefill = $stPlan->fetch(PDO::FETCH_ASSOC) ?: null;
+    if ($planPrefill) {
+        $planExpectedParticipants = trainingRosterBridgeExpectedForPlan($pdo, (int)$planPrefill['id']);
+    }
 }
 
 // ── Duplikovat trénink – předvyplnění z existujícího záznamu ──────────────
@@ -838,6 +843,8 @@ if (DUPLIKAT && DUPLIKAT.skupina_id) {
     if (DUPLIKAT && DUPLIKAT.ucastnici) {
         DUPLIKAT.ucastnici.forEach(sp => addParticipant(sp.id, sp.label));
     }
+    const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+    rosterExpected.forEach(sp => addParticipant(parseInt(sp.id, 10), sp.label));
 })();
 
 // ── MĚŘENÍ: dynamické řádky + sportovec autocomplete ─────────────────────
