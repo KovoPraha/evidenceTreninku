@@ -56,6 +56,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804190000_child_access_accounts',
                 '20260804200000_public_velodrome_shop',
                 '20260804210000_shop_order_expiration',
+                '20260804230000_club_event_shop',
             ],
             array_keys($catalog)
         );

@@ -1,6 +1,6 @@
 # 06 – Program board
 
-Aktualizováno: 3. 8. 2026 (M1.9 provozní a akceptační přírůstek)
+Aktualizováno: 4. 8. 2026 (technické dokončení M1)
 Aktuální produkční brána: **F0 – červená**
 Aktuální lokální produktový milník: **M1 – integrovaný testovatelný prototyp**
 Povolená práce: localhost přírůstky M1 podle
@@ -16,15 +16,15 @@ wallet, exporty a ostrý KIS/Shoptet cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | M1.9: A05 `d3e7e96`, A10 `e363d86` a expirace pending objednávek `c50e572`; bez produkčních změn |
+| lokální práce | technická část M1 dokončena; poslední brána je vlastníkova prohlídka A01–A10; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
-| syntax | všechny soubory jednotlivých paralelních přírůstků a integrační PHP soubory prošly lintem |
+| syntax | všech 339 first-party PHP souborů prošlo lintem |
 | dependency audit | 0 advisories lokálně; produkční stav nebyl v tomto přírůstku měněn |
-| automatické testy | 298 testů / 2435 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | 31 číslovaných migrací; nová M1.9 migrace `210000` byla aplikována pouze na localhost a katalog je 31/31 current |
+| automatické testy | 299 testů / 2547 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | 32 číslovaných migrací; `20260804230000_club_event_shop` byla aplikována pouze na localhost a katalog je 32/32 current |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
-| restore drill | post-M1.9 záloha `evidence_2026-08-03_220119_ec3f47b7.sql.gz` má 121 tabulek / 2 triggery a SHA-256 `c0506765ff6b0690302548841785fff5b0e638368e84313e1bcab5e4c0dd0f7c`; migrace přidala jen sloupce, ownership kontrakt zůstává `.5` |
+| restore drill | post-M1 záloha `evidence_2026-08-03_222958_4e76dbc4.sql.gz` má 123 tabulek / 2 triggery a SHA-256 `e4d43a20b008d7188af5c5b47a905893c44698c659dc78509af498bfa3d38d6b`; ownership kontrakt je `.6` |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | Shoptet katalog | reálných 241/807 bylo po auditované kontrole transakčně převedeno do izolovaného draft katalogu; opakování bez duplicity, veřejně aktivních produktů 0 |
 | Aktivace katalogu | `5500927`: jednotlivé `goods` lze ručně aktivovat s plain-text veřejným snapshotem a auditem; K3 typy jsou fail-closed; veřejný storefront stále neexistuje |
@@ -79,6 +79,15 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | A10 auditní osa osoby | `e363d86` | admin-only read-only agregace devíti zdrojů, pravdivě chybějící aktér/důvod, omezené stránkování a MariaDB/browser smoke |
 | expirace pending objednávek | `c50e572` | defaultní dry-run, explicitní potvrzení, payment-first lock order, kontrola nulové programové účasti a právě-jednou uvolnění skladu i velodromu |
 | integrační brána | tento commit | 31/31, 298/2435, 26 změněných PHP lintů, audit 0, opakovaný seed, reálná idempotentní expirace a backup 121/2 |
+
+## Technické dokončení M1
+
+| Proud | Stav | Přijatý důkaz |
+|---|---|---|
+| placená událost pro soupisky | hotovo lokálně | shop order/payment/QR, cenový a souhlasový snapshot, `payment_pending` drží kapacitu, paid aktivace, storno/expirace/refund a ochrana duplicity |
+| deterministická demo data | hotovo lokálně | placená i bezplatná událost, U13 → U15 → U17, dráha, silnice a rollover výjimka; seed prošel dvakrát |
+| integrační brána | hotovo lokálně | 32/32, 299/2547, 339 lintů, audit 0, browser paid flow a backup 123/2 `.6` |
+| produktová brána | čeká na vlastníka | ruční průchod A01–A10 a zařazení připomínek do M2 |
 
 ## Aktivní rozhodnutí
 

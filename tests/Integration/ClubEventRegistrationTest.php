@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/account_person_role.php';
 require_once dirname(__DIR__, 2) . '/includes/club_event_registration.php';
+require_once dirname(__DIR__, 2) . '/includes/shop_checkout.php';
 
 final class ClubEventRegistrationTest extends TestCase
 {
@@ -335,6 +336,33 @@ final class ClubEventRegistrationTest extends TestCase
         )->fetchColumn());
     }
 
+    public function testPaidRosterEventHoldsCapacityAndFollowsOrderPaymentLifecycle():void
+    {
+        $pdo=$this->database();$year=(int)date('Y')+1;
+        $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'TEST-SEASON','Test season','$year-01-01','$year-12-31','active',7)");
+        $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'U15','U15','silnice','U15','active',7)");
+        $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,created_by_trainer_id) VALUES(1,100,'active','manual','$year-01-01',7),(1,101,'active','manual','$year-01-01',7)");
+        $input=$this->eventInput(1);$input['code']='PAID-'.bin2hex(random_bytes(4));$input['name']='Placené soustředění';$input['pricing_policy']='product_variants';
+        $event=\clubEventCreateDraft($pdo,7,$input);$eventId=(int)$event['id'];
+        \clubEventAddSession($pdo,$eventId,7,$year.'-09-10T09:00',$year.'-09-10T17:00','Velodrom',1);
+        \clubEventLinkProduct($pdo,$eventId,502,7,'Cena soustředění.');
+        \clubEventRosterReplaceTargets($pdo,$eventId,[1],7,'Určeno pro U15.',true);
+        \clubEventConfigureRegistrationTerms($pdo,$eventId,7,'paid.1','Souhlasím s účastí.','Bezplatné storno do termínu.',$year.'-09-01T12:00',true);
+        \clubEventOpenPaidRegistration($pdo,$eventId,7,'Otevření testovací události.',true);
+        self::assertTrue(\clubEventShopAddToCart($pdo,10,$eventId,100,602,'paid.1',true)['created']);
+        $cart=\shopCartDetail($pdo,10);self::assertSame(250000,$cart['total_minor']);self::assertCount(1,$cart['event_items']);
+        $bank=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'TEST','due_days'=>7];
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),$bank,$cart['fingerprint']);
+        self::assertSame('payment_pending',$pdo->query('SELECT status FROM club_event_registrations')->fetchColumn());
+        try{\clubEventShopAddToCart($pdo,10,$eventId,101,602,'paid.1',true);$second=\shopCartDetail($pdo,10);\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),$bank,$second['fingerprint']);self::fail('Held capacity must reject second checkout.');}catch(\ClubEventShopException|\ShopCheckoutException $e){self::assertStringContainsString('kapacit',mb_strtolower($e->getMessage()));}
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Platba ověřena.',true);
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE sportovec_id=100')->fetchColumn());
+        $cancel=\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Storno placené účasti.',true);self::assertSame('refund_required',$cancel['payment_status']);
+        self::assertSame('cancelled',$pdo->query('SELECT status FROM club_event_registrations WHERE sportovec_id=100')->fetchColumn());
+        self::assertTrue(\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'REF-EVENT-1','Vratka odeslána.',true)['changed']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registration_events WHERE action='shop_payment_paid'")->fetchColumn());
+    }
+
     private function openFreeEvent(PDO $pdo, int $capacity, ?int $minAge = null, ?int $maxAge = null): int
     {
         $input = $this->eventInput($capacity);
@@ -398,10 +426,11 @@ final class ClubEventRegistrationTest extends TestCase
         $pdo->exec("INSERT INTO sportovci VALUES (100,'Anna','První','" . ($year - 8) . "-05-10'),(101,'Bára','Druhá','" . ($year - 9) . "-04-03'),(102,'Cyril','Starší','" . ($year - 15) . "-01-01'),(103,'Dana','Třetí','" . ($year - 8) . "-02-02')");
         $pdo->exec('CREATE TABLE verejni_uzivatele (id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,email TEXT,aktivni INTEGER NOT NULL,email_overeno INTEGER NOT NULL)');
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES (10,'Rodič','První','a@example.test',1,1),(11,'Cizí','Účet','b@example.test',1,1),(12,'Neověřený','Rodič','c@example.test',1,0)");
-        $pdo->exec('CREATE TABLE shop_products (id INTEGER PRIMARY KEY,name TEXT NOT NULL,offer_type TEXT NOT NULL,catalog_status TEXT NOT NULL)');
-        $pdo->exec("INSERT INTO shop_products VALUES (501,'Bezplatný kroužek','club_event','internal_only')");
-        $pdo->exec('CREATE TABLE shop_variants (id INTEGER PRIMARY KEY,product_id INTEGER NOT NULL,price_mode TEXT NOT NULL,amount_minor INTEGER NULL,currency TEXT NULL,visible INTEGER NULL)');
-        $pdo->exec("INSERT INTO shop_variants VALUES (601,501,'free',0,'CZK',1)");
+        $pdo->exec('CREATE TABLE shop_products (id INTEGER PRIMARY KEY,name TEXT NOT NULL,offer_type TEXT NOT NULL,catalog_status TEXT NOT NULL,internal_only INTEGER NOT NULL DEFAULT 1)');
+        $pdo->exec("INSERT INTO shop_products(id,name,offer_type,catalog_status) VALUES (501,'Bezplatný kroužek','club_event','internal_only'),(502,'Placené soustředění','club_event','active')");
+        $pdo->exec('CREATE TABLE shop_variants (id INTEGER PRIMARY KEY,product_id INTEGER NOT NULL,sku TEXT NOT NULL DEFAULT \'TEST\',attributes_json TEXT NOT NULL DEFAULT \'{}\',price_mode TEXT NOT NULL,amount_minor INTEGER NULL,currency TEXT NULL,includes_vat INTEGER NULL,vat_rate_basis_points INTEGER NULL,stock_quantity_decimal TEXT NULL,visible INTEGER NULL,catalog_status TEXT NOT NULL DEFAULT \'active\',updated_at TEXT DEFAULT CURRENT_TIMESTAMP)');
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,sku,price_mode,amount_minor,currency,visible,catalog_status) VALUES (601,501,'FREE-601','free',0,'CZK',1,'active'),(602,502,'PAID-602','fixed',250000,'CZK',1,'active')");
+        $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');
 
         foreach ([
             '20260802230000_account_person_roles.php',
@@ -411,8 +440,15 @@ final class ClubEventRegistrationTest extends TestCase
             '20260803170000_club_event_waitlist.php',
             '20260803190000_club_event_notifications.php',
             '20260803210000_club_event_notification_admin.php',
+            '20260803230000_shop_checkout.php',
+            '20260804010000_shop_order_fulfillment.php',
+            '20260804030000_shop_order_refunds.php',
+            '20260804050000_shop_coupons.php',
             '20260804090000_kis_teams_rosters.php',
+            '20260804120000_shop_item_beneficiaries.php',
             '20260804150000_club_event_roster_targets.php',
+            '20260804210000_shop_order_expiration.php',
+            '20260804230000_club_event_shop.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);

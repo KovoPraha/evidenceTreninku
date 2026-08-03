@@ -6,11 +6,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 
 ## Metadata
 
-- Aktualizováno: 2026-08-03, Europe/Prague
+- Aktualizováno: 2026-08-04, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `main`; M1.9 je sloučené v `d3e7e96` (A05),
-  `e363d86` (A10) a `c50e572` (expirace pending objednávek).
+- Aktivní integrační větev: `main`; technická část M1 je dokončená, poslední
+  produktovou branou zůstává vlastníkova prohlídka A01–A10.
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -22,7 +22,17 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md); cílem je prokliknutelná
   integrace stávající Evidence, e-shopu a nové členské evidence. Fio, Stripe,
   Excel/exporty a ostrý import jsou mimo M1.
-- Poslední dokončená akce: K3 má administrační frontu neodeslaných e-mailů a
+- Poslední dokončená akce: placená klubová událost cílená na více soupisek je
+  zapojená do standardního shop order/payment lifecycle. Checkout ukládá cenu,
+  příjemce, souhlas, storno a eligibility snapshot; stav `payment_pending` drží
+  kapacitu, ruční úhrada aktivuje přihlášku právě jednou a storno/expirace ji
+  auditovaně uvolní. Localhost browser prošel objednávku `NEPLATIT`, QR, ruční
+  syntetickou úhradu a potvrzenou účast. Seed nyní obsahuje také placenou
+  událost, U13 → U15 → U17, dráhu, silnici a rollover výjimku. Katalog migrací
+  je 32/32, plná sada 299/2547, 339 first-party PHP lintů a Composer audit bez
+  advisories. Ověřená post-change záloha má 123 tabulek a 2 triggery.
+
+  Historie: K3 má administrační frontu neodeslaných e-mailů a
   auditované bezpečné ruční retry (`4cd0eae`). K4 má první checkout přihlášeného
   účtu pro aktivní `goods`: košík, ochranu proti tiché změně ceny, neměnný
   snapshot, idempotentní objednávku, transakční rezervaci skladu, bankovní
@@ -101,11 +111,11 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 31/31 číslovaných migrací; localhost demo včetně A05/A10 a expirace aktivní | 2026-08-03 | migration check + MariaDB | ano |
-| testy | 298/2435; browser prošel A05 náhled, A10 timeline, admin expirace a reálný právě-jednou expiry lifecycle | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
+| lokální schema | legacy `2.20.2` + 32/32 číslovaných migrací; opakovaný M1 seed včetně placené události aktivní | 2026-08-04 | migration check + MariaDB | ano |
+| testy | 299/2547; browser prošel placenou událost, košík, QR, ruční syntetickou úhradu a aktivaci účasti | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
-| lokální backup drill | post-M1.9 artefakt `evidence_2026-08-03_220119_ec3f47b7.sql.gz`: 121 tabulek, 2 triggery, SHA-256 `c0506765ff6b0690302548841785fff5b0e638368e84313e1bcab5e4c0dd0f7c`; ownership kontrakt `2026-08-03.5` | 2026-08-03 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
+| lokální backup drill | post-M1 artefakt `evidence_2026-08-03_222958_4e76dbc4.sql.gz`: 123 tabulek, 2 triggery, SHA-256 `e4d43a20b008d7188af5c5b47a905893c44698c659dc78509af498bfa3d38d6b`; ownership kontrakt `2026-08-04.6` | 2026-08-04 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
@@ -211,6 +221,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 52 | M1.9 A10 `e363d86` | admin-only read-only osa devíti auditních zdrojů, omezené stránkování a pravdivě chybějící metadata |
 | 53 | M1.9 expirace `c50e572` | dry-run default, explicitní admin potvrzení, společný storno lifecycle a payment-first pořadí zámků |
 | 54 | Integrace M1.9 | 31/31, 298/2435, audit 0, deterministický A05 seed, browser A05/A10/expiry a backup 121/2 `.5` |
+| 55 | Dokončení technické části M1 | placená soupiska/událost přes shop lifecycle, 32/32, 299/2547, 339 lintů, audit 0, browser paid flow a backup 123/2 `.6` |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

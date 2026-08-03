@@ -44,7 +44,7 @@ function clubEventConfigureRegistrationTerms(
     try {
         $event = clubEventLock($pdo, $eventId);
         if (!$event || $event['status'] !== 'draft' || $event['event_type'] !== 'club_event'
-            || $event['pricing_policy'] !== 'free'
+            || !in_array($event['pricing_policy'], ['free', 'product_variants'], true)
         ) {
             throw new ClubEventRegistrationException(
                 'Podmínky lze nastavit pouze bezplatnému kroužku ve stavu draft.'
@@ -228,6 +228,32 @@ function clubEventOpenFreeRegistration(
 }
 
 /** @return array{id:int,status:string,changed:bool} */
+function clubEventOpenPaidRegistration(PDO $pdo,int $eventId,int $actorTrainerId,string $note,bool $confirmed):array
+{
+    $note=trim($note);
+    if($eventId<1||$actorTrainerId<1||$note===''||!$confirmed)throw new InvalidArgumentException('Otevreni vyzaduje akci, administratora, duvod a vyslovne potvrzeni.');
+    if(mb_strlen($note,'UTF-8')>1000)throw new InvalidArgumentException('Poznamka smi mit nejvyse 1000 znaku.');
+    $pdo->beginTransaction();
+    try{
+        $event=clubEventLock($pdo,$eventId);
+        if(!$event)throw new ClubEventRegistrationException('Udalost nebyla nalezena.');
+        if($event['status']==='open'){$pdo->commit();return['id'=>$eventId,'status'=>'open','changed'=>false];}
+        if($event['status']!=='draft'||$event['event_type']!=='club_event'||$event['pricing_policy']!=='product_variants')throw new ClubEventRegistrationException('Otevrit lze pouze placenou klubovou udalost ve stavu draft.');
+        if(empty($event['terms_version'])||empty($event['consent_text_plain'])||empty($event['cancellation_policy_plain'])||empty($event['cancellation_deadline_at']))throw new ClubEventRegistrationException('Pred otevrenim nastavte verzi souhlasu a storno podminky.');
+        $sessions=$pdo->prepare("SELECT MIN(starts_at),COUNT(*) FROM club_event_sessions WHERE event_id=? AND status='scheduled'");$sessions->execute([$eventId]);$session=$sessions->fetch(PDO::FETCH_NUM);
+        if(!$session||(int)$session[1]<1)throw new ClubEventRegistrationException('Pred otevrenim pridejte alespon jeden termin.');
+        if(new DateTimeImmutable((string)$event['cancellation_deadline_at'])>=new DateTimeImmutable((string)$session[0]))throw new ClubEventRegistrationException('Termin bezplatneho storna musi byt pred prvnim terminem.');
+        if(new DateTimeImmutable((string)$event['cancellation_deadline_at'])<=new DateTimeImmutable('now'))throw new ClubEventRegistrationException('Udalost nelze otevrit po terminu bezplatneho storna.');
+        $variants=$pdo->prepare("SELECT COUNT(*) FROM shop_product_event_links l JOIN shop_products p ON p.id=l.product_id JOIN shop_variants v ON v.product_id=p.id WHERE l.event_id=? AND p.catalog_status='active' AND v.catalog_status='active' AND v.price_mode='fixed' AND v.amount_minor>0 AND v.currency='CZK' AND (v.visible IS NULL OR v.visible=1)");$variants->execute([$eventId]);
+        if((int)$variants->fetchColumn()<1)throw new ClubEventRegistrationException('Propojte udalost s aktivni placenou variantou v CZK.');
+        $targets=$pdo->prepare('SELECT COUNT(*) FROM club_event_roster_targets WHERE event_id=?');$targets->execute([$eventId]);if((int)$targets->fetchColumn()<1)throw new ClubEventRegistrationException('Pred otevrenim zvolte alespon jednu cilovou soupisku.');
+        $pdo->prepare("UPDATE club_events SET status='open',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$eventId]);
+        clubEventAudit($pdo,$eventId,$actorTrainerId,'open_registration','event',$eventId,$note,['pricing_policy'=>'product_variants','capacity'=>clubEventEffectiveCapacity($pdo,$eventId,(int)$event['capacity'])]);
+        $pdo->commit();return['id'=>$eventId,'status'=>'open','changed'=>true];
+    }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof ClubEventRegistrationException)throw$e;throw new ClubEventRegistrationException('Udalost se nepodarilo bezpecne otevrit.',0,$e);}
+}
+
+/** @return array{id:int,status:string,changed:bool} */
 function clubEventCloseRegistration(PDO $pdo, int $eventId, int $actorTrainerId, string $note): array
 {
     $note = trim($note);
@@ -332,14 +358,14 @@ function clubEventRegisterParticipant(
         $existingStatement = $pdo->prepare($existingSql);
         $existingStatement->execute([$eventId, $sportovecId]);
         $existing = $existingStatement->fetch(PDO::FETCH_ASSOC);
-        if ($existing && in_array($existing['status'], ['confirmed', 'waitlisted'], true)) {
+        if ($existing && in_array($existing['status'], ['confirmed', 'waitlisted', 'payment_pending'], true)) {
             $pdo->commit();
             return ['id' => (int)$existing['id'], 'status' => (string)$existing['status'], 'created' => false];
         }
 
         $capacity = clubEventEffectiveCapacity($pdo, $eventId, (int)$event['capacity']);
         $count = $pdo->prepare(
-            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='confirmed'"
+            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
         );
         $count->execute([$eventId]);
         $targetStatus = (int)$count->fetchColumn() < $capacity ? 'confirmed' : 'waitlisted';
@@ -441,6 +467,11 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
         if (!$registration || (int)$registration['account_id'] !== $accountId) {
             throw new ClubEventRegistrationException('Přihláška nebyla nalezena.');
         }
+        if (function_exists('clubEventShopRegistrationIsOrderLinked')
+            && clubEventShopRegistrationIsOrderLinked($pdo, $registrationId)
+        ) {
+            throw new ClubEventRegistrationException('Placenou přihlášku zrušte přes objednávku; případná vratka musí zůstat auditovaná.');
+        }
         if ($registration['status'] === 'cancelled') {
             $pdo->commit();
             return ['id' => $registrationId, 'status' => 'cancelled', 'changed' => false, 'promoted_registration_id' => null];
@@ -531,6 +562,11 @@ function clubEventAdminCancelRegistration(
         if (!$registration) {
             throw new ClubEventRegistrationException('Přihláška nebyla nalezena.');
         }
+        if (function_exists('clubEventShopRegistrationIsOrderLinked')
+            && clubEventShopRegistrationIsOrderLinked($pdo, $registrationId)
+        ) {
+            throw new ClubEventRegistrationException('Placenou přihlášku stornujte přes objednávku, aby se správně zpracovala platba a vratka.');
+        }
         if ($registration['status'] === 'cancelled') {
             $pdo->commit();
             return [
@@ -597,7 +633,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
     }
     $capacity = clubEventEffectiveCapacity($pdo, $eventId, (int)$event['capacity']);
     $count = $pdo->prepare(
-        "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='confirmed'"
+        "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
     );
     $count->execute([$eventId]);
     if ((int)$count->fetchColumn() >= $capacity) {
@@ -676,7 +712,7 @@ function clubEventOpenFreeList(PDO $pdo): array
         $event['sessions'] = clubEventSessions($pdo, (int)$event['id']);
         $event['effective_capacity'] = clubEventEffectiveCapacity($pdo, (int)$event['id'], (int)$event['capacity']);
         $count = $pdo->prepare(
-            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='confirmed'"
+            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
         );
         $count->execute([(int)$event['id']]);
         $event['registration_count'] = (int)$count->fetchColumn();

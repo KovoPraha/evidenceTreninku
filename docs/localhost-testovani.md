@@ -19,8 +19,9 @@ Seed je idempotentní a mimo localhost skončí chybou. Připraví:
 - localhost administrátora,
 - reálný Shoptet katalog v pracovním stavu a jeden publikovaný skladový produkt,
 - kupón `LOCAL10`,
-- bezplatný kroužek s kapacitou dvě místa,
-- sezónu `2026/27`, tým `LOCALHOST U15` a dva členy soupisky.
+- bezplatnou i placenou událost cílenou na více soupisek,
+- věkovou řadu U13 → U15 → U17, dráhovou i silniční soupisku a rollover výjimku,
+- sezónu `2026/27`, tým `LOCALHOST U15` a členy testovacích soupisek.
 
 Aktuální testovací přístupy vypíše přímo seed. Výchozí hodnoty jsou:
 
@@ -39,10 +40,12 @@ skenovat pro skutečnou platbu. Fio import zůstává vypnutý.
 1. Přihlásit zákazníka na `booking/prihlaseni.php`.
 2. Zkontrolovat dvě osoby na `booking/moje_osoby.php`.
 3. Přihlásit dítě na `booking/krouzky.php`.
-4. Na `booking/eshop.php` vložit skladovou variantu do košíku.
-5. Použít `LOCAL10` a vytvořit objednávku.
-6. Zkontrolovat označení testovacího účtu, částku, VS a QR.
-7. Přihlásit localhost administrátora na `login.php`.
-8. Projít objednávky, Fio shadow přehled a `kis_rosters_admin.php`.
+4. Na `booking/krouzky.php` vložit placené soustředění `NEPLATIT` pro oprávněné dítě do košíku.
+5. Na `booking/eshop.php` zkontrolovat účastníka, snapshot souhlasu a cenu.
+6. Vytvořit objednávku a zkontrolovat testovací QR označené `NEPLATIT`.
+7. V administraci objednávek ručně potvrdit syntetickou úhradu a ověřit aktivní přihlášku.
+8. Samostatně lze vložit skladovou variantu, použít `LOCAL10` a projít skladový tok.
+9. Přihlásit localhost administrátora na `login.php`.
+10. Projít objednávky, audit osoby a `kis_rosters_admin.php`.
 
 Před větší změnou lokální DB používejte `bin/db-backup.php` s cílem mimo webroot.

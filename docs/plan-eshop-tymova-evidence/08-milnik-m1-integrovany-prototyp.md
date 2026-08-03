@@ -2,7 +2,7 @@
 
 Stav: kanonický plán prvního produktového milníku
 
-Aktualizováno: 3. 8. 2026
+Aktualizováno: 4. 8. 2026
 
 Prostředí milníku: pouze localhost, syntetická testovací data
 
@@ -310,17 +310,17 @@ MariaDB procesy.
 
 ## Definition of Done M1
 
-- [ ] všech deset akceptačních cest A01–A10 lze projít v UI,
-- [ ] všechny účastnické cesty používají stejnou osobu v `sportovci`,
-- [ ] rodič–dítě a dítě–vlastní účet mají otestované IDOR hranice,
+- [x] všech deset akceptačních cest A01–A10 lze projít v UI,
+- [x] všechny účastnické cesty používají stejnou osobu v `sportovci`,
+- [x] rodič–dítě a dítě–vlastní účet mají otestované IDOR hranice,
 - [x] školní a kalendářní sezóny fungují současně na localhostu,
-- [ ] všechny čtyři politiky soupisek mají auditovaný test,
-- [ ] tréninková Evidence používá nové soupisky bez druhého ručního seznamu,
-- [ ] objednatel, plátce a příjemce jsou na všech službách rozlišitelní,
-- [ ] kroužek, přechod do závodního klubu, událost a velodrom mají E2E důkaz,
-- [ ] fresh localhost setup, migrace a seed jsou opakovatelné,
-- [ ] plná testovací sada, dependency audit a migration check jsou zelené,
-- [ ] produkce, Fio, Stripe, Shoptet a starý KIS nebyly změněny,
+- [x] všechny čtyři politiky soupisek mají auditovaný test,
+- [x] tréninková Evidence používá nové soupisky bez druhého ručního seznamu,
+- [x] objednatel, plátce a příjemce jsou na všech službách rozlišitelní,
+- [x] kroužek, přechod do závodního klubu, událost a velodrom mají E2E důkaz,
+- [x] fresh localhost setup, migrace a seed jsou opakovatelné,
+- [x] plná testovací sada, dependency audit a migration check jsou zelené,
+- [x] produkce, Fio, Stripe, Shoptet a starý KIS nebyly změněny,
 - [ ] vlastník produktu provedl průchod a připomínky jsou zařazené do M2.
 
 ## Orientační mapa současného stavu
@@ -329,23 +329,27 @@ Procenta jsou odhad pokrytí akceptačních cest M1, nikoliv množství kódu.
 
 | Proud | Stav po M1.8 akceptačním přírůstku | Hlavní mezera |
 |---|---:|---|
-| stávající tréninková Evidence | 92 % | dotažení zápisu skutečné docházky a produktová prohlídka |
-| účty, rodič a osoby | 94 % | self-service obnova hesla sportovce a produktová prohlídka oprávnění |
-| běžné zboží a objednávka | 93 % | produkční UX a pravidlo kupónů pro služby |
-| programy/kroužky | 86 % | celý vlastníkům provedený A03–A04 průchod a produktová kontrola textů |
-| sezóny a soupisky | 91 % | vlastníkovo provedení A05 nad kopií dat a doladění administračního UX |
-| události a přihlášky | 78 % | placený scénář a UX validace časové platnosti soupisky |
-| veřejnost a velodrom přes e-shop | 94 % | rozhodnutí, zda kupóny platí na sloty, a produktová prohlídka |
-| integrovaný demo průchod | 94 % | vlastníkova prohlídka A01–A10 a zapracování připomínek |
+| stávající tréninková Evidence | 100 % technicky | produktová prohlídka skutečné docházky |
+| účty, rodič a osoby | 100 % technicky | produktová prohlídka oprávnění |
+| běžné zboží a objednávka | 100 % pro M1 | pozdější rozhodnutí o kupónech pro služby |
+| programy/kroužky | 100 % technicky | vlastníkovo provedení A03–A04 a kontrola textů |
+| sezóny a soupisky | 100 % technicky | vlastníkovo provedení A05–A06 |
+| události a přihlášky | 100 % technicky | vlastníkova kontrola bezplatné i placené varianty |
+| veřejnost a velodrom přes e-shop | 100 % pro M1 | pozdější rozhodnutí o kupónech pro sloty |
+| integrovaný demo průchod | 98 % | vlastníkova prohlídka A01–A10 a zařazení připomínek |
 
-Celý M1 je po M1.9 provozním přírůstku přibližně na 90 %. E-shopový základ,
+Technická část M1 je dokončena. Celý milník je na 98 %, protože poslední
+produktová brána je záměrně lidská: vlastník musí projít A01–A10 a jeho
+připomínky se musí zařadit do M2. E-shopový základ,
 rodinný rozsah, soupisky, plánování tréninku, kroužkové nabídky, cílené události,
 automatický životní cyklus programové účasti, provedení rolloveru a veřejná
 rezervace mají integrované localhost řezy. Přibyly A01–A10 rozcestník, omezený
 sportovní login a shop objednávka s QR pro placený velodrom. M1.9 doplnilo
 preview-first průvodce A05, jednotnou read-only auditní osu A10 a bezpečnou expiraci
-nezaplacených objednávek přes stejný storno lifecycle. Největší mezera je nyní
-vlastníkova ruční prohlídka A01–A10 a zapracování jejích výsledků.
+nezaplacených objednávek přes stejný storno lifecycle. Poslední technický řez
+doplnil placenou událost pro více soupisek: souhlasový a cenový snapshot,
+držení kapacity při čekání na platbu, ruční potvrzení převodu, auditované storno,
+vratku a ochranu před duplicitní přihláškou.
 
 ## Co následuje po M1
 
