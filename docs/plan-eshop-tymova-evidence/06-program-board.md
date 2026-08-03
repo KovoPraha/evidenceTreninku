@@ -13,19 +13,19 @@ Zakázaný start: veřejný storefront, checkout, Stripe, Fio, wallet a ostrý K
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | bezplatný kroužek `88f5b97`, verzované souhlasy a storno `e5fcaa0`; bez produkčních změn |
+| lokální práce | bezplatný kroužek `88f5b97`, souhlasy `e5fcaa0`, transakční čekací listina `a949c38`; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | 195 first-party PHP souborů auth přírůstku prošlo lintem |
 | dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | 166 testů / 1085 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | jedenáct číslovaných migrací včetně verzovaných podmínek kroužků; SQLite a izolovaná MariaDB prošly, lokální ani produkční apply neproběhl |
+| automatické testy | 168 testů / 1122 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | dvanáct číslovaných migrací včetně transakční čekací listiny; SQLite a souběžná izolovaná MariaDB prošly, lokální ani produkční apply neproběhl |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
 | restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-02.3` navíc pokrývá `auth_login_limits` a tři lokálně nepřítomné `ucto_gs_*` tabulky; produkční artefakt nebyl testován |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | Shoptet katalog | reálných 241/807 bylo po auditované kontrole transakčně převedeno do izolovaného draft katalogu; opakování bez duplicity, veřejně aktivních produktů 0 |
 | Aktivace katalogu | `5500927`: jednotlivé `goods` lze ručně aktivovat s plain-text veřejným snapshotem a auditem; K3 typy jsou fail-closed; veřejný storefront stále neexistuje |
-| K3 akce | `4ef5690`, `88f5b97`, `e5fcaa0`: bezplatný kroužek má K2 účastníka, transakční kapacitu, unikátní přihlášku a neměnné snapshoty verzovaného souhlasu a storna; bez objednávky, plateb, soupisky a KIS zápisu |
+| K3 akce | `4ef5690`, `88f5b97`, `e5fcaa0`, `a949c38`: navíc FIFO čekací listina a atomické povýšení nejstarší oprávněné osoby po stornu; bez objednávky, plateb, soupisky a KIS zápisu |
 | K2 identita | `8c374a4`, `d32fc08`: účet je oddělen od sportovce; veřejný claim neenumeruje osoby, vazby `self`/`guardian` schvaluje pouze admin s důvodem a auditem; neověřený účet ani zrušená vazba účastníka nezpřístupní |
 | lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
 
@@ -57,7 +57,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 | W0-D | Test harness a CI | dokončeno `0d50584`, remote run `30718098799` zelený | přijato | PHPUnit + GitHub workflow + test gate před deploy SSH |
 | W0-E | Migrace a deploy hardening | PR #6 v `main`, produkční ověření čeká | produkční ověření čeká | runner/check, fail-closed backup, lokální restore drill, preflight pepperu a migrace před aktivací PHP jsou doloženy; zbývá Secret/config a autorizovaný první deploy |
 | W0-F | ADR identity/KIS/wallet | produktová odpověď | ano, bez kódu | D-004 až D-011 mají schválený stav a důvod |
-| W0-G | Realistické anonymizované fixtures | částečně: Shoptet `f0370a3`/`3845eab`/`b77f8c3`, K2 `8c374a4`/`d32fc08`, aktivace `5500927`, K3 `4ef5690`/`88f5b97`/`e5fcaa0`; matice `168d132`, `8f0cbe8` | ano | Shoptet, K2, goods aktivace, bezplatná registrace a souhlasy pokryty; zbývá reálný KIS formát a platby |
+| W0-G | Realistické anonymizované fixtures | částečně: Shoptet `f0370a3`/`3845eab`/`b77f8c3`, K2 `8c374a4`/`d32fc08`, aktivace `5500927`, K3 `4ef5690`/`88f5b97`/`e5fcaa0`/`a949c38`; matice `168d132`, `8f0cbe8` | ano | Shoptet, K2, goods aktivace a bezplatný K3 průchod včetně čekání pokryty; zbývá reálný KIS formát a platby |
 
 ## Bezpečný merge order
 
