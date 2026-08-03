@@ -11,4 +11,11 @@ final class ClubProgramPaymentLifecycleWiringTest extends TestCase
         self::assertStringContainsString('clubProgramActivatePaidOrderInTransaction',$checkout);self::assertStringContainsString('clubProgramCancelOrderInTransaction',$checkout);self::assertStringContainsString('clubProgramAssertOrderHasNoActiveEnrollments',$checkout);
         self::assertStringContainsString('FOR UPDATE',$program);self::assertStringContainsString("e.status='active'",$program);self::assertStringContainsString("['source']!=='shop'",$program);self::assertStringContainsString('inTransaction',$program);
     }
+
+    public function testManualActivationUsesOrderThenTeamThenEnrollmentLockOrder():void
+    {
+        $source=(string)file_get_contents(dirname(__DIR__,2).'/includes/club_program.php');$start=strpos($source,'function clubProgramActivateOrderItemInTransaction');$end=strpos($source,'function clubProgramActivatePaidOrderInTransaction');$body=substr($source,$start,$end-$start);
+        $item=strpos($body,'$itemSql=');$team=strpos($body,'$teamLockSql=');$enrollment=strpos($body,"SELECT id FROM club_program_enrollments WHERE source_order_item_id=?");$member=strpos($body,'$memberSql=');
+        self::assertNotFalse($item);self::assertNotFalse($team);self::assertNotFalse($enrollment);self::assertNotFalse($member);self::assertLessThan($team,$item);self::assertLessThan($enrollment,$team);self::assertLessThan($member,$enrollment);
+    }
 }

@@ -167,13 +167,18 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
 {
     if (!$pdo->inTransaction()) throw new LogicException('Aktivace programu vyžaduje otevřenou transakci.');
     if ($accountId < 1 || $orderItemId < 1 || $actorId < 1 || !in_array($actorType,['account','trainer'],true)) throw new InvalidArgumentException('Aktivace programu nemá platného vlastníka nebo auditora.');
-    $teamLookup=$pdo->prepare('SELECT co.team_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id WHERE oi.id=? AND o.account_id=?');$teamLookup->execute([$orderItemId,$accountId]);$teamId=$teamLookup->fetchColumn();
+    $itemSql='SELECT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.line_amount_minor,oi.product_id,oi.variant_id,o.id AS order_id,o.account_id,o.status AS order_status,o.payment_status FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id AND vu.aktivni=1 AND vu.email_overeno=1 WHERE oi.id=? AND o.account_id=?';
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$itemSql.=' FOR UPDATE';
+    $itemStatement=$pdo->prepare($itemSql);$itemStatement->execute([$orderItemId,$accountId]);$item=$itemStatement->fetch(PDO::FETCH_ASSOC);
+    if(!$item)throw new ClubProgramException('Objednávková položka programu nebyla nalezena.');
+    $offerLookup=$pdo->prepare('SELECT team_id FROM club_program_offers WHERE variant_id=? AND product_id=?');$offerLookup->execute([(int)$item['variant_id'],(int)$item['product_id']]);$teamId=$offerLookup->fetchColumn();
     if($teamId===false)throw new ClubProgramException('Objednávková položka programu nebyla nalezena.');
     $teamLockSql='SELECT id FROM club_teams WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$teamLockSql.=' FOR UPDATE';$teamLock=$pdo->prepare($teamLockSql);$teamLock->execute([(int)$teamId]);if($teamLock->fetchColumn()===false)throw new ClubProgramException('Cílová soupiska programu nebyla nalezena.');
-    $sql = 'SELECT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.line_amount_minor,oi.product_id,oi.variant_id,o.id AS order_id,o.account_id,o.status AS order_status,o.payment_status,co.id AS offer_id,co.team_id,co.starts_on,co.ends_on,co.capacity,co.status AS offer_status,co.created_by_trainer_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id AND vu.aktivni=1 AND vu.email_overeno=1 JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id WHERE oi.id=? AND o.account_id=?';
-    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
-    $statement=$pdo->prepare($sql);$statement->execute([$orderItemId,$accountId]);$item=$statement->fetch(PDO::FETCH_ASSOC);
-    if (!$item) throw new ClubProgramException('Objednávková položka programu nebyla nalezena.');
+    $offerSql='SELECT id AS offer_id,team_id,starts_on,ends_on,capacity,status AS offer_status,created_by_trainer_id FROM club_program_offers WHERE variant_id=? AND product_id=? AND team_id=?';
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$offerSql.=' FOR UPDATE';
+    $offerStatement=$pdo->prepare($offerSql);$offerStatement->execute([(int)$item['variant_id'],(int)$item['product_id'],(int)$teamId]);$offer=$offerStatement->fetch(PDO::FETCH_ASSOC);
+    if(!$offer)throw new ClubProgramException('Nabídka programu se během aktivace změnila. Zkuste operaci znovu.');
+    $item=array_merge($item,$offer);
     if ($item['beneficiary_sportovec_id'] === null || (int)$item['quantity'] !== 1) throw new ClubProgramException('Položka programu musí mít právě jednoho příjemce a množství 1.');
     $sportovecId=(int)$item['beneficiary_sportovec_id'];
     $existing=$pdo->prepare('SELECT id FROM club_program_enrollments WHERE source_order_item_id=?');$existing->execute([$orderItemId]);$existingId=$existing->fetchColumn();
