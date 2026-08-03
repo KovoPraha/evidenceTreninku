@@ -8,10 +8,58 @@ use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/account_person_role.php';
 require_once dirname(__DIR__, 2) . '/includes/club_event_registration.php';
+require_once dirname(__DIR__, 2) . '/includes/club_event_export.php';
 require_once dirname(__DIR__, 2) . '/includes/shop_checkout.php';
 
 final class ClubEventRegistrationTest extends TestCase
 {
+    public function testAdminParticipantExportHasStableContractAuditAndSpreadsheetProtection(): void
+    {
+        $pdo = $this->database();
+        $eventId = $this->openFreeEvent($pdo, 2);
+        \clubEventRegisterParticipant($pdo, $eventId, 10, 100, '2026.1', true);
+        \clubEventRegisterParticipant($pdo, $eventId, 10, 101, '2026.1', true);
+        $pdo->exec("UPDATE sportovci SET prijmeni='=HYPERLINK(\"https://invalid.test\")' WHERE id=100");
+
+        $export = \clubEventParticipantExport($pdo, $eventId);
+        self::assertSame('m2.event-participants.v1', $export['contract_version']);
+        self::assertCount(2, $export['rows']);
+        self::assertSame(['confirmed', 'waitlisted'], array_column($export['rows'], 'status'));
+
+        $csv = \clubEventParticipantExportCsv($export);
+        self::assertStringStartsWith("\xEF\xBB\xBFexport_contract;event_code", $csv);
+        self::assertStringContainsString("'=HYPERLINK", $csv);
+        self::assertStringContainsString('responsible_account_email', $csv);
+
+        \clubEventAuditParticipantExport($pdo, $export, 7);
+        $audit = $pdo->query("SELECT payload_json FROM club_event_admin_events WHERE action='export_participants'")->fetchColumn();
+        self::assertNotFalse($audit);
+        $payload = json_decode((string)$audit, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(2, $payload['row_count']);
+        self::assertSame(1, $payload['status_counts']['confirmed']);
+        self::assertSame(1, $payload['status_counts']['waitlisted']);
+    }
+
+    public function testParticipantExportRejectsUnknownEventAndDoesNotMixEvents(): void
+    {
+        $pdo = $this->database();
+        $firstEvent = $this->openFreeEvent($pdo, 2);
+        \clubEventRegisterParticipant($pdo, $firstEvent, 10, 100, '2026.1', true);
+        $secondEvent = \clubEventCreateDraft($pdo, 7, $this->eventInput(2))['id'];
+        $insert = $pdo->prepare(
+            'INSERT INTO club_event_registrations '
+            . '(event_id,account_id,sportovec_id,relation_role_snapshot,status,registered_at) '
+            . "VALUES (?,?,?,'guardian','confirmed','2026-08-04 12:00:00')"
+        );
+        $insert->execute([$secondEvent, 10, 101]);
+
+        $export = \clubEventParticipantExport($pdo, $firstEvent);
+        self::assertSame([100], array_map('intval', array_column($export['rows'], 'sportovec_id')));
+
+        $this->expectException(\ClubEventExportException::class);
+        \clubEventParticipantExport($pdo, 999999);
+    }
+
     public function testApprovedChildRegistrationIsIdempotentCapacitySafeAndReversible(): void
     {
         $pdo = $this->database();

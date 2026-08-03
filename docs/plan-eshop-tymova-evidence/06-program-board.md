@@ -2,9 +2,9 @@
 
 Aktualizováno: 4. 8. 2026 (technické dokončení M1)
 Aktuální produkční brána: **F0 – červená**
-Aktuální lokální produktový milník: **M1 – integrovaný testovatelný prototyp**
-Povolená práce: localhost přírůstky M1 podle
-[08 – Milník M1](08-milnik-m1-integrovany-prototyp.md), testy a dokumentace
+Aktuální lokální produktový milník: **M2 – provozní pilot na localhostu**
+Povolená práce: localhost přírůstky podle
+[10 – Milník M2](10-milnik-m2-provozni-pilot.md), opravy z A01–A10, testy a dokumentace
 Zakázaný start: produkční aktivace nových funkcí, Stripe, automatické Fio,
 wallet, exporty a ostrý KIS/Shoptet cutover
 
@@ -88,6 +88,14 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | deterministická demo data | hotovo lokálně | placená i bezplatná událost, U13 → U15 → U17, dráha, silnice a rollover výjimka; seed prošel dvakrát |
 | integrační brána | hotovo lokálně | 32/32, 299/2547, 339 lintů, audit 0, browser paid flow a backup 123/2 `.6` |
 | produktová brána | čeká na vlastníka | ruční průchod A01–A10 a zařazení připomínek do M2 |
+
+## Zahájení M2
+
+| Proud | Stav | Přijatý důkaz |
+|---|---|---|
+| M2.1 export účastníků akce | hotovo lokálně | admin-only POST+CSRF, kontrakt `m2.event-participants.v1`, oddělení akcí, neutralizace tabulkových vzorců a audit počtu/stavů |
+| integrační brána M2.1 | hotovo lokálně | 303 testů / 2603 assertions, 345 PHP souborů ověřeno, Composer audit 0 advisories a autentizovaný browser export s viditelným auditem |
+| produktové připomínky A01–A10 | čekají na vlastníka | chyby a UX připomínky zařadit před další větší funkcí M2 |
 
 ## Aktivní rozhodnutí
 

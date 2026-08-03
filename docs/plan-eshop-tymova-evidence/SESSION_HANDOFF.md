@@ -9,8 +9,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-04, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `main`; technická část M1 je dokončená, poslední
-  produktovou branou zůstává vlastníkova prohlídka A01–A10.
+- Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
+  zahájilo provozní localhost pilot. Vlastníkova prohlídka A01–A10 zůstává
+  otevřenou produktovou branou.
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -19,10 +20,18 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
 - Aktuální produktová autorita pro localhost:
-  [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md); cílem je prokliknutelná
-  integrace stávající Evidence, e-shopu a nové členské evidence. Fio, Stripe,
-  Excel/exporty a ostrý import jsou mimo M1.
-- Poslední dokončená akce: placená klubová událost cílená na více soupisek je
+  [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
+  integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
+  wallet a ostrý import zůstávají blokované.
+- Poslední dokončená akce: M2.1 přidalo auditovaný administrační CSV export
+  účastníků jedné klubové akce. Endpoint je admin-only, POST+CSRF, soubor používá
+  kontrakt `m2.event-participants.v1`, neutralizuje tabulkové vzorce a neobsahuje
+  hesla ani celé texty souhlasů. Export zapisuje do auditu pouze počet řádků a
+  rozpad stavů. Plná sada má 303 testů / 2603 assertions, 344 PHP lintů a
+  Composer audit 0 advisories; ověřeno bylo 345 PHP souborů a localhost browser potvrdil tlačítko, stažení a
+  audit `export_participants`.
+
+  Předchozí dokončená akce: placená klubová událost cílená na více soupisek je
   zapojená do standardního shop order/payment lifecycle. Checkout ukládá cenu,
   příjemce, souhlas, storno a eligibility snapshot; stav `payment_pending` drží
   kapacitu, ruční úhrada aktivuje přihlášku právě jednou a storno/expirace ji
@@ -71,8 +80,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   deterministický A05 náhled, A10 události i admin expirace; reálná localhost
   programová objednávka expirovala právě jednou. Katalog je lokálně 31/31.
   Produkční workflow, kód ani DB se nezměnily.
-- Další přesná akce: vlastník produktu projde A01–A10 a zapíše připomínky. Potom
-  opravit nalezené M1 chyby a teprve následně zvolit další M2 funkci.
+- Další přesná akce: vlastník produktu projde A01–A10 a zapíše připomínky; řídicí
+  task je opraví jako M2.2. Bez připomínek pokračovat návrhem finálního KIS
+  migračního kontraktu M2.3 nad anonymizovanými daty.
   Produkční
   Secret/config, deploy, Fio a ostrý import zůstávají samostatně blokované do
   pozdějšího výslovného rozhodnutí.
@@ -222,6 +232,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 53 | M1.9 expirace `c50e572` | dry-run default, explicitní admin potvrzení, společný storno lifecycle a payment-first pořadí zámků |
 | 54 | Integrace M1.9 | 31/31, 298/2435, audit 0, deterministický A05 seed, browser A05/A10/expiry a backup 121/2 `.5` |
 | 55 | Dokončení technické části M1 | placená soupiska/událost přes shop lifecycle, 32/32, 299/2547, 339 lintů, audit 0, browser paid flow a backup 123/2 `.6` |
+| 56 | M2.1 provozní export účastníků | admin POST+CSRF, CSV kontrakt v1, izolace akce, formula neutralizace, audit; 303/2603, 345 PHP souborů a localhost browser |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
