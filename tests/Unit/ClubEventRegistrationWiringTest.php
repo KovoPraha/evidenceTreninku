@@ -28,6 +28,7 @@ final class ClubEventRegistrationWiringTest extends TestCase
         $service = (string)file_get_contents($root . '/includes/club_event_registration.php');
         $migration = (string)file_get_contents($root . '/migrations/20260803130000_club_event_registrations.php');
         $termsMigration = (string)file_get_contents($root . '/migrations/20260803150000_club_event_terms.php');
+        $waitlistMigration = (string)file_get_contents($root . '/migrations/20260803170000_club_event_waitlist.php');
         self::assertStringContainsString('clubEventLock($pdo, $eventId)', $service);
         self::assertStringContainsString("=== 'mysql'", $service);
         self::assertStringContainsString('FOR UPDATE', $service);
@@ -36,6 +37,10 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringContainsString('cancellation_deadline_snapshot', $service);
         self::assertStringContainsString('club_event_term_versions', $termsMigration);
         self::assertStringContainsString('uq_club_event_terms_version', $termsMigration);
+        self::assertStringContainsString('waitlisted_at', $waitlistMigration);
+        self::assertStringContainsString('idx_club_registration_waitlist', $waitlistMigration);
+        self::assertStringContainsString('promote_waitlist', $service);
+        self::assertStringContainsString('clubEventPromoteNextWaitlisted', $service);
     }
 
     public function testAdminOpeningIsCsrfProtectedAndExplicitlyConfirmed(): void

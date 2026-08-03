@@ -50,9 +50,16 @@ verzi. Přihláška ukládá snapshot verze, obou textů, času souhlasu a storn
 takže pozdější změna jiné akce nepřepíše historické rozhodnutí. Po snapshotovaném
 termínu je uživatelské storno fail-closed a vyžaduje kontakt s administrátorem.
 
+Při plné kapacitě vznikne místo chyby stav `waitlisted`. Pořadí je FIFO podle
+času zařazení a ID. Dvojité odeslání zůstává idempotentní díky stejnému unikátnímu
+klíči účastníka. Storno čekající osoby pouze odstraní její čekání. Storno
+potvrzeného účastníka ve stejné transakci uvolní kapacitu a povýší nejstarší
+stále oprávněnou osobu. Před povýšením se znovu kontroluje K2 vazba a přítomnost
+snapshotu souhlasu; neplatný kandidát se auditovaně vyřadí a pokračuje se dalším.
+
 ## Záměrně chybí v tomto průchodu
 
-- čekací listina a administrační řešení pozdního storna,
+- administrační řešení pozdního storna a ruční zásahy do čekací listiny,
 - placený kroužek a košík,
 - objednávka, platba, soupiska nebo zápis do KIS.
 
@@ -60,6 +67,7 @@ termínu je uživatelské storno fail-closed a vyžaduje kontakt s administráto
 
 Model vyžaduje migrace `20260803110000_club_events` a
 `20260803130000_club_event_registrations` a `20260803150000_club_event_terms`.
+Čekací listina navíc vyžaduje `20260803170000_club_event_waitlist`.
 Read-only kontrola je
 `php bin/migrate.php --check`; produkční migrace musí proběhnout před aktivací
 nové verze PHP.

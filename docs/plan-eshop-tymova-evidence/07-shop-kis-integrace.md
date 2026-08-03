@@ -136,8 +136,13 @@ Souhlas a storno jsou nyní verzované. Administrátor před otevřením nastav�
 prosté texty, verzi a budoucí deadline před prvním termínem. Rodič výslovně
 potvrdí právě aktuální verzi a přihláška uloží neměnný snapshot textů, verze,
 času souhlasu i storno termínu. Uživatelské storno po tomto termínu selže bez
-částečného zápisu. Čekací listina a administrační výjimka pozdního storna zatím
-neexistují.
+částečného zápisu. Administrační výjimka pozdního storna zatím neexistuje.
+
+Čekací listina je nyní transakční součástí stejné přihlášky. Plná kapacita vede
+na stav `waitlisted` s FIFO pořadím. Storno potvrzeného místa pod zámkem akce
+automaticky povýší nejstarší stále oprávněnou osobu; zrušená K2 vazba se
+auditovaně přeskočí. Odchod z čekací listiny kapacitu nemění a opakovaný požadavek
+nevytváří duplicitní řádek.
 
 ### K4 – Společná objednávka a platební předpis
 
@@ -171,8 +176,8 @@ Před příslušnou etapou musí vlastník potvrdit:
 
 ## Nejbližší implementační pořadí
 
-1. přidat čekací listinu se stejně transakčním přidělením místa,
-2. doplnit auditovanou administrační výjimku pozdního storna,
+1. doplnit auditovanou administrační výjimku pozdního storna a ruční zásahy,
+2. přidat oznámení rodiči po automatickém povýšení,
 3. teprve poté přidat objednávku a placenou variantu.
 
 Stripe, Fio, kredit, Packeta a ostrý KIS cutover nejsou součástí nejbližšího

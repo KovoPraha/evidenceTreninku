@@ -31,22 +31,25 @@ final class ClubEventRegistrationTest extends TestCase
         self::assertNotEmpty($snapshot['cancellation_deadline_snapshot']);
         self::assertNotEmpty($snapshot['consented_at']);
 
-        try {
-            \clubEventRegisterParticipant($pdo, $eventId, 10, 101, '2026.1', true);
-            self::fail('The second child must not take the same last place.');
-        } catch (\ClubEventRegistrationException $exception) {
-            self::assertStringContainsString('Kapacita', $exception->getMessage());
-        }
-        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
+        $waiting=\clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        $waitingDuplicate=\clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        self::assertSame('waitlisted',$waiting['status']);
+        self::assertTrue($waiting['created']);
+        self::assertFalse($waitingDuplicate['created']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registrations WHERE status='waitlisted'")->fetchColumn());
+        $mine=\clubEventMyRegistrations($pdo,10);
+        $waitingRows=array_values(array_filter($mine,static fn(array $row):bool=>$row['status']==='waitlisted'));
+        self::assertSame(1,$waitingRows[0]['waitlist_position']);
 
         $cancelled = \clubEventCancelRegistration($pdo, $first['id'], 10, 'Dítě se nemůže účastnit.');
         self::assertTrue($cancelled['changed']);
-        $second = \clubEventRegisterParticipant($pdo, $eventId, 10, 101, '2026.1', true);
-        self::assertTrue($second['created']);
+        self::assertSame($waiting['id'],$cancelled['promoted_registration_id']);
         self::assertSame(1, (int)$pdo->query(
             "SELECT COUNT(*) FROM club_event_registrations WHERE status='confirmed'"
         )->fetchColumn());
-        self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$waiting['id'])->fetchColumn());
+        self::assertNotEmpty($pdo->query('SELECT promoted_at FROM club_event_registrations WHERE id='.$waiting['id'])->fetchColumn());
+        self::assertSame(4, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
 
         $this->expectException(\PDOException::class);
         $pdo->exec(
@@ -71,6 +74,41 @@ final class ClubEventRegistrationTest extends TestCase
         }
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
+    }
+
+    public function testWaitlistFifoPromotionSkipsRevokedK2Relation(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
+        $confirmed=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        $firstWaiting=\clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        $secondWaiting=\clubEventRegisterParticipant($pdo,$eventId,10,103,'2026.1',true);
+        self::assertSame('waitlisted',$firstWaiting['status']);
+        self::assertSame('waitlisted',$secondWaiting['status']);
+        $mine=\clubEventMyRegistrations($pdo,10);$positions=[];
+        foreach($mine as$row){if($row['status']==='waitlisted')$positions[(int)$row['id']]=$row['waitlist_position'];}
+        self::assertSame(1,$positions[$firstWaiting['id']]);
+        self::assertSame(2,$positions[$secondWaiting['id']]);
+
+        $relationId=(int)$pdo->query('SELECT id FROM account_person_roles WHERE account_id=10 AND sportovec_id=101')->fetchColumn();
+        \accountPersonRoleRevoke($pdo,$relationId,7,'Vazba již není platná.');
+        $cancelled=\clubEventCancelRegistration($pdo,$confirmed['id'],10,'Uvolnění místa.');
+        self::assertSame($secondWaiting['id'],$cancelled['promoted_registration_id']);
+        self::assertSame('cancelled',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$firstWaiting['id'])->fetchColumn());
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$secondWaiting['id'])->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registration_events WHERE action='waitlist_ineligible'")->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registration_events WHERE action='promote_waitlist'")->fetchColumn());
+    }
+
+    public function testLeavingWaitlistDoesNotChangeConfirmedCapacity(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
+        \clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        $waiting=\clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        $cancelled=\clubEventCancelRegistration($pdo,$waiting['id'],10,'Už nechceme čekat.');
+        self::assertTrue($cancelled['changed']);
+        self::assertNull($cancelled['promoted_registration_id']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registrations WHERE status='confirmed'")->fetchColumn());
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registrations WHERE status='waitlisted'")->fetchColumn());
     }
 
     public function testCurrentConsentIsMandatoryAndCancellationDeadlineIsFailClosed(): void
@@ -247,7 +285,7 @@ final class ClubEventRegistrationTest extends TestCase
         $pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");
         $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY,jmeno TEXT NOT NULL,prijmeni TEXT NOT NULL,narozeni TEXT NULL)');
         $year = (int)date('Y') + 1;
-        $pdo->exec("INSERT INTO sportovci VALUES (100,'Anna','První','" . ($year - 8) . "-05-10'),(101,'Bára','Druhá','" . ($year - 9) . "-04-03'),(102,'Cyril','Starší','" . ($year - 15) . "-01-01')");
+        $pdo->exec("INSERT INTO sportovci VALUES (100,'Anna','První','" . ($year - 8) . "-05-10'),(101,'Bára','Druhá','" . ($year - 9) . "-04-03'),(102,'Cyril','Starší','" . ($year - 15) . "-01-01'),(103,'Dana','Třetí','" . ($year - 8) . "-02-02')");
         $pdo->exec('CREATE TABLE verejni_uzivatele (id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,email TEXT,aktivni INTEGER NOT NULL,email_overeno INTEGER NOT NULL)');
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES (10,'Rodič','První','a@example.test',1,1),(11,'Cizí','Účet','b@example.test',1,1),(12,'Neověřený','Rodič','c@example.test',1,0)");
         $pdo->exec('CREATE TABLE shop_products (id INTEGER PRIMARY KEY,name TEXT NOT NULL,offer_type TEXT NOT NULL,catalog_status TEXT NOT NULL)');
@@ -260,6 +298,7 @@ final class ClubEventRegistrationTest extends TestCase
             '20260803110000_club_events.php',
             '20260803130000_club_event_registrations.php',
             '20260803150000_club_event_terms.php',
+            '20260803170000_club_event_waitlist.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);
@@ -268,6 +307,7 @@ final class ClubEventRegistrationTest extends TestCase
         }
         \accountPersonRoleApprove($pdo, 10, 100, 'guardian', 7, 'Schválený rodič.');
         \accountPersonRoleApprove($pdo, 10, 101, 'guardian', 7, 'Schválený rodič.');
+        \accountPersonRoleApprove($pdo, 10, 103, 'guardian', 7, 'Schválený rodič.');
         \accountPersonRoleApprove($pdo, 12, 102, 'guardian', 7, 'Schválený rodič, účet zatím neověřen.');
         return $pdo;
     }

@@ -314,9 +314,9 @@ function clubEventRegisterParticipant(
         $existingStatement = $pdo->prepare($existingSql);
         $existingStatement->execute([$eventId, $sportovecId]);
         $existing = $existingStatement->fetch(PDO::FETCH_ASSOC);
-        if ($existing && $existing['status'] === 'confirmed') {
+        if ($existing && in_array($existing['status'], ['confirmed', 'waitlisted'], true)) {
             $pdo->commit();
-            return ['id' => (int)$existing['id'], 'status' => 'confirmed', 'created' => false];
+            return ['id' => (int)$existing['id'], 'status' => (string)$existing['status'], 'created' => false];
         }
 
         $capacity = clubEventEffectiveCapacity($pdo, $eventId, (int)$event['capacity']);
@@ -324,40 +324,42 @@ function clubEventRegisterParticipant(
             "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='confirmed'"
         );
         $count->execute([$eventId]);
-        if ((int)$count->fetchColumn() >= $capacity) {
-            throw new ClubEventRegistrationException('Kapacita kroužku je již naplněna.');
-        }
+        $targetStatus = (int)$count->fetchColumn() < $capacity ? 'confirmed' : 'waitlisted';
 
         if ($existing) {
             $update = $pdo->prepare(
-                "UPDATE club_event_registrations SET account_id=?, relation_role_snapshot=?, status='confirmed', "
+                'UPDATE club_event_registrations SET account_id=?, relation_role_snapshot=?, status=?, '
                 . 'registered_at=CURRENT_TIMESTAMP, cancelled_at=NULL, cancellation_note=NULL, '
                 . 'consent_version_snapshot=?,consent_text_snapshot=?,consented_at=CURRENT_TIMESTAMP, '
                 . 'cancellation_policy_snapshot=?,cancellation_deadline_snapshot=?, '
+                . "waitlisted_at=CASE WHEN ?='waitlisted' THEN CURRENT_TIMESTAMP ELSE NULL END,promoted_at=NULL, "
                 . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
             );
             $update->execute([
-                $accountId, $relation['relation_role'], $event['terms_version'], $event['consent_text_plain'],
-                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'], (int)$existing['id'],
+                $accountId, $relation['relation_role'], $targetStatus,
+                $event['terms_version'], $event['consent_text_plain'],
+                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'],
+                $targetStatus, (int)$existing['id'],
             ]);
             $registrationId = (int)$existing['id'];
-            $action = 'reactivate';
+            $action = $targetStatus === 'confirmed' ? 'reactivate' : 'reactivate_waitlist';
             $fromStatus = (string)$existing['status'];
         } else {
             $insert = $pdo->prepare(
                 'INSERT INTO club_event_registrations '
                 . '(event_id,account_id,sportovec_id,relation_role_snapshot,status,registered_at, '
                 . 'consent_version_snapshot,consent_text_snapshot,consented_at, '
-                . 'cancellation_policy_snapshot,cancellation_deadline_snapshot) '
-                . "VALUES (?,?,?,?,'confirmed',CURRENT_TIMESTAMP,?,?,CURRENT_TIMESTAMP,?,?)"
+                . 'cancellation_policy_snapshot,cancellation_deadline_snapshot,waitlisted_at) '
+                . "VALUES (?,?,?,?,?,CURRENT_TIMESTAMP,?,?,CURRENT_TIMESTAMP,?,?,"
+                . "CASE WHEN ?='waitlisted' THEN CURRENT_TIMESTAMP ELSE NULL END)"
             );
             $insert->execute([
-                $eventId, $accountId, $sportovecId, $relation['relation_role'],
+                $eventId, $accountId, $sportovecId, $relation['relation_role'], $targetStatus,
                 $event['terms_version'], $event['consent_text_plain'],
-                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'],
+                $event['cancellation_policy_plain'], $event['cancellation_deadline_at'], $targetStatus,
             ]);
             $registrationId = (int)$pdo->lastInsertId();
-            $action = 'register';
+            $action = $targetStatus === 'confirmed' ? 'register' : 'waitlist';
             $fromStatus = null;
         }
         clubEventRegistrationAudit(
@@ -367,11 +369,13 @@ function clubEventRegisterParticipant(
             $accountId,
             $action,
             $fromStatus,
-            'confirmed',
-            'Bezplatná přihláška schválené osoby z K2.'
+            $targetStatus,
+            $targetStatus === 'confirmed'
+                ? 'Bezplatná přihláška schválené osoby z K2.'
+                : 'Kapacita je plná; schválená osoba z K2 byla zařazena na čekací listinu.'
         );
         $pdo->commit();
-        return ['id' => $registrationId, 'status' => 'confirmed', 'created' => true];
+        return ['id' => $registrationId, 'status' => $targetStatus, 'created' => true];
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -385,7 +389,7 @@ function clubEventRegisterParticipant(
     }
 }
 
-/** @return array{id:int,status:string,changed:bool} */
+/** @return array{id:int,status:string,changed:bool,promoted_registration_id:?int} */
 function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $accountId, string $note): array
 {
     $note = trim($note);
@@ -416,15 +420,18 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
         }
         if ($registration['status'] === 'cancelled') {
             $pdo->commit();
-            return ['id' => $registrationId, 'status' => 'cancelled', 'changed' => false];
+            return ['id' => $registrationId, 'status' => 'cancelled', 'changed' => false, 'promoted_registration_id' => null];
         }
-        if ($registration['status'] !== 'confirmed') {
+        if (!in_array($registration['status'], ['confirmed', 'waitlisted'], true)) {
             throw new ClubEventRegistrationException('Přihlášku v tomto stavu nelze zrušit.');
         }
-        if (empty($registration['cancellation_deadline_snapshot'])) {
+        $fromStatus = (string)$registration['status'];
+        if ($fromStatus === 'confirmed' && empty($registration['cancellation_deadline_snapshot'])) {
             throw new ClubEventRegistrationException('U přihlášky chybí auditované storno pravidlo.');
         }
-        if (new DateTimeImmutable('now') > new DateTimeImmutable((string)$registration['cancellation_deadline_snapshot'])) {
+        if ($fromStatus === 'confirmed'
+            && new DateTimeImmutable('now') > new DateTimeImmutable((string)$registration['cancellation_deadline_snapshot'])
+        ) {
             throw new ClubEventRegistrationException(
                 'Termín bezplatného storna již uplynul. Kontaktujte administrátora.'
             );
@@ -439,12 +446,20 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
             'account',
             $accountId,
             'cancel',
-            'confirmed',
+            $fromStatus,
             'cancelled',
             $note
         );
+        $promotedRegistrationId = $fromStatus === 'confirmed'
+            ? clubEventPromoteNextWaitlisted($pdo, $eventId)
+            : null;
         $pdo->commit();
-        return ['id' => $registrationId, 'status' => 'cancelled', 'changed' => true];
+        return [
+            'id' => $registrationId,
+            'status' => 'cancelled',
+            'changed' => true,
+            'promoted_registration_id' => $promotedRegistrationId,
+        ];
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -455,6 +470,77 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
             throw $exception;
         }
         throw new ClubEventRegistrationException('Přihlášku se nepodařilo bezpečně zrušit.', 0, $exception);
+    }
+}
+
+function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
+{
+    if (!$pdo->inTransaction() || $eventId < 1) {
+        throw new LogicException('Povýšení čekací listiny vyžaduje aktivní transakci a zamčenou akci.');
+    }
+    $event = clubEventLock($pdo, $eventId);
+    if (!$event) {
+        throw new ClubEventRegistrationException('Kroužek pro čekací listinu nebyl nalezen.');
+    }
+    $capacity = clubEventEffectiveCapacity($pdo, $eventId, (int)$event['capacity']);
+    $count = $pdo->prepare(
+        "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='confirmed'"
+    );
+    $count->execute([$eventId]);
+    if ((int)$count->fetchColumn() >= $capacity) {
+        return null;
+    }
+
+    while (true) {
+        $sql = "SELECT * FROM club_event_registrations WHERE event_id=? AND status='waitlisted' "
+            . 'ORDER BY waitlisted_at,id LIMIT 1';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$eventId]);
+        $candidate = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!$candidate) {
+            return null;
+        }
+        $relation = clubEventEligibleRelation(
+            $pdo,
+            (int)$candidate['account_id'],
+            (int)$candidate['sportovec_id']
+        );
+        if (!$relation || empty($candidate['consent_version_snapshot'])) {
+            $pdo->prepare(
+                "UPDATE club_event_registrations SET status='cancelled',cancelled_at=CURRENT_TIMESTAMP, "
+                . "cancellation_note='Automaticky vyřazeno: K2 vazba nebo souhlas už není platný.', "
+                . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
+            )->execute([(int)$candidate['id']]);
+            clubEventRegistrationAudit(
+                $pdo,
+                (int)$candidate['id'],
+                'system',
+                null,
+                'waitlist_ineligible',
+                'waitlisted',
+                'cancelled',
+                'Automaticky vyřazeno při uvolnění místa: K2 vazba nebo souhlas už není platný.'
+            );
+            continue;
+        }
+        $pdo->prepare(
+            "UPDATE club_event_registrations SET status='confirmed',registered_at=CURRENT_TIMESTAMP, "
+            . 'promoted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+        )->execute([(int)$candidate['id']]);
+        clubEventRegistrationAudit(
+            $pdo,
+            (int)$candidate['id'],
+            'system',
+            null,
+            'promote_waitlist',
+            'waitlisted',
+            'confirmed',
+            'Automaticky povýšeno z čekací listiny po uvolnění kapacity.'
+        );
+        return (int)$candidate['id'];
     }
 }
 
@@ -476,6 +562,11 @@ function clubEventOpenFreeList(PDO $pdo): array
         $count->execute([(int)$event['id']]);
         $event['registration_count'] = (int)$count->fetchColumn();
         $event['remaining_capacity'] = max(0, (int)$event['effective_capacity'] - (int)$event['registration_count']);
+        $waitlist = $pdo->prepare(
+            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='waitlisted'"
+        );
+        $waitlist->execute([(int)$event['id']]);
+        $event['waitlist_count'] = (int)$waitlist->fetchColumn();
     }
     unset($event);
     return $events;
@@ -494,7 +585,25 @@ function clubEventMyRegistrations(PDO $pdo, int $accountId): array
         . 'ORDER BY r.registered_at DESC, r.id DESC'
     );
     $statement->execute([$accountId]);
-    return $statement->fetchAll(PDO::FETCH_ASSOC);
+    $registrations = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $position = $pdo->prepare(
+        "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='waitlisted' "
+        . 'AND (waitlisted_at<? OR (waitlisted_at=? AND id<=?))'
+    );
+    foreach ($registrations as &$registration) {
+        $registration['waitlist_position'] = null;
+        if ($registration['status'] === 'waitlisted' && $registration['waitlisted_at'] !== null) {
+            $position->execute([
+                (int)$registration['event_id'],
+                $registration['waitlisted_at'],
+                $registration['waitlisted_at'],
+                (int)$registration['id'],
+            ]);
+            $registration['waitlist_position'] = (int)$position->fetchColumn();
+        }
+    }
+    unset($registration);
+    return $registrations;
 }
 
 /** @return list<array<string,mixed>> */
