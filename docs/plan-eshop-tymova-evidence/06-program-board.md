@@ -1,6 +1,6 @@
 # 06 – Program board
 
-Aktualizováno: 3. 8. 2026 (localhost demo a KIS soupisky `fa452fd`)
+Aktualizováno: 3. 8. 2026 (první paralelní M1 přírůstek)
 Aktuální produkční brána: **F0 – červená**
 Aktuální lokální produktový milník: **M1 – integrovaný testovatelný prototyp**
 Povolená práce: localhost přírůstky M1 podle
@@ -16,21 +16,30 @@ wallet, exporty a ostrý KIS/Shoptet cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | bezplatný kroužek `88f5b97`, souhlasy `e5fcaa0`, transakční čekací listina `a949c38`; bez produkčních změn |
+| lokální práce | první paralelní M1 přírůstek: rodinný portál `d42a30c`, beneficiary snapshot `82b42a3` a série/rollover preview `18b81a3`; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
-| syntax | 195 first-party PHP souborů auth přírůstku prošlo lintem |
-| dependency audit | 0 advisories na foundation; produkční `main` stále používá starší lock |
-| automatické testy | 168 testů / 1122 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | dvanáct číslovaných migrací včetně transakční čekací listiny; SQLite a souběžná izolovaná MariaDB prošly, lokální ani produkční apply neproběhl |
+| syntax | všechny soubory jednotlivých paralelních přírůstků a integrační PHP soubory prošly lintem |
+| dependency audit | 0 advisories lokálně; produkční stav nebyl v tomto přírůstku měněn |
+| automatické testy | 213 testů / 1583 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | 22 číslovaných migrací; obě nové M1 migrace byly aplikovány pouze na localhost a katalog je 22/22 current |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
-| restore drill | lokální XAMPP obnova prošla: 59 tabulek, 1 trigger, 253 sportovců, 455 tréninků; ownership kontrakt `2026-08-02.3` navíc pokrývá `auth_login_limits` a tři lokálně nepřítomné `ucto_gs_*` tabulky; produkční artefakt nebyl testován |
+| restore drill | post-migration localhost backup má 102 tabulek / 1 trigger a ověřený checksum; ownership kontrakt `2026-08-03.2` zahrnuje `club_team_series`; produkční artefakt nebyl testován |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | Shoptet katalog | reálných 241/807 bylo po auditované kontrole transakčně převedeno do izolovaného draft katalogu; opakování bez duplicity, veřejně aktivních produktů 0 |
 | Aktivace katalogu | `5500927`: jednotlivé `goods` lze ručně aktivovat s plain-text veřejným snapshotem a auditem; K3 typy jsou fail-closed; veřejný storefront stále neexistuje |
 | K3 akce | `4ef5690`, `88f5b97`, `e5fcaa0`, `a949c38`: navíc FIFO čekací listina a atomické povýšení nejstarší oprávněné osoby po stornu; bez objednávky, plateb, soupisky a KIS zápisu |
 | K2 identita | `8c374a4`, `d32fc08`: účet je oddělen od sportovce; veřejný claim neenumeruje osoby, vazby `self`/`guardian` schvaluje pouze admin s důvodem a auditem; neověřený účet ani zrušená vazba účastníka nezpřístupní |
-| lokální data | 253 sportovců, 0 e-mailů, 0 veřejných účtů, 0 KIS runů |
+| lokální data | localhost demo obsahuje rodiče se dvěma oprávněnými profily, školní i kalendářní sezonu, věkovou a disciplínovou soupisku a cíle read-only rolloveru |
+
+## První paralelní přírůstek M1
+
+| Proud | Commit | Přijatý důkaz |
+|---|---|---|
+| M1.1 rodinný sportovní přehled | `d42a30c` | guardian/self rozsah, IDOR testy, soupisky, události a docházka |
+| M1.1 příjemce objednávkové položky | `82b42a3` | autorizovaný beneficiary v košíku, neměnný snapshot v objednávce, běžné zboží smí zůstat bez příjemce |
+| M1.2 série a sezony | `18b81a3` | school/calendar sezony, čtyři politiky a read-only preview s `mutation_count=0` |
+| integrační brána | tento commit | migration check 22/22, 213/1583, audit 0 advisories a browser průchod rodiče i KIS admina |
 
 Hodnoty lokální DB nejsou produkční statistika. Slouží pouze k posouzení, zda
 současné vývojové prostředí dokáže ověřit navrhované scénáře.

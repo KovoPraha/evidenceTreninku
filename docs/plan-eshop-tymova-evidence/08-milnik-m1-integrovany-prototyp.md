@@ -313,7 +313,7 @@ MariaDB procesy.
 - [ ] všech deset akceptačních cest A01–A10 lze projít v UI,
 - [ ] všechny účastnické cesty používají stejnou osobu v `sportovci`,
 - [ ] rodič–dítě a dítě–vlastní účet mají otestované IDOR hranice,
-- [ ] školní a kalendářní sezóny fungují současně,
+- [x] školní a kalendářní sezóny fungují současně na localhostu,
 - [ ] všechny čtyři politiky soupisek mají auditovaný test,
 - [ ] tréninková Evidence používá nové soupisky bez druhého ručního seznamu,
 - [ ] objednatel, plátce a příjemce jsou na všech službách rozlišitelní,
@@ -327,20 +327,21 @@ MariaDB procesy.
 
 Procenta jsou odhad pokrytí akceptačních cest M1, nikoliv množství kódu.
 
-| Proud | Stav při vzniku plánu | Hlavní mezera |
+| Proud | Stav po prvním paralelním přírůstku | Hlavní mezera |
 |---|---:|---|
-| stávající tréninková Evidence | 80 % | most z nových soupisek a samoobsluha dítěte |
-| účty, rodič a osoby | 65 % | vlastní účet dítěte a rodinný finanční pohled |
-| běžné zboží a objednávka | 80 % | příjemce služby a sjednocený portál |
+| stávající tréninková Evidence | 82 % | most z nových soupisek do plánování tréninku |
+| účty, rodič a osoby | 78 % | vlastní účet dítěte v seedu a mutační self/guardian cesty |
+| běžné zboží a objednávka | 85 % | UI výběru příjemce služby a sjednocený portál |
 | programy/kroužky | 15 % | dlouhodobá účast oddělená od jednorázové události |
-| sezóny a soupisky | 25 % | stabilní série, dva kalendáře a rollover politiky |
+| sezóny a soupisky | 60 % | auditované provedení rolloveru, výjimky a most do Evidence |
 | události a přihlášky | 55 % | cílení na soupisky a placená integrace |
 | veřejnost a velodrom přes e-shop | 15 % | jednotný onboarding, slot a účastníci |
-| integrovaný demo průchod | 35 % | scénáře A01–A10 a společné portály |
+| integrovaný demo průchod | 48 % | programové účasti, tréninkový most a scénáře A01–A10 |
 
-Celý M1 je při založení tohoto plánu přibližně na 40 %. Největší část existující
-práce je technický základ; největší produktová mezera je propojení služeb,
-soupisek, rodiny a stávající docházky.
+Celý M1 je po prvním paralelním přírůstku přibližně na 48 %. E-shopový základ je
+testovatelný a rodina, objednávkový příjemce a soupisové politiky mají první
+integrované řezy. Největší produktová mezera je nyní propojení programových
+služeb a soupisek se stávající docházkou.
 
 ## Co následuje po M1
 

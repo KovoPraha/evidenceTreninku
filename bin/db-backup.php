@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.2';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -45,6 +45,7 @@ const EVIDENCE_TABLES = [
     'club_roster_events',
     'club_roster_members',
     'club_seasons',
+    'club_team_series',
     'club_teams',
     'cviky',
     'dalsi_cinnosti',

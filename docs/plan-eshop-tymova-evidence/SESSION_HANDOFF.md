@@ -9,8 +9,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-03, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `main`; transakční kupóny před tímto stavovým
-  commitem: `135803a` (`Add transactional shop coupons`)
+- Aktivní integrační větev: `main`; první paralelní přírůstek M1 je sloučený v
+  `d42a30c` (rodinný sportovní portál), `82b42a3` (příjemce položky objednávky)
+  a `18b81a3` (stabilní série, dva kalendáře a read-only rollover preview).
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -45,12 +46,18 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   sezóny, týmy, auditovanou soupisku, snapshot UCI ID a historické odebrání bez
   mazání. Lokálně prošel zákaznický login, dvě osoby, kroužek, košík, kupón,
   skladová ochrana, objednávka s QR i administrace soupisky. Celkem 198/1483
-  testů a 276 PHP lintů prošlo; produkce se nezměnila.
-  Produkční workflow ani lokální/produkční DB se nezměnily
-- Další přesná akce: zahájit M1.1 pouze na localhostu – doplnit vlastní účet
-  dítěte, rodinný finanční pohled a příjemce služby/objednávkové položky včetně
-  IDOR testů. Produkční Secret/config, deploy, Fio a ostrý import zůstávají
-  samostatně blokované do pozdějšího výslovného rozhodnutí.
+  testů a 276 PHP lintů prošlo; produkce se nezměnila. První paralelní přírůstek
+  M1 doplnil rodinný read-only přehled, beneficiary snapshot košíku/objednávky,
+  stabilní série soupisek, školní a kalendářní sezóny a bezpečný náhled rolloveru
+  bez zápisu. Integrovaná sada má 213 testů / 1583 assertions, migration catalog
+  je lokálně 22/22 a Composer audit hlásí 0 advisories. Rodičovský a KIS admin
+  průchod byl ověřen přímo v localhost prohlížeči. Produkční workflow, produkční
+  kód ani produkční DB se nezměnily.
+- Další přesná akce: paralelně zahájit M1.3 (most soupisek do existující
+  docházky) a M1.4 (kroužkový program, nabídka, účast a přiřazení beneficiary v
+  košíku). Poté navázat M1.6 cílením událostí na soupisky. Produkční
+  Secret/config, deploy, Fio a ostrý import zůstávají samostatně blokované do
+  pozdějšího výslovného rozhodnutí.
 
 ## Stav etap podle akceptačních bran
 
@@ -60,10 +67,10 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | Etapa | Hotovo | Zbývá zejména |
 |---|---:|---|
 | K1 – katalog a publikace | 92 % | obrázky/detail produktu, finální produktová pravidla a případný anonymní storefront |
-| K2 – účty, osoby a rodič–dítě | 75 % | stabilní KIS identifikátor, bezpečné párování reálného exportu a hraniční review |
+| K2 – účty, osoby a rodič–dítě | 82 % | vlastní login dítěte v demo seedu, stabilní KIS identifikátor a bezpečné párování finálního exportu |
 | K3 – akce a přihlášky | 88 % | rozhodnutí o ručních změnách čekací listiny, export účastníků a produkční UX |
-| K4 – objednávky a platby | 75 % | ověřit Fio shadow návrhy na reálných datech, samostatně schválit automatické potvrzení a následně Stripe |
-| K5 – náhrada starého KIS | 25 % | M1 členské funkce, jednorázový finální import, paritní kontrola a schválený cutover bez dlouhodobé synchronizace |
+| K4 – objednávky a platby | 78 % | UI výběru příjemce služby, ověřit Fio shadow návrhy na reálných datech a samostatně schválit automatické potvrzení/Stripe |
+| K5 – náhrada starého KIS | 35 % | most do tréninků, programové účasti, události podle soupisek, finální jednorázový import a cutover |
 
 ## Pořadí autority
 
@@ -81,16 +88,16 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | K4 objednávky/kupóny/Fio shadow až `f23a332`; localhost demo a KIS sezóny/týmy/soupisky `fa452fd`; následuje pouze tento stavový commit | 2026-08-03 | Git | ano |
+| integrační branch | první paralelní M1 přírůstek: `d42a30c`, `82b42a3`, `18b81a3`; integrační doplnění a dokumentace následují v tomto commitu | 2026-08-03 | Git | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 20/20 číslovaných migrací; localhost demo aktivní | 2026-08-03 | migration check + MariaDB | ano |
-| testy | 198/1483; K4 checkout/fulfillment/refund/kupóny/Fio a KIS soupisky mají SQLite testy; localhost browser prošel zákaznickým checkoutem a KIS adminem; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
+| lokální schema | legacy `2.20.2` + 22/22 číslovaných migrací; localhost demo aktivní | 2026-08-03 | migration check + MariaDB | ano |
+| testy | 213/1583; K4 a první M1 rodinný/beneficiary/soupiskový přírůstek mají SQLite testy; localhost browser prošel rodičovským přehledem i KIS admin/rollover preview; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
-| lokální backup drill | před migrací 59 tabulek; po migraci a demo datech 101 tabulek, 1 trigger, checksum OK; kontrakt `2026-08-03.1` zahrnuje shop, akce, Fio i KIS soupisky | 2026-08-03 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem |
+| lokální backup drill | post-migration artefakt `evidence_2026-08-03_180008_6ecbcfe5.sql.gz`: 102 tabulek, 1 trigger, SHA-256 `ec8320583f03809710c864db5a5661a9e7f0878c6f7b0ac84a5b8e98cd766f74`; kontrakt `2026-08-03.2` zahrnuje `club_team_series` | 2026-08-03 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
@@ -176,17 +183,22 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 32 | K4 kupóny `135803a` | přijato lokálně; fixed/percentage, platnost/minimum/limit, audit, fingerprint, snapshot a souběžně bezpečný counter; SQLite/MariaDB, 190/1425 |
 | 33 | K4 Fio shadow import `f23a332` | přijato lokálně; pouze GET `/periods`, kontrola IBAN, minimální bankovní data, neměnná deduplikace a návrh VS + částka + měna bez změny platby; SQLite/MariaDB, 195/1457 |
 | 34 | Localhost demo + KIS sezóny/týmy/soupisky `fa452fd` | přijato lokálně; fail-closed seed, zákaznický/admin browser průchod, historická soupiska a audit bez externího KIS zápisu; SQLite/MariaDB/browser, 198/1483 |
+| 35 | M1 rodinný sportovní portál `d42a30c` | přijato lokálně; guardian/self rozsah, IDOR ochrana, soupisky, akce a docházka |
+| 36 | M1 příjemce shop položky `82b42a3` | přijato lokálně; autorizovaný beneficiary na košíku a neměnný snapshot v objednávce, běžné zboží smí mít NULL |
+| 37 | M1 série a rollover preview `18b81a3` | přijato lokálně; školní/kalendářní sezony, čtyři politiky a read-only preview bez zápisu |
+| 38 | Integrace prvního paralelního přírůstku | migration catalog 22/22, plná sada 213/1583, audit 0 advisories a browser průchod rodiče i KIS admina |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
 workflow stále nesmí být spuštěno bez ověřeného `SSH_KNOWN_HOSTS`, externího
 `AUTH_RATE_LIMIT_PEPPER` a výslovného souhlasu vlastníka.
 
-Shop přírůstek zůstává bezpečným F0-enabling krokem: má staging, kontrolní UI,
-kanonický katalog, řízenou aktivaci běžného zboží a K2 vazby účtů na sportovce.
-Implementována je jen veřejná stránka izolovaného bezplatného kroužku; nasazena
-zatím není. Nemá checkout,
-objednávku, platbu, soupisku, produkční import ani KIS zápis.
+Shop přírůstek zůstává lokálním a dosud nenasazeným krokem: má staging,
+kontrolní UI, kanonický katalog, řízenou aktivaci zboží, K2 vazby účtů na
+sportovce, checkout, objednávku, ručně potvrzenou bankovní platbu, storno,
+fulfillment, refundaci, kupóny a beneficiary snapshot položky. Nemá zatím
+programovou účast/prodloužení, automatickou platbu, Stripe, produkční import ani
+externí KIS zápis.
 
 Session increment používá vlastní cookie `EVIDENCESESSID`; jeho budoucí deploy
 jednorázově odhlásí existující relace. DB revokace a atomický HMAC rate limit jsou

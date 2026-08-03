@@ -11,6 +11,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
+require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 
 function familyPageH(mixed $value): string
 {
@@ -18,9 +19,16 @@ function familyPageH(mixed $value): string
 }
 
 $overview = [];
+$familyOrderItems = [];
 $loadError = '';
 try {
     $overview = familyPortalOverview($pdo, (int)$_SESSION['verejny_uzivatel_id']);
+    if (shopBeneficiaryColumnExists($pdo, 'shop_order_items')) {
+        $familyOrderItems = shopBeneficiaryOrderItemsForAccount(
+            $pdo,
+            (int)$_SESSION['verejny_uzivatel_id']
+        );
+    }
 } catch (Throwable $exception) {
     error_log('booking/sportovni_prehled.php: ' . $exception->getMessage());
     $loadError = 'Sportovní přehled se nyní nepodařilo načíst.';
@@ -84,6 +92,26 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
             </div>
         </section>
     <?php endforeach; ?>
+
+    <section class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white"><strong>Rodinné platby za klubové služby</strong></div>
+        <div class="card-body p-0">
+            <?php if ($familyOrderItems === []): ?>
+                <p class="text-muted small p-3 mb-0">Zatím zde není žádná objednávková položka přiřazená konkrétnímu sportovci.</p>
+            <?php else: ?>
+                <div class="table-responsive"><table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>Objednávka</th><th>Příjemce</th><th>Položka</th><th>Částka</th><th>Platba</th></tr></thead>
+                    <tbody><?php foreach ($familyOrderItems as $item): ?><tr>
+                        <td><code><?= familyPageH($item['public_code']) ?></code></td>
+                        <td><?= familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name']) ?></td>
+                        <td><?= familyPageH($item['product_name_snapshot']) ?></td>
+                        <td><?= familyPageH(number_format(((int)$item['line_amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency']) ?></td>
+                        <td><?= familyPageH($item['payment_status']) ?></td>
+                    </tr><?php endforeach; ?></tbody>
+                </table></div>
+            <?php endif; ?>
+        </div>
+    </section>
 </main>
 </body>
 </html>

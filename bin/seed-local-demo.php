@@ -69,9 +69,20 @@ try{
         clubEventOpenFreeRegistration($pdo,$eventId,$actorId,'Otevření localhost demo registrace.',true);
     }
 
-    $season=kisRosterCreateSeason($pdo,$actorId,'2026-27','LOCALHOST sezóna 2026/27','2026-07-01','2027-06-30');
-    $team=kisRosterCreateTeam($pdo,(int)$season['id'],$actorId,'LOCAL-U15','LOCALHOST U15','Dráha','U15','Localhost demo tým pro test soupisky.');
-    foreach($people as$personId)kisRosterAddMember($pdo,(int)$team['id'],(int)$personId,$actorId,'manual','2026-08-01','Localhost demo zařazení do soupisky.');
+    $schoolSeason=kisRosterCreateSeason($pdo,$actorId,'SCHOOL-2026-27','LOCALHOST školní rok 2026/27','2026-09-01','2027-08-31','school_year');
+    $raceSeason=kisRosterCreateSeason($pdo,$actorId,'RACE-2026','LOCALHOST závodní rok 2026','2026-01-01','2026-12-31','calendar_year');
+    $nextRaceSeason=kisRosterCreateSeason($pdo,$actorId,'RACE-2027','LOCALHOST závodní rok 2027','2027-01-01','2027-12-31','calendar_year');
+    $hobbySeries=kisRosterCreateSeries($pdo,$actorId,'LOCAL-KROUZEK','LOCALHOST Kroužek','hobby','school_year','renewal_required');
+    $u17Series=kisRosterCreateSeries($pdo,$actorId,'LOCAL-U17','LOCALHOST U17','age','calendar_year','manual',null,15,16);
+    $u15Series=kisRosterCreateSeries($pdo,$actorId,'LOCAL-U15','LOCALHOST U15','age','calendar_year','age_progression',(int)$u17Series['id'],13,14);
+    $trackSeries=kisRosterCreateSeries($pdo,$actorId,'LOCAL-DRAHA','LOCALHOST Dráhová cyklistika','discipline','calendar_year','carry_forward');
+    $hobbyTeam=kisRosterCreateSeriesTeam($pdo,(int)$hobbySeries['id'],(int)$schoolSeason['id'],$actorId,'LOCAL-KROUZEK-2026','LOCALHOST Kroužek 2026/27','Všeobecná příprava','Kroužek','Localhost školní soupiska.');
+    $team=kisRosterCreateSeriesTeam($pdo,(int)$u15Series['id'],(int)$raceSeason['id'],$actorId,'LOCAL-U15-2026','LOCALHOST U15 2026','Závodní cyklistika','U15','Localhost věková soupiska.');
+    $trackTeam=kisRosterCreateSeriesTeam($pdo,(int)$trackSeries['id'],(int)$raceSeason['id'],$actorId,'LOCAL-DRAHA-2026','LOCALHOST Dráha 2026','Dráha','Bez věkového přesunu','Localhost disciplínová soupiska.');
+    kisRosterCreateSeriesTeam($pdo,(int)$u17Series['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-U17-2027','LOCALHOST U17 2027','Závodní cyklistika','U17','Cíl localhost věkového preview.');
+    kisRosterCreateSeriesTeam($pdo,(int)$trackSeries['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-DRAHA-2027','LOCALHOST Dráha 2027','Dráha','Bez věkového přesunu','Cíl localhost carry-forward preview.');
+    if(isset($people[0])){kisRosterAddMember($pdo,(int)$team['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost věkové zařazení.');kisRosterAddMember($pdo,(int)$trackTeam['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost disciplínové zařazení.');}
+    if(isset($people[1]))kisRosterAddMember($pdo,(int)$hobbyTeam['id'],(int)$people[1],$actorId,'manual','2026-09-01','Localhost kroužkové zařazení.');
 
     echo json_encode(['ok'=>true,'customer_login_url'=>'http://localhost/evidencePavel/booking/prihlaseni.php','customer_email'=>$email,'customer_password'=>$password,'admin_login_url'=>'http://localhost/evidencePavel/login.php','admin_login'=>$adminLogin,'admin_password'=>$adminPassword,'coupon'=>'LOCAL10','account_id'=>$accountId,'linked_people'=>array_map('intval',$people),'published_product'=>(string)$goods['name'],'kis_demo_team'=>(string)$team['name'],'notice'=>'LOCALHOST TEST - NEPLATIT'],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR).PHP_EOL;
 }catch(Throwable $exception){error_log('seed-local-demo.php: '.$exception->getMessage());fwrite(STDERR,"Localhost demo seed selhal: ".$exception->getMessage()."\n");exit(1);}
