@@ -76,6 +76,46 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_cart_items')->fetchColumn());
     }
 
+    public function testPendingCancellationIsAuditedRestocksExactlyOnceAndCancelsPayment():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,2);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        try{\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Chybné objednání.',false);self::fail('Cancellation must be explicit.');}catch(\InvalidArgumentException){}
+        self::assertSame(3.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+        $result=\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Zákazník požádal o storno před platbou.',true);
+        self::assertTrue($result['changed']);self::assertSame('cancelled',$result['payment_status']);self::assertSame(1,$result['restocked_items']);
+        self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame('cancelled',$pdo->query('SELECT status FROM payments')->fetchColumn());self::assertSame('cancelled',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());
+        self::assertNotFalse($pdo->query('SELECT cancelled_at FROM shop_orders')->fetchColumn());self::assertSame('cancel',$pdo->query('SELECT action FROM shop_order_events ORDER BY id DESC LIMIT 1')->fetchColumn());
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_inventory_movements')->fetchColumn());
+        $repeat=\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Opakování stejného storna.',true);self::assertFalse($repeat['changed']);self::assertSame(0,$repeat['restocked_items']);
+        self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_inventory_movements')->fetchColumn());
+    }
+
+    public function testPaidCancellationRestocksButRequiresSeparateRefund():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Platba ověřena.',true);
+        $result=\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Zákazník odstoupil, předáno účetní k vrácení.',true);
+        self::assertTrue($result['changed']);self::assertSame('refund_required',$result['payment_status']);self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame('refund_required',$pdo->query('SELECT status FROM payments')->fetchColumn());self::assertSame('refund_required',$pdo->query('SELECT payment_status FROM shop_orders')->fetchColumn());
+        self::assertStringContainsString('samostatné vrácení',$pdo->query("SELECT note FROM shop_order_events WHERE action='cancel'")->fetchColumn());
+    }
+
+    public function testPaidOrderMovesThroughReadyAndCompletedWithAudit():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        try{\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Připraveno ve skladu.',true);self::fail('Unpaid order must not become ready.');}catch(\ShopCheckoutException){}
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Platba ověřena.',true);
+        $ready=\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Zabalil Admin, police A.',true);self::assertTrue($ready['changed']);self::assertSame('ready',$ready['status']);
+        self::assertFalse(\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Opakování.',true)['changed']);self::assertNotFalse($pdo->query('SELECT ready_at FROM shop_orders')->fetchColumn());
+        $complete=\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'Vydal Admin rodiči Novákovi.',true);self::assertTrue($complete['changed']);self::assertSame('completed',$complete['status']);
+        self::assertFalse(\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'Opakování.',true)['changed']);self::assertNotFalse($pdo->query('SELECT completed_at FROM shop_orders')->fetchColumn());
+        self::assertSame(['place','confirm_bank_payment','mark_ready','complete_pickup'],$pdo->query('SELECT action FROM shop_order_events ORDER BY id')->fetchAll(PDO::FETCH_COLUMN));
+        $admin=\shopOrderAdminList($pdo);self::assertSame('complete_pickup',$admin[0]['last_event_action']);self::assertSame(7,(int)$admin[0]['last_event_actor_id']);self::assertStringContainsString('Novákovi',$admin[0]['last_event_note']);
+        try{\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Pozdní storno.',true);self::fail('Completed order must not be cancelled.');}catch(\ShopCheckoutException){}
+        self::assertSame(4.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
@@ -88,6 +128,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants VALUES(601,501,'TRIKO-M','{\"size\":\"M\"}','fixed',12500,'CZK',1,2100,'5.000000',1,'active',CURRENT_TIMESTAMP),(602,502,'EVENT','{}','fixed',100,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP),(603,503,'OLD','{}','fixed',100,'CZK',1,0,NULL,1,'inactive',CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');
         $pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Tričko KOVO','Klubové tričko.'),(502,'active','Kroužek','Nejde do košíku.'),(503,'inactive','Staré','Neaktivní.')");
-        $migration=require dirname(__DIR__,2).'/migrations/20260803230000_shop_checkout.php';$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

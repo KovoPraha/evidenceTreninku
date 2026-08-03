@@ -53,9 +53,23 @@ Objednávka začíná jako `placed` + `payment_status=pending`. Ruční potvrzen
 přepne platbu na `paid` a objednávku na `processing`; auditní akce je
 `confirm_bank_payment`.
 
+Zaplacená objednávka pokračuje pouze řízeným tokem `processing` → `ready` →
+`completed`. Každý přechod vyžaduje administrátora, CSRF token, provozní poznámku
+a výslovné potvrzení a zapisuje `mark_ready` nebo `complete_pickup` do
+`shop_order_events`. QR předpis se zákazníkovi zobrazuje pouze ve stavu čekající
+platby.
+
+Storno je možné ze stavů `placed`, `processing` a `ready`, nikoli po výdeji.
+Skladové položky rezervované objednávkou se ve stejné transakci vrátí pohybem
+`restock`; unikátní dvojice položka + typ pohybu a zámek objednávky chrání před
+dvojím vrácením. Nezaplacený předpis přejde na `cancelled`. U přijaté platby se
+nastaví `refund_required`, protože samotné storno nesmí předstírat, že peníze už
+byly zákazníkovi skutečně vráceny.
+
 ## Migrace a další krok
 
-Schéma vyžaduje migraci `20260803230000_shop_checkout`. Před aktivací PHP musí
+Schéma vyžaduje migrace `20260803230000_shop_checkout` a
+`20260804010000_shop_order_fulfillment`. Před aktivací PHP musí
 být aplikována migračním runnerem. Další přírůstek musí doplnit auditované storno
-objednávky s kompenzačním skladovým pohybem, stav přípravy/výdeje, zákaznický
-seznam objednávek a teprve potom kupón nebo automatické Fio párování.
+vratky peněz, zákaznický seznam objednávek a teprve potom kupón nebo automatické
+Fio párování.
