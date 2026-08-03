@@ -143,6 +143,87 @@ final class ClubEventRegistrationTest extends TestCase
         self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
     }
 
+    public function testPromotionQueuesAndProcessesOneNotification(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
+        $confirmed=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        $waiting=\clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        $result=\clubEventCancelRegistration($pdo,$confirmed['id'],10,'Uvolnění místa.');
+        self::assertSame($waiting['id'],$result['promoted_registration_id']);
+        $queued=$pdo->query('SELECT * FROM club_event_notifications')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('pending',$queued['status']);
+        self::assertSame('a@example.test',$queued['recipient_email']);
+        self::assertStringContainsString('Bezplatný kroužek',$queued['subject_plain']);
+        $delivered=[];
+        $sent=\clubEventNotificationProcessOne(
+            $pdo,
+            static function(string $email,string $subject,string $body)use(&$delivered):bool{
+                $delivered=[$email,$subject,$body];return true;
+            }
+        );
+        self::assertTrue($sent);
+        self::assertSame('a@example.test',$delivered[0]);
+        self::assertStringContainsString('Bára Druhá',$delivered[2]);
+        self::assertSame('sent',$pdo->query('SELECT status FROM club_event_notifications')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT attempts FROM club_event_notifications')->fetchColumn());
+        self::assertNull(\clubEventNotificationProcessOne($pdo,static fn():bool=>true));
+    }
+
+    public function testAdminCanAuditLateCancellationAndPromoteWaitlist(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
+        $confirmed=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        $waiting=\clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        $pdo->exec("UPDATE club_event_registrations SET cancellation_deadline_snapshot='2000-01-01 00:00:00' WHERE id=".$confirmed['id']);
+        try {
+            \clubEventCancelRegistration($pdo,$confirmed['id'],10,'Pozdní storno.');
+            self::fail('Account cancellation must respect the deadline.');
+        } catch (\ClubEventRegistrationException) {
+        }
+        try {
+            \clubEventAdminCancelRegistration($pdo,$confirmed['id'],7,'Schválená výjimka.',false);
+            self::fail('Admin override requires explicit confirmation.');
+        } catch (\InvalidArgumentException) {
+        }
+        $result=\clubEventAdminCancelRegistration($pdo,$confirmed['id'],7,'Schválená výjimka.',true);
+        self::assertTrue($result['changed']);
+        self::assertSame($waiting['id'],$result['promoted_registration_id']);
+        self::assertSame('cancelled',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$confirmed['id'])->fetchColumn());
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$waiting['id'])->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registration_events WHERE action='admin_cancel_late' AND actor_type='trainer' AND actor_id=7")->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE registration_id=".$waiting['id'])->fetchColumn());
+    }
+
+    public function testFailedNotificationIsRetriedAndEventuallyQuarantined(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
+        $confirmed=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        \clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        \clubEventCancelRegistration($pdo,$confirmed['id'],10,'Uvolnění místa.');
+        for($attempt=1;$attempt<=5;$attempt++){
+            $pdo->exec("UPDATE club_event_notifications SET available_at='2000-01-01 00:00:00'");
+            self::assertFalse(\clubEventNotificationProcessOne($pdo,static fn():bool=>false));
+            self::assertSame($attempt,(int)$pdo->query('SELECT attempts FROM club_event_notifications')->fetchColumn());
+        }
+        self::assertSame('failed',$pdo->query('SELECT status FROM club_event_notifications')->fetchColumn());
+        self::assertNull(\clubEventNotificationProcessOne($pdo,static fn():bool=>true));
+    }
+
+    public function testNotificationPersistenceFailureRollsBackCancellationAndPromotion(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
+        $confirmed=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        $waiting=\clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        $pdo->exec('DROP TABLE club_event_notifications');
+        try {
+            \clubEventAdminCancelRegistration($pdo,$confirmed['id'],7,'Test atomického rollbacku.',true);
+            self::fail('Missing transactional outbox must fail closed.');
+        } catch (\ClubEventRegistrationException) {
+        }
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$confirmed['id'])->fetchColumn());
+        self::assertSame('waitlisted',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$waiting['id'])->fetchColumn());
+    }
+
     public function testAgeWindowAndOwnershipChecksRollBackCleanly(): void
     {
         $pdo = $this->database();
@@ -299,6 +380,7 @@ final class ClubEventRegistrationTest extends TestCase
             '20260803130000_club_event_registrations.php',
             '20260803150000_club_event_terms.php',
             '20260803170000_club_event_waitlist.php',
+            '20260803190000_club_event_notifications.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);

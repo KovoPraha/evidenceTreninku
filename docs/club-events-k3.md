@@ -57,9 +57,38 @@ potvrzeného účastníka ve stejné transakci uvolní kapacitu a povýší nejs
 stále oprávněnou osobu. Před povýšením se znovu kontroluje K2 vazba a přítomnost
 snapshotu souhlasu; neplatný kandidát se auditovaně vyřadí a pokračuje se dalším.
 
+Povýšení současně vloží do tabulky `club_event_notifications` neměnný e-mailový
+snapshot. Zápis je součástí stejné transakce jako storno a povýšení; selhání
+fronty proto vrátí zpět celý zásah. Samotné odeslání probíhá až mimo tuto
+transakci. Jedna přihláška smí mít nejvýše jedno oznámení typu
+`waitlist_promoted`.
+
+Administrátor může aktivní přihlášku auditovaně zrušit i po termínu. Formulář
+vyžaduje důvod a zvláštní potvrzovací checkbox. Pozdní zásah má auditní akci
+`admin_cancel_late`; uvolněná kapacita používá stejný FIFO mechanismus a frontu
+oznámení jako uživatelské storno.
+
+## Odesílání oznámení
+
+Krátký CLI worker převezme zprávu unikátním tokenem, transakci ukončí a teprve
+potom zavolá PHP `mail()`. Neúspěšnou zprávu vrátí do fronty se zpožděním,
+nejvýše pětkrát; poté zůstane ve stavu `failed` k ruční kontrole. Zaseknuté
+`processing` oznámení lze po 15 minutách převzít znovu. Jde o doručení typu
+at-least-once: pád procesu těsně po předání poštovnímu serveru může výjimečně
+vést k duplicitnímu e-mailu.
+
+Na hostingu spusťte z CRONu každou minutu například:
+
+```sh
+APP_HOST=data.kovopraha.cz php /absolutni/cesta/bin/club-event-notifications.php --limit=20
+```
+
+Návratový JSON obsahuje počty `processed`, `sent` a `failed`. Návrat `mail()`
+potvrzuje pouze převzetí lokálním poštovním systémem, nikoliv doručení do schránky.
+
 ## Záměrně chybí v tomto průchodu
 
-- administrační řešení pozdního storna a ruční zásahy do čekací listiny,
+- obecné ruční změny pořadí čekací listiny,
 - placený kroužek a košík,
 - objednávka, platba, soupiska nebo zápis do KIS.
 
@@ -68,6 +97,7 @@ snapshotu souhlasu; neplatný kandidát se auditovaně vyřadí a pokračuje se 
 Model vyžaduje migrace `20260803110000_club_events` a
 `20260803130000_club_event_registrations` a `20260803150000_club_event_terms`.
 Čekací listina navíc vyžaduje `20260803170000_club_event_waitlist`.
+Oznámení a správní storno vyžadují `20260803190000_club_event_notifications`.
 Read-only kontrola je
 `php bin/migrate.php --check`; produkční migrace musí proběhnout před aktivací
 nové verze PHP.

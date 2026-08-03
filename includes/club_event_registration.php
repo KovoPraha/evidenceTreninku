@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/club_event.php';
 require_once __DIR__ . '/account_person_role.php';
+require_once __DIR__ . '/club_event_notification.php';
 
 final class ClubEventRegistrationException extends RuntimeException
 {
@@ -473,6 +474,96 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
     }
 }
 
+/** @return array{id:int,status:string,changed:bool,promoted_registration_id:?int} */
+function clubEventAdminCancelRegistration(
+    PDO $pdo,
+    int $registrationId,
+    int $actorTrainerId,
+    string $note,
+    bool $confirmed
+): array {
+    $note = trim($note);
+    if ($registrationId < 1 || $actorTrainerId < 1 || $note === '' || !$confirmed) {
+        throw new InvalidArgumentException(
+            'Správní storno vyžaduje přihlášku, administrátora, důvod a výslovné potvrzení.'
+        );
+    }
+    if (mb_strlen($note, 'UTF-8') > 1000) {
+        throw new InvalidArgumentException('Poznámka smí mít nejvýše 1000 znaků.');
+    }
+    $pdo->beginTransaction();
+    try {
+        $lookup = $pdo->prepare('SELECT event_id FROM club_event_registrations WHERE id=?');
+        $lookup->execute([$registrationId]);
+        $eventId = (int)$lookup->fetchColumn();
+        if ($eventId < 1 || !clubEventLock($pdo, $eventId)) {
+            throw new ClubEventRegistrationException('Přihláška nebyla nalezena.');
+        }
+        $sql = 'SELECT * FROM club_event_registrations WHERE id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$registrationId]);
+        $registration = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!$registration) {
+            throw new ClubEventRegistrationException('Přihláška nebyla nalezena.');
+        }
+        if ($registration['status'] === 'cancelled') {
+            $pdo->commit();
+            return [
+                'id' => $registrationId,
+                'status' => 'cancelled',
+                'changed' => false,
+                'promoted_registration_id' => null,
+            ];
+        }
+        if (!in_array($registration['status'], ['confirmed', 'waitlisted'], true)) {
+            throw new ClubEventRegistrationException('Přihlášku v tomto stavu nelze správně zrušit.');
+        }
+        $fromStatus = (string)$registration['status'];
+        $late = $fromStatus === 'confirmed'
+            && !empty($registration['cancellation_deadline_snapshot'])
+            && new DateTimeImmutable('now') > new DateTimeImmutable(
+                (string)$registration['cancellation_deadline_snapshot']
+            );
+        $pdo->prepare(
+            "UPDATE club_event_registrations SET status='cancelled',cancelled_at=CURRENT_TIMESTAMP,"
+            . 'cancellation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+        )->execute([$note, $registrationId]);
+        clubEventRegistrationAudit(
+            $pdo,
+            $registrationId,
+            'trainer',
+            $actorTrainerId,
+            $late ? 'admin_cancel_late' : 'admin_cancel',
+            $fromStatus,
+            'cancelled',
+            $note
+        );
+        $promotedRegistrationId = $fromStatus === 'confirmed'
+            ? clubEventPromoteNextWaitlisted($pdo, $eventId)
+            : null;
+        $pdo->commit();
+        return [
+            'id' => $registrationId,
+            'status' => 'cancelled',
+            'changed' => true,
+            'promoted_registration_id' => $promotedRegistrationId,
+        ];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($exception instanceof InvalidArgumentException
+            || $exception instanceof ClubEventRegistrationException
+        ) {
+            throw $exception;
+        }
+        throw new ClubEventRegistrationException('Správní storno selhalo bez částečného zápisu.', 0, $exception);
+    }
+}
+
 function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
 {
     if (!$pdo->inTransaction() || $eventId < 1) {
@@ -530,7 +621,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
             "UPDATE club_event_registrations SET status='confirmed',registered_at=CURRENT_TIMESTAMP, "
             . 'promoted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?'
         )->execute([(int)$candidate['id']]);
-        clubEventRegistrationAudit(
+        $promotionEventId = clubEventRegistrationAudit(
             $pdo,
             (int)$candidate['id'],
             'system',
@@ -540,6 +631,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
             'confirmed',
             'Automaticky povýšeno z čekací listiny po uvolnění kapacity.'
         );
+        clubEventNotificationEnqueuePromotion($pdo, (int)$candidate['id'], $promotionEventId);
         return (int)$candidate['id'];
     }
 }
@@ -697,10 +789,11 @@ function clubEventRegistrationAudit(
     ?string $fromStatus,
     string $toStatus,
     string $note
-): void {
+): int {
     $statement = $pdo->prepare(
         'INSERT INTO club_event_registration_events '
         . '(registration_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,?,?,?,?,?,?)'
     );
     $statement->execute([$registrationId, $actorType, $actorId, $action, $fromStatus, $toStatus, $note]);
+    return (int)$pdo->lastInsertId();
 }

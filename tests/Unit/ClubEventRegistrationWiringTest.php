@@ -29,6 +29,7 @@ final class ClubEventRegistrationWiringTest extends TestCase
         $migration = (string)file_get_contents($root . '/migrations/20260803130000_club_event_registrations.php');
         $termsMigration = (string)file_get_contents($root . '/migrations/20260803150000_club_event_terms.php');
         $waitlistMigration = (string)file_get_contents($root . '/migrations/20260803170000_club_event_waitlist.php');
+        $notificationMigration = (string)file_get_contents($root . '/migrations/20260803190000_club_event_notifications.php');
         self::assertStringContainsString('clubEventLock($pdo, $eventId)', $service);
         self::assertStringContainsString("=== 'mysql'", $service);
         self::assertStringContainsString('FOR UPDATE', $service);
@@ -41,6 +42,9 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringContainsString('idx_club_registration_waitlist', $waitlistMigration);
         self::assertStringContainsString('promote_waitlist', $service);
         self::assertStringContainsString('clubEventPromoteNextWaitlisted', $service);
+        self::assertStringContainsString('clubEventNotificationEnqueuePromotion', $service);
+        self::assertStringContainsString('uq_club_event_notification', $notificationMigration);
+        self::assertStringContainsString('idx_club_event_notification_queue', $notificationMigration);
     }
 
     public function testAdminOpeningIsCsrfProtectedAndExplicitlyConfirmed(): void
@@ -52,5 +56,18 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringContainsString('clubEventOpenFreeRegistration', $source);
         self::assertStringContainsString('clubEventConfigureRegistrationTerms', $source);
         self::assertStringContainsString("(\$_POST['confirm_terms']??'')==='1'", $source);
+        self::assertStringContainsString("(\$_POST['confirm_admin_cancel']??'')==='1'", $source);
+        self::assertStringContainsString('clubEventAdminCancelRegistration', $source);
+    }
+
+    public function testNotificationWorkerIsCliOnlyAndRequiresExplicitHost(): void
+    {
+        $source = (string)file_get_contents(
+            dirname(__DIR__, 2) . '/bin/club-event-notifications.php'
+        );
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $source);
+        self::assertStringContainsString("getenv('APP_HOST')", $source);
+        self::assertStringContainsString('clubEventNotificationProcessOne', $source);
+        self::assertStringNotContainsString('DB_PASS=', $source);
     }
 }
