@@ -85,6 +85,7 @@ $stavBadge = [
         <div class="d-flex gap-2">
             <a href="kalendar.php" class="btn btn-outline-primary btn-sm">Kalendář</a>
             <a href="moje_osoby.php" class="btn btn-outline-secondary btn-sm">Moje osoby</a>
+            <a href="krouzky.php" class="btn btn-outline-secondary btn-sm">Kroužky</a>
             <form method="post" action="odhlaseni.php" class="d-inline">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-outline-danger btn-sm">Odhlásit</button>

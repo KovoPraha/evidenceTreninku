@@ -1,0 +1,217 @@
+<?php
+declare(strict_types=1);
+
+namespace Tests\Integration;
+
+use PDO;
+use PHPUnit\Framework\TestCase;
+
+require_once dirname(__DIR__, 2) . '/includes/account_person_role.php';
+require_once dirname(__DIR__, 2) . '/includes/club_event_registration.php';
+
+final class ClubEventRegistrationTest extends TestCase
+{
+    public function testApprovedChildRegistrationIsIdempotentCapacitySafeAndReversible(): void
+    {
+        $pdo = $this->database();
+        $eventId = $this->openFreeEvent($pdo, 1);
+
+        $first = \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
+        $duplicate = \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
+        self::assertTrue($first['created']);
+        self::assertFalse($duplicate['created']);
+        self::assertSame($first['id'], $duplicate['id']);
+        self::assertSame(1, (int)$pdo->query(
+            "SELECT COUNT(*) FROM club_event_registrations WHERE status='confirmed'"
+        )->fetchColumn());
+
+        try {
+            \clubEventRegisterParticipant($pdo, $eventId, 10, 101);
+            self::fail('The second child must not take the same last place.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('Kapacita', $exception->getMessage());
+        }
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
+
+        $cancelled = \clubEventCancelRegistration($pdo, $first['id'], 10, 'Dítě se nemůže účastnit.');
+        self::assertTrue($cancelled['changed']);
+        $second = \clubEventRegisterParticipant($pdo, $eventId, 10, 101);
+        self::assertTrue($second['created']);
+        self::assertSame(1, (int)$pdo->query(
+            "SELECT COUNT(*) FROM club_event_registrations WHERE status='confirmed'"
+        )->fetchColumn());
+        self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
+
+        $this->expectException(\PDOException::class);
+        $pdo->exec(
+            "INSERT INTO club_event_registrations "
+            . "(event_id,account_id,sportovec_id,relation_role_snapshot,status,registered_at) "
+            . "VALUES ($eventId,10,101,'guardian','confirmed',CURRENT_TIMESTAMP)"
+        );
+    }
+
+    public function testUnapprovedOrUnverifiedPersonCannotBeRegistered(): void
+    {
+        $pdo = $this->database();
+        $eventId = $this->openFreeEvent($pdo, 3);
+
+        foreach ([[11, 100], [12, 102]] as [$accountId, $sportovecId]) {
+            try {
+                \clubEventRegisterParticipant($pdo, $eventId, $accountId, $sportovecId);
+                self::fail('Only an approved K2 relation on an active verified account is allowed.');
+            } catch (\ClubEventRegistrationException $exception) {
+                self::assertStringContainsString('K2', $exception->getMessage());
+            }
+        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registration_events')->fetchColumn());
+    }
+
+    public function testAgeWindowAndOwnershipChecksRollBackCleanly(): void
+    {
+        $pdo = $this->database();
+        $eventId = $this->openFreeEvent($pdo, 3, 6, 10);
+        try {
+            \clubEventRegisterParticipant($pdo, $eventId, 12, 102);
+            self::fail('Unverified account is blocked before age evaluation.');
+        } catch (\ClubEventRegistrationException) {
+        }
+        $pdo->exec('UPDATE verejni_uzivatele SET email_overeno=1 WHERE id=12');
+        try {
+            \clubEventRegisterParticipant($pdo, $eventId, 12, 102);
+            self::fail('Age limit must be enforced on the first session date.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('věkové', $exception->getMessage());
+        }
+        $pdo->exec("UPDATE club_events SET registration_ends_at='2000-01-01 00:00:00' WHERE id=$eventId");
+        try {
+            \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
+            self::fail('Closed registration window must be enforced.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('skončilo', $exception->getMessage());
+        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
+
+        $pdo->exec('UPDATE club_events SET registration_ends_at=NULL,min_age=NULL,max_age=NULL WHERE id=' . $eventId);
+        $registration = \clubEventRegisterParticipant($pdo, $eventId, 10, 100);
+        try {
+            \clubEventCancelRegistration($pdo, $registration['id'], 11, 'Cizí účet.');
+            self::fail('Another account must not cancel the registration.');
+        } catch (\ClubEventRegistrationException) {
+        }
+        self::assertSame('confirmed', $pdo->query(
+            'SELECT status FROM club_event_registrations WHERE id=' . $registration['id']
+        )->fetchColumn());
+    }
+
+    public function testOpeningRequiresFreeClubEventSessionProductAndConfirmation(): void
+    {
+        $pdo = $this->database();
+        $event = \clubEventCreateDraft($pdo, 7, $this->eventInput(2));
+        foreach ([
+            ['', true],
+            ['Schválený provozní start.', false],
+        ] as [$note, $confirmed]) {
+            try {
+                \clubEventOpenFreeRegistration($pdo, $event['id'], 7, $note, $confirmed);
+                self::fail('Explicit note and confirmation are required.');
+            } catch (\InvalidArgumentException) {
+            }
+        }
+        try {
+            \clubEventOpenFreeRegistration($pdo, $event['id'], 7, 'Chybí termín.', true);
+            self::fail('Session is required.');
+        } catch (\ClubEventRegistrationException) {
+        }
+        self::assertSame('draft', $pdo->query(
+            'SELECT status FROM club_events WHERE id=' . $event['id']
+        )->fetchColumn());
+        $sessionYear=(int)date('Y')+1;
+        \clubEventAddSession($pdo,$event['id'],7,$sessionYear.'-09-02T16:00',$sessionYear.'-09-02T17:00','Velodrom',2);
+        \clubEventLinkProduct($pdo,$event['id'],501,7,'Bezplatný produkt.');
+        $pdo->exec("UPDATE shop_variants SET price_mode='fixed',amount_minor=100 WHERE id=601");
+        try {
+            \clubEventOpenFreeRegistration($pdo,$event['id'],7,'Cena se změnila.',true);
+            self::fail('Current product price must be checked again when opening.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('není bezplatný', $exception->getMessage());
+        }
+        self::assertSame('draft', $pdo->query(
+            'SELECT status FROM club_events WHERE id=' . $event['id']
+        )->fetchColumn());
+    }
+
+    private function openFreeEvent(PDO $pdo, int $capacity, ?int $minAge = null, ?int $maxAge = null): int
+    {
+        $input = $this->eventInput($capacity);
+        $input['min_age'] = $minAge === null ? '' : (string)$minAge;
+        $input['max_age'] = $maxAge === null ? '' : (string)$maxAge;
+        $event = \clubEventCreateDraft($pdo, 7, $input);
+        \clubEventAddSession(
+            $pdo,
+            $event['id'],
+            7,
+            ((int)date('Y') + 1) . '-09-01T16:00',
+            ((int)date('Y') + 1) . '-09-01T17:30',
+            'Velodrom',
+            1
+        );
+        \clubEventLinkProduct($pdo, $event['id'], 501, 7, 'Bezplatný produkt kroužku.');
+        \clubEventOpenFreeRegistration($pdo, $event['id'], 7, 'Schválený provozní start.', true);
+        return $event['id'];
+    }
+
+    /** @return array<string,string|int> */
+    private function eventInput(int $capacity): array
+    {
+        return [
+            'code' => 'FREE-' . bin2hex(random_bytes(4)),
+            'event_type' => 'club_event',
+            'name' => 'Bezplatný kroužek',
+            'description_plain' => 'První řízený průchod.',
+            'audience_label' => 'Děti',
+            'min_age' => '',
+            'max_age' => '',
+            'capacity' => $capacity,
+            'pricing_policy' => 'free',
+            'currency' => 'CZK',
+            'registration_starts_at' => '',
+            'registration_ends_at' => '',
+        ];
+    }
+
+    private function database(): PDO
+    {
+        $pdo = new PDO('sqlite::memory:', null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+        $pdo->exec('PRAGMA foreign_keys=ON');
+        $pdo->exec('CREATE TABLE treneri (id INTEGER PRIMARY KEY,jmeno TEXT NOT NULL)');
+        $pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");
+        $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY,jmeno TEXT NOT NULL,prijmeni TEXT NOT NULL,narozeni TEXT NULL)');
+        $year = (int)date('Y') + 1;
+        $pdo->exec("INSERT INTO sportovci VALUES (100,'Anna','První','" . ($year - 8) . "-05-10'),(101,'Bára','Druhá','" . ($year - 9) . "-04-03'),(102,'Cyril','Starší','" . ($year - 15) . "-01-01')");
+        $pdo->exec('CREATE TABLE verejni_uzivatele (id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,email TEXT,aktivni INTEGER NOT NULL,email_overeno INTEGER NOT NULL)');
+        $pdo->exec("INSERT INTO verejni_uzivatele VALUES (10,'Rodič','První','a@example.test',1,1),(11,'Cizí','Účet','b@example.test',1,1),(12,'Neověřený','Rodič','c@example.test',1,0)");
+        $pdo->exec('CREATE TABLE shop_products (id INTEGER PRIMARY KEY,name TEXT NOT NULL,offer_type TEXT NOT NULL,catalog_status TEXT NOT NULL)');
+        $pdo->exec("INSERT INTO shop_products VALUES (501,'Bezplatný kroužek','club_event','internal_only')");
+        $pdo->exec('CREATE TABLE shop_variants (id INTEGER PRIMARY KEY,product_id INTEGER NOT NULL,price_mode TEXT NOT NULL,amount_minor INTEGER NULL,currency TEXT NULL,visible INTEGER NULL)');
+        $pdo->exec("INSERT INTO shop_variants VALUES (601,501,'free',0,'CZK',1)");
+
+        foreach ([
+            '20260802230000_account_person_roles.php',
+            '20260803110000_club_events.php',
+            '20260803130000_club_event_registrations.php',
+        ] as $file) {
+            $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
+            $migration['up']($pdo);
+            $migration['up']($pdo);
+            self::assertTrue($migration['verify']($pdo));
+        }
+        \accountPersonRoleApprove($pdo, 10, 100, 'guardian', 7, 'Schválený rodič.');
+        \accountPersonRoleApprove($pdo, 10, 101, 'guardian', 7, 'Schválený rodič.');
+        \accountPersonRoleApprove($pdo, 12, 102, 'guardian', 7, 'Schválený rodič, účet zatím neověřen.');
+        return $pdo;
+    }
+}

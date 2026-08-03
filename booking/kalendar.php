@@ -268,6 +268,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
             <?php if ($prihlaseny): ?>
                 <span class="text-muted small d-none d-md-inline"><?= h($uzivatelJmeno) ?></span>
                 <a href="moje_osoby.php" class="btn btn-outline-secondary btn-sm">Moje osoby</a>
+                <a href="krouzky.php" class="btn btn-outline-secondary btn-sm">Kroužky</a>
                 <a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a>
                 <form method="post" action="odhlaseni.php" class="d-inline">
                     <?= csrf_field() ?>

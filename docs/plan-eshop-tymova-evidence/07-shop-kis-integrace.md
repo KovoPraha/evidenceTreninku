@@ -1,7 +1,8 @@
 # 07 – Plán napojení e-shopu na členské a KIS funkce
 
 Stav: K1 pracovní katalog i řízená aktivace běžného zboží jsou implementované;
-K2 identita a claim jsou implementované. Další je K3 klubových akcí. Evidence zůstává samostatnou aplikací; Velocota
+K2 identita a claim jsou implementované. K3 má první celý průchod bezplatným
+kroužkem. Evidence zůstává samostatnou aplikací; Velocota
 není součástí tohoto propojení.
 
 ## Cíl
@@ -118,12 +119,18 @@ jedna transakce. Zbývá bezpečné párování KIS importu přes stabilní iden
 Brána: kapacita, duplicita a čekací listina jsou transakční; přihláška zatím
 nepotřebuje Stripe a umí i nulovou cenu.
 
-Implementován je první administrační základ K3: pracovní akce typu `club_event`
+Implementován je administrační základ K3: pracovní akce typu `club_event`
 nebo `camp`, cílová skupina a věkové rozmezí, kapacita, registrační okno, cenová
 politika, samostatné termíny a auditované mapování kanonického produktu. Termíny
 jedné akce se nesmějí překrývat, typ a měna produktu musí odpovídat akci a
-bezplatná akce nepřijme placenou variantu. Vše zůstává `draft`; přihlášky,
-čekací listina, soupiska, platby i KIS zápis zatím neexistují.
+bezplatná akce nepřijme placenou variantu.
+
+Navazuje první provozní vertikála pro `free club_event`. Administrátor otevře
+přihlášky až po explicitním potvrzení. Přihlásit lze jen aktivní schválenou osobu
+z K2; kontroluje se registrační okno, věk k prvnímu termínu a efektivní kapacita.
+Zámek akce a unikátní klíč účastníka chrání poslední místo a duplicitu. Storno
+uvolní kapacitu, ale zachová audit. Tento průchod nevytváří objednávku, platbu,
+soupisku ani KIS zápis. Čekací listina a souhlasy zatím neexistují.
 
 ### K4 – Společná objednávka a platební předpis
 
@@ -157,8 +164,8 @@ Před příslušnou etapou musí vlastník potvrdit:
 
 ## Nejbližší implementační pořadí
 
-1. implementovat bezplatný kroužek jako první vertikální průchod,
-2. doplnit transakční kapacitu, duplicitu, souhlasy a čekací listinu,
+1. doplnit souhlasy a pravidla storna bezplatného kroužku,
+2. přidat čekací listinu se stejně transakčním přidělením místa,
 3. teprve poté přidat objednávku a placenou variantu.
 
 Stripe, Fio, kredit, Packeta a ostrý KIS cutover nejsou součástí nejbližšího
