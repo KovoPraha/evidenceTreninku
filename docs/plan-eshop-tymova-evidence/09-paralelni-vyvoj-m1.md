@@ -91,14 +91,28 @@ Všechny tři pracovní větve skončily čisté, bez push/deploy a bez změny p
 databáze. Číslované migrace `130000`, `140000` a `150000` byly aplikovány jen na
 localhost.
 
+## Třetí paralelní kolo
+
+Společný base: `6c3324f`
+
+| Proud | Branch | Přijatý commit | Výsledek |
+|---|---|---|---|
+| M1.4 platební lifecycle | `codex/m14-program-lifecycle` | `15cd57b`, oprava zámků `589d79b` | paid aktivace, storno/refund, audit a sjednocené transakční pořadí |
+| M1.5 rollover execution | `codex/m15-rollover-execution` | `8cf6774`, concurrency `94ab4a2` | fingerprint, výjimky, skutečný přesun, historie a idempotentní souběh |
+| M1.7 veřejný velodrom | `codex/m17-public-velodrome` | `9d8cee5` | veřejný self profil a rezervace nad existujícími booking tabulkami |
+| integrace | `main` | následující integrační commit | seed, backup kontrakt `.4`, navigace, plné testy, MariaDB a browser smoke |
+
+Všechny migrace třetího kola byly aplikovány pouze na localhost. Produkce, push,
+Fio ani Stripe se v tomto kole neměnily.
+
 ## Další vhodné paralelní kolo
 
-Po přijetí druhého kola lze opět oddělit:
+Po přijetí třetího kola lze opět oddělit:
 
-- M1.4 automatickou aktivaci/storno programové účasti podle životního cyklu platby,
-- M1.5 auditované provedení rolloveru a přechod kroužek → závodní tým,
-- M1.7 veřejný profil a rezervaci velodromu.
+- M1.8 jednotný localhost rozcestník a akceptační scénáře A01–A10,
+- dětský login a jeho omezený pohled bez rodičovských oprávnění,
+- placený velodrom napojený na shop objednávku, QR a bankovní lifecycle.
 
-Veřejný onboarding a rezervace velodromu začnou až po stabilizaci společného
-profilu a příjemce služby, protože oba proudy používají stejné identity a
-objednávkové kontrakty.
+Placený velodrom musí navázat na už stabilní společný profil a příjemce služby;
+nový proud proto smí rozšířit sdílený checkout až po samostatné integrační kontrole
+pořadí zámků, storna a refundace.

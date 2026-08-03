@@ -41,10 +41,10 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.3'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.4'",
             $backup
         );
-        foreach (['shop_orders', 'club_events', 'account_person_roles', 'fio_account_movements', 'club_roster_members', 'club_team_series', 'training_roster_links', 'club_program_enrollments', 'club_event_roster_targets'] as $table) {
+        foreach (['shop_orders', 'club_events', 'account_person_roles', 'fio_account_movements', 'club_roster_members', 'club_team_series', 'training_roster_links', 'club_program_enrollments', 'club_event_roster_targets', 'club_roster_rollover_runs', 'public_self_profiles', 'public_velodrome_reservation_events'] as $table) {
             self::assertStringContainsString("'{$table}'", $backup);
         }
     }

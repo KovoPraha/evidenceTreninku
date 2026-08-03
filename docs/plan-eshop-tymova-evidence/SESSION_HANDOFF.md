@@ -9,9 +9,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Aktualizováno: 2026-08-03, Europe/Prague
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
-- Aktivní integrační větev: `main`; druhý paralelní přírůstek M1 je sloučený v
-  `9f7e531` (M1.3 tréninkový most), `e6fad8e` (M1.4 programy) a `218bfd3`
-  (M1.6 cílení událostí na soupisky).
+- Aktivní integrační větev: `main`; třetí paralelní přírůstek M1 je sloučený v
+  `15cd57b` + `589d79b` (M1.4 automatický lifecycle), `8cf6774` + `94ab4a2`
+  (M1.5 provedení rolloveru) a `9d8cee5` (M1.7 veřejný profil a velodrom).
 - Auth kódový tip před tímto handoff commitem: `9977b4dfc3f2f6aab775825d0bdf9b629e61e217`;
   auth přírůstek tvoří
   `a3c2239` (revokace + limiter), `10c2cf9` (atomická rezervace + SSO abort) a
@@ -50,14 +50,16 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   M1 doplnil rodinný read-only přehled, beneficiary snapshot košíku/objednávky,
   stabilní série soupisek, školní a kalendářní sezóny a bezpečný náhled rolloveru.
   Druhé kolo doplnilo M:N most plánovaných tréninků na soupisky, programy/nabídky/
-  účasti a cílení událostí na více soupisek. Integrovaná sada má 236 testů / 1779
-  assertions, migration catalog je lokálně 25/25 a Composer audit hlásí 0
-  advisories. Browser prošel admin programů, košík s bezpečným výběrem dítěte,
-  cílenou událost a plán tréninku se dvěma soupiskami. Produkční workflow, kód ani
-  DB se nezměnily.
-- Další přesná akce: dokončit automatický životní cyklus M1.4 po úhradě/stornu,
-  implementovat M1.5 provedení rolloveru a přechod do závodního týmu a zahájit
-  M1.7 veřejný profil s rezervací velodromu. Produkční
+  účasti a cílení událostí na více soupisek. Třetí kolo doplnilo automatickou
+  aktivaci programu po úhradě a jeho storno/refund, auditované a souběžně bezpečné
+  provedení rolloveru a veřejný self profil s kapacitní rezervací velodromu.
+  Integrovaná sada má 258 testů / 2029 assertions, migration catalog je lokálně
+  28/28 a Composer audit hlásí 0 advisories. Browser prošel profilem rodiče,
+  bezplatným i placeným slotem velodromu, jejich administrací a read-only náhledem
+  U15 → U17 s fingerprintem. Produkční workflow, kód ani DB se nezměnily.
+- Další přesná akce: připravit M1.8 localhost rozcestník scénářů A01–A10, doplnit
+  vlastní omezený login dítěte a napojit placený velodrom na shop objednávku s QR.
+  Produkční
   Secret/config, deploy, Fio a ostrý import zůstávají samostatně blokované do
   pozdějšího výslovného rozhodnutí.
 
@@ -71,8 +73,8 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | K1 – katalog a publikace | 92 % | obrázky/detail produktu, finální produktová pravidla a případný anonymní storefront |
 | K2 – účty, osoby a rodič–dítě | 82 % | vlastní login dítěte v demo seedu, stabilní KIS identifikátor a bezpečné párování finálního exportu |
 | K3 – akce a přihlášky | 88 % | rozhodnutí o ručních změnách čekací listiny, export účastníků a produkční UX |
-| K4 – objednávky a platby | 82 % | dokončit automatický programový lifecycle, ověřit Fio shadow návrhy na reálných datech a samostatně schválit automatické potvrzení/Stripe |
-| K5 – náhrada starého KIS | 62 % | provedení rolloveru, závodní členství, veřejný profil/velodrom, finální jednorázový import a cutover |
+| K4 – objednávky a platby | 84 % | objednávka a QR pro placený velodrom, ověřit Fio shadow návrhy na reálných datech a samostatně schválit automatické potvrzení/Stripe |
+| K5 – náhrada starého KIS | 78 % | dětský login, akceptační UX, finální jednorázový import a cutover |
 
 ## Pořadí autority
 
@@ -90,16 +92,16 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | druhý paralelní M1 přírůstek: `9f7e531`, `e6fad8e`, `218bfd3`; integrační doplnění a dokumentace následují v tomto commitu | 2026-08-03 | Git | ano |
+| integrační branch | třetí paralelní M1 přírůstek: `15cd57b`, `589d79b`, `8cf6774`, `94ab4a2`, `9d8cee5`; integrační doplnění a dokumentace následují v tomto commitu | 2026-08-03 | Git | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 25/25 číslovaných migrací; localhost demo aktivní | 2026-08-03 | migration check + MariaDB | ano |
-| testy | 236/1779; M1.3, M1.4 a M1.6 mají SQLite/MariaDB důkazy; localhost browser prošel programem, beneficiary, cílenou událostí a plánem tréninku; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
+| lokální schema | legacy `2.20.2` + 28/28 číslovaných migrací; localhost demo aktivní | 2026-08-03 | migration check + MariaDB | ano |
+| testy | 258/2029; M1.4 lifecycle, M1.5 rollover a M1.7 velodrom mají SQLite/MariaDB důkazy; localhost browser prošel self profilem, oběma sloty, adminem a rollover preview; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
-| lokální backup drill | post-migration artefakt `evidence_2026-08-03_185240_d8c38a79.sql.gz`: 109 tabulek, 1 trigger, SHA-256 `1ee322cf5c83da1f9950408ff267e9825dc908293b8e7b092712e232f99edbf1`; kontrakt `2026-08-03.3` zahrnuje M1.3/M1.4/M1.6 tabulky | 2026-08-03 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
+| lokální backup drill | post-migration artefakt `evidence_2026-08-03_193846_cd241903.sql.gz`: 117 tabulek, 2 triggery, SHA-256 `a456c80c14c0998d419edc94ab008dbc96bdf845b4b4a085ab0d567c24fff651`; kontrakt `2026-08-03.4` zahrnuje M1.4/M1.5/M1.7 tabulky | 2026-08-03 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
@@ -193,6 +195,10 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 40 | M1.4 kroužkové programy `e6fad8e` | nabídka, období, účast, kapacita, beneficiary, audit a ruční bezpečná aktivace |
 | 41 | M1.6 cílené události `218bfd3` | M:N cíle, transakční oprávnění, snapshot a kompatibilita s čekací listinou |
 | 42 | Integrace druhého paralelního přírůstku | migration catalog 25/25, plná sada 236/1779, audit 0 advisories, 296 lintů, backup 109/1 a browser smoke |
+| 43 | M1.4 automatický lifecycle `15cd57b`, `589d79b` | paid aktivace, storno/refund, audit a bezpečné pořadí zámků; SQLite/MariaDB |
+| 44 | M1.5 provedení rolloveru `8cf6774`, `94ab4a2` | fingerprint, výjimky, auditovaný přesun, idempotence a dvouprocesový concurrency smoke |
+| 45 | M1.7 veřejný profil a velodrom `9d8cee5` | self profil, DOB, kapacita/exkluzivita, storno/rebook, ruční paid confirm; SQLite/MariaDB/browser |
+| 46 | Integrace třetího paralelního přírůstku | migration catalog 28/28, plná sada 258/2029, audit 0 advisories, 310 lintů, backup 117/2 a autentizovaný browser smoke |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
@@ -203,8 +209,9 @@ Shop přírůstek zůstává lokálním a dosud nenasazeným krokem: má staging
 kontrolní UI, kanonický katalog, řízenou aktivaci zboží, K2 vazby účtů na
 sportovce, checkout, objednávku, ručně potvrzenou bankovní platbu, storno,
 fulfillment, refundaci, kupóny, beneficiary snapshot položky a první programovou
-účast/prodloužení. Automatické navázání programu na refund/storno ještě nemá;
-chybí také automatická platba, Stripe, produkční import a externí KIS zápis.
+účast/prodloužení včetně automatického navázání na paid/storno/refund. Veřejný
+velodrom zatím pro placený slot používá ruční potvrzení; chybí shop objednávka s
+QR, automatická platba, Stripe, produkční import a externí KIS zápis.
 
 Session increment používá vlastní cookie `EVIDENCESESSID`; jeho budoucí deploy
 jednorázově odhlásí existující relace. DB revokace a atomický HMAC rate limit jsou

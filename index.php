@@ -576,6 +576,9 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a href="club_programs_admin.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-calendar-range text-primary"></i>Kroužkové programy
                 <?= roleBadge('sync_evidence') ?></a>
+              <a href="verejny_velodrom_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-bicycle text-primary"></i>Veřejné hodiny velodromu
+                <?= roleBadge('sync_evidence') ?></a>
             </div>
           </div>
           <?php endif; ?>

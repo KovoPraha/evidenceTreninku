@@ -94,9 +94,17 @@ return [
                 )
                 SQL);
         }
-        $systemTrainer = $pdo->prepare('SELECT id FROM treneri WHERE email=? ORDER BY id LIMIT 1');
+        $systemTrainer = $pdo->prepare('SELECT id,jmeno,role,aktivni FROM treneri WHERE email=? ORDER BY id LIMIT 1');
         $systemTrainer->execute(['system.public-profile@localhost.invalid']);
-        $systemTrainerId = (int)$systemTrainer->fetchColumn();
+        $systemTrainerRow = $systemTrainer->fetch(PDO::FETCH_ASSOC) ?: null;
+        if ($systemTrainerRow !== null
+            && ((string)$systemTrainerRow['jmeno'] !== 'Automat veřejných profilů'
+                || (string)$systemTrainerRow['role'] !== 'trener'
+                || (int)$systemTrainerRow['aktivni'] !== 0)
+        ) {
+            throw new RuntimeException('Public profile system trainer identity conflict.');
+        }
+        $systemTrainerId = (int)($systemTrainerRow['id'] ?? 0);
         if ($systemTrainerId < 1) {
             $insertSystemTrainer = $pdo->prepare(
                 "INSERT INTO treneri(jmeno,email,heslo,role,aktivni) VALUES (?,?,?,'trener',0)"

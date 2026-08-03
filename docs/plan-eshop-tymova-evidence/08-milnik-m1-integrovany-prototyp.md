@@ -327,21 +327,22 @@ MariaDB procesy.
 
 Procenta jsou odhad pokrytí akceptačních cest M1, nikoliv množství kódu.
 
-| Proud | Stav po druhém paralelním přírůstku | Hlavní mezera |
+| Proud | Stav po třetím paralelním přírůstku | Hlavní mezera |
 |---|---:|---|
 | stávající tréninková Evidence | 92 % | dotažení zápisu skutečné docházky a produktová prohlídka |
-| účty, rodič a osoby | 78 % | vlastní účet dítěte v seedu a mutační self/guardian cesty |
+| účty, rodič a osoby | 88 % | vlastní účet dítěte v seedu a akceptační průchod jeho omezeným pohledem |
 | běžné zboží a objednávka | 88 % | sjednocený portál a produkční UX |
-| programy/kroužky | 60 % | automatizace aktivace po úhradě, storno/refund a celý A03–A04 průchod |
-| sezóny a soupisky | 68 % | auditované provedení rolloveru a individuální výjimky |
+| programy/kroužky | 82 % | celý ruční A03–A04 průchod v jednotném portálu a produktová kontrola textů |
+| sezóny a soupisky | 85 % | akceptační provedení nad kopií dat a doladění administračního UX |
 | události a přihlášky | 78 % | placený scénář a UX validace časové platnosti soupisky |
-| veřejnost a velodrom přes e-shop | 15 % | jednotný onboarding, slot a účastníci |
-| integrovaný demo průchod | 65 % | dokončení A03–A07, veřejný scénář A09 a stránka testovacích scénářů |
+| veřejnost a velodrom přes e-shop | 70 % | napojit placený slot na shop objednávku, bankovní QR a automatickou rekonciliaci |
+| integrovaný demo průchod | 78 % | stránka testovacích scénářů, dětský login a vlastníkova prohlídka A01–A10 |
 
-Celý M1 je po druhém paralelním přírůstku přibližně na 65 %. E-shopový základ,
-rodinný rozsah, soupisky, plánování tréninku, kroužkové nabídky a cílené události
-mají integrované localhost řezy. Největší mezery jsou nyní automatický životní
-cyklus programové účasti po úhradě, provedení rolloveru a veřejná rezervace.
+Celý M1 je po třetím paralelním přírůstku přibližně na 78 %. E-shopový základ,
+rodinný rozsah, soupisky, plánování tréninku, kroužkové nabídky, cílené události,
+automatický životní cyklus programové účasti, provedení rolloveru a veřejná
+rezervace mají integrované localhost řezy. Největší mezery jsou nyní jednotný
+akceptační rozcestník, dětský login a shop objednávka s QR pro placený velodrom.
 
 ## Co následuje po M1
 

@@ -50,6 +50,9 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804130000_training_roster_bridge',
                 '20260804140000_club_programs',
                 '20260804150000_club_event_roster_targets',
+                '20260804160000_club_program_lifecycle',
+                '20260804170000_kis_roster_rollover_execution',
+                '20260804180000_public_velodrome',
             ],
             array_keys($catalog)
         );
@@ -91,9 +94,11 @@ final class AuthSecurityMigrationTest extends TestCase
         $statement = $pdo->prepare('INSERT INTO nastaveni (klic, hodnota) VALUES (:key, :value)');
         $statement->execute(['key' => 'schema_version', 'value' => \LEGACY_SCHEMA_VERSION]);
 
-        $pdo->exec('CREATE TABLE treneri (id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1)');
-        $pdo->exec('INSERT INTO treneri (id, aktivni) VALUES (1, 1)');
+        $pdo->exec('CREATE TABLE treneri (id INTEGER PRIMARY KEY, jmeno TEXT, email TEXT UNIQUE, heslo TEXT, role TEXT, aktivni INTEGER NOT NULL DEFAULT 1)');
+        $pdo->exec("INSERT INTO treneri (id,jmeno,email,heslo,role,aktivni) VALUES (1,'Admin','admin@example.test','x','admin',1)");
         $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE sportovist (id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE individualni_lekce (id INTEGER PRIMARY KEY)');
         $pdo->exec(
             'CREATE TABLE verejni_uzivatele ('
             . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1, '
@@ -105,7 +110,8 @@ final class AuthSecurityMigrationTest extends TestCase
         );
         $pdo->exec(
             'CREATE TABLE verejne_rezervace ('
-            . 'id INTEGER PRIMARY KEY, potvrzovaci_token TEXT NULL, cas_rezervace TEXT NOT NULL)'
+            . 'id INTEGER PRIMARY KEY, lekce_id INTEGER NULL, stav TEXT NOT NULL DEFAULT \'ceka\', '
+            . 'slot_cas_od TEXT NULL, potvrzovaci_token TEXT NULL, cas_rezervace TEXT NOT NULL)'
         );
         $pdo->exec(
             "INSERT INTO verejne_rezervace (id, potvrzovaci_token, cas_rezervace) "

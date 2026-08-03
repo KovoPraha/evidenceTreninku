@@ -24,6 +24,7 @@ final class PublicVelodromeWiringTest extends TestCase
         self::assertStringContainsString('uq_public_booking_active_person', $migration);
         self::assertStringContainsString('public_velodrome_reservation_events', $migration);
         self::assertStringContainsString('trg_public_velodrome_legacy_close', $migration);
+        self::assertStringContainsString('Public profile system trainer identity conflict.', $migration);
         self::assertStringContainsString('function publicProfileSave', $profile);
         self::assertStringContainsString("'public-account:'", $profile);
         self::assertStringContainsString('function publicVelodromeReserve', $booking);
