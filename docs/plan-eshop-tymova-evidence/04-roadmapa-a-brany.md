@@ -1,5 +1,11 @@
 # 04 – Roadmapa a brány
 
+> **Aktualizace 3. 8. 2026:** Pro nejbližší produktovou práci má přednost
+> [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md). Tento dokument zůstává
+> dlouhodobou rizikovou roadmapou; dřívější předpoklad dlouhého KIS shadow
+> provozu byl nahrazen opakovatelnými testovacími importy a jednorázovým ostrým
+> cutoverem až po akceptaci systému.
+
 Roadmapa je řízená rizikem, ne kalendářem. Další fáze začne až po splnění brány
 předchozí fáze. KIS a Shoptet se během přechodu nevypínají automaticky.
 

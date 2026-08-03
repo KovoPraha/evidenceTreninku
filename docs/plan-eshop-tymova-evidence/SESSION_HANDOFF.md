@@ -18,6 +18,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Původní base: `58ec8ec985d447dfe901481ac8bb24b944b03d08`
 - Produkční deploy bez výslovného souhlasu: zakázán
 - Produkční DB změny bez výslovného souhlasu: zakázány
+- Aktuální produktová autorita pro localhost:
+  [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md); cílem je prokliknutelná
+  integrace stávající Evidence, e-shopu a nové členské evidence. Fio, Stripe,
+  Excel/exporty a ostrý import jsou mimo M1.
 - Poslední dokončená akce: K3 má administrační frontu neodeslaných e-mailů a
   auditované bezpečné ruční retry (`4cd0eae`). K4 má první checkout přihlášeného
   účtu pro aktivní `goods`: košík, ochranu proti tiché změně ceny, neměnný
@@ -43,10 +47,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   skladová ochrana, objednávka s QR i administrace soupisky. Celkem 198/1483
   testů a 276 PHP lintů prošlo; produkce se nezměnila.
   Produkční workflow ani lokální/produkční DB se nezměnily
-- Další přesná akce: doplnit GitHub Secret `SSH_KNOWN_HOSTS` a produkční
-  `AUTH_RATE_LIMIT_PEPPER`, poté provést pouze autorizovaný první release.
-  Potvrdit KIS identifikátor a retenci; v K4 následně navrhnout read-only import
-  pohybů a bezpečné automatické párování plateb z Fio
+- Další přesná akce: zahájit M1.1 pouze na localhostu – doplnit vlastní účet
+  dítěte, rodinný finanční pohled a příjemce služby/objednávkové položky včetně
+  IDOR testů. Produkční Secret/config, deploy, Fio a ostrý import zůstávají
+  samostatně blokované do pozdějšího výslovného rozhodnutí.
 
 ## Stav etap podle akceptačních bran
 
@@ -59,7 +63,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | K2 – účty, osoby a rodič–dítě | 75 % | stabilní KIS identifikátor, bezpečné párování reálného exportu a hraniční review |
 | K3 – akce a přihlášky | 88 % | rozhodnutí o ručních změnách čekací listiny, export účastníků a produkční UX |
 | K4 – objednávky a platby | 75 % | ověřit Fio shadow návrhy na reálných datech, samostatně schválit automatické potvrzení a následně Stripe |
-| K5 – KIS shadow mode a cutover | 25 % | návrhy rozdílů KIS soupisky vs. interní tým, paritní reporty, export změn, řízený shadow provoz a samostatně schválený cutover |
+| K5 – náhrada starého KIS | 25 % | M1 členské funkce, jednorázový finální import, paritní kontrola a schválený cutover bez dlouhodobé synchronizace |
 
 ## Pořadí autority
 

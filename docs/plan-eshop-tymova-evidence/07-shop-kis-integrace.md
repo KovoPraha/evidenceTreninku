@@ -1,5 +1,10 @@
 # 07 – Plán napojení e-shopu na členské a KIS funkce
 
+> **Aktualizace 3. 8. 2026:** Tento dokument zachovává technickou historii K1–K5.
+> Nejbližší implementační pořadí a nově potvrzený jednorázový KIS/Shoptet
+> cutover určuje [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md).
+> Kroužek je v cílovém modelu program/služba, nikoliv jednorázová událost.
+
 Stav: K1 pracovní katalog i řízená aktivace běžného zboží jsou implementované;
 K2 identita a claim jsou implementované. K3 má první celý průchod bezplatným
 kroužkem. Evidence zůstává samostatnou aplikací; Velocota

@@ -68,10 +68,10 @@ kterém lze vysvětlit každou změnu člena, objednávky, platby i kreditu.
 |---|---|---|---|
 | D-001 | Tvar aplikace | modulární monolit v Evidence; adaptéry na hranicích | doporučeno |
 | D-002 | Kde bude e-shop | interní modul Evidence, ne nový samostatný backend | doporučeno |
-| D-003 | Shoptet | jednorázový import podle stabilního SKU; žádný dlouhodobý master | potvrdit dostupný export |
-| D-004 | KIS | nejdříve shadow mode a paritní report; cutover až samostatným rozhodnutím | blokuje ostré nahrazení |
+| D-003 | Shoptet | testovací importy jsou opakovatelné; produkční data se po dokončení systému převedou jedním řízeným cutoverem | potvrzeno 3. 8. 2026 |
+| D-004 | KIS | starý KIS bude po dokončení systému nahrazen jednorázovou řízenou migrací; dlouhodobá synchronizace se neplánuje | potvrzeno 3. 8. 2026 |
 | D-005 | Účet člena | pro MVP Evidence `verejni_uzivatele`; účet se aktivuje postupně | doporučeno |
-| D-006 | Rodina | vazební tabulka účet ↔ osoba s rolí a platností; ne jediný `sportovec_id` | blokuje návrh identity |
+| D-006 | Rodina | rodič spravuje více dětí; dítě může mít vlastní účet; vazba účet ↔ osoba má roli a platnost | potvrzeno 3. 8. 2026 |
 | D-007 | Budoucí sdílení uživatelů | Evidence zůstává samostatná; případně lze později federovat nebo propojit pouze identitu, bez sdílení doménových dat | potvrzeno 2. 8. 2026; mimo MVP |
 | D-008 | Klubové akce | nová doména; nepoužívat účetní `ucto_udalosti` | doporučeno |
 | D-009 | Kredit | neměnný ledger; reward a peněžní dobití jako oddělené kapsy | vyžaduje účetní/právní potvrzení |
@@ -81,6 +81,10 @@ kterém lze vysvětlit každou změnu člena, objednávky, platby i kreditu.
 | D-013 | Doprava | osobní odběr v MVP, Packeta až po stabilní objednávce | doporučeno |
 | D-014 | Hranice vůči Velocotě | žádná provozní/doménová integrace se neplánuje; případné sdílení uživatelů je jediný samostatný budoucí kontrakt | potvrzeno 2. 8. 2026 |
 | D-015 | Migrace | číslované migrace s ledgerem, CLI kontrolou a zálohou před spuštěním | blokuje finanční schéma |
+| D-016 | Registr osob | každý účastník sportovní služby nebo rezervace je právě jednou v `sportovci`; samotný profil neznamená klubové členství | potvrzeno 3. 8. 2026 |
+| D-017 | Sezóny soupisek | kroužkové soupisky používají školní rok, závodní soupisky kalendářní rok; délka služby je nezávislá | potvrzeno 3. 8. 2026 |
+| D-018 | Rollover soupisek | věkové řady postupují 1. ledna, disciplínové soupisky se přenášejí a kroužkové vyžadují účast/prodloužení | potvrzeno 3. 8. 2026 |
+| D-019 | Veřejné služby | registrace veřejnosti a rezervace velodromu probíhají přes e-shop a vytvářejí/propojují účastnický profil | potvrzeno 3. 8. 2026 |
 
 ## Otevřené otázky pro vlastníka produktu
 

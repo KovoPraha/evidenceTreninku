@@ -1,9 +1,12 @@
 # 06 – Program board
 
 Aktualizováno: 3. 8. 2026 (localhost demo a KIS soupisky `fa452fd`)
-Aktuální programová brána: **F0 – červená**
-Povolená práce: plánování, odstranění blokátorů F0, izolovaný katalog a řízená připravenost produktů
-Zakázaný start: veřejný storefront, checkout, Stripe, Fio, wallet a ostrý KIS cutover
+Aktuální produkční brána: **F0 – červená**
+Aktuální lokální produktový milník: **M1 – integrovaný testovatelný prototyp**
+Povolená práce: localhost přírůstky M1 podle
+[08 – Milník M1](08-milnik-m1-integrovany-prototyp.md), testy a dokumentace
+Zakázaný start: produkční aktivace nových funkcí, Stripe, automatické Fio,
+wallet, exporty a ostrý KIS/Shoptet cutover
 
 ## Ověřený výchozí stav
 

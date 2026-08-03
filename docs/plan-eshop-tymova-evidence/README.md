@@ -1,8 +1,9 @@
 # Program rozšíření Evidence: e-shop a týmová evidence
 
 Stav dokumentu: živý programový plán
-Datum auditu: 1. 8. 2026
-Implementace nových funkcí: **zahájena bezpečným Shoptet stagingem a jeho administrací**
+Datum auditu: 3. 8. 2026
+Implementace nových funkcí: **první lokální vertikály existují; aktuální
+produktovou prioritou je integrovaný a prokliknutelný milník M1**
 
 ## Účel
 
@@ -10,8 +11,8 @@ Tato sada převádí mluvené zadání do proveditelného programu. Má dvě hla
 produktové větve:
 
 1. interní a veřejný e-shop nahrazující dnešní Shoptet,
-2. úplná členská a týmová evidence, která nejprve integruje a později může
-   nahradit KIS.
+2. úplná členská a týmová evidence, která po jednorázovém řízeném cutoveru
+   nahradí KIS.
 
 Společným základem jsou identity, platby, kreditní ledger, audit, notifikace,
 bezpečný deploy a provozní dohled.
@@ -52,7 +53,8 @@ aktuální stav je vždy v `SESSION_HANDOFF.md`.
 | [04 – Roadmapa a brány](04-roadmapa-a-brany.md) | Etapy, závislosti a měřitelná akceptační kritéria |
 | [05 – Řízení vláken](05-rizeni-vlaken.md) | Pravidla pro řídicí a pracovní vlákna, předávací protokol |
 | [06 – Program board](06-program-board.md) | Aktuální stav, pořadí prvních úkolů a podmínky jejich startu |
-| [07 – Shop a KIS](07-shop-kis-integrace.md) | Konkrétní integrační tok katalogu, kroužků, účastníků, rezervací a KIS shadow mode |
+| [07 – Shop a KIS](07-shop-kis-integrace.md) | Technická historie katalogu, kroužků, účastníků, rezervací a původního KIS shadow návrhu |
+| [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md) | Kanonický plán integrovaného localhost prototypu, implementační pořadí a akceptační prohlídka |
 | [Session handoff](SESSION_HANDOFF.md) | Obnovitelný stav řídicího tasku, aktivní práce a další krok |
 | [Prompt nového řídicího tasku](PROMPT-NOVE-RIDICI-VLAKNO.md) | Text ke zkopírování při otevření pokračujícího tasku |
 
@@ -65,8 +67,9 @@ aktuální stav je vždy v `SESSION_HANDOFF.md`.
    službami.
 3. Shoptet použít jako jednorázový, opakovatelný import produktů, ne jako
    dlouhodobý obousměrný master.
-4. KIS během přechodu ponechat jako zdroj a Evidence provozovat v shadow mode;
-   přepnout zdroj pravdy až po prokázané paritě.
+4. Starý KIS použít jako zdroj jednorázové migrace až po dokončení a akceptaci
+   prototypu. Testovací importy mohou být opakovatelné, ale dlouhodobá provozní
+   synchronizace se neplánuje.
 5. Pro klubové akce vytvořit novou doménu. `ucto_udalosti` ponechat účetnictví;
    není to registrační systém členů.
 6. Platby sdílet mezi e-shopem, událostmi, členskými předpisy a dobíjením, ale
