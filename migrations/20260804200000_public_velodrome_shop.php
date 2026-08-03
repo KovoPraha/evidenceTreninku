@@ -30,8 +30,8 @@ return [
                 CREATE TABLE public_velodrome_cart_items (
                     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                     cart_id BIGINT UNSIGNED NOT NULL,
-                    lesson_id INT UNSIGNED NOT NULL,
-                    beneficiary_sportovec_id INT UNSIGNED NOT NULL,
+                    lesson_id INT NOT NULL,
+                    beneficiary_sportovec_id INT NOT NULL,
                     note VARCHAR(1000) NULL,
                     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -62,9 +62,9 @@ return [
                 CREATE TABLE public_velodrome_order_items (
                     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                     order_id BIGINT UNSIGNED NOT NULL,
-                    reservation_id INT UNSIGNED NOT NULL,
-                    lesson_id INT UNSIGNED NOT NULL,
-                    beneficiary_sportovec_id INT UNSIGNED NOT NULL,
+                    reservation_id INT NOT NULL,
+                    lesson_id INT NOT NULL,
+                    beneficiary_sportovec_id INT NOT NULL,
                     lesson_name_snapshot VARCHAR(255) NOT NULL,
                     lesson_date_snapshot DATE NOT NULL,
                     starts_at_snapshot TIME NOT NULL,

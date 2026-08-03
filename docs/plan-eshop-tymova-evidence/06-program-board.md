@@ -1,6 +1,6 @@
 # 06 – Program board
 
-Aktualizováno: 3. 8. 2026 (třetí paralelní M1 přírůstek)
+Aktualizováno: 3. 8. 2026 (M1.8 integrovaný akceptační přírůstek)
 Aktuální produkční brána: **F0 – červená**
 Aktuální lokální produktový milník: **M1 – integrovaný testovatelný prototyp**
 Povolená práce: localhost přírůstky M1 podle
@@ -16,15 +16,15 @@ wallet, exporty a ostrý KIS/Shoptet cutover
 | poslední ověřený deploy | GitHub run `30668559417`, úspěšný |
 | produkční schema/PHP | `2.20.2` / `8.2.32` |
 | vzdálený `main` | PR #1 až #6 sloučeny po vrstvách; `7f48b50b128b65f7340442ba33bfb9c66c27703a`, finální run `30743017895` úspěšný |
-| lokální práce | třetí paralelní M1 přírůstek: platební lifecycle programů `15cd57b` + `589d79b`, provedení rolloveru `8cf6774` + `94ab4a2` a veřejný velodrom `9d8cee5`; bez produkčních změn |
+| lokální práce | M1.8: akceptační rozcestník `bf3caa2`, omezený sportovní přístup `91b105f` a placený velodrom přes shop `664f855`; bez produkčních změn |
 | bezpečnostní snapshot | `d2b3c56` na `codex/pre-reconcile-20260801`, pouze lokálně |
 | odchylka lokálního main | odstraněna fast-forwardem; unikátní práce je zachována ve snapshot větvi |
 | syntax | všechny soubory jednotlivých paralelních přírůstků a integrační PHP soubory prošly lintem |
 | dependency audit | 0 advisories lokálně; produkční stav nebyl v tomto přírůstku měněn |
-| automatické testy | 258 testů / 2029 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
-| migrace | 28 číslovaných migrací; nové M1 migrace `160000`, `170000`, `180000` byly aplikovány pouze na localhost a katalog je 28/28 current |
+| automatické testy | 281 testů / 2251 assertions lokálně; poslední vzdálený důkaz zůstává GitHub CI run `30743017895` |
+| migrace | 30 číslovaných migrací; nové M1.8 migrace `190000`, `200000` byly aplikovány pouze na localhost a katalog je 30/30 current |
 | deploy/backup | fail-closed záloha, preflight pepperu a pořadí release → migrace → aktivace PHP jsou v `main`; chybí GitHub Secret `SSH_KNOWN_HOSTS` a produkční pepper nebyl ověřen |
-| restore drill | post-migration localhost backup má 117 tabulek / 2 triggery a ověřený checksum; ownership kontrakt `2026-08-03.4` zahrnuje nové M1 tabulky; produkční artefakt nebyl testován |
+| restore drill | post-M1.8 záloha má 121 tabulek / 2 triggery, ověřený checksum a ownership kontrakt `2026-08-03.5` se čtyřmi novými tabulkami |
 | KIS matcher | dále zpřísněn: jméno-only ani e-mail-only se automaticky nepřijmou, rozdílné datum narození je konflikt; ostrý import zůstává blokovaný |
 | Shoptet katalog | reálných 241/807 bylo po auditované kontrole transakčně převedeno do izolovaného draft katalogu; opakování bez duplicity, veřejně aktivních produktů 0 |
 | Aktivace katalogu | `5500927`: jednotlivé `goods` lze ručně aktivovat s plain-text veřejným snapshotem a auditem; K3 typy jsou fail-closed; veřejný storefront stále neexistuje |
@@ -61,6 +61,15 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M1.5 provedení rolloveru | `8cf6774`, `94ab4a2` | fingerprint náhledu, individuální výjimky, auditovaný přesun a idempotentní souběh chráněný DB/advisory zámkem |
 | M1.7 veřejný velodrom | `9d8cee5` | kanonický self profil, datum narození, sdílené/výhradní sloty, kapacita, storno/rebook a ruční potvrzení placeného slotu |
 | integrační brána | následující commit | katalog 28/28, 258/2029, audit 0 advisories, 310 lintů, backup 117/2 a autentizovaný browser smoke profilu, velodromu a rollover preview |
+
+## M1.8 integrovaný akceptační přírůstek
+
+| Proud | Commit v `main` | Přijatý důkaz |
+|---|---|---|
+| A01–A10 rozcestník | `bf3caa2` | localhost-only, admin+CSRF reset seedu, žádná hesla v UI, pravdivé ready/partial stavy |
+| omezený sportovní přístup | `91b105f` | vlastní session a revokace, DB-scoped read-only přehled, žádní sourozenci ani rodičovské mutace |
+| placený velodrom přes shop | `664f855` | standardní order/payment/QR, snapshot slotu, paid aktivace, storno/refund a uvolnění kapacity |
+| integrační brána | následující commit | katalog 30/30, opakovaný seed, plná sada, backup `.5` a browser A02/A09 včetně lifecycle |
 
 ## Aktivní rozhodnutí
 

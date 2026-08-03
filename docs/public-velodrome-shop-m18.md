@@ -42,7 +42,11 @@ Forward migrace: `20260804200000_public_velodrome_shop`. Je opakovatelná a vytv
 - `PublicVelodromeShopWiringTest`: MariaDB `FOR UPDATE`, deterministické pořadí a unikátní indexy.
 - `PublicVelodromeTest`, `ShopCheckoutTest` a `ClubProgramPaymentLifecycleTest`: regresní sousední kontrakty.
 
-Skutečný dvouprocesový MariaDB smoke se musí pouštět pouze nad jednorázovou testovací databází. V této větvi nebyl spuštěn, protože zadání výslovně zakázalo změny databáze.
+Na localhost MariaDB proběhla skutečná migrace, vytvoření objednávky a QR,
+potvrzení platby, aktivace rezervace, storno, refundace a opětovné uvolnění
+kapacity. Dvouprocesový závod posledního místa zůstává pokryt SQLite rollbackem
+a statickým MariaDB `FOR UPDATE` kontraktem; samostatný souběžný smoke je ještě
+vhodné doplnit nad jednorázovou testovací databází.
 
 ## Zbývající rizika
 

@@ -11,6 +11,20 @@ require_once dirname(__DIR__, 2) . '/includes/auth_session.php';
 
 final class ChildAccessTest extends TestCase
 {
+    public function testBindingTrainerOrPublicIdentityClearsRestrictedAthleteMode(): void
+    {
+        $_SESSION = [];
+        \auth_session_bind_child(9, 4);
+        \auth_session_bind_public_user(8, 3);
+        self::assertArrayNotHasKey('sportovec_pristup_id', $_SESSION);
+        self::assertSame(8, $_SESSION['verejny_uzivatel_id']);
+
+        \auth_session_bind_child(9, 4);
+        \auth_session_bind_trainer(7, 2);
+        self::assertArrayNotHasKey('sportovec_pristup_id', $_SESSION);
+        self::assertSame(7, $_SESSION['trener_id']);
+    }
+
     protected function tearDown(): void
     {
         $_SESSION = [];

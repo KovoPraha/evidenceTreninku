@@ -74,6 +74,26 @@ final class PublicVelodromeShopTest extends TestCase
         self::assertTrue(\shopOrderAdminConfirmRefund($pdo, (int)$order['id'], 7, 'REF-VELO-1', 'Vratka odeslána.', true)['changed']);
     }
 
+    public function testMixedGoodsAndVelodromeCartKeepsBothItemShapesIntact(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("INSERT INTO shop_products(id,offer_type,catalog_status) VALUES(100,'goods','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(200,100,'TEST-MIX','{}','fixed',5000,'CZK',1,0,'10',1,'active')");
+        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(100,'active','Testovací zboží','Smíšený košík')");
+        $cart = \shopCartGetOrCreate($pdo, 10);
+        $pdo->prepare('INSERT INTO shop_cart_items(cart_id,variant_id,quantity) VALUES(?,?,1)')
+            ->execute([(int)$cart['id'], 200]);
+        \publicVelodromeShopAddToCart($pdo, 10, $this->slot($pdo, 2, 25000));
+
+        $detail = \shopCartDetail($pdo, 10);
+
+        self::assertSame(200, (int)$detail['items'][0]['variant_id']);
+        self::assertSame('Testovací zboží', $detail['items'][0]['public_name']);
+        self::assertArrayNotHasKey('lesson_id', $detail['items'][0]);
+        self::assertArrayHasKey('lesson_id', $detail['velodrome_items'][0]);
+        self::assertSame(30000, $detail['total_minor']);
+    }
+
     public function testCapacityIsHeldAtCheckoutAndLosingCheckoutRollsBackCompletely(): void
     {
         $pdo = $this->database();

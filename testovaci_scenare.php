@@ -138,7 +138,7 @@ $statusLabels = [
                     <p class="text-muted mb-0"><?= acceptanceHubH($resetAvailability['reason']) ?> Seed je opakovatelný a nemaže cizí legacy data.</p>
                 </div>
                 <?php if ($resetAvailability['available']): ?>
-                    <form method="post" onsubmit="return confirm('Opravdu znovu připravit testovací data LOCALHOST?');">
+                    <form method="post">
                         <?= csrf_field() ?>
                         <input type="hidden" name="action" value="reset_local_demo">
                         <div class="form-check mb-2">

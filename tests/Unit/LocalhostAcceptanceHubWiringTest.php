@@ -25,7 +25,8 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringContainsString('localhostAcceptanceRunSeedReset', $page);
         self::assertStringContainsString('localhostAcceptanceScenarios', $page);
         self::assertStringContainsString("['HTTP_HOST', 'SERVER_ADDR', 'REMOTE_ADDR']", $helper);
-        self::assertStringContainsString("[PHP_BINARY, \$root . '/bin/seed-local-demo.php']", $helper);
+        self::assertStringContainsString("[\$cliBinary, \$root . '/bin/seed-local-demo.php']", $helper);
+        self::assertStringContainsString('PHP_BINDIR', $helper);
         self::assertStringContainsString("['bypass_shell' => true]", $helper);
         self::assertStringContainsString("\$environment['APP_HOST'] = 'localhost'", $helper);
         self::assertStringContainsString('stream_get_contents($pipes[1])', $helper);

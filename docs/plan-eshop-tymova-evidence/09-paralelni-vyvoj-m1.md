@@ -105,14 +105,27 @@ Společný base: `6c3324f`
 Všechny migrace třetího kola byly aplikovány pouze na localhost. Produkce, push,
 Fio ani Stripe se v tomto kole neměnily.
 
+## Čtvrté paralelní kolo – M1.8
+
+Společný base: `dbc1a7a`
+
+| Proud | Branch | Přijatý commit | Výsledek |
+|---|---|---|---|
+| A01–A10 akceptační hub | `codex/m18-acceptance-hub` | `fef4017` → `bf3caa2` | localhost-only rozcestník a bezpečný admin+CSRF reset seedu |
+| omezený sportovní přístup | `codex/m18-child-access` | `c9f6a44` → `91b105f` | vlastní účet/session, DB-scoped read-only pohled, revokace a provisioning |
+| placený velodrom | `codex/m18-paid-velodrome` | `fb6ce0e` → `664f855` | standardní shop order/payment/QR a transakční lifecycle rezervace |
+| integrace | `main` | následující integrační commit | FK oprava MariaDB, smíšený košík, seed, backup `.5`, navigace a browser lifecycle |
+
+Migrace `190000` a `200000` byly aplikovány pouze na localhost. Produkce, push,
+Fio ani Stripe se nezměnily.
+
 ## Další vhodné paralelní kolo
 
-Po přijetí třetího kola lze opět oddělit:
+Po vlastníkova průchodu M1.8 lze opět oddělit:
 
-- M1.8 jednotný localhost rozcestník a akceptační scénáře A01–A10,
-- dětský login a jeho omezený pohled bez rodičovských oprávnění,
-- placený velodrom napojený na shop objednávku, QR a bankovní lifecycle.
+- průvodce přechodem kroužek → závodní tým pro A05,
+- jednotnou read-only auditní časovou osu osoby pro A10,
+- expiraci nezaplacených shop rezervací a produktové pravidlo kupónů pro služby.
 
-Placený velodrom musí navázat na už stabilní společný profil a příjemce služby;
-nový proud proto smí rozšířit sdílený checkout až po samostatné integrační kontrole
-pořadí zámků, storna a refundace.
+Expirace pending objednávek smí uvolnit rezervaci pouze přes stejný auditovaný
+storno lifecycle jako ruční storno; nesmí přímo mazat rezervace ani platby.

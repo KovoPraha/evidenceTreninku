@@ -79,6 +79,9 @@ function auth_session_bind_trainer(int $trainerId, int $sessionVersion): void
         throw new InvalidArgumentException('Invalid trainer authentication binding.');
     }
 
+    // Athlete mode is exclusive in both directions. A later trainer login must
+    // not leave the restricted athlete identity attached to the same session.
+    auth_session_clear_identity('child');
     $_SESSION['trener_id'] = $trainerId;
     $_SESSION[AUTH_SESSION_TRAINER_VERSION_KEY] = $sessionVersion;
 }
@@ -89,6 +92,9 @@ function auth_session_bind_public_user(int $userId, int $sessionVersion): void
         throw new InvalidArgumentException('Invalid public authentication binding.');
     }
 
+    // Parent/public and trainer identities may coexist by the legacy contract,
+    // but neither may coexist with the restricted athlete identity.
+    auth_session_clear_identity('child');
     $_SESSION['verejny_uzivatel_id'] = $userId;
     $_SESSION[AUTH_SESSION_PUBLIC_VERSION_KEY] = $sessionVersion;
 }

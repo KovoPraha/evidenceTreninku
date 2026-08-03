@@ -327,22 +327,24 @@ MariaDB procesy.
 
 Procenta jsou odhad pokrytí akceptačních cest M1, nikoliv množství kódu.
 
-| Proud | Stav po třetím paralelním přírůstku | Hlavní mezera |
+| Proud | Stav po M1.8 akceptačním přírůstku | Hlavní mezera |
 |---|---:|---|
 | stávající tréninková Evidence | 92 % | dotažení zápisu skutečné docházky a produktová prohlídka |
-| účty, rodič a osoby | 88 % | vlastní účet dítěte v seedu a akceptační průchod jeho omezeným pohledem |
-| běžné zboží a objednávka | 88 % | sjednocený portál a produkční UX |
-| programy/kroužky | 82 % | celý ruční A03–A04 průchod v jednotném portálu a produktová kontrola textů |
+| účty, rodič a osoby | 94 % | self-service obnova hesla sportovce a produktová prohlídka oprávnění |
+| běžné zboží a objednávka | 90 % | produkční UX a pravidlo kupónů pro služby |
+| programy/kroužky | 86 % | celý vlastníkům provedený A03–A04 průchod a produktová kontrola textů |
 | sezóny a soupisky | 85 % | akceptační provedení nad kopií dat a doladění administračního UX |
 | události a přihlášky | 78 % | placený scénář a UX validace časové platnosti soupisky |
-| veřejnost a velodrom přes e-shop | 70 % | napojit placený slot na shop objednávku, bankovní QR a automatickou rekonciliaci |
-| integrovaný demo průchod | 78 % | stránka testovacích scénářů, dětský login a vlastníkova prohlídka A01–A10 |
+| veřejnost a velodrom přes e-shop | 90 % | expirace nezaplacených rezervací a rozhodnutí, zda kupóny platí na sloty |
+| integrovaný demo průchod | 88 % | vlastníkova prohlídka A01–A10; průvodce A05 a jednotná auditní časová osa A10 |
 
-Celý M1 je po třetím paralelním přírůstku přibližně na 78 %. E-shopový základ,
+Celý M1 je po M1.8 akceptačním přírůstku přibližně na 86 %. E-shopový základ,
 rodinný rozsah, soupisky, plánování tréninku, kroužkové nabídky, cílené události,
 automatický životní cyklus programové účasti, provedení rolloveru a veřejná
-rezervace mají integrované localhost řezy. Největší mezery jsou nyní jednotný
-akceptační rozcestník, dětský login a shop objednávka s QR pro placený velodrom.
+rezervace mají integrované localhost řezy. Přibyly A01–A10 rozcestník, omezený
+sportovní login a shop objednávka s QR pro placený velodrom. Největší mezery jsou
+nyní vlastníkova ruční prohlídka, průvodce A05, auditní časová osa A10 a expirace
+nezaplacených rezervací.
 
 ## Co následuje po M1
 

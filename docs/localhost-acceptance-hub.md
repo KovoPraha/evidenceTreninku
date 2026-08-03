@@ -29,5 +29,6 @@ reset pravdivě označí jako nedostupný.
 - **Nedostupné** — alespoň jeden soubor cílové obrazovky chybí; stav se dopočítá
   při každém načtení a odkaz se nepovažuje za hotový jen podle dokumentace.
 
-Rozcestník sám nic nemění. Mutace se provedou až na cílových obrazovkách a pouze
-po jejich běžném potvrzení, CSRF kontrole a autorizaci.
+Rozcestník sám kromě výslovně potvrzené obnovy localhost seedu nic nemění. Ostatní
+mutace se provedou až na cílových obrazovkách a pouze po jejich běžném potvrzení,
+CSRF kontrole a autorizaci.

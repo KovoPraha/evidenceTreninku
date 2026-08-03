@@ -56,7 +56,7 @@ function localhostAcceptanceSeedResetAvailability(string $root): array
     if (!function_exists('proc_open')) {
         return ['available' => false, 'reason' => 'Spouštění lokálního procesu není v PHP dostupné.'];
     }
-    if (!is_file(PHP_BINARY)) {
+    if (localhostAcceptanceCliBinary($root) === null) {
         return ['available' => false, 'reason' => 'PHP nemá dostupnou bezpečnou cestu ke svému CLI programu.'];
     }
     if (!is_file($root . '/bin/seed-local-demo.php')) {
@@ -67,6 +67,28 @@ function localhostAcceptanceSeedResetAvailability(string $root): array
     }
 
     return ['available' => true, 'reason' => 'Opakovatelné demo lze bezpečně obnovit.'];
+}
+
+function localhostAcceptanceCliBinary(?string $root = null): ?string
+{
+    $suffix = DIRECTORY_SEPARATOR === '\\' ? '.exe' : '';
+    $candidates = [
+        rtrim((string)PHP_BINDIR, '/\\') . DIRECTORY_SEPARATOR . 'php' . $suffix,
+        PHP_BINARY,
+    ];
+    if ($root !== null && DIRECTORY_SEPARATOR === '\\') {
+        // XAMPP's Apache module may report httpd.exe as PHP_BINARY and a stale
+        // compile-time PHP_BINDIR. Derive php.exe only from the already trusted
+        // application root: <xampp>/htdocs/<app> -> <xampp>/php/php.exe.
+        $candidates[] = dirname(dirname($root)) . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'php.exe';
+    }
+    foreach (array_unique($candidates) as $candidate) {
+        $basename = strtolower(pathinfo($candidate, PATHINFO_FILENAME));
+        if ($basename === 'php' && is_file($candidate)) {
+            return $candidate;
+        }
+    }
+    return null;
 }
 
 /** @return array{ok:bool,reason:string} */
@@ -80,6 +102,10 @@ function localhostAcceptanceRunSeedReset(string $root, int $timeoutSeconds = 45)
         return ['ok' => false, 'reason' => 'Neplatný časový limit obnovy.'];
     }
 
+    $cliBinary = localhostAcceptanceCliBinary($root);
+    if ($cliBinary === null) {
+        return ['ok' => false, 'reason' => 'PHP nemá dostupnou bezpečnou cestu ke svému CLI programu.'];
+    }
     $environment = getenv();
     if (!is_array($environment)) {
         $environment = [];
@@ -93,7 +119,7 @@ function localhostAcceptanceRunSeedReset(string $root, int $timeoutSeconds = 45)
 
     try {
         $process = proc_open(
-            [PHP_BINARY, $root . '/bin/seed-local-demo.php'],
+            [$cliBinary, $root . '/bin/seed-local-demo.php'],
             $descriptorSpec,
             $pipes,
             $root,
@@ -172,13 +198,13 @@ function localhostAcceptanceScenarios(string $root): array
             ],
         ],
         [
-            'id' => 'A02', 'role' => 'Dítě', 'area' => 'Zákaznická část', 'declared_status' => 'partial',
-            'steps' => ['Přihlaste se samostatným účtem dítěte.', 'Otevřete Sportovní přehled.', 'Ověřte, že nejsou dostupné údaje sourozence ani rodiče.'],
+            'id' => 'A02', 'role' => 'Dítě', 'area' => 'Sportovní část', 'declared_status' => 'ready',
+            'steps' => ['Přihlaste se samostatným účtem sportovce.', 'Otevřete Můj sport.', 'Ověřte, že nejsou dostupné údaje sourozence ani rodiče.'],
             'expected' => 'Dítě vidí jen vlastní tréninky, platby, události a soupisky.',
-            'note' => 'Omezený dětský účet ještě není součástí opakovatelného localhost seedu.',
+            'note' => 'Seed vytváří jeden omezený účet; jeho login neobsahuje rodinné ani administrační mutace.',
             'links' => [
-                ['label' => 'Přihlášení zákazníka', 'path' => 'booking/prihlaseni.php', 'scope' => 'customer'],
-                ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
+                ['label' => 'Přihlášení sportovce', 'path' => 'booking/sportovec_prihlaseni.php', 'scope' => 'customer'],
+                ['label' => 'Můj sport', 'path' => 'booking/muj_sport.php', 'scope' => 'customer'],
             ],
         ],
         [
@@ -240,10 +266,10 @@ function localhostAcceptanceScenarios(string $root): array
             ],
         ],
         [
-            'id' => 'A09', 'role' => 'Veřejnost', 'area' => 'Zákaznická část', 'declared_status' => 'partial',
+            'id' => 'A09', 'role' => 'Veřejnost', 'area' => 'Zákaznická část', 'declared_status' => 'ready',
             'steps' => ['Zaregistrujte nový testovací účet s datem narození.', 'Zkontrolujte veřejný profil.', 'Rezervujte bezplatný nebo placený demo slot velodromu.'],
             'expected' => 'Vznikne jeden profil sportovce a jedna kapacitně chráněná rezervace stejné osoby.',
-            'note' => 'Profil a rezervace fungují; placený slot ještě nevytváří shop objednávku ani QR předpis.',
+            'note' => 'Bezplatný slot se potvrzuje přímo; placený slot pokračuje přes standardní shop objednávku a testovací QR.',
             'links' => [
                 ['label' => 'Registrace', 'path' => 'booking/registrace.php', 'scope' => 'customer'],
                 ['label' => 'Veřejný profil', 'path' => 'booking/verejny_profil.php', 'scope' => 'customer'],

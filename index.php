@@ -602,6 +602,14 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a href="eshop_identity_admin.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-people text-primary"></i>Účty, rodiče a sportovci
                 <span class="role-badge role-admin">admin</span></a>
+              <a href="kis_child_access_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-person-badge text-primary"></i>Přístupy sportovců
+                <span class="role-badge role-admin">admin</span></a>
+              <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
+              <a href="testovaci_scenare.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-check2-square text-warning"></i>Testovací scénáře M1
+                <span class="role-badge role-admin">localhost</span></a>
+              <?php endif; ?>
               <a href="sprava_sportovist.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-building-gear text-danger"></i>Správa sportovišť
                 <?= roleBadge('sprava_sportovist') ?></a>

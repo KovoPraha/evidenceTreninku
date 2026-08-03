@@ -104,6 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="text-center text-muted small mt-3">
                 Nemáte účet? <a href="registrace.php">Zaregistrujte se</a>
             </p>
+            <p class="text-center small mb-0">
+                Jste sportovec? <a href="sportovec_prihlaseni.php">Přihlaste se omezeným sportovním účtem</a>
+            </p>
         </div>
     </div>
 </div>

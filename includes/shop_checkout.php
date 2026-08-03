@@ -79,6 +79,7 @@ function shopCartDetail(PDO $pdo, int $accountId): array
         $decoded = json_decode((string)$item['attributes_json'], true);
         $item['attributes'] = is_array($decoded) ? $decoded : [];
     }
+    unset($item);
     $velodromeItems = publicVelodromeShopCartItems($pdo, (int)$cart['id']);
     foreach ($velodromeItems as $item) {
         $total += (int)$item['line_amount_minor'];

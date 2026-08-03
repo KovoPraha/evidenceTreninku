@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.4';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.5';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -56,6 +56,8 @@ const EVIDENCE_TABLES = [
     'club_seasons',
     'club_team_series',
     'club_teams',
+    'child_access_accounts',
+    'child_access_events',
     'cviky',
     'dalsi_cinnosti',
     'email_log',
@@ -84,6 +86,8 @@ const EVIDENCE_TABLES = [
     'public_profile_events',
     'public_profile_settings',
     'public_self_profiles',
+    'public_velodrome_cart_items',
+    'public_velodrome_order_items',
     'public_velodrome_reservation_events',
     'rezervace_sportovist',
     'segmenty',
