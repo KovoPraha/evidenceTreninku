@@ -1,6 +1,6 @@
 # 06 – Program board
 
-Aktualizováno: 3. 8. 2026 (K4 Fio shadow import `f23a332`)
+Aktualizováno: 3. 8. 2026 (localhost demo a KIS soupisky `fa452fd`)
 Aktuální programová brána: **F0 – červená**
 Povolená práce: plánování, odstranění blokátorů F0, izolovaný katalog a řízená připravenost produktů
 Zakázaný start: veřejný storefront, checkout, Stripe, Fio, wallet a ostrý KIS cutover

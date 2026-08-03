@@ -46,4 +46,3 @@ skenovat pro skutečnou platbu. Fio import zůstává vypnutý.
 8. Projít objednávky, Fio shadow přehled a `kis_rosters_admin.php`.
 
 Před větší změnou lokální DB používejte `bin/db-backup.php` s cílem mimo webroot.
-

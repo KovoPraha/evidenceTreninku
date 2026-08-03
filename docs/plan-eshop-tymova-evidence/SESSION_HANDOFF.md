@@ -37,6 +37,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   neměnnou deduplikaci a návrhy podle přesného VS, částky a měny. Návrh nemění
   stav platby; 195/1457 testů, 270 PHP lintů a izolovaný MariaDB smoke prošly.
   Automatické potvrzení platby a Stripe zatím nevznikají.
+  `fa452fd` zprovozňuje kompletní localhost demo a první KIS funkční vrstvu:
+  sezóny, týmy, auditovanou soupisku, snapshot UCI ID a historické odebrání bez
+  mazání. Lokálně prošel zákaznický login, dvě osoby, kroužek, košík, kupón,
+  skladová ochrana, objednávka s QR i administrace soupisky. Celkem 198/1483
+  testů a 276 PHP lintů prošlo; produkce se nezměnila.
   Produkční workflow ani lokální/produkční DB se nezměnily
 - Další přesná akce: doplnit GitHub Secret `SSH_KNOWN_HOSTS` a produkční
   `AUTH_RATE_LIMIT_PEPPER`, poté provést pouze autorizovaný první release.
@@ -54,7 +59,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | K2 – účty, osoby a rodič–dítě | 75 % | stabilní KIS identifikátor, bezpečné párování reálného exportu a hraniční review |
 | K3 – akce a přihlášky | 88 % | rozhodnutí o ručních změnách čekací listiny, export účastníků a produkční UX |
 | K4 – objednávky a platby | 75 % | ověřit Fio shadow návrhy na reálných datech, samostatně schválit automatické potvrzení a následně Stripe |
-| K5 – KIS shadow mode a cutover | 15 % | paritní reporty, export změn, řízený shadow provoz a samostatně schválený cutover |
+| K5 – KIS shadow mode a cutover | 25 % | návrhy rozdílů KIS soupisky vs. interní tým, paritní reporty, export změn, řízený shadow provoz a samostatně schválený cutover |
 
 ## Pořadí autority
 
@@ -72,16 +77,16 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | K4 zákaznické objednávky/vratky `f8b12a4` + kupóny `135803a` + Fio shadow návrhy `f23a332`; následuje pouze tento stavový commit | 2026-08-03 | Git | ano |
+| integrační branch | K4 objednávky/kupóny/Fio shadow až `f23a332`; localhost demo a KIS sezóny/týmy/soupisky `fa452fd`; následuje pouze tento stavový commit | 2026-08-03 | Git | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | `2.20.2` | 2026-08-01 | read-only DB dotaz | ano |
-| testy | 195/1457; K4 checkout/fulfillment/refund/vlastnický seznam, kupóny a Fio shadow import mají SQLite testy; izolovaný MariaDB návrh, deduplikace a neměnný `pending` stav prošly; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
+| lokální schema | legacy `2.20.2` + 20/20 číslovaných migrací; localhost demo aktivní | 2026-08-03 | migration check + MariaDB | ano |
+| testy | 198/1483; K4 checkout/fulfillment/refund/kupóny/Fio a KIS soupisky mají SQLite testy; localhost browser prošel zákaznickým checkoutem a KIS adminem; poslední vzdálený main CI důkaz zůstává starší | 2026-08-03 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
-| lokální backup drill | 59 přítomných tabulek, 1 trigger, checksum OK; restore 253 sportovců / 455 tréninků; kontrakt `2026-08-02.3` obsahuje `auth_login_limits` i lokálně nepřítomné `ucto_gs_*` | 2026-08-02 | izolovaná XAMPP DB + code audit | zopakovat s produkčním artefaktem |
+| lokální backup drill | před migrací 59 tabulek; po migraci a demo datech 101 tabulek, 1 trigger, checksum OK; kontrakt `2026-08-03.1` zahrnuje shop, akce, Fio i KIS soupisky | 2026-08-03 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
@@ -166,6 +171,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 31 | K4 zákaznické objednávky/vratky `f8b12a4` | přijato lokálně; account-scoped seznam/detail, `refunded`, bankovní reference a idempotentní audit; SQLite/MariaDB, 187/1376 |
 | 32 | K4 kupóny `135803a` | přijato lokálně; fixed/percentage, platnost/minimum/limit, audit, fingerprint, snapshot a souběžně bezpečný counter; SQLite/MariaDB, 190/1425 |
 | 33 | K4 Fio shadow import `f23a332` | přijato lokálně; pouze GET `/periods`, kontrola IBAN, minimální bankovní data, neměnná deduplikace a návrh VS + částka + měna bez změny platby; SQLite/MariaDB, 195/1457 |
+| 34 | Localhost demo + KIS sezóny/týmy/soupisky `fa452fd` | přijato lokálně; fail-closed seed, zákaznický/admin browser průchod, historická soupiska a audit bez externího KIS zápisu; SQLite/MariaDB/browser, 198/1483 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
