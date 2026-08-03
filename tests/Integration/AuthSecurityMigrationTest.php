@@ -53,6 +53,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804160000_club_program_lifecycle',
                 '20260804170000_kis_roster_rollover_execution',
                 '20260804180000_public_velodrome',
+                '20260804190000_child_access_accounts',
             ],
             array_keys($catalog)
         );
@@ -60,6 +61,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertSame(1, $this->sessionVersion($pdo, 'verejni_uzivatele', 1));
         self::assertTrue($this->tableExists($pdo, 'auth_login_limits'));
         self::assertTrue($this->tableExists($pdo, 'shop_catalog_import_runs'));
+        self::assertTrue($this->tableExists($pdo, 'child_access_accounts'));
+        self::assertTrue($this->tableExists($pdo, 'child_access_events'));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
         self::assertSame(
             one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),

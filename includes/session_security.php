@@ -146,7 +146,9 @@ function app_session_lifecycle_decision(array $session, int $now, ?array $policy
 
 function app_session_has_authenticated_identity(): bool
 {
-    return isset($_SESSION['trener_id']) || isset($_SESSION['verejny_uzivatel_id']);
+    return isset($_SESSION['trener_id'])
+        || isset($_SESSION['verejny_uzivatel_id'])
+        || isset($_SESSION['sportovec_pristup_id']);
 }
 
 function app_session_rotate_csrf_token(): string
@@ -264,7 +266,32 @@ function app_session_logout_public_identity(?int $now = null): void
         $_SESSION['verejny_uzivatel_session_version']
     );
 
-    if (!isset($_SESSION['trener_id'])) {
+    if (!isset($_SESSION['trener_id']) && !isset($_SESSION['sportovec_pristup_id'])) {
+        app_session_destroy($now);
+        return;
+    }
+
+    if (!session_regenerate_id(true)) {
+        app_session_destroy($now);
+        return;
+    }
+
+    app_session_rotate_csrf_token();
+    $_SESSION[APP_SESSION_AUTHENTICATED_AT] ??= $now;
+    $_SESSION[APP_SESSION_LAST_ACTIVITY_AT] = $now;
+    $_SESSION[APP_SESSION_ROTATED_AT] = $now;
+}
+
+function app_session_logout_child_identity(?int $now = null): void
+{
+    $now ??= time();
+    unset(
+        $_SESSION['sportovec_pristup_id'],
+        $_SESSION['sportovec_pristup_jmeno'],
+        $_SESSION['sportovec_session_version']
+    );
+
+    if (!isset($_SESSION['trener_id']) && !isset($_SESSION['verejny_uzivatel_id'])) {
         app_session_destroy($now);
         return;
     }
