@@ -167,3 +167,117 @@ function clubEventNotificationMailSender(string $recipient, string $subject, str
     $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
     return mail($recipient, $encodedSubject, $body, "Content-Type: text/plain; charset=UTF-8\r\n");
 }
+
+/** @return array{pending:int,processing:int,failed:int,sent:int} */
+function clubEventNotificationAdminSummary(PDO $pdo): array
+{
+    $summary = ['pending' => 0, 'processing' => 0, 'failed' => 0, 'sent' => 0];
+    foreach ($pdo->query(
+        'SELECT status,COUNT(*) AS total FROM club_event_notifications GROUP BY status'
+    )->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if (array_key_exists((string)$row['status'], $summary)) {
+            $summary[(string)$row['status']] = (int)$row['total'];
+        }
+    }
+    return $summary;
+}
+
+/** @return list<array<string,mixed>> */
+function clubEventNotificationAdminList(PDO $pdo, string $status = '', int $limit = 100): array
+{
+    if (!in_array($status, ['', 'pending', 'processing', 'failed', 'sent'], true)) {
+        throw new InvalidArgumentException('Neplatný filtr stavu oznámení.');
+    }
+    $limit = max(1, min(500, $limit));
+    $sql = 'SELECT n.*,e.name AS event_name,s.jmeno AS child_first_name,'
+        . 's.prijmeni AS child_last_name FROM club_event_notifications n '
+        . 'JOIN club_event_registrations r ON r.id=n.registration_id '
+        . 'JOIN club_events e ON e.id=r.event_id JOIN sportovci s ON s.id=r.sportovec_id ';
+    $parameters = [];
+    if ($status !== '') {
+        $sql .= 'WHERE n.status=? ';
+        $parameters[] = $status;
+    } else {
+        $sql .= "WHERE n.status<>'sent' ";
+    }
+    $sql .= 'ORDER BY CASE n.status WHEN \'failed\' THEN 0 WHEN \'processing\' THEN 1 ELSE 2 END,'
+        . 'n.available_at,n.id LIMIT ' . $limit;
+    $statement = $pdo->prepare($sql);
+    $statement->execute($parameters);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/** @return array{id:int,status:string,changed:bool} */
+function clubEventNotificationAdminRetry(
+    PDO $pdo,
+    int $notificationId,
+    int $actorTrainerId,
+    string $reason,
+    bool $confirmed
+): array {
+    $reason = trim($reason);
+    if ($notificationId < 1 || $actorTrainerId < 1 || $reason === '' || !$confirmed) {
+        throw new InvalidArgumentException(
+            'Ruční opakování vyžaduje oznámení, administrátora, důvod a výslovné potvrzení.'
+        );
+    }
+    if (mb_strlen($reason, 'UTF-8') > 1000) {
+        throw new InvalidArgumentException('Důvod smí mít nejvýše 1000 znaků.');
+    }
+    $pdo->beginTransaction();
+    try {
+        $sql = 'SELECT id,status,attempts,available_at FROM club_event_notifications WHERE id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$notificationId]);
+        $notification = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!$notification) {
+            throw new ClubEventNotificationException('Oznámení nebylo nalezeno.');
+        }
+        if ($notification['status'] === 'sent') {
+            throw new ClubEventNotificationException('Odeslané oznámení nelze znovu zařadit bez nového případu.');
+        }
+        if ($notification['status'] === 'processing') {
+            throw new ClubEventNotificationException(
+                'Oznámení právě vlastní worker. Vyčkejte alespoň 15 minut nebo ověřte jeho stav.'
+            );
+        }
+        $alreadyReady = $notification['status'] === 'pending'
+            && (int)$notification['attempts'] === 0
+            && new DateTimeImmutable((string)$notification['available_at']) <= new DateTimeImmutable('now');
+        if ($alreadyReady) {
+            $pdo->commit();
+            return ['id' => $notificationId, 'status' => 'pending', 'changed' => false];
+        }
+        $pdo->prepare(
+            "UPDATE club_event_notifications SET status='pending',attempts=0,available_at=CURRENT_TIMESTAMP,"
+            . 'claimed_at=NULL,claim_token=NULL,last_error=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+        )->execute([$notificationId]);
+        $audit = $pdo->prepare(
+            'INSERT INTO club_event_notification_events '
+            . '(notification_id,actor_trainer_id,action,from_status,attempts_before,reason) '
+            . "VALUES (?,?,'manual_retry',?,?,?)"
+        );
+        $audit->execute([
+            $notificationId,
+            $actorTrainerId,
+            (string)$notification['status'],
+            (int)$notification['attempts'],
+            $reason,
+        ]);
+        $pdo->commit();
+        return ['id' => $notificationId, 'status' => 'pending', 'changed' => true];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($exception instanceof InvalidArgumentException
+            || $exception instanceof ClubEventNotificationException
+        ) {
+            throw $exception;
+        }
+        throw new ClubEventNotificationException('Ruční opakování selhalo bez částečného zápisu.', 0, $exception);
+    }
+}

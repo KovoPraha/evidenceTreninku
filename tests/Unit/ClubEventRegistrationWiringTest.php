@@ -70,4 +70,22 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringContainsString('clubEventNotificationProcessOne', $source);
         self::assertStringNotContainsString('DB_PASS=', $source);
     }
+
+    public function testNotificationAdminRequiresAdminCsrfReasonAndExplicitRetry(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $page = (string)file_get_contents($root . '/eshop_notifications_admin.php');
+        $service = (string)file_get_contents($root . '/includes/club_event_notification.php');
+        $migration = (string)file_get_contents(
+            $root . '/migrations/20260803210000_club_event_notification_admin.php'
+        );
+        self::assertStringContainsString("roleAtLeast('admin')", $page);
+        self::assertStringContainsString('csrf_verify', $page);
+        self::assertStringContainsString("(\$_POST['confirm_retry'] ?? '') === '1'", $page);
+        self::assertStringContainsString('clubEventNotificationAdminRetry', $page);
+        self::assertStringContainsString("status='processing'", $service);
+        self::assertStringContainsString("notification['status'] === 'sent'", $service);
+        self::assertStringContainsString('club_event_notification_events', $migration);
+        self::assertStringContainsString('manual_retry', $service);
+    }
 }

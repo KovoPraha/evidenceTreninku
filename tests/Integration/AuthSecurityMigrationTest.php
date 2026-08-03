@@ -38,6 +38,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260803150000_club_event_terms',
                 '20260803170000_club_event_waitlist',
                 '20260803190000_club_event_notifications',
+                '20260803210000_club_event_notification_admin',
             ],
             array_keys($catalog)
         );

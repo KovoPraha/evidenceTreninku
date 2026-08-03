@@ -209,6 +209,35 @@ final class ClubEventRegistrationTest extends TestCase
         self::assertNull(\clubEventNotificationProcessOne($pdo,static fn():bool=>true));
     }
 
+    public function testAdminRetryIsAuditedAndCannotTouchProcessingOrSentMessage(): void
+    {
+        $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
+        $confirmed=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        \clubEventRegisterParticipant($pdo,$eventId,10,101,'2026.1',true);
+        \clubEventCancelRegistration($pdo,$confirmed['id'],10,'Uvolnění místa.');
+        $notificationId=(int)$pdo->query('SELECT id FROM club_event_notifications')->fetchColumn();
+        $pdo->exec("UPDATE club_event_notifications SET status='failed',attempts=5,last_error='Transport odmítl zprávu.'");
+        try {
+            \clubEventNotificationAdminRetry($pdo,$notificationId,7,'Kontrola adresy.',false);
+            self::fail('Explicit confirmation is required.');
+        } catch (\InvalidArgumentException) {
+        }
+        $result=\clubEventNotificationAdminRetry($pdo,$notificationId,7,'Adresa ověřena správcem.',true);
+        self::assertTrue($result['changed']);
+        $row=$pdo->query('SELECT status,attempts,last_error FROM club_event_notifications')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('pending',$row['status']);self::assertSame(0,(int)$row['attempts']);self::assertNull($row['last_error']);
+        $audit=$pdo->query('SELECT * FROM club_event_notification_events')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('manual_retry',$audit['action']);self::assertSame('failed',$audit['from_status']);self::assertSame(5,(int)$audit['attempts_before']);self::assertSame(7,(int)$audit['actor_trainer_id']);
+        self::assertFalse(\clubEventNotificationAdminRetry($pdo,$notificationId,7,'Duplicitní klik.',true)['changed']);
+        $pdo->exec("UPDATE club_event_notifications SET status='processing',claim_token='0123456789abcdef0123456789abcdef'");
+        try { \clubEventNotificationAdminRetry($pdo,$notificationId,7,'Kolize.',true); self::fail('Processing must be locked.'); }
+        catch (\ClubEventNotificationException) {}
+        $pdo->exec("UPDATE club_event_notifications SET status='sent',claim_token=NULL");
+        try { \clubEventNotificationAdminRetry($pdo,$notificationId,7,'Duplikát.',true); self::fail('Sent must be immutable.'); }
+        catch (\ClubEventNotificationException) {}
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_event_notification_events')->fetchColumn());
+    }
+
     public function testNotificationPersistenceFailureRollsBackCancellationAndPromotion(): void
     {
         $pdo=$this->database();$eventId=$this->openFreeEvent($pdo,1);
@@ -381,6 +410,7 @@ final class ClubEventRegistrationTest extends TestCase
             '20260803150000_club_event_terms.php',
             '20260803170000_club_event_waitlist.php',
             '20260803190000_club_event_notifications.php',
+            '20260803210000_club_event_notification_admin.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);

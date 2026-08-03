@@ -86,6 +86,14 @@ APP_HOST=data.kovopraha.cz php /absolutni/cesta/bin/club-event-notifications.php
 Návratový JSON obsahuje počty `processed`, `sent` a `failed`. Návrat `mail()`
 potvrzuje pouze převzetí lokálním poštovním systémem, nikoliv doručení do schránky.
 
+Administrační stránka `eshop_notifications_admin.php` zobrazuje počty i detail
+stavů `pending`, `processing`, `failed` a `sent`. Výchozí filtr ukazuje pouze
+neodeslané položky. Ruční opakování je dostupné jen administrátorovi, vyžaduje
+CSRF token, důvod a výslovné potvrzení. Stav `processing` nelze přepsat během
+držení workerem a stav `sent` nelze vrátit do fronty. Povolené opakování v jedné
+transakci vynuluje pracovní počet pokusů a zapíše původní stav, původní počet
+pokusů, administrátora a důvod do `club_event_notification_events`.
+
 ## Záměrně chybí v tomto průchodu
 
 - obecné ruční změny pořadí čekací listiny,
@@ -98,6 +106,8 @@ Model vyžaduje migrace `20260803110000_club_events` a
 `20260803130000_club_event_registrations` a `20260803150000_club_event_terms`.
 Čekací listina navíc vyžaduje `20260803170000_club_event_waitlist`.
 Oznámení a správní storno vyžadují `20260803190000_club_event_notifications`.
+Administrační dohled a ruční retry navíc vyžadují
+`20260803210000_club_event_notification_admin`.
 Read-only kontrola je
 `php bin/migrate.php --check`; produkční migrace musí proběhnout před aktivací
 nové verze PHP.
