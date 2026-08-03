@@ -35,15 +35,18 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringNotContainsString('./ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"', $workflow);
     }
 
-    public function testBackupOwnershipIncludesAuthLimiterTable(): void
+    public function testBackupOwnershipIncludesCurrentMigrationTables(): void
     {
         $backup = $this->source('bin/db-backup.php');
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-02.3'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-03.1'",
             $backup
         );
+        foreach (['shop_orders', 'club_events', 'account_person_roles', 'fio_account_movements', 'club_roster_members'] as $table) {
+            self::assertStringContainsString("'{$table}'", $backup);
+        }
     }
 
     private function source(string $relativePath): string

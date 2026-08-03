@@ -330,6 +330,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-arrow-repeat me-2 text-primary"></i>Synchronizace evidence</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_sync_center.php') ?>" href="kis_sync_center.php">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>KIS centrum</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('kis_rosters_admin.php') ?>" href="kis_rosters_admin.php">
+                                <i class="bi bi-people-fill me-2 text-primary"></i>KIS týmy a soupisky</a></li>
                             <li><a class="dropdown-item<?= _dropActive('sprava_segmentu.php') ?>" href="sprava_segmentu.php">
                                 <i class="bi bi-signpost-split me-2"></i>Správa segmentů</a></li>
 

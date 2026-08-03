@@ -72,6 +72,15 @@ if (is_string($shopBankBic) && $shopBankBic !== '') define('SHOP_BANK_BIC', $sho
 if (is_string($shopBankAccountLabel) && $shopBankAccountLabel !== '') define('SHOP_BANK_ACCOUNT_LABEL', $shopBankAccountLabel);
 if (is_string($shopBankDueDays) && preg_match('/^[0-9]{1,2}$/D', $shopBankDueDays) === 1) define('SHOP_BANK_DUE_DAYS', (int)$shopBankDueDays);
 
+// Bezpečné localhost demo. Bankovní kód 9999 nepatří skutečné bance.
+if (JE_LOKALNE) {
+    defined('AUTH_RATE_LIMIT_PEPPER') || define('AUTH_RATE_LIMIT_PEPPER', 'localhost-only-rate-limit-pepper-do-not-deploy');
+    defined('SHOP_BANK_IBAN') || define('SHOP_BANK_IBAN', 'CZ7599999999999999999999');
+    defined('SHOP_BANK_BIC') || define('SHOP_BANK_BIC', '');
+    defined('SHOP_BANK_ACCOUNT_LABEL') || define('SHOP_BANK_ACCOUNT_LABEL', 'LOCALHOST TEST - NEPLATIT');
+    defined('SHOP_BANK_DUE_DAYS') || define('SHOP_BANK_DUE_DAYS', 7);
+}
+
 // Read-only Fio import v shadow rezimu. Pouzijte vyhradne token typu "Sledovani uctu".
 // Token nikdy neukladejte do tohoto souboru ani do Gitu; patri do FIO_API_TOKEN v prostredi.
 $fioImportEnabled = getenv('FIO_IMPORT_ENABLED');
