@@ -55,6 +55,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804180000_public_velodrome',
                 '20260804190000_child_access_accounts',
                 '20260804200000_public_velodrome_shop',
+                '20260804210000_shop_order_expiration',
             ],
             array_keys($catalog)
         );
@@ -66,6 +67,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'child_access_events'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_cart_items'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_order_items'));
+        self::assertTrue($this->columnExists($pdo, 'shop_orders', 'payment_expires_at'));
+        self::assertTrue($this->columnExists($pdo, 'shop_orders', 'expired_at'));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
         self::assertSame(
             one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),
@@ -141,6 +144,14 @@ final class AuthSecurityMigrationTest extends TestCase
         );
         $statement->execute(['name' => $table]);
         return (bool)$statement->fetchColumn();
+    }
+
+    private function columnExists(PDO $pdo,string $table,string $column):bool
+    {
+        foreach($pdo->query('PRAGMA table_info('.$table.')')->fetchAll(PDO::FETCH_ASSOC)as$definition){
+            if(($definition['name']??null)===$column)return true;
+        }
+        return false;
     }
 
     private function indexExists(PDO $pdo, string $index): bool

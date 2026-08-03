@@ -127,6 +127,21 @@ final class PublicVelodromeShopTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM public_velodrome_order_items')->fetchColumn());
     }
 
+    public function testExpirationReleasesHeldVelodromeCapacityExactlyOnce():void
+    {
+        $pdo=$this->database();$slot=$this->slot($pdo,1,10000);
+        \publicVelodromeShopAddToCart($pdo,10,$slot);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $pdo->exec("UPDATE shop_orders SET payment_expires_at='2030-01-01 12:00:00'");$now=new \DateTimeImmutable('2030-01-02 12:00:00');
+        $result=\shopOrderExpirePending($pdo,(int)$order['id'],$now,true);self::assertSame(1,$result['velodrome_cancelled']);
+        $reservation=$pdo->query('SELECT stav,active_token,zaplaceno FROM verejne_rezervace')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('zrusena',$reservation['stav']);self::assertNull($reservation['active_token']);self::assertSame(0,(int)$reservation['zaplaceno']);
+        $event=$pdo->query("SELECT actor_type,actor_id,action,created_at FROM public_velodrome_reservation_events WHERE action='shop_order_expire'")->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('system',$event['actor_type']);self::assertNull($event['actor_id']);self::assertSame('2030-01-02 12:00:00',$event['created_at']);
+        self::assertFalse(\shopOrderExpirePending($pdo,(int)$order['id'],$now,true)['changed']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM public_velodrome_reservation_events WHERE action='shop_order_expire'")->fetchColumn());
+        \publicVelodromeShopAddToCart($pdo,11,$slot);self::assertCount(1,\shopCartDetail($pdo,11)['velodrome_items']);
+    }
+
     public function testForwardMigrationIsRepeatableOnSqlite(): void
     {
         $pdo = $this->database();
@@ -170,6 +185,7 @@ final class PublicVelodromeShopTest extends TestCase
             '20260804050000_shop_coupons.php',
             '20260804180000_public_velodrome.php',
             '20260804200000_public_velodrome_shop.php',
+            '20260804210000_shop_order_expiration.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);

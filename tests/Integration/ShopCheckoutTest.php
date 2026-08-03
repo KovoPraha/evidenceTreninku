@@ -147,6 +147,40 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(3,(int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_events')->fetchColumn());
     }
 
+    public function testExpiredPendingOrderUsesAuditedCancellationExactlyOnce():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,2);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $now=new \DateTimeImmutable('2030-01-02 12:00:00');
+        $pdo->exec("UPDATE shop_orders SET payment_expires_at='2030-01-01 12:00:00'");
+        $preview=\shopOrderExpirationPreview($pdo,$now);self::assertCount(1,$preview);self::assertSame((int)$order['id'],(int)$preview[0]['id']);
+        try{\shopOrderExpirePending($pdo,(int)$order['id'],$now,false);self::fail('Explicit confirmation is required.');}catch(\InvalidArgumentException){}
+        $result=\shopOrderExpirePending($pdo,(int)$order['id'],$now,true);
+        self::assertTrue($result['changed']);self::assertSame(1,$result['restocked_items']);self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+        $stored=$pdo->query('SELECT status,payment_status,cancelled_at,expired_at FROM shop_orders')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('cancelled',$stored['status']);self::assertSame('cancelled',$stored['payment_status']);self::assertSame('2030-01-02 12:00:00',$stored['cancelled_at']);self::assertSame($stored['cancelled_at'],$stored['expired_at']);
+        $event=$pdo->query("SELECT actor_type,actor_id,action,created_at FROM shop_order_events WHERE action='expire'")->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('system',$event['actor_type']);self::assertNull($event['actor_id']);self::assertSame('2030-01-02 12:00:00',$event['created_at']);
+        self::assertFalse(\shopOrderExpirePending($pdo,(int)$order['id'],$now,true)['changed']);
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_inventory_movements')->fetchColumn());self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='expire'")->fetchColumn());
+    }
+
+    public function testExpirationBatchDefaultsToDryRunAndRejectsPaidOrFutureOrders():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $pdo->exec("UPDATE shop_orders SET payment_expires_at='2030-01-01 12:00:00'");$now=new \DateTimeImmutable('2030-01-02 12:00:00');
+        $dry=\shopOrderExpireBatch($pdo,$now);self::assertSame(1,$dry['examined']);self::assertSame(0,$dry['expired']);self::assertSame('placed',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Paid concurrently.',true);
+        self::assertSame([],\shopOrderExpirationPreview($pdo,$now));
+        try{\shopOrderExpirePending($pdo,(int)$order['id'],$now,true);self::fail('Paid order must never expire.');}catch(\ShopCheckoutException){}
+
+        $pdo2=$this->database();\shopCartSetQuantity($pdo2,10,601,1);$future=\shopCheckoutPlace($pdo2,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo2,10)['fingerprint']);
+        $pdo2->exec("UPDATE shop_orders SET payment_expires_at='2030-01-03 12:00:00'");
+        try{\shopOrderExpirePending($pdo2,(int)$future['id'],$now,true);self::fail('Future order must not expire.');}catch(\ShopCheckoutException){}
+        self::assertSame('placed',$pdo2->query('SELECT status FROM shop_orders')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
@@ -159,6 +193,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants VALUES(601,501,'TRIKO-M','{\"size\":\"M\"}','fixed',12500,'CZK',1,2100,'5.000000',1,'active',CURRENT_TIMESTAMP),(602,502,'EVENT','{}','fixed',100,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP),(603,503,'OLD','{}','fixed',100,'CZK',1,0,NULL,1,'inactive',CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');
         $pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Tričko KOVO','Klubové tričko.'),(502,'active','Kroužek','Nejde do košíku.'),(503,'inactive','Staré','Neaktivní.')");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804210000_shop_order_expiration.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

@@ -248,8 +248,21 @@ function publicVelodromeShopActivatePaidOrderInTransaction(PDO $pdo, int $orderI
 }
 
 /** @return array{items:int,cancelled:int} */
-function publicVelodromeShopCancelOrderInTransaction(PDO $pdo, int $orderId, int $actorTrainerId, string $reason): array
+function publicVelodromeShopCancelOrderInTransaction(
+    PDO $pdo,
+    int $orderId,
+    ?int $actorId,
+    string $reason,
+    string $actorType = 'trainer',
+    ?DateTimeImmutable $now = null
+): array
 {
+    if (!in_array($actorType, ['trainer', 'system'], true)
+        || ($actorType === 'trainer' && ($actorId === null || $actorId < 1))
+        || ($actorType === 'system' && $actorId !== null)
+    ) {
+        throw new InvalidArgumentException('Neplatna auditni identita storna velodromu.');
+    }
     $items = publicVelodromeShopOrderRows($pdo, $orderId);
     $cancelled = 0;
     foreach ($items as $item) {
@@ -262,7 +275,17 @@ function publicVelodromeShopCancelOrderInTransaction(PDO $pdo, int $orderId, int
         $from = (string)$reservation['stav'];
         $pdo->prepare("UPDATE verejne_rezervace SET stav='zrusena',active_token=NULL,poznamka_trenera=? WHERE id=?")
             ->execute([$reason, (int)$reservation['id']]);
-        publicVelodromeAudit($pdo, (int)$reservation['id'], 'trainer', $actorTrainerId, 'shop_order_cancel', $from, 'zrusena', $reason);
+        publicVelodromeAudit(
+            $pdo,
+            (int)$reservation['id'],
+            $actorType,
+            $actorId,
+            $actorType === 'system' ? 'shop_order_expire' : 'shop_order_cancel',
+            $from,
+            'zrusena',
+            $reason,
+            $now
+        );
         $cancelled++;
     }
     return ['items' => count($items), 'cancelled' => $cancelled];

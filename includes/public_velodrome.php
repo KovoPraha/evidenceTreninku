@@ -412,10 +412,18 @@ function publicVelodromeAudit(
     string $action,
     ?string $fromStatus,
     string $toStatus,
-    string $note
+    string $note,
+    ?DateTimeImmutable $now = null
 ): void {
+    if ($now === null) {
+        $pdo->prepare(
+            'INSERT INTO public_velodrome_reservation_events '
+            . '(reservation_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,?,?,?,?,?,?)'
+        )->execute([$reservationId, $actorType, $actorId, $action, $fromStatus, $toStatus, $note]);
+        return;
+    }
     $pdo->prepare(
         'INSERT INTO public_velodrome_reservation_events '
-        . '(reservation_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,?,?,?,?,?,?)'
-    )->execute([$reservationId, $actorType, $actorId, $action, $fromStatus, $toStatus, $note]);
+        . '(reservation_id,actor_type,actor_id,action,from_status,to_status,note,created_at) VALUES (?,?,?,?,?,?,?,?)'
+    )->execute([$reservationId, $actorType, $actorId, $action, $fromStatus, $toStatus, $note, $now->format('Y-m-d H:i:s')]);
 }

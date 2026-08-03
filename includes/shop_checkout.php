@@ -205,9 +205,17 @@ function shopCheckoutPlace(
         if(!hash_equals($expectedCartFingerprint,shopCartFingerprint($items,$coupon,$velodromeItems)))throw new ShopCheckoutException('Cena, obsah nebo kupón košíku se změnily. Zkontrolujte nový souhrn a odešlete jej znovu.');
         if($currency!=='CZK'||$total<1) throw new ShopCheckoutException('První bankovní checkout podporuje pouze kladnou částku v CZK.');
         $publicCode='KP'.date('ymd').strtoupper(bin2hex(random_bytes(5)));
-        $insert=$pdo->prepare('INSERT INTO shop_orders(public_code,account_id,source_cart_id,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at) '
-            . "VALUES (?,?,?,?,'placed','pending','personal_pickup',?,?,?,?,?,?,CURRENT_TIMESTAMP)");
-        $insert->execute([$publicCode,$accountId,(int)$cart['id'],$keyHash,trim((string)$account['jmeno'].' '.(string)$account['prijmeni']),(string)$account['email'],$subtotal,$discount,$total,$currency]);
+        $dueAt=(new DateTimeImmutable('now +'.$bank['due_days'].' days'))->setTime(23,59,59)->format('Y-m-d H:i:s');
+        $orderValues=[$publicCode,$accountId,(int)$cart['id'],$keyHash,trim((string)$account['jmeno'].' '.(string)$account['prijmeni']),(string)$account['email'],$subtotal,$discount,$total,$currency];
+        if(shopOrderExpirationAvailable($pdo)){
+            $insert=$pdo->prepare('INSERT INTO shop_orders(public_code,account_id,source_cart_id,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at,payment_expires_at) '
+                . "VALUES (?,?,?,?,'placed','pending','personal_pickup',?,?,?,?,?,?,CURRENT_TIMESTAMP,?)");
+            $orderValues[]=$dueAt;
+        }else{
+            $insert=$pdo->prepare('INSERT INTO shop_orders(public_code,account_id,source_cart_id,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at) '
+                . "VALUES (?,?,?,?,'placed','pending','personal_pickup',?,?,?,?,?,?,CURRENT_TIMESTAMP)");
+        }
+        $insert->execute($orderValues);
         $orderId=(int)$pdo->lastInsertId();
         foreach($items as $item){
             $quantity=(int)$item['quantity'];$line=(int)$item['amount_minor']*$quantity;
@@ -239,7 +247,6 @@ function shopCheckoutPlace(
                 ->execute([(int)$coupon['id'],$orderId,$accountId,(string)$coupon['code'],(string)$coupon['discount_type'],(int)$coupon['value_minor_or_basis_points'],$discount]);
         }
         $variableSymbol=shopPaymentVariableSymbol($orderId);
-        $dueAt=(new DateTimeImmutable('now +'.$bank['due_days'].' days'))->setTime(23,59,59)->format('Y-m-d H:i:s');
         $spd=shopPaymentSpdPayload($bank['iban'],$total,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
         $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) '
             . "VALUES ('shop_order',?,'bank_transfer','pending',?,?,?,?,?,?,?,?)")
@@ -361,6 +368,84 @@ function shopOrderAdminList(PDO $pdo,int $limit=200):array
         .'ORDER BY CASE p.status WHEN \'pending\' THEN 0 WHEN \'refund_required\' THEN 1 ELSE 2 END,o.created_at DESC,o.id DESC LIMIT '.$limit)->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function shopOrderExpirationAvailable(PDO $pdo):bool
+{
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
+        $statement=$pdo->query("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='shop_orders' AND COLUMN_NAME IN ('payment_expires_at','expired_at')");
+        return (int)$statement->fetchColumn()===2;
+    }
+    foreach($pdo->query('PRAGMA table_info(shop_orders)')->fetchAll(PDO::FETCH_ASSOC)as$column){$names[]=(string)$column['name'];}
+    return isset($names)&&in_array('payment_expires_at',$names,true)&&in_array('expired_at',$names,true);
+}
+
+/** @return list<array<string,mixed>> */
+function shopOrderExpirationPreview(PDO $pdo,DateTimeImmutable $now,int $limit=200):array
+{
+    if(!shopOrderExpirationAvailable($pdo))throw new ShopCheckoutException('Expirace objednavek zatim neni migrovana.');
+    $limit=max(1,min(500,$limit));
+    $velodromeCount=publicVelodromeShopAvailable($pdo)
+        ? '(SELECT COUNT(*) FROM public_velodrome_order_items vi WHERE vi.order_id=o.id)'
+        : '0';
+    $statement=$pdo->prepare(
+        "SELECT o.id,o.public_code,o.customer_name_snapshot,o.customer_email_snapshot,o.total_minor,o.currency,"
+        . "o.payment_expires_at,p.due_at,{$velodromeCount} AS velodrome_items "
+        . "FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id "
+        . "WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending' "
+        . 'AND COALESCE(o.payment_expires_at,p.due_at) IS NOT NULL '
+        . 'AND COALESCE(o.payment_expires_at,p.due_at)<=? ORDER BY COALESCE(o.payment_expires_at,p.due_at),o.id LIMIT '.$limit
+    );
+    $statement->execute([$now->format('Y-m-d H:i:s')]);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/** @return array{examined:int,expired:int,unchanged:int,failed:int,results:list<array<string,mixed>>} */
+function shopOrderExpireBatch(PDO $pdo,DateTimeImmutable $now,bool $apply=false,int $limit=200):array
+{
+    $candidates=shopOrderExpirationPreview($pdo,$now,$limit);
+    $summary=['examined'=>count($candidates),'expired'=>0,'unchanged'=>0,'failed'=>0,'results'=>[]];
+    foreach($candidates as$candidate){
+        if(!$apply){$summary['results'][]=['order_id'=>(int)$candidate['id'],'public_code'=>(string)$candidate['public_code'],'status'=>'dry-run'];continue;}
+        try{
+            $result=shopOrderExpirePending($pdo,(int)$candidate['id'],$now,true);
+            $key=$result['changed']?'expired':'unchanged';$summary[$key]++;
+            $summary['results'][]=['order_id'=>(int)$candidate['id'],'public_code'=>(string)$candidate['public_code'],'status'=>$key];
+        }catch(ShopCheckoutException $exception){
+            $summary['failed']++;$summary['results'][]=['order_id'=>(int)$candidate['id'],'public_code'=>(string)$candidate['public_code'],'status'=>'rejected','error'=>$exception->getMessage()];
+        }
+    }
+    return $summary;
+}
+
+/** @return array<string,mixed> */
+function shopOrderExpirePending(PDO $pdo,int $orderId,DateTimeImmutable $now,bool $confirmed):array
+{
+    if($orderId<1||!$confirmed)throw new InvalidArgumentException('Expirace vyzaduje objednavku a vyslovne potvrzeni.');
+    $pdo->beginTransaction();
+    try{
+        $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
+        if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
+        $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
+        $order=shopOrderAdminLockOrder($pdo,$orderId);
+        if(!$payment||!$order)throw new ShopCheckoutException('Objednavka nebo jeji platba nebyla nalezena.');
+        if($order['status']==='cancelled'&&$order['payment_status']==='cancelled'&&$payment['status']==='cancelled'){
+            $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'cancelled','changed'=>false,'restocked_items'=>0,'velodrome_items'=>0,'velodrome_cancelled'=>0];
+        }
+        if($order['status']!=='placed'||$order['payment_status']!=='pending'||$payment['status']!=='pending'){
+            throw new ShopCheckoutException('Expirovat lze pouze nezaplacenou objednavku cekajici na platbu.');
+        }
+        $deadline=(string)($order['payment_expires_at']??$payment['due_at']??'');
+        if($deadline===''||new DateTimeImmutable($deadline)>$now)throw new ShopCheckoutException('Lhuta pro zaplaceni objednavky jeste neuplynula.');
+        if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        $reason='Automaticka expirace nezaplacene objednavky po lhute '.$deadline.'.';
+        $result=shopOrderCancelLocked($pdo,$payment,$order,'system',null,$reason,'expire',$now);
+        $pdo->commit();return $result;
+    }catch(Throwable $exception){
+        if($pdo->inTransaction())$pdo->rollBack();
+        if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
+        throw new ShopCheckoutException('Expirace selhala bez castecneho zapisu.',0,$exception);
+    }
+}
+
 /** @return array{order_id:int,payment_status:string,changed:bool} */
 function shopOrderAdminConfirmBankPayment(PDO $pdo,int $paymentId,int $actorTrainerId,string $reason,bool $confirmed):array
 {
@@ -437,6 +522,35 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         throw new ShopCheckoutException('Storno selhalo bez částečného zápisu.',0,$exception);
     }
+}
+
+/**
+ * Expiration-only cancellation core. Caller must hold payment then order locks and own the transaction.
+ * Lock order continues with inventory order items/variants, program rows, then velodrome lessons/reservations.
+ * @param array<string,mixed> $payment
+ * @param array<string,mixed> $order
+ * @return array<string,mixed>
+ */
+function shopOrderCancelLocked(PDO $pdo,array $payment,array $order,string $actorType,?int $actorId,string $reason,string $action,DateTimeImmutable $now):array
+{
+    if($actorType!=='system'||$action!=='expire')throw new LogicException('Toto jadro je vyhrazeno pro auditovanou expiraci.');
+    $orderId=(int)$order['id'];
+    if($order['status']!=='placed'||$order['payment_status']!=='pending'||$payment['status']!=='pending'){
+        throw new ShopCheckoutException('Expirovat lze pouze nezaplacenou objednavku cekajici na platbu.');
+    }
+    $timestamp=$now->format('Y-m-d H:i:s');
+    $restocked=shopOrderAdminRestock($pdo,$orderId);
+    $pdo->prepare("UPDATE payments SET status='cancelled',updated_at=? WHERE id=?")
+        ->execute([$timestamp,(int)$payment['id']]);
+    $pdo->prepare("UPDATE shop_orders SET status='cancelled',payment_status='cancelled',cancelled_at=?,expired_at=?,updated_at=? WHERE id=?")
+        ->execute([$timestamp,$timestamp,$timestamp,$orderId]);
+    $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note,created_at) VALUES (?,? ,?,'expire','placed','cancelled',?,?)")
+        ->execute([$orderId,$actorType,$actorId,$reason,$timestamp]);
+    // Pending orders must not have activated program enrollments; the assertion is made before mutation.
+    $programSync=['cancelled'=>0,'rosters_ended'=>0];
+    if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramCancelOrderInTransaction($pdo,$orderId,0,$reason);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    try{$velodromeSync=publicVelodromeShopCancelOrderInTransaction($pdo,$orderId,$actorId,$reason,$actorType,$now);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    return ['order_id'=>$orderId,'payment_status'=>'cancelled','restocked_items'=>$restocked,'changed'=>true]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_cancelled'=>$velodromeSync['cancelled']];
 }
 
 /** @return array{order_id:int,payment_status:string,changed:bool} */
