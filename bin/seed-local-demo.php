@@ -42,6 +42,16 @@ try{
     $a05Person=$pdo->prepare("SELECT id FROM sportovci WHERE email='a05-transition@localhost.test' ORDER BY id DESC LIMIT 1");$a05Person->execute();$a05PersonId=(int)$a05Person->fetchColumn();
     if($a05PersonId<1){$pdo->prepare("INSERT INTO sportovci(jmeno,prijmeni,narozeni,email,telefon,hash,uci,stav_clenstvi) VALUES ('LOCALHOST','Přechod U17','2012-05-01','a05-transition@localhost.test','',?,0,'aktivni')")->execute([public_profile_token_generate()]);$a05PersonId=(int)$pdo->lastInsertId();}
     else{$pdo->prepare("UPDATE sportovci SET jmeno='LOCALHOST',prijmeni='Přechod U17',narozeni='2012-05-01',stav_clenstvi='aktivni' WHERE id=?")->execute([$a05PersonId]);}
+    $a05Duplicates=$pdo->prepare("SELECT id FROM sportovci WHERE email='a05-transition@localhost.test' AND id<>? ORDER BY id");$a05Duplicates->execute([$a05PersonId]);
+    foreach($a05Duplicates->fetchAll(PDO::FETCH_COLUMN)as$duplicateId){
+        $duplicateRelations=$pdo->prepare("SELECT id FROM account_person_roles WHERE sportovec_id=? AND status='approved' AND valid_to IS NULL");$duplicateRelations->execute([(int)$duplicateId]);
+        foreach($duplicateRelations->fetchAll(PDO::FETCH_COLUMN)as$relationId)accountPersonRoleRevoke($pdo,(int)$relationId,$actorId,'LOCALHOST reset: archivace starší duplicitní identity A05.');
+        $duplicateAccess=$pdo->prepare('SELECT id FROM child_access_accounts WHERE sportovec_id=? AND active=1');$duplicateAccess->execute([(int)$duplicateId]);
+        foreach($duplicateAccess->fetchAll(PDO::FETCH_COLUMN)as$accessId)childAccessSetActive($pdo,(int)$accessId,false,$actorId,'LOCALHOST reset: archivace starší duplicitní identity A05.');
+        $duplicateMemberships=$pdo->prepare("SELECT id,valid_from FROM club_roster_members WHERE sportovec_id=? AND status='active' AND valid_to IS NULL");$duplicateMemberships->execute([(int)$duplicateId]);
+        foreach($duplicateMemberships->fetchAll(PDO::FETCH_ASSOC)as$member)kisRosterRemoveMember($pdo,(int)$member['id'],$actorId,(string)$member['valid_from'],'LOCALHOST reset: archivace starší duplicitní identity A05.');
+        $pdo->prepare("UPDATE sportovci SET email=?,stav_clenstvi='archiv' WHERE id=?")->execute(['archived-a05-'.(int)$duplicateId.'@localhost.invalid',(int)$duplicateId]);
+    }
     $a05GuardianRelations=$pdo->prepare("SELECT r.id FROM account_person_roles r JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.relation_role='guardian' AND r.status='approved' AND r.valid_to IS NULL AND s.email='a05-transition@localhost.test'");$a05GuardianRelations->execute([$accountId]);
     foreach($a05GuardianRelations->fetchAll(PDO::FETCH_COLUMN)as$relationId)accountPersonRoleRevoke($pdo,(int)$relationId,$actorId,'LOCALHOST reset: A05 je samostatný administrační scénář, ne dítě rodiče z A01.');
 

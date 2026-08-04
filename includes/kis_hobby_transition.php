@@ -220,6 +220,33 @@ function kisHobbyTransitionExecute(PDO $pdo, int $sourceMemberId, int $targetTea
         $targetBefore = $preview['target_member'];
         $sportovecId = (int)$source['sportovec_id'];
 
+        if (!$endHobby && $targetBefore !== null
+            && $targetBefore['status'] === 'active' && $targetBefore['valid_to'] === null
+        ) {
+            $previousRun = $pdo->prepare(
+                'SELECT r.id FROM club_roster_rollover_runs r '
+                . 'JOIN club_roster_rollover_run_items i ON i.run_id=r.id '
+                . 'WHERE i.source_member_id=? AND i.target_team_id=? AND i.sportovec_id=? '
+                . 'ORDER BY r.id DESC LIMIT 1'
+            );
+            $previousRun->execute([$sourceMemberId, $targetTeamId, $sportovecId]);
+            $runId = (int)$previousRun->fetchColumn();
+            $pdo->commit();
+            kisRosterReleaseMysqlLock($pdo, $lockName);
+            return [
+                'run_id' => $runId,
+                'source_team_id' => $sourceTeamId,
+                'target_season_id' => $targetSeasonId,
+                'sportovec_id' => $sportovecId,
+                'target_member_id' => (int)$targetBefore['id'],
+                'end_hobby' => false,
+                'fingerprint' => $previewFingerprint,
+                'moved_count' => 0,
+                'skipped_count' => 1,
+                'idempotent' => true,
+            ];
+        }
+
         if ($targetBefore === null) {
             $pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,kis_external_id_snapshot,valid_from,valid_to,created_by_trainer_id) VALUES(?,?,'active','manual',?,?,NULL,?)")
                 ->execute([$targetTeamId, $sportovecId, $source['kis_external_id_snapshot'] ?? null, $transitionOn, $actorId]);

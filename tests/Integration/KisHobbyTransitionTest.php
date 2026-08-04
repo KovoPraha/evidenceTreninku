@@ -37,6 +37,23 @@ final class KisHobbyTransitionTest extends TestCase
         self::assertSame('hobby_to_race_keep_hobby', $pdo->query('SELECT action FROM club_roster_rollover_run_items')->fetchColumn());
     }
 
+    public function testFreshPreviewAfterKeepHobbyTransitionIsAlsoNoOp(): void
+    {
+        [$pdo,$source,$target] = $this->database();
+        $preview = kisHobbyTransitionPreview($pdo, $source, $target, '2027-02-01', false);
+        $first = kisHobbyTransitionExecute($pdo, $source, $target, '2027-02-01', false, 7, 'První přechod.', true, $preview['fingerprint']);
+        $freshPreview = kisHobbyTransitionPreview($pdo, $source, $target, '2027-02-01', false);
+        $again = kisHobbyTransitionExecute($pdo, $source, $target, '2027-02-01', false, 7, 'Nový náhled stejného stavu.', true, $freshPreview['fingerprint']);
+
+        self::assertTrue($again['idempotent']);
+        self::assertSame(0, $again['moved_count']);
+        self::assertSame(1, $again['skipped_count']);
+        self::assertSame($first['run_id'], $again['run_id']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_rollover_runs')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_rollover_run_items')->fetchColumn());
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
+    }
+
     public function testStalePreviewAndWrongAgeAreRejectedWithoutPartialWrite(): void
     {
         [$pdo,$source,$target] = $this->database();

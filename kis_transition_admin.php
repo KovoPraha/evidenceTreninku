@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 (string)($_POST['preview_fingerprint'] ?? '')
             );
             $_SESSION['flash_success'] = $result['idempotent']
-                ? 'Tento přesný náhled už byl proveden; nevznikl další zápis.'
+                ? 'Cílové členství už je aktivní; nevznikl další zápis.'
                 : 'Přechod byl proveden nad stejnou identitou sportovce a auditován.';
             header('Location: kis_transition_admin.php'); exit;
         } catch (InvalidArgumentException | KisRosterException $e) {
