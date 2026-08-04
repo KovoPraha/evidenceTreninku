@@ -38,15 +38,17 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
   rozporný identifikátor fail-closed blokuje zápis,
 - M2.3e ukládá non-PII paritní report osob, stavu členství, soupisek a platebních
   signálů; M2.3f přidává `member-charge-v1`, auditní cílové tabulky a bezpečný
-  staging jednotlivých KIS předpisů. Export plateb musí mít stabilní ID předpisu
-  i částku; skutečný zápis stagingu do členských předpisů zatím zůstává vypnutý,
+  staging jednotlivých KIS předpisů. M2.3g umožňuje pouze localhost administrátorovi
+  explicitně potvrzený transakční přenos přesně spárovaných předpisů, samostatnou
+  historickou platbu pro uhrazené položky a kontrolovaný rollback; produkční přenos
+  zůstává vypnutý,
 - auditní osa osoby a localhost scénáře A01–A10.
 
 ## Výslovně otevřené nebo blokované
 
 - závěrečná uživatelská prohlídka A01–A10 a vypořádání připomínek,
-- potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, řízený
-  testovací promote jednotlivých členských předpisů a ostrý cutover,
+- potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, závěrečná
+  zkouška cutover postupu nad testovací kopií a teprve potom samostatně schválený ostrý cutover,
 - produkční doručování reset e-mailů a produkční konfigurace tajemství,
 - Stripe, automatické Fio potvrzení, kreditní wallet a TrainingPeaks,
 - produkční deploy bez výslovného souhlasu vlastníka.

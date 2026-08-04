@@ -26,12 +26,12 @@ kódu.
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
-| M2.3 zkouška migrace KIS | probíhá | 98 % | jednotlivé předpisy mají cílový kontrakt a bezpečný staging; zbývá reprezentativní anonymizovaný formát a řízený testovací promote do cíle |
+| M2.3 zkouška migrace KIS | probíhá | 99 % | cílový kontrakt, staging i auditovaný localhost promote/rollback jsou hotové; zbývá reprezentativní anonymizovaný export a finální test cutover postupu |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
 
-Orientační stav celého M2: **76 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **77 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -226,16 +226,33 @@ Dokončený technický řez M2.3f (`d69ee4f`):
 - plná sada prošla 388 testy / 3369 assertions, syntaxe 406 first-party PHP
   souborů, migrace 44/44 a Composer audit je bez nálezu.
 
+Dokončený technický řez M2.3g (`7c8b444`):
+
+- localhost administrátor může s důvodem a výslovným potvrzením transakčně přenést
+  pouze přesně spárované stagingové předpisy nad čerstvým paritním fingerprintem,
+- každý přenos má vlastní promotion, položky a auditní události; opakování je
+  idempotentní a reapply po rollbacku zachová auditní identitu,
+- uhrazený předpis vytvoří samostatný historický `payments` záznam, otevřený předpis
+  žádnou platbu nevytváří; částečné úhrady, nulové částky a chybějící datum úhrady
+  jsou fail-closed,
+- rollback před mazáním ověří nezměněný předpis, platbu i auditní historii a odstraní
+  pouze cíle vytvořené tímto přenosem; jakýkoli následný zásah rollback zablokuje,
+- browser run #13 ověřil 2/2 aktivní předpisy, jednu historickou platbu a nulové
+  paritní blokátory, následně bezpečný rollback na 0/2 a 0 plateb se dvěma auditními
+  událostmi,
+- plná sada prošla 391 testy / 3430 assertions, syntaxe 408 first-party PHP
+  souborů, migrace 45/45 a Composer audit je bez nálezu.
+
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
    export KIS a potvrdit podporovaný alias stabilního externího ID osoby.
 2. Uložit raw vstup jako neměnný artefakt s hashem, časem a verzí kontraktu.
 3. Dry-run musí pro každý řádek vrátit `create`, `exact_match`, `conflict`,
    `ambiguous`, `invalid` nebo `missing_without_archive` a vysvětlit důvod.
 4. Slabá shoda jen podle jména nebo e-mailu se nikdy automaticky nepotvrdí.
-5. V M2.3g připravit explicitní promote předpisů s fingerprintem preview,
-   transakcí, auditem a idempotencí; pouze nad izolovanou testovací DB.
-6. Připravit kompenzační rollback/obnovu a paritní report osob, členství,
-   soupisek a platebních předpisů.
+5. Na reprezentativním anonymizovaném exportu zopakovat explicitní promote i
+   kompenzační rollback a přijmout výsledný paritní report.
+6. Teprve v samostatném schváleném kroku připravit ostrý cutover, retenční dobu
+   importních artefaktů a nevratný provozní bod rozhodnutí.
 
 Brána: 100 % řádků má vysvětlený výsledek, konflikty se nepřepisují, opakovaný
 dry-run je stejný a žádný testovací běh nezmění produkci.

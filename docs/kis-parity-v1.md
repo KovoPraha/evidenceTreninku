@@ -154,7 +154,28 @@ idempotence a `club_member_charge_events` je připravený audit změn.
 Preview ukládá jednotlivé zdrojové předpisy atomicky. Duplicitní ID, nekonzistentní
 částky, neplatná měna nebo stav zruší celý běh; prázdná či záporná částka je field
 blokátor a nevytvoří stagingový předpis. Paritní JSON neobsahuje ID předpisů ani
-peněžní hodnoty. M2.3f ještě neimplementuje zápis do `club_member_charges`.
+peněžní hodnoty. Zápis do `club_member_charges` implementuje až explicitní
+localhost-only krok M2.3g níže.
+
+## M2.3g – auditovaný testovací přenos předpisů
+
+Administrátor na localhostu může nad čistým uloženým paritním reportem přenést
+jednotlivé stagingové předpisy do `club_member_charges`. Služba před zápisem znovu
+ověří uložený i odeslaný fingerprint, přesnou shodu každé osoby, úplnost stagingu,
+nulové řádkové blokátory, důvod a explicitní potvrzení. Přenos probíhá v jedné
+transakci a je idempotentní.
+
+U uhrazeného předpisu vznikne samostatný `payments` záznam s metodou `kis_import`,
+částkou, měnou a datem úhrady; otevřený předpis se za platbu nevydává. Částečně
+uhrazené řádky, nulové částky a uhrazené řádky bez data úhrady jsou fail-closed.
+Zdrojový fingerprint zahrnuje hash jednotlivých stagingových předpisů, ale report
+nezveřejňuje jejich ID ani peněžní hodnoty.
+
+Rollback nejprve porovná předpis, platbu i auditní historii se záznamem přenosu.
+Jakýkoli pozdější zásah jej zablokuje; jinak odstraní pouze cíle vytvořené daným
+přenosem a zachová samostatný audit promotion událostí. Localhost run #13 ověřil
+2/2 předpisy, jednu historickou platbu, nulové paritní blokátory po aplikaci a
+následný návrat na 0/2 předpisů a 0 plateb se dvěma auditními událostmi.
 
 ## Realistická syntetická fixture W0-G
 

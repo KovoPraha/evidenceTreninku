@@ -7,10 +7,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `d69ee4f`.
-- Implementace `d69ee4f` je commitnutá; větev `main`, upstream `origin/main`,
-  před navazujícím dokumentačním commitem lokálně `ahead 9 / behind 0`.
-- Localhost DB je 44/44. Vzdálený repozitář se v této M2.3f session neměnil;
+- Poslední přijatý implementační HEAD: `7c8b444`.
+- Implementace `7c8b444` je commitnutá; větev `main`, upstream `origin/main`,
+  před navazujícím dokumentačním commitem lokálně `ahead 11 / behind 0`.
+- Localhost DB je 45/45. Vzdálený repozitář se v této M2.3g session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -28,15 +28,20 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `d69ee4f` dokončuje M2.3f cílový model a bezpečný staging
+- Poslední dokončená akce: `7c8b444` dokončuje M2.3g auditovaný localhost přenos
+  členských předpisů. Přenos vyžaduje přesnou shodu osoby, čerstvý paritní fingerprint,
+  admina, důvod a potvrzení; běží transakčně a je idempotentní. Uhrazený předpis
+  vytváří samostatnou historickou platbu. Rollback před odstraněním pouze vlastních
+  cílů kontroluje předpis, platbu i auditní historii a při driftu fail-closed zastaví.
+  Browser run #13 ověřil 2/2 předpisy + 1 platbu + nulové blokátory a návrat na
+  0/2 + 0 plateb se dvěma auditními událostmi. Plná sada je 391/3430, syntaxe 408
+  souborů, migrace 45/45 a audit 0. Další akce: zdrojová akceptace reprezentativního
+  anonymizovaného exportu a celý cutover rehearsal nad testovací kopií.
+
+  Předchozí dokončená akce: `d69ee4f` dokončuje M2.3f cílový model a bezpečný staging
   členských předpisů. `member-charge-v1` odděluje předpis od skutečné platby,
   cílové tabulky jsou idempotentní a auditovatelné a import vyžaduje stabilní ID
-  předpisu i částku. Duplicitní ID či nekonzistentní projekce vrátí celý běh;
-  paritní report ukazuje pouze počty bez ID a peněžních hodnot. Run #12 má 2
-  stagingové předpisy, 2 čekající na přenos a celkem 3 blokátory. Browser potvrdil
-  UI; sandbox byl ověřen 2/2 → 0/2. Plná sada je 388/3369, syntaxe 406 souborů,
-  migrace 44/44 a audit 0. Další akce: M2.3g řízený testovací promote do
-  `club_member_charges` a přijetí reprezentativního anonymizovaného exportu.
+  předpisu i částku. Run #12 měl 2 stagingové předpisy a 2 čekající na přenos.
 
   Předchozí dokončená akce: `95693a2` dokončuje M2.3e uložený cutover paritní
   report. Každý nový běh atomicky porovnává osoby, aktivní členství, snapshot
@@ -381,7 +386,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 |---|---|---|
 | M1 integrovaný prototyp | technicky dokončen; Evidence, shop, rodina, programy, soupisky, události a velodrom mají localhost řezy | vlastníkova prohlídka A01–A10 |
 | M2.1 akce | admin CSV export v `1b4d9e1`, kontrakt v1, CSRF, formula ochrana a audit | produktová kontrola sloupců v tabulkovém programu |
-| KIS migrace | parser, matcher, raw archiv, fingerprintovaný preview, M2.3c sandbox, M2.3d stabilní KIS ID, M2.3e parita a M2.3f cílové členské předpisy se stagingem | potvrdit aliasy na reprezentativním exportu, implementovat M2.3g řízený testovací promote a až potom plánovat ostrý cutover |
+| KIS migrace | parser, matcher, raw archiv, fingerprintovaný preview, M2.3c sandbox, M2.3d stabilní KIS ID, M2.3e parita, M2.3f cílové předpisy a M2.3g auditovaný localhost promote/rollback | potvrdit aliasy a data na reprezentativním exportu, zopakovat cutover rehearsal v testovací DB a až potom plánovat ostrý cutover |
 | e-shop | katalog, košík, objednávka, QR/převod, kupóny, sklad, výdej, storno/refund, program/událost/velodrom | detail/obrázky, pravidla slev pro služby, automatické platby a produkční aktivace |
 | přístup | rodič–děti, sportovní účet, bezpečné session, revokace, limiter, jednorázové tokeny, samoobslužný reset a okamžitá oprávnění | produkční pepper, migrace a doručování reset e-mailu |
 | finance | ruční převod a read-only Fio shadow návrhy | wallet D-009, Fio auto-confirm, Stripe, cash top-up a kombinované platby |
@@ -426,13 +431,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.3b `26076ba`, M2.3c `5caa850`, M2.3d `2bcb346`, M2.3e `95693a2`, M2.3f `d69ee4f`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db`, A08 `6ae75c1`, A10 `4ce0f17`, feedback `875c9e3` | 2026-08-04 | lokální Git, M2.3f před docs commitem ahead 9 / behind 0 | ano |
+| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.3b `26076ba`, M2.3c `5caa850`, M2.3d `2bcb346`, M2.3e `95693a2`, M2.3f `d69ee4f`, M2.3g `7c8b444`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db`, A08 `6ae75c1`, A10 `4ce0f17`, feedback `875c9e3` | 2026-08-04 | lokální Git, M2.3g před docs commitem ahead 11 / behind 0 | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 44/44 číslovaných migrací; `sportovci.kis_external_id`, field/parity report, staging a cílové tabulky členských předpisů jsou aplikované; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | 388/3369; browser M2.3f run #12 2 staging/2 čeká a 3 blokátory, sandbox 2/2→0/2, oba MariaDB smokes, 406 first-party syntaxí, 44/44 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
+| lokální schema | legacy `2.20.2` + 45/45 číslovaných migrací; `sportovci.kis_external_id`, field/parity report, staging, cílové předpisy a auditní tabulky M2.3g promotion jsou aplikované; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
+| testy | 391/3430; browser M2.3g run #13 2/2 + 1 platba → 0/2 + 0 plateb, 2 auditní události, 408 first-party syntaxí, 45/45 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -571,6 +576,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 82 | M2.3d field/external-ID kontrakt `2bcb346` | stabilní interní KIS ID oddělené od UCI, spojení tří exportů, archivace všech zdrojů, non-PII fingerprint a fail-closed execute; browser #8 2/2→0/2, legacy #7 blokován, 377/3308, 398 parse, 42/42, audit 0 |
 | 83 | M2.3e cutover parity `95693a2` | uložené porovnání osob, členství, soupisek a platebních signálů bez PII; run #9 má 2 nové osoby + chybějící payment-prescription target, sandbox 2/2→0/2, 379/3332, 401 parse, 43/43, audit 0 |
 | 84 | M2.3f členské předpisy `d69ee4f` | `member-charge-v1`, auditní cílové tabulky, stabilní ID+částka, atomický staging a non-PII porovnání; run #12 2 staging/2 čeká, 388/3369, 406 parse, 44/44, audit 0 |
+| 85 | M2.3g auditovaný promote/rollback `7c8b444` | localhost admin+CSRF+fingerprint, transakční a idempotentní přenos předpisů, samostatná historická platba, invarianty a bezpečný rollback; browser #13 2/2 + 1 platba → 0/2 + 0 plateb, 391/3430, 408 parse, 45/45, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
