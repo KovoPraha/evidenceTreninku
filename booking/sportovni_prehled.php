@@ -12,6 +12,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
+require_once dirname(__DIR__) . '/includes/member_charge_reminder.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 
 function familyPageH(mixed $value): string
@@ -27,8 +28,12 @@ function familyPageChargeStatus(string $status): string
 $accountId = (int)$_SESSION['verejny_uzivatel_id'];
 $calendarMessage = (string)($_SESSION['family_calendar_message'] ?? '');
 $calendarToken = (string)($_SESSION['family_calendar_token_once'] ?? '');
+$reminderMessage = (string)($_SESSION['member_charge_reminder_message'] ?? '');
 unset($_SESSION['family_calendar_message'], $_SESSION['family_calendar_token_once']);
+unset($_SESSION['member_charge_reminder_message']);
 $calendarError = '';
+$reminderError = '';
+$action = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
@@ -51,18 +56,35 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 header('Location: sportovni_prehled.php#rodinny-kalendar', true, 303);
                 exit;
             }
+            if ($action === 'member_charge_reminder_save') {
+                $enabled = (string)($_POST['enabled'] ?? '0') === '1';
+                $daysBefore = (int)($_POST['days_before'] ?? 7);
+                memberChargeReminderSavePreference($pdo, $accountId, $enabled, $daysBefore);
+                $generated = $enabled ? memberChargeReminderGenerate($pdo) : ['queued' => 0];
+                $_SESSION['member_charge_reminder_message'] = $enabled
+                    ? 'Připomínky plateb jsou zapnuté. Nově zařazené: ' . (int)$generated['queued'] . '.'
+                    : 'Připomínky plateb jsou vypnuté a neodeslané zprávy byly zrušeny.';
+                header('Location: sportovni_prehled.php#pripominky-plateb', true, 303);
+                exit;
+            }
             $calendarError = 'Neznámá akce kalendáře.';
+        } catch (InvalidArgumentException | MemberChargeReminderException $exception) {
+            if ($action === 'member_charge_reminder_save') $reminderError = $exception->getMessage();
+            else $calendarError = $exception->getMessage();
         } catch (FamilyCalendarFeedException $exception) {
             $calendarError = $exception->getMessage();
         } catch (Throwable $exception) {
             error_log('booking/sportovni_prehled.php calendar action: ' . $exception->getMessage());
-            $calendarError = 'Nastavení kalendáře se nyní nepodařilo uložit.';
+            if ($action === 'member_charge_reminder_save') $reminderError = 'Nastavení připomínek se nyní nepodařilo uložit.';
+            else $calendarError = 'Nastavení kalendáře se nyní nepodařilo uložit.';
         }
     }
 }
 
 $calendarState = familyCalendarFeedState($pdo, $accountId);
 $calendarUrl = $calendarToken !== '' ? familyCalendarFeedUrl($calendarToken) : '';
+$reminderPreference = memberChargeReminderPreference($pdo, $accountId);
+$reminderSummary = memberChargeReminderAccountSummary($pdo, $accountId);
 $overview = [];
 $familyOrderItems = [];
 $loadError = '';
@@ -132,6 +154,36 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
                 </div>
             <?php else: ?>
                 <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_issue"><button class="btn btn-primary">Vytvořit soukromý odkaz</button></form>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <section class="card border-0 shadow-sm mb-4" id="pripominky-plateb">
+        <div class="card-header bg-white"><strong><i class="bi bi-bell me-2 text-warning"></i>Připomínky klubových plateb</strong></div>
+        <div class="card-body">
+            <p class="mb-2">Dobrovolně si zapněte e-mail před splatností členského předpisu. Odkaz v e-mailu vede pouze na přihlášení a neobsahuje jméno dítěte ani identifikátor platby.</p>
+            <p class="small text-muted">Nejvýše jedna připomínka za 20 hodin na jeden účet. Každý předpis se zařadí jen jednou a před odesláním se znovu kontroluje jeho stav.</p>
+            <?php if ($reminderMessage !== ''): ?><div class="alert alert-success py-2"><?= familyPageH($reminderMessage) ?></div><?php endif; ?>
+            <?php if ($reminderError !== ''): ?><div class="alert alert-danger py-2"><?= familyPageH($reminderError) ?></div><?php endif; ?>
+            <form method="post" class="row g-2 align-items-end">
+                <?= csrf_field() ?><input type="hidden" name="action" value="member_charge_reminder_save">
+                <div class="col-sm-5">
+                    <label for="reminder-enabled" class="form-label">E-mailové připomínky</label>
+                    <select id="reminder-enabled" name="enabled" class="form-select">
+                        <option value="0" <?= !$reminderPreference['enabled'] ? 'selected' : '' ?>>Vypnuté</option>
+                        <option value="1" <?= $reminderPreference['enabled'] ? 'selected' : '' ?>>Zapnuté</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label for="reminder-days" class="form-label">Připomenout předem</label>
+                    <select id="reminder-days" name="days_before" class="form-select">
+                        <?php foreach ([3, 7, 14] as $days): ?><option value="<?= $days ?>" <?= $reminderPreference['days_before'] === $days ? 'selected' : '' ?>><?= $days ?> dní</option><?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-sm-3"><button class="btn btn-outline-primary w-100">Uložit nastavení</button></div>
+            </form>
+            <?php if ($reminderSummary['pending'] + $reminderSummary['processing'] + $reminderSummary['sent'] + $reminderSummary['failed'] > 0): ?>
+                <p class="small text-muted mt-3 mb-0">Připravené: <?= $reminderSummary['pending'] ?> · zpracovává se: <?= $reminderSummary['processing'] ?> · odeslané: <?= $reminderSummary['sent'] ?><?php if ($reminderSummary['failed'] > 0): ?> · neúspěšné: <?= $reminderSummary['failed'] ?><?php endif; ?></p>
             <?php endif; ?>
         </div>
     </section>

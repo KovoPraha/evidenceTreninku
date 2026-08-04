@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-05.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-05.2';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -88,6 +88,9 @@ const EVIDENCE_TABLES = [
     'kis_import_source_artifacts',
     'mereni',
     'mereni_zaznamy',
+    'member_charge_reminder_events',
+    'member_charge_reminder_preferences',
+    'member_charge_reminders',
     'nastaveni',
     'opravneni',
     'oznameni',
