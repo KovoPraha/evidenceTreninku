@@ -3,6 +3,13 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/csrf_helper.php';
 $is_logged_in = isset($_SESSION['trener_id']);
+$is_customer  = isset($_SESSION['verejny_uzivatel_id']);
+$is_athlete   = isset($_SESSION['sportovec_pristup_id']);
+$customerName = trim((string)($_SESSION['verejny_uzivatel_jmeno'] ?? ''));
+$athleteName  = trim((string)($_SESSION['sportovec_pristup_jmeno'] ?? ''));
+$shopUrl      = $is_customer ? 'booking/eshop.php' : 'booking/prihlaseni.php?redirect=eshop.php';
+$familyUrl    = $is_customer ? 'booking/moje_osoby.php' : 'booking/prihlaseni.php?redirect=moje_osoby.php';
+$athleteUrl   = $is_athlete ? 'booking/muj_sport.php' : 'booking/sportovec_prihlaseni.php';
 if ($is_logged_in && file_exists(__DIR__ . '/includes/funkce.php')) {
     require_once __DIR__ . '/includes/funkce.php';
 }
@@ -14,7 +21,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Evidence tréninků</title>
+  <title><?= $is_logged_in ? 'Evidence tréninků' : 'Kovopraha – klubový portál' ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <style>
@@ -47,6 +54,15 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
     .role-admin { background: #f8d7da; color: #842029; }
     .welcome-card { border: none; border-radius: 12px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: #fff; }
     .welcome-card .badge-date { background: rgba(255,255,255,.15); font-weight: 400; font-size: .85rem; }
+    .portal-hero { border: 0; border-radius: 20px; color: #fff; overflow: hidden; background: linear-gradient(135deg,#12372a 0%,#1f6f50 55%,#c46a2d 100%); box-shadow: 0 18px 45px rgba(18,55,42,.2); }
+    .portal-hero .hero-kicker { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 700; opacity: .78; }
+    .portal-card { border: 0; border-radius: 16px; box-shadow: 0 8px 26px rgba(18,55,42,.09); transition: transform .15s ease, box-shadow .15s ease; }
+    .portal-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(18,55,42,.14); }
+    .portal-icon { width: 52px; height: 52px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.45rem; }
+    .portal-link { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .62rem 0; color: inherit; text-decoration: none; border-top: 1px solid rgba(0,0,0,.08); }
+    .portal-link:hover { color: #146c43; }
+    .portal-shortcut { display: block; height: 100%; padding: 1rem; border-radius: 14px; color: inherit; text-decoration: none; background: #fff; box-shadow: 0 3px 14px rgba(0,0,0,.07); }
+    .portal-shortcut:hover { color: #0d6efd; box-shadow: 0 6px 20px rgba(0,0,0,.11); }
   </style>
 </head>
 <body>
@@ -55,19 +71,76 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
   <div class="container py-4">
 
     <?php if (!$is_logged_in): ?>
-      <!-- Nepřihlášený uživatel -->
-      <div class="row justify-content-center mt-5">
-        <div class="col-md-5">
-          <div class="card section-card text-center p-4">
-            <i class="bi bi-shield-lock fs-1 text-secondary mb-3"></i>
-            <h4>Evidence tréninků</h4>
-            <p class="text-muted">Pro přístup do aplikace se přihlaste.</p>
-            <a href="login.php" class="btn btn-primary mt-2">
-              <i class="bi bi-box-arrow-in-right me-1"></i>Přihlásit se
-            </a>
+      <section class="portal-hero card mb-4">
+        <div class="card-body p-4 p-lg-5">
+          <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+              <div class="hero-kicker mb-2">TJ Kovo Praha · jeden klubový portál</div>
+              <h1 class="display-6 fw-bold mb-3">Nakupujte, přihlašujte děti a sledujte sport na jednom místě.</h1>
+              <p class="lead mb-4 opacity-75">E-shop, kroužky, klubové události, velodrom a sportovní přehled jsou propojené se stejnými osobami a objednávkami.</p>
+              <div class="d-flex flex-wrap gap-2">
+                <a href="<?= htmlspecialchars($shopUrl, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-light btn-lg"><i class="bi bi-bag me-2"></i>Nakoupit v e-shopu</a>
+                <a href="booking/velodrom.php" class="btn btn-outline-light btn-lg"><i class="bi bi-bicycle me-2"></i>Rezervovat velodrom</a>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="p-3 p-lg-4 rounded-4" style="background:rgba(255,255,255,.13)">
+                <?php if ($is_customer): ?>
+                  <div class="small opacity-75">Přihlášený rodinný účet</div>
+                  <div class="fw-bold fs-5 mb-3"><?= htmlspecialchars($customerName !== '' ? $customerName : 'Můj účet', ENT_QUOTES, 'UTF-8') ?></div>
+                  <a href="booking/moje_objednavky.php" class="btn btn-light w-100 mb-2">Moje objednávky</a>
+                  <a href="booking/sportovni_prehled.php" class="btn btn-outline-light w-100">Sportovní přehled</a>
+                <?php elseif ($is_athlete): ?>
+                  <div class="small opacity-75">Přihlášený sportovec</div>
+                  <div class="fw-bold fs-5 mb-3"><?= htmlspecialchars($athleteName !== '' ? $athleteName : 'Můj sport', ENT_QUOTES, 'UTF-8') ?></div>
+                  <a href="booking/muj_sport.php" class="btn btn-light w-100">Otevřít Můj sport</a>
+                <?php else: ?>
+                  <div class="fw-semibold mb-2">Už u nás máte účet?</div>
+                  <a href="booking/prihlaseni.php" class="btn btn-light w-100 mb-2">Přihlášení rodiče / zákazníka</a>
+                  <a href="booking/sportovec_prihlaseni.php" class="btn btn-outline-light w-100">Přihlášení sportovce</a>
+                <?php endif; ?>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section aria-labelledby="portal-options-title">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+          <div><h2 id="portal-options-title" class="h3 mb-1">Co potřebujete zařídit?</h2><p class="text-muted mb-0">Vyberte nejbližší cestu; není potřeba znát strukturu systému.</p></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-4">
+            <article class="card portal-card h-100"><div class="card-body p-4">
+              <span class="portal-icon bg-success-subtle text-success mb-3"><i class="bi bi-bag-check"></i></span>
+              <h3 class="h5">E-shop a klubové služby</h3>
+              <p class="text-muted">Oblečení, knihy, kroužky, kurzy, výjezdy a placené rezervace.</p>
+              <a class="portal-link" href="<?= htmlspecialchars($shopUrl, ENT_QUOTES, 'UTF-8') ?>"><span>E-shop</span><i class="bi bi-arrow-right"></i></a>
+              <a class="portal-link" href="booking/krouzky.php"><span>Kroužky a události</span><i class="bi bi-arrow-right"></i></a>
+              <a class="portal-link" href="booking/velodrom.php"><span>Hodiny velodromu</span><i class="bi bi-arrow-right"></i></a>
+            </div></article>
+          </div>
+          <div class="col-lg-4">
+            <article class="card portal-card h-100"><div class="card-body p-4">
+              <span class="portal-icon bg-primary-subtle text-primary mb-3"><i class="bi bi-people"></i></span>
+              <h3 class="h5">Rodina a sportovec</h3>
+              <p class="text-muted">Jeden rodičovský účet pro děti, platby, přihlášky, soupisky a tréninky.</p>
+              <a class="portal-link" href="<?= htmlspecialchars($familyUrl, ENT_QUOTES, 'UTF-8') ?>"><span><?= $is_customer ? 'Moje osoby' : 'Přihlášení rodiče' ?></span><i class="bi bi-arrow-right"></i></a>
+              <a class="portal-link" href="<?= htmlspecialchars($athleteUrl, ENT_QUOTES, 'UTF-8') ?>"><span><?= $is_athlete ? 'Můj sport' : 'Přihlášení sportovce' ?></span><i class="bi bi-arrow-right"></i></a>
+              <?php if (!$is_customer && !$is_athlete): ?><a class="portal-link" href="booking/registrace.php"><span>Vytvořit účet</span><i class="bi bi-arrow-right"></i></a><?php endif; ?>
+            </div></article>
+          </div>
+          <div class="col-lg-4">
+            <article class="card portal-card h-100"><div class="card-body p-4">
+              <span class="portal-icon bg-warning-subtle text-warning-emphasis mb-3"><i class="bi bi-clipboard-data"></i></span>
+              <h3 class="h5">Trenéři a vedení klubu</h3>
+              <p class="text-muted">Evidence tréninků, plánovač, KIS soupisky, závody, události a správa objednávek.</p>
+              <a class="portal-link" href="login.php"><span>Vstup pro trenéry</span><i class="bi bi-arrow-right"></i></a>
+              <div class="small text-muted mt-3"><i class="bi bi-shield-check me-1"></i>Administrace je oddělená od zákaznického účtu.</div>
+            </div></article>
+          </div>
+        </div>
+      </section>
 
     <?php else: ?>
 
@@ -221,6 +294,16 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
           </div>
         </div>
       </div>
+
+      <section class="mb-4" aria-labelledby="staff-shortcuts-title">
+        <h2 id="staff-shortcuts-title" class="h5 mb-3">Co chcete udělat?</h2>
+        <div class="row g-3">
+          <div class="col-6 col-xl-3"><a class="portal-shortcut" href="formular.php"><i class="bi bi-plus-square text-primary fs-4"></i><div class="fw-semibold mt-2">Zadat trénink</div><div class="small text-muted">Evidence a účast</div></a></div>
+          <div class="col-6 col-xl-3"><a class="portal-shortcut" href="<?= $is_hlavni ? 'kis_rosters_admin.php' : 'moje_skupiny.php' ?>"><i class="bi bi-people-fill text-success fs-4"></i><div class="fw-semibold mt-2">KIS a soupisky</div><div class="small text-muted"><?= $is_hlavni ? 'Týmy, členství a události' : 'Moje skupiny' ?></div></a></div>
+          <div class="col-6 col-xl-3"><a class="portal-shortcut" href="<?= $is_admin ? 'eshop_orders_admin.php' : 'booking/prihlaseni.php?redirect=eshop.php' ?>"><i class="bi bi-receipt text-warning fs-4"></i><div class="fw-semibold mt-2"><?= $is_admin ? 'Objednávky' : 'E-shop' ?></div><div class="small text-muted"><?= $is_admin ? 'Platby, výdej a storna' : 'Klubová nabídka' ?></div></a></div>
+          <div class="col-6 col-xl-3"><a class="portal-shortcut" href="booking/eshop.php"><i class="bi bi-globe text-info fs-4"></i><div class="fw-semibold mt-2">Veřejný portál</div><div class="small text-muted">Pohled rodiče a zákazníka</div></a></div>
+        </div>
+      </section>
 
       <!-- Statistiky měsíce -->
       <div class="row g-3 mb-3">

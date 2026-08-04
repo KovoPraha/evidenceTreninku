@@ -10,6 +10,8 @@ if (!function_exists('csrf_token')) {
 }
 
 $is_logged_in = isset($_SESSION['trener_id']);
+$is_customer  = isset($_SESSION['verejny_uzivatel_id']);
+$is_athlete   = isset($_SESSION['sportovec_pristup_id']);
 $is_hlavni    = $is_logged_in && roleAtLeast('hlavni');  // správce nebo admin
 $is_admin     = $is_logged_in && roleAtLeast('admin');   // pouze admin
 
@@ -202,7 +204,7 @@ if ($is_logged_in) {
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand fw-semibold" href="index.php">
-            <i class="bi bi-bicycle me-1"></i>Tréninková evidence
+            <i class="bi bi-bicycle me-1"></i><?= $is_logged_in ? 'Tréninková evidence' : 'Kovopraha' ?>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Přepnout navigaci">
@@ -387,6 +389,10 @@ if ($is_logged_in) {
                     </li>
                     <?php endif; ?>
 
+                <?php else: ?>
+                    <li class="nav-item"><a class="nav-link" href="booking/eshop.php"><i class="bi bi-bag me-1"></i>E-shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="booking/krouzky.php"><i class="bi bi-calendar-event me-1"></i>Kroužky a události</a></li>
+                    <li class="nav-item"><a class="nav-link" href="booking/velodrom.php"><i class="bi bi-bicycle me-1"></i>Velodrom</a></li>
                 <?php endif; ?>
             </ul>
 
@@ -443,11 +449,14 @@ if ($is_logged_in) {
                         </form>
                     </li>
                 <?php else: ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.php">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Přihlásit se
-                        </a>
-                    </li>
+                    <?php if ($is_customer): ?>
+                      <li class="nav-item"><a class="nav-link" href="booking/moje_osoby.php"><i class="bi bi-person-circle me-1"></i>Můj účet</a></li>
+                    <?php elseif ($is_athlete): ?>
+                      <li class="nav-item"><a class="nav-link" href="booking/muj_sport.php"><i class="bi bi-person-circle me-1"></i>Můj sport</a></li>
+                    <?php else: ?>
+                      <li class="nav-item"><a class="nav-link" href="booking/prihlaseni.php"><i class="bi bi-person me-1"></i>Rodič / zákazník</a></li>
+                    <?php endif; ?>
+                    <li class="nav-item"><a class="nav-link" href="login.php"><i class="bi bi-shield-lock me-1"></i>Trenér</a></li>
                 <?php endif; ?>
             </ul>
         </div>
