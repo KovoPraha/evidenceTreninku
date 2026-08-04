@@ -16,10 +16,31 @@ if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     exit;
 }
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/localhost_acceptance_feedback.php';
+
+$scenarios = localhostAcceptanceScenarios(__DIR__);
+$scenarioIds = array_column($scenarios, 'id');
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['export'] ?? '') === 'markdown') {
+    try {
+        $feedbackExport = localhostAcceptanceFeedbackLoad(__DIR__);
+        header('Content-Type: text/markdown; charset=utf-8');
+        header('Content-Disposition: attachment; filename="acceptance-results-' . date('Y-m-d-His') . '.md"');
+        header('Cache-Control: no-store');
+        echo localhostAcceptanceFeedbackMarkdown($scenarios, $feedbackExport['scenarios']);
+    } catch (Throwable $exception) {
+        error_log('acceptance feedback export: ' . $exception->getMessage());
+        http_response_code(500);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo 'Výsledky se nepodařilo bezpečně exportovat.';
+    }
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $message = 'Obnovu se nepodařilo spustit.';
+    $message = 'Požadavek se nepodařilo zpracovat.';
     $messageType = 'danger';
+    $redirectAnchor = '';
     if (!localhostAcceptanceRequestIsAllowed($_SERVER, getenv('APP_HOST'))) {
         http_response_code(404);
         header('Cache-Control: no-store');
@@ -27,15 +48,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('Nenalezeno.');
     } elseif (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $message = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
-    } elseif (($_POST['action'] ?? '') !== 'reset_local_demo' || ($_POST['confirm_reset'] ?? '') !== '1') {
-        $message = 'Obnova nebyla potvrzena.';
     } else {
-        $result = localhostAcceptanceRunSeedReset(__DIR__);
-        $message = $result['reason'];
-        $messageType = $result['ok'] ? 'success' : 'danger';
+        $action = (string)($_POST['action'] ?? '');
+        if ($action === 'save_feedback') {
+            $scenarioId = (string)($_POST['scenario_id'] ?? '');
+            try {
+                localhostAcceptanceFeedbackSave(__DIR__, $scenarioId, $_POST, (int)$_SESSION['trener_id'], $scenarioIds);
+                $message = 'Výsledek scénáře ' . $scenarioId . ' byl lokálně uložen.';
+                $messageType = 'success';
+                $redirectAnchor = '#' . rawurlencode($scenarioId);
+            } catch (InvalidArgumentException | LocalhostAcceptanceFeedbackException $exception) {
+                $message = $exception->getMessage();
+            } catch (Throwable $exception) {
+                error_log('acceptance feedback save: ' . $exception->getMessage());
+                $message = 'Výsledek se nepodařilo bezpečně uložit.';
+            }
+        } elseif ($action === 'reset_local_demo' && ($_POST['confirm_reset'] ?? '') === '1') {
+            $result = localhostAcceptanceRunSeedReset(__DIR__);
+            $message = $result['reason'];
+            $messageType = $result['ok'] ? 'success' : 'danger';
+        } else {
+            $message = 'Požadovaná operace nebyla potvrzena.';
+        }
     }
     $_SESSION['localhost_acceptance_flash'] = ['type' => $messageType, 'message' => $message];
-    header('Location: testovaci_scenare.php', true, 303);
+    header('Location: testovaci_scenare.php' . $redirectAnchor, true, 303);
     exit;
 }
 
@@ -44,10 +81,21 @@ function acceptanceHubH(mixed $value): string
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-$scenarios = localhostAcceptanceScenarios(__DIR__);
 $resetAvailability = localhostAcceptanceSeedResetAvailability(__DIR__);
 $flash = $_SESSION['localhost_acceptance_flash'] ?? null;
 unset($_SESSION['localhost_acceptance_flash']);
+$feedbackError = '';
+try {
+    $feedbackData = localhostAcceptanceFeedbackLoad(__DIR__);
+} catch (LocalhostAcceptanceFeedbackException $exception) {
+    $feedbackData = ['version' => 1, 'updated_at' => null, 'scenarios' => []];
+    $feedbackError = $exception->getMessage();
+}
+$feedbackCounts = array_fill_keys(['not_tested', 'pass', 'partial', 'fail', 'blocked'], 0);
+foreach ($scenarios as $scenario) {
+    $feedbackResult = (string)($feedbackData['scenarios'][$scenario['id']]['result'] ?? 'not_tested');
+    $feedbackCounts[isset($feedbackCounts[$feedbackResult]) ? $feedbackResult : 'not_tested']++;
+}
 $statusLabels = [
     'ready' => ['Připraveno', 'success'],
     'partial' => ['Částečně připraveno', 'warning'],
@@ -76,6 +124,18 @@ $statusLabels = [
         <strong>Přihlášení:</strong> údaje vezměte z výstupu lokálního seedu nebo ze svého správce hesel.
         Rozcestník hesla úmyslně nezobrazuje. Zákaznickou a administrátorskou část otevírejte v oddělených profilech či anonymních oknech.
     </div>
+    <div class="card border-0 shadow-sm mb-3"><div class="card-body d-flex flex-wrap justify-content-between gap-3 align-items-center">
+        <div><strong>Výsledky prohlídky:</strong>
+            <span class="badge text-bg-success">PASS <?= (int)$feedbackCounts['pass'] ?></span>
+            <span class="badge text-bg-warning">PARTIAL <?= (int)$feedbackCounts['partial'] ?></span>
+            <span class="badge text-bg-danger">FAIL <?= (int)$feedbackCounts['fail'] ?></span>
+            <span class="badge text-bg-dark">BLOCKED <?= (int)$feedbackCounts['blocked'] ?></span>
+            <span class="badge text-bg-secondary">NETESTOVÁNO <?= (int)$feedbackCounts['not_tested'] ?></span>
+            <?php if ($feedbackData['updated_at']): ?><div class="small text-muted mt-1">Naposledy uloženo <?= acceptanceHubH($feedbackData['updated_at']) ?></div><?php endif; ?>
+        </div>
+        <a class="btn btn-outline-primary btn-sm" href="?export=markdown">Stáhnout výsledky pro GitHub / Cowork</a>
+    </div></div>
+    <?php if ($feedbackError !== ''): ?><div class="alert alert-danger"><?= acceptanceHubH($feedbackError) ?></div><?php endif; ?>
     <?php if (is_array($flash) && isset($flash['type'], $flash['message'])): ?>
         <div class="alert alert-<?= acceptanceHubH($flash['type']) ?>"><?= acceptanceHubH($flash['message']) ?></div>
     <?php endif; ?>
@@ -83,7 +143,7 @@ $statusLabels = [
     <div class="row g-3">
         <?php foreach ($scenarios as $scenario): $status = $statusLabels[$scenario['status']]; ?>
             <div class="col-12">
-                <article class="card shadow-sm border-0">
+                <article class="card shadow-sm border-0" id="<?= acceptanceHubH($scenario['id']) ?>">
                     <div class="card-body">
                         <div class="d-flex flex-wrap justify-content-between gap-2 align-items-start">
                             <div>
@@ -117,6 +177,24 @@ $statusLabels = [
                                 </div>
                             </div>
                         </div>
+                        <?php $savedFeedback = is_array($feedbackData['scenarios'][$scenario['id']] ?? null) ? $feedbackData['scenarios'][$scenario['id']] : []; ?>
+                        <form method="post" class="border-top mt-3 pt-3">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="action" value="save_feedback">
+                            <input type="hidden" name="scenario_id" value="<?= acceptanceHubH($scenario['id']) ?>">
+                            <div class="row g-2">
+                                <div class="col-md-3"><label class="form-label" for="result-<?= acceptanceHubH($scenario['id']) ?>">Výsledek</label><select class="form-select" id="result-<?= acceptanceHubH($scenario['id']) ?>" name="result">
+                                    <?php foreach (['not_tested'=>'Netestováno','pass'=>'PASS – funguje','partial'=>'PARTIAL – částečně','fail'=>'FAIL – chyba','blocked'=>'BLOCKED – nelze dokončit'] as $value=>$label): ?><option value="<?= $value ?>" <?= ($savedFeedback['result'] ?? 'not_tested') === $value ? 'selected' : '' ?>><?= acceptanceHubH($label) ?></option><?php endforeach; ?>
+                                </select></div>
+                                <div class="col-md-3"><label class="form-label" for="importance-<?= acceptanceHubH($scenario['id']) ?>">Důležitost</label><select class="form-select" id="importance-<?= acceptanceHubH($scenario['id']) ?>" name="importance">
+                                    <?php foreach (['none'=>'Bez připomínky','blocks'=>'Blokuje','important'=>'Důležité','idea'=>'Námět'] as $value=>$label): ?><option value="<?= $value ?>" <?= ($savedFeedback['importance'] ?? 'none') === $value ? 'selected' : '' ?>><?= acceptanceHubH($label) ?></option><?php endforeach; ?>
+                                </select></div>
+                                <div class="col-md-6"><label class="form-label" for="observed-<?= acceptanceHubH($scenario['id']) ?>">Co jste pozoroval(a)</label><textarea class="form-control" id="observed-<?= acceptanceHubH($scenario['id']) ?>" name="observed" maxlength="4000" rows="2" placeholder="Co fungovalo nebo co se stalo?"><?= acceptanceHubH($savedFeedback['observed'] ?? '') ?></textarea></div>
+                                <div class="col-md-9"><label class="form-label" for="expected-<?= acceptanceHubH($scenario['id']) ?>">Co jste očekával(a)</label><textarea class="form-control" id="expected-<?= acceptanceHubH($scenario['id']) ?>" name="expected" maxlength="4000" rows="2" placeholder="Vyplňte hlavně při chybě nebo námětu."><?= acceptanceHubH($savedFeedback['expected'] ?? '') ?></textarea></div>
+                                <div class="col-md-3 d-grid align-self-end"><button class="btn btn-primary">Uložit výsledek <?= acceptanceHubH($scenario['id']) ?></button></div>
+                            </div>
+                            <div class="form-text">Nezadávejte hesla ani ostré osobní údaje. Výsledek zůstává na localhostu, dokud export vědomě nepřidáte do Gitu.</div>
+                        </form>
                     </div>
                 </article>
             </div>

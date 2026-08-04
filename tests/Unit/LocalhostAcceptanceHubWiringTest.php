@@ -24,6 +24,10 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringContainsString('reset_local_demo', $page);
         self::assertStringContainsString('localhostAcceptanceRunSeedReset', $page);
         self::assertStringContainsString('localhostAcceptanceScenarios', $page);
+        self::assertStringContainsString('localhostAcceptanceFeedbackSave', $page);
+        self::assertStringContainsString("?export=markdown", $page);
+        self::assertStringContainsString('maxlength="4000"', $page);
+        self::assertStringContainsString('Nezadávejte hesla ani ostré osobní údaje.', $page);
         self::assertStringContainsString("['HTTP_HOST', 'SERVER_ADDR', 'REMOTE_ADDR']", $helper);
         self::assertStringContainsString("[\$cliBinary, \$root . '/bin/seed-local-demo.php']", $helper);
         self::assertStringContainsString('PHP_BINDIR', $helper);
