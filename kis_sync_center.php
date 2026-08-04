@@ -16,6 +16,14 @@ function dt(?string $date): string {
 
 $runId = isset($_GET['run_id']) ? (int)$_GET['run_id'] : 0;
 $detail = $runId > 0 ? kisImportRunDetail($pdo, $runId) : null;
+$previewReport = $detail && $detail['run'] ? kisImportStoredPreviewReport($detail['run']) : null;
+if (($_GET['preview_report'] ?? '') === 'json' && $previewReport !== null) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Content-Disposition: attachment; filename="kis-preview-run-' . $runId . '.json"');
+    header('Cache-Control: no-store');
+    echo json_encode($previewReport, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+    exit;
+}
 $runs = kisImportLatestRuns($pdo, 30);
 $attention = [
     'unmapped' => (int)$pdo->query("SELECT COUNT(*) FROM soupiska_mapping WHERE skupina_id IS NULL AND podskupina_id IS NULL")->fetchColumn(),
@@ -56,6 +64,31 @@ $attention = [
             <div class="card-header bg-white d-flex justify-content-between">
                 <span class="fw-semibold">Detail importu #<?= (int)$detail['run']['id'] ?> · <?= h($detail['run']['status']) ?></span>
                 <a href="kis_sync_center.php" class="btn btn-sm btn-outline-secondary">Zavřít detail</a>
+            </div>
+            <div class="card-body border-bottom">
+                <?php if ($previewReport !== null): ?>
+                    <?php $previewReady = $previewReport['status'] === 'ready_for_test_review'; ?>
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                        <div>
+                            <div class="fw-semibold">Integrita náhledu
+                                <span class="badge <?= $previewReady ? 'bg-success' : 'bg-danger' ?>">
+                                    <?= $previewReady ? 'připraveno ke kontrole' : 'blokováno' ?>
+                                </span>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                Klasifikováno <?= (int)$previewReport['summary']['classified_rows'] ?>/<?= (int)$previewReport['summary']['total_rows'] ?>,
+                                blokátory <?= (int)$previewReport['summary']['blocker_rows'] ?>.
+                                Tento náhled nic nezapisuje do profilů sportovců.
+                            </div>
+                            <code class="small text-break"><?= h($previewReport['fingerprint']) ?></code>
+                        </div>
+                        <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;preview_report=json">Stáhnout bezpečný JSON report</a>
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-warning mb-0">
+                        Starší náhled nemá uzamčený M2.3b report. Nelze jej použít jako podklad pro testovací promote.
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="card-body p-0">
                 <table class="table table-sm table-hover align-middle mb-0">

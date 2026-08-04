@@ -4,6 +4,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/kis_match_lib.php';
 require_once __DIR__ . '/kis_source_archive.php';
 
+const KIS_IMPORT_PREVIEW_CONTRACT = 'kis-import-preview-v2';
+
 function kisImportJson(array $value): string
 {
     return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}';
@@ -53,6 +55,9 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
         $runId = (int)$pdo->lastInsertId();
 
         kisImportStoreRowsAndMatches($pdo, $runId, $people, $stats);
+        if (kisImportColumnExists($pdo, 'kis_import_runs', 'preview_report_json')) {
+            kisImportFinalizePreview($pdo, $runId);
+        }
 
         if ($ownsTransaction) {
             $pdo->commit();
@@ -69,6 +74,176 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
         }
         throw $e;
     }
+}
+
+/**
+ * Build a deterministic, non-PII report for one stored preview. It deliberately
+ * uses opaque row/database references and fixed reason codes only.
+ *
+ * @return array<string,mixed>
+ */
+function kisImportBuildPreviewReport(PDO $pdo, int $runId): array
+{
+    $runStatement = $pdo->prepare('SELECT source_manifest_json FROM kis_import_runs WHERE id=?');
+    $runStatement->execute([$runId]);
+    $run = $runStatement->fetch(PDO::FETCH_ASSOC);
+    if (!$run) {
+        throw new InvalidArgumentException('KIS preview run nebyl nalezen.');
+    }
+
+    $manifest = null;
+    if (is_string($run['source_manifest_json'] ?? null) && trim((string)$run['source_manifest_json']) !== '') {
+        try {
+            $decoded = json_decode((string)$run['source_manifest_json'], true, 32, JSON_THROW_ON_ERROR);
+            if (is_array($decoded)
+                && ($decoded['contract'] ?? null) === KIS_SOURCE_MANIFEST_CONTRACT
+                && is_string($decoded['fingerprint'] ?? null)
+                && preg_match('/^[a-f0-9]{64}$/D', (string)$decoded['fingerprint']) === 1
+                && is_array($decoded['sources'] ?? null)
+                && $decoded['sources'] !== []) {
+                $manifest = $decoded;
+            }
+        } catch (JsonException) {
+            $manifest = null;
+        }
+    }
+
+    $statement = $pdo->prepare(
+        'SELECT ir.id,ir.jmeno,ir.prijmeni,ir.uciid,im.match_status,im.sportovec_id '
+        . 'FROM kis_import_rows ir LEFT JOIN kis_import_matches im '
+        . 'ON im.row_id=ir.id AND im.run_id=ir.run_id WHERE ir.run_id=? ORDER BY ir.id'
+    );
+    $statement->execute([$runId]);
+    $rows = [];
+    $targets = [];
+    $sourceOrdinal = 0;
+    foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $stored) {
+        $sourceOrdinal++;
+        $action = 'invalid';
+        $reason = 'missing_match_result';
+        $targetRef = null;
+        if ($manifest === null) {
+            $action = 'missing_without_archive';
+            $reason = 'archived_source_required';
+        } elseif (trim((string)$stored['jmeno']) === '' || trim((string)$stored['prijmeni']) === '') {
+            $reason = 'row_missing_identity';
+        } else {
+            switch ((string)($stored['match_status'] ?? '')) {
+                case 'matched':
+                    if ((int)($stored['sportovec_id'] ?? 0) > 0) {
+                        $action = 'exact_match';
+                        $reason = 'strong_identity_match';
+                        $targetRef = 'sportovec:' . (int)$stored['sportovec_id'];
+                    }
+                    break;
+                case 'new':
+                    $action = 'create';
+                    $reason = 'no_existing_candidate';
+                    break;
+                case 'ambiguous':
+                    $action = 'ambiguous';
+                    $reason = 'multiple_candidates';
+                    break;
+                case 'conflict':
+                    $action = 'conflict';
+                    $reason = 'identity_conflict';
+                    break;
+                case 'ignored':
+                    $reason = 'explicitly_ignored';
+                    break;
+            }
+        }
+        $row = [
+            'source_ref' => 'source:' . $sourceOrdinal,
+            'action' => $action,
+            'reason' => $reason,
+        ];
+        if ($targetRef !== null) {
+            $row['target_ref'] = $targetRef;
+            $targets[$targetRef][] = count($rows);
+        }
+        $rows[] = $row;
+    }
+
+    foreach ($targets as $indexes) {
+        if (count($indexes) < 2) {
+            continue;
+        }
+        foreach ($indexes as $index) {
+            $rows[$index]['action'] = 'conflict';
+            $rows[$index]['reason'] = 'duplicate_target';
+        }
+    }
+
+    $actions = ['create', 'exact_match', 'conflict', 'ambiguous', 'invalid', 'missing_without_archive'];
+    $counts = array_fill_keys($actions, 0);
+    foreach ($rows as $row) {
+        $counts[$row['action']]++;
+    }
+    $blockerRows = $counts['conflict'] + $counts['ambiguous'] + $counts['invalid'] + $counts['missing_without_archive'];
+    $canonical = [
+        'contract' => KIS_IMPORT_PREVIEW_CONTRACT,
+        'run_ref' => 'run:' . $runId,
+        'source_manifest_fingerprint' => $manifest['fingerprint'] ?? null,
+        'status' => $blockerRows === 0 ? 'ready_for_test_review' : 'blocked',
+        'summary' => [
+            'total_rows' => count($rows),
+            'classified_rows' => count($rows),
+            'blocker_rows' => $blockerRows,
+            'counts' => $counts,
+        ],
+        'rows' => $rows,
+    ];
+    $fingerprintPayload = $canonical;
+    unset($fingerprintPayload['run_ref']);
+    $canonical['fingerprint'] = hash('sha256', kisImportJson($fingerprintPayload));
+    return $canonical;
+}
+
+/** @return array<string,mixed> */
+function kisImportFinalizePreview(PDO $pdo, int $runId): array
+{
+    $report = kisImportBuildPreviewReport($pdo, $runId);
+    $statement = $pdo->prepare(
+        'UPDATE kis_import_runs SET preview_contract_version=?,preview_fingerprint=?,preview_report_json=?,classified_rows=?,blocker_rows=? WHERE id=?'
+    );
+    $statement->execute([
+        KIS_IMPORT_PREVIEW_CONTRACT,
+        $report['fingerprint'],
+        kisImportJson($report),
+        $report['summary']['classified_rows'],
+        $report['summary']['blocker_rows'],
+        $runId,
+    ]);
+    if ($statement->rowCount() !== 1) {
+        $check = $pdo->prepare('SELECT preview_fingerprint FROM kis_import_runs WHERE id=?');
+        $check->execute([$runId]);
+        if (!hash_equals((string)$report['fingerprint'], (string)$check->fetchColumn())) {
+            throw new RuntimeException('KIS preview report se nepodařilo uložit.');
+        }
+    }
+    return $report;
+}
+
+/** @return array<string,mixed>|null */
+function kisImportStoredPreviewReport(array $run): ?array
+{
+    $json = $run['preview_report_json'] ?? null;
+    if (!is_string($json) || trim($json) === '') {
+        return null;
+    }
+    try {
+        $report = json_decode($json, true, 64, JSON_THROW_ON_ERROR);
+    } catch (JsonException) {
+        return null;
+    }
+    if (!is_array($report)
+        || ($report['contract'] ?? null) !== KIS_IMPORT_PREVIEW_CONTRACT
+        || !is_string($report['fingerprint'] ?? null)
+        || !hash_equals((string)($run['preview_fingerprint'] ?? ''), (string)$report['fingerprint'])) {
+        return null;
+    }
+    return $report;
 }
 
 function kisImportColumnExists(PDO $pdo, string $table, string $column): bool

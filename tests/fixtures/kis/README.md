@@ -1,8 +1,9 @@
 # Syntetické KIS parity fixtures
 
-Všechny soubory v tomto adresáři obsahují pouze neprůhledné syntetické reference
-a pevné klasifikační kódy. Nesmí obsahovat jména, e-maily, telefony, adresy,
-rodná čísla, data narození ani skutečná KIS/UCI ID.
+Parity JSON soubory obsahují pouze neprůhledné syntetické reference a pevné
+klasifikační kódy. Demo CSV smí obsahovat jen výslovně fiktivní `Localhost`
+identity; žádný soubor nesmí obsahovat e-maily, telefony, adresy, rodná čísla ani
+skutečná jména, data narození nebo KIS/UCI ID.
 
 ## Přehled
 
@@ -12,6 +13,9 @@ rodná čísla, data narození ani skutečná KIS/UCI ID.
   validace a redakce vstupní hodnoty.
 - `parity-realistic.json` – reprezentativní kombinace deseti anonymních výsledků
   pro W0-G.
+
+- `m23-preview-users.csv` – dva čistě syntetické řádky pro opakovatelný localhost
+  M2.3b preview seed; nejde o finální exportní kontrakt KIS.
 
 ## Scénáře v `parity-realistic.json`
 

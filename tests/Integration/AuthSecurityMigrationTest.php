@@ -59,6 +59,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804230000_club_event_shop',
                 '20260804233000_kis_import_source_artifacts',
                 '20260804234000_shop_coupon_applicability',
+                '20260804234500_kis_import_preview_integrity',
                 '20260804235000_club_program_repeat_enrollment',
                 '20260804235500_public_profile_token_rotation',
                 '20260804235900_password_reset_tokens',
