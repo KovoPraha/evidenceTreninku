@@ -7,13 +7,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD před aktuálním řezem: `1b4d9e11b2c5c81089f24e274a1aaf232220d339`;
-  dokumentační plán je v `7435c7b`, M2.3a čeká na commit.
+- Poslední přijatý implementační HEAD: `851288c79c47ad282359458b14438a526753f320`;
+  dokumentační plán je v `7435c7b`.
 - Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
   upstream `origin/main`, lokálně `ahead 64 / behind 0` bez nového fetch ověření.
-- Vlastněné necommitnuté změny: M2.3a KIS raw archiv, migrace, CLI, testy,
-  backup kontrakt `.7` a související dokumentace. Localhost DB je 33/33;
-  produkce ani vzdálený repozitář se nemění.
+- Pracovní strom po implementačním commitu `851288c`: čistý před touto přesnou
+  handoff aktualizací. Localhost DB je 33/33; produkce ani vzdálený repozitář se
+  nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -167,7 +167,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | lokální `main` na implementačním commitu `1b4d9e1`; M1 `9c4c3e1`, M2.1 `1b4d9e1` | 2026-08-04 | lokální Git bez nového fetch | ano |
+| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.1 `1b4d9e1`, M2 plán `7435c7b`, M2.3a `851288c` | 2026-08-04 | lokální Git bez nového fetch | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
@@ -284,7 +284,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 54 | Integrace M1.9 | 31/31, 298/2435, audit 0, deterministický A05 seed, browser A05/A10/expiry a backup 121/2 `.5` |
 | 55 | Dokončení technické části M1 | placená soupiska/událost přes shop lifecycle, 32/32, 299/2547, 339 lintů, audit 0, browser paid flow a backup 123/2 `.6` |
 | 56 | M2.1 provozní export účastníků | admin POST+CSRF, CSV kontrakt v1, izolace akce, formula neutralizace, audit; 303/2603, 345 PHP souborů a localhost browser |
-| 57 | M2.3a KIS raw archiv | externí storage, hash/size/contract metadata, preview manifest, localhost dry-run a explicit write, idempotence; 33/33, 308/2635, 350 lintů, backup 124/2 `.7` |
+| 57 | M2.3a KIS raw archiv `851288c` | externí storage, hash/size/contract metadata, preview manifest, localhost dry-run a explicit write, idempotence; 33/33, 308/2635, 350 lintů, backup 124/2 `.7` |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
