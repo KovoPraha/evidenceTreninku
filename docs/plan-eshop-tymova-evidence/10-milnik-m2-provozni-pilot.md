@@ -27,11 +27,11 @@ kódu.
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | čeká na M2.0 | 0 % | nejprve chyby, potom texty a zjednodušení obrazovek |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
-| M2.4 provozní e-shop | základ existuje | 70 % | objednávka a služby fungují; chybí finální detail/obrázky, pravidlo slev pro služby a vlastníkova provozní zkouška |
+| M2.4 provozní e-shop | probíhá | 80 % | bezpečný detail, varianty a HTTPS obrázky fungují; chybí pravidlo slev pro služby a vlastníkova provozní zkouška |
 | M2.5 přístup a obnova účtu | částečně | 35 % | bezpečné session/tokeny a admin reset existují; chybí samoobslužný reset a dokončení permission cache |
 | M2.6 integrovaná akceptace | čeká | 0 % | opakovatelný browser průchod, backup a společná závěrečná brána |
 
-Orientační stav celého M2: **34 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **35 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -100,12 +100,25 @@ dry-run je stejný a žádný testovací běh nezmění produkci.
 
 ### M2.4 – provozní zkouška e-shopu
 
-1. Doplnit srozumitelný detail produktu a bezpečnou práci s obrázky.
-2. Rozhodnout a otestovat, zda se kupón smí použít na zboží, kroužek, událost a
+Dokončený technický řez M2.4a (`b4898f1`):
+
+- katalog sdružuje varianty do jedné produktové karty a ukazuje cenové rozpětí,
+- přihlášený zákazník má detail pouze aktivního publikovaného zboží,
+- detail používá výhradně schválený veřejný název a souhrn; importované
+  `description_html_untrusted` ani `short_description` nezobrazuje,
+- obrázek musí mít validní absolutní HTTPS URL bez přihlašovacích údajů a načítá
+  se bez referreru; neplatné, HTTP a jiné schéma se zahodí,
+- detail rozlišuje skladové varianty a vyprodanou variantu nepovolí vložit,
+- kroužek ukazuje pouze variantu svázanou s aktivní nabídkou a schová původní
+  importovaný obrázek zboží, který by po změně významu produktu klamal.
+
+Zbývá:
+
+1. Rozhodnout a otestovat, zda se kupón smí použít na zboží, kroužek, událost a
    velodrom; výchozí stav pro nejasnou službu je zamítnutí.
-3. Projít zboží i každou službu přes košík, neměnný cenový snapshot, QR,
+2. Projít zboží i každou službu přes košík, neměnný cenový snapshot, QR,
    ruční testovací úhradu, výdej/aktivaci, storno, expiraci a refundaci.
-4. Ověřit přehled objednávek rodiče i správce a srozumitelné chybové stavy.
+3. Ověřit přehled objednávek rodiče i správce a srozumitelné chybové stavy.
 
 Brána: žádná dvojitá objednávka, záporný sklad ani překročená kapacita; storno a
 expirace vracejí zdroje právě jednou; každý peněžní stav je auditovatelný.

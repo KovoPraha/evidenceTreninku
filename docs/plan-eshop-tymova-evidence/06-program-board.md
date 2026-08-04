@@ -98,6 +98,8 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | produktové připomínky A01–A10 | čekají na vlastníka | chyby a UX připomínky zařadit před další větší funkcí M2 |
 | M2.3a KIS raw archiv | hotovo lokálně | localhost-only dry-run/explicit write, archiv mimo webroot, SHA-256 + velikost, idempotence, preview manifest a žádný promote |
 | integrační brána M2.3a | hotovo lokálně | katalog 33/33, 308/2635, 350 PHP lintů, audit 0, dvojí MariaDB archivace stejné syntetické fixture a backup 124/2 `.7` |
+| M2.4a detail produktu | hotovo lokálně | aktivní publikace, seskupené varianty, sklad, schválené texty, validní HTTPS obrázky a oddělené zobrazení kroužkové nabídky |
+| integrační brána M2.4a | hotovo lokálně | 33/33 migrací, 313/2664, 354 PHP lintů, audit 0 a přihlášený browser průchod zboží i kroužku včetně vyčištění košíku |
 
 ## Aktivní rozhodnutí
 
