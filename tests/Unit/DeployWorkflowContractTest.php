@@ -41,10 +41,10 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-04.7'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-04.8'",
             $backup
         );
-        foreach (['shop_orders', 'club_events', 'account_person_roles', 'fio_account_movements', 'club_roster_members', 'club_team_series', 'training_roster_links', 'club_program_enrollments', 'club_event_roster_targets', 'club_roster_rollover_runs', 'public_self_profiles', 'public_velodrome_reservation_events', 'child_access_accounts', 'child_access_events', 'public_velodrome_cart_items', 'public_velodrome_order_items', 'club_event_cart_items', 'club_event_order_items', 'kis_import_source_artifacts'] as $table) {
+        foreach (['shop_orders', 'club_events', 'account_person_roles', 'fio_account_movements', 'club_roster_members', 'club_team_series', 'training_roster_links', 'club_program_enrollments', 'club_event_roster_targets', 'club_roster_rollover_runs', 'public_self_profiles', 'public_velodrome_reservation_events', 'child_access_accounts', 'child_access_events', 'public_velodrome_cart_items', 'public_velodrome_order_items', 'club_event_cart_items', 'club_event_order_items', 'kis_import_source_artifacts', 'password_reset_tokens'] as $table) {
             self::assertStringContainsString("'{$table}'", $backup);
         }
     }

@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-04.7';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-04.8';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -82,6 +82,7 @@ const EVIDENCE_TABLES = [
     'oznameni',
     'oznameni_targets',
     'payments',
+    'password_reset_tokens',
     'planovane_treninky',
     'planovane_treninky_podskupiny',
     'podskupiny',
