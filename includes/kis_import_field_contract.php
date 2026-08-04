@@ -53,7 +53,7 @@ function kisFieldContractEvaluate(array $people, array $meta, array $warnings): 
 {
     $definitions = [
         'users' => ['meta' => 'users', 'required' => ['jmeno', 'prijmeni', 'datumnarozeni']],
-        'payments' => ['meta' => 'payments', 'required' => ['stav', 'castka']],
+        'payments' => ['meta' => 'payments', 'required' => ['stav', 'castka', 'datumuhrady']],
         'rosters' => ['meta' => 'soupisky', 'required' => ['soupiska', 'jmeno', 'prijmeni']],
     ];
     $sources = [];

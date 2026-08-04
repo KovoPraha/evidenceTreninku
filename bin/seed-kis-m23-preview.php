@@ -97,7 +97,7 @@ try {
         ],
         [
             'users' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'jmeno', 'prijmeni', 'datumnarozeni'], 'rows' => 2],
-            'payments' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'idplatby', 'stav', 'castka'], 'rows' => 2],
+            'payments' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'idplatby', 'stav', 'castka', 'datumuhrady'], 'rows' => 2],
             'soupisky' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'soupiska', 'jmeno', 'prijmeni'], 'rows' => 2],
         ],
         [],

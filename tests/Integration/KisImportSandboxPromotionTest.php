@@ -102,7 +102,7 @@ final class KisImportSandboxPromotionTest extends TestCase
             ],
             [
                 'users' => ['headers' => ['kisid', 'jmeno', 'prijmeni', 'datumnarozeni'], 'rows' => 2],
-                'payments' => ['headers' => ['kisid', 'idplatby', 'stav', 'castka'], 'rows' => 2],
+                'payments' => ['headers' => ['kisid', 'idplatby', 'stav', 'castka', 'datumuhrady'], 'rows' => 2],
                 'soupisky' => ['headers' => ['kisid', 'soupiska', 'jmeno', 'prijmeni'], 'rows' => 2],
             ],
             [],

@@ -39,6 +39,18 @@ function memberChargeValidateStatus(mixed $status): string
     return $status;
 }
 
+function memberChargeNormalizeDate(mixed $value, string $label): ?string
+{
+    $value = trim((string)$value);
+    if ($value === '') return null;
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+    $errors = DateTimeImmutable::getLastErrors();
+    if (!$date || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0)) || $date->format('Y-m-d') !== $value) {
+        throw new InvalidArgumentException($label . ' predpisu nema platny format data.');
+    }
+    return $value;
+}
+
 /** @return array<string,mixed> */
 function memberChargeProjection(array $row): array
 {
@@ -46,11 +58,15 @@ function memberChargeProjection(array $row): array
     if ($externalId === '') throw new InvalidArgumentException('Clensky predpis nema stabilni zdrojove ID.');
     $amountMinor = filter_var($row['amount_minor'] ?? null, FILTER_VALIDATE_INT);
     $outstandingMinor = filter_var($row['outstanding_minor'] ?? null, FILTER_VALIDATE_INT);
-    if ($amountMinor === false || $amountMinor < 0 || $outstandingMinor === false || $outstandingMinor < 0 || $outstandingMinor > $amountMinor) {
+    if ($amountMinor === false || $amountMinor < 1 || $outstandingMinor === false || $outstandingMinor < 0 || $outstandingMinor > $amountMinor) {
         throw new InvalidArgumentException('Castky clenskeho predpisu nejsou konzistentni.');
     }
     $status = memberChargeValidateStatus($row['status'] ?? '');
     if ($status === 'paid' && $outstandingMinor !== 0) throw new InvalidArgumentException('Uhrazeny predpis nesmi mit zustatek.');
+    if ($status === 'cancelled' && $outstandingMinor !== 0) throw new InvalidArgumentException('Zruseny predpis nesmi mit zustatek.');
+    $dueOn = memberChargeNormalizeDate($row['due_on'] ?? null, 'Splatnost');
+    $paidOn = memberChargeNormalizeDate($row['paid_on'] ?? null, 'Uhrada');
+    if ($status === 'paid' && $paidOn === null) throw new InvalidArgumentException('Uhrazeny predpis nema datum uhrady.');
     return [
         'source_system' => 'kis_import',
         'source_external_id' => $externalId,
@@ -58,7 +74,7 @@ function memberChargeProjection(array $row): array
         'amount_minor' => $amountMinor,
         'outstanding_minor' => $outstandingMinor,
         'currency' => memberChargeNormalizeCurrency($row['currency'] ?? ''),
-        'due_on' => ($row['due_on'] ?? null) ?: null,
-        'paid_on' => ($row['paid_on'] ?? null) ?: null,
+        'due_on' => $dueOn,
+        'paid_on' => $paidOn,
     ];
 }

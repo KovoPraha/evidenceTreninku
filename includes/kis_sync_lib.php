@@ -333,6 +333,7 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
     $paymentInvalidPrescriptionIds = 0;
     $paymentMissingAmounts = 0;
     $paymentInvalidAmounts = 0;
+    $paymentMissingPaidDates = 0;
     foreach ($paymentRows as $row) {
         $jmeno = trim((string)($row['jmeno'] ?? ''));
         $prijmeni = trim((string)($row['prijmeni'] ?? ''));
@@ -367,7 +368,7 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         $amount = kis_money_to_float($row['castka'] ?? null);
         if ($amount === null) {
             $paymentMissingAmounts++;
-        } elseif ($amount < 0) {
+        } elseif ($amount <= 0) {
             $paymentInvalidAmounts++;
         }
         $status = mb_strtolower(kis_deaccent(trim((string)($row['stav'] ?? ''))), 'UTF-8');
@@ -375,7 +376,8 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         $dueDate = kis_date_to_mysql($row['datumsplatnosti'] ?? null);
         $statusClass = ($status === 'zaplaceno' || $remaining === 0.0) ? 'paid'
             : (in_array($status, ['zruseno', 'stornovano', 'storno'], true) ? 'cancelled' : 'pending');
-        if ($prescriptionId['value'] !== '' && $amount !== null && $amount >= 0) {
+        if ($statusClass === 'paid' && $paidDate === null) $paymentMissingPaidDates++;
+        if ($prescriptionId['value'] !== '' && $amount !== null && $amount > 0 && ($statusClass !== 'paid' || $paidDate !== null)) {
             $amountMinor = (int)round($amount * 100);
             $outstandingMinor = $remaining === null
                 ? ($statusClass === 'pending' ? $amountMinor : 0)
@@ -439,6 +441,7 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
     if ($paymentInvalidPrescriptionIds > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_ID_INVALID:' . $paymentInvalidPrescriptionIds;
     if ($paymentMissingAmounts > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_MISSING:' . $paymentMissingAmounts;
     if ($paymentInvalidAmounts > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_INVALID:' . $paymentInvalidAmounts;
+    if ($paymentMissingPaidDates > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_PAID_DATE_MISSING:' . $paymentMissingPaidDates;
 
     // Sloučení sezónních variant: "X (2025/2026)" → "X", pokud existuje i základní název.
     // KIS exportuje tutéž soupisku dvakrát (users bez sufixu, soupisky se sufixem sezóny) —

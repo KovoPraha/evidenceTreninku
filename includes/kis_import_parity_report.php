@@ -117,11 +117,12 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
     ]);
 
     $coverageBlockers = [];
+    $paymentPrescriptionFingerprint = hash('sha256', '[]');
     $hasPaymentStaging = function_exists('kisImportTableExists') && kisImportTableExists($pdo, 'kis_import_payment_rows');
     $hasPaymentTarget = function_exists('kisImportTableExists') && kisImportTableExists($pdo, 'club_member_charges');
     if ($hasPaymentStaging && $hasPaymentTarget) {
         $payments = $pdo->prepare(
-            'SELECT p.status_snapshot,p.amount_minor,p.currency,p.due_on,'
+            'SELECT p.source_ref,p.payment_external_id,p.status_snapshot,p.amount_minor,p.outstanding_minor,p.currency,p.due_on,p.paid_on,'
             . 'c.id AS target_id,c.status AS target_status,c.amount_minor AS target_amount_minor,'
             . 'c.currency AS target_currency,c.due_on AS target_due_on,'
             . 'im.sportovec_id,c.sportovec_id AS target_sportovec_id '
@@ -132,7 +133,18 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
             . 'WHERE p.run_id=? ORDER BY p.id'
         );
         $payments->execute([$runId]);
+        $paymentFingerprintRows = [];
         foreach ($payments->fetchAll(PDO::FETCH_ASSOC) as $payment) {
+            $paymentFingerprintRows[] = [
+                'source_ref' => (string)$payment['source_ref'],
+                'payment_external_id' => (string)$payment['payment_external_id'],
+                'status' => (string)$payment['status_snapshot'],
+                'amount_minor' => (int)$payment['amount_minor'],
+                'outstanding_minor' => (int)$payment['outstanding_minor'],
+                'currency' => (string)$payment['currency'],
+                'due_on' => $payment['due_on'] ?: null,
+                'paid_on' => $payment['paid_on'] ?: null,
+            ];
             $domains['payment_prescriptions']['staged_rows']++;
             if ((int)($payment['target_id'] ?? 0) < 1) {
                 $domains['payment_prescriptions']['target_missing']++;
@@ -148,6 +160,7 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
                 ? $domains['payment_prescriptions']['target_same']++
                 : $domains['payment_prescriptions']['target_different']++;
         }
+        $paymentPrescriptionFingerprint = hash('sha256', json_encode($paymentFingerprintRows, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         if ($domains['payment_prescriptions']['target_missing'] > 0) {
             $coverageBlockers[] = 'payment_prescriptions_not_promoted';
         }
@@ -165,6 +178,7 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
             'preview' => $preview['fingerprint'],
             'field' => $field['fingerprint'],
             'member_charge_contract' => MEMBER_CHARGE_CONTRACT,
+            'payment_prescriptions' => $paymentPrescriptionFingerprint,
         ],
         'summary' => [
             'total_rows' => $base['summary']['total_rows'],

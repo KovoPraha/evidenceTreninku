@@ -77,8 +77,8 @@ final class KisSyncLibTest extends TestCase
                 ['KIS-501', 'Stable', 'Member', '01.02.2012'],
             ]),
             'payments' => $this->writeXlsx([
-                ['ID uzivatele', 'ID platby', 'Stav', 'Castka'],
-                ['KIS-501', 'PAY-501', 'zaplaceno', '500'],
+                ['ID uzivatele', 'ID platby', 'Stav', 'Castka', 'Datum uhrady'],
+                ['KIS-501', 'PAY-501', 'zaplaceno', '500', '15.01.2026'],
             ]),
             'rosters' => $this->writeXlsx([
                 ['ID clena', 'Soupiska', 'Jmeno', 'Prijmeni'],
@@ -112,8 +112,8 @@ final class KisSyncLibTest extends TestCase
                 ['KIS-502', 'Missing', 'Amount', '01.02.2012'],
             ]),
             'payments' => $this->writeXlsx([
-                ['ID uzivatele', 'ID platby', 'Stav', 'Castka'],
-                ['KIS-502', 'PAY-502', 'ceka', ''],
+                ['ID uzivatele', 'ID platby', 'Stav', 'Castka', 'Datum uhrady'],
+                ['KIS-502', 'PAY-502', 'ceka', '', ''],
             ]),
             'rosters' => $this->writeXlsx([
                 ['ID clena', 'Soupiska', 'Jmeno', 'Prijmeni'],

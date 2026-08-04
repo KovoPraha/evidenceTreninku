@@ -77,7 +77,7 @@ final class KisImportParityReportTest extends TestCase
 
     private function meta(): array
     {
-        return ['users'=>['headers'=>['kisid','jmeno','prijmeni','datumnarozeni'],'rows'=>2],'payments'=>['headers'=>['kisid','idplatby','stav','castka'],'rows'=>2],'soupisky'=>['headers'=>['kisid','soupiska','jmeno','prijmeni'],'rows'=>2]];
+        return ['users'=>['headers'=>['kisid','jmeno','prijmeni','datumnarozeni'],'rows'=>2],'payments'=>['headers'=>['kisid','idplatby','stav','castka','datumuhrady'],'rows'=>2],'soupisky'=>['headers'=>['kisid','soupiska','jmeno','prijmeni'],'rows'=>2]];
     }
 
     private function artifact(PDO $pdo): int

@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/kis_import_run_lib.php';
 require_once __DIR__ . '/includes/kis_import_sandbox_promotion.php';
+require_once __DIR__ . '/includes/kis_member_charge_promotion.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) {
     header('Location: login.php');
@@ -23,7 +24,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (!$sandboxAllowed) {
-            throw new KisImportSandboxException('Sandbox akce je povolena pouze administrátorovi na localhostu.');
+            throw new KisImportSandboxException('Testovací KIS akce jsou povoleny pouze administrátorovi na localhostu.');
         }
         if (!csrf_verify($_POST['csrf_token'] ?? '')) {
             throw new InvalidArgumentException('Neplatný CSRF token.');
@@ -32,7 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $reason = (string)($_POST['reason'] ?? '');
         $confirmed = ($_POST['confirm_action'] ?? '') === '1';
         $actorId = (int)$_SESSION['trener_id'];
-        if (($_POST['action'] ?? '') === 'sandbox_promote') {
+        if (($_POST['action'] ?? '') === 'charge_promote') {
+            $result = kisMemberChargePromote($pdo, $runId, $fingerprint, $actorId, $reason, $confirmed, true);
+            $messages[] = !empty($result['idempotent'])
+                ? 'Členské předpisy už byly přeneseny; žádný další zápis nevznikl.'
+                : (!empty($result['reapplied']) ? 'Členské předpisy byly bezpečně znovu přeneseny.' : 'Členské předpisy byly přeneseny do testovacího cíle.');
+        } elseif (($_POST['action'] ?? '') === 'charge_rollback') {
+            $result = kisMemberChargeRollback($pdo, $runId, $fingerprint, $actorId, $reason, $confirmed, true);
+            $messages[] = !empty($result['idempotent'])
+                ? 'Rollback členských předpisů už byl proveden; žádný další zápis nevznikl.'
+                : 'Testovací přenos členských předpisů byl vrácen.';
+        } elseif (($_POST['action'] ?? '') === 'sandbox_promote') {
             $result = kisImportSandboxPromote($pdo, $runId, $fingerprint, $actorId, $reason, $confirmed, true);
             $messages[] = !empty($result['idempotent'])
                 ? 'Sandbox promote už byl aplikován; žádný další zápis nevznikl.'
@@ -46,11 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new InvalidArgumentException('Neznámá sandbox akce.');
         }
     } catch (Throwable $exception) {
-        $errors[] = $exception instanceof InvalidArgumentException || $exception instanceof KisImportSandboxException
+        $errors[] = $exception instanceof InvalidArgumentException || $exception instanceof KisImportSandboxException || $exception instanceof KisMemberChargePromotionException
             ? $exception->getMessage()
             : 'Sandbox akci se nepodařilo provést bez částečného zápisu.';
-        if (!$exception instanceof InvalidArgumentException && !$exception instanceof KisImportSandboxException) {
-            error_log('kis_sync_center sandbox: ' . $exception->getMessage());
+        if (!$exception instanceof InvalidArgumentException && !$exception instanceof KisImportSandboxException && !$exception instanceof KisMemberChargePromotionException) {
+            error_log('kis_sync_center KIS test action: ' . $exception->getMessage());
         }
     }
 }
@@ -59,6 +70,7 @@ $previewReport = $detail && $detail['run'] ? kisImportStoredPreviewReport($detai
 $fieldContractReport = $detail && $detail['run'] ? kisFieldContractStoredReport($detail['run']) : null;
 $parityReport = $detail && $detail['run'] ? kisImportStoredParityReport($detail['run']) : null;
 $sandboxPromotion = $sandboxAllowed && $runId > 0 ? kisImportSandboxPromotionForRun($pdo, $runId) : [];
+$chargePromotion = $sandboxAllowed && $runId > 0 ? kisMemberChargePromotionForRun($pdo, $runId) : [];
 if (($_GET['preview_report'] ?? '') === 'json' && $previewReport !== null) {
     header('Content-Type: application/json; charset=utf-8');
     header('Content-Disposition: attachment; filename="kis-preview-run-' . $runId . '.json"');
@@ -215,6 +227,52 @@ $attention = [
                             <?php endif; ?>
                         </div>
                     </div>
+                    <?php if ($sandboxAllowed && $parityReport !== null): ?>
+                        <?php
+                        $chargeApplied = ($chargePromotion['status'] ?? '') === 'applied';
+                        $chargeRolledBack = ($chargePromotion['status'] ?? '') === 'rolled_back';
+                        $chargeSourceReady = (int)($parityReport['summary']['row_blockers'] ?? -1) === 0
+                            && (int)($prescriptions['staged_rows'] ?? 0) > 0
+                            && (int)($prescriptions['target_different'] ?? -1) === 0
+                            && (($parityReport['coverage_blockers'] ?? []) === ['payment_prescriptions_not_promoted'] || $chargeApplied);
+                        ?>
+                        <div class="alert alert-primary mt-3 mb-0">
+                            <div class="fw-semibold">M2.3g testovací přenos členských předpisů</div>
+                            <div class="small mb-2">Pouze localhost: transakčně vytvoří členský předpis a u uhrazené položky samostatný historický platební záznam. Vyžaduje přesnou shodu existujícího sportovce, čerstvý paritní fingerprint, důvod a potvrzení.</div>
+                            <?php if ($chargePromotion): ?>
+                                <div class="small mb-2">
+                                    Stav: <strong><?= $chargeApplied ? 'aplikováno v testovacím cíli' : 'vráceno rollbackem' ?></strong>,
+                                    aktivní předpisy <?= (int)($chargePromotion['active_items'] ?? 0) ?>/<?= (int)($chargePromotion['item_count'] ?? 0) ?>,
+                                    samostatné platby <?= $chargeApplied ? (int)($chargePromotion['payment_count'] ?? 0) : 0 ?>,
+                                    auditní události <?= (int)($chargePromotion['event_count'] ?? 0) ?>.
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($chargeApplied || $chargeSourceReady): ?>
+                                <form method="post" action="kis_sync_center.php?run_id=<?= $runId ?>" class="row g-2 align-items-end">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="action" value="<?= $chargeApplied ? 'charge_rollback' : 'charge_promote' ?>">
+                                    <input type="hidden" name="preview_fingerprint" value="<?= h($parityReport['fingerprint']) ?>">
+                                    <div class="col-lg-7">
+                                        <label class="form-label small" for="charge-reason">Auditní důvod M2.3g</label>
+                                        <input id="charge-reason" class="form-control form-control-sm" name="reason" minlength="5" maxlength="1000" required placeholder="Např. Ověření M2.3g na localhostu">
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="confirm_action" value="1" required>
+                                            <span class="form-check-label small">Potvrzuji pouze testovací přenos</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 d-grid">
+                                        <button class="btn btn-sm <?= $chargeApplied ? 'btn-outline-danger' : 'btn-primary' ?>" type="submit">
+                                            <?= $chargeApplied ? 'Vrátit předpisy' : ($chargeRolledBack ? 'Znovu přenést' : 'Přenést předpisy') ?>
+                                        </button>
+                                    </div>
+                                </form>
+                            <?php else: ?>
+                                <div class="small text-danger">Přenos je zablokovaný: osoby musí být přesně spárované, staging úplný a cílové předpisy beze změn. Tento běh nic nezapíše.</div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                     <?php if ($sandboxAllowed): ?>
                         <div class="alert alert-info mt-3 mb-0">
                             <div class="fw-semibold">M2.3c testovací sandbox</div>
