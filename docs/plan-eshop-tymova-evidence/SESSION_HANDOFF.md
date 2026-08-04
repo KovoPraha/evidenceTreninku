@@ -7,13 +7,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `8647bce`;
-  dokumentační plán navazuje touto handoff aktualizací.
-- Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
-  upstream `origin/main`, lokálně `ahead 92 / behind 0` bez nového fetch ověření.
-- Pracovní strom po implementačním commitu `8647bce`: čistý před touto přesnou
-  handoff aktualizací. Localhost DB je 37/37; produkce ani vzdálený repozitář se
-  nemění.
+- Poslední přijatý implementační HEAD: `efa1ca8`.
+- Po implementačním commitu `efa1ca8` zůstává rozpracovaná pouze tato dokumentace;
+  větev `main`, upstream `origin/main`, lokálně `ahead 95 / behind 0` bez nového
+  fetch ověření.
+- Localhost DB je 38/38; produkce ani vzdálený repozitář se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -30,7 +28,19 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `8647bce` uzavírá provozní průchod A05. Reset seedu
+- Poslední dokončená akce: `efa1ca8` zpřístupňuje veřejný portál bez registrace a master účet
+  používá jeden login pro trenérskou Evidenci i zákaznický e-shop. Veřejné jsou
+  katalog, detail produktu, kroužky/události, velodrom, rezervační kalendář a nový
+  bezpečný rozvrh zveřejněných tréninků; košík, přihláška a rezervace vyžadují
+  přihlášení. Veřejný rozvrh nevybírá osoby, docházku, interní popis ani poznámky.
+  Trenérský login propojí nebo vytvoří právě jeden zákaznický profil, veřejný login
+  umí stejnou trenérskou roli obnovit a reset hesla aktualizuje obě role. Localhost
+  master `localhost-admin` je propojen bez duplicity. Browser potvrdil košík,
+  objednávky, kroužky i návrat do trenérského dashboardu bez druhého loginu.
+  Plná sada je 346/3063, lint 375, migrace 38/38 a Composer audit 0. Produkce ani
+  vzdálený Git se nezměnily. Další konkrétní akce: provozní scénář A06.
+
+  Předchozí dokončená akce: `8647bce` uzavírá provozní průchod A05. Reset seedu
   ponechá jedinou kanonickou identitu přechodu a bezpečně archivuje starý syntetický
   duplikát včetně jeho aktivních vazeb. Browser prošel preview, věkovou kontrolu,
   povinný důvod a auditovaný přechod stejné osoby do U17 2027. Nový náhled nad už
@@ -422,6 +432,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 69 | M2.2 homepage `25830e1` | společný veřejný vstup e-shop/rodina/sportovec/trenér a čtyři rychlé trenérské volby; HTTP 200, browser bez chyb, 336/3004 |
 | 70 | M2.2/A02 `18deb9c` | sportovní souhrn, české stavy/datumy, společná homepage a browser IDOR důkaz jediné identity; 337/3014, 367 lintů, 37/37, audit 0 |
 | 71 | M2.6/A05 `8647bce` | kanonický demo sportovec, auditovaný přechod a pravdivý no-op nového náhledu; reset zpět před přechod; 338/3025, 367 lintů, 37/37, audit 0 |
+| 72 | M2.2/M2.5 veřejnost + jednotný účet `efa1ca8` | veřejný read-only katalog a rozvrhy, akce po loginu, jedna trenérská/zákaznická identita a společný reset; 346/3063, 375 lintů, 38/38, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

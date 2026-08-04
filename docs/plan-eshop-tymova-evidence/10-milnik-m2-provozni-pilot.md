@@ -25,13 +25,13 @@ kódu.
 |---|---|---:|---|
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
-| M2.2 opravy a UX z prohlídky | probíhá | 40 % | homepage a sportovní přehled jsou zpřehledněné; A05 navíc opravilo duplicitní demo identitu a pravdivou no-op odpověď |
+| M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
-| M2.5 přístup a obnova účtu | technicky hotovo | 90 % | samoobslužný reset rodiče i sportovce, okamžitá oprávnění a tokenové/IDOR testy existují; zbývá uživatelský průchod a produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 68 % | backup, shop lifecycle, A02 a A05 mají browser důkaz; zbývají KIS scénáře A06–A08/A10 a závěrečná brána |
+| M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
+| M2.6 integrovaná akceptace | probíhá | 72 % | backup, shop lifecycle, A02, A05 a jednotný master účet mají browser důkaz; zbývají KIS scénáře A06–A08/A10 a závěrečná brána |
 
-Orientační stav celého M2: **52 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **56 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -45,6 +45,21 @@ migraci, které mají vlastní pozdější bránu.
    funkcí.
 
 Brána: každá připomínka má vlastníka, prioritu a cílový řez M2.
+
+Dokončený veřejný a identitní řez:
+
+- katalog e-shopu, produkt, kroužky/události, hodiny velodromu a zveřejněný
+  rozvrh tréninků jsou čitelné bez registrace,
+- vložení do košíku, přihláška nebo rezervace přesměrují nepřihlášeného uživatele
+  na jednotné přihlášení,
+- trenérský účet se bezpečně propojí s právě jedním zákaznickým profilem podle
+  trenérského ID nebo stejného e-mailu; nevzniká druhá registrace,
+- heslo trenéra je pro propojený účet kanonické a samoobslužný reset aktualizuje
+  a revokuje obě role v jedné transakci,
+- omezený přístup dítěte zůstává samostatnou bezpečnostní identitou; nejde o
+  duplicitní registraci dospělého ani o trenérské oprávnění,
+- veřejný rozvrh vybírá jen datum, čas, název, kategorii, skupinu a sportoviště;
+  docházku, osoby, interní popis a poznámky vůbec nenačítá.
 
 První dokončený UX řez (`25830e1`):
 

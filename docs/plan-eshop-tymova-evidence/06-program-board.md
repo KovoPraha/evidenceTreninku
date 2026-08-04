@@ -116,6 +116,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.2 společná homepage | hotovo lokálně | `25830e1`: veřejný vstup propojuje e-shop, služby, rodinu, sportovce a trenéry; trenérský dashboard má rychlé volby Evidence/KIS/objednávky/veřejný portál; 336/3004, audit 0 |
 | M2.2/A02 sportovní přehled | hotovo lokálně | `18deb9c`: vlastní souhrny, české stavy a datumy, návrat na společnou homepage; browser IDOR pokus zachoval jedinou identitu; 337/3014, 367 lintů, 37/37, audit 0 |
 | M2.6/A05 přechod do závodního týmu | hotovo lokálně | `8647bce`: jediná kanonická demo identita, preview + věk + auditovaný zápis a pravdivý no-op při novém opakovaném náhledu; reset vrací scénář před přechod; 338/3025, 367 lintů, 37/37, audit 0 |
+| M2.2/M2.5 veřejný portál a jednotný účet | hotovo lokálně | `efa1ca8`: veřejný katalog, kroužky, velodrom a bezpečný rozvrh; akce až po loginu; trenér i e-shop používají jednu identitu a reset hesla; 346/3063, 375 lintů, 38/38, audit 0, browser master flow |
 
 ## Aktivní rozhodnutí
 
