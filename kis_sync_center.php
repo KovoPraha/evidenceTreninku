@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/kis_import_run_lib.php';
+require_once __DIR__ . '/includes/kis_import_sandbox_promotion.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) {
     header('Location: login.php');
@@ -15,8 +17,46 @@ function dt(?string $date): string {
 }
 
 $runId = isset($_GET['run_id']) ? (int)$_GET['run_id'] : 0;
+$sandboxAllowed = defined('JE_LOKALNE') && JE_LOKALNE === true && roleAtLeast('admin');
+$messages = [];
+$errors = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        if (!$sandboxAllowed) {
+            throw new KisImportSandboxException('Sandbox akce je povolena pouze administrátorovi na localhostu.');
+        }
+        if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+            throw new InvalidArgumentException('Neplatný CSRF token.');
+        }
+        $fingerprint = trim((string)($_POST['preview_fingerprint'] ?? ''));
+        $reason = (string)($_POST['reason'] ?? '');
+        $confirmed = ($_POST['confirm_action'] ?? '') === '1';
+        $actorId = (int)$_SESSION['trener_id'];
+        if (($_POST['action'] ?? '') === 'sandbox_promote') {
+            $result = kisImportSandboxPromote($pdo, $runId, $fingerprint, $actorId, $reason, $confirmed, true);
+            $messages[] = !empty($result['idempotent'])
+                ? 'Sandbox promote už byl aplikován; žádný další zápis nevznikl.'
+                : (!empty($result['reapplied']) ? 'Sandbox promote byl bezpečně znovu aplikován.' : 'Sandbox promote byl aplikován.');
+        } elseif (($_POST['action'] ?? '') === 'sandbox_rollback') {
+            $result = kisImportSandboxRollback($pdo, $runId, $fingerprint, $actorId, $reason, $confirmed, true);
+            $messages[] = !empty($result['idempotent'])
+                ? 'Sandbox rollback už byl proveden; žádný další zápis nevznikl.'
+                : 'Sandbox rollback byl proveden.';
+        } else {
+            throw new InvalidArgumentException('Neznámá sandbox akce.');
+        }
+    } catch (Throwable $exception) {
+        $errors[] = $exception instanceof InvalidArgumentException || $exception instanceof KisImportSandboxException
+            ? $exception->getMessage()
+            : 'Sandbox akci se nepodařilo provést bez částečného zápisu.';
+        if (!$exception instanceof InvalidArgumentException && !$exception instanceof KisImportSandboxException) {
+            error_log('kis_sync_center sandbox: ' . $exception->getMessage());
+        }
+    }
+}
 $detail = $runId > 0 ? kisImportRunDetail($pdo, $runId) : null;
 $previewReport = $detail && $detail['run'] ? kisImportStoredPreviewReport($detail['run']) : null;
+$sandboxPromotion = $sandboxAllowed && $runId > 0 ? kisImportSandboxPromotionForRun($pdo, $runId) : [];
 if (($_GET['preview_report'] ?? '') === 'json' && $previewReport !== null) {
     header('Content-Type: application/json; charset=utf-8');
     header('Content-Disposition: attachment; filename="kis-preview-run-' . $runId . '.json"');
@@ -44,6 +84,8 @@ $attention = [
 <body class="bg-light">
 <?php include __DIR__ . '/hlavicka.php'; ?>
 <div class="container py-4" style="max-width:1280px;">
+    <?php foreach ($messages as $message): ?><div class="alert alert-success"><?= h($message) ?></div><?php endforeach; ?>
+    <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= h($error) ?></div><?php endforeach; ?>
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <div>
             <h1 class="h4 mb-0">KIS synchronizační centrum</h1>
@@ -84,6 +126,45 @@ $attention = [
                         </div>
                         <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;preview_report=json">Stáhnout bezpečný JSON report</a>
                     </div>
+                    <?php if ($sandboxAllowed): ?>
+                        <div class="alert alert-info mt-3 mb-0">
+                            <div class="fw-semibold">M2.3c testovací sandbox</div>
+                            <div class="small mb-2">Akce zapisuje pouze anonymní položky do oddělených sandbox tabulek. Tabulky sportovců, soupisek, plateb a objednávek se nemění.</div>
+                            <?php if ($previewReady): ?>
+                                <?php $sandboxApplied = ($sandboxPromotion['status'] ?? '') === 'applied'; ?>
+                                <?php $sandboxRolledBack = ($sandboxPromotion['status'] ?? '') === 'rolled_back'; ?>
+                                <?php if ($sandboxPromotion): ?>
+                                    <div class="small mb-2">
+                                        Stav: <strong><?= $sandboxApplied ? 'aplikováno v sandboxu' : 'vráceno rollbackem' ?></strong>,
+                                        aktivní položky <?= (int)($sandboxPromotion['active_items'] ?? 0) ?>/<?= (int)($sandboxPromotion['item_count'] ?? 0) ?>,
+                                        auditní události <?= (int)($sandboxPromotion['event_count'] ?? 0) ?>.
+                                    </div>
+                                <?php endif; ?>
+                                <form method="post" action="kis_sync_center.php?run_id=<?= $runId ?>" class="row g-2 align-items-end">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="action" value="<?= $sandboxApplied ? 'sandbox_rollback' : 'sandbox_promote' ?>">
+                                    <input type="hidden" name="preview_fingerprint" value="<?= h($previewReport['fingerprint']) ?>">
+                                    <div class="col-lg-7">
+                                        <label class="form-label small" for="sandbox-reason">Auditní důvod</label>
+                                        <input id="sandbox-reason" class="form-control form-control-sm" name="reason" minlength="5" maxlength="500" required placeholder="Např. Ověření M2.3c na localhostu">
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="confirm_action" value="1" required>
+                                            <span class="form-check-label small">Potvrzuji pouze sandbox akci</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 d-grid">
+                                        <button class="btn btn-sm <?= $sandboxApplied ? 'btn-outline-danger' : 'btn-primary' ?>" type="submit">
+                                            <?= $sandboxApplied ? 'Vrátit sandbox' : ($sandboxRolledBack ? 'Znovu aplikovat' : 'Aplikovat do sandboxu') ?>
+                                        </button>
+                                    </div>
+                                </form>
+                            <?php else: ?>
+                                <div class="small text-danger">Blokovaný nebo neúplný náhled nelze aplikovat ani do sandboxu.</div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 <?php else: ?>
                     <div class="alert alert-warning mb-0">
                         Starší náhled nemá uzamčený M2.3b report. Nelze jej použít jako podklad pro testovací promote.
