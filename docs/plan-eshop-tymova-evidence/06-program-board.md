@@ -107,6 +107,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | bezpečnostní hardening legacy | hotovo lokálně | `65a0433`: náhodné profilové tokeny, rotace odvoditelných URL, hash legacy hesel, CSRF, download oprávnění, redakce auditu a Apache defense-in-depth |
 | bezpečnostní integrační brána | hotovo lokálně | 36/36, 323/2903, 361 PHP lintů, Composer audit 0 a localhost HTTP hlavičky/upload 403; produkce beze změny |
 | M2.5 registrace bez enumerace | hotovo lokálně | `b8ecdaa`: shodná veřejná odpověď pro nový i existující e-mail; 324/2907 |
+| M2.5 obnova účtu a oprávnění | technicky hotovo lokálně | `7c1490e`: hashovaný hodinový single-use reset rodiče i sportovce, revokace relací, živé guardian ověření a request-scoped oprávnění; 37/37, 330/2944, 367 lintů |
 
 ## Aktivní rozhodnutí
 
@@ -149,7 +150,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 - [x] lokální a vzdálený main bezpečně sjednocen,
 - [x] KIS matcher opraven a otestován na foundation,
 - [x] dependency audit foundation bez advisories,
-- [ ] legacy hesla a session mají schválenou a ověřenou nápravu; tokeny, logout, lifecycle, DB revokace, limiter a localhost password apply jsou hotové, ale permission cache, reset hesla a produkční password apply zbývají,
+- [ ] legacy hesla a session mají schválenou a ověřenou nápravu; tokeny, logout, lifecycle, DB revokace, limiter, localhost password apply, samoobslužný reset a okamžitá oprávnění jsou hotové; zbývá produkční password apply a doručování reset e-mailu,
 - [x] unit/integration testy a migrační fixture existují; první GitHub běh `30718098799` je zelený,
 - [x] číslované migrace a read-only `--check` existují lokálně,
 - [ ] staging/test DB a kompletní realistické fixtures existují; rozšířené syntetické KIS/Shoptet matice a read-only dry-run už jsou doložené,

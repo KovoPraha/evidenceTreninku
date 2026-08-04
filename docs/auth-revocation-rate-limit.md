@@ -81,14 +81,17 @@ hesla smaže limiter konkrétního účtu. IP limiter zůstává nezávislý kro
 jediné úspěšné rezervace, takže jej nelze vymazat přihlášením do jiného platného
 účtu ze stejné adresy.
 
+## Navazující dokončení M2.5
+
+- `7c1490e` přestává důvěřovat dlouhodobému `$_SESSION['opravneni']`: role a
+  oprávnění trenéra se při každém požadavku obnoví z DB a chyba selže uzavřeně.
+- Rodičovský i sportovní účet používají společný hashovaný, expirovaný a
+  jednorázový reset token; změna hesla zvyšuje `session_version`.
+
 ## Otevřené body
 
-- Změna globální tabulky oprávnění se stále nepromítne do již nacachovaného
-  `$_SESSION['opravneni']`; samostatný increment má zavést globální permission
-  version nebo přestat oprávnění dlouhodobě cachovat.
 - Rotace `AUTH_RATE_LIMIT_PEPPER` změní všechny klíče limiteru. Vyžaduje
   koordinovaný provozní postup a následný úklid starých neodpovídajících řádků.
 - Tabulka limiteru potřebuje provozní retenční úklid starých řádků; není součástí
   přihlašovacího requestu ani tohoto incrementu.
-- Reset hesla, remember-me, expirované emailové/booking tokeny a redesign SSO
-  zůstávají mimo tento krok.
+- Remember-me a redesign SSO zůstávají mimo tento krok.

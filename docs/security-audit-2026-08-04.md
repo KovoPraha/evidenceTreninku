@@ -51,6 +51,7 @@ použijí stejné heslo; mění se pouze způsob jeho uložení.
   Přísnější CSP vyžaduje samostatný kompatibilitní průchod.
 - Produkční PHP/Apache konfigurace a provedení migrace nebyly v tomto kroku měněny
   ani živě ověřeny.
-- Self-service obnova sportovního hesla a permission cache zůstávají úkolem M2.5.
+- Samoobslužnou obnovu hesla a okamžité načítání oprávnění uzavřel navazující
+  commit `7c1490e`; produkční doručování reset e-mailu ještě vyžaduje provozní test.
 - Slabší historické tokeny veřejných skupin nejsou součástí potvrzeného S1; jejich
   případná rotace má být samostatná změna, aby se vědomě vyhodnotilo zneplatnění URL.

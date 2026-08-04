@@ -28,7 +28,7 @@ kódu.
 | M2.2 opravy a UX z prohlídky | čeká na M2.0 | 0 % | nejprve chyby, potom texty a zjednodušení obrazovek |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | probíhá | 90 % | detail, rozsah kupónů a tři kapacitní/re-enrollment regrese jsou uzavřené; zbývá vlastníkova úplná provozní zkouška a zbývající MEDIUM audit |
-| M2.5 přístup a obnova účtu | částečně | 50 % | bezpečné session/tokeny, admin reset, migrace legacy hesel a registrace bez enumerace existují; chybí samoobslužný reset a dokončení permission cache |
+| M2.5 přístup a obnova účtu | technicky hotovo | 90 % | samoobslužný reset rodiče i sportovce, okamžitá oprávnění a tokenové/IDOR testy existují; zbývá uživatelský průchod a produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | čeká | 0 % | opakovatelný browser průchod, backup a společná závěrečná brána |
 
 Orientační stav celého M2: **36 %**. Nezapočítává produkční deploy ani ostrou
