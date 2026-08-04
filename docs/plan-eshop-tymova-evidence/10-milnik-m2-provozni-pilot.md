@@ -27,11 +27,11 @@ kódu.
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | čeká na M2.0 | 0 % | nejprve chyby, potom texty a zjednodušení obrazovek |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
-| M2.4 provozní e-shop | probíhá | 80 % | bezpečný detail, varianty a HTTPS obrázky fungují; chybí pravidlo slev pro služby a vlastníkova provozní zkouška |
+| M2.4 provozní e-shop | probíhá | 88 % | detail i explicitní rozsah kupónů fungují; zbývá vlastníkova úplná provozní zkouška a doladění chybových stavů |
 | M2.5 přístup a obnova účtu | částečně | 35 % | bezpečné session/tokeny a admin reset existují; chybí samoobslužný reset a dokončení permission cache |
 | M2.6 integrovaná akceptace | čeká | 0 % | opakovatelný browser průchod, backup a společná závěrečná brána |
 
-Orientační stav celého M2: **35 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **36 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -112,13 +112,23 @@ Dokončený technický řez M2.4a (`b4898f1`):
 - kroužek ukazuje pouze variantu svázanou s aktivní nabídkou a schová původní
   importovaný obrázek zboží, který by po změně významu produktu klamal.
 
+Dokončený technický řez M2.4b (`838793d`):
+
+- kupón má neměnný auditovaný rozsah jako kombinaci zboží, kroužků, placených
+  událostí a velodromu,
+- výchozí a migrační hodnota je pouze běžné zboží; žádná služba se nezlevní bez
+  výslovného zaškrtnutí administrátorem,
+- minimum i sleva se počítají jen z povolených kategorií, zatímco konečná cena
+  objednávky stále zahrnuje celý košík,
+- neznámý rozsah, nesouhlasící rozpad částek a kupón bez vhodné položky selžou
+  bezpečně bez připojení kupónu,
+- redemption ukládá způsobilý mezisoučet a snapshot rozsahu pro pozdější audit.
+
 Zbývá:
 
-1. Rozhodnout a otestovat, zda se kupón smí použít na zboží, kroužek, událost a
-   velodrom; výchozí stav pro nejasnou službu je zamítnutí.
-2. Projít zboží i každou službu přes košík, neměnný cenový snapshot, QR,
+1. Projít zboží i každou službu přes košík, neměnný cenový snapshot, QR,
    ruční testovací úhradu, výdej/aktivaci, storno, expiraci a refundaci.
-3. Ověřit přehled objednávek rodiče i správce a srozumitelné chybové stavy.
+2. Ověřit přehled objednávek rodiče i správce a srozumitelné chybové stavy.
 
 Brána: žádná dvojitá objednávka, záporný sklad ani překročená kapacita; storno a
 expirace vracejí zdroje právě jednou; každý peněžní stav je auditovatelný.
