@@ -11,6 +11,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
+require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 
 function familyPageH(mixed $value): string
@@ -23,15 +24,54 @@ function familyPageChargeStatus(string $status): string
     return ['pending' => 'Čeká na úhradu', 'paid' => 'Uhrazeno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
 }
 
+$accountId = (int)$_SESSION['verejny_uzivatel_id'];
+$calendarMessage = (string)($_SESSION['family_calendar_message'] ?? '');
+$calendarToken = (string)($_SESSION['family_calendar_token_once'] ?? '');
+unset($_SESSION['family_calendar_message'], $_SESSION['family_calendar_token_once']);
+$calendarError = '';
+
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        $calendarError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
+    } else {
+        try {
+            $action = (string)($_POST['action'] ?? '');
+            if ($action === 'family_calendar_issue') {
+                $issued = familyCalendarFeedIssue($pdo, $accountId);
+                $_SESSION['family_calendar_token_once'] = $issued['token'];
+                $_SESSION['family_calendar_message'] = $issued['created']
+                    ? 'Soukromý odkaz kalendáře byl vytvořen.'
+                    : 'Starý odkaz byl zrušen a nahrazen novým.';
+                header('Location: sportovni_prehled.php#rodinny-kalendar', true, 303);
+                exit;
+            }
+            if ($action === 'family_calendar_revoke') {
+                familyCalendarFeedRevoke($pdo, $accountId);
+                $_SESSION['family_calendar_message'] = 'Soukromý odkaz kalendáře byl zrušen.';
+                header('Location: sportovni_prehled.php#rodinny-kalendar', true, 303);
+                exit;
+            }
+            $calendarError = 'Neznámá akce kalendáře.';
+        } catch (FamilyCalendarFeedException $exception) {
+            $calendarError = $exception->getMessage();
+        } catch (Throwable $exception) {
+            error_log('booking/sportovni_prehled.php calendar action: ' . $exception->getMessage());
+            $calendarError = 'Nastavení kalendáře se nyní nepodařilo uložit.';
+        }
+    }
+}
+
+$calendarState = familyCalendarFeedState($pdo, $accountId);
+$calendarUrl = $calendarToken !== '' ? familyCalendarFeedUrl($calendarToken) : '';
 $overview = [];
 $familyOrderItems = [];
 $loadError = '';
 try {
-    $overview = familyPortalOverview($pdo, (int)$_SESSION['verejny_uzivatel_id']);
+    $overview = familyPortalOverview($pdo, $accountId);
     if (shopBeneficiaryColumnExists($pdo, 'shop_order_items')) {
         $familyOrderItems = shopBeneficiaryOrderItemsForAccount(
             $pdo,
-            (int)$_SESSION['verejny_uzivatel_id']
+            $accountId
         );
     }
 } catch (Throwable $exception) {
@@ -69,6 +109,32 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
     <?php if ($loadError === '' && $overview === []): ?>
         <div class="alert alert-info">Nemáte žádný aktivní schválený profil. O propojení můžete požádat v části <a href="moje_osoby.php">Moje osoby</a>.</div>
     <?php endif; ?>
+
+    <section class="card border-0 shadow-sm mb-4" id="rodinny-kalendar">
+        <div class="card-header bg-white"><strong><i class="bi bi-calendar3 me-2 text-primary"></i>Rodinný kalendář v telefonu</strong></div>
+        <div class="card-body">
+            <p class="mb-2">Přidejte si do telefonu osobní kalendář tréninků, přihlášených akcí, rezervací a splatností za všechny schválené profily.</p>
+            <p class="small text-muted">Odkaz funguje jako soukromý klíč. Neposílejte ho dalším lidem. Při podezření na sdílení vytvořte nový nebo jej zrušte.</p>
+            <?php if ($calendarMessage !== ''): ?><div class="alert alert-success py-2"><?= familyPageH($calendarMessage) ?></div><?php endif; ?>
+            <?php if ($calendarError !== ''): ?><div class="alert alert-danger py-2"><?= familyPageH($calendarError) ?></div><?php endif; ?>
+            <?php if ($calendarUrl !== ''): ?>
+                <div class="alert alert-warning">
+                    <strong>Odkaz se zobrazuje pouze nyní.</strong> Zkopírujte jej do aplikace Kalendář jako odebíraný kalendář.
+                    <label for="family-calendar-url" class="visually-hidden">Soukromý odkaz kalendáře</label>
+                    <input id="family-calendar-url" class="form-control mt-2" type="text" readonly value="<?= familyPageH($calendarUrl) ?>" onclick="this.select()">
+                </div>
+            <?php endif; ?>
+            <?php if ($calendarState !== null && (int)$calendarState['active'] === 1): ?>
+                <p class="small mb-3">Kalendář je aktivní. Kontrolní konec odkazu: <code>…<?= familyPageH($calendarState['token_hint']) ?></code></p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_issue"><button class="btn btn-outline-primary btn-sm">Vytvořit nový odkaz</button></form>
+                    <form method="post" onsubmit="return confirm('Opravdu zrušit odběr rodinného kalendáře?');"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_revoke"><button class="btn btn-outline-danger btn-sm">Zrušit odkaz</button></form>
+                </div>
+            <?php else: ?>
+                <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_issue"><button class="btn btn-primary">Vytvořit soukromý odkaz</button></form>
+            <?php endif; ?>
+        </div>
+    </section>
 
     <?php foreach ($overview as $profile): $person = $profile['person']; ?>
         <section class="card border-0 shadow-sm mb-4">

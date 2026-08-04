@@ -90,11 +90,15 @@ function publicCalendarItems(PDO $pdo, string $from, string $to): array
 }
 
 /** @param list<array{uid:string,start:string,end:string,all_day:bool,summary:string,location:string,description:string,category:string}> $items */
-function publicCalendarRender(array $items, ?DateTimeImmutable $generatedAt = null): string
+function publicCalendarRender(
+    array $items,
+    ?DateTimeImmutable $generatedAt = null,
+    string $calendarName = 'Kovopraha – veřejný program'
+): string
 {
     $generatedAt ??= new DateTimeImmutable('now', new DateTimeZone('UTC'));
     $lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//TJ Kovo Praha//Verejny kalendar//CS',
-        'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Kovopraha – veřejný program',
+        'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:' . publicCalendarEscape($calendarName),
         'X-WR-TIMEZONE:Europe/Prague'];
     foreach ($items as $item) {
         $lines[] = 'BEGIN:VEVENT';
