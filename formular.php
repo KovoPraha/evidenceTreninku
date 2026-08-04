@@ -50,13 +50,14 @@ try {
 $planPrefill = null;
 $planExpectedParticipants = [];
 if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
+    $planOwnerSql = roleAtLeast('hlavni') ? '' : ' AND pt.trener_id = ?';
     $stPlan = $pdo->prepare("
         SELECT pt.*, sk.nazev AS skupina_nazev
         FROM planovane_treninky pt
         LEFT JOIN skupiny sk ON sk.id = pt.skupina_id
-        WHERE pt.id = ? AND pt.stav = 'planovany'
+        WHERE pt.id = ? AND pt.stav = 'planovany'{$planOwnerSql}
     ");
-    $stPlan->execute([(int)$_GET['plan_id']]);
+    $stPlan->execute(roleAtLeast('hlavni') ? [(int)$_GET['plan_id']] : [(int)$_GET['plan_id'],$currentTrener]);
     $planPrefill = $stPlan->fetch(PDO::FETCH_ASSOC) ?: null;
     if ($planPrefill) {
         $planExpectedParticipants = trainingRosterBridgeExpectedForPlan($pdo, (int)$planPrefill['id']);
@@ -312,7 +313,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 · <?= h($planPrefill['skupina_nazev']) ?>
             <?php endif; ?>
             </span><br>
-            <span class="small text-muted">Předvyplněné hodnoty můžete libovolně upravit.</span>
+            <span class="small text-muted">Datum odpovídá plánu; ostatní údaje můžete upravit. Ze snapshotu soupisek bylo předvybráno <?= count($planExpectedParticipants) ?> očekávaných účastníků; skutečnou docházku před uložením ručně opravte.</span>
         </div>
         <input type="hidden" name="plan_id" value="<?= (int)$planPrefill['id'] ?>">
     </div>
@@ -335,7 +336,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                                 <i class="bi bi-calendar3 me-1 text-primary"></i>Datum
                             </label>
                             <?php if ($isAdmin): ?>
-                                <input type="date" name="datum" id="datum" class="form-control"
+                                <input type="date" name="datum" id="datum" class="form-control" <?= $planPrefill ? 'readonly' : '' ?>
                                        value="<?= $duplikat ? h($dnesDate) : '' ?>" required>
                                 <div class="mini-muted mt-1">
                                     <i class="bi bi-unlock me-1"></i>Lze zadat libovolné datum.

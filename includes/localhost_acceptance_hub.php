@@ -254,6 +254,7 @@ function localhostAcceptanceScenarios(string $root): array
             'expected' => 'Očekávaní účastníci pocházejí ze soupisek a skutečná docházka zůstává v Evidenci.',
             'note' => 'Používejte jen položky označené LOCALHOST TEST.',
             'links' => [
+                ['label' => 'Průvodce A07', 'path' => 'kis_training_a07_admin.php', 'scope' => 'admin'],
                 ['label' => 'Plánovač tréninků', 'path' => 'planovac.php', 'scope' => 'admin'],
                 ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
             ],

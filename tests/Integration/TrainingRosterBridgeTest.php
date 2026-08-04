@@ -85,6 +85,25 @@ final class TrainingRosterBridgeTest extends TestCase
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM training_roster_links WHERE trenink_id=200 AND plan_id IS NULL')->fetchColumn());
     }
 
+    public function testActualTrainingCopiesImmutablePlanExpectationAndComparisonSeparatesAttendance():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,created_by_trainer_id) VALUES(1,10,'active','manual','2026-01-01',7),(1,11,'active','manual','2026-01-01',7)");
+        \trainingRosterBridgeReplacePlanTeams($pdo,100,[1],7);
+        $pdo->exec("UPDATE club_roster_members SET status='removed',valid_to='2026-08-10' WHERE sportovec_id=11");
+        $pdo->exec("UPDATE club_teams SET name='Nový název' WHERE id=1");
+        $copy=\trainingRosterBridgeCopyPlanToTraining($pdo,100,200,7);
+        self::assertSame(['link_count'=>1,'expected_count'=>2],$copy);
+        self::assertSame('Tým A',$pdo->query('SELECT team_name_snapshot FROM training_roster_links WHERE trenink_id=200')->fetchColumn());
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM training_roster_expected e JOIN training_roster_links l ON l.id=e.link_id WHERE l.trenink_id=200')->fetchColumn());
+        $pdo->exec("INSERT INTO trenink_sportovec VALUES(200,10),(200,12)");
+        $pdo->exec("UPDATE planovane_treninky SET stav='evidovany',trenink_id=200 WHERE id=100");
+        $comparison=\trainingRosterBridgePlanAttendanceComparison($pdo,100);
+        self::assertSame([10],array_column($comparison['attended_expected'],'id'));
+        self::assertSame([11],array_column($comparison['missing'],'id'));
+        self::assertSame([12],array_column($comparison['unexpected'],'id'));
+    }
+
     private function database(): PDO
     {
         $pdo = new PDO('sqlite::memory:');
@@ -93,12 +112,12 @@ final class TrainingRosterBridgeTest extends TestCase
         $pdo->exec('PRAGMA foreign_keys=ON');
         $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT)');
         $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,narozeni TEXT,uciid TEXT,stav_clenstvi TEXT)');
-        $pdo->exec('CREATE TABLE planovane_treninky(id INTEGER PRIMARY KEY,datum TEXT NOT NULL)');
+        $pdo->exec('CREATE TABLE planovane_treninky(id INTEGER PRIMARY KEY,trener_id INTEGER NOT NULL,nazev TEXT NOT NULL,datum TEXT NOT NULL,cas_od TEXT,cas_do TEXT,stav TEXT NOT NULL,trenink_id INTEGER)');
         $pdo->exec('CREATE TABLE treninky(id INTEGER PRIMARY KEY,datum TEXT NOT NULL)');
         $pdo->exec('CREATE TABLE trenink_sportovec(trenink_id INTEGER NOT NULL,sportovec_id INTEGER NOT NULL)');
         $pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");
         $pdo->exec("INSERT INTO sportovci VALUES(10,'Anna','A','2012-01-01','U10','aktivni'),(11,'Běla','B','2013-01-01','U11','aktivni'),(12,'Cyril','C','2014-01-01','U12','aktivni')");
-        $pdo->exec("INSERT INTO planovane_treninky VALUES(100,'2026-08-10')");
+        $pdo->exec("INSERT INTO planovane_treninky VALUES(100,7,'Test plánu','2026-08-10','16:00','17:00','planovany',NULL)");
         $pdo->exec("INSERT INTO treninky VALUES(200,'2026-08-10')");
         $base = require dirname(__DIR__, 2) . '/migrations/20260804090000_kis_teams_rosters.php';
         $base['up']($pdo);

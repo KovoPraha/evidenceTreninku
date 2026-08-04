@@ -8,6 +8,8 @@ if (!isset($_SESSION['trener_id'])) {
 }
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/funkce.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
 
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
@@ -228,6 +230,7 @@ $podskupiny = $_POST['podskupina_id'] ?? [];
 
 $trenere    = $_POST['trenere'] ?? [];
 $ucastnici  = trim((string)($_POST['ucastnici'] ?? ''));
+$planId     = (int)($_POST['plan_id'] ?? 0);
 
 $napln      = trim((string)($_POST['napln'] ?? ''));
 $poznamka   = trim((string)($_POST['poznamka'] ?? ''));
@@ -280,6 +283,16 @@ try {
     }
 
     $pdo->beginTransaction();
+
+    $planRow=null;
+    if($planId>0){
+        $planSql='SELECT id,trener_id,datum,stav FROM planovane_treninky WHERE id=?';
+        if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$planSql.=' FOR UPDATE';
+        $planStatement=$pdo->prepare($planSql);$planStatement->execute([$planId]);$planRow=$planStatement->fetch(PDO::FETCH_ASSOC);
+        if(!$planRow||(string)$planRow['stav']!=='planovany')throw new TrainingRosterBridgeException('Plánovaný trénink už není dostupný pro zápis evidence.');
+        if((int)$planRow['trener_id']!==$trenerId&&!roleAtLeast('hlavni'))throw new TrainingRosterBridgeException('Cizí plánovaný trénink nemůžete zaevidovat.');
+        if((string)$planRow['datum']!==$datum)throw new TrainingRosterBridgeException('Datum evidence musí odpovídat datu plánovaného tréninku.');
+    }
 
     $mereniRaw = null;
     $treninkId = 0;
@@ -495,8 +508,8 @@ try {
     }
 
     // 9) Propojení s plánovaným tréninkem (pokud byl formulář otevřen z plánovače)
-    $planId = (int)($_POST['plan_id'] ?? 0);
     if ($planId > 0) {
+        trainingRosterBridgeCopyPlanToTraining($pdo,$planId,$treninkId,$trenerId);
         $pdo->prepare("
             UPDATE planovane_treninky
             SET trenink_id = ?, stav = 'evidovany'
