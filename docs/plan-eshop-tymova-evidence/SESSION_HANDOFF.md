@@ -10,7 +10,7 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Poslední přijatý implementační HEAD: `4090bdc`;
   dokumentační plán navazuje touto handoff aktualizací.
 - Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
-  upstream `origin/main`, lokálně `ahead 85 / behind 0` bez nového fetch ověření.
+  upstream `origin/main`, lokálně `ahead 86 / behind 0` bez nového fetch ověření.
 - Pracovní strom po implementačním commitu `4090bdc`: čistý před touto přesnou
   handoff aktualizací. Localhost DB je 37/37; produkce ani vzdálený repozitář se
   nemění.
@@ -30,7 +30,18 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `4090bdc` opravuje regresi nalezenou prvním browser
+- Poslední dokončená akce: druhý browser řez M2.6 proběhl bez potřeby změny kódu.
+  Placená událost odmítla duplicitní aktivní přihlášku; její objednávka
+  `KP2608047D5C1C6050` po stornu uvolnila kapacitu na 3/3 a samostatná vratka
+  `LOCALHOST-M26-EVENT-REFUND` uzavřela platbu. Bezplatný velodrom po stornu vrátil
+  kapacitu 3/3. Placený velodrom `KP260804813B7DE01C` držel kapacitu 0/1 již před
+  platbou, po syntetické úhradě se potvrdil, storno ji vrátilo na 1/1 a vratka
+  `LOCALHOST-M26-VELO-REFUND` uzavřela platbu. Zboží `KP26080452226EF4BA` rezervovalo
+  sklad 157/MOD2 z 2 na 1 a nezaplacené storno jej vrátilo přesně na 2. Browser
+  konzole byla bez chyb a MariaDB potvrdila všechny koncové stavy. Produkce ani
+  vzdálený Git se nezměnily.
+
+  Předchozí dokončená akce: `4090bdc` opravuje regresi nalezenou prvním browser
   průchodem M2.6. Bezpečnostní rotace dříve změnila odvozený A05 hash, seed vytvořil
   další osobu a následně narazil na unikátní login sportovce. A05 se nyní hledá
   stabilním interním localhost e-mailem, nový veřejný token zůstává kryptograficky
@@ -180,9 +191,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   deterministický A05 náhled, A10 události i admin expirace; reálná localhost
   programová objednávka expirovala právě jednou. Katalog je lokálně 31/31.
   Produkční workflow, kód ani DB se nezměnily.
-- Další přesná akce: pokračovat v M2.6 browser průchodem placené události a
-  velodromu, následně ověřit zboží, storno, expiraci a refundaci. Kroužek už má
-  první úplný důkaz objednávky a aktivace. Paralelně lze po dodání anonymizovaného vzorku
+- Další přesná akce: pokračovat v M2.6 sportovními/KIS browser scénáři A02,
+  A05–A08 a A10, potom zopakovat závěrečnou full test/lint/migration/backup bránu.
+  Paralelně lze po dodání anonymizovaného vzorku
   uzavřít external-ID a field kontrakt finálního KIS exportu pro M2.3b.
   Produkční
   Secret/config, deploy, Fio a ostrý import zůstávají samostatně blokované do
@@ -380,6 +391,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 65 | MEDIUM kompatibilita `29f6029` | oddělená měna varianty/akce, fail-closed UTF-8 CSV a oficiální Fio datum; 333/2971, 367 lintů, 37/37 |
 | 66 | M2.6 backup `fdbe30c` | ownership kontrakt `.8` včetně reset tokenů; ověřená záloha mimo webroot 125 tabulek / 2 triggery, zaměřený kontrakt 2/41 |
 | 67 | M2.6 seed/browser `4090bdc` | stabilní A05 identita po rotaci tokenů, seed 2× se stejnými ID, A01 dvě děti a A03+A04 od QR přes syntetickou platbu po účast a soupisku |
+| 68 | M2.6 lifecycle bez změny kódu | událost a velodrom od kapacitního hold přes platbu po storno/refund; skladové zboží 2→1→2; DB/UI shoda a konzole bez chyb |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

@@ -29,9 +29,9 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 90 % | samoobslužný reset rodiče i sportovce, okamžitá oprávnění a tokenové/IDOR testy existují; zbývá uživatelský průchod a produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 30 % | backup, opakovaný seed a rodičovský tok A01+A03+A04 jsou ověřené; zbývají události, velodrom, storno/expirace/refund a společná závěrečná brána |
+| M2.6 integrovaná akceptace | probíhá | 55 % | backup, seed, kroužek, placená událost, velodrom a skladové zboží mají browser důkaz; zbývají sportovní/KIS scénáře a společná závěrečná brána |
 
-Orientační stav celého M2: **42 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **45 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -181,6 +181,22 @@ Dokončený první browser řez (`4090bdc`):
   soupisku,
 - plná sada před závěrečným seed cleanupem měla 334 testů / 2977 assertions;
   finální zaměřený test seedu prošel 2/25 a živý seed i browser průchod jsou zelené.
+
+Dokončený druhý browser řez (4. 8. 2026, bez změny kódu):
+
+- placená událost odmítla duplicitní aktivní přihlášku bezpečnou srozumitelnou
+  odpovědí,
+- storno zaplacené události `KP2608047D5C1C6050` zrušilo přihlášku, vrátilo
+  kapacitu na 3/3 a až samostatná potvrzená vratka
+  `LOCALHOST-M26-EVENT-REFUND` uzavřela platbu jako `refunded`,
+- bezplatný velodrom se rezervoval a po stornu vrátil kapacitu z 2/3 na 3/3,
+- placený velodrom `KP260804813B7DE01C` držel kapacitu už ve stavu čekání na
+  platbu, po úhradě rezervaci potvrdil, po stornu ji uvolnil na 1/1 a vratka
+  `LOCALHOST-M26-VELO-REFUND` uzavřela finanční stav,
+- skladové zboží `KP26080452226EF4BA` snížilo sklad varianty 157/MOD2 z 2 na 1;
+  storno nezaplacené objednávky jej vrátilo přesně na 2 bez požadavku na refund,
+- browser konzole nezaznamenala žádnou chybu a závěrečné read-only DB ověření
+  potvrdilo shodu objednávek, plateb, rezervací, přihlášky i skladu.
 
 - deterministický seed lze bezpečně spustit opakovaně,
 - migrace jsou aktuální a idempotentní na podporovaných DB,
