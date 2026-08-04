@@ -7,10 +7,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `5caa850`.
-- Implementace `5caa850` je commitnutá; větev `main`, upstream `origin/main`,
-  před navazujícím dokumentačním commitem lokálně `ahead 3 / behind 0`.
-- Localhost DB je 41/41. Vzdálený repozitář se v této M2.3c session neměnil;
+- Poslední přijatý implementační HEAD: `2bcb346`.
+- Implementace `2bcb346` je commitnutá; větev `main`, upstream `origin/main`,
+  před navazujícím dokumentačním commitem lokálně `ahead 5 / behind 0`.
+- Localhost DB je 42/42. Vzdálený repozitář se v této M2.3d session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -28,15 +28,25 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `5caa850` dokončuje izolovaný M2.3c sandbox promote/rollback.
+- Poslední dokončená akce: `2bcb346` dokončuje M2.3d stabilní field/external-ID
+  kontrakt. `kis-import-field-v1` vyžaduje interní KIS ID ve všech třech exportech,
+  drží jej odděleně od UCI licence, umí podle něj spojit i bezejmennou platbu a
+  fail-closed blokuje chybějící, neplatné, duplicitní nebo rozporné identity.
+  Non-PII report neobsahuje jména ani hodnoty KIS ID. Upload nyní archivuje všechny
+  tři zdroje mimo webroot a kanonický execute vyžaduje připravený field kontrakt.
+  Browser nad run #8 potvrdil 2/2, sandbox 2/2 a rollback 0/2; run #7 bez kontraktu
+  nelze znovu aplikovat. Plná sada je 377/3308, syntaxe 398 souborů, migrace 42/42
+  a audit 0. Další akce: potvrdit aliasy hlaviček na reprezentativním anonymizovaném
+  exportu a uzavřít úplný paritní report; produkční cutover není autorizovaný.
+
+  Předchozí dokončená akce: `5caa850` dokončuje izolovaný M2.3c sandbox promote/rollback.
   Akce je jen pro localhost administrátora, vyžaduje CSRF, potvrzení, důvod a čerstvý
   fingerprint. Promote je transakční, idempotentní a ukládá pouze neprůhledné položky
   a audit do `kis_import_sandbox_*`; kanonické osoby, soupisky, platby ani objednávky
   nemění. Rollback deaktivuje sandbox položky a funguje i při pozdějším driftu preview.
   Browser nad run #7 potvrdil 2/2 aktivní + 1 auditní událost a rollback 0/2 + 2;
   první průchod živě odhalil a opravil chybějící CSRF helper. Plná sada je 369/3254,
-  syntaxe 396 souborů, migrace 41/41 a audit 0. Další akce: finální external-ID/field
-  kontrakt a úplný paritní report; produkční promote stále neexistuje.
+  syntaxe 396 souborů, migrace 41/41 a audit 0. Navázal na něj M2.3d field kontrakt.
 
   Předchozí dokončená akce: `26076ba` dokončuje M2.3b integritu uloženého KIS preview.
   Každý nový běh atomicky ukládá úplnou klasifikaci, verzi kontraktu, bezpečný JSON
@@ -326,8 +336,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Další přesná akce: provést závěrečnou vlastníkovu bránu M2.6 a sepsat připomínky
   jako chyba, UX úprava nebo nový požadavek. Bez tohoto lidského průchodu se M2.6
   neoznačuje jako 100 %.
-  Paralelně lze po dodání anonymizovaného vzorku
-  uzavřít external-ID a field kontrakt finálního KIS exportu pro M2.3d.
+  Paralelně lze po dodání anonymizovaného vzorku potvrdit aliasy již implementovaného
+  M2.3d field kontraktu a uzavřít úplný paritní report.
   Produkční
   Secret/config, deploy, Fio a ostrý import zůstávají samostatně blokované do
   pozdějšího výslovného rozhodnutí.
@@ -340,7 +350,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | Etapa | Hotovo | Zbývá zejména |
 |---|---:|---|
 | K1 – katalog a publikace | 98 % | vlastníkova kontrola pravidel cen a finální publikace ostrého katalogu |
-| K2 – účty, osoby a rodič–dítě | 92 % | self-service obnova sportovního hesla, stabilní KIS identifikátor a bezpečné párování finálního exportu |
+| K2 – účty, osoby a rodič–dítě | 92 % | self-service obnova sportovního hesla a potvrzení bezpečného párování na anonymizovaném finálním exportu |
 | K3 – akce a přihlášky | 92 % | produktová kontrola exportu, rozhodnutí o ručních změnách čekací listiny a produkční UX |
 | K4 – objednávky a platby | 97 % | úplný vlastnický průchod všech typů košíku včetně klubové ceny, ověřit Fio shadow návrhy a samostatně schválit automatické potvrzení/Stripe |
 | K5 – náhrada starého KIS | 98 % | A05–A08 a A10 technicky i browserem uzavřeny; zbývá vlastníkova brána, finální jednorázový import a cutover |
@@ -351,7 +361,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 |---|---|---|
 | M1 integrovaný prototyp | technicky dokončen; Evidence, shop, rodina, programy, soupisky, události a velodrom mají localhost řezy | vlastníkova prohlídka A01–A10 |
 | M2.1 akce | admin CSV export v `1b4d9e1`, kontrakt v1, CSRF, formula ochrana a audit | produktová kontrola sloupců v tabulkovém programu |
-| KIS migrace | parser, matcher, import-run úložiště, parity kontrakt, raw archiv, fingerprintovaný preview a M2.3c sandbox promote/rollback | finální external ID/formát, úplná parita a ostrý cutover |
+| KIS migrace | parser, matcher, import-run úložiště, raw archiv, fingerprintovaný preview, M2.3c sandbox a M2.3d stabilní KIS ID/field kontrakt | potvrdit aliasy na reprezentativním exportu, úplná parita a ostrý cutover |
 | e-shop | katalog, košík, objednávka, QR/převod, kupóny, sklad, výdej, storno/refund, program/událost/velodrom | detail/obrázky, pravidla slev pro služby, automatické platby a produkční aktivace |
 | přístup | rodič–děti, sportovní účet, bezpečné session, revokace, limiter, jednorázové tokeny, samoobslužný reset a okamžitá oprávnění | produkční pepper, migrace a doručování reset e-mailu |
 | finance | ruční převod a read-only Fio shadow návrhy | wallet D-009, Fio auto-confirm, Stripe, cash top-up a kombinované platby |
@@ -396,13 +406,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.3b `26076ba`, M2.3c `5caa850`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db`, A08 `6ae75c1`, A10 `4ce0f17`, feedback `875c9e3` | 2026-08-04 | lokální Git, M2.3c před docs commitem ahead 3 / behind 0 | ano |
+| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.3b `26076ba`, M2.3c `5caa850`, M2.3d `2bcb346`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db`, A08 `6ae75c1`, A10 `4ce0f17`, feedback `875c9e3` | 2026-08-04 | lokální Git, M2.3d před docs commitem ahead 5 / behind 0 | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 40/40 číslovaných migrací; M2.3c sandbox tabulky jsou aplikované, reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | 369/3254; browser M2.3c 2/2→0/2 a 1→2 auditní události, oba MariaDB smokes, 396 first-party syntaxí, 41/41 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
+| lokální schema | legacy `2.20.2` + 41/41 číslovaných migrací; samostatné unikátní `sportovci.kis_external_id` a field report jsou aplikované; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
+| testy | 377/3308; browser M2.3d run #8 2/2→0/2 a blokace legacy run #7, oba MariaDB smokes, 398 first-party syntaxí, 42/42 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -538,6 +548,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 79 | feedback + aktuální AI kontext `875c9e3` | admin+CSRF výsledky A01–A10, zamčený ignorovaný JSON, Markdown export, opravený samostatný rozsah projektu v CLAUDE a nový CURRENT_STATE; 358/3156, 388 parse, 39/39, audit 0 |
 | 80 | M2.3b preview integrita `26076ba` | migrace preview reportu, úplná klasifikace, stabilní non-PII fingerprint, UI JSON export a idempotentní localhost seed; browser #7 2/2/0, 364/3197, 392 parse, 40/40, audit 0 |
 | 81 | M2.3c sandbox promote/rollback `5caa850` | localhost admin+CSRF+fingerprint, transakční idempotentní promote, audit a rollback i při driftu bez kanonických zápisů; browser 2/2→0/2, 369/3254, 396 parse, 41/41, audit 0 |
+| 82 | M2.3d field/external-ID kontrakt `2bcb346` | stabilní interní KIS ID oddělené od UCI, spojení tří exportů, archivace všech zdrojů, non-PII fingerprint a fail-closed execute; browser #8 2/2→0/2, legacy #7 blokován, 377/3308, 398 parse, 42/42, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

@@ -102,6 +102,24 @@ ukládá výhradně do `kis_import_sandbox_*`; tabulky osob a členství se nem�
 Rollback deaktivuje sandbox položky a zůstává dostupný i při pozdějším driftu
 preview. Produkční promote ani cutover tím nejsou povoleny.
 
+## M2.3d – stabilní identita exportu
+
+Import nyní ukládá také non-PII kontrakt `kis-import-field-v1`. Ve všech třech
+exportech vyžaduje stabilní interní identifikátor osoby v jednom z normalizovaných
+sloupců `kisid`, `iduzivatele`, `uzivatelid`, `idclena` nebo `clenid`. KIS ID se
+ukládá do samostatného `sportovci.kis_external_id`; UCI licence zůstává nezávislá.
+
+Kontrakt kontroluje povinné hlavičky, chybějící a neplatná ID, duplicity, rozpor
+identity a nejednoznačné platební vazby. Report používá jen pořadové `source:N`,
+pevné důvody, počty a fingerprint; neobsahuje jména ani hodnoty KIS ID. Starý
+export bez tohoto kontraktu lze prohlížet, ale nelze jej aplikovat do sandboxu ani
+spustit jako kanonickou synchronizaci. Již aplikovaný sandbox lze vždy vrátit.
+
+Localhost běh #8 nad třemi syntetickými artefakty prošel 2/2 a byl v prohlížeči
+aplikován do sandboxu 2/2 a vrácen na 0/2. Skutečný cutover zůstává blokovaný,
+dokud reprezentativní anonymizovaný finální export nepotvrdí konkrétní aliasy polí
+a úplný paritní report osob, členství, soupisek a plateb.
+
 ## Realistická syntetická fixture W0-G
 
 `tests/fixtures/kis/parity-realistic.json` skládá deset neprůhledných řádků do

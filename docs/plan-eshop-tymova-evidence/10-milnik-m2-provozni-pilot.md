@@ -26,12 +26,12 @@ kódu.
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
-| M2.3 zkouška migrace KIS | probíhá | 85 % | parser, archiv, fingerprintovaný preview a izolovaný auditovaný promote/rollback existují; chybí finální exportní kontrakt a úplná parita |
+| M2.3 zkouška migrace KIS | probíhá | 95 % | stabilní KIS ID, archiv, fingerprintovaný preview a izolovaný promote/rollback existují; zbývá potvrzení reálného anonymizovaného formátu a úplná parita |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
 
-Orientační stav celého M2: **72 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **74 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -169,11 +169,32 @@ Dokončený technický řez M2.3c (`5caa850`):
 - plná sada prošla 369 testy / 3254 assertions, syntaxe 396 first-party PHP souborů,
   migrace 41/41 a Composer audit je bez nálezu.
 
-Tento sandbox ověřuje orchestrace, oprávnění a kompenzaci. Není náhradou za finální
-field/external-ID kontrakt a neumí provést ostrý cutover.
+Samotný řez M2.3c ověřuje orchestrace, oprávnění a kompenzaci. Není náhradou za
+navazující field/external-ID kontrakt a neumí provést ostrý cutover.
+
+Dokončený technický řez M2.3d (`2bcb346`):
+
+- migrace přidává samostatné unikátní `sportovci.kis_external_id`; UCI licence se
+  jako interní KIS identita nikdy nepoužívá,
+- verzovaný `kis-import-field-v1` vyžaduje stabilní ID v exportu uživatelů,
+  plateb i soupisek, kontroluje hlavičky, duplicity, rozpory identity a platební vazby,
+- report neobsahuje osobní údaje ani hodnoty externího ID; ukládá jen pořadové
+  reference, pevné důvody, počty a deterministický fingerprint,
+- matcher upřednostní přesné KIS ID i po změně jména, ale rozdílné datum narození
+  zůstává konfliktem; platby lze bezpečně spojit podle KIS ID i bez jména,
+- skutečný upload archivuje všechny tři zdroje mimo webroot a kanonická synchronizace
+  je fail-closed blokována, pokud field kontrakt není úplný,
+- localhost run #8 prošel 2/2 bez blokátoru; browser ověřil promote 2/2, rollback
+  0/2 a blokaci starého run #7 bez stabilního ID,
+- plná sada prošla 377 testy / 3308 assertions, syntaxe 398 first-party PHP souborů,
+  migrace 42/42 a Composer audit je bez nálezu.
+
+Zbývá zdrojová akceptace: anonymizovaný reprezentativní export musí potvrdit,
+který podporovaný alias KIS ID a které další hlavičky budou ve finálním jednorázovém
+exportu. Teprve potom lze uzavřít úplný paritní report a plán ostrého cutoveru.
 
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
-   export KIS a určit stabilní externí ID osoby.
+   export KIS a potvrdit podporovaný alias stabilního externího ID osoby.
 2. Uložit raw vstup jako neměnný artefakt s hashem, časem a verzí kontraktu.
 3. Dry-run musí pro každý řádek vrátit `create`, `exact_match`, `conflict`,
    `ambiguous`, `invalid` nebo `missing_without_archive` a vysvětlit důvod.

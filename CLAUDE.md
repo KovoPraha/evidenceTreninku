@@ -33,12 +33,16 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
   a bezpečným JSON reportem; localhost admin může provést auditovaný promote a
   rollback výhradně v odděleném anonymním sandboxu,
+- verze `kis-import-field-v1` vyžaduje stejné stabilní interní KIS ID v exportu
+  uživatelů, plateb i soupisek; KIS ID je oddělené od UCI licence a chybějící či
+  rozporný identifikátor fail-closed blokuje zápis,
 - auditní osa osoby a localhost scénáře A01–A10.
 
 ## Výslovně otevřené nebo blokované
 
 - závěrečná uživatelská prohlídka A01–A10 a vypořádání připomínek,
-- finální jednorázový KIS exportní kontrakt, promote/rollback, parita a cutover,
+- potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, úplná
+  parita osob/členství/soupisek/plateb a ostrý cutover,
 - produkční doručování reset e-mailů a produkční konfigurace tajemství,
 - Stripe, automatické Fio potvrzení, kreditní wallet a TrainingPeaks,
 - produkční deploy bez výslovného souhlasu vlastníka.
