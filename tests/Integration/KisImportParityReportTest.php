@@ -10,6 +10,17 @@ require_once dirname(__DIR__, 2) . '/includes/kis_import_run_lib.php';
 
 final class KisImportParityReportTest extends TestCase
 {
+    public function testMoneySignalsUseExactDecimalRoundingWithoutFloatArithmetic(): void
+    {
+        self::assertSame(0, \kisImportParityMoneyMinor(null));
+        self::assertSame(10, \kisImportParityMoneyMinor('0.10'));
+        self::assertSame(101, \kisImportParityMoneyMinor('1.005'));
+        self::assertSame(-101, \kisImportParityMoneyMinor('-1.005'));
+        self::assertSame(123456789, \kisImportParityMoneyMinor('1234567.89'));
+        $this->expectException(\InvalidArgumentException::class);
+        \kisImportParityMoneyMinor('NaN');
+    }
+
     public function testStoredReportComparesDomainsAndExposesMissingPaymentTargetWithoutPii(): void
     {
         $pdo = $this->database();

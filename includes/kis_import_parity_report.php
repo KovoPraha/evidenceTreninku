@@ -16,7 +16,25 @@ function kisImportParityRosterNames(?string $value): array
 
 function kisImportParityMoneyMinor(mixed $value): int
 {
-    return (int)round((float)$value * 100);
+    if ($value === null || $value === '') return 0;
+    if (!is_int($value) && !is_float($value) && !is_string($value)) {
+        throw new InvalidArgumentException('Peněžní signál nemá číselný formát.');
+    }
+    $normalized = trim((string)$value);
+    if (preg_match('/^([+-]?)([0-9]+)(?:[.,]([0-9]+))?$/D', $normalized, $match) !== 1) {
+        throw new InvalidArgumentException('Peněžní signál nemá platný desetinný formát.');
+    }
+    $whole = ltrim($match[2], '0');
+    $whole = $whole === '' ? '0' : $whole;
+    $maxWhole = intdiv(PHP_INT_MAX - 100, 100);
+    if (strlen($whole) > strlen((string)$maxWhole)
+        || (strlen($whole) === strlen((string)$maxWhole) && strcmp($whole, (string)$maxWhole) > 0)) {
+        throw new InvalidArgumentException('Peněžní signál je mimo podporovaný rozsah.');
+    }
+    $fraction = str_pad($match[3] ?? '', 3, '0');
+    $minor = ((int)$whole * 100) + (int)substr($fraction, 0, 2);
+    if ((int)$fraction[2] >= 5) $minor++;
+    return ($match[1] ?? '') === '-' ? -$minor : $minor;
 }
 
 /** @return array<string,mixed> */

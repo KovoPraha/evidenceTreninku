@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-04.8';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-04.9';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -45,6 +45,8 @@ const EVIDENCE_TABLES = [
     'club_event_sessions',
     'club_event_term_versions',
     'club_events',
+    'club_member_charge_events',
+    'club_member_charges',
     'club_program_enrollment_events',
     'club_program_enrollments',
     'club_program_offers',
@@ -71,9 +73,16 @@ const EVIDENCE_TABLES = [
     'gs_link_targets',
     'gs_linky',
     'individualni_lekce',
+    'kis_import_charge_promotion_events',
+    'kis_import_charge_promotion_items',
+    'kis_import_charge_promotions',
     'kis_import_matches',
+    'kis_import_payment_rows',
     'kis_import_rows',
     'kis_import_runs',
+    'kis_import_sandbox_events',
+    'kis_import_sandbox_items',
+    'kis_import_sandbox_promotions',
     'kis_import_source_artifacts',
     'mereni',
     'mereni_zaznamy',
@@ -106,6 +115,9 @@ const EVIDENCE_TABLES = [
     'shop_coupon_redemptions',
     'shop_coupons',
     'shop_inventory_movements',
+    'shop_member_category_rules',
+    'shop_member_price_events',
+    'shop_member_product_prices',
     'shop_order_events',
     'shop_order_items',
     'shop_orders',

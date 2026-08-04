@@ -71,3 +71,6 @@ jobs:
 
       - name: Ověřit KIS přechod a idempotenci na MariaDB
         run: php tests/Support/KisHobbyTransitionMariaDbSmoke.php
+
+      - name: Ověřit skutečnou Evidence zálohu na MariaDB
+        run: php tests/Support/DatabaseBackupMariaDbSmoke.php
