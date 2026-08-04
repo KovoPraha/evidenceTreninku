@@ -7,11 +7,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `25830e1`;
+- Poslední přijatý implementační HEAD: `18deb9c`;
   dokumentační plán navazuje touto handoff aktualizací.
 - Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
-  upstream `origin/main`, lokálně `ahead 88 / behind 0` bez nového fetch ověření.
-- Pracovní strom po implementačním commitu `25830e1`: čistý před touto přesnou
+  upstream `origin/main`, lokálně `ahead 90 / behind 0` bez nového fetch ověření.
+- Pracovní strom po implementačním commitu `18deb9c`: čistý před touto přesnou
   handoff aktualizací. Localhost DB je 37/37; produkce ani vzdálený repozitář se
   nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -30,7 +30,15 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `25830e1` přidává společnou homepage sloučeného projektu.
+- Poslední dokončená akce: `18deb9c` uzavírá provozní průchod A02. Omezený účet
+  sportovce má souhrn vlastních tréninků, soupisek, událostí a plateb, návrat na
+  společnou homepage a srozumitelné české stavy, typy událostí i datumy. Browser
+  potvrdil, že podvržené `sportovec_id=999999` nezmění zobrazenou osobu a homepage
+  zachová sportovní režim bez trenérských práv. Zaměřená sada prošla 11/73, plná
+  337/3014, first-party lint 367 souborů, migrace 37/37 a Composer audit je 0.
+  Produkce ani vzdálený Git se nezměnily.
+
+  Předchozí dokončená akce: `25830e1` přidává společnou homepage sloučeného projektu.
   Nepřihlášený návštěvník má na kořenovém `index.php` přímé cesty do e-shopu,
   kroužků/událostí, velodromu, rodinného účtu, sportovního účtu a trenérské Evidence.
   Rodičovská a sportovní relace mají své bezpečně oddělené přímé vstupy. Přihlášený
@@ -201,8 +209,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   deterministický A05 náhled, A10 události i admin expirace; reálná localhost
   programová objednávka expirovala právě jednou. Katalog je lokálně 31/31.
   Produkční workflow, kód ani DB se nezměnily.
-- Další přesná akce: pokračovat v M2.6 sportovními/KIS browser scénáři A02,
-  A05–A08 a A10, potom zopakovat závěrečnou full test/lint/migration/backup bránu.
+- Další přesná akce: pokračovat v M2.6 administračním KIS scénářem A05
+  (přechod kroužek → závodní tým), potom A06–A08 a A10 a závěrečná brána.
   Paralelně lze po dodání anonymizovaného vzorku
   uzavřít external-ID a field kontrakt finálního KIS exportu pro M2.3b.
   Produkční
@@ -273,13 +281,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc` | 2026-08-04 | lokální Git bez nového fetch | ano |
+| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c` | 2026-08-04 | lokální Git bez nového fetch | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | legacy `2.20.2` + 37/37 číslovaných migrací; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | 336/3004; navíc veřejná homepage HTTP 200 a přihlášený trainer browser ověřil Evidence/KIS/objednávky/veřejný portál bez konzolové chyby | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost HTTP + in-app browser | ano |
+| testy | 337/3014; A02 browser ověřil jedinou identitu i při podvrženém ID, české stavy a návrat sportovce na homepage; 367 first-party lintů | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost HTTP + in-app browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -403,6 +411,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 67 | M2.6 seed/browser `4090bdc` | stabilní A05 identita po rotaci tokenů, seed 2× se stejnými ID, A01 dvě děti a A03+A04 od QR přes syntetickou platbu po účast a soupisku |
 | 68 | M2.6 lifecycle bez změny kódu | událost a velodrom od kapacitního hold přes platbu po storno/refund; skladové zboží 2→1→2; DB/UI shoda a konzole bez chyb |
 | 69 | M2.2 homepage `25830e1` | společný veřejný vstup e-shop/rodina/sportovec/trenér a čtyři rychlé trenérské volby; HTTP 200, browser bez chyb, 336/3004 |
+| 70 | M2.2/A02 `18deb9c` | sportovní souhrn, české stavy/datumy, společná homepage a browser IDOR důkaz jediné identity; 337/3014, 367 lintů, 37/37, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

@@ -25,13 +25,13 @@ kódu.
 |---|---|---:|---|
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
-| M2.2 opravy a UX z prohlídky | probíhá | 25 % | vznikla společná homepage a rychlé vstupy podle rolí; další UX připomínky čekají na úplný průchod vlastníka |
+| M2.2 opravy a UX z prohlídky | probíhá | 35 % | společná homepage a sportovní přehled mají srozumitelnou navigaci, souhrny a české stavy; další UX připomínky čekají na průchod vlastníka |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 90 % | samoobslužný reset rodiče i sportovce, okamžitá oprávnění a tokenové/IDOR testy existují; zbývá uživatelský průchod a produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 55 % | backup, seed, kroužek, placená událost, velodrom a skladové zboží mají browser důkaz; zbývají sportovní/KIS scénáře a společná závěrečná brána |
+| M2.6 integrovaná akceptace | probíhá | 60 % | backup, shop lifecycle a A02 mají browser důkaz včetně IDOR pokusu; zbývají administrační KIS scénáře A05–A08/A10 a závěrečná brána |
 
-Orientační stav celého M2: **48 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **50 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -59,6 +59,17 @@ První dokončený UX řez (`25830e1`):
   zůstává oddělená,
 - veřejný HTTP průchod vrátil 200 a správný titul, přihlášený browser ověřil čtyři
   trenérské zkratky bez konzolové chyby; plná sada je 336/3004 a audit 0.
+
+Druhý dokončený UX řez (`18deb9c`):
+
+- omezený účet sportovce má na `Můj sport` souhrn vlastních tréninků, soupisek,
+  událostí a plateb a bezpečný návrat na společnou homepage,
+- technické stavy členství, soupisky, přihlášky a platby jsou převedené do
+  srozumitelné češtiny; stejně tak typ klubové události a datumy,
+- browser potvrdil, že podvržené `sportovec_id=999999` nezmění zobrazenou osobu,
+  a společná homepage zachová sportovní režim bez trenérského dashboardu,
+- zaměřená sada prošla 11/73, plná sada 337/3014, first-party lint 367 souborů,
+  migrace 37/37 a Composer audit bez nálezu.
 
 ### M2.1 – provoz klubové akce
 

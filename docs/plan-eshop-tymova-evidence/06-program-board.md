@@ -114,6 +114,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.6 seed + A01/A03/A04 | hotovo lokálně | `4090bdc`: stabilní interní A05 identita s náhodným veřejným tokenem, seed 2× se stejnými ID, rodič právě se dvěma dětmi a objednávka `KP2608040ECDA87D7D` od QR po auditovanou platbu, účast a soupisku |
 | M2.6 e-shop/událost/velodrom lifecycle | hotovo lokálně | browser + MariaDB: ochrana duplicity události, auditované storno/refund události a velodromu, návrat kapacity 3/3 a 1/1, sklad zboží přesně 2→1→2; žádná konzolová chyba |
 | M2.2 společná homepage | hotovo lokálně | `25830e1`: veřejný vstup propojuje e-shop, služby, rodinu, sportovce a trenéry; trenérský dashboard má rychlé volby Evidence/KIS/objednávky/veřejný portál; 336/3004, audit 0 |
+| M2.2/A02 sportovní přehled | hotovo lokálně | `18deb9c`: vlastní souhrny, české stavy a datumy, návrat na společnou homepage; browser IDOR pokus zachoval jedinou identitu; 337/3014, 367 lintů, 37/37, audit 0 |
 
 ## Aktivní rozhodnutí
 
