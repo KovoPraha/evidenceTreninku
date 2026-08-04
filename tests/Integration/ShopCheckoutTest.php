@@ -147,6 +147,37 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(3,(int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_events')->fetchColumn());
     }
 
+    public function testCouponScopeDefaultsToGoodsAndExplicitlySupportsSelectedServices():void
+    {
+        $pdo=$this->database();
+        $goods=\shopCouponAdminCreate($pdo,7,'GOODS10','percentage',1000,0,5000,null,'','','Pouze běžné zboží.',true);
+        self::assertSame(SHOP_COUPON_GOODS,(int)$goods['applicability_mask']);
+        try{\shopCouponQuoteForBreakdown($goods,['goods'=>0,'club_program'=>10000,'club_event'=>0,'velodrome'=>0,'total'=>10000]);self::fail('Goods coupon must reject a service-only cart.');}catch(\ShopCouponException $exception){self::assertStringContainsString('nevztahuje',$exception->getMessage());}
+
+        $scope=SHOP_COUPON_CLUB_PROGRAM|SHOP_COUPON_CLUB_EVENT;
+        $services=\shopCouponAdminCreate($pdo,7,'SERVICES10','percentage',1000,0,null,null,'','','Výslovně jen kroužky a události.',true,$scope);
+        $quote=\shopCouponQuoteForBreakdown($services,['goods'=>20000,'club_program'=>10000,'club_event'=>5000,'velodrome'=>7000,'total'=>42000]);
+        self::assertSame(15000,(int)$quote['eligible_subtotal_minor']);self::assertSame(1500,(int)$quote['discount_minor']);self::assertSame($scope,(int)$quote['applicability_mask']);
+        self::assertSame(['kroužky','události'],\shopCouponApplicabilityLabels($scope));
+        try{\shopCouponQuoteForBreakdown($services,['goods'=>1,'club_program'=>1,'club_event'=>1,'velodrome'=>1,'total'=>5]);self::fail('Inconsistent subtotal must fail closed.');}catch(\ShopCouponException $exception){self::assertStringContainsString('neodpovídá',$exception->getMessage());}
+        $services['applicability_mask']=17;try{\shopCouponQuoteForBreakdown($services,['goods'=>20000,'club_program'=>0,'club_event'=>0,'velodrome'=>0,'total'=>20000]);self::fail('Unknown scope bits must fail closed.');}catch(\ShopCouponException $exception){self::assertStringContainsString('neplatný rozsah',$exception->getMessage());}
+    }
+
+    public function testCouponBreakdownSeparatesGoodsProgramsEventsAndVelodrome():void
+    {
+        $pdo=$this->database();
+        $pdo->exec('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,variant_id INTEGER)');
+        $pdo->exec('CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY)');
+        $pdo->exec('INSERT INTO club_program_offers VALUES(1,601)');
+        $breakdown=\shopCouponBreakdownFromItems(
+            $pdo,
+            [['variant_id'=>601,'quantity'=>2,'amount_minor'=>1000,'currency'=>'CZK'],['variant_id'=>999,'quantity'=>1,'amount_minor'=>3000,'currency'=>'CZK']],
+            [['line_amount_minor'=>4000,'currency'=>'CZK']],
+            [['line_amount_minor'=>5000,'currency'=>'CZK']]
+        );
+        self::assertSame(['goods'=>3000,'club_program'=>2000,'club_event'=>4000,'velodrome'=>5000,'total'=>14000],$breakdown);
+    }
+
     public function testExpiredPendingOrderUsesAuditedCancellationExactlyOnce():void
     {
         $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,2);
@@ -193,6 +224,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants VALUES(601,501,'TRIKO-M','{\"size\":\"M\"}','fixed',12500,'CZK',1,2100,'5.000000',1,'active',CURRENT_TIMESTAMP),(602,502,'EVENT','{}','fixed',100,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP),(603,503,'OLD','{}','fixed',100,'CZK',1,0,NULL,1,'inactive',CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');
         $pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Tričko KOVO','Klubové tričko.'),(502,'active','Kroužek','Nejde do košíku.'),(503,'inactive','Staré','Neaktivní.')");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804210000_shop_order_expiration.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

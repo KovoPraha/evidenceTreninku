@@ -95,8 +95,8 @@ function shopCartDetail(PDO $pdo, int $accountId): array
             throw new ShopCheckoutException('Jeden košík nesmí míchat různé měny.');
         }
     }
-    $coupon=null;$couponError=null;
-    if($cart['coupon_id']!==null){try{$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$total);}catch(ShopCouponException $exception){$couponError=$exception->getMessage();}}
+    $coupon=null;$couponError=null;$couponBreakdown=null;
+    if($cart['coupon_id']!==null){try{$couponBreakdown=shopCouponBreakdownFromItems($pdo,$items,$eventItems,$velodromeItems);$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$couponBreakdown);}catch(ShopCouponException $exception){$couponError=$exception->getMessage();}}
     $discount=$coupon!==null?(int)$coupon['discount_minor']:0;
     return ['cart'=>$cart,'items'=>$items,'event_items'=>$eventItems,'velodrome_items'=>$velodromeItems,'subtotal_minor'=>$total,'discount_minor'=>$discount,'total_minor'=>$total-$discount,'currency'=>$currency,'coupon'=>$coupon,'coupon_error'=>$couponError,'fingerprint'=>shopCartFingerprint($items,$coupon,$velodromeItems,$eventItems)];
 }
@@ -215,7 +215,7 @@ function shopCheckoutPlace(
             $total+=$unit;
         }
         $subtotal=$total;$coupon=null;$discount=0;
-        if($cart['coupon_id']!==null){try{$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$subtotal,true);$discount=(int)$coupon['discount_minor'];}catch(ShopCouponException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}}
+        if($cart['coupon_id']!==null){try{$couponBreakdown=shopCouponBreakdownFromItems($pdo,$items,$eventItems,$velodromeItems);$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$couponBreakdown,true);$discount=(int)$coupon['discount_minor'];}catch(ShopCouponException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}}
         $total=$subtotal-$discount;
         if(!hash_equals($expectedCartFingerprint,shopCartFingerprint($items,$coupon,$velodromeItems,$eventItems)))throw new ShopCheckoutException('Cena, obsah nebo kupón košíku se změnily. Zkontrolujte nový souhrn a odešlete jej znovu.');
         if($currency!=='CZK'||$total<1) throw new ShopCheckoutException('První bankovní checkout podporuje pouze kladnou částku v CZK.');
@@ -259,8 +259,8 @@ function shopCheckoutPlace(
         if($coupon!==null){
             $usage=$pdo->prepare('UPDATE shop_coupons SET usage_count=usage_count+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND (usage_limit_total IS NULL OR usage_count<usage_limit_total)');$usage->execute([(int)$coupon['id']]);
             if($usage->rowCount()!==1)throw new ShopCheckoutException('Limit použití kupónu byl mezitím vyčerpán.');
-            $pdo->prepare('INSERT INTO shop_coupon_redemptions(coupon_id,order_id,account_id,code_snapshot,discount_type_snapshot,value_snapshot,discount_minor) VALUES (?,?,?,?,?,?,?)')
-                ->execute([(int)$coupon['id'],$orderId,$accountId,(string)$coupon['code'],(string)$coupon['discount_type'],(int)$coupon['value_minor_or_basis_points'],$discount]);
+            $pdo->prepare('INSERT INTO shop_coupon_redemptions(coupon_id,order_id,account_id,code_snapshot,discount_type_snapshot,value_snapshot,discount_minor,eligible_subtotal_minor,applicability_mask_snapshot) VALUES (?,?,?,?,?,?,?,?,?)')
+                ->execute([(int)$coupon['id'],$orderId,$accountId,(string)$coupon['code'],(string)$coupon['discount_type'],(int)$coupon['value_minor_or_basis_points'],$discount,(int)$coupon['eligible_subtotal_minor'],(int)$coupon['applicability_mask']]);
         }
         $variableSymbol=shopPaymentVariableSymbol($orderId);
         $spd=shopPaymentSpdPayload($bank['iban'],$total,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
@@ -369,7 +369,7 @@ function shopCartFingerprint(array $items,?array $coupon=null,array $velodromeIt
         'beneficiary_sportovec_id'=>$item['beneficiary_sportovec_id']===null?null:(int)$item['beneficiary_sportovec_id'],
     ];
     usort($contract,static fn(array $a,array $b):int=>$a['variant_id']<=>$b['variant_id']);
-    $couponContract=$coupon===null?null:['id'=>(int)$coupon['id'],'code'=>(string)$coupon['code'],'discount_minor'=>(int)$coupon['discount_minor']];
+    $couponContract=$coupon===null?null:['id'=>(int)$coupon['id'],'code'=>(string)$coupon['code'],'discount_minor'=>(int)$coupon['discount_minor'],'eligible_subtotal_minor'=>(int)($coupon['eligible_subtotal_minor']??0),'applicability_mask'=>(int)($coupon['applicability_mask']??SHOP_COUPON_GOODS)];
     $velodromeContract=publicVelodromeShopFingerprintItems($velodromeItems);
     usort($velodromeContract,static fn(array $a,array $b):int=>[$a['lesson_id'],$a['beneficiary_sportovec_id']]<=>[$b['lesson_id'],$b['beneficiary_sportovec_id']]);
     $eventContract=clubEventShopFingerprintItems($eventItems);

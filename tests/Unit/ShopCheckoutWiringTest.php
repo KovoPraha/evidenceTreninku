@@ -34,9 +34,10 @@ final class ShopCheckoutWiringTest extends TestCase
     }
     public function testCouponAdminCheckoutAndSchemaAreWiredSafely():void
     {
-        $root=dirname(__DIR__,2);$admin=(string)file_get_contents($root.'/eshop_coupons_admin.php');$shop=(string)file_get_contents($root.'/booking/eshop.php');$migration=(string)file_get_contents($root.'/migrations/20260804050000_shop_coupons.php');
+        $root=dirname(__DIR__,2);$admin=(string)file_get_contents($root.'/eshop_coupons_admin.php');$shop=(string)file_get_contents($root.'/booking/eshop.php');$migration=(string)file_get_contents($root.'/migrations/20260804050000_shop_coupons.php').(string)file_get_contents($root.'/migrations/20260804234000_shop_coupon_applicability.php');
         foreach(["roleAtLeast('admin')",'csrf_verify','shopCouponAdminCreate','shopCouponAdminSetActive','confirm_action']as$needle)self::assertStringContainsString($needle,$admin);
         foreach(['shopCouponApplyToCart','shopCouponRemoveFromCart','coupon_code']as$needle)self::assertStringContainsString($needle,$shop);
-        foreach(['shop_coupons','shop_coupon_events','shop_coupon_redemptions','code_snapshot','discount_minor','usage_limit_total']as$needle)self::assertStringContainsString($needle,$migration);
+        foreach(['shop_coupons','shop_coupon_events','shop_coupon_redemptions','code_snapshot','discount_minor','usage_limit_total','applicability_mask','eligible_subtotal_minor']as$needle)self::assertStringContainsString($needle,$migration);
+        foreach(['scope_goods','scope_program','scope_event','scope_velodrome','shopCouponApplicabilityLabels']as$needle)self::assertStringContainsString($needle,$admin);
     }
 }
