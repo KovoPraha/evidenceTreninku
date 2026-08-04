@@ -7,6 +7,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
+- Poslední živě ověřený implementační HEAD: `1b4d9e11b2c5c81089f24e274a1aaf232220d339`
+- Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
+  upstream `origin/main`, lokálně `ahead 64 / behind 0` bez nového fetch ověření.
+- Vlastněné necommitnuté změny tohoto dokumentačního tasku: pouze
+  `10-milnik-m2-provozni-pilot.md`, `PROMPT-CLAUDE-CODE-REVIZE-M2.md`,
+  `PROMPT-NOVE-RIDICI-VLAKNO.md`, plánový `README.md` a tento handoff;
+  aplikační kód ani databáze se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -27,8 +34,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   účastníků jedné klubové akce. Endpoint je admin-only, POST+CSRF, soubor používá
   kontrakt `m2.event-participants.v1`, neutralizuje tabulkové vzorce a neobsahuje
   hesla ani celé texty souhlasů. Export zapisuje do auditu pouze počet řádků a
-  rozpad stavů. Plná sada má 303 testů / 2603 assertions, 344 PHP lintů a
-  Composer audit 0 advisories; ověřeno bylo 345 PHP souborů a localhost browser potvrdil tlačítko, stažení a
+  rozpad stavů. Plná sada má 303 testů / 2603 assertions, Composer audit
+  0 advisories; ověřeno bylo 345 PHP souborů a localhost browser potvrdil
+  tlačítko, stažení a
   audit `export_participants`.
 
   Předchozí dokončená akce: placená klubová událost cílená na více soupisek je
@@ -96,9 +104,44 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 |---|---:|---|
 | K1 – katalog a publikace | 92 % | obrázky/detail produktu, finální produktová pravidla a případný anonymní storefront |
 | K2 – účty, osoby a rodič–dítě | 92 % | self-service obnova sportovního hesla, stabilní KIS identifikátor a bezpečné párování finálního exportu |
-| K3 – akce a přihlášky | 88 % | rozhodnutí o ručních změnách čekací listiny, export účastníků a produkční UX |
+| K3 – akce a přihlášky | 92 % | produktová kontrola exportu, rozhodnutí o ručních změnách čekací listiny a produkční UX |
 | K4 – objednávky a platby | 92 % | pravidlo kupónů pro služby, ověřit Fio shadow návrhy a samostatně schválit automatické potvrzení/Stripe |
 | K5 – náhrada starého KIS | 90 % | vlastníkova prohlídka A05/A10, finální jednorázový import a cutover |
+
+## Rychlý aktuální stav pro další task
+
+| Oblast | Implementováno | Otevřeno / blokováno |
+|---|---|---|
+| M1 integrovaný prototyp | technicky dokončen; Evidence, shop, rodina, programy, soupisky, události a velodrom mají localhost řezy | vlastníkova prohlídka A01–A10 |
+| M2.1 akce | admin CSV export v `1b4d9e1`, kontrakt v1, CSRF, formula ochrana a audit | produktová kontrola sloupců v tabulkovém programu |
+| KIS migrace | parser, bezpečný matcher, import-run úložiště a parity kontrakt | finální external ID/formát, raw archiv, promote/rollback a ostrý cutover |
+| e-shop | katalog, košík, objednávka, QR/převod, kupóny, sklad, výdej, storno/refund, program/událost/velodrom | detail/obrázky, pravidla slev pro služby, automatické platby a produkční aktivace |
+| přístup | rodič–děti, sportovní účet, bezpečné session, revokace, limiter a jednorázové tokeny | self-service reset sportovce, permission cache a produkční pepper ověření |
+| finance | ruční převod a read-only Fio shadow návrhy | wallet D-009, Fio auto-confirm, Stripe, cash top-up a kombinované platby |
+
+Aktuální M2 autorita je
+[10 – Milník M2](10-milnik-m2-provozni-pilot.md). Nezávislá read-only revize má
+kanonický prompt v
+[PROMPT-CLAUDE-CODE-REVIZE-M2.md](PROMPT-CLAUDE-CODE-REVIZE-M2.md).
+
+## Povinný kontrakt údržby tohoto souboru
+
+`SESSION_HANDOFF.md` je jediný stručný živý stav projektu pro navázání dalšího
+řídicího tasku. Board zůstává historickým programovým ledgerem a jednotlivé
+milníkové dokumenty popisují cíle; nesmějí nahrazovat tento aktuální snapshot.
+
+Řídicí task aktualizuje tento soubor:
+
+1. po každém přijatém implementačním nebo integračním commitu,
+2. po změně migrací, testovacích výsledků, brány nebo blokátoru,
+3. před předáním do jiného tasku a před ukončením delší pracovní session,
+4. po externí revizi, pokud její nález změní pořadí nebo stav M2.
+
+Povinně zapíše datum, poslední implementační SHA, vlastněné dirty soubory,
+aktuální migrace/testy/lint, dokončený výsledek, otevřené riziko a právě jednu
+další konkrétní akci. Hodnoty GitHubu a produkce musí být označené jako historické,
+dokud nejsou znovu živě ověřené. Soubor nesmí tvrdit 100 % jen podle množství
+kódu; stav se mění pouze podle akceptačního důkazu.
 
 ## Pořadí autority
 
@@ -116,13 +159,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | M1.9: `d3e7e96`, `e363d86`, `c50e572`; společná navigace, seed, browser opravy a dokumentace v navazujícím integračním commitu | 2026-08-03 | Git | ano |
+| integrační branch | lokální `main` na implementačním commitu `1b4d9e1`; M1 `9c4c3e1`, M2.1 `1b4d9e1` | 2026-08-04 | lokální Git bez nového fetch | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | legacy `2.20.2` + 32/32 číslovaných migrací; opakovaný M1 seed včetně placené události aktivní | 2026-08-04 | migration check + MariaDB | ano |
-| testy | 299/2547; browser prošel placenou událost, košík, QR, ruční syntetickou úhradu a aktivaci účasti | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
+| testy | 303/2603; browser navíc ověřil M2.1 export a audit `export_participants` | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | post-M1 artefakt `evidence_2026-08-03_222958_4e76dbc4.sql.gz`: 123 tabulek, 2 triggery, SHA-256 `e4d43a20b008d7188af5c5b47a905893c44698c659dc78509af498bfa3d38d6b`; ownership kontrakt `2026-08-04.6` | 2026-08-04 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |

@@ -12,6 +12,7 @@ Nejdřív kompletně přečti:
 - docs/plan-eshop-tymova-evidence/04-roadmapa-a-brany.md
 - docs/plan-eshop-tymova-evidence/05-rizeni-vlaken.md
 - docs/plan-eshop-tymova-evidence/06-program-board.md
+- docs/plan-eshop-tymova-evidence/10-milnik-m2-provozni-pilot.md
 - docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md
 
 Handoff, board, předchozí chat i memory jsou pouze poslední známý stav. Jejich
@@ -45,8 +46,10 @@ potvrzení rozsahu. Jeho změnu nezávisle zkontroluj před integrací.
 
 Board měň pouze podle commit/diffu, výsledku testu, DB/schema post-checku,
 GitHub důkazu, restore záznamu nebo výslovně schváleného rozhodnutí. Na konci
-každého pracovního bloku aktualizuj SESSION_HANDOFF.md: přesná SHA, dirty soubory,
-worker/task IDs, důkazy, blokátory a jednu další konkrétní akci.
+každého pracovního bloku aktualizuj SESSION_HANDOFF.md podle jeho „Povinného
+kontraktu údržby“: poslední implementační SHA, vlastněné dirty soubory,
+migrace/testy/lint, worker/task IDs, důkazy, blokátory a právě jednu další
+konkrétní akci.
 
 Nyní proveď resume audit, oznam aktuální rozdíly a pokračuj dalším bezpečným
 úkolem uvedeným v SESSION_HANDOFF.md. Nezačínej funkcí z pozdější fáze jen proto,
