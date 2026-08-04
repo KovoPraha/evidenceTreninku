@@ -49,6 +49,18 @@ final class DeployWorkflowContractTest extends TestCase
         }
     }
 
+    public function testContinuousIntegrationRunsDedicatedMariaDbSmokes(): void
+    {
+        $workflow = $this->source('.github/workflows/tests.yml');
+
+        self::assertStringContainsString('mariadb-smoke:', $workflow);
+        self::assertStringContainsString('image: mariadb:11.4', $workflow);
+        self::assertStringContainsString('MARIADB_ALLOW_EMPTY_ROOT_PASSWORD', $workflow);
+        self::assertStringContainsString('extensions: mbstring, pdo_mysql', $workflow);
+        self::assertStringContainsString('php tests/Support/ChildAccessMariaDbSmoke.php', $workflow);
+        self::assertStringContainsString('php tests/Support/KisHobbyTransitionMariaDbSmoke.php', $workflow);
+    }
+
     private function source(string $relativePath): string
     {
         $source = file_get_contents(dirname(__DIR__, 2) . '/' . $relativePath);

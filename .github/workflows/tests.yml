@@ -36,3 +36,38 @@ jobs:
 
       - name: Spustit testy
         run: composer test
+
+  mariadb-smoke:
+    name: MariaDB integrační smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - name: Stáhnout kód
+        uses: actions/checkout@v7
+
+      - name: Připravit PHP s MariaDB ovladačem
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql
+          coverage: none
+
+      - name: Ověřit přístup sportovce na MariaDB
+        run: php tests/Support/ChildAccessMariaDbSmoke.php
+
+      - name: Ověřit KIS přechod a idempotenci na MariaDB
+        run: php tests/Support/KisHobbyTransitionMariaDbSmoke.php
