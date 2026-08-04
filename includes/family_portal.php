@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/member_charge_read.php';
+
 final class FamilyPortalAccessDenied extends RuntimeException
 {
 }
@@ -86,7 +88,7 @@ function familyPortalCanViewPerson(PDO $pdo, int $accountId, int $sportovecId): 
     return false;
 }
 
-/** @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>} */
+/** @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,member_charges:list<array<string,mixed>>} */
 function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId): array
 {
     $person = null;
@@ -145,10 +147,12 @@ function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId):
         $trainings = $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings];
+    $memberCharges = memberChargeRowsForSportovec($pdo, $sportovecId);
+
+    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings, 'member_charges' => $memberCharges];
 }
 
-/** @return list<array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>}> */
+/** @return list<array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,member_charges:list<array<string,mixed>>}> */
 function familyPortalOverview(PDO $pdo, int $accountId): array
 {
     $overview = [];

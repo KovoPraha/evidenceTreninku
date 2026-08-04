@@ -126,7 +126,7 @@ $person = $overview['person'];
             ['label' => 'Tréninky', 'value' => count($overview['trainings'])],
             ['label' => 'Soupisky', 'value' => count($overview['rosters'])],
             ['label' => 'Události', 'value' => count($overview['events'])],
-            ['label' => 'Platby', 'value' => count($overview['payments'])],
+            ['label' => 'Platby', 'value' => count($overview['payments']) + count($overview['member_charges'])],
         ] as $summary): ?>
             <div class="col-6 col-lg-3"><div class="card border-0 shadow-sm h-100"><div class="card-body py-3">
                 <div class="text-muted small"><?= childPageH($summary['label']) ?></div>
@@ -150,7 +150,12 @@ $person = $overview['person'];
         <?php foreach ($overview['events'] as $row): ?><tr><td><?= childPageH($row['event_name']) ?></td><td><?= childPageH(childPageEventTypeLabel((string)$row['event_type'])) ?></td><td><?= childPageH(childPageDateLabel((string)$row['registered_at'], true)) ?></td><td><span class="badge <?= childPageH(childPageStatusClass((string)$row['status'])) ?>"><?= childPageH(childPageStatusLabel((string)$row['status'], 'event')) ?></span></td></tr><?php endforeach; ?>
     </tbody></table></div></section>
 
-    <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje platby</div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Objednávka</th><th>Položka</th><th>Částka</th><th>Platba</th></tr></thead><tbody>
+    <section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Moje členské předpisy</div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Předpis</th><th>Částka</th><th>Splatnost</th><th>Stav</th></tr></thead><tbody>
+        <?php if ($overview['member_charges'] === []): ?><tr><td colspan="4" class="text-muted p-3">Zatím žádný členský předpis.</td></tr><?php endif; ?>
+        <?php foreach ($overview['member_charges'] as $row): ?><tr><td><strong><?= childPageH($row['title_snapshot']) ?></strong><div class="small text-muted"><code><?= childPageH($row['public_code']) ?></code></div></td><td><?= childPageH(number_format(((int)$row['amount_minor']) / 100, 2, ',', ' ') . ' ' . $row['currency']) ?></td><td><?= childPageH(childPageDateLabel($row['due_on'] ?: null)) ?></td><td><span class="badge <?= childPageH(childPageStatusClass((string)$row['status'])) ?>"><?= childPageH(childPageStatusLabel((string)$row['status'], 'payment')) ?></span><?php if ($row['paid_at']): ?><div class="small text-muted">Uhrazeno <?= childPageH(childPageDateLabel((string)$row['paid_at'])) ?></div><?php endif; ?></td></tr><?php endforeach; ?>
+    </tbody></table></div></section>
+
+    <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje objednávkové platby</div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Objednávka</th><th>Položka</th><th>Částka</th><th>Platba</th></tr></thead><tbody>
         <?php if ($overview['payments'] === []): ?><tr><td colspan="4" class="text-muted p-3">Zatím žádná objednávková položka přiřazená tomuto profilu.</td></tr><?php endif; ?>
         <?php foreach ($overview['payments'] as $row): ?><tr><td><code><?= childPageH($row['public_code']) ?></code></td><td><?= childPageH($row['product_name_snapshot']) ?></td><td><?= childPageH(number_format(((int)$row['line_amount_minor']) / 100, 2, ',', ' ') . ' ' . $row['currency']) ?></td><td><span class="badge <?= childPageH(childPageStatusClass((string)$row['payment_status'])) ?>"><?= childPageH(childPageStatusLabel((string)$row['payment_status'], 'payment')) ?></span></td></tr><?php endforeach; ?>
     </tbody></table></div></section>

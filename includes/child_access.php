@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/member_charge_read.php';
+
 final class ChildAccessException extends RuntimeException
 {
 }
@@ -302,7 +304,7 @@ function childAccessIdentity(PDO $pdo, int $accessAccountId): ?array
     return is_array($row) ? $row : null;
 }
 
-/** @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,payments:list<array<string,mixed>>} */
+/** @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,payments:list<array<string,mixed>>,member_charges:list<array<string,mixed>>} */
 function childAccessOverview(PDO $pdo, int $accessAccountId): array
 {
     $person = childAccessIdentity($pdo, $accessAccountId);
@@ -314,8 +316,9 @@ function childAccessOverview(PDO $pdo, int $accessAccountId): array
     $events = childAccessScopedRows($pdo, $accessAccountId, 'events');
     $trainings = childAccessScopedRows($pdo, $accessAccountId, 'trainings');
     $payments = childAccessScopedRows($pdo, $accessAccountId, 'payments');
+    $memberCharges = memberChargeRowsForSportovec($pdo, (int)$person['sportovec_id']);
 
-    return compact('person', 'rosters', 'events', 'trainings', 'payments');
+    return compact('person', 'rosters', 'events', 'trainings', 'payments') + ['member_charges' => $memberCharges];
 }
 
 /** @return list<array<string,mixed>> */

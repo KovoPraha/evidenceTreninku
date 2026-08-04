@@ -18,6 +18,11 @@ function familyPageH(mixed $value): string
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function familyPageChargeStatus(string $status): string
+{
+    return ['pending' => 'Čeká na úhradu', 'paid' => 'Uhrazeno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
+}
+
 $overview = [];
 $familyOrderItems = [];
 $loadError = '';
@@ -82,6 +87,17 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
                 <?php if ($profile['events'] === []): ?><p class="text-muted small">Žádná přihláška na klubovou událost.</p><?php else: ?>
                 <div class="table-responsive mb-4"><table class="table table-sm align-middle"><thead><tr><th>Událost</th><th>Typ</th><th>Přihlášeno</th><th>Stav</th></tr></thead><tbody>
                 <?php foreach ($profile['events'] as $event): ?><tr><td><?= familyPageH($event['event_name']) ?></td><td><?= familyPageH($event['event_type']) ?></td><td><?= familyPageH($event['registered_at']) ?></td><td><?= familyPageH($event['status']) ?></td></tr><?php endforeach; ?>
+                </tbody></table></div><?php endif; ?>
+
+                <h2 class="h6">Členské předpisy</h2>
+                <?php if ($profile['member_charges'] === []): ?><p class="text-muted small">Žádný členský předpis.</p><?php else: ?>
+                <div class="table-responsive mb-4"><table class="table table-sm align-middle"><thead><tr><th>Předpis</th><th>Částka</th><th>Splatnost</th><th>Stav</th></tr></thead><tbody>
+                <?php foreach ($profile['member_charges'] as $charge): ?><tr>
+                    <td><strong><?= familyPageH($charge['title_snapshot']) ?></strong><div class="small text-muted"><code><?= familyPageH($charge['public_code']) ?></code></div></td>
+                    <td><?= familyPageH(number_format(((int)$charge['amount_minor']) / 100, 2, ',', ' ') . ' ' . $charge['currency']) ?></td>
+                    <td><?= familyPageH($charge['due_on'] ?: 'neuvedeno') ?></td>
+                    <td><span class="badge <?= $charge['status'] === 'paid' ? 'text-bg-success' : ($charge['status'] === 'pending' ? 'text-bg-warning' : 'text-bg-secondary') ?>"><?= familyPageH(familyPageChargeStatus((string)$charge['status'])) ?></span><?php if ($charge['paid_at']): ?><div class="small text-muted">Uhrazeno <?= familyPageH(substr((string)$charge['paid_at'], 0, 10)) ?></div><?php endif; ?></td>
+                </tr><?php endforeach; ?>
                 </tbody></table></div><?php endif; ?>
 
                 <h2 class="h6">Docházka na tréninky</h2>
