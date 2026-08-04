@@ -104,6 +104,9 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | integrační brána M2.4b | hotovo lokálně | 34/34 migrací, 315/2707, 355 PHP lintů, audit 0; browser potvrdil zamítnutí `LOCAL10` na kroužek, slevu na zboží i administrační rozsah |
 | M2.4c checkout hardening z externí revize | hotovo lokálně | bezpečný opakovaný nákup stornovaného kroužku, legacy kapacita velodromu a součet více dětí stejné události v jednom košíku |
 | integrační brána M2.4c | hotovo lokálně | 35/35 migrací na localhost MariaDB, 318/2774, 356 PHP lintů a audit 0; produkce beze změny |
+| bezpečnostní hardening legacy | hotovo lokálně | `65a0433`: náhodné profilové tokeny, rotace odvoditelných URL, hash legacy hesel, CSRF, download oprávnění, redakce auditu a Apache defense-in-depth |
+| bezpečnostní integrační brána | hotovo lokálně | 36/36, 323/2903, 361 PHP lintů, Composer audit 0 a localhost HTTP hlavičky/upload 403; produkce beze změny |
+| M2.5 registrace bez enumerace | hotovo lokálně | `b8ecdaa`: shodná veřejná odpověď pro nový i existující e-mail; 324/2907 |
 
 ## Aktivní rozhodnutí
 
@@ -146,7 +149,7 @@ Zdroj pravdy je tabulka D-001 až D-015 v [02 – Zadání a rozhodnutí](02-zad
 - [x] lokální a vzdálený main bezpečně sjednocen,
 - [x] KIS matcher opraven a otestován na foundation,
 - [x] dependency audit foundation bez advisories,
-- [ ] legacy hesla a session mají schválenou a ověřenou nápravu; tokeny, logout, lifecycle, DB revokace a limiter jsou hotové lokálně, ale permission cache, reset hesla a produkční password apply zbývají,
+- [ ] legacy hesla a session mají schválenou a ověřenou nápravu; tokeny, logout, lifecycle, DB revokace, limiter a localhost password apply jsou hotové, ale permission cache, reset hesla a produkční password apply zbývají,
 - [x] unit/integration testy a migrační fixture existují; první GitHub běh `30718098799` je zelený,
 - [x] číslované migrace a read-only `--check` existují lokálně,
 - [ ] staging/test DB a kompletní realistické fixtures existují; rozšířené syntetické KIS/Shoptet matice a read-only dry-run už jsou doložené,

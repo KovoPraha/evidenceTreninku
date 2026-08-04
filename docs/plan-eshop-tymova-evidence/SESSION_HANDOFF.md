@@ -7,12 +7,12 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `b5f3f3f`;
+- Poslední přijatý implementační HEAD: `b8ecdaa`;
   dokumentační plán navazuje touto handoff aktualizací.
 - Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
   upstream `origin/main`, lokálně `ahead 72 / behind 0` bez nového fetch ověření.
-- Pracovní strom po implementačním commitu `b5f3f3f`: čistý před touto přesnou
-  handoff aktualizací. Localhost DB je 35/35; produkce ani vzdálený repozitář se
+- Pracovní strom po implementačním commitu `b8ecdaa`: čistý před touto přesnou
+  handoff aktualizací. Localhost DB je 36/36; produkce ani vzdálený repozitář se
   nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -30,7 +30,20 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: revize Claude Code byla porovnána s aktuálním HEAD.
+- Poslední dokončená akce: bezpečnostní audit legacy vrstvy byl porovnán s živým
+  HEAD a potvrzené nálezy uzavřel `65a0433`. Všechny veřejné odkazy sportovců mají
+  po jednorázové rotaci kryptograficky náhodný token, plaintext hesla trenérů byla
+  na localhostu převedena na moderní hash a aplikace je už nepřijímá. Doplněny jsou
+  CSRF hranice, oprávnění downloadu, redakce auditních dat, obecné chybové odpovědi,
+  bezpečné inline JSON a Apache defense-in-depth. Root `.htaccess` už existoval;
+  opačné tvrzení auditu bylo zastaralé. Katalog je 36/36, plná sada 323/2903,
+  361 PHP souborů bez chyby, Composer audit bez nálezu a localhost HTTP ověřil
+  hlavičky i 403 v upload cestě. Produkce ani vzdálený Git se nezměnily. Podrobný
+  záznam je v [bezpečnostním auditu](../security-audit-2026-08-04.md). Navazující
+  `b8ecdaa` uzavírá také enumeraci účtu při veřejné registraci: nový i existující
+  e-mail dostává stejnou neutrální odpověď. Plná sada je po tomto řezu 324/2907.
+
+  Předchozí dokončená akce: revize Claude Code byla porovnána s aktuálním HEAD.
   Její H1 vycházel ze starého snapshotu a je již uzavřený: backup kontrakt `.7`
   obsahuje `kis_import_source_artifacts`. Potvrzené H2, H3 a M1 uzavírá `b5f3f3f`:
   stornovaný a refundovaný kroužek lze znovu koupit se zachováním historie a
@@ -157,7 +170,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | M2.1 akce | admin CSV export v `1b4d9e1`, kontrakt v1, CSRF, formula ochrana a audit | produktová kontrola sloupců v tabulkovém programu |
 | KIS migrace | parser, bezpečný matcher, import-run úložiště, parity kontrakt a M2.3a raw archiv/manifest | finální external ID/formát, promote/rollback a ostrý cutover |
 | e-shop | katalog, košík, objednávka, QR/převod, kupóny, sklad, výdej, storno/refund, program/událost/velodrom | detail/obrázky, pravidla slev pro služby, automatické platby a produkční aktivace |
-| přístup | rodič–děti, sportovní účet, bezpečné session, revokace, limiter a jednorázové tokeny | self-service reset sportovce, permission cache a produkční pepper ověření |
+| přístup | rodič–děti, sportovní účet, bezpečné session, revokace, limiter, jednorázové tokeny a hashovaná legacy hesla | self-service reset sportovce, permission cache a produkční pepper/migrační ověření |
 | finance | ruční převod a read-only Fio shadow návrhy | wallet D-009, Fio auto-confirm, Stripe, cash top-up a kombinované platby |
 
 Aktuální M2 autorita je
@@ -205,8 +218,8 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 35/35 číslovaných migrací; aktivní programová účast má databázově unikátní token a samostatný FK index | 2026-08-04 | opakovaný migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | 318/2774; 356 PHP souborů; tři regresní scénáře externí revize a úplná sada prošly | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
+| lokální schema | legacy `2.20.2` + 36/36 číslovaných migrací; 255/255 profilových tokenů je silných a unikátních, 44/44 hesel trenérů je moderně hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
+| testy | 324/2907; 361 PHP souborů; bezpečnostní regresní scénáře i úplná sada prošly | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | post-M2.3a `evidence_2026-08-04_084445_f636b85b.sql.gz`: 124 tabulek, 2 triggery, SHA-256 `646f2312eb092a1ddf153f0a8d6fb4d22c5c85d93076d484e0dbbf1580f25b53`; ownership kontrakt `.7` | 2026-08-04 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -321,6 +334,8 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 58 | M2.4a detail produktu `b4898f1` | seskupené varianty, schválené veřejné texty, sklad, bezpečné HTTPS obrázky a oddělený detail kroužku; 33/33, 313/2664, 354 lintů a browser průchod |
 | 59 | M2.4b rozsah kupónů `838793d` | explicitní neměnná maska čtyř kategorií, výchozí pouze zboží, způsobilý mezisoučet a redemption snapshot; 34/34, 315/2707, 355 lintů a browser |
 | 60 | M2.4c hardening `b5f3f3f` | H1 revize byl již zastaralý; H2/H3/M1 uzavřeny migrací aktivní účasti, legacy kapacitou a součtem dětí v košíku; 35/35, 318/2774, 356 lintů, audit 0 |
+| 61 | bezpečnost legacy `65a0433` | náhodné profilové tokeny, hash všech hesel trenérů, CSRF/oprávnění/redakce/chybové odpovědi a Apache defense-in-depth; 36/36, 323/2903, 361 lintů, audit 0 |
+| 62 | registrace bez enumerace `b8ecdaa` | nový i existující e-mail má stejnou veřejnou odpověď; 324/2907 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
