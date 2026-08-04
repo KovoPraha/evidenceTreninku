@@ -36,13 +36,16 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - verze `kis-import-field-v1` vyžaduje stejné stabilní interní KIS ID v exportu
   uživatelů, plateb i soupisek; KIS ID je oddělené od UCI licence a chybějící či
   rozporný identifikátor fail-closed blokuje zápis,
+- M2.3e ukládá non-PII paritní report osob, stavu členství, soupisek a platebních
+  signálů; samostatné členské platební předpisy zatím nemají cílový kontrakt, takže
+  report tuto mezeru výslovně blokuje,
 - auditní osa osoby a localhost scénáře A01–A10.
 
 ## Výslovně otevřené nebo blokované
 
 - závěrečná uživatelská prohlídka A01–A10 a vypořádání připomínek,
-- potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, úplná
-  parita osob/členství/soupisek/plateb a ostrý cutover,
+- potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, cílový
+  model jednotlivých členských platebních předpisů a ostrý cutover,
 - produkční doručování reset e-mailů a produkční konfigurace tajemství,
 - Stripe, automatické Fio potvrzení, kreditní wallet a TrainingPeaks,
 - produkční deploy bez výslovného souhlasu vlastníka.

@@ -127,6 +127,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.3b integrita KIS preview | hotovo lokálně | `26076ba`: archivně podmíněná úplná klasifikace, stabilní non-PII fingerprint, bezpečný JSON report a idempotentní demo seed; browser run #7 2/2 bez blokátoru, 364/3197, 392 parse, 40/40, audit 0 |
 | M2.3c sandbox promote/rollback | hotovo lokálně | `5caa850`: admin+CSRF+localhost, fingerprint, transakce, idempotence, audit a rollback dostupný i při driftu; browser 2/2→0/2, 369/3254, 396 parse, 41/41, audit 0 |
 | M2.3d stabilní KIS ID | hotovo technicky | `2bcb346`: `kis-import-field-v1`, KIS ID oddělené od UCI, spojení tří exportů, non-PII report a fail-closed zápis; browser run #8 2/2→0/2, starý run blokován, 377/3308, 398 parse, 42/42, audit 0 |
+| M2.3e cutover parita | hotovo technicky | `95693a2`: uložený non-PII report osob/členství/soupisek/platebních signálů; run #9 pravdivě 3 blokátory včetně chybějícího cílového kontraktu předpisů, sandbox 2/2→0/2, 379/3332, 401 parse, 43/43, audit 0 |
 
 ## Aktivní rozhodnutí
 
@@ -185,7 +186,8 @@ nepřidávají košík, platby ani produkční import. Hashované, expirované a
 jednorázové e-mailové/booking tokeny jsou implementované v `main`.
 Shoptet export a bezpečný katalogový staging jsou doložené. Produktově stále
 chybí potvrzení konkrétního aliasu stabilního KIS identifikátoru na reprezentativním
-anonymizovaném exportu a retenční doby preview dat.
+anonymizovaném exportu, cílový model členských platebních předpisů a retenční doba
+preview dat.
 Před budoucím auth deployem musí být mimo Git nastaven `AUTH_RATE_LIMIT_PEPPER`.
 
 ## Pokyn pro příští řídicí task

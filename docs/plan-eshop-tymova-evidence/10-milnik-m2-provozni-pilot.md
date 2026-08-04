@@ -26,12 +26,12 @@ kódu.
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
-| M2.3 zkouška migrace KIS | probíhá | 95 % | stabilní KIS ID, archiv, fingerprintovaný preview a izolovaný promote/rollback existují; zbývá potvrzení reálného anonymizovaného formátu a úplná parita |
+| M2.3 zkouška migrace KIS | probíhá | 97 % | uložený paritní report už mapuje osoby, členství, soupisky a platební signály; zbývá reálný anonymizovaný formát a cílový model členských platebních předpisů |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
 
-Orientační stav celého M2: **74 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **75 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -191,7 +191,23 @@ Dokončený technický řez M2.3d (`2bcb346`):
 
 Zbývá zdrojová akceptace: anonymizovaný reprezentativní export musí potvrdit,
 který podporovaný alias KIS ID a které další hlavičky budou ve finálním jednorázovém
-exportu. Teprve potom lze uzavřít úplný paritní report a plán ostrého cutoveru.
+exportu. Teprve potom lze přijmout uložený paritní report jako podklad a plánovat
+ostrý cutover.
+
+Dokončený technický řez M2.3e (`95693a2`):
+
+- nový `kis-import-parity-v1` atomicky vzniká s importním během a je svázaný
+  fingerprinty preview i field kontraktu,
+- porovnává osoby, aktivní členství, textový snapshot soupisek a agregované
+  platební signály; report neobsahuje jména, KIS ID ani peněžní hodnoty,
+- nové osoby, rozdíly, konflikty a nejednoznačnosti jsou fail-closed blokátory;
+  chybění existující osoby v jednom běhu zůstává pouze informační a nic nearchivuje,
+- report výslovně odhalil nepokrytou doménu jednotlivých členských platebních
+  předpisů místo falešného tvrzení o úplné paritě,
+- run #9 má dvě nové osoby, dvě přiřazení soupisek, dva platební řádky a tři
+  blokátory; browser ověřil UI a sandbox 2/2 → 0/2,
+- plná sada prošla 379 testy / 3332 assertions, syntaxe 401 first-party PHP
+  souborů, migrace 43/43 a Composer audit je bez nálezu.
 
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
    export KIS a potvrdit podporovaný alias stabilního externího ID osoby.

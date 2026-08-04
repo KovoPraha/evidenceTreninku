@@ -120,6 +120,26 @@ aplikován do sandboxu 2/2 a vrácen na 0/2. Skutečný cutover zůstává bloko
 dokud reprezentativní anonymizovaný finální export nepotvrdí konkrétní aliasy polí
 a úplný paritní report osob, členství, soupisek a plateb.
 
+## M2.3e – uložený cutover paritní report
+
+Každý nový importní běh nyní atomicky ukládá také `kis-import-parity-v1`. Report
+porovnává zdrojový snapshot s aktuální cílovou Evidencí v oblastech osoby, aktivní
+členství, textový snapshot soupisek a agregované platební signály. Obsahuje pouze
+`source:N`, případné `sportovec:N`, pevné kategorie, souhrnné počty a fingerprinty
+preview/field kontraktu; jména, KIS ID ani peněžní hodnoty nevypisuje.
+
+Kategorie `new`, rozdílné signály, konflikty a nejednoznačnosti zůstávají
+blokátory. Osoba s KIS ID chybějící v jednom běhu je pouze informační údaj a nikdy
+se automaticky nearchivuje. Report navíc odděluje pokrytí domén: agregovaný počet
+uhrazených/otevřených platebních řádků je zachycen, ale cílový kontrakt jednotlivých
+členských platebních předpisů zatím neexistuje. Pokud zdroj takové řádky obsahuje,
+vznikne pevný blokátor `payment_prescription_target_contract_missing`.
+
+Localhost run #9 proto pravdivě hlásí tři blokátory: dvě nové syntetické osoby a
+jednu nepokrytou cílovou platební doménu. Browser ověřil zobrazení reportu, možnost
+stažení non-PII JSON a nezávislý sandbox lifecycle 2/2 → 0/2. Tento stav není chyba
+reportu; je to přesná mapa práce nutné před cutoverem.
+
 ## Realistická syntetická fixture W0-G
 
 `tests/fixtures/kis/parity-realistic.json` skládá deset neprůhledných řádků do
