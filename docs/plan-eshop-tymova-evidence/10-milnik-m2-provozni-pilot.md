@@ -243,6 +243,14 @@ Dokončený technický řez M2.3g (`7c8b444`):
 - plná sada prošla 391 testy / 3430 assertions, syntaxe 408 first-party PHP
   souborů, migrace 45/45 a Composer audit je bez nálezu.
 
+Kontrolní audit zálohy je opraven v `281fcd0`: ownership kontrakt `.9` zahrnuje
+všechny trvalé tabulky z migračního katalogu včetně M2.3g a klubových cen. Nový
+generický PHPUnit test zastaví další drift a MariaDB CI skutečně vytvoří zálohu,
+ověří její manifest a přítomnost všech 12 dříve chybějících tabulek. Izolovaný
+smoke prošel s 90 tabulkami; plná sada má 393 testů / 3496 assertions, syntaxe
+409 PHP souborů, migrace 45/45 a Composer audit bez nálezu. Starý agregovaný
+platební signál se navíc převádí na haléře přesně bez násobení typu float.
+
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
    export KIS a potvrdit podporovaný alias stabilního externího ID osoby.
 2. Uložit raw vstup jako neměnný artefakt s hashem, časem a verzí kontraktu.

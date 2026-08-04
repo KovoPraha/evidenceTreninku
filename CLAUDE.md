@@ -43,6 +43,8 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
   historickou platbu pro uhrazené položky a kontrolovaný rollback; produkční přenos
   zůstává vypnutý,
 - auditní osa osoby a localhost scénáře A01–A10.
+- zálohovací ownership kontrakt `.9` zahrnuje všechny trvalé migrační tabulky;
+  PHPUnit hlídá drift katalogu a MariaDB CI skutečně vytváří a kontroluje záložní artefakt.
 
 ## Výslovně otevřené nebo blokované
 

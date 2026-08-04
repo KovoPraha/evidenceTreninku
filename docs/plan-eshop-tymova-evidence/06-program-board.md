@@ -130,6 +130,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.3e cutover parita | hotovo technicky | `95693a2`: uložený non-PII report osob/členství/soupisek/platebních signálů; run #9 pravdivě 3 blokátory včetně chybějícího cílového kontraktu předpisů, sandbox 2/2→0/2, 379/3332, 401 parse, 43/43, audit 0 |
 | M2.3f členské předpisy | hotovo technicky | `d69ee4f`: `member-charge-v1`, cílové a auditní tabulky, stabilní ID+částka, atomický staging a non-PII porovnání; run #12 2 staging/2 čeká, 388/3369, 406 parse, 44/44, audit 0 |
 | M2.3g auditovaný promote/rollback předpisů | hotovo lokálně | `7c8b444`: localhost admin+CSRF+fingerprint, transakční a idempotentní přenos, samostatná historická platba, invarianty a bezpečný rollback; browser run #13 2/2 + 1 platba → 0/2 + 0 plateb, 391/3430, 408 parse, 45/45, audit 0 |
+| kontrolní audit zálohy M2.3g | opraveno | `281fcd0`: ownership kontrakt `.9` doplnil 12 chybějících KIS/členských cenových tabulek, generický test hlídá všechny trvalé migrační tabulky, MariaDB CI vytvořilo zálohu 90 tabulek; přesný převod platebních signálů bez float, 393/3496, 409 parse, 45/45, audit 0 |
 
 ## Aktivní rozhodnutí
 

@@ -15,13 +15,17 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `7c8b444` – M2.3g auditovaný
-  localhost přenos členských předpisů, historických plateb a bezpečný rollback,
+- poslední implementace před tímto dokumentem: `281fcd0` – oprava zálohovacího
+  ownership kontraktu `.9`, úplnost všech migračních tabulek a skutečný MariaDB backup smoke,
+- předchozí funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
+  předpisů, historických plateb a bezpečný rollback,
 - předchozí infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 45/45,
-- automatické testy 391/3430,
-- first-party PHP syntaxe 408 souborů bez chyby,
+- automatické testy 393/3496,
+- first-party PHP syntaxe 409 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
+- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 90 tabulek a potvrdil
+  všech 12 tabulek doplněných po kontrolním auditu,
 - produkce se při těchto změnách neměnila.
 
 Čísla jsou snapshot a nový agent je musí levně ověřit. Cowork bridge kopie může
