@@ -37,13 +37,13 @@ try{
     }else{
         $pdo->prepare('UPDATE verejni_uzivatele SET jmeno=?,prijmeni=?,heslo_hash=?,email_overeno=1,aktivni=1 WHERE id=?')->execute(['Testovací','Rodič',password_hash($password,PASSWORD_DEFAULT),$accountId]);
     }
-    $a05Hash=hash('sha256','localhost-demo:a05-hobby-to-race');
-    $peopleStatement=$pdo->prepare("SELECT id FROM sportovci WHERE hash IS NULL OR hash<>? ORDER BY CASE stav_clenstvi WHEN 'aktivni' THEN 0 ELSE 1 END,id LIMIT 2");$peopleStatement->execute([$a05Hash]);$people=$peopleStatement->fetchAll(PDO::FETCH_COLUMN);
+    $peopleStatement=$pdo->prepare("SELECT s.id FROM sportovci s LEFT JOIN child_access_accounts ca ON ca.sportovec_id=s.id AND ca.login_key='localhost-sportovec' WHERE COALESCE(s.email,'')<>'a05-transition@localhost.test' ORDER BY CASE WHEN ca.id IS NOT NULL THEN 0 ELSE 1 END,CASE s.stav_clenstvi WHEN 'aktivni' THEN 0 ELSE 1 END,s.id LIMIT 2");$peopleStatement->execute();$people=$peopleStatement->fetchAll(PDO::FETCH_COLUMN);
     foreach($people as$personId)accountPersonRoleApprove($pdo,$accountId,(int)$personId,'guardian',$actorId,'Localhost demo vazba rodič–dítě.');
-    $a05Person=$pdo->prepare('SELECT id FROM sportovci WHERE hash=?');$a05Person->execute([$a05Hash]);$a05PersonId=(int)$a05Person->fetchColumn();
-    if($a05PersonId<1){$pdo->prepare("INSERT INTO sportovci(jmeno,prijmeni,narozeni,email,telefon,hash,uci,stav_clenstvi) VALUES ('LOCALHOST','Přechod U17','2012-05-01','a05-transition@localhost.test','',?,0,'aktivni')")->execute([$a05Hash]);$a05PersonId=(int)$pdo->lastInsertId();}
+    $a05Person=$pdo->prepare("SELECT id FROM sportovci WHERE email='a05-transition@localhost.test' ORDER BY id DESC LIMIT 1");$a05Person->execute();$a05PersonId=(int)$a05Person->fetchColumn();
+    if($a05PersonId<1){$pdo->prepare("INSERT INTO sportovci(jmeno,prijmeni,narozeni,email,telefon,hash,uci,stav_clenstvi) VALUES ('LOCALHOST','Přechod U17','2012-05-01','a05-transition@localhost.test','',?,0,'aktivni')")->execute([public_profile_token_generate()]);$a05PersonId=(int)$pdo->lastInsertId();}
     else{$pdo->prepare("UPDATE sportovci SET jmeno='LOCALHOST',prijmeni='Přechod U17',narozeni='2012-05-01',stav_clenstvi='aktivni' WHERE id=?")->execute([$a05PersonId]);}
-    accountPersonRoleApprove($pdo,$accountId,$a05PersonId,'guardian',$actorId,'Localhost demo vazba pro scénář A05.');
+    $a05GuardianRelations=$pdo->prepare("SELECT r.id FROM account_person_roles r JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.relation_role='guardian' AND r.status='approved' AND r.valid_to IS NULL AND s.email='a05-transition@localhost.test'");$a05GuardianRelations->execute([$accountId]);
+    foreach($a05GuardianRelations->fetchAll(PDO::FETCH_COLUMN)as$relationId)accountPersonRoleRevoke($pdo,(int)$relationId,$actorId,'LOCALHOST reset: A05 je samostatný administrační scénář, ne dítě rodiče z A01.');
 
     $run=$pdo->query("SELECT * FROM shop_catalog_import_runs WHERE status IN ('pending_review','ready_for_promotion','promoted') ORDER BY id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     if(!$run)throw new RuntimeException('local_demo_requires_staged_shoptet_import');$runId=(int)$run['id'];

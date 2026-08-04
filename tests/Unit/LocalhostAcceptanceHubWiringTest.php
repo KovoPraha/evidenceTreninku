@@ -33,4 +33,18 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringNotContainsString('Localhost123!', $page . $helper);
         self::assertStringNotContainsString('LocalhostAdmin123!', $page . $helper);
     }
+
+    public function testSeedKeepsStableDemoIdentitiesAfterSecurityTokenRotation(): void
+    {
+        $seed = (string)file_get_contents(dirname(__DIR__, 2) . '/bin/seed-local-demo.php');
+
+        self::assertStringContainsString("ca.login_key='localhost-sportovec'", $seed);
+        self::assertStringContainsString("COALESCE(s.email,'')<>'a05-transition@localhost.test'", $seed);
+        self::assertStringContainsString("WHERE email='a05-transition@localhost.test' ORDER BY id DESC LIMIT 1", $seed);
+        self::assertStringContainsString('public_profile_token_generate()', $seed);
+        self::assertStringContainsString("s.email='a05-transition@localhost.test'", $seed);
+        self::assertStringContainsString('accountPersonRoleRevoke(', $seed);
+        self::assertStringNotContainsString("hash('sha256','localhost-demo:a05-hobby-to-race')", $seed);
+        self::assertStringNotContainsString("accountPersonRoleApprove(\$pdo,\$accountId,\$a05PersonId", $seed);
+    }
 }
