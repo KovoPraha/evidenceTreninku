@@ -29,9 +29,9 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 84 % | backup, shop lifecycle, A02, A05–A07 a jednotný master účet mají browser důkaz; zbývají A08/A10 a závěrečná brána |
+| M2.6 integrovaná akceptace | probíhá | 90 % | backup, shop lifecycle, A02, A05–A08 a jednotný master účet mají browser důkaz; zbývá A10 a závěrečná brána |
 
-Orientační stav celého M2: **61 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **63 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -296,6 +296,17 @@ Dokončený A07 řez (`03774db`):
   neočekávaní 1/1/0/0; sportovec viděl stejný trénink ve svém omezeném přehledu,
 - opakovaný seed zachoval historický trénink a připravil nový čistý plán 3,
 - plná sada prošla 354 testy / 3130 assertions, syntaxe 384 first-party PHP souborů,
+  migrace 39/39 a Composer audit je bez nálezu.
+
+Dokončený A08 řez (`6ae75c1`):
+
+- rodičovské UI nabídlo u události cílené na U15 a dráhu oprávněné dítě právě
+  jednou a ostatní schválené osoby jako neoprávněné vůbec nenabídlo,
+- browser vytvořil jednu potvrzenou přihlášku; databáze u stejné osoby doložila dvě
+  vyhovující soupisky, nikoli dvě přihlášky,
+- další spuštění localhost seedu přihlášku nemaže, ale auditovaně ji stornuje pouze
+  v rámci syntetické události a demo rodiče, takže scénář lze bezpečně opakovat,
+- plná sada prošla 355 testy / 3133 assertions, syntaxe 386 first-party PHP souborů,
   migrace 39/39 a Composer audit je bez nálezu.
 
 - deterministický seed lze bezpečně spustit opakovaně,

@@ -58,6 +58,9 @@ skenovat pro skutečnou platbu. Fio import zůstává vypnutý.
 12. Otevřít `kis_training_a07_admin.php`, zkontrolovat očekávané sportovce a přejít
     na zadání skutečné docházky. Po uložení průvodce ukáže přítomné podle plánu,
     chybějící a neočekávané; sportovec výsledek uvidí v `booking/muj_sport.php`.
+13. U události `LOCALHOST – výjezd pro U15 a dráhu` ověřit, že se oprávněné dítě
+    zobrazí jen jednou, i když je ve dvou cílových soupiskách, a odeslat přihlášku.
+    Nový reset seedu ji auditovaně zruší a připraví scénář k dalšímu průchodu.
 
 Před větší změnou lokální DB používejte `bin/db-backup.php` s cílem mimo webroot.
 

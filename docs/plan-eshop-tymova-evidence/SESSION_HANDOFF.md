@@ -7,9 +7,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `03774db`.
-- Implementace `03774db` i navazující dokumentační záznam jsou commitnuté; větev
-  `main`, upstream `origin/main`, lokálně `ahead 101 / behind 0` bez nového fetch
+- Poslední přijatý implementační HEAD: `6ae75c1`.
+- Implementace `6ae75c1` i navazující dokumentační záznam jsou commitnuté; větev
+  `main`, upstream `origin/main`, lokálně `ahead 103 / behind 0` bez nového fetch
   ověření a s čistým pracovním stromem.
 - Localhost DB je 39/39; produkce ani vzdálený repozitář se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -28,7 +28,16 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `03774db` uzavírá A07 – plánovaný trénink ze soupisek,
+- Poslední dokončená akce: `6ae75c1` uzavírá A08 – přihlášení oprávněného dítěte na
+  událost cílenou na dvě překrývající se soupisky. Rodičovské UI nabídlo dítě právě
+  jednou a browser vytvořil jedinou potvrzenou přihlášku. Databáze současně doložila,
+  že podmínku splnilo přes U15 i dráhovou soupisku. Seed nyní aktivní A08 přihlášku
+  demo rodiče nemaže, ale auditovaně stornuje, takže je další průchod čistý a historie
+  zůstává zachovaná. Plná sada je 355/3133, syntaxe 386 souborů, migrace 39/39 a
+  Composer audit 0. Produkce ani vzdálený Git se nezměnily. Další konkrétní akce je
+  A10 a potom závěrečná brána M2.6.
+
+  Předchozí dokončená akce: `03774db` uzavírá A07 – plánovaný trénink ze soupisek,
   skutečnou docházku a sportovní přehled. Běžný trenér může zaevidovat pouze vlastní
   plán, hlavní trenér libovolný dostupný plán a datum nelze proti plánu změnit.
   Historický snapshot cílových soupisek a očekávaných členů se atomicky kopíruje ke
@@ -262,7 +271,7 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   deterministický A05 náhled, A10 události i admin expirace; reálná localhost
   programová objednávka expirovala právě jednou. Katalog je lokálně 31/31.
   Produkční workflow, kód ani DB se nezměnily.
-- Další přesná akce: pokračovat v M2.6 scénářem A08, potom A10 a závěrečná brána.
+- Další přesná akce: pokračovat v M2.6 scénářem A10 a potom závěrečná brána.
   Paralelně lze po dodání anonymizovaného vzorku
   uzavřít external-ID a field kontrakt finálního KIS exportu pro M2.3b.
   Produkční
@@ -280,7 +289,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | K2 – účty, osoby a rodič–dítě | 92 % | self-service obnova sportovního hesla, stabilní KIS identifikátor a bezpečné párování finálního exportu |
 | K3 – akce a přihlášky | 92 % | produktová kontrola exportu, rozhodnutí o ručních změnách čekací listiny a produkční UX |
 | K4 – objednávky a platby | 97 % | úplný vlastnický průchod všech typů košíku včetně klubové ceny, ověřit Fio shadow návrhy a samostatně schválit automatické potvrzení/Stripe |
-| K5 – náhrada starého KIS | 96 % | A05–A07 technicky i browserem uzavřeny; zbývá A08/A10, finální jednorázový import a cutover |
+| K5 – náhrada starého KIS | 97 % | A05–A08 technicky i browserem uzavřeny; zbývá A10, finální jednorázový import a cutover |
 
 ## Rychlý aktuální stav pro další task
 
@@ -333,13 +342,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db` | 2026-08-04 | lokální Git bez nového fetch | ano |
+| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db`, A08 `6ae75c1` | 2026-08-04 | lokální Git bez nového fetch | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | legacy `2.20.2` + 37/37 číslovaných migrací; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | 354/3130; A07 plán 2 → trénink 528 prošel browserem 1/1/0/0 a sportovním přehledem; 384 first-party syntaxí, 39/39 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost HTTP + in-app browser | ano |
+| testy | 355/3133; A08 má browserem jednu přihlášku přes dvě vyhovující soupisky a auditovaný seed reset; 386 first-party syntaxí, 39/39 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost HTTP + in-app browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -469,6 +478,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 73 | M2.6/A06 `dde0f3e` | společný preview/fingerprint, 3 auditní běhy, 3 přesuny, 2 zachované výjimky, žádná duplicita a reset zpět před A06; 349/3081, 379 lintů, 38/38, audit 0 |
 | 74 | M2.4d klubové ceny `e67eed8` | veřejná cena a login výzva, ceny aktivních soupisek rodiny, kategorie/procento/pevná sleva, přesná cena produktu, audit a checkout snapshot; 353/3120, 383 parse, 39/39, audit 0 |
 | 75 | M2.6/A07 `03774db` | vlastnická/datová ochrana plánu, neměnná kopie očekávání ke skutečnému tréninku, localhost porovnání docházky a sportovní přehled; browser 1/1/0/0, 354/3130, 384 parse, 39/39, audit 0 |
+| 76 | M2.6/A08 `6ae75c1` | jedna přihláška oprávněného dítěte přes dvě cílové soupisky, UI bez duplicit a auditovaný opakovatelný seed reset; 355/3133, 386 parse, 39/39, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
