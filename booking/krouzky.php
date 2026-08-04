@@ -112,8 +112,7 @@ if(clubEventShopAvailable($pdo)){
     <div class="d-flex gap-2"><a href="eshop.php" class="btn btn-outline-success btn-sm">E-shop</a><a href="kalendar.php" class="btn btn-outline-primary btn-sm">Kalendář</a><?php if($isLoggedIn):?><a href="moje_objednavky.php" class="btn btn-outline-success btn-sm">Moje objednávky</a><a href="moje_osoby.php" class="btn btn-outline-secondary btn-sm">Moje osoby</a><a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a><?php else:?><a href="prihlaseni.php?redirect=krouzky.php" class="btn btn-primary btn-sm">Přihlásit se</a><?php endif;?></div>
 </div></nav>
 <main class="container py-4" style="max-width:1000px">
-    <h1 class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné kroužky</h1>
-    <p class="text-muted">Nabídku, termíny a volnou kapacitu vidíte bez registrace. Pro přihlášení účastníka budete potřebovat účet.</p>
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2"><div><h1 class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné kroužky</h1><p class="text-muted">Nabídku, termíny a volnou kapacitu vidíte bez registrace. Pro přihlášení účastníka budete potřebovat účet.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= clubRegistrationH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= clubRegistrationH($success) ?></div><?php endif; ?>
     <?php if ($isLoggedIn && $participants === []): ?><div class="alert alert-info">Nejprve si nechte schválit dítě v části <a href="moje_osoby.php">Moje osoby</a>.</div><?php endif; ?>
