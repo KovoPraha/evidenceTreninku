@@ -51,4 +51,13 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringNotContainsString("hash('sha256','localhost-demo:a05-hobby-to-race')", $seed);
         self::assertStringNotContainsString("accountPersonRoleApprove(\$pdo,\$accountId,\$a05PersonId", $seed);
     }
+
+    public function testSeedResetsOnlyDemoParentsActiveA08RegistrationsThroughAuditedCancellation(): void
+    {
+        $seed = (string)file_get_contents(dirname(__DIR__, 2) . '/bin/seed-local-demo.php');
+
+        self::assertStringContainsString("WHERE event_id=? AND account_id=? AND status IN ('confirmed','waitlisted')", $seed);
+        self::assertStringContainsString('clubEventAdminCancelRegistration($pdo,(int)$a08RegistrationId,$actorId', $seed);
+        self::assertStringNotContainsString('DELETE FROM club_event_registrations', $seed);
+    }
 }
