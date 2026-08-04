@@ -61,6 +61,9 @@ skenovat pro skutečnou platbu. Fio import zůstává vypnutý.
 13. U události `LOCALHOST – výjezd pro U15 a dráhu` ověřit, že se oprávněné dítě
     zobrazí jen jednou, i když je ve dvou cílových soupiskách, a odeslat přihlášku.
     Nový reset seedu ji auditovaně zruší a připraví scénář k dalšímu průchodu.
+14. V `person_audit_admin.php?sportovec_id=1` porovnat změny přístupu, objednávky,
+    soupisek a přihlášek. Opakovaný seed nesmí přidat nový `password_reset`, pokud
+    se demo heslo nezměnilo.
 
 Před větší změnou lokální DB používejte `bin/db-backup.php` s cílem mimo webroot.
 

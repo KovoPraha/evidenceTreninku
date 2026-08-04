@@ -29,9 +29,9 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 90 % | backup, shop lifecycle, A02, A05–A08 a jednotný master účet mají browser důkaz; zbývá A10 a závěrečná brána |
+| M2.6 integrovaná akceptace | probíhá | 96 % | backup, shop lifecycle, A02, A05–A08, A10 a jednotný master účet mají browser důkaz; zbývá závěrečná vlastníkova brána |
 
-Orientační stav celého M2: **63 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **65 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -307,6 +307,17 @@ Dokončený A08 řez (`6ae75c1`):
 - další spuštění localhost seedu přihlášku nemaže, ale auditovaně ji stornuje pouze
   v rámci syntetické události a demo rodiče, takže scénář lze bezpečně opakovat,
 - plná sada prošla 355 testy / 3133 assertions, syntaxe 386 first-party PHP souborů,
+  migrace 39/39 a Composer audit je bez nálezu.
+
+Dokončený A10 řez (`4ce0f17`):
+
+- browser u demo sportovce spojil auditované změny přístupu, objednávek, soupisek
+  a přihlášek na události a u každé zobrazil skutečně uloženého aktéra a důvod,
+- ověřená A08 registrace i následné auditované storno seedu jsou ve společné ose
+  právě jednou a odkazují na příslušnou správní oblast,
+- seed nyní ověří hash demo hesla a reset zapíše pouze při skutečné změně; dva
+  bezprostřední běhy ponechaly počet historických resetů beze změny 26 → 26,
+- plná sada prošla 355 testy / 3135 assertions, syntaxe 386 first-party PHP souborů,
   migrace 39/39 a Composer audit je bez nálezu.
 
 - deterministický seed lze bezpečně spustit opakovaně,

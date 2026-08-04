@@ -121,6 +121,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.4d klubové ceny podle soupisek | hotovo lokálně | `e67eed8`: veřejná cena + výzva k přihlášení, nejvýhodnější aktivní soupiska rodiny, sleva kategorie nebo přesná cena produktu, audit a checkout snapshot; 353/3120, 383 parse, 39/39, audit 0 |
 | M2.6/A07 plán → docházka → sportovec | hotovo lokálně | `03774db`: vlastnická a datová ochrana plánu, neměnná kopie snapshotu ke skutečnému tréninku, přehled očekávaní/skuteční/chybějící/neočekávaní; browser 1/1/0/0 a sportovní přehled, 354/3130, 384 parse, 39/39, audit 0 |
 | M2.6/A08 událost pro dvě soupisky | hotovo lokálně | `6ae75c1`: UI nabízí oprávněné dítě právě jednou, databáze potvrzuje jednu přihlášku a dvě vyhovující soupisky; opakovatelný seed používá auditované storno místo mazání, 355/3133, 386 parse, 39/39, audit 0 |
+| M2.6/A10 auditní osa osoby | hotovo lokálně | `4ce0f17`: browser spojil objednávku, soupisky, přihlášku a přístup s pravdivými aktéry/důvody; opakovaný seed už nevytváří falešné password-reset události, 355/3135, 386 parse, 39/39, audit 0 |
 
 ## Aktivní rozhodnutí
 
