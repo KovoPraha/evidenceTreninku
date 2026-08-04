@@ -15,7 +15,10 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `004e4a6` – soukromý rodinný
+- poslední implementace před tímto dokumentem: `29e3d5d` – dobrovolné e-mailové
+  připomínky blížící se splatnosti členského předpisu s idempotentní frontou,
+  auditem, opakovanými pokusy a omezením četnosti,
+- předchozí implementace: `004e4a6` – soukromý rodinný
   ICS kalendář tréninků, přihlášených akcí, rezervací a splatností pro
   všechny aktuálně schválené profily účtu,
 - předchozí funkční řez: `3aa39f8` – veřejný ICS kalendář zveřejněných
@@ -27,12 +30,12 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 - KIS funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 46/46,
-- automatické testy 410/3662,
-- first-party PHP syntaxe 423 souborů bez chyby,
+- migrace localhostu 47/47,
+- automatické testy 418/3728,
+- first-party PHP syntaxe 428 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
-- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 92 tabulek;
-  ownership kontrakt `2026-08-05.1` zahrnuje obě tabulky rodinného kalendáře,
+- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
+  ownership kontrakt `2026-08-05.2` zahrnuje kalendář i frontu připomínek,
 - produkce se při těchto změnách neměnila.
 
 Čísla jsou snapshot a nový agent je musí levně ověřit. Cowork bridge kopie může
@@ -53,6 +56,8 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
   `http://localhost/evidencePavel/booking/verejny_kalendar.php`.
 - nastavení soukromého rodinného kalendáře:
   `http://localhost/evidencePavel/booking/sportovni_prehled.php#rodinny-kalendar`.
+- dobrovolné připomínky splatnosti:
+  `http://localhost/evidencePavel/booking/sportovni_prehled.php#pripominky-plateb`.
 
 Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
 a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
@@ -66,7 +71,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 81 %,
+- celý M2: 82 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
   sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
   localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
@@ -74,9 +79,9 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
   bezpečně vrácen na 0/2 při zachování auditní historie,
 - M2.6 integrovaná akceptace: 98 %; technické scénáře jsou připravené, zbývá
   vlastníkův průchod a vypořádání připomínek,
-- M2.7 hodnota pro členy: 60 %; veřejný i soukromý rodinný ICS feed jsou
-  technicky hotové, zbývá ověřit odběr a aktualizace v reálném Google/Apple
-  kalendáři a rozhodnout o dalším řezu,
+- M2.7 hodnota pro členy: 75 %; veřejný i soukromý rodinný ICS feed a opt-in
+  fronta připomínek splatnosti jsou technicky hotové; zbývá ověřit kalendář
+  v reálné aplikaci a před produkcí potvrdit e-mailový transport, CRON a text,
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.
@@ -98,7 +103,8 @@ nenahrazuje schválený plán. Jednotlivé nápady se do roadmapy přesunou tepr
 potvrzení priority, právních a účetních dopadů a očekávaného rozsahu.
 Vytříděné návrhy a jejich brány jsou v
 `docs/plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md`. Do M2.7 byl
-přijat veřejný i revokovatelný rodinný ICS kalendář; wallet, zdravotní predikce,
+přijat veřejný i revokovatelný rodinný ICS kalendář a opt-in připomínky
+splatnosti; wallet, zdravotní predikce,
 externí integrace a další personalizované feedy zůstávají za samostatnými
 rozhodnutími.
 
@@ -110,7 +116,9 @@ rozhodnutími.
 4. Na telefonu nebo počítači přidat veřejný i rodinný odebíraný kalendář a
    potvrdit české názvy, časy, místa, aktualizace položek a zneplatnění
    rodinného odkazu po jeho zrušení.
-5. Potom dokončit M2.3: získat reprezentativní anonymizovaný KIS export, potvrdit
+5. Na testovací e-mailové adrese ověřit text a doručení jedné připomínky;
+   produkční CRON ani `--send` zatím nezapínat.
+6. Potom dokončit M2.3: získat reprezentativní anonymizovaný KIS export, potvrdit
    aliasy ID osoby, ID předpisu, částky a data úhrady a zopakovat celý cutover i
    rollback nad testovací kopií. Ostrý import zůstává samostatně blokovaný.
-6. Produkční deploy připravit až po samostatném výslovném souhlasu vlastníka.
+7. Produkční deploy připravit až po samostatném výslovném souhlasu vlastníka.

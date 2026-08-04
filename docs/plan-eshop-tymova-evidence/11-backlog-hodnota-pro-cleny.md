@@ -2,7 +2,7 @@
 
 Stav: vytříděný produktový backlog navazující na M2
 
-Aktualizováno: 4. 8. 2026
+Aktualizováno: 5. 8. 2026
 
 Zdrojové podklady: `docs/AUDIT-PRILEZITOSTI-A-NAPADY.md` a
 `docs/AUDIT-PRILEZITOSTI-HLOUBKOVE.md`. Auditní odhady nejsou automaticky
@@ -25,7 +25,7 @@ architekturu, v jakém pořadí a s jakou bránou.
 |---|---|---|---|
 | V1 | veřejný ICS kalendář | M2.7, první řez implementován | pouze zveřejněné plánované tréninky, otevřené klubové akce a aktivní veřejné hodiny velodromu; bez osob, docházky, rezervací a interních popisů |
 | V2 | osobní rodinný ICS kalendář | M2.7, technicky implementován | revokovatelný 256bitový náhodný token uložený jen jako hash, oddělený kalendář pro každý účet, rotace, audit, `no-store` a zákaz indexace |
-| V3 | připomínky splatných předpisů | po ověření členských předpisů v M2 | opt-in, idempotentní fronta, omezení četnosti a bezpečný odkaz bez údajů v URL |
+| V3 | připomínky splatných předpisů | M2.7, technicky implementováno | opt-in 3/7/14 dní, idempotentní auditovaná fronta, nejvýše jedna zpráva za 20 hodin na účet, bezpečný odkaz bez údajů v URL; produkční transport a CRON čekají na akceptaci |
 | V4 | roční přehled zaplacených klubových služeb | po finanční akceptaci | nejdřív přesný read-only přehled; označení „daňové potvrzení“ až po právním a účetním ověření textu a náležitostí |
 | V5 | osobní progres a osobní rekordy | budoucí datový milník | nejprve normalizovat volný čas měření do číselné hodnoty, opravit kvalitu dat a definovat soukromí nezletilých |
 | V6 | rodičovský týdenní souhrn | po V3 | opt-in, pouze fakta, která rodič už smí číst; možnost okamžitého odhlášení |
@@ -70,3 +70,14 @@ tréninky aktivních soupisek, přihlášené termíny akcí, rezervace a splatn
 členských předpisů všech aktuálně oprávněných profilů. Automatický test
 potvrzuje izolaci dvou rodin; otevřená je už jen zkouška odběru a aktualizace v
 reálné kalendářové aplikaci.
+
+V3 je implementováno v `29e3d5d`. Nastavení je v rodinném sportovním přehledu
+a bez výslovného opt-in nevznikne žádná zpráva. Generátor používá pouze
+aktuální schválené vazby účtu na osobu, aktivní ověřený e-mail a čekající
+předpis ve zvoleném okně. Unikátní klíč brání duplicitě; vypnutí zruší
+neodeslané zprávy. Worker má atomické převzetí, ochranu proti souběhu,
+dvacetihodinový limit, pět pokusů a audit stavu. Text obsahuje jméno, částku a
+splatnost pouze v těle e-mailu; URL vede na přihlášený přehled bez tokenu, ID osoby
+nebo ID předpisu. Automatické testy používají falešný transport. Před produkcí
+zbývá schválit text, otestovat doručení na testovací adresu a teprve potom
+nastavit CRON s explicitním `--send`.

@@ -30,9 +30,9 @@ kódu.
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
-| M2.7 hodnota pro členy | probíhá | 60 % | veřejný ICS feed slučuje zveřejněný program; soukromý rodinný feed přidává tréninky, přihlášené akce, rezervace a splatnosti oprávněných profilů s revokací odkazu; zbývá zkouška v reálné kalendářové aplikaci a další návrhy z dokumentu 11 |
+| M2.7 hodnota pro členy | probíhá | 75 % | veřejný a rodinný ICS feed jsou hotové; opt-in připomínky splatnosti mají idempotentní auditovanou frontu, opakované pokusy a omezení četnosti; zbývá akceptace v reálném kalendáři a potvrzení produkčního e-mailového transportu/CRONu |
 
-Orientační stav celého M2: **81 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **82 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -487,6 +487,16 @@ rezervace a splatnosti členských předpisů. HTTP smoke ověřil platné ICS s
 200 a stejný odkaz po revokaci s 404; testy ověřují i izolaci rodin. Zbývá
 produktová zkouška odběru a aktualizace v reálném Google/Apple kalendáři.
 Další nápady, jejich pořadí a blokátory jsou v `11-backlog-hodnota-pro-cleny.md`.
+
+Třetí řez `29e3d5d` přidává dobrovolné připomínky splatnosti. Uživatel je
+zapíná s předstihem 3, 7 nebo 14 dní. Jedna kombinace účet–předpis se zařadí
+právě jednou, stav předpisu i opt-in se kontrolují před převzetím zprávy a
+stejnému účtu nelze odeslat více než jednu zprávu za 20 hodin. Selhání se
+opakuje nejvýše pětkrát a každá změna je auditovaná. Odkaz v e-mailu vede na
+přihlášený rodinný přehled bez ID osoby nebo platby v URL. CLI umí oddělené
+`--generate` a `--send`; produkční CRON ani skutečné odesílání zatím nejsou
+schválené. Localhost browser ověřil zapnutí a vypnutí a skončil s vypnutým
+opt-in; nebyl odeslán žádný skutečný e-mail.
 
 ## Výslovně blokované oblasti
 
