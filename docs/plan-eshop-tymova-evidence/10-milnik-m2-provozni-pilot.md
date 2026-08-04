@@ -30,8 +30,9 @@ kódu.
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
+| M2.7 hodnota pro členy | probíhá | 35 % | veřejný ICS feed slučuje zveřejněné tréninky, otevřené klubové akce a veřejné hodiny velodromu; personalizovaný rodinný feed a další návrhy mají samostatné brány v dokumentu 11 |
 
-Orientační stav celého M2: **77 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **79 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -470,6 +471,17 @@ Dokončený nástroj vlastníkovy brány (`875c9e3`):
 - implementace M2.3, M2.4 a M2.5 se může dělit pouze při jasném vlastnictví
   souborů a migrací; sdílený `includes/shop_checkout.php`, auth bootstrap,
   migrační katalog a plánové dokumenty mají vždy jednoho editora.
+
+### M2.7 – veřejný a osobní kalendář
+
+Přijatý první řez z funkčního auditu je veřejný ICS kalendář. Je anonymní a
+obsahuje jen údaje, které už aplikace zveřejňuje na veřejných stránkách. Nemění
+databázi a nevytváří novou autorizační hranici.
+
+Navazující osobní rodinný kalendář je samostatný řez: musí používat náhodný
+revokovatelný token, nesmí přijímat ID osoby jako oprávnění a musí projít testem
+izolace rodin. Další nápady, jejich pořadí a blokátory jsou v
+`11-backlog-hodnota-pro-cleny.md`.
 
 ## Výslovně blokované oblasti
 

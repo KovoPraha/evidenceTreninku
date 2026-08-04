@@ -15,16 +15,18 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `5829171` – read-only přehled
-  členských předpisů pro rodiče, sportovce a administrátora s izolačními testy,
+- poslední implementace před tímto dokumentem: `3aa39f8` – veřejný ICS kalendář
+  zveřejněných tréninků, otevřených klubových akcí a veřejných hodin velodromu,
+- předchozí funkční řez: `5829171` – read-only přehled členských předpisů pro
+  rodiče, sportovce a administrátora s izolačními testy,
 - předchozí infrastruktura: `281fcd0` – oprava zálohovacího ownership kontraktu
   `.9`, úplnost všech migračních tabulek a skutečný MariaDB backup smoke,
-- předchozí funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
+- KIS funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 45/45,
-- automatické testy 398/3510,
-- first-party PHP syntaxe 412 souborů bez chyby,
+- automatické testy 403/3617,
+- first-party PHP syntaxe 416 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 90 tabulek a potvrdil
   všech 12 tabulek doplněných po kontrolním auditu,
@@ -43,7 +45,9 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
 - e-shop: `http://localhost/evidencePavel/booking/eshop.php`,
 - detail demo produktu: `http://localhost/evidencePavel/booking/produkt.php?id=1`,
 - administrativní přehled členských předpisů:
-  `http://localhost/evidencePavel/member_charges_admin.php`.
+  `http://localhost/evidencePavel/member_charges_admin.php`,
+- veřejný ICS kalendář:
+  `http://localhost/evidencePavel/booking/verejny_kalendar.php`.
 
 Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
 a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
@@ -57,7 +61,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 78 %,
+- celý M2: 79 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
   sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
   localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
@@ -84,13 +88,19 @@ penetračního testu.
 Produktový `AUDIT-PRILEZITOSTI-A-NAPADY.md` je uložen jako zdroj návrhů, ale
 nenahrazuje schválený plán. Jednotlivé nápady se do roadmapy přesunou teprve po
 potvrzení priority, právních a účetních dopadů a očekávaného rozsahu.
+Vytříděné návrhy a jejich brány jsou v
+`docs/plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md`. Do M2.7 byl
+přijat veřejný ICS kalendář; wallet, zdravotní predikce, externí integrace a
+personalizované feedy zůstávají za samostatnými rozhodnutími.
 
 ## Doporučené pořadí další práce
 
 1. Vlastník nebo Cowork projde A01–A10 v prohlížeči a uloží výsledky do rozcestníku.
 2. Export výsledků se zkontroluje a případně přidá do Gitu jako auditní artefakt.
 3. Blokující chyby a důležité UX připomínky se opraví před novými funkcemi.
-4. Potom dokončit M2.3: získat reprezentativní anonymizovaný KIS export, potvrdit
+4. Na telefonu nebo počítači stáhnout veřejný `.ics` z rozvrhu tréninků a
+   potvrdit, že se správně zobrazí české názvy, časy, místa a aktualizace položek.
+5. Potom dokončit M2.3: získat reprezentativní anonymizovaný KIS export, potvrdit
    aliasy ID osoby, ID předpisu, částky a data úhrady a zopakovat celý cutover i
    rollback nad testovací kopií. Ostrý import zůstává samostatně blokovaný.
-5. Produkční deploy připravit až po samostatném výslovném souhlasu vlastníka.
+6. Produkční deploy připravit až po samostatném výslovném souhlasu vlastníka.

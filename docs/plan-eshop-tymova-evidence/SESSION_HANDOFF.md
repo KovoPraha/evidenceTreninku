@@ -7,8 +7,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `5829171`.
-- Implementace `5829171` je commitnutá; větev `main`, upstream `origin/main`.
+- Poslední přijatý implementační HEAD: `3aa39f8`.
+- Implementace `3aa39f8` je commitnutá; větev `main`, upstream `origin/main`.
 - Localhost DB je 45/45. Vzdálený repozitář se v této M2.3g session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -27,7 +27,18 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená funkční akce: `5829171` zpřístupňuje členské předpisy v
+- Poslední dokončená funkční akce: `3aa39f8` přidává anonymní veřejný ICS feed
+  nad zveřejněnými plánovanými tréninky, otevřenými termíny klubových akcí a
+  aktivními veřejnými hodinami velodromu. Feed používá stabilní UID, UTC převod
+  z Europe/Prague, CRLF, escapování a skládání řádků; nečte osoby, docházku,
+  rezervace ani interní popisy. Odkaz je veřejně dostupný ze tří souvisejících
+  stránek. HTTP ověřil 200 + `text/calendar` + `.ics` attachment a 400 pro
+  neplatný rozsah; browser ověřil všechny tři odkazy. Plná sada je 403/3617,
+  syntaxe 416 souborů, migrace 45/45 a Composer audit 0. Funkční audit je
+  vytříděný v dokumentu 11; personalizovaný kalendář, wallet, externí integrace
+  a prediktivní funkce zůstávají za samostatnými branami. Produkce se nezměnila.
+
+  Předchozí dokončená funkční akce: `5829171` zpřístupňuje členské předpisy v
   read-only pohledu rodiče, omezeného sportovního účtu a administrátora.
   Rodičovský pohled je omezen aktivní schválenou vazbou, sportovní pohled
   odvozuje osobu pouze z revokovatelného přístupového účtu a administrace nemá

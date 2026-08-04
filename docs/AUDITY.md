@@ -14,6 +14,11 @@ Aktuální provozní stav vždy určuje `CURRENT_STATE.md`.
 | [Audit příležitostí a nápadů](AUDIT-PRILEZITOSTI-A-NAPADY.md) | stav 4. 8. 2026 | produktové náměty nad existujícími daty | inspirativní backlog, nikoli schválená roadmapa; právní, účetní a kapacitní předpoklady je nutné potvrdit před implementací |
 | [Hloubkový audit příležitostí](AUDIT-PRILEZITOSTI-HLOUBKOVE.md) | stav 4. 8. 2026 | datová připravenost a tři podrobnější produktové směry | návrhový podklad; fakta a odhady je nutné znovu ověřit proti aktuálnímu schématu a prioritám |
 
+Produktové návrhy z posledních dvou řádků jsou vytříděné do kanonického backlogu
+`plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md`. První přijatý řez
+je veřejný ICS kalendář M2.7; přijetí jednoho řezu neznamená automatické schválení
+ostatních auditních návrhů.
+
 ## Jak audity používat
 
 - Zjištění vždy vztahovat ke snapshot commitu, ne automaticky k dnešnímu HEAD.
