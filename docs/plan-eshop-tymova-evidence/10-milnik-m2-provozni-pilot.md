@@ -27,11 +27,11 @@ kódu.
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
-| M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
+| M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 78 % | backup, shop lifecycle, A02, A05, A06 a jednotný master účet mají browser důkaz; zbývají A07–A08/A10 a závěrečná brána |
 
-Orientační stav celého M2: **58 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **59 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -189,6 +189,23 @@ Dokončený hardening řez M2.4c (`b5f3f3f`):
   takže nemůže jednou transakcí obsadit více míst, než zbývá,
 - reálná localhost MariaDB ověřila migraci i podpůrné/unikátní indexy; SQLite
   integrační sada kryje všechny tři regresní scénáře.
+
+Dokončený řez klubových cen M2.4d (`e67eed8`):
+
+- veřejný návštěvník vždy vidí původní cenu a na detailu výzvu „Přihlásit pro
+  zobrazení klubové ceny“,
+- účet rodiče nebo sportovce získá oprávnění z aktuálních schválených vazeb a
+  aktivních soupisek; při více soupiskách se použije nejnižší výsledná cena,
+- soupiska může mít procentní nebo pevnou slevu pro celou kategorii a přesnou
+  cenu konkrétního produktu; přesná cena má uvnitř stejné soupisky přednost,
+- klubová cena nikdy nezvýší veřejnou cenu a všechny změny pravidel jsou
+  auditované včetně důvodu a správce,
+- košík, kupón i checkout počítají stejnou serverovou cenu; změna pravidla po
+  zobrazení košíku změní fingerprint a vyžádá nové potvrzení,
+- objednávka ukládá použitou jednotkovou cenu jako neměnný snapshot,
+- localhost seed připraví pro první publikovaný produkt desetiprocentní cenu
+  soupisky `LOCALHOST U15 2026`; veřejný, rodičovský i administrační HTTP průchod
+  byl ověřen.
 
 Zbývá:
 

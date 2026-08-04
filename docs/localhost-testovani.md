@@ -18,6 +18,8 @@ Seed je idempotentní a mimo localhost skončí chybou. Připraví:
 - ověřený účet rodiče se dvěma schválenými osobami,
 - localhost administrátora,
 - reálný Shoptet katalog v pracovním stavu a jeden publikovaný skladový produkt,
+- desetiprocentní klubovou cenu prvního publikovaného produktu pro soupisku
+  `LOCALHOST U15 2026`,
 - kupón `LOCAL10`,
 - bezplatnou i placenou událost cílenou na více soupisek,
 - věkovou řadu U13 → U15 → U17, dráhovou i silniční soupisku a rollover výjimku,
@@ -45,8 +47,12 @@ skenovat pro skutečnou platbu. Fio import zůstává vypnutý.
 6. Vytvořit objednávku a zkontrolovat testovací QR označené `NEPLATIT`.
 7. V administraci objednávek ručně potvrdit syntetickou úhradu a ověřit aktivní přihlášku.
 8. Samostatně lze vložit skladovou variantu, použít `LOCAL10` a projít skladový tok.
-9. Přihlásit localhost administrátora na `login.php`.
-10. Projít objednávky, audit osoby a `kis_rosters_admin.php`.
+9. Produkt otevřít nejprve odhlášený a ověřit veřejnou cenu i výzvu „Přihlásit pro
+   zobrazení klubové ceny“; po přihlášení rodiče se zobrazí nižší cena a soupiska
+   `LOCALHOST U15 2026`.
+10. Přihlásit localhost administrátora na `login.php` a otevřít
+    `eshop_member_prices_admin.php`.
+11. Projít objednávky, klubové ceny, audit osoby a `kis_rosters_admin.php`.
 
 Před větší změnou lokální DB používejte `bin/db-backup.php` s cílem mimo webroot.
 

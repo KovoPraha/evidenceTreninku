@@ -30,7 +30,7 @@ ručně odpovědnou osobou.
 Řídicí task udržuje v této složce:
 
 - roadmapu a stav bran,
-- rozhodovací log D-001 až D-015,
+- rozhodovací log D-001 až D-020,
 - tabulku aktivních úkolů: vlastník, branch, soubory/tabulky, závislost, stav,
 - migrační pořadí,
 - integrační a release report.

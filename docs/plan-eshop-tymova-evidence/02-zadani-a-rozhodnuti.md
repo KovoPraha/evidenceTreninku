@@ -85,6 +85,7 @@ kterém lze vysvětlit každou změnu člena, objednávky, platby i kreditu.
 | D-017 | Sezóny soupisek | kroužkové soupisky používají školní rok, závodní soupisky kalendářní rok; délka služby je nezávislá | potvrzeno 3. 8. 2026 |
 | D-018 | Rollover soupisek | věkové řady postupují 1. ledna, disciplínové soupisky se přenášejí a kroužkové vyžadují účast/prodloužení | potvrzeno 3. 8. 2026 |
 | D-019 | Veřejné služby | registrace veřejnosti a rezervace velodromu probíhají přes e-shop a vytvářejí/propojují účastnický profil | potvrzeno 3. 8. 2026 |
+| D-020 | Klubové ceny | veřejná cena produktu je vždy viditelná; přihlášený účet čerpá nejvýhodnější cenu z aktivních soupisek svých schválených osob; přesná cena produktu má v jedné soupisce přednost před procentní či pevnou slevou kategorie | potvrzeno 4. 8. 2026 |
 
 ## Otevřené otázky pro vlastníka produktu
 

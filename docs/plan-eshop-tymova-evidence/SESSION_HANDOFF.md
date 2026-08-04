@@ -7,11 +7,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `dde0f3e`.
-- Po implementačním commitu `dde0f3e` zůstává rozpracovaná pouze tato dokumentace;
-  větev `main`, upstream `origin/main`, lokálně `ahead 97 / behind 0` bez nového
-  fetch ověření.
-- Localhost DB je 38/38; produkce ani vzdálený repozitář se nemění.
+- Poslední přijatý implementační HEAD: `e67eed8`.
+- Implementace `e67eed8` i navazující dokumentační záznam jsou commitnuté; větev
+  `main`, upstream `origin/main`, lokálně `ahead 99 / behind 0` bez nového fetch
+  ověření a s čistým pracovním stromem.
+- Localhost DB je 39/39; produkce ani vzdálený repozitář se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -28,7 +28,19 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `dde0f3e` uzavírá provozní průchod A06. Nový
+- Poslední dokončená akce: `e67eed8` přidává klubové ceny e-shopu podle soupisek.
+  Veřejnost vždy vidí veřejnou cenu a výzvu k přihlášení. Přihlášený účet získá
+  nejvýhodnější cenu z aktuálních soupisek svých schválených osob; konkrétní cena
+  produktu má uvnitř jedné soupisky přednost před procentní nebo pevnou slevou
+  kategorie. Administrace je auditovaná, košík i kupón používají stejnou serverovou
+  cenu a checkout ukládá neměnný snapshot. Změna pravidla zneplatní starý fingerprint.
+  Localhost seed připravil desetiprocentní demo cenu produktu 1 pro `LOCALHOST U15
+  2026`. HTTP průchod potvrdil veřejnou výzvu, rodičovskou klubovou cenu i admin
+  přehled. Plná sada je 353/3120, syntaxe 383 souborů, migrace 39/39 a Composer audit
+  0. Produkce ani vzdálený Git se nezměnily. Další konkrétní akce zůstává A07 –
+  propojení plánované soupisky se skutečnou docházkou a sportovním přehledem.
+
+  Předchozí dokončená akce: `dde0f3e` uzavírá provozní průchod A06. Nový
   localhost-only admin průvodce ukáže v jednom náhledu věkový postup U15→U17,
   přenos dráhové disciplíny a U13→U15 se zachovanou individuální výjimkou.
   Souhrnný i dílčí fingerprint se před zápisem znovu ověřují. Browser provedl
@@ -254,10 +266,10 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 
 | Etapa | Hotovo | Zbývá zejména |
 |---|---:|---|
-| K1 – katalog a publikace | 96 % | finální produktová pravidla a případný anonymní storefront |
+| K1 – katalog a publikace | 98 % | vlastníkova kontrola pravidel cen a finální publikace ostrého katalogu |
 | K2 – účty, osoby a rodič–dítě | 92 % | self-service obnova sportovního hesla, stabilní KIS identifikátor a bezpečné párování finálního exportu |
 | K3 – akce a přihlášky | 92 % | produktová kontrola exportu, rozhodnutí o ručních změnách čekací listiny a produkční UX |
-| K4 – objednávky a platby | 96 % | úplný vlastnický průchod všech typů košíku, ověřit Fio shadow návrhy a samostatně schválit automatické potvrzení/Stripe |
+| K4 – objednávky a platby | 97 % | úplný vlastnický průchod všech typů košíku včetně klubové ceny, ověřit Fio shadow návrhy a samostatně schválit automatické potvrzení/Stripe |
 | K5 – náhrada starého KIS | 94 % | A05 a A06 technicky i browserem uzavřeny; zbývá A07–A08/A10, finální jednorázový import a cutover |
 
 ## Rychlý aktuální stav pro další task
@@ -445,6 +457,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 71 | M2.6/A05 `8647bce` | kanonický demo sportovec, auditovaný přechod a pravdivý no-op nového náhledu; reset zpět před přechod; 338/3025, 367 lintů, 37/37, audit 0 |
 | 72 | M2.2/M2.5 veřejnost + jednotný účet `efa1ca8` | veřejný read-only katalog a rozvrhy, akce po loginu, jedna trenérská/zákaznická identita a společný reset; 346/3063, 375 lintů, 38/38, audit 0 |
 | 73 | M2.6/A06 `dde0f3e` | společný preview/fingerprint, 3 auditní běhy, 3 přesuny, 2 zachované výjimky, žádná duplicita a reset zpět před A06; 349/3081, 379 lintů, 38/38, audit 0 |
+| 74 | M2.4d klubové ceny `e67eed8` | veřejná cena a login výzva, ceny aktivních soupisek rodiny, kategorie/procento/pevná sleva, přesná cena produktu, audit a checkout snapshot; 353/3120, 383 parse, 39/39, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
