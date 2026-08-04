@@ -49,6 +49,7 @@ $def = [
     'cas_do'        => $existujici['cas_do']        ?? '',
     'sportoviste_id'=> $existujici['sportoviste_id']?? '',
     'popis'         => $existujici['popis']         ?? '',
+    'je_verejny'    => (int)($existujici['je_verejny'] ?? 0),
 ];
 
 // ── POST ─────────────────────────────────────────────────────────────────────
@@ -69,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $casDo         = $casDo ? substr($casDo, 0, 5) : null;
         $sportId       = (int)($_POST['sportoviste_id'] ?? 0) ?: null;
         $popis         = trim($_POST['popis'] ?? '') ?: null;
+        $jeVerejny     = isset($_POST['je_verejny']) ? 1 : 0;
         $opTyp         = $_POST['opakovani_typ'] ?? 'none'; // none | pocet | datum
 
         $kategorieEnum = ['silnice','mtb','draha','cyklokros','posilovna','atletika','cviceni','plavani'];
@@ -87,10 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->prepare("
                         UPDATE planovane_treninky SET
                             nazev=?, kategorie=?, skupina_id=?, podskupina_id=?,
-                            datum=?, cas_od=?, cas_do=?, sportoviste_id=?, popis=?
+                            datum=?, cas_od=?, cas_do=?, sportoviste_id=?, popis=?, je_verejny=?
                         WHERE id=?
                     ")->execute([$nazev, $kategorie, $skupinaId, $podskupinaId,
-                                 $datum, $casOd, $casDo, $sportId, $popis, $editId]);
+                                 $datum, $casOd, $casDo, $sportId, $popis, $jeVerejny, $editId]);
                     // Aktualizace podskupin v junction tabulce
                     $pdo->prepare("DELETE FROM planovane_treninky_podskupiny WHERE plan_id=?")->execute([$editId]);
                     if (!empty($podskupinyIds)) {
@@ -111,8 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt   = $pdo->prepare("
                         INSERT INTO planovane_treninky
                             (trener_id, nazev, kategorie, skupina_id, podskupina_id,
-                             datum, cas_od, cas_do, sportoviste_id, popis, serie_id)
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                             datum, cas_od, cas_do, sportoviste_id, popis, serie_id, je_verejny)
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
                     ");
                     $stmtSerie = $pdo->prepare("UPDATE planovane_treninky SET serie_id=? WHERE id=?");
                     $stmtPs = !empty($podskupinyIds)
@@ -148,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $prveId    = null;
                     foreach ($datumy as $d) {
                         $stmt->execute([$trenerId, $nazev, $kategorie, $skupinaId, $podskupinaId,
-                                        $d, $casOd, $casDo, $sportId, $popis, null]);
+                                        $d, $casOd, $casDo, $sportId, $popis, null, $jeVerejny]);
                         $planId = (int)$pdo->lastInsertId();
                         if ($prveId === null) $prveId = $planId;
                         if ($stmtPs) {
@@ -186,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $def['sportoviste_id'] = $sportId;
         $def['cas_od']         = $casOd ?? '';
         $def['cas_do']         = $casDo ?? '';
+        $def['je_verejny']     = $jeVerejny ?? 0;
     }
 }
 
@@ -364,6 +367,13 @@ $kategorieMeta = [
                     <label class="form-label">Popis / Pokyny pro sportovce</label>
                     <textarea name="popis" class="form-control" rows="3"
                               placeholder="Struktura tréninku, co přinést, poznámky…"><?= h($def['popis']) ?></textarea>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" role="switch" name="je_verejny" id="jeVerejny" value="1"
+                           <?= !empty($def['je_verejny']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="jeVerejny">Zobrazit termín ve veřejném rozvrhu</label>
+                    <div class="form-text">Veřejnost uvidí jen datum, čas, název, skupinu, kategorii a sportoviště. Neuvidí účastníky, docházku ani interní poznámky.</div>
                 </div>
 
                 <?php if (!$editId): ?>

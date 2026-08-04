@@ -134,11 +134,27 @@ function passwordResetConsume(PDO $pdo, string $token, string $newPassword, ?int
         }
 
         if ((string)$reset['target_type'] === 'public') {
+            $account = $pdo->prepare(
+                'SELECT trener_id FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1'
+            );
+            $account->execute([(int)$reset['target_id']]);
+            $trainerId = $account->fetchColumn();
+            $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
             $update = $pdo->prepare(
                 'UPDATE verejni_uzivatele SET heslo_hash=?,session_version=session_version+1 '
                 . 'WHERE id=? AND aktivni=1 AND email_overeno=1'
             );
-            $update->execute([password_hash($newPassword, PASSWORD_DEFAULT), (int)$reset['target_id']]);
+            $update->execute([$newHash, (int)$reset['target_id']]);
+            if ($trainerId !== false && $trainerId !== null) {
+                $trainerUpdate = $pdo->prepare(
+                    'UPDATE treneri SET heslo=?,session_version=session_version+1 WHERE id=? AND aktivni=1'
+                );
+                $trainerUpdate->execute([$newHash, (int)$trainerId]);
+                if ($trainerUpdate->rowCount() !== 1) {
+                    $pdo->rollBack();
+                    return null;
+                }
+            }
         } else {
             $update = $pdo->prepare(
                 'UPDATE child_access_accounts SET password_hash=?,password_changed_at=CURRENT_TIMESTAMP,'

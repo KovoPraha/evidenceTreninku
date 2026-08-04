@@ -7,7 +7,7 @@ $is_customer  = isset($_SESSION['verejny_uzivatel_id']);
 $is_athlete   = isset($_SESSION['sportovec_pristup_id']);
 $customerName = trim((string)($_SESSION['verejny_uzivatel_jmeno'] ?? ''));
 $athleteName  = trim((string)($_SESSION['sportovec_pristup_jmeno'] ?? ''));
-$shopUrl      = $is_customer ? 'booking/eshop.php' : 'booking/prihlaseni.php?redirect=eshop.php';
+$shopUrl      = 'booking/eshop.php';
 $familyUrl    = $is_customer ? 'booking/moje_osoby.php' : 'booking/prihlaseni.php?redirect=moje_osoby.php';
 $athleteUrl   = $is_athlete ? 'booking/muj_sport.php' : 'booking/sportovec_prihlaseni.php';
 if ($is_logged_in && file_exists(__DIR__ . '/includes/funkce.php')) {
@@ -118,6 +118,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a class="portal-link" href="<?= htmlspecialchars($shopUrl, ENT_QUOTES, 'UTF-8') ?>"><span>E-shop</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/krouzky.php"><span>Kroužky a události</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/velodrom.php"><span>Hodiny velodromu</span><i class="bi bi-arrow-right"></i></a>
+              <a class="portal-link" href="booking/treninky.php"><span>Rozvrh tréninků</span><i class="bi bi-arrow-right"></i></a>
             </div></article>
           </div>
           <div class="col-lg-4">
@@ -136,7 +137,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <h3 class="h5">Trenéři a vedení klubu</h3>
               <p class="text-muted">Evidence tréninků, plánovač, KIS soupisky, závody, události a správa objednávek.</p>
               <a class="portal-link" href="login.php"><span>Vstup pro trenéry</span><i class="bi bi-arrow-right"></i></a>
-              <div class="small text-muted mt-3"><i class="bi bi-shield-check me-1"></i>Administrace je oddělená od zákaznického účtu.</div>
+              <div class="small text-muted mt-3"><i class="bi bi-shield-check me-1"></i>Jeden účet používá podle oprávnění e-shop i trenérskou Evidenci.</div>
             </div></article>
           </div>
         </div>

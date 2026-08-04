@@ -4,6 +4,7 @@ app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/auth_rate_limit.php';
+require_once __DIR__ . '/../includes/unified_account.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -24,27 +25,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $rateScope = 'public_login';
             $clientIp = auth_rate_limit_request_ip();
             $rateAllowed = auth_rate_limit_reserve_attempt($pdo, $rateScope, $email, $clientIp);
-            $uzivatel = false;
+            $identity = null;
 
             if ($rateAllowed) {
-                $st = $pdo->prepare("SELECT * FROM verejni_uzivatele WHERE email=? AND aktivni=1");
-                $st->execute([$email]);
-                $uzivatel = $st->fetch(PDO::FETCH_ASSOC);
+                $identity = unifiedAccountAuthenticate($pdo, $email, $heslo);
             }
 
-            if (!$rateAllowed || !$uzivatel || !password_verify($heslo, $uzivatel['heslo_hash'])) {
+            if (!$rateAllowed || $identity === null) {
                 $errors[] = 'Nesprávný email nebo heslo.';
-            } elseif (!$uzivatel['email_overeno']) {
+            } elseif (!$identity['public']['email_overeno']) {
                 auth_rate_limit_record_success($pdo, $rateScope, $email, $clientIp);
                 $errors[] = 'Email není ověřen. Zkontrolujte svou schránku.';
             } else {
                 auth_rate_limit_record_success($pdo, $rateScope, $email, $clientIp);
                 app_session_mark_authenticated();
                 auth_session_bind_public_user(
-                    (int)$uzivatel['id'],
-                    (int)$uzivatel['session_version']
+                    (int)$identity['public']['id'],
+                    (int)$identity['public']['session_version']
                 );
-                $_SESSION['verejny_uzivatel_jmeno'] = $uzivatel['jmeno'] . ' ' . $uzivatel['prijmeni'];
+                $_SESSION['verejny_uzivatel_jmeno'] = trim(
+                    (string)$identity['public']['jmeno'] . ' ' . (string)$identity['public']['prijmeni']
+                );
+                if ($identity['trainer'] !== null) {
+                    auth_session_bind_trainer(
+                        (int)$identity['trainer']['id'],
+                        (int)$identity['trainer']['session_version']
+                    );
+                    $_SESSION['trener_jmeno'] = (string)$identity['trainer']['jmeno'];
+                    $_SESSION['login_time'] = time();
+                    auth_session_refresh_trainer_authorization($pdo, (int)$identity['trainer']['id']);
+                }
                 // Jen interní relativní cíl (žádné //host, http://, zpětná lomítka) — prevence open redirect
                 $redirect = $_GET['redirect'] ?? 'kalendar.php';
                 if (!preg_match('~^[a-z0-9_]+\.php(\?[^\r\n]*)?$~i', $redirect)) {
@@ -82,7 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container mt-5" style="max-width:420px">
     <div class="card shadow">
         <div class="card-body p-4">
-            <h4 class="mb-4 text-center"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení</h4>
+            <h4 class="mb-2 text-center"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení</h4>
+            <p class="text-center text-muted small mb-4">Jeden účet platí pro e-shop, rezervace i trenérskou Evidenci.</p>
 
             <?php foreach ($errors as $e): ?>
                 <div class="alert alert-danger"><?= $e ?></div>

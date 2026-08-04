@@ -393,6 +393,7 @@ if ($is_logged_in) {
                     <li class="nav-item"><a class="nav-link" href="booking/eshop.php"><i class="bi bi-bag me-1"></i>E-shop</a></li>
                     <li class="nav-item"><a class="nav-link" href="booking/krouzky.php"><i class="bi bi-calendar-event me-1"></i>Kroužky a události</a></li>
                     <li class="nav-item"><a class="nav-link" href="booking/velodrom.php"><i class="bi bi-bicycle me-1"></i>Velodrom</a></li>
+                    <li class="nav-item"><a class="nav-link" href="booking/treninky.php"><i class="bi bi-calendar3 me-1"></i>Tréninky</a></li>
                 <?php endif; ?>
             </ul>
 

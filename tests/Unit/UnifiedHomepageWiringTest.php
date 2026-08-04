@@ -40,8 +40,8 @@ final class UnifiedHomepageWiringTest extends TestCase
         self::assertStringContainsString("isset(\$_SESSION['sportovec_pristup_id'])", $source);
         self::assertStringContainsString('Přihlášený rodinný účet', $source);
         self::assertStringContainsString('Přihlášený sportovec', $source);
-        self::assertStringContainsString('Administrace je oddělená od zákaznického účtu.', $source);
-        self::assertStringContainsString("\$is_customer ? 'booking/eshop.php'", $source);
+        self::assertStringContainsString('Jeden účet používá podle oprávnění e-shop i trenérskou Evidenci.', $source);
+        self::assertStringContainsString("\$shopUrl      = 'booking/eshop.php'", $source);
         self::assertStringContainsString("\$is_athlete ? 'booking/muj_sport.php'", $source);
     }
 }

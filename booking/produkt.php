@@ -3,10 +3,6 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
-if (!isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: prihlaseni.php?redirect=' . rawurlencode('produkt.php?id=' . (int)($_GET['id'] ?? 0)));
-    exit;
-}
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
@@ -56,9 +52,14 @@ if ($product === null || $product['variants'] === []) {
     $product = null;
 }
 
-$accountId = (int)$_SESSION['verejny_uzivatel_id'];
+$isLoggedIn = isset($_SESSION['verejny_uzivatel_id']);
+$accountId = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);
 $errors = [];
 if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!$isLoggedIn) {
+        header('Location: prihlaseni.php?redirect=' . rawurlencode('produkt.php?id=' . $productId), true, 303);
+        exit;
+    }
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $errors[] = 'Formulář vypršel. Obnovte stránku.';
     } else {
@@ -150,12 +151,12 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
                                         <div class="text-end">
                                             <div class="fw-semibold mb-2"><?= shopProductMoney((int)$variant['amount_minor'], (string)$variant['currency']) ?></div>
-                                            <form method="post">
+                                            <?php if($isLoggedIn): ?><form method="post">
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="action" value="add">
                                                 <input type="hidden" name="variant_id" value="<?= (int)$variant['variant_id'] ?>">
                                                 <button class="btn btn-primary btn-sm" <?= $variant['in_stock'] ? '' : 'disabled' ?>>Přidat do košíku</button>
-                                            </form>
+                                            </form><?php else: ?><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>"><?= $variant['in_stock'] ? 'Přihlásit se a koupit' : 'Vyprodáno' ?></a><?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

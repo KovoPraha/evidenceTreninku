@@ -62,6 +62,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804235000_club_program_repeat_enrollment',
                 '20260804235500_public_profile_token_rotation',
                 '20260804235900_password_reset_tokens',
+                '20260805000000_unified_accounts_public_schedule',
             ],
             array_keys($catalog)
         );
@@ -81,8 +82,12 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->columnExists($pdo, 'shop_coupon_redemptions', 'eligible_subtotal_minor'));
         self::assertTrue($this->columnExists($pdo, 'shop_coupon_redemptions', 'applicability_mask_snapshot'));
         self::assertTrue($this->columnExists($pdo, 'club_program_enrollments', 'active_token'));
+        self::assertTrue($this->columnExists($pdo, 'verejni_uzivatele', 'trener_id'));
+        self::assertTrue($this->columnExists($pdo, 'planovane_treninky', 'je_verejny'));
         self::assertTrue(\trainer_password_is_modern_hash((string)$pdo->query('SELECT heslo FROM treneri WHERE id=1')->fetchColumn()));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
+        self::assertTrue($this->indexExists($pdo, 'uq_verejni_uzivatele_trener'));
+        self::assertTrue($this->indexExists($pdo, 'idx_planovane_treninky_verejne'));
         self::assertSame(
             one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),
             $pdo->query('SELECT verifikacni_token FROM verejni_uzivatele WHERE id = 1')->fetchColumn()
@@ -121,6 +126,7 @@ final class AuthSecurityMigrationTest extends TestCase
         $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE sportovist (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE individualni_lekce (id INTEGER PRIMARY KEY)');
+        $pdo->exec("CREATE TABLE planovane_treninky (id INTEGER PRIMARY KEY, datum TEXT NOT NULL, stav TEXT NOT NULL DEFAULT 'planovany')");
         $pdo->exec(
             'CREATE TABLE verejni_uzivatele ('
             . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1, '

@@ -41,8 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($errors)) {
             // Kontrola duplicity
-            $st = $pdo->prepare("SELECT id FROM verejni_uzivatele WHERE email=?");
-            $st->execute([$email]);
+            $st = $pdo->prepare(
+                "SELECT id FROM verejni_uzivatele WHERE LOWER(email)=? "
+                . "UNION SELECT id FROM treneri WHERE LOWER(email)=? LIMIT 1"
+            );
+            $st->execute([$email, $email]);
             $existingAccount = $st->fetchColumn() !== false;
         }
 
