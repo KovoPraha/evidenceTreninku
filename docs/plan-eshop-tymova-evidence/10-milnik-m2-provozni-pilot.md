@@ -29,9 +29,9 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 90 % | samoobslužný reset rodiče i sportovce, okamžitá oprávnění a tokenové/IDOR testy existují; zbývá uživatelský průchod a produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 15 % | čerstvý ověřený backup je hotový; zbývá opakovatelný úplný browser průchod a společná závěrečná brána |
+| M2.6 integrovaná akceptace | probíhá | 30 % | backup, opakovaný seed a rodičovský tok A01+A03+A04 jsou ověřené; zbývají události, velodrom, storno/expirace/refund a společná závěrečná brána |
 
-Orientační stav celého M2: **40 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **42 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -167,6 +167,20 @@ Dokončený první provozní důkaz (`fdbe30c`):
 - SHA-256 zálohy je
   `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`,
 - zaměřený kontrakt zálohy prošel 2 testy / 41 assertions.
+
+Dokončený první browser řez (`4090bdc`):
+
+- bezpečnostní rotace profilových tokenů už nerozbije identitu demo sportovce A05,
+- veřejný profilový token zůstává náhodný a interní demo identita se hledá stabilním
+  localhost e-mailem,
+- opakovaný seed dvakrát po sobě zachoval stejné ID rodiče, dětí, sportovního účtu,
+  A05 sportovce i cílené události,
+- A01 v prohlížeči ukázalo právě dvě děti a samostatný vlastní profil rodiče,
+- A03+A04 vytvořilo objednávku `KP2608040ECDA87D7D`, zobrazilo QR `NEPLATIT`,
+  auditovaně přijalo syntetickou platbu a přesně jednou aktivovalo účast i školní
+  soupisku,
+- plná sada před závěrečným seed cleanupem měla 334 testů / 2977 assertions;
+  finální zaměřený test seedu prošel 2/25 a živý seed i browser průchod jsou zelené.
 
 - deterministický seed lze bezpečně spustit opakovaně,
 - migrace jsou aktuální a idempotentní na podporovaných DB,

@@ -111,6 +111,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.5 localhost reset UX | hotovo lokálně | `edc6c62`: po platné žádosti se jen na localhostu ukáže testovací fragmentový odkaz; produkce zůstává pouze e-mailová; 330/2946 |
 | uzavření MEDIUM kompatibility | hotovo lokálně | `29f6029`: explicitní měna varianty/události, fail-closed UTF-8 CSV a oficiální Fio datum s offsetem; 333/2971, 367 lintů, 37/37 |
 | M2.6 čerstvý backup | hotovo lokálně | `fdbe30c`: ownership kontrakt `.8` zahrnuje reset tokeny; záloha mimo webroot má 125 tabulek, 2 triggery a ověřený SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9` |
+| M2.6 seed + A01/A03/A04 | hotovo lokálně | `4090bdc`: stabilní interní A05 identita s náhodným veřejným tokenem, seed 2× se stejnými ID, rodič právě se dvěma dětmi a objednávka `KP2608040ECDA87D7D` od QR po auditovanou platbu, účast a soupisku |
 
 ## Aktivní rozhodnutí
 
