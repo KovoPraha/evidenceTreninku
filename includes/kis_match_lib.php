@@ -22,6 +22,12 @@ function kisMatchNormalizeText(?string $value): string
 
 function kisMatchPersonKey(array $person): string
 {
+    $externalId = function_exists('kisFieldNormalizeExternalId')
+        ? kisFieldNormalizeExternalId($person['kis_external_id'] ?? '')
+        : mb_strtoupper(trim((string)($person['kis_external_id'] ?? '')), 'UTF-8');
+    if ($externalId !== '') {
+        return 'kis:' . $externalId;
+    }
     $first = kisMatchNormalizeText((string)($person['jmeno'] ?? ''));
     $last = kisMatchNormalizeText((string)($person['prijmeni'] ?? ''));
     $birth = trim((string)($person['narozeni'] ?? ''));
@@ -35,8 +41,11 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
     $narozeni = trim((string)($person['narozeni'] ?? ''));
     $email = kisMatchNormalizeText((string)($person['email'] ?? ''));
     $uciid = kisMatchNormalizeText((string)($person['uciid'] ?? ''));
+    $kisExternalId = function_exists('kisFieldNormalizeExternalId')
+        ? kisFieldNormalizeExternalId($person['kis_external_id'] ?? '')
+        : mb_strtoupper(trim((string)($person['kis_external_id'] ?? '')), 'UTF-8');
 
-    if ($uciid === '' && $email === '' && ($jmeno === '' || $prijmeni === '')) {
+    if ($kisExternalId === '' && $uciid === '' && $email === '' && ($jmeno === '' || $prijmeni === '')) {
         return [];
     }
 
@@ -61,7 +70,15 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
         $score = 0;
         $reasons = [];
         $rowUciid = kisMatchNormalizeText((string)($row['uciid'] ?? ''));
+        $rowKisExternalId = function_exists('kisFieldNormalizeExternalId')
+            ? kisFieldNormalizeExternalId($row['kis_external_id'] ?? '')
+            : mb_strtoupper(trim((string)($row['kis_external_id'] ?? '')), 'UTF-8');
         $rowBirth = trim((string)($row['narozeni'] ?? ''));
+        $hasExactKisExternalId = $kisExternalId !== '' && $rowKisExternalId === $kisExternalId;
+        if ($hasExactKisExternalId) {
+            $score += 100;
+            $reasons[] = 'KIS external ID';
+        }
         $hasExactUciId = $uciid !== '' && $rowUciid === $uciid;
         if ($hasExactUciId) {
             $score += 95;
@@ -82,7 +99,7 @@ function kisMatchFindCandidates(PDO $pdo, array $person): array
                 $reasons[] = 'datum narozeni';
             }
         }
-        if (($hasExactName || $hasExactUciId) && $narozeni !== '' && $rowBirth !== '' && $rowBirth !== $narozeni) {
+        if (($hasExactName || $hasExactUciId || $hasExactKisExternalId) && $narozeni !== '' && $rowBirth !== '' && $rowBirth !== $narozeni) {
             $reasons[] = 'datum narozeni se lisi';
         }
         if ($hasExactName && $uciid !== '' && $rowUciid !== '' && $rowUciid !== $uciid) {
@@ -145,9 +162,10 @@ function kisMatchResolve(PDO $pdo, array $person): array
         ];
     }
     $hasExactUciId = in_array('UCI ID', $bestReasons, true);
+    $hasExactKisExternalId = in_array('KIS external ID', $bestReasons, true);
     $hasExactNameAndBirth = in_array('jmeno+prijmeni', $bestReasons, true)
         && in_array('datum narozeni', $bestReasons, true);
-    $hasStrongIdentityEvidence = $hasExactUciId || $hasExactNameAndBirth;
+    $hasStrongIdentityEvidence = $hasExactKisExternalId || $hasExactUciId || $hasExactNameAndBirth;
 
     // Skóre je jen pořadí kandidátů. Slabé signály se nesmí jejich součtem
     // proměnit v automatické propojení (typicky sdílený rodinný e-mail + jméno).

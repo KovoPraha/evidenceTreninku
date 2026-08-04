@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use DateTimeImmutable;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PHPUnit\Framework\TestCase;
 
 final class KisSyncLibTest extends TestCase
@@ -48,5 +50,67 @@ final class KisSyncLibTest extends TestCase
             )
         );
         self::assertSame([], \kis_parse_soupisky(''));
+    }
+
+    public function testStableKisIdIsIndependentFromUciAndDetectsIdentityConflict(): void
+    {
+        self::assertSame(
+            ['raw' => 'kis-001', 'value' => 'KIS-001', 'header' => 'kisid'],
+            \kisFieldExtractExternalId(['kisid' => ' kis-001 ', 'uciid' => 'UCI-999'])
+        );
+
+        $people = [];
+        [$key] = \kis_upsert_person($people, 'Original', 'Member', '2012-01-01', 'KIS-001', 'kis-001');
+        self::assertSame('external:KIS-001', $key);
+        self::assertSame('KIS-001', $people[$key]['kis_external_id']);
+        self::assertFalse($people[$key]['_kis_external_id_conflict']);
+
+        \kis_upsert_person($people, 'Different', 'Member', '2012-01-01', 'KIS-001', 'KIS-001');
+        self::assertTrue($people[$key]['_kis_external_id_conflict']);
+    }
+
+    public function testThreeExportsJoinByStableKisIdEvenWhenPaymentHasNoName(): void
+    {
+        $paths = [
+            'users' => $this->writeXlsx([
+                ['KIS ID', 'Jmeno', 'Prijmeni', 'Datum narozeni'],
+                ['KIS-501', 'Stable', 'Member', '01.02.2012'],
+            ]),
+            'payments' => $this->writeXlsx([
+                ['ID uzivatele', 'Stav', 'Castka'],
+                ['KIS-501', 'zaplaceno', '500'],
+            ]),
+            'rosters' => $this->writeXlsx([
+                ['ID clena', 'Soupiska', 'Jmeno', 'Prijmeni'],
+                ['KIS-501', 'U15', 'Stable', 'Member'],
+            ]),
+        ];
+        try {
+            $payload = \kis_build_import($paths['users'], $paths['payments'], $paths['rosters']);
+            self::assertCount(1, $payload['people']);
+            $person = $payload['people'][0];
+            self::assertSame('KIS-501', $person['kis_external_id']);
+            self::assertSame(1, $person['kis_platebne_aktivni']);
+            self::assertSame('U15', $person['kis_soupisky']);
+            self::assertSame([], $payload['warnings']);
+            self::assertContains('iduzivatele', $payload['meta']['payments']['headers']);
+        } finally {
+            foreach ($paths as $path) {
+                @unlink($path);
+            }
+        }
+    }
+
+    private function writeXlsx(array $rows): string
+    {
+        $path = tempnam(sys_get_temp_dir(), 'kis-field-');
+        self::assertIsString($path);
+        @unlink($path);
+        $path .= '.xlsx';
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getActiveSheet()->fromArray($rows);
+        (new Xlsx($spreadsheet))->save($path);
+        $spreadsheet->disconnectWorksheets();
+        return $path;
     }
 }

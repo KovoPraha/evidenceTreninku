@@ -88,6 +88,33 @@ final class KisImportRunTest extends TestCase
         self::assertSame(1, $runId);
     }
 
+    public function testStableKisExternalIdMatchesRenamedPersonButBirthMismatchBlocks(): void
+    {
+        $pdo = $this->createDatabase();
+        $pdo->exec('ALTER TABLE sportovci ADD COLUMN kis_external_id TEXT');
+        $pdo->exec("INSERT INTO sportovci(id,jmeno,prijmeni,narozeni,kis_external_id) VALUES(20,'Old','Name','2012-03-04','KIS-20')");
+
+        $matched = \kisMatchResolve($pdo, [
+            'kis_external_id' => 'kis-20',
+            'jmeno' => 'New',
+            'prijmeni' => 'Name',
+            'narozeni' => '2012-03-04',
+        ]);
+        self::assertSame('matched', $matched['status']);
+        self::assertSame(20, $matched['sportovec_id']);
+        self::assertStringContainsString('KIS external ID', $matched['reason']);
+        self::assertArrayNotHasKey('kis_external_id', $matched['candidates'][0]);
+
+        $conflict = \kisMatchResolve($pdo, [
+            'kis_external_id' => 'KIS-20',
+            'jmeno' => 'New',
+            'prijmeni' => 'Name',
+            'narozeni' => '2013-03-04',
+        ]);
+        self::assertSame('conflict', $conflict['status']);
+        self::assertNull($conflict['sportovec_id']);
+    }
+
     private function createDatabase(): PDO
     {
         $pdo = new PDO('sqlite::memory:');

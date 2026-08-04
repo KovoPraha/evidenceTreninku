@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/kis_match_lib.php';
 require_once __DIR__ . '/kis_source_archive.php';
+require_once __DIR__ . '/kis_import_field_contract.php';
 
 const KIS_IMPORT_PREVIEW_CONTRACT = 'kis-import-preview-v2';
 
@@ -58,6 +59,9 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
         if (kisImportColumnExists($pdo, 'kis_import_runs', 'preview_report_json')) {
             kisImportFinalizePreview($pdo, $runId);
         }
+        if (kisImportColumnExists($pdo, 'kis_import_runs', 'field_contract_report_json')) {
+            kisImportFinalizeFieldContract($pdo, $runId, $people, $meta, $warnings);
+        }
 
         if ($ownsTransaction) {
             $pdo->commit();
@@ -74,6 +78,30 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
         }
         throw $e;
     }
+}
+
+/** @return array<string,mixed> */
+function kisImportFinalizeFieldContract(PDO $pdo, int $runId, array $people, array $meta, array $warnings): array
+{
+    $report = kisFieldContractEvaluate($people, $meta, $warnings);
+    $statement = $pdo->prepare(
+        'UPDATE kis_import_runs SET field_contract_version=?,field_contract_fingerprint=?,field_contract_report_json=?,field_contract_blockers=? WHERE id=?'
+    );
+    $statement->execute([
+        KIS_IMPORT_FIELD_CONTRACT,
+        $report['fingerprint'],
+        kisImportJson($report),
+        $report['summary']['total_blockers'],
+        $runId,
+    ]);
+    if ($statement->rowCount() !== 1) {
+        $check = $pdo->prepare('SELECT field_contract_fingerprint FROM kis_import_runs WHERE id=?');
+        $check->execute([$runId]);
+        if (!hash_equals((string)$report['fingerprint'], (string)$check->fetchColumn())) {
+            throw new RuntimeException('Datovy kontrakt KIS importu se nepodarilo ulozit.');
+        }
+    }
+    return $report;
 }
 
 /**
@@ -267,14 +295,18 @@ function kisImportColumnExists(PDO $pdo, string $table, string $column): bool
 function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array $baseStats = []): array
 {
     $counts = ['new' => 0, 'matched' => 0, 'ambiguous' => 0, 'conflict' => 0, 'ignored' => 0];
-    $rowStmt = $pdo->prepare("
-        INSERT INTO kis_import_rows
-            (run_id, person_key, jmeno, prijmeni, narozeni, email, uciid, oddil,
-             kis_aktivni, kis_platebne_aktivni, kis_neuhrazeno, kis_posledni_uhrada, kis_soupisky, raw_json)
-        VALUES
-            (:run_id, :person_key, :jmeno, :prijmeni, :narozeni, :email, :uciid, :oddil,
-             :kis_aktivni, :kis_platebne_aktivni, :kis_neuhrazeno, :kis_posledni_uhrada, :kis_soupisky, :raw_json)
-    ");
+    $hasExternalIdColumn = kisImportColumnExists($pdo, 'kis_import_rows', 'kis_external_id');
+    $columns = [
+        'run_id', 'person_key', 'jmeno', 'prijmeni', 'narozeni', 'email', 'uciid', 'oddil',
+        'kis_aktivni', 'kis_platebne_aktivni', 'kis_neuhrazeno', 'kis_posledni_uhrada', 'kis_soupisky', 'raw_json',
+    ];
+    if ($hasExternalIdColumn) {
+        $columns[] = 'kis_external_id';
+    }
+    $rowStmt = $pdo->prepare(
+        'INSERT INTO kis_import_rows (' . implode(',', $columns) . ') VALUES ('
+        . implode(',', array_map(static fn(string $column): string => ':' . $column, $columns)) . ')'
+    );
     $matchStmt = $pdo->prepare("
         INSERT INTO kis_import_matches
             (run_id, row_id, sportovec_id, match_status, confidence, reason, candidate_json)
@@ -284,7 +316,7 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
 
     foreach ($people as $person) {
         $personKey = kisMatchPersonKey($person);
-        $rowStmt->execute([
+        $parameters = [
             ':run_id' => $runId,
             ':person_key' => $personKey,
             ':jmeno' => trim((string)($person['jmeno'] ?? '')),
@@ -301,7 +333,11 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
             // Celý zdrojový řádek obsahuje kontakty, adresu nebo rodné číslo.
             // Preview tabulky je pro současný matching nepotřebují.
             ':raw_json' => '{}',
-        ]);
+        ];
+        if ($hasExternalIdColumn) {
+            $parameters[':kis_external_id'] = kisFieldNormalizeExternalId($person['kis_external_id'] ?? '') ?: null;
+        }
+        $rowStmt->execute($parameters);
         $rowId = (int)$pdo->lastInsertId();
         $match = kisMatchResolve($pdo, $person);
         $status = (string)$match['status'];

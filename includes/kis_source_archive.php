@@ -14,6 +14,22 @@ function kisSourceKinds(): array
     return ['users', 'payments', 'rosters'];
 }
 
+function kisSourceConfiguredArchiveDirectory(): string
+{
+    $configured = getenv('KIS_SOURCE_ARCHIVE_DIR');
+    if (is_string($configured) && trim($configured) !== '') {
+        return trim($configured);
+    }
+    if (defined('JE_LOKALNE') && JE_LOKALNE === true) {
+        $local = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'evidencePavel-kis-source-archive';
+        if (!is_dir($local) && !mkdir($local, 0700, true) && !is_dir($local)) {
+            throw new KisSourceArchiveException('Privatni localhost archiv KIS zdroju nelze vytvorit.');
+        }
+        return $local;
+    }
+    throw new KisSourceArchiveException('Pro KIS import nastavte privatni KIS_SOURCE_ARCHIVE_DIR mimo web aplikace.');
+}
+
 /** @return array{source_kind:string,contract_version:string,sha256:string,byte_size:int,original_filename:string} */
 function kisSourceInspect(string $inputPath, string $sourceKind, string $contractVersion): array
 {

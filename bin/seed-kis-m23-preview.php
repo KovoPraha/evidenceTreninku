@@ -51,23 +51,32 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES => false]
     );
 
-    $fixture = $root . '/tests/fixtures/kis/m23-preview-users.csv';
+    $fixtures = [
+        'users' => $root . '/tests/fixtures/kis/m23d-field-users.csv',
+        'payments' => $root . '/tests/fixtures/kis/m23d-field-payments.csv',
+        'rosters' => $root . '/tests/fixtures/kis/m23d-field-rosters.csv',
+    ];
     $archive = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'evidencePavel-kis-source-archive';
     if (!is_dir($archive) && !mkdir($archive, 0700, true) && !is_dir($archive)) {
         throw new RuntimeException('Nelze vytvořit privátní localhost archiv KIS zdrojů.');
     }
-    $artifact = kisSourceArchive($pdo, $fixture, 'users', 'm23-synthetic-v1', $archive, null);
-    $manifest = kisSourceManifest($pdo, ['users' => (int)$artifact['id']]);
+    $artifactIds = [];
+    foreach ($fixtures as $kind => $fixture) {
+        $artifact = kisSourceArchive($pdo, $fixture, $kind, 'm23d-synthetic-v1', $archive, null);
+        $artifactIds[$kind] = (int)$artifact['id'];
+    }
+    $manifest = kisSourceManifest($pdo, $artifactIds);
 
     $runs = $pdo->query(
-        "SELECT * FROM kis_import_runs WHERE status='preview' AND source_users='m23-preview-users.csv' ORDER BY id DESC LIMIT 20"
+        "SELECT * FROM kis_import_runs WHERE status='preview' AND source_users='m23d-field-users.csv' ORDER BY id DESC LIMIT 20"
     )->fetchAll(PDO::FETCH_ASSOC);
     foreach ($runs as $existing) {
         $storedManifest = json_decode((string)($existing['source_manifest_json'] ?? ''), true);
         $storedReport = kisImportStoredPreviewReport($existing);
         if (is_array($storedManifest)
             && hash_equals((string)$manifest['fingerprint'], (string)($storedManifest['fingerprint'] ?? ''))
-            && $storedReport !== null) {
+            && $storedReport !== null
+            && kisFieldContractStoredReport($existing) !== null) {
             $respond([
                 'status' => 'existing',
                 'run_id' => (int)$existing['id'],
@@ -81,24 +90,30 @@ try {
     $runId = kisImportCreateRun(
         $pdo,
         [
-            ['jmeno' => 'Localhost', 'prijmeni' => 'PreviewOne', 'narozeni' => '2012-01-01', 'uciid' => 'M23-SYNTH-001'],
-            ['jmeno' => 'Localhost', 'prijmeni' => 'PreviewTwo', 'narozeni' => '2013-02-02', 'uciid' => 'M23-SYNTH-002'],
+            ['kis_external_id' => 'KIS-M23D-001', '_kis_external_id_raw' => 'KIS-M23D-001', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewOne', 'narozeni' => '2012-01-01', 'uciid' => 'M23-SYNTH-001'],
+            ['kis_external_id' => 'KIS-M23D-002', '_kis_external_id_raw' => 'KIS-M23D-002', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewTwo', 'narozeni' => '2013-02-02', 'uciid' => 'M23-SYNTH-002'],
         ],
-        ['users' => ['contract' => 'm23-synthetic-v1', 'rows' => 2]],
+        [
+            'users' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'jmeno', 'prijmeni', 'datumnarozeni'], 'rows' => 2],
+            'payments' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'stav'], 'rows' => 2],
+            'soupisky' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'soupiska', 'jmeno', 'prijmeni'], 'rows' => 2],
+        ],
         [],
-        ['users' => 'm23-preview-users.csv'],
+        ['users' => 'm23d-field-users.csv', 'payments' => 'm23d-field-payments.csv', 'rosters' => 'm23d-field-rosters.csv'],
         null,
-        ['users' => (int)$artifact['id']]
+        $artifactIds
     );
     $run = $pdo->query('SELECT * FROM kis_import_runs WHERE id=' . $runId)->fetch(PDO::FETCH_ASSOC);
     $report = kisImportStoredPreviewReport($run);
-    if ($report === null) {
+    $fieldReport = kisFieldContractStoredReport($run);
+    if ($report === null || $fieldReport === null) {
         throw new RuntimeException('Uložený preview report neprošel kontrolou fingerprintu.');
     }
     $respond([
         'status' => 'created',
         'run_id' => $runId,
         'preview_status' => (string)$report['status'],
+        'field_contract_status' => (string)$fieldReport['status'],
         'fingerprint' => (string)$report['fingerprint'],
         'url' => 'http://localhost/evidencePavel/kis_sync_center.php?run_id=' . $runId,
     ]);

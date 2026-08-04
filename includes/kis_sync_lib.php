@@ -5,6 +5,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+require_once __DIR__ . '/kis_import_field_contract.php';
+
 function kis_deaccent(string $s): string
 {
     static $map = [
@@ -184,6 +186,7 @@ function kis_read_rows(string $path, array $requiredKeys, array &$meta): array
             'sheet' => $sheet->getTitle(),
             'header_row' => $headerRow,
             'rows' => count($rows),
+            'headers' => array_values(array_keys($headers)),
         ];
         return $rows;
     }
@@ -191,10 +194,11 @@ function kis_read_rows(string $path, array $requiredKeys, array &$meta): array
     throw new RuntimeException('Nelze najit hlavicku v souboru ' . basename($path));
 }
 
-function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?string $narozeni): array
+function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?string $narozeni, string $externalId = '', string $externalIdRaw = ''): array
 {
     $nameKey = kis_normalize_name($jmeno, $prijmeni);
-    $key = $nameKey . '|' . ($narozeni ?? '');
+    $externalId = kisFieldNormalizeExternalId($externalId);
+    $key = $externalId !== '' ? 'external:' . $externalId : 'fallback:' . $nameKey . '|' . ($narozeni ?? '');
     if ($nameKey === '') {
         return ['', []];
     }
@@ -203,6 +207,9 @@ function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?str
             'jmeno' => trim($jmeno),
             'prijmeni' => trim($prijmeni),
             'narozeni' => $narozeni,
+            'kis_external_id' => $externalId,
+            '_kis_external_id_raw' => trim($externalIdRaw),
+            '_kis_external_id_conflict' => false,
             'email' => '',
             'telefon' => '',
             'rc' => '',
@@ -222,6 +229,12 @@ function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?str
                 'latest_due' => null,
             ],
         ];
+    } elseif ($externalId !== '') {
+        $existingName = kis_normalize_name((string)$people[$key]['jmeno'], (string)$people[$key]['prijmeni']);
+        $existingBirth = (string)($people[$key]['narozeni'] ?? '');
+        if ($existingName !== $nameKey || ($existingBirth !== '' && $narozeni !== null && $existingBirth !== $narozeni)) {
+            $people[$key]['_kis_external_id_conflict'] = true;
+        }
     }
     return [$key, $people[$key]];
 }
@@ -250,7 +263,8 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
             continue;
         }
         $narozeni = kis_date_to_mysql($row['datumnarozeni'] ?? null);
-        [$key] = kis_upsert_person($people, $jmeno, $prijmeni, $narozeni);
+        $external = kisFieldExtractExternalId($row);
+        [$key] = kis_upsert_person($people, $jmeno, $prijmeni, $narozeni, $external['value'], $external['raw']);
         if ($key === '') {
             continue;
         }
@@ -281,7 +295,8 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
             continue;
         }
         $narozeni = kis_date_to_mysql($row['datumnarozeni'] ?? null);
-        [$key] = kis_upsert_person($people, $jmeno, $prijmeni, $narozeni);
+        $external = kisFieldExtractExternalId($row);
+        [$key] = kis_upsert_person($people, $jmeno, $prijmeni, $narozeni, $external['value'], $external['raw']);
         if ($key === '') {
             continue;
         }
@@ -308,16 +323,26 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         }
     }
 
-    $paymentRows = kis_read_rows($paymentsPath, ['jmeno', 'prijmeni', 'stav'], $meta['payments']);
-    $paymentsByName = [];
+    $paymentRows = kis_read_rows($paymentsPath, ['stav'], $meta['payments']);
+    $paymentsByIdentity = [];
+    $paymentFallbackRows = 0;
+    $paymentInvalidExternalRows = 0;
     foreach ($paymentRows as $row) {
         $jmeno = trim((string)($row['jmeno'] ?? ''));
         $prijmeni = trim((string)($row['prijmeni'] ?? ''));
         $nameKey = kis_normalize_name($jmeno, $prijmeni);
-        if ($nameKey === '') {
+        $external = kisFieldExtractExternalId($row);
+        if ($external['raw'] !== '' && $external['value'] === '') {
+            $paymentInvalidExternalRows++;
+        }
+        if ($external['value'] === '') {
+            $paymentFallbackRows++;
+        }
+        if ($external['value'] === '' && $nameKey === '') {
             continue;
         }
-        $paymentsByName[$nameKey] ??= [
+        $paymentKey = $external['value'] !== '' ? 'external:' . $external['value'] : 'name:' . $nameKey;
+        $paymentsByIdentity[$paymentKey] ??= [
             'paid_rows' => 0,
             'open_rows' => 0,
             'open_total' => 0.0,
@@ -333,33 +358,48 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         $dueDate = kis_date_to_mysql($row['datumsplatnosti'] ?? null);
 
         if ($status === 'zaplaceno' || $remaining === 0.0) {
-            $paymentsByName[$nameKey]['paid_rows']++;
-            $paymentsByName[$nameKey]['paid_total'] += $amount ?? 0.0;
+            $paymentsByIdentity[$paymentKey]['paid_rows']++;
+            $paymentsByIdentity[$paymentKey]['paid_total'] += $amount ?? 0.0;
         }
         if ($remaining !== null && $remaining > 0.009) {
-            $paymentsByName[$nameKey]['open_rows']++;
-            $paymentsByName[$nameKey]['open_total'] += $remaining;
+            $paymentsByIdentity[$paymentKey]['open_rows']++;
+            $paymentsByIdentity[$paymentKey]['open_total'] += $remaining;
         }
-        if ($paidDate && (!$paymentsByName[$nameKey]['latest_paid'] || $paidDate > $paymentsByName[$nameKey]['latest_paid'])) {
-            $paymentsByName[$nameKey]['latest_paid'] = $paidDate;
+        if ($paidDate && (!$paymentsByIdentity[$paymentKey]['latest_paid'] || $paidDate > $paymentsByIdentity[$paymentKey]['latest_paid'])) {
+            $paymentsByIdentity[$paymentKey]['latest_paid'] = $paidDate;
         }
-        if ($dueDate && (!$paymentsByName[$nameKey]['latest_due'] || $dueDate > $paymentsByName[$nameKey]['latest_due'])) {
-            $paymentsByName[$nameKey]['latest_due'] = $dueDate;
+        if ($dueDate && (!$paymentsByIdentity[$paymentKey]['latest_due'] || $dueDate > $paymentsByIdentity[$paymentKey]['latest_due'])) {
+            $paymentsByIdentity[$paymentKey]['latest_due'] = $dueDate;
         }
     }
 
     $peopleByName = [];
+    $peopleByExternal = [];
     foreach ($people as $key => $person) {
         $peopleByName[kis_normalize_name($person['jmeno'], $person['prijmeni'])][] = $key;
+        if (($person['kis_external_id'] ?? '') !== '') {
+            $peopleByExternal[(string)$person['kis_external_id']][] = $key;
+        }
     }
-    foreach ($paymentsByName as $nameKey => $payment) {
-        $matches = $peopleByName[$nameKey] ?? [];
+    $paymentAmbiguousRows = 0;
+    $paymentUnmatchedExternalRows = 0;
+    foreach ($paymentsByIdentity as $identityKey => $payment) {
+        if (str_starts_with($identityKey, 'external:')) {
+            $matches = $peopleByExternal[substr($identityKey, 9)] ?? [];
+            if ($matches === []) $paymentUnmatchedExternalRows++;
+        } else {
+            $matches = $peopleByName[substr($identityKey, 5)] ?? [];
+        }
         if (count($matches) === 1) {
             $people[$matches[0]]['_kis_payment'] = $payment;
         } elseif (count($matches) > 1) {
-            $warnings[] = 'Platby nelze jednoznacne priradit duplicitnimu jmenu: ' . $nameKey;
+            $paymentAmbiguousRows++;
         }
     }
+    if ($paymentFallbackRows > 0) $warnings[] = 'PAYMENT_NAME_FALLBACK:' . $paymentFallbackRows;
+    if ($paymentInvalidExternalRows > 0) $warnings[] = 'PAYMENT_EXTERNAL_ID_INVALID:' . $paymentInvalidExternalRows;
+    if ($paymentUnmatchedExternalRows > 0) $warnings[] = 'PAYMENT_EXTERNAL_ID_UNMATCHED:' . $paymentUnmatchedExternalRows;
+    if ($paymentAmbiguousRows > 0) $warnings[] = 'PAYMENT_NAME_AMBIGUOUS:' . $paymentAmbiguousRows;
 
     // Sloučení sezónních variant: "X (2025/2026)" → "X", pokud existuje i základní název.
     // KIS exportuje tutéž soupisku dvakrát (users bez sufixu, soupisky se sufixem sezóny) —

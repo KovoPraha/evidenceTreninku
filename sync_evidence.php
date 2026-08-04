@@ -196,6 +196,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
             $_SESSION['sync_soupisky_counts'] = $payload['soupisky_counts'];
             $_SESSION['sync_meta'] = $payload['meta'];
             $_SESSION['sync_warnings'] = $payload['warnings'];
+            $artifactIds = [];
+            foreach (['users' => 'users_xlsx', 'payments' => 'payments_xlsx', 'rosters' => 'rosters_xlsx'] as $sourceKind => $field) {
+                $artifact = kisSourceArchive(
+                    $pdo,
+                    (string)$_FILES[$field]['tmp_name'],
+                    $sourceKind,
+                    KIS_IMPORT_FIELD_CONTRACT,
+                    kisSourceConfiguredArchiveDirectory(),
+                    isset($_SESSION['trener_id']) ? (int)$_SESSION['trener_id'] : null
+                );
+                $artifactIds[$sourceKind] = (int)$artifact['id'];
+            }
             $_SESSION['sync_run_id'] = kisImportCreateRun(
                 $pdo,
                 $payload['people'],
@@ -206,7 +218,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
                     'payments' => $_FILES['payments_xlsx']['name'] ?? null,
                     'rosters' => $_FILES['rosters_xlsx']['name'] ?? null,
                 ],
-                isset($_SESSION['trener_id']) ? (int)$_SESSION['trener_id'] : null
+                isset($_SESSION['trener_id']) ? (int)$_SESSION['trener_id'] : null,
+                $artifactIds
             );
 
             $step = 2;
@@ -545,9 +558,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'execu
         $errors[] = 'Chybí data. Nahrajte soubor znovu.';
         $step = 1;
     } else {
-        $vcetneNeaktivnich = !empty($_POST['vcetne_neaktivnich']);
-        $execReport = executeSync($pdo, $_SESSION['sync_data'], $vcetneNeaktivnich);
-        $step = 4;
+        $currentRunId = (int)($_SESSION['sync_run_id'] ?? 0);
+        $currentRun = $currentRunId > 0 ? kisImportRunDetail($pdo, $currentRunId)['run'] : null;
+        $fieldContract = is_array($currentRun) ? kisFieldContractStoredReport($currentRun) : null;
+        if ($fieldContract === null
+            || ($fieldContract['status'] ?? null) !== 'ready_for_parity'
+            || (int)($fieldContract['summary']['total_blockers'] ?? -1) !== 0) {
+            $errors[] = 'Synchronizaci nelze provést: exporty nemají úplný a stabilní kontrakt KIS ID.';
+            $step = 3;
+        } else {
+            $vcetneNeaktivnich = !empty($_POST['vcetne_neaktivnich']);
+            $execReport = executeSync($pdo, $_SESSION['sync_data'], $vcetneNeaktivnich);
+            $step = 4;
+        }
     }
 }
 
@@ -646,6 +669,11 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
                         $params[] = $newVal;
                     }
                 }
+                $externalId = kisFieldNormalizeExternalId($row['kis_external_id'] ?? '');
+                if ($externalId !== '' && $externalId !== (string)($dbRow['kis_external_id'] ?? '')) {
+                    $updates[] = '`kis_external_id` = ?';
+                    $params[] = $externalId;
+                }
                 $updates[] = "`kis_posledni_sync` = CURRENT_TIMESTAMP";
                 $updates[] = "`kis_last_seen_at` = CURRENT_TIMESTAMP";
                 $updates[] = "`kis_identity_key` = ?";
@@ -724,6 +752,7 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
                     'kis_posledni_sync' => date('Y-m-d H:i:s'),
                     'kis_last_seen_at' => date('Y-m-d H:i:s'),
                     'kis_identity_key' => kisMatchPersonKey($row),
+                    'kis_external_id' => kisFieldNormalizeExternalId($row['kis_external_id'] ?? '') ?: null,
                     'kis_match_confidence' => 0,
                     'kis_soupisky' => $row['kis_soupisky'] ?? '',
                     'hash' => generateHash($jmeno, $prijmeni),
@@ -928,9 +957,10 @@ if ($step === 3 || $step === 4) {
         </div>
         <div class="card-body">
             <p class="text-muted mb-3">
-                Nahrajte Excel soubor s kompletní evidencí sportovců. Soubor musí obsahovat sloupce:
-                <strong>Jméno</strong>, <strong>Příjmení</strong>, <strong>Datum narození</strong>,
-                <strong>Soupisky</strong>, <strong>E-mail</strong>, adresní údaje, atd.
+                Nahrajte tři Excel exporty z KIS. Pro bezpečný převod musí všechny obsahovat stejný stabilní sloupec
+                <strong>KIS ID</strong> (podporované názvy např. KIS ID, ID uživatele nebo ID člena).
+                KIS ID je interní identifikátor osoby a není to UCI licence. Starší export bez tohoto sloupce lze prohlédnout,
+                ale systém jej nepovolí aplikovat ani do testovacího sandboxu.
             </p>
             <form method="POST" enctype="multipart/form-data" id="kisUploadForm">
                 <?= csrf_field() ?>

@@ -56,6 +56,12 @@ function kisImportSandboxLockedPreview(PDO $pdo, int $runId, string $fingerprint
         || (int)$fresh['summary']['classified_rows'] !== (int)$fresh['summary']['total_rows']) {
         throw new KisImportSandboxException('Náhled obsahuje blokátory nebo není úplně klasifikovaný.');
     }
+    $fieldContract = kisFieldContractStoredReport($run);
+    if ($fieldContract === null
+        || ($fieldContract['status'] ?? null) !== 'ready_for_parity'
+        || (int)($fieldContract['summary']['total_blockers'] ?? -1) !== 0) {
+        throw new KisImportSandboxException('Datovy kontrakt KIS ID neni pripraven pro sandbox promote.');
+    }
     foreach ($fresh['rows'] as $row) {
         if (!in_array($row['action'] ?? null, ['create', 'exact_match'], true)) {
             throw new KisImportSandboxException('Náhled obsahuje akci nepovolenou pro sandbox promote.');

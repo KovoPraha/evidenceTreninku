@@ -97,10 +97,14 @@ final class KisImportSandboxPromotionTest extends TestCase
         $runId = \kisImportCreateRun(
             $pdo,
             [
-                ['jmeno' => 'Sandbox', 'prijmeni' => 'Create', 'narozeni' => '2012-01-01'],
-                ['jmeno' => 'Sandbox', 'prijmeni' => 'Second', 'narozeni' => '2013-02-02'],
+                ['kis_external_id' => 'KIS-SANDBOX-1', '_kis_external_id_raw' => 'KIS-SANDBOX-1', 'jmeno' => 'Sandbox', 'prijmeni' => 'Create', 'narozeni' => '2012-01-01'],
+                ['kis_external_id' => 'KIS-SANDBOX-2', '_kis_external_id_raw' => 'KIS-SANDBOX-2', 'jmeno' => 'Sandbox', 'prijmeni' => 'Second', 'narozeni' => '2013-02-02'],
             ],
-            [],
+            [
+                'users' => ['headers' => ['kisid', 'jmeno', 'prijmeni', 'datumnarozeni'], 'rows' => 2],
+                'payments' => ['headers' => ['kisid', 'stav'], 'rows' => 2],
+                'soupisky' => ['headers' => ['kisid', 'soupiska', 'jmeno', 'prijmeni'], 'rows' => 2],
+            ],
             [],
             ['users' => 'sandbox.xlsx'],
             7,
@@ -123,7 +127,7 @@ final class KisImportSandboxPromotionTest extends TestCase
             CREATE TABLE kis_import_rows(id INTEGER PRIMARY KEY AUTOINCREMENT,run_id INTEGER,person_key TEXT,jmeno TEXT,prijmeni TEXT,narozeni TEXT,email TEXT,uciid TEXT,oddil TEXT,kis_aktivni INTEGER,kis_platebne_aktivni INTEGER,kis_neuhrazeno REAL,kis_posledni_uhrada TEXT,kis_soupisky TEXT,raw_json TEXT);
             CREATE TABLE kis_import_matches(id INTEGER PRIMARY KEY AUTOINCREMENT,run_id INTEGER,row_id INTEGER,sportovec_id INTEGER,match_status TEXT,confidence INTEGER,reason TEXT,candidate_json TEXT);
             SQL);
-        foreach (['20260804233000_kis_import_source_artifacts.php', '20260804234500_kis_import_preview_integrity.php', '20260804234700_kis_import_sandbox_promotion.php'] as $file) {
+        foreach (['20260804233000_kis_import_source_artifacts.php', '20260804234500_kis_import_preview_integrity.php', '20260804234700_kis_import_sandbox_promotion.php', '20260804234800_kis_import_field_contract.php'] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);
             $migration['up']($pdo);

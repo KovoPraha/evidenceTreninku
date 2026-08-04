@@ -56,12 +56,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $detail = $runId > 0 ? kisImportRunDetail($pdo, $runId) : null;
 $previewReport = $detail && $detail['run'] ? kisImportStoredPreviewReport($detail['run']) : null;
+$fieldContractReport = $detail && $detail['run'] ? kisFieldContractStoredReport($detail['run']) : null;
 $sandboxPromotion = $sandboxAllowed && $runId > 0 ? kisImportSandboxPromotionForRun($pdo, $runId) : [];
 if (($_GET['preview_report'] ?? '') === 'json' && $previewReport !== null) {
     header('Content-Type: application/json; charset=utf-8');
     header('Content-Disposition: attachment; filename="kis-preview-run-' . $runId . '.json"');
     header('Cache-Control: no-store');
     echo json_encode($previewReport, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+    exit;
+}
+if (($_GET['field_contract'] ?? '') === 'json' && $fieldContractReport !== null) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Content-Disposition: attachment; filename="kis-field-contract-run-' . $runId . '.json"');
+    header('Cache-Control: no-store');
+    echo json_encode($fieldContractReport, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
     exit;
 }
 $runs = kisImportLatestRuns($pdo, 30);
@@ -110,6 +118,9 @@ $attention = [
             <div class="card-body border-bottom">
                 <?php if ($previewReport !== null): ?>
                     <?php $previewReady = $previewReport['status'] === 'ready_for_test_review'; ?>
+                    <?php $fieldReady = ($fieldContractReport['status'] ?? null) === 'ready_for_parity' && (int)($fieldContractReport['summary']['total_blockers'] ?? -1) === 0; ?>
+                    <?php $sandboxApplied = ($sandboxPromotion['status'] ?? '') === 'applied'; ?>
+                    <?php $sandboxRolledBack = ($sandboxPromotion['status'] ?? '') === 'rolled_back'; ?>
                     <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
                         <div>
                             <div class="fw-semibold">Integrita náhledu
@@ -126,13 +137,40 @@ $attention = [
                         </div>
                         <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;preview_report=json">Stáhnout bezpečný JSON report</a>
                     </div>
+                    <div class="border rounded p-3 mt-3 bg-light">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <div class="fw-semibold">M2.3d datový kontrakt
+                                    <span class="badge <?= $fieldReady ? 'bg-success' : 'bg-danger' ?>">
+                                        <?= $fieldReady ? 'stabilní KIS ID připraveno' : 'blokováno' ?>
+                                    </span>
+                                </div>
+                                <?php if ($fieldContractReport !== null): ?>
+                                    <div class="small text-muted mt-1">
+                                        Platné osoby <?= (int)$fieldContractReport['summary']['valid_people'] ?>/<?= (int)$fieldContractReport['summary']['total_people'] ?>,
+                                        blokátory <?= (int)$fieldContractReport['summary']['total_blockers'] ?>.
+                                        Interní KIS ID je samostatný identifikátor a nikdy se nezaměňuje za UCI licenci.
+                                    </div>
+                                    <div class="small mt-2">
+                                        <?php foreach (['users' => 'Uživatelé', 'payments' => 'Platby', 'rosters' => 'Soupisky'] as $sourceKey => $sourceLabel): ?>
+                                            <?php $source = $fieldContractReport['sources'][$sourceKey] ?? []; ?>
+                                            <span class="badge me-1 <?= ($source['status'] ?? '') === 'valid' ? 'bg-success' : 'bg-danger' ?>"><?= h($sourceLabel) ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="small text-muted mt-1">Starší import nemá uložený datový kontrakt. Lze jej prohlížet, ale nelze jej znovu aplikovat do sandboxu.</div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($fieldContractReport !== null): ?>
+                                <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;field_contract=json">Stáhnout kontrakt bez osobních údajů</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                     <?php if ($sandboxAllowed): ?>
                         <div class="alert alert-info mt-3 mb-0">
                             <div class="fw-semibold">M2.3c testovací sandbox</div>
                             <div class="small mb-2">Akce zapisuje pouze anonymní položky do oddělených sandbox tabulek. Tabulky sportovců, soupisek, plateb a objednávek se nemění.</div>
-                            <?php if ($previewReady): ?>
-                                <?php $sandboxApplied = ($sandboxPromotion['status'] ?? '') === 'applied'; ?>
-                                <?php $sandboxRolledBack = ($sandboxPromotion['status'] ?? '') === 'rolled_back'; ?>
+                            <?php if ($sandboxApplied || ($previewReady && $fieldReady)): ?>
                                 <?php if ($sandboxPromotion): ?>
                                     <div class="small mb-2">
                                         Stav: <strong><?= $sandboxApplied ? 'aplikováno v sandboxu' : 'vráceno rollbackem' ?></strong>,
@@ -161,7 +199,7 @@ $attention = [
                                     </div>
                                 </form>
                             <?php else: ?>
-                                <div class="small text-danger">Blokovaný nebo neúplný náhled nelze aplikovat ani do sandboxu.</div>
+                                <div class="small text-danger">Blokovaný náhled nebo chybějící stabilní KIS ID nelze aplikovat ani do sandboxu. Již aplikovaný sandbox lze vždy bezpečně vrátit.</div>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
