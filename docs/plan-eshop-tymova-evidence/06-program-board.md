@@ -113,6 +113,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.6 čerstvý backup | hotovo lokálně | `fdbe30c`: ownership kontrakt `.8` zahrnuje reset tokeny; záloha mimo webroot má 125 tabulek, 2 triggery a ověřený SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9` |
 | M2.6 seed + A01/A03/A04 | hotovo lokálně | `4090bdc`: stabilní interní A05 identita s náhodným veřejným tokenem, seed 2× se stejnými ID, rodič právě se dvěma dětmi a objednávka `KP2608040ECDA87D7D` od QR po auditovanou platbu, účast a soupisku |
 | M2.6 e-shop/událost/velodrom lifecycle | hotovo lokálně | browser + MariaDB: ochrana duplicity události, auditované storno/refund události a velodromu, návrat kapacity 3/3 a 1/1, sklad zboží přesně 2→1→2; žádná konzolová chyba |
+| M2.2 společná homepage | hotovo lokálně | `25830e1`: veřejný vstup propojuje e-shop, služby, rodinu, sportovce a trenéry; trenérský dashboard má rychlé volby Evidence/KIS/objednávky/veřejný portál; 336/3004, audit 0 |
 
 ## Aktivní rozhodnutí
 

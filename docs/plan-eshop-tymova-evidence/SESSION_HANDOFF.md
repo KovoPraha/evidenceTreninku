@@ -7,11 +7,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `4090bdc`;
+- Poslední přijatý implementační HEAD: `25830e1`;
   dokumentační plán navazuje touto handoff aktualizací.
 - Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
-  upstream `origin/main`, lokálně `ahead 86 / behind 0` bez nového fetch ověření.
-- Pracovní strom po implementačním commitu `4090bdc`: čistý před touto přesnou
+  upstream `origin/main`, lokálně `ahead 88 / behind 0` bez nového fetch ověření.
+- Pracovní strom po implementačním commitu `25830e1`: čistý před touto přesnou
   handoff aktualizací. Localhost DB je 37/37; produkce ani vzdálený repozitář se
   nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -30,7 +30,17 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: druhý browser řez M2.6 proběhl bez potřeby změny kódu.
+- Poslední dokončená akce: `25830e1` přidává společnou homepage sloučeného projektu.
+  Nepřihlášený návštěvník má na kořenovém `index.php` přímé cesty do e-shopu,
+  kroužků/událostí, velodromu, rodinného účtu, sportovního účtu a trenérské Evidence.
+  Rodičovská a sportovní relace mají své bezpečně oddělené přímé vstupy. Přihlášený
+  trenér si zachovává celý původní dashboard, ale nahoře má čtyři rychlé volby:
+  zadat trénink, KIS/soupisky, objednávky a veřejný portál. Veřejný HTTP průchod je
+  200 se správným titulkem; přihlášený browser ověřil všechny čtyři zkratky a
+  konzole byla bez chyby. Plná sada prošla 336/3004 a Composer audit je 0.
+  Produkce ani vzdálený Git se nezměnily.
+
+  Předchozí dokončená akce: druhý browser řez M2.6 proběhl bez potřeby změny kódu.
   Placená událost odmítla duplicitní aktivní přihlášku; její objednávka
   `KP2608047D5C1C6050` po stornu uvolnila kapacitu na 3/3 a samostatná vratka
   `LOCALHOST-M26-EVENT-REFUND` uzavřela platbu. Bezplatný velodrom po stornu vrátil
@@ -269,7 +279,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | legacy `2.20.2` + 37/37 číslovaných migrací; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | full 334/2977 před závěrečným seed cleanupem; následně zaměřený seed kontrakt 2/25, živý seed 2× a browser A01+A03+A04 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB + in-app browser | ano |
+| testy | 336/3004; navíc veřejná homepage HTTP 200 a přihlášený trainer browser ověřil Evidence/KIS/objednávky/veřejný portál bez konzolové chyby | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost HTTP + in-app browser | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -392,6 +402,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 66 | M2.6 backup `fdbe30c` | ownership kontrakt `.8` včetně reset tokenů; ověřená záloha mimo webroot 125 tabulek / 2 triggery, zaměřený kontrakt 2/41 |
 | 67 | M2.6 seed/browser `4090bdc` | stabilní A05 identita po rotaci tokenů, seed 2× se stejnými ID, A01 dvě děti a A03+A04 od QR přes syntetickou platbu po účast a soupisku |
 | 68 | M2.6 lifecycle bez změny kódu | událost a velodrom od kapacitního hold přes platbu po storno/refund; skladové zboží 2→1→2; DB/UI shoda a konzole bez chyb |
+| 69 | M2.2 homepage `25830e1` | společný veřejný vstup e-shop/rodina/sportovec/trenér a čtyři rychlé trenérské volby; HTTP 200, browser bez chyb, 336/3004 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

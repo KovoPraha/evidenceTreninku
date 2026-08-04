@@ -25,13 +25,13 @@ kódu.
 |---|---|---:|---|
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
-| M2.2 opravy a UX z prohlídky | čeká na M2.0 | 0 % | nejprve chyby, potom texty a zjednodušení obrazovek |
+| M2.2 opravy a UX z prohlídky | probíhá | 25 % | vznikla společná homepage a rychlé vstupy podle rolí; další UX připomínky čekají na úplný průchod vlastníka |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 90 % | samoobslužný reset rodiče i sportovce, okamžitá oprávnění a tokenové/IDOR testy existují; zbývá uživatelský průchod a produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 55 % | backup, seed, kroužek, placená událost, velodrom a skladové zboží mají browser důkaz; zbývají sportovní/KIS scénáře a společná závěrečná brána |
 
-Orientační stav celého M2: **45 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **48 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -45,6 +45,20 @@ migraci, které mají vlastní pozdější bránu.
    funkcí.
 
 Brána: každá připomínka má vlastníka, prioritu a cílový řez M2.
+
+První dokončený UX řez (`25830e1`):
+
+- kořenový `index.php` je společná homepage projektu, ne pouze přihlašovací brána
+  Evidence,
+- návštěvník vidí tři srozumitelné cesty: e-shop a služby, rodinu/sportovce a
+  trenéry/vedení klubu,
+- rodičovský a sportovní účet dostanou vlastní přímý vstup bez směšování oprávnění,
+- trenérovi zůstává původní dashboard a nahoře přibyly rychlé volby Evidence,
+  KIS/soupisky, objednávky a veřejný portál,
+- veřejná navigace nabízí e-shop, kroužky/události a velodrom; administrativa
+  zůstává oddělená,
+- veřejný HTTP průchod vrátil 200 a správný titul, přihlášený browser ověřil čtyři
+  trenérské zkratky bez konzolové chyby; plná sada je 336/3004 a audit 0.
 
 ### M2.1 – provoz klubové akce
 
