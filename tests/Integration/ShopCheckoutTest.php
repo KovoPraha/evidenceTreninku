@@ -42,6 +42,20 @@ final class ShopCheckoutTest extends TestCase
         self::assertCount(1,\shopOrderListForAccount($pdo,10));self::assertSame((string)$order['public_code'],\shopOrderListForAccount($pdo,10)[0]['public_code']);self::assertSame([],\shopOrderListForAccount($pdo,11));
     }
 
+    public function testCheckoutSnapshotsEligibleRosterPriceAndRejectsStaleClubQuote():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("INSERT INTO account_person_roles VALUES(1,10,90,'guardian','approved','2020-01-01',NULL)");
+        $pdo->exec("INSERT INTO club_roster_members VALUES(1,20,90,'active','2026-01-01',NULL)");
+        \shopMemberPricingSetProductPrice($pdo,20,501,10000,'CZK',7,'Klubová cena U15.');
+        \shopCartSetQuantity($pdo,10,601,2);$old=\shopCartDetail($pdo,10);
+        self::assertSame(20000,$old['subtotal_minor']);self::assertTrue($old['items'][0]['member_price']['is_member_price']);
+        \shopMemberPricingSetProductPrice($pdo,20,501,9000,'CZK',7,'Nová klubová cena U15.');
+        try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$old['fingerprint']);self::fail('Stale member price must be rejected.');}catch(\ShopCheckoutException){}
+        $fresh=\shopCartDetail($pdo,10);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$fresh['fingerprint']);
+        self::assertSame(18000,(int)$order['total_minor']);self::assertSame(9000,(int)$pdo->query('SELECT unit_amount_minor FROM shop_order_items')->fetchColumn());
+    }
+
     public function testInvalidBankOrInsufficientStockRollsBackEverything():void
     {
         $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,6);
@@ -224,6 +238,10 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants VALUES(601,501,'TRIKO-M','{\"size\":\"M\"}','fixed',12500,'CZK',1,2100,'5.000000',1,'active',CURRENT_TIMESTAMP),(602,502,'EVENT','{}','fixed',100,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP),(603,503,'OLD','{}','fixed',100,'CZK',1,0,NULL,1,'inactive',CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');
         $pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Tričko KOVO','Klubové tričko.'),(502,'active','Kroužek','Nejde do košíku.'),(503,'inactive','Staré','Neaktivní.')");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        $pdo->exec('CREATE TABLE club_teams(id INTEGER PRIMARY KEY,name TEXT,status TEXT)');$pdo->exec("INSERT INTO club_teams VALUES(20,'U15','active')");
+        $pdo->exec('CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY,account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,valid_from TEXT,valid_to TEXT)');
+        $pdo->exec('CREATE TABLE club_roster_members(id INTEGER PRIMARY KEY,team_id INTEGER,sportovec_id INTEGER,status TEXT,valid_from TEXT,valid_to TEXT)');
+        $pdo->exec('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER)');$pdo->exec("INSERT INTO shop_product_categories VALUES(1,501,'Oblečení',1,0)");
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

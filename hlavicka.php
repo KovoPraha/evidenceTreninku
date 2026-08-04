@@ -350,6 +350,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-receipt me-2 text-success"></i>Objednávky K4</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_catalog_publication_admin.php') ?>" href="eshop_catalog_publication_admin.php">
                                 <i class="bi bi-eye me-2 text-success"></i>Aktivace katalogu</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('eshop_member_prices_admin.php') ?>" href="eshop_member_prices_admin.php">
+                                <i class="bi bi-tags me-2 text-success"></i>Klubové ceny</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_events_admin.php') ?>" href="eshop_events_admin.php">
                                 <i class="bi bi-calendar-event me-2 text-primary"></i>Klubové akce a soupisky</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_notifications_admin.php') ?>" href="eshop_notifications_admin.php">

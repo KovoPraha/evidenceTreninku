@@ -54,6 +54,12 @@ if ($product === null || $product['variants'] === []) {
 
 $isLoggedIn = isset($_SESSION['verejny_uzivatel_id']);
 $accountId = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);
+if ($product !== null && $isLoggedIn) {
+    foreach ($product['variants'] as &$variant) {
+        shopMemberPriceApplyToItem($pdo, $accountId, $variant);
+    }
+    unset($variant);
+}
 $errors = [];
 if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$isLoggedIn) {
@@ -135,6 +141,9 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h1 class="h3"><?= shopProductH($product['public_name']) ?></h1>
                         <p class="text-muted"><?= nl2br(shopProductH($product['public_summary'])) ?></p>
                         <h2 class="h5 mt-4">Vyberte variantu</h2>
+                        <?php if (!$isLoggedIn): ?>
+                            <a class="alert alert-info d-block text-decoration-none" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit pro zobrazení klubové ceny</a>
+                        <?php endif; ?>
                         <div class="vstack gap-2">
                             <?php foreach ($product['variants'] as $variant): $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']); ?>
                                 <div class="border rounded p-3">
@@ -150,7 +159,13 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </div>
                                         </div>
                                         <div class="text-end">
-                                            <div class="fw-semibold mb-2"><?= shopProductMoney((int)$variant['amount_minor'], (string)$variant['currency']) ?></div>
+                                            <?php if (($variant['member_price']['is_member_price'] ?? false) === true): ?>
+                                                <div class="small text-muted text-decoration-line-through">Veřejná cena <?= shopProductMoney((int)$variant['public_amount_minor'], (string)$variant['currency']) ?></div>
+                                                <div class="fw-semibold text-success"><?= shopProductMoney((int)$variant['amount_minor'], (string)$variant['currency']) ?></div>
+                                                <div class="small text-success mb-2">Klubová cena · <?= shopProductH($variant['member_price']['team_name']) ?></div>
+                                            <?php else: ?>
+                                                <div class="fw-semibold mb-2"><?= shopProductMoney((int)$variant['amount_minor'], (string)$variant['currency']) ?></div>
+                                            <?php endif; ?>
                                             <?php if($isLoggedIn): ?><form method="post">
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="action" value="add">

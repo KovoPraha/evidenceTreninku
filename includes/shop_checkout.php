@@ -11,6 +11,7 @@ require_once __DIR__.'/shop_beneficiary.php';
 require_once __DIR__.'/club_program.php';
 require_once __DIR__.'/club_event_shop.php';
 require_once __DIR__.'/public_velodrome_shop.php';
+require_once __DIR__.'/shop_member_pricing.php';
 
 /** @return list<array<string,mixed>> */
 function shopStorefrontProducts(PDO $pdo): array
@@ -74,6 +75,7 @@ function shopCartDetail(PDO $pdo, int $accountId): array
     $items = $statement->fetchAll(PDO::FETCH_ASSOC);
     $total = 0;$currency = null;
     foreach ($items as &$item) {
+        shopMemberPriceApplyToItem($pdo,$accountId,$item);
         $item['line_amount_minor'] = (int)$item['amount_minor'] * (int)$item['quantity'];
         $total += $item['line_amount_minor'];
         $currency ??= (string)$item['currency'];
@@ -186,6 +188,8 @@ function shopCheckoutPlace(
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql') $sql.=' FOR UPDATE';
         $itemsStatement=$pdo->prepare($sql);$itemsStatement->execute([(int)$cart['id']]);
         $items=$itemsStatement->fetchAll(PDO::FETCH_ASSOC);
+        foreach($items as &$item)shopMemberPriceApplyToItem($pdo,$accountId,$item);
+        unset($item);
         // Lock order: cart -> catalog variants -> club events -> self profile -> lessons ASC -> reservations.
         $eventItems=clubEventShopLockCheckoutItems($pdo,(int)$cart['id'],$accountId);
         $velodromeItems=publicVelodromeShopLockCheckoutItems($pdo,(int)$cart['id'],$accountId);

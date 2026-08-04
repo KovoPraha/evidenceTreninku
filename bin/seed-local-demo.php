@@ -134,6 +134,13 @@ try{
     if(isset($people[0])){kisRosterAddMember($pdo,(int)$team['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost věkové zařazení.');kisRosterAddMember($pdo,(int)$trackTeam['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost disciplínové zařazení.');}
     if(isset($people[1]))kisRosterAddMember($pdo,(int)$hobbyTeam['id'],(int)$people[1],$actorId,'manual','2026-09-01','Localhost kroužkové zařazení.');
     if(isset($people[1])){kisRosterAddMember($pdo,(int)$u13Team['id'],(int)$people[1],$actorId,'manual','2026-01-01','Localhost zdroj věkového přesunu.');kisRosterAddMember($pdo,(int)$roadTeam['id'],(int)$people[1],$actorId,'manual','2026-01-01','Localhost silniční disciplína.');kisRosterSetRolloverException($pdo,(int)$u13Team['id'],(int)$nextRaceSeason['id'],(int)$people[1],'skip',null,$actorId,'LOCALHOST ukázka individuální výjimky.',true);}
+    $demoPublicPrice=(int)$pdo->query('SELECT MIN(amount_minor) FROM shop_variants WHERE product_id='.(int)$goods['id'].' AND amount_minor>0')->fetchColumn();
+    $demoMemberPrice=max(0,intdiv($demoPublicPrice*90,100));
+    $existingMemberPrice=$pdo->prepare('SELECT amount_minor,currency,active FROM shop_member_product_prices WHERE team_id=? AND product_id=?');
+    $existingMemberPrice->execute([(int)$team['id'],(int)$goods['id']]);$existingMemberPrice=$existingMemberPrice->fetch(PDO::FETCH_ASSOC);
+    if(!$existingMemberPrice||(int)$existingMemberPrice['amount_minor']!==$demoMemberPrice||(string)$existingMemberPrice['currency']!=='CZK'||(int)$existingMemberPrice['active']!==1){
+        shopMemberPricingSetProductPrice($pdo,(int)$team['id'],(int)$goods['id'],$demoMemberPrice,'CZK',$actorId,'LOCALHOST demo: klubová cena prvního produktu pro soupisku U15.');
+    }
     $a05Extra=$pdo->prepare("SELECT id,valid_from FROM club_roster_members WHERE sportovec_id=? AND team_id<>? AND status='active' AND valid_to IS NULL");$a05Extra->execute([$a05PersonId,(int)$hobbyTeam['id']]);
     foreach($a05Extra->fetchAll(PDO::FETCH_ASSOC)as$member)kisRosterRemoveMember($pdo,(int)$member['id'],$actorId,(string)$member['valid_from'],'LOCALHOST reset scénáře A05 před novým náhledem.');
     kisRosterAddMember($pdo,(int)$hobbyTeam['id'],$a05PersonId,$actorId,'manual','2026-09-01','Localhost kroužkové zařazení pro scénář A05.');
