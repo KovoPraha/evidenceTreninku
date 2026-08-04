@@ -125,6 +125,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | nezávislá AI revize + MariaDB CI | přijato s validací | Cowork report `AUDIT-M2-AI-SIMULACE.md` obsahoval zastaralé bridge závěry; živě potvrzený nedostatek opravil `ef5ec21`: samostatný MariaDB job pro child-access a KIS transition smoke, 356/3142, oba smokes OK, 386 parse, 39/39, audit 0 |
 | vlastníkův feedback A01–A10 + AI kontext | hotovo technicky | `875c9e3`: localhost-only CSRF/admin formuláře, souhrn, bezpečný JSON se zámkem a Markdown export; `CLAUDE.md` opraven jako samostatný projekt a přidán `CURRENT_STATE.md`; browser save/reload/reset, 358/3156, 388 parse, 39/39, audit 0 |
 | M2.3b integrita KIS preview | hotovo lokálně | `26076ba`: archivně podmíněná úplná klasifikace, stabilní non-PII fingerprint, bezpečný JSON report a idempotentní demo seed; browser run #7 2/2 bez blokátoru, 364/3197, 392 parse, 40/40, audit 0 |
+| M2.3c sandbox promote/rollback | hotovo lokálně | `5caa850`: admin+CSRF+localhost, fingerprint, transakce, idempotence, audit a rollback dostupný i při driftu; browser 2/2→0/2, 369/3254, 396 parse, 41/41, audit 0 |
 
 ## Aktivní rozhodnutí
 

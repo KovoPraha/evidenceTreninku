@@ -93,7 +93,14 @@ akci a pevný důvod; neobsahuje jména, e-maily ani zdrojové identitní hodnot
 
 Detail je dostupný oprávněnému trenérovi v `kis_sync_center.php`. JSON export má
 `Cache-Control: no-store`. Stav `ready_for_test_review` znamená pouze připravenost
-k lidské kontrole na localhostu, nikoli povolení promote nebo produkčního importu.
+k lidské kontrole; sandbox promote stále vyžaduje samostatné potvrzení administrátora
+a produkční import není povolen.
+
+M2.3c přidává pouze localhost sandbox promotion. Je dostupná administrátorovi po
+CSRF kontrole, explicitním potvrzení, důvodu a shodě fingerprintu. Výsledek se
+ukládá výhradně do `kis_import_sandbox_*`; tabulky osob a členství se nemění.
+Rollback deaktivuje sandbox položky a zůstává dostupný i při pozdějším driftu
+preview. Produkční promote ani cutover tím nejsou povoleny.
 
 ## Realistická syntetická fixture W0-G
 

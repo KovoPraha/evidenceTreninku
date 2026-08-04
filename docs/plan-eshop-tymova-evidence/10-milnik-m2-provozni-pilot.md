@@ -26,12 +26,12 @@ kódu.
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
-| M2.3 zkouška migrace KIS | probíhá | 70 % | parser, matcher, raw archiv a úplný fingerprintovaný preview report existují; chybí finální exportní kontrakt a izolovaný promote/rollback |
+| M2.3 zkouška migrace KIS | probíhá | 85 % | parser, archiv, fingerprintovaný preview a izolovaný auditovaný promote/rollback existují; chybí finální exportní kontrakt a úplná parita |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
 
-Orientační stav celého M2: **69 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **72 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -152,6 +152,25 @@ Dokončený technický řez M2.3b (`26076ba`):
 - localhost-only CLI seed vyžaduje `--confirm-seed`, je idempotentní a vytvořil
   browserově ověřený běh #7 s 2/2 řádky a nulou blokátorů,
 - promote ani zápis do profilů sportovců stále není implementovaný.
+
+Dokončený technický řez M2.3c (`5caa850`):
+
+- localhost administrátor může z detailu preview provést explicitně potvrzený
+  promote do tří oddělených `kis_import_sandbox_*` tabulek,
+- služba znovu přepočítá preview, kontroluje uložený i odeslaný fingerprint,
+  úplnost, nulové blokátory, povolené akce, důvod, roli a localhost hranici,
+- promote je transakční, idempotentní a auditovaný; reapply po rollbacku zachová
+  stejný promotion záznam a přidá pravdivou auditní událost,
+- rollback deaktivuje pouze sandbox položky a zůstává dostupný i při pozdějším
+  driftu preview; žádný SQL zápis do sportovců, soupisek, plateb nebo objednávek neexistuje,
+- browser nad run #7 ověřil stav 2/2 aktivní + 1 událost a následný rollback
+  0/2 aktivní + 2 události; první průchod odhalil a opravil chybějící načtení CSRF helperu,
+- vynucené selhání uprostřed položek nezanechá promotion, položku ani auditní událost,
+- plná sada prošla 369 testy / 3254 assertions, syntaxe 396 first-party PHP souborů,
+  migrace 41/41 a Composer audit je bez nálezu.
+
+Tento sandbox ověřuje orchestrace, oprávnění a kompenzaci. Není náhradou za finální
+field/external-ID kontrakt a neumí provést ostrý cutover.
 
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
    export KIS a určit stabilní externí ID osoby.

@@ -31,7 +31,8 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - plánovaný trénink ze soupisek, očekávaní účastníci a skutečná docházka,
 - read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
-  a bezpečným JSON reportem; žádná aplikační akce zatím neexistuje,
+  a bezpečným JSON reportem; localhost admin může provést auditovaný promote a
+  rollback výhradně v odděleném anonymním sandboxu,
 - auditní osa osoby a localhost scénáře A01–A10.
 
 ## Výslovně otevřené nebo blokované
