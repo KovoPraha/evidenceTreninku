@@ -244,6 +244,7 @@ function localhostAcceptanceScenarios(string $root): array
             'expected' => 'Věkový člen se přesune, disciplína se přenese, výjimka zůstane a opakování nic nezdvojí.',
             'note' => 'Proveďte pouze nad soupiskami LOCALHOST; změna je auditovaná a není to pouhá simulace.',
             'links' => [
+                ['label' => 'Průvodce A06', 'path' => 'kis_rollover_a06_admin.php', 'scope' => 'admin'],
                 ['label' => 'Soupisky a rollover', 'path' => 'kis_rosters_admin.php', 'scope' => 'admin'],
             ],
         ],

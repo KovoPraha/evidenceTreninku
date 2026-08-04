@@ -117,10 +117,20 @@ try{
     $u13Team=kisRosterCreateSeriesTeam($pdo,(int)$u13Series['id'],(int)$raceSeason['id'],$actorId,'LOCAL-U13-2026','LOCALHOST U13 2026','Závodní cyklistika','U13','Zdroj localhost věkového přesunu.');
     $trackTeam=kisRosterCreateSeriesTeam($pdo,(int)$trackSeries['id'],(int)$raceSeason['id'],$actorId,'LOCAL-DRAHA-2026','LOCALHOST Dráha 2026','Dráha','Bez věkového přesunu','Localhost disciplínová soupiska.');
     $roadTeam=kisRosterCreateSeriesTeam($pdo,(int)$roadSeries['id'],(int)$raceSeason['id'],$actorId,'LOCAL-SILNICE-2026','LOCALHOST Silnice 2026','Silnice','Bez věkového přesunu','Localhost silniční soupiska.');
-    kisRosterCreateSeriesTeam($pdo,(int)$u15Series['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-U15-2027','LOCALHOST U15 2027','Závodní cyklistika','U15','Cíl localhost přesunu z U13.');
-    kisRosterCreateSeriesTeam($pdo,(int)$u17Series['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-U17-2027','LOCALHOST U17 2027','Závodní cyklistika','U17','Cíl localhost věkového preview.');
-    kisRosterCreateSeriesTeam($pdo,(int)$trackSeries['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-DRAHA-2027','LOCALHOST Dráha 2027','Dráha','Bez věkového přesunu','Cíl localhost carry-forward preview.');
+    $u15TargetTeam=kisRosterCreateSeriesTeam($pdo,(int)$u15Series['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-U15-2027','LOCALHOST U15 2027','Závodní cyklistika','U15','Cíl localhost přesunu z U13.');
+    $u17TargetTeam=kisRosterCreateSeriesTeam($pdo,(int)$u17Series['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-U17-2027','LOCALHOST U17 2027','Závodní cyklistika','U17','Cíl localhost věkového preview.');
+    $trackTargetTeam=kisRosterCreateSeriesTeam($pdo,(int)$trackSeries['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-DRAHA-2027','LOCALHOST Dráha 2027','Dráha','Bez věkového přesunu','Cíl localhost carry-forward preview.');
     kisRosterCreateSeriesTeam($pdo,(int)$roadSeries['id'],(int)$nextRaceSeason['id'],$actorId,'LOCAL-SILNICE-2027','LOCALHOST Silnice 2027','Silnice','Bez věkového přesunu','Cíl localhost silničního carry-forward preview.');
+    // Reset opakovatelného A06: odstraní pouze auditní běhy LOCALHOST zdrojů a
+    // deaktivuje jejich syntetické cíle. Zdrojová členství níže znovu auditovaně aktivuje.
+    $a06SourceIds=[(int)$team['id'],(int)$trackTeam['id'],(int)$u13Team['id']];
+    $a06TargetIds=[(int)$u17TargetTeam['id'],(int)$trackTargetTeam['id'],(int)$u15TargetTeam['id']];
+    $a06Placeholders=implode(',',array_fill(0,count($a06SourceIds),'?'));
+    $a06Runs=$pdo->prepare('SELECT id FROM club_roster_rollover_runs WHERE target_season_id=? AND source_team_id IN ('.$a06Placeholders.')');
+    $a06Runs->execute([(int)$nextRaceSeason['id'],...$a06SourceIds]);$a06RunIds=array_map('intval',$a06Runs->fetchAll(PDO::FETCH_COLUMN));
+    if($a06RunIds!==[]){$runPlaceholders=implode(',',array_fill(0,count($a06RunIds),'?'));$pdo->prepare('DELETE FROM club_roster_rollover_run_items WHERE run_id IN ('.$runPlaceholders.')')->execute($a06RunIds);$pdo->prepare('DELETE FROM club_roster_rollover_runs WHERE id IN ('.$runPlaceholders.')')->execute($a06RunIds);}
+    $targetPlaceholders=implode(',',array_fill(0,count($a06TargetIds),'?'));
+    $pdo->prepare("UPDATE club_roster_members SET status='removed',valid_to='2027-01-01',updated_at=CURRENT_TIMESTAMP WHERE team_id IN (".$targetPlaceholders.") AND status='active'")->execute($a06TargetIds);
     if(isset($people[0])){kisRosterAddMember($pdo,(int)$team['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost věkové zařazení.');kisRosterAddMember($pdo,(int)$trackTeam['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost disciplínové zařazení.');}
     if(isset($people[1]))kisRosterAddMember($pdo,(int)$hobbyTeam['id'],(int)$people[1],$actorId,'manual','2026-09-01','Localhost kroužkové zařazení.');
     if(isset($people[1])){kisRosterAddMember($pdo,(int)$u13Team['id'],(int)$people[1],$actorId,'manual','2026-01-01','Localhost zdroj věkového přesunu.');kisRosterAddMember($pdo,(int)$roadTeam['id'],(int)$people[1],$actorId,'manual','2026-01-01','Localhost silniční disciplína.');kisRosterSetRolloverException($pdo,(int)$u13Team['id'],(int)$nextRaceSeason['id'],(int)$people[1],'skip',null,$actorId,'LOCALHOST ukázka individuální výjimky.',true);}
