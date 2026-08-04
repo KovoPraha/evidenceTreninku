@@ -29,9 +29,9 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 96 % | backup, shop lifecycle, A02, A05–A08, A10 a jednotný master účet mají browser důkaz; zbývá závěrečná vlastníkova brána |
+| M2.6 integrovaná akceptace | probíhá | 97 % | backup, shop lifecycle, A02, A05–A08, A10, master účet a MariaDB CI smoke mají důkaz; zbývá závěrečná vlastníkova brána |
 
-Orientační stav celého M2: **65 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **66 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -319,6 +319,16 @@ Dokončený A10 řez (`4ce0f17`):
   bezprostřední běhy ponechaly počet historických resetů beze změny 26 → 26,
 - plná sada prošla 355 testy / 3135 assertions, syntaxe 386 first-party PHP souborů,
   migrace 39/39 a Composer audit je bez nálezu.
+
+Přijatý výsledek nezávislé AI revize (`ef5ec21`):
+
+- závěry o zastaralém handoffu, nefunkčním detailu produktu, chybějící klubové ceně
+  a chybových hláškách vznikly ze zastaralé bridge kopie a živá kontrola je vyvrátila,
+- potvrzený nedostatek byl pouze v CI: existující MariaDB smoke skripty se nespouštěly,
+- nový oddělený job používá MariaDB 11.4 a `pdo_mysql` a spouští child-access i KIS
+  transition/idempotency smoke na izolovaných testovacích databázích,
+- oba MariaDB smoke testy prošly lokálně, plná sada má 356 testů / 3142 assertions,
+  syntaxe 386 first-party PHP souborů, migrace 39/39 a Composer audit je bez nálezu.
 
 - deterministický seed lze bezpečně spustit opakovaně,
 - migrace jsou aktuální a idempotentní na podporovaných DB,

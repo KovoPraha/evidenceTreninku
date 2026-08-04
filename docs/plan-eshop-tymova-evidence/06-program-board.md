@@ -122,6 +122,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.6/A07 plán → docházka → sportovec | hotovo lokálně | `03774db`: vlastnická a datová ochrana plánu, neměnná kopie snapshotu ke skutečnému tréninku, přehled očekávaní/skuteční/chybějící/neočekávaní; browser 1/1/0/0 a sportovní přehled, 354/3130, 384 parse, 39/39, audit 0 |
 | M2.6/A08 událost pro dvě soupisky | hotovo lokálně | `6ae75c1`: UI nabízí oprávněné dítě právě jednou, databáze potvrzuje jednu přihlášku a dvě vyhovující soupisky; opakovatelný seed používá auditované storno místo mazání, 355/3133, 386 parse, 39/39, audit 0 |
 | M2.6/A10 auditní osa osoby | hotovo lokálně | `4ce0f17`: browser spojil objednávku, soupisky, přihlášku a přístup s pravdivými aktéry/důvody; opakovaný seed už nevytváří falešné password-reset události, 355/3135, 386 parse, 39/39, audit 0 |
+| nezávislá AI revize + MariaDB CI | přijato s validací | Cowork report `AUDIT-M2-AI-SIMULACE.md` obsahoval zastaralé bridge závěry; živě potvrzený nedostatek opravil `ef5ec21`: samostatný MariaDB job pro child-access a KIS transition smoke, 356/3142, oba smokes OK, 386 parse, 39/39, audit 0 |
 
 ## Aktivní rozhodnutí
 
