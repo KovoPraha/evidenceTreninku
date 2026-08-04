@@ -20,6 +20,9 @@ administrátor v `eshop_orders_admin.php`.
 - Ukládají se pouze údaje nutné pro párování: ID, datum, částka, měna, VS, typ a
   SHA-256 otisk. Jméno protistrany, účet, zpráva a další bankovní osobní údaje se
   do Evidence nekopírují.
+- Datum pohybu přijímá oficiální Fio tvar `RRRR-MM-DD+02:00` (obecně validní
+  offset do ±14:00), prosté `RRRR-MM-DD` a kvůli zpětné kompatibilitě také epoch
+  seconds/milliseconds. Neplatné kalendářní datum nebo offset zastaví celý běh.
 - Stejné Fio ID se stejným otiskem je bezpečná duplicita. Stejné ID s jiným
   obsahem zastaví celý běh a původní záznam se nepřepíše.
 

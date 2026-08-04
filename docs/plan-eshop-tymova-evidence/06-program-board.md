@@ -109,6 +109,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.5 registrace bez enumerace | hotovo lokálně | `b8ecdaa`: shodná veřejná odpověď pro nový i existující e-mail; 324/2907 |
 | M2.5 obnova účtu a oprávnění | technicky hotovo lokálně | `7c1490e`: hashovaný hodinový single-use reset rodiče i sportovce, revokace relací, živé guardian ověření a request-scoped oprávnění; 37/37, 330/2944, 367 lintů |
 | M2.5 localhost reset UX | hotovo lokálně | `edc6c62`: po platné žádosti se jen na localhostu ukáže testovací fragmentový odkaz; produkce zůstává pouze e-mailová; 330/2946 |
+| uzavření MEDIUM kompatibility | hotovo lokálně | `29f6029`: explicitní měna varianty/události, fail-closed UTF-8 CSV a oficiální Fio datum s offsetem; 333/2971, 367 lintů, 37/37 |
 
 ## Aktivní rozhodnutí
 
