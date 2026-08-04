@@ -96,6 +96,8 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.1 export účastníků akce | hotovo lokálně | admin-only POST+CSRF, kontrakt `m2.event-participants.v1`, oddělení akcí, neutralizace tabulkových vzorců a audit počtu/stavů |
 | integrační brána M2.1 | hotovo lokálně | 303 testů / 2603 assertions, 345 PHP souborů ověřeno, Composer audit 0 advisories a autentizovaný browser export s viditelným auditem |
 | produktové připomínky A01–A10 | čekají na vlastníka | chyby a UX připomínky zařadit před další větší funkcí M2 |
+| M2.3a KIS raw archiv | hotovo lokálně | localhost-only dry-run/explicit write, archiv mimo webroot, SHA-256 + velikost, idempotence, preview manifest a žádný promote |
+| integrační brána M2.3a | hotovo lokálně | katalog 33/33, 308/2635, 350 PHP lintů, audit 0, dvojí MariaDB archivace stejné syntetické fixture a backup 124/2 `.7` |
 
 ## Aktivní rozhodnutí
 

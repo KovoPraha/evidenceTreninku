@@ -49,3 +49,23 @@ skenovat pro skutečnou platbu. Fio import zůstává vypnutý.
 10. Projít objednávky, audit osoby a `kis_rosters_admin.php`.
 
 Před větší změnou lokální DB používejte `bin/db-backup.php` s cílem mimo webroot.
+
+## M2.3 – bezpečný KIS raw archiv
+
+Archivace je zatím povolena pouze na localhostu. Výchozí příkaz pouze ukáže
+metadata a nic nezapíše:
+
+```powershell
+$env:APP_HOST='localhost'
+php bin\kis-archive-source.php `
+  --input=C:\cesta\k\anonymnimu-kis-exportu.xlsx `
+  --kind=users `
+  --contract=kis-export-2026.1 `
+  --archive-dir=C:\xampp\backups\evidence-local\kis-imports `
+  --json
+```
+
+Teprve po kontrole hashe, velikosti a typu zdroje lze přidat
+`--confirm-archive`. Archivní adresář musí předem existovat mimo
+`C:\xampp\htdocs\evidencePavel`. Pro skutečná data nepoužívejte webroot,
+cloudový odkaz ani sdílenou složku bez řízených oprávnění.

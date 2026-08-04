@@ -7,13 +7,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední živě ověřený implementační HEAD: `1b4d9e11b2c5c81089f24e274a1aaf232220d339`
+- Poslední přijatý implementační HEAD před aktuálním řezem: `1b4d9e11b2c5c81089f24e274a1aaf232220d339`;
+  dokumentační plán je v `7435c7b`, M2.3a čeká na commit.
 - Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
   upstream `origin/main`, lokálně `ahead 64 / behind 0` bez nového fetch ověření.
-- Vlastněné necommitnuté změny tohoto dokumentačního tasku: pouze
-  `10-milnik-m2-provozni-pilot.md`, `PROMPT-CLAUDE-CODE-REVIZE-M2.md`,
-  `PROMPT-NOVE-RIDICI-VLAKNO.md`, plánový `README.md` a tento handoff;
-  aplikační kód ani databáze se nemění.
+- Vlastněné necommitnuté změny: M2.3a KIS raw archiv, migrace, CLI, testy,
+  backup kontrakt `.7` a související dokumentace. Localhost DB je 33/33;
+  produkce ani vzdálený repozitář se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -30,7 +30,15 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: M2.1 přidalo auditovaný administrační CSV export
+- Poslední dokončená akce: M2.3a přidalo neměnný archiv zdrojových KIS souborů
+  mimo webroot. Metadata obsahují verzi kontraktu, SHA-256, velikost a storage
+  key; preview běh může uložit kanonický manifest s fingerprintem. CLI je pouze
+  localhost, defaultně dry-run a zápis vyžaduje `--confirm-archive`. Syntetický
+  MariaDB průchod vytvořil právě jeden soubor a jeden DB řádek; druhé spuštění
+  vrátilo `created_file=false` a `created_record=false`. Katalog je 33/33,
+  plná sada 308/2635, 350 PHP souborů bez chyby a dependency audit bez nálezů.
+
+  Předchozí dokončená akce: M2.1 přidalo auditovaný administrační CSV export
   účastníků jedné klubové akce. Endpoint je admin-only, POST+CSRF, soubor používá
   kontrakt `m2.event-participants.v1`, neutralizuje tabulkové vzorce a neobsahuje
   hesla ani celé texty souhlasů. Export zapisuje do auditu pouze počet řádků a
@@ -88,9 +96,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   deterministický A05 náhled, A10 události i admin expirace; reálná localhost
   programová objednávka expirovala právě jednou. Katalog je lokálně 31/31.
   Produkční workflow, kód ani DB se nezměnily.
-- Další přesná akce: vlastník produktu projde A01–A10 a zapíše připomínky; řídicí
-  task je opraví jako M2.2. Bez připomínek pokračovat návrhem finálního KIS
-  migračního kontraktu M2.3 nad anonymizovanými daty.
+- Další přesná akce: přijmout a ověřit výsledek externí Claude Code revize.
+  Pokud neobsahuje HIGH regresi, vyžádat anonymizovaný vzorek finálního KIS
+  exportu a uzavřít jeho external-ID/field kontrakt pro M2.3b.
   Produkční
   Secret/config, deploy, Fio a ostrý import zůstávají samostatně blokované do
   pozdějšího výslovného rozhodnutí.
@@ -114,7 +122,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 |---|---|---|
 | M1 integrovaný prototyp | technicky dokončen; Evidence, shop, rodina, programy, soupisky, události a velodrom mají localhost řezy | vlastníkova prohlídka A01–A10 |
 | M2.1 akce | admin CSV export v `1b4d9e1`, kontrakt v1, CSRF, formula ochrana a audit | produktová kontrola sloupců v tabulkovém programu |
-| KIS migrace | parser, bezpečný matcher, import-run úložiště a parity kontrakt | finální external ID/formát, raw archiv, promote/rollback a ostrý cutover |
+| KIS migrace | parser, bezpečný matcher, import-run úložiště, parity kontrakt a M2.3a raw archiv/manifest | finální external ID/formát, promote/rollback a ostrý cutover |
 | e-shop | katalog, košík, objednávka, QR/převod, kupóny, sklad, výdej, storno/refund, program/událost/velodrom | detail/obrázky, pravidla slev pro služby, automatické platby a produkční aktivace |
 | přístup | rodič–děti, sportovní účet, bezpečné session, revokace, limiter a jednorázové tokeny | self-service reset sportovce, permission cache a produkční pepper ověření |
 | finance | ruční převod a read-only Fio shadow návrhy | wallet D-009, Fio auto-confirm, Stripe, cash top-up a kombinované platby |
@@ -164,11 +172,11 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 32/32 číslovaných migrací; opakovaný M1 seed včetně placené události aktivní | 2026-08-04 | migration check + MariaDB | ano |
-| testy | 303/2603; browser navíc ověřil M2.1 export a audit `export_participants` | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB/browser | ano |
+| lokální schema | legacy `2.20.2` + 33/33 číslovaných migrací; M2.3a artefaktová tabulka a manifest sloupec aktivní | 2026-08-04 | opakovaný migration apply/check + MariaDB | ano |
+| testy | 308/2635; 350 PHP souborů; M2.3a SQLite i dvojí MariaDB archivace syntetického zdroje prošla | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
-| lokální backup drill | post-M1 artefakt `evidence_2026-08-03_222958_4e76dbc4.sql.gz`: 123 tabulek, 2 triggery, SHA-256 `e4d43a20b008d7188af5c5b47a905893c44698c659dc78509af498bfa3d38d6b`; ownership kontrakt `2026-08-04.6` | 2026-08-04 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
+| lokální backup drill | post-M2.3a `evidence_2026-08-04_084445_f636b85b.sql.gz`: 124 tabulek, 2 triggery, SHA-256 `646f2312eb092a1ddf153f0a8d6fb4d22c5c85d93076d484e0dbbf1580f25b53`; ownership kontrakt `.7` | 2026-08-04 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
 | GitHub host key | Secret `SSH_KNOWN_HOSTS` dosud chybí | 2026-08-01 | pouze seznam názvů Secrets | ano; hodnotu nikdy nevypisovat |
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
@@ -276,6 +284,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 54 | Integrace M1.9 | 31/31, 298/2435, audit 0, deterministický A05 seed, browser A05/A10/expiry a backup 121/2 `.5` |
 | 55 | Dokončení technické části M1 | placená soupiska/událost přes shop lifecycle, 32/32, 299/2547, 339 lintů, audit 0, browser paid flow a backup 123/2 `.6` |
 | 56 | M2.1 provozní export účastníků | admin POST+CSRF, CSV kontrakt v1, izolace akce, formula neutralizace, audit; 303/2603, 345 PHP souborů a localhost browser |
+| 57 | M2.3a KIS raw archiv | externí storage, hash/size/contract metadata, preview manifest, localhost dry-run a explicit write, idempotence; 33/33, 308/2635, 350 lintů, backup 124/2 `.7` |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

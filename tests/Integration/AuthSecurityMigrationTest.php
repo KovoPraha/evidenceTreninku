@@ -57,6 +57,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804200000_public_velodrome_shop',
                 '20260804210000_shop_order_expiration',
                 '20260804230000_club_event_shop',
+                '20260804233000_kis_import_source_artifacts',
             ],
             array_keys($catalog)
         );
@@ -66,6 +67,7 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_catalog_import_runs'));
         self::assertTrue($this->tableExists($pdo, 'child_access_accounts'));
         self::assertTrue($this->tableExists($pdo, 'child_access_events'));
+        self::assertTrue($this->tableExists($pdo, 'kis_import_source_artifacts'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_cart_items'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_order_items'));
         self::assertTrue($this->columnExists($pdo, 'shop_orders', 'payment_expires_at'));

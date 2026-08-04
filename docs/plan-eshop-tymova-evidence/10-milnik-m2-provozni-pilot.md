@@ -26,12 +26,12 @@ kódu.
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | čeká na M2.0 | 0 % | nejprve chyby, potom texty a zjednodušení obrazovek |
-| M2.3 zkouška migrace KIS | základ existuje | 45 % | parser, bezpečný matcher a parity kontrakt existují; chybí finální exportní kontrakt, raw archiv, promote/rollback a úplný paritní report |
+| M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | základ existuje | 70 % | objednávka a služby fungují; chybí finální detail/obrázky, pravidlo slev pro služby a vlastníkova provozní zkouška |
 | M2.5 přístup a obnova účtu | částečně | 35 % | bezpečné session/tokeny a admin reset existují; chybí samoobslužný reset a dokončení permission cache |
 | M2.6 integrovaná akceptace | čeká | 0 % | opakovatelný browser průchod, backup a společná závěrečná brána |
 
-Orientační stav celého M2: **30 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **34 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -69,6 +69,20 @@ Brána: žádná otevřená HIGH chyba; MEDIUM chyby mají rozhodnutý termín n
 výslovné přijetí rizika; všechny opravy jsou znovu prokliknuté na localhostu.
 
 ### M2.3 – bezpečná zkouška jednorázové migrace KIS
+
+Dokončený technický řez M2.3a:
+
+- migrace `20260804233000_kis_import_source_artifacts`,
+- tabulka neměnných metadat zdroje a manifest preview běhu,
+- soubor archivu je uložen pouze mimo webroot pod odvozeným storage key,
+- v databázi je jen typ, verze kontraktu, hash, velikost, původní název a klíč;
+  celý raw obsah se do DB nekopíruje,
+- CLI `bin/kis-archive-source.php` je localhost-only, výchozí dry-run a zápis
+  vyžaduje `--confirm-archive`,
+- opakovaný archiv stejného zdroje je idempotentní a existující soubor se před
+  přijetím znovu ověří hashem a velikostí.
+
+Tento řez zatím nepovoluje promote ani ostrý import.
 
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
    export KIS a určit stabilní externí ID osoby.

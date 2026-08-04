@@ -2,13 +2,14 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/kis_match_lib.php';
+require_once __DIR__ . '/kis_source_archive.php';
 
 function kisImportJson(array $value): string
 {
     return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}';
 }
 
-function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warnings, array $sourceNames, ?int $userId): int
+function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warnings, array $sourceNames, ?int $userId, array $sourceArtifactIds = []): int
 {
     $stats = [
         'rows' => count($people),
@@ -25,20 +26,30 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
     }
 
     try {
-        $stmt = $pdo->prepare("
-            INSERT INTO kis_import_runs
-                (created_by, status, source_users, source_payments, source_rosters, stats_json, warnings_json)
-            VALUES
-                (:created_by, 'preview', :source_users, :source_payments, :source_rosters, :stats_json, :warnings_json)
-        ");
-        $stmt->execute([
+        $manifest = $sourceArtifactIds === [] ? null : kisSourceManifest($pdo, $sourceArtifactIds);
+        $hasManifestColumn = kisImportColumnExists($pdo, 'kis_import_runs', 'source_manifest_json');
+        if ($manifest !== null && !$hasManifestColumn) {
+            throw new RuntimeException('KIS import source manifest migration is missing.');
+        }
+        $columns = 'created_by,status,source_users,source_payments,source_rosters,stats_json,warnings_json';
+        $values = ":created_by,'preview',:source_users,:source_payments,:source_rosters,:stats_json,:warnings_json";
+        if ($hasManifestColumn) {
+            $columns .= ',source_manifest_json';
+            $values .= ',:source_manifest_json';
+        }
+        $stmt = $pdo->prepare('INSERT INTO kis_import_runs (' . $columns . ') VALUES (' . $values . ')');
+        $parameters = [
             ':created_by' => $userId,
             ':source_users' => $sourceNames['users'] ?? null,
             ':source_payments' => $sourceNames['payments'] ?? null,
             ':source_rosters' => $sourceNames['rosters'] ?? null,
             ':stats_json' => kisImportJson($stats),
             ':warnings_json' => kisImportJson($warnings),
-        ]);
+        ];
+        if ($hasManifestColumn) {
+            $parameters[':source_manifest_json'] = $manifest === null ? null : kisImportJson($manifest);
+        }
+        $stmt->execute($parameters);
         $runId = (int)$pdo->lastInsertId();
 
         kisImportStoreRowsAndMatches($pdo, $runId, $people, $stats);
@@ -58,6 +69,24 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
         }
         throw $e;
     }
+}
+
+function kisImportColumnExists(PDO $pdo, string $table, string $column): bool
+{
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
+        foreach ($pdo->query('PRAGMA table_info(' . $table . ')')->fetchAll(PDO::FETCH_ASSOC) as $definition) {
+            if ((string)$definition['name'] === $column) {
+                return true;
+            }
+        }
+        return false;
+    }
+    $statement = $pdo->prepare(
+        'SELECT 1 FROM information_schema.COLUMNS '
+        . 'WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?'
+    );
+    $statement->execute([$table, $column]);
+    return (bool)$statement->fetchColumn();
 }
 
 function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array $baseStats = []): array
