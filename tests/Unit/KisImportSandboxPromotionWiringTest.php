@@ -10,7 +10,7 @@ final class KisImportSandboxPromotionWiringTest extends TestCase
     public function testSyncCenterGuardsSandboxMutationAndExplainsIsolation(): void
     {
         $page = (string)file_get_contents(dirname(__DIR__, 2) . '/kis_sync_center.php');
-        foreach (["roleAtLeast('admin')", 'JE_LOKALNE', "require_once __DIR__ . '/csrf_helper.php'", 'csrf_verify', 'confirm_action', 'preview_fingerprint', 'kisImportSandboxPromote', 'kisImportSandboxRollback', 'Tabulky sportovců', 'M2.3d datový kontrakt', 'kisFieldContractStoredReport', 'field_contract=json'] as $needle) {
+        foreach (["roleAtLeast('admin')", 'JE_LOKALNE', "require_once __DIR__ . '/csrf_helper.php'", 'csrf_verify', 'confirm_action', 'preview_fingerprint', 'kisImportSandboxPromote', 'kisImportSandboxRollback', 'Tabulky sportovců', 'M2.3d datový kontrakt', 'kisFieldContractStoredReport', 'field_contract=json', 'M2.3e úplná paritní kontrola', 'kisImportStoredParityReport', 'parity_report=json'] as $needle) {
             self::assertStringContainsString($needle, $page);
         }
     }

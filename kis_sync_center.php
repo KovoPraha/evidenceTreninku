@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $detail = $runId > 0 ? kisImportRunDetail($pdo, $runId) : null;
 $previewReport = $detail && $detail['run'] ? kisImportStoredPreviewReport($detail['run']) : null;
 $fieldContractReport = $detail && $detail['run'] ? kisFieldContractStoredReport($detail['run']) : null;
+$parityReport = $detail && $detail['run'] ? kisImportStoredParityReport($detail['run']) : null;
 $sandboxPromotion = $sandboxAllowed && $runId > 0 ? kisImportSandboxPromotionForRun($pdo, $runId) : [];
 if (($_GET['preview_report'] ?? '') === 'json' && $previewReport !== null) {
     header('Content-Type: application/json; charset=utf-8');
@@ -70,6 +71,13 @@ if (($_GET['field_contract'] ?? '') === 'json' && $fieldContractReport !== null)
     header('Content-Disposition: attachment; filename="kis-field-contract-run-' . $runId . '.json"');
     header('Cache-Control: no-store');
     echo json_encode($fieldContractReport, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+    exit;
+}
+if (($_GET['parity_report'] ?? '') === 'json' && $parityReport !== null) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Content-Disposition: attachment; filename="kis-parity-run-' . $runId . '.json"');
+    header('Cache-Control: no-store');
+    echo json_encode($parityReport, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
     exit;
 }
 $runs = kisImportLatestRuns($pdo, 30);
@@ -163,6 +171,36 @@ $attention = [
                             </div>
                             <?php if ($fieldContractReport !== null): ?>
                                 <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;field_contract=json">Stáhnout kontrakt bez osobních údajů</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="border rounded p-3 mt-3">
+                        <?php $parityReady = ($parityReport['cutover_ready'] ?? false) === true; ?>
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <div class="fw-semibold">M2.3e úplná paritní kontrola
+                                    <span class="badge <?= $parityReady ? 'bg-success' : 'bg-warning text-dark' ?>">
+                                        <?= $parityReady ? 'připraveno k rozhodnutí' : 'nalezené mezery' ?>
+                                    </span>
+                                </div>
+                                <?php if ($parityReport !== null): ?>
+                                    <div class="small text-muted mt-1">
+                                        Osoby <?= (int)$parityReport['domains']['persons']['source_rows'] ?>,
+                                        nové <?= (int)$parityReport['domains']['persons']['creates'] ?>,
+                                        shodné <?= (int)$parityReport['domains']['persons']['exact_same'] ?>,
+                                        přiřazení soupisek <?= (int)$parityReport['domains']['rosters']['assignment_count'] ?>,
+                                        platební řádky <?= (int)$parityReport['domains']['payment_signals']['paid_rows'] + (int)$parityReport['domains']['payment_signals']['open_rows'] ?>.
+                                        Celkem blokátorů <?= (int)$parityReport['summary']['total_blockers'] ?>.
+                                    </div>
+                                    <?php if (in_array('payment_prescription_target_contract_missing', $parityReport['coverage_blockers'] ?? [], true)): ?>
+                                        <div class="small text-danger mt-2">Platební souhrny jsou zachycené, ale cílový model jednotlivých členských předpisů ještě není definovaný. Ostrý cutover proto zůstává zablokovaný.</div>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <div class="small text-muted mt-1">Starší import nemá uložený M2.3e paritní report.</div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($parityReport !== null): ?>
+                                <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;parity_report=json">Stáhnout paritní report bez osobních údajů</a>
                             <?php endif; ?>
                         </div>
                     </div>

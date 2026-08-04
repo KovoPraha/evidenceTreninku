@@ -76,7 +76,8 @@ try {
         if (is_array($storedManifest)
             && hash_equals((string)$manifest['fingerprint'], (string)($storedManifest['fingerprint'] ?? ''))
             && $storedReport !== null
-            && kisFieldContractStoredReport($existing) !== null) {
+            && kisFieldContractStoredReport($existing) !== null
+            && kisImportStoredParityReport($existing) !== null) {
             $respond([
                 'status' => 'existing',
                 'run_id' => (int)$existing['id'],
@@ -90,8 +91,8 @@ try {
     $runId = kisImportCreateRun(
         $pdo,
         [
-            ['kis_external_id' => 'KIS-M23D-001', '_kis_external_id_raw' => 'KIS-M23D-001', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewOne', 'narozeni' => '2012-01-01', 'uciid' => 'M23-SYNTH-001'],
-            ['kis_external_id' => 'KIS-M23D-002', '_kis_external_id_raw' => 'KIS-M23D-002', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewTwo', 'narozeni' => '2013-02-02', 'uciid' => 'M23-SYNTH-002'],
+            ['kis_external_id' => 'KIS-M23D-001', '_kis_external_id_raw' => 'KIS-M23D-001', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewOne', 'narozeni' => '2012-01-01', 'uciid' => 'M23-SYNTH-001', '_soupisky_parsed' => ['Testovaci soupiska'], 'kis_soupisky' => 'Testovaci soupiska', 'kis_aktivni' => 1, 'kis_platebne_aktivni' => 1, '_kis_payment' => ['paid_rows' => 1, 'open_rows' => 0]],
+            ['kis_external_id' => 'KIS-M23D-002', '_kis_external_id_raw' => 'KIS-M23D-002', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewTwo', 'narozeni' => '2013-02-02', 'uciid' => 'M23-SYNTH-002', '_soupisky_parsed' => ['Testovaci soupiska'], 'kis_soupisky' => 'Testovaci soupiska', 'kis_aktivni' => 1, 'kis_platebne_aktivni' => 1, '_kis_payment' => ['paid_rows' => 1, 'open_rows' => 0]],
         ],
         [
             'users' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'jmeno', 'prijmeni', 'datumnarozeni'], 'rows' => 2],
@@ -106,7 +107,8 @@ try {
     $run = $pdo->query('SELECT * FROM kis_import_runs WHERE id=' . $runId)->fetch(PDO::FETCH_ASSOC);
     $report = kisImportStoredPreviewReport($run);
     $fieldReport = kisFieldContractStoredReport($run);
-    if ($report === null || $fieldReport === null) {
+    $parityReport = kisImportStoredParityReport($run);
+    if ($report === null || $fieldReport === null || $parityReport === null) {
         throw new RuntimeException('Uložený preview report neprošel kontrolou fingerprintu.');
     }
     $respond([
@@ -114,6 +116,8 @@ try {
         'run_id' => $runId,
         'preview_status' => (string)$report['status'],
         'field_contract_status' => (string)$fieldReport['status'],
+        'parity_status' => (string)$parityReport['status'],
+        'parity_blockers' => (int)$parityReport['summary']['total_blockers'],
         'fingerprint' => (string)$report['fingerprint'],
         'url' => 'http://localhost/evidencePavel/kis_sync_center.php?run_id=' . $runId,
     ]);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/kis_match_lib.php';
 require_once __DIR__ . '/kis_source_archive.php';
 require_once __DIR__ . '/kis_import_field_contract.php';
+require_once __DIR__ . '/kis_import_parity_report.php';
 
 const KIS_IMPORT_PREVIEW_CONTRACT = 'kis-import-preview-v2';
 
@@ -61,6 +62,9 @@ function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warning
         }
         if (kisImportColumnExists($pdo, 'kis_import_runs', 'field_contract_report_json')) {
             kisImportFinalizeFieldContract($pdo, $runId, $people, $meta, $warnings);
+        }
+        if (kisImportColumnExists($pdo, 'kis_import_runs', 'parity_report_json')) {
+            kisImportFinalizeParityReport($pdo, $runId);
         }
 
         if ($ownsTransaction) {
@@ -303,6 +307,14 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
     if ($hasExternalIdColumn) {
         $columns[] = 'kis_external_id';
     }
+    $optionalSnapshots = [
+        'kis_roster_count' => static fn(array $person): int => count((array)($person['_soupisky_parsed'] ?? [])),
+        'kis_payment_paid_count' => static fn(array $person): int => max(0, (int)($person['_kis_payment']['paid_rows'] ?? 0)),
+        'kis_payment_open_count' => static fn(array $person): int => max(0, (int)($person['_kis_payment']['open_rows'] ?? 0)),
+    ];
+    foreach (array_keys($optionalSnapshots) as $optionalColumn) {
+        if (kisImportColumnExists($pdo, 'kis_import_rows', $optionalColumn)) $columns[] = $optionalColumn;
+    }
     $rowStmt = $pdo->prepare(
         'INSERT INTO kis_import_rows (' . implode(',', $columns) . ') VALUES ('
         . implode(',', array_map(static fn(string $column): string => ':' . $column, $columns)) . ')'
@@ -336,6 +348,9 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
         ];
         if ($hasExternalIdColumn) {
             $parameters[':kis_external_id'] = kisFieldNormalizeExternalId($person['kis_external_id'] ?? '') ?: null;
+        }
+        foreach ($optionalSnapshots as $optionalColumn => $resolver) {
+            if (in_array($optionalColumn, $columns, true)) $parameters[':' . $optionalColumn] = $resolver($person);
         }
         $rowStmt->execute($parameters);
         $rowId = (int)$pdo->lastInsertId();
