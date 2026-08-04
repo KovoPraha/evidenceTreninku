@@ -10,6 +10,7 @@ if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) {
 }
 
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/db.php';
 
@@ -81,7 +82,7 @@ function normalizeKey(string $jmeno, string $prijmeni): string {
 }
 
 function generateHash(string $jmeno, string $prijmeni): string {
-    return hash('sha256', uniqid($jmeno . $prijmeni, true));
+    return public_profile_token_generate();
 }
 
 function generateUciInternalCode(): string {

@@ -5,6 +5,8 @@ require_once __DIR__ . '/includes/session_security.php';
  * Veřejná karta sportovce – přístup přes hash (bez přihlášení)
  */
 app_session_start();
+header('Referrer-Policy: no-referrer');
+header('Cache-Control: no-store, private');
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/db.php';
 
@@ -65,12 +67,12 @@ function renderMereniData(array $mz): string {
 
 // 1) Autentizace – hash
 $hash = trim($_GET['hash'] ?? '');
-if (!$hash) die('Sportovec není určen.');
+if (!$hash) { http_response_code(404); exit('Profil není dostupný.'); }
 
 $stmt = $pdo->prepare('SELECT * FROM sportovci WHERE hash = ?');
 $stmt->execute([$hash]);
 $s = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$s) die('Sportovec nenalezen.');
+if (!$s) { http_response_code(404); exit('Profil není dostupný.'); }
 
 $sportovec_id   = (int)$s['id'];
 $sportovec_name = trim(($s['jmeno'] ?? '') . ' ' . ($s['prijmeni'] ?? ''));
@@ -981,9 +983,9 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 (function () {
-    const HASH        = <?= json_encode($hash) ?>;
-    const CSRF_TOKEN  = <?= json_encode(csrf_token()) ?>;
-    const DEFAULT_ROK = <?= json_encode($defaultRok) ?>;
+    const HASH        = <?= json_encode($hash,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+    const CSRF_TOKEN  = <?= json_encode(csrf_token(),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+    const DEFAULT_ROK = <?= json_encode($defaultRok,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 
     // ── Tab persistence ──────────────────────────────────────────────
     const TAB_KEY = 'sp_treninky_tab';

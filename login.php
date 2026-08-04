@@ -3,9 +3,8 @@ require_once __DIR__ . '/includes/session_security.php';
 /**
  * login.php
  * Přihlášení trenéra.
- * Podporuje postupnou migraci hesel z plaintextu na PASSWORD_DEFAULT:
- *  - Moderní hash ověří pomocí password_verify().
- *  - Legacy plaintext dočasně porovná přesně a až po shodě přehashuje.
+ * Přijímá pouze hesla uložená přes password_hash(). Legacy plaintext převádí
+ * číslovaná bezpečnostní migrace před aktivací tohoto kódu.
  */
 app_session_start();
 
@@ -16,6 +15,7 @@ if (isset($_SESSION['trener_id'])) {
 }
 
 require_once 'db.php';
+require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/password_security.php';
 require_once __DIR__ . '/includes/auth_rate_limit.php';
 
@@ -24,6 +24,10 @@ function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        $error = 'Přihlašovací formulář vypršel. Obnovte stránku a zkuste to znovu.';
+    } else {
     $login = trim($_POST['jmeno'] ?? '');
     $heslo = $_POST['heslo'] ?? '';
 
@@ -92,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Přihlášení momentálně není dostupné. Zkuste to znovu.';
         }
     }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -120,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" novalidate>
+            <?= csrf_field() ?>
             <div class="mb-3">
                 <label for="jmeno" class="form-label">Jméno nebo e-mail</label>
                 <input type="text" name="jmeno" id="jmeno" class="form-control"

@@ -5,6 +5,8 @@ require_once __DIR__ . '/includes/session_security.php';
  */
 app_session_start();
 header('Content-Type: application/json; charset=utf-8');
+header('Referrer-Policy: no-referrer');
+header('Cache-Control: no-store, private');
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 
@@ -64,5 +66,7 @@ try {
 
     echo json_encode(['ok' => true]);
 } catch (PDOException $e) {
-    echo json_encode(['ok' => false, 'msg' => 'Chyba DB: ' . $e->getMessage()]);
+    error_log('ajax_sportovec_poznamka: '.$e->getMessage());
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'msg' => 'Poznámku se nepodařilo bezpečně uložit.']);
 }

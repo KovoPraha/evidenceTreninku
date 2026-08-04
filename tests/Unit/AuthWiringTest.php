@@ -29,6 +29,8 @@ final class AuthWiringTest extends TestCase
         self::assertStringNotContainsString('auth_rate_limit_record_failure', $trainer);
         self::assertStringContainsString('catch (Throwable $e)', $trainer);
         self::assertStringContainsString('auth_session_bind_trainer', $trainer);
+        self::assertStringContainsString('csrf_verify', $trainer);
+        self::assertStringContainsString('csrf_field()', $trainer);
         self::assertStringContainsString('session_version', $trainer);
         self::assertStringContainsString(
             "Neplatné přihlašovací jméno / email nebo heslo.",

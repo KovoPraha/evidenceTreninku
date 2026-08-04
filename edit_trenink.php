@@ -633,7 +633,7 @@ if (!empty($trenink['datum'])) {
    TAGY: chipy + hidden JSON
 ---------------------------- */
 (function(){
-    const TAGS = <?= json_encode($tagyAll, JSON_UNESCAPED_UNICODE) ?>;
+    const TAGS = <?= json_encode($tagyAll, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
     const input = document.getElementById('tag_input');
     const sug   = document.getElementById('tag_suggestions');
     const wrap  = document.getElementById('tag_selected');
@@ -736,8 +736,8 @@ if (!empty($trenink['datum'])) {
    MĚŘENÍ: render řádků z hidden JSON + možnost přidat řádek
 ---------------------------- */
 (function(){
-    const CVIKY = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE) ?>;
-    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE) ?>;
+    const CVIKY = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 
     const form = document.getElementById('treninkForm');
     const btnAdd = document.getElementById('btnAddMereni');

@@ -2,9 +2,15 @@
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
+require_once __DIR__ . '/csrf_helper.php';
 if (!isset($_SESSION['trener_id'])) {
     header("Location: login.php");
     exit;
+}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_verify($_POST['csrf_token'] ?? '')) {
+    http_response_code(405);
+    header('Allow: POST');
+    exit('Neplatný požadavek.');
 }
 
 // ── Pomocné funkce ──────────────────────────────────────────────
@@ -149,7 +155,7 @@ function getTextCenterX($fontSize, $angle, $font, $text, $canvasWidth) {
 
 require_once __DIR__ . '/db.php';
 
-$trenink_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$trenink_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 if ($trenink_id <= 0) {
     die('Neplatné ID tréninku.');
 }

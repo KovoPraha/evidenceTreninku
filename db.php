@@ -27,7 +27,9 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die('Chyba připojení k databázi: ' . $e->getMessage());
+    error_log('Database connection failed: '.$e->getMessage());
+    http_response_code(503);
+    die('Databázové připojení momentálně není dostupné.');
 }
 
 // Auto-migrace DB schématu — spustí se vždy, ale provede ALTER jen pokud verze nesedí

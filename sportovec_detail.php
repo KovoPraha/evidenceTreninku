@@ -445,7 +445,7 @@ $kategorieMeta = [
     <?php if (!empty($errors)): ?>
         <script>document.addEventListener('DOMContentLoaded', function() {
             <?php foreach ($errors as $e): ?>
-            showToast(<?= json_encode(h($e)) ?>, 'danger');
+            showToast(<?= json_encode(h($e),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>, 'danger');
             <?php endforeach; ?>
         });</script>
     <?php endif; ?>

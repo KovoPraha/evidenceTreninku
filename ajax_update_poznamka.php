@@ -52,5 +52,7 @@ try {
     ]);
     echo json_encode(['ok' => true, 'message' => 'Uloženo.', 'poznamka' => $poznamkaClean]);
 } catch (Exception $e) {
-    echo json_encode(['ok' => false, 'message' => 'Chyba při ukládání: ' . $e->getMessage()]);
+    error_log('ajax_update_poznamka: '.$e->getMessage());
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'message' => 'Poznámku se nepodařilo bezpečně uložit.']);
 }

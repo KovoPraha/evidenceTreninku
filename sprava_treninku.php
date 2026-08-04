@@ -202,7 +202,10 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
                     </td>
                     <td><?= h((string)($t['trenere'] ?? '')) ?></td>
                     <td>
-                        <a href="generuj_story.php?id=<?= $tid ?>" class="btn btn-info btn-sm">Story</a>
+                        <form method="POST" action="generuj_story.php" class="d-inline">
+                            <input type="hidden" name="id" value="<?= $tid ?>"><?= csrf_field() ?>
+                            <button type="submit" class="btn btn-info btn-sm">Story</button>
+                        </form>
                         <a href="edit_trenink.php?id=<?= $tid ?>" class="btn btn-secondary btn-sm">Upravit</a>
                         <form method="POST" action="smazat_trenink.php" class="d-inline"
                               data-confirm="Opravdu smazat trénink?">

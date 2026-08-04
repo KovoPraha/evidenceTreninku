@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     die('Neplatný CSRF token.');
@@ -118,8 +119,7 @@ try {
 
     // 5) Vazba účastníků (bez výsledků)
     $find = $pdo->prepare('SELECT id FROM sportovci WHERE jmeno = ?');
-    $ins  = $pdo->prepare('INSERT INTO sportovci (jmeno, hash) VALUES (?, "")');
-    $upd  = $pdo->prepare('UPDATE sportovci SET hash = SHA2(CONCAT(id,"-",jmeno),256) WHERE id = ?');
+    $ins  = $pdo->prepare('INSERT INTO sportovci (jmeno, hash) VALUES (?, ?)');
     $link = $pdo->prepare(
         'INSERT IGNORE INTO zavod_sportovec (zavod_id, sportovec_id) VALUES (:zid, :sid)'
     );
@@ -130,9 +130,8 @@ try {
             if ($r = $find->fetch(PDO::FETCH_ASSOC)) {
                 $sid = $r['id'];
             } else {
-                $ins->execute([$jm]);
+                $ins->execute([$jm, public_profile_token_generate()]);
                 $sid = $pdo->lastInsertId();
-                $upd->execute([$sid]);
             }
             $link->execute([':zid'=>$zavodId, ':sid'=>$sid]);
         }
@@ -160,6 +159,8 @@ try {
     exit;
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
-    echo 'Chyba při ukládání závodu: ' . htmlspecialchars($e->getMessage());
+    error_log('edit_zavod.php: '.$e->getMessage());
+    http_response_code(500);
+    echo 'Závod se nepodařilo bezpečně uložit.';
     exit;
 }

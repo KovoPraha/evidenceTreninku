@@ -4,10 +4,12 @@ require_once __DIR__ . '/includes/session_security.php';
 // Stáhne importovaný soubor výsledků závodu
 
 app_session_start();
+require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
     exit;
 }
+if (!canAccess('zavod_detail')) { http_response_code(403); exit('Přístup odepřen.'); }
 require_once __DIR__ . '/db.php';
 
 // Načtení ID importu
@@ -26,11 +28,12 @@ if (!$imp) {
     die('Import nenalezen.');
 }
 
-$filename = $imp['soubor'];
+$filename = basename((string)$imp['soubor']);
 $type     = $imp['typ'];
-$path     = __DIR__ . '/nahrane_zavody/results/' . $filename;
+$baseDir  = realpath(__DIR__ . '/nahrane_zavody/results');
+$path     = $baseDir === false ? false : realpath($baseDir . DIRECTORY_SEPARATOR . $filename);
 
-if (!file_exists($path)) {
+if ($path === false || !str_starts_with($path, $baseDir . DIRECTORY_SEPARATOR) || !is_file($path)) {
     http_response_code(404);
     die('Soubor neexistuje.');
 }
@@ -49,6 +52,7 @@ header('Content-Type: ' . $ctype);
 header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
 header('Expires: 0');
 header('Cache-Control: must-revalidate');
+header('X-Content-Type-Options: nosniff');
 header('Pragma: public');
 header('Content-Length: ' . filesize($path));
 readfile($path);

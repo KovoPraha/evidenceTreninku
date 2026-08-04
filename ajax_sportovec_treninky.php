@@ -5,6 +5,8 @@
  */
 require_once __DIR__ . '/db.php';
 header('Content-Type: text/html; charset=utf-8');
+header('Referrer-Policy: no-referrer');
+header('Cache-Control: no-store, private');
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 

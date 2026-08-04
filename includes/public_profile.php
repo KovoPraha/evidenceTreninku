@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/account_person_role.php';
+require_once __DIR__ . '/public_profile_token.php';
 
 final class PublicProfileException extends RuntimeException
 {
@@ -104,7 +105,7 @@ function publicProfileSave(
                 ]);
                 $action = 'adopt_approved_self';
             } else {
-                $hash = hash('sha256', 'public-account:' . $accountId);
+                $hash = public_profile_token_generate();
                 $collision = $pdo->prepare('SELECT id FROM sportovci WHERE hash=?');
                 $collision->execute([$hash]);
                 if ($collision->fetchColumn()) {

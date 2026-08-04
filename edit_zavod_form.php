@@ -592,11 +592,11 @@ $flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_succe
 
 <script>
 // ── Předvyplnění účastníků z PHP ─────────────────────────────────────────────
-window.__ucastniciSelected = <?= json_encode($ucastniciJS, JSON_UNESCAPED_UNICODE) ?>;
+window.__ucastniciSelected = <?= json_encode($ucastniciJS, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 
 // ── Předvyplnění skupiny + podskupiny z PHP ──────────────────────────────────
 const __existingSkupina    = <?= (int)$existingSkupina ?>;
-const __existingPodskupiny = <?= json_encode($existingPodskupiny, JSON_UNESCAPED_UNICODE) ?>;
+const __existingPodskupiny = <?= json_encode($existingPodskupiny, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 
 // ── Podskupiny podle skupiny ─────────────────────────────────────────────────
 function loadPodskupiny(skupinaId, preselectIds, callback) {
@@ -760,8 +760,8 @@ document.getElementById('skupina_id').addEventListener('change', function () {
     const hiddenJson = document.getElementById('mereni_json');
     const form       = document.getElementById('zavodForm');
 
-    const CVIKY    = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE) ?>;
-    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE) ?>;
+    const CVIKY    = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
     const MERENI_INIT = <?= $mereniInitJson ?>;
 
     function getSelectedUcastnici() {

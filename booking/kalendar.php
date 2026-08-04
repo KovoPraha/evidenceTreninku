@@ -396,7 +396,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // Data všech dnů serializovaná z PHP
-const dayData = <?= json_encode($dayData, JSON_UNESCAPED_UNICODE) ?>;
+const dayData = <?= json_encode($dayData, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 const jePrihlasen = <?= $prihlaseny ? 'true' : 'false' ?>;
 const mesiceCS = ['','leden','únor','březen','duben','květen','červen','červenec','srpen','září','říjen','listopad','prosinec'];
 

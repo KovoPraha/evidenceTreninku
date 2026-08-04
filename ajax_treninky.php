@@ -237,7 +237,10 @@ foreach ($treninky as $t) {
                                 </div>
                                 <hr>
                                 <div class="d-grid gap-2">
-                                    <a href="generuj_story.php?id=<?= $treninkId ?>" class="btn btn-sm btn-info">Story</a>
+                                    <form method="POST" action="generuj_story.php" class="d-grid">
+                                        <input type="hidden" name="id" value="<?= $treninkId ?>"><?= csrf_field() ?>
+                                        <button type="submit" class="btn btn-sm btn-info">Story</button>
+                                    </form>
                                     <a href="edit_trenink.php?id=<?= $treninkId ?>" class="btn btn-sm btn-secondary">Upravit</a>
                                     <form method="POST" action="smazat_trenink.php"
                                           data-confirm="Opravdu smazat trénink?"

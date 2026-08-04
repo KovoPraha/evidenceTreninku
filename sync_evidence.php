@@ -13,6 +13,7 @@ require_once __DIR__ . '/includes/kis_sync_lib.php';
 require_once __DIR__ . '/includes/kis_import_run_lib.php';
 require_once __DIR__ . '/includes/sportovec_status_lib.php';
 require_once __DIR__ . '/includes/sportovec_history_lib.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
@@ -72,7 +73,7 @@ function normalizeKey(string $jmeno, string $prijmeni): string {
 }
 
 function generateHash(string $jmeno, string $prijmeni): string {
-    return hash('sha256', uniqid($jmeno . $prijmeni, true));
+    return public_profile_token_generate();
 }
 
 function normalizeDateToMysql($value): ?string {

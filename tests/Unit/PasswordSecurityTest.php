@@ -31,10 +31,10 @@ final class PasswordSecurityTest extends TestCase
         self::assertFalse(\trainer_password_verify('wrong password', $hash));
     }
 
-    public function testLegacyPasswordRequiresAnExactMatch(): void
+    public function testLegacyPlaintextPasswordIsNeverAccepted(): void
     {
         self::assertFalse(\trainer_password_is_modern_hash('Legacy-Secret-123'));
-        self::assertTrue(\trainer_password_verify('Legacy-Secret-123', 'Legacy-Secret-123'));
+        self::assertFalse(\trainer_password_verify('Legacy-Secret-123', 'Legacy-Secret-123'));
         self::assertFalse(\trainer_password_verify('legacy-secret-123', 'Legacy-Secret-123'));
         self::assertFalse(\trainer_password_verify('', ''));
     }

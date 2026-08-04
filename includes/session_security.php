@@ -1,6 +1,12 @@
 <?php
 declare(strict_types=1);
 
+if (PHP_SAPI !== 'cli') {
+    ini_set('display_errors','0');
+    ini_set('display_startup_errors','0');
+    ini_set('log_errors','1');
+}
+
 defined('APP_SESSION_NAME') || define('APP_SESSION_NAME', 'EVIDENCESESSID');
 defined('APP_SESSION_IDLE_TIMEOUT') || define('APP_SESSION_IDLE_TIMEOUT', 7200);
 defined('APP_SESSION_ABSOLUTE_TIMEOUT') || define('APP_SESSION_ABSOLUTE_TIMEOUT', 43200);
@@ -163,6 +169,9 @@ function app_session_send_security_headers(): void
 {
     if (!headers_sent()) {
         header('Referrer-Policy: strict-origin-when-cross-origin', true);
+        if (app_session_request_is_https() && !app_session_request_is_local()) {
+            header('Strict-Transport-Security: max-age=31536000', true);
+        }
     }
 }
 

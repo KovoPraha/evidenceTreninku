@@ -44,6 +44,18 @@ function roleBadge(string $key): string {
     return '<span class="role-badge ' . $m[1] . '">' . $m[0] . '</span>';
 }
 
+function auditRedactSensitive(mixed $value, ?string $key = null): mixed {
+    if ($key !== null && preg_match('/(?:password|heslo|secret|token|authorization|cookie|csrf)/i', $key)) return '[REDACTED]';
+    if (!is_array($value)) return $value;
+    $clean=[];foreach($value as$childKey=>$childValue)$clean[$childKey]=auditRedactSensitive($childValue,(string)$childKey);return$clean;
+}
+
+function auditSanitizeDetail(mixed $detail): string {
+    if (is_array($detail)) return json_encode(auditRedactSensitive($detail),JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_INVALID_UTF8_SUBSTITUTE);
+    $text=(string)$detail;$decoded=json_decode($text,true);if(is_array($decoded))return json_encode(auditRedactSensitive($decoded),JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_INVALID_UTF8_SUBSTITUTE);
+    return mb_substr($text,0,10000,'UTF-8');
+}
+
 function zapisAuditLog($pdo, $uzivatel_id, $akce, $tabulka, $zaznam_id, $detail) {
     $stmt = $pdo->prepare("INSERT INTO ucto_audit_log (uzivatel_id, akce, tabulka, zaznam_id, detail, ip_adresa, user_agent)
                            VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -52,7 +64,7 @@ function zapisAuditLog($pdo, $uzivatel_id, $akce, $tabulka, $zaznam_id, $detail)
         $akce,
         $tabulka,
         $zaznam_id,
-        $detail,
+        auditSanitizeDetail($detail),
         $_SERVER['REMOTE_ADDR'] ?? '',
         $_SERVER['HTTP_USER_AGENT'] ?? ''
     ]);

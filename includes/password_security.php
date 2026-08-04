@@ -9,14 +9,11 @@ function trainer_password_is_modern_hash(string $storedPassword): bool
     return $info['algo'] !== null;
 }
 
-/** Verify both modern hashes and the temporary legacy plaintext representation. */
+/** Fail closed: plaintext and malformed legacy values are never login credentials. */
 function trainer_password_verify(string $providedPassword, string $storedPassword): bool
 {
-    if (trainer_password_is_modern_hash($storedPassword)) {
-        return password_verify($providedPassword, $storedPassword);
-    }
-
-    return $storedPassword !== '' && hash_equals($storedPassword, $providedPassword);
+    return trainer_password_is_modern_hash($storedPassword)
+        && password_verify($providedPassword, $storedPassword);
 }
 
 /** Legacy values and hashes using outdated parameters both need replacement. */

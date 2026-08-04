@@ -90,5 +90,6 @@ try {
     out($res);
 
 } catch (Exception $e) {
-    out(['error' => 'Chyba: ' . $e->getMessage()], 500);
+    error_log('ajax_sportovci: '.$e->getMessage());
+    out(['error' => 'Vyhledávání momentálně není dostupné.'], 500);
 }
