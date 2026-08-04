@@ -10,6 +10,7 @@ require_once dirname(__DIR__) . '/includes/password_reset.php';
 
 $submitted = false;
 $errors = [];
+$localResetLink = null;
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $errors[] = 'Neplatný bezpečnostní token.';
@@ -21,9 +22,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 passwordResetRequest(
                     $pdo,
                     $identifier,
-                    static function (string $email, string $token): bool {
+                    static function (string $email, string $token) use (&$localResetLink): bool {
                         $link = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
                             . '/evidence/booking/nove_heslo.php#token=' . rawurlencode($token);
+                        if (app_session_request_is_local()) {
+                            $localResetLink = 'nove_heslo.php#token=' . rawurlencode($token);
+                            return true;
+                        }
                         return @mail(
                             $email,
                             'Obnova hesla — Kovopraha',
@@ -48,6 +53,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <h1 class="h4">Obnova hesla</h1>
 <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></div><?php endforeach; ?>
 <?php if ($submitted): ?><div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, poslali jsme další postup na příslušný e-mail.</div>
+<?php if ($localResetLink !== null): ?><div class="alert alert-warning"><strong>Jen localhost:</strong> e-mail se zde neposílá. <a class="alert-link" href="<?= htmlspecialchars($localResetLink, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">Otevřít testovací odkaz pro obnovu</a>.</div><?php endif; ?>
 <?php else: ?><p class="text-muted">Zadejte e-mail rodičovského účtu nebo přihlašovací jméno sportovce.</p><form method="post"><?= csrf_field() ?>
 <div class="mb-3"><label class="form-label">E-mail nebo přihlašovací jméno</label><input class="form-control" name="identifier" autocomplete="username" required autofocus></div>
 <button class="btn btn-primary w-100">Poslat odkaz pro obnovu</button></form><?php endif; ?>

@@ -17,6 +17,8 @@ final class PasswordResetWiringTest extends TestCase
         self::assertStringContainsString('auth_rate_limit_reserve_attempt', $request);
         self::assertStringContainsString("nove_heslo.php#token=", $request);
         self::assertStringContainsString('Pokud účet existuje', $request);
+        self::assertStringContainsString('app_session_request_is_local()', $request);
+        self::assertStringContainsString('Jen localhost:', $request);
         self::assertStringContainsString('csrf_verify', $consume);
         self::assertStringContainsString('window.location.hash.slice(1)', $consume);
         self::assertStringContainsString('history.replaceState', $consume);
