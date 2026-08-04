@@ -58,6 +58,15 @@ final class AuthWiringTest extends TestCase
         self::assertStringContainsString('auth_session_bind_trainer', $sso);
     }
 
+    public function testRegistrationDoesNotRevealExistingEmail(): void
+    {
+        $registration = $this->source('booking/registrace.php');
+
+        self::assertStringNotContainsString('Tento email je již registrován', $registration);
+        self::assertStringContainsString('brání zjišťování existence účtu', $registration);
+        self::assertStringContainsString('Pokud lze účet s touto adresou vytvořit', $registration);
+    }
+
     public function testSensitiveLinksUseFragmentsAndLogoutRequiresPostWithCsrf(): void
     {
         $registration = $this->source('booking/registrace.php');

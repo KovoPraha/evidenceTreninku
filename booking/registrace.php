@@ -14,6 +14,7 @@ if (isset($_SESSION['verejny_uzivatel_id'])) {
 
 $errors  = [];
 $success = false;
+$existingAccount = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -42,12 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Kontrola duplicity
             $st = $pdo->prepare("SELECT id FROM verejni_uzivatele WHERE email=?");
             $st->execute([$email]);
-            if ($st->fetchColumn()) {
-                $errors[] = 'Tento email je již registrován. <a href="prihlaseni.php">Přihlaste se</a>.';
-            }
+            $existingAccount = $st->fetchColumn() !== false;
         }
 
-        if (empty($errors)) {
+        if (empty($errors) && $existingAccount) {
+            // Stejná odpověď jako u nové registrace brání zjišťování existence účtu.
+            $success = true;
+        }
+
+        if (empty($errors) && !$existingAccount) {
             $verification = one_time_token_issue(ONE_TIME_TOKEN_EMAIL_VERIFICATION, 86400);
             try {
                 $pdo->beginTransaction();
@@ -123,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($success): ?>
                 <div class="alert alert-success text-center">
                     <i class="bi bi-envelope-check fs-2 d-block mb-2"></i>
-                    Registrace proběhla. Zkontrolujte email a klikněte na ověřovací odkaz.
+                    Pokud lze účet s touto adresou vytvořit, poslali jsme na ni další postup.
                 </div>
             <?php else: ?>
 
