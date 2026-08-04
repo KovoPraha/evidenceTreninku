@@ -45,6 +45,8 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringContainsString("'archived-a05-'.(int)\$duplicateId.'@localhost.invalid'", $seed);
         self::assertStringContainsString('kisRosterRemoveMember($pdo', $seed);
         self::assertStringContainsString('childAccessSetActive($pdo', $seed);
+        self::assertStringContainsString('SELECT id,login_name,password_hash,active FROM child_access_accounts', $seed);
+        self::assertStringContainsString("if(!password_verify(\$childPassword,(string)\$childAccess['password_hash']))childAccessResetPassword", $seed);
         self::assertStringContainsString('public_profile_token_generate()', $seed);
         self::assertStringContainsString("s.email='a05-transition@localhost.test'", $seed);
         self::assertStringContainsString('accountPersonRoleRevoke(', $seed);

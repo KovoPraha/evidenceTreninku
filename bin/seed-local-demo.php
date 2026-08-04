@@ -171,9 +171,9 @@ try{
     $publicProfile=publicProfileSave($pdo,$accountId,'Testovací','Rodič','1985-01-01','+420 777 000 001');
     $childSportovecId=(int)($people[0]??0);$childLogin='localhost-sportovec';$childPassword='LocalhostSportovec123!';
     if($childSportovecId<1)throw new RuntimeException('local_demo_child_person_missing');
-    $childAccess=$pdo->prepare('SELECT id,login_name,active FROM child_access_accounts WHERE sportovec_id=?');$childAccess->execute([$childSportovecId]);$childAccess=$childAccess->fetch(PDO::FETCH_ASSOC);
+    $childAccess=$pdo->prepare('SELECT id,login_name,password_hash,active FROM child_access_accounts WHERE sportovec_id=?');$childAccess->execute([$childSportovecId]);$childAccess=$childAccess->fetch(PDO::FETCH_ASSOC);
     if(!$childAccess){$childCreated=childAccessCreate($pdo,$childSportovecId,$childLogin,$childPassword,$actorId,'LOCALHOST demo: vytvoření omezeného přístupu sportovce.');$childAccessId=(int)$childCreated['access_account_id'];}
-    else{$childAccessId=(int)$childAccess['id'];$childLogin=(string)$childAccess['login_name'];childAccessResetPassword($pdo,$childAccessId,$childPassword,$actorId,'LOCALHOST demo: obnova testovacího hesla sportovce.');if((int)$childAccess['active']!==1)childAccessSetActive($pdo,$childAccessId,true,$actorId,'LOCALHOST demo: obnovení přístupu sportovce.');}
+    else{$childAccessId=(int)$childAccess['id'];$childLogin=(string)$childAccess['login_name'];if(!password_verify($childPassword,(string)$childAccess['password_hash']))childAccessResetPassword($pdo,$childAccessId,$childPassword,$actorId,'LOCALHOST demo: obnova testovacího hesla sportovce.');if((int)$childAccess['active']!==1)childAccessSetActive($pdo,$childAccessId,true,$actorId,'LOCALHOST demo: obnovení přístupu sportovce.');}
     $velodrome=$pdo->query("SELECT id FROM sportovist WHERE kod='velodrom' ORDER BY id LIMIT 1")->fetchColumn();
     if(!$velodrome){$velodrome=$pdo->query("SELECT id FROM sportovist WHERE LOWER(nazev) LIKE '%velodrom%' ORDER BY id LIMIT 1")->fetchColumn();if($velodrome)$pdo->prepare("UPDATE sportovist SET kod='velodrom',je_verejne=1,aktivni=1 WHERE id=?")->execute([(int)$velodrome]);}
     else $pdo->prepare('UPDATE sportovist SET je_verejne=1,aktivni=1 WHERE id=?')->execute([(int)$velodrome]);
