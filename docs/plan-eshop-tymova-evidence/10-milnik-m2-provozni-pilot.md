@@ -29,9 +29,9 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 72 % | backup, shop lifecycle, A02, A05 a jednotný master účet mají browser důkaz; zbývají KIS scénáře A06–A08/A10 a závěrečná brána |
+| M2.6 integrovaná akceptace | probíhá | 78 % | backup, shop lifecycle, A02, A05, A06 a jednotný master účet mají browser důkaz; zbývají A07–A08/A10 a závěrečná brána |
 
-Orientační stav celého M2: **56 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **58 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -251,6 +251,21 @@ Dokončený druhý browser řez (4. 8. 2026, bez změny kódu):
   storno nezaplacené objednávky jej vrátilo přesně na 2 bez požadavku na refund,
 - browser konzole nezaznamenala žádnou chybu a závěrečné read-only DB ověření
   potvrdilo shodu objednávek, plateb, rezervací, přihlášky i skladu.
+
+Dokončený A06 řez (`dde0f3e`):
+
+- localhost-only admin průvodce spojil tři dříve oddělené operace do jednoho
+  souhrnného náhledu a jednoho potvrzeného průchodu,
+- fingerprinty se kontrolují znovu před zápisem a každý dílčí rollover zůstává
+  auditovaný a idempotentní,
+- browser provedl U15 → U17, přenos dráhové disciplíny a U13 → U15; výsledek byl
+  3 přesunutí a 2 zachované individuální výjimky,
+- v každé cílové soupisce vzniklo právě jedno aktivní členství a opakované otevření
+  už nenabídlo další zápis,
+- seed po skutečném průchodu odstranil pouze syntetické A06 běhy, deaktivoval
+  testovací cíle a znovu připravil tři čekající náhledy pro další testování,
+- plná sada prošla 349 testy / 3081 assertions, first-party lint 379 souborů,
+  migrace 38/38 a Composer audit je bez nálezu.
 
 - deterministický seed lze bezpečně spustit opakovaně,
 - migrace jsou aktuální a idempotentní na podporovaných DB,

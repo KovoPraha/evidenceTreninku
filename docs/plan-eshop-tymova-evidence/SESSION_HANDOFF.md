@@ -7,9 +7,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `efa1ca8`.
-- Po implementačním commitu `efa1ca8` zůstává rozpracovaná pouze tato dokumentace;
-  větev `main`, upstream `origin/main`, lokálně `ahead 95 / behind 0` bez nového
+- Poslední přijatý implementační HEAD: `dde0f3e`.
+- Po implementačním commitu `dde0f3e` zůstává rozpracovaná pouze tato dokumentace;
+  větev `main`, upstream `origin/main`, lokálně `ahead 97 / behind 0` bez nového
   fetch ověření.
 - Localhost DB je 38/38; produkce ani vzdálený repozitář se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -28,7 +28,18 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `efa1ca8` zpřístupňuje veřejný portál bez registrace a master účet
+- Poslední dokončená akce: `dde0f3e` uzavírá provozní průchod A06. Nový
+  localhost-only admin průvodce ukáže v jednom náhledu věkový postup U15→U17,
+  přenos dráhové disciplíny a U13→U15 se zachovanou individuální výjimkou.
+  Souhrnný i dílčí fingerprint se před zápisem znovu ověřují. Browser provedl
+  tři auditní běhy: 3 přesuny, 2 výjimky, právě jedno aktivní členství v každém
+  cíli a po dokončení žádné další tlačítko zápisu. Následný seed odstranil pouze
+  syntetické A06 běhy a vrátil všechny tři kroky do čekajícího náhledu, takže A07
+  začíná na čistých datech. Plná sada je 349/3081, lint 379, migrace 38/38 a audit
+  0. Produkce ani vzdálený Git se nezměnily. Další konkrétní akce: A07 – propojení
+  plánované soupisky se skutečnou docházkou a sportovním přehledem.
+
+  Předchozí dokončená akce: `efa1ca8` zpřístupňuje veřejný portál bez registrace a master účet
   používá jeden login pro trenérskou Evidenci i zákaznický e-shop. Veřejné jsou
   katalog, detail produktu, kroužky/události, velodrom, rezervační kalendář a nový
   bezpečný rozvrh zveřejněných tréninků; košík, přihláška a rezervace vyžadují
@@ -228,8 +239,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   deterministický A05 náhled, A10 události i admin expirace; reálná localhost
   programová objednávka expirovala právě jednou. Katalog je lokálně 31/31.
   Produkční workflow, kód ani DB se nezměnily.
-- Další přesná akce: pokračovat v M2.6 scénářem A06 (věkový rollover a přenos
-  disciplíny s výjimkou), potom A07–A08 a A10 a závěrečná brána.
+- Další přesná akce: pokračovat v M2.6 scénářem A07 (plánovaný trénink ze
+  soupisek → skutečná docházka → sportovní přehled), potom A08 a A10 a závěrečná brána.
   Paralelně lze po dodání anonymizovaného vzorku
   uzavřít external-ID a field kontrakt finálního KIS exportu pro M2.3b.
   Produkční
@@ -247,7 +258,7 @@ kódu. Produkční aktivace se do nich nepočítá jako hotová bez živého dů
 | K2 – účty, osoby a rodič–dítě | 92 % | self-service obnova sportovního hesla, stabilní KIS identifikátor a bezpečné párování finálního exportu |
 | K3 – akce a přihlášky | 92 % | produktová kontrola exportu, rozhodnutí o ručních změnách čekací listiny a produkční UX |
 | K4 – objednávky a platby | 96 % | úplný vlastnický průchod všech typů košíku, ověřit Fio shadow návrhy a samostatně schválit automatické potvrzení/Stripe |
-| K5 – náhrada starého KIS | 92 % | A05 technicky i browserem uzavřeno; zbývá vlastníkova prohlídka A10, finální jednorázový import a cutover |
+| K5 – náhrada starého KIS | 94 % | A05 a A06 technicky i browserem uzavřeny; zbývá A07–A08/A10, finální jednorázový import a cutover |
 
 ## Rychlý aktuální stav pro další task
 
@@ -433,6 +444,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 70 | M2.2/A02 `18deb9c` | sportovní souhrn, české stavy/datumy, společná homepage a browser IDOR důkaz jediné identity; 337/3014, 367 lintů, 37/37, audit 0 |
 | 71 | M2.6/A05 `8647bce` | kanonický demo sportovec, auditovaný přechod a pravdivý no-op nového náhledu; reset zpět před přechod; 338/3025, 367 lintů, 37/37, audit 0 |
 | 72 | M2.2/M2.5 veřejnost + jednotný účet `efa1ca8` | veřejný read-only katalog a rozvrhy, akce po loginu, jedna trenérská/zákaznická identita a společný reset; 346/3063, 375 lintů, 38/38, audit 0 |
+| 73 | M2.6/A06 `dde0f3e` | společný preview/fingerprint, 3 auditní běhy, 3 přesuny, 2 zachované výjimky, žádná duplicita a reset zpět před A06; 349/3081, 379 lintů, 38/38, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
