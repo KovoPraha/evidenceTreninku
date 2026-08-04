@@ -29,9 +29,9 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 97 % | backup, shop lifecycle, A02, A05–A08, A10, master účet a MariaDB CI smoke mají důkaz; zbývá závěrečná vlastníkova brána |
+| M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
 
-Orientační stav celého M2: **66 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **67 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -329,6 +329,19 @@ Přijatý výsledek nezávislé AI revize (`ef5ec21`):
   transition/idempotency smoke na izolovaných testovacích databázích,
 - oba MariaDB smoke testy prošly lokálně, plná sada má 356 testů / 3142 assertions,
   syntaxe 386 first-party PHP souborů, migrace 39/39 a Composer audit je bez nálezu.
+
+Dokončený nástroj vlastníkovy brány (`875c9e3`):
+
+- každá karta A01–A10 ukládá výsledek, důležitost a pozorované/očekávané chování,
+- zápis je pouze na loopbacku, vyžaduje administrátora a CSRF a používá omezené
+  enumy, délky, ochranu proti symlinku a zamčený JSON zápis,
+- lokální soubor je ignorovaný Gitem; export vytvoří kontrolovatelný Markdown pro
+  Cowork nebo vědomý commit bez automaticky načtených hesel a osobních dat,
+- browser ověřil 0/10 → PASS 1/9 → zpět na čistých 0/10 včetně reloadu a flash zprávy,
+- `CLAUDE.md` už netvrdí, že jde o submodule Velocoty, a odkazuje na krátký
+  `docs/CURRENT_STATE.md` jako aktuální vstup pro externí AI,
+- plná sada prošla 358 testy / 3156 assertions, syntaxe 388 first-party PHP souborů,
+  migrace 39/39 a Composer audit je bez nálezu.
 
 - deterministický seed lze bezpečně spustit opakovaně,
 - migrace jsou aktuální a idempotentní na podporovaných DB,

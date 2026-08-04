@@ -7,11 +7,12 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `ef5ec21`.
-- Implementace `ef5ec21` i navazující dokumentační záznam jsou commitnuté; větev
-  `main`, upstream `origin/main`, lokálně `ahead 107 / behind 0` bez nového fetch
-  ověření a s čistým pracovním stromem.
-- Localhost DB je 39/39; produkce ani vzdálený repozitář se nemění.
+- Poslední přijatý implementační HEAD: `875c9e3`.
+- Implementace `875c9e3` i navazující dokumentační záznam jsou commitnuté; větev
+  `main`, upstream `origin/main`, před dokumentačním commitem živě ověřeno
+  `ahead 108 / behind 0`; po dokumentačním commitu je k pushi 109 commitů.
+- Localhost DB je 39/39. Vzdálený repozitář se v této session aktualizuje pouze
+  běžným pushnutím `main`; produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -28,7 +29,19 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `ef5ec21` přijímá jediný živě potvrzený technický nález
+- Poslední dokončená akce: `875c9e3` připravuje skutečnou vlastníkovu/Cowork bránu.
+  Každá karta A01–A10 na localhost rozcestníku ukládá PASS/PARTIAL/FAIL/BLOCKED,
+  důležitost a pozorované/očekávané chování. Zápis je admin+CSRF, omezený enumy a
+  délkami, chráněný proti symlinku a zamčený; lokální JSON je ignorován Gitem.
+  Markdown export je určen k ruční kontrole a vědomému commitu bez automaticky
+  načtených hesel či osobních dat. Browser potvrdil save/reload/souhrn a návrat na
+  čistých 0/10. Kořenový `CLAUDE.md` už neoznačuje aplikaci jako submodule Velocoty
+  a nový `docs/CURRENT_STATE.md` dává Coworku krátký aktuální vstup. Plná sada je
+  358/3156, syntaxe 388 souborů, migrace 39/39 a Composer audit 0. Produkce se
+  nezměnila. Další konkrétní akce: vlastník nebo Cowork projde A01–A10 a uloží
+  výsledky; blokující a důležité připomínky se potom vypořádají.
+
+  Předchozí dokončená akce: `ef5ec21` přijímá jediný živě potvrzený technický nález
   nezávislé Cowork revize. CI má nový samostatný job s MariaDB 11.4 a `pdo_mysql`,
   který spouští existující child-access a KIS transition/idempotency smoke skripty na
   izolovaných testovacích databázích. Oba smokes prošly také lokálně. Cowork report je
@@ -363,13 +376,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db`, A08 `6ae75c1`, A10 `4ce0f17` | 2026-08-04 | lokální Git bez nového fetch | ano |
+| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f`, M2.6 backup `fdbe30c`, seed/browser `4090bdc`, A02 `18deb9c`, A05 `8647bce`, A06 `dde0f3e`, A07 `03774db`, A08 `6ae75c1`, A10 `4ce0f17`, feedback `875c9e3` | 2026-08-04 | lokální Git + `git fetch origin`, před docs commitem ahead 108 / behind 0 | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | legacy `2.20.2` + 37/37 číslovaných migrací; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | 356/3142; oba MariaDB smoke skripty prošly lokálně a nový CI job je spouští na MariaDB 11.4; 386 first-party syntaxí, 39/39 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost MariaDB | ano |
+| testy | 358/3156; browser feedback 0/10→1/9→0/10, oba MariaDB smokes, 388 first-party syntaxí, 39/39 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -502,6 +515,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 76 | M2.6/A08 `6ae75c1` | jedna přihláška oprávněného dítěte přes dvě cílové soupisky, UI bez duplicit a auditovaný opakovatelný seed reset; 355/3133, 386 parse, 39/39, audit 0 |
 | 77 | M2.6/A10 `4ce0f17` | browser auditní osy objednávka/soupiska/přihláška/přístup, pravdiví aktéři a důvody, seed bez falešných password-reset událostí; 355/3135, 386 parse, 39/39, audit 0 |
 | 78 | Cowork validace + MariaDB CI `ef5ec21` | zastaralé bridge závěry označeny, potvrzený CI nedostatek opraven jobem MariaDB 11.4 pro dva smoke skripty; 356/3142, 386 parse, 39/39, audit 0 |
+| 79 | feedback + aktuální AI kontext `875c9e3` | admin+CSRF výsledky A01–A10, zamčený ignorovaný JSON, Markdown export, opravený samostatný rozsah projektu v CLAUDE a nový CURRENT_STATE; 358/3156, 388 parse, 39/39, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

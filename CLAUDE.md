@@ -1,72 +1,61 @@
-# Evidence Tréninků — CLAUDE.md
+# Evidence + e-shop + KIS — CLAUDE.md
 
-Projektový kontext pro Claude Code. Tento soubor slouží jako rychlý přehled pro AI asistenta.
+Projektový vstupní kontext pro Claude Code a Cowork. Před auditem nebo změnou vždy
+nejprve přečti [aktuální stav](docs/CURRENT_STATE.md) a kanonický
+[session handoff](docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md). Starší roadmapy
+a historické sekce tohoto souboru nejsou autoritou pro aktuální procenta ani stav funkcí.
 
-## Projekt
+## Aktuální produktový rozsah
 
-Webová aplikace pro správu tréninků, sportovců a závodů cyklistického klubu. PHP procedurální styl bez frameworku.
+Jde o samostatnou integrovanou aplikaci cyklistického klubu:
 
-**Nadřazená aplikace:** Tato aplikace je sub-modulem platformy **Velocota** (klubový portál Kovopraha). Viz `docs/integrace-velocota.md` pro plný integrační kontext.
+- původní Evidence tréninků,
+- veřejný a členský e-shop,
+- rodinné a sportovní účty,
+- KIS funkce: osoby, soupisky, programy, události, docházka a audit.
 
-## Plánovaná rozšíření — přehled záměrů
+Projekt **není submodulem Velocoty**. Na stejném serveru může výhledově sdílet
+uživatele, ale větší propojení s projektem Velocota není schválený produktový plán.
+Historický SSO bridge a `velo_user_id` mohou v repozitáři zůstat kvůli kompatibilitě;
+nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového rozhodnutí.
 
-> Změny nejsou implementovány. Viz `docs/roadmapa-rozsireni.md` pro plný plán.
+## Co je dnes implementováno
 
-| Změna | Fáze | Stav |
-|-------|------|------|
-| Propojení sportovců s veřejnými profily (`verejni_uzivatele.sportovec_id`) | 1 | ⏳ Plánováno |
-| Kreditní wallet (`verejni_uzivatele.kredit_zustatek` + tabulka `kredit_pohyby`) | 1 | ⏳ Plánováno |
-| API bridge pro externí e-shop (složka `api/`, SSO tokeny) | 2 | ⏳ Plánováno |
-| Jednotný profil (booking + e-shop pod jedním účtem) | 2 | ⏳ Plánováno |
+- společná veřejná homepage a veřejně čitelný katalog, události, velodrom a rozvrh,
+- jeden účet pro zákaznickou část a trenérskou roli,
+- rodič s více dětmi a samostatný omezený sportovní účet,
+- katalog, klubové ceny podle soupisek, košík, QR/převod, objednávky, sklad,
+  kupóny, storno, refundace, příprava a výdej,
+- kroužkové programy a období, závodní i školní soupisky, rollover a výjimky,
+- události cílené na více soupisek, kapacity a čekací listina,
+- plánovaný trénink ze soupisek, očekávaní účastníci a skutečná docházka,
+- read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
+- auditní osa osoby a localhost scénáře A01–A10.
 
-**Hlavní architektonické rozhodnutí (nutno rozhodnout před Fází 2):**
-- Kde je „master" identity — Evidence nebo e-shop?
-- REST API nebo sdílená DB pro komunikaci s e-shopem?
-- Mají kredity expiraci?
+## Výslovně otevřené nebo blokované
 
----
+- závěrečná uživatelská prohlídka A01–A10 a vypořádání připomínek,
+- finální jednorázový KIS exportní kontrakt, promote/rollback, parita a cutover,
+- produkční doručování reset e-mailů a produkční konfigurace tajemství,
+- Stripe, automatické Fio potvrzení, kreditní wallet a TrainingPeaks,
+- produkční deploy bez výslovného souhlasu vlastníka.
 
-## Integrace Velocota — klíčový kontext pro cowork
+## Povinné hranice pro AI audit
 
-> Čti toto VŽDY před úpravou auth, session nebo navigace.
+- localhost lze mutovat pouze přes standardní UI a pouze syntetickými daty
+  `LOCALHOST` / `NEPLATIT`,
+- produkci, ostrá data a vzdálený Git neměň bez výslovné autorizace,
+- aktuální důkaz má přednost před starou dokumentací nebo bridge kopií,
+- při rozporu ověř místní Git, PHP testy, migrace a živý browser,
+- výsledky prohlídky zapisuj na `testovaci_scenare.php`; Markdown export je určen
+  k revizi a teprve potom k vědomému přidání do Gitu,
+- hesla a ostré osobní údaje do reportů ani exportu nevkládej.
 
-| Oblast | Stav | Soubor |
-|--------|------|--------|
-| SSO bridge (auth) | ✅ připraveno | `auth/sso_bridge.php` |
-| Přepínač integrace | ✅ připraveno | `config.php` (z `config.example.php`) |
-| DB migrace (velo_user_id) | ✅ v 2.18.0 | `includes/auto_migrace.php` |
-| Podmíněná navigace | ⏳ TODO | `hlavicka.php` |
-| Booking SSO | ⏳ TODO (Fáze 2) | `booking/prihlaseni.php` |
+## Historická kompatibilita Velocota
 
-### Standalone vs. integrovaný mód
-
-```php
-// config.php
-define('VELOCOTA_INTEGRATION', false); // lokální vývoj — vlastní login.php
-define('VELOCOTA_INTEGRATION', true);  // produkce — SSO z Velocoty
-```
-
-Standalone mód (`login.php`) musí vždy zůstat funkční pro lokální vývoj.
-
-### Session klíče — KONTRAKT S VELOCOTOU
-
-Velocota zapíše, Evidence čte přes `auth/sso_bridge.php`:
-
-| Velocota klíč | Evidence mapuje na |
-|---------------|-------------------|
-| `velo_user_id` | `treneri.velo_user_id` → `$_SESSION['trener_id']` |
-| `velo_role` | `trener\|hlavni_trener\|admin` → `$_SESSION['role']` |
-| `velo_jmeno` | `$_SESSION['trener_jmeno']` |
-| `velo_email` | lookup v `treneri.email` |
-
-**Tyto klíče nesmíš přejmenovat bez koordinace s Velocota týmem.**
-
-### Co neměnit bez koordinace
-
-- `auth/sso_bridge.php` — kontrakt s Velocotou
-- `treneri.velo_user_id` sloupec
-- `login.php` — musí zůstat pro standalone mód
-- `booking/` auth flow — čeká na rozhodnutí fáze 2
+`auth/sso_bridge.php`, `treneri.velo_user_id` a přepínač `VELOCOTA_INTEGRATION`
+jsou starší volitelná kompatibilita. Standalone přihlášení musí zůstat funkční.
+Jakoukoli novou integraci nejprve popiš jako produktové rozhodnutí; nepředpokládej ji.
 
 ## Technologie
 

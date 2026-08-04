@@ -32,3 +32,17 @@ reset pravdivě označí jako nedostupný.
 Rozcestník sám kromě výslovně potvrzené obnovy localhost seedu nic nemění. Ostatní
 mutace se provedou až na cílových obrazovkách a pouze po jejich běžném potvrzení,
 CSRF kontrole a autorizaci.
+
+## Výsledky prohlídky
+
+Každá karta A01–A10 má localhost-only formulář s výsledkem `PASS`, `PARTIAL`,
+`FAIL`, `BLOCKED` nebo `Netestováno`, důležitostí a poli pozorované/očekávané
+chování. Zápis vyžaduje administrátora a CSRF token. Hodnoty mají pevné enumy,
+poznámky nejvýše 4000 znaků a ukládají se se zámkem do
+`var/acceptance-feedback.json`. Soubor je v `.gitignore`, takže se do GitHubu
+nemůže dostat omylem.
+
+Tlačítko **Stáhnout výsledky pro GitHub / Cowork** vytvoří Markdown tabulku bez
+hesel nebo automaticky načtených osobních dat. Ručně zadané poznámky musí vlastník
+před commitem zkontrolovat. Reset demo databáze výsledky nemaže, takže lze
+postupně projít role v oddělených relacích.
