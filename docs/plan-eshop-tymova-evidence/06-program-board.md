@@ -102,6 +102,8 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | integrační brána M2.4a | hotovo lokálně | 33/33 migrací, 313/2664, 354 PHP lintů, audit 0 a přihlášený browser průchod zboží i kroužku včetně vyčištění košíku |
 | M2.4b rozsah kupónů | hotovo lokálně | neměnná maska zboží/kroužek/událost/velodrom, výchozí pouze zboží, způsobilý mezisoučet a auditovaný redemption snapshot |
 | integrační brána M2.4b | hotovo lokálně | 34/34 migrací, 315/2707, 355 PHP lintů, audit 0; browser potvrdil zamítnutí `LOCAL10` na kroužek, slevu na zboží i administrační rozsah |
+| M2.4c checkout hardening z externí revize | hotovo lokálně | bezpečný opakovaný nákup stornovaného kroužku, legacy kapacita velodromu a součet více dětí stejné události v jednom košíku |
+| integrační brána M2.4c | hotovo lokálně | 35/35 migrací na localhost MariaDB, 318/2774, 356 PHP lintů a audit 0; produkce beze změny |
 
 ## Aktivní rozhodnutí
 

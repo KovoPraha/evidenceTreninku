@@ -27,7 +27,7 @@ kódu.
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | čeká na M2.0 | 0 % | nejprve chyby, potom texty a zjednodušení obrazovek |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
-| M2.4 provozní e-shop | probíhá | 88 % | detail i explicitní rozsah kupónů fungují; zbývá vlastníkova úplná provozní zkouška a doladění chybových stavů |
+| M2.4 provozní e-shop | probíhá | 90 % | detail, rozsah kupónů a tři kapacitní/re-enrollment regrese jsou uzavřené; zbývá vlastníkova úplná provozní zkouška a zbývající MEDIUM audit |
 | M2.5 přístup a obnova účtu | částečně | 35 % | bezpečné session/tokeny a admin reset existují; chybí samoobslužný reset a dokončení permission cache |
 | M2.6 integrovaná akceptace | čeká | 0 % | opakovatelný browser průchod, backup a společná závěrečná brána |
 
@@ -123,6 +123,18 @@ Dokončený technický řez M2.4b (`838793d`):
 - neznámý rozsah, nesouhlasící rozpad částek a kupón bez vhodné položky selžou
   bezpečně bez připojení kupónu,
 - redemption ukládá způsobilý mezisoučet a snapshot rozsahu pro pozdější audit.
+
+Dokončený hardening řez M2.4c (`b5f3f3f`):
+
+- opakovaný nákup stejného programu po stornu a potvrzené vratce vytváří novou
+  historickou účast, ale databáze dovolí jen jednu aktivní účast dítěte v nabídce,
+- automaticky se obnoví pouze soupiska původně spravovaná e-shopem; dříve ručně
+  ukončené členství automat nepřepíše,
+- kapacita placeného velodromu započítá i platnou legacy rezervaci bez tokenu,
+- checkout placené události sčítá všechny děti stejné události v jednom košíku,
+  takže nemůže jednou transakcí obsadit více míst, než zbývá,
+- reálná localhost MariaDB ověřila migraci i podpůrné/unikátní indexy; SQLite
+  integrační sada kryje všechny tři regresní scénáře.
 
 Zbývá:
 

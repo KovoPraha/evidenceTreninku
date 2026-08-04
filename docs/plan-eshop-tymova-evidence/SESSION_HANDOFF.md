@@ -7,12 +7,12 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `838793d92b3d9fe1f0e541ce7e0b6f872c4e876a`;
+- Poslední přijatý implementační HEAD: `b5f3f3f`;
   dokumentační plán navazuje touto handoff aktualizací.
 - Pracovní strom před touto dokumentační aktualizací: čistý; větev `main`,
-  upstream `origin/main`, lokálně `ahead 70 / behind 0` bez nového fetch ověření.
-- Pracovní strom po implementačním commitu `838793d`: čistý před touto přesnou
-  handoff aktualizací. Localhost DB je 34/34; produkce ani vzdálený repozitář se
+  upstream `origin/main`, lokálně `ahead 72 / behind 0` bez nového fetch ověření.
+- Pracovní strom po implementačním commitu `b5f3f3f`: čistý před touto přesnou
+  handoff aktualizací. Localhost DB je 35/35; produkce ani vzdálený repozitář se
   nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -30,7 +30,17 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: M2.4b přidalo explicitní neměnný rozsah kupónů pro
+- Poslední dokončená akce: revize Claude Code byla porovnána s aktuálním HEAD.
+  Její H1 vycházel ze starého snapshotu a je již uzavřený: backup kontrakt `.7`
+  obsahuje `kis_import_source_artifacts`. Potvrzené H2, H3 a M1 uzavírá `b5f3f3f`:
+  stornovaný a refundovaný kroužek lze znovu koupit se zachováním historie a
+  databázově jedinou aktivní účastí, legacy rezervace velodromu bez
+  `active_token` stále zabírá kapacitu a jeden košík nemůže překročit kapacitu
+  placené události více dětmi. Nová migrace prošla reálnou localhost MariaDB;
+  katalog je 35/35, plná sada 318/2774, 356 PHP souborů bez chyby a dependency
+  audit bez nálezu. Produkce ani vzdálený Git se nezměnily.
+
+  Předchozí dokončená akce: M2.4b přidalo explicitní neměnný rozsah kupónů pro
   zboží, kroužky, placené události a velodrom. Výchozí i migrační pravidlo je
   pouze zboží; služba se nezlevní bez samostatného zaškrtnutí administrátorem.
   Minimum a sleva se počítají ze způsobilého mezisoučtu a redemption ukládá jeho
@@ -115,8 +125,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   deterministický A05 náhled, A10 události i admin expirace; reálná localhost
   programová objednávka expirovala právě jednou. Katalog je lokálně 31/31.
   Produkční workflow, kód ani DB se nezměnily.
-- Další přesná akce: přijmout a ověřit výsledek externí Claude Code revize.
-  Pokud neobsahuje HIGH regresi, připravit M2.4c jako opakovatelný úplný provozní
+- Další přesná akce: projít zbývající konkrétní MEDIUM body externí revize proti
+  aktuálnímu HEAD (měnový alias, neplatné UTF-8 v CSV, Fio datum a enumerace účtu)
+  a potvrzené nálezy řešit samostatnými regresními řezy. Poté připravit M2.4d jako
+  opakovatelný úplný provozní
   průchod zboží, kroužku, placené události a velodromu včetně úhrady, aktivace,
   storna, expirace a refundace. Paralelně lze po dodání anonymizovaného vzorku
   uzavřít external-ID a field kontrakt finálního KIS exportu pro M2.3b.
@@ -188,13 +200,13 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 |---|---|---|---|---|
 | Git remote | `https://github.com/KovoPraha/evidenceTreninku.git` | 2026-08-01 | `git remote -v` | ano |
 | `origin/main` | `7f48b50b128b65f7340442ba33bfb9c66c27703a` | 2026-08-02 | fetch + rev-parse | ano |
-| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d` | 2026-08-04 | lokální Git bez nového fetch | ano |
+| integrační branch | lokální `main`; M1 `9c4c3e1`, M2.3a `851288c`, M2.4a `b4898f1`, M2.4b `838793d`, M2.4c `b5f3f3f` | 2026-08-04 | lokální Git bez nového fetch | ano |
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 34/34 číslovaných migrací; M2.4b maska a redemption snapshot aktivní, `LOCAL10` má rozsah pouze zboží | 2026-08-04 | opakovaný migration apply/check + MariaDB | ano |
-| testy | 315/2707; 355 PHP souborů; M2.4b výpočet kategorií, fail-closed hranice a přihlášené browser průchody prošly | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
+| lokální schema | legacy `2.20.2` + 35/35 číslovaných migrací; aktivní programová účast má databázově unikátní token a samostatný FK index | 2026-08-04 | opakovaný migration apply/check + živá localhost MariaDB metadata | ano |
+| testy | 318/2774; 356 PHP souborů; tři regresní scénáře externí revize a úplná sada prošly | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + lokální MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | post-M2.3a `evidence_2026-08-04_084445_f636b85b.sql.gz`: 124 tabulek, 2 triggery, SHA-256 `646f2312eb092a1ddf153f0a8d6fb4d22c5c85d93076d484e0dbbf1580f25b53`; ownership kontrakt `.7` | 2026-08-04 | XAMPP DB backup mimo webroot | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -308,6 +320,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 57 | M2.3a KIS raw archiv `851288c` | externí storage, hash/size/contract metadata, preview manifest, localhost dry-run a explicit write, idempotence; 33/33, 308/2635, 350 lintů, backup 124/2 `.7` |
 | 58 | M2.4a detail produktu `b4898f1` | seskupené varianty, schválené veřejné texty, sklad, bezpečné HTTPS obrázky a oddělený detail kroužku; 33/33, 313/2664, 354 lintů a browser průchod |
 | 59 | M2.4b rozsah kupónů `838793d` | explicitní neměnná maska čtyř kategorií, výchozí pouze zboží, způsobilý mezisoučet a redemption snapshot; 34/34, 315/2707, 355 lintů a browser |
+| 60 | M2.4c hardening `b5f3f3f` | H1 revize byl již zastaralý; H2/H3/M1 uzavřeny migrací aktivní účasti, legacy kapacitou a součtem dětí v košíku; 35/35, 318/2774, 356 lintů, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
