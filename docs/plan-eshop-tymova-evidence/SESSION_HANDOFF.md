@@ -6,10 +6,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 
 ## Metadata
 
-- Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `3aa39f8`.
-- Implementace `3aa39f8` je commitnutá; větev `main`, upstream `origin/main`.
-- Localhost DB je 45/45. Vzdálený repozitář se v této M2.3g session neměnil;
+- Aktualizováno: 2026-08-05, Europe/Prague
+- Poslední přijatý implementační HEAD: `004e4a6`.
+- Implementace `004e4a6` je commitnutá; větev `main`, upstream `origin/main`.
+- Localhost DB je 46/46. Vzdálený repozitář se v této M2.7 session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -27,7 +27,20 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená funkční akce: `3aa39f8` přidává anonymní veřejný ICS feed
+- Poslední dokončená funkční akce: `004e4a6` přidává soukromý rodinný
+  ICS feed do sportovního přehledu rodiče. Odkaz používá 256bitový náhodný
+  token, v databázi je pouze jeho SHA-256 otisk a kontrolní konec; celý odkaz se
+  v účtu ukáže jen bezprostředně po vytvoření nebo rotaci. Vytvoření, rotace a
+  revokace jsou auditované. Každé načtení znovu vyhodnotí aktivní ověřený
+  účet a aktuální schválené vazby na osoby; URL nepřijímá ID osoby. Feed
+  obsahuje cílené tréninky aktivních soupisek, přihlášené termíny akcí,
+  rezervace a splatnosti členských předpisů. Browser ověřil vytvoření i
+  jednorázové zobrazení; HTTP smoke platné ICS 200 a tentýž odkaz po revokaci
+  404. Plná sada je 410/3662, syntaxe 423 souborů, migrace 46/46, backup smoke
+  92 tabulek s ownership kontraktem `2026-08-05.1` a Composer audit 0. Produkce
+  se nezměnila.
+
+  Předchozí dokončená funkční akce: `3aa39f8` přidává anonymní veřejný ICS feed
   nad zveřejněnými plánovanými tréninky, otevřenými termíny klubových akcí a
   aktivními veřejnými hodinami velodromu. Feed používá stabilní UID, UTC převod
   z Europe/Prague, CRLF, escapování a skládání řádků; nečte osoby, docházku,
@@ -35,8 +48,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   stránek. HTTP ověřil 200 + `text/calendar` + `.ics` attachment a 400 pro
   neplatný rozsah; browser ověřil všechny tři odkazy. Plná sada je 403/3617,
   syntaxe 416 souborů, migrace 45/45 a Composer audit 0. Funkční audit je
-  vytříděný v dokumentu 11; personalizovaný kalendář, wallet, externí integrace
-  a prediktivní funkce zůstávají za samostatnými branami. Produkce se nezměnila.
+  vytříděný v dokumentu 11; personalizovaný kalendář byl v tomto historickém
+  kroku ještě otevřený a dokončil jej až `004e4a6`. Wallet, externí integrace a
+  prediktivní funkce zůstávají za samostatnými branami. Produkce se nezměnila.
 
   Předchozí dokončená funkční akce: `5829171` zpřístupňuje členské předpisy v
   read-only pohledu rodiče, omezeného sportovního účtu a administrátora.
@@ -463,8 +477,8 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
-| lokální schema | legacy `2.20.2` + 45/45 číslovaných migrací; `sportovci.kis_external_id`, field/parity report, staging, cílové předpisy a auditní tabulky M2.3g promotion jsou aplikované; reset tokeny jsou hashované a indexed; 255/255 profilových tokenů je silných a 44/44 hesel trenérů hashovaných | 2026-08-04 | migration apply/check + živá localhost MariaDB metadata | ano |
-| testy | 393/3496; browser M2.3g run #13 2/2 + 1 platba → 0/2 + 0 plateb, MariaDB backup smoke 90 tabulek a všech 12 auditních oprav, 409 first-party syntaxí, 45/45 a audit 0 | 2026-08-04 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
+| lokální schema | legacy `2.20.2` + 46/46 číslovaných migrací; navíc hashované a auditované `family_calendar_feeds` + `_events`; `sportovci.kis_external_id`, field/parity report, staging, cílové předpisy a auditní tabulky M2.3g promotion jsou aplikované; reset tokeny jsou hashované a indexed | 2026-08-05 | migration apply/check + živá localhost MariaDB | ano |
+| testy | 410/3662; browser vytvoření rodinného odkazu, HTTP ICS 200→404 po revokaci, MariaDB backup smoke 92 tabulek, 423 first-party syntaxí, 46/46 a audit 0 | 2026-08-05 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/HTTP/MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -605,6 +619,8 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 84 | M2.3f členské předpisy `d69ee4f` | `member-charge-v1`, auditní cílové tabulky, stabilní ID+částka, atomický staging a non-PII porovnání; run #12 2 staging/2 čeká, 388/3369, 406 parse, 44/44, audit 0 |
 | 85 | M2.3g auditovaný promote/rollback `7c8b444` | localhost admin+CSRF+fingerprint, transakční a idempotentní přenos předpisů, samostatná historická platba, invarianty a bezpečný rollback; browser #13 2/2 + 1 platba → 0/2 + 0 plateb, 391/3430, 408 parse, 45/45, audit 0 |
 | 86 | oprava druhého kontrolního auditu `281fcd0` | ownership `.9` pokrývá všech 12 chybějících tabulek, generický katalogový guard + skutečný MariaDB backup smoke 90 tabulek, platební signál bez float; 393/3496, 409 parse, 45/45, audit 0 |
+| 87 | M2.7a veřejný ICS kalendář `3aa39f8` | anonymní feed zveřejněných tréninků, otevřených akcí a veřejných hodin velodromu; stabilní UID, UTC, bez osobních a interních dat; 403/3617, 416 parse, 45/45, audit 0 |
+| 88 | M2.7b rodinný ICS kalendář `004e4a6` | revokovatelný hashovaný 256bitový token, jednorázové zobrazení, audit, živé vazby osob a izolace rodin; tréninky/akce/rezervace/splatnosti, HTTP 200→404; 410/3662, 423 parse, 46/46, backup 92, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

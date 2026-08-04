@@ -24,7 +24,7 @@ architekturu, v jakém pořadí a s jakou bránou.
 | ID | Funkce | Zařazení | Brána / poznámka |
 |---|---|---|---|
 | V1 | veřejný ICS kalendář | M2.7, první řez implementován | pouze zveřejněné plánované tréninky, otevřené klubové akce a aktivní veřejné hodiny velodromu; bez osob, docházky, rezervací a interních popisů |
-| V2 | osobní rodinný ICS kalendář | M2.7 navazující řez | revokovatelný náhodný token, oddělený kalendář pro každou rodinu, jasná rotace a zákaz indexace |
+| V2 | osobní rodinný ICS kalendář | M2.7, technicky implementován | revokovatelný 256bitový náhodný token uložený jen jako hash, oddělený kalendář pro každý účet, rotace, audit, `no-store` a zákaz indexace |
 | V3 | připomínky splatných předpisů | po ověření členských předpisů v M2 | opt-in, idempotentní fronta, omezení četnosti a bezpečný odkaz bez údajů v URL |
 | V4 | roční přehled zaplacených klubových služeb | po finanční akceptaci | nejdřív přesný read-only přehled; označení „daňové potvrzení“ až po právním a účetním ověření textu a náležitostí |
 | V5 | osobní progres a osobní rekordy | budoucí datový milník | nejprve normalizovat volný čas měření do číselné hodnoty, opravit kvalitu dat a definovat soukromí nezletilých |
@@ -62,6 +62,11 @@ Akceptace prvního řezu:
 - odkaz je dostupný bez registrace z veřejného rozvrhu, kroužků i velodromu,
 - neplatný nebo nepřiměřeně dlouhý rozsah skončí bezpečnou chybou bez SQL detailu.
 
-Personalizovaný kalendář V2 se nesmí vytvořit pouhým přidáním `sportovec_id` do
-URL. Vyžaduje samostatný tokenový model, revokaci, test úniku mezi rodinami a
-rozhodnutí, které události se mají členům zobrazovat.
+Personalizovaný kalendář V2 je implementován v `004e4a6` bez `sportovec_id` v
+URL. Oprávnění vzniká jen z aktivního tokenu účtu a při každém načtení se
+znovu vyhodnotí schválené vazby na osoby. Odvolaný profil okamžitě zmizí, token
+lze otočit nebo zrušit a starý odkaz poté vrací 404. Feed zahrnuje cílené
+tréninky aktivních soupisek, přihlášené termíny akcí, rezervace a splatnosti
+členských předpisů všech aktuálně oprávněných profilů. Automatický test
+potvrzuje izolaci dvou rodin; otevřená je už jen zkouška odběru a aktualizace v
+reálné kalendářové aplikaci.

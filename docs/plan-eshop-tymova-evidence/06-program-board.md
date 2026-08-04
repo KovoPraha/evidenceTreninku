@@ -132,6 +132,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.3g auditovaný promote/rollback předpisů | hotovo lokálně | `7c8b444`: localhost admin+CSRF+fingerprint, transakční a idempotentní přenos, samostatná historická platba, invarianty a bezpečný rollback; browser run #13 2/2 + 1 platba → 0/2 + 0 plateb, 391/3430, 408 parse, 45/45, audit 0 |
 | kontrolní audit zálohy M2.3g | opraveno | `281fcd0`: ownership kontrakt `.9` doplnil 12 chybějících KIS/členských cenových tabulek, generický test hlídá všechny trvalé migrační tabulky, MariaDB CI vytvořilo zálohu 90 tabulek; přesný převod platebních signálů bez float, 393/3496, 409 parse, 45/45, audit 0 |
 | M2.7a veřejný ICS kalendář | hotovo technicky | `3aa39f8`: jeden anonymní feed nad již zveřejněnými tréninky, otevřenými klubovými akcemi a veřejnými hodinami velodromu; stabilní UID, UTC, standardní escapování/skládání, žádné osobní ani interní údaje; 403/3617, 416 parse, 45/45, audit 0 |
+| M2.7b soukromý rodinný ICS kalendář | hotovo technicky | `004e4a6`: hashovaný 256bitový token, jednorázové zobrazení odkazu, auditovaná rotace/revokace, živé oprávnění profilů a izolace rodin; cílené tréninky, akce, rezervace a splatnosti, HTTP 200→404 po revokaci; 410/3662, 423 parse, 46/46, backup smoke 92 tabulek, audit 0 |
 
 ## Aktivní rozhodnutí
 

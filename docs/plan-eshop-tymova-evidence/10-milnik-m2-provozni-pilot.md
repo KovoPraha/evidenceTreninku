@@ -2,7 +2,7 @@
 
 Stav: kanonický pracovní plán druhého produktového milníku
 
-Aktualizováno: 4. 8. 2026
+Aktualizováno: 5. 8. 2026
 
 Prostředí: pouze localhost a syntetická data; produkce beze změny
 
@@ -30,9 +30,9 @@ kódu.
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
-| M2.7 hodnota pro členy | probíhá | 35 % | veřejný ICS feed slučuje zveřejněné tréninky, otevřené klubové akce a veřejné hodiny velodromu; personalizovaný rodinný feed a další návrhy mají samostatné brány v dokumentu 11 |
+| M2.7 hodnota pro členy | probíhá | 60 % | veřejný ICS feed slučuje zveřejněný program; soukromý rodinný feed přidává tréninky, přihlášené akce, rezervace a splatnosti oprávněných profilů s revokací odkazu; zbývá zkouška v reálné kalendářové aplikaci a další návrhy z dokumentu 11 |
 
-Orientační stav celého M2: **79 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **81 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -478,10 +478,15 @@ Přijatý první řez z funkčního auditu je veřejný ICS kalendář. Je anony
 obsahuje jen údaje, které už aplikace zveřejňuje na veřejných stránkách. Nemění
 databázi a nevytváří novou autorizační hranici.
 
-Navazující osobní rodinný kalendář je samostatný řez: musí používat náhodný
-revokovatelný token, nesmí přijímat ID osoby jako oprávnění a musí projít testem
-izolace rodin. Další nápady, jejich pořadí a blokátory jsou v
-`11-backlog-hodnota-pro-cleny.md`.
+Navazující osobní rodinný kalendář je hotový technicky v `004e4a6`. Používá
+256bitový náhodný token, v databázi drží jen jeho SHA-256 otisk a posledních
+osm kontrolních znaků. Vytvoření, rotace a zrušení jsou auditované; aktuální
+vazby na profily se ověřují při každém načtení a ID osoby se z URL nepřijímá.
+Feed obsahuje cílené tréninky aktivních soupisek, přihlášené termíny akcí,
+rezervace a splatnosti členských předpisů. HTTP smoke ověřil platné ICS s
+200 a stejný odkaz po revokaci s 404; testy ověřují i izolaci rodin. Zbývá
+produktová zkouška odběru a aktualizace v reálném Google/Apple kalendáři.
+Další nápady, jejich pořadí a blokátory jsou v `11-backlog-hodnota-pro-cleny.md`.
 
 ## Výslovně blokované oblasti
 
