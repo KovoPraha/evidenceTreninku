@@ -25,13 +25,13 @@ kódu.
 |---|---|---:|---|
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
-| M2.2 opravy a UX z prohlídky | probíhá | 35 % | společná homepage a sportovní přehled mají srozumitelnou navigaci, souhrny a české stavy; další UX připomínky čekají na průchod vlastníka |
+| M2.2 opravy a UX z prohlídky | probíhá | 40 % | homepage a sportovní přehled jsou zpřehledněné; A05 navíc opravilo duplicitní demo identitu a pravdivou no-op odpověď |
 | M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
 | M2.4 provozní e-shop | technicky hotovo | 95 % | detail, kupóny, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 90 % | samoobslužný reset rodiče i sportovce, okamžitá oprávnění a tokenové/IDOR testy existují; zbývá uživatelský průchod a produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 60 % | backup, shop lifecycle a A02 mají browser důkaz včetně IDOR pokusu; zbývají administrační KIS scénáře A05–A08/A10 a závěrečná brána |
+| M2.6 integrovaná akceptace | probíhá | 68 % | backup, shop lifecycle, A02 a A05 mají browser důkaz; zbývají KIS scénáře A06–A08/A10 a závěrečná brána |
 
-Orientační stav celého M2: **50 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **52 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -69,6 +69,20 @@ Druhý dokončený UX řez (`18deb9c`):
 - browser potvrdil, že podvržené `sportovec_id=999999` nezmění zobrazenou osobu,
   a společná homepage zachová sportovní režim bez trenérského dashboardu,
 - zaměřená sada prošla 11/73, plná sada 337/3014, first-party lint 367 souborů,
+  migrace 37/37 a Composer audit bez nálezu.
+
+Dokončený provozní řez A05 (`8647bce`):
+
+- seed při resetu ponechá právě jednu kanonickou localhost identitu přechodu;
+  starší syntetický duplikát bezpečně archivuje a ukončí jen jeho aktivní testovací
+  vazby, přístupy a soupisky,
+- browser prošel read-only náhled stejné osoby z kroužku do U17 2027, věkovou
+  kontrolu, povinný důvod a explicitně potvrzený auditovaný zápis,
+- opakování s novým náhledem nad již aktivním cílem je pravdivý no-op: nevznikne
+  druhé členství ani další auditní běh a UI to výslovně oznámí,
+- demo bylo po testu vráceno před přechod: jedna kanonická osoba, jeden aktivní
+  zdrojový kroužek a žádné aktivní cílové U17 2027,
+- zaměřená sada prošla 9/80, plná sada 338/3025, first-party lint 367 souborů,
   migrace 37/37 a Composer audit bez nálezu.
 
 ### M2.1 – provoz klubové akce
