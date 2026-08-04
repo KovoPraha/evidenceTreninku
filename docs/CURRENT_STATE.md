@@ -15,14 +15,16 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `281fcd0` – oprava zálohovacího
-  ownership kontraktu `.9`, úplnost všech migračních tabulek a skutečný MariaDB backup smoke,
+- poslední implementace před tímto dokumentem: `5829171` – read-only přehled
+  členských předpisů pro rodiče, sportovce a administrátora s izolačními testy,
+- předchozí infrastruktura: `281fcd0` – oprava zálohovacího ownership kontraktu
+  `.9`, úplnost všech migračních tabulek a skutečný MariaDB backup smoke,
 - předchozí funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
   předpisů, historických plateb a bezpečný rollback,
-- předchozí infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
+- CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 45/45,
-- automatické testy 393/3496,
-- first-party PHP syntaxe 409 souborů bez chyby,
+- automatické testy 398/3510,
+- first-party PHP syntaxe 412 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 90 tabulek a potvrdil
   všech 12 tabulek doplněných po kontrolním auditu,
@@ -39,7 +41,13 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
 - A07 docházka: `http://localhost/evidencePavel/kis_training_a07_admin.php`,
 - A10 audit osoby: `http://localhost/evidencePavel/person_audit_admin.php?sportovec_id=1`,
 - e-shop: `http://localhost/evidencePavel/booking/eshop.php`,
-- detail demo produktu: `http://localhost/evidencePavel/booking/produkt.php?id=1`.
+- detail demo produktu: `http://localhost/evidencePavel/booking/produkt.php?id=1`,
+- administrativní přehled členských předpisů:
+  `http://localhost/evidencePavel/member_charges_admin.php`.
+
+Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
+a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
+osobu výhradně z aktivní session a schválené vazby.
 
 Testovací rozcestník je localhost-only a vyžaduje administrátora. Ke každému
 scénáři ukládá `PASS / PARTIAL / FAIL / BLOCKED`, důležitost a dvě krátké poznámky.
@@ -49,7 +57,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 77 %,
+- celý M2: 78 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
   sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
   localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
@@ -63,6 +71,19 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,
 Stripe, Fio auto-confirm, wallet a TrainingPeaks zůstávají samostatně blokované.
+
+## Kontrolní audity
+
+Rozcestník je v `docs/AUDITY.md`. Druhý AI re-audit a živý adversariální průchod
+jsou uložené jako historické snapshoty `cd38f85`; jejich validační dodatky
+zaznamenávají, že dřívější nálezy N-H1, N-M1 a N-L1 byly následně opraveny a
+ověřeny. Živý webový audit přibližně 45 útokových vektorů neprokázal CRITICAL,
+HIGH ani MEDIUM zneužitelnou webovou chybu. Nejde o náhradu produkčního
+penetračního testu.
+
+Produktový `AUDIT-PRILEZITOSTI-A-NAPADY.md` je uložen jako zdroj návrhů, ale
+nenahrazuje schválený plán. Jednotlivé nápady se do roadmapy přesunou teprve po
+potvrzení priority, právních a účetních dopadů a očekávaného rozsahu.
 
 ## Doporučené pořadí další práce
 

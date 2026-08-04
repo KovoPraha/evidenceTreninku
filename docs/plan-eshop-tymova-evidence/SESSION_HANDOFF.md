@@ -7,9 +7,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-04, Europe/Prague
-- Poslední přijatý implementační HEAD: `281fcd0`.
-- Implementace `281fcd0` je commitnutá; větev `main`, upstream `origin/main`,
-  před navazujícím dokumentačním commitem lokálně `ahead 13 / behind 0`.
+- Poslední přijatý implementační HEAD: `5829171`.
+- Implementace `5829171` je commitnutá; větev `main`, upstream `origin/main`.
 - Localhost DB je 45/45. Vzdálený repozitář se v této M2.3g session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -28,7 +27,16 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená akce: `281fcd0` uzavírá HIGH nález druhého kontrolního auditu.
+- Poslední dokončená funkční akce: `5829171` zpřístupňuje členské předpisy v
+  read-only pohledu rodiče, omezeného sportovního účtu a administrátora.
+  Rodičovský pohled je omezen aktivní schválenou vazbou, sportovní pohled
+  odvozuje osobu pouze z revokovatelného přístupového účtu a administrace nemá
+  žádnou mutující akci. Browser ověřil všechny tři obrazovky a odkaz z KIS
+  centra; plná sada je 398/3510, syntaxe 412 souborů, migrace 45/45 a Composer
+  audit 0. Auditní snapshoty a produktové příležitosti jsou indexované v
+  `docs/AUDITY.md`. Produkce se nezměnila.
+
+  Předchozí dokončená akce: `281fcd0` uzavírá HIGH nález druhého kontrolního auditu.
   Ownership kontrakt zálohy `.9` zahrnuje všech 12 chybějících trvalých tabulek
   M2.3/M2.3g a klubových cen. Generický test porovnává kontrakt se všemi trvalými
   `CREATE TABLE` v migračním katalogu a MariaDB CI skutečně vytvoří komprimovanou
