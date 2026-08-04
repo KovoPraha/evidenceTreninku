@@ -411,6 +411,23 @@ final class ClubEventRegistrationTest extends TestCase
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_registration_events WHERE action='shop_payment_paid'")->fetchColumn());
     }
 
+    public function testPaidEventRejectsTwoChildrenInOneCartWhenOnlyOnePlaceRemains():void
+    {
+        $pdo=$this->database();$year=(int)date('Y')+1;
+        $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'TEST-SEASON','Test season','$year-01-01','$year-12-31','active',7)");
+        $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'U15','U15','silnice','U15','active',7)");
+        $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,created_by_trainer_id) VALUES(1,100,'active','manual','$year-01-01',7),(1,101,'active','manual','$year-01-01',7)");
+        $input=$this->eventInput(1);$input['code']='PAID-MULTI-'.bin2hex(random_bytes(4));$input['name']='Placené soustředění';$input['pricing_policy']='product_variants';
+        $eventId=(int)\clubEventCreateDraft($pdo,7,$input)['id'];
+        \clubEventAddSession($pdo,$eventId,7,$year.'-09-10T09:00',$year.'-09-10T17:00','Velodrom',1);\clubEventLinkProduct($pdo,$eventId,502,7,'Cena soustředění.');
+        \clubEventRosterReplaceTargets($pdo,$eventId,[1],7,'Určeno pro U15.',true);\clubEventConfigureRegistrationTerms($pdo,$eventId,7,'paid.1','Souhlasím s účastí.','Bezplatné storno do termínu.',$year.'-09-01T12:00',true);\clubEventOpenPaidRegistration($pdo,$eventId,7,'Otevření.',true);
+        \clubEventShopAddToCart($pdo,10,$eventId,100,602,'paid.1',true);\clubEventShopAddToCart($pdo,10,$eventId,101,602,'paid.1',true);$cart=\shopCartDetail($pdo,10);
+        $bank=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'TEST','due_days'=>7];
+        try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),$bank,$cart['fingerprint']);self::fail('One remaining place must not accept two children from one cart.');}
+        catch(\ShopCheckoutException $exception){self::assertStringContainsString('Kapacita',$exception->getMessage());}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
+    }
+
     private function openFreeEvent(PDO $pdo, int $capacity, ?int $minAge = null, ?int $maxAge = null): int
     {
         $input = $this->eventInput($capacity);

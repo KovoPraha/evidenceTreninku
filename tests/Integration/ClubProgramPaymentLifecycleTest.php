@@ -52,6 +52,20 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         $refund=\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'REF-1','Vratka odeslána.',true);self::assertTrue($refund['changed']);$repeatRefund=\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'REF-2','Opakování.',true);self::assertFalse($repeatRefund['changed']);self::assertSame($eventsBefore,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollment_events')->fetchColumn());self::assertSame('cancelled',$pdo->query('SELECT status FROM club_program_enrollments')->fetchColumn());
     }
 
+    public function testCancelledAndRefundedProgramCanBeBoughtAgainSafely():void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'OFFER-A');
+        $first=$this->checkout($pdo,10,101,601);\shopOrderAdminConfirmBankPayment($pdo,(int)$first['payment_id'],7,'První platba.',true);
+        \shopOrderAdminCancel($pdo,(int)$first['id'],7,'Rodina odstoupila.',true);\shopOrderAdminConfirmRefund($pdo,(int)$first['id'],7,'REF-REBUY-1','Vratka odeslána.',true);
+        $second=$this->checkout($pdo,10,101,601);$confirmed=\shopOrderAdminConfirmBankPayment($pdo,(int)$second['payment_id'],7,'Nová platba.',true);
+
+        self::assertTrue($confirmed['changed']);self::assertSame(1,$confirmed['created']);
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_program_enrollments WHERE status='active' AND active_token='active'")->fetchColumn());
+        self::assertSame('active',$pdo->query('SELECT status FROM club_roster_members')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_roster_events WHERE action='restore'")->fetchColumn());
+    }
+
     public function testRosterStaysWhileAnotherActiveProgramUsesSamePersonAndTeam():void
     {
         $pdo=$this->database();$program=(int)\clubProgramCreate($pdo,7,'BIKE-SCHOOL','Cyklistická škola')['id'];$this->offer($pdo,601,501,10,5,'OFFER-A',$program);$this->offer($pdo,602,502,10,5,'OFFER-B',$program,'2027-02-01','2027-06-30');
@@ -97,7 +111,7 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');$pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Kroužek A','A'),(502,'active','Kroužek B','B')");
         foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804090000_kis_teams_rosters.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'SCHOOL','Školní rok','2026-09-01','2027-08-31','active',7)");$pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(10,1,'A','Kroužek A','vše','děti','active',7)");
-        foreach(['20260804140000_club_programs.php','20260804160000_club_program_lifecycle.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
+        foreach(['20260804140000_club_programs.php','20260804160000_club_program_lifecycle.php','20260804235000_club_program_repeat_enrollment.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         $expiration=require dirname(__DIR__,2).'/migrations/20260804210000_shop_order_expiration.php';$expiration['up']($pdo);self::assertTrue($expiration['verify']($pdo));
         return$pdo;
     }

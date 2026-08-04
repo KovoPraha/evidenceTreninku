@@ -89,14 +89,15 @@ function clubEventShopLockCheckoutItems(PDO $pdo,int $cartId,int $accountId):arr
 {
     if(!clubEventShopAvailable($pdo))return [];
     $sql='SELECT * FROM club_event_cart_items WHERE cart_id=? ORDER BY event_id,id'.((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'');
-    $s=$pdo->prepare($sql);$s->execute([$cartId]);$rows=$s->fetchAll(PDO::FETCH_ASSOC);$result=[];
+    $s=$pdo->prepare($sql);$s->execute([$cartId]);$rows=$s->fetchAll(PDO::FETCH_ASSOC);$result=[];$requestedByEvent=[];
     foreach($rows as $row){
         $event=clubEventShopVariant($pdo,(int)$row['event_id'],(int)$row['variant_id'],true);clubEventShopAssertConsent($event,(string)$row['consent_version']);
         $relation=clubEventEligibleRelation($pdo,$accountId,(int)$row['beneficiary_sportovec_id']);$eligibility=clubEventRosterEligibility($pdo,(int)$row['event_id'],(int)$row['beneficiary_sportovec_id']);
         if(!$relation||!$eligibility)throw new ClubEventShopException('Oprávnění nebo cílová soupiska události se změnily.');
         clubEventAssertAge($pdo,(int)$row['event_id'],$relation,$event);clubEventShopAssertNoActiveRegistration($pdo,(int)$row['event_id'],(int)$row['beneficiary_sportovec_id']);
-        $capacity=clubEventEffectiveCapacity($pdo,(int)$row['event_id'],(int)$event['capacity']);
-        if(clubEventShopOccupiedCount($pdo,(int)$row['event_id']) >= $capacity)throw new ClubEventShopException('Kapacita placené události byla mezitím naplněna.');
+        $eventId=(int)$row['event_id'];$capacity=clubEventEffectiveCapacity($pdo,$eventId,(int)$event['capacity']);$requested=$requestedByEvent[$eventId]??0;
+        if(clubEventShopOccupiedCount($pdo,$eventId)+$requested >= $capacity)throw new ClubEventShopException('Kapacita placené události nestačí pro všechny osoby v košíku.');
+        $requestedByEvent[$eventId]=$requested+1;
         $result[]=$row+$event+['relation_role'=>(string)$relation['relation_role'],'eligibility'=>$eligibility];
     }
     return $result;

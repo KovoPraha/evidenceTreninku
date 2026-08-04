@@ -183,7 +183,7 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
     $sportovecId=(int)$item['beneficiary_sportovec_id'];
     $existing=$pdo->prepare('SELECT id FROM club_program_enrollments WHERE source_order_item_id=?');$existing->execute([$orderItemId]);$existingId=$existing->fetchColumn();
     if ($existingId) return ['id'=>(int)$existingId,'created'=>false,'roster_created'=>false];
-    $duplicate=$pdo->prepare('SELECT id FROM club_program_enrollments WHERE offer_id=? AND sportovec_id=?');$duplicate->execute([(int)$item['offer_id'],$sportovecId]);
+    $duplicate=$pdo->prepare("SELECT id FROM club_program_enrollments WHERE offer_id=? AND sportovec_id=? AND status='active'");$duplicate->execute([(int)$item['offer_id'],$sportovecId]);
     if($duplicate->fetchColumn()!==false)throw new ClubProgramException('Tento sportovec už má stejné období aktivované jinou objednávkou. Duplicitní platbu nelze potvrdit.');
     shopBeneficiaryAssertAccessible($pdo,$accountId,$sportovecId,true);
     if ((string)$item['order_status']==='cancelled' || (string)$item['offer_status']!=='active' || (int)$item['line_amount_minor']<0) throw new ClubProgramException('Objednávka nebo nabídka už není aktivovatelná.');
@@ -192,7 +192,7 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
         $capacity=$pdo->prepare("SELECT COUNT(*) FROM club_program_enrollments WHERE offer_id=? AND status='active'");$capacity->execute([(int)$item['offer_id']]);
         if ((int)$capacity->fetchColumn()>=(int)$item['capacity']) throw new ClubProgramException('Kapacita období je vyčerpána.');
     }
-    $pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,valid_from,valid_to,activated_at) VALUES (?,?,?,?,'active',?,?,CURRENT_TIMESTAMP)")
+    $pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,active_token,valid_from,valid_to,activated_at) VALUES (?,?,?,?,'active','active',?,?,CURRENT_TIMESTAMP)")
         ->execute([(int)$item['offer_id'],$sportovecId,$accountId,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on']]);
     $enrollmentId=(int)$pdo->lastInsertId();
     $memberSql='SELECT id,status,source FROM club_roster_members WHERE team_id=? AND sportovec_id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$memberSql.=' FOR UPDATE';
@@ -204,7 +204,15 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
         $after=json_encode(['status'=>'active','source'=>'shop','sportovec_id'=>$sportovecId,'program_enrollment_id'=>$enrollmentId],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
         $pdo->prepare("INSERT INTO club_roster_events(team_id,roster_member_id,actor_trainer_id,action,before_json,after_json,note) VALUES (?,?,?,'add',NULL,?,'Automatické zařazení po aktivaci kroužku.')")
             ->execute([(int)$item['team_id'],$memberId,(int)$item['created_by_trainer_id'],$after]);
-    } elseif ((string)$member['status']!=='active') throw new ClubProgramException('Dřívější členství v cílové soupisce je ukončené; obnovení musí posoudit správce.');
+    } elseif ((string)$member['status']!=='active') {
+        if ((string)$member['source']!=='shop') throw new ClubProgramException('Dřívější ruční členství v cílové soupisce je ukončené; obnovení musí posoudit správce.');
+        $before=json_encode($member,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
+        $pdo->prepare("UPDATE club_roster_members SET status='active',valid_from=?,valid_to=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status<>'active'")
+            ->execute([(string)$item['starts_on'],(int)$member['id']]);
+        $after=json_encode(['status'=>'active','valid_from'=>(string)$item['starts_on'],'valid_to'=>null,'source'=>'shop','program_enrollment_id'=>$enrollmentId],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
+        $pdo->prepare("INSERT INTO club_roster_events(team_id,roster_member_id,actor_trainer_id,action,before_json,after_json,note) VALUES (?,?,?,'restore',?,?,?)")
+            ->execute([(int)$item['team_id'],(int)$member['id'],(int)$item['created_by_trainer_id'],$before,$after,'Automatické obnovení po nové aktivaci kroužku.']);
+    }
     $payload=json_encode(['order_item_id'=>$orderItemId,'sportovec_id'=>$sportovecId,'team_id'=>(int)$item['team_id'],'roster_created'=>$rosterCreated],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
     $pdo->prepare('INSERT INTO club_program_enrollment_events(offer_id,enrollment_id,actor_type,actor_id,action,payload_json) VALUES (?,?,?,?,\'activate\',?)')
         ->execute([(int)$item['offer_id'],$enrollmentId,$actorType,$actorId,$payload]);
@@ -236,7 +244,7 @@ function clubProgramCancelOrderInTransaction(PDO $pdo, int $orderId, int $actorT
         $member=$pdo->prepare($memberSql);$member->execute([$teamId,$sportovecId]);$lockedMembers[$key]=$member->fetch(PDO::FETCH_ASSOC);
     }
     foreach($enrollments as$enrollment){
-        $pdo->prepare("UPDATE club_program_enrollments SET status='cancelled',ended_at=CURRENT_TIMESTAMP,ended_reason=?,ended_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='active'")->execute([trim($reason),$actorTrainerId,(int)$enrollment['id']]);
+        $pdo->prepare("UPDATE club_program_enrollments SET status='cancelled',active_token=NULL,ended_at=CURRENT_TIMESTAMP,ended_reason=?,ended_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='active'")->execute([trim($reason),$actorTrainerId,(int)$enrollment['id']]);
         $payload=json_encode(['order_id'=>$orderId,'sportovec_id'=>(int)$enrollment['sportovec_id'],'team_id'=>(int)$enrollment['team_id'],'reason'=>trim($reason)],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
         $pdo->prepare("INSERT INTO club_program_enrollment_events(offer_id,enrollment_id,actor_type,actor_id,action,payload_json) VALUES (?,?,'trainer',?,'cancel',?)")->execute([(int)$enrollment['offer_id'],(int)$enrollment['id'],$actorTrainerId,$payload]);
     }

@@ -94,6 +94,6 @@ final class ClubProgramTest extends TestCase
         $pdo->exec('CREATE TABLE club_teams(id INTEGER PRIMARY KEY,season_id INTEGER,code TEXT,name TEXT,status TEXT)');$pdo->exec("INSERT INTO club_teams VALUES(10,1,'A','Kroužek A','active'),(11,1,'B','Kroužek B','active')");
         $pdo->exec('CREATE TABLE club_roster_members(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,sportovec_id INTEGER,status TEXT,source TEXT,valid_from TEXT,valid_to TEXT,created_by_trainer_id INTEGER,UNIQUE(team_id,sportovec_id),FOREIGN KEY(team_id) REFERENCES club_teams(id),FOREIGN KEY(sportovec_id) REFERENCES sportovci(id),FOREIGN KEY(created_by_trainer_id) REFERENCES treneri(id))');
         $pdo->exec('CREATE TABLE club_roster_events(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,roster_member_id INTEGER,actor_trainer_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,note TEXT)');
-        $migration=require dirname(__DIR__,2).'/migrations/20260804140000_club_programs.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));return$pdo;
+        foreach(['20260804140000_club_programs.php','20260804160000_club_program_lifecycle.php','20260804235000_club_program_repeat_enrollment.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return$pdo;
     }
 }

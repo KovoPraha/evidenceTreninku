@@ -59,6 +59,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804230000_club_event_shop',
                 '20260804233000_kis_import_source_artifacts',
                 '20260804234000_shop_coupon_applicability',
+                '20260804235000_club_program_repeat_enrollment',
             ],
             array_keys($catalog)
         );
@@ -76,6 +77,7 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->columnExists($pdo, 'shop_coupons', 'applicability_mask'));
         self::assertTrue($this->columnExists($pdo, 'shop_coupon_redemptions', 'eligible_subtotal_minor'));
         self::assertTrue($this->columnExists($pdo, 'shop_coupon_redemptions', 'applicability_mask_snapshot'));
+        self::assertTrue($this->columnExists($pdo, 'club_program_enrollments', 'active_token'));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
         self::assertSame(
             one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),

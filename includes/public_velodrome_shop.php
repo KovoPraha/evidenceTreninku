@@ -348,7 +348,8 @@ function publicVelodromeShopAssertPaidLesson(array $lesson): void
 /** @param array<string,mixed> $lesson */
 function publicVelodromeShopAssertCapacity(PDO $pdo, array $lesson): void
 {
-    $count = $pdo->prepare("SELECT COUNT(*) FROM verejne_rezervace WHERE lekce_id=? AND active_token='active' AND stav IN ('ceka','potvrzena')");
+    // Reservations created before active_token existed still occupy capacity.
+    $count = $pdo->prepare("SELECT COUNT(*) FROM verejne_rezervace WHERE lekce_id=? AND stav IN ('ceka','potvrzena')");
     $count->execute([(int)$lesson['id']]);
     $capacity = (int)$lesson['public_exclusive_booking'] === 1 ? 1 : (int)$lesson['max_osob'];
     if ($capacity < 1 || (int)$count->fetchColumn() >= $capacity) {

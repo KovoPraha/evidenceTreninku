@@ -117,6 +117,19 @@ final class PublicVelodromeShopTest extends TestCase
         self::assertFalse($pdo->inTransaction());
     }
 
+    public function testLegacyReservationWithoutActiveTokenStillConsumesCapacity():void
+    {
+        $pdo=$this->database();$slot=$this->slot($pdo,1,10000);
+        $pdo->prepare("INSERT INTO verejne_rezervace(lekce_id,uzivatel_id,sportovec_id,stav,zaplaceno,slot_cas_od,slot_cas_do,active_token) VALUES(?,11,NULL,'potvrzena',1,'10:00','11:00',NULL)")
+            ->execute([$slot]);
+        \publicVelodromeShopAddToCart($pdo,10,$slot);
+        $cart=\shopCartDetail($pdo,10);
+        try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint']);self::fail('Legacy reservation must consume the only place.');}
+        catch(\ShopCheckoutException $exception){self::assertStringContainsString('Kapacita',$exception->getMessage());}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM verejne_rezervace')->fetchColumn());
+    }
+
     public function testFreeReservationPathIsUnchanged(): void
     {
         $pdo = $this->database();
