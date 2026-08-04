@@ -56,9 +56,38 @@ function fioColumn(array $transaction, string $name): array
 
 function fioBookedOn(mixed $value): string
 {
-    if (!is_int($value) && !is_float($value) && !(is_string($value) && preg_match('/^[0-9]{10,16}$/D', $value) === 1)) throw new FioImportException('fio_invalid_booking_date');
-    $seconds = (int)floor(((float)$value) / 1000);
-    return (new DateTimeImmutable('@'.$seconds))->setTimezone(new DateTimeZone('Europe/Prague'))->format('Y-m-d');
+    if (is_string($value)) {
+        $value = trim($value);
+        if (preg_match('/^(\d{4}-\d{2}-\d{2})(?:([+-])(\d{2}):(\d{2}))?$/D', $value, $match) === 1) {
+            $date = DateTimeImmutable::createFromFormat('!Y-m-d', $match[1]);
+            if (!$date || $date->format('Y-m-d') !== $match[1]) {
+                throw new FioImportException('fio_invalid_booking_date');
+            }
+            if (isset($match[2]) && $match[2] !== '') {
+                $hours = (int)$match[3];
+                $minutes = (int)$match[4];
+                if ($hours > 14 || $minutes > 59 || ($hours === 14 && $minutes !== 0)) {
+                    throw new FioImportException('fio_invalid_booking_date');
+                }
+            }
+            return $match[1];
+        }
+        if (preg_match('/^[0-9]{10,16}$/D', $value) !== 1) {
+            throw new FioImportException('fio_invalid_booking_date');
+        }
+    } elseif (!is_int($value) && !is_float($value)) {
+        throw new FioImportException('fio_invalid_booking_date');
+    }
+    $numeric = (float)$value;
+    if (!is_finite($numeric) || $numeric <= 0) {
+        throw new FioImportException('fio_invalid_booking_date');
+    }
+    $seconds = $numeric >= 100_000_000_000 ? (int)floor($numeric / 1000) : (int)floor($numeric);
+    try {
+        return (new DateTimeImmutable('@'.$seconds))->setTimezone(new DateTimeZone('Europe/Prague'))->format('Y-m-d');
+    } catch (Throwable) {
+        throw new FioImportException('fio_invalid_booking_date');
+    }
 }
 
 /** @return array{run_id:int,fetched:int,inserted:int,duplicates:int,proposed:int,review:int,ignored:int} */

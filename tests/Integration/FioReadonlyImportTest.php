@@ -58,6 +58,23 @@ final class FioReadonlyImportTest extends TestCase
         $this->expectException(FioImportException::class);\fioAmountToMinor('1.001');
     }
 
+    public function testOfficialFioBookingDateFormatAndLegacyEpochAreAcceptedStrictly(): void
+    {
+        self::assertSame('2012-06-30',\fioBookedOn('2012-06-30+02:00'));
+        self::assertSame('2012-06-30',\fioBookedOn('2012-06-30'));
+        self::assertSame('2026-08-03',\fioBookedOn(1785715200000));
+        self::assertSame('2026-08-03',\fioBookedOn(1785715200));
+
+        foreach (['2012-02-30+02:00','2012-06-30+15:00','not-a-date'] as $invalid) {
+            try {
+                \fioBookedOn($invalid);
+                self::fail('Invalid Fio booking date must be rejected: '.$invalid);
+            } catch (FioImportException $exception) {
+                self::assertSame('fio_invalid_booking_date',$exception->getMessage());
+            }
+        }
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:');$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);$pdo->exec('PRAGMA foreign_keys=ON');

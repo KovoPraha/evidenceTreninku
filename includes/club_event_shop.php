@@ -18,16 +18,21 @@ function clubEventShopAvailable(PDO $pdo): bool
 /** @return array<string,mixed> */
 function clubEventShopVariant(PDO $pdo,int $eventId,int $variantId,bool $lock=false):array
 {
-    $sql="SELECT v.*,p.id AS product_id,p.catalog_status AS product_status,p.offer_type,e.name AS event_name,e.* "
+    $sql="SELECT v.*,v.currency AS variant_currency,p.id AS product_id,p.catalog_status AS product_status,"
+        ."p.offer_type,e.currency AS event_currency,e.name AS event_name,e.* "
         ."FROM club_events e JOIN shop_product_event_links l ON l.event_id=e.id JOIN shop_products p ON p.id=l.product_id "
         ."JOIN shop_variants v ON v.product_id=p.id WHERE e.id=? AND v.id=?";
     if($lock&&(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
     $s=$pdo->prepare($sql);$s->execute([$eventId,$variantId]);$row=$s->fetch(PDO::FETCH_ASSOC);
     if(!$row||$row['event_type']!=='club_event'||$row['pricing_policy']!=='product_variants'||$row['status']!=='open'
         ||$row['product_status']!=='active'||$row['catalog_status']!=='active'||$row['price_mode']!=='fixed'
-        ||(int)$row['amount_minor']<1||$row['currency']!=='CZK'||($row['visible']!==null&&(int)$row['visible']!==1)){
+        ||(int)$row['amount_minor']<1||$row['variant_currency']!=='CZK'
+        ||$row['event_currency']!==$row['variant_currency']
+        ||($row['visible']!==null&&(int)$row['visible']!==1)){
         throw new ClubEventShopException('Placená událost nebo zvolená cena už není dostupná.');
     }
+    // e.* contains its own currency column; downstream snapshots must always use the variant currency.
+    $row['currency']=$row['variant_currency'];
     clubEventAssertRegistrationWindow($row);
     return $row;
 }

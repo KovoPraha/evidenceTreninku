@@ -111,6 +111,9 @@ function clubEventParticipantExportCsv(array $export): string
 function clubEventExportCsvCell(mixed $value): string
 {
     $cell = str_replace("\0", '', (string)($value ?? ''));
+    if (!mb_check_encoding($cell, 'UTF-8')) {
+        throw new ClubEventExportException('Export obsahuje text mimo platné UTF-8 a byl bezpečně zastaven.');
+    }
     if (preg_match('/^[\s]*[=+\-@]/u', $cell) === 1 || preg_match('/^[\t\r]/', $cell) === 1) {
         return "'" . $cell;
     }

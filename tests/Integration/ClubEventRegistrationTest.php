@@ -60,6 +60,12 @@ final class ClubEventRegistrationTest extends TestCase
         \clubEventParticipantExport($pdo, 999999);
     }
 
+    public function testParticipantExportRejectsInvalidUtf8InsteadOfFailingOpen(): void
+    {
+        $this->expectException(\ClubEventExportException::class);
+        \clubEventExportCsvCell(" \xFF=HYPERLINK(\"https://invalid.test\")");
+    }
+
     public function testApprovedChildRegistrationIsIdempotentCapacitySafeAndReversible(): void
     {
         $pdo = $this->database();
@@ -426,6 +432,24 @@ final class ClubEventRegistrationTest extends TestCase
         try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),$bank,$cart['fingerprint']);self::fail('One remaining place must not accept two children from one cart.');}
         catch(\ShopCheckoutException $exception){self::assertStringContainsString('Kapacita',$exception->getMessage());}
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
+    }
+
+    public function testPaidEventRejectsVariantCurrencyChangedAfterOpening(): void
+    {
+        $pdo=$this->database();$year=(int)date('Y')+1;
+        $input=$this->eventInput(5);$input['code']='PAID-CURRENCY-'.bin2hex(random_bytes(4));$input['pricing_policy']='product_variants';
+        $eventId=(int)\clubEventCreateDraft($pdo,7,$input)['id'];
+        $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'CURRENCY-SEASON','Currency season','$year-01-01','$year-12-31','active',7)");
+        $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'CURRENCY-U15','U15','silnice','U15','active',7)");
+        \clubEventAddSession($pdo,$eventId,7,$year.'-09-10T09:00',$year.'-09-10T17:00','Velodrom',5);
+        \clubEventLinkProduct($pdo,$eventId,502,7,'Cena soustředění.');
+        \clubEventRosterReplaceTargets($pdo,$eventId,[1],7,'Určeno pro U15.',true);
+        \clubEventConfigureRegistrationTerms($pdo,$eventId,7,'paid.currency','Souhlasím.','Storno do termínu.',$year.'-09-01T12:00',true);
+        \clubEventOpenPaidRegistration($pdo,$eventId,7,'Otevření.',true);
+        $pdo->exec("UPDATE shop_variants SET currency='EUR' WHERE id=602");
+
+        $this->expectException(\ClubEventShopException::class);
+        \clubEventShopVariant($pdo,$eventId,602);
     }
 
     private function openFreeEvent(PDO $pdo, int $capacity, ?int $minAge = null, ?int $maxAge = null): int
