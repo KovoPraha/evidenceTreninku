@@ -135,6 +135,30 @@ function auth_session_version_value(mixed $value): ?int
     return $version > 0 ? $version : null;
 }
 
+/** Refresh the request-scoped trainer authorization snapshot from live DB state. */
+function auth_session_refresh_trainer_authorization(PDO $pdo, int $trainerId): void
+{
+    $trainer = $pdo->prepare('SELECT role FROM treneri WHERE id=? AND aktivni=1 LIMIT 1');
+    $trainer->execute([$trainerId]);
+    $role = $trainer->fetchColumn();
+    if (!is_string($role) || !in_array($role, ['trener', 'hlavni', 'admin'], true)) {
+        throw new RuntimeException('Trainer authorization role is invalid.');
+    }
+
+    $permissions = [];
+    foreach ($pdo->query('SELECT klic,min_role FROM opravneni')->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $key = (string)($row['klic'] ?? '');
+        $minimumRole = (string)($row['min_role'] ?? '');
+        if ($key === '' || !in_array($minimumRole, ['trener', 'hlavni', 'admin'], true)) {
+            throw new RuntimeException('Trainer permission configuration is invalid.');
+        }
+        $permissions[$key] = $minimumRole;
+    }
+
+    $_SESSION['role'] = $role;
+    $_SESSION['opravneni'] = $permissions;
+}
+
 /**
  * Validate every identity currently carried by the PHP session.
  * Invalid identities are cleared and false instructs the caller to terminate
@@ -178,6 +202,15 @@ function auth_session_validate(PDO $pdo): bool
     } catch (Throwable $exception) {
         error_log('Authentication session validation failed: ' . $exception->getMessage());
         $invalid = $present;
+    }
+
+    if ($invalid === [] && in_array('trainer', $present, true)) {
+        try {
+            auth_session_refresh_trainer_authorization($pdo, (int)$_SESSION['trener_id']);
+        } catch (Throwable $exception) {
+            error_log('Trainer authorization refresh failed: ' . $exception->getMessage());
+            $invalid[] = 'trainer';
+        }
     }
 
     if ($invalid === []) {

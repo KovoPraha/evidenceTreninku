@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 const ONE_TIME_TOKEN_EMAIL_VERIFICATION = 'email-verification-v1';
 const ONE_TIME_TOKEN_BOOKING_APPROVAL = 'booking-approval-v1';
+const ONE_TIME_TOKEN_PASSWORD_RESET = 'password-reset-v1';
 
 /** @return array{token:string,hash:string,expires_at:string} */
 function one_time_token_issue(string $purpose, int $ttlSeconds, ?int $now = null): array

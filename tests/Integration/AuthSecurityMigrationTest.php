@@ -61,6 +61,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804234000_shop_coupon_applicability',
                 '20260804235000_club_program_repeat_enrollment',
                 '20260804235500_public_profile_token_rotation',
+                '20260804235900_password_reset_tokens',
             ],
             array_keys($catalog)
         );
@@ -70,6 +71,7 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_catalog_import_runs'));
         self::assertTrue($this->tableExists($pdo, 'child_access_accounts'));
         self::assertTrue($this->tableExists($pdo, 'child_access_events'));
+        self::assertTrue($this->tableExists($pdo, 'password_reset_tokens'));
         self::assertTrue($this->tableExists($pdo, 'kis_import_source_artifacts'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_cart_items'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_order_items'));

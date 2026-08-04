@@ -79,6 +79,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             <div class="mb-3"><label class="form-label">Heslo</label><input class="form-control" type="password" name="heslo" autocomplete="current-password" required></div>
             <button class="btn btn-primary w-100">Přihlásit se</button>
         </form>
+        <p class="text-center small mt-3 mb-0"><a href="zapomenute_heslo.php">Zapomenuté heslo</a></p>
     </div></div>
 </main>
 </body>

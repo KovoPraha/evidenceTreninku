@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['opravneni'] = $pdo->query("SELECT klic, min_role FROM opravneni")->fetchAll(PDO::FETCH_KEY_PAIR);
             } catch (Exception $e) {}
 
-            $_SESSION['flash_success'] = "Oprávnění uložena ($updated položek). Změny se projeví po příštím přihlášení ostatních uživatelů.";
+            $_SESSION['flash_success'] = "Oprávnění uložena ($updated položek). Změny platí pro všechny uživatele od dalšího požadavku.";
             header('Location: nastaveni_opravneni.php');
             exit;
         }

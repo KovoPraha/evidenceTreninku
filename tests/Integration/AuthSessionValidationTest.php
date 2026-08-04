@@ -58,6 +58,21 @@ final class AuthSessionValidationTest extends TestCase
         self::assertArrayNotHasKey(AUTH_SESSION_PUBLIC_VERSION_KEY, $_SESSION);
     }
 
+    public function testTrainerRoleAndPermissionsRefreshOnEveryValidation(): void
+    {
+        $pdo = $this->database();
+        \auth_session_bind_trainer(1, 2);
+        $_SESSION['role'] = 'trener';
+        $_SESSION['opravneni'] = ['reports' => 'trener'];
+
+        $pdo->exec("UPDATE treneri SET role='hlavni' WHERE id=1");
+        $pdo->exec("UPDATE opravneni SET min_role='admin' WHERE klic='reports'");
+
+        self::assertTrue(\auth_session_validate($pdo));
+        self::assertSame('hlavni', $_SESSION['role']);
+        self::assertSame(['reports' => 'admin'], $_SESSION['opravneni']);
+    }
+
     #[RunInSeparateProcess]
     #[PreserveGlobalState(false)]
     public function testRevocationRotatesSessionAndCsrfBeforeCallerTerminatesRequest(): void
@@ -86,9 +101,11 @@ final class AuthSessionValidationTest extends TestCase
         ]);
         $pdo->exec(
             'CREATE TABLE treneri ('
-            . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL, session_version INTEGER NOT NULL)'
+            . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL, session_version INTEGER NOT NULL, role TEXT NOT NULL)'
         );
-        $pdo->exec('INSERT INTO treneri (id, aktivni, session_version) VALUES (1, 1, 2)');
+        $pdo->exec("INSERT INTO treneri (id, aktivni, session_version, role) VALUES (1, 1, 2, 'admin')");
+        $pdo->exec('CREATE TABLE opravneni (klic TEXT PRIMARY KEY,min_role TEXT NOT NULL)');
+        $pdo->exec("INSERT INTO opravneni VALUES('reports','hlavni')");
         $pdo->exec(
             'CREATE TABLE verejni_uzivatele ('
             . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL, session_version INTEGER NOT NULL)'
