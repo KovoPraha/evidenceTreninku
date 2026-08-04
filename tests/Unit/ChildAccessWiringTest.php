@@ -18,6 +18,20 @@ final class ChildAccessWiringTest extends TestCase
         self::assertStringContainsString('childAccessOverview($pdo', $dashboard);
     }
 
+    public function testDashboardHasUnifiedPortalNavigationAndHumanReadableStatuses(): void
+    {
+        $dashboard = $this->source('booking/muj_sport.php');
+        self::assertStringContainsString('href="../index.php"', $dashboard);
+        self::assertStringContainsString('aria-label="Souhrn sportovce"', $dashboard);
+        self::assertStringContainsString("'confirmed' => 'Přihlášeno'", $dashboard);
+        self::assertStringContainsString("'payment_pending' => 'Čeká na úhradu'", $dashboard);
+        self::assertStringContainsString("'paid' => 'Uhrazeno'", $dashboard);
+        self::assertStringContainsString("'club_event' => 'Klubová událost'", $dashboard);
+        self::assertStringContainsString("format(\$withTime ? 'j. n. Y H:i' : 'j. n. Y')", $dashboard);
+        self::assertStringContainsString("childPageStatusLabel((string)\$row['status'], 'event')", $dashboard);
+        self::assertStringContainsString("childPageStatusLabel((string)\$row['payment_status'], 'payment')", $dashboard);
+    }
+
     public function testLoginIsRateLimitedAndClearsHigherPrivilegeIdentities(): void
     {
         $login = $this->source('booking/sportovec_prihlaseni.php');
