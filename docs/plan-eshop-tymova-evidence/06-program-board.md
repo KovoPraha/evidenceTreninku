@@ -119,6 +119,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.2/M2.5 veřejný portál a jednotný účet | hotovo lokálně | `efa1ca8`: veřejný katalog, kroužky, velodrom a bezpečný rozvrh; akce až po loginu; trenér i e-shop používají jednu identitu a reset hesla; 346/3063, 375 lintů, 38/38, audit 0, browser master flow |
 | M2.6/A06 roční obnova soupisek | hotovo lokálně | `dde0f3e`: společný preview+fingerprint, U15→U17, přenos dráhy, zachované výjimky, auditované/idempotentní dílčí běhy a opakovatelný reset; browser 3 přesuny/2 výjimky, 349/3081, 379 lintů, 38/38, audit 0 |
 | M2.4d klubové ceny podle soupisek | hotovo lokálně | `e67eed8`: veřejná cena + výzva k přihlášení, nejvýhodnější aktivní soupiska rodiny, sleva kategorie nebo přesná cena produktu, audit a checkout snapshot; 353/3120, 383 parse, 39/39, audit 0 |
+| M2.6/A07 plán → docházka → sportovec | hotovo lokálně | `03774db`: vlastnická a datová ochrana plánu, neměnná kopie snapshotu ke skutečnému tréninku, přehled očekávaní/skuteční/chybějící/neočekávaní; browser 1/1/0/0 a sportovní přehled, 354/3130, 384 parse, 39/39, audit 0 |
 
 ## Aktivní rozhodnutí
 

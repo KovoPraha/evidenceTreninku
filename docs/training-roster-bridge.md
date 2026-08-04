@@ -9,6 +9,8 @@ Plánovaný i skutečný trénink může být propojen s více KIS soupiskami. S
 3. Členství se posuzuje podle `valid_from` a `valid_to` k datu tréninku. Neaktivní, neexistující nebo časově neplatná soupiska způsobí rollback celého uložení.
 4. Při otevření `formular.php?plan_id=…` se snapshot očekávaných členů pouze předvyplní do stávajícího výběru účastníků. Sportovec přítomný ve více soupiskách se zobrazí jen jednou.
 5. Skutečná docházka vzniká až běžným ručním odesláním evidence a zůstává v `trenink_sportovec`. Samotné plánování do této tabulky nikdy nezapisuje.
+6. Při uložení skutečné docházky se historický snapshot plánu atomicky zkopíruje také ke skutečnému tréninku. Pozdější změna soupisky tím nezmění původní očekávání.
+7. `kis_training_a07_admin.php` porovná očekávané a skutečné účastníky a ukáže přítomné podle plánu, chybějící i neočekávané osoby. Průvodce je dostupný pouze na localhostu.
 
 Snapshot uchovává kód a název soupisky, identitu člena a jeho interval platnosti. Pozdější změna soupisky tak nepřepisuje historické očekávání již naplánovaného tréninku. Editace vazeb snapshot vědomě vytvoří znovu.
 
@@ -16,7 +18,8 @@ Snapshot uchovává kód a název soupisky, identitu člena a jeho interval plat
 
 - Plán bez vybrané soupisky je podporovaný legacy režim.
 - `planovane_treninky_podskupiny`, legacy `podskupina_id` a výběr skupiny zůstávají beze změny.
-- Helper umí stejnou vazbu a snapshot i pro skutečný `treninky` záznam, UI M1.3 ji však automaticky nevytváří.
+- Při zaevidování plánu smí běžný trenér použít pouze svůj plán, hlavní trenér libovolný dostupný plán. Datum skutečného tréninku musí odpovídat plánu.
+- Skutečný `treninky` záznam dostane automaticky vlastní neměnnou kopii plánovacího snapshotu; docházka se dál ukládá výhradně do legacy tabulky `trenink_sportovec`.
 
 ## Migrace
 

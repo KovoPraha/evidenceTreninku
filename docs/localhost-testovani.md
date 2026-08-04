@@ -24,6 +24,8 @@ Seed je idempotentní a mimo localhost skončí chybou. Připraví:
 - bezplatnou i placenou událost cílenou na více soupisek,
 - věkovou řadu U13 → U15 → U17, dráhovou i silniční soupisku a rollover výjimku,
 - sezónu `2026/27`, tým `LOCALHOST U15` a členy testovacích soupisek.
+- dnešní plánovaný trénink A07 cílený na U15 a dráhovou soupisku; po jeho
+  zaevidování další spuštění seedu připraví nový čistý plán a historický trénink zachová.
 
 Aktuální testovací přístupy vypíše přímo seed. Výchozí hodnoty jsou:
 
@@ -53,6 +55,9 @@ skenovat pro skutečnou platbu. Fio import zůstává vypnutý.
 10. Přihlásit localhost administrátora na `login.php` a otevřít
     `eshop_member_prices_admin.php`.
 11. Projít objednávky, klubové ceny, audit osoby a `kis_rosters_admin.php`.
+12. Otevřít `kis_training_a07_admin.php`, zkontrolovat očekávané sportovce a přejít
+    na zadání skutečné docházky. Po uložení průvodce ukáže přítomné podle plánu,
+    chybějící a neočekávané; sportovec výsledek uvidí v `booking/muj_sport.php`.
 
 Před větší změnou lokální DB používejte `bin/db-backup.php` s cílem mimo webroot.
 
