@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/kis_parity_contract.php';
+require_once __DIR__ . '/member_charge.php';
 
 const KIS_IMPORT_PARITY_CONTRACT = 'kis-import-parity-v1';
 
@@ -51,6 +52,13 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
         'memberships' => ['active' => 0, 'inactive' => 0],
         'rosters' => ['people_with_rosters' => 0, 'assignment_count' => 0],
         'payment_signals' => ['active_people' => 0, 'people_with_debt' => 0, 'paid_rows' => 0, 'open_rows' => 0],
+        'payment_prescriptions' => [
+            'contract' => MEMBER_CHARGE_CONTRACT,
+            'staged_rows' => 0,
+            'target_same' => 0,
+            'target_missing' => 0,
+            'target_different' => 0,
+        ],
     ];
     foreach ($rows->fetchAll(PDO::FETCH_ASSOC) as $index => $row) {
         $domains['persons']['source_rows']++;
@@ -109,7 +117,44 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
     ]);
 
     $coverageBlockers = [];
-    if (($domains['payment_signals']['paid_rows'] + $domains['payment_signals']['open_rows']) > 0) {
+    $hasPaymentStaging = function_exists('kisImportTableExists') && kisImportTableExists($pdo, 'kis_import_payment_rows');
+    $hasPaymentTarget = function_exists('kisImportTableExists') && kisImportTableExists($pdo, 'club_member_charges');
+    if ($hasPaymentStaging && $hasPaymentTarget) {
+        $payments = $pdo->prepare(
+            'SELECT p.status_snapshot,p.amount_minor,p.currency,p.due_on,'
+            . 'c.id AS target_id,c.status AS target_status,c.amount_minor AS target_amount_minor,'
+            . 'c.currency AS target_currency,c.due_on AS target_due_on,'
+            . 'im.sportovec_id,c.sportovec_id AS target_sportovec_id '
+            . 'FROM kis_import_payment_rows p '
+            . 'JOIN kis_import_rows ir ON ir.id=p.import_row_id AND ir.run_id=p.run_id '
+            . 'LEFT JOIN kis_import_matches im ON im.row_id=ir.id AND im.run_id=ir.run_id '
+            . "LEFT JOIN club_member_charges c ON c.source_system='kis_import' AND c.source_external_id=p.payment_external_id "
+            . 'WHERE p.run_id=? ORDER BY p.id'
+        );
+        $payments->execute([$runId]);
+        foreach ($payments->fetchAll(PDO::FETCH_ASSOC) as $payment) {
+            $domains['payment_prescriptions']['staged_rows']++;
+            if ((int)($payment['target_id'] ?? 0) < 1) {
+                $domains['payment_prescriptions']['target_missing']++;
+                continue;
+            }
+            $same = (int)($payment['sportovec_id'] ?? 0) > 0
+                && (int)$payment['sportovec_id'] === (int)$payment['target_sportovec_id']
+                && (string)$payment['status_snapshot'] === (string)$payment['target_status']
+                && (int)$payment['amount_minor'] === (int)$payment['target_amount_minor']
+                && (string)$payment['currency'] === (string)$payment['target_currency']
+                && trim((string)($payment['due_on'] ?? '')) === trim((string)($payment['target_due_on'] ?? ''));
+            $same
+                ? $domains['payment_prescriptions']['target_same']++
+                : $domains['payment_prescriptions']['target_different']++;
+        }
+        if ($domains['payment_prescriptions']['target_missing'] > 0) {
+            $coverageBlockers[] = 'payment_prescriptions_not_promoted';
+        }
+        if ($domains['payment_prescriptions']['target_different'] > 0) {
+            $coverageBlockers[] = 'payment_prescriptions_different';
+        }
+    } elseif (($domains['payment_signals']['paid_rows'] + $domains['payment_signals']['open_rows']) > 0) {
         $coverageBlockers[] = 'payment_prescription_target_contract_missing';
     }
     $canonical = [
@@ -119,6 +164,7 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
         'source_fingerprints' => [
             'preview' => $preview['fingerprint'],
             'field' => $field['fingerprint'],
+            'member_charge_contract' => MEMBER_CHARGE_CONTRACT,
         ],
         'summary' => [
             'total_rows' => $base['summary']['total_rows'],
@@ -133,7 +179,9 @@ function kisImportBuildParityReport(PDO $pdo, int $runId): array
             'membership_status' => 'compared',
             'roster_snapshot' => 'compared',
             'payment_aggregates' => 'compared',
-            'payment_prescriptions' => $coverageBlockers === [] ? 'not_present' : 'source_projection_only',
+            'payment_prescriptions' => $domains['payment_prescriptions']['staged_rows'] === 0
+                ? 'not_present'
+                : ($domains['payment_prescriptions']['target_missing'] === 0 && $domains['payment_prescriptions']['target_different'] === 0 ? 'compared' : 'staged'),
         ],
         'coverage_blockers' => $coverageBlockers,
         'rows' => $base['rows'],

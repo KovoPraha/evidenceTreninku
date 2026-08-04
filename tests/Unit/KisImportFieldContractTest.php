@@ -52,7 +52,7 @@ final class KisImportFieldContractTest extends TestCase
     {
         return [
             'users' => ['headers' => ['kisid', 'jmeno', 'prijmeni', 'datumnarozeni'], 'rows' => 2],
-            'payments' => ['headers' => ['kisid', 'stav'], 'rows' => 2],
+            'payments' => ['headers' => ['kisid', 'idplatby', 'stav', 'castka'], 'rows' => 2],
             'soupisky' => ['headers' => ['kisid', 'soupiska', 'jmeno', 'prijmeni'], 'rows' => 2],
         ];
     }

@@ -77,8 +77,8 @@ final class KisSyncLibTest extends TestCase
                 ['KIS-501', 'Stable', 'Member', '01.02.2012'],
             ]),
             'payments' => $this->writeXlsx([
-                ['ID uzivatele', 'Stav', 'Castka'],
-                ['KIS-501', 'zaplaceno', '500'],
+                ['ID uzivatele', 'ID platby', 'Stav', 'Castka'],
+                ['KIS-501', 'PAY-501', 'zaplaceno', '500'],
             ]),
             'rosters' => $this->writeXlsx([
                 ['ID clena', 'Soupiska', 'Jmeno', 'Prijmeni'],
@@ -91,9 +91,39 @@ final class KisSyncLibTest extends TestCase
             $person = $payload['people'][0];
             self::assertSame('KIS-501', $person['kis_external_id']);
             self::assertSame(1, $person['kis_platebne_aktivni']);
+            self::assertSame('PAY-501', $person['_kis_payment_rows'][0]['payment_external_id']);
+            self::assertSame(50000, $person['_kis_payment_rows'][0]['amount_minor']);
+            self::assertSame(0, $person['_kis_payment_rows'][0]['outstanding_minor']);
             self::assertSame('U15', $person['kis_soupisky']);
             self::assertSame([], $payload['warnings']);
             self::assertContains('iduzivatele', $payload['meta']['payments']['headers']);
+        } finally {
+            foreach ($paths as $path) {
+                @unlink($path);
+            }
+        }
+    }
+
+    public function testPaymentWithoutAmountIsBlockedAndNotProjected(): void
+    {
+        $paths = [
+            'users' => $this->writeXlsx([
+                ['KIS ID', 'Jmeno', 'Prijmeni', 'Datum narozeni'],
+                ['KIS-502', 'Missing', 'Amount', '01.02.2012'],
+            ]),
+            'payments' => $this->writeXlsx([
+                ['ID uzivatele', 'ID platby', 'Stav', 'Castka'],
+                ['KIS-502', 'PAY-502', 'ceka', ''],
+            ]),
+            'rosters' => $this->writeXlsx([
+                ['ID clena', 'Soupiska', 'Jmeno', 'Prijmeni'],
+                ['KIS-502', 'U15', 'Missing', 'Amount'],
+            ]),
+        ];
+        try {
+            $payload = \kis_build_import($paths['users'], $paths['payments'], $paths['rosters']);
+            self::assertSame([], $payload['people'][0]['_kis_payment_rows']);
+            self::assertContains('PAYMENT_PRESCRIPTION_AMOUNT_MISSING:1', $payload['warnings']);
         } finally {
             foreach ($paths as $path) {
                 @unlink($path);

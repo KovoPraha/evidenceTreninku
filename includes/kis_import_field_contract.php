@@ -9,6 +9,12 @@ function kisFieldExternalIdHeaders(): array
     return ['kisid', 'iduzivatele', 'uzivatelid', 'idclena', 'clenid'];
 }
 
+/** @return list<string> */
+function kisFieldPaymentIdHeaders(): array
+{
+    return ['idplatby', 'platbaid', 'paymentid', 'idpredpisu', 'predpisid'];
+}
+
 function kisFieldNormalizeExternalId(mixed $value): string
 {
     $value = mb_strtoupper(trim((string)$value), 'UTF-8');
@@ -30,12 +36,24 @@ function kisFieldExtractExternalId(array $row): array
     return ['raw' => '', 'value' => '', 'header' => null];
 }
 
+/** @return array{raw:string,value:string,header:?string} */
+function kisFieldExtractPaymentId(array $row): array
+{
+    foreach (kisFieldPaymentIdHeaders() as $header) {
+        if (array_key_exists($header, $row) && trim((string)$row[$header]) !== '') {
+            $raw = trim((string)$row[$header]);
+            return ['raw' => $raw, 'value' => kisFieldNormalizeExternalId($raw), 'header' => $header];
+        }
+    }
+    return ['raw' => '', 'value' => '', 'header' => null];
+}
+
 /** @return array<string,mixed> */
 function kisFieldContractEvaluate(array $people, array $meta, array $warnings): array
 {
     $definitions = [
         'users' => ['meta' => 'users', 'required' => ['jmeno', 'prijmeni', 'datumnarozeni']],
-        'payments' => ['meta' => 'payments', 'required' => ['stav']],
+        'payments' => ['meta' => 'payments', 'required' => ['stav', 'castka']],
         'rosters' => ['meta' => 'soupisky', 'required' => ['soupiska', 'jmeno', 'prijmeni']],
     ];
     $sources = [];
@@ -55,11 +73,22 @@ function kisFieldContractEvaluate(array $people, array $meta, array $warnings): 
         if ($externalHeader === null) {
             $missing[] = 'kis_external_id';
         }
+        $paymentIdHeader = null;
+        if ($source === 'payments') {
+            foreach (kisFieldPaymentIdHeaders() as $candidate) {
+                if (in_array($candidate, $headers, true)) {
+                    $paymentIdHeader = $candidate;
+                    break;
+                }
+            }
+            if ($paymentIdHeader === null) $missing[] = 'payment_external_id';
+        }
         $missing = array_values(array_unique($missing));
         $headerBlockers += count($missing);
         $sources[$source] = [
             'status' => $missing === [] ? 'valid' : 'blocked',
             'external_id_header' => $externalHeader,
+            'payment_id_header' => $paymentIdHeader,
             'missing_headers' => $missing,
             'row_count' => max(0, (int)($sourceMeta['rows'] ?? 0)),
         ];

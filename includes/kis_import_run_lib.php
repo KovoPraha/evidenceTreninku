@@ -5,6 +5,7 @@ require_once __DIR__ . '/kis_match_lib.php';
 require_once __DIR__ . '/kis_source_archive.php';
 require_once __DIR__ . '/kis_import_field_contract.php';
 require_once __DIR__ . '/kis_import_parity_report.php';
+require_once __DIR__ . '/member_charge.php';
 
 const KIS_IMPORT_PREVIEW_CONTRACT = 'kis-import-preview-v2';
 
@@ -296,6 +297,20 @@ function kisImportColumnExists(PDO $pdo, string $table, string $column): bool
     return (bool)$statement->fetchColumn();
 }
 
+function kisImportTableExists(PDO $pdo, string $table): bool
+{
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
+        $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?");
+        $statement->execute([$table]);
+        return (bool)$statement->fetchColumn();
+    }
+    $statement = $pdo->prepare(
+        'SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?'
+    );
+    $statement->execute([$table]);
+    return (bool)$statement->fetchColumn();
+}
+
 function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array $baseStats = []): array
 {
     $counts = ['new' => 0, 'matched' => 0, 'ambiguous' => 0, 'conflict' => 0, 'ignored' => 0];
@@ -325,6 +340,15 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
         VALUES
             (:run_id, :row_id, :sportovec_id, :match_status, :confidence, :reason, :candidate_json)
     ");
+    $paymentStmt = null;
+    if (kisImportTableExists($pdo, 'kis_import_payment_rows')) {
+        $paymentStmt = $pdo->prepare(
+            'INSERT INTO kis_import_payment_rows '
+            . '(run_id,import_row_id,source_ref,payment_external_id,status_snapshot,amount_minor,outstanding_minor,currency,due_on,paid_on) '
+            . 'VALUES (:run_id,:import_row_id,:source_ref,:payment_external_id,:status_snapshot,:amount_minor,:outstanding_minor,:currency,:due_on,:paid_on)'
+        );
+    }
+    $paymentOrdinal = 0;
 
     foreach ($people as $person) {
         $personKey = kisMatchPersonKey($person);
@@ -354,6 +378,24 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
         }
         $rowStmt->execute($parameters);
         $rowId = (int)$pdo->lastInsertId();
+        if ($paymentStmt !== null) {
+            foreach ((array)($person['_kis_payment_rows'] ?? []) as $paymentRow) {
+                $projection = memberChargeProjection((array)$paymentRow);
+                $paymentOrdinal++;
+                $paymentStmt->execute([
+                    ':run_id' => $runId,
+                    ':import_row_id' => $rowId,
+                    ':source_ref' => 'payment:' . $paymentOrdinal,
+                    ':payment_external_id' => $projection['source_external_id'],
+                    ':status_snapshot' => $projection['status'],
+                    ':amount_minor' => $projection['amount_minor'],
+                    ':outstanding_minor' => $projection['outstanding_minor'],
+                    ':currency' => $projection['currency'],
+                    ':due_on' => $projection['due_on'],
+                    ':paid_on' => $projection['paid_on'],
+                ]);
+            }
+        }
         $match = kisMatchResolve($pdo, $person);
         $status = (string)$match['status'];
         $counts[$status] = ($counts[$status] ?? 0) + 1;

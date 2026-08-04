@@ -228,6 +228,7 @@ function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?str
                 'latest_paid' => null,
                 'latest_due' => null,
             ],
+            '_kis_payment_rows' => [],
         ];
     } elseif ($externalId !== '') {
         $existingName = kis_normalize_name((string)$people[$key]['jmeno'], (string)$people[$key]['prijmeni']);
@@ -325,8 +326,13 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
 
     $paymentRows = kis_read_rows($paymentsPath, ['stav'], $meta['payments']);
     $paymentsByIdentity = [];
+    $paymentRowsByIdentity = [];
     $paymentFallbackRows = 0;
     $paymentInvalidExternalRows = 0;
+    $paymentMissingPrescriptionIds = 0;
+    $paymentInvalidPrescriptionIds = 0;
+    $paymentMissingAmounts = 0;
+    $paymentInvalidAmounts = 0;
     foreach ($paymentRows as $row) {
         $jmeno = trim((string)($row['jmeno'] ?? ''));
         $prijmeni = trim((string)($row['prijmeni'] ?? ''));
@@ -342,6 +348,12 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
             continue;
         }
         $paymentKey = $external['value'] !== '' ? 'external:' . $external['value'] : 'name:' . $nameKey;
+        $prescriptionId = kisFieldExtractPaymentId($row);
+        if ($prescriptionId['raw'] === '') {
+            $paymentMissingPrescriptionIds++;
+        } elseif ($prescriptionId['value'] === '') {
+            $paymentInvalidPrescriptionIds++;
+        }
         $paymentsByIdentity[$paymentKey] ??= [
             'paid_rows' => 0,
             'open_rows' => 0,
@@ -353,9 +365,31 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
 
         $remaining = kis_money_to_float($row['zbyvazaplatit'] ?? null);
         $amount = kis_money_to_float($row['castka'] ?? null);
+        if ($amount === null) {
+            $paymentMissingAmounts++;
+        } elseif ($amount < 0) {
+            $paymentInvalidAmounts++;
+        }
         $status = mb_strtolower(kis_deaccent(trim((string)($row['stav'] ?? ''))), 'UTF-8');
         $paidDate = kis_date_to_mysql($row['datumuhrady'] ?? null);
         $dueDate = kis_date_to_mysql($row['datumsplatnosti'] ?? null);
+        $statusClass = ($status === 'zaplaceno' || $remaining === 0.0) ? 'paid'
+            : (in_array($status, ['zruseno', 'stornovano', 'storno'], true) ? 'cancelled' : 'pending');
+        if ($prescriptionId['value'] !== '' && $amount !== null && $amount >= 0) {
+            $amountMinor = (int)round($amount * 100);
+            $outstandingMinor = $remaining === null
+                ? ($statusClass === 'pending' ? $amountMinor : 0)
+                : max(0, (int)round($remaining * 100));
+            $paymentRowsByIdentity[$paymentKey][] = [
+                'payment_external_id' => $prescriptionId['value'],
+                'status' => $statusClass,
+                'amount_minor' => $amountMinor,
+                'outstanding_minor' => $outstandingMinor,
+                'currency' => 'CZK',
+                'due_on' => $dueDate,
+                'paid_on' => $paidDate,
+            ];
+        }
 
         if ($status === 'zaplaceno' || $remaining === 0.0) {
             $paymentsByIdentity[$paymentKey]['paid_rows']++;
@@ -392,6 +426,7 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         }
         if (count($matches) === 1) {
             $people[$matches[0]]['_kis_payment'] = $payment;
+            $people[$matches[0]]['_kis_payment_rows'] = $paymentRowsByIdentity[$identityKey] ?? [];
         } elseif (count($matches) > 1) {
             $paymentAmbiguousRows++;
         }
@@ -400,6 +435,10 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
     if ($paymentInvalidExternalRows > 0) $warnings[] = 'PAYMENT_EXTERNAL_ID_INVALID:' . $paymentInvalidExternalRows;
     if ($paymentUnmatchedExternalRows > 0) $warnings[] = 'PAYMENT_EXTERNAL_ID_UNMATCHED:' . $paymentUnmatchedExternalRows;
     if ($paymentAmbiguousRows > 0) $warnings[] = 'PAYMENT_NAME_AMBIGUOUS:' . $paymentAmbiguousRows;
+    if ($paymentMissingPrescriptionIds > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_ID_MISSING:' . $paymentMissingPrescriptionIds;
+    if ($paymentInvalidPrescriptionIds > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_ID_INVALID:' . $paymentInvalidPrescriptionIds;
+    if ($paymentMissingAmounts > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_MISSING:' . $paymentMissingAmounts;
+    if ($paymentInvalidAmounts > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_INVALID:' . $paymentInvalidAmounts;
 
     // Sloučení sezónních variant: "X (2025/2026)" → "X", pokud existuje i základní název.
     // KIS exportuje tutéž soupisku dvakrát (users bez sufixu, soupisky se sufixem sezóny) —

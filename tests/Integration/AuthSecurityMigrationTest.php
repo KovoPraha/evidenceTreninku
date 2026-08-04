@@ -63,6 +63,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260804234700_kis_import_sandbox_promotion',
                 '20260804234800_kis_import_field_contract',
                 '20260804234900_kis_import_parity_report',
+                '20260804234950_member_charge_target',
                 '20260804235000_club_program_repeat_enrollment',
                 '20260804235500_public_profile_token_rotation',
                 '20260804235900_password_reset_tokens',

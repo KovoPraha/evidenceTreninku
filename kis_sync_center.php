@@ -192,8 +192,19 @@ $attention = [
                                         platební řádky <?= (int)$parityReport['domains']['payment_signals']['paid_rows'] + (int)$parityReport['domains']['payment_signals']['open_rows'] ?>.
                                         Celkem blokátorů <?= (int)$parityReport['summary']['total_blockers'] ?>.
                                     </div>
-                                    <?php if (in_array('payment_prescription_target_contract_missing', $parityReport['coverage_blockers'] ?? [], true)): ?>
-                                        <div class="small text-danger mt-2">Platební souhrny jsou zachycené, ale cílový model jednotlivých členských předpisů ještě není definovaný. Ostrý cutover proto zůstává zablokovaný.</div>
+                                    <?php $prescriptions = $parityReport['domains']['payment_prescriptions'] ?? []; ?>
+                                    <div class="small mt-2">
+                                        <strong>M2.3f členské předpisy:</strong>
+                                        cílový model <?= h((string)($prescriptions['contract'] ?? MEMBER_CHARGE_CONTRACT)) ?> je připraven,
+                                        ve stagingu <?= (int)($prescriptions['staged_rows'] ?? 0) ?>,
+                                        shodných v cíli <?= (int)($prescriptions['target_same'] ?? 0) ?>,
+                                        čeká na přenos <?= (int)($prescriptions['target_missing'] ?? 0) ?>.
+                                    </div>
+                                    <?php if (in_array('payment_prescriptions_not_promoted', $parityReport['coverage_blockers'] ?? [], true)): ?>
+                                        <div class="small text-warning mt-1">Předpisy jsou bezpečně uložené ve stagingu, ale ještě nebyly zapsané mezi členské předpisy. Produkční data se nemění.</div>
+                                    <?php endif; ?>
+                                    <?php if (in_array('payment_prescriptions_different', $parityReport['coverage_blockers'] ?? [], true)): ?>
+                                        <div class="small text-danger mt-1">Některé již existující členské předpisy se liší od zdroje KIS. Automatický cutover je zablokovaný.</div>
                                     <?php endif; ?>
                                 <?php else: ?>
                                     <div class="small text-muted mt-1">Starší import nemá uložený M2.3e paritní report.</div>

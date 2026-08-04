@@ -77,7 +77,8 @@ try {
             && hash_equals((string)$manifest['fingerprint'], (string)($storedManifest['fingerprint'] ?? ''))
             && $storedReport !== null
             && kisFieldContractStoredReport($existing) !== null
-            && kisImportStoredParityReport($existing) !== null) {
+            && ($existingParity = kisImportStoredParityReport($existing)) !== null
+            && (int)($existingParity['domains']['payment_prescriptions']['staged_rows'] ?? 0) > 0) {
             $respond([
                 'status' => 'existing',
                 'run_id' => (int)$existing['id'],
@@ -91,12 +92,12 @@ try {
     $runId = kisImportCreateRun(
         $pdo,
         [
-            ['kis_external_id' => 'KIS-M23D-001', '_kis_external_id_raw' => 'KIS-M23D-001', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewOne', 'narozeni' => '2012-01-01', 'uciid' => 'M23-SYNTH-001', '_soupisky_parsed' => ['Testovaci soupiska'], 'kis_soupisky' => 'Testovaci soupiska', 'kis_aktivni' => 1, 'kis_platebne_aktivni' => 1, '_kis_payment' => ['paid_rows' => 1, 'open_rows' => 0]],
-            ['kis_external_id' => 'KIS-M23D-002', '_kis_external_id_raw' => 'KIS-M23D-002', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewTwo', 'narozeni' => '2013-02-02', 'uciid' => 'M23-SYNTH-002', '_soupisky_parsed' => ['Testovaci soupiska'], 'kis_soupisky' => 'Testovaci soupiska', 'kis_aktivni' => 1, 'kis_platebne_aktivni' => 1, '_kis_payment' => ['paid_rows' => 1, 'open_rows' => 0]],
+            ['kis_external_id' => 'KIS-M23D-001', '_kis_external_id_raw' => 'KIS-M23D-001', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewOne', 'narozeni' => '2012-01-01', 'uciid' => 'M23-SYNTH-001', '_soupisky_parsed' => ['Testovaci soupiska'], 'kis_soupisky' => 'Testovaci soupiska', 'kis_aktivni' => 1, 'kis_platebne_aktivni' => 1, '_kis_payment' => ['paid_rows' => 1, 'open_rows' => 0], '_kis_payment_rows' => [['payment_external_id' => 'PAY-M23F-001', 'status' => 'paid', 'amount_minor' => 250000, 'outstanding_minor' => 0, 'currency' => 'CZK', 'due_on' => '2026-01-31', 'paid_on' => '2026-01-15']]],
+            ['kis_external_id' => 'KIS-M23D-002', '_kis_external_id_raw' => 'KIS-M23D-002', 'jmeno' => 'Localhost', 'prijmeni' => 'PreviewTwo', 'narozeni' => '2013-02-02', 'uciid' => 'M23-SYNTH-002', '_soupisky_parsed' => ['Testovaci soupiska'], 'kis_soupisky' => 'Testovaci soupiska', 'kis_aktivni' => 1, 'kis_platebne_aktivni' => 1, '_kis_payment' => ['paid_rows' => 1, 'open_rows' => 0], '_kis_payment_rows' => [['payment_external_id' => 'PAY-M23F-002', 'status' => 'paid', 'amount_minor' => 180000, 'outstanding_minor' => 0, 'currency' => 'CZK', 'due_on' => '2026-01-31', 'paid_on' => '2026-01-20']]],
         ],
         [
             'users' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'jmeno', 'prijmeni', 'datumnarozeni'], 'rows' => 2],
-            'payments' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'stav'], 'rows' => 2],
+            'payments' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'idplatby', 'stav', 'castka'], 'rows' => 2],
             'soupisky' => ['contract' => 'm23d-synthetic-v1', 'headers' => ['kisid', 'soupiska', 'jmeno', 'prijmeni'], 'rows' => 2],
         ],
         [],
@@ -118,6 +119,7 @@ try {
         'field_contract_status' => (string)$fieldReport['status'],
         'parity_status' => (string)$parityReport['status'],
         'parity_blockers' => (int)$parityReport['summary']['total_blockers'],
+        'staged_payment_prescriptions' => (int)$parityReport['domains']['payment_prescriptions']['staged_rows'],
         'fingerprint' => (string)$report['fingerprint'],
         'url' => 'http://localhost/evidencePavel/kis_sync_center.php?run_id=' . $runId,
     ]);

@@ -16,8 +16,8 @@ final class KisImportParityReportTest extends TestCase
         $pdo->exec("INSERT INTO sportovci(id,jmeno,prijmeni,narozeni,kis_external_id,kis_aktivni,kis_platebne_aktivni,kis_neuhrazeno,kis_posledni_uhrada,kis_soupisky) VALUES(10,'Existing','Secret','2012-01-01','KIS-10',1,1,0,NULL,'U15')");
         $artifactId = $this->artifact($pdo);
         $people = [
-            ['kis_external_id'=>'KIS-10','_kis_external_id_raw'=>'KIS-10','jmeno'=>'Existing','prijmeni'=>'Secret','narozeni'=>'2012-01-01','kis_aktivni'=>1,'kis_platebne_aktivni'=>1,'kis_neuhrazeno'=>0,'kis_posledni_uhrada'=>null,'kis_soupisky'=>'U15','_soupisky_parsed'=>['U15'],'_kis_payment'=>['paid_rows'=>1,'open_rows'=>0]],
-            ['kis_external_id'=>'KIS-20','_kis_external_id_raw'=>'KIS-20','jmeno'=>'New','prijmeni'=>'Private','narozeni'=>'2013-02-02','kis_aktivni'=>1,'kis_platebne_aktivni'=>1,'kis_neuhrazeno'=>0,'kis_posledni_uhrada'=>null,'kis_soupisky'=>'U13','_soupisky_parsed'=>['U13'],'_kis_payment'=>['paid_rows'=>1,'open_rows'=>0]],
+            ['kis_external_id'=>'KIS-10','_kis_external_id_raw'=>'KIS-10','jmeno'=>'Existing','prijmeni'=>'Secret','narozeni'=>'2012-01-01','kis_aktivni'=>1,'kis_platebne_aktivni'=>1,'kis_neuhrazeno'=>0,'kis_posledni_uhrada'=>null,'kis_soupisky'=>'U15','_soupisky_parsed'=>['U15'],'_kis_payment'=>['paid_rows'=>1,'open_rows'=>0],'_kis_payment_rows'=>[['payment_external_id'=>'PAY-SECRET-10','status'=>'paid','amount_minor'=>250000,'outstanding_minor'=>0,'currency'=>'CZK','due_on'=>'2026-01-31','paid_on'=>'2026-01-10']]],
+            ['kis_external_id'=>'KIS-20','_kis_external_id_raw'=>'KIS-20','jmeno'=>'New','prijmeni'=>'Private','narozeni'=>'2013-02-02','kis_aktivni'=>1,'kis_platebne_aktivni'=>1,'kis_neuhrazeno'=>0,'kis_posledni_uhrada'=>null,'kis_soupisky'=>'U13','_soupisky_parsed'=>['U13'],'_kis_payment'=>['paid_rows'=>1,'open_rows'=>0],'_kis_payment_rows'=>[['payment_external_id'=>'PAY-SECRET-20','status'=>'paid','amount_minor'=>180000,'outstanding_minor'=>0,'currency'=>'CZK','due_on'=>'2026-01-31','paid_on'=>'2026-01-12']]],
         ];
         $runId = \kisImportCreateRun($pdo,$people,$this->meta(),[],['users'=>'users.xlsx'],7,['users'=>$artifactId]);
         $run = $pdo->query('SELECT * FROM kis_import_runs WHERE id='.$runId)->fetch(PDO::FETCH_ASSOC);
@@ -30,12 +30,17 @@ final class KisImportParityReportTest extends TestCase
         self::assertSame(1,$report['domains']['persons']['creates']);
         self::assertSame(2,$report['domains']['rosters']['assignment_count']);
         self::assertSame(2,$report['domains']['payment_signals']['paid_rows']);
-        self::assertSame(['payment_prescription_target_contract_missing'],$report['coverage_blockers']);
+        self::assertSame(MEMBER_CHARGE_CONTRACT,$report['domains']['payment_prescriptions']['contract']);
+        self::assertSame(2,$report['domains']['payment_prescriptions']['staged_rows']);
+        self::assertSame(2,$report['domains']['payment_prescriptions']['target_missing']);
+        self::assertSame(['payment_prescriptions_not_promoted'],$report['coverage_blockers']);
         self::assertSame(['matched_same','new'],array_column($report['rows'],'category'));
         $json=(string)$run['parity_report_json'];
         self::assertStringNotContainsString('Existing',$json);
         self::assertStringNotContainsString('Secret',$json);
         self::assertStringNotContainsString('KIS-10',$json);
+        self::assertStringNotContainsString('PAY-SECRET-10',$json);
+        self::assertStringNotContainsString('250000',$json);
     }
 
     public function testReportFingerprintIsStableForEquivalentProjection(): void
@@ -50,9 +55,29 @@ final class KisImportParityReportTest extends TestCase
         self::assertSame(\kisImportStoredParityReport($a)['fingerprint'],\kisImportStoredParityReport($b)['fingerprint']);
     }
 
+    public function testDuplicatePrescriptionIdRollsBackWholePreview(): void
+    {
+        $pdo=$this->database();
+        $artifactId=$this->artifact($pdo);
+        $payment=['payment_external_id'=>'PAY-DUPLICATE','status'=>'pending','amount_minor'=>10000,'outstanding_minor'=>10000,'currency'=>'CZK','due_on'=>'2026-02-01','paid_on'=>null];
+        $people=[
+            ['kis_external_id'=>'KIS-DUP-1','_kis_external_id_raw'=>'KIS-DUP-1','jmeno'=>'First','prijmeni'=>'Person','narozeni'=>'2012-01-01','_soupisky_parsed'=>[],'_kis_payment_rows'=>[$payment]],
+            ['kis_external_id'=>'KIS-DUP-2','_kis_external_id_raw'=>'KIS-DUP-2','jmeno'=>'Second','prijmeni'=>'Person','narozeni'=>'2013-01-01','_soupisky_parsed'=>[],'_kis_payment_rows'=>[$payment]],
+        ];
+
+        try {
+            \kisImportCreateRun($pdo,$people,$this->meta(),[],['users'=>'users.xlsx'],7,['users'=>$artifactId]);
+            self::fail('Duplicate prescription ID must reject the whole preview.');
+        } catch (\PDOException) {
+            self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM kis_import_runs')->fetchColumn());
+            self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM kis_import_rows')->fetchColumn());
+            self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM kis_import_payment_rows')->fetchColumn());
+        }
+    }
+
     private function meta(): array
     {
-        return ['users'=>['headers'=>['kisid','jmeno','prijmeni','datumnarozeni'],'rows'=>2],'payments'=>['headers'=>['kisid','stav'],'rows'=>2],'soupisky'=>['headers'=>['kisid','soupiska','jmeno','prijmeni'],'rows'=>2]];
+        return ['users'=>['headers'=>['kisid','jmeno','prijmeni','datumnarozeni'],'rows'=>2],'payments'=>['headers'=>['kisid','idplatby','stav','castka'],'rows'=>2],'soupisky'=>['headers'=>['kisid','soupiska','jmeno','prijmeni'],'rows'=>2]];
     }
 
     private function artifact(PDO $pdo): int
@@ -71,7 +96,7 @@ final class KisImportParityReportTest extends TestCase
             CREATE TABLE kis_import_rows(id INTEGER PRIMARY KEY AUTOINCREMENT,run_id INTEGER,person_key TEXT,jmeno TEXT,prijmeni TEXT,narozeni TEXT,email TEXT,uciid TEXT,oddil TEXT,kis_aktivni INTEGER,kis_platebne_aktivni INTEGER,kis_neuhrazeno REAL,kis_posledni_uhrada TEXT,kis_soupisky TEXT,raw_json TEXT);
             CREATE TABLE kis_import_matches(id INTEGER PRIMARY KEY AUTOINCREMENT,run_id INTEGER,row_id INTEGER,sportovec_id INTEGER,match_status TEXT,confidence INTEGER,reason TEXT,candidate_json TEXT);
             SQL);
-        foreach(['20260804233000_kis_import_source_artifacts.php','20260804234500_kis_import_preview_integrity.php','20260804234800_kis_import_field_contract.php','20260804234900_kis_import_parity_report.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
+        foreach(['20260804233000_kis_import_source_artifacts.php','20260804234500_kis_import_preview_integrity.php','20260804234800_kis_import_field_contract.php','20260804234900_kis_import_parity_report.php','20260804234950_member_charge_target.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         return $pdo;
     }
 }

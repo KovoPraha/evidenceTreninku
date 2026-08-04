@@ -1,3 +1,3 @@
-kisid,jmeno,prijmeni,stav
-KIS-M23D-001,Localhost,PreviewOne,zaplaceno
-KIS-M23D-002,Localhost,PreviewTwo,zaplaceno
+kisid,idplatby,jmeno,prijmeni,stav,castka
+KIS-M23D-001,PAY-M23F-001,Localhost,PreviewOne,zaplaceno,2500
+KIS-M23D-002,PAY-M23F-002,Localhost,PreviewTwo,zaplaceno,1800
