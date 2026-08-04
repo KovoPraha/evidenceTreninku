@@ -37,15 +37,16 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
   uživatelů, plateb i soupisek; KIS ID je oddělené od UCI licence a chybějící či
   rozporný identifikátor fail-closed blokuje zápis,
 - M2.3e ukládá non-PII paritní report osob, stavu členství, soupisek a platebních
-  signálů; samostatné členské platební předpisy zatím nemají cílový kontrakt, takže
-  report tuto mezeru výslovně blokuje,
+  signálů; M2.3f přidává `member-charge-v1`, auditní cílové tabulky a bezpečný
+  staging jednotlivých KIS předpisů. Export plateb musí mít stabilní ID předpisu
+  i částku; skutečný zápis stagingu do členských předpisů zatím zůstává vypnutý,
 - auditní osa osoby a localhost scénáře A01–A10.
 
 ## Výslovně otevřené nebo blokované
 
 - závěrečná uživatelská prohlídka A01–A10 a vypořádání připomínek,
-- potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, cílový
-  model jednotlivých členských platebních předpisů a ostrý cutover,
+- potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, řízený
+  testovací promote jednotlivých členských předpisů a ostrý cutover,
 - produkční doručování reset e-mailů a produkční konfigurace tajemství,
 - Stripe, automatické Fio potvrzení, kreditní wallet a TrainingPeaks,
 - produkční deploy bez výslovného souhlasu vlastníka.

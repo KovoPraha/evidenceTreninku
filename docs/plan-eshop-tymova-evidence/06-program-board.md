@@ -128,6 +128,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.3c sandbox promote/rollback | hotovo lokálně | `5caa850`: admin+CSRF+localhost, fingerprint, transakce, idempotence, audit a rollback dostupný i při driftu; browser 2/2→0/2, 369/3254, 396 parse, 41/41, audit 0 |
 | M2.3d stabilní KIS ID | hotovo technicky | `2bcb346`: `kis-import-field-v1`, KIS ID oddělené od UCI, spojení tří exportů, non-PII report a fail-closed zápis; browser run #8 2/2→0/2, starý run blokován, 377/3308, 398 parse, 42/42, audit 0 |
 | M2.3e cutover parita | hotovo technicky | `95693a2`: uložený non-PII report osob/členství/soupisek/platebních signálů; run #9 pravdivě 3 blokátory včetně chybějícího cílového kontraktu předpisů, sandbox 2/2→0/2, 379/3332, 401 parse, 43/43, audit 0 |
+| M2.3f členské předpisy | hotovo technicky | `d69ee4f`: `member-charge-v1`, cílové a auditní tabulky, stabilní ID+částka, atomický staging a non-PII porovnání; run #12 2 staging/2 čeká, 388/3369, 406 parse, 44/44, audit 0 |
 
 ## Aktivní rozhodnutí
 
@@ -185,9 +186,9 @@ Auth F0 větve přidávají pouze bezpečnostní schéma a přihlašovací infra
 nepřidávají košík, platby ani produkční import. Hashované, expirované a atomicky
 jednorázové e-mailové/booking tokeny jsou implementované v `main`.
 Shoptet export a bezpečný katalogový staging jsou doložené. Produktově stále
-chybí potvrzení konkrétního aliasu stabilního KIS identifikátoru na reprezentativním
-anonymizovaném exportu, cílový model členských platebních předpisů a retenční doba
-preview dat.
+chybí potvrzení konkrétních aliasů KIS identity osoby, ID předpisu a částky na
+reprezentativním anonymizovaném exportu, řízený testovací promote předpisů a
+retenční doba preview dat. Cílový model i staging už existují v M2.3f.
 Před budoucím auth deployem musí být mimo Git nastaven `AUTH_RATE_LIMIT_PEPPER`.
 
 ## Pokyn pro příští řídicí task
@@ -196,8 +197,8 @@ Před budoucím auth deployem musí být mimo Git nastaven `AUTH_RATE_LIMIT_PEPP
 Pracuj jako řídicí task programu Evidence e-shop + týmová evidence.
 Nejdřív načti CLAUDE.md, docs/CURRENT_STATE.md a SESSION_HANDOFF.md a ověř git
 status, HEAD, migrace a localhost. Zachovej všechny cizí změny. Aktuální volba
-práce je buď vlastníkův průchod A01–A10, nebo po dodání reprezentativního
-anonymizovaného exportu zdrojová akceptace M2.3d a úplný paritní report.
+práce je buď vlastníkův průchod A01–A10, nebo M2.3g řízený testovací promote
+předpisů a po dodání reprezentativního anonymizovaného exportu zdrojová akceptace.
 Znovu neimplementuj hotové M1/M2 řezy bez potvrzené chyby. Každý task musí vrátit
 base/commit SHA, jmenované soubory, migrace, testy, rizika a browser/DB důkaz.
 Produkční deploy, ostrý KIS import a automatické finanční operace spouští ručně

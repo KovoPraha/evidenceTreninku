@@ -26,12 +26,12 @@ kódu.
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
-| M2.3 zkouška migrace KIS | probíhá | 97 % | uložený paritní report už mapuje osoby, členství, soupisky a platební signály; zbývá reálný anonymizovaný formát a cílový model členských platebních předpisů |
+| M2.3 zkouška migrace KIS | probíhá | 98 % | jednotlivé předpisy mají cílový kontrakt a bezpečný staging; zbývá reprezentativní anonymizovaný formát a řízený testovací promote do cíle |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
 
-Orientační stav celého M2: **75 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **76 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -209,14 +209,31 @@ Dokončený technický řez M2.3e (`95693a2`):
 - plná sada prošla 379 testy / 3332 assertions, syntaxe 401 first-party PHP
   souborů, migrace 43/43 a Composer audit je bez nálezu.
 
+Dokončený technický řez M2.3f (`d69ee4f`):
+
+- `member-charge-v1` odděluje členský předpis od skutečné peněžní transakce;
+  cílové tabulky drží příjemce, volitelného plátce, cenu, měnu, stav, zdrojovou
+  idempotenci a auditní události,
+- platební export musí obsahovat stabilní ID předpisu i částku; prázdná či záporná
+  částka je fail-closed blokátor a nevytvoří stagingový řádek,
+- jednotlivé předpisy se ukládají atomicky do `kis_import_payment_rows`; duplicitní
+  ID nebo nekonzistentní projekce vrátí celý import bez částečných dat,
+- paritní report porovnává pouze souhrnné počty staging/cíl a nevypisuje ID ani
+  peněžní hodnoty; do cíle zatím nic automaticky nepromuje,
+- localhost run #12 má 2 stagingové předpisy, 2 čekající na přenos a celkem 3
+  pravdivé blokátory; browser zobrazení prošlo a předchozí průchod ověřil sandbox
+  2/2 → 0/2,
+- plná sada prošla 388 testy / 3369 assertions, syntaxe 406 first-party PHP
+  souborů, migrace 44/44 a Composer audit je bez nálezu.
+
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
    export KIS a potvrdit podporovaný alias stabilního externího ID osoby.
 2. Uložit raw vstup jako neměnný artefakt s hashem, časem a verzí kontraktu.
 3. Dry-run musí pro každý řádek vrátit `create`, `exact_match`, `conflict`,
    `ambiguous`, `invalid` nebo `missing_without_archive` a vysvětlit důvod.
 4. Slabá shoda jen podle jména nebo e-mailu se nikdy automaticky nepotvrdí.
-5. Připravit explicitní promote s fingerprintem preview, transakcí, auditem a
-   idempotencí; v M2 pouze nad izolovanou testovací DB.
+5. V M2.3g připravit explicitní promote předpisů s fingerprintem preview,
+   transakcí, auditem a idempotencí; pouze nad izolovanou testovací DB.
 6. Připravit kompenzační rollback/obnovu a paritní report osob, členství,
    soupisek a platebních předpisů.
 

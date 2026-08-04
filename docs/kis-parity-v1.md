@@ -131,14 +131,30 @@ preview/field kontraktu; jména, KIS ID ani peněžní hodnoty nevypisuje.
 Kategorie `new`, rozdílné signály, konflikty a nejednoznačnosti zůstávají
 blokátory. Osoba s KIS ID chybějící v jednom běhu je pouze informační údaj a nikdy
 se automaticky nearchivuje. Report navíc odděluje pokrytí domén: agregovaný počet
-uhrazených/otevřených platebních řádků je zachycen, ale cílový kontrakt jednotlivých
-členských platebních předpisů zatím neexistuje. Pokud zdroj takové řádky obsahuje,
-vznikne pevný blokátor `payment_prescription_target_contract_missing`.
+uhrazených/otevřených platebních řádků je zachycen a M2.3f přidává cílový kontrakt
+`member-charge-v1`. Jednotlivé předpisy se stabilním zdrojovým ID, částkou, stavem,
+měnou a daty se ukládají do `kis_import_payment_rows`; report zveřejní jen počty.
+Dokud nejsou bezpečně přeneseny do `club_member_charges`, vznikne blokátor
+`payment_prescriptions_not_promoted`. Rozdílný již existující cíl používá
+`payment_prescriptions_different`.
 
-Localhost run #9 proto pravdivě hlásí tři blokátory: dvě nové syntetické osoby a
-jednu nepokrytou cílovou platební doménu. Browser ověřil zobrazení reportu, možnost
-stažení non-PII JSON a nezávislý sandbox lifecycle 2/2 → 0/2. Tento stav není chyba
-reportu; je to přesná mapa práce nutné před cutoverem.
+Localhost run #12 proto pravdivě hlásí tři blokátory: dvě nové syntetické osoby a
+dosud neprovedený přenos dvou předpisů. Browser ověřil zobrazení 2 staging / 2 čeká,
+stažení non-PII JSON a nezávislý sandbox lifecycle byl před finálním během ověřen
+2/2 → 0/2. Žádný z těchto kroků nezapisuje do produkce ani do kanonických předpisů.
+
+## M2.3f – cílový model a staging členských předpisů
+
+`club_member_charges` drží předpis pro konkrétního sportovce a volitelný účet
+plátce. Peněžní transakce zůstává samostatná a váže se přes polymorfní
+`payments.payable_type=member_charge`; import proto nikdy nevydává předpis za
+bankovní platbu. Unikátní dvojice `source_system + source_external_id` je hranice
+idempotence a `club_member_charge_events` je připravený audit změn.
+
+Preview ukládá jednotlivé zdrojové předpisy atomicky. Duplicitní ID, nekonzistentní
+částky, neplatná měna nebo stav zruší celý běh; prázdná či záporná částka je field
+blokátor a nevytvoří stagingový předpis. Paritní JSON neobsahuje ID předpisů ani
+peněžní hodnoty. M2.3f ještě neimplementuje zápis do `club_member_charges`.
 
 ## Realistická syntetická fixture W0-G
 

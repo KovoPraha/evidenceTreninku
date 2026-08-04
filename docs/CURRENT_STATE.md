@@ -15,12 +15,12 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `95693a2` – M2.3e uložený non-PII
-  paritní report osob, členství, soupisek a platebních signálů,
+- poslední implementace před tímto dokumentem: `d69ee4f` – M2.3f cílový model
+  členských předpisů a bezpečný staging jednotlivých KIS předpisů,
 - předchozí infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 43/43,
-- automatické testy 379/3332,
-- first-party PHP syntaxe 401 souborů bez chyby,
+- migrace localhostu 44/44,
+- automatické testy 388/3369,
+- first-party PHP syntaxe 406 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - produkce se při těchto změnách neměnila.
 
@@ -31,7 +31,7 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
 
 - společná homepage: `http://localhost/evidencePavel/`,
 - testovací scénáře: `http://localhost/evidencePavel/testovaci_scenare.php`,
-- KIS M2.3e preview a parita: `http://localhost/evidencePavel/kis_sync_center.php?run_id=9`,
+- KIS M2.3f preview, parita a předpisy: `http://localhost/evidencePavel/kis_sync_center.php?run_id=12`,
 - A07 docházka: `http://localhost/evidencePavel/kis_training_a07_admin.php`,
 - A10 audit osoby: `http://localhost/evidencePavel/person_audit_admin.php?sportovec_id=1`,
 - e-shop: `http://localhost/evidencePavel/booking/eshop.php`,
@@ -45,11 +45,11 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 75 %,
-- M2.3 zkouška migrace KIS: 97 %; archiv, fingerprintovaný preview, izolovaný
-  promote/rollback, `kis-import-field-v1` a uložený paritní report jsou hotové;
-  report pravdivě blokuje dvě nové demo osoby a chybějící cílový model jednotlivých
-  členských platebních předpisů,
+- celý M2: 76 %,
+- M2.3 zkouška migrace KIS: 98 %; archiv, fingerprintovaný preview, izolovaný
+  promote/rollback, `kis-import-field-v1`, paritní report, cílový model členských
+  předpisů a staging jednotlivých předpisů jsou hotové; run #12 pravdivě blokuje
+  dvě nové demo osoby a dva dosud nepřenesené předpisy,
 - M2.6 integrovaná akceptace: 98 %; technické scénáře jsou připravené, zbývá
   vlastníkův průchod a vypořádání připomínek,
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
@@ -65,5 +65,6 @@ Stripe, Fio auto-confirm, wallet a TrainingPeaks zůstávají samostatně blokov
 2. Export výsledků se zkontroluje a případně přidá do Gitu jako auditní artefakt.
 3. Blokující chyby a důležité UX připomínky se opraví před novými funkcemi.
 4. Potom dokončit M2.3: získat reprezentativní anonymizovaný KIS export, potvrdit
-   aliasy stabilního ID a rozhodnout cílový model členských platebních předpisů.
+   aliasy ID osoby, ID předpisu a částky a připravit řízený testovací promote
+   stagingu do `club_member_charges` včetně vazby na samostatnou platbu.
 5. Produkční deploy připravit až po samostatném výslovném souhlasu vlastníka.
