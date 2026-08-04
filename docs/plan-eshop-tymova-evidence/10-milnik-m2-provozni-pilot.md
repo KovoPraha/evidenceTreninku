@@ -26,12 +26,12 @@ kódu.
 | M2.0 vlastníkova prohlídka M1 | čeká | 0 % | projít A01–A10 a sepsat chyby, UX připomínky a nové požadavky |
 | M2.1 provoz klubové akce | hotovo lokálně | 100 % | auditovaný CSV export účastníků `m2.event-participants.v1` |
 | M2.2 opravy a UX z prohlídky | probíhá | 55 % | veřejnost prochází e-shop, kroužky, velodrom a bezpečný rozvrh bez registrace; přihlášení je vyžadováno až pro akci |
-| M2.3 zkouška migrace KIS | probíhá | 55 % | parser, bezpečný matcher, parity kontrakt a neměnný raw archiv existují; chybí finální exportní kontrakt, promote/rollback a úplný paritní report |
+| M2.3 zkouška migrace KIS | probíhá | 70 % | parser, matcher, raw archiv a úplný fingerprintovaný preview report existují; chybí finální exportní kontrakt a izolovaný promote/rollback |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
 
-Orientační stav celého M2: **67 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **69 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -137,6 +137,21 @@ Dokončený technický řez M2.3a:
   přijetím znovu ověří hashem a velikostí.
 
 Tento řez zatím nepovoluje promote ani ostrý import.
+
+Dokončený technický řez M2.3b (`26076ba`):
+
+- migrace `20260804234500_kis_import_preview_integrity` ukládá verzi kontraktu,
+  stabilní fingerprint, bezpečný JSON report a počty klasifikovaných/blokujících řádků,
+- každý řádek skončí právě jednou jako `create`, `exact_match`, `conflict`,
+  `ambiguous`, `invalid` nebo `missing_without_archive`,
+- chybějící archiv, neúplná identita, slabá/rozporná shoda a duplicate target jsou
+  fail-closed blokátory; report nepřenáší jména, kontakty ani zdrojové identity,
+- fingerprint nezávisí na ID běhu a je stejný pro stejný archiv a stejné pořadí
+  klasifikací; celý preview vzniká atomicky s importním během,
+- synchronizační centrum ukazuje integritu, blokátory a nabízí `no-store` JSON export,
+- localhost-only CLI seed vyžaduje `--confirm-seed`, je idempotentní a vytvořil
+  browserově ověřený běh #7 s 2/2 řádky a nulou blokátorů,
+- promote ani zápis do profilů sportovců stále není implementovaný.
 
 1. Získat anonymizovaný vzorek přesně stejného formátu jako budoucí finální
    export KIS a určit stabilní externí ID osoby.

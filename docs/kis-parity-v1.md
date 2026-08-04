@@ -84,6 +84,17 @@ Chybění v jednom KIS běhu tedy nikdy neznamená archivaci, deaktivaci ani jin
 zápis. CLI nemá příkaz `apply`, nepoužívá produkční identitu a není rozhodnutím
 o KIS cutoveru.
 
+## Navazující uložený preview kontrakt M2.3b
+
+Importní UI používá samostatný `kis-import-preview-v2`. Nový běh po matchingu
+atomicky uloží úplný report, počty blokátorů a fingerprint nezávislý na databázovém
+ID běhu. Report obsahuje pouze odkazy `source:N`, případně `sportovec:N`, pevnou
+akci a pevný důvod; neobsahuje jména, e-maily ani zdrojové identitní hodnoty.
+
+Detail je dostupný oprávněnému trenérovi v `kis_sync_center.php`. JSON export má
+`Cache-Control: no-store`. Stav `ready_for_test_review` znamená pouze připravenost
+k lidské kontrole na localhostu, nikoli povolení promote nebo produkčního importu.
+
 ## Realistická syntetická fixture W0-G
 
 `tests/fixtures/kis/parity-realistic.json` skládá deset neprůhledných řádků do

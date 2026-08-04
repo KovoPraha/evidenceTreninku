@@ -30,6 +30,8 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - události cílené na více soupisek, kapacity a čekací listina,
 - plánovaný trénink ze soupisek, očekávaní účastníci a skutečná docházka,
 - read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
+- KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
+  a bezpečným JSON reportem; žádná aplikační akce zatím neexistuje,
 - auditní osa osoby a localhost scénáře A01–A10.
 
 ## Výslovně otevřené nebo blokované

@@ -15,12 +15,12 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `875c9e3` – localhost formulář
-  výsledků A01–A10 a bezpečný Markdown export,
+- poslední implementace před tímto dokumentem: `26076ba` – M2.3b uzamčený KIS
+  preview report s fingerprintem a opakovatelným localhost seedem,
 - předchozí infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 39/39,
-- automatické testy 358/3156,
-- first-party PHP syntaxe 388 souborů bez chyby,
+- migrace localhostu 40/40,
+- automatické testy 364/3197,
+- first-party PHP syntaxe 392 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - produkce se při těchto změnách neměnila.
 
@@ -31,6 +31,7 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
 
 - společná homepage: `http://localhost/evidencePavel/`,
 - testovací scénáře: `http://localhost/evidencePavel/testovaci_scenare.php`,
+- KIS M2.3b preview: `http://localhost/evidencePavel/kis_sync_center.php?run_id=7`,
 - A07 docházka: `http://localhost/evidencePavel/kis_training_a07_admin.php`,
 - A10 audit osoby: `http://localhost/evidencePavel/person_audit_admin.php?sportovec_id=1`,
 - e-shop: `http://localhost/evidencePavel/booking/eshop.php`,
@@ -44,7 +45,9 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 67 %,
+- celý M2: 69 %,
+- M2.3 zkouška migrace KIS: 70 %; archiv, úplná klasifikace a stabilní preview
+  fingerprint jsou hotové, chybí finální exportní kontrakt a testovací promote/rollback,
 - M2.6 integrovaná akceptace: 98 %; technické scénáře jsou připravené, zbývá
   vlastníkův průchod a vypořádání připomínek,
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
@@ -59,5 +62,6 @@ Stripe, Fio auto-confirm, wallet a TrainingPeaks zůstávají samostatně blokov
 1. Vlastník nebo Cowork projde A01–A10 v prohlížeči a uloží výsledky do rozcestníku.
 2. Export výsledků se zkontroluje a případně přidá do Gitu jako auditní artefakt.
 3. Blokující chyby a důležité UX připomínky se opraví před novými funkcemi.
-4. Potom dokončit M2.3: finální KIS kontrakt, dry-run paritu, promote/rollback.
+4. Potom dokončit M2.3: finální KIS kontrakt, izolovaný testovací promote/rollback
+   a závěrečný paritní report.
 5. Produkční deploy připravit až po samostatném výslovném souhlasu vlastníka.
