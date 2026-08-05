@@ -33,6 +33,11 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   strukturovaných i historických měření, závodních výsledků a zátěžových testů;
   zobrazuje pouze agregované počty bez jmen, ID a naměřených hodnot,
 
+- navazující M3.5b přidává aditivní kontrakt `sports-measurement-v1`: výslovnou
+  jednotku vzdálenosti a metry, čas v milisekundách, číselné RPE a uzavřené stavy
+  závodu. Historii nepřevádí a produkci nemění; nový zápis/import jej použije až
+  v M3.5c,
+
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
 - poslední implementace: `12c2300` – M3.4 přidává administrátorský read-only
   provozní přehled plateb, vratek, kapacit, přihlášek a provozních výjimek; browser
@@ -81,11 +86,11 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 - KIS funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 49/49,
-- automatické testy 466/4075,
-- first-party PHP syntaxe 461 souborů bez chyby,
+- migrace localhostu 50/50,
+- automatické testy 477/4107,
+- first-party PHP syntaxe 466 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
-- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 98 tabulek;
+- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 100 tabulek;
   aktuální ownership kontrakt `2026-08-05.3` zahrnuje i tři tabulky týdenních
   souhrnů,
 - produkce se při těchto změnách neměnila.
@@ -142,7 +147,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
   přenesl 2/2 předpisy včetně jedné samostatné historické platby a po ověření byl
   bezpečně vrácen na 0/2 při zachování auditní historie,
 - M2.6 integrovaná akceptace: 99 %; závěrečná brána živě potvrzuje technickou
-  připravenost 3/3, dostupnost A01–A10 10/10, migrace 49/49 a úplná demo data;
+  připravenost 3/3, dostupnost A01–A10 10/10, migrace 50/50 a úplná demo data;
   vlastníkem je zatím potvrzeno 0/10, takže zbývá jeho průchod a vypořádání
   připomínek,
 - M2.7 hodnota pro členy: 94 %; veřejný i soukromý rodinný ICS feed, opt-in
@@ -155,15 +160,16 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.
-- M3: 60 % technického localhost řešení; M3.1 rodinný program, M3.2 týdenní
+- M3: 65 % technického localhost řešení; M3.1 rodinný program, M3.2 týdenní
   souhrn a M3.4 read-only provozní přehled správce jsou technicky hotové. M3.2
   má bezpečný přihlášený náhled, opt-in/opt-out, idempotentní frontu, audit a
   localhost-only outbox;
   M3.3 má oddělený read-only roční přehled skutečně uhrazených členských
   předpisů a e-shopových položek. U M3.3 zbývá vlastníkova kontrola obsahu a
   rozhodnutí o exportu. M3.5a má read-only inventuru pěti sportovních zdrojů bez
-  osobních a naměřených hodnot; M3.5b musí teprve definovat jednotky, normalizovaný
-  čas, RPE, výsledkové stavy a pravidla ochrany zátěžových testů,
+  osobních a naměřených hodnot; M3.5b již definuje aditivní verzi jednotek,
+  normalizovaného času, RPE a výsledkových stavů bez převodu historie. M3.5c má
+  kontrakt zapojit do budoucího zápisu a jednorázových importů,
   produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,

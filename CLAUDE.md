@@ -38,6 +38,9 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
   skutečný e-mailový transport není implementovaný,
 - admin-only read-only M3.5a inventura pěti sportovních datových zdrojů; vrací
   pouze agregované počty a technická zjištění bez osob a naměřených hodnot,
+- M3.5b `sports-measurement-v1` s výslovnou jednotkou vzdálenosti, časem v
+  milisekundách, číselným RPE a stavy závodu; přidává jen nullable sloupce,
+  nepřevádí historii a zatím není napojený na legacy formuláře,
 - read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
   a bezpečným JSON reportem; localhost admin může provést auditovaný promote a

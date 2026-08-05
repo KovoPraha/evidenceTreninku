@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/sports_measurement_contract.php';
+
 /**
  * M3.5a read-only inventory of sports-data quality.
  *
@@ -19,6 +21,21 @@ function sportsDataQualityTableExists(PDO $pdo, string $table): bool
     $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1");
     $statement->execute([$table]);
     return (bool)$statement->fetchColumn();
+}
+
+function sportsDataQualityColumnExists(PDO $pdo, string $table, string $column): bool
+{
+    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1 || preg_match('/^[a-z0-9_]+$/D', $column) !== 1) return false;
+    if (!sportsDataQualityTableExists($pdo, $table)) return false;
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+        $statement = $pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1');
+        $statement->execute([$table, $column]);
+        return (bool)$statement->fetchColumn();
+    }
+    foreach ($pdo->query('PRAGMA table_info(' . $table . ')')->fetchAll(PDO::FETCH_ASSOC) as $definition) {
+        if (($definition['name'] ?? null) === $column) return true;
+    }
+    return false;
 }
 
 /** @param list<string> $tables */
@@ -132,8 +149,21 @@ function sportsDataQualityInventory(PDO $pdo, ?DateTimeImmutable $now = null): a
         sportsDataQualityMetric($measurements, 'Záznamy se vzdáleností', $distanceRows);
         sportsDataQualityFinding($measurements, 'unlinked_measurement', 'Měření bez tréninku nebo závodu', sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM mereni_zaznamy m WHERE NOT EXISTS(SELECT 1 FROM trenink_mereni tm WHERE tm.mereni_id=m.id) AND NOT EXISTS(SELECT 1 FROM zavod_mereni zm WHERE zm.mereni_id=m.id)'), 'Záznam není součástí žádné evidované aktivity.');
         sportsDataQualityFinding($measurements, 'missing_athlete', 'Měření bez konkrétního sportovce', sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM mereni_zaznamy WHERE sportovec_id IS NULL'), 'Skupinové měření může být záměrné, ale nelze z něj odvodit individuální vývoj.');
-        sportsDataQualityFinding($measurements, 'ambiguous_distance_unit', 'Vzdálenost bez uložené jednotky', $distanceRows, 'Formulář připouští km nebo m, ale databáze jednotku nerozlišuje.', 'danger');
-        sportsDataQualityFinding($measurements, 'freeform_time_rpe', 'Čas a RPE nejsou normalizované', 1, 'Čas i RPE jsou textové; nejdřív je nutný verzovaný formát a validace, teprve potom porovnávání.');
+        $contractInstalled = sportsDataQualityColumnExists($pdo, 'mereni_zaznamy', 'contract_version')
+            && sportsDataQualityColumnExists($pdo, 'mereni_zaznamy', 'distance_unit')
+            && sportsDataQualityColumnExists($pdo, 'mereni_zaznamy', 'distance_meters')
+            && sportsDataQualityColumnExists($pdo, 'mereni_zaznamy', 'duration_ms')
+            && sportsDataQualityColumnExists($pdo, 'mereni_zaznamy', 'rpe_value');
+        if ($contractInstalled) {
+            $quotedVersion = $pdo->quote(SPORTS_MEASUREMENT_CONTRACT_VERSION);
+            $contractRows = sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM mereni_zaznamy WHERE contract_version=' . $quotedVersion);
+            sportsDataQualityMetric($measurements, 'Záznamy v kontraktu v1', $contractRows, 'Nové hodnoty mají výslovnou jednotku, čas v milisekundách a číselné RPE.');
+            sportsDataQualityFinding($measurements, 'legacy_measurement_contract', 'Starší záznamy bez kontraktu v1', max(0, (int)$measurements['record_count'] - $contractRows), 'Zůstávají čitelné v původním formátu a nepřevádějí se odhadem.');
+            sportsDataQualityFinding($measurements, 'ambiguous_distance_unit', 'Starší vzdálenost bez uložené jednotky', sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM mereni_zaznamy WHERE vzdalenost IS NOT NULL AND contract_version IS NULL'), 'Původní formulář připouštěl km nebo m; hodnotu lze normalizovat jen při známé jednotce.', 'danger');
+            sportsDataQualityFinding($measurements, 'freeform_time_rpe', 'Starší čas nebo RPE je volný text', sportsDataQualityCount($pdo, "SELECT COUNT(*) FROM mereni_zaznamy WHERE contract_version IS NULL AND ((cas IS NOT NULL AND TRIM(cas)<>'') OR (rpe IS NOT NULL AND TRIM(rpe)<>''))"), 'Tyto historické hodnoty se bez výslovného potvrzení neporovnávají.');
+        } else {
+            sportsDataQualityFinding($measurements, 'missing_measurement_contract', 'Databázový kontrakt v1 není dostupný', 1, 'Nejdřív je nutné aplikovat verzovanou migraci M3.5b.', 'danger');
+        }
     }
     sportsDataQualityFinish($measurements);
     $sources[$measurements['key']] = $measurements;
@@ -172,8 +202,19 @@ function sportsDataQualityInventory(PDO $pdo, ?DateTimeImmutable $now = null): a
         $races['record_count'] = sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM zavod_sportovec');
         sportsDataQualityMetric($races, 'Řádky s výsledkem', sportsDataQualityCount($pdo, "SELECT COUNT(*) FROM zavod_sportovec WHERE poradi IS NOT NULL OR (cas IS NOT NULL AND TRIM(cas)<>'') OR body IS NOT NULL"));
         sportsDataQualityMetric($races, 'Externí účastníci bez klubového profilu', sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM zavod_sportovec WHERE sportovec_id IS NULL'));
-        sportsDataQualityFinding($races, 'missing_race_result', 'Účasti bez výsledku', sportsDataQualityCount($pdo, "SELECT COUNT(*) FROM zavod_sportovec WHERE poradi IS NULL AND (cas IS NULL OR TRIM(cas)='') AND body IS NULL"), 'Může jít o startovní listinu, DNS/DNF nebo dosud nedoplněný výsledek; stav se nerozlišuje.');
-        sportsDataQualityFinding($races, 'freeform_race_time', 'Čas závodu je volný text', sportsDataQualityCount($pdo, "SELECT COUNT(*) FROM zavod_sportovec WHERE cas IS NOT NULL AND TRIM(cas)<>''"), 'Bez normalizovaného času a výsledkového stavu nelze bezpečně počítat progres.');
+        $resultContractInstalled = sportsDataQualityColumnExists($pdo, 'zavod_sportovec', 'result_contract_version')
+            && sportsDataQualityColumnExists($pdo, 'zavod_sportovec', 'result_status')
+            && sportsDataQualityColumnExists($pdo, 'zavod_sportovec', 'result_time_ms');
+        if ($resultContractInstalled) {
+            $quotedVersion = $pdo->quote(SPORTS_MEASUREMENT_CONTRACT_VERSION);
+            $contractRows = sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM zavod_sportovec WHERE result_contract_version=' . $quotedVersion);
+            sportsDataQualityMetric($races, 'Výsledky v kontraktu v1', $contractRows, 'Stav rozlišuje přihlášení, dokončení, DNS, DNF a DSQ.');
+            sportsDataQualityFinding($races, 'legacy_race_result_contract', 'Starší účasti bez kontraktu v1', max(0, (int)$races['record_count'] - $contractRows), 'Zůstávají v původním formátu a stav se u nich neodhaduje.');
+            sportsDataQualityFinding($races, 'missing_race_result', 'Starší účasti bez výsledku a stavu', sportsDataQualityCount($pdo, "SELECT COUNT(*) FROM zavod_sportovec WHERE result_contract_version IS NULL AND poradi IS NULL AND (cas IS NULL OR TRIM(cas)='') AND body IS NULL"), 'Může jít o startovní listinu, DNS/DNF nebo dosud nedoplněný výsledek.');
+            sportsDataQualityFinding($races, 'freeform_race_time', 'Starší čas závodu je volný text', sportsDataQualityCount($pdo, "SELECT COUNT(*) FROM zavod_sportovec WHERE result_contract_version IS NULL AND cas IS NOT NULL AND TRIM(cas)<>''"), 'Bez potvrzení formátu se nepřevádí na normalizovaný čas.');
+        } else {
+            sportsDataQualityFinding($races, 'missing_race_contract', 'Databázový kontrakt výsledků v1 není dostupný', 1, 'Nejdřív je nutné aplikovat verzovanou migraci M3.5b.', 'danger');
+        }
     }
     sportsDataQualityFinish($races);
     $sources[$races['key']] = $races;

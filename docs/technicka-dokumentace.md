@@ -869,6 +869,11 @@ Systém měření ve `formular.php`, `edit_trenink.php`, `formular_zavod.php`, `
 
 **Data flow**: JSON na klientu → POST `mereni_json` → `buildMereniRowsFromPost()` → INSERT do `mereni_zaznamy` + link `trenink_mereni` nebo `zavod_mereni`.
 
+M3.5b přidává společný kontrakt `sports-measurement-v1` v
+`includes/sports_measurement_contract.php` a nullable normalizované sloupce.
+Stávající formuláře dál zapisují původní formát; jejich napojení a jednorázové
+importy jsou řez M3.5c. Historické hodnoty se automaticky neparsují ani nepřepisují.
+
 ## 11e. Evidence závodů (v2.7.0)
 
 Rozšířený systém závodů přidaný ve verzi 2.7.0.

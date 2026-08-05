@@ -47,6 +47,8 @@ try {
     $pdo->exec('CREATE TABLE individualni_lekce(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec("CREATE TABLE planovane_treninky(id INT PRIMARY KEY,datum DATE NOT NULL,stav VARCHAR(30) NOT NULL DEFAULT 'planovany') ENGINE=InnoDB");
     $pdo->exec('CREATE TABLE treninky(id INT PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE mereni_zaznamy(id INT PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE zavod_sportovec(zavod_id INT NOT NULL,sportovec_id INT NULL) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE verejni_uzivatele(id INT PRIMARY KEY,aktivni TINYINT NOT NULL DEFAULT 1,verifikacni_token VARCHAR(255) NULL,registrovan DATETIME NOT NULL) ENGINE=InnoDB');
     $pdo->exec("CREATE TABLE verejne_rezervace(id INT PRIMARY KEY,lekce_id INT NULL,stav VARCHAR(30) NOT NULL DEFAULT 'ceka',slot_cas_od TIME NULL,potvrzovaci_token VARCHAR(255) NULL,cas_rezervace DATETIME NOT NULL) ENGINE=InnoDB");
     $pdo->exec("CREATE TABLE kis_import_runs(id INT AUTO_INCREMENT PRIMARY KEY,created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,created_by INT NULL,status ENUM('preview','applied','failed','cancelled') NOT NULL DEFAULT 'preview',source_users VARCHAR(255),source_payments VARCHAR(255),source_rosters VARCHAR(255),stats_json LONGTEXT,warnings_json LONGTEXT,applied_at DATETIME,note TEXT) ENGINE=InnoDB");

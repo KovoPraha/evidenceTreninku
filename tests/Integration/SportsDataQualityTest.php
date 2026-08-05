@@ -24,15 +24,18 @@ final class SportsDataQualityTest extends TestCase
             'stress_tests',
         ], array_keys($inventory['sources']));
         self::assertSame(8, $inventory['total_records']);
-        self::assertSame(12, $inventory['finding_count']);
+        self::assertSame(14, $inventory['finding_count']);
 
         $training = $inventory['sources']['training_attendance'];
         self::assertSame(2, $training['record_count']);
         self::assertSame(['missing_category', 'missing_duration', 'broken_attendance_link', 'implicit_duration_unit'], array_column($training['findings'], 'key'));
 
         $measurements = $inventory['sources']['structured_measurements'];
-        self::assertSame(['unlinked_measurement', 'missing_athlete', 'ambiguous_distance_unit', 'freeform_time_rpe'], array_column($measurements['findings'], 'key'));
+        self::assertSame(['unlinked_measurement', 'missing_athlete', 'legacy_measurement_contract', 'ambiguous_distance_unit', 'freeform_time_rpe'], array_column($measurements['findings'], 'key'));
         self::assertSame('citlivé sportovní údaje', $measurements['classification']);
+
+        $races = $inventory['sources']['race_results'];
+        self::assertSame(['legacy_race_result_contract', 'missing_race_result', 'freeform_race_time'], array_column($races['findings'], 'key'));
 
         $encoded = json_encode($inventory, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
         self::assertStringNotContainsString('sportovec_id', $encoded);
@@ -77,23 +80,23 @@ final class SportsDataQualityTest extends TestCase
         $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE treninky(id INTEGER PRIMARY KEY,kategorie TEXT,delka REAL)');
         $pdo->exec('CREATE TABLE trenink_sportovec(trenink_id INTEGER,sportovec_id INTEGER)');
-        $pdo->exec('CREATE TABLE mereni_zaznamy(id INTEGER PRIMARY KEY,sportovec_id INTEGER,vzdalenost REAL,cas TEXT,rpe TEXT)');
+        $pdo->exec('CREATE TABLE mereni_zaznamy(id INTEGER PRIMARY KEY,sportovec_id INTEGER,vzdalenost REAL,cas TEXT,rpe TEXT,contract_version TEXT,distance_unit TEXT,distance_meters REAL,duration_ms INTEGER,rpe_value REAL)');
         $pdo->exec('CREATE TABLE trenink_mereni(trenink_id INTEGER,mereni_id INTEGER)');
         $pdo->exec('CREATE TABLE zavod_mereni(zavod_id INTEGER,mereni_id INTEGER)');
         $pdo->exec('CREATE TABLE mereni(id INTEGER PRIMARY KEY,trenink_id INTEGER,sportovec_id INTEGER,vzdalenost TEXT,cas TEXT)');
         $pdo->exec('CREATE TABLE zavody(id INTEGER PRIMARY KEY)');
-        $pdo->exec('CREATE TABLE zavod_sportovec(zavod_id INTEGER,sportovec_id INTEGER,poradi INTEGER,cas TEXT,body REAL)');
+        $pdo->exec('CREATE TABLE zavod_sportovec(zavod_id INTEGER,sportovec_id INTEGER,poradi INTEGER,cas TEXT,body REAL,result_contract_version TEXT,result_status TEXT,result_time_ms INTEGER)');
         $pdo->exec('CREATE TABLE zatezove_testy(id INTEGER PRIMARY KEY,sportovec_id INTEGER,vaha_kg REAL,vyska_cm REAL)');
         $pdo->exec('CREATE TABLE zatezove_testy_soubory(id INTEGER PRIMARY KEY,test_id INTEGER)');
 
         $pdo->exec('INSERT INTO sportovci VALUES(1)');
         $pdo->exec("INSERT INTO treninky VALUES(1,NULL,NULL),(2,'silnice',1.5)");
         $pdo->exec('INSERT INTO trenink_sportovec VALUES(1,1),(999,1)');
-        $pdo->exec("INSERT INTO mereni_zaznamy VALUES(1,1,10.0,'00:30','7'),(2,NULL,NULL,NULL,NULL)");
+        $pdo->exec("INSERT INTO mereni_zaznamy VALUES(1,1,10.0,'00:30','7',NULL,NULL,NULL,NULL,NULL),(2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)");
         $pdo->exec('INSERT INTO trenink_mereni VALUES(1,1)');
         $pdo->exec("INSERT INTO mereni VALUES(1,1,1,'10 km','30 min')");
         $pdo->exec('INSERT INTO zavody VALUES(1)');
-        $pdo->exec("INSERT INTO zavod_sportovec VALUES(1,1,NULL,NULL,NULL),(1,NULL,NULL,'01:00',NULL)");
+        $pdo->exec("INSERT INTO zavod_sportovec VALUES(1,1,NULL,NULL,NULL,NULL,NULL,NULL),(1,NULL,NULL,'01:00',NULL,NULL,NULL,NULL)");
         $pdo->exec('INSERT INTO zatezove_testy VALUES(1,1,60.0,170.0)');
         $pdo->exec('INSERT INTO zatezove_testy_soubory VALUES(1,1)');
         return $pdo;

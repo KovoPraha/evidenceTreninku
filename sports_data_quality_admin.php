@@ -30,7 +30,7 @@ require_once __DIR__ . '/hlavicka.php';
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div>
             <h1 class="h3 mb-1"><i class="bi bi-clipboard-data me-2 text-primary"></i>Kvalita sportovních dat</h1>
-            <div class="text-muted">M3.5a: souhrnná inventura zdrojů, úplnosti, jednotek a ochrany dat.</div>
+            <div class="text-muted">M3.5a–b: souhrnná inventura zdrojů a pokrytí bezpečným datovým kontraktem v1.</div>
         </div>
         <div class="text-end"><span class="badge text-bg-<?= (int)$inventory['finding_count'] > 0 ? 'warning' : 'success' ?> fs-6"><?= (int)$inventory['finding_count'] ?> typů zjištění</span><?php if ($inventory['generated_at'] !== ''): ?><div class="small text-muted mt-1">Stav k <?= sportsQualityPageH($inventory['generated_at']) ?></div><?php endif; ?></div>
     </div>

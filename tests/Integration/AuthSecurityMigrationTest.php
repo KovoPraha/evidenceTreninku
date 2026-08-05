@@ -74,6 +74,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260805020000_member_charge_reminders',
                 '20260805030000_member_charge_reminder_admin',
                 '20260805040000_family_weekly_summaries',
+                '20260805050000_sports_measurement_contract',
             ],
             array_keys($catalog)
         );
@@ -94,6 +95,19 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'family_weekly_summary_preferences'));
         self::assertTrue($this->tableExists($pdo, 'family_weekly_summaries'));
         self::assertTrue($this->tableExists($pdo, 'family_weekly_summary_events'));
+        self::assertTrue($this->columnExists($pdo, 'mereni_zaznamy', 'contract_version'));
+        self::assertTrue($this->columnExists($pdo, 'mereni_zaznamy', 'distance_unit'));
+        self::assertTrue($this->columnExists($pdo, 'mereni_zaznamy', 'distance_meters'));
+        self::assertTrue($this->columnExists($pdo, 'mereni_zaznamy', 'duration_ms'));
+        self::assertTrue($this->columnExists($pdo, 'mereni_zaznamy', 'rpe_value'));
+        self::assertTrue($this->columnExists($pdo, 'zavod_sportovec', 'result_contract_version'));
+        self::assertTrue($this->columnExists($pdo, 'zavod_sportovec', 'result_status'));
+        self::assertTrue($this->columnExists($pdo, 'zavod_sportovec', 'result_time_ms'));
+        self::assertSame('10 km', $pdo->query('SELECT vzdalenost FROM mereni_zaznamy WHERE id=1')->fetchColumn());
+        self::assertSame('30 min', $pdo->query('SELECT cas FROM mereni_zaznamy WHERE id=1')->fetchColumn());
+        self::assertNull($pdo->query('SELECT contract_version FROM mereni_zaznamy WHERE id=1')->fetchColumn());
+        self::assertSame('01:00', $pdo->query('SELECT cas FROM zavod_sportovec WHERE zavod_id=1')->fetchColumn());
+        self::assertNull($pdo->query('SELECT result_contract_version FROM zavod_sportovec WHERE zavod_id=1')->fetchColumn());
         self::assertTrue($this->tableExists($pdo, 'shop_member_category_rules'));
         self::assertTrue($this->tableExists($pdo, 'shop_member_product_prices'));
         self::assertTrue($this->tableExists($pdo, 'shop_member_price_events'));
@@ -150,6 +164,10 @@ final class AuthSecurityMigrationTest extends TestCase
         $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE sportovist (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE individualni_lekce (id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE mereni_zaznamy (id INTEGER PRIMARY KEY, vzdalenost TEXT, cas TEXT, rpe TEXT)');
+        $pdo->exec("INSERT INTO mereni_zaznamy VALUES (1, '10 km', '30 min', 'lehké')");
+        $pdo->exec('CREATE TABLE zavod_sportovec (zavod_id INTEGER, sportovec_id INTEGER, cas TEXT)');
+        $pdo->exec("INSERT INTO zavod_sportovec VALUES (1, 1, '01:00')");
         $pdo->exec("CREATE TABLE planovane_treninky (id INTEGER PRIMARY KEY, datum TEXT NOT NULL, stav TEXT NOT NULL DEFAULT 'planovany')");
         $pdo->exec(
             'CREATE TABLE verejni_uzivatele ('

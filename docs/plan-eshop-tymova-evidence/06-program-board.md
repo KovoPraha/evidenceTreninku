@@ -142,6 +142,9 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M3.1 rodinný program | hotovo technicky | `1510c20`: přihlášený rodič vidí 30denní read-only agendu tréninků, akcí, rezervací a splatností nad kanonickým `familyCalendarItems`; browser 2 správné položky, cizí osoba nezobrazena, konzole 0; 431/3847, 433 parse, 48/48, backup 95, audit 0 |
 | M3.2a týdenní náhled | hotovo technicky | `82d41ac`: prostý text ze stejné rodinné agendy, pravdivý prázdný stav a striktně omezené listování; browser 12.–18. 8. zobrazil 1 akci + 1 splatnost, bez cizí osoby a transportu; 434/3872, 434 parse, 48/48, backup 95, audit 0 |
 | M3.3a roční přehled úhrad | hotovo technicky | `63c8ec1`: read-only rok skutečně uhrazených členských předpisů a e-shopových položek všech schválených profilů; zdroje a měny oddělené, revokace vazby fail-closed, žádný účetní/daňový doklad; browser 2026 = e-shop 1 530 CZK a čekající předpis vynechán, 2025 prázdný, 2027 odmítnut; 438/3897, 438 parse, 48/48, backup 95, audit 0 |
+| M3.4 provozní přehled správce | hotovo technicky | `12c2300`: read-only akční signály peněz, kapacit, přihlášek a výjimek, pouze odkazy do existujících auditovaných obrazovek; 452/3951, 450 parse, 48/48, audit 0 |
+| M3.5a inventura sportovních dat | hotovo technicky | `efc8172`: admin-only agregace pěti zdrojů bez osob a hodnot; browser 5 karet / 0 formulářů / 0 vstupů / konzole 0; 466/4075, 461 parse, 49/49, audit 0 |
+| M3.5b sportovní datový kontrakt | hotovo technicky | aditivní `sports-measurement-v1` pro m/km, metry, milisekundy, RPE 1–10 a výsledkové stavy; žádný backfill, budoucí importy jej použijí v M3.5c; 477/4107, 466 parse, 50/50, backup 100, audit 0 |
 
 ## Aktivní rozhodnutí
 

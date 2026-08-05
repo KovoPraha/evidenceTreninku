@@ -1,6 +1,7 @@
-# Kvalita sportovních dat – M3.5a
+# Kvalita sportovních dat – M3.5a a M3.5b
 
-Stav k 5. 8. 2026: read-only inventura je implementovaná a ověřená na localhostu.
+Stav k 5. 8. 2026: read-only inventura i verzovaný kontrakt v1 jsou implementované
+a ověřené na localhostu.
 Produkce se nezměnila.
 
 ## Účel
@@ -46,10 +47,33 @@ Počty jsou pouze snapshot testovacích localhost dat a mohou se měnit.
 - zátěžové testy před další analytikou potřebují schválený účel, přístupy,
   retenční dobu a pravidlo výmazu.
 
-## Následující rozhodnutí M3.5b
+## Kontrakt M3.5b: `sports-measurement-v1`
 
-Nejdříve je potřeba schválit verzovaný měřicí kontrakt: jednotku vzdálenosti,
-normalizovaný čas, stupnici RPE, výsledkové stavy závodu a pravidla migrace
-nejednoznačných historických hodnot. Staré hodnoty se nesmí automaticky převádět
-odhadem. Zátěžové testy zůstávají mimo progresové výpočty, dokud nebude schválena
-jejich zvláštní ochrana.
+Nový kontrakt je připraven pro budoucí formuláře a jednorázové importy. Nemění
+ani automaticky nepřevádí žádný historický řádek:
+
+- vzdálenost vždy vyžaduje výslovnou jednotku `m` nebo `km` a ukládá se také
+  normalizovaně v metrech,
+- čas přijímá jen `MM:SS(.mmm)` nebo `HH:MM:SS(.mmm)` a ukládá se v milisekundách,
+- RPE je číslo od 1,0 do 10,0 s nejvýše jedním desetinným místem,
+- stav závodu je právě jeden z `entered`, `finished`, `dns`, `dnf`, `dsq`,
+- zátěžové testy nejsou součástí kontraktu ani progresových výpočtů.
+
+Migrace `20260805050000_sports_measurement_contract` přidává pouze nullable
+sloupce. V `mereni_zaznamy` jsou `contract_version`, `distance_unit`,
+`distance_meters`, `duration_ms` a `rpe_value`; v `zavod_sportovec` jsou
+`result_contract_version`, `result_status` a `result_time_ms`. Původní sloupce
+zůstávají kvůli čitelnosti historie beze změny.
+
+Validace je v `includes/sports_measurement_contract.php`. Nejednoznačný neprázdný
+vstup se odmítne; prázdná volitelná hodnota zůstane `NULL`. Read-only přehled
+ukazuje pokrytí kontraktem v1, ale nikdy nevypisuje hodnoty nebo osoby.
+
+## Pravidlo pro ostrá data
+
+- KIS a e-shop se později převezmou jednorázovým kontrolovaným importem.
+- Tréninky se převezmou ze stávající produkční Evidence; jejich objem je malý.
+- Historické texty se při importu nepřevádějí odhadem. Pokud jednotka nebo formát
+  není jednoznačný, zůstane normalizovaná hodnota prázdná a originál čitelný.
+- M3.5b zatím nepřepojuje staré formuláře na nový zápis. To je samostatný řez
+  M3.5c, který použije tento společný validátor v UI a importérech.

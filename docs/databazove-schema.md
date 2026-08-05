@@ -205,6 +205,14 @@ Nový formát měření s typem.
 | `rpe` | varchar(50) | RPE hodnocení (pouze posilovna) |
 | `poznamka` | text | |
 | `created_at` | timestamp | |
+| `contract_version` | varchar(40) NULL | M3.5b; `sports-measurement-v1` pouze u nově normalizovaných záznamů |
+| `distance_unit` | varchar(4) NULL | `m` nebo `km`; vždy výslovně zadané |
+| `distance_meters` | decimal(12,2) NULL | Normalizovaná vzdálenost v metrech |
+| `duration_ms` | bigint unsigned NULL | Normalizovaný čas v milisekundách |
+| `rpe_value` | decimal(3,1) NULL | Číselné RPE 1,0–10,0 |
+
+Sloupce M3.5b jsou aditivní a nullable. Migrace nepřevádí starší `vzdalenost`,
+`cas` ani `rpe` odhadem; původní hodnoty zůstávají čitelné.
 
 ### `trenink_mereni`
 Vazba tréninku na záznamy měření.
@@ -342,8 +350,12 @@ Evidence závodů. Od verze 2.7.0 rozšířeno o kategorii a URL výsledků.
 | `jmeno_ext` | varchar(200) NULL | Jméno externího závodníka — **přidáno v 2.7.0** |
 | `klub` | varchar(200) NULL | Klub závodníka — **přidáno v 2.7.0** |
 | `kategorie_start` | varchar(100) NULL | Startovní kategorie (Elite, U23, Jun…) — **přidáno v 2.7.0** |
+| `result_contract_version` | varchar(40) NULL | M3.5b; `sports-measurement-v1` pro normalizovaný výsledek |
+| `result_status` | varchar(16) NULL | `entered`, `finished`, `dns`, `dnf`, `dsq` |
+| `result_time_ms` | bigint unsigned NULL | Normalizovaný výsledný čas v milisekundách |
 
 Interní závodníci mají vyplněno `sportovec_id` (odkaz na profil). Externí závodníci mají `sportovec_id = NULL` a jméno v `jmeno_ext`.
+Historické výsledky zůstávají ve starých sloupcích; stav ani čas se nedopočítává.
 
 ### `zavod_mereni`
 Junction tabulka pro měření u závodů. Identická struktura jako `trenink_mereni`. **Přidáno v 2.7.0.**

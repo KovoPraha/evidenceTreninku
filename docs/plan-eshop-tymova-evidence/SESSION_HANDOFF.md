@@ -1,5 +1,23 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — M3.5b sportovní datový kontrakt
+
+- Kontrakt `sports-measurement-v1` nově vyžaduje výslovnou jednotku `m`/`km`,
+  normalizuje vzdálenost na metry, striktní čas na milisekundy a RPE na číslo
+  1,0–10,0. Závod rozlišuje `entered`, `finished`, `dns`, `dnf` a `dsq`.
+- Migrace `20260805050000_sports_measurement_contract` je čistě aditivní: přidává
+  nullable sloupce do `mereni_zaznamy` a `zavod_sportovec`, bez jediného backfillu.
+  Localhost je 50/50; produkce se nezměnila.
+- Read-only inventura M3.5a ukazuje počet záznamů v kontraktu v1 a staré řádky
+  označuje jako legacy. Nadále nevrací osoby ani naměřené hodnoty.
+- KIS a e-shop budou později jednorázově importované. Produkční tréninky se
+  převezmou ze stávající Evidence; nejednoznačné historické hodnoty se neodhadují.
+- Další řez M3.5c napojí společný validátor na nový zápis a kontrolované importy.
+  Legacy formuláře v tomto řezu zůstaly beze změny.
+- Ověření: 477/4107 PHPUnit, 466 first-party PHP syntaxí, migrace 50/50,
+  izolovaný MariaDB backup smoke 100 tabulek a Composer audit bez nálezu. Browser
+  potvrdil metriku v1, dvě starší závodní účasti, 0 formulářů/vstupů a konzoli 0.
+
 ## Aktualizace 5. 8. 2026 — M3.5a kvalita sportovních dat
 
 - `sports_data_quality_admin.php` je admin-only, no-store a výhradně read-only.
@@ -57,10 +75,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD před M3.5a: `8a69b66`.
+- Poslední přijatý implementační HEAD před M3.5b: `efc8172`.
 - Implementace `12c2300`, `3a35a2b` a `8a69b66` jsou commitnuté; větev `main`, upstream
   `origin/main`. Vzdálený repozitář ani produkce se v tomto řezu nezměnily.
-- Localhost DB je 49/49. Vzdálený repozitář se v této M2.7 session neměnil;
+- Localhost DB je 50/50. Vzdálený repozitář se v této M3.5b session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -80,7 +98,11 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce je tento řez M3.5a. Administrátor má agregovaný
+- Poslední dokončená funkční akce je tento řez M3.5b. Databáze a společný
+  validátor mají aditivní `sports-measurement-v1`; historická data zůstala beze
+  změny a read-only přehled ukazuje pokrytí v1. Produkce se nezměnila.
+
+  Předchozí dokončená funkční akce je řez M3.5a. Administrátor má agregovaný
   read-only přehled pěti sportovních zdrojů bez osobních a naměřených hodnot.
   Browser ověřil pět karet, žádný formulář ani vstup a nulovou konzolovou chybu;
   plná sada je 466/4075 a databáze zůstává 49/49. Produkce se nezměnila.
@@ -789,6 +811,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 99 | sjednocený UI základ `3a35a2b` | společné pozadí, formuláře, načítání, toast zprávy a veřejná navigace pro 127 aktivních HTML stránek; 455/3970, 450 parse, 48/48, audit 0 |
 | 100 | dokončení M3.2 | opt-in/opt-out, idempotentní fronta a audit, sdílený localhost-only outbox; browser zapnout → 1 zpráva → lokální uložení → vypnout, 462/4026, 457 parse, 49/49, backup 98, audit 0 |
 | 101 | M3.5a kvalita sportovních dat | admin-only agregace pěti zdrojů bez jmen, ID a hodnot; browser 5 karet / 0 formulářů / 0 vstupů / konzole 0; integrovaný kontrakt hlídá jednotnou identitu, osoby a docházku; 466/4075, 461 parse, 49/49, audit 0 |
+| 102 | M3.5b sportovní datový kontrakt | aditivní `sports-measurement-v1` pro m/km, metry, milisekundy, RPE 1–10 a stavy entered/finished/DNS/DNF/DSQ; žádný backfill, browser 0 formulářů/vstupů a konzole 0; 477/4107, 466 parse, 50/50, backup 100, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

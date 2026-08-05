@@ -25,9 +25,9 @@ před dalším rozšiřováním M3.
 | M3.2 týdenní souhrn | technicky hotovo | 100 % | náhled, výchozí opt-out, dobrovolný opt-in, odhlášení jedním krokem, idempotentní fronta, audit a localhost-only outbox jsou ověřené; produkční transport zůstává samostatně blokovaný |
 | M3.3 roční přehled plateb | probíhá | 70 % | přihlášený read-only přehled skutečně uhrazených členských předpisů a e-shopových položek je hotový; zbývá vlastníkovo ověření obsahu a rozhodnutí, zda vůbec vznikne schválený export |
 | M3.4 provozní přehled správce | technicky hotovo | 100 % | read-only akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
-| M3.5 datová kvalita sportovního progresu | probíhá | 30 % | M3.5a má admin-only read-only inventuru pěti zdrojů bez jmen a hodnot; před porovnáváním zbývá schválit jednotky, formáty, výsledkové stavy a ochranu zátěžových testů |
+| M3.5 datová kvalita sportovního progresu | probíhá | 65 % | M3.5a má admin-only read-only inventuru; M3.5b přidává aditivní `sports-measurement-v1` pro jednotky, čas, RPE a stav závodu bez převodu historie; zbývá napojení budoucího zápisu/importu a ochrana zátěžových testů |
 
-Orientační technický stav M3: **60 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
+Orientační technický stav M3: **65 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
 
 ## M3.1 – rodinný program
 
@@ -115,6 +115,13 @@ docházky, 239 sportovců s docházkou, 7 historických měření, 2 závodní �
 měření dále nemají bezpečně verzované jednotky a formáty. Podrobnosti jsou v
 `docs/sports-data-quality.md`.
 
+Řez M3.5b zavádí kontrakt `sports-measurement-v1`. Vzdálenost má výslovnou
+jednotku `m`/`km` a normalizaci na metry, čas striktní formát a milisekundy, RPE
+číselnou stupnici 1,0–10,0 a závod stav `entered`/`finished`/`dns`/`dnf`/`dsq`.
+Nové databázové sloupce jsou nullable a migrace neprovádí žádný backfill. Staré
+tréninky a výsledky proto zůstávají čitelné bez odhadování. Jednorázové importy
+KIS, e-shopu a produkčních tréninků použijí kontrakt až v navazujícím řezu.
+
 ## Brány a výslovně odložené oblasti
 
 - Stripe, automatické Fio párování, Packeta a skutečné e-mailové transporty
@@ -130,8 +137,8 @@ měření dále nemají bezpečně verzované jednotky a formáty. Podrobnosti j
 
 ## Další konkrétní krok
 
-Další technický řez je M3.5b: navrhnout a nechat vlastníkem potvrdit verzovaný
-kontrakt vzdálenosti, času, RPE a výsledkových stavů DNS/DNF. Historické hodnoty
-se nesmějí převádět odhadem. Zátěžové testy zůstávají mimo progresové výpočty,
-dokud nebude schválen účel, přístup, retence a výmaz. Současně zůstává otevřená
-vlastníkova kontrola M3.3 a celé A01–A10.
+Další technický řez je M3.5c: použít schválený kontrakt v novém zápisu a v
+jednorázových importérech, vždy s náhledem a bez odhadování historických hodnot.
+Zátěžové testy zůstávají mimo progresové výpočty, dokud nebude schválen účel,
+přístup, retence a výmaz. Současně zůstává otevřená vlastníkova kontrola M3.3 a
+celé A01–A10.
