@@ -1,8 +1,9 @@
-# Kvalita sportovních dat – M3.5a až M3.5c
+# Kvalita sportovních dat – M3.5a až M3.5e
 
-Stav k 5. 8. 2026: read-only inventura, verzovaný kontrakt v1 i jeho použití při
-novém zápisu jsou implementované a ověřené na localhostu.
-Produkce se nezměnila.
+Stav k 5. 8. 2026: read-only inventura, verzovaný kontrakt v1, jeho použití při
+novém zápisu, read-only příprava importu (M3.5d) i deterministický rozpoznávací
+kontrakt historické volnotextové tabulky `mereni` (M3.5e) jsou implementované a
+ověřené na localhostu. Produkce se nezměnila.
 
 ## Účel
 
@@ -68,6 +69,48 @@ zůstávají kvůli čitelnosti historie beze změny.
 Validace je v `includes/sports_measurement_contract.php`. Nejednoznačný neprázdný
 vstup se odmítne; prázdná volitelná hodnota zůstane `NULL`. Read-only přehled
 ukazuje pokrytí kontraktem v1, ale nikdy nevypisuje hodnoty nebo osoby.
+
+## Kontrakt M3.5e: rozpoznávání historické tabulky `mereni`
+
+M3.5a i M3.5d záměrně vynechaly historickou volnotextovou tabulku `mereni`
+(vzdálenost i čas jako volný text, 7 řádků na localhostu), dokud nebude
+definován formát. M3.5e nedefinuje formát pro převod — definuje pouze
+**deterministický rozpoznávací kontrakt**, který každou hodnotu klasifikuje
+jako rozpoznatelnou nebo nejednoznačnou. Kontrakt nic nepřevádí, nic
+neodhaduje a neukládá žádnou normalizovanou hodnotu; slouží jen k tomu, aby
+administrátor viděl, které řádky bude muset později rozhodnout ručně.
+
+Uznané vzory (přesná shoda, jednotka výhradně malými písmeny):
+
+- vzdálenost: `<číslo> km` nebo `<číslo> m`,
+- čas: striktní `MM:SS(.mmm)` / `HH:MM:SS(.mmm)` (stejný parser jako
+  `sports-measurement-v1`, viz `sportsMeasurementDurationMilliseconds()`) nebo
+  `<číslo> min`.
+
+`<číslo>` je nezáporné číslo s nejvýše třemi desetinnými místy; desetinný
+oddělovač je tečka nebo čárka (stejná číselná gramatika jako u
+`sports-measurement-v1`). Mezi číslem a jednotkou smí být nejvýše jedna
+mezera — hodnota tedy může, ale nemusí mít mezeru („200m“ i „200 m“ jsou
+rozpoznatelné; „200  m“ se dvěma mezerami už ne).
+
+Cokoli jiné je nejednoznačné, mimo jiné:
+
+- rozsahy („10-15 km“),
+- přibližné zápisy s „cca“ nebo podobnou předponou,
+- více hodnot v jednom poli („10 km, 5 km“),
+- prázdná hodnota — chybějící vzdálenost nebo čas je vždy nejednoznačný, není
+  to automatické „nic k řešení“,
+- jiná jednotka, jiný počet desetinných míst nebo jiné velikosti písmen
+  jednotky (`KM`, `Km`), než kontrakt uznává.
+
+Řádek tabulky `mereni` je jako celek rozpoznatelný, jen když jsou rozpoznatelná
+obě pole zároveň (vzdálenost i čas). Klasifikace nikdy nevrací `sportovec_id`
+ani jméno; vazba na trénink se uvádí pouze jako `trénink <datum>`.
+
+Kontrakt je čistě přípravný krok pro `sports_import_review_admin.php`. Ruční
+rozhodnutí o každém nejednoznačném řádku a případný samostatně schválený
+formát převodu zůstávají navazujícím krokem; M3.5e sám o sobě žádný řádek
+tabulky `mereni` nemění.
 
 ## Pravidlo pro ostrá data
 

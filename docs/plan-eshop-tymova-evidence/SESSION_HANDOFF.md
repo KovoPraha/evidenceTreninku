@@ -1,5 +1,45 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — M3.5e rozpoznávání historické tabulky měření
+
+- Historická volnotextová tabulka `mereni` (7 řádků na localhostu), kterou
+  M3.5a i M3.5d záměrně vynechaly, má nový deterministický rozpoznávací
+  kontrakt v `includes/sports_import_review.php`. Uznané vzory jsou výhradně
+  „<číslo> km“, „<číslo> m“, striktní čas `MM:SS(.mmm)`/`HH:MM:SS(.mmm)` a
+  „<číslo> min“ (mezi číslem a jednotkou smí, ale nemusí být jedna mezera,
+  např. „200m“ i „200 m“); cokoli jiné — rozsahy, „cca“, více hodnot nebo
+  prázdná hodnota — je nejednoznačné. Kontrakt nic nepřevádí, nic neodhaduje
+  a neukládá žádnou normalizovanou hodnotu, jen klasifikuje pro pozdější
+  ruční rozhodnutí. Úplný popis je v `docs/sports-data-quality.md`.
+- `sports_import_review_admin.php` nahradil dosavadní jednořádkovou
+  souhrnnou kartu plnohodnotnou sekcí: řádků celkem, rozpoznatelné,
+  nejednoznačné a tabulka všech řádků s badge verdiktem a důvodem u obou
+  polí (vzdálenost i čas). Vazba na trénink se uvádí jen jako
+  „trénink <datum>“; `sportovec_id` ani jméno se nikam nevrací. Stránka
+  zůstává no-store a sama o sobě nemá formulář ani vstup — jediný form/input
+  na vykreslené stránce patří sdílené navigaci `hlavicka.php` (odhlášení a
+  globální hledání), stejně jako na všech ostatních obrazovkách aplikace.
+- Živý localhost snapshot: všech 7 historických řádků je klasifikováno jako
+  nejednoznačných (0 rozpoznatelných) — např. vzdálenost „200m“ je sama o
+  sobě rozpoznaná, ale čas u stejného řádku („30s“) ani u jiných řádků
+  („14.52“ bez dvojtečky, „por“) striktnímu formátu neodpovídá, takže se
+  žádný z řádků nepřevádí ani neodhaduje.
+- Testováno na izolované sqlite fixture se 7 syntetickými řádky (2 plně
+  rozpoznatelné, 5 nejednoznačných — rozsah, „cca“ prefix, více hodnot,
+  obě pole prázdná, desetinný čas bez dvojtečky) a samostatným maticovým
+  testem přímo nad rozpoznávacími funkcemi včetně negativních případů
+  (jednotka velkými písmeny, dvě mezery, jiná jednotka, prázdný/mezerový
+  vstup). JSON výstup je ověřen bez `sportovec_id`, `jmeno` nebo konkrétního
+  jména.
+- Ověření (lokálně, PHP 8.2.12/PHPUnit 11.5.56, izolovaně jen s tímto řezem
+  nad `cfc3c93`): 492/4276 PHPUnit (base 491/4217 → +1 test/+59 assertions,
+  0 selhání), 470 first-party PHP souborů beze změny počtu a bez chyby,
+  žádná nová migrace ani závislost. Browser přes `localhost-admin` potvrdil
+  novou sekci se 7 řádky a verdikty, 0 rozpoznatelných/7 nejednoznačných a
+  0 konzolových chyb.
+- Base před M3.5e je `cfc3c93` (M3.5d). Vzdálený repozitář ani produkce se
+  nemění.
+
 ## Aktualizace 5. 8. 2026 — M3.5d read-only příprava importu sportovních dat
 
 - Nová admin-only stránka `sports_import_review_admin.php` je no-store, bez
@@ -124,13 +164,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD před M3.5d: `e07fc25` (M3.5c).
-- Větev `main`, upstream `origin/main`, lokálně ahead 46 / behind 0 proti
+- Poslední přijatý implementační HEAD před M3.5e: `cfc3c93` (M3.5d).
+- Větev `main`, upstream `origin/main`, lokálně ahead 48 / behind 0 proti
   poslednímu známému `origin/main` (`aead0be`, bez živého fetch). Vzdálený
   repozitář ani produkce se v tomto řezu nezměnily.
-- Localhost DB je 50/50 (historická hodnota; tato cloud session DB nemutovala
-  a M3.5d žádnou migraci nepřidává). Produkční workflow je ruční a produkce se
-  nemění.
+- Localhost DB je 50/50 (historická hodnota; M3.5e je čistě čtecí klasifikace
+  volného textu a nepřidává žádnou migraci). Produkční workflow je ruční a
+  produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -149,7 +189,17 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce je řez M3.5d. Administrátor má read-only
+- Poslední dokončená funkční akce je řez M3.5e. Historická volnotextová
+  tabulka `mereni` (7 řádků) má deterministický rozpoznávací kontrakt: uznává
+  jen „<číslo> km/m/min“ a striktní čas, cokoli jiné včetně prázdné hodnoty
+  je nejednoznačné a nic se nepřevádí ani neodhaduje.
+  `sports_import_review_admin.php` nahradil souhrnnou kartu plnohodnotnou
+  sekcí se všemi 7 řádky, verdiktem a důvodem u obou polí, bez `sportovec_id`
+  a bez jmen. Ověření izolovaně nad `cfc3c93` je 492/4276 PHPUnit (base
+  491/4217, +1 test/+59 assertions, 0 selhání) a 470 first-party syntaxí beze
+  změny počtu; browser živě potvrdil 7 řádků s verdikty (0 rozpoznatelných/7
+  nejednoznačných) a konzoli 0.
+  Předchozí dokončená funkční akce je řez M3.5d. Administrátor má read-only
   přípravu jednorázového importu: pokrytí v1 a konkrétní seznam nejednoznačných
   legacy řádků s důvody, bez jediného převodu, odhadu, formuláře nebo osobního
   údaje. Ověření 491/4217 PHPUnit a 470 syntaxí proběhlo na identické kopii
@@ -876,6 +926,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 102 | M3.5b sportovní datový kontrakt | aditivní `sports-measurement-v1` pro m/km, metry, milisekundy, RPE 1–10 a stavy entered/finished/DNS/DNF/DSQ; žádný backfill, browser 0 formulářů/vstupů a konzole 0; 477/4107, 466 parse, 50/50, backup 100, audit 0 |
 | 103 | M3.5c normalizovaný zápis sportovních dat | čtyři formuláře/handlery sdílí fail-closed parser a ukládají legacy + v1 hodnoty; výslovná jednotka, striktní čas/RPE, testovaný importní mapper bez ostrého zápisu; browser bez odeslání a konzole 0; 487/4161, 469 parse, 50/50, backup 100, audit 0 |
 | 104 | M3.5d read-only příprava importu | admin-only no-store stránka bez formuláře: pokrytí v1 a konkrétní nejednoznačné legacy řádky s důvody; deterministické kandidáty pouze počítá, nic nepřevádí a neodhaduje; bez osob; oprava chybějícího Bootstrap head u M3.5a/M3.5d a reference legacy řádků bez PK; browser živě 2 účasti + konzole 0; 491/4217, 470 parse, bez nové migrace a změny závislostí |
+| 105 | M3.5e rozpoznávání historické tabulky měření | deterministický kontrakt „<číslo> km/m/min“ + striktní čas pro volný text `mereni`; rozsah/„cca“/více hodnot/prázdná hodnota je vždy nejednoznačné, nic se nepřevádí; admin sekce se všemi 7 řádky a verdikty bez sportovec_id a jmen; browser živě 0 rozpoznatelných/7 nejednoznačných, konzole 0; izolovaně 492/4276 (base 491/4217, +1 test/+59 assertions), 470 parse beze změny počtu, bez migrace a nové závislosti |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

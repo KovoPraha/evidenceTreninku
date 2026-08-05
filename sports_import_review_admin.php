@@ -47,7 +47,7 @@ $races = $review['races'];
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div>
             <h1 class="h3 mb-1"><i class="bi bi-clipboard-check me-2 text-primary"></i>Příprava importu sportovních dat</h1>
-            <div class="text-muted">M3.5d: pokrytí kontraktu v1 a nejednoznačné legacy řádky k ručnímu rozhodnutí.</div>
+            <div class="text-muted">M3.5d: pokrytí kontraktu v1 a nejednoznačné legacy řádky k ručnímu rozhodnutí. M3.5e: rozpoznávací kontrakt historické textové tabulky měření.</div>
         </div>
         <?php if ($review['generated_at'] !== ''): ?><div class="text-end small text-muted">Stav k <?= sportsImportReviewPageH($review['generated_at']) ?></div><?php endif; ?>
     </div>
@@ -139,9 +139,31 @@ $races = $review['races'];
 
     <?php if ($review['legacy_text_table']['available']): ?>
     <section class="card border-0 shadow-sm mb-4" id="legacy-text">
-        <div class="card-header bg-white"><strong class="fs-5">Historická textová tabulka měření</strong></div>
+        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-start gap-2">
+            <div><strong class="fs-5">Historická textová tabulka měření</strong><div class="small text-muted">M3.5e: deterministický rozpoznávací kontrakt volného textu vzdálenosti a času. Nic se nepřevádí, jen se klasifikuje pro ruční rozhodnutí.</div></div>
+            <span class="badge text-bg-<?= (int)$review['legacy_text_table']['ambiguous_count'] > 0 ? 'warning' : 'success' ?>"><?= (int)$review['legacy_text_table']['ambiguous_count'] ?> nejednoznačných</span>
+        </div>
         <div class="card-body">
-            <p class="mb-0">Tabulka starších volnotextových měření obsahuje <strong><?= (int)$review['legacy_text_table']['total'] ?></strong> řádků. Do tohoto seznamu záměrně nevstupuje: před jejím převodem je nutné nejprve schválit formát, jednotky a pravidla pro nejednoznačné hodnoty (viz inventura M3.5a).</p>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Řádků celkem</div><div class="h4 mb-0"><?= (int)$review['legacy_text_table']['total'] ?></div></div></div>
+                <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Rozpoznatelné</div><div class="h4 mb-0"><?= (int)$review['legacy_text_table']['recognized_count'] ?></div><div class="small text-muted mt-1">Vzdálenost i čas odpovídají uznanému vzoru „&lt;číslo&gt; km/m/min“ nebo striktnímu času.</div></div></div>
+                <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Nejednoznačné</div><div class="h4 mb-0"><?= (int)$review['legacy_text_table']['ambiguous_count'] ?></div><div class="small text-muted mt-1">Čekají na ruční rozhodnutí; žádný odhad se neprovádí.</div></div></div>
+            </div>
+            <p class="text-muted small">Před případným převodem je nutné nejprve schválit formát, jednotky a pravidla pro nejednoznačné hodnoty (viz inventura M3.5a). Tento kontrakt pouze rozpoznává vzor v každém řádku níže, nic nepřevádí.</p>
+            <?php if ($review['legacy_text_table']['truncated']): ?><div class="alert alert-warning">Seznam je zkrácen na prvních <?= count($review['legacy_text_table']['rows']) ?> řádků z <?= (int)$review['legacy_text_table']['total'] ?>. Zbytek není skryt záměrně: rozhodnutí proběhne po dávkách.</div><?php endif; ?>
+            <?php if ($review['legacy_text_table']['rows'] === []): ?><div class="alert alert-secondary mb-0">Historická tabulka měření je prázdná.</div>
+            <?php else: ?>
+            <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Řádek</th><th>Kontext</th><th>Verdikt</th><th>Pole a důvody</th></tr></thead><tbody>
+                <?php foreach ($review['legacy_text_table']['rows'] as $row): ?>
+                <tr>
+                    <td class="fw-semibold">#<?= (int)$row['id'] ?></td>
+                    <td class="small text-muted"><?= sportsImportReviewPageH($row['kontext']) ?></td>
+                    <td><span class="badge text-bg-<?= $row['verdict'] === 'ambiguous' ? 'warning' : 'success' ?>"><?= $row['verdict'] === 'ambiguous' ? 'Nejednoznačné' : 'Rozpoznatelné' ?></span></td>
+                    <td><?php foreach ($row['fields'] as $field): ?><div class="mb-1"><span class="badge text-bg-<?= $field['verdict'] === 'ambiguous' ? 'warning' : 'success' ?> me-2"><?= sportsImportReviewPageH($field['field']) ?></span><?php if ($field['value'] !== ''): ?><code><?= sportsImportReviewPageH($field['value']) ?></code> <?php endif; ?><span class="small text-muted"><?= sportsImportReviewPageH($field['reason']) ?></span></div><?php endforeach; ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody></table></div>
+            <?php endif; ?>
         </div>
     </section>
     <?php endif; ?>

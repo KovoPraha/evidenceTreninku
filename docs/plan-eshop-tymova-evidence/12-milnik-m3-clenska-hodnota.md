@@ -25,7 +25,7 @@ před dalším rozšiřováním M3.
 | M3.2 týdenní souhrn | technicky hotovo | 100 % | náhled, výchozí opt-out, dobrovolný opt-in, odhlášení jedním krokem, idempotentní fronta, audit a localhost-only outbox jsou ověřené; produkční transport zůstává samostatně blokovaný |
 | M3.3 roční přehled plateb | probíhá | 70 % | přihlášený read-only přehled skutečně uhrazených členských předpisů a e-shopových položek je hotový; zbývá vlastníkovo ověření obsahu a rozhodnutí, zda vůbec vznikne schválený export |
 | M3.4 provozní přehled správce | technicky hotovo | 100 % | read-only akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
-| M3.5 datová kvalita sportovního progresu | probíhá | 90 % | M3.5a má admin-only read-only inventuru; M3.5b přidává aditivní `sports-measurement-v1`; M3.5c napojuje všechny čtyři formuláře a handlery na společný striktní zápis; M3.5d přidává read-only přípravu importu: pokrytí v1 a konkrétní seznam nejednoznačných legacy řádků k ručnímu rozhodnutí; zbývá schválená ochrana zátěžových testů a samotný řízený jednorázový import |
+| M3.5 datová kvalita sportovního progresu | probíhá | 92 % | M3.5a má admin-only read-only inventuru; M3.5b přidává aditivní `sports-measurement-v1`; M3.5c napojuje všechny čtyři formuláře a handlery na společný striktní zápis; M3.5d přidává read-only přípravu importu: pokrytí v1 a konkrétní seznam nejednoznačných legacy řádků k ručnímu rozhodnutí; M3.5e přidává deterministický rozpoznávací kontrakt historické textové tabulky `mereni` beze změny dat; zbývá schválená ochrana zátěžových testů a samotný řízený jednorázový import |
 
 Orientační technický stav M3: **70 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
 
@@ -144,6 +144,21 @@ jména ani identifikátory sportovců, nemá formulář ani vstup a historická
 volnotextová tabulka měření zůstává mimo seznam, dokud nebude schválen její
 formát a jednotky.
 
+Řez M3.5e přidává do `includes/sports_import_review.php` deterministický
+rozpoznávací kontrakt právě pro tuto historickou volnotextovou tabulku
+`mereni`, kterou M3.5a i M3.5d záměrně vynechaly. Uznané vzory jsou výhradně
+„<číslo> km“, „<číslo> m“, striktní čas `MM:SS(.mmm)`/`HH:MM:SS(.mmm)` a
+„<číslo> min“; rozsahy, „cca“ zápisy, více hodnot v jednom poli i prázdná
+hodnota jsou vždy nejednoznačné. Kontrakt nic nepřevádí ani neodhaduje — jen
+klasifikuje pro pozdější ruční rozhodnutí. `sports_import_review_admin.php`
+nahrazuje dosavadní jednořádkovou souhrnnou kartu plnohodnotnou sekcí se
+všemi historickými řádky (na localhostu 7), verdiktem a důvodem u obou polí
+(vzdálenost i čas), bez `sportovec_id` a bez jmen; vazba na trénink se uvádí
+jen jako „trénink <datum>“. Živá data ukazují 0 rozpoznatelných a 7
+nejednoznačných řádků — ani jeden historický řádek se proto zatím
+nepřevádí. Podrobný kontrakt je zdokumentovaný v
+`docs/sports-data-quality.md`.
+
 ## Brány a výslovně odložené oblasti
 
 - Stripe, automatické Fio párování, Packeta a skutečné e-mailové transporty
@@ -160,8 +175,11 @@ formát a jednotky.
 ## Další konkrétní krok
 
 Automatický backfill historie zůstává vyloučený: při malém objemu dat by přinesl
-více rizika než hodnoty. M3.5d je hotové jako read-only příprava; navazující krok
-je ruční rozhodnutí vlastníka o vyjmenovaných nejednoznačných řádcích a teprve
-potom samostatně schválený jednorázový import s auditem. Zátěžové testy zůstávají
+více rizika než hodnoty. M3.5d i M3.5e jsou hotové jako read-only příprava —
+včetně deterministického rozpoznávacího kontraktu historické tabulky `mereni`;
+navazující krok je ruční rozhodnutí vlastníka o všech vyjmenovaných
+nejednoznačných řádcích (měření, výsledky závodů i historická tabulka
+`mereni`) a teprve potom samostatně schválený jednorázový import s auditem.
+Zátěžové testy zůstávají
 mimo progresové výpočty, dokud nebude schválen účel, přístup, retence a výmaz.
 Současně zůstává otevřená vlastníkova kontrola M3.3 a celé A01–A10.

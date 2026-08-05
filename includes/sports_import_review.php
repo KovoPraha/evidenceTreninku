@@ -12,6 +12,11 @@ require_once __DIR__ . '/sports_data_quality.php';
  * writes, never guesses ambiguous historical values and never returns athlete
  * IDs or names. Raw technical measurement values are included on purpose so an
  * administrator can decide each ambiguous row manually.
+ *
+ * M3.5e adds a deterministic recognizer for the legacy free-text `mereni`
+ * table (see sportsImportReviewClassifyLegacyTextRow() below). It only
+ * classifies rows as recognized or ambiguous; it does not define or perform
+ * any conversion.
  */
 
 const SPORTS_IMPORT_REVIEW_ROW_LIMIT = 200;
@@ -107,12 +112,74 @@ function sportsImportReviewClassifyRaceRow(array $row): array
 }
 
 /**
+ * M3.5e deterministic recognizer for the legacy free-text `mereni` table.
+ *
+ * Recognized patterns only: "<number> km", "<number> m", a strict duration
+ * (same parser as sports-measurement-v1) or "<number> min". Anything else —
+ * ranges, "cca" prefixes, multiple values, or an empty value — is ambiguous.
+ * This never converts or stores a normalized value; it only classifies.
+ */
+const SPORTS_IMPORT_REVIEW_LEGACY_NUMBER = '(?:0|[1-9][0-9]*)(?:[.,][0-9]{1,3})?';
+
+/** @return array{verdict:string,reason:string} */
+function sportsImportReviewClassifyLegacyDistance(string $rawValue): array
+{
+    $value = trim($rawValue);
+    if ($value === '') {
+        return ['verdict' => 'ambiguous', 'reason' => 'Prázdná hodnota je vždy nejednoznačná a čeká na ruční rozhodnutí.'];
+    }
+    if (preg_match('/^' . SPORTS_IMPORT_REVIEW_LEGACY_NUMBER . '[ ]?(?:km|m)$/D', $value) === 1) {
+        return ['verdict' => 'recognized', 'reason' => 'Hodnota odpovídá uznanému vzoru „<číslo> km“ nebo „<číslo> m“.'];
+    }
+    return ['verdict' => 'ambiguous', 'reason' => 'Hodnota neodpovídá vzoru „<číslo> km“ ani „<číslo> m“ (rozsah, „cca“, více hodnot nebo jiný zápis se nepřevádí odhadem).'];
+}
+
+/** @return array{verdict:string,reason:string} */
+function sportsImportReviewClassifyLegacyTime(string $rawValue): array
+{
+    $value = trim($rawValue);
+    if ($value === '') {
+        return ['verdict' => 'ambiguous', 'reason' => 'Prázdná hodnota je vždy nejednoznačná a čeká na ruční rozhodnutí.'];
+    }
+    try {
+        sportsMeasurementDurationMilliseconds($value);
+        return ['verdict' => 'recognized', 'reason' => 'Čas odpovídá striktnímu formátu MM:SS(.mmm) nebo HH:MM:SS(.mmm).'];
+    } catch (InvalidArgumentException) {
+        // Not a strict duration; fall through to the "<number> min" pattern.
+    }
+    if (preg_match('/^' . SPORTS_IMPORT_REVIEW_LEGACY_NUMBER . '[ ]?min$/D', $value) === 1) {
+        return ['verdict' => 'recognized', 'reason' => 'Hodnota odpovídá uznanému vzoru „<číslo> min“.'];
+    }
+    return ['verdict' => 'ambiguous', 'reason' => 'Hodnota neodpovídá striktnímu času ani vzoru „<číslo> min“ (rozsah, „cca“, více hodnot nebo jiný zápis se nepřevádí odhadem).'];
+}
+
+/**
+ * @param array<string,mixed> $row
+ * @return array{verdict:string,fields:list<array{field:string,value:string,verdict:string,reason:string}>}
+ */
+function sportsImportReviewClassifyLegacyTextRow(array $row): array
+{
+    $distance = sportsImportReviewClassifyLegacyDistance((string)($row['vzdalenost'] ?? ''));
+    $time = sportsImportReviewClassifyLegacyTime((string)($row['cas'] ?? ''));
+
+    $fields = [
+        ['field' => 'vzdalenost', 'value' => sportsImportReviewTrimValue($row['vzdalenost'] ?? ''), 'verdict' => $distance['verdict'], 'reason' => $distance['reason']],
+        ['field' => 'cas', 'value' => sportsImportReviewTrimValue($row['cas'] ?? ''), 'verdict' => $time['verdict'], 'reason' => $time['reason']],
+    ];
+
+    return [
+        'verdict' => ($distance['verdict'] === 'recognized' && $time['verdict'] === 'recognized') ? 'recognized' : 'ambiguous',
+        'fields' => $fields,
+    ];
+}
+
+/**
  * @return array{
  *   generated_at:string,
  *   available:bool,
  *   measurements:array<string,mixed>,
  *   races:array<string,mixed>,
- *   legacy_text_table:array<string,mixed>
+ *   legacy_text_table:array{available:bool,total:int,recognized_count:int,ambiguous_count:int,rows:list<array<string,mixed>>,truncated:bool}
  * }
  */
 function sportsImportReview(PDO $pdo, int $rowLimit = SPORTS_IMPORT_REVIEW_ROW_LIMIT, ?DateTimeImmutable $now = null): array
@@ -231,10 +298,43 @@ function sportsImportReview(PDO $pdo, int $rowLimit = SPORTS_IMPORT_REVIEW_ROW_L
         }
     }
 
-    $legacyTextTable = ['available' => false, 'total' => 0];
-    if (sportsDataQualityTableExists($pdo, 'mereni')) {
+    $legacyTextTable = [
+        'available' => false,
+        'total' => 0,
+        'recognized_count' => 0,
+        'ambiguous_count' => 0,
+        'rows' => [],
+        'truncated' => false,
+    ];
+    if (sportsDataQualityHasTables($pdo, ['mereni', 'treninky'])) {
         $legacyTextTable['available'] = true;
         $legacyTextTable['total'] = sportsDataQualityCount($pdo, 'SELECT COUNT(*) FROM mereni');
+
+        // Deterministic recognition only — see sportsImportReviewClassifyLegacyTextRow().
+        // Never selects sportovec_id; the training date is the only linkage shown.
+        $statement = $pdo->query(
+            'SELECT m.id, m.vzdalenost, m.cas, t.datum AS trenink_datum'
+            . ' FROM mereni m LEFT JOIN treninky t ON t.id = m.trenink_id'
+            . ' ORDER BY m.id'
+        );
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $classified = sportsImportReviewClassifyLegacyTextRow($row);
+            if ($classified['verdict'] === 'recognized') {
+                $legacyTextTable['recognized_count']++;
+            } else {
+                $legacyTextTable['ambiguous_count']++;
+            }
+            if (count($legacyTextTable['rows']) >= $rowLimit) {
+                $legacyTextTable['truncated'] = true;
+                continue;
+            }
+            $legacyTextTable['rows'][] = [
+                'id' => (int)$row['id'],
+                'kontext' => 'trénink ' . (string)($row['trenink_datum'] ?? '—'),
+                'verdict' => $classified['verdict'],
+                'fields' => $classified['fields'],
+            ];
+        }
     }
 
     return [
