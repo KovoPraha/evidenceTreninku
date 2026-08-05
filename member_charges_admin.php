@@ -35,7 +35,7 @@ require_once __DIR__ . '/hlavicka.php';
 <main class="container py-4">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div><h1 class="h3 mb-1">Členské předpisy</h1><div class="text-muted">Bezpečný přehled předpisů a jejich poslední známé platby. Změny se zde neprovádějí.</div></div>
-        <a href="kis_sync_center.php" class="btn btn-outline-secondary">Zpět do KIS centra</a>
+        <div class="d-flex gap-2"><a href="member_charge_reminders_admin.php" class="btn btn-outline-primary">Připomínky plateb</a><a href="kis_sync_center.php" class="btn btn-outline-secondary">Zpět do KIS centra</a></div>
     </div>
     <form method="get" class="card card-body border-0 shadow-sm mb-4"><div class="row g-3 align-items-end">
         <div class="col-md-6"><label for="q" class="form-label">Hledat sportovce, kód nebo název</label><input id="q" name="q" class="form-control" value="<?= memberChargeAdminH($query) ?>"></div>

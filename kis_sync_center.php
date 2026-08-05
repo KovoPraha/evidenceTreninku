@@ -119,7 +119,7 @@ $attention = [
             <h1 class="h4 mb-0">KIS synchronizační centrum</h1>
             <div class="text-muted small">Importy, preview, konflikty a provozní kontrola členské evidence.</div>
         </div>
-        <div class="d-flex flex-wrap gap-2"><a href="kis_rosters_admin.php" class="btn btn-outline-primary btn-sm">Týmy a soupisky</a><a href="member_charges_admin.php" class="btn btn-outline-primary btn-sm">Členské předpisy</a><a href="sync_evidence.php" class="btn btn-primary btn-sm"><i class="bi bi-upload me-1"></i>Nový import</a></div>
+        <div class="d-flex flex-wrap gap-2"><a href="kis_rosters_admin.php" class="btn btn-outline-primary btn-sm">Týmy a soupisky</a><a href="member_charges_admin.php" class="btn btn-outline-primary btn-sm">Členské předpisy</a><a href="member_charge_reminders_admin.php" class="btn btn-outline-primary btn-sm">Připomínky plateb</a><a href="sync_evidence.php" class="btn btn-primary btn-sm"><i class="bi bi-upload me-1"></i>Nový import</a></div>
     </div>
 
     <div class="row g-3 mb-3">

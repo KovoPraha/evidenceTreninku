@@ -101,6 +101,50 @@ final class MemberChargeReminderTest extends TestCase
         self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM member_charge_reminders WHERE status='pending'")->fetchColumn());
     }
 
+    public function testAdminCanInspectAndAuditRetryOfFailedReminder(): void
+    {
+        $pdo = $this->database();
+        \memberChargeReminderSavePreference($pdo, 1, true, 7);
+        \memberChargeReminderGenerate($pdo, $this->today());
+        $pdo->exec("UPDATE member_charge_reminders SET status='failed',attempts=5,last_error='Transport unavailable' WHERE id=1");
+
+        self::assertSame(1, \memberChargeReminderAdminSummary($pdo)['failed']);
+        $rows = \memberChargeReminderAdminList($pdo, 'failed');
+        self::assertCount(1, $rows);
+        self::assertSame('Anna', $rows[0]['child_first_name']);
+        self::assertSame('CH-100', $rows[0]['public_code']);
+
+        $result = \memberChargeReminderAdminRetry($pdo, 1, 77, 'Ověřena dočasná chyba transportu.', true);
+        self::assertSame(['id' => 1, 'changed' => true, 'status' => 'pending'], $result);
+        $reminder = $pdo->query('SELECT status,attempts,last_error FROM member_charge_reminders WHERE id=1')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(['status' => 'pending', 'attempts' => 0, 'last_error' => null], $reminder);
+        $audit = $pdo->query("SELECT action,actor_type,actor_id FROM member_charge_reminder_events WHERE action='manual_retry'")->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(['action' => 'manual_retry', 'actor_type' => 'trainer', 'actor_id' => 77], $audit);
+    }
+
+    public function testAdminRetryCannotBypassConfirmationOptOutOrFinalState(): void
+    {
+        $pdo = $this->database();
+        \memberChargeReminderSavePreference($pdo, 1, true, 7);
+        \memberChargeReminderGenerate($pdo, $this->today());
+        $pdo->exec("UPDATE member_charge_reminders SET status='failed',attempts=5 WHERE id=1");
+
+        try {
+            \memberChargeReminderAdminRetry($pdo, 1, 77, 'Důvod', false);
+            self::fail('Missing confirmation must fail.');
+        } catch (\InvalidArgumentException) {
+            self::assertTrue(true);
+        }
+        \memberChargeReminderSavePreference($pdo, 1, false, 7);
+        try {
+            \memberChargeReminderAdminRetry($pdo, 1, 77, 'Důvod', true);
+            self::fail('Cancelled reminder must fail.');
+        } catch (\MemberChargeReminderException) {
+            self::assertTrue(true);
+        }
+        self::assertSame('cancelled', $pdo->query('SELECT status FROM member_charge_reminders WHERE id=1')->fetchColumn());
+    }
+
     private function today(): DateTimeImmutable
     {
         return new DateTimeImmutable('2026-08-05', new DateTimeZone('Europe/Prague'));
@@ -118,6 +162,10 @@ final class MemberChargeReminderTest extends TestCase
         $migration['up']($pdo);
         $migration['up']($pdo);
         self::assertTrue($migration['verify']($pdo));
+        $adminMigration = require dirname(__DIR__, 2) . '/migrations/20260805030000_member_charge_reminder_admin.php';
+        $adminMigration['up']($pdo);
+        $adminMigration['up']($pdo);
+        self::assertTrue($adminMigration['verify']($pdo));
 
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES(1,'rodic@example.test','Testovací','Rodič',1,1),(2,'cizi@example.test','Cizí','Rodič',1,1)");
         $pdo->exec("INSERT INTO sportovci VALUES(10,'Anna','První'),(11,'Bára','Cizí')");
