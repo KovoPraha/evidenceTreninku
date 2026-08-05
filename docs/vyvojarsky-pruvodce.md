@@ -16,7 +16,7 @@ Průvodce pro vývojáře pracující na projektu **Evidence tréninků**. Obsah
 8. [Export do Excelu](#8-export-do-excelu)
 9. [Upload souborů](#9-upload-souborů)
 10. [Bezpečnost](#10-bezpečnost)
-11. [Správa DB schématu (auto-migrace)](#11-správa-db-schématu-auto-migrace)
+11. [Správa DB schématu](#11-správa-db-schématu)
 12. [Nasazení](#12-nasazení)
 
 ---
@@ -886,26 +886,28 @@ Při prvním přihlášení s plaintext heslem (starší účty před migrací) 
 
 ---
 
-## 11. Správa DB schématu (auto-migrace)
+## 11. Správa DB schématu
 
 ### Princip
 
-Projekt používá systém auto-migrací v `includes/auto_migrace.php`. Migrace se spouštějí automaticky při každém PHP requestu jako součást `db.php` — **žádné manuální SQL na produkci není potřeba**.
+Nové změny patří výhradně do číslovaných souborů v `migrations/`. Legacy
+`includes/auto_migrace.php` udržuje jen historický baseline `2.20.2` a nesmí se
+rozšiřovat. Migrace se před nasazením spouštějí explicitně, nikoli návštěvou webu.
 
 ### Jak přidat novou migraci
 
-1. **Otevřete** `includes/auto_migrace.php`
-2. **Zvyšte** konstantu `SCHEMA_VERSION` (sem-ver, např. `'2.10.0'` → `'2.11.0'`)
-3. **Přidejte SQL krok** do sekce Migrace před část "P/Q/... Uložení verze schématu":
+1. Vytvořte nový časově řazený soubor v `migrations/` podle existující šablony.
+2. Doplňte dopředný krok, kontrolu výsledku a případný rollback podle kontraktu
+   migračního runneru.
+3. Ověřte stav i checksum katalogu:
 
-```php
-// ── X. Popis změny ────────────────────────────────────────────────────────
-if (!$colExists('tabulka', 'novy_sloupec')) {
-    $exec("ALTER TABLE tabulka ADD COLUMN novy_sloupec VARCHAR(100) NULL");
-}
+```bash
+php bin/migrate.php --check --json
+php bin/migrate.php --apply
+php bin/migrate.php --check --json
 ```
 
-4. **Nahrajte soubory** na produkci — migrace proběhne automaticky při prvním requestu
+4. Produkci migrujte až po ověřené záloze a před přepnutím nové verze aplikace.
 
 ### Dostupné helper funkce
 

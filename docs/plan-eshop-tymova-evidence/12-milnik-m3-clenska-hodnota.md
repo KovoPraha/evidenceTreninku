@@ -24,10 +24,10 @@ před dalším rozšiřováním M3.
 | M3.1 rodinný program | technicky hotovo | 100 % | read-only 30denní přehled tréninků, přihlášených akcí, rezervací a splatností nad stejným oprávněním jako rodinný ICS feed |
 | M3.2 týdenní souhrn | probíhá | 35 % | přihlášený read-only náhled, prázdný stav a omezené listování po týdnech jsou hotové; zbývá opt-in, odhlášení, idempotentní fronta a localhost outbox |
 | M3.3 roční přehled plateb | probíhá | 70 % | přihlášený read-only přehled skutečně uhrazených členských předpisů a e-shopových položek je hotový; zbývá vlastníkovo ověření obsahu a rozhodnutí, zda vůbec vznikne schválený export |
-| M3.4 provozní přehled správce | plánováno | 0 % | akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
+| M3.4 provozní přehled správce | technicky hotovo | 100 % | read-only akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
 | M3.5 datová kvalita sportovního progresu | návrh | 0 % | nejdřív normalizace měření, soukromí nezletilých a vysvětlení kvality; žádné zdravotní predikce |
 
-Orientační technický stav M3: **25 %**. Procento nezahrnuje produkční aktivaci.
+Orientační technický stav M3: **35 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
 
 ## M3.1 – rodinný program
 
@@ -74,6 +74,19 @@ Stránka výslovně uvádí, že jde o informační přehled, nikoli účetní n
 doklad. Nevytváří PDF, potvrzení ani export. Browser na localhostu ověřil rok
 2026 se skutečně zaplacenou e-shopovou položkou 1 530 CZK a vynechaným čekajícím
 členským předpisem, prázdný rok 2025 i odmítnutí budoucího roku 2027.
+
+## M3.4 – provozní přehled správce
+
+Commit `12c2300` přidává pouze administrátorskou read-only obrazovku
+`provozni_prehled_admin.php`. Skládá akční signály z existujících kanonických stavů:
+platby po splatnosti, vratky, expirace objednávek, návrhy Fio, naplněné kapacity,
+čekací listiny, čekající propojení osoby, selhané notifikace a konflikty posledního
+KIS importu. Chybějící zdroj je označen jako nedostupný a není vydáván za nulu.
+
+Přehled sám nic nemění. Každá položka vede do existující obrazovky, která si dál
+vynucuje vlastní oprávnění, potvrzení, CSRF a audit. Browser ověřil přihlášení
+syntetického administrátora, dostupnost stránky, čtyři sekce, nulový stav aktuálních
+lokálních dat a žádnou chybu konzole.
 
 ## Brány a výslovně odložené oblasti
 

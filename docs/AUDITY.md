@@ -1,6 +1,6 @@
 # Přehled kontrolních auditů
 
-Aktualizováno: 4. 8. 2026, Europe/Prague
+Aktualizováno: 5. 8. 2026, Europe/Prague
 
 Auditní zprávy jsou neměnné historické snímky stavu na uvedeném commitu. Pokud
 byl nález později opraven, je u zprávy validační dodatek a níže odkaz na opravu.
@@ -13,6 +13,7 @@ Aktuální provozní stav vždy určuje `CURRENT_STATE.md`.
 | [Adversariální průchod aplikace](AUDIT-M2-ADVERSARIAL.md) | `cd38f85` | přibližně 45 živých útokových vektorů, bez CRITICAL/HIGH/MEDIUM webové chyby | webové výsledky evidovány; tehdy otevřený N-H1 je opraven v `281fcd0` |
 | [Audit příležitostí a nápadů](AUDIT-PRILEZITOSTI-A-NAPADY.md) | stav 4. 8. 2026 | produktové náměty nad existujícími daty | inspirativní backlog, nikoli schválená roadmapa; právní, účetní a kapacitní předpoklady je nutné potvrdit před implementací |
 | [Hloubkový audit příležitostí](AUDIT-PRILEZITOSTI-HLOUBKOVE.md) | stav 4. 8. 2026 | datová připravenost a tři podrobnější produktové směry | návrhový podklad; fakta a odhady je nutné znovu ověřit proti aktuálnímu schématu a prioritám |
+| [Audit společné bezpečnostní infrastruktury](security-infrastructure-2026-08-05.md) | před `6655a39` | 2 HIGH a 3 malé MEDIUM řezy potvrzené v aktuálním kódu | HIGH, XSS a CSRF uzavřeny v `6655a39`; DDL a společná e-mailová fronta zůstávají otevřené |
 
 Produktové návrhy z posledních dvou řádků jsou vytříděné do kanonického backlogu
 `plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md`. První přijatý řez

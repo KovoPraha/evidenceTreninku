@@ -227,7 +227,11 @@ konfigurace drží `VELOCOTA_INTEGRATION === false`.
 
 Soubor: `includes/auto_migrace.php`
 
-Systém automatické migrace DB schématu — spouští se při každém requestu jako součást `db.php`. Nevyžaduje žádný manuální SQL zásah na produkci; stačí nahrát soubory.
+`includes/auto_migrace.php` dnes udržuje pouze uzavřený legacy baseline `2.20.2`.
+Nové změny schématu se do něj nepřidávají a produkční deploy se nesmí spoléhat na
+první webový request. Kanonické migrace jsou číslované soubory v `migrations/` a
+spouštějí se explicitně přes `php bin/migrate.php --apply`; před i po aplikaci se
+ověřují příkazem `php bin/migrate.php --check --json`.
 
 **Princip:**
 
@@ -237,7 +241,8 @@ Systém automatické migrace DB schématu — spouští se při každém request
 4. Pokud verze nesedí → spustí potřebné `ALTER TABLE` / `CREATE TABLE` (guard přes `information_schema`)
 5. Uloží novou verzi do `nastaveni`
 
-**Aktuální verze:** `SCHEMA_VERSION = '2.20.0'`
+**Legacy baseline:** `SCHEMA_VERSION = '2.20.2'`. Jeho odstranění z webových
+requestů je otevřený bezpečnostní úkol; nejde o místo pro další vývoj.
 
 **Souběžná ochrana (race condition):** Mezi přečtením verze a provedením migrací se získá MySQL advisory lock (`GET_LOCK('evidence_auto_migrace', 0)`). Pokud se lock nepodaří získat (jiný request migruje), funkce okamžitě vrátí. Po dokončení se lock uvolní (`RELEASE_LOCK`). Pokud DB engine `GET_LOCK` nepodporuje, pokračuje bez locku (tolerovaná degradace).
 
@@ -259,9 +264,10 @@ if ($defKat && strpos($defKat['Type'] ?? '', 'mtb') === false) {
 ```
 
 **Postup přidání nové migrace:**
-1. Přidej SQL krok do `includes/auto_migrace.php` (sekce Migrace)
-2. Zvyš `SCHEMA_VERSION` (sem-ver: major.minor.patch)
-3. Nahraj soubory na produkci — migrace proběhne automaticky při prvním requestu
+1. Přidej nový časově řazený soubor do `migrations/` podle existující šablony.
+2. Ověř katalog a checksumy přes `php bin/migrate.php --check --json`.
+3. Po ověřené záloze spusť `php bin/migrate.php --apply` ještě před aktivací
+   nové verze aplikace a zopakuj kontrolu.
 
 ### Schéma
 

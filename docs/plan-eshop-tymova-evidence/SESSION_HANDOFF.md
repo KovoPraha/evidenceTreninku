@@ -7,8 +7,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD: `63c8ec1`.
-- Implementace `63c8ec1` je commitnutá; větev `main`, upstream `origin/main`.
+- Poslední přijatý implementační HEAD: `12c2300`.
+- Implementace `6655a39` a `12c2300` jsou commitnuté; větev `main`, upstream
+  `origin/main`. Vzdálený repozitář ani produkce se v tomto řezu nezměnily.
 - Localhost DB je 48/48. Vzdálený repozitář se v této M2.7 session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -29,7 +30,16 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce: `63c8ec1` přidává první část M3.3. Přihlášený
+- Poslední dokončená funkční akce: `12c2300` dokončuje technický řez M3.4.
+  Administrátor má read-only provozní přehled peněz, kapacit, přihlášek a výjimek,
+  který pouze odkazuje do existujících auditovaných obrazovek. Browser ověřil
+  přihlášení lokálním syntetickým administrátorem, čtyři sekce, stav 0 signálů a
+  nulovou konzolovou chybu. Bezpečnostní commit `6655a39` předtím uzavřel dva nové
+  HIGH nálezy: přílohy jsou mimo webroot a bezpečnostní odkazy ignorují Host
+  hlavičku. Plná sada je 452/3951, syntaxe 450 souborů, migrace 48/48 a audit 0.
+  Produkce se nezměnila.
+
+  Předchozí dokončená funkční akce: `63c8ec1` přidává první část M3.3. Přihlášený
   účet vidí za validovaný rok skutečně uhrazené členské předpisy a e-shopové
   položky všech právě schválených profilů. Zdroje a měny se nesčítají dohromady,
   čekající, zrušené, vratkové a cizí řádky se vynechávají a stránka výslovně

@@ -252,19 +252,18 @@ sudo systemctl status apache2
 # nebo přes doménu pokud máte VirtualHost
 ```
 
-### 7c) Auto-migrace
+### 7c) Databázové migrace
 
-Při prvním přístupu proběhne automatická DB migrace:
-- Vytvoří se chybějící tabulky
-- Přidají se chybějící sloupce
-- Uloží se `schema_version = 2.19.2` do tabulky `nastaveni`
+Před prvním přístupem spusťte explicitní migrační kontrolu a aplikaci. Webový
+request není instalační ani nasazovací mechanismus.
 
-**Ověření migrace:**
-```sql
--- V MySQL konzoli:
-SELECT hodnota FROM nastaveni WHERE klic = 'schema_version';
--- Mělo by vrátit: 2.19.2
+```bash
+php bin/migrate.php --check --json
+php bin/migrate.php --apply
+php bin/migrate.php --check --json
 ```
+
+Výsledek musí mít `current: true`, legacy baseline `2.20.2` a prázdné `pending`.
 
 ---
 
@@ -441,10 +440,13 @@ echo \$pdo ? 'DB OK' : 'DB CHYBA';
 # Zkontrolujte tabulku nastaveni:
 mysql -u root -p evidence -e "SELECT * FROM nastaveni WHERE klic='schema_version';"
 
-# Resetování verze (spustí migraci znovu):
-mysql -u root -p evidence -e "UPDATE nastaveni SET hodnota='0' WHERE klic='schema_version';"
-# Poté navštivte libovolnou stránku aplikace
+# Bezpečná diagnostika katalogu a čekajících kroků:
+php bin/migrate.php --check --json
 ```
+
+Nikdy nenastavujte `schema_version` ručně na `0` a nespouštějte migrace návštěvou
+webu. Pokud kontrola selže, obnovte ověřenou zálohu nebo chybu vyřešte v novém
+číslovaném migračním kroku.
 
 ### Composer: „Class not found"
 

@@ -151,3 +151,18 @@ APP_HOST=data.kovopraha.cz php "$HOME/.evidence-deploy/db-backup.php" \
 
 `bin/.htaccess` zůstává `Require all denied` a `bin/zaloha.php` vrací přes web
 404 i v případě, že hosting `.htaccess` nepoužije.
+## Soukromé přílohy a kanonická adresa
+
+Před dalším produkčním deployem musí konfigurace obsahovat důvěryhodnou
+`APP_BASE_URL=https://data.kovopraha.cz/evidence` a absolutní
+`APP_PRIVATE_STORAGE_ROOT` mimo webroot. Po záloze spusťte nejprve:
+
+```bash
+php bin/migrate-private-files.php
+php bin/migrate-private-files.php --apply
+php bin/migrate-private-files.php
+```
+
+Poslední dry-run smí hlásit pouze `already_private`; `missing` a `errors` musí být
+nula. Produkční adresář musí být zapisovatelný pouze aplikačním uživatelem. Nový
+kód se nesmí přepnout před zálohou a úspěšným převodem.
