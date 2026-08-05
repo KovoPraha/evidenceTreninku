@@ -140,6 +140,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.7f obnovitelná localhost ukázka | hotovo technicky | `5843f70`: admin+CSRF+potvrzení připraví auditovaný syntetický předpis, opt-in a právě jednu čekající zprávu, poté otevře náhled; browser 0→1, žádný transport; 425/3799, 431 parse, 48/48, backup 95, audit 0 |
 | M2.7g browserové testovací doručení | hotovo technicky | `6d290cc`: localhost admin+CSRF+potvrzení zpracuje jednu čekající zprávu výhradně do chráněného souborového outboxu; claim i sent auditují konkrétního trenéra, browser ověřil Čeká 1→Odesláno 1 a obnovu na Čeká 1; 427/3819, 431 parse, 48/48, backup 95, audit 0 |
 | M3.1 rodinný program | hotovo technicky | `1510c20`: přihlášený rodič vidí 30denní read-only agendu tréninků, akcí, rezervací a splatností nad kanonickým `familyCalendarItems`; browser 2 správné položky, cizí osoba nezobrazena, konzole 0; 431/3847, 433 parse, 48/48, backup 95, audit 0 |
+| M3.2a týdenní náhled | hotovo technicky | `82d41ac`: prostý text ze stejné rodinné agendy, pravdivý prázdný stav a striktně omezené listování; browser 12.–18. 8. zobrazil 1 akci + 1 splatnost, bez cizí osoby a transportu; 434/3872, 434 parse, 48/48, backup 95, audit 0 |
 
 ## Aktivní rozhodnutí
 

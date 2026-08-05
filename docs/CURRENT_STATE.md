@@ -15,7 +15,10 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `1510c20` – první řez M3 přidává
+- poslední implementace před tímto dokumentem: `82d41ac` – M3.2 přidává
+  přihlášený týdenní náhled rodinného programu s bezpečným listováním po týdnech,
+  prostým textem a výslovně vypnutým odesíláním,
+- předchozí implementace: `1510c20` – první řez M3 přidává
   do rodinného sportovního přehledu společný read-only program nejbližších
   30 dní nad stejnými oprávněními jako soukromý ICS kalendář,
 - předchozí implementace: `9a04c3c` – localhostová
@@ -50,8 +53,8 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 48/48,
-- automatické testy 431/3847,
-- first-party PHP syntaxe 433 souborů bez chyby,
+- automatické testy 434/3872,
+- first-party PHP syntaxe 434 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
   ownership kontrakt `2026-08-05.2` zahrnuje kalendář i frontu připomínek,
@@ -112,7 +115,9 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.
-- M3: 10 % technického localhost řešení; M3.1 rodinný program je hotový,
+- M3: 16 % technického localhost řešení; M3.1 rodinný program je hotový a M3.2
+  má bezpečný přihlášený náhled včetně prázdného stavu a listování po týdnech;
+  opt-in, odhlášení, fronta a localhost outbox ještě nejsou implementované,
   produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,

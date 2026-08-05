@@ -22,12 +22,12 @@ před dalším rozšiřováním M3.
 |---|---|---:|---|
 | M3.0 převzetí M2 | čeká na vlastníka | 0 % | PASS A01–A10, nulové blokátory a vypořádané důležité připomínky |
 | M3.1 rodinný program | technicky hotovo | 100 % | read-only 30denní přehled tréninků, přihlášených akcí, rezervací a splatností nad stejným oprávněním jako rodinný ICS feed |
-| M3.2 týdenní souhrn | plánováno | 0 % | nejprve náhled a localhost outbox; opt-in, odhlášení a omezení četnosti před jakýmkoli produkčním doručováním |
+| M3.2 týdenní souhrn | probíhá | 35 % | přihlášený read-only náhled, prázdný stav a omezené listování po týdnech jsou hotové; zbývá opt-in, odhlášení, idempotentní fronta a localhost outbox |
 | M3.3 roční přehled plateb | plánováno | 0 % | read-only přehled skutečně uhrazených klubových služeb; nesmí se označovat za daňové potvrzení bez právního a účetního schválení |
 | M3.4 provozní přehled správce | plánováno | 0 % | akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
 | M3.5 datová kvalita sportovního progresu | návrh | 0 % | nejdřív normalizace měření, soukromí nezletilých a vysvětlení kvality; žádné zdravotní predikce |
 
-Orientační technický stav M3: **10 %**. Procento nezahrnuje produkční aktivaci.
+Orientační technický stav M3: **16 %**. Procento nezahrnuje produkční aktivaci.
 
 ## M3.1 – rodinný program
 
@@ -46,6 +46,17 @@ Akceptační kritéria:
 - prázdný stav je normální a nevydává se za chybu,
 - funkce nic nezapisuje, nevytváří token a neodesílá oznámení.
 
+## M3.2 – týdenní souhrn
+
+Dokončený první řez (`82d41ac`) skládá prostý text pouze z kanonické sedmidenní
+rodinné agendy. Přihlášený účet může bezpečně listovat po týdnech; datum je
+striktní a omezené na 90 dní zpět až 370 dní dopředu. Náhled nepřijímá ID osoby,
+neobsahuje HTML, nevytváří frontu a žádný transport se z webu nevolá.
+
+Browser ověřil prázdný aktuální týden a týden 12.–18. 8. 2026 s jednou akcí a
+jednou splatností. Cizí osoba se nezobrazila a stránka výslovně říká, že nic
+neodesílá a odběr zatím nelze zapnout.
+
 ## Brány a výslovně odložené oblasti
 
 - Stripe, automatické Fio párování, Packeta a skutečné e-mailové transporty
@@ -61,6 +72,7 @@ Akceptační kritéria:
 
 ## Další konkrétní krok
 
-Po dokončení a otestování M3.1 připravit M3.2 pouze jako přihlášený náhled
-týdenního souhrnu. E-mailový opt-in a localhost outbox lze přidat až po kontrole
-textu; produkční transport zůstane vypnutý.
+Další řez M3.2 může přidat dobrovolný opt-in a idempotentní frontu, ale nejprve
+jen s ručním localhostovým náhledem/outboxem. Produkční transport zůstane vypnutý
+a jeho aktivace vyžaduje schválený text, odhlášení jedním krokem a omezení
+četnosti.
