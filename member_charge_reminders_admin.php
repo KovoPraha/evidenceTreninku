@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/member_charge_reminder.php';
+require_once __DIR__ . '/includes/member_charge_reminder_demo.php';
 
 header('Cache-Control: no-store, private');
 
@@ -18,22 +19,29 @@ function memberChargeReminderAdminH(mixed $value): string
 }
 
 $errors = [];
+$demoAllowed = defined('JE_LOKALNE') && JE_LOKALNE === true;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $errors[] = 'Formulář vypršel. Obnovte stránku.';
     } else {
         try {
-            $result = memberChargeReminderAdminRetry(
-                $pdo,
-                (int)($_POST['reminder_id'] ?? 0),
-                (int)$_SESSION['trener_id'],
-                (string)($_POST['reason'] ?? ''),
-                ($_POST['confirm_retry'] ?? '') === '1'
-            );
-            $_SESSION['flash_charge_reminder_success'] = $result['changed']
-                ? 'Připomínka byla auditovaně vrácena do fronty.'
-                : 'Připomínka už čeká na nejbližší spuštění workeru.';
-            header('Location: member_charge_reminders_admin.php', true, 303);
+            if (($_POST['action'] ?? '') === 'seed_demo') {
+                $result = memberChargeReminderSeedLocalDemo($pdo, (int)$_SESSION['trener_id'], ($_POST['confirm_demo'] ?? '') === '1', $demoAllowed);
+                $_SESSION['flash_charge_reminder_success'] = 'Testovací připomínka byla připravena. Nic nebylo odesláno.';
+                header('Location: member_charge_reminders_admin.php?preview_id=' . (int)$result['reminder_id'], true, 303);
+            } else {
+                $result = memberChargeReminderAdminRetry(
+                    $pdo,
+                    (int)($_POST['reminder_id'] ?? 0),
+                    (int)$_SESSION['trener_id'],
+                    (string)($_POST['reason'] ?? ''),
+                    ($_POST['confirm_retry'] ?? '') === '1'
+                );
+                $_SESSION['flash_charge_reminder_success'] = $result['changed']
+                    ? 'Připomínka byla auditovaně vrácena do fronty.'
+                    : 'Připomínka už čeká na nejbližší spuštění workeru.';
+                header('Location: member_charge_reminders_admin.php', true, 303);
+            }
             exit;
         } catch (PDOException $exception) {
             error_log('member_charge_reminders_admin.php: ' . $exception->getMessage());
@@ -71,6 +79,7 @@ require_once __DIR__ . '/hlavicka.php';
     </div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= memberChargeReminderAdminH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= memberChargeReminderAdminH($success) ?></div><?php endif; ?>
+    <?php if ($demoAllowed): ?><div class="card border-warning mb-3"><div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3"><div><strong>Localhost testovací ukázka</strong><div class="small text-muted">Připraví syntetický předpis a zprávu pro účet rodic@localhost.test a zapne mu připomínky. Akce je opakovatelná a nic neodesílá.</div></div><form method="post" class="d-flex flex-wrap align-items-center gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="seed_demo"><label class="small"><input type="checkbox" name="confirm_demo" value="1" required> Potvrzuji přípravu syntetických dat</label><button class="btn btn-warning btn-sm">Připravit ukázku</button></form></div></div><?php endif; ?>
     <div class="row g-3 mb-3">
         <?php foreach (['pending' => 'Čeká', 'processing' => 'Zpracovává se', 'failed' => 'Vyžaduje zásah', 'sent' => 'Odesláno', 'cancelled' => 'Zrušeno'] as $key => $label): ?>
             <div class="col-6 col-lg"><a class="text-decoration-none text-reset" href="?status=<?= $key ?>"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-muted"><?= memberChargeReminderAdminH($label) ?></div><div class="h3 mb-0"><?= (int)$summary[$key] ?></div></div></div></a></div>

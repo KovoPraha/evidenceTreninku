@@ -131,22 +131,14 @@ function memberChargeReminderGenerate(PDO $pdo, ?DateTimeImmutable $today = null
         }
         $accountId = (int)$row['account_id'];
         $chargeId = (int)$row['charge_id'];
-        $recipientName = trim((string)$row['account_first_name'] . ' ' . (string)$row['account_last_name']);
-        $childName = trim((string)$row['child_first_name'] . ' ' . (string)$row['child_last_name']);
-        $amount = number_format(((int)$row['amount_minor']) / 100, 2, ',', ' ') . ' ' . (string)$row['currency'];
-        $link = memberChargeReminderAccountUrl();
-        $subject = 'Připomínka platby: ' . (string)$row['title_snapshot'];
-        $body = 'Dobrý den' . ($recipientName !== '' ? ' ' . $recipientName : '') . ",\n\n"
-            . 'připomínáme blížící se splatnost „' . (string)$row['title_snapshot'] . '“ pro ' . $childName . ".\n"
-            . 'Splatnost: ' . $dueOn->format('d. m. Y') . "\nČástka: " . $amount . "\n\n"
-            . 'Přehled plateb po přihlášení: ' . $link . "\n\nKlub KOVO Praha";
+        $message = memberChargeReminderComposeMessage($row);
         $pdo->beginTransaction();
         try {
             $insert = $pdo->prepare(
                 'INSERT INTO member_charge_reminders(charge_id,account_id,reminder_type,recipient_email,recipient_name,subject_plain,body_plain) '
                 . "VALUES(?,?,'due_soon',?,?,?,?)"
             );
-            $insert->execute([$chargeId, $accountId, (string)$row['email'], $recipientName, $subject, $body]);
+            $insert->execute([$chargeId, $accountId, (string)$row['email'], $message['recipient_name'], $message['subject'], $message['body']]);
             $id = (int)$pdo->lastInsertId();
             memberChargeReminderAudit($pdo, $id, $accountId, 'enqueue', null, 'pending', 'Připomínka byla idempotentně zařazena.');
             $pdo->commit();
@@ -161,6 +153,25 @@ function memberChargeReminderGenerate(PDO $pdo, ?DateTimeImmutable $today = null
         }
     }
     return compact('queued', 'existing', 'skipped');
+}
+
+/** @param array<string,mixed> $row @return array{recipient_name:string,subject:string,body:string} */
+function memberChargeReminderComposeMessage(array $row): array
+{
+    $dueOn = DateTimeImmutable::createFromFormat('!Y-m-d', (string)($row['due_on'] ?? ''), new DateTimeZone('Europe/Prague'));
+    if (!$dueOn) throw new InvalidArgumentException('Připomínka nemá platnou splatnost.');
+    $recipientName = trim((string)($row['account_first_name'] ?? '') . ' ' . (string)($row['account_last_name'] ?? ''));
+    $childName = trim((string)($row['child_first_name'] ?? '') . ' ' . (string)($row['child_last_name'] ?? ''));
+    $title = (string)($row['title_snapshot'] ?? '');
+    $amount = number_format(((int)($row['amount_minor'] ?? 0)) / 100, 2, ',', ' ') . ' ' . (string)($row['currency'] ?? '');
+    return [
+        'recipient_name' => $recipientName,
+        'subject' => 'Připomínka platby: ' . $title,
+        'body' => 'Dobrý den' . ($recipientName !== '' ? ' ' . $recipientName : '') . ",\n\n"
+            . 'připomínáme blížící se splatnost „' . $title . '“ pro ' . $childName . ".\n"
+            . 'Splatnost: ' . $dueOn->format('d. m. Y') . "\nČástka: " . $amount . "\n\n"
+            . 'Přehled plateb po přihlášení: ' . memberChargeReminderAccountUrl() . "\n\nKlub KOVO Praha",
+    ];
 }
 
 /** @return array<string,mixed>|null */

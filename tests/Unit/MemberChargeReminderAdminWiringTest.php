@@ -14,6 +14,7 @@ final class MemberChargeReminderAdminWiringTest extends TestCase
         $service = (string)file_get_contents($root . '/includes/member_charge_reminder.php');
         $header = (string)file_get_contents($root . '/hlavicka.php');
         $cli = (string)file_get_contents($root . '/bin/member-charge-reminders.php');
+        $demo = (string)file_get_contents($root . '/includes/member_charge_reminder_demo.php');
         self::assertStringContainsString("roleAtLeast('admin')", $page);
         self::assertStringContainsString('csrf_verify', $page);
         self::assertStringContainsString("(\$_POST['confirm_retry'] ?? '') === '1'", $page);
@@ -30,5 +31,10 @@ final class MemberChargeReminderAdminWiringTest extends TestCase
         self::assertStringContainsString('--transport=local-outbox', $cli);
         self::assertStringContainsString('memberChargeReminderLocalOutboxSender($appHost)', $cli);
         self::assertStringContainsString("Require all denied", (string)file_get_contents($root . '/var/.htaccess'));
+        self::assertStringContainsString("(\$_POST['action'] ?? '') === 'seed_demo'", $page);
+        self::assertStringContainsString("defined('JE_LOKALNE')", $page);
+        self::assertStringContainsString('memberChargeReminderSeedLocalDemo', $page);
+        self::assertStringContainsString("rodic@localhost.test", $demo);
+        self::assertStringContainsString("'localhost_demo_reset'", $demo);
     }
 }
