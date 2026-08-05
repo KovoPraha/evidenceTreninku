@@ -700,7 +700,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
                 <span class="role-badge role-admin">admin</span></a>
               <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
               <a href="testovaci_scenare.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-check2-square text-warning"></i>Testovací scénáře M1
+                <i class="bi bi-check2-square text-warning"></i>Finalizace M2
                 <span class="role-badge role-admin">localhost</span></a>
               <?php endif; ?>
               <a href="sprava_sportovist.php" class="list-group-item list-group-item-action">

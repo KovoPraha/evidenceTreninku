@@ -17,6 +17,7 @@ if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
 }
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/localhost_acceptance_feedback.php';
+require_once __DIR__ . '/includes/m2_finalization.php';
 
 $scenarios = localhostAcceptanceScenarios(__DIR__);
 $scenarioIds = array_column($scenarios, 'id');
@@ -96,6 +97,7 @@ foreach ($scenarios as $scenario) {
     $feedbackResult = (string)($feedbackData['scenarios'][$scenario['id']]['result'] ?? 'not_tested');
     $feedbackCounts[isset($feedbackCounts[$feedbackResult]) ? $feedbackResult : 'not_tested']++;
 }
+$finalization = m2FinalizationStatus($pdo, __DIR__, $scenarios, $feedbackData['scenarios']);
 $statusLabels = [
     'ready' => ['Připraveno', 'success'],
     'partial' => ['Částečně připraveno', 'warning'],
@@ -107,14 +109,14 @@ $statusLabels = [
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Testovací scénáře M1</title>
+    <title>Finalizace a testovací scénáře M2</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 <main class="container py-4" style="max-width:1180px">
     <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start mb-4">
         <div>
-            <h1 class="h3 mb-1">Testovací scénáře M1</h1>
+            <h1 class="h3 mb-1">Finalizace a testovací scénáře M2</h1>
             <p class="text-muted mb-0">Lokální akceptační průchod Evidence + e-shop + KIS. Tato stránka je mimo loopback nedostupná.</p>
         </div>
         <a href="admin_dashboard.php" class="btn btn-outline-secondary">Administrace</a>
@@ -135,6 +137,21 @@ $statusLabels = [
         </div>
         <a class="btn btn-outline-primary btn-sm" href="?export=markdown">Stáhnout výsledky pro GitHub / Cowork</a>
     </div></div>
+    <section class="card border-0 shadow-sm mb-3" aria-labelledby="m2-finalization-title"><div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start mb-3">
+            <div><h2 class="h5 mb-1" id="m2-finalization-title">Závěrečná brána M2</h2><p class="text-muted mb-0">Technické kontroly se počítají automaticky. Uživatelskou akceptaci uzavřete uložením PASS u scénářů A01–A10.</p></div>
+            <span class="badge fs-6 text-bg-<?= $finalization['close_ready'] ? 'success' : 'warning' ?>"><?= $finalization['close_ready'] ? 'M2 lze uzavřít' : 'M2 čeká na dokončení' ?></span>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Technická připravenost</div><div class="h3 mb-0"><?= (int)$finalization['technical_passed'] ?>/<?= (int)$finalization['technical_total'] ?></div></div></div>
+            <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Vlastníkem potvrzeno</div><div class="h3 mb-0"><?= (int)$finalization['accepted'] ?>/<?= (int)$finalization['scenario_total'] ?></div></div></div>
+            <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Blokující výsledky</div><div class="h3 mb-0"><?= (int)$finalization['blocking'] ?></div></div></div>
+        </div>
+        <ul class="list-group list-group-flush">
+            <?php foreach ($finalization['checks'] as $check): ?><li class="list-group-item px-0 d-flex gap-3 align-items-start"><span class="badge text-bg-<?= $check['status'] === 'pass' ? 'success' : ($check['status'] === 'wait' ? 'warning' : 'danger') ?>"><?= $check['status'] === 'pass' ? 'OK' : ($check['status'] === 'wait' ? 'ČEKÁ' : 'CHYBA') ?></span><div><strong><?= acceptanceHubH($check['label']) ?></strong><div class="small text-muted"><?= acceptanceHubH($check['detail']) ?></div></div></li><?php endforeach; ?>
+        </ul>
+        <p class="small text-muted mt-3 mb-0">Tato brána nic nenasazuje na produkci a nespouští ostrý import, platby ani skutečné e-maily.</p>
+    </div></section>
     <?php if ($feedbackError !== ''): ?><div class="alert alert-danger"><?= acceptanceHubH($feedbackError) ?></div><?php endif; ?>
     <?php if (is_array($flash) && isset($flash['type'], $flash['message'])): ?>
         <div class="alert alert-<?= acceptanceHubH($flash['type']) ?>"><?= acceptanceHubH($flash['message']) ?></div>

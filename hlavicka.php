@@ -374,7 +374,7 @@ if ($is_logged_in) {
                                 <i class="bi bi-hourglass-split me-2 text-warning"></i>Expirace nezaplacených objednávek</a></li>
                             <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
                             <li><a class="dropdown-item<?= _dropActive('testovaci_scenare.php') ?>" href="testovaci_scenare.php">
-                                <i class="bi bi-check2-square me-2 text-warning"></i>Testovací scénáře M1</a></li>
+                                <i class="bi bi-check2-square me-2 text-warning"></i>Finalizace M2</a></li>
                             <?php endif; ?>
                             <li><a class="dropdown-item<?= _dropActive('sprava_sportovist.php') ?>" href="sprava_sportovist.php">
                                 <i class="bi bi-building-gear me-2"></i>Správa sportovišť</a></li>

@@ -25,6 +25,8 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringContainsString('localhostAcceptanceRunSeedReset', $page);
         self::assertStringContainsString('localhostAcceptanceScenarios', $page);
         self::assertStringContainsString('localhostAcceptanceFeedbackSave', $page);
+        self::assertStringContainsString('m2FinalizationStatus', $page);
+        self::assertStringContainsString('Závěrečná brána M2', $page);
         self::assertStringContainsString("?export=markdown", $page);
         self::assertStringContainsString('maxlength="4000"', $page);
         self::assertStringContainsString('Nezadávejte hesla ani ostré osobní údaje.', $page);
