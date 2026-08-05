@@ -18,6 +18,7 @@ final class PublicVelodromeWiringTest extends TestCase
         $admin = (string)file_get_contents($root . '/verejny_velodrom_admin.php');
         $registration = (string)file_get_contents($root . '/booking/registrace.php');
         $people = (string)file_get_contents($root . '/booking/moje_osoby.php');
+        $shell = (string)file_get_contents($root . '/includes/ui_shell.php');
 
         self::assertStringContainsString('public_self_profiles', $migration);
         self::assertStringContainsString('sportovec_id', $migration);
@@ -39,8 +40,9 @@ final class PublicVelodromeWiringTest extends TestCase
         self::assertStringContainsString("name=\"narozeni\"", $registration);
         self::assertStringContainsString('publicProfileSave(', $registration);
         self::assertStringContainsString('$pdo->beginTransaction()', $registration);
-        self::assertStringContainsString('verejny_profil.php', $people);
-        self::assertStringContainsString('velodrom.php', $people);
+        self::assertStringContainsString('publicShellNav()', $people);
+        self::assertStringContainsString('verejny_profil.php', $shell);
+        self::assertStringContainsString('velodrom.php', $shell);
         self::assertStringNotContainsString('shop_checkout.php', $booking);
     }
 }

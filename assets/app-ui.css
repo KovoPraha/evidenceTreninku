@@ -1,0 +1,114 @@
+:root {
+    --app-page-bg: #f3f6fa;
+    --app-surface-radius: .85rem;
+    --app-focus-ring: 0 0 0 .22rem rgba(13, 110, 253, .18);
+}
+
+body {
+    background-color: var(--app-page-bg);
+    color: var(--bs-body-color, #212529);
+}
+
+.card,
+.modal-content,
+.dropdown-menu {
+    border-radius: var(--app-surface-radius);
+}
+
+.card:not(.border-0) {
+    border-color: rgba(33, 37, 41, .09);
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: .4rem;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+    border-radius: .55rem;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    box-shadow: var(--app-focus-ring);
+}
+
+.form-text,
+.invalid-feedback,
+.valid-feedback {
+    line-height: 1.35;
+}
+
+form[aria-busy="true"] {
+    cursor: progress;
+}
+
+form[aria-busy="true"] > :not(.app-form-status) {
+    pointer-events: none;
+}
+
+form[aria-busy="true"] button[type="submit"],
+form[aria-busy="true"] input[type="submit"] {
+    opacity: .78;
+}
+
+form[aria-busy="true"] button[type="submit"]::before {
+    content: "";
+    display: inline-block;
+    width: .9em;
+    height: .9em;
+    margin-right: .45rem;
+    vertical-align: -.08em;
+    border: .14em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: app-spin .65s linear infinite;
+}
+
+.app-loading-bar {
+    position: fixed;
+    inset: 0 100% auto 0;
+    z-index: 2000;
+    height: 3px;
+    background: #0d6efd;
+    opacity: 0;
+    transition: inset .25s ease, opacity .15s ease;
+}
+
+body.app-loading .app-loading-bar {
+    right: 8%;
+    opacity: 1;
+}
+
+.app-public-nav .nav-link.active {
+    color: var(--bs-primary);
+}
+
+.app-public-footer {
+    background: rgba(255, 255, 255, .75);
+}
+
+.app-public-footer a {
+    color: inherit;
+}
+
+[data-bs-theme="dark"] {
+    --app-page-bg: #111827;
+}
+
+[data-bs-theme="dark"] .app-public-footer {
+    background: rgba(33, 37, 41, .8);
+}
+
+@keyframes app-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}

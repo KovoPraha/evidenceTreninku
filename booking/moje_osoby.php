@@ -74,13 +74,10 @@ $statusLabels = [
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moje osoby — Kovopraha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-light bg-white border-bottom shadow-sm"><div class="container">
-    <a class="navbar-brand fw-bold" href="kalendar.php"><i class="bi bi-bicycle me-2 text-primary"></i>Rezervace Kovopraha</a>
-    <div class="d-flex gap-2 flex-wrap"><a href="verejny_profil.php" class="btn btn-outline-primary btn-sm">Můj profil</a><a href="velodrom.php" class="btn btn-outline-primary btn-sm">Velodrom</a><a href="sportovni_prehled.php" class="btn btn-outline-primary btn-sm">Sportovní přehled</a><a href="eshop.php" class="btn btn-outline-success btn-sm">E-shop</a><a href="moje_programy.php" class="btn btn-outline-primary btn-sm">Moje kroužky</a><a href="moje_objednavky.php" class="btn btn-outline-success btn-sm">Moje objednávky</a><a href="kalendar.php" class="btn btn-outline-primary btn-sm">Kalendář</a><a href="krouzky.php" class="btn btn-outline-secondary btn-sm">Události</a><a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a></div>
-</div></nav>
+<?php publicShellNav(); ?>
 <main class="container py-4" style="max-width:900px">
     <h1 class="h4 mb-1"><i class="bi bi-people me-2 text-primary"></i>Moje osoby</h1>
     <p class="text-muted">Děti a sportovci, které budete moci přihlašovat na kroužky, kurzy a akce.</p>

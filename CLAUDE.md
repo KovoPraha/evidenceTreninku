@@ -86,7 +86,9 @@ Jakoukoli novou integraci nejprve popiš jako produktové rozhodnutí; nepředpo
 | Soubor | Účel |
 |--------|------|
 | `db.php` | Připojení k DB — auto-detekce localhost vs produkce + `require includes/auto_migrace.php` |
-| `hlavicka.php` | Navigační panel + globální searchbar + globální CSS (mobile, req, ...) |
+| `includes/ui_shell.php` | Společné UI assety a veřejná navigace napříč Evidencí, KIS, e-shopem a rezervacemi |
+| `assets/app-ui.css`, `assets/app-ui.js` | Sdílené pozadí, formuláře, načítání, dvojí odeslání, toasty a obecné interakce |
+| `hlavicka.php` | Navigační panel administrace + globální hledání; používá společný UI základ |
 | `csrf_helper.php` | CSRF ochrana: `csrf_field()`, `csrf_verify()`, `csrf_token()` |
 | `includes/init.php` | Session start + require db.php (pro podadresáře) |
 | `includes/funkce.php` | Sdílené funkce (roleAtLeast, canAccess, roleBadge, audit log) |
@@ -214,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Titulek</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons a mobilní/validační CSS je automaticky v hlavicka.php -->
+    <!-- Sdílené UI assety načte hlavicka.php; samostatná stránka volá appUiAssets(). -->
 </head>
 <body class="bg-light">
 <?php include 'hlavicka.php'; ?>

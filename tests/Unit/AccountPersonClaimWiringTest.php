@@ -35,7 +35,9 @@ final class AccountPersonClaimWiringTest extends TestCase
     public function testPublicBookingNavigationLinksToOwnPeopleOnly(): void
     {
         $root = dirname(__DIR__, 2);
-        self::assertStringContainsString('moje_osoby.php', (string)file_get_contents($root . '/booking/kalendar.php'));
-        self::assertStringContainsString('moje_osoby.php', (string)file_get_contents($root . '/booking/moje_rezervace.php'));
+        $shell = (string)file_get_contents($root . '/includes/ui_shell.php');
+        self::assertStringContainsString('publicShellNav', (string)file_get_contents($root . '/booking/kalendar.php'));
+        self::assertStringContainsString('publicShellNav', (string)file_get_contents($root . '/booking/moje_rezervace.php'));
+        self::assertStringContainsString('moje_osoby.php', $shell);
     }
 }

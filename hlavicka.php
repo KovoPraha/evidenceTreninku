@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/session_security.php';
 if (session_status() === PHP_SESSION_NONE) app_session_start();
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/ui_shell.php';
 if (file_exists(__DIR__ . '/includes/funkce.php')) {
     require_once __DIR__ . '/includes/funkce.php';
 }
@@ -41,7 +42,7 @@ if ($is_logged_in) {
     document.documentElement.setAttribute('data-bs-theme', t);
 })();
 </script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<?php appUiAssets(); ?>
 <style>
     .navbar .nav-link.active { color: #fff !important; border-bottom: 2px solid #0d6efd; }
     .dropdown-item.active { background-color: #e8f0fe !important; color: #0d6efd !important; }
@@ -543,37 +544,7 @@ if (!empty($_SESSION['flash_info'])) {
 ?>
 <script>
 // ── Toast notifikace — globální funkce ──────────────────────────────────────
-window.showToast = function(message, type) {
-    type = type || 'success';
-    var icons = {
-        success: 'bi-check-circle-fill text-success',
-        danger:  'bi-exclamation-triangle-fill text-danger',
-        warning: 'bi-exclamation-circle-fill text-warning',
-        info:    'bi-info-circle-fill text-info'
-    };
-    var icon = icons[type] || icons.info;
-
-    var container = document.getElementById('toastContainer');
-    if (!container) return;
-
-    var id = 'toast_' + Date.now();
-    var html = '<div id="' + id + '" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">' +
-        '<div class="toast-body">' +
-            '<i class="bi ' + icon + ' fs-5"></i>' +
-            '<span>' + message + '</span>' +
-            '<button type="button" class="btn-close btn-close-sm ms-auto" data-bs-dismiss="toast" aria-label="Zavřít"></button>' +
-        '</div>' +
-    '</div>';
-
-    container.insertAdjacentHTML('beforeend', html);
-
-    var toastEl = document.getElementById(id);
-    if (toastEl && typeof bootstrap !== 'undefined') {
-        var bsToast = new bootstrap.Toast(toastEl, { delay: 4000, autohide: true });
-        bsToast.show();
-        toastEl.addEventListener('hidden.bs.toast', function() { toastEl.remove(); });
-    }
-};
+// Bezpečné společné toast notifikace poskytuje assets/app-ui.js.
 
 // ── Tmavý režim ─────────────────────────────────────────────────────────────
 window.toggleTheme = function() {

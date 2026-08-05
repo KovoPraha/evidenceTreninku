@@ -1,5 +1,18 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — sjednocení uživatelského rozhraní
+
+- Evidence, KIS, e-shop a rezervace používají společný základ
+  `includes/ui_shell.php` + `assets/app-ui.css` + `assets/app-ui.js`.
+- Všech 127 aktivních PHP HTML stránek používá buď `hlavicka.php`, nebo
+  `appUiAssets()`; regresi hlídá `tests/Unit/SharedUiShellTest.php`.
+- Hlavní veřejné vstupy používají jednu navigaci a přizpůsobují volby rodiči,
+  sportovci i trenérovi. POST formuláře mají společný stav načítání a ochranu
+  proti dvojímu odeslání.
+- `prehled_skupiny.php` byl bez změny funkčnosti převeden z historického CP1250
+  do UTF-8, aby mohl sdílený základ bezpečně používat.
+- Produkce nebyla změněna. Podrobný kontrakt je v `docs/shared-ui-foundation.md`.
+
 Tento soubor je stručný obnovitelný stav řídicího tasku. Architekturu ani
 roadmapu neduplikuje; odkazuje na jejich kanonické dokumenty. Všechny provozní
 hodnoty jsou historické, dokud je nový řídicí task živě neověří.

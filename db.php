@@ -5,6 +5,7 @@ require_once __DIR__ . '/includes/session_security.php';
 if (file_exists(__DIR__ . '/config.php')) {
     require_once __DIR__ . '/config.php';
 }
+require_once __DIR__ . '/includes/ui_shell.php';
 
 // DB připojení — konstanty z config.php mají přednost před výchozími hodnotami.
 // Localhost výchozí hodnoty fungují bez config.php (standalone vývoj).

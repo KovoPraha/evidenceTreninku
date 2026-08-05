@@ -39,7 +39,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
     <title>Ověření emailu — Rezervace Kovopraha</title>
     <meta name="referrer" content="no-referrer">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <?php appUiAssets(); ?>
     <?php if ($ok): ?>
         <meta http-equiv="refresh" content="3;url=kalendar.php">
     <?php endif; ?>

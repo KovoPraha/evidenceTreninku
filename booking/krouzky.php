@@ -104,13 +104,10 @@ if(clubEventShopAvailable($pdo)){
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Kroužky — Kovopraha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-light bg-white border-bottom shadow-sm"><div class="container">
-    <a class="navbar-brand fw-bold" href="kalendar.php"><i class="bi bi-bicycle me-2 text-primary"></i>Rezervace Kovopraha</a>
-    <div class="d-flex gap-2"><a href="eshop.php" class="btn btn-outline-success btn-sm">E-shop</a><a href="kalendar.php" class="btn btn-outline-primary btn-sm">Kalendář</a><?php if($isLoggedIn):?><a href="moje_objednavky.php" class="btn btn-outline-success btn-sm">Moje objednávky</a><a href="moje_osoby.php" class="btn btn-outline-secondary btn-sm">Moje osoby</a><a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a><?php else:?><a href="prihlaseni.php?redirect=krouzky.php" class="btn btn-primary btn-sm">Přihlásit se</a><?php endif;?></div>
-</div></nav>
+<?php publicShellNav('clubs'); ?>
 <main class="container py-4" style="max-width:1000px">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2"><div><h1 class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné kroužky</h1><p class="text-muted">Nabídku, termíny a volnou kapacitu vidíte bez registrace. Pro přihlášení účastníka budete potřebovat účet.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= clubRegistrationH($error) ?></div><?php endforeach; ?>
@@ -155,6 +152,7 @@ if(clubEventShopAvailable($pdo)){
     <?php if ($registrations === []): ?><tr><td colspan="4" class="text-center text-muted py-3">Zatím nemáte žádnou přihlášku.</td></tr><?php endif; ?>
     </tbody></table></div></section><?php endif;?>
 </main>
+<?php publicShellFooter(); ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

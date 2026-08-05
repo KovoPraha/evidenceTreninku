@@ -2,13 +2,13 @@
 // prehled_skupiny.php
 require_once __DIR__ . '/db.php';
 
-// 1) NaËÌst hash skupiny z GET
+// 1) Naƒç√≠st hash skupiny z GET
 $group_hash = isset($_GET['hash']) ? $_GET['hash'] : '';
 if ($group_hash === '') {
-    die("Skupina nenÌ urËena.");
+    die("Skupina nen√≠ urƒçena.");
 }
 
-// 2) NajÌt skupinu podle hash
+// 2) Naj√≠t skupinu podle hash
 $stmtG = $pdo->prepare("SELECT id, nazev FROM skupiny WHERE hash = ?");
 $stmtG->execute([$group_hash]);
 $group = $stmtG->fetch(PDO::FETCH_ASSOC);
@@ -18,18 +18,18 @@ if (!$group) {
 $group_id   = $group['id'];
 $group_name = $group['nazev'];
 
-// 3) V˝bÏr obdobÌ
+// 3) V√Ωbƒõr obdob√≠
 $periods = [
-    1 => '1 mÏsÌc',
-    2 => '2 mÏsÌce',
-    6 => '6 mÏsÌc˘',
+    1 => '1 mƒõs√≠c',
+    2 => '2 mƒõs√≠ce',
+    6 => '6 mƒõs√≠c≈Ø',
 ];
 $period = isset($_GET['period']) && isset($periods[(int)$_GET['period']])
         ? (int)$_GET['period']
         : 1;
 $since_date = date('Y-m-d', strtotime("-{$period} months"));
 
-// 4) NaËÌst trÈninky danÈ skupiny a obdobÌ
+// 4) Naƒç√≠st tr√©ninky dan√© skupiny a obdob√≠
 $stmt = $pdo->prepare("
     SELECT 
       t.id,
@@ -52,21 +52,22 @@ $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="cs">
 <head>
   <meta charset="UTF-8">
-  <title>TrÈninky skupiny ì<?= htmlspecialchars($group_name) ?>î</title>
+  <title>Tr√©ninky skupiny ‚Äú<?= htmlspecialchars($group_name) ?>‚Äù</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <?php appUiAssets(); ?>
   <style>
     .thumbnail { height: 80px; margin: 2px; object-fit: cover; }
   </style>
 </head>
 <body class="bg-light">
   <div class="container py-5">
-    <h1 class="mb-4">TrÈninky skupiny ì<?= htmlspecialchars($group_name) ?>î</h1>
+    <h1 class="mb-4">Tr√©ninky skupiny ‚Äú<?= htmlspecialchars($group_name) ?>‚Äù</h1>
 
-    <!-- FiltraËnÌ formul·¯ -->
+    <!-- Filtraƒçn√≠ formul√°≈ô -->
     <form method="GET" class="row g-3 mb-4 align-items-end">
       <input type="hidden" name="hash" value="<?= htmlspecialchars($group_hash) ?>">
       <div class="col-md-6">
-        <label for="period" class="form-label">ObdobÌ:</label>
+        <label for="period" class="form-label">Obdob√≠:</label>
         <select name="period" id="period" class="form-select">
           <?php foreach ($periods as $m => $label): ?>
             <option value="<?= $m ?>" <?= $period === $m ? 'selected' : '' ?>>
@@ -81,10 +82,10 @@ $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </form>
 
     <?php if (empty($treninky)): ?>
-      <div class="alert alert-info">V tomto obdobÌ nejsou û·dnÈ trÈninky.</div>
+      <div class="alert alert-info">V tomto obdob√≠ nejsou ≈æ√°dn√© tr√©ninky.</div>
     <?php else: ?>
       <?php foreach ($treninky as $t): 
-        // p¯iprav miniatury
+        // p≈ôiprav miniatury
         $thumbs = [];
         if (!empty($t['obrazky'])) {
           foreach (explode(',', $t['obrazky']) as $fn) {
@@ -101,7 +102,7 @@ $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <strong><?= htmlspecialchars($t['datum']) ?></strong>
         </div>
         <div class="card-body">
-          <!-- N·plÚ trÈninku -->
+          <!-- N√°pl≈à tr√©ninku -->
           <p><?= nl2br(htmlspecialchars($t['napln'])) ?></p>
           <!-- Fotografie -->
           <?php if ($thumbs): ?>

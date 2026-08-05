@@ -103,13 +103,10 @@ $person = $overview['person'];
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Můj sport — Kovopraha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
-<nav class="navbar bg-white border-bottom shadow-sm"><div class="container d-flex gap-2">
-    <a class="navbar-brand fw-bold me-auto" href="../index.php">Kovopraha</a>
-    <a class="btn btn-outline-primary btn-sm" href="muj_sport.php" aria-current="page">Můj sport</a>
-    <form method="post" action="sportovec_odhlaseni.php"><?= csrf_field() ?><button class="btn btn-outline-danger btn-sm">Odhlásit</button></form>
-</div></nav>
+<?php publicShellNav(); ?>
 <main class="container py-4" style="max-width:1050px">
     <div class="alert alert-info small">Omezený režim sportovce: vidíte výhradně údaje profilu <strong><?= childPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong>. Změny přihlášek, rodiny a objednávek provádí rodič nebo klub.</div>
 
@@ -160,5 +157,6 @@ $person = $overview['person'];
         <?php foreach ($overview['payments'] as $row): ?><tr><td><code><?= childPageH($row['public_code']) ?></code></td><td><?= childPageH($row['product_name_snapshot']) ?></td><td><?= childPageH(number_format(((int)$row['line_amount_minor']) / 100, 2, ',', ' ') . ' ' . $row['currency']) ?></td><td><span class="badge <?= childPageH(childPageStatusClass((string)$row['payment_status'])) ?>"><?= childPageH(childPageStatusLabel((string)$row['payment_status'], 'payment')) ?></span></td></tr><?php endforeach; ?>
     </tbody></table></div></section>
 </main>
+<?php publicShellFooter(); ?>
 </body>
 </html>

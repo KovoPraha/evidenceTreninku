@@ -115,7 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Přihlášení – Evidence tréninků</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<?php appUiAssets(); ?>
     <style>
         body { background: linear-gradient(135deg, #1a56db 0%, #0e9f6e 100%); min-height: 100vh; }
         .login-card { max-width: 420px; border-radius: 1rem; }

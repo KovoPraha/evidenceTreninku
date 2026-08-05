@@ -89,8 +89,8 @@ function formatDatum(string $datum, array $czDay, array $czMonth): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Program skupiny — <?= h($skupinaNazev) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<?php appUiAssets(); ?>
     <style>
         body { background: #f0f2f5; font-family: system-ui, -apple-system, sans-serif; }
         .page-header {

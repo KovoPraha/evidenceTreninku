@@ -202,7 +202,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Rezervace — <?= h($mesiceCS[$mesic]) ?> <?= $rok ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <?php appUiAssets(); ?>
     <style>
         .cal-grid {
             display: grid;
@@ -258,29 +258,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 </head>
 <body class="bg-light">
 
-<!-- Navbar -->
-<nav class="navbar navbar-light bg-white border-bottom shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="kalendar.php">
-            <i class="bi bi-bicycle me-2 text-primary"></i>Rezervace Kovopraha
-        </a>
-        <div class="d-flex gap-2 align-items-center">
-            <?php if ($prihlaseny): ?>
-                <span class="text-muted small d-none d-md-inline"><?= h($uzivatelJmeno) ?></span>
-                <a href="moje_osoby.php" class="btn btn-outline-secondary btn-sm">Moje osoby</a>
-                <a href="krouzky.php" class="btn btn-outline-secondary btn-sm">Kroužky</a>
-                <a href="moje_rezervace.php" class="btn btn-outline-secondary btn-sm">Moje rezervace</a>
-                <form method="post" action="odhlaseni.php" class="d-inline">
-                    <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-outline-danger btn-sm">Odhlásit</button>
-                </form>
-            <?php else: ?>
-                <a href="prihlaseni.php" class="btn btn-outline-primary btn-sm">Přihlásit</a>
-                <a href="registrace.php" class="btn btn-primary btn-sm">Registrace</a>
-            <?php endif; ?>
-        </div>
-    </div>
-</nav>
+<?php publicShellNav('velodrome'); ?>
 
 <div class="container mt-3 pb-5">
 

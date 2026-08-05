@@ -116,8 +116,10 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?= $product ? shopProductH($product['public_name']) : 'Produkt nebyl nalezen' ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
+<?php publicShellNav('shop'); ?>
 <main class="container py-4" style="max-width: 1050px">
     <a href="eshop.php" class="btn btn-sm btn-outline-secondary mb-3">← Zpět do e-shopu</a>
     <?php if ($product === null): ?>
@@ -184,5 +186,6 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 </main>
+<?php publicShellFooter(); ?>
 </body>
 </html>

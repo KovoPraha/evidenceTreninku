@@ -74,25 +74,10 @@ $stavBadge = [
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moje rezervace — Kovopraha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-light bg-white border-bottom shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="kalendar.php">
-            <i class="bi bi-bicycle me-2 text-primary"></i>Rezervace Kovopraha
-        </a>
-        <div class="d-flex gap-2">
-            <a href="kalendar.php" class="btn btn-outline-primary btn-sm">Kalendář</a>
-            <a href="moje_osoby.php" class="btn btn-outline-secondary btn-sm">Moje osoby</a>
-            <a href="krouzky.php" class="btn btn-outline-secondary btn-sm">Kroužky</a>
-            <form method="post" action="odhlaseni.php" class="d-inline">
-                <?= csrf_field() ?>
-                <button type="submit" class="btn btn-outline-danger btn-sm">Odhlásit</button>
-            </form>
-        </div>
-    </div>
-</nav>
+<?php publicShellNav(); ?>
 <div class="container mt-4" style="max-width:700px">
     <h5 class="mb-3"><i class="bi bi-calendar-check me-2"></i>Moje rezervace</h5>
 

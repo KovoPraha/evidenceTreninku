@@ -582,8 +582,8 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
                   <code id="bookingUrlCode" class="small text-break" style="font-size:.73rem;"><?= htmlspecialchars($bookingUrl) ?></code>
                   <button type="button" class="btn btn-outline-secondary btn-sm ms-auto py-0"
                           style="font-size:.7rem;"
-                          onclick="navigator.clipboard.writeText(<?= json_encode($bookingUrl) ?>).then(()=>{this.innerHTML='<i class=\'bi bi-check-lg\'></i> Zkopírováno';setTimeout(()=>{this.innerHTML='<i class=\'bi bi-clipboard\'></i> Kopírovat';},2000)})">
-                    <i class="bi bi-clipboard"></i> Kopírovat
+                          data-copy-text="<?= htmlspecialchars($bookingUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
+                    <i class="bi bi-clipboard" aria-hidden="true"></i> <span class="app-copy-label">Kopírovat</span>
                   </button>
                 </div>
               </div>

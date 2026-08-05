@@ -16,7 +16,7 @@ function myOrdersPayment(string $status):string{return ['pending'=>'Čeká na pl
 $orders=shopOrderListForAccount($pdo,(int)$_SESSION['verejny_uzivatel_id']);
 ?>
 <!doctype html>
-<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moje objednávky</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"></head>
+<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moje objednávky</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><?php appUiAssets(); ?></head>
 <body class="bg-light"><main class="container py-4" style="max-width:1000px">
 <div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-0"><i class="bi bi-bag-check me-2 text-success"></i>Moje objednávky</h1><div class="text-muted">Objednávky přihlášeného účtu, stav platby, přípravy a případné vratky.</div></div><a href="eshop.php" class="btn btn-outline-success">Zpět do e-shopu</a></div>
 <?php if($orders===[]):?><div class="alert alert-light border">Zatím nemáte žádnou objednávku. <a href="eshop.php">Přejít do e-shopu</a>.</div><?php endif;?>

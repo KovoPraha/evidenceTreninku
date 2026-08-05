@@ -582,6 +582,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .err{color:#b00020}
     .muted{color:#666}
 </style>
+<?php appUiAssets(); ?>
 </head>
 <body>
 

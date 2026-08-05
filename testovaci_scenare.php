@@ -110,7 +110,8 @@ $statusLabels = [
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Finalizace a testovací scénáře M2</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
 <main class="container py-4" style="max-width:1180px">

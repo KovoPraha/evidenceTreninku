@@ -14,6 +14,12 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 
 ## Poslední přijatý technický stav
 
+- pracovní řez sjednocení aplikace zavádí jeden UI základ pro všech 127 aktivních
+  PHP HTML stránek: společné pozadí a formuláře, stav načítání a ochranu proti
+  dvojímu odeslání, bezpečné toast zprávy a jednu veřejnou navigaci pro e-shop,
+  tréninky, kroužky, velodrom a účty; podrobnosti jsou v
+  `docs/shared-ui-foundation.md`,
+
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
 - poslední implementace: `12c2300` – M3.4 přidává administrátorský read-only
   provozní přehled plateb, vratek, kapacit, přihlášek a provozních výjimek; browser
@@ -63,7 +69,7 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 48/48,
-- automatické testy 452/3951,
+- automatické testy 455/3970,
 - first-party PHP syntaxe 450 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;

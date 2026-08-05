@@ -21,7 +21,9 @@ final class ChildAccessWiringTest extends TestCase
     public function testDashboardHasUnifiedPortalNavigationAndHumanReadableStatuses(): void
     {
         $dashboard = $this->source('booking/muj_sport.php');
-        self::assertStringContainsString('href="../index.php"', $dashboard);
+        $shell = $this->source('includes/ui_shell.php');
+        self::assertStringContainsString('publicShellNav()', $dashboard);
+        self::assertStringContainsString('href="../index.php"', $shell);
         self::assertStringContainsString('aria-label="Souhrn sportovce"', $dashboard);
         self::assertStringContainsString("'confirmed' => 'Přihlášeno'", $dashboard);
         self::assertStringContainsString("'payment_pending' => 'Čeká na úhradu'", $dashboard);
