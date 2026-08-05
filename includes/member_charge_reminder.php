@@ -175,7 +175,7 @@ function memberChargeReminderComposeMessage(array $row): array
 }
 
 /** @return array<string,mixed>|null */
-function memberChargeReminderClaim(PDO $pdo): ?array
+function memberChargeReminderClaim(PDO $pdo, string $actorType = 'system', ?int $actorId = null): ?array
 {
     $pdo->beginTransaction();
     try {
@@ -203,7 +203,7 @@ function memberChargeReminderClaim(PDO $pdo): ?array
             "UPDATE member_charge_reminders SET status='processing',attempts=attempts+1,claimed_at=CURRENT_TIMESTAMP,"
             . 'claim_token=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
         )->execute([$token, (int)$row['id']]);
-        memberChargeReminderAudit($pdo, (int)$row['id'], (int)$row['account_id'], 'claim', (string)$row['status'], 'processing', 'Zprávu převzal worker.');
+        memberChargeReminderAudit($pdo, (int)$row['id'], (int)$row['account_id'], 'claim', (string)$row['status'], 'processing', 'Zprávu převzal worker.', $actorType, $actorId);
         $pdo->commit();
         $row['claim_token'] = $token;
         $row['attempts'] = (int)$row['attempts'] + 1;
@@ -214,7 +214,7 @@ function memberChargeReminderClaim(PDO $pdo): ?array
     }
 }
 
-function memberChargeReminderComplete(PDO $pdo, int $id, string $token, bool $sent, ?string $error = null): void
+function memberChargeReminderComplete(PDO $pdo, int $id, string $token, bool $sent, ?string $error = null, string $actorType = 'system', ?int $actorId = null): void
 {
     if ($id < 1 || preg_match('/^[a-f0-9]{32}$/D', $token) !== 1) throw new InvalidArgumentException('Neplatné převzetí připomínky.');
     $pdo->beginTransaction();
@@ -227,7 +227,7 @@ function memberChargeReminderComplete(PDO $pdo, int $id, string $token, bool $se
             $pdo->prepare(
                 "UPDATE member_charge_reminders SET status='sent',sent_at=CURRENT_TIMESTAMP,claim_token=NULL,last_error=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?"
             )->execute([$id]);
-            memberChargeReminderAudit($pdo, $id, (int)$row['account_id'], 'sent', 'processing', 'sent', 'Transport potvrdil odeslání.');
+            memberChargeReminderAudit($pdo, $id, (int)$row['account_id'], 'sent', 'processing', 'sent', 'Transport potvrdil odeslání.', $actorType, $actorId);
         } else {
             $terminal = (int)$row['attempts'] >= 5;
             $next = $terminal ? 'failed' : 'pending';
@@ -236,7 +236,7 @@ function memberChargeReminderComplete(PDO $pdo, int $id, string $token, bool $se
             $pdo->prepare(
                 'UPDATE member_charge_reminders SET status=?,available_at=?,claim_token=NULL,last_error=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
             )->execute([$next, $available, $safeError, $id]);
-            memberChargeReminderAudit($pdo, $id, (int)$row['account_id'], 'send_failed', 'processing', $next, $safeError !== '' ? $safeError : 'Transport odmítl zprávu.');
+            memberChargeReminderAudit($pdo, $id, (int)$row['account_id'], 'send_failed', 'processing', $next, $safeError !== '' ? $safeError : 'Transport odmítl zprávu.', $actorType, $actorId);
         }
         $pdo->commit();
     } catch (Throwable $exception) {
@@ -246,16 +246,16 @@ function memberChargeReminderComplete(PDO $pdo, int $id, string $token, bool $se
 }
 
 /** @param callable(string,string,string):bool $sender */
-function memberChargeReminderProcessOne(PDO $pdo, callable $sender): ?bool
+function memberChargeReminderProcessOne(PDO $pdo, callable $sender, string $actorType = 'system', ?int $actorId = null): ?bool
 {
-    $row = memberChargeReminderClaim($pdo);
+    $row = memberChargeReminderClaim($pdo, $actorType, $actorId);
     if ($row === null) return null;
     try {
         $sent = $sender((string)$row['recipient_email'], (string)$row['subject_plain'], (string)$row['body_plain']);
-        memberChargeReminderComplete($pdo, (int)$row['id'], (string)$row['claim_token'], $sent, $sent ? null : 'Transport odmítl zprávu.');
+        memberChargeReminderComplete($pdo, (int)$row['id'], (string)$row['claim_token'], $sent, $sent ? null : 'Transport odmítl zprávu.', $actorType, $actorId);
         return $sent;
     } catch (Throwable $exception) {
-        memberChargeReminderComplete($pdo, (int)$row['id'], (string)$row['claim_token'], false, 'Transport vyvolal chybu typu ' . get_class($exception) . '.');
+        memberChargeReminderComplete($pdo, (int)$row['id'], (string)$row['claim_token'], false, 'Transport vyvolal chybu typu ' . get_class($exception) . '.', $actorType, $actorId);
         return false;
     }
 }

@@ -45,6 +45,55 @@ final class MemberChargeReminderDemoTest extends TestCase
         \memberChargeReminderSeedLocalDemo($pdo, 77, true, false);
     }
 
+    public function testLocalDemoDeliveryUsesFileOutboxAndAuditsTrainer(): void
+    {
+        $pdo = $this->database();
+        $seed = \memberChargeReminderSeedLocalDemo($pdo, 77, true, true);
+        $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'member-charge-reminder-demo-' . bin2hex(random_bytes(8));
+
+        try {
+            $result = \memberChargeReminderDeliverLocalDemo($pdo, 77, true, true, $directory);
+            self::assertSame(['processed' => true, 'sent' => true, 'reminder_id' => $seed['reminder_id']], $result);
+            self::assertSame('sent', $pdo->query('SELECT status FROM member_charge_reminders')->fetchColumn());
+            self::assertSame(1, (int)$pdo->query('SELECT attempts FROM member_charge_reminders')->fetchColumn());
+
+            $files = glob($directory . DIRECTORY_SEPARATOR . '*.json') ?: [];
+            self::assertCount(1, $files);
+            $payload = json_decode((string)file_get_contents($files[0]), true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame('member-charge-reminder-local-outbox-v1', $payload['schema']);
+            self::assertSame('rodic@localhost.test', $payload['original_recipient']);
+            self::assertStringContainsString('LOCALHOST', (string)$payload['subject']);
+
+            foreach (['claim', 'sent'] as $action) {
+                $statement = $pdo->prepare('SELECT actor_type,actor_id FROM member_charge_reminder_events WHERE reminder_id=? AND action=? ORDER BY id DESC LIMIT 1');
+                $statement->execute([$seed['reminder_id'], $action]);
+                self::assertSame(['actor_type' => 'trainer', 'actor_id' => 77], $statement->fetch(PDO::FETCH_ASSOC));
+            }
+            self::assertSame(['processed' => false, 'sent' => false, 'reminder_id' => null], \memberChargeReminderDeliverLocalDemo($pdo, 77, true, true, $directory));
+
+            $reset = \memberChargeReminderSeedLocalDemo($pdo, 77, true, true);
+            self::assertSame($seed, $reset);
+            self::assertSame('pending', $pdo->query('SELECT status FROM member_charge_reminders')->fetchColumn());
+            self::assertSame(0, (int)$pdo->query('SELECT attempts FROM member_charge_reminders')->fetchColumn());
+        } finally {
+            foreach (glob($directory . DIRECTORY_SEPARATOR . '*') ?: [] as $file) unlink($file);
+            if (is_dir($directory)) rmdir($directory);
+        }
+    }
+
+    public function testLocalDemoDeliveryRefusesMissingConfirmationAndNonLocalEnvironment(): void
+    {
+        $pdo = $this->database();
+        try {
+            \memberChargeReminderDeliverLocalDemo($pdo, 77, false, true);
+            self::fail('Missing confirmation must fail.');
+        } catch (\InvalidArgumentException) {
+            self::assertTrue(true);
+        }
+        $this->expectException(\MemberChargeReminderException::class);
+        \memberChargeReminderDeliverLocalDemo($pdo, 77, true, false);
+    }
+
     private function database(): PDO
     {
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);

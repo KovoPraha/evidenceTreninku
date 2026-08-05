@@ -29,6 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = memberChargeReminderSeedLocalDemo($pdo, (int)$_SESSION['trener_id'], ($_POST['confirm_demo'] ?? '') === '1', $demoAllowed);
                 $_SESSION['flash_charge_reminder_success'] = 'Testovací připomínka byla připravena. Nic nebylo odesláno.';
                 header('Location: member_charge_reminders_admin.php?preview_id=' . (int)$result['reminder_id'], true, 303);
+            } elseif (($_POST['action'] ?? '') === 'deliver_demo') {
+                $result = memberChargeReminderDeliverLocalDemo($pdo, (int)$_SESSION['trener_id'], ($_POST['confirm_delivery'] ?? '') === '1', $demoAllowed);
+                $_SESSION['flash_charge_reminder_success'] = $result['processed']
+                    ? 'Testovací zpráva byla uložena do localhost outboxu. Na internet nic neodešlo.'
+                    : 'Ve frontě není žádná zpráva připravená k testovacímu zpracování.';
+                $location = 'member_charge_reminders_admin.php';
+                if ($result['processed']) $location .= '?status=sent&preview_id=' . (int)$result['reminder_id'];
+                header('Location: ' . $location, true, 303);
             } else {
                 $result = memberChargeReminderAdminRetry(
                     $pdo,
@@ -79,7 +87,7 @@ require_once __DIR__ . '/hlavicka.php';
     </div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= memberChargeReminderAdminH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= memberChargeReminderAdminH($success) ?></div><?php endif; ?>
-    <?php if ($demoAllowed): ?><div class="card border-warning mb-3"><div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3"><div><strong>Localhost testovací ukázka</strong><div class="small text-muted">Připraví syntetický předpis a zprávu pro účet rodic@localhost.test a zapne mu připomínky. Akce je opakovatelná a nic neodesílá.</div></div><form method="post" class="d-flex flex-wrap align-items-center gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="seed_demo"><label class="small"><input type="checkbox" name="confirm_demo" value="1" required> Potvrzuji přípravu syntetických dat</label><button class="btn btn-warning btn-sm">Připravit ukázku</button></form></div></div><?php endif; ?>
+    <?php if ($demoAllowed): ?><div class="card border-warning mb-3"><div class="card-body"><div class="d-flex flex-wrap justify-content-between align-items-center gap-3"><div><strong>Localhost testovací ukázka</strong><div class="small text-muted">Připraví syntetický předpis a zprávu pro účet rodic@localhost.test. Testovací zpracování ji uloží jen do chráněného souborového outboxu; skutečný e-mail neodejde.</div></div><div class="d-flex flex-column gap-2"><form method="post" class="d-flex flex-wrap align-items-center gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="seed_demo"><label class="small"><input type="checkbox" name="confirm_demo" value="1" required> Potvrzuji přípravu syntetických dat</label><button class="btn btn-warning btn-sm">Připravit ukázku</button></form><form method="post" class="d-flex flex-wrap align-items-center gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="deliver_demo"><label class="small"><input type="checkbox" name="confirm_delivery" value="1" required> Potvrzuji testovací zpracování</label><button class="btn btn-outline-warning btn-sm">Zpracovat 1 zprávu do testovacího outboxu</button></form></div></div></div></div><?php endif; ?>
     <div class="row g-3 mb-3">
         <?php foreach (['pending' => 'Čeká', 'processing' => 'Zpracovává se', 'failed' => 'Vyžaduje zásah', 'sent' => 'Odesláno', 'cancelled' => 'Zrušeno'] as $key => $label): ?>
             <div class="col-6 col-lg"><a class="text-decoration-none text-reset" href="?status=<?= $key ?>"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-muted"><?= memberChargeReminderAdminH($label) ?></div><div class="h3 mb-0"><?= (int)$summary[$key] ?></div></div></div></a></div>

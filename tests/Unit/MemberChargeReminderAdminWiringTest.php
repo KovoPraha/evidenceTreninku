@@ -19,7 +19,6 @@ final class MemberChargeReminderAdminWiringTest extends TestCase
         self::assertStringContainsString('csrf_verify', $page);
         self::assertStringContainsString("(\$_POST['confirm_retry'] ?? '') === '1'", $page);
         self::assertStringContainsString('memberChargeReminderAdminRetry', $page);
-        self::assertStringNotContainsString('memberChargeReminderProcessOne', $page);
         self::assertStringNotContainsString('memberChargeReminderMailSender', $page);
         self::assertStringContainsString("c.status AS charge_status", $service);
         self::assertStringContainsString("p.enabled", $service);
@@ -36,5 +35,10 @@ final class MemberChargeReminderAdminWiringTest extends TestCase
         self::assertStringContainsString('memberChargeReminderSeedLocalDemo', $page);
         self::assertStringContainsString("rodic@localhost.test", $demo);
         self::assertStringContainsString("'localhost_demo_reset'", $demo);
+        self::assertStringContainsString("(\$_POST['action'] ?? '') === 'deliver_demo'", $page);
+        self::assertStringContainsString("(\$_POST['confirm_delivery'] ?? '') === '1'", $page);
+        self::assertStringContainsString('memberChargeReminderDeliverLocalDemo', $page);
+        self::assertStringContainsString("memberChargeReminderLocalOutboxSender('localhost'", $demo);
+        self::assertStringNotContainsString('memberChargeReminderMailSender', $demo);
     }
 }

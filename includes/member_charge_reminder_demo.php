@@ -104,3 +104,39 @@ function memberChargeReminderSeedLocalDemo(PDO $pdo, int $actorTrainerId, bool $
         throw $exception;
     }
 }
+
+/** @return array{processed:bool,sent:bool,reminder_id:?int} */
+function memberChargeReminderDeliverLocalDemo(PDO $pdo, int $actorTrainerId, bool $confirmed, bool $isLocal, ?string $directory = null): array
+{
+    if (!$isLocal) throw new MemberChargeReminderException('Testovací doručení lze spustit pouze na localhostu.');
+    if ($actorTrainerId < 1 || !$confirmed) throw new InvalidArgumentException('Testovací doručení musíte výslovně potvrdit.');
+
+    $sender = memberChargeReminderLocalOutboxSender('localhost', $directory);
+    $row = memberChargeReminderClaim($pdo, 'trainer', $actorTrainerId);
+    if ($row === null) return ['processed' => false, 'sent' => false, 'reminder_id' => null];
+
+    try {
+        $sent = $sender((string)$row['recipient_email'], (string)$row['subject_plain'], (string)$row['body_plain']);
+        memberChargeReminderComplete(
+            $pdo,
+            (int)$row['id'],
+            (string)$row['claim_token'],
+            $sent,
+            $sent ? null : 'Lokální outbox odmítl zprávu.',
+            'trainer',
+            $actorTrainerId
+        );
+        return ['processed' => true, 'sent' => $sent, 'reminder_id' => (int)$row['id']];
+    } catch (Throwable $exception) {
+        memberChargeReminderComplete(
+            $pdo,
+            (int)$row['id'],
+            (string)$row['claim_token'],
+            false,
+            'Lokální outbox vyvolal chybu typu ' . get_class($exception) . '.',
+            'trainer',
+            $actorTrainerId
+        );
+        throw new MemberChargeReminderException('Testovací zprávu se nepodařilo uložit do localhost outboxu.', 0, $exception);
+    }
+}
