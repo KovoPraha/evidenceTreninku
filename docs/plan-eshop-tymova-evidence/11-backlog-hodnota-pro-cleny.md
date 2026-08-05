@@ -25,7 +25,7 @@ architekturu, v jakém pořadí a s jakou bránou.
 |---|---|---|---|
 | V1 | veřejný ICS kalendář | M2.7, první řez implementován | pouze zveřejněné plánované tréninky, otevřené klubové akce a aktivní veřejné hodiny velodromu; bez osob, docházky, rezervací a interních popisů |
 | V2 | osobní rodinný ICS kalendář | M2.7, technicky implementován | revokovatelný 256bitový náhodný token uložený jen jako hash, oddělený kalendář pro každý účet, rotace, audit, `no-store` a zákaz indexace |
-| V3 | připomínky splatných předpisů | M2.7, technicky implementováno | opt-in 3/7/14 dní, idempotentní auditovaná fronta, nejvýše jedna zpráva za 20 hodin na účet, admin náhled/retry a localhost testovací outbox; produkční transport a CRON čekají na akceptaci |
+| V3 | připomínky splatných předpisů | M2.7, technicky implementováno | opt-in 3/7/14 dní, idempotentní auditovaná fronta, nejvýše jedna zpráva za 20 hodin na účet, admin náhled/retry, localhost outbox a obnovitelná syntetická ukázka; produkční transport a CRON čekají na akceptaci |
 | V4 | roční přehled zaplacených klubových služeb | po finanční akceptaci | nejdřív přesný read-only přehled; označení „daňové potvrzení“ až po právním a účetním ověření textu a náležitostí |
 | V5 | osobní progres a osobní rekordy | budoucí datový milník | nejprve normalizovat volný čas měření do číselné hodnoty, opravit kvalitu dat a definovat soukromí nezletilých |
 | V6 | rodičovský týdenní souhrn | po V3 | opt-in, pouze fakta, která rodič už smí číst; možnost okamžitého odhlášení |
@@ -85,3 +85,8 @@ localhost transport `--transport=local-outbox`; jeho soubory jsou ignorované,
 nepřístupné přes web a test ověřuje odmítnutí produkčního hostu. Zbývá schválit
 text, otestovat doručení na určenou testovací adresu a teprve potom samostatně
 rozhodnout o produkčním CRONu s explicitním `--send`.
+
+Pro vlastníkův browser průchod přidává `5843f70` localhost-only potvrzenou akci,
+která pro standardní syntetický rodičovský účet opakovatelně připraví testovací
+předpis, opt-in a jednu čekající zprávu a rovnou otevře náhled. Akce je auditovaná,
+na produkci nedostupná a sama nikdy nespouští transport.

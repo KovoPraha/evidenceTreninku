@@ -15,7 +15,10 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `68e1199` – bezpečný
+- poslední implementace před tímto dokumentem: `5843f70` – jedním potvrzeným
+  localhostovým tlačítkem připraví opakovatelný syntetický předpis, čekající
+  připomínku a její okamžitý náhled bez odeslání,
+- předchozí implementace: `68e1199` – bezpečný
   administrátorský náhled uloženého textu připomínky a localhost-only
   testovací outbox, který nic neposílá na internet,
 - předchozí implementace: `66b4241` – administrátorský
@@ -37,8 +40,8 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 48/48,
-- automatické testy 423/3781,
-- first-party PHP syntaxe 429 souborů bez chyby,
+- automatické testy 425/3799,
+- first-party PHP syntaxe 431 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
   ownership kontrakt `2026-08-05.2` zahrnuje kalendář i frontu připomínek,
@@ -79,7 +82,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 84 %,
+- celý M2: 85 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
   sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
   localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
@@ -87,9 +90,10 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
   bezpečně vrácen na 0/2 při zachování auditní historie,
 - M2.6 integrovaná akceptace: 98 %; technické scénáře jsou připravené, zbývá
   vlastníkův průchod a vypořádání připomínek,
-- M2.7 hodnota pro členy: 88 %; veřejný i soukromý rodinný ICS feed, opt-in
+- M2.7 hodnota pro členy: 91 %; veřejný i soukromý rodinný ICS feed, opt-in
   fronta připomínek, její auditovaná administrátorská obsluha, náhled textu a
-  bezpečný lokální testovací outbox jsou technicky hotové; zbývá ověřit
+  bezpečný lokální testovací outbox a jedním tlačítkem obnovitelná browserová
+  ukázka jsou technicky hotové; zbývá ověřit
   kalendář v reálné aplikaci a po schválení textu provést kontrolované doručení
   na určenou testovací adresu; produkční CRON zůstává vypnutý,
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,

@@ -136,6 +136,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.7c opt-in připomínky splatnosti | hotovo technicky | `29e3d5d`: nastavení 3/7/14 dní, idempotentní fronta, audit, kontrola aktivní vazby a stavu předpisu, jedna zpráva/20 h/účet, ochrana souběhu a pět pokusů; bezpečný login odkaz bez ID, browser zapnutí/vypnutí bez skutečného e-mailu; 418/3728, 428 parse, 47/47, backup 95, audit 0 |
 | M2.7d provozní obsluha připomínek | hotovo technicky | `66b4241`: admin přehled pěti stavů, ruční retry pouze přes POST+CSRF+důvod+potvrzení, audit typu/ID aktéra a opětovná kontrola opt-in i stavu předpisu; web zprávu neodesílá; 421/3761, 429 parse, 48/48, backup 95, audit 0 |
 | M2.7e náhled a bezpečný testovací transport | hotovo technicky | `68e1199`: no-store admin náhled escapovaného uloženého textu, localhost-only souborový outbox, odmítnutí produkčního hostu a webový zákaz `var/`; skutečný mail se nezapnul; 423/3781, 429 parse, 48/48, backup 95, audit 0 |
+| M2.7f obnovitelná localhost ukázka | hotovo technicky | `5843f70`: admin+CSRF+potvrzení připraví auditovaný syntetický předpis, opt-in a právě jednu čekající zprávu, poté otevře náhled; browser 0→1, žádný transport; 425/3799, 431 parse, 48/48, backup 95, audit 0 |
 
 ## Aktivní rozhodnutí
 

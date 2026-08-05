@@ -7,8 +7,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD: `68e1199`.
-- Implementace `68e1199` je commitnutá; větev `main`, upstream `origin/main`.
+- Poslední přijatý implementační HEAD: `5843f70`.
+- Implementace `5843f70` je commitnutá; větev `main`, upstream `origin/main`.
 - Localhost DB je 48/48. Vzdálený repozitář se v této M2.7 session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -27,7 +27,16 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená funkční akce: `68e1199` přidává no-store administrátorský
+- Poslední dokončená funkční akce: `5843f70` přidává localhost-only admin+CSRF
+  tlačítko s výslovným potvrzením. Opakovatelně vytvoří nebo obnoví syntetický
+  předpis `LOCAL-REMINDER-001`, opt-in účtu `rodic@localhost.test` a právě jednu
+  čekající připomínku, přičemž audit ukládá administrátora u předpisu, opt-in i
+  zprávy. Browser ověřil přechod 0→1, náhled předmětu a stav Čeká; žádný
+  transport se nespustil. Ukázka zůstává na localhostu připravená k prohlídce.
+  Plná sada je 425/3799, syntaxe 431 souborů, migrace 48/48, backup smoke 95
+  tabulek a audit 0. Produkce se nezměnila.
+
+  Předchozí dokončená funkční akce: `68e1199` přidává no-store administrátorský
   náhled přesně uloženého textu připomínky a explicitní localhost-only
   `--transport=local-outbox`. Testovací transport uloží JSON do ignorovaného
   `var/member-charge-reminder-outbox`, skutečný mail nevolá a produkční host
@@ -509,7 +518,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | legacy `2.20.2` + 48/48 číslovaných migrací; audit připomínek nově ukládá typ a ID aktéra; hashované rodinné kalendáře a tři tabulky opt-in/fronty/auditu jsou aplikované | 2026-08-05 | migration apply/check + živá localhost MariaDB | ano |
-| testy | 423/3781; browser admin fronty, náhled a localhost outbox bez skutečného mailu, HTTP 403 pro `var/`, MariaDB backup smoke 95 tabulek, 429 first-party syntaxí, 48/48 a audit 0 | 2026-08-05 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
+| testy | 425/3799; browser syntetická ukázka 0→1 + náhled bez odeslání, localhost outbox, HTTP 403 pro `var/`, MariaDB backup smoke 95 tabulek, 431 first-party syntaxí, 48/48 a audit 0 | 2026-08-05 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -655,6 +664,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 89 | M2.7c připomínky splatnosti `29e3d5d` | opt-in 3/7/14 dní, unikátní auditovaná fronta, stavová kontrola, 1 zpráva/20 h/účet, souběh a pět pokusů; login URL bez ID, browser končí vypnuto; 418/3728, 428 parse, 47/47, backup 95, audit 0 |
 | 90 | M2.7d provozní obsluha připomínek `66b4241` | admin přehled pěti stavů, POST+CSRF+důvod+potvrzení, audit aktéra a bezpečné vrácení do fronty bez webového odeslání či obejití opt-out/stavu předpisu; 421/3761, 429 parse, 48/48, backup 95, audit 0 |
 | 91 | M2.7e náhled/testovací outbox `68e1199` | no-store escapovaný náhled, localhost-only souborový transport, odmítnutí produkčního hostu a HTTP 403 pro `var/`; žádný skutečný mail, 423/3781, 429 parse, 48/48, backup 95, audit 0 |
+| 92 | M2.7f syntetická browser ukázka `5843f70` | localhost admin+CSRF+potvrzení opakovatelně připraví auditovaný předpis, opt-in a jednu čekající zprávu, browser 0→1 + náhled, bez transportu; 425/3799, 431 parse, 48/48, backup 95, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;
