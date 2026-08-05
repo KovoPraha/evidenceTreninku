@@ -68,6 +68,13 @@ $cards = [
     ],
 ];
 if (roleAtLeast('admin')) {
+    $cards[] = [
+        'label' => 'Provozní přehled M3.4',
+        'value' => 'Otevřít',
+        'hint' => 'platby, kapacity, přihlášky a výjimky na jednom místě',
+        'href' => 'provozni_prehled_admin.php',
+        'class' => 'border-primary',
+    ];
     $lastShopRun = $pdo->query(
         "SELECT r.*, (SELECT COUNT(*) FROM shop_catalog_product_candidates p "
         . "WHERE p.run_id=r.id AND p.review_status='pending') AS pending_count "
