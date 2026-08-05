@@ -9,6 +9,7 @@ header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store, private');
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/sports_measurement_contract.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -44,7 +45,7 @@ function renderMereniData(array $mz): string {
     $parts = [];
     if ($typ === 'kolo' || $typ === 'beh') {
         if (!empty($mz['vzdalenost']) && $mz['vzdalenost'] !== '0')
-            $parts[] = '<strong>' . h($mz['vzdalenost']) . '</strong> km';
+            $parts[] = '<strong>' . h($mz['vzdalenost']) . '</strong> ' . h(sportsMeasurementDisplayUnit($mz['distance_unit'] ?? null));
         if (!empty($mz['cas']))
             $parts[] = '⏱ ' . h($mz['cas']);
         if (!empty($mz['prevod']) && $typ === 'kolo')
@@ -108,7 +109,7 @@ try {
             t.datum AS trenink_datum,
             tm.poradi,
             mz.id AS mereni_id, mz.typ,
-            mz.vzdalenost, mz.cas, mz.prevod,
+            mz.vzdalenost, mz.distance_unit, mz.cas, mz.prevod,
             mz.cvik_id, mz.segment_id, mz.vaha, mz.opakovani, mz.rpe,
             mz.poznamka AS mereni_poznamka,
             c.nazev AS cvik_nazev,

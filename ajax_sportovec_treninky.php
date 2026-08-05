@@ -4,6 +4,7 @@
  * Params: hash, rok (0 = vše), typ (optional filter: kolo|beh|posilovna|'')
  */
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/sports_measurement_contract.php';
 header('Content-Type: text/html; charset=utf-8');
 header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store, private');
@@ -22,7 +23,7 @@ function renderMereniData(array $mz): string {
 
     if ($typ === 'kolo' || $typ === 'beh') {
         if (!empty($mz['vzdalenost']) && $mz['vzdalenost'] !== '0')
-            $parts[] = '<strong>' . h($mz['vzdalenost']) . '</strong> km';
+            $parts[] = '<strong>' . h($mz['vzdalenost']) . '</strong> ' . h(sportsMeasurementDisplayUnit($mz['distance_unit'] ?? null));
         if (!empty($mz['cas']))
             $parts[] = '⏱ ' . h($mz['cas']);
         if (!empty($mz['prevod']) && $typ === 'kolo')
@@ -111,7 +112,7 @@ if (!empty($treninkIds)) {
         SELECT
             tm.trenink_id, tm.poradi,
             mz.id AS mereni_id, mz.typ,
-            mz.vzdalenost, mz.cas, mz.prevod,
+            mz.vzdalenost, mz.distance_unit, mz.cas, mz.prevod,
             mz.cvik_id, mz.segment_id, mz.vaha, mz.opakovani, mz.rpe,
             mz.poznamka AS mereni_poznamka,
             c.nazev AS cvik_nazev,

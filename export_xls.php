@@ -8,6 +8,7 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'vendor/autoload.php';
 require_once 'db.php';
+require_once __DIR__ . '/includes/sports_measurement_contract.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -51,7 +52,7 @@ $row = 2;
 foreach ($treninky as $t) {
     $pocetSportovcu = (int)$t['pocet_sportovcu'];
 
-    $stmtMereni = $pdo->prepare("SELECT s.jmeno, s.prijmeni, mz.vzdalenost, mz.cas, mz.poznamka
+    $stmtMereni = $pdo->prepare("SELECT s.jmeno, s.prijmeni, mz.vzdalenost, mz.distance_unit, mz.cas, mz.poznamka
                                  FROM trenink_mereni tm
                                  JOIN mereni_zaznamy mz ON mz.id = tm.mereni_id
                                  LEFT JOIN sportovci s ON s.id = mz.sportovec_id
@@ -63,7 +64,10 @@ foreach ($treninky as $t) {
     $mereniText = '';
     foreach ($mereniZaznamy as $m) {
         $jmeno = trim((string)($m['prijmeni'] ?? '') . ' ' . (string)($m['jmeno'] ?? ''));
-        $mereniText .= "{$jmeno}, {$m['vzdalenost']}, {$m['cas']}, {$m['poznamka']}\n";
+        $distance = ($m['vzdalenost'] ?? '') === '' || $m['vzdalenost'] === null
+            ? ''
+            : $m['vzdalenost'] . ' ' . sportsMeasurementDisplayUnit($m['distance_unit'] ?? null);
+        $mereniText .= "{$jmeno}, {$distance}, {$m['cas']}, {$m['poznamka']}\n";
     }
 
     // Textová pole z DB explicitně jako string — nikdy se nevyhodnotí jako vzorec (=CMD…)

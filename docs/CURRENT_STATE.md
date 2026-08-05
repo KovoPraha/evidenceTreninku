@@ -33,13 +33,18 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   strukturovaných i historických měření, závodních výsledků a zátěžových testů;
   zobrazuje pouze agregované počty bez jmen, ID a naměřených hodnot,
 
-- navazující M3.5b přidává aditivní kontrakt `sports-measurement-v1`: výslovnou
-  jednotku vzdálenosti a metry, čas v milisekundách, číselné RPE a uzavřené stavy
-  závodu. Historii nepřevádí a produkci nemění; nový zápis/import jej použije až
-  v M3.5c,
+- M3.5b přidává aditivní kontrakt `sports-measurement-v1`: výslovnou jednotku
+  vzdálenosti a metry, čas v milisekundách, číselné RPE a uzavřené stavy závodu,
+
+- M3.5c používá tento kontrakt ve všech čtyřech formulářích a handlerech pro
+  vytvoření i editaci tréninku/závodu. Nové řádky ukládají původní i normalizované
+  hodnoty; neplatný čas, RPE nebo chybějící jednotka selžou před transakcí. Historii
+  ani produkci řez nepřevádí a ostrý import nespouští,
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace: `12c2300` – M3.4 přidává administrátorský read-only
+- poslední přijatý base před M3.5c: `7211dfd`; aktuální řez M3.5c sjednocuje
+  validaci a zápis sportovních měření ve čtyřech tocích vytvoření/editace,
+- předchozí implementace: `12c2300` – M3.4 přidává administrátorský read-only
   provozní přehled plateb, vratek, kapacit, přihlášek a provozních výjimek; browser
   ověřil stránku syntetickým administrátorem bez konzolové chyby,
 - bezpečnostní infrastruktura: `6655a39` – kanonická `APP_BASE_URL`, soukromé
@@ -87,8 +92,8 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 50/50,
-- automatické testy 477/4107,
-- first-party PHP syntaxe 466 souborů bez chyby,
+- automatické testy 487/4161,
+- first-party PHP syntaxe 469 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 100 tabulek;
   aktuální ownership kontrakt `2026-08-05.3` zahrnuje i tři tabulky týdenních
@@ -125,7 +130,7 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
   `http://localhost/evidencePavel/booking/sportovni_prehled.php#tydenni-souhrn`.
 - administrátorská fronta týdenních souhrnů:
   `http://localhost/evidencePavel/family_weekly_summaries_admin.php`.
-- kvalita sportovních dat M3.5a:
+- kvalita sportovních dat M3.5a–c:
   `http://localhost/evidencePavel/sports_data_quality_admin.php`.
 
 Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
@@ -167,9 +172,10 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
   M3.3 má oddělený read-only roční přehled skutečně uhrazených členských
   předpisů a e-shopových položek. U M3.3 zbývá vlastníkova kontrola obsahu a
   rozhodnutí o exportu. M3.5a má read-only inventuru pěti sportovních zdrojů bez
-  osobních a naměřených hodnot; M3.5b již definuje aditivní verzi jednotek,
-  normalizovaného času, RPE a výsledkových stavů bez převodu historie. M3.5c má
-  kontrakt zapojit do budoucího zápisu a jednorázových importů,
+  osobních a naměřených hodnot; M3.5b definuje aditivní verzi jednotek,
+  normalizovaného času, RPE a výsledkových stavů bez převodu historie. M3.5c již
+  kontrakt zapojuje do všech nových zápisů a editací měření; jednorázový ostrý
+  import a automatický převod historie zůstávají záměrně neprovedené,
   produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,

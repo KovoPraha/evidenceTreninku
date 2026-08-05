@@ -867,12 +867,17 @@ Systém měření ve `formular.php`, `edit_trenink.php`, `formular_zavod.php`, `
 | `beh` | vzdálenost, čas, poznámka | — |
 | `posilovna` | cvik, váha, opakování, RPE, poznámka | `cviky` |
 
-**Data flow**: JSON na klientu → POST `mereni_json` → `buildMereniRowsFromPost()` → INSERT do `mereni_zaznamy` + link `trenink_mereni` nebo `zavod_mereni`.
+**Data flow**: JSON na klientu → POST `mereni_json` → společný
+`sportsMeasurementRowsFromPost()` → INSERT do `mereni_zaznamy` + link
+`trenink_mereni` nebo `zavod_mereni`.
 
 M3.5b přidává společný kontrakt `sports-measurement-v1` v
 `includes/sports_measurement_contract.php` a nullable normalizované sloupce.
-Stávající formuláře dál zapisují původní formát; jejich napojení a jednorázové
-importy jsou řez M3.5c. Historické hodnoty se automaticky neparsují ani nepřepisují.
+M3.5c jej přes `includes/sports_measurement_input.php` používá ve všech čtyřech
+handlerech vytvoření a editace tréninku/závodu. Nové řádky současně uchovají
+původní čitelnou hodnotu a normalizovanou hodnotu v1. Historické hodnoty se
+automaticky neparsují ani nepřepisují; starší vzdálenost bez jednotky se pouze
+zobrazuje v dosavadních kilometrech a při editaci vyžaduje výslovné potvrzení.
 
 ## 11e. Evidence závodů (v2.7.0)
 
@@ -884,7 +889,7 @@ Rozšířený systém závodů přidaný ve verzi 2.7.0.
 |--------|---------|-------|
 | `prehled_zavodu.php` | `prehled_zavodu` (min. trener) | Přehled závodů — kategorie filtr, stats karty, detail tlačítko |
 | `formular_zavod.php` | `formular_zavod` (min. trener) | Formulář nového závodu — kategorie, měření, účastníci, URL výsledků |
-| `ulozit_zavod.php` | POST handler | Uložení závodu — `buildMereniRowsFromPost()`, závod_mereni, fotky, soubory |
+| `ulozit_zavod.php` | POST handler | Uložení závodu — `sportsMeasurementRowsFromPost()`, normalizovaná měření v1, závod_mereni, fotky, soubory |
 | `zavod_detail.php` | `zavod_detail` (min. trener) | Detail závodu — výsledky (int/ext), měření, galerie, soubory |
 | `edit_zavod_form.php` | `sprava_zavodu` (min. hlavni) | Formulář editace — předvyplnění měření z `zavod_mereni` |
 | `update_zavod.php` | POST handler | Aktualizace závodu — delete+reinsert měření, soft-delete fotek |

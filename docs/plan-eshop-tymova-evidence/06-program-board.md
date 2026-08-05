@@ -145,6 +145,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M3.4 provozní přehled správce | hotovo technicky | `12c2300`: read-only akční signály peněz, kapacit, přihlášek a výjimek, pouze odkazy do existujících auditovaných obrazovek; 452/3951, 450 parse, 48/48, audit 0 |
 | M3.5a inventura sportovních dat | hotovo technicky | `efc8172`: admin-only agregace pěti zdrojů bez osob a hodnot; browser 5 karet / 0 formulářů / 0 vstupů / konzole 0; 466/4075, 461 parse, 49/49, audit 0 |
 | M3.5b sportovní datový kontrakt | hotovo technicky | aditivní `sports-measurement-v1` pro m/km, metry, milisekundy, RPE 1–10 a výsledkové stavy; žádný backfill, budoucí importy jej použijí v M3.5c; 477/4107, 466 parse, 50/50, backup 100, audit 0 |
+| M3.5c normalizovaný zápis sportovních dat | hotovo technicky | všechny čtyři formuláře a handlery tréninku/závodu používají sdílený fail-closed parser, výslovnou jednotku a dual-write původních + v1 hodnot; závodní import má pouze testovaný mapper bez ostrého zápisu; 487/4161, 469 parse, 50/50, backup 100, audit 0, browser formuláře bez zápisu a konzole 0 |
 
 ## Aktivní rozhodnutí
 

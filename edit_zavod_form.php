@@ -152,6 +152,7 @@ foreach ($existingMereni as $mz) {
         'sportovec_id'   => $sid,
         'sportovec_label'=> $label,
         'vzdalenost'     => $mz['vzdalenost'] ?? '',
+        'distance_unit'  => $mz['distance_unit'] ?? '',
         'cas'            => $mz['cas'] ?? '',
         'prevod'         => $mz['prevod'] ?? '',
         'cvik_id'        => $mz['cvik_id'] ?? '',
@@ -447,8 +448,8 @@ $flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_succe
                             <div class="d-flex align-items-center gap-2 p-2 rounded"
                                  style="background:#e8f5e9; border:1px solid #c8e6c9;">
                                 <i class="bi bi-clock-history text-success"></i>
-                                <span class="small fw-semibold">Formát času: <code>mm:ss.xx</code></span>
-                                <span class="text-muted small">např. <code>02:13.45</code> = 2 min 13,45 s</span>
+                                <span class="small fw-semibold">Čas: <code>MM:SS(.mmm)</code> nebo <code>HH:MM:SS(.mmm)</code></span>
+                                <span class="text-muted small">Starší vzdálenost při úpravě potvrďte výběrem m nebo km.</span>
                             </div>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-info" id="btnAddMereni">
@@ -812,14 +813,20 @@ document.getElementById('skupina_id').addEventListener('change', function () {
             box.appendChild(el('div', { class: 'row g-2' }, `
                 <div class="col-md-3">
                     <label class="form-label small mb-1">Vzdálenost</label>
-                    <input type="number" step="0.01" class="form-control form-control-sm js-vzdalenost" placeholder="km nebo m">
+                    <div class="input-group input-group-sm">
+                        <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" placeholder="Vzdálenost">
+                        <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">
+                            <option value="">jednotka</option><option value="m">m</option><option value="km">km</option>
+                        </select>
+                    </div>
+                    <div class="invalid-feedback">Vyplňte vzdálenost i jednotku m nebo km.</div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small mb-1">
                         Čas
                         <span class="text-muted fw-normal" style="font-size:.78rem;">mm:ss.xx</span>
                     </label>
-                    <input type="text" class="form-control form-control-sm js-cas" placeholder="02:13.45">
+                    <input type="text" class="form-control form-control-sm js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     <small class="text-muted" style="font-size:.76rem;">např. 2 min 13,45 s → 02:13.45</small>
                 </div>
                 ${type === 'kolo' ? `
@@ -867,7 +874,7 @@ document.getElementById('skupina_id').addEventListener('change', function () {
                         Čas
                         <span class="text-muted fw-normal" style="font-size:.78rem;">mm:ss.xx</span>
                     </label>
-                    <input type="text" class="form-control form-control-sm js-cas" placeholder="02:13.45">
+                    <input type="text" class="form-control form-control-sm js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
@@ -1032,6 +1039,7 @@ document.getElementById('skupina_id').addEventListener('change', function () {
             };
             if (typ === 'kolo' || typ === 'beh') {
                 obj.vzdalenost = (r.querySelector('.js-vzdalenost')?.value ?? '').trim();
+                obj.distance_unit = (r.querySelector('.js-distance-unit')?.value ?? '').trim();
                 obj.cas        = (r.querySelector('.js-cas')?.value ?? '').trim();
                 obj.prevod     = (r.querySelector('.js-prevod')?.value ?? '').trim();
                 obj.poznamka   = (r.querySelector('.js-poznamka')?.value ?? '').trim();
@@ -1081,6 +1089,14 @@ document.getElementById('skupina_id').addEventListener('change', function () {
             } else {
                 spName.classList.remove('is-invalid');
             }
+            if (typ === 'kolo' || typ === 'beh') {
+                const distance = row.querySelector('.js-vzdalenost');
+                const unit = row.querySelector('.js-distance-unit');
+                const pairValid = Boolean(distance?.value) === Boolean(unit?.value);
+                distance?.classList.toggle('is-invalid', !pairValid);
+                unit?.classList.toggle('is-invalid', !pairValid);
+                if (!pairValid) valid = false;
+            }
         });
 
         if (!valid) {
@@ -1114,6 +1130,7 @@ document.getElementById('skupina_id').addEventListener('change', function () {
                     const f = row.querySelector('.js-vzdalenost');
                     if (f) f.value = m.vzdalenost;
                 }
+                if (m.distance_unit) { const f = row.querySelector('.js-distance-unit'); if (f) f.value = m.distance_unit; }
                 if (m.cas) { const f = row.querySelector('.js-cas'); if (f) f.value = m.cas; }
                 if (m.prevod) { const f = row.querySelector('.js-prevod'); if (f) f.value = m.prevod; }
                 if (m.poznamka) { const f = row.querySelector('.js-poznamka'); if (f) f.value = m.poznamka; }

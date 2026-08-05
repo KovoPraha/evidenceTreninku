@@ -1,6 +1,7 @@
 <?php
 // report_tyden_lib.php
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/sports_measurement_contract.php';
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -140,7 +141,7 @@ function load_measurements_for_trainings_present(PDO $pdo, array $treninkIds): a
             mz.typ,
             mz.sportovec_id,
             s.jmeno, s.prijmeni,
-            mz.vzdalenost, mz.cas, mz.prevod,
+            mz.vzdalenost, mz.distance_unit, mz.cas, mz.prevod,
             mz.cvik_id, c.nazev AS cvik_nazev,
             mz.segment_id, seg.nazev AS segment_nazev,
             mz.vaha, mz.opakovani, mz.rpe,
@@ -265,7 +266,7 @@ function build_week_report_html(array $ctx): string {
 
                         $dataParts = [];
                         if ($typ === 'kolo' || $typ === 'beh') {
-                            if (($m['vzdalenost'] ?? '') !== '' && $m['vzdalenost'] !== null) $dataParts[] = 'vzdálenost: ' . $m['vzdalenost'];
+                            if (($m['vzdalenost'] ?? '') !== '' && $m['vzdalenost'] !== null) $dataParts[] = 'vzdálenost: ' . $m['vzdalenost'] . ' ' . sportsMeasurementDisplayUnit($m['distance_unit'] ?? null);
                             if (($m['cas'] ?? '') !== '') $dataParts[] = 'čas: ' . $m['cas'];
                             if ($typ === 'kolo' && ($m['prevod'] ?? '') !== '') $dataParts[] = 'převod: ' . $m['prevod'];
                         } elseif ($typ === 'posilovna') {

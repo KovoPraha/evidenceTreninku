@@ -1,5 +1,22 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — M3.5c normalizovaný zápis sportovních dat
+
+- Všechny čtyři toky vytvoření a editace tréninku/závodu používají jediný
+  `includes/sports_measurement_input.php`. Lokální duplicitní parsery byly odstraněné.
+- Formuláře vyžadují výslovnou jednotku vzdálenosti `m`/`km`, čas ve striktním
+  formátu a číselné RPE 1,0–10,0. Neplatný vstup selže před DB transakcí.
+- Nové řádky ukládají původní čitelná pole i normalizované metry, milisekundy,
+  RPE a `sports-measurement-v1`. Ve výstupech se zobrazuje uložená jednotka;
+  legacy vzdálenost bez jednotky zůstává čitelná v dosavadních kilometrech.
+- Testovaný `sportsRaceResultInput()` je pouze fail-closed příprava budoucího
+  jednorázového importu. M3.5c žádný ostrý KIS/e-shop import, převod historie ani
+  zápis do produkce nespouští.
+- Browser ověřil nový formulář tréninku: volbu jednotky, nápovědu striktního času,
+  nulovou konzolovou chybu a žádné odeslání dat. Ověření: 487/4161 PHPUnit,
+  469 first-party syntaxí, migrace 50/50, backup smoke 100 tabulek a audit 0.
+- Base před M3.5c je `7211dfd`. Vzdálený repozitář ani produkce se nemění.
+
 ## Aktualizace 5. 8. 2026 — M3.5b sportovní datový kontrakt
 
 - Kontrakt `sports-measurement-v1` nově vyžaduje výslovnou jednotku `m`/`km`,
@@ -75,10 +92,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD před M3.5b: `efc8172`.
+- Poslední přijatý implementační HEAD před M3.5c: `7211dfd`.
 - Implementace `12c2300`, `3a35a2b` a `8a69b66` jsou commitnuté; větev `main`, upstream
   `origin/main`. Vzdálený repozitář ani produkce se v tomto řezu nezměnily.
-- Localhost DB je 50/50. Vzdálený repozitář se v této M3.5b session neměnil;
+- Localhost DB je 50/50. Vzdálený repozitář se v této M3.5c session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -98,9 +115,14 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce je tento řez M3.5b. Databáze a společný
-  validátor mají aditivní `sports-measurement-v1`; historická data zůstala beze
-  změny a read-only přehled ukazuje pokrytí v1. Produkce se nezměnila.
+- Poslední dokončená funkční akce je řez M3.5c. Všechny čtyři toky vytvoření a
+  editace tréninku/závodu používají společný fail-closed parser a dual-write
+  původních + normalizovaných hodnot `sports-measurement-v1`. Historická data,
+  produkce a vzdálený repozitář zůstaly beze změny.
+
+  Předchozí dokončená funkční akce je řez M3.5b. Databáze a společný validátor
+  získaly aditivní `sports-measurement-v1`; historická data zůstala beze změny a
+  read-only přehled ukazuje pokrytí v1.
 
   Předchozí dokončená funkční akce je řez M3.5a. Administrátor má agregovaný
   read-only přehled pěti sportovních zdrojů bez osobních a naměřených hodnot.
@@ -812,6 +834,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 100 | dokončení M3.2 | opt-in/opt-out, idempotentní fronta a audit, sdílený localhost-only outbox; browser zapnout → 1 zpráva → lokální uložení → vypnout, 462/4026, 457 parse, 49/49, backup 98, audit 0 |
 | 101 | M3.5a kvalita sportovních dat | admin-only agregace pěti zdrojů bez jmen, ID a hodnot; browser 5 karet / 0 formulářů / 0 vstupů / konzole 0; integrovaný kontrakt hlídá jednotnou identitu, osoby a docházku; 466/4075, 461 parse, 49/49, audit 0 |
 | 102 | M3.5b sportovní datový kontrakt | aditivní `sports-measurement-v1` pro m/km, metry, milisekundy, RPE 1–10 a stavy entered/finished/DNS/DNF/DSQ; žádný backfill, browser 0 formulářů/vstupů a konzole 0; 477/4107, 466 parse, 50/50, backup 100, audit 0 |
+| 103 | M3.5c normalizovaný zápis sportovních dat | čtyři formuláře/handlery sdílí fail-closed parser a ukládají legacy + v1 hodnoty; výslovná jednotka, striktní čas/RPE, testovaný importní mapper bez ostrého zápisu; browser bez odeslání a konzole 0; 487/4161, 469 parse, 50/50, backup 100, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

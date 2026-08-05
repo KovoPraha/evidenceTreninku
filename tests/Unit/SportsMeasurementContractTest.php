@@ -16,6 +16,8 @@ final class SportsMeasurementContractTest extends TestCase
         self::assertSame(1500.0, \sportsMeasurementDistanceMeters('1,5', 'km'));
         self::assertSame(250.25, \sportsMeasurementDistanceMeters('250.25', 'm'));
         self::assertNull(\sportsMeasurementDistanceMeters('', null));
+        self::assertSame('m', \sportsMeasurementDisplayUnit('m'));
+        self::assertSame('km', \sportsMeasurementDisplayUnit(null));
     }
 
     public function testNonEmptyDistanceWithoutSupportedUnitIsRejected(): void

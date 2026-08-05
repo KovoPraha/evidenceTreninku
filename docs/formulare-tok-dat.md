@@ -10,6 +10,11 @@ Přehled všech formulářů v aplikaci: co každý dělá, jaká data přijím�
 
 **Účel:** Vytvoření nového tréninku trenérem.
 
+**Měření M3.5c:** Klient odesílá JSON `mereni_json` včetně výslovné
+`distance_unit`. Sdílený `sportsMeasurementRowsFromPost()` před zahájením
+databázové transakce ověří typ, jednotku, striktní čas a RPE a připraví původní
+i normalizované hodnoty `sports-measurement-v1`.
+
 **POST pole:**
 | Pole | Typ | Popis |
 |------|-----|-------|
@@ -40,7 +45,7 @@ Přehled všech formulářů v aplikaci: co každý dělá, jaká data přijím�
 3. `INSERT INTO trenink_skupina` (pokud skupina zvolena)
 4. `INSERT INTO trenink_podskupina` (M:N)
 5. `INSERT INTO trenink_sportovec` (M:N)
-6. `buildMereniRowsFromPost()` → `INSERT INTO mereni_zaznamy` + `INSERT INTO trenink_mereni`
+6. `sportsMeasurementRowsFromPost()` → sdílený v1 INSERT do `mereni_zaznamy` + `INSERT INTO trenink_mereni`
 7. Upload obrázků → `finfo_file()` MIME check → cesty se sbírají do pole `$imagePaths`, pak `json_encode()` → uloženo do sloupce `treninky.obrazky` (JSON pole relativních cest, **žádná separátní tabulka**)
 8. `audit_log()` — záznam akce
 
@@ -57,6 +62,9 @@ Přehled všech formulářů v aplikaci: co každý dělá, jaká data přijím�
 **Přístup:** Trenér musí být přiřazen k tréninku (`trenink_trener`) nebo mít roli `hlavni`. Kontrola v `edit_trenink.php` (GET) i `update_trenink.php` (POST).
 
 **POST pole:** Stejná struktura jako `ulozit_trenink.php` + `trenink_id`.
+
+Editace používá stejný společný parser jako vytvoření. Starší vzdálenost bez
+uložené jednotky musí obsluha před uložením výslovně označit jako `m` nebo `km`.
 
 **DB transakce (update_trenink.php):**
 1. `UPDATE treninky SET ...`
@@ -143,7 +151,7 @@ Přehled všech formulářů v aplikaci: co každý dělá, jaká data přijím�
 **DB transakce (ulozit_zavod.php):**
 1. `INSERT INTO zavody`
 2. `INSERT INTO zavod_sportovec` (M:N)
-3. `buildMereniRowsFromPost()` → `INSERT INTO mereni_zaznamy` + `INSERT INTO zavod_mereni`
+  3. `sportsMeasurementRowsFromPost()` → sdílený v1 INSERT do `mereni_zaznamy` + `INSERT INTO zavod_mereni`
 4. Upload fotek → `INSERT INTO zavod_fotka`
 5. Upload souborů (PDF/XLS/XLSX/CSV) → `INSERT INTO zavod_import`
 
@@ -156,6 +164,9 @@ Přehled všech formulářů v aplikaci: co každý dělá, jaká data přijím�
 **Účel:** Editace závodu — stejná struktura jako tvorba, ale s prefillováním dat.
 
 **Prefill měření:** JS funkce `prefillMereni()` načte JSON z DB a předvyplní dynamické řádky.
+
+Nové i editované řádky vyžadují výslovnou jednotku vzdálenosti a používají stejný
+striktní parser jako formulář tréninku. Neplatný vstup selže před DB transakcí.
 
 **DB transakce (update_zavod.php):**
 - DELETE + INSERT vzor pro všechny M:N vazby (zavod_sportovec, zavod_mereni, zavod_fotka)

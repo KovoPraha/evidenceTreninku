@@ -140,6 +140,7 @@ foreach ($stmtM->fetchAll(PDO::FETCH_ASSOC) as $r) {
         'sportovec_id' => (string)($r['sportovec_id'] ?? ''),
         'sportovec_label' => (string)($r['sportovec_label'] ?? ''),
         'vzdalenost' => ($r['vzdalenost'] ?? ''),
+        'distance_unit' => ($r['distance_unit'] ?? ''),
         'cas' => ($r['cas'] ?? ''),
         'prevod' => ($r['prevod'] ?? ''),
         'cvik_id' => ($r['cvik_id'] ?? ''),
@@ -353,8 +354,8 @@ if (!empty($trenink['datum'])) {
                             <div class="d-flex align-items-center gap-2 p-2 rounded"
                                  style="background:#e8f5e9; border:1px solid #c8e6c9;">
                                 <i class="bi bi-clock-history text-success"></i>
-                                <span class="small fw-semibold">Formát času: <code>mm:ss.xx</code></span>
-                                <span class="text-muted small">např. <code>02:13.45</code> = 2 min 13,45 s</span>
+                                <span class="small fw-semibold">Čas: <code>MM:SS(.mmm)</code> nebo <code>HH:MM:SS(.mmm)</code></span>
+                                <span class="text-muted small">Starší vzdálenost při úpravě potvrďte výběrem m nebo km.</span>
                             </div>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-success" id="btnAddMereni">
@@ -796,11 +797,17 @@ if (!empty($trenink['datum'])) {
                 <div class="row g-2">
                     <div class="col-md-3">
                         <label class="form-label mb-1">Vzdálenost (m)</label>
-                        <input type="number" step="1" class="form-control js-vzdalenost">
+                        <div class="input-group">
+                            <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" placeholder="Vzdálenost">
+                            <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">
+                                <option value="">jednotka</option><option value="m">m</option><option value="km">km</option>
+                            </select>
+                        </div>
+                        <div class="invalid-feedback">Vyplňte vzdálenost i jednotku m nebo km.</div>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label mb-1">Čas (mm:ss.xx)</label>
-                        <input type="text" class="form-control js-cas" placeholder="02:13.45">
+                        <input type="text" class="form-control js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     </div>
                     <div class="col-md-3 ${typ === 'kolo' ? '' : 'd-none'}">
                         <label class="form-label mb-1">Převod</label>
@@ -829,7 +836,7 @@ if (!empty($trenink['datum'])) {
                     </div>
                     <div class="col-md-2">
                         <label class="form-label mb-1">RPE</label>
-                        <input type="text" class="form-control js-rpe" placeholder="8/10">
+                        <input type="number" min="1" max="10" step="0.5" class="form-control js-rpe" placeholder="7">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label mb-1">Pozn.</label>
@@ -847,7 +854,7 @@ if (!empty($trenink['datum'])) {
                     </div>
                     <div class="col-md-3">
                         <label class="form-label mb-1">Čas (mm:ss.xx)</label>
-                        <input type="text" class="form-control js-cas" placeholder="02:13.45">
+                        <input type="text" class="form-control js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label mb-1">Poznámka</label>
@@ -950,6 +957,7 @@ if (!empty($trenink['datum'])) {
 
             if (prefill.typ === 'kolo' || prefill.typ === 'beh') {
                 row.querySelector('.js-vzdalenost')?.value = prefill.vzdalenost ?? '';
+                if (row.querySelector('.js-distance-unit')) row.querySelector('.js-distance-unit').value = prefill.distance_unit ?? '';
                 row.querySelector('.js-cas')?.value = prefill.cas ?? '';
                 row.querySelector('.js-prevod')?.value = prefill.prevod ?? '';
                 row.querySelector('.js-poznamka')?.value = prefill.poznamka ?? '';
@@ -992,6 +1000,7 @@ if (!empty($trenink['datum'])) {
 
             if (typ === 'kolo' || typ === 'beh') {
                 obj.vzdalenost = (r.querySelector('.js-vzdalenost')?.value ?? '').trim();
+                obj.distance_unit = (r.querySelector('.js-distance-unit')?.value ?? '').trim();
                 obj.cas = (r.querySelector('.js-cas')?.value ?? '').trim();
                 obj.prevod = (r.querySelector('.js-prevod')?.value ?? '').trim();
                 obj.poznamka = (r.querySelector('.js-poznamka')?.value ?? '').trim();
@@ -1043,6 +1052,14 @@ if (!empty($trenink['datum'])) {
                 valid = false;
             } else {
                 spName.classList.remove('is-invalid');
+            }
+            if (typ === 'kolo' || typ === 'beh') {
+                const distance = row.querySelector('.js-vzdalenost');
+                const unit = row.querySelector('.js-distance-unit');
+                const pairValid = Boolean(distance?.value) === Boolean(unit?.value);
+                distance?.classList.toggle('is-invalid', !pairValid);
+                unit?.classList.toggle('is-invalid', !pairValid);
+                if (!pairValid) valid = false;
             }
         });
 

@@ -1,7 +1,7 @@
-# Kvalita sportovních dat – M3.5a a M3.5b
+# Kvalita sportovních dat – M3.5a až M3.5c
 
-Stav k 5. 8. 2026: read-only inventura i verzovaný kontrakt v1 jsou implementované
-a ověřené na localhostu.
+Stav k 5. 8. 2026: read-only inventura, verzovaný kontrakt v1 i jeho použití při
+novém zápisu jsou implementované a ověřené na localhostu.
 Produkce se nezměnila.
 
 ## Účel
@@ -47,10 +47,10 @@ Počty jsou pouze snapshot testovacích localhost dat a mohou se měnit.
 - zátěžové testy před další analytikou potřebují schválený účel, přístupy,
   retenční dobu a pravidlo výmazu.
 
-## Kontrakt M3.5b: `sports-measurement-v1`
+## Kontrakt M3.5b–c: `sports-measurement-v1`
 
-Nový kontrakt je připraven pro budoucí formuláře a jednorázové importy. Nemění
-ani automaticky nepřevádí žádný historický řádek:
+Nový kontrakt používají všechny čtyři formuláře a handlery pro vytvoření i editaci
+tréninku a závodu. Nemění ani automaticky nepřevádí žádný historický řádek:
 
 - vzdálenost vždy vyžaduje výslovnou jednotku `m` nebo `km` a ukládá se také
   normalizovaně v metrech,
@@ -75,5 +75,14 @@ ukazuje pokrytí kontraktem v1, ale nikdy nevypisuje hodnoty nebo osoby.
 - Tréninky se převezmou ze stávající produkční Evidence; jejich objem je malý.
 - Historické texty se při importu nepřevádějí odhadem. Pokud jednotka nebo formát
   není jednoznačný, zůstane normalizovaná hodnota prázdná a originál čitelný.
-- M3.5b zatím nepřepojuje staré formuláře na nový zápis. To je samostatný řez
-  M3.5c, který použije tento společný validátor v UI a importérech.
+- M3.5c připojuje formuláře `formular.php`, `edit_trenink.php`,
+  `formular_zavod.php` a `edit_zavod_form.php` ke společnému parseru
+  `includes/sports_measurement_input.php`. Nový zápis ukládá původní čitelná pole
+  i normalizované hodnoty v1; neplatná jednotka, čas nebo RPE se odmítnou ještě
+  před databázovou transakcí.
+- Zobrazení starších řádků bez uložené jednotky zachovává dosavadní význam `km`.
+  Při editaci však musí obsluha jednotku výslovně potvrdit, takže se nový zápis
+  nevytváří odhadem.
+- Stejný soubor obsahuje fail-closed mapper budoucího importu závodních výsledků.
+  Samotný jednorázový import KIS/e-shopu ani produkčních tréninků se v M3.5c
+  nespouští a produkční data zůstávají beze změny.

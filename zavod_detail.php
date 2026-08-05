@@ -5,6 +5,7 @@ require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
 if (!canAccess('zavod_detail')) { header('Location: index.php'); exit; }
 require_once 'db.php';
+require_once __DIR__ . '/includes/sports_measurement_contract.php';
 
 function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -20,7 +21,7 @@ function renderMereniData(array $mz): string {
     $typ   = $mz['typ'] ?? '';
     $parts = [];
     if ($typ === 'kolo' || $typ === 'beh') {
-        if (!empty($mz['vzdalenost']) && $mz['vzdalenost'] !== '0') $parts[] = '<strong>' . h($mz['vzdalenost']) . '</strong> km';
+        if (!empty($mz['vzdalenost']) && $mz['vzdalenost'] !== '0') $parts[] = '<strong>' . h($mz['vzdalenost']) . '</strong> ' . h(sportsMeasurementDisplayUnit($mz['distance_unit'] ?? null));
         if (!empty($mz['cas']))    $parts[] = '⏱ ' . h($mz['cas']);
         if (!empty($mz['prevod']) && $typ === 'kolo') $parts[] = 'převod ' . h($mz['prevod']);
     } elseif ($typ === 'posilovna') {

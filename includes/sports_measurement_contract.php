@@ -15,6 +15,13 @@ function sportsMeasurementDistanceUnits(): array
     return ['m', 'km'];
 }
 
+/** Existing pre-v1 rows were historically displayed as kilometres. */
+function sportsMeasurementDisplayUnit(?string $unit): string
+{
+    $unit = strtolower(trim((string)$unit));
+    return in_array($unit, sportsMeasurementDistanceUnits(), true) ? $unit : 'km';
+}
+
 /**
  * @param int|float|string|null $value
  */

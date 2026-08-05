@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 }
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/sports_measurement_input.php';
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     die('Neplatný CSRF token.');
@@ -16,106 +17,6 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
-/**
- * Stejn� parser m��en� jako v ulozit_trenink.php (��dek => jedna polo�ka).
- */
-function buildMereniRowsFromPost(array $post): array
-{
-    if (!empty($post['mereni_json'])) {
-        $decoded = json_decode((string)$post['mereni_json'], true);
-        if (!is_array($decoded)) return [];
-
-        $out = [];
-        foreach ($decoded as $row) {
-            if (!is_array($row)) continue;
-
-            $typ = isset($row['typ']) ? trim((string)$row['typ']) : '';
-            if ($typ === '') continue;
-
-            $sid = null;
-            if (isset($row['sportovec_id']) && ctype_digit((string)$row['sportovec_id'])) {
-                $sidInt = (int)$row['sportovec_id'];
-                if ($sidInt > 0) $sid = $sidInt;
-            }
-
-            if ($typ === 'kolo' || $typ === 'beh') {
-                $v = isset($row['vzdalenost']) && $row['vzdalenost'] !== '' ? (float)str_replace(',', '.', (string)$row['vzdalenost']) : null;
-                $c = isset($row['cas']) && trim((string)$row['cas']) !== '' ? trim((string)$row['cas']) : null;
-                $p = isset($row['prevod']) && trim((string)$row['prevod']) !== '' ? trim((string)$row['prevod']) : null;
-                $poz = isset($row['poznamka']) && trim((string)$row['poznamka']) !== '' ? trim((string)$row['poznamka']) : null;
-
-                if ($sid === null && $v === null && $c === null && $p === null && $poz === null) continue;
-
-                $out[] = [
-                    'typ' => $typ,
-                    'sportovec_id' => $sid,
-                    'vzdalenost' => $v,
-                    'cas' => $c,
-                    'prevod' => ($typ === 'kolo' ? $p : null),
-                    'cvik_id' => null,
-                    'segment_id' => null,
-                    'vaha' => null,
-                    'opakovani' => null,
-                    'rpe' => null,
-                    'poznamka' => $poz,
-                ];
-                continue;
-            }
-
-            if ($typ === 'kolo_krouzek' || $typ === 'kolo_silnice' || $typ === 'kolo_mtb') {
-                $segId = isset($row['segment_id']) && ctype_digit((string)$row['segment_id']) ? (int)$row['segment_id'] : null;
-                $c = isset($row['cas']) && trim((string)$row['cas']) !== '' ? trim((string)$row['cas']) : null;
-                $poz = isset($row['poznamka']) && trim((string)$row['poznamka']) !== '' ? trim((string)$row['poznamka']) : null;
-
-                if ($sid === null && $segId === null && $c === null && $poz === null) continue;
-
-                $out[] = [
-                    'typ' => $typ,
-                    'sportovec_id' => $sid,
-                    'vzdalenost' => null,
-                    'cas' => $c,
-                    'prevod' => null,
-                    'cvik_id' => null,
-                    'segment_id' => $segId,
-                    'vaha' => null,
-                    'opakovani' => null,
-                    'rpe' => null,
-                    'poznamka' => $poz,
-                ];
-                continue;
-            }
-
-            if ($typ === 'posilovna') {
-                $cvik = isset($row['cvik_id']) && ctype_digit((string)$row['cvik_id']) ? (int)$row['cvik_id'] : null;
-                $vaha = isset($row['vaha']) && $row['vaha'] !== '' ? (float)str_replace(',', '.', (string)$row['vaha']) : null;
-                $op   = isset($row['opakovani']) && $row['opakovani'] !== '' ? (int)$row['opakovani'] : null;
-                $rpe  = isset($row['rpe']) && trim((string)$row['rpe']) !== '' ? trim((string)$row['rpe']) : null;
-                $poz  = isset($row['poznamka']) && trim((string)$row['poznamka']) !== '' ? trim((string)$row['poznamka']) : null;
-
-                if ($sid === null && $cvik === null && $vaha === null && $op === null && $rpe === null && $poz === null) continue;
-
-                $out[] = [
-                    'typ' => 'posilovna',
-                    'sportovec_id' => $sid,
-                    'vzdalenost' => null,
-                    'cas' => null,
-                    'prevod' => null,
-                    'cvik_id' => $cvik,
-                    'segment_id' => null,
-                    'vaha' => $vaha,
-                    'opakovani' => $op,
-                    'rpe' => $rpe,
-                    'poznamka' => $poz,
-                ];
-                continue;
-            }
-        }
-
-        return $out;
-    }
-
-    return [];
-}
 
 // --------------------
 // Vstupy
@@ -142,7 +43,13 @@ $ucastnici  = trim((string)($_POST['ucastnici'] ?? ''));
 $napln      = trim((string)($_POST['napln'] ?? ''));
 $poznamka   = trim((string)($_POST['poznamka'] ?? ''));
 
-$mereniRows = buildMereniRowsFromPost($_POST);
+try {
+    $mereniRows = sportsMeasurementRowsFromPost($_POST);
+} catch (InvalidArgumentException $exception) {
+    $_SESSION['flash_error'] = $exception->getMessage();
+    header('Location: edit_trenink.php?id=' . $treninkId);
+    exit;
+}
 
 // Opr�vn�n�
 if (!$isAdmin) {
@@ -331,12 +238,7 @@ try {
 
     // vlo� nov� m��en�
     if (!empty($mereniRows)) {
-        $stmtInsM = $pdo->prepare("
-            INSERT INTO mereni_zaznamy
-                (typ, sportovec_id, vzdalenost, cas, prevod, cvik_id, segment_id, vaha, opakovani, rpe, poznamka)
-            VALUES
-                (:typ, :sportovec_id, :vzdalenost, :cas, :prevod, :cvik_id, :segment_id, :vaha, :opakovani, :rpe, :poznamka)
-        ");
+        $stmtInsM = $pdo->prepare(sportsMeasurementInsertSql());
 
         $stmtLinkM = $pdo->prepare("
             INSERT INTO trenink_mereni (trenink_id, mereni_id, poradi)
@@ -345,19 +247,7 @@ try {
 
         $poradi = 0;
         foreach ($mereniRows as $row) {
-            $stmtInsM->execute([
-                ':typ' => $row['typ'],
-                ':sportovec_id' => $row['sportovec_id'],
-                ':vzdalenost' => $row['vzdalenost'],
-                ':cas' => $row['cas'],
-                ':prevod' => $row['prevod'],
-                ':cvik_id' => $row['cvik_id'],
-                ':segment_id' => $row['segment_id'] ?? null,
-                ':vaha' => $row['vaha'],
-                ':opakovani' => $row['opakovani'],
-                ':rpe' => $row['rpe'],
-                ':poznamka' => $row['poznamka'],
-            ]);
+            $stmtInsM->execute(sportsMeasurementInsertParameters($row));
 
             $mid = (int)$pdo->lastInsertId();
             $stmtLinkM->execute([

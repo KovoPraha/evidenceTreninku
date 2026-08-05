@@ -38,9 +38,10 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
   skutečný e-mailový transport není implementovaný,
 - admin-only read-only M3.5a inventura pěti sportovních datových zdrojů; vrací
   pouze agregované počty a technická zjištění bez osob a naměřených hodnot,
-- M3.5b `sports-measurement-v1` s výslovnou jednotkou vzdálenosti, časem v
-  milisekundách, číselným RPE a stavy závodu; přidává jen nullable sloupce,
-  nepřevádí historii a zatím není napojený na legacy formuláře,
+- M3.5b–c `sports-measurement-v1` s výslovnou jednotkou vzdálenosti, časem v
+  milisekundách, číselným RPE a stavy závodu; všechny čtyři formuláře vytvoření
+  a editace tréninku/závodu používají společný fail-closed parser a ukládají
+  původní i normalizované hodnoty, historie se automaticky nepřevádí,
 - read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
   a bezpečným JSON reportem; localhost admin může provést auditovaný promote a
@@ -109,7 +110,7 @@ Jakoukoli novou integraci nejprve popiš jako produktové rozhodnutí; nepředpo
 | `ajax_global_search.php` | AJAX: globální vyhledávání (sportovci, tréninky, závody) |
 | `prehled_zavodu.php` | Přehled závodů — kategorie filtr+badge, stats, detail/edit tlačítka |
 | `formular_zavod.php` | Nový závod — kategorie, měření panel, účastníci (chip autocomplete), soubory, URL výsledků |
-| `ulozit_zavod.php` | Uložení závodu (POST) — buildMereniRowsFromPost(), zavod_mereni, fotky |
+| `ulozit_zavod.php` | Uložení závodu (POST) — sdílený `sportsMeasurementRowsFromPost()`, normalizovaná měření v1, zavod_mereni, fotky |
 | `edit_zavod_form.php` | Formulář editace závodu — předvyplnění měření z zavod_mereni, prefillMereni() JS |
 | `update_zavod.php` | Aktualizace závodu (POST) — delete/reinsert měření, soft-delete fotek |
 | `zavod_detail.php` | Detail závodu — výsledky (int/ext závodníci), měření, galerie, soubory, tisk |
@@ -484,7 +485,8 @@ Guard pro ENUM rozšíření: `$colDef('tabulka', 'sloupec')` → `strpos($def['
 Systém měření ve `formular.php`, `edit_trenink.php`, `formular_zavod.php`, `edit_zavod_form.php`:
 - **Typ měření**: kolo, kolo_krouzek, kolo_silnice, kolo_mtb, běh, posilovna
 - Data uložena v `mereni_zaznamy` + `trenink_mereni` nebo `zavod_mereni` (M:N s pořadím)
-- JSON serializace na klientu → POST `mereni_json` → `buildMereniRowsFromPost()` v handlerech
+- JSON serializace na klientu → POST `mereni_json` → společný
+  `sportsMeasurementRowsFromPost()` v `includes/sports_measurement_input.php`
 - **Kolo/Běh**: vzdálenost, čas, převod, poznámka
 - **Kolo - Kroužek/Silnice/MTB**: segment (select z `segmenty` dle kategorie), čas, poznámka
 - **Posilovna**: cvik (select z `cviky`), váha, opakování, RPE, poznámka
