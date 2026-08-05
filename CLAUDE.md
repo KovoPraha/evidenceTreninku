@@ -29,6 +29,9 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - kroužkové programy a období, závodní i školní soupisky, rollover a výjimky,
 - události cílené na více soupisek, kapacity a čekací listina,
 - plánovaný trénink ze soupisek, očekávaní účastníci a skutečná docházka,
+- rodinný program, týdenní náhled a dobrovolný týdenní souhrn s odhlášením
+  jedním krokem, idempotentní frontou, auditem a pouze localhostovým outboxem;
+  skutečný e-mailový transport není implementovaný,
 - read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
   a bezpečným JSON reportem; localhost admin může provést auditovaný promote a

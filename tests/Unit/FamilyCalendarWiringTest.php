@@ -18,7 +18,7 @@ final class FamilyCalendarWiringTest extends TestCase
         self::assertStringContainsString('Co nás čeká v příštích 30 dnech', $source);
         self::assertStringContainsString('familyPageItemCount(count($familyAgenda))', $source);
         self::assertStringContainsString('familyWeeklySummaryPreview', $source);
-        self::assertStringContainsString('Jde pouze o náhled.', $source);
+        self::assertStringContainsString('Produkční e-mailový transport zatím není aktivní', $source);
         self::assertStringNotContainsString('familyWeeklySummarySend', $source);
         self::assertStringContainsString('familyWeeklySummaryStartDate', $source);
         self::assertStringContainsString('Další týden →', $source);

@@ -73,6 +73,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260805010000_shop_member_pricing',
                 '20260805020000_member_charge_reminders',
                 '20260805030000_member_charge_reminder_admin',
+                '20260805040000_family_weekly_summaries',
             ],
             array_keys($catalog)
         );
@@ -90,6 +91,9 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'member_charge_reminder_events'));
         self::assertTrue($this->columnExists($pdo, 'member_charge_reminder_events', 'actor_type'));
         self::assertTrue($this->columnExists($pdo, 'member_charge_reminder_events', 'actor_id'));
+        self::assertTrue($this->tableExists($pdo, 'family_weekly_summary_preferences'));
+        self::assertTrue($this->tableExists($pdo, 'family_weekly_summaries'));
+        self::assertTrue($this->tableExists($pdo, 'family_weekly_summary_events'));
         self::assertTrue($this->tableExists($pdo, 'shop_member_category_rules'));
         self::assertTrue($this->tableExists($pdo, 'shop_member_product_prices'));
         self::assertTrue($this->tableExists($pdo, 'shop_member_price_events'));

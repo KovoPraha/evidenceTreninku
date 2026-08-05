@@ -20,6 +20,11 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   tréninky, kroužky, velodrom a účty; podrobnosti jsou v
   `docs/shared-ui-foundation.md`,
 
+- aktuální funkční řez dokončuje M3.2: uživatel má výchozí opt-out, dobrovolné
+  zapnutí a odhlášení jedním krokem; idempotentní týdenní fronta, audit a společný
+  localhost-only outbox jsou ověřené. Produkční e-mailový transport ani CRON
+  nejsou implementované,
+
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
 - poslední implementace: `12c2300` – M3.4 přidává administrátorský read-only
   provozní přehled plateb, vratek, kapacit, přihlášek a provozních výjimek; browser
@@ -68,12 +73,13 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 - KIS funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 48/48,
-- automatické testy 455/3970,
-- first-party PHP syntaxe 450 souborů bez chyby,
+- migrace localhostu 49/49,
+- automatické testy 462/4026,
+- first-party PHP syntaxe 457 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
-- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
-  ownership kontrakt `2026-08-05.2` zahrnuje kalendář i frontu připomínek,
+- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 98 tabulek;
+  aktuální ownership kontrakt `2026-08-05.3` zahrnuje i tři tabulky týdenních
+  souhrnů,
 - produkce se při těchto změnách neměnila.
 
 Čísla jsou snapshot a nový agent je musí levně ověřit. Cowork bridge kopie může
@@ -102,6 +108,10 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
   `http://localhost/evidencePavel/booking/sportovni_prehled.php?year=2026#rocni-prehled-uhrad`.
 - administrátorský provozní přehled:
   `http://localhost/evidencePavel/provozni_prehled_admin.php`.
+- nastavení týdenního souhrnu:
+  `http://localhost/evidencePavel/booking/sportovni_prehled.php#tydenni-souhrn`.
+- administrátorská fronta týdenních souhrnů:
+  `http://localhost/evidencePavel/family_weekly_summaries_admin.php`.
 
 Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
 a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
@@ -122,7 +132,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
   přenesl 2/2 předpisy včetně jedné samostatné historické platby a po ověření byl
   bezpečně vrácen na 0/2 při zachování auditní historie,
 - M2.6 integrovaná akceptace: 99 %; závěrečná brána živě potvrzuje technickou
-  připravenost 3/3, dostupnost A01–A10 10/10, migrace 48/48 a úplná demo data;
+  připravenost 3/3, dostupnost A01–A10 10/10, migrace 49/49 a úplná demo data;
   vlastníkem je zatím potvrzeno 0/10, takže zbývá jeho průchod a vypořádání
   připomínek,
 - M2.7 hodnota pro členy: 94 %; veřejný i soukromý rodinný ICS feed, opt-in
@@ -135,12 +145,14 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.
-- M3: 35 % technického localhost řešení; M3.1 rodinný program a M3.4 read-only
-  provozní přehled správce jsou hotové, M3.2
-  má bezpečný přihlášený náhled včetně prázdného stavu a listování po týdnech;
+- M3: 55 % technického localhost řešení; M3.1 rodinný program, M3.2 týdenní
+  souhrn a M3.4 read-only provozní přehled správce jsou technicky hotové. M3.2
+  má bezpečný přihlášený náhled, opt-in/opt-out, idempotentní frontu, audit a
+  localhost-only outbox;
   M3.3 má oddělený read-only roční přehled skutečně uhrazených členských
-  předpisů a e-shopových položek. U M3.2 zbývá opt-in, odhlášení, fronta a
-  localhost outbox; u M3.3 vlastníkova kontrola obsahu a rozhodnutí o exportu,
+  předpisů a e-shopových položek. U M3.3 zbývá vlastníkova kontrola obsahu a
+  rozhodnutí o exportu; dalším technickým řezem je M3.5a read-only inventura
+  kvality sportovních dat,
   produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,

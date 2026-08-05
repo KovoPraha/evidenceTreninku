@@ -13,6 +13,7 @@ require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_summary.php';
+require_once dirname(__DIR__) . '/includes/family_weekly_delivery.php';
 require_once dirname(__DIR__) . '/includes/family_annual_paid_overview.php';
 require_once dirname(__DIR__) . '/includes/member_charge_reminder.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
@@ -37,18 +38,22 @@ $accountId = (int)$_SESSION['verejny_uzivatel_id'];
 $calendarMessage = (string)($_SESSION['family_calendar_message'] ?? '');
 $calendarToken = (string)($_SESSION['family_calendar_token_once'] ?? '');
 $reminderMessage = (string)($_SESSION['member_charge_reminder_message'] ?? '');
+$weeklyDeliveryMessage = (string)($_SESSION['family_weekly_delivery_message'] ?? '');
 unset($_SESSION['family_calendar_message'], $_SESSION['family_calendar_token_once']);
 unset($_SESSION['member_charge_reminder_message']);
+unset($_SESSION['family_weekly_delivery_message']);
 $calendarError = '';
 $reminderError = '';
+$weeklyDeliveryError = '';
 $action = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $action = (string)($_POST['action'] ?? '');
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
-        $calendarError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
+        if ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
+        else $calendarError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
     } else {
         try {
-            $action = (string)($_POST['action'] ?? '');
             if ($action === 'family_calendar_issue') {
                 $issued = familyCalendarFeedIssue($pdo, $accountId);
                 $_SESSION['family_calendar_token_once'] = $issued['token'];
@@ -75,15 +80,26 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 header('Location: sportovni_prehled.php#pripominky-plateb', true, 303);
                 exit;
             }
+            if ($action === 'family_weekly_delivery_save') {
+                $enabled = (string)($_POST['enabled'] ?? '0') === '1';
+                $saved = familyWeeklyDeliverySavePreference($pdo, $accountId, $enabled);
+                $_SESSION['family_weekly_delivery_message'] = $enabled
+                    ? 'Týdenní rodinný souhrn je zapnutý. První zpráva vznikne při nejbližším pondělním zpracování.'
+                    : 'Týdenní rodinný souhrn je vypnutý. Zrušené neodeslané zprávy: ' . (int)$saved['cancelled'] . '.';
+                header('Location: sportovni_prehled.php#tydenni-souhrn', true, 303);
+                exit;
+            }
             $calendarError = 'Neznámá akce kalendáře.';
-        } catch (InvalidArgumentException | MemberChargeReminderException $exception) {
-            if ($action === 'member_charge_reminder_save') $reminderError = $exception->getMessage();
+        } catch (InvalidArgumentException | MemberChargeReminderException | FamilyWeeklyDeliveryException $exception) {
+            if ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = $exception->getMessage();
+            elseif ($action === 'member_charge_reminder_save') $reminderError = $exception->getMessage();
             else $calendarError = $exception->getMessage();
         } catch (FamilyCalendarFeedException $exception) {
             $calendarError = $exception->getMessage();
         } catch (Throwable $exception) {
             error_log('booking/sportovni_prehled.php calendar action: ' . $exception->getMessage());
-            if ($action === 'member_charge_reminder_save') $reminderError = 'Nastavení připomínek se nyní nepodařilo uložit.';
+            if ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = 'Nastavení týdenního souhrnu se nyní nepodařilo uložit.';
+            elseif ($action === 'member_charge_reminder_save') $reminderError = 'Nastavení připomínek se nyní nepodařilo uložit.';
             else $calendarError = 'Nastavení kalendáře se nyní nepodařilo uložit.';
         }
     }
@@ -93,6 +109,8 @@ $calendarState = familyCalendarFeedState($pdo, $accountId);
 $calendarUrl = $calendarToken !== '' ? familyCalendarFeedUrl($calendarToken) : '';
 $reminderPreference = memberChargeReminderPreference($pdo, $accountId);
 $reminderSummary = memberChargeReminderAccountSummary($pdo, $accountId);
+$weeklyDeliveryPreference = familyWeeklyDeliveryPreference($pdo, $accountId);
+$weeklyDeliverySummary = familyWeeklyDeliveryAccountSummary($pdo, $accountId);
 $overview = [];
 $familyOrderItems = [];
 $familyAgenda = [];
@@ -188,7 +206,21 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
     <section class="card border-info shadow-sm mb-4" id="tydenni-souhrn">
         <div class="card-header bg-info-subtle d-flex flex-wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-envelope-paper me-2"></i>Náhled týdenního souhrnu</strong><?php if ($weeklySummary !== null): ?><span class="badge text-bg-light border text-dark"><?= familyPageH($weeklySummary['period_label']) ?></span><?php endif; ?></div>
         <div class="card-body">
-            <div class="alert alert-info py-2"><strong>Jde pouze o náhled.</strong> Nic se neodesílá a odběr zatím nelze zapnout.</div>
+            <?php if ($weeklyDeliveryMessage !== ''): ?><div class="alert alert-success py-2"><?= familyPageH($weeklyDeliveryMessage) ?></div><?php endif; ?>
+            <?php if ($weeklyDeliveryError !== ''): ?><div class="alert alert-danger py-2"><?= familyPageH($weeklyDeliveryError) ?></div><?php endif; ?>
+            <div class="alert alert-info py-2">
+                <strong><?= $weeklyDeliveryPreference['enabled'] ? 'Odběr je zapnutý.' : 'Odběr je vypnutý.' ?></strong>
+                Souhrn se připravuje nejvýše jednou týdně a používá vždy aktuální oprávnění k rodinným profilům.
+                Produkční e-mailový transport zatím není aktivní; na localhostu lze zprávu bezpečně projít v testovacím outboxu.
+            </div>
+            <form method="post" class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <?= csrf_field() ?><input type="hidden" name="action" value="family_weekly_delivery_save">
+                <input type="hidden" name="enabled" value="<?= $weeklyDeliveryPreference['enabled'] ? '0' : '1' ?>">
+                <button class="btn btn-sm <?= $weeklyDeliveryPreference['enabled'] ? 'btn-outline-danger' : 'btn-info' ?>">
+                    <?= $weeklyDeliveryPreference['enabled'] ? 'Vypnout týdenní souhrn' : 'Zapnout týdenní souhrn' ?>
+                </button>
+                <span class="small text-muted">Čeká <?= (int)$weeklyDeliverySummary['pending'] ?> · zpracováno <?= (int)$weeklyDeliverySummary['sent'] ?> · selhalo <?= (int)$weeklyDeliverySummary['failed'] ?></span>
+            </form>
             <?php if ($weeklyError !== ''): ?><div class="alert alert-warning"><?= familyPageH($weeklyError) ?></div>
             <?php elseif ($weeklySummary !== null): ?>
                 <div class="d-flex justify-content-between gap-2 mb-3"><a class="btn btn-sm btn-outline-secondary" href="?week=<?= urlencode($weeklyPrevious) ?>#tydenni-souhrn">← Předchozí týden</a><a class="btn btn-sm btn-outline-secondary" href="?week=<?= urlencode($weeklyNext) ?>#tydenni-souhrn">Další týden →</a></div>

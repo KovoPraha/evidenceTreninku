@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/local_message_outbox.php';
+
 final class MemberChargeReminderException extends RuntimeException
 {
 }
@@ -271,35 +273,19 @@ function memberChargeReminderMailSender(string $recipient, string $subject, stri
 /** @return callable(string,string,string):bool */
 function memberChargeReminderLocalOutboxSender(string $appHost, ?string $directory = null): callable
 {
-    $host = strtolower((string)preg_replace('/:\d+$/D', '', trim($appHost)));
-    if (!in_array($host, ['localhost', '127.0.0.1'], true)) {
-        throw new MemberChargeReminderException('Lokální testovací outbox je povolen pouze na localhostu.');
-    }
     $directory ??= dirname(__DIR__) . '/var/member-charge-reminder-outbox';
-    if (!is_dir($directory) && !mkdir($directory, 0700, true) && !is_dir($directory)) {
-        throw new MemberChargeReminderException('Adresář testovacího outboxu nelze vytvořit.');
+    try {
+        $sender = localMessageOutboxSender($appHost, 'member-charge-reminder-local-outbox-v1', $directory);
+    } catch (Throwable $exception) {
+        throw new MemberChargeReminderException($exception->getMessage(), 0, $exception);
     }
-    $resolved = realpath($directory);
-    if ($resolved === false || !is_writable($resolved)) {
-        throw new MemberChargeReminderException('Adresář testovacího outboxu není zapisovatelný.');
-    }
-    return static function (string $recipient, string $subject, string $body) use ($resolved): bool {
-        if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $recipient . $subject) === 1) {
-            throw new MemberChargeReminderException('Připomínka obsahuje neplatnou e-mailovou hlavičku.');
+
+    return static function (string $recipient, string $subject, string $body) use ($sender): bool {
+        try {
+            return $sender($recipient, $subject, $body);
+        } catch (Throwable $exception) {
+            throw new MemberChargeReminderException($exception->getMessage(), 0, $exception);
         }
-        $payload = json_encode([
-            'schema' => 'member-charge-reminder-local-outbox-v1',
-            'captured_at' => (new DateTimeImmutable())->format(DATE_ATOM),
-            'original_recipient' => $recipient,
-            'subject' => $subject,
-            'body' => $body,
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-        $path = $resolved . DIRECTORY_SEPARATOR . date('Ymd_His') . '_' . bin2hex(random_bytes(8)) . '.json';
-        if (file_put_contents($path, $payload . PHP_EOL, LOCK_EX) === false) {
-            throw new MemberChargeReminderException('Testovací zprávu nelze uložit do outboxu.');
-        }
-        @chmod($path, 0600);
-        return true;
     };
 }
 

@@ -1,5 +1,24 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — dokončení M3.2
+
+- Týdenní rodinný souhrn má výchozí opt-out, dobrovolné zapnutí a odhlášení
+  jedním krokem v `booking/sportovni_prehled.php`.
+- Migrace `20260805040000_family_weekly_summaries` přidává preference,
+  idempotentní snapshot frontu a audit. Unikátní účet + počátek týdne brání
+  duplicitám; vypnutí ruší všechny neodeslané zprávy.
+- `family_weekly_summaries_admin.php` umí pouze na localhostu připravit frontu a
+  uložit jednu zprávu do chráněného souborového outboxu. Produkční transport ani
+  CRON nejsou implementované.
+- Lokální outbox je sdílený s připomínkami členských plateb přes
+  `includes/local_message_outbox.php`.
+- Browser ověřil zapnutí → jednu zprávu → lokální uložení → vypnutí, bez zbylé
+  fronty a bez konzolové chyby. Plná sada je 462/4026, syntaxe 457 PHP souborů,
+  migrace 49/49, MariaDB backup smoke 98 tabulek a Composer audit bez nálezu.
+  Produkce se nezměnila.
+- Další implementovatelný řez je M3.5a: read-only inventura kvality sportovních
+  dat, jednotek, úplnosti a oprávnění bez zdravotních predikcí.
+
 ## Aktualizace 5. 8. 2026 — sjednocení uživatelského rozhraní
 
 - Evidence, KIS, e-shop a rezervace používají společný základ
@@ -20,10 +39,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD: `12c2300`.
-- Implementace `6655a39` a `12c2300` jsou commitnuté; větev `main`, upstream
+- Poslední přijatý implementační HEAD před M3.2: `3a35a2b`.
+- Implementace `6655a39`, `12c2300` a `3a35a2b` jsou commitnuté; větev `main`, upstream
   `origin/main`. Vzdálený repozitář ani produkce se v tomto řezu nezměnily.
-- Localhost DB je 48/48. Vzdálený repozitář se v této M2.7 session neměnil;
+- Localhost DB je 49/49. Vzdálený repozitář se v této M2.7 session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
@@ -43,7 +62,14 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce: `12c2300` dokončuje technický řez M3.4.
+- Poslední dokončená funkční akce je tento řez M3.2. Uživatel si týdenní souhrn
+  dobrovolně zapne nebo jedním krokem vypne; idempotentní fronta a audit jsou
+  napojené na kanonickou rodinnou agendu. Administrátor má pouze localhostový
+  souborový outbox a produkční e-mail zůstává nepřítomný. Browser ověřil celý tok,
+  plná sada je 462/4026, syntaxe 457 souborů, migrace 49/49, backup smoke 98
+  tabulek a audit 0.
+
+  Předchozí dokončená funkční akce: `12c2300` dokončuje technický řez M3.4.
   Administrátor má read-only provozní přehled peněz, kapacit, přihlášek a výjimek,
   který pouze odkazuje do existujících auditovaných obrazovek. Browser ověřil
   přihlášení lokálním syntetickým administrátorem, čtyři sekce, stav 0 signálů a
@@ -735,6 +761,10 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 94 | M2.6 závěrečná brána `9a04c3c` | localhost-only read-only panel kontroluje cesty, migrační checksumy a demo data odděleně od vlastníkova PASS; browser 3/3, 10/10 cest, 48/48 migrací, vlastník 0/10, blokátory 0; 429/3833, 433 parse, backup 95, audit 0 |
 | 95 | M3.1 rodinný program `1510c20` | 30denní read-only agenda z kanonického rodinného kalendáře; browser rodiče 2 správné položky, cizí osoba nezobrazena, konzole 0; 431/3847, 433 parse, 48/48, backup 95, audit 0 |
 | 96 | M3.2a týdenní náhled `82d41ac` | prostý text ze sedmidenní rodinné agendy, prázdný stav a omezené listování; browser 1 akce + 1 splatnost, bez cizí osoby a transportu; 434/3872, 434 parse, 48/48, backup 95, audit 0 |
+| 97 | M3.3 roční přehled `63c8ec1` | read-only uhrazené členské předpisy a e-shopové položky po osobách a měnách; bez účetního/daňového exportu; 438/3897, 438 parse, 48/48, audit 0 |
+| 98 | M3.4 provozní přehled `12c2300` | admin read-only signály peněz, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek; 452/3951, 450 parse, 48/48, audit 0 |
+| 99 | sjednocený UI základ `3a35a2b` | společné pozadí, formuláře, načítání, toast zprávy a veřejná navigace pro 127 aktivních HTML stránek; 455/3970, 450 parse, 48/48, audit 0 |
+| 100 | dokončení M3.2 | opt-in/opt-out, idempotentní fronta a audit, sdílený localhost-only outbox; browser zapnout → 1 zpráva → lokální uložení → vypnout, 462/4026, 457 parse, 49/49, backup 98, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

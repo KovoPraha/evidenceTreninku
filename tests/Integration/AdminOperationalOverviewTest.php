@@ -16,7 +16,7 @@ final class AdminOperationalOverviewTest extends TestCase
         $overview = adminOperationalOverview($this->database(), new DateTimeImmutable('2026-08-05 12:00:00'));
 
         self::assertSame([], $overview['unavailable']);
-        self::assertSame(13, $overview['signal_count']);
+        self::assertSame(14, $overview['signal_count']);
         self::assertSame([
             'overdue_member_charges', 'refunds_required', 'expired_shop_orders', 'fio_proposals',
         ], array_column($overview['sections']['payments']['items'], 'key'));
@@ -25,7 +25,7 @@ final class AdminOperationalOverviewTest extends TestCase
             'waitlisted_registrations', 'pending_person_claims', 'payment_pending_registrations',
         ], array_column($overview['sections']['registrations']['items'], 'key'));
         self::assertSame([
-            'failed_charge_reminders', 'failed_event_notifications', 'fio_review', 'kis_conflicts',
+            'failed_charge_reminders', 'failed_weekly_summaries', 'failed_event_notifications', 'fio_review', 'kis_conflicts',
         ], array_column($overview['sections']['exceptions']['items'], 'key'));
 
         $refund = $this->item($overview, 'payments', 'refunds_required');
@@ -47,6 +47,7 @@ final class AdminOperationalOverviewTest extends TestCase
         $pdo->exec("UPDATE club_event_registrations SET status='cancelled'");
         $pdo->exec("UPDATE account_person_claim_requests SET status='approved'");
         $pdo->exec("UPDATE member_charge_reminders SET status='sent'");
+        $pdo->exec("UPDATE family_weekly_summaries SET status='sent'");
         $pdo->exec("UPDATE club_event_notifications SET status='sent'");
         $pdo->exec("UPDATE kis_import_matches SET match_status='matched'");
 
@@ -103,6 +104,7 @@ final class AdminOperationalOverviewTest extends TestCase
         $pdo->exec('CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,status TEXT)');
         $pdo->exec('CREATE TABLE account_person_claim_requests(id INTEGER PRIMARY KEY,status TEXT)');
         $pdo->exec('CREATE TABLE member_charge_reminders(id INTEGER PRIMARY KEY,status TEXT)');
+        $pdo->exec('CREATE TABLE family_weekly_summaries(id INTEGER PRIMARY KEY,status TEXT)');
         $pdo->exec('CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY,status TEXT)');
         $pdo->exec('CREATE TABLE kis_import_runs(id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE kis_import_matches(id INTEGER PRIMARY KEY,run_id INTEGER,match_status TEXT)');
@@ -118,6 +120,7 @@ final class AdminOperationalOverviewTest extends TestCase
         $pdo->exec("INSERT INTO club_program_enrollments VALUES(1,1,'active')");
         $pdo->exec("INSERT INTO account_person_claim_requests VALUES(1,'pending')");
         $pdo->exec("INSERT INTO member_charge_reminders VALUES(1,'failed')");
+        $pdo->exec("INSERT INTO family_weekly_summaries VALUES(1,'failed')");
         $pdo->exec("INSERT INTO club_event_notifications VALUES(1,'failed')");
         $pdo->exec("INSERT INTO kis_import_runs VALUES(1),(2)");
         $pdo->exec("INSERT INTO kis_import_matches VALUES(1,1,'conflict'),(2,2,'ambiguous'),(3,2,'matched')");

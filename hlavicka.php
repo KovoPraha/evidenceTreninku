@@ -365,6 +365,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-envelope-exclamation me-2 text-warning"></i>Fronta e-mailů K3</a></li>
                             <li><a class="dropdown-item<?= _dropActive('member_charge_reminders_admin.php') ?>" href="member_charge_reminders_admin.php">
                                 <i class="bi bi-bell me-2 text-warning"></i>Připomínky plateb</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('family_weekly_summaries_admin.php') ?>" href="family_weekly_summaries_admin.php">
+                                <i class="bi bi-envelope-paper me-2 text-info"></i>Týdenní souhrny</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_identity_admin.php') ?>" href="eshop_identity_admin.php">
                                 <i class="bi bi-people me-2 text-primary"></i>Účty, rodiče a sportovci</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_child_access_admin.php') ?>" href="kis_child_access_admin.php">

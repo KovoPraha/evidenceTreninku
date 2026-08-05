@@ -60,6 +60,7 @@ function familyWeeklySummaryPreview(PDO $pdo, int $accountId, string $from): arr
         . 'zde je rodinný program na období ' . $periodLabel . ".\n\n"
         . ($lines === [] ? "V tomto období nemáte evidovanou žádnou položku.\n" : implode("\n", $lines) . "\n")
         . "\nAktuální přehled po přihlášení: " . familyWeeklySummaryPortalUrl()
+        . "\nOdběr lze kdykoli jedním krokem vypnout ve sportovním přehledu."
         . "\n\nKlub KOVO Praha";
     return [
         'from' => $fromDate->format('Y-m-d'),

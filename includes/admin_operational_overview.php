@@ -119,6 +119,11 @@ function adminOperationalOverview(PDO $pdo, ?DateTimeImmutable $now = null): arr
         adminOperationalAdd($sections['exceptions'], 'failed_charge_reminders', 'Selhané připomínky členských plateb', $failed, 'Ruční opakování pouze vrátí zprávu do auditované fronty.', 'member_charge_reminders_admin.php?status=failed', 'danger');
     } else $unavailable[] = 'připomínky členských plateb';
 
+    if (adminOperationalHasTables($pdo, ['family_weekly_summaries'])) {
+        $failed = (int)$pdo->query("SELECT COUNT(*) FROM family_weekly_summaries WHERE status='failed'")->fetchColumn();
+        adminOperationalAdd($sections['exceptions'], 'failed_weekly_summaries', 'Selhané týdenní rodinné souhrny', $failed, 'Produkční transport je vypnutý; na localhostu zkontrolujte uložený snapshot a testovací outbox.', 'family_weekly_summaries_admin.php?status=failed', 'danger');
+    } else $unavailable[] = 'týdenní rodinné souhrny';
+
     if (adminOperationalHasTables($pdo, ['club_event_notifications'])) {
         $failed = (int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE status='failed'")->fetchColumn();
         adminOperationalAdd($sections['exceptions'], 'failed_event_notifications', 'Selhaná oznámení z čekací listiny', $failed, 'Zkontrolujte chybu a případně proveďte auditované ruční opakování.', 'eshop_notifications_admin.php?status=failed', 'danger');

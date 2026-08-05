@@ -22,12 +22,12 @@ před dalším rozšiřováním M3.
 |---|---|---:|---|
 | M3.0 převzetí M2 | čeká na vlastníka | 0 % | PASS A01–A10, nulové blokátory a vypořádané důležité připomínky |
 | M3.1 rodinný program | technicky hotovo | 100 % | read-only 30denní přehled tréninků, přihlášených akcí, rezervací a splatností nad stejným oprávněním jako rodinný ICS feed |
-| M3.2 týdenní souhrn | probíhá | 35 % | přihlášený read-only náhled, prázdný stav a omezené listování po týdnech jsou hotové; zbývá opt-in, odhlášení, idempotentní fronta a localhost outbox |
+| M3.2 týdenní souhrn | technicky hotovo | 100 % | náhled, výchozí opt-out, dobrovolný opt-in, odhlášení jedním krokem, idempotentní fronta, audit a localhost-only outbox jsou ověřené; produkční transport zůstává samostatně blokovaný |
 | M3.3 roční přehled plateb | probíhá | 70 % | přihlášený read-only přehled skutečně uhrazených členských předpisů a e-shopových položek je hotový; zbývá vlastníkovo ověření obsahu a rozhodnutí, zda vůbec vznikne schválený export |
 | M3.4 provozní přehled správce | technicky hotovo | 100 % | read-only akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
 | M3.5 datová kvalita sportovního progresu | návrh | 0 % | nejdřív normalizace měření, soukromí nezletilých a vysvětlení kvality; žádné zdravotní predikce |
 
-Orientační technický stav M3: **35 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
+Orientační technický stav M3: **55 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
 
 ## M3.1 – rodinný program
 
@@ -55,7 +55,20 @@ neobsahuje HTML, nevytváří frontu a žádný transport se z webu nevolá.
 
 Browser ověřil prázdný aktuální týden a týden 12.–18. 8. 2026 s jednou akcí a
 jednou splatností. Cizí osoba se nezobrazila a stránka výslovně říká, že nic
-neodesílá a odběr zatím nelze zapnout.
+neodesílá.
+
+Druhý řez dokončuje výchozí opt-out, dobrovolné zapnutí a odhlášení jedním krokem.
+Preference, idempotentní snapshot fronta a audit mají vlastní migraci. Pro jeden
+účet a počátek týdne může vzniknout právě jedna zpráva; před převzetím se znovu
+ověří aktivní ověřený účet a zapnutý odběr. Vypnutí zruší čekající, rozpracované
+i dříve selhané neodeslané zprávy.
+
+Administrátor může na localhostu ručně připravit týden a uložit jednu zprávu do
+chráněného souborového outboxu. Produkční host lokální transport odmítne a žádný
+skutečný e-mailový transport není implementovaný. Browser ověřil celý tok
+zapnout → připravit právě jednu zprávu → uložit do outboxu → vypnout, nulovou
+frontu po zpracování a nulové chyby konzole. Provozní postup je v
+`docs/family-weekly-summaries.md`.
 
 ## M3.3 – roční přehled uhrazených služeb
 
@@ -103,7 +116,7 @@ lokálních dat a žádnou chybu konzole.
 
 ## Další konkrétní krok
 
-Další řez M3.2 může přidat dobrovolný opt-in a idempotentní frontu, ale nejprve
-jen s ručním localhostovým náhledem/outboxem. Produkční transport zůstane vypnutý
-a jeho aktivace vyžaduje schválený text, odhlášení jedním krokem a omezení
-četnosti.
+Další technický řez je M3.5a: read-only inventura kvality existujících tréninkových
+a výkonnostních dat, jejich jednotek, úplnosti a oprávnění. Nejdřív vznikne
+vysvětlitelný přehled kvality; žádné zdravotní predikce ani externí synchronizace.
+Současně zůstává otevřená vlastníkova kontrola M3.3 a celé A01–A10.
