@@ -38,13 +38,21 @@ jobs:
         run: composer test
 
   mariadb-smoke:
-    name: MariaDB integrační smoke
+    name: MariaDB integrační smoke (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    strategy:
+      fail-fast: false
+      matrix:
+        # 10.3 = produkční kompatibilní podlaha (replikant3544, viz
+        # docs/mariadb-10.3-compatibility-2026-08-06.md), 11.4 = dosavadní CI
+        # verze. Localhost vývoj běží na 10.4.32, mezi oběma maticovými verzemi.
+        mariadb-version: ['10.3', '11.4']
+
     services:
       mariadb:
-        image: mariadb:11.4
+        image: mariadb:${{ matrix.mariadb-version }}
         env:
           MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
         ports:

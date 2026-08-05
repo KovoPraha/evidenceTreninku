@@ -1,5 +1,57 @@
 # Session handoff
 
+## Aktualizace 6. 8. 2026 — statická kontrola kompatibility s produkční MariaDB 10.3
+
+- Vlastník 2026-08-05 v phpMyAdmin ověřil produkční DB server: MariaDB
+  `10.3.39` na Debian 10 (`replikant3544`), klientské připojení bez SSL v
+  privátní síti `10.5.x.x`. Je to dnes nejstarší a jediné dosud netestované
+  prostředí projektu (localhost `10.4.32`, CI `11.4`) — zapsáno do řádku
+  „produkční runtime" v poslední známém důkazním snapshotu níže spolu s
+  krátkou poznámkou o otevřeném vlastnickém rozhodnutí ohledně EOL Debian 10
+  a nepatchované MariaDB 10.3 od roku 2023; žádná akce vůči produkci ani
+  produkční DB se neprovedla (ani jen připojení).
+- Statická kontrola `migrations/*.php` (49 souborů), `includes/auto_migrace.php`,
+  `includes/migration_runner.php`, `db.php` a zbytku first-party PHP (mimo
+  `vendor/`, přes 470 souborů) na konstrukce nedostupné v MariaDB 10.3
+  (`INSERT...RETURNING` 10.5.0, `JSON_TABLE`/`JSON_ARRAYAGG`/`JSON_OBJECTAGG`
+  10.5–10.6, `SKIP LOCKED`/`NOWAIT`/`LATERAL` 10.6.0, CTE/window funkce/
+  `INTERSECT`/`EXCEPT`/sekvence/temporální tabulky/`INVISIBLE` sloupce — ty
+  všechny jsou už pod podlahou 10.3 — a nekonstantní `DEFAULT (výraz)` od
+  10.2.1) — **bez nálezu**. Jediná reálná `CHECK (...)` constraint
+  v produkčním MySQL/MariaDB kódu (`training_roster_bridge.php:49`) je
+  kompatibilní, protože MariaDB CHECK vynucuje už od 10.2.1 (druhý nalezený
+  `CHECK` v `club_event_notifications.php:78` je jen v SQLite testovací větvi
+  a proti MariaDB se nikdy neprovede). utf8mb4 kolace jsou v celém repozitáři
+  vždy explicitní (`utf8mb4_unicode_ci`/`utf8mb4_general_ci`) a beze změny
+  napříč 10.3/10.4/11.4. Nic se preventivně nepřepisovalo; plný rozbor včetně
+  zdrojů je v [`docs/mariadb-10.3-compatibility-2026-08-06.md`](../mariadb-10.3-compatibility-2026-08-06.md).
+- `.github/workflows/tests.yml`, job `mariadb-smoke`, dostal `strategy.matrix`
+  se dvěma verzemi (`10.3` produkční podlaha, `11.4` dosavadní CI);
+  `services.mariadb.image` nově interpoluje `${{ matrix.mariadb-version }}`
+  místo pevné `mariadb:11.4`. Workflow nebyl spuštěn (zakázáno zadáním).
+  Žádný ze čtyř smoke kroků není z principu blokovaný na 10.3 — všechny
+  používají jen SQL ověřené jako kompatibilní výše.
+  `tests/Unit/DeployWorkflowContractTest.php` je jediná kódová změna tohoto
+  řezu — kontrakt testoval natvrdo `image: mariadb:11.4`, aktualizován na
+  novou maticovou strukturu.
+- Lokálně (10.3 na XAMPP není k dispozici, poctivě přiznáno — skutečný běh na
+  10.3 proběhne až v CI matici po autorizovaném spuštění) proběhly všechny
+  čtyři MariaDB smoke skripty proti izolované MariaDB `10.4.32`: dětský
+  přístup OK, KIS hobby přechod OK, záloha 100 tabulek OK, sportovní import
+  review OK (5 měření/1 v1, 3 výsledky/1 v1, 7 legacy textových řádků/2
+  rozpoznatelné, 8 inventurních záznamů, 8 nálezů). Po běhu `SHOW DATABASES`
+  potvrdilo úklid všech izolovaných testovacích databází a nedotčenou
+  `evidence`.
+- Ověření: `php -l` na 471 first-party PHP souborů bez chyby (beze změny
+  počtu — žádná PHP kompatibilní oprava nebyla potřeba). Celá sada je
+  493/4278 PHPUnit, 0 selhání (base 493/4277 + 1 nová assertion z opraveného
+  workflow kontraktu). Migrace beze změny (50/50). Produkce, produkční DB a
+  vzdálený Git se v tomto řezu vůbec nepřipojily ani nezměnily.
+- Base před tímto řezem: `9e8d9d0` (MariaDB smoke pro M3.5d). Řez commituje
+  jen `docs/mariadb-10.3-compatibility-2026-08-06.md`,
+  `.github/workflows/tests.yml`, `tests/Unit/DeployWorkflowContractTest.php`
+  a tento soubor.
+
 ## Aktualizace 5. 8. 2026 — MariaDB smoke pro M3.5d sportovní import review
 
 - M3.5d živě odhalil dvě reálné vady, které SQLite testy nezachytily: legacy
@@ -243,7 +295,10 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 
 ## Metadata
 
-- Aktualizováno: 2026-08-05, Europe/Prague
+- Aktualizováno: 2026-08-06, Europe/Prague
+- Poslední přijatý implementační HEAD před statickou kontrolou MariaDB 10.3:
+  `9e8d9d0` (MariaDB smoke pro M3.5d). Řez je čistě dokumentační + CI matice;
+  nesahá na sports/admin stránky ani `includes/sports_import_review.php`.
 - Poslední přijatý implementační HEAD před M3.5e: `cfc3c93` (M3.5d).
 - Poslední přijatý implementační HEAD před opravou Bootstrap hlavičky: `188407c` (M3.5e).
 - Integrační kontrola řídícího vlákna (2026-08-05): HEAD `a90de13`, strom čistý,
@@ -255,9 +310,9 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   řezu (base `a90de13`) a jeho commitem; mění výhradně tento soubor, žádný
   kód ani schéma, takže neruší nic, co smoke skript ověřuje. Zaznamenáno zde
   místo tichého přepsání, jak vyžaduje protokol driftu.
-- Větev `main`, upstream `origin/main`, lokálně ahead 51 / behind 0 proti
+- Větev `main`, upstream `origin/main`, lokálně ahead 52 / behind 0 proti
   poslednímu známému `origin/main` (`aead0be`, bez živého fetch). Vzdálený
-  repozitář ani produkce se v tomto řezu nezměnily.
+  repozitář ani produkce se v tomto řezu nezměnily; `git push` neproveden.
 - Localhost DB je 50/50 (historická hodnota; M3.5e je čistě čtecí klasifikace
   volného textu a nepřidává žádnou migraci). Produkční workflow je ruční a
   produkce se nemění.
@@ -855,7 +910,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | PR / remote CI | PR #1 až #6 merged; finální main run `30743017895` success | 2026-08-02 | GitHub | ano |
 | ochranný snapshot | `d2b3c56` / `codex/pre-reconcile-20260801` | 2026-08-01 | lokální Git | před mazáním větve |
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
-| produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
+| produkční runtime | schema `2.20.2`, PHP `8.2.32`; DB server MariaDB `10.3.39` (Debian 10, host `replikant3544`, klientské připojení bez SSL v privátní síti `10.5.x.x`) | 2026-07-31 (schema/PHP); 2026-08-05 (MariaDB) | deploy post-check (schema/PHP); vlastník / phpMyAdmin (MariaDB) | před releasem |
 | lokální schema | legacy `2.20.2` + 48/48 číslovaných migrací; audit připomínek nově ukládá typ a ID aktéra; hashované rodinné kalendáře a tři tabulky opt-in/fronty/auditu jsou aplikované | 2026-08-05 | migration apply/check + živá localhost MariaDB | ano |
 | testy | 434/3872; M3.2 browserem prázdný aktuální týden a 12.–18. 8. jedna akce + jedna splatnost, bez cizí osoby/transportu a konzole 0; migrace 48/48, backup smoke 95 tabulek, 434 first-party syntaxí a audit 0 | 2026-08-05 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
@@ -865,6 +920,16 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 
 Lokální DB, GitHub run a produkční runtime jsou tři různé zdroje. Výsledek
 jednoho se nesmí vydávat za důkaz druhého.
+
+**Poznámka ke kompatibilní podlaze (2026-08-05):** produkční DB server běží
+MariaDB `10.3.39` na Debian 10 (`replikant3544`) — to je dnes nejstarší a
+jediné dosud netestované prostředí projektu (localhost `10.4.32`, CI `11.4`).
+MariaDB 10.3 je bez bezpečnostních záplat od roku 2023 a Debian 10 je po EOL;
+jde o provozní riziko hostingu, ne o vadu této aplikace. Zůstává to otevřené
+rozhodnutí vlastníka (upgrade hostingu/DB vs. vědomé setrvání) — tento řez k
+tomu nepodniká žádnou akci vůči produkci ani jejímu poskytovateli, pouze
+zaznamenává fakt a ověřuje statickou i smoke kompatibilitu aplikace s 10.3
+(viz nová sekce níže).
 
 ## Povinný resume audit bez mutací
 
@@ -1018,6 +1083,12 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 104 | M3.5d read-only příprava importu | admin-only no-store stránka bez formuláře: pokrytí v1 a konkrétní nejednoznačné legacy řádky s důvody; deterministické kandidáty pouze počítá, nic nepřevádí a neodhaduje; bez osob; oprava chybějícího Bootstrap head u M3.5a/M3.5d a reference legacy řádků bez PK; browser živě 2 účasti + konzole 0; 491/4217, 470 parse, bez nové migrace a změny závislostí |
 | 105 | M3.5e rozpoznávání historické tabulky měření (`188407c`) | deterministický kontrakt „<číslo> km/m/min“ + striktní čas pro volný text `mereni`; rozsah/„cca“/více hodnot/prázdná hodnota je vždy nejednoznačné, nic se nepřevádí; admin sekce se všemi 7 řádky a verdikty bez sportovec_id a jmen; browser živě 0 rozpoznatelných/7 nejednoznačných, konzole 0; izolovaně 492/4276 (base 491/4217, +1 test/+59 assertions), 470 parse beze změny počtu, bez migrace a nové závislosti |
 | 106 | oprava chybějící Bootstrap hlavičky na 4 stránkách (`a90de13`) | `provozni_prehled_admin.php`, `family_weekly_summaries_admin.php`, `member_charge_reminders_admin.php` a `member_charges_admin.php` dostaly stejnou hlavičku jako M3.5d; nový regresní test hlídá všechny stránky s `hlavicka.php`; browser 4× potvrzený Bootstrap stylesheet a konzole 0; nad M3.5e `188407c`; 493/4277, 471 parse, migrace beze změny (50/50); řídící vlákno nezávisle potvrdilo 493/4277 nad sloučeným stromem |
+| 108 | statická kontrola kompatibility s produkční MariaDB 10.3 | zaznamenán produkční DB server (`10.3.39`/Debian 10/`replikant3544`, zdroj vlastník+phpMyAdmin 2026-08-05) do snapshotu s poznámkou o EOL riziku jako otevřeném vlastnickém rozhodnutí, bez akce; grep + ruční revize `migrations/*.php`, `auto_migrace.php`, `migration_runner.php`, `db.php` a first-party PHP nenašla žádnou konstrukci nad podlahou 10.3 (`RETURNING` 10.5.0, `JSON_TABLE`/`JSON_ARRAYAGG`/`JSON_OBJECTAGG` 10.5–10.6, `SKIP LOCKED`/`NOWAIT`/`LATERAL` 10.6.0) — bez nálezu; jediný nalezený `CHECK` constraint je kompatibilní (vynucováno od 10.2.1); utf8mb4 kolace explicitní a beze změny napříč 10.3/10.4/11.4; `mariadb-smoke` CI job dostal `strategy.matrix` 10.3/11.4 (workflow nespuštěn); lokálně 4/4 smoke skriptů OK na izolované MariaDB 10.4.32, `evidence` nedotčená; 493/4278, 471 parse, migrace beze změny (50/50) |
+
+Číslo 107 je záměrně vynechané — rezervované pro souběžnou práci „smoke C“,
+která v době tohoto zápisu ještě nepřistála v `main`. Přidat tento řádek
+zpětně smí až session, která tuto práci skutečně integruje a zná její SHA;
+neplňte 107 dopředu jen proto, aby fronta byla souvislá.
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

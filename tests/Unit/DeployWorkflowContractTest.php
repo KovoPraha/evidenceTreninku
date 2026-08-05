@@ -72,7 +72,8 @@ final class DeployWorkflowContractTest extends TestCase
         $workflow = $this->source('.github/workflows/tests.yml');
 
         self::assertStringContainsString('mariadb-smoke:', $workflow);
-        self::assertStringContainsString('image: mariadb:11.4', $workflow);
+        self::assertStringContainsString("mariadb-version: ['10.3', '11.4']", $workflow);
+        self::assertStringContainsString('image: mariadb:${{ matrix.mariadb-version }}', $workflow);
         self::assertStringContainsString('MARIADB_ALLOW_EMPTY_ROOT_PASSWORD', $workflow);
         self::assertStringContainsString('extensions: mbstring, pdo_mysql', $workflow);
         self::assertStringContainsString('php tests/Support/ChildAccessMariaDbSmoke.php', $workflow);
