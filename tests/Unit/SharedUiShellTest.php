@@ -36,6 +36,35 @@ final class SharedUiShellTest extends TestCase
         self::assertSame([], $missing, 'HTML pages without the shared UI foundation: ' . implode(', ', $missing));
     }
 
+    public function testEveryHlavickaIncludingPageHasOwnBootstrapCss(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)
+        );
+        $missing = [];
+
+        foreach ($iterator as $file) {
+            if (!$file->isFile() || $file->getExtension() !== 'php') {
+                continue;
+            }
+            $path = $file->getPathname();
+            $relative = str_replace('\\', '/', substr($path, strlen($root) + 1));
+            if (preg_match('#^(vendor|tests|migrations|scripts)/#', $relative) === 1) {
+                continue;
+            }
+            $source = (string)file_get_contents($path);
+            if (!str_contains($source, 'hlavicka.php')) {
+                continue;
+            }
+            if (!str_contains($source, 'bootstrap.min.css')) {
+                $missing[] = $relative;
+            }
+        }
+
+        self::assertSame([], $missing, 'Pages including hlavicka.php without their own Bootstrap CSS link: ' . implode(', ', $missing));
+    }
+
     public function testPublicPortalEntrypointsUseOneNavigation(): void
     {
         $root = dirname(__DIR__, 2);

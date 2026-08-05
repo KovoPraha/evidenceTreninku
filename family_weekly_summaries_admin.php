@@ -64,8 +64,17 @@ try {
     $rows = familyWeeklyDeliveryAdminList($pdo);
 }
 
-require_once __DIR__ . '/hlavicka.php';
 ?>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Týdenní rodinné souhrny</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<?php require_once __DIR__ . '/hlavicka.php'; ?>
 <main class="container-fluid py-4" style="max-width:1450px">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
         <div><h1 class="h4 mb-1">Týdenní rodinné souhrny</h1><div class="small text-muted">Dobrovolný odběr, idempotentní fronta a bezpečný localhostový outbox.</div></div>
@@ -81,4 +90,5 @@ require_once __DIR__ . '/hlavicka.php';
     <?php foreach ($rows as $row): ?><tr><td><span class="badge text-bg-<?= $row['status']==='failed'?'danger':($row['status']==='sent'?'success':($row['status']==='cancelled'?'secondary':'warning')) ?>"><?= familyWeeklyAdminH($row['status']) ?></span></td><td><?= familyWeeklyAdminH($row['period_from'] . '–' . $row['period_to']) ?></td><td><?= familyWeeklyAdminH($row['recipient_name']) ?><div class="small text-muted"><?= familyWeeklyAdminH($row['recipient_email']) ?></div></td><td><?= (int)$row['item_count'] ?></td><td><?= (int)$row['attempts'] ?></td><td class="small"><?= familyWeeklyAdminH($row['last_error'] ?? '') ?></td><td><a class="btn btn-sm btn-outline-primary" href="?preview_id=<?= (int)$row['id'] ?><?= $status !== '' ? '&amp;status=' . urlencode($status) : '' ?>">Náhled</a></td></tr><?php endforeach; ?>
     <?php if ($rows === []): ?><tr><td colspan="7" class="text-center text-muted py-4">V tomto filtru nejsou žádné souhrny.</td></tr><?php endif; ?></tbody></table></div></section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body></html>

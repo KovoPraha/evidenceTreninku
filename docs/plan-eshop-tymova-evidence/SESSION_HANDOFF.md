@@ -1,5 +1,37 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — doplnění chybějící Bootstrap hlavičky na 4 stránkách
+
+- `cfc3c93` (M3.5d) opravil chybějící vlastní `<head>` s Bootstrap 5.3.3 CSS
+  na `sports_data_quality_admin.php` a `sports_import_review_admin.php`.
+  Systematický grep porovnal všechny stránky s `hlavicka.php` proti těm,
+  které mají vlastní odkaz na `bootstrap.min.css`, a našel čtyři další
+  postižené stránky: `provozni_prehled_admin.php`,
+  `family_weekly_summaries_admin.php`, `member_charge_reminders_admin.php`
+  a `member_charges_admin.php`. Bez vlastní hlavičky se vykreslovaly zcela
+  bez stylů, protože `appUiAssets()` volaný z `hlavicka.php` načítá jen
+  bootstrap-icons a `assets/app-ui.css`, nikdy samotný Bootstrap.
+- Všechny čtyři dostaly stejnou standardní hlavičku podle šablony v
+  `CLAUDE.md` (`<!DOCTYPE html>`, `<head>` s Bootstrap 5.3.3 CSS,
+  `bootstrap.bundle.min.js` před `</body>`); obsah stránek se nezměnil.
+- `tests/Unit/SharedUiShellTest.php` má nový regresní test
+  `testEveryHlavickaIncludingPageHasOwnBootstrapCss`: nad celým stromem
+  (mimo `vendor/`, `tests/`, `migrations/`, `scripts/`) hlídá, že každá
+  stránka s `hlavicka.php` má i vlastní `bootstrap.min.css`.
+- Browser přes `localhost-admin` na všech čtyřech stránkách potvrdil
+  skutečně načtený Bootstrap stylesheet (`document.styleSheets` s
+  pravidly, ne jen přítomný `<link>`), konzoli 0 a žádné odeslání dat.
+- Tento řez dobíhal souběžně se sdílenou pracovní kopií, do které za běhu
+  přibylo M3.5e (`188407c`) — měnilo `includes/sports_import_review.php`,
+  `sports_import_review_admin.php`,
+  `tests/Integration/SportsImportReviewTest.php` a
+  `docs/sports-data-quality.md`. Tento řez se jich nedotkl a commituje jen
+  svých 5 vyjmenovaných souborů nad již přijatým `188407c`.
+- Ověření: 493/4277 PHPUnit (bezprostředně po M3.5e 492/4276; tento řez
+  přidává +1 test/+1 assertion, 0 selhání), 471 first-party PHP souborů
+  bez chyby syntaxe, migrace beze změny (50/50). Produkce ani vzdálený Git
+  se nezměnily.
+
 ## Aktualizace 5. 8. 2026 — M3.5e rozpoznávání historické tabulky měření
 
 - Historická volnotextová tabulka `mereni` (7 řádků na localhostu), kterou
@@ -165,7 +197,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 
 - Aktualizováno: 2026-08-05, Europe/Prague
 - Poslední přijatý implementační HEAD před M3.5e: `cfc3c93` (M3.5d).
-- Větev `main`, upstream `origin/main`, lokálně ahead 48 / behind 0 proti
+- Poslední přijatý implementační HEAD před opravou Bootstrap hlavičky: `188407c` (M3.5e).
+- Větev `main`, upstream `origin/main`, lokálně ahead 49 / behind 0 proti
   poslednímu známému `origin/main` (`aead0be`, bez živého fetch). Vzdálený
   repozitář ani produkce se v tomto řezu nezměnily.
 - Localhost DB je 50/50 (historická hodnota; M3.5e je čistě čtecí klasifikace
@@ -926,6 +959,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 102 | M3.5b sportovní datový kontrakt | aditivní `sports-measurement-v1` pro m/km, metry, milisekundy, RPE 1–10 a stavy entered/finished/DNS/DNF/DSQ; žádný backfill, browser 0 formulářů/vstupů a konzole 0; 477/4107, 466 parse, 50/50, backup 100, audit 0 |
 | 103 | M3.5c normalizovaný zápis sportovních dat | čtyři formuláře/handlery sdílí fail-closed parser a ukládají legacy + v1 hodnoty; výslovná jednotka, striktní čas/RPE, testovaný importní mapper bez ostrého zápisu; browser bez odeslání a konzole 0; 487/4161, 469 parse, 50/50, backup 100, audit 0 |
 | 104 | M3.5d read-only příprava importu | admin-only no-store stránka bez formuláře: pokrytí v1 a konkrétní nejednoznačné legacy řádky s důvody; deterministické kandidáty pouze počítá, nic nepřevádí a neodhaduje; bez osob; oprava chybějícího Bootstrap head u M3.5a/M3.5d a reference legacy řádků bez PK; browser živě 2 účasti + konzole 0; 491/4217, 470 parse, bez nové migrace a změny závislostí |
+| 105 | oprava chybějící Bootstrap hlavičky na 4 stránkách | `provozni_prehled_admin.php`, `family_weekly_summaries_admin.php`, `member_charge_reminders_admin.php` a `member_charges_admin.php` dostaly stejnou hlavičku jako M3.5d; nový regresní test hlídá všechny stránky s `hlavicka.php`; browser 4× potvrzený Bootstrap stylesheet a konzole 0; nad M3.5e `188407c`; 493/4277, 471 parse, migrace beze změny (50/50) |
 | 105 | M3.5e rozpoznávání historické tabulky měření | deterministický kontrakt „<číslo> km/m/min“ + striktní čas pro volný text `mereni`; rozsah/„cca“/více hodnot/prázdná hodnota je vždy nejednoznačné, nic se nepřevádí; admin sekce se všemi 7 řádky a verdikty bez sportovec_id a jmen; browser živě 0 rozpoznatelných/7 nejednoznačných, konzole 0; izolovaně 492/4276 (base 491/4217, +1 test/+59 assertions), 470 parse beze změny počtu, bez migrace a nové závislosti |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy

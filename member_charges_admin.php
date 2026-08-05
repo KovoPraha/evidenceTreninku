@@ -30,8 +30,17 @@ if (!in_array($status, ['', 'pending', 'paid', 'cancelled'], true)) {
     $status = '';
 }
 $rows = memberChargeAdminRows($pdo, $query, $status);
-require_once __DIR__ . '/hlavicka.php';
 ?>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Členské předpisy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<?php require_once __DIR__ . '/hlavicka.php'; ?>
 <main class="container py-4">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div><h1 class="h3 mb-1">Členské předpisy</h1><div class="text-muted">Bezpečný přehled předpisů a jejich poslední známé platby. Změny se zde neprovádějí.</div></div>
@@ -54,4 +63,5 @@ require_once __DIR__ . '/hlavicka.php';
         </tr><?php endforeach; ?>
         </tbody></table></div></div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body></html>

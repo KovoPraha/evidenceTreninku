@@ -78,8 +78,17 @@ try {
     $summary = memberChargeReminderAdminSummary($pdo);
     $rows = memberChargeReminderAdminList($pdo, $status);
 }
-require_once __DIR__ . '/hlavicka.php';
 ?>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Připomínky členských plateb</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<?php require_once __DIR__ . '/hlavicka.php'; ?>
 <main class="container-fluid py-4" style="max-width:1450px">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
         <div><h1 class="h4 mb-1">Připomínky členských plateb</h1><div class="small text-muted">Provozní fronta dobrovolně zapnutých připomínek splatnosti.</div></div>
@@ -110,4 +119,5 @@ require_once __DIR__ . '/hlavicka.php';
         </tbody></table></div>
     </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body></html>
