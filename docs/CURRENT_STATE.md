@@ -15,9 +15,12 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `29e3d5d` – dobrovolné e-mailové
-  připomínky blížící se splatnosti členského předpisu s idempotentní frontou,
-  auditem, opakovanými pokusy a omezením četnosti,
+- poslední implementace před tímto dokumentem: `66b4241` – administrátorský
+  přehled fronty připomínek členských plateb, bezpečné ruční opakování bez
+  odesílání z webu a audit konkrétního administrátora,
+- předchozí implementace: `29e3d5d` – dobrovolné e-mailové připomínky blížící
+  se splatnosti členského předpisu s idempotentní frontou, auditem,
+  opakovanými pokusy a omezením četnosti,
 - předchozí implementace: `004e4a6` – soukromý rodinný
   ICS kalendář tréninků, přihlášených akcí, rezervací a splatností pro
   všechny aktuálně schválené profily účtu,
@@ -30,9 +33,9 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 - KIS funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 47/47,
-- automatické testy 418/3728,
-- first-party PHP syntaxe 428 souborů bez chyby,
+- migrace localhostu 48/48,
+- automatické testy 421/3761,
+- first-party PHP syntaxe 429 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
   ownership kontrakt `2026-08-05.2` zahrnuje kalendář i frontu připomínek,
@@ -58,6 +61,8 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
   `http://localhost/evidencePavel/booking/sportovni_prehled.php#rodinny-kalendar`.
 - dobrovolné připomínky splatnosti:
   `http://localhost/evidencePavel/booking/sportovni_prehled.php#pripominky-plateb`.
+- administrátorská fronta připomínek:
+  `http://localhost/evidencePavel/member_charge_reminders_admin.php`.
 
 Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
 a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
@@ -71,7 +76,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 82 %,
+- celý M2: 83 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
   sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
   localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
@@ -79,9 +84,10 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
   bezpečně vrácen na 0/2 při zachování auditní historie,
 - M2.6 integrovaná akceptace: 98 %; technické scénáře jsou připravené, zbývá
   vlastníkův průchod a vypořádání připomínek,
-- M2.7 hodnota pro členy: 75 %; veřejný i soukromý rodinný ICS feed a opt-in
-  fronta připomínek splatnosti jsou technicky hotové; zbývá ověřit kalendář
-  v reálné aplikaci a před produkcí potvrdit e-mailový transport, CRON a text,
+- M2.7 hodnota pro členy: 82 %; veřejný i soukromý rodinný ICS feed, opt-in
+  fronta připomínek splatnosti a její auditovaná administrátorská obsluha jsou
+  technicky hotové; zbývá ověřit kalendář v reálné aplikaci a před produkcí
+  potvrdit e-mailový transport, CRON a finální text zprávy,
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.

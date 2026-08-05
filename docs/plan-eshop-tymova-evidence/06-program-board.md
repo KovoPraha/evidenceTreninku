@@ -134,6 +134,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.7a veřejný ICS kalendář | hotovo technicky | `3aa39f8`: jeden anonymní feed nad již zveřejněnými tréninky, otevřenými klubovými akcemi a veřejnými hodinami velodromu; stabilní UID, UTC, standardní escapování/skládání, žádné osobní ani interní údaje; 403/3617, 416 parse, 45/45, audit 0 |
 | M2.7b soukromý rodinný ICS kalendář | hotovo technicky | `004e4a6`: hashovaný 256bitový token, jednorázové zobrazení odkazu, auditovaná rotace/revokace, živé oprávnění profilů a izolace rodin; cílené tréninky, akce, rezervace a splatnosti, HTTP 200→404 po revokaci; 410/3662, 423 parse, 46/46, backup smoke 92 tabulek, audit 0 |
 | M2.7c opt-in připomínky splatnosti | hotovo technicky | `29e3d5d`: nastavení 3/7/14 dní, idempotentní fronta, audit, kontrola aktivní vazby a stavu předpisu, jedna zpráva/20 h/účet, ochrana souběhu a pět pokusů; bezpečný login odkaz bez ID, browser zapnutí/vypnutí bez skutečného e-mailu; 418/3728, 428 parse, 47/47, backup 95, audit 0 |
+| M2.7d provozní obsluha připomínek | hotovo technicky | `66b4241`: admin přehled pěti stavů, ruční retry pouze přes POST+CSRF+důvod+potvrzení, audit typu/ID aktéra a opětovná kontrola opt-in i stavu předpisu; web zprávu neodesílá; 421/3761, 429 parse, 48/48, backup 95, audit 0 |
 
 ## Aktivní rozhodnutí
 
