@@ -23,11 +23,11 @@ před dalším rozšiřováním M3.
 | M3.0 převzetí M2 | čeká na vlastníka | 0 % | PASS A01–A10, nulové blokátory a vypořádané důležité připomínky |
 | M3.1 rodinný program | technicky hotovo | 100 % | read-only 30denní přehled tréninků, přihlášených akcí, rezervací a splatností nad stejným oprávněním jako rodinný ICS feed |
 | M3.2 týdenní souhrn | probíhá | 35 % | přihlášený read-only náhled, prázdný stav a omezené listování po týdnech jsou hotové; zbývá opt-in, odhlášení, idempotentní fronta a localhost outbox |
-| M3.3 roční přehled plateb | plánováno | 0 % | read-only přehled skutečně uhrazených klubových služeb; nesmí se označovat za daňové potvrzení bez právního a účetního schválení |
+| M3.3 roční přehled plateb | probíhá | 70 % | přihlášený read-only přehled skutečně uhrazených členských předpisů a e-shopových položek je hotový; zbývá vlastníkovo ověření obsahu a rozhodnutí, zda vůbec vznikne schválený export |
 | M3.4 provozní přehled správce | plánováno | 0 % | akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
 | M3.5 datová kvalita sportovního progresu | návrh | 0 % | nejdřív normalizace měření, soukromí nezletilých a vysvětlení kvality; žádné zdravotní predikce |
 
-Orientační technický stav M3: **16 %**. Procento nezahrnuje produkční aktivaci.
+Orientační technický stav M3: **25 %**. Procento nezahrnuje produkční aktivaci.
 
 ## M3.1 – rodinný program
 
@@ -56,6 +56,24 @@ neobsahuje HTML, nevytváří frontu a žádný transport se z webu nevolá.
 Browser ověřil prázdný aktuální týden a týden 12.–18. 8. 2026 s jednou akcí a
 jednou splatností. Cizí osoba se nezobrazila a stránka výslovně říká, že nic
 neodesílá a odběr zatím nelze zapnout.
+
+## M3.3 – roční přehled uhrazených služeb
+
+První řez (`63c8ec1`) je pouze přihlášený a read-only. Rok se validuje od 2000
+po právě probíhající rok a výběr osoby nepřijímá z URL. Oprávněné profily se při
+každém načtení znovu odvozují z aktivního ověřeného účtu a schválených vazeb
+`self`/`guardian`; revokace vazby proto řádky okamžitě odebere.
+
+Přehled zahrnuje jen členské předpisy i jejich platební záznam ve stavu `paid`
+a e-shopové položky objednávek i plateb ve stavu `paid`, vždy podle skutečného
+`paid_at` ve vybraném roce. Čekající, zrušené, vratkové a cizí řádky vynechává.
+Členské předpisy a e-shop mají oddělené tabulky i součty po měnách, aby se při
+přechodu KIS/e-shop jedna služba skrytě nesečetla dvakrát.
+
+Stránka výslovně uvádí, že jde o informační přehled, nikoli účetní nebo daňový
+doklad. Nevytváří PDF, potvrzení ani export. Browser na localhostu ověřil rok
+2026 se skutečně zaplacenou e-shopovou položkou 1 530 CZK a vynechaným čekajícím
+členským předpisem, prázdný rok 2025 i odmítnutí budoucího roku 2027.
 
 ## Brány a výslovně odložené oblasti
 

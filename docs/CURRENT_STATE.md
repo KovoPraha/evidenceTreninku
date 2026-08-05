@@ -15,7 +15,11 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `82d41ac` – M3.2 přidává
+- poslední implementace před tímto dokumentem: `63c8ec1` – první řez M3.3 přidává
+  přihlášený roční přehled skutečně uhrazených členských předpisů a e-shopových
+  položek všech schválených profilů; oba zdroje i měny drží odděleně a výslovně
+  nejde o účetní ani daňový doklad,
+- předchozí implementace: `82d41ac` – M3.2 přidává
   přihlášený týdenní náhled rodinného programu s bezpečným listováním po týdnech,
   prostým textem a výslovně vypnutým odesíláním,
 - předchozí implementace: `1510c20` – první řez M3 přidává
@@ -53,8 +57,8 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 48/48,
-- automatické testy 434/3872,
-- first-party PHP syntaxe 434 souborů bez chyby,
+- automatické testy 438/3897,
+- first-party PHP syntaxe 438 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
   ownership kontrakt `2026-08-05.2` zahrnuje kalendář i frontu připomínek,
@@ -82,6 +86,8 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
   `http://localhost/evidencePavel/booking/sportovni_prehled.php#pripominky-plateb`.
 - administrátorská fronta připomínek:
   `http://localhost/evidencePavel/member_charge_reminders_admin.php`.
+- roční přehled uhrazených služeb:
+  `http://localhost/evidencePavel/booking/sportovni_prehled.php?year=2026#rocni-prehled-uhrad`.
 
 Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
 a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
@@ -115,9 +121,11 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.
-- M3: 16 % technického localhost řešení; M3.1 rodinný program je hotový a M3.2
+- M3: 25 % technického localhost řešení; M3.1 rodinný program je hotový, M3.2
   má bezpečný přihlášený náhled včetně prázdného stavu a listování po týdnech;
-  opt-in, odhlášení, fronta a localhost outbox ještě nejsou implementované,
+  M3.3 má oddělený read-only roční přehled skutečně uhrazených členských
+  předpisů a e-shopových položek. U M3.2 zbývá opt-in, odhlášení, fronta a
+  localhost outbox; u M3.3 vlastníkova kontrola obsahu a rozhodnutí o exportu,
   produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,

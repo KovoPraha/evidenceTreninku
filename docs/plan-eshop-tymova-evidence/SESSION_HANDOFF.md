@@ -7,8 +7,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD: `82d41ac`.
-- Implementace `82d41ac` je commitnutá; větev `main`, upstream `origin/main`.
+- Poslední přijatý implementační HEAD: `63c8ec1`.
+- Implementace `63c8ec1` je commitnutá; větev `main`, upstream `origin/main`.
 - Localhost DB je 48/48. Vzdálený repozitář se v této M2.7 session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -29,7 +29,16 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce: `82d41ac` přidává první část M3.2. Přihlášený
+- Poslední dokončená funkční akce: `63c8ec1` přidává první část M3.3. Přihlášený
+  účet vidí za validovaný rok skutečně uhrazené členské předpisy a e-shopové
+  položky všech právě schválených profilů. Zdroje a měny se nesčítají dohromady,
+  čekající, zrušené, vratkové a cizí řádky se vynechávají a stránka výslovně
+  nevystupuje jako účetní ani daňový doklad. Browser ověřil rok 2026 s e-shopovou
+  úhradou 1 530 CZK a vynechaným čekajícím předpisem, prázdný rok 2025 a odmítnutý
+  rok 2027. Plná sada je 438/3897, syntaxe 438 souborů, migrace 48/48, backup
+  smoke 95 a audit 0. Produkce se nezměnila.
+
+  Předchozí dokončená funkční akce: `82d41ac` přidává první část M3.2. Přihlášený
   rodič vidí prostý text týdenního souhrnu a může listovat po striktně validovaných
   sedmidenních intervalech v omezeném rozsahu. Náhled používá kanonickou rodinnou
   agendu, nepřijímá ID osoby, nic nezapisuje a výslovně nemá odběr ani transport.
