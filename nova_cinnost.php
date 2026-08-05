@@ -2,14 +2,25 @@
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once 'db.php';
+require_once __DIR__ . '/csrf_helper.php';
 
 if (!isset($_SESSION['trener_id'])) {
     header("Location: login.php");
     exit;
 }
 
+if (!in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'POST'], true)) {
+    http_response_code(405);
+    header('Allow: GET, POST');
+    exit('Nepodporovana metoda.');
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nazev = $_POST['nazev'] ?? '';
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        http_response_code(403);
+        exit('Neplatny bezpecnostni token.');
+    }
+    $nazev = trim((string)($_POST['nazev'] ?? ''));
     $delka = floatval($_POST['delka'] ?? 0);
     $poznamka = $_POST['poznamka'] ?? '';
     $datum = date('Y-m-d');
@@ -35,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container mt-5">
     <h1>Zadat další činnost</h1>
     <form method="POST" class="card p-4">
+        <?= csrf_field() ?>
         <div class="mb-3">
             <label for="nazev" class="form-label">Název činnosti:</label>
             <input type="text" name="nazev" id="nazev" class="form-control" required>

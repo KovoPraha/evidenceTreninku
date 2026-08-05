@@ -174,7 +174,7 @@ if ($id > 0) {
           </label>
           <?php if (!empty($uctenka['obrazek_path'])): ?>
             <div class="mb-2">
-              <a href="../<?= h($uctenka['obrazek_path']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary">
+              <a href="../private_download.php?kind=receipt&amp;id=<?= (int)$uctenka['id'] ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-image me-1"></i>Stávající doklad
               </a>
             </div>

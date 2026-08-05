@@ -914,16 +914,16 @@ $kategorieMeta = [
                                     <?php foreach ($files as $f):
                                         $path  = $f['cesta'] ?? '';
                                         $nazev = $f['nazev'] ?? basename($path);
-                                        $isImg = preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $path)
-                                            || in_array($f['typ'] ?? '', ['public_img','internal_img','img'], true);
+                                        $downloadUrl = 'private_download.php?kind=stress&amp;id=' . (int)$f['id'];
+                                        $isImg = in_array($f['typ'] ?? '', ['public_img','internal_img','img'], true);
                                     ?>
                                         <?php if ($path): ?>
                                             <?php if ($isImg): ?>
-                                                <a href="<?= h($path) ?>" target="_blank">
-                                                    <img src="<?= h($path) ?>" alt="<?= h($nazev) ?>" class="thumb-test">
+                                                <a href="<?= $downloadUrl ?>" target="_blank" rel="noopener">
+                                                    <img src="<?= $downloadUrl ?>" alt="<?= h($nazev) ?>" class="thumb-test">
                                                 </a>
                                             <?php else: ?>
-                                                <a href="<?= h($path) ?>" target="_blank">📎 <?= h($nazev) ?></a>
+                                                <a href="<?= $downloadUrl ?>" target="_blank" rel="noopener">📎 <?= h($nazev) ?></a>
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     <?php endforeach; ?>

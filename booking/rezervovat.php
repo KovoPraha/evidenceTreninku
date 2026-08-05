@@ -7,6 +7,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
+require_once __DIR__ . '/../includes/app_url.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -183,14 +184,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 . "Lekce: {$lekce['nazev']}\n"
                 . "Sportoviště: {$lekce['sport_nazev']}\n"
                 . "Datum: {$lekce['datum']}, {$slotInfo}\n\n"
-                . "Přehled lekcí: https://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "/evidence/individualni_lekce_sprava.php";
+                . "Přehled lekcí: " . appUrl('individualni_lekce_sprava.php');
             @mail($lekce['trener_email'], $subject, $body,
                 "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
 
             $_SESSION['flash_booking_success'] = 'Rezervace potvrzena! Uvidíte ji v přehledu svých rezervací.';
         } else {
             // Trenér musí potvrdit
-            $host = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/evidence/booking/potvrdit.php';
+            $host = appUrl('booking/potvrdit.php');
             $rawApprovalToken = (string)($approval['token'] ?? '');
             $linkPotvrdit = $host . '#token=' . rawurlencode($rawApprovalToken) . '&akce=potvrdit';
             $linkZamit    = $host . '#token=' . rawurlencode($rawApprovalToken) . '&akce=zamit';

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/app_url.php';
 $is_logged_in = isset($_SESSION['trener_id']);
 $is_customer  = isset($_SESSION['verejny_uzivatel_id']);
 $is_athlete   = isset($_SESSION['sportovec_pristup_id']);
@@ -545,9 +546,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
 
           <!-- Rezervace sportovišť — vždy viditelné (veřejný kalendář sdílí každý trenér) -->
           <?php
-            $bookingUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
-                          . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-                          . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/booking/kalendar.php';
+            $bookingUrl = appUrl('booking/kalendar.php');
           ?>
           <div class="card section-card mb-3">
             <div class="card-header bg-info text-white">

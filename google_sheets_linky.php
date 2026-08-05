@@ -783,14 +783,12 @@ async function loadPodskupinyForSkupina(groupId, selectedId = '') {
         const data = await res.json();
 
         const items = (data && data.items) ? data.items : [];
-        let html = '<option value="">— vyber podskupinu —</option>';
+        selPs.replaceChildren(new Option('— vyber podskupinu —', ''));
         for (const it of items) {
             const id = String(it.id);
             const name = String(it.nazev || '');
-            const sel = (selectedId && selectedId === id) ? ' selected' : '';
-            html += `<option value="${id}"${sel}>${name.replaceAll('<','&lt;').replaceAll('>','&gt;')}</option>`;
+            selPs.appendChild(new Option(name, id, false, Boolean(selectedId && selectedId === id)));
         }
-        selPs.innerHTML = html;
     } catch (e) {
         selPs.innerHTML = '<option value="">— chyba načítání —</option>';
         console.error(e);
@@ -828,12 +826,18 @@ if (selGroup) {
         for (const [id, label] of selected.entries()) {
             const el = document.createElement('span');
             el.className = 'chip';
-            el.innerHTML = `<span>${label}</span><button type="button" aria-label="Odebrat">×</button>`;
-            el.querySelector('button').addEventListener('click', () => {
+            const text = document.createElement('span');
+            text.textContent = label;
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.setAttribute('aria-label', 'Odebrat');
+            remove.textContent = '×';
+            remove.addEventListener('click', () => {
                 selected.delete(id);
                 syncHidden();
                 renderChips();
             });
+            el.append(text, remove);
             chips.appendChild(el);
         }
     }
@@ -900,7 +904,10 @@ if (selGroup) {
 </script>
 
 <script>
-window.__initialSportovciLabels = <?= json_encode(!empty($editTargets['sportovci']) ? $editTargets['sportovci'] : $formSportLabels, JSON_UNESCAPED_UNICODE) ?>;
+window.__initialSportovciLabels = <?= json_encode(
+    !empty($editTargets['sportovci']) ? $editTargets['sportovci'] : $formSportLabels,
+    JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+) ?>;
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

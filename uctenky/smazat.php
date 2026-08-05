@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/funkce.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/private_storage.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('uctenky')) {
     header('Location: ../login.php');
@@ -23,13 +24,8 @@ if ($id > 0) {
         $zaznam = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($zaznam) {
-            // Přejmenuj soubor (soft delete)
             if (!empty($zaznam['obrazek_path'])) {
-                $filePath = __DIR__ . '/../' . ltrim($zaznam['obrazek_path'], '/');
-                if (file_exists($filePath)) {
-                    $smazano = dirname($filePath) . '/smazano_' . basename($filePath);
-                    rename($filePath, $smazano);
-                }
+                privateStorageSoftDelete((string)$zaznam['obrazek_path']);
             }
 
             $pdo->prepare("DELETE FROM ucto_uctenky WHERE id = ?")->execute([$id]);

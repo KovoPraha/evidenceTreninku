@@ -7,6 +7,7 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule (^|/)\.git(/|$) - [F,L]
+    RewriteRule ^uploads/(?:uctenky|zatezove_testy)(?:/|$) - [F,L,NC]
     RewriteRule ^(?:uploads|nahrane_obrazky|nahrane_zavody|stories|loga_story)/.*\.(?:php[0-9]?|phtml|phar)$ - [F,L,NC]
 </IfModule>
 

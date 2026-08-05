@@ -5,6 +5,7 @@ require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
 require_once __DIR__ . '/../includes/public_profile.php';
+require_once __DIR__ . '/../includes/app_url.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -91,8 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Verifikační email
             if (empty($errors)) {
-                $link = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-                    . '/evidence/booking/overeni.php#token=' . rawurlencode($verification['token']);
+                $link = appUrl('booking/overeni.php') . '#token=' . rawurlencode($verification['token']);
                 @mail($email, 'Ověření registrace — Kovopraha',
                     "Dobrý den {$jmeno},\n\nPro dokončení registrace klikněte na odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",
                     "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");

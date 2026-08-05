@@ -145,7 +145,7 @@ $platba_map = [
                 <td><small><?= h($u['poznamka']) ?></small></td>
                 <td>
                   <?php if (!empty($u['obrazek_path'])): ?>
-                    <a href="../<?= h($u['obrazek_path']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary">
+                    <a href="../private_download.php?kind=receipt&amp;id=<?= (int)$u['id'] ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">
                       <i class="bi bi-image me-1"></i>Zobrazit
                     </a>
                   <?php else: ?>

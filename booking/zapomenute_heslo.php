@@ -7,6 +7,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
 require_once dirname(__DIR__) . '/includes/password_reset.php';
+require_once dirname(__DIR__) . '/includes/app_url.php';
 
 $submitted = false;
 $errors = [];
@@ -23,8 +24,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     $pdo,
                     $identifier,
                     static function (string $email, string $token) use (&$localResetLink): bool {
-                        $link = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-                            . '/evidence/booking/nove_heslo.php#token=' . rawurlencode($token);
+                        $link = appUrl('booking/nove_heslo.php') . '#token=' . rawurlencode($token);
                         if (app_session_request_is_local()) {
                             $localResetLink = 'nove_heslo.php#token=' . rawurlencode($token);
                             return true;

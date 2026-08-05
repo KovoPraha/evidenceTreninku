@@ -77,7 +77,8 @@ final class AuthWiringTest extends TestCase
         $trainerLogout = $this->source('logout.php');
         $publicLogout = $this->source('booking/odhlaseni.php');
 
-        self::assertStringContainsString("overeni.php#token=", $registration);
+        self::assertStringContainsString("appUrl('booking/overeni.php')", $registration);
+        self::assertStringContainsString("'#token='", $registration);
         self::assertStringContainsString("#token=", $reservation);
         self::assertStringContainsString("#token=", $waitingList);
         self::assertStringNotContainsString("overeni.php?token=", $registration);

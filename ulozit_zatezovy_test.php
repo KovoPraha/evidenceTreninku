@@ -8,6 +8,7 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/private_storage.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: zatezovy_test_form.php');
@@ -64,20 +65,14 @@ try {
     $testId = (int)$pdo->lastInsertId();
 
     // 3) Upload souborů
-    $uploadBaseDir = __DIR__ . '/uploads/zatezove_testy/';
-    $uploadBaseUrl = 'uploads/zatezove_testy/';
-
-    if (!is_dir($uploadBaseDir)) {
-        mkdir($uploadBaseDir, 0755, true);
-    }
-
     /**
      * Pomocná funkce na zpracování pole souborů
      *
      * @param string $poleName   - jméno inputu ve formuláři
      * @param string $typ        - typ do DB (public_img | internal_img | other)
      */
-    $saveFiles = function(string $poleName, string $typ) use ($testId, $uploadBaseDir, $uploadBaseUrl, $pdo) {
+    $storedPrivateKeys = [];
+    $saveFiles = function(string $poleName, string $typ) use ($testId, $pdo, &$storedPrivateKeys): void {
         if (!isset($_FILES[$poleName])) {
             return;
         }
@@ -93,43 +88,22 @@ try {
                 continue;
             }
 
-            $origName = $files['name'][$i];
-            $ext      = strtolower(pathinfo($origName, PATHINFO_EXTENSION) ?: '');
-            if ($ext === '') {
-                $ext = 'dat';
-            }
-
-            $safeExt  = preg_replace('~[^a-z0-9]+~', '', $ext);
-            if ($safeExt === '') {
-                $safeExt = 'dat';
-            }
-
-            // MIME validace — blokuj spustitelné typy bez ohledu na příponu
-            $finfo    = finfo_open(FILEINFO_MIME_TYPE);
-            $mime     = finfo_file($finfo, $files['tmp_name'][$i]);
-            finfo_close($finfo);
-            $blocked  = ['text/x-php','application/x-php','application/php','application/x-httpd-php','application/x-sh','text/x-sh'];
-            if (in_array($mime, $blocked, true) || $safeExt === 'php') {
-                continue;
-            }
-
-            $filename = 'test_' . $testId . '_' . $typ . '_' . time() . '_' . $i . '.' . $safeExt;
-            $target   = $uploadBaseDir . $filename;
-
-            if (move_uploaded_file($files['tmp_name'][$i], $target)) {
-                $relPath = $uploadBaseUrl . $filename;
-
-                $stmtFile = $pdo->prepare("
-                    INSERT INTO zatezove_testy_soubory (test_id, typ, nazev, cesta, created_at)
-                    VALUES (:tid, :typ, :nazev, :cesta, NOW())
-                ");
-                $stmtFile->execute([
-                    ':tid'   => $testId,
-                    ':typ'   => $typ,
-                    ':nazev' => $origName,
-                    ':cesta' => $relPath
-                ]);
-            }
+            $origName = basename((string)$files['name'][$i]);
+            $privateKey = privateStorageStore(
+                (string)$files['tmp_name'][$i],
+                PRIVATE_STORAGE_STRESS_TESTS
+            );
+            $storedPrivateKeys[] = $privateKey;
+            $stmtFile = $pdo->prepare("
+                INSERT INTO zatezove_testy_soubory (test_id, typ, nazev, cesta, created_at)
+                VALUES (:tid, :typ, :nazev, :cesta, NOW())
+            ");
+            $stmtFile->execute([
+                ':tid'   => $testId,
+                ':typ'   => $typ,
+                ':nazev' => $origName,
+                ':cesta' => $privateKey
+            ]);
         }
     };
 
@@ -149,6 +123,13 @@ try {
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
+    }
+    foreach ($storedPrivateKeys ?? [] as $storedPrivateKey) {
+        try {
+            privateStorageSoftDelete((string)$storedPrivateKey);
+        } catch (Throwable $cleanupException) {
+            error_log('Cleanup zatezoveho testu: ' . $cleanupException->getMessage());
+        }
     }
     die('Chyba při ukládání zátěžového testu: ' . htmlspecialchars($e->getMessage()));
 }

@@ -877,8 +877,9 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
             <?php if (!empty($files)): ?>
               <div class="d-flex flex-wrap gap-2">
                 <?php foreach ($files as $f): ?>
-                  <a href="<?= h($f['cesta']) ?>" target="_blank">
-                    <img src="<?= h($f['cesta']) ?>" alt="<?= h($f['nazev'] ?? '') ?>" class="thumb-tr">
+                  <?php $downloadUrl = 'private_download.php?kind=stress&amp;id=' . (int)$f['id'] . '&amp;hash=' . rawurlencode($hash); ?>
+                  <a href="<?= $downloadUrl ?>" target="_blank" rel="noopener">
+                    <img src="<?= $downloadUrl ?>" alt="<?= h($f['nazev'] ?? '') ?>" class="thumb-tr">
                   </a>
                 <?php endforeach; ?>
               </div>

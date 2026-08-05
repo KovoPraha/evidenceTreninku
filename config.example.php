@@ -27,6 +27,23 @@ $jeLokalne = PHP_OS_FAMILY === 'Windows'
 
 define('JE_LOKALNE', $jeLokalne);
 
+// Jediny duveryhodny zaklad pro odkazy v e-mailech a notifikacich.
+// Hodnota z HTTP Host se z bezpecnostnich duvodu nepouziva.
+$appBaseUrl = getenv('APP_BASE_URL');
+if (is_string($appBaseUrl) && $appBaseUrl !== '') {
+    define('APP_BASE_URL', $appBaseUrl);
+} elseif ($jeLokalne) {
+    define('APP_BASE_URL', 'http://localhost/evidencePavel');
+} else {
+    define('APP_BASE_URL', 'https://data.kovopraha.cz/evidence');
+}
+
+// Absolutni adresar mimo verejny webroot. Na produkci jej nastavte v prostredi.
+$privateStorageRoot = getenv('APP_PRIVATE_STORAGE_ROOT');
+if (is_string($privateStorageRoot) && $privateStorageRoot !== '') {
+    define('APP_PRIVATE_STORAGE_ROOT', $privateStorageRoot);
+}
+
 // ── Bezpečnost přihlášení ───────────────────────────────────────────────────
 // POVINNÉ PŘED DEPLOYEM: unikátní náhodný secret o délce nejméně 32 znaků.
 // Preferovaně jej nastavte na hostingu jako environment proměnnou, mimo webroot.

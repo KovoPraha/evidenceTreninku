@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/funkce.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/private_storage.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -68,39 +69,19 @@ try {
 
     // Upload obrázku s MIME validací
     if (!empty($_FILES['obrazek']['name']) && $_FILES['obrazek']['error'] === UPLOAD_ERR_OK) {
-        $allowedMime = ['image/jpeg', 'image/png', 'application/pdf'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $_FILES['obrazek']['tmp_name']);
-        finfo_close($finfo);
-
-        if (in_array($mime, $allowedMime)) {
-            $upload_dir = __DIR__ . '/../uploads/uctenky/';
-            if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0755, true);
-            }
-
-            $ext = strtolower(pathinfo($_FILES['obrazek']['name'], PATHINFO_EXTENSION));
-            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'pdf'])) $ext = 'jpg';
-            $filename = "uctenka_{$id}_" . time() . '_' . rand(1000, 9999) . ".{$ext}";
-            $full_path = $upload_dir . $filename;
-
-            if (move_uploaded_file($_FILES['obrazek']['tmp_name'], $full_path)) {
-                // Přejmenuj starý soubor
-                if ($old_data && !empty($old_data['obrazek_path'])) {
-                    $oldFile = __DIR__ . '/../' . ltrim($old_data['obrazek_path'], '/');
-                    if (file_exists($oldFile)) {
-                        $smazany = dirname($oldFile) . '/smazano_' . basename($oldFile);
-                        rename($oldFile, $smazany);
-                    }
-                }
-
-                $obrazek_path = 'uploads/uctenky/' . $filename;
-                $pdo->prepare("UPDATE ucto_uctenky SET obrazek_path = ? WHERE id = ?")->execute([$obrazek_path, $id]);
-            }
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Nepodporovaný typ souboru. Povolené: JPG, PNG, PDF.']);
+        try {
+            $obrazek_path = privateStorageStore(
+                (string)$_FILES['obrazek']['tmp_name'],
+                PRIVATE_STORAGE_RECEIPTS
+            );
+        } catch (RuntimeException $exception) {
+            echo json_encode(['status' => 'error', 'message' => $exception->getMessage()]);
             exit;
         }
+        if ($old_data && !empty($old_data['obrazek_path'])) {
+            privateStorageSoftDelete((string)$old_data['obrazek_path']);
+        }
+        $pdo->prepare("UPDATE ucto_uctenky SET obrazek_path = ? WHERE id = ?")->execute([$obrazek_path, $id]);
     }
 
     zapisAuditLog(

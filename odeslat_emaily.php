@@ -9,6 +9,8 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/app_url.php';
+require_once __DIR__ . '/includes/html_sanitizer.php';
 
 // Jen hlavní trenér
 $is_hlavni = canAccess('odeslat_emaily');
@@ -41,10 +43,7 @@ try {
 // ── Pomocné funkce ────────────────────────────────────────────────────────
 
 function buildProfilUrl(string $hash): string {
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $dir    = rtrim(dirname($_SERVER['PHP_SELF'] ?? '/'), '/\\');
-    return $scheme . '://' . $host . $dir . '/sportovec_treninky.php?hash=' . urlencode($hash);
+    return appUrl('sportovec_treninky.php') . '?hash=' . urlencode($hash);
 }
 
 function applyTemplate(string $tpl, array $sp, string $odkaz): string {
@@ -61,11 +60,11 @@ function applyTemplate(string $tpl, array $sp, string $odkaz): string {
 }
 
 function applySubject(string $subj, array $sp): string {
-    return str_replace(
+    return str_replace(["\r", "\n"], '', str_replace(
         ['{jmeno}', '{prijmeni}'],
         [$sp['jmeno'] ?? '', $sp['prijmeni'] ?? ''],
         $subj
-    );
+    ));
 }
 
 // ── Načtení uložené šablony ───────────────────────────────────────────────
@@ -140,9 +139,13 @@ $predmetVal   = $defaultPredmet;
 $teloVal      = $defaultTelo;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        http_response_code(403);
+        exit('Neplatny bezpecnostni token.');
+    }
     $action    = $_POST['action'] ?? '';
     $predmetIn = $_POST['predmet'] ?? $defaultPredmet;
-    $teloIn    = $_POST['telo']    ?? $defaultTelo;
+    $teloIn    = safeEmailHtml((string)($_POST['telo'] ?? $defaultTelo));
     $predmetVal = $predmetIn;
     $teloVal    = $teloIn;
 
@@ -217,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $headers  = "MIME-Version: 1.0\r\n";
                     $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-                    $headers .= "From: Evidence tréninků <noreply@" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ">\r\n";
+                    $headers .= "From: Evidence tréninků <evidence@kovopraha.cz>\r\n";
                     $headers .= "X-Mailer: PHP/" . phpversion();
 
                     $ok = @mail($email, $subjekt, $telo, $headers);
@@ -454,6 +457,7 @@ $pocetBezEmailu  = count($vsichniSportovci) - $pocetSEmailem;
     <!-- ── HLAVNÍ FORMULÁŘ ─────────────────────────────────────────── -->
     <form method="post" id="mainForm">
         <input type="hidden" name="action" value="preview">
+        <?= csrf_field() ?>
         <input type="hidden" name="skupina_id" value="<?= h($filterSkupinaId) ?>">
         <input type="hidden" name="podskupina_id" value="<?= h($filterPodskupinaId) ?>">
         <?php if ($nacistVsechny): ?>

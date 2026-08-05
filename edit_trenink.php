@@ -610,7 +610,12 @@ if (!empty($trenink['datum'])) {
                         const chip = document.createElement('span');
                         chip.className = 'chip';
                         chip.setAttribute('data-id', it.id);
-                        chip.innerHTML = it.jmeno + ' <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>';
+                        chip.appendChild(document.createTextNode(String(it.jmeno) + ' '));
+                        const close = document.createElement('button');
+                        close.type = 'button';
+                        close.className = 'btn-close btn-close-white btn-sm ms-2';
+                        close.setAttribute('aria-label', 'Odstranit');
+                        chip.appendChild(close);
                         wrap.appendChild(chip);
                         input.value = '';
                         sug.innerHTML = '';
@@ -640,8 +645,6 @@ if (!empty($trenink['datum'])) {
     const hid   = document.getElementById('tagy_json');
     if (!input || !sug || !wrap || !hid) return;
 
-    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
-
     let selected = [];
     try { selected = JSON.parse(hid.value || '[]'); if (!Array.isArray(selected)) selected = []; } catch(e){ selected = []; }
 
@@ -651,12 +654,17 @@ if (!empty($trenink['datum'])) {
             const chip = document.createElement('span');
             chip.className = 'chip';
             chip.setAttribute('data-id', t.id ?? '');
-            chip.innerHTML = escapeHtml(t.name) + ' <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>';
-            chip.querySelector('button').addEventListener('click', () => {
+            chip.appendChild(document.createTextNode(String(t.name) + ' '));
+            const close = document.createElement('button');
+            close.type = 'button';
+            close.className = 'btn-close btn-close-white btn-sm ms-2';
+            close.setAttribute('aria-label', 'Odstranit');
+            close.addEventListener('click', () => {
                 selected.splice(idx, 1);
                 sync();
                 render();
             });
+            chip.appendChild(close);
             wrap.appendChild(chip);
         });
     }
@@ -705,7 +713,12 @@ if (!empty($trenink['datum'])) {
             const b = document.createElement('button');
             b.type = 'button';
             b.className = 'list-group-item list-group-item-action';
-            b.innerHTML = '<span class="text-muted">Přidat nový tag:</span> <strong>' + escapeHtml(input.value.trim()) + '</strong>';
+            const hint = document.createElement('span');
+            hint.className = 'text-muted';
+            hint.textContent = 'Přidat nový tag: ';
+            const name = document.createElement('strong');
+            name.textContent = input.value.trim();
+            b.append(hint, name);
             b.addEventListener('click', () => addTag({id: null, name: input.value.trim()}));
             sug.appendChild(b);
         }
