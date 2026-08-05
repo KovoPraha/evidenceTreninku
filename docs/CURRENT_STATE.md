@@ -41,9 +41,14 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   hodnoty; neplatný čas, RPE nebo chybějící jednotka selžou před transakcí. Historii
   ani produkci řez nepřevádí a ostrý import nespouští,
 
+- M3.5d přidává admin-only read-only stránku `sports_import_review_admin.php`:
+  pokrytí kontraktu v1 a konkrétní seznam nejednoznačných legacy řádků s důvody
+  k ručnímu rozhodnutí před budoucím jednorázovým importem; nic nepřevádí,
+  neodhaduje a nezobrazuje osoby,
+
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední přijatý base před M3.5c: `7211dfd`; aktuální řez M3.5c sjednocuje
-  validaci a zápis sportovních měření ve čtyřech tocích vytvoření/editace,
+- poslední přijatý base před M3.5d: `e07fc25` (M3.5c); aktuální řez M3.5d přidává
+  read-only přípravu jednorázového importu sportovních dat,
 - předchozí implementace: `12c2300` – M3.4 přidává administrátorský read-only
   provozní přehled plateb, vratek, kapacit, přihlášek a provozních výjimek; browser
   ověřil stránku syntetickým administrátorem bez konzolové chyby,

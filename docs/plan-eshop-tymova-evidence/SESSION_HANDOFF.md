@@ -1,5 +1,37 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — M3.5d read-only příprava importu sportovních dat
+
+- Nová admin-only stránka `sports_import_review_admin.php` je no-store, bez
+  formuláře i vstupu a nic neimportuje. Ukazuje pokrytí kontraktu v1 v měřeních
+  a výsledcích závodů a konkrétní seznam nejednoznačných legacy řádků k ručnímu
+  rozhodnutí před budoucím jednorázovým importem.
+- Klasifikace v `includes/sports_import_review.php` je deterministická a
+  fail-closed: vzdálenost bez výslovné jednotky, čas mimo striktní formát, RPE
+  mimo 1,0–10,0 a chybějící výslovný stav výsledku závodu jsou nejednoznačné;
+  striktně parsovatelný čas/RPE bez vzdálenosti se pouze počítá jako
+  deterministicky převoditelný. Nic se nepřevádí a stav se neodhaduje.
+- Výstup neobsahuje jména ani identifikátory sportovců; technické hodnoty měření
+  jsou zobrazené záměrně kvůli ručnímu rozhodnutí. Delší seznam se zkracuje
+  hlasitě s uvedeným celkovým počtem. Historická volnotextová tabulka `mereni`
+  zůstává mimo seznam do schválení formátu a jednotek.
+- Živý browser průchod odhalil a řez opravil dvě reálné vady: legacy tabulka
+  `zavod_sportovec` nemá surrogate PK (řádky se nyní odkazují přes `zavod_id`
+  + deterministické pořadí v závodě) a stránky M3.5a i M3.5d neměly vlastní
+  `<head>` s Bootstrap CSS, takže se vykreslovaly bez stylů. Obě sportovní
+  admin stránky teď mají standardní hlavičku dle šablony projektu.
+- Browser nad živým localhostem ověřil: přihlášení `localhost-admin`, odkaz v
+  menu Správa, stylované vykreslení, měření v1 0/0, dvě legacy závodní účasti
+  (#8 a #9, důvod „chybí výslovný stav“), historická tabulka 7 řádků,
+  0 formulářů, 0 vstupů a 0 konzolových chyb. Dočasný diagnostický skript byl
+  z webrootu odstraněn.
+- Session běžela v Cowork cloudu: testy proběhly na identické kopii repozitáře
+  (PHP 8.4/PHPUnit 11.5.56), lokální DB se nemutovala. Ověření: 491/4217
+  PHPUnit (base 487/4161), 4 nové testy, 470 first-party syntaxí bez chyby,
+  žádná nová migrace ani změna závislostí (poslední audit 0 je historický;
+  sandbox nemá přístup k advisories).
+- Base před M3.5d je `e07fc25`. Vzdálený repozitář ani produkce se nemění.
+
 ## Aktualizace 5. 8. 2026 — M3.5c normalizovaný zápis sportovních dat
 
 - Všechny čtyři toky vytvoření a editace tréninku/závodu používají jediný
@@ -92,11 +124,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD před M3.5c: `7211dfd`.
-- Implementace `12c2300`, `3a35a2b` a `8a69b66` jsou commitnuté; větev `main`, upstream
-  `origin/main`. Vzdálený repozitář ani produkce se v tomto řezu nezměnily.
-- Localhost DB je 50/50. Vzdálený repozitář se v této M3.5c session neměnil;
-  produkční workflow je ruční a produkce se nemění.
+- Poslední přijatý implementační HEAD před M3.5d: `e07fc25` (M3.5c).
+- Větev `main`, upstream `origin/main`, lokálně ahead 46 / behind 0 proti
+  poslednímu známému `origin/main` (`aead0be`, bez živého fetch). Vzdálený
+  repozitář ani produkce se v tomto řezu nezměnily.
+- Localhost DB je 50/50 (historická hodnota; tato cloud session DB nemutovala
+  a M3.5d žádnou migraci nepřidává). Produkční workflow je ruční a produkce se
+  nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
 - Programová brána: F0 – červená
 - Aktivní integrační větev: `main`; technická část M1 je dokončená a M2.1
@@ -115,7 +149,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce je řez M3.5c. Všechny čtyři toky vytvoření a
+- Poslední dokončená funkční akce je řez M3.5d. Administrátor má read-only
+  přípravu jednorázového importu: pokrytí v1 a konkrétní seznam nejednoznačných
+  legacy řádků s důvody, bez jediného převodu, odhadu, formuláře nebo osobního
+  údaje. Ověření 491/4217 PHPUnit a 470 syntaxí proběhlo na identické kopii
+  repozitáře v Cowork cloudu; browser nad živým localhostem potvrdil obě
+  sportovní admin stránky, dvě legacy účasti k rozhodnutí a konzoli 0.
+  Předchozí dokončená funkční akce je řez M3.5c. Všechny čtyři toky vytvoření a
   editace tréninku/závodu používají společný fail-closed parser a dual-write
   původních + normalizovaných hodnot `sports-measurement-v1`. Historická data,
   produkce a vzdálený repozitář zůstaly beze změny.
@@ -835,6 +875,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 101 | M3.5a kvalita sportovních dat | admin-only agregace pěti zdrojů bez jmen, ID a hodnot; browser 5 karet / 0 formulářů / 0 vstupů / konzole 0; integrovaný kontrakt hlídá jednotnou identitu, osoby a docházku; 466/4075, 461 parse, 49/49, audit 0 |
 | 102 | M3.5b sportovní datový kontrakt | aditivní `sports-measurement-v1` pro m/km, metry, milisekundy, RPE 1–10 a stavy entered/finished/DNS/DNF/DSQ; žádný backfill, browser 0 formulářů/vstupů a konzole 0; 477/4107, 466 parse, 50/50, backup 100, audit 0 |
 | 103 | M3.5c normalizovaný zápis sportovních dat | čtyři formuláře/handlery sdílí fail-closed parser a ukládají legacy + v1 hodnoty; výslovná jednotka, striktní čas/RPE, testovaný importní mapper bez ostrého zápisu; browser bez odeslání a konzole 0; 487/4161, 469 parse, 50/50, backup 100, audit 0 |
+| 104 | M3.5d read-only příprava importu | admin-only no-store stránka bez formuláře: pokrytí v1 a konkrétní nejednoznačné legacy řádky s důvody; deterministické kandidáty pouze počítá, nic nepřevádí a neodhaduje; bez osob; oprava chybějícího Bootstrap head u M3.5a/M3.5d a reference legacy řádků bez PK; browser živě 2 účasti + konzole 0; 491/4217, 470 parse, bez nové migrace a změny závislostí |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

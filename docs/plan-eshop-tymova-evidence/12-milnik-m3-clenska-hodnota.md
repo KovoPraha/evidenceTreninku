@@ -25,7 +25,7 @@ před dalším rozšiřováním M3.
 | M3.2 týdenní souhrn | technicky hotovo | 100 % | náhled, výchozí opt-out, dobrovolný opt-in, odhlášení jedním krokem, idempotentní fronta, audit a localhost-only outbox jsou ověřené; produkční transport zůstává samostatně blokovaný |
 | M3.3 roční přehled plateb | probíhá | 70 % | přihlášený read-only přehled skutečně uhrazených členských předpisů a e-shopových položek je hotový; zbývá vlastníkovo ověření obsahu a rozhodnutí, zda vůbec vznikne schválený export |
 | M3.4 provozní přehled správce | technicky hotovo | 100 % | read-only akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
-| M3.5 datová kvalita sportovního progresu | probíhá | 85 % | M3.5a má admin-only read-only inventuru; M3.5b přidává aditivní `sports-measurement-v1`; M3.5c napojuje všechny čtyři formuláře a handlery na společný striktní zápis a připravuje fail-closed mapper závodních výsledků bez spuštění ostrého importu; zbývá schválená ochrana zátěžových testů a budoucí řízený import |
+| M3.5 datová kvalita sportovního progresu | probíhá | 90 % | M3.5a má admin-only read-only inventuru; M3.5b přidává aditivní `sports-measurement-v1`; M3.5c napojuje všechny čtyři formuláře a handlery na společný striktní zápis; M3.5d přidává read-only přípravu importu: pokrytí v1 a konkrétní seznam nejednoznačných legacy řádků k ručnímu rozhodnutí; zbývá schválená ochrana zátěžových testů a samotný řízený jednorázový import |
 
 Orientační technický stav M3: **70 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
 
@@ -133,6 +133,17 @@ Součástí je testovaný fail-closed mapper budoucího importu výsledků závo
 stavem `entered`/`finished`/`dns`/`dnf`/`dsq`. Mapper zatím nic neimportuje a
 produkční data ani historie se v tomto řezu nemění.
 
+Řez M3.5d přidává admin-only read-only stránku `sports_import_review_admin.php`.
+Ukazuje pokrytí kontraktu v1 v měřeních i výsledcích závodů a konkrétní seznam
+nejednoznačných legacy řádků k ručnímu rozhodnutí před jednorázovým importem:
+vzdálenost bez výslovné jednotky, čas mimo striktní formát, RPE mimo číselnou
+stupnici a chybějící výslovný stav výsledku závodu. Deterministicky převoditelné
+řádky se pouze počítají a nic se nepřevádí; delší seznam se zkracuje hlasitě
+s uvedeným celkovým počtem. Stránka zobrazuje technické hodnoty měření, ale žádná
+jména ani identifikátory sportovců, nemá formulář ani vstup a historická
+volnotextová tabulka měření zůstává mimo seznam, dokud nebude schválen její
+formát a jednotky.
+
 ## Brány a výslovně odložené oblasti
 
 - Stripe, automatické Fio párování, Packeta a skutečné e-mailové transporty
@@ -148,9 +159,9 @@ produkční data ani historie se v tomto řezu nemění.
 
 ## Další konkrétní krok
 
-Další bezpečný krok není automatický backfill historie: při malém objemu dat by
-přinesl více rizika než hodnoty. M3.5d proto připraví jen read-only pohled nad
-novými záznamy v1 a konkrétní seznam nejednoznačných legacy řádků k ručnímu
-rozhodnutí před jednorázovým importem. Zátěžové testy zůstávají mimo progresové
-výpočty, dokud nebude schválen účel, přístup, retence a výmaz. Současně zůstává
-otevřená vlastníkova kontrola M3.3 a celé A01–A10.
+Automatický backfill historie zůstává vyloučený: při malém objemu dat by přinesl
+více rizika než hodnoty. M3.5d je hotové jako read-only příprava; navazující krok
+je ruční rozhodnutí vlastníka o vyjmenovaných nejednoznačných řádcích a teprve
+potom samostatně schválený jednorázový import s auditem. Zátěžové testy zůstávají
+mimo progresové výpočty, dokud nebude schválen účel, přístup, retence a výmaz.
+Současně zůstává otevřená vlastníkova kontrola M3.3 a celé A01–A10.
