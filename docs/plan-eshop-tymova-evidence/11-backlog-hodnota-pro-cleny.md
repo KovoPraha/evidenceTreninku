@@ -25,7 +25,7 @@ architekturu, v jakém pořadí a s jakou bránou.
 |---|---|---|---|
 | V1 | veřejný ICS kalendář | M2.7, první řez implementován | pouze zveřejněné plánované tréninky, otevřené klubové akce a aktivní veřejné hodiny velodromu; bez osob, docházky, rezervací a interních popisů |
 | V2 | osobní rodinný ICS kalendář | M2.7, technicky implementován | revokovatelný 256bitový náhodný token uložený jen jako hash, oddělený kalendář pro každý účet, rotace, audit, `no-store` a zákaz indexace |
-| V3 | připomínky splatných předpisů | M2.7, technicky implementováno | opt-in 3/7/14 dní, idempotentní auditovaná fronta, nejvýše jedna zpráva za 20 hodin na účet, admin náhled/retry, localhost outbox a obnovitelná syntetická ukázka; produkční transport a CRON čekají na akceptaci |
+| V3 | připomínky splatných předpisů | M2.7, technicky implementováno | opt-in 3/7/14 dní, idempotentní auditovaná fronta, nejvýše jedna zpráva za 20 hodin na účet, admin náhled/retry a bezpečný localhostový průchod Čeká → Odesláno do souborového outboxu; produkční transport a CRON čekají na akceptaci |
 | V4 | roční přehled zaplacených klubových služeb | po finanční akceptaci | nejdřív přesný read-only přehled; označení „daňové potvrzení“ až po právním a účetním ověření textu a náležitostí |
 | V5 | osobní progres a osobní rekordy | budoucí datový milník | nejprve normalizovat volný čas měření do číselné hodnoty, opravit kvalitu dat a definovat soukromí nezletilých |
 | V6 | rodičovský týdenní souhrn | po V3 | opt-in, pouze fakta, která rodič už smí číst; možnost okamžitého odhlášení |

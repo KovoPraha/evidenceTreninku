@@ -30,9 +30,9 @@ kódu.
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
-| M2.7 hodnota pro členy | probíhá | 91 % | veřejný a rodinný ICS feed, opt-in připomínky, admin obsluha, náhled, localhost outbox a obnovitelná syntetická ukázka jsou hotové; zbývá akceptace v reálném kalendáři, schválení textu a kontrolované doručení na testovací adresu |
+| M2.7 hodnota pro členy | probíhá | 94 % | veřejný a rodinný ICS feed, opt-in připomínky, admin obsluha, náhled a localhostový průchod Čeká → Odesláno do chráněného outboxu jsou hotové; zbývá akceptace v reálném kalendáři, schválení textu a kontrolované doručení na určenou testovací adresu |
 
-Orientační stav celého M2: **85 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **86 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí

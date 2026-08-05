@@ -137,6 +137,7 @@ současné vývojové prostředí dokáže ověřit navrhované scénáře.
 | M2.7d provozní obsluha připomínek | hotovo technicky | `66b4241`: admin přehled pěti stavů, ruční retry pouze přes POST+CSRF+důvod+potvrzení, audit typu/ID aktéra a opětovná kontrola opt-in i stavu předpisu; web zprávu neodesílá; 421/3761, 429 parse, 48/48, backup 95, audit 0 |
 | M2.7e náhled a bezpečný testovací transport | hotovo technicky | `68e1199`: no-store admin náhled escapovaného uloženého textu, localhost-only souborový outbox, odmítnutí produkčního hostu a webový zákaz `var/`; skutečný mail se nezapnul; 423/3781, 429 parse, 48/48, backup 95, audit 0 |
 | M2.7f obnovitelná localhost ukázka | hotovo technicky | `5843f70`: admin+CSRF+potvrzení připraví auditovaný syntetický předpis, opt-in a právě jednu čekající zprávu, poté otevře náhled; browser 0→1, žádný transport; 425/3799, 431 parse, 48/48, backup 95, audit 0 |
+| M2.7g browserové testovací doručení | hotovo technicky | `6d290cc`: localhost admin+CSRF+potvrzení zpracuje jednu čekající zprávu výhradně do chráněného souborového outboxu; claim i sent auditují konkrétního trenéra, browser ověřil Čeká 1→Odesláno 1 a obnovu na Čeká 1; 427/3819, 431 parse, 48/48, backup 95, audit 0 |
 
 ## Aktivní rozhodnutí
 
