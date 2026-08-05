@@ -215,6 +215,33 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
     return $items;
 }
 
+/**
+ * Read-only web agenda over the same authorization and source model as the
+ * private family ICS feed.
+ *
+ * @return list<array{uid:string,start:string,end:string,all_day:bool,summary:string,location:string,description:string,category:string,date_label:string,time_label:string}>
+ */
+function familyCalendarAgenda(PDO $pdo, int $accountId, string $from, int $days = 30): array
+{
+    $fromDate = publicCalendarDate($from);
+    if ($accountId < 1 || $fromDate === null || $days < 1 || $days > 90) {
+        throw new InvalidArgumentException('Neplatné období rodinného přehledu.');
+    }
+    $to = $fromDate->modify('+' . ($days - 1) . ' days')->format('Y-m-d');
+    $items = familyCalendarItems($pdo, $accountId, $from, $to);
+    foreach ($items as &$item) {
+        $start = (string)$item['start'];
+        $date = publicCalendarDate(substr($start, 0, 10));
+        if ($date === null) throw new FamilyCalendarFeedException('Kalendář obsahuje neplatné datum.');
+        $item['date_label'] = $date->format('d. m. Y');
+        $item['time_label'] = $item['all_day']
+            ? 'celý den'
+            : substr($start, 11, 5) . '–' . substr((string)$item['end'], 11, 5);
+    }
+    unset($item);
+    return $items;
+}
+
 /** @param array<string,mixed> $row @return array{uid:string,start:string,end:string,all_day:bool,summary:string,location:string,description:string,category:string}|null */
 function familyCalendarTrainingItem(array $row): ?array
 {

@@ -14,6 +14,9 @@ final class FamilyCalendarWiringTest extends TestCase
         self::assertStringContainsString('family_calendar_issue', $source);
         self::assertStringContainsString('family_calendar_revoke', $source);
         self::assertStringContainsString('family_calendar_token_once', $source);
+        self::assertStringContainsString('familyCalendarAgenda', $source);
+        self::assertStringContainsString('Co nás čeká v příštích 30 dnech', $source);
+        self::assertStringContainsString('familyPageItemCount(count($familyAgenda))', $source);
         self::assertStringContainsString("unset(\$_SESSION['family_calendar_message'], \$_SESSION['family_calendar_token_once'])", $source);
     }
 

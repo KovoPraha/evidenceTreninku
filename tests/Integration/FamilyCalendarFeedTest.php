@@ -64,6 +64,34 @@ final class FamilyCalendarFeedTest extends TestCase
         self::assertSame([], \familyCalendarItems($pdo, 1, '2026-10-01', '2026-10-31'));
     }
 
+    public function testFamilyAgendaReusesAuthorizedCalendarItemsAndAddsCzechDisplayLabels(): void
+    {
+        $pdo = $this->database();
+        $items = \familyCalendarAgenda($pdo, 1, '2026-10-01', 7);
+
+        self::assertSame(
+            ['family-training-1-person-10', 'family-event-1-session-1', 'family-reservation-1', 'family-charge-1'],
+            array_column($items, 'uid')
+        );
+        self::assertSame('01. 10. 2026', $items[0]['date_label']);
+        self::assertSame('16:00–17:30', $items[0]['time_label']);
+        self::assertSame('celý den', $items[3]['time_label']);
+        self::assertStringNotContainsString('Cizí Osoba', json_encode($items, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE));
+    }
+
+    public function testFamilyAgendaRejectsInvalidAccountDateAndRange(): void
+    {
+        $pdo = $this->database();
+        foreach ([[0, '2026-10-01', 30], [1, 'bad-date', 30], [1, '2026-10-01', 0], [1, '2026-10-01', 91]] as [$accountId, $from, $days]) {
+            try {
+                \familyCalendarAgenda($pdo, $accountId, $from, $days);
+                self::fail('Invalid agenda input must fail.');
+            } catch (\InvalidArgumentException) {
+                self::assertTrue(true);
+            }
+        }
+    }
+
     public function testUnverifiedAccountAndMalformedTokenCannotResolve(): void
     {
         $pdo = $this->database();

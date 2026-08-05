@@ -25,6 +25,12 @@ function familyPageChargeStatus(string $status): string
     return ['pending' => 'Čeká na úhradu', 'paid' => 'Uhrazeno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
 }
 
+function familyPageItemCount(int $count): string
+{
+    $word = $count === 1 ? 'položka' : ($count >= 2 && $count <= 4 ? 'položky' : 'položek');
+    return $count . ' ' . $word;
+}
+
 $accountId = (int)$_SESSION['verejny_uzivatel_id'];
 $calendarMessage = (string)($_SESSION['family_calendar_message'] ?? '');
 $calendarToken = (string)($_SESSION['family_calendar_token_once'] ?? '');
@@ -87,6 +93,8 @@ $reminderPreference = memberChargeReminderPreference($pdo, $accountId);
 $reminderSummary = memberChargeReminderAccountSummary($pdo, $accountId);
 $overview = [];
 $familyOrderItems = [];
+$familyAgenda = [];
+$agendaError = '';
 $loadError = '';
 try {
     $overview = familyPortalOverview($pdo, $accountId);
@@ -99,6 +107,13 @@ try {
 } catch (Throwable $exception) {
     error_log('booking/sportovni_prehled.php: ' . $exception->getMessage());
     $loadError = 'Sportovní přehled se nyní nepodařilo načíst.';
+}
+try {
+    $agendaFrom = (new DateTimeImmutable('today', new DateTimeZone('Europe/Prague')))->format('Y-m-d');
+    $familyAgenda = familyCalendarAgenda($pdo, $accountId, $agendaFrom, 30);
+} catch (Throwable $exception) {
+    error_log('booking/sportovni_prehled.php agenda: ' . $exception->getMessage());
+    $agendaError = 'Rodinný program se nyní nepodařilo načíst.';
 }
 
 $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
@@ -131,6 +146,20 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
     <?php if ($loadError === '' && $overview === []): ?>
         <div class="alert alert-info">Nemáte žádný aktivní schválený profil. O propojení můžete požádat v části <a href="moje_osoby.php">Moje osoby</a>.</div>
     <?php endif; ?>
+
+    <section class="card border-0 shadow-sm mb-4" id="rodinny-program">
+        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-calendar2-week me-2 text-success"></i>Co nás čeká v příštích 30 dnech</strong><span class="badge text-bg-light border text-dark"><?= familyPageH(familyPageItemCount(count($familyAgenda))) ?></span></div>
+        <div class="card-body">
+            <p class="small text-muted">Společný read-only program všech schválených profilů: tréninky, přihlášené akce, rezervace a splatnosti. Používá stejná oprávnění jako soukromý rodinný kalendář.</p>
+            <?php if ($agendaError !== ''): ?><div class="alert alert-warning mb-0"><?= familyPageH($agendaError) ?></div>
+            <?php elseif ($familyAgenda === []): ?><p class="text-muted mb-0">V nejbližších 30 dnech není evidovaná žádná položka.</p>
+            <?php else: ?><div class="list-group list-group-flush">
+                <?php foreach ($familyAgenda as $item): ?>
+                    <div class="list-group-item px-0"><div class="d-flex flex-wrap justify-content-between gap-2"><div><span class="badge text-bg-<?= $item['category'] === 'Členský předpis' ? 'warning' : ($item['category'] === 'Rodinný trénink' ? 'primary' : 'success') ?> me-2"><?= familyPageH($item['category']) ?></span><strong><?= familyPageH($item['summary']) ?></strong><?php if ($item['location'] !== ''): ?><div class="small text-muted mt-1"><i class="bi bi-geo-alt me-1"></i><?= familyPageH($item['location']) ?></div><?php endif; ?><?php if ($item['description'] !== ''): ?><div class="small text-muted"><?= familyPageH($item['description']) ?></div><?php endif; ?></div><div class="text-md-end"><strong><?= familyPageH($item['date_label']) ?></strong><div class="small text-muted"><?= familyPageH($item['time_label']) ?></div></div></div></div>
+                <?php endforeach; ?>
+            </div><?php endif; ?>
+        </div>
+    </section>
 
     <section class="card border-0 shadow-sm mb-4" id="rodinny-kalendar">
         <div class="card-header bg-white"><strong><i class="bi bi-calendar3 me-2 text-primary"></i>Rodinný kalendář v telefonu</strong></div>
