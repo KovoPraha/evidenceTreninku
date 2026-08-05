@@ -13,6 +13,7 @@ require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_summary.php';
+require_once dirname(__DIR__) . '/includes/family_annual_paid_overview.php';
 require_once dirname(__DIR__) . '/includes/member_charge_reminder.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 
@@ -96,8 +97,10 @@ $overview = [];
 $familyOrderItems = [];
 $familyAgenda = [];
 $weeklySummary = null;
+$annualPaidOverview = null;
 $agendaError = '';
 $weeklyError = '';
+$annualPaidOverviewError = '';
 $loadError = '';
 try {
     $overview = familyPortalOverview($pdo, $accountId);
@@ -130,6 +133,20 @@ try {
 } catch (Throwable $exception) {
     error_log('booking/sportovni_prehled.php weekly summary: ' . $exception->getMessage());
     $weeklyError = 'Náhled týdenního souhrnu se nyní nepodařilo načíst.';
+}
+try {
+    $today ??= new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
+    $annualPaidOverviewYear = familyAnnualPaidOverviewYear($_GET['year'] ?? '', $today);
+    $annualPaidOverview = familyAnnualPaidOverview($pdo, $accountId, $annualPaidOverviewYear);
+    $annualPaidOverviewPrevious = $annualPaidOverviewYear - 1;
+    $annualPaidOverviewNext = $annualPaidOverviewYear < (int)$today->format('Y')
+        ? $annualPaidOverviewYear + 1
+        : null;
+} catch (InvalidArgumentException $exception) {
+    $annualPaidOverviewError = $exception->getMessage();
+} catch (Throwable $exception) {
+    error_log('booking/sportovni_prehled.php annual paid overview: ' . $exception->getMessage());
+    $annualPaidOverviewError = 'Roční přehled uhrazených služeb se nyní nepodařilo načíst.';
 }
 
 $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
@@ -187,6 +204,50 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
                 <div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-primary">Tréninky <?= (int)$weeklySummary['counts']['training'] ?></span><span class="badge text-bg-success">Akce <?= (int)$weeklySummary['counts']['event'] ?></span><span class="badge text-bg-success">Rezervace <?= (int)$weeklySummary['counts']['reservation'] ?></span><span class="badge text-bg-warning">Splatnosti <?= (int)$weeklySummary['counts']['charge'] ?></span></div>
                 <dl class="row small"><dt class="col-sm-2">Předmět</dt><dd class="col-sm-10"><strong><?= familyPageH($weeklySummary['subject']) ?></strong></dd></dl>
                 <pre class="bg-light border rounded p-3 mb-0" style="white-space:pre-wrap"><?= familyPageH($weeklySummary['body']) ?></pre>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <section class="card border-success shadow-sm mb-4" id="rocni-prehled-uhrad">
+        <div class="card-header bg-success-subtle d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <strong><i class="bi bi-receipt me-2"></i>Roční přehled uhrazených klubových služeb</strong>
+            <?php if ($annualPaidOverview !== null): ?><span class="badge text-bg-light border text-dark">Rok <?= (int)$annualPaidOverview['year'] ?></span><?php endif; ?>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning py-2"><strong>Informační přehled.</strong> Není účetním ani daňovým dokladem a nenahrazuje potvrzení vystavené klubem.</div>
+            <?php if ($annualPaidOverviewError !== ''): ?><div class="alert alert-danger mb-0"><?= familyPageH($annualPaidOverviewError) ?></div>
+            <?php elseif ($annualPaidOverview !== null): ?>
+                <div class="d-flex justify-content-between gap-2 mb-3">
+                    <a class="btn btn-sm btn-outline-secondary" href="?year=<?= (int)$annualPaidOverviewPrevious ?>#rocni-prehled-uhrad">← Rok <?= (int)$annualPaidOverviewPrevious ?></a>
+                    <?php if ($annualPaidOverviewNext !== null): ?><a class="btn btn-sm btn-outline-secondary" href="?year=<?= (int)$annualPaidOverviewNext ?>#rocni-prehled-uhrad">Rok <?= (int)$annualPaidOverviewNext ?> →</a><?php endif; ?>
+                </div>
+                <p class="small text-muted">Přehled zahrnuje jen skutečně uhrazené položky přiřazené schváleným profilům rodiny. Členské předpisy a e-shop zůstávají oddělené a nesčítají se do jednoho součtu, protože v přechodném období může být stejná služba evidována v obou systémech.</p>
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="border rounded h-100">
+                            <div class="p-3 border-bottom d-flex justify-content-between gap-2"><strong>Členské předpisy</strong><span><?= familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['member_charges'])) ?></span></div>
+                            <?php if ($annualPaidOverview['member_charges'] === []): ?><p class="small text-muted p-3 mb-0">V tomto roce není evidovaný žádný uhrazený členský předpis.</p>
+                            <?php else: ?><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Profil a předpis</th><th>Uhrazeno</th><th class="text-end">Částka</th></tr></thead><tbody>
+                            <?php foreach ($annualPaidOverview['member_charges'] as $item): ?><tr>
+                                <td><?= familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name']) ?><div class="small"><strong><?= familyPageH($item['title_snapshot']) ?></strong> · <code><?= familyPageH($item['public_code']) ?></code></div></td>
+                                <td><?= familyPageH(substr((string)$item['paid_at'], 0, 10)) ?></td>
+                                <td class="text-end text-nowrap"><?= familyPageH(number_format(((int)$item['amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency']) ?></td>
+                            </tr><?php endforeach; ?></tbody></table></div><?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="border rounded h-100">
+                            <div class="p-3 border-bottom d-flex justify-content-between gap-2"><strong>E-shopové položky</strong><span><?= familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['shop_items'])) ?></span></div>
+                            <?php if ($annualPaidOverview['shop_items'] === []): ?><p class="small text-muted p-3 mb-0">V tomto roce není evidovaná žádná uhrazená e-shopová položka přiřazená profilu.</p>
+                            <?php else: ?><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Profil a položka</th><th>Uhrazeno</th><th class="text-end">Částka</th></tr></thead><tbody>
+                            <?php foreach ($annualPaidOverview['shop_items'] as $item): ?><tr>
+                                <td><?= familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name']) ?><div class="small"><strong><?= familyPageH($item['product_name_snapshot']) ?></strong><?php if ((int)$item['quantity'] > 1): ?> × <?= (int)$item['quantity'] ?><?php endif; ?> · <code><?= familyPageH($item['public_code']) ?></code></div></td>
+                                <td><?= familyPageH(substr((string)$item['paid_at'], 0, 10)) ?></td>
+                                <td class="text-end text-nowrap"><?= familyPageH(number_format(((int)$item['amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency']) ?></td>
+                            </tr><?php endforeach; ?></tbody></table></div><?php endif; ?>
+                        </div>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
     </section>
