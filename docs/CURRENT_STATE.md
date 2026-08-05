@@ -15,7 +15,10 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `66b4241` – administrátorský
+- poslední implementace před tímto dokumentem: `68e1199` – bezpečný
+  administrátorský náhled uloženého textu připomínky a localhost-only
+  testovací outbox, který nic neposílá na internet,
+- předchozí implementace: `66b4241` – administrátorský
   přehled fronty připomínek členských plateb, bezpečné ruční opakování bez
   odesílání z webu a audit konkrétního administrátora,
 - předchozí implementace: `29e3d5d` – dobrovolné e-mailové připomínky blížící
@@ -34,7 +37,7 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 48/48,
-- automatické testy 421/3761,
+- automatické testy 423/3781,
 - first-party PHP syntaxe 429 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
@@ -76,7 +79,7 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 83 %,
+- celý M2: 84 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
   sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
   localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
@@ -84,10 +87,11 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
   bezpečně vrácen na 0/2 při zachování auditní historie,
 - M2.6 integrovaná akceptace: 98 %; technické scénáře jsou připravené, zbývá
   vlastníkův průchod a vypořádání připomínek,
-- M2.7 hodnota pro členy: 82 %; veřejný i soukromý rodinný ICS feed, opt-in
-  fronta připomínek splatnosti a její auditovaná administrátorská obsluha jsou
-  technicky hotové; zbývá ověřit kalendář v reálné aplikaci a před produkcí
-  potvrdit e-mailový transport, CRON a finální text zprávy,
+- M2.7 hodnota pro členy: 88 %; veřejný i soukromý rodinný ICS feed, opt-in
+  fronta připomínek, její auditovaná administrátorská obsluha, náhled textu a
+  bezpečný lokální testovací outbox jsou technicky hotové; zbývá ověřit
+  kalendář v reálné aplikaci a po schválení textu provést kontrolované doručení
+  na určenou testovací adresu; produkční CRON zůstává vypnutý,
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.

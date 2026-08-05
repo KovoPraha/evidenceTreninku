@@ -30,9 +30,9 @@ kódu.
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
 | M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
-| M2.7 hodnota pro členy | probíhá | 75 % | veřejný a rodinný ICS feed jsou hotové; opt-in připomínky splatnosti mají idempotentní auditovanou frontu, opakované pokusy a omezení četnosti; zbývá akceptace v reálném kalendáři a potvrzení produkčního e-mailového transportu/CRONu |
+| M2.7 hodnota pro členy | probíhá | 88 % | veřejný a rodinný ICS feed, opt-in připomínky, admin obsluha, náhled textu a localhost testovací outbox jsou hotové; zbývá akceptace v reálném kalendáři, schválení textu a kontrolované doručení na testovací adresu |
 
-Orientační stav celého M2: **82 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **84 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
@@ -497,6 +497,15 @@ přihlášený rodinný přehled bez ID osoby nebo platby v URL. CLI umí odděl
 `--generate` a `--send`; produkční CRON ani skutečné odesílání zatím nejsou
 schválené. Localhost browser ověřil zapnutí a vypnutí a skončil s vypnutým
 opt-in; nebyl odeslán žádný skutečný e-mail.
+
+Provozní dokončení `66b4241` a `68e1199` přidává admin-only přehled pěti stavů,
+auditované ruční vrácení do fronty, no-store náhled přesně uloženého předmětu a
+těla zprávy a explicitní CLI transport `--transport=local-outbox`. Testovací
+transport je povolen jen pro `localhost`/`127.0.0.1`, ukládá zprávy do ignorovaného
+adresáře `var/member-charge-reminder-outbox`, který Apache vrací jako 403, a
+nikdy nevolá skutečný mail transport. Produkční CRON a skutečné odesílání jsou
+nadále vypnuté. Před jejich aktivací zbývá schválit text a kontrolovaně ověřit
+doručení na jednu určenou testovací adresu.
 
 ## Výslovně blokované oblasti
 
