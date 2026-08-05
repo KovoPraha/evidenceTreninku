@@ -57,6 +57,7 @@ aktuální stav je vždy v `SESSION_HANDOFF.md`.
 | [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md) | Kanonický plán integrovaného localhost prototypu, implementační pořadí a akceptační prohlídka |
 | [09 – Paralelní vývoj M1](09-paralelni-vyvoj-m1.md) | Worktrees, vlastnictví souborů, prompt kontrakt, merge order a stop podmínky |
 | [10 – Milník M2](10-milnik-m2-provozni-pilot.md) | Kanonický plán provozního localhost pilotu, pořadí přírůstků a blokované oblasti |
+| [12 – Milník M3](12-milnik-m3-clenska-hodnota.md) | Každodenní rodinné a provozní přehledy nad již propojenými daty, s oddělenými produkčními branami |
 | [11 – Hodnota pro členy](11-backlog-hodnota-pro-cleny.md) | Vytřídění funkčního auditu, bezpečné pořadí nových služeb a první řez veřejného ICS kalendáře |
 | [Prompt Claude Code – revize M2](PROMPT-CLAUDE-CODE-REVIZE-M2.md) | Read-only prompt pro nezávislou revizi kódu, dokumentace, testů a pořadí M2 |
 | [Session handoff](SESSION_HANDOFF.md) | Obnovitelný stav řídicího tasku, aktivní práce a další krok |

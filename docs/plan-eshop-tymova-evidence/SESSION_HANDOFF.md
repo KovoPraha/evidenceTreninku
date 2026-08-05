@@ -7,8 +7,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD: `9a04c3c`.
-- Implementace `9a04c3c` je commitnutá; větev `main`, upstream `origin/main`.
+- Poslední přijatý implementační HEAD: `1510c20`.
+- Implementace `1510c20` je commitnutá; větev `main`, upstream `origin/main`.
 - Localhost DB je 48/48. Vzdálený repozitář se v této M2.7 session neměnil;
   produkční workflow je ruční a produkce se nemění.
 - Repozitář: `C:\xampp\htdocs\evidencePavel`
@@ -27,7 +27,17 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   [10 – Milník M2](10-milnik-m2-provozni-pilot.md); cílem je provozní pilot nad
   integrovanou Evidencí, e-shopem a členskou evidencí. Fio auto-confirm, Stripe,
   wallet a ostrý import zůstávají blokované.
-- Poslední dokončená funkční akce: `9a04c3c` přidává do A01–A10 závěrečnou
+- Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
+  jejich produkční brána se neotevře před vypořádáním A01–A10.
+- Poslední dokončená funkční akce: `1510c20` zahajuje M3.1 rodinným programem.
+  Přihlášený rodič vidí nejbližších 30 dní tréninků, přihlášených akcí,
+  rezervací a splatností. Funkce je read-only a volá kanonický rodinný
+  kalendářový model, takže nepřijímá ID osoby a zachovává živé oprávnění vazeb.
+  Browser nad `rodic@localhost.test` zobrazil dvě oprávněné položky, žádnou cizí
+  osobu a nula konzolových chyb. Plná sada je 431/3847, syntaxe 433 souborů,
+  migrace 48/48, backup smoke 95 a audit 0. Produkce se nezměnila.
+
+  Předchozí dokončená funkční akce: `9a04c3c` přidává do A01–A10 závěrečnou
   bránu M2. Automaticky a read-only ověřuje dostupnost všech cest, checksumy
   migračního katalogu a úplnost základních demo identit/nabídky; výsledek
   odděluje od vlastníkova PASS 10/10 a blokujících připomínek. Browser živě
@@ -534,7 +544,7 @@ Při rozporu se nejprve zastaví mutace, zaznamená drift a aktualizuje board.
 | GitHub deploy | run `30668559417`, success | 2026-08-01 | GitHub CLI | ano |
 | produkční runtime | schema `2.20.2`, PHP `8.2.32` | 2026-07-31 | deploy post-check | před releasem |
 | lokální schema | legacy `2.20.2` + 48/48 číslovaných migrací; audit připomínek nově ukládá typ a ID aktéra; hashované rodinné kalendáře a tři tabulky opt-in/fronty/auditu jsou aplikované | 2026-08-05 | migration apply/check + živá localhost MariaDB | ano |
-| testy | 429/3833; závěrečná brána browserem 3/3 technika, A01–A10 10/10, migrace 48/48, demo data OK, vlastník 0/10 a blokátory 0; MariaDB backup smoke 95 tabulek, 433 first-party syntaxí a audit 0 | 2026-08-05 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
+| testy | 431/3847; M3.1 browserem 2 oprávněné položky, cizí osoba nezobrazena a konzole 0; závěrečná brána M2 3/3 technika a vlastník 0/10; migrace 48/48, backup smoke 95 tabulek, 433 first-party syntaxí a audit 0 | 2026-08-05 | PHP 8.2.12 / PHPUnit 11.5.56 + localhost browser/MariaDB | ano |
 | Shoptet staging | 241 produktů / 807 variant převedeno do draft katalogu; druhé spuštění bez duplicity, 1 bookable rental, 3 free varianty, 0 veřejně aktivních | 2026-08-02 | reálný XML + SQLite/MariaDB | před veřejnou aktivací |
 | dependencies | PhpSpreadsheet 5.8.1, Guzzle 7.15.2, PSR-7 2.13.0, endroid/qr-code 6.0.9; 0 advisories | 2026-08-03 | Composer audit | ano |
 | lokální backup drill | M2.6 `evidence_2026-08-04_104915_2404dfc4.sql.gz`: 125 tabulek, 2 triggery, SHA-256 `a7382f999126595fbbabffc99c7f5e926c0a134600fcf8659f167c949a0174a9`; ownership kontrakt `.8` včetně `password_reset_tokens` | 2026-08-04 | XAMPP DB backup mimo webroot + ověřený manifest/hash | zopakovat s produkčním artefaktem až před autorizovaným deployem |
@@ -683,6 +693,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 92 | M2.7f syntetická browser ukázka `5843f70` | localhost admin+CSRF+potvrzení opakovatelně připraví auditovaný předpis, opt-in a jednu čekající zprávu, browser 0→1 + náhled, bez transportu; 425/3799, 431 parse, 48/48, backup 95, audit 0 |
 | 93 | M2.7g browserové testovací doručení `6d290cc` | localhost admin+CSRF+potvrzení zpracuje jednu čekající připomínku pouze do souborového outboxu, claim/sent auditují trenéra; browser Čeká 1→Odesláno 1→Čeká 1, 427/3819, 431 parse, 48/48, backup 95, audit 0 |
 | 94 | M2.6 závěrečná brána `9a04c3c` | localhost-only read-only panel kontroluje cesty, migrační checksumy a demo data odděleně od vlastníkova PASS; browser 3/3, 10/10 cest, 48/48 migrací, vlastník 0/10, blokátory 0; 429/3833, 433 parse, backup 95, audit 0 |
+| 95 | M3.1 rodinný program `1510c20` | 30denní read-only agenda z kanonického rodinného kalendáře; browser rodiče 2 správné položky, cizí osoba nezobrazena, konzole 0; 431/3847, 433 parse, 48/48, backup 95, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

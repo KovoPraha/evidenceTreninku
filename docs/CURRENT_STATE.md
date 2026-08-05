@@ -15,7 +15,10 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `9a04c3c` – localhostová
+- poslední implementace před tímto dokumentem: `1510c20` – první řez M3 přidává
+  do rodinného sportovního přehledu společný read-only program nejbližších
+  30 dní nad stejnými oprávněními jako soukromý ICS kalendář,
+- předchozí implementace: `9a04c3c` – localhostová
   závěrečná brána M2 automaticky ověřuje cesty A01–A10, migrace a úplnost demo
   dat a odděluje je od vlastníkových výsledků PASS/PARTIAL/FAIL/BLOCKED,
 - předchozí implementace: `6d290cc` – administrátor může
@@ -47,7 +50,7 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 48/48,
-- automatické testy 429/3833,
+- automatické testy 431/3847,
 - first-party PHP syntaxe 433 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
@@ -109,6 +112,8 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.
+- M3: 10 % technického localhost řešení; M3.1 rodinný program je hotový,
+  produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,
 Stripe, Fio auto-confirm, wallet a TrainingPeaks zůstávají samostatně blokované.
@@ -131,6 +136,11 @@ přijat veřejný i revokovatelný rodinný ICS kalendář a opt-in připomínky
 splatnosti; wallet, zdravotní predikce,
 externí integrace a další personalizované feedy zůstávají za samostatnými
 rozhodnutími.
+
+Kanonický plán navazujícího milníku je
+`docs/plan-eshop-tymova-evidence/12-milnik-m3-clenska-hodnota.md`. M3.1 pouze
+zobrazuje již oprávněná data; nevytváří druhou identitu, kalendářovou logiku ani
+finanční stav.
 
 ## Doporučené pořadí další práce
 
