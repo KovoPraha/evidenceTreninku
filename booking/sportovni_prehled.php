@@ -12,6 +12,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
+require_once dirname(__DIR__) . '/includes/family_weekly_summary.php';
 require_once dirname(__DIR__) . '/includes/member_charge_reminder.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 
@@ -94,7 +95,9 @@ $reminderSummary = memberChargeReminderAccountSummary($pdo, $accountId);
 $overview = [];
 $familyOrderItems = [];
 $familyAgenda = [];
+$weeklySummary = null;
 $agendaError = '';
+$weeklyError = '';
 $loadError = '';
 try {
     $overview = familyPortalOverview($pdo, $accountId);
@@ -109,11 +112,24 @@ try {
     $loadError = 'Sportovní přehled se nyní nepodařilo načíst.';
 }
 try {
-    $agendaFrom = (new DateTimeImmutable('today', new DateTimeZone('Europe/Prague')))->format('Y-m-d');
+    $today = new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
+    $agendaFrom = $today->format('Y-m-d');
     $familyAgenda = familyCalendarAgenda($pdo, $accountId, $agendaFrom, 30);
 } catch (Throwable $exception) {
     error_log('booking/sportovni_prehled.php agenda: ' . $exception->getMessage());
     $agendaError = 'Rodinný program se nyní nepodařilo načíst.';
+}
+try {
+    $today ??= new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
+    $weeklyStart = familyWeeklySummaryStartDate((string)($_GET['week'] ?? ''), $today);
+    $weeklySummary = familyWeeklySummaryPreview($pdo, $accountId, $weeklyStart->format('Y-m-d'));
+    $weeklyPrevious = $weeklyStart->modify('-7 days')->format('Y-m-d');
+    $weeklyNext = $weeklyStart->modify('+7 days')->format('Y-m-d');
+} catch (InvalidArgumentException $exception) {
+    $weeklyError = $exception->getMessage();
+} catch (Throwable $exception) {
+    error_log('booking/sportovni_prehled.php weekly summary: ' . $exception->getMessage());
+    $weeklyError = 'Náhled týdenního souhrnu se nyní nepodařilo načíst.';
 }
 
 $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
@@ -158,6 +174,20 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
                     <div class="list-group-item px-0"><div class="d-flex flex-wrap justify-content-between gap-2"><div><span class="badge text-bg-<?= $item['category'] === 'Členský předpis' ? 'warning' : ($item['category'] === 'Rodinný trénink' ? 'primary' : 'success') ?> me-2"><?= familyPageH($item['category']) ?></span><strong><?= familyPageH($item['summary']) ?></strong><?php if ($item['location'] !== ''): ?><div class="small text-muted mt-1"><i class="bi bi-geo-alt me-1"></i><?= familyPageH($item['location']) ?></div><?php endif; ?><?php if ($item['description'] !== ''): ?><div class="small text-muted"><?= familyPageH($item['description']) ?></div><?php endif; ?></div><div class="text-md-end"><strong><?= familyPageH($item['date_label']) ?></strong><div class="small text-muted"><?= familyPageH($item['time_label']) ?></div></div></div></div>
                 <?php endforeach; ?>
             </div><?php endif; ?>
+        </div>
+    </section>
+
+    <section class="card border-info shadow-sm mb-4" id="tydenni-souhrn">
+        <div class="card-header bg-info-subtle d-flex flex-wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-envelope-paper me-2"></i>Náhled týdenního souhrnu</strong><?php if ($weeklySummary !== null): ?><span class="badge text-bg-light border text-dark"><?= familyPageH($weeklySummary['period_label']) ?></span><?php endif; ?></div>
+        <div class="card-body">
+            <div class="alert alert-info py-2"><strong>Jde pouze o náhled.</strong> Nic se neodesílá a odběr zatím nelze zapnout.</div>
+            <?php if ($weeklyError !== ''): ?><div class="alert alert-warning"><?= familyPageH($weeklyError) ?></div>
+            <?php elseif ($weeklySummary !== null): ?>
+                <div class="d-flex justify-content-between gap-2 mb-3"><a class="btn btn-sm btn-outline-secondary" href="?week=<?= urlencode($weeklyPrevious) ?>#tydenni-souhrn">← Předchozí týden</a><a class="btn btn-sm btn-outline-secondary" href="?week=<?= urlencode($weeklyNext) ?>#tydenni-souhrn">Další týden →</a></div>
+                <div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-primary">Tréninky <?= (int)$weeklySummary['counts']['training'] ?></span><span class="badge text-bg-success">Akce <?= (int)$weeklySummary['counts']['event'] ?></span><span class="badge text-bg-success">Rezervace <?= (int)$weeklySummary['counts']['reservation'] ?></span><span class="badge text-bg-warning">Splatnosti <?= (int)$weeklySummary['counts']['charge'] ?></span></div>
+                <dl class="row small"><dt class="col-sm-2">Předmět</dt><dd class="col-sm-10"><strong><?= familyPageH($weeklySummary['subject']) ?></strong></dd></dl>
+                <pre class="bg-light border rounded p-3 mb-0" style="white-space:pre-wrap"><?= familyPageH($weeklySummary['body']) ?></pre>
+            <?php endif; ?>
         </div>
     </section>
 

@@ -17,6 +17,12 @@ final class FamilyCalendarWiringTest extends TestCase
         self::assertStringContainsString('familyCalendarAgenda', $source);
         self::assertStringContainsString('Co nás čeká v příštích 30 dnech', $source);
         self::assertStringContainsString('familyPageItemCount(count($familyAgenda))', $source);
+        self::assertStringContainsString('familyWeeklySummaryPreview', $source);
+        self::assertStringContainsString('Jde pouze o náhled.', $source);
+        self::assertStringNotContainsString('familyWeeklySummarySend', $source);
+        self::assertStringContainsString('familyWeeklySummaryStartDate', $source);
+        self::assertStringContainsString('Další týden →', $source);
+        self::assertStringNotContainsString("\$_GET['sportovec_id']", $source);
         self::assertStringContainsString("unset(\$_SESSION['family_calendar_message'], \$_SESSION['family_calendar_token_once'])", $source);
     }
 

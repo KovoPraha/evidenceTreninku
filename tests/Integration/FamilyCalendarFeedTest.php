@@ -9,6 +9,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/family_calendar_feed.php';
+require_once dirname(__DIR__, 2) . '/includes/family_weekly_summary.php';
 
 final class FamilyCalendarFeedTest extends TestCase
 {
@@ -86,6 +87,49 @@ final class FamilyCalendarFeedTest extends TestCase
             try {
                 \familyCalendarAgenda($pdo, $accountId, $from, $days);
                 self::fail('Invalid agenda input must fail.');
+            } catch (\InvalidArgumentException) {
+                self::assertTrue(true);
+            }
+        }
+    }
+
+    public function testWeeklySummaryPreviewUsesAuthorizedAgendaAndPlainText(): void
+    {
+        $pdo = $this->database();
+        $preview = \familyWeeklySummaryPreview($pdo, 1, '2026-10-01');
+
+        self::assertSame('2026-10-01', $preview['from']);
+        self::assertSame('2026-10-07', $preview['to']);
+        self::assertSame('01. 10.–07. 10. 2026', $preview['period_label']);
+        self::assertSame(['training' => 1, 'event' => 1, 'reservation' => 1, 'charge' => 1, 'other' => 0, 'total' => 4], $preview['counts']);
+        self::assertStringContainsString('Rodinný program 01. 10.–07. 10. 2026', $preview['subject']);
+        self::assertStringContainsString('Dráhový trénink – Anna První', $preview['body']);
+        self::assertStringContainsString('Splatnost: Příspěvek – Anna První', $preview['body']);
+        self::assertStringNotContainsString('Cizí Osoba', $preview['body']);
+        self::assertStringNotContainsString('<', $preview['body']);
+    }
+
+    public function testWeeklySummaryPreviewHasTruthfulEmptyStateAndRejectsInvalidInput(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE account_person_roles SET status='revoked',valid_to='2026-08-05 00:00:00' WHERE account_id=1");
+        $preview = \familyWeeklySummaryPreview($pdo, 1, '2026-10-01');
+        self::assertSame(0, $preview['counts']['total']);
+        self::assertStringContainsString('nemáte evidovanou žádnou položku', $preview['body']);
+
+        $this->expectException(\InvalidArgumentException::class);
+        \familyWeeklySummaryPreview($pdo, 0, '2026-10-01');
+    }
+
+    public function testWeeklySummaryNavigationAcceptsOnlyBoundedStrictDates(): void
+    {
+        $today = new DateTimeImmutable('2026-08-05 13:00:00', new DateTimeZone('Europe/Prague'));
+        self::assertSame('2026-08-05', \familyWeeklySummaryStartDate('', $today)->format('Y-m-d'));
+        self::assertSame('2026-08-12', \familyWeeklySummaryStartDate('2026-08-12', $today)->format('Y-m-d'));
+        foreach (['bad-date', '2026-05-06', '2027-08-11'] as $invalid) {
+            try {
+                \familyWeeklySummaryStartDate($invalid, $today);
+                self::fail('Invalid week must fail.');
             } catch (\InvalidArgumentException) {
                 self::assertTrue(true);
             }
