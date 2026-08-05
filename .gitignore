@@ -26,6 +26,7 @@
 # Lokalni importy a prilohy z pracovnich vlaken
 /var/imports/
 /var/acceptance-feedback.json
+/var/member-charge-reminder-outbox/
 /.codex-remote-attachments/
 
 .DS_Store

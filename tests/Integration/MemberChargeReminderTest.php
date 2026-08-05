@@ -122,6 +122,43 @@ final class MemberChargeReminderTest extends TestCase
         self::assertSame(['action' => 'manual_retry', 'actor_type' => 'trainer', 'actor_id' => 77], $audit);
     }
 
+    public function testAdminPreviewReturnsStoredMessageForExactReminder(): void
+    {
+        $pdo = $this->database();
+        \memberChargeReminderSavePreference($pdo, 1, true, 7);
+        \memberChargeReminderGenerate($pdo, $this->today());
+
+        $preview = \memberChargeReminderAdminPreview($pdo, 1);
+        self::assertSame(1, (int)$preview['id']);
+        self::assertSame('rodic@example.test', $preview['recipient_email']);
+        self::assertStringContainsString('Příspěvek srpen', (string)$preview['subject_plain']);
+        self::assertStringContainsString('Anna První', (string)$preview['body_plain']);
+        self::assertStringContainsString('sportovni_prehled.php', (string)$preview['body_plain']);
+    }
+
+    public function testLocalOutboxCapturesMessageAndRejectsProductionHost(): void
+    {
+        $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'member-reminder-test-' . bin2hex(random_bytes(6));
+        try {
+            $sender = \memberChargeReminderLocalOutboxSender('localhost', $directory);
+            self::assertTrue($sender('test@example.test', 'Testovací předmět', "První řádek\nDruhý řádek"));
+            $files = glob($directory . DIRECTORY_SEPARATOR . '*.json');
+            self::assertIsArray($files);
+            self::assertCount(1, $files);
+            $payload = json_decode((string)file_get_contents($files[0]), true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame('member-charge-reminder-local-outbox-v1', $payload['schema']);
+            self::assertSame('test@example.test', $payload['original_recipient']);
+            self::assertSame('Testovací předmět', $payload['subject']);
+            self::assertSame("První řádek\nDruhý řádek", $payload['body']);
+        } finally {
+            foreach (glob($directory . DIRECTORY_SEPARATOR . '*') ?: [] as $file) unlink($file);
+            if (is_dir($directory)) rmdir($directory);
+        }
+
+        $this->expectException(\MemberChargeReminderException::class);
+        \memberChargeReminderLocalOutboxSender('data.kovopraha.cz', $directory);
+    }
+
     public function testAdminRetryCannotBypassConfirmationOptOutOrFinalState(): void
     {
         $pdo = $this->database();

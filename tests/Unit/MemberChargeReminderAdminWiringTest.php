@@ -13,6 +13,7 @@ final class MemberChargeReminderAdminWiringTest extends TestCase
         $page = (string)file_get_contents($root . '/member_charge_reminders_admin.php');
         $service = (string)file_get_contents($root . '/includes/member_charge_reminder.php');
         $header = (string)file_get_contents($root . '/hlavicka.php');
+        $cli = (string)file_get_contents($root . '/bin/member-charge-reminders.php');
         self::assertStringContainsString("roleAtLeast('admin')", $page);
         self::assertStringContainsString('csrf_verify', $page);
         self::assertStringContainsString("(\$_POST['confirm_retry'] ?? '') === '1'", $page);
@@ -24,5 +25,10 @@ final class MemberChargeReminderAdminWiringTest extends TestCase
         self::assertStringContainsString("'manual_retry'", $service);
         self::assertStringContainsString("'trainer', \$actorTrainerId", $service);
         self::assertStringContainsString('member_charge_reminders_admin.php', $header);
+        self::assertStringContainsString("header('Cache-Control: no-store, private')", $page);
+        self::assertStringContainsString('memberChargeReminderAdminPreview', $page);
+        self::assertStringContainsString('--transport=local-outbox', $cli);
+        self::assertStringContainsString('memberChargeReminderLocalOutboxSender($appHost)', $cli);
+        self::assertStringContainsString("Require all denied", (string)file_get_contents($root . '/var/.htaccess'));
     }
 }

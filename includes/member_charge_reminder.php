@@ -257,6 +257,41 @@ function memberChargeReminderMailSender(string $recipient, string $subject, stri
     return mail($recipient, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, "Content-Type: text/plain; charset=UTF-8\r\n");
 }
 
+/** @return callable(string,string,string):bool */
+function memberChargeReminderLocalOutboxSender(string $appHost, ?string $directory = null): callable
+{
+    $host = strtolower((string)preg_replace('/:\d+$/D', '', trim($appHost)));
+    if (!in_array($host, ['localhost', '127.0.0.1'], true)) {
+        throw new MemberChargeReminderException('Lokální testovací outbox je povolen pouze na localhostu.');
+    }
+    $directory ??= dirname(__DIR__) . '/var/member-charge-reminder-outbox';
+    if (!is_dir($directory) && !mkdir($directory, 0700, true) && !is_dir($directory)) {
+        throw new MemberChargeReminderException('Adresář testovacího outboxu nelze vytvořit.');
+    }
+    $resolved = realpath($directory);
+    if ($resolved === false || !is_writable($resolved)) {
+        throw new MemberChargeReminderException('Adresář testovacího outboxu není zapisovatelný.');
+    }
+    return static function (string $recipient, string $subject, string $body) use ($resolved): bool {
+        if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $recipient . $subject) === 1) {
+            throw new MemberChargeReminderException('Připomínka obsahuje neplatnou e-mailovou hlavičku.');
+        }
+        $payload = json_encode([
+            'schema' => 'member-charge-reminder-local-outbox-v1',
+            'captured_at' => (new DateTimeImmutable())->format(DATE_ATOM),
+            'original_recipient' => $recipient,
+            'subject' => $subject,
+            'body' => $body,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        $path = $resolved . DIRECTORY_SEPARATOR . date('Ymd_His') . '_' . bin2hex(random_bytes(8)) . '.json';
+        if (file_put_contents($path, $payload . PHP_EOL, LOCK_EX) === false) {
+            throw new MemberChargeReminderException('Testovací zprávu nelze uložit do outboxu.');
+        }
+        @chmod($path, 0600);
+        return true;
+    };
+}
+
 function memberChargeReminderAccountUrl(): string
 {
     return defined('JE_LOKALNE') && JE_LOKALNE === true
@@ -293,6 +328,22 @@ function memberChargeReminderAdminList(PDO $pdo, string $status = '', int $limit
     );
     $statement->execute($status === '' ? [] : [$status]);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/** @return array<string,mixed> */
+function memberChargeReminderAdminPreview(PDO $pdo, int $id): array
+{
+    if ($id < 1) throw new InvalidArgumentException('Neplatná připomínka pro náhled.');
+    $statement = $pdo->prepare(
+        'SELECT n.id,n.status,n.recipient_email,n.recipient_name,n.subject_plain,n.body_plain,n.created_at,'
+        . 'c.public_code,c.title_snapshot,c.due_on,s.jmeno AS child_first_name,s.prijmeni AS child_last_name '
+        . 'FROM member_charge_reminders n JOIN club_member_charges c ON c.id=n.charge_id '
+        . 'JOIN sportovci s ON s.id=c.sportovec_id WHERE n.id=?'
+    );
+    $statement->execute([$id]);
+    $row = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$row) throw new MemberChargeReminderException('Připomínka pro náhled nebyla nalezena.');
+    return $row;
 }
 
 /** @return array{id:int,changed:bool,status:string} */

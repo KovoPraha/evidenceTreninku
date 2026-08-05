@@ -10,15 +10,20 @@ $root = dirname(__DIR__);
 $arguments = array_slice($argv, 1);
 $generate = in_array('--generate', $arguments, true);
 $send = in_array('--send', $arguments, true);
+$transport = 'mail';
 $limit = 20;
 foreach ($arguments as $argument) {
     if (in_array($argument, ['--generate', '--send'], true)) continue;
+    if ($argument === '--transport=local-outbox') {
+        $transport = 'local-outbox';
+        continue;
+    }
     if (preg_match('/^--limit=([1-9]|[1-9][0-9])$/D', $argument, $match) === 1) {
         $limit = (int)$match[1];
         continue;
     }
     if ($argument === '--help') {
-        echo "Pouziti: APP_HOST=<host> php bin/member-charge-reminders.php --generate [--send] [--limit=20]\n";
+        echo "Pouziti: APP_HOST=<host> php bin/member-charge-reminders.php --generate [--send] [--transport=local-outbox] [--limit=20]\n";
         exit(0);
     }
     fwrite(STDERR, "Neplatne argumenty. Pouzijte --help.\n");
@@ -48,14 +53,17 @@ try {
     $generation = $generate ? memberChargeReminderGenerate($pdo) : ['queued' => 0, 'existing' => 0, 'skipped' => 0];
     $processed = $sent = $failed = 0;
     if ($send) {
+        $sender = $transport === 'local-outbox'
+            ? memberChargeReminderLocalOutboxSender($appHost)
+            : 'memberChargeReminderMailSender';
         while ($processed < $limit) {
-            $result = memberChargeReminderProcessOne($pdo, 'memberChargeReminderMailSender');
+            $result = memberChargeReminderProcessOne($pdo, $sender);
             if ($result === null) break;
             $processed++;
             $result ? $sent++ : $failed++;
         }
     }
-    echo json_encode(['generation' => $generation, 'processed' => $processed, 'sent' => $sent, 'failed' => $failed], JSON_UNESCAPED_UNICODE) . PHP_EOL;
+    echo json_encode(['generation' => $generation, 'transport' => $transport, 'processed' => $processed, 'sent' => $sent, 'failed' => $failed], JSON_UNESCAPED_UNICODE) . PHP_EOL;
 } catch (Throwable $exception) {
     error_log('member-charge-reminders.php: ' . $exception->getMessage());
     fwrite(STDERR, "Zpracovani pripominek selhalo; podrobnosti jsou pouze v serverovem logu.\n");
