@@ -15,7 +15,10 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 ## Poslední přijatý technický stav
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední implementace před tímto dokumentem: `6d290cc` – administrátor může
+- poslední implementace před tímto dokumentem: `9a04c3c` – localhostová
+  závěrečná brána M2 automaticky ověřuje cesty A01–A10, migrace a úplnost demo
+  dat a odděluje je od vlastníkových výsledků PASS/PARTIAL/FAIL/BLOCKED,
+- předchozí implementace: `6d290cc` – administrátor může
   jednu čekající připomínku na localhostu auditovaně zpracovat do chráněného
   souborového outboxu, ověřit stav „Odesláno“ a ukázku opakovaně obnovit;
   skutečný e-mail se nepoužije,
@@ -44,8 +47,8 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 48/48,
-- automatické testy 427/3819,
-- first-party PHP syntaxe 431 souborů bez chyby,
+- automatické testy 429/3833,
+- first-party PHP syntaxe 433 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 95 tabulek;
   ownership kontrakt `2026-08-05.2` zahrnuje kalendář i frontu připomínek,
@@ -86,14 +89,16 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
 
-- celý M2: 86 %,
+- celý M2: 87 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
   sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
   localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
   přenesl 2/2 předpisy včetně jedné samostatné historické platby a po ověření byl
   bezpečně vrácen na 0/2 při zachování auditní historie,
-- M2.6 integrovaná akceptace: 98 %; technické scénáře jsou připravené, zbývá
-  vlastníkův průchod a vypořádání připomínek,
+- M2.6 integrovaná akceptace: 99 %; závěrečná brána živě potvrzuje technickou
+  připravenost 3/3, dostupnost A01–A10 10/10, migrace 48/48 a úplná demo data;
+  vlastníkem je zatím potvrzeno 0/10, takže zbývá jeho průchod a vypořádání
+  připomínek,
 - M2.7 hodnota pro členy: 94 %; veřejný i soukromý rodinný ICS feed, opt-in
   fronta připomínek, její auditovaná administrátorská obsluha, náhled textu a
   bezpečný lokální testovací outbox, jedním tlačítkem obnovitelná browserová

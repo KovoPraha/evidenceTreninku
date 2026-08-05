@@ -1,7 +1,14 @@
-# Lokální rozcestník akceptačních scénářů M1
+# Finalizace a lokální akceptační scénáře M2
 
 Stránka `testovaci_scenare.php` soustřeďuje scénáře A01–A10 na jednom místě.
 Je určena vlastníkovi produktu pro ruční kontrolu propojení Evidence, e-shopu a KIS.
+
+Horní panel **Závěrečná brána M2** odděluje automaticky ověřenou technickou
+připravenost od výsledku vlastníkovy prohlídky. Při každém načtení kontroluje
+dostupnost všech cest A01–A10, shodu migračního katalogu s databází a přítomnost
+základních localhostových identit a demo nabídky. M2 označí jako uzavíratelné
+teprve při zelených technických kontrolách, PASS 10/10 a nulovém počtu
+blokujících výsledků. Panel nic neopravuje, nenasazuje ani neodesílá.
 
 ## Bezpečnostní omezení
 

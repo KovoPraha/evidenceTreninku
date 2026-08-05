@@ -29,10 +29,10 @@ kódu.
 | M2.3 zkouška migrace KIS | probíhá | 99 % | cílový kontrakt, staging i auditovaný localhost promote/rollback jsou hotové; zbývá reprezentativní anonymizovaný export a finální test cutover postupu |
 | M2.4 provozní e-shop | technicky hotovo | 97 % | detail, kupóny, klubové ceny podle soupisek, kapacity, opakovaný nákup a měnová hranice jsou uzavřené; zbývá vlastníkova úplná provozní zkouška |
 | M2.5 přístup a obnova účtu | technicky hotovo | 96 % | trenérská a zákaznická role používají jeden účet i jedno heslo; reset obě role revokuje společně; zbývá produkční ověření doručování e-mailu |
-| M2.6 integrovaná akceptace | probíhá | 98 % | technické a browser důkazy jsou připravené, výsledky A01–A10 lze ukládat a exportovat; zbývá vlastníkův průchod a vypořádání připomínek |
+| M2.6 integrovaná akceptace | probíhá | 99 % | závěrečná brána automaticky potvrzuje techniku 3/3, cesty 10/10, migrace 48/48 a demo data; výsledky lze ukládat/exportovat, vlastníkem je zatím potvrzeno 0/10 |
 | M2.7 hodnota pro členy | probíhá | 94 % | veřejný a rodinný ICS feed, opt-in připomínky, admin obsluha, náhled a localhostový průchod Čeká → Odesláno do chráněného outboxu jsou hotové; zbývá akceptace v reálném kalendáři, schválení textu a kontrolované doručení na určenou testovací adresu |
 
-Orientační stav celého M2: **86 %**. Nezapočítává produkční deploy ani ostrou
+Orientační stav celého M2: **87 %**. Nezapočítává produkční deploy ani ostrou
 migraci, které mají vlastní pozdější bránu.
 
 ## Implementační pořadí
