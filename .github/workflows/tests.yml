@@ -74,3 +74,6 @@ jobs:
 
       - name: Ověřit skutečnou Evidence zálohu na MariaDB
         run: php tests/Support/DatabaseBackupMariaDbSmoke.php
+
+      - name: Ověřit M3.5d sportovní import review na MariaDB
+        run: php bin/sports-review-smoke.php

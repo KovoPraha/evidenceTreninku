@@ -1,5 +1,53 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — MariaDB smoke pro M3.5d sportovní import review
+
+- M3.5d živě odhalil dvě reálné vady, které SQLite testy nezachytily: legacy
+  `zavod_sportovec` v produkčním schématu nemá surrogate PK a dotaz na `zs.id`
+  spadl až nad skutečným MySQL/MariaDB (opraveno v `cfc3c93`). Chyběla vrstva,
+  která by tento typ driftu odhalila automaticky a opakovaně, ne až živou
+  prohlídkou.
+- Nový `bin/sports-review-smoke.php` (localhost/CI-only, po vzoru
+  `tests/Support/*MariaDbSmoke.php`) na izolované testovací MariaDB databázi
+  vytvoří minimální ale reálné schéma: `mereni_zaznamy` s PK, `zavod_sportovec`
+  výslovně BEZ surrogate PK, `zavody`, `treninky`, `trenink_mereni`,
+  `zavod_mereni` a `mereni`. Legacy řádky se vloží před spuštěním skutečné
+  migrace `20260805050000_sports_measurement_contract`; teprve po jejím
+  `up()`/`verify()` přibudou dva řádky v kontraktu v1 — stejně jako v realitě,
+  migrace nic zpětně nepřevádí ani neodhaduje.
+- Syntetická data jsou označená `LOCALHOST` a neobsahují žádnou konkrétní
+  osobu (`sportovec_id` zůstává v celé fixtuře `NULL`). Skript spustí
+  `sportsImportReview()` i `sportsDataQualityInventory()`, ověří klíčové počty
+  (měření, výsledky závodů, legacy textová tabulka, inventura zdrojů a nálezů)
+  a explicitně zkontroluje, že zakódovaný JSON výstup neobsahuje
+  `sportovec_id`, `jmeno` ani `prijmeni`.
+- Cílová databáze je omezená regexem na `evidence_sports_review_smoke_test`
+  (volitelně s `_[a-z0-9_]+` příponou přes env `EVIDENCE_SPORTS_REVIEW_SMOKE_DB`)
+  a host je napevno `127.0.0.1` — skript se nemůže připojit k databázi
+  `evidence` ani k žádnému vzdálenému serveru. Testovací databáze se vždy
+  smaže ve `finally`, i při selhání.
+- Zapojeno do `.github/workflows/tests.yml`, job `mariadb-smoke`, jako čtvrtý
+  krok vedle stávajících tří smoke skriptů (workflow nebyl spuštěn, jen
+  upraven).
+- `includes/sports_import_review.php` a admin stránky zůstaly beze změny —
+  úkolem tohoto řezu bylo doplnit chybějící testovací vrstvu, ne opravovat kód;
+  živý běh navíc žádnou další vadu neodhalil.
+- Ověření: lokální běh proti izolované MariaDB 10.4.32 na XAMPP vypsal
+  `MariaDB sports review smoke OK — 5 measurements (1 v1), 3 race results
+  (1 v1), 7 legacy text rows (2 recognized/5 ambiguous), 8 inventory records,
+  8 findings`; testovací databáze byla po běhu smazána, `evidence` zůstala
+  nedotčená (ověřeno `SHOW DATABASES`). `php -l` na nový skript čistý a 470
+  first-party PHP souborů (vše mimo `vendor/`, včetně nového skriptu) bez
+  chyby syntaxe. Celá sada je beze změny 493/4277 PHPUnit, 0 selhání — nový
+  skript není součástí `composer test`, spouští se samostatně jako ostatní
+  MariaDB smoke skripty. Migrace beze změny (50/50). Produkce, vzdálený Git a
+  databáze `evidence` se nezměnily.
+- Base před tímto řezem: `6312d04` — doc-only integrační záznam Cowork control
+  nad `a90de13` (oprava Bootstrap hlavičky), objevený jako drift až v průběhu
+  tohoto řezu (viz Metadata níže). Netýká se žádného kódu, který tento smoke
+  ověřuje. Řez commituje jen `bin/sports-review-smoke.php`,
+  `.github/workflows/tests.yml` a tento soubor.
+
 ## Aktualizace 5. 8. 2026 — doplnění chybějící Bootstrap hlavičky na 4 stránkách
 
 - `cfc3c93` (M3.5d) opravil chybějící vlastní `<head>` s Bootstrap 5.3.3 CSS
@@ -201,8 +249,13 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 - Integrační kontrola řídícího vlákna (2026-08-05): HEAD `a90de13`, strom čistý,
   oba paralelní commity přijaty; plná sada 493/4277 nezávisle potvrzena nad
   sloučeným stromem v Cowork cloudu. Duplicitní číslo 105 v integrační frontě
-  opraveno na 105 (M3.5e) + 106 (Bootstrap hlavičky).
-- Větev `main`, upstream `origin/main`, lokálně ahead 49 / behind 0 proti
+  opraveno na 105 (M3.5e) + 106 (Bootstrap hlavičky); zaznamenáno v `6312d04`.
+- Poslední přijatý implementační HEAD před MariaDB smoke test řezem: `6312d04`.
+  Tento commit (Cowork control) přistál mezi počátečním resume auditem tohoto
+  řezu (base `a90de13`) a jeho commitem; mění výhradně tento soubor, žádný
+  kód ani schéma, takže neruší nic, co smoke skript ověřuje. Zaznamenáno zde
+  místo tichého přepsání, jak vyžaduje protokol driftu.
+- Větev `main`, upstream `origin/main`, lokálně ahead 51 / behind 0 proti
   poslednímu známému `origin/main` (`aead0be`, bez živého fetch). Vzdálený
   repozitář ani produkce se v tomto řezu nezměnily.
 - Localhost DB je 50/50 (historická hodnota; M3.5e je čistě čtecí klasifikace
