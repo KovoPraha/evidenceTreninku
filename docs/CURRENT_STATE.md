@@ -12,6 +12,10 @@ Samostatná aplikace Evidence tréninků + e-shop + KIS v
 `C:\xampp\htdocs\evidencePavel`. Není submodulem Velocoty. Případné budoucí
 sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
 
+Evidence, e-shop a KIS nejsou tři nasazené aplikace. Jde o jednu aplikaci, jeden
+webroot, databázi, migrační katalog, session a kanonickou tabulku `sportovci`.
+Názvy modulů zachovávají historické zadání a funkční orientaci v obrazovkách.
+
 ## Poslední přijatý technický stav
 
 - pracovní řez sjednocení aplikace zavádí jeden UI základ pro všech 127 aktivních
@@ -24,6 +28,10 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   zapnutí a odhlášení jedním krokem; idempotentní týdenní fronta, audit a společný
   localhost-only outbox jsou ověřené. Produkční e-mailový transport ani CRON
   nejsou implementované,
+
+- aktuální M3.5a přidává admin-only read-only inventuru kvality tréninků,
+  strukturovaných i historických měření, závodních výsledků a zátěžových testů;
+  zobrazuje pouze agregované počty bez jmen, ID a naměřených hodnot,
 
 - větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
 - poslední implementace: `12c2300` – M3.4 přidává administrátorský read-only
@@ -74,8 +82,8 @@ sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
 - migrace localhostu 49/49,
-- automatické testy 462/4026,
-- first-party PHP syntaxe 457 souborů bez chyby,
+- automatické testy 466/4075,
+- first-party PHP syntaxe 461 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
 - izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 98 tabulek;
   aktuální ownership kontrakt `2026-08-05.3` zahrnuje i tři tabulky týdenních
@@ -112,6 +120,8 @@ být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu
   `http://localhost/evidencePavel/booking/sportovni_prehled.php#tydenni-souhrn`.
 - administrátorská fronta týdenních souhrnů:
   `http://localhost/evidencePavel/family_weekly_summaries_admin.php`.
+- kvalita sportovních dat M3.5a:
+  `http://localhost/evidencePavel/sports_data_quality_admin.php`.
 
 Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
 a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
@@ -145,14 +155,15 @@ zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 - KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
 - e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
   platby nejsou součástí hotového stavu.
-- M3: 55 % technického localhost řešení; M3.1 rodinný program, M3.2 týdenní
+- M3: 60 % technického localhost řešení; M3.1 rodinný program, M3.2 týdenní
   souhrn a M3.4 read-only provozní přehled správce jsou technicky hotové. M3.2
   má bezpečný přihlášený náhled, opt-in/opt-out, idempotentní frontu, audit a
   localhost-only outbox;
   M3.3 má oddělený read-only roční přehled skutečně uhrazených členských
   předpisů a e-shopových položek. U M3.3 zbývá vlastníkova kontrola obsahu a
-  rozhodnutí o exportu; dalším technickým řezem je M3.5a read-only inventura
-  kvality sportovních dat,
+  rozhodnutí o exportu. M3.5a má read-only inventuru pěti sportovních zdrojů bez
+  osobních a naměřených hodnot; M3.5b musí teprve definovat jednotky, normalizovaný
+  čas, RPE, výsledkové stavy a pravidla ochrany zátěžových testů,
   produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
 
 Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,

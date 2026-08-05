@@ -1,5 +1,23 @@
 # Session handoff
 
+## Aktualizace 5. 8. 2026 — M3.5a kvalita sportovních dat
+
+- `sports_data_quality_admin.php` je admin-only, no-store a výhradně read-only.
+  Nemá formulář ani výběr osoby a nevrací jména, ID, poznámky nebo naměřené hodnoty.
+- Inventura agreguje pět existujících zdrojů: tréninky a docházku, strukturovaná
+  měření, starší textová měření, výsledky závodů a zátěžové testy. Nedostupný
+  zdroj se nikdy nevydává za nulu.
+- Live localhost snapshot: 456 tréninků, 422 vazeb docházky, 239 sportovců s
+  docházkou, 0 strukturovaných měření, 7 historických měření, 2 závodní účasti a
+  6 zátěžových testů. Pět z pěti zdrojů je dostupných.
+- Browser ověřil pět zdrojových karet, nulový počet formulářů a vstupů a nulové
+  chyby konzole. Plná sada je 466/4075; migrace zůstávají 49/49.
+- Dokumentace výslovně potvrzuje, že Evidence, e-shop a KIS jsou jedna aplikace;
+  modulové názvy jsou historické a funkční členění, nikoli hranice nasazení.
+- Další řez M3.5b musí nejprve definovat jednotky, formát času, stupnici RPE,
+  výsledkové stavy DNS/DNF a ochranu zátěžových testů. Historii nelze převádět
+  odhadem. Produkce se nezměnila.
+
 ## Aktualizace 5. 8. 2026 — dokončení M3.2
 
 - Týdenní rodinný souhrn má výchozí opt-out, dobrovolné zapnutí a odhlášení
@@ -39,8 +57,8 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
 ## Metadata
 
 - Aktualizováno: 2026-08-05, Europe/Prague
-- Poslední přijatý implementační HEAD před M3.2: `3a35a2b`.
-- Implementace `6655a39`, `12c2300` a `3a35a2b` jsou commitnuté; větev `main`, upstream
+- Poslední přijatý implementační HEAD před M3.5a: `8a69b66`.
+- Implementace `12c2300`, `3a35a2b` a `8a69b66` jsou commitnuté; větev `main`, upstream
   `origin/main`. Vzdálený repozitář ani produkce se v tomto řezu nezměnily.
 - Localhost DB je 49/49. Vzdálený repozitář se v této M2.7 session neměnil;
   produkční workflow je ruční a produkce se nemění.
@@ -62,7 +80,12 @@ hodnoty jsou historické, dokud je nový řídicí task živě neověří.
   wallet a ostrý import zůstávají blokované.
 - Navazující technické řezy řídí [12 – Milník M3](12-milnik-m3-clenska-hodnota.md);
   jejich produkční brána se neotevře před vypořádáním A01–A10.
-- Poslední dokončená funkční akce je tento řez M3.2. Uživatel si týdenní souhrn
+- Poslední dokončená funkční akce je tento řez M3.5a. Administrátor má agregovaný
+  read-only přehled pěti sportovních zdrojů bez osobních a naměřených hodnot.
+  Browser ověřil pět karet, žádný formulář ani vstup a nulovou konzolovou chybu;
+  plná sada je 466/4075 a databáze zůstává 49/49. Produkce se nezměnila.
+
+  Předchozí dokončená funkční akce je řez M3.2. Uživatel si týdenní souhrn
   dobrovolně zapne nebo jedním krokem vypne; idempotentní fronta a audit jsou
   napojené na kanonickou rodinnou agendu. Administrátor má pouze localhostový
   souborový outbox a produkční e-mail zůstává nepřítomný. Browser ověřil celý tok,
@@ -765,6 +788,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 98 | M3.4 provozní přehled `12c2300` | admin read-only signály peněz, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek; 452/3951, 450 parse, 48/48, audit 0 |
 | 99 | sjednocený UI základ `3a35a2b` | společné pozadí, formuláře, načítání, toast zprávy a veřejná navigace pro 127 aktivních HTML stránek; 455/3970, 450 parse, 48/48, audit 0 |
 | 100 | dokončení M3.2 | opt-in/opt-out, idempotentní fronta a audit, sdílený localhost-only outbox; browser zapnout → 1 zpráva → lokální uložení → vypnout, 462/4026, 457 parse, 49/49, backup 98, audit 0 |
+| 101 | M3.5a kvalita sportovních dat | admin-only agregace pěti zdrojů bez jmen, ID a hodnot; browser 5 karet / 0 formulářů / 0 vstupů / konzole 0; integrovaný kontrakt hlídá jednotnou identitu, osoby a docházku; 466/4075, 461 parse, 49/49, audit 0 |
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
 se v této session nespustily. Pořadí migrace před aktivací PHP je opravené;

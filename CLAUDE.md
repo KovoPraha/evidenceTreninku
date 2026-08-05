@@ -14,6 +14,10 @@ Jde o samostatnou integrovanou aplikaci cyklistického klubu:
 - rodinné a sportovní účty,
 - KIS funkce: osoby, soupisky, programy, události, docházka a audit.
 
+Evidence, e-shop a KIS jsou jedna aplikace se společnou databází, migracemi,
+session a kanonickou tabulkou `sportovci`. Označení modulů je historické a
+funkční členění, nikoli hranice samostatného nasazení.
+
 Projekt **není submodulem Velocoty**. Na stejném serveru může výhledově sdílet
 uživatele, ale větší propojení s projektem Velocota není schválený produktový plán.
 Historický SSO bridge a `velo_user_id` mohou v repozitáři zůstat kvůli kompatibilitě;
@@ -32,6 +36,8 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - rodinný program, týdenní náhled a dobrovolný týdenní souhrn s odhlášením
   jedním krokem, idempotentní frontou, auditem a pouze localhostovým outboxem;
   skutečný e-mailový transport není implementovaný,
+- admin-only read-only M3.5a inventura pěti sportovních datových zdrojů; vrací
+  pouze agregované počty a technická zjištění bez osob a naměřených hodnot,
 - read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
   a bezpečným JSON reportem; localhost admin může provést auditovaný promote a

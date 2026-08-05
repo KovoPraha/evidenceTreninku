@@ -25,9 +25,9 @@ před dalším rozšiřováním M3.
 | M3.2 týdenní souhrn | technicky hotovo | 100 % | náhled, výchozí opt-out, dobrovolný opt-in, odhlášení jedním krokem, idempotentní fronta, audit a localhost-only outbox jsou ověřené; produkční transport zůstává samostatně blokovaný |
 | M3.3 roční přehled plateb | probíhá | 70 % | přihlášený read-only přehled skutečně uhrazených členských předpisů a e-shopových položek je hotový; zbývá vlastníkovo ověření obsahu a rozhodnutí, zda vůbec vznikne schválený export |
 | M3.4 provozní přehled správce | technicky hotovo | 100 % | read-only akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
-| M3.5 datová kvalita sportovního progresu | návrh | 0 % | nejdřív normalizace měření, soukromí nezletilých a vysvětlení kvality; žádné zdravotní predikce |
+| M3.5 datová kvalita sportovního progresu | probíhá | 30 % | M3.5a má admin-only read-only inventuru pěti zdrojů bez jmen a hodnot; před porovnáváním zbývá schválit jednotky, formáty, výsledkové stavy a ochranu zátěžových testů |
 
-Orientační technický stav M3: **55 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
+Orientační technický stav M3: **60 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
 
 ## M3.1 – rodinný program
 
@@ -101,6 +101,20 @@ vynucuje vlastní oprávnění, potvrzení, CSRF a audit. Browser ověřil přih
 syntetického administrátora, dostupnost stránky, čtyři sekce, nulový stav aktuálních
 lokálních dat a žádnou chybu konzole.
 
+## M3.5 – datová kvalita sportovního progresu
+
+Řez M3.5a přidává administrátorskou read-only inventuru nad pěti skutečnými
+zdroji: tréninky a docházka, strukturovaná měření, starší textová měření, závodní
+výsledky a zátěžové testy. Výstup obsahuje pouze agregované počty, citlivost,
+pravidla přístupu a technická zjištění. Nevrací ID ani jména sportovců, poznámky,
+výsledkové texty nebo naměřené hodnoty a nepřijímá žádný vstup.
+
+Localhost má všech pět zdrojů dostupných. Snapshot našel 456 tréninků, 422 vazeb
+docházky, 239 sportovců s docházkou, 7 historických měření, 2 závodní účasti a
+6 zátěžových testů. Hlavní dluh je 455 historických tréninků bez kategorie;
+měření dále nemají bezpečně verzované jednotky a formáty. Podrobnosti jsou v
+`docs/sports-data-quality.md`.
+
 ## Brány a výslovně odložené oblasti
 
 - Stripe, automatické Fio párování, Packeta a skutečné e-mailové transporty
@@ -116,7 +130,8 @@ lokálních dat a žádnou chybu konzole.
 
 ## Další konkrétní krok
 
-Další technický řez je M3.5a: read-only inventura kvality existujících tréninkových
-a výkonnostních dat, jejich jednotek, úplnosti a oprávnění. Nejdřív vznikne
-vysvětlitelný přehled kvality; žádné zdravotní predikce ani externí synchronizace.
-Současně zůstává otevřená vlastníkova kontrola M3.3 a celé A01–A10.
+Další technický řez je M3.5b: navrhnout a nechat vlastníkem potvrdit verzovaný
+kontrakt vzdálenosti, času, RPE a výsledkových stavů DNS/DNF. Historické hodnoty
+se nesmějí převádět odhadem. Zátěžové testy zůstávají mimo progresové výpočty,
+dokud nebude schválen účel, přístup, retence a výmaz. Současně zůstává otevřená
+vlastníkova kontrola M3.3 a celé A01–A10.

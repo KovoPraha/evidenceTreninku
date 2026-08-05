@@ -14,6 +14,19 @@ frontendového build kroku:
 - veřejné vstupy e-shopu, tréninků, kroužků, velodromu a přihlášení používají
   `publicShellNav()`; viditelné volby se přizpůsobí rodiči, sportovci a trenérovi.
 
+## Jedna aplikace, nikoli tři oddělené moduly
+
+Označení Evidence, e-shop a KIS popisuje funkční oblasti a historický původ
+obrazovek. Technicky jde o jednu aplikaci v jednom repozitáři a webrootu. Používá
+jedno `db.php`, společný migrační katalog, společnou session a tabulku
+`sportovci`. KIS soupisky a programy přímo navazují na původní tréninky a
+docházku; e-shopové objednávky mohou stejnému sportovci aktivovat program,
+soupisku, událost nebo rezervaci. Trenérský účet zároveň dostává zákaznickou
+identitu pro nákup.
+
+Rozdělení adresářů a názvů souborů se zatím zachovává kvůli kompatibilitě a
+srozumitelnosti, nikoli jako hranice samostatných systémů.
+
 ## Pravidlo pro novou stránku
 
 Přihlášená administrační stránka má použít `hlavicka.php`. Samostatná nebo
