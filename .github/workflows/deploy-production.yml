@@ -151,8 +151,18 @@ jobs:
             mkdir -p '$DEPLOY_BASE/releases'
             chmod 700 '$DEPLOY_BASE' '$DEPLOY_BASE/releases'
           "
+          # Hosting čistí i proměnné prostředí; hodnoty proto nastavuje
+          # vygenerovaný bootstrap přes putenv() a spouští se holé `php soubor`.
+          cat > /tmp/run-preflight.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('DEPLOY_PROBE=1');
+          require __DIR__ . '/deploy-preflight.php';
+          EOF
           "${SCP[@]}" bin/deploy-preflight.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/deploy-preflight.php"
-          "${SSH[@]}" "APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' DEPLOY_PROBE=1 php '$DEPLOY_BASE/deploy-preflight.php'" | tee /tmp/preflight.json
+          "${SCP[@]}" /tmp/run-preflight.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-preflight.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-preflight.php'" | tee /tmp/preflight.json
           jq -e '.ok == true' /tmp/preflight.json >/dev/null
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
@@ -174,14 +184,20 @@ jobs:
       - name: Vytvořit a ověřit produkční zálohu
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          VYSLEDEK=$("${SSH[@]}" "
-            set -eu
-            umask 077
-            APP_HOST='$APP_HOST' DEPLOY_GIT_SHA='$GITHUB_SHA' DEPLOY_RUN_ID='$GITHUB_RUN_ID' \\
-              BACKUP_APP_ROOT='$REMOTE_DIR' BACKUP_TARGET_DIR='/$BACKUP_DIR' \\
-              BACKUP_KEEP=20 BACKUP_JSON=1 \\
-              php '$DEPLOY_BASE/db-backup.php'
-          ")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          cat > /tmp/run-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=/$BACKUP_DIR');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require __DIR__ . '/db-backup.php';
+          EOF
+          "${SCP[@]}" /tmp/run-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-backup.php"
+          VYSLEDEK=$("${SSH[@]}" "php '$DEPLOY_BASE/run-backup.php'")
           echo "$VYSLEDEK"
           echo "$VYSLEDEK" | jq -e '.ok == true and .tables > 0 and (.sha256 | length == 64)' >/dev/null
           echo '✅ Ověřená záloha vznikla mimo webový adresář. Teprve nyní se smí měnit aplikace.'
@@ -224,8 +240,21 @@ jobs:
       - name: Aplikovat migrace z připraveného release
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' MIGRATE_ACTION=apply MIGRATE_JSON=1 php bin/migrate.php"
-          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' MIGRATE_ACTION=check MIGRATE_JSON=1 php bin/migrate.php"
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          for AKCE in apply check; do
+            cat > "/tmp/run-migrate-$AKCE.php" <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('MIGRATE_ACTION=$AKCE');
+          putenv('MIGRATE_JSON=1');
+          require __DIR__ . '/bin/migrate.php';
+          EOF
+            "${SCP[@]}" "/tmp/run-migrate-$AKCE.php" "$SSH_USER@$SSH_HOST:$RELEASE_DIR/run-migrate-$AKCE.php"
+          done
+          "${SSH[@]}" "cd '$RELEASE_DIR' && php run-migrate-apply.php"
+          "${SSH[@]}" "cd '$RELEASE_DIR' && php run-migrate-check.php"
+          # Bootstrapy nesmí zůstat v release, aktivace by je zkopírovala do webrootu.
+          "${SSH[@]}" "rm -f '$RELEASE_DIR/run-migrate-apply.php' '$RELEASE_DIR/run-migrate-check.php'"
           echo '✅ Migrace jsou aktuální; produkční PHP zatím nebylo aktivováno.'
 
       - name: Aktivovat ověřený release

@@ -29,20 +29,25 @@ final class DeployWorkflowContractTest extends TestCase
         // běží v nahraném bin/deploy-preflight.php a workflow žádné `php -r`
         // na serveru nespouští.
         $preflight = $this->source('bin/deploy-preflight.php');
-        self::assertStringContainsString("DEPLOY_PROBE=1 php '\$DEPLOY_BASE/deploy-preflight.php'", $workflow);
         self::assertStringNotContainsString('php -r', $workflow);
         self::assertStringContainsString('AUTH_RATE_LIMIT_PEPPER', $preflight);
         self::assertStringContainsString('strlen($pepper) < 32', $preflight);
         self::assertStringContainsString('DEPLOY_PROBE', $preflight);
         self::assertStringContainsString('JE_LOKALNE', $preflight);
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $preflight);
 
-        // Omezený shell blokuje i argumenty za jménem skriptu — vzdálená PHP
-        // volání proto běží výhradně přes proměnné prostředí.
-        self::assertStringContainsString('MIGRATE_ACTION=apply MIGRATE_JSON=1 php bin/migrate.php', $workflow);
-        self::assertStringContainsString('MIGRATE_ACTION=check MIGRATE_JSON=1 php bin/migrate.php', $workflow);
-        self::assertStringContainsString("BACKUP_TARGET_DIR='/\$BACKUP_DIR'", $workflow);
+        // Omezený shell hostingu blokuje argumenty skriptů i externí proměnné
+        // prostředí; hodnoty proto nastavují vygenerované putenv() bootstrapy
+        // a na serveru se spouští výhradně holé `php soubor.php`.
+        self::assertStringContainsString("putenv('DEPLOY_PROBE=1');", $workflow);
+        self::assertStringContainsString("php '\$DEPLOY_BASE/run-preflight.php'", $workflow);
+        self::assertStringContainsString("putenv('MIGRATE_ACTION=\$AKCE');", $workflow);
+        self::assertStringContainsString('php run-migrate-apply.php', $workflow);
+        self::assertStringContainsString('php run-migrate-check.php', $workflow);
+        self::assertStringContainsString("rm -f '\$RELEASE_DIR/run-migrate-apply.php'", $workflow);
+        self::assertStringContainsString("putenv('BACKUP_TARGET_DIR=/\$BACKUP_DIR');", $workflow);
+        self::assertStringContainsString("php '\$DEPLOY_BASE/run-backup.php'", $workflow);
         self::assertStringNotContainsString('php bin/migrate.php --', $workflow);
-        self::assertStringNotContainsString("db-backup.php' \\\\\n              --app-root", $workflow);
         self::assertStringContainsString('MIGRATE_ACTION', $this->source('bin/migrate.php'));
         self::assertStringContainsString('BACKUP_TARGET_DIR', $this->source('bin/db-backup.php'));
 
