@@ -27,9 +27,25 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString('AUTH_RATE_LIMIT_PEPPER', $workflow);
         self::assertStringContainsString('strlen(\\$pepper) < 32', $workflow);
-        self::assertStringContainsString('RELEASE_DIR: .evidence-deploy/releases/', $workflow);
-        self::assertStringContainsString('cd \\"\\$HOME/$RELEASE_DIR\\"', $workflow);
-        self::assertStringContainsString('\\"\\$HOME/$RELEASE_DIR/\\"', $workflow);
+
+        // Cíl kis.kovopraha.cz je parametrizovaný přes GitHub Variables
+        // a fail-closed kontrolu jejich přítomnosti.
+        self::assertStringContainsString('APP_HOST: ${{ vars.KIS_APP_HOST }}', $workflow);
+        self::assertStringContainsString('WEB_URL: ${{ vars.KIS_WEB_URL }}', $workflow);
+        self::assertStringContainsString('REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}', $workflow);
+        self::assertStringContainsString('- name: Ověřit konfigurační Variables', $workflow);
+        self::assertStringContainsString('environment: production', $workflow);
+        self::assertStringContainsString('group: produkce-kis', $workflow);
+
+        // Chroot server nemá funkční $HOME; deploy stav žije relativně v data/.
+        self::assertStringContainsString('RELEASE_DIR: data/.kis-deploy/releases/', $workflow);
+        self::assertStringContainsString('BACKUP_DIR: data/.kis-backups', $workflow);
+        self::assertStringContainsString("cd '\$RELEASE_DIR'", $workflow);
+        self::assertStringContainsString("'\$RELEASE_DIR/' '\$REMOTE_DIR/'", $workflow);
+        self::assertStringNotContainsString('$HOME/$RELEASE_DIR', $workflow);
+        self::assertStringNotContainsString('.evidence-deploy', $workflow);
+        self::assertStringNotContainsString('.evidence-backups', $workflow);
+
         self::assertStringContainsString("--exclude='config.php'", $workflow);
         self::assertStringContainsString('Odstranit kopii produkční konfigurace z release', $workflow);
         self::assertStringNotContainsString('./ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"', $workflow);

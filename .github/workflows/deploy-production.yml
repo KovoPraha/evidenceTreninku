@@ -12,20 +12,26 @@ permissions:
   contents: read
 
 concurrency:
-  group: produkce-evidence
+  group: produkce-kis
   cancel-in-progress: false
 
+# Cílový server má chroot SSH bez funkčního $HOME a s nezapisovatelným
+# kořenem; všechny cesty jsou proto RELATIVNÍ k přihlašovacímu adresáři
+# a deploy stav žije v soukromém adresáři data/.
 env:
-  APP_HOST: data.kovopraha.cz
-  WEB_URL: https://data.kovopraha.cz/evidence
-  REMOTE_DIR: data.kovopraha.cz/evidence
-  RELEASE_DIR: .evidence-deploy/releases/${{ github.sha }}-${{ github.run_id }}
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  WEB_URL: ${{ vars.KIS_WEB_URL }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  BACKUP_DIR: data/.kis-backups
+  RELEASE_DIR: data/.kis-deploy/releases/${{ github.sha }}-${{ github.run_id }}
 
 jobs:
   nasadit:
-    name: Nasazení evidence tréninků
+    name: Nasazení KIS (kis.kovopraha.cz)
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment: production
     timeout-minutes: 30
 
     steps:
@@ -37,6 +43,19 @@ jobs:
             echo '❌ Nasazení nebylo potvrzeno přesným slovem NASADIT.'
             exit 1
           fi
+
+      - name: Ověřit konfigurační Variables
+        run: |
+          for promenna in APP_HOST WEB_URL REMOTE_DIR; do
+            if [ -z "${!promenna}" ]; then
+              echo "❌ Chybí GitHub Variable pro ${promenna} (KIS_APP_HOST / KIS_WEB_URL / KIS_REMOTE_DIR)."
+              exit 1
+            fi
+          done
+          case "$REMOTE_DIR" in
+            /*|*..*) echo '❌ KIS_REMOTE_DIR musí být relativní cesta bez ..'; exit 1 ;;
+          esac
+          echo "✅ Cíl: $APP_HOST → $REMOTE_DIR ($WEB_URL)"
 
       - name: Stáhnout kód z main
         uses: actions/checkout@v7
@@ -142,8 +161,8 @@ jobs:
                 exit(1);
               }
             '
-            mkdir -p \"\$HOME/.evidence-deploy/releases\"
-            chmod 700 \"\$HOME/.evidence-deploy\" \"\$HOME/.evidence-deploy/releases\"
+            mkdir -p '$DEPLOY_BASE/releases'
+            chmod 700 '$DEPLOY_BASE' '$DEPLOY_BASE/releases'
           "
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
@@ -151,14 +170,14 @@ jobs:
         run: |
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:.evidence-deploy/db-backup.php.partial"
-          "${SSH[@]}" '
+          "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php.partial"
+          "${SSH[@]}" "
             set -eu
             umask 077
-            php -l "$HOME/.evidence-deploy/db-backup.php.partial" >/dev/null
-            chmod 600 "$HOME/.evidence-deploy/db-backup.php.partial"
-            mv "$HOME/.evidence-deploy/db-backup.php.partial" "$HOME/.evidence-deploy/db-backup.php"
-          '
+            php -l '$DEPLOY_BASE/db-backup.php.partial' >/dev/null
+            chmod 600 '$DEPLOY_BASE/db-backup.php.partial'
+            mv '$DEPLOY_BASE/db-backup.php.partial' '$DEPLOY_BASE/db-backup.php'
+          "
 
       - name: Vytvořit a ověřit produkční zálohu
         run: |
@@ -167,9 +186,9 @@ jobs:
             set -eu
             umask 077
             APP_HOST='$APP_HOST' DEPLOY_GIT_SHA='$GITHUB_SHA' DEPLOY_RUN_ID='$GITHUB_RUN_ID' \\
-              php \"\$HOME/.evidence-deploy/db-backup.php\" \\
+              php '$DEPLOY_BASE/db-backup.php' \\
               --app-root='$REMOTE_DIR' \\
-              --backup-dir=\"\$HOME/.evidence-backups\" \\
+              --backup-dir='$BACKUP_DIR' \\
               --keep=20 \\
               --json
           ")
@@ -183,8 +202,8 @@ jobs:
           "${SSH[@]}" "
             set -eu
             umask 077
-            mkdir -p \"\$HOME/$RELEASE_DIR\"
-            chmod 700 \"\$HOME/$RELEASE_DIR\"
+            mkdir -p '$RELEASE_DIR'
+            chmod 700 '$RELEASE_DIR'
           "
           rsync -az --itemize-changes \
             -e "ssh -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts" \
@@ -205,18 +224,18 @@ jobs:
           "${SSH[@]}" "
             set -eu
             umask 077
-            cp '$REMOTE_DIR/config.php' \"\$HOME/$RELEASE_DIR/config.php\"
-            chmod 600 \"\$HOME/$RELEASE_DIR/config.php\"
-            test -s \"\$HOME/$RELEASE_DIR/bin/migrate.php\"
-            test -s \"\$HOME/$RELEASE_DIR/config.php\"
+            cp '$REMOTE_DIR/config.php' '$RELEASE_DIR/config.php'
+            chmod 600 '$RELEASE_DIR/config.php'
+            test -s '$RELEASE_DIR/bin/migrate.php'
+            test -s '$RELEASE_DIR/config.php'
           "
           echo '✅ Kompletní release je připravený mimo veřejný webroot.'
 
       - name: Aplikovat migrace z připraveného release
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "cd \"\$HOME/$RELEASE_DIR\" && APP_HOST='$APP_HOST' php bin/migrate.php --apply --json"
-          "${SSH[@]}" "cd \"\$HOME/$RELEASE_DIR\" && APP_HOST='$APP_HOST' php bin/migrate.php --check --json"
+          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --apply --json"
+          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --check --json"
           echo '✅ Migrace jsou aktuální; produkční PHP zatím nebylo aktivováno.'
 
       - name: Aktivovat ověřený release
@@ -234,7 +253,7 @@ jobs:
               --exclude='reports/' \\
               --exclude='bin/zalohy/' \\
               --exclude='*.log' \\
-              \"\$HOME/$RELEASE_DIR/\" '$REMOTE_DIR/'
+              '$RELEASE_DIR/' '$REMOTE_DIR/'
           "
           echo '✅ Ověřený release byl aktivován. rsync záměrně nepoužívá --delete.'
 
@@ -253,4 +272,4 @@ jobs:
         continue-on-error: true
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "rm -f -- \"\$HOME/$RELEASE_DIR/config.php\""
+          "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php'"
