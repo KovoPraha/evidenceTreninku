@@ -8,6 +8,20 @@ if (PHP_SAPI !== 'cli') {
 
 $root = dirname(__DIR__);
 $arguments = array_slice($argv, 1);
+
+// Omezené hostingové shelly blokují argumenty za jménem skriptu; bez argumentů
+// lze proto akci zadat proměnnými prostředí MIGRATE_ACTION=check|apply a
+// MIGRATE_JSON=1. CLI argumenty mají přednost a chování se jinak nemění.
+if ($arguments === []) {
+    $environmentAction = strtolower(trim((string)getenv('MIGRATE_ACTION')));
+    if (in_array($environmentAction, ['check', 'apply'], true)) {
+        $arguments[] = '--' . $environmentAction;
+        if ((string)getenv('MIGRATE_JSON') === '1') {
+            $arguments[] = '--json';
+        }
+    }
+}
+
 $json = in_array('--json', $arguments, true);
 $commands = array_values(array_intersect($arguments, ['--check', '--apply']));
 $unknown = array_values(array_diff($arguments, ['--check', '--apply', '--json', '--help']));

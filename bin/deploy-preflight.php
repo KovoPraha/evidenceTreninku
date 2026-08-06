@@ -9,9 +9,10 @@ declare(strict_types=1);
  * nemění: pouze čte config a prostředí a při problému skončí nenulovým kódem
  * se srozumitelnou hláškou na STDERR.
  *
- * Vstup: env APP_HOST (produkční hostname) a APP_ROOT (docroot s config.php).
- * Argument --probe zároveň ověřuje, že omezený shell propouští argumenty
- * skriptu (stejný vzor používá bin/migrate.php a zálohovací nástroj).
+ * Vstup: env APP_HOST (produkční hostname), APP_ROOT (docroot s config.php)
+ * a DEPLOY_PROBE=1. Omezený shell hostingu blokuje i argumenty za jménem
+ * skriptu, proto se vše předává výhradně proměnnými prostředí; DEPLOY_PROBE
+ * zároveň ověřuje, že env proměnné skutečně procházejí.
  */
 
 $fail = static function (string $message): never {
@@ -19,8 +20,8 @@ $fail = static function (string $message): never {
     exit(1);
 };
 
-if (!in_array('--probe', $argv, true)) {
-    $fail('Restricted shell nepropustil argumenty skriptu (--probe chybí v argv).');
+if ((string)getenv('DEPLOY_PROBE') !== '1') {
+    $fail('Env DEPLOY_PROBE=1 nedorazila — shell nepropustil proměnné prostředí.');
 }
 
 foreach (['pdo_mysql', 'zlib', 'json', 'hash'] as $extension) {

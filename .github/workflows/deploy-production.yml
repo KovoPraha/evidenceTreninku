@@ -152,7 +152,7 @@ jobs:
             chmod 700 '$DEPLOY_BASE' '$DEPLOY_BASE/releases'
           "
           "${SCP[@]}" bin/deploy-preflight.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/deploy-preflight.php"
-          "${SSH[@]}" "APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php '$DEPLOY_BASE/deploy-preflight.php' --probe" | tee /tmp/preflight.json
+          "${SSH[@]}" "APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' DEPLOY_PROBE=1 php '$DEPLOY_BASE/deploy-preflight.php'" | tee /tmp/preflight.json
           jq -e '.ok == true' /tmp/preflight.json >/dev/null
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
@@ -178,11 +178,9 @@ jobs:
             set -eu
             umask 077
             APP_HOST='$APP_HOST' DEPLOY_GIT_SHA='$GITHUB_SHA' DEPLOY_RUN_ID='$GITHUB_RUN_ID' \\
-              php '$DEPLOY_BASE/db-backup.php' \\
-              --app-root='$REMOTE_DIR' \\
-              --backup-dir='$BACKUP_DIR' \\
-              --keep=20 \\
-              --json
+              BACKUP_APP_ROOT='$REMOTE_DIR' BACKUP_TARGET_DIR='/$BACKUP_DIR' \\
+              BACKUP_KEEP=20 BACKUP_JSON=1 \\
+              php '$DEPLOY_BASE/db-backup.php'
           ")
           echo "$VYSLEDEK"
           echo "$VYSLEDEK" | jq -e '.ok == true and .tables > 0 and (.sha256 | length == 64)' >/dev/null
@@ -226,8 +224,8 @@ jobs:
       - name: Aplikovat migrace z připraveného release
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --apply --json"
-          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --check --json"
+          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' MIGRATE_ACTION=apply MIGRATE_JSON=1 php bin/migrate.php"
+          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' MIGRATE_ACTION=check MIGRATE_JSON=1 php bin/migrate.php"
           echo '✅ Migrace jsou aktuální; produkční PHP zatím nebylo aktivováno.'
 
       - name: Aktivovat ověřený release

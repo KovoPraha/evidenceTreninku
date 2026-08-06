@@ -277,6 +277,28 @@ function isAbsolutePath(string $path): bool
 }
 
 $options = getopt('', ['app-root:', 'backup-dir:', 'keep::', 'json']);
+
+// Omezené hostingové shelly blokují argumenty za jménem skriptu; bez argumentů
+// lze proto vstupy zadat proměnnými prostředí BACKUP_APP_ROOT,
+// BACKUP_TARGET_DIR, BACKUP_KEEP a BACKUP_JSON=1. CLI argumenty mají přednost.
+if ($options === []) {
+    $environmentAppRoot = (string)getenv('BACKUP_APP_ROOT');
+    $environmentTargetDir = (string)getenv('BACKUP_TARGET_DIR');
+    $environmentKeep = (string)getenv('BACKUP_KEEP');
+    if ($environmentAppRoot !== '') {
+        $options['app-root'] = $environmentAppRoot;
+    }
+    if ($environmentTargetDir !== '') {
+        $options['backup-dir'] = $environmentTargetDir;
+    }
+    if ($environmentKeep !== '') {
+        $options['keep'] = $environmentKeep;
+    }
+    if ((string)getenv('BACKUP_JSON') === '1') {
+        $options['json'] = false;
+    }
+}
+
 $json = array_key_exists('json', $options);
 $appRoot = isset($options['app-root']) ? realpath((string)$options['app-root']) : false;
 $backupDirRaw = isset($options['backup-dir']) ? (string)$options['backup-dir'] : '';
