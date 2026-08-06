@@ -137,7 +137,10 @@ jobs:
 
       - name: Předletová kontrola serveru bez změny aplikace
         run: |
+          # Hostingový omezený shell zakazuje PHP kód z parametru; kontrola proto běží jako
+          # nahraný skript bin/deploy-preflight.php (`php soubor.php` povolen je).
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
           "${SSH[@]}" "
             set -eu
             umask 077
@@ -145,25 +148,12 @@ jobs:
             test -s '$REMOTE_DIR/config.php'
             command -v php >/dev/null
             command -v rsync >/dev/null
-            php -r 'foreach ([\"pdo_mysql\",\"zlib\",\"json\",\"hash\"] as \$e) { if (!extension_loaded(\$e)) { fwrite(STDERR, \"missing extension: \".\$e.PHP_EOL); exit(1); } }'
-            APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php -r '
-              \$host = (string)getenv(\"APP_HOST\");
-              \$_SERVER[\"HTTP_HOST\"] = \$host;
-              \$_SERVER[\"SERVER_NAME\"] = \$host;
-              require getenv(\"APP_ROOT\").\"/config.php\";
-              if (!defined(\"JE_LOKALNE\") || JE_LOKALNE) { exit(1); }
-              foreach ([\"DB_HOST\",\"DB_NAME\",\"DB_USER\",\"DB_PASS\"] as \$constant) {
-                if (!defined(\$constant)) { exit(1); }
-              }
-              \$pepper = defined(\"AUTH_RATE_LIMIT_PEPPER\") ? constant(\"AUTH_RATE_LIMIT_PEPPER\") : null;
-              if (!is_string(\$pepper) || strlen(\$pepper) < 32) {
-                fwrite(STDERR, \"AUTH_RATE_LIMIT_PEPPER is missing or too short.\".PHP_EOL);
-                exit(1);
-              }
-            '
             mkdir -p '$DEPLOY_BASE/releases'
             chmod 700 '$DEPLOY_BASE' '$DEPLOY_BASE/releases'
           "
+          "${SCP[@]}" bin/deploy-preflight.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/deploy-preflight.php"
+          "${SSH[@]}" "APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php '$DEPLOY_BASE/deploy-preflight.php' --probe" | tee /tmp/preflight.json
+          jq -e '.ok == true' /tmp/preflight.json >/dev/null
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
       - name: Nahrát zálohovací nástroj mimo aplikaci
@@ -171,10 +161,12 @@ jobs:
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php.partial"
+          # Syntaxe je ověřená v CI kroku „Kontrola PHP syntaxe“; omezený shell
+          # hostingu lint z parametru nepovoluje, na serveru se kontroluje jen úplnost.
           "${SSH[@]}" "
             set -eu
             umask 077
-            php -l '$DEPLOY_BASE/db-backup.php.partial' >/dev/null
+            test -s '$DEPLOY_BASE/db-backup.php.partial'
             chmod 600 '$DEPLOY_BASE/db-backup.php.partial'
             mv '$DEPLOY_BASE/db-backup.php.partial' '$DEPLOY_BASE/db-backup.php'
           "

@@ -25,8 +25,16 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertLessThan($activate, $migrate);
         self::assertLessThan($smoke, $activate);
 
-        self::assertStringContainsString('AUTH_RATE_LIMIT_PEPPER', $workflow);
-        self::assertStringContainsString('strlen(\\$pepper) < 32', $workflow);
+        // Hostingový omezený shell zakazuje `php -r`; validace configu proto
+        // běží v nahraném bin/deploy-preflight.php a workflow žádné `php -r`
+        // na serveru nespouští.
+        $preflight = $this->source('bin/deploy-preflight.php');
+        self::assertStringContainsString("deploy-preflight.php' --probe", $workflow);
+        self::assertStringNotContainsString('php -r', $workflow);
+        self::assertStringContainsString('AUTH_RATE_LIMIT_PEPPER', $preflight);
+        self::assertStringContainsString('strlen($pepper) < 32', $preflight);
+        self::assertStringContainsString("'--probe'", $preflight);
+        self::assertStringContainsString('JE_LOKALNE', $preflight);
 
         // Cíl kis.kovopraha.cz je parametrizovaný přes GitHub Variables
         // a fail-closed kontrolu jejich přítomnosti.
