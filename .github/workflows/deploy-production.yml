@@ -200,7 +200,9 @@ jobs:
           require __DIR__ . '/db-backup.php';
           EOF
           "${SCP[@]}" /tmp/run-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-backup.php"
-          VYSLEDEK=$("${SSH[@]}" "php '$DEPLOY_BASE/run-backup.php'")
+          # Neúspěch nesmí spolknout diagnostiku: výstup se vypíše VŽDY,
+          # o výsledku rozhoduje až kontrola JSON přes jq.
+          VYSLEDEK=$("${SSH[@]}" "php '$DEPLOY_BASE/run-backup.php'") || true
           echo "$VYSLEDEK"
           echo "$VYSLEDEK" | jq -e '.ok == true and .tables > 0 and (.sha256 | length == 64)' >/dev/null
           echo '✅ Ověřená záloha vznikla mimo webový adresář. Teprve nyní se smí měnit aplikace.'
