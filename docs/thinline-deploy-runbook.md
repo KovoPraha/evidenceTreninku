@@ -71,10 +71,15 @@ SSH účet `kovopraha_cz`, host `replikant3544.thinline.cz`, port **2228**.
    reálnému schématu, viz oprava AUTO_INCREMENT u `treneri`).
    Kompatibilitní podlaha SQL je 10.3 (viz docs/mariadb-10.3-compatibility-*).
 
-7. **PHP CLI 8.2.32, rsync k dispozici.** `mysqldump`/`mysql` fungují;
-   pro přihlášení k DB na serveru používat dočasný soubor
-   `--defaults-extra-file` (vytvořit, použít, smazat), heslo nikdy do
-   argumentů příkazu ani do gitu.
+7. **PHP CLI 8.2.32 a rsync k dispozici; MySQL CLI prakticky ne.**
+   `mysql` klient v shellu neexistuje a `mysqldump` je stejný omezený
+   wrapper jako php — odmítá parametry („Unknown/unsupported parameter“,
+   včetně `--defaults-extra-file`). Databázové operace na serveru proto
+   dělat buď přes phpMyAdmin (kopie DB: Operace → Zkopírovat databázi do,
+   bez CREATE DATABASE pokud cíl existuje), nebo PHP skriptem přes PDO
+   s putenv bootstrapem (cross-DB `CREATE TABLE cíl.t LIKE zdroj.t` +
+   `INSERT ... SELECT` funguje, stejný uživatel má práva na obě DB).
+   Zálohy řeší aplikace vlastním čistě-PHP `bin/db-backup.php`.
 
 ## Architektura deploy workflow (`deploy-production.yml`)
 

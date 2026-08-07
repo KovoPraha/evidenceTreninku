@@ -185,13 +185,16 @@ jobs:
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          # PHP na hostingu vidí skutečné cesty (open_basedir na
+          # /home/www/<účet>/www/), zatímco SSH běží v chrootu. Absolutní cestu
+          # záloh proto bootstrap odvodí z vlastního reálného umístění.
           cat > /tmp/run-backup.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
           putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
           putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
           putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
-          putenv('BACKUP_TARGET_DIR=/$BACKUP_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
           putenv('BACKUP_KEEP=20');
           putenv('BACKUP_JSON=1');
           require __DIR__ . '/db-backup.php';
