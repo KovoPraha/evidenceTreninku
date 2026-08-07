@@ -1,5 +1,23 @@
 # Session handoff
 
+## Aktualizace 8. 8. 2026 — návrh informační architektury (read-only)
+
+- Nový dokument [`docs/navrh-informacni-architektury.md`](../navrh-informacni-architektury.md):
+  mapa všech 83 stránek odkazovaných z `hlavicka.php`/`index.php` (66+71
+  unikátních cílů, ověřeno množinově přes `comm`/`sort -u`, ne ručním
+  počítáním) + 64 dalších nalezených funkčních stránek mimo navigaci (mj.
+  `auditlog/seznam.php` zcela bez odkazu odkudkoli, `member_charges_admin.php`
+  a `kis_rollover_a06_admin.php` jen kontextově) a přehled podezřelých
+  duplicitních/mrtvých souborů (`index-backup.php`, `index3.php`, 6×
+  `vypis_vykazu (N) - kopie.php` aj.).
+- Navrhuje cílovou navigaci (max 7 top-level položek pro trenéra/správce/
+  admina, rozdělení dnešní 39položkové „Správy" bez druhého patra na
+  Klub/Administraci se 4 podskupinami), zeštíhlení nástěnky `index.php`
+  a trvalý viditelný odkaz na veřejný portál z navbaru — dnes chybí
+  jakýkoli stálý most mezi přihlášeným trenérem a veřejnou částí.
+- Čistě analytický řez: žádný PHP soubor nezměněn, nic nepřejmenováno ani
+  nepřesunuto na disku. Base `5c99509`. Produkce se nezměnila.
+
 ## Aktualizace 6. 8. 2026 — PRVNÍ PRODUKČNÍ NASAZENÍ kis.kovopraha.cz
 
 - Workflow „Nasadit produkci“ doběhl celý: záloha DB, release mimo webroot,
