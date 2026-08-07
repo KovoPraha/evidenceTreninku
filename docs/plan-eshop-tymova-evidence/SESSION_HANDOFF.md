@@ -1,5 +1,49 @@
 # Session handoff
 
+## Aktualizace 6. 8. 2026 — PRVNÍ PRODUKČNÍ NASAZENÍ kis.kovopraha.cz
+
+- Workflow „Nasadit produkci“ doběhl celý: záloha DB, release mimo webroot,
+  migrace (kopie legacy schématu 2.20.2 povýšena celým katalogem 50 migrací)
+  a aktivace. https://kis.kovopraha.cz živě odpovídá — homepage portálu bez
+  chyb, ověřeno nezávislým fetch z Cowork cloudu.
+- Data: kovoprahacz10 = kopie kovoprahacz09 pořízená přes phpMyAdmin
+  (mysql/mysqldump CLI hosting nepovoluje). Kopie zároveň splnila roli
+  cutover rehearsal — migrace nad reálnými produkčními daty prošla.
+- DŮLEŽITÝ NÁLEZ: v kovoprahacz09 žije vedle evidence i samostatná aplikace
+  miniresult (16 tabulek vč. miniresult_athletes/registrations s FK na
+  sportovci). Z kopie kovoprahacz10 byly tyto tabulky smazány (fail-closed
+  ownership guard zálohy je odhalil). Pro budoucí ostrý cutover evidence
+  platí: stará DB musí zůstat živá, dokud se miniresult nepřepojí — vazba
+  cizí aplikace na sportovci je otevřený bod cutover plánu.
+- DB_HOST na tomto hostingu je 127.0.0.1; heslo DB uživatele bylo změněno
+  vlastníkem (prošlo chatem → po pilotu zrotovat spolu s FTP heslem).
+- Stará evidence data.kovopraha.cz zůstává nedotčená a AUTORITATIVNÍ.
+  kis.kovopraha.cz je pilot nad kopií dat; ostrý cutover je samostatně
+  schvalovaný krok. Vlastníkova prohlídka A01–A10 zůstává otevřená — nyní
+  ji lze provést i nad produkčním pilotem.
+- Kanonické poznatky o hostingu: docs/thinline-deploy-runbook.md.
+
+## Aktualizace 6. 8. 2026 — příprava produkce kis.kovopraha.cz
+
+- Vlastník autorizoval nasazení na novou subdoménu kis.kovopraha.cz přes
+  GitHub Actions. Lokální `main` je pushnutá na `origin/main`; deploy workflow
+  je parametrizovaný přes Variables KIS_* a běží v environment `production`
+  s ručním potvrzením NASADIT.
+- Server má tři živě ověřené zvláštnosti: chroot bez funkčního $HOME
+  s nezapisovatelným kořenem, omezený shell blokující argumenty PHP skriptů
+  I externí env proměnné (jediný kanál je soubor → putenv bootstrap vzor) a
+  MariaDB se strict mode, který XAMPP nemá. Kanonický popis a runbook je
+  v docs/thinline-deploy-runbook.md — deploy vlákna ho čtou před změnou workflow.
+- CI odhalilo a opravilo reálnou fixture chybu (treneri bez AUTO_INCREMENT ve
+  strict mode). Preflight na serveru živě vrací {"ok":true,"php":"8.2.32"};
+  config.php s pepperem a novou DB kovoprahacz10 je nahraný mimo git.
+- Zbývá před prvním nasazením: kopie kovoprahacz09 → kovoprahacz10 přímo na
+  serveru (slouží zároveň jako cutover rehearsal; deploy odmítne zálohu prázdné
+  DB) a ruční spuštění workflow s NASADIT. Stará evidence zůstává nedotčená a
+  autoritativní až do samostatně schváleného ostrého cutoveru.
+- Otevřené bezpečnostní resty vlastníka: změna FTP hesla, rotace DB hesla po
+  zprovoznění (obojí prošlo chatem), výhledově EOL MariaDB 10.3/Debian 10.
+
 ## Aktualizace 6. 8. 2026 — statická kontrola kompatibility s produkční MariaDB 10.3
 
 - Vlastník 2026-08-05 v phpMyAdmin ověřil produkční DB server: MariaDB
