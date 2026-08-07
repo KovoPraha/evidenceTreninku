@@ -103,6 +103,23 @@ function shopStageOutput(array $payload, bool $json): string
     );
 }
 
+// Omezené hostingové shelly blokují argumenty za jménem skriptu; bez argumentů
+// lze proto vstupy zadat proměnnými prostředí SHOPTET_INPUT, SHOPTET_APPLY=1
+// a SHOPTET_JSON=1 (typicky přes putenv bootstrap, viz
+// docs/thinline-deploy-runbook.md). CLI argumenty mají přednost.
+if (count($argv) === 1) {
+    $environmentInput = (string)getenv('SHOPTET_INPUT');
+    if ($environmentInput !== '') {
+        $argv[] = '--input=' . $environmentInput;
+        if ((string)getenv('SHOPTET_APPLY') === '1') {
+            $argv[] = '--apply';
+        }
+        if ((string)getenv('SHOPTET_JSON') === '1') {
+            $argv[] = '--json';
+        }
+    }
+}
+
 $options = shopStageArguments($argv);
 $appHost = getenv('APP_HOST');
 if (!is_string($appHost) || preg_match('/^[a-z0-9.-]+(?::\d+)?$/Di', $appHost) !== 1) {

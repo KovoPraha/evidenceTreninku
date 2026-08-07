@@ -120,6 +120,17 @@ Změny workflow VŽDY promítnout i do testu.
 - vzor funkčního `config.php` je `config.example.php`; ostrý soubor se
   100% drží mimo git a nahrává se jednorázově přes scp.
 
+## Import Shoptet katalogu do produkce
+
+`bin/shoptet-products-dry-run.php` a `bin/shoptet-products-stage.php` mají
+aditivní env vstupy `SHOPTET_INPUT`, `SHOPTET_APPLY=1`, `SHOPTET_JSON=1`
+(kvůli blokaci argumentů na hostingu). Vlastník používá lokální nástroj
+`kis-shoptet-import.ps1`: nahraje XML do `data/shoptet-import.xml` (mimo
+webroot), vygeneruje putenv bootstrapy do `data/.kis-deploy/` a spustí
+dry-run → po potvrzení staging. Produkty vznikají jako DRAFT; zveřejnění
+výhradně přes administraci „Aktivace katalogu“. Skripty se na server
+dostávají běžným deployem (jsou součástí release v docrootu).
+
 ## Ponaučení pro další aplikace na tomto serveru
 
 Nový deploy = zkopírovat tento workflow, změnit trojici Variables,

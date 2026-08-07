@@ -129,6 +129,19 @@ function shopDryRunSummary(array $result): string
     return implode(PHP_EOL, $lines) . PHP_EOL;
 }
 
+// Omezené hostingové shelly blokují argumenty za jménem skriptu; bez argumentů
+// lze proto vstup zadat proměnnými prostředí SHOPTET_INPUT a SHOPTET_JSON=1
+// (typicky přes putenv bootstrap). CLI argumenty mají přednost.
+if (count($argv) === 1) {
+    $environmentInput = (string)getenv('SHOPTET_INPUT');
+    if ($environmentInput !== '') {
+        $argv[] = '--input=' . $environmentInput;
+        if ((string)getenv('SHOPTET_JSON') === '1') {
+            $argv[] = '--json';
+        }
+    }
+}
+
 $options = shopDryRunArguments($argv);
 try {
     $parsed = ShoptetProductInput::read($options['input']);
