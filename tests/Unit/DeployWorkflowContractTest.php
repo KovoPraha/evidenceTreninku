@@ -45,7 +45,7 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('php run-migrate-apply.php', $workflow);
         self::assertStringContainsString('php run-migrate-check.php', $workflow);
         self::assertStringContainsString("rm -f '\$RELEASE_DIR/run-migrate-apply.php'", $workflow);
-        self::assertStringContainsString("putenv('BACKUP_TARGET_DIR=/\$BACKUP_DIR');", $workflow);
+        self::assertStringContainsString("putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');", $workflow);
         self::assertStringContainsString("php '\$DEPLOY_BASE/run-backup.php'", $workflow);
         self::assertStringNotContainsString('php bin/migrate.php --', $workflow);
         self::assertStringContainsString('MIGRATE_ACTION', $this->source('bin/migrate.php'));
