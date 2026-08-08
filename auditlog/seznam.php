@@ -29,9 +29,9 @@ $filter_akce = $_GET['akce'] ?? '';
 
 // výběr trenérů a typů akcí pro select boxy
 $trenery = $pdo->query("
-    SELECT DISTINCT l.trener_id, t.jmeno 
-    FROM ucto_audit_log l 
-    LEFT JOIN treneri t ON l.trener_id = t.id 
+    SELECT DISTINCT l.uzivatel_id AS trener_id, t.jmeno
+    FROM ucto_audit_log l
+    LEFT JOIN treneri t ON l.uzivatel_id = t.id 
     WHERE t.id IS NOT NULL
     ORDER BY t.jmeno
 ")->fetchAll(PDO::FETCH_ASSOC);
@@ -43,7 +43,7 @@ $where = [];
 $params = [];
 
 if ($filter_trener !== '') {
-    $where[] = 'l.trener_id = ?';
+    $where[] = 'l.uzivatel_id = ?';
     $params[] = $filter_trener;
 }
 if ($filter_akce !== '') {
@@ -51,13 +51,13 @@ if ($filter_akce !== '') {
     $params[] = $filter_akce;
 }
 
-$sql = "SELECT l.*, t.jmeno 
+$sql = "SELECT l.*, t.jmeno
         FROM ucto_audit_log l
-        LEFT JOIN treneri t ON l.trener_id = t.id";
+        LEFT JOIN treneri t ON l.uzivatel_id = t.id";
 if ($where) {
     $sql .= ' WHERE ' . implode(' AND ', $where);
 }
-$sql .= " ORDER BY l.cas DESC";
+$sql .= " ORDER BY l.datum DESC LIMIT 500";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
@@ -109,12 +109,12 @@ $logy = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <tbody>
     <?php foreach ($logy as $z): ?>
       <tr>
-        <td><?= date('d.m.Y H:i:s', strtotime($z['cas'])) ?></td>
-        <td><?= htmlspecialchars($z['jmeno']) ?></td>
+        <td><?= date('d.m.Y H:i:s', strtotime((string)$z['datum'])) ?></td>
+        <td><?= htmlspecialchars((string)($z['jmeno'] ?? ('#' . $z['uzivatel_id']))) ?></td>
         <td><?= htmlspecialchars($z['akce']) ?></td>
-        <td><?= htmlspecialchars($z['entita']) ?></td>
-        <td><?= (int)$z['entita_id'] ?></td>
-        <td><pre><?= htmlspecialchars($z['data']) ?></pre></td>
+        <td><?= htmlspecialchars((string)$z['tabulka']) ?></td>
+        <td><?= (int)$z['zaznam_id'] ?></td>
+        <td><pre><?= htmlspecialchars((string)$z['detail']) ?></pre></td>
       </tr>
     <?php endforeach; ?>
   </tbody>
