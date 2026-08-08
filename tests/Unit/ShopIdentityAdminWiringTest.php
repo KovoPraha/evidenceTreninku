@@ -23,8 +23,10 @@ final class ShopIdentityAdminWiringTest extends TestCase
 
     public function testAdminNavigationLinksToIdentityDecisions(): void
     {
+        // index.php's card-wall was retired 2026-08-08 in favor of the hlavicka.php
+        // navbar as the single admin navigation source (see docs/navrh-informacni-architektury.md).
         $root = dirname(__DIR__, 2);
-        foreach (['hlavicka.php', 'index.php', 'eshop_admin.php', 'admin_dashboard.php'] as $filename) {
+        foreach (['hlavicka.php', 'eshop_admin.php', 'admin_dashboard.php'] as $filename) {
             self::assertStringContainsString(
                 'eshop_identity_admin.php',
                 (string)file_get_contents($root . '/' . $filename),

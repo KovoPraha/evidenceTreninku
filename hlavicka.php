@@ -222,14 +222,20 @@ if ($is_logged_in) {
 
                     <!-- Vkládání dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle<?= _navActive('formular.php','nova_cinnost.php','zatezovy_test_form.php','duplikovat_trenink.php') ?>" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle<?= _navActive('formular.php','nova_cinnost.php','zatezovy_test_form.php','duplikovat_trenink.php','formular_zavod.php') ?>" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-plus-square me-1"></i>Vložit
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item<?= _dropActive('formular.php') ?>" href="formular.php">
                                 <i class="bi bi-calendar-plus me-2 text-primary"></i>Nový trénink</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('duplikovat_trenink.php') ?>" href="duplikovat_trenink.php">
+                                <i class="bi bi-copy me-2 text-primary"></i>Duplikovat trénink</a></li>
                             <li><a class="dropdown-item<?= _dropActive('nova_cinnost.php') ?>" href="nova_cinnost.php">
                                 <i class="bi bi-journal-plus me-2 text-secondary"></i>Další činnost</a></li>
+                            <?php if (canAccess('formular_zavod')): ?>
+                            <li><a class="dropdown-item<?= _dropActive('formular_zavod.php') ?>" href="formular_zavod.php">
+                                <i class="bi bi-trophy me-2 text-warning"></i>Nový závod</a></li>
+                            <?php endif; ?>
                             <li><a class="dropdown-item<?= _dropActive('zatezovy_test_form.php') ?>" href="zatezovy_test_form.php">
                                 <i class="bi bi-heart-pulse me-2 text-danger"></i>Zátěžový test</a></li>
                         </ul>
@@ -237,7 +243,7 @@ if ($is_logged_in) {
 
                     <!-- Přehledy dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle<?= _navActive('moje_treninky.php','moje_skupiny.php','prehled_trenera.php','prehled_sportovcu.php','prehled_treninku_skupiny_kalendar.php','vypis_vykazu.php','prehled_popisu.php','prehled_zavodu.php','zavod_detail.php') ?>" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle<?= _navActive('moje_treninky.php','moje_skupiny.php','prehled_trenera.php','prehled_sportovcu.php','prehled_treninku_skupiny_kalendar.php','vypis_vykazu.php','prehled_popisu.php','prehled_zavodu.php','zavod_detail.php','sprava_zavodu.php','hromadne_podskupiny.php','oznameni.php','export_draha.php','export_seznam.php','export_uci.php','google_sheets_linky.php','cviky.php','sprava_segmentu.php','hromadne_odmeny.php') ?>" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-bar-chart me-1"></i>Přehledy
                         </a>
                         <ul class="dropdown-menu">
@@ -259,6 +265,38 @@ if ($is_logged_in) {
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item<?= _dropActive('prehled_zavodu.php') ?>" href="prehled_zavodu.php">
                                 <i class="bi bi-trophy me-2 text-warning"></i>Přehled závodů</a></li>
+                            <?php if (canAccess('sprava_zavodu')): ?>
+                            <li><a class="dropdown-item<?= _dropActive('sprava_zavodu.php') ?>" href="sprava_zavodu.php">
+                                <i class="bi bi-gear me-2 text-warning"></i>Správa závodů</a></li>
+                            <?php endif; ?>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Exporty</h6></li>
+                            <li><a class="dropdown-item<?= _dropActive('export_draha.php') ?>" href="export_draha.php">
+                                <i class="bi bi-file-earmark-excel me-2 text-success"></i>Export – dráha</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('export_uci.php') ?>" href="export_uci.php">
+                                <i class="bi bi-file-earmark-person me-2 text-primary"></i>Export – UCI přihláška</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('export_seznam.php') ?>" href="export_seznam.php">
+                                <i class="bi bi-file-earmark-spreadsheet me-2 text-success"></i>Export – Seznam sportovců</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('google_sheets_linky.php') ?>" href="google_sheets_linky.php">
+                                <i class="bi bi-table me-2 text-success"></i>Google Sheets evidence</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Nástroje</h6></li>
+                            <?php if (canAccess('sprava_sportovcu')): ?>
+                            <li><a class="dropdown-item<?= _dropActive('hromadne_podskupiny.php') ?>" href="hromadne_podskupiny.php">
+                                <i class="bi bi-diagram-3 me-2 text-warning"></i>Skupiny a podskupiny</a></li>
+                            <?php endif; ?>
+                            <?php if (canAccess('oznameni')): ?>
+                            <li><a class="dropdown-item<?= _dropActive('oznameni.php') ?>" href="oznameni.php">
+                                <i class="bi bi-bell me-2 text-warning"></i>Oznámení a zprávy</a></li>
+                            <?php endif; ?>
+                            <li><a class="dropdown-item<?= _dropActive('cviky.php') ?>" href="cviky.php">
+                                <i class="bi bi-activity me-2 text-secondary"></i>Cviky v posilovně</a></li>
+                            <?php if (canAccess('segmenty')): ?>
+                            <li><a class="dropdown-item<?= _dropActive('sprava_segmentu.php') ?>" href="sprava_segmentu.php">
+                                <i class="bi bi-signpost-split me-2 text-secondary"></i>Segmenty</a></li>
+                            <?php endif; ?>
+                            <li><a class="dropdown-item<?= _dropActive('hromadne_odmeny.php') ?>" href="hromadne_odmeny.php">
+                                <i class="bi bi-star me-2 text-warning"></i>Nastavení odměn</a></li>
                         </ul>
                     </li>
 
@@ -301,10 +339,10 @@ if ($is_logged_in) {
                     <?php endif; ?>
 
                     <?php if ($is_hlavni): ?>
-                    <!-- Správa dropdown – správce + admin (rychlá výhra: podnadpisy, zatím 1 menu) -->
+                    <!-- Klub dropdown – správce + admin (cílová struktura: bývalá "Správa dat") -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-shield-lock me-1"></i>Správa
+                            <i class="bi bi-diagram-3 me-1"></i>Klub
                         </a>
                         <ul class="dropdown-menu">
                             <li><h6 class="dropdown-header">Provoz</h6></li>
@@ -334,6 +372,12 @@ if ($is_logged_in) {
                                 <i class="bi bi-bicycle me-2 text-primary"></i>Veřejné hodiny velodromu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('sprava_segmentu.php') ?>" href="sprava_segmentu.php">
                                 <i class="bi bi-signpost-split me-2"></i>Správa segmentů</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('odeslat_emaily.php') ?>" href="odeslat_emaily.php">
+                                <i class="bi bi-envelope-fill me-2 text-primary"></i>Odeslat emaily</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('prehled_kreditu.php') ?>" href="prehled_kreditu.php">
+                                <i class="bi bi-wallet2 me-2 text-success"></i>Přehled kreditů</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('sprava_sportovec_obdobi.php') ?>" href="sprava_sportovec_obdobi.php">
+                                <i class="bi bi-cash-coin me-2 text-success"></i>Kreditní období</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Členové a KIS</h6></li>
                             <li><a class="dropdown-item<?= _dropActive('sync_evidence.php') ?>" href="sync_evidence.php">
@@ -346,10 +390,18 @@ if ($is_logged_in) {
                             <li><a class="dropdown-item<?= _dropActive('kis_training_a07_admin.php') ?>" href="kis_training_a07_admin.php">
                                 <i class="bi bi-clipboard-check me-2 text-primary"></i>A07 trénink a docházka</a></li>
                             <?php endif; ?>
+                        </ul>
+                    </li>
+                    <?php endif; ?>
 
-                            <?php if ($is_admin): ?>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Administrace — E-shop</h6></li>
+                    <?php if ($is_admin): ?>
+                    <!-- Administrace dropdown – pouze admin (cílová struktura: samostatné top-level menu) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-shield-lock me-1"></i>Administrace
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><h6 class="dropdown-header">E-shop</h6></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_admin.php') ?>" href="eshop_admin.php">
                                 <i class="bi bi-shop me-2 text-primary"></i>Administrace e-shopu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_orders_admin.php') ?>" href="eshop_orders_admin.php">
@@ -362,8 +414,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-calendar-event me-2 text-primary"></i>Klubové akce a soupisky</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_notifications_admin.php') ?>" href="eshop_notifications_admin.php">
                                 <i class="bi bi-envelope-exclamation me-2 text-warning"></i>Fronta e-mailů K3</a></li>
-
-                            <li><h6 class="dropdown-header">Administrace — Členové a KIS</h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Členové a KIS</h6></li>
                             <li><a class="dropdown-item<?= _dropActive('member_charge_reminders_admin.php') ?>" href="member_charge_reminders_admin.php">
                                 <i class="bi bi-bell me-2 text-warning"></i>Připomínky plateb</a></li>
                             <li><a class="dropdown-item<?= _dropActive('member_charges_admin.php') ?>" href="member_charges_admin.php">
@@ -380,8 +432,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-arrow-clockwise me-2 text-primary"></i>Roční obnova soupisek (A06)</a></li>
                             <li><a class="dropdown-item<?= _dropActive('person_audit_admin.php') ?>" href="person_audit_admin.php">
                                 <i class="bi bi-clock-history me-2 text-primary"></i>Auditní osa osoby</a></li>
-
-                            <li><h6 class="dropdown-header">Administrace — Provoz</h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Provoz</h6></li>
                             <li><a class="dropdown-item<?= _dropActive('provozni_prehled_admin.php') ?>" href="provozni_prehled_admin.php">
                                 <i class="bi bi-speedometer2 me-2 text-primary"></i>Provozní přehled</a></li>
                             <li><a class="dropdown-item<?= _dropActive('sports_data_quality_admin.php') ?>" href="sports_data_quality_admin.php">
@@ -394,7 +446,7 @@ if ($is_logged_in) {
                             <li><a class="dropdown-item<?= _dropActive('testovaci_scenare.php') ?>" href="testovaci_scenare.php">
                                 <i class="bi bi-check2-square me-2 text-warning"></i>Finalizace M2</a></li>
                             <?php endif; ?>
-
+                            <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Nastavení a firemní evidence</h6></li>
                             <li><a class="dropdown-item<?= _dropActive('sprava_sportovist.php') ?>" href="sprava_sportovist.php">
                                 <i class="bi bi-building-gear me-2"></i>Správa sportovišť</a></li>
@@ -414,7 +466,6 @@ if ($is_logged_in) {
                                 <i class="bi bi-receipt me-2"></i>Účtenky</a></li>
                             <li><a class="dropdown-item" href="udalosti/seznam.php">
                                 <i class="bi bi-calendar-event me-2"></i>Události</a></li>
-                            <?php endif; ?>
                         </ul>
                     </li>
                     <?php endif; ?>

@@ -416,172 +416,22 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
       </a>
       <?php endif; ?>
 
-      <!-- Legenda rolí -->
-      <?php if ($is_hlavni): ?>
-      <div class="d-flex gap-3 mb-3 flex-wrap align-items-center">
-        <span class="small text-muted fw-semibold">Přístup:</span>
-        <span class="role-badge role-all">všichni</span>
-        <span class="role-badge role-mgr">správce</span>
-        <?php if ($is_admin): ?>
-        <span class="role-badge role-admin">admin</span>
-        <?php endif; ?>
-      </div>
-      <?php endif; ?>
-
-      <div class="row g-3">
-
-        <!-- LEVÝ SLOUPEC -->
-        <div class="col-lg-4 col-md-6">
-
-          <!-- Vkládání -->
-          <div class="card section-card mb-3">
-            <div class="card-header bg-primary text-white">
-              <i class="bi bi-plus-square me-2"></i>Vkládání
-            </div>
-            <div class="list-group list-group-flush">
-              <a href="formular.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-plus text-primary"></i>Nový trénink
-                <?= roleBadge('formular') ?></a>
-              <a href="duplikovat_trenink.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-copy text-primary"></i>Duplikovat trénink
-                <?= roleBadge('duplikovat_trenink') ?></a>
-              <a href="nova_cinnost.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-journal-plus text-secondary"></i>Další činnost
-                <?= roleBadge('nova_cinnost') ?></a>
-              <?php if (canAccess('formular_zavod')): ?>
-              <a href="formular_zavod.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-trophy text-warning"></i>Nový závod
-                <?= roleBadge('formular_zavod') ?></a>
-              <?php endif; ?>
-              <a href="zatezovy_test_form.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-heart-pulse text-danger"></i>Nový zátěžový test
-                <?= roleBadge('zatezovy_test') ?></a>
-              <?php if (canAccess('planovac')): ?>
-              <a href="planovac.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar3-week text-info"></i>Plánovač tréninků
-                <?php if (($statPendingPlans ?? 0) > 0): ?>
-                  <span class="badge bg-warning text-dark ms-auto"><?= $statPendingPlans ?> bez evidence</span>
-                <?php else: ?>
-                  <?= roleBadge('planovac') ?>
-                <?php endif; ?>
-              </a>
-              <?php endif; ?>
-            </div>
-          </div>
-
-          <!-- Přehledy -->
-          <div class="card section-card">
-            <div class="card-header bg-success text-white">
-              <i class="bi bi-bar-chart me-2"></i>Přehledy
-            </div>
-            <div class="list-group list-group-flush">
-              <a href="moje_treninky.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-list-ul text-success"></i>Moje tréninky
-                <?= roleBadge('moje_treninky') ?></a>
-              <a href="moje_skupiny.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-people text-success"></i>Moje skupiny
-                <?= roleBadge('moje_skupiny') ?></a>
-              <a href="prehled_trenera.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-range text-success"></i>Přehled tréninků
-                <?= roleBadge('prehled_trenera') ?></a>
-              <a href="prehled_sportovcu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-person-lines-fill text-success"></i>Přehled sportovců
-                <?= roleBadge('prehled_sportovcu') ?></a>
-              <a href="prehled_treninku_skupiny_kalendar.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar3 text-success"></i>Kalendář tréninků
-                <?= roleBadge('kalendar') ?></a>
-              <a href="vypis_vykazu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-file-earmark-bar-graph text-secondary"></i>Výkaz činností
-                <?= roleBadge('vypis_vykazu') ?></a>
-              <a href="prehled_popisu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-journal-text text-success"></i>Přehled popisů tréninků
-                <?= roleBadge('prehled_popisu') ?></a>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- STŘEDNÍ SLOUPEC -->
-        <div class="col-lg-4 col-md-6">
-
-          <!-- Závodní sekce -->
-          <div class="card section-card mb-3">
-            <div class="card-header bg-warning text-dark">
-              <i class="bi bi-trophy me-2"></i>Závodní sekce
-            </div>
-            <div class="list-group list-group-flush">
-              <a href="prehled_zavodu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-trophy text-warning"></i>Přehled závodů
-                <?= roleBadge('prehled_zavodu') ?></a>
-              <?php if (canAccess('formular_zavod')): ?>
-              <a href="formular_zavod.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-plus-circle text-success"></i>Nový závod
-                <?= roleBadge('formular_zavod') ?></a>
-              <?php endif; ?>
-              <?php if (canAccess('sprava_zavodu')): ?>
-              <a href="sprava_zavodu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-gear text-warning"></i>Správa závodů
-                <?= roleBadge('sprava_zavodu') ?></a>
-              <?php endif; ?>
-              <a href="hromadne_podskupiny.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-diagram-3 text-warning"></i>Skupiny a podskupiny
-                <?= roleBadge('skupiny_podskupiny') ?></a>
-              <a href="export_draha.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-file-earmark-excel text-success"></i>Export – dráha
-                <?= roleBadge('exporty') ?></a>
-              <a href="export_uci.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-file-earmark-person text-primary"></i>Export – UCI přihláška
-                <?= roleBadge('exporty') ?></a>
-              <a href="export_seznam.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-file-earmark-spreadsheet text-success"></i>Export – Seznam sportovců
-                <?= roleBadge('exporty') ?></a>
-              <a href="google_sheets_linky.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-table text-success"></i>Google Sheets evidence
-                <?= roleBadge('google_sheets') ?></a>
-              <a href="oznameni.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-bell text-warning"></i>Oznámení a zprávy
-                <?= roleBadge('oznameni') ?></a>
-            </div>
-          </div>
-
-          <!-- Rezervace sportovišť — vždy viditelné (veřejný kalendář sdílí každý trenér) -->
-          <?php
-            $bookingUrl = appUrl('booking/kalendar.php');
-          ?>
-          <div class="card section-card mb-3">
-            <div class="card-header bg-info text-white">
-              <i class="bi bi-building me-2"></i>Rezervace sportovišť
-            </div>
-            <div class="list-group list-group-flush">
-              <?php if (canAccess('kalendar_sportovist')): ?>
-              <a href="kalendar_sportovist.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar3 text-info"></i>Kalendář sportovišť
-                <?= roleBadge('kalendar_sportovist') ?></a>
-              <?php endif; ?>
-              <?php if (canAccess('rezervace_sportovist')): ?>
-              <a href="rezervovat_sportoviste.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-plus text-success"></i>Nová rezervace
-                <?= roleBadge('rezervace_sportovist') ?></a>
-              <?php endif; ?>
-              <?php if (canAccess('individualni_lekce')): ?>
-              <a href="individualni_lekce_sprava.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-person-circle text-success"></i>Individuální lekce
-                <?= roleBadge('individualni_lekce') ?></a>
-              <a href="individualni_lekce_form.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-person-plus text-success"></i>Nová lekce
-                <?= roleBadge('individualni_lekce') ?></a>
-              <?php endif; ?>
-              <a href="booking/kalendar.php" class="list-group-item list-group-item-action" target="_blank">
-                <i class="bi bi-globe text-primary"></i>Veřejný kalendář rezervací
-                <span class="badge bg-primary ms-auto">veřejné</span>
-              </a>
-              <div class="list-group-item py-2 px-3" style="background:#f0f9ff;">
+      <!-- Rychlý přístup — plný výpis funkcí je v menu nahoře (Vložit / Přehledy /
+           Plánovač / Rezervace / Klub / Administrace), nástěnka už ho neduplikuje -->
+      <?php $bookingUrl = appUrl('booking/kalendar.php'); ?>
+      <section class="mb-4">
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card section-card h-100">
+              <div class="card-header bg-info text-white">
+                <i class="bi bi-building me-2"></i>Odkaz pro zákazníky
+              </div>
+              <div class="card-body py-2 px-3">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                  <i class="bi bi-link-45deg text-info" style="font-size:.95rem;"></i>
-                  <span class="text-muted" style="font-size:.75rem;">Odkaz pro zákazníky:</span>
-                  <code id="bookingUrlCode" class="small text-break" style="font-size:.73rem;"><?= htmlspecialchars($bookingUrl) ?></code>
+                  <a href="booking/kalendar.php" target="_blank" class="small">
+                    <i class="bi bi-globe me-1"></i>Veřejný kalendář rezervací</a>
+                  <code id="bookingUrlCode" class="small text-break ms-2"><?= htmlspecialchars($bookingUrl) ?></code>
                   <button type="button" class="btn btn-outline-secondary btn-sm ms-auto py-0"
-                          style="font-size:.7rem;"
                           data-copy-text="<?= htmlspecialchars($bookingUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
                     <i class="bi bi-clipboard" aria-hidden="true"></i> <span class="app-copy-label">Kopírovat</span>
                   </button>
@@ -589,169 +439,26 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               </div>
             </div>
           </div>
-
-          <!-- Nastavení -->
-          <div class="card section-card">
-            <div class="card-header bg-secondary text-white">
-              <i class="bi bi-gear me-2"></i>Nastavení
-            </div>
-            <div class="list-group list-group-flush">
-              <a href="cviky.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-activity text-secondary"></i>Cviky v posilovně
-                <?= roleBadge('cviky') ?></a>
-              <a href="sprava_segmentu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-signpost-split text-secondary"></i>Segmenty
-                <?= roleBadge('segmenty') ?></a>
-              <a href="hromadne_odmeny.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-star text-warning"></i>Nastavení odměn
-                <?= roleBadge('odmeny') ?></a>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- PRAVÝ SLOUPEC -->
-        <div class="col-lg-4 col-md-12">
-
           <?php if ($is_hlavni): ?>
-          <!-- Správa dat (správce + admin) -->
-          <div class="card section-card mb-3">
-            <div class="card-header bg-primary text-white">
-              <i class="bi bi-key me-2"></i>Správa dat
-            </div>
-            <div class="list-group list-group-flush">
-              <a href="sprava_sportovcu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-person-lines-fill text-primary"></i>Správa sportovců
-                <?= roleBadge('sprava_sportovcu') ?></a>
-              <a href="admin_dashboard.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-speedometer2 text-primary"></i>Admin dashboard
-                <?= roleBadge('sprava_sportovcu') ?></a>
-              <a href="sprava_vsech_treninku.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-clipboard-data text-primary"></i>Správa tréninků
-                <?= roleBadge('sprava_treninku') ?></a>
-              <a href="sprava_skupin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-diagram-2 text-primary"></i>Správa skupin
-                <?= roleBadge('sprava_skupin') ?></a>
-              <a href="sprava_podskupin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-diagram-3 text-primary"></i>Správa podskupin
-                <?= roleBadge('sprava_podskupin') ?></a>
-              <a href="verejny_prehled.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-globe text-primary"></i>Veřejný přehled
-                <?= roleBadge('verejny_prehled') ?></a>
-              <a href="prehled_vsech_vykazu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-graph-up text-secondary"></i>Všechny výkazy
-                <?= roleBadge('vsechny_vykazy') ?></a>
-              <a href="odeslat_emaily.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-envelope-fill text-primary"></i>Odeslat emaily
-                <?= roleBadge('odeslat_emaily') ?></a>
-              <a href="prehled_kreditu.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-wallet2 text-success"></i>Přehled kreditů
-                <?= roleBadge('prehled_kreditu') ?></a>
-              <a href="sprava_sportovec_obdobi.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-cash-coin text-success"></i>Kreditní období
-                <?= roleBadge('kreditni_obdobi') ?></a>
-              <a href="sync_evidence.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-arrow-repeat text-primary"></i>Synchronizace evidence
-                <?= roleBadge('sync_evidence') ?></a>
-              <a href="kis_sync_center.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-diagram-3 text-primary"></i>KIS centrum
-                <?= roleBadge('sync_evidence') ?></a>
-              <a href="club_programs_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-range text-primary"></i>Kroužkové programy
-                <?= roleBadge('sync_evidence') ?></a>
-              <a href="verejny_velodrom_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-bicycle text-primary"></i>Veřejné hodiny velodromu
-                <?= roleBadge('sync_evidence') ?></a>
-            </div>
+          <div class="col-6 col-lg-3">
+            <a class="portal-shortcut" href="sprava_sportovcu.php">
+              <i class="bi bi-diagram-3 text-primary fs-4"></i>
+              <div class="fw-semibold mt-2">Otevřít Klub</div>
+              <div class="small text-muted">Provoz, členové a KIS — i v menu nahoře</div>
+            </a>
           </div>
           <?php endif; ?>
-
           <?php if ($is_admin): ?>
-          <!-- Administrace (pouze admin) -->
-          <div class="card section-card mb-3">
-            <div class="card-header bg-danger text-white">
-              <i class="bi bi-shield-lock me-2"></i>Administrace
-            </div>
-            <div class="list-group list-group-flush">
-              <a href="eshop_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-shop text-primary"></i>Administrace e-shopu
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="eshop_catalog_publication_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-eye text-success"></i>Aktivace katalogu
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="eshop_events_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-event text-primary"></i>Klubové akce a soupisky
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="eshop_identity_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-people text-primary"></i>Účty, rodiče a sportovci
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="kis_child_access_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-person-badge text-primary"></i>Přístupy sportovců
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="kis_transition_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-arrow-left-right text-primary"></i>Přechod do závodního týmu
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="kis_rollover_a06_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-arrow-clockwise text-primary"></i>Roční obnova soupisek (A06)
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="member_charges_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-cash-stack text-warning"></i>Členské předpisy
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="person_audit_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-clock-history text-primary"></i>Auditní osa osoby
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="eshop_order_expiry_admin.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-hourglass-split text-warning"></i>Expirace nezaplacených objednávek
-                <span class="role-badge role-admin">admin</span></a>
-              <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
-              <a href="testovaci_scenare.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-check2-square text-warning"></i>Finalizace M2
-                <span class="role-badge role-admin">localhost</span></a>
-              <?php endif; ?>
-              <a href="sprava_sportovist.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-building-gear text-danger"></i>Správa sportovišť
-                <?= roleBadge('sprava_sportovist') ?></a>
-              <a href="sprava_treneru.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-person-gear text-danger"></i>Správa trenérů
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="nastaveni_opravneni.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-sliders text-danger"></i>Nastavení oprávnění
-                <span class="role-badge role-admin">admin</span></a>
-              <a href="nastaveni_zadavani.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-lock text-warning"></i>Okno pro zadávání
-                <?= roleBadge('nastaveni_zadavani') ?></a>
-              <a href="vozidla/seznam.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-car-front text-secondary"></i>Vozidla
-                <?= roleBadge('vozidla') ?></a>
-              <a href="uctenky/seznam.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-receipt text-secondary"></i>Účtenky
-                <?= roleBadge('uctenky') ?></a>
-              <a href="udalosti/seznam.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-event text-secondary"></i>Události
-                <?= roleBadge('udalosti') ?></a>
-              <?php if (canAccess('auditlog')): ?>
-              <a href="auditlog/seznam.php" class="list-group-item list-group-item-action">
-                <i class="bi bi-journal-text text-secondary"></i>Audit log
-                <span class="role-badge role-admin">admin</span></a>
-              <?php endif; ?>
-            </div>
+          <div class="col-6 col-lg-3">
+            <a class="portal-shortcut" href="eshop_admin.php">
+              <i class="bi bi-shield-lock text-danger fs-4"></i>
+              <div class="fw-semibold mt-2">Otevřít Administraci</div>
+              <div class="small text-muted">E-shop, nastavení — i v menu nahoře</div>
+            </a>
           </div>
           <?php endif; ?>
-
-          <!-- Odhlášení -->
-          <div class="card section-card">
-            <div class="list-group list-group-flush">
-              <form method="post" action="logout.php">
-                <?= csrf_field() ?>
-                <button type="submit" class="list-group-item list-group-item-action text-danger border-0 text-start w-100">
-                  <i class="bi bi-box-arrow-right text-danger"></i>Odhlásit se
-                </button>
-              </form>
-            </div>
-          </div>
-
         </div>
-      </div><!-- /row -->
+      </section>
 
     <?php endif; ?>
   </div>

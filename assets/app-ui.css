@@ -111,6 +111,10 @@ body.app-loading .app-loading-bar {
 }
 .acct-menu > summary::-webkit-details-marker { display: none; }
 .acct-menu > ul {
+    /* Explicit display toggle: absolute positioning on this element defeats the
+       browser's native "hide non-summary children while closed" behavior in at
+       least one tested engine, so closed/open state can't be left implicit. */
+    display: none;
     position: absolute;
     right: 0;
     z-index: 1000;
@@ -124,6 +128,7 @@ body.app-loading .app-loading-bar {
     border-radius: var(--app-surface-radius);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
 }
+.acct-menu[open] > ul { display: block; }
 
 @keyframes app-spin { to { transform: rotate(360deg); } }
 

@@ -1,5 +1,78 @@
 # Session handoff
 
+## Aktualizace 8. 8. 2026 — implementace informační architektury (2 commity)
+
+- Vlastník schválil `docs/navrh-informacni-architektury.md` a řez ho
+  implementoval ve dvou commitech nad base `6806766`.
+- **Commit `2f0fc98`** — 5 rychlých výher: trvalý odkaz „Veřejný portál"
+  v navbaru pro každého přihlášeného (`hlavicka.php`, `booking/eshop.php`,
+  `target="_blank"`); doplnění `member_charges_admin.php`,
+  `kis_rollover_a06_admin.php` a `auditlog/seznam.php` (dosud 0 odkazů
+  kdekoli) do Správy; podnadpisy uvnitř tehdy ještě jediné „Správy"
+  (Provoz/Členové a KIS/Administrace — E-shop/Členové a KIS/Provoz/
+  Nastavení a firemní evidence); oprava zavádějícího
+  `_dropActive('edit_zavod_form.php')` u položky s `href="prehled_zavodu.php"`;
+  sloučení 5 tlačítek zákaznického účtu do jedné nabídky „Můj účet"
+  (`includes/ui_shell.php` + `assets/app-ui.css`).
+- **Commit `3db00f2`** — cílová struktura: rozdělení „Správy" na **Klub**
+  (správce) a **Administrace** (admin, samostatné top-level menu, ne
+  vnořené) → trenér/správce/admin nyní vidí 5/6/7 položek první úrovně,
+  nikdy víc než 7. `index.php` card-wall (~40 odkazů) nahrazen kompaktní
+  sekcí „Rychlý přístup" (widget kopírovacího odkazu pro zákazníky +
+  zkratky „Otevřít Klub"/„Otevřít Administraci"); 13 položek, které tím
+  na nástěnce ztrácely jediný vstup (`cviky.php`, `duplikovat_trenink.php`,
+  4× export, `google_sheets_linky.php`, `hromadne_odmeny.php`,
+  `hromadne_podskupiny.php`, `oznameni.php`, `sprava_zavodu.php`,
+  `formular_zavod.php` ve Vložit), přesunuto do `Vložit`/`Přehledy` se
+  **stejným** efektivním oprávněním, jaké mělo dnes (ne do správcovského
+  Klubu — to by byla tichá regrese pro řadové trenéry). Pouze
+  `odeslat_emaily.php`, `prehled_kreditu.php`, `sprava_sportovec_obdobi.php`
+  byly už dřív správcovské, ty šly do Klubu.
+- **Testy:** `tests/Unit/SharedUiShellTest.php` má 2 nové regresní testy —
+  natvrdo zapsaná množina 84 stránek (83 z `hlavicka.php`/`index.php` před
+  řezem + `auditlog/seznam.php`) musí zůstat pokrytá součtem obou souborů
+  po řezu (ověřeno: 86 unikátních cílů, žádná z 84 nechybí, žádný odkaz
+  nesměřuje na neexistující soubor). Tři starší „wiring" testy
+  (`ClubEventWiringTest`, `ShopCatalogPublicationWiringTest`,
+  `ShopIdentityAdminWiringTest`) natvrdo kontrolovaly přítomnost stránky
+  v `index.php` — upraveny na `hlavicka.php` (+ `eshop_admin.php`/
+  `admin_dashboard.php`), protože nástěnka záměrně přestala být druhou
+  navigací. Plná sada 495/4305 (base 493/4306: +2 nové testy, −3 asercí ze
+  tří upravených wiring testů, +2 z nových), 462 first-party PHP souborů
+  bez chyby syntaxe.
+- **Browser:** ověřeno jako `localhost-admin` (7 položek, Klub i
+  Administrace naplněné, `member_charges_admin.php` i
+  `kis_rollover_a06_admin.php` se vykreslí bez chyby) a jako dokumentovaný
+  `trener1`/`heslo456` (`docs/vyvojarsky-pruvodce.md`) — 5 položek, Klub
+  i Administrace správně chybí, `cviky.php`/`hromadne_odmeny.php` dostupné
+  z Přehledů, `sprava_segmentu.php`/`hromadne_podskupiny.php` skryté (jejich
+  `canAccess()` je pro tento účet false — potvrzuje, že podmínky reagují na
+  živé oprávnění, ne natvrdo). „Můj účet" ověřeno na `booking/eshop.php`
+  (stránka bez `bootstrap.bundle.min.js`) — živý klik otevřel/zavřel menu
+  správně po opravě CSS (viz níže). Konzole 0, žádné neočekávané requesty
+  ve všech třech relacích.
+- **Nález za běhu, opraveno v rámci commitu `3db00f2`:** `<details>` menu
+  „Můj účet" bylo viditelné i zavřené — `position: absolute` na `<ul>`
+  potlačilo nativní skrývání zavřeného `<details>` v testovaném enginu.
+  Opraveno explicitním `display: none` / `.acct-menu[open] > ul { display: block; }`
+  místo spoléhání na nativní chování.
+- **Nález za běhu, MIMO ROZSAH tohoto řezu, nahlášen samostatně:**
+  `auditlog/seznam.php` má prapůvodní (nesouvisející) chybu neshody
+  sloupců — dotazuje `l.trener_id`/`l.cas`/`l.entita`/`l.data`, skutečné
+  sloupce `ucto_audit_log` jsou `uzivatel_id`/`datum`/`tabulka`/
+  `zaznam_id`/`detail` — PDOException na každém načtení. Stránka byla do
+  teď zcela neodkazovaná, takže na to nikdo nenarazil; nový odkaz v
+  Administraci to odhalil. Nahlášeno jako samostatný task, nesahá na to
+  tento řez.
+- Stav .git: nalezen `.git/HEAD.lock` (0 B, neaktivní proces ověřen přes
+  `Get-Process`/`ps aux`), přesunut do `var/_to_delete/HEAD.lock.<ts>`
+  podle zavedené konvence adresáře. `vendor/*` a další již dříve
+  nekomitované soubory (`.github/workflows/deploy-productio.yml`,
+  `kis-shoptet-import.ps1`, `var/_to_delete/`) zůstaly nedotčené a
+  necomitnuté.
+- Žádné oprávnění nebylo změněno. Žádný soubor nebyl přejmenován ani
+  přesunut. Produkce ani vzdálený Git se nezměnily (`git push` neproveden).
+
 ## Aktualizace 8. 8. 2026 — návrh informační architektury (read-only)
 
 - Nový dokument [`docs/navrh-informacni-architektury.md`](../navrh-informacni-architektury.md):

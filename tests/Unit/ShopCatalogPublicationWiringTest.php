@@ -24,8 +24,10 @@ final class ShopCatalogPublicationWiringTest extends TestCase
 
     public function testAdminNavigationLinksToPublicationDecisions(): void
     {
+        // index.php's card-wall was retired 2026-08-08 in favor of the hlavicka.php
+        // navbar as the single admin navigation source (see docs/navrh-informacni-architektury.md).
         $root = dirname(__DIR__, 2);
-        foreach (['hlavicka.php', 'index.php', 'eshop_admin.php'] as $filename) {
+        foreach (['hlavicka.php', 'eshop_admin.php'] as $filename) {
             self::assertStringContainsString(
                 'eshop_catalog_publication_admin.php',
                 (string)file_get_contents($root . '/' . $filename),
