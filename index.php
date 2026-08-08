@@ -691,6 +691,12 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a href="kis_transition_admin.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-arrow-left-right text-primary"></i>Přechod do závodního týmu
                 <span class="role-badge role-admin">admin</span></a>
+              <a href="kis_rollover_a06_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-arrow-clockwise text-primary"></i>Roční obnova soupisek (A06)
+                <span class="role-badge role-admin">admin</span></a>
+              <a href="member_charges_admin.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-cash-stack text-warning"></i>Členské předpisy
+                <span class="role-badge role-admin">admin</span></a>
               <a href="person_audit_admin.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-clock-history text-primary"></i>Auditní osa osoby
                 <span class="role-badge role-admin">admin</span></a>
@@ -723,6 +729,11 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a href="udalosti/seznam.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-calendar-event text-secondary"></i>Události
                 <?= roleBadge('udalosti') ?></a>
+              <?php if (canAccess('auditlog')): ?>
+              <a href="auditlog/seznam.php" class="list-group-item list-group-item-action">
+                <i class="bi bi-journal-text text-secondary"></i>Audit log
+                <span class="role-badge role-admin">admin</span></a>
+              <?php endif; ?>
             </div>
           </div>
           <?php endif; ?>

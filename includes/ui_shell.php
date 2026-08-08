@@ -56,11 +56,16 @@ function publicShellNav(string $active = ''): void
           <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
             <?php if ($customer): ?>
               <a class="btn btn-outline-primary btn-sm" href="sportovni_prehled.php"><i class="bi bi-person-heart me-1"></i>Můj přehled</a>
-              <a class="btn btn-outline-secondary btn-sm" href="verejny_profil.php">Profil</a>
-              <a class="btn btn-outline-secondary btn-sm" href="moje_osoby.php">Moje osoby</a>
-              <a class="btn btn-outline-secondary btn-sm" href="moje_programy.php">Moje kroužky</a>
-              <a class="btn btn-outline-secondary btn-sm" href="moje_rezervace.php">Rezervace</a>
-              <a class="btn btn-outline-secondary btn-sm" href="moje_objednavky.php">Objednávky</a>
+              <details class="acct-menu position-relative d-inline-block">
+                <summary class="btn btn-outline-secondary btn-sm"><i class="bi bi-person-circle me-1"></i>Můj účet</summary>
+                <ul>
+                  <li><a class="dropdown-item" href="verejny_profil.php">Profil</a></li>
+                  <li><a class="dropdown-item" href="moje_osoby.php">Moje osoby</a></li>
+                  <li><a class="dropdown-item" href="moje_programy.php">Moje kroužky</a></li>
+                  <li><a class="dropdown-item" href="moje_rezervace.php">Rezervace</a></li>
+                  <li><a class="dropdown-item" href="moje_objednavky.php">Objednávky</a></li>
+                </ul>
+              </details>
             <?php endif; ?>
             <?php if ($athlete): ?>
               <a class="btn btn-outline-primary btn-sm" href="muj_sport.php"><i class="bi bi-activity me-1"></i>Můj sport</a>

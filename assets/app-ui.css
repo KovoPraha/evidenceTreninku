@@ -103,6 +103,28 @@ body.app-loading .app-loading-bar {
     background: rgba(33, 37, 41, .8);
 }
 
+/* ── Veřejný účtový výběr (booking/) — <details>, bez závislosti na JS ──── */
+.acct-menu { list-style: none; }
+.acct-menu > summary {
+    cursor: pointer;
+    list-style: none;
+}
+.acct-menu > summary::-webkit-details-marker { display: none; }
+.acct-menu > ul {
+    position: absolute;
+    right: 0;
+    z-index: 1000;
+    margin-top: .25rem;
+    min-width: 10rem;
+    padding: .5rem 0;
+    list-style: none;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--app-surface-radius);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
 @keyframes app-spin { to { transform: rotate(360deg); } }
 
 @media (prefers-reduced-motion: reduce) {
