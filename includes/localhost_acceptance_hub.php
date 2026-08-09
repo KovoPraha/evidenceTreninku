@@ -311,3 +311,340 @@ function localhostAcceptanceScenarios(string $root): array
 
     return $definitions;
 }
+/**
+ * Sada B: kompletní funkční akceptace celého systému nad rámec integračních
+ * scénářů A01–A10. Výsledky se ukládají stejným mechanismem; sada B nevstupuje
+ * do závěrečné brány M2 (ta zůstává vyhrazena A01–A10).
+ *
+ * @return list<array<string,mixed>>
+ */
+function localhostAcceptanceScenariosB(string $root): array
+{
+    $definitions = [
+        [
+            'id' => 'B01', 'role' => 'Trenér', 'area' => 'Tréninky', 'declared_status' => 'ready',
+            'steps' => ['Založte nový trénink s kategorií, délkou a docházkou.', 'Přidejte měření kolo/běh s výslovnou jednotkou (km i m) a striktním časem MM:SS.', 'Přidejte posilovací měření s číselným RPE.', 'Zkuste uložit neplatný čas („cca 2 min“) a RPE mimo 1–10.'],
+            'expected' => 'Platný zápis se uloží s jednotkou viditelnou v přehledu; neplatný čas/RPE je odmítnut před uložením.',
+            'note' => 'Ověřuje sports-measurement-v1 kontrakt v ostrém zadávání.',
+            'links' => [
+                ['label' => 'Nový trénink', 'path' => 'formular.php', 'scope' => 'trainer'],
+                ['label' => 'Moje tréninky', 'path' => 'moje_treninky.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B02', 'role' => 'Trenér', 'area' => 'Tréninky', 'declared_status' => 'ready',
+            'steps' => ['Otevřete existující trénink v editaci.', 'Změňte náplň, docházku a upravte jedno měření.', 'Uložte a zkontrolujte, že se změny propsaly a žádné měření se neztratilo.'],
+            'expected' => 'Editace zachová všechna měření i vazby; upravené hodnoty jsou vidět v detailu.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Správa tréninků', 'path' => 'sprava_vsech_treninku.php', 'scope' => 'trainer'],
+                ['label' => 'Editace tréninku', 'path' => 'edit_trenink.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B03', 'role' => 'Trenér', 'area' => 'Tréninky', 'declared_status' => 'ready',
+            'steps' => ['Projděte výkaz činností za aktuální měsíc.', 'Stáhněte měsíční XLSX a CSV export.', 'Zkontrolujte přehled trenéra a kalendář skupiny.'],
+            'expected' => 'Součty ve výkazu odpovídají zadaným tréninkům; exporty se stáhnou a jdou otevřít.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Výkaz činností', 'path' => 'vypis_vykazu.php', 'scope' => 'trainer'],
+                ['label' => 'Export XLSX', 'path' => 'export_xls.php', 'scope' => 'trainer'],
+                ['label' => 'Export CSV', 'path' => 'export_csv.php', 'scope' => 'trainer'],
+                ['label' => 'Přehled trenéra', 'path' => 'prehled_trenera.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B04', 'role' => 'Trenér', 'area' => 'Závody', 'declared_status' => 'ready',
+            'steps' => ['Založte závod s kategorií a URL výsledků.', 'Přidejte klubového i externího závodníka s pořadím a časem.', 'Přidejte měření k závodu.', 'Otevřete detail a poté závod editujte.'],
+            'expected' => 'Detail ukazuje interní i externí výsledky, měření a soubory; editace nezničí historii.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Nový závod', 'path' => 'formular_zavod.php', 'scope' => 'trainer'],
+                ['label' => 'Detail závodu', 'path' => 'zavod_detail.php', 'scope' => 'trainer'],
+                ['label' => 'Editace závodu', 'path' => 'edit_zavod_form.php', 'scope' => 'trainer'],
+                ['label' => 'Přehled závodů', 'path' => 'prehled_zavodu.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B05', 'role' => 'Trenér', 'area' => 'Plánování a rezervace', 'declared_status' => 'ready',
+            'steps' => ['Vytvořte plánovaný trénink s více podskupinami a opakováním.', 'V plánovači přesuňte plán drag&drop a přejmenujte ho dvojklikem.', 'Zkopírujte týden a poté sérii zrušte.'],
+            'expected' => 'Plány se chovají podle filtru Moje/Vše, kopie týdne nekopíruje rezervace a série jde zrušit celá.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Nový plán', 'path' => 'planovany_trenink_form.php', 'scope' => 'trainer'],
+                ['label' => 'Plánovač', 'path' => 'planovac.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B06', 'role' => 'Trenér', 'area' => 'Plánování a rezervace', 'declared_status' => 'ready',
+            'steps' => ['Vytvořte interní rezervaci sportoviště se sidebarem denního rozvrhu.', 'Vypište individuální lekci (zelenou i žlutou) s kapacitou.', 'Ve správě lekcí jednu potvrďte a jednu zamítněte.'],
+            'expected' => 'Kalendář sportovišť ukazuje kapacitu X/5, lekce mají správné stavy a zamítnutí nabídne slot čekací listině.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Kalendář sportovišť', 'path' => 'kalendar_sportovist.php', 'scope' => 'trainer'],
+                ['label' => 'Nová rezervace', 'path' => 'rezervovat_sportoviste.php', 'scope' => 'trainer'],
+                ['label' => 'Nová lekce', 'path' => 'individualni_lekce_form.php', 'scope' => 'trainer'],
+                ['label' => 'Správa lekcí', 'path' => 'individualni_lekce_sprava.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B07', 'role' => 'Zákazník', 'area' => 'Plánování a rezervace', 'declared_status' => 'ready',
+            'steps' => ['Ve veřejném kalendáři rezervujte volný slot zelené lekce.', 'U plné lekce se zapište na čekací listinu.', 'Stornujte aktivní rezervaci a sledujte posun z listiny.'],
+            'expected' => 'Zelená lekce je potvrzená ihned, čekací listina ukazuje pořadí a po stornu se první čekající posune.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Veřejný kalendář', 'path' => 'booking/kalendar.php', 'scope' => 'customer'],
+                ['label' => 'Moje rezervace', 'path' => 'booking/moje_rezervace.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B08', 'role' => 'Administrátor', 'area' => 'E-shop', 'declared_status' => 'ready',
+            'steps' => ['Naimportujte Shoptet export (dry-run → staging).', 'V administraci vyřiďte ruční kontroly a potvrďte převod běhu.', 'V Aktivaci katalogu zveřejněte vybrané produkty.'],
+            'expected' => 'Produkty projdou stavem kandidát → draft → aktivní a objeví se ve veřejném katalogu.',
+            'note' => 'Na produkci se import spouští nástrojem kis-shoptet-import.ps1.',
+            'links' => [
+                ['label' => 'Kontrola importu', 'path' => 'eshop_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Aktivace katalogu', 'path' => 'eshop_catalog_publication_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Veřejný katalog', 'path' => 'booking/eshop.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B09', 'role' => 'Zákazník + administrátor', 'area' => 'E-shop', 'declared_status' => 'ready',
+            'steps' => ['Vložte zboží do košíku a dokončete objednávku.', 'Zkontrolujte QR/SPD platební předpis a stav skladu.', 'Jako administrátor ručně potvrďte platbu.', 'Přepněte objednávku na připraveno a osobně vydáno.'],
+            'expected' => 'Sklad se sníží při objednávce, platba změní stav právě jednou a výdej uzavře objednávku.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Katalog a košík', 'path' => 'booking/eshop.php', 'scope' => 'customer'],
+                ['label' => 'Objednávka', 'path' => 'booking/objednavka.php', 'scope' => 'customer'],
+                ['label' => 'Objednávky K4', 'path' => 'eshop_orders_admin.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B10', 'role' => 'Zákazník + administrátor', 'area' => 'E-shop', 'declared_status' => 'ready',
+            'steps' => ['Stornujte nezaplacenou objednávku a ověřte vrácení skladu.', 'U zaplacené objednávky proveďte storno se stavem refund_required.', 'Potvrďte bankovní vratku s referencí.'],
+            'expected' => 'Sklad se vrátí právě jednou, vratka jde potvrdit jen jednou a zákazník vidí stav refunded.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Moje objednávky', 'path' => 'booking/moje_objednavky.php', 'scope' => 'customer'],
+                ['label' => 'Objednávky K4', 'path' => 'eshop_orders_admin.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B11', 'role' => 'Zákazník + administrátor', 'area' => 'E-shop', 'declared_status' => 'ready',
+            'steps' => ['Založte kupón s omezením jen na zboží a minimem košíku.', 'Zkuste ho uplatnit na samotný kroužek (má selhat).', 'Uplatněte ho na zboží a zkontrolujte snapshot slevy v objednávce.'],
+            'expected' => 'Rozsah kupónu se vynucuje na serveru; sleva se počítá ze způsobilého mezisoučtu.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Správa kupónů', 'path' => 'eshop_coupons_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Katalog a košík', 'path' => 'booking/eshop.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B12', 'role' => 'Rodič', 'area' => 'E-shop', 'declared_status' => 'ready',
+            'steps' => ['Jako nepřihlášený ověřte veřejnou cenu produktu.', 'Přihlaste se rodičem se členem na soupisce s klubovou cenou.', 'Zkontrolujte zvýhodněnou cenu v katalogu, košíku i objednávce.'],
+            'expected' => 'Klubová cena se odvozuje ze soupisek rodiny a checkout ukládá neměnný snapshot.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Klubové ceny', 'path' => 'eshop_member_prices_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Veřejný katalog', 'path' => 'booking/eshop.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B13', 'role' => 'Zákazník', 'area' => 'E-shop', 'declared_status' => 'ready',
+            'steps' => ['Otevřete detail produktu s více variantami.', 'Přepněte varianty a zkontrolujte cenu, sklad a obrázky.', 'Vložte konkrétní variantu do košíku.'],
+            'expected' => 'Detail ukazuje jen aktivní publikované varianty, obrázky se načítají přes HTTPS a bez referreru.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Detail produktu', 'path' => 'booking/produkt.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B14', 'role' => 'Rodič', 'area' => 'Kroužky a programy', 'declared_status' => 'ready',
+            'steps' => ['Přihlaste schválené dítě na bezplatný kroužek.', 'Zkuste totéž dítě přihlásit podruhé (má selhat).', 'Přihlášku stornujte a ověřte uvolnění kapacity.'],
+            'expected' => 'Kapacita se drží transakčně, duplicitní aktivní přihláška nevznikne a storno kapacitu vrátí.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Kroužky a události', 'path' => 'booking/krouzky.php', 'scope' => 'customer'],
+                ['label' => 'Moje kroužky', 'path' => 'booking/moje_programy.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B15', 'role' => 'Rodič + administrátor', 'area' => 'Kroužky a programy', 'declared_status' => 'ready',
+            'steps' => ['Kupte placený program pro dítě přes košík.', 'Jako administrátor potvrďte platbu a ověřte automatickou aktivaci účasti.', 'Proveďte storno s vratkou a ověřte deaktivaci.'],
+            'expected' => 'Účast v programu se aktivuje po úhradě právě jednou a storno/refund ji auditovaně ukončí.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Správa programů', 'path' => 'club_programs_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Moje kroužky', 'path' => 'booking/moje_programy.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B16', 'role' => 'Administrátor', 'area' => 'Kroužky a programy', 'declared_status' => 'ready',
+            'steps' => ['Vytvořte placenou událost cílenou na více soupisek s kapacitou.', 'Ověřte, že se nabízí jen oprávněným dětem.', 'Stáhněte CSV export účastníků.'],
+            'expected' => 'Cílení na soupisky funguje, kapacita drží i pro košík s více dětmi a export má auditovaný kontrakt v1.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Klubové akce a soupisky', 'path' => 'eshop_events_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Export účastníků', 'path' => 'club_event_participants_export.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B17', 'role' => 'Veřejnost + administrátor', 'area' => 'Kroužky a programy', 'declared_status' => 'ready',
+            'steps' => ['Zkontrolujte veřejné hodiny velodromu a proveďte bezplatnou rezervaci.', 'Projděte placenou rezervaci přes objednávku a QR.', 'Ve správě velodromu upravte kapacitu hodiny.'],
+            'expected' => 'Kapacita se drží od objednávky, platba potvrdí rezervaci a správa hodin je auditovaná.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Velodrom', 'path' => 'booking/velodrom.php', 'scope' => 'customer'],
+                ['label' => 'Správa velodromu', 'path' => 'verejny_velodrom_admin.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B18', 'role' => 'Veřejnost', 'area' => 'Rodina a účty', 'declared_status' => 'ready',
+            'steps' => ['Zaregistrujte nový zákaznický účet a ověřte e-mail.', 'Požádejte o propojení s existujícím sportovcem.', 'Jako administrátor žádost schvalte a ověřte, že se osoba objevila v Moje osoby.'],
+            'expected' => 'Registrace nevyzrazuje existující účty, claim nevyzrazuje osoby a schválení je atomické.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Registrace', 'path' => 'booking/registrace.php', 'scope' => 'customer'],
+                ['label' => 'Moje osoby', 'path' => 'booking/moje_osoby.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B19', 'role' => 'Zákazník + dítě', 'area' => 'Rodina a účty', 'declared_status' => 'ready',
+            'steps' => ['Vyžádejte obnovu hesla rodičovského účtu a dokončete ji.', 'Vyžádejte obnovu hesla sportovního účtu dítěte.', 'Ověřte, že staré přihlášené relace byly odhlášeny.'],
+            'expected' => 'Token platí jednou a 60 minut, sportovcův odkaz dostane jen ověřený rodič/self a session se zneplatní.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Zapomenuté heslo', 'path' => 'booking/zapomenute_heslo.php', 'scope' => 'customer'],
+                ['label' => 'Nové heslo', 'path' => 'booking/nove_heslo.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B20', 'role' => 'Rodič', 'area' => 'Rodina a účty', 'declared_status' => 'ready',
+            'steps' => ['Vytvořte soukromý rodinný ICS odkaz a přidejte ho do kalendáře.', 'Odkaz zrotujte a ověřte, že starý přestal platit.', 'Zkontrolujte 30denní rodinný program v přehledu.'],
+            'expected' => 'ICS obsahuje jen oprávněné položky rodiny, rotace zneplatní starý odkaz a program ukazuje správné děti.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Rodinný kalendář', 'path' => 'booking/rodinny_kalendar.php', 'scope' => 'customer'],
+                ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B21', 'role' => 'Rodič', 'area' => 'Rodina a účty', 'declared_status' => 'ready',
+            'steps' => ['Zapněte týdenní souhrn, prohlédněte náhled a zase ho vypněte.', 'Projděte roční přehled skutečně uhrazených plateb.', 'Ověřte, že čekající a stornované platby v přehledu nejsou.'],
+            'expected' => 'Opt-in/opt-out funguje jedním krokem a roční přehled odděluje zdroje i měny bez součtů dohromady.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B22', 'role' => 'Veřejnost', 'area' => 'Rodina a účty', 'declared_status' => 'ready',
+            'steps' => ['Otevřete veřejný rozvrh tréninků a veřejný kalendář.', 'Stáhněte veřejný ICS feed a přidejte ho do kalendáře.'],
+            'expected' => 'Veřejné výstupy neobsahují osoby, docházku ani interní poznámky.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Veřejné tréninky', 'path' => 'booking/treninky.php', 'scope' => 'customer'],
+                ['label' => 'Veřejný kalendář', 'path' => 'booking/verejny_kalendar.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B23', 'role' => 'Administrátor', 'area' => 'KIS a členství', 'declared_status' => 'ready',
+            'steps' => ['Projděte 4krokový průvodce synchronizace: nahrání tří XLSX, mapování soupisek, náhled, provedení.', 'Zkontrolujte, že osoby mimo import nebyly archivovány.'],
+            'expected' => 'Preview ukazuje nové/aktualizované/beze změny a provedení běží v transakci s mapovanými vazbami.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Synchronizace evidence', 'path' => 'sync_evidence.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B24', 'role' => 'Administrátor', 'area' => 'KIS a členství', 'declared_status' => 'ready',
+            'steps' => ['V KIS centru zkontrolujte uložený preview běh a jeho fingerprint.', 'Proveďte sandbox promote a poté rollback.', 'Ověřte, že kanonická data se nezměnila.'],
+            'expected' => 'Promote je transakční a idempotentní, rollback funguje i při driftu a vše je auditované.',
+            'note' => '',
+            'links' => [
+                ['label' => 'KIS centrum', 'path' => 'kis_sync_center.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B25', 'role' => 'Administrátor + rodič', 'area' => 'KIS a členství', 'declared_status' => 'ready',
+            'steps' => ['Zkontrolujte členské předpisy v administraci.', 'Ověřte tentýž předpis v pohledu rodiče a omezeného sportovce.', 'Zkontrolujte auditní historii předpisu.'],
+            'expected' => 'Předpisy jsou read-only pro rodiče/sportovce podle vazeb a administrace nemá skrytou mutaci.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Členské předpisy', 'path' => 'member_charges_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B26', 'role' => 'Administrátor', 'area' => 'KIS a členství', 'declared_status' => 'ready',
+            'steps' => ['Projděte správu soupisek: přidání a historické odebrání člena.', 'Zkontrolujte kartu sportovce s auditní historií.', 'Použijte hromadné akce s preview.'],
+            'expected' => 'Odebrání nemaže historii, karta ukazuje časovou osu a hromadné akce běží v transakci.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Soupisky', 'path' => 'kis_rosters_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Karta sportovce', 'path' => 'sportovec_karta.php', 'scope' => 'trainer'],
+                ['label' => 'Hromadné akce', 'path' => 'sportovci_hromadne.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B27', 'role' => 'Administrátor + rodič', 'area' => 'KIS a členství', 'declared_status' => 'ready',
+            'steps' => ['Jako rodič zapněte připomínky splatnosti (3/7/14 dní).', 'V administraci zkontrolujte frontu a náhled přesného textu.', 'Na localhostu proveďte testovací doručení do souborového outboxu.'],
+            'expected' => 'Fronta respektuje opt-out a stav předpisu, náhled je no-store a testovací transport nikdy neposílá skutečný e-mail.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Připomínky plateb', 'path' => 'member_charge_reminders_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
+            ],
+        ],
+        [
+            'id' => 'B28', 'role' => 'Administrátor', 'area' => 'Administrace a bezpečnost', 'declared_status' => 'ready',
+            'steps' => ['Založte testovacího trenéra a přihlaste ho ve druhém okně.', 'Odeberte mu oprávnění a ověřte okamžitou ztrátu přístupu bez nového přihlášení.', 'Vraťte nastavení zpět.'],
+            'expected' => 'Oprávnění se vyhodnocují při každém požadavku; revokace platí okamžitě a fail-closed.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Správa trenérů', 'path' => 'sprava_treneru.php', 'scope' => 'trainer'],
+                ['label' => 'Nastavení oprávnění', 'path' => 'nastaveni_opravneni.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B29', 'role' => 'Administrátor', 'area' => 'Administrace a bezpečnost', 'declared_status' => 'ready',
+            'steps' => ['Projděte provozní přehled a admin dashboard.', 'Zkontrolujte kvalitu sportovních dat a přípravu importu.', 'Otevřete audit log a vyfiltrujte akce jednoho trenéra.'],
+            'expected' => 'Read-only přehledy odkazují do auditovaných obrazovek a audit log ukazuje skutečné akce se správnými sloupci.',
+            'note' => '',
+            'links' => [
+                ['label' => 'Provozní přehled', 'path' => 'provozni_prehled_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Admin dashboard', 'path' => 'admin_dashboard.php', 'scope' => 'trainer'],
+                ['label' => 'Kvalita sportovních dat', 'path' => 'sports_data_quality_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Příprava importu', 'path' => 'sports_import_review_admin.php', 'scope' => 'trainer'],
+                ['label' => 'Audit log', 'path' => 'auditlog/seznam.php', 'scope' => 'trainer'],
+            ],
+        ],
+        [
+            'id' => 'B30', 'role' => 'Všechny role', 'area' => 'Administrace a bezpečnost', 'declared_status' => 'ready',
+            'steps' => ['Jako běžný trenér ověřte, že nevidíte menu Klub/Administrace, ale vidíte své nástroje.', 'Jako admin projděte obě nová menu a odkaz Veřejný portál.', 'Jako zákazník otevřete menu Můj účet na stránce bez Bootstrap JS.', 'Vyzkoušejte tmavý režim a klávesové zkratky.'],
+            'expected' => 'Navigace odpovídá roli, žádná stránka neztratila vstup a menu fungují i bez JavaScriptu.',
+            'note' => 'Akceptace informační architektury po přestavbě navigace.',
+            'links' => [
+                ['label' => 'Nástěnka', 'path' => 'index.php', 'scope' => 'trainer'],
+                ['label' => 'Veřejný portál', 'path' => 'booking/eshop.php', 'scope' => 'customer'],
+            ],
+        ],
+    ];
+
+    foreach ($definitions as &$scenario) {
+        $missing = [];
+        foreach ($scenario['links'] as $link) {
+            if (!is_file($root . '/' . $link['path'])) {
+                $missing[] = $link['label'];
+            }
+        }
+        $scenario['status'] = $missing === [] ? $scenario['declared_status'] : 'unavailable';
+        if ($missing !== []) {
+            $scenario['note'] .= ' Chybí cesta: ' . implode(', ', $missing) . '.';
+        }
+        unset($scenario['declared_status']);
+    }
+    unset($scenario);
+
+    return $definitions;
+}

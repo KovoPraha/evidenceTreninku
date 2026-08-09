@@ -19,8 +19,11 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/localhost_acceptance_feedback.php';
 require_once __DIR__ . '/includes/m2_finalization.php';
 
-$scenarios = localhostAcceptanceScenarios(__DIR__);
+$scenariosA = localhostAcceptanceScenarios(__DIR__);
+$scenariosB = localhostAcceptanceScenariosB(__DIR__);
+$scenarios = array_merge($scenariosA, $scenariosB);
 $scenarioIds = array_column($scenarios, 'id');
+$firstBScenarioId = $scenariosB === [] ? null : (string)$scenariosB[0]['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['export'] ?? '') === 'markdown') {
     try {
@@ -97,7 +100,9 @@ foreach ($scenarios as $scenario) {
     $feedbackResult = (string)($feedbackData['scenarios'][$scenario['id']]['result'] ?? 'not_tested');
     $feedbackCounts[isset($feedbackCounts[$feedbackResult]) ? $feedbackResult : 'not_tested']++;
 }
-$finalization = m2FinalizationStatus($pdo, __DIR__, $scenarios, $feedbackData['scenarios']);
+// Závěrečná brána M2 zůstává vázaná výhradně na vlastnickou sadu A01–A10;
+// rozšířená sada B je průběžná regresní prohlídka a bránu neovlivňuje.
+$finalization = m2FinalizationStatus($pdo, __DIR__, $scenariosA, $feedbackData['scenarios']);
 $statusLabels = [
     'ready' => ['Připraveno', 'success'],
     'partial' => ['Částečně připraveno', 'warning'],
@@ -160,6 +165,14 @@ $statusLabels = [
 
     <div class="row g-3">
         <?php foreach ($scenarios as $scenario): $status = $statusLabels[$scenario['status']]; ?>
+            <?php if ($firstBScenarioId !== null && $scenario['id'] === $firstBScenarioId): ?>
+            <div class="col-12">
+                <div class="border-top pt-4 mt-2">
+                    <h2 class="h4 mb-1">Rozšířená sada B — kompletní funkční prohlídka</h2>
+                    <p class="text-muted mb-0">Scénáře B01–B<?= str_pad((string)count($scenariosB), 2, '0', STR_PAD_LEFT) ?> pokrývají vše, co systém umí: tréninky, závody, plánování, e-shop, kroužky, rodinné účty, KIS i administraci. Výsledky se ukládají stejně jako u sady A, ale závěrečnou bránu M2 neblokují.</p>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="col-12">
                 <article class="card shadow-sm border-0" id="<?= acceptanceHubH($scenario['id']) ?>">
                     <div class="card-body">
