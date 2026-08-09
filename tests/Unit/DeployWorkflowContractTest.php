@@ -47,6 +47,17 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("rm -f '\$RELEASE_DIR/run-migrate-apply.php'", $workflow);
         self::assertStringContainsString("putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');", $workflow);
         self::assertStringContainsString("php '\$DEPLOY_BASE/run-backup.php'", $workflow);
+
+        // Hosting může blokovat IP rozsahy GitHub runnerů; smoke test má proto
+        // SSH fallback přes nahraný bin/deploy-smoke.php se stejným putenv
+        // bootstrapem. Skutečná HTTP chyba z přímého testu fallback nespouští.
+        $smokeScript = $this->source('bin/deploy-smoke.php');
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $smokeScript);
+        self::assertStringContainsString('DEPLOY_PROBE', $smokeScript);
+        self::assertStringContainsString('SMOKE_URL', $smokeScript);
+        self::assertStringContainsString("putenv('SMOKE_URL=\$WEB_URL/index.php');", $workflow);
+        self::assertStringContainsString("php '\$DEPLOY_BASE/run-smoke.php'", $workflow);
+        self::assertStringContainsString('--retry-all-errors', $workflow);
         self::assertStringNotContainsString('php bin/migrate.php --', $workflow);
         self::assertStringContainsString('MIGRATE_ACTION', $this->source('bin/migrate.php'));
         self::assertStringContainsString('BACKUP_TARGET_DIR', $this->source('bin/db-backup.php'));
