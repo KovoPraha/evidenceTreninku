@@ -106,3 +106,17 @@ define('FIO_IMPORT_ENABLED', is_string($fioImportEnabled) && $fioImportEnabled =
 if (is_string($fioImportLookbackDays) && preg_match('/^(?:[1-9]|[12][0-9]|30)$/D', $fioImportLookbackDays) === 1) {
     define('FIO_IMPORT_LOOKBACK_DAYS', (int)$fioImportLookbackDays);
 }
+
+// ── Stripe Checkout (výchozí stav: vypnuto) ────────────────────────────────
+// Klíče patří pouze do prostředí nebo do ignorovaného config.php. Na omezeném
+// produkčním hostingu je při deployi nastaví putenv bootstrap ve stejném PHP
+// procesu; nikdy je nevkládejte do repozitáře ani do GitHub Variables.
+$stripeEnabled = getenv('STRIPE_ENABLED');
+$stripeSecretKey = getenv('STRIPE_SECRET_KEY');
+$stripePublishableKey = getenv('STRIPE_PUBLISHABLE_KEY');
+$stripeWebhookSecret = getenv('STRIPE_WEBHOOK_SECRET');
+
+defined('STRIPE_ENABLED') || define('STRIPE_ENABLED', is_string($stripeEnabled) && $stripeEnabled === '1');
+if (!defined('STRIPE_SECRET_KEY') && is_string($stripeSecretKey) && $stripeSecretKey !== '') define('STRIPE_SECRET_KEY', $stripeSecretKey);
+if (!defined('STRIPE_PUBLISHABLE_KEY') && is_string($stripePublishableKey) && $stripePublishableKey !== '') define('STRIPE_PUBLISHABLE_KEY', $stripePublishableKey);
+if (!defined('STRIPE_WEBHOOK_SECRET') && is_string($stripeWebhookSecret) && $stripeWebhookSecret !== '') define('STRIPE_WEBHOOK_SECRET', $stripeWebhookSecret);

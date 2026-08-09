@@ -130,10 +130,11 @@ function clubEventShopCreateOrderItemsInTransaction(PDO $pdo,int $orderId,int $a
 }
 
 /** @return array{items:int,activated:int} */
-function clubEventShopActivatePaidOrderInTransaction(PDO $pdo,int $orderId,int $actorTrainerId):array
+function clubEventShopActivatePaidOrderInTransaction(PDO $pdo,int $orderId,?int $actorId,string $actorType='trainer'):array
 {
+    if(!in_array($actorType,['trainer','system'],true)||($actorType==='trainer'&&($actorId??0)<1)||($actorType==='system'&&$actorId!==null))throw new InvalidArgumentException('Neplatná auditní identita platby události.');
     $items=clubEventShopOrderRows($pdo,$orderId);$activated=0;
-    foreach($items as $i){clubEventLock($pdo,(int)$i['event_id']);$r=clubEventShopLockRegistration($pdo,(int)$i['registration_id']);if($r['status']==='confirmed')continue;if($r['status']!=='payment_pending')throw new ClubEventShopException('Přihláška objednávky není ve stavu pro přijetí platby.');$pdo->prepare("UPDATE club_event_registrations SET status='confirmed',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([(int)$r['id']]);clubEventRegistrationAudit($pdo,(int)$r['id'],'trainer',$actorTrainerId,'shop_payment_paid','payment_pending','confirmed','Platba potvrzena na objednávce #'.$orderId.'.');$activated++;}
+    foreach($items as $i){clubEventLock($pdo,(int)$i['event_id']);$r=clubEventShopLockRegistration($pdo,(int)$i['registration_id']);if($r['status']==='confirmed')continue;if($r['status']!=='payment_pending')throw new ClubEventShopException('Přihláška objednávky není ve stavu pro přijetí platby.');$pdo->prepare("UPDATE club_event_registrations SET status='confirmed',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([(int)$r['id']]);clubEventRegistrationAudit($pdo,(int)$r['id'],$actorType,$actorId,'shop_payment_paid','payment_pending','confirmed','Platba potvrzena na objednávce #'.$orderId.'.');$activated++;}
     return ['items'=>count($items),'activated'=>$activated];
 }
 

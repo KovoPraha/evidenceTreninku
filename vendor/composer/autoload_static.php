@@ -12,6 +12,7 @@ class ComposerStaticInit22cc412b56ccbda580782c07e4ed485e
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '5897ea0ac4cccf14d323035e65887801' => __DIR__ . '/..' . '/symfony/polyfill-php82/bootstrap.php',
+        'd92f49fe138fde4e7a3ec6f988960524' => __DIR__ . '/..' . '/stripe/stripe-php/lib/version_check.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -23,6 +24,7 @@ class ComposerStaticInit22cc412b56ccbda580782c07e4ed485e
         array (
             'Symfony\\Polyfill\\Php82\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
+            'Stripe\\' => 7,
             'SpomkyLabs\\Pki\\' => 15,
         ),
         'P' => 
@@ -81,6 +83,10 @@ class ComposerStaticInit22cc412b56ccbda580782c07e4ed485e
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
+        'Stripe\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
         ),
         'SpomkyLabs\\Pki\\' => 
         array (

@@ -8,7 +8,8 @@
         "ext-simplexml": "*",
         "phpoffice/phpspreadsheet": "^5.3",
         "minishlink/web-push": "^9.0",
-        "endroid/qr-code": "^6.0"
+        "endroid/qr-code": "^6.0",
+        "stripe/stripe-php": "^21.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5"

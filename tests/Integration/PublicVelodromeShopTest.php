@@ -199,6 +199,7 @@ final class PublicVelodromeShopTest extends TestCase
             '20260804180000_public_velodrome.php',
             '20260804200000_public_velodrome_shop.php',
             '20260804210000_shop_order_expiration.php',
+            '20260809090000_stripe_checkout.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);

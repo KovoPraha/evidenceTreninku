@@ -75,6 +75,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260805030000_member_charge_reminder_admin',
                 '20260805040000_family_weekly_summaries',
                 '20260805050000_sports_measurement_contract',
+                '20260809090000_stripe_checkout',
             ],
             array_keys($catalog)
         );

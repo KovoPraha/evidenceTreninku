@@ -475,40 +475,64 @@ function shopOrderAdminConfirmBankPayment(PDO $pdo,int $paymentId,int $actorTrai
     $reason=trim($reason);
     if($paymentId<1||$actorTrainerId<1||$reason===''||!$confirmed)throw new InvalidArgumentException('Potvrzení platby vyžaduje platbu, administrátora, důvod a výslovné potvrzení.');
     if(mb_strlen($reason,'UTF-8')>1000)throw new InvalidArgumentException('Důvod smí mít nejvýše 1000 znaků.');
+    return shopOrderConfirmPayment($pdo,$paymentId,'bank_transfer','trainer',$actorTrainerId,$reason);
+}
+
+/** @return array<string,mixed> */
+function shopOrderConfirmPayment(PDO $pdo,int $paymentId,string $source,string $actorType,?int $actorId,string $reason):array
+{
+    shopOrderValidatePaymentActor($paymentId,$source,$actorType,$actorId,$reason);
     $pdo->beginTransaction();
     try{
-        $sql='SELECT * FROM payments WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
-        $statement=$pdo->prepare($sql);$statement->execute([$paymentId]);$payment=$statement->fetch(PDO::FETCH_ASSOC);
-        if(!$payment||$payment['payable_type']!=='shop_order'||$payment['method']!=='bank_transfer')throw new ShopCheckoutException('Bankovní platba objednávky nebyla nalezena.');
-        $orderId=(int)$payment['payable_id'];
-        $orderSql='SELECT * FROM shop_orders WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$orderSql.=' FOR UPDATE';
-        $orderStatement=$pdo->prepare($orderSql);$orderStatement->execute([$orderId]);$order=$orderStatement->fetch(PDO::FETCH_ASSOC);
-        if(!$order)throw new ShopCheckoutException('Objednávka platby nebyla nalezena.');
-        if($payment['status']==='paid'){
-            if($order['payment_status']!=='paid'||!in_array($order['status'],['processing','ready','completed'],true))throw new ShopCheckoutException('Stav potvrzené platby a objednávky není konzistentní.');
-            $programSync=['program_items'=>0,'created'=>0];
-            if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-            try{$eventSync=clubEventShopActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-            try{$velodromeSync=publicVelodromeShopActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-            $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>false]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
-        }
-        if($payment['status']!=='pending'||$order['payment_status']!=='pending'||$order['status']!=='placed')throw new ShopCheckoutException('Platbu nebo objednávku v tomto stavu nelze potvrdit.');
-        $pdo->prepare("UPDATE payments SET status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
-            ->execute([$actorTrainerId,$reason,$paymentId]);
-        $pdo->prepare("UPDATE shop_orders SET payment_status='paid',status='processing',updated_at=CURRENT_TIMESTAMP WHERE id=?")
-            ->execute([$orderId]);
-        $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_bank_payment\',\'placed\',\'processing\',?)')
-            ->execute([$orderId,$actorTrainerId,$reason]);
-        $programSync=['program_items'=>0,'created'=>0];
-        if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-        try{$eventSync=clubEventShopActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-        try{$velodromeSync=publicVelodromeShopActivatePaidOrderInTransaction($pdo,$orderId,$actorTrainerId);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-        $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>true]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
+        $result=shopOrderConfirmPaymentInTransaction($pdo,$paymentId,$source,$actorType,$actorId,$reason);
+        $pdo->commit();return $result;
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         throw new ShopCheckoutException('Potvrzení platby selhalo bez částečného zápisu.',0,$exception);
     }
+}
+
+/** @return array<string,mixed> */
+function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $source,string $actorType,?int $actorId,string $reason):array
+{
+    shopOrderValidatePaymentActor($paymentId,$source,$actorType,$actorId,$reason);
+    if(!$pdo->inTransaction())throw new LogicException('Kanonický přechod platby vyžaduje aktivní transakci.');
+    $sql='SELECT * FROM payments WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
+    $statement=$pdo->prepare($sql);$statement->execute([$paymentId]);$payment=$statement->fetch(PDO::FETCH_ASSOC);
+    if(!$payment||$payment['payable_type']!=='shop_order')throw new ShopCheckoutException('Platba objednávky nebyla nalezena.');
+    if($source==='bank_transfer'&&$payment['method']!=='bank_transfer')throw new ShopCheckoutException('Bankovní platba objednávky nebyla nalezena.');
+    if($source==='stripe'&&empty($payment['stripe_checkout_session_id']))throw new ShopCheckoutException('Stripe relace platby nebyla nalezena.');
+    $orderId=(int)$payment['payable_id'];$order=shopOrderAdminLockOrder($pdo,$orderId);
+    if(!$order)throw new ShopCheckoutException('Objednávka platby nebyla nalezena.');
+    if($payment['status']==='paid'){
+        if($order['payment_status']!=='paid'||!in_array($order['status'],['processing','ready','completed'],true)||(string)($payment['payment_source']??$payment['method'])!==$source)throw new ShopCheckoutException('Stav potvrzené platby a objednávky není konzistentní.');
+        $programSync=['program_items'=>0,'created'=>0];
+        if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        try{$eventSync=clubEventShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        try{$velodromeSync=publicVelodromeShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>false]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
+    }
+    if($payment['status']!=='pending'||$order['payment_status']!=='pending'||$order['status']!=='placed')throw new ShopCheckoutException('Platbu nebo objednávku v tomto stavu nelze potvrdit.');
+    $trainerId=$actorType==='trainer'?$actorId:null;
+    $pdo->prepare("UPDATE payments SET method=?,payment_source=?,status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
+        ->execute([$source,$source,$trainerId,$reason,$paymentId]);
+    $pdo->prepare("UPDATE shop_orders SET payment_status='paid',status='processing',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
+    $action=$source==='stripe'?'confirm_stripe_payment':'confirm_bank_payment';
+    $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,?,?,?,\'placed\',\'processing\',?)')
+        ->execute([$orderId,$actorType,$actorId,$action,$reason]);
+    $programSync=['program_items'=>0,'created'=>0];
+    if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    try{$eventSync=clubEventShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    try{$velodromeSync=publicVelodromeShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>true]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
+}
+
+function shopOrderValidatePaymentActor(int $paymentId,string $source,string $actorType,?int $actorId,string $reason):void
+{
+    $reason=trim($reason);
+    if($paymentId<1||!in_array($source,['bank_transfer','stripe'],true)||!in_array($actorType,['trainer','system'],true)||($actorType==='trainer'&&($actorId??0)<1)||($actorType==='system'&&$actorId!==null)||$reason==='')throw new InvalidArgumentException('Potvrzení platby nemá platný zdroj, auditora nebo důvod.');
+    if(mb_strlen($reason,'UTF-8')>1000)throw new InvalidArgumentException('Důvod smí mít nejvýše 1000 znaků.');
 }
 
 /** @return array{order_id:int,payment_status:string,restocked_items:int,changed:bool} */

@@ -228,8 +228,9 @@ function publicVelodromeShopCreateOrderItemsInTransaction(PDO $pdo, int $orderId
 }
 
 /** @return array{items:int,activated:int} */
-function publicVelodromeShopActivatePaidOrderInTransaction(PDO $pdo, int $orderId, int $actorTrainerId): array
+function publicVelodromeShopActivatePaidOrderInTransaction(PDO $pdo, int $orderId, ?int $actorId, string $actorType='trainer'): array
 {
+    if (!in_array($actorType, ['trainer', 'system'], true) || ($actorType === 'trainer' && ($actorId === null || $actorId < 1)) || ($actorType === 'system' && $actorId !== null)) throw new InvalidArgumentException('Neplatna auditni identita platby velodromu.');
     $items = publicVelodromeShopOrderRows($pdo, $orderId);
     $activated = 0;
     foreach ($items as $item) {
@@ -241,7 +242,7 @@ function publicVelodromeShopActivatePaidOrderInTransaction(PDO $pdo, int $orderI
         }
         $pdo->prepare("UPDATE verejne_rezervace SET stav='potvrzena',zaplaceno=1,cas_potvrzeni=CURRENT_TIMESTAMP WHERE id=?")
             ->execute([(int)$reservation['id']]);
-        publicVelodromeAudit($pdo, (int)$reservation['id'], 'trainer', $actorTrainerId, 'shop_payment_paid', 'ceka', 'potvrzena', 'Platba potvrzena na objednávce #' . $orderId . '.');
+        publicVelodromeAudit($pdo, (int)$reservation['id'], $actorType, $actorId, 'shop_payment_paid', 'ceka', 'potvrzena', 'Platba potvrzena na objednávce #' . $orderId . '.');
         $activated++;
     }
     return ['items' => count($items), 'activated' => $activated];

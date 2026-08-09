@@ -163,10 +163,10 @@ function clubProgramActivateOrderItem(PDO $pdo, int $accountId, int $orderItemId
 }
 
 /** @return array{id:int,created:bool,roster_created:bool} */
-function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int $orderItemId, string $actorType, int $actorId): array
+function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int $orderItemId, string $actorType, ?int $actorId): array
 {
     if (!$pdo->inTransaction()) throw new LogicException('Aktivace programu vyžaduje otevřenou transakci.');
-    if ($accountId < 1 || $orderItemId < 1 || $actorId < 1 || !in_array($actorType,['account','trainer'],true)) throw new InvalidArgumentException('Aktivace programu nemá platného vlastníka nebo auditora.');
+    if ($accountId < 1 || $orderItemId < 1 || !in_array($actorType,['account','trainer','system'],true) || ($actorType==='system'&&$actorId!==null) || ($actorType!=='system'&&($actorId??0)<1)) throw new InvalidArgumentException('Aktivace programu nemá platného vlastníka nebo auditora.');
     $itemSql='SELECT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.line_amount_minor,oi.product_id,oi.variant_id,o.id AS order_id,o.account_id,o.status AS order_status,o.payment_status FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id AND vu.aktivni=1 AND vu.email_overeno=1 WHERE oi.id=? AND o.account_id=?';
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$itemSql.=' FOR UPDATE';
     $itemStatement=$pdo->prepare($itemSql);$itemStatement->execute([$orderItemId,$accountId]);$item=$itemStatement->fetch(PDO::FETCH_ASSOC);
@@ -220,13 +220,13 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
 }
 
 /** @return array{program_items:int,created:int} */
-function clubProgramActivatePaidOrderInTransaction(PDO $pdo, int $orderId, int $actorTrainerId): array
+function clubProgramActivatePaidOrderInTransaction(PDO $pdo, int $orderId, ?int $actorId, string $actorType='trainer'): array
 {
-    if (!$pdo->inTransaction() || $orderId<1 || $actorTrainerId<1) throw new InvalidArgumentException('Synchronizace zaplacené objednávky vyžaduje transakci, objednávku a administrátora.');
+    if (!$pdo->inTransaction() || $orderId<1 || !in_array($actorType,['trainer','system'],true) || ($actorType==='trainer'&&($actorId??0)<1) || ($actorType==='system'&&$actorId!==null)) throw new InvalidArgumentException('Synchronizace zaplacené objednávky vyžaduje transakci, objednávku a platného auditora.');
     $order=$pdo->prepare("SELECT id,account_id,status,payment_status FROM shop_orders WHERE id=? AND payment_status='paid' AND status IN ('processing','ready','completed')");$order->execute([$orderId]);$order=$order->fetch(PDO::FETCH_ASSOC);
     if (!$order) throw new ClubProgramException('Objednávka není ve stavu potvrzené platby.');
     $items=$pdo->prepare('SELECT oi.id FROM shop_order_items oi JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id WHERE oi.order_id=? ORDER BY oi.id');$items->execute([$orderId]);$items=$items->fetchAll(PDO::FETCH_COLUMN);
-    $created=0;foreach($items as $itemId){$result=clubProgramActivateOrderItemInTransaction($pdo,(int)$order['account_id'],(int)$itemId,'trainer',$actorTrainerId);if($result['created'])$created++;}
+    $created=0;foreach($items as $itemId){$result=clubProgramActivateOrderItemInTransaction($pdo,(int)$order['account_id'],(int)$itemId,$actorType,$actorId);if($result['created'])$created++;}
     return ['program_items'=>count($items),'created'=>$created];
 }
 
