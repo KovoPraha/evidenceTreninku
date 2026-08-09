@@ -62,4 +62,15 @@ if (!is_string($pepper) || strlen($pepper) < 32) {
     $fail('AUTH_RATE_LIMIT_PEPPER is missing or too short.');
 }
 
-echo json_encode(['ok' => true, 'php' => PHP_VERSION], JSON_THROW_ON_ERROR) . PHP_EOL;
+$warnings = [];
+$appBaseUrl = defined('APP_BASE_URL') ? trim((string)constant('APP_BASE_URL')) : '';
+$appBaseParts = $appBaseUrl === '' ? false : parse_url($appBaseUrl);
+if (filter_var($appBaseUrl, FILTER_VALIDATE_URL) === false
+    || !is_array($appBaseParts)
+    || strtolower((string)($appBaseParts['scheme'] ?? '')) !== 'https'
+    || trim((string)($appBaseParts['host'] ?? '')) === ''
+) {
+    $warnings[] = 'APP_BASE_URL chybí nebo není platná https:// URL; Stripe zůstane fail-closed vypnutý.';
+}
+
+echo json_encode(['ok' => true, 'php' => PHP_VERSION, 'warnings' => $warnings], JSON_THROW_ON_ERROR) . PHP_EOL;

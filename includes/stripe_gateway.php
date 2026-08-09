@@ -95,7 +95,6 @@ function stripeCreateCheckoutSession(PDO $pdo,int $orderId,int $accountId,Stripe
     $publicCode=rawurlencode((string)$snapshot['public_code']);$base=rtrim((string)$settings['base_url'],'/');
     $parameters=[
         'mode'=>'payment',
-        'payment_method_types'=>['card'],
         'client_reference_id'=>(string)$snapshot['public_code'],
         'success_url'=>$base.'/booking/objednavka.php?code='.$publicCode.'&stripe=success&session_id={CHECKOUT_SESSION_ID}',
         'cancel_url'=>$base.'/booking/objednavka.php?code='.$publicCode.'&stripe=cancelled',
@@ -169,13 +168,18 @@ function stripeHandleWebhook(PDO $pdo,string $payload,string $signature,StripeGa
         $object=$event['data']['object']??null;
         if(!is_array($object))throw new StripeGatewayException('Stripe Checkout Session v eventu chybí.');
         $sessionId=(string)($object['id']??'');$metadata=is_array($object['metadata']??null)?$object['metadata']:[];
-        if(($object['mode']??'payment')!=='payment'||($object['payment_status']??'')!=='paid'||preg_match('/^cs_(?:test_|live_)?[A-Za-z0-9_]+$/D',$sessionId)!==1)throw new StripeGatewayException('Stripe Checkout Session není potvrzená kartová platba.');
+        if(preg_match('/^cs_(?:test_|live_)?[A-Za-z0-9_]+$/D',$sessionId)!==1)throw new StripeGatewayException('Stripe Checkout Session nemá platnou identitu.');
         $paymentSql="SELECT p.*,o.id AS order_id,o.status AS order_status,o.payment_status AS order_payment_status,o.total_minor AS order_total_minor,o.currency AS order_currency FROM payments p JOIN shop_orders o ON o.id=p.payable_id AND p.payable_type='shop_order' WHERE p.stripe_checkout_session_id=?";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
         $statement=$pdo->prepare($paymentSql);$statement->execute([$sessionId]);$payment=$statement->fetch(PDO::FETCH_ASSOC);
         if(!$payment)throw new StripeGatewayException('Stripe Session není navázána na žádnou platbu.');
         if((string)($metadata['shop_order_id']??'')!==(string)$payment['order_id']||(string)($metadata['payment_id']??'')!==(string)$payment['id'])throw new StripeGatewayException('Stripe metadata neodpovídají objednávce.');
         if((int)($object['amount_total']??-1)!==(int)$payment['amount_minor']||(int)$payment['amount_minor']!==(int)$payment['order_total_minor']||strtoupper((string)($object['currency']??''))!==(string)$payment['currency']||(string)$payment['currency']!==(string)$payment['order_currency'])throw new StripeGatewayException('Stripe částka nebo měna neodpovídá serverovému snapshotu.');
+        if(($object['mode']??'payment')!=='payment'||($object['payment_status']??'')!=='paid'){
+            $pdo->prepare("UPDATE stripe_webhook_events SET payment_id=?,processing_status='ignored',processed_at=CURRENT_TIMESTAMP WHERE event_id=?")->execute([(int)$payment['id'],$eventId]);
+            $pdo->commit();error_log('stripe_webhook: ignored incomplete checkout session '.$eventId);
+            return ['status'=>'ignored','event_id'=>$eventId,'event_type'=>$eventType,'duplicate'=>false,'changed'=>false];
+        }
         $paymentIntent=is_string($object['payment_intent']??null)?trim((string)$object['payment_intent']):'';
         if($paymentIntent!=='')$pdo->prepare('UPDATE payments SET stripe_payment_intent_id=? WHERE id=?')->execute([$paymentIntent,(int)$payment['id']]);
         $transition=shopOrderConfirmPaymentInTransaction($pdo,(int)$payment['id'],'stripe','system',null,'Stripe webhook '.$eventId.' potvrdil zaplacenou Checkout Session '.$sessionId.'.');

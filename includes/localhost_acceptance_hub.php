@@ -50,6 +50,72 @@ function localhostAcceptanceRequestIsAllowed(array $server, mixed $configuredHos
     return true;
 }
 
+function localhostAcceptanceTestCustomerEmail(): string
+{
+    return 'rodic@localhost.test';
+}
+
+/**
+ * @param array<string,mixed> $server
+ * @return array{id:int,email:string,created:bool}
+ */
+function localhostAcceptanceResetTestCustomer(
+    PDO $pdo,
+    string $password,
+    array $server,
+    mixed $configuredHost
+): array {
+    if (!localhostAcceptanceRequestIsAllowed($server, $configuredHost)) {
+        throw new RuntimeException('Testovacího zákazníka lze obnovit pouze z loopbacku.');
+    }
+    $passwordLength = mb_strlen($password, 'UTF-8');
+    if ($passwordLength < 12 || $passwordLength > 128) {
+        throw new InvalidArgumentException('Testovací heslo musí mít 12 až 128 znaků.');
+    }
+
+    $email = localhostAcceptanceTestCustomerEmail();
+    $pdo->beginTransaction();
+    try {
+        $sql = 'SELECT id,trener_id FROM verejni_uzivatele WHERE LOWER(email)=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$email]);
+        $account = $statement->fetch(PDO::FETCH_ASSOC);
+        $created = false;
+        if ($account) {
+            if ($account['trener_id'] !== null) {
+                throw new RuntimeException('Testovací e-mail je propojený s trenérem a nelze jej bezpečně resetovat.');
+            }
+            $accountId = (int)$account['id'];
+            $pdo->prepare(
+                'UPDATE verejni_uzivatele SET jmeno=?,prijmeni=?,heslo_hash=?,email_overeno=1,aktivni=1,'
+                . 'verifikacni_token=NULL,verifikacni_token_expires_at=NULL,session_version=session_version+1 '
+                . 'WHERE id=? AND trener_id IS NULL'
+            )->execute(['Testovací', 'Rodič', password_hash($password, PASSWORD_DEFAULT), $accountId]);
+        } else {
+            $pdo->prepare(
+                'INSERT INTO verejni_uzivatele '
+                . '(jmeno,prijmeni,email,heslo_hash,email_overeno,aktivni,session_version,trener_id) '
+                . 'VALUES (?,?,?,?,1,1,1,NULL)'
+            )->execute(['Testovací', 'Rodič', $email, password_hash($password, PASSWORD_DEFAULT)]);
+            $accountId = (int)$pdo->lastInsertId();
+            $created = true;
+        }
+        if ($accountId < 1) {
+            throw new RuntimeException('Testovací zákaznický účet se nepodařilo bezpečně uložit.');
+        }
+        $pdo->commit();
+        return ['id' => $accountId, 'email' => $email, 'created' => $created];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $exception;
+    }
+}
+
 /** @return array{available:bool,reason:string} */
 function localhostAcceptanceSeedResetAvailability(string $root): array
 {

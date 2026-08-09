@@ -6,6 +6,7 @@
 *.php3
 
 /config.php
+/vendor/
 
 # Zálohy DB a deploy klíče
 /bin/zalohy/

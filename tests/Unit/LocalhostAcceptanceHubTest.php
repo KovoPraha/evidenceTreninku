@@ -34,6 +34,33 @@ final class LocalhostAcceptanceHubTest extends TestCase
         self::assertFalse(\localhostAcceptanceIsLoopbackHost('user@localhost'));
     }
 
+    public function testTestCustomerResetIsIdempotentAndFailsClosedOutsideLoopback(): void
+    {
+        $pdo = new \PDO('sqlite::memory:', null, null, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
+        $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT,prijmeni TEXT,email TEXT UNIQUE,heslo_hash TEXT,email_overeno INTEGER,aktivni INTEGER,verifikacni_token TEXT,verifikacni_token_expires_at TEXT,session_version INTEGER DEFAULT 1,trener_id INTEGER NULL)');
+        $loopback = ['HTTP_HOST' => 'localhost', 'SERVER_ADDR' => '127.0.0.1', 'REMOTE_ADDR' => '127.0.0.1'];
+        $remote = array_replace($loopback, ['REMOTE_ADDR' => '192.0.2.10']);
+
+        try {
+            \localhostAcceptanceResetTestCustomer($pdo, 'BezpecneHeslo123!', $remote, 'localhost');
+            self::fail('Remote request must not reset a test customer.');
+        } catch (\RuntimeException) {
+        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn());
+
+        $created = \localhostAcceptanceResetTestCustomer($pdo, 'BezpecneHeslo123!', $loopback, 'localhost');
+        self::assertTrue($created['created']);
+        self::assertSame(\localhostAcceptanceTestCustomerEmail(), $created['email']);
+        $reset = \localhostAcceptanceResetTestCustomer($pdo, 'JineBezpecneHeslo456!', $loopback, 'localhost');
+        self::assertFalse($reset['created']);
+        self::assertSame($created['id'], $reset['id']);
+        $account = $pdo->query('SELECT * FROM verejni_uzivatele')->fetch(\PDO::FETCH_ASSOC);
+        self::assertTrue(password_verify('JineBezpecneHeslo456!', (string)$account['heslo_hash']));
+        self::assertSame(1, (int)$account['email_overeno']);
+        self::assertSame(1, (int)$account['aktivni']);
+        self::assertSame(2, (int)$account['session_version']);
+    }
+
     public function testCatalogueContainsA01ThroughA10AndTruthfulReadinessStates(): void
     {
         $scenarios = \localhostAcceptanceScenarios(dirname(__DIR__, 2));

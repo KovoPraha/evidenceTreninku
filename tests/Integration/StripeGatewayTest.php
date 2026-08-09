@@ -39,6 +39,7 @@ final class StripeGatewayTest extends TestCase
         $session=\stripeCreateCheckoutSession($pdo,11,10,$client,self::SETTINGS);
         self::assertSame(25900,$session['amount_total']);self::assertSame('CZK',$session['currency']);self::assertCount(1,$client->created);
         $request=$client->created[0];self::assertSame(25900,$request['parameters']['line_items'][0]['price_data']['unit_amount']);self::assertSame('czk',$request['parameters']['line_items'][0]['price_data']['currency']);
+        self::assertArrayNotHasKey('payment_method_types',$request['parameters']);
         self::assertSame('11',$request['parameters']['metadata']['shop_order_id']);self::assertSame('31',$request['parameters']['metadata']['payment_id']);self::assertSame('shop-order-11-payment-31',$request['idempotency_key']);
         self::assertSame('cs_test_unit123',$pdo->query('SELECT stripe_checkout_session_id FROM payments WHERE id=31')->fetchColumn());
         $pdo->exec("UPDATE shop_orders SET status='cancelled',payment_status='cancelled' WHERE id=11");$pdo->exec("UPDATE payments SET status='cancelled' WHERE id=31");
@@ -79,6 +80,35 @@ final class StripeGatewayTest extends TestCase
         $audit=$pdo->query('SELECT actor_type,actor_id,action,from_status,to_status,note FROM shop_order_events')->fetch(PDO::FETCH_ASSOC);
         self::assertSame('system',$audit['actor_type']);self::assertNull($audit['actor_id']);self::assertSame('confirm_stripe_payment',$audit['action']);self::assertSame('placed',$audit['from_status']);self::assertSame('processing',$audit['to_status']);self::assertStringContainsString('evt_checkout_completed_unit',$audit['note']);
         self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM stripe_webhook_events')->fetchColumn());self::assertSame('processed',$pdo->query('SELECT processing_status FROM stripe_webhook_events')->fetchColumn());
+    }
+
+    public function testUnpaidCompletedWebhookIsRecordedAndAcknowledgedAsIgnored():void
+    {
+        $pdo=$this->database();$createClient=new FakeStripeGatewayClient();\stripeCreateCheckoutSession($pdo,11,10,$createClient,self::SETTINGS);
+        $client=$this->completedClient();$client->event['id']='evt_checkout_unpaid_unit';$client->event['data']['object']['payment_status']='unpaid';$client->event['data']['object']['payment_intent']=null;
+        $result=\stripeHandleWebhook($pdo,'{"id":"evt_checkout_unpaid_unit"}','valid-signature',$client,self::SETTINGS);
+        self::assertSame('ignored',$result['status']);self::assertFalse($result['changed']);
+        self::assertSame(['status'=>'pending','stripe_payment_intent_id'=>null],$pdo->query('SELECT status,stripe_payment_intent_id FROM payments')->fetch(PDO::FETCH_ASSOC));
+        self::assertSame(['status'=>'placed','payment_status'=>'pending'],$pdo->query('SELECT status,payment_status FROM shop_orders')->fetch(PDO::FETCH_ASSOC));
+        self::assertSame(['payment_id'=>31,'processing_status'=>'ignored'],$pdo->query('SELECT payment_id,processing_status FROM stripe_webhook_events')->fetch(PDO::FETCH_ASSOC));
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());
+    }
+
+    public function testUnpaidCompletedWebhookStillRejectsAnUnlinkedSession():void
+    {
+        $pdo=$this->database();$client=$this->completedClient();$client->event['id']='evt_checkout_unlinked_unit';$client->event['data']['object']['id']='cs_test_unlinked';$client->event['data']['object']['payment_status']='unpaid';
+        try{\stripeHandleWebhook($pdo,'{"id":"evt_checkout_unlinked_unit"}','valid-signature',$client,self::SETTINGS);self::fail('Unlinked unpaid session must remain an error.');}catch(\StripeGatewayException $exception){self::assertStringContainsString('navázána',$exception->getMessage());}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM stripe_webhook_events')->fetchColumn());self::assertSame('pending',$pdo->query('SELECT status FROM payments')->fetchColumn());
+    }
+
+    public function testLatePaidWebhookDoesNotAttachMoneyToCancelledOrder():void
+    {
+        $pdo=$this->database();$createClient=new FakeStripeGatewayClient();\stripeCreateCheckoutSession($pdo,11,10,$createClient,self::SETTINGS);
+        $pdo->exec("UPDATE shop_orders SET status='cancelled',payment_status='cancelled' WHERE id=11");$pdo->exec("UPDATE payments SET status='cancelled' WHERE id=31");
+        try{\stripeHandleWebhook($pdo,'{"id":"evt_checkout_completed_unit"}','valid-signature',$this->completedClient(),self::SETTINGS);self::fail('Late payment must not be attached to a cancelled order.');}catch(\ShopCheckoutException){}
+        self::assertSame(['status'=>'cancelled','stripe_payment_intent_id'=>null],$pdo->query('SELECT status,stripe_payment_intent_id FROM payments')->fetch(PDO::FETCH_ASSOC));
+        self::assertSame(['status'=>'cancelled','payment_status'=>'cancelled'],$pdo->query('SELECT status,payment_status FROM shop_orders')->fetch(PDO::FETCH_ASSOC));
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM stripe_webhook_events')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());
     }
 
     public function testIncompleteConfigurationKeepsFlagFailClosed():void

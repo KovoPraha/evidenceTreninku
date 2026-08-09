@@ -71,6 +71,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = localhostAcceptanceRunSeedReset(__DIR__);
             $message = $result['reason'];
             $messageType = $result['ok'] ? 'success' : 'danger';
+        } elseif ($action === 'reset_test_customer' && ($_POST['confirm_customer_reset'] ?? '') === '1') {
+            try {
+                $customer = localhostAcceptanceResetTestCustomer(
+                    $pdo,
+                    (string)($_POST['customer_password'] ?? ''),
+                    $_SERVER,
+                    getenv('APP_HOST')
+                );
+                $message = ($customer['created'] ? 'Testovací zákazník byl založen: ' : 'Testovací zákazník byl resetován: ')
+                    . $customer['email'] . '. Heslo se nezobrazuje ani neukládá do logu.';
+                $messageType = 'success';
+            } catch (InvalidArgumentException | RuntimeException $exception) {
+                $message = $exception->getMessage();
+            } catch (Throwable $exception) {
+                error_log('acceptance test customer reset: ' . get_class($exception));
+                $message = 'Testovacího zákazníka se nepodařilo bezpečně obnovit.';
+            }
         } else {
             $message = 'Požadovaná operace nebyla potvrzena.';
         }
@@ -261,6 +278,27 @@ $statusLabels = [
                 <?php endif; ?>
             </div>
             <p class="small text-muted mt-3 mb-0">Výstup seedu může obsahovat přihlašovací údaje, proto jej stránka vždy zahodí a ukáže pouze obecný výsledek.</p>
+        </div>
+    </section>
+    <section class="card border-0 shadow-sm mt-3">
+        <div class="card-body">
+            <h2 class="h5 mb-1">Založit nebo resetovat testovacího zákazníka</h2>
+            <p class="text-muted">Účet <code><?= acceptanceHubH(localhostAcceptanceTestCustomerEmail()) ?></code> bude aktivní a e-mailově ověřený. Zadané heslo se nikde nezobrazí ani nezaloguje.</p>
+            <form method="post" class="row g-3 align-items-end">
+                <?= csrf_field() ?>
+                <input type="hidden" name="action" value="reset_test_customer">
+                <div class="col-md-5">
+                    <label class="form-label" for="customer-password">Nové testovací heslo</label>
+                    <input class="form-control" type="password" id="customer-password" name="customer_password" minlength="12" maxlength="128" autocomplete="new-password" required>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirm-customer-reset" name="confirm_customer_reset" value="1" required>
+                        <label class="form-check-label" for="confirm-customer-reset">Potvrzuji reset pouze localhost testovacího účtu.</label>
+                    </div>
+                </div>
+                <div class="col-md-2"><button class="btn btn-outline-primary w-100">Založit / resetovat</button></div>
+            </form>
         </div>
     </section>
 </main>

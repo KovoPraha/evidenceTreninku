@@ -29,6 +29,8 @@ define('JE_LOKALNE', $jeLokalne);
 
 // Jediny duveryhodny zaklad pro odkazy v e-mailech a notifikacich.
 // Hodnota z HTTP Host se z bezpecnostnich duvodu nepouziva.
+// Pro Stripe je APP_BASE_URL povinne a na produkci musi byt platna https:// URL
+// (pro KIS: https://kis.kovopraha.cz); bez ni Stripe zustane fail-closed vypnuty.
 $appBaseUrl = getenv('APP_BASE_URL');
 if (is_string($appBaseUrl) && $appBaseUrl !== '') {
     define('APP_BASE_URL', $appBaseUrl);

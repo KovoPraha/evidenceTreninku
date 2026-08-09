@@ -35,6 +35,11 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('DEPLOY_PROBE', $preflight);
         self::assertStringContainsString('JE_LOKALNE', $preflight);
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $preflight);
+        self::assertStringContainsString('APP_BASE_URL', $preflight);
+        self::assertStringContainsString("'warnings' => \$warnings", $preflight);
+        self::assertStringContainsString("!== 'https'", $preflight);
+        self::assertStringContainsString("jq -r '.warnings[]?'", $workflow);
+        self::assertStringContainsString('::warning title=Produkční konfigurace::', $workflow);
 
         // Omezený shell hostingu blokuje argumenty skriptů i externí proměnné
         // prostředí; hodnoty proto nastavují vygenerované putenv() bootstrapy
@@ -76,6 +81,12 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('BACKUP_DIR: data/.kis-backups', $workflow);
         self::assertStringContainsString("cd '\$RELEASE_DIR'", $workflow);
         self::assertStringContainsString("'\$RELEASE_DIR/' '\$REMOTE_DIR/'", $workflow);
+        self::assertStringContainsString('composer install --no-dev', $workflow);
+        self::assertLessThan(
+            strpos($workflow, '- name: Připravit kompletní release mimo webroot'),
+            strpos($workflow, 'composer install --no-dev')
+        );
+        self::assertStringContainsString('/vendor/', $this->source('.gitignore'));
         self::assertStringNotContainsString('$HOME/$RELEASE_DIR', $workflow);
         self::assertStringNotContainsString('.evidence-deploy', $workflow);
         self::assertStringNotContainsString('.evidence-backups', $workflow);

@@ -164,6 +164,9 @@ jobs:
           "${SCP[@]}" /tmp/run-preflight.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-preflight.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-preflight.php'" | tee /tmp/preflight.json
           jq -e '.ok == true' /tmp/preflight.json >/dev/null
+          while IFS= read -r warning; do
+            echo "::warning title=Produkční konfigurace::$warning"
+          done < <(jq -r '.warnings[]?' /tmp/preflight.json)
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
       - name: Nahrát zálohovací nástroj mimo aplikaci

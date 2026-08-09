@@ -76,6 +76,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260805040000_family_weekly_summaries',
                 '20260805050000_sports_measurement_contract',
                 '20260809090000_stripe_checkout',
+                '20260810003000_legacy_training_support_tables',
             ],
             array_keys($catalog)
         );
@@ -85,6 +86,10 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_catalog_import_runs'));
         self::assertTrue($this->tableExists($pdo, 'child_access_accounts'));
         self::assertTrue($this->tableExists($pdo, 'child_access_events'));
+        self::assertTrue($this->tableExists($pdo, 'cviky'));
+        self::assertTrue($this->tableExists($pdo, 'gs_kategorie'));
+        self::assertTrue($this->tableExists($pdo, 'gs_linky'));
+        self::assertTrue($this->tableExists($pdo, 'gs_link_targets'));
         self::assertTrue($this->tableExists($pdo, 'password_reset_tokens'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feeds'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feed_events'));

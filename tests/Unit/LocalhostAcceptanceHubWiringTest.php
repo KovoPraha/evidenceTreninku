@@ -23,6 +23,9 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringContainsString('csrf_verify', $page);
         self::assertStringContainsString('reset_local_demo', $page);
         self::assertStringContainsString('localhostAcceptanceRunSeedReset', $page);
+        self::assertStringContainsString('reset_test_customer', $page);
+        self::assertStringContainsString('localhostAcceptanceResetTestCustomer', $page);
+        self::assertStringContainsString('confirm_customer_reset', $page);
         self::assertStringContainsString('localhostAcceptanceScenarios', $page);
         self::assertStringContainsString('localhostAcceptanceFeedbackSave', $page);
         self::assertStringContainsString('m2FinalizationStatus', $page);
