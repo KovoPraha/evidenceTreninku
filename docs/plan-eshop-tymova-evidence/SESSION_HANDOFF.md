@@ -1,5 +1,30 @@
 # Session handoff
 
+## Aktualizace 9. 8. 2026 — rozšířená akceptační sada B01–B30 (commit `d33ec55`)
+
+- Na žádost vlastníka („KA1–A10 mi přidej další kompletní sadu scénářů…
+  prostě vše co systém má umět") vznikla druhá, regresní sada scénářů
+  `localhostAcceptanceScenariosB()` v `includes/localhost_acceptance_hub.php`:
+  30 scénářů B01–B30 v osmi oblastech — Tréninky (B01–B03), Závody (B04),
+  Plánování a rezervace (B05–B07), E-shop (B08–B13 včetně importu, kupónů,
+  klubových cen, storna/refundace), Kroužky a programy (B14–B17), Rodina a
+  účty (B18–B22), KIS a členství (B23–B27), Administrace a bezpečnost
+  (B28–B30). Stejný formát i `is_file` kontrola cest jako sada A; všech
+  30 odkazovaných cest existuje (žádný scénář „unavailable").
+- `testovaci_scenare.php` zobrazuje sloučené A+B se společným ukládáním
+  výsledků (PASS/PARTIAL/FAIL/BLOCKED), společným Markdown exportem a
+  vizuálním oddělovačem před B01. **Závěrečná brána M2 zůstává vázaná
+  VÝHRADNĚ na vlastnickou sadu A01–A10** — `m2FinalizationStatus()` dostává
+  jen `$scenariosA`; sada B bránu neblokuje ani nenafukuje čitatele.
+- Testy: `php -l` čisté, akceptační testy (LocalhostAcceptance* +
+  M2Finalization) 13/114 zelené, plná sada v cloudové kopii zelená.
+  `LocalhostAcceptanceHubWiringTest` nevyžadoval změnu (asserce dál platí).
+- Pozn.: soubor hubu měl 252 řádků CRLF — před commitem normalizováno na
+  LF, takže commit je minimální (+337/−2).
+- Otevřené: `git push origin main` a případné NASADIT provádí vlastník;
+  výsledky prohlídky se zapisují na localhostu (stránka je mimo loopback
+  fail-closed 404), testovat lze proti produkčnímu pilotu.
+
 ## Aktualizace 8. 8. 2026 — implementace informační architektury (2 commity)
 
 - Vlastník schválil `docs/navrh-informacni-architektury.md` a řez ho
@@ -1221,6 +1246,7 @@ nebo soubor už není potřebný. Snapshot není určen k merge ani pushnutí.
 | 107 | MariaDB smoke pro sportovní read-only přehledy (`9e8d9d0`) | `bin/sports-review-smoke.php` na izolované testovací DB (regex-omezený název, nikdy `evidence`) reprodukuje reálné schéma včetně `zavod_sportovec` bez surrogate PK, spouští skutečnou migraci `20260805050000` a ověřuje `sportsImportReview()` i `sportsDataQualityInventory()` bez sportovec_id/jmen; zapojeno jako čtvrtý krok CI jobu mariadb-smoke (nespuštěno); lokální běh na MariaDB 10.4.32: 5 měření (1 v1), 3 výsledky (1 v1), 7 legacy textových řádků (2/5), 8 záznamů inventury; DB dropnuta ve finally; 493/4277 beze změny |
 | 108 | statická kontrola kompatibility s produkční MariaDB 10.3 | zaznamenán produkční DB server (`10.3.39`/Debian 10/`replikant3544`, zdroj vlastník+phpMyAdmin 2026-08-05) do snapshotu s poznámkou o EOL riziku jako otevřeném vlastnickém rozhodnutí, bez akce; grep + ruční revize `migrations/*.php`, `auto_migrace.php`, `migration_runner.php`, `db.php` a first-party PHP nenašla žádnou konstrukci nad podlahou 10.3 (`RETURNING` 10.5.0, `JSON_TABLE`/`JSON_ARRAYAGG`/`JSON_OBJECTAGG` 10.5–10.6, `SKIP LOCKED`/`NOWAIT`/`LATERAL` 10.6.0) — bez nálezu; jediný nalezený `CHECK` constraint je kompatibilní (vynucováno od 10.2.1); utf8mb4 kolace explicitní a beze změny napříč 10.3/10.4/11.4; `mariadb-smoke` CI job dostal `strategy.matrix` 10.3/11.4 (workflow nespuštěn); lokálně 4/4 smoke skriptů OK na izolované MariaDB 10.4.32, `evidence` nedotčená; 493/4278, 471 parse, migrace beze změny (50/50) |
 | 109 | deploy workflow pro kis.kovopraha.cz | cíl parametrizován přes GitHub Variables (KIS_APP_HOST/KIS_WEB_URL/KIS_REMOTE_DIR) s fail-closed kontrolou; job běží v environment `production`, concurrency `produkce-kis`; server má chroot SSH bez funkčního $HOME a nezapisovatelný kořen, deploy stav proto žije relativně v `data/.kis-deploy` a zálohy v `data/.kis-backups`; SSH klíč ověřen (KEY-OK), PHP CLI 8.2.32 + rsync na serveru potvrzeny, docroot `kis.kovopraha.cz`; kontraktní test rozšířen (zákaz $HOME a .evidence-deploy); 493/4288; první nasazení dál vyžaduje workflow_dispatch + NASADIT; hosting má omezený shell (rssh) zakazující `php -r` — preflight validace configu běží jako nahraný `bin/deploy-preflight.php` řízený vygenerovanými putenv() bootstrap soubory — hosting blokuje argumenty skriptů I externí env, jediný průchozí kanál je soubor; `migrate.php` a `db-backup.php` mají aditivní env vstupy MIGRATE_*/BACKUP_* čtené přes putenv z bootstrapu, migrace bootstrapy se před aktivací release mažou a `deploy-preflight.php` má CLI guard a vzdálený `php -l` je nahrazen CI lintem; první běh nasazení dále odhalil a potvrdil funkční Variables/Secrets řetěz |
+| 110 | rozšířená akceptační sada B01–B30 (`d33ec55`) | `localhostAcceptanceScenariosB()` s 30 scénáři v 8 oblastech (kompletní funkční pokrytí systému); `testovaci_scenare.php` sloučené zobrazení A+B se společným feedback mechanismem a Markdown exportem; brána M2 dál počítá jen A01–A10; 13/114 akceptačních asercí zelených, CRLF→LF normalizace hubu |
 
 
 PR #1 až #6 jsou sloučené do `main`. Produkční migrace, migrace hesel ani deploy
