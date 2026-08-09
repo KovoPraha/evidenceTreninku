@@ -1,5 +1,55 @@
 # Session handoff
 
+## Aktualizace 10. 8. 2026 — autonomní stabilizace, plné E2E a produkční deploy (`e4a5dc07f28570a0a56a9040ce7acc5578276a5a`)
+
+### Výsledek
+
+- Produkční kód byl stabilizován, plně otestován, commitnut, pushnut a nasazen z `main` přes GitHub Actions.
+- Výchozí SHA bylo `4289785ca21c5d12bf4514714428156d5473adec`; nasazené SHA je `e4a5dc07f28570a0a56a9040ce7acc5578276a5a` (`Stabilize checkout, acceptance, and deploy readiness`).
+- Cizí rozpracované soubory zůstaly nedotčené. Chybně pojmenovaný workflow `.github/workflows/deploy-productio.yml` byl pouze přesunut do karantény `var/_to_delete/deploy-productio.yml`.
+- `vendor/` byl odebrán z Git indexu a přidán do `.gitignore`; fyzický lokální adresář a `vendor/autoload.php` zůstaly zachované. Produkční release instaluje závislosti z `composer.lock`.
+
+### Opravené priority
+
+- **P0 — Stripe:** Checkout už nenutí pouze kartu (`payment_method_types` odstraněno). Webhook nejprve ověří vazbu session, payment intent, metadata, částku a měnu. Legitimní neplacený/incomplete event uloží jako ignorovaný a vrátí HTTP 200; nepropojené nebo nesouhlasící eventy dál odmítá a transakci vrací zpět.
+- **P0 — deploy:** preflight vrací strukturované `warnings[]` pro chybějící/neplatné/ne-HTTPS `APP_BASE_URL`; workflow je zvýrazní jako GitHub warning. Na produkci je ale nyní `APP_BASE_URL=https://kis.kovopraha.cz` správně nastavené, takže vlastník nemusí nic doplňovat.
+- **P1 — acceptance účet:** administrátor může na localhostu přes CSRF chráněný formulář idempotentně vytvořit/resetovat `rodic@localhost.test`; operace je fail-closed mimo loopback, heslo se neloguje ani nezobrazuje, účet je aktivní/ověřený a staré relace jsou zneplatněné.
+- **P2 — pozdní platba:** placený Stripe event pro zrušenou/expirovanou objednávku se k objednávce nepřipojí; kanonický přechod selže a celá lokální transakce se vrátí zpět. Regresní test pokrývá, že se nevytvoří falešná lokální platba.
+
+### Dodatečný nalezený a opravený blokér
+
+- Široký HTTP smoke odhalil skutečné HTTP 500 na `cviky.php` a `google_sheets_linky.php`: migrační katalog neuměl z čisté databáze vytvořit legacy tabulky `cviky`, `gs_kategorie`, `gs_linky` a `gs_link_targets`.
+- Přidána idempotentní migrace `20260810003000_legacy_training_support_tables.php` pro MySQL i SQLite a rozšířen test úplnosti migračního katalogu. Po nasazení je produkční stav `current=true`, `catalog_count=52`, `pending=[]`.
+
+### Vědomě neimplementováno
+
+- **Notifikace po přijetí platby:** současná architektura správně používá transakční outbox a worker; nebyl přidán přímý e-mail do HTTP requestu. Navržený další slice: generický paid-order outbox s unikátním klíčem objednávka+událost/akce, enqueue uvnitř `shopOrderConfirmPaymentInTransaction` pro banku i Stripe, claim/send/retry ve workeru mimo DB transakci a stav v administraci. Chyba notifikace nesmí vrátit potvrzení platby zpět.
+- **Refund/reconciliation automatika:** pozdní platba je bezpečně nepřipojená, ale externí refundace a automatické párování jsou samostatný budoucí slice. Lokální Stripe testovací objednávky proto po skutečném sandbox refundu zůstávají ve stavu `refund_required`.
+
+### Ověření
+
+- PHP lint: `472` first-party souborů bez chyby.
+- PHPUnit: `506 tests`, `4457 assertions`, vše zelené; test spuštěn i bezprostředně před implementačním commitem.
+- `composer validate --strict`, `composer audit --locked` a `composer check-platform-reqs`: vše úspěšné, žádné známé advisory.
+- Migrace lokálně: pending → apply → current; opakovaný apply i check zůstaly current.
+- Playwright mimo repozitář: `8/8` scénářů prošlo. Pokryty zákazník/admin, bankovní QR/IBAN/VS/splatnost/částka, kupon a členská cena, reálný Stripe sandbox Checkout kartou `4242`, dynamické metody (card/link/klarna), aktivace programu, podepsaný duplicate replay, akce klubu/velodromu, A01–A10, B01–B30, storno/expirace, skrytá platba, rate limit a úklid fixtures.
+- Široký smoke: `161` kontrol, `0` selhání a `0` odpovědí 5xx/runtime warningů; guardované action/parameter endpointy vracely očekávané 400/403/404/405.
+- Podepsaný replay úspěšného Stripe eventu vrátil `duplicate` HTTP 200 a nezměnil počty eventů ani auditů (`1 → 1`). Sandbox placené pokusy byly na Stripe refundovány a lokální fixtures kanonicky zrušeny; bankovní fixtures mají potvrzené lokální refundy.
+
+### Produkční nasazení a kontrola
+
+- GitHub Actions run `31340114330`, job `93312387822`, závěr `success`, nasazené SHA přesně `e4a5dc07f28570a0a56a9040ce7acc5578276a5a`.
+- Před migracemi vznikla ověřená záloha mimo webroot: `evidence_2026-08-09_224450_2662bec0.sql.gz` + manifest, `154` tabulek, `2` triggery, `1 241 996` komprimovaných bajtů, ověřen SHA checksum.
+- Aktivace release použila rsync bez `--delete`. Runner měl tři síťové timeouty, workflow proto poprvé živě použilo SSH/server fallback a ten uspěl: `{"ok":true,"http":200,"via":"curl"}`.
+- Přímá produkční kontrola: `/index.php`, `/booking/prihlaseni.php`, `/booking/eshop.php` a `/booking/krouzky.php` HTTP 200; chráněné `cviky.php` a `google_sheets_linky.php` korektně 302 na login; Stripe webhook na GET korektně 405 s `Allow: POST`.
+
+### Co zbývá vlastníkovi
+
+1. Před live Stripe provozem dokončit KYC, vložit live klíče a založit/ověřit live webhook secret; testovací klíče se nesmí kopírovat do produkce.
+2. Samostatně schválit a implementovat paid-order notification outbox slice popsaný výše.
+3. Samostatně navrhnout refund/reconciliation slice pro pozdní Stripe platby a stav `refund_required`.
+4. Po kontrole rozhodnout, zda trvale smazat karanténní `var/_to_delete/deploy-productio.yml`; tato stabilizace ji záměrně nemaže.
+
 ## Aktualizace 9. 8. 2026 — Stripe slice 1 NASAZENA a OVĚŘENA v test mode (commity `cb2c356`, `080f66a`, `0b1109f`, `f190498`)
 
 - Slice 1 (`feat(payments): add disabled Stripe Checkout foundation` +
