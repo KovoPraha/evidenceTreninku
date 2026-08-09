@@ -1,5 +1,73 @@
 # Session handoff
 
+## Aktualizace 9. 8. 2026 — Stripe slice 1 NASAZENA a OVĚŘENA v test mode (commity `cb2c356`, `080f66a`, `0b1109f`, `f190498`)
+
+- Slice 1 (`feat(payments): add disabled Stripe Checkout foundation` +
+  handoff) byla po revizi pushnuta a **nasazena na produkci**. GitHub push
+  protection nejprve push zablokoval kvůli ukázkovému test klíči ve
+  `vendor/stripe/stripe-php/README.md:62` — vyhodnoceno jako false positive
+  (klíč z oficiální dokumentace SDK) a odblokováno přes secret-scanning URL.
+- **Produkce běží s vypnutým Stripe.** Ověřeno:
+  `GET https://kis.kovopraha.cz/booking/stripe_webhook.php` → `405`,
+  `Allow: POST`, `Cache-Control: no-store`. Kontrola metody je ve skriptu
+  první, takže 405 potvrzuje jen nasazení souboru, nikoli zapnutí Stripe.
+- **OPRAVA DEPLOY WORKFLOW** (`0b1109f` + `f190498`): závěrečný „HTTP smoke
+  test" selhal `curl: (28) Connection timed out` — hosting Český hosting
+  blokuje IP rozsahy GitHub runnerů. Deploy sám (SSH) proběhl celý; červený
+  byl jen poslední krok PO aktivaci release. Smoke test má nyní
+  `--retry 2 --retry-all-errors` a při selhání na SÍŤOVÉ úrovni fallback
+  přes SSH na nový `bin/deploy-smoke.php` (stejný putenv bootstrap vzor jako
+  `bin/deploy-preflight.php`). Skutečná HTTP chyba (např. 500) shodí deploy
+  okamžitě, bez fallbacku. `DeployWorkflowContractTest` rozšířen o asserce
+  na nový skript, bootstrap i retry.
+  - POZOR na past: mezikrok `0b1109f` omylem obsahoval STAROU verzi workflow
+    (chybná kopie z Downloads) s `php -r`, který omezený shell hostingu
+    zakazuje; kontraktní test to zachytil, `f190498` to opravil. HEAD je
+    v pořádku, ale `0b1109f` v historii je nepoužitelný.
+- **Lokální test mode kompletně ověřen (end-to-end, sandbox
+  `acct_1U2Uf22fNtqyPMYB` „Kovo Praha sandbox")**:
+  - `stripe listen --forward-to http://localhost/evidencePavel/booking/stripe_webhook.php`
+  - Objednávka `id=8` / `KP260809948037CDBF`, 2 630,00 CZK, karta
+    `4242 4242 4242 4242`.
+  - Výsledek: objednávka `status=processing`, `payment_status=paid`;
+    platba `id=8` `status=paid`, `payment_source=stripe`,
+    `stripe_checkout_session_id=cs_test_a1uFt0dQ…`,
+    `stripe_payment_intent_id=pi_3U2dmH2fNtqyPMYB0Rw3YTY6`.
+  - `checkout.session.completed` → `processed` s `payment_id=8`; ostatní
+    doručené eventy (`charge.succeeded`, `payment_intent.succeeded`,
+    `payment_intent.created`, `charge.updated`) → `ignored`, všechny s
+    HTTP 200. Neznámé typy tedy webhook nerozbíjejí ani neopakují.
+- **Lokální `config.php`**: doplněno chybějící `APP_BASE_URL` (bez něj
+  `stripeIsEnabled()` vrací false, protože z něj vznikají success/cancel URL)
+  a localhost-only větev se sandbox test klíči + `whsec_`. Klíče nejsou
+  a nesmí být v Gitu.
+- Dočasné pomocné skripty (`stripe-check.php`, `stripe-test-ucet.php`) byly
+  po testu smazány. Registrace na localhostu nejde dokončit (bez SMTP se
+  neodešle ověřovací e-mail) — testovací zákazník se zakládá přímo v DB
+  s `email_overeno=1`.
+
+### PŘEDPOKLADY PRO ZAPNUTÍ TEST MODE NA PRODUKCI (nezačínat bez nich)
+
+1. **Produkční `config.php` nemá `APP_BASE_URL`.** Je to samostatná kopie na
+   serveru mimo Git a bez této konstanty zůstane Stripe vypnutý i s platnými
+   klíči. Doplnit `https://kis.kovopraha.cz`.
+2. Klíče a webhook secret dodat mimo Git (prostředí / ignorovaný
+   `config.php`), sandbox klíče NEPOUŽÍVAT pro ostré platby.
+3. Webhook endpoint ve Stripe dashboardu:
+   `https://kis.kovopraha.cz/booking/stripe_webhook.php`, event
+   `checkout.session.completed`.
+4. Klubový Stripe účet + KYC, výplatní účet, role a 2FA — stále OTEVŘENÉ,
+   sandbox na ostré platby nestačí.
+
+### DROBNOST DO NÁSLEDUJÍCÍ SLICE (revize kódu)
+
+- `checkout.session.completed` s `payment_status != 'paid'` dnes skončí
+  výjimkou → HTTP 500 → Stripe event opakuje až do vyčerpání retry okna.
+  U card-only plateb prakticky nenastane, ale s asynchronními metodami
+  patří takový event uložit jako `ignored`, ne shodit.
+- Refund/reconciliation slice (nad existujícím `refund_required`, zejména
+  pozdní platba po expiraci) zůstává předpokladem live režimu.
+
 ## Aktualizace 9. 8. 2026 — rozšířená akceptační sada B01–B30 (commit `d33ec55`)
 
 - Na žádost vlastníka („KA1–A10 mi přidej další kompletní sadu scénářů…
