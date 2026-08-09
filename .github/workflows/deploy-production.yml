@@ -137,7 +137,10 @@ jobs:
 
       - name: Předletová kontrola serveru bez změny aplikace
         run: |
+          # Hostingový omezený shell zakazuje PHP kód z parametru; kontrola proto běží jako
+          # nahraný skript bin/deploy-preflight.php (`php soubor.php` povolen je).
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
           "${SSH[@]}" "
             set -eu
             umask 077
@@ -145,25 +148,22 @@ jobs:
             test -s '$REMOTE_DIR/config.php'
             command -v php >/dev/null
             command -v rsync >/dev/null
-            php -r 'foreach ([\"pdo_mysql\",\"zlib\",\"json\",\"hash\"] as \$e) { if (!extension_loaded(\$e)) { fwrite(STDERR, \"missing extension: \".\$e.PHP_EOL); exit(1); } }'
-            APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php -r '
-              \$host = (string)getenv(\"APP_HOST\");
-              \$_SERVER[\"HTTP_HOST\"] = \$host;
-              \$_SERVER[\"SERVER_NAME\"] = \$host;
-              require getenv(\"APP_ROOT\").\"/config.php\";
-              if (!defined(\"JE_LOKALNE\") || JE_LOKALNE) { exit(1); }
-              foreach ([\"DB_HOST\",\"DB_NAME\",\"DB_USER\",\"DB_PASS\"] as \$constant) {
-                if (!defined(\$constant)) { exit(1); }
-              }
-              \$pepper = defined(\"AUTH_RATE_LIMIT_PEPPER\") ? constant(\"AUTH_RATE_LIMIT_PEPPER\") : null;
-              if (!is_string(\$pepper) || strlen(\$pepper) < 32) {
-                fwrite(STDERR, \"AUTH_RATE_LIMIT_PEPPER is missing or too short.\".PHP_EOL);
-                exit(1);
-              }
-            '
             mkdir -p '$DEPLOY_BASE/releases'
             chmod 700 '$DEPLOY_BASE' '$DEPLOY_BASE/releases'
           "
+          # Hosting čistí i proměnné prostředí; hodnoty proto nastavuje
+          # vygenerovaný bootstrap přes putenv() a spouští se holé `php soubor`.
+          cat > /tmp/run-preflight.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('DEPLOY_PROBE=1');
+          require __DIR__ . '/deploy-preflight.php';
+          EOF
+          "${SCP[@]}" bin/deploy-preflight.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/deploy-preflight.php"
+          "${SCP[@]}" /tmp/run-preflight.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-preflight.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-preflight.php'" | tee /tmp/preflight.json
+          jq -e '.ok == true' /tmp/preflight.json >/dev/null
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
       - name: Nahrát zálohovací nástroj mimo aplikaci
@@ -171,10 +171,12 @@ jobs:
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php.partial"
+          # Syntaxe je ověřená v CI kroku „Kontrola PHP syntaxe“; omezený shell
+          # hostingu lint z parametru nepovoluje, na serveru se kontroluje jen úplnost.
           "${SSH[@]}" "
             set -eu
             umask 077
-            php -l '$DEPLOY_BASE/db-backup.php.partial' >/dev/null
+            test -s '$DEPLOY_BASE/db-backup.php.partial'
             chmod 600 '$DEPLOY_BASE/db-backup.php.partial'
             mv '$DEPLOY_BASE/db-backup.php.partial' '$DEPLOY_BASE/db-backup.php'
           "
@@ -182,16 +184,25 @@ jobs:
       - name: Vytvořit a ověřit produkční zálohu
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          VYSLEDEK=$("${SSH[@]}" "
-            set -eu
-            umask 077
-            APP_HOST='$APP_HOST' DEPLOY_GIT_SHA='$GITHUB_SHA' DEPLOY_RUN_ID='$GITHUB_RUN_ID' \\
-              php '$DEPLOY_BASE/db-backup.php' \\
-              --app-root='$REMOTE_DIR' \\
-              --backup-dir='$BACKUP_DIR' \\
-              --keep=20 \\
-              --json
-          ")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          # PHP na hostingu vidí skutečné cesty (open_basedir na
+          # /home/www/<účet>/www/), zatímco SSH běží v chrootu. Absolutní cestu
+          # záloh proto bootstrap odvodí z vlastního reálného umístění.
+          cat > /tmp/run-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require __DIR__ . '/db-backup.php';
+          EOF
+          "${SCP[@]}" /tmp/run-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-backup.php"
+          # Neúspěch nesmí spolknout diagnostiku: výstup se vypíše VŽDY,
+          # o výsledku rozhoduje až kontrola JSON přes jq.
+          VYSLEDEK=$("${SSH[@]}" "php '$DEPLOY_BASE/run-backup.php'") || true
           echo "$VYSLEDEK"
           echo "$VYSLEDEK" | jq -e '.ok == true and .tables > 0 and (.sha256 | length == 64)' >/dev/null
           echo '✅ Ověřená záloha vznikla mimo webový adresář. Teprve nyní se smí měnit aplikace.'
@@ -234,8 +245,21 @@ jobs:
       - name: Aplikovat migrace z připraveného release
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --apply --json"
-          "${SSH[@]}" "cd '$RELEASE_DIR' && APP_HOST='$APP_HOST' php bin/migrate.php --check --json"
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          for AKCE in apply check; do
+            cat > "/tmp/run-migrate-$AKCE.php" <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('MIGRATE_ACTION=$AKCE');
+          putenv('MIGRATE_JSON=1');
+          require __DIR__ . '/bin/migrate.php';
+          EOF
+            "${SCP[@]}" "/tmp/run-migrate-$AKCE.php" "$SSH_USER@$SSH_HOST:$RELEASE_DIR/run-migrate-$AKCE.php"
+          done
+          "${SSH[@]}" "cd '$RELEASE_DIR' && php run-migrate-apply.php"
+          "${SSH[@]}" "cd '$RELEASE_DIR' && php run-migrate-check.php"
+          # Bootstrapy nesmí zůstat v release, aktivace by je zkopírovala do webrootu.
+          "${SSH[@]}" "rm -f '$RELEASE_DIR/run-migrate-apply.php' '$RELEASE_DIR/run-migrate-check.php'"
           echo '✅ Migrace jsou aktuální; produkční PHP zatím nebylo aktivováno.'
 
       - name: Aktivovat ověřený release
@@ -259,13 +283,36 @@ jobs:
 
       - name: HTTP smoke test bez tajného tokenu
         run: |
-          KOD=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 120 "$WEB_URL/index.php")
-          echo "Web odpověděl HTTP $KOD."
-          if [ "$KOD" != '200' ] && [ "$KOD" != '302' ]; then
-            echo '❌ Veřejný web po nasazení neodpovídá očekávaně.'
+          # Hosting může blokovat IP rozsahy GitHub runnerů (TCP timeout).
+          # Přímý test má proto retry; když selže už síťové spojení, provede
+          # se stejné HTTP ověření ze serveru přes SSH kanál, který v tomto
+          # workflow prokazatelně funguje. Skutečná HTTP chyba (např. 500)
+          # z přímého testu ale nasazení shodí okamžitě, bez fallbacku.
+          KOD=$(curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 15 --max-time 60 --retry 2 --retry-all-errors "$WEB_URL/index.php") || KOD=0
+          echo "Přímý test z runneru: HTTP $KOD."
+          if [ "$KOD" = '200' ] || [ "$KOD" = '302' ]; then
+            echo '✅ Nasazení dokončeno.'
+            exit 0
+          fi
+          if [ "$KOD" != '0' ] && [ "$KOD" != '000' ]; then
+            echo "❌ Veřejný web po nasazení neodpovídá očekávaně (HTTP $KOD)."
             exit 1
           fi
-          echo '✅ Nasazení dokončeno.'
+          echo 'ℹ️ Runner se k webu nedostal na síťové úrovni; ověřuji ze serveru.'
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          cat > /tmp/run-smoke.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('SMOKE_URL=$WEB_URL/index.php');
+          putenv('DEPLOY_PROBE=1');
+          require __DIR__ . '/deploy-smoke.php';
+          EOF
+          "${SCP[@]}" bin/deploy-smoke.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/deploy-smoke.php"
+          "${SCP[@]}" /tmp/run-smoke.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-smoke.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-smoke.php'" | tee /tmp/smoke.json
+          jq -e '.ok == true and (.http == 200 or .http == 302)' /tmp/smoke.json >/dev/null
+          echo '✅ Nasazení dokončeno (HTTP ověřeno ze serveru).'
 
       - name: Odstranit kopii produkční konfigurace z release
         if: always()
