@@ -1,5 +1,27 @@
 # Produkční UX a funkční audit KIS — 10. 8. 2026
 
+## Doplnění před ruční kontrolou — souběh, obnova a provozní odolnost
+
+Po schválení navazujícího plánu proběhla další automatizovaná vlna zaměřená na situace, které se ručně reprodukují obtížně: přesně současné požadavky, opakované odeslání, obnovitelnost záloh, role, jednorázové odkazy, chybové vstupy a výkon.
+
+### Nově nalezené a opravené problémy
+
+1. **Současné dvojité odeslání checkoutu.** Dva požadavky stejného účtu se stejným idempotentním klíčem mohly vstoupit do databázového závodu. MariaDB správně zachovala jedinou objednávku a jediný odpis skladu, ale jeden požadavek mohla ukončit jako deadlock, takže uživatel viděl chybu. Checkout nyní na MariaDB krátce serializuje pouze shodný idempotentní klíč pomocí pojmenovaného zámku. Výsledek je deterministicky jedna nová objednávka a jedno bezpečné opakování téže objednávky; různé objednávky se vzájemně neblokují.
+2. **Zastaralá verze kontraktu v backup smoke testu.** Zálohovací nástroj používal aktuální ownership kontrakt `2026-08-09.1`, zatímco skutečný MariaDB smoke stále očekával `2026-08-05.3`. Záloha byla korektní, ale test ji chybně odmítal. Očekávání je sjednoceno s aktuálním kontraktem.
+3. **Chybějící skutečný restore drill.** Původní smoke ověřoval vznik, checksum, manifest a obsah zálohy, ale neprovedl její import. Test nyní zálohu rozbalí, obnoví do přesně omezené dočasné MariaDB databáze, porovná počet řádků všech 105 tabulek a seznam triggerů a databázi ve `finally` odstraní.
+4. **Regresní ochrana v CI.** Nový dvouprocesový test souběžného checkoutu je součástí MariaDB matice 10.3 a 11.4; backup smoke v téže matici nově zahrnuje i obnovu.
+
+### Výsledky této vlny
+
+- Produkční databáze byla v phpMyAdmin jednoznačně potvrzena jako `kovoprahacz10`. Testovací veřejné účty `id=5,6`, trenér `id=47` a aktivní lekce `UXTEST postdeploy jediný termín 20260810` byly deaktivovány nebo zrušeny; následná kontrola vrátila 0 aktivních účtů, 0 aktivních testovacích trenérů a 0 aktivních testovacích lekcí.
+- Migrační stav localhostu: **52/52**, bez čekající migrace.
+- Cílená objednávková, kapacitní, webhooková, tokenová a přístupová sada: **68 testů / 906 kontrol**; doručovací a bezpečnostní sada: **57 testů / 627 kontrol**.
+- Reálný MariaDB souběh: dvě paralelní PHP relace, jedna objednávka, jedna platba, jeden skladový pohyb, sklad 0, druhý požadavek vrácen jako replay.
+- Backup–restore: **105 tabulek**, všechny počty řádků a triggery shodné s manifestem; dočasná databáze odstraněna.
+- Playwright: **8/8** hlavních funkčních scénářů, **40/40** akceptačních oblastí, **161** endpointů bez 5xx, **4/4** role/responzivita/invarianty a **4/4** změnové CRUD scénáře.
+- Výkon localhostu na 45 načteních reprezentativních veřejných, zákaznických a administrátorských stránek: medián **148 ms**, p95 **798 ms**, maximum **1 213 ms**; všechny odpovědi pod 500 a p95 pod dvousekundovou bránou.
+- Syntaxe: **475 PHP souborů**, 0 chyb. Composer konfigurace je validní, platformní požadavky splněné a dependency audit má 0 známých zranitelností.
+
 ## Závěrečný stav po rozšířeném testování
 
 - Implementační commit `34c185b64643e531ced4ac53004b23aa11593cbb` byl pushnut na `main` a úspěšně nasazen workflow `Nasadit produkci`, run `31409725853`.
@@ -104,7 +126,7 @@ Kód už nepoužije náhodný řádek, ale samotné slučování účtů vyžadu
 - Odstraněno: dočasné sportoviště, rezervace, skupina, trenérský CRUD profil a položky košíku.
 - Odvoláno/vypnuto: soukromý kalendář a týdenní souhrn testovacího zákazníka.
 - Závěrečný automatický úklid lokálních mutačních scénářů skončil s nulou vlastněných trenérů, tréninků, lekcí, rezervací a žádostí o propojení. Bankovní testovací objednávka byla kanonicky stornována a označena `refunded`; Stripe sandbox platba byla skutečně refundována u Stripe a lokální objednávka zůstala v očekávaném stavu `refund_required`.
-- Produkční testovací účty nelze bezpečně deaktivovat v aktuálně otevřené kartě phpMyAdmin: karta je přihlášena do databáze `velocotacom` se 202 tabulkami, zatímco deploy záloha potvrzuje, že KIS používá databázi `evidence` se 154 tabulkami. V `velocotacom` nejsou legacy KIS tabulky `verejni_uzivatele`, `treneri`, `sportovci`, `treninky` ani `individualni_lekce`; kvůli ochraně cizích dat tam nebyl proveden žádný zápis. Ruční úklid v databázi `evidence`: deaktivovat účty `verejni_uzivatele.id=5` a `treneri.id=47`, zvýšit jejich `session_version` a zkontrolovat případnou lekci `UXTEST postdeploy jediný termín 20260810`.
+- Produkční databáze byla následně potvrzena jako `kovoprahacz10`. Účty `verejni_uzivatele.id=5,6` a trenér `treneri.id=47` byly deaktivovány se zvýšením `session_version`; aktivní testovací lekce byla zrušena. Kontrolní počty po transakci jsou ve všech třech kategoriích nula.
 
 ## Automatizované ověření
 

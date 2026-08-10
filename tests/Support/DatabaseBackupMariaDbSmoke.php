@@ -15,6 +15,8 @@ $server = new PDO('mysql:host=127.0.0.1;charset=utf8mb4', 'root', '', [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ]);
 $quotedDatabase = '`' . str_replace('`', '``', $database) . '`';
+$restoreDatabase = $database . '_restore';
+$quotedRestoreDatabase = '`' . str_replace('`', '``', $restoreDatabase) . '`';
 $temporaryRoot = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'evidence-backup-smoke-' . bin2hex(random_bytes(6));
 $appRoot = $temporaryRoot . DIRECTORY_SEPARATOR . 'app';
 $backupRoot = $temporaryRoot . DIRECTORY_SEPARATOR . 'backups';
@@ -95,7 +97,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-08-05.3') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-08-09.1') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $required = [
@@ -112,8 +114,47 @@ try {
             throw new RuntimeException('Database backup smoke omitted table: ' . $table);
         }
     }
-    echo 'MariaDB database backup smoke OK (' . count($manifest['tables']) . " tables)\n";
+
+    $compressedSql = file_get_contents($backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['backup']));
+    $sql = is_string($compressedSql) ? gzdecode($compressedSql) : false;
+    if (!is_string($sql) || !str_contains($sql, '-- EVIDENCE BACKUP COMPLETE')) {
+        throw new RuntimeException('Database backup smoke could not decompress a complete SQL dump.');
+    }
+
+    $server->exec('DROP DATABASE IF EXISTS ' . $quotedRestoreDatabase);
+    $server->exec('CREATE DATABASE ' . $quotedRestoreDatabase . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+    $restore = new PDO('mysql:host=127.0.0.1;dbname=' . $restoreDatabase . ';charset=utf8mb4', 'root', '', [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => true,
+    ]);
+    $delimiterParts = explode("DELIMITER $$\n", $sql, 2);
+    $restore->exec($delimiterParts[0]);
+    if (isset($delimiterParts[1])) {
+        $triggerParts = explode("DELIMITER ;\n", $delimiterParts[1], 2);
+        foreach (explode("$$\n", $triggerParts[0]) as $triggerStatement) {
+            if (trim($triggerStatement) !== '') $restore->exec($triggerStatement);
+        }
+        if (isset($triggerParts[1]) && trim($triggerParts[1]) !== '') $restore->exec($triggerParts[1]);
+    }
+
+    foreach ($manifest['tables'] as $table => $expectedRows) {
+        $restoredRows = (int)$restore->query('SELECT COUNT(*) FROM `' . str_replace('`', '``', (string)$table) . '`')->fetchColumn();
+        if ($restoredRows !== (int)$expectedRows) {
+            throw new RuntimeException('Database restore row count mismatch for table: ' . $table);
+        }
+    }
+    $restoredTriggers = $restore->query(
+        'SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = DATABASE() ORDER BY TRIGGER_NAME'
+    )->fetchAll(PDO::FETCH_COLUMN);
+    $expectedTriggers = $manifest['triggers'] ?? [];
+    sort($expectedTriggers);
+    if ($restoredTriggers !== $expectedTriggers) {
+        throw new RuntimeException('Database restore trigger list does not match the backup manifest.');
+    }
+    echo 'MariaDB database backup and restore smoke OK (' . count($manifest['tables']) . " tables)\n";
 } finally {
+    $server->exec('DROP DATABASE IF EXISTS ' . $quotedRestoreDatabase);
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);
     if (file_exists($temporaryRoot)) $removeTree($temporaryRoot);
 }

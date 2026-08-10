@@ -164,8 +164,15 @@ function shopCheckoutPlace(
         throw new InvalidArgumentException('Checkout vyžaduje účet a platný jednorázový klíč.');
     }
     $keyHash = hash('sha256',$accountId.':'.$idempotencyKey);
-    $pdo->beginTransaction();
-    try {
+    $checkoutLockName=null;
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
+        $checkoutLockName='shop_checkout:'.substr($keyHash,0,48);
+        $lock=$pdo->prepare('SELECT GET_LOCK(?,5)');$lock->execute([$checkoutLockName]);
+        if((int)$lock->fetchColumn()!==1)throw new ShopCheckoutException('Objednávku právě zpracovává jiný požadavek. Zkuste ji prosím za okamžik znovu.');
+    }
+    try{
+        $pdo->beginTransaction();
+        try {
         $existing = $pdo->prepare('SELECT * FROM shop_orders WHERE idempotency_key_hash=? AND account_id=?');
         $existing->execute([$keyHash,$accountId]);
         $order = $existing->fetch(PDO::FETCH_ASSOC);
@@ -282,6 +289,12 @@ function shopCheckoutPlace(
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         if($exception instanceof PublicVelodromeShopException||$exception instanceof ClubEventShopException||$exception instanceof ClubEventRegistrationException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         throw new ShopCheckoutException('Objednávka se nepodařila vytvořit bez částečného zápisu.',0,$exception);
+    }
+    }finally{
+        if($checkoutLockName!==null){
+            try{$release=$pdo->prepare('SELECT RELEASE_LOCK(?)');$release->execute([$checkoutLockName]);}
+            catch(Throwable $releaseError){error_log('shop_checkout lock release: '.$releaseError->getMessage());}
+        }
     }
 }
 

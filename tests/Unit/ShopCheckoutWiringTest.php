@@ -16,6 +16,12 @@ final class ShopCheckoutWiringTest extends TestCase
         $source=(string)file_get_contents(dirname(__DIR__,2).'/migrations/20260803230000_shop_checkout.php');
         foreach(['idempotency_key_hash','product_name_snapshot','unit_amount_minor','vat_rate_basis_points_snapshot','variable_symbol','spd_payload','shop_inventory_movements','uq_shop_order_idempotency']as$needle)self::assertStringContainsString($needle,$source);
     }
+    public function testMysqlCheckoutSerializesTheSameIdempotencyKey():void
+    {
+        $root=dirname(__DIR__,2);$service=(string)file_get_contents($root.'/includes/shop_checkout.php');$workflow=(string)file_get_contents($root.'/.github/workflows/tests.yml');
+        self::assertStringContainsString('GET_LOCK',$service);self::assertStringContainsString('RELEASE_LOCK',$service);self::assertStringContainsString("'shop_checkout:'",$service);
+        self::assertStringContainsString('php tests/Support/ShopCheckoutMariaDbSmoke.php',$workflow);
+    }
     public function testAdminBankConfirmationRequiresRoleCsrfReasonAndConfirmation():void
     {
         $source=(string)file_get_contents(dirname(__DIR__,2).'/eshop_orders_admin.php');
