@@ -1,5 +1,39 @@
 # Session handoff
 
+## Aktualizace 10. 8. 2026 — dokončený UX/CRUD průchod a produkční nasazení (`34c185b64643e531ced4ac53004b23aa11593cbb`)
+
+### Výsledek a opravy
+
+- Rozšířený testovací plán doběhl bez nové kritické nebo datově nekonzistentní chyby. Implementační commit `34c185b` (`Improve KIS accessibility and responsive admin UX`) je na `main` a byl úspěšně nasazen.
+- Opravena administrátorská navigace přetékající na notebookových šířkách: skládá se do hamburgeru do breakpointu XXL, globální vyhledávání má bezpečnou šířku v pásmu 1400–1439 px.
+- Doplněny skutečné H1 na dashboardu, tréninkovém formuláři, správě sportovců a zákaznickém kalendáři.
+- Doplněny programatické popisky zákaznického kalendáře, přihlášení sportovce a žádosti o propojení osoby.
+- Doplněny čitelné názvy ikonových akcí pro navigaci kalendářů, skupiny, sportoviště, lekce a rezervace.
+- Doplněny názvy hustých řádkových polí ve správě sportovců, katalogu, objednávkách a měřeních tréninku; mobilní akce e-shop administrace se zalamují.
+- Přidán regresní `tests/Unit/UxAccessibilityWiringTest.php` (4 testy, 35 kontrol).
+
+### Ověření
+
+- PHPUnit bezprostředně před commitem: `515 tests`, `4533 assertions`, vše zelené.
+- Playwright acceptance: `8/8`; katalog `A01–A10 + B01–B30 = 40/40`; široký smoke `161` endpointů bez 5xx/runtime chyby.
+- UX/responzivita: `49` kombinací stránek a šířek, 0 chybějících H1, 0 nepopsaných kontrol, 0 vodorovných přesahů.
+- Mutační CRUD: `4/4`; trenér, skupina, trénink/vazby, sportoviště, rezervace, individuální lekce bez opakování, žádost o osobu, týdenní souhrn a privátní kalendář. SQL kontrola a automatický úklid vlastněných dat prošly.
+- DB invarianty po scénářích: všech 8 kontrol má hodnotu 0 (osiřelé/duplicitní objednávky a platby, záporné součty, neplatné rezervace, duplicitní účastníci, aktivní expirace).
+- `composer validate --strict`, `composer audit --locked`, `composer check-platform-reqs`, lint 473 first-party PHP souborů a idempotentní migration check/apply byly zelené.
+
+### Produkce
+
+- GitHub Actions run `31409725853`, job `93524592344`, závěr `success`; nasazené SHA `34c185b64643e531ced4ac53004b23aa11593cbb`.
+- Ověřená záloha před aktivací: `evidence_2026-08-10_163614_62fd5e47.sql.gz`, 154 tabulek, 2 triggery, SHA-256 `08f7f32aa94847f5e77ee78f09f19913bdfe93a9127396d66cba503abf6e51c2`.
+- Přihlášený produkční smoke ověřil admin dashboard, katalog, objednávky, zákaznický kalendář a osoby HTTP 200 včetně nového HTML; webhook GET vrací očekávané 405 + `Allow: POST`.
+
+### Otevřené body
+
+1. Produkční bankovní checkout zůstává fail-closed, dokud vlastník nedodá skutečné `SHOP_BANK_IBAN`, `SHOP_BANK_BIC`, `SHOP_BANK_ACCOUNT_LABEL` a splatnost.
+2. Stripe sandbox refund proběhl skutečně u Stripe, lokální objednávka ale zůstává `refund_required`; automatická Stripe refund/reconciliation synchronizace je odložený systémový slice.
+3. Aktuálně otevřená karta phpMyAdmin míří do `velocotacom` (202 tabulek), ne do KIS databáze `evidence` (154 tabulek potvrzených deploy zálohou). Nebyl proveden zápis do nesprávné DB. Po otevření `evidence` ručně deaktivovat testovací účty `verejni_uzivatele.id=5`, `treneri.id=47`, zvýšit `session_version` a prověřit případnou lekci `UXTEST postdeploy jediný termín 20260810`.
+4. Historické duplicitní trenérské identity a velké seznamy (cca 10 tisíc sportovců / 1463 tréninkových formulářů) zůstávají samostatné datové a architektonické úkoly; nejsou blokátorem dokončené testovací vlny.
+
 ## Aktualizace 10. 8. 2026 — autonomní stabilizace, plné E2E a produkční deploy (`e4a5dc07f28570a0a56a9040ce7acc5578276a5a`)
 
 ### Výsledek
