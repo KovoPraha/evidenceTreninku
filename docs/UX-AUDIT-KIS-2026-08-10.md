@@ -19,7 +19,7 @@ Po schválení navazujícího plánu proběhla další automatizovaná vlna zam�
 - Reálný MariaDB souběh: dvě paralelní PHP relace, jedna objednávka, jedna platba, jeden skladový pohyb, sklad 0, druhý požadavek vrácen jako replay.
 - Backup–restore: **105 tabulek**, všechny počty řádků a triggery shodné s manifestem; dočasná databáze odstraněna.
 - Playwright: **8/8** hlavních funkčních scénářů, **40/40** akceptačních oblastí, **161** endpointů bez 5xx, **4/4** role/responzivita/invarianty a **4/4** změnové CRUD scénáře.
-- Výkon localhostu na 45 načteních reprezentativních veřejných, zákaznických a administrátorských stránek: medián **148 ms**, p95 **798 ms**, maximum **1 213 ms**; všechny odpovědi pod 500 a p95 pod dvousekundovou bránou.
+- Výkon localhostu na 45 načteních existujících reprezentativních veřejných, zákaznických a administrátorských stránek: medián **162 ms**, p95 **933 ms**, maximum **1 256 ms**; všech 45 odpovědí HTTP 200 a p95 pod dvousekundovou bránou.
 - Syntaxe: **475 PHP souborů**, 0 chyb. Composer konfigurace je validní, platformní požadavky splněné a dependency audit má 0 známých zranitelností.
 
 ## Závěrečný stav po rozšířeném testování
