@@ -300,6 +300,7 @@ try {
     }
 
     $pdo->commit();
+    $_SESSION['flash_success'] = 'Trénink byl úspěšně uložen.';
     header('Location: moje_treninky.php');
     exit;
 

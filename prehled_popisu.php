@@ -232,9 +232,9 @@ $dniLabels    = [7=>'7 dní', 14=>'14 dní', 30=>'1 měsíc', 180=>'6 měsíců'
     <!-- Hero -->
     <div class="hero-bar d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div>
-            <div class="fw-semibold fs-5">
+            <h1 class="fw-semibold fs-5 mb-0">
                 <i class="bi bi-journal-text me-2 opacity-75"></i>Přehled popisů tréninků
-            </div>
+            </h1>
             <div class="opacity-75 small">
                 <?php if ($isSupervisor): ?>
                     Popisy tréninků dle skupiny nebo podskupiny za zvolené období — všechny skupiny.

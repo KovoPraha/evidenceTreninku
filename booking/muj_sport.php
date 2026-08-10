@@ -29,6 +29,7 @@ function childPageStatusLabel(string $status, string $context): string
             'active' => 'Aktivní',
             'ended' => 'Ukončeno',
             'cancelled' => 'Zrušeno',
+            'removed' => 'Odebráno ze soupisky',
         ],
         'event' => [
             'confirmed' => 'Přihlášeno',
@@ -55,7 +56,7 @@ function childPageStatusClass(string $status): string
     return match ($status) {
         'aktivni', 'active', 'confirmed', 'paid', 'refunded' => 'text-bg-success',
         'cekajici', 'waitlisted', 'payment_pending', 'pending', 'refund_required' => 'text-bg-warning',
-        'cancelled', 'ended', 'neaktivni', 'archiv', 'unpaid' => 'text-bg-secondary',
+        'cancelled', 'ended', 'removed', 'neaktivni', 'archiv', 'unpaid' => 'text-bg-secondary',
         default => 'text-bg-light',
     };
 }

@@ -309,9 +309,9 @@ $pocetBezEmailu  = count($vsichniSportovci) - $pocetSEmailem;
     <div class="hero-card card mb-4 p-3 px-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <div class="fw-semibold fs-5">
+                <h1 class="fw-semibold fs-5 mb-0">
                     <i class="bi bi-envelope-fill me-2 opacity-75"></i>Odeslat emaily sportovcům
-                </div>
+                </h1>
                 <div class="opacity-75 small">Hromadné individualizované emaily s unikátním odkazem na profil každého sportovce.</div>
             </div>
             <a href="index.php" class="btn btn-outline-light btn-sm">

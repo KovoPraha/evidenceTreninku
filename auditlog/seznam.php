@@ -95,7 +95,8 @@ $logy = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </form>
 
-<table class="table table-sm table-bordered table-hover">
+<div class="table-responsive">
+<table class="table table-sm table-bordered table-hover align-middle">
   <thead class="table-light">
     <tr>
       <th>Čas</th>
@@ -114,8 +115,9 @@ $logy = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <td><?= htmlspecialchars($z['akce']) ?></td>
         <td><?= htmlspecialchars((string)$z['tabulka']) ?></td>
         <td><?= (int)$z['zaznam_id'] ?></td>
-        <td><pre><?= htmlspecialchars((string)$z['detail']) ?></pre></td>
+        <td><pre class="mb-0 text-wrap" style="white-space: pre-wrap; overflow-wrap: anywhere;"><?= htmlspecialchars((string)$z['detail']) ?></pre></td>
       </tr>
     <?php endforeach; ?>
   </tbody>
 </table>
+</div>

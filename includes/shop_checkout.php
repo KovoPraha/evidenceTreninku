@@ -395,14 +395,22 @@ function shopCartFingerprint(array $items,?array $coupon=null,array $velodromeIt
 }
 
 /** @return list<array<string,mixed>> */
-function shopOrderAdminList(PDO $pdo,int $limit=200):array
+function shopOrderAdminList(PDO $pdo,int $limit=200,string $query=''):array
 {
     $limit=max(1,min(500,$limit));
-    return $pdo->query('SELECT o.*,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
+    $query=trim($query);
+    $sql='SELECT o.*,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
         .'e.action AS last_event_action,e.actor_id AS last_event_actor_id,e.note AS last_event_note,e.created_at AS last_event_at '
         .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '
-        .'LEFT JOIN shop_order_events e ON e.id=(SELECT MAX(e2.id) FROM shop_order_events e2 WHERE e2.order_id=o.id) '
-        .'ORDER BY CASE p.status WHEN \'pending\' THEN 0 WHEN \'refund_required\' THEN 1 ELSE 2 END,o.created_at DESC,o.id DESC LIMIT '.$limit)->fetchAll(PDO::FETCH_ASSOC);
+        .'LEFT JOIN shop_order_events e ON e.id=(SELECT MAX(e2.id) FROM shop_order_events e2 WHERE e2.order_id=o.id) ';
+    $parameters=[];
+    if($query!==''){
+        $sql.='WHERE o.public_code LIKE ? OR o.customer_name_snapshot LIKE ? OR o.customer_email_snapshot LIKE ? OR p.variable_symbol LIKE ? ';
+        $needle='%'.$query.'%';$parameters=[$needle,$needle,$needle,$needle];
+    }
+    $sql.='ORDER BY CASE p.status WHEN \'pending\' THEN 0 WHEN \'refund_required\' THEN 1 ELSE 2 END,o.created_at DESC,o.id DESC LIMIT '.$limit;
+    $statement=$pdo->prepare($sql);$statement->execute($parameters);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function shopOrderExpirationAvailable(PDO $pdo):bool

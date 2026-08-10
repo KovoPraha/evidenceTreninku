@@ -11,7 +11,9 @@ function orderAdminH(mixed $value):string{return htmlspecialchars((string)$value
 function orderAdminMoney(int $minor,string $currency):string{return number_format($minor/100,2,',',' ').' '.orderAdminH($currency);}
 function orderAdminStatusLabel(string $status):string{return ['placed'=>'Čeká na platbu','processing'=>'Připravuje se','ready'=>'Připraveno','completed'=>'Vydáno','cancelled'=>'Stornováno'][$status]??$status;}
 function orderAdminPaymentLabel(string $status):string{return ['pending'=>'Čeká','paid'=>'Zaplaceno','cancelled'=>'Zrušeno','refund_required'=>'Vrátit platbu','refunded'=>'Vráceno'][$status]??$status;}
+function orderAdminActionLabel(?string $action):string{return ['checkout_created'=>'Objednávka vytvořena','confirm_bank_payment'=>'Bankovní platba potvrzena','mark_ready'=>'Příprava dokončena','complete_pickup'=>'Osobní výdej potvrzen','cancel'=>'Objednávka stornována','confirm_refund'=>'Vrácení platby potvrzeno','expire'=>'Nezaplacená objednávka expirována'][$action??'']??'Záznam změny';}
 
+$query=trim((string)($_GET['q']??''));
 $errors=[];
 if($_SERVER['REQUEST_METHOD']==='POST'){
     if(!csrf_verify((string)($_POST['csrf_token']??''))){
@@ -39,7 +41,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             }else{
                 throw new InvalidArgumentException('Neznámá akce objednávky.');
             }
-            $_SESSION['flash_order_admin']=$message;header('Location: eshop_orders_admin.php',true,303);exit;
+            $_SESSION['flash_order_admin']=$message;
+            $target='eshop_orders_admin.php'.($query!==''?'?q='.rawurlencode($query):'').'#order-'.(int)$result['order_id'];
+            header('Location: '.$target,true,303);exit;
         }catch(PDOException $exception){
             error_log('eshop_orders_admin.php: '.$exception->getMessage());$errors[]='Databázová operace selhala bez částečného zápisu.';
         }catch(InvalidArgumentException|ShopCheckoutException $exception){
@@ -47,7 +51,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         }
     }
 }
-$success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_order_admin']);$orders=shopOrderAdminList($pdo);
+$success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_order_admin']);$orders=shopOrderAdminList($pdo,200,$query);
 ?>
 <!doctype html>
 <html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Objednávky K4</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"></head>
@@ -57,14 +61,19 @@ $success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_ord
 <?php foreach($errors as$error):?><div class="alert alert-danger"><?=orderAdminH($error)?></div><?php endforeach;?>
 <?php if($success!==''):?><div class="alert alert-success"><?=orderAdminH($success)?></div><?php endif;?>
 <div class="alert alert-warning small">Zaplacené storno vrátí zboží do skladu, ale peníze označí jako <strong>Vrátit platbu</strong>. Teprve samostatné ověření bankovní vratky může finanční část uzavřít.</div>
-<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Objednávka</th><th>Zákazník</th><th>Částka / VS</th><th>Objednávka</th><th>Platba</th><th>Poslední audit</th><th style="min-width:330px">Bezpečná akce</th></tr></thead><tbody>
-<?php foreach($orders as$order):?><tr>
+<form method="get" class="card card-body border-0 shadow-sm mb-3" role="search">
+<label for="order-search" class="form-label fw-semibold">Najít objednávku</label>
+<div class="input-group"><input id="order-search" name="q" class="form-control" value="<?=orderAdminH($query)?>" maxlength="100" placeholder="Kód objednávky, zákazník, e-mail nebo variabilní symbol"><button class="btn btn-primary" type="submit">Hledat</button><?php if($query!==''):?><a class="btn btn-outline-secondary" href="eshop_orders_admin.php">Zrušit filtr</a><?php endif;?></div>
+<?php if($query!==''):?><div class="form-text">Počet výsledků: <?=count($orders)?>.</div><?php endif;?>
+</form>
+<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Objednávka</th><th>Zákazník</th><th>Částka / VS</th><th>Stav</th><th>Platba</th><th>Poslední změna</th><th style="min-width:330px">Dostupné akce</th></tr></thead><tbody>
+<?php foreach($orders as$order):?><tr id="order-<?=(int)$order['id']?>">
 <td><code><?=orderAdminH($order['public_code'])?></code><div class="small text-muted"><?=orderAdminH($order['created_at'])?></div></td>
 <td><?=orderAdminH($order['customer_name_snapshot'])?><div class="small"><?=orderAdminH($order['customer_email_snapshot'])?></div></td>
 <td><?=orderAdminMoney((int)$order['total_minor'],(string)$order['currency'])?><div><code>VS <?=orderAdminH($order['variable_symbol'])?></code></div><?php if($order['coupon_code_snapshot']!==null):?><div class="small text-success">kupón <?=orderAdminH($order['coupon_code_snapshot'])?> · sleva <?=orderAdminMoney((int)$order['discount_minor'],(string)$order['currency'])?></div><?php endif;?></td>
 <td><strong><?=orderAdminH(orderAdminStatusLabel((string)$order['status']))?></strong><?php if($order['ready_at']!==null):?><div class="small text-muted">Připraveno <?=orderAdminH($order['ready_at'])?></div><?php endif;?><?php if($order['completed_at']!==null):?><div class="small text-muted">Vydáno <?=orderAdminH($order['completed_at'])?></div><?php endif;?><?php if($order['cancelled_at']!==null):?><div class="small text-muted">Storno <?=orderAdminH($order['cancelled_at'])?></div><?php endif;?></td>
 <td><span class="badge text-bg-<?=in_array($order['payment_record_status'],['paid','refunded'],true)?'success':($order['payment_record_status']==='refund_required'?'danger':'warning')?>"><?=orderAdminH(orderAdminPaymentLabel((string)$order['payment_record_status']))?></span><?php if($order['refund_sent_at']!==null):?><div class="small text-muted"><?=orderAdminH($order['refund_sent_at'])?><br>ref. <?=orderAdminH($order['refund_reference'])?></div><?php endif;?></td>
-<td class="small" style="max-width:260px"><code><?=orderAdminH($order['last_event_action'])?></code><?php if($order['last_event_actor_id']!==null):?> · admin #<?=(int)$order['last_event_actor_id']?><?php endif;?><div><?=orderAdminH($order['last_event_note'])?></div><div class="text-muted"><?=orderAdminH($order['last_event_at'])?></div></td>
+<td class="small" style="max-width:260px"><strong><?=orderAdminH(orderAdminActionLabel($order['last_event_action']))?></strong><?php if($order['last_event_actor_id']!==null):?> · administrátor<?php endif;?><div><?=orderAdminH($order['last_event_note'])?></div><div class="text-muted"><?=orderAdminH($order['last_event_at'])?></div></td>
 <td>
 <?php if($order['status']==='placed'&&$order['payment_record_status']==='pending'):?>
 <form method="post" class="border rounded p-2 mb-2"><?=csrf_field()?><input type="hidden" name="action" value="confirm_payment"><input type="hidden" name="payment_id" value="<?=(int)$order['payment_id']?>"><label class="small fw-semibold">Potvrdit bankovní platbu</label><input class="form-control form-control-sm my-1" name="reason" maxlength="1000" required aria-label="Způsob ověření platby <?=orderAdminH($order['public_code'])?>" placeholder="Jak byla platba ověřena"><label class="small d-block"><input type="checkbox" name="confirm_action" value="1" required> Ověřil/a jsem platbu v bance</label><button class="btn btn-sm btn-outline-success mt-1">Přijmout platbu</button></form>
@@ -80,5 +89,5 @@ $success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_ord
 <form method="post" class="border border-danger-subtle rounded p-2"><?=csrf_field()?><input type="hidden" name="action" value="cancel"><input type="hidden" name="order_id" value="<?=(int)$order['id']?>"><label class="small fw-semibold text-danger">Stornovat objednávku</label><input class="form-control form-control-sm my-1" name="reason" maxlength="1000" required aria-label="Důvod storna <?=orderAdminH($order['public_code'])?>" placeholder="Důvod storna"><label class="small d-block"><input type="checkbox" name="confirm_action" value="1" required> Potvrzuji storno a vrácení skladu</label><button class="btn btn-sm btn-outline-danger mt-1">Stornovat</button></form>
 <?php elseif(in_array($order['status'],['completed','cancelled'],true)&&$order['payment_record_status']!=='refund_required'):?><span class="small text-muted">Objednávka je v koncovém stavu.</span><?php endif;?>
 </td></tr><?php endforeach;?>
-<?php if($orders===[]):?><tr><td colspan="7" class="text-center text-muted py-4">Zatím není žádná objednávka.</td></tr><?php endif;?>
+<?php if($orders===[]):?><tr><td colspan="7" class="text-center text-muted py-4"><?=$query!==''?'Tomuto hledání neodpovídá žádná objednávka.':'Zatím není žádná objednávka.'?></td></tr><?php endif;?>
 </tbody></table></div></div></main></body></html>

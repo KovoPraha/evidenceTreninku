@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once 'db.php';
+require_once __DIR__ . '/csrf_helper.php';
 
 // Autoload a import tříd pro Excel export
 require 'vendor/autoload.php';
@@ -10,6 +11,26 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 if (!isset($_SESSION['trener_id'])) {
     header("Location: login.php");
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        $_SESSION['flash_error'] = 'Platnost formuláře vypršela. Obnovte stránku a zkuste to znovu.';
+    } elseif (($_POST['action'] ?? '') === 'delete_activity' && ($_POST['confirm_action'] ?? '') === '1') {
+        $delete = $pdo->prepare('DELETE FROM dalsi_cinnosti WHERE id = ? AND trener_id = ?');
+        $delete->execute([(int)($_POST['activity_id'] ?? 0), (int)$_SESSION['trener_id']]);
+        $_SESSION[$delete->rowCount() === 1 ? 'flash_success' : 'flash_error'] = $delete->rowCount() === 1
+            ? 'Činnost byla odstraněna z výkazu.'
+            : 'Činnost nebyla nalezena nebo ji nemůžete odstranit.';
+    } else {
+        $_SESSION['flash_error'] = 'Odstranění činnosti je nutné výslovně potvrdit.';
+    }
+    $returnMonth = (string)($_POST['mesic'] ?? date('Y-m'));
+    if (!preg_match('/^\d{4}-\d{2}$/', $returnMonth)) {
+        $returnMonth = date('Y-m');
+    }
+    header('Location: vypis_vykazu.php?mesic=' . rawurlencode($returnMonth), true, 303);
     exit;
 }
 
@@ -266,6 +287,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'xls') {
                     <th><i class="bi bi-card-text me-1"></i>Název</th>
                     <th><i class="bi bi-chat-left-text me-1"></i>Poznámka</th>
                     <th style="width:75px;" class="text-end"><i class="bi bi-clock me-1"></i>Hodin</th>
+                    <th style="width:90px;" class="text-end">Akce</th>
                 </tr>
             </thead>
             <tbody>
@@ -279,6 +301,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'xls') {
                     <td><?= h($a['nazev']) ?></td>
                     <td class="text-muted small"><?= h($a['poznamka']) ?></td>
                     <td class="text-end fw-semibold"><?= number_format($a['delka'], 1, ',', '') ?></td>
+                    <td class="text-end"><details class="d-inline-block text-start"><summary class="btn btn-sm btn-outline-danger" aria-label="Odstranit činnost <?= h($a['nazev']) ?>"><i class="bi bi-trash" aria-hidden="true"></i><span class="d-none d-lg-inline ms-1">Odstranit</span></summary><form method="post" class="border rounded bg-white p-2 mt-1" style="min-width:210px"><?= csrf_field() ?><input type="hidden" name="action" value="delete_activity"><input type="hidden" name="activity_id" value="<?= (int)$a['id'] ?>"><input type="hidden" name="mesic" value="<?= h($mesic) ?>"><label class="small d-block"><input type="checkbox" name="confirm_action" value="1" required> Opravdu odstranit tuto činnost</label><button class="btn btn-sm btn-danger mt-2">Potvrdit odstranění</button></form></details></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -286,6 +309,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'xls') {
                 <tr class="table-info fw-bold">
                     <td colspan="4" class="text-end"><i class="bi bi-calculator me-1"></i>Součet činnosti:</td>
                     <td class="text-end"><?= number_format($hodinAktivity, 1, ',', ' ') ?> h</td>
+                    <td></td>
                 </tr>
             </tfoot>
         </table>

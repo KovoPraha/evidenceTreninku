@@ -309,7 +309,7 @@ try {
 
     <!-- Hlavička -->
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <h5 class="mb-0 me-2"><i class="bi bi-calendar3-week me-2 text-primary"></i>Plánovač tréninků</h5>
+        <h1 class="h5 mb-0 me-2"><i class="bi bi-calendar3-week me-2 text-primary"></i>Plánovač tréninků</h1>
         <?php
         // Helper: sestaví URL s aktuálními filtry
         $qFilters = ($filterSkupina ? '&skupina_id='.$filterSkupina : '')

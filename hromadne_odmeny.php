@@ -270,9 +270,9 @@ if ($filterSkupinaId !== '') {
     <div class="hero-card card mb-4 p-3 px-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <div class="fw-semibold fs-5">
+                <h1 class="fw-semibold fs-5 mb-0">
                     <i class="bi bi-star me-2 opacity-75"></i>Hromadné nastavení sazeb za trénink
-                </div>
+                </h1>
                 <div class="opacity-75 small">
                     Nastaví <code>sazba_kc</code> v otevřeném období pro celou skupinu najednou.
                     Pokud sportovec nemá otevřené období, automaticky se vytvoří od dnešního dne.

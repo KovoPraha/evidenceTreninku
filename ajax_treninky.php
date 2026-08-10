@@ -169,16 +169,17 @@ foreach ($treninky as $t) {
                             <div class="muted-label d-flex align-items-center gap-2">
                                 Poznámka
                                 <button type="button" class="btn btn-link btn-sm p-0 lh-1 js-edit-poznamka"
-                                        data-id="<?= $treninkId ?>" title="Upravit">✏️</button>
+                                        data-id="<?= $treninkId ?>" title="Upravit" aria-label="Upravit poznámku k tréninku <?= h((string)$t['datum']) ?>">✏️</button>
                             </div>
                             <div id="poznamka-text-<?= $treninkId ?>">
                                 <?= nl2br(h($t['poznamka'] ?? '')) ?: '<span class="text-muted">—</span>' ?>
                             </div>
+                            <div id="poznamka-status-<?= $treninkId ?>" class="small mt-1" role="status" aria-live="polite"></div>
                             <div id="poznamka-form-<?= $treninkId ?>" class="d-none mt-1">
-                                <textarea class="form-control form-control-sm" rows="3" id="poznamka-ta-<?= $treninkId ?>"><?= h($t['poznamka'] ?? '') ?></textarea>
+                                <textarea class="form-control form-control-sm" rows="3" id="poznamka-ta-<?= $treninkId ?>" aria-label="Poznámka k tréninku <?= h((string)$t['datum']) ?>"><?= h($t['poznamka'] ?? '') ?></textarea>
                                 <div class="mt-1 d-flex gap-2">
-                                    <button type="button" class="btn btn-sm btn-primary js-save-poznamka" data-id="<?= $treninkId ?>">Uložit</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary js-cancel-poznamka" data-id="<?= $treninkId ?>">Zrušit</button>
+                                    <button type="button" class="btn btn-sm btn-primary js-save-poznamka" data-id="<?= $treninkId ?>" aria-label="Uložit poznámku k tréninku <?= h((string)$t['datum']) ?>">Uložit</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary js-cancel-poznamka" data-id="<?= $treninkId ?>" aria-label="Zrušit úpravu poznámky k tréninku <?= h((string)$t['datum']) ?>">Zrušit</button>
                                 </div>
                                 <div class="js-poznamka-msg mt-1 small"></div>
                             </div>
@@ -239,7 +240,7 @@ foreach ($treninky as $t) {
                                 <div class="d-grid gap-2">
                                     <form method="POST" action="generuj_story.php" class="d-grid">
                                         <input type="hidden" name="id" value="<?= $treninkId ?>"><?= csrf_field() ?>
-                                        <button type="submit" class="btn btn-sm btn-info">Story</button>
+                                        <button type="submit" class="btn btn-sm btn-info">Vytvořit Story</button>
                                     </form>
                                     <a href="edit_trenink.php?id=<?= $treninkId ?>" class="btn btn-sm btn-secondary">Upravit</a>
                                     <form method="POST" action="smazat_trenink.php"

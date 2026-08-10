@@ -205,9 +205,9 @@ $vyplStats = $stmtVypl->fetch(PDO::FETCH_ASSOC);
     <div class="hero-card card mb-4 p-3 px-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <div class="fw-semibold fs-5">
+                <h1 class="fw-semibold fs-5 mb-0">
                     <i class="bi bi-graph-up me-2 opacity-75"></i>Přehled kreditů sportovců
-                </div>
+                </h1>
                 <div class="opacity-75 small">Aktivní odměny, čekající výplaty a statistiky vyplacených odměn.</div>
             </div>
             <div class="d-flex gap-2 flex-wrap">

@@ -208,7 +208,7 @@ if (!empty($trenink['datum'])) {
         <div class="card-body py-3 px-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
-                    <div class="fw-semibold fs-5"><i class="bi bi-pencil-square me-2"></i>Úprava tréninku #<?= (int)$trenink['id'] ?></div>
+                    <h1 class="fw-semibold fs-5 mb-0"><i class="bi bi-pencil-square me-2"></i>Úprava tréninku #<?= (int)$trenink['id'] ?></h1>
                     <div class="opacity-75 small"><i class="bi bi-calendar3 me-1"></i><?= h($dupDatumStr) ?></div>
                 </div>
                 <a href="moje_treninky.php" class="btn btn-outline-light btn-sm">

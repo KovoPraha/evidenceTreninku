@@ -36,6 +36,7 @@ unset($_SESSION['flash_success']);
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moje tréninky</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -209,6 +210,8 @@ unset($_SESSION['flash_success']);
         listWrap.querySelectorAll('.js-edit-poznamka').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.dataset.id;
+                const status = document.getElementById('poznamka-status-' + id);
+                status.textContent = '';
                 document.getElementById('poznamka-text-' + id).classList.add('d-none');
                 document.getElementById('poznamka-form-'  + id).classList.remove('d-none');
             });
@@ -219,7 +222,10 @@ unset($_SESSION['flash_success']);
                 const id = btn.dataset.id;
                 document.getElementById('poznamka-text-' + id).classList.remove('d-none');
                 document.getElementById('poznamka-form-'  + id).classList.add('d-none');
-                document.querySelector('.js-poznamka-msg[data-id="' + id + '"]').textContent = '';
+                document.getElementById('poznamka-form-' + id).querySelector('.js-poznamka-msg').textContent = '';
+                const status = document.getElementById('poznamka-status-' + id);
+                status.textContent = 'Změny poznámky nebyly uloženy.';
+                status.className = 'small mt-1 text-muted';
             });
         });
 
@@ -260,6 +266,9 @@ unset($_SESSION['flash_success']);
                         }
                         textEl.classList.remove('d-none');
                         document.getElementById('poznamka-form-' + id).classList.add('d-none');
+                        const status = document.getElementById('poznamka-status-' + id);
+                        status.textContent = 'Poznámka byla uložena.';
+                        status.className = 'small mt-1 text-success';
                     } else {
                         msgEl.textContent = data.message;
                         msgEl.className = 'js-poznamka-msg mt-1 small text-danger';
