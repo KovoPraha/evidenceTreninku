@@ -9,22 +9,10 @@ require_once 'db.php';
 require_once 'csrf_helper.php';
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
-// ── Vytvoř tabulku nastaveni pokud neexistuje ─────────────────────────────
-try {
-    $pdo->exec("CREATE TABLE IF NOT EXISTS nastaveni (
-        klic     VARCHAR(80)  NOT NULL,
-        hodnota  TEXT         NOT NULL DEFAULT '',
-        upraveno TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        PRIMARY KEY (klic)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
-} catch (PDOException $e) {
-    error_log('nastaveni create table: ' . $e->getMessage());
-}
-
 // ── Zpracování POST ───────────────────────────────────────────────────────
 $flashError = $flashSuccess = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $flashError = 'Neplatný CSRF token.';
     } else {
         $dniZpet = (int)($_POST['dni_zpet'] ?? -1);
@@ -39,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $flashSuccess = "Nastavení uloženo — zadávání povoleno $dniZpet " . ($dniZpet === 1 ? 'den zpět' : ($dniZpet <= 4 ? 'dny zpět' : 'dní zpět')) . '.';
             } catch (PDOException $e) {
                 error_log('nastaveni save: ' . $e->getMessage());
-                $flashError = 'Chyba při ukládání: ' . $e->getMessage();
+                $flashError = 'Nastavení se nepodařilo uložit. Zkuste to prosím znovu.';
             }
         }
     }
@@ -135,9 +123,9 @@ try {
     <div class="hero-card card mb-4 p-3 px-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <div class="fw-semibold fs-5">
+                <h1 class="h5 fw-semibold mb-0">
                     <i class="bi bi-calendar-lock me-2 opacity-75"></i>Nastavení zadávání tréninků
-                </div>
+                </h1>
                 <div class="opacity-75 small">Určete, jak daleko do minulosti mohou trenéři zadávat tréninky.</div>
             </div>
             <a href="index.php" class="btn btn-outline-light btn-sm">

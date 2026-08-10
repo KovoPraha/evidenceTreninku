@@ -79,7 +79,7 @@ $stavBadge = [
 <body class="bg-light">
 <?php publicShellNav(); ?>
 <div class="container mt-4" style="max-width:700px">
-    <h5 class="mb-3"><i class="bi bi-calendar-check me-2"></i>Moje rezervace</h5>
+    <h1 class="h5 mb-3"><i class="bi bi-calendar-check me-2"></i>Moje rezervace</h1>
 
     <?php if ($success): ?>
         <div class="alert alert-success"><?= h($success) ?></div>

@@ -9,6 +9,8 @@ on:
         type: choice
         options:
           - obnovit-zalohu-izolovane
+          - obnovit-tri-zalohy-izolovane
+          - overit-databazove-invarianty
           - deaktivovat-testovaci-ucty
       potvrzeni:
         description: 'Pro spusteni napiste presne PROVEST'
@@ -70,56 +72,83 @@ jobs:
           echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
           echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
 
-      - name: Obnovit posledni zalohu do izolovane MariaDB
-        if: inputs.operace == 'obnovit-zalohu-izolovane'
+      - name: Obnovit vybrane generace zaloh do izolovane MariaDB
+        if: inputs.operace == 'obnovit-zalohu-izolovane' || inputs.operace == 'obnovit-tri-zalohy-izolovane'
         run: |
           set -euo pipefail
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
           TMP="/tmp/kis-restore-drill-$GITHUB_RUN_ID"
           install -d -m 700 "$TMP"
-          LATEST=$("${SSH[@]}" "set -eu; latest=\$(ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n 1); test -n \"\$latest\"; printf '%s\\n' \"\$latest\"")
-          [[ "$LATEST" =~ ^data/\.kis-backups/evidence_[0-9A-Za-z_-]+\.sql\.gz$ ]]
-          BASE="${LATEST%.sql.gz}"
-          "${SCP[@]}" "$SSH_USER@$SSH_HOST:$LATEST" "$TMP/"
-          "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.sha256" "$TMP/"
-          "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.manifest.json" "$TMP/"
-          cd "$TMP"
-          SQL_FILE=$(basename "$LATEST")
-          SHA_FILE="$(basename "$BASE").sha256"
-          MANIFEST_FILE="$(basename "$BASE").manifest.json"
-          sha256sum -c "$SHA_FILE"
-          test "$(jq -r '.sha256' "$MANIFEST_FILE")" = "$(sha256sum "$SQL_FILE" | awk '{print $1}')"
-          test "$(jq -r '.application' "$MANIFEST_FILE")" = 'evidence'
-          test "$(jq -r '.sql_file' "$MANIFEST_FILE")" = "$SQL_FILE"
-          test "$(jq -r '.format_version | numbers' "$MANIFEST_FILE")" -ge 1
+          COUNT=1
+          if [ '${{ inputs.operace }}' = 'obnovit-tri-zalohy-izolovane' ]; then COUNT=3; fi
+          mapfile -t BACKUPS < <("${SSH[@]}" "set -eu; ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n '$COUNT'")
+          test "${#BACKUPS[@]}" = "$COUNT"
 
-          CONTAINER="kis-restore-$GITHUB_RUN_ID"
-          RESTORE_PASSWORD=$(openssl rand -hex 24)
-          docker run -d --name "$CONTAINER" -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:11.4 > /dev/null
-          READY=0
-          for i in $(seq 1 60); do
-            if docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT 1' > /dev/null 2>&1; then
-              READY=1
-              break
-            fi
-            sleep 2
+          VERIFIED=0
+          for LATEST in "${BACKUPS[@]}"; do
+            [[ "$LATEST" =~ ^data/\.kis-backups/evidence_[0-9A-Za-z_-]+\.sql\.gz$ ]]
+            BASE="${LATEST%.sql.gz}"
+            "${SCP[@]}" "$SSH_USER@$SSH_HOST:$LATEST" "$TMP/"
+            "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.sha256" "$TMP/"
+            "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.manifest.json" "$TMP/"
+            cd "$TMP"
+            SQL_FILE=$(basename "$LATEST")
+            SHA_FILE="$(basename "$BASE").sha256"
+            MANIFEST_FILE="$(basename "$BASE").manifest.json"
+            sha256sum -c "$SHA_FILE"
+            test "$(jq -r '.sha256' "$MANIFEST_FILE")" = "$(sha256sum "$SQL_FILE" | awk '{print $1}')"
+            test "$(jq -r '.application' "$MANIFEST_FILE")" = 'evidence'
+            test "$(jq -r '.sql_file' "$MANIFEST_FILE")" = "$SQL_FILE"
+            test "$(jq -r '.format_version | numbers' "$MANIFEST_FILE")" -ge 1
+
+            VERIFIED=$((VERIFIED + 1))
+            CONTAINER="kis-restore-$GITHUB_RUN_ID-$VERIFIED"
+            RESTORE_PASSWORD=$(openssl rand -hex 24)
+            docker run -d --name "$CONTAINER" -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:11.4 > /dev/null
+            READY=0
+            for i in $(seq 1 60); do
+              if docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT 1' > /dev/null 2>&1; then
+                READY=1
+                break
+              fi
+              sleep 2
+            done
+            test "$READY" = '1'
+            docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+            gzip -dc "$SQL_FILE" | docker exec -i "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" kis_restore
+
+            CHECKED=0
+            while IFS=$'\t' read -r TABLE EXPECTED; do
+              [[ "$TABLE" =~ ^[a-z0-9_]+$ ]]
+              ACTUAL=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM \`$TABLE\`" kis_restore)
+              test "$ACTUAL" = "$EXPECTED"
+              CHECKED=$((CHECKED + 1))
+            done < <(jq -r '.tables | to_entries[] | [.key,.value] | @tsv' "$MANIFEST_FILE")
+            EXPECTED_TRIGGERS=$(jq -r '.triggers | sort | join("\n")' "$MANIFEST_FILE")
+            ACTUAL_TRIGGERS=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA='kis_restore' ORDER BY TRIGGER_NAME")
+            test "$ACTUAL_TRIGGERS" = "$EXPECTED_TRIGGERS"
+            docker rm -f "$CONTAINER" > /dev/null
+            echo "Generace $VERIFIED obnovena: $CHECKED tabulek, $(jq '.triggers | length' "$MANIFEST_FILE") triggeru."
           done
-          test "$READY" = '1'
-          docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
-          gzip -dc "$SQL_FILE" | docker exec -i "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" kis_restore
+          echo "Izolovana obnova overena pro $VERIFIED generaci zaloh."
 
-          CHECKED=0
-          while IFS=$'\t' read -r TABLE EXPECTED; do
-            [[ "$TABLE" =~ ^[a-z0-9_]+$ ]]
-            ACTUAL=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM \`$TABLE\`" kis_restore)
-            test "$ACTUAL" = "$EXPECTED"
-            CHECKED=$((CHECKED + 1))
-          done < <(jq -r '.tables | to_entries[] | [.key,.value] | @tsv' "$MANIFEST_FILE")
-          EXPECTED_TRIGGERS=$(jq -r '.triggers | sort | join("\n")' "$MANIFEST_FILE")
-          ACTUAL_TRIGGERS=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA='kis_restore' ORDER BY TRIGGER_NAME")
-          test "$ACTUAL_TRIGGERS" = "$EXPECTED_TRIGGERS"
-          echo "Obnova overena: $CHECKED tabulek, $(jq '.triggers | length' "$MANIFEST_FILE") triggeru."
+      - name: Overit databazove invarianty pouze ctenim
+        if: inputs.operace == 'overit-databazove-invarianty'
+        run: |
+          set -euo pipefail
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SCP[@]}" bin/production-invariants.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-invariants.php"
+          cat > /tmp/run-production-invariants.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_INVARIANT_CONFIRM=OVERIT');
+          require __DIR__ . '/production-invariants.php';
+          EOF
+          "${SCP[@]}" /tmp/run-production-invariants.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-invariants.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-production-invariants.php'"
 
       - name: Deaktivovat vyhradne jednorazove testovaci ucty
         if: inputs.operace == 'deaktivovat-testovaci-ucty'
@@ -142,13 +171,12 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          CONTAINER="kis-restore-$GITHUB_RUN_ID"
-          docker rm -f "$CONTAINER" > /dev/null 2>&1 || true
+          docker ps -aq --filter "name=kis-restore-$GITHUB_RUN_ID" | xargs -r docker rm -f > /dev/null 2>&1 || true
           TMP="/tmp/kis-restore-drill-$GITHUB_RUN_ID"
           if [ -d "$TMP" ] && [[ "$TMP" =~ ^/tmp/kis-restore-drill-[0-9]+$ ]]; then
             find "$TMP" -mindepth 1 -maxdepth 1 -type f -delete
             rmdir "$TMP"
           fi
           if [ -n "${SSH_HOST:-}" ]; then
-            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php'" || true
+            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php' '$DEPLOY_BASE/production-invariants.php' '$DEPLOY_BASE/run-production-invariants.php'" || true
           fi

@@ -139,3 +139,8 @@ body.app-loading .app-loading-bar {
         transition-duration: .01ms !important;
     }
 }
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid #ffbf47 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px #212529 !important;
+}

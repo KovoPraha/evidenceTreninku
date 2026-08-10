@@ -71,6 +71,18 @@ final class PublicCalendarFeedTest extends TestCase
         }
     }
 
+    public function testPragueDstBoundaryRejectsMissingHourAndConvertsBothSidesExactly(): void
+    {
+        self::assertNull(\publicCalendarLocalDateTime('2026-03-29 02:30:00'));
+        self::assertSame('20260329T003000Z', \publicCalendarUtc('2026-03-29 01:30:00'));
+        self::assertSame('20260329T013000Z', \publicCalendarUtc('2026-03-29 03:30:00'));
+
+        $repeatedHour = \publicCalendarLocalDateTime('2026-10-25 02:30:00');
+        self::assertNotNull($repeatedHour);
+        self::assertSame('Europe/Prague', $repeatedHour->getTimezone()->getName());
+        self::assertSame('20261025T013000Z', \publicCalendarUtc('2026-10-25 02:30:00'));
+    }
+
     private function database(): PDO
     {
         $pdo = new PDO('sqlite::memory:', null, null, [

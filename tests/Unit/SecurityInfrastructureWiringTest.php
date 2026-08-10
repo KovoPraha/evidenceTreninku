@@ -29,6 +29,16 @@ final class SecurityInfrastructureWiringTest extends TestCase
         self::assertStringContainsString('csrf_field()', $route);
     }
 
+    public function testTrainingEntrySettingsUseCanonicalCsrfAndDoNotExposeDatabaseErrors(): void
+    {
+        $route = (string)file_get_contents(dirname(__DIR__, 2) . '/nastaveni_zadavani.php');
+
+        self::assertStringContainsString("csrf_verify((string)(\$_POST['csrf_token'] ?? ''))", $route);
+        self::assertStringContainsString('csrf_field()', $route);
+        self::assertStringNotContainsString("'Chyba při ukládání: ' . \$e->getMessage()", $route);
+        self::assertStringNotContainsString('CREATE TABLE IF NOT EXISTS nastaveni', $route);
+    }
+
     public function testStoredValuesAreNotInsertedThroughKnownUnsafeSinks(): void
     {
         $root = dirname(__DIR__, 2);

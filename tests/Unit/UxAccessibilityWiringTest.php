@@ -73,4 +73,49 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('aria-label="Důvod storna', $orders);
         self::assertStringContainsString('aria-label="Reference vratky', $orders);
     }
+
+    public function testRemainingCustomerBookingFormsHaveHeadingsAndLabels(): void
+    {
+        $reservations = (string)file_get_contents($this->root . 'booking/moje_rezervace.php');
+        $events = (string)file_get_contents($this->root . 'booking/krouzky.php');
+        $velodrome = (string)file_get_contents($this->root . 'booking/velodrom.php');
+
+        self::assertStringContainsString('<h1 class="h5 mb-3">', $reservations);
+        self::assertStringContainsString('for="paid-person-', $events);
+        self::assertStringContainsString('id="paid-person-', $events);
+        self::assertStringContainsString('for="velodrome-note-', $velodrome);
+        self::assertStringContainsString('id="velodrome-note-', $velodrome);
+        self::assertStringContainsString('for="velodrome-cancel-note-', $velodrome);
+        self::assertStringContainsString('id="velodrome-cancel-note-', $velodrome);
+    }
+
+    public function testSharedUiAddsAccessibleNamesToLegacyAdminFields(): void
+    {
+        $ui = (string)file_get_contents($this->root . 'assets/app-ui.js');
+        $trainingSettings = (string)file_get_contents($this->root . 'nastaveni_zadavani.php');
+
+        self::assertStringContainsString('function ensureAccessibleFieldNames()', $ui);
+        self::assertStringContainsString("name.indexOf('min_role[') === 0", $ui);
+        self::assertStringContainsString("field.getAttribute('placeholder')", $ui);
+        self::assertStringContainsString('ensureAccessibleFieldNames();', $ui);
+        self::assertStringContainsString('<h1 class="h5 fw-semibold mb-0">', $trainingSettings);
+    }
+
+    public function testSharedUiAssetsAreCacheBustedAfterDeployment(): void
+    {
+        $shell = (string)file_get_contents($this->root . 'includes/ui_shell.php');
+
+        self::assertStringContainsString("filemtime(\$root . '/assets/app-ui.css')", $shell);
+        self::assertStringContainsString("filemtime(\$root . '/assets/app-ui.js')", $shell);
+        self::assertStringContainsString("'?v=' . rawurlencode", $shell);
+    }
+
+    public function testKeyboardFocusIsClearlyVisibleAcrossSharedUi(): void
+    {
+        $css = (string)file_get_contents($this->root . 'assets/app-ui.css');
+
+        self::assertStringContainsString(':focus-visible', $css);
+        self::assertStringContainsString('outline: 3px solid #ffbf47 !important;', $css);
+        self::assertStringContainsString('outline-offset: 2px !important;', $css);
+    }
 }

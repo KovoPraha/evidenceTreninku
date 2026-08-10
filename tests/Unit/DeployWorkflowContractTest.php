@@ -152,6 +152,8 @@ final class DeployWorkflowContractTest extends TestCase
         $cleanup = $this->source('bin/production-test-cleanup.php');
 
         self::assertStringContainsString('obnovit-zalohu-izolovane', $workflow);
+        self::assertStringContainsString('obnovit-tri-zalohy-izolovane', $workflow);
+        self::assertStringContainsString('overit-databazove-invarianty', $workflow);
         self::assertStringContainsString('deaktivovat-testovaci-ucty', $workflow);
         self::assertStringContainsString("inputs.potvrzeni", $workflow);
         self::assertStringContainsString("= 'PROVEST'", $workflow);
@@ -161,6 +163,9 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('test "$READY" = \'1\'', $workflow);
         self::assertStringContainsString('CREATE DATABASE kis_restore', $workflow);
         self::assertStringContainsString("jq -r '.tables | to_entries[]", $workflow);
+        self::assertStringContainsString("then COUNT=3", $workflow);
+        self::assertStringContainsString('test "${#BACKUPS[@]}" = "$COUNT"', $workflow);
+        self::assertStringContainsString('CONTAINER="kis-restore-$GITHUB_RUN_ID-$VERIFIED"', $workflow);
         self::assertStringNotContainsString('upload-artifact', $workflow);
         self::assertStringNotContainsString('rsync', $workflow);
 
@@ -169,6 +174,24 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("'^kis-e2e-[0-9]+@velocota[.]com$'", $cleanup);
         self::assertStringContainsString('SET aktivni=0,session_version=session_version+1', $cleanup);
         self::assertStringNotContainsString('DELETE FROM verejni_uzivatele', $cleanup);
+    }
+
+    public function testProductionInvariantDrillIsGuardedAndSelectOnly(): void
+    {
+        $workflow = $this->source('.github/workflows/production-drills.yml');
+        $invariants = $this->source('bin/production-invariants.php');
+
+        self::assertStringContainsString("KIS_INVARIANT_CONFIRM=OVERIT", $workflow);
+        self::assertStringContainsString("php '\$DEPLOY_BASE/run-production-invariants.php'", $workflow);
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $invariants);
+        self::assertStringContainsString("\$confirm !== 'OVERIT'", $invariants);
+        self::assertStringContainsString('information_schema.TABLES', $invariants);
+        self::assertStringContainsString('invalid_shop_order_totals', $invariants);
+        self::assertStringContainsString('orphan_training_assignments_people', $invariants);
+        self::assertStringNotContainsString('UPDATE ', $invariants);
+        self::assertStringNotContainsString('DELETE ', $invariants);
+        self::assertStringNotContainsString('INSERT ', $invariants);
+        self::assertStringNotContainsString('FOR UPDATE', $invariants);
     }
 
     private function source(string $relativePath): string

@@ -17,6 +17,46 @@
         document.body.appendChild(bar);
     }
 
+    function ensureAccessibleFieldNames() {
+        var fieldLabels = {
+            q: 'Hledat', status: 'Stav', code: 'Kód', event_type: 'Typ akce', name: 'Název',
+            audience_label: 'Cílová skupina', description_plain: 'Popis', min_age: 'Věk od', max_age: 'Věk do',
+            capacity: 'Kapacita', capacity_override: 'Kapacita termínu', pricing_policy: 'Způsob ceny', currency: 'Měna',
+            registration_starts_at: 'Začátek registrace', registration_ends_at: 'Konec registrace',
+            terms_version: 'Verze souhlasu', consent_text_plain: 'Text souhlasu',
+            cancellation_policy_plain: 'Storno podmínky', cancellation_deadline_at: 'Termín bezplatného storna',
+            starts_at: 'Začátek termínu', ends_at: 'Konec termínu', location: 'Místo', product_id: 'Produkt',
+            team_id: 'Soupiska', team_ids: 'Soupisky', category_path: 'Kategorie', discount_type: 'Druh slevy',
+            value: 'Hodnota', amount: 'Cena', sportovec_id: 'Sportovec', account_id: 'Veřejný účet',
+            relation_role: 'Vztah', public_name: 'Veřejný název', public_summary: 'Veřejný popis',
+            date: 'Datum', starts_at_time: 'Čas od', ends_at_time: 'Čas do', price_minor: 'Cena v haléřích',
+            minimum_order: 'Minimální hodnota objednávky', maximum_discount: 'Maximální sleva',
+            usage_limit: 'Celkový limit použití', valid_from: 'Platnost od', valid_until: 'Platnost do', note: 'Důvod nebo poznámka'
+        };
+
+        document.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea').forEach(function (field) {
+            if (field.hasAttribute('aria-label') || field.hasAttribute('aria-labelledby') || field.hasAttribute('title')) return;
+            if (field.labels && field.labels.length > 0) return;
+
+            var label = '';
+            var sibling = field.previousElementSibling;
+            if (sibling && sibling.matches('label')) label = (sibling.textContent || '').trim();
+
+            var name = String(field.getAttribute('name') || '');
+            if (!label && name.indexOf('min_role[') === 0) {
+                var row = field.closest('tr');
+                var permissionName = row ? row.querySelector('th, td') : null;
+                if (permissionName) label = 'Minimální role pro ' + (permissionName.textContent || '').trim();
+            }
+            if (!label) label = String(field.getAttribute('placeholder') || '').trim();
+            if (!label) {
+                var normalizedName = name.replace(/\[\]$/, '');
+                label = fieldLabels[normalizedName] || normalizedName.replace(/[_-]+/g, ' ').trim();
+            }
+            if (label) field.setAttribute('aria-label', label.replace(/\s+/g, ' ').trim());
+        });
+    }
+
     window.showToast = function (message, type) {
         type = type || 'info';
         var container = document.getElementById('toastContainer');
@@ -50,6 +90,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         ensureLoadingBar();
+        ensureAccessibleFieldNames();
         document.body.classList.add('app-ui-ready');
     });
 

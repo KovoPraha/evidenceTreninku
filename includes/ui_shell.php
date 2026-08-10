@@ -20,8 +20,11 @@ function appUiAssets(): void
     static $rendered = false;
     if ($rendered) return;
     $rendered = true;
-    $css = htmlspecialchars(appUiUrl('assets/app-ui.css'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    $js = htmlspecialchars(appUiUrl('assets/app-ui.js'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $root = dirname(__DIR__);
+    $cssVersion = (string)(filemtime($root . '/assets/app-ui.css') ?: '1');
+    $jsVersion = (string)(filemtime($root . '/assets/app-ui.js') ?: '1');
+    $css = htmlspecialchars(appUiUrl('assets/app-ui.css') . '?v=' . rawurlencode($cssVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $js = htmlspecialchars(appUiUrl('assets/app-ui.js') . '?v=' . rawurlencode($jsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">';
     echo '<link href="' . $css . '" rel="stylesheet">';
     echo '<script defer src="' . $js . '"></script>';
