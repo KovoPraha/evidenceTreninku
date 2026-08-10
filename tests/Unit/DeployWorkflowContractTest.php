@@ -146,6 +146,17 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('php tests/Support/DatabaseBackupMariaDbSmoke.php', $workflow);
     }
 
+    public function testCheckoutActionUsesPinnedNode24ReleaseInEveryWorkflow(): void
+    {
+        $pin = 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1';
+        foreach (['tests.yml', 'deploy-production.yml', 'production-drills.yml'] as $name) {
+            $workflow = $this->source('.github/workflows/' . $name);
+            self::assertStringContainsString($pin, $workflow);
+            self::assertStringNotContainsString('actions/checkout@v', $workflow);
+            self::assertStringNotContainsString('actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5', $workflow);
+        }
+    }
+
     public function testProductionDrillRestoresEphemerallyAndCleanupIsNarrowlyScoped(): void
     {
         $workflow = $this->source('.github/workflows/production-drills.yml');

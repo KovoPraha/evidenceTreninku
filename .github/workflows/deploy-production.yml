@@ -58,7 +58,7 @@ jobs:
           echo "✅ Cíl: $APP_HOST → $REMOTE_DIR ($WEB_URL)"
 
       - name: Stáhnout kód z main
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Připravit PHP
         uses: shivammathur/setup-php@v2
