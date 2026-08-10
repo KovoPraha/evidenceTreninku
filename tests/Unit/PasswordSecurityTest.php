@@ -58,4 +58,25 @@ final class PasswordSecurityTest extends TestCase
         self::assertTrue(\trainer_password_needs_rehash('legacy plaintext'));
         self::assertTrue(\trainer_password_needs_rehash($lowCostBcrypt));
     }
+
+    public function testUniqueCandidateSelectionDoesNotDependOnDatabaseRowOrder(): void
+    {
+        $first = ['id' => 10, 'heslo' => password_hash('first secret', PASSWORD_BCRYPT)];
+        $second = ['id' => 20, 'heslo' => password_hash('second secret', PASSWORD_BCRYPT)];
+
+        self::assertSame(20, \trainer_password_unique_match([$first, $second], 'second secret')['id']);
+        self::assertSame(10, \trainer_password_unique_match([$second, $first], 'first secret')['id']);
+        self::assertNull(\trainer_password_unique_match([$first, $second], 'wrong secret'));
+    }
+
+    public function testMultipleMatchingCandidatesFailClosed(): void
+    {
+        $sharedPassword = 'same secret';
+        $candidates = [
+            ['id' => 10, 'heslo' => password_hash($sharedPassword, PASSWORD_BCRYPT)],
+            ['id' => 20, 'heslo' => password_hash($sharedPassword, PASSWORD_BCRYPT)],
+        ];
+
+        self::assertNull(\trainer_password_unique_match($candidates, $sharedPassword));
+    }
 }

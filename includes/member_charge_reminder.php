@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/local_message_outbox.php';
+require_once __DIR__ . '/app_url.php';
 
 final class MemberChargeReminderException extends RuntimeException
 {
@@ -291,9 +292,7 @@ function memberChargeReminderLocalOutboxSender(string $appHost, ?string $directo
 
 function memberChargeReminderAccountUrl(): string
 {
-    return defined('JE_LOKALNE') && JE_LOKALNE === true
-        ? 'http://localhost/evidencePavel/booking/sportovni_prehled.php'
-        : 'https://data.kovopraha.cz/evidence/booking/sportovni_prehled.php';
+    return appUrl('booking/sportovni_prehled.php');
 }
 
 /** @return array{pending:int,processing:int,sent:int,failed:int,cancelled:int} */

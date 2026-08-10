@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/family_calendar_feed.php';
+require_once __DIR__ . '/app_url.php';
 
 function familyWeeklySummaryPlain(string $value): string
 {
@@ -10,9 +11,7 @@ function familyWeeklySummaryPlain(string $value): string
 
 function familyWeeklySummaryPortalUrl(): string
 {
-    return defined('JE_LOKALNE') && JE_LOKALNE === true
-        ? 'http://localhost/evidencePavel/booking/sportovni_prehled.php'
-        : 'https://data.kovopraha.cz/evidence/booking/sportovni_prehled.php';
+    return appUrl('booking/sportovni_prehled.php');
 }
 
 function familyWeeklySummaryStartDate(string $requested, DateTimeImmutable $today): DateTimeImmutable

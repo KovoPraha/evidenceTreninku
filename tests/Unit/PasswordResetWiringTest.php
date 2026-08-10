@@ -23,6 +23,7 @@ final class PasswordResetWiringTest extends TestCase
         self::assertStringContainsString('window.location.hash.slice(1)', $consume);
         self::assertStringContainsString('history.replaceState', $consume);
         self::assertStringNotContainsString("nove_heslo.php?token=", $request);
+        self::assertStringContainsString('for="password-reset-identifier"', $request);
         self::assertStringContainsString("appUrl('booking/nove_heslo.php')", $request);
         self::assertStringNotContainsString('HTTP_HOST', $request);
     }

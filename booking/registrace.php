@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container mt-5" style="max-width:500px">
     <div class="card shadow">
         <div class="card-body p-4">
-            <h4 class="mb-4 text-center"><i class="bi bi-person-plus me-2"></i>Registrace</h4>
+            <h1 class="h4 mb-4 text-center"><i class="bi bi-person-plus me-2"></i>Registrace</h1>
 
             <?php if ($success): ?>
                 <div class="alert alert-success text-center">
@@ -135,38 +135,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?= csrf_field() ?>
                     <div class="row g-3 mb-3">
                         <div class="col">
-                            <label class="form-label">Jméno</label>
-                            <input type="text" name="jmeno" class="form-control"
+                            <label class="form-label" for="registration-first-name">Jméno</label>
+                            <input type="text" name="jmeno" id="registration-first-name" class="form-control"
                                    value="<?= h($_POST['jmeno'] ?? '') ?>" required>
                         </div>
                         <div class="col">
-                            <label class="form-label">Příjmení</label>
-                            <input type="text" name="prijmeni" class="form-control"
+                            <label class="form-label" for="registration-last-name">Příjmení</label>
+                            <input type="text" name="prijmeni" id="registration-last-name" class="form-control"
                                    value="<?= h($_POST['prijmeni'] ?? '') ?>" required>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control"
+                        <label class="form-label" for="registration-email">Email</label>
+                        <input type="email" name="email" id="registration-email" class="form-control"
                                value="<?= h($_POST['email'] ?? '') ?>" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Datum narození</label>
-                        <input type="date" name="narozeni" class="form-control"
+                        <label class="form-label" for="registration-birth-date">Datum narození</label>
+                        <input type="date" name="narozeni" id="registration-birth-date" class="form-control"
                                value="<?= h($_POST['narozeni'] ?? '') ?>" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Telefon (nepovinný)</label>
-                        <input type="tel" name="telefon" class="form-control"
+                        <label class="form-label" for="registration-phone">Telefon (nepovinný)</label>
+                        <input type="tel" name="telefon" id="registration-phone" class="form-control"
                                value="<?= h($_POST['telefon'] ?? '') ?>">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Heslo <small class="text-muted">(min. 8 znaků)</small></label>
-                        <input type="password" name="heslo" class="form-control" required minlength="8">
+                        <label class="form-label" for="registration-password">Heslo <small class="text-muted">(min. 8 znaků)</small></label>
+                        <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="8">
                     </div>
                     <div class="mb-4">
-                        <label class="form-label">Heslo znovu</label>
-                        <input type="password" name="heslo2" class="form-control" required>
+                        <label class="form-label" for="registration-password-confirmation">Heslo znovu</label>
+                        <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Zaregistrovat se</button>
                 </form>

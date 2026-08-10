@@ -37,7 +37,7 @@ if (is_string($appBaseUrl) && $appBaseUrl !== '') {
 } elseif ($jeLokalne) {
     define('APP_BASE_URL', 'http://localhost/evidencePavel');
 } else {
-    define('APP_BASE_URL', 'https://data.kovopraha.cz/evidence');
+    define('APP_BASE_URL', 'https://kis.kovopraha.cz');
 }
 
 // Absolutni adresar mimo verejny webroot. Na produkci jej nastavte v prostredi.

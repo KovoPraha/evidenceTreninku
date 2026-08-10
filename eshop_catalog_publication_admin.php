@@ -98,8 +98,8 @@ $activeCount = count(array_filter($products, static fn (array $product): bool =>
 <body class="bg-light">
 <?php include __DIR__ . '/hlavicka.php'; ?>
 <main class="container-fluid py-4" style="max-width:1500px">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h1 class="h4 mb-0"><i class="bi bi-eye me-2 text-success"></i>Řízená aktivace katalogu</h1><div class="text-muted small">Příprava jednotlivých produktů pro budoucí veřejný storefront.</div></div><a href="eshop_admin.php" class="btn btn-outline-secondary btn-sm">Zpět na kontrolu katalogu</a></div>
-    <div class="alert alert-warning"><strong>Aktivace zde ještě produkt nikde veřejně nezobrazí.</strong> Storefront ani checkout neexistují. Nyní lze aktivovat pouze běžné zboží <code>goods</code>; kroužky, služby a rezervace zůstanou blokované do implementace K3. Chybějící příznak viditelnosti u staršího importu se bere jako viditelný až po tomto ručním potvrzení.</div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h1 class="h4 mb-0"><i class="bi bi-eye me-2 text-success"></i>Řízená aktivace katalogu</h1><div class="text-muted small">Správa jednotlivých produktů pro veřejný e-shop.</div></div><a href="eshop_admin.php" class="btn btn-outline-secondary btn-sm">Zpět na kontrolu katalogu</a></div>
+    <div class="alert alert-warning"><strong>Aktivace zde produkt zveřejní v klubovém e-shopu.</strong> Na této obrazovce aktivujte pouze běžné zboží <code>goods</code>. Kroužky, služby a rezervace se spravují ve vlastních administračních obrazovkách a zde zůstávají blokované. Chybějící příznak viditelnosti u staršího importu se bere jako viditelný až po tomto ručním potvrzení.</div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= publicationAdminH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= publicationAdminH($success) ?></div><?php endif; ?>
 

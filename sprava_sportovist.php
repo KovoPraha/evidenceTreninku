@@ -84,7 +84,7 @@ $sportovist = $pdo->query("SELECT * FROM sportovist ORDER BY poradi, nazev")->fe
 <?php include 'hlavicka.php'; ?>
 <div class="container mt-4" style="max-width:900px">
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <h4 class="mb-0"><i class="bi bi-building me-2 text-primary"></i>Správa sportovišť</h4>
+        <h1 class="h4 mb-0"><i class="bi bi-building me-2 text-primary"></i>Správa sportovišť</h1>
         <a href="kalendar_sportovist.php" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-calendar3 me-1"></i>Kalendář
         </a>
@@ -111,20 +111,20 @@ $sportovist = $pdo->query("SELECT * FROM sportovist ORDER BY poradi, nazev")->fe
                 <?php endif; ?>
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <label class="form-label req">Kód</label>
-                        <input type="text" name="kod" class="form-control"
+                        <label class="form-label req" for="sportoviste-kod">Kód</label>
+                        <input type="text" name="kod" id="sportoviste-kod" class="form-control"
                                value="<?= h($editRow['kod'] ?? '') ?>"
                                placeholder="napr. velodrom" pattern="[a-z0-9_]+" required>
                         <div class="form-text">Malá písmena, podtržítka</div>
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label req">Název</label>
-                        <input type="text" name="nazev" class="form-control"
+                        <label class="form-label req" for="sportoviste-nazev">Název</label>
+                        <input type="text" name="nazev" id="sportoviste-nazev" class="form-control"
                                value="<?= h($editRow['nazev'] ?? '') ?>" required>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Pořadí</label>
-                        <input type="number" name="poradi" class="form-control"
+                        <label class="form-label" for="sportoviste-poradi">Pořadí</label>
+                        <input type="number" name="poradi" id="sportoviste-poradi" class="form-control"
                                value="<?= h((string)($editRow['poradi'] ?? 0)) ?>">
                     </div>
                     <div class="col-md-2 d-flex flex-column justify-content-end gap-2">
@@ -183,7 +183,7 @@ $sportovist = $pdo->query("SELECT * FROM sportovist ORDER BY poradi, nazev")->fe
                                 : '<i class="bi bi-x-circle text-secondary"></i>' ?>
                         </td>
                         <td class="text-end">
-                            <a href="?edit=<?= $s['id'] ?>" class="btn btn-sm btn-outline-secondary">
+                            <a href="?edit=<?= $s['id'] ?>" class="btn btn-sm btn-outline-secondary" aria-label="Upravit sportoviště <?= h($s['nazev']) ?>">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <form method="post" class="d-inline"
@@ -191,7 +191,7 @@ $sportovist = $pdo->query("SELECT * FROM sportovist ORDER BY poradi, nazev")->fe
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Smazat sportoviště <?= h($s['nazev']) ?>">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>

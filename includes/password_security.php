@@ -30,3 +30,25 @@ function trainer_password_hash(string $plainPassword): string
 {
     return password_hash($plainPassword, PASSWORD_DEFAULT);
 }
+
+/**
+ * @param list<array<string,mixed>> $candidates
+ * @return array<string,mixed>|null Exactly one password match, otherwise fail closed.
+ */
+function trainer_password_unique_match(array $candidates, string $providedPassword): ?array
+{
+    $match = null;
+    foreach ($candidates as $candidate) {
+        if (!is_array($candidate)
+            || !trainer_password_verify($providedPassword, (string)($candidate['heslo'] ?? ''))
+        ) {
+            continue;
+        }
+        if ($match !== null) {
+            return null;
+        }
+        $match = $candidate;
+    }
+
+    return $match;
+}

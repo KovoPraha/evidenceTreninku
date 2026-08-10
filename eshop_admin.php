@@ -5,6 +5,7 @@ require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/shop_catalog_review.php';
 require_once __DIR__ . '/includes/shop_catalog_promotion.php';
+require_once __DIR__ . '/includes/shop_checkout.php';
 
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
@@ -84,6 +85,12 @@ $detail = $runId > 0
     : ['run' => null, 'products' => [], 'events' => []];
 $offerTypes = shopCatalogReviewOfferTypes();
 $canonicalSummary = shopCanonicalCatalogSummary($pdo);
+$bankCheckoutReady = true;
+try {
+    shopBankSettingsFromConfig();
+} catch (ShopCheckoutException) {
+    $bankCheckoutReady = false;
+}
 $statusLabels = [
     'pending' => ['Čeká na kontrolu', 'bg-warning text-dark'],
     'auto_classified' => ['Automaticky zařazeno', 'bg-secondary'],
@@ -106,7 +113,7 @@ $statusLabels = [
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <div>
             <h1 class="h4 mb-0"><i class="bi bi-shop me-2 text-primary"></i>Administrace e-shopu</h1>
-            <div class="text-muted small">Kontrola importovaného katalogu před budoucí publikací.</div>
+            <div class="text-muted small">Kontrola importovaného katalogu a provozu veřejného e-shopu.</div>
         </div>
         <div class="d-flex gap-2">
             <a href="eshop_fio_admin.php" class="btn btn-outline-info btn-sm"><i class="bi bi-bank me-1"></i>Fio párování K4</a>
@@ -125,6 +132,14 @@ $statusLabels = [
         Produkty přecházejí pouze do pracovního stavu <code>draft</code>; nevzniká rezervace,
         objednávka, platba ani skladový pohyb.
     </div>
+    <?php if (!$bankCheckoutReady): ?>
+        <div class="alert alert-danger" role="alert">
+            <strong>Objednávky nyní nelze dokončit.</strong>
+            Doplňte a ověřte produkční hodnoty <code>SHOP_BANK_IBAN</code>,
+            <code>SHOP_BANK_BIC</code>, <code>SHOP_BANK_ACCOUNT_LABEL</code> a
+            <code>SHOP_BANK_DUE_DAYS</code>. Checkout zůstává do té doby bezpečně vypnutý.
+        </div>
+    <?php endif; ?>
     <?php foreach ($errors as $error): ?>
         <div class="alert alert-danger"><?= shopAdminH($error) ?></div>
     <?php endforeach; ?>

@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($akce === 'save') {
         $id    = (int)($_POST['id'] ?? 0);
         $jmeno = trim($_POST['jmeno'] ?? '');
-        $email = trim($_POST['email'] ?? '');
+        $email = strtolower(trim($_POST['email'] ?? ''));
         $heslo = $_POST['heslo'] ?? '';
         $role  = $_POST['role'] ?? 'trener';
 
@@ -30,6 +30,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['flash_error'] = 'Jméno a email jsou povinné.';
             header("Location: sprava_treneru.php");
             exit;
+        }
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            $_SESSION['flash_error'] = 'Zadejte platnou e-mailovou adresu.';
+            header("Location: sprava_treneru.php");
+            exit;
+        }
+        if (!in_array($role, ['trener', 'hlavni', 'admin'], true)) {
+            $_SESSION['flash_error'] = 'Vyberte platnou roli trenéra.';
+            header("Location: sprava_treneru.php");
+            exit;
+        }
+
+        $currentEmail = null;
+        if ($id > 0) {
+            $current = $pdo->prepare('SELECT email FROM treneri WHERE id=?');
+            $current->execute([$id]);
+            $currentEmail = $current->fetchColumn();
+        }
+        if ($id === 0 || !is_string($currentEmail) || strcasecmp(trim($currentEmail), $email) !== 0) {
+            $duplicate = $pdo->prepare(
+                'SELECT COUNT(*) FROM treneri WHERE aktivni=1 AND LOWER(TRIM(email))=? AND id<>?'
+            );
+            $duplicate->execute([$email, $id]);
+            if ((int)$duplicate->fetchColumn() > 0) {
+                $_SESSION['flash_error'] = 'Tento e-mail už používá jiný aktivní trenér.';
+                header("Location: sprava_treneru.php");
+                exit;
+            }
         }
 
         if ($id > 0) {
@@ -158,6 +186,7 @@ $trenery = $pdo->query("
               <td>
                 <div class="d-flex gap-1">
                   <button class="btn btn-sm btn-outline-primary edit-btn"
+                          aria-label="Upravit trenéra <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"
                           data-id="<?= $tr['id'] ?>"
                           data-jmeno="<?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"
                           data-email="<?= htmlspecialchars($tr['email'], ENT_QUOTES) ?>"
@@ -169,7 +198,7 @@ $trenery = $pdo->query("
                       <?= csrf_field() ?>
                       <input type="hidden" name="akce" value="delete">
                       <input type="hidden" name="delete_id" value="<?= $tr['id'] ?>">
-                      <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                      <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Smazat trenéra <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"><i class="bi bi-trash"></i></button>
                     </form>
                   <?php endif; ?>
                 </div>

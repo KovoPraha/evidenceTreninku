@@ -144,7 +144,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="text-muted"><?= nl2br(shopProductH($product['public_summary'])) ?></p>
                         <h2 class="h5 mt-4">Vyberte variantu</h2>
                         <?php if (!$isLoggedIn): ?>
-                            <a class="alert alert-info d-block text-decoration-none" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit pro zobrazení klubové ceny</a>
+                            <a class="alert alert-info d-block text-decoration-none" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se pro zobrazení klubové ceny</a>
                         <?php endif; ?>
                         <div class="vstack gap-2">
                             <?php foreach ($product['variants'] as $variant): $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']); ?>

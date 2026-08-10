@@ -281,6 +281,7 @@ jobs:
               --exclude='bin/zalohy/' \\
               --exclude='*.log' \\
               '$RELEASE_DIR/' '$REMOTE_DIR/'
+            test -s '$REMOTE_DIR/kis_rollover_a06_admin.php'
           "
           echo '✅ Ověřený release byl aktivován. rsync záměrně nepoužívá --delete.'
 

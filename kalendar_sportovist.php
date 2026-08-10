@@ -194,7 +194,7 @@ $today = date('Y-m-d');
 
     <!-- Hlavička -->
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <h5 class="mb-0 me-2"><i class="bi bi-calendar3 me-2 text-primary"></i>Kalendář sportovišť</h5>
+        <h1 class="h5 mb-0 me-2"><i class="bi bi-calendar3 me-2 text-primary"></i>Kalendář sportovišť</h1>
         <div class="btn-group btn-group-sm">
             <a href="?datum=<?= $prevWeek ?>" class="btn btn-outline-secondary">
                 <i class="bi bi-chevron-left"></i>

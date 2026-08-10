@@ -55,7 +55,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <?php if ($submitted): ?><div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, poslali jsme další postup na příslušný e-mail.</div>
 <?php if ($localResetLink !== null): ?><div class="alert alert-warning"><strong>Jen localhost:</strong> e-mail se zde neposílá. <a class="alert-link" href="<?= htmlspecialchars($localResetLink, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">Otevřít testovací odkaz pro obnovu</a>.</div><?php endif; ?>
 <?php else: ?><p class="text-muted">Zadejte e-mail rodičovského účtu nebo přihlašovací jméno sportovce.</p><form method="post"><?= csrf_field() ?>
-<div class="mb-3"><label class="form-label">E-mail nebo přihlašovací jméno</label><input class="form-control" name="identifier" autocomplete="username" required autofocus></div>
+<div class="mb-3"><label class="form-label" for="password-reset-identifier">E-mail nebo přihlašovací jméno</label><input class="form-control" id="password-reset-identifier" name="identifier" autocomplete="username" required autofocus></div>
 <button class="btn btn-primary w-100">Poslat odkaz pro obnovu</button></form><?php endif; ?>
 <p class="mt-3 mb-0 text-center"><a href="prihlaseni.php">Zpět na přihlášení</a></p>
 </div></div></main></body></html>

@@ -32,6 +32,10 @@ final class AuthWiringTest extends TestCase
         self::assertStringContainsString('csrf_verify', $trainer);
         self::assertStringContainsString('csrf_field()', $trainer);
         self::assertStringContainsString('session_version', $trainer);
+        self::assertStringContainsString('trainer_password_unique_match', $trainer);
+        self::assertStringContainsString('fetchAll(PDO::FETCH_ASSOC)', $trainer);
+        self::assertStringNotContainsString('(jmeno = ? OR email = ?) LIMIT 1', $trainer);
+        self::assertStringContainsString("LOWER(TRIM(email))=? AND id<>?", $this->source('sprava_treneru.php'));
         self::assertStringContainsString(
             "Neplatné přihlašovací jméno / email nebo heslo.",
             $trainer

@@ -30,9 +30,11 @@ final class MemberChargeReminderWiringTest extends TestCase
     {
         $source = $this->source('includes/member_charge_reminder.php');
         $url = \memberChargeReminderAccountUrl();
+        self::assertSame('https://kis.kovopraha.cz/booking/sportovni_prehled.php', $url);
         self::assertNull(parse_url($url, PHP_URL_QUERY));
         self::assertNull(parse_url($url, PHP_URL_FRAGMENT));
         self::assertStringContainsString('sportovni_prehled.php', $source);
+        self::assertStringContainsString("appUrl('booking/sportovni_prehled.php')", $source);
         self::assertStringContainsString('INTERVAL 20 HOUR', $source);
     }
 

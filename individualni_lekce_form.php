@@ -11,6 +11,7 @@ function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUB
 
 $trenerId = (int)$_SESSION['trener_id'];
 $errors   = [];
+$opakovat = $_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['opakovat']);
 
 // ── Předvyplnění z kopie (?kopie_id=X) ───────────────────────────────────────
 $kopie = null;
@@ -62,7 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cena          = max(0, (float)str_replace(',', '.', $_POST['cena_kc'] ?? '0'));
         $maxOsob        = max(1, (int)($_POST['max_osob'] ?? 1));
         $vyjimka3dny   = !empty($_POST['vyjimka_3_dny']) ? 1 : 0;
-        $opakovaniTydnu = max(0, min(24, (int)($_POST['opakovani_tydnu'] ?? 0)));
+        $opakovaniTydnu = $opakovat
+            ? max(1, min(24, (int)($_POST['opakovani_tydnu'] ?? 1)))
+            : 0;
 
         // Validace
         if (!$sportId) $errors[] = 'Vyberte sportoviště.';
@@ -153,10 +156,10 @@ $sportovist = $pdo->query("
 <?php include 'hlavicka.php'; ?>
 <div class="container mt-4" style="max-width:1060px">
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <h4 class="mb-0">
+        <h1 class="h4 mb-0">
             <i class="bi bi-<?= $kopie ? 'copy' : 'person-plus' ?> me-2 text-success"></i>
             <?= $kopie ? 'Duplikovat lekci' : 'Nová individuální lekce' ?>
-        </h4>
+        </h1>
         <a href="individualni_lekce_sprava.php" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Přehled lekcí
         </a>
@@ -181,14 +184,14 @@ $sportovist = $pdo->query("
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-8">
-                        <label class="form-label req">Název lekce</label>
-                        <input type="text" name="nazev" class="form-control"
+                        <label class="form-label req" for="lekce-nazev">Název lekce</label>
+                        <input type="text" name="nazev" id="lekce-nazev" class="form-control"
                                value="<?= h($def['nazev']) ?>"
                                placeholder="Individuální jízda na velodromu" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label req">Sportoviště</label>
-                        <select name="sportoviste_id" class="form-select" required>
+                        <label class="form-label req" for="lekce-sportoviste">Sportoviště</label>
+                        <select name="sportoviste_id" id="lekce-sportoviste" class="form-select" required>
                             <option value="">— vyberte —</option>
                             <?php foreach ($sportovist as $s): ?>
                                 <option value="<?= $s['id'] ?>"
@@ -202,22 +205,22 @@ $sportovist = $pdo->query("
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-3">
-                        <label class="form-label req">Datum</label>
-                        <input type="date" name="datum" class="form-control"
+                        <label class="form-label req" for="lekce-datum">Datum</label>
+                        <input type="date" name="datum" id="lekce-datum" class="form-control"
                                value="<?= h($def['datum']) ?>" required>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label req">Okno od</label>
+                        <label class="form-label req" for="casOd">Okno od</label>
                         <input type="time" name="cas_od" id="casOd" class="form-control"
                                value="<?= h(substr($def['cas_od'], 0, 5)) ?>" required>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label req">Okno do</label>
+                        <label class="form-label req" for="casDo">Okno do</label>
                         <input type="time" name="cas_do" id="casDo" class="form-control"
                                value="<?= h(substr($def['cas_do'], 0, 5)) ?>" required>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label req">Délka slotu</label>
+                        <label class="form-label req" for="slotDelka">Délka slotu</label>
                         <select name="slot_delka_min" id="slotDelka" class="form-select">
                             <?php foreach ([30=>'30 min',45=>'45 min',60=>'60 min',90=>'90 min',120=>'2 hodiny'] as $v=>$l): ?>
                                 <option value="<?= $v ?>" <?= (int)$def['slot_delka_min'] === $v ? 'selected' : '' ?>>
@@ -268,14 +271,14 @@ $sportovist = $pdo->query("
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
-                        <label class="form-label req">Cena za slot (Kč)</label>
-                        <input type="number" name="cena_kc" class="form-control"
+                        <label class="form-label req" for="lekce-cena">Cena za slot (Kč)</label>
+                        <input type="number" name="cena_kc" id="lekce-cena" class="form-control"
                                value="<?= h($def['cena_kc']) ?>"
                                min="0" step="50" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Max. osob na slot</label>
-                        <input type="number" name="max_osob" class="form-control"
+                        <label class="form-label" for="lekce-max-osob">Max. osob na slot</label>
+                        <input type="number" name="max_osob" id="lekce-max-osob" class="form-control"
                                value="<?= h($def['max_osob']) ?>"
                                min="1" max="50">
                         <div class="form-text">Kolik zákazníků může rezervovat stejný slot</div>
@@ -283,8 +286,8 @@ $sportovist = $pdo->query("
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Popis (viditelný zákazníkovi)</label>
-                    <textarea name="popis" class="form-control" rows="2"><?= h($def['popis']) ?></textarea>
+                    <label class="form-label" for="lekce-popis">Popis (viditelný zákazníkovi)</label>
+                    <textarea name="popis" id="lekce-popis" class="form-control" rows="2"><?= h($def['popis']) ?></textarea>
                 </div>
 
                 <div class="mb-3">
@@ -309,14 +312,14 @@ $sportovist = $pdo->query("
                     <div class="card-body p-3">
                         <div class="form-check form-switch mb-2">
                             <input class="form-check-input" type="checkbox" id="opakovaniToggle"
-                                   <?= (int)($_POST['opakovani_tydnu'] ?? 0) > 0 ? 'checked' : '' ?>>
+                                   name="opakovat" value="1" <?= $opakovat ? 'checked' : '' ?>>
                             <label class="form-check-label fw-semibold" for="opakovaniToggle">
                                 <i class="bi bi-arrow-repeat me-1 text-primary"></i>Opakovat každý týden
                             </label>
                         </div>
-                        <div id="opakovaniPanel" class="<?= (int)($_POST['opakovani_tydnu'] ?? 0) > 0 ? '' : 'd-none' ?>">
-                            <label class="form-label small">Počet opakování (týdnů)</label>
-                            <select name="opakovani_tydnu" class="form-select form-select-sm w-auto">
+                        <div id="opakovaniPanel" class="<?= $opakovat ? '' : 'd-none' ?>">
+                            <label class="form-label small" for="opakovani-tydnu">Počet opakování (týdnů)</label>
+                            <select name="opakovani_tydnu" id="opakovani-tydnu" class="form-select form-select-sm w-auto" <?= $opakovat ? '' : 'disabled' ?>>
                                 <?php for ($i = 1; $i <= 12; $i++): ?>
                                     <option value="<?= $i ?>" <?= (int)($_POST['opakovani_tydnu'] ?? 0) === $i ? 'selected' : '' ?>>
                                         <?= $i ?>× (<?= $i+1 ?> termínů celkem)
@@ -406,12 +409,15 @@ document.getElementById('casDo').addEventListener('change', updateSlotPreview);
 document.getElementById('slotDelka').addEventListener('change', updateSlotPreview);
 
 // Opakování toggle
-document.getElementById('opakovaniToggle').addEventListener('change', function () {
-    document.getElementById('opakovaniPanel').classList.toggle('d-none', !this.checked);
-    if (!this.checked) {
-        document.querySelector('[name=opakovani_tydnu]').value = '0';
-    }
-});
+const opakovaniToggle = document.getElementById('opakovaniToggle');
+const opakovaniPanel = document.getElementById('opakovaniPanel');
+const opakovaniSelect = document.querySelector('[name=opakovani_tydnu]');
+function syncOpakovani() {
+    opakovaniPanel.classList.toggle('d-none', !opakovaniToggle.checked);
+    opakovaniSelect.disabled = !opakovaniToggle.checked;
+}
+opakovaniToggle.addEventListener('change', syncOpakovani);
+syncOpakovani();
 // init preview
 updateSlotPreview();
 

@@ -187,7 +187,7 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
 <?php include 'hlavicka.php'; ?>
 <div class="container mt-4" style="max-width:1060px">
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <h4 class="mb-0"><i class="bi bi-calendar-plus me-2 text-primary"></i>Nová rezervace sportoviště</h4>
+        <h1 class="h4 mb-0"><i class="bi bi-calendar-plus me-2 text-primary"></i>Nová rezervace sportoviště</h1>
         <a href="kalendar_sportovist.php" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Kalendář
         </a>
@@ -209,7 +209,7 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
                 <?= csrf_field() ?>
 
                 <div class="mb-3">
-                    <label class="form-label req">Sportoviště</label>
+                    <label class="form-label req" for="sportoviste_id">Sportoviště</label>
                     <select name="sportoviste_id" id="sportoviste_id" class="form-select" required>
                         <option value="">— vyberte —</option>
                         <?php foreach ($sportovist as $s): ?>
@@ -222,26 +222,26 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label req">Datum</label>
-                    <input type="date" name="datum" class="form-control"
+                    <label class="form-label req" for="rezervace-datum">Datum</label>
+                    <input type="date" name="datum" id="rezervace-datum" class="form-control"
                            value="<?= h($_POST['datum'] ?? $defaultDatum) ?>" required>
                 </div>
 
                 <div class="row g-3 mb-3">
                     <div class="col">
-                        <label class="form-label req">Čas od</label>
-                        <input type="time" name="cas_od" class="form-control"
+                        <label class="form-label req" for="rezervace-cas-od">Čas od</label>
+                        <input type="time" name="cas_od" id="rezervace-cas-od" class="form-control"
                                value="<?= h($_POST['cas_od'] ?? '07:00') ?>" required>
                     </div>
                     <div class="col">
-                        <label class="form-label req">Čas do</label>
-                        <input type="time" name="cas_do" class="form-control"
+                        <label class="form-label req" for="rezervace-cas-do">Čas do</label>
+                        <input type="time" name="cas_do" id="rezervace-cas-do" class="form-control"
                                value="<?= h($_POST['cas_do'] ?? '08:00') ?>" required>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label req">Kapacita <span id="kapLabel" class="text-primary fw-bold">1/5</span></label>
+                    <label class="form-label req" for="kapacita">Kapacita <span id="kapLabel" class="text-primary fw-bold">1/5</span></label>
                     <input type="range" name="kapacita_dilu" id="kapacita" class="form-range"
                            min="1" max="5" value="<?= (int)($_POST['kapacita_dilu'] ?? 1) ?>">
                     <div class="d-flex justify-content-between text-muted small px-1">
@@ -251,8 +251,8 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Poznámka</label>
-                    <textarea name="poznamka" class="form-control" rows="2"><?= h($_POST['poznamka'] ?? '') ?></textarea>
+                    <label class="form-label" for="rezervace-poznamka">Poznámka</label>
+                    <textarea name="poznamka" id="rezervace-poznamka" class="form-control" rows="2"><?= h($_POST['poznamka'] ?? '') ?></textarea>
                 </div>
 
                 <!-- Volitelně: plánovaný trénink -->
@@ -270,14 +270,14 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
                     <div id="planPanel" class="card card-body bg-light border p-3 <?= empty($_POST['vytvorit_plan']) ? 'd-none' : '' ?>">
                         <div class="row g-3">
                             <div class="col-sm-8">
-                                <label class="form-label req">Název tréninku</label>
-                                <input type="text" name="plan_nazev" class="form-control"
+                                <label class="form-label req" for="plan-nazev">Název tréninku</label>
+                                <input type="text" name="plan_nazev" id="plan-nazev" class="form-control"
                                        placeholder="např. Intervalový trénink"
                                        value="<?= h($_POST['plan_nazev'] ?? '') ?>">
                             </div>
                             <div class="col-sm-4">
-                                <label class="form-label">Kategorie</label>
-                                <select name="plan_kategorie" class="form-select">
+                                <label class="form-label" for="plan-kategorie">Kategorie</label>
+                                <select name="plan_kategorie" id="plan-kategorie" class="form-select">
                                     <option value="">— vyberte —</option>
                                     <?php foreach (['silnice'=>'Silnice','mtb'=>'MTB','draha'=>'Dráha',
                                         'cyklokros'=>'Cyklokros','posilovna'=>'Posilovna',
@@ -289,7 +289,7 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
                                 </select>
                             </div>
                             <div class="col-sm-6">
-                                <label class="form-label req">Skupina</label>
+                                <label class="form-label req" for="planSkupinaId">Skupina</label>
                                 <select name="plan_skupina_id" id="planSkupinaId" class="form-select">
                                     <option value="">— vyberte skupinu —</option>
                                     <?php foreach ($skupiny as $sk): ?>

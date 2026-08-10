@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/app_url.php';
 /**
  * includes/push_helper.php
  * Helper pro odesílání Web Push notifikací.
@@ -60,7 +61,7 @@ function sendPushNotification(PDO $pdo, array $payload, array $trenerIds = []): 
     $json    = json_encode(array_merge([
         'title' => 'Evidence tréninků',
         'body'  => '',
-        'url'   => 'https://data.kovopraha.cz/evidence/',
+        'url'   => appUrl(),
         'tag'   => 'evidence',
     ], $payload), JSON_UNESCAPED_UNICODE);
 

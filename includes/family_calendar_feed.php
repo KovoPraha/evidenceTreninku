@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/family_portal.php';
 require_once __DIR__ . '/public_calendar_feed.php';
+require_once __DIR__ . '/app_url.php';
 
 final class FamilyCalendarFeedException extends RuntimeException
 {
@@ -275,10 +276,7 @@ function familyCalendarRegistrationStatus(string $status): string
 
 function familyCalendarFeedUrl(string $token): string
 {
-    $base = defined('JE_LOKALNE') && JE_LOKALNE === true
-        ? 'http://localhost/evidencePavel/booking/rodinny_kalendar.php'
-        : 'https://data.kovopraha.cz/evidence/booking/rodinny_kalendar.php';
-    return $base . '?token=' . rawurlencode($token);
+    return appUrl('booking/rodinny_kalendar.php') . '?token=' . rawurlencode($token);
 }
 
 function familyCalendarFeedAudit(PDO $pdo, int $feedId, int $accountId, string $action, string $hint, string $note): void

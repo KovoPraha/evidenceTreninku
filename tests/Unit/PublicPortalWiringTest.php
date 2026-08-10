@@ -30,4 +30,16 @@ final class PublicPortalWiringTest extends TestCase
         self::assertStringContainsString('unifiedAccountAuthenticate', $shopLogin);
         self::assertStringContainsString('auth_session_bind_trainer', $shopLogin);
     }
+
+    public function testCustomerLoginAndRegistrationExposeOnePrimaryHeading(): void
+    {
+        $root = dirname(__DIR__, 2) . '/booking/';
+        foreach (['prihlaseni.php' => 'Přihlášení', 'registrace.php' => 'Registrace'] as $file => $heading) {
+            $source = (string)file_get_contents($root . $file);
+            self::assertStringContainsString('<h1 class="h4', $source, $file);
+            self::assertStringContainsString($heading . '</h1>', $source, $file);
+        }
+        self::assertStringContainsString('for="login-email"', (string)file_get_contents($root . 'prihlaseni.php'));
+        self::assertStringContainsString('for="registration-email"', (string)file_get_contents($root . 'registrace.php'));
+    }
 }

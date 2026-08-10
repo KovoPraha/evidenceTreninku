@@ -39,25 +39,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $rateScope = 'trainer_login';
             $clientIp = auth_rate_limit_request_ip();
             $rateAllowed = auth_rate_limit_reserve_attempt($pdo, $rateScope, $login, $clientIp);
-            $uzivatel = false;
+            $uzivatele = [];
 
             if ($rateAllowed) {
-                // Načteme uživatele podle jména NEBO emailu
+                // Jméno ani e-mail nejsou v historických datech vždy unikátní.
+                // Heslo proto ověříme proti všem přesným kandidátům a přijmeme
+                // pouze právě jednu shodu; pořadí řádků nesmí rozhodovat o identitě.
                 $stmt = $pdo->prepare(
                     "SELECT id, jmeno, email, heslo, role, session_version FROM treneri "
-                    . "WHERE aktivni = 1 AND (jmeno = ? OR email = ?) LIMIT 1"
+                    . "WHERE aktivni = 1 AND (jmeno = ? OR email = ?)"
                 );
                 $stmt->execute([$login, $login]);
-                $uzivatel = $stmt->fetch(PDO::FETCH_ASSOC);
+                $uzivatele = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
 
-            $authenticated = false;
-
-            if ($uzivatel) {
+            $uzivatel = trainer_password_unique_match($uzivatele, $heslo);
+            $authenticated = $uzivatel !== null;
+            if ($authenticated) {
                 $storedHash = (string)($uzivatel['heslo'] ?? '');
-
-                $authenticated = trainer_password_verify($heslo, $storedHash);
-                if ($authenticated && trainer_password_needs_rehash($storedHash)) {
+                if (trainer_password_needs_rehash($storedHash)) {
                     $newHash = trainer_password_hash($heslo);
                     $pdo->prepare("UPDATE treneri SET heslo = ? WHERE id = ? AND heslo = ? LIMIT 1")
                         ->execute([$newHash, $uzivatel['id'], $storedHash]);
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            if ($authenticated && $uzivatel) {
+            if ($authenticated) {
                 auth_rate_limit_record_success($pdo, $rateScope, $login, $clientIp);
                 $customerAccount = unifiedAccountEnsureTrainerCustomer($pdo, $uzivatel);
                 // Nová autentizace rotuje session ID, CSRF token a nastaví časové limity.

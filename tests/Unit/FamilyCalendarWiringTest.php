@@ -41,6 +41,7 @@ final class FamilyCalendarWiringTest extends TestCase
         $source = $this->source('includes/family_calendar_feed.php');
         self::assertStringContainsString("hash('sha256', \$token)", $source);
         self::assertStringContainsString('familyPortalAuthorizedPeople($pdo, $accountId)', $source);
+        self::assertStringContainsString("appUrl('booking/rodinny_kalendar.php')", $source);
         self::assertStringNotContainsString('token_plain', $source);
     }
 

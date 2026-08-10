@@ -71,6 +71,20 @@ if (filter_var($appBaseUrl, FILTER_VALIDATE_URL) === false
     || trim((string)($appBaseParts['host'] ?? '')) === ''
 ) {
     $warnings[] = 'APP_BASE_URL chybí nebo není platná https:// URL; Stripe zůstane fail-closed vypnutý.';
+} elseif (strtolower(trim((string)$appBaseParts['host'])) !== strtolower($appHost)) {
+    $warnings[] = 'APP_BASE_URL míří na jiný host než APP_HOST; odkazy v e-mailech a notifikacích mohou být chybné.';
+}
+
+$shopCheckoutFile = $appRoot . '/includes/shop_checkout.php';
+if (!is_file($shopCheckoutFile)) {
+    $warnings[] = 'Chybí validátor bankovního checkoutu; objednávky zůstanou fail-closed vypnuté.';
+} else {
+    require_once $shopCheckoutFile;
+    try {
+        shopBankSettingsFromConfig();
+    } catch (Throwable) {
+        $warnings[] = 'SHOP_BANK_* není kompletně a platně nastaveno; bankovní objednávky nelze dokončit.';
+    }
 }
 
 echo json_encode(['ok' => true, 'php' => PHP_VERSION, 'warnings' => $warnings], JSON_THROW_ON_ERROR) . PHP_EOL;

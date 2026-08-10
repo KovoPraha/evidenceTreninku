@@ -17,7 +17,8 @@ final class ShopCatalogPublicationWiringTest extends TestCase
         self::assertStringContainsString('shopCatalogPublicationActivate', $source);
         self::assertStringContainsString('shopCatalogPublicationDeactivate', $source);
         self::assertStringContainsString("name=\"confirmed\"", $source);
-        self::assertStringContainsString('Storefront ani checkout neexistují', $source);
+        self::assertStringContainsString('Aktivace zde produkt zveřejní v klubovém e-shopu.', $source);
+        self::assertStringNotContainsString('Storefront ani checkout neexistují', $source);
         self::assertStringNotContainsString('INSERT INTO shop_orders', $source);
         self::assertStringNotContainsString('kis_', strtolower($source));
     }

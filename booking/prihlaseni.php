@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container mt-5" style="max-width:420px">
     <div class="card shadow">
         <div class="card-body p-4">
-            <h4 class="mb-2 text-center"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení</h4>
+            <h1 class="h4 mb-2 text-center"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení</h1>
             <p class="text-center text-muted small mb-4">Jeden účet platí pro e-shop, rezervace i trenérskou Evidenci.</p>
 
             <?php foreach ($errors as $e): ?>
@@ -95,13 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form method="post">
                 <?= csrf_field() ?>
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control"
+                    <label class="form-label" for="login-email">Email</label>
+                    <input type="email" name="email" id="login-email" class="form-control"
                            value="<?= h($_POST['email'] ?? '') ?>" required autofocus>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label">Heslo</label>
-                    <input type="password" name="heslo" class="form-control" required>
+                    <label class="form-label" for="login-password">Heslo</label>
+                    <input type="password" name="heslo" id="login-password" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Přihlásit se</button>
             </form>

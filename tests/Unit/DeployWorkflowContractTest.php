@@ -37,7 +37,10 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $preflight);
         self::assertStringContainsString('APP_BASE_URL', $preflight);
         self::assertStringContainsString("'warnings' => \$warnings", $preflight);
+        self::assertStringContainsString('shopBankSettingsFromConfig', $preflight);
+        self::assertStringContainsString('SHOP_BANK_*', $preflight);
         self::assertStringContainsString("!== 'https'", $preflight);
+        self::assertStringContainsString("!== strtolower(\$appHost)", $preflight);
         self::assertStringContainsString("jq -r '.warnings[]?'", $workflow);
         self::assertStringContainsString('::warning title=Produkční konfigurace::', $workflow);
 
@@ -81,6 +84,7 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('BACKUP_DIR: data/.kis-backups', $workflow);
         self::assertStringContainsString("cd '\$RELEASE_DIR'", $workflow);
         self::assertStringContainsString("'\$RELEASE_DIR/' '\$REMOTE_DIR/'", $workflow);
+        self::assertStringContainsString("test -s '\$REMOTE_DIR/kis_rollover_a06_admin.php'", $workflow);
         self::assertStringContainsString('composer install --no-dev', $workflow);
         self::assertLessThan(
             strpos($workflow, '- name: Připravit kompletní release mimo webroot'),

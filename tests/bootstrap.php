@@ -9,3 +9,4 @@ defined('AUTH_RATE_LIMIT_PEPPER') || define(
     'AUTH_RATE_LIMIT_PEPPER',
     'test-only-auth-rate-limit-pepper-0000000000000000'
 );
+defined('APP_BASE_URL') || define('APP_BASE_URL', 'https://kis.kovopraha.cz');

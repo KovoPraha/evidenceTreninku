@@ -179,7 +179,7 @@ $stavBadge = [
 <?php include 'hlavicka.php'; ?>
 <div class="container mt-4">
     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-        <h4 class="mb-0"><i class="bi bi-person-circle me-2 text-success"></i>Individuální lekce</h4>
+        <h1 class="h4 mb-0"><i class="bi bi-person-circle me-2 text-success"></i>Individuální lekce</h1>
         <div class="d-flex gap-2">
             <?php if (roleAtLeast('hlavni')): ?>
                 <a href="?<?= $zobrazitVse ? '' : 'vse' ?>" class="btn btn-outline-secondary btn-sm">

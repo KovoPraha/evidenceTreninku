@@ -22,6 +22,8 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringNotContainsString('INSERT INTO shop_products', $source);
         self::assertStringNotContainsString('INSERT INTO shop_orders', $source);
         self::assertStringContainsString('ve stavu draft', $source);
+        self::assertStringContainsString('shopBankSettingsFromConfig', $source);
+        self::assertStringContainsString('Objednávky nyní nelze dokončit.', $source);
     }
 
     public function testAdminNavigationLinksToShopReview(): void

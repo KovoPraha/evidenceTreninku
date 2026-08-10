@@ -34,6 +34,7 @@ final class FamilyWeeklyDeliveryWiringTest extends TestCase
     public function testMessageExplainsUnsubscribeAndContainsNoIdentityToken(): void
     {
         $summary = $this->source('includes/family_weekly_summary.php');
+        self::assertStringContainsString("appUrl('booking/sportovni_prehled.php')", $summary);
         self::assertStringContainsString('jedním krokem vypnout', $summary);
         self::assertStringNotContainsString('sportovec_id', $summary);
         self::assertStringNotContainsString('token=', $summary);
