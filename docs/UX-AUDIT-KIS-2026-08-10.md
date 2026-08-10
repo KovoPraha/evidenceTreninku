@@ -1,5 +1,35 @@
 # Produkční UX a funkční audit KIS — 10. 8. 2026
 
+## Závěrečná automatizovaná vlna před ruční kontrolou
+
+### Opravy nalezené a nasazené v této vlně
+
+1. **Domovská stránka přijímala nepodporované HTTP metody.** `PUT`, `PATCH` a `DELETE` na `/index.php` vracely HTTP 200. Vstup nyní explicitně povoluje jen `GET` a `HEAD`; ostatní metody končí HTTP 405 s `Allow: GET, HEAD`. Regresní test hlídá zapojení ochrany.
+2. **První verze produkčního restore drillu očekávala neexistující pole manifestu.** Kontrola nyní odpovídá skutečnému atomickému formátu zálohy: ověřuje sidecar SHA-256, SHA v manifestu, aplikaci, verzi formátu a přesný název SQL souboru.
+3. **Kontrola připravenosti dočasné MariaDB byla příliš slabá.** `mariadb-admin ping` může označit server za živý i při odmítnutém přihlášení. Drill nyní čeká na úspěšný autentizovaný `SELECT 1` a bez něj skončí fail-closed. Tato oprava byla doplněna regresním kontraktním testem.
+4. **Chyběl bezpečný opakovatelný úklid produkčních testovacích účtů.** Přibyl ručně potvrzovaný workflow, který pouze deaktivuje aktivní účty odpovídající přesnému vzoru `kis-e2e-<číslo>@velocota.com`, zvýší jejich `session_version` a spotřebuje resetovací tokeny. Účty ani jiná data nemaže.
+5. **Chyběl provozní restore drill nad skutečnou produkční zálohou.** Nový ručně potvrzovaný workflow stahuje poslední zálohu jen do dočasného prostoru runneru, ověří integritu, obnoví ji do jednorázového kontejneru MariaDB, porovná počty řádků všech tabulek a přesný seznam triggerů a vše vždy odstraní. Produkční DB se nemění a záloha se neukládá jako CI artefakt.
+
+### Výsledky
+
+- Kompletní PHPUnit gate bezprostředně před implementačními commity: **518/518 testů, 4 559 kontrol**, vše zelené. PHP lint: **475 first-party souborů**, 0 chyb; Composer validace, platformní požadavky a audit závislostí byly zelené, 0 známých advisories.
+- CI `Testy`: run `31432002869`, úspěch na PHP 8.2 i integrační MariaDB 10.3 a 11.4.
+- Produkční restore drill: run `31432074594`, SHA-256 sidecar v pořádku, obnova a přesné porovnání **154 tabulek a 2 triggerů** úspěšné. Předchozí run `31431868441` bezpečně odhalil chybnou readiness kontrolu; nedotkl se produkční databáze a vedl k opravě popsané výše.
+- Registrace a doručení e-mailu: jednorázový účet na catch-all doméně obdržel ověřovací zprávu, ověřovací odkaz aktivoval účet a přihlášení fungovalo. Obnova hesla doručila samostatnou zprávu a platný formulář pro nové heslo. Závěrečný cleanup run `31432168737` deaktivoval právě **1 účet** a spotřeboval právě **1 token**.
+- Produkční souběh: dva nezávislé přihlášené kontexty a celkem 48 autentizovaných požadavků prošly při čtyřech paralelních požadavcích bez 5xx. Záměrně přehnaná první vlna 48 požadavků současně narazila na jeden síťový `ETIMEDOUT` hostingu, nikoli na aplikační 5xx; bezpečný ověřený profil je proto čtyřnásobný paralelismus.
+- Dynamická bezpečnostní sada: **56/56** produkčních kontrol bez chyby. Po nasazení vracejí `GET`/`HEAD` na `/index.php` HTTP 200 a `POST`/`PUT`/`PATCH`/`DELETE`/`TRACE` HTTP 405. Citlivé soubory neunikají obsahem a vypnutý Stripe webhook zůstává fail-closed.
+- Prohlížečová matice Chromium, Firefox a WebKit: **12/12** UX scénářů prošlo na desktopových i mobilních rozměrech.
+- Load test localhost: **600/600** odpovědí, 0 chyb, concurrency 20, medián 135 ms, p95 401 ms, p99 580 ms, maximum 825 ms. Produkce: **300/300**, 0 chyb, concurrency 12, medián 56 ms, p95 1 062 ms, p99 1 382 ms, maximum 3 140 ms.
+- Failure/retry sada: **71 testů / 1 012 kontrol** pro privátní úložiště, doručování, retry notifikací, upomínky, reset hesla, transakční rollback importů, checkout/refund a Stripe podpisy/webhooky.
+- Plný finanční a aplikační E2E: **8/8** scénářů. Pokryty role zákazník/admin, bankovní checkout a DB stav, Stripe test-mode Checkout a idempotentní webhook, katalog, akce, 161 endpointů, placené storno/refund stav, expirace i rate-limit cleanup. Produkční Stripe zůstal vypnutý a nebyly použity live klíče.
+- Nasazení revize `6993693c7cd133ede8a5c2e666468a2b3cc6c8b1` prošlo dvakrát za sebou: runy `31432225018` a `31432462031`. Oba vytvořily ověřenou zálohu, aplikovaly idempotentní migrace, aktivovaly release a dokončily HTTP smoke.
+
+### Odložené systémové body
+
+- Skutečný downgrade na starší revizi nebyl proveden, protože by dočasně znovu nasadil právě opravené chování HTTP metod a migrace jsou záměrně forward-only. Bezpečně byla ověřena obnova dat do izolace a opakované nasazení stejné revize. Automatizovaný application rollback s kompatibilitní bránou je samostatný architektonický úkol.
+- Stripe test-mode refund je externě proveden, lokální objednávka ale záměrně zůstává `refund_required`; automatická refund/reconciliation synchronizace je samostatný architektonický slice.
+- Produkční bankovní checkout zůstává fail-closed do doplnění skutečných `SHOP_BANK_*` údajů vlastníkem. Produkční Stripe zůstává vypnutý.
+
 ## Doplnění před ruční kontrolou — souběh, obnova a provozní odolnost
 
 Po schválení navazujícího plánu proběhla další automatizovaná vlna zaměřená na situace, které se ručně reprodukují obtížně: přesně současné požadavky, opakované odeslání, obnovitelnost záloh, role, jednorázové odkazy, chybové vstupy a výkon.

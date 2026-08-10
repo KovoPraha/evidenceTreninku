@@ -1,5 +1,31 @@
 # Session handoff
 
+## Aktualizace 10. 8. 2026 — závěrečná automatizovaná vlna a provozní drilly (`6993693c7cd133ede8a5c2e666468a2b3cc6c8b1`)
+
+### Implementované opravy
+
+- `/index.php` nyní přijímá pouze `GET` a `HEAD`; ostatní metody vracejí 405 a `Allow: GET, HEAD`.
+- Přibyl ručně potvrzovaný produkční workflow pro izolovanou obnovu poslední zálohy a úzce omezenou deaktivaci jednorázových E2E účtů.
+- Restore drill ověřuje SHA-256 a skutečný manifest, čeká na autentizovaný SQL dotaz, obnovuje do jednorázové MariaDB a porovnává všechny tabulky i triggery. První run odhalil slabý readiness probe; oprava je krytá regresním testem.
+- Cleanup je CLI-only, vyžaduje dvojí explicitní potvrzení a může deaktivovat pouze aktivní účty `kis-e2e-<číslo>@velocota.com`; nemaže účty ani jiná data.
+
+### Ověření a produkce
+
+- Lokální finální gate: `518 tests`, `4559 assertions`; CI run `31432002869` zelený včetně MariaDB 10.3 a 11.4.
+- Produkční restore run `31432074594`: checksum v pořádku, **154 tabulek a 2 triggery** obnoveny a přesně porovnány v izolaci.
+- Produkční cleanup run `31432168737`: `matched=1`, `deactivated=1`, `tokens_consumed=1`.
+- E-mailové cesty: registrace, ověření adresy, přihlášení, resetovací zpráva a platný resetovací formulář ověřeny přes catch-all `@velocota.com`.
+- Bezpečnost: `56/56`; `/index.php` po nasazení dává 200 pro GET/HEAD a 405 pro POST/PUT/PATCH/DELETE/TRACE.
+- Prohlížeče: Chromium/Firefox/WebKit `12/12`. Failure/retry `71 testů / 1012 kontrol`. Plné aplikační a finanční E2E `8/8`.
+- Zátěž: localhost `600/600`, 0 chyb, p95 401 ms; produkce `300/300`, 0 chyb, p95 1062 ms. Autentizovaný produkční souběh `48/48` prošel při concurrency 4; jednorázová přehnaná concurrency 48 odhalila jeden síťový timeout hostingu bez aplikační 5xx.
+- Produkční deploy runy `31432225018` a `31432462031` oba uspěly pro stejné SHA, včetně zálohy, migrací a HTTP smoke. Opakovatelnost nasazení je potvrzena.
+
+### Otevřené architektonické body
+
+1. Automatizovaný návrat aplikace na starší kompatibilní release nebyl aktivován; databázové migrace jsou forward-only. Restore do izolace a opakované nasazení jsou ověřené.
+2. Automatická Stripe refund/reconciliation synchronizace pro lokální `refund_required` zůstává samostatný slice. Produkční Stripe je vypnutý.
+3. Bankovní checkout zůstává fail-closed do dodání platných `SHOP_BANK_*` údajů.
+
 ## Aktualizace 10. 8. 2026 — dokončený UX/CRUD průchod a produkční nasazení (`34c185b64643e531ced4ac53004b23aa11593cbb`)
 
 ### Výsledek a opravy
