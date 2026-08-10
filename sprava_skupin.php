@@ -128,6 +128,7 @@ $groups = $pdo->query("
             <td>
               <div class="d-flex gap-1">
                 <button class="btn btn-sm btn-outline-primary edit-btn"
+                        aria-label="Upravit skupinu <?= htmlspecialchars($g['nazev'], ENT_QUOTES) ?>"
                         data-id="<?= $g['id'] ?>"
                         data-nazev="<?= htmlspecialchars($g['nazev'], ENT_QUOTES) ?>"
                         data-poradi="<?= $g['poradi'] ?>"
@@ -138,7 +139,7 @@ $groups = $pdo->query("
                   <?= csrf_field() ?>
                   <input type="hidden" name="delete" value="1">
                   <input type="hidden" name="delete_id" value="<?= $g['id'] ?>">
-                  <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Smazat skupinu <?= htmlspecialchars($g['nazev'], ENT_QUOTES) ?>"><i class="bi bi-trash"></i></button>
                 </form>
               </div>
             </td>

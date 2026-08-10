@@ -196,11 +196,11 @@ $today = date('Y-m-d');
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
         <h1 class="h5 mb-0 me-2"><i class="bi bi-calendar3 me-2 text-primary"></i>Kalendář sportovišť</h1>
         <div class="btn-group btn-group-sm">
-            <a href="?datum=<?= $prevWeek ?>" class="btn btn-outline-secondary">
+            <a href="?datum=<?= $prevWeek ?>" class="btn btn-outline-secondary" aria-label="Předchozí týden">
                 <i class="bi bi-chevron-left"></i>
             </a>
             <a href="?datum=<?= $today ?>" class="btn btn-outline-secondary">Dnes</a>
-            <a href="?datum=<?= $nextWeek ?>" class="btn btn-outline-secondary">
+            <a href="?datum=<?= $nextWeek ?>" class="btn btn-outline-secondary" aria-label="Následující týden">
                 <i class="bi bi-chevron-right"></i>
             </a>
         </div>
@@ -219,7 +219,7 @@ $today = date('Y-m-d');
                 </a>
             <?php endif; ?>
             <?php if (canAccess('sprava_sportovist')): ?>
-                <a href="sprava_sportovist.php" class="btn btn-outline-secondary btn-sm">
+                <a href="sprava_sportovist.php" class="btn btn-outline-secondary btn-sm" aria-label="Správa sportovišť">
                     <i class="bi bi-gear"></i>
                 </a>
             <?php endif; ?>

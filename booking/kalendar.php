@@ -265,8 +265,8 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
     <!-- Filtr sportoviště -->
     <form class="d-flex gap-2 mb-3 align-items-center flex-wrap" method="get">
         <input type="hidden" name="od" value="<?= h($prvniDen->format('Y-m-01')) ?>">
-        <label class="small text-muted mb-0">Sportoviště:</label>
-        <select name="sportoviste_id" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+        <label for="calendar-sportoviste" class="small text-muted mb-0">Sportoviště:</label>
+        <select id="calendar-sportoviste" name="sportoviste_id" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
             <option value="">Všechna veřejná</option>
             <?php foreach ($sportovist as $s): ?>
                 <option value="<?= $s['id'] ?>" <?= $filterSport === (int)$s['id'] ? 'selected' : '' ?>>
@@ -278,11 +278,11 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 
     <!-- Navigace měsíce -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="?od=<?= $prevMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm">
+        <a href="?od=<?= $prevMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm" aria-label="Předchozí měsíc">
             <i class="bi bi-chevron-left"></i>
         </a>
-        <h5 class="mb-0 fw-bold"><?= $mesiceCS[$mesic] ?> <?= $rok ?></h5>
-        <a href="?od=<?= $nextMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm">
+        <h1 class="h5 mb-0 fw-bold"><?= $mesiceCS[$mesic] ?> <?= $rok ?></h1>
+        <a href="?od=<?= $nextMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm" aria-label="Následující měsíc">
             <i class="bi bi-chevron-right"></i>
         </a>
     </div>

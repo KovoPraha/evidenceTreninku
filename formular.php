@@ -251,10 +251,10 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
     <div class="hero-card card mb-4 p-3 px-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <div class="fw-semibold fs-5">
+                <h1 class="fw-semibold fs-5 mb-0">
                     <i class="bi bi-<?= $duplikat ? 'copy' : 'calendar-plus' ?> me-2 opacity-75"></i>
                     <?= $duplikat ? 'Duplikovat trénink' : 'Zadání tréninku' ?>
-                </div>
+                </h1>
                 <div class="opacity-75 small">
                     <?= $duplikat
                         ? 'Zkontrolujte předvyplněné hodnoty a uložte nový trénink'
@@ -560,8 +560,8 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                     <i class="bi bi-image"></i>Fotografie
                 </div>
                 <div class="card-body">
-                    <label class="form-label fw-semibold">Nahrát fotky (max. 5)</label>
-                    <input type="file" name="obrazky[]" class="form-control"
+                    <label for="training-images" class="form-label fw-semibold">Nahrát fotky (max. 5)</label>
+                    <input type="file" id="training-images" name="obrazky[]" class="form-control"
                            accept="image/*" multiple>
                     <div class="mini-muted mt-1">
                         <i class="bi bi-info-circle me-1"></i>Formáty: JPG, PNG, WEBP
@@ -1083,13 +1083,13 @@ if (DUPLIKAT && DUPLIKAT.skupina_id) {
                 <div class="w-100 position-relative">
                     <label class="form-label small mb-1 fw-semibold">Sportovec</label>
                     <input type="text" class="form-control form-control-sm js-sp-name"
-                           placeholder="Jméno (klikněte nebo napište 2+ znaky)…" autocomplete="off">
+                           aria-label="Sportovec pro měření" placeholder="Jméno (klikněte nebo napište 2+ znaky)…" autocomplete="off">
                     <input type="hidden" class="js-sp-id" value="">
                     <div class="list-group position-absolute js-sp-sug suggest-box"></div>
                 </div>
                 <div style="min-width:200px;">
                     <label class="form-label small mb-1 fw-semibold">Typ měření</label>
-                    <select class="form-select form-select-sm js-typ">
+                    <select class="form-select form-select-sm js-typ" aria-label="Typ měření">
                         <option value="">— vyber —</option>
                         <option value="kolo">Kolo</option>
                         <option value="kolo_krouzek">Kolo - Kroužek</option>
@@ -1101,7 +1101,7 @@ if (DUPLIKAT && DUPLIKAT.skupina_id) {
                 </div>
                 <div>
                     <label class="form-label small mb-1">&nbsp;</label>
-                    <button type="button" class="btn btn-sm btn-outline-danger js-del">
+                    <button type="button" class="btn btn-sm btn-outline-danger js-del" aria-label="Odebrat měření">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>

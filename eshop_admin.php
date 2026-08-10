@@ -115,7 +115,7 @@ $statusLabels = [
             <h1 class="h4 mb-0"><i class="bi bi-shop me-2 text-primary"></i>Administrace e-shopu</h1>
             <div class="text-muted small">Kontrola importovaného katalogu a provozu veřejného e-shopu.</div>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
             <a href="eshop_fio_admin.php" class="btn btn-outline-info btn-sm"><i class="bi bi-bank me-1"></i>Fio párování K4</a>
             <a href="eshop_coupons_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-ticket-perforated me-1"></i>Kupóny K4</a>
             <a href="eshop_orders_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-receipt me-1"></i>Objednávky K4</a>
@@ -198,9 +198,9 @@ $statusLabels = [
             <form method="get" class="card border-0 shadow-sm mb-3">
                 <div class="card-body row g-2 align-items-end">
                     <input type="hidden" name="run_id" value="<?= $runId ?>">
-                    <div class="col-md-4"><label class="form-label small">Hledat název, SKU nebo klíč</label><input class="form-control" name="q" value="<?= shopAdminH($search) ?>"></div>
-                    <div class="col-md-3"><label class="form-label small">Stav kontroly</label><select class="form-select" name="status"><option value="">Všechny stavy</option><?php foreach ($statusLabels as $key => $meta): ?><option value="<?= shopAdminH($key) ?>" <?= $statusFilter === $key ? 'selected' : '' ?>><?= shopAdminH($meta[0]) ?></option><?php endforeach; ?></select></div>
-                    <div class="col-md-3"><label class="form-label small">Výsledný typ</label><select class="form-select" name="type"><option value="">Všechny typy</option><?php foreach (ShopOfferClassifier::TYPES as $type): ?><option value="<?= shopAdminH($type) ?>" <?= $typeFilter === $type ? 'selected' : '' ?>><?= shopAdminH($type) ?></option><?php endforeach; ?></select></div>
+                    <div class="col-md-4"><label for="catalog-search" class="form-label small">Hledat název, SKU nebo klíč</label><input id="catalog-search" class="form-control" name="q" value="<?= shopAdminH($search) ?>"></div>
+                    <div class="col-md-3"><label for="catalog-status" class="form-label small">Stav kontroly</label><select id="catalog-status" class="form-select" name="status"><option value="">Všechny stavy</option><?php foreach ($statusLabels as $key => $meta): ?><option value="<?= shopAdminH($key) ?>" <?= $statusFilter === $key ? 'selected' : '' ?>><?= shopAdminH($meta[0]) ?></option><?php endforeach; ?></select></div>
+                    <div class="col-md-3"><label for="catalog-type" class="form-label small">Výsledný typ</label><select id="catalog-type" class="form-select" name="type"><option value="">Všechny typy</option><?php foreach (ShopOfferClassifier::TYPES as $type): ?><option value="<?= shopAdminH($type) ?>" <?= $typeFilter === $type ? 'selected' : '' ?>><?= shopAdminH($type) ?></option><?php endforeach; ?></select></div>
                     <div class="col-md-2 d-grid"><button class="btn btn-primary"><i class="bi bi-funnel me-1"></i>Filtrovat</button></div>
                 </div>
             </form>
@@ -228,8 +228,8 @@ $statusLabels = [
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="run_id" value="<?= $runId ?>">
                                         <input type="hidden" name="product_id" value="<?= (int)$product['id'] ?>">
-                                        <div class="col-md-4"><select class="form-select form-select-sm" name="offer_type"><?php foreach ($offerTypes as $type): ?><option value="<?= shopAdminH($type) ?>" <?= $effectiveType === $type ? 'selected' : '' ?>><?= shopAdminH($type) ?></option><?php endforeach; ?></select></div>
-                                        <div class="col-md-4"><input class="form-control form-control-sm" name="note" maxlength="1000" placeholder="Poznámka při změně/vyřazení"></div>
+                                        <div class="col-md-4"><select class="form-select form-select-sm" name="offer_type" aria-label="Výsledný typ produktu <?= shopAdminH($product['name']) ?>"><?php foreach ($offerTypes as $type): ?><option value="<?= shopAdminH($type) ?>" <?= $effectiveType === $type ? 'selected' : '' ?>><?= shopAdminH($type) ?></option><?php endforeach; ?></select></div>
+                                        <div class="col-md-4"><input class="form-control form-control-sm" name="note" maxlength="1000" aria-label="Poznámka k produktu <?= shopAdminH($product['name']) ?>" placeholder="Poznámka při změně/vyřazení"></div>
                                         <div class="col-md-4 d-flex gap-1"><button class="btn btn-sm btn-success flex-fill" name="action" value="approve">Schválit</button><button class="btn btn-sm btn-outline-danger" name="action" value="exclude">Vyřadit</button></div>
                                     </form>
                                 </td>

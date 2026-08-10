@@ -93,11 +93,11 @@ $statusLabels = [
     <section class="card border-0 shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Požádat o propojení osoby</div><div class="card-body">
         <form method="post" class="row g-3">
             <?= csrf_field() ?><input type="hidden" name="action" value="submit">
-            <div class="col-md-4"><label class="form-label">Vztah</label><select class="form-select" name="requested_role" required><option value="guardian">Jsem rodič / zástupce</option><option value="self">Je to můj vlastní profil</option></select></div>
-            <div class="col-md-4"><label class="form-label">Jméno osoby</label><input class="form-control" name="jmeno" maxlength="100" required></div>
-            <div class="col-md-4"><label class="form-label">Příjmení osoby</label><input class="form-control" name="prijmeni" maxlength="100" required></div>
-            <div class="col-md-4"><label class="form-label">Datum narození</label><input class="form-control" type="date" name="narozeni" max="<?= date('Y-m-d') ?>" required></div>
-            <div class="col-md-8"><label class="form-label">Poznámka pro ověření <span class="text-muted">(nepovinná)</span></label><input class="form-control" name="message" maxlength="1000" placeholder="Např. kroužek nebo skupina, kam dítě chodí"></div>
+            <div class="col-md-4"><label for="claim-role" class="form-label">Vztah</label><select id="claim-role" class="form-select" name="requested_role" required><option value="guardian">Jsem rodič / zástupce</option><option value="self">Je to můj vlastní profil</option></select></div>
+            <div class="col-md-4"><label for="claim-first-name" class="form-label">Jméno osoby</label><input id="claim-first-name" class="form-control" name="jmeno" maxlength="100" required></div>
+            <div class="col-md-4"><label for="claim-last-name" class="form-label">Příjmení osoby</label><input id="claim-last-name" class="form-control" name="prijmeni" maxlength="100" required></div>
+            <div class="col-md-4"><label for="claim-birth-date" class="form-label">Datum narození</label><input id="claim-birth-date" class="form-control" type="date" name="narozeni" max="<?= date('Y-m-d') ?>" required></div>
+            <div class="col-md-8"><label for="claim-message" class="form-label">Poznámka pro ověření <span class="text-muted">(nepovinná)</span></label><input id="claim-message" class="form-control" name="message" maxlength="1000" placeholder="Např. kroužek nebo skupina, kam dítě chodí"></div>
             <div class="col-12"><button class="btn btn-primary"><i class="bi bi-send me-1"></i>Odeslat žádost</button></div>
         </form>
     </div></section>

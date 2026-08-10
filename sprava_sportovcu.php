@@ -221,9 +221,9 @@ try {
     <div class="hero-card card mb-4 p-3 px-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <div class="fw-semibold fs-5">
+                <h1 class="fw-semibold fs-5 mb-0">
                     <i class="bi bi-person-lines-fill me-2 opacity-75"></i>Správa sportovců
-                </div>
+                </h1>
                 <div class="opacity-75 small">Editace údajů sportovců — jméno, příjmení, kategorie, kontakt.</div>
             </div>
             <div class="d-flex gap-2 flex-wrap">
@@ -284,9 +284,9 @@ try {
         <div class="card-body py-2">
             <form method="GET" class="d-flex gap-2 align-items-center flex-wrap">
                 <i class="bi bi-search text-muted"></i>
-                <input type="text" name="q" class="form-control form-control-sm" style="max-width: 320px;"
+                <input type="text" name="q" class="form-control form-control-sm" style="max-width: 320px;" aria-label="Hledat sportovce"
                        placeholder="Hledat příjmení, jméno, UCI ID, email…" value="<?= h($q) ?>">
-                <select name="stav" class="form-select form-select-sm" style="max-width: 190px;">
+                <select name="stav" class="form-select form-select-sm" style="max-width: 190px;" aria-label="Filtrovat podle stavu">
                     <option value="">Vsechny stavy</option>
                     <option value="aktivni" <?= $stavFilter === 'aktivni' ? 'selected' : '' ?>>Aktivni</option>
                     <option value="cekajici" <?= $stavFilter === 'cekajici' ? 'selected' : '' ?>>Cekajici</option>
@@ -294,7 +294,7 @@ try {
                     <option value="archiv" <?= $stavFilter === 'archiv' ? 'selected' : '' ?>>Archiv</option>
                     <option value="manualni" <?= $stavFilter === 'manualni' ? 'selected' : '' ?>>Rucni stav</option>
                 </select>
-                <select name="kis" class="form-select form-select-sm" style="max-width: 210px;">
+                <select name="kis" class="form-select form-select-sm" style="max-width: 210px;" aria-label="Filtrovat podle KIS">
                     <option value="">KIS filtr</option>
                     <option value="kis_aktivni" <?= $kisFilter === 'kis_aktivni' ? 'selected' : '' ?>>KIS aktivni</option>
                     <option value="dluh" <?= $kisFilter === 'dluh' ? 'selected' : '' ?>>Dluh &gt; 0</option>
@@ -360,7 +360,7 @@ try {
                 <tbody>
                 <?php foreach ($sportovciPage as $s): ?>
                     <tr>
-                        <td><input type="checkbox" class="form-check-input row-check" name="sportovec_ids[]" value="<?= (int)$s['id'] ?>"></td>
+                        <td><input type="checkbox" class="form-check-input row-check" name="sportovec_ids[]" value="<?= (int)$s['id'] ?>" aria-label="Vybrat <?= h(trim($s['prijmeni'] . ' ' . $s['jmeno'])) ?>"></td>
                         <td class="fw-semibold"><a href="sportovec_karta.php?sportovec_id=<?= (int)$s['id'] ?>" title="Administrační karta člena"><?= h($s['prijmeni']) ?></a></td>
                         <td><?= h($s['jmeno']) ?></td>
                         <td><?= sportovecStatusBadge($s) ?></td>

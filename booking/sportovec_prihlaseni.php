@@ -73,8 +73,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= childLoginH($error) ?></div><?php endforeach; ?>
         <form method="post">
             <?= csrf_field() ?>
-            <div class="mb-3"><label class="form-label">Přihlašovací jméno</label><input class="form-control" name="login" value="<?= childLoginH($_POST['login'] ?? '') ?>" autocomplete="username" required autofocus></div>
-            <div class="mb-3"><label class="form-label">Heslo</label><input class="form-control" type="password" name="heslo" autocomplete="current-password" required></div>
+            <div class="mb-3"><label for="athlete-login" class="form-label">Přihlašovací jméno</label><input id="athlete-login" class="form-control" name="login" value="<?= childLoginH($_POST['login'] ?? '') ?>" autocomplete="username" required autofocus></div>
+            <div class="mb-3"><label for="athlete-password" class="form-label">Heslo</label><input id="athlete-password" class="form-control" type="password" name="heslo" autocomplete="current-password" required></div>
             <button class="btn btn-primary w-100">Přihlásit se</button>
         </form>
         <p class="text-center small mt-3 mb-0"><a href="zapomenute_heslo.php">Zapomenuté heslo</a></p>

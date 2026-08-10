@@ -277,7 +277,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
       <div class="welcome-card card mb-4 p-3 px-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div>
-            <div class="fw-semibold fs-5">Ahoj, <?= htmlspecialchars($trenerJmeno) ?> 👋</div>
+            <h1 class="fw-semibold fs-5 mb-0">Ahoj, <?= htmlspecialchars($trenerJmeno) ?> 👋</h1>
             <div class="opacity-75 small"><?= $dayName ?>, <?= $dnes->format('j. n. Y') ?></div>
           </div>
           <div class="d-flex gap-2 flex-wrap">

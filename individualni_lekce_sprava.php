@@ -234,7 +234,7 @@ $stavBadge = [
                         <?= csrf_field() ?>
                         <input type="hidden" name="action" value="zrusit_lekci">
                         <input type="hidden" name="lekce_id" value="<?= $l['id'] ?>">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Zrušit lekci <?= h($l['nazev']) ?>">
                             <i class="bi bi-trash"></i>
                         </button>
                     </form>
@@ -317,7 +317,7 @@ $stavBadge = [
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="zamit">
                                     <input type="hidden" name="rezervace_id" value="<?= $r['id'] ?>">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Zamítnout rezervaci <?= h(trim($r['jmeno'] . ' ' . $r['prijmeni'])) ?>">
                                         <i class="bi bi-x-lg"></i>
                                     </button>
                                 </form>

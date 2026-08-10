@@ -153,6 +153,9 @@ if ($is_logged_in) {
         box-shadow: 0 0 0 .2rem rgba(13,110,253,.25);
     }
     #globalSearchInput:focus::placeholder { color: #6c757d; }
+    @media (min-width: 1400px) and (max-width: 1439.98px) {
+        #globalSearchInput { min-width: 170px; width: 170px; }
+    }
     #globalSearchDropdown {
         position: absolute;
         top: calc(100% + 4px);
@@ -202,7 +205,7 @@ if ($is_logged_in) {
     .gs-empty { padding: .6rem .85rem; color: #6c757d; font-size: .85rem; }
     .gs-loading { padding: .6rem .85rem; color: #6c757d; font-size: .85rem; }
 </style>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand fw-semibold" href="index.php">
             <i class="bi bi-bicycle me-1"></i><?= $is_logged_in ? 'Tréninková evidence' : 'Kovopraha' ?>
