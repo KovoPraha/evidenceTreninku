@@ -157,6 +157,8 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("= 'PROVEST'", $workflow);
         self::assertStringContainsString('sha256sum -c', $workflow);
         self::assertStringContainsString('mariadb:11.4', $workflow);
+        self::assertStringContainsString("-Nse 'SELECT 1'", $workflow);
+        self::assertStringContainsString('test "$READY" = \'1\'', $workflow);
         self::assertStringContainsString('CREATE DATABASE kis_restore', $workflow);
         self::assertStringContainsString("jq -r '.tables | to_entries[]", $workflow);
         self::assertStringNotContainsString('upload-artifact', $workflow);

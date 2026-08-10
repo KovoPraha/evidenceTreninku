@@ -97,10 +97,15 @@ jobs:
           CONTAINER="kis-restore-$GITHUB_RUN_ID"
           RESTORE_PASSWORD=$(openssl rand -hex 24)
           docker run -d --name "$CONTAINER" -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:11.4 > /dev/null
+          READY=0
           for i in $(seq 1 60); do
-            if docker exec "$CONTAINER" mariadb-admin -uroot -p"$RESTORE_PASSWORD" ping --silent; then break; fi
+            if docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT 1' > /dev/null 2>&1; then
+              READY=1
+              break
+            fi
             sleep 2
           done
+          test "$READY" = '1'
           docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
           gzip -dc "$SQL_FILE" | docker exec -i "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" kis_restore
 
