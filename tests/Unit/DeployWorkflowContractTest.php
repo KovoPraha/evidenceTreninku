@@ -146,6 +146,29 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('php tests/Support/DatabaseBackupMariaDbSmoke.php', $workflow);
     }
 
+    public function testProductionDrillRestoresEphemerallyAndCleanupIsNarrowlyScoped(): void
+    {
+        $workflow = $this->source('.github/workflows/production-drills.yml');
+        $cleanup = $this->source('bin/production-test-cleanup.php');
+
+        self::assertStringContainsString('obnovit-zalohu-izolovane', $workflow);
+        self::assertStringContainsString('deaktivovat-testovaci-ucty', $workflow);
+        self::assertStringContainsString("inputs.potvrzeni", $workflow);
+        self::assertStringContainsString("= 'PROVEST'", $workflow);
+        self::assertStringContainsString('sha256sum -c', $workflow);
+        self::assertStringContainsString('mariadb:11.4', $workflow);
+        self::assertStringContainsString('CREATE DATABASE kis_restore', $workflow);
+        self::assertStringContainsString("jq -r '.tables | to_entries[]", $workflow);
+        self::assertStringNotContainsString('upload-artifact', $workflow);
+        self::assertStringNotContainsString('rsync', $workflow);
+
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $cleanup);
+        self::assertStringContainsString("KIS_TEST_CLEANUP_CONFIRM", $cleanup);
+        self::assertStringContainsString("'^kis-e2e-[0-9]+@velocota[.]com$'", $cleanup);
+        self::assertStringContainsString('SET aktivni=0,session_version=session_version+1', $cleanup);
+        self::assertStringNotContainsString('DELETE FROM verejni_uzivatele', $cleanup);
+    }
+
     private function source(string $relativePath): string
     {
         $source = file_get_contents(dirname(__DIR__, 2) . '/' . $relativePath);

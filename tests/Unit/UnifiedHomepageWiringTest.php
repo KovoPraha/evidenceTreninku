@@ -7,6 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class UnifiedHomepageWiringTest extends TestCase
 {
+    public function testHomepageRejectsUnsupportedHttpMethods(): void
+    {
+        $source = (string)file_get_contents(dirname(__DIR__, 2) . '/index.php');
+
+        self::assertStringContainsString("['GET', 'HEAD']", $source);
+        self::assertStringContainsString('http_response_code(405)', $source);
+        self::assertStringContainsString("header('Allow: GET, HEAD')", $source);
+    }
+
     public function testHomepageConnectsShopFamilyAthleteEvidenceAndKisEntrypoints(): void
     {
         $root = dirname(__DIR__, 2);

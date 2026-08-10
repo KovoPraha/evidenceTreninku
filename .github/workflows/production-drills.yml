@@ -1,0 +1,149 @@
+name: Produkcni provozni drill
+
+on:
+  workflow_dispatch:
+    inputs:
+      operace:
+        description: 'Bezpecna provozni operace'
+        required: true
+        type: choice
+        options:
+          - obnovit-zalohu-izolovane
+          - deaktivovat-testovaci-ucty
+      potvrzeni:
+        description: 'Pro spusteni napiste presne PROVEST'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  BACKUP_DIR: data/.kis-backups
+
+jobs:
+  drill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+
+    steps:
+      - name: Overit potvrzeni a konfiguraci
+        run: |
+          test '${{ inputs.potvrzeni }}' = 'PROVEST'
+          test -n "$APP_HOST"
+          test -n "$REMOTE_DIR"
+
+      - name: Stahnout kod
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Pripravit overene SSH spojeni
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          for promenna in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
+            test -n "${!promenna}"
+          done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = '22' ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Obnovit posledni zalohu do izolovane MariaDB
+        if: inputs.operace == 'obnovit-zalohu-izolovane'
+        run: |
+          set -euo pipefail
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          TMP="/tmp/kis-restore-drill-$GITHUB_RUN_ID"
+          install -d -m 700 "$TMP"
+          LATEST=$("${SSH[@]}" "set -eu; latest=\$(ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n 1); test -n \"\$latest\"; printf '%s\\n' \"\$latest\"")
+          [[ "$LATEST" =~ ^data/\.kis-backups/evidence_[0-9A-Za-z_-]+\.sql\.gz$ ]]
+          BASE="${LATEST%.sql.gz}"
+          "${SCP[@]}" "$SSH_USER@$SSH_HOST:$LATEST" "$TMP/"
+          "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.sha256" "$TMP/"
+          "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.manifest.json" "$TMP/"
+          cd "$TMP"
+          SQL_FILE=$(basename "$LATEST")
+          SHA_FILE="$(basename "$BASE").sha256"
+          MANIFEST_FILE="$(basename "$BASE").manifest.json"
+          sha256sum -c "$SHA_FILE"
+          test "$(jq -r '.sha256' "$MANIFEST_FILE")" = "$(sha256sum "$SQL_FILE" | awk '{print $1}')"
+          test "$(jq -r '.application' "$MANIFEST_FILE")" = 'evidence'
+          test "$(jq -r '.sql_file' "$MANIFEST_FILE")" = "$SQL_FILE"
+          test "$(jq -r '.format_version | numbers' "$MANIFEST_FILE")" -ge 1
+
+          CONTAINER="kis-restore-$GITHUB_RUN_ID"
+          RESTORE_PASSWORD=$(openssl rand -hex 24)
+          docker run -d --name "$CONTAINER" -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:11.4 > /dev/null
+          for i in $(seq 1 60); do
+            if docker exec "$CONTAINER" mariadb-admin -uroot -p"$RESTORE_PASSWORD" ping --silent; then break; fi
+            sleep 2
+          done
+          docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+          gzip -dc "$SQL_FILE" | docker exec -i "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" kis_restore
+
+          CHECKED=0
+          while IFS=$'\t' read -r TABLE EXPECTED; do
+            [[ "$TABLE" =~ ^[a-z0-9_]+$ ]]
+            ACTUAL=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM \`$TABLE\`" kis_restore)
+            test "$ACTUAL" = "$EXPECTED"
+            CHECKED=$((CHECKED + 1))
+          done < <(jq -r '.tables | to_entries[] | [.key,.value] | @tsv' "$MANIFEST_FILE")
+          EXPECTED_TRIGGERS=$(jq -r '.triggers | sort | join("\n")' "$MANIFEST_FILE")
+          ACTUAL_TRIGGERS=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA='kis_restore' ORDER BY TRIGGER_NAME")
+          test "$ACTUAL_TRIGGERS" = "$EXPECTED_TRIGGERS"
+          echo "Obnova overena: $CHECKED tabulek, $(jq '.triggers | length' "$MANIFEST_FILE") triggeru."
+
+      - name: Deaktivovat vyhradne jednorazove testovaci ucty
+        if: inputs.operace == 'deaktivovat-testovaci-ucty'
+        run: |
+          set -euo pipefail
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SCP[@]}" bin/production-test-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-test-cleanup.php"
+          cat > /tmp/run-production-test-cleanup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_TEST_CLEANUP_CONFIRM=DEAKTIVOVAT');
+          require __DIR__ . '/production-test-cleanup.php';
+          EOF
+          "${SCP[@]}" /tmp/run-production-test-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-test-cleanup.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-production-test-cleanup.php'"
+
+      - name: Uklid docasnych dat drillu
+        if: always()
+        continue-on-error: true
+        run: |
+          CONTAINER="kis-restore-$GITHUB_RUN_ID"
+          docker rm -f "$CONTAINER" > /dev/null 2>&1 || true
+          TMP="/tmp/kis-restore-drill-$GITHUB_RUN_ID"
+          if [ -d "$TMP" ] && [[ "$TMP" =~ ^/tmp/kis-restore-drill-[0-9]+$ ]]; then
+            find "$TMP" -mindepth 1 -maxdepth 1 -type f -delete
+            rmdir "$TMP"
+          fi
+          if [ -n "${SSH_HOST:-}" ]; then
+            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php'" || true
+          fi
