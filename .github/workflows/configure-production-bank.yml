@@ -1,0 +1,113 @@
+name: Nastavit produkční bankovní účet KIS
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro změnu cílového účtu napište přesně NASTAVIT-BANKU'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  CONFIG_BACKUP_DIR: data/.kis-backups/config
+
+jobs:
+  nastavit:
+    name: Bankovní účet (kis.kovopraha.cz)
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+
+    steps:
+      - name: Ověřit ruční potvrzení
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          if [ "$POTVRZENI" != 'NASTAVIT-BANKU' ]; then
+            echo '❌ Změna bankovního účtu nebyla potvrzena přesným textem.'
+            exit 1
+          fi
+
+      - name: Stáhnout konfigurační nástroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Ověřit SSH a bankovní konfiguraci
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+          BANK_IBAN_VALUE: ${{ secrets.KIS_BANK_IBAN }}
+          BANK_ACCOUNT_LABEL_VALUE: ${{ secrets.KIS_BANK_ACCOUNT_LABEL }}
+        run: |
+          for promenna in APP_HOST REMOTE_DIR SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET BANK_IBAN_VALUE BANK_ACCOUNT_LABEL_VALUE; do
+            if [ -z "${!promenna}" ]; then
+              echo "❌ Chybí povinná konfigurace: $promenna."
+              exit 1
+            fi
+          done
+          case "$REMOTE_DIR" in
+            /*|*..*) echo '❌ KIS_REMOTE_DIR musí být relativní cesta bez ..'; exit 1 ;;
+          esac
+          [[ "$BANK_IBAN_VALUE" =~ ^CZ[0-9]{22}$ ]] || { echo '❌ Bankovní IBAN nemá český formát.'; exit 1; }
+
+          PORT="${SSH_PORT_SECRET:-22}"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = '22' ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+          php -r '$v=["iban"=>getenv("BANK_IBAN_VALUE"),"bic"=>"","account_label"=>getenv("BANK_ACCOUNT_LABEL_VALUE"),"due_days"=>7];file_put_contents("/tmp/bank-settings.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
+          chmod 600 /tmp/bank-settings.json
+
+      - name: Zálohovat a nastavit bankovní účet
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SSH[@]}" "set -eu; umask 077; test -d '$REMOTE_DIR'; test -s '$REMOTE_DIR/config.php'; mkdir -p '$DEPLOY_BASE' '$CONFIG_BACKUP_DIR'"
+          "${SCP[@]}" bin/configure-production-bank.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/configure-production-bank.php"
+          "${SCP[@]}" /tmp/bank-settings.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/bank-settings.json"
+
+          cat > /tmp/run-bank-config.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_BANK=1');
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('CONFIG_BACKUP_DIR=$CONFIG_BACKUP_DIR');
+          putenv('BANK_SETTINGS_FILE=$DEPLOY_BASE/bank-settings.json');
+          require __DIR__ . '/configure-production-bank.php';
+          kisProductionBankMain();
+          EOF
+          "${SCP[@]}" /tmp/run-bank-config.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-bank-config.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-bank-config.php'" | tee /tmp/bank-result.json
+          jq -e '.ok == true and .environment == "production" and .bank_valid == true and .iban_match == true and .bic_match == true and .label_match == true and .due_days_match == true' /tmp/bank-result.json > /dev/null
+          echo '✅ Produkční bankovní účet je nastavený a přesně ověřený.'
+
+      - name: Uklidit dočasné kopie údajů
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/bank-settings.json /tmp/run-bank-config.php
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then
+            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" \
+              "rm -f '$DEPLOY_BASE/bank-settings.json' '$DEPLOY_BASE/run-bank-config.php' '$DEPLOY_BASE/configure-production-bank.php'"
+          fi
