@@ -39,6 +39,7 @@ final class StripeGatewayTest extends TestCase
         $session=\stripeCreateCheckoutSession($pdo,11,10,$client,self::SETTINGS);
         self::assertSame(25900,$session['amount_total']);self::assertSame('CZK',$session['currency']);self::assertCount(1,$client->created);
         $request=$client->created[0];self::assertSame(25900,$request['parameters']['line_items'][0]['price_data']['unit_amount']);self::assertSame('czk',$request['parameters']['line_items'][0]['price_data']['currency']);
+        self::assertSame('kis_checkout_qkmrztax',$request['parameters']['integration_identifier']);
         self::assertArrayNotHasKey('payment_method_types',$request['parameters']);
         self::assertSame('11',$request['parameters']['metadata']['shop_order_id']);self::assertSame('31',$request['parameters']['metadata']['payment_id']);self::assertSame('shop-order-11-payment-31',$request['idempotency_key']);
         self::assertSame('cs_test_unit123',$pdo->query('SELECT stripe_checkout_session_id FROM payments WHERE id=31')->fetchColumn());

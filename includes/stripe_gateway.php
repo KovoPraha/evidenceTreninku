@@ -95,6 +95,7 @@ function stripeCreateCheckoutSession(PDO $pdo,int $orderId,int $accountId,Stripe
     $publicCode=rawurlencode((string)$snapshot['public_code']);$base=rtrim((string)$settings['base_url'],'/');
     $parameters=[
         'mode'=>'payment',
+        'integration_identifier'=>'kis_checkout_qkmrztax',
         'client_reference_id'=>(string)$snapshot['public_code'],
         'success_url'=>$base.'/booking/objednavka.php?code='.$publicCode.'&stripe=success&session_id={CHECKOUT_SESSION_ID}',
         'cancel_url'=>$base.'/booking/objednavka.php?code='.$publicCode.'&stripe=cancelled',
