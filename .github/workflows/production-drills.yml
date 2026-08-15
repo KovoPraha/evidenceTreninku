@@ -12,6 +12,7 @@ on:
           - obnovit-tri-zalohy-izolovane
           - overit-databazove-invarianty
           - deaktivovat-testovaci-ucty
+          - vytvorit-kis-test-admina
       potvrzeni:
         description: 'Pro spusteni napiste presne PROVEST'
         required: true
@@ -167,6 +168,35 @@ jobs:
           "${SCP[@]}" /tmp/run-production-test-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-test-cleanup.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-production-test-cleanup.php'"
 
+      - name: Vytvorit nebo obnovit vyhradne KIS testovaciho administratora
+        if: inputs.operace == 'vytvorit-kis-test-admina'
+        env:
+          KIS_TEST_ADMIN_PASSWORD_VALUE: ${{ secrets.KIS_TEST_ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$KIS_TEST_ADMIN_PASSWORD_VALUE"
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          export KIS_TEST_ADMIN_EMAIL_VALUE='kis@velocota.com'
+          export KIS_TEST_ADMIN_NAME_VALUE='KIS testovací administrátor'
+          php -r '$v=["email"=>getenv("KIS_TEST_ADMIN_EMAIL_VALUE"),"name"=>getenv("KIS_TEST_ADMIN_NAME_VALUE"),"password"=>getenv("KIS_TEST_ADMIN_PASSWORD_VALUE")];file_put_contents("/tmp/kis-test-admin.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
+          chmod 600 /tmp/kis-test-admin.json
+          "${SCP[@]}" bin/provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/provision-production-test-admin.php"
+          "${SCP[@]}" /tmp/kis-test-admin.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/kis-test-admin.json"
+          cat > /tmp/run-provision-production-test-admin.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_TEST_ADMIN_CONFIRM=VYTVORIT-KIS-ADMINA');
+          putenv('KIS_TEST_ADMIN_SETTINGS_FILE=$DEPLOY_BASE/kis-test-admin.json');
+          require __DIR__ . '/provision-production-test-admin.php';
+          kisProductionTestAdminMain();
+          EOF
+          "${SCP[@]}" /tmp/run-provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-test-admin.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-test-admin.php'" | tee /tmp/kis-test-admin-result.json
+          jq -e '.ok == true and .email == "kis@velocota.com" and .role == "admin" and .active == true and .password_verified == true' /tmp/kis-test-admin-result.json > /dev/null
+          echo 'KIS testovaci administrator byl vytvoren a overen.'
+
       - name: Uklid docasnych dat drillu
         if: always()
         continue-on-error: true
@@ -177,6 +207,7 @@ jobs:
             find "$TMP" -mindepth 1 -maxdepth 1 -type f -delete
             rmdir "$TMP"
           fi
+          rm -f /tmp/kis-test-admin.json /tmp/kis-test-admin-result.json /tmp/run-provision-production-test-admin.php
           if [ -n "${SSH_HOST:-}" ]; then
-            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php' '$DEPLOY_BASE/production-invariants.php' '$DEPLOY_BASE/run-production-invariants.php'" || true
+            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php' '$DEPLOY_BASE/production-invariants.php' '$DEPLOY_BASE/run-production-invariants.php' '$DEPLOY_BASE/kis-test-admin.json' '$DEPLOY_BASE/provision-production-test-admin.php' '$DEPLOY_BASE/run-provision-production-test-admin.php'" || true
           fi

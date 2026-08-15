@@ -166,6 +166,7 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('obnovit-tri-zalohy-izolovane', $workflow);
         self::assertStringContainsString('overit-databazove-invarianty', $workflow);
         self::assertStringContainsString('deaktivovat-testovaci-ucty', $workflow);
+        self::assertStringContainsString('vytvorit-kis-test-admina', $workflow);
         self::assertStringContainsString("inputs.potvrzeni", $workflow);
         self::assertStringContainsString("= 'PROVEST'", $workflow);
         self::assertStringContainsString('sha256sum -c', $workflow);
@@ -182,6 +183,8 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $cleanup);
         self::assertStringContainsString("KIS_TEST_CLEANUP_CONFIRM", $cleanup);
+        self::assertStringContainsString('secrets.KIS_TEST_ADMIN_PASSWORD', $workflow);
+        self::assertStringContainsString('provision-production-test-admin.php', $workflow);
         self::assertStringContainsString("'^kis-e2e-[0-9]+@velocota[.]com$'", $cleanup);
         self::assertStringContainsString('SET aktivni=0,session_version=session_version+1', $cleanup);
         self::assertStringNotContainsString('DELETE FROM verejni_uzivatele', $cleanup);
