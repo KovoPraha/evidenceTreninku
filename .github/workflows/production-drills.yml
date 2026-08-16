@@ -170,6 +170,7 @@ jobs:
           "${SCP[@]}" /tmp/kis-post-deploy-settings.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/kis-post-deploy-settings.json"
           cat > /tmp/run-post-deploy-r2.php <<EOF
           <?php
+          putenv('APP_HOST=$APP_HOST');
           putenv('APP_ROOT=$REMOTE_DIR');
           putenv('WEB_URL=$WEB_URL');
           putenv('KIS_POST_DEPLOY_CONFIRM=OVERIT');
