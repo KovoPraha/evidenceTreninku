@@ -1,5 +1,54 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — P1 F7 přísné zakládání osob (`80bb5231ed6caef5b8a237546de45a830615774d`)
+
+### Dokončený výsledek
+
+- Nový `includes/person_match.php` je jediná sdílená implementace závazného
+  kontraktu `person-match-v1`. Je oddělený od skórování KIS importu, protože
+  vyhodnocuje přesně SHODU a pravidla P1–P4; vlákno B má volat přímo
+  `personMatchV1()` a nesmí vytvořit vlastní variantu pravidel.
+- Normalizace sjednocuje mezery a velikost písmen, odstraňuje diakritiku,
+  spojovníky a apostrofy. Vrací všechny přesné i podobné kandidáty včetně
+  pravidel. Přesná shoda blokuje vytvoření, nabízí existující osoby a dovolí
+  auditovanou výjimku „Přesto založit jako novou osobu“ jen s důvodem alespoň
+  10 znaků.
+- `sprava_sportovcu.php` má admin-only, CSRF chráněnou akci `create`. Ruční
+  osoba dostane kryptografický veřejný token, `stav_clenstvi='cekajici'`,
+  `stav_manualni=1` a žádné `kis_external_id`; každý výsledek založení i
+  výjimka se zapisuje do existujícího obecného auditu bez nové migrace.
+- `eshop_identity_admin.php` umí nad žádostí zobrazit všechny kandidáty,
+  připojit vybranou existující osobu nebo založit osobu z údajů žádosti a
+  schválit ji v jedné transakci. `accountPersonClaimApprove()` nově korektně
+  vstoupí do transakce volajícího. Pevný `LIMIT 1000` nahradilo serverové
+  hledání s limitem 100 výsledků, takže funguje i nad přibližně 10 000 osobami.
+- Veřejná žádost kontrakt nevolá, nedotazuje `sportovci` a dál vrací stejnou
+  neutrální odpověď; kontrola shod zůstává výhradně administrátorská.
+
+### Živé ověření a brány
+
+- V izolované lokální databázi byla vytvořena čekající žádost se stejným
+  jménem a datem jako existující osoba. Pokus o založení se zastavil na přesné
+  shodě, vykreslil kandidáta, „Připojit k této osobě“ a důvod výjimky. Nová
+  osoba nevznikla; přesně vymezená testovací žádost, její event a auditní
+  discovery záznam byly po ověření odstraněny.
+- Povinné případy T1–T12 jsou pokryté: SHODA/normalizace, P1–P4, žádná shoda,
+  více přesných kandidátů, audit override a zákaz veřejné enumerace. Regrese
+  navíc ověřuje, že schválení žádosti nepřevezme ani předčasně necommitne vnější
+  transakci založení osoby.
+- Plná sada: `560 tests`, `4821 assertions`; PHP lint `484` first-party
+  souborů, `0` chyb. Composer `validate --strict`, `audit --locked` a
+  `check-platform-reqs` jsou zelené. Migrace `check → apply → check` třikrát
+  `AKTUALNI: current`; žádná migrace nebyla přidána.
+- Produkce ani původní poškozený lokální InnoDB nebyly změněny. Cizí
+  nesledovaný WIP zůstal nedotčený a nic nebylo pushnuto ani nasazeno.
+
+### Další akce
+
+- **Jediná další konkrétní akce:** implementovat schválený řez F8 včetně
+  vazby plánu na rezervaci, historické deduplikace a regrese „plán → evidence +
+  rezervace v jednom odeslání“ právě jednou.
+
 ## Aktualizace 16. 8. 2026 — P1 F9 politika hesla (`0aacc178dd01c1025078bbc1f98c614ac992206c`)
 
 ### Dokončený výsledek
