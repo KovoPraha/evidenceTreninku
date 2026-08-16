@@ -174,6 +174,7 @@ jobs:
           putenv('APP_ROOT=$REMOTE_DIR');
           putenv('WEB_URL=$WEB_URL');
           putenv('KIS_POST_DEPLOY_CONFIRM=OVERIT');
+          putenv('KIS_POST_DEPLOY_FINGERPRINT_SALT=postdeploy-$GITHUB_RUN_ID');
           putenv('KIS_POST_DEPLOY_SETTINGS_FILE=$DEPLOY_BASE/kis-post-deploy-settings.json');
           require __DIR__ . '/post-deploy-r2-verify.php';
           EOF

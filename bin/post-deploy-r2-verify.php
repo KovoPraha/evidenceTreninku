@@ -9,8 +9,9 @@ if (PHP_SAPI !== 'cli') {
 $confirm = (string)getenv('KIS_POST_DEPLOY_CONFIRM');
 $appRoot = realpath((string)getenv('APP_ROOT'));
 $webUrl = rtrim((string)getenv('WEB_URL'), '/');
+$fingerprintSalt = (string)getenv('KIS_POST_DEPLOY_FINGERPRINT_SALT');
 $settingsFile = realpath((string)getenv('KIS_POST_DEPLOY_SETTINGS_FILE'));
-if ($confirm !== 'OVERIT' || $appRoot === false || $settingsFile === false || $webUrl === '') {
+if ($confirm !== 'OVERIT' || $appRoot === false || $settingsFile === false || $webUrl === '' || $fingerprintSalt === '') {
     fwrite(STDERR, "post_deploy_r2_refused\n");
     exit(2);
 }
@@ -89,6 +90,23 @@ function postDeployCsrf(string $html): string
         throw new RuntimeException('CSRF token nebyl nalezen.');
     }
     return html_entity_decode($match[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
+/** @return array{ok:bool,body:string} */
+function postDeployLogin(string $webUrl, string $cookieFile, array $settings): array
+{
+    $loginPage = postDeployHttp($webUrl . '/login.php', $cookieFile);
+    $login = postDeployHttp($webUrl . '/login.php', $cookieFile, 'POST', [
+        'csrf_token' => postDeployCsrf($loginPage['body']),
+        'jmeno' => (string)$settings['email'],
+        'heslo' => (string)$settings['password'],
+    ]);
+    return [
+        'ok' => $login['status'] === 200
+            && !str_contains($login['body'], 'Neplatné přihlašovací')
+            && str_contains($login['body'], 'Odhlásit'),
+        'body' => $login['body'],
+    ];
 }
 
 function postDeploySourceContains(string $appRoot, string $file, array $needles): bool
@@ -180,15 +198,8 @@ try {
     }
 
     $stage = 'admin_http_login';
-    $loginPage = postDeployHttp($webUrl . '/login.php', $cookieFile);
-    $login = postDeployHttp($webUrl . '/login.php', $cookieFile, 'POST', [
-        'csrf_token' => postDeployCsrf($loginPage['body']),
-        'jmeno' => (string)$settings['email'],
-        'heslo' => (string)$settings['password'],
-    ]);
-    $authenticated = $login['status'] === 200
-        && !str_contains($login['body'], 'Neplatné přihlašovací')
-        && str_contains($login['body'], 'Odhlásit');
+    $login = postDeployLogin($webUrl, $cookieFile, $settings);
+    $authenticated = $login['ok'];
 
     $diagnostics = postDeployHttp($webUrl . '/diagnostika_site_admin.php', $cookieFile);
     $diagnosticsCsrf = postDeployCsrf($diagnostics['body']);
@@ -200,6 +211,8 @@ try {
         '/(?:X-Forwarded-For|X-Real-IP|CF-Connecting-IP|Forwarded)<\/th>\s*<td>ano<\/td>/s',
         $diagnostics['body']
     ) === 1;
+    preg_match('/<th scope="row">X-Real-IP<\/th>.*?<code>([^<]*)<\/code>/s', $diagnostics['body'], $xRealMatch);
+    $xRealAddress = html_entity_decode((string)($xRealMatch[1] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $trustedProxyCount = 0;
     if (defined('AUTH_TRUSTED_PROXIES') && is_array(AUTH_TRUSTED_PROXIES)) {
         $trustedProxyCount = count(AUTH_TRUSTED_PROXIES);
@@ -239,6 +252,23 @@ try {
         $privateDownloads['stress_http_ok'] = $download['status'] === 200
             && (str_starts_with($download['content_type'], 'image/') || str_starts_with($download['content_type'], 'application/pdf'))
             && strlen($download['body']) > 0;
+    }
+
+    $stage = 'logout_paths';
+    $logoutPaths = [];
+    foreach (['trainer' => '/logout.php', 'public' => '/booking/odhlaseni.php', 'athlete' => '/booking/sportovec_odhlaseni.php'] as $name => $path) {
+        $sessionPage = postDeployHttp($webUrl . '/diagnostika_site_admin.php', $cookieFile);
+        $logout = postDeployHttp($webUrl . $path, $cookieFile, 'POST', [
+            'csrf_token' => postDeployCsrf($sessionPage['body']),
+        ]);
+        $protectedPage = postDeployHttp($webUrl . '/sprava_sportovcu.php', $cookieFile);
+        $loggedOut = $logout['status'] === 200
+            && $protectedPage['status'] === 200
+            && str_contains($protectedPage['body'], 'Přihlášení trenéra')
+            && !str_contains($protectedPage['body'], 'Správa sportovců');
+        $relogin = postDeployLogin($webUrl, $cookieFile, $settings);
+        $logoutPaths[$name] = ['logout_ok' => $loggedOut, 'relogin_first_try_ok' => $relogin['ok']];
+        if (!$relogin['ok']) break;
     }
 
     $stage = 'planner';
@@ -309,7 +339,7 @@ try {
                 '[data-bs-theme="dark"]',
             ]),
         ],
-        'f3_login' => ['test_admin_login_ok' => $authenticated],
+        'f3_login' => ['test_admin_login_ok' => $authenticated, 'paths' => $logoutPaths],
         'f4_dropdowns' => [
             'orders_http_ok' => $ordersPage['status'] === 200,
             'orders_bootstrap_dropdown' => str_contains($ordersPage['body'], 'data-bs-toggle="dropdown"'),
@@ -354,12 +384,17 @@ try {
             'forwarding_headers_present' => $forwardingHeadersPresent,
             'trusted_proxy_count' => $trustedProxyCount,
             'network_paths_verified' => 1,
+            'remote_fingerprint' => hash_hmac('sha256', $remoteAddress, $fingerprintSalt),
+            'derived_fingerprint' => hash_hmac('sha256', $derivedAddress, $fingerprintSalt),
+            'x_real_fingerprint' => $xRealAddress !== '' ? hash_hmac('sha256', $xRealAddress, $fingerprintSalt) : null,
         ],
     ];
 
     $hardFailures = [];
     if (!$schema['migration_recorded'] || !$schema['all_tables_present']) $hardFailures[] = 'schema';
-    if (!$authenticated) $hardFailures[] = 'admin_login';
+    if (!$authenticated || count($logoutPaths) !== 3
+        || array_filter($logoutPaths, static fn(array $path): bool => !$path['logout_ok'] || !$path['relogin_first_try_ok']) !== []
+    ) $hardFailures[] = 'admin_login';
     if (!$sensitiveFailClosed) $hardFailures[] = 'sensitive_endpoint';
     foreach (['receipt', 'stress'] as $kind) {
         if ($privateDownloads[$kind . '_fixture_available'] && $privateDownloads[$kind . '_http_ok'] !== true) {
