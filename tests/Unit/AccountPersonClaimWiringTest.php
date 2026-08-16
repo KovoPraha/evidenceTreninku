@@ -16,7 +16,9 @@ final class AccountPersonClaimWiringTest extends TestCase
         self::assertStringContainsString('csrf_verify', $source);
         self::assertStringContainsString('accountPersonClaimSubmit', $source);
         self::assertStringContainsString('accountPersonClaimCancel', $source);
+        self::assertStringContainsString('Žádost byla odeslána ke kontrole administrátorovi.', $source);
         self::assertStringNotContainsString('FROM sportovci', $source);
+        self::assertStringNotContainsString('personMatchV1', $source);
         self::assertStringNotContainsString('kis_', strtolower($source));
     }
 
@@ -30,6 +32,11 @@ final class AccountPersonClaimWiringTest extends TestCase
         self::assertStringContainsString('reject_claim', $source);
         self::assertStringContainsString('sportovec_id', $source);
         self::assertStringContainsString('Podklad ověření', $source);
+        self::assertStringContainsString('create_claim_person', $source);
+        self::assertStringContainsString('personMatchV1', $source);
+        self::assertStringContainsString('personMatchV1CreateManual', $source);
+        self::assertStringContainsString('Založit osobu z údajů žádosti a schválit', $source);
+        self::assertStringNotContainsString('LIMIT 1000', $source);
     }
 
     public function testPublicBookingNavigationLinksToOwnPeopleOnly(): void

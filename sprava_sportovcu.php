@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sportovec_status_lib.php';
+require_once __DIR__ . '/includes/person_match.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_sportovcu')) {
     header("Location: login.php");
@@ -12,7 +13,11 @@ function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-// ── POST: uložení změn sportovce ────────────────────────────────────────────
+$createPreview = null;
+$createInput = ['jmeno' => '', 'prijmeni' => '', 'narozeni' => '', 'email' => ''];
+$createError = '';
+
+// ── POST: uložení změn nebo založení sportovce ──────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
         $_SESSION['flash_error'] = 'Neplatný CSRF token.';
@@ -22,7 +27,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $akce = $_POST['akce'] ?? '';
 
-    if ($akce === 'save') {
+    if ($akce === 'create') {
+        if (!roleAtLeast('admin')) {
+            http_response_code(403);
+            exit('Tuto akci smí provést pouze administrátor.');
+        }
+        $createInput = [
+            'jmeno' => trim((string)($_POST['jmeno'] ?? '')),
+            'prijmeni' => trim((string)($_POST['prijmeni'] ?? '')),
+            'narozeni' => trim((string)($_POST['narozeni'] ?? '')),
+            'email' => trim((string)($_POST['email'] ?? '')),
+        ];
+        $confirmation = (string)($_POST['create_confirmation'] ?? '');
+        $overrideReason = trim((string)($_POST['override_reason'] ?? ''));
+        try {
+            $birthDate = personMatchV1Date($createInput['narozeni']);
+            if ($createInput['jmeno'] === '' || $createInput['prijmeni'] === '' || $birthDate === null) {
+                throw new InvalidArgumentException('Jméno, příjmení a platné datum narození jsou povinné.');
+            }
+            if (new DateTimeImmutable($birthDate) > new DateTimeImmutable('today')) {
+                throw new InvalidArgumentException('Datum narození nesmí být v budoucnosti.');
+            }
+            $match = personMatchV1($pdo, $createInput);
+            $createPreview = $match;
+            if ($match['level'] === PERSON_MATCH_EXACT && $confirmation !== 'exact_override') {
+                personMatchV1Audit(
+                    $pdo,
+                    (int)$_SESSION['trener_id'],
+                    'exact_discovery',
+                    $match,
+                    null,
+                    '',
+                    ['source' => 'sprava_sportovcu']
+                );
+                $createError = 'Nalezena přesná shoda. Použijte existující osobu, nebo zdůvodněte výjimku.';
+            } elseif ($match['level'] === PERSON_MATCH_EXACT && mb_strlen($overrideReason, 'UTF-8') < 10) {
+                $createError = 'Důvod výjimky musí mít alespoň 10 znaků.';
+            } elseif ($match['level'] === PERSON_MATCH_SIMILARITY && $confirmation !== 'similarity') {
+                personMatchV1Audit(
+                    $pdo,
+                    (int)$_SESSION['trener_id'],
+                    'similarity_discovery',
+                    $match,
+                    null,
+                    '',
+                    ['source' => 'sprava_sportovcu']
+                );
+                $createError = 'Nalezeny podobné osoby. Zkontrolujte je a založení výslovně potvrďte.';
+            } else {
+                $pdo->beginTransaction();
+                $newPersonId = personMatchV1CreateManual($pdo, $createInput);
+                $auditAction = $match['level'] === PERSON_MATCH_EXACT
+                    ? 'override_create'
+                    : ($match['level'] === PERSON_MATCH_SIMILARITY ? 'similarity_create' : 'create');
+                personMatchV1Audit(
+                    $pdo,
+                    (int)$_SESSION['trener_id'],
+                    $auditAction,
+                    $match,
+                    $newPersonId,
+                    $overrideReason,
+                    ['source' => 'sprava_sportovcu']
+                );
+                $pdo->commit();
+                $_SESSION['flash_success'] = 'Osoba ' . $createInput['prijmeni'] . ' ' . $createInput['jmeno'] . ' byla založena jako čekající.';
+                header('Location: sprava_sportovcu.php?q=' . rawurlencode($createInput['prijmeni']));
+                exit;
+            }
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            if ($exception instanceof InvalidArgumentException) {
+                $createError = $exception->getMessage();
+            } else {
+                error_log('sprava_sportovcu create: ' . $exception->getMessage());
+                $createError = 'Osobu se nepodařilo bezpečně založit.';
+            }
+        }
+    } elseif ($akce === 'save') {
         $id       = (int)($_POST['id'] ?? 0);
         $jmeno    = trim($_POST['jmeno'] ?? '');
         $prijmeni = trim($_POST['prijmeni'] ?? '');
@@ -278,6 +361,65 @@ try {
             </div>
         </div>
     </div>
+
+    <?php if (roleAtLeast('admin')): ?>
+    <div class="card section-card mb-4" id="create-card">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-person-plus-fill me-1"></i>Založit novou osobu
+        </div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Ruční osoba vznikne ve stavu „čekající“. Před uložením proběhne závazná kontrola shod person-match-v1.</p>
+            <?php if ($createError !== ''): ?><div class="alert alert-warning"><?= h($createError) ?></div><?php endif; ?>
+            <?php if (is_array($createPreview) && $createPreview['candidates'] !== []): ?>
+                <div class="alert <?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'alert-danger' : 'alert-warning' ?>">
+                    <div class="fw-semibold mb-2">
+                        <?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'Přesná shoda – založení je zablokováno' : 'Nalezeny podobné osoby' ?>
+                    </div>
+                    <div class="list-group mb-2">
+                    <?php foreach ($createPreview['candidates'] as $candidate): ?>
+                        <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span>
+                                <strong><?= h($candidate['prijmeni'] . ' ' . $candidate['jmeno']) ?></strong>
+                                · nar. <?= h($candidate['narozeni'] ?? 'neuvedeno') ?>
+                                · pravidlo <?= h(implode(', ', $candidate['rules'])) ?>
+                                <?php if ($candidate['kis_external_id']): ?><span class="badge bg-info text-dark">KIS</span><?php endif; ?>
+                            </span>
+                            <a class="btn btn-sm btn-outline-primary" href="sportovec_karta.php?sportovec_id=<?= (int)$candidate['id'] ?>">
+                                Připojit k této osobě / otevřít kartu
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                    </div>
+                    <span class="small">Zobrazeny jsou všechny nalezené shody a podobnosti.</span>
+                </div>
+            <?php endif; ?>
+            <form method="post" class="row g-3" novalidate>
+                <?= csrf_field() ?>
+                <input type="hidden" name="akce" value="create">
+                <?php if (is_array($createPreview)): ?>
+                    <input type="hidden" name="create_confirmation" value="<?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'exact_override' : 'similarity' ?>">
+                <?php endif; ?>
+                <div class="col-md-3"><label class="form-label req">Příjmení</label><input class="form-control" name="prijmeni" maxlength="100" required value="<?= h($createInput['prijmeni']) ?>"></div>
+                <div class="col-md-3"><label class="form-label req">Jméno</label><input class="form-control" name="jmeno" maxlength="100" required value="<?= h($createInput['jmeno']) ?>"></div>
+                <div class="col-md-3"><label class="form-label req">Datum narození</label><input class="form-control" type="date" name="narozeni" required value="<?= h($createInput['narozeni']) ?>"></div>
+                <div class="col-md-3"><label class="form-label">E-mail</label><input class="form-control" type="email" name="email" value="<?= h($createInput['email']) ?>"></div>
+                <?php if (is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_EXACT): ?>
+                    <div class="col-12"><label class="form-label req">Důvod, proč jde o jinou osobu</label><textarea class="form-control" name="override_reason" minlength="10" maxlength="1000" required placeholder="Alespoň 10 znaků; důvod se uloží do auditu."></textarea></div>
+                <?php endif; ?>
+                <div class="col-12">
+                    <button class="btn <?= is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_EXACT ? 'btn-danger' : 'btn-success' ?>">
+                        <i class="bi bi-person-plus me-1"></i>
+                        <?= is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_EXACT
+                            ? 'Přesto založit jako novou osobu'
+                            : (is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_SIMILARITY
+                                ? 'Potvrzuji kontrolu a zakládám osobu'
+                                : 'Zkontrolovat shody a založit') ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Filtr -->
     <div class="card section-card mb-4">

@@ -134,7 +134,10 @@ function accountPersonClaimApprove(
         throw new InvalidArgumentException('Vyberte sportovce, kterého jste skutečně ověřili.');
     }
 
-    $pdo->beginTransaction();
+    $ownsTransaction = !$pdo->inTransaction();
+    if ($ownsTransaction) {
+        $pdo->beginTransaction();
+    }
     try {
         $claim = accountPersonClaimLock($pdo, $requestId);
         if (!$claim) {
@@ -158,7 +161,9 @@ function accountPersonClaimApprove(
         );
         $update->execute([$sportovecId, $trainerId, $note, $requestId]);
         accountPersonClaimEvent($pdo, $requestId, 'trainer', $trainerId, 'approve', 'pending', 'approved', $note);
-        $pdo->commit();
+        if ($ownsTransaction) {
+            $pdo->commit();
+        }
         return [
             'id' => $requestId,
             'status' => 'approved',
@@ -166,7 +171,7 @@ function accountPersonClaimApprove(
             'relation_id' => $relation['relation_id'],
         ];
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
         if ($exception instanceof InvalidArgumentException

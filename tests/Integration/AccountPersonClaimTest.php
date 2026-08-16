@@ -81,6 +81,24 @@ final class AccountPersonClaimTest extends TestCase
         }
     }
 
+    public function testClaimApprovalCanJoinOuterCreateAndApproveTransaction(): void
+    {
+        $pdo = $this->database();
+        $claim = \accountPersonClaimSubmit($pdo, 1, 'guardian', 'Nová', 'Osoba', '2015-02-03', '');
+
+        $pdo->beginTransaction();
+        $pdo->exec("INSERT INTO sportovci VALUES (99, 'Nová', 'Osoba', '2015-02-03', 'cekajici')");
+        \accountPersonClaimApprove($pdo, $claim['id'], 99, 7, 'Založeno z údajů žádosti.');
+        self::assertTrue($pdo->inTransaction(), 'Approval must not commit a transaction owned by its caller.');
+        $pdo->rollBack();
+
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM sportovci WHERE id=99')->fetchColumn());
+        self::assertSame('pending', $pdo->query(
+            'SELECT status FROM account_person_claim_requests WHERE id=' . $claim['id']
+        )->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM account_person_roles')->fetchColumn());
+    }
+
     public function testAccountCannotAccumulateMoreThanFivePendingClaims(): void
     {
         $pdo = $this->database();
