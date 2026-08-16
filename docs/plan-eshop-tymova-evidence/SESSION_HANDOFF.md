@@ -1,5 +1,89 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt B R1: základ registrace sportovce (`f2985b8`)
+
+### Dokončený výsledek
+
+- Aditivní migrace `20260816143000_athlete_registration_foundation` rozšířila
+  jedinou frontu `account_person_claim_requests` o druh žádosti a verzi
+  kontraktu. Přidala oddělený detail registrace, neměnné snapshoty informačních
+  textů, metadata soukromých fotografií, šifrované citlivé údaje a append-only
+  audit přístupů. Historická data se nebackfillovala.
+- Cizinec bez přiděleného českého RČ má explicitní
+  `has_czech_birth_number=false`; náhradní číslo se nevytváří. Nové schéma
+  neukládá RČ, ciphertext ani cestu fotografie do `sportovci`.
+- Všech pět nových trvalých tabulek je v `EVIDENCE_TABLES`; ownership kontrakt
+  zálohy je `2026-08-16.1`. SQLite migrační test i generický test úplnosti
+  ownership katalogu zůstávají zelené.
+- Návrh byl aktualizován podle rozhodnutí vlastníka: R1–R6 jsou lokálně
+  otevřené, R7 a produkce zavřené, lhůty 30/90 dní jsou předběžné a konkrétní
+  právní zdroj je povinný až před produkční aktivací. Bod 9 se řeší až u R3.
+
+### Produkční preflight před první migrací
+
+- Read-only workflow run `31951238628` vrátil bez výpisu hodnot **1 241**
+  neprázdných `sportovci.rc`. `sync_evidence` používá prahovou roli `hlavni`,
+  takže ji mají 1 aktivní hlavní trenér a 3 aktivní administrátoři, celkem 4;
+  individuální výjimky model nemá. Všech 16 invariantů bylo zelených.
+- Preflight používal pouze `SELECT`. Pomocná vzdálená větev byla po doběhnutí
+  odstraněna. Produkční databáze, aplikace ani konfigurace se nezměnily.
+
+### Ověření a další akce
+
+- Lokální migrace prošla `check (pending) → apply → check (current)`, katalog
+  má 53 migrací. Plná sada po commitu: `567 tests`, `4862 assertions`; lint
+  `488` first-party PHP souborů, Composer validate/audit/platform zelené.
+- **Jediná další konkrétní akce:** implementovat R2 — fail-closed šifrovací a
+  validační vrstvu, tvrdé admin-only auditované čtení, privátní fotografii a
+  automatické exportní guardy. Legacy produkční hodnoty se v R2 automaticky
+  nepřevádějí ani nemažou.
+
+## Aktualizace 16. 8. 2026 — Prompt B Fáze 1: návrh registrace sportovce
+
+### Dokončený výsledek
+
+- Vznikl povinný návrh `docs/navrh-registrace-sportovce.md`. Návrh zachovává
+  jedinou frontu `account_person_claim_requests`, odděluje citlivé údaje od
+  profilu sportovce, požaduje šifrování RČ s odděleným slepým indexem, audit
+  každého zobrazení a soukromé uložení fotografie mimo webroot.
+- Doporučená varianta je B2: jedna objednávka může obsahovat jeden programový
+  produkt pro čekajícího sportovce, s časově omezenou rezervací kapacity.
+  Aktivace programu, skupiny, soupisky i členského předpisu nastane až po
+  samostatném schválení administrátorem. Implementace B2 je až poslední řez R7
+  a bez schválení vlastníka nezačne.
+- Párování ve schvalovací transakci musí přímo volat sdílenou funkci
+  `personMatchV1()` z `includes/person_match.php`; nevznikne druhá implementace
+  pravidel shody osob.
+- Audit potvrdil drift: `sportovci.rc` už existuje v plaintextu a používají jej
+  KIS synchronizace; lokálně je neprázdných hodnot 0, produkce nebyla čtena.
+  `club_event_term_versions` je pouze registr podmínek akcí a
+  `member_charges_admin.php` je read-only. Návrh proto požaduje výslovné
+  rozhodnutí před zobecněním registru a nový auditovaný writer předpisů.
+- Nebylo změněno PHP, databázové schéma ani produkce. Nevznikla migrace, commit,
+  push ani deploy.
+
+### Ověření a pracovní stav
+
+- Výchozí lokální HEAD je `9e4ae69c674d83c713d7a1392f2e85a767a4d1e6`;
+  po čerstvém fetchi je lokální `main` 14 commitů před `origin/main` a 0 za
+  ním. Před vlastními dokumentačními změnami byly sledované soubory čisté;
+  cizí nesledovaný WIP zůstal nedotčený.
+- Lokální DB `evidence` běží na MariaDB 10.4.32, obsahuje 150 tabulek a
+  `APP_HOST=localhost php bin/migrate.php --check` hlásí `AKTUALNI: current`.
+  Produkční DB, produkční tajemství ani produkční soubory nebyly čteny.
+- Právní část byla ověřena proti GDPR, aktuálnímu zákonu č. 133/2000 Sb. a
+  metodice ÚOOÚ. Návrh není právní stanovisko: konkrétní právní titul pro RČ,
+  účely a retenční lhůty musí před implementací schválit vlastník.
+
+### Rozhodnutí a další akce
+
+- Vlastník musí schválit nebo změnit rozhodnutí v části 12 návrhu, zejména B1
+  versus B2, povinná pole a cizince, režim dospělý/zákonný zástupce, právní
+  titul a retenci RČ, oddělení souhlasů k interní a veřejné fotografii a
+  zobecnění K3 registru verzí.
+- **Jediná další konkrétní akce:** vlastník odpoví na body 1–8 v části 12
+  `docs/navrh-registrace-sportovce.md`; do té doby nezačne žádná implementace.
+
 ## Aktualizace 16. 8. 2026 — P1 F8 kalendáře a rezervace (`e0daaa8d84d434c2b9bd849a5ee407a4ddf20826`)
 
 ### Dokončený výsledek
