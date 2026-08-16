@@ -1,6 +1,6 @@
 # Aktuální stav projektu pro AI a vlastníka
 
-Aktualizováno: 5. 8. 2026, Europe/Prague
+Aktualizováno: 16. 8. 2026, Europe/Prague
 
 Tento soubor je krátký vstupní rozcestník. Přesný historický ledger a poslední
 důkazy jsou v `docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md`; produktová
@@ -17,6 +17,25 @@ webroot, databázi, migrační katalog, session a kanonickou tabulku `sportovci`
 Názvy modulů zachovávají historické zadání a funkční orientaci v obrazovkách.
 
 ## Poslední přijatý technický stav
+
+- produkce i `origin/main` jsou po společném nasazení vláken F+B na commitu
+  `0e43a8b`. Nasazený řez zahrnuje samoobslužnou registraci sportovce,
+  administrátorské schválení, přiřazení do klubové struktury, vystavení
+  členského předpisu, fail-closed vrstvu citlivých údajů a opravu scoped
+  podmínek klubových akcí,
+
+- migrační katalog má 55 migrací. Nasazení zahrnuje registrační základ
+  `20260816143000_athlete_registration_foundation`, notifikaci přijaté platby
+  `20260816170000_shop_payment_received_notification` a scoped podmínky
+  `20260816180000_registration_terms_scope`,
+
+- poslední ověřená plná lokální brána nad přesně tímto kódem je
+  `600 tests / 5358 assertions`; first-party lint prošel na 507 PHP souborech.
+  `composer validate --strict`, audit zamčených závislostí i kontrola
+  platformních požadavků byly zelené,
+
+- aktuální ownership kontrakt zálohy je `2026-08-16.1` a obsahuje i pět
+  registračních tabulek přidaných vláknem B,
 
 - pracovní řez sjednocení aplikace zavádí jeden UI základ pro všech 127 aktivních
   PHP HTML stránek: společné pozadí a formuláře, stav načítání a ochranu proti
@@ -46,7 +65,8 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   k ručnímu rozhodnutí před budoucím jednorázovým importem; nic nepřevádí,
   neodhaduje a nezobrazuje osoby,
 
-- větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
+- výchozí větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
+- poslední nasazený a přijatý base: `0e43a8b` (Prompt F nad commity vlákna B),
 - poslední přijatý base před M3.5d: `e07fc25` (M3.5c); aktuální řez M3.5d přidává
   read-only přípravu jednorázového importu sportovních dat,
 - předchozí implementace: `12c2300` – M3.4 přidává administrátorský read-only
@@ -96,14 +116,14 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 - KIS funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
   předpisů, historických plateb a bezpečný rollback,
 - CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 50/50,
-- automatické testy 487/4161,
-- first-party PHP syntaxe 469 souborů bez chyby,
+- migrace localhostu 55/55,
+- automatické testy 600/5358,
+- first-party PHP syntaxe 507 souborů bez chyby,
 - Composer audit bez bezpečnostního nálezu,
-- izolovaný MariaDB backup smoke vytvořil ověřenou zálohu 100 tabulek;
-  aktuální ownership kontrakt `2026-08-05.3` zahrnuje i tři tabulky týdenních
-  souhrnů,
-- produkce se při těchto změnách neměnila.
+- aktuální ownership kontrakt `2026-08-16.1` zahrnuje pět tabulek registrace
+  sportovce i dosavadní aplikační tabulky,
+- produkce je nasazená na `0e43a8b`; další vývoj Promptu E probíhá odděleně na
+  větvi `codex/prompt-e-r1-r8` a není součástí tohoto nasazeného stavu.
 
 Čísla jsou snapshot a nový agent je musí levně ověřit. Cowork bridge kopie může
 být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu.
@@ -149,6 +169,10 @@ Markdown bez automaticky načtených osobních dat; před commitem se musí ruč
 zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
 
 ## Aktuální orientační stav
+
+Následující procenta jsou historický produktový snapshot z 5. 8. 2026. Nejsou
+přepočtená podle nového registračního řezu a neslouží jako důkaz technické shody
+produkce; tu popisuje předchozí sekce konkrétním commitem, migracemi a branami.
 
 - celý M2: 87 %,
 - M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
@@ -215,15 +239,9 @@ finanční stav.
 
 ## Doporučené pořadí další práce
 
-1. Vlastník nebo Cowork projde A01–A10 v prohlížeči a uloží výsledky do rozcestníku.
-2. Export výsledků se zkontroluje a případně přidá do Gitu jako auditní artefakt.
-3. Blokující chyby a důležité UX připomínky se opraví před novými funkcemi.
-4. Na telefonu nebo počítači přidat veřejný i rodinný odebíraný kalendář a
-   potvrdit české názvy, časy, místa, aktualizace položek a zneplatnění
-   rodinného odkazu po jeho zrušení.
-5. Na testovací e-mailové adrese ověřit text a doručení jedné připomínky;
-   produkční CRON ani `--send` zatím nezapínat.
-6. Potom dokončit M2.3: získat reprezentativní anonymizovaný KIS export, potvrdit
-   aliasy ID osoby, ID předpisu, částky a data úhrady a zopakovat celý cutover i
-   rollback nad testovací kopií. Ostrý import zůstává samostatně blokovaný.
-7. Produkční deploy připravit až po samostatném výslovném souhlasu vlastníka.
+1. Na větvi `codex/prompt-e-r1-r8` realizovat potvrzené řezy R1–R8 z
+   `docs/PROMPT-E-rucni-katalog-a-krouzky.md`, každý s vlastní migrační,
+   testovací a handoff bránou.
+2. Po R8 se zastavit a nechat vlastníka vyzkoušet reálný prodej kroužku; R9–R11
+   bez nového rozhodnutí nezačínat.
+3. Prompt E nenasazovat ani nepushovat bez samostatného výslovného pokynu.
