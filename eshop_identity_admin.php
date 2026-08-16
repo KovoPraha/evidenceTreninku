@@ -43,6 +43,7 @@ $claimPreviewId = 0;
 $claimMatch = null;
 $claimOverrideReason = '';
 $registrationReview = null;
+$assignmentContext = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $errors[] = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
@@ -50,7 +51,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $redirect = true;
             $action = (string)($_POST['action'] ?? '');
-            if ($action === 'review_registration') {
+            if ($action === 'review_assignment') {
+                $claimPreviewId = (int)($_POST['request_id'] ?? 0);
+                $assignmentContext = athleteRegistrationAdminAssignmentContext($pdo, $claimPreviewId);
+                $redirect = false;
+            } elseif ($action === 'assign_registration') {
+                $assignment = athleteRegistrationAdminAssign(
+                    $pdo,
+                    (int)($_POST['request_id'] ?? 0),
+                    (int)($_POST['group_id'] ?? 0),
+                    (int)($_POST['subgroup_id'] ?? 0),
+                    (int)($_POST['team_id'] ?? 0),
+                    (int)$_SESSION['trener_id'],
+                    (string)($_POST['reason'] ?? '')
+                );
+                $_SESSION['flash_success'] = $assignment['changed']
+                    ? 'Sportovec byl zařazen do skupiny, podskupiny a sezonní soupisky.'
+                    : 'Vybrané zařazení už bylo aktivní; nevznikl duplicitní zápis.';
+            } elseif ($action === 'review_registration') {
                 $claimPreviewId = (int)($_POST['request_id'] ?? 0);
                 $registrationReview = athleteRegistrationAdminReview(
                     $pdo,
@@ -453,7 +471,42 @@ $activeRelations = count(array_filter(
         </table></div>
     </div>
 
-    <?php if ($closedClaims !== []): ?><div class="card border-0 shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Historie vyřízených žádostí</div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Účet</th><th>Uvedená osoba</th><th>Stav</th><th>Propojená osoba</th><th>Rozhodnutí</th></tr></thead><tbody><?php foreach ($closedClaims as $claim): ?><tr><td><?= identityAdminH($claim['account_email']) ?></td><td><?= identityAdminH($claim['claimed_prijmeni'] . ' ' . $claim['claimed_jmeno']) ?><div class="small text-muted"><?= identityAdminH($claim['claimed_narozeni']) ?></div></td><td><span class="badge <?= $claim['status'] === 'approved' ? 'bg-success' : 'bg-secondary' ?>"><?= identityAdminH($claim['status']) ?></span></td><td><?= $claim['matched_sportovec_id'] ? identityAdminH($claim['matched_prijmeni'] . ' ' . $claim['matched_jmeno']) : '—' ?></td><td><?= identityAdminH($claim['decision_note']) ?><div class="small text-muted"><?= identityAdminH($claim['decider_name'] ?: $claim['decided_at']) ?></div></td></tr><?php endforeach; ?></tbody></table></div></div><?php endif; ?>
+    <?php if ($closedClaims !== []): ?>
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-header bg-white fw-semibold">Historie vyřízených žádostí</div>
+            <div class="table-responsive"><table class="table table-sm align-middle mb-0">
+                <thead><tr><th>Účet</th><th>Uvedená osoba</th><th>Stav</th><th>Propojená osoba</th><th>Rozhodnutí a další krok</th></tr></thead>
+                <tbody>
+                <?php foreach ($closedClaims as $claim): ?>
+                    <tr>
+                        <td><?= identityAdminH($claim['account_email']) ?></td>
+                        <td><?= identityAdminH($claim['claimed_prijmeni'] . ' ' . $claim['claimed_jmeno']) ?><div class="small text-muted"><?= identityAdminH($claim['claimed_narozeni']) ?></div></td>
+                        <td><span class="badge <?= $claim['status'] === 'approved' ? 'bg-success' : 'bg-secondary' ?>"><?= identityAdminH($claim['status']) ?></span><?php if (($claim['request_kind'] ?? 'person_link') === 'athlete_registration'): ?><div><span class="badge bg-primary mt-1">registrace sportovce</span></div><?php endif; ?></td>
+                        <td><?= $claim['matched_sportovec_id'] ? identityAdminH($claim['matched_prijmeni'] . ' ' . $claim['matched_jmeno']) : '—' ?></td>
+                        <td>
+                            <?= identityAdminH($claim['decision_note']) ?><div class="small text-muted mb-1"><?= identityAdminH($claim['decider_name'] ?: $claim['decided_at']) ?></div>
+                            <?php if (($claim['request_kind'] ?? 'person_link') === 'athlete_registration' && $claim['status'] === 'approved' && $claim['matched_sportovec_id']): ?>
+                                <?php if ($claimPreviewId === (int)$claim['id'] && is_array($assignmentContext)): ?>
+                                    <?php if ($assignmentContext['active_rosters'] !== []): ?><div class="small mb-2"><span class="text-muted">Aktivní soupisky:</span> <?= identityAdminH(implode(', ', array_map(static fn(array $row): string => $row['season_name'] . ' / ' . $row['team_name'], $assignmentContext['active_rosters']))) ?></div><?php endif; ?>
+                                    <form method="post" class="row g-1 align-items-end">
+                                        <?= csrf_field() ?><input type="hidden" name="action" value="assign_registration"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>">
+                                        <div class="col-lg-3"><label class="form-label small mb-1">Skupina</label><select class="form-select form-select-sm athlete-group-select" name="group_id" required><option value="">Vyberte</option><?php foreach ($assignmentContext['options']['groups'] as $group): ?><option value="<?= (int)$group['id'] ?>"><?= identityAdminH($group['nazev']) ?></option><?php endforeach; ?></select></div>
+                                        <div class="col-lg-3"><label class="form-label small mb-1">Podskupina</label><select class="form-select form-select-sm athlete-subgroup-select" name="subgroup_id" required><option value="">Vyberte</option><?php foreach ($assignmentContext['options']['subgroups'] as $subgroup): ?><option value="<?= (int)$subgroup['id'] ?>" data-group-id="<?= (int)$subgroup['skupina_id'] ?>"><?= identityAdminH($subgroup['skupina_nazev'] . ' / ' . $subgroup['nazev']) ?></option><?php endforeach; ?></select></div>
+                                        <div class="col-lg-4"><label class="form-label small mb-1">Aktivní sezona / tým</label><select class="form-select form-select-sm" name="team_id" required><option value="">Vyberte</option><?php foreach ($assignmentContext['options']['teams'] as $team): ?><option value="<?= (int)$team['id'] ?>"><?= identityAdminH($team['season_name'] . ' / ' . $team['name'] . ' (' . $team['starts_on'] . '–' . $team['ends_on'] . ')') ?></option><?php endforeach; ?></select></div>
+                                        <div class="col-lg-8"><label class="form-label small mb-1">Důvod ručního zařazení</label><input class="form-control form-control-sm" name="reason" minlength="10" maxlength="1000" required placeholder="Alespoň 10 znaků"></div>
+                                        <div class="col-lg-2 d-grid"><button class="btn btn-sm btn-primary">Zařadit sportovce</button></div>
+                                    </form>
+                                <?php else: ?>
+                                    <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="review_assignment"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>"><button class="btn btn-sm btn-outline-primary">Zařadit sportovce</button></form>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table></div>
+        </div>
+    <?php endif; ?>
 
     <div class="card border-0 shadow-sm mb-3">
         <div class="card-header bg-white fw-semibold">Schválit vazbu</div>
@@ -502,6 +555,20 @@ document.querySelectorAll('.athlete-sensitive-reveal').forEach(function (form) {
             result.textContent = 'Údaj nelze zobrazit.';
         }
     });
+});
+document.querySelectorAll('.athlete-group-select').forEach(function (groupSelect) {
+    const form = groupSelect.closest('form');
+    const subgroupSelect = form ? form.querySelector('.athlete-subgroup-select') : null;
+    if (!subgroupSelect) return;
+    const filterSubgroups = function () {
+        const groupId = groupSelect.value;
+        Array.from(subgroupSelect.options).forEach(function (option, index) {
+            option.hidden = index > 0 && option.dataset.groupId !== groupId;
+            if (option.hidden && option.selected) subgroupSelect.value = '';
+        });
+    };
+    groupSelect.addEventListener('change', filterSubgroups);
+    filterSubgroups();
 });
 </script>
 </body>

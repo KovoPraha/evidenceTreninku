@@ -30,15 +30,18 @@ final class AthleteRegistrationAdminWiringTest extends TestCase
         self::assertStringContainsString("file_kind='profile_photo'", (string)file_get_contents($root . '/private_download.php'));
     }
 
-    public function testApprovalIsAtomicAndDoesNotOpenGroupingOrCharges(): void
+    public function testApprovalAndExplicitAssignmentAreAtomicWithoutAutomaticCharges(): void
     {
         $service = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/athlete_registration_admin.php');
         self::assertStringContainsString('beginTransaction()', $service);
         self::assertStringContainsString('accountPersonClaimApprove', $service);
         self::assertStringContainsString('athleteRegistrationAdminApplyToPerson', $service);
         self::assertStringContainsString("kis_external_id) ", (string)file_get_contents(dirname(__DIR__, 2) . '/includes/person_match.php'));
-        self::assertStringNotContainsString('sportovec_skupina', $service);
-        self::assertStringNotContainsString('club_roster_members', $service);
+        self::assertStringContainsString('athleteRegistrationAdminAssign', $service);
+        self::assertStringContainsString('sportovec_skupina', $service);
+        self::assertStringContainsString('sportovec_podskupina', $service);
+        self::assertStringContainsString('club_roster_members', $service);
+        self::assertStringContainsString('athlete_registration_assign', $service);
         self::assertStringNotContainsString('club_member_charges', $service);
     }
 }

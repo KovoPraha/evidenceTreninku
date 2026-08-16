@@ -139,6 +139,72 @@ final class AthleteRegistrationAdminTest extends TestCase
         self::assertNotEmpty($pdo->query('SELECT retention_until FROM osoba_citlive_udaje WHERE request_id=' . $request['id'])->fetchColumn());
     }
 
+    public function testApprovedRegistrationCanBeAssignedOnceAndInvalidSelectionsRollBack(): void
+    {
+        $pdo = $this->database();
+        $request = $this->submit($pdo, '2012-03-04');
+        $approved = \athleteRegistrationAdminCreatePerson(
+            $pdo,
+            $request['id'],
+            7,
+            'Ověřeno podle přiložených registračních podkladů.',
+            '',
+            ''
+        );
+        $personId = $approved['person_id'];
+
+        $pdo->exec("INSERT INTO skupiny(id,nazev,poradi) VALUES(10,'Mládež',1),(20,'Dospělí',2)");
+        $pdo->exec("INSERT INTO podskupiny(id,skupina_id,nazev,poradi) VALUES(11,10,'U15',1)");
+        $today = new DateTimeImmutable('today');
+        $startsOn = $today->modify('-1 month')->format('Y-m-d');
+        $endsOn = $today->modify('+10 months')->format('Y-m-d');
+        $pdo->prepare(
+            "INSERT INTO club_seasons(code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES('CURRENT','Aktuální',?,?,'active',7)"
+        )->execute([$startsOn, $endsOn]);
+        $seasonId = (int)$pdo->lastInsertId();
+        $pdo->prepare(
+            "INSERT INTO club_teams(season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(?,'U15','U15 silnice','silnice','U15','active',7)"
+        )->execute([$seasonId]);
+        $teamId = (int)$pdo->lastInsertId();
+
+        try {
+            \athleteRegistrationAdminAssign($pdo, $request['id'], 20, 11, $teamId, 7, 'Kontrola chybné podskupiny.');
+            self::fail('A subgroup from another group was accepted.');
+        } catch (\AthleteRegistrationAdminException) {
+            self::addToAssertionCount(1);
+        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_skupina')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_podskupina')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
+
+        $first = \athleteRegistrationAdminAssign($pdo, $request['id'], 10, 11, $teamId, 7, 'Zařazení podle schválené registrace.');
+        $second = \athleteRegistrationAdminAssign($pdo, $request['id'], 10, 11, $teamId, 7, 'Opakované ověření stejného zařazení.');
+        self::assertTrue($first['changed']);
+        self::assertFalse($second['changed']);
+        self::assertSame($personId, $first['person_id']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_skupina')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_podskupina')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
+        self::assertSame('active:manual', $pdo->query("SELECT status || ':' || source FROM club_roster_members")->fetchColumn());
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM club_roster_events WHERE action='athlete_registration_assign'")->fetchColumn());
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM ucto_audit_log WHERE akce='athlete_registration_assign'")->fetchColumn());
+
+        $pdo->exec("INSERT INTO club_seasons(code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES('INACTIVE','Neaktivní','2020-01-01','2099-12-31','draft',7)");
+        $inactiveSeasonId = (int)$pdo->lastInsertId();
+        $pdo->prepare(
+            "INSERT INTO club_teams(season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(?,'BAD','Neaktivní tým','silnice','U15','active',7)"
+        )->execute([$inactiveSeasonId]);
+        try {
+            \athleteRegistrationAdminAssign($pdo, $request['id'], 20, 11, (int)$pdo->lastInsertId(), 7, 'Kontrola neaktivní sezony.');
+            self::fail('An inactive season was accepted.');
+        } catch (\AthleteRegistrationAdminException) {
+            self::addToAssertionCount(1);
+        }
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_skupina')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_podskupina')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
+    }
+
     /** @return array{id:int,status:string,created:bool} */
     private function submit(PDO $pdo, string $birthDate): array
     {
@@ -210,6 +276,10 @@ final class AthleteRegistrationAdminTest extends TestCase
                 id INTEGER PRIMARY KEY AUTOINCREMENT,uzivatel_id INTEGER,akce TEXT,tabulka TEXT,
                 zaznam_id INTEGER NULL,detail TEXT,ip_adresa TEXT,user_agent TEXT
             );
+            CREATE TABLE skupiny(id INTEGER PRIMARY KEY,nazev TEXT NOT NULL,poradi INTEGER NOT NULL DEFAULT 0);
+            CREATE TABLE podskupiny(id INTEGER PRIMARY KEY,skupina_id INTEGER NOT NULL,nazev TEXT NOT NULL,poradi INTEGER NOT NULL DEFAULT 0,FOREIGN KEY(skupina_id) REFERENCES skupiny(id));
+            CREATE TABLE sportovec_skupina(sportovec_id INTEGER NOT NULL,skupina_id INTEGER NOT NULL,PRIMARY KEY(sportovec_id,skupina_id),FOREIGN KEY(sportovec_id) REFERENCES sportovci(id),FOREIGN KEY(skupina_id) REFERENCES skupiny(id));
+            CREATE TABLE sportovec_podskupina(sportovec_id INTEGER NOT NULL,podskupina_id INTEGER NOT NULL,PRIMARY KEY(sportovec_id,podskupina_id),FOREIGN KEY(sportovec_id) REFERENCES sportovci(id),FOREIGN KEY(podskupina_id) REFERENCES podskupiny(id));
             INSERT INTO verejni_uzivatele VALUES(1,'Rodič','Testovací','verified@example.test',1,1);
             INSERT INTO treneri VALUES(7,'Admin');
             SQL);
@@ -217,6 +287,7 @@ final class AthleteRegistrationAdminTest extends TestCase
             '20260802230000_account_person_roles.php',
             '20260802233000_account_person_claim_requests.php',
             '20260803150000_club_event_terms.php',
+            '20260804090000_kis_teams_rosters.php',
             '20260816143000_athlete_registration_foundation.php',
             '20260816180000_registration_terms_scope.php',
         ] as $file) {

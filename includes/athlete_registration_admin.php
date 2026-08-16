@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/athlete_registration.php';
 require_once __DIR__ . '/person_match.php';
+require_once __DIR__ . '/kis_roster.php';
 
 final class AthleteRegistrationAdminException extends RuntimeException
 {
@@ -227,6 +228,176 @@ function athleteRegistrationAdminReject(
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         athleteRegistrationAdminRethrow($exception, 'Registrační žádost se nepodařilo bezpečně zamítnout.');
+    }
+}
+
+/** @return array{groups:list<array<string,mixed>>,subgroups:list<array<string,mixed>>,teams:list<array<string,mixed>>} */
+function athleteRegistrationAdminAssignmentOptions(PDO $pdo): array
+{
+    return [
+        'groups' => $pdo->query('SELECT id,nazev FROM skupiny ORDER BY poradi,nazev,id')->fetchAll(PDO::FETCH_ASSOC),
+        'subgroups' => $pdo->query(
+            'SELECT p.id,p.skupina_id,p.nazev,s.nazev AS skupina_nazev FROM podskupiny p '
+            . 'JOIN skupiny s ON s.id=p.skupina_id ORDER BY s.poradi,p.poradi,p.nazev,p.id'
+        )->fetchAll(PDO::FETCH_ASSOC),
+        'teams' => $pdo->query(
+            "SELECT t.id,t.name,t.season_id,s.code AS season_code,s.name AS season_name,s.starts_on,s.ends_on "
+            . "FROM club_teams t JOIN club_seasons s ON s.id=t.season_id "
+            . "WHERE t.status='active' AND s.status='active' AND s.ends_on>=CURRENT_DATE "
+            . 'ORDER BY s.starts_on DESC,t.name,t.id'
+        )->fetchAll(PDO::FETCH_ASSOC),
+    ];
+}
+
+/** @return array<string,mixed> */
+function athleteRegistrationAdminAssignmentContext(PDO $pdo, int $requestId): array
+{
+    $claim = athleteRegistrationAdminClaim($pdo, $requestId);
+    if ((string)$claim['status'] !== 'approved' || (int)($claim['matched_sportovec_id'] ?? 0) < 1) {
+        throw new AthleteRegistrationAdminException('Zařadit lze pouze schválenou registraci s přiřazenou osobou.');
+    }
+    $person = $pdo->prepare('SELECT id,jmeno,prijmeni,narozeni FROM sportovci WHERE id=?');
+    $person->execute([(int)$claim['matched_sportovec_id']]);
+    $claim['person'] = $person->fetch(PDO::FETCH_ASSOC);
+    if (!$claim['person']) throw new AthleteRegistrationAdminException('Schválená osoba nebyla nalezena.');
+    $claim['options'] = athleteRegistrationAdminAssignmentOptions($pdo);
+    $state = $pdo->prepare(
+        'SELECT m.id AS roster_member_id,m.status AS roster_status,t.id AS team_id,t.name AS team_name,'
+        . 's.id AS season_id,s.name AS season_name FROM club_roster_members m '
+        . 'JOIN club_teams t ON t.id=m.team_id JOIN club_seasons s ON s.id=t.season_id '
+        . "WHERE m.sportovec_id=? AND m.status='active' AND m.valid_to IS NULL ORDER BY s.starts_on DESC,t.name"
+    );
+    $state->execute([(int)$claim['matched_sportovec_id']]);
+    $claim['active_rosters'] = $state->fetchAll(PDO::FETCH_ASSOC);
+    return $claim;
+}
+
+/** @return array{request_id:int,person_id:int,roster_member_id:int,changed:bool} */
+function athleteRegistrationAdminAssign(
+    PDO $pdo,
+    int $requestId,
+    int $groupId,
+    int $subgroupId,
+    int $teamId,
+    int $trainerId,
+    string $reason
+): array {
+    $reason = athleteRegistrationAdminDecisionNote($requestId, $trainerId, $reason);
+    if (min($groupId, $subgroupId, $teamId) < 1) {
+        throw new InvalidArgumentException('Vyberte skupinu, její podskupinu a sezonní tým.');
+    }
+    $pdo->beginTransaction();
+    try {
+        $claim = athleteRegistrationAdminClaim($pdo, $requestId, true);
+        if ((string)$claim['status'] !== 'approved' || (int)($claim['matched_sportovec_id'] ?? 0) < 1) {
+            throw new AthleteRegistrationAdminException('Zařadit lze pouze schválenou registraci s přiřazenou osobou.');
+        }
+        $personId = (int)$claim['matched_sportovec_id'];
+        $subgroupSql = 'SELECT p.id,p.nazev,s.id AS skupina_id,s.nazev AS skupina_nazev '
+            . 'FROM podskupiny p JOIN skupiny s ON s.id=p.skupina_id WHERE p.id=? AND s.id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $subgroupSql .= ' FOR UPDATE';
+        $subgroup = $pdo->prepare($subgroupSql);
+        $subgroup->execute([$subgroupId, $groupId]);
+        $subgroup = $subgroup->fetch(PDO::FETCH_ASSOC);
+        if (!$subgroup) throw new AthleteRegistrationAdminException('Vybraná podskupina nepatří do vybrané skupiny.');
+
+        $teamSql = 'SELECT t.id,t.name,t.season_id,s.name AS season_name,s.starts_on,s.ends_on '
+            . 'FROM club_teams t JOIN club_seasons s ON s.id=t.season_id '
+            . "WHERE t.id=? AND t.status='active' AND s.status='active' AND s.ends_on>=CURRENT_DATE";
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $teamSql .= ' FOR UPDATE';
+        $team = $pdo->prepare($teamSql);
+        $team->execute([$teamId]);
+        $team = $team->fetch(PDO::FETCH_ASSOC);
+        if (!$team) throw new AthleteRegistrationAdminException('Vybraný tým nebo jeho sezona už nejsou aktivní.');
+
+        $groupExists = $pdo->prepare('SELECT 1 FROM sportovec_skupina WHERE sportovec_id=? AND skupina_id=?');
+        $groupExists->execute([$personId, $groupId]);
+        $createdGroup = !$groupExists->fetchColumn();
+        if ($createdGroup) {
+            $pdo->prepare('INSERT INTO sportovec_skupina(sportovec_id,skupina_id) VALUES (?,?)')
+                ->execute([$personId, $groupId]);
+        }
+        $subgroupExists = $pdo->prepare('SELECT 1 FROM sportovec_podskupina WHERE sportovec_id=? AND podskupina_id=?');
+        $subgroupExists->execute([$personId, $subgroupId]);
+        $createdSubgroup = !$subgroupExists->fetchColumn();
+        if ($createdSubgroup) {
+            $pdo->prepare('INSERT INTO sportovec_podskupina(sportovec_id,podskupina_id) VALUES (?,?)')
+                ->execute([$personId, $subgroupId]);
+        }
+
+        $memberSql = 'SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $memberSql .= ' FOR UPDATE';
+        $member = $pdo->prepare($memberSql);
+        $member->execute([$teamId, $personId]);
+        $before = $member->fetch(PDO::FETCH_ASSOC) ?: null;
+        $rosterChanged = $before === null || (string)$before['status'] !== 'active' || $before['valid_to'] !== null;
+        $validFrom = max((new DateTimeImmutable('today'))->format('Y-m-d'), (string)$team['starts_on']);
+        if ($before === null) {
+            $snapshot = $pdo->prepare('SELECT kis_external_id FROM sportovci WHERE id=?');
+            $snapshot->execute([$personId]);
+            $kisExternalId = trim((string)$snapshot->fetchColumn()) ?: null;
+            $pdo->prepare(
+                "INSERT INTO club_roster_members(team_id,sportovec_id,status,source,kis_external_id_snapshot,"
+                . "valid_from,valid_to,created_by_trainer_id) VALUES (?,?,'active','manual',?,?,NULL,?)"
+            )->execute([$teamId, $personId, $kisExternalId, $validFrom, $trainerId]);
+            $memberId = (int)$pdo->lastInsertId();
+        } else {
+            $memberId = (int)$before['id'];
+            if ($rosterChanged) {
+                $pdo->prepare(
+                    "UPDATE club_roster_members SET status='active',source='manual',valid_from=?,valid_to=NULL,"
+                    . 'created_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+                )->execute([$validFrom, $trainerId, $memberId]);
+            }
+        }
+
+        $changed = $createdGroup || $createdSubgroup || $rosterChanged;
+        if ($rosterChanged) {
+            $after = [
+                'id' => $memberId,
+                'team_id' => $teamId,
+                'sportovec_id' => $personId,
+                'status' => 'active',
+                'source' => 'manual',
+                'valid_from' => $validFrom,
+                'valid_to' => null,
+            ];
+            kisRosterEvent($pdo, $teamId, $memberId, $trainerId, 'athlete_registration_assign', $before, $after, $reason);
+        }
+        if ($changed) {
+            $detail = json_encode([
+                'contract' => ATHLETE_REGISTRATION_CONTRACT,
+                'request_id' => $requestId,
+                'sportovec_id' => $personId,
+                'group_id' => $groupId,
+                'subgroup_id' => $subgroupId,
+                'team_id' => $teamId,
+                'season_id' => (int)$team['season_id'],
+                'reason' => $reason,
+            ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $pdo->prepare(
+                'INSERT INTO ucto_audit_log(uzivatel_id,akce,tabulka,zaznam_id,detail,ip_adresa,user_agent) '
+                . 'VALUES (?,?,?,?,?,?,?)'
+            )->execute([
+                $trainerId,
+                'athlete_registration_assign',
+                'sportovci',
+                $personId,
+                $detail,
+                (string)($_SERVER['REMOTE_ADDR'] ?? ''),
+                (string)($_SERVER['HTTP_USER_AGENT'] ?? ''),
+            ]);
+        }
+        $pdo->commit();
+        return [
+            'request_id' => $requestId,
+            'person_id' => $personId,
+            'roster_member_id' => $memberId,
+            'changed' => $changed,
+        ];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        athleteRegistrationAdminRethrow($exception, 'Zařazení sportovce se nepodařilo bezpečně uložit.');
     }
 }
 
