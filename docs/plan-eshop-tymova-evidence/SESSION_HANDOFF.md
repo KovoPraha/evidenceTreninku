@@ -1,5 +1,54 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — P1 F8 kalendáře a rezervace (`e0daaa8d84d434c2b9bd849a5ee407a4ddf20826`)
+
+### Dokončený výsledek
+
+- Oba kalendáře sportovišť volají společný `venueCalendarUnreservedPlans()`.
+  Dotaz zahrnuje plány ve stavu `planovany` i `evidovany`, ale samostatný plán
+  vynechá při přímé vazbě `rezervace_id` i při historické vazbě přes shodné
+  `rezervace_sportovist.trenink_id = planovane_treninky.trenink_id`.
+- Evidovaný plán se vykreslí zeleně se štítkem `Zaevidováno`; odkaz
+  `Otevřít trénink` používá výhradně `planovane_treninky.trenink_id`. Tabulka
+  `treninky` se pro místo ani čas nepoužívá.
+- `venueCalendarCreateTrainingReservation()` provede kontrolu kapacity,
+  rezervaci a zápis `planovane_treninky.rezervace_id` uvnitř stejné transakce
+  jako evidence tréninku. Plná kapacita už není tichý fail: vrací konkrétní
+  hlášku s místem, časem a obsazeností a celý zápis bezpečně vrátí zpět.
+  Zrušení rezervace zároveň uvolní přímou vazbu plánu.
+- Formulář otevřený z plánu předvyplní `sportoviste_id`, `cas_od` i `cas_do` a
+  rezervační panel rovnou rozbalí. Při chybě se vrací na stejný `plan_id`.
+- Kalendář tréninků nyní při vybrané skupině a prázdné podskupině filtruje přes
+  `trenink_skupina`; podskupina je volitelná. Kopie týdne zachovává
+  `je_verejny`. Současně byl z kopírovacího INSERT odstraněn neexistující
+  sloupec `misto`, takže větev odpovídá kanonickému schématu.
+
+### Živé ověření a brány
+
+- Lokální formulář z plánu se otevřel s rozbaleným panelem, sportovištěm `1`
+  a časy `19:00–19:30`. Jediné odeslání vytvořilo trénink, rezervaci a stav
+  plánu `evidovany`; plán měl `trenink_id` i `rezervace_id`. Sdílený kalendářní
+  dotaz vrátil `0` samostatných plánů, vedle jedné rezervace tedy kontrolní
+  `render_count=1`.
+- Samostatný evidovaný plán se v týdenním i denním kalendáři zobrazil jako
+  `Zaevidováno` s funkčním odkazem na skutečný trénink. Skupinový kalendář bez
+  podskupiny vykreslil měsíc bez chyby. Kopie týdne vytvořila cílový plán a
+  kontrolní SELECT potvrdil u zdroje i kopie `je_verejny=1`.
+- Regrese navíc pokrývá historickou deduplikaci a jasný kapacitní konflikt bez
+  částečné vazby. Plná sada: `567 tests`, `4849 assertions`; PHP lint `487`
+  first-party souborů, `0` chyb. Composer `validate --strict`, `audit --locked`
+  a `check-platform-reqs` jsou zelené. Migrace `check → apply → check` třikrát
+  `AKTUALNI: current`; žádná migrace nebyla přidána.
+- Všechny dočasné lokální plány, tréninky, vazby a rezervace vytvořené živými
+  scénáři byly po kontrole přesně odstraněny. Produkce ani původní poškozený
+  lokální InnoDB nebyly změněny. Cizí nesledovaný WIP zůstal nedotčený a nic
+  nebylo pushnuto ani nasazeno.
+
+### Další akce
+
+- **Jediná další konkrétní akce:** vlastník může zkontrolovat souhrn Promptu A;
+  push nebo nasazení provést až na jeho výslovný pokyn.
+
 ## Aktualizace 16. 8. 2026 — P1 F7 přísné zakládání osob (`80bb5231ed6caef5b8a237546de45a830615774d`)
 
 ### Dokončený výsledek
