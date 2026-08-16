@@ -15,10 +15,15 @@ if ($confirm !== 'OVERIT' || $appRoot === false || $settingsFile === false || $w
     exit(2);
 }
 
+$stage = 'config';
 require $appRoot . '/config.php';
+$stage = 'private_storage_include';
 require_once $appRoot . '/includes/private_storage.php';
+$stage = 'person_sensitive_include';
 require_once $appRoot . '/includes/person_sensitive.php';
+$stage = 'person_match_include';
 require_once $appRoot . '/includes/person_match.php';
+$stage = 'venue_calendar_include';
 require_once $appRoot . '/includes/venue_calendar.php';
 
 foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS'] as $constant) {
@@ -114,8 +119,8 @@ if (!is_string($cookieFile)) {
 }
 chmod($cookieFile, 0600);
 
-$stage = 'connect';
 try {
+    $stage = 'pdo_connect';
     $pdo = new PDO(
         'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
         DB_USER,
@@ -369,7 +374,10 @@ try {
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL;
     exit($hardFailures === [] ? 0 : 1);
 } catch (Throwable $exception) {
-    fwrite(STDERR, 'post_deploy_r2_failed:' . $stage . ':' . get_class($exception) . "\n");
+    $safeCode = $exception instanceof PDOException
+        ? (string)($exception->errorInfo[1] ?? $exception->getCode())
+        : (string)$exception->getCode();
+    fwrite(STDERR, 'post_deploy_r2_failed:' . $stage . ':' . get_class($exception) . ':' . $safeCode . "\n");
     exit(1);
 } finally {
     @unlink($cookieFile);
