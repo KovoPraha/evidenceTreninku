@@ -427,7 +427,7 @@ try {
                                 </span>
                             </div>
                             <div class="text-muted small mt-1" style="font-size:.8rem">
-                                <?= mb_strtok(strip_tags($oz['obsah_html']), "\n") ?>
+                                <?= h(mb_substr(strtok(strip_tags($oz['obsah_html']), "\n") ?: '', 0, 160)) ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
