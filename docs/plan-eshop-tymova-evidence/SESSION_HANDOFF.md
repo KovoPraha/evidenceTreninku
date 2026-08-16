@@ -1,5 +1,66 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt E R1: původ ručního katalogu (`a0c0d73`)
+
+### Dokončený výsledek
+
+- Nová aditivní a idempotentní migrace
+  `20260816200000_shop_manual_catalog_origin` povoluje `NULL` ve zdrojových
+  sloupcích produktů a variant, zachovává jejich původní cizí klíče a přidává
+  do obou tabulek `origin VARCHAR(16) NOT NULL DEFAULT 'import'` a nullable
+  `created_by_trainer_id` s vazbou na `treneri`. Neprovádí datový backfill;
+  dosavadní řádky získají deklarovaný výchozí původ `import`.
+- Společný aplikační kontrakt odmítá importovaný produkt bez zdrojového
+  kandidáta nebo běhu, importovanou variantu bez kandidáta, ruční řádek se
+  zdrojovou vazbou, ruční řádek bez administrátora a variantu s jiným původem
+  než její produkt. `shopCatalogPromote()` zapisuje `import` výslovně a před
+  každým produktem i variantou tento kontrakt ověří.
+- Ownership kontrakt zálohy je `2026-08-16.2`. Manifest nyní vedle vlastnictví
+  celých tabulek výslovně uvádí změněné sloupce `shop_products` a
+  `shop_variants`, aby byly při restore review viditelné.
+
+### Ověření a provozní hranice
+
+- Izolované SQLite testy ověřují opakované spuštění migrace, zachování
+  existujících importních dat i navazujících cizích klíčů, vložení ručního
+  produktu/varianty a fail-closed vazbu na trenéra. Nové unit testy pokrývají
+  všechny symetrické kombinace původu.
+- Jednorázová MariaDB databáze prošla migrací dvakrát na lokální verzi 10.4.32,
+  zachovala importní řádek a přijala ruční řádek s nulovými zdroji. CI spustí
+  stejný nový smoke také v existující matici MariaDB 10.3 a 11.4; vzdálené CI
+  nebylo bez pushnutí spuštěno.
+- Skutečný izolovaný backup/restore smoke prošel se 110 tabulkami a novým
+  sloupcovým ownership manifestem. Plná sada je `614 tests / 5407 assertions`,
+  s jednou existující PHPUnit deprecation. Lint je čistý na 511 first-party PHP
+  souborech; `composer validate --strict`, `composer audit --locked` a
+  `composer check-platform-reqs` jsou zelené.
+- Lokální MariaDB prošla `check (jedna čekající R1) → apply → check (current)`;
+  katalog má 56 migrací. Následné dotazy potvrdily nulu pro importní produkty
+  bez zdrojů, neplatné ruční produkty, rozdílný původ varianty a produktu,
+  importní varianty bez zdroje i neplatné ruční varianty. R1 nemění UI, proto
+  nemá browserovou bránu.
+- Implementace je samostatný commit `a0c0d73`. Produkce a `origin/main`
+  zůstávají na `0e43a8b`; nic z Promptu E nebylo pushnuto ani nasazeno.
+
+### Závazné hranice pro R2–R8
+
+- R2 zastaví importní kolizi před prvním `INSERT`, vypíše všechna konkrétní
+  kolidující SKU a poradí administrátorovi přejmenovat ručně založené SKU.
+- Při pozdějším rozdělení `kisRosterCreateTeam()` a
+  `shopCatalogPublicationActivate()` na transakčně skládatelné jádro vzniknou
+  regresní testy všech současných volajících, nejen průvodce.
+- Ruční cena je konečná zákaznická cena včetně DPH; příznak a sazba jsou pouze
+  auditní snapshot. Budoucí dopočet DPH a dokladový tok pro klub-plátce přes
+  modul `uctenky/` zůstává známým omezením mimo Prompt E.
+- Testy i finální browserový průchod používají jednorázovou izolovanou DB. V R8
+  se program musí zobrazit také na `/booking/krouzky.php`. Po R8 se práce
+  zastaví; R9–R11 bez nové vlastnické kontroly nezačínají.
+
+### Další krok
+
+- Zahájit R2 nad commitem `a0c0d73`; před jeho implementací znovu ověřit čistý
+  sledovaný worktree a zachovat cizí nesledované podklady beze změny.
+
 ## Aktualizace 16. 8. 2026 — Prompt F: kompatibilita scoped podmínek (`ff02c40`)
 
 ### Dokončený výsledek
