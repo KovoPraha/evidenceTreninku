@@ -146,6 +146,7 @@ final class ShopCatalogPublicationTest extends TestCase
             '20260802170000_shop_catalog_staging.php',
             '20260802190000_shop_catalog_review.php',
             '20260802210000_shop_canonical_catalog.php',
+            '20260816200000_shop_manual_catalog_origin.php',
             '20260803090000_shop_product_publication.php',
         ] as $filename) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $filename;

@@ -80,6 +80,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260816143000_athlete_registration_foundation',
                 '20260816170000_shop_payment_received_notification',
                 '20260816180000_registration_terms_scope',
+                '20260816200000_shop_manual_catalog_origin',
             ],
             array_keys($catalog)
         );

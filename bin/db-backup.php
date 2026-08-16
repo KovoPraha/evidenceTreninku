@@ -21,7 +21,26 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-16.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-16.2';
+
+/**
+ * Schema evolutions on already-owned tables that change their write contract.
+ * The backup still owns the complete tables; this list makes column-level
+ * migrations explicit in the manifest used for restore review.
+ */
+const EVIDENCE_OWNED_COLUMN_CONTRACT = [
+    'shop_products' => [
+        'source_candidate_id',
+        'source_run_id',
+        'origin',
+        'created_by_trainer_id',
+    ],
+    'shop_variants' => [
+        'source_candidate_id',
+        'origin',
+        'created_by_trainer_id',
+    ],
+];
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -576,6 +595,7 @@ try {
         'application' => 'evidence',
         'created_at_utc' => gmdate(DATE_ATOM),
         'ownership_contract' => EVIDENCE_OWNERSHIP_CONTRACT_VERSION,
+        'owned_column_contract' => EVIDENCE_OWNED_COLUMN_CONTRACT,
         'database_name' => (string)DB_NAME,
         'sql_file' => basename($sqlFinal),
         'sha256' => $sha256,

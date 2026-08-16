@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/shop_offer_classifier.php';
+require_once __DIR__ . '/shop_catalog_origin.php';
 
 final class ShopCatalogPromotionException extends RuntimeException
 {
@@ -93,9 +94,10 @@ function shopCatalogPromote(PDO $pdo, int $runId, int $actorTrainerId, bool $con
 
         $insertProduct = $pdo->prepare(
             'INSERT INTO shop_products '
-            . '(source_candidate_id, source_run_id, external_product_key, source_pair_code, name, '
-            . 'short_description, description_html_untrusted, offer_type, visibility, item_type, catalog_status) '
-            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')"
+            . '(source_candidate_id, source_run_id, origin, created_by_trainer_id, external_product_key, '
+            . 'source_pair_code, name, short_description, description_html_untrusted, offer_type, visibility, '
+            . 'item_type, catalog_status) '
+            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')"
         );
         $insertCategory = $pdo->prepare(
             'INSERT INTO shop_product_categories (product_id, category_path, is_default, sort_order) '
@@ -109,10 +111,11 @@ function shopCatalogPromote(PDO $pdo, int $runId, int $actorTrainerId, bool $con
         );
         $insertVariant = $pdo->prepare(
             'INSERT INTO shop_variants '
-            . '(product_id, source_candidate_id, sku, ean, attributes_json, price_mode, amount_minor, '
-            . 'compare_at_amount_minor, currency, includes_vat, vat_rate_basis_points, stock_quantity_decimal, '
-            . 'unit_code, availability_in_stock, availability_out_of_stock, free_shipping, free_billing, '
-            . "visible, catalog_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')"
+            . '(product_id, source_candidate_id, origin, created_by_trainer_id, sku, ean, attributes_json, '
+            . 'price_mode, amount_minor, compare_at_amount_minor, currency, includes_vat, '
+            . 'vat_rate_basis_points, stock_quantity_decimal, unit_code, availability_in_stock, '
+            . 'availability_out_of_stock, free_shipping, free_billing, visible, catalog_status) '
+            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')"
         );
 
         $productCount = 0;
@@ -125,9 +128,18 @@ function shopCatalogPromote(PDO $pdo, int $runId, int $actorTrainerId, bool $con
             ) {
                 throw new ShopCatalogPromotionException('Produkt nemá platný výsledný typ nabídky.');
             }
-            $insertProduct->execute([
-                (int)$candidate['id'],
+            $sourceCandidateId = (int)$candidate['id'];
+            shopCatalogAssertProductOrigin(
+                ShopCatalogOrigin::IMPORT,
+                $sourceCandidateId,
                 $runId,
+                null
+            );
+            $insertProduct->execute([
+                $sourceCandidateId,
+                $runId,
+                ShopCatalogOrigin::IMPORT,
+                null,
                 (string)$candidate['external_product_key'],
                 $candidate['source_pair_code'],
                 (string)$candidate['name'],
@@ -158,9 +170,18 @@ function shopCatalogPromote(PDO $pdo, int $runId, int $actorTrainerId, bool $con
             $variantCandidates->execute([(int)$candidate['id']]);
             foreach ($variantCandidates->fetchAll(PDO::FETCH_ASSOC) as $variantCandidate) {
                 $variant = shopCatalogPromotionJson((string)$variantCandidate['payload_json'], 'varianta');
+                $variantSourceCandidateId = (int)$variantCandidate['id'];
+                shopCatalogAssertVariantOrigin(
+                    ShopCatalogOrigin::IMPORT,
+                    $variantSourceCandidateId,
+                    null,
+                    ShopCatalogOrigin::IMPORT
+                );
                 $insertVariant->execute([
                     $productId,
-                    (int)$variantCandidate['id'],
+                    $variantSourceCandidateId,
+                    ShopCatalogOrigin::IMPORT,
+                    null,
                     (string)$variantCandidate['sku'],
                     $variant['ean'] ?? null,
                     json_encode(

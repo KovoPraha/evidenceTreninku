@@ -84,7 +84,7 @@ final class ClubEventTest extends TestCase
     private function database(): PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');$pdo->exec('CREATE TABLE treneri (id INTEGER PRIMARY KEY,jmeno TEXT NOT NULL)');$pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");
-        foreach(['20260802170000_shop_catalog_staging.php','20260802190000_shop_catalog_review.php','20260802210000_shop_canonical_catalog.php','20260803110000_club_events.php'] as $file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
+        foreach(['20260802170000_shop_catalog_staging.php','20260802190000_shop_catalog_review.php','20260802210000_shop_canonical_catalog.php','20260816200000_shop_manual_catalog_origin.php','20260803110000_club_events.php'] as $file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         $catalog=\ShopCatalogContract::build(\ShoptetProductInput::read(dirname(__DIR__).'/fixtures/shoptet/products-offer-types.csv'));$run=\shopCatalogStage($pdo,$catalog);$pending=$pdo->query("SELECT id FROM shop_catalog_product_candidates WHERE run_id={$run['run_id']} AND review_status='pending'")->fetchColumn();\shopCatalogReviewProduct($pdo,$run['run_id'],(int)$pending,7,'approve','goods','Fyzické zboží.');\shopCatalogPromote($pdo,$run['run_id'],7,true);return $pdo;
     }
 }

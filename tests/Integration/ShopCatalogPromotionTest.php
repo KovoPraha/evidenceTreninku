@@ -35,6 +35,13 @@ final class ShopCatalogPromotionTest extends TestCase
         self::assertSame(0, (int)$pdo->query(
             "SELECT COUNT(*) FROM shop_products WHERE catalog_status<>'draft'"
         )->fetchColumn());
+        self::assertSame(0, (int)$pdo->query(
+            "SELECT COUNT(*) FROM shop_products "
+            . "WHERE origin<>'import' OR source_candidate_id IS NULL OR source_run_id IS NULL"
+        )->fetchColumn());
+        self::assertSame(0, (int)$pdo->query(
+            "SELECT COUNT(*) FROM shop_variants WHERE origin<>'import' OR source_candidate_id IS NULL"
+        )->fetchColumn());
         self::assertSame('promoted', $pdo->query(
             'SELECT status FROM shop_catalog_import_runs WHERE id=' . $runId
         )->fetchColumn());
@@ -97,10 +104,13 @@ final class ShopCatalogPromotionTest extends TestCase
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
         $pdo->exec('PRAGMA foreign_keys = ON');
+        $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT NOT NULL)');
+        $pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");
         foreach ([
             '20260802170000_shop_catalog_staging.php',
             '20260802190000_shop_catalog_review.php',
             '20260802210000_shop_canonical_catalog.php',
+            '20260816200000_shop_manual_catalog_origin.php',
         ] as $filename) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $filename;
             $migration['up']($pdo);
