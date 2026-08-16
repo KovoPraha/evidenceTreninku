@@ -1,12 +1,14 @@
 <?php
 declare(strict_types=1);
 
-defined('AUTH_RATE_LIMIT_MAX_ATTEMPTS') || define('AUTH_RATE_LIMIT_MAX_ATTEMPTS', 5);
-// Shared networks (families, clubs, schools) need more room than one account,
-// while the per-account limit remains deliberately strict.
-defined('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS') || define('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS', 20);
+defined('AUTH_RATE_LIMIT_ACCOUNT_MAX_ATTEMPTS') || define('AUTH_RATE_LIMIT_ACCOUNT_MAX_ATTEMPTS', 5);
+// Successful logins refund their IP reservation. Forty failed evaluations per
+// 15 minutes leave room for a club or school network while still throttling
+// password guessing from one public address.
+defined('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS') || define('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS', 40);
 defined('AUTH_RATE_LIMIT_WINDOW_SECONDS') || define('AUTH_RATE_LIMIT_WINDOW_SECONDS', 900);
 defined('AUTH_RATE_LIMIT_BLOCK_SECONDS') || define('AUTH_RATE_LIMIT_BLOCK_SECONDS', 900);
+defined('AUTH_TRUSTED_PROXIES') || define('AUTH_TRUSTED_PROXIES', []);
 
 /**
  * @param array<string, int> $overrides
@@ -15,7 +17,7 @@ defined('AUTH_RATE_LIMIT_BLOCK_SECONDS') || define('AUTH_RATE_LIMIT_BLOCK_SECOND
 function auth_rate_limit_policy(array $overrides = []): array
 {
     $policy = [
-        'max_attempts' => (int)AUTH_RATE_LIMIT_MAX_ATTEMPTS,
+        'max_attempts' => (int)AUTH_RATE_LIMIT_ACCOUNT_MAX_ATTEMPTS,
         'ip_max_attempts' => (int)AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS,
         'window_seconds' => (int)AUTH_RATE_LIMIT_WINDOW_SECONDS,
         'block_seconds' => (int)AUTH_RATE_LIMIT_BLOCK_SECONDS,
@@ -49,6 +51,77 @@ function auth_rate_limit_normalize_ip(string $ipAddress): string
         : @inet_pton($ipAddress);
 
     return $packed === false ? 'unknown' : (string)inet_ntop($packed);
+}
+
+function auth_rate_limit_ip_matches_network(string $ipAddress, string $network): bool
+{
+    $ipAddress = auth_rate_limit_normalize_ip($ipAddress);
+    $network = trim($network);
+    if ($ipAddress === 'unknown' || $network === '') {
+        return false;
+    }
+
+    if (!str_contains($network, '/')) {
+        return hash_equals($ipAddress, auth_rate_limit_normalize_ip($network));
+    }
+
+    [$networkAddress, $prefixText] = array_pad(explode('/', $network, 2), 2, '');
+    if ($prefixText === '' || preg_match('/^[0-9]{1,3}$/D', $prefixText) !== 1) {
+        return false;
+    }
+
+    $ipPacked = @inet_pton($ipAddress);
+    $networkPacked = @inet_pton(trim($networkAddress));
+    if ($ipPacked === false || $networkPacked === false || strlen($ipPacked) !== strlen($networkPacked)) {
+        return false;
+    }
+
+    $prefix = (int)$prefixText;
+    $bitCount = strlen($ipPacked) * 8;
+    if ($prefix < 0 || $prefix > $bitCount) {
+        return false;
+    }
+
+    $fullBytes = intdiv($prefix, 8);
+    if ($fullBytes > 0 && substr($ipPacked, 0, $fullBytes) !== substr($networkPacked, 0, $fullBytes)) {
+        return false;
+    }
+
+    $remainingBits = $prefix % 8;
+    if ($remainingBits === 0) {
+        return true;
+    }
+
+    $mask = (0xFF << (8 - $remainingBits)) & 0xFF;
+    return (ord($ipPacked[$fullBytes]) & $mask) === (ord($networkPacked[$fullBytes]) & $mask);
+}
+
+/** @param list<string>|null $trustedProxies */
+function auth_rate_limit_ip_is_trusted(string $ipAddress, ?array $trustedProxies = null): bool
+{
+    if ($trustedProxies === null) {
+        $configured = constant('AUTH_TRUSTED_PROXIES');
+        $trustedProxies = is_array($configured) ? array_values($configured) : [];
+    }
+
+    foreach ($trustedProxies as $trustedProxy) {
+        if (is_string($trustedProxy) && auth_rate_limit_ip_matches_network($ipAddress, $trustedProxy)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function auth_rate_limit_ip_is_private(string $ipAddress): bool
+{
+    foreach (['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', 'fc00::/7'] as $network) {
+        if (auth_rate_limit_ip_matches_network($ipAddress, $network)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function auth_rate_limit_validate_pepper(mixed $pepper): string
@@ -106,11 +179,33 @@ function auth_rate_limit_ordered_keys(
     return $keys;
 }
 
-/** @param array<string, mixed>|null $server */
-function auth_rate_limit_request_ip(?array $server = null): string
+/**
+ * @param array<string, mixed>|null $server
+ * @param list<string>|null $trustedProxies
+ */
+function auth_rate_limit_request_ip(?array $server = null, ?array $trustedProxies = null): string
 {
     $server ??= $_SERVER;
-    return auth_rate_limit_normalize_ip((string)($server['REMOTE_ADDR'] ?? ''));
+    $remoteValue = $server['REMOTE_ADDR'] ?? '';
+    $remoteAddress = auth_rate_limit_normalize_ip(is_string($remoteValue) ? $remoteValue : '');
+    if (!auth_rate_limit_ip_is_trusted($remoteAddress, $trustedProxies)) {
+        return $remoteAddress;
+    }
+
+    $forwardedValue = $server['HTTP_X_FORWARDED_FOR'] ?? '';
+    if (!is_string($forwardedValue) || trim($forwardedValue) === '') {
+        return $remoteAddress;
+    }
+
+    $forwardedAddresses = array_reverse(explode(',', $forwardedValue));
+    foreach ($forwardedAddresses as $forwardedAddress) {
+        $candidate = auth_rate_limit_normalize_ip($forwardedAddress);
+        if ($candidate !== 'unknown' && !auth_rate_limit_ip_is_trusted($candidate, $trustedProxies)) {
+            return $candidate;
+        }
+    }
+
+    return $remoteAddress;
 }
 
 /**

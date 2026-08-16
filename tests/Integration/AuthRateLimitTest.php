@@ -14,7 +14,7 @@ final class AuthRateLimitTest extends TestCase
     {
         self::assertSame([
             'max_attempts' => 5,
-            'ip_max_attempts' => 20,
+            'ip_max_attempts' => 40,
             'window_seconds' => 900,
             'block_seconds' => 900,
         ], \auth_rate_limit_policy());
@@ -68,12 +68,55 @@ final class AuthRateLimitTest extends TestCase
         );
     }
 
+    public function testDefaultConfigurationIgnoresForwardedHeaders(): void
+    {
+        self::assertSame('198.51.100.23', \auth_rate_limit_request_ip([
+            'REMOTE_ADDR' => '198.51.100.23',
+            'HTTP_X_FORWARDED_FOR' => '203.0.113.8',
+            'HTTP_X_REAL_IP' => '203.0.113.9',
+        ]));
+    }
+
+    public function testSpoofedForwardedHeaderFromUntrustedPeerIsIgnored(): void
+    {
+        self::assertSame('198.51.100.23', \auth_rate_limit_request_ip([
+            'REMOTE_ADDR' => '198.51.100.23',
+            'HTTP_X_FORWARDED_FOR' => '192.0.2.99',
+        ], ['10.0.0.0/8']));
+    }
+
+    public function testTrustedProxyChainReturnsRightmostUntrustedClient(): void
+    {
+        self::assertSame('198.51.100.77', \auth_rate_limit_request_ip([
+            'REMOTE_ADDR' => '10.20.30.40',
+            'HTTP_X_FORWARDED_FOR' => '203.0.113.9, 198.51.100.77, 192.0.2.15',
+        ], ['10.0.0.0/8', '192.0.2.0/24']));
+    }
+
+    public function testTrustedProxyMatchingSupportsIpv4AndIpv6Cidrs(): void
+    {
+        self::assertTrue(\auth_rate_limit_ip_matches_network('10.12.3.4', '10.0.0.0/8'));
+        self::assertFalse(\auth_rate_limit_ip_matches_network('11.12.3.4', '10.0.0.0/8'));
+        self::assertTrue(\auth_rate_limit_ip_matches_network('2001:db8:abcd::1', '2001:db8::/32'));
+        self::assertFalse(\auth_rate_limit_ip_matches_network('2001:db9::1', '2001:db8::/32'));
+    }
+
+    public function testPrivateAddressDetectionUsesPrivateNotDocumentationRanges(): void
+    {
+        foreach (['10.1.2.3', '172.31.255.254', '192.168.1.1', 'fd12:3456::1'] as $privateIp) {
+            self::assertTrue(\auth_rate_limit_ip_is_private($privateIp), $privateIp);
+        }
+        foreach (['172.32.0.1', '198.51.100.1', '2001:db8::1'] as $publicIp) {
+            self::assertFalse(\auth_rate_limit_ip_is_private($publicIp), $publicIp);
+        }
+    }
+
     public function testSharedIpAllowsSeveralAccountsBeforeItsHigherThresholdBlocks(): void
     {
         $pdo = $this->database();
-        $policy = ['max_attempts' => 5, 'ip_max_attempts' => 20];
+        $policy = ['max_attempts' => 5, 'ip_max_attempts' => 40];
 
-        for ($attempt = 0; $attempt < 20; $attempt++) {
+        for ($attempt = 0; $attempt < 40; $attempt++) {
             self::assertTrue(\auth_rate_limit_reserve_attempt(
                 $pdo,
                 'public_login',
@@ -87,9 +130,9 @@ final class AuthRateLimitTest extends TestCase
         self::assertFalse(\auth_rate_limit_reserve_attempt(
             $pdo,
             'public_login',
-            'person-21@example.test',
+            'person-41@example.test',
             '192.0.2.99',
-            1020,
+            1040,
             $policy
         ));
     }

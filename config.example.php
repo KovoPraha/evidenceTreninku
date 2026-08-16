@@ -56,6 +56,15 @@ if (is_string($authRateLimitPepper) && $authRateLimitPepper !== '') {
 // Pokud hosting environment proměnné neumí, přidejte pouze do ignorovaného config.php:
 // define('AUTH_RATE_LIMIT_PEPPER', '<NAHODNY-SECRET-ALESPOŇ-32-ZNAKU>');
 
+// Seznam IP adres nebo CIDR rozsahů reverzních proxy, kterým se smí věřit.
+// Prázdné = žádná proxy, používá se výhradně REMOTE_ADDR (dnešní chování).
+define('AUTH_TRUSTED_PROXIES', []);
+
+// Účet zůstává přísně omezený. Vyšší IP práh počítá se sdílenými klubovými,
+// školními a rodinnými sítěmi; úspěšná přihlášení se do něj nezapočítají.
+define('AUTH_RATE_LIMIT_ACCOUNT_MAX_ATTEMPTS', 5);
+define('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS', 40);
+
 // ── Databáze ─────────────────────────────────────────────────────────────────
 
 if ($jeLokalne) {
