@@ -1,5 +1,48 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — P0 F1 plánovač (`a2833fcdc981ab6931559077140bcca125d4bd08`)
+
+### Dokončený výsledek
+
+- Náhled skupinového oznámení v `planovac.php` už nevolá neexistující
+  `mb_strtok()`. První řádek je zkrácený na 160 znaků a escapovaný přes `h()`,
+  takže oznámení plánovač neshodí ani nevloží aktivní HTML/JavaScript.
+- Nový plošný test prochází všech 482 first-party PHP souborů a ověřuje, že
+  každá staticky volaná globální funkce existuje v PHP nebo je deklarovaná
+  aplikací. Rozlišuje funkce od metod, konstruktorů a PHP atributů.
+- Živé ověření proběhlo na localhostu se syntetickým administrátorem,
+  skupinovým oznámením obsahujícím `<script>` a plánovaným tréninkem. Vykreslila
+  se nástěnka, sedmidenní mřížka, plán, tlačítko „Zadat evidenci" i
+  `bootstrap.bundle.min.js`; hamburger a dropdown se skutečně rozbalily a
+  vložený skript se nespustil.
+
+### Brány a pracovní stav
+
+- Plná sada: `538 tests`, `4696 assertions`, vše zelené.
+- PHP lint: `482` first-party souborů, `0` chyb.
+- Composer: `validate --strict`, `audit --locked` a `check-platform-reqs`
+  zelené; žádné známé bezpečnostní advisory.
+- Migrace na izolované lokální obnově: `check → apply → check`, legacy
+  `2.20.2`, katalog `52`, `pending=[]`.
+- V implementačním commitu byly vlastněné pouze `planovac.php` a
+  `tests/Unit/GlobalFunctionAvailabilityTest.php`; po commitu nezůstal žádný
+  vlastněný sledovaný dirty soubor. Dřívější nesledované dokumenty, nástroje,
+  `.agents/` a `var/` jsou cizí WIP a zůstaly nedotčené.
+- Produkce a aktuální produkční stav nebyly v této aktualizaci ověřeny ani
+  změněny; starší produkční údaje níže jsou historické.
+
+### Otevřené riziko a další akce
+
+- Původní lokální MariaDB datový adresář je poškozený: InnoDB odmítá start
+  hláškou `Missing MLOG_CHECKPOINT`, a to i s dosavadním
+  `innodb_force_recovery=1`. Nebyl opravován ani přepisován. Pro ověření vznikla
+  oddělená dočasná instance z lokální zálohy s ověřeným SHA-256. Druhý drift
+  mimo rozsah této vlny: migrace neumějí postavit legacy základ 2.20.2 z úplně
+  prázdné databáze.
+- **Jediná další konkrétní akce:** implementovat P0 F2 — vypnout automatické
+  zapnutí tmavého režimu podle nastavení operačního systému a doplnit CSS
+  bezpečnostní síť i regresní test.
+
 ## Aktualizace 10. 8. 2026 — závěrečná automatizovaná vlna a provozní drilly (`6993693c7cd133ede8a5c2e666468a2b3cc6c8b1`)
 
 ### Implementované opravy
