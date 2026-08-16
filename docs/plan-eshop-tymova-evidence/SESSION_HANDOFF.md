@@ -1,5 +1,47 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — P1 F9 politika hesla (`0aacc178dd01c1025078bbc1f98c614ac992206c`)
+
+### Dokončený výsledek
+
+- Jediná funkce `passwordPolicyValidate()` v `includes/password_security.php`
+  vynucuje 12–200 Unicode znaků přes `mb_strlen`, takže vícebajtové znaky se
+  už nepočítají jako několik znaků hesla.
+- Sdílenou politiku volá registrace zákazníka, založení i změna sportovního
+  účtu, samoobslužný reset, administrace trenérů, localhost acceptance reset,
+  lokální seed a provisioning produkčního test-admina. Provisioning si navíc
+  zachoval svou přísnější kontrolu malého/velkého písmene, čísla a symbolu.
+- Registrační formulář, oba resetovací vstupy, administrace sportovních účtů a
+  správa trenérů používají shodné `minlength=12`, `maxlength=200` a texty.
+  Prázdné heslo při úpravě trenéra dál znamená beze změny; každé nové heslo ale
+  projde společnou serverovou politikou.
+- Onboarding trenéra jednorázovým odkazem nebyl přidán: mění provozní proces
+  doručení a aktivace účtu a vyžaduje samostatné produktové rozhodnutí. Současná
+  cesta je teď alespoň bezpečně ohraničená společnou politikou.
+
+### Živé ověření a brány
+
+- V prohlížeči správa trenérů i veřejná registrace zobrazily 12–200 znaků a
+  oba inputy měly stejné min/max atributy. Odeslání krátkého hesla v registraci
+  i při založení trenéra skončilo zprávou `Heslo musí mít 12–200 znaků.`;
+  kontrolní SELECT potvrdil `0` řádků krátkého testovacího trenéra.
+- Regresní test výslovně odmítá krátké ASCII heslo, šest vícebajtových znaků a
+  201 znaků; přijímá 12 ASCII, 12 vícebajtových i 200 znaků. Plošně hlídá všech
+  sedm serverových zakládacích/resetovacích cest a oba hlavní formuláře.
+- Plná sada: `547 tests`, `4780 assertions`; PHP lint `482` first-party
+  souborů, `0` chyb. Composer `validate --strict`, `audit --locked` a
+  `check-platform-reqs` jsou zelené. Migrace `check → apply → check`: legacy
+  `2.20.2`, katalog `52`, `pending=[]`.
+- Produkce ani původní poškozený lokální InnoDB nebyly změněny. Cizí
+  nesledovaný WIP zůstal nedotčený a nic nebylo pushnuto ani nasazeno.
+
+### Další akce
+
+- **Jediná další konkrétní akce:** vyžádat produktové rozhodnutí pro F7
+  (pravidlo duplicity při ručním založení osoby z žádosti) a F8(a) (zda
+  zaevidovaný trénink zobrazovat přímo v kalendáři sportovišť), teprve potom
+  implementovat poslední dva řezy.
+
 ## Aktualizace 16. 8. 2026 — P1 F4–F6 navigace (`77a3a3f006cf9859ea1a41c4356d91bf3b4f564d`)
 
 ### Dokončený výsledek
