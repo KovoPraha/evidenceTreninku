@@ -44,6 +44,7 @@ $claimMatch = null;
 $claimOverrideReason = '';
 $registrationReview = null;
 $assignmentContext = null;
+$chargeContext = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $errors[] = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
@@ -51,7 +52,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $redirect = true;
             $action = (string)($_POST['action'] ?? '');
-            if ($action === 'review_assignment') {
+            if ($action === 'review_charge') {
+                $claimPreviewId = (int)($_POST['request_id'] ?? 0);
+                $chargeContext = athleteRegistrationAdminChargeContext(
+                    $pdo,
+                    $claimPreviewId,
+                    (int)($_POST['season_id'] ?? 0)
+                );
+                $redirect = false;
+            } elseif ($action === 'create_registration_charge') {
+                $charge = athleteRegistrationAdminCreateCharge(
+                    $pdo,
+                    (int)($_POST['request_id'] ?? 0),
+                    (int)($_POST['season_id'] ?? 0),
+                    (int)($_POST['payer_account_id'] ?? 0),
+                    (string)($_POST['title'] ?? ''),
+                    (string)($_POST['period_from'] ?? ''),
+                    (string)($_POST['period_to'] ?? ''),
+                    (string)($_POST['due_on'] ?? ''),
+                    $_POST['amount_minor'] ?? null,
+                    (string)($_POST['currency'] ?? ''),
+                    (int)$_SESSION['trener_id'],
+                    (string)($_POST['reason'] ?? ''),
+                    isset($_POST['confirmed'])
+                );
+                $_SESSION['flash_success'] = $charge['created']
+                    ? 'Členský předpis byl vystaven a auditován.'
+                    : 'Stejný členský předpis už existoval; nevznikla duplicita.';
+            } elseif ($action === 'review_assignment') {
                 $claimPreviewId = (int)($_POST['request_id'] ?? 0);
                 $assignmentContext = athleteRegistrationAdminAssignmentContext($pdo, $claimPreviewId);
                 $redirect = false;
@@ -296,6 +324,7 @@ $events = accountPersonRoleEvents($pdo);
 $claims = accountPersonClaimListForAdmin($pdo);
 $pendingClaims = array_values(array_filter($claims, static fn (array $claim): bool => $claim['status'] === 'pending'));
 $closedClaims = array_values(array_filter($claims, static fn (array $claim): bool => $claim['status'] !== 'pending'));
+$chargeSeasons = athleteRegistrationAdminChargeSeasons($pdo);
 $activeRelations = count(array_filter(
     $relations,
     static fn (array $relation): bool => $relation['status'] === 'approved' && $relation['valid_to'] === null
@@ -499,6 +528,44 @@ $activeRelations = count(array_filter(
                                 <?php else: ?>
                                     <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="review_assignment"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>"><button class="btn btn-sm btn-outline-primary">Zařadit sportovce</button></form>
                                 <?php endif; ?>
+                                <div class="border-top mt-2 pt-2">
+                                    <?php if ($claimPreviewId === (int)$claim['id'] && is_array($chargeContext)): ?>
+                                        <div class="small fw-semibold mb-1">Připravenost členského předpisu · <?= identityAdminH($chargeContext['season']['name'] ?? 'neplatná sezona') ?></div>
+                                        <?php foreach ([
+                                            'approved_person' => 'Schválená registrace a osoba',
+                                            'group' => 'Skupina',
+                                            'subgroup' => 'Podskupina patřící do skupiny',
+                                            'current_season_roster' => 'Aktivní soupiska v aktuální sezoně',
+                                        ] as $readinessKey => $readinessLabel): ?>
+                                            <span class="badge <?= $chargeContext['readiness'][$readinessKey] ? 'bg-success' : 'bg-danger' ?> me-1 mb-1"><?= identityAdminH($readinessLabel) ?></span>
+                                        <?php endforeach; ?>
+                                        <?php if (is_array($chargeContext['existing_charge'])): ?>
+                                            <div class="alert alert-info py-2 mt-2 mb-0">Pro tuto registraci a sezonu už existuje předpis <code><?= identityAdminH($chargeContext['existing_charge']['public_code']) ?></code>. <a href="member_charges_admin.php">Otevřít přehled</a>.</div>
+                                        <?php elseif ($chargeContext['ready']): ?>
+                                            <form method="post" class="row g-2 align-items-end mt-1">
+                                                <?= csrf_field() ?><input type="hidden" name="action" value="create_registration_charge"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>"><input type="hidden" name="season_id" value="<?= (int)$chargeContext['season']['id'] ?>">
+                                                <div class="col-lg-4"><label class="form-label small mb-1">Název předpisu</label><input class="form-control form-control-sm" name="title" maxlength="255" required value="Členský příspěvek <?= identityAdminH($chargeContext['season']['name']) ?>"></div>
+                                                <div class="col-lg-2"><label class="form-label small mb-1">Od</label><input class="form-control form-control-sm" type="date" name="period_from" required value="<?= identityAdminH($chargeContext['season']['starts_on']) ?>"></div>
+                                                <div class="col-lg-2"><label class="form-label small mb-1">Do</label><input class="form-control form-control-sm" type="date" name="period_to" required value="<?= identityAdminH($chargeContext['season']['ends_on']) ?>"></div>
+                                                <div class="col-lg-2"><label class="form-label small mb-1">Splatnost</label><input class="form-control form-control-sm" type="date" name="due_on" required></div>
+                                                <div class="col-lg-2"><label class="form-label small mb-1">Částka v haléřích</label><input class="form-control form-control-sm" name="amount_minor" inputmode="numeric" pattern="[0-9]+" required placeholder="250000"></div>
+                                                <div class="col-lg-2"><label class="form-label small mb-1">Měna</label><input class="form-control form-control-sm text-uppercase" name="currency" minlength="3" maxlength="3" required value="CZK"></div>
+                                                <div class="col-lg-5"><label class="form-label small mb-1">Plátce</label><select class="form-select form-select-sm" name="payer_account_id" required><option value="">Vyberte aktivní vazbu</option><?php foreach ($chargeContext['payers'] as $payer): ?><option value="<?= (int)$payer['account_id'] ?>"><?= identityAdminH($payer['prijmeni'] . ' ' . $payer['jmeno'] . ' – ' . $payer['relation_role'] . ' – ' . $payer['email']) ?></option><?php endforeach; ?></select></div>
+                                                <div class="col-lg-5"><label class="form-label small mb-1">Důvod vystavení</label><input class="form-control form-control-sm" name="reason" minlength="10" maxlength="1000" required placeholder="Alespoň 10 znaků"></div>
+                                                <div class="col-12 form-check ms-1"><input class="form-check-input" type="checkbox" name="confirmed" value="1" id="confirm-charge-<?= (int)$claim['id'] ?>" required><label class="form-check-label small" for="confirm-charge-<?= (int)$claim['id'] ?>">Výslovně potvrzuji vystavení tohoto členského předpisu.</label></div>
+                                                <div class="col-lg-4 d-grid"><button class="btn btn-sm btn-success">Vystavit členský předpis</button></div>
+                                            </form>
+                                        <?php else: ?>
+                                            <div class="text-danger small mt-1">Předpis nyní nelze vystavit. Doplňte všechny čtyři podmínky; nic se nevytvořilo.</div>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <form method="post" class="d-flex gap-1 align-items-center flex-wrap">
+                                            <?= csrf_field() ?><input type="hidden" name="action" value="review_charge"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>">
+                                            <select class="form-select form-select-sm" style="max-width:300px" name="season_id" required><option value="">Aktuální sezona</option><?php foreach ($chargeSeasons as $season): ?><option value="<?= (int)$season['id'] ?>"><?= identityAdminH($season['name'] . ' (' . $season['starts_on'] . '–' . $season['ends_on'] . ')') ?></option><?php endforeach; ?></select>
+                                            <button class="btn btn-sm btn-outline-success"<?= $chargeSeasons === [] ? ' disabled' : '' ?>>Prověřit členský předpis</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
                             <?php endif; ?>
                         </td>
                     </tr>

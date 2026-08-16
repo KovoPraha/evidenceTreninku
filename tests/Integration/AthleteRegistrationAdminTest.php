@@ -205,6 +205,117 @@ final class AthleteRegistrationAdminTest extends TestCase
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
     }
 
+    public function testMemberChargeRequiresAllReadinessRulesAndIsIdempotent(): void
+    {
+        $pdo = $this->database();
+        $request = $this->submit($pdo, '2012-03-04');
+        $today = new DateTimeImmutable('today');
+        $startsOn = $today->modify('-1 month')->format('Y-m-d');
+        $endsOn = $today->modify('+10 months')->format('Y-m-d');
+        $dueOn = $today->modify('+14 days')->format('Y-m-d');
+        $pdo->prepare(
+            "INSERT INTO club_seasons(code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES('CHARGE','Aktuální',?,?,'active',7)"
+        )->execute([$startsOn, $endsOn]);
+        $seasonId = (int)$pdo->lastInsertId();
+        $pdo->prepare(
+            "INSERT INTO club_teams(season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(?,'CHARGE','Členský tým','silnice','U15','active',7)"
+        )->execute([$seasonId]);
+        $teamId = (int)$pdo->lastInsertId();
+        $pdo->exec("INSERT INTO verejni_uzivatele(id,jmeno,prijmeni,email,aktivni,email_overeno) VALUES(2,'Cizí','Plátce','foreign@localhost.test',1,1)");
+
+        $create = function (array $overrides = []) use ($pdo, $request, $seasonId, $startsOn, $endsOn, $dueOn): array {
+            $input = array_replace([
+                'payer' => 1,
+                'title' => 'LOCALHOST členský příspěvek',
+                'period_from' => $startsOn,
+                'period_to' => $endsOn,
+                'due_on' => $dueOn,
+                'amount' => '250000',
+                'currency' => 'CZK',
+                'reason' => 'Ruční vystavení po ověření zařazení.',
+                'confirmed' => true,
+            ], $overrides);
+            return \athleteRegistrationAdminCreateCharge(
+                $pdo,
+                $request['id'],
+                $seasonId,
+                $input['payer'],
+                $input['title'],
+                $input['period_from'],
+                $input['period_to'],
+                $input['due_on'],
+                $input['amount'],
+                $input['currency'],
+                7,
+                $input['reason'],
+                $input['confirmed']
+            );
+        };
+
+        $this->assertChargeRejected($pdo, $create, \AthleteRegistrationAdminException::class);
+        $approved = \athleteRegistrationAdminCreatePerson(
+            $pdo,
+            $request['id'],
+            7,
+            'Ověřeno podle přiložených registračních podkladů.',
+            '',
+            ''
+        );
+        $personId = $approved['person_id'];
+
+        $this->assertChargeRejected($pdo, $create, \AthleteRegistrationAdminException::class);
+        $pdo->exec("INSERT INTO skupiny(id,nazev,poradi) VALUES(10,'Mládež',1)");
+        $pdo->prepare('INSERT INTO sportovec_skupina(sportovec_id,skupina_id) VALUES(?,10)')->execute([$personId]);
+        $this->assertChargeRejected($pdo, $create, \AthleteRegistrationAdminException::class);
+        $pdo->exec("INSERT INTO podskupiny(id,skupina_id,nazev,poradi) VALUES(11,10,'U15',1)");
+        $pdo->prepare('INSERT INTO sportovec_podskupina(sportovec_id,podskupina_id) VALUES(?,11)')->execute([$personId]);
+        $this->assertChargeRejected($pdo, $create, \AthleteRegistrationAdminException::class);
+        $pdo->prepare(
+            "INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,valid_to,created_by_trainer_id) VALUES(?,?,'active','manual',?,NULL,7)"
+        )->execute([$teamId, $personId, $startsOn]);
+
+        $context = \athleteRegistrationAdminChargeContext($pdo, $request['id'], $seasonId);
+        self::assertTrue($context['ready']);
+        self::assertSame([true, true, true, true], array_values($context['readiness']));
+        self::assertSame([1], array_map('intval', array_column($context['payers'], 'account_id')));
+
+        $this->assertChargeRejected($pdo, fn (): array => $create(['payer' => 2]), \AthleteRegistrationAdminException::class);
+        $this->assertChargeRejected($pdo, fn (): array => $create(['amount' => '-1']), \InvalidArgumentException::class);
+        $this->assertChargeRejected($pdo, fn (): array => $create(['amount' => '12.5']), \InvalidArgumentException::class);
+        $this->assertChargeRejected($pdo, fn (): array => $create(['currency' => 'CZ1']), \InvalidArgumentException::class);
+        $this->assertChargeRejected($pdo, fn (): array => $create(['confirmed' => false]), \InvalidArgumentException::class);
+
+        $first = $create();
+        $second = $create();
+        self::assertTrue($first['created']);
+        self::assertFalse($second['created']);
+        self::assertSame($first['charge_id'], $second['charge_id']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());
+        self::assertSame('membership:membership:pending', $pdo->query("SELECT charge_type || ':' || source_system || ':' || status FROM club_member_charges")->fetchColumn());
+        self::assertSame(250000, (int)$pdo->query('SELECT amount_minor FROM club_member_charges')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM club_member_charge_events WHERE action='athlete_registration_create' AND actor_type='trainer' AND actor_id=7")->fetchColumn());
+
+        $this->assertChargeRejected(
+            $pdo,
+            fn (): array => $create(['title' => 'LOCALHOST jiný předpis']),
+            \AthleteRegistrationAdminException::class,
+            1
+        );
+    }
+
+    /** @param callable():array $operation */
+    private function assertChargeRejected(PDO $pdo, callable $operation, string $exceptionClass, int $expectedCount = 0): void
+    {
+        try {
+            $operation();
+            self::fail('Invalid member charge input was accepted.');
+        } catch (\Throwable $exception) {
+            self::assertInstanceOf($exceptionClass, $exception);
+        }
+        self::assertSame($expectedCount, (int)$pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());
+        self::assertSame($expectedCount, (int)$pdo->query('SELECT COUNT(*) FROM club_member_charge_events')->fetchColumn());
+    }
+
     /** @return array{id:int,status:string,created:bool} */
     private function submit(PDO $pdo, string $birthDate): array
     {
@@ -280,6 +391,8 @@ final class AthleteRegistrationAdminTest extends TestCase
             CREATE TABLE podskupiny(id INTEGER PRIMARY KEY,skupina_id INTEGER NOT NULL,nazev TEXT NOT NULL,poradi INTEGER NOT NULL DEFAULT 0,FOREIGN KEY(skupina_id) REFERENCES skupiny(id));
             CREATE TABLE sportovec_skupina(sportovec_id INTEGER NOT NULL,skupina_id INTEGER NOT NULL,PRIMARY KEY(sportovec_id,skupina_id),FOREIGN KEY(sportovec_id) REFERENCES sportovci(id),FOREIGN KEY(skupina_id) REFERENCES skupiny(id));
             CREATE TABLE sportovec_podskupina(sportovec_id INTEGER NOT NULL,podskupina_id INTEGER NOT NULL,PRIMARY KEY(sportovec_id,podskupina_id),FOREIGN KEY(sportovec_id) REFERENCES sportovci(id),FOREIGN KEY(podskupina_id) REFERENCES podskupiny(id));
+            CREATE TABLE kis_import_runs(id INTEGER PRIMARY KEY);
+            CREATE TABLE kis_import_rows(id INTEGER PRIMARY KEY);
             INSERT INTO verejni_uzivatele VALUES(1,'Rodič','Testovací','verified@example.test',1,1);
             INSERT INTO treneri VALUES(7,'Admin');
             SQL);
@@ -288,6 +401,7 @@ final class AthleteRegistrationAdminTest extends TestCase
             '20260802233000_account_person_claim_requests.php',
             '20260803150000_club_event_terms.php',
             '20260804090000_kis_teams_rosters.php',
+            '20260804234950_member_charge_target.php',
             '20260816143000_athlete_registration_foundation.php',
             '20260816180000_registration_terms_scope.php',
         ] as $file) {

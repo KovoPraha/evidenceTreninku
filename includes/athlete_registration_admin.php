@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/athlete_registration.php';
 require_once __DIR__ . '/person_match.php';
 require_once __DIR__ . '/kis_roster.php';
+require_once __DIR__ . '/member_charge.php';
 
 final class AthleteRegistrationAdminException extends RuntimeException
 {
@@ -398,6 +399,220 @@ function athleteRegistrationAdminAssign(
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         athleteRegistrationAdminRethrow($exception, 'Zařazení sportovce se nepodařilo bezpečně uložit.');
+    }
+}
+
+/** @return list<array<string,mixed>> */
+function athleteRegistrationAdminChargeSeasons(PDO $pdo): array
+{
+    return $pdo->query(
+        "SELECT id,code,name,starts_on,ends_on FROM club_seasons "
+        . "WHERE status='active' AND starts_on<=CURRENT_DATE AND ends_on>=CURRENT_DATE "
+        . 'ORDER BY starts_on DESC,name,id'
+    )->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function athleteRegistrationAdminChargeReference(int $requestId, int $seasonId): string
+{
+    if ($requestId < 1 || $seasonId < 1) {
+        throw new InvalidArgumentException('Předpis vyžaduje registrační žádost a aktuální sezonu.');
+    }
+    return 'athlete-registration:' . $requestId . ':season:' . $seasonId . ':membership';
+}
+
+/** @return array<string,mixed> */
+function athleteRegistrationAdminChargeContext(PDO $pdo, int $requestId, int $seasonId = 0, bool $lock = false): array
+{
+    $claim = athleteRegistrationAdminClaim($pdo, $requestId, $lock);
+    $personId = (int)($claim['matched_sportovec_id'] ?? 0);
+    $approvedPerson = (string)$claim['status'] === 'approved' && $personId > 0;
+    $mysqlLock = $lock && (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
+
+    $groups = [];
+    $subgroups = [];
+    $payers = [];
+    if ($approvedPerson) {
+        $statement = $pdo->prepare(
+            'SELECT s.id,s.nazev FROM sportovec_skupina ss JOIN skupiny s ON s.id=ss.skupina_id '
+            . 'WHERE ss.sportovec_id=? ORDER BY s.poradi,s.nazev,s.id' . $mysqlLock
+        );
+        $statement->execute([$personId]);
+        $groups = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $statement = $pdo->prepare(
+            'SELECT p.id,p.skupina_id,p.nazev,s.nazev AS skupina_nazev FROM sportovec_podskupina sp '
+            . 'JOIN podskupiny p ON p.id=sp.podskupina_id '
+            . 'JOIN sportovec_skupina ss ON ss.sportovec_id=sp.sportovec_id AND ss.skupina_id=p.skupina_id '
+            . 'JOIN skupiny s ON s.id=p.skupina_id WHERE sp.sportovec_id=? '
+            . 'ORDER BY s.poradi,p.poradi,p.nazev,p.id' . $mysqlLock
+        );
+        $statement->execute([$personId]);
+        $subgroups = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $statement = $pdo->prepare(
+            "SELECT r.account_id,r.relation_role,u.jmeno,u.prijmeni,u.email FROM account_person_roles r "
+            . 'JOIN verejni_uzivatele u ON u.id=r.account_id '
+            . "WHERE r.sportovec_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') "
+            . "AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) "
+            . 'AND u.aktivni=1 AND u.email_overeno=1 ORDER BY u.prijmeni,u.jmeno,u.id' . $mysqlLock
+        );
+        $statement->execute([$personId]);
+        $payers = $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    $season = null;
+    $rosters = [];
+    if ($seasonId > 0) {
+        $statement = $pdo->prepare(
+            "SELECT id,code,name,starts_on,ends_on FROM club_seasons WHERE id=? AND status='active' "
+            . 'AND starts_on<=CURRENT_DATE AND ends_on>=CURRENT_DATE' . $mysqlLock
+        );
+        $statement->execute([$seasonId]);
+        $season = $statement->fetch(PDO::FETCH_ASSOC) ?: null;
+        if ($approvedPerson && $season !== null) {
+            $statement = $pdo->prepare(
+                'SELECT m.id AS roster_member_id,t.id AS team_id,t.name AS team_name FROM club_roster_members m '
+                . 'JOIN club_teams t ON t.id=m.team_id '
+                . "WHERE m.sportovec_id=? AND t.season_id=? AND t.status='active' AND m.status='active' "
+                . 'AND m.valid_from<=CURRENT_DATE AND (m.valid_to IS NULL OR m.valid_to>=CURRENT_DATE) '
+                . 'ORDER BY t.name,t.id' . $mysqlLock
+            );
+            $statement->execute([$personId, $seasonId]);
+            $rosters = $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
+
+    $existingCharge = null;
+    if ($seasonId > 0) {
+        $statement = $pdo->prepare('SELECT * FROM club_member_charges WHERE source_system=? AND source_external_id=?' . $mysqlLock);
+        $statement->execute(['membership', athleteRegistrationAdminChargeReference($requestId, $seasonId)]);
+        $existingCharge = $statement->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+    $readiness = [
+        'approved_person' => $approvedPerson,
+        'group' => $groups !== [],
+        'subgroup' => $subgroups !== [],
+        'current_season_roster' => $season !== null && $rosters !== [],
+    ];
+    return [
+        'claim' => $claim,
+        'person_id' => $personId,
+        'seasons' => athleteRegistrationAdminChargeSeasons($pdo),
+        'season' => $season,
+        'groups' => $groups,
+        'subgroups' => $subgroups,
+        'rosters' => $rosters,
+        'payers' => $payers,
+        'existing_charge' => $existingCharge,
+        'readiness' => $readiness,
+        'ready' => !in_array(false, $readiness, true),
+    ];
+}
+
+/** @return array{charge_id:int,created:bool,public_code:string,source_external_id:string} */
+function athleteRegistrationAdminCreateCharge(
+    PDO $pdo,
+    int $requestId,
+    int $seasonId,
+    int $payerAccountId,
+    string $title,
+    string $periodFrom,
+    string $periodTo,
+    string $dueOn,
+    mixed $amountMinor,
+    string $currency,
+    int $trainerId,
+    string $reason,
+    bool $confirmed
+): array {
+    if (!$confirmed) throw new InvalidArgumentException('Vystavení předpisu vyžaduje výslovné potvrzení.');
+    $reason = athleteRegistrationAdminDecisionNote($requestId, $trainerId, $reason);
+    if ($seasonId < 1 || $payerAccountId < 1) throw new InvalidArgumentException('Vyberte aktuální sezonu a plátce.');
+    $title = trim($title);
+    if ($title === '' || mb_strlen($title, 'UTF-8') > 255) throw new InvalidArgumentException('Název předpisu je povinný a smí mít nejvýše 255 znaků.');
+    $periodFrom = memberChargeNormalizeDate($periodFrom, 'Začátek období') ?? '';
+    $periodTo = memberChargeNormalizeDate($periodTo, 'Konec období') ?? '';
+    $dueOn = memberChargeNormalizeDate($dueOn, 'Splatnost') ?? '';
+    if ($periodFrom === '' || $periodTo === '' || $dueOn === '') throw new InvalidArgumentException('Období a splatnost předpisu jsou povinné.');
+    if ($periodFrom > $periodTo) throw new InvalidArgumentException('Konec období nesmí být před jeho začátkem.');
+    $amount = filter_var($amountMinor, FILTER_VALIDATE_INT);
+    if ($amount === false || $amount < 1) throw new InvalidArgumentException('Částka musí být kladné celé číslo v haléřích.');
+    $currency = memberChargeNormalizeCurrency($currency);
+    $sourceExternalId = athleteRegistrationAdminChargeReference($requestId, $seasonId);
+    $publicCode = 'AR-' . strtoupper(substr(hash('sha256', $sourceExternalId), 0, 20));
+
+    $pdo->beginTransaction();
+    try {
+        $context = athleteRegistrationAdminChargeContext($pdo, $requestId, $seasonId, true);
+        if (!$context['ready']) {
+            throw new AthleteRegistrationAdminException('Členský předpis lze vystavit až po schválení, skupině, odpovídající podskupině a aktivní soupisce v aktuální sezoně.');
+        }
+        $payerIds = array_map('intval', array_column($context['payers'], 'account_id'));
+        if (!in_array($payerAccountId, $payerIds, true)) {
+            throw new AthleteRegistrationAdminException('Vybraný plátce nemá k této osobě aktivní schválenou vazbu.');
+        }
+        $expected = [
+            'sportovec_id' => (int)$context['person_id'],
+            'payer_account_id' => $payerAccountId,
+            'public_code' => $publicCode,
+            'charge_type' => 'membership',
+            'title_snapshot' => $title,
+            'period_from' => $periodFrom,
+            'period_to' => $periodTo,
+            'amount_minor' => $amount,
+            'currency' => $currency,
+            'due_on' => $dueOn,
+            'status' => 'pending',
+            'source_system' => 'membership',
+            'source_external_id' => $sourceExternalId,
+            'source_import_run_id' => null,
+        ];
+        if (is_array($context['existing_charge'])) {
+            $existing = $context['existing_charge'];
+            foreach ($expected as $field => $value) {
+                if (($value === null && $existing[$field] !== null) || ($value !== null && (string)$existing[$field] !== (string)$value)) {
+                    throw new AthleteRegistrationAdminException('Pro tuto registraci a sezonu už existuje odlišný členský předpis.');
+                }
+            }
+            $pdo->commit();
+            return [
+                'charge_id' => (int)$existing['id'],
+                'created' => false,
+                'public_code' => (string)$existing['public_code'],
+                'source_external_id' => $sourceExternalId,
+            ];
+        }
+
+        $pdo->prepare(
+            'INSERT INTO club_member_charges(sportovec_id,payer_account_id,public_code,charge_type,title_snapshot,'
+            . 'period_from,period_to,amount_minor,currency,due_on,status,source_system,source_external_id,source_import_run_id) '
+            . "VALUES(?,?,?,?,?,?,?,?,?,?,'pending','membership',?,NULL)"
+        )->execute([
+            $expected['sportovec_id'], $payerAccountId, $publicCode, 'membership', $title,
+            $periodFrom, $periodTo, $amount, $currency, $dueOn, $sourceExternalId,
+        ]);
+        $chargeId = (int)$pdo->lastInsertId();
+        $snapshot = json_encode([
+            'contract' => MEMBER_CHARGE_CONTRACT,
+            'registration_contract' => ATHLETE_REGISTRATION_CONTRACT,
+            'request_id' => $requestId,
+            'season_id' => $seasonId,
+            'charge' => $expected,
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $pdo->prepare(
+            'INSERT INTO club_member_charge_events(charge_id,action,from_status,to_status,actor_type,actor_id,reason,snapshot_json) '
+            . "VALUES(?,'athlete_registration_create',NULL,'pending','trainer',?,?,?)"
+        )->execute([$chargeId, $trainerId, $reason, $snapshot]);
+        $pdo->commit();
+        return [
+            'charge_id' => $chargeId,
+            'created' => true,
+            'public_code' => $publicCode,
+            'source_external_id' => $sourceExternalId,
+        ];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        athleteRegistrationAdminRethrow($exception, 'Členský předpis se nepodařilo bezpečně vystavit.');
     }
 }
 
