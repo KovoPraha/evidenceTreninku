@@ -1,5 +1,47 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt B R6: členský předpis po zařazení (`f352fbc`)
+
+### Dokončený výsledek
+
+- Detail schválené registrační žádosti nabízí samostatné prověření výslovně
+  zvolené aktuální sezony. Zobrazuje čtyři nezávislé podmínky: schválenou
+  žádost s osobou, alespoň jednu skupinu, podskupinu patřící k některé z jejích
+  skupin a aktivní členství v aktivním týmu dané právě probíhající sezony.
+  Tlačítko „Vystavit členský předpis“ se zobrazí pouze při splnění všech čtyř.
+- Administrátor ručně zadává název, obě hranice období, splatnost, kladnou
+  celočíselnou částku v haléřích a ISO formát měny. Plátce lze vybrat jen z
+  aktivních schválených vazeb `self`/`guardian` na danou osobu s aktivním a
+  ověřeným účtem. POST má CSRF, povinný potvrzovací checkbox a důvod alespoň 10
+  znaků.
+- Writer znovu ověří a na MariaDB zamkne rozhodné řádky v jedné transakci.
+  Používá existující `member-charge-v1`, `club_member_charges` a
+  `club_member_charge_events`: typ i zdroj jsou `membership`, stav `pending` a
+  audit nese aktéra `trainer`, jeho ID, důvod a snapshot. Nevznikla nová
+  finanční tabulka ani skutečná platba.
+- Stabilní reference obsahuje registrační request, sezonu a typ předpisu.
+  Přesné opakování je idempotentní no-op se stejným ID; pokus pod stejnou
+  referencí změnit titul, částku či jiné hodnoty selže. Schválení ani zařazení
+  předpis nikdy nevystavují automaticky.
+
+### Ověření a hranice
+
+- Plná sada: `599 tests`, `5314 assertions`; lint `507` first-party PHP
+  souborů. Composer validate/audit/platform je zelený a lokální katalog 55
+  migrací je aktuální.
+- Izolovaný regresní test postupně ověřuje selhání každé ze čtyř readiness
+  podmínek bez zápisu, cizího plátce, zápornou i desetinnou částku, neplatnou
+  měnu, chybějící potvrzení, přesnou idempotenci i konfliktní duplicitu.
+- Produkční databáze, deploy, vzdálený repozitář ani platební služby nebyly
+  změněny. R7 zůstává uzavřený. Konkrétní právní zdroj a konečné retenční lhůty
+  jsou nadále povinnou branou před produkční aktivací.
+
+### Další krok
+
+- Lokálně jsou autorizované řezy R1–R6 dokončené. R7 se nesmí otevřít bez
+  nového rozhodnutí vlastníka; stejně tak se bez výslovného pokynu nesmí nic
+  nasadit ani měnit v produkční databázi.
+
 ## Aktualizace 16. 8. 2026 — Prompt B R5: ruční zařazení sportovce (`68498a1`)
 
 ### Dokončený výsledek
