@@ -193,7 +193,7 @@ function athleteRegistrationSubmit(
             $photoInsert = $pdo->prepare(
                 'INSERT INTO athlete_private_files '
                 . '(request_id,file_kind,storage_key,sha256,byte_size,mime_type,width_px,height_px,status,consent_snapshot_id) '
-                . "VALUES (?,'internal_photo',?,?,?,?,?,?, 'active',?)"
+                . "VALUES (?,'profile_photo',?,?,?,?,?,?, 'active',?)"
             );
             $photoInsert->execute([
                 $requestId,

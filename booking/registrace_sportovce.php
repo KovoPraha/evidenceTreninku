@@ -47,8 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             header('Location: registrace_sportovce.php', true, 303);
             exit;
-        } catch (InvalidArgumentException | AthleteRegistrationException | PersonSensitiveException $exception) {
+        } catch (InvalidArgumentException | AthleteRegistrationException $exception) {
             $errors[] = $exception->getMessage();
+        } catch (PersonSensitiveException $exception) {
+            $errors[] = 'Žádost se nepodařilo bezpečně uložit. Zkontrolujte údaje a zkuste to znovu.';
         } catch (RuntimeException $exception) {
             $errors[] = 'Žádost se nepodařilo bezpečně uložit. Zkontrolujte údaje a zkuste to znovu.';
         } catch (Throwable $exception) {

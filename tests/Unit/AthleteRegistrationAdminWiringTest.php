@@ -1,0 +1,44 @@
+<?php
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use PHPUnit\Framework\TestCase;
+
+final class AthleteRegistrationAdminWiringTest extends TestCase
+{
+    public function testSingleAdminQueueUsesSharedMatcherAndExistingF7Creator(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $page = (string)file_get_contents($root . '/eshop_identity_admin.php');
+        $service = (string)file_get_contents($root . '/includes/athlete_registration_admin.php');
+
+        self::assertStringContainsString("(string)(\$_SESSION['role'] ?? '') !== 'admin'", $page);
+        self::assertStringContainsString('Cache-Control: no-store', $page);
+        self::assertStringContainsString('athleteRegistrationAdminReview', $page);
+        self::assertStringContainsString('approve_registration_existing', $page);
+        self::assertStringContainsString('create_registration_person', $page);
+        self::assertStringContainsString('reject_registration', $page);
+        self::assertStringContainsString('personMatchV1($pdo', $service);
+        self::assertStringContainsString('personMatchV1CreateManual($pdo', $service);
+        self::assertStringNotContainsString('function personMatchV2', $service . $page);
+        self::assertStringContainsString('shodný bezpečný otisk RČ', $page);
+        self::assertStringContainsString('athlete_sensitive_admin.php', $page);
+        self::assertStringContainsString('private_download.php?kind=athlete-photo', $page);
+        self::assertStringContainsString("file_kind='profile_photo'", $service);
+        self::assertStringContainsString("VALUES (?,'profile_photo'", (string)file_get_contents($root . '/includes/athlete_registration.php'));
+        self::assertStringContainsString("file_kind='profile_photo'", (string)file_get_contents($root . '/private_download.php'));
+    }
+
+    public function testApprovalIsAtomicAndDoesNotOpenGroupingOrCharges(): void
+    {
+        $service = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/athlete_registration_admin.php');
+        self::assertStringContainsString('beginTransaction()', $service);
+        self::assertStringContainsString('accountPersonClaimApprove', $service);
+        self::assertStringContainsString('athleteRegistrationAdminApplyToPerson', $service);
+        self::assertStringContainsString("kis_external_id) ", (string)file_get_contents(dirname(__DIR__, 2) . '/includes/person_match.php'));
+        self::assertStringNotContainsString('sportovec_skupina', $service);
+        self::assertStringNotContainsString('club_roster_members', $service);
+        self::assertStringNotContainsString('club_member_charges', $service);
+    }
+}

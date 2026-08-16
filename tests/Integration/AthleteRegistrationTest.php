@@ -101,6 +101,7 @@ final class AthleteRegistrationTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_udaje')->fetchColumn());
         self::assertSame(0, (int)$pdo->query('SELECT has_czech_birth_number FROM athlete_registration_request_details')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM athlete_private_files')->fetchColumn());
+        self::assertSame('profile_photo', $pdo->query('SELECT file_kind FROM athlete_private_files')->fetchColumn());
         self::assertSame(4, (int)$pdo->query('SELECT COUNT(*) FROM athlete_registration_consent_snapshots')->fetchColumn());
         self::assertSame(
             0,

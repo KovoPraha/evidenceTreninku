@@ -27,7 +27,7 @@ final class AccountPersonClaimWiringTest extends TestCase
         $root = dirname(__DIR__, 2);
         $source = (string)file_get_contents($root . '/eshop_identity_admin.php');
 
-        self::assertStringContainsString("roleAtLeast('admin')", $source);
+        self::assertStringContainsString("(string)(\$_SESSION['role'] ?? '') !== 'admin'", $source);
         self::assertStringContainsString('approve_claim', $source);
         self::assertStringContainsString('reject_claim', $source);
         self::assertStringContainsString('sportovec_id', $source);
