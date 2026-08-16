@@ -71,7 +71,10 @@ final class ShopCatalogPromotionTest extends TestCase
             \shopCatalogPromote($pdo, $secondRun['run_id'], 7, true);
             self::fail('Duplicate canonical keys must block the complete promotion.');
         } catch (\ShopCatalogPromotionException $exception) {
-            self::assertStringContainsString('bez částečného zápisu', $exception->getMessage());
+            self::assertStringContainsString('před prvním zápisem', $exception->getMessage());
+            self::assertStringContainsString('Kolidující SKU:', $exception->getMessage());
+            self::assertStringContainsString('Přejmenujte v administraci ručně založená SKU', $exception->getMessage());
+            self::assertStringContainsString('importní soubor není rozbitý', $exception->getMessage());
         }
 
         self::assertSame(10, (int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
@@ -80,6 +83,66 @@ final class ShopCatalogPromotionTest extends TestCase
         self::assertSame('ready_for_promotion', $pdo->query(
             'SELECT status FROM shop_catalog_import_runs WHERE id=' . (int)$secondRun['run_id']
         )->fetchColumn());
+    }
+
+    public function testReservedManualSkuDoesNotCollideWithSyntheticImport(): void
+    {
+        [$pdo, , $runId] = $this->databaseWithStagedCatalog();
+        $this->resolvePending($pdo, $runId);
+        $this->insertManualProduct($pdo, 'KP-R2-SYNTHETIC-UNIQUE', true);
+
+        $result = \shopCatalogPromote($pdo, $runId, 7, true);
+
+        self::assertTrue($result['created']);
+        self::assertSame(10, $result['products']);
+        self::assertSame(11, (int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
+        self::assertSame(11, (int)$pdo->query('SELECT COUNT(*) FROM shop_variants')->fetchColumn());
+    }
+
+    public function testManualSkuCollisionStopsBeforeFirstPromotionInsertWithExactGuidance(): void
+    {
+        [$pdo, , $runId] = $this->databaseWithStagedCatalog();
+        $this->resolvePending($pdo, $runId);
+        $collisionSku = (string)$pdo->query(
+            'SELECT sku FROM shop_catalog_variant_candidates WHERE run_id=' . $runId . ' ORDER BY sku LIMIT 1'
+        )->fetchColumn();
+        self::assertNotSame('', $collisionSku);
+        $this->insertManualProduct($pdo, $collisionSku, false);
+        $before = $this->canonicalWriteCounts($pdo);
+
+        try {
+            \shopCatalogPromote($pdo, $runId, 7, true);
+            self::fail('Manual SKU collision must stop the import preflight.');
+        } catch (\ShopCatalogPromotionException $exception) {
+            self::assertStringContainsString('před prvním zápisem', $exception->getMessage());
+            self::assertStringContainsString('`' . $collisionSku . '`', $exception->getMessage());
+            self::assertStringContainsString('Přejmenujte v administraci ručně založená SKU', $exception->getMessage());
+        }
+
+        self::assertSame($before, $this->canonicalWriteCounts($pdo));
+        self::assertSame(0, $before['promotions']);
+    }
+
+    public function testPromotionRejectsManualNamespaceInStagingBeforeAnyInsert(): void
+    {
+        [$pdo, , $runId] = $this->databaseWithStagedCatalog();
+        $this->resolvePending($pdo, $runId);
+        $candidateId = (int)$pdo->query(
+            'SELECT id FROM shop_catalog_product_candidates WHERE run_id=' . $runId . ' ORDER BY id LIMIT 1'
+        )->fetchColumn();
+        $manualKey = \shopCatalogManualExternalProductKey();
+        $pdo->prepare('UPDATE shop_catalog_product_candidates SET external_product_key=? WHERE id=?')
+            ->execute([$manualKey, $candidateId]);
+
+        try {
+            \shopCatalogPromote($pdo, $runId, 7, true);
+            self::fail('Promotion must never process a manual product namespace.');
+        } catch (\ShopCatalogPromotionException $exception) {
+            self::assertStringContainsString('namespace shoptet:', $exception->getMessage());
+            self::assertStringContainsString('Ruční produkty patří přímo do katalogu', $exception->getMessage());
+        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_promotions')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
     }
 
     public function testExplicitConfirmationIsRequiredBeforeAnyWrite(): void
@@ -138,5 +201,44 @@ final class ShopCatalogPromotionTest extends TestCase
             'goods',
             'Fyzické zboží.'
         );
+    }
+
+    private function insertManualProduct(PDO $pdo, string $sku, bool $enforceReservedPrefix): void
+    {
+        $externalKey = \shopCatalogManualExternalProductKey();
+        \shopCatalogAssertManualExternalProductKey($externalKey);
+        if ($enforceReservedPrefix) {
+            \shopCatalogAssertManualSku($sku);
+        }
+        \shopCatalogAssertProductOrigin(\ShopCatalogOrigin::MANUAL, null, null, 7);
+        \shopCatalogAssertVariantOrigin(
+            \ShopCatalogOrigin::MANUAL,
+            null,
+            7,
+            \ShopCatalogOrigin::MANUAL
+        );
+        $statement = $pdo->prepare(
+            'INSERT INTO shop_products '
+            . '(source_candidate_id,source_run_id,origin,created_by_trainer_id,external_product_key,name,'
+            . "offer_type,catalog_status) VALUES(NULL,NULL,'manual',7,?,'Ruční R2 produkt','goods','draft')"
+        );
+        $statement->execute([$externalKey]);
+        $productId = (int)$pdo->lastInsertId();
+        $statement = $pdo->prepare(
+            'INSERT INTO shop_variants '
+            . '(product_id,source_candidate_id,origin,created_by_trainer_id,sku,attributes_json,price_mode,'
+            . "amount_minor,currency,catalog_status) VALUES(?,NULL,'manual',7,?,'{}','fixed',10000,'CZK','draft')"
+        );
+        $statement->execute([$productId, $sku]);
+    }
+
+    /** @return array{promotions:int,products:int,variants:int} */
+    private function canonicalWriteCounts(PDO $pdo): array
+    {
+        return [
+            'promotions' => (int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_promotions')->fetchColumn(),
+            'products' => (int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn(),
+            'variants' => (int)$pdo->query('SELECT COUNT(*) FROM shop_variants')->fetchColumn(),
+        ];
     }
 }

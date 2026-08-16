@@ -11,6 +11,37 @@ require_once dirname(__DIR__, 2) . '/includes/shop_catalog_origin.php';
 
 final class ShopCatalogOriginTest extends TestCase
 {
+    public function testManualIdentifiersUseReservedNamespaces(): void
+    {
+        $key = \shopCatalogManualExternalProductKey();
+        \shopCatalogAssertManualExternalProductKey($key);
+        \shopCatalogAssertManualSku('KP-RAJCATA-2026');
+
+        self::assertMatchesRegularExpression('/^manual:[a-f0-9]{32}$/D', $key);
+        self::assertSame('KP-', \shopCatalogManualSkuPrefix());
+        self::assertStringNotContainsString('shoptet:', $key);
+    }
+
+    #[DataProvider('invalidManualIdentifiers')]
+    public function testInvalidManualIdentifierIsRejected(string $kind, string $value): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        if ($kind === 'key') {
+            \shopCatalogAssertManualExternalProductKey($value);
+            return;
+        }
+        \shopCatalogAssertManualSku($value);
+    }
+
+    /** @return iterable<string,array{string,string}> */
+    public static function invalidManualIdentifiers(): iterable
+    {
+        yield 'shoptet key' => ['key', 'shoptet:sku:KP-TEST'];
+        yield 'short random key' => ['key', 'manual:abc'];
+        yield 'sku without prefix' => ['sku', 'TEST-1'];
+        yield 'lowercase sku' => ['sku', 'KP-test'];
+    }
+
     public function testValidImportAndManualProductsAreAccepted(): void
     {
         \shopCatalogAssertProductOrigin(\ShopCatalogOrigin::IMPORT, 11, 12, null);

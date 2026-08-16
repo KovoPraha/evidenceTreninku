@@ -86,6 +86,8 @@ function shopCatalogPromote(PDO $pdo, int $runId, int $actorTrainerId, bool $con
             throw new ShopCatalogPromotionException('Importní běh neobsahuje žádný produkt k převodu.');
         }
 
+        shopCatalogPromotionPreflight($pdo, $runId, $candidates);
+
         $createPromotion = $pdo->prepare(
             "INSERT INTO shop_catalog_promotions (run_id, actor_trainer_id, status) VALUES (?, ?, 'in_progress')"
         );
@@ -241,6 +243,147 @@ function shopCatalogPromote(PDO $pdo, int $runId, int $actorTrainerId, bool $con
             $exception
         );
     }
+}
+
+/**
+ * Fail before the first promotion INSERT when canonical keys collide or the
+ * staging run contains duplicate/non-import identities.
+ *
+ * @param list<array<string,mixed>> $candidates
+ */
+function shopCatalogPromotionPreflight(PDO $pdo, int $runId, array $candidates): void
+{
+    $variantStatement = $pdo->prepare(
+        'SELECT sku FROM shop_catalog_variant_candidates '
+        . 'WHERE run_id=? AND product_candidate_id=? ORDER BY sku,id'
+    );
+    $incoming = [];
+    foreach ($candidates as $candidate) {
+        $variantStatement->execute([$runId, (int)$candidate['id']]);
+        $incoming[] = [
+            'external_product_key' => (string)$candidate['external_product_key'],
+            'skus' => array_map(
+                static fn (mixed $sku): string => (string)$sku,
+                $variantStatement->fetchAll(PDO::FETCH_COLUMN)
+            ),
+        ];
+    }
+
+    $lockSuffix = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
+    $existingProductKeys = array_map(
+        static fn (mixed $key): string => (string)$key,
+        $pdo->query('SELECT external_product_key FROM shop_products ORDER BY id' . $lockSuffix)
+            ->fetchAll(PDO::FETCH_COLUMN)
+    );
+    $existingSkus = array_map(
+        static fn (mixed $sku): string => (string)$sku,
+        $pdo->query('SELECT sku FROM shop_variants ORDER BY id' . $lockSuffix)
+            ->fetchAll(PDO::FETCH_COLUMN)
+    );
+    $report = shopCatalogPromotionCollisionReport($incoming, $existingProductKeys, $existingSkus);
+
+    if ($report['non_import_external_keys'] !== []) {
+        $nonImportDetails = $report['non_import_skus'] !== []
+            ? 'Dotčená SKU: ' . shopCatalogPromotionSkuList($report['non_import_skus'])
+            : 'Dotčené externí klíče: ' . shopCatalogPromotionSkuList(
+                $report['non_import_external_keys']
+            );
+        throw new ShopCatalogPromotionException(
+            'Import byl zastaven před prvním zápisem do katalogu. Importní běh obsahuje produkt mimo '
+            . 'vyhrazený namespace shoptet:. ' . $nonImportDetails
+            . '. Ruční produkty patří přímo do katalogu a shopCatalogPromote() je nesmí zpracovat.'
+        );
+    }
+    if ($report['colliding_skus'] !== [] || $report['colliding_external_keys'] !== []) {
+        $collisionDetails = [];
+        if ($report['colliding_skus'] !== []) {
+            $collisionDetails[] = 'Kolidující SKU: '
+                . shopCatalogPromotionSkuList($report['colliding_skus']);
+        }
+        if ($report['colliding_external_keys'] !== []) {
+            $collisionDetails[] = 'Kolidující externí klíče: '
+                . shopCatalogPromotionSkuList($report['colliding_external_keys']);
+        }
+        throw new ShopCatalogPromotionException(
+            'Import byl zastaven před prvním zápisem do katalogu. '
+            . implode('. ', $collisionDetails)
+            . '. Přejmenujte v administraci ručně založená SKU z tohoto seznamu a import spusťte znovu. '
+            . 'Pokud SKU patří dřívějšímu importu, nejprve zkontrolujte duplicitní běh; '
+            . 'importní soubor není rozbitý.'
+        );
+    }
+}
+
+/**
+ * @param list<array{external_product_key:string,skus:list<string>}> $incoming
+ * @param list<string> $existingProductKeys
+ * @param list<string> $existingSkus
+ * @return array{
+ *   colliding_skus:list<string>,
+ *   colliding_external_keys:list<string>,
+ *   non_import_skus:list<string>,
+ *   non_import_external_keys:list<string>
+ * }
+ */
+function shopCatalogPromotionCollisionReport(
+    array $incoming,
+    array $existingProductKeys,
+    array $existingSkus
+): array {
+    $existingKeySet = array_fill_keys($existingProductKeys, true);
+    $existingSkuSet = array_fill_keys($existingSkus, true);
+    $seenKeys = [];
+    $seenSkus = [];
+    $collisions = [];
+    $collidingExternalKeys = [];
+    $nonImport = [];
+    $nonImportExternalKeys = [];
+
+    foreach ($incoming as $product) {
+        $externalKey = (string)$product['external_product_key'];
+        $skus = array_values(array_map('strval', $product['skus']));
+        if (!str_starts_with($externalKey, 'shoptet:')) {
+            $nonImportExternalKeys[$externalKey] = true;
+            foreach ($skus as $sku) {
+                $nonImport[$sku] = true;
+            }
+        }
+        if (isset($existingKeySet[$externalKey]) || isset($seenKeys[$externalKey])) {
+            $collidingExternalKeys[$externalKey] = true;
+            foreach ($skus as $sku) {
+                $collisions[$sku] = true;
+            }
+        }
+        $seenKeys[$externalKey] = true;
+
+        foreach ($skus as $sku) {
+            if (isset($existingSkuSet[$sku]) || isset($seenSkus[$sku])) {
+                $collisions[$sku] = true;
+            }
+            $seenSkus[$sku] = true;
+        }
+    }
+
+    $collidingSkus = array_keys($collisions);
+    $collidingKeys = array_keys($collidingExternalKeys);
+    $nonImportSkus = array_keys($nonImport);
+    $nonImportKeys = array_keys($nonImportExternalKeys);
+    sort($collidingSkus, SORT_STRING);
+    sort($collidingKeys, SORT_STRING);
+    sort($nonImportSkus, SORT_STRING);
+    sort($nonImportKeys, SORT_STRING);
+    return [
+        'colliding_skus' => $collidingSkus,
+        'colliding_external_keys' => $collidingKeys,
+        'non_import_skus' => $nonImportSkus,
+        'non_import_external_keys' => $nonImportKeys,
+    ];
+}
+
+/** @param list<string> $skus */
+function shopCatalogPromotionSkuList(array $skus): string
+{
+    return implode(', ', array_map(static fn (string $sku): string => '`' . $sku . '`', $skus));
 }
 
 /** @return array<string,mixed> */
