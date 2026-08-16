@@ -99,6 +99,14 @@ body.app-loading .app-loading-bar {
     --app-page-bg: #111827;
 }
 
+[data-bs-theme="dark"] body.bg-light {
+    background-color: var(--app-page-bg) !important;
+}
+
+[data-bs-theme="dark"] .bg-white {
+    background-color: var(--bs-secondary-bg) !important;
+}
+
 [data-bs-theme="dark"] .app-public-footer {
     background: rgba(33, 37, 41, .8);
 }

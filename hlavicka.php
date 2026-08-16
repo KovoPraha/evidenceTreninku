@@ -37,8 +37,7 @@ if ($is_logged_in) {
 <!-- Dark mode: nastav téma co nejdříve, aby nedošlo k bliknutí -->
 <script>
 (function(){
-    var t = localStorage.getItem('bs-theme')
-         || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var t = localStorage.getItem('bs-theme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', t);
 })();
 </script>

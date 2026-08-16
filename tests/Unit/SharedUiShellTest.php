@@ -181,4 +181,36 @@ final class SharedUiShellTest extends TestCase
         self::assertStringContainsString("form.dataset.appSubmitting = '1'", $javascript);
         self::assertStringNotContainsString('insertAdjacentHTML', $header);
     }
+
+    public function testThemeDefaultsToLightUntilTheUserExplicitlyChoosesDarkMode(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $header = (string)file_get_contents($root . '/hlavicka.php');
+        $css = (string)file_get_contents($root . '/assets/app-ui.css');
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)
+        );
+        $automaticThemePages = [];
+
+        foreach ($iterator as $file) {
+            if (!$file->isFile() || $file->getExtension() !== 'php') {
+                continue;
+            }
+            $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
+            if (preg_match('#^(vendor|tests|migrations|scripts|var|\.agents)/#', $relative) === 1) {
+                continue;
+            }
+            $source = (string)file_get_contents($file->getPathname());
+            if (str_contains($source, 'prefers-color-scheme')) {
+                $automaticThemePages[] = $relative;
+            }
+        }
+
+        self::assertSame([], $automaticThemePages, 'Pages enabling a theme from OS preference: ' . implode(', ', $automaticThemePages));
+        self::assertStringContainsString("localStorage.getItem('bs-theme') || 'light'", $header);
+        self::assertStringContainsString('[data-bs-theme="dark"] body.bg-light', $css);
+        self::assertStringContainsString('background-color: var(--app-page-bg) !important;', $css);
+        self::assertStringContainsString('[data-bs-theme="dark"] .bg-white', $css);
+        self::assertStringContainsString('background-color: var(--bs-secondary-bg) !important;', $css);
+    }
 }
