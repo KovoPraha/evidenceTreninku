@@ -1907,3 +1907,70 @@ W0-C ani F0 nejsou uzavřené.
 - [ ] zapsat jednu další konkrétní akci,
 - [ ] aktualizovat čas tohoto handoffu,
 - [ ] ověřit, že prompt nového řídicího tasku stále odpovídá procesu.
+
+## Produkční nasazení a post-deploy ověření 2026-08-16
+
+- Nasazen přesný `origin/main` SHA `44dd1c19181b8ec6b428c19ebf2351210f4f4c02`.
+- Workflow `Nasadit produkci` run `31956663648` skončil úspěšně; CI v deployi:
+  586 testů, 5 046 asercí, jedna existující PHPUnit deprecation.
+- Záloha před migrací: `evidence_2026-08-16_154741_9256ee77.sql.gz`, manifest
+  `evidence_2026-08-16_154741_9256ee77.manifest.json`, SHA-256
+  `a1d0bea0f0e85c41157589fcfc29acb9768bf2bb014cd32afe237d7d03fc5ea9`,
+  154 tabulek a 2 triggery, mimo webroot.
+- Migrace před i po aplikaci hlásily katalog 53 a `pending: []`.
+- `20260816143000_athlete_registration_foundation` je zapsaná a všech pět tabulek
+  existuje: `athlete_registration_request_details`,
+  `athlete_registration_consent_snapshots`, `athlete_private_files`,
+  `osoba_citlive_udaje`, `osoba_citlive_pristupy`.
+- `athlete_sensitive_admin.php` bez nastavených klíčů vrací čisté JSON HTTP 503
+  s obecnou zprávou; žádný fatal error ani únik detailu.
+- `private_download.php` je funkční fail-closed, ale stávající kategorie nejsou
+  provozně zelené: 2 účtenky a 3 soubory zátěžových testů mají stále legacy
+  cesty, žádný nemá `private://` klíč a endpoint proto vrací 404. Souborová
+  migrace `bin/migrate-private-files.php --apply` nebyla součástí deploy workflow.
+
+### Deset bodů post-deploy ověření
+
+1. **F1 plánovač — částečně.** Po vytvoření cíleného oznámení se vykreslilo všech
+   sedm dnů a oznámení bylo viditelné. V týdnu ale nebyl zobrazen žádný aktivní
+   plán, takže tlačítko `Zadat evidenci` nešlo ve stejném scénáři potvrdit;
+   upozornění přitom hlásilo jeden starší nezaevidovaný plán. Samostatný nový plán
+   v bodu 8 tlačítko zobrazil.
+2. **F2 tmavý režim — zelené s omezením prostředí.** Zařízení bylo nastavené
+   světle; aplikace zůstala světlá. Ručně zapnutý tmavý režim byl čitelný i na
+   admin stránce a návrat do světlého režimu fungoval. Přesný OS-dark stav nebyl
+   na tomto zařízení dostupný; opt-in kontrakt je krytý nasazeným kódem a testy.
+3. **F3 přihlášení — zelené.** Trenérská, veřejná i sportovcovská odhlašovací
+   cesta prošla a každá následná relace se přihlásila napoprvé.
+4. **F4 nabídky — zelené.** Rozbalovací nabídky fungují na
+   `eshop_orders_admin.php` i `edit_trenink.php`.
+5. **F5 lišta — částečně.** Při dostupné šířce 1536 px bez overflow a s položkou
+   Plánovač uvnitř lišty. Přesných 1366 px nešlo v připojeném Chrome vynutit;
+   nasazené `navbar-expand-xxl` pod 1400 px lištu skládá.
+6. **F6 navigace — zelené.** `booking/verejny_profil.php` má plnou produktovou
+   navigaci, ne pouze Velodrom.
+7. **F7 osoby — zelené.** Přesná shoda jména a data narození založení zablokovala,
+   nabídla existující osobu a výjimku dovolila pouze s povinným důvodem.
+8. **F8 kalendář — funkčně zelené, textová odchylka.** Plán `6` vytvořil evidenci
+   `1596` a rezervaci `8` jedním odesláním; v kalendáři Velodromu byla přesně
+   jedna rezervace 06:00–07:00. Plán měl štítek `Evidováno`, nikoli požadovaný
+   text `Zaevidováno`.
+9. **RČ v importu — zelené podle produkčního kontraktu, bez samostatné hlavní
+   session.** `sync_evidence` zůstává dostupné od role `hlavni`; nasazený zdroj
+   náhledu neobsahuje rodné číslo. Samostatné přihlášení konkrétním účtem hlavního
+   trenéra nebylo k dispozici.
+10. **Proxy — zelené.** Uživatelský Chrome a serverový kontrolní požadavek měly
+    rozdílné anonymizované síťové otisky. Na obou cestách se odvozená adresa
+    rovnala `REMOTE_ADDR`; `X-Real-IP` ji pouze kopíruje. Produkce není za jednou
+    sdílenou reverzní proxy, `AUTH_TRUSTED_PROXIES` má zůstat prázdné.
+
+Dočasná data byla po samostatném potvrzení vlastníka uklizena workflow run
+`31959921970`: oznámení `5`, evidence `1596` a rezervace `8` jsou odstraněné;
+plán `6` je zrušený a má `trenink_id=NULL`, `rezervace_id=NULL`. Diagnostický a
+úklidový kód je pouze na pomocné větvi `codex/postdeploy-verify` (`56f4f6d`),
+není sloučený do `main` ani nasazený jako release.
+
+**Další konkrétní akce:** po novém výslovném schválení produkčního souborového a
+DB zápisu provést zálohu, dry-run `bin/migrate-private-files.php`, přesunout 2
+účtenky a 3 soubory zátěžových testů pomocí `--apply`, znovu spustit dry-run a
+ověřit obě kategorie přes `private_download.php`.
