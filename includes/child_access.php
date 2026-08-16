@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/member_charge_read.php';
+require_once __DIR__ . '/password_security.php';
 
 final class ChildAccessException extends RuntimeException
 {
@@ -62,9 +63,7 @@ function childAccessNormalizeLogin(string $login): string
 
 function childAccessValidatePassword(string $password): void
 {
-    if (strlen($password) < 12 || strlen($password) > 200) {
-        throw new InvalidArgumentException('Heslo musí mít 12–200 znaků.');
-    }
+    passwordPolicyValidate($password);
 }
 
 function childAccessValidateReason(string $reason): string
@@ -109,7 +108,7 @@ function childAccessCreate(
     string $reason
 ): array {
     $loginKey = childAccessNormalizeLogin($login);
-    childAccessValidatePassword($password);
+    passwordPolicyValidate($password);
     $reason = childAccessValidateReason($reason);
     if ($sportovecId < 1 || $actorTrainerId < 1) {
         throw new InvalidArgumentException('Chybí sportovec nebo administrátor.');
@@ -159,7 +158,7 @@ function childAccessResetPassword(
     int $actorTrainerId,
     string $reason
 ): void {
-    childAccessValidatePassword($password);
+    passwordPolicyValidate($password);
     childAccessChangeState($pdo, $accessAccountId, $actorTrainerId, 'password_reset', $reason, $password);
 }
 

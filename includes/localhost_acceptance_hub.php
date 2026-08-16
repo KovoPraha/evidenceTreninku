@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/password_security.php';
+
 /**
  * M1 acceptance hub security and scenario catalogue.
  *
@@ -68,10 +70,7 @@ function localhostAcceptanceResetTestCustomer(
     if (!localhostAcceptanceRequestIsAllowed($server, $configuredHost)) {
         throw new RuntimeException('Testovacího zákazníka lze obnovit pouze z loopbacku.');
     }
-    $passwordLength = mb_strlen($password, 'UTF-8');
-    if ($passwordLength < 12 || $passwordLength > 128) {
-        throw new InvalidArgumentException('Testovací heslo musí mít 12 až 128 znaků.');
-    }
+    passwordPolicyValidate($password);
 
     $email = localhostAcceptanceTestCustomerEmail();
     $pdo->beginTransaction();

@@ -112,7 +112,7 @@ function passwordResetResolveTarget(PDO $pdo, string $identifier): ?array
 /** @return array{target_type:string,target_id:int}|null */
 function passwordResetConsume(PDO $pdo, string $token, string $newPassword, ?int $now = null): ?array
 {
-    childAccessValidatePassword($newPassword);
+    passwordPolicyValidate($newPassword);
     $hash = one_time_token_hash(ONE_TIME_TOKEN_PASSWORD_RESET, trim($token));
     if ($hash === '') {
         return null;

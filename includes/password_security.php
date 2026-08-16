@@ -1,6 +1,17 @@
 <?php
 declare(strict_types=1);
 
+defined('PASSWORD_POLICY_MIN_LENGTH') || define('PASSWORD_POLICY_MIN_LENGTH', 12);
+defined('PASSWORD_POLICY_MAX_LENGTH') || define('PASSWORD_POLICY_MAX_LENGTH', 200);
+
+function passwordPolicyValidate(string $password): void
+{
+    $length = mb_strlen($password, 'UTF-8');
+    if ($length < PASSWORD_POLICY_MIN_LENGTH || $length > PASSWORD_POLICY_MAX_LENGTH) {
+        throw new InvalidArgumentException('Heslo musí mít 12–200 znaků.');
+    }
+}
+
 /** Return true only for password formats understood by the current PHP runtime. */
 function trainer_password_is_modern_hash(string $storedPassword): bool
 {

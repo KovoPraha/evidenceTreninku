@@ -9,6 +9,47 @@ require_once dirname(__DIR__, 2) . '/includes/password_security.php';
 
 final class PasswordSecurityTest extends TestCase
 {
+    public function testSharedPolicyUsesUnicodeCharacterLengthAndTwelveCharacterMinimum(): void
+    {
+        foreach (['short', 'ěščřžý', str_repeat('x', 201)] as $invalid) {
+            try {
+                \passwordPolicyValidate($invalid);
+                self::fail('Invalid password length was accepted.');
+            } catch (\InvalidArgumentException $exception) {
+                self::assertSame('Heslo musí mít 12–200 znaků.', $exception->getMessage());
+            }
+        }
+
+        \passwordPolicyValidate(str_repeat('x', 12));
+        \passwordPolicyValidate(str_repeat('ě', 12));
+        \passwordPolicyValidate(str_repeat('x', 200));
+        self::addToAssertionCount(3);
+    }
+
+    public function testEveryPasswordCreationFlowUsesSharedPolicy(): void
+    {
+        $root = dirname(__DIR__, 2);
+        foreach ([
+            'booking/registrace.php',
+            'sprava_treneru.php',
+            'includes/child_access.php',
+            'includes/password_reset.php',
+            'includes/localhost_acceptance_hub.php',
+            'bin/provision-production-test-admin.php',
+            'bin/seed-local-demo.php',
+        ] as $relative) {
+            $source = (string)file_get_contents($root . '/' . $relative);
+            self::assertStringContainsString('passwordPolicyValidate(', $source, $relative);
+        }
+
+        $registration = (string)file_get_contents($root . '/booking/registrace.php');
+        $trainers = (string)file_get_contents($root . '/sprava_treneru.php');
+        self::assertStringNotContainsString('strlen($heslo)', $registration);
+        self::assertStringNotContainsString('min. 8 znaků', $registration);
+        self::assertSame(2, substr_count($registration, 'minlength="12"'));
+        self::assertStringContainsString('minlength="12" maxlength="200"', $trainers);
+    }
+
     public function testDetectsModernBcryptHash(): void
     {
         $hash = password_hash('correct horse battery staple', PASSWORD_BCRYPT);

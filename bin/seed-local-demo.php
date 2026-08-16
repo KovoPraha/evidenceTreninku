@@ -25,11 +25,11 @@ try{
     require_once $root.'/includes/public_velodrome.php';
     require_once $root.'/includes/child_access.php';
     $pdo=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]);
-    $adminLogin='localhost-admin';$adminPassword='LocalhostAdmin123!';$admin=$pdo->prepare('SELECT id FROM treneri WHERE jmeno=? ORDER BY id LIMIT 1');$admin->execute([$adminLogin]);$actorId=(int)$admin->fetchColumn();
+    $adminLogin='localhost-admin';$adminPassword='LocalhostAdmin123!';passwordPolicyValidate($adminPassword);$admin=$pdo->prepare('SELECT id FROM treneri WHERE jmeno=? ORDER BY id LIMIT 1');$admin->execute([$adminLogin]);$actorId=(int)$admin->fetchColumn();
     if($actorId<1){$pdo->prepare("INSERT INTO treneri(jmeno,email,heslo,role,aktivni) VALUES (?,?,?,'admin',1)")->execute([$adminLogin,'admin@localhost.test',password_hash($adminPassword,PASSWORD_DEFAULT)]);$actorId=(int)$pdo->lastInsertId();}
     else{$pdo->prepare("UPDATE treneri SET email=?,heslo=?,role='admin',aktivni=1 WHERE id=?")->execute(['admin@localhost.test',password_hash($adminPassword,PASSWORD_DEFAULT),$actorId]);}
 
-    $email='rodic@localhost.test';$password='Localhost123!';
+    $email='rodic@localhost.test';$password='Localhost123!';passwordPolicyValidate($password);
     $account=$pdo->prepare('SELECT id FROM verejni_uzivatele WHERE email=?');$account->execute([$email]);$accountId=(int)$account->fetchColumn();
     if($accountId<1){
         $insert=$pdo->prepare('INSERT INTO verejni_uzivatele(jmeno,prijmeni,email,heslo_hash,email_overeno,aktivni) VALUES (?,?,?,?,1,1)');

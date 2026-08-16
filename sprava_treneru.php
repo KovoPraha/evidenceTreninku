@@ -41,6 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: sprava_treneru.php");
             exit;
         }
+        if ($heslo !== '') {
+            try {
+                passwordPolicyValidate($heslo);
+            } catch (InvalidArgumentException $exception) {
+                $_SESSION['flash_error'] = $exception->getMessage();
+                header("Location: sprava_treneru.php");
+                exit;
+            }
+        }
 
         $currentEmail = null;
         if ($id > 0) {
@@ -238,8 +247,8 @@ $trenery = $pdo->query("
             <label for="trener-heslo" class="form-label fw-semibold">
               <i class="bi bi-key me-1"></i>Heslo
             </label>
-            <input type="password" name="heslo" id="trener-heslo" class="form-control" placeholder="Nové heslo">
-            <div class="form-text" id="heslo-hint">Povinné pro nového trenéra</div>
+            <input type="password" name="heslo" id="trener-heslo" class="form-control" placeholder="Nové heslo" minlength="12" maxlength="200">
+            <div class="form-text" id="heslo-hint">Povinné pro nového trenéra, 12–200 znaků</div>
           </div>
           <div class="col-md-2">
             <label for="trener-role" class="form-label fw-semibold">
@@ -277,7 +286,7 @@ document.querySelectorAll('.edit-btn').forEach(btn => {
         document.getElementById('trener-role').value  = btn.dataset.role;
         document.getElementById('trener-heslo').value = '';
         document.getElementById('trener-heslo').removeAttribute('required');
-        document.getElementById('heslo-hint').innerText = 'Prázdné = beze změny';
+        document.getElementById('heslo-hint').innerText = 'Prázdné = beze změny, nové heslo musí mít 12–200 znaků';
         document.getElementById('trener-form').scrollIntoView({ behavior: 'smooth' });
     });
 });
@@ -289,7 +298,7 @@ document.getElementById('form-reset').addEventListener('click', () => {
     document.getElementById('trener-email').value = '';
     document.getElementById('trener-role').value  = 'trener';
     document.getElementById('trener-heslo').value = '';
-    document.getElementById('heslo-hint').innerText = 'Povinné pro nového trenéra';
+    document.getElementById('heslo-hint').innerText = 'Povinné pro nového trenéra, 12–200 znaků';
 });
 </script>
 </body>

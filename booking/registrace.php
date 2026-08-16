@@ -6,6 +6,7 @@ require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
 require_once __DIR__ . '/../includes/public_profile.php';
 require_once __DIR__ . '/../includes/app_url.php';
+require_once __DIR__ . '/../includes/password_security.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -37,7 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             || $birth > new DateTimeImmutable('today') || $birth < new DateTimeImmutable('1900-01-01')) {
             $errors[] = 'Zadejte platné datum narození.';
         }
-        if (strlen($heslo) < 8) $errors[] = 'Heslo musí mít alespoň 8 znaků.';
+        try {
+            passwordPolicyValidate($heslo);
+        } catch (InvalidArgumentException $exception) {
+            $errors[] = $exception->getMessage();
+        }
         if ($heslo !== $heslo2) $errors[] = 'Hesla se neshodují.';
 
         if (empty($errors)) {
@@ -161,12 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                value="<?= h($_POST['telefon'] ?? '') ?>">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="registration-password">Heslo <small class="text-muted">(min. 8 znaků)</small></label>
-                        <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="8">
+                        <label class="form-label" for="registration-password">Heslo <small class="text-muted">(12–200 znaků)</small></label>
+                        <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="12" maxlength="200">
                     </div>
                     <div class="mb-4">
                         <label class="form-label" for="registration-password-confirmation">Heslo znovu</label>
-                        <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required>
+                        <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required minlength="12" maxlength="200">
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Zaregistrovat se</button>
                 </form>

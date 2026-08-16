@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once dirname(__DIR__) . '/includes/password_security.php';
+
 const KIS_PRODUCTION_TEST_ADMIN_EMAIL = 'kis@velocota.com';
 
 /** @param array<string,mixed> $input @return array{email:string,name:string,password:string} */
@@ -18,8 +20,16 @@ function kisProductionTestAdminValidate(array $input): array
     ) {
         throw new RuntimeException('Test administrator name is invalid.');
     }
-    if (strlen($password) < 12 || strlen($password) > 200
-        || preg_match('/[a-z]/', $password) !== 1
+    try {
+        passwordPolicyValidate($password);
+    } catch (InvalidArgumentException $exception) {
+        throw new RuntimeException(
+            'Test administrator password does not meet the production policy.',
+            0,
+            $exception
+        );
+    }
+    if (preg_match('/[a-z]/', $password) !== 1
         || preg_match('/[A-Z]/', $password) !== 1
         || preg_match('/[0-9]/', $password) !== 1
         || preg_match('/[^A-Za-z0-9]/', $password) !== 1
