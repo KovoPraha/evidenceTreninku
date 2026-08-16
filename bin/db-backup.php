@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-09.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-16.1';
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -33,6 +33,9 @@ const EVIDENCE_TABLES = [
     'account_person_claim_requests',
     'account_person_role_events',
     'account_person_roles',
+    'athlete_private_files',
+    'athlete_registration_consent_snapshots',
+    'athlete_registration_request_details',
     'auth_login_limits',
     'club_event_admin_events',
     'club_event_cart_items',
@@ -95,6 +98,8 @@ const EVIDENCE_TABLES = [
     'member_charge_reminder_preferences',
     'member_charge_reminders',
     'nastaveni',
+    'osoba_citlive_pristupy',
+    'osoba_citlive_udaje',
     'opravneni',
     'oznameni',
     'oznameni_targets',
