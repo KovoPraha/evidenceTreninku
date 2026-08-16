@@ -64,4 +64,23 @@ final class PrivateStorageTest extends TestCase
             }
         }
     }
+
+    public function testAthletePhotoIsReencodedWithoutOriginalMetadata(): void
+    {
+        $source = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'evidence-athlete-' . bin2hex(random_bytes(6)) . '.png';
+        file_put_contents($source, base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+            true
+        ));
+
+        $stored = \privateStorageStoreAthletePhoto($source, false);
+
+        self::assertMatchesRegularExpression('~^private://athlete-photos/[a-f0-9]{32}\.jpg$~', $stored['storage_key']);
+        self::assertSame('image/jpeg', $stored['mime_type']);
+        self::assertSame(1, $stored['width_px']);
+        self::assertSame(1, $stored['height_px']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/D', $stored['sha256_hex']);
+        self::assertFileExists((string)\privateStorageResolve($stored['storage_key']));
+        self::assertFileDoesNotExist($source);
+    }
 }

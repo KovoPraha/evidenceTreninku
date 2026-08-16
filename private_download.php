@@ -6,6 +6,7 @@ app_session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/includes/private_storage.php';
+require_once __DIR__ . '/includes/person_sensitive.php';
 
 header('Cache-Control: no-store, private');
 header('Pragma: no-cache');
@@ -55,6 +56,24 @@ if ($kind === 'receipt') {
     }
     $key = (string)$file['cesta'];
     $originalName = (string)($file['nazev'] ?: ('zatezovy-test-' . (int)$id));
+} elseif ($kind === 'athlete-photo') {
+    if (!isset($_SESSION['trener_id']) || (string)($_SESSION['role'] ?? '') !== 'admin') {
+        http_response_code(403);
+        exit('Pristup odepren.');
+    }
+    $stmt = $pdo->prepare(
+        "SELECT id,request_id,sportovec_id,storage_key FROM athlete_private_files "
+        . "WHERE id=? AND file_kind='profile_photo' AND status='active' LIMIT 1"
+    );
+    $stmt->execute([(int)$id]);
+    $file = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$file) {
+        http_response_code(404);
+        exit('Soubor nebyl nalezen.');
+    }
+    personSensitiveAdminAuditPhotoView($pdo, $file, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+    $key = (string)$file['storage_key'];
+    $originalName = 'sportovec-foto-' . (int)$id;
 } else {
     http_response_code(404);
     exit('Soubor nebyl nalezen.');

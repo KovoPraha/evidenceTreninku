@@ -10,6 +10,19 @@ require_once 'db.php';
 require_once 'csrf_helper.php';
 require 'vendor/autoload.php';
 require_once __DIR__ . '/includes/kis_sync_lib.php';
+
+function syncEvidenceSafePersonColumns(): string
+{
+    return implode(',', [
+        'id','jmeno','hash','odmena_za_trenink','obdobi_start','prijmeni','narozeni',
+        'category','uci','uciid','email','stav_clenstvi','stav_duvod','stav_manualni',
+        'stav_aktualizovan','kis_identity_key','kis_match_confidence','kis_last_seen_at',
+        'oddil','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc',
+        'first_name_norm','last_name_norm','kis_aktivni','kis_platebne_aktivni',
+        'kis_neuhrazeno','kis_posledni_uhrada','kis_posledni_sync','kis_soupisky',
+        'kis_external_id',
+    ]);
+}
 require_once __DIR__ . '/includes/kis_import_run_lib.php';
 require_once __DIR__ . '/includes/sportovec_status_lib.php';
 require_once __DIR__ . '/includes/sportovec_history_lib.php';
@@ -290,7 +303,6 @@ if (false && $_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') =
                     'trvalá adresa - č.o.' => 'adresa_co', 'č.o.' => 'adresa_co', 'co' => 'adresa_co',
                     'trvalá adresa - obec' => 'adresa_obec', 'obec' => 'adresa_obec',
                     'trvalá adresa - psč' => 'adresa_psc', 'psč' => 'adresa_psc', 'psc' => 'adresa_psc',
-                    'rodné číslo' => 'rc', 'rodne cislo' => 'rc', 'rc' => 'rc',
                     'e-mail' => 'email', 'email' => 'email',
                     'telefon' => 'telefon', 'phone' => 'telefon',
                 ];
@@ -331,7 +343,7 @@ if (false && $_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') =
                     }
 
                     // Clean string fields
-                    foreach (['jmeno','prijmeni','email','telefon','rc','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'] as $f) {
+                    foreach (['jmeno','prijmeni','email','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'] as $f) {
                         if (isset($row[$f])) $row[$f] = trim((string)$row[$f]);
                     }
 
@@ -392,7 +404,7 @@ if ($step === 3 && isset($_SESSION['sync_data'])) {
 
 function buildPreview(PDO $pdo, array $importData): array {
     // Load all sportovci from DB
-    $allDb = $pdo->query("SELECT * FROM sportovci")->fetchAll(PDO::FETCH_ASSOC);
+    $allDb = $pdo->query('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci')->fetchAll(PDO::FETCH_ASSOC);
     $dbByKey = [];      // normalizedKey+narozeni => row
     $dbByName = [];     // normalizedKey => [rows]
     $dbIds = [];        // all DB ids
@@ -483,7 +495,7 @@ function buildPreview(PDO $pdo, array $importData): array {
             $result['matched_db_ids'][$id] = true;
 
             $changes = [];
-            $fields = ['email','rc','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'];
+            $fields = ['email','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'];
             foreach ($fields as $f) {
                 $newVal = $row[$f] ?? '';
                 $oldVal = $dbRow[$f] ?? '';
@@ -588,7 +600,7 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
     }
 
     // Load all DB sportovci
-    $allDb = $pdo->query("SELECT * FROM sportovci")->fetchAll(PDO::FETCH_ASSOC);
+    $allDb = $pdo->query('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci')->fetchAll(PDO::FETCH_ASSOC);
     $dbByKey = [];
     $dbByName = [];
     $dbIds = [];
@@ -624,7 +636,7 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
             $match = kisMatchResolve($pdo, $row);
             $dbRow = null;
             if ($match['status'] === 'matched' && !empty($match['sportovec_id'])) {
-                $stMatch = $pdo->prepare("SELECT * FROM sportovci WHERE id = ? LIMIT 1");
+                $stMatch = $pdo->prepare('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci WHERE id = ? LIMIT 1');
                 $stMatch->execute([(int)$match['sportovec_id']]);
                 $dbRow = $stMatch->fetch(PDO::FETCH_ASSOC) ?: null;
             } elseif (in_array($match['status'], ['ambiguous', 'conflict', 'ignored'], true)) {
@@ -650,7 +662,7 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
 
                 $updates = [];
                 $params = [];
-                $fields = ['email','rc','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'];
+                $fields = ['email','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'];
                 foreach ($fields as $f) {
                     $newVal = $row[$f] ?? '';
                     if ((string)$newVal !== '' && (string)$newVal !== (string)($dbRow[$f] ?? '')) {
@@ -717,7 +729,7 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
                         $pdo->prepare("INSERT IGNORE INTO sportovec_podskupina (sportovec_id, podskupina_id) VALUES (?, ?)")->execute([$id, $psId]);
                     }
                 }
-                $fresh = $pdo->prepare("SELECT * FROM sportovci WHERE id = ?");
+                $fresh = $pdo->prepare('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci WHERE id = ?');
                 $fresh->execute([$id]);
                 $freshRow = $fresh->fetch(PDO::FETCH_ASSOC);
                 if ($freshRow) {
@@ -738,7 +750,6 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
                     'prijmeni' => $prijmeni,
                     'narozeni' => $narozeni ?? '0000-00-00',
                     'email' => $row['email'] ?? '',
-                    'rc' => $row['rc'] ?? '',
                     'telefon' => $row['telefon'] ?? '',
                     'adresa_ulice' => $row['adresa_ulice'] ?? '',
                     'adresa_cp' => $row['adresa_cp'] ?? '',
@@ -774,7 +785,7 @@ function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = fals
                 foreach (array_keys($rowPodskupiny) as $psId) {
                     $pdo->prepare("INSERT IGNORE INTO sportovec_podskupina (sportovec_id, podskupina_id) VALUES (?, ?)")->execute([$newId, $psId]);
                 }
-                $fresh = $pdo->prepare("SELECT * FROM sportovci WHERE id = ?");
+                $fresh = $pdo->prepare('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci WHERE id = ?');
                 $fresh->execute([$newId]);
                 $freshRow = $fresh->fetch(PDO::FETCH_ASSOC);
                 if ($freshRow) {

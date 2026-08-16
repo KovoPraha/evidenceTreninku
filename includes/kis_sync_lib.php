@@ -212,7 +212,6 @@ function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?str
             '_kis_external_id_conflict' => false,
             'email' => '',
             'telefon' => '',
-            'rc' => '',
             'adresa_ulice' => '',
             'adresa_cp' => '',
             'adresa_co' => '',
@@ -242,7 +241,7 @@ function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?str
 
 function kis_merge_contact(array &$person, array $source): void
 {
-    foreach (['email','telefon','rc','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'] as $field) {
+    foreach (['email','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'] as $field) {
         if (($person[$field] ?? '') === '' && isset($source[$field]) && trim((string)$source[$field]) !== '') {
             $person[$field] = trim((string)$source[$field]);
         }
@@ -273,7 +272,6 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         $contact = [
             'email' => $row['email'] ?? '',
             'telefon' => $row['telefon'] ?? '',
-            'rc' => $row['rodnecislo'] ?? '',
             'adresa_ulice' => $row['trvalaadresaulice'] ?? '',
             'adresa_cp' => $row['trvalaadresacp'] ?? '',
             'adresa_co' => $row['trvalaadresaco'] ?? '',
@@ -305,7 +303,6 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         kis_merge_contact($people[$key], [
             'email' => $row['email'] ?? '',
             'telefon' => $row['telefon'] ?? '',
-            'rc' => $row['rodnecislo'] ?? '',
             'adresa_ulice' => $row['trvalaadresaulice'] ?? '',
             'adresa_cp' => $row['trvalaadresacp'] ?? '',
             'adresa_co' => $row['trvalaadresaco'] ?? '',

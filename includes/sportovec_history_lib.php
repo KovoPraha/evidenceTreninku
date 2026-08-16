@@ -1,6 +1,19 @@
 <?php
 declare(strict_types=1);
 
+function sportovecHistorySanitize(mixed $value, ?string $key = null): mixed
+{
+    if ($key !== null && preg_match('/^(?:rc|rodne_?cislo|rc_.+|.*ciphertext.*|.*blind_index.*)$/i', $key) === 1) {
+        return '[REDACTED]';
+    }
+    if (!is_array($value)) return $value;
+    $clean = [];
+    foreach ($value as $childKey => $childValue) {
+        $clean[$childKey] = sportovecHistorySanitize($childValue, (string)$childKey);
+    }
+    return $clean;
+}
+
 function sportovecLogEvent(
     PDO $pdo,
     int $sportovecId,
@@ -17,6 +30,8 @@ function sportovecLogEvent(
     if ($sportovecId <= 0) {
         return;
     }
+    $old = sportovecHistorySanitize($old);
+    $new = sportovecHistorySanitize($new);
     $oldJson = $old ? json_encode($old, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
     $newJson = $new ? json_encode($new, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
     $stmt = $pdo->prepare("

@@ -46,6 +46,18 @@ if (is_string($privateStorageRoot) && $privateStorageRoot !== '') {
     define('APP_PRIVATE_STORAGE_ROOT', $privateStorageRoot);
 }
 
+// ── Citlivé údaje sportovce (RČ) ───────────────────────────────────────────
+// Produkce je bez všech tří hodnot fail-closed. Klíče jsou base64 kódovaných
+// 32 náhodných bajtů; indexový klíč musí být jiný než každý šifrovací klíč.
+// Preferované environment proměnné:
+//   PERSON_RC_KEYRING_JSON={"v1":"<BASE64-32-BYTES>"}
+//   PERSON_RC_ACTIVE_KEY_VERSION=v1
+//   PERSON_RC_INDEX_KEY=<JINY-BASE64-32-BYTES>
+// Pokud hosting environment neumí, přidejte pouze do ignorovaného config.php:
+// define('PERSON_RC_KEYRING', ['v1' => '<BASE64-32-BYTES>']);
+// define('PERSON_RC_ACTIVE_KEY_VERSION', 'v1');
+// define('PERSON_RC_INDEX_KEY', '<JINY-BASE64-32-BYTES>');
+
 // ── Bezpečnost přihlášení ───────────────────────────────────────────────────
 // POVINNÉ PŘED DEPLOYEM: unikátní náhodný secret o délce nejméně 32 znaků.
 // Preferovaně jej nastavte na hostingu jako environment proměnnou, mimo webroot.
