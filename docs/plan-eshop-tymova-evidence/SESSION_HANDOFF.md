@@ -1,5 +1,59 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt B R4: administrátorské schválení registrace (`d5fa74b`)
+
+### Dokončený výsledek
+
+- `eshop_identity_admin.php` zůstává jedinou frontou pro běžné žádosti o
+  propojení i nové registrace sportovce. Detail registrační žádosti vyžaduje
+  natvrdo session roli `admin`, používá CSRF/PRG a odpověď `no-store` bez
+  referreru. Běžný trenér byl v živém localhost průchodu správně odmítnut.
+- Detail zobrazuje kontaktní a adresní podklady, občanství, všechny neměnné
+  snapshoty informačních textů a oddělené fotografické volby. RČ se při
+  kontrole načte pouze maskovaně přes `person-sensitive-v1` a každé takové
+  čtení se audituje; celé RČ má samostatný POST + CSRF + důvod. Interní
+  fotografii doručí pouze existující admin-only privátní endpoint a zobrazení
+  se audituje.
+- Jedinou autoritou shody je sdílená `personMatchV1()`. R4 ji znovu
+  implementovat nezačal: zobrazuje všechny SHODA/P1–P4 kandidáty a jejich
+  pravidla, KIS příznak a samostatný bezpečný signál shody nebo konfliktu blind
+  indexu RČ. SHODA blokuje běžné založení; výjimka vyžaduje potvrzení a důvod
+  alespoň 10 znaků a zapisuje kandidátní ID do auditu.
+- `includes/athlete_registration_admin.php` provádí oba schvalovací směry v
+  jedné transakci. Připojení existující osoby i založení nové přes již hotovou
+  F7 funkci `personMatchV1CreateManual()` znovu zamknou žádost, ověří aktivní
+  účet, aplikují kontakt/adresu, přiřadí chráněný záznam a fotografii, schválí
+  self/guardian vazbu a zapíší person-match audit. Nová osoba má
+  `kis_external_id=NULL`.
+- Jiný chráněný záznam RČ u vybrané osoby, neočekávané RČ ve větvi cizince,
+  chybějící povinný citlivý řádek nebo stale stav blokují celou transakci bez
+  částečného přepisu. Zamítnutí nastaví RČ a fotografii do předběžné 30denní
+  řízené retence. R4 nezařazuje skupinu/soupisku a nevystavuje předpis.
+- Typ soukromé fotografie byl sjednocen na kanonický `profile_photo`, který
+  používá i `private_download.php`. Veřejná stránka nyní převádí vnitřní
+  crypto/unikátní konflikt na obecnou chybu a neprozrazuje existenci RČ.
+
+### Ověření a hranice
+
+- Plná sada po implementaci: `597 tests`, `5227 assertions`; lint `507`
+  first-party PHP souborů. Composer validate/audit/platform je zelený a lokální
+  katalog 55 migrací je aktuální.
+- Nové integrační testy ověřují maskované auditované čtení, všechny kandidáty
+  sdíleného matcheru, připojení existující osoby, blokovanou SHODA bez override,
+  F7 založení s override auditem, `kis_external_id=NULL`, adresu, vazbu účtu,
+  přiřazení RČ, rollback konfliktu a reject retenci. Povinné T1–T12 zůstávají v
+  jediné stávající sadě `PersonMatchV1Test`.
+- Produkční databáze, deploy, produkční klíče a aktivace nebyly změněny. R7
+  zůstává uzavřený; právní zdroj a konečná retence jsou stále brána až před
+  produkční aktivací.
+
+### Následující řez
+
+- R5 na stejném detailu přidá výhradně explicitní zařazení schválené osoby do
+  jedné skupiny, její podskupiny a aktivní sezonní soupisky. Musí validovat
+  vztahy i aktuálnost, zapsat legacy a kanonické vazby v jedné transakci,
+  auditovat a zůstat idempotentní. R6 ani R7 se v R5 automaticky nespouští.
+
 ## Aktualizace 16. 8. 2026 — Prompt B R3: samoobslužná registrace sportovce (`3918dc2`)
 
 ### Dokončený výsledek
