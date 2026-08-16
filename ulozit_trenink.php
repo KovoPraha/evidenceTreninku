@@ -11,6 +11,7 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
+require_once __DIR__ . '/includes/venue_calendar.php';
 
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
@@ -276,33 +277,19 @@ try {
     $rezCasDo    = trim($_POST['rez_cas_do'] ?? '');
     $treninkDatum = trim($_POST['datum'] ?? '');
 
-    if ($rezSportId > 0 && $rezCasOd && $rezCasDo && $rezCasOd < $rezCasDo && $treninkDatum) {
-        // Kontrola kapacity — nepřekročit max_kapacita sportoviště
-        $stMaxKap = $pdo->prepare("SELECT max_kapacita FROM sportovist WHERE id=? AND aktivni=1");
-        $stMaxKap->execute([$rezSportId]);
-        $maxKap = (int)($stMaxKap->fetchColumn() ?: 5);
-
-        $stObsaz = $pdo->prepare("
-            SELECT COALESCE(SUM(kapacita_dilu),0)
-            FROM rezervace_sportovist
-            WHERE sportoviste_id=? AND datum=? AND cas_od < ? AND cas_do > ?
-              AND lekce_id IS NULL
-        ");
-        $stObsaz->execute([$rezSportId, $treninkDatum, $rezCasDo, $rezCasOd]);
-        $obsazeno = (int)$stObsaz->fetchColumn();
-
-        if ($obsazeno + $rezKapacita <= $maxKap) {
-            $pdo->prepare("
-                INSERT INTO rezervace_sportovist
-                    (sportoviste_id, trener_id, datum, cas_od, cas_do, kapacita_dilu, trenink_id)
-                VALUES (?,?,?,?,?,?,?)
-            ")->execute([
-                $rezSportId, (int)$_SESSION['trener_id'],
-                $treninkDatum, $rezCasOd, $rezCasDo,
-                $rezKapacita, $treninkId,
-            ]);
-        }
-        // Pokud kapacita překročena: tichý fail — trénink se uloží, rezervace ne
+    $reservationRequested = $rezSportId > 0 || $rezCasOd !== '' || $rezCasDo !== '';
+    if ($reservationRequested) {
+        venueCalendarCreateTrainingReservation(
+            $pdo,
+            $rezSportId,
+            $trenerId,
+            $treninkDatum,
+            $rezCasOd,
+            $rezCasDo,
+            $rezKapacita,
+            $treninkId,
+            $planId
+        );
     }
 
     // 9) Propojení s plánovaným tréninkem (pokud byl formulář otevřen z plánovače)
@@ -323,6 +310,6 @@ try {
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     $_SESSION['flash_error'] = 'Chyba při ukládání: ' . $e->getMessage();
-    header('Location: formular.php');
+    header('Location: formular.php' . ($planId > 0 ? '?plan_id=' . $planId : ''));
     exit;
 }

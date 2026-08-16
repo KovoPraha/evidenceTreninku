@@ -164,28 +164,35 @@ function renderWeekRow(DateTime $weekStart, DateTime $monthStart, array $trenink
 }
 
 // -------------------------------
-// Načti tréninky (jen pro vybranou podskupinu)
+// Načti tréninky pro podskupinu, nebo pro celou skupinu pokud podskupina není vybraná.
 // + dotáhni trenéry a tagy bez N+1
 // -------------------------------
 $treninkyByDate = [];
 $treninkMeta = [];
 
-if ($filterPodskupinaId !== '') {
-    $pid = (int)$filterPodskupinaId;
-
-    $stmt = $pdo->prepare("
-        SELECT t.id, t.datum, t.delka, t.napln, t.poznamka, t.mereni, t.obrazky
-        FROM treninky t
-        JOIN trenink_podskupina tp ON tp.trenink_id = t.id
-        WHERE tp.podskupina_id = :pid
-          AND t.datum BETWEEN :d1 AND :d2
-        ORDER BY t.datum DESC, t.id DESC
-    ");
-    $stmt->execute([
-        ':pid' => $pid,
-        ':d1'  => $rangeFrom,
-        ':d2'  => $rangeTo,
-    ]);
+if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
+    if ($filterPodskupinaId !== '') {
+        $stmt = $pdo->prepare("
+            SELECT DISTINCT t.id, t.datum, t.delka, t.napln, t.poznamka, t.mereni, t.obrazky
+            FROM treninky t
+            JOIN trenink_podskupina tp ON tp.trenink_id = t.id
+            WHERE tp.podskupina_id = :filter_id
+              AND t.datum BETWEEN :d1 AND :d2
+            ORDER BY t.datum DESC, t.id DESC
+        ");
+        $filterId = (int)$filterPodskupinaId;
+    } else {
+        $stmt = $pdo->prepare("
+            SELECT DISTINCT t.id, t.datum, t.delka, t.napln, t.poznamka, t.mereni, t.obrazky
+            FROM treninky t
+            JOIN trenink_skupina ts ON ts.trenink_id = t.id
+            WHERE ts.skupina_id = :filter_id
+              AND t.datum BETWEEN :d1 AND :d2
+            ORDER BY t.datum DESC, t.id DESC
+        ");
+        $filterId = (int)$filterSkupinaId;
+    }
+    $stmt->execute([':filter_id'=>$filterId, ':d1'=>$rangeFrom, ':d2'=>$rangeTo]);
     $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $ids = [];
@@ -306,9 +313,9 @@ if ($filterPodskupinaId !== '') {
         </div>
     </div>
 
-    <?php if ($filterPodskupinaId === ''): ?>
+    <?php if ($filterSkupinaId === ''): ?>
         <div class="alert alert-info">
-            Vyber skupinu a podskupinu – poté se zobrazí kalendář pro zvolený měsíc.
+            Vyber skupinu; podskupina je volitelná. Poté se zobrazí kalendář pro zvolený měsíc.
         </div>
     <?php else: ?>
 

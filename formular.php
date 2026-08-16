@@ -573,18 +573,19 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
     </div><!-- /row -->
 
-    <!-- 5. Rezervace sportoviště (volitelná, collapsible) -->
+    <!-- 5. Rezervace sportoviště (u plánu s místem a časem rovnou otevřená) -->
     <?php if (canAccess('rezervace_sportovist') && !empty($sportovisteList)): ?>
+    <?php $reservationFromPlan = $planPrefill && !empty($planPrefill['sportoviste_id']) && !empty($planPrefill['cas_od']) && !empty($planPrefill['cas_do']); ?>
     <div class="card section-card mb-3">
         <div class="card-header d-flex justify-content-between align-items-center"
              style="background:#0d6efd;color:#fff;cursor:pointer"
-             data-bs-toggle="collapse" data-bs-target="#kolapsRezerv" aria-expanded="false">
+             data-bs-toggle="collapse" data-bs-target="#kolapsRezerv" aria-expanded="<?= $reservationFromPlan ? 'true' : 'false' ?>">
             <span><i class="bi bi-building-check me-2"></i>Rezervace sportoviště
                 <span class="badge bg-white text-primary ms-2 fw-normal" style="font-size:.75em">Volitelné</span>
             </span>
             <i class="bi bi-chevron-down"></i>
         </div>
-        <div class="collapse" id="kolapsRezerv">
+        <div class="collapse <?= $reservationFromPlan ? 'show' : '' ?>" id="kolapsRezerv">
             <div class="card-body">
                 <p class="text-muted small mb-3">
                     <i class="bi bi-info-circle me-1"></i>Pokud trénink probíhá na konkrétním sportovišti, lze zde zablokovat kapacitu pro ostatní rezervace.
@@ -661,6 +662,9 @@ const PLAN_PREFILL = <?= json_encode($planPrefill ? [
     'datum'         => $planPrefill['datum'] ?? '',
     'kategorie'     => $planPrefill['kategorie'] ?? '',
     'nazev'         => $planPrefill['nazev'] ?? '',
+    'sportoviste_id'=> (int)($planPrefill['sportoviste_id'] ?? 0),
+    'cas_od'        => $planPrefill['cas_od'] ?? '',
+    'cas_do'        => $planPrefill['cas_do'] ?? '',
 ] : null, JSON_UNESCAPED_UNICODE) ?>;
 if (PLAN_PREFILL) {
     // Datum
@@ -683,6 +687,15 @@ if (PLAN_PREFILL) {
             skSel.value = PLAN_PREFILL.skupina_id;
             skSel.dispatchEvent(new Event('change'));
         }
+    }
+    // Rezervace sportoviště — plán nese místo i přesné časy.
+    if (PLAN_PREFILL.sportoviste_id) {
+        const venueSelect = document.getElementById('rezSportovisteId');
+        const timeFrom = document.getElementById('rezCasOd');
+        const timeTo = document.getElementById('rezCasDo');
+        if (venueSelect) venueSelect.value = String(PLAN_PREFILL.sportoviste_id);
+        if (timeFrom && PLAN_PREFILL.cas_od) timeFrom.value = PLAN_PREFILL.cas_od.slice(0, 5);
+        if (timeTo && PLAN_PREFILL.cas_do) timeTo.value = PLAN_PREFILL.cas_do.slice(0, 5);
     }
     // Náplň — předvyplnit z názvu plánu pokud je prázdná
     const naplnField = document.getElementById('napln') || document.querySelector('[name="napln"]');

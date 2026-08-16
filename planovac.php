@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
         $stInsert = $pdo->prepare("
             INSERT INTO planovane_treninky
                 (trener_id, nazev, kategorie, skupina_id, podskupina_id,
-                 datum, cas_od, cas_do, sportoviste_id, popis, misto, stav)
+                 datum, cas_od, cas_do, sportoviste_id, popis, je_verejny, stav)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,'planovany')
         ");
         $stInsertPs = $pdo->prepare("
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
                 $zp['trener_id'], $zp['nazev'], $zp['kategorie'],
                 $zp['skupina_id'], $zp['podskupina_id'],
                 $noveDatum, $zp['cas_od'], $zp['cas_do'],
-                $zp['sportoviste_id'], $zp['popis'], $zp['misto'],
+                $zp['sportoviste_id'], $zp['popis'], (int)$zp['je_verejny'],
             ]);
             $novyId = (int)$pdo->lastInsertId();
             $pocet++;

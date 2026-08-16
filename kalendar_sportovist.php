@@ -6,6 +6,7 @@ require_once 'includes/funkce.php';
 if (!canAccess('kalendar_sportovist')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/venue_calendar.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -20,8 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
             ? "DELETE FROM rezervace_sportovist WHERE id=?"
             : "DELETE FROM rezervace_sportovist WHERE id=? AND trener_id=?";
         $params = roleAtLeast('hlavni') ? [$delId] : [$delId, $trenerId];
-        $pdo->prepare($sql)->execute($params);
-        $_SESSION['flash_success'] = 'Rezervace zrušena.';
+        $pdo->beginTransaction();
+        try {
+            $delete = $pdo->prepare($sql);
+            $delete->execute($params);
+            if ($delete->rowCount() === 1) {
+                $pdo->prepare('UPDATE planovane_treninky SET rezervace_id=NULL WHERE rezervace_id=?')->execute([$delId]);
+                $_SESSION['flash_success'] = 'Rezervace zrušena.';
+            }
+            $pdo->commit();
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            error_log('kalendar_sportovist delete: ' . $exception->getMessage());
+            $_SESSION['flash_error'] = 'Rezervaci se nepodařilo zrušit.';
+        }
     }
     header('Location: ' . $_SERVER['REQUEST_URI']);
     exit;
@@ -90,21 +103,12 @@ foreach ($vsechnyLekce as $l) {
     $lekceIdx[$l['datum']][$l['sportoviste_id']][] = $l;
 }
 
-// ── Plánované tréninky v týdnu (bez rezervace sportoviště, jen s sportoviste_id) ──
-$stmtPlan = $pdo->prepare("
-    SELECT pt.*, sp.nazev AS sport_nazev, t.jmeno AS trener_jmeno, sk.nazev AS skupina_nazev
-    FROM planovane_treninky pt
-    LEFT JOIN sportovist sp ON sp.id = pt.sportoviste_id
-    LEFT JOIN treneri t     ON t.id  = pt.trener_id
-    LEFT JOIN skupiny sk    ON sk.id = pt.skupina_id
-    WHERE pt.stav = 'planovany'
-      AND pt.sportoviste_id IS NOT NULL
-      AND pt.rezervace_id IS NULL
-      AND pt.datum BETWEEN ? AND ?
-    ORDER BY pt.datum, pt.cas_od
-");
-$stmtPlan->execute([$monday->format('Y-m-d'), $sunday->format('Y-m-d')]);
-$vsechnyPlan = $stmtPlan->fetchAll(PDO::FETCH_ASSOC);
+// Plány bez samostatně vykreslené rezervace; zahrnuje i evidované a historickou deduplikaci.
+$vsechnyPlan = venueCalendarUnreservedPlans(
+    $pdo,
+    $monday->format('Y-m-d'),
+    $sunday->format('Y-m-d')
+);
 
 // Indexovat dle [datum][sportoviste_id]
 $planIdx = [];
@@ -186,6 +190,7 @@ $today = date('Y-m-d');
             background: #eff6ff;
             color: #1e40af;
         }
+        .plan-blok.evidovany { border-style: solid; border-color: #198754 !important; background: #ecfdf3; color: #14532d; }
     </style>
 </head>
 <body class="bg-light">
@@ -245,6 +250,9 @@ $today = date('Y-m-d');
         </span>
         <span style="font-size:.8rem;padding:4px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:2px dotted #3b82f6">
             <i class="bi bi-calendar3-week me-1"></i>Plánovaný trénink (bez rezervace)
+        </span>
+        <span style="font-size:.8rem;padding:4px 8px;border-radius:4px;background:#ecfdf3;color:#14532d;border:2px solid #198754">
+            <i class="bi bi-check-circle me-1"></i>Zaevidovaný trénink (bez rezervace)
         </span>
     </div>
 
@@ -375,14 +383,19 @@ $today = date('Y-m-d');
                             <?php foreach ($planIdx[$d][$sport['id']] ?? [] as $pt): ?>
                                 <?php
                                 $barvaT = $trenerBarva[$pt['trener_id']] ?? '#3b82f6';
+                                $isRecordedPlan = $pt['stav'] === 'evidovany';
                                 ?>
-                                <div class="plan-blok" style="border-color:<?= $barvaT ?>">
+                                <div class="plan-blok <?= $isRecordedPlan ? 'evidovany' : '' ?>" style="border-color:<?= $barvaT ?>">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <span>
                                             <i class="bi bi-calendar3-week me-1"></i>
                                             <strong><?= h(mb_substr($pt['nazev'] ?: 'Trénink', 0, 22)) ?></strong>
                                         </span>
-                                        <span style="font-size:.68rem;opacity:.75">plán</span>
+                                        <?php if ($isRecordedPlan): ?>
+                                            <span class="badge bg-success" style="font-size:.64rem">Zaevidováno</span>
+                                        <?php else: ?>
+                                            <span style="font-size:.68rem;opacity:.75">plán</span>
+                                        <?php endif; ?>
                                     </div>
                                     <?php if ($pt['cas_od']): ?>
                                         <div style="font-size:.72rem">
@@ -395,7 +408,11 @@ $today = date('Y-m-d');
                                             · <?= h($pt['skupina_nazev']) ?>
                                         <?php endif; ?>
                                     </div>
-                                    <?php if (canAccess('rezervace_sportovist') && $d >= $today): ?>
+                                    <?php if ($isRecordedPlan && (int)$pt['trenink_id'] > 0): ?>
+                                        <a href="edit_trenink.php?id=<?= (int)$pt['trenink_id'] ?>" style="font-size:.68rem;color:#14532d">
+                                            <i class="bi bi-bicycle me-1"></i>Otevřít trénink
+                                        </a>
+                                    <?php elseif (canAccess('rezervace_sportovist') && $d >= $today): ?>
                                         <a href="rezervovat_sportoviste.php?datum=<?= $d ?>&sportoviste_id=<?= $sport['id'] ?>"
                                            style="font-size:.68rem;color:#1e40af" title="Přidat rezervaci k tréninku">
                                             <i class="bi bi-lock me-1"></i>Rezervovat

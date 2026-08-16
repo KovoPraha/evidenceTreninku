@@ -8,6 +8,7 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 if (!isset($_SESSION['trener_id'])) { http_response_code(403); exit; }
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/venue_calendar.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -76,16 +77,10 @@ $lekceStmt = $pdo->prepare("
 $lekceStmt->execute([$sportId, $datum]);
 $lekce = $lekceStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$planStmt = $pdo->prepare("
-    SELECT pt.cas_od, pt.cas_do, pt.nazev, t.jmeno AS trener_jmeno
-    FROM planovane_treninky pt
-    LEFT JOIN treneri t ON t.id = pt.trener_id
-    WHERE pt.sportoviste_id = ? AND pt.datum = ? AND pt.stav = 'planovany' AND pt.rezervace_id IS NULL
-      AND pt.cas_od IS NOT NULL
-    ORDER BY pt.cas_od
-");
-$planStmt->execute([$sportId, $datum]);
-$planovane = $planStmt->fetchAll(PDO::FETCH_ASSOC);
+$planovane = array_values(array_filter(
+    venueCalendarUnreservedPlans($pdo, $datum, $datum, $sportId),
+    static fn(array $plan): bool => !empty($plan['cas_od'])
+));
 
 $totalPx = (END_MIN - START_MIN) * PX_PER_MIN; // 600 px
 ?>
@@ -155,15 +150,23 @@ $totalPx = (END_MIN - START_MIN) * PX_PER_MIN; // 600 px
         if (!$p['cas_od'] || !$p['cas_do']) continue;
         $g = blockGeom($p['cas_od'], $p['cas_do']);
         if (!$g) continue;
+        $isRecordedPlan = $p['stav'] === 'evidovany';
+        $planBackground = $isRecordedPlan ? '#ecfdf3' : '#eff6ff';
+        $planBorder = $isRecordedPlan ? '#198754' : '#3b82f6';
+        $planColor = $isRecordedPlan ? '#14532d' : '#1e40af';
     ?>
     <div class="position-absolute rounded"
          style="top:<?= $g['top'] ?>px;height:<?= $g['height'] ?>px;left:28px;right:2px;
-                background:#eff6ff;border:2px dotted #3b82f6;z-index:2;padding:2px 5px;overflow:hidden"
+                background:<?= $planBackground ?>;border:2px <?= $isRecordedPlan ? 'solid' : 'dotted' ?> <?= $planBorder ?>;z-index:2;padding:2px 5px;overflow:hidden"
          title="<?= h($p['nazev'] ?? 'Trénink') ?>">
-        <div style="font-size:.67rem;color:#1e40af;line-height:1.25">
+        <div style="font-size:.67rem;color:<?= $planColor ?>;line-height:1.25">
             <strong><?= h(substr($p['cas_od'],0,5)) ?>–<?= h(substr($p['cas_do'],0,5)) ?></strong>
+            <?php if ($isRecordedPlan): ?><span style="font-size:.58rem;background:#198754;color:#fff;border-radius:2px;padding:0 3px">Zaevidováno</span><?php endif; ?>
             <?php if ($g['height'] >= 26): ?>
             <br><?= h(mb_substr($p['nazev'] ?? 'Trénink', 0, 16)) ?>
+            <?php if ($isRecordedPlan && (int)$p['trenink_id'] > 0): ?>
+                · <a href="edit_trenink.php?id=<?= (int)$p['trenink_id'] ?>" style="color:inherit">trénink</a>
+            <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>
