@@ -12,6 +12,7 @@ require_once __DIR__.'/club_program.php';
 require_once __DIR__.'/club_event_shop.php';
 require_once __DIR__.'/public_velodrome_shop.php';
 require_once __DIR__.'/shop_member_pricing.php';
+require_once __DIR__.'/shop_payment_notification.php';
 
 /** @return list<array<string,mixed>> */
 function shopStorefrontProducts(PDO $pdo): array
@@ -532,6 +533,7 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
         if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         try{$eventSync=clubEventShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         try{$velodromeSync=publicVelodromeShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        shopPaymentNotificationEnqueue($pdo,$orderId);
         return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>false]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
     }
     if($payment['status']!=='pending'||$order['payment_status']!=='pending'||$order['status']!=='placed')throw new ShopCheckoutException('Platbu nebo objednávku v tomto stavu nelze potvrdit.');
@@ -546,6 +548,7 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
     if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
     try{$eventSync=clubEventShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
     try{$velodromeSync=publicVelodromeShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    shopPaymentNotificationEnqueue($pdo,$orderId);
     return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>true]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
 }
 

@@ -190,9 +190,12 @@ function clubEventNotificationAdminList(PDO $pdo, string $status = '', int $limi
     }
     $limit = max(1, min(500, $limit));
     $sql = 'SELECT n.*,e.name AS event_name,s.jmeno AS child_first_name,'
-        . 's.prijmeni AS child_last_name FROM club_event_notifications n '
-        . 'JOIN club_event_registrations r ON r.id=n.registration_id '
-        . 'JOIN club_events e ON e.id=r.event_id JOIN sportovci s ON s.id=r.sportovec_id ';
+        . 's.prijmeni AS child_last_name,o.public_code AS order_public_code '
+        . 'FROM club_event_notifications n '
+        . 'LEFT JOIN club_event_registrations r ON r.id=n.registration_id '
+        . 'LEFT JOIN club_events e ON e.id=r.event_id '
+        . 'LEFT JOIN sportovci s ON s.id=r.sportovec_id '
+        . 'LEFT JOIN shop_orders o ON o.id=n.order_id ';
     $parameters = [];
     if ($status !== '') {
         $sql .= 'WHERE n.status=? ';
@@ -205,6 +208,24 @@ function clubEventNotificationAdminList(PDO $pdo, string $status = '', int $limi
     $statement = $pdo->prepare($sql);
     $statement->execute($parameters);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/** @return array<string,mixed> */
+function clubEventNotificationAdminPreview(PDO $pdo, int $notificationId): array
+{
+    if ($notificationId < 1) {
+        throw new InvalidArgumentException('Neplatné oznámení pro náhled.');
+    }
+    $statement = $pdo->prepare(
+        'SELECT id,notification_type,recipient_email,subject_plain,body_plain,status,attempts,'
+        . 'available_at,sent_at,last_error FROM club_event_notifications WHERE id=?'
+    );
+    $statement->execute([$notificationId]);
+    $row = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$row) {
+        throw new ClubEventNotificationException('Oznámení pro náhled nebylo nalezeno.');
+    }
+    return $row;
 }
 
 /** @return array{id:int,status:string,changed:bool} */

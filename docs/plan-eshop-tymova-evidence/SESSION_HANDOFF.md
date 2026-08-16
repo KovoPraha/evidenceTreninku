@@ -1,5 +1,76 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt D: oznámení zákazníkovi po přijetí platby
+
+### Dokončený výsledek
+
+- Kanonický přechod platby `shopOrderConfirmPaymentInTransaction()` nyní ve
+  stejné transakci zařadí událost `shop_payment_received` do existujícího
+  `club_event_notifications`. Bankovní potvrzení i podepsaný Stripe webhook
+  používají tutéž cestu; opakované potvrzení a duplicitní webhook dohledají
+  tentýž záznam.
+- Aditivní migrace `20260816170000_shop_payment_received_notification` pouze
+  rozšiřuje společný outbox o nullable `order_id` a unikátní klíč
+  `(order_id, notification_type)`. Nevznikla nová tabulka, worker ani správní
+  fronta, proto se ownership kontrakt zálohy neměnil. SQL je kompatibilní s
+  MariaDB 10.3 a SQLite migrace zachovává původní K3 data i indexy.
+- Uložený plain-text obsah má veřejný kód objednávky, datum přijetí, částku a
+  měnu, položky a další krok pro osobní odběr, kroužek nebo rezervaci. Neobsahuje
+  platební instrukce, variabilní symbol, bearer token ani osobní/order ID v URL;
+  odkaz vede pouze na přihlášení s interním návratem do `Moje objednávky`.
+- Stávající worker dál claimuje a odesílá až po ukončení DB transakce, opakuje
+  dočasná selhání a po pěti pokusech nechá položku `failed`. Přibyl pouze
+  explicitní `local-outbox` transport pro bezpečný localhostový průchod;
+  odmítnutí nebo výjimka transportu stav platby nemění.
+- Stávající `eshop_notifications_admin.php` je společná fronta K3 i plateb:
+  admin vidí typ, veřejný kód, stav, pokusy a chybu, escapovaný `no-store`
+  náhled přesně uloženého textu a původní POST+CSRF auditované ruční opakování.
+
+### Ověření
+
+- Povinný vstupní audit začal na `9e4ae69`; během práce byly cizím vlastníkem
+  dokončeny a integrovány řezy Prompt B a rate-limitů. Finální nedotčený základ
+  je `44dd1c19181b8ec6b428c19ebf2351210f4f4c02`. Při finální kontrole byl
+  lokální `main` `3 ahead / 0 behind` proti `origin/main`
+  `df4154faa6fe05c6941cd986149059939c604cfe`.
+  Prompt D se v původním handoffu nevyskytoval a krátký `CURRENT_STATE.md` je
+  proti ledgeru zastaralý. Cizí dokumenty, build artefakty a jiné untracked
+  soubory zůstaly nedotčené.
+- Lokální migrace: `check (1 pending) → apply → check (current)`, katalog
+  `54`, legacy schema `2.20.2`. Dvouprocesový MariaDB smoke potvrdil výsledky
+  `[changed=true, changed=false]`, jednu placenou objednávku a právě jednu
+  notifikaci.
+- Plná sada: `587 tests`, `5105 assertions`, jedna existující PHPUnit
+  deprecation; zaměřená sada `63/1162`. `php -l` je čisté na `498`
+  first-party PHP souborech. Composer validate, audit (0 advisories) a platform
+  requirements jsou zelené.
+- Živý localhostový průchod použil pouze syntetický účet a bankovní objednávku
+  `KP2608164CC1B68600`: vytvoření přes zákaznické UI → potvrzení v admin UI →
+  jediná položka fronty → přesný náhled → tentýž worker s
+  `local-outbox`. Výsledek workeru `processed=1, sent=1, failed=0`; DB stav
+  objednávky zůstal `paid`, oznámení je `sent`, pokusy `1`. Důkaz je pouze
+  lokálně ve `var/_to_delete/prompt-d-live-20260816-162342/`; žádný Stripe ani
+  skutečný e-mail nebyl použit.
+
+### Produkční hranice a povinná akce vlastníka
+
+- Produkce nebyla nasazena a produkční DB se nezměnila. Poslední viditelné
+  deploy workflow běhy jsou zelené, ale nedokládají odchozí e-mail. Repozitář
+  obsahuje adaptér přes PHP `mail()`, nikoli důkaz přijetí poštovním serverem,
+  skutečného doručení ani nastaveného CRONu. Produkční doručování proto zůstává
+  **neověřené a vypnuté**; nové zprávy se po budoucím deployi bezpečně hromadí
+  ve frontě, dokud vlastník worker nezapne.
+- Po výslovně autorizovaném deployi musí vlastník mimo webroot vytvořit soukromý
+  putenv bootstrap v `data/.kis-deploy/`, který nastaví `APP_HOST`,
+  `CLUB_EVENT_NOTIFICATION_TRANSPORT=mail` a limit a načte
+  `kis.kovopraha.cz/bin/club-event-notifications.php`. Hostingový CRON smí
+  spouštět pouze holé `php data/.kis-deploy/<bootstrap>.php`; argumenty ani
+  externí env hosting podle runbooku nepřenese.
+- Teprve řízená objednávka na určenou testovací schránku, stav `sent` ve frontě
+  a skutečně přijatý e-mail dovolí označit doručování za funkční. Návrat
+  `mail()=true` sám o sobě potvrzuje jen převzetí lokálním transportem. Do té
+  doby CRON nezapínat naslepo a netvrdit, že zákazníci e-mail dostávají.
+
 ## Aktualizace 16. 8. 2026 — Prompt B R2: citlivé údaje a fotografie (`dadc478`)
 
 ### Dokončený výsledek

@@ -49,8 +49,10 @@ final class PublicVelodromeShopTest extends TestCase
         self::assertSame(1, $paid['velodrome_activated']);
         self::assertSame('potvrzena', $pdo->query('SELECT stav FROM verejne_rezervace')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT zaplaceno FROM verejne_rezervace')->fetchColumn());
+        self::assertStringContainsString('Přihláška nebo rezervace byla po přijetí platby potvrzena', (string)$pdo->query('SELECT body_plain FROM club_event_notifications')->fetchColumn());
         $again = \shopOrderAdminConfirmBankPayment($pdo, (int)$order['payment_id'], 7, 'Opakování.', true);
         self::assertSame(0, $again['velodrome_activated']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_event_notifications')->fetchColumn());
 
         $reservationId = (int)$snapshot['reservation_id'];
         try {
@@ -182,6 +184,7 @@ final class PublicVelodromeShopTest extends TestCase
         $pdo->exec("INSERT INTO treneri VALUES(7,'Admin','admin@example.test','x','admin',1)");
         $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,email TEXT,telefon TEXT,aktivni INTEGER,email_overeno INTEGER)');
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES(10,'Účet','První','a@example.test','777111222',1,1),(11,'Účet','Druhý','b@example.test','777222333',1,1)");
+        $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
         $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT NOT NULL,prijmeni TEXT NOT NULL,narozeni TEXT NOT NULL,email TEXT NOT NULL,telefon TEXT NULL,hash TEXT NOT NULL,uci INTEGER NOT NULL,stav_clenstvi TEXT NOT NULL)');
         $pdo->exec('CREATE TABLE sportovist(id INTEGER PRIMARY KEY,kod TEXT UNIQUE,nazev TEXT,je_verejne INTEGER,aktivni INTEGER,max_kapacita INTEGER)');
         $pdo->exec("INSERT INTO sportovist VALUES(20,'velodrom','Velodrom',1,1,10)");

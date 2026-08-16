@@ -81,6 +81,8 @@ final class StripeGatewayTest extends TestCase
         $audit=$pdo->query('SELECT actor_type,actor_id,action,from_status,to_status,note FROM shop_order_events')->fetch(PDO::FETCH_ASSOC);
         self::assertSame('system',$audit['actor_type']);self::assertNull($audit['actor_id']);self::assertSame('confirm_stripe_payment',$audit['action']);self::assertSame('placed',$audit['from_status']);self::assertSame('processing',$audit['to_status']);self::assertStringContainsString('evt_checkout_completed_unit',$audit['note']);
         self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM stripe_webhook_events')->fetchColumn());self::assertSame('processed',$pdo->query('SELECT processing_status FROM stripe_webhook_events')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_payment_received'")->fetchColumn());
+        self::assertStringContainsString('KP260809UNIT',(string)$pdo->query('SELECT body_plain FROM club_event_notifications')->fetchColumn());
     }
 
     public function testUnpaidCompletedWebhookIsRecordedAndAcknowledgedAsIgnored():void
@@ -135,8 +137,11 @@ final class StripeGatewayTest extends TestCase
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
-        $pdo->exec('CREATE TABLE shop_orders(id INTEGER PRIMARY KEY,public_code TEXT,account_id INTEGER,status TEXT,payment_status TEXT,total_minor INTEGER,currency TEXT,updated_at TEXT)');
-        $pdo->exec("INSERT INTO shop_orders VALUES(11,'KP260809UNIT',10,'placed','pending',25900,'CZK',CURRENT_TIMESTAMP)");
+        $pdo->exec('CREATE TABLE shop_orders(id INTEGER PRIMARY KEY,public_code TEXT,account_id INTEGER,status TEXT,payment_status TEXT,customer_name_snapshot TEXT,customer_email_snapshot TEXT,total_minor INTEGER,currency TEXT,updated_at TEXT)');
+        $pdo->exec("INSERT INTO shop_orders VALUES(11,'KP260809UNIT',10,'placed','pending','Testovací účet','stripe@example.test',25900,'CZK',CURRENT_TIMESTAMP)");
+        $pdo->exec('CREATE TABLE shop_order_items(id INTEGER PRIMARY KEY,order_id INTEGER,variant_id INTEGER,product_name_snapshot TEXT,quantity INTEGER)');
+        $pdo->exec("INSERT INTO shop_order_items VALUES(1,11,601,'Stripe test položka',1)");
+        $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
         $pdo->exec('CREATE TABLE payments(id INTEGER PRIMARY KEY,payable_type TEXT,payable_id INTEGER,method TEXT,status TEXT,amount_minor INTEGER,currency TEXT,paid_at TEXT,confirmed_by_trainer_id INTEGER,confirmation_note TEXT,updated_at TEXT)');
         $pdo->exec("INSERT INTO payments VALUES(31,'shop_order',11,'bank_transfer','pending',25900,'CZK',NULL,NULL,NULL,CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_order_events(id INTEGER PRIMARY KEY AUTOINCREMENT,order_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');

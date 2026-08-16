@@ -77,11 +77,25 @@ nejvýše pětkrát; poté zůstane ve stavu `failed` k ruční kontrole. Zasekn
 at-least-once: pád procesu těsně po předání poštovnímu serveru může výjimečně
 vést k duplicitnímu e-mailu.
 
-Na hostingu spusťte z CRONu každou minutu například:
+Na běžném hostingu lze worker spouštět z CRONu každou minutu například:
 
 ```sh
 APP_HOST=data.kovopraha.cz php /absolutni/cesta/bin/club-event-notifications.php --limit=20
 ```
+
+Na produkčním Thinline hostingu tento příklad **nefunguje**: omezený shell
+odstraňuje externí environment proměnné a zakazuje argumenty PHP skriptů.
+Použijte soukromý putenv bootstrap mimo webroot podle
+`docs/thinline-deploy-runbook.md`; CRON potom spouští pouze holé
+`php data/.kis-deploy/<bootstrap>.php`. Bootstrap nastaví `APP_HOST`,
+`CLUB_EVENT_NOTIFICATION_LIMIT` a explicitně
+`CLUB_EVENT_NOTIFICATION_TRANSPORT=mail` a načte worker z aktivního docrootu.
+Produkční CRON se nesmí zapnout před řízeným testem na určenou schránku.
+
+Pro bezpečný localhostový průchod lze ve stejném bootstrapu nebo shellu použít
+`CLUB_EVENT_NOTIFICATION_TRANSPORT=local-outbox`; volitelný adresář určuje
+`CLUB_EVENT_NOTIFICATION_OUTBOX_DIR`. Tento transport používá sdílený
+`includes/local_message_outbox.php` a žádný e-mail neposílá.
 
 Návratový JSON obsahuje počty `processed`, `sent` a `failed`. Návrat `mail()`
 potvrzuje pouze převzetí lokálním poštovním systémem, nikoliv doručení do schránky.

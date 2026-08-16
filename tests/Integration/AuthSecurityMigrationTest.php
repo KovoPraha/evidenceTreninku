@@ -78,6 +78,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260809090000_stripe_checkout',
                 '20260810003000_legacy_training_support_tables',
                 '20260816143000_athlete_registration_foundation',
+                '20260816170000_shop_payment_received_notification',
             ],
             array_keys($catalog)
         );
@@ -98,6 +99,7 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'osoba_citlive_pristupy'));
         self::assertTrue($this->columnExists($pdo, 'account_person_claim_requests', 'request_kind'));
         self::assertTrue($this->columnExists($pdo, 'account_person_claim_requests', 'contract_version'));
+        self::assertTrue($this->columnExists($pdo, 'club_event_notifications', 'order_id'));
         self::assertTrue($this->tableExists($pdo, 'password_reset_tokens'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feeds'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feed_events'));

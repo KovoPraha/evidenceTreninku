@@ -69,6 +69,8 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $source);
         self::assertStringContainsString("getenv('APP_HOST')", $source);
         self::assertStringContainsString('clubEventNotificationProcessOne', $source);
+        self::assertStringContainsString('localMessageOutboxSender', $source);
+        self::assertStringContainsString('CLUB_EVENT_NOTIFICATION_TRANSPORT', $source);
         self::assertStringNotContainsString('DB_PASS=', $source);
     }
 
@@ -84,6 +86,8 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringContainsString('csrf_verify', $page);
         self::assertStringContainsString("(\$_POST['confirm_retry'] ?? '') === '1'", $page);
         self::assertStringContainsString('clubEventNotificationAdminRetry', $page);
+        self::assertStringContainsString('clubEventNotificationAdminPreview', $page);
+        self::assertStringContainsString('Cache-Control: no-store', $page);
         self::assertStringContainsString("status='processing'", $service);
         self::assertStringContainsString("notification['status'] === 'sent'", $service);
         self::assertStringContainsString('club_event_notification_events', $migration);

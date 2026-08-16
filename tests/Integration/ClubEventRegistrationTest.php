@@ -538,6 +538,7 @@ final class ClubEventRegistrationTest extends TestCase
             '20260804150000_club_event_roster_targets.php',
             '20260804210000_shop_order_expiration.php',
             '20260804230000_club_event_shop.php',
+            '20260816170000_shop_payment_received_notification.php',
             '20260809090000_stripe_checkout.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;

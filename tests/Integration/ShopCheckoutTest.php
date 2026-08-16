@@ -7,6 +7,8 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2).'/includes/shop_checkout.php';
+require_once dirname(__DIR__,2).'/includes/club_event_notification.php';
+require_once dirname(__DIR__,2).'/includes/local_message_outbox.php';
 
 final class ShopCheckoutTest extends TestCase
 {
@@ -77,7 +79,27 @@ final class ShopCheckoutTest extends TestCase
         $result=\shopOrderAdminConfirmBankPayment($pdo,$paymentId,7,'Ověřeno v bankovnictví podle VS a částky.',true);self::assertTrue($result['changed']);
         self::assertSame('paid',$pdo->query('SELECT status FROM payments')->fetchColumn());self::assertSame('processing',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());self::assertSame('paid',$pdo->query('SELECT payment_status FROM shop_orders')->fetchColumn());
         self::assertSame('confirm_bank_payment',$pdo->query('SELECT action FROM shop_order_events ORDER BY id DESC LIMIT 1')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_payment_received'")->fetchColumn());
+        $notification=$pdo->query('SELECT * FROM club_event_notifications')->fetch(PDO::FETCH_ASSOC);
+        self::assertStringContainsString((string)$order['public_code'],$notification['subject_plain']);
+        self::assertStringContainsString('125,00 CZK',$notification['body_plain']);
+        self::assertStringContainsString('Tričko KOVO × 1',$notification['body_plain']);
+        self::assertStringContainsString('osobnímu odběru',$notification['body_plain']);
+        self::assertStringContainsString('booking/prihlaseni.php?redirect=moje_objednavky.php',$notification['body_plain']);
+        foreach(['IBAN','X-VS','Bearer','sportovec_id=','order_id=','?id='] as $forbidden)self::assertStringNotContainsString($forbidden,$notification['body_plain']);
+        $preview=\clubEventNotificationAdminPreview($pdo,(int)$notification['id']);self::assertSame($notification['subject_plain'],$preview['subject_plain']);self::assertSame($notification['body_plain'],$preview['body_plain']);
+        self::assertFalse(\clubEventNotificationProcessOne($pdo,static fn():bool=>false));
+        self::assertSame('paid',$pdo->query('SELECT status FROM payments')->fetchColumn());
+        self::assertSame('paid',$pdo->query('SELECT payment_status FROM shop_orders')->fetchColumn());
+        $retry=\clubEventNotificationAdminRetry($pdo,(int)$notification['id'],7,'LOCALHOST kontrola adresy po odmítnutí transportu.',true);self::assertTrue($retry['changed']);self::assertSame('manual_retry',$pdo->query('SELECT action FROM club_event_notification_events')->fetchColumn());
+        $outbox=sys_get_temp_dir().DIRECTORY_SEPARATOR.'evidence-payment-notification-'.bin2hex(random_bytes(6));
+        self::assertTrue(\clubEventNotificationProcessOne($pdo,\localMessageOutboxSender('localhost','evidence.transactional-notification.v1',$outbox)));
+        $files=glob($outbox.DIRECTORY_SEPARATOR.'*.json')?:[];self::assertCount(1,$files);
+        $captured=json_decode((string)file_get_contents($files[0]),true,512,JSON_THROW_ON_ERROR);
+        self::assertSame($notification['body_plain'],$captured['body']);
+        unlink($files[0]);rmdir($outbox);
         self::assertFalse(\shopOrderAdminConfirmBankPayment($pdo,$paymentId,7,'Opakování.',true)['changed']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_payment_received'")->fetchColumn());
         self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());
     }
 
@@ -241,6 +263,8 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec('CREATE TABLE club_teams(id INTEGER PRIMARY KEY,name TEXT,status TEXT)');$pdo->exec("INSERT INTO club_teams VALUES(20,'U15','active')");
         $pdo->exec('CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY,account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,valid_from TEXT,valid_to TEXT)');
         $pdo->exec('CREATE TABLE club_roster_members(id INTEGER PRIMARY KEY,team_id INTEGER,sportovec_id INTEGER,status TEXT,valid_from TEXT,valid_to TEXT)');
+        $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
+        $pdo->exec('CREATE TABLE club_event_notification_events(id INTEGER PRIMARY KEY AUTOINCREMENT,notification_id INTEGER NOT NULL,actor_trainer_id INTEGER NOT NULL,action TEXT NOT NULL,from_status TEXT NOT NULL,attempts_before INTEGER NOT NULL,reason TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)');
         $pdo->exec('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER)');$pdo->exec("INSERT INTO shop_product_categories VALUES(1,501,'Oblečení',1,0)");
         foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php','20260809090000_stripe_checkout.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }

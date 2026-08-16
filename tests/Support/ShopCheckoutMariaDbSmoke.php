@@ -4,6 +4,10 @@ declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/includes/migration_runner.php';
 require_once dirname(__DIR__, 2) . '/includes/shop_checkout.php';
 
+if (getenv('APP_BASE_URL') === false || trim((string)getenv('APP_BASE_URL')) === '') {
+    putenv('APP_BASE_URL=http://localhost/evidencePavel');
+}
+
 const SHOP_CHECKOUT_SMOKE_BANK = [
     'iban' => 'CZ6508000000192000145399',
     'bic' => 'GIBACZPX',
@@ -33,6 +37,21 @@ function shopCheckoutSmokeWorker(string $database, string $key, string $fingerpr
     $pipes = [];
     $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
     if (!is_resource($process)) throw new RuntimeException('Cannot start checkout concurrency worker.');
+    fclose($pipes[0]);
+    return ['process' => $process, 'pipes' => $pipes];
+}
+
+/** @return array{process:resource,pipes:array<int,resource>} */
+function shopCheckoutSmokePaymentWorker(string $database, int $paymentId, string $workerId): array
+{
+    $command = escapeshellarg(PHP_BINARY)
+        . ' ' . escapeshellarg(__FILE__)
+        . ' --payment-worker ' . escapeshellarg($database)
+        . ' ' . escapeshellarg((string)$paymentId)
+        . ' ' . escapeshellarg($workerId);
+    $pipes = [];
+    $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
+    if (!is_resource($process)) throw new RuntimeException('Cannot start payment confirmation concurrency worker.');
     fclose($pipes[0]);
     return ['process' => $process, 'pipes' => $pipes];
 }
@@ -70,6 +89,32 @@ if (($argv[1] ?? '') === '--worker') {
     exit(0);
 }
 
+if (($argv[1] ?? '') === '--payment-worker') {
+    $database = (string)($argv[2] ?? '');
+    $paymentId = (int)($argv[3] ?? 0);
+    $workerId = (string)($argv[4] ?? '');
+    if (preg_match('/\Aevidence_shop_checkout_smoke_test(?:_[a-z0-9_]+)?\z/', $database) !== 1
+        || $paymentId < 1
+        || preg_match('/\Apayment_worker_[12]\z/', $workerId) !== 1
+    ) {
+        throw new RuntimeException('Invalid payment confirmation concurrency worker input.');
+    }
+    $pdo = shopCheckoutSmokePdo($database);
+    $pdo->prepare('INSERT INTO smoke_payment_worker_ready(worker_id) VALUES(?)')->execute([$workerId]);
+    $result = shopOrderAdminConfirmBankPayment(
+        $pdo,
+        $paymentId,
+        7,
+        'Dvouprocesové ověření idempotence přijaté platby.',
+        true
+    );
+    echo json_encode([
+        'order_id' => (int)$result['order_id'],
+        'changed' => (bool)$result['changed'],
+    ], JSON_THROW_ON_ERROR) . PHP_EOL;
+    exit(0);
+}
+
 $database = getenv('EVIDENCE_SHOP_CHECKOUT_SMOKE_DB') ?: 'evidence_shop_checkout_smoke_test';
 if (preg_match('/\Aevidence_shop_checkout_smoke_test(?:_[a-z0-9_]+)?\z/', $database) !== 1) {
     throw new RuntimeException('Refusing to use a non-test MariaDB database name.');
@@ -101,6 +146,7 @@ try {
     $result = (new EvidenceMigrationRunner($pdo, $catalog))->apply();
     if (!$result['current']) throw new RuntimeException('MariaDB migration catalog is not current before checkout smoke.');
 
+    $pdo->exec("INSERT INTO treneri(id,jmeno,email,heslo,role,aktivni) VALUES(7,'Smoke Admin','smoke-admin@example.test','not-a-login-secret','admin',1)");
     $pdo->exec("INSERT INTO verejni_uzivatele(id,jmeno,prijmeni,email,aktivni,email_overeno,registrovan) VALUES(10,'Race','Tester','race@example.test',1,1,CURRENT_TIMESTAMP)");
     $pdo->exec("INSERT INTO shop_catalog_import_runs(id,source_sha256,source_filename,contract_version,status,product_count,variant_count,warning_count,manual_review_count) VALUES(1,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','smoke.csv','smoke-v1','promoted',1,1,0,0)");
     $pdo->exec("INSERT INTO shop_catalog_product_candidates(id,run_id,external_product_key,name,offer_type,classification_confidence,needs_manual_review,payload_json) VALUES(501,1,'race-product','Race item','goods','high',0,'{}')");
@@ -145,7 +191,38 @@ try {
     ) {
         throw new RuntimeException('Concurrent duplicate checkout changed persisted order or stock counts.');
     }
-    echo "MariaDB concurrent checkout idempotency smoke OK\n";
+
+    $paymentId = (int)$pdo->query('SELECT id FROM payments LIMIT 1')->fetchColumn();
+    $orderId = (int)$pdo->query('SELECT id FROM shop_orders LIMIT 1')->fetchColumn();
+    $pdo->exec('CREATE TABLE smoke_payment_worker_ready(worker_id VARCHAR(30) PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->beginTransaction();
+    $pdo->prepare('SELECT id FROM payments WHERE id=? FOR UPDATE')->execute([$paymentId]);
+    $paymentWorkers = [
+        shopCheckoutSmokePaymentWorker($database, $paymentId, 'payment_worker_1'),
+        shopCheckoutSmokePaymentWorker($database, $paymentId, 'payment_worker_2'),
+    ];
+    $deadline = microtime(true) + 8.0;
+    do {
+        usleep(100000);
+        $ready = (int)$observer->query('SELECT COUNT(*) FROM smoke_payment_worker_ready')->fetchColumn();
+        $active = $observer->prepare("SELECT COUNT(*) FROM information_schema.PROCESSLIST WHERE DB=? AND ID<>CONNECTION_ID() AND COMMAND<>'Sleep'");
+        $active->execute([$database]);
+        $activeWorkers = (int)$active->fetchColumn();
+    } while (($ready < 2 || $activeWorkers < 2) && microtime(true) < $deadline);
+    if ($ready !== 2 || $activeWorkers < 2) throw new RuntimeException('Payment workers did not reach the locked race window.');
+    $pdo->commit();
+
+    $paymentOutcomes = array_map('shopCheckoutSmokeFinishWorker', $paymentWorkers);
+    usort($paymentOutcomes, static fn(array $a, array $b): int => (int)$b['changed'] <=> (int)$a['changed']);
+    if (array_column($paymentOutcomes, 'changed') !== [true, false]
+        || array_unique(array_column($paymentOutcomes, 'order_id')) !== [$orderId]
+        || (int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE order_id={$orderId} AND notification_type='shop_payment_received'")->fetchColumn() !== 1
+        || $pdo->query('SELECT status FROM payments WHERE id=' . $paymentId)->fetchColumn() !== 'paid'
+        || $pdo->query('SELECT payment_status FROM shop_orders WHERE id=' . $orderId)->fetchColumn() !== 'paid'
+    ) {
+        throw new RuntimeException('Concurrent payment confirmation did not persist one paid order and one notification.');
+    }
+    echo "MariaDB concurrent checkout and payment-notification idempotency smoke OK\n";
 } finally {
     if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);
