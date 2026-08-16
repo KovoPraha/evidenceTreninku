@@ -1,5 +1,61 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt E R2: kolizní preflight katalogu (`24cc675`)
+
+### Dokončený výsledek
+
+- Ruční produkt dostává náhodný klíč `manual:<32 hex>` a jeho SKU musí začínat
+  konfigurovatelnou konstantou `SHOP_MANUAL_SKU_PREFIX` s výchozí hodnotou
+  `KP-`. Validátory odmítají klíče `shoptet:` i ruční SKU mimo rezervovaný
+  prefix.
+- `shopCatalogPromote()` po všech read-only kontrolách běhu, ale ještě před
+  prvním `INSERT` promotion, sestaví úplný seznam chystaných externích klíčů a
+  SKU. Porovná je s kanonickým katalogem, odhalí duplicity uvnitř stejného běhu
+  a odmítne produkt, jehož klíč není v importním namespace `shoptet:`. Ruční
+  produkt proto promotion nemůže zpracovat.
+- Kolize selže s deterministicky seřazeným výčtem konkrétních SKU a případných
+  externích klíčů. Text administrátorovi výslovně říká, že má přejmenovat ručně
+  založené SKU a import zopakovat; u kolize s dřívějším importem má zkontrolovat
+  duplicitní běh. Současně vysvětluje, že importní soubor není rozbitý.
+
+### Ověření nad skutečným Shoptet exportem
+
+- Ověřený soubor `C:\productsComplete.xml` měl SHA-256
+  `f924ec583781ac6a18aa92c1574070d8a220ee49fc13baf4700ff85527046bdf` a
+  normalizoval se bez blokátoru na přesně 241 produktů a 807 variant.
+- V první jednorázové MariaDB databázi existoval ruční produkt se SKU
+  `KP-R2-REAL-UNIKAT`. Staging a promotion stejného skutečného XML prošly a
+  vytvořily všech 241 importních produktů a 807 variant vedle ruční položky.
+- Ve druhé jednorázové MariaDB databázi byl záměrně nasimulován starší ruční
+  produkt se skutečným exportním SKU `157/MOD`. Promotion skončila zprávou
+  `Kolidující SKU: 157/MOD` a návodem k přejmenování. Počty před i po pokusu
+  zůstaly přesně `0 promotions / 1 product / 1 variant`, takže preflight
+  proběhl před prvním promotion insertem.
+- Obě testovací databáze byly v `finally` odstraněny. Následná kontrola
+  `information_schema` nenašla žádnou databázi `evidence_prompt_e_r2_real_%`;
+  samotný XML soubor nebyl kopírován ani měněn.
+
+### Regrese a provozní hranice
+
+- Syntetické testy pokrývají průchod unikátního `KP-` SKU, kolizi SKU s ručním
+  produktem, kolizi SKU i externího klíče s dřívějším importem, duplicity uvnitř
+  běhu, stabilní úplný výpis a odmítnutí `manual:` produktu ve stagingu ještě
+  před zápisem.
+- Plná sada je `626 tests / 5457 assertions`, s jednou existující PHPUnit
+  deprecation. Lint prošel na 513 first-party PHP souborech;
+  `composer validate --strict`, `composer audit --locked` a
+  `composer check-platform-reqs` jsou zelené. Migrační brána
+  `check → apply → check` zůstala `current` na 56 migracích.
+- R2 nemění rozhraní, proto podle pravidla Promptu E nemá živou browserovou
+  bránu. Implementace je samostatný commit `24cc675`. Produkce a `origin/main`
+  zůstávají na `0e43a8b`; nic nebylo pushnuto ani nasazeno.
+
+### Další krok
+
+- Zahájit R3 nad commitem `24cc675`: přidat nabídku `program` a zachovat
+  fail-closed podmínky publikace, checkoutu a storefrontu. R4 ani další řezy
+  neslučovat do R3 commitu.
+
 ## Aktualizace 16. 8. 2026 — Prompt E R1: původ ručního katalogu (`a0c0d73`)
 
 ### Dokončený výsledek
