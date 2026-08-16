@@ -1,5 +1,49 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — P1 F4–F6 navigace (`77a3a3f006cf9859ea1a41c4356d91bf3b4f564d`)
+
+### Dokončený výsledek
+
+- `appUiAssets()` nyní načítá jediný centrální Bootstrap 5.3.3 bundle. Ruční
+  kopie byly odstraněny ze všech 82 first-party stránek, které je měly; nový
+  plošný test zakazuje další ruční kopie.
+- Breakpointy horní lišty jsou sjednocené na XXL: mobilní pravidla platí do
+  1399,98 px, odsazení i zarovnání pravého bloku se přepínají ve stejném bodě
+  jako `navbar-expand-xxl`. Všechny odkazy mají průhledný spodní rámeček, takže
+  aktivní Plánovač už nemění výšku řádku.
+- Sedm nahlášených samostatných booking stránek má společnou horní i dolní
+  navigaci. `program_skupiny.php` používá administrátorskou hlavičku. Ruční
+  `<details>` nabídku „Můj účet“ nahradil standardní Bootstrap dropdown, který
+  se zavírá kliknutím mimo a nepřetéká vpravo.
+- Regresní test hlídá centrální Bootstrap JS, zákaz duplicit, XXL kontrakt,
+  navigaci všech osmi nahlášených slepých uliček a standardní účtový dropdown.
+
+### Živé ověření a brány
+
+- Na šířce 1280 px se hamburger na dříve rozbité
+  `kis_rosters_admin.php` rozbalil; levý i pravý blok měly shodný levý okraj,
+  stránka načetla právě jeden Bootstrap bundle a nevznikl vodorovný přesah.
+- `booking/verejny_profil.php` vykreslil horní i dolní navigaci, účtový dropdown
+  se otevřel, zůstal uvnitř viewportu a stránka neměla horizontální overflow.
+  Veřejný `program_skupiny.php` vykreslil hlavičku, obsah i jediný bundle bez
+  přesahu. Vizuální screenshoty všech tří stavů byly zkontrolované.
+- Plná sada: `545 tests`, `4763 assertions`; PHP lint `482` first-party
+  souborů, `0` chyb. Composer `validate --strict`, `audit --locked` a
+  `check-platform-reqs` jsou zelené. Migrace `check → apply → check`: legacy
+  `2.20.2`, katalog `52`, `pending=[]`.
+- Produkce ani původní poškozený lokální InnoDB nebyly změněny. Cizí
+  nesledovaný WIP zůstal nedotčený a nic nebylo pushnuto ani nasazeno.
+
+### Samostatný nález a další akce
+
+- Mimo osm výslovně vyjmenovaných F6 stránek existuje devět starších
+  standalone stránek bez sdílené navigační komponenty (`kis_child_access_admin.php`,
+  `login.php`, `prehled_skupiny.php`, `prehled_skupina.php`, `pub.php`,
+  `sportovec_treninky.php`, `verejny_prehled.php`, `testovaci_scenare.php`,
+  `tydenni_report.php`). Rozsah F6 nebyl o tyto stránky rozšířen.
+- **Jediná další konkrétní akce:** sjednotit F9 na jednu sdílenou politiku
+  hesla o minimálně 12 znacích a ověřit všechny zakládací i resetovací cesty.
+
 ## Aktualizace 16. 8. 2026 — P0 F3 přihlášení a relace (`75226aa1d31dc225f27feacd9f086abea1c1fb79`)
 
 ### Potvrzená diagnóza a oprava
