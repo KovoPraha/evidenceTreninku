@@ -130,6 +130,34 @@ function postDeployFileCandidate(PDO $pdo, string $sql, string $pathColumn): ?ar
     return null;
 }
 
+/** @return array{rows:int,private_keys:int,legacy_paths:int,resolved_files:int,missing_private_files:int} */
+function postDeployFileInventory(PDO $pdo, string $sql, string $pathColumn): array
+{
+    $inventory = [
+        'rows' => 0,
+        'private_keys' => 0,
+        'legacy_paths' => 0,
+        'resolved_files' => 0,
+        'missing_private_files' => 0,
+    ];
+    foreach ($pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $inventory['rows']++;
+        $key = (string)($row[$pathColumn] ?? '');
+        if (str_starts_with($key, 'private://')) {
+            $inventory['private_keys']++;
+        } else {
+            $inventory['legacy_paths']++;
+        }
+        $path = privateStorageResolve($key);
+        if ($path !== null && is_file($path) && filesize($path) > 0) {
+            $inventory['resolved_files']++;
+        } elseif (str_starts_with($key, 'private://')) {
+            $inventory['missing_private_files']++;
+        }
+    }
+    return $inventory;
+}
+
 $cookieFile = tempnam(sys_get_temp_dir(), 'kis-post-deploy-');
 if (!is_string($cookieFile)) {
     fwrite(STDERR, "post_deploy_r2_cookie_file_failed\n");
@@ -188,6 +216,16 @@ try {
         "SELECT id,cesta FROM zatezove_testy_soubory WHERE cesta IS NOT NULL AND cesta<>'' ORDER BY id DESC LIMIT 50",
         'cesta'
     );
+    $receiptInventory = postDeployFileInventory(
+        $pdo,
+        "SELECT obrazek_path FROM ucto_uctenky WHERE obrazek_path IS NOT NULL AND obrazek_path<>''",
+        'obrazek_path'
+    );
+    $stressInventory = postDeployFileInventory(
+        $pdo,
+        "SELECT cesta FROM zatezove_testy_soubory WHERE cesta IS NOT NULL AND cesta<>''",
+        'cesta'
+    );
 
     $stage = 'sensitive_config';
     $keysMissing = false;
@@ -236,8 +274,10 @@ try {
         && !str_contains(strtolower($sensitiveEndpoint['body']), 'fatal error');
 
     $privateDownloads = [
+        'receipt_inventory' => $receiptInventory,
         'receipt_fixture_available' => $receiptCandidate !== null,
         'receipt_http_ok' => null,
+        'stress_inventory' => $stressInventory,
         'stress_fixture_available' => $stressCandidate !== null,
         'stress_http_ok' => null,
     ];
