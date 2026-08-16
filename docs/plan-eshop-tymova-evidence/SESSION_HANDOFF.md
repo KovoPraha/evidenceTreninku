@@ -1,5 +1,41 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — P0 F2 tmavý režim (`cdf16620d8d1ae8025f93567e95318e957786555`)
+
+### Dokončený výsledek
+
+- Téma se už nikdy nezapíná automaticky podle `prefers-color-scheme`; bez
+  výslovné uložené volby uživatele se načte světlé rozhraní.
+- Vědomě zapnutý tmavý režim přepisuje `body.bg-light` na sdílené
+  `--app-page-bg` a `.bg-white` na Bootstrap `--bs-secondary-bg`.
+- Regresní test prochází first-party PHP stránky, zakazuje automatickou volbu
+  tématu podle OS a hlídá obě CSS bezpečnostní sítě.
+- Živý browser na čistém originu `127.0.0.1` potvrdil výchozí `light`, pozadí
+  `#f3f6fa` a tmavý text. Po ručním přepnutí potvrdil `dark`, pozadí `#111827`
+  a světlý text na dashboardu i `sprava_sportovcu.php`. Známé inline světlé
+  panely na jednotlivých stránkách zůstávají vědomě P2 mimo tento řez.
+
+### Brány a pracovní stav
+
+- Plná sada: `539 tests`, `4702 assertions`, vše zelené.
+- PHP lint: `482` first-party souborů, `0` chyb.
+- Composer `validate --strict`, `audit --locked`, `check-platform-reqs` zelené;
+  migrace `check → apply → check`, legacy `2.20.2`, katalog `52`, `pending=[]`.
+- V implementačním commitu byly vlastněné pouze `hlavicka.php`,
+  `assets/app-ui.css` a `tests/Unit/SharedUiShellTest.php`; po commitu nezůstal
+  žádný vlastněný sledovaný dirty soubor. Cizí nesledovaný WIP zůstal
+  nedotčený. Produkce nebyla ověřena, změněna ani nasazena.
+
+### Otevřené riziko a další akce
+
+- Platí databázový drift popsaný v aktualizaci F1: původní lokální InnoDB je
+  poškozená a testy běží proti oddělené dočasné obnově; původní data nebyla
+  měněna.
+- **Jediná další konkrétní akce:** provést cílenou diagnostiku P0 F3 přes cyklus
+  přihlásit → odhlásit → přihlásit všemi třemi odhlašovacími cestami, zaznamenat
+  odmítající větev bez osobních údajů a teprve potom implementovat tři potvrzené
+  opravy.
+
 ## Aktualizace 16. 8. 2026 — P0 F1 plánovač (`a2833fcdc981ab6931559077140bcca125d4bd08`)
 
 ### Dokončený výsledek
