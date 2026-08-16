@@ -81,7 +81,7 @@ $statusLabels = [
 <main class="container py-4" style="max-width:900px">
     <h1 class="h4 mb-1"><i class="bi bi-people me-2 text-primary"></i>Moje osoby</h1>
     <p class="text-muted">Děti a sportovci, které budete moci přihlašovat na kroužky, kurzy a akce.</p>
-    <div class="alert alert-info">Kvůli ochraně osobních údajů se osoby nehledají ani nepřipojují automaticky. Zadejte údaje osoby a administrátor vazbu ověří.</div>
+    <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2"><span>Kvůli ochraně osobních údajů se osoby nehledají ani nepřipojují automaticky. Administrátor každou vazbu ověří.</span><a class="btn btn-primary btn-sm" href="registrace_sportovce.php"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= claimPageH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= claimPageH($success) ?></div><?php endif; ?>
 
@@ -107,6 +107,6 @@ $statusLabels = [
     <?php if ($claims === []): ?><tr><td colspan="5" class="text-center text-muted py-3">Zatím jste žádnou žádost neposlali.</td></tr><?php endif; ?>
     </tbody></table></div></section>
 </main>
-
+<?php publicShellFooter(); ?>
 </body>
 </html>

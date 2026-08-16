@@ -591,7 +591,7 @@ uzavřený a bod 9 je odložen k rozhodnutí před zahájením R3.
 | 6 | Retence fotografie | stejný základ jako registrace; po odvolání interního souhlasu řízený výmaz, veřejná publikace okamžitě zastavit |
 | 7 | Fotografie interní vs. veřejná | **oddělit**; obě volitelné, veřejná nikdy nepodmiňuje členství |
 | 8 | Právní titul RČ | **pro R1–R6 schváleno:** vlastníkem deklarovaná zákonná povinnost klubu; konkrétní zdroj a konečná retence jsou povinná brána před produkční aktivací |
-| 9 | Zobecnění K3 registru | **odloženo k R3:** přijmout rozšíření `club_event_term_versions`; nevytvářet syntetickou událost ani paralelní registr |
+| 9 | Zobecnění K3 registru | **schváleno 16. 8. 2026 pro R3:** rozšířit `club_event_term_versions` o scope/purpose; nevytvářet syntetickou událost ani paralelní registr |
 | 10 | Fotografie povinná? | doporučení: ne |
 | 11 | SLA admin rozhodnutí / B2 hold | doporučení: upozornění po 2 pracovních dnech; zaplacený hold bez tiché expirace |
 | 12 | Parametry prvního členského předpisu | kdo určí titul, částku, měnu, období a splatnost; návrh je explicitní admin formulář bez automatického výpočtu |
@@ -610,6 +610,7 @@ produkční aktivací.
 ## 14. Schvalovací výrok
 
 Fáze 2 je otevřená pouze pro lokální řezy R1–R6. R7, produkční migrace, deploy a
-produkční aktivace zůstávají uzavřené. Před R3 je nutné uzavřít bod 9. Před
+produkční aktivace zůstávají uzavřené. Bod 9 byl vlastníkem před R3 potvrzen:
+K3 registr se zobecní, bez syntetické události a bez paralelního registru. Před
 produkční aktivací musí vlastník dodat konkrétní právní zdroj a konečné retenční
 lhůty.
