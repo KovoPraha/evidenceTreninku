@@ -1,5 +1,42 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt B R5: ruční zařazení sportovce (`68498a1`)
+
+### Dokončený výsledek
+
+- Ve stejné administrátorské frontě lze po schválení registrace explicitně
+  otevřít zařazení sportovce. Formulář nabízí existující skupiny, pouze jejich
+  podskupiny a týmy z aktivních, dosud neskončených sezon; vyžaduje důvod
+  alespoň 10 znaků. Výběr podskupin se v prohlížeči filtruje podle skupiny,
+  server však vztah vždy znovu ověřuje.
+- `athleteRegistrationAdminAssign()` znovu zamkne schválenou registrační
+  žádost a v jedné transakci zapíše legacy vazby `sportovec_skupina` a
+  `sportovec_podskupina` i kanonické aktivní členství v
+  `club_roster_members`. Zdroj soupisky je `manual`; změna má kanonickou
+  roster událost i samostatný audit s kontraktem a důvodem.
+- Opakování stejného požadavku je bezpečný no-op. Neplatná kombinace
+  skupiny/podskupiny, neaktivní tým či sezona a neschválená žádost zastaví
+  celou transakci bez částečného zařazení. R5 nevystavuje členský předpis a
+  žádný další krok nespouští automaticky.
+
+### Ověření a hranice
+
+- Plná sada: `598 tests`, `5256 assertions`; lint `507` first-party PHP
+  souborů. Composer validate/audit/platform je zelený a lokální katalog 55
+  migrací je aktuální.
+- Regresní test ověřuje rollback cizí podskupiny a neaktivní sezony, jediný
+  zápis každé vazby, jedinou roster událost a audit a idempotentní opakování.
+- Produkční databáze, deploy ani vzdálený repozitář nebyly změněny. R7 zůstává
+  uzavřený.
+
+### Následující řez
+
+- R6 přidá pouze explicitní administrátorské vystavení členského předpisu nad
+  existujícími `club_member_charges` a `club_member_charge_events`. Před zápisem
+  musí samostatně ověřit schválenou registraci, skupinu, odpovídající
+  podskupinu a aktivní soupisku ve výslovně zvolené aktivní sezoně; předpis se
+  po R4 ani R5 nikdy nevystaví automaticky.
+
 ## Aktualizace 16. 8. 2026 — Prompt B R4: administrátorské schválení registrace (`d5fa74b`)
 
 ### Dokončený výsledek
