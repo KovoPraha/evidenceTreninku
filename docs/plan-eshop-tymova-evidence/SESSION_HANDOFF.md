@@ -1,5 +1,66 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt F: kompatibilita scoped podmínek (`ff02c40`)
+
+### Dokončený výsledek
+
+- `clubEventConfigureRegistrationTerms()` po migraci
+  `20260816180000_registration_terms_scope` zapisuje úplný eventový kontrakt:
+  `scope_type='club_event'`, `scope_key='event:<id>'`,
+  `consent_purpose='club_event_registration'`, `actor_type='trainer'` a ID
+  stejného administrátora v `actor_id`. Dosavadní neměnná verze, oba texty,
+  deadline, snapshoty a pravidla otevření klubové akce se nezměnily.
+- Všechna aplikační čtení a zápisy `club_event_term_versions` byla znovu
+  prověřena. Registrace sportovce dál vybírá své čtyři účely výhradně přes
+  `scope_type`, `scope_key` a `consent_purpose`; seed scoped migrace už úplný
+  kontrakt zapisoval. Jiný nekompatibilní aplikační writer ani obdobný dopad
+  dalších migrací vlákna B nalezen nebyl.
+- Integrační fixture registrací a cílení na soupisky nyní aplikují původní
+  eventovou migraci i následnou scoped migraci. Nový regresní test založí
+  klubovou akci nad post-migračním schématem, uloží podmínky a ověří přesný
+  scope i auditora, zatímco čtyři registrační texty sportovce zůstanou
+  oddělené.
+
+### Ověření a provozní hranice
+
+- Zaměřená sada: `26 tests / 616 assertions`; plná sada: `600 tests / 5358
+  assertions`, jedna existující PHPUnit deprecation. Lint je čistý na `507`
+  first-party PHP souborech. `composer validate --strict`,
+  `composer audit --locked` (0 advisories) a `composer check-platform-reqs`
+  jsou zelené.
+- Lokální MariaDB prošla `check → apply → check` jako `current`; katalog má 55
+  migrací. Živý localhostový admin průchod založil draft akci
+  `PROMPT-F-TERMS-155420` (ID 4), přidal termín a uložil `prompt-f-v1`.
+  UI zobrazilo úspěch a audit `configure_terms`, konzole neměla chyby a DB
+  potvrdila `club_event / event:4 / club_event_registration / trainer`.
+  Testovací akce zůstala záměrně v draftu; nic se nemazalo.
+- Implementace je samostatný commit
+  `ff02c4072cdf31a4619a4fdd7e1bef3239531a8f` nad osmi lokálními commity vlákna
+  B. Nic nebylo pushnuto ani nasazeno a produkční databáze se nezměnila.
+
+### Potvrzené hranice navazujícího Promptu E
+
+- Doporučení E1–E12 jsou vlastníkem potvrzená, ale R1 nesmí začít před
+  nasazením Promptu F+B, novým fetch/rebase a vytvořením izolované větve.
+- Budoucí transakčně skládatelná jádra `kisRosterCreateTeam()` a
+  `shopCatalogPublicationActivate()` musí mít regresní testy všech současných
+  volajících, nejen průvodce. Program se v R8 musí objevit také na
+  `/booking/krouzky.php`.
+- Ruční cena bude konečná zákaznická cena včetně DPH; příznak a sazba jsou nyní
+  pouze auditní snapshot. Pokud je klub plátcem DPH a používá modul `uctenky/`,
+  budoucí výpočet DPH a dokladový tok zůstávají známým omezením mimo Prompt E.
+- Importní kolize se zastaví před prvním INSERTem, vypíše konkrétní SKU a
+  administrátorovi výslovně poradí přejmenovat ručně založené SKU. Testy a
+  kompletní browserový scénář Promptu E použijí jednorázovou izolovanou DB.
+- `docs/CURRENT_STATE.md` se aktualizuje až po produkčním nasazení, samostatným
+  dokumentačním commitem podle skutečně nasazeného stavu.
+
+### Další krok
+
+- Připravit přesný výčet `2f11612..HEAD` a počkat na výslovné potvrzení
+  vlastníka. Do té doby nic nepushovat, nespouštět produkční workflow a
+  nezačínat Prompt E R1.
+
 ## Aktualizace 16. 8. 2026 — Prompt B R6: členský předpis po zařazení (`f352fbc`)
 
 ### Dokončený výsledek
