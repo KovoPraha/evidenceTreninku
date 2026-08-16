@@ -1,5 +1,50 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt B R2: citlivé údaje a fotografie (`dadc478`)
+
+### Dokončený výsledek
+
+- `includes/person_sensitive.php` zavádí jedinou fail-closed vrstvu
+  `person-sensitive-v1`: validaci 9/10 číslic, datum, offsety `+20/+50/+70`,
+  dělitelnost 11, XChaCha20-Poly1305, oddělený HMAC blind index, verzovaný
+  keyring, rotaci a kryptografický výmaz. Šifrovací a indexový klíč nesmějí být
+  stejné.
+- Maskované i plné čtení vyžaduje natvrdo session roli `admin`; nepoužívá
+  `canAccess()`. Odhalení je POST + CSRF + důvod, odpověď má `no-store` a každé
+  úspěšné maskování, odhalení, změna, výmaz, rotace i zobrazení fotografie jde
+  do `osoba_citlive_pristupy` bez plaintextu, ciphertextu nebo storage key.
+- KIS synchronizace už RČ nemapuje do session payloadu, nečte je přes
+  `SELECT *` a nezapisuje je do `sportovci.rc`. Historie sportovce rekurzivně
+  rediguje legacy i šifrované citlivé klíče. Automatické guardy zakazují import
+  decrypt vrstvy do exportů, kalendářů, story, auditů a KIS preview/parity.
+- Interní fotografie se MIME/rozměrově ověří, dekóduje a znovu uloží jako JPEG
+  bez EXIF do `private://athlete-photos/` mimo webroot. Plný soubor doručí jen
+  admin větev `private_download.php` a zobrazení audituje.
+- `ext-sodium` je povinná Composer platforma. V lokálním XAMPP byla dostupná
+  knihovna pouze zakomentovaná, proto byla v `C:\xampp\php\php.ini` bezpečně
+  aktivována. Produkční klíče nebyly vytvořeny, čteny ani nastaveny.
+- Bezpečnostní a provozní kontrakt je v `docs/rodne-cislo-bezpecnost.md`;
+  permanentní read-only kontrola je `bin/athlete-registration-preflight.php`.
+
+### Ověření a hranice
+
+- Plná sada po commitu: `587 tests`, `5103 assertions`; lint `498` first-party
+  PHP souborů. Composer validate/audit/platform včetně Sodium je zelený a
+  migrace hlásí `AKTUALNI: current`.
+- Testy pokrývají délku, lomítko, kontrolní součet, přesné datum, syntetické
+  `+20/+50/+70`, cizince bez RČ, chybějící/stejný klíč, duplicitní blind index,
+  poškozený ciphertext, admin/hlavní roli, masku, reveal, audit, rotaci, výmaz,
+  re-encoding fotografie a statické exportní/KIS guardy.
+- Produkčních 1 241 legacy hodnot nebylo čteno, přeneseno ani změněno. R7,
+  produkční migrace, klíče, aktivace a deploy zůstávají uzavřené.
+
+### Další rozhodnutí
+
+- **Brána před R3 — bod 9:** potvrdit, zda se má existující
+  `club_event_term_versions` v R3 doporučeně zobecnit o scope/purpose pro
+  registraci sportovce. Bez potvrzení nevznikne paralelní registr ani
+  syntetická klubová událost a R3 nezačne.
+
 ## Aktualizace 16. 8. 2026 — Prompt B R1: základ registrace sportovce (`f2985b8`)
 
 ### Dokončený výsledek
