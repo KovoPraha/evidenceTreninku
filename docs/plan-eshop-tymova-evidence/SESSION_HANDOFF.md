@@ -1,5 +1,49 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — P0 F3 přihlášení a relace (`75226aa1d31dc225f27feacd9f086abea1c1fb79`)
+
+### Potvrzená diagnóza a oprava
+
+- Běžný cyklus přihlásit → odhlásit → přihlásit prošel před opravou všemi
+  třemi cestami (`logout.php`, `booking/odhlaseni.php`,
+  `booking/sportovec_odhlaseni.php`). Návrat na trenérský formulář načetl nový
+  CSRF token. Neúplné odhlášení ani zastaralý CSRF formulář se proto při
+  reprodukci nepotvrdily.
+- Potvrdil se sdílený IP limit: pět chybných pokusů pro pět různých účtů
+  zablokovalo šesté správné přihlášení a rozhraní zobrazilo jen zprávu o
+  nesprávném hesle. Dočasné kategorické diagnostické logy byly před commitem
+  úplně odstraněny.
+- Limit účtu zůstává 5 pokusů za 15 minut, samostatný limit sdílené IP je nově
+  20 pokusů za 15 minut. Vyšší IP práh chrání běžné domácí, klubové a školní
+  sítě, aniž by oslabil ochranu konkrétního účtu. Blokace má nyní vlastní
+  srozumitelnou zprávu v obou hlavních přihlašovacích formulářích.
+- Pět citlivých přihlašovacích/resetovacích stránek posílá `Cache-Control:
+  no-store` a `Pragma: no-cache`. Všechny tři odhlašovací cesty ničí celou
+  relaci. Neplatná verzovaná relace přesměruje na přihlášení se zprávou místo
+  holého textu 401.
+
+### Živé ověření a brány
+
+- Po opravě pět chybných pokusů různých účtů ze stejné IP neblokovalo správné
+  přihlášení šestého účtu. Pět chybných pokusů stejného účtu naopak zachovalo
+  přísnou blokaci a zobrazilo novou zprávu.
+- Všechny tři odhlašovací cesty znovu prošly v prohlížeči včetně následného
+  přihlášení. Uměle revokovaná lokální sportovní relace skončila na
+  `booking/prihlaseni.php?session=expired` s vysvětlující zprávou. Všech pět
+  stránek mělo přes HTTP obě no-store hlavičky.
+- Plná sada: `541 tests`, `4737 assertions`; PHP lint `482` first-party
+  souborů, `0` chyb. Composer `validate --strict`, `audit --locked` a
+  `check-platform-reqs` jsou zelené. Migrace `check → apply → check`: legacy
+  `2.20.2`, katalog `52`, `pending=[]`.
+- Testy dál běží proti izolované lokální obnově popsané níže; původní poškozený
+  InnoDB adresář ani produkce nebyly změněny. Cizí nesledovaný WIP zůstal
+  nedotčený a nic nebylo pushnuto ani nasazeno.
+
+### Další akce
+
+- **Jediná další konkrétní akce:** implementovat P1 F4–F6 jako jeden úzký UX
+  řez, znovu projít plné brány a vizuálně ověřit dotčené stránky.
+
 ## Aktualizace 16. 8. 2026 — P0 F2 tmavý režim (`cdf16620d8d1ae8025f93567e95318e957786555`)
 
 ### Dokončený výsledek
