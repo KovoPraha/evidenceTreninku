@@ -143,7 +143,7 @@ try {
     sort($requiredTables);
     sort($foundTables);
     $migrationStatement = $pdo->prepare(
-        'SELECT COUNT(*) FROM evidence_schema_migrations WHERE migration_id=?'
+        'SELECT COUNT(*) FROM evidence_schema_migrations WHERE id=?'
     );
     $migrationStatement->execute(['20260816143000_athlete_registration_foundation']);
     $schema = [
