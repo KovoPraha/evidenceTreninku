@@ -162,6 +162,6 @@ $activeRelations = count(array_filter(
 
     <?php if ($events !== []): ?><div class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Audit rozhodnutí</div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Čas</th><th>Účet</th><th>Osoba</th><th>Akce</th><th>Změna</th><th>Kdo</th><th>Důvod</th></tr></thead><tbody><?php foreach ($events as $event): ?><tr><td><?= identityAdminH($event['created_at']) ?></td><td><?= identityAdminH($event['account_email']) ?></td><td><?= identityAdminH($event['person_prijmeni'] . ' ' . $event['person_jmeno']) ?></td><td><?= identityAdminH($event['action']) ?></td><td><?= identityAdminH(($event['from_status'] ?: 'nová') . ' → ' . $event['to_status']) ?></td><td><?= identityAdminH($event['actor_name'] ?: '#' . $event['actor_trainer_id']) ?></td><td><?= identityAdminH($event['note']) ?></td></tr><?php endforeach; ?></tbody></table></div></div><?php endif; ?>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

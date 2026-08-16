@@ -45,6 +45,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
     <?php endif; ?>
 </head>
 <body class="bg-light">
+<?php publicShellNav(); ?>
 <div class="container mt-5" style="max-width:500px">
     <div class="card shadow text-center p-4">
         <?php if ($ok): ?>
@@ -87,5 +88,6 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
 })();
 </script>
 <?php endif; ?>
+<?php publicShellFooter(); ?>
 </body>
 </html>

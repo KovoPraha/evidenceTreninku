@@ -50,7 +50,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Obnova hesla — Kovopraha</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><?php appUiAssets(); ?></head>
-<body class="bg-light"><main class="container py-5" style="max-width:480px"><div class="card shadow-sm"><div class="card-body p-4">
+<body class="bg-light"><?php publicShellNav(); ?><main class="container py-5" style="max-width:480px"><div class="card shadow-sm"><div class="card-body p-4">
 <h1 class="h4">Obnova hesla</h1>
 <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></div><?php endforeach; ?>
 <?php if ($submitted): ?><div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, poslali jsme další postup na příslušný e-mail.</div>
@@ -59,4 +59,4 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <div class="mb-3"><label class="form-label" for="password-reset-identifier">E-mail nebo přihlašovací jméno</label><input class="form-control" id="password-reset-identifier" name="identifier" autocomplete="username" required autofocus></div>
 <button class="btn btn-primary w-100">Poslat odkaz pro obnovu</button></form><?php endif; ?>
 <p class="mt-3 mb-0 text-center"><a href="prihlaseni.php">Zpět na přihlášení</a></p>
-</div></div></main></body></html>
+</div></div></main><?php publicShellFooter(); ?></body></html>

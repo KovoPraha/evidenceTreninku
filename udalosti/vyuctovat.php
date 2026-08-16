@@ -190,7 +190,7 @@ $platba_map = [
   <?php endif; ?>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 // Handle uzavrit.php response (returns JSON but form submits normally)
 document.querySelector('form[action="uzavrit.php"]')?.addEventListener('submit', function(e) {

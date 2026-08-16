@@ -90,5 +90,5 @@ try {
     <?php foreach ($rows as $row): ?><tr><td><span class="badge text-bg-<?= $row['status']==='failed'?'danger':($row['status']==='sent'?'success':($row['status']==='cancelled'?'secondary':'warning')) ?>"><?= familyWeeklyAdminH($row['status']) ?></span></td><td><?= familyWeeklyAdminH($row['period_from'] . '–' . $row['period_to']) ?></td><td><?= familyWeeklyAdminH($row['recipient_name']) ?><div class="small text-muted"><?= familyWeeklyAdminH($row['recipient_email']) ?></div></td><td><?= (int)$row['item_count'] ?></td><td><?= (int)$row['attempts'] ?></td><td class="small"><?= familyWeeklyAdminH($row['last_error'] ?? '') ?></td><td><a class="btn btn-sm btn-outline-primary" href="?preview_id=<?= (int)$row['id'] ?><?= $status !== '' ? '&amp;status=' . urlencode($status) : '' ?>">Náhled</a></td></tr><?php endforeach; ?>
     <?php if ($rows === []): ?><tr><td colspan="7" class="text-center text-muted py-4">V tomto filtru nejsou žádné souhrny.</td></tr><?php endif; ?></tbody></table></div></section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body></html>

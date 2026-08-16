@@ -420,7 +420,7 @@ $dniLabels    = [7=>'7 dní', 14=>'14 dní', 30=>'1 měsíc', 180=>'6 měsíců'
 
 </div><!-- /container -->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 const skupinaSelect    = document.getElementById('skupinaSelect');
 const podskupinaSelect = document.getElementById('podskupinaSelect');

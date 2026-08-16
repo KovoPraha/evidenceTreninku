@@ -373,7 +373,7 @@ $sportovist = $pdo->query("
     </div><!-- /col-md-5 -->
     </div><!-- /row -->
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 function setTyp(typ) {
     document.getElementById('typZelena').checked = typ === 'zelena';

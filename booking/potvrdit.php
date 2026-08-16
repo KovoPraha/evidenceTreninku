@@ -90,6 +90,7 @@ if ($method === 'POST' && !csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
+<?php publicShellNav(); ?>
 <div class="container mt-5" style="max-width:520px">
     <div class="card shadow text-center p-4">
         <?php if ($ok): ?>
@@ -150,5 +151,6 @@ if ($method === 'POST' && !csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
 })();
 </script>
 <?php endif; ?>
+<?php publicShellFooter(); ?>
 </body>
 </html>

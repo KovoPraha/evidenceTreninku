@@ -43,7 +43,8 @@ if ($is_logged_in) {
 </script>
 <?php appUiAssets(); ?>
 <style>
-    .navbar .nav-link.active { color: #fff !important; border-bottom: 2px solid #0d6efd; }
+    .navbar .nav-link { border-bottom: 2px solid transparent; }
+    .navbar .nav-link.active { color: #fff !important; border-bottom-color: #0d6efd; }
     .dropdown-item.active { background-color: #e8f0fe !important; color: #0d6efd !important; }
 
     /* Povinná pole — vizuální indikátory */
@@ -59,7 +60,7 @@ if ($is_logged_in) {
     .was-validated textarea:invalid { border-left: 3px solid #dc3545 !important; }
 
     /* Mobilní použitelnost — globální */
-    @media (max-width: 991.98px) {
+    @media (max-width: 1399.98px) {
         /* Větší touch targets na malých obrazovkách */
         .btn { min-height: 44px; }
         .btn-sm { min-height: 38px; }
@@ -215,7 +216,7 @@ if ($is_logged_in) {
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
                 <li class="nav-item">
                     <a class="nav-link<?= _navActive('index.php') ?>" href="index.php"><i class="bi bi-house me-1"></i>Domů</a>
                 </li>
@@ -482,7 +483,7 @@ if ($is_logged_in) {
 
             <?php if ($is_logged_in): ?>
             <!-- Globální hledání -->
-            <div id="globalSearchWrap" class="mx-lg-3 my-2 my-lg-0" role="search">
+            <div id="globalSearchWrap" class="mx-xxl-3 my-2 my-xxl-0" role="search">
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-transparent border-end-0" style="border-color:rgba(255,255,255,.2);">
                         <i class="bi bi-search text-white-50"></i>
@@ -499,7 +500,7 @@ if ($is_logged_in) {
             </div>
             <?php endif; ?>
 
-            <ul class="navbar-nav align-items-lg-center gap-1">
+            <ul class="navbar-nav align-items-xxl-center gap-1">
                 <!-- Tmavý režim + zkratky -->
                 <li class="nav-item d-flex align-items-center gap-1">
                     <?php if ($is_logged_in): ?>

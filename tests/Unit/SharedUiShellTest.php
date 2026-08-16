@@ -65,6 +65,81 @@ final class SharedUiShellTest extends TestCase
         self::assertSame([], $missing, 'Pages including hlavicka.php without their own Bootstrap CSS link: ' . implode(', ', $missing));
     }
 
+    public function testBootstrapJavascriptIsEmittedOnceBySharedAssets(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $helper = (string)file_get_contents($root . '/includes/ui_shell.php');
+        self::assertSame(1, substr_count($helper, 'bootstrap.bundle.min.js'));
+
+        $manualCopies = [];
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)
+        );
+        foreach ($iterator as $file) {
+            if (!$file->isFile() || $file->getExtension() !== 'php') {
+                continue;
+            }
+            $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
+            if (preg_match('#^(vendor|tests|migrations|scripts|docs|var|\.agents)/#', $relative) === 1
+                || $relative === 'includes/ui_shell.php'
+            ) {
+                continue;
+            }
+            if (str_contains((string)file_get_contents($file->getPathname()), 'bootstrap.bundle.min.js')) {
+                $manualCopies[] = $relative;
+            }
+        }
+
+        self::assertSame([], $manualCopies, 'Pages loading Bootstrap JS manually: ' . implode(', ', $manualCopies));
+    }
+
+    public function testNavbarBreakpointsStayAlignedWithXxlExpansion(): void
+    {
+        $header = (string)file_get_contents(dirname(__DIR__, 2) . '/hlavicka.php');
+
+        foreach ([
+            '@media (max-width: 1399.98px)',
+            'mb-2 mb-xxl-0',
+            'mx-xxl-3 my-2 my-xxl-0',
+            'align-items-xxl-center',
+            '.navbar .nav-link { border-bottom: 2px solid transparent; }',
+        ] as $expected) {
+            self::assertStringContainsString($expected, $header);
+        }
+        self::assertStringNotContainsString('@media (max-width: 991.98px)', $header);
+    }
+
+    public function testReportedStandalonePagesHaveSharedNavigationAndFooter(): void
+    {
+        $root = dirname(__DIR__, 2);
+        foreach ([
+            'booking/verejny_profil.php',
+            'booking/moje_objednavky.php',
+            'booking/objednavka.php',
+            'booking/potvrdit.php',
+            'booking/overeni.php',
+            'booking/nove_heslo.php',
+            'booking/zapomenute_heslo.php',
+        ] as $relative) {
+            $source = (string)file_get_contents($root . '/' . $relative);
+            self::assertStringContainsString('publicShellNav();', $source, $relative);
+            self::assertStringContainsString('publicShellFooter();', $source, $relative);
+        }
+
+        self::assertStringContainsString(
+            "include __DIR__ . '/hlavicka.php';",
+            (string)file_get_contents($root . '/program_skupiny.php')
+        );
+    }
+
+    public function testPublicAccountMenuUsesBootstrapDropdown(): void
+    {
+        $helper = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/ui_shell.php');
+        self::assertStringContainsString('data-bs-toggle="dropdown"', $helper);
+        self::assertStringContainsString('dropdown-menu dropdown-menu-end', $helper);
+        self::assertStringNotContainsString('<details class="acct-menu', $helper);
+    }
+
     public function testPublicPortalEntrypointsUseOneNavigation(): void
     {
         $root = dirname(__DIR__, 2);

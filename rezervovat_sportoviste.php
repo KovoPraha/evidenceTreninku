@@ -395,7 +395,7 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
     </div><!-- /row -->
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 (() => {
     const kapInput = document.getElementById('kapacita');

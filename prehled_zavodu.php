@@ -300,7 +300,7 @@ $monthLabels = [1=>'1 měsíc', 2=>'2 měsíce', 6=>'6 měsíců', 12=>'12 měs�
     <?php endif; ?>
 
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 document.getElementById('skupina').addEventListener('change', function () {
     fetch('nacti_podskupiny.php?skupina_id=' + this.value)

@@ -118,6 +118,6 @@ $activeCount = count(array_filter($products, static fn (array $product): bool =>
 
     <?php if ($events !== []): ?><div class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Audit aktivací</div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Čas</th><th>Produkt</th><th>Akce</th><th>Stav</th><th>Kdo</th><th>Důvod</th></tr></thead><tbody><?php foreach ($events as $event): ?><tr><td><?= publicationAdminH($event['created_at']) ?></td><td><?= publicationAdminH($event['product_name']) ?></td><td><?= publicationAdminH($event['action']) ?></td><td><?= publicationAdminH(($event['from_status'] ?: 'nový') . ' → ' . $event['to_status']) ?></td><td><?= publicationAdminH($event['actor_name'] ?: '#' . $event['actor_trainer_id']) ?></td><td><?= publicationAdminH($event['note']) ?></td></tr><?php endforeach; ?></tbody></table></div></div><?php endif; ?>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

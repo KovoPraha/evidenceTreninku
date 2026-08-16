@@ -150,7 +150,7 @@ $otevrene = $pdo->query("
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 // Řidič: zobrazit textové pole
 document.getElementById('ridic_id').addEventListener('change', function() {

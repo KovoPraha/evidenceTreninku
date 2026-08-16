@@ -123,6 +123,7 @@ function formatDatum(string $datum, array $czDay, array $czMonth): string {
     </style>
 </head>
 <body>
+<?php include __DIR__ . '/hlavicka.php'; ?>
 
 <div class="page-header">
     <div class="container">
@@ -252,6 +253,6 @@ function formatDatum(string $datum, array $czDay, array $czMonth): string {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

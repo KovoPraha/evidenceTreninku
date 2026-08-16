@@ -982,7 +982,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 
 </div><!-- /container -->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 (function () {
     const HASH        = <?= json_encode($hash,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;

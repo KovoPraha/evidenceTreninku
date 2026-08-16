@@ -41,7 +41,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Nové heslo — Kovopraha</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><?php appUiAssets(); ?></head>
-<body class="bg-light"><main class="container py-5" style="max-width:480px"><div class="card shadow-sm"><div class="card-body p-4">
+<body class="bg-light"><?php publicShellNav(); ?><main class="container py-5" style="max-width:480px"><div class="card shadow-sm"><div class="card-body p-4">
 <h1 class="h4">Nastavení nového hesla</h1>
 <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></div><?php endforeach; ?>
 <?php if ($success): ?><div class="alert alert-success">Heslo bylo změněno. Všechna starší přihlášení byla odhlášena.</div><a class="btn btn-primary w-100" href="prihlaseni.php">Přejít na přihlášení</a>
@@ -54,4 +54,4 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 const fragment = new URLSearchParams(window.location.hash.slice(1));
 document.getElementById('password-reset-token').value = fragment.get('token') || '';
 if (window.location.hash) history.replaceState(null, '', window.location.pathname);
-</script><?php endif; ?></body></html>
+</script><?php endif; ?><?php publicShellFooter(); ?></body></html>

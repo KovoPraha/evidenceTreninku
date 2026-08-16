@@ -27,6 +27,7 @@ function appUiAssets(): void
     $js = htmlspecialchars(appUiUrl('assets/app-ui.js') . '?v=' . rawurlencode($jsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">';
     echo '<link href="' . $css . '" rel="stylesheet">';
+    echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>';
     echo '<script defer src="' . $js . '"></script>';
 }
 
@@ -59,16 +60,16 @@ function publicShellNav(string $active = ''): void
           <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
             <?php if ($customer): ?>
               <a class="btn btn-outline-primary btn-sm" href="sportovni_prehled.php"><i class="bi bi-person-heart me-1"></i>Můj přehled</a>
-              <details class="acct-menu position-relative d-inline-block">
-                <summary class="btn btn-outline-secondary btn-sm"><i class="bi bi-person-circle me-1"></i>Můj účet</summary>
-                <ul>
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle me-1"></i>Můj účet</button>
+                <ul class="dropdown-menu dropdown-menu-end">
                   <li><a class="dropdown-item" href="verejny_profil.php">Profil</a></li>
                   <li><a class="dropdown-item" href="moje_osoby.php">Moje osoby</a></li>
                   <li><a class="dropdown-item" href="moje_programy.php">Moje kroužky</a></li>
                   <li><a class="dropdown-item" href="moje_rezervace.php">Rezervace</a></li>
                   <li><a class="dropdown-item" href="moje_objednavky.php">Objednávky</a></li>
                 </ul>
-              </details>
+              </div>
             <?php endif; ?>
             <?php if ($athlete): ?>
               <a class="btn btn-outline-primary btn-sm" href="muj_sport.php"><i class="bi bi-activity me-1"></i>Můj sport</a>

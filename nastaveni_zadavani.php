@@ -318,7 +318,7 @@ try {
     </div><!-- /row -->
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 // Předvolby tlačítka — nastaví přímo počet dní
 document.querySelectorAll('.preset-btn[data-days]').forEach(btn => {

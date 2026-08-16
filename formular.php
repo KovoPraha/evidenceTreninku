@@ -1297,7 +1297,7 @@ if (DUPLIKAT && DUPLIKAT.skupina_id) {
     sync();
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 // ── Upozornění na neuložené změny ────────────────────────────────────────
 (() => {
