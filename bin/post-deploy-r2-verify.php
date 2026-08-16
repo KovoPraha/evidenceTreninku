@@ -114,6 +114,7 @@ if (!is_string($cookieFile)) {
 }
 chmod($cookieFile, 0600);
 
+$stage = 'connect';
 try {
     $pdo = new PDO(
         'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
@@ -126,6 +127,7 @@ try {
         ]
     );
 
+    $stage = 'schema';
     $requiredTables = [
         'athlete_registration_request_details',
         'athlete_registration_consent_snapshots',
@@ -152,6 +154,7 @@ try {
         'all_tables_present' => $foundTables === $requiredTables,
     ];
 
+    $stage = 'private_file_candidates';
     $receiptCandidate = postDeployFileCandidate(
         $pdo,
         "SELECT id,obrazek_path FROM ucto_uctenky WHERE obrazek_path IS NOT NULL AND obrazek_path<>'' ORDER BY id DESC LIMIT 50",
@@ -163,6 +166,7 @@ try {
         'cesta'
     );
 
+    $stage = 'sensitive_config';
     $keysMissing = false;
     try {
         personSensitiveConfig();
@@ -170,6 +174,7 @@ try {
         $keysMissing = true;
     }
 
+    $stage = 'admin_http_login';
     $loginPage = postDeployHttp($webUrl . '/login.php', $cookieFile);
     $login = postDeployHttp($webUrl . '/login.php', $cookieFile, 'POST', [
         'csrf_token' => postDeployCsrf($loginPage['body']),
@@ -231,6 +236,7 @@ try {
             && strlen($download['body']) > 0;
     }
 
+    $stage = 'planner';
     $monday = (new DateTimeImmutable('monday this week'))->format('Y-m-d');
     $sunday = (new DateTimeImmutable($monday))->modify('+6 days')->format('Y-m-d');
     $targetedStatement = $pdo->prepare(
@@ -242,6 +248,7 @@ try {
     $targetedAnnouncements = (int)$targetedStatement->fetchColumn();
     $planner = postDeployHttp($webUrl . '/planovac.php', $cookieFile);
 
+    $stage = 'navigation_pages';
     $latestTrainingId = (int)($pdo->query('SELECT MAX(id) FROM treninky')->fetchColumn() ?: 0);
     $ordersPage = postDeployHttp($webUrl . '/eshop_orders_admin.php', $cookieFile);
     $editPage = $latestTrainingId > 0
@@ -250,6 +257,7 @@ try {
 
     $publicProfile = postDeployHttp($webUrl . '/booking/verejny_profil.php', $cookieFile);
 
+    $stage = 'person_match';
     $person = $pdo->query(
         "SELECT id,jmeno,prijmeni,narozeni FROM sportovci WHERE narozeni IS NOT NULL AND narozeni<>'0000-00-00' ORDER BY id LIMIT 1"
     )->fetch(PDO::FETCH_ASSOC);
@@ -258,12 +266,14 @@ try {
         && $personMatch['level'] === PERSON_MATCH_EXACT
         && in_array((int)$person['id'], array_map('intval', array_column($personMatch['candidates'], 'id')), true);
 
+    $stage = 'venue_calendar';
     $calendarFrom = (new DateTimeImmutable('-90 days'))->format('Y-m-d');
     $calendarTo = (new DateTimeImmutable('+90 days'))->format('Y-m-d');
     $unreservedPlans = venueCalendarUnreservedPlans($pdo, $calendarFrom, $calendarTo);
     $planIds = array_map(static fn(array $row): int => (int)$row['id'], $unreservedPlans);
     $venueCalendarUnique = count($planIds) === count(array_unique($planIds));
 
+    $stage = 'kis_sync';
     $syncMinRoleStatement = $pdo->prepare("SELECT min_role FROM opravneni WHERE klic='sync_evidence' LIMIT 1");
     $syncMinRoleStatement->execute();
     $syncMinRole = (string)$syncMinRoleStatement->fetchColumn();
@@ -359,7 +369,7 @@ try {
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL;
     exit($hardFailures === [] ? 0 : 1);
 } catch (Throwable $exception) {
-    fwrite(STDERR, 'post_deploy_r2_failed:' . get_class($exception) . "\n");
+    fwrite(STDERR, 'post_deploy_r2_failed:' . $stage . ':' . get_class($exception) . "\n");
     exit(1);
 } finally {
     @unlink($cookieFile);
