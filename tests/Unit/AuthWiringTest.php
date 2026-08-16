@@ -7,14 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class AuthWiringTest extends TestCase
 {
-    public function testDatabaseBootstrapTerminatesInvalidSessionRequest(): void
+    public function testDatabaseBootstrapRedirectsInvalidSessionToLogin(): void
     {
         $source = $this->source('db.php');
 
         self::assertStringContainsString('if (!auth_session_validate($pdo))', $source);
         self::assertStringContainsString('if (!velocotaSsoBridge($pdo))', $source);
-        self::assertStringContainsString('http_response_code(401);', $source);
-        self::assertStringContainsString("exit('Přihlášení již není platné.", $source);
+        self::assertStringContainsString("appUrl('booking/prihlaseni.php?session=expired')", $source);
+        self::assertStringContainsString("header('Location: '", $source);
+        self::assertStringNotContainsString("exit('Přihlášení již není platné.", $source);
     }
 
     public function testBothLoginFlowsUseRateLimitAndBindSessionVersion(): void
@@ -49,6 +50,29 @@ final class AuthWiringTest extends TestCase
         self::assertStringContainsString('catch (Throwable $exception)', $public);
         self::assertStringContainsString('auth_session_bind_public_user', $public);
         self::assertStringContainsString('Nesprávný email nebo heslo.', $public);
+        self::assertStringContainsString('Příliš mnoho pokusů o přihlášení.', $trainer);
+        self::assertStringContainsString('Příliš mnoho pokusů o přihlášení.', $public);
+    }
+
+    public function testAuthenticationPagesDisableBrowserCaching(): void
+    {
+        foreach ([
+            'login.php',
+            'booking/prihlaseni.php',
+            'booking/sportovec_prihlaseni.php',
+            'booking/zapomenute_heslo.php',
+            'booking/nove_heslo.php',
+        ] as $path) {
+            self::assertStringContainsString(
+                'app_session_send_auth_no_store_headers();',
+                $this->source($path),
+                $path
+            );
+        }
+
+        $sessionSecurity = $this->source('includes/session_security.php');
+        self::assertStringContainsString("header('Cache-Control: no-store');", $sessionSecurity);
+        self::assertStringContainsString("header('Pragma: no-cache');", $sessionSecurity);
     }
 
     public function testVerificationAndSsoBindVersionedIdentities(): void
@@ -80,6 +104,7 @@ final class AuthWiringTest extends TestCase
         $approval = $this->source('booking/potvrdit.php');
         $trainerLogout = $this->source('logout.php');
         $publicLogout = $this->source('booking/odhlaseni.php');
+        $athleteLogout = $this->source('booking/sportovec_odhlaseni.php');
 
         self::assertStringContainsString("appUrl('booking/overeni.php')", $registration);
         self::assertStringContainsString("'#token='", $registration);
@@ -98,6 +123,11 @@ final class AuthWiringTest extends TestCase
         self::assertStringContainsString('csrf_verify', $trainerLogout);
         self::assertStringContainsString("!== 'POST'", $publicLogout);
         self::assertStringContainsString('csrf_verify', $publicLogout);
+        self::assertStringContainsString('app_session_destroy();', $trainerLogout);
+        self::assertStringContainsString('app_session_destroy();', $publicLogout);
+        self::assertStringContainsString('app_session_destroy();', $athleteLogout);
+        self::assertStringNotContainsString('app_session_logout_public_identity();', $publicLogout);
+        self::assertStringNotContainsString('app_session_logout_child_identity();', $athleteLogout);
     }
 
     public function testBookingAndWaitlistFailClosedUnderTheSameSlotLock(): void

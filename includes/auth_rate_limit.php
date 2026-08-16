@@ -2,17 +2,21 @@
 declare(strict_types=1);
 
 defined('AUTH_RATE_LIMIT_MAX_ATTEMPTS') || define('AUTH_RATE_LIMIT_MAX_ATTEMPTS', 5);
+// Shared networks (families, clubs, schools) need more room than one account,
+// while the per-account limit remains deliberately strict.
+defined('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS') || define('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS', 20);
 defined('AUTH_RATE_LIMIT_WINDOW_SECONDS') || define('AUTH_RATE_LIMIT_WINDOW_SECONDS', 900);
 defined('AUTH_RATE_LIMIT_BLOCK_SECONDS') || define('AUTH_RATE_LIMIT_BLOCK_SECONDS', 900);
 
 /**
  * @param array<string, int> $overrides
- * @return array{max_attempts:int,window_seconds:int,block_seconds:int}
+ * @return array{max_attempts:int,ip_max_attempts:int,window_seconds:int,block_seconds:int}
  */
 function auth_rate_limit_policy(array $overrides = []): array
 {
     $policy = [
         'max_attempts' => (int)AUTH_RATE_LIMIT_MAX_ATTEMPTS,
+        'ip_max_attempts' => (int)AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS,
         'window_seconds' => (int)AUTH_RATE_LIMIT_WINDOW_SECONDS,
         'block_seconds' => (int)AUTH_RATE_LIMIT_BLOCK_SECONDS,
     ];
@@ -186,9 +190,13 @@ function auth_rate_limit_reserve_attempt(
                 ];
             }
 
+            $maxAttempts = $dimension === 'ip'
+                ? $policy['ip_max_attempts']
+                : $policy['max_attempts'];
+
             if ($row['blocked_until'] > $now) {
                 $allowed = false;
-            } elseif ($row['attempts'] >= $policy['max_attempts']) {
+            } elseif ($row['attempts'] >= $maxAttempts) {
                 $row['blocked_until'] = $now + $policy['block_seconds'];
                 $allowed = false;
             }
@@ -293,7 +301,7 @@ function auth_rate_limit_record_success(
                 $deleteIp->execute(['scope' => $scope, 'key_hash' => $keys['ip']]);
             } else {
                 $attempts--;
-                if ($attempts < $policy['max_attempts']) {
+                if ($attempts < $policy['ip_max_attempts']) {
                     $blockedUntil = 0;
                 }
 

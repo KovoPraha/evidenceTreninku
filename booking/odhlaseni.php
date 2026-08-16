@@ -13,10 +13,6 @@ if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
     exit('Neplatný CSRF token.');
 }
 
-if (isset($_SESSION['trener_id'])) {
-    app_session_destroy();
-} else {
-    app_session_logout_public_identity();
-}
+app_session_destroy();
 header('Location: kalendar.php', true, 303);
 exit;

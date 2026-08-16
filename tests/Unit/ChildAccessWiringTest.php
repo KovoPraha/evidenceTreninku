@@ -50,7 +50,8 @@ final class ChildAccessWiringTest extends TestCase
         $logout = $this->source('booking/sportovec_odhlaseni.php');
         self::assertStringContainsString("!== 'POST'", $logout);
         self::assertStringContainsString('csrf_verify', $logout);
-        self::assertStringContainsString('app_session_logout_child_identity', $logout);
+        self::assertStringContainsString('app_session_destroy();', $logout);
+        self::assertStringNotContainsString('app_session_logout_child_identity', $logout);
     }
 
     public function testMigrationUsesOneToOnePersonAndRevocationVersion(): void

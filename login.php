@@ -7,6 +7,7 @@ require_once __DIR__ . '/includes/session_security.php';
  * číslovaná bezpečnostní migrace před aktivací tohoto kódu.
  */
 app_session_start();
+app_session_send_auth_no_store_headers();
 
 // Pokud je již přihlášen, přesměruj rovnou
 if (isset($_SESSION['trener_id'])) {
@@ -97,8 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php');
                 exit;
             } else {
-                // Úmyslně neurčitá zpráva – neprozrazuje, zda přihlašovací údaj existuje
-                $error = 'Neplatné přihlašovací jméno / email nebo heslo.';
+                $error = $rateAllowed
+                    // Úmyslně neurčitá zpráva – neprozrazuje, zda přihlašovací údaj existuje.
+                    ? 'Neplatné přihlašovací jméno / email nebo heslo.'
+                    : 'Příliš mnoho pokusů o přihlášení. Zkuste to prosím znovu za několik minut.';
             }
         } catch (Throwable $e) {
             // Nezobrazujeme detaily autentizační ani DB chyby uživateli.

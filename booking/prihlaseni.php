@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
+app_session_send_auth_no_store_headers();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/auth_rate_limit.php';
@@ -12,7 +13,9 @@ if (isset($_SESSION['verejny_uzivatel_id'])) {
     header('Location: kalendar.php'); exit;
 }
 
-$errors = [];
+$errors = isset($_GET['session']) && $_GET['session'] === 'expired'
+    ? ['Přihlášení již není platné. Přihlaste se znovu.']
+    : [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -32,7 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (!$rateAllowed || $identity === null) {
-                $errors[] = 'Nesprávný email nebo heslo.';
+                $errors[] = $rateAllowed
+                    ? 'Nesprávný email nebo heslo.'
+                    : 'Příliš mnoho pokusů o přihlášení. Zkuste to prosím znovu za několik minut.';
             } elseif (!$identity['public']['email_overeno']) {
                 auth_rate_limit_record_success($pdo, $rateScope, $email, $clientIp);
                 $errors[] = 'Email není ověřen. Zkontrolujte svou schránku.';

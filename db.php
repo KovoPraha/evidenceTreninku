@@ -40,12 +40,11 @@ require_once __DIR__ . '/includes/auto_migrace.php';
 // Při neplatnosti request ukončíme: část legacy endpointů autorizuje ještě před db.php.
 require_once __DIR__ . '/includes/auth_session.php';
 if (!auth_session_validate($pdo)) {
-    http_response_code(401);
     if (!headers_sent()) {
-        header('Cache-Control: no-store');
-        header('Content-Type: text/plain; charset=utf-8');
+        app_session_send_auth_no_store_headers();
+        header('Location: ' . appUrl('booking/prihlaseni.php?session=expired'), true, 303);
     }
-    exit('Přihlášení již není platné. Přihlaste se znovu.');
+    exit;
 }
 
 // Legacy Velocota bridge není součástí cílové architektury Evidence.
@@ -54,12 +53,11 @@ if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {
     require_once __DIR__ . '/auth/sso_bridge.php';
     if (session_status() === PHP_SESSION_NONE) app_session_start();
     if (!velocotaSsoBridge($pdo)) {
-        http_response_code(401);
         if (!headers_sent()) {
-            header('Cache-Control: no-store');
-            header('Content-Type: text/plain; charset=utf-8');
+            app_session_send_auth_no_store_headers();
+            header('Location: ' . appUrl('booking/prihlaseni.php?session=expired'), true, 303);
         }
-        exit('Přihlášení již není platné. Přihlaste se znovu.');
+        exit;
     }
 }
 ?>

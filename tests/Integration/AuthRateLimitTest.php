@@ -14,10 +14,12 @@ final class AuthRateLimitTest extends TestCase
     {
         self::assertSame([
             'max_attempts' => 5,
+            'ip_max_attempts' => 20,
             'window_seconds' => 900,
             'block_seconds' => 900,
         ], \auth_rate_limit_policy());
         self::assertSame(3, \auth_rate_limit_policy(['max_attempts' => 3])['max_attempts']);
+        self::assertSame(12, \auth_rate_limit_policy(['ip_max_attempts' => 12])['ip_max_attempts']);
     }
 
     public function testPepperIsRequiredAndMustHaveAtLeastThirtyTwoCharacters(): void
@@ -50,17 +52,46 @@ final class AuthRateLimitTest extends TestCase
         self::assertFalse(\auth_rate_limit_reserve_attempt($pdo, $scope, $email, $ip, 1005));
         self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM auth_login_limits')->fetchColumn());
 
-        $rows = $pdo->query(
-            'SELECT scope, key_hash, attempts, blocked_until FROM auth_login_limits ORDER BY key_hash'
-        )->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($rows as $row) {
-            self::assertSame($scope, $row['scope']);
-            self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/D', (string)$row['key_hash']);
-            self::assertStringNotContainsString(strtolower($email), (string)$row['key_hash']);
-            self::assertStringNotContainsString($ip, (string)$row['key_hash']);
-            self::assertSame(5, (int)$row['attempts']);
-            self::assertSame(1905, (int)$row['blocked_until']);
+        $keys = \auth_rate_limit_keys($scope, $email, $ip);
+        $select = $pdo->prepare(
+            'SELECT attempts, blocked_until FROM auth_login_limits WHERE scope=? AND key_hash=?'
+        );
+        $select->execute([$scope, $keys['identifier']]);
+        self::assertSame(
+            ['attempts' => 5, 'blocked_until' => 1905],
+            array_map('intval', $select->fetch(PDO::FETCH_ASSOC))
+        );
+        $select->execute([$scope, $keys['ip']]);
+        self::assertSame(
+            ['attempts' => 5, 'blocked_until' => 0],
+            array_map('intval', $select->fetch(PDO::FETCH_ASSOC))
+        );
+    }
+
+    public function testSharedIpAllowsSeveralAccountsBeforeItsHigherThresholdBlocks(): void
+    {
+        $pdo = $this->database();
+        $policy = ['max_attempts' => 5, 'ip_max_attempts' => 20];
+
+        for ($attempt = 0; $attempt < 20; $attempt++) {
+            self::assertTrue(\auth_rate_limit_reserve_attempt(
+                $pdo,
+                'public_login',
+                'person-' . $attempt . '@example.test',
+                '192.0.2.99',
+                1000 + $attempt,
+                $policy
+            ));
         }
+
+        self::assertFalse(\auth_rate_limit_reserve_attempt(
+            $pdo,
+            'public_login',
+            'person-21@example.test',
+            '192.0.2.99',
+            1020,
+            $policy
+        ));
     }
 
     public function testSuccessClearsAccountAndRefundsOnlyItsSharedIpReservation(): void

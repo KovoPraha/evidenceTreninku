@@ -16,6 +16,16 @@ const APP_SESSION_AUTHENTICATED_AT = '__app_authenticated_at';
 const APP_SESSION_LAST_ACTIVITY_AT = '__app_last_activity_at';
 const APP_SESSION_ROTATED_AT = '__app_rotated_at';
 
+function app_session_send_auth_no_store_headers(): void
+{
+    if (headers_sent()) {
+        return;
+    }
+
+    header('Cache-Control: no-store');
+    header('Pragma: no-cache');
+}
+
 /** @param array<string, mixed>|null $server */
 function app_session_request_is_local(?array $server = null, ?string $platform = null): bool
 {

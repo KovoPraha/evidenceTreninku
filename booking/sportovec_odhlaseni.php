@@ -35,6 +35,6 @@ if ($accessAccountId !== false && childAccessIdentity($pdo, (int)$accessAccountI
         error_log('Athlete logout audit failed: ' . $exception->getMessage());
     }
 }
-app_session_logout_child_identity();
+app_session_destroy();
 header('Location: sportovec_prihlaseni.php', true, 303);
 exit;
