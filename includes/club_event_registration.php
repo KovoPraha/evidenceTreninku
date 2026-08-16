@@ -80,11 +80,19 @@ function clubEventConfigureRegistrationTerms(
         } else {
             $insertVersion = $pdo->prepare(
                 'INSERT INTO club_event_term_versions '
-                . '(event_id,terms_version,consent_text_plain,cancellation_policy_plain, '
-                . 'cancellation_deadline_at,actor_trainer_id) VALUES (?,?,?,?,?,?)'
+                . '(scope_type,scope_key,consent_purpose,event_id,terms_version,consent_text_plain, '
+                . 'cancellation_policy_plain,cancellation_deadline_at,actor_trainer_id,actor_type,actor_id) '
+                . "VALUES ('club_event',?,'club_event_registration',?,?,?,?,?,?,'trainer',?)"
             );
             $insertVersion->execute([
-                $eventId, $termsVersion, $consentText, $cancellationPolicy, $deadline, $actorTrainerId,
+                'event:' . $eventId,
+                $eventId,
+                $termsVersion,
+                $consentText,
+                $cancellationPolicy,
+                $deadline,
+                $actorTrainerId,
+                $actorTrainerId,
             ]);
         }
 

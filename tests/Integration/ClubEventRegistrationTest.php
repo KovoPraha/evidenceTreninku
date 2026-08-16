@@ -13,6 +13,55 @@ require_once dirname(__DIR__, 2) . '/includes/shop_checkout.php';
 
 final class ClubEventRegistrationTest extends TestCase
 {
+    public function testConfiguringTermsAfterScopedRegistryMigrationStoresEventScope(): void
+    {
+        $pdo = $this->database();
+        $event = \clubEventCreateDraft($pdo, 7, $this->eventInput(2));
+        $year = (int)date('Y') + 1;
+        \clubEventAddSession(
+            $pdo,
+            (int)$event['id'],
+            7,
+            $year . '-09-02T16:00',
+            $year . '-09-02T17:00',
+            'Velodrom',
+            2
+        );
+
+        \clubEventConfigureRegistrationTerms(
+            $pdo,
+            (int)$event['id'],
+            7,
+            'scoped.1',
+            'Souhlasím s účastí dítěte.',
+            'Bezplatné storno je možné do uvedeného termínu.',
+            $year . '-08-30T16:00',
+            true
+        );
+
+        $statement = $pdo->prepare(
+            'SELECT scope_type,scope_key,consent_purpose,event_id,terms_version,actor_trainer_id,actor_type,actor_id '
+            . 'FROM club_event_term_versions WHERE event_id=? AND terms_version=?'
+        );
+        $statement->execute([(int)$event['id'], 'scoped.1']);
+        self::assertSame([
+            'scope_type' => 'club_event',
+            'scope_key' => 'event:' . $event['id'],
+            'consent_purpose' => 'club_event_registration',
+            'event_id' => (int)$event['id'],
+            'terms_version' => 'scoped.1',
+            'actor_trainer_id' => 7,
+            'actor_type' => 'trainer',
+            'actor_id' => 7,
+        ], $statement->fetch(PDO::FETCH_ASSOC));
+        self::assertSame(
+            4,
+            (int)$pdo->query(
+                "SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration'"
+            )->fetchColumn()
+        );
+    }
+
     public function testAdminParticipantExportHasStableContractAuditAndSpreadsheetProtection(): void
     {
         $pdo = $this->database();
@@ -377,7 +426,9 @@ final class ClubEventRegistrationTest extends TestCase
         } catch (\ClubEventRegistrationException $exception) {
             self::assertStringContainsString('novou verzi',$exception->getMessage());
         }
-        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_event_term_versions')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query(
+            'SELECT COUNT(*) FROM club_event_term_versions WHERE event_id=' . $event['id']
+        )->fetchColumn());
         $pdo->exec("UPDATE shop_variants SET price_mode='fixed',amount_minor=100 WHERE id=601");
         try {
             \clubEventOpenFreeRegistration($pdo,$event['id'],7,'Cena se změnila.',true);
@@ -539,6 +590,7 @@ final class ClubEventRegistrationTest extends TestCase
             '20260804210000_shop_order_expiration.php',
             '20260804230000_club_event_shop.php',
             '20260816170000_shop_payment_received_notification.php',
+            '20260816180000_registration_terms_scope.php',
             '20260809090000_stripe_checkout.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;

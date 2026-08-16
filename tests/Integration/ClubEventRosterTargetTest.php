@@ -175,6 +175,7 @@ final class ClubEventRosterTargetTest extends TestCase
             '20260803210000_club_event_notification_admin.php',
             '20260804090000_kis_teams_rosters.php',
             '20260804150000_club_event_roster_targets.php',
+            '20260816180000_registration_terms_scope.php',
         ] as $file) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $file;
             $migration['up']($pdo);
