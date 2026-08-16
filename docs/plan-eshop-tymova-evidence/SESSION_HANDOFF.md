@@ -1,5 +1,60 @@
 # Session handoff
 
+## Aktualizace 16. 8. 2026 — Prompt B R3: samoobslužná registrace sportovce (`3918dc2`)
+
+### Dokončený výsledek
+
+- Vlastník potvrdil bod 9. Migrace
+  `20260816180000_registration_terms_scope` zobecňuje jediný K3 registr
+  `club_event_term_versions` o `scope_type`, `scope_key` a
+  `consent_purpose`, zachovává staré eventové řádky a jejich identity a ukládá
+  čtyři neměnné verze registračních textů. Nevznikla syntetická klubová událost,
+  paralelní registr ani falešné ID trenéra; registrační texty mají aktéra
+  `system`.
+- `includes/athlete_registration.php` zapisuje Tok A do jediné existující
+  fronty `account_person_claim_requests` s druhem `athlete_registration`.
+  Vyžaduje aktivní účet s ověřeným e-mailem, vztah guardian pro nezletilého a
+  self pro dospělého, povinný kontakt a úplnou adresu, přesný snapshot všech
+  textů, explicitní větev cizince bez přiděleného českého RČ a stabilní
+  idempotenci. Veřejná větev nikdy nevolá matcher ani nehledá kandidáty.
+- RČ se ve stejné transakci ukládá výhradně přes `person-sensitive-v1`.
+  Cizinec s `has_czech_birth_number=false` nemá žádný citlivý řádek ani
+  náhradní číslo. Volitelná interní fotografie se ukládá mimo webroot přes
+  existující privátní storage, má samostatný souhlas a při rollbacku se
+  bezpečně odstraní. Veřejný fotografický souhlas je oddělená explicitní
+  volba ano/ne.
+- `booking/registrace_sportovce.php` poskytuje CSRF, PRG, `no-store`,
+  `no-referrer`, neutrální úspěšnou odpověď a správu vlastních čekajících
+  žádostí. Citlivé pole se po chybě nikdy nepředvyplní. Odkaz vede z
+  `booking/moje_osoby.php`, které nyní používá i společný footer.
+- Zrušení čekající registrační žádosti je transakční, idempotentní a nastaví
+  předběžnou 30denní retenční lhůtu citlivému záznamu a stav řízené retence
+  soukromé fotografie.
+
+### Ověření a hranice
+
+- Plná sada po implementačním commitu: `592 tests`, `5163 assertions`; lint
+  `504` first-party PHP souborů. Composer validate/audit/platform je zelený.
+- Lokální MariaDB migrace prošla `check → apply → check`; katalog obsahuje 55
+  migrací a je aktuální. Izolované testy opakují migrace i submit, ověřují
+  transakční atomicitu, cizince bez RČ, šifrovaný český záznam, soukromou
+  fotografii, snapshoty, stale podmínky, neověřený účet, věkovou roli,
+  idempotenci a storno s retencí.
+- Živý localhost průchod v přihlášené relaci ověřil společnou navigaci,
+  vykreslení všech čtyř verzovaných textů, explicitní volby RČ/fotografií a
+  prázdnou historii. Formulář nebyl v uživatelské lokální DB odeslán; zápis
+  pokrývají izolované testy.
+- Produkční databáze, deploy, produkční klíče a aktivace nebyly změněny. R7
+  zůstává uzavřený. Konkrétní právní zdroj a konečné retenční lhůty zůstávají
+  povinnou branou až před produkční aktivací.
+
+### Následující řez
+
+- R4 rozšíří jedinou frontu `eshop_identity_admin.php`. Musí použít výhradně
+  sdílenou `personMatchV1()`, zobrazit všechny SHODA/P1–P4 kandidáty a bezpečný
+  signál blind indexu a v jedné transakci buď připojit existující osobu, nebo
+  založit novou přes již hotovou F7 cestu. R5/R6 a R7 se v R4 neotvírají.
+
 ## Aktualizace 16. 8. 2026 — Prompt D: oznámení zákazníkovi po přijetí platby
 
 ### Dokončený výsledek
