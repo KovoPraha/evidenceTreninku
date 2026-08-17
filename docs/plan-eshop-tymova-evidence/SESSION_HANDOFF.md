@@ -1,5 +1,96 @@
 # Session handoff
 
+## Aktualizace 17. 8. 2026 — Prompt E R3: prodejní životní cyklus programu (`79c84bb`)
+
+### Dokončený výsledek
+
+- Katalogový typ `program` je povolený pro ručně založený kroužek, aniž by se
+  změnila klasifikace importu: kategorie Shoptetu „Kroužky“ zůstává
+  `club_event`. Publikace programu je fail-closed a vyžaduje existující vazbu
+  na nabídku; `goods` si zachovává dosavadní pravidla a ostatní typy zůstávají
+  blokované.
+- Kruhová závislost z rozhodnutí 8 je rozseknutá společným serverovým výběrem
+  variant: koncept produktu i varianty lze nabídnout pouze pro typ `program`,
+  zatímco `goods` musí mít produkt i variantu nadále aktivní. Stejnou podmínku
+  znovu ověřuje transakční writer nabídky, takže úprava HTML ji nemůže obejít.
+  Přirozené pořadí je produkt v konceptu → nabídka → aktivace; samotná vazba
+  nic nezveřejní.
+- Storefront i checkout používají společnou fail-closed prodejnost programu.
+  Nabídka musí být aktivní, její program musí být aktivní, aktuální čas musí
+  ležet v prodejním okně, nesmí být po konci dne `ends_on` a počet aktivních
+  účastí musí být pod kapacitou. Časy se vyhodnocují výslovně v
+  `Europe/Prague`; neexistující lokální čas při přechodu na letní čas je
+  odmítnut. Běžné zboží se chová jako před R3.
+- Po skončení okna se `catalog_status` produktu nemění. Program zmizí ze
+  storefrontu, checkout jej znovu odmítne pod transakčním zámkem a administrace
+  zobrazí „Aktivní, ale bez platné nabídky.“ i konkrétní důvod. Nová aktivní
+  sezonní varianta s novou nabídkou vrátí tentýž produkt do prodeje bez další
+  publikace; stará varianta zůstane skrytá.
+- `clubProgramCreate()` a `clubProgramCreateOffer()` mají transakčně
+  skládatelná jádra `...InTransaction`. Nová aditivní a idempotentní tabulka
+  `club_program_events` zapisuje ve stejné transakci aktéra `trainer`, jeho ID,
+  akci a snapshot. Ownership kontrakt zálohy je `2026-08-17.1` a novou tabulku
+  vlastní ve stejném commitu.
+
+### Potvrzené volající a hranice navazujících řezů
+
+- `clubProgramOfferIsOnSale()` volají `booking/eshop.php` při přidání do
+  košíku, před vytvořením objednávky a při sestavení nabídky účastníků a
+  `booking/produkt.php` při filtrování variant i při POSTu přidání do košíku.
+  Všechny tyto cesty nyní sdílejí kontrolu `ends_on` a aktivní kapacity.
+- Závazné držení kapacity neuhrazenou objednávkou do
+  `shop_orders.payment_expires_at` patří do R6. Musí být lazy, transakčně
+  zamčené, zahrnuté do společného výpočtu dostupnosti a v administraci rozdělit
+  aktivní účasti od dosud platných rezervací. R3 záměrně počítá jen aktivní
+  účasti; tento známý mezistav nesmí být zaměněn za hotovou R6 kapacitu.
+- Nová sezona používá novou variantu stejného produktu/programu a zachovává
+  `UNIQUE(variant_id)`. Předvídatelné SKU `KP-<slug>-<rok><sezona>`, administrační
+  historie a automatické skrytí starých sezonních variant dokončí navazující
+  řezy; R3 už ověřuje, že stará neprodejná varianta se ve storefrontu neukáže.
+
+### Živý localhostový průchod a úklid
+
+- Administrátor nejprve viděl koncept `R3 BROWSER Rajčátka / program /
+  draft→draft` ve výběru nabídky, zatímco žádné konceptové `goods` ve výběru
+  nebylo. Samostatný program bez nabídky měl v publikaci přesný blokátor
+  „Program nemá navázanou žádnou nabídku.“ a neměl tlačítko Aktivovat.
+- Po založení stabilního programu a aktivní nabídky nad konceptovou variantou
+  šel produkt aktivovat. Objevil se ve storefrontu, detail zobrazil období,
+  SKU, cenu a tlačítko Přidat do košíku; vložení do košíku prošlo.
+- Po auditovaném posunutí konce prodeje do minulosti zmizela karta produktu ze
+  storefrontu. Položka zůstala v košíku pouze pro bezpečný recheck a pokus o
+  vytvoření objednávky skončil hláškou, že období už není v prodeji. DB
+  potvrdila nula objednávkových položek a produkt zůstal `active`; publikace
+  zobrazila „Aktivní, ale bez platné nabídky. Prodejní okno už skončilo.“
+- Nová aktivní varianta a nová nabídka vrátily produkt do storefrontu bez
+  opakované publikace. Detail ukázal jen novou variantu a staré SKU skryl.
+- Po ověření byly v jedné kontrolované transakci odstraněny 2 syntetické
+  produkty, 3 varianty, 1 program, 2 nabídky, testovací košíková položka a
+  související testovací audity/publikace. Nevznikla objednávka, platba, účast
+  ani členství. Následný DB dotaz i nové načtení storefrontu a administrace
+  potvrdily nulový zůstatek všech prefixů `R3-BROWSER`.
+
+### Brány a provozní hranice
+
+- Plná sada je `633 tests / 5541 assertions`, s jednou existující PHPUnit
+  deprecation. Lint prošel na 514 first-party PHP souborech;
+  `composer validate --strict`, `composer audit --locked` a
+  `composer check-platform-reqs` jsou zelené a `git diff --check` je čistý.
+- Lokální migrace prošla `check (jedna čekající R3) → apply → check (current)`
+  a katalog má 57/57 migrací. Úplný migrační a skutečný backup/restore smoke
+  se 111 tabulkami prošel na izolovaných přenosných serverech
+  `10.3.39-MariaDB` i `11.4.0-MariaDB`; obě testovací databáze odstranil
+  `finally`.
+- Implementace je samostatný commit `79c84bb`. Produkce a `origin/main`
+  zůstávají na `0e43a8b`; větev nebyla pushnuta, nic nebylo nasazeno a worktree
+  Promptu G na `e28abd6` zůstal nedotčený.
+
+### Další krok
+
+- Zahájit čistý R4 nad `79c84bb`. Kapacitní rezervace neuhrazených objednávek
+  zůstává závaznou součástí R6; po každém řezu zachovat plné brány, samostatný
+  implementační commit a samostatný handoff commit.
+
 ## Aktualizace 16. 8. 2026 — Prompt E R2: kolizní preflight katalogu (`24cc675`)
 
 ### Dokončený výsledek
