@@ -1,5 +1,67 @@
 # Session handoff
 
+## Aktualizace 17. 8. 2026 — Prompt E R7: verzované podmínky kroužku (`cddad4b`)
+
+### Dokončený výsledek
+
+- R7 používá existující registr `club_event_term_versions`; nevznikl druhý
+  číselník ani nová trvalá tabulka. Každý program má dvě oddělené verze:
+  storno podmínky a souhlas s účastí. Výchozí text patří programu a konkrétní
+  nabídka jej může samostatně přepsat. Tato hierarchie zachová opakovaně
+  použitelný program a dovolí odlišnost jedné sezóny bez kopírování obou
+  dokumentů.
+- Uložení vytvoří automaticky další verzi, dosavadní aktivní verzi archivuje s
+  časem a ID trenéra a historický text už nepřepisuje. Nabídka bez obou platných
+  efektivních dokumentů je fail-closed: program nelze publikovat a již aktivní
+  položka není prodejná.
+- Checkout zobrazuje oba dokumenty a vyžaduje výslovné potvrzení pro každý
+  program v košíku. Přesný snapshot ID verze, označení verze, textu a SHA-256
+  obou dokumentů se atomicky uloží k položce objednávky spolu s časem a účtem
+  rodiče. Po platbě se tentýž snapshot beze změny přenese k účasti. Otisk
+  košíku obsahuje podmínky, takže změna verze bezpečně zneplatní starou stránku.
+- Kompatibilita starších izolovaných testovacích schémat je záměrně vázaná na
+  přítomnost R7 sloupců: po aplikaci migrace je kontrola vždy přísná, zatímco
+  historické fixture bez migračního registru nadále ověřují jen starší vrstvy.
+  MariaDB deadlock z přesně synchronizovaného závodu se mapuje na stejné
+  srozumitelné fail-closed odmítnutí dostupnosti; žádný částečný zápis
+  nevznikne.
+
+### Regrese, živý localhostový průchod a úklid
+
+- Regrese ověřují blokaci publikace bez podmínek, povinný souhlas na serveru,
+  programový výchozí text i override nabídky, archivaci v1 po vzniku v2,
+  neměnnost již přijatého snapshotu a jeho přesný přenos do účasti po platbě.
+- V prohlížeči vznikl koncept `R7 BROWSER SOUHLAS` / `KP-R7-BROWSER`, program a
+  nabídka. Administrátor přes UI uložil obě v1, produkt publikoval a rodič na
+  storefrontu viděl oba dokumenty. Bez zaškrtnutí objednávka nevznikla; po
+  potvrzení vznikla objednávka `KP260817D350AFCAEB` a DB doložila snapshot
+  v1/v1 s účtem rodiče. Následná editace souhlasu vytvořila v2, archivovala v1
+  s trenérem 43 a původní objednávka si ponechala přesný text v1.
+- Syntetický produkt, varianta, publikace a audity, program, nabídka, termíny,
+  objednávka, položka, platba, košík i dočasná vazba osoby byly odstraněny v
+  kontrolované transakci. Souhrnný SELECT potvrdil ve všech skupinách nulový
+  zůstatek.
+
+### Brány a provozní hranice
+
+- Plná sada je `644 tests / 5785 assertions`, s jednou existující PHPUnit
+  deprecation. Lint prošel na 523 first-party PHP souborech. `composer validate
+  --strict`, `composer audit --locked`, `composer check-platform-reqs` a
+  `git diff --check` jsou zelené.
+- Lokální migrace prošla `check → apply → check` a katalog je current 60/60.
+  Úplný backup/restore smoke všech 112 vlastněných tabulek i souběžný checkout
+  posledního místa prošly na `10.3.39-MariaDB` i `11.4.0-MariaDB`; dočasné
+  servery byly ukončeny. Protože R7 nepřidává tabulku, ownership kontrakt
+  zálohy se nemění.
+- Implementace je commit `cddad4b062088fb1e414e965e397fb6df6de5db8`.
+  Produkce, `origin/main`, Prompt G, push i deploy zůstaly beze změny.
+
+### Další krok
+
+- Zahájit čistý R8: transakční průvodce „Vypsat kroužek“, který spojí katalog,
+  nabídku, podmínky a cílovou soupisku a zakončí se povinným kompletním živým
+  průchodem před kontrolním bodem.
+
 ## Aktualizace 17. 8. 2026 — Prompt E R6: ročníky a skutečná kapacita (`df0f4e1`)
 
 ### Dokončený výsledek
