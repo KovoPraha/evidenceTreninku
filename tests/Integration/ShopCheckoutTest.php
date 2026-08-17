@@ -128,8 +128,9 @@ final class ShopCheckoutTest extends TestCase
             $now->modify('-1 day')->format('Y-m-d'),$now->modify('+5 days')->format('Y-m-d'),
             $now->modify('-1 day')->format('Y-m-d H:i:s'),$now->modify('+1 day')->format('Y-m-d H:i:s'),
         ]);
+        $pdo->exec("INSERT INTO account_person_roles VALUES(2,10,90,'guardian','approved','2020-01-01',NULL)");
         self::assertContains(604,array_map('intval',array_column(\shopStorefrontProducts($pdo),'variant_id')));
-        \shopCartSetQuantity($pdo,10,604,1);$fingerprint=\shopCartDetail($pdo,10)['fingerprint'];
+        \shopCartSetQuantity($pdo,10,604,1,90);$fingerprint=\shopCartDetail($pdo,10)['fingerprint'];
         $pdo->prepare('UPDATE club_program_offers SET sales_close_at=?')->execute([$now->modify('-1 second')->format('Y-m-d H:i:s')]);
         try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$fingerprint);self::fail('Closed program offer must fail again inside checkout transaction.');}
         catch(\ShopCheckoutException $exception){self::assertStringContainsString('není dostupná',$exception->getMessage());}
@@ -277,6 +278,7 @@ final class ShopCheckoutTest extends TestCase
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
         $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,email TEXT,aktivni INTEGER,email_overeno INTEGER)');
         $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT)');$pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");
+        $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,narozeni TEXT NULL)');$pdo->exec("INSERT INTO sportovci VALUES(90,'Testovací','Dítě','2017-01-01')");
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES(10,'Rodič','Test','parent@example.test',1,1),(11,'Cizí','Účet','foreign@example.test',1,1)");
         $pdo->exec('CREATE TABLE shop_products(id INTEGER PRIMARY KEY,offer_type TEXT,catalog_status TEXT)');
         $pdo->exec("INSERT INTO shop_products VALUES(501,'goods','active'),(502,'club_event','active'),(503,'goods','inactive')");
@@ -290,6 +292,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
         $pdo->exec('CREATE TABLE club_event_notification_events(id INTEGER PRIMARY KEY AUTOINCREMENT,notification_id INTEGER NOT NULL,actor_trainer_id INTEGER NOT NULL,action TEXT NOT NULL,from_status TEXT NOT NULL,attempts_before INTEGER NOT NULL,reason TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)');
         $pdo->exec('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER)');$pdo->exec("INSERT INTO shop_product_categories VALUES(1,501,'Oblečení',1,0)");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php','20260809090000_stripe_checkout.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php','20260809090000_stripe_checkout.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

@@ -17,7 +17,12 @@ const SHOP_CHECKOUT_SMOKE_BANK = [
 
 function shopCheckoutSmokePdo(string $database = ''): PDO
 {
-    $dsn = 'mysql:host=127.0.0.1;' . ($database !== '' ? 'dbname=' . $database . ';' : '') . 'charset=utf8mb4';
+    $host = getenv('EVIDENCE_MARIADB_SMOKE_HOST') ?: '127.0.0.1';
+    $port = getenv('EVIDENCE_MARIADB_SMOKE_PORT') ?: '3306';
+    if (preg_match('/\A[1-9][0-9]{0,4}\z/', $port) !== 1 || (int)$port > 65535) {
+        throw new RuntimeException('Invalid MariaDB smoke port.');
+    }
+    $dsn = 'mysql:host=' . $host . ';port=' . $port . ';' . ($database !== '' ? 'dbname=' . $database . ';' : '') . 'charset=utf8mb4';
     return new PDO($dsn, 'root', '', [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -52,6 +57,23 @@ function shopCheckoutSmokePaymentWorker(string $database, int $paymentId, string
     $pipes = [];
     $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
     if (!is_resource($process)) throw new RuntimeException('Cannot start payment confirmation concurrency worker.');
+    fclose($pipes[0]);
+    return ['process' => $process, 'pipes' => $pipes];
+}
+
+/** @return array{process:resource,pipes:array<int,resource>} */
+function shopCheckoutSmokeProgramWorker(string $database, int $accountId, string $key, string $fingerprint, string $workerId): array
+{
+    $command = escapeshellarg(PHP_BINARY)
+        . ' ' . escapeshellarg(__FILE__)
+        . ' --program-worker ' . escapeshellarg($database)
+        . ' ' . escapeshellarg((string)$accountId)
+        . ' ' . escapeshellarg($key)
+        . ' ' . escapeshellarg($fingerprint)
+        . ' ' . escapeshellarg($workerId);
+    $pipes = [];
+    $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
+    if (!is_resource($process)) throw new RuntimeException('Cannot start program-capacity concurrency worker.');
     fclose($pipes[0]);
     return ['process' => $process, 'pipes' => $pipes];
 }
@@ -115,6 +137,36 @@ if (($argv[1] ?? '') === '--payment-worker') {
     exit(0);
 }
 
+if (($argv[1] ?? '') === '--program-worker') {
+    $database = (string)($argv[2] ?? '');
+    $accountId = (int)($argv[3] ?? 0);
+    $key = (string)($argv[4] ?? '');
+    $fingerprint = (string)($argv[5] ?? '');
+    $workerId = (string)($argv[6] ?? '');
+    if (preg_match('/\Aevidence_shop_checkout_smoke_test(?:_[a-z0-9_]+)?\z/', $database) !== 1
+        || !in_array($accountId, [10, 11], true)
+        || preg_match('/\A[a-f0-9]{32}\z/', $key) !== 1
+        || preg_match('/\A[a-f0-9]{64}\z/', $fingerprint) !== 1
+        || preg_match('/\Aprogram_worker_[12]\z/', $workerId) !== 1
+    ) {
+        throw new RuntimeException('Invalid program-capacity concurrency worker input.');
+    }
+    $pdo = shopCheckoutSmokePdo($database);
+    $pdo->prepare('INSERT INTO smoke_program_worker_ready(worker_id) VALUES(?)')->execute([$workerId]);
+    try {
+        $order = shopCheckoutPlace($pdo, $accountId, $key, SHOP_CHECKOUT_SMOKE_BANK, $fingerprint);
+        echo json_encode(['success' => true, 'id' => (int)$order['id'], 'error' => null], JSON_THROW_ON_ERROR) . PHP_EOL;
+    } catch (ShopCheckoutException $exception) {
+        echo json_encode([
+            'success' => false,
+            'id' => null,
+            'error' => $exception->getMessage(),
+            'cause' => $exception->getPrevious()?->getMessage(),
+        ], JSON_THROW_ON_ERROR) . PHP_EOL;
+    }
+    exit(0);
+}
+
 $database = getenv('EVIDENCE_SHOP_CHECKOUT_SMOKE_DB') ?: 'evidence_shop_checkout_smoke_test';
 if (preg_match('/\Aevidence_shop_checkout_smoke_test(?:_[a-z0-9_]+)?\z/', $database) !== 1) {
     throw new RuntimeException('Refusing to use a non-test MariaDB database name.');
@@ -129,7 +181,7 @@ try {
     $pdo->exec('CREATE TABLE nastaveni(klic VARCHAR(100) PRIMARY KEY,hodnota TEXT NOT NULL) ENGINE=InnoDB');
     $pdo->prepare('INSERT INTO nastaveni(klic,hodnota) VALUES(?,?)')->execute(['schema_version', LEGACY_SCHEMA_VERSION]);
     $pdo->exec('CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,jmeno VARCHAR(100),email VARCHAR(255) UNIQUE,heslo VARCHAR(255),role VARCHAR(30),aktivni TINYINT NOT NULL DEFAULT 1) ENGINE=InnoDB');
-    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160)) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160),narozeni DATE NULL) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE sportovist(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE individualni_lekce(id INT PRIMARY KEY,nazev VARCHAR(255),datum DATE,cas_od TIME,cas_do TIME,public_exclusive_booking TINYINT NOT NULL DEFAULT 0,cena_kc DECIMAL(10,2)) ENGINE=InnoDB');
     $pdo->exec("CREATE TABLE planovane_treninky(id INT PRIMARY KEY,datum DATE NOT NULL,stav VARCHAR(30) NOT NULL DEFAULT 'planovany') ENGINE=InnoDB");
@@ -222,7 +274,52 @@ try {
     ) {
         throw new RuntimeException('Concurrent payment confirmation did not persist one paid order and one notification.');
     }
-    echo "MariaDB concurrent checkout and payment-notification idempotency smoke OK\n";
+
+    $pdo->exec("INSERT INTO verejni_uzivatele(id,jmeno,prijmeni,email,aktivni,email_overeno,registrovan) VALUES(11,'Capacity','Tester','capacity@example.test',1,1,CURRENT_TIMESTAMP)");
+    $pdo->exec("INSERT INTO sportovci(id,jmeno,prijmeni,narozeni) VALUES(101,'První','Dítě','2017-03-01'),(102,'Druhé','Dítě','2018-04-02')");
+    $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,created_by_trainer_id,approved_by_trainer_id,decision_note) VALUES(10,101,'guardian','approved','admin','2020-01-01',7,7,'smoke'),(11,102,'guardian','approved','admin','2020-01-01',7,7,'smoke')");
+    $pdo->exec("INSERT INTO shop_catalog_product_candidates(id,run_id,external_product_key,name,offer_type,classification_confidence,needs_manual_review,payload_json) VALUES(502,1,'capacity-program','Capacity program','program','high',0,'{}')");
+    $pdo->exec("INSERT INTO shop_catalog_variant_candidates(id,run_id,product_candidate_id,sku,price_mode,amount_minor,currency,stock_quantity_decimal,payload_json) VALUES(602,1,502,'PROGRAM-LAST-SPOT','fixed',15000,'CZK',NULL,'{}')");
+    $pdo->exec("INSERT INTO shop_products(id,source_candidate_id,source_run_id,external_product_key,name,offer_type,catalog_status) VALUES(502,502,1,'capacity-program','Capacity program','program','active')");
+    $pdo->exec("INSERT INTO shop_variants(id,product_id,source_candidate_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(602,502,602,'PROGRAM-LAST-SPOT','{}','fixed',15000,'CZK',1,0,NULL,1,'active')");
+    $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note) VALUES(502,'active','Capacity program','Last-place concurrency smoke','Approved smoke fixture')");
+    $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'SMOKE-2026','Smoke season','2026-01-01','2027-12-31','active',7)");
+    $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'SMOKE-TEAM','Smoke team','all','2016-2019','active',7)");
+    $programId = (int)clubProgramCreate($pdo, 7, 'SMOKE-PROGRAM', 'Capacity program')['id'];
+    clubProgramCreateOffer($pdo, 7, $programId, 1, 1, 502, 602, 'SMOKE-LAST-SPOT', 'Last spot', '2026-01-01', '2027-12-31', '2026-01-01 00:00:00', '2027-12-31 23:59:59', 1, 'active', 2016, 2019);
+
+    shopCartSetQuantity($pdo, 10, 602, 1, 101);
+    shopCartSetQuantity($pdo, 11, 602, 1, 102);
+    $cart10 = shopCartDetail($pdo, 10);
+    $cart11 = shopCartDetail($pdo, 11);
+    $pdo->exec('CREATE TABLE smoke_program_worker_ready(worker_id VARCHAR(30) PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->beginTransaction();
+    $pdo->query('SELECT id FROM shop_variants WHERE id=602 FOR UPDATE')->fetchColumn();
+    $programWorkers = [
+        shopCheckoutSmokeProgramWorker($database, 10, bin2hex(random_bytes(16)), (string)$cart10['fingerprint'], 'program_worker_1'),
+        shopCheckoutSmokeProgramWorker($database, 11, bin2hex(random_bytes(16)), (string)$cart11['fingerprint'], 'program_worker_2'),
+    ];
+    $deadline = microtime(true) + 8.0;
+    do {
+        usleep(100000);
+        $ready = (int)$observer->query('SELECT COUNT(*) FROM smoke_program_worker_ready')->fetchColumn();
+        $active = $observer->prepare("SELECT COUNT(*) FROM information_schema.PROCESSLIST WHERE DB=? AND ID<>CONNECTION_ID() AND COMMAND<>'Sleep'");
+        $active->execute([$database]);
+        $activeWorkers = (int)$active->fetchColumn();
+    } while (($ready < 2 || $activeWorkers < 2) && microtime(true) < $deadline);
+    if ($ready !== 2 || $activeWorkers < 2) throw new RuntimeException('Program workers did not reach the locked last-place race window.');
+    $pdo->commit();
+
+    $programOutcomes = array_map('shopCheckoutSmokeFinishWorker', $programWorkers);
+    usort($programOutcomes, static fn(array $a, array $b): int => (int)$b['success'] <=> (int)$a['success']);
+    if (array_column($programOutcomes, 'success') !== [true, false]
+        || !str_contains((string)$programOutcomes[1]['error'], 'dostupná')
+        || (int)$pdo->query("SELECT COUNT(*) FROM shop_orders o JOIN shop_order_items oi ON oi.order_id=o.id WHERE oi.variant_id=602 AND o.status='placed' AND o.payment_status='pending'")->fetchColumn() !== 1
+        || (int)clubProgramOfferForVariant($pdo, 602)['held_order_count'] !== 1
+    ) {
+        throw new RuntimeException('Concurrent last-place checkout did not produce exactly one hold and one fail-closed rejection: ' . json_encode($programOutcomes, JSON_THROW_ON_ERROR));
+    }
+    echo "MariaDB concurrent checkout, payment idempotency, and last-program-place smoke OK\n";
 } finally {
     if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);

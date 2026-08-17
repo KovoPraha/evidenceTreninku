@@ -7,6 +7,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
+require_once dirname(__DIR__) . '/includes/family_portal.php';
 
 function shopProductH(mixed $value): string
 {
@@ -57,6 +58,7 @@ if ($product === null || $product['variants'] === []) {
 
 $isLoggedIn = isset($_SESSION['verejny_uzivatel_id']);
 $accountId = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);
+$people=$isLoggedIn?familyPortalAuthorizedPeople($pdo,$accountId):[];
 if ($product !== null && $isLoggedIn) {
     foreach ($product['variants'] as &$variant) {
         shopMemberPriceApplyToItem($pdo, $accountId, $variant);
@@ -97,9 +99,9 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                     $current = (int)$item['quantity'];
                 }
             }
-            shopCartSetQuantity($pdo, $accountId, $variantId, $offer ? 1 : min(99, $current + 1));
+            shopCartSetQuantity($pdo,$accountId,$variantId,$offer?1:min(99,$current+1),$offer?(int)($_POST['sportovec_id']??0):null);
             $_SESSION['flash_shop'] = $offer
-                ? 'Období kroužku bylo přidáno. V košíku vyberte dítě.'
+                ? 'Období kroužku bylo přidáno pro vybrané dítě.'
                 : 'Položka byla přidána do košíku.';
             header('Location: eshop.php', true, 303);
             exit;
@@ -157,7 +159,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <strong><?= shopProductH(shopProductVariantLabel($variant)) ?></strong>
                                             <div class="small text-muted">SKU <?= shopProductH($variant['sku']) ?></div>
                                             <?php if ($offer): ?>
-                                                <div class="small mt-1"><?= shopProductH($offer['name']) ?><br><?= shopProductH($offer['starts_on']) ?> – <?= shopProductH($offer['ends_on']) ?></div>
+                                                <div class="small mt-1"><?= shopProductH($offer['name']) ?><br><?= shopProductH($offer['starts_on']) ?> – <?= shopProductH($offer['ends_on']) ?><br><span class="text-primary"><?=shopProductH(clubProgramBirthYearLabel($offer))?></span></div>
                                             <?php endif; ?>
                                             <div class="small <?= $variant['in_stock'] ? 'text-success' : 'text-danger' ?> mt-1">
                                                 <?= $variant['in_stock'] ? 'Skladem' : 'Momentálně vyprodáno' ?>
@@ -175,6 +177,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="action" value="add">
                                                 <input type="hidden" name="variant_id" value="<?= (int)$variant['variant_id'] ?>">
+                                                <?php if($offer):?><label class="form-label small" for="program-person-<?=(int)$variant['variant_id']?>">Dítě / účastník</label><select class="form-select form-select-sm mb-2" id="program-person-<?=(int)$variant['variant_id']?>" name="sportovec_id" required><option value="">Vyberte</option><?php foreach($people as$person):?><option value="<?=(int)$person['sportovec_id']?>"><?=shopProductH($person['prijmeni'].' '.$person['jmeno'])?></option><?php endforeach;?></select><?php if($people===[]):?><div class="small text-danger mb-2">Nejdříve propojte dítě v části Moje osoby.</div><?php endif;?><?php endif;?>
                                                 <button class="btn btn-primary btn-sm" <?= $variant['in_stock'] ? '' : 'disabled' ?>>Přidat do košíku</button>
                                             </form><?php else: ?><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>"><?= $variant['in_stock'] ? 'Přihlásit se a koupit' : 'Vyprodáno' ?></a><?php endif; ?>
                                         </div>

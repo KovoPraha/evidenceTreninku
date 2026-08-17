@@ -42,19 +42,31 @@ function shopCartSetBeneficiary(PDO $pdo, int $accountId, int $cartItemId, ?int 
     }
     $pdo->beginTransaction();
     try {
-        $sql = 'SELECT ci.id,ci.cart_id FROM shop_cart_items ci JOIN shop_carts c ON c.id=ci.cart_id '
+        $sql = 'SELECT ci.id,ci.cart_id,ci.variant_id,p.offer_type FROM shop_cart_items ci '
+            . 'JOIN shop_carts c ON c.id=ci.cart_id JOIN shop_variants v ON v.id=ci.variant_id '
+            . 'JOIN shop_products p ON p.id=v.product_id '
             . "WHERE ci.id=? AND c.active_account_id=? AND c.status='active'";
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
         $statement = $pdo->prepare($sql);
         $statement->execute([$cartItemId, $accountId]);
-        if (!$statement->fetch(PDO::FETCH_ASSOC)) throw new ShopCheckoutException('Položka aktivního košíku nebyla nalezena.');
-        if ($sportovecId !== null) shopBeneficiaryAssertAccessible($pdo, $accountId, $sportovecId, true);
+        $item=$statement->fetch(PDO::FETCH_ASSOC);
+        if (!$item) throw new ShopCheckoutException('Položka aktivního košíku nebyla nalezena.');
+        if ($sportovecId !== null) {
+            $offer=false;
+            if((string)$item['offer_type']==='program'){
+                $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id'],null,true);
+                if(!$offer)throw new ClubProgramException('Nabídka kroužku už není dostupná.');
+            }
+            shopBeneficiaryAssertAccessible($pdo,$accountId,$sportovecId,true);
+            if($offer)clubProgramAssertBeneficiaryBirthYear($pdo,$offer,$sportovecId,true);
+        }
         $pdo->prepare('UPDATE shop_cart_items SET beneficiary_sportovec_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')
             ->execute([$sportovecId, $cartItemId]);
         $pdo->commit();
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         if ($exception instanceof InvalidArgumentException || $exception instanceof ShopCheckoutException) throw $exception;
+        if($exception instanceof ClubProgramException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         throw new ShopCheckoutException('Příjemce košíku se nepodařilo změnit bez částečného zápisu.', 0, $exception);
     }
 }
