@@ -71,7 +71,7 @@ function shopCartDetail(PDO $pdo, int $accountId): array
         ? 'ci.beneficiary_sportovec_id'
         : 'NULL AS beneficiary_sportovec_id';
     $statement = $pdo->prepare(
-        'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,pub.public_name,'
+        'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,pub.public_name,'
         . 'v.id AS variant_id,v.sku,v.attributes_json,v.amount_minor,v.currency,v.catalog_status '
         . 'FROM shop_cart_items ci JOIN shop_variants v ON v.id=ci.variant_id '
         . 'JOIN shop_products p ON p.id=v.product_id '
@@ -87,6 +87,11 @@ function shopCartDetail(PDO $pdo, int $accountId): array
         $currency ??= (string)$item['currency'];
         $decoded = json_decode((string)$item['attributes_json'], true);
         $item['attributes'] = is_array($decoded) ? $decoded : [];
+        $item['program_terms']=null;
+        if(($item['offer_type']??null)==='program'){
+            $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id']);
+            if($offer)$item['program_terms']=clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id']);
+        }
     }
     unset($item);
     $eventItems = clubEventShopCartItems($pdo, (int)$cart['id']);
@@ -186,7 +191,8 @@ function shopCheckoutPlace(
     int $accountId,
     string $idempotencyKey,
     array $bank,
-    string $expectedCartFingerprint
+    string $expectedCartFingerprint,
+    array $programTermsAccepted = []
 ): array
 {
     if ($accountId < 1 || preg_match('/^[a-f0-9]{32}$/D',$idempotencyKey)!==1
@@ -233,7 +239,7 @@ function shopCheckoutPlace(
         $velodromeItems=publicVelodromeShopLockCheckoutItems($pdo,(int)$cart['id'],$accountId);
         if ($items===[] && $eventItems===[] && $velodromeItems===[]) throw new ShopCheckoutException('Prázdný košík nelze objednat.');
         $total=0;$currency=null;
-        foreach($items as $item){
+        foreach($items as &$item){
             if(!shopCheckoutVariantIsSaleable($item,$pdo,null,true))throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
             if(($item['offer_type']??null)==='program'){
                 if($item['beneficiary_sportovec_id']===null)throw new ShopCheckoutException('U kroužku vyberte dítě nebo účastníka.');
@@ -241,6 +247,12 @@ function shopCheckoutPlace(
                 if(!$offer)throw new ShopCheckoutException('Nabídka kroužku už není dostupná.');
                 shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$item['beneficiary_sportovec_id'],true);
                 clubProgramAssertBeneficiaryBirthYear($pdo,$offer,(int)$item['beneficiary_sportovec_id'],true);
+                $item['program_terms']=clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id'],true);
+                if(clubProgramTermsRegistryAvailable($pdo)){
+                    if(!clubProgramTermsComplete($item['program_terms']))throw new ShopCheckoutException('Kroužek nemá zveřejněné platné storno podmínky a souhlas.');
+                    if(empty($programTermsAccepted[(int)$item['variant_id']]))throw new ShopCheckoutException('Před objednáním potvrďte storno podmínky a souhlas u každého kroužku.');
+                    $item['program_terms_snapshot_json']=clubProgramTermsSnapshotJson($item['program_terms']);
+                }
             }elseif($item['beneficiary_sportovec_id']!==null){
                 shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$item['beneficiary_sportovec_id'],true);
             }
@@ -250,6 +262,7 @@ function shopCheckoutPlace(
             $line=$unit*$quantity;if($line<0||$total>PHP_INT_MAX-$line) throw new ShopCheckoutException('Celková částka je mimo podporovaný rozsah.');
             $total+=$line;
         }
+        unset($item);
         foreach($velodromeItems as $item){
             $unit=(int)$item['amount_minor'];
             if($unit<1)throw new ShopCheckoutException('Placený termín obsahuje neplatnou cenu.');
@@ -291,8 +304,15 @@ function shopCheckoutPlace(
                 if($reserve->rowCount()!==1) throw new ShopCheckoutException('Mezitím se vyprodala položka '.$item['sku'].'. Objednávka nebyla vytvořena.');
             }
             if(shopBeneficiaryColumnExists($pdo,'shop_order_items')){
-                $orderItem=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,beneficiary_sportovec_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-                $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],$item['beneficiary_sportovec_id']!==null?(int)$item['beneficiary_sportovec_id']:null,(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
+                if(($item['offer_type']??null)==='program'&&clubProgramTermsRegistryAvailable($pdo)){
+                    if(!clubProgramTermsAcceptanceAvailable($pdo))throw new ShopCheckoutException('Databáze objednávek nepodporuje doložitelný souhlas kroužku.');
+                    $acceptedAt=(new DateTimeImmutable('now',new DateTimeZone('Europe/Prague')))->format('Y-m-d H:i:s');
+                    $orderItem=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,beneficiary_sportovec_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot,program_terms_snapshot_json,program_terms_accepted_at,program_terms_accepted_by_account_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+                    $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],(int)$item['beneficiary_sportovec_id'],(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points'],(string)$item['program_terms_snapshot_json'],$acceptedAt,$accountId]);
+                }else{
+                    $orderItem=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,beneficiary_sportovec_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
+                    $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],$item['beneficiary_sportovec_id']!==null?(int)$item['beneficiary_sportovec_id']:null,(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
+                }
             }else{
                 $orderItem=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
                 $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
@@ -328,6 +348,7 @@ function shopCheckoutPlace(
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         if($exception instanceof ClubProgramException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         if($exception instanceof PublicVelodromeShopException||$exception instanceof ClubEventShopException||$exception instanceof ClubEventRegistrationException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
+        if($exception instanceof PDOException&&((string)$exception->getCode()==='40001'||(int)($exception->errorInfo[1]??0)===1213))throw new ShopCheckoutException('Některá položka už není dostupná nebo ji právě objednal jiný zákazník. Obnovte košík.',0,$exception);
         throw new ShopCheckoutException('Objednávka se nepodařila vytvořit bez částečného zápisu.',0,$exception);
     }
     }finally{
@@ -424,6 +445,7 @@ function shopCartFingerprint(array $items,?array $coupon=null,array $velodromeIt
         'amount_minor'=>(int)$item['amount_minor'],
         'currency'=>(string)$item['currency'],
         'beneficiary_sportovec_id'=>$item['beneficiary_sportovec_id']===null?null:(int)$item['beneficiary_sportovec_id'],
+        'program_terms'=>isset($item['program_terms'])&&is_array($item['program_terms'])&&clubProgramTermsComplete($item['program_terms'])?clubProgramTermsSnapshot($item['program_terms']):null,
     ];
     usort($contract,static fn(array $a,array $b):int=>$a['variant_id']<=>$b['variant_id']);
     $couponContract=$coupon===null?null:['id'=>(int)$coupon['id'],'code'=>(string)$coupon['code'],'discount_minor'=>(int)$coupon['discount_minor'],'eligible_subtotal_minor'=>(int)($coupon['eligible_subtotal_minor']??0),'applicability_mask'=>(int)($coupon['applicability_mask']??SHOP_COUPON_GOODS)];

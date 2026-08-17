@@ -154,7 +154,7 @@ if (($argv[1] ?? '') === '--program-worker') {
     $pdo = shopCheckoutSmokePdo($database);
     $pdo->prepare('INSERT INTO smoke_program_worker_ready(worker_id) VALUES(?)')->execute([$workerId]);
     try {
-        $order = shopCheckoutPlace($pdo, $accountId, $key, SHOP_CHECKOUT_SMOKE_BANK, $fingerprint);
+        $order = shopCheckoutPlace($pdo, $accountId, $key, SHOP_CHECKOUT_SMOKE_BANK, $fingerprint, [602 => 1]);
         echo json_encode(['success' => true, 'id' => (int)$order['id'], 'error' => null], JSON_THROW_ON_ERROR) . PHP_EOL;
     } catch (ShopCheckoutException $exception) {
         echo json_encode([
@@ -286,6 +286,8 @@ try {
     $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'SMOKE-2026','Smoke season','2026-01-01','2027-12-31','active',7)");
     $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'SMOKE-TEAM','Smoke team','all','2016-2019','active',7)");
     $programId = (int)clubProgramCreate($pdo, 7, 'SMOKE-PROGRAM', 'Capacity program')['id'];
+    clubProgramTermsConfigure($pdo, 7, 'program', $programId, 'program_cancellation', CLUB_PROGRAM_TERM_DEFAULTS['program_cancellation'], true);
+    clubProgramTermsConfigure($pdo, 7, 'program', $programId, 'program_consent', CLUB_PROGRAM_TERM_DEFAULTS['program_consent'], true);
     clubProgramCreateOffer($pdo, 7, $programId, 1, 1, 502, 602, 'SMOKE-LAST-SPOT', 'Last spot', '2026-01-01', '2027-12-31', '2026-01-01 00:00:00', '2027-12-31 23:59:59', 1, 'active', 2016, 2019);
 
     shopCartSetQuantity($pdo, 10, 602, 1, 101);

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/shop_checkout.php';
+require_once __DIR__ . '/club_program_terms.php';
 
 final class ClubProgramException extends RuntimeException {}
 
@@ -187,7 +188,11 @@ function clubProgramAdminSelectableVariants(PDO $pdo): array
 function clubProgramAdminOffers(PDO $pdo): array
 {
     $rows=$pdo->query('SELECT o.*,p.code AS program_code,p.name AS program_name,s.name AS season_name,t.name AS team_name,v.sku,sp.name AS product_name FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id JOIN club_seasons s ON s.id=o.season_id JOIN club_teams t ON t.id=o.team_id JOIN shop_variants v ON v.id=o.variant_id JOIN shop_products sp ON sp.id=o.product_id ORDER BY o.starts_on DESC,o.id DESC')->fetchAll(PDO::FETCH_ASSOC);
-    foreach($rows as&$row)$row=array_merge($row,clubProgramOfferCapacityState($pdo,$row));
+    foreach($rows as&$row){
+        $row=array_merge($row,clubProgramOfferCapacityState($pdo,$row));
+        $row['effective_terms']=clubProgramTermsEffective($pdo,(int)$row['program_id'],(int)$row['id']);
+        $row['terms_complete']=clubProgramTermsComplete($row['effective_terms']);
+    }
     unset($row);
     return$rows;
 }
@@ -369,7 +374,17 @@ function clubProgramVariantSaleState(PDO $pdo, int $variantId, ?DateTimeImmutabl
     $offer = clubProgramOfferForVariant($pdo, $variantId, $now, $lock);
     if (!$offer) return ['saleable'=>false,'reason'=>'Varianta nemá aktivní nabídku programu.','offer'=>null];
     $state = clubProgramOfferSaleState($offer, $now);
+    if($state['saleable']&&clubProgramTermsRegistryAvailable($pdo)&&!clubProgramTermsComplete(clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id'],$lock))){
+        $state=['saleable'=>false,'reason'=>'Nabídka nemá zveřejněné platné storno podmínky a souhlas.'];
+    }
     return $state + ['offer'=>$offer];
+}
+
+function clubProgramProductHasEffectiveTerms(PDO $pdo,int $productId):bool
+{
+    $statement=$pdo->prepare('SELECT id,program_id FROM club_program_offers WHERE product_id=? ORDER BY id');$statement->execute([$productId]);
+    foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$offer)if(clubProgramTermsComplete(clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id'])))return true;
+    return false;
 }
 
 /** @return array{saleable:bool,reason:string} */
@@ -447,7 +462,8 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
 {
     if (!$pdo->inTransaction()) throw new LogicException('Aktivace programu vyžaduje otevřenou transakci.');
     if ($accountId < 1 || $orderItemId < 1 || !in_array($actorType,['account','trainer','system'],true) || ($actorType==='system'&&$actorId!==null) || ($actorType!=='system'&&($actorId??0)<1)) throw new InvalidArgumentException('Aktivace programu nemá platného vlastníka nebo auditora.');
-    $itemSql='SELECT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.line_amount_minor,oi.product_id,oi.variant_id,o.id AS order_id,o.account_id,o.status AS order_status,o.payment_status FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id AND vu.aktivni=1 AND vu.email_overeno=1 WHERE oi.id=? AND o.account_id=?';
+    $termsSelect=clubProgramTermsAcceptanceAvailable($pdo)?'oi.program_terms_snapshot_json,oi.program_terms_accepted_at,oi.program_terms_accepted_by_account_id':'NULL AS program_terms_snapshot_json,NULL AS program_terms_accepted_at,NULL AS program_terms_accepted_by_account_id';
+    $itemSql='SELECT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.line_amount_minor,oi.product_id,oi.variant_id,'.$termsSelect.',o.id AS order_id,o.account_id,o.status AS order_status,o.payment_status FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id AND vu.aktivni=1 AND vu.email_overeno=1 WHERE oi.id=? AND o.account_id=?';
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$itemSql.=' FOR UPDATE';
     $itemStatement=$pdo->prepare($itemSql);$itemStatement->execute([$orderItemId,$accountId]);$item=$itemStatement->fetch(PDO::FETCH_ASSOC);
     if(!$item)throw new ClubProgramException('Objednávková položka programu nebyla nalezena.');
@@ -460,6 +476,8 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
     if(!$offer)throw new ClubProgramException('Nabídka programu se během aktivace změnila. Zkuste operaci znovu.');
     $item=array_merge($item,$offer);
     if ($item['beneficiary_sportovec_id'] === null || (int)$item['quantity'] !== 1) throw new ClubProgramException('Položka programu musí mít právě jednoho příjemce a množství 1.');
+    $termsRequired=clubProgramTermsAcceptanceAvailable($pdo);
+    if($termsRequired&&((int)($item['program_terms_accepted_by_account_id']??0)!==$accountId||empty($item['program_terms_accepted_at'])||!clubProgramTermsSnapshotValid((string)($item['program_terms_snapshot_json']??''))))throw new ClubProgramException('Objednávka nemá doložitelný souhlas s podmínkami kroužku.');
     $sportovecId=(int)$item['beneficiary_sportovec_id'];
     $existing=$pdo->prepare('SELECT id FROM club_program_enrollments WHERE source_order_item_id=?');$existing->execute([$orderItemId]);$existingId=$existing->fetchColumn();
     if ($existingId) return ['id'=>(int)$existingId,'created'=>false,'roster_created'=>false];
@@ -472,7 +490,9 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
         $capacity=$pdo->prepare("SELECT COUNT(*) FROM club_program_enrollments WHERE offer_id=? AND status='active'");$capacity->execute([(int)$item['offer_id']]);
         if ((int)$capacity->fetchColumn()>=(int)$item['capacity']) throw new ClubProgramException('Kapacita období je vyčerpána.');
     }
-    $pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,active_token,valid_from,valid_to,activated_at) VALUES (?,?,?,?,'active','active',?,?,CURRENT_TIMESTAMP)")
+    if($termsRequired)$pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,active_token,valid_from,valid_to,activated_at,terms_snapshot_json,terms_accepted_at,terms_accepted_by_account_id) VALUES (?,?,?,?,'active','active',?,?,CURRENT_TIMESTAMP,?,?,?)")
+        ->execute([(int)$item['offer_id'],$sportovecId,$accountId,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on'],(string)$item['program_terms_snapshot_json'],(string)$item['program_terms_accepted_at'],$accountId]);
+    else $pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,active_token,valid_from,valid_to,activated_at) VALUES (?,?,?,?,'active','active',?,?,CURRENT_TIMESTAMP)")
         ->execute([(int)$item['offer_id'],$sportovecId,$accountId,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on']]);
     $enrollmentId=(int)$pdo->lastInsertId();
     $memberSql='SELECT id,status,source FROM club_roster_members WHERE team_id=? AND sportovec_id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$memberSql.=' FOR UPDATE';

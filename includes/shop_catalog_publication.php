@@ -64,6 +64,8 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
     if ((string)$product['offer_type'] === 'program') {
         if (!clubProgramProductHasOfferLink($pdo, $productId)) {
             $blockers[] = 'Program nemá navázanou žádnou nabídku.';
+        } elseif(clubProgramTermsRegistryAvailable($pdo)&&!clubProgramProductHasEffectiveTerms($pdo,$productId)) {
+            $blockers[] = 'Žádná nabídka programu nemá zveřejněné platné storno podmínky a souhlas.';
         }
     } elseif ((string)$product['offer_type'] !== 'goods') {
         $blockers[] = 'Typ ' . $product['offer_type'] . ' čeká na doménovou funkci K3 nebo rezervace.';

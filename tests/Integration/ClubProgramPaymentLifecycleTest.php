@@ -150,14 +150,40 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         catch(\InvalidArgumentException $exception){self::assertStringContainsString('Počáteční ročník',$exception->getMessage());}
     }
 
+    public function testAcceptedProgramTermsStayImmutableAfterNewVersion():void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'OFFER-TERMS');
+        \shopCartSetQuantity($pdo,10,601,1,101);$cart=\shopCartDetail($pdo,10);
+        try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint']);self::fail('Explicit acceptance is required.');}
+        catch(\ShopCheckoutException $exception){self::assertStringContainsString('potvrďte storno podmínky',$exception->getMessage());}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],[601=>1]);
+        $snapshot=(string)$pdo->query('SELECT program_terms_snapshot_json FROM shop_order_items')->fetchColumn();
+        self::assertTrue(\clubProgramTermsSnapshotValid($snapshot));self::assertStringContainsString('Souhlasím s přihlášením', $snapshot);
+        $programId=(int)$pdo->query('SELECT id FROM club_programs')->fetchColumn();
+        $new=\clubProgramTermsConfigure($pdo,7,'program',$programId,'program_consent','Nové znění souhlasu pro další objednávky.',true);
+        self::assertSame('v2',$new['terms_version']);self::assertSame('archived',$pdo->query("SELECT status FROM club_event_term_versions WHERE consent_purpose='program_consent' AND terms_version='v1'")->fetchColumn());
+        self::assertSame($snapshot,(string)$pdo->query('SELECT program_terms_snapshot_json FROM shop_order_items')->fetchColumn());
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Platba se snapshotem.',true);
+        self::assertSame($snapshot,(string)$pdo->query('SELECT terms_snapshot_json FROM club_program_enrollments')->fetchColumn());
+        $offerId=(int)$pdo->query('SELECT id FROM club_program_offers')->fetchColumn();
+        \clubProgramTermsConfigure($pdo,7,'offer',$offerId,'program_cancellation','Speciální storno pouze pro toto období.',true);
+        $effective=\clubProgramTermsEffective($pdo,$programId,$offerId);
+        self::assertSame('Speciální storno pouze pro toto období.',$effective['program_cancellation']['consent_text_plain']);
+        self::assertSame('Nové znění souhlasu pro další objednávky.',$effective['program_consent']['consent_text_plain']);
+    }
+
     private function checkout(PDO $pdo,int $accountId,int $sportovecId,int $variantId):array
     {
-        \shopCartSetQuantity($pdo,$accountId,$variantId,1,$sportovecId);$cart=\shopCartDetail($pdo,$accountId);return \shopCheckoutPlace($pdo,$accountId,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint']);
+        \shopCartSetQuantity($pdo,$accountId,$variantId,1,$sportovecId);$cart=\shopCartDetail($pdo,$accountId);return \shopCheckoutPlace($pdo,$accountId,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],[$variantId=>1]);
     }
 
     private function offer(PDO $pdo,int $variantId,int $productId,int $teamId,int $capacity,string $code,?int $programId=null,string $from='2026-09-01',string $to='2027-01-31',?int $birthYearFrom=null,?int $birthYearTo=null):int
     {
-        $programId??=(int)\clubProgramCreate($pdo,7,'BIKE-SCHOOL','Cyklistická škola')['id'];return(int)\clubProgramCreateOffer($pdo,7,$programId,1,$teamId,$productId,$variantId,$code,'Období '.$code,$from,$to,null,null,$capacity,'active',$birthYearFrom,$birthYearTo)['id'];
+        $programId??=(int)\clubProgramCreate($pdo,7,'BIKE-SCHOOL','Cyklistická škola')['id'];
+        \clubProgramTermsConfigure($pdo,7,'program',$programId,'program_cancellation',CLUB_PROGRAM_TERM_DEFAULTS['program_cancellation'],true);
+        \clubProgramTermsConfigure($pdo,7,'program',$programId,'program_consent',CLUB_PROGRAM_TERM_DEFAULTS['program_consent'],true);
+        return(int)\clubProgramCreateOffer($pdo,7,$programId,1,$teamId,$productId,$variantId,$code,'Období '.$code,$from,$to,null,null,$capacity,'active',$birthYearFrom,$birthYearTo)['id'];
     }
 
     private function database():PDO
@@ -170,9 +196,10 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         $pdo->exec('CREATE TABLE shop_variants(id INTEGER PRIMARY KEY,product_id INTEGER,sku TEXT,attributes_json TEXT,price_mode TEXT,amount_minor INTEGER,currency TEXT,includes_vat INTEGER,vat_rate_basis_points INTEGER,stock_quantity_decimal TEXT,visible INTEGER,catalog_status TEXT,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)');$pdo->exec("INSERT INTO shop_variants VALUES(601,501,'A','{}','fixed',10000,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP),(602,502,'B','{}','fixed',12000,'CZK',1,0,NULL,1,'active',CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT)');$pdo->exec("INSERT INTO shop_product_publications VALUES(501,'active','Kroužek A','A'),(502,'active','Kroužek B','B')");
         $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
+        $pdo->exec('CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT NOT NULL,scope_key TEXT NOT NULL,consent_purpose TEXT NOT NULL,event_id INTEGER NULL,terms_version TEXT NOT NULL,consent_text_plain TEXT NOT NULL,cancellation_policy_plain TEXT NULL,cancellation_deadline_at TEXT NULL,actor_trainer_id INTEGER NULL,actor_type TEXT NOT NULL,actor_id INTEGER NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))');
         foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804090000_kis_teams_rosters.php','20260809090000_stripe_checkout.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'SCHOOL','Školní rok','2026-09-01','2027-08-31','active',7)");$pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(10,1,'A','Kroužek A','vše','děti','active',7)");
-        foreach(['20260804140000_club_programs.php','20260804160000_club_program_lifecycle.php','20260804235000_club_program_repeat_enrollment.php','20260817090000_club_program_events.php','20260817130000_club_program_offer_age.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
+        foreach(['20260804140000_club_programs.php','20260804160000_club_program_lifecycle.php','20260804235000_club_program_repeat_enrollment.php','20260817090000_club_program_events.php','20260817130000_club_program_offer_age.php','20260817150000_club_program_terms.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         $expiration=require dirname(__DIR__,2).'/migrations/20260804210000_shop_order_expiration.php';$expiration['up']($pdo);self::assertTrue($expiration['verify']($pdo));
         return$pdo;
     }

@@ -100,10 +100,14 @@ final class ShopCatalogPublicationTest extends TestCase
         $pdo=$this->databaseWithDraftCatalog();
         $productId=(int)$pdo->query("SELECT id FROM shop_products WHERE offer_type<>'goods' ORDER BY id LIMIT 1")->fetchColumn();
         $pdo->exec("UPDATE shop_products SET offer_type='program' WHERE id=$productId");
+        $pdo->exec("CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT NOT NULL,scope_key TEXT NOT NULL,consent_purpose TEXT NOT NULL,event_id INTEGER NULL,terms_version TEXT NOT NULL,consent_text_plain TEXT NOT NULL,cancellation_policy_plain TEXT NULL,cancellation_deadline_at TEXT NULL,actor_trainer_id INTEGER NULL,actor_type TEXT NOT NULL,actor_id INTEGER NULL,status TEXT NOT NULL DEFAULT 'active',archived_at TEXT NULL,archived_by_trainer_id INTEGER NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))");
         $variantId=(int)$pdo->query("SELECT id FROM shop_variants WHERE product_id=$productId ORDER BY id LIMIT 1")->fetchColumn();
         $blocked=\shopCatalogPublicationReadiness($pdo,$productId);self::assertFalse($blocked['ready']);self::assertStringContainsString('nemá navázanou',implode(' ',$blocked['blockers']));
         $pdo->exec("INSERT INTO club_programs(id,name,status) VALUES(1,'Rajčátka','active')");
         $pdo->exec("INSERT INTO club_program_offers(id,program_id,product_id,variant_id,status,ends_on,capacity) VALUES(1,1,$productId,$variantId,'draft','2027-08-31',12)");
+        $missingTerms=\shopCatalogPublicationReadiness($pdo,$productId);self::assertFalse($missingTerms['ready']);self::assertStringContainsString('storno podmínky',implode(' ',$missingTerms['blockers']));
+        \clubProgramTermsConfigure($pdo,7,'program',1,'program_cancellation','Storno podmínky programu.',true);
+        \clubProgramTermsConfigure($pdo,7,'program',1,'program_consent','Souhlas s přihlášením.',true);
         self::assertTrue(\shopCatalogPublicationReadiness($pdo,$productId)['ready']);
         \shopCatalogPublicationActivate($pdo,$productId,7,'Rajčátka','Cyklistický kroužek pro děti.','Navázaná nabídka byla ověřena.',true);
         $pdo->exec("UPDATE club_program_offers SET status='active',ends_on='2000-01-01'");
