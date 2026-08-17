@@ -15,23 +15,28 @@ require_once __DIR__.'/shop_member_pricing.php';
 require_once __DIR__.'/shop_payment_notification.php';
 
 /** @return list<array<string,mixed>> */
-function shopStorefrontProducts(PDO $pdo): array
+function shopStorefrontProducts(PDO $pdo, ?DateTimeImmutable $now = null): array
 {
     $rows = $pdo->query(
-        "SELECT p.id AS product_id,pub.public_name,pub.public_summary,v.id AS variant_id,v.sku,"
+        "SELECT p.id AS product_id,p.offer_type,p.catalog_status AS product_status,"
+        . "pub.status AS publication_status,pub.public_name,pub.public_summary,"
+        . "v.id AS variant_id,v.sku,v.catalog_status,v.visible,v.price_mode,"
         . 'v.attributes_json,v.amount_minor,v.currency,v.stock_quantity_decimal '
         . 'FROM shop_products p JOIN shop_product_publications pub ON pub.product_id=p.id '
         . 'JOIN shop_variants v ON v.product_id=p.id '
-        . "WHERE p.offer_type='goods' AND p.catalog_status='active' AND pub.status='active' "
+        . "WHERE p.offer_type IN ('goods','program') AND p.catalog_status='active' AND pub.status='active' "
         . "AND v.catalog_status='active' AND (v.visible=1 OR v.visible IS NULL) "
         . "AND v.price_mode='fixed' AND v.amount_minor>=0 AND v.currency='CZK' "
         . 'ORDER BY pub.public_name,v.sku,v.id'
     )->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($rows as &$row) {
+    $saleable = [];
+    foreach ($rows as $row) {
+        if (!shopCheckoutVariantIsSaleable($row, $pdo, $now)) continue;
         $decoded = json_decode((string)$row['attributes_json'], true);
         $row['attributes'] = is_array($decoded) ? $decoded : [];
+        $saleable[] = $row;
     }
-    return $rows;
+    return $saleable;
 }
 
 /** @return array<string,mixed> */
@@ -117,7 +122,7 @@ function shopCartSetQuantity(PDO $pdo, int $accountId, int $variantId, int $quan
                 ->execute([(int)$cart['id'],$variantId]);
         } else {
             $variant = shopCheckoutLockVariant($pdo, $variantId);
-            if (!$variant || !shopCheckoutVariantIsSaleable($variant)) {
+            if (!$variant || !shopCheckoutVariantIsSaleable($variant, $pdo)) {
                 throw new ShopCheckoutException('Varianta není aktuálně dostupná pro nákup.');
             }
             if ($cart['currency'] !== null && $cart['currency'] !== $variant['currency']) {
@@ -205,7 +210,7 @@ function shopCheckoutPlace(
         $total=0;$currency=null;
         foreach($items as $item){
             if($item['beneficiary_sportovec_id']!==null)shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$item['beneficiary_sportovec_id'],true);
-            if(!shopCheckoutVariantIsSaleable($item)) throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
+            if(!shopCheckoutVariantIsSaleable($item, $pdo)) throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
             $quantity=(int)$item['quantity'];$unit=(int)$item['amount_minor'];
             if($quantity<1||$quantity>99||$unit<0) throw new ShopCheckoutException('Košík obsahuje neplatné množství nebo cenu.');
             $currency??=(string)$item['currency'];if($currency!==$item['currency']) throw new ShopCheckoutException('Objednávka nesmí míchat měny.');
@@ -761,7 +766,23 @@ function shopCheckoutLockVariant(PDO $pdo,int $variantId): array|false
 }
 
 /** @param array<string,mixed> $variant */
-function shopCheckoutVariantIsSaleable(array $variant): bool
+function shopCheckoutVariantIsSaleable(
+    array $variant,
+    ?PDO $pdo = null,
+    ?DateTimeImmutable $now = null
+): bool
 {
-    return ($variant['offer_type']??null)==='goods'&&($variant['product_status']??null)==='active'&&($variant['publication_status']??null)==='active'&&($variant['catalog_status']??null)==='active'&&($variant['visible']===null||(int)$variant['visible']===1)&&($variant['price_mode']??null)==='fixed'&&$variant['amount_minor']!==null&&(int)$variant['amount_minor']>=0&&($variant['currency']??null)==='CZK';
+    $structurallySaleable = ($variant['product_status']??null)==='active'
+        && ($variant['publication_status']??null)==='active'
+        && ($variant['catalog_status']??null)==='active'
+        && (($variant['visible']??null)===null||(int)$variant['visible']===1)
+        && ($variant['price_mode']??null)==='fixed'
+        && ($variant['amount_minor']??null)!==null
+        && (int)$variant['amount_minor']>=0
+        && ($variant['currency']??null)==='CZK';
+    if (!$structurallySaleable) return false;
+    if (($variant['offer_type']??null)==='goods') return true;
+    if (($variant['offer_type']??null)!=='program' || $pdo === null) return false;
+    $variantId = (int)($variant['variant_id'] ?? $variant['id'] ?? 0);
+    return $variantId > 0 && clubProgramVariantSaleState($pdo, $variantId, $now)['saleable'];
 }

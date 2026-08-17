@@ -9,8 +9,14 @@ if (preg_match('/\Aevidence_backup_smoke_test_[a-z0-9_]+\z/', $database) !== 1
 ) {
     throw new RuntimeException('Refusing to use a non-test MariaDB database name.');
 }
+$host = getenv('EVIDENCE_MARIADB_SMOKE_HOST') ?: '127.0.0.1';
+$port = getenv('EVIDENCE_MARIADB_SMOKE_PORT') ?: '3306';
+if (preg_match('/\A[1-9][0-9]{0,4}\z/', $port) !== 1 || (int)$port > 65535) {
+    throw new RuntimeException('Invalid MariaDB smoke port.');
+}
+$hostAndPort = $host . ';port=' . $port;
 
-$server = new PDO('mysql:host=127.0.0.1;charset=utf8mb4', 'root', '', [
+$server = new PDO('mysql:host=' . $hostAndPort . ';charset=utf8mb4', 'root', '', [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ]);
@@ -36,7 +42,7 @@ $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);
 $server->exec('CREATE DATABASE ' . $quotedDatabase . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
 
 try {
-    $pdo = new PDO('mysql:host=127.0.0.1;dbname=' . $database . ';charset=utf8mb4', 'root', '', [
+    $pdo = new PDO('mysql:host=' . $hostAndPort . ';dbname=' . $database . ';charset=utf8mb4', 'root', '', [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
@@ -69,7 +75,7 @@ try {
         throw new RuntimeException('Cannot create backup smoke directories.');
     }
     $config = "<?php\n"
-        . "define('DB_HOST', '127.0.0.1');\n"
+        . "define('DB_HOST', " . var_export($hostAndPort, true) . ");\n"
         . "define('DB_NAME', " . var_export($database, true) . ");\n"
         . "define('DB_USER', 'root');\n"
         . "define('DB_PASS', '');\n";
@@ -97,7 +103,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-08-16.2') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-08-17.1') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -110,6 +116,7 @@ try {
         throw new RuntimeException('Database backup smoke used an unexpected owned column contract.');
     }
     $required = [
+        'club_program_events',
         'club_member_charge_events', 'club_member_charges',
         'family_calendar_feed_events', 'family_calendar_feeds',
         'family_weekly_summaries', 'family_weekly_summary_events', 'family_weekly_summary_preferences',
@@ -134,7 +141,7 @@ try {
 
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedRestoreDatabase);
     $server->exec('CREATE DATABASE ' . $quotedRestoreDatabase . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
-    $restore = new PDO('mysql:host=127.0.0.1;dbname=' . $restoreDatabase . ';charset=utf8mb4', 'root', '', [
+    $restore = new PDO('mysql:host=' . $hostAndPort . ';dbname=' . $restoreDatabase . ';charset=utf8mb4', 'root', '', [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => true,

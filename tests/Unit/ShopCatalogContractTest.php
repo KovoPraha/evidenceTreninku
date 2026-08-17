@@ -12,6 +12,16 @@ final class ShopCatalogContractTest extends TestCase
 {
     private const FIXTURES = __DIR__ . '/../fixtures/shoptet';
 
+    public function testManualProgramTypeDoesNotChangeImportedClubClassification(): void
+    {
+        self::assertContains('program', \ShopOfferClassifier::TYPES);
+        $classification=\ShopOfferClassifier::classify([
+            'name'=>'Rajčátka','item_type'=>'service','default_category_path'=>'Kroužky',
+        ]);
+        self::assertSame('club_event',$classification['type']);
+        self::assertContains('category:club_event',$classification['signals']);
+    }
+
     public function testBuildsTwoProductsAndThreeVariantsWithoutDatabase(): void
     {
         $result = \ShopCatalogContract::build(
@@ -253,6 +263,7 @@ final class ShopCatalogContractTest extends TestCase
         self::assertTrue($first['summary']['contract_ready']);
         self::assertSame([
             'goods' => 2,
+            'program' => 0,
             'club_event' => 1,
             'camp' => 1,
             'bookable_service' => 2,

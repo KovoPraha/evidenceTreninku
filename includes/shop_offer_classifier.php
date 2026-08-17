@@ -4,6 +4,7 @@ declare(strict_types=1);
 final class ShopOfferClassifier
 {
     public const GOODS = 'goods';
+    public const PROGRAM = 'program';
     public const CLUB_EVENT = 'club_event';
     public const CAMP = 'camp';
     public const BOOKABLE_SERVICE = 'bookable_service';
@@ -15,6 +16,7 @@ final class ShopOfferClassifier
     /** @var list<string> */
     public const TYPES = [
         self::GOODS,
+        self::PROGRAM,
         self::CLUB_EVENT,
         self::CAMP,
         self::BOOKABLE_SERVICE,

@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-16.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-17.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -71,6 +71,7 @@ const EVIDENCE_TABLES = [
     'club_member_charges',
     'club_program_enrollment_events',
     'club_program_enrollments',
+    'club_program_events',
     'club_program_offers',
     'club_programs',
     'club_roster_events',

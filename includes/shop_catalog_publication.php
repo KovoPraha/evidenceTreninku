@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/club_program.php';
+
 final class ShopCatalogPublicationException extends RuntimeException
 {
 }
@@ -8,7 +10,7 @@ final class ShopCatalogPublicationException extends RuntimeException
 /** @return list<array<string,mixed>> */
 function shopCatalogPublicationProducts(PDO $pdo): array
 {
-    return $pdo->query(
+    $rows = $pdo->query(
         'SELECT p.*, pub.status AS publication_status, pub.public_name, pub.public_summary, '
         . 'pub.decision_note AS publication_note, pub.activated_at, pub.deactivated_at, '
         . 'COUNT(v.id) AS variant_count, '
@@ -23,6 +25,17 @@ function shopCatalogPublicationProducts(PDO $pdo): array
         . 'pub.decision_note, pub.activated_at, pub.deactivated_at '
         . 'ORDER BY CASE p.catalog_status WHEN \'active\' THEN 0 WHEN \'draft\' THEN 1 ELSE 2 END, p.name, p.id'
     )->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($rows as &$row) {
+        $row['program_saleable'] = null;
+        $row['program_sale_reason'] = null;
+        if ((string)$row['offer_type'] === 'program' && (string)$row['catalog_status'] === 'active') {
+            $saleState = clubProgramProductSaleState($pdo, (int)$row['id']);
+            $row['program_saleable'] = $saleState['saleable'];
+            $row['program_sale_reason'] = $saleState['reason'];
+        }
+    }
+    unset($row);
+    return $rows;
 }
 
 /** @return list<array<string,mixed>> */
@@ -48,7 +61,11 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
         return ['ready' => false, 'blockers' => ['Produkt nebyl nalezen.'], 'visible_variants' => 0];
     }
     $blockers = [];
-    if ((string)$product['offer_type'] !== 'goods') {
+    if ((string)$product['offer_type'] === 'program') {
+        if (!clubProgramProductHasOfferLink($pdo, $productId)) {
+            $blockers[] = 'Program nemá navázanou žádnou nabídku.';
+        }
+    } elseif ((string)$product['offer_type'] !== 'goods') {
         $blockers[] = 'Typ ' . $product['offer_type'] . ' čeká na doménovou funkci K3 nebo rezervace.';
     }
     if (trim((string)$product['name']) === '') {

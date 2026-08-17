@@ -113,6 +113,30 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_cart_items')->fetchColumn());
     }
 
+    public function testCheckoutRejectsProgramAfterItsSaleWindowClosesWithoutDeactivatingProduct():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("INSERT INTO shop_products VALUES(504,'program','active')");
+        $pdo->exec("INSERT INTO shop_variants VALUES(604,504,'KP-TOMATOES-CURRENT','{}','fixed',150000,'CZK',1,2100,NULL,1,'active',CURRENT_TIMESTAMP)");
+        $pdo->exec("INSERT INTO shop_product_publications VALUES(504,'active','Rajčátka','Cyklistický kroužek.')");
+        $pdo->exec('CREATE TABLE club_programs(id INTEGER PRIMARY KEY,name TEXT,status TEXT)');
+        $pdo->exec('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,product_id INTEGER,variant_id INTEGER,status TEXT,starts_on TEXT,ends_on TEXT,sales_open_at TEXT NULL,sales_close_at TEXT NULL,capacity INTEGER NULL)');
+        $pdo->exec('CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,status TEXT)');
+        $now=new \DateTimeImmutable('now',new \DateTimeZone('Europe/Prague'));
+        $pdo->prepare('INSERT INTO club_programs VALUES(1,?,\'active\')')->execute(['Rajčátka']);
+        $pdo->prepare("INSERT INTO club_program_offers VALUES(1,1,504,604,'active',?,?,?,?,12)")->execute([
+            $now->modify('-1 day')->format('Y-m-d'),$now->modify('+5 days')->format('Y-m-d'),
+            $now->modify('-1 day')->format('Y-m-d H:i:s'),$now->modify('+1 day')->format('Y-m-d H:i:s'),
+        ]);
+        self::assertContains(604,array_map('intval',array_column(\shopStorefrontProducts($pdo),'variant_id')));
+        \shopCartSetQuantity($pdo,10,604,1);$fingerprint=\shopCartDetail($pdo,10)['fingerprint'];
+        $pdo->prepare('UPDATE club_program_offers SET sales_close_at=?')->execute([$now->modify('-1 second')->format('Y-m-d H:i:s')]);
+        try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$fingerprint);self::fail('Closed program offer must fail again inside checkout transaction.');}
+        catch(\ShopCheckoutException $exception){self::assertStringContainsString('není dostupná',$exception->getMessage());}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());self::assertSame('active',$pdo->query('SELECT catalog_status FROM shop_products WHERE id=504')->fetchColumn());
+        self::assertNotContains(604,array_map('intval',array_column(\shopStorefrontProducts($pdo),'variant_id')));
+    }
+
     public function testPendingCancellationIsAuditedRestocksExactlyOnceAndCancelsPayment():void
     {
         $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,2);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);

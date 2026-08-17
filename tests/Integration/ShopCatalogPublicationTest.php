@@ -95,6 +95,22 @@ final class ShopCatalogPublicationTest extends TestCase
         }
     }
 
+    public function testProgramRequiresOfferLinkAndStaysActiveWhenOfferIsNoLongerSaleable(): void
+    {
+        $pdo=$this->databaseWithDraftCatalog();
+        $productId=(int)$pdo->query("SELECT id FROM shop_products WHERE offer_type<>'goods' ORDER BY id LIMIT 1")->fetchColumn();
+        $pdo->exec("UPDATE shop_products SET offer_type='program' WHERE id=$productId");
+        $variantId=(int)$pdo->query("SELECT id FROM shop_variants WHERE product_id=$productId ORDER BY id LIMIT 1")->fetchColumn();
+        $blocked=\shopCatalogPublicationReadiness($pdo,$productId);self::assertFalse($blocked['ready']);self::assertStringContainsString('nemá navázanou',implode(' ',$blocked['blockers']));
+        $pdo->exec("INSERT INTO club_programs(id,name,status) VALUES(1,'Rajčátka','active')");
+        $pdo->exec("INSERT INTO club_program_offers(id,program_id,product_id,variant_id,status,ends_on,capacity) VALUES(1,1,$productId,$variantId,'draft','2027-08-31',12)");
+        self::assertTrue(\shopCatalogPublicationReadiness($pdo,$productId)['ready']);
+        \shopCatalogPublicationActivate($pdo,$productId,7,'Rajčátka','Cyklistický kroužek pro děti.','Navázaná nabídka byla ověřena.',true);
+        $pdo->exec("UPDATE club_program_offers SET status='active',ends_on='2000-01-01'");
+        $row=array_values(array_filter(\shopCatalogPublicationProducts($pdo),static fn(array $row):bool=>(int)$row['id']===$productId))[0];
+        self::assertSame('active',$row['catalog_status']);self::assertFalse($row['program_saleable']);self::assertStringContainsString('skončila',$row['program_sale_reason']);
+    }
+
     public function testInvalidVisibleVariantRollsBackActivation(): void
     {
         $pdo = $this->databaseWithDraftCatalog();
@@ -162,6 +178,9 @@ final class ShopCatalogPublicationTest extends TestCase
         )->fetchColumn();
         \shopCatalogReviewProduct($pdo, $run['run_id'], (int)$pending, 7, 'approve', 'goods', 'Fyzické zboží.');
         \shopCatalogPromote($pdo, $run['run_id'], 7, true);
+        $pdo->exec('CREATE TABLE club_programs(id INTEGER PRIMARY KEY,name TEXT,status TEXT)');
+        $pdo->exec('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,product_id INTEGER,variant_id INTEGER,status TEXT,ends_on TEXT,sales_open_at TEXT NULL,sales_close_at TEXT NULL,capacity INTEGER NULL)');
+        $pdo->exec('CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,status TEXT)');
         return $pdo;
     }
 
