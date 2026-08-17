@@ -1,5 +1,79 @@
 # Session handoff
 
+## Aktualizace 17. 8. 2026 — Prompt E R6: ročníky a skutečná kapacita (`df0f4e1`)
+
+### Dokončený výsledek
+
+- Nabídka programu má aditivní nullable omezení `birth_year_from` a
+  `birth_year_to`. Rozsah je validovaný mezi 1900 a aktuálním rokem, může být
+  jednostranný a počáteční ročník nesmí převýšit koncový. Prázdná dvojice
+  znamená bez omezení; veřejné i administrační UI používá společný čitelný
+  popisek, včetně přirozeného „pro ročník 2025“ pro jediný ročník.
+- Dítě se u programu vybírá už na detailu produktu a přidání do košíku proběhne
+  atomicky s ověřením aktivní schválené vazby a data narození. Chybějící nebo
+  nepovolený ročník nevytvoří ani prázdnou položku. Totéž se znovu fail-closed
+  ověří při změně příjemce a uvnitř transakce checkoutu; běžné zboží zachovalo
+  volitelnou vazbu příjemce i původní chování.
+- Jediný výpočet kapacity nyní sčítá aktivní účasti a množství položek platných
+  nezaplacených objednávek. Držení končí přesně v
+  `shop_orders.payment_expires_at`; vypršení se vyhodnocuje líně při čtení a
+  nepotřebuje worker ani změnu `status`. Storno držení uvolní a zaplacená
+  objednávka se po vzniku aktivní účasti nepočítá dvakrát.
+- Checkout zamyká katalogovou variantu a nabídku, potom čte aktivní účasti i
+  držící objednávkové položky zamykacím aktuálním čtením. První verze smoke
+  testu odhalila, že samotný zámek nabídky nestačí: druhý proces po čekání stále
+  používal starý transakční snapshot. Přechod na `FOR UPDATE` nad konkrétními
+  řádky uzavřel závod; ze dvou současných checkoutů posledního místa nyní
+  přesně jeden uspěje a druhý dostane srozumitelné odmítnutí bez částečného
+  zápisu.
+- Administrace nabídky zobrazuje odděleně „Aktivní / zaplacené“, „Drží
+  nezaplacené“ a „Skutečně volné“. Trvalou tabulku R6 nepřidává; nová migrace
+  pouze idempotentně rozšiřuje `club_program_offers`, takže ownership kontrakt
+  zálohy se nemění.
+
+### Regrese, živý localhostový průchod a úklid
+
+- Regrese pokrývají odmítnutí ročníku už při vložení i po podvržení košíku,
+  chybějící narození, neomezenou nabídku, lazy uvolnění po lhůtě, storno,
+  přechod držení na aktivní účast bez dvojího započtení a opakovatelnost
+  migrace. MariaDB dvouprocesový smoke navíc připraví dvě rodiny a nabídku s
+  kapacitou jedna, obě pustí k zamčenému závodu a ověří právě jednu čekající
+  objednávku a jedno odmítnutí.
+- V prohlížeči administrátor založil koncept `R6 BROWSER KROUŽEK` se SKU
+  `KP-R6-BROWSER`, přímo v administračním výběru jej navázal na aktivní období
+  s kapacitou 1 a ročníkem 2025 a poté produkt publikoval. Storefront i detail
+  zobrazily „pro ročník 2025“.
+- Dočasná osoba narozená 1985 byla odmítnuta textem o věkovém omezení a DB
+  potvrdila nula položek; osoba narozená 2025 prošla. Objednávka zobrazila QR,
+  variabilní symbol a splatnost a administrativa přešla z `0 / 0 / 1` na
+  `0 / 1 / 0`; storefront plnou nabídku skryl. Po auditovaném posunu testovací
+  lhůty do minulosti zůstal stav objednávky `placed/pending`, rozpad se vrátil
+  na `0 / 0 / 1` a nabídka se bez workeru znovu ukázala.
+- Syntetický produkt, varianta, publikace, program, nabídka, objednávka,
+  položka, platba, košíky a dvě dočasné vazby osob byly po ověření odstraněny v
+  kontrolované transakci. Následný souhrnný SELECT potvrdil pro všech osm
+  skupin nulový zůstatek.
+
+### Brány a provozní hranice
+
+- Plná sada je `643 tests / 5743 assertions`, s jednou existující PHPUnit
+  deprecation. Lint prošel na 521 first-party PHP souborech; všech 12 souborů
+  vlastněných R6 bylo po poslední úpravě znovu ověřeno. `composer validate
+  --strict`, `composer audit --locked`, `composer check-platform-reqs` a
+  `git diff --check` jsou zelené.
+- Lokální migrace prošla `check (jedna čekající R6) → apply → check (current)`
+  a finální `check → apply → check`; katalog má 59/59 migrací. Úplný migrační
+  a backup/restore smoke se 112 tabulkami i nový souběžný checkout posledního
+  místa prošly na `10.3.39-MariaDB` i `11.4.0-MariaDB`; oba dočasné servery byly
+  po testu ukončeny a izolované testovací databáze odstraněny.
+- Implementace je commit `df0f4e1c8b8871b06262edce148d43d78fe04833`.
+  Produkce, `origin/main`, Prompt G, push i deploy zůstaly beze změny.
+
+### Další krok
+
+- Zahájit čistý R7: verzované souhlasy programu a nabídky, povinné potvrzení v
+  checkoutu a neměnný auditní snapshot souhlasu u objednávky/účasti.
+
 ## Aktualizace 17. 8. 2026 — Prompt E R5: bezpečné obrázky produktu (`3746174`)
 
 ### Dokončený výsledek
