@@ -33,4 +33,19 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringContainsString('eshop_admin.php', (string)file_get_contents($root . '/index.php'));
         self::assertStringContainsString('eshop_admin.php', (string)file_get_contents($root . '/admin_dashboard.php'));
     }
+
+    public function testProductAdminUsesProtectedDomainWritersAndPrg(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $source = (string)file_get_contents($root . '/eshop_produkt_admin.php');
+        self::assertStringContainsString("roleAtLeast('admin')", $source);
+        self::assertStringContainsString('csrf_verify', $source);
+        self::assertStringContainsString('shopManualCatalogCreate', $source);
+        self::assertStringContainsString('shopManualCatalogUpdateProduct', $source);
+        self::assertStringContainsString('shopManualCatalogUpdateVariant', $source);
+        self::assertStringContainsString('shopManualCatalogArchive', $source);
+        self::assertStringContainsString("header('Location: eshop_produkt_admin.php", $source);
+        self::assertStringNotContainsString('INSERT INTO shop_products', $source);
+        self::assertStringContainsString('eshop_produkt_admin.php', (string)file_get_contents($root . '/eshop_admin.php'));
+    }
 }

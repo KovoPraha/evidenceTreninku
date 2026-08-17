@@ -9,6 +9,19 @@ const SHOP_COUPON_CLUB_EVENT = 4;
 const SHOP_COUPON_VELODROME = 8;
 const SHOP_COUPON_ALL = 15;
 
+function couponAdminMoneyInput(string $value, bool $nullable = false): ?int
+{
+    $value = trim(str_replace(',', '.', $value));
+    if ($nullable && $value === '') return null;
+    if (preg_match('/^[0-9]{1,8}(?:\.[0-9]{1,2})?$/D', $value) !== 1) {
+        throw new InvalidArgumentException(
+            'Částka musí být nezáporné číslo nejvýše se dvěma desetinnými místy.'
+        );
+    }
+    [$whole, $fraction] = array_pad(explode('.', $value, 2), 2, '');
+    return (int)$whole * 100 + (int)str_pad($fraction, 2, '0');
+}
+
 function shopCouponNormalizeCode(string $code): string
 {
     $code = strtoupper(trim($code));

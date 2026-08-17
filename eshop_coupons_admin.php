@@ -10,14 +10,6 @@ if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
 }
 
 function couponAdminH(mixed $value): string { return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
-function couponAdminMoneyInput(string $value, bool $nullable = false): ?int
-{
-    $value = trim(str_replace(',', '.', $value));
-    if ($nullable && $value === '') return null;
-    if (preg_match('/^[0-9]{1,8}(?:\.[0-9]{1,2})?$/D', $value) !== 1) throw new InvalidArgumentException('Částka musí být nezáporné číslo nejvýše se dvěma desetinnými místy.');
-    [$whole, $fraction] = array_pad(explode('.', $value, 2), 2, '');
-    return (int)$whole * 100 + (int)str_pad($fraction, 2, '0');
-}
 function couponAdminDate(string $value): string { $value = trim($value); return $value === '' ? '' : str_replace('T', ' ', $value) . (strlen($value) === 16 ? ':00' : ''); }
 function couponAdminDiscount(array $coupon): string { return $coupon['discount_type'] === 'fixed' ? number_format((int)$coupon['value_minor_or_basis_points'] / 100, 2, ',', ' ') . ' Kč' : number_format((int)$coupon['value_minor_or_basis_points'] / 100, 2, ',', ' ') . ' %'; }
 
