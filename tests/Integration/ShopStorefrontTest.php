@@ -45,10 +45,19 @@ final class ShopStorefrontTest extends TestCase
     public function testImageAllowListRejectsUnsafeSchemesCredentialsAndControls(): void
     {
         self::assertSame('https://cdn.example.test/a.jpg?x=1', \shopStorefrontSafeImageUrl('https://cdn.example.test/a.jpg?x=1'));
+        self::assertSame(
+            \appUrl('uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'),
+            \shopStorefrontSafeImageUrl('uploads/shop-products/0123456789abcdef0123456789abcdef.jpg')
+        );
         self::assertNull(\shopStorefrontSafeImageUrl('http://cdn.example.test/a.jpg'));
         self::assertNull(\shopStorefrontSafeImageUrl('javascript:alert(1)'));
         self::assertNull(\shopStorefrontSafeImageUrl('https://user:pass@cdn.example.test/a.jpg'));
         self::assertNull(\shopStorefrontSafeImageUrl("https://cdn.example.test/a.jpg\nX-Test: bad"));
+        self::assertNull(\shopStorefrontSafeImageUrl('uploads/shop-products/../../config.php'));
+        self::assertNull(\shopStorefrontSafeImageUrl('uploads/shop-products/not-random.jpg'));
+        self::assertNull(\shopStorefrontSafeImageUrl('/uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'));
+        self::assertTrue(\shopStorefrontIsLocalImageUrl(\appUrl('uploads/shop-products/0123456789abcdef0123456789abcdef.jpg')));
+        self::assertFalse(\shopStorefrontIsLocalImageUrl('https://attacker.example/uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'));
     }
 
     private function database(): PDO

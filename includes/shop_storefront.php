@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/shop_checkout.php';
+require_once __DIR__ . '/app_url.php';
 
 /**
  * Only explicitly published text is returned. The imported HTML description is
@@ -94,6 +95,9 @@ function shopStorefrontSafeImageUrl(string $url): ?string
     if ($url === '' || strlen($url) > 2048 || preg_match('/[\x00-\x1F\x7F]/', $url) === 1) {
         return null;
     }
+    if (shopStorefrontIsLocalImagePath($url)) {
+        return appUrl($url);
+    }
     if (filter_var($url, FILTER_VALIDATE_URL) === false) {
         return null;
     }
@@ -105,4 +109,16 @@ function shopStorefrontSafeImageUrl(string $url): ?string
         return null;
     }
     return $url;
+}
+
+function shopStorefrontIsLocalImagePath(string $url): bool
+{
+    return preg_match('~^uploads/shop-products/[a-f0-9]{32}\.jpg$~D',trim($url))===1;
+}
+
+function shopStorefrontIsLocalImageUrl(string $url): bool
+{
+    $prefix=appUrl('uploads/shop-products/');
+    if (!str_starts_with($url,$prefix)) return false;
+    return preg_match('~^[a-f0-9]{32}\.jpg$~D',substr($url,strlen($prefix)))===1;
 }

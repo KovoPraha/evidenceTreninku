@@ -44,7 +44,10 @@ if ($product !== null) {
     ));
     if ($isProgram) {
         // Imported source images describe the former Shoptet product, not the approved club service.
-        $product['images'] = [];
+        $product['images'] = array_values(array_filter(
+            $product['images'],
+            static fn(string $url): bool => shopStorefrontIsLocalImageUrl($url)
+        ));
     }
 }
 if ($product === null || $product['variants'] === []) {

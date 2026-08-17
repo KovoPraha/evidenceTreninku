@@ -20,7 +20,7 @@ function shopManualCatalogProducts(PDO $pdo): array
     )->fetchAll(PDO::FETCH_ASSOC);
 }
 
-/** @return array{product:array<string,mixed>,variants:list<array<string,mixed>>,events:list<array<string,mixed>>} */
+/** @return array{product:array<string,mixed>,variants:list<array<string,mixed>>,images:list<array<string,mixed>>,events:list<array<string,mixed>>} */
 function shopManualCatalogDetail(PDO $pdo, int $productId): array
 {
     if ($productId < 1) throw new InvalidArgumentException('Produkt nebyl vybrán.');
@@ -33,6 +33,8 @@ function shopManualCatalogDetail(PDO $pdo, int $productId): array
     if (!$product) throw new ShopManualCatalogException('Produkt nebyl nalezen.');
     $variants = $pdo->prepare('SELECT * FROM shop_variants WHERE product_id=? ORDER BY id');
     $variants->execute([$productId]);
+    $images = $pdo->prepare('SELECT id,product_id,image_url,sort_order FROM shop_product_images WHERE product_id=? ORDER BY sort_order,id');
+    $images->execute([$productId]);
     $events = $pdo->prepare(
         'SELECT e.*,t.jmeno AS actor_name FROM shop_catalog_admin_events e '
         . 'LEFT JOIN treneri t ON e.actor_type=\'trainer\' AND t.id=e.actor_id '
@@ -42,6 +44,7 @@ function shopManualCatalogDetail(PDO $pdo, int $productId): array
     return [
         'product'=>$product,
         'variants'=>$variants->fetchAll(PDO::FETCH_ASSOC),
+        'images'=>$images->fetchAll(PDO::FETCH_ASSOC),
         'events'=>$events->fetchAll(PDO::FETCH_ASSOC),
     ];
 }

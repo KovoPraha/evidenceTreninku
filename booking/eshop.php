@@ -71,7 +71,10 @@ foreach (shopStorefrontCatalog($pdo) as $product) {
         }
     ));
     if ($product['variants'] === []) continue;
-    if ($isProgram) $product['images'] = [];
+    if ($isProgram) $product['images'] = array_values(array_filter(
+        $product['images'],
+        static fn(string $url): bool => shopStorefrontIsLocalImageUrl($url)
+    ));
     $product['is_program'] = $isProgram;
     $product['min_amount_minor'] = min(array_column($product['variants'], 'amount_minor'));
     $product['max_amount_minor'] = max(array_column($product['variants'], 'amount_minor'));
