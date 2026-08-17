@@ -1,5 +1,74 @@
 # Session handoff
 
+## Aktualizace 17. 8. 2026 — Prompt E R5: bezpečné obrázky produktu (`3746174`)
+
+### Dokončený výsledek
+
+- Správa produktu nyní umožňuje administrátorovi nahrát JPG nebo PNG do 5 MB
+  a 6000 × 6000 px, určit jeho pořadí, pořadí později změnit a obrázek odebrat.
+  Každá operace vyžaduje CSRF, důvod a výslovné potvrzení.
+- Server nevěří příponě ani MIME z prohlížeče: obsah ověří přes `finfo`, dekóduje
+  přes GD a vždy znovu zakóduje jako JPEG na bílé plátno. Tím zahodí EXIF i
+  ostatní metadata. Veřejný soubor má pouze kryptograficky náhodný název;
+  původní jméno se neukládá do cesty ani do databáze.
+- Databáze používá existující `shop_product_images`. Přidání, změna pořadí a
+  odebrání zapisují ve stejné databázové transakci snapshot do existujícího
+  `shop_catalog_admin_events` s aktérem `trainer`, jeho ID a důvodem. Zámky
+  drží konzistentní pořadí produkt → obrázek.
+- Soubor se ukládá jako kanonická relativní cesta
+  `uploads/shop-products/<32 hex>.jpg`. Storefront pustí jen přesný vlastní
+  vzor a z něj sestaví adresu přes důvěryhodné `APP_BASE_URL`; nadále odmítá
+  cizí HTTP, jiné protokoly, řídicí znaky i URL s přihlašovacími údaji.
+  Kroužek ukáže pouze takový vlastní ručně schválený obrázek, nikoli starý
+  importní obrázek původního produktu.
+- Odebrání fyzický soubor nemaže. V rámci kompenzovaného transakčního toku ho
+  přesune do `var/_to_delete/shop-product-images`; při databázovém rollbacku
+  se pokusí soubor vrátit. Veřejný kořen už globálně zakazuje indexování a
+  spuštění skriptových přípon v `uploads`, takže nový adresář nepotřeboval
+  další trvalý konfigurační soubor.
+
+### Regrese, živý localhostový průchod a úklid
+
+- Nový integrační test odmítne textový soubor vydávající se za JPG bez řádku v
+  databázi a bez veřejného souboru. Druhý test vloží do platného JPEG vlastní
+  EXIF marker, projde přidání → změnu pořadí → odebrání a ověří, že uložený
+  JPEG marker neobsahuje, všechny tři akce jsou auditované a odebraný soubor
+  leží v karanténě. URL regrese navíc ověřuje povolenou vlastní cestu, traversal,
+  ne-náhodný název a cizí doménu se stejně vypadající cestou.
+- V prohlížeči administrátor založil `R5 BROWSER Obrázek programu` se SKU
+  `KP-R5-BROWSER-IMG`, nahrál skutečné PNG, změnil pořadí z 10 na -5 a viděl
+  audit `add_image` a `reorder_image`. DB a soubor potvrdily náhodnou cestu,
+  MIME `image/jpeg`, SHA-256 a nulový výskyt EXIF markeru.
+- Pro kontrolu obou veřejných rozhraní byl syntetický produkt dočasně změněn
+  na `goods` a auditovaně publikován. Obrázek se zobrazil na kartě v
+  `/booking/eshop.php` i v `/booking/produkt.php?id=247`, vždy z přesné lokální
+  adresy. Poté ho administrátor odebral; UI potvrdilo prázdnou galerii a soubor
+  byl přesunut do karantény.
+- Před úklidem bylo ověřeno, že produkt ani varianta nemají nabídku, košík,
+  objednávku, členskou cenu, kategorii, event vazbu ani skladový pohyb. Produkt,
+  varianta, publikace a oba auditní deníky byly následně odstraněny v jedné
+  kontrolované transakci. DB i nově načtený storefront a katalog potvrdily nulu
+  pro `R5 BROWSER` a `KP-R5-BROWSER-`; syntetický JPEG zůstává pouze v určené
+  karanténě, jak vyžaduje pravidlo bez fyzického mazání.
+
+### Brány a provozní hranice
+
+- Plná sada je `638 tests / 5604 assertions`, s jednou existující PHPUnit
+  deprecation. Lint prošel na 520 first-party PHP souborech;
+  `composer validate --strict`, `composer audit --locked`,
+  `composer check-platform-reqs` a `git diff --check` jsou zelené.
+- R5 nepřidává migraci ani trvalou tabulku. Povinný lokální průchod
+  `check → apply → check` skončil třikrát `current`; stav zůstává 58/58 a
+  ownership kontrakt zálohy se neměnil.
+- Implementace je commit `3746174`. Produkce, `origin/main`, Prompt G, push i
+  deploy zůstaly beze změny.
+
+### Další krok
+
+- Zahájit čistý R6: kapacita nabídky včetně neuhrazených objednávek držených do
+  `shop_orders.payment_expires_at`, lazy expirace, společný transakční výpočet a
+  administrační rozpad aktivních účastí versus dosud platných rezervací.
+
 ## Aktualizace 17. 8. 2026 — Prompt E R4: ruční správa produktu (`049503c`)
 
 ### Dokončený výsledek
