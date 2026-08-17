@@ -1,5 +1,78 @@
 # Session handoff
 
+## Aktualizace 17. 8. 2026 — Prompt E R4: ruční správa produktu (`049503c`)
+
+### Dokončený výsledek
+
+- Nová stránka `eshop_produkt_admin.php` je natvrdo jen pro administrátora,
+  používá CSRF a PRG a je dostupná ze správy e-shopu. Z prohlížeče založí ruční
+  produkt s první variantou, upraví produkt i variantu, přidá další sezonní
+  variantu a produkt deaktivuje/archivuje bez fyzického mazání.
+- Ruční produkt vzniká v jedné transakci jako `origin='manual'`, bez importních
+  vazeb, s náhodným klíčem `manual:<32 hex>` a v `draft`. SKU se ověřuje proti
+  rezervovanému prefixu `KP-` i globální unikátnosti; souběžná kolize skončí
+  stejnou srozumitelnou hláškou. První varianta vznikne vždy v konceptu.
+- Nová varianta ručního produktu převezme aktivní stav už publikovaného
+  produktu. U programu je to bezpečné: bez navázané právě prodejné nabídky ji
+  R3 ve storefrontu i checkoutu stejně odmítne. Tím je zachováno rozhodnutí, že
+  nová sezonní nabídka vrátí produkt do prodeje bez opakované publikace.
+- Produkt upravuje interní název, prostý popis, `goods`/`program`,
+  `product`/`service` a povolenou viditelnost. Varianta upravuje cenu, původní
+  cenu, JSON parametry, viditelnost, DPH snapshot, sklad, jednotku a EAN. Cena
+  používá sdílený `couponAdminMoneyInput()` přesunutý beze změny do
+  `includes/shop_coupon.php`; UI výslovně říká, že změna platí jen pro nové
+  objednávky. SKU importované varianty je neměnné kvůli budoucím importům.
+- Každý writer vyžaduje administrátora, důvod a potvrzení, drží pořadí zámků
+  produkt → varianta a zapisuje snapshot do nové tabulky
+  `shop_catalog_admin_events` ve stejné transakci. Deaktivace synchronně
+  deaktivuje produkt, varianty i případnou publikaci a zachová také dosavadní
+  publikační audit.
+- Bezpečná editace skladu vyžadovala předsunout úzkou část R11: existující
+  `shop_inventory_movements` nyní dovoluje `NULL` u objednávkové vazby a má
+  nullable auditní sloupce `actor_type`, `actor_id`, `reason` pro staré řádky.
+  Ruční změna skladu nikdy nepřepisuje číslo bez pohybu; zapisuje
+  `manual_adjustment`, přesný rozdíl, výsledný stav, aktéra a důvod. Ne vznikl
+  druhý skladový registr.
+
+### Regrese a živý localhostový průchod
+
+- Integrační test vytvoří ruční program a dvě sezonní varianty, ověří jejich
+  původ, stavy a snapshotové audity. Nad importovanou variantou s historickou
+  objednávkou změní cenu z 50 na 75 Kč a sklad z 5 na 7; objednávkový snapshot
+  zůstane 50 Kč a vznikne jediný pohyb `manual_adjustment +2.000000` s aktérem
+  `trainer`. Změna importního SKU, chybějící potvrzení i neplatné ruční SKU
+  selžou bez částečného zápisu.
+- V prohlížeči administrátor založil `R4 BROWSER Test produktu` se SKU
+  `KP-R4-BROWSER-2026`, cenou 1 234,56 Kč, JSON parametrem, DPH snapshotem a
+  skladem 5. Následně změnil název, cenu na 1 300 Kč, parametry i sklad na 7,
+  přidal `KP-R4-BROWSER-2027` za 1 400 Kč a produkt archivoval. UI po každém
+  POSTu zobrazilo PRG úspěch a audit `create_product`, `update_variant`,
+  `add_variant`, `update_product`, `archive_product`.
+- DB potvrdila ruční původ, obě neaktivní varianty po archivaci, pět auditních
+  událostí, jeden skladový pohyb a nula objednávek. Poté byly produkt, obě
+  varianty, pohyb i testovací audity kontrolovaně odstraněny; DB i nové načtení
+  obrazovky potvrdily nulový zůstatek prefixů `R4 BROWSER` a
+  `KP-R4-BROWSER-`.
+
+### Brány a provozní hranice
+
+- Plná sada je `636 tests / 5578 assertions`, s jednou existující PHPUnit
+  deprecation. Lint prošel na 518 first-party PHP souborech; Composer validate,
+  audit i platform requirements jsou zelené a `git diff --check` je čistý.
+- Lokální migrace prošla `check (jedna čekající R4) → apply → check (current)`;
+  katalog má 58/58 migrací. Úplný migrační a backup/restore smoke se 112
+  tabulkami prošel na `10.3.39-MariaDB` i `11.4.0-MariaDB`. Ownership kontrakt
+  `2026-08-17.2` obsahuje novou trvalou auditní tabulku.
+- Kategorie jsou v R4 záměrně odložené na R9 a dvojice parametrů s našeptáváním
+  na R10 podle původního pořadí; volný JSON už lze bezpečně editovat. Implementace
+  je commit `049503c`. Produkce, `origin/main`, Prompt G, push i deploy zůstaly
+  beze změny.
+
+### Další krok
+
+- Zahájit čistý R5 nad `049503c`: bezpečný upload JPG/PNG, re-encoding bez EXIF,
+  lokální veřejná URL, pořadí a odstranění obrázku s auditem.
+
 ## Aktualizace 17. 8. 2026 — Prompt E R3: prodejní životní cyklus programu (`79c84bb`)
 
 ### Dokončený výsledek
