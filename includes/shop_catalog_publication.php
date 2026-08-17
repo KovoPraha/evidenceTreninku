@@ -123,82 +123,13 @@ function shopCatalogPublicationActivate(
     string $note,
     bool $confirmed
 ): array {
-    [$publicName, $publicSummary, $note] = shopCatalogPublicationValidateDecision(
-        $productId,
-        $actorTrainerId,
-        $publicName,
-        $publicSummary,
-        $note,
-        $confirmed
-    );
     $pdo->beginTransaction();
     try {
-        $product = shopCatalogPublicationLockProduct($pdo, $productId);
-        if (!$product) {
-            throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
-        }
-        $readiness = shopCatalogPublicationReadiness($pdo, $productId);
-        if (!$readiness['ready']) {
-            throw new ShopCatalogPublicationException('Aktivace je blokována: ' . implode(' ', $readiness['blockers']));
-        }
-        $existing = $pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');
-        $existing->execute([$productId]);
-        $publication = $existing->fetch(PDO::FETCH_ASSOC);
-        if ($product['catalog_status'] === 'active' && $publication && $publication['status'] === 'active') {
-            if ($publication['public_name'] === $publicName && $publication['public_summary'] === $publicSummary) {
-                $pdo->commit();
-                return [
-                    'product_id' => $productId,
-                    'status' => 'active',
-                    'changed' => false,
-                    'visible_variants' => $readiness['visible_variants'],
-                ];
-            }
-            throw new ShopCatalogPublicationException('Aktivní veřejný text nelze tiše přepsat. Produkt nejprve deaktivujte.');
-        }
-        if ($publication) {
-            $update = $pdo->prepare(
-                "UPDATE shop_product_publications SET status='active', public_name=?, public_summary=?, "
-                . 'decision_note=?, activated_by_trainer_id=?, activated_at=CURRENT_TIMESTAMP, '
-                . 'deactivated_at=NULL, updated_at=CURRENT_TIMESTAMP WHERE product_id=?'
-            );
-            $update->execute([$publicName, $publicSummary, $note, $actorTrainerId, $productId]);
-            $action = 'reactivate';
-            $fromStatus = (string)$publication['status'];
-        } else {
-            $insert = $pdo->prepare(
-                'INSERT INTO shop_product_publications '
-                . '(product_id, status, public_name, public_summary, decision_note, '
-                . "activated_by_trainer_id, activated_at) VALUES (?, 'active', ?, ?, ?, ?, CURRENT_TIMESTAMP)"
-            );
-            $insert->execute([$productId, $publicName, $publicSummary, $note, $actorTrainerId]);
-            $action = 'activate';
-            $fromStatus = null;
-        }
-        $pdo->prepare("UPDATE shop_products SET catalog_status='active', updated_at=CURRENT_TIMESTAMP WHERE id=?")
-            ->execute([$productId]);
-        $pdo->prepare(
-            "UPDATE shop_variants SET catalog_status=CASE WHEN visible=1 OR visible IS NULL THEN 'active' ELSE 'inactive' END, "
-            . 'updated_at=CURRENT_TIMESTAMP WHERE product_id=?'
-        )->execute([$productId]);
-        shopCatalogPublicationEvent(
-            $pdo,
-            $productId,
-            $actorTrainerId,
-            $action,
-            $fromStatus,
-            'active',
-            $publicName,
-            $publicSummary,
-            $note
+        $result = shopCatalogPublicationActivateInTransaction(
+            $pdo,$productId,$actorTrainerId,$publicName,$publicSummary,$note,$confirmed
         );
         $pdo->commit();
-        return [
-            'product_id' => $productId,
-            'status' => 'active',
-            'changed' => true,
-            'visible_variants' => $readiness['visible_variants'],
-        ];
+        return $result;
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -208,6 +139,47 @@ function shopCatalogPublicationActivate(
         }
         throw new ShopCatalogPublicationException('Aktivace selhala bez částečného zápisu.', 0, $exception);
     }
+}
+
+/** @return array{product_id:int,status:string,changed:bool,visible_variants:int} */
+function shopCatalogPublicationActivateInTransaction(
+    PDO $pdo,
+    int $productId,
+    int $actorTrainerId,
+    string $publicName,
+    string $publicSummary,
+    string $note,
+    bool $confirmed
+): array {
+    if (!$pdo->inTransaction()) throw new LogicException('Aktivace katalogu vyžaduje otevřenou transakci.');
+    [$publicName,$publicSummary,$note]=shopCatalogPublicationValidateDecision(
+        $productId,$actorTrainerId,$publicName,$publicSummary,$note,$confirmed
+    );
+    $product=shopCatalogPublicationLockProduct($pdo,$productId);
+    if(!$product)throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
+    $readiness=shopCatalogPublicationReadiness($pdo,$productId);
+    if(!$readiness['ready'])throw new ShopCatalogPublicationException('Aktivace je blokována: '.implode(' ',$readiness['blockers']));
+    $existing=$pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');
+    $existing->execute([$productId]);$publication=$existing->fetch(PDO::FETCH_ASSOC);
+    if($product['catalog_status']==='active'&&$publication&&$publication['status']==='active'){
+        if($publication['public_name']===$publicName&&$publication['public_summary']===$publicSummary)return[
+            'product_id'=>$productId,'status'=>'active','changed'=>false,'visible_variants'=>$readiness['visible_variants'],
+        ];
+        throw new ShopCatalogPublicationException('Aktivní veřejný text nelze tiše přepsat. Produkt nejprve deaktivujte.');
+    }
+    if($publication){
+        $pdo->prepare("UPDATE shop_product_publications SET status='active',public_name=?,public_summary=?,decision_note=?,activated_by_trainer_id=?,activated_at=CURRENT_TIMESTAMP,deactivated_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE product_id=?")
+            ->execute([$publicName,$publicSummary,$note,$actorTrainerId,$productId]);
+        $action='reactivate';$fromStatus=(string)$publication['status'];
+    }else{
+        $pdo->prepare("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note,activated_by_trainer_id,activated_at) VALUES(?,'active',?,?,?,?,CURRENT_TIMESTAMP)")
+            ->execute([$productId,$publicName,$publicSummary,$note,$actorTrainerId]);
+        $action='activate';$fromStatus=null;
+    }
+    $pdo->prepare("UPDATE shop_products SET catalog_status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
+    $pdo->prepare("UPDATE shop_variants SET catalog_status=CASE WHEN visible=1 OR visible IS NULL THEN 'active' ELSE 'inactive' END,updated_at=CURRENT_TIMESTAMP WHERE product_id=?")->execute([$productId]);
+    shopCatalogPublicationEvent($pdo,$productId,$actorTrainerId,$action,$fromStatus,'active',$publicName,$publicSummary,$note);
+    return['product_id'=>$productId,'status'=>'active','changed'=>true,'visible_variants'=>$readiness['visible_variants']];
 }
 
 /** @return array{product_id:int,status:string,changed:bool} */

@@ -27,6 +27,7 @@ final class ShopStorefrontTest extends TestCase
         self::assertTrue($stockBySku['DRES-M']);
         self::assertFalse($stockBySku['DRES-L']);
         self::assertSame(['https://cdn.example.test/dres.jpg'], $catalog[0]['images']);
+        self::assertSame(['Oblečení > Dresy','Klubové zboží'],$catalog[0]['categories']);
         self::assertArrayNotHasKey('description_html_untrusted', $catalog[0]);
         self::assertStringNotContainsString('script', json_encode($catalog, JSON_THROW_ON_ERROR));
     }
@@ -74,6 +75,8 @@ final class ShopStorefrontTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants VALUES(601,501,'DRES-M','{\"Velikost\":\"M\"}','fixed',120000,'CZK','2.000000',1,'active'),(602,501,'DRES-L','{\"Velikost\":\"L\"}','fixed',125000,'CZK','0.000000',1,'active'),(603,501,'DRES-XL','{}','fixed',130000,'CZK','1.000000',0,'inactive'),(604,502,'DRAFT','{}','fixed',100,'CZK',NULL,1,'active'),(605,503,'HIDDEN','{}','fixed',100,'CZK',NULL,1,'active'),(606,504,'SERVICE','{}','fixed',100,'CZK',NULL,1,'active')");
         $pdo->exec('CREATE TABLE shop_product_images(id INTEGER PRIMARY KEY,product_id INTEGER,image_url TEXT,sort_order INTEGER)');
         $pdo->exec("INSERT INTO shop_product_images VALUES(1,501,'https://cdn.example.test/dres.jpg',0),(2,501,'http://cdn.example.test/insecure.jpg',1),(3,501,'javascript:alert(1)',2),(4,502,'https://cdn.example.test/draft.jpg',0)");
+        $pdo->exec('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER)');
+        $pdo->exec("INSERT INTO shop_product_categories VALUES(1,501,'Oblečení > Dresy',1,0),(2,501,'Klubové zboží',0,1),(3,502,'Koncepty',1,0)");
         return $pdo;
     }
 }

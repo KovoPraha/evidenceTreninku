@@ -40,6 +40,14 @@ function kisRosterCreateSeries(PDO$pdo,int$actorId,string$code,string$name,strin
 /** @return array<string,mixed> */
 function kisRosterCreateSeason(PDO$pdo,int$actorId,string$code,string$name,string$startsOn,string$endsOn,?string$seasonType=null):array
 {
+    $pdo->beginTransaction();
+    try{$result=kisRosterCreateSeasonInTransaction($pdo,$actorId,$code,$name,$startsOn,$endsOn,$seasonType);$pdo->commit();return$result;}
+    catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sezonu se nepodařilo založit bez částečného zápisu.',0,$e);}
+}
+/** @return array<string,mixed> */
+function kisRosterCreateSeasonInTransaction(PDO$pdo,int$actorId,string$code,string$name,string$startsOn,string$endsOn,?string$seasonType=null):array
+{
+    if(!$pdo->inTransaction())throw new LogicException('Založení sezony vyžaduje otevřenou transakci.');
     $code=kisRosterCode($code,32);$name=kisRosterText($name,120,'Nazev sezony');$startsOn=kisRosterDate($startsOn);$endsOn=kisRosterDate($endsOn);$seasonType=kisRosterSeasonType($seasonType??kisRosterInferSeasonType($startsOn,$endsOn));
     if($actorId<1||$startsOn>=$endsOn)throw new InvalidArgumentException('Sezona vyzaduje administratora a konec po zacatku.');
     $startYear=(int)substr($startsOn,0,4);$endYear=(int)substr($endsOn,0,4);
@@ -54,17 +62,24 @@ function kisRosterCreateSeason(PDO$pdo,int$actorId,string$code,string$name,strin
 /** @return array<string,mixed> */
 function kisRosterCreateTeam(PDO$pdo,int$seasonId,int$actorId,string$code,string$name,string$discipline,string$ageLabel,string$note,?int$seriesId=null):array
 {
-    $code=kisRosterCode($code);$name=kisRosterText($name,160,'Nazev tymu');$discipline=kisRosterText($discipline,120,'Disciplina');$ageLabel=kisRosterText($ageLabel,120,'Vekova kategorie');$note=kisRosterText($note,1000,'Duvod');
-    if($seasonId<1||$actorId<1)throw new InvalidArgumentException('Tym vyzaduje sezonu a administratora.');
     $pdo->beginTransaction();
     try{
-        $s=$pdo->prepare('SELECT * FROM club_seasons WHERE id=?');$s->execute([$seasonId]);$season=$s->fetch(PDO::FETCH_ASSOC);if(!$season)throw new KisRosterException('Sezona nebyla nalezena.');
-        if($seriesId!==null){$s=$pdo->prepare("SELECT * FROM club_team_series WHERE id=? AND status='active'");$s->execute([$seriesId]);$series=$s->fetch(PDO::FETCH_ASSOC);if(!$series)throw new KisRosterException('Aktivni serie nebyla nalezena.');if($series['season_type']!==$season['season_type'])throw new InvalidArgumentException('Serie a sezona pouzivaji jiny kalendar.');}
-        $s=$pdo->prepare('SELECT * FROM club_teams WHERE season_id=? AND code=?');$s->execute([$seasonId,$code]);$team=$s->fetch(PDO::FETCH_ASSOC);
-        if($team){if($team['name']!==$name||$team['discipline']!==$discipline||$team['age_label']!==$ageLabel||($team['series_id']===null?null:(int)$team['series_id'])!==$seriesId)throw new KisRosterException('Kod tymu uz oznacuje jiny tym.');$pdo->commit();return$team;}
-        $pdo->prepare("INSERT INTO club_teams(season_id,series_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES (?,?,?,?,?,?,'active',?)")->execute([$seasonId,$seriesId,$code,$name,$discipline,$ageLabel,$actorId]);$id=(int)$pdo->lastInsertId();
-        $after=['id'=>$id,'season_id'=>$seasonId,'series_id'=>$seriesId,'code'=>$code,'name'=>$name,'discipline'=>$discipline,'age_label'=>$ageLabel,'status'=>'active'];kisRosterEvent($pdo,$id,null,$actorId,'create_team',null,$after,$note);$pdo->commit();return$after;
+        $result=kisRosterCreateTeamInTransaction($pdo,$seasonId,$actorId,$code,$name,$discipline,$ageLabel,$note,$seriesId);
+        $pdo->commit();return$result;
     }catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Tym se nepodarilo zalozit bez castecneho zapisu.',0,$e);}
+}
+/** @return array<string,mixed> */
+function kisRosterCreateTeamInTransaction(PDO$pdo,int$seasonId,int$actorId,string$code,string$name,string$discipline,string$ageLabel,string$note,?int$seriesId=null):array
+{
+    if(!$pdo->inTransaction())throw new LogicException('Založení týmu vyžaduje otevřenou transakci.');
+    $code=kisRosterCode($code);$name=kisRosterText($name,160,'Nazev tymu');$discipline=kisRosterText($discipline,120,'Disciplina');$ageLabel=kisRosterText($ageLabel,120,'Vekova kategorie');$note=kisRosterText($note,1000,'Duvod');
+    if($seasonId<1||$actorId<1)throw new InvalidArgumentException('Tym vyzaduje sezonu a administratora.');
+    $s=$pdo->prepare('SELECT * FROM club_seasons WHERE id=?');$s->execute([$seasonId]);$season=$s->fetch(PDO::FETCH_ASSOC);if(!$season)throw new KisRosterException('Sezona nebyla nalezena.');
+    if($seriesId!==null){$s=$pdo->prepare("SELECT * FROM club_team_series WHERE id=? AND status='active'");$s->execute([$seriesId]);$series=$s->fetch(PDO::FETCH_ASSOC);if(!$series)throw new KisRosterException('Aktivni serie nebyla nalezena.');if($series['season_type']!==$season['season_type'])throw new InvalidArgumentException('Serie a sezona pouzivaji jiny kalendar.');}
+    $s=$pdo->prepare('SELECT * FROM club_teams WHERE season_id=? AND code=?');$s->execute([$seasonId,$code]);$team=$s->fetch(PDO::FETCH_ASSOC);
+    if($team){if($team['name']!==$name||$team['discipline']!==$discipline||$team['age_label']!==$ageLabel||($team['series_id']===null?null:(int)$team['series_id'])!==$seriesId)throw new KisRosterException('Kod tymu uz oznacuje jiny tym.');return$team;}
+    $pdo->prepare("INSERT INTO club_teams(season_id,series_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES (?,?,?,?,?,?,'active',?)")->execute([$seasonId,$seriesId,$code,$name,$discipline,$ageLabel,$actorId]);$id=(int)$pdo->lastInsertId();
+    $after=['id'=>$id,'season_id'=>$seasonId,'series_id'=>$seriesId,'code'=>$code,'name'=>$name,'discipline'=>$discipline,'age_label'=>$ageLabel,'status'=>'active'];kisRosterEvent($pdo,$id,null,$actorId,'create_team',null,$after,$note);return$after;
 }
 function kisRosterCreateSeriesTeam(PDO$pdo,int$seriesId,int$seasonId,int$actorId,string$code,string$name,string$discipline,string$ageLabel,string$note):array{return kisRosterCreateTeam($pdo,$seasonId,$actorId,$code,$name,$discipline,$ageLabel,$note,$seriesId);}
 

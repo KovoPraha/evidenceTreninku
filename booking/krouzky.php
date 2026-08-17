@@ -7,6 +7,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/club_event_registration.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
+require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 
 function clubRegistrationH(mixed $value): string
 {
@@ -96,6 +97,12 @@ if(clubEventShopAvailable($pdo)){
     $linkedStatement=$pdo->prepare('SELECT order_id FROM club_event_order_items WHERE registration_id=?');
     foreach($registrations as $registration){$linkedStatement->execute([(int)$registration['id']]);$linkedOrderId=(int)$linkedStatement->fetchColumn();if($linkedOrderId>0)$orderLinkedRegistrations[(int)$registration['id']]=$linkedOrderId;}
 }
+$programProducts=[];
+foreach(shopStorefrontCatalog($pdo)as$product){
+    $variants=[];
+    foreach($product['variants']as$variant){$state=clubProgramVariantSaleState($pdo,(int)$variant['variant_id']);if($state['saleable'])$variants[]=$variant;}
+    if($variants===[])continue;$product['variants']=$variants;$product['min_amount_minor']=min(array_column($variants,'amount_minor'));$product['currency']=(string)$variants[0]['currency'];$product['images']=array_values(array_filter($product['images'],static fn(string$url):bool=>shopStorefrontIsLocalImageUrl($url)));$programProducts[]=$product;
+}
 ?>
 <!doctype html>
 <html lang="cs">
@@ -109,6 +116,7 @@ if(clubEventShopAvailable($pdo)){
 <body class="bg-light">
 <?php publicShellNav('clubs'); ?>
 <main class="container py-4" style="max-width:1000px">
+    <section class="mb-4"><div class="d-flex justify-content-between align-items-start gap-2 mb-3"><div><h1 class="h4 mb-1"><i class="bi bi-bicycle me-2 text-primary"></i>Placené kroužky</h1><p class="text-muted mb-0">Aktuální kroužky koupíte bezpečně v klubovém e-shopu.</p></div><a class="btn btn-primary btn-sm" href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">Otevřít e-shop</a></div><div class="row g-3"><?php foreach($programProducts as$product):?><div class="col-lg-6"><article class="card border-0 shadow-sm h-100"><?php if($product['images']!==[]):?><img src="<?=clubRegistrationH($product['images'][0])?>" class="card-img-top object-fit-contain bg-white p-2" style="height:190px" alt="<?=clubRegistrationH($product['public_name'])?>"><?php endif;?><div class="card-body d-flex flex-column"><h2 class="h5"><?=clubRegistrationH($product['public_name'])?></h2><p class="text-muted small"><?=nl2br(clubRegistrationH($product['public_summary']))?></p><div class="mt-auto d-flex justify-content-between align-items-center"><strong><?=number_format((int)$product['min_amount_minor']/100,2,',',' ')?> <?=clubRegistrationH($product['currency'])?></strong><a class="btn btn-primary btn-sm" href="produkt.php?id=<?=(int)$product['product_id']?>">Detail a koupit</a></div></div></article></div><?php endforeach;?><?php if($programProducts===[]):?><div class="col-12"><div class="alert alert-light border mb-0">Momentálně není v prodeji žádný placený kroužek.</div></div><?php endif;?></div></section>
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2"><div><h1 class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné kroužky</h1><p class="text-muted">Nabídku, termíny a volnou kapacitu vidíte bez registrace. Pro přihlášení účastníka budete potřebovat účet.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= clubRegistrationH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= clubRegistrationH($success) ?></div><?php endif; ?>

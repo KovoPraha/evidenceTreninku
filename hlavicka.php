@@ -371,6 +371,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-graph-up me-2"></i>Všechny výkazy</a></li>
                             <li><a class="dropdown-item<?= _dropActive('club_programs_admin.php') ?>" href="club_programs_admin.php">
                                 <i class="bi bi-calendar-range me-2 text-primary"></i>Kroužkové programy</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('club_program_wizard_admin.php') ?>" href="club_program_wizard_admin.php">
+                                <i class="bi bi-magic me-2 text-success"></i>Vypsat kroužek</a></li>
                             <li><a class="dropdown-item<?= _dropActive('verejny_velodrom_admin.php') ?>" href="verejny_velodrom_admin.php">
                                 <i class="bi bi-bicycle me-2 text-primary"></i>Veřejné hodiny velodromu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('sprava_segmentu.php') ?>" href="sprava_segmentu.php">

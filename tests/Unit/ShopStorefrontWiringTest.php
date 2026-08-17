@@ -28,5 +28,10 @@ final class ShopStorefrontWiringTest extends TestCase
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/booking/eshop.php');
         self::assertStringContainsString('produkt.php?id=', $source);
         self::assertStringContainsString('shopStorefrontCatalog', $source);
+        self::assertStringContainsString("\$_GET['kategorie']",$source);
+        self::assertStringContainsString('rawurlencode($category)',$source);
+        $clubs=(string)file_get_contents(dirname(__DIR__,2).'/booking/krouzky.php');
+        self::assertStringContainsString('shopStorefrontCatalog',$clubs);
+        self::assertStringContainsString('Detail a koupit',$clubs);
     }
 }

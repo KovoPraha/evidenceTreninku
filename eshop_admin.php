@@ -116,6 +116,7 @@ $statusLabels = [
             <div class="text-muted small">Kontrola importovaného katalogu a provozu veřejného e-shopu.</div>
         </div>
         <div class="d-flex gap-2 flex-wrap">
+            <a href="club_program_wizard_admin.php" class="btn btn-primary btn-sm"><i class="bi bi-magic me-1"></i>Vypsat kroužek</a>
             <a href="eshop_fio_admin.php" class="btn btn-outline-info btn-sm"><i class="bi bi-bank me-1"></i>Fio párování K4</a>
             <a href="eshop_coupons_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-ticket-perforated me-1"></i>Kupóny K4</a>
             <a href="eshop_orders_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-receipt me-1"></i>Objednávky K4</a>

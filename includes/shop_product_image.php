@@ -101,20 +101,39 @@ function shopProductImageAdd(
     $stored = shopProductImageStoreFile($source, $uploaded, $applicationRoot);
     try {
         $pdo->beginTransaction();
-        shopManualCatalogLockProduct($pdo, $productId);
-        $pdo->prepare('INSERT INTO shop_product_images(product_id,image_url,sort_order) VALUES(?,?,?)')
-            ->execute([$productId,$stored['image_url'],$sortOrder]);
-        $id = (int)$pdo->lastInsertId();
-        $after = ['id'=>$id,'product_id'=>$productId,'image_url'=>$stored['image_url'],'sort_order'=>$sortOrder,'file'=>$stored];
-        shopManualCatalogEvent($pdo,$productId,null,$actorId,'add_image',null,$after,$reason);
+        $result=shopProductImageAddStoredInTransaction($pdo,$actorId,$productId,$stored,$sortOrder,$reason,true);
         $pdo->commit();
-        return ['id'=>$id,'product_id'=>$productId,'image_url'=>$stored['image_url'],'sort_order'=>$sortOrder];
+        return $result;
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         shopProductImageQuarantine(shopProductImagePath((string)$stored['image_url'],$applicationRoot),$applicationRoot);
         if ($exception instanceof InvalidArgumentException || $exception instanceof ShopManualCatalogException) throw $exception;
         throw new ShopProductImageException('Obrázek se nepodařilo přidat bez částečného zápisu.',0,$exception);
     }
+}
+
+/**
+ * @param array{image_url:string,sha256_hex:string,byte_size:int,mime_type:string,width_px:int,height_px:int} $stored
+ * @return array{id:int,product_id:int,image_url:string,sort_order:int}
+ */
+function shopProductImageAddStoredInTransaction(
+    PDO $pdo,int $actorId,int $productId,array $stored,int $sortOrder,string $reason,bool $confirmed
+):array{
+    if(!$pdo->inTransaction())throw new LogicException('Přidání obrázku vyžaduje otevřenou transakci.');
+    if($sortOrder < -100000 || $sortOrder > 100000)throw new InvalidArgumentException('Pořadí obrázku musí být mezi -100000 a 100000.');
+    shopManualCatalogDecision($actorId,$reason,$confirmed);
+    if(preg_match('~^uploads/shop-products/[a-f0-9]{32}\.jpg$~D',(string)($stored['image_url']??''))!==1
+        ||preg_match('/^[a-f0-9]{64}$/D',(string)($stored['sha256_hex']??''))!==1
+        ||(int)($stored['byte_size']??0)<1||(string)($stored['mime_type']??'')!=='image/jpeg'){
+        throw new ShopProductImageException('Připravený obrázek nemá platný bezpečnostní záznam.');
+    }
+    shopManualCatalogLockProduct($pdo,$productId);
+    $pdo->prepare('INSERT INTO shop_product_images(product_id,image_url,sort_order) VALUES(?,?,?)')
+        ->execute([$productId,$stored['image_url'],$sortOrder]);
+    $id=(int)$pdo->lastInsertId();
+    $after=['id'=>$id,'product_id'=>$productId,'image_url'=>$stored['image_url'],'sort_order'=>$sortOrder,'file'=>$stored];
+    shopManualCatalogEvent($pdo,$productId,null,$actorId,'add_image',null,$after,$reason);
+    return['id'=>$id,'product_id'=>$productId,'image_url'=>$stored['image_url'],'sort_order'=>$sortOrder];
 }
 
 /** @return array{id:int,product_id:int,changed:bool} */

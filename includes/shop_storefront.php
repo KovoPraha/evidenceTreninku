@@ -22,6 +22,7 @@ function shopStorefrontCatalog(PDO $pdo): array
                 'public_summary' => (string)$row['public_summary'],
                 'variants' => [],
                 'images' => [],
+                'categories' => [],
             ];
         }
         $row['in_stock'] = $row['stock_quantity_decimal'] === null
@@ -36,9 +37,22 @@ function shopStorefrontCatalog(PDO $pdo): array
                 $products[$productId]['images'] = $urls;
             }
         }
+        $categories=shopStorefrontCategories($pdo,array_keys($products));
+        foreach($categories as$productId=>$paths)if(isset($products[$productId]))$products[$productId]['categories']=$paths;
     }
 
     return array_values($products);
+}
+
+/** @param list<int> $productIds @return array<int,list<string>> */
+function shopStorefrontCategories(PDO $pdo,array $productIds):array
+{
+    $productIds=array_values(array_unique(array_filter(array_map('intval',$productIds),static fn(int$id):bool=>$id>0)));
+    if($productIds===[])return[];$marks=implode(',',array_fill(0,count($productIds),'?'));
+    $statement=$pdo->prepare("SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN ($marks) ORDER BY product_id,is_default DESC,sort_order,id");
+    $statement->execute($productIds);$result=[];
+    foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$row){$path=trim((string)$row['category_path']);if($path==='')continue;$id=(int)$row['product_id'];$result[$id]??=[];if(!in_array($path,$result[$id],true))$result[$id][]=$path;}
+    return$result;
 }
 
 /** @return array<string,mixed>|null */
