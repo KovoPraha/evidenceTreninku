@@ -1,5 +1,110 @@
 # Session handoff
 
+## Aktualizace 18. 8. 2026 — Prompt E R8: transakční průvodce „Vypsat kroužek“ (`c520b35`)
+
+### Dokončený výsledek
+
+- R8 přidává jednu obrazovku `club_program_wizard_admin.php`, dostupnou z navigace
+  i z `eshop_admin.php` a `club_programs_admin.php`. Devět kroků průvodce (název a
+  popis, cena a DPH, obrázek, kategorie a parametry, období a prodejní okno s
+  kapacitou, volitelné ročníky, storno podmínky, souhlas, cílová soupiska, souhrn)
+  vede k jedinému POST. Souhrn se v prohlížeči přepočítává živě, takže administrátor
+  před odesláním vidí, co vznikne.
+- `clubProgramWizardCreate()` provede celý zápis v jedné transakci: produkt a
+  variantu s původem `manual` a SKU `KP-`, výchozí kategorii, obrázek, sezónu a
+  soupisku, program, nabídku, obě verze podmínek a teprve nakonec publikaci.
+  Aktivace je záměrně poslední krok, takže poloviční kroužek nemůže být zákazníkovi
+  viditelný. Jednorázový klíč v session brání dvojímu odeslání a při selhání se
+  už uložený obrázek přesune do karantény.
+- Aby průvodce nemusel zakládat paralelní model, dostaly tři existující cesty
+  transakční jádro se stejnou konvencí jako `shopOrderConfirmPaymentInTransaction()`:
+  `shopCatalogPublicationActivateInTransaction()`,
+  `shopProductImageAddStoredInTransaction()`, `kisRosterCreateSeasonInTransaction()`
+  a `kisRosterCreateTeamInTransaction()`. Veřejné funkce zůstaly beze změny chování
+  a nadále otevírají vlastní transakci; jádra na otevřenou transakci trvají.
+  Jádro přidání obrázku navíc znovu ověří bezpečnostní záznam připraveného souboru,
+  takže se do katalogu nedostane cesta mimo `uploads/shop-products/`.
+- `shopStorefrontCatalog()` nově vrací i kategorie produktu (jeden dávkový dotaz nad
+  `shop_product_categories`, výchozí kategorie první). Na tom stojí základní
+  kategoriové menu v `booking/eshop.php`: chipy „Vše“ a jednotlivé cesty s počty,
+  filtr v URL `?kategorie=…` a nadpis podle výběru. Menu se odvozuje výhradně z
+  právě prodejných produktů, žádná metadata kategorií zatím neexistují — to je
+  úkol R9.
+- `booking/krouzky.php` dostal úzkou sekci „Placené kroužky“ nad dosavadním
+  bezplatným výpisem. Zobrazuje jen varianty, které projdou
+  `clubProgramVariantSaleState()`, a obrázky omezuje na lokální soubory.
+  Rozhodnutí vlastníka číslo 2 je tím splněné na obou místech.
+
+### Regrese, živý localhostový průchod a úklid
+
+- Regrese `ClubProgramWizardTest` ověřují úplné vytvoření kroužku jedním voláním,
+  nezveřejnění při selhání kteréhokoli kroku a nulový zůstatek po rollbacku;
+  `ShopStorefrontTest` a obě wiring sady kryjí kategorie ve storefrontu.
+- Kompletní živý průchod prošel v prohlížeči na localhostu. Administrátor založil
+  průvodcem kroužek `Rajčátka` (produkt 251, varianta `KP-RAJC-ATKA-FBE16F`,
+  klíč `manual:…`, cena 1 500 Kč, kategorie `Kroužky`, kapacita 2, ročník 2025,
+  nová sezóna i soupiska `LOCALHOST Rajčátka`, obě verze podmínek v1). Kroužek se
+  objevil na `/booking/krouzky.php` i v kategoriovém menu e-shopu pod chipem
+  `Kroužky` s popiskem „pro ročník 2025“.
+- Osoba narozená 1985 byla odmítnuta hláškou o věkovém omezení a nevznikla ani
+  prázdná položka košíku; dítě narozené 2025 prošlo. Objednávka bez zaškrtnutého
+  souhlasu fail-closed skončila hláškou a žádná objednávka nevznikla. Po potvrzení
+  souhlasu vznikla objednávka `KP2608188826B944AD` s QR kódem, variabilním symbolem
+  `0000000012` a splatností; administrace ukázala rozpad kapacity `0 / 1 / 1`.
+- Po ručním potvrzení syntetické platby přešel rozpad na `1 / 0 / 1`, vznikla
+  aktivní účast se snapshotem obou verzí podmínek a členství `active / shop` na
+  soupisce od 1. 9. 2026. Storno objednávky účast i členství korektně ukončilo
+  (`cancelled`, `removed`, platba `refund_required`) se zápisem do
+  `club_roster_events` i `club_program_enrollment_events`.
+- Po posunu konce prodejního okna do minulosti kroužek zmizel ze storefrontu i z
+  kategoriového menu, `booking/krouzky.php` zobrazil prázdný stav a detail produktu
+  přestal být veřejně dostupný, zatímco `catalog_status` zůstal `active`.
+  Souběžně ověřený nákup běžného zboží zůstal beze změny: formulář bez příjemce,
+  bez věkové kontroly a bez souhlasu, objednávka `KP260818F70CFC33F4` se
+  snapshotem bez `beneficiary_sportovec_id` i bez podmínek.
+- Syntetický produkt, varianta, kategorie, obrázek, publikace, program, nabídka,
+  obě verze podmínek, sezóna, soupiska, členství, účast, obě objednávky, položky,
+  platby, skladové pohyby, notifikace i košíky byly odstraněny v jedné transakci.
+  Následná kontrola patnácti skupin vrátila celkový zůstatek 0 a sklad testované
+  varianty se vrátil na původní hodnotu. Nahraný obrázek a dočasná sonda souběhu
+  jsou v `var/_to_delete/prompt-e-r8-checkpoint/`.
+
+### Brány a provozní hranice
+
+- Plná sada je `648 tests / 5828 assertions`, s jednou existující PHPUnit
+  deprecation. Lint prošel na 526 first-party PHP souborech. `composer validate
+  --strict`, `composer audit --locked`, `composer check-platform-reqs` a
+  `git diff --check` jsou zelené. Migrační katalog je current 60/60.
+- Souběžný checkout posledního místa byl znovu ověřen na `10.3.39-MariaDB`
+  i `11.4.0-MariaDB`. V obou verzích uspěje právě jeden rodič; druhý dostane
+  fail-closed odmítnutí „Některá položka už není dostupná. Obnovte košík.“ a
+  jeho košík zůstane `active` i s položkou, takže může objednat něco jiného.
+  Rozhodnutí padne na kapacitní kontrole se zamykacím čtením, ne na deadlocku.
+  Oba dočasné servery byly po testu ukončeny a testovací databáze odstraněny.
+- Překlad deadlocku z R7 se chytá pouze na `SQLSTATE 40001` nebo chybu `1213`.
+  Změřeno na 10.3.39: `1205` (lock wait timeout), `1054` i `1062` se nepřekládají
+  a padají do obecné hlášky. Otevřený nález: obecná větev v `shop_checkout.php`
+  zabalí původní `PDOException` jako `previous`, ale `booking/eshop.php:59`
+  `ShopCheckoutException` neloguje, takže skutečná databázová chyba při checkoutu
+  nezanechá v logu stopu.
+- Další otevřené nálezy k R9–R11: administrace nemá cestu k editaci ani uzavření
+  existující nabídky (`clubProgramEvent()` zná jen `create_program` a
+  `create_offer`); důvod z `clubProgramVariantSaleState()` se nikde v administraci
+  nezobrazuje, takže rozhodnutí 7 „musí být vidět, proč se neprodává“ zatím není
+  splněné; předpřipravený text podmínek neobsahuje označení
+  „VZOR — před publikováním upravte“; produkt bez kategorie se objeví jen pod
+  „Vše“; překlad deadlocku nemá regresi.
+- R8 nepřidává trvalou tabulku, takže ownership kontrakt zálohy zůstává
+  `2026-08-17.2`. Implementace je commit
+  `c520b35961d5acdcabf00d9a26bc7e59f03723cb`. Produkce, `origin/main`, Prompt G,
+  push i deploy zůstaly beze změny.
+
+### Další krok
+
+- Kontrolní bod po R8: nechat vlastníka potvrdit rozsah nasazení R3–R8, doprovodit
+  nasazení na produkci, rebasovat na nový `origin/main` a teprve pak zahájit R9
+  (metadata kategorií nad `category_path`, administrace, veřejné menu a filtrování).
+
 ## Aktualizace 17. 8. 2026 — Prompt E R7: verzované podmínky kroužku (`cddad4b`)
 
 ### Dokončený výsledek
