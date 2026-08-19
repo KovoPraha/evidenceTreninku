@@ -37,8 +37,8 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $preflight);
         self::assertStringContainsString('APP_BASE_URL', $preflight);
         self::assertStringContainsString("'warnings' => \$warnings", $preflight);
-        self::assertStringContainsString('shopBankSettingsFromConfig', $preflight);
-        self::assertStringContainsString('SHOP_BANK_*', $preflight);
+        self::assertStringContainsString('shopBankSettingsEffective', $preflight);
+        self::assertStringContainsString('Bankovní účet e-shopu není kompletně a platně nastavený', $preflight);
         self::assertStringContainsString("!== 'https'", $preflight);
         self::assertStringContainsString("!== strtolower(\$appHost)", $preflight);
         self::assertStringContainsString("jq -r '.warnings[]?'", $workflow);
@@ -106,7 +106,7 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-17.2'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-19.1'",
             $backup
         );
         foreach (['source_candidate_id', 'source_run_id', 'origin', 'created_by_trainer_id'] as $column) {

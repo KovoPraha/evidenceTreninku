@@ -9,6 +9,7 @@ require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
+require_once dirname(__DIR__) . '/includes/shop_bank_settings.php';
 
 function shopPublicH(mixed $value): string { return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function shopPublicMoney(int $minor, string $currency = 'CZK'): string { return number_format($minor / 100, 2, ',', ' ') . ' ' . shopPublicH($currency); }
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $key = (string)($_POST['checkout_key'] ?? '');
             if (!isset($_SESSION['shop_checkout_key']) || !hash_equals((string)$_SESSION['shop_checkout_key'],$key)) throw new ShopCheckoutException('Checkout klíč vypršel. Obnovte stránku.');
             $accepted=is_array($_POST['program_terms_accept']??null)?$_POST['program_terms_accept']:[];
-            $order = shopCheckoutPlace($pdo,$accountId,$key,shopBankSettingsFromConfig(),(string)($_POST['cart_fingerprint'] ?? ''),$accepted);unset($_SESSION['shop_checkout_key']);
+            $order = shopCheckoutPlace($pdo,$accountId,$key,shopBankSettingsEffective($pdo),(string)($_POST['cart_fingerprint'] ?? ''),$accepted);unset($_SESSION['shop_checkout_key']);
             header('Location: objednavka.php?code=' . rawurlencode((string)$order['public_code']),true,303);exit;
         } else throw new InvalidArgumentException('Neplatná akce.');
         header('Location: eshop.php',true,303);exit;

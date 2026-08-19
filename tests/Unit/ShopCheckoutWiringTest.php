@@ -7,7 +7,7 @@ final class ShopCheckoutWiringTest extends TestCase
     public function testPublicCheckoutRequiresAccountCsrfAndServerService():void
     {
         $root=dirname(__DIR__,2);$shop=(string)file_get_contents($root.'/booking/eshop.php');$order=(string)file_get_contents($root.'/booking/objednavka.php');$orders=(string)file_get_contents($root.'/booking/moje_objednavky.php');
-        self::assertStringContainsString("isset(\$_SESSION['verejny_uzivatel_id'])",$shop);self::assertStringContainsString('csrf_verify',$shop);self::assertStringContainsString('shopCheckoutPlace',$shop);self::assertStringContainsString('shopBankSettingsFromConfig',$shop);self::assertStringContainsString('hash_equals',$shop);self::assertStringContainsString('cart_fingerprint',$shop);
+        self::assertStringContainsString("isset(\$_SESSION['verejny_uzivatel_id'])",$shop);self::assertStringContainsString('csrf_verify',$shop);self::assertStringContainsString('shopCheckoutPlace',$shop);self::assertStringContainsString('shopBankSettingsEffective',$shop);self::assertStringContainsString('hash_equals',$shop);self::assertStringContainsString('cart_fingerprint',$shop);
         self::assertStringContainsString('shopOrderByCode',$order);self::assertStringContainsString("(int)\$_SESSION['verejny_uzivatel_id']",$order);self::assertStringContainsString("payment_record_status']==='pending'",$order);self::assertStringContainsString('shopPaymentQrDataUri',$order);
         self::assertStringContainsString("isset(\$_SESSION['verejny_uzivatel_id'])",$orders);self::assertStringContainsString('shopOrderListForAccount',$orders);self::assertStringContainsString('objednavka.php?code=',$orders);
     }

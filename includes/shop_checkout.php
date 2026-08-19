@@ -449,7 +449,12 @@ function shopBankValidateSettings(array $settings): array
 {
     $iban=strtoupper((string)preg_replace('/\s+/','',(string)($settings['iban']??'')));
     $bic=strtoupper(trim((string)($settings['bic']??'')));$label=trim((string)($settings['account_label']??''));$days=(int)($settings['due_days']??0);
-    if(!shopBankIbanValid($iban)||($bic!==''&&preg_match('/^[A-Z0-9]{8}([A-Z0-9]{3})?$/D',$bic)!==1)||$label===''||mb_strlen($label,'UTF-8')>255||$days<1||$days>30){
+    // Jediný validátor bankovních údajů pro checkout i pro administraci.
+    // Rozsah názvu účtu je shodný s bin/configure-production-bank.php, aby obě
+    // cesty přijímaly přesně totéž.
+    if(!shopBankIbanValid($iban)||($bic!==''&&preg_match('/^[A-Z0-9]{8}([A-Z0-9]{3})?$/D',$bic)!==1)
+        ||mb_strlen($label,'UTF-8')<3||mb_strlen($label,'UTF-8')>120||preg_match('/[\x00-\x1F\x7F]/u',$label)===1
+        ||$days<1||$days>30){
         throw new ShopCheckoutException('Bankovní checkout není bezpečně nakonfigurován. Zkontrolujte IBAN, BIC, název účtu a splatnost.');
     }
     return ['iban'=>$iban,'bic'=>$bic,'account_label'=>$label,'due_days'=>$days];

@@ -6,6 +6,7 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/shop_catalog_review.php';
 require_once __DIR__ . '/includes/shop_catalog_promotion.php';
 require_once __DIR__ . '/includes/shop_checkout.php';
+require_once __DIR__ . '/includes/shop_bank_settings.php';
 
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
@@ -85,12 +86,8 @@ $detail = $runId > 0
     : ['run' => null, 'products' => [], 'events' => []];
 $offerTypes = shopCatalogReviewOfferTypes();
 $canonicalSummary = shopCanonicalCatalogSummary($pdo);
-$bankCheckoutReady = true;
-try {
-    shopBankSettingsFromConfig();
-} catch (ShopCheckoutException) {
-    $bankCheckoutReady = false;
-}
+$bankSettings = shopBankSettingsResolve($pdo);
+$bankCheckoutReady = $bankSettings['settings'] !== null && $bankSettings['database_error'] === '';
 $statusLabels = [
     'pending' => ['Čeká na kontrolu', 'bg-warning text-dark'],
     'auto_classified' => ['Automaticky zařazeno', 'bg-secondary'],
@@ -117,6 +114,7 @@ $statusLabels = [
         </div>
         <div class="d-flex gap-2 flex-wrap">
             <a href="club_program_wizard_admin.php" class="btn btn-primary btn-sm"><i class="bi bi-magic me-1"></i>Vypsat kroužek</a>
+            <a href="eshop_bank_admin.php" class="btn btn-outline-dark btn-sm"><i class="bi bi-bank me-1"></i>Bankovní účet</a>
             <a href="eshop_fio_admin.php" class="btn btn-outline-info btn-sm"><i class="bi bi-bank me-1"></i>Fio párování K4</a>
             <a href="eshop_coupons_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-ticket-perforated me-1"></i>Kupóny K4</a>
             <a href="eshop_orders_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-receipt me-1"></i>Objednávky K4</a>
@@ -137,9 +135,20 @@ $statusLabels = [
     <?php if (!$bankCheckoutReady): ?>
         <div class="alert alert-danger" role="alert">
             <strong>Objednávky nyní nelze dokončit.</strong>
-            Doplňte a ověřte produkční hodnoty <code>SHOP_BANK_IBAN</code>,
-            <code>SHOP_BANK_BIC</code>, <code>SHOP_BANK_ACCOUNT_LABEL</code> a
-            <code>SHOP_BANK_DUE_DAYS</code>. Checkout zůstává do té doby bezpečně vypnutý.
+            <?php if ($bankSettings['database_error'] !== ''): ?>
+                Uložený bankovní účet není platný. Opravte jej v
+                <a href="eshop_bank_admin.php">nastavení bankovního účtu</a>.
+            <?php else: ?>
+                Nastavte bankovní účet v
+                <a href="eshop_bank_admin.php">nastavení bankovního účtu</a>.
+                Checkout zůstává do té doby bezpečně vypnutý.
+            <?php endif; ?>
+        </div>
+    <?php elseif ($bankSettings['conflict']): ?>
+        <div class="alert alert-warning" role="alert">
+            <strong>Bankovní účet je nastavený ve dvou zdrojích a liší se.</strong>
+            Platí databáze; podrobnosti jsou v
+            <a href="eshop_bank_admin.php">nastavení bankovního účtu</a>.
         </div>
     <?php endif; ?>
     <?php foreach ($errors as $error): ?>

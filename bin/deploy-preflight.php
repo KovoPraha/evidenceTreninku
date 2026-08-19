@@ -80,10 +80,20 @@ if (!is_file($shopCheckoutFile)) {
     $warnings[] = 'Chybí validátor bankovního checkoutu; objednávky zůstanou fail-closed vypnuté.';
 } else {
     require_once $shopCheckoutFile;
+    require_once $appRoot . '/includes/shop_bank_settings.php';
     try {
-        shopBankSettingsFromConfig();
+        // Zdrojem pravdy je záznam v databázi; konstanty jsou jen záloha, takže
+        // varování nesmí být červené jen proto, že config.php účet neobsahuje.
+        $bankPdo = new PDO(
+            'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+            (string)DB_USER,
+            (string)DB_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
+        );
+        shopBankSettingsEffective($bankPdo);
+        $bankPdo = null;
     } catch (Throwable) {
-        $warnings[] = 'SHOP_BANK_* není kompletně a platně nastaveno; bankovní objednávky nelze dokončit.';
+        $warnings[] = 'Bankovní účet e-shopu není kompletně a platně nastavený; bankovní objednávky nelze dokončit.';
     }
 }
 
