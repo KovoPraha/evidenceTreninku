@@ -1,6 +1,6 @@
 # Aktuální stav projektu pro AI a vlastníka
 
-Aktualizováno: 16. 8. 2026, Europe/Prague
+Aktualizováno: 19. 8. 2026, Europe/Prague
 
 Tento soubor je krátký vstupní rozcestník. Přesný historický ledger a poslední
 důkazy jsou v `docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md`; produktová
@@ -18,24 +18,30 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 
 ## Poslední přijatý technický stav
 
-- produkce i `origin/main` jsou po společném nasazení vláken F+B na commitu
-  `0e43a8b`. Nasazený řez zahrnuje samoobslužnou registraci sportovce,
-  administrátorské schválení, přiřazení do klubové struktury, vystavení
-  členského předpisu, fail-closed vrstvu citlivých údajů a opravu scoped
-  podmínek klubových akcí,
+- produkce i `origin/main` jsou po nasazení řezů R1–R8 Promptu E na commitu
+  `612c793` (běh 32245326447, 19. 8. 2026). Nasazený rozsah zahrnuje ruční
+  založení a editaci produktu s původem `manual` a SKU `KP-`, preflight kolizí
+  importu, typ nabídky `program`, bezpečné obrázky produktu, věkové omezení
+  a skutečnou kapacitu nabídky, verzované podmínky kroužku, transakčního
+  průvodce „Vypsat kroužek“ a základní kategoriové menu e-shopu. Předchozí
+  produkční commit byl `0e43a8b` (vlákna F+B),
 
-- migrační katalog má 55 migrací. Nasazení zahrnuje registrační základ
-  `20260816143000_athlete_registration_foundation`, notifikaci přijaté platby
-  `20260816170000_shop_payment_received_notification` a scoped podmínky
-  `20260816180000_registration_terms_scope`,
+- migrační katalog má 60 migrací. Toto nasazení přidalo `20260816200000_shop_manual_catalog_origin`,
+  `20260817090000_club_program_events`, `20260817110000_shop_catalog_admin`,
+  `20260817130000_club_program_offer_age` a `20260817150000_club_program_terms`,
 
 - poslední ověřená plná lokální brána nad přesně tímto kódem je
-  `600 tests / 5358 assertions`; first-party lint prošel na 507 PHP souborech.
-  `composer validate --strict`, audit zamčených závislostí i kontrola
-  platformních požadavků byly zelené,
+  `655 tests / 5879 assertions` s jednou existující PHPUnit deprecation;
+  first-party lint prošel na 528 PHP souborech. `composer validate --strict`,
+  audit zamčených závislostí i kontrola platformních požadavků byly zelené,
 
-- aktuální ownership kontrakt zálohy je `2026-08-16.1` a obsahuje i pět
-  registračních tabulek přidaných vláknem B,
+- aktuální ownership kontrakt zálohy je `2026-08-17.2` a obsahuje i tabulky
+  `club_program_events` a `shop_catalog_admin_events`. Sloupcový kontrakt
+  registruje sloupce z R1; doplnění sloupců z R7 je vědomě odložené na R9,
+
+- bankovní konstanty `SHOP_BANK_*` nejsou na produkci nastavené, dokud vlastník
+  nespustí workflow „Nastavit produkční bankovní účet KIS“. Do té doby je
+  checkout fail-closed a objednávka nevznikne,
 
 - pracovní řez sjednocení aplikace zavádí jeden UI základ pro všech 127 aktivních
   PHP HTML stránek: společné pozadí a formuláře, stav načítání a ochranu proti
