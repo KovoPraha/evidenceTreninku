@@ -2,9 +2,16 @@
 declare(strict_types=1);
 
 const CLUB_PROGRAM_TERM_PURPOSES=['program_cancellation','program_consent'];
+
+/**
+ * The marker is part of the document text, not only of the form, so that an
+ * accidentally published draft is recognisable in the parent's own consent
+ * snapshot. The club must never rely on cancellation terms that nobody wrote.
+ */
+const CLUB_PROGRAM_TERM_DRAFT_MARKER='VZOR — před publikováním upravte.';
 const CLUB_PROGRAM_TERM_DEFAULTS=[
-    'program_cancellation'=>'Při zrušení účasti před začátkem období klub vrátí uhrazenou cenu po odečtení již vzniklých nevratných nákladů. Po zahájení období posoudí případné vrácení individuálně podle důvodu a již čerpané části programu.',
-    'program_consent'=>'Souhlasím s přihlášením vybraného dítěte nebo účastníka do uvedeného kroužku, s jeho účastí na programu a s organizační komunikací klubu k této účasti.',
+    'program_cancellation'=>CLUB_PROGRAM_TERM_DRAFT_MARKER.' Při zrušení účasti před začátkem období klub vrátí uhrazenou cenu po odečtení již vzniklých nevratných nákladů. Po zahájení období posoudí případné vrácení individuálně podle důvodu a již čerpané části programu.',
+    'program_consent'=>CLUB_PROGRAM_TERM_DRAFT_MARKER.' Souhlasím s přihlášením vybraného dítěte nebo účastníka do uvedeného kroužku, s jeho účastí na programu a s organizační komunikací klubu k této účasti.',
 ];
 
 final class ClubProgramTermsException extends RuntimeException{}
