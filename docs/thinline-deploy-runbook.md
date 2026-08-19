@@ -120,6 +120,30 @@ Změny workflow VŽDY promítnout i do testu.
 - vzor funkčního `config.php` je `config.example.php`; ostrý soubor se
   100% drží mimo git a nahrává se jednorázově přes scp.
 
+## Bankovní účet e-shopu — databáze má přednost
+
+Od 19. 8. 2026 je zdrojem pravdy o klubovém účtu tabulka `shop_bank_settings`
+(jeden řádek, auditovaná historie v `shop_bank_settings_events`). Konstanty
+`SHOP_BANK_*` v `config.php` jsou už jen **záloha pro stav, kdy v databázi
+žádný záznam není** — díky tomu produkce funguje mezi nasazením a prvním
+uložením a localhostové demo konstanty zůstávají beze změny.
+
+Účet se nastavuje v administraci: **E-shop → Bankovní účet e-shopu**
+(`eshop_bank_admin.php`, oprávnění `eshop_bank_settings`, výchozí minimální
+role `admin`, změnitelná v `nastaveni_opravneni.php`). Obrazovka ukazuje
+aktuálně platné hodnoty, jejich zdroj („z administrace“ / „z config.php“),
+upozorní, když se oba zdroje liší, a umí vykreslit kontrolní QR kód bez
+vytvoření objednávky.
+
+Workflow `configure-production-bank.yml` **zůstává jako nouzová cesta**, kdyby
+administrace nebyla dostupná. Pozor: zapisuje jen konstanty do `config.php`,
+takže **po prvním uložení v administraci už jeho spuštění nic nezmění** —
+databázový záznam má přednost. V takovém případě obrazovka rozdíl ohlásí.
+
+`SHOP_BANK_DUE_DAYS` respektive sloupec `due_days` neřídí jen splatnost: od R6
+určuje i dobu, po kterou nezaplacená objednávka drží místo v kroužku.
+Doporučená hodnota je 7 dní.
+
 ## Import Shoptet katalogu do produkce
 
 `bin/shoptet-products-dry-run.php` a `bin/shoptet-products-stage.php` mají

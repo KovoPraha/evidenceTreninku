@@ -1,5 +1,128 @@
 # Session handoff
 
+## Aktualizace 19. 8. 2026 — bankovní účet e-shopu v administraci (`27b2d8e`, `ff20427`)
+
+### Dokončený výsledek
+
+- Účet, na který chodí platby klubu, šel dosud změnit jedině spuštěním GitHub
+  Actions workflow a jeho hodnotu nešlo vůbec přečíst — jediná kontrola byla
+  vytvořit objednávku a podívat se na QR. Nová obrazovka
+  `eshop_bank_admin.php` ukazuje platný IBAN, BIC, název účtu i splatnost,
+  dovolí je změnit bez GitHubu a bez vývojáře a je dostupná z navigace
+  i z `eshop_admin.php`.
+- Úložištěm je `shop_bank_settings` s pevným primárním klíčem `1`, takže druhý
+  konkurenční řádek nemůže vzniknout ani při souběžném uložení. Každá změna je
+  transakční a zapisuje se do `shop_bank_settings_events` s typem a ID aktéra,
+  předchozí i novou hodnotou a povinným důvodem. Uložení beze změny je
+  bezpečný no-op a nezakládá prázdný auditní řádek.
+- **Přednost zdrojů: databáze vyhrává, konstanty z `config.php` jsou záloha,
+  dokud v databázi žádný záznam není.** Produkce tím zůstane funkční mezi
+  nasazením a prvním uložením a localhostové demo konstanty fungují beze změny.
+  Obrazovka vždy ukazuje zdroj právě platné hodnoty a při rozdílu mezi zdroji
+  vypíše výslovné upozornění včetně toho, co je v `config.php`. Uložený, ale
+  neplatný záznam se nikdy tiše neobejde konstantami — checkout je do opravy
+  fail-closed, protože jinak by peníze chodily na starý účet.
+- `shopBankValidateSettings()` zůstává jediným validátorem; administrace
+  nezakládá druhou kopii pravidel. Rozsah názvu účtu byl sjednocen na 3–120
+  znaků bez řídicích znaků, aby přijímal přesně totéž co produkční nástroj.
+  Všichni čtenáři jdou přes resolver: storefront, administrace e-shopu, deploy
+  preflight i Fio import, který se musí párovat proti skutečně platnému účtu.
+- Kontrolní QR se vykreslí z uloženého nastavení bez vzniku objednávky:
+  `shopBankSampleQr()` nedostává PDO, takže ze své podstaty nemůže nic zapsat.
+  Ukázková částka je 1 Kč, variabilní symbol `9999999999` je nejvyšší možný
+  desetimístný, a tedy mimo řadu odvozenou z ID objednávky, a zprávu
+  `UKAZKA NEPLATIT` nese i samotný QR kód.
+- U splatnosti je přímo u pole napsáno, že řídí i dobu, po kterou nezaplacená
+  objednávka drží místo v kroužku, a že 30 dní zablokuje kapacitu na měsíc.
+- Oprávnění je konfigurovatelné klíčem `eshop_bank_settings` stejným vzorem
+  jako `sync_evidence`. **Poznámka k zadání:** v tomto projektu je `admin` (3)
+  vyšší role než `hlavni` (2), takže zadání „nejvyšší úroveň, tedy hlavni, ne
+  admin“ si odporovalo. Migrace proto seeduje `min_role='admin'` podle
+  uvedeného důvodu, tedy nejpřísněji; vlastník ji smí kdykoli snížit na
+  `hlavni` v `nastaveni_opravneni.php` bez zásahu do kódu. Chybí-li klíč
+  v relaci, `canAccess()` spadne zpět na `hlavni`, takže obrazovka není nikdy
+  otevřená trenérovi.
+- Workflow `configure-production-bank.yml` zůstalo nedotčené jako nouzová cesta.
+  Runbook nově popisuje, že po prvním uložení v administraci už jeho spuštění
+  nic nezmění, protože přednost má databáze.
+
+### Neměnnost existujících objednávek — ověřeno, nález nevznikl
+
+Bankovní údaje se snapshotují do `payments` v okamžiku vzniku objednávky
+(`iban_snapshot`, `bic_snapshot`, `account_label_snapshot`, `spd_payload`,
+`due_at`) a `booking/objednavka.php` je odtud jen vykresluje. Změna účtu proto
+nemůže přepsat platební příkaz, který zákazník už má. Regrese to nyní hlídá:
+po změně IBANu drží starší nezaplacená objednávka původní účet, název, VS
+i SPD payload, zatímco nová objednávka použije nový účet.
+
+### Kontrakt zálohy a manifest
+
+- `EVIDENCE_OWNED_COLUMN_CONTRACT` doplněn o sloupce R7:
+  `club_event_term_versions.status` / `archived_at` / `archived_by_trainer_id`,
+  `shop_order_items.program_terms_*` a `club_program_enrollments.terms_*`.
+  Sloupce R6 tam podle uzavřeného rozhodnutí nepatří. Dvě nové tabulky
+  bankovního nastavení jsou v `EVIDENCE_TABLES`.
+  `EVIDENCE_OWNERSHIP_CONTRACT_VERSION` je `2026-08-19.2`.
+- Manifest nese **obě čísla**: `owned_column_contract` jako očekávání kódu
+  a nové `owned_columns_present` jako seznam sloupců skutečně přítomných ve
+  snímku. Záměrně nejde o varování, které by bylo při každém vydání s novým
+  sloupcem červené a po třetím vydání by ho nikdo nečetl.
+- Ověřeno prakticky na `10.3.39-MariaDB` proti schématu před vydáním
+  (katalog 55 migrací): manifest uvedl úplný kontrakt a vedle něj jen
+  `shop_products: source_candidate_id, source_run_id` a
+  `shop_variants: source_candidate_id`, tedy realitu snímku. Obnova 110 tabulek
+  přitom prošla. Nad úplným katalogem se obě čísla shodují a obnova 114 tabulek
+  prošla na 10.3.39 i 11.4.0. Restore drill čte jen `sha256`, `application`,
+  `sql_file`, `format_version`, `tables` a `triggers`, takže nový klíč se ho
+  nedotkne.
+- Regrese `DatabaseBackupOwnershipContractTest` čte kontrakt bez spuštění
+  zálohy přes strážní konstantu `EVIDENCE_BACKUP_LIBRARY_ONLY`, kterou deploy
+  nikdy nedefinuje; soubor zůstává samostatně spustitelný.
+
+### Regrese, živý localhostový průchod a úklid
+
+- Nové regrese pokrývají přednost zdrojů, konflikt obou zdrojů, odmítnutí
+  neplatného IBANu, krátkého názvu, splatnosti mimo 1–30 a chybného BIC,
+  fail-closed checkout bez platného nastavení i nad poškozeným záznamem,
+  neměnnost existující objednávky, ukázkový QR bez zápisu, audit s aktérem
+  i předchozí hodnotou, jeden řádek pravdy, opakovatelnost migrace, strážení
+  obrazovky před jakoukoli prací s databází a kontrakt zálohy.
+- V prohlížeči administrátor otevřel obrazovku se zdrojem „z config.php“,
+  neplatný IBAN neprošel a v databázi nevznikl žádný řádek ani auditní zápis.
+  Uložení platného účtu zadaného s mezerami je normalizovalo, přepnulo zdroj na
+  „z administrace“, vypsalo rozdíl proti `config.php` a doplnilo, kdo a kdy
+  změnu provedl. Ukázkový QR se vykreslil s VS `9999999999` a částkou 1 Kč,
+  aniž přibyl jediný záznam. Rodič poté vytvořil objednávku, která dostala účet
+  z administrace a pětidenní splatnost; po změně IBANu ukázala tatáž objednávka
+  v prohlížeči dál původní účet, VS i QR.
+- Testovací objednávka, položka, platba, skladový pohyb, košík, obě nastavení
+  i oba auditní záznamy byly odstraněny v jedné transakci a sklad se vrátil na
+  původní hodnotu. Kontrolní SELECT vrátil ve všech šesti skupinách nulu.
+  Instrumentovaná sonda manifestu je v `var/_to_delete/prompt-e-r8-checkpoint/`.
+
+### Brány a provozní hranice
+
+- Plná sada je `670 tests / 6066 assertions` s jednou existující PHPUnit
+  deprecation. Lint prošel na 534 first-party PHP souborech. `composer validate
+  --strict`, `composer audit --locked`, `composer check-platform-reqs`
+  a `git diff --check` jsou zelené.
+- Lokální migrace prošla `check (jedna čekající) → apply → check (current)`;
+  katalog má 61 migrací. Zálohovací i checkoutový smoke prošly na
+  `10.3.39-MariaDB` i `11.4.0-MariaDB`; oba dočasné servery byly ukončeny
+  a testovací databáze odstraněny.
+- Produkce, `origin/main`, Prompt G, push i deploy zůstaly beze změny.
+  IBAN, název účtu ani obsah secrets se nedostaly do Gitu, logu ani testů;
+  všechny použité účty mají neexistující bankovní kód 9999.
+
+### Další krok
+
+- Navrhnout vlastníkovi nasazení tohoto řezu jako samostatné malé vydání.
+  Teprve po něm nastaví účet v administraci a teprve pak má smysl bod 9
+  poinstalačního ověření, tedy zkušební nákup běžného zboží.
+- Poté zahájit R9 a předložit čtyři body zapsané v předchozí sekci; body 3 a 4
+  jsou tímto řezem hotové, zbývá návrh `parent_path` a rozhodnutí o produktu
+  bez kategorie.
+
 ## Aktualizace 19. 8. 2026 — Prompt E R1–R8 nasazen na produkci (`612c793`)
 
 ### Výsledek nasazení
