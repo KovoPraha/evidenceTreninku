@@ -103,10 +103,15 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-08-19.1') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-08-19.2') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
+        'club_event_term_versions' => ['status', 'archived_at', 'archived_by_trainer_id'],
+        'club_program_enrollments' => ['terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
+        'shop_order_items' => [
+            'program_terms_snapshot_json', 'program_terms_accepted_at', 'program_terms_accepted_by_account_id',
+        ],
         'shop_products' => [
             'source_candidate_id', 'source_run_id', 'origin', 'created_by_trainer_id',
         ],
@@ -114,6 +119,22 @@ try {
     ];
     if (($manifest['owned_column_contract'] ?? null) !== $expectedColumnContract) {
         throw new RuntimeException('Database backup smoke used an unexpected owned column contract.');
+    }
+    // Katalog je tu úplný, takže snímek musí obsahovat všechny sloupce kontraktu.
+    // Manifest zároveň nesmí hlásit sloupec, který v zálohované tabulce není.
+    if (($manifest['owned_columns_present'] ?? null) !== $expectedColumnContract) {
+        throw new RuntimeException('Database backup smoke did not report the contract columns present in the snapshot.');
+    }
+    foreach ($manifest['owned_columns_present'] as $contractTable => $contractColumns) {
+        $actualColumns = $pdo->query(
+            'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='
+            . $pdo->quote((string)$contractTable)
+        )->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($contractColumns as $contractColumn) {
+            if (!in_array($contractColumn, $actualColumns, true)) {
+                throw new RuntimeException('Manifest reported a column absent from the snapshot: ' . $contractTable . '.' . $contractColumn);
+            }
+        }
     }
     $required = [
         'shop_bank_settings', 'shop_bank_settings_events',

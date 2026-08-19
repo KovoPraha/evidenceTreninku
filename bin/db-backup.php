@@ -21,14 +21,43 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-19.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-19.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
  * The backup still owns the complete tables; this list makes column-level
  * migrations explicit in the manifest used for restore review.
+ *
+ * The criterion is the write contract, not every added column: who may write a
+ * row, whether an existing invariant still holds, or what a write must carry.
+ * A plain optional business attribute does not belong here, otherwise the list
+ * would duplicate the migration catalogue and dilute the signal that matters.
+ *
+ * This list is the expectation of the code. The manifest also records which of
+ * these columns a given snapshot really contains, because the backup runs
+ * before the migrations of the release it precedes.
  */
 const EVIDENCE_OWNED_COLUMN_CONTRACT = [
+    // Rows are no longer always current; a restore that loses the lifecycle
+    // would silently present archived consent texts as valid.
+    'club_event_term_versions' => [
+        'status',
+        'archived_at',
+        'archived_by_trainer_id',
+    ],
+    // Immutable proof of the terms a parent accepted, carried from the order.
+    'club_program_enrollments' => [
+        'terms_snapshot_json',
+        'terms_accepted_at',
+        'terms_accepted_by_account_id',
+    ],
+    // A program item cannot be written without them; checkout is fail-closed.
+    'shop_order_items' => [
+        'program_terms_snapshot_json',
+        'program_terms_accepted_at',
+        'program_terms_accepted_by_account_id',
+    ],
+    // Rows may now legitimately originate outside the Shoptet import.
     'shop_products' => [
         'source_candidate_id',
         'source_run_id',
@@ -41,6 +70,33 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'created_by_trainer_id',
     ],
 ];
+
+/**
+ * Which contract columns the dumped snapshot really contains. Reported next to
+ * the contract instead of a warning: a warning would be red at every release
+ * that adds a column and nobody would read it by the third one.
+ *
+ * @param array<string,list<array{name:string,binary:bool}>> $columns
+ * @return array<string,list<string>>
+ */
+function ownedColumnsPresentInSnapshot(array $columns): array
+{
+    $present = [];
+    foreach (EVIDENCE_OWNED_COLUMN_CONTRACT as $table => $contractColumns) {
+        if (!isset($columns[$table])) {
+            continue;
+        }
+        $actual = array_column($columns[$table], 'name');
+        $found = array_values(array_filter(
+            $contractColumns,
+            static fn(string $column): bool => in_array($column, $actual, true)
+        ));
+        if ($found !== []) {
+            $present[$table] = $found;
+        }
+    }
+    return $present;
+}
 
 /**
  * This is the ownership boundary in the shared database. A new Evidence table
@@ -303,6 +359,13 @@ function isAbsolutePath(string $path): bool
     return str_starts_with($path, '/')
         || str_starts_with($path, '\\\\')
         || preg_match('/^[A-Za-z]:[\\\\\/]/', $path) === 1;
+}
+
+// Regrese potřebují ownership kontrakt a jeho pomocné funkce bez spuštění
+// zálohy. Deploy tuto konstantu nikdy nedefinuje, takže soubor zůstává
+// samostatně spustitelný přesně jako dosud.
+if (defined('EVIDENCE_BACKUP_LIBRARY_ONLY')) {
+    return;
 }
 
 $options = getopt('', ['app-root:', 'backup-dir:', 'keep::', 'json']);
@@ -600,6 +663,7 @@ try {
         'created_at_utc' => gmdate(DATE_ATOM),
         'ownership_contract' => EVIDENCE_OWNERSHIP_CONTRACT_VERSION,
         'owned_column_contract' => EVIDENCE_OWNED_COLUMN_CONTRACT,
+        'owned_columns_present' => ownedColumnsPresentInSnapshot($columns),
         'database_name' => (string)DB_NAME,
         'sql_file' => basename($sqlFinal),
         'sha256' => $sha256,
