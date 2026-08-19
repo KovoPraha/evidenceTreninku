@@ -1,5 +1,110 @@
 # Session handoff
 
+## Aktualizace 18. 8. 2026 — Prompt E, kontrolní bod R8: diagnostika checkoutu a značka vzoru (`4df4a47`, `f96915b`)
+
+### Dokončený výsledek
+
+- Skutečná chyba checkoutu se nově zaloguje. Obecná větev
+  `shopCheckoutPlace()` sice původní `PDOException` zabalovala jako `previous`,
+  ale `booking/eshop.php` chytá `ShopCheckoutException` bez logování, takže
+  databázová porucha končila u zákazníka obecnou hláškou a na serveru beze
+  stopy. Nejde o regresi z R3–R8; nasadit ale nelze bez diagnostiky, protože
+  checkout tímto vydáním výrazně nabývá na složitosti.
+- Log obsahuje pouze třídu výjimky, `SQLSTATE`, driver kód a původ celého
+  řetězu `previous`, plus prefix hashe klíče, který se joinuje na
+  `shop_orders.idempotency_key_hash`. Zprávy ovladače se záměrně nelogují,
+  protože mohou citovat hodnoty řádku, například e-mail. Soubor a řádek přitom
+  jednoznačně určují, který příkaz selhal. Hláška pro zákazníka se nezměnila.
+- Podmínka překladu deadlocku je vytažená do
+  `shopCheckoutIsSerializationFailure()`, takže ji poprvé kryje test. Měření
+  proti skutečné 10.3.39 potvrdilo, že `1205` (lock wait timeout), `1054`
+  (neznámý sloupec), `1062` (duplicitní klíč) ani `2006` se nepřekládají a
+  drží obecné fail-closed odmítnutí; překládá se jen `SQLSTATE 40001` nebo
+  chyba `1213`. Deadlock se loguje samostatným prefixem, aby šlo odlišit
+  provozní souběh od skutečné poruchy.
+- `CLUB_PROGRAM_TERM_DEFAULTS` začíná značkou `VZOR — před publikováním
+  upravte.` přímo v textu dokumentu, ne jen v rozhraní. Doplňující rozhodnutí
+  to vyžadovalo a v R7 to vypadlo. Důvod je právní: kdyby administrátor
+  publikoval připravené znění beze změny, klub by se opíral o storno podmínky,
+  které nikdo nenapsal, a značka se propíše i do rodičova snímku souhlasu.
+
+### Chování zálohy vůči sloupcům, které ve schématu ještě nejsou
+
+Ověřeno prakticky proti `10.3.39-MariaDB` nad **produkčním schématem**, tedy
+katalogem 55 migrací bez pěti nových. `bin/db-backup.php` v takovém stavu
+**projde, exit kód 0**, a úplná obnova 110 tabulek souhlasí v počtech řádků
+i triggerech.
+
+`EVIDENCE_OWNED_COLUMN_CONTRACT` se do manifestu zapisuje **deklarativně** —
+konstanta se serializuje beze změny a proti schématu se nijak neověřuje. Ani
+neselže, ani nevaruje, ani sloupec nepřeskočí. Záloha pořízená před migracemi
+proto uvádí `origin` a `created_by_trainer_id`, které v tom okamžiku ve
+schématu ještě neexistují (`source_candidate_id` a `source_run_id` jsou navíc
+stále `NOT NULL`). Manifest tedy popisuje očekávání kódu, ne obsah snímku.
+
+Není to blokátor nasazení a data neohrožuje — dump je úplný a sám sebe
+popisuje. Je to ale vlastnost, na kterou narazí každé další vydání, které do
+kontraktu něco přidá, protože záloha běží v deploy workflow **před** migracemi.
+Nabízí se doplnit do `bin/db-backup.php` varování se seznamem sloupců
+z kontraktu, které ve schématu chybí; patří to do stejné změny jako doplnění
+R7 sloupců, tedy na začátek R9.
+
+### Kontrakt zálohy — rozhodnutí a načasování
+
+Vlastník přijal rozdělení: R6 do kontraktu nepatří, protože
+`birth_year_from/to` je volitelný obchodní atribut, který nemění, kdo smí
+zapisovat. R7 tam patří, protože `status`/`archived_at`/`archived_by_trainer_id`
+ruší invariant „každý řádek je platný“ a `program_terms_*` v
+`shop_order_items` a `club_program_enrollments` jsou přímo zápisový kontrakt
+i právně relevantní důkaz. Doplnění se odkládá **na začátek R9**, protože bumpne
+`EVIDENCE_OWNERSHIP_CONTRACT_VERSION` a mění skript, který na produkci běží
+jako první krok deploye.
+
+### Rozšířený rozsah R11
+
+K původnímu zadání R11 přibývají čtyři nálezy z kontrolního bodu:
+
+1. **Editace a uzavření existující nabídky — povinná součást, ne volitelná.**
+   `club_programs_admin.php` umí nabídku jen zakládat a `clubProgramEvent()`
+   zná pouze akce `create_program` a `create_offer`. Bez toho nelze kroužek
+   provozovat přes rok.
+2. **Důvod neprodejnosti v administraci.** `clubProgramVariantSaleState()`
+   vrací srozumitelný `reason`, ale čte ho jen storefront a checkout;
+   rozhodnutí 7 výslovně žádá, aby administrátor viděl, proč se produkt
+   neprodává.
+3. **Hláška poraženému v souběhu** neřekne, že je kroužek plný.
+4. **Transliterace SKU** nesmí zlomit slovo uvnitř (`KP-RAJC-ATKA-…`); pokud to
+   nejde spolehlivě, zkrátit na hranici slova. Nejnižší priorita.
+
+### Brány a provozní hranice
+
+- Plná sada je `655 tests / 5879 assertions`, s jednou existující PHPUnit
+  deprecation; stav samotného `4df4a47` byl zvlášť ověřen na `653 / 5869`.
+  Lint prošel na 528 first-party PHP souborech. `composer validate --strict`,
+  `composer audit --locked`, `composer check-platform-reqs` a
+  `git diff --check` jsou zelené. Migrační katalog je current 60/60.
+- Nové regrese: `ShopCheckoutDiagnosticsTest` kryje překlad deadlocku, omezení
+  hloubky řetězu a nepřítomnost osobních údajů ve stopě;
+  `ShopCheckoutTest::testDatabaseFailureDuringCheckoutIsLoggedWithoutPersonalData`
+  ověřuje, že databázová chyba při checkoutu zapíše log a zákazník dostane
+  obecnou hlášku, přičemž log neobsahuje e-mail, jméno, obsah košíku ani
+  zprávu ovladače; `ClubProgramTermDefaultsTest` hlídá značku vzoru.
+- Obě nové změny nepřidávají migraci ani tabulku, ownership kontrakt zálohy
+  zůstává `2026-08-17.2`. Dočasný server 10.3.39 byl po ověření ukončen,
+  testovací databáze odstraněny a instrumentované sondy přesunuty do
+  `var/_to_delete/prompt-e-r8-checkpoint/`.
+- Produkce, `origin/main`, Prompt G, push i deploy zůstaly beze změny.
+
+### Další krok
+
+- Předložit vlastníkovi aktualizovaný výčet 19 commitů a počkat na pokyn
+  k pushi; vlastník mezitím nastaví produkční `SHOP_BANK_*`.
+- Po nasazení projít devět bodů poinstalačního ověření (bod 9 až po nastavení
+  banky), aktualizovat `docs/CURRENT_STATE.md`, rebasovat na nový `origin/main`
+  a otevřít R9. R9 musí vědomě vyřešit dvě věci z R8: filtr kategorií dnes
+  dělá přesnou shodu řetězce a nezahrnuje podkategorie, a produkt bez
+  kategorie se objeví jen pod „Vše“.
+
 ## Aktualizace 18. 8. 2026 — Prompt E R8: transakční průvodce „Vypsat kroužek“ (`c520b35`)
 
 ### Dokončený výsledek
