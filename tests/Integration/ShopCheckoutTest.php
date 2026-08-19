@@ -273,6 +273,40 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame('placed',$pdo2->query('SELECT status FROM shop_orders')->fetchColumn());
     }
 
+    public function testDatabaseFailureDuringCheckoutIsLoggedWithoutPersonalData():void
+    {
+        $pdo=$this->database();
+        \shopCartSetQuantity($pdo,10,601,1);
+        $fingerprint=\shopCartDetail($pdo,10)['fingerprint'];
+        $pdo->exec('DROP TABLE payments');
+
+        $logFile=(string)tempnam(sys_get_temp_dir(),'shop_checkout_log_');
+        $previousLog=(string)ini_get('error_log');
+        ini_set('error_log',$logFile);
+        try{
+            \shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$fingerprint);
+            self::fail('A database failure must not produce an order.');
+        }catch(\ShopCheckoutException $exception){
+            self::assertSame('Objednávka se nepodařila vytvořit bez částečného zápisu.',$exception->getMessage());
+            self::assertInstanceOf(\PDOException::class,$exception->getPrevious());
+        }finally{
+            ini_set('error_log',$previousLog);
+        }
+
+        $log=(string)file_get_contents($logFile);
+        unlink($logFile);
+        self::assertStringContainsString('shop_checkout failed: ref=',$log);
+        self::assertStringContainsString(' order=',$log);
+        self::assertStringContainsString('sqlstate=',$log);
+        self::assertStringContainsString('shop_checkout.php:',$log);
+        self::assertStringNotContainsString('parent@example.test',$log,'A log line must never carry the customer e-mail.');
+        self::assertStringNotContainsString('Rodič',$log,'A log line must never carry the customer name.');
+        self::assertStringNotContainsString('TRIKO-M',$log,'A log line must never carry the cart contents.');
+        self::assertStringNotContainsString('no such table',$log,'The driver message may quote row values and stays out of the log.');
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_items')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');

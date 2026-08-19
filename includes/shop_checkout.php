@@ -201,7 +201,7 @@ function shopCheckoutPlace(
         throw new InvalidArgumentException('Checkout vyžaduje účet a platný jednorázový klíč.');
     }
     $keyHash = hash('sha256',$accountId.':'.$idempotencyKey);
-    $checkoutLockName=null;
+    $checkoutLockName=null;$orderId=0;
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
         $checkoutLockName='shop_checkout:'.substr($keyHash,0,48);
         $lock=$pdo->prepare('SELECT GET_LOCK(?,5)');$lock->execute([$checkoutLockName]);
@@ -348,7 +348,12 @@ function shopCheckoutPlace(
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         if($exception instanceof ClubProgramException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         if($exception instanceof PublicVelodromeShopException||$exception instanceof ClubEventShopException||$exception instanceof ClubEventRegistrationException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
-        if($exception instanceof PDOException&&((string)$exception->getCode()==='40001'||(int)($exception->errorInfo[1]??0)===1213))throw new ShopCheckoutException('Některá položka už není dostupná nebo ji právě objednal jiný zákazník. Obnovte košík.',0,$exception);
+        $reference=shopCheckoutDiagnosticReference($keyHash,$orderId);
+        if(shopCheckoutIsSerializationFailure($exception)){
+            error_log('shop_checkout serialization failure: '.$reference.' '.shopCheckoutDiagnosticTrace($exception));
+            throw new ShopCheckoutException('Některá položka už není dostupná nebo ji právě objednal jiný zákazník. Obnovte košík.',0,$exception);
+        }
+        error_log('shop_checkout failed: '.$reference.' '.shopCheckoutDiagnosticTrace($exception));
         throw new ShopCheckoutException('Objednávka se nepodařila vytvořit bez částečného zápisu.',0,$exception);
     }
     }finally{
@@ -357,6 +362,50 @@ function shopCheckoutPlace(
             catch(Throwable $releaseError){error_log('shop_checkout lock release: '.$releaseError->getMessage());}
         }
     }
+}
+
+/**
+ * True only for a serialization failure, never for any other database error.
+ * A lock wait timeout, a schema error or a constraint violation must keep the
+ * generic fail-closed message so that a real defect is not hidden behind
+ * "someone else has just ordered it".
+ */
+function shopCheckoutIsSerializationFailure(Throwable $exception): bool
+{
+    return $exception instanceof PDOException
+        && ((string)$exception->getCode()==='40001'||(int)($exception->errorInfo[1]??0)===1213);
+}
+
+/**
+ * Non-personal identification of a failed checkout. The key hash prefix also
+ * appears in shop_orders.idempotency_key_hash, so a log line can be joined to
+ * the order without carrying the live checkout token.
+ */
+function shopCheckoutDiagnosticReference(string $keyHash,int $orderId): string
+{
+    return 'ref='.substr($keyHash,0,16).' order='.($orderId>0?(string)$orderId:'-');
+}
+
+/**
+ * Diagnostic chain of an exception: class, SQLSTATE, driver code and origin.
+ * Exception messages are deliberately omitted, because a driver message can
+ * quote row values such as an e-mail address; file and line already identify
+ * the failing statement.
+ */
+function shopCheckoutDiagnosticTrace(Throwable $exception): string
+{
+    $parts=[];$current=$exception;
+    for($depth=0;$current!==null&&$depth<5;$depth++){
+        $frame=get_class($current);
+        if($current instanceof PDOException){
+            $sqlstate=(string)$current->getCode();
+            $frame.=' sqlstate='.($sqlstate!==''?$sqlstate:'-')
+                .' driver='.(isset($current->errorInfo[1])?(string)(int)$current->errorInfo[1]:'-');
+        }
+        $parts[]=$frame.' at '.basename($current->getFile()).':'.$current->getLine();
+        $current=$current->getPrevious();
+    }
+    return implode(' <- ',$parts);
 }
 
 /** @return array<string,mixed> */
