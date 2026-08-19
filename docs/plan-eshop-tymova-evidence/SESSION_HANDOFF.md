@@ -1,5 +1,91 @@
 # Session handoff
 
+## Aktualizace 19. 8. 2026 — Prompt E R1–R8 nasazen na produkci (`612c793`)
+
+### Výsledek nasazení
+
+- Vlastník spustil běh `32245326447`. Všech osmnáct kroků je zelených včetně
+  plné testovací sady, kontroly syntaxe, předletové kontroly serveru, zálohy,
+  migrací, aktivace release a HTTP smoke testu. Doba běhu 1 min 23 s. Produkce
+  přešla z `0e43a8b` na `612c793`, tedy dvacet commitů a pět nových migrací.
+- Záloha vznikla **před** migracemi:
+  `evidence_2026-08-19_110000_18457cc3.sql.gz`, SHA-256
+  `1366ab5d9d0ab53f1c492787818edafdef981d1516c0a95b2d950f8d9fa0a65d`,
+  159 vlastněných tabulek, 2 triggery, 1 256 661 bajtů, uloženo v
+  `/home/www/kovopraha.cz/www/data/.kis-backups` mimo webroot.
+- Migrace doběhly a byly ověřeny dvakrát: `current: true`, `reason: current`,
+  `catalog_count: 60`, `legacy_state: current` s cílem `2.20.2`. Produkční PHP
+  se aktivovalo teprve po tomto ověření.
+- Předpovězené chování zálohy se na produkci potvrdilo. Záloha běží před
+  migracemi, takže manifest tohoto běhu uvádí sloupcový kontrakt s `origin`
+  a `created_by_trainer_id`, které ve schématu v tom okamžiku ještě
+  neexistovaly. Manifest je deklarativní, proti schématu se neověřuje a záloha
+  proto neselhala ani nevarovala. Náprava je zařazená na začátek R9.
+
+### Poinstalační ověření
+
+- **1 · Záloha** — doloženo výstupem kroku „Vytvořit a ověřit produkční zálohu“
+  (viz hodnoty výše) a hláškou, že se aplikace smí měnit teprve poté.
+- **2 · Migrace** — `current`, katalog 60/60, ověřeno před aktivací i po ní.
+- **3 · Storefront odhlášeně** — `booking/eshop.php` se načetl bez relace,
+  zobrazil dosavadní aktivní nabídku a novou řádku kategorií s chipy `Vše` a
+  `Doplňky (1)`. Filtr `?kategorie=Doplňky` vrátil nadpis „Kategorie: Doplňky“
+  a zvýrazněný chip, takže kategoriové menu z R8 je v provozu.
+- **6 · Kroužky** — `booking/krouzky.php` vykreslil všechny tři sekce:
+  „Placené kroužky“ s prázdným stavem, „Bezplatné kroužky“ a „Placené klubové
+  události“, obě rovněž s prázdným stavem. Žádná regrese v živé funkci;
+  produkce zatím nemá publikovanou klubovou událost.
+- **8 · Databázové invarianty** — read-only drill `overit-databazove-invarianty`
+  (běh `32246124827`) vrátil `ok: true`, `checked: 16`, všech šestnáct kontrol
+  `ok` s nulovým počtem a prázdné pole `violations`.
+- **4, 5, 7 · Administrační obrazovky** — neověřeno tímto vláknem. Vyžadují
+  přihlášení do produkční administrace; přihlašovací údaje vlákno nepoužívá ani
+  nepřijímá. Předáno vlastníkovi jako tři kliknutí.
+- **9 · Zkušební nákup** — blokováno, dokud nejsou nastavené `SHOP_BANK_*`.
+  Provede se až po nastavení banky a s výslovným souhlasem, protože vytvoří
+  skutečnou objednávku.
+
+### Nastavení bankovního účtu
+
+- Banka se nastavuje výhradně workflow **„Nastavit produkční bankovní účet
+  KIS“** (`configure-production-bank.yml`) s jediným vstupem
+  `potvrzeni = NASTAVIT-BANKU`. Údaje se berou ze secrets prostředí
+  `production` `KIS_BANK_IBAN` a `KIS_BANK_ACCOUNT_LABEL`, které už existují.
+  Ruční nahrávání `config.php` není potřeba a je zakázané.
+- Skript `bin/configure-production-bank.php` vloží spravovaný blok mezi
+  `// BEGIN KIS MANAGED BANK ACCOUNT` a `// END KIS MANAGED BANK ACCOUNT` hned
+  za úvodní `<?php` produkčního `config.php`, zálohuje původní soubor do
+  `data/.kis-backups/config/`, zapisuje atomicky přes `rename()` a nastaví
+  práva `0600`. Opakované spuštění je idempotentní a blok nezduplikuje.
+- Deploy `config.php` nepřepisuje. Rsync ho vylučuje při přípravě release
+  i při aktivaci a stávající produkční soubor se do release jen kopíruje.
+  Nastavení tedy proběhne jednou a další nasazení ho zachovají.
+- Dvě omezení workflow, která nelze změnit vstupem: BIC je pevně prázdný
+  řetězec a `SHOP_BANK_DUE_DAYS` je pevně `7`. Prázdný BIC je pro tuzemský
+  převod v pořádku. Sedm dní je zároveň doba, po kterou nezaplacená objednávka
+  drží místo v kroužku; ponechat ji doporučujeme. Změna kterékoli z obou hodnot
+  vyžaduje úpravu kódu, ne jen jiný secret.
+
+### Brány a provozní hranice
+
+- Nasazený kód je totožný s lokálně ověřeným stavem: `655 tests / 5879
+  assertions`, lint 528 first-party souborů, `composer validate --strict`,
+  `composer audit --locked` a `composer check-platform-reqs` zelené.
+  Testovací sada proběhla znovu i uvnitř deploy workflow.
+- Ověření bylo čtecí. Produkční databáze se tímto vláknem nemutovala, žádná
+  produkční objednávka nevznikla a do výstupů ani do dokumentace se nedostaly
+  osobní údaje.
+- Ownership kontrakt zálohy zůstává `2026-08-17.2`.
+
+### Další krok
+
+- Vlastník spustí nastavení banky, proklikne body 4, 5 a 7 a vyžádá si bod 9.
+- Poté zahájit R9. Na začátku R9 předložit: návrh `parent_path` a hierarchie
+  kategorií, rozhodnutí o produktu bez kategorie, doplnění sloupců R7 do
+  `EVIDENCE_OWNED_COLUMN_CONTRACT` s bumpnutím verze a úpravu manifestu tak,
+  aby vedle kontraktu jako očekávání kódu nesl i seznam sloupců skutečně
+  přítomných ve snímku.
+
 ## Aktualizace 18. 8. 2026 — Prompt E, kontrolní bod R8: diagnostika checkoutu a značka vzoru (`4df4a47`, `f96915b`)
 
 ### Dokončený výsledek
