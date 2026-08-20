@@ -48,4 +48,20 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringNotContainsString('INSERT INTO shop_products', $source);
         self::assertStringContainsString('eshop_produkt_admin.php', (string)file_get_contents($root . '/eshop_admin.php'));
     }
+
+    public function testCategoryAdminUsesProtectedDomainWritersAuditAndPrg(): void
+    {
+        $root=dirname(__DIR__,2);$source=(string)file_get_contents($root.'/eshop_categories_admin.php');
+        self::assertStringContainsString("roleAtLeast('admin')",$source);
+        self::assertStringContainsString('csrf_verify',$source);
+        self::assertStringContainsString('shopCategoryAdminSave',$source);
+        self::assertStringContainsString('shopCategoryAdminDelete',$source);
+        self::assertStringContainsString('shopCategoryAdminAssignProduct',$source);
+        self::assertStringContainsString('COUNT(pc.id) category_count',$source);
+        self::assertStringContainsString('bez kategorie – neúplné',$source);
+        self::assertStringContainsString("header('Location: eshop_categories_admin.php",$source);
+        self::assertStringNotContainsString('INSERT INTO shop_category_meta',$source);
+        self::assertStringContainsString('eshop_categories_admin.php',(string)file_get_contents($root.'/hlavicka.php'));
+        self::assertStringContainsString('eshop_categories_admin.php',(string)file_get_contents($root.'/eshop_admin.php'));
+    }
 }

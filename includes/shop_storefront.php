@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/shop_checkout.php';
 require_once __DIR__ . '/app_url.php';
+require_once __DIR__ . '/shop_category.php';
 
 /**
  * Only explicitly published text is returned. The imported HTML description is

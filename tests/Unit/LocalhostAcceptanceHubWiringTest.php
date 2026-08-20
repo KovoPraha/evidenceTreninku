@@ -57,6 +57,9 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringContainsString('SELECT id,login_name,password_hash,active FROM child_access_accounts', $seed);
         self::assertStringContainsString("if(!password_verify(\$childPassword,(string)\$childAccess['password_hash']))childAccessResetPassword", $seed);
         self::assertStringContainsString('public_profile_token_generate()', $seed);
+        self::assertStringContainsString("'shoptet:local-demo:club-event'", $seed);
+        self::assertStringNotContainsString("'local-demo:club-event'", $seed);
+        self::assertStringContainsString("if((int)\$programGoods['id']!==(int)\$goods['id'])", $seed);
         self::assertStringContainsString("s.email='a05-transition@localhost.test'", $seed);
         self::assertStringContainsString('accountPersonRoleRevoke(', $seed);
         self::assertStringNotContainsString("hash('sha256','localhost-demo:a05-hobby-to-race')", $seed);

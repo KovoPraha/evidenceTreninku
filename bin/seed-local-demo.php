@@ -58,11 +58,11 @@ try{
     $run=$pdo->query("SELECT * FROM shop_catalog_import_runs WHERE status IN ('pending_review','ready_for_promotion','promoted') ORDER BY id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     if(!$run)throw new RuntimeException('local_demo_requires_staged_shoptet_import');$runId=(int)$run['id'];
     if($run['status']!=='promoted'){
-        $demoCandidate=$pdo->prepare('SELECT id FROM shop_catalog_product_candidates WHERE run_id=? AND external_product_key=?');$demoCandidate->execute([$runId,'local-demo:club-event']);$demoCandidateId=(int)$demoCandidate->fetchColumn();
+        $demoCandidate=$pdo->prepare('SELECT id FROM shop_catalog_product_candidates WHERE run_id=? AND external_product_key=?');$demoCandidate->execute([$runId,'shoptet:local-demo:club-event']);$demoCandidateId=(int)$demoCandidate->fetchColumn();
         if($demoCandidateId<1){
             $productPayload=['short_description'=>'Bezplatný testovací kroužek pouze pro localhost.','description_html_untrusted'=>null,'default_category_path'=>'LOCALHOST','visibility'=>'visible','item_type'=>'product','additional_category_paths'=>[],'images'=>[]];
             $insert=$pdo->prepare("INSERT INTO shop_catalog_product_candidates(run_id,external_product_key,source_pair_code,name,offer_type,classification_confidence,needs_manual_review,payload_json,review_status) VALUES (?,?,?,'LOCALHOST – bezplatný kroužek','club_event','high',0,?,'auto_classified')");
-            $insert->execute([$runId,'local-demo:club-event','LOCAL-DEMO-CLUB',json_encode($productPayload,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);$demoCandidateId=(int)$pdo->lastInsertId();
+            $insert->execute([$runId,'shoptet:local-demo:club-event','LOCAL-DEMO-CLUB',json_encode($productPayload,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);$demoCandidateId=(int)$pdo->lastInsertId();
             $variantPayload=['ean'=>null,'attributes'=>['Varianta'=>'Testovací'],'price'=>['compare_at_amount_minor'=>null,'includes_vat'=>false,'vat_rate_basis_points'=>null],'stock'=>['availability_in_stock'=>'Dostupné','availability_out_of_stock'=>'Nedostupné'],'unit'=>['code'=>'person'],'fulfillment'=>['free_shipping'=>true,'free_billing'=>true],'visible'=>true];
             $pdo->prepare("INSERT INTO shop_catalog_variant_candidates(run_id,product_candidate_id,sku,price_mode,amount_minor,currency,stock_quantity_decimal,payload_json) VALUES (?,?,?,'free',0,'CZK',NULL,?)")->execute([$runId,$demoCandidateId,'LOCAL-DEMO-CLUB-FREE',json_encode($variantPayload,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);
             $pdo->prepare('UPDATE shop_catalog_import_runs SET product_count=product_count+1,variant_count=variant_count+1 WHERE id=?')->execute([$runId]);
@@ -87,7 +87,9 @@ try{
     $pdo->prepare("UPDATE shop_variants SET visible=0,catalog_status='inactive' WHERE product_id=? AND stock_quantity_decimal IS NOT NULL AND stock_quantity_decimal<=0")->execute([(int)$goods['id']]);
     $programGoodsStatement=$pdo->prepare("SELECT p.id,p.name,v.id variant_id FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.offer_type='goods' AND p.id<>? AND (v.visible=1 OR v.visible IS NULL) AND v.price_mode='fixed' AND v.amount_minor>0 AND (v.stock_quantity_decimal IS NULL OR v.stock_quantity_decimal>0) ORDER BY p.id,v.id LIMIT 1");
     $programGoodsStatement->execute([(int)$goods['id']]);$programGoods=$programGoodsStatement->fetch(PDO::FETCH_ASSOC)?:$goods;
-    shopCatalogPublicationActivate($pdo,(int)$programGoods['id'],$actorId,'LOCALHOST – placený kroužek (NEPLATIT)','Testovací klubová služba. Částku neposílejte; administrátor ji označí jako uhrazenou pouze na localhostu.','Localhost demo programová nabídka.',true);
+    if((int)$programGoods['id']!==(int)$goods['id']){
+        shopCatalogPublicationActivate($pdo,(int)$programGoods['id'],$actorId,'LOCALHOST – placený kroužek (NEPLATIT)','Testovací klubová služba. Částku neposílejte; administrátor ji označí jako uhrazenou pouze na localhostu.','Localhost demo programová nabídka.',true);
+    }
 
     $coupon=$pdo->prepare('SELECT id FROM shop_coupons WHERE code=?');$coupon->execute(['LOCAL10']);
     if(!$coupon->fetchColumn())shopCouponAdminCreate($pdo,$actorId,'LOCAL10','percentage',1000,0,50000,100,'','','Localhost demo kupón 10 %.',true);
@@ -97,7 +99,7 @@ try{
         $now=new DateTimeImmutable('now');$regEnd=$now->modify('+6 days');$deadline=$now->modify('+7 days');$start=$now->modify('+14 days')->setTime(16,0);$end=$start->modify('+90 minutes');
         $created=clubEventCreateDraft($pdo,$actorId,['code'=>'LOCALHOST-KROUZEK','event_type'=>'club_event','name'=>'LOCALHOST – bezplatný testovací kroužek','description_plain'=>'Bezplatná demonstrační akce pro test rodiče a dítěte.','audience_label'=>'Testovací děti','min_age'=>'','max_age'=>'','capacity'=>2,'pricing_policy'=>'free','currency'=>'CZK','registration_starts_at'=>$now->modify('-1 day')->format('Y-m-d\TH:i'),'registration_ends_at'=>$regEnd->format('Y-m-d\TH:i')]);
         $eventId=(int)$created['id'];clubEventAddSession($pdo,$eventId,$actorId,$start->format('Y-m-d\TH:i'),$end->format('Y-m-d\TH:i'),'Velodrom – LOCALHOST TEST',2);
-        $clubProduct=(int)$pdo->query("SELECT id FROM shop_products WHERE external_product_key='local-demo:club-event'")->fetchColumn();
+        $clubProduct=(int)$pdo->query("SELECT id FROM shop_products WHERE external_product_key='shoptet:local-demo:club-event'")->fetchColumn();
         clubEventLinkProduct($pdo,$eventId,$clubProduct,$actorId,'Localhost demo vazba produktu a kroužku.');
         clubEventConfigureRegistrationTerms($pdo,$eventId,$actorId,'local-v1','Souhlasím s účastí v testovacím kroužku.','Přihlášku lze v testu zrušit do uvedeného termínu.',$deadline->format('Y-m-d\TH:i'),true);
         clubEventOpenFreeRegistration($pdo,$eventId,$actorId,'Otevření localhost demo registrace.',true);

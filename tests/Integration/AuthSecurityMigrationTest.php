@@ -86,6 +86,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260817130000_club_program_offer_age',
                 '20260817150000_club_program_terms',
                 '20260819120000_shop_bank_settings',
+                '20260820220000_shop_category_meta',
             ],
             array_keys($catalog)
         );
@@ -141,6 +142,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_member_category_rules'));
         self::assertTrue($this->tableExists($pdo, 'shop_member_product_prices'));
         self::assertTrue($this->tableExists($pdo, 'shop_member_price_events'));
+        self::assertTrue($this->tableExists($pdo, 'shop_category_meta'));
+        self::assertTrue($this->tableExists($pdo, 'shop_category_meta_events'));
         self::assertTrue($this->tableExists($pdo, 'kis_import_source_artifacts'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_cart_items'));
         self::assertTrue($this->tableExists($pdo, 'public_velodrome_order_items'));

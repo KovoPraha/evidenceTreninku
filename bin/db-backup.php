@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-19.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-20.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -195,6 +195,8 @@ const EVIDENCE_TABLES = [
     'segmenty',
     'shop_bank_settings',
     'shop_bank_settings_events',
+    'shop_category_meta',
+    'shop_category_meta_events',
     'shop_cart_items',
     'shop_carts',
     'shop_catalog_admin_events',
