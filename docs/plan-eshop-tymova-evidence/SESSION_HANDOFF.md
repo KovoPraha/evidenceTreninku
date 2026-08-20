@@ -1,5 +1,60 @@
 # Session handoff
 
+## Aktualizace 20. 8. 2026 — oprava deploy preflightu proti předchozímu release (`04fe558`)
+
+### Dokončený výsledek
+
+- `bin/deploy-preflight.php` už nepředpokládá, že aktuálně nasazený docroot
+  obsahuje soubor `includes/shop_bank_settings.php`, který přináší teprve
+  nasazované vydání. Všechny volitelné aplikační soubory načítá přes jedinou
+  kontrolovanou hranici s `is_file()`.
+- Pokud starý docroot nový resolver obsahuje, preflight připojí databázi a použije
+  `shopBankSettingsEffective($pdo)`. Pokud soubor ještě neexistuje, ověří
+  dosavadní konstanty přes `shopBankSettingsFromConfig()`. Chyba bankovní
+  diagnostiky se dál vrací jen ve `warnings[]`; nepřítomnost budoucího souboru
+  už nezpůsobí fatální pád před zálohou.
+- Kontrola celého preflightu nenašla jiný předpoklad souboru z nového release.
+  `config.php` je povinná produkční konfigurace a již nasazený
+  `includes/shop_checkout.php` se kontroluje před načtením.
+
+### Regrese a brány
+
+- Nový obecný test
+  `DeployWorkflowContractTest::testPreflightDoesNotRequireFilesFromTheIncomingReleaseDirectly`
+  nejprve na původním kódu prokazatelně selhal na přímém načtení checkoutu
+  a bankovního resolveru. Po opravě povoluje přímé načtení jen povinného
+  `config.php`; každý aplikační `require`/`include` navíc test odmítne, pokud
+  neprojde společnou kontrolou existence. Existující bankovní wiring test byl
+  zpřesněn pro dvojí režim preflightu, ostatní čtenáři nadále nesmějí obcházet
+  databázový resolver.
+- Zaměřené testy: `13 tests / 290 assertions`. Plná sada: `671 tests / 6075
+  assertions`, jedna existující PHPUnit deprecation. Lint prošel na všech 534
+  sledovaných first-party PHP souborech. `composer validate --strict`,
+  `composer audit --locked`, `composer check-platform-reqs` a `git diff --check`
+  jsou zelené.
+- Migrační brána proběhla na izolované `10.3.39-MariaDB` z ověřené lokální
+  zálohy: `check` našel očekávané pending migrace, `apply` a následný `check`
+  vrátily `current: true`, katalog `61`, `pending: []`, legacy baseline
+  `2.20.2`. Testovací schéma bylo odstraněno a kontrola vrátila nulu.
+- Všech pět MariaDB smoke scénářů prošlo na `10.3.39-MariaDB` i
+  `11.4.0-MariaDB`: child access, hobby transition, záloha a obnova 114 tabulek,
+  ruční katalog a souběžný checkout/platba/poslední místo kroužku. Po obou
+  bězích zůstalo nula testovacích schémat a servery byly vráceny na porty 33103
+  a 33114.
+- Lokální XAMPP MariaDB na portu 3306 se nespustila kvůli dřívějšímu poškození
+  InnoDB (`Missing MLOG_CHECKPOINT`). Její data nebyla otevřena, opravována ani
+  měněna; všechny databázové brány proto běžely na izolovaném serveru 10.3.
+  Řez nemění rozhraní, takže browserová brána nebyla relevantní.
+
+### Provozní hranice a další krok
+
+- Implementační commit je `04fe558`. Produkce, `origin/main`, push i deploy
+  zůstaly beze změny; produkce je stále na `612c793` a bankovní administrace
+  stále čeká na nasazení.
+- Následuje samostatná dokumentační oprava nepravdivého tvrzení o produkčních
+  `SHOP_BANK_*` v `docs/CURRENT_STATE.md`. Až poté se vlastníkovi předloží přesný
+  výčet commitů a bez jeho pokynu se nic nepushuje ani nenasazuje.
+
 ## Aktualizace 19. 8. 2026 — bankovní účet e-shopu v administraci (`27b2d8e`, `ff20427`)
 
 ### Dokončený výsledek
