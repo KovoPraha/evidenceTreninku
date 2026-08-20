@@ -55,8 +55,15 @@ final class ShopBankSettingsWiringTest extends TestCase
         ] as $file => $needle) {
             $source = (string)file_get_contents($root . '/' . $file);
             self::assertStringContainsString($needle, $source, $file);
-            self::assertStringNotContainsString('shopBankSettingsFromConfig()', $source, $file . ' už nesmí číst jen konstanty.');
+            if ($file !== 'bin/deploy-preflight.php') {
+                self::assertStringNotContainsString('shopBankSettingsFromConfig()', $source, $file . ' už nesmí číst jen konstanty.');
+            }
         }
+        // Preflight se spouští proti předchozímu release. Databázový resolver
+        // použije, pokud už existuje, jinak musí umět ověřit původní konstanty.
+        $preflight = (string)file_get_contents($root . '/bin/deploy-preflight.php');
+        self::assertStringContainsString('$loadOptionalAppFile($shopBankSettingsFile)', $preflight);
+        self::assertStringContainsString('shopBankSettingsFromConfig()', $preflight);
         // Fio se nesmí párovat proti konstantě, když databáze určuje jiný účet.
         self::assertStringNotContainsString('SHOP_BANK_IBAN', (string)file_get_contents($root . '/bin/fio-import.php'));
     }

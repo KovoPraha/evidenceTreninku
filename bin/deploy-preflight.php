@@ -48,6 +48,15 @@ $_SERVER['HTTP_HOST'] = $appHost;
 $_SERVER['SERVER_NAME'] = $appHost;
 require $appRoot . '/config.php';
 
+$loadOptionalAppFile = static function (string $path): bool {
+    if (!is_file($path)) {
+        return false;
+    }
+
+    require_once $path;
+    return true;
+};
+
 if (!defined('JE_LOKALNE') || JE_LOKALNE) {
     $fail('config.php se na produkčním hostu vyhodnotil jako lokální prostředí.');
 }
@@ -76,22 +85,28 @@ if (filter_var($appBaseUrl, FILTER_VALIDATE_URL) === false
 }
 
 $shopCheckoutFile = $appRoot . '/includes/shop_checkout.php';
-if (!is_file($shopCheckoutFile)) {
+if (!$loadOptionalAppFile($shopCheckoutFile)) {
     $warnings[] = 'Chybí validátor bankovního checkoutu; objednávky zůstanou fail-closed vypnuté.';
 } else {
-    require_once $shopCheckoutFile;
-    require_once $appRoot . '/includes/shop_bank_settings.php';
+    $shopBankSettingsFile = $appRoot . '/includes/shop_bank_settings.php';
     try {
-        // Zdrojem pravdy je záznam v databázi; konstanty jsou jen záloha, takže
-        // varování nesmí být červené jen proto, že config.php účet neobsahuje.
-        $bankPdo = new PDO(
-            'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
-            (string)DB_USER,
-            (string)DB_PASS,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-        );
-        shopBankSettingsEffective($bankPdo);
-        $bankPdo = null;
+        if ($loadOptionalAppFile($shopBankSettingsFile)) {
+            // Zdrojem pravdy je záznam v databázi; konstanty jsou jen záloha,
+            // takže varování nesmí být červené jen proto, že config.php účet
+            // neobsahuje.
+            $bankPdo = new PDO(
+                'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+                (string)DB_USER,
+                (string)DB_PASS,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
+            );
+            shopBankSettingsEffective($bankPdo);
+            $bankPdo = null;
+        } else {
+            // Předlet běží proti právě nasazenému release. Pokud nový resolver
+            // ještě neobsahuje, musí ověřit dosavadní konstanty a pokračovat.
+            shopBankSettingsFromConfig();
+        }
     } catch (Throwable) {
         $warnings[] = 'Bankovní účet e-shopu není kompletně a platně nastavený; bankovní objednávky nelze dokončit.';
     }

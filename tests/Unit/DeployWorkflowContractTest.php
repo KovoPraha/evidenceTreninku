@@ -117,6 +117,31 @@ final class DeployWorkflowContractTest extends TestCase
         }
     }
 
+    public function testPreflightDoesNotRequireFilesFromTheIncomingReleaseDirectly(): void
+    {
+        $preflight = $this->source('bin/deploy-preflight.php');
+        preg_match_all('/^\s*(?:require|include)(?:_once)?\s+[^;]+;/m', $preflight, $matches);
+        $loadStatements = array_map('trim', $matches[0]);
+
+        self::assertSame(
+            [
+                "require \$appRoot . '/config.php';",
+                'require_once $path;',
+            ],
+            $loadStatements,
+            'Preflight běží proti předchozímu release. Aplikační soubory proto smí načítat jen přes kontrolu existence.'
+        );
+
+        $guard = strpos($preflight, 'if (!is_file($path))');
+        $guardedLoad = strpos($preflight, 'require_once $path;');
+        self::assertNotFalse($guard);
+        self::assertNotFalse($guardedLoad);
+        self::assertLessThan($guardedLoad, $guard);
+        self::assertStringContainsString('$loadOptionalAppFile($shopCheckoutFile)', $preflight);
+        self::assertStringContainsString('$loadOptionalAppFile($shopBankSettingsFile)', $preflight);
+        self::assertStringContainsString('shopBankSettingsFromConfig()', $preflight);
+    }
+
     public function testEveryPermanentMigrationTableBelongsToBackupOwnership(): void
     {
         $backup = $this->source('bin/db-backup.php');
