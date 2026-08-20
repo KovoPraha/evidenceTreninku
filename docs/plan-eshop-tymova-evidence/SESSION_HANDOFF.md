@@ -1,5 +1,50 @@
 # Session handoff
 
+## Aktualizace 21. 8. 2026 — R12: ověření platebního toku (`4d1e05f`)
+
+### Dokončený výsledek
+
+- R12 podle zadání nepřidává nový platební kód. Trvalý důkaz je v
+  `docs/shop-program-payment-verification.md`: bankovní/QR checkout v jedné
+  transakci vytvoří objednávku, neměnný snapshot položky a právě jeden čekající
+  řádek `payments` se snapshotem bankovních údajů, variabilním symbolem,
+  splatností a SPD payloadem pro QR.
+- Výslovné a auditované potvrzení bankovní platby přepne platbu na `paid` a ve
+  stejné transakci vytvoří právě jednu aktivní programovou účast a aktivní zápis
+  dítěte na cílovou soupisku. Plná kapacita, ztráta oprávnění i duplicitní účast
+  vrátí celou transakci a platbu ponechají čekající.
+- Storno zaplacené objednávky účast auditovaně ukončí, shopové členství na
+  soupisce odstraní jen bez jiné aktivní účasti a platbu přepne na
+  `refund_required`. Samostatné potvrzení vratky nastaví `refunded`; opakované
+  storno ani vratka nevytvoří druhé ukončení.
+
+### Důkazy
+
+- Zaměřené lokální sady jsou zelené: `ClubProgramPaymentLifecycleTest`
+  14 testů / 312 assertions, `ShopCheckoutTest` 16 / 331 a
+  `ShopBankSettingsTest` 6 / 120, celkem 36 testů / 763 assertions.
+- Následná plná sada skončila `685 tests / 6211 assertions` s jednou existující
+  PHPUnit deprecation. Lint prošel na všech 550 first-party PHP souborech včetně
+  lokálního ignorovaného `config.php`; Composer validate, audit zamčených
+  závislostí, platformní požadavky a diff check jsou zelené.
+- R12 nemění schéma ani rozhraní. Navazuje na bezprostředně předcházející
+  zelenou R11 matici: 64 migrací s `current: true` a `pending: []`, pět smoke
+  scénářů včetně checkout/payment/last-place a zálohy 119 tabulek na MariaDB
+  10.3.39 i 11.4.0. Veškerá syntetická data a procesy této matice byly uklizeny.
+
+### Produkce a úkoly vlastníka
+
+- Produkce i `origin/main` zůstávají na `b2f5523`; R9 až R12 jsou pouze lokální
+  a před pushem/deployem musí vlastník potvrdit přesný seznam commitů. Na
+  produkci nevznikla žádná testovací objednávka, platba, účast ani členství.
+- Vlastník má po přihlášení jako administrátor na
+  `https://kis.kovopraha.cz/eshop_bank_admin.php` očima ověřit, že zobrazený
+  IBAN patří správnému klubovému účtu. Účet je technicky platně nakonfigurován;
+  jeho hodnoty se do dokumentace nezapisují.
+- Produkční Stripe zůstává vypnutý. Live konfigurace a její případné zapnutí
+  jsou samostatný vlastníkem schvalovaný produkční krok; R12 nepoužil žádný
+  live klíč.
+
 ## Aktualizace 21. 8. 2026 — R11: provozní správa katalogu (`0fd31f2`)
 
 ### Dokončený výsledek

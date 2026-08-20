@@ -21,9 +21,9 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 - produkce i `origin/main` jsou na commitu `b2f5523`. Deploy běh
   `32418793534` úspěšně nasadil opravený preflight, administraci bankovního
   účtu a ownership kontrakt zálohy; `eshop_bank_admin.php` je na produkci
-  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 až R11
-  jsou dokončené pouze lokálně v implementačních commitech `2173097`,
-  `93d0286` a `0fd31f2`; zatím nebyly pushnuté ani nasazené,
+  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 až R12
+  jsou dokončené pouze lokálně v commitech `2173097`, `93d0286`, `0fd31f2` a
+  `4d1e05f`; zatím nebyly pushnuté ani nasazené,
 
 - migrační katalog v lokálním R11 má 64 migrací, produkce má 61. Čekající
   aditivní migrace přidávají metadata kategorií, číselník parametrů s volbami
@@ -68,6 +68,13 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   artefaktem ověřil správu 243 produktů, skladový pohyb, hromadné pořadí,
   blokovanou aktivaci nepodporovaného pronájmu, editaci a uzavření kroužku i
   veřejné hledání a řazení,
+
+- R12 nepřidává nový platební mechanismus. Dokument
+  `docs/shop-program-payment-verification.md` dokládá bankovní/QR tok od košíku
+  a čekajícího řádku `payments` přes potvrzení platby, aktivní účast a zápis na
+  soupisku až po storno, stav `refund_required` a samostatně potvrzenou vratku.
+  Zaměřené sady prošly 36 testy / 763 assertions; plná sada i obě MariaDB smoke
+  matice zůstávají zelené. Produkční objednávka ani live Stripe nebyly použity,
 
 - workflow „Nastavit produkční bankovní účet KIS“ proběhlo úspěšně 14. 8. 2026
   (běh `31849593079`) a produkční `SHOP_BANK_*` jsou platně nastavené. Potvrdil
