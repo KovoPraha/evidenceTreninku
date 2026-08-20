@@ -21,25 +21,25 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 - produkce i `origin/main` jsou na commitu `b2f5523`. Deploy běh
   `32418793534` úspěšně nasadil opravený preflight, administraci bankovního
   účtu a ownership kontrakt zálohy; `eshop_bank_admin.php` je na produkci
-  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 je
-  dokončená pouze lokálně v implementačním commitu `2173097` a zatím nebyla
-  pushnuta ani nasazena,
+  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 a R10
+  jsou dokončené pouze lokálně v implementačních commitech `2173097` a
+  `93d0286`; zatím nebyly pushnuté ani nasazené,
 
-- migrační katalog v lokální R9 má 62 migrací, produkce má 61. Čekající
-  aditivní migrace `20260820220000_shop_category_meta` přidává metadata
-  kategorií a audit; čistý průchod `check → apply → check` skončil na
-  `current: true`, `pending: []` na MariaDB 10.3.39 i 11.4.0,
+- migrační katalog v lokálním R10 má 63 migrací, produkce má 61. Čekající
+  aditivní migrace přidávají metadata kategorií a číselník parametrů s volbami
+  a auditem; průchod `check → apply → check` skončil na `current: true`,
+  `pending: []` na MariaDB 10.3.39 i 11.4.0,
 
-- poslední ověřená plná lokální brána R9 je `675 tests / 6126 assertions`
+- poslední ověřená plná lokální brána R10 je `679 tests / 6161 assertions`
   s jednou existující PHPUnit deprecation. First-party lint prošel na všech
-  540 PHP souborech a změněná stránka byla po poslední úpravě znovu ověřena.
+  545 PHP souborech.
   `composer validate --strict`, audit zamčených závislostí, kontrola
   platformních požadavků i `git diff --check` jsou zelené,
 
-- aktuální lokální ownership kontrakt zálohy je `2026-08-20.1`; vedle
+- aktuální lokální ownership kontrakt zálohy je `2026-08-21.1`; vedle
   bankovního nastavení a sloupců zápisového kontraktu R7 zahrnuje nové tabulky
-  `shop_category_meta` a `shop_category_meta_events`. Obnova zálohy na MariaDB
-  10.3 i 11.4 ověřila 116 vlastněných tabulek,
+  kategorií, definic parametrů, voleb a jejich audit. Obnova zálohy na MariaDB
+  10.3 i 11.4 ověřila 119 vlastněných tabulek,
 
 - R9 zachovává řetězcové `category_path`, odvozuje hierarchii z cest
   `A > B > C`, dovoluje výslovný přepis rodiče a chybějící rodiče zobrazuje jako
@@ -49,6 +49,14 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   bez kategorie zůstává pouze pod „Vše“ a administrace ho označuje jako
   neúplný. Živý localhostový průchod ověřil vytvoření stromu, přiřazení produktu
   i filtrování rodičem a po úklidu nezůstalo žádné testovací schéma,
+
+- R10 ponechává importní `attributes_json` otevřený a nad ním přidává volitelný
+  číselník názvů, jednotek, pořadí, ploch zobrazení a výběrových hodnot. Neznámé
+  klíče ani chybný JSON import nezastaví; neznámé hodnoty se zobrazují za
+  definovanými a deaktivace nemaže varianty ani historii. Administrace používá
+  transakce, CSRF, PRG a audit. Živý localhostový průchod nad reálným Shoptet
+  artefaktem ověřil číselník velikostí, skutečný výběr ve variantě a veřejné
+  zobrazení definované velikosti i neznámé barvy,
 
 - workflow „Nastavit produkční bankovní účet KIS“ proběhlo úspěšně 14. 8. 2026
   (běh `31849593079`) a produkční `SHOP_BANK_*` jsou platně nastavené. Potvrdil

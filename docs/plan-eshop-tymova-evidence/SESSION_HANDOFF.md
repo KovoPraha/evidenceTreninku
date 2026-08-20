@@ -1,5 +1,60 @@
 # Session handoff
 
+## Aktualizace 21. 8. 2026 — R10: parametry produktů (`93d0286`)
+
+### Dokončený výsledek
+
+- Volný importní `attributes_json` zůstává kanonickým úložištěm a import kvůli
+  chybějící definici ani neplatnému JSON neselže. Nové aditivní tabulky
+  `shop_attribute_definitions`, `shop_attribute_choices` a
+  `shop_attribute_definition_events` přidávají pouze prezentační číselník,
+  výběrové hodnoty a audit; všechny tři jsou ve stejném commitu v ownership
+  kontraktu zálohy `2026-08-21.1`.
+- Admin-only obrazovka `eshop_attributes_admin.php` s CSRF, PRG, transakcemi a
+  auditovaným důvodem spravuje zobrazovaný název, typ, jednotku, pořadí,
+  viditelnost ve výpisu/detailu a stav. Deaktivace definice nebo volby pouze
+  skryje číselník a nemaže hodnoty variant ani auditní historii.
+- Editor variant převádí JSON na dvojice klíč/hodnota, nabízí aktivní definice
+  a pro typ `choice` používá skutečný výběr. Stávající hodnota mimo aktuální
+  číselník zůstane v editoru zachovaná a označená; bez JavaScriptu zůstává
+  původní JSON formulář funkční.
+- Veřejný výpis a detail řadí definované parametry podle číselníku, doplňují
+  jednotku a neznámé importované klíče zobrazí abecedně až za nimi. R10
+  záměrně nepřidává filtrování podle parametrů.
+
+### Důkazy a úklid
+
+- Živý localhostový průchod nad zachovaným reálným Shoptet artefaktem
+  (241 produktů / 807 variant) objevil čtyři volné klíče. Syntetický
+  administrátor auditovaně založil `Velikost` jako „Konfekční velikost“ se 42
+  skutečně importovanými volbami. Editor aktivního produktu vykreslil devět
+  výběrů a veřejný výpis i detail zobrazily definovanou velikost současně s
+  neznámou `Barva`.
+- Plná sada skončila `679 tests / 6161 assertions` s jednou existující PHPUnit
+  deprecation. Lint prošel na všech 545 first-party PHP souborech.
+  `composer validate --strict`, audit zamčených závislostí, kontrola
+  platformních požadavků a `git diff --check` jsou zelené.
+- Migrační brána `check → apply → check` skončila s 63 migracemi,
+  `current: true`, legacy baseline `2.20.2` a `pending: []` na MariaDB 10.3.39
+  i 11.4.0. Na obou verzích prošly smoke scénáře child access, hobby
+  transition, ruční katalog, souběžný checkout/platba/poslední místo a záloha
+  s obnovou 119 tabulek.
+- Přesné syntetické schéma, všechny smoke databáze, Apache i oba izolované
+  databázové procesy byly odstraněny nebo ukončeny. Dočasný 10.3 server je zpět
+  na portu 33103 a jednorázová data 11.4 byla bezpečně smazána; původní XAMPP
+  data nebyla otevřena ani změněna.
+
+### Produkce a další krok
+
+- Produkce i `origin/main` zůstávají na `b2f5523`; R9 `2173097` a R10
+  `93d0286` jsou pouze lokální. Vizuální kontrola skutečného produkčního IBANu
+  dál čeká na přihlášeného administrátora a žádná bankovní hodnota nebyla
+  změněna.
+- Následuje R11 — provozní správa katalogu, zejména hledání a filtry,
+  auditovaná korekce skladu, hromadné akce a možnost upravit či uzavřít nabídku
+  kroužku. Před budoucím pushem bude vlastníkovi předložen přesný seznam
+  commitů.
+
 ## Aktualizace 21. 8. 2026 — R9: hierarchické kategorie e-shopu (`2173097`)
 
 ### Dokončený výsledek
