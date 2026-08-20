@@ -64,4 +64,21 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringContainsString('eshop_categories_admin.php',(string)file_get_contents($root.'/hlavicka.php'));
         self::assertStringContainsString('eshop_categories_admin.php',(string)file_get_contents($root.'/eshop_admin.php'));
     }
+
+    public function testAttributeAdminAndVariantEditorUseProtectedDictionaryWriters(): void
+    {
+        $root=dirname(__DIR__,2);$admin=(string)file_get_contents($root.'/eshop_attributes_admin.php');
+        self::assertStringContainsString("roleAtLeast('admin')",$admin);
+        self::assertStringContainsString('csrf_verify',$admin);
+        self::assertStringContainsString('shopAttributeAdminSave',$admin);
+        self::assertStringContainsString('shopAttributeDiscoveredKeys',$admin);
+        self::assertStringNotContainsString('INSERT INTO shop_attribute_definitions',$admin);
+        $product=(string)file_get_contents($root.'/eshop_produkt_admin.php');
+        self::assertStringContainsString('attribute_keys[]',$product);
+        self::assertStringContainsString('data-add-attribute',$product);
+        self::assertStringContainsString("definition.value_type==='choice'",$product);
+        self::assertStringContainsString('eshop_attributes_admin.php',$product);
+        self::assertStringContainsString('eshop_attributes_admin.php',(string)file_get_contents($root.'/hlavicka.php'));
+        self::assertStringContainsString('eshop_attributes_admin.php',(string)file_get_contents($root.'/eshop_admin.php'));
+    }
 }

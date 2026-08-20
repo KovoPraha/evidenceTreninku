@@ -23,8 +23,8 @@ function shopProductMoney(int $minor, string $currency): string
 function shopProductVariantLabel(array $variant): string
 {
     $parts = [];
-    foreach (($variant['attributes'] ?? []) as $name => $value) {
-        $parts[] = trim((string)$name) . ': ' . trim((string)$value);
+    foreach (($variant['attributes_detail'] ?? []) as $attribute) {
+        $parts[] = trim((string)$attribute['display_name']) . ': ' . trim((string)$attribute['formatted_value']);
     }
     return $parts !== [] ? implode(' · ', $parts) : (string)$variant['sku'];
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/shop_checkout.php';
 require_once __DIR__ . '/app_url.php';
 require_once __DIR__ . '/shop_category.php';
+require_once __DIR__ . '/shop_attribute.php';
 
 /**
  * Only explicitly published text is returned. The imported HTML description is
@@ -13,7 +14,7 @@ require_once __DIR__ . '/shop_category.php';
  */
 function shopStorefrontCatalog(PDO $pdo): array
 {
-    $products = [];
+    $products = [];$attributeDefinitions=shopAttributeDefinitions($pdo,true);
     foreach (shopStorefrontProducts($pdo) as $row) {
         $productId = (int)$row['product_id'];
         if (!isset($products[$productId])) {
@@ -24,10 +25,14 @@ function shopStorefrontCatalog(PDO $pdo): array
                 'variants' => [],
                 'images' => [],
                 'categories' => [],
+                'listing_attributes' => [],
             ];
         }
         $row['in_stock'] = $row['stock_quantity_decimal'] === null
             || (float)$row['stock_quantity_decimal'] > 0.0;
+        $row['attributes_detail']=shopAttributePresentation($pdo,(array)($row['attributes']??[]),'detail',$attributeDefinitions);
+        $row['attributes_listing']=shopAttributePresentation($pdo,(array)($row['attributes']??[]),'listing',$attributeDefinitions);
+        foreach($row['attributes_listing']as$attribute){$fingerprint=$attribute['key']."\0".$attribute['formatted_value'];$products[$productId]['listing_attributes'][$fingerprint]=$attribute;}
         $products[$productId]['variants'][] = $row;
     }
 
@@ -42,6 +47,7 @@ function shopStorefrontCatalog(PDO $pdo): array
         foreach($categories as$productId=>$paths)if(isset($products[$productId]))$products[$productId]['categories']=$paths;
     }
 
+    foreach($products as&$product)$product['listing_attributes']=array_values($product['listing_attributes']);unset($product);
     return array_values($products);
 }
 

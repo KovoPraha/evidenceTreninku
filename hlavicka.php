@@ -417,6 +417,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-eye me-2 text-success"></i>Aktivace katalogu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_categories_admin.php') ?>" href="eshop_categories_admin.php">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>Kategorie e-shopu</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('eshop_attributes_admin.php') ?>" href="eshop_attributes_admin.php">
+                                <i class="bi bi-sliders me-2 text-primary"></i>Parametry produktů</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_member_prices_admin.php') ?>" href="eshop_member_prices_admin.php">
                                 <i class="bi bi-tags me-2 text-success"></i>Klubové ceny</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_events_admin.php') ?>" href="eshop_events_admin.php">
