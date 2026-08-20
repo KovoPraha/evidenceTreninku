@@ -1,5 +1,57 @@
 # Session handoff
 
+## Aktualizace 21. 8. 2026 — R9: hierarchické kategorie e-shopu (`2173097`)
+
+### Dokončený výsledek
+
+- Nad stabilními řetězcovými `category_path` vznikla aditivní metadata
+  `shop_category_meta` a audit `shop_category_meta_events`; obě tabulky jsou ve
+  stejném commitu zahrnuté do ownership kontraktu zálohy `2026-08-20.1`.
+- Podle rozhodnutí vlastníka se běžný strom odvozuje z přesné cesty
+  `A > B > C`, přičemž administrátor může rodiče výslovně přepsat. Chybějící
+  metadata rodiče vytvoří bezpečný virtuální uzel a stará importovaná cesta se
+  dál zobrazí. Druhé rozhodnutí ponechává produkt bez kategorie jen pod „Vše“;
+  administrace ho označí jako neúplný katalogový záznam.
+- Nová admin-only obrazovka `eshop_categories_admin.php` s CSRF, PRG,
+  transakcemi a auditem spravuje zobrazovaný název, rodiče, pořadí, viditelnost,
+  popis a přiřazení produktu s právě jednou výchozí kategorií. Metadata
+  kategorie používané produktem, cenovým pravidlem nebo metadatovým potomkem
+  nelze odstranit.
+- Veřejný e-shop používá hierarchické menu s deduplikovanými počty prodejných
+  produktů a filtr `?kategorie=…` zahrnuje všechny potomky. Kroužky zůstávají
+  součástí stejného kategoriového menu.
+
+### Důkazy a úklid
+
+- Živý localhostový průchod jako syntetický administrátor vytvořil cestu
+  `LOCALHOST TEST > Oblečení > Bundy`, ověřil virtuální rodiče a audit, přiřadil
+  produkt do listu a veřejným kliknutím na kořen zobrazil produkt z
+  podkategorie. První pokus odhalil odmítání dosud nematerializovaného
+  odvozeného rodiče; oprava i regrese jsou součástí `2173097`.
+- Migrační brána `check → apply → check` nad čistým základem skončila s 62
+  migracemi, `current: true` a `pending: []` na MariaDB 10.3.39 i 11.4.0. Na
+  obou verzích prošly smoke scénáře child access, hobby transition, ruční
+  katalog, souběžný checkout/platba/poslední místo a záloha s obnovou 116
+  tabulek.
+- Plná sada: `675 tests / 6126 assertions`, jedna existující PHPUnit
+  deprecation. Lint: 540 first-party PHP souborů bez chyby a samostatný zelený
+  re-lint naposledy upravené admin stránky. `composer validate --strict`,
+  `composer audit --locked`, `composer check-platform-reqs` a diff check jsou
+  zelené.
+- Přesné syntetické schéma bylo odstraněno, oba izolované MariaDB servery byly
+  ukončeny a nezůstal žádný testovací databázový ani webový proces. Původní
+  poškozená XAMPP data nebyla změněna.
+
+### Produkce a další krok
+
+- Produkce i `origin/main` jsou na `b2f5523`; opravný deploy
+  `32418793534` proběhl úspěšně a bankovní administrace je dostupná. Vizuální
+  kontrola skutečného produkčního IBANu stále čeká na vlastníka s přihlášeným
+  administrátorským účtem; hodnota účtu ani secrets nebyly nikam zapsány.
+- R9 implementace `2173097` zůstává lokální, nebyla pushnuta ani nasazena.
+  Následuje R10 — číselník parametrů vedle volného `attributes_json`. Před
+  jakýmkoli budoucím pushem bude vlastníkovi předložen přesný seznam commitů.
+
 ## Aktualizace 20. 8. 2026 — korekce produkčního bankovního stavu (`cae6694`)
 
 ### Opravená skutečnost

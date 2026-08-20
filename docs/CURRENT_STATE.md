@@ -1,6 +1,6 @@
 # Aktuální stav projektu pro AI a vlastníka
 
-Aktualizováno: 20. 8. 2026, Europe/Prague
+Aktualizováno: 21. 8. 2026, Europe/Prague
 
 Tento soubor je krátký vstupní rozcestník. Přesný historický ledger a poslední
 důkazy jsou v `docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md`; produktová
@@ -18,35 +18,44 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 
 ## Poslední přijatý technický stav
 
-- produkce je po nasazení řezů R1–R8 Promptu E na commitu `612c793` (běh
-  `32245326447`, 19. 8. 2026). `origin/main` je na `3af5a05`, tedy o tři
-  commity napřed; čekající vydání přidává administraci bankovního účtu,
-  ownership kontrakt zálohy a jeho dokumentaci. Nasazený rozsah zahrnuje ruční
-  založení a editaci produktu s původem `manual` a SKU `KP-`, preflight kolizí
-  importu, typ nabídky `program`, bezpečné obrázky produktu, věkové omezení
-  a skutečnou kapacitu nabídky, verzované podmínky kroužku, transakčního
-  průvodce „Vypsat kroužek“ a základní kategoriové menu e-shopu. Předchozí
-  produkční commit byl `0e43a8b` (vlákna F+B),
+- produkce i `origin/main` jsou na commitu `b2f5523`. Deploy běh
+  `32418793534` úspěšně nasadil opravený preflight, administraci bankovního
+  účtu a ownership kontrakt zálohy; `eshop_bank_admin.php` je na produkci
+  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 je
+  dokončená pouze lokálně v implementačním commitu `2173097` a zatím nebyla
+  pushnuta ani nasazena,
 
-- migrační katalog v repozitáři má 61 migrací, produkce má 60 a čeká migrace
-  `20260819120000_shop_bank_settings`. Nasazení R1–R8 přidalo `20260816200000_shop_manual_catalog_origin`,
-  `20260817090000_club_program_events`, `20260817110000_shop_catalog_admin`,
-  `20260817130000_club_program_offer_age` a `20260817150000_club_program_terms`,
+- migrační katalog v lokální R9 má 62 migrací, produkce má 61. Čekající
+  aditivní migrace `20260820220000_shop_category_meta` přidává metadata
+  kategorií a audit; čistý průchod `check → apply → check` skončil na
+  `current: true`, `pending: []` na MariaDB 10.3.39 i 11.4.0,
 
-- poslední ověřená plná lokální brána nad aktuální opravou preflightu je
-  `671 tests / 6075 assertions` s jednou existující PHPUnit deprecation;
-  first-party lint prošel na 534 PHP souborech. `composer validate --strict`,
-  audit zamčených závislostí i kontrola platformních požadavků byly zelené,
+- poslední ověřená plná lokální brána R9 je `675 tests / 6126 assertions`
+  s jednou existující PHPUnit deprecation. First-party lint prošel na všech
+  540 PHP souborech a změněná stránka byla po poslední úpravě znovu ověřena.
+  `composer validate --strict`, audit zamčených závislostí, kontrola
+  platformních požadavků i `git diff --check` jsou zelené,
 
-- aktuální ownership kontrakt zálohy je `2026-08-19.2`. Obsahuje tabulky
-  bankovního nastavení, sloupce zápisového kontraktu R7 a manifest vedle
-  `owned_column_contract` zapisuje i skutečně přítomné `owned_columns_present`,
+- aktuální lokální ownership kontrakt zálohy je `2026-08-20.1`; vedle
+  bankovního nastavení a sloupců zápisového kontraktu R7 zahrnuje nové tabulky
+  `shop_category_meta` a `shop_category_meta_events`. Obnova zálohy na MariaDB
+  10.3 i 11.4 ověřila 116 vlastněných tabulek,
+
+- R9 zachovává řetězcové `category_path`, odvozuje hierarchii z cest
+  `A > B > C`, dovoluje výslovný přepis rodiče a chybějící rodiče zobrazuje jako
+  bezpečné virtuální uzly. Administrátor spravuje metadata, auditované
+  přiřazení a jednu výchozí kategorii; kategorii používanou produktem nebo
+  cenovým pravidlem nelze smazat. Veřejný filtr zahrnuje podkategorie. Produkt
+  bez kategorie zůstává pouze pod „Vše“ a administrace ho označuje jako
+  neúplný. Živý localhostový průchod ověřil vytvoření stromu, přiřazení produktu
+  i filtrování rodičem a po úklidu nezůstalo žádné testovací schéma,
 
 - workflow „Nastavit produkční bankovní účet KIS“ proběhlo úspěšně 14. 8. 2026
   (běh `31849593079`) a produkční `SHOP_BANK_*` jsou platně nastavené. Potvrdil
   to i úspěšný deploy preflight běhu `32245326447` s prázdným seznamem varování.
-  Bankovní checkout proto na produkci funguje a není fail-closed. Po nasazení
-  nové obrazovky `eshop_bank_admin.php` zbývá vlastníkovi vizuálně ověřit, že
+  Bankovní checkout proto na produkci funguje a není fail-closed. Obrazovka
+  `eshop_bank_admin.php` je nasazená; vlastníkovi stále zbývá po přihlášení
+  vizuálně ověřit, že
   platný IBAN odpovídá správnému klubovému účtu; hodnoty účtu ani secrets se do
   dokumentace nezapisují,
 
