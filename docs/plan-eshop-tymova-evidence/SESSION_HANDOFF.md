@@ -1,5 +1,40 @@
 # Session handoff
 
+## Aktualizace 20. 8. 2026 — korekce produkčního bankovního stavu (`cae6694`)
+
+### Opravená skutečnost
+
+- `docs/CURRENT_STATE.md` už netvrdí, že produkční `SHOP_BANK_*` nejsou
+  nastavené a bankovní checkout je fail-closed. Workflow „Nastavit produkční
+  bankovní účet KIS“ proběhlo úspěšně 14. 8. 2026 jako běh `31849593079`.
+  Úspěšný preflight deploye `32245326447` navíc vrátil prázdné `warnings[]`,
+  takže produkční bankovní nastavení je platné a bankovní objednávka může
+  vzniknout.
+- Starší historické sekce tohoto handoffu, které uvádějí nenastavené konstanty
+  nebo blokovaný zkušební nákup, jsou tímto výslovně překonané. Zůstávají beze
+  změny jako záznam tehdejšího, později vyvráceného závěru.
+- Současně byl snapshot v `CURRENT_STATE.md` srovnán se skutečností: produkce
+  `612c793`, `origin/main` `3af5a05`, katalog 61 v repozitáři / 60 na produkci,
+  čekající migrace `20260819120000_shop_bank_settings`, ownership kontrakt
+  `2026-08-19.2` a poslední plná brána `671 tests / 6075 assertions`.
+
+### Co stále musí ověřit vlastník
+
+- Po nasazení otevřít `eshop_bank_admin.php` jako administrátor a očima ověřit,
+  že zobrazený IBAN patří správnému klubovému účtu. Hodnota účtu ani obsah
+  secretů nebyly zapsány do dokumentace, Gitu ani výstupu.
+- Stripe live klíče pro platbu kartou zůstávají samostatným budoucím úkolem;
+  produkční Stripe je nadále vypnutý.
+
+### Brána a další krok
+
+- Jde pouze o dokumentační korekci `cae6694`; aplikační kód je totožný se zeleně
+  ověřeným `04fe558`. `git diff --check` je zelený. Produkce, `origin/main`, push
+  ani deploy se nezměnily.
+- Další krok je předložit vlastníkovi přesný výčet čtyř nových commitů a počkat
+  na výslovný pokyn k pushi. Teprve po pushi a úspěšném nasazení lze provést
+  produkční kontroly bankovní administrace a otevřít R9.
+
 ## Aktualizace 20. 8. 2026 — oprava deploy preflightu proti předchozímu release (`04fe558`)
 
 ### Dokončený výsledek
