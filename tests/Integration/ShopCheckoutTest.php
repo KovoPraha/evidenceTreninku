@@ -131,9 +131,12 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("INSERT INTO account_person_roles VALUES(2,10,90,'guardian','approved','2020-01-01',NULL)");
         self::assertContains(604,array_map('intval',array_column(\shopStorefrontProducts($pdo),'variant_id')));
         \shopCartSetQuantity($pdo,10,604,1,90);$fingerprint=\shopCartDetail($pdo,10)['fingerprint'];
+        $pdo->exec("UPDATE club_program_offers SET capacity=1 WHERE id=1");$pdo->exec("INSERT INTO club_program_enrollments VALUES(1,1,'active')");
+        self::assertStringContainsString('Kapacita nabídky je naplněna.',\shopCheckoutSerializationFailureMessage($pdo,10));
+        $pdo->exec('DELETE FROM club_program_enrollments');$pdo->exec("UPDATE club_program_offers SET capacity=12 WHERE id=1");
         $pdo->prepare('UPDATE club_program_offers SET sales_close_at=?')->execute([$now->modify('-1 second')->format('Y-m-d H:i:s')]);
         try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$fingerprint);self::fail('Closed program offer must fail again inside checkout transaction.');}
-        catch(\ShopCheckoutException $exception){self::assertStringContainsString('není dostupná',$exception->getMessage());}
+        catch(\ShopCheckoutException $exception){self::assertStringContainsString('Prodejní okno už skončilo',$exception->getMessage());}
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());self::assertSame('active',$pdo->query('SELECT catalog_status FROM shop_products WHERE id=504')->fetchColumn());
         self::assertNotContains(604,array_map('intval',array_column(\shopStorefrontProducts($pdo),'variant_id')));
     }

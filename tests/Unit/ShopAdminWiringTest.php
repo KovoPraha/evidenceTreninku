@@ -81,4 +81,10 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringContainsString('eshop_attributes_admin.php',(string)file_get_contents($root.'/hlavicka.php'));
         self::assertStringContainsString('eshop_attributes_admin.php',(string)file_get_contents($root.'/eshop_admin.php'));
     }
+
+    public function testCatalogManagementAndProgramOfferEditorsUseSharedAuditedWriters():void
+    {
+        $root=dirname(__DIR__,2);$catalog=(string)file_get_contents($root.'/eshop_catalog_admin.php');self::assertStringContainsString("roleAtLeast('admin')",$catalog);self::assertStringContainsString('csrf_verify',$catalog);self::assertStringContainsString('shopCatalogBulkActivate',$catalog);self::assertStringContainsString('shopCatalogAdjustStock',$catalog);self::assertStringNotContainsString('UPDATE shop_variants SET stock_quantity_decimal',$catalog);
+        $offers=(string)file_get_contents($root.'/club_program_offers_admin.php');self::assertStringContainsString('clubProgramUpdateOffer',$offers);self::assertStringContainsString('clubProgramCloseOffer',$offers);self::assertStringContainsString('sale_reason',$offers);self::assertStringContainsString('eshop_catalog_admin.php',(string)file_get_contents($root.'/hlavicka.php'));self::assertStringContainsString('club_program_offers_admin.php',(string)file_get_contents($root.'/hlavicka.php'));
+    }
 }

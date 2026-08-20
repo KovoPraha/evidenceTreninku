@@ -88,6 +88,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260819120000_shop_bank_settings',
                 '20260820220000_shop_category_meta',
                 '20260821090000_shop_attribute_definitions',
+                '20260821120000_shop_catalog_management',
             ],
             array_keys($catalog)
         );
@@ -112,6 +113,7 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->columnExists($pdo, 'club_event_term_versions', 'scope_type'));
         self::assertTrue($this->columnExists($pdo, 'club_event_term_versions', 'scope_key'));
         self::assertTrue($this->columnExists($pdo, 'club_event_term_versions', 'consent_purpose'));
+        self::assertTrue($this->columnExists($pdo, 'shop_products', 'sort_order'));
         self::assertSame(
             4,
             (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration'")->fetchColumn()

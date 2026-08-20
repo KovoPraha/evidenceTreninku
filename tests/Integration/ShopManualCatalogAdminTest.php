@@ -7,6 +7,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2) . '/includes/shop_manual_catalog.php';
+require_once dirname(__DIR__,2) . '/includes/shop_catalog_management.php';
 
 final class ShopManualCatalogAdminTest extends TestCase
 {
@@ -36,13 +37,14 @@ final class ShopManualCatalogAdminTest extends TestCase
         $pdo->exec("INSERT INTO shop_carts(id) VALUES(1)");$pdo->exec("INSERT INTO verejni_uzivatele(id) VALUES(10)");
         $pdo->exec("INSERT INTO shop_orders(id,account_id,source_cart_id) VALUES(1,10,1)");
         $pdo->exec("INSERT INTO shop_order_items(id,order_id,product_id,variant_id,product_name_snapshot,sku_snapshot,unit_amount_minor,line_amount_minor) VALUES(1,1,501,601,'Historické zboží','IMPORT-1',5000,5000)");
-        \shopManualCatalogUpdateVariant($pdo,7,601,$this->variant('IMPORT-1',7500,'7'),'Změna ceny a inventura.',true);
+        \shopManualCatalogUpdateVariant($pdo,7,601,$this->variant('IMPORT-1',7500,'5'),'Změna ceny bez přímého zásahu do skladu.',true);
+        \shopCatalogAdjustStock($pdo,7,601,'7','Samostatná inventura.',true);
         self::assertSame(5000,(int)$pdo->query('SELECT unit_amount_minor FROM shop_order_items WHERE id=1')->fetchColumn());
         self::assertSame(7500,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=601')->fetchColumn());
         $movement=$pdo->query("SELECT * FROM shop_inventory_movements WHERE movement_type='manual_adjustment'")->fetch(PDO::FETCH_ASSOC);
         self::assertSame('trainer',$movement['actor_type']);self::assertSame(7,(int)$movement['actor_id']);
         self::assertSame('2.000000',$movement['quantity_delta_decimal']);self::assertSame('7.000000',$movement['stock_after_decimal']);
-        self::assertSame('Změna ceny a inventura.',$movement['reason']);
+        self::assertSame('Samostatná inventura.',$movement['reason']);
 
         \shopManualCatalogArchive($pdo,7,(int)$created['product_id'],'Konec testovací nabídky.',true);
         self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id='.(int)$created['product_id'])->fetchColumn());

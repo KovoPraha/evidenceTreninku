@@ -315,7 +315,7 @@ try {
     $programOutcomes = array_map('shopCheckoutSmokeFinishWorker', $programWorkers);
     usort($programOutcomes, static fn(array $a, array $b): int => (int)$b['success'] <=> (int)$a['success']);
     if (array_column($programOutcomes, 'success') !== [true, false]
-        || !str_contains((string)$programOutcomes[1]['error'], 'dostupná')
+        || !str_contains((string)$programOutcomes[1]['error'], 'Kapacita nabídky je naplněna.')
         || (int)$pdo->query("SELECT COUNT(*) FROM shop_orders o JOIN shop_order_items oi ON oi.order_id=o.id WHERE oi.variant_id=602 AND o.status='placed' AND o.payment_status='pending'")->fetchColumn() !== 1
         || (int)clubProgramOfferForVariant($pdo, 602)['held_order_count'] !== 1
     ) {

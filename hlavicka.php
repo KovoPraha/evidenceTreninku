@@ -371,6 +371,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-graph-up me-2"></i>Všechny výkazy</a></li>
                             <li><a class="dropdown-item<?= _dropActive('club_programs_admin.php') ?>" href="club_programs_admin.php">
                                 <i class="bi bi-calendar-range me-2 text-primary"></i>Kroužkové programy</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('club_program_offers_admin.php') ?>" href="club_program_offers_admin.php">
+                                <i class="bi bi-calendar2-check me-2 text-primary"></i>Nabídky kroužků</a></li>
                             <li><a class="dropdown-item<?= _dropActive('club_program_wizard_admin.php') ?>" href="club_program_wizard_admin.php">
                                 <i class="bi bi-magic me-2 text-success"></i>Vypsat kroužek</a></li>
                             <li><a class="dropdown-item<?= _dropActive('verejny_velodrom_admin.php') ?>" href="verejny_velodrom_admin.php">
@@ -417,6 +419,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-eye me-2 text-success"></i>Aktivace katalogu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_categories_admin.php') ?>" href="eshop_categories_admin.php">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>Kategorie e-shopu</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('eshop_catalog_admin.php') ?>" href="eshop_catalog_admin.php">
+                                <i class="bi bi-boxes me-2 text-dark"></i>Správa katalogu</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_attributes_admin.php') ?>" href="eshop_attributes_admin.php">
                                 <i class="bi bi-sliders me-2 text-primary"></i>Parametry produktů</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_member_prices_admin.php') ?>" href="eshop_member_prices_admin.php">

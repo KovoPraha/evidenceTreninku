@@ -194,42 +194,9 @@ function shopCatalogPublicationDeactivate(PDO $pdo, int $productId, int $actorTr
     }
     $pdo->beginTransaction();
     try {
-        $product = shopCatalogPublicationLockProduct($pdo, $productId);
-        if (!$product) {
-            throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
-        }
-        $statement = $pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');
-        $statement->execute([$productId]);
-        $publication = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($product['catalog_status'] !== 'active' || !$publication || $publication['status'] !== 'active') {
-            if ($publication && $publication['status'] === 'inactive') {
-                $pdo->commit();
-                return ['product_id' => $productId, 'status' => 'inactive', 'changed' => false];
-            }
-            throw new ShopCatalogPublicationException('Deaktivovat lze pouze aktivní produkt.');
-        }
-        $pdo->prepare(
-            "UPDATE shop_product_publications SET status='inactive', decision_note=?, "
-            . 'activated_by_trainer_id=?, deactivated_at=CURRENT_TIMESTAMP, '
-            . 'updated_at=CURRENT_TIMESTAMP WHERE product_id=?'
-        )->execute([$note, $actorTrainerId, $productId]);
-        $pdo->prepare("UPDATE shop_products SET catalog_status='inactive', updated_at=CURRENT_TIMESTAMP WHERE id=?")
-            ->execute([$productId]);
-        $pdo->prepare("UPDATE shop_variants SET catalog_status='inactive', updated_at=CURRENT_TIMESTAMP WHERE product_id=?")
-            ->execute([$productId]);
-        shopCatalogPublicationEvent(
-            $pdo,
-            $productId,
-            $actorTrainerId,
-            'deactivate',
-            'active',
-            'inactive',
-            (string)$publication['public_name'],
-            (string)$publication['public_summary'],
-            $note
-        );
+        $result=shopCatalogPublicationDeactivateInTransaction($pdo,$productId,$actorTrainerId,$note);
         $pdo->commit();
-        return ['product_id' => $productId, 'status' => 'inactive', 'changed' => true];
+        return$result;
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -239,6 +206,25 @@ function shopCatalogPublicationDeactivate(PDO $pdo, int $productId, int $actorTr
         }
         throw new ShopCatalogPublicationException('Deaktivace selhala bez částečného zápisu.', 0, $exception);
     }
+}
+
+/** @return array{product_id:int,status:string,changed:bool} */
+function shopCatalogPublicationDeactivateInTransaction(PDO$pdo,int$productId,int$actorTrainerId,string$note):array
+{
+    if(!$pdo->inTransaction())throw new LogicException('Deaktivace katalogu vyžaduje otevřenou transakci.');
+    $note=trim($note);
+    if($productId<1||$actorTrainerId<1||$note===''||mb_strlen($note,'UTF-8')>1000)throw new InvalidArgumentException('Deaktivace vyžaduje produkt, administrátora a důvod do 1000 znaků.');
+    $product=shopCatalogPublicationLockProduct($pdo,$productId);if(!$product)throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
+    $statement=$pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');$statement->execute([$productId]);$publication=$statement->fetch(PDO::FETCH_ASSOC);
+    if($product['catalog_status']!=='active'||!$publication||$publication['status']!=='active'){
+        if($publication&&$publication['status']==='inactive')return['product_id'=>$productId,'status'=>'inactive','changed'=>false];
+        throw new ShopCatalogPublicationException('Deaktivovat lze pouze aktivní produkt.');
+    }
+    $pdo->prepare("UPDATE shop_product_publications SET status='inactive',decision_note=?,activated_by_trainer_id=?,deactivated_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE product_id=?")->execute([$note,$actorTrainerId,$productId]);
+    $pdo->prepare("UPDATE shop_products SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
+    $pdo->prepare("UPDATE shop_variants SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE product_id=?")->execute([$productId]);
+    shopCatalogPublicationEvent($pdo,$productId,$actorTrainerId,'deactivate','active','inactive',(string)$publication['public_name'],(string)$publication['public_summary'],$note);
+    return['product_id'=>$productId,'status'=>'inactive','changed'=>true];
 }
 
 /** @return array<string,mixed>|false */

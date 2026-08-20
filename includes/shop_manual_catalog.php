@@ -170,9 +170,9 @@ function shopManualCatalogUpdateVariant(PDO $pdo, int $actorId, int $variantId, 
             throw new ShopManualCatalogException('SKU importované varianty se kvůli budoucím importům nemění.');
         }
         shopManualCatalogAssertSkuAvailable($pdo,$values['sku'],$variantId);
-        if ($before['stock_quantity_decimal'] !== null && $values['stock_quantity_decimal'] === null) {
-            throw new ShopManualCatalogException('Řízený sklad nelze změnit na neřízený bez samostatného rozhodnutí.');
-        }
+        // R11 keeps inventory corrections on their own audited movement path.
+        if(shopManualCatalogComparable($values['stock_quantity_decimal'])!==shopManualCatalogComparable($before['stock_quantity_decimal']))throw new ShopManualCatalogException('Sklad upravte samostatnou auditovanou korekcí, aby vždy vznikl pohyb.');
+        $values['stock_quantity_decimal']=$before['stock_quantity_decimal'];
         $changed = false;
         foreach ($values as $key=>$value) {
             if (shopManualCatalogComparable($before[$key]??null) !== shopManualCatalogComparable($value)) $changed=true;
@@ -187,12 +187,6 @@ function shopManualCatalogUpdateVariant(PDO $pdo, int $actorId, int $variantId, 
                 $values['compare_at_amount_minor'],$values['includes_vat'],$values['vat_rate_basis_points'],
                 $values['stock_quantity_decimal'],$values['unit_code'],$values['visible'],$variantId,
             ]);
-            if (shopManualCatalogComparable($before['stock_quantity_decimal'])
-                !== shopManualCatalogComparable($values['stock_quantity_decimal'])) {
-                shopManualCatalogInventoryMovement(
-                    $pdo,$variantId,$actorId,$before['stock_quantity_decimal'],$values['stock_quantity_decimal'],$reason
-                );
-            }
             $after = shopManualCatalogLockVariant($pdo,$variantId);
             shopManualCatalogEvent($pdo,(int)$before['product_id'],$variantId,$actorId,'update_variant',$before,$after,$reason);
         }

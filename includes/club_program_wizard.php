@@ -123,6 +123,7 @@ function clubProgramWizardTermText(PDO $pdo,string $purpose,array $input):string
 function clubProgramWizardSlug(string $value):string
 {
     $ascii=iconv('UTF-8','ASCII//TRANSLIT//IGNORE',$value);$ascii=is_string($ascii)?strtoupper($ascii):'PROGRAM';
+    $ascii=(string)preg_replace('/[\'`´^~]+/u','',$ascii);
     $slug=trim((string)preg_replace('/[^A-Z0-9]+/','-',$ascii),'-');return$slug!==''?substr($slug,0,42):'PROGRAM';
 }
 function clubProgramWizardCategory(string $value):string

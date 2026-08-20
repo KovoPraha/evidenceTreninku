@@ -114,6 +114,8 @@ $statusLabels = [
         </div>
         <div class="d-flex gap-2 flex-wrap">
             <a href="club_program_wizard_admin.php" class="btn btn-primary btn-sm"><i class="bi bi-magic me-1"></i>Vypsat kroužek</a>
+            <a href="club_program_offers_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-calendar2-check me-1"></i>Nabídky kroužků</a>
+            <a href="eshop_catalog_admin.php" class="btn btn-outline-dark btn-sm"><i class="bi bi-boxes me-1"></i>Správa katalogu</a>
             <a href="eshop_categories_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-diagram-3 me-1"></i>Kategorie</a>
             <a href="eshop_attributes_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders me-1"></i>Parametry</a>
             <a href="eshop_bank_admin.php" class="btn btn-outline-dark btn-sm"><i class="bi bi-bank me-1"></i>Bankovní účet</a>

@@ -7,6 +7,7 @@ require_once __DIR__ . '/includes/shop_manual_catalog.php';
 require_once __DIR__ . '/includes/shop_product_image.php';
 require_once __DIR__ . '/includes/shop_storefront.php';
 require_once __DIR__ . '/includes/shop_attribute.php';
+require_once __DIR__ . '/includes/shop_catalog_management.php';
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
     exit;
@@ -87,6 +88,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             }elseif($action==='add_variant'){
                 shopManualCatalogAddVariant($pdo,$actorId,$selectedId,productAdminVariantInput($_POST,$attributeDefinitions),$reason,$confirmed);
                 $_SESSION['product_admin_flash']='Nová sezonní varianta byla přidána v konceptu.';
+            }elseif($action==='adjust_stock'){
+                shopCatalogAdjustStock($pdo,$actorId,(int)($_POST['variant_id']??0),(string)($_POST['stock_quantity_decimal']??''),$reason,$confirmed);
+                $_SESSION['product_admin_flash']='Sklad byl auditovaně opraven samostatným pohybem.';
             }elseif($action==='add_image'){
                 $upload=$_FILES['product_image']??null;
                 if(!is_array($upload)||(int)($upload['error']??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_OK)throw new InvalidArgumentException('Vyberte JPG nebo PNG obrázek do 5 MB.');
@@ -124,7 +128,7 @@ for(const textarea of document.querySelectorAll('textarea[name="attributes_json"
 for(const editor of document.querySelectorAll('[data-attribute-editor]')){if(!editor.dataset.listId){editor.dataset.listId=editor.querySelector('datalist')?.id||('attribute-runtime-'+(++editorCounter));for(const row of [...editor.querySelectorAll('[data-attribute-row]')]){const key=row.querySelector('input[name="attribute_keys[]"]')?.value||'';const value=row.querySelector('[data-attribute-value]')?.value||'';row.remove();addRow(editor,key,value);}}editor.querySelector('[data-add-attribute]')?.addEventListener('click',()=>addRow(editor));}
 });
 </script>
-<main class="container-fluid py-4" style="max-width:1600px"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h1 class="h4 mb-0"><i class="bi bi-box-seam me-2 text-primary"></i>Produkty e-shopu</h1><div class="small text-muted">Ruční založení, varianty, ceny a auditované úpravy katalogu.</div></div><div class="d-flex gap-2"><a class="btn btn-outline-primary btn-sm" href="eshop_categories_admin.php">Kategorie</a><a class="btn btn-outline-primary btn-sm" href="eshop_attributes_admin.php">Parametry</a><a class="btn btn-outline-success btn-sm" href="eshop_catalog_publication_admin.php">Aktivace katalogu</a><a class="btn btn-outline-secondary btn-sm" href="eshop_admin.php">Zpět</a></div></div>
+<main class="container-fluid py-4" style="max-width:1600px"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h1 class="h4 mb-0"><i class="bi bi-box-seam me-2 text-primary"></i>Produkty e-shopu</h1><div class="small text-muted">Ruční založení, varianty, ceny a auditované úpravy katalogu.</div></div><div class="d-flex gap-2"><a class="btn btn-outline-dark btn-sm" href="eshop_catalog_admin.php">Správa katalogu</a><a class="btn btn-outline-primary btn-sm" href="eshop_categories_admin.php">Kategorie</a><a class="btn btn-outline-primary btn-sm" href="eshop_attributes_admin.php">Parametry</a><a class="btn btn-outline-success btn-sm" href="eshop_catalog_publication_admin.php">Aktivace katalogu</a><a class="btn btn-outline-secondary btn-sm" href="eshop_admin.php">Zpět</a></div></div>
 <?php foreach($errors as$error):?><div class="alert alert-danger"><?=productAdminH($error)?></div><?php endforeach;?><?php if($success!==''):?><div class="alert alert-success"><?=productAdminH($success)?></div><?php endif;?>
 <div class="alert alert-info py-2">Cena se zadává v Kč a ukládá přesně v haléřích. <strong>Změna ceny platí jen pro nové objednávky;</strong> historické objednávky si ponechají původní název i částku. Každá změna vyžaduje důvod a potvrzení.</div>
 <div class="row g-3"><section class="col-xxl-4"><div class="card border-0 shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Nový ruční produkt</div><div class="card-body"><form method="post" class="row g-2"><?=csrf_field()?><input type="hidden" name="action" value="create">

@@ -124,6 +124,14 @@ final class ClubProgramTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollment_events')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());self::assertFalse($pdo->inTransaction());
     }
 
+    public function testOfferCanBeEditedAndAuditablyClosedWithoutDeletingHistory():void
+    {
+        $pdo=$this->database();$program=(int)\clubProgramCreate($pdo,7,'EDITABLE','Editovatelný kroužek')['id'];$offer=\clubProgramCreateOffer($pdo,7,$program,1,10,501,601,'EDIT-2026','Původní název','2026-09-01','2027-01-31',null,null,12,'active');
+        $updated=\clubProgramUpdateOffer($pdo,7,(int)$offer['id'],['name'=>'Upravený název','starts_on'=>'2026-09-01','ends_on'=>'2027-02-28','sales_open_at'=>'2026-08-01T08:00','sales_close_at'=>'2026-09-30T20:00','capacity'=>'15','birth_year_from'=>'2016','birth_year_to'=>'2019','status'=>'active'],'Úprava dalšího prodejního období.',true);self::assertTrue($updated['changed']);self::assertSame(15,(int)$pdo->query('SELECT capacity FROM club_program_offers WHERE id='.(int)$offer['id'])->fetchColumn());
+        $closed=\clubProgramCloseOffer($pdo,7,(int)$offer['id'],'Ukončení prodeje vlastníkem.',true);self::assertTrue($closed['changed']);self::assertSame('closed',$pdo->query('SELECT status FROM club_program_offers WHERE id='.(int)$offer['id'])->fetchColumn());self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_program_events WHERE offer_id=".(int)$offer['id']." AND action='close_offer' AND after_json LIKE '%Ukončení prodeje%'")->fetchColumn());
+        $admin=array_values(array_filter(\clubProgramAdminOffers($pdo),static fn(array$row):bool=>(int)$row['id']===(int)$offer['id']))[0];self::assertFalse($admin['saleable']);self::assertSame('Nabídka není aktivní.',$admin['sale_reason']);
+    }
+
     private function offer(PDO $pdo,int $variantId,int $productId,int $teamId,int $capacity,string $code,string $from,string $to,?int $programId=null): int
     {
         $programId??=(int)\clubProgramCreate($pdo,7,'BIKE-SCHOOL','Cyklistická škola')['id'];

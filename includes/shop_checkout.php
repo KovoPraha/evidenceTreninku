@@ -14,11 +14,18 @@ require_once __DIR__.'/public_velodrome_shop.php';
 require_once __DIR__.'/shop_member_pricing.php';
 require_once __DIR__.'/shop_payment_notification.php';
 
+function shopCheckoutColumnExists(PDO$pdo,string$table,string$column):bool
+{
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){$statement=$pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1');$statement->execute([$table,$column]);return(bool)$statement->fetchColumn();}
+    foreach($pdo->query('PRAGMA table_info('.$table.')')->fetchAll(PDO::FETCH_ASSOC)as$row)if((string)$row['name']===$column)return true;return false;
+}
+
 /** @return list<array<string,mixed>> */
 function shopStorefrontProducts(PDO $pdo, ?DateTimeImmutable $now = null): array
 {
+    $sortOrder=shopCheckoutColumnExists($pdo,'shop_products','sort_order')?'p.sort_order':'0';
     $rows = $pdo->query(
-        "SELECT p.id AS product_id,p.offer_type,p.catalog_status AS product_status,"
+        "SELECT p.id AS product_id,p.offer_type,p.catalog_status AS product_status,".$sortOrder." AS sort_order,"
         . "pub.status AS publication_status,pub.public_name,pub.public_summary,"
         . "v.id AS variant_id,v.sku,v.catalog_status,v.visible,v.price_mode,"
         . 'v.attributes_json,v.amount_minor,v.currency,v.stock_quantity_decimal '
@@ -27,7 +34,7 @@ function shopStorefrontProducts(PDO $pdo, ?DateTimeImmutable $now = null): array
         . "WHERE p.offer_type IN ('goods','program') AND p.catalog_status='active' AND pub.status='active' "
         . "AND v.catalog_status='active' AND (v.visible=1 OR v.visible IS NULL) "
         . "AND v.price_mode='fixed' AND v.amount_minor>=0 AND v.currency='CZK' "
-        . 'ORDER BY pub.public_name,v.sku,v.id'
+        . 'ORDER BY sort_order,pub.public_name,v.sku,v.id'
     )->fetchAll(PDO::FETCH_ASSOC);
     $saleable = [];
     foreach ($rows as $row) {
@@ -240,7 +247,10 @@ function shopCheckoutPlace(
         if ($items===[] && $eventItems===[] && $velodromeItems===[]) throw new ShopCheckoutException('Prázdný košík nelze objednat.');
         $total=0;$currency=null;
         foreach($items as &$item){
-            if(!shopCheckoutVariantIsSaleable($item,$pdo,null,true))throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
+            if(!shopCheckoutVariantIsSaleable($item,$pdo,null,true)){
+                if(($item['offer_type']??null)==='program'){$saleState=clubProgramVariantSaleState($pdo,(int)$item['variant_id'],null,true);if(!$saleState['saleable'])throw new ShopCheckoutException('Kroužek nelze objednat: '.$saleState['reason']);}
+                throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
+            }
             if(($item['offer_type']??null)==='program'){
                 if($item['beneficiary_sportovec_id']===null)throw new ShopCheckoutException('U kroužku vyberte dítě nebo účastníka.');
                 $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id'],null,true);
@@ -351,7 +361,7 @@ function shopCheckoutPlace(
         $reference=shopCheckoutDiagnosticReference($keyHash,$orderId);
         if(shopCheckoutIsSerializationFailure($exception)){
             error_log('shop_checkout serialization failure: '.$reference.' '.shopCheckoutDiagnosticTrace($exception));
-            throw new ShopCheckoutException('Některá položka už není dostupná nebo ji právě objednal jiný zákazník. Obnovte košík.',0,$exception);
+            throw new ShopCheckoutException(shopCheckoutSerializationFailureMessage($pdo,$accountId),0,$exception);
         }
         error_log('shop_checkout failed: '.$reference.' '.shopCheckoutDiagnosticTrace($exception));
         throw new ShopCheckoutException('Objednávka se nepodařila vytvořit bez částečného zápisu.',0,$exception);
@@ -374,6 +384,36 @@ function shopCheckoutIsSerializationFailure(Throwable $exception): bool
 {
     return $exception instanceof PDOException
         && ((string)$exception->getCode()==='40001'||(int)($exception->errorInfo[1]??0)===1213);
+}
+
+/**
+ * After a deadlock, re-lock program variants in the normal checkout order and
+ * classify the now-committed winner. This turns the loser of the last-place
+ * race into the same concrete capacity message as an ordinary later checkout.
+ */
+function shopCheckoutSerializationFailureMessage(PDO $pdo,int $accountId): string
+{
+    $fallback='Některá položka už není dostupná nebo ji právě objednal jiný zákazník. Obnovte košík.';
+    if($accountId<1||$pdo->inTransaction())return $fallback;
+    try{
+        $pdo->beginTransaction();
+        $sql="SELECT DISTINCT v.id FROM shop_carts c JOIN shop_cart_items ci ON ci.cart_id=c.id JOIN shop_variants v ON v.id=ci.variant_id JOIN shop_products p ON p.id=v.product_id WHERE c.active_account_id=? AND c.status='active' AND p.offer_type='program' ORDER BY v.id";
+        $mysql=(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql';
+        if($mysql)$sql.=' FOR UPDATE';
+        $statement=$pdo->prepare($sql);$statement->execute([$accountId]);
+        $variantIds=array_map('intval',$statement->fetchAll(PDO::FETCH_COLUMN));
+        $message=null;
+        foreach($variantIds as$variantId){
+            $state=clubProgramVariantSaleState($pdo,$variantId,null,$mysql);
+            if(!$state['saleable']){$message='Kroužek nelze objednat: '.$state['reason'];break;}
+        }
+        $pdo->rollBack();
+        return $message??$fallback;
+    }catch(Throwable $classificationError){
+        if($pdo->inTransaction())$pdo->rollBack();
+        error_log('shop_checkout serialization classification failed: '.get_class($classificationError).' code='.(string)$classificationError->getCode());
+        return $fallback;
+    }
 }
 
 /**

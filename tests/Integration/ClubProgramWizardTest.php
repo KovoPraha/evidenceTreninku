@@ -64,6 +64,12 @@ final class ClubProgramWizardTest extends TestCase
         ],$statement->fetchAll(PDO::FETCH_ASSOC));
     }
 
+    public function testSkuSlugDoesNotBreakCzechWordInside():void
+    {
+        self::assertSame('RAJCATKA',\clubProgramWizardSlug('Rajčátka'));
+        self::assertStringNotContainsString('-ATKA',\clubProgramWizardSlug('Rajčátka'));
+    }
+
     /** @return array<string,mixed> */
     private function input():array{return[
         'request_key'=>'abcdef0123456789abcdef0123456789','name'=>'Rajčátka','description'=>'Cyklistický kroužek pro děti.',
