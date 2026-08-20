@@ -21,18 +21,18 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 - produkce i `origin/main` jsou na commitu `b2f5523`. Deploy běh
   `32418793534` úspěšně nasadil opravený preflight, administraci bankovního
   účtu a ownership kontrakt zálohy; `eshop_bank_admin.php` je na produkci
-  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 a R10
-  jsou dokončené pouze lokálně v implementačních commitech `2173097` a
-  `93d0286`; zatím nebyly pushnuté ani nasazené,
+  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 až R11
+  jsou dokončené pouze lokálně v implementačních commitech `2173097`,
+  `93d0286` a `0fd31f2`; zatím nebyly pushnuté ani nasazené,
 
-- migrační katalog v lokálním R10 má 63 migrací, produkce má 61. Čekající
-  aditivní migrace přidávají metadata kategorií a číselník parametrů s volbami
-  a auditem; průchod `check → apply → check` skončil na `current: true`,
+- migrační katalog v lokálním R11 má 64 migrací, produkce má 61. Čekající
+  aditivní migrace přidávají metadata kategorií, číselník parametrů s volbami
+  a auditem a provozní pořadí produktů; průchod `check → apply → check` skončil na `current: true`,
   `pending: []` na MariaDB 10.3.39 i 11.4.0,
 
-- poslední ověřená plná lokální brána R10 je `679 tests / 6161 assertions`
+- poslední ověřená plná lokální brána R11 je `685 tests / 6211 assertions`
   s jednou existující PHPUnit deprecation. First-party lint prošel na všech
-  545 PHP souborech.
+  550 PHP souborech.
   `composer validate --strict`, audit zamčených závislostí, kontrola
   platformních požadavků i `git diff --check` jsou zelené,
 
@@ -57,6 +57,17 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   transakce, CSRF, PRG a audit. Živý localhostový průchod nad reálným Shoptet
   artefaktem ověřil číselník velikostí, skutečný výběr ve variantě a veřejné
   zobrazení definované velikosti i neznámé barvy,
+
+- R11 přidává administrátorský provozní přehled katalogu s počty, hledáním,
+  filtry, řazením, hromadnými akcemi a auditovanou korekcí skladu přes samostatný
+  skladový pohyb. Veřejný e-shop umí hledat a řadit. Nabídku kroužku lze nově
+  auditovaně upravit nebo uzavřít a administrace ukazuje přesný důvod, proč ji
+  nelze prodávat. Aktivace respektuje stejnou publikační připravenost jako
+  jednotlivý editor a prohraný souběžný pokus o poslední místo vrací přesný
+  důvod naplněné kapacity. Živý localhostový průchod nad reálným Shoptet
+  artefaktem ověřil správu 243 produktů, skladový pohyb, hromadné pořadí,
+  blokovanou aktivaci nepodporovaného pronájmu, editaci a uzavření kroužku i
+  veřejné hledání a řazení,
 
 - workflow „Nastavit produkční bankovní účet KIS“ proběhlo úspěšně 14. 8. 2026
   (běh `31849593079`) a produkční `SHOP_BANK_*` jsou platně nastavené. Potvrdil

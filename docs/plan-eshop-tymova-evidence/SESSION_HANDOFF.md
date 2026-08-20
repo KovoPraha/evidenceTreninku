@@ -1,5 +1,58 @@
 # Session handoff
 
+## Aktualizace 21. 8. 2026 — R11: provozní správa katalogu (`0fd31f2`)
+
+### Dokončený výsledek
+
+- Nová admin-only obrazovka `eshop_catalog_admin.php` ukazuje souhrny celého
+  katalogu a dovoluje hledat, filtrovat a řadit produkty. Hromadně umí aktivaci,
+  deaktivaci, přiřazení kategorie a provozní pořadí; aktivace používá stejnou
+  publikační připravenost jako jednotlivý editor a u každého produktu zobrazuje
+  konkrétní důvod neprodejnosti.
+- Stav skladu se už nemění nepřímo přes obecný editor varianty. Vyhrazená
+  korekce vyžaduje důvod, zapisuje nový stav, samostatný skladový pohyb i audit
+  v jedné transakci. Obecný editor přímou změnu skladu odmítne.
+- Nová obrazovka `club_program_offers_admin.php` dovoluje nabídku kroužku
+  auditovaně upravit nebo uzavřít. Kapacitu nelze snížit pod skutečně obsazený
+  počet a uzavřenou nabídku nelze znovu otevřít bez nového publikačního toku.
+- Veřejný e-shop přidává hledání v názvu a souhrnu a řazení podle názvu, ceny
+  nebo provozního pořadí. České SKU se tvoří bez rozdělení slov při
+  transliteraci. Souběžný poražený pokus o poslední místo po dokončení vítězné
+  transakce vrací přesný důvod naplněné kapacity.
+
+### Důkazy a úklid
+
+- Plná sada skončila `685 tests / 6211 assertions` s jednou existující PHPUnit
+  deprecation. Lint prošel na všech 550 first-party PHP souborech.
+  `composer validate --strict`, audit zamčených závislostí, kontrola
+  platformních požadavků a `git diff --check` jsou zelené.
+- Migrační brána `check → apply → check` skončila se 64 migracemi,
+  `current: true`, legacy baseline `2.20.2` a `pending: []` na MariaDB 10.3.39
+  i 11.4.0. Na obou verzích prošly smoke scénáře child access, hobby
+  transition, ruční katalog, souběžný checkout/platba/poslední místo a záloha
+  s obnovou 119 tabulek. Souběžný checkout byl navíc třikrát po sobě ověřen na
+  MariaDB 10.3 s přesným důvodem plné kapacity.
+- Živý localhostový průchod nad zachovaným reálným Shoptet artefaktem
+  (241 importovaných produktů / 807 variant; celkem 243 produktů) ověřil
+  hledání, filtry, řazení, auditovanou skladovou korekci a její samostatný
+  pohyb, hromadné pořadí, blokovanou aktivaci nepodporovaného pronájmu, editaci
+  a uzavření kroužku i veřejné hledání a cenové řazení.
+- Syntetický administrátor, přesné testovací schéma, všechny smoke databáze,
+  Apache i izolované databázové procesy byly odstraněny nebo ukončeny. Cizí
+  lokální MariaDB na portu 33103 zůstal nedotčený.
+
+### Produkce a další krok
+
+- Produkce i `origin/main` zůstávají na `b2f5523`; R9 `2173097`, R10
+  `93d0286` a R11 `0fd31f2` jsou pouze lokální. Vizuální kontrola skutečného
+  produkčního IBANu dál čeká na přihlášeného administrátora a žádná bankovní
+  hodnota nebyla změněna.
+- Následuje R12 — pouze ověření existujícího bankovního platebního toku od
+  košíku a QR přes potvrzení platby a zápis do seznamu až po ukončení při
+  stornu/vratce. Produkční objednávka se bez dalšího výslovného souhlasu
+  nevytváří. Před budoucím pushem bude vlastníkovi předložen přesný seznam
+  commitů.
+
 ## Aktualizace 21. 8. 2026 — R10: parametry produktů (`93d0286`)
 
 ### Dokončený výsledek
