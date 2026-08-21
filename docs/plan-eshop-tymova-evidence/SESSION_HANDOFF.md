@@ -1,5 +1,46 @@
 # Session handoff
 
+## Aktualizace 21. 8. 2026 — R9 až R12 nasazené na produkci (`c5f638f`)
+
+### Push, CI a deploy
+
+- Vlastník výslovně schválil přesně osm commitů od R9 implementace `2173097`
+  po R12 handoff `c5f638f`. Push posunul `origin/main` z `b2f5523` na
+  `c5f638f57ca52d717265700f2ffd5e3fe96972a5` bez dalšího commitu.
+- CI běh `32451633696` je zelený na shodném SHA: PHPUnit na PHP 8.2 a úplné
+  MariaDB integrační smoke matice 10.3 i 11.4 včetně zálohy, souběžného
+  checkoutu a ručního původu katalogu.
+- Produkční deploy `32451651704` je zelený. Preflight vrátil
+  `{"ok":true,"php":"8.2.32","warnings":[]}`; před změnou vznikla ověřená
+  záloha mimo webroot se 163 tabulkami a 2 triggery. Migrační post-check má
+  katalog 64, `current: true`, `pending: []`. Aktivovaný release je
+  `c5f638f57ca52d717265700f2ffd5e3fe96972a5-32451651704`; rsync nepoužil
+  `--delete` a kopie produkční konfigurace byla z release odstraněna.
+- Přímé spojení GitHub runneru třikrát skončilo síťovým timeoutem hostingu;
+  kanonický serverový fallback ověřil živý web výsledkem
+  `{"ok":true,"http":200,"via":"curl"}`. Nešlo o aplikační HTTP chybu.
+
+### Produkční read-only ověření
+
+- Drill `32454370195` na shodném SHA přečetl 16 databázových invariantů a
+  skončil `ok: true`, `violations: []`. Nevytvořil ani nezměnil aplikační data.
+- Homepage, `booking/eshop.php` a `booking/krouzky.php` odpovídají HTTP 200.
+  Živý e-shop obsahuje hledání v názvu a popisu, vlastní/cenové řazení a
+  kategoriové menu; kontrolní URL s hledáním a cenovým řazením odpověděla 200.
+- `eshop_catalog_admin.php`, `eshop_categories_admin.php`,
+  `eshop_attributes_admin.php`, `club_program_offers_admin.php` a
+  `eshop_bank_admin.php` existují a nepřihlášeného uživatele shodně
+  přesměrují HTTP 302 na `login.php`. Autorizovaný zápis ani produkční
+  objednávka nebyly součástí post-deploy kontroly.
+
+### Zbývající vlastnické kroky
+
+- Po přihlášení jako administrátor očima potvrdit na
+  `https://kis.kovopraha.cz/eshop_bank_admin.php`, že platný produkční IBAN
+  patří správnému klubovému účtu. Hodnota nebyla z logu ani dokumentace čtena.
+- Stripe live zůstává vypnutý. Případné dodání live konfigurace a zapnutí
+  platby kartou vyžaduje samostatný vlastníkem schválený produkční krok.
+
 ## Aktualizace 21. 8. 2026 — R12: ověření platebního toku (`4d1e05f`)
 
 ### Dokončený výsledek

@@ -18,17 +18,15 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
 
 ## Poslední přijatý technický stav
 
-- produkce i `origin/main` jsou na commitu `b2f5523`. Deploy běh
-  `32418793534` úspěšně nasadil opravený preflight, administraci bankovního
-  účtu a ownership kontrakt zálohy; `eshop_bank_admin.php` je na produkci
-  dostupná a nepřihlášeného uživatele správně přesměruje na login. R9 až R12
-  jsou dokončené pouze lokálně v commitech `2173097`, `93d0286`, `0fd31f2` a
-  `4d1e05f`; zatím nebyly pushnuté ani nasazené,
+- produkce i `origin/main` jsou na commitu `c5f638f`. CI běh `32451633696`
+  úspěšně ověřil PHPUnit a MariaDB 10.3/11.4; deploy běh `32451651704`
+  vytvořil ověřenou zálohu, aplikoval R9–R11 migrace, aktivoval přesně tento
+  release a dokončil serverový HTTP smoke stavem 200. R9 až R12 jsou nasazené,
 
-- migrační katalog v lokálním R11 má 64 migrací, produkce má 61. Čekající
-  aditivní migrace přidávají metadata kategorií, číselník parametrů s volbami
-  a auditem a provozní pořadí produktů; průchod `check → apply → check` skončil na `current: true`,
-  `pending: []` na MariaDB 10.3.39 i 11.4.0,
+- lokální i produkční migrační katalog má 64 migrací. Produkční post-check po
+  aplikaci metadat kategorií, číselníku parametrů a provozního pořadí produktů
+  skončil `current: true`, `pending: []`; stejný průchod `check → apply → check`
+  je zelený na MariaDB 10.3.39 i 11.4.0,
 
 - poslední ověřená plná lokální brána R11 je `685 tests / 6211 assertions`
   s jednou existující PHPUnit deprecation. First-party lint prošel na všech
@@ -75,6 +73,12 @@ Názvy modulů zachovávají historické zadání a funkční orientaci v obrazo
   soupisku až po storno, stav `refund_required` a samostatně potvrzenou vratku.
   Zaměřené sady prošly 36 testy / 763 assertions; plná sada i obě MariaDB smoke
   matice zůstávají zelené. Produkční objednávka ani live Stripe nebyly použity,
+
+- produkční read-only drill `32454370195` po nasazení ověřil 16 databázových
+  invariantů s nulou porušení. Homepage, e-shop a stránka kroužků odpovídají
+  HTTP 200; správa katalogu, kategorií, parametrů, nabídek kroužků a bankovního
+  účtu existuje a nepřihlášeného uživatele přesměruje na login. Živý e-shop
+  obsahuje nové hledání, řazení a kategoriové menu,
 
 - workflow „Nastavit produkční bankovní účet KIS“ proběhlo úspěšně 14. 8. 2026
   (běh `31849593079`) a produkční `SHOP_BANK_*` jsou platně nastavené. Potvrdil
