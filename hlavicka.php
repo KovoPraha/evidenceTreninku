@@ -15,6 +15,10 @@ $is_customer  = isset($_SESSION['verejny_uzivatel_id']);
 $is_athlete   = isset($_SESSION['sportovec_pristup_id']);
 $is_hlavni    = $is_logged_in && roleAtLeast('hlavni');  // správce nebo admin
 $is_admin     = $is_logged_in && roleAtLeast('admin');   // pouze admin
+$staff_definitions = $is_logged_in ? staffPositionDefinitions() : [];
+$staff_active_code = $is_logged_in ? staffActivePosition() : '';
+$staff_active = $is_logged_in ? ($staff_definitions[$staff_active_code] ?? null) : null;
+$staff_available = $is_logged_in ? staffAvailablePositions() : [];
 
 // Active page detection for navbar highlighting
 $_currentPage = basename($_SERVER['SCRIPT_NAME'] ?? '');
@@ -207,8 +211,8 @@ if ($is_logged_in) {
 </style>
 <nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand fw-semibold" href="index.php">
-            <i class="bi bi-bicycle me-1"></i><?= $is_logged_in ? 'Tréninková evidence' : 'Kovopraha' ?>
+        <a class="navbar-brand fw-semibold" href="<?= $is_logged_in ? 'pracovni_pozice.php' : 'index.php' ?>">
+            <i class="bi bi-bicycle me-1"></i><?= $is_logged_in ? htmlspecialchars((string)($staff_active['short_label'] ?? 'Pracovní rozcestník')) : 'Kovopraha' ?>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Přepnout navigaci">
@@ -216,6 +220,21 @@ if ($is_logged_in) {
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
+            <?php if ($is_logged_in && is_array($staff_active)): ?>
+            <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
+                <li class="nav-item"><a class="nav-link<?= _navActive('pracovni_pozice.php') ?>" href="pracovni_pozice.php"><i class="bi bi-grid me-1"></i>Rozcestník</a></li>
+                <?php foreach ($staff_active['groups'] as $staff_group): ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-<?= htmlspecialchars((string)$staff_group['icon']) ?> me-1"></i><?= htmlspecialchars((string)$staff_group['label']) ?></a>
+                    <ul class="dropdown-menu">
+                        <?php foreach ($staff_group['items'] as $staff_item): ?>
+                        <li><a class="dropdown-item<?= _dropActive(basename((string)$staff_item['route'])) ?>" href="<?= htmlspecialchars((string)$staff_item['route']) ?>"><i class="bi bi-<?= htmlspecialchars((string)$staff_item['icon']) ?> me-2 text-primary"></i><?= htmlspecialchars((string)$staff_item['label']) ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php else: ?>
             <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
                 <li class="nav-item">
                     <a class="nav-link<?= _navActive('index.php') ?>" href="index.php"><i class="bi bi-house me-1"></i>Domů</a>
@@ -492,8 +511,9 @@ if ($is_logged_in) {
                     <li class="nav-item"><a class="nav-link" href="booking/treninky.php"><i class="bi bi-calendar3 me-1"></i>Tréninky</a></li>
                 <?php endif; ?>
             </ul>
+            <?php endif; ?>
 
-            <?php if ($is_logged_in): ?>
+            <?php if (false && $is_logged_in): ?>
             <!-- Globální hledání -->
             <div id="globalSearchWrap" class="mx-xxl-3 my-2 my-xxl-0" role="search">
                 <div class="input-group input-group-sm">
@@ -539,6 +559,27 @@ if ($is_logged_in) {
                     <?php endif; ?>
                 </li>
                 <?php if ($is_logged_in): ?>
+                    <?php if (count($staff_available) > 1): ?>
+                    <li class="nav-item dropdown">
+                        <button class="btn btn-sm btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-<?= htmlspecialchars((string)($staff_active['icon'] ?? 'person-workspace')) ?> me-1"></i><?= staffIsSuperadmin() ? 'Superadmin · ' : '' ?><?= htmlspecialchars((string)($staff_active['short_label'] ?? 'Pozice')) ?>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" style="min-width:270px">
+                            <li><h6 class="dropdown-header">Přepnout pracovní pozici</h6></li>
+                            <?php foreach ($staff_available as $staff_code): $staff_position = $staff_definitions[$staff_code]; ?>
+                            <li>
+                                <form method="post" action="prepnout_pracovni_pozici.php">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="position" value="<?= htmlspecialchars($staff_code) ?>">
+                                    <button class="dropdown-item<?= $staff_code === $staff_active_code ? ' active' : '' ?>" <?= $staff_code === $staff_active_code ? 'disabled' : '' ?>><i class="bi bi-<?= htmlspecialchars((string)$staff_position['icon']) ?> me-2"></i><?= htmlspecialchars((string)$staff_position['label']) ?></button>
+                                </form>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
+                    <?php else: ?>
+                    <li class="nav-item"><span class="badge text-bg-secondary"><i class="bi bi-<?= htmlspecialchars((string)($staff_active['icon'] ?? 'person-workspace')) ?> me-1"></i><?= htmlspecialchars((string)($staff_active['short_label'] ?? 'Pozice')) ?></span></li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <span class="navbar-text text-light small">
                             <i class="bi bi-person-circle me-1"></i><?= htmlspecialchars($trener_jmeno) ?>

@@ -92,7 +92,7 @@ try {
 <main class="container-fluid py-4" style="max-width:1450px">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
         <div><h1 class="h4 mb-1">Připomínky členských plateb</h1><div class="small text-muted">Provozní fronta dobrovolně zapnutých připomínek splatnosti.</div></div>
-        <div class="d-flex gap-2"><a href="member_charges_admin.php" class="btn btn-outline-primary btn-sm">Členské předpisy</a><a href="kis_sync_center.php" class="btn btn-outline-secondary btn-sm">KIS centrum</a></div>
+        <div class="d-flex gap-2"><a href="member_charges_admin.php" class="btn btn-outline-primary btn-sm">Členské předpisy</a><a href="pracovni_pozice.php" class="btn btn-outline-secondary btn-sm">Finanční rozcestník</a></div>
     </div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= memberChargeReminderAdminH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= memberChargeReminderAdminH($success) ?></div><?php endif; ?>

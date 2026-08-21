@@ -22,7 +22,7 @@ $respond = static function (int $status, array $payload): never {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $respond(405, ['ok' => false, 'message' => 'Operace není povolena.']);
 }
-if (!isset($_SESSION['trener_id']) || (string)($_SESSION['role'] ?? '') !== 'admin') {
+if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('registrar')) {
     $respond(403, ['ok' => false, 'message' => 'Přístup odepřen.']);
 }
 if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {

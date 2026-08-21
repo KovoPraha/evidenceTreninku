@@ -24,7 +24,7 @@ if ($id === false) {
 $key = '';
 $originalName = 'soubor';
 if ($kind === 'receipt') {
-    if (!isset($_SESSION['trener_id']) || !canAccess('uctenky')) {
+    if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('finance_manager')) {
         http_response_code(403);
         exit('Pristup odepren.');
     }
@@ -45,7 +45,7 @@ if ($kind === 'receipt') {
         http_response_code(404);
         exit('Soubor nebyl nalezen.');
     }
-    $trainer = isset($_SESSION['trener_id']);
+    $trainer = isset($_SESSION['trener_id']) && staffActivePositionIs('coach');
     $publicHash = trim((string)($_GET['hash'] ?? ''));
     $public = (string)$file['typ'] === 'public_img'
         && $publicHash !== ''
@@ -57,7 +57,7 @@ if ($kind === 'receipt') {
     $key = (string)$file['cesta'];
     $originalName = (string)($file['nazev'] ?: ('zatezovy-test-' . (int)$id));
 } elseif ($kind === 'athlete-photo') {
-    if (!isset($_SESSION['trener_id']) || (string)($_SESSION['role'] ?? '') !== 'admin') {
+    if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('registrar')) {
         http_response_code(403);
         exit('Pristup odepren.');
     }

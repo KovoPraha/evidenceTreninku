@@ -95,7 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $stmt = $pdo->prepare("INSERT INTO treneri (jmeno, email, heslo, role) VALUES (?, ?, ?, ?)");
             $stmt->execute([$jmeno, $email, trainer_password_hash($heslo), $role]);
-            $_SESSION['flash_success'] = 'Trenér přidán.';
+            $newTrainerId = (int)$pdo->lastInsertId();
+            if (staffWorkspaceTablesAvailable($pdo)) {
+                $assign = $pdo->prepare('INSERT INTO staff_user_positions(trainer_id,position_code,is_default,assigned_by_trainer_id) VALUES(?,\'coach\',1,?)');
+                $assign->execute([$newTrainerId, (int)$_SESSION['trener_id']]);
+            }
+            $_SESSION['flash_success'] = 'Pracovní účet byl přidán s výchozí pozicí Trenér. Další pozice nastavte samostatně.';
         }
         header("Location: sprava_treneru.php");
         exit;
@@ -105,8 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($akce === 'delete') {
         $del_id = (int)($_POST['delete_id'] ?? 0);
         if ($del_id > 0 && $del_id !== $_SESSION['trener_id']) {
-            $pdo->prepare("DELETE FROM treneri WHERE id = ?")->execute([$del_id]);
-            $_SESSION['flash_success'] = 'Trenér smazán.';
+            $pdo->prepare("UPDATE treneri SET aktivni=0,session_version=session_version+1 WHERE id = ?")->execute([$del_id]);
+            $_SESSION['flash_success'] = 'Pracovní účet byl deaktivován; audit a historie zůstaly zachované.';
         } else {
             $_SESSION['flash_error'] = 'Nelze smazat sám sebe.';
         }
@@ -139,6 +144,7 @@ $trenery = $pdo->query("
   <div class="d-flex align-items-center gap-3 mb-4">
     <i class="bi bi-person-gear fs-2 text-secondary"></i>
     <h1 class="h3 mb-0">Správa trenérů</h1>
+    <a class="btn btn-outline-primary ms-auto" href="sprava_pracovnich_pozic.php"><i class="bi bi-person-workspace me-1"></i>Pracovní pozice</a>
   </div>
 
   <?php if (!empty($_SESSION['flash_success'])): ?>

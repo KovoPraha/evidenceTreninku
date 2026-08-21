@@ -8,17 +8,22 @@
 function roleAtLeast(string $requiredRole): bool {
     static $levels = ['trener' => 1, 'hlavni' => 2, 'admin' => 3];
     $current = $_SESSION['role'] ?? 'trener';
+    if (function_exists('staffEffectiveLegacyRole')) {
+        $current = staffEffectiveLegacyRole((string)$current);
+    }
     return ($levels[$current] ?? 0) >= ($levels[$requiredRole] ?? 99);
 }
 
 /**
  * Kontrola oprávnění dle konfigurovatelné tabulky.
  * Čte z $_SESSION['opravneni'] (načteno při loginu).
- * Pokud klíč neexistuje → fallback na roleAtLeast('hlavni').
+ * Neznamy klic je fail-closed. Pracovni pozice resi vlastnictvi cele trasy;
+ * legacy tabulka zde docasne ridi pouze vnitrni funkce starych obrazovek.
  */
 function canAccess(string $key): bool {
     $perms = $_SESSION['opravneni'] ?? [];
-    $minRole = $perms[$key] ?? 'hlavni';
+    if (!array_key_exists($key, $perms)) return false;
+    $minRole = $perms[$key];
     return roleAtLeast($minRole);
 }
 
@@ -27,7 +32,7 @@ function canAccess(string $key): bool {
  */
 function getMinRole(string $key): string {
     $perms = $_SESSION['opravneni'] ?? [];
-    return $perms[$key] ?? 'hlavni';
+    return $perms[$key] ?? 'zakazano';
 }
 
 /**
@@ -40,7 +45,8 @@ function roleBadge(string $key): string {
         'hlavni' => ['správce', 'role-mgr'],
         'admin'  => ['admin', 'role-admin'],
     ];
-    $m = $map[$role] ?? $map['hlavni'];
+    $map['zakazano'] = ['zakázáno', 'role-admin'];
+    $m = $map[$role] ?? $map['zakazano'];
     return '<span class="role-badge ' . $m[1] . '">' . $m[0] . '</span>';
 }
 

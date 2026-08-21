@@ -47,6 +47,11 @@ if (!auth_session_validate($pdo)) {
     exit;
 }
 
+// Jediny fail-closed bod pro vlastnictvi pracovnich administracnich tras.
+// Bezi po obnoveni autorizacniho snapshotu a pred zpracovanim POST akci stranek.
+require_once __DIR__ . '/includes/staff_workspaces.php';
+staffEnforceCurrentRoute(__DIR__);
+
 // Legacy Velocota bridge není součástí cílové architektury Evidence.
 // Feature flag musí zůstat false bez nového explicitního rozhodnutí a review.
 if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {

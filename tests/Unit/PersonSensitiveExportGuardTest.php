@@ -66,11 +66,12 @@ final class PersonSensitiveExportGuardTest extends TestCase
         $reveal = (string)file_get_contents($root . '/athlete_sensitive_admin.php');
         $download = (string)file_get_contents($root . '/private_download.php');
 
-        self::assertStringContainsString("(string)(\$_SESSION['role'] ?? '') !== 'admin'", $reveal);
+        self::assertStringContainsString("staffActivePositionIs('registrar')", $reveal);
         self::assertStringContainsString('csrf_verify', $reveal);
         self::assertStringContainsString('Cache-Control: no-store', $reveal);
         self::assertStringNotContainsString('canAccess(', $reveal);
         self::assertStringContainsString("\$kind === 'athlete-photo'", $download);
+        self::assertStringContainsString("staffActivePositionIs('registrar')", $download);
         self::assertStringContainsString('personSensitiveAdminAuditPhotoView', $download);
         self::assertStringNotContainsString("canAccess('athlete", $download);
     }

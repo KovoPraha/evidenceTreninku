@@ -113,21 +113,13 @@ $statusLabels = [
             <div class="text-muted small">Kontrola importovaného katalogu a provozu veřejného e-shopu.</div>
         </div>
         <div class="d-flex gap-2 flex-wrap">
-            <a href="club_program_wizard_admin.php" class="btn btn-primary btn-sm"><i class="bi bi-magic me-1"></i>Vypsat kroužek</a>
-            <a href="club_program_offers_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-calendar2-check me-1"></i>Nabídky kroužků</a>
             <a href="eshop_catalog_admin.php" class="btn btn-outline-dark btn-sm"><i class="bi bi-boxes me-1"></i>Správa katalogu</a>
             <a href="eshop_categories_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-diagram-3 me-1"></i>Kategorie</a>
             <a href="eshop_attributes_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders me-1"></i>Parametry</a>
-            <a href="eshop_bank_admin.php" class="btn btn-outline-dark btn-sm"><i class="bi bi-bank me-1"></i>Bankovní účet</a>
-            <a href="eshop_fio_admin.php" class="btn btn-outline-info btn-sm"><i class="bi bi-bank me-1"></i>Fio párování K4</a>
             <a href="eshop_coupons_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-ticket-perforated me-1"></i>Kupóny K4</a>
-            <a href="eshop_orders_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-receipt me-1"></i>Objednávky K4</a>
-            <a href="eshop_notifications_admin.php" class="btn btn-outline-warning btn-sm"><i class="bi bi-envelope-exclamation me-1"></i>Fronta e-mailů</a>
-            <a href="eshop_events_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-calendar-event me-1"></i>Klubové akce K3</a>
             <a href="eshop_produkt_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-box-seam me-1"></i>Produkty</a>
             <a href="eshop_catalog_publication_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-eye me-1"></i>Aktivace katalogu</a>
-            <a href="eshop_identity_admin.php" class="btn btn-outline-primary btn-sm"><i class="bi bi-people me-1"></i>Účty a sportovci</a>
-            <a href="admin_dashboard.php" class="btn btn-outline-secondary btn-sm">Admin dashboard</a>
+            <a href="eshop_member_prices_admin.php" class="btn btn-outline-success btn-sm"><i class="bi bi-tags me-1"></i>Klubové ceny</a>
         </div>
     </div>
 
@@ -140,19 +132,17 @@ $statusLabels = [
         <div class="alert alert-danger" role="alert">
             <strong>Objednávky nyní nelze dokončit.</strong>
             <?php if ($bankSettings['database_error'] !== ''): ?>
-                Uložený bankovní účet není platný. Opravte jej v
-                <a href="eshop_bank_admin.php">nastavení bankovního účtu</a>.
+                Uložený bankovní účet není platný. Úkol musí vyřešit pracovní pozice
+                <strong>Hospodář a platby</strong>.
             <?php else: ?>
-                Nastavte bankovní účet v
-                <a href="eshop_bank_admin.php">nastavení bankovního účtu</a>.
+                Bankovní účet musí nastavit pracovní pozice <strong>Hospodář a platby</strong>.
                 Checkout zůstává do té doby bezpečně vypnutý.
             <?php endif; ?>
         </div>
     <?php elseif ($bankSettings['conflict']): ?>
         <div class="alert alert-warning" role="alert">
             <strong>Bankovní účet je nastavený ve dvou zdrojích a liší se.</strong>
-            Platí databáze; podrobnosti jsou v
-            <a href="eshop_bank_admin.php">nastavení bankovního účtu</a>.
+            Platí databáze; kontrolu musí provést pracovní pozice <strong>Hospodář a platby</strong>.
         </div>
     <?php endif; ?>
     <?php foreach ($errors as $error): ?>

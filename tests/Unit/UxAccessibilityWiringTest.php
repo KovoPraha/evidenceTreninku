@@ -62,6 +62,7 @@ final class UxAccessibilityWiringTest extends TestCase
         $training = (string)file_get_contents($this->root . 'formular.php');
         $catalog = (string)file_get_contents($this->root . 'eshop_admin.php');
         $orders = (string)file_get_contents($this->root . 'eshop_orders_admin.php');
+        $payments = (string)file_get_contents($this->root . 'eshop_payments_admin.php');
 
         self::assertStringContainsString('aria-label="Hledat sportovce"', $members);
         self::assertStringContainsString('aria-label="Vybrat <?= h(', $members);
@@ -71,7 +72,7 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('aria-label="Výsledný typ produktu', $catalog);
         self::assertStringContainsString('aria-label="Poznámka k produktu', $catalog);
         self::assertStringContainsString('aria-label="Důvod storna', $orders);
-        self::assertStringContainsString('aria-label="Reference vratky', $orders);
+        self::assertStringContainsString('placeholder="Reference bankovní transakce', $payments);
     }
 
     public function testRemainingCustomerBookingFormsHaveHeadingsAndLabels(): void

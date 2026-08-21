@@ -89,5 +89,8 @@ jobs:
       - name: Ověřit ruční původ katalogu na MariaDB
         run: php tests/Support/ShopManualCatalogOriginMariaDbSmoke.php
 
+      - name: Ověřit pracovní pozice a superadmin audit na MariaDB
+        run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
+
       - name: Ověřit M3.5d sportovní import review na MariaDB
         run: php bin/sports-review-smoke.php

@@ -8,7 +8,7 @@ require_once __DIR__ . '/includes/account_person_claim.php';
 require_once __DIR__ . '/includes/person_match.php';
 require_once __DIR__ . '/includes/athlete_registration_admin.php';
 
-if (!isset($_SESSION['trener_id']) || (string)($_SESSION['role'] ?? '') !== 'admin') {
+if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('registrar')) {
     header('Location: login.php');
     exit;
 }
@@ -344,7 +344,7 @@ $activeRelations = count(array_filter(
 <div class="container py-4" style="max-width:1300px">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <div><h1 class="h4 mb-0"><i class="bi bi-people me-2 text-primary"></i>Účty, rodiče a sportovci</h1><div class="text-muted small">Schválené osoby, které účet smí spravovat nebo přihlašovat.</div></div>
-        <a href="eshop_admin.php" class="btn btn-outline-secondary btn-sm">Administrace e-shopu</a>
+        <a href="pracovni_pozice.php" class="btn btn-outline-secondary btn-sm">Rozcestník členů</a>
     </div>
 
     <div class="alert alert-warning">
@@ -540,7 +540,7 @@ $activeRelations = count(array_filter(
                                             <span class="badge <?= $chargeContext['readiness'][$readinessKey] ? 'bg-success' : 'bg-danger' ?> me-1 mb-1"><?= identityAdminH($readinessLabel) ?></span>
                                         <?php endforeach; ?>
                                         <?php if (is_array($chargeContext['existing_charge'])): ?>
-                                            <div class="alert alert-info py-2 mt-2 mb-0">Pro tuto registraci a sezonu už existuje předpis <code><?= identityAdminH($chargeContext['existing_charge']['public_code']) ?></code>. <a href="member_charges_admin.php">Otevřít přehled</a>.</div>
+                                            <div class="alert alert-info py-2 mt-2 mb-0">Pro tuto registraci a sezonu už existuje předpis <code><?= identityAdminH($chargeContext['existing_charge']['public_code']) ?></code>. Finanční stav ověřuje pozice Hospodář a platby.</div>
                                         <?php elseif ($chargeContext['ready']): ?>
                                             <form method="post" class="row g-2 align-items-end mt-1">
                                                 <?= csrf_field() ?><input type="hidden" name="action" value="create_registration_charge"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>"><input type="hidden" name="season_id" value="<?= (int)$chargeContext['season']['id'] ?>">

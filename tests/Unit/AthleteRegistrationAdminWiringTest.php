@@ -13,7 +13,7 @@ final class AthleteRegistrationAdminWiringTest extends TestCase
         $page = (string)file_get_contents($root . '/eshop_identity_admin.php');
         $service = (string)file_get_contents($root . '/includes/athlete_registration_admin.php');
 
-        self::assertStringContainsString("(string)(\$_SESSION['role'] ?? '') !== 'admin'", $page);
+        self::assertStringContainsString("staffActivePositionIs('registrar')", $page);
         self::assertStringContainsString('Cache-Control: no-store', $page);
         self::assertStringContainsString('athleteRegistrationAdminReview', $page);
         self::assertStringContainsString('approve_registration_existing', $page);

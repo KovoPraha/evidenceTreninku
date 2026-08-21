@@ -12,7 +12,7 @@ final class ShopIdentityAdminWiringTest extends TestCase
         $root = dirname(__DIR__, 2);
         $source = (string)file_get_contents($root . '/eshop_identity_admin.php');
 
-        self::assertStringContainsString("(string)(\$_SESSION['role'] ?? '') !== 'admin'", $source);
+        self::assertStringContainsString("staffActivePositionIs('registrar')", $source);
         self::assertStringContainsString('csrf_verify', $source);
         self::assertStringContainsString('accountPersonRoleApprove', $source);
         self::assertStringContainsString('accountPersonRoleRevoke', $source);
@@ -23,12 +23,12 @@ final class ShopIdentityAdminWiringTest extends TestCase
 
     public function testAdminNavigationLinksToIdentityDecisions(): void
     {
-        // index.php's card-wall was retired 2026-08-08 in favor of the hlavicka.php
-        // navbar as the single admin navigation source (see docs/navrh-informacni-architektury.md).
+        // Pracovni registry je jediny zdroj staff navigace; hlavicka z nej
+        // vykresluje pouze prave aktivni pozici.
         $root = dirname(__DIR__, 2);
-        foreach (['hlavicka.php', 'eshop_admin.php', 'admin_dashboard.php'] as $filename) {
+        foreach (['includes/staff_workspaces.php', 'hlavicka.php'] as $filename) {
             self::assertStringContainsString(
-                'eshop_identity_admin.php',
+                $filename === 'hlavicka.php' ? "foreach (\$staff_active['groups']" : 'eshop_identity_admin.php',
                 (string)file_get_contents($root . '/' . $filename),
                 $filename
             );

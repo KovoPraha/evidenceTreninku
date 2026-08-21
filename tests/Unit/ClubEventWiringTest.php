@@ -15,8 +15,7 @@ final class ClubEventWiringTest extends TestCase
     }
     public function testAdminNavigationLinksToK3(): void
     {
-        // index.php's card-wall was retired 2026-08-08 in favor of the hlavicka.php
-        // navbar as the single admin navigation source (see docs/navrh-informacni-architektury.md).
-        $root=dirname(__DIR__,2);foreach(['hlavicka.php','eshop_admin.php'] as $file)self::assertStringContainsString('eshop_events_admin.php',(string)file_get_contents($root.'/'.$file),$file);
+        $root=dirname(__DIR__,2);$registry=(string)file_get_contents($root.'/includes/staff_workspaces.php');$header=(string)file_get_contents($root.'/hlavicka.php');
+        self::assertStringContainsString("'program_coordinator'",$registry);self::assertStringContainsString('eshop_events_admin.php',$registry);self::assertStringContainsString("foreach (\$staff_active['groups']",$header);
     }
 }

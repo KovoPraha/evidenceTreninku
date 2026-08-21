@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/session_security.php';
+require_once __DIR__ . '/staff_workspaces.php';
 
 const AUTH_SESSION_TRAINER_VERSION_KEY = 'trener_session_version';
 const AUTH_SESSION_PUBLIC_VERSION_KEY = 'verejny_uzivatel_session_version';
@@ -22,6 +23,9 @@ function auth_session_identity_definition(string $identity): array
                 'role',
                 'login_time',
                 'opravneni',
+                'staff_positions',
+                'staff_is_superadmin',
+                'staff_active_position',
                 'velo_user_id_cached',
                 AUTH_SESSION_TRAINER_VERSION_KEY,
             ],
@@ -157,6 +161,7 @@ function auth_session_refresh_trainer_authorization(PDO $pdo, int $trainerId): v
 
     $_SESSION['role'] = $role;
     $_SESSION['opravneni'] = $permissions;
+    staffWorkspaceRefreshSession($pdo, $trainerId);
 }
 
 /**

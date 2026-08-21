@@ -14,6 +14,10 @@ $is_customer  = isset($_SESSION['verejny_uzivatel_id']);
 $is_athlete   = isset($_SESSION['sportovec_pristup_id']);
 $customerName = trim((string)($_SESSION['verejny_uzivatel_jmeno'] ?? ''));
 $athleteName  = trim((string)($_SESSION['sportovec_pristup_jmeno'] ?? ''));
+if ($is_logged_in) {
+    header('Location: pracovni_pozice.php', true, 302);
+    exit;
+}
 $shopUrl      = 'booking/eshop.php';
 $familyUrl    = $is_customer ? 'booking/moje_osoby.php' : 'booking/prihlaseni.php?redirect=moje_osoby.php';
 $athleteUrl   = $is_athlete ? 'booking/muj_sport.php' : 'booking/sportovec_prihlaseni.php';

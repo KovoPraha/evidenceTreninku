@@ -78,7 +78,7 @@ try {
 <main class="container-fluid py-4" style="max-width:1450px">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
         <div><h1 class="h4 mb-1">Týdenní rodinné souhrny</h1><div class="small text-muted">Dobrovolný odběr, idempotentní fronta a bezpečný localhostový outbox.</div></div>
-        <a href="provozni_prehled_admin.php" class="btn btn-outline-secondary btn-sm">Provozní přehled</a>
+        <a href="pracovni_pozice.php" class="btn btn-outline-secondary btn-sm">Rozcestník objednávek</a>
     </div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= familyWeeklyAdminH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= familyWeeklyAdminH($success) ?></div><?php endif; ?>

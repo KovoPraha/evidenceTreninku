@@ -24,8 +24,9 @@ final class ShopCheckoutWiringTest extends TestCase
     }
     public function testAdminBankConfirmationRequiresRoleCsrfReasonAndConfirmation():void
     {
-        $source=(string)file_get_contents(dirname(__DIR__,2).'/eshop_orders_admin.php');
-        self::assertStringContainsString("roleAtLeast('admin')",$source);self::assertStringContainsString('csrf_verify',$source);self::assertStringContainsString("(\$_POST['confirm_action']??'')==='1'",$source);self::assertStringContainsString('shopOrderAdminConfirmBankPayment',$source);self::assertStringContainsString('shopOrderAdminCancel',$source);self::assertStringContainsString('shopOrderAdminMarkReady',$source);self::assertStringContainsString('shopOrderAdminCompletePickup',$source);self::assertStringContainsString('shopOrderAdminConfirmRefund',$source);self::assertStringContainsString('refund_reference',$source);self::assertStringContainsString('reason',$source);
+        $root=dirname(__DIR__,2);$source=(string)file_get_contents($root.'/eshop_orders_admin.php');$payments=(string)file_get_contents($root.'/eshop_payments_admin.php');
+        self::assertStringContainsString("roleAtLeast('admin')",$source);self::assertStringContainsString('csrf_verify',$source);self::assertStringContainsString("(\$_POST['confirm_action']??'')==='1'",$source);self::assertStringContainsString('shopOrderAdminCancel',$source);self::assertStringContainsString('shopOrderAdminMarkReady',$source);self::assertStringContainsString('shopOrderAdminCompletePickup',$source);self::assertStringNotContainsString('shopOrderAdminConfirmBankPayment',$source);self::assertStringNotContainsString('shopOrderAdminConfirmRefund',$source);
+        self::assertStringContainsString("staffRequireActivePosition('finance_manager')",$payments);self::assertStringContainsString('shopOrderAdminConfirmBankPayment',$payments);self::assertStringContainsString('shopOrderAdminConfirmRefund',$payments);self::assertStringContainsString('refund_reference',$payments);self::assertStringContainsString('reason',$payments);
     }
     public function testFulfillmentMigrationAndServiceKeepAuditAndRestockContract():void
     {
