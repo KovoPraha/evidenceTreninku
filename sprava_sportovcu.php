@@ -310,9 +310,6 @@ try {
                 <div class="opacity-75 small">Editace údajů sportovců — jméno, příjmení, kategorie, kontakt.</div>
             </div>
             <div class="d-flex gap-2 flex-wrap">
-                <a href="prehled_sportovcu.php" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-people me-1"></i>Přehled sportovců
-                </a>
                 <a href="index.php" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-house me-1"></i>Rozcestník
                 </a>
@@ -540,10 +537,6 @@ try {
                                     title="Upravit" aria-label="Upravit sportovce">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <a href="sportovec_detail.php?id=<?= (int)$s['id'] ?>"
-                               class="btn btn-sm btn-outline-secondary" title="Detail" aria-label="Detail sportovce">
-                                <i class="bi bi-eye"></i>
-                            </a>
                             <a href="sportovec_karta.php?sportovec_id=<?= (int)$s['id'] ?>"
                                class="btn btn-sm btn-outline-success" title="Administrační karta člena" aria-label="Administrační karta člena">
                                 <i class="bi bi-person-vcard"></i>

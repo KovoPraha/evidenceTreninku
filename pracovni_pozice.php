@@ -17,6 +17,7 @@ if ($activeCode === '' || !isset($definitions[$activeCode])) {
     exit('Účet nemá přiřazenou pracovní pozici. Obraťte se na správce systému.');
 }
 $active = $definitions[$activeCode];
+$activeGroups = staffPositionMenuGroups($activeCode, defined('JE_LOKALNE') && JE_LOKALNE === true);
 $available = staffAvailablePositions();
 $trainerName = trim((string)($_SESSION['trener_jmeno'] ?? ''));
 if ($trainerName === '') {
@@ -89,7 +90,7 @@ function staffDashboardH(mixed $value): string
     </section>
     <?php endif; ?>
 
-    <?php foreach ($active['groups'] as $group): ?>
+    <?php foreach ($activeGroups as $group): ?>
     <section class="mb-4" aria-labelledby="group-<?= staffDashboardH(md5((string)$group['label'])) ?>">
         <h2 class="h5 mb-3" id="group-<?= staffDashboardH(md5((string)$group['label'])) ?>"><i class="bi bi-<?= staffDashboardH($group['icon']) ?> me-2 text-primary"></i><?= staffDashboardH($group['label']) ?></h2>
         <div class="row g-3">

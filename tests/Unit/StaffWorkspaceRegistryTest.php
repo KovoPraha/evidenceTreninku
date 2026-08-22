@@ -48,6 +48,45 @@ final class StaffWorkspaceRegistryTest extends TestCase
         }
     }
 
+    public function testSupportRouteDelegationIsExplicitAndDoesNotMergeMenus(): void
+    {
+        $definitions = \staffPositionDefinitions();
+        foreach (\staffRouteDelegates() as $route => $delegates) {
+            self::assertNotNull(\staffRouteOwner($route), $route);
+            self::assertFileExists(dirname(__DIR__, 2) . '/' . $route, $route);
+            self::assertNotSame([], $delegates, $route);
+            self::assertNotContains(\staffRouteOwner($route), $delegates, $route);
+            foreach ($delegates as $delegate) self::assertArrayHasKey($delegate, $definitions, $route);
+        }
+        self::assertSame(['coach', 'sports_lead'], \staffRouteAllowedPositions('edit_trenink.php'));
+        self::assertSame(['sports_lead', 'coach'], \staffRouteAllowedPositions('update_trenink.php'));
+        self::assertSame(['coach', 'program_coordinator'], \staffRouteAllowedPositions('kalendar_sportovist.php'));
+    }
+
+    public function testEnvironmentSpecificItemsAreHiddenFromProductionMenus(): void
+    {
+        $registrarProduction = \staffPositionMenuGroups('registrar', false);
+        $systemProduction = \staffPositionMenuGroups('system_admin', false);
+        $registrarLocal = \staffPositionMenuGroups('registrar', true);
+        $systemLocal = \staffPositionMenuGroups('system_admin', true);
+        $routes = static function (array $groups): array {
+            $result = [];
+            foreach ($groups as $group) foreach ($group['items'] as $item) $result[] = $item['route'];
+            return $result;
+        };
+        self::assertNotContains('kis_rollover_a06_admin.php', $routes($registrarProduction));
+        self::assertNotContains('testovaci_scenare.php', $routes($systemProduction));
+        self::assertContains('kis_rollover_a06_admin.php', $routes($registrarLocal));
+        self::assertContains('testovaci_scenare.php', $routes($systemLocal));
+    }
+
+    public function testPublicGroupProgramIsSharedAndMoneyRatesBelongToFinance(): void
+    {
+        self::assertContains('program_skupiny.php', \staffSharedRoutes());
+        self::assertNull(\staffRouteOwner('program_skupiny.php'));
+        self::assertSame('finance_manager', \staffRouteOwner('hromadne_odmeny.php'));
+    }
+
     public function testStaffEntryPointInventoryHasNoOrphanRoute(): void
     {
         $root = dirname(__DIR__, 2);
@@ -78,10 +117,12 @@ final class StaffWorkspaceRegistryTest extends TestCase
         $root = dirname(__DIR__, 2);
         $header = (string)file_get_contents($root . '/hlavicka.php');
         $landing = (string)file_get_contents($root . '/pracovni_pozice.php');
-        self::assertStringContainsString("foreach (\$staff_active['groups']", $header);
+        self::assertStringContainsString('staffPositionMenuGroups(', $header);
+        self::assertStringContainsString('foreach ($staff_menu_groups', $header);
         self::assertStringContainsString('staffAvailablePositions()', $header);
         self::assertStringContainsString('staffIsSuperadmin()', $header);
-        self::assertStringContainsString("foreach (\$active['groups']", $landing);
+        self::assertStringContainsString('staffPositionMenuGroups(', $landing);
+        self::assertStringContainsString('foreach ($activeGroups', $landing);
         self::assertStringNotContainsString('roleAtLeast(', $landing);
     }
 

@@ -432,11 +432,7 @@ try {
                         </div>
                     <?php endforeach; ?>
                     </div>
-                    <div class="mt-2 text-end">
-                        <a href="oznameni.php" class="small text-muted">
-                            Všechna oznámení <i class="bi bi-arrow-right ms-1"></i>
-                        </a>
-                    </div>
+                    <div class="mt-2 text-end small text-muted">Další oznámení spravuje Vedoucí sportu.</div>
                 <?php endif; ?>
             </div>
         </div>

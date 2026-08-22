@@ -19,6 +19,9 @@ $staff_definitions = $is_logged_in ? staffPositionDefinitions() : [];
 $staff_active_code = $is_logged_in ? staffActivePosition() : '';
 $staff_active = $is_logged_in ? ($staff_definitions[$staff_active_code] ?? null) : null;
 $staff_available = $is_logged_in ? staffAvailablePositions() : [];
+$staff_menu_groups = $is_logged_in && is_array($staff_active)
+    ? staffPositionMenuGroups($staff_active_code, defined('JE_LOKALNE') && JE_LOKALNE === true)
+    : [];
 
 // Active page detection for navbar highlighting
 $_currentPage = basename($_SERVER['SCRIPT_NAME'] ?? '');
@@ -223,7 +226,7 @@ if ($is_logged_in) {
             <?php if ($is_logged_in && is_array($staff_active)): ?>
             <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
                 <li class="nav-item"><a class="nav-link<?= _navActive('pracovni_pozice.php') ?>" href="pracovni_pozice.php"><i class="bi bi-grid me-1"></i>Rozcestník</a></li>
-                <?php foreach ($staff_active['groups'] as $staff_group): ?>
+                <?php foreach ($staff_menu_groups as $staff_group): ?>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-<?= htmlspecialchars((string)$staff_group['icon']) ?> me-1"></i><?= htmlspecialchars((string)$staff_group['label']) ?></a>
                     <ul class="dropdown-menu">

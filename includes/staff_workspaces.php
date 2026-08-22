@@ -36,7 +36,6 @@ function staffPositionDefinitions(): array
                     ['route' => 'kalendar_sportovist.php', 'label' => 'Kalendář sportovišť', 'description' => 'Moje termíny a dostupnost', 'icon' => 'calendar3'],
                     ['route' => 'individualni_lekce_sprava.php', 'label' => 'Individuální lekce', 'description' => 'Moje individuální výuka', 'icon' => 'person-video3'],
                     ['route' => 'cviky.php', 'label' => 'Cviky', 'description' => 'Katalog cviků pro trénink', 'icon' => 'activity'],
-                    ['route' => 'hromadne_odmeny.php', 'label' => 'Odměny', 'description' => 'Odměny vlastních sportovců', 'icon' => 'star'],
                 ]],
             ],
         ],
@@ -84,7 +83,7 @@ function staffPositionDefinitions(): array
                 ]],
                 ['label' => 'Kontrola', 'icon' => 'clock-history', 'items' => [
                     ['route' => 'person_audit_admin.php', 'label' => 'Auditní osa osoby', 'description' => 'Historie změn jedné osoby', 'icon' => 'clock-history'],
-                    ['route' => 'kis_rollover_a06_admin.php', 'label' => 'Roční obnova soupisek', 'description' => 'Lokální průvodce a ověření A06', 'icon' => 'arrow-clockwise'],
+                    ['route' => 'kis_rollover_a06_admin.php', 'label' => 'Roční obnova soupisek', 'description' => 'Lokální průvodce a ověření A06', 'icon' => 'arrow-clockwise', 'local_only' => true],
                     ['route' => 'sync_evidence.php', 'label' => 'Synchronizace evidence', 'description' => 'Mapování staršího importu', 'icon' => 'diagram-3'],
                 ]],
             ],
@@ -167,6 +166,7 @@ function staffPositionDefinitions(): array
                 ['label' => 'Kredity a provoz', 'icon' => 'wallet2', 'items' => [
                     ['route' => 'prehled_kreditu.php', 'label' => 'Přehled kreditů', 'description' => 'Kredity sportovců', 'icon' => 'wallet2'],
                     ['route' => 'sprava_sportovec_obdobi.php', 'label' => 'Kreditní období', 'description' => 'Platnost kreditních období', 'icon' => 'calendar2-range'],
+                    ['route' => 'hromadne_odmeny.php', 'label' => 'Sazby za trénink', 'description' => 'Hromadné nastavení peněžních sazeb', 'icon' => 'star'],
                     ['route' => 'uctenky/seznam.php', 'label' => 'Účtenky', 'description' => 'Doklady a výdaje', 'icon' => 'receipt-cutoff'],
                     ['route' => 'vozidla/seznam.php', 'label' => 'Vozidla a jízdy', 'description' => 'Vozidla, jízdy a servis', 'icon' => 'car-front'],
                     ['route' => 'udalosti/seznam.php', 'label' => 'Provozní události', 'description' => 'Události a vyúčtování', 'icon' => 'calendar-event'],
@@ -190,7 +190,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'auditlog/seznam.php', 'label' => 'Systémový audit', 'description' => 'Auditní události aplikace', 'icon' => 'journal-text'],
                     ['route' => 'diagnostika_site_admin.php', 'label' => 'Diagnostika', 'description' => 'Bezpečný technický stav aplikace', 'icon' => 'activity'],
                     ['route' => 'provozni_prehled_admin.php', 'label' => 'Kontrolní přehled', 'description' => 'Read-only souhrn provozních výjimek', 'icon' => 'speedometer2'],
-                    ['route' => 'testovaci_scenare.php', 'label' => 'Lokální testovací scénáře', 'description' => 'Pouze localhost', 'icon' => 'check2-square'],
+                    ['route' => 'testovaci_scenare.php', 'label' => 'Lokální testovací scénáře', 'description' => 'Pouze localhost', 'icon' => 'check2-square', 'local_only' => true],
                 ]],
             ],
         ],
@@ -246,7 +246,7 @@ function staffRouteOwners(): array
         ],
         'registrar' => [
             'athlete_sensitive_admin.php','hromadne_podskupiny.php','kis_training_a07_admin.php',
-            'sportovci_hromadne.php','sportovec_karta.php','program_skupiny.php',
+            'sportovci_hromadne.php','sportovec_karta.php',
         ],
         'program_coordinator' => [
             'club_event_participants_export.php',
@@ -281,8 +281,53 @@ function staffSharedRoutes(): array
 {
     return [
         'index.php','login.php','logout.php','pracovni_pozice.php','prepnout_pracovni_pozici.php',
-        'private_download.php','push_subscribe.php',
+        'private_download.php','push_subscribe.php','program_skupiny.php',
     ];
+}
+
+/**
+ * Podpurne editory mohou obsluhovat vice pracovnich agend, aniz by se jejich
+ * rozcestniky nebo hlavni vlastnictvi trasy sloucily.
+ *
+ * @return array<string,list<string>> route => dalsi povolene aktivni pozice
+ */
+function staffRouteDelegates(): array
+{
+    return [
+        'edit_trenink.php' => ['sports_lead'],
+        'update_trenink.php' => ['coach'],
+        'smazat_trenink.php' => ['sports_lead'],
+        'sportovec_detail.php' => ['sports_lead'],
+        'kalendar_sportovist.php' => ['program_coordinator'],
+        'rezervovat_sportoviste.php' => ['program_coordinator'],
+    ];
+}
+
+/** @return list<string> */
+function staffRouteAllowedPositions(string $route): array
+{
+    $route = staffNormalizeRoute($route);
+    $owner = staffRouteOwner($route);
+    if ($owner === null) return [];
+    return array_values(array_unique(array_merge([$owner], staffRouteDelegates()[$route] ?? [])));
+}
+
+/** @return list<array<string,mixed>> */
+function staffPositionMenuGroups(string $position, bool $isLocal): array
+{
+    $definition = staffPositionDefinitions()[$position] ?? null;
+    if (!is_array($definition)) return [];
+    $groups = [];
+    foreach ($definition['groups'] as $group) {
+        $items = array_values(array_filter(
+            $group['items'],
+            static fn(array $item): bool => $isLocal || empty($item['local_only'])
+        ));
+        if ($items === []) continue;
+        $group['items'] = $items;
+        $groups[] = $group;
+    }
+    return $groups;
 }
 
 function staffNormalizeRoute(string $route): string
@@ -471,7 +516,7 @@ function staffEnforceCurrentRoute(string $appRoot): void
     $route = staffCurrentRoute($appRoot);
     if ($route === null || in_array($route, staffSharedRoutes(), true)) return;
     $owner = staffRouteOwner($route);
-    if ($owner === null || staffActivePositionIs($owner)) return;
+    if ($owner === null || in_array(staffActivePosition(), staffRouteAllowedPositions($route), true)) return;
 
     http_response_code(403);
     header('Cache-Control: no-store, private');

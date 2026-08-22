@@ -19,6 +19,8 @@ Administrace je rozdělena na osm nepřekrývajících se pracovních pozic. Ka�
 
 Součet osmi rozcestníků pokrývá všechny odkazy určené přihlášenému personálu. Vlastnictví jednotlivých vstupních stránek je vedeno v jednom registru `includes/staff_workspaces.php`; stejný registr používá rozcestník, navigace, kontrola přístupu i automatické testy.
 
+Podpůrný editor může mít jednoho vlastníka a výslovně uvedenou další pozici, která ho smí použít v navazujícím pracovním postupu. Taková delegace nepřidá cizí menu ani celou cizí agendu. Lokální diagnostické stránky jsou v registru označeny jako lokální a na produkčním rozcestníku ani v navigaci se nezobrazí.
+
 ## Superadministrátor
 
 Superadministrátor není devátá pracovní pozice. Je to příznak účtu, který umožní přepínat mezi všemi osmi pozicemi. Po přepnutí se stránka i navigace chovají stejně jako u běžného držitele dané pozice; oprávnění se nesčítají.
@@ -39,10 +41,11 @@ Každé přepnutí se zapisuje do `staff_position_switch_events`. Změny přiřa
 - Kontrola vlastníka stránky proběhne centrálně po ověření přihlášení a před provedením změny.
 - Neznámý klíč oprávnění je zakázán; starý automatický přístup pro vedoucího se nepoužívá.
 - Peněžní operace nejsou součástí správy objednávek. Potvrzení platby a vratky vlastní pouze Hospodář a platby.
+- Peněžní sazby za trénink vlastní Hospodář a platby; trenér eviduje odvedenou práci, ale neurčuje sazbu.
 - Citlivé členské exporty vlastní Registrář členů a KIS.
 - Stažení účtenky vlastní Hospodář a platby, fotografie člena Registrář a trenérské zátěžové výstupy Trenér.
 - Všechny aktivní účty musí mít alespoň jednu a právě jednu výchozí pozici.
 
 ## Testovací kontrakt
 
-Automatické testy ověřují přesně osm pozic, jediné vlastnictví každého vstupního bodu, úplné pokrytí personálních stránek, oddělení peněžních operací, přepínání superadministrátora a opakovatelnost migrace. Databázová migrace se v CI spouští také proti MariaDB 10.3 a 11.4.
+Automatické testy ověřují přesně osm pozic, jediné vlastnictví každého vstupního bodu, výslovné delegace podpůrných editorů, produkční skrytí lokálních nástrojů, úplné pokrytí personálních stránek, oddělení peněžních operací, přepínání superadministrátora a opakovatelnost migrace. Databázová migrace se v CI spouští také proti MariaDB 10.3 a 11.4.

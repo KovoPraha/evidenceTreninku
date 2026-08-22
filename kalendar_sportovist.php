@@ -223,7 +223,7 @@ $today = date('Y-m-d');
                     <i class="bi bi-person-plus me-1"></i>Nová lekce
                 </a>
             <?php endif; ?>
-            <?php if (canAccess('sprava_sportovist')): ?>
+            <?php if (staffActivePositionIs('program_coordinator')): ?>
                 <a href="sprava_sportovist.php" class="btn btn-outline-secondary btn-sm" aria-label="Správa sportovišť">
                     <i class="bi bi-gear"></i>
                 </a>
