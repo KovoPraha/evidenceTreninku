@@ -20,13 +20,19 @@ if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
 }
 
 try {
+    $targetPosition = (string)($_POST['position'] ?? '');
     staffSwitchPosition(
         $pdo,
         (int)$_SESSION['trener_id'],
-        (string)($_POST['position'] ?? ''),
+        $targetPosition,
         (string)($_POST['reason'] ?? '')
     );
     $_SESSION['flash_success'] = 'Aktivní pracovní pozice byla přepnuta.';
+    $next = staffNormalizeRoute((string)($_POST['next'] ?? ''));
+    if ($next !== '' && staffRouteOwner($next) === $targetPosition) {
+        header('Location: ' . $next, true, 303);
+        exit;
+    }
 } catch (InvalidArgumentException $exception) {
     $_SESSION['flash_error'] = $exception->getMessage();
 }

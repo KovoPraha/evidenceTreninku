@@ -79,10 +79,12 @@ function shopCouponAdminCreate(PDO $pdo, int $actorTrainerId, string $code, stri
 function shopCouponAdminSetActive(PDO $pdo, int $couponId, int $actorTrainerId, bool $active, string $note, bool $confirmed): array
 {
     $note = trim($note);
-    if ($couponId < 1 || $actorTrainerId < 1 || !$confirmed || $note === '' || mb_strlen($note, 'UTF-8') > 1000) throw new InvalidArgumentException('Změna kupónu vyžaduje kupón, administrátora, poznámku a potvrzení.');
+    if ($note === '') $note = $active ? 'Kupón aktivován v administraci.' : 'Kupón vypnut v administraci.';
+    if ($couponId < 1 || $actorTrainerId < 1 || !$confirmed || mb_strlen($note, 'UTF-8') > 1000) throw new InvalidArgumentException('Změna kupónu vyžaduje kupón, administrátora a potvrzení.');
     $pdo->beginTransaction();
     try {
         $coupon = shopCouponAdminFind($pdo, $couponId, true);
+        if (($coupon['archived_at'] ?? null) !== null) throw new ShopCouponException('Archivovaný kupón už nelze znovu aktivovat ani vypnout.');
         $before = shopCouponAuditSnapshot($coupon);
         if ((bool)$coupon['active'] === $active) {
             $pdo->commit();
@@ -102,10 +104,45 @@ function shopCouponAdminSetActive(PDO $pdo, int $couponId, int $actorTrainerId, 
     }
 }
 
-/** @return list<array<string,mixed>> */
-function shopCouponAdminList(PDO $pdo): array
+/** @return array{id:int,changed:bool} */
+function shopCouponAdminArchive(PDO $pdo, int $couponId, int $actorTrainerId, string $note, bool $confirmed): array
 {
-    return $pdo->query('SELECT c.*,e.action AS last_action,e.actor_trainer_id AS last_actor_id,e.note AS last_note,e.created_at AS last_event_at FROM shop_coupons c LEFT JOIN shop_coupon_events e ON e.id=(SELECT MAX(e2.id) FROM shop_coupon_events e2 WHERE e2.coupon_id=c.id) ORDER BY c.active DESC,c.created_at DESC,c.id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    $note = trim($note);
+    if ($couponId < 1 || $actorTrainerId < 1 || !$confirmed || $note === '' || mb_strlen($note, 'UTF-8') > 1000) {
+        throw new InvalidArgumentException('Archivace kupónu vyžaduje kupón, administrátora, důvod a výslovné potvrzení.');
+    }
+    $pdo->beginTransaction();
+    try {
+        $coupon = shopCouponAdminFind($pdo, $couponId, true);
+        if (($coupon['archived_at'] ?? null) !== null) {
+            $pdo->commit();
+            return ['id' => $couponId, 'changed' => false];
+        }
+        $redemptions = $pdo->prepare('SELECT COUNT(*) FROM shop_coupon_redemptions WHERE coupon_id=?');
+        $redemptions->execute([$couponId]);
+        if ((int)$coupon['usage_count'] > 0 || (int)$redemptions->fetchColumn() > 0) {
+            throw new ShopCouponException('Použitý kupón nelze archivovat, protože patří do historie objednávek. Může zůstat vypnutý.');
+        }
+        $before = shopCouponAuditSnapshot($coupon);
+        $pdo->prepare('UPDATE shop_coupons SET active=0,archived_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$couponId]);
+        $coupon = shopCouponAdminFind($pdo, $couponId, false);
+        $after = shopCouponAuditSnapshot($coupon);
+        $pdo->prepare('INSERT INTO shop_coupon_events(coupon_id,actor_trainer_id,action,before_json,after_json,note) VALUES (?,?,\'archive\',?,?,?)')
+            ->execute([$couponId, $actorTrainerId, json_encode($before, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR), json_encode($after, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR), $note]);
+        $pdo->commit();
+        return ['id' => $couponId, 'changed' => true];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($exception instanceof InvalidArgumentException || $exception instanceof ShopCouponException) throw $exception;
+        throw new ShopCouponException('Kupón se nepodařilo archivovat bez částečného zápisu.', 0, $exception);
+    }
+}
+
+/** @return list<array<string,mixed>> */
+function shopCouponAdminList(PDO $pdo, bool $includeArchived = false): array
+{
+    $where = $includeArchived ? '' : ' WHERE c.archived_at IS NULL';
+    return $pdo->query('SELECT c.*,e.action AS last_action,e.actor_trainer_id AS last_actor_id,e.note AS last_note,e.created_at AS last_event_at FROM shop_coupons c LEFT JOIN shop_coupon_events e ON e.id=(SELECT MAX(e2.id) FROM shop_coupon_events e2 WHERE e2.coupon_id=c.id)' . $where . ' ORDER BY CASE WHEN c.archived_at IS NULL THEN 0 ELSE 1 END,c.active DESC,c.created_at DESC,c.id DESC')->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /** @return array<string,mixed> */
@@ -186,6 +223,7 @@ function shopCouponValidateRow(array $coupon, int $eligibleSubtotal, ?int $order
 {
     $orderSubtotal ??= $eligibleSubtotal;
     $now = new DateTimeImmutable();
+    if (($coupon['archived_at'] ?? null) !== null) throw new ShopCouponException('Kupón byl archivován.');
     if ((int)$coupon['active'] !== 1) throw new ShopCouponException('Kupón není aktivní.');
     if ($coupon['currency'] !== 'CZK') throw new ShopCouponException('Kupón nepodporuje měnu košíku.');
     if ($coupon['valid_from'] !== null && $now < new DateTimeImmutable((string)$coupon['valid_from'])) throw new ShopCouponException('Platnost kupónu ještě nezačala.');
@@ -295,5 +333,5 @@ function shopCouponAdminDate(string $value): ?string
 /** @return array<string,mixed> */
 function shopCouponAuditSnapshot(array $coupon): array
 {
-    return array_intersect_key($coupon, array_flip(['id', 'code', 'discount_type', 'value_minor_or_basis_points', 'currency', 'minimum_order_minor', 'maximum_discount_minor', 'usage_limit_total', 'usage_count', 'valid_from', 'valid_until', 'active', 'applicability_mask']));
+    return array_intersect_key($coupon, array_flip(['id', 'code', 'discount_type', 'value_minor_or_basis_points', 'currency', 'minimum_order_minor', 'maximum_discount_minor', 'usage_limit_total', 'usage_count', 'valid_from', 'valid_until', 'active', 'archived_at', 'applicability_mask']));
 }

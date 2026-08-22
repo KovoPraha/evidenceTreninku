@@ -7,6 +7,12 @@ require_once __DIR__ . '/shop_coupon.php';
 
 final class ShopManualCatalogException extends RuntimeException {}
 
+function shopManualCatalogCreationReason(string $reason): string
+{
+    $reason = trim($reason);
+    return $reason !== '' ? $reason : 'Ruční založení produktu do katalogu.';
+}
+
 /** @return list<array<string,mixed>> */
 function shopManualCatalogProducts(PDO $pdo): array
 {
@@ -52,6 +58,7 @@ function shopManualCatalogDetail(PDO $pdo, int $productId): array
 /** @param array<string,mixed> $product @param array<string,mixed> $variant @return array<string,mixed> */
 function shopManualCatalogCreate(PDO $pdo, int $actorId, array $product, array $variant, string $reason, bool $confirmed): array
 {
+    $reason = shopManualCatalogCreationReason($reason);
     $pdo->beginTransaction();
     try {
         $result = shopManualCatalogCreateInTransaction($pdo,$actorId,$product,$variant,$reason,$confirmed);

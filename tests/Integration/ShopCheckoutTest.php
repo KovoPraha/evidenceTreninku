@@ -211,6 +211,27 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(3,(int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_events')->fetchColumn());
     }
 
+    public function testUnusedCouponCanBeAuditArchivedButUsedCouponCannot():void
+    {
+        $pdo=$this->database();
+        $coupon=\shopCouponAdminCreate($pdo,7,'OMYL2026','fixed',1000,0,null,null,'','','Test omylem založeného kupónu.',true);
+        try{\shopCouponAdminArchive($pdo,(int)$coupon['id'],7,'Archivace omylu.',false);self::fail('Archive must be explicit.');}catch(\InvalidArgumentException){}
+        $result=\shopCouponAdminArchive($pdo,(int)$coupon['id'],7,'Kupón se nepoužil a byl založen omylem.',true);
+        self::assertTrue($result['changed']);self::assertSame([],\shopCouponAdminList($pdo));
+        $archived=\shopCouponAdminList($pdo,true);self::assertCount(1,$archived);self::assertNotNull($archived[0]['archived_at']);self::assertSame('archive',$archived[0]['last_action']);
+        self::assertFalse(\shopCouponAdminArchive($pdo,(int)$coupon['id'],7,'Opakování archivace.',true)['changed']);
+        try{\shopCouponAdminSetActive($pdo,(int)$coupon['id'],7,true,'Pokus o obnovu.',true);self::fail('Archived coupon must stay archived.');}catch(\ShopCouponException){}
+        try{\shopCouponQuoteForBreakdown($archived[0],['goods'=>5000,'club_program'=>0,'club_event'=>0,'velodrome'=>0,'total'=>5000]);self::fail('Archived coupon must fail closed.');}catch(\ShopCouponException $exception){self::assertStringContainsString('archivován',$exception->getMessage());}
+
+        self::assertSame('Kupón vypnut v administraci.',(function()use($pdo):string{$toggle=\shopCouponAdminCreate($pdo,7,'BEZDUVODU','fixed',1000,0,null,null,'','','Test výchozího auditu.',true);\shopCouponAdminSetActive($pdo,(int)$toggle['id'],7,false,'',true);return(string)$pdo->query("SELECT note FROM shop_coupon_events WHERE coupon_id=".(int)$toggle['id']." ORDER BY id DESC LIMIT 1")->fetchColumn();})());
+
+        $used=\shopCouponAdminCreate($pdo,7,'POUZITY1','fixed',1000,0,null,null,'','','Test použitého kupónu.',true);
+        \shopCouponAdminSetActive($pdo,(int)$used['id'],7,false,'Konec kampaně.',true);
+        $pdo->exec('UPDATE shop_coupons SET usage_count=1 WHERE id='.(int)$used['id']);
+        try{\shopCouponAdminArchive($pdo,(int)$used['id'],7,'Pokus skrýt historii.',true);self::fail('Used coupon must remain in history.');}catch(\ShopCouponException $exception){self::assertStringContainsString('historie objednávek',$exception->getMessage());}
+        self::assertNull($pdo->query('SELECT archived_at FROM shop_coupons WHERE id='.(int)$used['id'])->fetchColumn());
+    }
+
     public function testCouponScopeDefaultsToGoodsAndExplicitlySupportsSelectedServices():void
     {
         $pdo=$this->database();
@@ -329,6 +350,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
         $pdo->exec('CREATE TABLE club_event_notification_events(id INTEGER PRIMARY KEY AUTOINCREMENT,notification_id INTEGER NOT NULL,actor_trainer_id INTEGER NOT NULL,action TEXT NOT NULL,from_status TEXT NOT NULL,attempts_before INTEGER NOT NULL,reason TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)');
         $pdo->exec('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER)');$pdo->exec("INSERT INTO shop_product_categories VALUES(1,501,'Oblečení',1,0)");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php','20260809090000_stripe_checkout.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php','20260809090000_stripe_checkout.php','20260822120000_shop_coupon_archiving.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

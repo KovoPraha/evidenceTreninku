@@ -19,13 +19,14 @@ final class ShopManualCatalogAdminTest extends TestCase
         $created=\shopManualCatalogCreate($pdo,7,[
             'name'=>'Rajčátka','short_description'=>'Kroužek pro děti.','offer_type'=>'program',
             'visibility'=>'visible','item_type'=>'service',
-        ],$this->variant('KP-RAJCATA-2026',150000,null), 'Nový sezonní kroužek.',true);
+        ],$this->variant('KP-RAJCATA-2026',150000,null), '',true);
         self::assertMatchesRegularExpression('/^manual:[a-f0-9]{32}$/',$created['external_product_key']);
         $product=$pdo->query('SELECT * FROM shop_products WHERE id='.(int)$created['product_id'])->fetch(PDO::FETCH_ASSOC);
         $variant=$pdo->query('SELECT * FROM shop_variants WHERE id='.(int)$created['variant_id'])->fetch(PDO::FETCH_ASSOC);
         self::assertSame('manual',$product['origin']);self::assertSame('draft',$product['catalog_status']);
         self::assertSame('manual',$variant['origin']);self::assertSame('draft',$variant['catalog_status']);
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_catalog_admin_events WHERE action='create_product' AND actor_type='trainer' AND actor_id=7")->fetchColumn());
+        self::assertSame('Ruční založení produktu do katalogu.',$pdo->query("SELECT reason FROM shop_catalog_admin_events WHERE action='create_product'")->fetchColumn());
 
         $pdo->exec("UPDATE shop_products SET catalog_status='active' WHERE id=".(int)$created['product_id']);
         $pdo->exec("UPDATE shop_variants SET catalog_status='active' WHERE id=".(int)$created['variant_id']);

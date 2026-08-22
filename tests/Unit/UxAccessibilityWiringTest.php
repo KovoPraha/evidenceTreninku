@@ -102,6 +102,26 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('<h1 class="h5 fw-semibold mb-0">', $trainingSettings);
     }
 
+    public function testShopBugReportFormsUsePlainLanguageAndSafeFallbacks(): void
+    {
+        $product = (string)file_get_contents($this->root . 'eshop_produkt_admin.php');
+        self::assertStringNotContainsString('name="attributes_json"', $product);
+        self::assertStringNotContainsString('Parametry JSON', $product);
+        self::assertStringContainsString('productAdminAttributeEditor($attributeDefinitions,(string)$v[\'attributes_json\']', $product);
+        self::assertStringContainsString('Poznámka do historie', $product);
+
+        $memberPrices = (string)file_get_contents($this->root . 'eshop_member_prices_admin.php');
+        self::assertStringContainsString('Klubové ceny pro konkrétní soupisky', $memberPrices);
+        self::assertStringContainsString('Sleva pro všechny zákazníky', $memberPrices);
+        self::assertStringContainsString('Klubové ceny teď nelze založit', $memberPrices);
+        self::assertStringContainsString('if($teams!==[])', $memberPrices);
+
+        $orders = (string)file_get_contents($this->root . 'eshop_orders_admin.php');
+        self::assertStringContainsString('Čeká na vrácení hospodářem', $orders);
+        self::assertStringContainsString('Přejít k vrácení platby', $orders);
+        self::assertStringContainsString('name="next" value="eshop_payments_admin.php"', $orders);
+    }
+
     public function testLegacyAdminPagesExposeOneMainHeadingAndAuditTableStaysContained(): void
     {
         $headings = [

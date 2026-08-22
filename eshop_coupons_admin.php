@@ -14,6 +14,7 @@ function couponAdminDate(string $value): string { $value = trim($value); return 
 function couponAdminDiscount(array $coupon): string { return $coupon['discount_type'] === 'fixed' ? number_format((int)$coupon['value_minor_or_basis_points'] / 100, 2, ',', ' ') . ' Kč' : number_format((int)$coupon['value_minor_or_basis_points'] / 100, 2, ',', ' ') . ' %'; }
 
 $errors = [];
+$showArchived = ($_GET['show_archived'] ?? $_POST['show_archived'] ?? '') === '1';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $errors[] = 'Formulář vypršel. Obnovte stránku.';
@@ -48,11 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif ($action === 'set_active') {
                 $result = shopCouponAdminSetActive($pdo, (int)($_POST['coupon_id'] ?? 0), $actor, ($_POST['target_active'] ?? '') === '1', (string)($_POST['note'] ?? ''), $confirmed);
                 $message = $result['changed'] ? 'Stav kupónu byl auditovaně změněn.' : 'Kupón už měl požadovaný stav.';
+            } elseif ($action === 'archive') {
+                $result = shopCouponAdminArchive($pdo, (int)($_POST['coupon_id'] ?? 0), $actor, (string)($_POST['note'] ?? ''), $confirmed);
+                $message = $result['changed'] ? 'Nepoužitý kupón byl auditovaně archivován.' : 'Kupón už byl archivován.';
             } else {
                 throw new InvalidArgumentException('Neznámá akce kupónu.');
             }
             $_SESSION['flash_coupon_admin'] = $message;
-            header('Location: eshop_coupons_admin.php', true, 303);
+            header('Location: eshop_coupons_admin.php' . ($showArchived ? '?show_archived=1' : ''), true, 303);
             exit;
         } catch (PDOException $exception) {
             error_log('eshop_coupons_admin.php: ' . $exception->getMessage());
@@ -64,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $success = (string)($_SESSION['flash_coupon_admin'] ?? '');
 unset($_SESSION['flash_coupon_admin']);
-$coupons = shopCouponAdminList($pdo);
+$coupons = shopCouponAdminList($pdo, $showArchived);
 ?>
 <!doctype html>
 <html lang="cs">
@@ -77,7 +81,7 @@ $coupons = shopCouponAdminList($pdo);
 <body class="bg-light">
 <?php include __DIR__ . '/hlavicka.php'; ?>
 <main class="container py-4" style="max-width:1200px">
-    <div class="d-flex justify-content-between mb-3"><div><h1 class="h4 mb-0">Slevové kupóny K4</h1><div class="text-muted small">Pravidla i rozsah vytvořeného kupónu jsou neměnné; změnit lze jen aktivní stav.</div></div><a href="eshop_admin.php" class="btn btn-outline-secondary btn-sm">Administrace e-shopu</a></div>
+    <div class="d-flex justify-content-between gap-2 mb-3"><div><h1 class="h4 mb-0">Slevové kupóny K4</h1><div class="text-muted small">Ekonomická pravidla kupónu se nemění. Nepoužitý kupón lze archivovat; použitý zůstává kvůli historii objednávek.</div></div><div class="d-flex gap-2 align-items-start"><a href="<?= $showArchived ? 'eshop_coupons_admin.php' : 'eshop_coupons_admin.php?show_archived=1' ?>" class="btn btn-outline-dark btn-sm"><?= $showArchived ? 'Skrýt archivované' : 'Zobrazit archivované' ?></a><a href="eshop_admin.php" class="btn btn-outline-secondary btn-sm">Administrace e-shopu</a></div></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= couponAdminH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= couponAdminH($success) ?></div><?php endif; ?>
 
@@ -106,14 +110,15 @@ $coupons = shopCouponAdminList($pdo);
         <thead><tr><th>Kód</th><th>Sleva</th><th>Podmínky a rozsah</th><th>Použití</th><th>Stav</th><th>Poslední audit</th><th>Akce</th></tr></thead>
         <tbody>
         <?php foreach ($coupons as $coupon): ?>
-            <tr>
+            <?php $archived = ($coupon['archived_at'] ?? null) !== null; ?>
+            <tr class="<?= $archived ? 'table-secondary' : '' ?>">
                 <td><code><?= couponAdminH($coupon['code']) ?></code></td>
                 <td><?= couponAdminH(couponAdminDiscount($coupon)) ?></td>
                 <td class="small">Minimum <?= number_format((int)$coupon['minimum_order_minor'] / 100, 2, ',', ' ') ?> Kč<?php if ($coupon['maximum_discount_minor'] !== null): ?><br>maximum <?= number_format((int)$coupon['maximum_discount_minor'] / 100, 2, ',', ' ') ?> Kč<?php endif; ?><br><strong>Platí na:</strong> <?= couponAdminH(implode(', ', shopCouponApplicabilityLabels((int)($coupon['applicability_mask'] ?? SHOP_COUPON_GOODS)))) ?><br><?= couponAdminH($coupon['valid_from'] ?? 'od vytvoření') ?> – <?= couponAdminH($coupon['valid_until'] ?? 'bez konce') ?></td>
                 <td><?= (int)$coupon['usage_count'] ?> / <?= couponAdminH($coupon['usage_limit_total'] ?? '∞') ?></td>
-                <td><span class="badge text-bg-<?= (int)$coupon['active'] === 1 ? 'success' : 'secondary' ?>"><?= (int)$coupon['active'] === 1 ? 'aktivní' : 'vypnutý' ?></span></td>
+                <td><?php if ($archived): ?><span class="badge text-bg-dark">archivovaný</span><div class="small text-muted"><?= couponAdminH($coupon['archived_at']) ?></div><?php else: ?><span class="badge text-bg-<?= (int)$coupon['active'] === 1 ? 'success' : 'secondary' ?>"><?= (int)$coupon['active'] === 1 ? 'aktivní' : 'vypnutý' ?></span><?php endif; ?></td>
                 <td class="small"><code><?= couponAdminH($coupon['last_action']) ?></code> · admin #<?= (int)$coupon['last_actor_id'] ?><div><?= couponAdminH($coupon['last_note']) ?></div></td>
-                <td><form method="post" style="min-width:220px"><?= csrf_field() ?><input type="hidden" name="action" value="set_active"><input type="hidden" name="coupon_id" value="<?= (int)$coupon['id'] ?>"><input type="hidden" name="target_active" value="<?= (int)$coupon['active'] === 1 ? '0' : '1' ?>"><input class="form-control form-control-sm" name="note" maxlength="1000" required placeholder="Důvod změny"><label class="small"><input type="checkbox" name="confirm_action" value="1" required> Potvrzuji změnu</label><button class="btn btn-sm btn-outline-<?= (int)$coupon['active'] === 1 ? 'danger' : 'success' ?>"><?= (int)$coupon['active'] === 1 ? 'Vypnout' : 'Aktivovat' ?></button></form></td>
+                <td style="min-width:240px"><?php if ($archived): ?><span class="small text-muted">Bez dalších akcí.</span><?php else: ?><form method="post" class="mb-2"><?= csrf_field() ?><input type="hidden" name="action" value="set_active"><input type="hidden" name="coupon_id" value="<?= (int)$coupon['id'] ?>"><input type="hidden" name="target_active" value="<?= (int)$coupon['active'] === 1 ? '0' : '1' ?>"><input type="hidden" name="show_archived" value="<?= $showArchived ? '1' : '0' ?>"><input class="form-control form-control-sm" name="note" maxlength="1000" placeholder="Poznámka (nepovinná)"><label class="small"><input type="checkbox" name="confirm_action" value="1" required> Potvrzuji změnu</label><button class="btn btn-sm btn-outline-<?= (int)$coupon['active'] === 1 ? 'danger' : 'success' ?>"><?= (int)$coupon['active'] === 1 ? 'Vypnout' : 'Aktivovat' ?></button></form><?php if ((int)$coupon['usage_count'] === 0): ?><form method="post" class="border-top pt-2"><?= csrf_field() ?><input type="hidden" name="action" value="archive"><input type="hidden" name="coupon_id" value="<?= (int)$coupon['id'] ?>"><input type="hidden" name="show_archived" value="<?= $showArchived ? '1' : '0' ?>"><input class="form-control form-control-sm" name="note" maxlength="1000" required placeholder="Důvod archivace"><label class="small d-block"><input type="checkbox" name="confirm_action" value="1" required> Potvrzuji archivaci</label><button class="btn btn-sm btn-outline-dark">Archivovat nepoužitý kupón</button></form><?php else: ?><span class="small text-muted">Použitý kupón nelze archivovat; zůstává v historii.</span><?php endif; ?><?php endif; ?></td>
             </tr>
         <?php endforeach; ?>
         <?php if ($coupons === []): ?><tr><td colspan="7" class="text-center text-muted py-4">Zatím není žádný kupón.</td></tr><?php endif; ?>

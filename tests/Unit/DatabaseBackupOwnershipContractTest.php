@@ -27,6 +27,7 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
         // R1: řádek katalogu už nemusí pocházet z importu.
         self::assertContains('origin', $contract['shop_products']);
         self::assertContains('origin', $contract['shop_variants']);
+        self::assertSame(['archived_at'], $contract['shop_coupons']);
 
         // R6 je volitelný obchodní atribut, ne změna zápisového kontraktu.
         self::assertArrayNotHasKey('club_program_offers', $contract);

@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-21.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-22.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -68,6 +68,11 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'source_candidate_id',
         'origin',
         'created_by_trainer_id',
+    ],
+    // Kupón může být vyřazen z provozního seznamu, ale jeho auditní a účetní
+    // historie se kvůli objednávkám nikdy fyzicky nemaže.
+    'shop_coupons' => [
+        'archived_at',
     ],
     // Pracovni pristup je obnovitelny jen spolu s vlastnikem prirazeni a
     // jedinou vychozi pozici. Ztrata techto poli by znovu slila role.

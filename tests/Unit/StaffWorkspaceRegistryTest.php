@@ -117,5 +117,7 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertStringContainsString("\$action === 'confirm_payment'", $payments);
         self::assertStringContainsString("\$action === 'confirm_refund'", $payments);
         self::assertStringContainsString("staffRequireActivePosition('finance_manager')", $payments);
+        $switch = (string)file_get_contents($root . '/prepnout_pracovni_pozici.php');
+        self::assertStringContainsString("staffRouteOwner(\$next) === \$targetPosition", $switch);
     }
 }
