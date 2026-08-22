@@ -100,6 +100,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'club_program_wizard_admin.php', 'label' => 'Vypsat kroužek', 'description' => 'Průvodce novou nabídkou', 'icon' => 'magic'],
                     ['route' => 'club_program_offers_admin.php', 'label' => 'Nabídky kroužků', 'description' => 'Kapacity, věk a prodejní okna', 'icon' => 'calendar2-check'],
                     ['route' => 'club_programs_admin.php', 'label' => 'Programy a podmínky', 'description' => 'Kanonické programy a dokumenty', 'icon' => 'calendar-range'],
+                    ['route' => 'club_program_settings_admin.php', 'label' => 'Správa programů', 'description' => 'Opravy názvů a archivace', 'icon' => 'pencil-square'],
                 ]],
                 ['label' => 'Akce a sportoviště', 'icon' => 'building', 'items' => [
                     ['route' => 'eshop_events_admin.php', 'label' => 'Klubové akce', 'description' => 'Termíny, přihlášky a čekací listiny', 'icon' => 'calendar-event'],

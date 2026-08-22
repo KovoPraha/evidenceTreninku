@@ -79,6 +79,62 @@ function clubEventCreateDraft(PDO $pdo, int $actorId, array $input): array
     }
 }
 
+/** @return array{id:int,changed:bool,status:string} */
+function clubEventUpdateDraft(PDO $pdo, int $eventId, int $actorId, array $input, string $note, bool $confirmed): array
+{
+    $value=clubEventValidateDraft($actorId,$input);$note=trim($note);
+    if($eventId<1||$note===''||mb_strlen($note,'UTF-8')>1000||!$confirmed)throw new InvalidArgumentException('Úprava akce vyžaduje důvod a potvrzení.');
+    $pdo->beginTransaction();
+    try{
+        $before=clubEventLock($pdo,$eventId);if(!$before)throw new ClubEventException('Akce nebyla nalezena.');if($before['status']!=='draft')throw new ClubEventException('Základní údaje lze měnit pouze u pracovní akce.');
+        $changed=false;foreach($value as$key=>$item)if((string)($before[$key]??'')!==(string)($item??'')){$changed=true;break;}
+        if($changed){$pdo->prepare('UPDATE club_events SET code=?,event_type=?,name=?,description_plain=?,audience_label=?,min_age=?,max_age=?,capacity=?,pricing_policy=?,currency=?,registration_starts_at=?,registration_ends_at=? WHERE id=?')->execute([$value['code'],$value['event_type'],$value['name'],$value['description_plain'],$value['audience_label'],$value['min_age'],$value['max_age'],$value['capacity'],$value['pricing_policy'],$value['currency'],$value['registration_starts_at'],$value['registration_ends_at'],$eventId]);clubEventAudit($pdo,$eventId,$actorId,'update_event','event',$eventId,$note,['before'=>$before,'after'=>$value]);}
+        $pdo->commit();return['id'=>$eventId,'changed'=>$changed,'status'=>'draft'];
+    }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ClubEventException)throw$exception;throw new ClubEventException('Akci se nepodařilo upravit bez částečného zápisu.',0,$exception);}
+}
+
+/** @return array{id:int,changed:bool} */
+function clubEventUpdateSession(PDO $pdo,int $eventId,int $sessionId,int $actorId,string $startsAt,string $endsAt,string $location,?int $capacityOverride,string $note,bool $confirmed):array
+{
+    [$startsAt,$endsAt]=[clubEventDateTime($startsAt),clubEventDateTime($endsAt)];$location=trim($location);$note=trim($note);
+    if($eventId<1||$sessionId<1||$actorId<1||$location===''||mb_strlen($location,'UTF-8')>255||$note===''||mb_strlen($note,'UTF-8')>1000||!$confirmed)throw new InvalidArgumentException('Úprava termínu vyžaduje platné údaje, důvod a potvrzení.');
+    if($startsAt>=$endsAt||($capacityOverride!==null&&($capacityOverride<1||$capacityOverride>10000)))throw new InvalidArgumentException('Konec termínu musí být po začátku a kapacita musí být platná.');
+    $pdo->beginTransaction();try{$event=clubEventLock($pdo,$eventId);if(!$event||$event['status']!=='draft')throw new ClubEventException('Termín lze upravit pouze u pracovní akce.');
+        $sql='SELECT * FROM club_event_sessions WHERE id=? AND event_id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$statement=$pdo->prepare($sql);$statement->execute([$sessionId,$eventId]);$before=$statement->fetch(PDO::FETCH_ASSOC);if(!$before||$before['status']!=='scheduled')throw new ClubEventException('Aktivní termín nebyl nalezen.');
+        $overlap=$pdo->prepare("SELECT COUNT(*) FROM club_event_sessions WHERE event_id=? AND id<>? AND status='scheduled' AND starts_at<? AND ends_at>?");$overlap->execute([$eventId,$sessionId,$endsAt,$startsAt]);if((int)$overlap->fetchColumn()>0)throw new ClubEventException('Termín se překrývá s jiným termínem této akce.');
+        $after=['starts_at'=>$startsAt,'ends_at'=>$endsAt,'location'=>$location,'capacity_override'=>$capacityOverride];$changed=false;foreach($after as$key=>$item)if((string)($before[$key]??'')!==(string)($item??'')){$changed=true;break;}
+        if($changed){$pdo->prepare('UPDATE club_event_sessions SET starts_at=?,ends_at=?,location=?,capacity_override=? WHERE id=?')->execute([$startsAt,$endsAt,$location,$capacityOverride,$sessionId]);clubEventAudit($pdo,$eventId,$actorId,'update_session','session',$sessionId,$note,['before'=>$before,'after'=>$after]);}$pdo->commit();return['id'=>$sessionId,'changed'=>$changed];
+    }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ClubEventException)throw$exception;throw new ClubEventException('Termín se nepodařilo upravit bez částečného zápisu.',0,$exception);}
+}
+
+/** @return array{id:int,changed:bool} */
+function clubEventCancelSession(PDO $pdo,int $eventId,int $sessionId,int $actorId,string $note,bool $confirmed):array
+{
+    $note=trim($note);if($eventId<1||$sessionId<1||$actorId<1||$note===''||mb_strlen($note,'UTF-8')>1000||!$confirmed)throw new InvalidArgumentException('Zrušení termínu vyžaduje důvod a potvrzení.');
+    $pdo->beginTransaction();try{$event=clubEventLock($pdo,$eventId);if(!$event||$event['status']!=='draft')throw new ClubEventException('Termín lze zrušit pouze u pracovní akce.');$statement=$pdo->prepare('SELECT * FROM club_event_sessions WHERE id=? AND event_id=?');$statement->execute([$sessionId,$eventId]);$before=$statement->fetch(PDO::FETCH_ASSOC);if(!$before)throw new ClubEventException('Termín nebyl nalezen.');if($before['status']==='cancelled'){$pdo->commit();return['id'=>$sessionId,'changed'=>false];}$pdo->prepare("UPDATE club_event_sessions SET status='cancelled' WHERE id=?")->execute([$sessionId]);clubEventAudit($pdo,$eventId,$actorId,'cancel_session','session',$sessionId,$note,['before'=>$before,'after'=>['status'=>'cancelled']]);$pdo->commit();return['id'=>$sessionId,'changed'=>true];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ClubEventException)throw$exception;throw new ClubEventException('Termín se nepodařilo zrušit bez částečného zápisu.',0,$exception);}
+}
+
+/** @return array{id:int,changed:bool,status:string} */
+function clubEventReopenDraft(PDO $pdo,int $eventId,int $actorId,string $note,bool $confirmed):array
+{
+    $note=trim($note);if($eventId<1||$actorId<1||$note===''||mb_strlen($note,'UTF-8')>1000||!$confirmed)throw new InvalidArgumentException('Vrácení do rozpracovaného stavu vyžaduje důvod a potvrzení.');
+    $pdo->beginTransaction();try{$before=clubEventLock($pdo,$eventId);if(!$before)throw new ClubEventException('Akce nebyla nalezena.');if($before['status']==='draft'){$pdo->commit();return['id'=>$eventId,'changed'=>false,'status'=>'draft'];}if($before['status']!=='closed')throw new ClubEventException('Do rozpracovaného stavu lze vrátit pouze uzavřenou akci.');$pdo->prepare("UPDATE club_events SET status='draft' WHERE id=?")->execute([$eventId]);clubEventAudit($pdo,$eventId,$actorId,'reopen_draft','event',$eventId,$note,['before'=>['status'=>'closed'],'after'=>['status'=>'draft']]);$pdo->commit();return['id'=>$eventId,'changed'=>true,'status'=>'draft'];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ClubEventException)throw$exception;throw new ClubEventException('Akci se nepodařilo vrátit do pracovního stavu.',0,$exception);}
+}
+
+/** @return array{id:int,changed:bool,status:string} */
+function clubEventArchive(PDO $pdo,int $eventId,int $actorId,string $note,bool $confirmed):array
+{
+    $note=trim($note);if($eventId<1||$actorId<1||$note===''||mb_strlen($note,'UTF-8')>1000||!$confirmed)throw new InvalidArgumentException('Archivace akce vyžaduje důvod a potvrzení.');
+    $pdo->beginTransaction();try{$before=clubEventLock($pdo,$eventId);if(!$before)throw new ClubEventException('Akce nebyla nalezena.');if($before['status']==='archived'){$pdo->commit();return['id'=>$eventId,'changed'=>false,'status'=>'archived'];}if(!in_array($before['status'],['draft','closed'],true))throw new ClubEventException('Otevřenou akci je nutné nejprve uzavřít.');
+        if(clubEventTableExists($pdo,'club_event_registrations')){$statement=$pdo->prepare("SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','waitlisted')");$statement->execute([$eventId]);if((int)$statement->fetchColumn()>0)throw new ClubEventException('Akci s aktivními přihláškami nelze archivovat.');}
+        $pdo->prepare("UPDATE club_events SET status='archived' WHERE id=?")->execute([$eventId]);clubEventAudit($pdo,$eventId,$actorId,'archive_event','event',$eventId,$note,['before'=>['status'=>$before['status']],'after'=>['status'=>'archived']]);$pdo->commit();return['id'=>$eventId,'changed'=>true,'status'=>'archived'];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ClubEventException)throw$exception;throw new ClubEventException('Akci se nepodařilo archivovat bez částečného zápisu.',0,$exception);}
+}
+
+function clubEventTableExists(PDO $pdo,string $table):bool
+{
+    if(preg_match('/^[a-z0-9_]+$/D',$table)!==1)return false;if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){$statement=$pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1');$statement->execute([$table]);return(bool)$statement->fetchColumn();}$statement=$pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1");$statement->execute([$table]);return(bool)$statement->fetchColumn();
+}
+
 /** @return array{id:int,event_id:int} */
 function clubEventAddSession(PDO $pdo, int $eventId, int $actorId, string $startsAt, string $endsAt, string $location, ?int $capacityOverride): array
 {

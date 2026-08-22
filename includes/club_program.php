@@ -57,6 +57,53 @@ function clubProgramCreate(PDO $pdo, int $actorId, string $code, string $name, s
     }
 }
 
+/** @return array{id:int,changed:bool,status:string} */
+function clubProgramUpdate(PDO $pdo, int $actorId, int $programId, string $name, string $description, string $reason, bool $confirmed): array
+{
+    $name = clubProgramText($name, 160, 'Název programu');
+    $description = clubProgramText($description, 4000, 'Popis programu', false);
+    $reason = clubProgramText($reason, 1000, 'Důvod úpravy');
+    if ($actorId < 1 || $programId < 1 || !$confirmed) throw new InvalidArgumentException('Úprava programu vyžaduje správce, důvod a potvrzení.');
+    $pdo->beginTransaction();
+    try {
+        $sql = 'SELECT * FROM club_programs WHERE id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
+        $statement = $pdo->prepare($sql);$statement->execute([$programId]);$before = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!$before) throw new ClubProgramException('Program nebyl nalezen.');
+        if ((string)$before['status'] === 'archived') throw new ClubProgramException('Archivovaný program nelze upravovat.');
+        $changed = (string)$before['name'] !== $name || (string)($before['description'] ?? '') !== $description;
+        if ($changed) {
+            $pdo->prepare('UPDATE club_programs SET name=?,description=? WHERE id=?')->execute([$name,$description !== '' ? $description : null,$programId]);
+            $after = $before;$after['name']=$name;$after['description']=$description;$after['reason']=$reason;
+            clubProgramEvent($pdo,$programId,null,'trainer',$actorId,'update_program',$before,$after);
+        }
+        $pdo->commit();return ['id'=>$programId,'changed'=>$changed,'status'=>(string)$before['status']];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($exception instanceof InvalidArgumentException || $exception instanceof ClubProgramException) throw $exception;
+        throw new ClubProgramException('Program se nepodařilo upravit bez částečného zápisu.',0,$exception);
+    }
+}
+
+/** @return array{id:int,changed:bool,status:string} */
+function clubProgramArchive(PDO $pdo, int $actorId, int $programId, string $reason, bool $confirmed): array
+{
+    $reason = clubProgramText($reason, 1000, 'Důvod archivace');
+    if ($actorId < 1 || $programId < 1 || !$confirmed) throw new InvalidArgumentException('Archivace programu vyžaduje správce, důvod a potvrzení.');
+    $pdo->beginTransaction();
+    try {
+        $sql='SELECT * FROM club_programs WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
+        $statement=$pdo->prepare($sql);$statement->execute([$programId]);$before=$statement->fetch(PDO::FETCH_ASSOC);
+        if(!$before)throw new ClubProgramException('Program nebyl nalezen.');
+        if((string)$before['status']==='archived'){$pdo->commit();return['id'=>$programId,'changed'=>false,'status'=>'archived'];}
+        $active=$pdo->prepare("SELECT COUNT(*) FROM club_program_offers WHERE program_id=? AND status IN ('draft','active')");$active->execute([$programId]);
+        if((int)$active->fetchColumn()>0)throw new ClubProgramException('Nejprve uzavřete všechny pracovní a aktivní nabídky programu.');
+        $pdo->prepare("UPDATE club_programs SET status='archived' WHERE id=?")->execute([$programId]);
+        $after=$before;$after['status']='archived';$after['reason']=$reason;clubProgramEvent($pdo,$programId,null,'trainer',$actorId,'archive_program',$before,$after);
+        $pdo->commit();return['id'=>$programId,'changed'=>true,'status'=>'archived'];
+    }catch(Throwable $exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ClubProgramException)throw$exception;throw new ClubProgramException('Program se nepodařilo archivovat bez částečného zápisu.',0,$exception);}
+}
+
 function clubProgramColumnExists(PDO $pdo, string $table, string $column): bool
 {
     if(preg_match('/^[a-z0-9_]+$/D',$table)!==1||preg_match('/^[a-z0-9_]+$/D',$column)!==1)return false;
@@ -434,7 +481,7 @@ function clubProgramProductSaleState(PDO $pdo, int $productId, ?DateTimeImmutabl
 function clubProgramEvent(PDO $pdo, int $programId, ?int $offerId, string $actorType, int $actorId, string $action, ?array $before, array $after): void
 {
     if (!$pdo->inTransaction() || $programId < 1 || $actorType !== 'trainer' || $actorId < 1
-        || !in_array($action, ['create_program','create_offer','update_offer','close_offer'], true)) {
+        || !in_array($action, ['create_program','update_program','archive_program','create_offer','update_offer','close_offer'], true)) {
         throw new LogicException('Audit programu vyžaduje transakci, objekt, správce a podporovanou akci.');
     }
     $pdo->prepare(

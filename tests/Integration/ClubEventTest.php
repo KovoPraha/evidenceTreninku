@@ -76,6 +76,17 @@ final class ClubEventTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_sessions')->fetchColumn());
     }
 
+    public function testDraftEventAndSessionsCanBeEditedCancelledReopenedAndArchived():void
+    {
+        $pdo=$this->database();$input=$this->eventInput();$event=\clubEventCreateDraft($pdo,7,$input);$session=\clubEventAddSession($pdo,$event['id'],7,'2026-09-01T16:00','2026-09-01T17:00','Velodrom',20);
+        $input['name']='Zebry – opravený název';$input['capacity']='25';$updated=\clubEventUpdateDraft($pdo,$event['id'],7,$input,'Oprava zadání.',true);self::assertTrue($updated['changed']);
+        self::assertTrue(\clubEventUpdateSession($pdo,$event['id'],$session['id'],7,'2026-09-01T16:30','2026-09-01T18:00','Hala',18,'Změna místa.',true)['changed']);
+        self::assertTrue(\clubEventCancelSession($pdo,$event['id'],$session['id'],7,'Termín odpadl.',true)['changed']);self::assertSame('cancelled',$pdo->query('SELECT status FROM club_event_sessions WHERE id='.$session['id'])->fetchColumn());
+        $pdo->exec("UPDATE club_events SET status='closed' WHERE id=".(int)$event['id']);self::assertTrue(\clubEventReopenDraft($pdo,$event['id'],7,'Je potřeba oprava.',true)['changed']);
+        self::assertTrue(\clubEventArchive($pdo,$event['id'],7,'Akce se neuskuteční.',true)['changed']);self::assertSame('archived',$pdo->query('SELECT status FROM club_events WHERE id='.$event['id'])->fetchColumn());
+        self::assertSame(5,(int)$pdo->query("SELECT COUNT(*) FROM club_event_admin_events WHERE action IN ('update_event','update_session','cancel_session','reopen_draft','archive_event')")->fetchColumn());
+    }
+
     private function eventInput(): array
     {
         return ['code'=>'KROUZEK-2026','event_type'=>'club_event','name'=>'Zebry 6–7 let','description_plain'=>'Pracovní návrh kroužku.','audience_label'=>'Děti 6–7 let','min_age'=>'6','max_age'=>'7','capacity'=>'20','pricing_policy'=>'product_variants','currency'=>'CZK','registration_starts_at'=>'2026-08-10T08:00','registration_ends_at'=>'2026-08-31T20:00'];

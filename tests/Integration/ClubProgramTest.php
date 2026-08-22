@@ -132,6 +132,18 @@ final class ClubProgramTest extends TestCase
         $admin=array_values(array_filter(\clubProgramAdminOffers($pdo),static fn(array$row):bool=>(int)$row['id']===(int)$offer['id']))[0];self::assertFalse($admin['saleable']);self::assertSame('Nabídka není aktivní.',$admin['sale_reason']);
     }
 
+    public function testStableProgramCanBeEditedAndArchivedOnlyAfterOffersClose():void
+    {
+        $pdo=$this->database();$program=(int)\clubProgramCreate($pdo,7,'STABLE','Původní program','Původní popis')['id'];
+        $updated=\clubProgramUpdate($pdo,7,$program,'Nový název','Nový popis','Upřesnění veřejného názvu.',true);
+        self::assertTrue($updated['changed']);self::assertSame('Nový název',$pdo->query('SELECT name FROM club_programs WHERE id='.$program)->fetchColumn());
+        $offer=\clubProgramCreateOffer($pdo,7,$program,1,10,501,601,'STABLE-2026','Období','2026-09-01','2027-01-31',null,null,12,'active');
+        try{\clubProgramArchive($pdo,7,$program,'Konec programu.',true);self::fail('Open offer must block program archive.');}catch(\ClubProgramException$exception){self::assertStringContainsString('uzavřete',$exception->getMessage());}
+        \clubProgramCloseOffer($pdo,7,(int)$offer['id'],'Období skončilo.',true);$archived=\clubProgramArchive($pdo,7,$program,'Program se už nevypisuje.',true);
+        self::assertTrue($archived['changed']);self::assertSame('archived',$pdo->query('SELECT status FROM club_programs WHERE id='.$program)->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_program_events WHERE program_id=$program AND action='update_program'")->fetchColumn());self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_program_events WHERE program_id=$program AND action='archive_program'")->fetchColumn());
+    }
+
     private function offer(PDO $pdo,int $variantId,int $productId,int $teamId,int $capacity,string $code,string $from,string $to,?int $programId=null): int
     {
         $programId??=(int)\clubProgramCreate($pdo,7,'BIKE-SCHOOL','Cyklistická škola')['id'];
