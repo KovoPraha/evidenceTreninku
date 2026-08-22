@@ -9,24 +9,29 @@ if (PHP_SAPI !== 'cli') {
 $root = dirname(__DIR__);
 $arguments = array_slice($argv, 1);
 $generate = in_array('--generate', $arguments, true);
-$send = in_array('--send-local', $arguments, true);
+$sendLocal = in_array('--send-local', $arguments, true);
+$sendMail = in_array('--send', $arguments, true);
 $force = in_array('--force', $arguments, true);
 $limit = 20;
 foreach ($arguments as $argument) {
-    if (in_array($argument, ['--generate', '--send-local', '--force'], true)) continue;
+    if (in_array($argument, ['--generate', '--send', '--send-local', '--force'], true)) continue;
     if (preg_match('/^--limit=([1-9]|[1-9][0-9])$/D', $argument, $match) === 1) {
         $limit = (int)$match[1];
         continue;
     }
     if ($argument === '--help') {
-        echo "Pouziti: APP_HOST=localhost php bin/family-weekly-summaries.php --generate [--force] [--send-local] [--limit=20]\n";
+        echo "Pouziti: APP_HOST=<host> php bin/family-weekly-summaries.php --generate [--force] [--send|--send-local] [--limit=20]\n";
         exit(0);
     }
     fwrite(STDERR, "Neplatne argumenty. Pouzijte --help.\n");
     exit(64);
 }
-if (!$generate && !$send) {
-    fwrite(STDERR, "Je nutne zvolit --generate nebo --send-local.\n");
+if (!$generate && !$sendLocal && !$sendMail) {
+    fwrite(STDERR, "Je nutne zvolit --generate, --send nebo --send-local.\n");
+    exit(64);
+}
+if ($sendLocal && $sendMail) {
+    fwrite(STDERR, "--send a --send-local nelze kombinovat.\n");
     exit(64);
 }
 $appHost = getenv('APP_HOST');
@@ -35,8 +40,8 @@ if (!is_string($appHost) || preg_match('/^[a-z0-9.-]+(?::\d+)?$/Di', $appHost) !
     exit(64);
 }
 $normalizedHost = strtolower((string)preg_replace('/:\d+$/D', '', $appHost));
-if ($send && !in_array($normalizedHost, ['localhost', '127.0.0.1'], true)) {
-    fwrite(STDERR, "Odesilani je povoleno pouze do localhost outboxu. Produkční transport neni implementovan.\n");
+if ($sendLocal && !in_array($normalizedHost, ['localhost', '127.0.0.1'], true)) {
+    fwrite(STDERR, "Lokální outbox je povolen pouze pro localhost.\n");
     exit(64);
 }
 $_SERVER['HTTP_HOST'] = $appHost;
@@ -52,8 +57,10 @@ try {
     ]);
     $generation = $generate ? familyWeeklyDeliveryGenerate($pdo, null, $force) : null;
     $processed = $sent = $failed = 0;
-    if ($send) {
-        $sender = familyWeeklyDeliveryLocalOutboxSender($appHost);
+    $transport = 'none';
+    if ($sendLocal || $sendMail) {
+        $transport = $sendLocal ? 'local-outbox' : 'mail';
+        $sender = $sendLocal ? familyWeeklyDeliveryLocalOutboxSender($appHost) : 'familyWeeklyDeliveryMailSender';
         while ($processed < $limit) {
             $outcome = familyWeeklyDeliveryProcessOne($pdo, $sender);
             if ($outcome === null) break;
@@ -61,7 +68,7 @@ try {
             $outcome ? $sent++ : $failed++;
         }
     }
-    echo json_encode(['generation' => $generation, 'transport' => 'local-outbox-only', 'processed' => $processed, 'sent' => $sent, 'failed' => $failed], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+    echo json_encode(['generation' => $generation, 'transport' => $transport, 'processed' => $processed, 'sent' => $sent, 'failed' => $failed], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } catch (Throwable $exception) {
     error_log('family-weekly-summaries.php: ' . $exception->getMessage());
     fwrite(STDERR, "Zpracovani tydennich souhrnu selhalo; podrobnosti jsou pouze v serverovem logu.\n");

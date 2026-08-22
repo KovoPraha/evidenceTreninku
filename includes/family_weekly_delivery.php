@@ -212,14 +212,14 @@ function familyWeeklyDeliveryComplete(PDO $pdo, int $id, string $token, bool $se
         if (!$row || (string)$row['status'] !== 'processing') throw new FamilyWeeklyDeliveryException('Souhrn již nevlastní tento proces.');
         if ($sent) {
             $pdo->prepare("UPDATE family_weekly_summaries SET status='sent',sent_at=CURRENT_TIMESTAMP,claim_token=NULL,last_error=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$id]);
-            familyWeeklyDeliveryAudit($pdo, $id, (int)$row['account_id'], 'sent', 'processing', 'sent', 'Testovací transport potvrdil zpracování.', $actorType, $actorId);
+            familyWeeklyDeliveryAudit($pdo, $id, (int)$row['account_id'], 'sent', 'processing', 'sent', 'E-mailový transport potvrdil odeslání.', $actorType, $actorId);
         } else {
             $terminal = (int)$row['attempts'] >= 5;
             $next = $terminal ? 'failed' : 'pending';
             $available = (new DateTimeImmutable('now +' . min(3600, 300 * max(1, (int)$row['attempts'])) . ' seconds'))->format('Y-m-d H:i:s');
             $safeError = mb_substr(trim((string)$error), 0, 500, 'UTF-8');
             $pdo->prepare('UPDATE family_weekly_summaries SET status=?,available_at=?,claim_token=NULL,last_error=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$next, $available, $safeError, $id]);
-            familyWeeklyDeliveryAudit($pdo, $id, (int)$row['account_id'], 'send_failed', 'processing', $next, $safeError !== '' ? $safeError : 'Testovací transport odmítl zprávu.', $actorType, $actorId);
+            familyWeeklyDeliveryAudit($pdo, $id, (int)$row['account_id'], 'send_failed', 'processing', $next, $safeError !== '' ? $safeError : 'E-mailový transport odmítl zprávu.', $actorType, $actorId);
         }
         $pdo->commit();
     } catch (Throwable $exception) {
@@ -244,7 +244,7 @@ function familyWeeklyDeliveryProcessOne(PDO $pdo, callable $sender, string $acto
         return false;
     }
     try {
-        familyWeeklyDeliveryComplete($pdo, (int)$row['id'], (string)$row['claim_token'], $sent, $sent ? null : 'Testovací transport odmítl zprávu.', $actorType, $actorId);
+        familyWeeklyDeliveryComplete($pdo, (int)$row['id'], (string)$row['claim_token'], $sent, $sent ? null : 'E-mailový transport odmítl zprávu.', $actorType, $actorId);
     } catch (FamilyWeeklyDeliveryException) {
         // The user may have opted out after claim; their cancellation wins.
         return false;
@@ -261,6 +261,21 @@ function familyWeeklyDeliveryLocalOutboxSender(string $appHost, ?string $directo
     } catch (Throwable $exception) {
         throw new FamilyWeeklyDeliveryException($exception->getMessage(), 0, $exception);
     }
+}
+
+function familyWeeklyDeliveryMailSender(string $recipient, string $subject, string $body): bool
+{
+    if (!filter_var($recipient, FILTER_VALIDATE_EMAIL)
+        || preg_match('/[\r\n]/', $recipient . $subject) === 1
+    ) {
+        throw new FamilyWeeklyDeliveryException('Souhrn obsahuje neplatnou e-mailovou hlavičku.');
+    }
+    return mail(
+        $recipient,
+        '=?UTF-8?B?' . base64_encode($subject) . '?=',
+        $body,
+        "Content-Type: text/plain; charset=UTF-8\r\n"
+    );
 }
 
 /** @return array{pending:int,processing:int,sent:int,failed:int,cancelled:int} */

@@ -185,6 +185,7 @@ final class ShopCheckoutTest extends TestCase
         self::assertFalse(\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'Opakování.',true)['changed']);self::assertNotFalse($pdo->query('SELECT completed_at FROM shop_orders')->fetchColumn());
         self::assertSame(['place','confirm_bank_payment','mark_ready','complete_pickup'],$pdo->query('SELECT action FROM shop_order_events ORDER BY id')->fetchAll(PDO::FETCH_COLUMN));
         $admin=\shopOrderAdminList($pdo);self::assertSame('complete_pickup',$admin[0]['last_event_action']);self::assertSame(7,(int)$admin[0]['last_event_actor_id']);self::assertStringContainsString('Novákovi',$admin[0]['last_event_note']);
+        $items=\shopOrderAdminItemMap($pdo,[(int)$order['id']]);self::assertCount(1,$items[(int)$order['id']]);self::assertSame('Tričko KOVO',$items[(int)$order['id']][0]['line_name']);self::assertSame('TRIKO-M',(string)$items[(int)$order['id']][0]['sku']);self::assertSame(1,(int)$items[(int)$order['id']][0]['quantity']);
         try{\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Pozdní storno.',true);self::fail('Completed order must not be cancelled.');}catch(\ShopCheckoutException){}
         self::assertSame(4.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
     }

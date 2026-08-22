@@ -16,7 +16,7 @@ final class FamilyWeeklyDeliveryWiringTest extends TestCase
         self::assertStringContainsString('Vypnout týdenní souhrn', $page);
     }
 
-    public function testAdminAndCliCanOnlyUseLocalOutbox(): void
+    public function testAdminUsesLocalPreviewAndCliHasExplicitProductionTransport(): void
     {
         $admin = $this->source('family_weekly_summaries_admin.php');
         $cli = $this->source('bin/family-weekly-summaries.php');
@@ -26,9 +26,18 @@ final class FamilyWeeklyDeliveryWiringTest extends TestCase
         self::assertStringContainsString("defined('JE_LOKALNE')", $admin);
         self::assertStringContainsString('familyWeeklyDeliveryLocalOutboxSender', $admin);
         self::assertStringContainsString('--send-local', $cli);
-        self::assertStringContainsString('Produkční transport neni implementovan', $cli);
+        self::assertStringContainsString("in_array('--send', \$arguments, true)", $cli);
+        self::assertStringContainsString('familyWeeklyDeliveryMailSender', $cli);
         self::assertStringNotContainsString('mail(', $cli);
         self::assertStringContainsString('family_weekly_summaries_admin.php', $header);
+    }
+
+    public function testMailSenderValidatesHeadersBeforeUsingProductionMail(): void
+    {
+        $delivery = $this->source('includes/family_weekly_delivery.php');
+        self::assertStringContainsString('function familyWeeklyDeliveryMailSender', $delivery);
+        self::assertStringContainsString("preg_match('/[\\r\\n]/'", $delivery);
+        self::assertStringContainsString('base64_encode($subject)', $delivery);
     }
 
     public function testMessageExplainsUnsubscribeAndContainsNoIdentityToken(): void

@@ -39,6 +39,18 @@ php bin/family-weekly-summaries.php --generate --force
 php bin/family-weekly-summaries.php --send-local --limit=1
 ```
 
+Produkční CRON spouští jednou týdně vytvoření fronty a následně její omezené
+zpracování skutečným e-mailovým transportem:
+
+```bash
+APP_HOST=kis.kovopraha.cz php bin/family-weekly-summaries.php --generate --send --limit=50
+```
+
+Volba `--send` je záměrně explicitní. Opakované spuštění je bezpečné: pro jeden
+účet a počátek týdne vznikne nejvýše jeden snapshot a worker používá převzetí,
+počet pokusů a odložené opakování. `--send-local` nadále odmítne jiný host než
+localhost.
+
 `--force` obchází pouze pondělní plán na localhostu; unikátní klíč fronty stále
 brání duplicitám. `--send-local` se na jiném hostu než `localhost` nebo `127.0.0.1`
 ukončí chybou.

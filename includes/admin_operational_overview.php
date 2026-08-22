@@ -121,7 +121,7 @@ function adminOperationalOverview(PDO $pdo, ?DateTimeImmutable $now = null): arr
 
     if (adminOperationalHasTables($pdo, ['family_weekly_summaries'])) {
         $failed = (int)$pdo->query("SELECT COUNT(*) FROM family_weekly_summaries WHERE status='failed'")->fetchColumn();
-        adminOperationalAdd($sections['exceptions'], 'failed_weekly_summaries', 'Selhané týdenní rodinné souhrny', $failed, 'Produkční transport je vypnutý; na localhostu zkontrolujte uložený snapshot a testovací outbox.', 'family_weekly_summaries_admin.php?status=failed', 'danger');
+        adminOperationalAdd($sections['exceptions'], 'failed_weekly_summaries', 'Selhané týdenní rodinné souhrny', $failed, 'Zkontrolujte uložený snapshot, adresu a chybu produkčního e-mailového transportu.', 'family_weekly_summaries_admin.php?status=failed', 'danger');
     } else $unavailable[] = 'týdenní rodinné souhrny';
 
     if (adminOperationalHasTables($pdo, ['club_event_notifications'])) {

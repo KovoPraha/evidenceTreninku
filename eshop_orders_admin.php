@@ -45,7 +45,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         }
     }
 }
-$success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_order_admin']);$orders=shopOrderAdminList($pdo,200,$query);
+$success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_order_admin']);$orders=shopOrderAdminList($pdo,200,$query);$orderItems=shopOrderAdminItemMap($pdo,array_column($orders,'id'));
 ?>
 <!doctype html>
 <html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Objednávky K4</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"></head>
@@ -61,7 +61,7 @@ $success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_ord
 <?php if($query!==''):?><div class="form-text">Počet výsledků: <?=count($orders)?>.</div><?php endif;?>
 </form>
 <div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Objednávka</th><th>Zákazník</th><th>Částka / VS</th><th>Stav</th><th>Platba</th><th>Poslední změna</th><th style="min-width:330px">Dostupné akce</th></tr></thead><tbody>
-<?php foreach($orders as$order):?><tr id="order-<?=(int)$order['id']?>">
+<?php foreach($orders as$order):?><?php $items=$orderItems[(int)$order['id']]??[];?><tr id="order-<?=(int)$order['id']?>">
 <td><code><?=orderAdminH($order['public_code'])?></code><div class="small text-muted"><?=orderAdminH($order['created_at'])?></div></td>
 <td><?=orderAdminH($order['customer_name_snapshot'])?><div class="small"><?=orderAdminH($order['customer_email_snapshot'])?></div></td>
 <td><?=orderAdminMoney((int)$order['total_minor'],(string)$order['currency'])?><div><code>VS <?=orderAdminH($order['variable_symbol'])?></code></div><?php if($order['coupon_code_snapshot']!==null):?><div class="small text-success">kupón <?=orderAdminH($order['coupon_code_snapshot'])?> · sleva <?=orderAdminMoney((int)$order['discount_minor'],(string)$order['currency'])?></div><?php endif;?></td>
@@ -79,6 +79,9 @@ $success=(string)($_SESSION['flash_order_admin']??'');unset($_SESSION['flash_ord
 <?php if(in_array($order['status'],['placed','processing','ready'],true)):?>
 <form method="post" class="border border-danger-subtle rounded p-2"><?=csrf_field()?><input type="hidden" name="action" value="cancel"><input type="hidden" name="order_id" value="<?=(int)$order['id']?>"><label class="small fw-semibold text-danger">Stornovat objednávku</label><input class="form-control form-control-sm my-1" name="reason" maxlength="1000" required aria-label="Důvod storna <?=orderAdminH($order['public_code'])?>" placeholder="Důvod storna"><label class="small d-block"><input type="checkbox" name="confirm_action" value="1" required> Potvrzuji storno a vrácení skladu</label><button class="btn btn-sm btn-outline-danger mt-1">Stornovat</button></form>
 <?php elseif(in_array($order['status'],['completed','cancelled'],true)&&$order['payment_record_status']!=='refund_required'):?><span class="small text-muted">Objednávka je v koncovém stavu.</span><?php endif;?>
-</td></tr><?php endforeach;?>
+</td></tr>
+<tr class="table-light"><td colspan="7" class="p-3"><strong class="small text-uppercase text-muted">Co přesně připravit</strong>
+<?php if($items!==[]):?><div class="table-responsive mt-2"><table class="table table-sm table-bordered bg-white mb-0"><thead><tr><th>Položka</th><th>SKU / typ</th><th>Pro koho</th><th class="text-end">Množství</th><th class="text-end">Cena za kus</th><th class="text-end">Celkem</th></tr></thead><tbody>
+<?php foreach($items as$item):?><?php $attributes=json_decode((string)($item['detail_json']??''),true);?><tr><td><strong><?=orderAdminH($item['line_name'])?></strong><?php if($item['starts_at']!==null):?><div class="small text-muted"><?=orderAdminH($item['starts_at'])?>–<?=orderAdminH($item['ends_at'])?></div><?php endif;?><?php if(is_array($attributes)&&$attributes!==[]):?><div class="small text-muted"><?=orderAdminH(implode(' · ',array_map(static fn($key,$value):string=>(string)$key.': '.(is_scalar($value)?(string)$value:'—'),array_keys($attributes),$attributes)))?></div><?php endif;?></td><td><code><?=orderAdminH($item['sku'])?></code><div class="small text-muted"><?=orderAdminH(['catalog'=>'zboží / kroužek','velodrome'=>'lekce na velodromu','event'=>'klubová akce'][$item['line_type']]??$item['line_type'])?></div></td><td><?=trim((string)($item['jmeno']??'').' '.(string)($item['prijmeni']??''))!==''?orderAdminH(trim((string)$item['jmeno'].' '.(string)$item['prijmeni'])):'—'?></td><td class="text-end fw-semibold"><?=(int)$item['quantity']?></td><td class="text-end"><?=orderAdminMoney((int)$item['unit_amount_minor'],(string)$item['currency'])?></td><td class="text-end fw-semibold"><?=orderAdminMoney((int)$item['line_amount_minor'],(string)$item['currency'])?></td></tr><?php endforeach;?></tbody></table></div><?php else:?><div class="alert alert-warning py-2 mb-0 mt-2">Objednávka nemá žádnou dohledatelnou položku. Před změnou stavu ji prověřte.</div><?php endif;?></td></tr><?php endforeach;?>
 <?php if($orders===[]):?><tr><td colspan="7" class="text-center text-muted py-4"><?=$query!==''?'Tomuto hledání neodpovídá žádná objednávka.':'Zatím není žádná objednávka.'?></td></tr><?php endif;?>
 </tbody></table></div></div></main></body></html>

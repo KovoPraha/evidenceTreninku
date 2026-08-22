@@ -569,6 +569,34 @@ function shopOrderAdminList(PDO $pdo,int $limit=200,string $query=''):array
     return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+/**
+ * Complete immutable fulfillment lines, grouped by order id.
+ *
+ * @param list<int|string> $orderIds
+ * @return array<int,list<array<string,mixed>>>
+ */
+function shopOrderAdminItemMap(PDO $pdo,array $orderIds):array
+{
+    $ids=array_values(array_unique(array_filter(array_map('intval',$orderIds),static fn(int $id):bool=>$id>0)));
+    if($ids===[])return[];
+    $placeholders=implode(',',array_fill(0,count($ids),'?'));
+    $result=array_fill_keys($ids,[]);
+    $queries=[
+        "SELECT i.order_id,'catalog' AS line_type,i.product_name_snapshot AS line_name,i.sku_snapshot AS sku,i.quantity,i.unit_amount_minor,i.line_amount_minor,i.currency,i.attributes_json_snapshot AS detail_json,i.beneficiary_sportovec_id,s.jmeno,s.prijmeni,NULL AS starts_at,NULL AS ends_at FROM shop_order_items i LEFT JOIN sportovci s ON s.id=i.beneficiary_sportovec_id WHERE i.order_id IN ({$placeholders}) ORDER BY i.id",
+        "SELECT i.order_id,'velodrome' AS line_type,i.lesson_name_snapshot AS line_name,('Lekce #' || i.lesson_id) AS sku,i.quantity,i.unit_amount_minor,i.line_amount_minor,i.currency,NULL AS detail_json,i.beneficiary_sportovec_id,s.jmeno,s.prijmeni,(i.lesson_date_snapshot || ' ' || i.starts_at_snapshot) AS starts_at,i.ends_at_snapshot AS ends_at FROM public_velodrome_order_items i LEFT JOIN sportovci s ON s.id=i.beneficiary_sportovec_id WHERE i.order_id IN ({$placeholders}) ORDER BY i.id",
+        "SELECT i.order_id,'event' AS line_type,i.event_name_snapshot AS line_name,i.sku_snapshot AS sku,i.quantity,i.unit_amount_minor,i.line_amount_minor,i.currency,NULL AS detail_json,i.beneficiary_sportovec_id,s.jmeno,s.prijmeni,NULL AS starts_at,NULL AS ends_at FROM club_event_order_items i LEFT JOIN sportovci s ON s.id=i.beneficiary_sportovec_id WHERE i.order_id IN ({$placeholders}) ORDER BY i.id",
+    ];
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
+        $queries[1]=str_replace(["('Lekce #' || i.lesson_id)","(i.lesson_date_snapshot || ' ' || i.starts_at_snapshot)"],["CONCAT('Lekce #',i.lesson_id)","CONCAT(i.lesson_date_snapshot,' ',i.starts_at_snapshot)"],$queries[1]);
+    }
+    foreach($queries as$sql){
+        try{$statement=$pdo->prepare($sql);$statement->execute($ids);}
+        catch(PDOException){continue;}
+        foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$row)$result[(int)$row['order_id']][]=$row;
+    }
+    return$result;
+}
+
 function shopOrderExpirationAvailable(PDO $pdo):bool
 {
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
