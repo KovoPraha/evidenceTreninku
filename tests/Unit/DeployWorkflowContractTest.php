@@ -218,6 +218,7 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("KIS_TEST_CLEANUP_CONFIRM", $cleanup);
         self::assertStringContainsString('secrets.KIS_TEST_ADMIN_PASSWORD', $workflow);
         self::assertStringContainsString('provision-production-test-admin.php', $workflow);
+        self::assertStringContainsString('.positions == 8 and .superadmin == true', $workflow);
         self::assertStringContainsString("'^kis-e2e-[0-9]+@velocota[.]com$'", $cleanup);
         self::assertStringContainsString('SET aktivni=0,session_version=session_version+1', $cleanup);
         self::assertStringNotContainsString('DELETE FROM verejni_uzivatele', $cleanup);

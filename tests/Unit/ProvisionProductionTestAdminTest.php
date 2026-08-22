@@ -44,8 +44,10 @@ final class ProvisionProductionTestAdminTest extends TestCase
             'CREATE TABLE treneri ('
             . 'id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT NOT NULL,email TEXT NOT NULL,'
             . 'heslo TEXT NOT NULL,role TEXT NOT NULL,aktivni INTEGER NOT NULL DEFAULT 1,'
-            . 'session_version INTEGER NOT NULL DEFAULT 1)'
+                . 'session_version INTEGER NOT NULL DEFAULT 1)'
         );
+        $migration = require dirname(__DIR__, 2) . '/migrations/20260821150000_staff_workspaces.php';
+        $migration['up']($pdo);
 
         $first = kisProductionTestAdminUpsert($pdo, [
             'email' => 'kis@velocota.com',
@@ -68,5 +70,11 @@ final class ProvisionProductionTestAdminTest extends TestCase
         self::assertSame(2, (int)$row['session_version']);
         self::assertTrue(password_verify('Another-Test-456!', (string)$row['heslo']));
         self::assertFalse(password_verify('Strong-Test-123!', (string)$row['heslo']));
+        self::assertSame(8, $second['positions']);
+        self::assertTrue($second['superadmin']);
+        self::assertSame(8, (int)$pdo->query('SELECT COUNT(*) FROM staff_user_positions WHERE trainer_id=' . (int)$first['id'])->fetchColumn());
+        self::assertSame('system_admin', (string)$pdo->query('SELECT position_code FROM staff_user_positions WHERE trainer_id=' . (int)$first['id'] . ' AND is_default=1')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM staff_superadmins WHERE trainer_id=' . (int)$first['id'])->fetchColumn());
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM staff_position_assignment_events WHERE action='provision_test_superadmin'")->fetchColumn());
     }
 }

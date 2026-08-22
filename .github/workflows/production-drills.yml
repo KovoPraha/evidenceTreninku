@@ -194,8 +194,8 @@ jobs:
           EOF
           "${SCP[@]}" /tmp/run-provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-test-admin.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-test-admin.php'" | tee /tmp/kis-test-admin-result.json
-          jq -e '.ok == true and .email == "kis@velocota.com" and .role == "admin" and .active == true and .password_verified == true' /tmp/kis-test-admin-result.json > /dev/null
-          echo 'KIS testovaci administrator byl vytvoren a overen.'
+          jq -e '.ok == true and .email == "kis@velocota.com" and .role == "admin" and .active == true and .password_verified == true and .positions == 8 and .superadmin == true' /tmp/kis-test-admin-result.json > /dev/null
+          echo 'KIS testovaci superadministrator byl vytvoren a overen.'
 
       - name: Uklid docasnych dat drillu
         if: always()
