@@ -19,7 +19,7 @@ function kisProductionTestAdminRequire(string $relativePath): void
 kisProductionTestAdminRequire('includes/password_security.php');
 kisProductionTestAdminRequire('includes/staff_workspaces.php');
 
-const KIS_PRODUCTION_TEST_ADMIN_EMAIL = 'kis@velocota.com';
+const KIS_PRODUCTION_TEST_ADMIN_EMAIL = 'kis-superadmin-test@velocota.com';
 
 /** @param array<string,mixed> $input @return array{email:string,name:string,password:string} */
 function kisProductionTestAdminValidate(array $input): array

@@ -10,12 +10,12 @@ final class ProvisionProductionTestAdminTest extends TestCase
     public function testValidationAllowsOnlyDedicatedEmailAndStrongPassword(): void
     {
         $settings = kisProductionTestAdminValidate([
-            'email' => ' KIS@VELOCOTA.COM ',
-            'name' => 'KIS testovací administrátor',
+            'email' => ' KIS-SUPERADMIN-TEST@VELOCOTA.COM ',
+            'name' => 'KIS testovací superadministrátor',
             'password' => 'Strong-Test-123!',
         ]);
-        self::assertSame('kis@velocota.com', $settings['email']);
-        self::assertSame('KIS testovací administrátor', $settings['name']);
+        self::assertSame('kis-superadmin-test@velocota.com', $settings['email']);
+        self::assertSame('KIS testovací superadministrátor', $settings['name']);
 
         $this->expectException(RuntimeException::class);
         kisProductionTestAdminValidate([
@@ -29,7 +29,7 @@ final class ProvisionProductionTestAdminTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         kisProductionTestAdminValidate([
-            'email' => 'kis@velocota.com',
+            'email' => 'kis-superadmin-test@velocota.com',
             'name' => 'KIS testovací administrátor',
             'password' => 'kis',
         ]);
@@ -50,15 +50,15 @@ final class ProvisionProductionTestAdminTest extends TestCase
         $migration['up']($pdo);
 
         $first = kisProductionTestAdminUpsert($pdo, [
-            'email' => 'kis@velocota.com',
-            'name' => 'KIS testovací administrátor',
+            'email' => 'kis-superadmin-test@velocota.com',
+            'name' => 'KIS testovací superadministrátor',
             'password' => 'Strong-Test-123!',
         ]);
         self::assertTrue($first['created']);
 
         $second = kisProductionTestAdminUpsert($pdo, [
-            'email' => 'kis@velocota.com',
-            'name' => 'KIS testovací administrátor',
+            'email' => 'kis-superadmin-test@velocota.com',
+            'name' => 'KIS testovací superadministrátor',
             'password' => 'Another-Test-456!',
         ]);
         self::assertFalse($second['created']);

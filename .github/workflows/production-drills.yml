@@ -177,8 +177,8 @@ jobs:
           test -n "$KIS_TEST_ADMIN_PASSWORD_VALUE"
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
-          export KIS_TEST_ADMIN_EMAIL_VALUE='kis@velocota.com'
-          export KIS_TEST_ADMIN_NAME_VALUE='KIS testovací administrátor'
+          export KIS_TEST_ADMIN_EMAIL_VALUE='kis-superadmin-test@velocota.com'
+          export KIS_TEST_ADMIN_NAME_VALUE='KIS testovací superadministrátor'
           php -r '$v=["email"=>getenv("KIS_TEST_ADMIN_EMAIL_VALUE"),"name"=>getenv("KIS_TEST_ADMIN_NAME_VALUE"),"password"=>getenv("KIS_TEST_ADMIN_PASSWORD_VALUE")];file_put_contents("/tmp/kis-test-admin.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
           chmod 600 /tmp/kis-test-admin.json
           "${SCP[@]}" bin/provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/provision-production-test-admin.php"
@@ -194,7 +194,7 @@ jobs:
           EOF
           "${SCP[@]}" /tmp/run-provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-test-admin.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-test-admin.php'" | tee /tmp/kis-test-admin-result.json
-          jq -e '.ok == true and .email == "kis@velocota.com" and .role == "admin" and .active == true and .password_verified == true and .positions == 8 and .superadmin == true' /tmp/kis-test-admin-result.json > /dev/null
+          jq -e '.ok == true and .email == "kis-superadmin-test@velocota.com" and .role == "admin" and .active == true and .password_verified == true and .positions == 8 and .superadmin == true' /tmp/kis-test-admin-result.json > /dev/null
           echo 'KIS testovaci superadministrator byl vytvoren a overen.'
 
       - name: Uklid docasnych dat drillu
