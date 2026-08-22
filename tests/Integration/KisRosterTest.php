@@ -69,10 +69,19 @@ final class KisRosterTest extends TestCase
         $policy=require dirname(__DIR__,2).'/migrations/20260804110000_kis_roster_policies.php';$policy['up']($pdo);$types=$pdo->query('SELECT season_type FROM club_seasons ORDER BY id')->fetchAll(PDO::FETCH_COLUMN);self::assertSame(['calendar_year','school_year'],$types);self::assertNull($pdo->query('SELECT series_id FROM club_teams WHERE id=1')->fetchColumn());
     }
 
+    public function testRosterStructuresCanBeCorrectedAndClosedWithoutDeletingHistory():void
+    {
+        $pdo=$this->database();$season=\kisRosterCreateSeason($pdo,7,'CAL-30','Rok 2030','2030-01-01','2030-12-31','calendar_year');$series=\kisRosterCreateSeries($pdo,7,'ROAD-30','Silnice','discipline','calendar_year','carry_forward');$team=\kisRosterCreateSeriesTeam($pdo,(int)$series['id'],(int)$season['id'],7,'ROAD-A','Silnice A','Silnice','Open','Založení.');
+        self::assertTrue(\kisRosterRenameSeries($pdo,(int)$series['id'],7,'Silnice a cyklokros','Oprava názvu série.',true)['changed']);self::assertTrue(\kisRosterRenameSeason($pdo,(int)$season['id'],7,'Kalendářní rok 2030','Sjednocení názvu sezony.',true)['changed']);
+        self::assertTrue(\kisRosterUpdateTeam($pdo,(int)$team['id'],7,'Silnice elite','Silnice','Elite',(int)$series['id'],'Upřesnění týmové soupisky.',true)['changed']);
+        self::assertTrue(\kisRosterCloseTeam($pdo,(int)$team['id'],7,'Soupiska po sezoně uzavřena.',true)['changed']);self::assertTrue(\kisRosterCloseSeason($pdo,(int)$season['id'],7,'Sezona byla dokončena.',true)['changed']);self::assertTrue(\kisRosterArchiveSeries($pdo,(int)$series['id'],7,'Série se už nepoužívá.',true)['changed']);
+        self::assertSame(4,(int)$pdo->query('SELECT COUNT(*) FROM club_roster_structure_events')->fetchColumn());self::assertSame(3,(int)$pdo->query('SELECT COUNT(*) FROM club_roster_events')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:');$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);$pdo->exec('PRAGMA foreign_keys=ON');
         $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT)');$pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,narozeni TEXT,uciid TEXT,stav_clenstvi TEXT)');$pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");$pdo->exec("INSERT INTO sportovci VALUES(10,'Anna','Test','2012-01-01','UCI-10','aktivni'),(11,'Archiv','Test','2000-01-01',NULL,'archiv')");
-        $migration=require dirname(__DIR__,2).'/migrations/20260804090000_kis_teams_rosters.php';$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));$policy=require dirname(__DIR__,2).'/migrations/20260804110000_kis_roster_policies.php';$policy['up']($pdo);$policy['up']($pdo);self::assertTrue($policy['verify']($pdo));return$pdo;
+        $migration=require dirname(__DIR__,2).'/migrations/20260804090000_kis_teams_rosters.php';$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));$policy=require dirname(__DIR__,2).'/migrations/20260804110000_kis_roster_policies.php';$policy['up']($pdo);$policy['up']($pdo);self::assertTrue($policy['verify']($pdo));$events=require dirname(__DIR__,2).'/migrations/20260822170000_club_roster_structure_events.php';$events['up']($pdo);$events['up']($pdo);self::assertTrue($events['verify']($pdo));return$pdo;
     }
 }

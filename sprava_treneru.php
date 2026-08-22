@@ -2,11 +2,13 @@
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/password_security.php';
+require_once __DIR__ . '/includes/staff_account_lifecycle.php';
 
-if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
+if (!isset($_SESSION['trener_id'])) {
     header("Location: login.php");
     exit;
 }
+staffRequireActivePosition('system_admin');
 
 // Zpracování POST požadavků
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = strtolower(trim($_POST['email'] ?? ''));
         $heslo = $_POST['heslo'] ?? '';
         $role  = $_POST['role'] ?? 'trener';
+        try{$reason=staffAccountReason((string)($_POST['reason']??''));if(!isset($_POST['confirmed']))throw new InvalidArgumentException('Uložení účtu je nutné potvrdit.');}catch(InvalidArgumentException$exception){$_SESSION['flash_error']=$exception->getMessage();header("Location: sprava_treneru.php");exit;}
 
         if (!$jmeno || !$email) {
             $_SESSION['flash_error'] = 'Jméno a email jsou povinné.';
@@ -51,11 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $currentEmail = null;
+        $currentEmail = null;$beforeAccount=null;
         if ($id > 0) {
-            $current = $pdo->prepare('SELECT email FROM treneri WHERE id=?');
+            $current = $pdo->prepare('SELECT * FROM treneri WHERE id=?');
             $current->execute([$id]);
-            $currentEmail = $current->fetchColumn();
+            $beforeAccount = $current->fetch(PDO::FETCH_ASSOC)?:null;$currentEmail=$beforeAccount['email']??null;
         }
         if ($id === 0 || !is_string($currentEmail) || strcasecmp(trim($currentEmail), $email) !== 0) {
             $duplicate = $pdo->prepare(
@@ -85,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 $stmt->execute([$jmeno, $email, $role, $role, $id]);
             }
+            $afterStatement=$pdo->prepare('SELECT * FROM treneri WHERE id=?');$afterStatement->execute([$id]);staffAccountEvent($pdo,$id,(int)$_SESSION['trener_id'],'update',$reason,$beforeAccount,$afterStatement->fetch(PDO::FETCH_ASSOC));
             $_SESSION['flash_success'] = 'Trenér aktualizován.';
         } else {
             // Nový trenér
@@ -100,21 +104,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $assign = $pdo->prepare('INSERT INTO staff_user_positions(trainer_id,position_code,is_default,assigned_by_trainer_id) VALUES(?,\'coach\',1,?)');
                 $assign->execute([$newTrainerId, (int)$_SESSION['trener_id']]);
             }
+            $afterStatement=$pdo->prepare('SELECT * FROM treneri WHERE id=?');$afterStatement->execute([$newTrainerId]);staffAccountEvent($pdo,$newTrainerId,(int)$_SESSION['trener_id'],'create',$reason,null,$afterStatement->fetch(PDO::FETCH_ASSOC));
             $_SESSION['flash_success'] = 'Pracovní účet byl přidán s výchozí pozicí Trenér. Další pozice nastavte samostatně.';
         }
         header("Location: sprava_treneru.php");
         exit;
     }
 
-    // Smazání trenéra
-    if ($akce === 'delete') {
-        $del_id = (int)($_POST['delete_id'] ?? 0);
-        if ($del_id > 0 && $del_id !== $_SESSION['trener_id']) {
-            $pdo->prepare("UPDATE treneri SET aktivni=0,session_version=session_version+1 WHERE id = ?")->execute([$del_id]);
-            $_SESSION['flash_success'] = 'Pracovní účet byl deaktivován; audit a historie zůstaly zachované.';
-        } else {
-            $_SESSION['flash_error'] = 'Nelze smazat sám sebe.';
-        }
+    if ($akce === 'set_active') {
+        try{$result=staffAccountSetActive($pdo,(int)($_POST['trainer_id']??0),(int)$_SESSION['trener_id'],($_POST['active']??'')==='1',(string)($_POST['reason']??''),isset($_POST['confirmed']));$_SESSION['flash_success']=$result['changed']?($result['active']?'Pracovní účet byl aktivován.':'Pracovní účet byl deaktivován; audit a historie zůstaly zachované.'):'Stav účtu se nezměnil.';}catch(InvalidArgumentException|StaffAccountLifecycleException$exception){$_SESSION['flash_error']=$exception->getMessage();}
         header("Location: sprava_treneru.php");
         exit;
     }
@@ -133,7 +131,7 @@ $trenery = $pdo->query("
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Správa trenérů – Evidence</title>
+  <title>Správa pracovních účtů – Evidence</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
@@ -143,7 +141,7 @@ $trenery = $pdo->query("
 <div class="container py-4">
   <div class="d-flex align-items-center gap-3 mb-4">
     <i class="bi bi-person-gear fs-2 text-secondary"></i>
-    <h1 class="h3 mb-0">Správa trenérů</h1>
+    <h1 class="h3 mb-0">Správa pracovních účtů</h1>
     <a class="btn btn-outline-primary ms-auto" href="sprava_pracovnich_pozic.php"><i class="bi bi-person-workspace me-1"></i>Pracovní pozice</a>
   </div>
 
@@ -174,7 +172,7 @@ $trenery = $pdo->query("
             <th>Jméno</th>
             <th>Email</th>
             <th>Role</th>
-            <th>Tréninky</th>
+            <th>Stav</th><th>Tréninky</th>
             <th>Akce</th>
           </tr>
         </thead>
@@ -197,7 +195,7 @@ $trenery = $pdo->query("
                   <span class="badge bg-success"><i class="bi bi-person me-1"></i>Trenér</span>
                 <?php endif; ?>
               </td>
-              <td><span class="badge bg-light text-dark"><?= (int)$tr['pocet_treninku'] ?></span></td>
+              <td><span class="badge <?=$tr['aktivni']?'text-bg-success':'text-bg-secondary'?>"><?=$tr['aktivni']?'Aktivní':'Deaktivovaný'?></span></td><td><span class="badge bg-light text-dark"><?= (int)$tr['pocet_treninku'] ?></span></td>
               <td>
                 <div class="d-flex gap-1">
                   <button class="btn btn-sm btn-outline-primary edit-btn"
@@ -209,11 +207,9 @@ $trenery = $pdo->query("
                     <i class="bi bi-pencil"></i>
                   </button>
                   <?php if ($tr['id'] != $_SESSION['trener_id']): ?>
-                    <form method="POST" class="m-0" data-confirm="Opravdu smazat trenéra?">
+                    <form method="POST" class="m-0 d-flex gap-1 align-items-center">
                       <?= csrf_field() ?>
-                      <input type="hidden" name="akce" value="delete">
-                      <input type="hidden" name="delete_id" value="<?= $tr['id'] ?>">
-                      <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Smazat trenéra <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"><i class="bi bi-trash"></i></button>
+                      <input type="hidden" name="akce" value="set_active"><input type="hidden" name="trainer_id" value="<?= $tr['id'] ?>"><input type="hidden" name="active" value="<?=$tr['aktivni']?'0':'1'?>"><input class="form-control form-control-sm" style="width:150px" name="reason" required placeholder="Důvod změny"><input type="checkbox" name="confirmed" value="1" required title="Potvrdit změnu"><button type="submit" class="btn btn-sm <?=$tr['aktivni']?'btn-outline-danger':'btn-outline-success'?>" aria-label="<?=$tr['aktivni']?'Deaktivovat':'Aktivovat'?> účet <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"><i class="bi <?=$tr['aktivni']?'bi-person-x':'bi-person-check'?>"></i> <?=$tr['aktivni']?'Deaktivovat':'Aktivovat'?></button>
                     </form>
                   <?php endif; ?>
                 </div>
@@ -256,6 +252,7 @@ $trenery = $pdo->query("
             <input type="password" name="heslo" id="trener-heslo" class="form-control" placeholder="Nové heslo" minlength="12" maxlength="200">
             <div class="form-text" id="heslo-hint">Povinné pro nového trenéra, 12–200 znaků</div>
           </div>
+          <div class="col-md-8"><label for="account-reason" class="form-label fw-semibold">Auditovaný důvod</label><input type="text" name="reason" id="account-reason" class="form-control" minlength="5" maxlength="1000" required placeholder="Proč účet zakládáte nebo měníte"></div><div class="col-md-4 form-check align-self-end pb-2"><input class="form-check-input" type="checkbox" name="confirmed" value="1" id="account-confirmed" required><label class="form-check-label" for="account-confirmed">Potvrzuji změnu pracovního účtu</label></div>
           <div class="col-md-2">
             <label for="trener-role" class="form-label fw-semibold">
               <i class="bi bi-shield me-1"></i>Role

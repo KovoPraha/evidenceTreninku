@@ -150,7 +150,7 @@ final class AuthWiringTest extends TestCase
         $login = $this->source('login.php');
         $migrator = $this->source('bin/migrate-trainer-passwords.php');
 
-        self::assertStringContainsString('session_version = session_version + 1', $management);
+        self::assertStringContainsString('staffAccountSetActive', $management);
         self::assertStringContainsString('CASE WHEN role <> ?', $management);
         self::assertStringNotContainsString(
             'UPDATE treneri SET heslo = ?, session_version',

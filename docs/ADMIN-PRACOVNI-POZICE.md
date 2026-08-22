@@ -1,6 +1,6 @@
 # Pracovní pozice administrace
 
-Stav k 21. 8. 2026.
+Stav k 22. 8. 2026.
 
 Administrace je rozdělena na osm nepřekrývajících se pracovních pozic. Každá pozice má vlastní rozcestník a v navigaci vidí jen svoje funkce. Účet může mít přiřazeno více pozic, ale v jednu chvíli pracuje vždy právě v jedné z nich.
 
@@ -47,6 +47,13 @@ Každé přepnutí se zapisuje do `staff_position_switch_events`. Změny přiřa
 - Citlivé členské exporty vlastní Registrář členů a KIS.
 - Stažení účtenky vlastní Hospodář a platby, fotografie člena Registrář a trenérské zátěžové výstupy Trenér.
 - Všechny aktivní účty musí mít alespoň jednu a právě jednu výchozí pozici.
+
+## Uzavřené pracovní cesty
+
+- Koordinátor programů může opravovat a archivovat stabilní programy, upravit základní údaje klubové akce, měnit nebo rušit její termíny, uzavřenou akci vrátit k úpravě a nakonec ji archivovat. Otevřená akce nebo program s otevřenou nabídkou se archivovat nedá.
+- Registrář spravuje členství v soupiskách i životní cyklus jejich struktury. Kódy, kalendáře a období zůstávají stabilní identita; názvy lze auditovaně opravit. Tým lze uzavřít až po ukončení aktivních členství, sezonu a sérii až po uzavření aktivních týmů.
+- Hospodář může členský předpis založit, opravit před úhradou, potvrdit úhradu podle bankovního výpisu nebo ho zrušit. Uhrazený předpis se nezruší touto cestou, protože případné vrácení peněz je samostatný finanční děj.
+- Správce systému může pracovní účet auditovaně založit, upravit, deaktivovat a znovu aktivovat. Deaktivace není mazání, ukončí existující relace zvýšením `session_version`; vlastní účet nelze deaktivovat a aktivace hlídá kolizi e-mailu.
 
 ## Testovací kontrakt
 
