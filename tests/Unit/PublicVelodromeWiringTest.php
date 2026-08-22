@@ -34,9 +34,10 @@ final class PublicVelodromeWiringTest extends TestCase
         self::assertStringContainsString('function publicVelodromeManualConfirm', $booking);
         self::assertStringContainsString('csrf_verify', $profilePage);
         self::assertStringContainsString('csrf_verify', $bookingPage);
-        self::assertStringContainsString("roleAtLeast('admin')", $admin);
-        self::assertStringContainsString('confirm_payment', $admin);
-        self::assertStringContainsString('manual_confirm', $admin);
+        self::assertStringContainsString("staffRequireActivePosition('program_coordinator')", $admin);
+        self::assertStringContainsString('update_slot', $admin);
+        self::assertStringContainsString('cancel_reservation', $admin);
+        self::assertStringNotContainsString('confirm_payment', $admin);
         self::assertStringContainsString("name=\"narozeni\"", $registration);
         self::assertStringContainsString('publicProfileSave(', $registration);
         self::assertStringContainsString('$pdo->beginTransaction()', $registration);
