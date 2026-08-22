@@ -6,16 +6,20 @@ require_once 'includes/funkce.php';
 if (!canAccess('individualni_lekce')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/venue_operations.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
 $trenerId = (int)$_SESSION['trener_id'];
 $errors   = [];
 $opakovat = $_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['opakovat']);
+$editId=(int)($_GET['edit_id']??$_POST['edit_id']??0);
+$editRow=null;
+if($editId>0){$st=$pdo->prepare('SELECT * FROM individualni_lekce WHERE id=? AND trener_id=?');$st->execute([$editId,$trenerId]);$editRow=$st->fetch(PDO::FETCH_ASSOC)?:null;if(!$editRow){http_response_code(404);exit('Lekce nebyla nalezena nebo ji nesmíte upravit.');}}
 
 // ── Předvyplnění z kopie (?kopie_id=X) ───────────────────────────────────────
 $kopie = null;
-$kopieId = (int)($_GET['kopie_id'] ?? 0);
+$kopieId = $editRow?0:(int)($_GET['kopie_id'] ?? 0);
 if ($kopieId && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     $stK = $pdo->prepare("SELECT * FROM individualni_lekce WHERE id=? AND trener_id=?");
     $stK->execute([$kopieId, $trenerId]);
@@ -28,17 +32,17 @@ if ($kopieId && $_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Výchozí hodnoty (kopie nebo prázdné)
 $def = [
-    'sportoviste_id' => $kopie['sportoviste_id'] ?? '',
-    'nazev'          => $kopie['nazev']          ?? '',
-    'datum'          => $kopie['datum']           ?? date('Y-m-d'),
-    'cas_od'         => $kopie['cas_od']          ?? '10:00',
-    'cas_do'         => $kopie['cas_do']          ?? '18:00',
-    'typ'            => $kopie['typ']             ?? 'zelena',
-    'slot_delka_min' => $kopie['slot_delka_min']  ?? 60,
-    'cena_kc'        => $kopie['cena_kc']         ?? '0',
-    'max_osob'       => $kopie['max_osob']        ?? '1',
-    'popis'          => $kopie['popis']           ?? '',
-    'vyjimka_3_dny'  => $kopie['vyjimka_3_dny']  ?? 0,
+    'sportoviste_id' => $editRow['sportoviste_id']??$kopie['sportoviste_id'] ?? '',
+    'nazev'          => $editRow['nazev']??$kopie['nazev']          ?? '',
+    'datum'          => $editRow['datum']??$kopie['datum']           ?? date('Y-m-d'),
+    'cas_od'         => $editRow['cas_od']??$kopie['cas_od']          ?? '10:00',
+    'cas_do'         => $editRow['cas_do']??$kopie['cas_do']          ?? '18:00',
+    'typ'            => $editRow['typ']??$kopie['typ']             ?? 'zelena',
+    'slot_delka_min' => $editRow['slot_delka_min']??$kopie['slot_delka_min']  ?? 60,
+    'cena_kc'        => $editRow['cena_kc']??$kopie['cena_kc']         ?? '0',
+    'max_osob'       => $editRow['max_osob']??$kopie['max_osob']       ?? '1',
+    'popis'          => $editRow['popis']??$kopie['popis']           ?? '',
+    'vyjimka_3_dny'  => $editRow['vyjimka_3_dny']??$kopie['vyjimka_3_dny']  ?? 0,
 ];
 
 // URL předvyplnění z kalendáře (?datum=X&sportoviste_id=Y) — jen při GET bez kopie
@@ -85,6 +89,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        if(empty($errors)&&$editRow){
+            $st=$pdo->prepare("SELECT COUNT(*) FROM verejne_rezervace WHERE lekce_id=? AND stav IN ('ceka','potvrzena','cekaci_listina')");$st->execute([$editId]);$activeReservations=(int)$st->fetchColumn();
+            $criticalChanged=(int)$editRow['sportoviste_id']!==$sportId||(string)$editRow['datum']!==$datum||substr((string)$editRow['cas_od'],0,5)!==substr($casOd,0,5)||substr((string)$editRow['cas_do'],0,5)!==substr($casDo,0,5)||(int)$editRow['slot_delka_min']!==$slotDelka||(float)$editRow['cena_kc']!==$cena||(int)$editRow['max_osob']!==$maxOsob||(string)$editRow['typ']!==$typ;
+            if($activeReservations>0&&$criticalChanged)$errors[]='Lekce má aktivní rezervace. Můžete upravit název a popis, ale termín, cenu, typ a kapacitu až po vyřešení rezervací.';
+            if(trim((string)($_POST['reason']??''))==='')$errors[]='Uveďte důvod změny lekce.';
+        }
+
         if (empty($errors)) {
             // Vytvořit seznam datumů (první + opakování)
             $datumy = [];
@@ -96,6 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->beginTransaction();
             try {
+                if($editRow){
+                    $pdo->prepare('UPDATE individualni_lekce SET sportoviste_id=?,datum=?,cas_od=?,cas_do=?,slot_delka_min=?,typ=?,nazev=?,popis=?,cena_kc=?,max_osob=?,vyjimka_3_dny=? WHERE id=? AND trener_id=?')->execute([$sportId,$datum,$casOd,$casDo,$slotDelka,$typ,$nazev,$popis?:null,$cena,$maxOsob,$vyjimka3dny,$editId,$trenerId]);
+                    venueOperationAudit($pdo,'lesson',$editId,$trenerId,'update',trim((string)$_POST['reason']),['from'=>$editRow,'to'=>['sportoviste_id'=>$sportId,'datum'=>$datum,'cas_od'=>$casOd,'cas_do'=>$casDo,'slot_delka_min'=>$slotDelka,'typ'=>$typ,'nazev'=>$nazev,'popis'=>$popis,'cena_kc'=>$cena,'max_osob'=>$maxOsob,'vyjimka_3_dny'=>$vyjimka3dny]]);
+                    $pdo->commit();$_SESSION['flash_success']='Lekce byla upravena a změna auditována.';header('Location: individualni_lekce_sprava.php');exit;
+                }
                 $stmtLekce = $pdo->prepare("
                     INSERT INTO individualni_lekce
                         (trener_id, sportoviste_id, datum, cas_od, cas_do, slot_delka_min, typ, nazev, popis, cena_kc, max_osob, vyjimka_3_dny)
@@ -149,7 +165,7 @@ $sportovist = $pdo->query("
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= $kopie ? 'Duplikovat lekci' : 'Nová individuální lekce' ?></title>
+    <title><?= $editRow?'Upravit lekci':($kopie ? 'Duplikovat lekci' : 'Nová individuální lekce') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
@@ -157,8 +173,8 @@ $sportovist = $pdo->query("
 <div class="container mt-4" style="max-width:1060px">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h4 mb-0">
-            <i class="bi bi-<?= $kopie ? 'copy' : 'person-plus' ?> me-2 text-success"></i>
-            <?= $kopie ? 'Duplikovat lekci' : 'Nová individuální lekce' ?>
+            <i class="bi bi-<?= $editRow?'pencil':($kopie ? 'copy' : 'person-plus') ?> me-2 text-success"></i>
+            <?= $editRow?'Upravit lekci':($kopie ? 'Duplikovat lekci' : 'Nová individuální lekce') ?>
         </h1>
         <a href="individualni_lekce_sprava.php" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Přehled lekcí
@@ -181,6 +197,7 @@ $sportovist = $pdo->query("
         <div class="card-body">
             <form method="post" id="lekceForm">
                 <?= csrf_field() ?>
+                <?php if($editRow):?><input type="hidden" name="edit_id" value="<?=(int)$editRow['id']?>"><?php endif;?>
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-8">
@@ -308,7 +325,7 @@ $sportovist = $pdo->query("
                 </div>
 
                 <!-- Opakování -->
-                <div class="card border-0 bg-light mb-4">
+                <div class="card border-0 bg-light mb-4 <?= $editRow?'d-none':'' ?>">
                     <div class="card-body p-3">
                         <div class="form-check form-switch mb-2">
                             <input class="form-check-input" type="checkbox" id="opakovaniToggle"
@@ -333,9 +350,11 @@ $sportovist = $pdo->query("
                     </div>
                 </div>
 
+                <?php if($editRow):?><div class="mb-4"><label class="form-label req" for="lesson-reason">Důvod změny</label><input class="form-control" id="lesson-reason" name="reason" maxlength="1000" required placeholder="Proč se lekce upravuje"></div><?php endif;?>
+
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-lg me-1"></i>Vypsat lekci
+                        <i class="bi bi-check-lg me-1"></i><?= $editRow?'Uložit změny':'Vypsat lekci' ?>
                     </button>
                     <a href="individualni_lekce_sprava.php" class="btn btn-outline-secondary">Zrušit</a>
                 </div>

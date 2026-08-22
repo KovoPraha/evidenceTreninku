@@ -11,7 +11,7 @@ Administrace je rozdělena na osm nepřekrývajících se pracovních pozic. Ka�
 | Trenér | Svěřenci, tréninky, testy a sportovní data vlastního družstva |
 | Vedoucí sportu | Metodika, výkonnost, plánování sportu a přehled trenérů |
 | Registrář členů a KIS | Členové, přihlášky, identity, souhlasy a citlivé členské údaje |
-| Koordinátor programů a sportovišť | Kroužky, události, rezervace, haly a kalendáře |
+| Koordinátor programů a sportovišť | Kroužky, události, editace a storna rezervací, haly, veřejný velodrom a kalendáře |
 | Správce katalogu e-shopu | Produkty, kategorie, nabídky, obrázky, sklad a import katalogu |
 | Zákaznická péče a objednávky | Objednávky, expedice, předání, storna a zákaznická komunikace |
 | Hospodář a platby | Bankovní účet, párování plateb, potvrzení úhrad, vratky a členské platby |
@@ -42,6 +42,8 @@ Každé přepnutí se zapisuje do `staff_position_switch_events`. Změny přiřa
 - Neznámý klíč oprávnění je zakázán; starý automatický přístup pro vedoucího se nepoužívá.
 - Peněžní operace nejsou součástí správy objednávek. Potvrzení platby a vratky vlastní pouze Hospodář a platby.
 - Peněžní sazby za trénink vlastní Hospodář a platby; trenér eviduje odvedenou práci, ale neurčuje sazbu.
+- Trenér ani koordinátor nepotvrzuje přijetí peněz za individuální lekci nebo velodrom. Takové potvrzení je ve společné finanční frontě Hospodáře a plateb.
+- Změna lekce, přesun rezervace a uzavření termínu vyžadují důvod a zapisují se do auditní historie provozu sportovišť.
 - Citlivé členské exporty vlastní Registrář členů a KIS.
 - Stažení účtenky vlastní Hospodář a platby, fotografie člena Registrář a trenérské zátěžové výstupy Trenér.
 - Všechny aktivní účty musí mít alespoň jednu a právě jednu výchozí pozici.

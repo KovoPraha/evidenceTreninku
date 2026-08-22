@@ -6,6 +6,7 @@ require_once 'includes/funkce.php';
 if (!canAccess('individualni_lekce')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/venue_operations.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -18,6 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
     $rezervId = (int)($_POST['rezervace_id'] ?? 0);
 
     if ($action === 'zrusit_lekci' && $lekceId) {
+        $reason=trim((string)($_POST['reason']??''));
+        if($reason===''){$_SESSION['flash_error']='Uveďte důvod zrušení lekce.';header('Location: individualni_lekce_sprava.php');exit;}
         // Ověř vlastnictví lekce
         $stOwn = $pdo->prepare("SELECT nazev, datum, cas_od, cas_do FROM individualni_lekce WHERE id=? AND trener_id=?");
         $stOwn->execute([$lekceId, $trenerId]);
@@ -33,11 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
             $stCust->execute([$lekceId]);
             $dotceni = $stCust->fetchAll(PDO::FETCH_ASSOC);
 
-            $pdo->prepare("UPDATE individualni_lekce SET stav='zrusena' WHERE id=?")->execute([$lekceId]);
-            // Zruš i všechny živé rezervace zákazníků (jinak zůstanou viset na neexistující lekci)
-            $pdo->prepare("UPDATE verejne_rezervace SET stav='zrusena' WHERE lekce_id=? AND stav IN ('ceka','potvrzena','cekaci_listina')")
-                ->execute([$lekceId]);
-            $pdo->prepare("DELETE FROM rezervace_sportovist WHERE lekce_id=?")->execute([$lekceId]);
+            $pdo->beginTransaction();
+            try{
+                $pdo->prepare("UPDATE individualni_lekce SET stav='zrusena' WHERE id=?")->execute([$lekceId]);
+                $pdo->prepare("UPDATE verejne_rezervace SET stav='zrusena' WHERE lekce_id=? AND stav IN ('ceka','potvrzena','cekaci_listina')")->execute([$lekceId]);
+                $pdo->prepare("DELETE FROM rezervace_sportovist WHERE lekce_id=?")->execute([$lekceId]);
+                venueOperationAudit($pdo,'lesson',$lekceId,$trenerId,'cancel',$reason,['affected_reservations'=>count($dotceni)]);
+                $pdo->commit();
+            }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();throw$exception;}
 
             foreach ($dotceni as $d) {
                 $subject = 'Lekce zrušena — ' . str_replace(["\r","\n"], ' ', (string)$lek['nazev']);
@@ -98,21 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
             @mail($rez['email'], $subject, $body,
                 "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
             $_SESSION['flash_success'] = 'Rezervace zamítnuta.';
-        }
-    }
-
-    if (($action === 'zaplatit' || $action === 'nezaplatit') && $rezervId) {
-        // IDOR guard — jen rezervace na lekcích tohoto trenéra
-        $stChk = $pdo->prepare("
-            SELECT vr.id FROM verejne_rezervace vr
-            JOIN individualni_lekce il ON il.id = vr.lekce_id
-            WHERE vr.id=? AND il.trener_id=?
-        ");
-        $stChk->execute([$rezervId, $trenerId]);
-        if ($stChk->fetch()) {
-            $nova = $action === 'zaplatit' ? 1 : 0;
-            $pdo->prepare("UPDATE verejne_rezervace SET zaplaceno=? WHERE id=?")->execute([$nova, $rezervId]);
-            if ($nova) $_SESSION['flash_success'] = 'Označeno jako zaplaceno.';
         }
     }
 
@@ -228,12 +219,14 @@ $stavBadge = [
                    class="btn btn-sm btn-outline-secondary" title="Duplikovat (+7 dní)">
                     <i class="bi bi-copy"></i>
                 </a>
+                <?php if($l['stav']==='aktivni'&&$l['trener_id']==$trenerId):?><a href="individualni_lekce_form.php?edit_id=<?=(int)$l['id']?>" class="btn btn-sm btn-outline-primary" title="Upravit lekci"><i class="bi bi-pencil"></i></a><?php endif;?>
                 <?php if ($l['stav'] === 'aktivni' && !$jeMinulost): ?>
                     <form method="post" class="d-inline"
                           data-confirm="Zrušit lekci a všechny rezervace?">
                         <?= csrf_field() ?>
                         <input type="hidden" name="action" value="zrusit_lekci">
                         <input type="hidden" name="lekce_id" value="<?= $l['id'] ?>">
+                        <input type="text" name="reason" maxlength="1000" required class="form-control form-control-sm d-inline-block" style="width:150px" placeholder="Důvod zrušení">
                         <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Zrušit lekci <?= h($l['nazev']) ?>">
                             <i class="bi bi-trash"></i>
                         </button>
@@ -322,15 +315,7 @@ $stavBadge = [
                                     </button>
                                 </form>
                             <?php elseif ($r['stav'] === 'potvrzena'): ?>
-                                <form method="post" class="d-inline">
-                                    <?= csrf_field() ?>
-                                    <input type="hidden" name="action"
-                                           value="<?= $r['zaplaceno'] ? 'nezaplatit' : 'zaplatit' ?>">
-                                    <input type="hidden" name="rezervace_id" value="<?= $r['id'] ?>">
-                                    <button type="submit" class="btn btn-sm btn-outline-<?= $r['zaplaceno'] ? 'secondary' : 'success' ?>">
-                                        <i class="bi bi-cash me-1"></i><?= $r['zaplaceno'] ? 'Odznačit' : 'Zaplaceno' ?>
-                                    </button>
-                                </form>
+                                <span class="small text-muted">Platbu ověřuje Hospodář a platby.</span>
                             <?php endif; ?>
                         </td>
                     </tr>

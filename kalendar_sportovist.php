@@ -7,6 +7,7 @@ if (!canAccess('kalendar_sportovist')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/venue_calendar.php';
+require_once __DIR__ . '/includes/venue_operations.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -16,24 +17,14 @@ $trenerId = (int)$_SESSION['trener_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
     if (csrf_verify($_POST['csrf_token'] ?? '')) {
         $delId = (int)($_POST['rezervace_id'] ?? 0);
-        // Trenér může mazat jen své rezervace, admin libovolné
-        $sql = roleAtLeast('hlavni')
-            ? "DELETE FROM rezervace_sportovist WHERE id=?"
-            : "DELETE FROM rezervace_sportovist WHERE id=? AND trener_id=?";
-        $params = roleAtLeast('hlavni') ? [$delId] : [$delId, $trenerId];
-        $pdo->beginTransaction();
         try {
-            $delete = $pdo->prepare($sql);
-            $delete->execute($params);
-            if ($delete->rowCount() === 1) {
-                $pdo->prepare('UPDATE planovane_treninky SET rezervace_id=NULL WHERE rezervace_id=?')->execute([$delId]);
-                $_SESSION['flash_success'] = 'Rezervace zrušena.';
-            }
-            $pdo->commit();
+            $reason=trim((string)($_POST['reason']??''));
+            $manageAll=function_exists('staffActivePositionIs')&&staffActivePositionIs('program_coordinator');
+            venueReservationCancel($pdo,$delId,$trenerId,$manageAll,$reason,($_POST['confirm_action']??'')==='1');
+            $_SESSION['flash_success'] = 'Rezervace byla auditovaně zrušena.';
         } catch (Throwable $exception) {
-            if ($pdo->inTransaction()) $pdo->rollBack();
             error_log('kalendar_sportovist delete: ' . $exception->getMessage());
-            $_SESSION['flash_error'] = 'Rezervaci se nepodařilo zrušit.';
+            $_SESSION['flash_error'] = $exception instanceof InvalidArgumentException||$exception instanceof RuntimeException?$exception->getMessage():'Rezervaci se nepodařilo zrušit.';
         }
     }
     header('Location: ' . $_SERVER['REQUEST_URI']);
@@ -313,16 +304,19 @@ $today = date('Y-m-d');
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($r['trener_id'] == $trenerId || roleAtLeast('hlavni')): ?>
-                                        <form method="post" class="mt-1"
-                                              data-confirm="Zrušit rezervaci?">
+                                        <div class="d-flex gap-2 mt-1"><a class="text-white-50" style="font-size:.65rem" href="rezervovat_sportoviste.php?edit_id=<?= (int)$r['id'] ?>"><i class="bi bi-pencil"></i> upravit</a>
+                                        <form method="post" class="d-inline"
+                                              data-confirm="Zrušit rezervaci po vyplnění důvodu?">
                                             <?= csrf_field() ?>
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="rezervace_id" value="<?= $r['id'] ?>">
+                                            <input type="hidden" name="confirm_action" value="1">
+                                            <input type="text" name="reason" maxlength="1000" required class="form-control form-control-sm py-0 px-1 d-inline-block" style="width:110px;font-size:.65rem" placeholder="Důvod storna">
                                             <button type="submit" class="btn btn-sm p-0 text-white-50"
                                                     style="font-size:.65rem;background:none;border:none">
                                                 <i class="bi bi-x"></i> zrušit
                                             </button>
-                                        </form>
+                                        </form></div>
                                     <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>

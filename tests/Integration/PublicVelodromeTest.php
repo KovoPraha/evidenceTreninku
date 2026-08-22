@@ -167,6 +167,20 @@ final class PublicVelodromeTest extends TestCase
         self::assertTrue(\publicVelodromeReserve($pdo, $slot, 10)['created']);
     }
 
+    public function testCoordinatorCanEditCloseAndAuditSlotLifecycle(): void
+    {
+        $pdo=$this->database();
+        \publicProfileSave($pdo,10,'Anna','První','2010-01-01','777111222');
+        $slot=$this->slot($pdo,3,false,0);$year=(int)date('Y')+1;
+        self::assertTrue(\publicVelodromeUpdateSlot($pdo,$slot,7,"$year-06-02",'12:00','13:00',4,false,0,'Posun dle provozního plánu.',true)['changed']);
+        $reservation=\publicVelodromeReserve($pdo,$slot,10);
+        try{\publicVelodromeUpdateSlot($pdo,$slot,7,"$year-06-03",'12:00','13:00',4,false,0,'Pokus přesunu.',true);self::fail('Booked slot must not move.');}catch(PublicVelodromeException $exception){self::assertStringContainsString('aktivní rezervací',$exception->getMessage());}
+        self::assertTrue(\publicVelodromeAdminCancelReservation($pdo,$reservation['id'],7,'Provozní kolize.',true)['changed']);
+        self::assertTrue(\publicVelodromeCloseSlot($pdo,$slot,7,'Termín se neuskuteční.',true)['changed']);
+        self::assertSame(['create','update','close'],$pdo->query("SELECT action FROM venue_operation_events WHERE target_type='lesson' ORDER BY id")->fetchAll(PDO::FETCH_COLUMN));
+        self::assertSame('admin_cancel',$pdo->query("SELECT action FROM public_velodrome_reservation_events ORDER BY id DESC LIMIT 1")->fetchColumn());
+    }
+
     private function slot(PDO $pdo, int $capacity, bool $exclusive, int $priceMinor): int
     {
         $year = (int)date('Y') + 1;
@@ -205,6 +219,10 @@ final class PublicVelodromeTest extends TestCase
         $migration['up']($pdo);
         $migration['up']($pdo);
         self::assertTrue($migration['verify']($pdo));
+        $venueEvents = require dirname(__DIR__, 2) . '/migrations/20260822150000_venue_operation_events.php';
+        $venueEvents['up']($pdo);
+        $venueEvents['up']($pdo);
+        self::assertTrue($venueEvents['verify']($pdo));
         return $pdo;
     }
 }

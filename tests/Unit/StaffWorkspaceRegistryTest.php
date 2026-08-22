@@ -158,6 +158,11 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertStringContainsString("\$action === 'confirm_payment'", $payments);
         self::assertStringContainsString("\$action === 'confirm_refund'", $payments);
         self::assertStringContainsString("staffRequireActivePosition('finance_manager')", $payments);
+        self::assertStringContainsString("action === 'confirm_velodrome_payment'", $payments);
+        $lessons = (string)file_get_contents($root . '/individualni_lekce_sprava.php');
+        $velodrome = (string)file_get_contents($root . '/verejny_velodrom_admin.php');
+        self::assertStringNotContainsString("\$action === 'zaplatit'", $lessons);
+        self::assertStringNotContainsString("manual_confirm", $velodrome);
         $switch = (string)file_get_contents($root . '/prepnout_pracovni_pozici.php');
         self::assertStringContainsString("staffRouteOwner(\$next) === \$targetPosition", $switch);
     }

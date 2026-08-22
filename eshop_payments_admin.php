@@ -27,16 +27,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             } elseif ($action === 'confirm_refund') {
                 $result = shopOrderAdminConfirmRefund($pdo, (int)($_POST['order_id'] ?? 0), $actor, (string)($_POST['refund_reference'] ?? ''), $reason, $confirmed);
                 $message = $result['changed'] ? 'Odeslaná vratka byla auditovaně potvrzena.' : 'Vratka už byla potvrzena.';
+            } elseif ($action === 'confirm_velodrome_payment') {
+                $result = publicVelodromeManualConfirm($pdo, (int)($_POST['reservation_id'] ?? 0), $actor, $reason, $confirmed);
+                $message = $result['changed'] ? 'Platba rezervace velodromu byla potvrzena.' : 'Platba rezervace už byla potvrzena.';
             } else {
                 throw new InvalidArgumentException('Neznámá finanční akce.');
             }
             $_SESSION['flash_payment_admin'] = $message;
-            header('Location: eshop_payments_admin.php' . ($query !== '' ? '?q=' . rawurlencode($query) : '') . '#order-' . (int)$result['order_id'], true, 303);
+            $fragment=isset($result['order_id'])?'#order-'.(int)$result['order_id']:'#velodrome-'.(int)$result['id'];
+            header('Location: eshop_payments_admin.php' . ($query !== '' ? '?q=' . rawurlencode($query) : '') . $fragment, true, 303);
             exit;
         } catch (PDOException $exception) {
             error_log('eshop_payments_admin.php: ' . $exception->getMessage());
             $errors[] = 'Databázová operace selhala bez částečného zápisu.';
-        } catch (InvalidArgumentException|ShopCheckoutException $exception) {
+        } catch (InvalidArgumentException|ShopCheckoutException|PublicVelodromeException $exception) {
             $errors[] = $exception->getMessage();
         }
     }
@@ -49,6 +53,7 @@ $orders = array_values(array_filter(
     static fn(array $order): bool => ($order['status'] === 'placed' && $order['payment_record_status'] === 'pending')
         || $order['payment_record_status'] === 'refund_required'
 ));
+$velodromePayments=array_values(array_filter(publicVelodromeAdminReservations($pdo),static fn(array$r):bool=>$r['stav']==='ceka'&&!(int)$r['zaplaceno']&&(float)$r['cena_kc']>0&&!$r['shop_order_id']));
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ověření plateb a vratek</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"></head>
 <body class="bg-light"><?php include __DIR__ . '/hlavicka.php'; ?>
@@ -63,4 +68,6 @@ $orders = array_values(array_filter(
 <?php if ($order['payment_record_status'] === 'refund_required'): ?><form method="post" class="border border-warning rounded p-2"><?= csrf_field() ?><input type="hidden" name="action" value="confirm_refund"><input type="hidden" name="order_id" value="<?= (int)$order['id'] ?>"><label class="small fw-semibold">Potvrdit odeslanou vratku</label><input class="form-control form-control-sm my-1" name="refund_reference" maxlength="255" required placeholder="Reference bankovní transakce"><input class="form-control form-control-sm my-1" name="reason" maxlength="1000" required placeholder="Jak byla vratka ověřena"><label class="small d-block"><input type="checkbox" name="confirm_action" value="1" required> Peníze byly skutečně odeslány</label><button class="btn btn-sm btn-warning mt-1">Potvrdit vratku</button></form><?php endif; ?>
 </td></tr><?php endforeach; ?>
 <?php if ($orders === []): ?><tr><td colspan="4" class="text-center text-muted py-5">Žádná platba ani vratka nyní nečeká na ruční potvrzení.</td></tr><?php endif; ?>
-</tbody></table></div></div></main></body></html>
+</tbody></table></div></div>
+<div class="card border-0 shadow-sm mt-4"><div class="card-header bg-white fw-semibold">Placené rezervace velodromu mimo objednávku</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Rezervace</th><th>Účastník</th><th>Částka</th><th>Finanční úkol</th></tr></thead><tbody><?php foreach($velodromePayments as$r):?><tr id="velodrome-<?=(int)$r['id']?>"><td><?=paymentAdminH($r['datum'].' '.substr((string)$r['cas_od'],0,5))?></td><td><?=paymentAdminH($r['prijmeni'].' '.$r['jmeno'])?><div class="small text-muted"><?=paymentAdminH($r['email'])?></div></td><td><?=number_format((float)$r['cena_kc'],2,',',' ')?> Kč</td><td><form method="post" class="border rounded p-2"><?=csrf_field()?><input type="hidden" name="action" value="confirm_velodrome_payment"><input type="hidden" name="reservation_id" value="<?=(int)$r['id']?>"><input class="form-control form-control-sm mb-1" name="reason" maxlength="1000" required placeholder="Jak byla platba ověřena a její reference"><label class="small d-block"><input type="checkbox" name="confirm_action" value="1" required> Ověřil/a jsem platbu v bance</label><button class="btn btn-success btn-sm mt-1">Potvrdit platbu</button></form></td></tr><?php endforeach;?><?php if($velodromePayments===[]):?><tr><td colspan="4" class="text-center text-muted py-4">Žádná samostatná platba velodromu nečeká.</td></tr><?php endif;?></tbody></table></div></div>
+</main></body></html>

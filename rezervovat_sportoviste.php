@@ -6,12 +6,17 @@ require_once 'includes/funkce.php';
 if (!canAccess('rezervace_sportovist')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/venue_operations.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
 $trenerId    = (int)$_SESSION['trener_id'];
 $errors      = [];
 $kolizeLekce = []; // kolize s individuálními lekcemi (vyplněno při POST)
+$editId=(int)($_GET['edit_id']??$_POST['edit_id']??0);
+$manageAll=function_exists('staffActivePositionIs')&&staffActivePositionIs('program_coordinator');
+$editRow=null;
+if($editId>0){$sql='SELECT * FROM rezervace_sportovist WHERE id=? AND lekce_id IS NULL';if(!$manageAll)$sql.=' AND trener_id=?';$st=$pdo->prepare($sql);$st->execute($manageAll?[$editId]:[$editId,$trenerId]);$editRow=$st->fetch(PDO::FETCH_ASSOC)?:null;if(!$editRow){http_response_code(404);exit('Rezervace nebyla nalezena nebo ji nesmíte upravit.');}}
 
 // ── POST: uložení ─────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -41,8 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE sportoviste_id = ? AND datum = ?
                   AND cas_od < ? AND cas_do > ?
                   AND lekce_id IS NULL
+                  AND id <> ?
             ");
-            $stmtKap->execute([$sportoviste, $datum, $casDo, $casOd]);
+            $stmtKap->execute([$sportoviste, $datum, $casDo, $casOd, $editId]);
             $obsazeno = (int)$stmtKap->fetchColumn();
 
             $stSport = $pdo->prepare("SELECT max_kapacita FROM sportovist WHERE id=?");
@@ -96,8 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     WHERE sportoviste_id = ? AND datum = ?
                       AND cas_od < ? AND cas_do > ?
                       AND lekce_id IS NULL
+                      AND id <> ?
                 ");
-                $stmtKap->execute([$sportoviste, $datum, $casDo, $casOd]);
+                $stmtKap->execute([$sportoviste, $datum, $casDo, $casOd, $editId]);
                 $obsazeno = (int)$stmtKap->fetchColumn();
 
                 $stSport = $pdo->prepare("SELECT max_kapacita FROM sportovist WHERE id=?");
@@ -108,15 +115,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new RuntimeException("Sportoviste je v tomto case obsazeno ({$obsazeno}/{$maxKap}). Zbyva " . ($maxKap - $obsazeno) . " dil(y).");
                 }
 
-                $pdo->prepare("
-                    INSERT INTO rezervace_sportovist
-                        (sportoviste_id, trener_id, datum, cas_od, cas_do, kapacita_dilu, poznamka)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ")->execute([$sportoviste, $trenerId, $datum, $casOd, $casDo, $kapacita, $poznamka ?: null]);
-                $rezervaceId = (int)$pdo->lastInsertId();
+                if($editRow){
+                    $pdo->prepare('UPDATE rezervace_sportovist SET sportoviste_id=?,datum=?,cas_od=?,cas_do=?,kapacita_dilu=?,poznamka=? WHERE id=?')->execute([$sportoviste,$datum,$casOd,$casDo,$kapacita,$poznamka?:null,$editId]);
+                    $pdo->prepare('UPDATE planovane_treninky SET sportoviste_id=?,datum=?,cas_od=?,cas_do=? WHERE rezervace_id=?')->execute([$sportoviste,$datum,$casOd,$casDo,$editId]);
+                    venueOperationAudit($pdo,'venue_reservation',$editId,$trenerId,'update',trim((string)($_POST['reason']??'')),['from'=>$editRow,'to'=>['sportoviste_id'=>$sportoviste,'datum'=>$datum,'cas_od'=>$casOd,'cas_do'=>$casDo,'kapacita_dilu'=>$kapacita,'poznamka'=>$poznamka]]);
+                    $rezervaceId=$editId;
+                }else{
+                    $pdo->prepare("
+                        INSERT INTO rezervace_sportovist
+                            (sportoviste_id, trener_id, datum, cas_od, cas_do, kapacita_dilu, poznamka)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ")->execute([$sportoviste, $trenerId, $datum, $casOd, $casDo, $kapacita, $poznamka ?: null]);
+                    $rezervaceId = (int)$pdo->lastInsertId();
+                }
 
                 // Volitelný plánovaný trénink
-                if (!empty($_POST['vytvorit_plan'])) {
+                if (!$editRow && !empty($_POST['vytvorit_plan'])) {
                     $planNazev    = trim($_POST['plan_nazev'] ?? '');
                     $planSkupina  = (int)($_POST['plan_skupina_id'] ?? 0);
                     $planPodskIds = array_values(array_filter(array_map('intval', $_POST['plan_podskupiny_ids'] ?? [])));
@@ -150,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $unlockStmt->execute([$lockName]);
                     $gotLock = false;
                 }
-                $_SESSION['flash_success'] = 'Rezervace sportoviště byla uložena.'
+                $_SESSION['flash_success'] = $editRow?'Rezervace sportoviště byla upravena a změna auditována.':'Rezervace sportoviště byla uložena.'
                     . (!empty($_POST['vytvorit_plan']) && !empty($planSkupina) && !empty($planNazev)
                         ? ' Plánovaný trénink vypsán.' : '');
                 header('Location: kalendar_sportovist.php?datum=' . $datum);
@@ -172,8 +186,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ── Data ──────────────────────────────────────────────────────────────────────
 $sportovist = $pdo->query("SELECT id, nazev FROM sportovist WHERE aktivni=1 ORDER BY poradi, nazev")->fetchAll(PDO::FETCH_ASSOC);
 $skupiny    = $pdo->query("SELECT id, nazev FROM skupiny ORDER BY nazev")->fetchAll(PDO::FETCH_ASSOC);
-$defaultDatum = $_GET['datum'] ?? date('Y-m-d');
-$defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
+$defaultDatum = $editRow['datum']??($_GET['datum'] ?? date('Y-m-d'));
+$defaultSport = (int)($editRow['sportoviste_id']??($_GET['sportoviste_id'] ?? 0));
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -187,7 +201,7 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
 <?php include 'hlavicka.php'; ?>
 <div class="container mt-4" style="max-width:1060px">
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <h1 class="h4 mb-0"><i class="bi bi-calendar-plus me-2 text-primary"></i>Nová rezervace sportoviště</h1>
+        <h1 class="h4 mb-0"><i class="bi bi-calendar-plus me-2 text-primary"></i><?= $editRow?'Upravit rezervaci sportoviště':'Nová rezervace sportoviště' ?></h1>
         <a href="kalendar_sportovist.php" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Kalendář
         </a>
@@ -207,6 +221,7 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
         <div class="card-body">
             <form method="post" id="formRezervace">
                 <?= csrf_field() ?>
+                <?php if($editRow):?><input type="hidden" name="edit_id" value="<?=(int)$editRow['id']?>"><?php endif;?>
 
                 <div class="mb-3">
                     <label class="form-label req" for="sportoviste_id">Sportoviště</label>
@@ -231,19 +246,19 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
                     <div class="col">
                         <label class="form-label req" for="rezervace-cas-od">Čas od</label>
                         <input type="time" name="cas_od" id="rezervace-cas-od" class="form-control"
-                               value="<?= h($_POST['cas_od'] ?? '07:00') ?>" required>
+                               value="<?= h($_POST['cas_od'] ?? ($editRow['cas_od']??'07:00')) ?>" required>
                     </div>
                     <div class="col">
                         <label class="form-label req" for="rezervace-cas-do">Čas do</label>
                         <input type="time" name="cas_do" id="rezervace-cas-do" class="form-control"
-                               value="<?= h($_POST['cas_do'] ?? '08:00') ?>" required>
+                               value="<?= h($_POST['cas_do'] ?? ($editRow['cas_do']??'08:00')) ?>" required>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label req" for="kapacita">Kapacita <span id="kapLabel" class="text-primary fw-bold">1/5</span></label>
                     <input type="range" name="kapacita_dilu" id="kapacita" class="form-range"
-                           min="1" max="5" value="<?= (int)($_POST['kapacita_dilu'] ?? 1) ?>">
+                           min="1" max="5" value="<?= (int)($_POST['kapacita_dilu'] ?? ($editRow['kapacita_dilu']??1)) ?>">
                     <div class="d-flex justify-content-between text-muted small px-1">
                         <span>1/5 – malá část</span>
                         <span>5/5 – celé sportoviště</span>
@@ -252,11 +267,13 @@ $defaultSport = (int)($_GET['sportoviste_id'] ?? 0);
 
                 <div class="mb-3">
                     <label class="form-label" for="rezervace-poznamka">Poznámka</label>
-                    <textarea name="poznamka" id="rezervace-poznamka" class="form-control" rows="2"><?= h($_POST['poznamka'] ?? '') ?></textarea>
+                    <textarea name="poznamka" id="rezervace-poznamka" class="form-control" rows="2"><?= h($_POST['poznamka'] ?? ($editRow['poznamka']??'')) ?></textarea>
                 </div>
 
+                <?php if($editRow):?><div class="mb-3"><label class="form-label req" for="rezervace-reason">Důvod změny</label><input class="form-control" id="rezervace-reason" name="reason" maxlength="1000" required placeholder="Proč se rezervace přesouvá nebo mění"></div><?php endif;?>
+
                 <!-- Volitelně: plánovaný trénink -->
-                <?php if (canAccess('planovac')): ?>
+                <?php if (!$editRow && canAccess('planovac')): ?>
                 <div class="mb-4">
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" name="vytvorit_plan"
