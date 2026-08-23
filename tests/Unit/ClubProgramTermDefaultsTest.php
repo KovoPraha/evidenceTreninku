@@ -27,11 +27,13 @@ final class ClubProgramTermDefaultsTest extends TestCase
         }
     }
 
-    public function testAdministrationOffersThePreparedTextForEditing():void
+    public function testAdministrationKeepsDraftEditingSeparateFromSimplePublication():void
     {
         $root=dirname(__DIR__,2);
-        foreach(['club_program_wizard_admin.php','club_programs_admin.php'] as $page){
-            self::assertStringContainsString('CLUB_PROGRAM_TERM_DEFAULTS',(string)file_get_contents($root.'/'.$page),$page);
-        }
+        $wizard=(string)file_get_contents($root.'/club_program_wizard_admin.php');
+        $programs=(string)file_get_contents($root.'/club_programs_admin.php');
+        self::assertStringNotContainsString('CLUB_PROGRAM_TERM_DEFAULTS',$wizard);
+        self::assertStringContainsString("'_source'] = 'existing'",$wizard);
+        self::assertStringContainsString('CLUB_PROGRAM_TERM_DEFAULTS',$programs);
     }
 }

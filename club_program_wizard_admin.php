@@ -1,38 +1,168 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__.'/includes/init.php';require_once __DIR__.'/csrf_helper.php';require_once __DIR__.'/includes/club_program_wizard.php';
-if(!isset($_SESSION['trener_id'])||!roleAtLeast('admin')){header('Location: login.php');exit;}
-function cpwh(mixed$value):string{return htmlspecialchars((string)$value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
-function cpwMinor(string$value):int{$value=trim(str_replace([' ',chr(194).chr(160),','],['','','.'],$value));if(preg_match('/^[0-9]{1,7}(?:\.[0-9]{1,2})?$/D',$value)!==1)throw new InvalidArgumentException('Cena musí být nezáporná částka v Kč s nejvýše dvěma desetinnými místy.');[$whole,$fraction]=array_pad(explode('.',$value,2),2,'');return((int)$whole*100)+(int)str_pad($fraction,2,'0');}
-$errors=[];$actorId=(int)$_SESSION['trener_id'];
-if(!isset($_SESSION['club_program_wizard_key'])||preg_match('/^[a-f0-9]{32}$/D',(string)$_SESSION['club_program_wizard_key'])!==1)$_SESSION['club_program_wizard_key']=bin2hex(random_bytes(16));
-if($_SERVER['REQUEST_METHOD']==='POST'){
-    if(!csrf_verify((string)($_POST['csrf_token']??'')))$errors[]='Formulář vypršel. Obnovte stránku.';
-    else try{
-        $key=(string)($_POST['request_key']??'');if(!hash_equals((string)$_SESSION['club_program_wizard_key'],$key))throw new InvalidArgumentException('Průvodce už byl odeslán nebo vypršel. Obnovte stránku.');
-        $input=$_POST;$input['request_key']=$key;$input['amount_minor']=cpwMinor((string)($_POST['amount']??''));$input['confirmed']=($_POST['confirm_action']??'')==='1';
-        $upload=$_FILES['product_image']??null;$source=null;
-        if(is_array($upload)&&($upload['error']??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_NO_FILE){if((int)$upload['error']!==UPLOAD_ERR_OK)throw new InvalidArgumentException('Nahrání obrázku nebylo dokončeno.');$source=(string)$upload['tmp_name'];}
-        $result=clubProgramWizardCreate($pdo,$actorId,$input,$source,true,__DIR__);
-        unset($_SESSION['club_program_wizard_key']);$_SESSION['club_program_wizard_flash']='Kroužek byl atomicky založen, navázán na soupisku a zveřejněn.';
-        header('Location: club_program_wizard_admin.php?hotovo='.(int)$result['product_id'],true,303);exit;
-    }catch(Throwable$exception){if(!($exception instanceof InvalidArgumentException||$exception instanceof ShopManualCatalogException||$exception instanceof ShopProductImageException||$exception instanceof KisRosterException||$exception instanceof ClubProgramException||$exception instanceof ClubProgramTermsException||$exception instanceof ShopCatalogPublicationException||$exception instanceof ClubProgramWizardException))error_log('club_program_wizard_admin.php: '.$exception->getMessage());$errors[]=$exception->getMessage();}
+
+require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/club_program_wizard.php';
+
+if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
+    header('Location: login.php');
+    exit;
 }
-$success=(string)($_SESSION['club_program_wizard_flash']??'');unset($_SESSION['club_program_wizard_flash']);$reference=clubProgramWizardReferenceData($pdo);$key=(string)$_SESSION['club_program_wizard_key'];$attributeDefinitions=shopAttributeDefinitions($pdo,true);$attributeRows=shopAttributeFormRows($_POST);
-$old=static fn(string$key,string$default=''):string=>(string)($_POST[$key]??$default);$today=new DateTimeImmutable('today');$start=$today->modify('first day of next month');$end=$start->modify('+9 months -1 day');
+
+function cpwh(mixed $value): string
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+function cpwMinor(string $value): int
+{
+    $value = trim(str_replace([' ', chr(194) . chr(160), ','], ['', '', '.'], $value));
+    if (preg_match('/^[0-9]{1,7}(?:[.][0-9]{1,2})?$/D', $value) !== 1) {
+        throw new InvalidArgumentException('Cena musí být částka v Kč, například 2500.');
+    }
+    [$whole, $fraction] = array_pad(explode('.', $value, 2), 2, '');
+    return ((int)$whole * 100) + (int)str_pad($fraction, 2, '0');
+}
+
+/** @param array<string,mixed> $input @param array<string,mixed> $reference @return array<string,mixed> */
+function cpwSimpleDefaults(array $input, string $requestKey, array $reference): array
+{
+    $name = trim((string)($input['name'] ?? ''));
+    $startsOn = (string)($input['starts_on'] ?? '');
+    $endsOn = (string)($input['ends_on'] ?? '');
+    $startYear = preg_match('/^(\d{4})-/', $startsOn, $match) === 1 ? (int)$match[1] : (int)date('Y');
+    $endYear = preg_match('/^(\d{4})-/', $endsOn, $match) === 1 ? (int)$match[1] : $startYear + 1;
+    $suffix = strtoupper(substr($requestKey, 0, 6));
+
+    $input['description'] = trim((string)($input['description'] ?? '')) ?: 'Kroužek ' . $name;
+    $input['currency'] = 'CZK';
+    $input['category_path'] = 'Kroužky';
+    $input['includes_vat'] = '';
+    $input['vat_rate_basis_points'] = '';
+    $input['sales_open_at'] = date('Y-m-d') . 'T00:00';
+    $input['sales_close_at'] = $startsOn !== '' ? $startsOn . 'T23:59' : '';
+    foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
+        $terms = $reference['terms'][$purpose] ?? [];
+        if (!is_array($terms) || $terms === [] || (int)($terms[0]['id'] ?? 0) < 1) {
+            throw new ClubProgramWizardException('Kroužek nelze zveřejnit, dokud správce jednou neschválí klubové podmínky. Otevřete Pokročilé nástroje → Programy a podmínky.');
+        }
+        $input[$purpose . '_source'] = 'existing';
+        $input[$purpose . '_version_id'] = (string)$terms[0]['id'];
+    }
+    $input['reason'] = 'Vypsání nového kroužku.';
+    $input['confirmed'] = true;
+
+    if ((int)($input['team_id'] ?? 0) > 0) {
+        $input['team_mode'] = 'existing';
+        return $input;
+    }
+
+    $input['team_mode'] = 'new';
+    $input['season_code'] = 'KROUZKY-' . $startYear . '-' . $endYear . '-' . $suffix;
+    $input['season_name'] = 'Kroužky ' . $startYear . '/' . $endYear;
+    $input['season_type'] = $startYear === $endYear ? 'calendar_year' : 'school_year';
+    $input['season_starts_on'] = $startsOn;
+    $input['season_ends_on'] = $endsOn;
+    $input['team_code'] = 'KROUZEK-' . $suffix;
+    $input['team_name'] = $name;
+    $input['team_discipline'] = 'Všeobecná cyklistická příprava';
+    $from = trim((string)($input['birth_year_from'] ?? ''));
+    $to = trim((string)($input['birth_year_to'] ?? ''));
+    $input['team_age_label'] = $from !== '' || $to !== '' ? 'Ročníky ' . ($from ?: 'bez omezení') . '–' . ($to ?: 'bez omezení') : 'Děti';
+    return $input;
+}
+
+$errors = [];
+$actorId = (int)$_SESSION['trener_id'];
+$reference = clubProgramWizardReferenceData($pdo);
+if (!isset($_SESSION['club_program_wizard_key']) || preg_match('/^[a-f0-9]{32}$/D', (string)$_SESSION['club_program_wizard_key']) !== 1) {
+    $_SESSION['club_program_wizard_key'] = bin2hex(random_bytes(16));
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        $errors[] = 'Formulář vypršel. Obnovte stránku.';
+    } else {
+        try {
+            $key = (string)($_POST['request_key'] ?? '');
+            if (!hash_equals((string)$_SESSION['club_program_wizard_key'], $key)) {
+                throw new InvalidArgumentException('Formulář už byl odeslán nebo vypršel. Obnovte stránku.');
+            }
+            $input = cpwSimpleDefaults($_POST, $key, $reference);
+            $input['request_key'] = $key;
+            $input['amount_minor'] = cpwMinor((string)($_POST['amount'] ?? ''));
+            $upload = $_FILES['product_image'] ?? null;
+            $source = null;
+            if (is_array($upload) && ($upload['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+                if ((int)$upload['error'] !== UPLOAD_ERR_OK) throw new InvalidArgumentException('Nahrání obrázku nebylo dokončeno.');
+                $source = (string)$upload['tmp_name'];
+            }
+            $result = clubProgramWizardCreate($pdo, $actorId, $input, $source, true, __DIR__);
+            unset($_SESSION['club_program_wizard_key']);
+            $_SESSION['club_program_wizard_flash'] = 'Kroužek byl založen a zveřejněn.';
+            header('Location: club_program_wizard_admin.php?hotovo=' . (int)$result['product_id'], true, 303);
+            exit;
+        } catch (Throwable $exception) {
+            if (!($exception instanceof InvalidArgumentException
+                || $exception instanceof ShopManualCatalogException
+                || $exception instanceof ShopProductImageException
+                || $exception instanceof KisRosterException
+                || $exception instanceof ClubProgramException
+                || $exception instanceof ClubProgramTermsException
+                || $exception instanceof ShopCatalogPublicationException
+                || $exception instanceof ClubProgramWizardException)) {
+                error_log('club_program_wizard_admin.php: ' . $exception->getMessage());
+            }
+            $errors[] = $exception->getMessage();
+        }
+    }
+}
+
+$success = (string)($_SESSION['club_program_wizard_flash'] ?? '');
+unset($_SESSION['club_program_wizard_flash']);
+$activeTeams = array_values(array_filter($reference['teams'], static fn(array $team): bool => (string)$team['status'] === 'active'));
+$key = (string)$_SESSION['club_program_wizard_key'];
+$old = static fn(string $field, string $default = ''): string => (string)($_POST[$field] ?? $default);
+$today = new DateTimeImmutable('today');
+$start = $today->modify('first day of next month');
+$end = $start->modify('+9 months -1 day');
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vypsat kroužek</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"></head><body class="bg-light"><?php include __DIR__.'/hlavicka.php';?>
-<main class="container py-4" style="max-width:1100px"><div class="d-flex justify-content-between align-items-start gap-2 mb-3"><div><h1 class="h3 mb-1"><i class="bi bi-magic me-2 text-primary"></i>Vypsat kroužek</h1><p class="text-muted mb-0">Jeden průvodce vytvoří produkt, nabídku, podmínky i vazbu na soupisku. Zveřejnění proběhne až úplně nakonec.</p></div><a class="btn btn-outline-secondary btn-sm" href="club_programs_admin.php">Kroužkové programy</a></div>
-<?php foreach($errors as$error):?><div class="alert alert-danger"><?=cpwh($error)?></div><?php endforeach;?><?php if($success!==''):?><div class="alert alert-success d-flex flex-wrap align-items-center gap-2"><?=cpwh($success)?> <?php if((int)($_GET['hotovo']??0)>0):?><?php if(staffCanUsePosition('catalog_manager')):?><form method="post" action="prepnout_pracovni_pozici.php" class="m-0"><?=csrf_field()?><input type="hidden" name="position" value="catalog_manager"><input type="hidden" name="next" value="eshop_produkt_admin.php"><input type="hidden" name="reason" value="Kontrola produktu právě vypsaného kroužku"><button class="btn btn-sm btn-outline-success">Přejít do katalogu</button></form><?php else:?><span class="small">Produkt dále spravuje pozice Správce katalogu e-shopu.</span><?php endif;?><?php endif;?></div><?php endif;?>
-<form method="post" enctype="multipart/form-data" id="wizard" class="vstack gap-3"><?=csrf_field()?><input type="hidden" name="request_key" value="<?=cpwh($key)?>">
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">1. Název a veřejný popis</div><div class="card-body row g-3"><div class="col-md-5"><label class="form-label">Název kroužku</label><input class="form-control" name="name" maxlength="160" value="<?=cpwh($old('name','Rajčátka'))?>" required></div><div class="col-md-7"><label class="form-label">Veřejný popis</label><textarea class="form-control" name="description" maxlength="4000" required><?=cpwh($old('description'))?></textarea></div></div></section>
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">2. Cena, měna a DPH</div><div class="card-body row g-3"><div class="col-md-3"><label class="form-label">Cena v Kč</label><input class="form-control" name="amount" inputmode="decimal" value="<?=cpwh($old('amount'))?>" required></div><div class="col-md-2"><label class="form-label">Měna</label><select class="form-select" name="currency"><option value="CZK">CZK</option></select></div><div class="col-md-3"><label class="form-label">Cena obsahuje DPH</label><select class="form-select" name="includes_vat"><option value="">Neurčeno</option><option value="1" <?=$old('includes_vat')==='1'?'selected':''?>>Ano</option><option value="0" <?=$old('includes_vat')==='0'?'selected':''?>>Ne</option></select></div><div class="col-md-4"><label class="form-label">Sazba DPH v bazických bodech</label><input class="form-control" type="number" min="0" max="10000" name="vat_rate_basis_points" value="<?=cpwh($old('vat_rate_basis_points','2100'))?>"><div class="form-text">2100 = 21 %</div></div></div></section>
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">3. Obrázek</div><div class="card-body"><label class="form-label">JPG nebo PNG (volitelné)</label><input class="form-control" type="file" name="product_image" accept="image/jpeg,image/png"><div class="form-text">Max. 5 MB a 6000 × 6000 px; soubor se bezpečně překóduje bez metadat.</div></div></section>
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">4. Kategorie a volitelné parametry</div><div class="card-body row g-3"><div class="col-md-5"><label class="form-label">Kategorie</label><input class="form-control" name="category_path" list="category-options" value="<?=cpwh($old('category_path','Kroužky'))?>" required><datalist id="category-options"><?php foreach($reference['categories']as$category):?><option value="<?=cpwh($category)?>"><?php endforeach;?></datalist></div><div class="col-md-7" data-program-attribute-editor><label class="form-label">Parametry kroužku (volitelné)</label><datalist id="program-attribute-options"><?php foreach($attributeDefinitions as$definition):if((int)$definition['active']!==1)continue;?><option value="<?=cpwh($definition['attribute_key'])?>"><?=cpwh($definition['display_name'])?></option><?php endforeach;?></datalist><div class="vstack gap-2" data-attribute-rows><?php if($attributeRows===[]):?><div class="small text-muted" data-no-attributes>Žádné parametry. Kroužek lze vypsat i bez nich.</div><?php endif;?><?php foreach($attributeRows as$row):?><div class="row g-2 align-items-center" data-attribute-row><div class="col-5"><input class="form-control form-control-sm" name="attribute_keys[]" list="program-attribute-options" value="<?=cpwh($row['key'])?>" placeholder="Název, např. Úroveň"></div><div class="col-6"><input class="form-control form-control-sm" name="attribute_values[]" value="<?=cpwh($row['value'])?>" placeholder="Hodnota, např. Začátečníci"></div><div class="col-1 d-grid"><button class="btn btn-sm btn-outline-danger" type="button" data-remove-attribute aria-label="Odebrat parametr">×</button></div></div><?php endforeach;?></div><button class="btn btn-sm btn-outline-secondary mt-2" type="button" data-add-attribute>Přidat parametr</button><div class="form-text">Každý parametr zadejte jako název a hodnotu. Pokud žádný nepotřebujete, tuto část přeskočte.</div><template><div class="row g-2 align-items-center" data-attribute-row><div class="col-5"><input class="form-control form-control-sm" name="attribute_keys[]" list="program-attribute-options" placeholder="Název parametru"></div><div class="col-6"><input class="form-control form-control-sm" name="attribute_values[]" placeholder="Hodnota"></div><div class="col-1 d-grid"><button class="btn btn-sm btn-outline-danger" type="button" data-remove-attribute aria-label="Odebrat parametr">×</button></div></div></template></div></div></section>
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">5. Období, prodej a kapacita</div><div class="card-body row g-3"><div class="col-md-3"><label class="form-label">Kroužek od</label><input class="form-control" type="date" name="starts_on" value="<?=cpwh($old('starts_on',$start->format('Y-m-d')))?>" required></div><div class="col-md-3"><label class="form-label">Kroužek do</label><input class="form-control" type="date" name="ends_on" value="<?=cpwh($old('ends_on',$end->format('Y-m-d')))?>" required></div><div class="col-md-3"><label class="form-label">Prodej od</label><input class="form-control" type="datetime-local" name="sales_open_at" value="<?=cpwh($old('sales_open_at',$today->format('Y-m-d').'T00:00'))?>"></div><div class="col-md-3"><label class="form-label">Prodej do</label><input class="form-control" type="datetime-local" name="sales_close_at" value="<?=cpwh($old('sales_close_at',$start->format('Y-m-d').'T23:59'))?>"></div><div class="col-md-3"><label class="form-label">Kapacita</label><input class="form-control" type="number" min="1" max="100000" name="capacity" value="<?=cpwh($old('capacity','12'))?>"></div></div></section>
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">6. Povolené ročníky narození</div><div class="card-body row g-3"><div class="col-md-3"><label class="form-label">Od ročníku</label><input class="form-control" type="number" min="1900" max="<?=date('Y')?>" name="birth_year_from" value="<?=cpwh($old('birth_year_from'))?>"></div><div class="col-md-3"><label class="form-label">Do ročníku</label><input class="form-control" type="number" min="1900" max="<?=date('Y')?>" name="birth_year_to" value="<?=cpwh($old('birth_year_to'))?>"></div><div class="col-md-6 d-flex align-items-end"><div class="form-text mb-2">Obě pole mohou zůstat prázdná. Jediný ročník zadejte do obou polí.</div></div></div></section>
-<?php foreach(['program_cancellation'=>'7a. Storno podmínky','program_consent'=>'7b. Souhlas s účastí']as$purpose=>$label):$existing=$reference['terms'][$purpose];$selectedSource=$old($purpose.'_source','new');?><section class="card border-0 shadow-sm term-card"><div class="card-header bg-white fw-semibold"><?=cpwh($label)?></div><div class="card-body row g-3"><div class="col-md-4"><label class="form-label">Zdroj textu</label><select class="form-select term-source" name="<?=cpwh($purpose)?>_source"><option value="new" <?=$selectedSource==='new'?'selected':''?>>Napsat nový text</option><option value="existing" <?=$selectedSource==='existing'?'selected':''?> <?=$existing===[]?'disabled':''?>>Použít existující platnou verzi</option></select><select class="form-select mt-2 existing-term" name="<?=cpwh($purpose)?>_version_id"><option value="">Vyberte verzi</option><?php foreach($existing as$term):?><option value="<?=(int)$term['id']?>" <?=$old($purpose.'_version_id')===(string)$term['id']?'selected':''?>><?=cpwh($term['terms_version'].' · '.$term['scope_key'].' · '.mb_substr((string)$term['consent_text_plain'],0,60,'UTF-8'))?></option><?php endforeach;?></select></div><div class="col-md-8"><label class="form-label">Nový text</label><textarea class="form-control new-term" name="<?=cpwh($purpose)?>_text" maxlength="4000"><?=cpwh($old($purpose.'_text',CLUB_PROGRAM_TERM_DEFAULTS[$purpose]))?></textarea><div class="form-text">Existující text se zkopíruje do nové neměnné verze tohoto programu.</div></div></div></section><?php endforeach;?>
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">8. Cílová soupiska</div><div class="card-body"><div class="row g-3"><div class="col-md-4"><label class="form-label">Způsob</label><select class="form-select" name="team_mode" id="team-mode"><option value="existing" <?=$old('team_mode','existing')==='existing'?'selected':''?>>Vybrat existující soupisku</option><option value="new" <?=$old('team_mode')==='new'?'selected':''?>>Založit sezonu a soupisku</option></select></div><div class="col-md-8 existing-team"><label class="form-label">Aktivní soupiska</label><select class="form-select" name="team_id"><option value="">Vyberte</option><?php foreach($reference['teams']as$team):if((string)$team['status']!=='active')continue;?><option value="<?=(int)$team['id']?>" <?=$old('team_id')===(string)$team['id']?'selected':''?>><?=cpwh($team['season_name'].' · '.$team['name'])?></option><?php endforeach;?></select></div></div><div class="new-team row g-3 mt-1"><div class="col-md-3"><label class="form-label">Kód sezony</label><input class="form-control" name="season_code" value="<?=cpwh($old('season_code'))?>"></div><div class="col-md-5"><label class="form-label">Název sezony</label><input class="form-control" name="season_name" value="<?=cpwh($old('season_name'))?>"></div><div class="col-md-4"><label class="form-label">Typ sezony</label><select class="form-select" name="season_type"><option value="school_year">Školní rok</option><option value="calendar_year" <?=$old('season_type')==='calendar_year'?'selected':''?>>Kalendářní rok</option></select></div><div class="col-md-3"><label class="form-label">Sezona od</label><input class="form-control" type="date" name="season_starts_on" value="<?=cpwh($old('season_starts_on',$start->format('Y-m-d')))?>"></div><div class="col-md-3"><label class="form-label">Sezona do</label><input class="form-control" type="date" name="season_ends_on" value="<?=cpwh($old('season_ends_on',$start->modify('+1 year -1 day')->format('Y-m-d')))?>"></div><div class="col-md-3"><label class="form-label">Kód soupisky</label><input class="form-control" name="team_code" value="<?=cpwh($old('team_code'))?>"></div><div class="col-md-3"><label class="form-label">Název soupisky</label><input class="form-control" name="team_name" value="<?=cpwh($old('team_name'))?>"></div><div class="col-md-6"><label class="form-label">Disciplína</label><input class="form-control" name="team_discipline" value="<?=cpwh($old('team_discipline','Všeobecná cyklistická příprava'))?>"></div><div class="col-md-6"><label class="form-label">Věková kategorie</label><input class="form-control" name="team_age_label" value="<?=cpwh($old('team_age_label','Děti'))?>"></div></div></div></section>
-<section class="card border-primary shadow-sm"><div class="card-header bg-white fw-semibold">9. Souhrn a potvrzení</div><div class="card-body"><div id="wizard-summary" class="alert alert-light border">Zkontrolujte údaje výše. Produkt bude zveřejněn až po úspěšném vytvoření všech vazeb.</div><label class="form-label">Auditní důvod</label><input class="form-control mb-3" name="reason" maxlength="1000" value="<?=cpwh($old('reason','Vypsání nového kroužku průvodcem.'))?>" required><div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="confirm_action" value="1" id="confirm" required><label class="form-check-label" for="confirm">Potvrzuji správnost ceny, období, podmínek, soupisky a okamžité zveřejnění.</label></div><button class="btn btn-primary btn-lg w-100"><i class="bi bi-check2-circle me-2"></i>Vypsat a zveřejnit kroužek</button></div></section></form></main>
-<script>(()=>{const editor=document.querySelector('[data-program-attribute-editor]');if(!editor)return;const rows=editor.querySelector('[data-attribute-rows]'),template=editor.querySelector('template');const empty=()=>{if(!rows.querySelector('[data-attribute-row]')&&!rows.querySelector('[data-no-attributes]')){const note=document.createElement('div');note.className='small text-muted';note.dataset.noAttributes='';note.textContent='Žádné parametry. Kroužek lze vypsat i bez nich.';rows.append(note);}};const bind=row=>row.querySelector('[data-remove-attribute]')?.addEventListener('click',()=>{row.remove();empty();});rows.querySelectorAll('[data-attribute-row]').forEach(bind);editor.querySelector('[data-add-attribute]')?.addEventListener('click',()=>{rows.querySelector('[data-no-attributes]')?.remove();const fragment=template.content.cloneNode(true),row=fragment.querySelector('[data-attribute-row]');bind(row);rows.append(fragment);row.querySelector('input')?.focus();});})();</script>
-<script>(()=>{const form=document.getElementById('wizard'),mode=document.getElementById('team-mode');function toggle(){document.querySelector('.existing-team').classList.toggle('d-none',mode.value!=='existing');document.querySelector('.new-team').classList.toggle('d-none',mode.value!=='new');document.querySelectorAll('.term-card').forEach(card=>{const existing=card.querySelector('.term-source').value==='existing';card.querySelector('.existing-term').classList.toggle('d-none',!existing);card.querySelector('.new-term').classList.toggle('d-none',existing);});const name=form.elements.name.value||'bez názvu',price=form.elements.amount.value||'bez ceny',category=form.elements.category_path.value||'bez kategorie',target=mode.value==='existing'?form.elements.team_id.options[form.elements.team_id.selectedIndex]?.text:'nová soupiska '+(form.elements.team_name.value||'');document.getElementById('wizard-summary').textContent=`${name} · ${price} CZK · ${category} · ${form.elements.starts_on.value} až ${form.elements.ends_on.value} · ${target}`;}form.addEventListener('input',toggle);form.addEventListener('change',toggle);toggle();})();</script></body></html>
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vypsat kroužek</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light">
+<?php include __DIR__ . '/hlavicka.php'; ?>
+<main class="container py-4" style="max-width:900px">
+    <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+        <div><h1 class="h3 mb-1"><i class="bi bi-plus-circle me-2 text-primary"></i>Vypsat kroužek</h1><p class="text-muted mb-0">Jeden formulář. Po uložení je kroužek rovnou připravený pro přihlášky.</p></div>
+        <a class="btn btn-outline-secondary btn-sm" href="club_program_offers_admin.php">Zpět na kroužky</a>
+    </div>
+    <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= cpwh($error) ?></div><?php endforeach; ?>
+    <?php if ($success !== ''): ?><div class="alert alert-success d-flex justify-content-between align-items-center"><span><?= cpwh($success) ?></span><a class="btn btn-sm btn-success" href="club_program_offers_admin.php">Otevřít správu kroužků</a></div><?php endif; ?>
+    <form method="post" enctype="multipart/form-data" class="card border-0 shadow-sm">
+        <div class="card-body row g-3">
+            <?= csrf_field() ?><input type="hidden" name="request_key" value="<?= cpwh($key) ?>">
+            <div class="col-md-7"><label class="form-label">Název kroužku</label><input class="form-control form-control-lg" name="name" maxlength="160" value="<?= cpwh($old('name')) ?>" required autofocus></div>
+            <div class="col-md-5"><label class="form-label">Cena v Kč</label><input class="form-control form-control-lg" name="amount" inputmode="decimal" value="<?= cpwh($old('amount')) ?>" placeholder="např. 2500" required></div>
+            <div class="col-12"><label class="form-label">Krátký popis <span class="text-muted">(nepovinné)</span></label><textarea class="form-control" name="description" maxlength="4000" rows="2"><?= cpwh($old('description')) ?></textarea></div>
+            <div class="col-md-4"><label class="form-label">Od</label><input class="form-control" type="date" name="starts_on" value="<?= cpwh($old('starts_on', $start->format('Y-m-d'))) ?>" required></div>
+            <div class="col-md-4"><label class="form-label">Do</label><input class="form-control" type="date" name="ends_on" value="<?= cpwh($old('ends_on', $end->format('Y-m-d'))) ?>" required></div>
+            <div class="col-md-4"><label class="form-label">Počet míst</label><input class="form-control" type="number" min="1" max="100000" name="capacity" value="<?= cpwh($old('capacity', '12')) ?>" required></div>
+            <div class="col-md-4"><label class="form-label">Nejmladší ročník <span class="text-muted">(nepovinné)</span></label><input class="form-control" type="number" min="1900" max="<?= date('Y') ?>" name="birth_year_from" value="<?= cpwh($old('birth_year_from')) ?>"></div>
+            <div class="col-md-4"><label class="form-label">Nejstarší ročník <span class="text-muted">(nepovinné)</span></label><input class="form-control" type="number" min="1900" max="<?= date('Y') ?>" name="birth_year_to" value="<?= cpwh($old('birth_year_to')) ?>"></div>
+            <div class="col-md-4"><label class="form-label">Obrázek <span class="text-muted">(nepovinné)</span></label><input class="form-control" type="file" name="product_image" accept="image/jpeg,image/png"></div>
+            <?php if ($activeTeams !== []): ?><div class="col-12"><label class="form-label">Soupiska pro přihlášené <span class="text-muted">(nepovinné)</span></label><select class="form-select" name="team_id"><option value="">Vytvořit novou automaticky</option><?php foreach ($activeTeams as $team): ?><option value="<?= (int)$team['id'] ?>" <?= $old('team_id') === (string)$team['id'] ? 'selected' : '' ?>><?= cpwh($team['season_name'] . ' · ' . $team['name']) ?></option><?php endforeach; ?></select><div class="form-text">Pokud nevyberete existující soupisku, systém založí novou jen pro tento kroužek.</div></div><?php endif; ?>
+            <div class="col-12"><div class="alert alert-light border mb-0">Systém automaticky použije schválené klubové podmínky a připraví kategorii, prodejní období, produkt i soupisku. Nic dalšího nebude potřeba doplňovat.</div></div>
+            <div class="col-md-5 d-grid ms-auto"><button class="btn btn-primary btn-lg"><i class="bi bi-check2-circle me-2"></i>Vypsat a zveřejnit kroužek</button></div>
+        </div>
+    </form>
+</main>
+</body>
+</html>

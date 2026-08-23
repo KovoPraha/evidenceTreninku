@@ -27,6 +27,6 @@ final class ShopIdentityAdminWiringTest extends TestCase
         // vykresluje pouze prave aktivni pozici.
         $root = dirname(__DIR__, 2);
         self::assertStringContainsString('eshop_identity_admin.php',(string)file_get_contents($root.'/includes/staff_workspaces.php'));
-        $header=(string)file_get_contents($root.'/hlavicka.php');self::assertStringContainsString('staffPositionMenuGroups',$header);self::assertStringContainsString('foreach ($staff_menu_groups as $staff_group)',$header);
+        $header=(string)file_get_contents($root.'/hlavicka.php');self::assertStringContainsString('staffPositionPrimaryMenuGroups',$header);self::assertStringContainsString('foreach ($staff_menu_groups as $staff_group)',$header);
     }
 }

@@ -16,6 +16,6 @@ final class ClubEventWiringTest extends TestCase
     public function testAdminNavigationLinksToK3(): void
     {
         $root=dirname(__DIR__,2);$registry=(string)file_get_contents($root.'/includes/staff_workspaces.php');$header=(string)file_get_contents($root.'/hlavicka.php');
-        self::assertStringContainsString("'program_coordinator'",$registry);self::assertStringContainsString('eshop_events_admin.php',$registry);self::assertStringContainsString('staffPositionMenuGroups',$header);self::assertStringContainsString('foreach ($staff_menu_groups as $staff_group)',$header);
+        self::assertStringContainsString("'program_coordinator'",$registry);self::assertStringContainsString('eshop_events_admin.php',$registry);self::assertStringContainsString('staffPositionPrimaryMenuGroups',$header);self::assertStringContainsString('foreach ($staff_menu_groups as $staff_group)',$header);
     }
 }
