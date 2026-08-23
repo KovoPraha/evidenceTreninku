@@ -99,7 +99,7 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Kroužky', 'icon' => 'calendar-range', 'items' => [
                     ['route' => 'club_program_wizard_admin.php', 'label' => 'Vypsat kroužek', 'description' => 'Průvodce novou nabídkou', 'icon' => 'magic'],
-                    ['route' => 'club_program_offers_admin.php', 'label' => 'Nabídky kroužků', 'description' => 'Kapacity, věk a prodejní okna', 'icon' => 'calendar2-check'],
+                    ['route' => 'club_program_offers_admin.php', 'label' => 'Kroužky', 'description' => 'Založení, úpravy, kapacity a přihlášky', 'icon' => 'calendar2-check'],
                     ['route' => 'club_programs_admin.php', 'label' => 'Programy a podmínky', 'description' => 'Kanonické programy a dokumenty', 'icon' => 'calendar-range'],
                     ['route' => 'club_program_settings_admin.php', 'label' => 'Správa programů', 'description' => 'Opravy názvů a archivace', 'icon' => 'pencil-square'],
                 ]],
@@ -113,22 +113,22 @@ function staffPositionDefinitions(): array
         'catalog_manager' => [
             'label' => 'Správce katalogu e-shopu',
             'short_label' => 'Katalog',
-            'description' => 'Produkty, import, kategorie, ceny, sklad a publikace.',
+            'description' => 'Produkty, ceny, sklad, slevy a zveřejnění.',
             'icon' => 'boxes',
             'legacy_role' => 'admin',
             'sort' => 50,
             'groups' => [
                 ['label' => 'Katalog', 'icon' => 'boxes', 'items' => [
-                    ['route' => 'eshop_catalog_admin.php', 'label' => 'Správa katalogu', 'description' => 'Hledání, filtry, sklad a hromadné akce', 'icon' => 'boxes'],
-                    ['route' => 'eshop_produkt_admin.php', 'label' => 'Ruční produkt', 'description' => 'Založení a úprava produktu', 'icon' => 'box-seam'],
+                    ['route' => 'eshop_catalog_admin.php', 'label' => 'Hromadná správa', 'description' => 'Výjimečné hromadné opravy katalogu', 'icon' => 'boxes'],
+                    ['route' => 'eshop_produkt_admin.php', 'label' => 'Katalog', 'description' => 'Produkty, ceny, sklad a zveřejnění', 'icon' => 'box-seam'],
                     ['route' => 'eshop_categories_admin.php', 'label' => 'Kategorie', 'description' => 'Hierarchie kategorií', 'icon' => 'diagram-3'],
                     ['route' => 'eshop_attributes_admin.php', 'label' => 'Parametry', 'description' => 'Číselník parametrů produktů', 'icon' => 'sliders'],
                 ]],
                 ['label' => 'Ceny a zveřejnění', 'icon' => 'tags', 'items' => [
                     ['route' => 'eshop_member_prices_admin.php', 'label' => 'Klubové ceny', 'description' => 'Členské ceny a pravidla', 'icon' => 'tags'],
                     ['route' => 'eshop_coupons_admin.php', 'label' => 'Kupóny', 'description' => 'Slevové kupóny', 'icon' => 'ticket-perforated'],
-                    ['route' => 'eshop_catalog_publication_admin.php', 'label' => 'Aktivace katalogu', 'description' => 'Kontrola a publikace nabídky', 'icon' => 'eye'],
-                    ['route' => 'eshop_admin.php', 'label' => 'Import katalogu', 'description' => 'Kontrola Shoptet importu', 'icon' => 'cloud-arrow-down'],
+                    ['route' => 'eshop_catalog_publication_admin.php', 'label' => 'Hromadné zveřejnění', 'description' => 'Výjimečná publikace více nabídek', 'icon' => 'eye'],
+                    ['route' => 'eshop_admin.php', 'label' => 'Jednorázový import Shoptet', 'description' => 'Jednorázový převod původního katalogu', 'icon' => 'cloud-arrow-down'],
                 ]],
             ],
         ],
@@ -159,14 +159,14 @@ function staffPositionDefinitions(): array
             'sort' => 70,
             'groups' => [
                 ['label' => 'Platby', 'icon' => 'bank', 'items' => [
-                    ['route' => 'eshop_payments_admin.php', 'label' => 'Ověření plateb a vratek', 'description' => 'Ruční potvrzení peněz v bance', 'icon' => 'cash-coin'],
+                    ['route' => 'eshop_payments_admin.php', 'label' => 'Platby a vratky', 'description' => 'Úkoly čekající na ověření v bance', 'icon' => 'cash-coin'],
                     ['route' => 'eshop_fio_admin.php', 'label' => 'Fio párování', 'description' => 'Návrhy bankovních shod', 'icon' => 'bank'],
                     ['route' => 'eshop_bank_admin.php', 'label' => 'Bankovní účet e-shopu', 'description' => 'IBAN, BIC a splatnost', 'icon' => 'credit-card'],
-                    ['route' => 'member_charges_admin.php', 'label' => 'Členské předpisy', 'description' => 'Stav členských plateb', 'icon' => 'cash-stack'],
+                    ['route' => 'member_charges_admin.php', 'label' => 'Klubové platby', 'description' => 'Stav členských plateb', 'icon' => 'cash-stack'],
                     ['route' => 'member_charge_reminders_admin.php', 'label' => 'Připomínky plateb', 'description' => 'Auditovaná fronta upomínek', 'icon' => 'bell'],
                 ]],
                 ['label' => 'Kredity a provoz', 'icon' => 'wallet2', 'items' => [
-                    ['route' => 'prehled_kreditu.php', 'label' => 'Přehled kreditů', 'description' => 'Kredity sportovců', 'icon' => 'wallet2'],
+                    ['route' => 'prehled_kreditu.php', 'label' => 'Kredity', 'description' => 'Kredity sportovců', 'icon' => 'wallet2'],
                     ['route' => 'sprava_sportovec_obdobi.php', 'label' => 'Kreditní období', 'description' => 'Platnost kreditních období', 'icon' => 'calendar2-range'],
                     ['route' => 'hromadne_odmeny.php', 'label' => 'Sazby za trénink', 'description' => 'Hromadné nastavení peněžních sazeb', 'icon' => 'star'],
                     ['route' => 'uctenky/seznam.php', 'label' => 'Účtenky', 'description' => 'Doklady a výdaje', 'icon' => 'receipt-cutoff'],
@@ -205,6 +205,27 @@ function staffPositionCodes(): array
     $definitions = staffPositionDefinitions();
     uasort($definitions, static fn(array $a, array $b): int => (int)$a['sort'] <=> (int)$b['sort']);
     return array_keys($definitions);
+}
+
+/**
+ * Běžná navigace ukazuje jen činnosti, které člověk vykonává opakovaně.
+ * Ostatní vlastněné trasy zůstávají dostupné jako pokročilé nástroje na
+ * pracovním rozcestníku, takže zjednodušení nemění oprávnění ani data.
+ *
+ * @return array<string,list<string>>
+ */
+function staffPositionPrimaryRoutes(): array
+{
+    return [
+        'coach'=>['formular.php','planovac.php','moje_treninky.php'],
+        'sports_lead'=>['sprava_vsech_treninku.php','sprava_zavodu.php','prehled_vsech_vykazu.php'],
+        'registrar'=>['sprava_sportovcu.php','kis_rosters_admin.php','eshop_identity_admin.php'],
+        'program_coordinator'=>['club_program_offers_admin.php','eshop_events_admin.php','verejny_velodrom_admin.php'],
+        'catalog_manager'=>['eshop_produkt_admin.php','eshop_coupons_admin.php'],
+        'order_operator'=>['eshop_orders_admin.php'],
+        'finance_manager'=>['eshop_payments_admin.php','member_charges_admin.php','prehled_kreditu.php'],
+        'system_admin'=>['sprava_pracovnich_pozic.php','sprava_treneru.php'],
+    ];
 }
 
 /** @return array<string,string> route => position */
@@ -330,6 +351,28 @@ function staffPositionMenuGroups(string $position, bool $isLocal): array
         $groups[] = $group;
     }
     return $groups;
+}
+
+/** @return list<array<string,mixed>> */
+function staffPositionPrimaryMenuGroups(string $position,bool $isLocal):array
+{
+    $primary=array_fill_keys(staffPositionPrimaryRoutes()[$position]??[],true);$groups=[];
+    foreach(staffPositionMenuGroups($position,$isLocal)as$group){
+        $items=array_values(array_filter($group['items'],static fn(array$item):bool=>isset($primary[(string)$item['route']])));
+        if($items===[])continue;$group['items']=$items;$groups[]=$group;
+    }
+    return$groups;
+}
+
+/** @return list<array<string,mixed>> */
+function staffPositionAdvancedMenuGroups(string $position,bool $isLocal):array
+{
+    $primary=array_fill_keys(staffPositionPrimaryRoutes()[$position]??[],true);$groups=[];
+    foreach(staffPositionMenuGroups($position,$isLocal)as$group){
+        $items=array_values(array_filter($group['items'],static fn(array$item):bool=>!isset($primary[(string)$item['route']])));
+        if($items===[])continue;$group['items']=$items;$groups[]=$group;
+    }
+    return$groups;
 }
 
 function staffNormalizeRoute(string $route): string

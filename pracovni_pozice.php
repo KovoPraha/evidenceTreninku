@@ -17,7 +17,7 @@ if ($activeCode === '' || !isset($definitions[$activeCode])) {
     exit('Účet nemá přiřazenou pracovní pozici. Obraťte se na správce systému.');
 }
 $active = $definitions[$activeCode];
-$activeGroups = staffPositionMenuGroups($activeCode, defined('JE_LOKALNE') && JE_LOKALNE === true);
+$isLocal=defined('JE_LOKALNE')&&JE_LOKALNE===true;$activeGroups=staffPositionPrimaryMenuGroups($activeCode,$isLocal);$advancedGroups=staffPositionAdvancedMenuGroups($activeCode,$isLocal);
 $available = staffAvailablePositions();
 $trainerName = trim((string)($_SESSION['trener_jmeno'] ?? ''));
 if ($trainerName === '') {
@@ -51,7 +51,7 @@ function staffDashboardH(mixed $value): string
     <section class="workspace-hero p-4 p-lg-5 mb-4 shadow-sm">
         <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
             <div>
-                <div class="small text-white-50 mb-1">Pracovní rozcestník · <?= staffDashboardH($trainerName) ?></div>
+                <div class="small text-white-50 mb-1">Moje práce · <?= staffDashboardH($trainerName) ?></div>
                 <h1 class="h2 mb-2"><i class="bi bi-<?= staffDashboardH($active['icon']) ?> me-2"></i><?= staffDashboardH($active['label']) ?></h1>
                 <p class="mb-0 text-white-50"><?= staffDashboardH($active['description']) ?></p>
             </div>
@@ -110,6 +110,15 @@ function staffDashboardH(mixed $value): string
         </div>
     </section>
     <?php endforeach; ?>
+
+    <?php if($advancedGroups!==[]):?>
+    <details class="card border-0 shadow-sm mt-4 mb-3">
+        <summary class="card-header bg-white fw-semibold py-3" style="cursor:pointer"><i class="bi bi-tools me-2 text-secondary"></i>Pokročilé a jednorázové nástroje</summary>
+        <div class="card-body"><p class="small text-muted">Tyto nástroje nejsou součástí běžné práce. Použijte je pouze pro výjimečnou opravu, jednorázový převod dat nebo systémové nastavení.</p>
+        <?php foreach($advancedGroups as$group):?><h2 class="h6 mt-3"><?=staffDashboardH($group['label'])?></h2><div class="d-flex flex-wrap gap-2"><?php foreach($group['items']as$item):?><a class="btn btn-sm btn-outline-secondary" href="<?=staffDashboardH(appUiUrl((string)$item['route']))?>"><i class="bi bi-<?=staffDashboardH($item['icon'])?> me-1"></i><?=staffDashboardH($item['label'])?></a><?php endforeach;?></div><?php endforeach;?>
+        </div>
+    </details>
+    <?php endif;?>
 </main>
 </body>
 </html>

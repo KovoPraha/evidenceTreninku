@@ -20,7 +20,7 @@ $staff_active_code = $is_logged_in ? staffActivePosition() : '';
 $staff_active = $is_logged_in ? ($staff_definitions[$staff_active_code] ?? null) : null;
 $staff_available = $is_logged_in ? staffAvailablePositions() : [];
 $staff_menu_groups = $is_logged_in && is_array($staff_active)
-    ? staffPositionMenuGroups($staff_active_code, defined('JE_LOKALNE') && JE_LOKALNE === true)
+    ? staffPositionPrimaryMenuGroups($staff_active_code, defined('JE_LOKALNE') && JE_LOKALNE === true)
     : [];
 
 // Active page detection for navbar highlighting

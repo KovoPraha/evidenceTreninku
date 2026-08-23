@@ -117,17 +117,43 @@ final class StaffWorkspaceRegistryTest extends TestCase
         $root = dirname(__DIR__, 2);
         $header = (string)file_get_contents($root . '/hlavicka.php');
         $landing = (string)file_get_contents($root . '/pracovni_pozice.php');
-        self::assertStringContainsString('staffPositionMenuGroups(', $header);
+        self::assertStringContainsString('staffPositionPrimaryMenuGroups(', $header);
         self::assertStringContainsString('foreach ($staff_menu_groups', $header);
         self::assertStringContainsString('staffAvailablePositions()', $header);
         self::assertStringContainsString('staffIsSuperadmin()', $header);
-        self::assertStringContainsString('staffPositionMenuGroups(', $landing);
+        self::assertStringContainsString('staffPositionPrimaryMenuGroups(', $landing);
+        self::assertStringContainsString('staffPositionAdvancedMenuGroups(', $landing);
+        self::assertStringContainsString('Pokročilé a jednorázové nástroje', $landing);
         self::assertStringContainsString('foreach ($activeGroups', $landing);
         self::assertStringContainsString("appUiUrl((string)\$staff_item['route'])", $header);
         self::assertStringContainsString("appUiUrl((string)\$item['route'])", $landing);
         self::assertStringContainsString("\$position['label']", $landing);
         self::assertStringNotContainsString("\$position['short_label']", $landing);
         self::assertStringNotContainsString('roleAtLeast(', $landing);
+    }
+
+    public function testDailyNavigationIsSmallAndAdvancedRoutesRemainReachable(): void
+    {
+        foreach (\staffPositionCodes() as $position) {
+            $primary = [];
+            foreach (\staffPositionPrimaryMenuGroups($position, false) as $group) {
+                foreach ($group['items'] as $item) $primary[] = $item['route'];
+            }
+            $advanced = [];
+            foreach (\staffPositionAdvancedMenuGroups($position, false) as $group) {
+                foreach ($group['items'] as $item) $advanced[] = $item['route'];
+            }
+            $all = [];
+            foreach (\staffPositionMenuGroups($position, false) as $group) {
+                foreach ($group['items'] as $item) $all[] = $item['route'];
+            }
+            self::assertLessThanOrEqual(3, count($primary), $position);
+            self::assertSame([], array_intersect($primary, $advanced), $position);
+            self::assertEqualsCanonicalizing($all, array_merge($primary, $advanced), $position);
+        }
+        $catalogPrimary = array_merge(...array_map(static fn(array $group): array => array_column($group['items'], 'route'), \staffPositionPrimaryMenuGroups('catalog_manager', false)));
+        self::assertContains('eshop_produkt_admin.php', $catalogPrimary);
+        self::assertNotContains('eshop_admin.php', $catalogPrimary);
     }
 
     public function testActivePositionControlsLegacyCompatibilityWithoutMergingMenus(): void
