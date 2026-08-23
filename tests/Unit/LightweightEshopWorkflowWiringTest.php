@@ -19,6 +19,10 @@ final class LightweightEshopWorkflowWiringTest extends TestCase
         self::assertStringContainsString('shopCatalogPublicationDeactivate(', $source);
         self::assertStringContainsString('Zveřejnit v e-shopu', $source);
         self::assertStringContainsString('Zobrazit technické údaje', $source);
+        self::assertStringContainsString("elseif(!\$showArchive)", $source);
+        self::assertStringContainsString("(string)\$row['origin']==='manual'||(string)\$row['catalog_status']==='active'", $source);
+        self::assertStringContainsString('Zobrazit celý archiv', $source);
+        self::assertStringContainsString('productAdminStatusLabel', $source);
         self::assertStringNotContainsString('href="eshop_catalog_publication_admin.php"', $source);
         self::assertStringNotContainsString('name="attributes_json"', $source);
     }
@@ -43,6 +47,7 @@ final class LightweightEshopWorkflowWiringTest extends TestCase
         $payments = (string)file_get_contents($root . '/eshop_payments_admin.php');
         self::assertStringContainsString('<summary class="btn btn-outline-secondary btn-sm">Pokročilé</summary>', $orders);
         self::assertStringContainsString('Ruční expirace nezaplacených', $orders);
+        self::assertStringContainsString('<title>Objednávky</title>', $orders);
         self::assertStringContainsString('<summary class="btn btn-outline-secondary btn-sm">Pokročilé</summary>', $payments);
         self::assertStringContainsString('Automatické párování Fio', $payments);
         self::assertStringContainsString('Nastavení bankovního účtu', $payments);
