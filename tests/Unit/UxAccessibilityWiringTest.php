@@ -110,6 +110,8 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('productAdminAttributeEditor($attributeDefinitions,(string)$v[\'attributes_json\']', $product);
         self::assertStringContainsString('Volitelné parametry varianty', $product);
         self::assertStringContainsString('Produkt lze založit i bez nich', $product);
+        self::assertStringContainsString('Každý se zadává jednoduše jako název a hodnota', $product);
+        self::assertStringNotContainsString('JSON systém', $product);
         self::assertStringContainsString('<input type="hidden" name="reason" value="">', $product);
         self::assertStringNotContainsString('Důvod založení', $product);
         self::assertLessThan(strpos($product, '<div class="row g-3"><section class="col-xxl-4">'), strpos($product, 'Nový ruční produkt'));
@@ -126,6 +128,23 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('name="next" value="eshop_payments_admin.php"', $orders);
         self::assertStringContainsString('data-refund-handoff', $orders);
         self::assertStringContainsString('<button type="submit" class="btn btn-sm btn-warning">', $orders);
+    }
+
+    public function testHumanFacingCatalogPagesNeverAskForJson(): void
+    {
+        $forbidden = ['JSON objekt', 'platný JSON', 'Technický klíč z JSON', 'volným JSON', 'JSON systém', 'bezpečný JSON report'];
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->root, \FilesystemIterator::SKIP_DOTS));
+        foreach ($iterator as $entry) {
+            if (!$entry->isFile() || strtolower($entry->getExtension()) !== 'php') continue;
+            $file = str_replace('\\', '/', substr($entry->getPathname(), strlen($this->root)));
+            if (preg_match('~^(?:vendor|tests|migrations|bin|docs)/~', $file) === 1) continue;
+            $source = (string)file_get_contents($entry->getPathname());
+            foreach ($forbidden as $phrase) {
+                self::assertStringNotContainsString($phrase, $source, $file . ' nesmí uživateli ukazovat technický formát.');
+            }
+            self::assertDoesNotMatchRegularExpression('~<(?:textarea|input)(?![^>]*\btype=["\']hidden["\'])[^>]*\bname=["\'][^"\']*json~iu', $source, $file . ' nesmí mít viditelné pole pro technický formát.');
+            self::assertDoesNotMatchRegularExpression('~(?:zadejte|vyplňte|musí být|parametry)[^\r\n<]{0,80}\bJSON\b~iu', $source, $file . ' nesmí po uživateli požadovat technický formát.');
+        }
     }
 
     public function testLegacyAdminPagesExposeOneMainHeadingAndAuditTableStaysContained(): void

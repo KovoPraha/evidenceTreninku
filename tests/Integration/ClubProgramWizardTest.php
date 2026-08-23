@@ -28,6 +28,7 @@ final class ClubProgramWizardTest extends TestCase
         self::assertSame('active',$pdo->query('SELECT catalog_status FROM shop_variants')->fetchColumn());
         self::assertSame('active',$pdo->query('SELECT status FROM shop_product_publications')->fetchColumn());
         self::assertSame('active',$pdo->query('SELECT status FROM club_program_offers')->fetchColumn());
+        self::assertSame(['úroveň'=>'začátečníci'],json_decode((string)$pdo->query('SELECT attributes_json FROM shop_variants')->fetchColumn(),true,512,JSON_THROW_ON_ERROR));
         self::assertSame('Kroužky > Dětské',$pdo->query('SELECT category_path FROM shop_product_categories')->fetchColumn());
         self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE status='active'")->fetchColumn());
         self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_seasons')->fetchColumn());
@@ -74,7 +75,7 @@ final class ClubProgramWizardTest extends TestCase
     private function input():array{return[
         'request_key'=>'abcdef0123456789abcdef0123456789','name'=>'Rajčátka','description'=>'Cyklistický kroužek pro děti.',
         'currency'=>'CZK','amount_minor'=>150000,'includes_vat'=>1,'vat_rate_basis_points'=>2100,'category_path'=>'Kroužky > Dětské',
-        'attributes_json'=>'{"úroveň":"začátečníci"}','starts_on'=>'2026-09-01','ends_on'=>'2027-06-30',
+        'attribute_keys'=>['úroveň'],'attribute_values'=>['začátečníci'],'starts_on'=>'2026-09-01','ends_on'=>'2027-06-30',
         'sales_open_at'=>'2026-08-01T00:00','sales_close_at'=>'2026-09-30T23:59','capacity'=>12,
         'birth_year_from'=>2018,'birth_year_to'=>2020,'program_cancellation_source'=>'new','program_cancellation_text'=>'Storno podmínky Rajčátek.',
         'program_consent_source'=>'new','program_consent_text'=>'Souhlasím s účastí dítěte.','team_mode'=>'new',

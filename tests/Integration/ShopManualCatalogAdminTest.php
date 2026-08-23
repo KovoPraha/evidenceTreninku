@@ -25,6 +25,7 @@ final class ShopManualCatalogAdminTest extends TestCase
         $variant=$pdo->query('SELECT * FROM shop_variants WHERE id='.(int)$created['variant_id'])->fetch(PDO::FETCH_ASSOC);
         self::assertSame('manual',$product['origin']);self::assertSame('draft',$product['catalog_status']);
         self::assertSame('manual',$variant['origin']);self::assertSame('draft',$variant['catalog_status']);
+        self::assertSame('{}',$variant['attributes_json']);
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_catalog_admin_events WHERE action='create_product' AND actor_type='trainer' AND actor_id=7")->fetchColumn());
         self::assertSame('Ruční založení produktu do katalogu.',$pdo->query("SELECT reason FROM shop_catalog_admin_events WHERE action='create_product'")->fetchColumn());
 

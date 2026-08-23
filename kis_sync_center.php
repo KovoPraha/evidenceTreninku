@@ -155,7 +155,7 @@ $attention = [
                             </div>
                             <code class="small text-break"><?= h($previewReport['fingerprint']) ?></code>
                         </div>
-                        <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;preview_report=json">Stáhnout bezpečný JSON report</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="kis_sync_center.php?run_id=<?= $runId ?>&amp;preview_report=json">Stáhnout technický report</a>
                     </div>
                     <div class="border rounded p-3 mt-3 bg-light">
                         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">

@@ -271,11 +271,11 @@ function shopManualCatalogVariantInput(array $input): array
     if ($sku === '' || strlen($sku) > 64) throw new InvalidArgumentException('SKU je povinné a smí mít nejvýše 64 znaků.');
     $attributes = trim((string)($input['attributes_json']??'{}'));
     try { $decoded = json_decode($attributes,true,64,JSON_THROW_ON_ERROR); }
-    catch (JsonException $exception) { throw new InvalidArgumentException('Parametry musí být platný JSON objekt.',0,$exception); }
+    catch (JsonException $exception) { throw new InvalidArgumentException('Parametry se nepodařilo zpracovat. Odeberte problematický řádek a přidejte jej znovu.',0,$exception); }
     if (!is_array($decoded) || (!str_starts_with(ltrim($attributes),'{'))) {
-        throw new InvalidArgumentException('Parametry musí být JSON objekt, například {}.');
+        throw new InvalidArgumentException('Parametry mají nepodporovaný tvar. Zadejte každý parametr jako samostatný název a hodnotu.');
     }
-    $attributes = json_encode($decoded,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR);
+    $attributes = json_encode((object)$decoded,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR);
     $amount = $input['amount_minor']??null;
     if (!is_int($amount) || $amount < 0 || $amount > 1000000000) throw new InvalidArgumentException('Cena není v podporovaném rozsahu.');
     $compare = $input['compare_at_amount_minor']??null;

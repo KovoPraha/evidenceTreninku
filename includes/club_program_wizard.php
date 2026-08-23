@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__.'/shop_product_image.php';
+require_once __DIR__.'/shop_attribute.php';
 require_once __DIR__.'/kis_roster.php';
 require_once __DIR__.'/club_program_terms.php';
 
@@ -43,7 +44,7 @@ function clubProgramWizardCreate(
     $sku=strtoupper(trim((string)($input['sku']??'')));
     if($sku==='')$sku=substr(shopCatalogManualSkuPrefix().$slug.'-'.$suffix,0,64);
     $amount=$input['amount_minor']??null;if(!is_int($amount))throw new InvalidArgumentException('Cena musí být zadána přesně v haléřích.');
-    $attributes=trim((string)($input['attributes_json']??'{}'));
+    $attributes=shopAttributeFormJson($input,shopAttributeDefinitions($pdo,true));
     $stored=null;$applicationRoot??=dirname(__DIR__);
     if($imageSource!==null&&$imageSource!=='')$stored=shopProductImageStoreFile($imageSource,$uploaded,$applicationRoot);
     try{
