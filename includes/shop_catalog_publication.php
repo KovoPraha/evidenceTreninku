@@ -67,8 +67,25 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
         } elseif(clubProgramTermsRegistryAvailable($pdo)&&!clubProgramProductHasEffectiveTerms($pdo,$productId)) {
             $blockers[] = 'Žádná nabídka programu nemá zveřejněné platné storno podmínky a souhlas.';
         }
+    } elseif ((string)$product['offer_type'] === 'camp') {
+        if (!function_exists('clubEventTableExists')
+            || !clubEventTableExists($pdo, 'shop_product_event_links')
+            || !clubEventTableExists($pdo, 'club_events')
+        ) {
+            $blockers[] = 'Databáze zatím nemá připravenou správu táborů.';
+        } else {
+            $linkedEvent = $pdo->prepare(
+                'SELECT e.id FROM shop_product_event_links l '
+                . 'JOIN club_events e ON e.id=l.event_id '
+                . "WHERE l.product_id=? AND e.event_type='camp' LIMIT 1"
+            );
+            $linkedEvent->execute([$productId]);
+        }
+        if (isset($linkedEvent) && !$linkedEvent->fetchColumn()) {
+            $blockers[] = 'Tábor nejprve propojte s pracovní akcí typu Tábor v agendě Klubové akce.';
+        }
     } elseif ((string)$product['offer_type'] !== 'goods') {
-        $blockers[] = 'Typ ' . $product['offer_type'] . ' čeká na doménovou funkci K3 nebo rezervace.';
+        $blockers[] = 'Typ ' . $product['offer_type'] . ' zatím nemá podporovaný prodejní postup.';
     }
     if (trim((string)$product['name']) === '') {
         $blockers[] = 'Produkt nemá název.';
@@ -158,7 +175,7 @@ function shopCatalogPublicationActivateInTransaction(
     $product=shopCatalogPublicationLockProduct($pdo,$productId);
     if(!$product)throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
     $readiness=shopCatalogPublicationReadiness($pdo,$productId);
-    if(!$readiness['ready'])throw new ShopCatalogPublicationException('Aktivace je blokována: '.implode(' ',$readiness['blockers']));
+    if(!$readiness['ready'])throw new ShopCatalogPublicationException('Aktivace je blokovaná: '.implode(' ',$readiness['blockers']));
     $existing=$pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');
     $existing->execute([$productId]);$publication=$existing->fetch(PDO::FETCH_ASSOC);
     if($product['catalog_status']==='active'&&$publication&&$publication['status']==='active'){

@@ -108,7 +108,11 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringNotContainsString('name="attributes_json"', $product);
         self::assertStringNotContainsString('Parametry JSON', $product);
         self::assertStringContainsString('productAdminAttributeEditor($attributeDefinitions,(string)$v[\'attributes_json\']', $product);
-        self::assertStringContainsString('Poznámka do historie', $product);
+        self::assertStringContainsString('Volitelné parametry varianty', $product);
+        self::assertStringContainsString('Produkt lze založit i bez nich', $product);
+        self::assertStringContainsString('<input type="hidden" name="reason" value="">', $product);
+        self::assertStringNotContainsString('Důvod založení', $product);
+        self::assertLessThan(strpos($product, '<div class="row g-3"><section class="col-xxl-4">'), strpos($product, 'Nový ruční produkt'));
 
         $memberPrices = (string)file_get_contents($this->root . 'eshop_member_prices_admin.php');
         self::assertStringContainsString('Klubové ceny pro konkrétní soupisky', $memberPrices);
@@ -118,8 +122,10 @@ final class UxAccessibilityWiringTest extends TestCase
 
         $orders = (string)file_get_contents($this->root . 'eshop_orders_admin.php');
         self::assertStringContainsString('Čeká na vrácení hospodářem', $orders);
-        self::assertStringContainsString('Přejít k vrácení platby', $orders);
+        self::assertStringContainsString('Přepnout na Hospodáře a otevřít vratku', $orders);
         self::assertStringContainsString('name="next" value="eshop_payments_admin.php"', $orders);
+        self::assertStringContainsString('data-refund-handoff', $orders);
+        self::assertStringContainsString('<button type="submit" class="btn btn-sm btn-warning">', $orders);
     }
 
     public function testLegacyAdminPagesExposeOneMainHeadingAndAuditTableStaysContained(): void

@@ -43,11 +43,11 @@ function clubEventConfigureRegistrationTerms(
     $pdo->beginTransaction();
     try {
         $event = clubEventLock($pdo, $eventId);
-        if (!$event || $event['status'] !== 'draft' || $event['event_type'] !== 'club_event'
+        if (!$event || $event['status'] !== 'draft' || !in_array((string)$event['event_type'], clubEventTypes(), true)
             || !in_array($event['pricing_policy'], ['free', 'product_variants'], true)
         ) {
             throw new ClubEventRegistrationException(
-                'Podmínky lze nastavit pouze bezplatnému kroužku ve stavu draft.'
+                'Podmínky lze nastavit pouze podporované klubové akci ve stavu konceptu.'
             );
         }
         $session = $pdo->prepare(
@@ -161,10 +161,10 @@ function clubEventOpenFreeRegistration(
             return ['id' => $eventId, 'status' => 'open', 'changed' => false];
         }
         if ($event['status'] !== 'draft'
-            || $event['event_type'] !== 'club_event'
+            || !in_array((string)$event['event_type'], clubEventTypes(), true)
             || $event['pricing_policy'] !== 'free'
         ) {
-            throw new ClubEventRegistrationException('Otevřít lze pouze bezplatný kroužek ve stavu draft.');
+            throw new ClubEventRegistrationException('Otevřít lze pouze bezplatnou klubovou akci nebo tábor ve stavu konceptu.');
         }
         if (empty($event['terms_version']) || empty($event['consent_text_plain'])
             || empty($event['cancellation_policy_plain']) || empty($event['cancellation_deadline_at'])
@@ -246,7 +246,7 @@ function clubEventOpenPaidRegistration(PDO $pdo,int $eventId,int $actorTrainerId
         $event=clubEventLock($pdo,$eventId);
         if(!$event)throw new ClubEventRegistrationException('Udalost nebyla nalezena.');
         if($event['status']==='open'){$pdo->commit();return['id'=>$eventId,'status'=>'open','changed'=>false];}
-        if($event['status']!=='draft'||$event['event_type']!=='club_event'||$event['pricing_policy']!=='product_variants')throw new ClubEventRegistrationException('Otevrit lze pouze placenou klubovou udalost ve stavu draft.');
+        if($event['status']!=='draft'||!in_array((string)$event['event_type'],clubEventTypes(),true)||$event['pricing_policy']!=='product_variants')throw new ClubEventRegistrationException('Otevřít lze pouze placenou klubovou akci nebo tábor ve stavu konceptu.');
         if(empty($event['terms_version'])||empty($event['consent_text_plain'])||empty($event['cancellation_policy_plain'])||empty($event['cancellation_deadline_at']))throw new ClubEventRegistrationException('Pred otevrenim nastavte verzi souhlasu a storno podminky.');
         $sessions=$pdo->prepare("SELECT MIN(starts_at),COUNT(*) FROM club_event_sessions WHERE event_id=? AND status='scheduled'");$sessions->execute([$eventId]);$session=$sessions->fetch(PDO::FETCH_NUM);
         if(!$session||(int)$session[1]<1)throw new ClubEventRegistrationException('Pred otevrenim pridejte alespon jeden termin.');
@@ -331,7 +331,7 @@ function clubEventRegisterParticipant(
     try {
         // The event row is the capacity mutex in MariaDB. Every registration and reactivation locks it first.
         $event = clubEventLock($pdo, $eventId);
-        if (!$event || $event['status'] !== 'open' || $event['event_type'] !== 'club_event'
+        if (!$event || $event['status'] !== 'open' || !in_array((string)$event['event_type'], clubEventTypes(), true)
             || $event['pricing_policy'] !== 'free'
         ) {
             throw new ClubEventRegistrationException('Kroužek není otevřený pro bezplatné přihlášení.');
@@ -711,7 +711,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
 function clubEventOpenFreeList(PDO $pdo): array
 {
     $events = $pdo->query(
-        "SELECT e.* FROM club_events e WHERE e.status='open' AND e.event_type='club_event' "
+        "SELECT e.* FROM club_events e WHERE e.status='open' AND e.event_type IN ('club_event','camp') "
         . "AND e.pricing_policy='free' AND (e.registration_starts_at IS NULL OR e.registration_starts_at<=CURRENT_TIMESTAMP) "
         . "AND (e.registration_ends_at IS NULL OR e.registration_ends_at>=CURRENT_TIMESTAMP) "
         . 'ORDER BY e.registration_ends_at IS NULL, e.registration_ends_at, e.name'

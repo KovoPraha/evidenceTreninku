@@ -13,6 +13,29 @@ require_once dirname(__DIR__, 2) . '/includes/shop_checkout.php';
 
 final class ClubEventRegistrationTest extends TestCase
 {
+    public function testCampUsesTheCompleteFreeRegistrationLifecycle(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE shop_products SET offer_type='camp' WHERE id=501");
+        $input = $this->eventInput(2);
+        $input['event_type'] = 'camp';
+        $input['name'] = 'Letní příměstský tábor';
+        $event = \clubEventCreateDraft($pdo, 7, $input);
+        $year = (int)date('Y') + 1;
+        \clubEventAddSession($pdo, $event['id'], 7, $year . '-07-12T08:00', $year . '-07-16T17:00', 'Velodrom', 2);
+        \clubEventLinkProduct($pdo, $event['id'], 501, 7, 'Bezplatná varianta tábora.');
+        \clubEventConfigureRegistrationTerms(
+            $pdo, $event['id'], 7, 'camp.1', 'Souhlasím s účastí na táboře.',
+            'Bezplatné storno je možné do uvedeného termínu.', $year . '-07-01T12:00', true
+        );
+        \clubEventOpenFreeRegistration($pdo, $event['id'], 7, 'Tábor je připravený pro přihlášky.', true);
+
+        $open = \clubEventOpenFreeList($pdo);
+        self::assertSame('camp', $open[0]['event_type']);
+        $registration = \clubEventRegisterParticipant($pdo, $event['id'], 10, 100, 'camp.1', true);
+        self::assertSame('confirmed', $registration['status']);
+    }
+
     public function testConfiguringTermsAfterScopedRegistryMigrationStoresEventScope(): void
     {
         $pdo = $this->database();
@@ -441,13 +464,14 @@ final class ClubEventRegistrationTest extends TestCase
         )->fetchColumn());
     }
 
-    public function testPaidRosterEventHoldsCapacityAndFollowsOrderPaymentLifecycle():void
+    public function testPaidCampHoldsCapacityAndFollowsOrderPaymentLifecycle():void
     {
         $pdo=$this->database();$year=(int)date('Y')+1;
+        $pdo->exec("UPDATE shop_products SET offer_type='camp' WHERE id=502");
         $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'TEST-SEASON','Test season','$year-01-01','$year-12-31','active',7)");
         $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'U15','U15','silnice','U15','active',7)");
         $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,created_by_trainer_id) VALUES(1,100,'active','manual','$year-01-01',7),(1,101,'active','manual','$year-01-01',7)");
-        $input=$this->eventInput(1);$input['code']='PAID-'.bin2hex(random_bytes(4));$input['name']='Placené soustředění';$input['pricing_policy']='product_variants';
+        $input=$this->eventInput(1);$input['code']='PAID-'.bin2hex(random_bytes(4));$input['event_type']='camp';$input['name']='Placené soustředění';$input['pricing_policy']='product_variants';
         $event=\clubEventCreateDraft($pdo,7,$input);$eventId=(int)$event['id'];
         \clubEventAddSession($pdo,$eventId,7,$year.'-09-10T09:00',$year.'-09-10T17:00','Velodrom',1);
         \clubEventLinkProduct($pdo,$eventId,502,7,'Cena soustředění.');

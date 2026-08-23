@@ -82,7 +82,7 @@ function staffDashboardH(mixed $value): string
                 <form method="post" action="prepnout_pracovni_pozici.php">
                     <?= csrf_field() ?>
                     <input type="hidden" name="position" value="<?= staffDashboardH($code) ?>">
-                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-<?= staffDashboardH($position['icon']) ?> me-1"></i><?= staffDashboardH($position['short_label']) ?></button>
+                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-<?= staffDashboardH($position['icon']) ?> me-1"></i><?= staffDashboardH($position['label']) ?></button>
                 </form>
                 <?php endforeach; ?>
             </div>
@@ -96,7 +96,7 @@ function staffDashboardH(mixed $value): string
         <div class="row g-3">
             <?php foreach ($group['items'] as $item): ?>
             <div class="col-md-6 col-xl-3">
-                <a class="workspace-link" href="<?= staffDashboardH($item['route']) ?>">
+                <a class="workspace-link" href="<?= staffDashboardH(appUiUrl((string)$item['route'])) ?>">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <div class="workspace-icon mb-3"><i class="bi bi-<?= staffDashboardH($item['icon']) ?>"></i></div>

@@ -214,8 +214,8 @@ if ($is_logged_in) {
 </style>
 <nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand fw-semibold" href="<?= $is_logged_in ? 'pracovni_pozice.php' : 'index.php' ?>">
-            <i class="bi bi-bicycle me-1"></i><?= $is_logged_in ? htmlspecialchars((string)($staff_active['short_label'] ?? 'Pracovní rozcestník')) : 'Kovopraha' ?>
+        <a class="navbar-brand fw-semibold" href="<?= htmlspecialchars(appUiUrl($is_logged_in ? 'pracovni_pozice.php' : 'index.php')) ?>">
+            <i class="bi bi-bicycle me-1"></i><?= $is_logged_in ? htmlspecialchars((string)($staff_active['label'] ?? 'Pracovní rozcestník')) : 'Kovopraha' ?>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Přepnout navigaci">
@@ -225,13 +225,13 @@ if ($is_logged_in) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <?php if ($is_logged_in && is_array($staff_active)): ?>
             <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
-                <li class="nav-item"><a class="nav-link<?= _navActive('pracovni_pozice.php') ?>" href="pracovni_pozice.php"><i class="bi bi-grid me-1"></i>Rozcestník</a></li>
+                <li class="nav-item"><a class="nav-link<?= _navActive('pracovni_pozice.php') ?>" href="<?= htmlspecialchars(appUiUrl('pracovni_pozice.php')) ?>"><i class="bi bi-grid me-1"></i>Rozcestník</a></li>
                 <?php foreach ($staff_menu_groups as $staff_group): ?>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-<?= htmlspecialchars((string)$staff_group['icon']) ?> me-1"></i><?= htmlspecialchars((string)$staff_group['label']) ?></a>
                     <ul class="dropdown-menu">
                         <?php foreach ($staff_group['items'] as $staff_item): ?>
-                        <li><a class="dropdown-item<?= _dropActive(basename((string)$staff_item['route'])) ?>" href="<?= htmlspecialchars((string)$staff_item['route']) ?>"><i class="bi bi-<?= htmlspecialchars((string)$staff_item['icon']) ?> me-2 text-primary"></i><?= htmlspecialchars((string)$staff_item['label']) ?></a></li>
+                        <li><a class="dropdown-item<?= _dropActive(basename((string)$staff_item['route'])) ?>" href="<?= htmlspecialchars(appUiUrl((string)$staff_item['route'])) ?>"><i class="bi bi-<?= htmlspecialchars((string)$staff_item['icon']) ?> me-2 text-primary"></i><?= htmlspecialchars((string)$staff_item['label']) ?></a></li>
                         <?php endforeach; ?>
                     </ul>
                 </li>

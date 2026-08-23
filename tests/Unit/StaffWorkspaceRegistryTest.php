@@ -123,6 +123,10 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertStringContainsString('staffIsSuperadmin()', $header);
         self::assertStringContainsString('staffPositionMenuGroups(', $landing);
         self::assertStringContainsString('foreach ($activeGroups', $landing);
+        self::assertStringContainsString("appUiUrl((string)\$staff_item['route'])", $header);
+        self::assertStringContainsString("appUiUrl((string)\$item['route'])", $landing);
+        self::assertStringContainsString("\$position['label']", $landing);
+        self::assertStringNotContainsString("\$position['short_label']", $landing);
         self::assertStringNotContainsString('roleAtLeast(', $landing);
     }
 

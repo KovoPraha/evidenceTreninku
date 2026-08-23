@@ -24,7 +24,7 @@ function clubEventShopVariant(PDO $pdo,int $eventId,int $variantId,bool $lock=fa
         ."JOIN shop_variants v ON v.product_id=p.id WHERE e.id=? AND v.id=?";
     if($lock&&(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
     $s=$pdo->prepare($sql);$s->execute([$eventId,$variantId]);$row=$s->fetch(PDO::FETCH_ASSOC);
-    if(!$row||$row['event_type']!=='club_event'||$row['pricing_policy']!=='product_variants'||$row['status']!=='open'
+    if(!$row||!in_array((string)$row['event_type'],clubEventTypes(),true)||$row['pricing_policy']!=='product_variants'||$row['status']!=='open'
         ||$row['product_status']!=='active'||$row['catalog_status']!=='active'||$row['price_mode']!=='fixed'
         ||(int)$row['amount_minor']<1||$row['variant_currency']!=='CZK'
         ||$row['event_currency']!==$row['variant_currency']
@@ -161,6 +161,6 @@ function clubEventShopAssertConsent(array $event,string $version):void{if(empty(
 /** @return list<array<string,mixed>> */
 function clubEventOpenPaidList(PDO $pdo):array
 {
-    $rows=$pdo->query("SELECT e.*,v.id AS variant_id,v.sku,v.amount_minor FROM club_events e JOIN shop_product_event_links l ON l.event_id=e.id JOIN shop_products p ON p.id=l.product_id JOIN shop_variants v ON v.product_id=p.id WHERE e.event_type='club_event' AND e.status='open' AND e.pricing_policy='product_variants' AND p.catalog_status='active' AND v.catalog_status='active' AND v.price_mode='fixed' AND v.amount_minor>0 AND v.currency='CZK' AND (v.visible IS NULL OR v.visible=1) AND (e.registration_starts_at IS NULL OR e.registration_starts_at<=CURRENT_TIMESTAMP) AND (e.registration_ends_at IS NULL OR e.registration_ends_at>=CURRENT_TIMESTAMP) ORDER BY e.registration_starts_at,e.id,v.id")->fetchAll(PDO::FETCH_ASSOC);
+    $rows=$pdo->query("SELECT e.*,v.id AS variant_id,v.sku,v.amount_minor FROM club_events e JOIN shop_product_event_links l ON l.event_id=e.id JOIN shop_products p ON p.id=l.product_id JOIN shop_variants v ON v.product_id=p.id WHERE e.event_type IN ('club_event','camp') AND e.status='open' AND e.pricing_policy='product_variants' AND p.catalog_status='active' AND v.catalog_status='active' AND v.price_mode='fixed' AND v.amount_minor>0 AND v.currency='CZK' AND (v.visible IS NULL OR v.visible=1) AND (e.registration_starts_at IS NULL OR e.registration_starts_at<=CURRENT_TIMESTAMP) AND (e.registration_ends_at IS NULL OR e.registration_ends_at>=CURRENT_TIMESTAMP) ORDER BY e.registration_starts_at,e.id,v.id")->fetchAll(PDO::FETCH_ASSOC);
     foreach($rows as &$event){$event['sessions']=clubEventSessions($pdo,(int)$event['id']);$event['effective_capacity']=clubEventEffectiveCapacity($pdo,(int)$event['id'],(int)$event['capacity']);$event['remaining_capacity']=max(0,$event['effective_capacity']-clubEventShopOccupiedCount($pdo,(int)$event['id']));}unset($event);return$rows;
 }

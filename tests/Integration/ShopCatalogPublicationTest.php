@@ -75,24 +75,30 @@ final class ShopCatalogPublicationTest extends TestCase
         self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publication_events')->fetchColumn());
     }
 
-    public function testK3OfferTypesStayBlockedWithoutAnyPublicationWrite(): void
+    public function testCampRequiresDomainLinkAndCanThenBeActivated(): void
     {
         $pdo = $this->databaseWithDraftCatalog();
         $productId = (int)$pdo->query(
-            "SELECT id FROM shop_products WHERE offer_type<>'goods' ORDER BY id LIMIT 1"
+            "SELECT id FROM shop_products WHERE offer_type='camp' ORDER BY id LIMIT 1"
         )->fetchColumn();
         self::assertGreaterThan(0, $productId);
+        $pdo->exec('CREATE TABLE club_events(id INTEGER PRIMARY KEY,event_type TEXT NOT NULL)');
+        $pdo->exec('CREATE TABLE shop_product_event_links(product_id INTEGER NOT NULL,event_id INTEGER NOT NULL)');
 
         $readiness = \shopCatalogPublicationReadiness($pdo, $productId);
         self::assertFalse($readiness['ready']);
-        self::assertStringContainsString('K3', implode(' ', $readiness['blockers']));
-        try {
-            \shopCatalogPublicationActivate($pdo, $productId, 7, 'Akce', 'Popis klubové akce.', 'Pokus.', true);
-            self::fail('K3 product must stay blocked.');
-        } catch (\ShopCatalogPublicationException) {
-            self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publications')->fetchColumn());
-            self::assertSame('draft', $pdo->query("SELECT catalog_status FROM shop_products WHERE id=$productId")->fetchColumn());
-        }
+        self::assertStringContainsString('propojte', implode(' ', $readiness['blockers']));
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publications')->fetchColumn());
+
+        $pdo->exec("INSERT INTO club_events VALUES(1,'camp')");
+        $pdo->exec("INSERT INTO shop_product_event_links VALUES($productId,1)");
+        self::assertTrue(\shopCatalogPublicationReadiness($pdo, $productId)['ready']);
+        $result = \shopCatalogPublicationActivate(
+            $pdo, $productId, 7, 'Letní tábor', 'Přihlášení na klubový letní tábor.',
+            'Tábor je propojený s pracovní akcí a připravený k otevření přihlášek.', true
+        );
+        self::assertTrue($result['changed']);
+        self::assertSame('active', $pdo->query("SELECT catalog_status FROM shop_products WHERE id=$productId")->fetchColumn());
     }
 
     public function testProgramRequiresOfferLinkAndStaysActiveWhenOfferIsNoLongerSaleable(): void
