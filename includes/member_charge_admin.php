@@ -77,5 +77,23 @@ function memberChargeAdminConfirmPaid(PDO$pdo,int$chargeId,int$actorId,string$pa
     if($chargeId<1||$actorId<1||!$confirmed)throw new InvalidArgumentException('Potvrzení úhrady vyžaduje správce a potvrzení.');$reason=memberChargeAdminReason($reason);$paidOn=memberChargeAdminDate($paidOn,true);$settings=shopBankSettingsEffective($pdo);$paidAt=$paidOn.' 12:00:00';$pdo->beginTransaction();try{$before=memberChargeAdminLock($pdo,$chargeId);if(!$before)throw new MemberChargeAdminException('Předpis nebyl nalezen.');if($before['status']==='paid'){$pdo->commit();return['id'=>$chargeId,'changed'=>false,'status'=>'paid'];}if($before['status']!=='pending')throw new MemberChargeAdminException('Uhradit lze pouze aktivní neuhrazený předpis.');$values=['amount_minor'=>(int)$before['amount_minor'],'currency'=>(string)$before['currency'],'due_on'=>(string)($before['due_on']?:$paidOn)];$payment=$pdo->prepare("SELECT * FROM payments WHERE payable_type='member_charge' AND payable_id=?");$payment->execute([$chargeId]);$row=$payment->fetch(PDO::FETCH_ASSOC);if($row){$pdo->prepare("UPDATE payments SET status='paid',paid_at=?,confirmed_by_trainer_id=?,confirmation_note=? WHERE id=? AND status='pending'")->execute([$paidAt,$actorId,$reason,$row['id']]);}else{memberChargeAdminInsertPayment($pdo,$chargeId,$values,$settings,(string)$before['public_code'],$actorId,$paidAt,$reason);}$pdo->prepare("UPDATE club_member_charges SET status='paid' WHERE id=?")->execute([$chargeId]);memberChargeAdminEvent($pdo,$chargeId,'manual_confirm_paid','pending','paid',$actorId,$reason,['paid_at'=>$paidAt,'before'=>$before]);$pdo->commit();return['id'=>$chargeId,'changed'=>true,'status'=>'paid'];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof MemberChargeAdminException||$exception instanceof ShopCheckoutException)throw$exception;throw new MemberChargeAdminException('Úhradu se nepodařilo potvrdit bez částečného zápisu.',0,$exception);}
 }
 
+/** @return array{id:int,changed:bool,status:string} */
+function memberChargeAdminConfirmRefund(PDO $pdo,int $chargeId,int $actorId,string $reference,string $reason,bool $confirmed):array
+{
+    $reference=trim($reference);
+    if($chargeId<1||$actorId<1||!$confirmed||$reference===''||mb_strlen($reference,'UTF-8')>255)throw new InvalidArgumentException('Potvrzení vratky vyžaduje hospodáře, bankovní referenci a výslovné potvrzení.');
+    $reason=memberChargeAdminReason($reason);$pdo->beginTransaction();
+    try{$before=memberChargeAdminLock($pdo,$chargeId);if(!$before)throw new MemberChargeAdminException('Předpis nebyl nalezen.');
+        if($before['status']==='refunded'){$pdo->commit();return['id'=>$chargeId,'changed'=>false,'status'=>'refunded'];}
+        if($before['status']!=='refund_required')throw new MemberChargeAdminException('Vratku lze potvrdit pouze u předpisu označeného k vrácení.');
+        $payment=$pdo->prepare("SELECT * FROM payments WHERE payable_type='member_charge' AND payable_id=? ORDER BY id DESC LIMIT 1");$payment->execute([$chargeId]);$row=$payment->fetch(PDO::FETCH_ASSOC);
+        if(!$row||!in_array((string)$row['status'],['paid','refund_required'],true))throw new MemberChargeAdminException('K předpisu chybí uhrazená platba pro vratku.');
+        $pdo->prepare("UPDATE payments SET status='refunded',refund_sent_at=CURRENT_TIMESTAMP,refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$reference,$actorId,$reason,(int)$row['id']]);
+        $pdo->prepare("UPDATE club_member_charges SET status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$chargeId]);
+        memberChargeAdminEvent($pdo,$chargeId,'manual_confirm_refund','refund_required','refunded',$actorId,$reason,['reference'=>$reference,'payment_id'=>(int)$row['id'],'before'=>$before]);
+        $pdo->commit();return['id'=>$chargeId,'changed'=>true,'status'=>'refunded'];
+    }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof MemberChargeAdminException)throw$exception;throw new MemberChargeAdminException('Vratku se nepodařilo potvrdit bez částečného zápisu.',0,$exception);}
+}
+
 /** @return array<string,mixed>|false */
 function memberChargeAdminLock(PDO$pdo,int$chargeId):array|false{$sql='SELECT * FROM club_member_charges WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$statement=$pdo->prepare($sql);$statement->execute([$chargeId]);return$statement->fetch(PDO::FETCH_ASSOC);}

@@ -25,6 +25,17 @@ if ($trainerName === '') {
     $statement->execute([(int)$_SESSION['trener_id']]);
     $trainerName = (string)$statement->fetchColumn();
 }
+$vehicleConflictCount = 0;
+try {
+    $vehicleConflictCount = (int)$pdo->query(
+        "SELECT COUNT(*) FROM club_event_vehicle_reservations a "
+        . "JOIN club_event_vehicle_reservations b ON b.vehicle_id=a.vehicle_id AND b.id>a.id "
+        . "AND b.status='active' AND b.starts_at<a.ends_at AND b.ends_at>a.starts_at "
+        . "WHERE a.status='active' AND a.ends_at>=CURRENT_TIMESTAMP"
+    )->fetchColumn();
+} catch (Throwable $exception) {
+    error_log('pracovni_pozice vehicle conflicts: ' . $exception->getMessage());
+}
 function staffDashboardH(mixed $value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -68,6 +79,13 @@ function staffDashboardH(mixed $value): string
     <?php if (!empty($_SESSION['flash_error'])): ?>
         <div class="alert alert-danger"><?= staffDashboardH($_SESSION['flash_error']) ?></div>
         <?php unset($_SESSION['flash_error']); ?>
+    <?php endif; ?>
+
+    <?php if ($vehicleConflictCount > 0): ?>
+        <div class="alert alert-danger border-3 shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div><strong><i class="bi bi-exclamation-octagon-fill me-2"></i>Kolize klubových vozidel: <?= $vehicleConflictCount ?></strong><div class="small">Překryv může být domluvený mimo systém, ale musí být zkontrolován.</div></div>
+            <a class="btn btn-danger" href="<?= staffDashboardH(appUiUrl('club_calendar.php')) ?>">Otevřít klubový kalendář</a>
+        </div>
     <?php endif; ?>
 
     <?php if (count($available) > 1): ?>

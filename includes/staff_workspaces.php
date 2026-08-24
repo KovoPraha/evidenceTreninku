@@ -21,6 +21,7 @@ function staffPositionDefinitions(): array
             'sort' => 10,
             'groups' => [
                 ['label' => 'Moje práce', 'icon' => 'calendar-check', 'items' => [
+                    ['route' => 'club_calendar.php', 'label' => 'Klubový kalendář', 'description' => 'Plán akcí, účastníci a vozidla', 'icon' => 'calendar-event'],
                     ['route' => 'formular.php', 'label' => 'Zadat trénink', 'description' => 'Evidence tréninku a účasti', 'icon' => 'calendar-plus'],
                     ['route' => 'planovac.php', 'label' => 'Plánovač', 'description' => 'Naplánované tréninky', 'icon' => 'calendar3-week'],
                     ['route' => 'moje_treninky.php', 'label' => 'Moje tréninky', 'description' => 'Vlastní historie a úpravy', 'icon' => 'list-check'],
@@ -217,7 +218,7 @@ function staffPositionCodes(): array
 function staffPositionPrimaryRoutes(): array
 {
     return [
-        'coach'=>['formular.php','planovac.php','moje_treninky.php'],
+        'coach'=>['club_calendar.php','formular.php','planovac.php'],
         'sports_lead'=>['sprava_vsech_treninku.php','sprava_zavodu.php','prehled_vsech_vykazu.php'],
         'registrar'=>['sprava_sportovcu.php','kis_rosters_admin.php','eshop_identity_admin.php'],
         'program_coordinator'=>['club_program_offers_admin.php','eshop_events_admin.php','verejny_velodrom_admin.php'],
@@ -323,6 +324,7 @@ function staffRouteDelegates(): array
         'sportovec_detail.php' => ['sports_lead'],
         'kalendar_sportovist.php' => ['program_coordinator'],
         'rezervovat_sportoviste.php' => ['program_coordinator'],
+        'club_calendar.php' => ['sports_lead','program_coordinator','finance_manager'],
     ];
 }
 

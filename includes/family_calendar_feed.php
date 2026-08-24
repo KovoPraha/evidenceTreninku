@@ -168,6 +168,30 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
         }
     }
 
+    // Soupiskový předběžný plán patří do soukromého rodinného kalendáře ještě před přihlášením.
+    if (publicCalendarHasTables($pdo, ['club_events','club_event_sessions','club_event_roster_targets','club_roster_members','sportovci'])
+        && publicCalendarColumnExists($pdo,'club_events','visibility')
+        && publicCalendarColumnExists($pdo,'club_events','planning_status')) {
+        $statement=$pdo->prepare(
+            'SELECT DISTINCT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,'
+            . 'sp.id AS sportovec_id,sp.jmeno,sp.prijmeni FROM club_events e '
+            . 'JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id '
+            . 'JOIN club_roster_members rm ON rm.team_id=rt.team_id JOIN sportovci sp ON sp.id=rm.sportovec_id '
+            . 'WHERE rm.sportovec_id IN (' . $placeholders . ") AND e.visibility='rosters' "
+            . "AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' "
+            . "AND rm.status='active' AND (rm.valid_to IS NULL OR rm.valid_to>=CURRENT_DATE) "
+            . 'AND s.starts_at<? AND s.ends_at>=? AND NOT EXISTS (SELECT 1 FROM club_event_registrations r '
+            . "WHERE r.event_id=e.id AND r.sportovec_id=rm.sportovec_id AND r.status IN ('confirmed','waitlisted','payment_pending')) "
+            . 'ORDER BY s.starts_at,s.id,sp.id'
+        );
+        $statement->execute([...$personIds,$toDate->modify('+1 day')->format('Y-m-d 00:00:00'),$from.' 00:00:00']);
+        foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$row){
+            $state=(string)$row['planning_status']==='planned'?'Předběžný plán – termín se může změnit.':'Potvrzená akce, účast zatím není přihlášená.';
+            $item=publicCalendarTimedItem('family-plan-'.(int)$row['event_id'].'-'.(int)$row['session_id'].'-'.(int)$row['sportovec_id'],(string)$row['starts_at'],(string)$row['ends_at'],(string)$row['name'].' – '.trim((string)$row['jmeno'].' '.(string)$row['prijmeni']),(string)$row['location'],$state,'Rodinný plán');
+            if($item!==null)$items[]=$item;
+        }
+    }
+
     if (publicCalendarHasTables($pdo, ['verejne_rezervace', 'individualni_lekce', 'sportovist', 'sportovci'])) {
         $statement = $pdo->prepare(
             'SELECT r.id AS reservation_id,r.stav,r.sportovec_id,il.datum,il.cas_od,il.cas_do,il.nazev,'

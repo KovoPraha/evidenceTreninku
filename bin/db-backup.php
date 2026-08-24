@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-22.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-08-24.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -81,6 +81,15 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'is_default',
         'assigned_by_trainer_id',
     ],
+    // Kalendář odděluje jistotu konání, viditelnost a registraci. Ztráta
+    // těchto sloupců by mohla zveřejnit interní plán nebo ztratit cenu účasti.
+    'club_events' => [
+        'activity_kind',
+        'planning_status',
+        'visibility',
+        'participant_fee_minor',
+        'legacy_race_id',
+    ],
 ];
 
 /**
@@ -125,6 +134,9 @@ const EVIDENCE_TABLES = [
     'athlete_registration_request_details',
     'auth_login_limits',
     'club_event_admin_events',
+    'club_event_links',
+    'club_event_people',
+    'club_event_planned_participants',
     'club_event_cart_items',
     'club_event_notification_events',
     'club_event_notifications',
@@ -134,6 +146,7 @@ const EVIDENCE_TABLES = [
     'club_event_roster_targets',
     'club_event_sessions',
     'club_event_term_versions',
+    'club_event_vehicle_reservations',
     'club_events',
     'club_member_charge_events',
     'club_member_charges',

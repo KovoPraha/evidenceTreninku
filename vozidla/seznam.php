@@ -13,7 +13,11 @@ $vozidla = $pdo->query("
     SELECT v.*,
            (SELECT COUNT(*) FROM ucto_jizdy j WHERE j.vozidlo_id = v.id) AS pocet_jizd,
            (SELECT COUNT(*) FROM ucto_servis s WHERE s.vozidlo_id = v.id) AS pocet_servisu,
-           (SELECT COUNT(*) FROM ucto_jizdy j WHERE j.vozidlo_id = v.id AND j.datum_konec IS NULL) AS otevrene_jizdy
+           (SELECT COUNT(*) FROM ucto_jizdy j WHERE j.vozidlo_id = v.id AND j.datum_konec IS NULL) AS otevrene_jizdy,
+           (SELECT COUNT(*) FROM club_event_vehicle_reservations a
+              JOIN club_event_vehicle_reservations b ON b.vehicle_id=a.vehicle_id AND b.id>a.id
+               AND b.status='active' AND b.starts_at<a.ends_at AND b.ends_at>a.starts_at
+             WHERE a.vehicle_id=v.id AND a.status='active' AND a.ends_at>=CURRENT_TIMESTAMP) AS kolize_rezervaci
     FROM ucto_vozidla v
     ORDER BY v.znacka_model
 ")->fetchAll(PDO::FETCH_ASSOC);
@@ -51,9 +55,7 @@ function stavDatumu(?string $datum): array {
         <p class="text-muted mb-0 small"><?= count($vozidla) ?> vozidel v evidenci</p>
       </div>
     </div>
-    <a class="btn btn-primary" href="formular.php">
-      <i class="bi bi-plus-lg me-1"></i>Nové vozidlo
-    </a>
+    <div class="d-flex gap-2"><a class="btn btn-outline-primary" href="../club_calendar.php"><i class="bi bi-calendar-event me-1"></i>Rezervace vozidel</a><a class="btn btn-primary" href="formular.php"><i class="bi bi-plus-lg me-1"></i>Nové vozidlo</a></div>
   </div>
 
   <?php if (!empty($_SESSION['flash_success'])): ?>
@@ -96,6 +98,9 @@ function stavDatumu(?string $datum): array {
                   <span class="badge bg-warning text-dark">
                     <i class="bi bi-geo-alt-fill me-1"></i>Na cestě
                   </span>
+                <?php endif; ?>
+                <?php if ((int)$auto['kolize_rezervaci'] > 0): ?>
+                  <span class="badge bg-danger"><i class="bi bi-exclamation-octagon-fill me-1"></i><?= (int)$auto['kolize_rezervaci'] ?> kolizí rezervací</span>
                 <?php endif; ?>
               </div>
 
