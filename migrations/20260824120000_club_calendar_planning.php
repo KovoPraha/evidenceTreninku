@@ -97,7 +97,6 @@ return [
                     note VARCHAR(1000) NOT NULL DEFAULT '',
                     created_by_trainer_id INT NOT NULL,
                     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    KEY idx_club_event_people_event (event_id,id),
                     CONSTRAINT fk_club_event_people_event FOREIGN KEY(event_id) REFERENCES club_events(id) ON DELETE RESTRICT,
                     CONSTRAINT fk_club_event_people_trainer FOREIGN KEY(trainer_id) REFERENCES treneri(id) ON DELETE RESTRICT,
                     CONSTRAINT fk_club_event_people_creator FOREIGN KEY(created_by_trainer_id) REFERENCES treneri(id) ON DELETE RESTRICT
@@ -123,7 +122,6 @@ return [
                     link_type VARCHAR(24) NOT NULL,label VARCHAR(255) NOT NULL,url VARCHAR(2048) NOT NULL,
                     sort_order INT NOT NULL DEFAULT 0,created_by_trainer_id INT NOT NULL,
                     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    KEY idx_club_event_links_event (event_id,sort_order,id),
                     CONSTRAINT fk_club_event_links_event FOREIGN KEY(event_id) REFERENCES club_events(id) ON DELETE RESTRICT,
                     CONSTRAINT fk_club_event_links_creator FOREIGN KEY(created_by_trainer_id) REFERENCES treneri(id) ON DELETE RESTRICT
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -149,8 +147,6 @@ return [
                     status VARCHAR(24) NOT NULL DEFAULT 'active',created_by_trainer_id INT NOT NULL,
                     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    KEY idx_club_vehicle_time (vehicle_id,status,starts_at,ends_at),
-                    KEY idx_club_vehicle_event (event_id,status,id),
                     CONSTRAINT fk_club_vehicle_event FOREIGN KEY(event_id) REFERENCES club_events(id) ON DELETE RESTRICT,
                     CONSTRAINT fk_club_vehicle_driver FOREIGN KEY(driver_trainer_id) REFERENCES treneri(id) ON DELETE RESTRICT,
                     CONSTRAINT fk_club_vehicle_creator FOREIGN KEY(created_by_trainer_id) REFERENCES treneri(id) ON DELETE RESTRICT
@@ -184,7 +180,6 @@ return [
                     created_by_trainer_id INT NULL,confirmed_by_trainer_id INT NULL,
                     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,confirmed_at DATETIME NULL,cancelled_at DATETIME NULL,
                     UNIQUE KEY uq_club_planned_participant (event_id,sportovec_id),
-                    KEY idx_club_planned_status (event_id,status,id),
                     CONSTRAINT fk_club_planned_event FOREIGN KEY(event_id) REFERENCES club_events(id) ON DELETE RESTRICT,
                     CONSTRAINT fk_club_planned_person FOREIGN KEY(sportovec_id) REFERENCES sportovci(id) ON DELETE RESTRICT,
                     CONSTRAINT fk_club_planned_account FOREIGN KEY(account_id) REFERENCES verejni_uzivatele(id) ON DELETE RESTRICT,
