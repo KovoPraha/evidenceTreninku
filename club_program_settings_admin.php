@@ -44,7 +44,7 @@ $success = (string)($_SESSION['program_settings_flash'] ?? '');unset($_SESSION['
 $programs = $pdo->query("SELECT p.*,SUM(CASE WHEN o.status IN ('draft','active') THEN 1 ELSE 0 END) AS open_offer_count,COUNT(o.id) AS offer_count FROM club_programs p LEFT JOIN club_program_offers o ON o.program_id=p.id GROUP BY p.id ORDER BY CASE p.status WHEN 'active' THEN 0 ELSE 1 END,p.name,p.id")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!doctype html>
-<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Správa stabilních programů</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"></head>
+<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Správa stabilních programů</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head>
 <body class="bg-light"><?php include __DIR__ . '/hlavicka.php'; ?>
 <main class="container py-4" style="max-width:1100px">
     <div class="d-flex justify-content-between align-items-start mb-3"><div><h1 class="h4 mb-1">Správa stabilních programů</h1><p class="text-muted mb-0">Opravte název a popis nebo archivujte program, který už nemá otevřené nabídky.</p></div><a class="btn btn-outline-secondary btn-sm" href="club_programs_admin.php">Programy a podmínky</a></div>

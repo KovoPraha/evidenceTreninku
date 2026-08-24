@@ -4,6 +4,7 @@ declare(strict_types=1);
 const PRIVATE_STORAGE_RECEIPTS = 'receipts';
 const PRIVATE_STORAGE_STRESS_TESTS = 'stress-tests';
 const PRIVATE_STORAGE_ATHLETE_PHOTOS = 'athlete-photos';
+const PRIVATE_STORAGE_SERVICE_DOCUMENTS = 'service-documents';
 
 /** @return array{extension:string,mime:string} */
 function privateStorageDetectAllowedFile(string $source): array
@@ -54,7 +55,12 @@ function privateStorageRoot(): string
 
 function privateStorageEnsureDirectory(string $category): string
 {
-    if (!in_array($category, [PRIVATE_STORAGE_RECEIPTS, PRIVATE_STORAGE_STRESS_TESTS, PRIVATE_STORAGE_ATHLETE_PHOTOS], true)) {
+    if (!in_array($category, [
+        PRIVATE_STORAGE_RECEIPTS,
+        PRIVATE_STORAGE_STRESS_TESTS,
+        PRIVATE_STORAGE_ATHLETE_PHOTOS,
+        PRIVATE_STORAGE_SERVICE_DOCUMENTS,
+    ], true)) {
         throw new InvalidArgumentException('Neplatna kategorie soukromeho souboru.');
     }
     $directory = privateStorageRoot() . DIRECTORY_SEPARATOR . $category;
@@ -80,7 +86,7 @@ function privateStorageStore(string $source, string $category, bool $uploaded = 
 
 function privateStorageResolve(string $key): ?string
 {
-    if (preg_match('~^private://(receipts|stress-tests|athlete-photos)/([a-f0-9]{32}\.(?:jpg|png|pdf))$~D', $key, $match) !== 1) {
+    if (preg_match('~^private://(receipts|stress-tests|athlete-photos|service-documents)/([a-f0-9]{32}\.(?:jpg|png|pdf))$~D', $key, $match) !== 1) {
         return null;
     }
     $path = privateStorageRoot() . DIRECTORY_SEPARATOR . $match[1] . DIRECTORY_SEPARATOR . $match[2];

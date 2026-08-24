@@ -23,6 +23,7 @@ if ($id === false) {
 
 $key = '';
 $originalName = 'soubor';
+$legacyPath = null;
 if ($kind === 'receipt') {
     if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('finance_manager')) {
         http_response_code(403);
@@ -74,12 +75,37 @@ if ($kind === 'receipt') {
     personSensitiveAdminAuditPhotoView($pdo, $file, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
     $key = (string)$file['storage_key'];
     $originalName = 'sportovec-foto-' . (int)$id;
+} elseif ($kind === 'service') {
+    if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('finance_manager') || !canAccess('servis')) {
+        http_response_code(403);
+        exit('Pristup odepren.');
+    }
+    $stmt = $pdo->prepare('SELECT dokument FROM ucto_servis WHERE id=? LIMIT 1');
+    $stmt->execute([(int)$id]);
+    $key = (string)($stmt->fetchColumn() ?: '');
+    $originalName = 'servisni-dokument-' . (int)$id;
+    if ($key !== '' && !str_starts_with($key, 'private://')) {
+        $normalized = str_replace('\\', '/', ltrim($key, '/'));
+        $basename = basename($normalized);
+        $legacyRoot = realpath(__DIR__ . '/uploads/servis');
+        $candidate = $legacyRoot === false ? false : realpath($legacyRoot . DIRECTORY_SEPARATOR . $basename);
+        if (!str_starts_with($normalized, 'uploads/servis/')
+            || $basename === ''
+            || $normalized !== 'uploads/servis/' . $basename
+            || $candidate === false
+            || !str_starts_with($candidate, $legacyRoot . DIRECTORY_SEPARATOR)
+        ) {
+            http_response_code(404);
+            exit('Soubor nebyl nalezen.');
+        }
+        $legacyPath = $candidate;
+    }
 } else {
     http_response_code(404);
     exit('Soubor nebyl nalezen.');
 }
 
-$path = privateStorageResolve($key);
+$path = $legacyPath ?? privateStorageResolve($key);
 if ($path === null) {
     http_response_code(404);
     exit('Soubor nebyl nalezen.');

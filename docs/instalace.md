@@ -363,12 +363,9 @@ Register-ScheduledTask -TaskName "EvidenceUpominky" `
 ```bash
 # Otestovat skript ručně (CLI):
 php /cesta/k/evidencePavel/cron_upominky.php
-
-# Nebo přes webový prohlížeč (se secret tokenem):
-curl "https://data.kovopraha.cz/evidence/cron_upominky.php?secret=$UPOMINKA_SECRET"
 ```
 
-> Pred nasazenim na produkci nastavte `UPOMINKA_SECRET` mimo webroot, napr. v prostredi Apache/cron konfigurace.
+> Skript je záměrně dostupný jen z CLI. Webový požadavek vždy vrací 404, takže tajný token v URL není potřeba ani podporovaný.
 
 ---
 
@@ -377,12 +374,11 @@ curl "https://data.kovopraha.cz/evidence/cron_upominky.php?secret=$UPOMINKA_SECR
 ```bash
 # ── Bezpečnost ────────────────────────────────────────────────────────────────
 # 1. Nastavit silné DB heslo (viz krok 5a)
-# 2. Nastavit UPOMINKA_SECRET mimo webroot (Apache/cron prostredi)
-# 3. Nastavit HTTPS (Let's Encrypt):
+# 2. Nastavit HTTPS (Let's Encrypt):
 sudo apt install certbot python3-certbot-apache
 sudo certbot --apache -d vase-domena.cz
 
-# 4. Vypnout zobrazení chyb v PHP (php.ini nebo .htaccess):
+# 3. Vypnout zobrazení chyb v PHP (php.ini nebo .htaccess):
 echo "display_errors = Off" >> /etc/php/8.2/apache2/php.ini
 echo "log_errors = On"      >> /etc/php/8.2/apache2/php.ini
 sudo systemctl restart apache2

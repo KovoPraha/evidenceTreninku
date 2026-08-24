@@ -447,7 +447,7 @@ if ($form['target_skupina_id'] !== '' && ctype_digit((string)$form['target_skupi
 <head>
     <meta charset="UTF-8">
     <title>Google Sheets odkazy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .small-muted { font-size: .85rem; color: #666; }
         .url-break { word-break: break-all; }

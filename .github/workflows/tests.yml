@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Připravit PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2, verified tag 2026-06-08
         with:
           php-version: '8.2'
           extensions: mbstring, gd, zip, pdo_sqlite
@@ -68,7 +68,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Připravit PHP s MariaDB ovladačem
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2, verified tag 2026-06-08
         with:
           php-version: '8.2'
           extensions: mbstring, pdo_mysql

@@ -11,7 +11,7 @@ $_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? 'localhost';
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/includes/private_storage.php';
 
-$apply = in_array('--apply', $argv, true);
+$apply = in_array('--apply', $argv, true) || getenv('MIGRATE_PRIVATE_APPLY') === '1';
 $appRoot = dirname(__DIR__);
 $moved = 0;
 $missing = 0;
@@ -115,6 +115,24 @@ migratePrivateRows(
     PRIVATE_STORAGE_STRESS_TESTS,
     'zatezove_testy_soubory',
     'cesta',
+    $apply,
+    $appRoot,
+    $moved,
+    $missing,
+    $alreadyPrivate,
+    $errors
+);
+
+$serviceDocuments = $pdo->query(
+    "SELECT id, dokument AS path FROM ucto_servis WHERE dokument IS NOT NULL AND dokument <> '' ORDER BY id"
+)->fetchAll(PDO::FETCH_ASSOC);
+migratePrivateRows(
+    $pdo,
+    $serviceDocuments,
+    'uploads/servis',
+    PRIVATE_STORAGE_SERVICE_DOCUMENTS,
+    'ucto_servis',
+    'dokument',
     $apply,
     $appRoot,
     $moved,

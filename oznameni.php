@@ -268,7 +268,7 @@ if (!empty($form['target_sportovci'])) {
 <head>
     <meta charset="UTF-8">
     <title>Oznámení</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .small-muted { font-size: .85rem; color: #666; }
         .chip {
@@ -511,7 +511,7 @@ if (!empty($form['target_sportovci'])) {
 </div>
 
 <!-- TinyMCE (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
 <script>
 tinymce.init({
     selector: '#obsah_html',

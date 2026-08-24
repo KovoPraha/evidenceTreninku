@@ -43,7 +43,7 @@ $accountStatement = $pdo->prepare('SELECT jmeno,prijmeni,email,telefon FROM vere
 $accountStatement->execute([$accountId]);
 $account = $accountStatement->fetch(PDO::FETCH_ASSOC) ?: [];
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Můj veřejný profil</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><?php appUiAssets(); ?></head><body class="bg-light">
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Můj veřejný profil</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><?php appUiAssets(); ?></head><body class="bg-light">
 <?php publicShellNav(); ?>
 <main class="container py-4" style="max-width:720px"><div class="d-flex justify-content-between mb-3"><div><h1 class="h4 mb-1">Můj profil účastníka</h1><p class="text-muted mb-0">Tento profil se používá pro rezervace velodromu a budoucí klubové služby.</p></div><a class="btn btn-outline-primary btn-sm align-self-start" href="velodrom.php">Velodrom</a></div>
 <?php foreach($errors as $error):?><div class="alert alert-danger"><?=publicProfileH($error)?></div><?php endforeach;?><?php if($success!==''):?><div class="alert alert-success"><?=publicProfileH($success)?></div><?php endif;?>

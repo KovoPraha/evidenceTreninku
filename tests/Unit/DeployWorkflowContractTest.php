@@ -15,15 +15,17 @@ final class DeployWorkflowContractTest extends TestCase
         $prepare = strpos($workflow, '- name: Připravit kompletní release mimo webroot');
         $migrate = strpos($workflow, '- name: Aplikovat migrace z připraveného release');
         $activate = strpos($workflow, '- name: Aktivovat ověřený release');
+        $cleanup = strpos($workflow, '- name: Odstranit jen vyjmenované osiřelé soubory');
         $smoke = strpos($workflow, '- name: HTTP smoke test bez tajného tokenu');
 
-        foreach ([$backup, $prepare, $migrate, $activate, $smoke] as $position) {
+        foreach ([$backup, $prepare, $migrate, $activate, $cleanup, $smoke] as $position) {
             self::assertNotFalse($position);
         }
         self::assertLessThan($prepare, $backup);
         self::assertLessThan($migrate, $prepare);
         self::assertLessThan($activate, $migrate);
-        self::assertLessThan($smoke, $activate);
+        self::assertLessThan($cleanup, $activate);
+        self::assertLessThan($smoke, $cleanup);
 
         // Hostingový omezený shell zakazuje `php -r`; validace configu proto
         // běží v nahraném bin/deploy-preflight.php a workflow žádné `php -r`
@@ -98,6 +100,41 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("--exclude='config.php'", $workflow);
         self::assertStringContainsString('Odstranit kopii produkční konfigurace z release', $workflow);
         self::assertStringNotContainsString('./ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"', $workflow);
+        self::assertStringContainsString('DEPLOY_CLEANUP_CONFIRM=ODSTRANIT-OSIŘELÉ-SOUBORY', $workflow);
+        self::assertStringContainsString('MIGRATE_PRIVATE_APPLY=1', $workflow);
+        self::assertStringNotContainsString('rsync -a --delete', $workflow);
+    }
+
+    public function testDeployCleanupIsExactManifestOnlyAndCannotEscapeAppRoot(): void
+    {
+        $cleanup = $this->source('bin/deploy-cleanup.php');
+        $manifest = $this->source('bin/deploy-delete-manifest.txt');
+
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $cleanup);
+        self::assertStringContainsString("DEPLOY_CLEANUP_CONFIRM", $cleanup);
+        self::assertStringContainsString("preg_match('~(?:^|/)\\.\\.(?:/|$)~'", $cleanup);
+        self::assertStringContainsString("pathinfo(\$normalized, PATHINFO_EXTENSION)", $cleanup);
+        self::assertStringContainsString('unlink($safeTarget)', $cleanup);
+        self::assertStringNotContainsString('glob(', $cleanup);
+        self::assertStringNotContainsString('RecursiveDirectoryIterator', $cleanup);
+        self::assertStringContainsString('admin_panel.php', $manifest);
+        self::assertStringContainsString('test.php', $manifest);
+        self::assertStringNotContainsString('*', $manifest);
+    }
+
+    public function testThirdPartyActionsAndWorkflowInputsAreNotMutableShellCode(): void
+    {
+        $pin = 'shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240';
+        foreach (['tests.yml', 'deploy-production.yml'] as $name) {
+            $workflow = $this->source('.github/workflows/' . $name);
+            self::assertStringContainsString($pin, $workflow);
+            self::assertStringNotContainsString('shivammathur/setup-php@v2', $workflow);
+        }
+        $drill = $this->source('.github/workflows/production-drills.yml');
+        self::assertStringContainsString('POTVRZENI: ${{ inputs.potvrzeni }}', $drill);
+        self::assertStringContainsString('OPERACE: ${{ inputs.operace }}', $drill);
+        self::assertStringNotContainsString('test \'${{ inputs.potvrzeni }}\'', $drill);
+        self::assertStringNotContainsString('if [ \'${{ inputs.operace }}\'', $drill);
     }
 
     public function testBackupOwnershipIncludesCurrentMigrationTables(): void

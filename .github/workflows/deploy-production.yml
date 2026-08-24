@@ -53,7 +53,13 @@ jobs:
             fi
           done
           case "$REMOTE_DIR" in
-            /*|*..*) echo '❌ KIS_REMOTE_DIR musí být relativní cesta bez ..'; exit 1 ;;
+            /*|*..*|*[!A-Za-z0-9._/-]*) echo '❌ KIS_REMOTE_DIR musí být bezpečná relativní cesta bez ..'; exit 1 ;;
+          esac
+          [[ "$APP_HOST" =~ ^[A-Za-z0-9.-]+$ ]] || { echo '❌ KIS_APP_HOST není platný hostname.'; exit 1; }
+          [[ "$WEB_URL" =~ ^https://[A-Za-z0-9.-]+(/[A-Za-z0-9._~/-]*)?$ ]] || { echo '❌ KIS_WEB_URL musí být bezpečná HTTPS URL.'; exit 1; }
+          case "$WEB_URL" in
+            "https://$APP_HOST"|"https://$APP_HOST/"*) ;;
+            *) echo '❌ KIS_WEB_URL neodpovídá KIS_APP_HOST.'; exit 1 ;;
           esac
           echo "✅ Cíl: $APP_HOST → $REMOTE_DIR ($WEB_URL)"
 
@@ -61,7 +67,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Připravit PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2, verified tag 2026-06-08
         with:
           php-version: '8.2'
           extensions: mbstring, gd, zip, pdo_mysql, pdo_sqlite
@@ -284,6 +290,29 @@ jobs:
             test -s '$REMOTE_DIR/kis_rollover_a06_admin.php'
           "
           echo '✅ Ověřený release byl aktivován. rsync záměrně nepoužívá --delete.'
+
+      - name: Odstranit jen vyjmenované osiřelé soubory a přesunout soukromé přílohy
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          cat > /tmp/run-deploy-cleanup.php <<EOF
+          <?php
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('DEPLOY_CLEANUP_CONFIRM=ODSTRANIT-OSIŘELÉ-SOUBORY');
+          require '$REMOTE_DIR/bin/deploy-cleanup.php';
+          EOF
+          cat > /tmp/run-private-migration.php <<EOF
+          <?php
+          putenv('MIGRATE_PRIVATE_APPLY=1');
+          require '$REMOTE_DIR/bin/migrate-private-files.php';
+          EOF
+          "${SCP[@]}" /tmp/run-deploy-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-deploy-cleanup.php"
+          "${SCP[@]}" /tmp/run-private-migration.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-private-migration.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-deploy-cleanup.php'" | tee /tmp/deploy-cleanup.json
+          jq -e '.ok == true' /tmp/deploy-cleanup.json >/dev/null
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-private-migration.php'"
+          "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-deploy-cleanup.php' '$DEPLOY_BASE/run-private-migration.php'"
+          echo '✅ Odstraněny byly jen manifestem určené staré soubory; citlivé přílohy jsou mimo webroot.'
 
       - name: HTTP smoke test bez tajného tokenu
         run: |

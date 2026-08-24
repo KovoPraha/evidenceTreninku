@@ -139,7 +139,7 @@ Jakoukoli novou integraci nejprve popiš jako produktové rozhodnutí; nepředpo
 | `booking/moje_rezervace.php` | Přehled a storno rezervací + čekací listiny; storno aktivní rezervace → volá `notifyWaitingList()` |
 | `booking/potvrdit.php` | GET endpoint pro trenéra — potvrzení/zamítnutí z emailu (`?token=&akce=`); po zamítnutí volá `notifyWaitingList()` — stejně jako `individualni_lekce_sprava.php` |
 | `booking/waiting_list.php` | Helper `notifyWaitingList(PDO, lekceId, slotOd)` — automatické přiřazení slotu prvnímu čekajícímu + email |
-| `cron_upominky.php` | CLI/web cron — upomínky trenérům na nezaevidované plány; web vyžaduje `?secret=TOKEN` shodný s env `UPOMINKA_SECRET` |
+| `cron_upominky.php` | Pouze CLI cron — upomínky trenérům na nezaevidované plány; přes web vždy vrací 404 |
 
 ## Databáze
 
@@ -526,11 +526,10 @@ Archivace: automatická archivace osob mimo KIS import je vypnutá; chybějící
 
 ### Upomínky na nezaevidované tréninky
 
-- **`cron_upominky.php`** — CLI nebo web (`?secret=TOKEN` shodný s env `UPOMINKA_SECRET`), zasílá email trenérům za každý plán s `stav='planovany'` a `datum < dnes` (max 14 dní zpětně, jen pokud `upominka_cas IS NULL`)
+- **`cron_upominky.php`** — pouze CLI, zasílá email trenérům za každý plán s `stav='planovany'` a `datum < dnes` (max 14 dní zpětně, jen pokud `upominka_cas IS NULL`); webový požadavek vždy dostane 404
 - `planovane_treninky.upominka_cas TIMESTAMP NULL` — kdy byla upomínka odeslána
 - **`planovac.php`** zobrazuje varování s počtem nezaevidovaných; ruční odeslání patří do CLI/web cronu s env tokenem
 - Doporučený cron: `0 7 * * * php /cesta/cron_upominky.php`
-- Secret token: env `UPOMINKA_SECRET`, nikdy hardcoded v PHP ani v odkazu
 
 ### Kopírování týdne v plánovači
 

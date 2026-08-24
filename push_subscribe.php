@@ -9,6 +9,7 @@ app_session_start();
 if (!isset($_SESSION['trener_id'])) { http_response_code(403); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/push_subscription_security.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -24,13 +25,23 @@ $akce  = $data['action'] ?? 'subscribe';
 $sub   = $data['subscription'] ?? null;
 $tid   = (int)$_SESSION['trener_id'];
 
-if (!$sub || empty($sub['endpoint'])) {
+if (!is_array($sub) || empty($sub['endpoint'])) {
     echo json_encode(['ok'=>false,'msg'=>'Chybí subscription']); exit;
 }
 
-$endpoint = $sub['endpoint'];
-$p256dh   = $sub['keys']['p256dh'] ?? '';
-$auth     = $sub['keys']['auth']   ?? '';
+try {
+    $endpoint = pushSubscriptionValidateEndpoint($sub['endpoint']);
+    $p256dh = $akce === 'unsubscribe'
+        ? ''
+        : pushSubscriptionValidateKey($sub['keys']['p256dh'] ?? null, 'Push klíč', 200);
+    $auth = $akce === 'unsubscribe'
+        ? ''
+        : pushSubscriptionValidateKey($sub['keys']['auth'] ?? null, 'Autorizační klíč', 100);
+} catch (InvalidArgumentException $exception) {
+    http_response_code(422);
+    echo json_encode(['ok'=>false,'msg'=>$exception->getMessage()], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 $ua       = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255);
 
 if ($akce === 'unsubscribe') {

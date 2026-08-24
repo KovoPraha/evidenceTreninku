@@ -6,30 +6,20 @@
  *
  * Spuštění:
  *   - CLI:  php cron_upominky.php
- *   - Web:  /cron_upominky.php?secret=TAJNY_TOKEN  (vyzaduje UPOMINKA_SECRET)
  *
  * Doporučené nastavení cronu (každý den v 7:00):
  *   0 7 * * * php /cesta/k/evidencePavel/cron_upominky.php >> /var/log/upominky.log 2>&1
  */
 
 // ── Bezpečnost ────────────────────────────────────────────────────────────────
-define('UPOMINKA_SECRET', getenv('UPOMINKA_SECRET') ?: '');
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
 define('UPOMINKA_OD_DATU', 14);                  // upomínat max. 14 dní zpětně
 define('UPOMINKA_PO_DNECH', 1);                  // upomínat 1+ dní po datu tréninku
 define('UPOMINKA_EMAIL_FROM', 'evidence@kovopraha.cz');
 define('UPOMINKA_BASE_URL',   'https://data.kovopraha.cz/evidence');
-
-$isCli = PHP_SAPI === 'cli';
-
-if (!$isCli) {
-    // Webový přístup — povoleno pouze z localhost nebo se správným tokenem
-    $token   = trim($_GET['secret'] ?? '');
-    if (UPOMINKA_SECRET === '' || !hash_equals(UPOMINKA_SECRET, $token)) {
-        http_response_code(403);
-        exit('Přístup odepřen.');
-    }
-    header('Content-Type: text/plain; charset=utf-8');
-}
 
 require_once __DIR__ . '/db.php';
 

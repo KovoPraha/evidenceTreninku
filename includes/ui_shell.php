@@ -25,9 +25,9 @@ function appUiAssets(): void
     $jsVersion = (string)(filemtime($root . '/assets/app-ui.js') ?: '1');
     $css = htmlspecialchars(appUiUrl('assets/app-ui.css') . '?v=' . rawurlencode($cssVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $js = htmlspecialchars(appUiUrl('assets/app-ui.js') . '?v=' . rawurlencode($jsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">';
+    echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">';
     echo '<link href="' . $css . '" rel="stylesheet">';
-    echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>';
+    echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>';
     echo '<script defer src="' . $js . '"></script>';
 }
 

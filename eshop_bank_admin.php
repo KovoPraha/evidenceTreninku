@@ -71,7 +71,7 @@ foreach (['iban', 'bic', 'account_label'] as $field) {
 }
 if (isset($_POST['due_days'])) $form['due_days'] = (int)$_POST['due_days'];
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bankovní účet e-shopu</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"></head><body class="bg-light"><?php include __DIR__ . '/hlavicka.php'; ?>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bankovní účet e-shopu</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous"></head><body class="bg-light"><?php include __DIR__ . '/hlavicka.php'; ?>
 <main class="container py-4" style="max-width:960px">
 <div class="d-flex justify-content-between align-items-start gap-2 mb-3"><div><h1 class="h3 mb-1"><i class="bi bi-bank me-2 text-primary"></i>Bankovní účet e-shopu</h1><p class="text-muted mb-0">Účet, na který zákazníci posílají platby, a splatnost objednávek.</p></div><a class="btn btn-outline-secondary btn-sm" href="pracovni_pozice.php">Finanční rozcestník</a></div>
 

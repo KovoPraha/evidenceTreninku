@@ -39,8 +39,10 @@ jobs:
 
     steps:
       - name: Overit potvrzeni a konfiguraci
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
         run: |
-          test '${{ inputs.potvrzeni }}' = 'PROVEST'
+          test "$POTVRZENI" = 'PROVEST'
           test -n "$APP_HOST"
           test -n "$REMOTE_DIR"
 
@@ -75,6 +77,8 @@ jobs:
 
       - name: Obnovit vybrane generace zaloh do izolovane MariaDB
         if: inputs.operace == 'obnovit-zalohu-izolovane' || inputs.operace == 'obnovit-tri-zalohy-izolovane'
+        env:
+          OPERACE: ${{ inputs.operace }}
         run: |
           set -euo pipefail
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
@@ -82,7 +86,7 @@ jobs:
           TMP="/tmp/kis-restore-drill-$GITHUB_RUN_ID"
           install -d -m 700 "$TMP"
           COUNT=1
-          if [ '${{ inputs.operace }}' = 'obnovit-tri-zalohy-izolovane' ]; then COUNT=3; fi
+          if [ "$OPERACE" = 'obnovit-tri-zalohy-izolovane' ]; then COUNT=3; fi
           mapfile -t BACKUPS < <("${SSH[@]}" "set -eu; ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n '$COUNT'")
           test "${#BACKUPS[@]}" = "$COUNT"
 

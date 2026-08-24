@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/funkce.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/private_storage.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('servis')) {
     header('Location: ../login.php');
@@ -25,10 +26,15 @@ if ($id > 0) {
 
         if ($zaznam) {
             if (!empty($zaznam['dokument'])) {
-                $filePath = __DIR__ . '/../' . $zaznam['dokument'];
-                if (file_exists($filePath)) {
-                    $smazano = dirname($filePath) . '/smazano_' . basename($filePath);
-                    rename($filePath, $smazano);
+                $document = (string)$zaznam['dokument'];
+                if (str_starts_with($document, 'private://')) {
+                    privateStorageSoftDelete($document);
+                } else {
+                    $filePath = __DIR__ . '/../' . ltrim($document, '/\\');
+                    if (is_file($filePath)) {
+                        $smazano = dirname($filePath) . '/smazano_' . basename($filePath);
+                        rename($filePath, $smazano);
+                    }
                 }
             }
 

@@ -165,7 +165,7 @@ evidencePavel/
 ├── planovac.php                    # Plánovač tréninků — přehled plánovaných tréninků, filtr, sdílení programu skupiny
 ├── planovany_trenink_form.php      # Formulář nového/editace plánovaného tréninku
 ├── program_skupiny.php             # Veřejný program skupiny — bez přihlášení, URL ?hash=<skupinaHash>
-├── cron_upominky.php               # CLI/web cron — upomínky trenérům na nezaevidované plány
+├── cron_upominky.php               # Pouze CLI cron — upomínky trenérům na nezaevidované plány
 ├── cron_report_tyden.php           # CLI cron — generování týdenních reportů dle skupiny
 ├── report_tyden_lib.php            # Sdílená knihovna pro týdenní reporty (buildWeekReport, saveWeekReport)
 │
@@ -1348,7 +1348,7 @@ Rezervace sportoviště (`rezervovat_sportoviste.php`): checkboxy podskupin mís
 
 Sloupec `planovane_treninky.upominka_cas TIMESTAMP NULL` — kdy byla odeslána upomínka.
 
-`cron_upominky.php` — CLI nebo web (`?secret=TOKEN`):
+`cron_upominky.php` — pouze CLI (přes web vždy vrací 404):
 - Hledá `stav='planovany'`, `datum < dnes`, `datum >= dnes-14 dní`, `upominka_cas IS NULL`
 - Skupiny emaily po trenérech, nastaví `upominka_cas = NOW()`
 - Doporučený cron: `0 7 * * * php /cesta/cron_upominky.php`

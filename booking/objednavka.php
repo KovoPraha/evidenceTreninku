@@ -36,7 +36,7 @@ $messages=[
 [$messageStyle,$messageText]=$messages[$order['status']]??['secondary','Aktuální stav objednávky: '.(string)$order['status']];
 ?>
 <!doctype html>
-<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Objednávka <?=orderPublicH($order['public_code'])?></title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><?php appUiAssets(); ?></head>
+<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Objednávka <?=orderPublicH($order['public_code'])?></title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><?php appUiAssets(); ?></head>
 <body class="bg-light"><?php publicShellNav(); ?><main class="container py-4" style="max-width:900px">
 <div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3 mb-0">Objednávka <?=orderPublicH($order['public_code'])?></h1><div class="d-flex gap-2"><a href="moje_objednavky.php" class="btn btn-outline-primary">Moje objednávky</a><a href="eshop.php" class="btn btn-outline-secondary">Zpět do e-shopu</a></div></div>
 <?php if($stripeError!==''):?><div class="alert alert-danger"><?=orderPublicH($stripeError)?></div><?php endif;?>

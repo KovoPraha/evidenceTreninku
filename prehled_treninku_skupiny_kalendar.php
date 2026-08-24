@@ -241,7 +241,7 @@ if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
 <head>
     <meta charset="UTF-8">
     <title>Kalendář tréninků dle skupin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .calendar-mini th { width: calc(100%/7); }
         .calendar-cell { vertical-align: top; min-width: 120px; }

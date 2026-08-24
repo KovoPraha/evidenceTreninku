@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/app_url.php';
+require_once __DIR__ . '/push_subscription_security.php';
 /**
  * includes/push_helper.php
  * Helper pro odesílání Web Push notifikací.
@@ -67,9 +68,18 @@ function sendPushNotification(PDO $pdo, array $payload, array $trenerIds = []): 
 
     $invalidEndpoints = [];
     foreach ($subs as $sub) {
+        try {
+            $endpoint = pushSubscriptionValidateEndpoint($sub['endpoint'] ?? null);
+            $p256dh = pushSubscriptionValidateKey($sub['p256dh'] ?? null, 'Push klíč', 200);
+            $authToken = pushSubscriptionValidateKey($sub['auth'] ?? null, 'Autorizační klíč', 100);
+        } catch (InvalidArgumentException $exception) {
+            error_log('push_helper: odmítnut neplatný uložený endpoint');
+            $pdo->prepare('DELETE FROM push_subscriptions WHERE id=?')->execute([(int)$sub['id']]);
+            continue;
+        }
         $subscription = \Minishlink\WebPush\Subscription::create([
-            'endpoint' => $sub['endpoint'],
-            'keys'     => ['p256dh' => $sub['p256dh'], 'auth' => $sub['auth']],
+            'endpoint' => $endpoint,
+            'keys'     => ['p256dh' => $p256dh, 'auth' => $authToken],
         ]);
         $webPush->queueNotification($subscription, $json);
     }

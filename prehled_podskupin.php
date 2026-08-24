@@ -1,22 +1,23 @@
 <?php
 // prehled_podskupin.php
+require_once __DIR__ . '/includes/session_security.php';
+app_session_start();
+if (!isset($_SESSION['trener_id'])) {
+    header('Location: login.php', true, 303);
+    exit;
+}
 require_once __DIR__ . '/db.php';
 
-// Podskupina lze identifikovat buď hash nebo id
-$hash = $_GET['hash'] ?? null;
-$id   = isset($_GET['id']) ? (int)$_GET['id'] : null;
-
-if ($hash) {
-    $stmt = $pdo->prepare('SELECT id, nazev FROM podskupiny WHERE hash = :hash');
-    $stmt->execute([':hash' => $hash]);
-    $ps = $stmt->fetch(PDO::FETCH_ASSOC);
-} elseif ($id) {
-    $stmt = $pdo->prepare('SELECT id, nazev FROM podskupiny WHERE id = :id');
-    $stmt->execute([':id' => $id]);
-    $ps = $stmt->fetch(PDO::FETCH_ASSOC);
-} else {
+// Verejny pristup pres sekvencni ID byl IDOR. Interni prehled pouziva pouze
+// nahodny skupinovy identifikator, ktery generuji spravcovske odkazy.
+$hash = trim((string)($_GET['hash'] ?? ''));
+if ($hash === '') {
+    http_response_code(400);
     die('<p>Podskupina není určena.</p>');
 }
+$stmt = $pdo->prepare('SELECT id, nazev FROM podskupiny WHERE hash = :hash');
+$stmt->execute([':hash' => $hash]);
+$ps = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$ps) {
     die('<p>Podskupina nenalezena.</p>');
@@ -71,7 +72,7 @@ $stmtZ->execute([':pid'=>$podskupinaId, ':df'=>$dateFrom]);$zavody = $stmtZ->fet
 <head>
   <meta charset="UTF-8">
   <title>Přehled podskupiny: <?= $podskupinaNazev ?></title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body class="bg-light">
 <?php // include 'hlavicka.php'; ?>
@@ -81,7 +82,7 @@ $stmtZ->execute([':pid'=>$podskupinaId, ':df'=>$dateFrom]);$zavody = $stmtZ->fet
     <span>Interval: </span>
     <?php foreach ($allowed as $m): ?>
       <?php $active = ($m === $months) ? 'fw-bold' : ''; ?>
-      <a href="?<?= $hash ? 'hash='.urlencode($hash) : 'id='.$podskupinaId ?>&months=<?= $m ?>" class="me-2 <?= $active ?>">
+      <a href="?hash=<?= urlencode($hash) ?>&months=<?= $m ?>" class="me-2 <?= $active ?>">
         <?= $m ?> měsíc<?= $m>1?'ů':'' ?>
       </a>
     <?php endforeach; ?>

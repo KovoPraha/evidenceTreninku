@@ -46,8 +46,8 @@ function stavKontroly(?string $datum): array {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Servis – <?= h($vozidlo['znacka_model']) ?></title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 </head>
 <body class="bg-light">
 <?php include __DIR__ . '/../hlavicka.php'; ?>
@@ -122,7 +122,7 @@ function stavKontroly(?string $datum): array {
                 </td>
                 <td>
                   <?php if ($z['dokument']): ?>
-                    <a href="../<?= h($z['dokument']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary">
+                    <a href="../private_download.php?kind=service&amp;id=<?= (int)$z['id'] ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">
                       <i class="bi bi-paperclip me-1"></i>Otevřít
                     </a>
                   <?php else: ?>

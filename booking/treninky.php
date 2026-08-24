@@ -21,7 +21,7 @@ $next = $start->modify('+1 month')->format('Y-m');
 $loggedIn = isset($_SESSION['verejny_uzivatel_id']);
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Veřejný rozvrh tréninků</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><?php appUiAssets(); ?></head>
+<title>Veřejný rozvrh tréninků</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><?php appUiAssets(); ?></head>
 <body class="bg-light"><?php publicShellNav('training'); ?><main class="container py-4" style="max-width:960px">
 <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3"><div><h1 class="h3 mb-1">Rozvrh tréninků</h1><p class="text-muted mb-0">Veřejné termíny klubu bez údajů o sportovcích a docházce.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Stáhnout veřejný kalendář (.ics)</a></div>
 <div class="d-flex justify-content-between align-items-center bg-white border rounded p-2 mb-3"><a class="btn btn-outline-secondary btn-sm" href="?mesic=<?=publicTrainingH($previous)?>">Předchozí</a><strong><?=$start->format('m / Y')?></strong><a class="btn btn-outline-secondary btn-sm" href="?mesic=<?=publicTrainingH($next)?>">Další</a></div>

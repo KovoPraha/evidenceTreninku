@@ -20,7 +20,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 }
 $success=(string)($_SESSION['flash_expiry']??'');unset($_SESSION['flash_expiry']);$orders=shopOrderExpirationPreview($pdo,$now);
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Expirace objednávek</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"></head>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Expirace objednávek</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head>
 <body class="bg-light"><?php include __DIR__.'/hlavicka.php';?><main class="container py-4" style="max-width:1200px">
 <div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h4 mb-1">Expirace nezaplacených objednávek</h1><div class="text-muted small">Náhled k <?=expiryH($now->format('Y-m-d H:i:s'))?>. Zaplacené a dokončené objednávky se nikdy nenabízejí.</div></div><a class="btn btn-outline-secondary btn-sm" href="eshop_orders_admin.php">Zpět na objednávky</a></div>
 <?php foreach($errors as$error):?><div class="alert alert-danger"><?=expiryH($error)?></div><?php endforeach;?><?php if($success!==''):?><div class="alert alert-success"><?=expiryH($success)?></div><?php endif;?>

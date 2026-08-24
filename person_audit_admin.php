@@ -38,7 +38,7 @@ function paPageUrl(int $sportovecId, int $page, int $pageSize): string
 }
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Auditní časová osa osoby</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"></head>
+<title>Auditní časová osa osoby</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head>
 <body class="bg-light"><?php include __DIR__ . '/hlavicka.php'; ?>
 <main class="container py-4" style="max-width:1200px"><div class="mb-3"><h1 class="h4 mb-1">Auditní časová osa osoby</h1>
 <p class="text-muted mb-0">Pouze čtení. Zobrazuje existující auditní záznamy; chybějící důvod ani aktér se nedovozuje.</p></div>

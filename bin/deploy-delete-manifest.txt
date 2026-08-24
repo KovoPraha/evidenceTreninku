@@ -1,0 +1,15 @@
+# Presne vyjmenovane historicke PHP soubory, ktere release uz nevlastni.
+# Deploy cleanup nikdy nemaze adresare, wildcardy ani soubory mimo tento seznam.
+admin_panel.php
+index-backup.php
+index3.php
+sync.php
+test.php
+analyze_excel.php
+analyze_uci_form.php
+jizdy/vypis_vykazu (4) - kopie.php
+servis/vypis_vykazu (4) - kopie.php
+uctenky/vypis_vykazu (4) - kopie.php
+udalosti/vypis_vykazu (4) - kopie.php
+vozidla/vypis_vykazu (3) - kopie.php
+vozidla/vypis_vykazu (4) - kopie.php

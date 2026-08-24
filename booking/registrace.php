@@ -7,6 +7,7 @@ require_once __DIR__ . '/../includes/one_time_token.php';
 require_once __DIR__ . '/../includes/public_profile.php';
 require_once __DIR__ . '/../includes/app_url.php';
 require_once __DIR__ . '/../includes/password_security.php';
+require_once __DIR__ . '/../includes/auth_rate_limit.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -29,6 +30,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $narozeni = trim($_POST['narozeni'] ?? '');
         $heslo    = $_POST['heslo']         ?? '';
         $heslo2   = $_POST['heslo2']        ?? '';
+
+        try {
+            if (!auth_rate_limit_reserve_attempt(
+                $pdo,
+                'public_registration',
+                $email,
+                auth_rate_limit_request_ip()
+            )) {
+                $errors[] = 'Příliš mnoho pokusů. Zkuste registraci později.';
+            }
+        } catch (Throwable $exception) {
+            error_log('booking/registrace.php rate limit: ' . $exception->getMessage());
+            $errors[] = 'Registrace momentálně není dostupná. Zkuste to později.';
+        }
 
         if (!$jmeno)    $errors[] = 'Zadejte jméno.';
         if (!$prijmeni) $errors[] = 'Zadejte příjmení.';
@@ -114,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registrace — Rezervace Kovopraha</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">

@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $success = (string)($_SESSION['flash_success'] ?? ''); unset($_SESSION['flash_success']);
 try { $scenario = kisA06Scenario($pdo); } catch (Throwable $exception) { $scenario = null; $errors[] = $exception->getMessage(); }
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A06 – roční obnova soupisek</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"></head>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A06 – roční obnova soupisek</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head>
 <body class="bg-light"><?php include __DIR__ . '/hlavicka.php'; ?><main class="container py-4" style="max-width:1100px">
 <div class="d-flex flex-wrap justify-content-between gap-2 mb-3"><div><h1 class="h3 mb-1">A06 – roční obnova soupisek</h1><p class="text-muted mb-0">Jeden kontrolovaný průchod věkovým přesunem, přenosem disciplíny a individuální výjimkou.</p></div><a class="btn btn-outline-secondary" href="pracovni_pozice.php">Zpět na rozcestník</a></div>
 <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?=a06h($error)?></div><?php endforeach; ?><?php if ($success !== ''): ?><div class="alert alert-success"><?=a06h($success)?></div><?php endif; ?>

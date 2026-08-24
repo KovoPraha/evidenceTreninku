@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/funkce.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/private_storage.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('servis')) {
     header('Location: ../login.php');
@@ -30,6 +31,8 @@ if (empty($planovana)) $planovana = null;
 
 $dokument_path = null;
 $old_data = null;
+$newDocumentKey = null;
+$oldDocumentToDelete = null;
 
 if ($id > 0) {
     $stmt = $pdo->prepare("SELECT * FROM ucto_servis WHERE id = ?");
@@ -38,38 +41,24 @@ if ($id > 0) {
     $dokument_path = $old_data['dokument'] ?? null;
 }
 
-// Upload dokumentu s MIME validací
+// Dokument je ulozen mimo webroot; prime URL k internim dokladum neexistuje.
 if (!empty($_FILES['dokument']['name']) && $_FILES['dokument']['error'] === UPLOAD_ERR_OK) {
-    $allowedMime = ['application/pdf', 'image/jpeg', 'image/png'];
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime = finfo_file($finfo, $_FILES['dokument']['tmp_name']);
-    finfo_close($finfo);
-
-    if (in_array($mime, $allowedMime)) {
-        $upload_dir = __DIR__ . '/../uploads/servis/';
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
-        }
-
-        // Přípona z OVĚŘENÉHO MIME, ne z názvu souboru (jinak lze uložit spustitelný .php)
-        $mimeExt = ['application/pdf' => 'pdf', 'image/jpeg' => 'jpg', 'image/png' => 'png'];
-        $ext = $mimeExt[$mime] ?? 'bin';
-        $new_name = 'servis_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
-        $target_file = $upload_dir . $new_name;
-
-        if (move_uploaded_file($_FILES['dokument']['tmp_name'], $target_file)) {
-            // Přejmenuj starý dokument
-            if ($id > 0 && !empty($old_data['dokument'])) {
-                $oldFile = __DIR__ . '/../' . $old_data['dokument'];
-                if (file_exists($oldFile)) {
-                    $smazany = dirname($oldFile) . '/smazano_' . basename($oldFile);
-                    rename($oldFile, $smazany);
-                }
-            }
-            $dokument_path = 'uploads/servis/' . $new_name;
-        }
-    } else {
-        $_SESSION['flash_error'] = 'Nepodporovaný typ souboru. Povolené: PDF, JPG, PNG.';
+    $size = filesize((string)$_FILES['dokument']['tmp_name']);
+    if (!is_int($size) || $size < 1 || $size > 10 * 1024 * 1024) {
+        $_SESSION['flash_error'] = 'Dokument musí mít nejvýše 10 MB.';
+        header('Location: formular.php?vozidlo_id=' . $vozidlo_id . ($id ? '&id=' . $id : ''));
+        exit;
+    }
+    try {
+        $newDocumentKey = privateStorageStore(
+            (string)$_FILES['dokument']['tmp_name'],
+            PRIVATE_STORAGE_SERVICE_DOCUMENTS
+        );
+        $dokument_path = $newDocumentKey;
+        $oldDocumentToDelete = $id > 0 ? (string)($old_data['dokument'] ?? '') : null;
+    } catch (Throwable $exception) {
+        error_log('servis/uloz.php private upload: ' . $exception->getMessage());
+        $_SESSION['flash_error'] = 'Dokument musí být skutečný PDF, JPG nebo PNG soubor.';
         header('Location: formular.php?vozidlo_id=' . $vozidlo_id . ($id ? '&id=' . $id : ''));
         exit;
     }
@@ -94,8 +83,19 @@ try {
         zapisAuditLog($pdo, $_SESSION['trener_id'], 'Přidání servisního záznamu', 'ucto_servis', $new_id, json_encode($_POST));
     }
 
+    if (is_string($oldDocumentToDelete) && $oldDocumentToDelete !== '') {
+        if (str_starts_with($oldDocumentToDelete, 'private://')) {
+            privateStorageSoftDelete($oldDocumentToDelete);
+        } else {
+            $legacy = __DIR__ . '/../' . ltrim($oldDocumentToDelete, '/\\');
+            if (is_file($legacy)) rename($legacy, dirname($legacy) . '/smazano_' . basename($legacy));
+        }
+    }
     $_SESSION['flash_success'] = 'Servisní záznam uložen.';
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    if (is_string($newDocumentKey) && $newDocumentKey !== '') {
+        try { privateStorageSoftDelete($newDocumentKey); } catch (Throwable) {}
+    }
     error_log('servis/uloz.php: ' . $e->getMessage());
     $_SESSION['flash_error'] = 'Chyba při ukládání.';
 }
