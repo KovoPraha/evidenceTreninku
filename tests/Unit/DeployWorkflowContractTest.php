@@ -102,6 +102,8 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringNotContainsString('./ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"', $workflow);
         self::assertStringContainsString('DEPLOY_CLEANUP_CONFIRM=ODSTRANIT-OSIŘELÉ-SOUBORY', $workflow);
         self::assertStringContainsString('MIGRATE_PRIVATE_APPLY=1', $workflow);
+        self::assertStringContainsString("putenv('APP_HOST=\$APP_HOST');", $workflow);
+        self::assertStringContainsString("grep -Eq '^APPLY summary:", $workflow);
         self::assertStringNotContainsString('rsync -a --delete', $workflow);
     }
 

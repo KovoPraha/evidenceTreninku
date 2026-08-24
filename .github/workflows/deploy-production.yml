@@ -303,6 +303,7 @@ jobs:
           EOF
           cat > /tmp/run-private-migration.php <<EOF
           <?php
+          putenv('APP_HOST=$APP_HOST');
           putenv('MIGRATE_PRIVATE_APPLY=1');
           require '$REMOTE_DIR/bin/migrate-private-files.php';
           EOF
@@ -310,7 +311,8 @@ jobs:
           "${SCP[@]}" /tmp/run-private-migration.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-private-migration.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-deploy-cleanup.php'" | tee /tmp/deploy-cleanup.json
           jq -e '.ok == true' /tmp/deploy-cleanup.json >/dev/null
-          "${SSH[@]}" "php '$DEPLOY_BASE/run-private-migration.php'"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-private-migration.php'" | tee /tmp/private-migration.log
+          grep -Eq '^APPLY summary: candidates=[0-9]+, already_private=[0-9]+, missing=[0-9]+, errors=0$' /tmp/private-migration.log
           "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-deploy-cleanup.php' '$DEPLOY_BASE/run-private-migration.php'"
           echo '✅ Odstraněny byly jen manifestem určené staré soubory; citlivé přílohy jsou mimo webroot.'
 
