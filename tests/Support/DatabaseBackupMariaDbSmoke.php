@@ -103,7 +103,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-08-22.1') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-08-24.1') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -118,6 +118,7 @@ try {
         'shop_variants' => ['source_candidate_id', 'origin', 'created_by_trainer_id'],
         'shop_coupons' => ['archived_at'],
         'staff_user_positions' => ['position_code', 'is_default', 'assigned_by_trainer_id'],
+        'club_events' => ['activity_kind', 'planning_status', 'visibility', 'participant_fee_minor', 'legacy_race_id'],
     ];
     if (($manifest['owned_column_contract'] ?? null) !== $expectedColumnContract) {
         throw new RuntimeException('Database backup smoke used an unexpected owned column contract.');
@@ -151,6 +152,8 @@ try {
         'shop_member_category_rules', 'shop_member_price_events', 'shop_member_product_prices',
         'athlete_private_files', 'athlete_registration_consent_snapshots',
         'athlete_registration_request_details', 'osoba_citlive_pristupy', 'osoba_citlive_udaje',
+        'club_event_links', 'club_event_people', 'club_event_planned_participants',
+        'club_event_vehicle_reservations',
     ];
     foreach ($required as $table) {
         if (!array_key_exists($table, $manifest['tables'] ?? [])) {

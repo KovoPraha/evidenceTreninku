@@ -28,6 +28,10 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
         self::assertContains('origin', $contract['shop_products']);
         self::assertContains('origin', $contract['shop_variants']);
         self::assertSame(['archived_at'], $contract['shop_coupons']);
+        self::assertSame(
+            ['activity_kind', 'planning_status', 'visibility', 'participant_fee_minor', 'legacy_race_id'],
+            $contract['club_events']
+        );
 
         // R6 je volitelný obchodní atribut, ne změna zápisového kontraktu.
         self::assertArrayNotHasKey('club_program_offers', $contract);
@@ -44,7 +48,7 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
     public function testEveryOwnedTableIsListedOnceAndTheNewOnesAreThere(): void
     {
         self::assertSame(array_values(array_unique(EVIDENCE_TABLES)), array_values(EVIDENCE_TABLES));
-        foreach (['shop_bank_settings', 'shop_bank_settings_events', 'shop_attribute_definitions', 'shop_attribute_choices', 'shop_attribute_definition_events', 'shop_category_meta', 'shop_category_meta_events'] as $table) {
+        foreach (['shop_bank_settings', 'shop_bank_settings_events', 'shop_attribute_definitions', 'shop_attribute_choices', 'shop_attribute_definition_events', 'shop_category_meta', 'shop_category_meta_events', 'club_event_links', 'club_event_people', 'club_event_planned_participants', 'club_event_vehicle_reservations'] as $table) {
             self::assertContains($table, EVIDENCE_TABLES);
         }
     }

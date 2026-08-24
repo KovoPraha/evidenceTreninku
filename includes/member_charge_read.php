@@ -49,7 +49,7 @@ function memberChargeAdminRows(PDO $pdo, string $query = '', string $status = ''
         return [];
     }
     $query = mb_substr(trim($query), 0, 100, 'UTF-8');
-    $status = in_array($status, ['pending', 'paid', 'cancelled'], true) ? $status : '';
+    $status = in_array($status, ['pending', 'paid', 'refund_required', 'refunded', 'cancelled'], true) ? $status : '';
     $limit = max(1, min(500, $limit));
     $where = [];
     $parameters = [];

@@ -18,6 +18,23 @@ function publicCalendarTableExists(PDO $pdo, string $table): bool
     return false;
 }
 
+function publicCalendarColumnExists(PDO $pdo, string $table, string $column): bool
+{
+    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1 || preg_match('/^[a-z0-9_]+$/D', $column) !== 1) return false;
+    $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+    if ($driver === 'mysql') {
+        $statement = $pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?');
+        $statement->execute([$table, $column]);
+        return (bool)$statement->fetchColumn();
+    }
+    if ($driver === 'sqlite') {
+        foreach ($pdo->query('PRAGMA table_info(' . $table . ')')->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            if ((string)$row['name'] === $column) return true;
+        }
+    }
+    return false;
+}
+
 /** @return list<array{uid:string,start:string,end:string,all_day:bool,summary:string,location:string,description:string,category:string}> */
 function publicCalendarItems(PDO $pdo, string $from, string $to): array
 {
@@ -44,10 +61,12 @@ function publicCalendarItems(PDO $pdo, string $from, string $to): array
         }
     }
     if (publicCalendarHasTables($pdo, ['club_events', 'club_event_sessions'])) {
+        $visibility = publicCalendarColumnExists($pdo, 'club_events', 'visibility') ? " AND e.visibility='public'" : '';
+        $planning = publicCalendarColumnExists($pdo, 'club_events', 'planning_status') ? " AND e.planning_status='confirmed'" : '';
         $statement = $pdo->prepare(
             'SELECT s.id,s.starts_at,s.ends_at,s.location,e.name,e.audience_label,e.event_type '
             . 'FROM club_event_sessions s JOIN club_events e ON e.id=s.event_id '
-            . "WHERE e.status='open' AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? "
+            . "WHERE e.status='open'" . $visibility . $planning . " AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? "
             . 'ORDER BY s.starts_at,s.id'
         );
         $statement->execute([$toDate->modify('+1 day')->format('Y-m-d 00:00:00'), $from . ' 00:00:00']);
