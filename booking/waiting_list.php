@@ -5,6 +5,7 @@
  */
 
 require_once dirname(__DIR__) . '/includes/one_time_token.php';
+require_once dirname(__DIR__) . '/includes/app_url.php';
 
 function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
 {
@@ -72,7 +73,7 @@ function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
         $from = substr((string)$waiting['slot_cas_od'], 0, 5);
         $to = substr((string)$waiting['slot_cas_do'], 0, 5);
         $name = trim($waiting['jmeno'] . ' ' . $waiting['prijmeni']);
-        $base = 'https://data.kovopraha.cz/evidence/booking';
+        $base = appUrl('booking');
         $customerEmail = (string)$waiting['uzivatel_email'];
 
         if ($waiting['typ'] === 'zelena') {

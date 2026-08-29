@@ -69,7 +69,8 @@ final class SharedUiShellTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $helper = (string)file_get_contents($root . '/includes/ui_shell.php');
-        self::assertSame(1, substr_count($helper, 'bootstrap.bundle.min.js'));
+        self::assertStringContainsString("appUiUrl('assets/vendor/bootstrap/bootstrap.bundle.min.js')", $helper);
+        self::assertStringNotContainsString('cdn.jsdelivr.net/npm/bootstrap@', $helper);
 
         $manualCopies = [];
         $iterator = new \RecursiveIteratorIterator(
@@ -91,6 +92,27 @@ final class SharedUiShellTest extends TestCase
         }
 
         self::assertSame([], $manualCopies, 'Pages loading Bootstrap JS manually: ' . implode(', ', $manualCopies));
+    }
+
+    public function testSharedAssetsHaveCompleteLocalOfflineDependencies(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $helper = (string)file_get_contents($root . '/includes/ui_shell.php');
+        $files = [
+            'assets/vendor/bootstrap/bootstrap.min.css',
+            'assets/vendor/bootstrap/bootstrap.bundle.min.js',
+            'assets/vendor/bootstrap/LICENSE',
+            'assets/vendor/bootstrap-icons/font/bootstrap-icons.css',
+            'assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff',
+            'assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2',
+            'assets/vendor/bootstrap-icons/LICENSE',
+        ];
+        foreach ($files as $relative) {
+            self::assertFileExists($root . '/' . $relative);
+            self::assertGreaterThan(0, filesize($root . '/' . $relative));
+        }
+        self::assertStringContainsString("appUiUrl('assets/vendor/bootstrap/bootstrap.min.css')", $helper);
+        self::assertStringContainsString("appUiUrl('assets/vendor/bootstrap-icons/font/bootstrap-icons.css')", $helper);
     }
 
     public function testNavbarBreakpointsStayAlignedWithXxlExpansion(): void

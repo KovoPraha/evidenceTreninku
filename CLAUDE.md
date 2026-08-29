@@ -1,7 +1,8 @@
 # Evidence + e-shop + KIS — CLAUDE.md
 
 Projektový vstupní kontext pro Claude Code a Cowork. Před auditem nebo změnou vždy
-nejprve přečti [aktuální stav](docs/CURRENT_STATE.md) a kanonický
+nejprve přečti [aktuální stav](docs/CURRENT_STATE.md),
+[předání na další stanici](docs/HANDOFF_2026-08-29.md) a kanonický historický
 [session handoff](docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md). Starší roadmapy
 a historické sekce tohoto souboru nejsou autoritou pro aktuální procenta ani stav funkcí.
 
@@ -98,7 +99,7 @@ Jakoukoli novou integraci nejprve popiš jako produktové rozhodnutí; nepředpo
 
 | Soubor | Účel |
 |--------|------|
-| `db.php` | Připojení k DB — auto-detekce localhost vs produkce + `require includes/auto_migrace.php` |
+| `db.php` | Připojení k DB — auto-detekce localhost vs produkce; webový request nikdy nemění schema |
 | `includes/ui_shell.php` | Společné UI assety a veřejná navigace napříč Evidencí, KIS, e-shopem a rezervacemi |
 | `assets/app-ui.css`, `assets/app-ui.js` | Sdílené pozadí, formuláře, načítání, dvojí odeslání, toasty a obecné interakce |
 | `hlavicka.php` | Navigační panel administrace + globální hledání; používá společný UI základ |
@@ -117,7 +118,7 @@ Jakoukoli novou integraci nejprve popiš jako produktové rozhodnutí; nepředpo
 | `sprava_zavodu.php` | Admin přehled závodů — kategorie badge, edit+detail akce |
 | `vypis_vykazu.php` | Výkaz činností — stats karty, tabulky s součty, kategorie badge |
 | `sprava_vsech_treninku.php` | Správa tréninků (admin) — fulltext hledání, filtr kategorie, stats |
-| `sync_evidence.php` | KIS synchronizace ze tří XLSX exportů (uživatelé, platby, soupisky) — 4-krokový wizard |
+| `sync_evidence.php` | KIS upload, archivace, mapování a preview ze tří XLSX; přímý zápis do osob je vyřazen |
 | `sprava_segmentu.php` | Správa segmentů na kole — CRUD s foto uploadem, kategorie kroužek/silnice/mtb |
 | `nastaveni_opravneni.php` | Nastavení oprávnění — admin UI pro konfiguraci přístupu dle rolí |
 | `nastaveni_zadavani.php` | Okno pro zadávání tréninků — rolling integer (dni_zpet), ne fixní datum |
@@ -449,28 +450,17 @@ showToast('Chyba při ukládání.', 'danger');
 
 Typy: `success` (zelená), `danger` (červená), `warning` (žlutá), `info` (modrá). Auto-dismiss po 4 s.
 
-### Auto-migrace DB schématu (vzor)
+### Migrace DB schématu (vzor)
 
-Soubor: `includes/auto_migrace.php`. Volán z konce `db.php`.
-
-```php
-define('SCHEMA_VERSION', '2.16.0');
-
-(function (PDO $pdo): void {
-    // Zajistí tabulku nastaveni
-    // Zkontroluje schema_version — 1 SELECT per request, vrátí se pokud sedí
-    // Spustí ALTER/CREATE jen pokud nesedí
-    // Uloží novou verzi
-})($pdo);
-```
+Webový bootstrap `db.php` schema nikdy nemění. `includes/auto_migrace.php`
+udržuje pouze zmražený legacy baseline a načítá jej výhradně CLI runner
+`bin/migrate.php`; nové změny patří do číslovaných souborů `migrations/`.
 
 **Postup přidání migrace:**
-1. Přidej SQL krok do `includes/auto_migrace.php`
-2. Zvyš `SCHEMA_VERSION` (např. `'2.7.0'` → `'2.8.0'`)
-3. Nahraj soubory — migrace proběhne automaticky
-
-Guard pro existenci sloupce: `$colExists('tabulka', 'sloupec')` (information_schema, funguje MySQL i MariaDB).
-Guard pro ENUM rozšíření: `$colDef('tabulka', 'sloupec')` → `strpos($def['Type'], 'nova_hodnota') === false`.
+1. Přidej časově řazený soubor do `migrations/` podle existující šablony.
+2. Doplň dopředný krok, postcondition a případný rollback.
+3. Ověř `php bin/migrate.php --check --json`.
+4. Po záloze spusť `php bin/migrate.php --apply` před aktivací release a znovu proveď check.
 
 ### Kategorie závodů (`zavody.kategorie`)
 
@@ -496,11 +486,11 @@ Cviky spravuje `cviky.php`.
 
 ### Synchronizace evidence (vzor)
 
-`sync_evidence.php` — 4-krokový wizard pro KIS synchronizaci ze tří XLSX exportů:
+`sync_evidence.php` — bezpečný vstup pro tři KIS XLSX exporty:
 1. **Upload** — uživatelé, platby a soupisky; parser je v `includes/kis_sync_lib.php`
 2. **Mapování soupisek** — persistentní tabulka `soupiska_mapping`, AJAX podskupiny, auto-match
 3. **Preview** — stats karty, nové/aktualizované/beze změn + počet DB osob mimo import
-4. **Provedení** — DB transakce, INSERT/UPDATE, `kis_*` platební a soupiskový stav, mapované vazby na skupiny/podskupiny
+4. **Předání do KIS centra** — přímé INSERT/UPDATE osob je vyřazeno; povolené změny vyžadují uložený fingerprint, důvod, explicitní potvrzení a auditovaný promote/rollback tok.
 
 Archivace: automatická archivace osob mimo KIS import je vypnutá; chybějící řádek v jednom exportu není ukončené členství.
 

@@ -26,11 +26,17 @@ final class KisImportSandboxPromotionWiringTest extends TestCase
         self::assertStringNotContainsString('club_roster_members', $service);
     }
 
-    public function testCanonicalSyncArchivesSourcesAndRequiresReadyFieldContract(): void
+    public function testPreviewArchivesSourcesAndCannotExecuteCanonicalWrites(): void
     {
         $page = (string)file_get_contents(dirname(__DIR__, 2) . '/sync_evidence.php');
-        foreach (['kisSourceArchive(', 'kisSourceConfiguredArchiveDirectory()', 'KIS_IMPORT_FIELD_CONTRACT', 'kisFieldContractStoredReport', 'kis_external_id'] as $needle) {
+        foreach (['kisSourceArchive(', 'kisSourceConfiguredArchiveDirectory()', 'KIS_IMPORT_FIELD_CONTRACT', 'kis_external_id'] as $needle) {
             self::assertStringContainsString($needle, $page);
         }
+        self::assertStringContainsString('Přímá synchronizace byla bezpečně vyřazena', $page);
+        self::assertStringContainsString('kis_sync_center.php', $page);
+        self::assertSame(0, substr_count($page, 'executeSync('), 'Legacy writer nesmi v kodu zustat.');
+        self::assertStringNotContainsString('UPDATE sportovci SET', $page);
+        self::assertStringNotContainsString('DELETE FROM sportovec_skupina', $page);
+        self::assertStringNotContainsString('name="action" value="execute"', $page);
     }
 }

@@ -10,6 +10,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
+require_once __DIR__ . '/includes/file_mutation_transaction.php';
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     die('Neplatný CSRF token.');
@@ -58,6 +59,7 @@ if (!$isAdmin) {
     if (!$stmtAuth->fetchColumn()) die('Nem�te opr�vn�n� tento tr�nink upravit.');
 }
 
+$fileMutations = fileMutationBegin();
 try {
     if ($datum === '') throw new Exception('Chyb� datum.');
     if ($delka < 0) throw new Exception('Neplatn� d�lka.');
@@ -95,12 +97,13 @@ try {
         if (in_array((string)$p, $remove, true)) continue;
         if ($safeRel($p) !== null) $existing[] = (string)$p;
     }
-    // Soft-delete odebraných souborů (konvence: prefix smazano_)
+    // Odebrane soubory se retire az uvnitr DB transakce, aby je rollback vratil.
+    $retireImagePaths = [];
     foreach ($remove as $p) {
         $rel = $safeRel($p);
         if ($rel !== null) {
             $path = __DIR__ . '/' . $rel;
-            if (is_file($path)) @rename($path, dirname($path) . '/smazano_' . basename($path));
+            if (is_file($path)) $retireImagePaths[] = $path;
         }
     }
 
@@ -123,7 +126,7 @@ try {
             $name = 'trenink_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
             $dest = $uploadDir . $name;
 
-            if (move_uploaded_file($tmp, $dest)) {
+            if (fileMutationStage($fileMutations, $tmp, $dest)) {
                 $newPaths[] = 'nahrane_obrazky/' . $name;
             }
         }
@@ -136,6 +139,9 @@ try {
     // Ulo�en�
     // --------------------
     $pdo->beginTransaction();
+    foreach ($retireImagePaths as $path) {
+        fileMutationRetire($fileMutations, $path);
+    }
 
     // UPDATE treninky (robustn�: s kategorie / bez)
     try {
@@ -299,13 +305,16 @@ try {
         foreach ($tagIds as $tid) $stmtLinkTag->execute([$treninkId, $tid]);
     }
 
+    fileMutationFinalize($fileMutations);
     $pdo->commit();
+    fileMutationCommitted($fileMutations);
     $_SESSION['flash_success'] = 'Trénink byl úspěšně uložen.';
     header('Location: moje_treninky.php');
     exit;
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
+    fileMutationRollback($fileMutations);
     $_SESSION['flash_error'] = 'Chyba p�i aktualizaci: ' . $e->getMessage();
     header('Location: edit_trenink.php?id=' . $treninkId);
     exit;

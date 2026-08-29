@@ -33,8 +33,9 @@ try {
     die('Databázové připojení momentálně není dostupné.');
 }
 
-// Auto-migrace DB schématu — spustí se vždy, ale provede ALTER jen pokud verze nesedí
-require_once __DIR__ . '/includes/auto_migrace.php';
+// Webovy request nesmi menit schema. Legacy baseline i cislovane migrace se
+// aplikuji pouze rizenym CLI/deploy krokem pres bin/migrate.php. Neaktualni
+// schema proto selze predvidatelne v preflightu, ne nahodnym DDL v requestu.
 
 // Každá existující identita musí být aktivní a mít stejnou revokační verzi jako DB.
 // Při neplatnosti request ukončíme: část legacy endpointů autorizuje ještě před db.php.

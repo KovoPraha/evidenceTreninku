@@ -12,6 +12,7 @@ require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
 require_once __DIR__ . '/includes/venue_calendar.php';
+require_once __DIR__ . '/includes/file_mutation_transaction.php';
 
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
@@ -59,6 +60,7 @@ try {
 // Obrázky
 // --------------------
 $imagePaths = [];
+$fileMutations = fileMutationBegin();
 if (!empty($_FILES['obrazky']['name'][0])) {
     $uploadDir = __DIR__ . '/nahrane_obrazky/';
     if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
@@ -77,7 +79,7 @@ if (!empty($_FILES['obrazky']['name'][0])) {
         $name = 'trenink_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
         $dest = $uploadDir . $name;
 
-        if (move_uploaded_file($tmp, $dest)) {
+        if (fileMutationStage($fileMutations, $tmp, $dest)) {
             $imagePaths[] = 'nahrane_obrazky/' . $name;
         }
     }
@@ -302,13 +304,16 @@ try {
         ")->execute([$treninkId, $planId]);
     }
 
+    fileMutationFinalize($fileMutations);
     $pdo->commit();
+    fileMutationCommitted($fileMutations);
     $redirectBack = ($planId > 0) ? 'planovac.php' : 'index.php';
     header('Location: ' . $redirectBack);
     exit;
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
+    fileMutationRollback($fileMutations);
     $_SESSION['flash_error'] = 'Chyba při ukládání: ' . $e->getMessage();
     header('Location: formular.php' . ($planId > 0 ? '?plan_id=' . $planId : ''));
     exit;

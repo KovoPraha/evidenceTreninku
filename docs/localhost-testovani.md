@@ -3,20 +3,41 @@
 Tento postup je pouze pro lokální XAMPP databázi. Produkci, GitHub ani externí
 KIS/Fio nemění.
 
-## Obnovení prostředí
+## První instalace na novém počítači
+
+1. Nainstalujte XAMPP s PHP 8.2+ a Composer.
+2. Naklonujte repozitář přesně do `C:\xampp\htdocs\evidencePavel`.
+3. Dokud je počítač online, spusťte v kořeni `PRIPRAVIT_LOCALHOST_TESTOVANI.cmd`.
+4. Skript nainstaluje zamčené Composer závislosti, vytvoří samostatnou MariaDB
+   na portu 3308, importuje prázdné schéma, aplikuje migrace a vloží pouze
+   syntetická data.
+5. Po zeleném potvrzení lze internet odpojit.
+
+Soubor `database/local-demo-schema.sql` neobsahuje aplikační data ani účty.
+Lokální `config.php`, databázové dumpy a datový adresář se záměrně nepřenášejí
+přes GitHub.
+
+## Obnovení již připraveného prostředí
+
+Pro již připravený počítač stačí dvojklik na kořenový soubor
+`START_LOCALHOST_TESTOVANI.cmd`. Spustí Apache a samostatnou čistou databázi
+Evidence na portu 3308, aniž by ukončil jiné lokální databáze. Podrobný offline
+návod je v `outputs/localhost-test-2026-08-25/OFFLINE_TESTOVANI.md`.
+
+Ruční obnovení syntetických dat v již připravené databázi:
 
 ```powershell
 $env:APP_HOST='localhost'
 php bin/migrate.php --apply --json
-php bin/shoptet-products-dry-run.php --input=var/imports/shoptet-products.csv --json
-php bin/shoptet-products-stage.php --input=var/imports/shoptet-products.csv --apply --json
+php bin/shoptet-products-dry-run.php --input=tests/fixtures/shoptet/products-valid.csv --json
+php bin/shoptet-products-stage.php --input=tests/fixtures/shoptet/products-valid.csv --apply --json
 php bin/seed-local-demo.php
 ```
 
 Seed je idempotentní a mimo localhost skončí chybou. Připraví:
 
 - ověřený účet rodiče se dvěma schválenými osobami,
-- localhost administrátora,
+- localhost superadministrátora se všemi osmi pracovními pozicemi,
 - reálný Shoptet katalog v pracovním stavu a jeden publikovaný skladový produkt,
 - desetiprocentní klubovou cenu prvního publikovaného produktu pro soupisku
   `LOCALHOST U15 2026`,
@@ -32,6 +53,7 @@ Aktuální testovací přístupy vypíše přímo seed. Výchozí hodnoty jsou:
 ```text
 Zákazník: rodic@localhost.test / Localhost123!
 Administrátor: localhost-admin / LocalhostAdmin123!
+Sportovec: localhost-sportovec / LocalhostSportovec123!
 ```
 
 Lokální checkout musí mít v ignorovaném `config.php` syntetické bankovní údaje.

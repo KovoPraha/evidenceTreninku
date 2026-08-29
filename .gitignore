@@ -1,4 +1,5 @@
 *.sql
+!/database/local-demo-schema.sql
 *.log
 *.zip
 *.bak

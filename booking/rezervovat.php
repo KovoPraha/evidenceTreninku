@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 sendPushNotification($pdo, [
                     'title' => 'Nová rezervace',
                     'body'  => "{$uzJmeno}: {$lekce['nazev']} ({$lekce['datum']}, {$slotStr})",
-                    'url'   => 'https://data.kovopraha.cz/evidence/individualni_lekce_sprava.php',
+                    'url'   => appUrl('individualni_lekce_sprava.php'),
                     'tag'   => 'rezervace-' . $lekceId,
                 ], [(int)$lekce['trener_id']]);
             } catch (Throwable $ex) { /* push je nepovinný */ }

@@ -171,7 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'] ?? '';
         if ($action === 'upload') $step = 1; // Process upload → go to step 2
         elseif ($action === 'save_mapping') $step = 2; // Process mapping → go to step 3
-        elseif ($action === 'execute') $step = 4; // Execute sync
+        elseif ($action === 'execute') {
+            // Historicky prime zapisovani do sportovcu a jejich skupin je
+            // zamerne fail-closed. Bezpecna cesta je otisknuty nahled v KIS
+            // centru a explicitni promote/rollback nad izolovanym sandboxem.
+            $step = 3;
+            $errors[] = 'Přímá synchronizace byla bezpečně vyřazena. Pokračujte přes KIS centrum a fingerprintovaný promote tok.';
+        }
     }
 }
 
@@ -565,287 +571,11 @@ function buildPreview(PDO $pdo, array $importData): array {
 /* ================== STEP 4: EXECUTE SYNC ================== */
 
 $execReport = null;
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'execute' && empty($errors)) {
-    if (!isset($_SESSION['sync_data'])) {
-        $errors[] = 'Chybí data. Nahrajte soubor znovu.';
-        $step = 1;
-    } else {
-        $currentRunId = (int)($_SESSION['sync_run_id'] ?? 0);
-        $currentRun = $currentRunId > 0 ? kisImportRunDetail($pdo, $currentRunId)['run'] : null;
-        $fieldContract = is_array($currentRun) ? kisFieldContractStoredReport($currentRun) : null;
-        if ($fieldContract === null
-            || ($fieldContract['status'] ?? null) !== 'ready_for_parity'
-            || (int)($fieldContract['summary']['total_blockers'] ?? -1) !== 0) {
-            $errors[] = 'Synchronizaci nelze provést: exporty nemají úplný a stabilní kontrakt KIS ID.';
-            $step = 3;
-        } else {
-            $vcetneNeaktivnich = !empty($_POST['vcetne_neaktivnich']);
-            $execReport = executeSync($pdo, $_SESSION['sync_data'], $vcetneNeaktivnich);
-            $step = 4;
-        }
-    }
-}
+// POST action=execute je zachycena fail-closed uz pri urceni kroku vyse.
+// Tento soubor smi nadale pouze nahrat, archivovat, mapovat a zobrazit nahled.
 
-function executeSync(PDO $pdo, array $importData, bool $vcetneNeaktivnich = false): array {
-    $report = ['added' => 0, 'updated' => 0, 'archived' => 0, 'unchanged' => 0, 'skipped_inactive' => 0, 'errors' => []];
-
-    // Load soupiska mappings
-    $mappings = [];
-    $mapRows = $pdo->query("SELECT * FROM soupiska_mapping")->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($mapRows as $mr) {
-        $mappings[$mr['soupiska_text']] = [
-            'skupina_id' => $mr['skupina_id'] ? (int)$mr['skupina_id'] : null,
-            'podskupina_id' => $mr['podskupina_id'] ? (int)$mr['podskupina_id'] : null,
-        ];
-    }
-
-    // Load all DB sportovci
-    $allDb = $pdo->query('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci')->fetchAll(PDO::FETCH_ASSOC);
-    $dbByKey = [];
-    $dbByName = [];
-    $dbIds = [];
-    foreach ($allDb as $row) {
-        $id = (int)$row['id'];
-        $dbIds[$id] = $row;
-        $nameKey = normalizeKey((string)$row['jmeno'], (string)$row['prijmeni']);
-        $fullKey = $nameKey . '|' . ($row['narozeni'] ?? '');
-        $dbByKey[$fullKey] = $row;
-        $dbByName[$nameKey][] = $row;
-    }
-
-    // Ensure Archiv group exists
-    $archStmt = $pdo->prepare("SELECT id FROM skupiny WHERE LOWER(nazev) = 'archiv' LIMIT 1");
-    $archStmt->execute();
-    $archivId = (int)$archStmt->fetchColumn();
-    if (!$archivId) {
-        $pdo->exec("INSERT INTO skupiny (nazev, poradi) VALUES ('Archiv', 9999)");
-        $archivId = (int)$pdo->lastInsertId();
-    }
-
-    $matchedDbIds = [];
-
-    $pdo->beginTransaction();
-    try {
-        foreach ($importData as $row) {
-            $jmeno = trim((string)($row['jmeno'] ?? ''));
-            $prijmeni = trim((string)($row['prijmeni'] ?? ''));
-            $narozeni = $row['narozeni'] ?? null;
-
-            if ($jmeno === '' && $prijmeni === '') continue;
-
-            $match = kisMatchResolve($pdo, $row);
-            $dbRow = null;
-            if ($match['status'] === 'matched' && !empty($match['sportovec_id'])) {
-                $stMatch = $pdo->prepare('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci WHERE id = ? LIMIT 1');
-                $stMatch->execute([(int)$match['sportovec_id']]);
-                $dbRow = $stMatch->fetch(PDO::FETCH_ASSOC) ?: null;
-            } elseif (in_array($match['status'], ['ambiguous', 'conflict', 'ignored'], true)) {
-                $report['errors'][] = "$prijmeni $jmeno: preskoceno, vyzaduje rucni potvrzeni (" . $match['reason'] . ")";
-                continue;
-            }
-
-            // Resolve soupisky
-            $rowSkupiny = [];
-            $rowPodskupiny = [];
-            foreach ($row['_soupisky_parsed'] ?? [] as $sp) {
-                $m = $mappings[$sp] ?? null;
-                if ($m) {
-                    if ($m['skupina_id']) $rowSkupiny[$m['skupina_id']] = true;
-                    if ($m['podskupina_id']) $rowPodskupiny[$m['podskupina_id']] = true;
-                }
-            }
-
-            if ($dbRow) {
-                // UPDATE
-                $id = (int)$dbRow['id'];
-                $matchedDbIds[$id] = true;
-
-                $updates = [];
-                $params = [];
-                $fields = ['email','telefon','adresa_ulice','adresa_cp','adresa_co','adresa_obec','adresa_psc'];
-                foreach ($fields as $f) {
-                    $newVal = $row[$f] ?? '';
-                    if ((string)$newVal !== '' && (string)$newVal !== (string)($dbRow[$f] ?? '')) {
-                        $updates[] = "`$f` = ?";
-                        $params[] = $newVal;
-                    }
-                }
-                if ($narozeni && empty($dbRow['narozeni'])) {
-                    $updates[] = "`narozeni` = ?";
-                        $params[] = $narozeni;
-                }
-                foreach (['kis_aktivni','kis_platebne_aktivni','kis_neuhrazeno','kis_posledni_uhrada','kis_soupisky'] as $f) {
-                    $newVal = $row[$f] ?? null;
-                    if ((string)$newVal !== (string)($dbRow[$f] ?? null)) {
-                        $updates[] = "`$f` = ?";
-                        $params[] = $newVal;
-                    }
-                }
-                $externalId = kisFieldNormalizeExternalId($row['kis_external_id'] ?? '');
-                if ($externalId !== '' && $externalId !== (string)($dbRow['kis_external_id'] ?? '')) {
-                    $updates[] = '`kis_external_id` = ?';
-                    $params[] = $externalId;
-                }
-                $updates[] = "`kis_posledni_sync` = CURRENT_TIMESTAMP";
-                $updates[] = "`kis_last_seen_at` = CURRENT_TIMESTAMP";
-                $updates[] = "`kis_identity_key` = ?";
-                $params[] = kisMatchPersonKey($row);
-                $updates[] = "`kis_match_confidence` = ?";
-                $params[] = (int)($match['confidence'] ?? 0);
-
-                if (!empty($updates)) {
-                    $params[] = $id;
-                    $sql = "UPDATE sportovci SET " . implode(', ', $updates) . " WHERE id = ? LIMIT 1";
-                    $pdo->prepare($sql)->execute($params);
-                    $report['updated']++;
-                    sportovecLogEvent(
-                        $pdo,
-                        $id,
-                        'kis_update',
-                        'Aktualizace z KIS importu',
-                        $dbRow,
-                        $row,
-                        'kis_import',
-                        isset($_SESSION['trener_id']) ? (int)$_SESSION['trener_id'] : null,
-                        'Import aktualizoval kontakty, KIS stav nebo platební údaje.',
-                        'kis_import_runs',
-                        isset($_SESSION['sync_run_id']) ? (int)$_SESSION['sync_run_id'] : null
-                    );
-                } else {
-                    $report['unchanged']++;
-                }
-
-                // Vazby skupin přepiš JEN pokud import přinesl namapované skupiny/podskupiny.
-                // Jinak by členové na nenamapovaných soupiskách (nebo ruční přiřazení mimo KIS)
-                // přišli o členství bez náhrady.
-                if (!empty($rowSkupiny) || !empty($rowPodskupiny)) {
-                    $pdo->prepare("DELETE FROM sportovec_skupina WHERE sportovec_id = ?")->execute([$id]);
-                    $pdo->prepare("DELETE FROM sportovec_podskupina WHERE sportovec_id = ?")->execute([$id]);
-
-                    foreach (array_keys($rowSkupiny) as $skId) {
-                        $pdo->prepare("INSERT IGNORE INTO sportovec_skupina (sportovec_id, skupina_id) VALUES (?, ?)")->execute([$id, $skId]);
-                    }
-                    foreach (array_keys($rowPodskupiny) as $psId) {
-                        $pdo->prepare("INSERT IGNORE INTO sportovec_podskupina (sportovec_id, podskupina_id) VALUES (?, ?)")->execute([$id, $psId]);
-                    }
-                }
-                $fresh = $pdo->prepare('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci WHERE id = ?');
-                $fresh->execute([$id]);
-                $freshRow = $fresh->fetch(PDO::FETCH_ASSOC);
-                if ($freshRow) {
-                    sportovecStatusUpdate($pdo, $id, $freshRow);
-                }
-
-            } else {
-                // INSERT — neaktivní nové osoby přeskočit, pokud nebylo výslovně povoleno
-                $isInactive = (int)($row['kis_aktivni'] ?? 0) === 0
-                    && (int)($row['kis_platebne_aktivni'] ?? 0) === 0
-                    && (float)($row['kis_neuhrazeno'] ?? 0) <= 0;
-                if ($isInactive && !$vcetneNeaktivnich) {
-                    $report['skipped_inactive']++;
-                    continue;
-                }
-                $newRow = [
-                    'jmeno' => $jmeno,
-                    'prijmeni' => $prijmeni,
-                    'narozeni' => $narozeni ?? '0000-00-00',
-                    'email' => $row['email'] ?? '',
-                    'telefon' => $row['telefon'] ?? '',
-                    'adresa_ulice' => $row['adresa_ulice'] ?? '',
-                    'adresa_cp' => $row['adresa_cp'] ?? '',
-                    'adresa_co' => $row['adresa_co'] ?? '',
-                    'adresa_obec' => $row['adresa_obec'] ?? '',
-                    'adresa_psc' => $row['adresa_psc'] ?? '',
-                    'kis_aktivni' => (int)($row['kis_aktivni'] ?? 0),
-                    'kis_platebne_aktivni' => (int)($row['kis_platebne_aktivni'] ?? 0),
-                    'kis_neuhrazeno' => (float)($row['kis_neuhrazeno'] ?? 0),
-                    'kis_posledni_uhrada' => $row['kis_posledni_uhrada'] ?? null,
-                    'kis_posledni_sync' => date('Y-m-d H:i:s'),
-                    'kis_last_seen_at' => date('Y-m-d H:i:s'),
-                    'kis_identity_key' => kisMatchPersonKey($row),
-                    'kis_external_id' => kisFieldNormalizeExternalId($row['kis_external_id'] ?? '') ?: null,
-                    'kis_match_confidence' => 0,
-                    'kis_soupisky' => $row['kis_soupisky'] ?? '',
-                    'hash' => generateHash($jmeno, $prijmeni),
-                    'uci' => 0,
-                    'odmena_za_trenink' => 0,
-                ];
-
-                $cols = array_keys($newRow);
-                $ph = array_fill(0, count($cols), '?');
-                $sql = "INSERT INTO sportovci (`" . implode('`,`', $cols) . "`) VALUES (" . implode(',', $ph) . ")";
-                $pdo->prepare($sql)->execute(array_values($newRow));
-                $newId = (int)$pdo->lastInsertId();
-                $matchedDbIds[$newId] = true;
-
-                // Assign skupiny
-                foreach (array_keys($rowSkupiny) as $skId) {
-                    $pdo->prepare("INSERT IGNORE INTO sportovec_skupina (sportovec_id, skupina_id) VALUES (?, ?)")->execute([$newId, $skId]);
-                }
-                foreach (array_keys($rowPodskupiny) as $psId) {
-                    $pdo->prepare("INSERT IGNORE INTO sportovec_podskupina (sportovec_id, podskupina_id) VALUES (?, ?)")->execute([$newId, $psId]);
-                }
-                $fresh = $pdo->prepare('SELECT ' . syncEvidenceSafePersonColumns() . ' FROM sportovci WHERE id = ?');
-                $fresh->execute([$newId]);
-                $freshRow = $fresh->fetch(PDO::FETCH_ASSOC);
-                if ($freshRow) {
-                    sportovecStatusUpdate($pdo, $newId, $freshRow);
-                }
-                sportovecLogEvent(
-                    $pdo,
-                    $newId,
-                    'kis_create',
-                    'Založení z KIS importu',
-                    [],
-                    $newRow,
-                    'kis_import',
-                    isset($_SESSION['trener_id']) ? (int)$_SESSION['trener_id'] : null,
-                    'Nový člen byl založen z KIS importu.',
-                    'kis_import_runs',
-                    isset($_SESSION['sync_run_id']) ? (int)$_SESSION['sync_run_id'] : null
-                );
-
-                $report['added']++;
-            }
-        }
-
-        // Automaticka archivace chybejicich lidi je zamerne vypnuta. KIS exporty
-        // maji ruzny rozsah a chybejici radek nemusi znamenat ukoncene clenstvi.
-
-        if (isset($_SESSION['sync_run_id'])) {
-            $stRun = $pdo->prepare("
-                UPDATE kis_import_runs
-                SET status = 'applied',
-                    applied_at = NOW(),
-                    stats_json = :stats
-                WHERE id = :id
-            ");
-            $stRun->execute([
-                ':stats' => json_encode($report, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-                ':id' => (int)$_SESSION['sync_run_id'],
-            ]);
-        }
-
-        $pdo->commit();
-
-        // Clear session data
-        unset($_SESSION['sync_data'], $_SESSION['sync_soupisky'], $_SESSION['sync_soupisky_counts'], $_SESSION['sync_mapping_saved'], $_SESSION['sync_meta'], $_SESSION['sync_warnings'], $_SESSION['sync_run_id']);
-
-        $_SESSION['flash_success'] = "Synchronizace dokončena: {$report['added']} nových, {$report['updated']} aktualizovaných, {$report['archived']} archivovaných.";
-
-    } catch (\Throwable $e) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
-        if (isset($_SESSION['sync_run_id'])) {
-            try {
-                $stRun = $pdo->prepare("UPDATE kis_import_runs SET status = 'failed', note = ? WHERE id = ?");
-                $stRun->execute([$e->getMessage(), (int)$_SESSION['sync_run_id']]);
-            } catch (\Throwable $ignored) {}
-        }
-        $report['errors'][] = $e->getMessage();
-    }
-
-    return $report;
-}
+// Prime zapisovani legacy wizardu bylo odstraneno. Kanonicke zmeny KIS dat
+// musi projit pouze fingerprintovanym promote/rollback tokem v KIS centru.
 
 /* ================== LOAD DATA FOR STEP 2 ================== */
 
@@ -1336,37 +1066,23 @@ if ($step === 3 || $step === 4) {
     </div>
     <?php endif; ?>
 
-    <!-- Execute button -->
-    <div class="card border-primary mb-4">
+    <!-- Canonical promote route -->
+    <div class="card border-warning mb-4">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <i class="bi bi-exclamation-diamond text-primary me-2 fs-4"></i>
-                    <span class="fw-bold">Potvrďte spuštění synchronizace</span>
+                    <i class="bi bi-shield-lock text-warning me-2 fs-4"></i>
+                    <span class="fw-bold">Přímý zápis byl vyřazen</span>
                     <div class="text-muted small mt-1">
-                        Tato operace aktualizuje <?= count($preview['update']) ?> sportovců,
-                        přidá <?= count($preview['new']) ?> nových
-                        bez automaticke archivace lidi chybejicich v importu.
-                        <?php if (!empty($preview['new_inactive'])): ?>
-                        <br><?= count($preview['new_inactive']) ?> neaktivních nových osob bude přeskočeno (pokud nezaškrtnete volbu níže).
-                        <?php endif; ?>
+                        Náhled zůstává dostupný pro kontrolu. Jakákoli povolená změna musí
+                        pokračovat přes KIS centrum, kde se ověřuje fingerprint, důvod,
+                        explicitní potvrzení a možnost rollbacku.
                     </div>
                 </div>
-                <form method="POST" data-confirm="Opravdu provést synchronizaci? Tuto akci nelze vrátit zpět.">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="execute">
-                    <?php if (!empty($preview['new_inactive'])): ?>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" name="vcetne_neaktivnich" value="1" id="vcetneNeaktivnich">
-                        <label class="form-check-label small" for="vcetneNeaktivnich">
-                            Založit i neaktivní osoby (<?= count($preview['new_inactive']) ?>)
-                        </label>
-                    </div>
-                    <?php endif; ?>
-                    <button type="submit" class="btn btn-danger btn-lg">
-                        <i class="bi bi-check2-all me-1"></i>Provést synchronizaci
-                    </button>
-                </form>
+                <a href="kis_sync_center.php<?= !empty($_SESSION['sync_run_id']) ? '?run_id=' . (int)$_SESSION['sync_run_id'] : '' ?>"
+                   class="btn btn-primary btn-lg">
+                    <i class="bi bi-shield-check me-1"></i>Otevřít KIS centrum
+                </a>
             </div>
         </div>
     </div>

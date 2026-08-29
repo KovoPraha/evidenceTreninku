@@ -875,8 +875,8 @@ Při prvním přihlášení s plaintext heslem (starší účty před migrací) 
 
 - MIME validace přes `finfo_file()` (ne `$_FILES['type']`)
 - Upload adresáře: oprávnění `0755` (ne `0777`)
-- Soft delete: přejmenování s prefixem `smazano_`
-- Kontrola `move_uploaded_file()` návratové hodnoty
+- Přílohy tréninků a závodů: `fileMutationStage()` → SQL → `fileMutationFinalize()` → DB commit; exception větev vždy `fileMutationRollback()`.
+- Odstraňované přílohy používat přes `fileMutationRetire()`, aby je DB rollback vrátil.
 
 ### 10.7 Chybové zprávy
 

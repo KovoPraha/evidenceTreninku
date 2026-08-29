@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/person_match.php';
@@ -27,7 +28,7 @@ final class PersonMatchV1Test extends TestCase
         );
     }
 
-    /** @dataProvider exactProvider */
+    #[DataProvider('exactProvider')]
     public function testT1T2T3AndT9ExactNormalization(
         string $storedFirst,
         string $storedLast,

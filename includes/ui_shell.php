@@ -21,13 +21,20 @@ function appUiAssets(): void
     if ($rendered) return;
     $rendered = true;
     $root = dirname(__DIR__);
+    $bootstrapCssVersion = (string)(filemtime($root . '/assets/vendor/bootstrap/bootstrap.min.css') ?: '1');
+    $bootstrapJsVersion = (string)(filemtime($root . '/assets/vendor/bootstrap/bootstrap.bundle.min.js') ?: '1');
+    $iconsVersion = (string)(filemtime($root . '/assets/vendor/bootstrap-icons/font/bootstrap-icons.css') ?: '1');
     $cssVersion = (string)(filemtime($root . '/assets/app-ui.css') ?: '1');
     $jsVersion = (string)(filemtime($root . '/assets/app-ui.js') ?: '1');
+    $bootstrapCss = htmlspecialchars(appUiUrl('assets/vendor/bootstrap/bootstrap.min.css') . '?v=' . rawurlencode($bootstrapCssVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $bootstrapJs = htmlspecialchars(appUiUrl('assets/vendor/bootstrap/bootstrap.bundle.min.js') . '?v=' . rawurlencode($bootstrapJsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $icons = htmlspecialchars(appUiUrl('assets/vendor/bootstrap-icons/font/bootstrap-icons.css') . '?v=' . rawurlencode($iconsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $css = htmlspecialchars(appUiUrl('assets/app-ui.css') . '?v=' . rawurlencode($cssVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $js = htmlspecialchars(appUiUrl('assets/app-ui.js') . '?v=' . rawurlencode($jsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">';
+    echo '<link href="' . $bootstrapCss . '" rel="stylesheet">';
+    echo '<link href="' . $icons . '" rel="stylesheet">';
     echo '<link href="' . $css . '" rel="stylesheet">';
-    echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>';
+    echo '<script src="' . $bootstrapJs . '"></script>';
     echo '<script defer src="' . $js . '"></script>';
 }
 
