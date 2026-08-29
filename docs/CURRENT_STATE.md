@@ -1,10 +1,29 @@
 # Aktuální stav projektu pro AI a vlastníka
 
-Aktualizováno: 21. 8. 2026, Europe/Prague
+Aktualizováno: 29. 8. 2026, Europe/Prague
 
 Tento soubor je krátký vstupní rozcestník. Přesný historický ledger a poslední
 důkazy jsou v `docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md`; produktová
 autorita M2 je `10-milnik-m2-provozni-pilot.md`.
+
+## Aktuální předání na další stanici
+
+Pro pokračování z nového počítače je autoritativní
+`docs/HANDOFF_2026-08-29.md` a tag `handoff-2026-08-29`. Čistý clone lze poprvé
+připravit přes `PRIPRAVIT_LOCALHOST_TESTOVANI.cmd`: vznikne oddělená MariaDB na
+portu 3308, všech 70 migrací a pouze syntetické demo. Verzované schéma nemá
+aplikační řádky, hesla ani osobní údaje. Bootstrap, ikony a písma jsou lokální,
+takže po prvním `composer install` lze UAT provádět bez internetu.
+
+Zdrojová kontrola datových toků je v `outputs/data-flow-audit-2026-08-24/`.
+Aktuální opravy zavírají legacy přímé zapisovače, přesouvají dočasné a citlivé
+soubory do soukromého úložiště, koordinují souborové změny s DB transakcemi a
+ponechávají KIS synchronizaci v preview/sandbox režimu. Produkční deploy není
+součástí tohoto předání.
+
+Následující rozsáhlá část zachovává historické provozní důkazy. Starší SHA,
+počty migrací a testů v ní nejsou autoritou pro aktuální checkout; přednost má
+výše uvedené předání a čerstvá lokální kontrola.
 
 ## Identita projektu
 
@@ -269,8 +288,8 @@ jsou uložené jako historické snapshoty `cd38f85`; jejich validační dodatky
 zaznamenávají, že dřívější nálezy N-H1, N-M1 a N-L1 byly následně opraveny a
 ověřeny. Pozdější audit z 5. 8. 2026 potvrdil dva nové HIGH nálezy v legacy
 infrastruktuře (veřejné přílohy a Host poisoning); oba jsou opravené v `6655a39`
-spolu se známými XSS a CSRF cestami. Otevřené zůstává odstranění DDL z webových
-requestů a převedení request-bound e-mailů na společnou frontu. Podrobnosti jsou v
+spolu se známými XSS a CSRF cestami. DDL bylo z webového bootstrapu odstraněno;
+otevřené zůstává převedení request-bound e-mailů na společnou frontu. Podrobnosti jsou v
 `docs/security-infrastructure-2026-08-05.md`. Žádný localhost audit nenahrazuje
 produkční penetrační test ani kontrolu konfigurace hostingu.
 

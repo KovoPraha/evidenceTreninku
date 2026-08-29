@@ -7,24 +7,9 @@ if (!canAccess('sprava_zavodu')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
+require_once __DIR__ . '/includes/file_mutation_transaction.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'); }
-
-function softDeleteUpload(string $dir, string $filename): void {
-    $base = basename($filename);
-    if ($base === '' || str_starts_with($base, 'smazano_')) return;
-    $realDir = realpath($dir);
-    if ($realDir === false) return;
-
-    $source = $realDir . DIRECTORY_SEPARATOR . $base;
-    if (!is_file($source)) return;
-
-    $target = $realDir . DIRECTORY_SEPARATOR . 'smazano_' . $base;
-    if (is_file($target)) {
-        $target = $realDir . DIRECTORY_SEPARATOR . 'smazano_' . date('Ymd_His') . '_' . $base;
-    }
-    @rename($source, $target);
-}
 
 // ── CSRF ─────────────────────────────────────────────────────────────────────
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -74,6 +59,7 @@ $uploadDirResults = __DIR__ . '/nahrane_zavody/results/';
 
 $fotkyNove   = [];
 $vysledkyNove = [];
+$fileMutations = fileMutationBegin();
 
 if (!empty($_FILES['fotky']['name'][0])) {
     if (!is_dir($uploadDirPhotos)) @mkdir($uploadDirPhotos, 0755, true);
@@ -93,7 +79,7 @@ if (!empty($_FILES['fotky']['name'][0])) {
         if (!in_array($ext, $allowedImgExts, true)) continue;
 
         $name = 'zavod_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-        if (move_uploaded_file($tmp, $uploadDirPhotos . $name)) {
+        if (fileMutationStage($fileMutations, $tmp, $uploadDirPhotos . $name)) {
             $fotkyNove[] = $name;
         }
     }
@@ -122,7 +108,7 @@ if (!empty($_FILES['vysledky']['name'][0])) {
 
         $origName = preg_replace('/[^a-zA-Z0-9_.-]/', '_', basename($_FILES['vysledky']['name'][$i]));
         $name     = 'vysledky_' . time() . '_' . bin2hex(random_bytes(4)) . '_' . $origName;
-        if (move_uploaded_file($tmp, $uploadDirResults . $name)) {
+        if (fileMutationStage($fileMutations, $tmp, $uploadDirResults . $name)) {
             $vysledkyNove[] = ['soubor' => $name, 'typ' => $ext];
         }
     }
@@ -195,7 +181,7 @@ try {
             $stmtGetF->execute([$fid, $zavodId]);
             $soubor = $stmtGetF->fetchColumn();
             if ($soubor) {
-                softDeleteUpload($uploadDirPhotos, (string)$soubor);
+                fileMutationRetire($fileMutations, $uploadDirPhotos . basename((string)$soubor));
             }
             $stmtDelF->execute([$fid, $zavodId]);
         }
@@ -210,7 +196,7 @@ try {
             $stmtGetI->execute([$iid, $zavodId]);
             $soubor = $stmtGetI->fetchColumn();
             if ($soubor) {
-                softDeleteUpload($uploadDirResults, (string)$soubor);
+                fileMutationRetire($fileMutations, $uploadDirResults . basename((string)$soubor));
             }
             $stmtDelI->execute([$iid, $zavodId]);
         }
@@ -302,7 +288,9 @@ try {
         }
     }
 
+    fileMutationFinalize($fileMutations);
     $pdo->commit();
+    fileMutationCommitted($fileMutations);
 
     $_SESSION['flash_success'] = 'Závod byl úspěšně aktualizován.';
     header('Location: zavod_detail.php?id=' . $zavodId);
@@ -310,6 +298,7 @@ try {
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
+    fileMutationRollback($fileMutations);
     error_log('update_zavod.php error: ' . $e->getMessage());
     $_SESSION['flash_error'] = 'Chyba při ukládání závodu: ' . $e->getMessage();
     header('Location: edit_zavod_form.php?id=' . $zavodId);

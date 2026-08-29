@@ -83,4 +83,22 @@ final class PrivateStorageTest extends TestCase
         self::assertFileExists((string)\privateStorageResolve($stored['storage_key']));
         self::assertFileDoesNotExist($source);
     }
+
+    public function testUciTemplateUsesDedicatedPrivateXlsxCategory(): void
+    {
+        $source = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'evidence-uci-' . bin2hex(random_bytes(6)) . '.xlsx';
+        $archive = new \ZipArchive();
+        self::assertTrue($archive->open($source, \ZipArchive::CREATE | \ZipArchive::OVERWRITE));
+        $archive->addFromString('[Content_Types].xml', '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>');
+        $archive->addFromString('xl/workbook.xml', '<?xml version="1.0"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>');
+        $archive->close();
+
+        $key = \privateStorageStoreUciTemp($source, 'UCI-template.xlsx', false);
+
+        self::assertMatchesRegularExpression('~^private://uci-temp/[a-f0-9]{32}\.xlsx$~', $key);
+        self::assertFileExists((string)\privateStorageResolve($key));
+        self::assertFileDoesNotExist($source);
+        \privateStorageDeleteUciTemp($key);
+        self::assertNull(\privateStorageResolve($key));
+    }
 }

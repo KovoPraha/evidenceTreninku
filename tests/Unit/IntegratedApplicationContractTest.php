@@ -11,6 +11,7 @@ final class IntegratedApplicationContractTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $database = $this->source($root, 'db.php');
+        $migrationCli = $this->source($root, 'bin/migrate.php');
         $customerLogin = $this->source($root, 'booking/prihlaseni.php');
         $trainerLogin = $this->source($root, 'login.php');
         $family = $this->source($root, 'includes/family_portal.php');
@@ -19,7 +20,8 @@ final class IntegratedApplicationContractTest extends TestCase
         $training = $this->source($root, 'includes/training_roster_bridge.php');
 
         self::assertStringContainsString("require_once __DIR__ . '/includes/ui_shell.php'", $database);
-        self::assertStringContainsString("require_once __DIR__ . '/includes/auto_migrace.php'", $database);
+        self::assertStringNotContainsString("require_once __DIR__ . '/includes/auto_migrace.php'", $database);
+        self::assertStringContainsString("require \$root . '/includes/auto_migrace.php'", $migrationCli);
         self::assertStringContainsString('unifiedAccountAuthenticate', $customerLogin);
         self::assertStringContainsString('auth_session_bind_trainer', $customerLogin);
         self::assertStringContainsString('unifiedAccountEnsureTrainerCustomer', $trainerLogin);

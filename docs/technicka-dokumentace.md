@@ -192,7 +192,7 @@ evidencePavel/
 ├── oznameni.php                    # Oznámení
 ├── google_sheets_linky.php         # Google Sheets integrace
 ├── sync.php                        # Import sportovců z XLSX (legacy)
-├── sync_evidence.php               # KIS synchronizace: uzivatele + platby + soupisky (4-krokovy wizard)
+├── sync_evidence.php               # KIS upload, archivace, mapovani a preview; bez primeho zapisu osob
 ├── sprava_segmentu.php             # Správa segmentů na kole (CRUD + foto upload)
 │
 └── composer.json                   # Composer konfigurace
@@ -219,30 +219,29 @@ Připojení: `PDO("mysql:host=...;dbname=...;charset=utf8mb4")`
 
 Nastavení: `PDO::ATTR_ERRMODE → PDO::ERRMODE_EXCEPTION`
 
-Na konci `db.php` se volá `require_once __DIR__ . '/includes/auto_migrace.php'`.
-Soubor obsahuje také podmínku pro legacy `auth/sso_bridge.php`, ale cílová
+`db.php` pouze naváže PDO a obnoví autorizační kontext; v běžném webovém
+requestu nenačítá ani nespouští žádné DDL. Soubor obsahuje také podmínku pro legacy `auth/sso_bridge.php`, ale cílová
 konfigurace drží `VELOCOTA_INTEGRATION === false`.
 
 ### Auto-migrace schématu
 
 Soubor: `includes/auto_migrace.php`
 
-`includes/auto_migrace.php` dnes udržuje pouze uzavřený legacy baseline `2.20.2`.
-Nové změny schématu se do něj nepřidávají a produkční deploy se nesmí spoléhat na
-první webový request. Kanonické migrace jsou číslované soubory v `migrations/` a
+`includes/auto_migrace.php` udržuje pouze uzavřený legacy baseline `2.20.2` a
+načítá jej výhradně CLI `bin/migrate.php`. Nové změny schématu se do něj
+nepřidávají. Kanonické migrace jsou číslované soubory v `migrations/` a
 spouštějí se explicitně přes `php bin/migrate.php --apply`; před i po aplikaci se
 ověřují příkazem `php bin/migrate.php --check --json`.
 
 **Princip:**
 
-1. Zajistí existenci tabulky `nastaveni` (klíč-hodnota)
-2. Přečte `nastaveni.schema_version` — **1 SELECT** per request
-3. Pokud verze odpovídá konstantě `SCHEMA_VERSION` → okamžitý `return` (nulový overhead)
-4. Pokud verze nesedí → spustí potřebné `ALTER TABLE` / `CREATE TABLE` (guard přes `information_schema`)
-5. Uloží novou verzi do `nastaveni`
+1. `bin/migrate.php` naváže DB spojení a při `--apply` načte legacy baseline.
+2. Baseline ověří `nastaveni.schema_version` a případně provede historické guardované kroky.
+3. Runner následně aplikuje číslované migrace a jejich postconditions/checksumy.
+4. Webový request pouze používá již připravené schema a při nekompatibilitě selže bez DDL.
 
-**Legacy baseline:** `SCHEMA_VERSION = '2.20.2'`. Jeho odstranění z webových
-requestů je otevřený bezpečnostní úkol; nejde o místo pro další vývoj.
+**Legacy baseline:** `SCHEMA_VERSION = '2.20.2'`. Z webových requestů je odstraněn;
+nejde o místo pro další vývoj.
 
 **Souběžná ochrana (race condition):** Mezi přečtením verze a provedením migrací se získá MySQL advisory lock (`GET_LOCK('evidence_auto_migrace', 0)`). Pokud se lock nepodaří získat (jiný request migruje), funkce okamžitě vrátí. Po dokončení se lock uvolní (`RELEASE_LOCK`). Pokud DB engine `GET_LOCK` nepodporuje, pokračuje bez locku (tolerovaná degradace).
 
@@ -650,7 +649,7 @@ Proces:
 
 Třístupňový export (upload šablony → výběr skupiny/sportovců → generování):
 
-1. Upload UCI Enrollment Form (.xlsx) — validace MIME, max 5 MB, temp soubor v `uploads/temp/`
+1. Upload UCI Enrollment Form (.xlsx) — validace MIME a ZIP struktury, max 5 MB, opaque klíč v soukromém `uci-temp` mimo webroot
 2. Výběr skupiny a sportovců (max 11: 8 titular + 3 substitute)
 3. Vyplnění šablony: sloupce K–O (příjmení, jméno, CZE, datum nar. DD/MM/YYYY, UCI ID)
 
@@ -820,11 +819,11 @@ Odpověď: `{ok: true, items: [{id, nazev}, ...]}`
 
 ### 11a. Legacy import — `sync.php`
 
-Import dat sportovců ze dvou Excel souborů (licence + KIS). Matching dle normalizovaného jména.
+Endpoint je odstraněn a deploy manifest jej maže i ze starších release stromů.
 
 ### 11b. Synchronizace evidence — `sync_evidence.php`
 
-4-krokovy wizard pro synchronizaci s KIS. Upload vyzaduje tri exporty:
+Preview workflow pro KIS. Upload vyzaduje tri exporty:
 
 1. **Uzivatele z KIS** — clenske udaje, kontakt, datum narozeni a volitelny sloupec `Soupisky`
 2. **Export plateb** — stav platby, castka, zbyva zaplatit, datum splatnosti/uhrady
@@ -835,11 +834,11 @@ Prubeh:
 1. **Upload** — `includes/kis_sync_lib.php` nacte tri XLSX pres PhpSpreadsheet, slouci osoby a agreguje platby
 2. **Mapovani soupisek** — tabulka `soupiska_mapping`, AJAX podskupiny, auto-match dle nazvu
 3. **Preview** — nove osoby, aktualizace, beze zmen a pocet DB osob mimo aktualni KIS import
-4. **Provedeni** — DB transakce, INSERT/UPDATE sportovcu, KIS stav, platebni stav a mapovane vazby na skupiny/podskupiny
+4. **KIS centrum** — přímý zápis osob je vyřazen; pokračování vyžaduje uložený fingerprint, důvod, explicitní potvrzení a auditovaný promote/rollback tok.
 
-**Matching**: primarne jmeno + prijmeni + datum narozeni. Fallback na jmeno+prijmeni jen pri jedine shode.
+**Matching v náhledu**: stabilní interní KIS ID; nejednoznačné nebo konfliktní identity fail-closed blokují promote.
 **Archivace**: automaticka archivace chybejicich lidi je vypnuta. Chybejici radek v jednom z KIS exportu neni povazovan za ukoncene clenstvi.
-**KIS stav**: uklada se do `sportovci.kis_aktivni`, `kis_platebne_aktivni`, `kis_neuhrazeno`, `kis_posledni_uhrada`, `kis_posledni_sync`, `kis_soupisky`.
+**KIS stav**: preview klasifikuje zdrojová data; samotný `sync_evidence.php` kanonické `sportovci` nemění.
 **Persistentni mapovani**: tabulka `soupiska_mapping` uchovava prirazeni soupisek pro opakovane importy.
 
 ## 11c. Správa segmentů — `sprava_segmentu.php`

@@ -80,11 +80,16 @@ define('AUTH_RATE_LIMIT_IP_MAX_ATTEMPTS', 40);
 // ── Databáze ─────────────────────────────────────────────────────────────────
 
 if ($jeLokalne) {
-    // XAMPP na vlastním počítači
-    define('DB_HOST', '127.0.0.1');
-    define('DB_NAME', 'evidence');
-    define('DB_USER', 'root');
-    define('DB_PASS', '');
+    // XAMPP na vlastním počítači. Samostatný port 3308 nekoliduje s jinými
+    // lokálními projekty. Proměnné používá přenosný localhost spouštěč.
+    $localDbHost = getenv('EVIDENCE_LOCAL_DB_HOST');
+    $localDbName = getenv('EVIDENCE_LOCAL_DB_NAME');
+    $localDbUser = getenv('EVIDENCE_LOCAL_DB_USER');
+    $localDbPass = getenv('EVIDENCE_LOCAL_DB_PASS');
+    define('DB_HOST', is_string($localDbHost) && $localDbHost !== '' ? $localDbHost : '127.0.0.1;port=3308');
+    define('DB_NAME', is_string($localDbName) && $localDbName !== '' ? $localDbName : 'evidence');
+    define('DB_USER', is_string($localDbUser) && $localDbUser !== '' ? $localDbUser : 'root');
+    define('DB_PASS', is_string($localDbPass) ? $localDbPass : '');
 } else {
     // Produkční hosting
     define('DB_HOST', '127.0.0.1');

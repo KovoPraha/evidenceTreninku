@@ -47,8 +47,10 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
     {
         $seed = (string)file_get_contents(dirname(__DIR__, 2) . '/bin/seed-local-demo.php');
 
-        self::assertStringContainsString("ca.login_key='localhost-sportovec'", $seed);
-        self::assertStringContainsString("COALESCE(s.email,'')<>'a05-transition@localhost.test'", $seed);
+        self::assertStringContainsString('localhost-sportovec-a@localhost.test', $seed);
+        self::assertStringContainsString('localhost-sportovec-b@localhost.test', $seed);
+        self::assertStringContainsString('$people=$demoPeople', $seed);
+        self::assertStringContainsString("hash='localhost-demo-group'", $seed);
         self::assertStringContainsString("WHERE email='a05-transition@localhost.test' ORDER BY id DESC LIMIT 1", $seed);
         self::assertStringContainsString("email='a05-transition@localhost.test' AND id<>?", $seed);
         self::assertStringContainsString("'archived-a05-'.(int)\$duplicateId.'@localhost.invalid'", $seed);
@@ -73,5 +75,18 @@ final class LocalhostAcceptanceHubWiringTest extends TestCase
         self::assertStringContainsString("WHERE event_id=? AND account_id=? AND status IN ('confirmed','waitlisted')", $seed);
         self::assertStringContainsString('clubEventAdminCancelRegistration($pdo,(int)$a08RegistrationId,$actorId', $seed);
         self::assertStringNotContainsString('DELETE FROM club_event_registrations', $seed);
+    }
+
+    public function testSeedGrantsTheLocalAdministratorEveryWorkspaceAndSuperadminAccess(): void
+    {
+        $seed = (string)file_get_contents(dirname(__DIR__, 2) . '/bin/seed-local-demo.php');
+
+        self::assertStringContainsString("require_once \$root.'/includes/staff_workspaces.php'", $seed);
+        self::assertStringContainsString('staffPositionCodes()', $seed);
+        self::assertStringContainsString('INSERT IGNORE INTO staff_user_positions', $seed);
+        self::assertStringContainsString("position_code='system_admin'", $seed);
+        self::assertStringContainsString('INSERT INTO staff_superadmins', $seed);
+        self::assertStringContainsString("'admin_superadmin'=>true", $seed);
+        self::assertStringContainsString("'admin_positions'=>\$positionCodes", $seed);
     }
 }

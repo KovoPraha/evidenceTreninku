@@ -19,9 +19,9 @@ if (PHP_SAPI !== 'cli') {
 define('UPOMINKA_OD_DATU', 14);                  // upomínat max. 14 dní zpětně
 define('UPOMINKA_PO_DNECH', 1);                  // upomínat 1+ dní po datu tréninku
 define('UPOMINKA_EMAIL_FROM', 'evidence@kovopraha.cz');
-define('UPOMINKA_BASE_URL',   'https://data.kovopraha.cz/evidence');
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/app_url.php';
 
 $dnes    = date('Y-m-d');
 $odDatum = date('Y-m-d', strtotime("-" . UPOMINKA_OD_DATU . " days"));
@@ -87,7 +87,7 @@ foreach ($poDle as $tid => $data) {
 
     $seznam = implode("\n", $radky);
     $tydnu  = $pocet === 1 ? 'trénink' : ($pocet < 5 ? 'tréninky' : 'tréninků');
-    $odkaz  = UPOMINKA_BASE_URL . '/planovac.php?jen_moje=1';
+    $odkaz  = appUrl('planovac.php?jen_moje=1');
 
     $subject = "Upomínka: {$pocet} nezaevidovan" . ($pocet === 1 ? 'ý' : 'é') . " {$tydnu}";
     $body    = "Dobrý den {$data['jmeno']},\n\n"

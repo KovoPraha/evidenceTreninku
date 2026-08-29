@@ -15,7 +15,7 @@ final class SecurityInfrastructureWiringTest extends TestCase
         $stress = (string)file_get_contents($root . '/ulozit_zatezovy_test.php');
         $download = (string)file_get_contents($root . '/private_download.php');
 
-        self::assertStringContainsString('uploads/(?:uctenky|zatezove_testy|servis)', $htaccess);
+        self::assertStringContainsString('uploads/(?:uctenky|zatezove_testy|servis|temp)', $htaccess);
         self::assertStringContainsString('privateStorageStore', $receipt);
         self::assertStringContainsString('privateStorageStore', $stress);
         self::assertStringContainsString("hash_equals((string)\$file['hash'], \$publicHash)", $download);
@@ -55,10 +55,11 @@ final class SecurityInfrastructureWiringTest extends TestCase
     public function testSecuritySensitiveUrlWiringDoesNotReadHostHeader(): void
     {
         $root = dirname(__DIR__, 2);
-        foreach (['booking/zapomenute_heslo.php', 'booking/registrace.php', 'booking/rezervovat.php'] as $path) {
+        foreach (['booking/zapomenute_heslo.php', 'booking/registrace.php', 'booking/rezervovat.php', 'booking/waiting_list.php', 'cron_upominky.php'] as $path) {
             $source = (string)file_get_contents($root . '/' . $path);
             self::assertStringContainsString('appUrl(', $source, $path);
             self::assertStringNotContainsString('HTTP_HOST', $source, $path);
+            self::assertStringNotContainsString('https://data.kovopraha.cz/evidence', $source, $path);
         }
     }
 
@@ -96,12 +97,28 @@ final class SecurityInfrastructureWiringTest extends TestCase
         self::assertStringContainsString("canAccess('servis')", $download);
     }
 
+    public function testUciTemplateNeverUsesPublicWebrootStorage(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $route = (string)file_get_contents($root . '/export_uci.php');
+        $storage = (string)file_get_contents($root . '/includes/private_storage.php');
+
+        self::assertStringContainsString('privateStorageStoreUciTemp', $route);
+        self::assertStringContainsString('privateStorageResolve', $route);
+        self::assertStringContainsString("PRIVATE_STORAGE_UCI_TEMP = 'uci-temp'", $storage);
+        self::assertStringContainsString("isset(\$_POST['reset_upload'])", $route);
+        self::assertStringContainsString('csrf_verify', $route);
+        self::assertStringNotContainsString("\$_GET['reset_upload']", $route);
+        self::assertStringNotContainsString("\$tempDir     = __DIR__ . '/uploads/temp'", $route);
+        self::assertStringNotContainsString("\$_SESSION['uci_upload_path'] =", $route);
+    }
+
     public function testProductionHttpPolicyBlocksInternalTreesAndForcesCanonicalHttps(): void
     {
         $htaccess = (string)file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
         self::assertStringContainsString('^kis\\.kovopraha\\.cz', $htaccess);
         self::assertStringContainsString('https://kis.kovopraha.cz%{REQUEST_URI}', $htaccess);
-        self::assertStringContainsString('^(?:bin|docs|migrations|tests|var|vendor)', $htaccess);
+        self::assertStringContainsString('^(?:bin|database|docs|migrations|tests|var|vendor)', $htaccess);
         self::assertStringContainsString('^nahrane_zavody/results', $htaccess);
         self::assertStringContainsString("base-uri 'self'", $htaccess);
         self::assertStringContainsString("object-src 'none'", $htaccess);

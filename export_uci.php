@@ -8,6 +8,7 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/private_storage.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -44,17 +45,19 @@ function excelDateToString($value): string {
 }
 
 /**
- * Garbage-collect old temp UCI files (older than 24h)
+ * Remove files created by the retired public-webroot implementation.
  */
-function cleanupOldTempFiles(): void {
+function cleanupLegacyPublicUciFiles(): void {
     $dir = __DIR__ . '/uploads/temp';
     if (!is_dir($dir)) return;
-    $cutoff = time() - 86400;
-    foreach (glob($dir . '/uci_*.xlsx') as $file) {
-        if (filemtime($file) < $cutoff) {
-            @unlink($file);
-        }
+    foreach (glob($dir . '/uci_*.xlsx') ?: [] as $file) {
+        @unlink($file);
     }
+}
+
+function uciUploadPathFromSession(): ?string {
+    $key = (string)($_SESSION['uci_upload_key'] ?? '');
+    return $key !== '' ? privateStorageResolve($key) : null;
 }
 
 // -------------------------------------------------------------------
@@ -63,15 +66,16 @@ function cleanupOldTempFiles(): void {
 $errors      = [];
 $uploadInfo  = null;
 $skupinaId   = trim((string)($_GET['skupina_id'] ?? ($_POST['skupina_id'] ?? '')));
-$tempDir     = __DIR__ . '/uploads/temp';
 
-// Ensure temp dir exists
-if (!is_dir($tempDir)) {
-    mkdir($tempDir, 0755, true);
+// Private garbage collection plus immediate cleanup of the retired webroot path.
+try {
+    privateStorageCleanupUciTemp();
+} catch (Throwable $exception) {
+    $errors[] = 'Soukromé úložiště UCI formulářů není dostupné.';
+    error_log('UCI private storage cleanup failed: ' . $exception->getMessage());
 }
-
-// Periodic cleanup
-cleanupOldTempFiles();
+cleanupLegacyPublicUciFiles();
+unset($_SESSION['uci_upload_path']);
 
 // -------------------------------------------------------------------
 // Handle file upload (POST with uci_file)
@@ -101,22 +105,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['uci_file']) && $_FIL
         } elseif ($_FILES['uci_file']['size'] > 5 * 1024 * 1024) {
             $errors[] = 'Soubor je příliš velký (max. 5 MB).';
         } else {
-            // Delete previous temp file
-            if (!empty($_SESSION['uci_upload_path']) && file_exists($_SESSION['uci_upload_path'])) {
-                @unlink($_SESSION['uci_upload_path']);
-            }
-
-            $filename = 'uci_' . $_SESSION['trener_id'] . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.xlsx';
-            $destPath = $tempDir . '/' . $filename;
-
-            if (move_uploaded_file($tmpFile, $destPath)) {
-                $_SESSION['uci_upload_path'] = $destPath;
+            try {
+                $previousKey = (string)($_SESSION['uci_upload_key'] ?? '');
+                if ($previousKey !== '') {
+                    privateStorageDeleteUciTemp($previousKey);
+                }
+                $storageKey = privateStorageStoreUciTemp($tmpFile, $origName);
+                $_SESSION['uci_upload_key'] = $storageKey;
                 $_SESSION['uci_upload_name'] = $origName;
                 // Redirect to avoid re-upload on refresh
                 header('Location: export_uci.php' . ($skupinaId !== '' ? '?skupina_id=' . urlencode($skupinaId) : ''));
                 exit;
-            } else {
-                $errors[] = 'Nahrání souboru selhalo.';
+            } catch (Throwable $exception) {
+                $errors[] = $exception->getMessage();
             }
         }
     }
@@ -125,28 +126,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['uci_file']) && $_FIL
 // -------------------------------------------------------------------
 // Handle reset (clear uploaded file)
 // -------------------------------------------------------------------
-if (isset($_GET['reset_upload'])) {
-    if (!empty($_SESSION['uci_upload_path']) && file_exists($_SESSION['uci_upload_path'])) {
-        @unlink($_SESSION['uci_upload_path']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_upload'])) {
+    if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+        $errors[] = 'Neplatný CSRF token.';
+    } else {
+        $storageKey = (string)($_SESSION['uci_upload_key'] ?? '');
+        try {
+            if ($storageKey !== '') {
+                privateStorageDeleteUciTemp($storageKey);
+            }
+            unset($_SESSION['uci_upload_key'], $_SESSION['uci_upload_name']);
+            header('Location: export_uci.php');
+            exit;
+        } catch (Throwable $exception) {
+            $errors[] = 'Dočasný UCI formulář se nepodařilo odstranit.';
+            error_log('UCI private storage reset failed: ' . $exception->getMessage());
+        }
     }
-    unset($_SESSION['uci_upload_path'], $_SESSION['uci_upload_name']);
-    header('Location: export_uci.php');
-    exit;
 }
 
 // -------------------------------------------------------------------
 // Load upload info (if file exists in session)
 // -------------------------------------------------------------------
 $hasUpload = false;
-if (!empty($_SESSION['uci_upload_path']) && file_exists($_SESSION['uci_upload_path'])) {
+$uciUploadPath = uciUploadPathFromSession();
+if ($uciUploadPath !== null) {
     $hasUpload = true;
     try {
-        $previewSpreadsheet = IOFactory::load($_SESSION['uci_upload_path']);
+        $previewSpreadsheet = IOFactory::load($uciUploadPath);
         $previewSheet = $previewSpreadsheet->getSheetByName('Bulletin Engagement UCI');
         if (!$previewSheet) $previewSheet = $previewSpreadsheet->getSheet(0);
 
         $uploadInfo = [
-            'file'        => $_SESSION['uci_upload_name'] ?? basename($_SESSION['uci_upload_path']),
+            'file'        => $_SESSION['uci_upload_name'] ?? basename($uciUploadPath),
             'event'       => (string)$previewSheet->getCell('C7')->getValue(),
             'class'       => (string)$previewSheet->getCell('G7')->getValue(),
             'organiser'   => (string)$previewSheet->getCell('C8')->getValue(),
@@ -215,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export'])) {
                 $directors = array_values(array_filter([$mixa, $papik]));
 
                 // ---- Open uploaded file ----
-                $spreadsheet = IOFactory::load($_SESSION['uci_upload_path']);
+                $spreadsheet = IOFactory::load($uciUploadPath);
                 $sheet = $spreadsheet->getSheetByName('Bulletin Engagement UCI');
                 if (!$sheet) {
                     $sheet = $spreadsheet->getSheet(0);
@@ -432,9 +444,12 @@ if ($skupinaId !== '' && ctype_digit($skupinaId)) {
         <div class="card shadow-sm mt-3 border-success">
             <div class="card-header bg-success text-white d-flex align-items-center">
                 <i class="bi bi-check-circle me-2"></i>Nahraný formulář
-                <a href="export_uci.php?reset_upload=1" class="btn btn-sm btn-outline-light ms-auto">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>Nahrát jiný
-                </a>
+                <form method="post" class="ms-auto">
+                    <?= csrf_field() ?>
+                    <button type="submit" name="reset_upload" value="1" class="btn btn-sm btn-outline-light">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Nahrát jiný
+                    </button>
+                </form>
             </div>
             <?php if ($uploadInfo): ?>
             <div class="card-body py-2">

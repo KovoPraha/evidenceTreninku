@@ -510,19 +510,21 @@ if (!empty($form['target_sportovci'])) {
 
 </div>
 
-<!-- TinyMCE (CDN) -->
+<!-- TinyMCE je volitelné vylepšení. Bez internetu zůstává funkční obyčejné textarea. -->
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
 <script>
-tinymce.init({
-    selector: '#obsah_html',
-    menubar: false,
-    branding: false,
-    plugins: 'link lists',
-    toolbar: 'bold | bullist numlist | link | removeformat',
-    default_link_target: '_blank',
-    link_assume_external_targets: true,
-    height: 280
-});
+if (typeof window.tinymce !== 'undefined') {
+    window.tinymce.init({
+        selector: '#obsah_html',
+        menubar: false,
+        branding: false,
+        plugins: 'link lists',
+        toolbar: 'bold | bullist numlist | link | removeformat',
+        default_link_target: '_blank',
+        link_assume_external_targets: true,
+        height: 280
+    });
+}
 </script>
 
 <script>
