@@ -119,17 +119,24 @@ function shopStorefrontSafeImageUrl(string $url): ?string
     if (shopStorefrontIsLocalImagePath($url)) {
         return appUrl($url);
     }
-    if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-        return null;
+    // Veřejná CSP záměrně povoluje obrázky jen z KIS. Importované vzdálené
+    // adresy proto nesmějí projít do HTML; správce je musí nejprve nahrát přes
+    // validovaný lokální image workflow.
+    return null;
+}
+
+function shopStorefrontPlaceholderImageUrl(): string
+{
+    return appUrl('assets/product-placeholder.svg');
+}
+
+/** @param list<string> $urls */
+function shopStorefrontPrimaryImageUrl(array $urls): string
+{
+    foreach ($urls as $url) {
+        if (shopStorefrontIsLocalImageUrl((string)$url)) return (string)$url;
     }
-    $parts = parse_url($url);
-    if (!is_array($parts) || strtolower((string)($parts['scheme'] ?? '')) !== 'https') {
-        return null;
-    }
-    if (($parts['host'] ?? '') === '' || isset($parts['user']) || isset($parts['pass'])) {
-        return null;
-    }
-    return $url;
+    return shopStorefrontPlaceholderImageUrl();
 }
 
 function shopStorefrontIsLocalImagePath(string $url): bool

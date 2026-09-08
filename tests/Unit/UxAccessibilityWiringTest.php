@@ -41,6 +41,25 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('for="athlete-password"', $athleteLogin);
     }
 
+    public function testPublicNavigationTouchTargetsAndReportedEmptyStatesStayActionable(): void
+    {
+        $shell = (string)file_get_contents($this->root . 'includes/ui_shell.php');
+        $css = (string)file_get_contents($this->root . 'assets/app-ui.css');
+        $shop = (string)file_get_contents($this->root . 'booking/eshop.php');
+        $clubs = (string)file_get_contents($this->root . 'booking/krouzky.php');
+        $registration = (string)file_get_contents($this->root . 'booking/registrace.php');
+
+        self::assertStringContainsString('navbar-expand-xl', $shell);
+        self::assertStringContainsString("'lessons' => ['Individuální lekce'", $shell);
+        self::assertStringContainsString('@media (max-width: 1199.98px)', $css);
+        self::assertStringContainsString('min-height: 44px;', $css);
+        self::assertStringContainsString('Žádný produkt neodpovídá zvoleným filtrům.', $shop);
+        self::assertStringContainsString('Zrušit filtry', $shop);
+        self::assertSame(1, substr_count($clubs, '<h1'));
+        self::assertStringContainsString('<h1 class="h3 mb-1">Kroužky a klubové akce</h1>', $clubs);
+        self::assertStringContainsString('col-12 col-sm-6', $registration);
+    }
+
     public function testIconOnlyAdminActionsHaveAccessibleNames(): void
     {
         $groups = (string)file_get_contents($this->root . 'sprava_skupin.php');

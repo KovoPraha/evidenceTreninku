@@ -108,7 +108,7 @@ if ($accountId !== null) {
             <?php elseif (!$planned): ?><div class="text-muted small mt-3">Přihlašování není otevřené.</div><?php endif; ?>
         </div></article></div>
     <?php endforeach; ?>
-    <?php if ($events === []): ?><div class="col-12"><div class="alert alert-light border">V příštím roce nejsou žádné akce, které můžete vidět.</div></div><?php endif; ?>
+    <?php if ($events === []): ?><div class="col-12"><div class="alert alert-light border"><p class="mb-2">V období <?= memberCalendarH($today->format('d. m. Y')) ?>–<?= memberCalendarH($today->modify('+1 year')->format('d. m. Y')) ?> nejsou žádné akce, které můžete vidět.</p><div class="d-flex flex-wrap gap-2"><?php if ($accountId === null): ?><a class="btn btn-primary" href="prihlaseni.php?redirect=klubovy_kalendar.php">Přihlásit se pro klubové akce</a><?php endif; ?><a class="btn btn-outline-secondary" href="krouzky.php">Kroužky a otevřené události</a></div></div></div><?php endif; ?>
     </div>
 </main>
 <?php publicShellFooter(); ?>

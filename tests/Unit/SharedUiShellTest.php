@@ -171,6 +171,7 @@ final class SharedUiShellTest extends TestCase
             'booking/treninky.php' => "publicShellNav('training')",
             'booking/krouzky.php' => "publicShellNav('clubs')",
             'booking/velodrom.php' => "publicShellNav('velodrome')",
+            'booking/kalendar.php' => "publicShellNav('lessons')",
             'booking/prihlaseni.php' => 'publicShellNav()',
             'booking/registrace.php' => 'publicShellNav()',
         ];
@@ -178,6 +179,9 @@ final class SharedUiShellTest extends TestCase
         foreach ($expected as $relative => $needle) {
             self::assertStringContainsString($needle, (string)file_get_contents($root . '/' . $relative), $relative);
         }
+        self::assertStringContainsString("publicShellNav('home')", (string)file_get_contents($root . '/index.php'));
+        self::assertStringContainsString("require_once __DIR__ . '/config.php';", (string)file_get_contents($root . '/index.php'));
+        self::assertStringContainsString('navbar-expand-xl', (string)file_get_contents($root . '/includes/ui_shell.php'));
     }
 
     /**

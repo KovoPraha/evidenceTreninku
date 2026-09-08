@@ -26,7 +26,7 @@ final class ShopStorefrontTest extends TestCase
         }
         self::assertTrue($stockBySku['DRES-M']);
         self::assertFalse($stockBySku['DRES-L']);
-        self::assertSame(['https://cdn.example.test/dres.jpg'], $catalog[0]['images']);
+        self::assertSame([], $catalog[0]['images']);
         self::assertSame(['Oblečení > Dresy','Klubové zboží'],$catalog[0]['categories']);
         self::assertArrayNotHasKey('description_html_untrusted', $catalog[0]);
         self::assertStringNotContainsString('script', json_encode($catalog, JSON_THROW_ON_ERROR));
@@ -45,7 +45,7 @@ final class ShopStorefrontTest extends TestCase
 
     public function testImageAllowListRejectsUnsafeSchemesCredentialsAndControls(): void
     {
-        self::assertSame('https://cdn.example.test/a.jpg?x=1', \shopStorefrontSafeImageUrl('https://cdn.example.test/a.jpg?x=1'));
+        self::assertNull(\shopStorefrontSafeImageUrl('https://cdn.example.test/a.jpg?x=1'));
         self::assertSame(
             \appUrl('uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'),
             \shopStorefrontSafeImageUrl('uploads/shop-products/0123456789abcdef0123456789abcdef.jpg')
@@ -59,6 +59,7 @@ final class ShopStorefrontTest extends TestCase
         self::assertNull(\shopStorefrontSafeImageUrl('/uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'));
         self::assertTrue(\shopStorefrontIsLocalImageUrl(\appUrl('uploads/shop-products/0123456789abcdef0123456789abcdef.jpg')));
         self::assertFalse(\shopStorefrontIsLocalImageUrl('https://attacker.example/uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'));
+        self::assertSame(\appUrl('assets/product-placeholder.svg'), \shopStorefrontPrimaryImageUrl([]));
     }
 
     private function database(): PDO

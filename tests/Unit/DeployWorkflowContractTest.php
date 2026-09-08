@@ -237,6 +237,7 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('obnovit-zalohu-izolovane', $workflow);
         self::assertStringContainsString('obnovit-tri-zalohy-izolovane', $workflow);
         self::assertStringContainsString('overit-databazove-invarianty', $workflow);
+        self::assertStringContainsString('overit-uat-pripravenost', $workflow);
         self::assertStringContainsString('deaktivovat-testovaci-ucty', $workflow);
         self::assertStringContainsString('vytvorit-kis-test-admina', $workflow);
         self::assertStringContainsString("inputs.potvrzeni", $workflow);
@@ -279,6 +280,22 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringNotContainsString('DELETE ', $invariants);
         self::assertStringNotContainsString('INSERT ', $invariants);
         self::assertStringNotContainsString('FOR UPDATE', $invariants);
+    }
+
+    public function testDeployPublishesPrivateReleaseEvidenceAndUatDrillIsReadOnly(): void
+    {
+        $deploy = $this->source('.github/workflows/deploy-production.yml');
+        $workflow = $this->source('.github/workflows/production-drills.yml');
+        $readiness = $this->source('bin/production-uat-readiness.php');
+
+        self::assertStringContainsString('uat_schvaleno:', $deploy);
+        self::assertStringContainsString('var/deployment.json', $deploy);
+        self::assertStringContainsString("'{sha:\$sha,run_id:\$run_id,deployed_at:\$deployed_at,uat_approved:\$uat_approved}'", $deploy);
+        self::assertStringContainsString('KIS_UAT_READINESS_CONFIRM=OVERIT', $workflow);
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $readiness);
+        self::assertStringNotContainsString('UPDATE ', $readiness);
+        self::assertStringNotContainsString('DELETE ', $readiness);
+        self::assertStringNotContainsString('INSERT ', $readiness);
     }
 
     private function source(string $relativePath): string

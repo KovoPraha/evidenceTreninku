@@ -11,6 +11,7 @@ on:
           - obnovit-zalohu-izolovane
           - obnovit-tri-zalohy-izolovane
           - overit-databazove-invarianty
+          - overit-uat-pripravenost
           - deaktivovat-testovaci-ucty
           - vytvorit-kis-test-admina
       potvrzeni:
@@ -155,6 +156,29 @@ jobs:
           "${SCP[@]}" /tmp/run-production-invariants.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-invariants.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-production-invariants.php'"
 
+      - name: Overit pripravenost produkcniho UAT pouze ctenim
+        if: inputs.operace == 'overit-uat-pripravenost'
+        run: |
+          set -euo pipefail
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SCP[@]}" bin/production-uat-readiness.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-uat-readiness.php"
+          cat > /tmp/run-production-uat-readiness.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_UAT_READINESS_CONFIRM=OVERIT');
+          require __DIR__ . '/production-uat-readiness.php';
+          EOF
+          "${SCP[@]}" /tmp/run-production-uat-readiness.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-uat-readiness.php"
+          VYSLEDEK=$("${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-readiness.php'") || STAV=$?
+          echo "$VYSLEDEK" | jq .
+          if [ "${STAV:-0}" -ne 0 ]; then
+            echo 'Produkční UAT je blokován; podrobnosti jsou v kontrolním JSON výše.'
+            exit "${STAV:-1}"
+          fi
+          jq -e '.ready == true' <<< "$VYSLEDEK" >/dev/null
+
       - name: Deaktivovat vyhradne jednorazove testovaci ucty
         if: inputs.operace == 'deaktivovat-testovaci-ucty'
         run: |
@@ -211,7 +235,7 @@ jobs:
             find "$TMP" -mindepth 1 -maxdepth 1 -type f -delete
             rmdir "$TMP"
           fi
-          rm -f /tmp/kis-test-admin.json /tmp/kis-test-admin-result.json /tmp/run-provision-production-test-admin.php
+          rm -f /tmp/kis-test-admin.json /tmp/kis-test-admin-result.json /tmp/run-provision-production-test-admin.php /tmp/run-production-uat-readiness.php
           if [ -n "${SSH_HOST:-}" ]; then
-            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php' '$DEPLOY_BASE/production-invariants.php' '$DEPLOY_BASE/run-production-invariants.php' '$DEPLOY_BASE/kis-test-admin.json' '$DEPLOY_BASE/provision-production-test-admin.php' '$DEPLOY_BASE/run-provision-production-test-admin.php'" || true
+            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php' '$DEPLOY_BASE/production-invariants.php' '$DEPLOY_BASE/run-production-invariants.php' '$DEPLOY_BASE/production-uat-readiness.php' '$DEPLOY_BASE/run-production-uat-readiness.php' '$DEPLOY_BASE/kis-test-admin.json' '$DEPLOY_BASE/provision-production-test-admin.php' '$DEPLOY_BASE/run-provision-production-test-admin.php'" || true
           fi

@@ -95,6 +95,15 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
         $blockers[] = 'Zdrojový produkt je označený jako skrytý.';
     }
 
+    $images = $pdo->prepare('SELECT image_url FROM shop_product_images WHERE product_id=? ORDER BY sort_order,id');
+    $images->execute([$productId]);
+    foreach ($images->fetchAll(PDO::FETCH_COLUMN) as $imageUrl) {
+        if (preg_match('~^uploads/shop-products/[a-f0-9]{32}\.jpg$~D', trim((string)$imageUrl)) !== 1) {
+            $blockers[] = 'Vzdálený nebo neověřený obrázek nejprve nahrajte do lokálního úložiště KIS.';
+            break;
+        }
+    }
+
     $variants = $pdo->prepare('SELECT * FROM shop_variants WHERE product_id=? ORDER BY id');
     $variants->execute([$productId]);
     $visible = 0;

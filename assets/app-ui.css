@@ -87,6 +87,17 @@ body.app-loading .app-loading-bar {
     color: var(--bs-primary);
 }
 
+.app-public-nav .navbar-toggler {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.app-product-image {
+    width: 100%;
+    object-fit: contain;
+    background: #fff;
+}
+
 .app-public-footer {
     background: rgba(255, 255, 255, .75);
 }
@@ -118,6 +129,32 @@ body.app-loading .app-loading-bar {
         scroll-behavior: auto !important;
         animation-duration: .01ms !important;
         transition-duration: .01ms !important;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .app-public-nav .navbar-collapse {
+        padding-top: .75rem;
+    }
+
+    .app-public-nav .nav-link,
+    .app-public-nav .btn,
+    .form-control,
+    .form-select,
+    button.btn,
+    a.btn {
+        min-height: 44px;
+    }
+
+    .app-public-nav .nav-link {
+        display: flex;
+        align-items: center;
+        padding-inline: .75rem;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 16px;
     }
 }
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
