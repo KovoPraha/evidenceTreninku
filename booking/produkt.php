@@ -130,17 +130,14 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($product === null): ?>
         <div class="alert alert-warning">Produkt není dostupný nebo už není v aktivní nabídce.</div>
     <?php else: ?>
+        <?php $imageUrl = shopStorefrontPrimaryImageUrl($product['images']); ?>
         <?php foreach ($errors as $error): ?>
             <div class="alert alert-danger"><?= shopProductH($error) ?></div>
         <?php endforeach; ?>
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="row g-0">
                 <div class="col-lg-5 bg-white d-flex align-items-center justify-content-center p-3">
-                    <?php if ($product['images'] !== []): ?>
-                        <img src="<?= shopProductH($product['images'][0]) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded" style="max-height:480px" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-                    <?php else: ?>
-                        <div class="text-center text-muted p-5"><div class="display-4 mb-2">◇</div>Obrázek zatím není k dispozici.</div>
-                    <?php endif; ?>
+                    <img src="<?= shopProductH($imageUrl) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded app-product-image" style="max-height:480px" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='<?=shopProductH(shopStorefrontPlaceholderImageUrl())?>'">
                 </div>
                 <div class="col-lg-7">
                     <div class="card-body p-4">

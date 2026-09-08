@@ -258,9 +258,14 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 </head>
 <body class="bg-light">
 
-<?php publicShellNav('velodrome'); ?>
+<?php publicShellNav('lessons'); ?>
 
 <div class="container mt-3 pb-5">
+
+    <div class="mb-3">
+        <h1 class="h3 mb-1">Individuální lekce</h1>
+        <p class="text-muted mb-0">Vyberte veřejné sportoviště, den a konkrétní čas lekce. Pronájem velodromu najdete samostatně v části Velodrom.</p>
+    </div>
 
     <!-- Filtr sportoviště -->
     <form class="d-flex gap-2 mb-3 align-items-center flex-wrap" method="get">
@@ -281,7 +286,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
         <a href="?od=<?= $prevMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm" aria-label="Předchozí měsíc">
             <i class="bi bi-chevron-left"></i>
         </a>
-        <h1 class="h5 mb-0 fw-bold"><?= $mesiceCS[$mesic] ?> <?= $rok ?></h1>
+        <h2 class="h5 mb-0 fw-bold"><?= $mesiceCS[$mesic] ?> <?= $rok ?></h2>
         <a href="?od=<?= $nextMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm" aria-label="Následující měsíc">
             <i class="bi bi-chevron-right"></i>
         </a>
@@ -293,6 +298,13 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
         <span><span class="dot dot-yellow d-inline-block me-1"></span>Žlutá — potřebuje potvrzení</span>
         <span class="text-muted"><i class="bi bi-clock me-1"></i>Zpravidla min. 3 dny předem</span>
     </div>
+
+    <?php if ($dayData === []): ?>
+        <div class="alert alert-light border d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span>V měsíci <?= h($mesiceCS[$mesic]) ?> <?= $rok ?> nejsou zveřejněné žádné individuální lekce.</span>
+            <a class="btn btn-outline-primary" href="?od=<?= h($nextMesic . $sportParam) ?>">Zobrazit další měsíc</a>
+        </div>
+    <?php endif; ?>
 
     <!-- Kalendářní mřížka -->
     <div class="cal-grid mb-2">

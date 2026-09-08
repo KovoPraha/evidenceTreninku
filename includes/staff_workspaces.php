@@ -193,6 +193,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'auditlog/seznam.php', 'label' => 'Systémový audit', 'description' => 'Auditní události aplikace', 'icon' => 'journal-text'],
                     ['route' => 'diagnostika_site_admin.php', 'label' => 'Diagnostika', 'description' => 'Bezpečný technický stav aplikace', 'icon' => 'activity'],
                     ['route' => 'provozni_prehled_admin.php', 'label' => 'Kontrolní přehled', 'description' => 'Read-only souhrn provozních výjimek', 'icon' => 'speedometer2'],
+                    ['route' => 'uat_readiness_admin.php', 'label' => 'Připravenost UAT', 'description' => 'Read-only brána produkčního uživatelského testu', 'icon' => 'clipboard2-check'],
                     ['route' => 'testovaci_scenare.php', 'label' => 'Lokální testovací scénáře', 'description' => 'Pouze localhost', 'icon' => 'check2-square', 'local_only' => true],
                 ]],
             ],

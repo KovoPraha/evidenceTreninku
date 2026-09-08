@@ -7,8 +7,10 @@ if (!in_array($requestMethod, ['GET', 'HEAD'], true)) {
 }
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/app_url.php';
+require_once __DIR__ . '/includes/ui_shell.php';
 $is_logged_in = isset($_SESSION['trener_id']);
 $is_customer  = isset($_SESSION['verejny_uzivatel_id']);
 $is_athlete   = isset($_SESSION['sportovec_pristup_id']);
@@ -33,8 +35,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= $is_logged_in ? 'Evidence tréninků' : 'Kovopraha – klubový portál' ?></title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+  <?php appUiAssets(); ?>
   <style>
     body { background: #f0f2f5; }
     .section-card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
@@ -77,7 +78,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
   </style>
 </head>
 <body>
-  <?php include 'hlavicka.php'; ?>
+  <?php publicShellNav('home'); ?>
 
   <div class="container py-4">
 
@@ -129,6 +130,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <a class="portal-link" href="<?= htmlspecialchars($shopUrl, ENT_QUOTES, 'UTF-8') ?>"><span>E-shop</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/krouzky.php"><span>Kroužky a události</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/velodrom.php"><span>Hodiny velodromu</span><i class="bi bi-arrow-right"></i></a>
+              <a class="portal-link" href="booking/kalendar.php"><span>Individuální lekce</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/treninky.php"><span>Rozvrh tréninků</span><i class="bi bi-arrow-right"></i></a>
             </div></article>
           </div>

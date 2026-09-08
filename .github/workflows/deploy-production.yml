@@ -7,6 +7,11 @@ on:
         description: 'Pro nasazení napište přesně NASADIT'
         required: true
         type: string
+      uat_schvaleno:
+        description: 'Označit tento přesný commit jako schválený pro produkční UAT'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -217,8 +222,11 @@ jobs:
           echo '✅ Ověřená záloha vznikla mimo webový adresář. Teprve nyní se smí měnit aplikace.'
 
       - name: Připravit kompletní release mimo webroot
+        env:
+          UAT_SCHVALENO: ${{ inputs.uat_schvaleno }}
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
           "${SSH[@]}" "
             set -eu
             umask 077
@@ -241,15 +249,26 @@ jobs:
             --exclude='.phpunit.cache/' \
             --exclude='*.log' \
             ./ "$SSH_USER@$SSH_HOST:$RELEASE_DIR/"
+          jq -n \
+            --arg sha "$GITHUB_SHA" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg deployed_at "$(date -u +'%Y-%m-%dT%H:%M:%S+00:00')" \
+            --argjson uat_approved "$UAT_SCHVALENO" \
+            '{sha:$sha,run_id:$run_id,deployed_at:$deployed_at,uat_approved:$uat_approved}' \
+            > /tmp/deployment.json
+          "${SSH[@]}" "mkdir -p '$RELEASE_DIR/var' && chmod 700 '$RELEASE_DIR/var'"
+          "${SCP[@]}" /tmp/deployment.json "$SSH_USER@$SSH_HOST:$RELEASE_DIR/var/deployment.json"
           "${SSH[@]}" "
             set -eu
             umask 077
             cp '$REMOTE_DIR/config.php' '$RELEASE_DIR/config.php'
             chmod 600 '$RELEASE_DIR/config.php'
+            chmod 644 '$RELEASE_DIR/var/deployment.json'
             test -s '$RELEASE_DIR/bin/migrate.php'
             test -s '$RELEASE_DIR/config.php'
+            test -s '$RELEASE_DIR/var/deployment.json'
           "
-          echo '✅ Kompletní release je připravený mimo veřejný webroot.'
+          echo "✅ Kompletní release je připravený mimo veřejný webroot; UAT schválení: $UAT_SCHVALENO."
 
       - name: Aplikovat migrace z připraveného release
         run: |

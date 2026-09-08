@@ -140,6 +140,22 @@ final class ShopCatalogPublicationTest extends TestCase
         }
     }
 
+    public function testRemoteImageBlocksPublicationUntilItIsReplacedByLocalImage(): void
+    {
+        $pdo = $this->databaseWithDraftCatalog();
+        $productId = $this->readyGoodsId($pdo);
+        $pdo->prepare('INSERT INTO shop_product_images(product_id,image_url,sort_order) VALUES(?,?,0)')
+            ->execute([$productId, 'https://cdn.example.test/product.jpg']);
+
+        $blocked = \shopCatalogPublicationReadiness($pdo, $productId);
+        self::assertFalse($blocked['ready']);
+        self::assertStringContainsString('lokálního úložiště KIS', implode(' ', $blocked['blockers']));
+
+        $pdo->prepare('UPDATE shop_product_images SET image_url=? WHERE product_id=?')
+            ->execute(['uploads/shop-products/' . str_repeat('a', 32) . '.jpg', $productId]);
+        self::assertTrue(\shopCatalogPublicationReadiness($pdo, $productId)['ready']);
+    }
+
     public function testConfirmationAndPlainPublicCopyAreRequiredBeforeWriting(): void
     {
         $pdo = $this->databaseWithDraftCatalog();
@@ -188,6 +204,9 @@ final class ShopCatalogPublicationTest extends TestCase
         )->fetchColumn();
         \shopCatalogReviewProduct($pdo, $run['run_id'], (int)$pending, 7, 'approve', 'goods', 'Fyzické zboží.');
         \shopCatalogPromote($pdo, $run['run_id'], 7, true);
+        // Základní publikační testy pracují s produktem bez obrázku; samostatný
+        // test výše ověřuje blokaci vzdálených a přijetí lokálních obrázků.
+        $pdo->exec('DELETE FROM shop_product_images');
         $pdo->exec('CREATE TABLE club_programs(id INTEGER PRIMARY KEY,name TEXT,status TEXT)');
         $pdo->exec('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,product_id INTEGER,variant_id INTEGER,status TEXT,ends_on TEXT,sales_open_at TEXT NULL,sales_close_at TEXT NULL,capacity INTEGER NULL)');
         $pdo->exec('CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,status TEXT)');

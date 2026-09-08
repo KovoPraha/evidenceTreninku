@@ -49,48 +49,54 @@ function publicShellNav(string $active = ''): void
     $athlete = isset($_SESSION['sportovec_pristup_id']);
     $trainer = isset($_SESSION['trener_id']);
     $items = [
-        'shop' => ['E-shop', 'eshop.php'],
-        'training' => ['Tréninky', 'treninky.php'],
-        'clubs' => ['Kroužky a akce', 'krouzky.php'],
-        'calendar' => ['Klubový kalendář', 'klubovy_kalendar.php'],
-        'velodrome' => ['Velodrom', 'velodrom.php'],
+        'home' => ['Domů', 'index.php'],
+        'shop' => ['E-shop', 'booking/eshop.php'],
+        'training' => ['Tréninky', 'booking/treninky.php'],
+        'clubs' => ['Kroužky a akce', 'booking/krouzky.php'],
+        'calendar' => ['Klubový kalendář', 'booking/klubovy_kalendar.php'],
+        'lessons' => ['Individuální lekce', 'booking/kalendar.php'],
+        'velodrome' => ['Velodrom', 'booking/velodrom.php'],
     ];
     ?>
-    <nav class="app-public-nav bg-white border-bottom shadow-sm" aria-label="Klubový portál">
-      <div class="container d-flex flex-wrap align-items-center gap-3 py-2">
-        <a class="navbar-brand fw-semibold" href="../index.php"><i class="bi bi-bicycle me-2 text-primary"></i>Kovopraha</a>
-        <div class="d-flex flex-wrap align-items-center gap-1 flex-grow-1">
-          <ul class="navbar-nav flex-row flex-wrap me-auto gap-1">
+    <nav class="app-public-nav navbar navbar-expand-xl bg-white border-bottom shadow-sm" aria-label="Klubový portál">
+      <div class="container">
+        <a class="navbar-brand fw-semibold" href="<?= publicShellH(appUiUrl('index.php')) ?>"><i class="bi bi-bicycle me-2 text-primary"></i>Kovopraha</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appPublicNav"
+                aria-controls="appPublicNav" aria-expanded="false" aria-label="Otevřít hlavní nabídku">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="appPublicNav">
+          <ul class="navbar-nav me-auto mb-2 mb-xl-0">
             <?php foreach ($items as $key => [$label, $href]): ?>
-              <li class="nav-item"><a class="nav-link<?= $active === $key ? ' active fw-semibold' : '' ?>" href="<?= publicShellH($href) ?>"<?= $active === $key ? ' aria-current="page"' : '' ?>><?= publicShellH($label) ?></a></li>
+              <li class="nav-item"><a class="nav-link<?= $active === $key ? ' active fw-semibold' : '' ?>" href="<?= publicShellH(appUiUrl($href)) ?>"<?= $active === $key ? ' aria-current="page"' : '' ?>><?= publicShellH($label) ?></a></li>
             <?php endforeach; ?>
           </ul>
-          <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
+          <div class="d-flex flex-column flex-xl-row align-items-stretch align-items-xl-center gap-2 ms-xl-2 pb-2 pb-xl-0">
             <?php if ($customer): ?>
-              <a class="btn btn-outline-primary btn-sm" href="sportovni_prehled.php"><i class="bi bi-person-heart me-1"></i>Můj přehled</a>
+              <a class="btn btn-outline-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/sportovni_prehled.php')) ?>"><i class="bi bi-person-heart me-1"></i>Můj přehled</a>
               <div class="dropdown">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle me-1"></i>Můj účet</button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="verejny_profil.php">Profil</a></li>
-                  <li><a class="dropdown-item" href="moje_osoby.php">Moje osoby</a></li>
-                  <li><a class="dropdown-item" href="moje_programy.php">Moje kroužky</a></li>
-                  <li><a class="dropdown-item" href="moje_rezervace.php">Rezervace</a></li>
-                  <li><a class="dropdown-item" href="moje_objednavky.php">Objednávky</a></li>
+                  <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/verejny_profil.php')) ?>">Profil</a></li>
+                  <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/moje_osoby.php')) ?>">Moje osoby</a></li>
+                  <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/moje_programy.php')) ?>">Moje kroužky</a></li>
+                  <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/moje_rezervace.php')) ?>">Rezervace</a></li>
+                  <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/moje_objednavky.php')) ?>">Objednávky</a></li>
                 </ul>
               </div>
             <?php endif; ?>
             <?php if ($athlete): ?>
-              <a class="btn btn-outline-primary btn-sm" href="muj_sport.php"><i class="bi bi-activity me-1"></i>Můj sport</a>
+              <a class="btn btn-outline-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/muj_sport.php')) ?>"><i class="bi bi-activity me-1"></i>Můj sport</a>
             <?php endif; ?>
             <?php if ($trainer): ?>
-              <a class="btn btn-outline-primary btn-sm" href="../index.php"><i class="bi bi-speedometer2 me-1"></i>Evidence</a>
+              <a class="btn btn-outline-primary btn-sm" href="<?= publicShellH(appUiUrl('index.php')) ?>"><i class="bi bi-speedometer2 me-1"></i>Evidence</a>
             <?php endif; ?>
             <?php if (!$customer && !$athlete && !$trainer): ?>
-              <a class="btn btn-primary btn-sm" href="prihlaseni.php">Přihlásit se</a>
+              <a class="btn btn-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/prihlaseni.php')) ?>">Přihlásit se</a>
             <?php elseif ($athlete && !$customer && !$trainer): ?>
-              <form method="post" action="sportovec_odhlaseni.php" class="d-inline"><?= csrf_field() ?><button class="btn btn-outline-danger btn-sm">Odhlásit</button></form>
+              <form method="post" action="<?= publicShellH(appUiUrl('booking/sportovec_odhlaseni.php')) ?>" class="d-inline"><?= csrf_field() ?><button class="btn btn-outline-danger btn-sm w-100">Odhlásit</button></form>
             <?php else: ?>
-              <form method="post" action="odhlaseni.php" class="d-inline"><?= csrf_field() ?><button class="btn btn-outline-danger btn-sm">Odhlásit</button></form>
+              <form method="post" action="<?= publicShellH(appUiUrl('booking/odhlaseni.php')) ?>" class="d-inline"><?= csrf_field() ?><button class="btn btn-outline-danger btn-sm w-100">Odhlásit</button></form>
             <?php endif; ?>
           </div>
         </div>
@@ -105,7 +111,7 @@ function publicShellFooter(): void
     <footer class="app-public-footer border-top mt-5 py-4">
       <div class="container d-flex flex-wrap justify-content-between gap-2 small text-muted">
         <span>Klubový portál Kovopraha</span>
-        <span><a href="../index.php">Domů</a> · <a href="treninky.php">Veřejné tréninky</a> · <a href="eshop.php">E-shop</a></span>
+        <span><a href="<?= publicShellH(appUiUrl('index.php')) ?>">Domů</a> · <a href="<?= publicShellH(appUiUrl('booking/kalendar.php')) ?>">Individuální lekce</a> · <a href="<?= publicShellH(appUiUrl('booking/treninky.php')) ?>">Veřejné tréninky</a> · <a href="<?= publicShellH(appUiUrl('booking/eshop.php')) ?>">E-shop</a></span>
       </div>
     </footer>
     <?php

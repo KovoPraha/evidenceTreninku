@@ -148,3 +148,15 @@ defined('STRIPE_ENABLED') || define('STRIPE_ENABLED', is_string($stripeEnabled) 
 if (!defined('STRIPE_SECRET_KEY') && is_string($stripeSecretKey) && $stripeSecretKey !== '') define('STRIPE_SECRET_KEY', $stripeSecretKey);
 if (!defined('STRIPE_PUBLISHABLE_KEY') && is_string($stripePublishableKey) && $stripePublishableKey !== '') define('STRIPE_PUBLISHABLE_KEY', $stripePublishableKey);
 if (!defined('STRIPE_WEBHOOK_SECRET') && is_string($stripeWebhookSecret) && $stripeWebhookSecret !== '') define('STRIPE_WEBHOOK_SECRET', $stripeWebhookSecret);
+
+// ── Brána produkčního uživatelského testu ─────────────────────────────────
+// Neobsahuje žádná hesla, tokeny ani čísla účtů. Příznaky pouze potvrzují, že
+// vlastník určil člověka, který umí ověřit testovací inbox a bankovní záznam.
+$uatInboxReady = getenv('KIS_UAT_INBOX_READY');
+$uatBankReady = getenv('KIS_UAT_BANK_RECONCILIATION_READY');
+$uatOwner = getenv('KIS_UAT_OWNER');
+$uatWindowEnd = getenv('KIS_UAT_WINDOW_END');
+defined('KIS_UAT_INBOX_READY') || define('KIS_UAT_INBOX_READY', is_string($uatInboxReady) && $uatInboxReady === '1');
+defined('KIS_UAT_BANK_RECONCILIATION_READY') || define('KIS_UAT_BANK_RECONCILIATION_READY', is_string($uatBankReady) && $uatBankReady === '1');
+if (!defined('KIS_UAT_OWNER') && is_string($uatOwner) && trim($uatOwner) !== '') define('KIS_UAT_OWNER', trim($uatOwner));
+if (!defined('KIS_UAT_WINDOW_END') && is_string($uatWindowEnd) && trim($uatWindowEnd) !== '') define('KIS_UAT_WINDOW_END', trim($uatWindowEnd));

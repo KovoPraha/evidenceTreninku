@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title description">
+  <title id="title">Náhradní obrázek produktu</title>
+  <desc id="description">Jednoduchá ilustrace klubového balíčku s logem Kovo Praha.</desc>
+  <rect width="800" height="520" rx="28" fill="#f3f6fa"/>
+  <rect x="215" y="105" width="370" height="290" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="8"/>
+  <path d="M250 190h300M250 245h225M250 300h265" stroke="#94a3b8" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="570" cy="345" r="78" fill="#1f6f50"/>
+  <path d="M525 345h90M570 300v90" stroke="#ffffff" stroke-width="16" stroke-linecap="round"/>
+  <text x="400" y="465" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#334155">KOVO PRAHA</text>
+</svg>

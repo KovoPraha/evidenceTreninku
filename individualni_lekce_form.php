@@ -7,6 +7,7 @@ if (!canAccess('individualni_lekce')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/venue_operations.php';
+require_once __DIR__ . '/includes/public_listing_guard.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -78,6 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$casDo)   $errors[] = 'Zadejte čas do.';
         if ($casOd && $casDo && $casOd >= $casDo) $errors[] = 'Čas "od" musí být před časem "do".';
         if ($nazev === '') $errors[] = 'Zadejte název lekce.';
+        if ($nazev !== '') {
+            try {
+                publicListingValidateTechnicalOwner($pdo, $trenerId, $nazev);
+            } catch (InvalidArgumentException $exception) {
+                $errors[] = $exception->getMessage();
+            }
+        }
 
         // Ověřit, že okno je dělitelné slotem
         if (empty($errors)) {

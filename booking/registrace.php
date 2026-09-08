@@ -154,12 +154,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form method="post">
                     <?= csrf_field() ?>
                     <div class="row g-3 mb-3">
-                        <div class="col">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label" for="registration-first-name">Jméno</label>
                             <input type="text" name="jmeno" id="registration-first-name" class="form-control"
                                    value="<?= h($_POST['jmeno'] ?? '') ?>" required>
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label" for="registration-last-name">Příjmení</label>
                             <input type="text" name="prijmeni" id="registration-last-name" class="form-control"
                                    value="<?= h($_POST['prijmeni'] ?? '') ?>" required>
