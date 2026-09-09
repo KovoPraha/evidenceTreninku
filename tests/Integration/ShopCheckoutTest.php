@@ -44,6 +44,21 @@ final class ShopCheckoutTest extends TestCase
         self::assertCount(1,\shopOrderListForAccount($pdo,10));self::assertSame((string)$order['public_code'],\shopOrderListForAccount($pdo,10)[0]['public_code']);self::assertSame([],\shopOrderListForAccount($pdo,11));
     }
 
+    public function testCheckoutSnapshotsProductPaymentPolicy():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("ALTER TABLE shop_products ADD COLUMN payment_method_policy TEXT NOT NULL DEFAULT 'bank_transfer'");
+        $pdo->exec("ALTER TABLE payments ADD COLUMN accepted_payment_methods TEXT NOT NULL DEFAULT 'bank_transfer'");
+        $pdo->exec("UPDATE shop_products SET payment_method_policy='bank_transfer_sumup' WHERE id=501");
+        \shopCartSetQuantity($pdo,10,601,1);
+        $cart=\shopCartDetail($pdo,10);
+        self::assertSame('bank_transfer_sumup',$cart['payment_method_policy']);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint']);
+        self::assertSame('bank_transfer_sumup',$order['accepted_payment_methods']);
+        $pdo->exec("UPDATE shop_products SET payment_method_policy='bank_transfer' WHERE id=501");
+        self::assertSame('bank_transfer_sumup',\shopOrderByCode($pdo,10,(string)$order['public_code'])['accepted_payment_methods']);
+    }
+
     public function testCheckoutSnapshotsEligibleRosterPriceAndRejectsStaleClubQuote():void
     {
         $pdo=$this->database();

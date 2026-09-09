@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/public_velodrome.php';
+require_once __DIR__ . '/shop_payment_policy.php';
 
 final class PublicVelodromeShopException extends RuntimeException
 {
@@ -107,9 +108,10 @@ function publicVelodromeShopRemoveFromCart(PDO $pdo, int $accountId, int $cartIt
 function publicVelodromeShopCartItems(PDO $pdo, int $cartId): array
 {
     if (!publicVelodromeShopAvailable($pdo) || $cartId < 1) return [];
+    $paymentPolicy=shopPaymentPolicyLessonSelect($pdo,'il');
     $statement = $pdo->prepare(
         'SELECT ci.id AS cart_item_id,ci.lesson_id,ci.beneficiary_sportovec_id,ci.note,'
-        . 'il.nazev AS lesson_name,il.datum,il.cas_od,il.cas_do,il.public_exclusive_booking,il.cena_kc,'
+        . 'il.nazev AS lesson_name,il.datum,il.cas_od,il.cas_do,il.public_exclusive_booking,il.cena_kc,'.$paymentPolicy.' AS payment_method_policy,'
         . 'sp.jmeno,sp.prijmeni FROM public_velodrome_cart_items ci '
         . 'JOIN individualni_lekce il ON il.id=ci.lesson_id JOIN sportovci sp ON sp.id=ci.beneficiary_sportovec_id '
         . 'WHERE ci.cart_id=? ORDER BY ci.lesson_id,ci.id'
@@ -188,6 +190,7 @@ function publicVelodromeShopFingerprintItems(array $items): array
             ? (int)$item['amount_minor']
             : publicVelodromeShopPriceMinor($item['cena_kc']),
         'currency' => 'CZK',
+        'payment_method_policy' => (string)($item['payment_method_policy'] ?? SHOP_PAYMENT_POLICY_BANK_ONLY),
     ], $items);
 }
 

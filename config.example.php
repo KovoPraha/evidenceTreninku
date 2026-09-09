@@ -149,6 +149,17 @@ if (!defined('STRIPE_SECRET_KEY') && is_string($stripeSecretKey) && $stripeSecre
 if (!defined('STRIPE_PUBLISHABLE_KEY') && is_string($stripePublishableKey) && $stripePublishableKey !== '') define('STRIPE_PUBLISHABLE_KEY', $stripePublishableKey);
 if (!defined('STRIPE_WEBHOOK_SECRET') && is_string($stripeWebhookSecret) && $stripeWebhookSecret !== '') define('STRIPE_WEBHOOK_SECRET', $stripeWebhookSecret);
 
+// ── SumUp Hosted Checkout (výchozí stav: vypnuto) ──────────────────────────
+// Tajný API klíč patří pouze do prostředí nebo do ignorovaného config.php.
+// Nikdy jej nevkládejte do repozitáře, dokumentace ani do klientského JavaScriptu.
+$sumupEnabled = getenv('SUMUP_ENABLED');
+$sumupApiKey = getenv('SUMUP_API_KEY');
+$sumupMerchantCode = getenv('SUMUP_MERCHANT_CODE');
+
+defined('SUMUP_ENABLED') || define('SUMUP_ENABLED', is_string($sumupEnabled) && $sumupEnabled === '1');
+if (!defined('SUMUP_API_KEY') && is_string($sumupApiKey) && $sumupApiKey !== '') define('SUMUP_API_KEY', $sumupApiKey);
+if (!defined('SUMUP_MERCHANT_CODE') && is_string($sumupMerchantCode) && $sumupMerchantCode !== '') define('SUMUP_MERCHANT_CODE', $sumupMerchantCode);
+
 // ── Brána produkčního uživatelského testu ─────────────────────────────────
 // Neobsahuje žádná hesla, tokeny ani čísla účtů. Příznaky pouze potvrzují, že
 // vlastník určil člověka, který umí ověřit testovací inbox a bankovní záznam.

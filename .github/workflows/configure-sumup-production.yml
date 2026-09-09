@@ -1,0 +1,142 @@
+name: Nastavit SumUp na produkci
+
+on:
+  workflow_dispatch:
+    inputs:
+      rezim:
+        description: 'Zapnout nebo nouzově vypnout SumUp'
+        required: true
+        type: choice
+        options: [enable, disable]
+      potvrzeni:
+        description: 'ZAPNOUT-SUMUP-LIVE nebo VYPNOUT-SUMUP'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  CONFIG_BACKUP_DIR: data/.kis-backups/config
+
+jobs:
+  nastavit:
+    name: SumUp live (kis.kovopraha.cz)
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - name: Ověřit ruční potvrzení
+        env:
+          REZIM: ${{ inputs.rezim }}
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          if [ "$REZIM" = enable ] && [ "$POTVRZENI" != 'ZAPNOUT-SUMUP-LIVE' ]; then echo '❌ Chybí potvrzení zapnutí SumUp live.'; exit 1; fi
+          if [ "$REZIM" = disable ] && [ "$POTVRZENI" != 'VYPNOUT-SUMUP' ]; then echo '❌ Chybí potvrzení vypnutí SumUp.'; exit 1; fi
+
+      - name: Stáhnout konfigurační nástroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Ověřit přístup a připravit tajnou konfiguraci
+        env:
+          REZIM: ${{ inputs.rezim }}
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+          SUMUP_API_KEY_VALUE: ${{ secrets.KIS_SUMUP_API_KEY }}
+          SUMUP_MERCHANT_CODE_VALUE: ${{ vars.KIS_SUMUP_MERCHANT_CODE }}
+        run: |
+          for promenna in APP_HOST REMOTE_DIR SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
+            if [ -z "${!promenna}" ]; then echo "❌ Chybí povinná konfigurace: $promenna."; exit 1; fi
+          done
+          [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]] && [[ "$APP_HOST" != .* ]] && [[ "$APP_HOST" != *. ]] || { echo '❌ KIS_APP_HOST nemá bezpečný formát hostitele.'; exit 1; }
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo '❌ KIS_REMOTE_DIR obsahuje nepovolené znaky.'; exit 1; }
+          case "$REMOTE_DIR" in /*|*..*|*/./*|./*|*/.) echo '❌ KIS_REMOTE_DIR musí být relativní cesta bez . a .. segmentů'; exit 1 ;; esac
+          if [ "$REZIM" = enable ]; then
+            [ -n "$SUMUP_API_KEY_VALUE" ] && [ -n "$SUMUP_MERCHANT_CODE_VALUE" ] || { echo '❌ Chybí SumUp produkční klíč nebo merchant code.'; exit 1; }
+            [[ "$SUMUP_API_KEY_VALUE" =~ ^sup_sk_[A-Za-z0-9._-]+$ ]] || { echo '❌ SumUp API klíč nemá platný formát.'; exit 1; }
+            [[ "$SUMUP_MERCHANT_CODE_VALUE" =~ ^[A-Z0-9]{8}$ ]] || { echo '❌ SumUp merchant code nemá platný formát.'; exit 1; }
+          fi
+          PORT="${SSH_PORT_SECRET:-22}"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+          if [ "$REZIM" = enable ]; then
+            php -r '$v=["api_key"=>getenv("SUMUP_API_KEY_VALUE"),"merchant_code"=>getenv("SUMUP_MERCHANT_CODE_VALUE"),"base_url"=>"https://".getenv("APP_HOST")];file_put_contents("/tmp/sumup-secrets.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
+            chmod 600 /tmp/sumup-secrets.json
+          fi
+
+      - name: Ověřit živý profil SumUp bez vytvoření platby
+        if: inputs.rezim == 'enable'
+        env:
+          SUMUP_API_KEY_VALUE: ${{ secrets.KIS_SUMUP_API_KEY }}
+          SUMUP_MERCHANT_CODE_VALUE: ${{ vars.KIS_SUMUP_MERCHANT_CODE }}
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 20 --proto '=https' \
+            -H "Authorization: Bearer $SUMUP_API_KEY_VALUE" -H 'Accept: application/json' \
+            "https://api.sumup.com/v0.1/merchants/$SUMUP_MERCHANT_CODE_VALUE/payment-methods?amount=1&currency=CZK" > /tmp/sumup-methods.json
+          jq -e '.available_payment_methods | map(.id) | index("card") != null' /tmp/sumup-methods.json > /dev/null
+          echo '✅ Živý profil SumUp přijímá online kartu v CZK.'
+
+      - name: Zálohovat a nastavit SumUp
+        env:
+          REZIM: ${{ inputs.rezim }}
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SSH[@]}" "set -eu; umask 077; test -d '$REMOTE_DIR'; test -s '$REMOTE_DIR/config.php'; mkdir -p '$DEPLOY_BASE' '$CONFIG_BACKUP_DIR'"
+          "${SCP[@]}" bin/configure-production-sumup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/configure-production-sumup.php"
+          if [ "$REZIM" = enable ]; then "${SCP[@]}" /tmp/sumup-secrets.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/sumup-secrets.json"; ACTION=configure_live; else ACTION=disable; fi
+          cat > /tmp/run-sumup-config.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_SUMUP=1');
+          putenv('SUMUP_CONFIG_ACTION=$ACTION');
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('CONFIG_BACKUP_DIR=$CONFIG_BACKUP_DIR');
+          putenv('SUMUP_SECRETS_FILE=$DEPLOY_BASE/sumup-secrets.json');
+          require __DIR__ . '/configure-production-sumup.php';
+          kisProductionSumUpMain();
+          EOF
+          "${SCP[@]}" /tmp/run-sumup-config.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-sumup-config.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-sumup-config.php'" | tee /tmp/configure-result.json
+          jq -e --arg mode "$([ "$REZIM" = enable ] && echo live || echo disabled)" '.ok == true and .mode == $mode' /tmp/configure-result.json > /dev/null
+          cat > /tmp/run-sumup-probe.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_SUMUP=1');
+          putenv('SUMUP_CONFIG_ACTION=probe');
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          require __DIR__ . '/configure-production-sumup.php';
+          kisProductionSumUpMain();
+          EOF
+          "${SCP[@]}" /tmp/run-sumup-probe.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-sumup-probe.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-sumup-probe.php'" | tee /tmp/probe-result.json
+          if [ "$REZIM" = enable ]; then jq -e '.ok and .environment == "production" and .sumup_enabled and .api_key_present and .merchant_code_ok and .base_url_ok' /tmp/probe-result.json > /dev/null; else jq -e '.ok and (.sumup_enabled|not)' /tmp/probe-result.json > /dev/null; fi
+
+      - name: Uklidit dočasné kopie secrets
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/sumup-secrets.json /tmp/sumup-methods.json /tmp/run-sumup-config.php /tmp/run-sumup-probe.php
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then
+            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" \
+              "rm -f '$DEPLOY_BASE/sumup-secrets.json' '$DEPLOY_BASE/run-sumup-config.php' '$DEPLOY_BASE/run-sumup-probe.php' '$DEPLOY_BASE/configure-production-sumup.php'"
+          fi

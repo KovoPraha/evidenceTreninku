@@ -270,6 +270,7 @@ const EVIDENCE_TABLES = [
     'story_nastaveni',
     'story_vygenerovane',
     'stripe_webhook_events',
+    'sumup_webhook_events',
     'tagy',
     'treneri',
     'treninky',

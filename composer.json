@@ -5,6 +5,7 @@
     "require": {
         "php": "^8.2",
         "ext-libxml": "*",
+        "ext-curl": "*",
         "ext-simplexml": "*",
         "ext-sodium": "*",
         "phpoffice/phpspreadsheet": "^5.3",
