@@ -709,6 +709,7 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
     if(!$payment||$payment['payable_type']!=='shop_order')throw new ShopCheckoutException('Platba objednávky nebyla nalezena.');
     if($source==='bank_transfer'&&$payment['method']!=='bank_transfer')throw new ShopCheckoutException('Bankovní platba objednávky nebyla nalezena.');
     if($source==='stripe'&&empty($payment['stripe_checkout_session_id']))throw new ShopCheckoutException('Stripe relace platby nebyla nalezena.');
+    if($source==='sumup'&&empty($payment['sumup_checkout_id']))throw new ShopCheckoutException('SumUp relace platby nebyla nalezena.');
     $orderId=(int)$payment['payable_id'];$order=shopOrderAdminLockOrder($pdo,$orderId);
     if(!$order)throw new ShopCheckoutException('Objednávka platby nebyla nalezena.');
     if($payment['status']==='paid'){
@@ -725,7 +726,7 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
     $pdo->prepare("UPDATE payments SET method=?,payment_source=?,status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
         ->execute([$source,$source,$trainerId,$reason,$paymentId]);
     $pdo->prepare("UPDATE shop_orders SET payment_status='paid',status='processing',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
-    $action=$source==='stripe'?'confirm_stripe_payment':'confirm_bank_payment';
+    $action=match($source){'stripe'=>'confirm_stripe_payment','sumup'=>'confirm_sumup_payment',default=>'confirm_bank_payment'};
     $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,?,?,?,\'placed\',\'processing\',?)')
         ->execute([$orderId,$actorType,$actorId,$action,$reason]);
     $programSync=['program_items'=>0,'created'=>0];
@@ -739,7 +740,7 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
 function shopOrderValidatePaymentActor(int $paymentId,string $source,string $actorType,?int $actorId,string $reason):void
 {
     $reason=trim($reason);
-    if($paymentId<1||!in_array($source,['bank_transfer','stripe'],true)||!in_array($actorType,['trainer','system'],true)||($actorType==='trainer'&&($actorId??0)<1)||($actorType==='system'&&$actorId!==null)||$reason==='')throw new InvalidArgumentException('Potvrzení platby nemá platný zdroj, auditora nebo důvod.');
+    if($paymentId<1||!in_array($source,['bank_transfer','stripe','sumup'],true)||!in_array($actorType,['trainer','system'],true)||($actorType==='trainer'&&($actorId??0)<1)||($actorType==='system'&&$actorId!==null)||$reason==='')throw new InvalidArgumentException('Potvrzení platby nemá platný zdroj, auditora nebo důvod.');
     if(mb_strlen($reason,'UTF-8')>1000)throw new InvalidArgumentException('Důvod smí mít nejvýše 1000 znaků.');
 }
 
