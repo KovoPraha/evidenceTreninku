@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/shop_checkout.php';
+require_once __DIR__.'/member_charge_admin.php';
+
 final class FioImportException extends RuntimeException {}
 
 function fioNormalizeIban(string $value): string
@@ -29,22 +32,32 @@ function fioAmountToMinor(mixed $value): int
     return ($match[1] ?? '') === '-' ? -$minor : $minor;
 }
 
-/** @return array{status:string,payment_id:?int,order_id:?int,reason:string} */
+function fioTableExists(PDO $pdo,string $table):bool
+{
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){$statement=$pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1');$statement->execute([$table]);return(bool)$statement->fetchColumn();}
+    $statement=$pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1");$statement->execute([$table]);return(bool)$statement->fetchColumn();
+}
+
+/** @return array{status:string,payment_id:?int,order_id:?int,payable_type:?string,payable_id:?int,reason:string} */
 function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?string $variableSymbol): array
 {
-    if ($amountMinor <= 0) return ['status'=>'ignored_non_credit','payment_id'=>null,'order_id'=>null,'reason'=>'Odchozi nebo nulovy pohyb se neparuje.'];
-    if ($variableSymbol === null) return ['status'=>'review_missing_vs','payment_id'=>null,'order_id'=>null,'reason'=>'Prichozi platba nema platny variabilni symbol.'];
-    $statement = $pdo->prepare("SELECT p.id AS payment_id,o.id AS order_id,p.method,p.status AS payment_status,p.amount_minor,p.currency,o.status AS order_status,o.payment_status AS order_payment_status FROM payments p LEFT JOIN shop_orders o ON o.id=p.payable_id WHERE p.payable_type='shop_order' AND p.variable_symbol=? LIMIT 2");
+    $empty=static fn(string$status,string$reason):array=>['status'=>$status,'payment_id'=>null,'order_id'=>null,'payable_type'=>null,'payable_id'=>null,'reason'=>$reason];
+    if ($amountMinor <= 0) return $empty('ignored_non_credit','Odchozí nebo nulový pohyb se nepáruje.');
+    if ($variableSymbol === null) return $empty('review_missing_vs','Příchozí platba nemá platný variabilní symbol.');
+    $statement = $pdo->prepare('SELECT id AS payment_id,payable_type,payable_id,method,status AS payment_status,amount_minor,currency FROM payments WHERE variable_symbol=? LIMIT 2');
     $statement->execute([$variableSymbol]);
     $candidates = $statement->fetchAll(PDO::FETCH_ASSOC);
-    if (count($candidates) !== 1 || $candidates[0]['order_id'] === null) return ['status'=>'review_unknown_vs','payment_id'=>null,'order_id'=>null,'reason'=>'Variabilni symbol neodpovida jedine objednavce.'];
-    $candidate = $candidates[0]; $paymentId=(int)$candidate['payment_id']; $orderId=(int)$candidate['order_id'];
-    if ((int)$candidate['amount_minor'] !== $amountMinor) return ['status'=>'review_amount','payment_id'=>$paymentId,'order_id'=>$orderId,'reason'=>'Castka neodpovida cenovemu snapshotu platby.'];
-    if (strtoupper((string)$candidate['currency']) !== $currency) return ['status'=>'review_currency','payment_id'=>$paymentId,'order_id'=>$orderId,'reason'=>'Mena neodpovida cenovemu snapshotu platby.'];
-    if ($candidate['method'] !== 'bank_transfer' || $candidate['payment_status'] !== 'pending' || $candidate['order_status'] !== 'placed' || $candidate['order_payment_status'] !== 'pending') {
-        return ['status'=>'review_state','payment_id'=>$paymentId,'order_id'=>$orderId,'reason'=>'Platba nebo objednavka uz neni v cekajicim stavu.'];
-    }
-    return ['status'=>'proposed_exact','payment_id'=>$paymentId,'order_id'=>$orderId,'reason'=>'Presna shoda VS, castky a meny; pouze navrh bez zmeny objednavky.'];
+    if (count($candidates) !== 1) return $empty('review_unknown_vs','Variabilní symbol neodpovídá právě jedné evidované platbě.');
+    $candidate=$candidates[0];$paymentId=(int)$candidate['payment_id'];$payableType=(string)$candidate['payable_type'];$payableId=(int)$candidate['payable_id'];$orderId=null;$targetStatus=null;$orderPaymentStatus=null;
+    if($payableType==='shop_order'){$target=$pdo->prepare('SELECT id,status,payment_status FROM shop_orders WHERE id=?');$target->execute([$payableId]);$row=$target->fetch(PDO::FETCH_ASSOC);if(!$row)return$empty('review_unknown_vs','Objednávka přiřazená k platbě nebyla nalezena.');$orderId=(int)$row['id'];$targetStatus=(string)$row['status'];$orderPaymentStatus=(string)$row['payment_status'];}
+    elseif($payableType==='member_charge'&&fioTableExists($pdo,'club_member_charges')){$target=$pdo->prepare('SELECT id,status FROM club_member_charges WHERE id=?');$target->execute([$payableId]);$row=$target->fetch(PDO::FETCH_ASSOC);if(!$row)return$empty('review_unknown_vs','Členský předpis přiřazený k platbě nebyl nalezen.');$targetStatus=(string)$row['status'];}
+    else return['status'=>'review_type','payment_id'=>$paymentId,'order_id'=>null,'payable_type'=>$payableType,'payable_id'=>$payableId,'reason'=>'Tento typ platby zatím nelze párovat.'];
+    $base=['payment_id'=>$paymentId,'order_id'=>$orderId,'payable_type'=>$payableType,'payable_id'=>$payableId];
+    if ((int)$candidate['amount_minor'] !== $amountMinor) return ['status'=>'review_amount','reason'=>'Částka neodpovídá uložené platbě.']+$base;
+    if (strtoupper((string)$candidate['currency']) !== $currency) return ['status'=>'review_currency','reason'=>'Měna neodpovídá uložené platbě.']+$base;
+    $targetPending=$payableType==='shop_order'?$targetStatus==='placed'&&$orderPaymentStatus==='pending':$targetStatus==='pending';
+    if ($candidate['method'] !== 'bank_transfer'||$candidate['payment_status'] !== 'pending'||!$targetPending) return ['status'=>'review_state','reason'=>'Platba nebo její předpis už není v čekajícím stavu.']+$base;
+    return ['status'=>'proposed_exact','reason'=>'Přesná shoda VS, částky a měny; čeká na výslovné potvrzení správce.']+$base;
 }
 
 /** @return array<string,mixed> */
@@ -113,8 +126,15 @@ function fioImportJson(PDO $pdo, string $json, string $periodFrom, string $perio
             $movementId=trim((string)(fioColumn($transaction,'column22')['value']??''));
             if($movementId===''||strlen($movementId)>80||preg_match('/^[A-Za-z0-9._:-]+$/D',$movementId)!==1)throw new FioImportException('fio_invalid_movement_id');
             $rawHash=hash('sha256',(string)json_encode($transaction,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRESERVE_ZERO_FRACTION|JSON_THROW_ON_ERROR));
-            $existing=$pdo->prepare('SELECT raw_sha256 FROM fio_account_movements WHERE fio_movement_id=?');$existing->execute([$movementId]);$existingHash=$existing->fetchColumn();
-            if($existingHash!==false){if(!hash_equals((string)$existingHash,$rawHash))throw new FioImportException('fio_movement_changed');$counts['duplicates']++;continue;}
+            $existing=$pdo->prepare('SELECT id,raw_sha256,amount_minor,currency,variable_symbol,match_status FROM fio_account_movements WHERE fio_movement_id=?');$existing->execute([$movementId]);$existingRow=$existing->fetch(PDO::FETCH_ASSOC);
+            if($existingRow){
+                if(!hash_equals((string)$existingRow['raw_sha256'],$rawHash))throw new FioImportException('fio_movement_changed');
+                if((string)$existingRow['match_status']!=='confirmed'){
+                    $refreshed=fioProposePaymentMatch($pdo,(int)$existingRow['amount_minor'],(string)$existingRow['currency'],$existingRow['variable_symbol']!==null?(string)$existingRow['variable_symbol']:null);
+                    $pdo->prepare('UPDATE fio_account_movements SET match_status=?,candidate_payment_id=?,candidate_order_id=?,match_reason=? WHERE id=?')->execute([$refreshed['status'],$refreshed['payment_id'],$refreshed['order_id'],$refreshed['reason'],(int)$existingRow['id']]);
+                }
+                $counts['duplicates']++;continue;
+            }
             $amountMinor=fioAmountToMinor(fioColumn($transaction,'column1')['value']??null);
             $currency=strtoupper(trim((string)(fioColumn($transaction,'column14')['value']??'')));if(preg_match('/^[A-Z]{3}$/D',$currency)!==1)throw new FioImportException('fio_invalid_currency');
             $variableSymbol=fioNormalizeVariableSymbol(fioColumn($transaction,'column5')['value']??null);$bookedOn=fioBookedOn(fioColumn($transaction,'column0')['value']??null);
@@ -148,5 +168,38 @@ function fioFetchPeriodJson(string $token, string $periodFrom, string $periodTo)
     if($body===false||$error!==0||$status!==200)throw new FioImportException('fio_http_failed_'.$status);if(strlen($body)>5_000_000)throw new FioImportException('fio_response_too_large');return $body;
 }
 
-function fioAdminMovements(PDO $pdo,int $limit=200):array{$limit=max(1,min(500,$limit));return $pdo->query('SELECT m.*,o.public_code,p.status AS payment_status FROM fio_account_movements m LEFT JOIN shop_orders o ON o.id=m.candidate_order_id LEFT JOIN payments p ON p.id=m.candidate_payment_id ORDER BY m.booked_on DESC,m.id DESC LIMIT '.$limit)->fetchAll(PDO::FETCH_ASSOC);}
+/** @return array{movement_id:int,payment_id:int,payable_type:string,payable_id:int,changed:bool} */
+function fioAdminConfirmExactMovement(PDO $pdo,int $movementId,int $actorTrainerId,string $reason,bool $confirmed):array
+{
+    $reason=trim((string)preg_replace('/\s+/u',' ',$reason));
+    if($movementId<1||$actorTrainerId<1||!$confirmed||mb_strlen($reason,'UTF-8')<5||mb_strlen($reason,'UTF-8')>1000)throw new InvalidArgumentException('Potvrzení vyžaduje správce, důvod (5 až 1000 znaků) a výslovný souhlas.');
+    $pdo->beginTransaction();
+    try{
+        $sql='SELECT * FROM fio_account_movements WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$statement=$pdo->prepare($sql);$statement->execute([$movementId]);$movement=$statement->fetch(PDO::FETCH_ASSOC);
+        if(!$movement)throw new FioImportException('Bankovní pohyb nebyl nalezen.');
+        if((string)$movement['match_status']==='confirmed'){
+            $paymentId=(int)($movement['candidate_payment_id']??0);$check=$pdo->prepare('SELECT payable_type,payable_id,status,bank_movement_id FROM payments WHERE id=?');$check->execute([$paymentId]);$payment=$check->fetch(PDO::FETCH_ASSOC);
+            if(!$payment||$payment['status']!=='paid'||(string)$payment['bank_movement_id']!==(string)$movement['fio_movement_id'])throw new FioImportException('Potvrzený bankovní pohyb není konzistentní s platbou.');
+            $pdo->commit();return['movement_id'=>$movementId,'payment_id'=>$paymentId,'payable_type'=>(string)$payment['payable_type'],'payable_id'=>(int)$payment['payable_id'],'changed'=>false];
+        }
+        $proposal=fioProposePaymentMatch($pdo,(int)$movement['amount_minor'],(string)$movement['currency'],$movement['variable_symbol']!==null?(string)$movement['variable_symbol']:null);
+        if($proposal['status']!=='proposed_exact'||!$proposal['payment_id']||!$proposal['payable_type']||!$proposal['payable_id'])throw new FioImportException('Pohyb už nesplňuje přesnou shodu: '.$proposal['reason']);
+        $paymentId=(int)$proposal['payment_id'];$auditReason=$reason.' Fio pohyb '.(string)$movement['fio_movement_id'].'.';
+        if($proposal['payable_type']==='shop_order')shopOrderConfirmPaymentInTransaction($pdo,$paymentId,'bank_transfer','trainer',$actorTrainerId,$auditReason);
+        elseif($proposal['payable_type']==='member_charge')memberChargeConfirmBankPaymentInTransaction($pdo,$paymentId,(string)$movement['booked_on'],'trainer',$actorTrainerId,$auditReason);
+        else throw new FioImportException('Typ platby nelze potvrdit z Fio pohybu.');
+        $bind=$pdo->prepare('UPDATE payments SET bank_movement_id=?,bank_booked_on=?,paid_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND (bank_movement_id IS NULL OR bank_movement_id=?)');
+        $bind->execute([(string)$movement['fio_movement_id'],(string)$movement['booked_on'],(string)$movement['booked_on'].' 12:00:00',$paymentId,(string)$movement['fio_movement_id']]);
+        if($bind->rowCount()!==1)throw new FioImportException('Platba už je svázána s jiným bankovním pohybem.');
+        $update=$pdo->prepare("UPDATE fio_account_movements SET match_status='confirmed',candidate_payment_id=?,candidate_order_id=?,match_reason=?,confirmed_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=? WHERE id=? AND match_status<>'confirmed'");
+        $update->execute([$paymentId,$proposal['order_id'],'Přesná shoda potvrzena správcem.',$actorTrainerId,$reason,$movementId]);if($update->rowCount()!==1)throw new FioImportException('Bankovní pohyb se nepodařilo potvrdit.');
+        $pdo->commit();return['movement_id'=>$movementId,'payment_id'=>$paymentId,'payable_type'=>(string)$proposal['payable_type'],'payable_id'=>(int)$proposal['payable_id'],'changed'=>true];
+    }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof FioImportException||$exception instanceof ShopCheckoutException||$exception instanceof MemberChargeAdminException)throw$exception;throw new FioImportException('Potvrzení bankovního pohybu selhalo bez částečného zápisu.',0,$exception);}
+}
+
+function fioAdminMovements(PDO $pdo,int $limit=200):array
+{
+    $limit=max(1,min(500,$limit));$memberJoin=fioTableExists($pdo,'club_member_charges')?' LEFT JOIN club_member_charges c ON c.id=p.payable_id AND p.payable_type=\'member_charge\'':'';$memberSelect=fioTableExists($pdo,'club_member_charges')?',c.public_code AS member_charge_code,c.title_snapshot AS member_charge_title':',NULL AS member_charge_code,NULL AS member_charge_title';
+    return$pdo->query('SELECT m.*,o.public_code,p.status AS payment_status,p.payable_type,p.payable_id'.$memberSelect.' FROM fio_account_movements m LEFT JOIN shop_orders o ON o.id=m.candidate_order_id LEFT JOIN payments p ON p.id=m.candidate_payment_id'.$memberJoin.' ORDER BY m.booked_on DESC,m.id DESC LIMIT '.$limit)->fetchAll(PDO::FETCH_ASSOC);
+}
 function fioAdminRuns(PDO $pdo,int $limit=30):array{$limit=max(1,min(100,$limit));return $pdo->query('SELECT * FROM fio_import_runs ORDER BY id DESC LIMIT '.$limit)->fetchAll(PDO::FETCH_ASSOC);}

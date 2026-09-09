@@ -47,6 +47,27 @@ function memberChargeAdminEvent(PDO$pdo,int$chargeId,string$action,?string$from,
     $pdo->prepare('INSERT INTO club_member_charge_events(charge_id,action,from_status,to_status,actor_type,actor_id,reason,snapshot_json) VALUES (?,?,?,?,\'trainer\',?,?,?)')->execute([$chargeId,$action,$from,$to,$actorId,$reason,json_encode($snapshot,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)]);
 }
 
+/** @return array{id:int,changed:bool,status:string} */
+function memberChargeConfirmBankPaymentInTransaction(PDO $pdo,int $paymentId,string $paidOn,string $actorType,?int $actorId,string $reason):array
+{
+    $reason=memberChargeAdminReason($reason);$paidOn=memberChargeAdminDate($paidOn,true);
+    if(!$pdo->inTransaction())throw new LogicException('Potvrzení členské platby vyžaduje aktivní transakci.');
+    if($paymentId<1||!in_array($actorType,['trainer','system'],true)||($actorType==='trainer'&&($actorId??0)<1)||($actorType==='system'&&$actorId!==null))throw new InvalidArgumentException('Potvrzení členské platby nemá platného auditora.');
+    $sql='SELECT * FROM payments WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
+    $statement=$pdo->prepare($sql);$statement->execute([$paymentId]);$payment=$statement->fetch(PDO::FETCH_ASSOC);
+    if(!$payment||$payment['payable_type']!=='member_charge'||$payment['method']!=='bank_transfer')throw new MemberChargeAdminException('Bankovní platba členského předpisu nebyla nalezena.');
+    $chargeId=(int)$payment['payable_id'];$charge=memberChargeAdminLock($pdo,$chargeId);
+    if(!$charge)throw new MemberChargeAdminException('Členský předpis nebyl nalezen.');
+    if($payment['status']==='paid'&&$charge['status']==='paid')return['id'=>$chargeId,'changed'=>false,'status'=>'paid'];
+    if($payment['status']!=='pending'||$charge['status']!=='pending')throw new MemberChargeAdminException('Platbu nebo členský předpis v tomto stavu nelze potvrdit.');
+    if((int)$payment['amount_minor']!==(int)$charge['amount_minor']||strtoupper((string)$payment['currency'])!==strtoupper((string)$charge['currency']))throw new MemberChargeAdminException('Částka nebo měna platby neodpovídá členskému předpisu.');
+    $paidAt=$paidOn.' 12:00:00';$trainerId=$actorType==='trainer'?$actorId:null;
+    $pdo->prepare("UPDATE payments SET status='paid',payment_source='bank_transfer',paid_at=?,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='pending'")->execute([$paidAt,$trainerId,$reason,$paymentId]);
+    $pdo->prepare("UPDATE club_member_charges SET status='paid',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='pending'")->execute([$chargeId]);
+    $pdo->prepare('INSERT INTO club_member_charge_events(charge_id,action,from_status,to_status,actor_type,actor_id,reason,snapshot_json) VALUES (?,\'confirm_fio_payment\',\'pending\',\'paid\',?,?,?,?)')->execute([$chargeId,$actorType,$actorId,$reason,json_encode(['paid_at'=>$paidAt,'payment_id'=>$paymentId,'before'=>$charge],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)]);
+    return['id'=>$chargeId,'changed'=>true,'status'=>'paid'];
+}
+
 /** @return array{id:int,public_code:string,variable_symbol:string} */
 function memberChargeAdminCreate(PDO$pdo,int$actorId,array$input,string$reason,bool$confirmed):array
 {

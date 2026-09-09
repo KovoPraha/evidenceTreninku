@@ -232,7 +232,7 @@ U každé je uvedeno, odkud je (pokud vůbec) dosažitelná dnes.
 |---|---|---|---|
 | `member_charges_admin.php` | Read-only přehled členských předpisů a plateb (dokumentovaný v CURRENT_STATE.md jako funkční vstup) | jen kontextově z `kis_sync_center.php`, `member_charge_reminders_admin.php`, `provozni_prehled_admin.php` | Přidat přímý odkaz do Administrace → Členové a KIS |
 | `eshop_coupons_admin.php` | Administrace slevových kupónů | jen kontextově z `eshop_admin.php` | V pořádku jako podstránka `eshop_admin.php`, zvážit zmínku v tabulce E-shopu |
-| `eshop_fio_admin.php` | Read-only přehled Fio shadow importu a návrhů párování | jen kontextově z `eshop_admin.php`, `provozni_prehled_admin.php` | V pořádku jako podstránka |
+| `eshop_fio_admin.php` | Read-only import Fio, návrhy párování a ruční potvrzení přesné shody | jen kontextově z `eshop_admin.php`, `provozni_prehled_admin.php` | V pořádku jako podstránka |
 | `kis_rollover_a06_admin.php` | Průvodce A06 — roční věková obnova soupisek KIS | jen z `testovaci_scenare.php` (lokální testovací rozcestník) | Prakticky nedohledatelná v reálném provozu — přidat odkaz do Administrace → Členové a KIS |
 | `auditlog/seznam.php` | Prohlížeč audit logu (admin, plně funkční) | **nikde, 0 odkazů v celém prvostranném kódu** | Skutečná mezera — přidat do Administrace → Nastavení a firemní evidence |
 | `sportovci_hromadne.php` | Hromadné akce nad vybranými sportovci (POST akce z formuláře) | `sprava_sportovcu.php` (`action=`) | V pořádku, je to akční cíl, ne samostatná stránka |

@@ -39,6 +39,7 @@ final class ShopCheckoutTest extends TestCase
         $snapshot=$pdo->query('SELECT product_name_snapshot,sku_snapshot,unit_amount_minor FROM shop_order_items')->fetch(PDO::FETCH_ASSOC);
         self::assertSame(['product_name_snapshot'=>'Tričko KOVO','sku_snapshot'=>'TRIKO-M','unit_amount_minor'=>13000],$snapshot);
         self::assertMatchesRegularExpression('/^SPD\*1\.0\*ACC:CZ6508000000192000145399\*AM:260\.00\*CC:CZK\*X-VS:[0-9]{10}\*MSG:/',(string)$order['spd_payload']);
+        self::assertStringContainsString('*X-VS:'.$order['variable_symbol'].'*',(string)$order['spd_payload']);
         self::assertStringStartsWith('data:image/svg+xml',\shopPaymentQrDataUri((string)$order['spd_payload']));
         try{\shopOrderByCode($pdo,11,(string)$order['public_code']);self::fail('Foreign order must not be readable.');}catch(\ShopCheckoutException){}
         self::assertCount(1,\shopOrderListForAccount($pdo,10));self::assertSame((string)$order['public_code'],\shopOrderListForAccount($pdo,10)[0]['public_code']);self::assertSame([],\shopOrderListForAccount($pdo,11));
