@@ -11,5 +11,6 @@ final class FioImportWiringTest extends TestCase
         self::assertStringContainsString("PHP_SAPI !== 'cli'",$cli);self::assertStringContainsString('/v1/rest/periods/',$service);self::assertStringNotContainsString('/v1/rest/last/',$service);
         self::assertStringContainsString('fioImportJson',$cli);self::assertStringContainsString('fioAdminConfirmExactMovement',$service);self::assertStringContainsString("match_status='confirmed'",$service);self::assertStringContainsString('eshop_fio_admin.php',(string)file_get_contents($root.'/includes/staff_workspaces.php'));
         self::assertStringContainsString('FIO_API_TOKEN',(string)file_get_contents($root.'/config.example.php'));
+        self::assertStringContainsString("defined('FIO_API_TOKEN')",$cli);
     }
 }

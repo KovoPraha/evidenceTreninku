@@ -9,7 +9,7 @@ try{
     require_once $root.'/config.php';require_once $root.'/includes/fio_readonly_import.php';require_once $root.'/includes/shop_bank_settings.php';
     $enabled=getenv('FIO_IMPORT_ENABLED');
     if($enabled!=='1'&&(!defined('FIO_IMPORT_ENABLED')||FIO_IMPORT_ENABLED!==true))throw new RuntimeException('fio_import_disabled');
-    $token=getenv('FIO_API_TOKEN');if(!is_string($token)||$token==='')throw new RuntimeException('fio_token_missing');
+    $token=getenv('FIO_API_TOKEN');if((!is_string($token)||$token==='')&&defined('FIO_API_TOKEN'))$token=(string)FIO_API_TOKEN;if(!is_string($token)||$token==='')throw new RuntimeException('fio_token_missing');
     foreach(['DB_HOST','DB_NAME','DB_USER','DB_PASS']as$constant)if(!defined($constant))throw new RuntimeException('missing_database_configuration');
     $lookbackEnv=getenv('FIO_IMPORT_LOOKBACK_DAYS');
     $lookback=is_string($lookbackEnv)&&$lookbackEnv!==''?(int)$lookbackEnv:(defined('FIO_IMPORT_LOOKBACK_DAYS')?(int)FIO_IMPORT_LOOKBACK_DAYS:3);if($lookback<1||$lookback>30)throw new RuntimeException('fio_invalid_lookback');

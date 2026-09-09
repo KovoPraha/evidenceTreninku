@@ -1,0 +1,60 @@
+name: Synchronizovat Fio pohyby
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  synchronizovat:
+    name: Fio read-only import (kis.kovopraha.cz)
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          for promenna in APP_HOST REMOTE_DIR SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do if [ -z "${!promenna}" ]; then echo "❌ Chybí povinná konfigurace: $promenna.";exit 1;fi;done
+          [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]] || { echo '❌ Neplatný hostname.';exit 1; };[[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo '❌ Neplatná cesta.';exit 1; };case "$REMOTE_DIR" in /*|*..*) echo '❌ Neplatná cesta.';exit 1;;esac
+          PORT="${SSH_PORT_SECRET:-22}";install -d -m 700 ~/.ssh;printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519;printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts;chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts;ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET";else HLEDAT="[$SSH_HOST_SECRET]:$PORT";fi;ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV";echo "SSH_PORT=$PORT" >> "$GITHUB_ENV";echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Spustit omezený import
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SSH[@]}" "set -eu;umask 077;test -s '$REMOTE_DIR/config.php';test -s '$REMOTE_DIR/bin/fio-import.php';mkdir -p '$DEPLOY_BASE'"
+          cat > /tmp/run-fio-import.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');require '$REMOTE_DIR/config.php';
+          if(!defined('FIO_IMPORT_ENABLED')||FIO_IMPORT_ENABLED!==true){echo json_encode(['status'=>'disabled'],JSON_THROW_ON_ERROR).PHP_EOL;exit;}
+          require '$REMOTE_DIR/bin/fio-import.php';
+          EOF
+          "${SCP[@]}" /tmp/run-fio-import.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-import.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-fio-import.php'"
+
+      - name: Uklidit spouštěcí soubor
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-fio-import.php
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f '$DEPLOY_BASE/run-fio-import.php'";fi

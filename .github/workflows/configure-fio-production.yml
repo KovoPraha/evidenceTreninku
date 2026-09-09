@@ -1,0 +1,104 @@
+name: Nastavit Fio synchronizaci na produkci
+
+on:
+  workflow_dispatch:
+    inputs:
+      rezim:
+        description: 'Zapnout nebo nouzově vypnout Fio synchronizaci'
+        required: true
+        type: choice
+        options: [enable, disable]
+      potvrzeni:
+        description: 'ZAPNOUT-FIO-READONLY nebo VYPNOUT-FIO'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  CONFIG_BACKUP_DIR: data/.kis-backups/config
+
+jobs:
+  nastavit:
+    name: Fio read-only (kis.kovopraha.cz)
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - name: Ověřit ruční potvrzení
+        env:
+          REZIM: ${{ inputs.rezim }}
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          if [ "$REZIM" = enable ] && [ "$POTVRZENI" != 'ZAPNOUT-FIO-READONLY' ]; then echo '❌ Chybí potvrzení zapnutí Fio.'; exit 1; fi
+          if [ "$REZIM" = disable ] && [ "$POTVRZENI" != 'VYPNOUT-FIO' ]; then echo '❌ Chybí potvrzení vypnutí Fio.'; exit 1; fi
+
+      - name: Stáhnout konfigurační nástroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Ověřit přístup a připravit tajnou konfiguraci
+        env:
+          REZIM: ${{ inputs.rezim }}
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+          FIO_API_TOKEN_VALUE: ${{ secrets.KIS_FIO_API_TOKEN }}
+        run: |
+          for promenna in APP_HOST REMOTE_DIR SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
+            if [ -z "${!promenna}" ]; then echo "❌ Chybí povinná konfigurace: $promenna."; exit 1; fi
+          done
+          [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]] && [[ "$APP_HOST" != .* ]] && [[ "$APP_HOST" != *. ]] || { echo '❌ KIS_APP_HOST nemá bezpečný formát.'; exit 1; }
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo '❌ KIS_REMOTE_DIR obsahuje nepovolené znaky.'; exit 1; }
+          case "$REMOTE_DIR" in /*|*..*|*/./*|./*|*/.) echo '❌ KIS_REMOTE_DIR musí být relativní cesta bez . a .. segmentů'; exit 1 ;; esac
+          if [ "$REZIM" = enable ]; then [ -n "$FIO_API_TOKEN_VALUE" ] || { echo '❌ Chybí Fio read-only token.'; exit 1; }; [[ "$FIO_API_TOKEN_VALUE" =~ ^[A-Za-z0-9_-]{20,128}$ ]] || { echo '❌ Fio token nemá bezpečný formát.'; exit 1; }; fi
+          PORT="${SSH_PORT_SECRET:-22}";install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts;ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV";echo "SSH_PORT=$PORT" >> "$GITHUB_ENV";echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+          if [ "$REZIM" = enable ]; then php -r '$v=["token"=>getenv("FIO_API_TOKEN_VALUE"),"lookback_days"=>3];file_put_contents("/tmp/fio-secrets.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);';chmod 600 /tmp/fio-secrets.json;fi
+
+      - name: Zálohovat a nastavit Fio
+        env:
+          REZIM: ${{ inputs.rezim }}
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SSH[@]}" "set -eu; umask 077; test -d '$REMOTE_DIR'; test -s '$REMOTE_DIR/config.php'; mkdir -p '$DEPLOY_BASE' '$CONFIG_BACKUP_DIR'"
+          "${SCP[@]}" bin/configure-production-fio.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/configure-production-fio.php"
+          if [ "$REZIM" = enable ]; then "${SCP[@]}" /tmp/fio-secrets.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/fio-secrets.json"; ACTION=enable; else ACTION=disable; fi
+          cat > /tmp/run-fio-config.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_FIO=1');putenv('FIO_CONFIG_ACTION=$ACTION');putenv('APP_HOST=$APP_HOST');putenv('APP_ROOT=$REMOTE_DIR');putenv('CONFIG_BACKUP_DIR=$CONFIG_BACKUP_DIR');putenv('FIO_SECRETS_FILE=$DEPLOY_BASE/fio-secrets.json');
+          require __DIR__ . '/configure-production-fio.php';kisProductionFioMain();
+          EOF
+          "${SCP[@]}" /tmp/run-fio-config.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-config.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-fio-config.php'" | tee /tmp/fio-config-result.json
+          jq -e --arg mode "$([ "$REZIM" = enable ] && echo enabled || echo disabled)" '.ok == true and .mode == $mode' /tmp/fio-config-result.json > /dev/null
+          cat > /tmp/run-fio-probe.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_FIO=1');putenv('FIO_CONFIG_ACTION=probe');putenv('APP_HOST=$APP_HOST');putenv('APP_ROOT=$REMOTE_DIR');require __DIR__ . '/configure-production-fio.php';kisProductionFioMain();
+          EOF
+          "${SCP[@]}" /tmp/run-fio-probe.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-probe.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-fio-probe.php'" | tee /tmp/fio-probe-result.json
+          if [ "$REZIM" = enable ]; then jq -e '.ok and .environment == "production" and .fio_enabled and .token_present and .lookback_days == 3' /tmp/fio-probe-result.json > /dev/null; else jq -e '.ok and (.fio_enabled|not)' /tmp/fio-probe-result.json > /dev/null; fi
+
+      - name: Uklidit dočasné kopie tokenu
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/fio-secrets.json /tmp/fio-config-result.json /tmp/fio-probe-result.json /tmp/run-fio-config.php /tmp/run-fio-probe.php
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f '$DEPLOY_BASE/fio-secrets.json' '$DEPLOY_BASE/run-fio-config.php' '$DEPLOY_BASE/run-fio-probe.php' '$DEPLOY_BASE/configure-production-fio.php'";fi

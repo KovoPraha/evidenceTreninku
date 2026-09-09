@@ -126,13 +126,16 @@ if (JE_LOKALNE) {
     defined('SHOP_BANK_DUE_DAYS') || define('SHOP_BANK_DUE_DAYS', 7);
 }
 
-// Read-only Fio import v shadow rezimu. Pouzijte vyhradne token typu "Sledovani uctu".
-// Token nikdy neukladejte do tohoto souboru ani do Gitu; patri do FIO_API_TOKEN v prostredi.
+// Read-only Fio import. Pouzijte vyhradne token typu "Sledovani uctu".
+// Token nikdy neukladejte do verzovaneho souboru. Na omezenem produkcnim hostingu
+// jej spravovany workflow ulozi do ignorovaneho config.php s pravy 0600.
 $fioImportEnabled = getenv('FIO_IMPORT_ENABLED');
+$fioApiToken = getenv('FIO_API_TOKEN');
 $fioImportLookbackDays = getenv('FIO_IMPORT_LOOKBACK_DAYS');
-define('FIO_IMPORT_ENABLED', is_string($fioImportEnabled) && $fioImportEnabled === '1');
+defined('FIO_IMPORT_ENABLED') || define('FIO_IMPORT_ENABLED', is_string($fioImportEnabled) && $fioImportEnabled === '1');
+if (!defined('FIO_API_TOKEN') && is_string($fioApiToken) && $fioApiToken !== '') define('FIO_API_TOKEN', $fioApiToken);
 if (is_string($fioImportLookbackDays) && preg_match('/^(?:[1-9]|[12][0-9]|30)$/D', $fioImportLookbackDays) === 1) {
-    define('FIO_IMPORT_LOOKBACK_DAYS', (int)$fioImportLookbackDays);
+    defined('FIO_IMPORT_LOOKBACK_DAYS') || define('FIO_IMPORT_LOOKBACK_DAYS', (int)$fioImportLookbackDays);
 }
 
 // ── Stripe Checkout (výchozí stav: vypnuto) ────────────────────────────────

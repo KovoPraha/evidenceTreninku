@@ -9,8 +9,9 @@ v `eshop_fio_admin.php`; teprve tento auditovaný krok změní stav platby.
 
 - Ve Fio se vytvoří token typu **Sledování účtu**, nikoli token pro zadávání
   plateb. Jeden token patří právě jednomu účtu.
-- Token je pouze v environment proměnné `FIO_API_TOKEN`; nepatří do databáze,
-  `config.php`, Gitu, CRON příkazu uloženého ve verzovaném souboru ani do výpisu.
+- Token nepatří do databáze, Gitu, argumentu CRONu ani do výpisu. Na produkci
+  jej workflow uloží do ignorovaného `config.php` s právy 0600; na běžném
+  serveru lze místo toho použít environment proměnnou `FIO_API_TOKEN`.
 - Import používá výhradně HTTPS GET endpoint `/v1/rest/periods/...`. Nepoužívá
   `/last`, protože ten posouvá serverový kurzor Fio. Překryvné období je bezpečné
   díky deduplikaci podle unikátního ID pohybu.
@@ -70,9 +71,15 @@ Obecný příkaz (konkrétní absolutní cestu doplní hosting) je:
 APP_HOST=data.kovopraha.cz php /absolutni/cesta/evidence/bin/fio-import.php
 ```
 
-Environment proměnné musí CRON zdědit z bezpečné konfigurace hostingu. Token
-nevkládejte přímo do příkazu, protože jej mohou zobrazovat procesní a provozní
-logy. Import vypíše jen počty; při chybě nevypíše token ani bankovní data.
+Na produkci běží verzovaný workflow `fio-import-production.yml` každých deset
+minut. Připojí se přes ověřené SSH, spustí pouze `bin/fio-import.php` a dočasný
+spouštěcí soubor vždy odstraní. Token se do plánovače ani příkazu nevkládá.
+Import vypíše jen počty; při chybě nevypíše token ani bankovní data.
+
+Zapnutí a nouzové vypnutí provádí workflow `configure-fio-production.yml`.
+Před zapnutím ověří read-only token skutečným GET dotazem a porovná IBAN tokenu
+s aktuálním účtem z administrace. Původní produkční konfiguraci zálohuje a nový
+blok zapisuje atomicky. Tajný token je GitHub Secret `KIS_FIO_API_TOKEN`.
 
 ## Automatické potvrzení
 
