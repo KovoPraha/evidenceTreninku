@@ -34,7 +34,7 @@ try{
 }catch(StripeGatewayException|SumUpGatewayException|InvalidArgumentException $exception){
     $paymentError=$exception->getMessage();$qr=$order['payment_record_status']==='pending'?shopPaymentQrDataUri((string)$order['spd_payload']):null;
 }
-$sumupAvailable=sumupIsEnabled()&&$order['status']==='placed'&&$order['payment_record_status']==='pending';
+$sumupAvailable=sumupIsEnabled()&&shopPaymentPolicyAllowsSumUp($order['accepted_payment_methods']??null)&&$order['status']==='placed'&&$order['payment_record_status']==='pending';
 $stripeAvailable=!$sumupAvailable&&stripeIsEnabled()&&$order['status']==='placed'&&$order['payment_record_status']==='pending';
 $messages=[
     'placed'=>['warning',$sumupAvailable?'Objednávka čeká na úhradu. Můžete zaplatit online přes SumUp nebo bankovním převodem.':'Objednávka čeká na bankovní platbu. Pro správné spárování použijte uvedený variabilní symbol.'],

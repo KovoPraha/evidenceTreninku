@@ -150,7 +150,8 @@ function sumupCreateCheckout(PDO $pdo, int $orderId, int $accountId, SumUpGatewa
     $settings ??= sumupSettingsFromConfig();
     if (!sumupIsEnabled($settings)) throw new SumUpGatewayDisabledException('SumUp je vypnutý nebo neúplně nakonfigurovaný.');
     if ($orderId < 1 || $accountId < 1) throw new InvalidArgumentException('SumUp checkout vyžaduje platnou objednávku a účet.');
-    $statement = $pdo->prepare("SELECT o.id,o.public_code,o.account_id,o.status,o.payment_status,o.total_minor,o.currency,p.id AS payment_id,p.payable_type,p.payable_id,p.status AS payment_record_status,p.amount_minor,p.currency AS payment_currency,p.sumup_checkout_id,p.sumup_checkout_reference FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id WHERE o.id=? AND o.account_id=?");
+    $paymentPolicy=shopPaymentPolicyPaymentSelect($pdo,'p');
+    $statement = $pdo->prepare("SELECT o.id,o.public_code,o.account_id,o.status,o.payment_status,o.total_minor,o.currency,p.id AS payment_id,p.payable_type,p.payable_id,".$paymentPolicy." AS accepted_payment_methods,p.status AS payment_record_status,p.amount_minor,p.currency AS payment_currency,p.sumup_checkout_id,p.sumup_checkout_reference FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id WHERE o.id=? AND o.account_id=?");
     $statement->execute([$orderId, $accountId]);
     $snapshot = $statement->fetch(PDO::FETCH_ASSOC);
     sumupAssertPendingOrderSnapshot($snapshot);
@@ -180,7 +181,7 @@ function sumupCreateCheckout(PDO $pdo, int $orderId, int $accountId, SumUpGatewa
 
     $pdo->beginTransaction();
     try {
-        $lockSql = "SELECT o.id,o.account_id,o.status,o.payment_status,o.total_minor,o.currency,p.id AS payment_id,p.payable_type,p.payable_id,p.status AS payment_record_status,p.amount_minor,p.currency AS payment_currency,p.sumup_checkout_id,p.sumup_checkout_reference FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id WHERE o.id=? AND o.account_id=?";
+        $lockSql = "SELECT o.id,o.account_id,o.status,o.payment_status,o.total_minor,o.currency,p.id AS payment_id,p.payable_type,p.payable_id,".$paymentPolicy." AS accepted_payment_methods,p.status AS payment_record_status,p.amount_minor,p.currency AS payment_currency,p.sumup_checkout_id,p.sumup_checkout_reference FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id WHERE o.id=? AND o.account_id=?";
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $lockSql .= ' FOR UPDATE';
         $lock = $pdo->prepare($lockSql);
         $lock->execute([$orderId, $accountId]);
@@ -216,6 +217,7 @@ function sumupCreateCheckout(PDO $pdo, int $orderId, int $accountId, SumUpGatewa
 function sumupAssertPendingOrderSnapshot(array|false $snapshot): void
 {
     if (!$snapshot || $snapshot['payable_type'] !== 'shop_order' || (int)$snapshot['payable_id'] !== (int)$snapshot['id']) throw new SumUpGatewayException('Objednávka nebo její platba nebyla nalezena.');
+    if (!shopPaymentPolicyAllowsSumUp($snapshot['accepted_payment_methods'] ?? null)) throw new SumUpGatewayDisabledException('Tato objednávka přijímá pouze QR platbu nebo bankovní převod.');
     if ($snapshot['status'] !== 'placed' || $snapshot['payment_status'] !== 'pending' || $snapshot['payment_record_status'] !== 'pending') throw new SumUpGatewayException('SumUp Checkout lze vytvořit pouze pro čekající objednávku.');
     if ((int)$snapshot['total_minor'] < 1 || (int)$snapshot['amount_minor'] !== (int)$snapshot['total_minor'] || (string)$snapshot['currency'] !== (string)$snapshot['payment_currency'] || preg_match('/^[A-Z]{3}$/D', (string)$snapshot['currency']) !== 1) {
         throw new SumUpGatewayException('Částka nebo měna platebního snapshotu není konzistentní.');

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__.'/shop_coupon.php';
+require_once __DIR__.'/shop_payment_policy.php';
 
 final class ShopCheckoutException extends RuntimeException
 {
@@ -24,8 +25,9 @@ function shopCheckoutColumnExists(PDO$pdo,string$table,string$column):bool
 function shopStorefrontProducts(PDO $pdo, ?DateTimeImmutable $now = null): array
 {
     $sortOrder=shopCheckoutColumnExists($pdo,'shop_products','sort_order')?'p.sort_order':'0';
+    $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
     $rows = $pdo->query(
-        "SELECT p.id AS product_id,p.offer_type,p.catalog_status AS product_status,".$sortOrder." AS sort_order,"
+        "SELECT p.id AS product_id,p.offer_type,p.catalog_status AS product_status,".$paymentPolicy." AS payment_method_policy,".$sortOrder." AS sort_order,"
         . "pub.status AS publication_status,pub.public_name,pub.public_summary,"
         . "v.id AS variant_id,v.sku,v.catalog_status,v.visible,v.price_mode,"
         . 'v.attributes_json,v.amount_minor,v.currency,v.stock_quantity_decimal '
@@ -77,8 +79,9 @@ function shopCartDetail(PDO $pdo, int $accountId): array
     $beneficiarySelect = shopBeneficiaryColumnExists($pdo,'shop_cart_items')
         ? 'ci.beneficiary_sportovec_id'
         : 'NULL AS beneficiary_sportovec_id';
+    $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
     $statement = $pdo->prepare(
-        'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,pub.public_name,'
+        'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,'.$paymentPolicy.' AS payment_method_policy,pub.public_name,'
         . 'v.id AS variant_id,v.sku,v.attributes_json,v.amount_minor,v.currency,v.catalog_status '
         . 'FROM shop_cart_items ci JOIN shop_variants v ON v.id=ci.variant_id '
         . 'JOIN shop_products p ON p.id=v.product_id '
@@ -118,7 +121,8 @@ function shopCartDetail(PDO $pdo, int $accountId): array
     $coupon=null;$couponError=null;$couponBreakdown=null;
     if($cart['coupon_id']!==null){try{$couponBreakdown=shopCouponBreakdownFromItems($pdo,$items,$eventItems,$velodromeItems);$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$couponBreakdown);}catch(ShopCouponException $exception){$couponError=$exception->getMessage();}}
     $discount=$coupon!==null?(int)$coupon['discount_minor']:0;
-    return ['cart'=>$cart,'items'=>$items,'event_items'=>$eventItems,'velodrome_items'=>$velodromeItems,'subtotal_minor'=>$total,'discount_minor'=>$discount,'total_minor'=>$total-$discount,'currency'=>$currency,'coupon'=>$coupon,'coupon_error'=>$couponError,'fingerprint'=>shopCartFingerprint($items,$coupon,$velodromeItems,$eventItems)];
+    $paymentPolicy=shopPaymentPolicyForItemGroups($items,$eventItems,$velodromeItems);
+    return ['cart'=>$cart,'items'=>$items,'event_items'=>$eventItems,'velodrome_items'=>$velodromeItems,'subtotal_minor'=>$total,'discount_minor'=>$discount,'total_minor'=>$total-$discount,'currency'=>$currency,'coupon'=>$coupon,'coupon_error'=>$couponError,'payment_method_policy'=>$paymentPolicy,'fingerprint'=>shopCartFingerprint($items,$coupon,$velodromeItems,$eventItems)];
 }
 
 function shopCartSetQuantity(PDO $pdo, int $accountId, int $variantId, int $quantity, ?int $beneficiarySportovecId = null): void
@@ -232,7 +236,8 @@ function shopCheckoutPlace(
         $beneficiarySelect=shopBeneficiaryColumnExists($pdo,'shop_cart_items')
             ? 'ci.beneficiary_sportovec_id'
             : 'NULL AS beneficiary_sportovec_id';
-        $sql = 'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,p.catalog_status AS product_status,'
+        $paymentPolicySelect=shopPaymentPolicyProductSelect($pdo,'p');
+        $sql = 'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,'.$paymentPolicySelect.' AS payment_method_policy,p.catalog_status AS product_status,'
             . 'pub.status AS publication_status,pub.public_name,v.id AS variant_id,v.* FROM shop_cart_items ci '
             . 'JOIN shop_variants v ON v.id=ci.variant_id JOIN shop_products p ON p.id=v.product_id '
             . 'JOIN shop_product_publications pub ON pub.product_id=p.id WHERE ci.cart_id=? ORDER BY v.id';
@@ -287,6 +292,7 @@ function shopCheckoutPlace(
             if($total>PHP_INT_MAX-$unit)throw new ShopCheckoutException('Celková částka je mimo podporovaný rozsah.');
             $total+=$unit;
         }
+        $paymentPolicy=shopPaymentPolicyForItemGroups($items,$eventItems,$velodromeItems);
         $subtotal=$total;$coupon=null;$discount=0;
         if($cart['coupon_id']!==null){try{$couponBreakdown=shopCouponBreakdownFromItems($pdo,$items,$eventItems,$velodromeItems);$coupon=shopCouponQuoteById($pdo,(int)$cart['coupon_id'],$couponBreakdown,true);$discount=(int)$coupon['discount_minor'];}catch(ShopCouponException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}}
         $total=$subtotal-$discount;
@@ -344,9 +350,15 @@ function shopCheckoutPlace(
         }
         $variableSymbol=shopPaymentVariableSymbol($orderId);
         $spd=shopPaymentSpdPayload($bank['iban'],$total,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
-        $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) '
-            . "VALUES ('shop_order',?,'bank_transfer','pending',?,?,?,?,?,?,?,?)")
-            ->execute([$orderId,$total,$currency,$variableSymbol,$bank['iban'],$bank['bic']!==''?$bank['bic']:null,$bank['account_label'],$spd,$dueAt]);
+        if(shopPaymentPolicyColumnExists($pdo,'payments','accepted_payment_methods')){
+            $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,accepted_payment_methods,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) '
+                . "VALUES ('shop_order',?,'bank_transfer',?,'pending',?,?,?,?,?,?,?,?)")
+                ->execute([$orderId,$paymentPolicy,$total,$currency,$variableSymbol,$bank['iban'],$bank['bic']!==''?$bank['bic']:null,$bank['account_label'],$spd,$dueAt]);
+        }else{
+            $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) '
+                . "VALUES ('shop_order',?,'bank_transfer','pending',?,?,?,?,?,?,?,?)")
+                ->execute([$orderId,$total,$currency,$variableSymbol,$bank['iban'],$bank['bic']!==''?$bank['bic']:null,$bank['account_label'],$spd,$dueAt]);
+        }
         $placeNote='Objednávka vytvořena serverovým checkoutem.'.($eventOrderItems>0?' Obsahuje '.$eventOrderItems.' placenou klubovou událost.':'').($velodromeOrderItems>0?' Obsahuje '.$velodromeOrderItems.' rezervaci velodromu.':'').($coupon!==null?' Kupón '.$coupon['code'].' poskytl slevu '.$discount.' minor units.':'');
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'account\',?,\'place\',NULL,\'placed\',?)')->execute([$orderId,$accountId,$placeNote]);
         $pdo->prepare("UPDATE shop_carts SET status='converted',active_account_id=NULL,converted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?")
@@ -451,7 +463,8 @@ function shopCheckoutDiagnosticTrace(Throwable $exception): string
 /** @return array<string,mixed> */
 function shopOrderByCode(PDO $pdo,int $accountId,string $publicCode): array
 {
-    $statement=$pdo->prepare('SELECT o.*,p.id AS payment_id,p.method,p.status AS payment_record_status,p.variable_symbol,p.iban_snapshot,p.bic_snapshot,p.account_label_snapshot,p.spd_payload,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS coupon_code_snapshot,r.discount_minor AS coupon_discount_minor FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id WHERE o.account_id=? AND o.public_code=?');
+    $paymentPolicy=shopPaymentPolicyPaymentSelect($pdo,'p');
+    $statement=$pdo->prepare('SELECT o.*,p.id AS payment_id,p.method,'.$paymentPolicy.' AS accepted_payment_methods,p.status AS payment_record_status,p.variable_symbol,p.iban_snapshot,p.bic_snapshot,p.account_label_snapshot,p.spd_payload,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS coupon_code_snapshot,r.discount_minor AS coupon_discount_minor FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id WHERE o.account_id=? AND o.public_code=?');
     $statement->execute([$accountId,$publicCode]);$order=$statement->fetch(PDO::FETCH_ASSOC);
     if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
     $items=$pdo->prepare('SELECT * FROM shop_order_items WHERE order_id=? ORDER BY id');$items->execute([(int)$order['id']]);
@@ -539,6 +552,7 @@ function shopCartFingerprint(array $items,?array $coupon=null,array $velodromeIt
         'amount_minor'=>(int)$item['amount_minor'],
         'currency'=>(string)$item['currency'],
         'beneficiary_sportovec_id'=>$item['beneficiary_sportovec_id']===null?null:(int)$item['beneficiary_sportovec_id'],
+        'payment_method_policy'=>(string)($item['payment_method_policy']??SHOP_PAYMENT_POLICY_BANK_ONLY),
         'program_terms'=>isset($item['program_terms'])&&is_array($item['program_terms'])&&clubProgramTermsComplete($item['program_terms'])?clubProgramTermsSnapshot($item['program_terms']):null,
     ];
     usort($contract,static fn(array $a,array $b):int=>$a['variant_id']<=>$b['variant_id']);
@@ -940,7 +954,8 @@ function shopCartLockActive(PDO $pdo,int $accountId): array
 /** @return array<string,mixed>|false */
 function shopCheckoutLockVariant(PDO $pdo,int $variantId): array|false
 {
-    $sql='SELECT v.*,p.offer_type,p.catalog_status AS product_status,pub.status AS publication_status,pub.public_name FROM shop_variants v JOIN shop_products p ON p.id=v.product_id JOIN shop_product_publications pub ON pub.product_id=p.id WHERE v.id=?';
+    $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
+    $sql='SELECT v.*,p.offer_type,'.$paymentPolicy.' AS payment_method_policy,p.catalog_status AS product_status,pub.status AS publication_status,pub.public_name FROM shop_variants v JOIN shop_products p ON p.id=v.product_id JOIN shop_product_publications pub ON pub.product_id=p.id WHERE v.id=?';
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
     $statement=$pdo->prepare($sql);$statement->execute([$variantId]);return $statement->fetch(PDO::FETCH_ASSOC);
 }

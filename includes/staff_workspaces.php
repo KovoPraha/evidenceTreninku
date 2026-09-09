@@ -161,6 +161,7 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Platby', 'icon' => 'bank', 'items' => [
                     ['route' => 'eshop_payments_admin.php', 'label' => 'Platby a vratky', 'description' => 'Úkoly čekající na ověření v bance', 'icon' => 'cash-coin'],
+                    ['route' => 'eshop_payment_methods_admin.php', 'label' => 'Způsoby platby', 'description' => 'QR převod nebo karta přes SumUp podle nabídky', 'icon' => 'credit-card-2-front'],
                     ['route' => 'eshop_fio_admin.php', 'label' => 'Fio párování', 'description' => 'Návrhy bankovních shod', 'icon' => 'bank'],
                     ['route' => 'eshop_bank_admin.php', 'label' => 'Bankovní účet e-shopu', 'description' => 'IBAN, BIC a splatnost', 'icon' => 'credit-card'],
                     ['route' => 'member_charges_admin.php', 'label' => 'Klubové platby', 'description' => 'Stav členských plateb', 'icon' => 'cash-stack'],

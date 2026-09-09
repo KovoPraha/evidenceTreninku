@@ -96,6 +96,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260822180000_staff_account_events',
                 '20260824120000_club_calendar_planning',
                 '20260908120000_sumup_checkout',
+                '20260909120000_payment_method_policy',
             ],
             array_keys($catalog)
         );

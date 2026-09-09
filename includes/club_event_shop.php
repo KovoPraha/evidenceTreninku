@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__.'/club_event_registration.php';
+require_once __DIR__.'/shop_payment_policy.php';
 
 final class ClubEventShopException extends RuntimeException {}
 
@@ -18,7 +19,8 @@ function clubEventShopAvailable(PDO $pdo): bool
 /** @return array<string,mixed> */
 function clubEventShopVariant(PDO $pdo,int $eventId,int $variantId,bool $lock=false):array
 {
-    $sql="SELECT v.*,v.currency AS variant_currency,p.id AS product_id,p.catalog_status AS product_status,"
+    $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
+    $sql="SELECT v.*,v.currency AS variant_currency,p.id AS product_id,".$paymentPolicy." AS payment_method_policy,p.catalog_status AS product_status,"
         ."p.offer_type,e.currency AS event_currency,e.name AS event_name,e.* "
         ."FROM club_events e JOIN shop_product_event_links l ON l.event_id=e.id JOIN shop_products p ON p.id=l.product_id "
         ."JOIN shop_variants v ON v.product_id=p.id WHERE e.id=? AND v.id=?";
@@ -85,7 +87,8 @@ function clubEventShopRemoveFromCart(PDO $pdo,int $accountId,int $cartItemId):bo
 function clubEventShopCartItems(PDO $pdo,int $cartId):array
 {
     if(!clubEventShopAvailable($pdo)||$cartId<1)return [];
-    $s=$pdo->prepare('SELECT ci.id AS cart_item_id,ci.event_id,ci.variant_id,ci.beneficiary_sportovec_id,ci.consent_version,e.name AS event_name,v.sku,v.amount_minor,v.currency,s.jmeno,s.prijmeni FROM club_event_cart_items ci JOIN club_events e ON e.id=ci.event_id JOIN shop_variants v ON v.id=ci.variant_id JOIN sportovci s ON s.id=ci.beneficiary_sportovec_id WHERE ci.cart_id=? ORDER BY ci.event_id,ci.id');
+    $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
+    $s=$pdo->prepare('SELECT ci.id AS cart_item_id,ci.event_id,ci.variant_id,ci.beneficiary_sportovec_id,ci.consent_version,e.name AS event_name,v.sku,v.amount_minor,v.currency,'.$paymentPolicy.' AS payment_method_policy,s.jmeno,s.prijmeni FROM club_event_cart_items ci JOIN club_events e ON e.id=ci.event_id JOIN shop_variants v ON v.id=ci.variant_id JOIN shop_products p ON p.id=v.product_id JOIN sportovci s ON s.id=ci.beneficiary_sportovec_id WHERE ci.cart_id=? ORDER BY ci.event_id,ci.id');
     $s->execute([$cartId]);$rows=$s->fetchAll(PDO::FETCH_ASSOC);foreach($rows as &$row){$row['quantity']=1;$row['line_amount_minor']=(int)$row['amount_minor'];}unset($row);return $rows;
 }
 
@@ -111,7 +114,7 @@ function clubEventShopLockCheckoutItems(PDO $pdo,int $cartId,int $accountId):arr
 /** @param list<array<string,mixed>> $items */
 function clubEventShopFingerprintItems(array $items):array
 {
-    return array_map(static fn(array $i):array=>['event_id'=>(int)$i['event_id'],'variant_id'=>(int)$i['variant_id'],'beneficiary_sportovec_id'=>(int)$i['beneficiary_sportovec_id'],'consent_version'=>(string)$i['consent_version'],'amount_minor'=>(int)$i['amount_minor'],'currency'=>(string)$i['currency']],$items);
+    return array_map(static fn(array $i):array=>['event_id'=>(int)$i['event_id'],'variant_id'=>(int)$i['variant_id'],'beneficiary_sportovec_id'=>(int)$i['beneficiary_sportovec_id'],'consent_version'=>(string)$i['consent_version'],'amount_minor'=>(int)$i['amount_minor'],'currency'=>(string)$i['currency'],'payment_method_policy'=>(string)($i['payment_method_policy']??SHOP_PAYMENT_POLICY_BANK_ONLY)],$items);
 }
 
 /** @param list<array<string,mixed>> $items */

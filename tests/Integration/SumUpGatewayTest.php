@@ -137,6 +137,14 @@ final class SumUpGatewayTest extends TestCase
         self::assertFalse(\sumupIsEnabled(['enabled' => true, 'api_key' => 'sup_' . 'sk_test', 'merchant_code' => 'MELE4XUL', 'base_url' => 'http://example.test']));
     }
 
+    public function testBankOnlyPaymentCannotCreateSumUpCheckout(): void
+    {
+        $pdo=$this->database();
+        $pdo->exec("ALTER TABLE payments ADD COLUMN accepted_payment_methods TEXT NOT NULL DEFAULT 'bank_transfer'");
+        $this->expectException(\SumUpGatewayDisabledException::class);
+        \sumupCreateCheckout($pdo,11,10,$this->pendingClient(),self::SETTINGS);
+    }
+
     private function pendingClient(): FakeSumUpGatewayClient
     {
         $client = new FakeSumUpGatewayClient();
