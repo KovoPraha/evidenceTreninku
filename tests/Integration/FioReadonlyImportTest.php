@@ -44,6 +44,16 @@ final class FioReadonlyImportTest extends TestCase
         self::assertSame('failed',$pdo->query('SELECT status FROM fio_import_runs ORDER BY id DESC LIMIT 1')->fetchColumn());
     }
 
+    public function testDuplicateUnconfirmedMovementIsReevaluatedAgainstCurrentPayments():void
+    {
+        $pdo=$this->database();$payload=$this->payload([$this->movement('reevaluate-1','1250.00','CZK','999')]);
+        fioImportJson($pdo,$payload,'2026-08-03','2026-08-03','CZ6508000000192000145399');
+        self::assertSame('review_unknown_vs',$pdo->query("SELECT match_status FROM fio_account_movements WHERE fio_movement_id='reevaluate-1'")->fetchColumn());
+        $pdo->exec("UPDATE payments SET variable_symbol='0000000999' WHERE id=1");
+        $again=fioImportJson($pdo,$payload,'2026-08-03','2026-08-03','CZ6508000000192000145399');
+        self::assertSame(1,$again['duplicates']);self::assertSame('proposed_exact',$pdo->query("SELECT match_status FROM fio_account_movements WHERE fio_movement_id='reevaluate-1'")->fetchColumn());
+    }
+
     public function testUnexpectedAccountIsRejectedAndNoMovementIsStored(): void
     {
         $pdo=$this->database();
