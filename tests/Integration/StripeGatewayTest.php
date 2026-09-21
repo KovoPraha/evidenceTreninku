@@ -12,6 +12,8 @@ final class FakeStripeGatewayClient implements \StripeGatewayClient
 {
     /** @var list<array{parameters:array<string,mixed>,idempotency_key:string}> */
     public array $created=[];
+    /** @var array<string,array<string,mixed>> */
+    public array $sessions=[];
     /** @var array<string,mixed> */
     public array $event=[];
 
@@ -19,6 +21,12 @@ final class FakeStripeGatewayClient implements \StripeGatewayClient
     {
         $this->created[]=['parameters'=>$parameters,'idempotency_key'=>$idempotencyKey];
         return ['id'=>'cs_test_unit123','url'=>'https://checkout.stripe.test/c/pay_unit123'];
+    }
+
+    public function retrieveCheckoutSession(string $sessionId):array
+    {
+        if(!isset($this->sessions[$sessionId]))throw new \StripeGatewayException('Session not found.');
+        return $this->sessions[$sessionId];
     }
 
     public function constructWebhookEvent(string $payload,string $signature,string $secret):array
@@ -53,6 +61,23 @@ final class StripeGatewayTest extends TestCase
         $pdo=$this->database();$client=$this->completedClient();
         try{\stripeHandleWebhook($pdo,'{"id":"evt_unit"}','bad-signature',$client,self::SETTINGS);self::fail('Bad signature must be rejected.');}catch(\StripeWebhookSignatureException){}
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM stripe_webhook_events')->fetchColumn());self::assertSame('pending',$pdo->query('SELECT status FROM payments')->fetchColumn());
+    }
+
+    public function testExistingOpenSessionIsReusedWithoutCreatingAnotherOne():void
+    {
+        $pdo=$this->database();$pdo->exec("UPDATE payments SET stripe_checkout_session_id='cs_test_existing' WHERE id=31");
+        $client=new FakeStripeGatewayClient();$client->sessions['cs_test_existing']=['id'=>'cs_test_existing','status'=>'open','url'=>'https://checkout.stripe.test/c/existing'];
+        $session=\stripeCreateCheckoutSession($pdo,11,10,$client,self::SETTINGS);
+        self::assertSame('cs_test_existing',$session['id']);self::assertSame('https://checkout.stripe.test/c/existing',$session['url']);self::assertSame([],$client->created);
+    }
+
+    public function testExpiredSessionIsReplacedWithDeterministicRetryKey():void
+    {
+        $pdo=$this->database();$pdo->exec("UPDATE payments SET stripe_checkout_session_id='cs_test_expired' WHERE id=31");
+        $client=new FakeStripeGatewayClient();$client->sessions['cs_test_expired']=['id'=>'cs_test_expired','status'=>'expired','url'=>null];
+        $session=\stripeCreateCheckoutSession($pdo,11,10,$client,self::SETTINGS);
+        self::assertSame('cs_test_unit123',$session['id']);self::assertStringStartsWith('shop-order-11-payment-31-after-',$client->created[0]['idempotency_key']);
+        self::assertSame('cs_test_unit123',$pdo->query('SELECT stripe_checkout_session_id FROM payments WHERE id=31')->fetchColumn());
     }
 
     public function testSdkAdapterRejectsInvalidCryptographicSignatureWithoutNetwork():void

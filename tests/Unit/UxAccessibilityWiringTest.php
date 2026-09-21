@@ -56,7 +56,7 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('Žádný produkt neodpovídá zvoleným filtrům.', $shop);
         self::assertStringContainsString('Zrušit filtry', $shop);
         self::assertSame(1, substr_count($clubs, '<h1'));
-        self::assertStringContainsString('<h1 class="h3 mb-1">Kroužky a klubové akce</h1>', $clubs);
+        self::assertStringContainsString('<h1 class="h3 mb-1">Akce</h1>', $clubs);
         self::assertStringContainsString('col-12 col-sm-6', $registration);
     }
 

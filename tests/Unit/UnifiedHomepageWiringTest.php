@@ -35,7 +35,7 @@ final class UnifiedHomepageWiringTest extends TestCase
         self::assertStringContainsString('eshop_orders_admin.php', $source);
         self::assertStringContainsString('Kovopraha – klubový portál', $source);
         self::assertStringContainsString('booking/eshop.php', $header);
-        self::assertStringContainsString('Kroužky a události', $header);
+        self::assertStringContainsString('Akce', $header);
         self::assertStringContainsString('Rodič / zákazník', $header);
         self::assertStringContainsString('Trenér', $header);
     }

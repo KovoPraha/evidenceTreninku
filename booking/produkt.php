@@ -31,14 +31,14 @@ function shopProductVariantLabel(array $variant): string
 
 $productId = (int)($_GET['id'] ?? 0);
 $product = shopStorefrontProductDetail($pdo, $productId);
-$isProgram = $product !== null && clubProgramProductHasActiveOffer($pdo, $productId);
+$isProgram = $product !== null && clubProgramProductHasOfferLink($pdo, $productId);
 if ($product !== null) {
     $product['variants'] = array_values(array_filter(
         $product['variants'],
         static function (array $variant) use ($pdo, $isProgram): bool {
             $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']);
             if ($isProgram) {
-                return $offer !== false && clubProgramOfferIsOnSale($offer);
+                return clubProgramVariantSaleState($pdo,(int)$variant['variant_id'])['saleable'];
             }
             return $offer === false;
         }
@@ -89,10 +89,8 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($selected === null || !$selected['in_stock']) {
                 throw new ShopCheckoutException('Vybraná varianta není aktuálně skladem.');
             }
-            $offer = clubProgramOfferForVariant($pdo, $variantId);
-            if ($offer && !clubProgramOfferIsOnSale($offer)) {
-                throw new ClubProgramException('Prodej tohoto období ještě nezačal nebo už skončil.');
-            }
+            $offer = false;
+            if(clubProgramVariantHasOfferLink($pdo,$variantId)){$saleState=clubProgramVariantSaleState($pdo,$variantId);if(!$saleState['saleable'])throw new ClubProgramException($saleState['reason']);$offer=$saleState['offer'];}
             $current = 0;
             foreach (shopCartDetail($pdo, $accountId)['items'] as $item) {
                 if ((int)$item['variant_id'] === $variantId) {

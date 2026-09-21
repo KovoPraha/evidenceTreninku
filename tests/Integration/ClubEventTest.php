@@ -14,6 +14,16 @@ require_once dirname(__DIR__, 2) . '/includes/club_event.php';
 
 final class ClubEventTest extends TestCase
 {
+    public function testCreateGeneratesFriendlyUniqueInternalCodeWhenFieldIsBlank():void
+    {
+        $pdo=$this->database();$input=$this->eventInput();$input['code']='';
+        $first=\clubEventCreateDraft($pdo,7,$input);$second=\clubEventCreateDraft($pdo,7,$input);
+        $codes=$pdo->query('SELECT code FROM club_events ORDER BY id')->fetchAll(PDO::FETCH_COLUMN);
+        self::assertCount(2,$codes);self::assertNotSame($codes[0],$codes[1]);
+        self::assertMatchesRegularExpression('/^AKCE-ZEBRY-6-7-LET-[A-F0-9]{6}$/',$codes[0]);
+        self::assertGreaterThan(0,$first['id']);self::assertGreaterThan($first['id'],$second['id']);
+    }
+
     public function testDraftEventSessionAndProductLinkAreAuditedAndReversible(): void
     {
         $pdo=$this->database();$event=\clubEventCreateDraft($pdo,7,$this->eventInput());

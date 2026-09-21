@@ -8,6 +8,7 @@ require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/venue_operations.php';
 require_once __DIR__ . '/includes/public_listing_guard.php';
+require_once __DIR__ . '/includes/individual_lesson_context.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -16,13 +17,14 @@ $errors   = [];
 $opakovat = $_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['opakovat']);
 $editId=(int)($_GET['edit_id']??$_POST['edit_id']??0);
 $editRow=null;
-if($editId>0){$st=$pdo->prepare('SELECT * FROM individualni_lekce WHERE id=? AND trener_id=?');$st->execute([$editId,$trenerId]);$editRow=$st->fetch(PDO::FETCH_ASSOC)?:null;if(!$editRow){http_response_code(404);exit('Lekce nebyla nalezena nebo ji nesmíte upravit.');}}
+$lessonContext=individualLessonContextCondition($pdo,'individualni_lekce',INDIVIDUAL_LESSON_CONTEXT_LESSON);
+if($editId>0){$st=$pdo->prepare('SELECT * FROM individualni_lekce WHERE id=? AND trener_id=? AND '.$lessonContext);$st->execute([$editId,$trenerId]);$editRow=$st->fetch(PDO::FETCH_ASSOC)?:null;if(!$editRow){http_response_code(404);exit('Individuální lekce nebyla nalezena nebo ji nesmíte upravit.');}}
 
 // ── Předvyplnění z kopie (?kopie_id=X) ───────────────────────────────────────
 $kopie = null;
 $kopieId = $editRow?0:(int)($_GET['kopie_id'] ?? 0);
 if ($kopieId && $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $stK = $pdo->prepare("SELECT * FROM individualni_lekce WHERE id=? AND trener_id=?");
+    $stK = $pdo->prepare("SELECT * FROM individualni_lekce WHERE id=? AND trener_id=? AND ".$lessonContext);
     $stK->execute([$kopieId, $trenerId]);
     $kopie = $stK->fetch(PDO::FETCH_ASSOC) ?: null;
     if ($kopie) {
@@ -122,13 +124,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $stmtLekce = $pdo->prepare("
                     INSERT INTO individualni_lekce
-                        (trener_id, sportoviste_id, datum, cas_od, cas_do, slot_delka_min, typ, nazev, popis, cena_kc, max_osob, vyjimka_3_dny)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                        (trener_id, sportoviste_id, datum, cas_od, cas_do, slot_delka_min, typ, nazev, popis, cena_kc, max_osob, vyjimka_3_dny,booking_context)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
                 ");
 
                 foreach ($datumy as $d) {
                     $stmtLekce->execute([$trenerId, $sportId, $d, $casOd, $casDo,
-                                         $slotDelka, $typ, $nazev, $popis ?: null, $cena, $maxOsob, $vyjimka3dny]);
+                                         $slotDelka, $typ, $nazev, $popis ?: null, $cena, $maxOsob, $vyjimka3dny,INDIVIDUAL_LESSON_CONTEXT_LESSON]);
                     // Poznámka: individuální lekce záměrně NEBLOKUJÍ rezervace_sportovist.
                     // Sportoviště se blokuje až při potvrzeném týmovém tréninku (přes formular.php).
                 }

@@ -52,8 +52,8 @@ function publicShellNav(string $active = ''): void
         'home' => ['Domů', 'index.php'],
         'shop' => ['E-shop', 'booking/eshop.php'],
         'training' => ['Tréninky', 'booking/treninky.php'],
-        'clubs' => ['Kroužky a akce', 'booking/krouzky.php'],
-        'calendar' => ['Klubový kalendář', 'booking/klubovy_kalendar.php'],
+        'clubs' => ['Akce', 'booking/krouzky.php'],
+        'calendar' => ['Kalendář klubových akcí', 'booking/klubovy_kalendar.php'],
         'lessons' => ['Individuální lekce', 'booking/kalendar.php'],
         'velodrome' => ['Velodrom', 'booking/velodrom.php'],
     ];

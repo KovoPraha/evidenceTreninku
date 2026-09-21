@@ -21,6 +21,9 @@ interface StripeGatewayClient
     public function createCheckoutSession(array $parameters, string $idempotencyKey): array;
 
     /** @return array<string,mixed> */
+    public function retrieveCheckoutSession(string $sessionId): array;
+
+    /** @return array<string,mixed> */
     public function constructWebhookEvent(string $payload, string $signature, string $secret): array;
 }
 
@@ -28,18 +31,36 @@ final class StripeSdkGatewayClient implements StripeGatewayClient
 {
     private object $client;
 
-    public function __construct(string $secretKey)
+    public function __construct(string $secretKey, int $connectTimeoutSeconds = 5, int $timeoutSeconds = 15)
     {
         $autoload = dirname(__DIR__) . '/vendor/autoload.php';
         if (!is_file($autoload)) throw new StripeGatewayException('Stripe SDK není dostupné.');
         require_once $autoload;
-        $this->client = new \Stripe\StripeClient($secretKey);
+        $httpClient = new \Stripe\HttpClient\CurlClient();
+        $httpClient->setConnectTimeout($connectTimeoutSeconds);
+        $httpClient->setTimeout($timeoutSeconds);
+        \Stripe\ApiRequestor::setHttpClient($httpClient);
+        $this->client = new \Stripe\StripeClient(['api_key'=>$secretKey,'max_network_retries'=>0]);
     }
 
     public function createCheckoutSession(array $parameters, string $idempotencyKey): array
     {
-        $session = $this->client->checkout->sessions->create($parameters, ['idempotency_key' => $idempotencyKey]);
-        return $session->toArray();
+        try {
+            $session = $this->client->checkout->sessions->create($parameters, ['idempotency_key' => $idempotencyKey]);
+            return $session->toArray();
+        } catch (Throwable $exception) {
+            throw stripeSdkFailure($exception);
+        }
+    }
+
+    public function retrieveCheckoutSession(string $sessionId): array
+    {
+        try {
+            $session = $this->client->checkout->sessions->retrieve($sessionId, []);
+            return $session->toArray();
+        } catch (Throwable $exception) {
+            throw stripeSdkFailure($exception);
+        }
     }
 
     public function constructWebhookEvent(string $payload, string $signature, string $secret): array
@@ -51,6 +72,17 @@ final class StripeSdkGatewayClient implements StripeGatewayClient
         }
         return $event->toArray();
     }
+}
+
+function stripeSdkFailure(Throwable $exception): StripeGatewayException
+{
+    $reference = substr(bin2hex(random_bytes(8)), 0, 12);
+    error_log('stripe_gateway: ref=' . $reference . ' class=' . get_class($exception) . ' message=' . $exception->getMessage());
+    return new StripeGatewayException(
+        'Platební služba momentálně neodpovídá. Zkuste to prosím znovu za chvíli. Kód chyby: ' . $reference,
+        0,
+        $exception
+    );
 }
 
 /** @return array{enabled:bool,secret_key:string,publishable_key:string,webhook_secret:string,base_url:string} */
@@ -92,6 +124,18 @@ function stripeCreateCheckoutSession(PDO $pdo,int $orderId,int $accountId,Stripe
     $statement=$pdo->prepare("SELECT o.id,o.public_code,o.account_id,o.status,o.payment_status,o.total_minor,o.currency,p.id AS payment_id,p.payable_type,p.payable_id,p.status AS payment_record_status,p.amount_minor,p.currency AS payment_currency,p.stripe_checkout_session_id FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id WHERE o.id=? AND o.account_id=?");
     $statement->execute([$orderId,$accountId]);$snapshot=$statement->fetch(PDO::FETCH_ASSOC);
     stripeAssertPendingOrderSnapshot($snapshot);
+    $storedSessionId=trim((string)($snapshot['stripe_checkout_session_id']??''));
+    if($storedSessionId!==''){
+        if(preg_match('/^cs_(?:test_|live_)?[A-Za-z0-9_]+$/D',$storedSessionId)!==1)throw new StripeGatewayException('U objednávky je uložen neplatný identifikátor platby. Kontaktujte správce.');
+        $storedSession=$client->retrieveCheckoutSession($storedSessionId);
+        $storedId=(string)($storedSession['id']??'');$storedUrl=(string)($storedSession['url']??'');$storedStatus=(string)($storedSession['status']??'');
+        if(!hash_equals($storedSessionId,$storedId))throw new StripeGatewayException('Platební služba vrátila jinou objednávku. Pokračování bylo z bezpečnostních důvodů zastaveno.');
+        if($storedStatus==='open'&&filter_var($storedUrl,FILTER_VALIDATE_URL)!==false){
+            return ['id'=>$storedId,'url'=>$storedUrl,'order_id'=>$orderId,'payment_id'=>(int)$snapshot['payment_id'],'amount_total'=>(int)$snapshot['total_minor'],'currency'=>(string)$snapshot['currency']];
+        }
+        if($storedStatus==='complete')throw new StripeGatewayException('Platba už byla odeslána. Obnovte stránku a vyčkejte na potvrzení platební služby.');
+        if($storedStatus!=='expired')throw new StripeGatewayException('Uloženou platební relaci nelze bezpečně obnovit. Zkuste to prosím později.');
+    }
     $publicCode=rawurlencode((string)$snapshot['public_code']);$base=rtrim((string)$settings['base_url'],'/');
     $parameters=[
         'mode'=>'payment',
@@ -113,7 +157,9 @@ function stripeCreateCheckoutSession(PDO $pdo,int $orderId,int $accountId,Stripe
             'public_code'=>(string)$snapshot['public_code'],
         ],
     ];
-    $session=$client->createCheckoutSession($parameters,'shop-order-'.$snapshot['id'].'-payment-'.$snapshot['payment_id']);
+    $idempotencyKey='shop-order-'.$snapshot['id'].'-payment-'.$snapshot['payment_id'];
+    if($storedSessionId!=='')$idempotencyKey.='-after-'.substr(hash('sha256',$storedSessionId),0,16);
+    $session=$client->createCheckoutSession($parameters,$idempotencyKey);
     $sessionId=(string)($session['id']??'');$url=(string)($session['url']??'');
     if(preg_match('/^cs_(?:test_|live_)?[A-Za-z0-9_]+$/D',$sessionId)!==1||filter_var($url,FILTER_VALIDATE_URL)===false)throw new StripeGatewayException('Stripe vrátil neplatnou Checkout Session.');
     $pdo->beginTransaction();
@@ -124,8 +170,9 @@ function stripeCreateCheckoutSession(PDO $pdo,int $orderId,int $accountId,Stripe
         stripeAssertPendingOrderSnapshot($current);
         if((int)$current['total_minor']!==(int)$snapshot['total_minor']||(string)$current['currency']!==(string)$snapshot['currency'])throw new StripeGatewayException('Snapshot objednávky se během Stripe checkoutu změnil.');
         $stored=(string)($current['stripe_checkout_session_id']??'');
-        if($stored!==''&&!hash_equals($stored,$sessionId))throw new StripeGatewayException('Objednávka už má jinou Stripe Checkout Session.');
-        if($stored==='')$pdo->prepare('UPDATE payments SET stripe_checkout_session_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$sessionId,(int)$current['payment_id']]);
+        if($storedSessionId===''&&$stored!==''&&!hash_equals($stored,$sessionId))throw new StripeGatewayException('Objednávka už má jinou Stripe Checkout Session.');
+        if($storedSessionId!==''&&!hash_equals($stored,$storedSessionId))throw new StripeGatewayException('Platební relace objednávky se mezitím změnila. Obnovte stránku.');
+        if($stored===''||$storedSessionId!=='')$pdo->prepare('UPDATE payments SET stripe_checkout_session_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$sessionId,(int)$current['payment_id']]);
         $pdo->commit();
     }catch(Throwable $exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof StripeGatewayException||$exception instanceof ShopCheckoutException)throw $exception;throw new StripeGatewayException('Stripe Checkout Session se nepodařilo bezpečně navázat.',0,$exception);}
     return ['id'=>$sessionId,'url'=>$url,'order_id'=>$orderId,'payment_id'=>(int)$snapshot['payment_id'],'amount_total'=>(int)$snapshot['total_minor'],'currency'=>(string)$snapshot['currency']];

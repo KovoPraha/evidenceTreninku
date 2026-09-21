@@ -71,7 +71,7 @@ if ($accountId !== null) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Klubový kalendář — Kovopraha</title>
+    <title>Kalendář klubových akcí — Kovopraha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
 </head>
@@ -79,7 +79,7 @@ if ($accountId !== null) {
 <?php publicShellNav('calendar'); ?>
 <main class="container py-4" style="max-width:1000px">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-        <div><h1 class="h3 mb-1">Klubový kalendář</h1><p class="text-muted mb-0">Potvrzené i předběžné závody, soustředění, školení a klubové schůze.</p></div>
+        <div><h1 class="h3 mb-1">Kalendář klubových akcí</h1><p class="text-muted mb-0">Potvrzené i předběžné závody, soustředění, školení a klubové schůze. Neobsahuje individuální lekce ani veřejné hodiny velodromu.</p></div>
         <a class="btn btn-outline-primary" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a>
     </div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= memberCalendarH($error) ?></div><?php endforeach; ?>
@@ -108,7 +108,7 @@ if ($accountId !== null) {
             <?php elseif (!$planned): ?><div class="text-muted small mt-3">Přihlašování není otevřené.</div><?php endif; ?>
         </div></article></div>
     <?php endforeach; ?>
-    <?php if ($events === []): ?><div class="col-12"><div class="alert alert-light border"><p class="mb-2">V období <?= memberCalendarH($today->format('d. m. Y')) ?>–<?= memberCalendarH($today->modify('+1 year')->format('d. m. Y')) ?> nejsou žádné akce, které můžete vidět.</p><div class="d-flex flex-wrap gap-2"><?php if ($accountId === null): ?><a class="btn btn-primary" href="prihlaseni.php?redirect=klubovy_kalendar.php">Přihlásit se pro klubové akce</a><?php endif; ?><a class="btn btn-outline-secondary" href="krouzky.php">Kroužky a otevřené události</a></div></div></div><?php endif; ?>
+    <?php if ($events === []): ?><div class="col-12"><div class="alert alert-light border"><p class="mb-2">V období <?= memberCalendarH($today->format('d. m. Y')) ?>–<?= memberCalendarH($today->modify('+1 year')->format('d. m. Y')) ?> nejsou žádné klubové akce, které můžete vidět. Individuální lekce a velodrom hledejte v jejich samostatných částech.</p><div class="d-flex flex-wrap gap-2"><?php if ($accountId === null): ?><a class="btn btn-primary" href="prihlaseni.php?redirect=klubovy_kalendar.php">Přihlásit se pro klubové akce</a><?php endif; ?><a class="btn btn-outline-secondary" href="krouzky.php">Otevřené akce</a></div></div></div><?php endif; ?>
     </div>
 </main>
 <?php publicShellFooter(); ?>

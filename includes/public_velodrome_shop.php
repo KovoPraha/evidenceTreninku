@@ -328,7 +328,8 @@ function publicVelodromeShopOrderRows(PDO $pdo, int $orderId): array
 /** @return array<string,mixed> */
 function publicVelodromeShopLockLesson(PDO $pdo, int $lessonId): array
 {
-    $sql = 'SELECT il.*,s.kod,s.je_verejne,s.aktivni FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=?';
+    $context=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_VELODROME);
+    $sql = 'SELECT il.*,s.kod,s.je_verejne,s.aktivni FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=? AND '.$context;
     if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
     $statement = $pdo->prepare($sql);
     $statement->execute([$lessonId]);

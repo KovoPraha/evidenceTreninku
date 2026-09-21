@@ -290,6 +290,13 @@ function clubProgramProductHasOfferLink(PDO $pdo, int $productId): bool
     return $stmt->fetchColumn() !== false;
 }
 
+function clubProgramVariantHasOfferLink(PDO $pdo, int $variantId): bool
+{
+    $stmt = $pdo->prepare('SELECT 1 FROM club_program_offers WHERE variant_id=? LIMIT 1');
+    $stmt->execute([$variantId]);
+    return $stmt->fetchColumn() !== false;
+}
+
 function clubProgramProductHasActiveOffer(PDO $pdo, int $productId): bool
 {
     $stmt = $pdo->prepare('SELECT 1 FROM club_program_offers o JOIN club_programs p ON p.id = o.program_id WHERE o.product_id = ? AND o.status = \'active\' AND p.status = \'active\' LIMIT 1');

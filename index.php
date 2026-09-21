@@ -128,7 +128,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <h3 class="h5">E-shop a klubové služby</h3>
               <p class="text-muted">Oblečení, knihy, kroužky, kurzy, výjezdy a placené rezervace.</p>
               <a class="portal-link" href="<?= htmlspecialchars($shopUrl, ENT_QUOTES, 'UTF-8') ?>"><span>E-shop</span><i class="bi bi-arrow-right"></i></a>
-              <a class="portal-link" href="booking/krouzky.php"><span>Kroužky a události</span><i class="bi bi-arrow-right"></i></a>
+              <a class="portal-link" href="booking/krouzky.php"><span>Akce</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/velodrom.php"><span>Hodiny velodromu</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/kalendar.php"><span>Individuální lekce</span><i class="bi bi-arrow-right"></i></a>
               <a class="portal-link" href="booking/treninky.php"><span>Rozvrh tréninků</span><i class="bi bi-arrow-right"></i></a>

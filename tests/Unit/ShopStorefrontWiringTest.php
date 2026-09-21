@@ -32,13 +32,16 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringContainsString("rawurlencode((string)\$category['category_path'])",$source);
         self::assertStringContainsString('shopCategoryDescendants',$source);
         self::assertStringContainsString('shopStorefrontCategoryMenu',$source);
+        self::assertStringContainsString('clubProgramVariantSaleState',$source);
+        self::assertStringNotContainsString('clubProgramOfferIsOnSale($offer)',$source);
         self::assertStringContainsString("listing_attributes",$source);
         $detail=(string)file_get_contents(dirname(__DIR__,2).'/booking/produkt.php');
         self::assertStringContainsString("attributes_detail",$detail);
+        self::assertStringContainsString('clubProgramVariantSaleState',$detail);
         self::assertStringContainsString("name=\"razeni\"",$source);
         self::assertStringContainsString('Hledat v názvu a popisu',$source);
         $clubs=(string)file_get_contents(dirname(__DIR__,2).'/booking/krouzky.php');
-        self::assertStringContainsString('shopStorefrontCatalog',$clubs);
-        self::assertStringContainsString('Detail a koupit',$clubs);
+        self::assertStringNotContainsString('shopStorefrontCatalog',$clubs);
+        self::assertStringContainsString('Pravidelné kroužky najdete pouze',$clubs);
     }
 }

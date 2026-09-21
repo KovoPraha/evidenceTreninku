@@ -3,6 +3,7 @@ require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/individual_lesson_context.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function timeToMin(string $t): int { return (int)substr($t,0,2)*60 + (int)substr($t,3,2); }
@@ -53,6 +54,7 @@ $minDatum = (new DateTime())->modify('+3 days')->format('Y-m-d');
 $params = [$mesicOd, $mesicDo];
 $sportKl = '';
 if ($filterSport) { $sportKl = ' AND il.sportoviste_id = ?'; $params[] = $filterSport; }
+$lessonContext=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_LESSON);
 
 $lekceArr = $pdo->prepare("
     SELECT il.*, s.nazev AS sport_nazev, s.kod AS sport_kod, t.jmeno AS trener_jmeno
@@ -60,6 +62,7 @@ $lekceArr = $pdo->prepare("
     JOIN sportovist s ON s.id = il.sportoviste_id
     JOIN treneri t    ON t.id = il.trener_id
     WHERE il.stav = 'aktivni'
+      AND {$lessonContext}
       AND il.datum BETWEEN ? AND ?
       AND s.je_verejne = 1
       {$sportKl}

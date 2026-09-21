@@ -37,7 +37,7 @@ try{
 $sumupAvailable=sumupIsEnabled()&&shopPaymentPolicyAllowsSumUp($order['accepted_payment_methods']??null)&&$order['status']==='placed'&&$order['payment_record_status']==='pending';
 $stripeAvailable=!$sumupAvailable&&stripeIsEnabled()&&$order['status']==='placed'&&$order['payment_record_status']==='pending';
 $messages=[
-    'placed'=>['warning',$sumupAvailable?'Objednávka čeká na úhradu. Můžete zaplatit online přes SumUp nebo bankovním převodem.':'Objednávka čeká na bankovní platbu. Pro správné spárování použijte uvedený variabilní symbol.'],
+    'placed'=>['warning',$sumupAvailable?'Objednávka čeká na úhradu. Můžete zaplatit online přes SumUp nebo bankovním převodem.':($stripeAvailable?'Objednávka čeká na úhradu. Můžete zaplatit kartou přes Stripe nebo bankovním převodem.':'Objednávka čeká na bankovní platbu. Pro správné spárování použijte uvedený variabilní symbol.')],
     'processing'=>['info','Platba byla přijata a objednávku připravujeme.'],
     'ready'=>['success','Objednávka je připravena k osobnímu odběru.'],
     'completed'=>['secondary','Objednávka byla osobně vydána a dokončena.'],
@@ -51,6 +51,7 @@ $messages=[
 <div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3 mb-0">Objednávka <?=orderPublicH($order['public_code'])?></h1><div class="d-flex gap-2"><a href="moje_objednavky.php" class="btn btn-outline-primary">Moje objednávky</a><a href="eshop.php" class="btn btn-outline-secondary">Zpět do e-shopu</a></div></div>
 <?php if($paymentError!==''):?><div class="alert alert-danger"><?=orderPublicH($paymentError)?></div><?php endif;?>
 <?php if(($_GET['sumup']??'')==='return'&&$order['payment_record_status']==='pending'):?><div class="alert alert-info">SumUp platbu ověřujeme. Stav objednávky se změní až po potvrzení platební služby.</div><?php endif;?>
+<?php if(($_GET['stripe']??'')==='cancelled'&&$order['payment_record_status']==='pending'):?><div class="alert alert-info">Platba kartou nebyla dokončena. Můžete ji zkusit znovu nebo použít bankovní převod.</div><?php endif;?>
 <div class="alert alert-<?=$messageStyle?>"><?=orderPublicH($messageText)?></div>
 <div class="row g-3"><div class="col-md-7"><div class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Neměnný obsah objednávky</div><div class="card-body">
 <?php foreach($order['items']as$item):?><div class="d-flex justify-content-between border-bottom py-2"><span><?=orderPublicH($item['product_name_snapshot'])?> × <?=(int)$item['quantity']?><br><code><?=orderPublicH($item['sku_snapshot'])?></code></span><strong><?=orderPublicMoney((int)$item['line_amount_minor'],(string)$item['currency'])?></strong></div><?php endforeach;?>

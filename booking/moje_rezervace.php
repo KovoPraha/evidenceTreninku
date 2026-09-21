@@ -6,10 +6,12 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 }
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/individual_lesson_context.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
 $uzivatelId = (int)$_SESSION['verejny_uzivatel_id'];
+$individualContext=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_LESSON);
 $success = $_SESSION['flash_booking_success'] ?? '';
 unset($_SESSION['flash_booking_success']);
 
@@ -20,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
         $st = $pdo->prepare("
             SELECT vr.*, il.datum, il.cas_od FROM verejne_rezervace vr
             JOIN individualni_lekce il ON il.id = vr.lekce_id
-            WHERE vr.id=? AND vr.uzivatel_id=?
+            WHERE vr.id=? AND vr.uzivatel_id=? AND {$individualContext}
         ");
         $st->execute([$rezervId, $uzivatelId]);
         $rez = $st->fetch(PDO::FETCH_ASSOC);
@@ -51,7 +53,7 @@ $rezervace = $pdo->prepare("
     JOIN individualni_lekce il ON il.id = vr.lekce_id
     JOIN sportovist s ON s.id = il.sportoviste_id
     JOIN treneri t    ON t.id = il.trener_id
-    WHERE vr.uzivatel_id=?
+    WHERE vr.uzivatel_id=? AND {$individualContext}
     ORDER BY il.datum DESC, vr.slot_cas_od DESC
 ");
 $rezervace->execute([$uzivatelId]);

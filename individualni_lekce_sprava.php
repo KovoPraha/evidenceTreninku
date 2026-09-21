@@ -7,10 +7,12 @@ if (!canAccess('individualni_lekce')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/venue_operations.php';
+require_once __DIR__ . '/includes/individual_lesson_context.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
 $trenerId = (int)$_SESSION['trener_id'];
+$individualContext=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_LESSON);
 
 // ── POST akce ─────────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -22,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
         $reason=trim((string)($_POST['reason']??''));
         if($reason===''){$_SESSION['flash_error']='Uveďte důvod zrušení lekce.';header('Location: individualni_lekce_sprava.php');exit;}
         // Ověř vlastnictví lekce
-        $stOwn = $pdo->prepare("SELECT nazev, datum, cas_od, cas_do FROM individualni_lekce WHERE id=? AND trener_id=?");
+        $stOwn = $pdo->prepare("SELECT il.nazev,il.datum,il.cas_od,il.cas_do FROM individualni_lekce il WHERE il.id=? AND il.trener_id=? AND ".$individualContext);
         $stOwn->execute([$lekceId, $trenerId]);
         $lek = $stOwn->fetch(PDO::FETCH_ASSOC);
         if ($lek) {
@@ -63,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
             FROM verejne_rezervace vr
             JOIN verejni_uzivatele vu ON vu.id = vr.uzivatel_id
             JOIN individualni_lekce il ON il.id = vr.lekce_id
-            WHERE vr.id=?
+            WHERE vr.id=? AND {$individualContext}
         ");
         $st->execute([$rezervId]);
         $rez = $st->fetch(PDO::FETCH_ASSOC);
@@ -89,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
             FROM verejne_rezervace vr
             JOIN verejni_uzivatele vu ON vu.id = vr.uzivatel_id
             JOIN individualni_lekce il ON il.id = vr.lekce_id
-            WHERE vr.id=?
+            WHERE vr.id=? AND {$individualContext}
         ");
         $st->execute([$rezervId]);
         $rez = $st->fetch(PDO::FETCH_ASSOC);
@@ -114,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
 // ── Filtr ─────────────────────────────────────────────────────────────────────
 $zobrazitVse = roleAtLeast('hlavni') && isset($_GET['vse']);
 $podminka = $zobrazitVse ? '' : ' AND il.trener_id = ' . $trenerId;
+$podminka.=' AND '.$individualContext;
 
 // ── Lekce s rezervacemi ───────────────────────────────────────────────────────
 $lekce = $pdo->query("

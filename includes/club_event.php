@@ -54,6 +54,9 @@ function clubEventDetail(PDO $pdo, int $eventId): ?array
 /** @return array{id:int,status:string} */
 function clubEventCreateDraft(PDO $pdo, int $actorId, array $input): array
 {
+    if(trim((string)($input['code']??''))===''){
+        $input['code']=clubEventGenerateCode($pdo,(string)($input['name']??''),(string)($input['event_type']??''));
+    }
     $value = clubEventValidateDraft($actorId, $input);
     $pdo->beginTransaction();
     try {
@@ -77,6 +80,24 @@ function clubEventCreateDraft(PDO $pdo, int $actorId, array $input): array
         if ($exception instanceof InvalidArgumentException || $exception instanceof ClubEventException) throw $exception;
         throw new ClubEventException('Akci se nepodařilo založit bez částečného zápisu.', 0, $exception);
     }
+}
+
+function clubEventGenerateCode(PDO $pdo,string $name,string $type):string
+{
+    $prefix=$type==='camp'?'TABOR':'AKCE';
+    $ascii=function_exists('iconv')?iconv('UTF-8','ASCII//TRANSLIT//IGNORE',trim($name)):trim($name);
+    $slug=strtoupper((string)$ascii);
+    $slug=preg_replace('/[^A-Z0-9]+/','-',$slug)??'';
+    $slug=trim($slug,'-');
+    if($slug==='')$slug=$prefix;
+    $base=substr($prefix.'-'.$slug,0,55);
+    $lookup=$pdo->prepare('SELECT 1 FROM club_events WHERE code=? LIMIT 1');
+    for($attempt=0;$attempt<20;$attempt++){
+        $candidate=rtrim($base,'-').'-'.strtoupper(bin2hex(random_bytes(3)));
+        $lookup->execute([$candidate]);
+        if($lookup->fetchColumn()===false)return$candidate;
+    }
+    throw new ClubEventException('Nepodařilo se vytvořit jedinečný interní kód akce. Zkuste formulář odeslat znovu.');
 }
 
 /** @return array{id:int,changed:bool,status:string} */
@@ -273,7 +294,9 @@ function clubEventValidateDraft(int $actorId, array $input): array
     $minAge=($input['min_age']??'')===''?null:(int)$input['min_age'];$maxAge=($input['max_age']??'')===''?null:(int)$input['max_age'];
     $pricing=(string)($input['pricing_policy']??'');$currency=strtoupper(trim((string)($input['currency']??'CZK')));
     $regStart=clubEventNullableDateTime((string)($input['registration_starts_at']??''));$regEnd=clubEventNullableDateTime((string)($input['registration_ends_at']??''));
-    if ($actorId<1 || preg_match('/^[A-Z0-9_-]{3,64}$/D',$code)!==1 || !in_array($type,clubEventTypes(),true)) throw new InvalidArgumentException('Neplatný kód, typ nebo administrátor akce.');
+    if ($actorId<1) throw new InvalidArgumentException('Akci může založit nebo upravit pouze přihlášený administrátor.');
+    if (!in_array($type,clubEventTypes(),true)) throw new InvalidArgumentException('Vyberte platný typ akce.');
+    if (preg_match('/^[A-Z0-9_-]{3,64}$/D',$code)!==1) throw new InvalidArgumentException('Interní kód může obsahovat pouze velká písmena, čísla, pomlčku a podtržítko (3 až 64 znaků). Při založení ho můžete nechat prázdný.');
     if ($name==='' || mb_strlen($name,'UTF-8')>255 || preg_match('/[<>]/u',$name.$description.$audience)===1) throw new InvalidArgumentException('Název a texty musí být prostý text v povolené délce.');
     if (mb_strlen($description,'UTF-8')>2000 || $audience==='' || mb_strlen($audience,'UTF-8')>255) throw new InvalidArgumentException('Vyplňte platnou cílovou skupinu a popis.');
     if ($capacity<1 || $capacity>10000 || ($minAge!==null&&($minAge<0||$minAge>120)) || ($maxAge!==null&&($maxAge<0||$maxAge>120)) || ($minAge!==null&&$maxAge!==null&&$minAge>$maxAge)) throw new InvalidArgumentException('Kapacita nebo věkové omezení není platné.');

@@ -1,30 +1,179 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__.'/includes/init.php';
-require_once __DIR__.'/csrf_helper.php';
-require_once __DIR__.'/includes/public_velodrome_shop.php';
-require_once __DIR__.'/includes/venue_operations.php';
+
+require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/public_velodrome_shop.php';
+require_once __DIR__ . '/includes/venue_operations.php';
+
 staffRequireActivePosition('program_coordinator');
-function publicVelodromeAdminH(mixed $value):string{return htmlspecialchars((string)$value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
-$errors=[];
-if(($_SERVER['REQUEST_METHOD']??'GET')==='POST'){
- if(!csrf_verify((string)($_POST['csrf_token']??'')))$errors[]='Formulář vypršel.';
- else try{
-  $action=(string)($_POST['action']??'');$actor=(int)$_SESSION['trener_id'];
-  if($action==='create_slot'){$result=publicVelodromeCreateSlot($pdo,$actor,(string)($_POST['date']??''),(string)($_POST['starts_at']??''),(string)($_POST['ends_at']??''),(int)($_POST['capacity']??0),($_POST['exclusive']??'')==='1',(int)($_POST['price_minor']??0));$message='Veřejný termín byl vytvořen.';}
-  elseif($action==='update_slot'){$result=publicVelodromeUpdateSlot($pdo,(int)($_POST['slot_id']??0),$actor,(string)($_POST['date']??''),(string)($_POST['starts_at']??''),(string)($_POST['ends_at']??''),(int)($_POST['capacity']??0),($_POST['exclusive']??'')==='1',(int)($_POST['price_minor']??0),(string)($_POST['reason']??''),($_POST['confirm_action']??'')==='1');$message='Termín byl upraven.';}
-  elseif($action==='close_slot'){$result=publicVelodromeCloseSlot($pdo,(int)($_POST['slot_id']??0),$actor,(string)($_POST['reason']??''),($_POST['confirm_action']??'')==='1');$message=$result['changed']?'Termín byl uzavřen.':'Termín už byl uzavřen.';}
-  elseif($action==='cancel_reservation'){$result=publicVelodromeAdminCancelReservation($pdo,(int)($_POST['reservation_id']??0),$actor,(string)($_POST['reason']??''),($_POST['confirm_action']??'')==='1');$message=$result['changed']?'Rezervace byla auditovaně zrušena.':'Rezervace už byla zrušena.';}
-  else throw new InvalidArgumentException('Neznámá provozní akce velodromu.');
-  $_SESSION['flash_velodrome_admin']=$message;header('Location: verejny_velodrom_admin.php',true,303);exit;
- }catch(InvalidArgumentException|PublicVelodromeException|RuntimeException $exception){$errors[]=$exception->getMessage();}
+
+function publicVelodromeAdminH(mixed $value): string
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
-$success=(string)($_SESSION['flash_velodrome_admin']??'');unset($_SESSION['flash_velodrome_admin']);$slots=publicVelodromeAdminSlots($pdo);$reservations=publicVelodromeAdminReservations($pdo);
+
+$errors = [];
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        $errors[] = 'Formulář vypršel.';
+    } else {
+        try {
+            $action = (string)($_POST['action'] ?? '');
+            $actor = (int)$_SESSION['trener_id'];
+            if ($action === 'create_slot') {
+                publicVelodromeCreateSlot(
+                    $pdo,
+                    $actor,
+                    (string)($_POST['date'] ?? ''),
+                    (string)($_POST['starts_at'] ?? ''),
+                    (string)($_POST['ends_at'] ?? ''),
+                    (int)($_POST['capacity'] ?? 0),
+                    ($_POST['exclusive'] ?? '') === '1',
+                    publicVelodromeCzkToMinor((string)($_POST['price_czk'] ?? ''))
+                );
+                $message = 'Veřejný termín byl vytvořen.';
+            } elseif ($action === 'update_slot') {
+                publicVelodromeUpdateSlot(
+                    $pdo,
+                    (int)($_POST['slot_id'] ?? 0),
+                    $actor,
+                    (string)($_POST['date'] ?? ''),
+                    (string)($_POST['starts_at'] ?? ''),
+                    (string)($_POST['ends_at'] ?? ''),
+                    (int)($_POST['capacity'] ?? 0),
+                    ($_POST['exclusive'] ?? '') === '1',
+                    publicVelodromeCzkToMinor((string)($_POST['price_czk'] ?? '')),
+                    (string)($_POST['reason'] ?? ''),
+                    ($_POST['confirm_action'] ?? '') === '1'
+                );
+                $message = 'Termín byl upraven.';
+            } elseif ($action === 'close_slot') {
+                $result = publicVelodromeCloseSlot($pdo, (int)($_POST['slot_id'] ?? 0), $actor, (string)($_POST['reason'] ?? ''), ($_POST['confirm_action'] ?? '') === '1');
+                $message = $result['changed'] ? 'Termín byl uzavřen.' : 'Termín už byl uzavřen.';
+            } elseif ($action === 'cancel_reservation') {
+                $result = publicVelodromeAdminCancelReservation($pdo, (int)($_POST['reservation_id'] ?? 0), $actor, (string)($_POST['reason'] ?? ''), ($_POST['confirm_action'] ?? '') === '1');
+                $message = $result['changed'] ? 'Rezervace byla auditovaně zrušena.' : 'Rezervace už byla zrušena.';
+            } else {
+                throw new InvalidArgumentException('Neznámá provozní akce velodromu.');
+            }
+            $_SESSION['flash_velodrome_admin'] = $message;
+            header('Location: verejny_velodrom_admin.php', true, 303);
+            exit;
+        } catch (InvalidArgumentException | PublicVelodromeException | RuntimeException $exception) {
+            $errors[] = $exception->getMessage();
+        }
+    }
+}
+
+$success = (string)($_SESSION['flash_velodrome_admin'] ?? '');
+unset($_SESSION['flash_velodrome_admin']);
+$slots = publicVelodromeAdminSlots($pdo);
+$reservations = publicVelodromeAdminReservations($pdo);
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Veřejné hodiny velodromu</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous"></head><body class="bg-light"><?php include __DIR__.'/hlavicka.php';?>
-<main class="container-fluid py-4" style="max-width:1300px"><div class="d-flex justify-content-between align-items-start mb-3"><div><h1 class="h4 mb-1">Veřejné hodiny velodromu</h1><p class="text-muted mb-0">Termíny, kapacita a rezervace. Skutečný pohyb peněz potvrzuje pouze Hospodář a platby.</p></div><a href="booking/velodrom.php" class="btn btn-outline-primary btn-sm">Veřejná stránka</a></div>
-<?php foreach($errors as$error):?><div class="alert alert-danger"><?=publicVelodromeAdminH($error)?></div><?php endforeach;?><?php if($success!==''):?><div class="alert alert-success"><?=publicVelodromeAdminH($success)?></div><?php endif;?>
-<section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Vypsat nový termín</div><div class="card-body"><form method="post" class="row g-3"><?=csrf_field()?><input type="hidden" name="action" value="create_slot"><div class="col-md-3"><label class="form-label">Datum</label><input class="form-control" type="date" name="date" required></div><div class="col-md-2"><label class="form-label">Od</label><input class="form-control" type="time" name="starts_at" required></div><div class="col-md-2"><label class="form-label">Do</label><input class="form-control" type="time" name="ends_at" required></div><div class="col-md-2"><label class="form-label">Kapacita</label><input class="form-control" type="number" name="capacity" min="1" max="1000" value="1" required></div><div class="col-md-2"><label class="form-label">Cena v haléřích</label><input class="form-control" type="number" name="price_minor" min="0" value="0" required></div><div class="col-md-4 form-check ms-2"><input class="form-check-input" type="checkbox" name="exclusive" value="1" id="exclusive"><label class="form-check-label" for="exclusive">Výhradní rezervace celého slotu</label></div><div class="col-md-3 d-grid"><button class="btn btn-primary">Vypsat hodinu</button></div></form></div></section>
-<section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Správa termínů</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Termín</th><th>Režim</th><th>Obsazeno</th><th>Cena</th><th style="min-width:460px">Úprava</th></tr></thead><tbody><?php foreach($slots as$slot):?><tr class="<?=$slot['stav']==='zrusena'?'table-secondary':''?>"><td><?=publicVelodromeAdminH($slot['datum'].' '.substr((string)$slot['cas_od'],0,5).'–'.substr((string)$slot['cas_do'],0,5))?><div class="small text-muted"><?=publicVelodromeAdminH($slot['stav'])?></div></td><td><?=$slot['public_exclusive_booking']?'výhradní':'sdílený'?></td><td><?=(int)$slot['reserved_count']?> / <?=(int)($slot['public_exclusive_booking']?1:$slot['max_osob'])?></td><td><?=number_format((float)$slot['cena_kc'],2,',',' ')?> Kč</td><td><?php if($slot['stav']==='aktivni'):?><details><summary class="btn btn-sm btn-outline-primary">Upravit nebo uzavřít</summary><form method="post" class="row g-2 mt-2"><?=csrf_field()?><input type="hidden" name="action" value="update_slot"><input type="hidden" name="slot_id" value="<?=(int)$slot['id']?>"><div class="col-3"><input class="form-control form-control-sm" type="date" name="date" value="<?=publicVelodromeAdminH($slot['datum'])?>" required></div><div class="col-2"><input class="form-control form-control-sm" type="time" name="starts_at" value="<?=publicVelodromeAdminH(substr((string)$slot['cas_od'],0,5))?>" required></div><div class="col-2"><input class="form-control form-control-sm" type="time" name="ends_at" value="<?=publicVelodromeAdminH(substr((string)$slot['cas_do'],0,5))?>" required></div><div class="col-2"><input class="form-control form-control-sm" type="number" name="capacity" min="1" max="1000" value="<?=(int)$slot['max_osob']?>" required></div><div class="col-3"><input class="form-control form-control-sm" type="number" name="price_minor" min="0" value="<?=(int)round((float)$slot['cena_kc']*100)?>" required></div><div class="col-4 form-check ms-2"><input class="form-check-input" type="checkbox" name="exclusive" value="1" id="exclusive-<?=(int)$slot['id']?>" <?=$slot['public_exclusive_booking']?'checked':''?>><label class="form-check-label" for="exclusive-<?=(int)$slot['id']?>">Výhradní</label></div><div class="col-5"><input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod změny"></div><div class="col-3 form-check"><input class="form-check-input" type="checkbox" name="confirm_action" value="1" required id="confirm-slot-<?=(int)$slot['id']?>"><label class="form-check-label" for="confirm-slot-<?=(int)$slot['id']?>">Potvrzuji</label></div><div class="col-3 d-grid"><button class="btn btn-primary btn-sm">Uložit změny</button></div></form><form method="post" class="d-flex gap-2 mt-2"><?=csrf_field()?><input type="hidden" name="action" value="close_slot"><input type="hidden" name="slot_id" value="<?=(int)$slot['id']?>"><input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod uzavření"><label class="small"><input type="checkbox" name="confirm_action" value="1" required> potvrzuji</label><button class="btn btn-outline-danger btn-sm">Uzavřít</button></form></details><?php else:?><span class="text-muted">Uzavřeno</span><?php endif;?></td></tr><?php endforeach;?><?php if($slots===[]):?><tr><td colspan="5" class="text-center text-muted py-4">Není vypsán žádný budoucí termín.</td></tr><?php endif;?></tbody></table></div></section>
-<section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Rezervace velodromu</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Účastník</th><th>Termín</th><th>Stav</th><th>Objednávka</th><th>Provozní akce</th></tr></thead><tbody><?php foreach($reservations as$r):?><tr><td><strong><?=publicVelodromeAdminH($r['prijmeni'].' '.$r['jmeno'])?></strong><div class="small text-muted"><?=publicVelodromeAdminH($r['email'])?></div></td><td><?=publicVelodromeAdminH($r['datum'].' '.substr((string)$r['cas_od'],0,5))?></td><td><?=publicVelodromeAdminH($r['stav'])?><?=$r['zaplaceno']?' · zaplaceno':''?></td><td><?php if($r['shop_order_id']):?><code><?=publicVelodromeAdminH($r['shop_order_code'])?></code><div class="small text-muted">Storno přes objednávky</div><?php else:?>—<?php endif;?></td><td><?php if(!$r['shop_order_id']&&in_array($r['stav'],['ceka','potvrzena','cekaci_listina'],true)):?><form method="post" class="d-flex gap-2"><?=csrf_field()?><input type="hidden" name="action" value="cancel_reservation"><input type="hidden" name="reservation_id" value="<?=(int)$r['id']?>"><input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod storna"><label class="small"><input type="checkbox" name="confirm_action" value="1" required> potvrzuji</label><button class="btn btn-outline-danger btn-sm">Zrušit</button></form><?php else:?><span class="text-muted small">Bez provozní akce</span><?php endif;?></td></tr><?php endforeach;?><?php if($reservations===[]):?><tr><td colspan="5" class="text-center text-muted py-4">Zatím nejsou rezervace.</td></tr><?php endif;?></tbody></table></div></section>
-</main></body></html>
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Veřejné hodiny velodromu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+<?php include __DIR__ . '/hlavicka.php'; ?>
+<main class="container-fluid py-4" style="max-width:1300px">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div><h1 class="h4 mb-1">Veřejné hodiny velodromu</h1><p class="text-muted mb-0">Termíny, kapacita a rezervace. Skutečný pohyb peněz potvrzuje pouze Hospodář a platby.</p></div>
+        <a href="booking/velodrom.php" class="btn btn-outline-primary btn-sm">Veřejná stránka</a>
+    </div>
+
+    <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= publicVelodromeAdminH($error) ?></div><?php endforeach; ?>
+    <?php if ($success !== ''): ?><div class="alert alert-success"><?= publicVelodromeAdminH($success) ?></div><?php endif; ?>
+
+    <section class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">Vypsat nový termín</div>
+        <div class="card-body">
+            <form method="post" class="row g-3">
+                <?= csrf_field() ?><input type="hidden" name="action" value="create_slot">
+                <div class="col-md-3"><label class="form-label">Datum</label><input class="form-control" type="date" name="date" required></div>
+                <div class="col-md-2"><label class="form-label">Od</label><input class="form-control" type="time" name="starts_at" required></div>
+                <div class="col-md-2"><label class="form-label">Do</label><input class="form-control" type="time" name="ends_at" required></div>
+                <div class="col-md-2"><label class="form-label">Kapacita</label><input class="form-control" type="number" name="capacity" min="1" max="1000" value="1" required></div>
+                <div class="col-md-2"><label class="form-label">Cena v Kč</label><input class="form-control" type="number" name="price_czk" min="0" max="1000000" step="0.01" inputmode="decimal" value="0" required></div>
+                <div class="col-md-4 form-check ms-2"><input class="form-check-input" type="checkbox" name="exclusive" value="1" id="exclusive"><label class="form-check-label" for="exclusive">Výhradní rezervace celého slotu</label></div>
+                <div class="col-md-3 d-grid"><button class="btn btn-primary">Vypsat hodinu</button></div>
+            </form>
+        </div>
+    </section>
+
+    <section class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">Správa termínů</div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Termín</th><th>Režim</th><th>Obsazeno</th><th>Cena</th><th style="min-width:460px">Úprava</th></tr></thead>
+                <tbody>
+                <?php foreach ($slots as $slot): ?>
+                    <tr class="<?= $slot['stav'] === 'zrusena' ? 'table-secondary' : '' ?>">
+                        <td><?= publicVelodromeAdminH($slot['datum'] . ' ' . substr((string)$slot['cas_od'], 0, 5) . '–' . substr((string)$slot['cas_do'], 0, 5)) ?><div class="small text-muted"><?= publicVelodromeAdminH($slot['stav']) ?></div></td>
+                        <td><?= $slot['public_exclusive_booking'] ? 'výhradní' : 'sdílený' ?></td>
+                        <td><?= (int)$slot['reserved_count'] ?> / <?= (int)($slot['public_exclusive_booking'] ? 1 : $slot['max_osob']) ?></td>
+                        <td><?= number_format((float)$slot['cena_kc'], 2, ',', ' ') ?> Kč</td>
+                        <td>
+                            <?php if ($slot['stav'] === 'aktivni'): ?>
+                                <details>
+                                    <summary class="btn btn-sm btn-outline-primary">Upravit nebo uzavřít</summary>
+                                    <form method="post" class="row g-2 mt-2">
+                                        <?= csrf_field() ?><input type="hidden" name="action" value="update_slot"><input type="hidden" name="slot_id" value="<?= (int)$slot['id'] ?>">
+                                        <div class="col-3"><input class="form-control form-control-sm" aria-label="Datum" type="date" name="date" value="<?= publicVelodromeAdminH($slot['datum']) ?>" required></div>
+                                        <div class="col-2"><input class="form-control form-control-sm" aria-label="Čas od" type="time" name="starts_at" value="<?= publicVelodromeAdminH(substr((string)$slot['cas_od'], 0, 5)) ?>" required></div>
+                                        <div class="col-2"><input class="form-control form-control-sm" aria-label="Čas do" type="time" name="ends_at" value="<?= publicVelodromeAdminH(substr((string)$slot['cas_do'], 0, 5)) ?>" required></div>
+                                        <div class="col-2"><input class="form-control form-control-sm" aria-label="Kapacita" type="number" name="capacity" min="1" max="1000" value="<?= (int)$slot['max_osob'] ?>" required></div>
+                                        <div class="col-3"><input class="form-control form-control-sm" aria-label="Cena v Kč" type="number" name="price_czk" min="0" max="1000000" step="0.01" inputmode="decimal" value="<?= publicVelodromeAdminH(number_format((float)$slot['cena_kc'], 2, '.', '')) ?>" required></div>
+                                        <div class="col-4 form-check ms-2"><input class="form-check-input" type="checkbox" name="exclusive" value="1" id="exclusive-<?= (int)$slot['id'] ?>" <?= $slot['public_exclusive_booking'] ? 'checked' : '' ?>><label class="form-check-label" for="exclusive-<?= (int)$slot['id'] ?>">Výhradní</label></div>
+                                        <div class="col-5"><input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod změny"></div>
+                                        <div class="col-3 form-check"><input class="form-check-input" type="checkbox" name="confirm_action" value="1" required id="confirm-slot-<?= (int)$slot['id'] ?>"><label class="form-check-label" for="confirm-slot-<?= (int)$slot['id'] ?>">Potvrzuji</label></div>
+                                        <div class="col-3 d-grid"><button class="btn btn-primary btn-sm">Uložit změny</button></div>
+                                    </form>
+                                    <form method="post" class="d-flex gap-2 mt-2">
+                                        <?= csrf_field() ?><input type="hidden" name="action" value="close_slot"><input type="hidden" name="slot_id" value="<?= (int)$slot['id'] ?>">
+                                        <input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod uzavření"><label class="small"><input type="checkbox" name="confirm_action" value="1" required> potvrzuji</label><button class="btn btn-outline-danger btn-sm">Uzavřít</button>
+                                    </form>
+                                </details>
+                            <?php else: ?><span class="text-muted">Uzavřeno</span><?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php if ($slots === []): ?><tr><td colspan="5" class="text-center text-muted py-4">Není vypsán žádný budoucí termín.</td></tr><?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card border-0 shadow-sm">
+        <div class="card-header bg-white fw-semibold">Rezervace velodromu</div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Účastník</th><th>Termín</th><th>Stav</th><th>Objednávka</th><th>Provozní akce</th></tr></thead>
+                <tbody>
+                <?php foreach ($reservations as $reservation): ?>
+                    <tr>
+                        <td><strong><?= publicVelodromeAdminH($reservation['prijmeni'] . ' ' . $reservation['jmeno']) ?></strong><div class="small text-muted"><?= publicVelodromeAdminH($reservation['email']) ?></div></td>
+                        <td><?= publicVelodromeAdminH($reservation['datum'] . ' ' . substr((string)$reservation['cas_od'], 0, 5)) ?></td>
+                        <td><?= publicVelodromeAdminH($reservation['stav']) ?><?= $reservation['zaplaceno'] ? ' · zaplaceno' : '' ?></td>
+                        <td><?php if ($reservation['shop_order_id']): ?><code><?= publicVelodromeAdminH($reservation['shop_order_code']) ?></code><div class="small text-muted">Storno přes objednávky</div><?php else: ?>—<?php endif; ?></td>
+                        <td>
+                            <?php if (!$reservation['shop_order_id'] && in_array($reservation['stav'], ['ceka', 'potvrzena', 'cekaci_listina'], true)): ?>
+                                <form method="post" class="d-flex gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="cancel_reservation"><input type="hidden" name="reservation_id" value="<?= (int)$reservation['id'] ?>"><input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod storna"><label class="small"><input type="checkbox" name="confirm_action" value="1" required> potvrzuji</label><button class="btn btn-outline-danger btn-sm">Zrušit</button></form>
+                            <?php else: ?><span class="text-muted small">Bez provozní akce</span><?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php if ($reservations === []): ?><tr><td colspan="5" class="text-center text-muted py-4">Zatím nejsou rezervace.</td></tr><?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
