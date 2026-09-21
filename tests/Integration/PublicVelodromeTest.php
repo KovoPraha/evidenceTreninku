@@ -12,6 +12,24 @@ require_once dirname(__DIR__, 2) . '/includes/public_velodrome.php';
 
 final class PublicVelodromeTest extends TestCase
 {
+    public function testCzkPriceInputIsConvertedExactlyToMinorUnits():void
+    {
+        self::assertSame(25000,\publicVelodromeCzkToMinor('250'));
+        self::assertSame(25050,\publicVelodromeCzkToMinor('250,50'));
+        self::assertSame(125000,\publicVelodromeCzkToMinor('1 250'));
+        $this->expectException(InvalidArgumentException::class);
+        \publicVelodromeCzkToMinor('250 Kč');
+    }
+
+    public function testAdminPriceFormUsesCzkWithoutBrowserSideConversion():void
+    {
+        $source=(string)file_get_contents(dirname(__DIR__,2).'/verejny_velodrom_admin.php');
+        self::assertStringContainsString('Cena v Kč', $source);
+        self::assertStringContainsString('name="price_czk"', $source);
+        self::assertStringNotContainsString('Cena v haléřích', $source);
+        self::assertStringNotContainsString('name="price_minor"', $source);
+    }
+
     public function testRequiredProfileDataAndExactlyOneSelfPerson(): void
     {
         $pdo = $this->database();

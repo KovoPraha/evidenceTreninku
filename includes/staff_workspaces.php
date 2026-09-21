@@ -21,7 +21,7 @@ function staffPositionDefinitions(): array
             'sort' => 10,
             'groups' => [
                 ['label' => 'Moje práce', 'icon' => 'calendar-check', 'items' => [
-                    ['route' => 'club_calendar.php', 'label' => 'Klubový kalendář', 'description' => 'Plán akcí, účastníci a vozidla', 'icon' => 'calendar-event'],
+                    ['route' => 'club_calendar.php', 'label' => 'Kalendář klubových akcí', 'description' => 'Závody, soustředění, schůze, účastníci a vozidla', 'icon' => 'calendar-event'],
                     ['route' => 'formular.php', 'label' => 'Zadat trénink', 'description' => 'Evidence tréninku a účasti', 'icon' => 'calendar-plus'],
                     ['route' => 'planovac.php', 'label' => 'Plánovač', 'description' => 'Naplánované tréninky', 'icon' => 'calendar3-week'],
                     ['route' => 'moje_treninky.php', 'label' => 'Moje tréninky', 'description' => 'Vlastní historie a úpravy', 'icon' => 'list-check'],

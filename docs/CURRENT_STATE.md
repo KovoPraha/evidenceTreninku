@@ -1,6 +1,18 @@
 # Aktuální stav projektu pro AI a vlastníka
 
-Aktualizováno: 29. 8. 2026, Europe/Prague
+Aktualizováno: 21. 9. 2026, Europe/Prague
+
+## UAT opravy z 21. 9. 2026
+
+Součástí aktuální verze jsou opravy produkčního UAT: odolnější Stripe Checkout,
+jednotná nabídka kroužků pouze v e-shopu,
+srozumitelnější akce a programy, automatický kód akce, cena velodromu v Kč a
+datové oddělení veřejného velodromu od individuálních lekcí. Přesný rozsah,
+migrace a provozní hranice jsou v `docs/UAT-OPRAVY-2026-09-21.md`.
+
+Produkční stav a přesný nasazený commit dokládá workflow `deploy-production.yml`
+a soubor `var/deployment.json`. Stripe zůstává fail-closed bez samostatně
+schválené produkční konfigurace klíčů a webhooku.
 
 Tento soubor je krátký vstupní rozcestník. Přesný historický ledger a poslední
 důkazy jsou v `docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md`; produktová

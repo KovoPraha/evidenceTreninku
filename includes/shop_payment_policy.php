@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/individual_lesson_context.php';
+
 const SHOP_PAYMENT_POLICY_BANK_ONLY = 'bank_transfer';
 const SHOP_PAYMENT_POLICY_SUMUP_AND_BANK = 'bank_transfer_sumup';
 
@@ -105,10 +107,11 @@ function shopPaymentPolicyProducts(PDO $pdo): array
 function shopPaymentPolicyVelodromeSlots(PDO $pdo): array
 {
     if (!shopPaymentPolicyColumnExists($pdo, 'individualni_lekce', 'payment_method_policy')) return [];
+    $context=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_VELODROME);
     return $pdo->query(
         'SELECT il.id,il.nazev,il.datum,il.cas_od,il.cas_do,il.cena_kc,il.stav,il.payment_method_policy '
         . 'FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id '
-        . "WHERE s.kod='velodrom' AND il.datum>=CURRENT_DATE AND il.cena_kc>0 "
+        . "WHERE s.kod='velodrom' AND ".$context." AND il.datum>=CURRENT_DATE AND il.cena_kc>0 "
         . 'ORDER BY il.datum,il.cas_od,il.id'
     )->fetchAll(PDO::FETCH_ASSOC);
 }

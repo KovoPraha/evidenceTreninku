@@ -8,6 +8,7 @@ require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
 require_once __DIR__ . '/../includes/app_url.php';
+require_once __DIR__ . '/../includes/individual_lesson_context.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -19,12 +20,13 @@ $waitlist   = !empty($_GET['waitlist']) || !empty($_POST['waitlist']);
 $errors     = [];
 
 // Načtení lekce
+$individualContext=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_LESSON);
 $stLekce = $pdo->prepare("
     SELECT il.*, s.nazev AS sport_nazev, t.jmeno AS trener_jmeno, t.email AS trener_email
     FROM individualni_lekce il
     JOIN sportovist s ON s.id = il.sportoviste_id
     JOIN treneri t    ON t.id = il.trener_id
-    WHERE il.id=? AND il.stav='aktivni' AND s.je_verejne=1
+    WHERE il.id=? AND il.stav='aktivni' AND s.je_verejne=1 AND {$individualContext}
 ");
 $stLekce->execute([$lekceId]);
 $lekce = $stLekce->fetch(PDO::FETCH_ASSOC);

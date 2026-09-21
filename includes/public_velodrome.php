@@ -3,9 +3,20 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/public_profile.php';
 require_once __DIR__ . '/venue_operations.php';
+require_once __DIR__ . '/individual_lesson_context.php';
 
 final class PublicVelodromeException extends RuntimeException
 {
+}
+
+function publicVelodromeCzkToMinor(string $value):int
+{
+    $value=trim(str_replace([' ',chr(194).chr(160),','],['','','.'],$value));
+    if(preg_match('/^[0-9]{1,7}(?:\.[0-9]{1,2})?$/D',$value)!==1)throw new InvalidArgumentException('Cena musí být částka v Kč, například 250 nebo 250,50.');
+    [$whole,$fraction]=array_pad(explode('.',$value,2),2,'');
+    $minor=((int)$whole*100)+(int)str_pad($fraction,2,'0');
+    if($minor>100000000)throw new InvalidArgumentException('Cena je příliš vysoká.');
+    return$minor;
 }
 
 /** @return array{id:int,created:bool} */
@@ -52,10 +63,12 @@ function publicVelodromeCreateSlot(
         if ($overlap->fetchColumn()) {
             throw new PublicVelodromeException('Termín se překrývá s jinou aktivní lekcí velodromu.');
         }
+        $hasContext=individualLessonContextAvailable($pdo);
         $insert = $pdo->prepare(
             'INSERT INTO individualni_lekce '
             . '(trener_id,sportoviste_id,datum,cas_od,cas_do,slot_delka_min,typ,nazev,popis,cena_kc,max_osob, '
-            . "vyjimka_3_dny,stav,public_exclusive_booking) VALUES (?,?,?,?,?,?,'zelena',?,?,?, ?,1,'aktivni',?)"
+            . 'vyjimka_3_dny,stav,public_exclusive_booking'.($hasContext?',booking_context':'').') '
+            . "VALUES (?,?,?,?,?,?,'zelena',?,?,?, ?,1,'aktivni',?".($hasContext?',?':'').')'
         );
         $minutes = max(1, (int)(($end->getTimestamp() - $start->getTimestamp()) / 60));
         $insert->execute([
@@ -70,6 +83,7 @@ function publicVelodromeCreateSlot(
             number_format($priceMinor / 100, 2, '.', ''),
             $exclusive ? 1 : $capacity,
             $exclusive ? 1 : 0,
+            ...($hasContext?[INDIVIDUAL_LESSON_CONTEXT_VELODROME]:[]),
         ]);
         $id = (int)$pdo->lastInsertId();
         venueOperationAudit($pdo,'lesson',$id,$actorTrainerId,'create',$reason,['date'=>$date,'starts_at'=>$startsAt,'ends_at'=>$endsAt,'capacity'=>$exclusive?1:$capacity,'exclusive'=>$exclusive,'price_minor'=>$priceMinor]);
@@ -110,7 +124,8 @@ function publicVelodromeUpdateSlot(
     ) throw new InvalidArgumentException('Úprava termínu vyžaduje platné údaje, důvod a výslovné potvrzení.');
     $pdo->beginTransaction();
     try {
-        $sql = "SELECT il.*,s.kod FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=?";
+        $context=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_VELODROME);
+        $sql = "SELECT il.*,s.kod FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=? AND ".$context;
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
         $statement = $pdo->prepare($sql);$statement->execute([$slotId]);$slot = $statement->fetch(PDO::FETCH_ASSOC);
         if (!$slot || (string)$slot['kod'] !== 'velodrom' || (string)$slot['stav'] !== 'aktivni') throw new PublicVelodromeException('Aktivní termín velodromu nebyl nalezen.');
@@ -132,7 +147,7 @@ function publicVelodromeCloseSlot(PDO $pdo,int $slotId,int $actorTrainerId,strin
 {
     $reason=trim($reason);if($slotId<1||$actorTrainerId<1||$reason===''||!$confirmed||mb_strlen($reason,'UTF-8')>1000)throw new InvalidArgumentException('Uzavření termínu vyžaduje důvod a výslovné potvrzení.');
     $pdo->beginTransaction();
-    try{$sql="SELECT il.id,il.stav,s.kod FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=?";if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$st=$pdo->prepare($sql);$st->execute([$slotId]);$slot=$st->fetch(PDO::FETCH_ASSOC);if(!$slot||(string)$slot['kod']!=='velodrom')throw new PublicVelodromeException('Termín velodromu nebyl nalezen.');if((string)$slot['stav']==='zrusena'){$pdo->commit();return['id'=>$slotId,'changed'=>false];}$count=$pdo->prepare("SELECT COUNT(*) FROM verejne_rezervace WHERE lekce_id=? AND stav IN ('ceka','potvrzena')");$count->execute([$slotId]);if((int)$count->fetchColumn()>0)throw new PublicVelodromeException('Termín má aktivní rezervace. Nejprve je auditovaně zrušte nebo vyřešte přes objednávky.');$pdo->prepare("UPDATE individualni_lekce SET stav='zrusena' WHERE id=?")->execute([$slotId]);if(function_exists('venueOperationAudit'))venueOperationAudit($pdo,'lesson',$slotId,$actorTrainerId,'close',$reason,['from_status'=>'aktivni','to_status'=>'zrusena']);$pdo->commit();return['id'=>$slotId,'changed'=>true];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof PublicVelodromeException)throw$exception;throw new PublicVelodromeException('Termín se nepodařilo uzavřít bez částečné změny.',0,$exception);}
+    try{$context=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_VELODROME);$sql="SELECT il.id,il.stav,s.kod FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=? AND ".$context;if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$st=$pdo->prepare($sql);$st->execute([$slotId]);$slot=$st->fetch(PDO::FETCH_ASSOC);if(!$slot||(string)$slot['kod']!=='velodrom')throw new PublicVelodromeException('Termín velodromu nebyl nalezen.');if((string)$slot['stav']==='zrusena'){$pdo->commit();return['id'=>$slotId,'changed'=>false];}$count=$pdo->prepare("SELECT COUNT(*) FROM verejne_rezervace WHERE lekce_id=? AND stav IN ('ceka','potvrzena')");$count->execute([$slotId]);if((int)$count->fetchColumn()>0)throw new PublicVelodromeException('Termín má aktivní rezervace. Nejprve je auditovaně zrušte nebo vyřešte přes objednávky.');$pdo->prepare("UPDATE individualni_lekce SET stav='zrusena' WHERE id=?")->execute([$slotId]);if(function_exists('venueOperationAudit'))venueOperationAudit($pdo,'lesson',$slotId,$actorTrainerId,'close',$reason,['from_status'=>'aktivni','to_status'=>'zrusena']);$pdo->commit();return['id'=>$slotId,'changed'=>true];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof PublicVelodromeException)throw$exception;throw new PublicVelodromeException('Termín se nepodařilo uzavřít bez částečné změny.',0,$exception);}
 }
 
 /** @return array{id:int,changed:bool} */
@@ -146,18 +161,20 @@ function publicVelodromeAdminCancelReservation(PDO$pdo,int$reservationId,int$act
 /** @return list<array<string,mixed>> */
 function publicVelodromeAdminSlots(PDO$pdo):array
 {
-    return$pdo->query("SELECT il.*,s.nazev AS sportoviste_name,(SELECT COUNT(*) FROM verejne_rezervace r WHERE r.lekce_id=il.id AND r.stav IN ('ceka','potvrzena')) AS reserved_count FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE s.kod='velodrom' AND il.datum>=CURRENT_DATE ORDER BY il.datum,il.cas_od,il.id")->fetchAll(PDO::FETCH_ASSOC);
+    $context=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_VELODROME);
+    return$pdo->query("SELECT il.*,s.nazev AS sportoviste_name,(SELECT COUNT(*) FROM verejne_rezervace r WHERE r.lekce_id=il.id AND r.stav IN ('ceka','potvrzena')) AS reserved_count FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE s.kod='velodrom' AND ".$context." AND il.datum>=CURRENT_DATE ORDER BY il.datum,il.cas_od,il.id")->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /** @return list<array<string,mixed>> */
 function publicVelodromeSlots(PDO $pdo): array
 {
+    $context=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_VELODROME);
     $statement = $pdo->query(
         "SELECT il.*,s.nazev AS sportoviste_name, "
         . "(SELECT COUNT(*) FROM verejne_rezervace r WHERE r.lekce_id=il.id "
         . "AND r.stav IN ('ceka','potvrzena')) AS reserved_count "
         . 'FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id '
-        . "WHERE s.kod='velodrom' AND s.je_verejne=1 AND s.aktivni=1 "
+        . "WHERE s.kod='velodrom' AND ".$context." AND s.je_verejne=1 AND s.aktivni=1 "
         . "AND il.stav='aktivni' AND il.datum>=CURRENT_DATE ORDER BY il.datum,il.cas_od,il.id"
     );
     $slots = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -304,8 +321,9 @@ function publicVelodromeReserve(PDO $pdo, int $lessonId, int $accountId, string 
         if (!$profile) {
             throw new PublicVelodromeException('Nejprve dokončete svůj veřejný profil.');
         }
+        $context=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_VELODROME);
         $lessonSql = 'SELECT il.*,s.kod,s.je_verejne,s.aktivni FROM individualni_lekce il '
-            . 'JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=?';
+            . 'JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.id=? AND '.$context;
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
             $lessonSql .= ' FOR UPDATE';
         }

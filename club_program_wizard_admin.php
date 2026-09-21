@@ -44,11 +44,18 @@ function cpwSimpleDefaults(array $input, string $requestKey, array $reference): 
     $input['sales_close_at'] = $startsOn !== '' ? $startsOn . 'T23:59' : '';
     foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
         $terms = $reference['terms'][$purpose] ?? [];
-        if (!is_array($terms) || $terms === [] || (int)($terms[0]['id'] ?? 0) < 1) {
-            throw new ClubProgramWizardException('Kroužek nelze zveřejnit, dokud správce jednou neschválí klubové podmínky. Otevřete Pokročilé nástroje → Programy a podmínky.');
+        if (is_array($terms) && $terms !== [] && (int)($terms[0]['id'] ?? 0) > 0) {
+            $input[$purpose . '_source'] = 'existing';
+            $input[$purpose . '_version_id'] = (string)$terms[0]['id'];
+            continue;
         }
-        $input[$purpose . '_source'] = 'existing';
-        $input[$purpose . '_version_id'] = (string)$terms[0]['id'];
+        $text=trim((string)($input[$purpose.'_text']??''));
+        if($text===''||mb_strlen($text,'UTF-8')>4000||str_contains($text,CLUB_PROGRAM_TERM_DRAFT_MARKER)){
+            throw new ClubProgramWizardException('Před prvním zveřejněním vyplňte a zkontrolujte oba texty klubových podmínek. Vzorový text označený jako VZOR nelze zveřejnit.');
+        }
+        if(($input['terms_confirmed']??'')!=='1')throw new ClubProgramWizardException('Potvrďte, že jste zkontrolovali první znění klubových podmínek.');
+        $input[$purpose . '_source'] = 'new';
+        $input[$purpose . '_text'] = $text;
     }
     $input['reason'] = 'Vypsání nového kroužku.';
     $input['confirmed'] = true;
@@ -122,6 +129,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 $success = (string)($_SESSION['club_program_wizard_flash'] ?? '');
 unset($_SESSION['club_program_wizard_flash']);
 $activeTeams = array_values(array_filter($reference['teams'], static fn(array $team): bool => (string)$team['status'] === 'active'));
+$termsReady=true;
+foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){$terms=$reference['terms'][$purpose]??[];if(!is_array($terms)||$terms===[]||(int)($terms[0]['id']??0)<1)$termsReady=false;}
 $key = (string)$_SESSION['club_program_wizard_key'];
 $old = static fn(string $field, string $default = ''): string => (string)($_POST[$field] ?? $default);
 $today = new DateTimeImmutable('today');
@@ -146,6 +155,7 @@ $end = $start->modify('+9 months -1 day');
     </div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= cpwh($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success d-flex justify-content-between align-items-center"><span><?= cpwh($success) ?></span><a class="btn btn-sm btn-success" href="club_program_offers_admin.php">Otevřít správu kroužků</a></div><?php endif; ?>
+    <?php if($termsReady):?><div class="alert alert-success"><i class="bi bi-shield-check me-2"></i>Klubové storno podmínky a souhlas jsou připravené. Průvodce použije jejich poslední schválené znění.</div><?php else:?><div class="alert alert-warning"><strong>Před prvním kroužkem je potřeba jednou zadat klubové podmínky.</strong> Vyplňte je přímo níže; při uložení se bezpečně založí spolu s kroužkem. Další kroužky už převezmou schválené znění automaticky.</div><?php endif;?>
     <form method="post" enctype="multipart/form-data" class="card border-0 shadow-sm">
         <div class="card-body row g-3">
             <?= csrf_field() ?><input type="hidden" name="request_key" value="<?= cpwh($key) ?>">
@@ -159,7 +169,8 @@ $end = $start->modify('+9 months -1 day');
             <div class="col-md-4"><label class="form-label">Nejstarší ročník <span class="text-muted">(nepovinné)</span></label><input class="form-control" type="number" min="1900" max="<?= date('Y') ?>" name="birth_year_to" value="<?= cpwh($old('birth_year_to')) ?>"></div>
             <div class="col-md-4"><label class="form-label">Obrázek <span class="text-muted">(nepovinné)</span></label><input class="form-control" type="file" name="product_image" accept="image/jpeg,image/png"></div>
             <?php if ($activeTeams !== []): ?><div class="col-12"><label class="form-label">Soupiska pro přihlášené <span class="text-muted">(nepovinné)</span></label><select class="form-select" name="team_id"><option value="">Vytvořit novou automaticky</option><?php foreach ($activeTeams as $team): ?><option value="<?= (int)$team['id'] ?>" <?= $old('team_id') === (string)$team['id'] ? 'selected' : '' ?>><?= cpwh($team['season_name'] . ' · ' . $team['name']) ?></option><?php endforeach; ?></select><div class="form-text">Pokud nevyberete existující soupisku, systém založí novou jen pro tento kroužek.</div></div><?php endif; ?>
-            <div class="col-12"><div class="alert alert-light border mb-0">Systém automaticky použije schválené klubové podmínky a připraví kategorii, prodejní období, produkt i soupisku. Nic dalšího nebude potřeba doplňovat.</div></div>
+            <?php if(!$termsReady):?><div class="col-12"><h2 class="h5 mt-2">První klubové podmínky</h2><p class="text-muted small">Zadejte konečné znění schválené klubem. Text se zobrazí rodiči před objednávkou a uloží se do neměnného snapshotu objednávky.</p></div><div class="col-12"><label class="form-label req">Storno podmínky kroužku</label><textarea class="form-control" name="program_cancellation_text" maxlength="4000" rows="5" required placeholder="Kdy a za jakých podmínek lze účast zrušit a jak se řeší vrácení ceny."><?=cpwh($old('program_cancellation_text'))?></textarea></div><div class="col-12"><label class="form-label req">Souhlas s účastí</label><textarea class="form-control" name="program_consent_text" maxlength="4000" rows="5" required placeholder="S čím rodič nebo účastník souhlasí při přihlášení do kroužku."><?=cpwh($old('program_consent_text'))?></textarea></div><div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="terms_confirmed" value="1" id="terms-confirmed" required <?=$old('terms_confirmed')==='1'?'checked':''?>><label class="form-check-label" for="terms-confirmed">Potvrzuji, že oba texty jsou konečné a schválené klubem.</label></div><?php endif;?>
+            <div class="col-12"><div class="alert alert-light border mb-0">Systém připraví kategorii, prodejní období, produkt i soupisku. Podmínky budou před nákupem vždy viditelné rodiči.</div></div>
             <div class="col-md-5 d-grid ms-auto"><button class="btn btn-primary btn-lg"><i class="bi bi-check2-circle me-2"></i>Vypsat a zveřejnit kroužek</button></div>
         </div>
     </form>

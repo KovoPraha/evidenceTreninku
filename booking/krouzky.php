@@ -7,7 +7,6 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/club_event_registration.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
-require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 
 function clubRegistrationH(mixed $value): string
 {
@@ -34,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ($_POST['consented'] ?? '') === '1'
                 );
                 $_SESSION['flash_club_registration'] = $result['status'] === 'waitlisted'
-                    ? ($result['created'] ? 'Kapacita je plná. Dítě bylo zařazeno na čekací listinu.' : 'Dítě už je na čekací listině.')
-                    : ($result['created'] ? 'Dítě bylo na kroužek přihlášeno.' : 'Dítě už je na tento kroužek přihlášeno.');
+                    ? ($result['created'] ? 'Kapacita je plná. Účastník byl zařazen na čekací listinu.' : 'Účastník už je na čekací listině.')
+                    : ($result['created'] ? 'Účastník byl na akci přihlášen.' : 'Účastník už je na tuto akci přihlášen.');
             } elseif ($action === 'add_paid') {
                 $result=clubEventShopAddToCart($pdo,$accountId,(int)($_POST['event_id']??0),(int)($_POST['sportovec_id']??0),(int)($_POST['variant_id']??0),(string)($_POST['consent_version']??''),($_POST['consented']??'')==='1');
                 $_SESSION['flash_club_registration']=$result['created']?'Placená událost byla přidána do košíku. Dokončete objednávku a platbu.':'Událost už v košíku je.';
@@ -97,28 +96,21 @@ if(clubEventShopAvailable($pdo)){
     $linkedStatement=$pdo->prepare('SELECT order_id FROM club_event_order_items WHERE registration_id=?');
     foreach($registrations as $registration){$linkedStatement->execute([(int)$registration['id']]);$linkedOrderId=(int)$linkedStatement->fetchColumn();if($linkedOrderId>0)$orderLinkedRegistrations[(int)$registration['id']]=$linkedOrderId;}
 }
-$programProducts=[];
-foreach(shopStorefrontCatalog($pdo)as$product){
-    $variants=[];
-    foreach($product['variants']as$variant){$state=clubProgramVariantSaleState($pdo,(int)$variant['variant_id']);if($state['saleable'])$variants[]=$variant;}
-    if($variants===[])continue;$product['variants']=$variants;$product['min_amount_minor']=min(array_column($variants,'amount_minor'));$product['currency']=(string)$variants[0]['currency'];$product['images']=array_values(array_filter($product['images'],static fn(string$url):bool=>shopStorefrontIsLocalImageUrl($url)));$programProducts[]=$product;
-}
 ?>
 <!doctype html>
 <html lang="cs">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kroužky — Kovopraha</title>
+    <title>Akce — Kovopraha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
 <?php publicShellNav('clubs'); ?>
 <main class="container py-4" style="max-width:1000px">
-    <div class="mb-4"><h1 class="h3 mb-1">Kroužky a klubové akce</h1><p class="text-muted mb-0">Placené i bezplatné nabídky klubu na jednom místě.</p></div>
-    <section class="mb-4" aria-labelledby="paid-clubs-title"><div class="d-flex justify-content-between align-items-start gap-2 mb-3"><div><h2 id="paid-clubs-title" class="h4 mb-1"><i class="bi bi-bicycle me-2 text-primary"></i>Placené kroužky</h2><p class="text-muted mb-0">Aktuální kroužky koupíte bezpečně v klubovém e-shopu.</p></div><a class="btn btn-primary btn-sm" href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">Otevřít e-shop</a></div><div class="row g-3"><?php foreach($programProducts as$product):$imageUrl=shopStorefrontPrimaryImageUrl($product['images']);?><div class="col-lg-6"><article class="card border-0 shadow-sm h-100"><img src="<?=clubRegistrationH($imageUrl)?>" class="card-img-top app-product-image p-2" style="height:190px" alt="<?=clubRegistrationH($product['public_name'])?>" onerror="this.onerror=null;this.src='<?=clubRegistrationH(shopStorefrontPlaceholderImageUrl())?>'"><div class="card-body d-flex flex-column"><h3 class="h5"><?=clubRegistrationH($product['public_name'])?></h3><p class="text-muted small"><?=nl2br(clubRegistrationH($product['public_summary']))?></p><div class="mt-auto d-flex justify-content-between align-items-center"><strong><?=number_format((int)$product['min_amount_minor']/100,2,',',' ')?> <?=clubRegistrationH($product['currency'])?></strong><a class="btn btn-primary btn-sm" href="produkt.php?id=<?=(int)$product['product_id']?>">Detail a koupit</a></div></div></article></div><?php endforeach;?><?php if($programProducts===[]):?><div class="col-12"><div class="alert alert-light border mb-0">Momentálně není v prodeji žádný placený kroužek. <a href="eshop.php">Prohlédněte si ostatní nabídku e-shopu</a>.</div></div><?php endif;?></div></section>
-    <section aria-labelledby="free-clubs-title"><div class="d-flex flex-wrap justify-content-between align-items-start gap-2"><div><h2 id="free-clubs-title" class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné kroužky</h2><p class="text-muted">Nabídku, termíny a volnou kapacitu vidíte bez registrace. Pro přihlášení účastníka budete potřebovat účet.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a></div>
+    <div class="mb-4"><h1 class="h3 mb-1">Akce</h1><p class="text-muted mb-0">Jednorázové klubové akce, nábory, kempy a závody. Pravidelné kroužky najdete pouze v <a href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">e-shopu</a>.</p></div>
+    <section aria-labelledby="free-clubs-title"><div class="d-flex flex-wrap justify-content-between align-items-start gap-2"><div><h2 id="free-clubs-title" class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné akce a nábory</h2><p class="text-muted">Jde o jednorázové akce bez ceny, například nábor, otevřený trénink nebo klubové setkání. Nabídku, termíny a volnou kapacitu vidíte bez registrace; k přihlášení účastníka potřebujete účet.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= clubRegistrationH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= clubRegistrationH($success) ?></div><?php endif; ?>
     <?php if ($isLoggedIn && $participants === []): ?><div class="alert alert-info">Nejprve si nechte schválit dítě v části <a href="moje_osoby.php">Moje osoby</a>.</div><?php endif; ?>
@@ -140,7 +132,7 @@ foreach(shopStorefrontCatalog($pdo)as$product){
             </form><?php elseif($event['roster_targets'] !== []): ?><div class="alert alert-secondary small mb-0">Žádná z vašich schválených osob není v cílové soupisce.</div><?php endif; ?>
         </div></section></div>
     <?php endforeach; ?>
-    <?php if ($events === []): ?><div class="col-12"><div class="alert alert-secondary">Momentálně není otevřen žádný bezplatný kroužek. <a href="klubovy_kalendar.php">Podívejte se do klubového kalendáře</a>.</div></div><?php endif; ?>
+    <?php if ($events === []): ?><div class="col-12"><div class="alert alert-secondary">Momentálně není otevřena žádná bezplatná akce ani nábor. <a href="klubovy_kalendar.php">Podívejte se do kalendáře klubových akcí</a>.</div></div><?php endif; ?>
     </div>
     </section>
 
@@ -158,7 +150,7 @@ foreach(shopStorefrontCatalog($pdo)as$product){
     </div>
     </section>
 
-    <?php if($isLoggedIn):?><section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje přihlášky na kroužky</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Kroužek</th><th>Dítě</th><th>Stav</th><th></th></tr></thead><tbody>
+    <?php if($isLoggedIn):?><section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje přihlášky na akce</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Akce</th><th>Účastník</th><th>Stav</th><th></th></tr></thead><tbody>
     <?php foreach ($registrations as $registration):$isOrderLinked=isset($orderLinkedRegistrations[(int)$registration['id']]);$canCancel=!$isOrderLinked&&($registration['status']==='waitlisted'||($registration['status']==='confirmed'&&!empty($registration['cancellation_deadline_snapshot'])&&new DateTimeImmutable('now')<=new DateTimeImmutable((string)$registration['cancellation_deadline_snapshot'])));$statusLabel=$registration['status']==='payment_pending'?'čeká na platbu':($registration['status']==='confirmed'?'přihlášeno':($registration['status']==='waitlisted'?'čekací listina #'.(int)$registration['waitlist_position']:'zrušeno'));$statusColor=$registration['status']==='confirmed'?'success':(in_array($registration['status'],['waitlisted','payment_pending'],true)?'warning':'secondary');?><tr><td><strong><?= clubRegistrationH($registration['event_name']) ?></strong><div class="small text-muted"><?= clubRegistrationH($registration['registered_at']) ?><?=!empty($registration['promoted_at'])?' · povýšeno '.clubRegistrationH($registration['promoted_at']):''?></div><div class="small text-muted">Souhlas <?=clubRegistrationH($registration['consent_version_snapshot']??'')?> · storno do <?=clubRegistrationH($registration['cancellation_deadline_snapshot']??'')?></div></td><td><?= clubRegistrationH($registration['prijmeni'] . ' ' . $registration['jmeno']) ?></td><td><span class="badge text-bg-<?=$statusColor?>"><?=clubRegistrationH($statusLabel)?></span></td><td><?php if ($canCancel): ?><form method="post" class="d-flex gap-2 justify-content-end"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="registration_id" value="<?= (int)$registration['id'] ?>"><input class="form-control form-control-sm" style="max-width:220px" name="note" maxlength="1000" required placeholder="Důvod zrušení"><button class="btn btn-sm btn-outline-danger"><?= $registration['status']==='waitlisted'?'Opustit čekací listinu':'Zrušit' ?></button></form><?php elseif($isOrderLinked):?><a class="btn btn-sm btn-outline-secondary" href="moje_objednavky.php">Storno přes objednávku</a><?php elseif($registration['status']==='confirmed'):?><span class="small text-muted">Bezplatné storno skončilo</span><?php endif; ?></td></tr><?php endforeach; ?>
     <?php if ($registrations === []): ?><tr><td colspan="4" class="text-center text-muted py-3">Zatím nemáte žádnou přihlášku.</td></tr><?php endif; ?>
     </tbody></table></div></section><?php endif;?>
