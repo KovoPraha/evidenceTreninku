@@ -251,7 +251,9 @@ function shopManualCatalogProductInput(array $input): array
     $name = shopManualCatalogText((string)($input['name']??''),255,'Název produktu');
     $summary = shopManualCatalogText((string)($input['short_description']??''),4000,'Krátký popis',false);
     $offerType = (string)($input['offer_type']??'');
-    if (!in_array($offerType,['goods','program'],true)) throw new InvalidArgumentException('Ruční produkt musí být zboží nebo program.');
+    if (!in_array($offerType,['goods','program','club_event','camp'],true)) {
+        throw new InvalidArgumentException('Ruční položka musí být zboží, kroužek, klubová akce nebo tábor.');
+    }
     $itemType = (string)($input['item_type']??'');
     if (!in_array($itemType,['product','service'],true)) throw new InvalidArgumentException('Typ položky musí být product nebo service.');
     $visibility = mb_strtolower(trim((string)($input['visibility']??'')),'UTF-8');

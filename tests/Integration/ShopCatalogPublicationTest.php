@@ -101,6 +101,27 @@ final class ShopCatalogPublicationTest extends TestCase
         self::assertSame('active', $pdo->query("SELECT catalog_status FROM shop_products WHERE id=$productId")->fetchColumn());
     }
 
+    public function testClubEventRequiresMatchingDomainLinkAndCanThenBeActivated(): void
+    {
+        $pdo = $this->databaseWithDraftCatalog();
+        $productId = (int)$pdo->query("SELECT id FROM shop_products WHERE offer_type='camp' ORDER BY id LIMIT 1")->fetchColumn();
+        self::assertGreaterThan(0, $productId);
+        $pdo->exec("UPDATE shop_products SET offer_type='club_event' WHERE id=$productId");
+        $pdo->exec('CREATE TABLE club_events(id INTEGER PRIMARY KEY,event_type TEXT NOT NULL)');
+        $pdo->exec('CREATE TABLE shop_product_event_links(product_id INTEGER NOT NULL,event_id INTEGER NOT NULL)');
+        $pdo->exec("INSERT INTO club_events VALUES(1,'camp'),(2,'club_event')");
+        $pdo->exec("INSERT INTO shop_product_event_links VALUES($productId,1)");
+        $mismatched=\shopCatalogPublicationReadiness($pdo,$productId);
+        self::assertFalse($mismatched['ready']);
+        self::assertStringContainsString('Klubová akce',implode(' ',$mismatched['blockers']));
+        $pdo->exec('DELETE FROM shop_product_event_links');
+        $pdo->exec("INSERT INTO shop_product_event_links VALUES($productId,2)");
+        self::assertTrue(\shopCatalogPublicationReadiness($pdo,$productId)['ready']);
+        $result=\shopCatalogPublicationActivate($pdo,$productId,7,'Klubový závod','Jednorázová klubová akce.','Propojení a cena byly ověřeny.',true);
+        self::assertTrue($result['changed']);
+        self::assertSame('active',$pdo->query("SELECT catalog_status FROM shop_products WHERE id=$productId")->fetchColumn());
+    }
+
     public function testProgramRequiresOfferLinkAndStaysActiveWhenOfferIsNoLongerSaleable(): void
     {
         $pdo=$this->databaseWithDraftCatalog();

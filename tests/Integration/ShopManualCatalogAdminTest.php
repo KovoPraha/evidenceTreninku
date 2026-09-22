@@ -71,6 +71,24 @@ final class ShopManualCatalogAdminTest extends TestCase
         self::assertFalse($pdo->inTransaction());
     }
 
+    public function testManualCatalogAcceptsBothPaidEventOfferTypes(): void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260817110000_shop_catalog_admin.php';$migration['up']($pdo);
+        foreach(['club_event'=>'KP-AKCE-2026','camp'=>'KP-TABOR-2026'] as $offerType=>$sku){
+            $created=\shopManualCatalogCreate($pdo,7,[
+                'name'=>$offerType==='camp'?'Letní tábor':'Klubový závod',
+                'offer_type'=>$offerType,'item_type'=>'service','visibility'=>'visible',
+            ],$this->variant($sku,25000,null),'Ruční placená akce.',true);
+            self::assertSame($offerType,$pdo->query('SELECT offer_type FROM shop_products WHERE id='.(int)$created['product_id'])->fetchColumn());
+            self::assertSame('service',$pdo->query('SELECT item_type FROM shop_products WHERE id='.(int)$created['product_id'])->fetchColumn());
+        }
+        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE offer_type IN ('club_event','camp')")->fetchColumn());
+
+        try{\shopManualCatalogCreate($pdo,7,['name'=>'Neplatný typ','offer_type'=>'rental','item_type'=>'service','visibility'=>'visible'],$this->variant('KP-RENTAL',1000,null),'Kontrola typů.',true);self::fail('Unsupported manual type must fail closed.');}
+        catch(\InvalidArgumentException){}
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE offer_type='rental'")->fetchColumn());
+    }
+
     /** @return array<string,mixed> */
     private function variant(string $sku,int $amount,?string $stock): array
     {

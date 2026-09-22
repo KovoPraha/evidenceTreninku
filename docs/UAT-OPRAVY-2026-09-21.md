@@ -12,6 +12,7 @@ Stav dokumentu: implementováno; produkční release probíhá výhradně chrán
 - Pokročilá stránka programů vysvětluje pojmy stabilní program, nabízené období, soupiska a účast z objednávky.
 - Stránka dlouhodobých názvů kroužků vysvětluje, že hodnoty jako „500+1“ a „K“ nejsou předvolby, ale dříve uložená data. Zobrazuje počet nabízených období.
 - Při založení klubové akce je interní kód nepovinný a systém ho vytvoří automaticky. Chybové zprávy oddělují chybný typ, oprávnění a formát kódu.
+- V katalogu lze ručně založit také placenou klubovou akci nebo tábor. Agenda akcí vysvětluje návaznost a odkazuje přímo na propojenou položku; zveřejňovací kontrola podporuje oba typy a vyžaduje shodný typ propojené akce.
 - Cena veřejné hodiny velodromu se zadává v Kč; na haléře se převádí až na serveru.
 - Veřejné hodiny velodromu a individuální lekce mají nový datový kontext. Po migraci se nezobrazují ve stejné nabídce a nelze je upravovat přes nesprávnou administraci.
 - „Klubový kalendář“ se jmenuje **Kalendář klubových akcí** a výslovně obsahuje závody, soustředění, školení a schůze, nikoli individuální lekce a velodrom.

@@ -36,6 +36,11 @@ Veřejné záznamy mají povinný prefix `TEST -`:
 - `TEST - Individuální lekce`,
 - veřejný plán `TEST - Trénink nového dítěte`.
 
+Placená akce ověřuje celý skutečný řetězec: ruční položka typu Tábor se nejprve
+propojí s pracovní akcí, potom se auditovaně aktivuje její katalogová varianta a
+nakonec se otevře registrace. Běžná ruční správa katalogu podporuje stejným
+postupem typy Klubová akce i Tábor / soustředění.
+
 Termíny se odvozují od dne spuštění a konec prodeje kroužku od proměnné
 `KIS_UAT_WINDOW_END`. Okno smí být nejvýše 31 dní. Skutečné finanční potvrzení
 není součástí provisioningu: QR, Stripe/SumUp a bankovní spárování se provádějí

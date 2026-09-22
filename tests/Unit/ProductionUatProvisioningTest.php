@@ -47,6 +47,8 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertStringContainsString("'KP-TEST-UAT-PRIMESTSKY-DEN'", $script);
         self::assertStringContainsString('clubEventOpenPaidRegistration', $script);
         self::assertStringContainsString('clubEventRosterReplaceTargets', $script);
+        self::assertStringContainsString('shopCatalogPublicationActivate(', $script);
+        self::assertLessThan(strpos($script,'clubEventOpenPaidRegistration',strpos($script,'function kisUatUpsertPaidShopEvent')),strpos($script,'shopCatalogPublicationActivate(',strpos($script,'function kisUatUpsertPaidShopEvent')));
         self::assertStringContainsString("(.products|length) == 3", $workflow);
         self::assertStringContainsString("pub.public_name LIKE 'TEST -%'", $cleanup);
         self::assertStringContainsString('KP-TEST-UAT-PRIMESTSKY-DEN', $cleanup);

@@ -7,11 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 final class LightweightEshopWorkflowWiringTest extends TestCase
 {
-    public function testCatalogCreatesGoodsWithSafeDefaultsAndPublishesOnTheSamePage(): void
+    public function testCatalogCreatesSupportedOffersWithSafeDefaultsAndPublishesOnTheSamePage(): void
     {
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/eshop_produkt_admin.php');
         self::assertStringContainsString('function productAdminGeneratedSku()', $source);
-        self::assertStringContainsString("\$_POST['offer_type']='goods'", $source);
+        self::assertStringContainsString('name="offer_type" data-catalog-primary', $source);
+        self::assertStringContainsString('value="club_event"', $source);
+        self::assertStringContainsString('value="camp"', $source);
+        self::assertStringContainsString("\$createdOfferType==='goods'?'product':'service'", $source);
         self::assertStringContainsString("\$_POST['visibility']='visible'", $source);
         self::assertStringContainsString("\$action==='publish'", $source);
         self::assertStringContainsString('shopCatalogPublicationActivate(', $source);

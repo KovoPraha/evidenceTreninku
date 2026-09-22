@@ -67,22 +67,23 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
         } elseif(clubProgramTermsRegistryAvailable($pdo)&&!clubProgramProductHasEffectiveTerms($pdo,$productId)) {
             $blockers[] = 'Žádná nabídka programu nemá zveřejněné platné storno podmínky a souhlas.';
         }
-    } elseif ((string)$product['offer_type'] === 'camp') {
+    } elseif (in_array((string)$product['offer_type'], ['club_event','camp'], true)) {
         if (!function_exists('clubEventTableExists')
             || !clubEventTableExists($pdo, 'shop_product_event_links')
             || !clubEventTableExists($pdo, 'club_events')
         ) {
-            $blockers[] = 'Databáze zatím nemá připravenou správu táborů.';
+            $blockers[] = 'Databáze zatím nemá připravenou správu klubových akcí.';
         } else {
             $linkedEvent = $pdo->prepare(
                 'SELECT e.id FROM shop_product_event_links l '
                 . 'JOIN club_events e ON e.id=l.event_id '
-                . "WHERE l.product_id=? AND e.event_type='camp' LIMIT 1"
+                . 'WHERE l.product_id=? AND e.event_type=? LIMIT 1'
             );
-            $linkedEvent->execute([$productId]);
+            $linkedEvent->execute([$productId,(string)$product['offer_type']]);
         }
         if (isset($linkedEvent) && !$linkedEvent->fetchColumn()) {
-            $blockers[] = 'Tábor nejprve propojte s pracovní akcí typu Tábor v agendě Klubové akce.';
+            $expected=(string)$product['offer_type']==='camp'?'Tábor / soustředění':'Klubová akce';
+            $blockers[] = 'Položku nejprve propojte s pracovní akcí typu '.$expected.' v agendě Klubové akce.';
         }
     } elseif ((string)$product['offer_type'] !== 'goods') {
         $blockers[] = 'Typ ' . $product['offer_type'] . ' zatím nemá podporovaný prodejní postup.';

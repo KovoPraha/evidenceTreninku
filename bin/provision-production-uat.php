@@ -218,6 +218,10 @@ function kisUatUpsertPaidShopEvent(
     }
 
     clubEventLinkProduct($pdo, $eventId, $productId, $actorId, 'Dočasná placená varianta pro produkční UAT.');
+    shopCatalogPublicationActivate(
+        $pdo, $productId, $actorId, $name, 'Dočasná placená akce pro produkční UAT.',
+        'Aktivace neveřejné katalogové varianty pro objednávkový tok produkčního UAT.', true
+    );
     clubEventRosterReplaceTargets($pdo, $eventId, [$teamId], $actorId, 'Produkční UAT je omezeno na testovací soupisku.', true);
     clubEventConfigureRegistrationTerms(
         $pdo, $eventId, $actorId, 'uat-paid-' . $day->format('Ymd'),

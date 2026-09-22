@@ -10,6 +10,7 @@ final class ClubEventWiringTest extends TestCase
         self::assertStringContainsString("roleAtLeast('admin')",$source);self::assertStringContainsString('csrf_verify',$source);
         self::assertStringContainsString('clubEventCreateDraft',$source);self::assertStringContainsString('clubEventAddSession',$source);self::assertStringContainsString('clubEventLinkProduct',$source);self::assertStringContainsString('clubEventUpdateDraft',$source);self::assertStringContainsString('clubEventUpdateSession',$source);self::assertStringContainsString('clubEventArchive',$source);
         self::assertStringContainsString('clubEventOpenFreeRegistration',$source);self::assertStringContainsString('clubEventOpenPaidRegistration',$source);
+        self::assertStringContainsString('eshop_produkt_admin.php?id=',$source);self::assertStringContainsString('teprve poté lze registraci otevřít',$source);
         self::assertStringContainsString('celý životní cyklus bezplatných i placených akcí',$source);
         self::assertStringNotContainsString('INSERT INTO shop_orders',$source);self::assertStringNotContainsString('kis_',$source);
     }
