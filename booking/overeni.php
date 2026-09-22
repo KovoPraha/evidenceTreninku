@@ -9,6 +9,13 @@ header('Cache-Control: no-store');
 header('Referrer-Policy: no-referrer');
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function verificationSafeRedirect(mixed $value): string
+{
+    $redirect = trim((string)$value);
+    return preg_match('~^[a-z0-9_]+\.php(\?[a-z0-9_=&%.-]*)?$~i', $redirect) === 1
+        ? $redirect
+        : 'kalendar.php';
+}
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $token = $method === 'POST' ? trim((string)($_POST['token'] ?? '')) : '';
@@ -18,6 +25,7 @@ $legacyToken = one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, $legacyTok
     : '';
 $ok = false;
 $attempted = $method === 'POST';
+$redirect = verificationSafeRedirect($_POST['redirect'] ?? 'kalendar.php');
 
 if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !== '') {
     $uzivatel = one_time_email_verification_consume($pdo, $token);
@@ -41,7 +49,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
     <?php if ($ok): ?>
-        <meta http-equiv="refresh" content="3;url=kalendar.php">
+        <meta http-equiv="refresh" content="3;url=<?=h($redirect)?>">
     <?php endif; ?>
 </head>
 <body class="bg-light">
@@ -51,7 +59,8 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
         <?php if ($ok): ?>
             <i class="bi bi-check-circle-fill text-success fs-1 mb-3"></i>
             <h5>Email ověřen!</h5>
-            <p class="text-muted">Přesměrováváme vás na kalendář…</p>
+            <p class="text-muted">Přesměrováváme vás na další krok…</p>
+            <a class="btn btn-primary" href="<?=h($redirect)?>">Pokračovat</a>
         <?php elseif ($attempted): ?>
             <i class="bi bi-x-circle-fill text-danger fs-1 mb-3"></i>
             <h5>Neplatný nebo expirovaný odkaz</h5>
@@ -63,6 +72,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
             <form method="post" id="verification-form">
                 <?= csrf_field() ?>
                 <input type="hidden" name="token" id="verification-token" value="<?= h($legacyToken) ?>">
+                <input type="hidden" name="redirect" id="verification-redirect" value="kalendar.php">
                 <button type="submit" id="verification-submit" class="btn btn-primary" <?= $legacyToken === '' ? 'disabled' : '' ?>>
                     Ověřit e-mail
                 </button>
@@ -84,6 +94,10 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
         return;
     }
     document.getElementById('verification-token').value = token;
+    const redirect = params.get('redirect') || 'kalendar.php';
+    if (/^[a-z0-9_]+\.php(\?[a-z0-9_=&%.-]*)?$/i.test(redirect)) {
+        document.getElementById('verification-redirect').value = redirect;
+    }
     submit.disabled = false;
 })();
 </script>

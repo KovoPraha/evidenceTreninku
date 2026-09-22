@@ -4,6 +4,22 @@ Samostatná klubová aplikace pro evidenci tréninků, osoby a soupisky KIS,
 rodinné účty, e-shop, programy, události a rezervace sportovišť. Backend je PHP
 8.2+ nad MariaDB; projekt se lokálně provozuje v XAMPP.
 
+## Produkce
+
+Produkční aplikace běží na <https://kis.kovopraha.cz/>. Nasazení provádí ruční
+GitHub Actions workflow **Nasadit produkci**; cíl určují a vzájemně kontrolují
+Variables `KIS_APP_HOST`, `KIS_WEB_URL` a `KIS_REMOTE_DIR`. Samotný push do
+`main` produkci nemění.
+
+Pro řízené testování na živé aplikaci použijte
+[produkční uživatelské scénáře](docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
+
+Veřejný produktový detail rozlišuje běžné zboží a nabídky navázané na
+sportovce. Zboží lze objednat rychlým nákupem bez účtu; kroužky, členství a
+další sportovní programy vedou přes ověřený účet a chráněnou registraci osoby.
+Na každém produktu lze zanechat kontakt pro jiný termín nebo variantu a
+zákaznická péče jej vyřizuje v auditované provozní frontě.
+
 ## Převzetí vývoje na novém počítači
 
 1. Nainstalujte XAMPP s PHP 8.2+ a Composer.
@@ -25,6 +41,9 @@ Podrobnosti:
 - [localhost instalace a demo](docs/localhost-testovani.md),
 - [samostatný offline testovací návod](outputs/localhost-test-2026-08-25/OFFLINE_TESTOVANI.md),
 - [aktuální stav a hranice projektu](docs/CURRENT_STATE.md),
+- [produkční uživatelské testování](docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md),
+- [souhrn navržených oprav z produkčního UAT](output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf),
+- [produkční nasazení](docs/NASAZENI.md),
 - [datové toky v kódu](outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md),
 - [nálezy a rizika](outputs/data-flow-audit-2026-08-24/NALEZY_A_RIZIKA.md).
 

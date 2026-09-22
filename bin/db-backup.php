@@ -258,6 +258,8 @@ const EVIDENCE_TABLES = [
     'shop_orders',
     'shop_product_categories',
     'shop_product_event_links',
+    'shop_product_interest_events',
+    'shop_product_interests',
     'shop_product_images',
     'shop_product_publication_events',
     'shop_product_publications',

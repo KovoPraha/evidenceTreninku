@@ -2,6 +2,19 @@
 
 Aktualizováno: 22. 9. 2026, Europe/Prague
 
+## Aktuální produkční release
+
+Produkční aplikace je <https://kis.kovopraha.cz/>. Poslední uzavřený release
+před touto změnou byl commit `0135e34e47243ba983ee9239ab67087a5b6f35f1`:
+CI běh `35729444543` prošel na PHP 8.2 a MariaDB 10.3/11.4 a produkční deploy
+`35729597409` dokončil zálohu, migrace, aktivaci stejného commitu a serverový
+HTTP smoke. Deploy byl spuštěn s `potvrzeni=NASADIT` a `uat_schvaleno=true`.
+
+Veřejná domovská stránka, registrace a e-shop po tomto release vracely HTTP
+200; administrační trasy bez přihlášení správně přesměrovaly na login. To je
+důkaz nasazeného kódu a základní dostupnosti, nikoli náhrada plného UAT se
+skutečným e-mailem, bankovní platbou a jmenovanými provozními vlastníky.
+
 ## Produkční UAT účty a scénářová data z 22. 9. 2026
 
 Chráněný provozní workflow umí idempotentně připravit rodiče Tester Karel a
@@ -33,6 +46,22 @@ schválené produkční konfigurace klíčů a webhooku.
 Tento soubor je krátký vstupní rozcestník. Přesný historický ledger a poslední
 důkazy jsou v `docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md`; produktová
 autorita M2 je `10-milnik-m2-provozni-pilot.md`.
+
+## Produkční adresa a aktuální deploy důkaz
+
+Aktuální produkční adresa je <https://kis.kovopraha.cz/>. GitHub workflow
+`.github/workflows/deploy-production.yml`
+je parametrizované Variables `KIS_APP_HOST`, `KIS_WEB_URL` a `KIS_REMOTE_DIR`,
+kontroluje jejich vzájemnou shodu a provádí závěrečný HTTP smoke.
+
+Staré nasazení `data.kovopraha.cz/evidence` se nadále používá, ale není cílem
+tohoto GitHub workflow. Jeho stav proto nelze zaměňovat za stav KIS.
+
+Aktuální ověřený důkaz je deploy `35729597409` nad commitem
+`0135e34e47243ba983ee9239ab67087a5b6f35f1`. Před každým dalším zapisovacím
+UAT se musí znovu porovnat schválený commit s `var/deployment.json` a konkrétním
+během workflow. Podrobný postup je v
+`docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md`.
 
 ## Aktuální předání na další stanici
 

@@ -31,6 +31,8 @@
 /var/member-charge-reminder-outbox/
 /var/family-weekly-summary-outbox/
 /.codex-remote-attachments/
+/.codex-artifact-qa/
+/tmp/
 
 .DS_Store
 Thumbs.db

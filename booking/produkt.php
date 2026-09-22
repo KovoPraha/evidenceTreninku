@@ -8,6 +8,8 @@ require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
+require_once dirname(__DIR__) . '/includes/shop_product_interest.php';
+require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
 
 function shopProductH(mixed $value): string
 {
@@ -72,17 +74,37 @@ if ($product !== null && $isLoggedIn) {
     unset($variant);
 }
 $errors = [];
+$interestSuccess = (string)($_SESSION['shop_interest_success'] ?? '');
+unset($_SESSION['shop_interest_success']);
 if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!$isLoggedIn) {
-        header('Location: prihlaseni.php?redirect=' . rawurlencode('produkt.php?id=' . $productId), true, 303);
-        exit;
-    }
+    $action = (string)($_POST['action'] ?? '');
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $errors[] = 'Formulář vypršel. Obnovte stránku.';
     } else {
         try {
-            if ((string)($_POST['action'] ?? '') !== 'add') {
+            if ($action === 'interest') {
+                $interestEmail = strtolower(trim((string)($_POST['interest_email'] ?? '')));
+                if (!auth_rate_limit_reserve_attempt($pdo, 'product_interest', $interestEmail, auth_rate_limit_request_ip())) {
+                    throw new ShopProductInterestException('Příliš mnoho pokusů. Zkuste kontakt odeslat později.');
+                }
+                shopProductInterestSubmit(
+                    $pdo,
+                    $productId,
+                    (int)($_POST['interest_variant_id'] ?? 0) > 0 ? (int)$_POST['interest_variant_id'] : null,
+                    $interestEmail,
+                    'booking/produkt.php?id=' . $productId,
+                    ($_POST['contact_consent'] ?? '') === '1'
+                );
+                $_SESSION['shop_interest_success'] = 'Děkujeme. E-mail jsme uložili a k této nabídce se vám ozveme.';
+                header('Location: produkt.php?id=' . $productId . '#mam-zajem', true, 303);
+                exit;
+            }
+            if ($action !== 'add') {
                 throw new InvalidArgumentException('Neplatná akce.');
+            }
+            if (!$isLoggedIn) {
+                header('Location: prihlaseni.php?redirect=' . rawurlencode('produkt.php?id=' . $productId), true, 303);
+                exit;
             }
             $variantId = (int)($_POST['variant_id'] ?? 0);
             $selected = null;
@@ -112,7 +134,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $exception) {
             error_log('booking/produkt.php: ' . $exception->getMessage());
             $errors[] = 'Databázová operace selhala bez částečného zápisu.';
-        } catch (InvalidArgumentException|ShopCheckoutException|ClubProgramException $exception) {
+        } catch (InvalidArgumentException|ShopCheckoutException|ClubProgramException|ShopProductInterestException $exception) {
             $errors[] = $exception->getMessage();
         }
     }
@@ -138,6 +160,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php foreach ($errors as $error): ?>
             <div class="alert alert-danger"><?= shopProductH($error) ?></div>
         <?php endforeach; ?>
+        <?php if ($interestSuccess !== ''): ?><div class="alert alert-success"><?=shopProductH($interestSuccess)?></div><?php endif; ?>
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="row g-0">
                 <div class="col-lg-5 bg-white d-flex align-items-center justify-content-center p-3">
@@ -150,10 +173,9 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="text-muted"><?= nl2br(shopProductH($product['public_summary'])) ?></p>
                         <h2 class="h5 mt-4"><?= $isProgram ? 'Termín a přihlášení' : 'Vyberte variantu' ?></h2>
                         <?php if (!$isLoggedIn): ?>
-                            <div class="alert alert-info">
-                                <?= $isProgram ? 'Pro přihlášení dítěte nebo účastníka potřebujete účet.' : 'Po přihlášení se zobrazí případná klubová cena.' ?>
-                                <div class="mt-2"><a class="btn btn-sm btn-primary" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a>
-                                <?php if ($isProgram): ?><a class="btn btn-sm btn-outline-primary" href="registrace.php">Vytvořit účet</a><?php endif; ?></div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-6"><div class="border rounded bg-body-tertiary p-3 h-100"><strong>Už máte účet?</strong><p class="small text-muted my-2">Přihlaste se. Uvidíte své osoby, historii a klubové ceny. Po přihlášení se zobrazí případná klubová cena.</p><a class="btn btn-sm btn-outline-primary" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div></div>
+                                <div class="col-md-6"><div class="border rounded border-primary p-3 h-100"><strong><?=$isProgram?'Jste tu poprvé?':'Chcete nakoupit bez účtu?'?></strong><p class="small text-muted my-2"><?=$isProgram?'Pro přihlášení dítěte nebo účastníka potřebujete účet. Založte kontakt rodiče a po ověření bezpečně doplňte údaje sportovce.':'Stačí jméno a e-mail. Adresa je při osobním odběru nepovinná.'?></p><?php if($isProgram):?><a class="btn btn-sm btn-primary" href="registrace.php?purpose=nakup&amp;redirect=<?=rawurlencode('registrace_sportovce.php?product_id='.$productId)?>">Začít registraci sportovce</a><?php else:?><span class="small text-muted">Rychlý nákup vyberete u konkrétní varianty níže.</span><?php endif;?></div></div>
                             </div>
                         <?php endif; ?>
                         <div class="vstack gap-2">
@@ -196,13 +218,17 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <input type="hidden" name="variant_id" value="<?= (int)$variant['variant_id'] ?>">
                                                 <?php if($offer):?><label class="form-label small" for="program-person-<?=(int)$variant['variant_id']?>">Dítě / účastník</label><select class="form-select form-select-sm mb-2" id="program-person-<?=(int)$variant['variant_id']?>" name="sportovec_id" required><option value="">Vyberte</option><?php foreach($people as$person):?><option value="<?=(int)$person['sportovec_id']?>"><?=shopProductH($person['prijmeni'].' '.$person['jmeno'])?></option><?php endforeach;?></select><?php if($people===[]):?><div class="small text-danger mb-2">Nejdříve propojte dítě v části Moje osoby.</div><?php endif;?><?php endif;?>
                                                 <button class="btn btn-primary btn-sm" <?= $variant['in_stock'] ? '' : 'disabled' ?>><?= $offer ? 'Přihlásit účastníka' : 'Přidat do košíku' ?></button>
-                                            </form><?php else: ?><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>"><?= $variant['in_stock'] ? ($offer ? 'Přihlásit se a pokračovat' : 'Přihlásit se a koupit') : ($offer ? 'Kapacita naplněna' : 'Vyprodáno') ?></a><?php endif; ?>
+                                            </form><?php else: ?><?php if($offer):?><div class="d-grid gap-1"><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>"><?= $variant['in_stock'] ? 'Přihlásit se a pokračovat' : 'Kapacita naplněna' ?></a><a class="btn btn-outline-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="registrace.php?purpose=nakup&amp;redirect=<?=rawurlencode('registrace_sportovce.php?product_id='.$productId)?>">Nový sportovec</a></div><?php else:?><div class="d-grid gap-1"><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="rychly_nakup.php?product_id=<?=$productId?>&amp;variant_id=<?=(int)$variant['variant_id']?>"><?= $variant['in_stock'] ? 'Koupit bez registrace' : 'Vyprodáno' ?></a><a class="btn btn-outline-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div><?php endif;?><?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
                         <p class="small text-muted mt-4 mb-0"><?= $isProgram ? 'Cena, věk účastníka a volná kapacita se před dokončením přihlášení znovu ověří.' : 'Cena a dostupnost se při vytvoření objednávky znovu bezpečně ověří. Objednávka používá neměnný cenový snapshot.' ?></p>
+                        <section id="mam-zajem" class="card bg-body-tertiary border-0 mt-4"><div class="card-body">
+                            <h2 class="h5">Nevyhovuje vám termín nebo varianta?</h2><p class="small text-muted">Zanechte nám e-mail. Ozveme se, jakmile budeme řešit další termín, velikost nebo vhodnou variantu.</p>
+                            <form method="post" class="row g-2 align-items-end"><?=csrf_field()?><input type="hidden" name="action" value="interest"><div class="col-md-6"><label class="form-label" for="interest-email">E-mail</label><input id="interest-email" type="email" name="interest_email" class="form-control" maxlength="254" value="<?=shopProductH($_POST['interest_email']??'')?>" required></div><div class="col-md-6"><label class="form-label" for="interest-variant">Termín / varianta <span class="text-muted">(nepovinné)</span></label><select id="interest-variant" name="interest_variant_id" class="form-select"><option value="">Obecný zájem o produkt</option><?php foreach($product['variants'] as$interestVariant):?><option value="<?=(int)$interestVariant['variant_id']?>"><?=shopProductH(shopProductVariantLabel($interestVariant))?></option><?php endforeach;?></select></div><div class="col-12"><div class="form-check"><input id="contact-consent" class="form-check-input" type="checkbox" name="contact_consent" value="1" required><label class="form-check-label small" for="contact-consent">Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.</label></div></div><div class="col-12"><button class="btn btn-outline-primary">Chci vědět o další možnosti</button></div></form>
+                        </div></section>
                     </div>
                 </div>
             </div>

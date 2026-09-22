@@ -10,15 +10,23 @@ require_once __DIR__ . '/../includes/password_security.php';
 require_once __DIR__ . '/../includes/auth_rate_limit.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function registrationSafeRedirect(mixed $value): string
+{
+    $redirect = trim((string)$value);
+    return preg_match('~^[a-z0-9_]+\.php(\?[a-z0-9_=&%.-]*)?$~i', $redirect) === 1
+        ? $redirect
+        : 'kalendar.php';
+}
 
 if (isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: kalendar.php'); exit;
+    header('Location: ' . registrationSafeRedirect($_GET['redirect'] ?? 'kalendar.php')); exit;
 }
 
 $errors  = [];
 $success = false;
 $existingAccount = false;
 $purpose = (string)($_POST['ucel'] ?? $_GET['purpose'] ?? 'nakup');
+$redirect = registrationSafeRedirect($_POST['redirect'] ?? $_GET['redirect'] ?? 'kalendar.php');
 if (!in_array($purpose, ['nakup', 'sport'], true)) {
     $purpose = 'nakup';
 }
@@ -125,7 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Verifikační email
             if (empty($errors)) {
-                $link = appUrl('booking/overeni.php') . '#token=' . rawurlencode($verification['token']);
+                $link = appUrl('booking/overeni.php') . '#token=' . rawurlencode($verification['token'])
+                    . '&redirect=' . rawurlencode($redirect);
                 @mail($email, 'Ověření registrace — Kovopraha',
                     "Dobrý den {$jmeno},\n\nPro dokončení registrace klikněte na odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",
                     "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
@@ -166,6 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <form method="post">
                     <?= csrf_field() ?>
+                    <input type="hidden" name="redirect" value="<?=h($redirect)?>">
                     <fieldset class="mb-3">
                         <legend class="form-label mb-2">K čemu budete účet používat?</legend>
                         <div class="form-check border rounded p-3 ps-5 mb-2">
@@ -215,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="submit" class="btn btn-primary w-100">Zaregistrovat se</button>
                 </form>
                 <p class="text-center text-muted small mt-3">
-                    Již máte účet? <a href="prihlaseni.php">Přihlaste se</a>
+                    Již máte účet? <a href="prihlaseni.php?redirect=<?=rawurlencode($redirect)?>">Přihlaste se</a>
                 </p>
             <?php endif; ?>
         </div>

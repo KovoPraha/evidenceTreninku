@@ -166,6 +166,7 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertSame('admin', \staffEffectiveLegacyRole('trener'));
         self::assertSame('finance_manager', \staffRouteOwner('eshop_payments_admin.php'));
         self::assertSame('order_operator', \staffRouteOwner('eshop_orders_admin.php'));
+        self::assertSame('order_operator', \staffRouteOwner('shop_product_interests_admin.php'));
     }
 
     public function testSuperadminMayActivateAllPositionsButOnlyOneAtATime(): void
