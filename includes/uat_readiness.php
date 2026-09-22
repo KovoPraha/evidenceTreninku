@@ -35,6 +35,21 @@ function uatReadinessCheck(string $key, string $label, bool $ok, string $detail,
     return ['key' => $key, 'label' => $label, 'ok' => $ok, 'detail' => $detail, 'scenarios' => $scenarios];
 }
 
+function uatReadinessBoolSetting(string $constantName, string $environmentName): bool
+{
+    if (defined($constantName) && constant($constantName) === true) return true;
+    return trim((string)getenv($environmentName)) === '1';
+}
+
+function uatReadinessStringSetting(string $constantName, string $environmentName): string
+{
+    if (defined($constantName)) {
+        $value = trim((string)constant($constantName));
+        if ($value !== '') return $value;
+    }
+    return trim((string)getenv($environmentName));
+}
+
 /** @return array<string,mixed> */
 function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
 {
@@ -142,12 +157,12 @@ function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
         'technical_public_without_prefix' => $technicalPublic,
         'stripe' => $stripe,
         'bank_ready' => $bankReady,
-        'inbox_ready' => defined('KIS_UAT_INBOX_READY') && KIS_UAT_INBOX_READY === true,
-        'bank_reconciliation_ready' => defined('KIS_UAT_BANK_RECONCILIATION_READY') && KIS_UAT_BANK_RECONCILIATION_READY === true,
+        'inbox_ready' => uatReadinessBoolSetting('KIS_UAT_INBOX_READY', 'KIS_UAT_INBOX_READY'),
+        'bank_reconciliation_ready' => uatReadinessBoolSetting('KIS_UAT_BANK_RECONCILIATION_READY', 'KIS_UAT_BANK_RECONCILIATION_READY'),
         'queue_available' => $queueAvailable,
         'queue_failed' => $queueFailed,
-        'owner' => defined('KIS_UAT_OWNER') ? trim((string)KIS_UAT_OWNER) : '',
-        'window_end' => defined('KIS_UAT_WINDOW_END') ? trim((string)KIS_UAT_WINDOW_END) : '',
+        'owner' => uatReadinessStringSetting('KIS_UAT_OWNER', 'KIS_UAT_OWNER'),
+        'window_end' => uatReadinessStringSetting('KIS_UAT_WINDOW_END', 'KIS_UAT_WINDOW_END'),
     ];
 }
 

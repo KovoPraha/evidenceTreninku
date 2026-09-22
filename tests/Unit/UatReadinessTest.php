@@ -10,6 +10,27 @@ require_once dirname(__DIR__, 2) . '/includes/uat_readiness.php';
 
 final class UatReadinessTest extends TestCase
 {
+    /** @var list<string> */
+    private array $environmentNames = [];
+
+    protected function tearDown(): void
+    {
+        foreach ($this->environmentNames as $name) putenv($name);
+        parent::tearDown();
+    }
+
+    public function testRuntimeEnvironmentCanSupplyDeploymentOwnedUatSettings(): void
+    {
+        $boolName = 'KIS_TEST_UAT_READY_' . bin2hex(random_bytes(4));
+        $stringName = 'KIS_TEST_UAT_OWNER_' . bin2hex(random_bytes(4));
+        $this->environmentNames = [$boolName, $stringName];
+        putenv($boolName . '=1');
+        putenv($stringName . '=Marek');
+
+        self::assertTrue(\uatReadinessBoolSetting('KIS_TEST_UNDEFINED_BOOL', $boolName));
+        self::assertSame('Marek', \uatReadinessStringSetting('KIS_TEST_UNDEFINED_STRING', $stringName));
+    }
+
     public function testEveryRequiredGateMustBeGreen(): void
     {
         $snapshot = [
