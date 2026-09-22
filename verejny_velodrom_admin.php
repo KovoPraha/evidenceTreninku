@@ -33,6 +33,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     publicVelodromeCzkToMinor((string)($_POST['price_czk'] ?? ''))
                 );
                 $message = 'Veřejný termín byl vytvořen.';
+            } elseif ($action === 'create_series') {
+                $result=publicVelodromeCreateRecurringSlots(
+                    $pdo,$actor,(string)($_POST['date_from']??''),(string)($_POST['date_to']??''),
+                    is_array($_POST['weekdays']??null)?$_POST['weekdays']:[],(string)($_POST['starts_at']??''),(string)($_POST['ends_at']??''),
+                    (int)($_POST['capacity']??0),($_POST['exclusive']??'')==='1',publicVelodromeCzkToMinor((string)($_POST['price_czk']??'')),(string)($_POST['name']??''),
+                    (string)($_POST['reason']??''),($_POST['confirm_action']??'')==='1'
+                );
+                $message='Byla vytvořena série '.$result['created'].' veřejných termínů.';
             } elseif ($action === 'update_slot') {
                 publicVelodromeUpdateSlot(
                     $pdo,
@@ -104,6 +112,27 @@ $reservations = publicVelodromeAdminReservations($pdo);
                 <div class="col-md-4 form-check ms-2"><input class="form-check-input" type="checkbox" name="exclusive" value="1" id="exclusive"><label class="form-check-label" for="exclusive">Výhradní rezervace celého slotu</label></div>
                 <div class="col-md-3 d-grid"><button class="btn btn-primary">Vypsat hodinu</button></div>
             </form>
+        </div>
+    </section>
+
+    <section class="card border-primary shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">Vypsat opakované veřejné jízdy</div>
+        <div class="card-body">
+            <form method="post" class="row g-3">
+                <?= csrf_field() ?><input type="hidden" name="action" value="create_series">
+                <div class="col-md-2"><label class="form-label">Od data</label><input class="form-control" type="date" name="date_from" required></div>
+                <div class="col-md-2"><label class="form-label">Do data</label><input class="form-control" type="date" name="date_to" required></div>
+                <div class="col-md-2"><label class="form-label">Od</label><input class="form-control" type="time" name="starts_at" value="16:00" required></div>
+                <div class="col-md-2"><label class="form-label">Do</label><input class="form-control" type="time" name="ends_at" value="19:00" required></div>
+                <div class="col-md-2"><label class="form-label">Kapacita</label><input class="form-control" type="number" name="capacity" min="1" max="1000" value="20" required></div>
+                <div class="col-md-2"><label class="form-label">Cena v Kč</label><input class="form-control" type="number" name="price_czk" min="0" max="1000000" step="0.01" value="100" required></div>
+                <div class="col-12 d-flex flex-wrap gap-3"><span class="fw-semibold">Dny:</span><?php foreach([1=>'pondělí',2=>'úterý',3=>'středa',4=>'čtvrtek',5=>'pátek',6=>'sobota',7=>'neděle']as$day=>$label):?><label class="form-check"><input class="form-check-input" type="checkbox" name="weekdays[]" value="<?=$day?>" <?=in_array($day,[1,3],true)?'checked':''?>> <?=publicVelodromeAdminH($label)?></label><?php endforeach;?></div>
+                <div class="col-md-6"><label class="form-label">Veřejný název</label><input class="form-control" name="name" maxlength="255" value="Jízdy pro veřejnost" required></div>
+                <div class="col-md-6"><label class="form-label">Auditovaný důvod</label><input class="form-control" name="reason" maxlength="1000" value="Vypsání pravidelných jízd pro veřejnost." required></div>
+                <div class="col-md-3 form-check align-self-end mb-2"><input class="form-check-input" type="checkbox" name="confirm_action" value="1" id="confirm-series" required><label class="form-check-label" for="confirm-series">Potvrzuji celou sérii</label></div>
+                <div class="col-md-3 d-grid align-self-end"><button class="btn btn-primary">Vypsat celou sérii</button></div>
+            </form>
+            <div class="form-text mt-2">Všechny termíny vzniknou atomicky. Pokud se jediný překrývá s existující lekcí, nevznikne žádný.</div>
         </div>
     </section>
 

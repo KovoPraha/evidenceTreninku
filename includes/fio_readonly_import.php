@@ -44,9 +44,18 @@ function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?s
     $empty=static fn(string$status,string$reason):array=>['status'=>$status,'payment_id'=>null,'order_id'=>null,'payable_type'=>null,'payable_id'=>null,'reason'=>$reason];
     if ($amountMinor <= 0) return $empty('ignored_non_credit','Odchozí nebo nulový pohyb se nepáruje.');
     if ($variableSymbol === null) return $empty('review_missing_vs','Příchozí platba nemá platný variabilní symbol.');
-    $statement = $pdo->prepare('SELECT id AS payment_id,payable_type,payable_id,method,status AS payment_status,amount_minor,currency FROM payments WHERE variable_symbol=? LIMIT 2');
+    $hasPlans=fioTableExists($pdo,'club_member_charges')&&fioTableExists($pdo,'member_fee_plan_run_items')&&fioTableExists($pdo,'member_fee_plan_runs');
+    $planJoins=$hasPlans?"LEFT JOIN club_member_charges c ON c.id=p.payable_id AND p.payable_type='member_charge' LEFT JOIN member_fee_plan_run_items ri ON ri.charge_id=c.id LEFT JOIN member_fee_plan_runs rr ON rr.id=ri.run_id ":'';
+    $statement = $pdo->prepare('SELECT p.id AS payment_id,p.payable_type,p.payable_id,p.method,p.status AS payment_status,p.amount_minor,p.currency'.($hasPlans?',rr.plan_id AS charge_plan_id,c.sportovec_id,c.status AS charge_status,c.due_on':',NULL AS charge_plan_id,NULL AS sportovec_id,NULL AS charge_status,NULL AS due_on').' FROM payments p '.$planJoins.'WHERE p.variable_symbol=? ORDER BY '.($hasPlans?'c.due_on,':'').'p.id');
     $statement->execute([$variableSymbol]);
     $candidates = $statement->fetchAll(PDO::FETCH_ASSOC);
+    if(count($candidates)>1){
+        $planIds=[];$personIds=[];$validPlan=true;foreach($candidates as$row){if((string)$row['payable_type']!=='member_charge'||(int)($row['charge_plan_id']??0)<1||(int)($row['sportovec_id']??0)<1){$validPlan=false;break;}$planIds[(int)$row['charge_plan_id']]=true;$personIds[(int)$row['sportovec_id']]=true;}
+        if(!$validPlan||count($planIds)!==1||count($personIds)!==1)return$empty('review_unknown_vs','Variabilní symbol neodpovídá jednomu členskému plánu a sportovci.');
+        $eligible=array_values(array_filter($candidates,static fn(array$row):bool=>(string)$row['payment_status']==='pending'&&(string)$row['charge_status']==='pending'&&(int)$row['amount_minor']===$amountMinor&&strtoupper((string)$row['currency'])===$currency));
+        if($eligible===[])return$empty('review_amount','Částka nebo stav neodpovídá žádnému neuhrazenému období trvalého příkazu.');
+        $candidates=[$eligible[0]];
+    }
     if (count($candidates) !== 1) return $empty('review_unknown_vs','Variabilní symbol neodpovídá právě jedné evidované platbě.');
     $candidate=$candidates[0];$paymentId=(int)$candidate['payment_id'];$payableType=(string)$candidate['payable_type'];$payableId=(int)$candidate['payable_id'];$orderId=null;$targetStatus=null;$orderPaymentStatus=null;
     if($payableType==='shop_order'){$target=$pdo->prepare('SELECT id,status,payment_status FROM shop_orders WHERE id=?');$target->execute([$payableId]);$row=$target->fetch(PDO::FETCH_ASSOC);if(!$row)return$empty('review_unknown_vs','Objednávka přiřazená k platbě nebyla nalezena.');$orderId=(int)$row['id'];$targetStatus=(string)$row['status'];$orderPaymentStatus=(string)$row['payment_status'];}

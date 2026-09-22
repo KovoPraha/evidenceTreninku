@@ -85,6 +85,18 @@ final class FioReadonlyImportTest extends TestCase
         }
     }
 
+    public function testStandingOrderVariableSymbolSelectsOldestPendingMonth():void
+    {
+        $pdo=$this->database();$pdo->exec('DELETE FROM payments;DELETE FROM shop_orders');
+        $pdo->exec('CREATE TABLE club_member_charges(id INTEGER PRIMARY KEY,status TEXT,due_on TEXT,sportovec_id INTEGER)');
+        $pdo->exec('CREATE TABLE member_fee_plan_runs(id INTEGER PRIMARY KEY,plan_id INTEGER)');
+        $pdo->exec('CREATE TABLE member_fee_plan_run_items(id INTEGER PRIMARY KEY,run_id INTEGER,charge_id INTEGER)');
+        $pdo->exec("INSERT INTO club_member_charges VALUES(10,'pending','2026-09-15',55),(11,'pending','2026-10-15',55);INSERT INTO member_fee_plan_runs VALUES(20,7),(21,7);INSERT INTO member_fee_plan_run_items VALUES(30,20,10),(31,21,11);INSERT INTO payments VALUES(40,'member_charge',10,'bank_transfer','pending',120000,'CZK','0000000777',NULL),(41,'member_charge',11,'bank_transfer','pending',120000,'CZK','0000000777',NULL)");
+        self::assertSame(40,(int)\fioProposePaymentMatch($pdo,120000,'CZK','0000000777')['payment_id']);
+        $pdo->exec("UPDATE payments SET status='paid' WHERE id=40;UPDATE club_member_charges SET status='paid' WHERE id=10");
+        self::assertSame(41,(int)\fioProposePaymentMatch($pdo,120000,'CZK','0000000777')['payment_id']);
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:');$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);$pdo->exec('PRAGMA foreign_keys=ON');

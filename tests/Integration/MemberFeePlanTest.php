@@ -12,11 +12,13 @@ final class MemberFeePlanTest extends TestCase
 {
     public function testPreviewSkipsMissingPayerAndGenerationIsIdempotent():void
     {
-        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260922120000_member_fee_plans.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260922120000_member_fee_plans.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));$standing=require dirname(__DIR__,2).'/migrations/20260922190000_member_fee_standing_orders.php';$standing['up']($pdo);self::assertTrue($standing['verify']($pdo));
         $plan=\memberFeePlanCreate($pdo,7,['team_id'=>10,'name'=>'Závodní měsíční','charge_title'=>'Příspěvek září','amount_minor'=>120000,'due_day'=>15,'starts_on'=>'2026-01-01','ends_on'=>'2026-12-31'],'Zavedení měsíčních příspěvků.',true);
         $preview=\memberFeePlanPreview($pdo,$plan['id'],'2026-09');self::assertSame(1,$preview['ready_count']);self::assertSame(1,$preview['skipped_count']);self::assertContains('missing_payer',array_column($preview['rows'],'result'));
         $run=\memberFeePlanGenerate($pdo,$plan['id'],'2026-09',7,'Potvrzený měsíční běh.',$preview['fingerprint'],true);self::assertFalse($run['idempotent']);self::assertSame(1,$run['generated_count']);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
         $again=\memberFeePlanGenerate($pdo,$plan['id'],'2026-09',7,'Opakování stejného běhu.',$preview['fingerprint'],true);self::assertTrue($again['idempotent']);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());
+        $october=\memberFeePlanPreview($pdo,$plan['id'],'2026-10');\memberFeePlanGenerate($pdo,$plan['id'],'2026-10',7,'Říjnový měsíční běh.',$october['fingerprint'],true);
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(DISTINCT variable_symbol) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM member_fee_standing_orders')->fetchColumn());
     }
 
     private function database():PDO

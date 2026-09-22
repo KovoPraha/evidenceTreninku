@@ -199,6 +199,16 @@ final class PublicVelodromeTest extends TestCase
         self::assertSame('admin_cancel',$pdo->query("SELECT action FROM public_velodrome_reservation_events ORDER BY id DESC LIMIT 1")->fetchColumn());
     }
 
+    public function testCoordinatorCanCreateAtomicMondayWednesdaySeries():void
+    {
+        $pdo=$this->database();$year=(int)date('Y')+1;$monday=new \DateTimeImmutable('first monday of June '.$year);$wednesday=$monday->modify('+2 days');
+        $result=\publicVelodromeCreateRecurringSlots($pdo,7,$monday->format('Y-m-d'),$wednesday->format('Y-m-d'),[1,3],'16:00','19:00',20,false,10000,'TEST – jízdy pro veřejnost','Pravidelné jízdy pro veřejnost.',true);
+        self::assertSame(2,$result['created']);self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM individualni_lekce WHERE cas_od='16:00:00' AND cas_do='19:00:00'")->fetchColumn());
+        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM individualni_lekce WHERE nazev='TEST – jízdy pro veřejnost'")->fetchColumn());
+        try{\publicVelodromeCreateRecurringSlots($pdo,7,$monday->format('Y-m-d'),$wednesday->format('Y-m-d'),[1,3],'16:00','19:00',20,false,10000,'TEST – kolize','Kolizní série.',true);self::fail('Overlapping series must fail atomically.');}catch(PublicVelodromeException){}
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM individualni_lekce')->fetchColumn());
+    }
+
     private function slot(PDO $pdo, int $capacity, bool $exclusive, int $priceMinor): int
     {
         $year = (int)date('Y') + 1;
