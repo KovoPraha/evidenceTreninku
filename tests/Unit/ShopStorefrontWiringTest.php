@@ -19,10 +19,24 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringContainsString('shopCartSetQuantity', $source);
         self::assertStringContainsString('referrerpolicy="no-referrer"', $source);
         self::assertStringContainsString('Po přihlášení se zobrazí případná klubová cena.', $source);
-        self::assertStringContainsString('Pro přihlášení dítěte nebo účastníka potřebujete účet.', $source);
+        self::assertStringContainsString('Účet vytvoříme automaticky a e-mail ověříte následně.', $source);
+        self::assertStringContainsString('rychla_prihlaska.php?product_id=', $source);
+        self::assertStringContainsString('Přihlásit sportovce a zaplatit', $source);
+        self::assertStringNotContainsString('Pro přihlášení dítěte nebo účastníka potřebujete účet.', $source);
         self::assertStringNotContainsString('>Přihlásit pro zobrazení klubové ceny<', $source);
         self::assertStringNotContainsString('description_html_untrusted', $source);
         self::assertStringNotContainsString('short_description', $source);
+    }
+
+    public function testQuickProgramCheckoutKeepsAgeMismatchAsWarningOnly():void
+    {
+        $root=dirname(__DIR__,2);$page=(string)file_get_contents($root.'/booking/rychla_prihlaska.php');$service=(string)file_get_contents($root.'/includes/shop_program_quick_checkout.php');
+        self::assertStringContainsString('quick-age-warning',$page);
+        self::assertStringContainsString('Přihlášení je přesto možné.',$page);
+        self::assertStringContainsString('Objednat a zobrazit platbu',$page);
+        self::assertStringContainsString('athleteRegistrationSubmit',$service);
+        self::assertStringContainsString("'quick_program'",$service);
+        self::assertStringContainsString('clubProgramBirthDateWarning',$service);
     }
 
     public function testStorefrontLinksToProductDetail(): void

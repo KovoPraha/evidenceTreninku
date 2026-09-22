@@ -57,7 +57,9 @@ function cpwSimpleDefaults(array $input, string $requestKey, array $reference): 
         $input[$purpose . '_source'] = 'new';
         $input[$purpose . '_text'] = $text;
     }
-    $input['reason'] = 'Vypsání nového kroužku.';
+    $input['reason'] = ($input['source_mode']??'new')==='existing'
+        ? 'Napojení existujícího produktu na kroužkový program.'
+        : 'Vypsání nového kroužku.';
     $input['confirmed'] = true;
 
     if ((int)($input['team_id'] ?? 0) > 0) {
@@ -98,7 +100,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             }
             $input = cpwSimpleDefaults($_POST, $key, $reference);
             $input['request_key'] = $key;
-            $input['amount_minor'] = cpwMinor((string)($_POST['amount'] ?? ''));
+            $input['amount_minor'] = (string)($_POST['source_mode'] ?? 'new') === 'existing'
+                ? 0
+                : cpwMinor((string)($_POST['amount'] ?? ''));
             $upload = $_FILES['product_image'] ?? null;
             $source = null;
             if (is_array($upload) && ($upload['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
@@ -107,7 +111,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             }
             $result = clubProgramWizardCreate($pdo, $actorId, $input, $source, true, __DIR__);
             unset($_SESSION['club_program_wizard_key']);
-            $_SESSION['club_program_wizard_flash'] = 'Kroužek byl založen a zveřejněn.';
+            $_SESSION['club_program_wizard_flash'] = (string)($_POST['source_mode'] ?? 'new') === 'existing'
+                ? 'Existující produkt byl napojen na kroužek a zveřejněn.'
+                : 'Kroužek byl založen a zveřejněn.';
             header('Location: club_program_wizard_admin.php?hotovo=' . (int)$result['product_id'], true, 303);
             exit;
         } catch (Throwable $exception) {
@@ -129,10 +135,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 $success = (string)($_SESSION['club_program_wizard_flash'] ?? '');
 unset($_SESSION['club_program_wizard_flash']);
 $activeTeams = array_values(array_filter($reference['teams'], static fn(array $team): bool => (string)$team['status'] === 'active'));
+$existingProducts = $reference['products'] ?? [];
 $termsReady=true;
 foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){$terms=$reference['terms'][$purpose]??[];if(!is_array($terms)||$terms===[]||(int)($terms[0]['id']??0)<1)$termsReady=false;}
 $key = (string)$_SESSION['club_program_wizard_key'];
 $old = static fn(string $field, string $default = ''): string => (string)($_POST[$field] ?? $default);
+$requestedProductId=max(0,(int)($_GET['product_id']??0));$requestedVariantId='';
+foreach($existingProducts as$candidate)if((int)$candidate['product_id']===$requestedProductId){$requestedVariantId=(string)$candidate['variant_id'];break;}
+$sourceMode=$old('source_mode',$requestedVariantId!==''?'existing':'new');
 $today = new DateTimeImmutable('today');
 $start = $today->modify('first day of next month');
 $end = $start->modify('+9 months -1 day');
@@ -159,9 +169,11 @@ $end = $start->modify('+9 months -1 day');
     <form method="post" enctype="multipart/form-data" class="card border-0 shadow-sm">
         <div class="card-body row g-3">
             <?= csrf_field() ?><input type="hidden" name="request_key" value="<?= cpwh($key) ?>">
-            <div class="col-md-7"><label class="form-label">Název kroužku</label><input class="form-control form-control-lg" name="name" maxlength="160" value="<?= cpwh($old('name')) ?>" required autofocus></div>
-            <div class="col-md-5"><label class="form-label">Cena v Kč</label><input class="form-control form-control-lg" name="amount" inputmode="decimal" value="<?= cpwh($old('amount')) ?>" placeholder="např. 2500" required></div>
-            <div class="col-12"><label class="form-label">Krátký popis <span class="text-muted">(nepovinné)</span></label><textarea class="form-control" name="description" maxlength="4000" rows="2"><?= cpwh($old('description')) ?></textarea></div>
+            <div class="col-12"><fieldset><legend class="form-label fw-semibold">Co chcete udělat?</legend><div class="row g-2"><div class="col-md-6"><label class="border rounded p-3 d-block h-100"><input class="form-check-input me-2" type="radio" name="source_mode" value="existing" <?=$sourceMode==='existing'?'checked':''?> <?= $existingProducts===[]?'disabled':'' ?>><strong>Použít existující produkt</strong><span class="d-block small text-muted mt-1">Například už zveřejněný produkt 243. Nevznikne duplicita.</span></label></div><div class="col-md-6"><label class="border rounded p-3 d-block h-100"><input class="form-check-input me-2" type="radio" name="source_mode" value="new" <?=$sourceMode==='new'?'checked':''?>><strong>Vytvořit nový produkt</strong><span class="d-block small text-muted mt-1">Pro kroužek, který v katalogu ještě není.</span></label></div></div></fieldset></div>
+            <div class="col-12" data-existing-product><label class="form-label">Existující produkt a varianta</label><select class="form-select form-select-lg" name="existing_variant_id"><option value="">Vyberte produkt</option><?php foreach($existingProducts as$candidate):$candidateName=(string)($candidate['public_name']?:$candidate['name']);?><option value="<?=(int)$candidate['variant_id']?>" data-name="<?=cpwh($candidateName)?>" data-description="<?=cpwh((string)($candidate['public_summary']?:$candidate['short_description']))?>" data-amount="<?=cpwh(number_format((int)$candidate['amount_minor']/100,2,',',''))?>" <?= $old('existing_variant_id',$requestedVariantId)===(string)$candidate['variant_id']?'selected':'' ?>><?=cpwh('#'.(int)$candidate['product_id'].' · '.$candidateName.' · '.$candidate['sku'].' · '.number_format((int)$candidate['amount_minor']/100,2,',',' ').' Kč')?></option><?php endforeach;?></select><div class="form-text">Průvodce odstraní skladovou logiku, zachová cenu a veřejný text a připojí termín, kapacitu a soupisku.</div></div>
+            <div class="col-md-7" data-new-product><label class="form-label">Název kroužku</label><input class="form-control form-control-lg" name="name" maxlength="160" value="<?= cpwh($old('name')) ?>" required autofocus></div>
+            <div class="col-md-5" data-new-product><label class="form-label">Cena v Kč</label><input class="form-control form-control-lg" name="amount" inputmode="decimal" value="<?= cpwh($old('amount')) ?>" placeholder="např. 2500" required></div>
+            <div class="col-12" data-new-product><label class="form-label">Krátký popis <span class="text-muted">(nepovinné)</span></label><textarea class="form-control" name="description" maxlength="4000" rows="2"><?= cpwh($old('description')) ?></textarea></div>
             <div class="col-md-4"><label class="form-label">Od</label><input class="form-control" type="date" name="starts_on" value="<?= cpwh($old('starts_on', $start->format('Y-m-d'))) ?>" required></div>
             <div class="col-md-4"><label class="form-label">Do</label><input class="form-control" type="date" name="ends_on" value="<?= cpwh($old('ends_on', $end->format('Y-m-d'))) ?>" required></div>
             <div class="col-md-4"><label class="form-label">Počet míst</label><input class="form-control" type="number" min="1" max="100000" name="capacity" value="<?= cpwh($old('capacity', '12')) ?>" required></div>
@@ -175,5 +187,8 @@ $end = $start->modify('+9 months -1 day');
         </div>
     </form>
 </main>
+<script>
+(()=>{const radios=[...document.querySelectorAll('input[name="source_mode"]')];const existing=document.querySelector('[data-existing-product]');const fresh=[...document.querySelectorAll('[data-new-product]')];const select=existing?.querySelector('select');const apply=()=>{const mode=radios.find(r=>r.checked)?.value||'new';const useExisting=mode==='existing';existing?.classList.toggle('d-none',!useExisting);if(select)select.required=useExisting;for(const block of fresh){block.classList.toggle('d-none',useExisting);for(const input of block.querySelectorAll('input,textarea'))input.required=!useExisting&&input.name!=='description';}};for(const radio of radios)radio.addEventListener('change',apply);apply();})();
+</script>
 </body>
 </html>

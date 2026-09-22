@@ -58,7 +58,7 @@ function shopCartSetBeneficiary(PDO $pdo, int $accountId, int $cartItemId, ?int 
                 if(!$offer)throw new ClubProgramException('Nabídka kroužku už není dostupná.');
             }
             shopBeneficiaryAssertAccessible($pdo,$accountId,$sportovecId,true);
-            if($offer)clubProgramAssertBeneficiaryBirthYear($pdo,$offer,$sportovecId,true);
+            // Věkové rozpětí je doporučení; rozpor se ukáže jako varování v UI.
         }
         $pdo->prepare('UPDATE shop_cart_items SET beneficiary_sportovec_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')
             ->execute([$sportovecId, $cartItemId]);

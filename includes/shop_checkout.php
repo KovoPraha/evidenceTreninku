@@ -163,7 +163,6 @@ function shopCartSetQuantity(PDO $pdo, int $accountId, int $variantId, int $quan
                 $offer=clubProgramOfferForVariant($pdo,$variantId,null,true);
                 if(!$offer)throw new ShopCheckoutException('Nabídka kroužku už není dostupná.');
                 shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$beneficiary,true);
-                clubProgramAssertBeneficiaryBirthYear($pdo,$offer,(int)$beneficiary,true);
                 $beneficiarySportovecId=(int)$beneficiary;
             }
             if ($existing) {
@@ -267,7 +266,7 @@ function shopCheckoutPlace(
                 $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id'],null,true);
                 if(!$offer)throw new ShopCheckoutException('Nabídka kroužku už není dostupná.');
                 shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$item['beneficiary_sportovec_id'],true);
-                clubProgramAssertBeneficiaryBirthYear($pdo,$offer,(int)$item['beneficiary_sportovec_id'],true);
+                $item['program_age_warning']=clubProgramBeneficiaryBirthYearWarning($pdo,$offer,(int)$item['beneficiary_sportovec_id'],true);
                 $item['program_terms']=clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id'],true);
                 if(clubProgramTermsRegistryAvailable($pdo)){
                     if(!clubProgramTermsComplete($item['program_terms']))throw new ShopCheckoutException('Kroužek nemá zveřejněné platné storno podmínky a souhlas.');
@@ -319,7 +318,7 @@ function shopCheckoutPlace(
         $orderId=(int)$pdo->lastInsertId();
         foreach($items as $item){
             $quantity=(int)$item['quantity'];$line=(int)$item['amount_minor']*$quantity;
-            $managedStock=$item['stock_quantity_decimal']!==null;
+            $managedStock=($item['offer_type']??null)!=='program'&&$item['stock_quantity_decimal']!==null;
             if($managedStock){
                 $reserve=$pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal-?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND stock_quantity_decimal>=?');
                 $reserve->execute([$quantity,(int)$item['id'],$quantity]);
@@ -365,7 +364,8 @@ function shopCheckoutPlace(
                 . "VALUES ('shop_order',?,'bank_transfer','pending',?,?,?,?,?,?,?,?)")
                 ->execute([$orderId,$total,$currency,$variableSymbol,$bank['iban'],$bank['bic']!==''?$bank['bic']:null,$bank['account_label'],$spd,$dueAt]);
         }
-        $placeNote='Objednávka vytvořena serverovým checkoutem.'.($eventOrderItems>0?' Obsahuje '.$eventOrderItems.' placenou klubovou událost.':'').($velodromeOrderItems>0?' Obsahuje '.$velodromeOrderItems.' rezervaci velodromu.':'').($coupon!==null?' Kupón '.$coupon['code'].' poskytl slevu '.$discount.' minor units.':'');
+        $programAgeWarnings=[];foreach($items as$item)if(trim((string)($item['program_age_warning']??''))!=='')$programAgeWarnings[]=(string)$item['program_age_warning'];
+        $placeNote='Objednávka vytvořena serverovým checkoutem.'.($eventOrderItems>0?' Obsahuje '.$eventOrderItems.' placenou klubovou událost.':'').($velodromeOrderItems>0?' Obsahuje '.$velodromeOrderItems.' rezervaci velodromu.':'').($coupon!==null?' Kupón '.$coupon['code'].' poskytl slevu '.$discount.' minor units.':'').($programAgeWarnings!==[]?' Věk mimo doporučení: '.implode(' ',array_unique($programAgeWarnings)):'');
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'account\',?,\'place\',NULL,\'placed\',?)')->execute([$orderId,$accountId,$placeNote]);
         $pdo->prepare("UPDATE shop_carts SET status='converted',active_account_id=NULL,converted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?")
             ->execute([(int)$cart['id']]);
@@ -601,8 +601,11 @@ function shopOrderAdminItemMap(PDO $pdo,array $orderIds):array
     if($ids===[])return[];
     $placeholders=implode(',',array_fill(0,count($ids),'?'));
     $result=array_fill_keys($ids,[]);
+    $catalogLineType=clubProgramRuntimeTableExists($pdo,'club_program_offers')
+        ? "CASE WHEN EXISTS(SELECT 1 FROM club_program_offers co WHERE co.product_id=i.product_id AND co.variant_id=i.variant_id) THEN 'program' ELSE 'catalog' END"
+        : "'catalog'";
     $queries=[
-        "SELECT i.order_id,'catalog' AS line_type,i.product_name_snapshot AS line_name,i.sku_snapshot AS sku,i.quantity,i.unit_amount_minor,i.line_amount_minor,i.currency,i.attributes_json_snapshot AS detail_json,i.beneficiary_sportovec_id,s.jmeno,s.prijmeni,NULL AS starts_at,NULL AS ends_at FROM shop_order_items i LEFT JOIN sportovci s ON s.id=i.beneficiary_sportovec_id WHERE i.order_id IN ({$placeholders}) ORDER BY i.id",
+        "SELECT i.order_id,{$catalogLineType} AS line_type,i.product_name_snapshot AS line_name,i.sku_snapshot AS sku,i.quantity,i.unit_amount_minor,i.line_amount_minor,i.currency,i.attributes_json_snapshot AS detail_json,i.beneficiary_sportovec_id,s.jmeno,s.prijmeni,NULL AS starts_at,NULL AS ends_at FROM shop_order_items i LEFT JOIN sportovci s ON s.id=i.beneficiary_sportovec_id WHERE i.order_id IN ({$placeholders}) ORDER BY i.id",
         "SELECT i.order_id,'velodrome' AS line_type,i.lesson_name_snapshot AS line_name,('Lekce #' || i.lesson_id) AS sku,i.quantity,i.unit_amount_minor,i.line_amount_minor,i.currency,NULL AS detail_json,i.beneficiary_sportovec_id,s.jmeno,s.prijmeni,(i.lesson_date_snapshot || ' ' || i.starts_at_snapshot) AS starts_at,i.ends_at_snapshot AS ends_at FROM public_velodrome_order_items i LEFT JOIN sportovci s ON s.id=i.beneficiary_sportovec_id WHERE i.order_id IN ({$placeholders}) ORDER BY i.id",
         "SELECT i.order_id,'event' AS line_type,i.event_name_snapshot AS line_name,i.sku_snapshot AS sku,i.quantity,i.unit_amount_minor,i.line_amount_minor,i.currency,NULL AS detail_json,i.beneficiary_sportovec_id,s.jmeno,s.prijmeni,NULL AS starts_at,NULL AS ends_at FROM club_event_order_items i LEFT JOIN sportovci s ON s.id=i.beneficiary_sportovec_id WHERE i.order_id IN ({$placeholders}) ORDER BY i.id",
     ];
@@ -895,6 +898,7 @@ function shopOrderAdminFulfillmentTransition(PDO $pdo,int $orderId,int $actorTra
         if($paymentStatement->fetchColumn()!=='paid')throw new ShopCheckoutException('Výdejový stav nelze změnit bez konzistentní zaplacené platby.');
         $order=shopOrderAdminLockOrder($pdo,$orderId);
         if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
+        if(clubProgramRuntimeTableExists($pdo,'club_program_offers')){$programItems=$pdo->prepare('SELECT COUNT(*) FROM shop_order_items oi JOIN club_program_offers co ON co.product_id=oi.product_id AND co.variant_id=oi.variant_id WHERE oi.order_id=?');$programItems->execute([$orderId]);if((int)$programItems->fetchColumn()>0)throw new ShopCheckoutException('Kroužek nemá výdejový stav. Po platbě a schválení sportovce se aktivuje v soupisce.');}
         if($order['status']===$to){$pdo->commit();return ['order_id'=>$orderId,'status'=>$to,'changed'=>false];}
         if($order['status']!==$from||$order['payment_status']!=='paid')throw new ShopCheckoutException('Objednávka není ve stavu povoleném pro tuto akci.');
         $pdo->prepare("UPDATE shop_orders SET status=?,{$timestampColumn}=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$to,$orderId]);

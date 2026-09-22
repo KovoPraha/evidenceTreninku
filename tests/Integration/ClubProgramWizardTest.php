@@ -65,6 +65,27 @@ final class ClubProgramWizardTest extends TestCase
         ],$statement->fetchAll(PDO::FETCH_ASSOC));
     }
 
+    public function testWizardConvertsExistingProductAndClearsMisleadingStock():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(243,'manual','manual:243','Přípravka','Přípravný cyklistický kroužek.','goods','visible','physical','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(343,243,'manual','KROUZEK-243','{}','fixed',175000,'CZK','20','piece',1,'active')");
+        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(243,'active','Přípravka','Přípravný cyklistický kroužek.')");
+        $input=$this->input();$input['source_mode']='existing';$input['existing_variant_id']=343;
+
+        $result=\clubProgramWizardCreate($pdo,7,$input,null,false);
+
+        self::assertSame(243,$result['product_id']);self::assertSame(343,$result['variant_id']);
+        self::assertSame('program',$pdo->query('SELECT offer_type FROM shop_products WHERE id=243')->fetchColumn());
+        self::assertSame('service',$pdo->query('SELECT item_type FROM shop_products WHERE id=243')->fetchColumn());
+        self::assertNull($pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=343')->fetchColumn());
+        self::assertSame('person',$pdo->query('SELECT unit_code FROM shop_variants WHERE id=343')->fetchColumn());
+        self::assertSame(175000,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=343')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_program_offers WHERE product_id=243 AND variant_id=343')->fetchColumn());
+        self::assertSame(['convert_to_program','clear_program_stock','assign_category','create_program_wizard'],$pdo->query('SELECT action FROM shop_catalog_admin_events ORDER BY id')->fetchAll(PDO::FETCH_COLUMN));
+        self::assertFalse($pdo->inTransaction());
+    }
+
     public function testSkuSlugDoesNotBreakCzechWordInside():void
     {
         self::assertSame('RAJCATKA',\clubProgramWizardSlug('Rajčátka'));

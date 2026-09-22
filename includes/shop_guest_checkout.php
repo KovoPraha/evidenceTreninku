@@ -50,7 +50,7 @@ function shopGuestOrderByCode(PDO $pdo, string $publicCode, string $accessToken)
         . 'p.account_label_snapshot,p.spd_payload,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,'
         . 'NULL AS coupon_code_snapshot,0 AS coupon_discount_minor '
         . "FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id "
-        . "WHERE o.public_code=? AND o.checkout_mode='guest' AND o.guest_access_token_hash=?"
+        . "WHERE o.public_code=? AND o.checkout_mode IN ('guest','quick_program') AND o.guest_access_token_hash=?"
     );
     $statement->execute([$publicCode, hash('sha256', $accessToken)]);
     $order = $statement->fetch(PDO::FETCH_ASSOC);

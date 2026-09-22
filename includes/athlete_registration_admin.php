@@ -5,6 +5,7 @@ require_once __DIR__ . '/athlete_registration.php';
 require_once __DIR__ . '/person_match.php';
 require_once __DIR__ . '/kis_roster.php';
 require_once __DIR__ . '/member_charge.php';
+require_once __DIR__ . '/club_program.php';
 
 final class AthleteRegistrationAdminException extends RuntimeException
 {
@@ -124,6 +125,7 @@ function athleteRegistrationAdminApproveExisting(
         $match = athleteRegistrationAdminMatch($pdo, $claim);
         athleteRegistrationAdminApplyToPerson($pdo, $claim, $sportovecId);
         $approval = accountPersonClaimApprove($pdo, $requestId, $sportovecId, $trainerId, $note);
+        clubProgramLinkApprovedAthleteRequestInTransaction($pdo,$requestId,$sportovecId,$trainerId);
         personMatchV1Audit($pdo, $trainerId, 'athlete_registration_link', $match, null, $note, [
             'source' => 'eshop_identity_admin',
             'request_id' => $requestId,
@@ -172,6 +174,7 @@ function athleteRegistrationAdminCreatePerson(
         ]);
         athleteRegistrationAdminApplyToPerson($pdo, $claim, $personId);
         $approval = accountPersonClaimApprove($pdo, $requestId, $personId, $trainerId, $note);
+        clubProgramLinkApprovedAthleteRequestInTransaction($pdo,$requestId,$personId,$trainerId);
         $action = $freshMatch['level'] === PERSON_MATCH_EXACT
             ? 'athlete_registration_override_create'
             : ($freshMatch['level'] === PERSON_MATCH_SIMILARITY
