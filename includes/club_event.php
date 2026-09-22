@@ -156,6 +156,14 @@ function clubEventTableExists(PDO $pdo,string $table):bool
     if(preg_match('/^[a-z0-9_]+$/D',$table)!==1)return false;if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){$statement=$pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1');$statement->execute([$table]);return(bool)$statement->fetchColumn();}$statement=$pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1");$statement->execute([$table]);return(bool)$statement->fetchColumn();
 }
 
+function clubEventColumnExists(PDO $pdo,string $table,string $column):bool
+{
+    if(preg_match('/^[a-z0-9_]+$/D',$table)!==1||preg_match('/^[a-z0-9_]+$/D',$column)!==1)return false;
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){$statement=$pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1');$statement->execute([$table,$column]);return(bool)$statement->fetchColumn();}
+    foreach($pdo->query('PRAGMA table_info('.$table.')')->fetchAll(PDO::FETCH_ASSOC)as$definition)if((string)($definition['name']??'')===$column)return true;
+    return false;
+}
+
 /** @return array{id:int,event_id:int} */
 function clubEventAddSession(PDO $pdo, int $eventId, int $actorId, string $startsAt, string $endsAt, string $location, ?int $capacityOverride): array
 {

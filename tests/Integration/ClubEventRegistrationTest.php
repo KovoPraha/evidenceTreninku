@@ -478,6 +478,7 @@ final class ClubEventRegistrationTest extends TestCase
         \clubEventRosterReplaceTargets($pdo,$eventId,[1],7,'Určeno pro U15.',true);
         \clubEventConfigureRegistrationTerms($pdo,$eventId,7,'paid.1','Souhlasím s účastí.','Bezplatné storno do termínu.',$year.'-09-01T12:00',true);
         \clubEventOpenPaidRegistration($pdo,$eventId,7,'Otevření testovací události.',true);
+        self::assertCount(1, \clubEventOpenPaidList($pdo));
         self::assertTrue(\clubEventShopAddToCart($pdo,10,$eventId,100,602,'paid.1',true)['created']);
         $cart=\shopCartDetail($pdo,10);self::assertSame(250000,$cart['total_minor']);self::assertCount(1,$cart['event_items']);
         $bank=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'TEST','due_days'=>7];

@@ -7,6 +7,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2) . '/includes/club_calendar.php';
+require_once dirname(__DIR__,2) . '/includes/club_event_registration.php';
 
 final class ClubCalendarTest extends TestCase
 {
@@ -26,6 +27,16 @@ final class ClubCalendarTest extends TestCase
         self::assertSame('draft',$pdo->query('SELECT status FROM club_events WHERE id='.$event['id'])->fetchColumn());
         \clubCalendarSetRegistration($pdo,$event['id'],1,true);
         self::assertSame('open',$pdo->query('SELECT status FROM club_events WHERE id='.$event['id'])->fetchColumn());
+    }
+
+    public function testPublicEventListNeverLeaksStaffOnlyOpenPlan(): void
+    {
+        $pdo=$this->database();
+        $event=$this->event($pdo,['visibility'=>'public','planning_status'=>'confirmed','team_ids'=>[]]);
+        \clubCalendarSetRegistration($pdo,$event['id'],1,true);
+        self::assertCount(1,\clubEventOpenFreeList($pdo));
+        $pdo->exec("UPDATE club_events SET visibility='staff' WHERE id=".$event['id']);
+        self::assertSame([],\clubEventOpenFreeList($pdo));
     }
 
     public function testVehicleCollisionRequiresAcknowledgementAndRemainsVisibleEverywhere(): void

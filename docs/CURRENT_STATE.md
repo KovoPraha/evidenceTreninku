@@ -12,6 +12,12 @@ odstranit. Stejný workflow obsahuje cílenou deaktivaci účtů a všech veřej
 TEST položek bez mazání auditní historie. Provozní popis je v
 `docs/PRODUKCNI-UAT-UCTY-A-DATA.md`.
 
+Placená testovací akce je připravena jako skutečný objednávkový tok: veřejně se
+zobrazuje pouze v části Akce, má cílovou testovací soupisku, neměnné souhlasy a
+storno podmínky a po vložení účastníka pokračuje do společného košíku. Kontrola
+připravenosti ji uzná pouze tehdy, když je propojená s aktivní placenou variantou
+v CZK; samotný otevřený kalendářový záznam už nestačí.
+
 ## UAT opravy z 21. 9. 2026
 
 Součástí aktuální verze jsou opravy produkčního UAT: odolnější Stripe Checkout,

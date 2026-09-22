@@ -104,8 +104,14 @@ function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
     }
     if (uatReadinessTableExists($pdo, 'club_events') && uatReadinessTableExists($pdo, 'club_event_sessions')) {
         $eventBase = " FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id WHERE e.name LIKE 'TEST -%' AND e.status='open' AND e.visibility='public' AND s.status='scheduled' AND s.ends_at>=CURRENT_TIMESTAMP";
-        $fixtureCounts['free_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase AND e.participant_fee_minor=0");
-        $fixtureCounts['paid_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase AND e.participant_fee_minor>0");
+        $fixtureCounts['free_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase AND e.pricing_policy='free'");
+        $paidBase = " FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id "
+            . "JOIN shop_product_event_links l ON l.event_id=e.id JOIN shop_products p ON p.id=l.product_id "
+            . "JOIN shop_variants v ON v.product_id=p.id WHERE e.name LIKE 'TEST -%' AND e.status='open' "
+            . "AND e.visibility='public' AND e.pricing_policy='product_variants' AND s.status='scheduled' "
+            . "AND s.ends_at>=CURRENT_TIMESTAMP AND p.catalog_status='active' AND v.catalog_status='active' "
+            . "AND v.price_mode='fixed' AND v.amount_minor>0 AND v.currency='CZK' AND (v.visible IS NULL OR v.visible=1)";
+        $fixtureCounts['paid_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$paidBase");
         $fixtureCounts['calendar_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase");
     }
     if (uatReadinessTableExists($pdo, 'individualni_lekce') && uatReadinessTableExists($pdo, 'sportovist')) {
