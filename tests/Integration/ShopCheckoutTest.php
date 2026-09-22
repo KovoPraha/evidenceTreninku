@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 require_once dirname(__DIR__,2).'/includes/shop_checkout.php';
 require_once dirname(__DIR__,2).'/includes/shop_guest_checkout.php';
 require_once dirname(__DIR__,2).'/includes/shop_product_interest.php';
+require_once dirname(__DIR__,2).'/includes/shop_purchase_mode.php';
 require_once dirname(__DIR__,2).'/includes/club_event_notification.php';
 require_once dirname(__DIR__,2).'/includes/local_message_outbox.php';
 
@@ -34,6 +35,28 @@ final class ShopCheckoutTest extends TestCase
         try{\shopGuestOrderByCode($pdo,(string)$order['public_code'],bin2hex(random_bytes(32)));self::fail('A different token must not disclose the order.');}catch(\ShopCheckoutException){}
         $replay=\shopGuestCheckoutPlace($pdo,601,2,['first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test'],$key,$token,self::BANK);
         self::assertTrue($replay['replayed']);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+    }
+
+    public function testLegacyAthleteProductNeverFallsThroughToGuestGoodsCheckout():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("UPDATE shop_product_publications SET public_name='Předpřípravka (4 - 6 let)' WHERE product_id=501");
+        self::assertTrue(\shopProductRequiresAthlete($pdo,501));
+        try {
+            \shopGuestCheckoutPlace($pdo,601,1,[
+                'first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test',
+            ],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);
+            self::fail('A sportsperson-bound product must never enter guest checkout.');
+        } catch (\ShopCheckoutException $exception) {
+            self::assertSame('Tuto položku nelze koupit bez registrace.',$exception->getMessage());
+        }
+        try {
+            \shopCartSetQuantity($pdo,10,601,1);
+            self::fail('A legacy sportsperson-bound product must not enter a member cart as ordinary goods.');
+        } catch (\ShopCheckoutException $exception) {
+            self::assertSame('Tato nabídka vyžaduje sportovce a řádně vypsaný termín.',$exception->getMessage());
+        }
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
     }
 
     public function testProductInterestIsDeduplicatedAndAdminTransitionIsAudited():void

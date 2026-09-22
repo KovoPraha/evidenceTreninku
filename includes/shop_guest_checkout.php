@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/shop_checkout.php';
 require_once __DIR__ . '/app_url.php';
+require_once __DIR__ . '/shop_purchase_mode.php';
 
 /** @param array<string,mixed> $customer @return array<string,string|null> */
 function shopGuestCustomerValidate(array $customer): array
@@ -101,7 +102,9 @@ function shopGuestCheckoutPlace(
                 return shopGuestOrderByCode($pdo, (string)$existingCode, $accessToken) + ['replayed' => true];
             }
             $variant = shopCheckoutLockVariant($pdo, $variantId);
-            if (!$variant || ($variant['offer_type'] ?? null) !== 'goods' || !shopCheckoutVariantIsSaleable($variant, $pdo, null, true)) {
+            if (!$variant || ($variant['offer_type'] ?? null) !== 'goods'
+                || shopProductRequiresAthlete($pdo, (int)($variant['product_id'] ?? 0))
+                || !shopCheckoutVariantIsSaleable($variant, $pdo, null, true)) {
                 throw new ShopCheckoutException('Tuto položku nelze koupit bez registrace.');
             }
             $unit = (int)$variant['amount_minor'];

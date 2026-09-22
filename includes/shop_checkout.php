@@ -14,6 +14,7 @@ require_once __DIR__.'/club_event_shop.php';
 require_once __DIR__.'/public_velodrome_shop.php';
 require_once __DIR__.'/shop_member_pricing.php';
 require_once __DIR__.'/shop_payment_notification.php';
+require_once __DIR__.'/shop_purchase_mode.php';
 
 function shopCheckoutColumnExists(PDO$pdo,string$table,string$column):bool
 {
@@ -141,6 +142,10 @@ function shopCartSetQuantity(PDO $pdo, int $accountId, int $variantId, int $quan
             if (!$variant || !shopCheckoutVariantIsSaleable($variant, $pdo, null, true)) {
                 throw new ShopCheckoutException('Varianta není aktuálně dostupná pro nákup.');
             }
+            if (($variant['offer_type'] ?? null) !== 'program'
+                && shopProductRequiresAthlete($pdo, (int)($variant['product_id'] ?? 0))) {
+                throw new ShopCheckoutException('Tato nabídka vyžaduje sportovce a řádně vypsaný termín.');
+            }
             if(($variant['offer_type']??null)==='program'&&$quantity!==1){
                 throw new ShopCheckoutException('Období kroužku lze vložit pouze jednou pro jedno dítě.');
             }
@@ -253,6 +258,7 @@ function shopCheckoutPlace(
         $total=0;$currency=null;
         foreach($items as &$item){
             if(!shopCheckoutVariantIsSaleable($item,$pdo,null,true)){
+                if(($item['offer_type']??null)!=='program'&&shopProductRequiresAthlete($pdo,(int)$item['product_id']))throw new ShopCheckoutException('Tato nabídka vyžaduje sportovce a řádně vypsaný termín.');
                 if(($item['offer_type']??null)==='program'){$saleState=clubProgramVariantSaleState($pdo,(int)$item['variant_id'],null,true);if(!$saleState['saleable'])throw new ShopCheckoutException('Kroužek nelze objednat: '.$saleState['reason']);}
                 throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
             }

@@ -9,6 +9,7 @@ require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/shop_product_interest.php';
+require_once dirname(__DIR__) . '/includes/shop_purchase_mode.php';
 require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
 
 function shopProductH(mixed $value): string
@@ -39,15 +40,17 @@ function shopProductVariantLabel(array $variant): string
 
 $productId = (int)($_GET['id'] ?? 0);
 $product = shopStorefrontProductDetail($pdo, $productId);
-$isProgram = $product !== null && clubProgramProductHasOfferLink($pdo, $productId);
+$hasProgramOffer = $product !== null && clubProgramProductHasOfferLink($pdo, $productId);
+$isProgram = $product !== null && shopProductRequiresAthlete($pdo, $productId);
 if ($product !== null) {
     $product['variants'] = array_values(array_filter(
         $product['variants'],
-        static function (array $variant) use ($pdo, $isProgram): bool {
+        static function (array $variant) use ($pdo, $hasProgramOffer, $isProgram): bool {
             $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']);
-            if ($isProgram) {
+            if ($hasProgramOffer) {
                 return clubProgramVariantSaleState($pdo,(int)$variant['variant_id'])['saleable'];
             }
+            if ($isProgram) return true;
             return $offer === false;
         }
     ));
@@ -202,7 +205,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     </details>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if (!$offer): ?><div class="small <?= $variant['in_stock'] ? 'text-success' : 'text-danger' ?> mt-1"><?= $variant['in_stock'] ? 'Skladem' : 'Momentálně vyprodáno' ?></div><?php endif; ?>
+                                            <?php if (!$offer && !$isProgram): ?><div class="small <?= $variant['in_stock'] ? 'text-success' : 'text-danger' ?> mt-1"><?= $variant['in_stock'] ? 'Skladem' : 'Momentálně vyprodáno' ?></div><?php elseif(!$offer):?><div class="small text-warning mt-1">Přihlášení k tomuto termínu se připravuje.</div><?php endif; ?>
                                         </div>
                                         <div class="text-end">
                                             <?php if (($variant['member_price']['is_member_price'] ?? false) === true): ?>
@@ -212,13 +215,13 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <?php else: ?>
                                                 <div class="fw-semibold mb-2"><?= shopProductMoney((int)$variant['amount_minor'], (string)$variant['currency']) ?></div>
                                             <?php endif; ?>
-                                            <?php if($isLoggedIn): ?><form method="post">
+                                            <?php if($isLoggedIn && (!$isProgram || $offer)): ?><form method="post">
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="action" value="add">
                                                 <input type="hidden" name="variant_id" value="<?= (int)$variant['variant_id'] ?>">
                                                 <?php if($offer):?><label class="form-label small" for="program-person-<?=(int)$variant['variant_id']?>">Dítě / účastník</label><select class="form-select form-select-sm mb-2" id="program-person-<?=(int)$variant['variant_id']?>" name="sportovec_id" required><option value="">Vyberte</option><?php foreach($people as$person):?><option value="<?=(int)$person['sportovec_id']?>"><?=shopProductH($person['prijmeni'].' '.$person['jmeno'])?></option><?php endforeach;?></select><?php if($people===[]):?><div class="small text-danger mb-2">Nejdříve propojte dítě v části Moje osoby.</div><?php endif;?><?php endif;?>
                                                 <button class="btn btn-primary btn-sm" <?= $variant['in_stock'] ? '' : 'disabled' ?>><?= $offer ? 'Přihlásit účastníka' : 'Přidat do košíku' ?></button>
-                                            </form><?php else: ?><?php if($offer):?><div class="d-grid gap-1"><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>"><?= $variant['in_stock'] ? 'Přihlásit se a pokračovat' : 'Kapacita naplněna' ?></a><a class="btn btn-outline-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="registrace.php?purpose=nakup&amp;redirect=<?=rawurlencode('registrace_sportovce.php?product_id='.$productId)?>">Nový sportovec</a></div><?php else:?><div class="d-grid gap-1"><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="rychly_nakup.php?product_id=<?=$productId?>&amp;variant_id=<?=(int)$variant['variant_id']?>"><?= $variant['in_stock'] ? 'Koupit bez registrace' : 'Vyprodáno' ?></a><a class="btn btn-outline-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div><?php endif;?><?php endif; ?>
+                                            </form><?php elseif($isLoggedIn && $isProgram):?><div class="d-grid gap-1"><a class="btn btn-outline-primary btn-sm" href="registrace_sportovce.php?product_id=<?=$productId?>">Doplnit sportovce</a><span class="small text-muted">Nákup se zpřístupní po vypsání prodejního termínu.</span></div><?php else: ?><?php if($isProgram):?><div class="d-grid gap-1"><a class="btn btn-primary btn-sm <?= $offer && !$variant['in_stock'] ? 'disabled' : '' ?>" href="registrace.php?purpose=nakup&amp;redirect=<?=rawurlencode('registrace_sportovce.php?product_id='.$productId)?>"><?= $offer && !$variant['in_stock'] ? 'Kapacita naplněna' : 'Začít registraci sportovce' ?></a><a class="btn btn-outline-primary btn-sm" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div><?php else:?><div class="d-grid gap-1"><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="rychly_nakup.php?product_id=<?=$productId?>&amp;variant_id=<?=(int)$variant['variant_id']?>"><?= $variant['in_stock'] ? 'Koupit bez registrace' : 'Vyprodáno' ?></a><a class="btn btn-outline-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div><?php endif;?><?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
