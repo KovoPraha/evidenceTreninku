@@ -19,6 +19,12 @@ function shopProductMoney(int $minor, string $currency): string
     return number_format($minor / 100, 2, ',', ' ') . ' ' . shopProductH($currency);
 }
 
+function shopProductDate(string $date): string
+{
+    $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+    return $parsed ? $parsed->format('j. n. Y') : $date;
+}
+
 /** @return string */
 function shopProductVariantLabel(array $variant): string
 {
@@ -142,9 +148,13 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php if ($isProgram): ?><span class="badge text-bg-primary mb-2">kroužek</span><?php endif; ?>
                         <h1 class="h3"><?= shopProductH($product['public_name']) ?></h1>
                         <p class="text-muted"><?= nl2br(shopProductH($product['public_summary'])) ?></p>
-                        <h2 class="h5 mt-4">Vyberte variantu</h2>
+                        <h2 class="h5 mt-4"><?= $isProgram ? 'Termín a přihlášení' : 'Vyberte variantu' ?></h2>
                         <?php if (!$isLoggedIn): ?>
-                            <a class="alert alert-info d-block text-decoration-none" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se pro zobrazení klubové ceny</a>
+                            <div class="alert alert-info">
+                                <?= $isProgram ? 'Pro přihlášení dítěte nebo účastníka potřebujete účet.' : 'Po přihlášení se zobrazí případná klubová cena.' ?>
+                                <div class="mt-2"><a class="btn btn-sm btn-primary" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a>
+                                <?php if ($isProgram): ?><a class="btn btn-sm btn-outline-primary" href="registrace.php">Vytvořit účet</a><?php endif; ?></div>
+                            </div>
                         <?php endif; ?>
                         <div class="vstack gap-2">
                             <?php foreach ($product['variants'] as $variant): $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']); ?>
@@ -152,13 +162,25 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="d-flex flex-wrap justify-content-between gap-2 align-items-start">
                                         <div>
                                             <strong><?= shopProductH(shopProductVariantLabel($variant)) ?></strong>
-                                            <div class="small text-muted">SKU <?= shopProductH($variant['sku']) ?></div>
+                                            <?php if (!$offer): ?><div class="small text-muted">SKU <?= shopProductH($variant['sku']) ?></div><?php endif; ?>
                                             <?php if ($offer): ?>
-                                                <div class="small mt-1"><?= shopProductH($offer['name']) ?><br><?= shopProductH($offer['starts_on']) ?> – <?= shopProductH($offer['ends_on']) ?><br><span class="text-primary"><?=shopProductH(clubProgramBirthYearLabel($offer))?></span></div>
+                                                <div class="small mt-1">
+                                                    <strong><?= shopProductH($offer['name']) ?></strong><br>
+                                                    <?= shopProductH(shopProductDate((string)$offer['starts_on'])) ?> – <?= shopProductH(shopProductDate((string)$offer['ends_on'])) ?><br>
+                                                    <span class="text-primary"><?=shopProductH(clubProgramBirthYearLabel($offer))?></span><br>
+                                                    Skupina: <?= shopProductH($offer['team_name']) ?>
+                                                    <?php if ($offer['capacity'] !== null): ?><br>Volná místa: <strong><?= (int)$offer['available_count'] ?></strong> z <?= (int)$offer['capacity'] ?><?php else: ?><br>Kapacita není omezena.<?php endif; ?>
+                                                </div>
+                                                <?php if (trim((string)($offer['program_description'] ?? '')) !== ''): ?><p class="small mt-2 mb-1"><?= nl2br(shopProductH($offer['program_description'])) ?></p><?php endif; ?>
+                                                <?php $terms = clubProgramTermsEffective($pdo, (int)$offer['program_id'], (int)$offer['id']); ?>
+                                                <?php if (clubProgramTermsComplete($terms)): ?>
+                                                    <details class="small mt-2"><summary>Storno podmínky a souhlas</summary>
+                                                        <p class="mt-2 mb-1"><strong>Storno:</strong> <?= nl2br(shopProductH($terms['program_cancellation']['consent_text_plain'])) ?></p>
+                                                        <p class="mb-0"><strong>Souhlas:</strong> <?= nl2br(shopProductH($terms['program_consent']['consent_text_plain'])) ?></p>
+                                                    </details>
+                                                <?php endif; ?>
                                             <?php endif; ?>
-                                            <div class="small <?= $variant['in_stock'] ? 'text-success' : 'text-danger' ?> mt-1">
-                                                <?= $variant['in_stock'] ? 'Skladem' : 'Momentálně vyprodáno' ?>
-                                            </div>
+                                            <?php if (!$offer): ?><div class="small <?= $variant['in_stock'] ? 'text-success' : 'text-danger' ?> mt-1"><?= $variant['in_stock'] ? 'Skladem' : 'Momentálně vyprodáno' ?></div><?php endif; ?>
                                         </div>
                                         <div class="text-end">
                                             <?php if (($variant['member_price']['is_member_price'] ?? false) === true): ?>
@@ -173,14 +195,14 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <input type="hidden" name="action" value="add">
                                                 <input type="hidden" name="variant_id" value="<?= (int)$variant['variant_id'] ?>">
                                                 <?php if($offer):?><label class="form-label small" for="program-person-<?=(int)$variant['variant_id']?>">Dítě / účastník</label><select class="form-select form-select-sm mb-2" id="program-person-<?=(int)$variant['variant_id']?>" name="sportovec_id" required><option value="">Vyberte</option><?php foreach($people as$person):?><option value="<?=(int)$person['sportovec_id']?>"><?=shopProductH($person['prijmeni'].' '.$person['jmeno'])?></option><?php endforeach;?></select><?php if($people===[]):?><div class="small text-danger mb-2">Nejdříve propojte dítě v části Moje osoby.</div><?php endif;?><?php endif;?>
-                                                <button class="btn btn-primary btn-sm" <?= $variant['in_stock'] ? '' : 'disabled' ?>>Přidat do košíku</button>
-                                            </form><?php else: ?><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>"><?= $variant['in_stock'] ? 'Přihlásit se a koupit' : 'Vyprodáno' ?></a><?php endif; ?>
+                                                <button class="btn btn-primary btn-sm" <?= $variant['in_stock'] ? '' : 'disabled' ?>><?= $offer ? 'Přihlásit účastníka' : 'Přidat do košíku' ?></button>
+                                            </form><?php else: ?><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>"><?= $variant['in_stock'] ? ($offer ? 'Přihlásit se a pokračovat' : 'Přihlásit se a koupit') : ($offer ? 'Kapacita naplněna' : 'Vyprodáno') ?></a><?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <p class="small text-muted mt-4 mb-0">Cena a dostupnost se při vytvoření objednávky znovu bezpečně ověří. Objednávka používá neměnný cenový snapshot.</p>
+                        <p class="small text-muted mt-4 mb-0"><?= $isProgram ? 'Cena, věk účastníka a volná kapacita se před dokončením přihlášení znovu ověří.' : 'Cena a dostupnost se při vytvoření objednávky znovu bezpečně ověří. Objednávka používá neměnný cenový snapshot.' ?></p>
                     </div>
                 </div>
             </div>

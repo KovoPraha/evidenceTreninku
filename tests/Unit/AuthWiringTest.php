@@ -95,6 +95,17 @@ final class AuthWiringTest extends TestCase
         self::assertStringContainsString('Pokud lze účet s touto adresou vytvořit', $registration);
     }
 
+    public function testCustomerRegistrationDoesNotForceAthleteProfile(): void
+    {
+        $registration = $this->source('booking/registrace.php');
+
+        self::assertStringContainsString("['nakup', 'sport']", $registration);
+        self::assertStringContainsString("if (\$purpose === 'sport')", $registration);
+        self::assertStringContainsString('publicProfileSave(', $registration);
+        self::assertStringContainsString('Jen nákup a rezervace', $registration);
+        self::assertStringNotContainsString('value="<?= h(\$_POST[\'narozeni\'] ?? \'\') ?>" required', $registration);
+    }
+
     public function testSensitiveLinksUseFragmentsAndLogoutRequiresPostWithCsrf(): void
     {
         $registration = $this->source('booking/registrace.php');

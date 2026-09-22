@@ -46,7 +46,7 @@ jobs:
           cat > /tmp/run-fio-import.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');require '$REMOTE_DIR/config.php';
-          if(!defined('FIO_IMPORT_ENABLED')||FIO_IMPORT_ENABLED!==true){echo json_encode(['status'=>'disabled'],JSON_THROW_ON_ERROR).PHP_EOL;exit;}
+          if(!defined('FIO_IMPORT_ENABLED')||FIO_IMPORT_ENABLED!==true){fwrite(STDERR,"Fio import je v produkční konfiguraci vypnutý; kontrola plateb neproběhla.\n");exit(78);}
           require '$REMOTE_DIR/bin/fio-import.php';
           EOF
           "${SCP[@]}" /tmp/run-fio-import.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-import.php"

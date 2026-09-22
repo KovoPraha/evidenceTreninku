@@ -18,6 +18,10 @@ if (isset($_SESSION['verejny_uzivatel_id'])) {
 $errors  = [];
 $success = false;
 $existingAccount = false;
+$purpose = (string)($_POST['ucel'] ?? $_GET['purpose'] ?? 'nakup');
+if (!in_array($purpose, ['nakup', 'sport'], true)) {
+    $purpose = 'nakup';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -27,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $prijmeni = trim($_POST['prijmeni'] ?? '');
         $email    = strtolower(trim($_POST['email']  ?? ''));
         $telefon  = trim($_POST['telefon']  ?? '');
+        $purpose  = (string)($_POST['ucel'] ?? 'nakup');
         $narozeni = trim($_POST['narozeni'] ?? '');
         $heslo    = $_POST['heslo']         ?? '';
         $heslo2   = $_POST['heslo2']        ?? '';
@@ -48,10 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$jmeno)    $errors[] = 'Zadejte jméno.';
         if (!$prijmeni) $errors[] = 'Zadejte příjmení.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Neplatná emailová adresa.';
-        $birth = DateTimeImmutable::createFromFormat('!Y-m-d', $narozeni);
-        if (!$birth || $birth->format('Y-m-d') !== $narozeni
-            || $birth > new DateTimeImmutable('today') || $birth < new DateTimeImmutable('1900-01-01')) {
-            $errors[] = 'Zadejte platné datum narození.';
+        if (!in_array($purpose, ['nakup', 'sport'], true)) {
+            $errors[] = 'Vyberte, k čemu budete účet používat.';
+        }
+        if ($purpose === 'sport') {
+            $birth = DateTimeImmutable::createFromFormat('!Y-m-d', $narozeni);
+            if (!$birth || $birth->format('Y-m-d') !== $narozeni
+                || $birth > new DateTimeImmutable('today') || $birth < new DateTimeImmutable('1900-01-01')) {
+                $errors[] = 'Pro sportovní účet zadejte platné datum narození.';
+            }
         }
         try {
             passwordPolicyValidate($heslo);
@@ -93,14 +103,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $verification['hash'],
                     $verification['expires_at'],
                 ]);
-                publicProfileSave(
-                    $pdo,
-                    (int)$pdo->lastInsertId(),
-                    $jmeno,
-                    $prijmeni,
-                    $narozeni,
-                    $telefon
-                );
+                $accountId = (int)$pdo->lastInsertId();
+                if ($purpose === 'sport') {
+                    publicProfileSave(
+                        $pdo,
+                        $accountId,
+                        $jmeno,
+                        $prijmeni,
+                        $narozeni,
+                        $telefon
+                    );
+                }
                 $pdo->commit();
             } catch (Throwable $exception) {
                 if ($pdo->inTransaction()) {
@@ -153,6 +166,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <form method="post">
                     <?= csrf_field() ?>
+                    <fieldset class="mb-3">
+                        <legend class="form-label mb-2">K čemu budete účet používat?</legend>
+                        <div class="form-check border rounded p-3 ps-5 mb-2">
+                            <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-shop" value="nakup" <?= $purpose === 'nakup' ? 'checked' : '' ?>>
+                            <label class="form-check-label" for="registration-purpose-shop"><strong>Jen nákup a rezervace</strong><br><span class="text-muted small">Oblečení, veřejné akce a další nabídky. Datum narození není potřeba.</span></label>
+                        </div>
+                        <div class="form-check border rounded p-3 ps-5">
+                            <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-sport" value="sport" <?= $purpose === 'sport' ? 'checked' : '' ?>>
+                            <label class="form-check-label" for="registration-purpose-sport"><strong>Jsem také účastník nebo sportovec</strong><br><span class="text-muted small">Vytvoří se mi osobní sportovní profil. Dítě lze přidat samostatně po přihlášení.</span></label>
+                        </div>
+                    </fieldset>
                     <div class="row g-3 mb-3">
                         <div class="col-12 col-sm-6">
                             <label class="form-label" for="registration-first-name">Jméno</label>
@@ -171,9 +195,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                value="<?= h($_POST['email'] ?? '') ?>" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="registration-birth-date">Datum narození</label>
+                        <label class="form-label" for="registration-birth-date">Datum narození <span id="registration-birth-required" class="text-muted small">(jen pro sportovní profil)</span></label>
                         <input type="date" name="narozeni" id="registration-birth-date" class="form-control"
-                               value="<?= h($_POST['narozeni'] ?? '') ?>" required>
+                               value="<?= h($_POST['narozeni'] ?? '') ?>">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="registration-phone">Telefon (nepovinný)</label>
@@ -197,7 +221,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </div>
-
+<script>
+(() => {
+    const birth = document.getElementById('registration-birth-date');
+    const hint = document.getElementById('registration-birth-required');
+    const sync = () => {
+        const sport = document.getElementById('registration-purpose-sport').checked;
+        birth.required = sport;
+        hint.textContent = sport ? '(povinné)' : '(jen pro sportovní profil)';
+    };
+    document.querySelectorAll('input[name="ucel"]').forEach(input => input.addEventListener('change', sync));
+    sync();
+})();
+</script>
 <?php publicShellFooter(); ?>
 </body>
 </html>
