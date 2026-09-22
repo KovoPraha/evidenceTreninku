@@ -44,6 +44,8 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringContainsString('shopManualCatalogUpdateProduct', $source);
         self::assertStringContainsString('shopManualCatalogUpdateVariant', $source);
         self::assertStringContainsString('shopManualCatalogArchive', $source);
+        self::assertStringContainsString('Jednorázová klubová akce', $source);
+        self::assertStringContainsString('Tábor / soustředění', $source);
         self::assertStringContainsString("header('Location: eshop_produkt_admin.php", $source);
         self::assertStringNotContainsString('INSERT INTO shop_products', $source);
         self::assertStringContainsString('eshop_produkt_admin.php', (string)file_get_contents($root . '/eshop_admin.php'));

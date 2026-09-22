@@ -6,7 +6,9 @@ automaticky při importu ani převodu stagingu.
 
 ## Bezpečnostní brána
 
-V první etapě lze aktivovat pouze nabídku typu `goods`. Produkt musí mít název a
+Aktivovat lze zboží, prodejný program a placenou klubovou akci nebo tábor.
+Program musí mít navázanou nabídku a platné podmínky. `club_event` i `camp` musí
+být propojeny s pracovní akcí stejného typu. Produkt musí mít název a
 alespoň jednu variantu, která není explicitně skrytá. Každá taková varianta musí
 mít SKU a buď platnou pevnou cenu s třípísmennou měnou, nebo konzistentní nulovou
 cenu. Chybějící příznak viditelnosti ve starším CSV se připustí pouze po ručním
@@ -24,10 +26,13 @@ znovu aktivovat, čímž vznikne další auditní událost.
 
 ## Co aktivace nyní neznamená
 
-- Produkt se nikde veřejně nezobrazí, protože storefront zatím neexistuje.
-- Nevznikne košík, objednávka, rezervace, platba ani skladový pohyb.
-- Typy `club_event`, `camp`, `bookable_service`, `rental`, `bookable_rental` a
-  `custom_quote` zůstanou blokované do dokončení jejich doménových funkcí.
+- Samotná aktivace ještě nevytvoří košík, objednávku, rezervaci, platbu ani
+  skladový pohyb.
+- Zboží a prodejné programy se zobrazují v e-shopu. Propojené otevřené položky
+  `club_event` a `camp` se zobrazují v části Akce, nikoli podruhé jako samostatné
+  zboží v e-shopu.
+- Typy `bookable_service`, `rental`, `bookable_rental` a `custom_quote` zůstávají
+  blokované do dokončení jejich doménových funkcí.
 
 ## Nasazení
 
