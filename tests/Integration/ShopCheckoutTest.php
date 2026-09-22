@@ -7,12 +7,47 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2).'/includes/shop_checkout.php';
+require_once dirname(__DIR__,2).'/includes/shop_guest_checkout.php';
+require_once dirname(__DIR__,2).'/includes/shop_product_interest.php';
 require_once dirname(__DIR__,2).'/includes/club_event_notification.php';
 require_once dirname(__DIR__,2).'/includes/local_message_outbox.php';
 
 final class ShopCheckoutTest extends TestCase
 {
     private const BANK=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'KOVO Praha','due_days'=>7];
+
+    public function testGuestGoodsCheckoutUsesCanonicalOrderPaymentStockAndSecureToken():void
+    {
+        $pdo=$this->database();
+        $key=bin2hex(random_bytes(16));$token=bin2hex(random_bytes(32));
+        $order=\shopGuestCheckoutPlace($pdo,601,2,[
+            'first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test','phone'=>'777 123 456',
+            'address_street'=>'','address_city'=>'','address_postcode'=>'',
+        ],$key,$token,self::BANK);
+        self::assertFalse($order['replayed']);self::assertSame('guest',$order['checkout_mode']);
+        self::assertNull($order['account_id']);self::assertNull($order['source_cart_id']);self::assertSame(25000,(int)$order['total_minor']);
+        self::assertSame(3.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
+        self::assertSame('guest',$pdo->query('SELECT actor_type FROM shop_order_events')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_guest_order_placed'")->fetchColumn());
+        self::assertSame((string)$order['public_code'],(string)\shopGuestOrderByCode($pdo,(string)$order['public_code'],$token)['public_code']);
+        try{\shopGuestOrderByCode($pdo,(string)$order['public_code'],bin2hex(random_bytes(32)));self::fail('A different token must not disclose the order.');}catch(\ShopCheckoutException){}
+        $replay=\shopGuestCheckoutPlace($pdo,601,2,['first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test'],$key,$token,self::BANK);
+        self::assertTrue($replay['replayed']);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+    }
+
+    public function testProductInterestIsDeduplicatedAndAdminTransitionIsAudited():void
+    {
+        $pdo=$this->database();
+        $first=\shopProductInterestSubmit($pdo,501,601,' Lead@Example.Test ','booking/produkt.php?id=501',true);
+        self::assertTrue($first['created']);
+        $repeat=\shopProductInterestSubmit($pdo,501,601,'lead@example.test','booking/produkt.php?id=501',true);
+        self::assertFalse($repeat['created']);self::assertSame($first['id'],$repeat['id']);
+        $changed=\shopProductInterestAdminTransition($pdo,$first['id'],7,'contacted','Odpověď e-mailem.',true);
+        self::assertTrue($changed['changed']);self::assertSame('contacted',$changed['status']);
+        self::assertCount(1,\shopProductInterestAdminList($pdo,'contacted'));
+        self::assertSame(['submit','mark_contacted'],$pdo->query('SELECT action FROM shop_product_interest_events ORDER BY id')->fetchAll(PDO::FETCH_COLUMN));
+    }
 
     public function testCheckoutUsesCurrentServerPriceThenKeepsImmutableSnapshotAndIsIdempotent():void
     {
@@ -195,7 +230,7 @@ final class ShopCheckoutTest extends TestCase
         $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
         try{\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Připraveno ve skladu.',true);self::fail('Unpaid order must not become ready.');}catch(\ShopCheckoutException){}
         \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Platba ověřena.',true);
-        $ready=\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Zabalil Admin, police A.',true);self::assertTrue($ready['changed']);self::assertSame('ready',$ready['status']);
+        $ready=\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Zabalil Admin, police A.',true);self::assertTrue($ready['changed']);self::assertSame('ready',$ready['status']);self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_order_ready'")->fetchColumn());
         self::assertFalse(\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Opakování.',true)['changed']);self::assertNotFalse($pdo->query('SELECT ready_at FROM shop_orders')->fetchColumn());
         $complete=\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'Vydal Admin rodiči Novákovi.',true);self::assertTrue($complete['changed']);self::assertSame('completed',$complete['status']);
         self::assertFalse(\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'Opakování.',true)['changed']);self::assertNotFalse($pdo->query('SELECT completed_at FROM shop_orders')->fetchColumn());
@@ -367,6 +402,6 @@ final class ShopCheckoutTest extends TestCase
         $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
         $pdo->exec('CREATE TABLE club_event_notification_events(id INTEGER PRIMARY KEY AUTOINCREMENT,notification_id INTEGER NOT NULL,actor_trainer_id INTEGER NOT NULL,action TEXT NOT NULL,from_status TEXT NOT NULL,attempts_before INTEGER NOT NULL,reason TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)');
         $pdo->exec('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER)');$pdo->exec("INSERT INTO shop_product_categories VALUES(1,501,'Oblečení',1,0)");
-        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php','20260809090000_stripe_checkout.php','20260822120000_shop_coupon_archiving.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
+        foreach(['20260803230000_shop_checkout.php','20260804010000_shop_order_fulfillment.php','20260804030000_shop_order_refunds.php','20260804050000_shop_coupons.php','20260804120000_shop_item_beneficiaries.php','20260804210000_shop_order_expiration.php','20260804234000_shop_coupon_applicability.php','20260805010000_shop_member_pricing.php','20260809090000_stripe_checkout.php','20260822120000_shop_coupon_archiving.php','20260922140000_low_friction_storefront.php'] as $filename){$migration=require dirname(__DIR__,2).'/migrations/'.$filename;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}return $pdo;
     }
 }

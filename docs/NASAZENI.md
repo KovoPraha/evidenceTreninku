@@ -1,7 +1,15 @@
 # Nasazení na produkci
 
-Produkční adresa je <https://data.kovopraha.cz/evidence/>. Nasazení se spouští
+Produkční adresa je <https://kis.kovopraha.cz/>. Nasazení se spouští
 ručně na GitHubu; samotný push do `main` produkci nezmění.
+
+Ověřeno 22. 9. 2026: úspěšný běh `35729597409` nasadil commit
+`0135e34e47243ba983ee9239ab67087a5b6f35f1` a použil
+`APP_HOST=kis.kovopraha.cz`, `WEB_URL=https://kis.kovopraha.cz` a
+`REMOTE_DIR=kis.kovopraha.cz`; závěrečný HTTP smoke skončil 200. Cíl workflow
+je tedy nový KIS web, nikoli staré, nadále používané nasazení
+`data.kovopraha.cz/evidence`. Jeho případná správa je samostatný proces a tento
+workflow je nepřepisuje.
 
 ## Běžné nasazení krok za krokem
 
@@ -9,7 +17,9 @@ ručně na GitHubu; samotný push do `main` produkci nezmění.
 2. Vlevo vyberte **Nasadit produkci**.
 3. Klikněte na **Run workflow** a ponechte větev **main**.
 4. Do potvrzovacího pole napište přesně `NASADIT`.
-5. Klikněte na zelené **Run workflow** a počkejte, až jsou všechny kroky zelené.
+5. Nastavte `uat_schvaleno=true` pouze pro release, jehož UAT brána byla
+   skutečně schválena; jinak workflow záměrně zastavte.
+6. Klikněte na zelené **Run workflow** a počkejte, až jsou všechny kroky zelené.
 
 Workflow před změnou produkčních souborů vždy:
 
@@ -22,7 +32,7 @@ Workflow před změnou produkčních souborů vždy:
 5. zastaví se, pokud záloha není úplná nebo ověřitelná.
 
 Teprve potom připraví celý release v neveřejném adresáři
-`~/.evidence-deploy/releases/<commit>-<běh>`, dočasně do něj s právy 0600 zkopíruje
+`data/.kis-deploy/releases/<commit>-<běh>`, dočasně do něj s právy 0600 zkopíruje
 produkční `config.php`, spustí migrace z tohoto release a až po jejich úspěchu
 aktivuje PHP soubory do webrootu. Nakonec provede veřejný HTTP test a kopii
 konfigurace z release odstraní. Tajné údaje se neposílají v URL ani v logu.
@@ -44,6 +54,17 @@ V repozitáři otevřete **Settings → Secrets and variables → Actions** a vy
 | `SSH_USER` | hlavní uživatel domény |
 | `SSH_PRIVATE_KEY` | celý soukromý klíč odpovídající `authorized_keys` na serveru |
 | `SSH_KNOWN_HOSTS` | ověřený řádek veřejného hostitelského klíče serveru |
+
+V GitHub environment `production` musí být také tyto Variables:
+
+| Variable | Povinná hodnota pro současnou produkci |
+|---|---|
+| `KIS_APP_HOST` | `kis.kovopraha.cz` |
+| `KIS_WEB_URL` | `https://kis.kovopraha.cz` |
+| `KIS_REMOTE_DIR` | `kis.kovopraha.cz` |
+
+Workflow skončí před připojením, pokud hodnoty chybí, URL není HTTPS, cílová
+cesta není bezpečná relativní cesta nebo host URL neodpovídá `KIS_APP_HOST`.
 
 `DEPLOY_TOKEN` ani `PROD_CONFIG` se už nepoužívají. `config.php` musí být na
 serveru nahraný před prvním nasazením, například přes Total Commander. Workflow
@@ -100,8 +121,8 @@ mazání přes Total Commander provádějte jen podle konkrétního release poky
 ## Databázová záloha
 
 Před každým deployem se aktuální `bin/db-backup.php` nahraje do
-`~/.evidence-deploy/` a spustí se ještě proti staré produkční aplikaci. Zálohy
-jsou v `~/.evidence-backups/`, tedy mimo veřejný web, s právy 0700/0600. Každá
+`data/.kis-deploy/` a spustí se ještě proti dosud aktivní produkční aplikaci.
+Zálohy jsou v `data/.kis-backups/`, tedy mimo veřejný web, s právy 0700/0600. Každá
 záloha má tři soubory:
 
 - `evidence_*.sql.gz` – komprimovaný SQL dump;
@@ -137,24 +158,22 @@ tabulek jsou součástí dumpu.
 Vrácení staršího commitu vrátí pouze kód. Nevrací automaticky databázové změny.
 Produkční obnova databáze je vždy ruční, řízený zásah.
 
-## Ruční CLI záloha přes SSH
+## Ruční záloha a omezený shell
 
-Pokročilý správce ji může spustit bez URL tokenu:
-
-```bash
-umask 077
-APP_HOST=data.kovopraha.cz php "$HOME/.evidence-deploy/db-backup.php" \
-  --app-root="$HOME/data.kovopraha.cz/evidence" \
-  --backup-dir="$HOME/.evidence-backups" \
-  --keep=20 --json
-```
+Hostingový shell nepředává spolehlivě argumenty ani vnější proměnné PHP a jeho
+`$HOME` není použitelný. Nepoužívejte proto staré příklady s
+`$HOME/.evidence-deploy` ani s docrootem `data.kovopraha.cz/evidence`.
+Kanonický postup je zálohovací krok workflow s bootstrapem v
+`data/.kis-deploy/` a cílem `data/.kis-backups/`. Podrobnosti jsou v
+[`thinline-deploy-runbook.md`](thinline-deploy-runbook.md).
 
 `bin/.htaccess` zůstává `Require all denied` a `bin/zaloha.php` vrací přes web
 404 i v případě, že hosting `.htaccess` nepoužije.
+
 ## Soukromé přílohy a kanonická adresa
 
 Před dalším produkčním deployem musí konfigurace obsahovat důvěryhodnou
-`APP_BASE_URL=https://data.kovopraha.cz/evidence` a absolutní
+`APP_BASE_URL=https://kis.kovopraha.cz` a absolutní
 `APP_PRIVATE_STORAGE_ROOT` mimo webroot. Po záloze spusťte nejprve:
 
 ```bash

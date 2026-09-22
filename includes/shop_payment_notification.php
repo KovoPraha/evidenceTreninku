@@ -27,6 +27,19 @@ function shopPaymentNotificationTableExists(PDO $pdo, string $table): bool
     return (bool)$statement->fetchColumn();
 }
 
+function shopPaymentNotificationColumnExists(PDO $pdo, string $table, string $column): bool
+{
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+        $statement = $pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?');
+        $statement->execute([$table, $column]);
+        return (bool)$statement->fetchColumn();
+    }
+    foreach ($pdo->query('PRAGMA table_info(' . $table . ')')->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if ((string)$row['name'] === $column) return true;
+    }
+    return false;
+}
+
 function shopPaymentNotificationMoney(int $amountMinor, string $currency): string
 {
     $currency = strtoupper(trim($currency));
@@ -121,13 +134,16 @@ function shopPaymentNotificationBody(array $order, array $items): string
         $nextLines[] = '- Přihláška nebo rezervace byla po přijetí platby potvrzena.';
     }
     $ordersUrl = appUrl('booking/prihlaseni.php?redirect=moje_objednavky.php');
+    $statusInstruction = ($order['checkout_mode'] ?? 'account') === 'guest'
+        ? 'Stav objednávky otevřete bezpečným odkazem z původního e-mailu s platebními údaji.'
+        : "Stav objednávky najdete po přihlášení v Moje objednávky:\n" . $ordersUrl;
     return "Dobrý den,\n\n"
         . 'potvrzujeme přijetí platby za objednávku ' . (string)$order['public_code'] . ".\n\n"
         . 'Datum přijetí platby: ' . $paidAt->format('d. m. Y H:i') . "\n"
         . 'Přijatá částka: ' . shopPaymentNotificationMoney((int)$order['total_minor'], (string)$order['currency']) . "\n\n"
         . "Položky objednávky:\n" . implode("\n", $lines) . "\n\n"
         . "Co se děje dál:\n" . implode("\n", $nextLines) . "\n\n"
-        . "Stav objednávky najdete po přihlášení v Moje objednávky:\n" . $ordersUrl . "\n\n"
+        . $statusInstruction . "\n\n"
         . 'Klub KOVO Praha';
 }
 
@@ -136,8 +152,11 @@ function shopPaymentNotificationEnqueue(PDO $pdo, int $orderId): int
     if (!$pdo->inTransaction() || $orderId < 1) {
         throw new LogicException('Oznámení o přijaté platbě vyžaduje aktivní transakci objednávky.');
     }
+    $checkoutModeSelect = shopPaymentNotificationColumnExists($pdo, 'shop_orders', 'checkout_mode')
+        ? 'o.checkout_mode'
+        : "'account' AS checkout_mode";
     $statement = $pdo->prepare(
-        'SELECT o.id,o.public_code,o.customer_email_snapshot,o.customer_name_snapshot,o.total_minor,o.currency,'
+        'SELECT o.id,o.public_code,' . $checkoutModeSelect . ',o.customer_email_snapshot,o.customer_name_snapshot,o.total_minor,o.currency,'
         . 'p.paid_at FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' '
         . 'AND p.payable_id=o.id AND p.status=\'paid\' '
         . 'WHERE o.id=? AND o.payment_status=\'paid\' AND o.status IN (\'processing\',\'ready\',\'completed\')'
@@ -176,6 +195,38 @@ function shopPaymentNotificationEnqueue(PDO $pdo, int $orderId): int
         if ($id < 1) {
             throw $exception;
         }
+        return $id;
+    }
+}
+
+function shopOrderReadyNotificationEnqueue(PDO $pdo, int $orderId): int
+{
+    if (!$pdo->inTransaction() || $orderId < 1) throw new LogicException('Oznámení o připravenosti vyžaduje aktivní transakci objednávky.');
+    $statement = $pdo->prepare("SELECT id,public_code,customer_email_snapshot,customer_name_snapshot FROM shop_orders WHERE id=? AND status='ready'");
+    $statement->execute([$orderId]);
+    $order = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$order || !filter_var((string)$order['customer_email_snapshot'], FILTER_VALIDATE_EMAIL)) {
+        throw new ShopPaymentNotificationException('Připravenou objednávku nelze zařadit k oznámení.');
+    }
+    $items = shopPaymentNotificationItems($pdo, $orderId);
+    $lines = [];
+    foreach ($items as $item) $lines[] = '- ' . $item['label'] . ' × ' . $item['quantity'];
+    $subject = 'Objednávka ' . (string)$order['public_code'] . ' je připravena';
+    $body = "Dobrý den,\n\nobjednávka " . (string)$order['public_code'] . " je připravena k osobnímu odběru.\n\n"
+        . "Položky:\n" . implode("\n", $lines) . "\n\nKlub KOVO Praha";
+    try {
+        $insert = $pdo->prepare(
+            'INSERT INTO club_event_notifications(registration_id,registration_event_id,order_id,notification_type,recipient_email,recipient_name,subject_plain,body_plain) '
+            . "VALUES (NULL,NULL,?,'shop_order_ready',?,?,?,?)"
+        );
+        $insert->execute([$orderId, (string)$order['customer_email_snapshot'], trim((string)$order['customer_name_snapshot']), $subject, $body]);
+        return (int)$pdo->lastInsertId();
+    } catch (PDOException $exception) {
+        if ((string)$exception->getCode() !== '23000') throw $exception;
+        $existing = $pdo->prepare("SELECT id FROM club_event_notifications WHERE order_id=? AND notification_type='shop_order_ready'");
+        $existing->execute([$orderId]);
+        $id = (int)$existing->fetchColumn();
+        if ($id < 1) throw $exception;
         return $id;
     }
 }

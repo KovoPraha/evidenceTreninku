@@ -867,7 +867,7 @@ function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,s
 /** @return array{order_id:int,status:string,changed:bool} */
 function shopOrderAdminMarkReady(PDO $pdo,int $orderId,int $actorTrainerId,string $reason,bool $confirmed):array
 {
-    return shopOrderAdminFulfillmentTransition($pdo,$orderId,$actorTrainerId,$reason,$confirmed,'processing','ready','mark_ready','ready_at','Příprava');
+    return shopOrderAdminFulfillmentTransition($pdo,$orderId,$actorTrainerId,$reason,$confirmed,'processing','ready','mark_ready','ready_at','Příprava',true);
 }
 
 /** @return array{order_id:int,status:string,changed:bool} */
@@ -877,7 +877,7 @@ function shopOrderAdminCompletePickup(PDO $pdo,int $orderId,int $actorTrainerId,
 }
 
 /** @return array{order_id:int,status:string,changed:bool} */
-function shopOrderAdminFulfillmentTransition(PDO $pdo,int $orderId,int $actorTrainerId,string $reason,bool $confirmed,string $from,string $to,string $action,string $timestampColumn,string $label):array
+function shopOrderAdminFulfillmentTransition(PDO $pdo,int $orderId,int $actorTrainerId,string $reason,bool $confirmed,string $from,string $to,string $action,string $timestampColumn,string $label,bool $notifyReady=false):array
 {
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,$label);
     if(!in_array($timestampColumn,['ready_at','completed_at'],true))throw new LogicException('Nepovolený časový sloupec přechodu.');
@@ -894,6 +894,7 @@ function shopOrderAdminFulfillmentTransition(PDO $pdo,int $orderId,int $actorTra
         $pdo->prepare("UPDATE shop_orders SET status=?,{$timestampColumn}=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$to,$orderId]);
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,?,?,?,?)')
             ->execute([$orderId,$actorTrainerId,$action,$from,$to,$reason]);
+        if($notifyReady)shopOrderReadyNotificationEnqueue($pdo,$orderId);
         $pdo->commit();return ['order_id'=>$orderId,'status'=>$to,'changed'=>true];
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();

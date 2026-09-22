@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
+$productId = max(0, (int)($_POST['product_id'] ?? $_GET['product_id'] ?? 0));
 if (!isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: prihlaseni.php?redirect=registrace_sportovce.php');
+    $target = 'registrace_sportovce.php' . ($productId > 0 ? '?product_id=' . $productId : '');
+    header('Location: prihlaseni.php?redirect=' . rawurlencode($target));
     exit;
 }
 header('Cache-Control: no-store, max-age=0');
@@ -45,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 throw new InvalidArgumentException('Neplatná akce.');
             }
-            header('Location: registrace_sportovce.php', true, 303);
+            header('Location: registrace_sportovce.php' . ($productId > 0 ? '?product_id=' . $productId : ''), true, 303);
             exit;
         } catch (InvalidArgumentException | AthleteRegistrationException $exception) {
             $errors[] = $exception->getMessage();
@@ -90,12 +92,13 @@ $value = static fn(string $key, string $default = ''): string => athleteRegistra
         <a class="btn btn-outline-secondary btn-sm" href="moje_osoby.php">Zpět na Moje osoby</a>
     </div>
     <div class="alert alert-info">Odesláním nevzniká členství automaticky. Údaje se neposílají do veřejných výpisů a rodné číslo se ukládá šifrovaně.</div>
+    <?php if($productId>0):?><div class="alert alert-primary"><strong>Registrujete sportovce kvůli konkrétní nabídce.</strong> Po schválení žádosti se vraťte na produkt a vyberte sportovce. <a href="produkt.php?id=<?=$productId?>" class="alert-link">Zobrazit produkt</a>.</div><?php endif;?>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= athleteRegistrationPageH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= athleteRegistrationPageH($success) ?></div><?php endif; ?>
 
     <section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Nová žádost</div><div class="card-body">
         <form method="post" enctype="multipart/form-data" class="row g-3" autocomplete="off">
-            <?= csrf_field() ?><input type="hidden" name="action" value="submit">
+            <?= csrf_field() ?><input type="hidden" name="action" value="submit"><input type="hidden" name="product_id" value="<?=$productId?>">
             <?php foreach ($terms as $purpose => $term): ?><input type="hidden" name="term_version[<?= athleteRegistrationPageH($purpose) ?>]" value="<?= athleteRegistrationPageH($term['version']) ?>"><?php endforeach; ?>
 
             <div class="col-md-4"><label for="athlete-role" class="form-label">Kdo žádost podává</label><select id="athlete-role" name="requested_role" class="form-select" required><option value="guardian" <?= $value('requested_role', 'guardian') === 'guardian' ? 'selected' : '' ?>>Rodič / zákonný zástupce dítěte</option><option value="self" <?= $value('requested_role') === 'self' ? 'selected' : '' ?>>Dospělý sportovec za sebe</option></select></div>

@@ -149,6 +149,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_order_expiry_admin.php', 'label' => 'Expirace objednávek', 'description' => 'Potvrzené ukončení nezaplacených objednávek', 'icon' => 'hourglass-split'],
                 ]],
                 ['label' => 'Komunikace', 'icon' => 'envelope', 'items' => [
+                    ['route' => 'shop_product_interests_admin.php', 'label' => 'Zájemci o produkty', 'description' => 'Kontakty z nedostupných termínů a variant', 'icon' => 'person-heart'],
                     ['route' => 'eshop_notifications_admin.php', 'label' => 'Fronta e-mailů', 'description' => 'Selhané a čekající zprávy', 'icon' => 'envelope-exclamation'],
                     ['route' => 'family_weekly_summaries_admin.php', 'label' => 'Rodinné souhrny', 'description' => 'Týdenní zákaznické souhrny', 'icon' => 'envelope-paper'],
                 ]],
