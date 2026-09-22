@@ -167,9 +167,9 @@ function kisUatProvision(PDO $pdo, array $settings, ?DateTimeImmutable $now = nu
     foreach([$karel['id'],$petra['id']]as$accountId)foreach([$ema['id'],$adam['id']]as$personId)accountPersonRoleApprove($pdo,$accountId,$personId,'guardian',$actorId,'Schválená vazba výhradně pro produkční UAT.');
     $childAccess=[kisUatUpsertChildAccess($pdo,$ema['id'],KIS_UAT_CHILD_LOGINS[0],$password,$actorId),kisUatUpsertChildAccess($pdo,$adam['id'],KIS_UAT_CHILD_LOGINS[1],$password,$actorId)];
 
-    $goods=kisUatProduct($pdo,$actorId,'TEST-UAT-LAHEV','TEST - Klubová láhev','goods',19000);
+    $goods=kisUatProduct($pdo,$actorId,'KP-TEST-UAT-LAHEV','TEST - Klubová láhev','goods',19000);
     kisUatPublish($pdo,$actorId,$goods['product_id'],'TEST - Klubová láhev');
-    $programProduct=kisUatProduct($pdo,$actorId,'TEST-UAT-KROUZEK','TEST - Cyklistický kroužek','program',10000);
+    $programProduct=kisUatProduct($pdo,$actorId,'KP-TEST-UAT-KROUZEK','TEST - Cyklistický kroužek','program',10000);
     $starts=$now->format('Y-m-d');$ends=$now->modify('+60 days')->format('Y-m-d');$season=kisUatSeasonAndTeam($pdo,$actorId,$starts,$ends);
     foreach([$ema['id'],$adam['id']]as$personId){$s=$pdo->prepare('SELECT id FROM club_roster_members WHERE team_id=? AND sportovec_id=?');$s->execute([$season['team_id'],$personId]);if(!$s->fetchColumn())$pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,valid_to,created_by_trainer_id) VALUES(?,?,'active','admin',?,NULL,?)")->execute([$season['team_id'],$personId,$starts,$actorId]);}
     $program=clubProgramCreate($pdo,$actorId,'TEST-UAT-KROUZEK','TEST - Cyklistický kroužek','Dočasný program pro produkční UAT.');
