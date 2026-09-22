@@ -15,6 +15,7 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringContainsString("verejny_uzivatel_id", $source);
         self::assertStringContainsString('csrf_verify', $source);
         self::assertStringContainsString('shopStorefrontProductDetail', $source);
+        self::assertStringContainsString('shopProductRequiresAthlete', $source);
         self::assertStringContainsString('shopCartSetQuantity', $source);
         self::assertStringContainsString('referrerpolicy="no-referrer"', $source);
         self::assertStringContainsString('Po přihlášení se zobrazí případná klubová cena.', $source);

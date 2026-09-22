@@ -26,7 +26,7 @@ $productId = (int)($_POST['product_id'] ?? $_GET['product_id'] ?? 0);
 $variantId = (int)($_POST['variant_id'] ?? $_GET['variant_id'] ?? 0);
 $product = shopStorefrontProductDetail($pdo, $productId);
 $variant = null;
-if ($product !== null) {
+if ($product !== null && !shopProductRequiresAthlete($pdo, $productId)) {
     foreach ($product['variants'] as $candidate) {
         if ((int)$candidate['variant_id'] === $variantId && !clubProgramVariantHasOfferLink($pdo, $variantId)) {
             $variant = $candidate;
