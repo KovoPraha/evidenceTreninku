@@ -62,8 +62,11 @@ function shopPaymentNotificationItems(PDO $pdo, int $orderId): array
         }
     }
     if (shopPaymentNotificationTableExists($pdo, 'shop_order_items')) {
+        $pendingIdentitySelect=shopPaymentNotificationColumnExists($pdo,'shop_order_items','athlete_registration_request_id')
+            ? ',athlete_registration_request_id,beneficiary_sportovec_id'
+            : ',NULL AS athlete_registration_request_id,NULL AS beneficiary_sportovec_id';
         $statement = $pdo->prepare(
-            'SELECT variant_id,product_name_snapshot,quantity FROM shop_order_items '
+            'SELECT variant_id,product_name_snapshot,quantity'.$pendingIdentitySelect.' FROM shop_order_items '
             . 'WHERE order_id=? ORDER BY id'
         );
         $statement->execute([$orderId]);
@@ -72,7 +75,9 @@ function shopPaymentNotificationItems(PDO $pdo, int $orderId): array
             $items[] = [
                 'label' => trim((string)$row['product_name_snapshot']),
                 'quantity' => max(1, (int)$row['quantity']),
-                'next' => $program ? 'program' : 'pickup',
+                'next' => $program
+                    ? (((int)($row['athlete_registration_request_id']??0)>0&&$row['beneficiary_sportovec_id']===null)?'program_pending_identity':'program')
+                    : 'pickup',
             ];
         }
     }
@@ -130,11 +135,14 @@ function shopPaymentNotificationBody(array $order, array $items): string
     if (in_array('program', $next, true)) {
         $nextLines[] = '- Kroužek byl po přijetí platby aktivován; aktuální stav najdete ve svém účtu.';
     }
+    if (in_array('program_pending_identity', $next, true)) {
+        $nextLines[] = '- Platbu evidujeme. Údaje sportovce nyní zkontroluje klub; místo zůstává rezervované.';
+    }
     if (in_array('reservation', $next, true)) {
         $nextLines[] = '- Přihláška nebo rezervace byla po přijetí platby potvrzena.';
     }
     $ordersUrl = appUrl('booking/prihlaseni.php?redirect=moje_objednavky.php');
-    $statusInstruction = ($order['checkout_mode'] ?? 'account') === 'guest'
+    $statusInstruction = in_array(($order['checkout_mode']??'account'),['guest','quick_program'],true)
         ? 'Stav objednávky otevřete bezpečným odkazem z původního e-mailu s platebními údaji.'
         : "Stav objednávky najdete po přihlášení v Moje objednávky:\n" . $ordersUrl;
     return "Dobrý den,\n\n"

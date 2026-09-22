@@ -8,7 +8,7 @@ require_once __DIR__.'/club_program_terms.php';
 
 final class ClubProgramWizardException extends RuntimeException{}
 
-/** @return array{seasons:list<array<string,mixed>>,teams:list<array<string,mixed>>,categories:list<string>,terms:array<string,list<array<string,mixed>>>} */
+/** @return array{seasons:list<array<string,mixed>>,teams:list<array<string,mixed>>,categories:list<string>,terms:array<string,list<array<string,mixed>>>,products:list<array<string,mixed>>} */
 function clubProgramWizardReferenceData(PDO $pdo):array
 {
     $categories=$pdo->query("SELECT DISTINCT category_path FROM shop_product_categories WHERE TRIM(category_path)<>'' ORDER BY category_path")
@@ -19,7 +19,35 @@ function clubProgramWizardReferenceData(PDO $pdo):array
             ->fetchAll(PDO::FETCH_ASSOC);
         foreach($rows as$row)$terms[(string)$row['consent_purpose']][]=$row;
     }
-    return['seasons'=>kisRosterSeasons($pdo),'teams'=>kisRosterTeams($pdo),'categories'=>array_values(array_map('strval',$categories)),'terms'=>$terms];
+    $products=$pdo->query(
+        "SELECT p.id AS product_id,v.id AS variant_id,p.name,p.short_description,p.offer_type,p.catalog_status,"
+        . "v.sku,v.amount_minor,v.currency,v.stock_quantity_decimal,"
+        . "pub.status AS publication_status,pub.public_name,pub.public_summary "
+        . "FROM shop_products p JOIN shop_variants v ON v.product_id=p.id "
+        . "LEFT JOIN shop_product_publications pub ON pub.product_id=p.id "
+        . "WHERE p.catalog_status<>'inactive' AND v.catalog_status<>'inactive' "
+        . "AND v.price_mode='fixed' AND v.amount_minor IS NOT NULL AND v.currency='CZK' "
+        . "AND NOT EXISTS(SELECT 1 FROM club_program_offers o WHERE o.variant_id=v.id) "
+        . 'ORDER BY COALESCE(pub.public_name,p.name),v.sku,v.id'
+    )->fetchAll(PDO::FETCH_ASSOC);
+    return['seasons'=>kisRosterSeasons($pdo),'teams'=>kisRosterTeams($pdo),'categories'=>array_values(array_map('strval',$categories)),'terms'=>$terms,'products'=>$products];
+}
+
+/** @return array<string,mixed> */
+function clubProgramWizardExistingProduct(PDO $pdo,int $variantId,bool $lock=false):array
+{
+    if($variantId<1)throw new InvalidArgumentException('Vyberte existující produkt, který chcete použít.');
+    $sql="SELECT p.*,v.id AS variant_id,v.sku,v.amount_minor,v.currency,v.catalog_status AS variant_status,"
+        ."v.stock_quantity_decimal,v.unit_code,v.visible,pub.status AS publication_status,"
+        ."pub.public_name,pub.public_summary FROM shop_products p JOIN shop_variants v ON v.product_id=p.id "
+        ."LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE v.id=? "
+        ."AND p.catalog_status<>'inactive' AND v.catalog_status<>'inactive' AND v.price_mode='fixed' "
+        ."AND v.amount_minor IS NOT NULL AND v.currency='CZK' "
+        ."AND NOT EXISTS(SELECT 1 FROM club_program_offers o WHERE o.variant_id=v.id)";
+    if($lock&&(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
+    $statement=$pdo->prepare($sql);$statement->execute([$variantId]);$row=$statement->fetch(PDO::FETCH_ASSOC);
+    if(!$row)throw new ClubProgramWizardException('Vybraný produkt už má termín, není aktivní nebo jej nelze bezpečně převést.');
+    return$row;
 }
 
 /**
@@ -33,8 +61,11 @@ function clubProgramWizardCreate(
     shopManualCatalogDecision($actorId,$reason,$confirmed);
     $requestKey=strtolower(trim((string)($input['request_key']??'')));
     if(preg_match('/^[a-f0-9]{32}$/D',$requestKey)!==1)throw new InvalidArgumentException('Průvodce nemá platný jednorázový klíč. Obnovte stránku.');
-    $name=shopManualCatalogText((string)($input['name']??''),160,'Název kroužku');
-    $description=shopManualCatalogText((string)($input['description']??''),4000,'Veřejný popis');
+    $sourceMode=(string)($input['source_mode']??'new');
+    if(!in_array($sourceMode,['new','existing'],true))throw new InvalidArgumentException('Vyberte nový nebo existující produkt.');
+    $existingProduct=$sourceMode==='existing'?clubProgramWizardExistingProduct($pdo,(int)($input['existing_variant_id']??0)):null;
+    $name=shopManualCatalogText($existingProduct!==null?(string)($existingProduct['public_name']?:$existingProduct['name']):(string)($input['name']??''),160,'Název kroužku');
+    $description=shopManualCatalogText($existingProduct!==null?(string)($existingProduct['public_summary']?:$existingProduct['short_description']):(string)($input['description']??''),4000,'Veřejný popis');
     if($description==='')throw new InvalidArgumentException('Veřejný popis je povinný.');
     if(strtoupper(trim((string)($input['currency']??'')))!=='CZK')throw new InvalidArgumentException('Průvodce nyní bezpečně podporuje pouze měnu CZK.');
     $category=clubProgramWizardCategory((string)($input['category_path']??''));
@@ -43,21 +74,35 @@ function clubProgramWizardCreate(
     $offerCode=clubProgramCode((string)($input['offer_code']??'')?:substr($slug.'-'.$suffix.'-OFFER',0,64));
     $sku=strtoupper(trim((string)($input['sku']??'')));
     if($sku==='')$sku=substr(shopCatalogManualSkuPrefix().$slug.'-'.$suffix,0,64);
-    $amount=$input['amount_minor']??null;if(!is_int($amount))throw new InvalidArgumentException('Cena musí být zadána přesně v haléřích.');
-    $attributes=shopAttributeFormJson($input,shopAttributeDefinitions($pdo,true));
+    $amount=$existingProduct!==null?(int)$existingProduct['amount_minor']:($input['amount_minor']??null);if(!is_int($amount))throw new InvalidArgumentException('Cena musí být zadána přesně v haléřích.');
+    $attributes=$existingProduct!==null?'{}':shopAttributeFormJson($input,shopAttributeDefinitions($pdo,true));
     $stored=null;$applicationRoot??=dirname(__DIR__);
     if($imageSource!==null&&$imageSource!=='')$stored=shopProductImageStoreFile($imageSource,$uploaded,$applicationRoot);
     try{
         $pdo->beginTransaction();
-        $catalog=shopManualCatalogCreateInTransaction($pdo,$actorId,[
-            'name'=>$name,'short_description'=>$description,'offer_type'=>'program','visibility'=>'visible','item_type'=>'service',
-        ],[
-            'sku'=>$sku,'ean'=>'','attributes_json'=>$attributes,'amount_minor'=>$amount,'compare_at_amount_minor'=>null,
-            'includes_vat'=>clubProgramWizardNullableInt($input['includes_vat']??null),'vat_rate_basis_points'=>clubProgramWizardNullableInt($input['vat_rate_basis_points']??null),
-            'stock_quantity_decimal'=>'','unit_code'=>'person','visible'=>1,
-        ],$reason,true);
-        $productId=(int)$catalog['product_id'];$variantId=(int)$catalog['variant_id'];$imageId=null;
-        $pdo->prepare('INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES(?,?,1,0)')->execute([$productId,$category]);
+        if($existingProduct===null){
+            $catalog=shopManualCatalogCreateInTransaction($pdo,$actorId,[
+                'name'=>$name,'short_description'=>$description,'offer_type'=>'program','visibility'=>'visible','item_type'=>'service',
+            ],[
+                'sku'=>$sku,'ean'=>'','attributes_json'=>$attributes,'amount_minor'=>$amount,'compare_at_amount_minor'=>null,
+                'includes_vat'=>clubProgramWizardNullableInt($input['includes_vat']??null),'vat_rate_basis_points'=>clubProgramWizardNullableInt($input['vat_rate_basis_points']??null),
+                'stock_quantity_decimal'=>'','unit_code'=>'person','visible'=>1,
+            ],$reason,true);
+            $productId=(int)$catalog['product_id'];$variantId=(int)$catalog['variant_id'];
+        }else{
+            $locked=clubProgramWizardExistingProduct($pdo,(int)$existingProduct['variant_id'],true);
+            $productId=(int)$locked['id'];$variantId=(int)$locked['variant_id'];
+            $beforeProduct=$locked;$beforeVariant=shopManualCatalogLockVariant($pdo,$variantId);
+            $pdo->prepare("UPDATE shop_products SET offer_type='program',item_type='service',visibility='visible',catalog_status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
+            $pdo->prepare("UPDATE shop_variants SET stock_quantity_decimal=NULL,unit_code='person',visible=1,catalog_status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$variantId]);
+            shopManualCatalogEvent($pdo,$productId,null,$actorId,'convert_to_program',$beforeProduct,shopManualCatalogLockProduct($pdo,$productId),$reason);
+            shopManualCatalogEvent($pdo,$productId,$variantId,$actorId,'clear_program_stock',$beforeVariant,shopManualCatalogLockVariant($pdo,$variantId),$reason);
+        }
+        $imageId=null;
+        $pdo->prepare('UPDATE shop_product_categories SET is_default=0 WHERE product_id=?')->execute([$productId]);
+        $categoryRow=$pdo->prepare('SELECT id FROM shop_product_categories WHERE product_id=? AND category_path=?');$categoryRow->execute([$productId,$category]);$categoryId=$categoryRow->fetchColumn();
+        if($categoryId===false)$pdo->prepare('INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES(?,?,1,0)')->execute([$productId,$category]);
+        else$pdo->prepare('UPDATE shop_product_categories SET is_default=1,sort_order=0 WHERE id=?')->execute([(int)$categoryId]);
         shopManualCatalogEvent($pdo,$productId,null,$actorId,'assign_category',null,['category_path'=>$category,'is_default'=>1,'sort_order'=>0],$reason);
         if($stored!==null)$imageId=(int)shopProductImageAddStoredInTransaction($pdo,$actorId,$productId,$stored,0,$reason,true)['id'];
 
@@ -78,7 +123,8 @@ function clubProgramWizardCreate(
             'product_id'=>$productId,'variant_id'=>$variantId,'program_id'=>(int)$program['id'],'offer_id'=>(int)$offer['id'],
             'season_id'=>$seasonId,'team_id'=>$teamId,'category_path'=>$category,'image_id'=>$imageId,
         ],$reason);
-        shopCatalogPublicationActivateInTransaction($pdo,$productId,$actorId,$name,$description,$reason,true);
+        $publication=$pdo->prepare('SELECT status FROM shop_product_publications WHERE product_id=?');$publication->execute([$productId]);
+        if((string)$publication->fetchColumn()!=='active')shopCatalogPublicationActivateInTransaction($pdo,$productId,$actorId,$name,$description,$reason,true);
         $pdo->commit();
         return['product_id'=>$productId,'variant_id'=>$variantId,'program_id'=>(int)$program['id'],'offer_id'=>(int)$offer['id'],'season_id'=>$seasonId,'team_id'=>$teamId,'image_id'=>$imageId,'category_path'=>$category];
     }catch(Throwable$exception){

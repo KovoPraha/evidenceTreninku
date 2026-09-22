@@ -28,7 +28,9 @@ function shopStorefrontCatalog(PDO $pdo): array
                 'listing_attributes' => [],
             ];
         }
-        $row['in_stock'] = $row['stock_quantity_decimal'] === null
+        // Program capacity is the only availability source for a club program.
+        $row['in_stock'] = ($row['offer_type'] ?? null) === 'program'
+            || $row['stock_quantity_decimal'] === null
             || (float)$row['stock_quantity_decimal'] > 0.0;
         $row['attributes_detail']=shopAttributePresentation($pdo,(array)($row['attributes']??[]),'detail',$attributeDefinitions);
         $row['attributes_listing']=shopAttributePresentation($pdo,(array)($row['attributes']??[]),'listing',$attributeDefinitions);

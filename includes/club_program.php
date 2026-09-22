@@ -399,24 +399,43 @@ function clubProgramBirthYearLabel(array $offer): string
     return$from!==null?'pro ročníky od '.(int)$from:'pro ročníky do '.(int)$to;
 }
 
-/** @param array<string,mixed> $offer */
-function clubProgramAssertBeneficiaryBirthYear(PDO $pdo, array $offer, int $sportovecId, bool $lock = false): void
+/**
+ * Birth years are guidance for families and staff, not a hard sales gate.
+ * A mismatch stays visible as a warning while the application remains orderable.
+ *
+ * @param array<string,mixed> $offer
+ */
+function clubProgramBeneficiaryBirthYearWarning(PDO $pdo, array $offer, int $sportovecId, bool $lock = false): ?string
 {
     $from=$offer['birth_year_from']??null;$to=$offer['birth_year_to']??null;
-    if($from===null&&$to===null)return;
-    if($sportovecId<1)throw new ClubProgramException('Pro kroužek vyberte dítě nebo účastníka.');
+    if($from===null&&$to===null)return null;
+    if($sportovecId<1)return 'Věk účastníka nebylo možné ověřit.';
     $sql='SELECT narozeni FROM sportovci WHERE id=?';
     if($lock&&(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
     $statement=$pdo->prepare($sql);$statement->execute([$sportovecId]);$birth=$statement->fetchColumn();
     $birth=(string)($birth===false?'':$birth);
+    return clubProgramBirthDateWarning($offer,$birth);
+}
+
+/** @param array<string,mixed> $offer */
+function clubProgramBirthDateWarning(array $offer,string $birth):?string
+{
+    $from=$offer['birth_year_from']??null;$to=$offer['birth_year_to']??null;
+    if($from===null&&$to===null)return null;
     $date=DateTimeImmutable::createFromFormat('!Y-m-d',$birth);
-    if(!$date||$date->format('Y-m-d')!==$birth){
-        throw new ClubProgramException('Vybraný účastník nemá vyplněné platné datum narození. Doplňte ho v části Moje osoby a zkuste to znovu.');
-    }
+    if(!$date||$date->format('Y-m-d')!==$birth)return 'Věk účastníka nebylo možné ověřit.';
     $year=(int)$date->format('Y');
     if(($from!==null&&$year<(int)$from)||($to!==null&&$year>(int)$to)){
-        throw new ClubProgramException('Vybraný účastník nesplňuje věkové omezení nabídky ('.clubProgramBirthYearLabel($offer).').');
+        return 'Ročník účastníka '.$year.' je mimo doporučení '.clubProgramBirthYearLabel($offer).'. Přihlášení je přesto možné.';
     }
+    return null;
+}
+
+/** @param array<string,mixed> $offer */
+function clubProgramAssertBeneficiaryBirthYear(PDO $pdo, array $offer, int $sportovecId, bool $lock = false): void
+{
+    // Backwards-compatible no-op: věkové rozpětí už nákup neblokuje.
+    clubProgramBeneficiaryBirthYearWarning($pdo,$offer,$sportovecId,$lock);
 }
 
 /**
@@ -614,15 +633,40 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
     return ['id'=>$enrollmentId,'created'=>true,'roster_created'=>$rosterCreated];
 }
 
-/** @return array{program_items:int,created:int} */
+/** @return array{program_items:int,created:int,pending_identity:int} */
 function clubProgramActivatePaidOrderInTransaction(PDO $pdo, int $orderId, ?int $actorId, string $actorType='trainer'): array
 {
     if (!$pdo->inTransaction() || $orderId<1 || !in_array($actorType,['trainer','system'],true) || ($actorType==='trainer'&&($actorId??0)<1) || ($actorType==='system'&&$actorId!==null)) throw new InvalidArgumentException('Synchronizace zaplacené objednávky vyžaduje transakci, objednávku a platného auditora.');
     $order=$pdo->prepare("SELECT id,account_id,status,payment_status FROM shop_orders WHERE id=? AND payment_status='paid' AND status IN ('processing','ready','completed')");$order->execute([$orderId]);$order=$order->fetch(PDO::FETCH_ASSOC);
     if (!$order) throw new ClubProgramException('Objednávka není ve stavu potvrzené platby.');
-    $items=$pdo->prepare('SELECT oi.id FROM shop_order_items oi JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id WHERE oi.order_id=? ORDER BY oi.id');$items->execute([$orderId]);$items=$items->fetchAll(PDO::FETCH_COLUMN);
-    $created=0;foreach($items as $itemId){$result=clubProgramActivateOrderItemInTransaction($pdo,(int)$order['account_id'],(int)$itemId,$actorType,$actorId);if($result['created'])$created++;}
-    return ['program_items'=>count($items),'created'=>$created];
+    $requestSelect=clubProgramColumnExists($pdo,'shop_order_items','athlete_registration_request_id')?'oi.athlete_registration_request_id':'NULL AS athlete_registration_request_id';
+    $items=$pdo->prepare('SELECT oi.id,oi.beneficiary_sportovec_id,'.$requestSelect.' FROM shop_order_items oi JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id WHERE oi.order_id=? ORDER BY oi.id');$items->execute([$orderId]);$items=$items->fetchAll(PDO::FETCH_ASSOC);
+    $created=0;$pending=0;foreach($items as$item){
+        if($item['beneficiary_sportovec_id']===null&&(int)($item['athlete_registration_request_id']??0)>0){$pending++;continue;}
+        $result=clubProgramActivateOrderItemInTransaction($pdo,(int)$order['account_id'],(int)$item['id'],$actorType,$actorId);if($result['created'])$created++;
+    }
+    return ['program_items'=>count($items),'created'=>$created,'pending_identity'=>$pending];
+}
+
+/** @return array{linked:int,activated:int} */
+function clubProgramLinkApprovedAthleteRequestInTransaction(PDO $pdo,int $requestId,int $sportovecId,int $trainerId):array
+{
+    if(!$pdo->inTransaction()||min($requestId,$sportovecId,$trainerId)<1)throw new InvalidArgumentException('Napojení rychlé přihlášky vyžaduje transakci, žádost, osobu a administrátora.');
+    if(!clubProgramColumnExists($pdo,'shop_order_items','athlete_registration_request_id'))return['linked'=>0,'activated'=>0];
+    $requestSql='SELECT account_id,status,matched_sportovec_id FROM account_person_claim_requests WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$requestSql.=' FOR UPDATE';
+    $request=$pdo->prepare($requestSql);$request->execute([$requestId]);$request=$request->fetch(PDO::FETCH_ASSOC);
+    if(!$request||(string)$request['status']!=='approved'||(int)$request['matched_sportovec_id']!==$sportovecId)throw new ClubProgramException('Rychlou přihlášku lze napojit pouze na právě schváleného sportovce.');
+    $sql='SELECT oi.id,o.account_id,o.payment_status,o.status AS order_status FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id WHERE oi.athlete_registration_request_id=? ORDER BY oi.id';
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
+    $statement=$pdo->prepare($sql);$statement->execute([$requestId]);$items=$statement->fetchAll(PDO::FETCH_ASSOC);$linked=0;$activated=0;
+    foreach($items as$item){
+        if((int)$item['account_id']!==(int)$request['account_id'])throw new ClubProgramException('Rychlá přihláška nepatří účtu objednávky.');
+        $update=$pdo->prepare('UPDATE shop_order_items SET beneficiary_sportovec_id=? WHERE id=? AND beneficiary_sportovec_id IS NULL');$update->execute([$sportovecId,(int)$item['id']]);$linked+=$update->rowCount();
+        if((string)$item['payment_status']==='paid'&&in_array((string)$item['order_status'],['processing','ready','completed'],true)){
+            $result=clubProgramActivateOrderItemInTransaction($pdo,(int)$item['account_id'],(int)$item['id'],'trainer',$trainerId);if($result['created'])$activated++;
+        }
+    }
+    return['linked'=>$linked,'activated'=>$activated];
 }
 
 /** @return array{cancelled:int,rosters_ended:int} */

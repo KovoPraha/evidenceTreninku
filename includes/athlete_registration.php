@@ -56,10 +56,12 @@ function athleteRegistrationSubmit(
     array $submittedVersions,
     ?array $photo = null,
     ?array $sensitiveConfig = null,
-    bool $uploadedPhoto = true
+    bool $uploadedPhoto = true,
+    bool $allowUnverifiedAccount = false
 ): array {
-    if ($pdo->inTransaction()) {
-        throw new AthleteRegistrationException('Registrační žádost vyžaduje samostatnou transakci.');
+    $ownTransaction = !$pdo->inTransaction();
+    if (!$ownTransaction && is_array($photo) && (int)($photo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+        throw new AthleteRegistrationException('Fotografii lze bezpečně uložit jen v samostatné registrační transakci.');
     }
     $validated = athleteRegistrationValidate($accountId, $input, $photo);
     $terms = athleteRegistrationCurrentTerms($pdo);
@@ -84,14 +86,14 @@ function athleteRegistrationSubmit(
         $validated['narozeni']
     );
     $storedPhotoKey = null;
-    $pdo->beginTransaction();
+    if ($ownTransaction) $pdo->beginTransaction();
     try {
         $accountSql = 'SELECT id,email,aktivni,email_overeno FROM verejni_uzivatele WHERE id=?';
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $accountSql .= ' FOR UPDATE';
         $account = $pdo->prepare($accountSql);
         $account->execute([$accountId]);
         $account = $account->fetch(PDO::FETCH_ASSOC);
-        if (!$account || !(int)$account['aktivni'] || !(int)$account['email_overeno']) {
+        if (!$account || !(int)$account['aktivni'] || (!$allowUnverifiedAccount && !(int)$account['email_overeno'])) {
             throw new AthleteRegistrationException('Žádost může odeslat pouze aktivní účet s ověřeným e-mailem.');
         }
 
@@ -102,7 +104,7 @@ function athleteRegistrationSubmit(
         $existing->execute([$accountId, $fingerprint]);
         $existingId = $existing->fetchColumn();
         if ($existingId !== false) {
-            $pdo->commit();
+            if ($ownTransaction) $pdo->commit();
             return ['id' => (int)$existingId, 'status' => 'pending', 'created' => false];
         }
 
@@ -217,10 +219,10 @@ function athleteRegistrationSubmit(
             'pending',
             'athlete_registration_submit'
         );
-        $pdo->commit();
+        if ($ownTransaction) $pdo->commit();
         return ['id' => $requestId, 'status' => 'pending', 'created' => true];
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($ownTransaction && $pdo->inTransaction()) $pdo->rollBack();
         if ($storedPhotoKey !== null) {
             try {
                 privateStorageSoftDelete($storedPhotoKey);
