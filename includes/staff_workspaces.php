@@ -75,6 +75,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'sprava_skupin.php', 'label' => 'Skupiny', 'description' => 'Klubové skupiny', 'icon' => 'diagram-2'],
                     ['route' => 'sprava_podskupin.php', 'label' => 'Podskupiny', 'description' => 'Zařazení sportovců', 'icon' => 'diagram-3'],
                     ['route' => 'eshop_identity_admin.php', 'label' => 'Účty a osoby', 'description' => 'Rodiče, sportovci a propojení', 'icon' => 'person-badge'],
+                    ['route' => 'member_engagement_admin.php', 'label' => 'Úrovně zapojení', 'description' => 'Veřejnost, kroužky a závodní oddíl podle živých dat', 'icon' => 'layers'],
                 ]],
                 ['label' => 'KIS a soupisky', 'icon' => 'arrow-repeat', 'items' => [
                     ['route' => 'kis_sync_center.php', 'label' => 'KIS centrum', 'description' => 'Import a konflikty osob', 'icon' => 'arrow-repeat'],
@@ -82,6 +83,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'kis_roster_settings_admin.php', 'label' => 'Správa struktur soupisek', 'description' => 'Opravy a uzavírání sezon a týmů', 'icon' => 'pencil-square'],
                     ['route' => 'kis_transition_admin.php', 'label' => 'Přechody sportovců', 'description' => 'Auditovaný přechod do týmu', 'icon' => 'arrow-left-right'],
                     ['route' => 'kis_child_access_admin.php', 'label' => 'Přístupy sportovců', 'description' => 'Samostatné účty dětí', 'icon' => 'key'],
+                    ['route' => 'roster_messages_admin.php', 'label' => 'Komunikace se soupiskami', 'description' => 'Auditované zprávy členům a rodičům', 'icon' => 'envelope-paper'],
                 ]],
                 ['label' => 'Kontrola', 'icon' => 'clock-history', 'items' => [
                     ['route' => 'person_audit_admin.php', 'label' => 'Auditní osa osoby', 'description' => 'Historie změn jedné osoby', 'icon' => 'clock-history'],
@@ -105,6 +107,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'club_program_settings_admin.php', 'label' => 'Správa programů', 'description' => 'Opravy názvů a archivace', 'icon' => 'pencil-square'],
                 ]],
                 ['label' => 'Akce a sportoviště', 'icon' => 'building', 'items' => [
+                    ['route' => 'bookable_services_admin.php', 'label' => 'Kurzy a rezervační okna', 'description' => 'Cena, kapacita, sloty a čekací listiny', 'icon' => 'calendar2-plus'],
                     ['route' => 'eshop_events_admin.php', 'label' => 'Klubové akce', 'description' => 'Termíny, přihlášky a čekací listiny', 'icon' => 'calendar-event'],
                     ['route' => 'verejny_velodrom_admin.php', 'label' => 'Veřejný velodrom', 'description' => 'Veřejné hodiny a rezervace', 'icon' => 'bicycle'],
                     ['route' => 'sprava_sportovist.php', 'label' => 'Sportoviště', 'description' => 'Provozní nastavení sportovišť', 'icon' => 'building-gear'],
@@ -165,6 +168,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_fio_admin.php', 'label' => 'Fio párování', 'description' => 'Návrhy bankovních shod', 'icon' => 'bank'],
                     ['route' => 'eshop_bank_admin.php', 'label' => 'Bankovní účet e-shopu', 'description' => 'IBAN, BIC a splatnost', 'icon' => 'credit-card'],
                     ['route' => 'member_charges_admin.php', 'label' => 'Klubové platby', 'description' => 'Stav členských plateb', 'icon' => 'cash-stack'],
+                    ['route' => 'member_fee_plans_admin.php', 'label' => 'Plány příspěvků', 'description' => 'Měsíční předpisy podle platných soupisek', 'icon' => 'calendar2-check'],
                     ['route' => 'member_charge_reminders_admin.php', 'label' => 'Připomínky plateb', 'description' => 'Auditovaná fronta upomínek', 'icon' => 'bell'],
                 ]],
                 ['label' => 'Kredity a provoz', 'icon' => 'wallet2', 'items' => [
@@ -327,6 +331,8 @@ function staffRouteDelegates(): array
         'kalendar_sportovist.php' => ['program_coordinator'],
         'rezervovat_sportoviste.php' => ['program_coordinator'],
         'club_calendar.php' => ['sports_lead','program_coordinator','finance_manager'],
+        'individualni_lekce_sprava.php' => ['program_coordinator'],
+        'individualni_lekce_form.php' => ['program_coordinator'],
     ];
 }
 

@@ -14,6 +14,19 @@ function clubProgramLifecycleAvailable(PDO $pdo): bool
     $statement=$pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('club_program_offers','club_program_enrollments')");return(int)$statement->fetchColumn()===2;
 }
 
+function clubProgramRuntimeTableExists(PDO $pdo, string $table): bool
+{
+    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1) return false;
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+        $statement = $pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?');
+        $statement->execute([$table]);
+        return (bool)$statement->fetchColumn();
+    }
+    $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?");
+    $statement->execute([$table]);
+    return (bool)$statement->fetchColumn();
+}
+
 function clubProgramCode(string $value): string
 {
     $value = strtoupper(trim($value));
@@ -272,9 +285,12 @@ function clubProgramAdminOffers(PDO $pdo): array
 /** @return array<string,mixed>|false */
 function clubProgramOfferForVariant(PDO $pdo, int $variantId, ?DateTimeImmutable $now = null, bool $lock = false): array|false
 {
-    $sql=
-        "SELECT o.*,p.name AS program_name "
+    $hasRosterContext = clubProgramRuntimeTableExists($pdo, 'club_teams') && clubProgramRuntimeTableExists($pdo, 'club_seasons');
+    $descriptionSelect = clubProgramColumnExists($pdo, 'club_programs', 'description') ? 'p.description' : 'NULL';
+    $sql = "SELECT o.*,p.name AS program_name," . $descriptionSelect . " AS program_description,"
+        . ($hasRosterContext ? 't.name AS team_name,s.name AS season_name ' : "NULL AS team_name,NULL AS season_name ")
         . "FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id "
+        . ($hasRosterContext ? 'JOIN club_teams t ON t.id=o.team_id JOIN club_seasons s ON s.id=o.season_id ' : '')
         . "WHERE o.variant_id=? AND o.status='active' AND p.status='active'";
     if($lock&&(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
     $statement = $pdo->prepare($sql);
