@@ -29,66 +29,22 @@ function publicVelodromeCreateSlot(
     int $capacity,
     bool $exclusive,
     int $priceMinor,
-    string $reason = 'Vypsání veřejného termínu velodromu.'
+    string $reason = 'Vypsání veřejného termínu velodromu.',
+    string $name = 'Veřejná hodina velodromu'
 ): array {
     $start = DateTimeImmutable::createFromFormat('!Y-m-d H:i', trim($date) . ' ' . trim($startsAt));
     $end = DateTimeImmutable::createFromFormat('!Y-m-d H:i', trim($date) . ' ' . trim($endsAt));
     if ($actorTrainerId < 1 || !$start || !$end || $end <= $start || $start <= new DateTimeImmutable('now')
         || $capacity < 1 || $capacity > 1000 || $priceMinor < 0 || $priceMinor > 100000000
+        || trim($name)==='' || mb_strlen(trim($name),'UTF-8')>255 || preg_match('/[<>]/u',$name)===1
     ) {
         throw new InvalidArgumentException('Termín, kapacita nebo cena nejsou platné.');
     }
     $pdo->beginTransaction();
     try {
-        $actor = $pdo->prepare("SELECT id FROM treneri WHERE id=? AND aktivni=1");
-        $actor->execute([$actorTrainerId]);
-        if (!$actor->fetchColumn()) {
-            throw new PublicVelodromeException('Aktivní administrátor nebyl nalezen.');
-        }
-        $placeSql = "SELECT id FROM sportovist WHERE kod='velodrom' AND je_verejne=1 AND aktivni=1";
-        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
-            $placeSql .= ' FOR UPDATE';
-        }
-        $sportovisteId = (int)$pdo->query($placeSql)->fetchColumn();
-        if ($sportovisteId < 1) {
-            throw new PublicVelodromeException('Aktivní veřejný velodrom nebyl nalezen.');
-        }
-        $overlap = $pdo->prepare(
-            "SELECT id FROM individualni_lekce WHERE sportoviste_id=? AND datum=? AND stav='aktivni' "
-            . 'AND cas_od<? AND cas_do>? LIMIT 1'
-        );
-        $overlap->execute([
-            $sportovisteId, $start->format('Y-m-d'), $end->format('H:i:s'), $start->format('H:i:s'),
-        ]);
-        if ($overlap->fetchColumn()) {
-            throw new PublicVelodromeException('Termín se překrývá s jinou aktivní lekcí velodromu.');
-        }
-        $hasContext=individualLessonContextAvailable($pdo);
-        $insert = $pdo->prepare(
-            'INSERT INTO individualni_lekce '
-            . '(trener_id,sportoviste_id,datum,cas_od,cas_do,slot_delka_min,typ,nazev,popis,cena_kc,max_osob, '
-            . 'vyjimka_3_dny,stav,public_exclusive_booking'.($hasContext?',booking_context':'').') '
-            . "VALUES (?,?,?,?,?,?,'zelena',?,?,?, ?,1,'aktivni',?".($hasContext?',?':'').')'
-        );
-        $minutes = max(1, (int)(($end->getTimestamp() - $start->getTimestamp()) / 60));
-        $insert->execute([
-            $actorTrainerId,
-            $sportovisteId,
-            $start->format('Y-m-d'),
-            $start->format('H:i:s'),
-            $end->format('H:i:s'),
-            $minutes,
-            'Veřejná hodina velodromu',
-            $exclusive ? 'Výhradní rezervace celého slotu.' : 'Veřejná rezervace místa ve slotu.',
-            number_format($priceMinor / 100, 2, '.', ''),
-            $exclusive ? 1 : $capacity,
-            $exclusive ? 1 : 0,
-            ...($hasContext?[INDIVIDUAL_LESSON_CONTEXT_VELODROME]:[]),
-        ]);
-        $id = (int)$pdo->lastInsertId();
-        venueOperationAudit($pdo,'lesson',$id,$actorTrainerId,'create',$reason,['date'=>$date,'starts_at'=>$startsAt,'ends_at'=>$endsAt,'capacity'=>$exclusive?1:$capacity,'exclusive'=>$exclusive,'price_minor'=>$priceMinor]);
+        $result=publicVelodromeCreateSlotInTransaction($pdo,$actorTrainerId,$start,$end,$capacity,$exclusive,$priceMinor,$reason,trim($name));
         $pdo->commit();
-        return ['id' => $id, 'created' => true];
+        return $result;
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -98,6 +54,40 @@ function publicVelodromeCreateSlot(
         }
         throw new PublicVelodromeException('Termín se nepodařilo vytvořit bez částečné změny.', 0, $exception);
     }
+}
+
+/** @return array{id:int,created:bool} */
+function publicVelodromeCreateSlotInTransaction(PDO $pdo,int $actorTrainerId,DateTimeImmutable $start,DateTimeImmutable $end,int $capacity,bool $exclusive,int $priceMinor,string $reason,string $name):array
+{
+    if(!$pdo->inTransaction())throw new LogicException('Založení termínu vyžaduje otevřenou transakci.');
+    $actor=$pdo->prepare("SELECT id FROM treneri WHERE id=? AND aktivni=1");$actor->execute([$actorTrainerId]);
+    if(!$actor->fetchColumn())throw new PublicVelodromeException('Aktivní administrátor nebyl nalezen.');
+    $placeSql="SELECT id FROM sportovist WHERE kod='velodrom' AND je_verejne=1 AND aktivni=1";
+    if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$placeSql.=' FOR UPDATE';
+    $sportovisteId=(int)$pdo->query($placeSql)->fetchColumn();
+    if($sportovisteId<1)throw new PublicVelodromeException('Aktivní veřejný velodrom nebyl nalezen.');
+    $overlap=$pdo->prepare("SELECT id FROM individualni_lekce WHERE sportoviste_id=? AND datum=? AND stav='aktivni' AND cas_od<? AND cas_do>? LIMIT 1");
+    $overlap->execute([$sportovisteId,$start->format('Y-m-d'),$end->format('H:i:s'),$start->format('H:i:s')]);
+    if($overlap->fetchColumn())throw new PublicVelodromeException('Termín '.$start->format('d. m. Y H:i').' se překrývá s jinou aktivní lekcí velodromu.');
+    $hasContext=individualLessonContextAvailable($pdo);
+    $insert=$pdo->prepare('INSERT INTO individualni_lekce (trener_id,sportoviste_id,datum,cas_od,cas_do,slot_delka_min,typ,nazev,popis,cena_kc,max_osob,vyjimka_3_dny,stav,public_exclusive_booking'.($hasContext?',booking_context':'').") VALUES (?,?,?,?,?,?,'zelena',?,?,?, ?,1,'aktivni',?".($hasContext?',?':'').')');
+    $minutes=max(1,(int)(($end->getTimestamp()-$start->getTimestamp())/60));
+    $insert->execute([$actorTrainerId,$sportovisteId,$start->format('Y-m-d'),$start->format('H:i:s'),$end->format('H:i:s'),$minutes,$name,$exclusive?'Výhradní rezervace celého slotu.':'Veřejná rezervace místa ve slotu.',number_format($priceMinor/100,2,'.',''),$exclusive?1:$capacity,$exclusive?1:0,...($hasContext?[INDIVIDUAL_LESSON_CONTEXT_VELODROME]:[])]);
+    $id=(int)$pdo->lastInsertId();
+    venueOperationAudit($pdo,'lesson',$id,$actorTrainerId,'create',$reason,['date'=>$start->format('Y-m-d'),'starts_at'=>$start->format('H:i'),'ends_at'=>$end->format('H:i'),'capacity'=>$exclusive?1:$capacity,'exclusive'=>$exclusive,'price_minor'=>$priceMinor]);
+    return['id'=>$id,'created'=>true];
+}
+
+/** @param list<int> $weekdays @return array{created:int,ids:list<int>} */
+function publicVelodromeCreateRecurringSlots(PDO $pdo,int $actorTrainerId,string $from,string $to,array $weekdays,string $startsAt,string $endsAt,int $capacity,bool $exclusive,int $priceMinor,string $name,string $reason,bool $confirmed):array
+{
+    $startDate=DateTimeImmutable::createFromFormat('!Y-m-d',trim($from));$endDate=DateTimeImmutable::createFromFormat('!Y-m-d',trim($to));
+    $days=array_values(array_unique(array_map('intval',$weekdays)));sort($days);
+    $name=trim($name);if(!$confirmed||$actorTrainerId<1||!$startDate||!$endDate||$startDate->format('Y-m-d')!==trim($from)||$endDate->format('Y-m-d')!==trim($to)||$startDate>$endDate||$startDate->diff($endDate)->days>366||$days===[]||array_diff($days,[1,2,3,4,5,6,7])!==[]||$name===''||mb_strlen($name,'UTF-8')>255||preg_match('/[<>]/u',$name)===1||trim($reason)===''||mb_strlen(trim($reason),'UTF-8')>1000)throw new InvalidArgumentException('Série vyžaduje platný název, období do jednoho roku, dny, důvod a potvrzení.');
+    $slots=[];for($date=$startDate;$date<=$endDate;$date=$date->modify('+1 day')){if(!in_array((int)$date->format('N'),$days,true))continue;$slotStart=DateTimeImmutable::createFromFormat('!Y-m-d H:i',$date->format('Y-m-d').' '.trim($startsAt));$slotEnd=DateTimeImmutable::createFromFormat('!Y-m-d H:i',$date->format('Y-m-d').' '.trim($endsAt));if(!$slotStart||!$slotEnd||$slotEnd<=$slotStart||$slotStart<=new DateTimeImmutable('now'))throw new InvalidArgumentException('Čas série nebo některý její termín není platný.');$slots[]=[$slotStart,$slotEnd];}
+    if($slots===[]||count($slots)>110)throw new InvalidArgumentException('Série nevytváří žádný termín nebo je příliš dlouhá.');
+    if($capacity<1||$capacity>1000||$priceMinor<0||$priceMinor>100000000)throw new InvalidArgumentException('Kapacita nebo cena série není platná.');
+    $pdo->beginTransaction();try{$ids=[];foreach($slots as[$slotStart,$slotEnd])$ids[]=publicVelodromeCreateSlotInTransaction($pdo,$actorTrainerId,$slotStart,$slotEnd,$capacity,$exclusive,$priceMinor,trim($reason),$name)['id'];$pdo->commit();return['created'=>count($ids),'ids'=>$ids];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof PublicVelodromeException)throw$exception;throw new PublicVelodromeException('Sérii termínů se nepodařilo vytvořit bez částečné změny.',0,$exception);}
 }
 
 /** @return array{id:int,changed:bool} */

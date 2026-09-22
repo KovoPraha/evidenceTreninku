@@ -203,6 +203,7 @@ const EVIDENCE_TABLES = [
     'member_fee_plan_run_items',
     'member_fee_plan_runs',
     'member_fee_plans',
+    'member_fee_standing_orders',
     'nastaveni',
     'osoba_citlive_pristupy',
     'osoba_citlive_udaje',

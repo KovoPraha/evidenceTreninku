@@ -34,9 +34,10 @@ function memberChargeAdminPublicCode():string{return'MC-'.date('Ymd').'-'.strtou
 function memberChargeAdminVariableSymbol(string $seed,int $attempt=0):string{$number=hexdec(substr(hash('sha256',$seed.':'.$attempt),0,8))%1000000000;return'9'.str_pad((string)$number,9,'0',STR_PAD_LEFT);}
 
 /** @param array<string,mixed> $settings @return array{id:int,variable_symbol:string} */
-function memberChargeAdminInsertPayment(PDO$pdo,int$chargeId,array$values,array$settings,string$seed,int$actorId,?string$paidAt=null,string$note=''):array
+function memberChargeAdminInsertPayment(PDO$pdo,int$chargeId,array$values,array$settings,string$seed,int$actorId,?string$paidAt=null,string$note='',?string$preferredVariableSymbol=null):array
 {
-    for($attempt=0;$attempt<20;$attempt++){$vs=memberChargeAdminVariableSymbol($seed,$attempt);$check=$pdo->prepare('SELECT 1 FROM payments WHERE variable_symbol=?');$check->execute([$vs]);if(!$check->fetchColumn())break;if($attempt===19)throw new MemberChargeAdminException('Nepodařilo se přidělit volný variabilní symbol.');}
+    if($preferredVariableSymbol!==null){$vs=trim($preferredVariableSymbol);if(preg_match('/^[0-9]{10}$/D',$vs)!==1)throw new MemberChargeAdminException('Stálý variabilní symbol nemá platný formát.');}
+    else for($attempt=0;$attempt<20;$attempt++){$vs=memberChargeAdminVariableSymbol($seed,$attempt);$check=$pdo->prepare('SELECT 1 FROM payments WHERE variable_symbol=?');$check->execute([$vs]);if(!$check->fetchColumn())break;if($attempt===19)throw new MemberChargeAdminException('Nepodařilo se přidělit volný variabilní symbol.');}
     $status=$paidAt===null?'pending':'paid';$message='Členský předpis '.$chargeId;$spd=shopPaymentSpdPayload((string)$settings['iban'],(int)$values['amount_minor'],(string)$values['currency'],$vs,$message);
     $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at,paid_at,confirmed_by_trainer_id,confirmation_note) VALUES (\'member_charge\',?,\'bank_transfer\',?,?,?,?,?,?,?,?,?,?,?,?)')->execute([$chargeId,$status,$values['amount_minor'],$values['currency'],$vs,$settings['iban'],$settings['bic']!==''?$settings['bic']:null,$settings['account_label'],$spd,$values['due_on'].' 23:59:59',$paidAt,$paidAt===null?null:$actorId,$paidAt===null?null:$note]);
     return['id'=>(int)$pdo->lastInsertId(),'variable_symbol'=>$vs];
