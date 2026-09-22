@@ -214,7 +214,12 @@ function clubEventOpenFreeRegistration(
             }
         }
 
-        $pdo->prepare("UPDATE club_events SET status='open', updated_at=CURRENT_TIMESTAMP WHERE id=?")
+        $publish = clubEventColumnExists($pdo,'club_events','planning_status')
+            && clubEventColumnExists($pdo,'club_events','visibility')
+            && clubEventColumnExists($pdo,'club_events','public_published_at');
+        $pdo->prepare($publish
+            ? "UPDATE club_events SET status='open',planning_status='confirmed',visibility='public',public_published_at=COALESCE(public_published_at,CURRENT_TIMESTAMP),updated_at=CURRENT_TIMESTAMP WHERE id=?"
+            : "UPDATE club_events SET status='open',updated_at=CURRENT_TIMESTAMP WHERE id=?")
             ->execute([$eventId]);
         clubEventAudit($pdo, $eventId, $actorTrainerId, 'open_registration', 'event', $eventId, $note, [
             'pricing_policy' => 'free',
@@ -255,7 +260,8 @@ function clubEventOpenPaidRegistration(PDO $pdo,int $eventId,int $actorTrainerId
         $variants=$pdo->prepare("SELECT COUNT(*) FROM shop_product_event_links l JOIN shop_products p ON p.id=l.product_id JOIN shop_variants v ON v.product_id=p.id WHERE l.event_id=? AND p.catalog_status='active' AND v.catalog_status='active' AND v.price_mode='fixed' AND v.amount_minor>0 AND v.currency='CZK' AND (v.visible IS NULL OR v.visible=1)");$variants->execute([$eventId]);
         if((int)$variants->fetchColumn()<1)throw new ClubEventRegistrationException('Propojte udalost s aktivni placenou variantou v CZK.');
         $targets=$pdo->prepare('SELECT COUNT(*) FROM club_event_roster_targets WHERE event_id=?');$targets->execute([$eventId]);if((int)$targets->fetchColumn()<1)throw new ClubEventRegistrationException('Pred otevrenim zvolte alespon jednu cilovou soupisku.');
-        $pdo->prepare("UPDATE club_events SET status='open',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$eventId]);
+        $publish=clubEventColumnExists($pdo,'club_events','planning_status')&&clubEventColumnExists($pdo,'club_events','visibility')&&clubEventColumnExists($pdo,'club_events','public_published_at');
+        $pdo->prepare($publish?"UPDATE club_events SET status='open',planning_status='confirmed',visibility='public',public_published_at=COALESCE(public_published_at,CURRENT_TIMESTAMP),updated_at=CURRENT_TIMESTAMP WHERE id=?":"UPDATE club_events SET status='open',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$eventId]);
         clubEventAudit($pdo,$eventId,$actorTrainerId,'open_registration','event',$eventId,$note,['pricing_policy'=>'product_variants','capacity'=>clubEventEffectiveCapacity($pdo,$eventId,(int)$event['capacity'])]);
         $pdo->commit();return['id'=>$eventId,'status'=>'open','changed'=>true];
     }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof ClubEventRegistrationException)throw$e;throw new ClubEventRegistrationException('Udalost se nepodarilo bezpecne otevrit.',0,$e);}
@@ -710,8 +716,10 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
 /** @return list<array<string,mixed>> */
 function clubEventOpenFreeList(PDO $pdo): array
 {
+    $public = clubEventColumnExists($pdo,'club_events','planning_status') && clubEventColumnExists($pdo,'club_events','visibility')
+        ? " AND e.planning_status='confirmed' AND e.visibility='public'" : '';
     $events = $pdo->query(
-        "SELECT e.* FROM club_events e WHERE e.status='open' AND e.event_type IN ('club_event','camp') "
+        "SELECT e.* FROM club_events e WHERE e.status='open'" . $public . " AND e.event_type IN ('club_event','camp') "
         . "AND e.pricing_policy='free' AND (e.registration_starts_at IS NULL OR e.registration_starts_at<=CURRENT_TIMESTAMP) "
         . "AND (e.registration_ends_at IS NULL OR e.registration_ends_at>=CURRENT_TIMESTAMP) "
         . 'ORDER BY e.registration_ends_at IS NULL, e.registration_ends_at, e.name'

@@ -29,7 +29,9 @@ Veřejné záznamy mají povinný prefix `TEST -`:
 - prodejný program `TEST - Cyklistický kroužek` včetně období, soupisky,
   věkového rozsahu a schválených UAT podmínek,
 - bezplatná akce `TEST - Rodinný nábor`,
-- placená akce `TEST - Příměstský den`,
+- placená akce `TEST - Příměstský den` s interní aktivní variantou 50 Kč;
+  zobrazuje se v části Akce a vede přes košík, objednávku a zvolenou platební
+  metodu, ale neduplikuje se jako samostatný produkt v běžném e-shopu,
 - placený termín `TEST - Veřejný velodrom`,
 - `TEST - Individuální lekce`,
 - veřejný plán `TEST - Trénink nového dítěte`.
@@ -57,7 +59,8 @@ Operace `deaktivovat-testovaci-ucty`:
 - zneaktivní oba rodiče a oba dětské přístupy,
 - uzavře a skryje akce `TEST -`,
 - zruší veřejné lekce a tréninky `TEST -`,
-- deaktivuje publikace, produkty a varianty `TEST -`.
+- deaktivuje publikace, produkty a varianty `TEST -`, včetně neveřejné varianty
+  použité pouze pro objednávkový tok placené akce.
 
 Záznamy se nemažou, aby zůstal audit a historie objednávek. Operace se nesmí
 rozšiřovat na obecný prefix e-mailů nebo běžné veřejné nabídky.

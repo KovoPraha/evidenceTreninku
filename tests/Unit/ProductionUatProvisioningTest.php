@@ -44,6 +44,18 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertStringContainsString('pripravit-uat-ucty-a-data', $workflow);
         self::assertStringContainsString("'KP-TEST-UAT-LAHEV'", $script);
         self::assertStringContainsString("'KP-TEST-UAT-KROUZEK'", $script);
+        self::assertStringContainsString("'KP-TEST-UAT-PRIMESTSKY-DEN'", $script);
+        self::assertStringContainsString('clubEventOpenPaidRegistration', $script);
+        self::assertStringContainsString('clubEventRosterReplaceTargets', $script);
+        self::assertStringContainsString("(.products|length) == 3", $workflow);
         self::assertStringContainsString("pub.public_name LIKE 'TEST -%'", $cleanup);
+        self::assertStringContainsString('KP-TEST-UAT-PRIMESTSKY-DEN', $cleanup);
+
+        $registration = (string)file_get_contents($root . '/includes/club_event_registration.php');
+        $paidList = (string)file_get_contents($root . '/includes/club_event_shop.php');
+        self::assertStringContainsString("visibility='public'", $registration);
+        self::assertStringContainsString("e.visibility='public'", $registration);
+        self::assertStringContainsString("e.visibility='public'", $paidList);
+        self::assertStringContainsString("s.ends_at>=CURRENT_TIMESTAMP", $paidList);
     }
 }

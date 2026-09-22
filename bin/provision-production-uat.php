@@ -16,6 +16,7 @@ kisUatRequire('includes/shop_manual_catalog.php');
 kisUatRequire('includes/club_program.php');
 kisUatRequire('includes/club_program_terms.php');
 kisUatRequire('includes/club_calendar.php');
+kisUatRequire('includes/club_event_registration.php');
 
 const KIS_UAT_PARENT_EMAILS = ['tester.karel@velocota.com', 'tester.petra@velocota.com'];
 const KIS_UAT_CHILD_LOGINS = ['tester.ema', 'tester.adam'];
@@ -144,6 +145,90 @@ function kisUatUpsertCalendarEvent(PDO $pdo, int $actorId, string $name, int $fe
     return (int)$result['id'];
 }
 
+function kisUatUpsertPaidShopEvent(
+    PDO $pdo,
+    int $actorId,
+    int $productId,
+    int $teamId,
+    DateTimeImmutable $day,
+    DateTimeImmutable $windowEnd
+): int {
+    $name = 'TEST - Příměstský den';
+    $startsAt = $day->setTime(10, 0)->format('Y-m-d H:i:s');
+    $endsAt = $day->setTime(15, 0)->format('Y-m-d H:i:s');
+    $cancellationDeadline = $day->modify('-1 day')->setTime(20, 0)->format('Y-m-d\TH:i');
+    $registrationEnd = min($windowEnd->getTimestamp(), $day->modify('-1 day')->setTime(23, 0)->getTimestamp());
+    $registrationEndsAt = (new DateTimeImmutable('@' . $registrationEnd))
+        ->setTimezone(new DateTimeZone('Europe/Prague'))->format('Y-m-d H:i:s');
+
+    $lookup = $pdo->prepare('SELECT * FROM club_events WHERE name=? ORDER BY id');
+    $lookup->execute([$name]);
+    $events = $lookup->fetchAll(PDO::FETCH_ASSOC);
+    if (count($events) > 1) throw new RuntimeException('Duplicitní UAT akce: ' . $name);
+
+    if ($events === []) {
+        $created = clubEventCreateDraft($pdo, $actorId, [
+            'code'=>'TEST-UAT-PRIMESTSKY-DEN', 'event_type'=>'camp', 'name'=>$name,
+            'description_plain'=>'Dočasná placená akce pro produkční UAT.', 'audience_label'=>'TEST - UAT děti',
+            'min_age'=>'', 'max_age'=>'', 'capacity'=>20, 'pricing_policy'=>'product_variants', 'currency'=>'CZK',
+            'registration_starts_at'=>$day->modify('-7 days')->format('Y-m-d\TH:i'),
+            'registration_ends_at'=>str_replace(' ', 'T', substr($registrationEndsAt, 0, 16)),
+        ]);
+        $eventId = (int)$created['id'];
+    } else {
+        $eventId = (int)$events[0]['id'];
+        $registrations = $pdo->prepare('SELECT COUNT(*) FROM club_event_registrations WHERE event_id=?');
+        $registrations->execute([$eventId]);
+        if ((int)$registrations->fetchColumn() > 0) {
+            if ((string)$events[0]['pricing_policy'] !== 'product_variants') {
+                throw new RuntimeException('Placenou UAT akci s přihláškami nelze převést na objednávkový tok.');
+            }
+            return $eventId;
+        }
+    }
+
+    $pdo->prepare(
+        "UPDATE club_events SET event_type='camp',description_plain=?,audience_label='TEST - UAT děti',"
+        . "min_age=NULL,max_age=NULL,capacity=20,pricing_policy='product_variants',currency='CZK',"
+        . "registration_starts_at=?,registration_ends_at=?,status='draft',activity_kind='camp',"
+        . "planning_status='confirmed',visibility='public',public_description_plain=?,internal_note=?,"
+        . "participant_fee_minor=0,fee_due_days=7,public_published_at=COALESCE(public_published_at,CURRENT_TIMESTAMP),"
+        . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
+    )->execute([
+        'Dočasná placená akce pro produkční UAT.',
+        $day->modify('-7 days')->format('Y-m-d H:i:s'), $registrationEndsAt,
+        'Dočasná placená akce pro produkční UAT.', 'TEST data; po UAT deaktivovat.', $eventId,
+    ]);
+    clubEventAudit($pdo, $eventId, $actorId, 'uat_paid_event_prepare', 'event', $eventId, 'Příprava placené akce výhradně pro produkční UAT.', [
+        'pricing_policy'=>'product_variants', 'starts_at'=>$startsAt, 'ends_at'=>$endsAt,
+    ]);
+
+    $sessions = $pdo->prepare("SELECT id FROM club_event_sessions WHERE event_id=? AND status='scheduled' ORDER BY id");
+    $sessions->execute([$eventId]);
+    $sessionIds = array_map('intval', $sessions->fetchAll(PDO::FETCH_COLUMN));
+    if (count($sessionIds) > 1) throw new RuntimeException('Placená UAT akce má více aktivních termínů.');
+    if ($sessionIds === []) {
+        clubEventAddSession($pdo, $eventId, $actorId, str_replace(' ', 'T', substr($startsAt, 0, 16)), str_replace(' ', 'T', substr($endsAt, 0, 16)), 'Velodrom Třebešín', 20);
+    } else {
+        clubEventUpdateSession(
+            $pdo, $eventId, $sessionIds[0], $actorId,
+            str_replace(' ', 'T', substr($startsAt, 0, 16)), str_replace(' ', 'T', substr($endsAt, 0, 16)),
+            'Velodrom Třebešín', 20, 'Aktualizace termínu placené akce pro produkční UAT.', true
+        );
+    }
+
+    clubEventLinkProduct($pdo, $eventId, $productId, $actorId, 'Dočasná placená varianta pro produkční UAT.');
+    clubEventRosterReplaceTargets($pdo, $eventId, [$teamId], $actorId, 'Produkční UAT je omezeno na testovací soupisku.', true);
+    clubEventConfigureRegistrationTerms(
+        $pdo, $eventId, $actorId, 'uat-paid-' . $day->format('Ymd'),
+        'Zákonný zástupce souhlasí s účastí dítěte na této dočasné testovací akci.',
+        'Testovací objednávku lze bezplatně zrušit do uvedeného termínu.',
+        $cancellationDeadline, true
+    );
+    clubEventOpenPaidRegistration($pdo, $eventId, $actorId, 'Otevření placené akce výhradně pro produkční UAT.', true);
+    return $eventId;
+}
+
 function kisUatUpsertLesson(PDO $pdo, int $actorId, string $venueCode, string $name, DateTimeImmutable $day, string $context, float $price): int
 {
     $venue=$pdo->prepare('SELECT id FROM sportovist WHERE kod=? AND je_verejne=1 AND aktivni=1');$venue->execute([$venueCode]);$venueId=(int)$venue->fetchColumn();
@@ -179,13 +264,14 @@ function kisUatProvision(PDO $pdo, array $settings, ?DateTimeImmutable $now = nu
     kisUatPublish($pdo,$actorId,$programProduct['product_id'],'TEST - Cyklistický kroužek');
 
     $freeEvent=kisUatUpsertCalendarEvent($pdo,$actorId,'TEST - Rodinný nábor',0,$now->modify('+5 days'));
-    $paidEvent=kisUatUpsertCalendarEvent($pdo,$actorId,'TEST - Příměstský den',5000,$now->modify('+6 days'));
+    $paidEventProduct=kisUatProduct($pdo,$actorId,'KP-TEST-UAT-PRIMESTSKY-DEN','TEST - Příměstský den','camp',5000);
+    $paidEvent=kisUatUpsertPaidShopEvent($pdo,$actorId,$paidEventProduct['product_id'],$season['team_id'],$now->modify('+6 days'),$windowEnd);
     $velodrome=kisUatUpsertLesson($pdo,$actorId,'velodrom','TEST - Veřejný velodrom',$now->modify('+7 days'),'public_velodrome',250.00);
     $lesson=kisUatUpsertLesson($pdo,$actorId,'posilovna_horni','TEST - Individuální lekce',$now->modify('+8 days'),'individual_lesson',300.00);
     $training=$pdo->prepare("SELECT id FROM planovane_treninky WHERE nazev='TEST - Trénink nového dítěte' ORDER BY id");$training->execute();$trainingIds=array_map('intval',$training->fetchAll(PDO::FETCH_COLUMN));if(count($trainingIds)>1)throw new RuntimeException('Duplicitní UAT trénink.');
     if($trainingIds===[]){$pdo->prepare("INSERT INTO planovane_treninky(trener_id,datum,cas_od,cas_do,nazev,kategorie,popis,stav,je_verejny) VALUES(?,?,'17:00:00','18:00:00','TEST - Trénink nového dítěte','draha','Dočasný trénink pro produkční UAT.','planovany',1)")->execute([$actorId,$now->modify('+9 days')->format('Y-m-d')]);$trainingId=(int)$pdo->lastInsertId();}else{$trainingId=$trainingIds[0];$pdo->prepare("UPDATE planovane_treninky SET trener_id=?,datum=?,cas_od='17:00:00',cas_do='18:00:00',kategorie='draha',popis='Dočasný trénink pro produkční UAT.',stav='planovany',je_verejny=1 WHERE id=?")->execute([$actorId,$now->modify('+9 days')->format('Y-m-d'),$trainingId]);}
 
-    return ['ok'=>true,'parents'=>[$karel['id'],$petra['id']],'children'=>[$ema['id'],$adam['id']],'child_access'=>$childAccess,'products'=>[$goods['product_id'],$programProduct['product_id']],'program_offer'=>(int)$offer['id'],'events'=>[$freeEvent,$paidEvent],'lessons'=>[$velodrome,$lesson],'training'=>$trainingId,'window_end'=>$windowEnd->format('Y-m-d H:i:s')];
+    return ['ok'=>true,'parents'=>[$karel['id'],$petra['id']],'children'=>[$ema['id'],$adam['id']],'child_access'=>$childAccess,'products'=>[$goods['product_id'],$programProduct['product_id'],$paidEventProduct['product_id']],'program_offer'=>(int)$offer['id'],'events'=>[$freeEvent,$paidEvent],'lessons'=>[$velodrome,$lesson],'training'=>$trainingId,'window_end'=>$windowEnd->format('Y-m-d H:i:s')];
 }
 
 function kisUatMain(): void

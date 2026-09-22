@@ -93,6 +93,15 @@ try {
         "UPDATE shop_variants v JOIN shop_products p ON p.id=v.product_id JOIN shop_product_publications pub ON pub.product_id=p.id "
         . "SET v.catalog_status='inactive',v.updated_at=CURRENT_TIMESTAMP WHERE pub.public_name LIKE 'TEST -%'"
     );
+    $eventVariants = $pdo->prepare(
+        "UPDATE shop_variants SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE sku=? AND catalog_status<>'inactive'"
+    );
+    $eventVariants->execute(['KP-TEST-UAT-PRIMESTSKY-DEN']);
+    $eventProducts = $pdo->prepare(
+        "UPDATE shop_products p JOIN shop_variants v ON v.product_id=p.id SET p.catalog_status='inactive',p.updated_at=CURRENT_TIMESTAMP "
+        . "WHERE v.sku=? AND p.catalog_status<>'inactive'"
+    );
+    $eventProducts->execute(['KP-TEST-UAT-PRIMESTSKY-DEN']);
     $pdo->commit();
     echo json_encode([
         'ok' => true,
@@ -104,6 +113,7 @@ try {
         'lessons_cancelled' => $lessons->rowCount(),
         'trainings_cancelled' => $trainings->rowCount(),
         'products_deactivated' => $products->rowCount(),
+        'event_products_deactivated' => $eventProducts->rowCount(),
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } catch (Throwable $exception) {
     if ($pdo->inTransaction()) {

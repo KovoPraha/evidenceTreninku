@@ -217,7 +217,7 @@ jobs:
           EOF
           "${SCP[@]}" /tmp/run-provision-production-uat.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-uat.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-uat.php'" | tee /tmp/kis-uat-result.json
-          jq -e '.ok == true and (.parents|length) == 2 and (.children|length) == 2 and (.products|length) == 2 and (.events|length) == 2 and (.lessons|length) == 2' /tmp/kis-uat-result.json >/dev/null
+          jq -e '.ok == true and (.parents|length) == 2 and (.children|length) == 2 and (.products|length) == 3 and (.events|length) == 2 and (.lessons|length) == 2' /tmp/kis-uat-result.json >/dev/null
           echo 'Produkční UAT účty a označená testovací data byly vytvořeny a ověřeny.'
 
       - name: Deaktivovat vyhradne jednorazove testovaci ucty
