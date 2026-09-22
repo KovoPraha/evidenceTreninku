@@ -1,6 +1,16 @@
 # Aktuální stav projektu pro AI a vlastníka
 
-Aktualizováno: 21. 9. 2026, Europe/Prague
+Aktualizováno: 22. 9. 2026, Europe/Prague
+
+## Produkční UAT účty a scénářová data z 22. 9. 2026
+
+Chráněný provozní workflow umí idempotentně připravit rodiče Tester Karel a
+Tester Petra, děti Ema Tester a Adam Tester a provázaná data označená `TEST -`
+pro e-shop, kroužek, bezplatnou i placenou akci, velodrom, individuální lekci a
+trénink. Heslo se nepíše do Gitu ani do logu a po provedení lze dočasný secret
+odstranit. Stejný workflow obsahuje cílenou deaktivaci účtů a všech veřejných
+TEST položek bez mazání auditní historie. Provozní popis je v
+`docs/PRODUKCNI-UAT-UCTY-A-DATA.md`.
 
 ## UAT opravy z 21. 9. 2026
 
