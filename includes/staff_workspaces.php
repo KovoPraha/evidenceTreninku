@@ -103,6 +103,7 @@ function staffPositionDefinitions(): array
                 ['label' => 'Kroužky', 'icon' => 'calendar-range', 'items' => [
                     ['route' => 'club_program_wizard_admin.php', 'label' => 'Vypsat kroužek', 'description' => 'Průvodce novou nabídkou', 'icon' => 'magic'],
                     ['route' => 'club_program_offers_admin.php', 'label' => 'Kroužky', 'description' => 'Založení, úpravy, kapacity a přihlášky', 'icon' => 'calendar2-check'],
+                    ['route' => 'club_program_storefront_admin.php', 'label' => 'Veřejný rozcestník', 'description' => 'Texty, rozvrh a fotografie kroužků', 'icon' => 'images'],
                     ['route' => 'club_programs_admin.php', 'label' => 'Programy a podmínky', 'description' => 'Kanonické programy a dokumenty', 'icon' => 'calendar-range'],
                     ['route' => 'club_program_settings_admin.php', 'label' => 'Správa programů', 'description' => 'Opravy názvů a archivace', 'icon' => 'pencil-square'],
                 ]],

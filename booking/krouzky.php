@@ -112,7 +112,7 @@ if(clubEventShopAvailable($pdo)){
 <body class="bg-light">
 <?php publicShellNav('clubs'); ?>
 <main class="container py-4" style="max-width:1000px">
-    <div class="mb-4"><h1 class="h3 mb-1">Akce</h1><p class="text-muted mb-0">Jednorázové klubové akce, nábory, kempy a závody. Pravidelné kroužky najdete pouze v <a href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">e-shopu</a>.</p></div>
+    <div class="mb-4"><h1 class="h3 mb-1">Akce</h1><p class="text-muted mb-0">Jednorázové klubové akce, nábory, kempy a závody. Pro pravidelné dětské tréninky použijte nový <a href="cyklisticke_krouzky.php">rozcestník kroužků</a>.</p></div>
     <section aria-labelledby="free-clubs-title"><div class="d-flex flex-wrap justify-content-between align-items-start gap-2"><div><h2 id="free-clubs-title" class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné akce a nábory</h2><p class="text-muted">Jde o jednorázové akce bez ceny, například nábor, otevřený trénink nebo klubové setkání. Nabídku, termíny a volnou kapacitu vidíte bez registrace; k přihlášení účastníka potřebujete účet.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= clubRegistrationH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success d-flex flex-wrap justify-content-between align-items-center gap-2"><span><?= clubRegistrationH($success) ?></span><?php if($showCartLink):?><a class="btn btn-success btn-sm" href="eshop.php#kosik"><i class="bi bi-cart-check me-1"></i>Přejít přímo do košíku</a><?php endif;?></div><?php endif; ?>

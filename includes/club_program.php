@@ -241,10 +241,20 @@ function clubProgramUpdateOffer(PDO$pdo,int$actorId,int$offerId,array$input,stri
         $salesOpenAt=clubProgramInputDateTime(isset($input['sales_open_at'])?(string)$input['sales_open_at']:null);$salesCloseAt=clubProgramInputDateTime(isset($input['sales_close_at'])?(string)$input['sales_close_at']:null);if($salesOpenAt!==null&&$salesCloseAt!==null&&$salesOpenAt>=$salesCloseAt)throw new InvalidArgumentException('Konec prodeje musí být po jeho otevření.');
         $capacity=$input['capacity']??null;$capacity=$capacity===null||trim((string)$capacity)===''?null:filter_var($capacity,FILTER_VALIDATE_INT);if($capacity===false||($capacity!==null&&($capacity<1||$capacity>100000)))throw new InvalidArgumentException('Kapacita musí být prázdná nebo mezi 1 a 100000.');
         $birthFromRaw=$input['birth_year_from']??null;$birthToRaw=$input['birth_year_to']??null;[$birthYearFrom,$birthYearTo]=clubProgramBirthYearRange($birthFromRaw===null||trim((string)$birthFromRaw)===''?null:(int)$birthFromRaw,$birthToRaw===null||trim((string)$birthToRaw)===''?null:(int)$birthToRaw);$status=(string)($input['status']??'');if(!in_array($status,['draft','active','closed'],true))throw new InvalidArgumentException('Stav nabídky není podporován.');if((string)$before['status']==='closed'&&$status!=='closed')throw new ClubProgramException('Uzavřenou nabídku nelze znovu otevřít; pro další období založte novou.');
+        $hasPurchaseOption=clubProgramColumnExists($pdo,'club_program_offers','purchase_option');
+        $purchaseOption=$hasPurchaseOption?(string)($input['purchase_option']??($before['purchase_option']??'custom')):'custom';
+        if($hasPurchaseOption){$allowed=['first_half','second_half','full_year','custom'];if(!in_array($purchaseOption,$allowed,true))throw new InvalidArgumentException('Platební varianta není podporována.');}
+        $isFeatured=$hasPurchaseOption&&!empty($input['is_featured'])?1:0;
         $capacityState=clubProgramOfferCapacityState($pdo,$before,null,true);if($capacity!==null&&(int)$capacity<(int)$capacityState['occupied_count'])throw new ClubProgramException('Kapacitu nelze snížit pod počet aktivních účastí a platných rezervací.');
         $after=$before;foreach(['name'=>$name,'starts_on'=>$startsOn,'ends_on'=>$endsOn,'sales_open_at'=>$salesOpenAt,'sales_close_at'=>$salesCloseAt,'capacity'=>$capacity,'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,'status'=>$status]as$key=>$value)$after[$key]=$value;
-        $changed=false;foreach(['name','starts_on','ends_on','sales_open_at','sales_close_at','capacity','birth_year_from','birth_year_to','status']as$key)if((string)($before[$key]??'')!==(string)($after[$key]??''))$changed=true;
-        if($changed){$pdo->prepare('UPDATE club_program_offers SET name=?,starts_on=?,ends_on=?,sales_open_at=?,sales_close_at=?,capacity=?,birth_year_from=?,birth_year_to=?,status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$name,$startsOn,$endsOn,$salesOpenAt,$salesCloseAt,$capacity,$birthYearFrom,$birthYearTo,$status,$offerId]);$fresh=$pdo->prepare('SELECT * FROM club_program_offers WHERE id=?');$fresh->execute([$offerId]);$after=$fresh->fetch(PDO::FETCH_ASSOC);$after['_audit_reason']=$reason;$action=$status==='closed'&&(string)$before['status']!=='closed'?'close_offer':'update_offer';clubProgramEvent($pdo,(int)$before['program_id'],$offerId,'trainer',$actorId,$action,$before,$after);}
+        if($hasPurchaseOption){$after['purchase_option']=$purchaseOption;$after['is_featured']=$isFeatured;}
+        $keys=['name','starts_on','ends_on','sales_open_at','sales_close_at','capacity','birth_year_from','birth_year_to','status'];if($hasPurchaseOption)$keys=array_merge($keys,['purchase_option','is_featured']);
+        $changed=false;foreach($keys as$key)if((string)($before[$key]??'')!==(string)($after[$key]??''))$changed=true;
+        if($changed){
+            if($hasPurchaseOption)$pdo->prepare('UPDATE club_program_offers SET name=?,starts_on=?,ends_on=?,sales_open_at=?,sales_close_at=?,capacity=?,birth_year_from=?,birth_year_to=?,purchase_option=?,is_featured=?,status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$name,$startsOn,$endsOn,$salesOpenAt,$salesCloseAt,$capacity,$birthYearFrom,$birthYearTo,$purchaseOption,$isFeatured,$status,$offerId]);
+            else$pdo->prepare('UPDATE club_program_offers SET name=?,starts_on=?,ends_on=?,sales_open_at=?,sales_close_at=?,capacity=?,birth_year_from=?,birth_year_to=?,status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$name,$startsOn,$endsOn,$salesOpenAt,$salesCloseAt,$capacity,$birthYearFrom,$birthYearTo,$status,$offerId]);
+            $fresh=$pdo->prepare('SELECT * FROM club_program_offers WHERE id=?');$fresh->execute([$offerId]);$after=$fresh->fetch(PDO::FETCH_ASSOC);$after['_audit_reason']=$reason;$action=$status==='closed'&&(string)$before['status']!=='closed'?'close_offer':'update_offer';clubProgramEvent($pdo,(int)$before['program_id'],$offerId,'trainer',$actorId,$action,$before,$after);
+        }
         $pdo->commit();return['id'=>$offerId,'changed'=>$changed,'status'=>$status];
     }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ClubProgramException)throw$exception;throw new ClubProgramException('Nabídku se nepodařilo upravit bez částečného zápisu.',0,$exception);}
 }
@@ -252,7 +262,7 @@ function clubProgramUpdateOffer(PDO$pdo,int$actorId,int$offerId,array$input,stri
 /** @return array{id:int,changed:bool,status:string} */
 function clubProgramCloseOffer(PDO$pdo,int$actorId,int$offerId,string$reason,bool$confirmed):array
 {
-    $statement=$pdo->prepare('SELECT name,starts_on,ends_on,sales_open_at,sales_close_at,capacity,birth_year_from,birth_year_to,status FROM club_program_offers WHERE id=?');$statement->execute([$offerId]);$offer=$statement->fetch(PDO::FETCH_ASSOC);if(!$offer)throw new ClubProgramException('Nabídka nebyla nalezena.');$offer['status']='closed';return clubProgramUpdateOffer($pdo,$actorId,$offerId,$offer,$reason,$confirmed);
+    $statement=$pdo->prepare('SELECT * FROM club_program_offers WHERE id=?');$statement->execute([$offerId]);$offer=$statement->fetch(PDO::FETCH_ASSOC);if(!$offer)throw new ClubProgramException('Nabídka nebyla nalezena.');$offer['status']='closed';return clubProgramUpdateOffer($pdo,$actorId,$offerId,$offer,$reason,$confirmed);
 }
 
 /** @return list<array<string,mixed>> */
@@ -558,7 +568,11 @@ function clubProgramProductSaleState(PDO $pdo, int $productId, ?DateTimeImmutabl
 function clubProgramEvent(PDO $pdo, int $programId, ?int $offerId, string $actorType, int $actorId, string $action, ?array $before, array $after): void
 {
     if (!$pdo->inTransaction() || $programId < 1 || $actorType !== 'trainer' || $actorId < 1
-        || !in_array($action, ['create_program','update_program','archive_program','create_offer','update_offer','close_offer'], true)) {
+        || !in_array($action, [
+            'create_program','update_program','archive_program','create_offer','update_offer','close_offer',
+            'set_purchase_option','update_storefront_presentation','add_storefront_schedule',
+            'remove_storefront_schedule','add_storefront_image','remove_storefront_image',
+        ], true)) {
         throw new LogicException('Audit programu vyžaduje transakci, objekt, správce a podporovanou akci.');
     }
     $pdo->prepare(

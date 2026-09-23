@@ -50,6 +50,7 @@ function publicShellNav(string $active = ''): void
     $trainer = isset($_SESSION['trener_id']);
     $items = [
         'home' => ['Domů', 'index.php'],
+        'programs' => ['Kroužky', 'booking/cyklisticke_krouzky.php'],
         'shop' => ['E-shop', 'booking/eshop.php'],
         'training' => ['Tréninky', 'booking/treninky.php'],
         'clubs' => ['Akce', 'booking/krouzky.php'],
@@ -111,7 +112,7 @@ function publicShellFooter(): void
     <footer class="app-public-footer border-top mt-5 py-4">
       <div class="container d-flex flex-wrap justify-content-between gap-2 small text-muted">
         <span>Klubový portál Kovopraha</span>
-        <span><a href="<?= publicShellH(appUiUrl('index.php')) ?>">Domů</a> · <a href="<?= publicShellH(appUiUrl('booking/kalendar.php')) ?>">Individuální lekce</a> · <a href="<?= publicShellH(appUiUrl('booking/treninky.php')) ?>">Veřejné tréninky</a> · <a href="<?= publicShellH(appUiUrl('booking/eshop.php')) ?>">E-shop</a></span>
+        <span><a href="<?= publicShellH(appUiUrl('index.php')) ?>">Domů</a> · <a href="<?= publicShellH(appUiUrl('booking/cyklisticke_krouzky.php')) ?>">Kroužky</a> · <a href="<?= publicShellH(appUiUrl('booking/kalendar.php')) ?>">Individuální lekce</a> · <a href="<?= publicShellH(appUiUrl('booking/treninky.php')) ?>">Veřejné tréninky</a> · <a href="<?= publicShellH(appUiUrl('booking/eshop.php')) ?>">E-shop</a></span>
       </div>
     </footer>
     <?php
