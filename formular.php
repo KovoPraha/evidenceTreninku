@@ -49,6 +49,7 @@ try {
 // ── Předvyplnění z plánovaného tréninku (?plan_id=X) ─────────────────────
 $planPrefill = null;
 $planExpectedParticipants = [];
+$planPrefillSubgroups = [];
 if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
     $planOwnerSql = roleAtLeast('hlavni') ? '' : ' AND pt.trener_id = ?';
     $stPlan = $pdo->prepare("
@@ -60,6 +61,14 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
     $stPlan->execute(roleAtLeast('hlavni') ? [(int)$_GET['plan_id']] : [(int)$_GET['plan_id'],$currentTrener]);
     $planPrefill = $stPlan->fetch(PDO::FETCH_ASSOC) ?: null;
     if ($planPrefill) {
+        try {
+            $subgroups=$pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=? ORDER BY podskupina_id');
+            $subgroups->execute([(int)$planPrefill['id']]);
+            $planPrefillSubgroups=array_map('intval',$subgroups->fetchAll(PDO::FETCH_COLUMN));
+        } catch (PDOException $exception) {
+            error_log('formular.php plan subgroups: '.$exception->getMessage());
+        }
+        if($planPrefillSubgroups===[]&&(int)($planPrefill['podskupina_id']??0)>0)$planPrefillSubgroups=[(int)$planPrefill['podskupina_id']];
         $planExpectedParticipants = trainingRosterBridgeExpectedForPlan($pdo, (int)$planPrefill['id']);
     }
 }
@@ -658,7 +667,7 @@ window.__duplikatPodskupiny = DUPLIKAT ? (DUPLIKAT.podskupiny || []) : [];
 // ── Předvyplnění z plánovaného tréninku ──────────────────────────────────
 const PLAN_PREFILL = <?= json_encode($planPrefill ? [
     'skupina_id'    => (int)($planPrefill['skupina_id'] ?? 0),
-    'podskupina_id' => (int)($planPrefill['podskupina_id'] ?? 0),
+    'podskupiny'    => $planPrefillSubgroups,
     'datum'         => $planPrefill['datum'] ?? '',
     'kategorie'     => $planPrefill['kategorie'] ?? '',
     'nazev'         => $planPrefill['nazev'] ?? '',
@@ -681,11 +690,10 @@ if (PLAN_PREFILL) {
     }
     // Skupina — nastaví se přes existující DUPLIKAT mechanismus níže
     if (PLAN_PREFILL.skupina_id && !DUPLIKAT) {
-        window.__planPodskupina = PLAN_PREFILL.podskupina_id;
+        window.__planPodskupiny = PLAN_PREFILL.podskupiny || [];
         const skSel = document.getElementById('skupina_id');
         if (skSel) {
             skSel.value = PLAN_PREFILL.skupina_id;
-            skSel.dispatchEvent(new Event('change'));
         }
     }
     // Rezervace sportoviště — plán nese místo i přesné časy.
@@ -726,7 +734,7 @@ document.getElementById('skupina_id').addEventListener('change', function () {
                     // Předvyber podskupiny z duplikátu nebo z plánu
                     if (window.__duplikatPodskupiny.includes(parseInt(p.id, 10))) {
                         opt.selected = true;
-                    } else if (window.__planPodskupina && parseInt(p.id, 10) === window.__planPodskupina) {
+                    } else if ((window.__planPodskupiny || []).includes(parseInt(p.id, 10))) {
                         opt.selected = true;
                     }
                     sel.appendChild(opt);
@@ -741,8 +749,8 @@ document.getElementById('skupina_id').addEventListener('change', function () {
         });
 });
 
-// Pokud duplikát předvyplňuje skupinu, spusť načtení podskupin hned
-if (DUPLIKAT && DUPLIKAT.skupina_id) {
+// Listener už je připojený: teprve teď načti podskupiny z duplikátu nebo plánu.
+if ((DUPLIKAT && DUPLIKAT.skupina_id) || (PLAN_PREFILL && PLAN_PREFILL.skupina_id)) {
     document.getElementById('skupina_id').dispatchEvent(new Event('change'));
 }
 

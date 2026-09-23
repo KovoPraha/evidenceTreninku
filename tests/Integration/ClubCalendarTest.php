@@ -29,6 +29,17 @@ final class ClubCalendarTest extends TestCase
         self::assertSame('open',$pdo->query('SELECT status FROM club_events WHERE id='.$event['id'])->fetchColumn());
     }
 
+    public function testOpeningAPlannedEventConfirmsItInTheSameAction():void
+    {
+        $pdo=$this->database();$event=$this->event($pdo,['visibility'=>'public','planning_status'=>'planned','team_ids'=>[]]);
+        $result=\clubCalendarSetRegistration($pdo,$event['id'],1,true);
+        self::assertTrue($result['changed']);
+        self::assertSame('open:confirmed',$pdo->query("SELECT status||':'||planning_status FROM club_events WHERE id=".$event['id'])->fetchColumn());
+        $audit=json_decode((string)$pdo->query("SELECT payload_json FROM club_event_admin_events WHERE action='calendar_confirm_and_open_registration'")->fetchColumn(),true,512,JSON_THROW_ON_ERROR);
+        self::assertSame('planned',$audit['before']['planning_status']);
+        self::assertSame('confirmed',$audit['after']['planning_status']);
+    }
+
     public function testPublicEventListNeverLeaksStaffOnlyOpenPlan(): void
     {
         $pdo=$this->database();

@@ -21,6 +21,10 @@ final class ClubEventRegistrationWiringTest extends TestCase
         self::assertStringNotContainsString('payments', $page);
         self::assertStringContainsString('clubEventRosterEligibility', $page);
         self::assertStringContainsString('roster_targets', $page);
+        self::assertStringContainsString('eshop.php#kosik', $page);
+        self::assertStringContainsString('Přejít přímo do košíku', $page);
+        $shop=(string)file_get_contents($root.'/booking/eshop.php');
+        self::assertStringContainsString('id="kosik"', $shop);
     }
 
     public function testRegistrationServiceContainsMariaDbCapacityLockAndUniqueMigration(): void

@@ -5,10 +5,7 @@ require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/sports_import_review.php';
 
 header('Cache-Control: no-store, private');
-if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
-    header('Location: login.php');
-    exit;
-}
+staffRequireActivePosition('sports_lead');
 
 function sportsImportReviewPageH(mixed $value): string
 {

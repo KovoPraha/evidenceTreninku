@@ -131,13 +131,13 @@ final class SportsImportReviewTest extends TestCase
         self::assertSame([], $review['legacy_text_table']['rows']);
     }
 
-    public function testPageIsAdminOnlyReadOnlyAndLinked(): void
+    public function testPageIsSportsLeadReadOnlyAndLinked(): void
     {
         $root = dirname(__DIR__, 2);
         $page = (string)file_get_contents($root . '/sports_import_review_admin.php');
         $header = (string)file_get_contents($root . '/hlavicka.php');
 
-        self::assertStringContainsString("roleAtLeast('admin')", $page);
+        self::assertStringContainsString("staffRequireActivePosition('sports_lead')", $page);
         self::assertStringContainsString('Cache-Control: no-store, private', $page);
         self::assertStringContainsString('pouze ke čtení a nic neimportuje', $page);
         self::assertStringContainsString('bez jmen a identifikátorů sportovců', $page);
