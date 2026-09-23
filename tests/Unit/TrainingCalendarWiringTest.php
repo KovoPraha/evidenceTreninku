@@ -29,6 +29,13 @@ final class TrainingCalendarWiringTest extends TestCase
         self::assertStringContainsString("'cas_od'", $form);
         self::assertStringContainsString("'cas_do'", $form);
         self::assertStringContainsString("\$reservationFromPlan ? 'show'", $form);
+        self::assertStringContainsString('planovane_treninky_podskupiny', $form);
+        self::assertStringContainsString("PLAN_PREFILL && PLAN_PREFILL.skupina_id", $form);
+        $listenerPosition=strpos($form,"document.getElementById('skupina_id').addEventListener");
+        $dispatchPosition=strrpos($form,"document.getElementById('skupina_id').dispatchEvent");
+        self::assertNotFalse($listenerPosition);
+        self::assertNotFalse($dispatchPosition);
+        self::assertGreaterThan($listenerPosition,$dispatchPosition,'Načtení podskupin se smí spustit až po připojení listeneru.');
 
         $save = (string)file_get_contents($root . '/ulozit_trenink.php');
         self::assertStringContainsString('venueCalendarCreateTrainingReservation', $save);

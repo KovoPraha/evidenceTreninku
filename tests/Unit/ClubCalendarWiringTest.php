@@ -14,6 +14,9 @@ final class ClubCalendarWiringTest extends TestCase
         self::assertStringContainsString("includes/club_calendar.php",$family);self::assertStringContainsString('csrf_verify',$family);
         self::assertStringContainsString('clubCalendarFamilyRegister',$family);self::assertStringContainsString("publicShellNav('calendar')",$family);
         self::assertStringNotContainsString("['internal_note']",$family);
+        self::assertStringContainsString('Potvrdit akci a otevřít přihlašování',$staff);
+        $service=(string)file_get_contents($root.'/includes/club_calendar.php');
+        self::assertStringContainsString('calendar_confirm_and_open_registration',$service);
     }
 
     public function testVisibilityAndVehicleConflictWiringIsFailClosedAndProminent(): void

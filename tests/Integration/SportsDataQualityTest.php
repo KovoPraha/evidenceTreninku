@@ -58,13 +58,13 @@ final class SportsDataQualityTest extends TestCase
         }
     }
 
-    public function testPageIsAdminOnlyReadOnlyAndLinked(): void
+    public function testPageIsSportsLeadReadOnlyAndLinked(): void
     {
         $root = dirname(__DIR__, 2);
         $page = (string)file_get_contents($root . '/sports_data_quality_admin.php');
         $header = (string)file_get_contents($root . '/hlavicka.php');
 
-        self::assertStringContainsString("roleAtLeast('admin')", $page);
+        self::assertStringContainsString("staffRequireActivePosition('sports_lead')", $page);
         self::assertStringContainsString('Cache-Control: no-store, private', $page);
         self::assertStringContainsString('Přehled je pouze ke čtení', $page);
         self::assertStringContainsString('neobsahuje jména ani naměřené hodnoty', $page);
