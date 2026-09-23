@@ -115,6 +115,19 @@ function clubProgramWizardCreate(
             clubProgramWizardNullableInt($input['capacity']??null),'active',
             clubProgramWizardNullableInt($input['birth_year_from']??null),clubProgramWizardNullableInt($input['birth_year_to']??null)
         );
+        $purchaseOption=(string)($input['purchase_option']??'custom');
+        if(!in_array($purchaseOption,['first_half','second_half','full_year','custom'],true))throw new InvalidArgumentException('Platební varianta není podporována.');
+        $featured=!empty($input['is_featured'])?1:0;
+        if(clubProgramColumnExists($pdo,'club_program_offers','purchase_option')){
+            $pdo->prepare('UPDATE club_program_offers SET purchase_option=?,is_featured=? WHERE id=?')->execute([$purchaseOption,$featured,(int)$offer['id']]);
+            $offer['purchase_option']=$purchaseOption;$offer['is_featured']=$featured;
+        }
+        if(clubProgramRuntimeTableExists($pdo,'club_program_presentations')){
+            $ageFrom=clubProgramWizardNullableInt($input['birth_year_from']??null);$ageTo=clubProgramWizardNullableInt($input['birth_year_to']??null);
+            $ageLabel=$ageFrom!==null||$ageTo!==null?'Ročníky '.($ageFrom??'bez omezení').'–'.($ageTo??'bez omezení'):null;
+            $pdo->prepare("INSERT INTO club_program_presentations(program_id,public_name,public_summary,age_label,listing_status,sort_order,interest_enabled) VALUES(?,?,?,?, 'draft',0,1)")
+                ->execute([(int)$program['id'],$name,$description!==''?$description:null,$ageLabel]);
+        }
         foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
             $text=clubProgramWizardTermText($pdo,$purpose,$input);
             clubProgramTermsConfigureInTransaction($pdo,$actorId,'program',(int)$program['id'],$purpose,$text,true);
@@ -122,6 +135,7 @@ function clubProgramWizardCreate(
         shopManualCatalogEvent($pdo,$productId,$variantId,$actorId,'create_program_wizard',null,[
             'product_id'=>$productId,'variant_id'=>$variantId,'program_id'=>(int)$program['id'],'offer_id'=>(int)$offer['id'],
             'season_id'=>$seasonId,'team_id'=>$teamId,'category_path'=>$category,'image_id'=>$imageId,
+            'purchase_option'=>$purchaseOption,'is_featured'=>$featured,
         ],$reason);
         $publication=$pdo->prepare('SELECT status FROM shop_product_publications WHERE product_id=?');$publication->execute([$productId]);
         if((string)$publication->fetchColumn()!=='active')shopCatalogPublicationActivateInTransaction($pdo,$productId,$actorId,$name,$description,$reason,true);
