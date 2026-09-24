@@ -12,6 +12,11 @@ on:
         required: true
         type: boolean
         default: false
+      importovat_krouzky:
+        description: 'Po nasazení idempotentně založit nabídku kroužků 2026/27 v KIS'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -310,6 +315,25 @@ jobs:
           "
           echo '✅ Ověřený release byl aktivován. rsync záměrně nepoužívá --delete.'
 
+      - name: Založit produkty kroužků 2026/27 v KIS
+        if: inputs.importovat_krouzky
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          cat > /tmp/run-club-catalog-import.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('CLUB_CATALOG_IMPORT_CONFIRM=IMPORTOVAT-KROUZKY-2026-27');
+          require '$REMOTE_DIR/bin/import-club-catalog.php';
+          clubCatalogImportMain();
+          EOF
+          "${SCP[@]}" /tmp/run-club-catalog-import.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-club-catalog-import.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-club-catalog-import.php'" | tee /tmp/club-catalog-import.json
+          jq -e '.programs == 26 and .products == 26 and .variants == 49' /tmp/club-catalog-import.json >/dev/null
+          "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-club-catalog-import.php'"
+          echo '✅ Kroužky jsou založené jako produkty, programy, varianty a společné soupisky KIS.'
+
       - name: Odstranit jen vyjmenované osiřelé soubory a přesunout soukromé přílohy
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
@@ -373,4 +397,5 @@ jobs:
         continue-on-error: true
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php'"
+          "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php' '$DEPLOY_BASE/run-club-catalog-import.php'"
+          rm -f /tmp/run-club-catalog-import.php
