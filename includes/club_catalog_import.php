@@ -7,7 +7,12 @@ require_once __DIR__.'/club_program_storefront.php';
 
 final class ClubCatalogImportException extends RuntimeException{}
 
-/** @return array{program_cancellation:array{id:int,text:string,approved:bool},program_consent:array{id:int,text:string,approved:bool>} */
+const CLUB_CATALOG_DUMMY_TERMS=[
+    'program_cancellation'=>'vzorový text – Přihlášku lze před zahájením zrušit písemným oznámením klubu. Způsob případného vrácení uhrazené ceny bude posouzen podle okamžiku zrušení a již vzniklých nákladů.',
+    'program_consent'=>'vzorový text – Zákonný zástupce souhlasí s přihlášením vybraného dítěte do uvedeného kroužku, jeho účastí na programu a s organizační komunikací klubu.',
+];
+
+/** @return array{program_cancellation:array{id:int,text:string,approved:bool,dummy:bool},program_consent:array{id:int,text:string,approved:bool,dummy:bool>} */
 function clubCatalogImportTermTemplates(PDO $pdo):array
 {
     $result=[];
@@ -21,8 +26,8 @@ function clubCatalogImportTermTemplates(PDO $pdo):array
     );
     foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
         $statement->execute([$purpose,CLUB_PROGRAM_TERM_DRAFT_MARKER.'%']);$row=$statement->fetch(PDO::FETCH_ASSOC);
-        if(!$row||trim((string)$row['consent_text_plain'])==='')$result[$purpose]=['id'=>0,'text'=>CLUB_PROGRAM_TERM_DEFAULTS[$purpose],'approved'=>false];
-        else$result[$purpose]=['id'=>(int)$row['id'],'text'=>(string)$row['consent_text_plain'],'approved'=>true];
+        if(!$row||trim((string)$row['consent_text_plain'])==='')$result[$purpose]=['id'=>0,'text'=>CLUB_CATALOG_DUMMY_TERMS[$purpose],'approved'=>false,'dummy'=>true];
+        else$result[$purpose]=['id'=>(int)$row['id'],'text'=>(string)$row['consent_text_plain'],'approved'=>true,'dummy'=>false];
     }
     return$result;
 }
@@ -50,7 +55,7 @@ function clubCatalogImportSchedule(string$value):array
     return$slots;
 }
 
-/** @return array{created:int,updated:int,programs:int,products:int,variants:int,terms_ready:bool} */
+/** @return array{created:int,updated:int,programs:int,products:int,variants:int,terms_ready:bool,terms_dummy:bool} */
 function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
 {
     if($actorId<1)throw new InvalidArgumentException('Import vyžaduje aktivního správce.');
@@ -74,9 +79,9 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
                 'starts_on'=>'2026-09-01','ends_on'=>$firstEnds,'sales_open_at'=>'2026-09-01T00:00','sales_close_at'=>$firstEnds.'T23:59',
                 'capacity'=>'','program_code'=>$programCode,'offer_code'=>substr($programCode.'-'.strtoupper($firstOption),0,64),
                 'sku'=>substr('KP-KR-2627-'.$slug.'-'.strtoupper($firstOption),0,64),'purchase_option'=>$firstOption,'is_featured'=>$firstOption==='full_year',
-                'program_cancellation_source'=>$templates['program_cancellation']['approved']?'existing':'new',
+                'program_cancellation_source'=>$templates['program_cancellation']['id']>0?'existing':'new',
                 'program_cancellation_version_id'=>$templates['program_cancellation']['id'],'program_cancellation_text'=>$templates['program_cancellation']['text'],
-                'program_consent_source'=>$templates['program_consent']['approved']?'existing':'new',
+                'program_consent_source'=>$templates['program_consent']['id']>0?'existing':'new',
                 'program_consent_version_id'=>$templates['program_consent']['id'],'program_consent_text'=>$templates['program_consent']['text'],
                 'team_mode'=>'existing','team_id'=>(int)$team['id'],'reason'=>$reason,'confirmed'=>true,
             ],$imagePath,false,$applicationRoot);
@@ -88,11 +93,7 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
             $productId=(int)$base['product_id'];$baseOfferId=(int)$base['id'];$updated++;
         }
         foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
-            if(!clubProgramTermsCurrent($pdo,'program',$programId,$purpose)&&$templates[$purpose]['approved'])clubProgramTermsConfigure($pdo,$actorId,'program',$programId,$purpose,$templates[$purpose]['text'],true);
-            if(!$templates[$purpose]['approved']){
-                $archive=$pdo->prepare("UPDATE club_event_term_versions SET status='archived',archived_at=CURRENT_TIMESTAMP,archived_by_trainer_id=? WHERE scope_type='club_program' AND scope_key=? AND consent_purpose=? AND status='active' AND consent_text_plain LIKE ?");
-                $archive->execute([$actorId,'program:'.$programId,$purpose,CLUB_PROGRAM_TERM_DRAFT_MARKER.'%']);
-            }
+            if(!clubProgramTermsCurrent($pdo,'program',$programId,$purpose))clubProgramTermsConfigure($pdo,$actorId,'program',$programId,$purpose,$templates[$purpose]['text'],true);
         }
         $pdo->prepare('UPDATE club_program_offers SET purchase_option=?,is_featured=? WHERE id=?')->execute([$firstOption,$firstOption==='full_year'?1:0,$baseOfferId]);
         foreach(array_slice($row['offers'],1)as$offer){
@@ -118,6 +119,6 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
         $productImages=$pdo->prepare('SELECT COUNT(*) FROM shop_product_images WHERE product_id=?');$productImages->execute([$productId]);
         if((int)$productImages->fetchColumn()===0)shopProductImageAdd($pdo,$actorId,$productId,$imagePath,0,$reason,true,false,$applicationRoot);
     }
-    $termsReady=true;foreach($templates as$template)$termsReady=$termsReady&&$template['approved'];
-    return['created'=>$created,'updated'=>$updated,'programs'=>(int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'products'=>(int)$pdo->query("SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'variants'=>(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'terms_ready'=>$termsReady];
+    $termsDummy=false;foreach($templates as$template)$termsDummy=$termsDummy||$template['dummy'];
+    return['created'=>$created,'updated'=>$updated,'programs'=>(int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'products'=>(int)$pdo->query("SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'variants'=>(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'terms_ready'=>true,'terms_dummy'=>$termsDummy];
 }
