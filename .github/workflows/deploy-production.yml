@@ -331,8 +331,8 @@ jobs:
           "${SCP[@]}" /tmp/run-club-catalog-import.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-club-catalog-import.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-club-catalog-import.php'" | tee /tmp/club-catalog-import.json
           jq -e '.programs == 26 and .products == 26 and .variants == 49' /tmp/club-catalog-import.json >/dev/null
-          if [ "$(jq -r '.terms_ready' /tmp/club-catalog-import.json)" != 'true' ]; then
-            echo '::warning title=Kroužky čekají na schválení podmínek::Produkty jsou v KIS, ale nákup zůstává uzavřený do schválení storno podmínek a souhlasu.'
+          if [ "$(jq -r '.terms_dummy' /tmp/club-catalog-import.json)" = 'true' ]; then
+            echo '::warning title=Kroužky používají dummy podmínky::Storno a souhlas začínají slovy „vzorový text“ a musí být později nahrazeny finálním zněním.'
           fi
           "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-club-catalog-import.php'"
           echo '✅ Kroužky jsou založené jako produkty, programy, varianty a společné soupisky KIS.'
