@@ -28,6 +28,7 @@ final class ClubCatalogImportTest extends TestCase
     {
         $pdo=$this->database();$first=\clubCatalogImport($pdo,7,$this->root);$second=\clubCatalogImport($pdo,7,$this->root);
         self::assertSame(26,$first['created']);self::assertSame(0,$second['created']);self::assertSame(26,$second['updated']);
+        self::assertTrue($second['terms_ready']);
         self::assertSame(26,$second['programs']);self::assertSame(26,$second['products']);self::assertSame(49,$second['variants']);
         self::assertSame(26,(int)$pdo->query("SELECT COUNT(*) FROM club_program_presentations WHERE listing_status='published'")->fetchColumn());
         self::assertSame(26,(int)$pdo->query('SELECT COUNT(*) FROM club_program_images')->fetchColumn());
@@ -45,6 +46,14 @@ final class ClubCatalogImportTest extends TestCase
         $page=(string)file_get_contents(dirname(__DIR__,2).'/booking/cyklisticke_krouzky.php');
         self::assertStringNotContainsString('Koupit ve stávajícím e-shopu',$page);
         self::assertStringNotContainsString('shop.kovopraha.cz',$page);
+    }
+
+    public function testMissingApprovedTermsFallsBackToNonApprovedDrafts():void
+    {
+        $pdo=$this->database();$pdo->exec('DELETE FROM club_event_term_versions');$templates=\clubCatalogImportTermTemplates($pdo);
+        foreach($templates as$template){self::assertFalse($template['approved']);self::assertSame(0,$template['id']);self::assertStringStartsWith(\CLUB_PROGRAM_TERM_DRAFT_MARKER,$template['text']);}
+        $result=\clubCatalogImport($pdo,7,$this->root);self::assertFalse($result['terms_ready']);self::assertSame(26,$result['products']);
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions t JOIN club_programs p ON t.scope_key='program:' || p.id WHERE p.code LIKE 'KROUZKY-2627-%' AND t.status='active'")->fetchColumn());
     }
 
     private function database():PDO
