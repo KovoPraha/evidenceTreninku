@@ -34,19 +34,19 @@ function clubCatalogImportTermTemplates(PDO $pdo):array
 
 function clubCatalogImportSlug(string$value):string{return clubProgramWizardSlug($value);}
 
-/** @return array<string,string> Program slug to repository asset path, relative to assets/clubs. */
+/** @return array<string,string> Exact public program name to repository asset path, relative to assets/clubs. */
 function clubCatalogImportAnimalImages():array
 {
     return[
-        'ALIGATORI'=>'animals/aligatori-cyclist.png','KAMZICI'=>'animals/kamzici-cyclist.png',
-        'PAPUCHALCI'=>'animals/papuchalci-cyclist.png','ZEBRY'=>'animals/zebry-cyclist.png',
-        'SVISTI'=>'animals/svisti-cyclist.png','JEZEVCI'=>'animals/jezevci-cyclist.png',
-        'SUMCI'=>'animals/sumci-cyclist.png','ZUBRICI'=>'animals/zubrici-cyclist.png',
-        'KAPYBARY'=>'animals/kapybary-cyclist.png','LENOCHODI'=>'animals/lenochodi-cyclist.png',
-        'LAMY'=>'animals/lamy-cyclist.png','PASOVCI'=>'animals/pasovci-cyclist.png',
-        'MYVALOVE'=>'animals/myvalove-cyclist.png','LVICCI'=>'animals/lvicci-cyclist.png',
-        'LEMURI'=>'animals/lemuri-cyclist.png','SLONI'=>'animals/sloni-cyclist.png',
-        'SURIKATY'=>'animals/surikaty-cyclist.png','ZIRAFY'=>'animals/zirafy-cyclist.png',
+        'Aligátoři'=>'animals/aligatori-cyclist.png','Kamzíci'=>'animals/kamzici-cyclist.png',
+        'Papuchálci'=>'animals/papuchalci-cyclist.png','Zebry'=>'animals/zebry-cyclist.png',
+        'Svišti'=>'animals/svisti-cyclist.png','Jezevci'=>'animals/jezevci-cyclist.png',
+        'Sumci'=>'animals/sumci-cyclist.png','Zubříci'=>'animals/zubrici-cyclist.png',
+        'Kapybary'=>'animals/kapybary-cyclist.png','Lenochodi'=>'animals/lenochodi-cyclist.png',
+        'Lamy'=>'animals/lamy-cyclist.png','Pásovci'=>'animals/pasovci-cyclist.png',
+        'Mývalové'=>'animals/myvalove-cyclist.png','Lvíčci'=>'animals/lvicci-cyclist.png',
+        'Lemuři'=>'animals/lemuri-cyclist.png','Sloni'=>'animals/sloni-cyclist.png',
+        'Surikaty'=>'animals/surikaty-cyclist.png','Žirafy'=>'animals/zirafy-cyclist.png',
     ];
 }
 
@@ -139,7 +139,7 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
         $slug=clubCatalogImportSlug((string)$row['name']);$programCode='KROUZKY-2627-'.$slug;$teamCode=substr('KR-2627-'.$slug,0,48);
         $team=kisRosterCreateTeam($pdo,$seasonId,$actorId,$teamCode,(string)$row['name'].' 2026/27','Cyklistika',(string)$row['age'],$reason);
         $programQuery=$pdo->prepare('SELECT * FROM club_programs WHERE code=?');$programQuery->execute([$programCode]);$program=$programQuery->fetch(PDO::FETCH_ASSOC);
-        $imageRelative=$animalImages[$slug]??$images[$index%count($images)];
+        $animalImage=$animalImages[(string)$row['name']]??null;$imageRelative=$animalImage??$images[$index%count($images)];
         $imagePath=rtrim($applicationRoot,'/\\').DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'clubs'.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$imageRelative);
         if(!is_file($imagePath))throw new ClubCatalogImportException('Chybí importovaný obrázek: '.basename($imagePath));
         $first=$row['offers'][0];$firstOption=clubCatalogImportPurchaseOption((string)$first['label']);
@@ -188,11 +188,11 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
             if($exists->fetchColumn()===false)clubProgramStorefrontAddSchedule($pdo,$actorId,$programId,['season_id'=>$seasonId,'weekday'=>$slot['weekday'],'starts_at'=>$slot['starts_at'],'ends_at'=>$slot['ends_at'],'location_name'=>$row['location'],'sort_order'=>$sort],$reason,true);
         }
         $programImages=$pdo->prepare('SELECT COUNT(*) FROM club_program_images WHERE program_id=?');$programImages->execute([$programId]);
-        $programImageAlt=isset($animalImages[$slug])?'Malovaný maskot kroužku '.$row['name'].' jako cyklista':'Děti na cyklistickém kroužku '.$row['name'];
+        $programImageAlt=$animalImage!==null?'Malovaný maskot kroužku '.$row['name'].' jako cyklista':'Děti na cyklistickém kroužku '.$row['name'];
         if((int)$programImages->fetchColumn()===0)clubProgramStorefrontAddImage($pdo,$actorId,$programId,$imagePath,$programImageAlt,0,$reason,true,false,$applicationRoot);
         $productImages=$pdo->prepare('SELECT COUNT(*) FROM shop_product_images WHERE product_id=?');$productImages->execute([$productId]);
         if((int)$productImages->fetchColumn()===0)shopProductImageAdd($pdo,$actorId,$productId,$imagePath,0,$reason,true,false,$applicationRoot);
-        if(isset($animalImages[$slug]))clubCatalogImportSyncAnimalImages($pdo,$actorId,$programId,$productId,$imagePath,(string)$row['name'],$reason,$applicationRoot);
+        if($animalImage!==null)clubCatalogImportSyncAnimalImages($pdo,$actorId,$programId,$productId,$imagePath,(string)$row['name'],$reason,$applicationRoot);
     }
     $termsDummy=false;foreach($templates as$template)$termsDummy=$termsDummy||$template['dummy'];
     return['created'=>$created,'updated'=>$updated,'programs'=>(int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'products'=>(int)$pdo->query("SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'variants'=>(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'terms_ready'=>true,'terms_dummy'=>$termsDummy];
