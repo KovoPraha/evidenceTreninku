@@ -34,6 +34,78 @@ function clubCatalogImportTermTemplates(PDO $pdo):array
 
 function clubCatalogImportSlug(string$value):string{return clubProgramWizardSlug($value);}
 
+/** @return array<string,string> Program slug to repository asset path, relative to assets/clubs. */
+function clubCatalogImportAnimalImages():array
+{
+    return[
+        'ALIGATORI'=>'animals/aligatori-cyclist.png','KAMZICI'=>'animals/kamzici-cyclist.png',
+        'PAPUCHALCI'=>'animals/papuchalci-cyclist.png','ZEBRY'=>'animals/zebry-cyclist.png',
+        'SVISTI'=>'animals/svisti-cyclist.png','JEZEVCI'=>'animals/jezevci-cyclist.png',
+        'SUMCI'=>'animals/sumci-cyclist.png','ZUBRICI'=>'animals/zubrici-cyclist.png',
+        'KAPYBARY'=>'animals/kapybary-cyclist.png','LENOCHODI'=>'animals/lenochodi-cyclist.png',
+        'LAMY'=>'animals/lamy-cyclist.png','PASOVCI'=>'animals/pasovci-cyclist.png',
+        'MYVALOVE'=>'animals/myvalove-cyclist.png','LVICCI'=>'animals/lvicci-cyclist.png',
+        'LEMURI'=>'animals/lemuri-cyclist.png','SLONI'=>'animals/sloni-cyclist.png',
+        'SURIKATY'=>'animals/surikaty-cyclist.png','ZIRAFY'=>'animals/zirafy-cyclist.png',
+    ];
+}
+
+function clubCatalogImportStoredHash(string$imageUrl,string$applicationRoot):?string
+{
+    $path=shopProductImagePath($imageUrl,$applicationRoot);
+    if($path===null||!is_file($path))return null;
+    $hash=hash_file('sha256',$path);return is_string($hash)?$hash:null;
+}
+
+/** @param array{image_url:string} $stored */
+function clubCatalogImportDiscardStored(array$stored,string$applicationRoot):void
+{
+    $path=shopProductImagePath((string)$stored['image_url'],$applicationRoot);
+    if($path!==null&&is_file($path))@unlink($path);
+}
+
+/**
+ * Replace legacy photographs for an animal-named group with the matching mascot.
+ * The expected encoded file hash makes repeated production imports idempotent.
+ */
+function clubCatalogImportSyncAnimalImages(
+    PDO$pdo,int$actorId,int$programId,int$productId,string$source,string$programName,string$reason,string$applicationRoot
+):bool{
+    $programStored=shopProductImageStoreFile($source,false,$applicationRoot);
+    try{$productStored=shopProductImageStoreFile($source,false,$applicationRoot);}catch(Throwable$exception){
+        shopProductImageQuarantine(shopProductImagePath((string)$programStored['image_url'],$applicationRoot),$applicationRoot);throw$exception;
+    }
+    $programRows=$pdo->prepare('SELECT * FROM club_program_images WHERE program_id=? ORDER BY sort_order,id');$programRows->execute([$programId]);$oldProgram=$programRows->fetchAll(PDO::FETCH_ASSOC);
+    $productRows=$pdo->prepare('SELECT * FROM shop_product_images WHERE product_id=? ORDER BY sort_order,id');$productRows->execute([$productId]);$oldProduct=$productRows->fetchAll(PDO::FETCH_ASSOC);
+    $altText='Malovaný maskot kroužku '.$programName.' jako cyklista';
+    $programMatches=count($oldProgram)===1&&(string)$oldProgram[0]['alt_text']===$altText&&clubCatalogImportStoredHash((string)$oldProgram[0]['image_url'],$applicationRoot)===$programStored['sha256_hex'];
+    $productMatches=count($oldProduct)===1&&clubCatalogImportStoredHash((string)$oldProduct[0]['image_url'],$applicationRoot)===$productStored['sha256_hex'];
+    if($programMatches&&$productMatches){clubCatalogImportDiscardStored($programStored,$applicationRoot);clubCatalogImportDiscardStored($productStored,$applicationRoot);return false;}
+    try{
+        $pdo->beginTransaction();clubProgramStorefrontLockProgram($pdo,$programId);shopManualCatalogLockProduct($pdo,$productId);
+        $programRows->execute([$programId]);$oldProgram=$programRows->fetchAll(PDO::FETCH_ASSOC);$productRows->execute([$productId]);$oldProduct=$productRows->fetchAll(PDO::FETCH_ASSOC);
+        $pdo->prepare('DELETE FROM club_program_images WHERE program_id=?')->execute([$programId]);
+        if($oldProgram)clubProgramEvent($pdo,$programId,null,'trainer',$actorId,'remove_storefront_image',['images'=>$oldProgram],['removed'=>true,'_audit_reason'=>$reason]);
+        $pdo->prepare('INSERT INTO club_program_images(program_id,image_url,alt_text,sort_order) VALUES(?,?,?,0)')->execute([$programId,$programStored['image_url'],$altText]);$programImageId=(int)$pdo->lastInsertId();
+        clubProgramEvent($pdo,$programId,null,'trainer',$actorId,'add_storefront_image',null,['id'=>$programImageId,'image_url'=>$programStored['image_url'],'alt_text'=>$altText,'sort_order'=>0,'file'=>$programStored,'_audit_reason'=>$reason]);
+        $pdo->prepare('DELETE FROM shop_product_images WHERE product_id=?')->execute([$productId]);
+        if($oldProduct)shopManualCatalogEvent($pdo,$productId,null,$actorId,'replace_imported_images',['images'=>$oldProduct],['removed'=>true],$reason);
+        shopProductImageAddStoredInTransaction($pdo,$actorId,$productId,$productStored,0,$reason,true);
+        $pdo->commit();
+    }catch(Throwable$exception){
+        if($pdo->inTransaction())$pdo->rollBack();
+        shopProductImageQuarantine(shopProductImagePath((string)$programStored['image_url'],$applicationRoot),$applicationRoot);
+        shopProductImageQuarantine(shopProductImagePath((string)$productStored['image_url'],$applicationRoot),$applicationRoot);throw$exception;
+    }
+    $currentUrls=[(string)$programStored['image_url']=>(string)$programStored['image_url'],(string)$productStored['image_url']=>(string)$productStored['image_url']];
+    foreach(array_merge($oldProgram,$oldProduct)as$old){
+        $url=(string)($old['image_url']??'');if($url===''||isset($currentUrls[$url]))continue;
+        $references=$pdo->prepare('SELECT (SELECT COUNT(*) FROM club_program_images WHERE image_url=?)+(SELECT COUNT(*) FROM shop_product_images WHERE image_url=?)');$references->execute([$url,$url]);
+        if((int)$references->fetchColumn()===0)shopProductImageQuarantine(shopProductImagePath($url,$applicationRoot),$applicationRoot);
+    }
+    return true;
+}
+
 function clubCatalogImportPurchaseOption(string$label):string
 {
     $label=mb_strtolower($label,'UTF-8');
@@ -62,12 +134,13 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
     $templates=clubCatalogImportTermTemplates($pdo);$reason='Import nabídky cyklistických kroužků 2026/27 do KIS.';
     $season=kisRosterCreateSeason($pdo,$actorId,'SCHOOL-2026-27','Školní rok 2026/27','2026-09-01','2027-08-31','school_year');
     $seasonId=(int)$season['id'];$created=0;$updated=0;
-    $images=['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg'];
+    $images=['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg'];$animalImages=clubCatalogImportAnimalImages();
     foreach(legacyClubCatalog()as$index=>$row){
         $slug=clubCatalogImportSlug((string)$row['name']);$programCode='KROUZKY-2627-'.$slug;$teamCode=substr('KR-2627-'.$slug,0,48);
         $team=kisRosterCreateTeam($pdo,$seasonId,$actorId,$teamCode,(string)$row['name'].' 2026/27','Cyklistika',(string)$row['age'],$reason);
         $programQuery=$pdo->prepare('SELECT * FROM club_programs WHERE code=?');$programQuery->execute([$programCode]);$program=$programQuery->fetch(PDO::FETCH_ASSOC);
-        $imagePath=rtrim($applicationRoot,'/\\').DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'clubs'.DIRECTORY_SEPARATOR.$images[$index%count($images)];
+        $imageRelative=$animalImages[$slug]??$images[$index%count($images)];
+        $imagePath=rtrim($applicationRoot,'/\\').DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'clubs'.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$imageRelative);
         if(!is_file($imagePath))throw new ClubCatalogImportException('Chybí importovaný obrázek: '.basename($imagePath));
         $first=$row['offers'][0];$firstOption=clubCatalogImportPurchaseOption((string)$first['label']);
         if(!$program){
@@ -115,9 +188,11 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
             if($exists->fetchColumn()===false)clubProgramStorefrontAddSchedule($pdo,$actorId,$programId,['season_id'=>$seasonId,'weekday'=>$slot['weekday'],'starts_at'=>$slot['starts_at'],'ends_at'=>$slot['ends_at'],'location_name'=>$row['location'],'sort_order'=>$sort],$reason,true);
         }
         $programImages=$pdo->prepare('SELECT COUNT(*) FROM club_program_images WHERE program_id=?');$programImages->execute([$programId]);
-        if((int)$programImages->fetchColumn()===0)clubProgramStorefrontAddImage($pdo,$actorId,$programId,$imagePath,'Děti na cyklistickém kroužku '.$row['name'],0,$reason,true,false,$applicationRoot);
+        $programImageAlt=isset($animalImages[$slug])?'Malovaný maskot kroužku '.$row['name'].' jako cyklista':'Děti na cyklistickém kroužku '.$row['name'];
+        if((int)$programImages->fetchColumn()===0)clubProgramStorefrontAddImage($pdo,$actorId,$programId,$imagePath,$programImageAlt,0,$reason,true,false,$applicationRoot);
         $productImages=$pdo->prepare('SELECT COUNT(*) FROM shop_product_images WHERE product_id=?');$productImages->execute([$productId]);
         if((int)$productImages->fetchColumn()===0)shopProductImageAdd($pdo,$actorId,$productId,$imagePath,0,$reason,true,false,$applicationRoot);
+        if(isset($animalImages[$slug]))clubCatalogImportSyncAnimalImages($pdo,$actorId,$programId,$productId,$imagePath,(string)$row['name'],$reason,$applicationRoot);
     }
     $termsDummy=false;foreach($templates as$template)$termsDummy=$termsDummy||$template['dummy'];
     return['created'=>$created,'updated'=>$updated,'programs'=>(int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'products'=>(int)$pdo->query("SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'variants'=>(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'terms_ready'=>true,'terms_dummy'=>$termsDummy];
