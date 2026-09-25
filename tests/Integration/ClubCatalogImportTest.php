@@ -25,6 +25,14 @@ final class ClubCatalogImportTest extends TestCase
         foreach($iterator as$item)$item->isDir()?rmdir($item->getPathname()):unlink($item->getPathname());rmdir($this->root);
     }
 
+    public function testAnimalImagesUseExactCzechNamesInsteadOfPlatformDependentSlugs():void
+    {
+        self::assertSame(array_slice(array_column(\legacyClubCatalog(),'name'),0,18),array_keys(\clubCatalogImportAnimalImages()));
+        self::assertArrayHasKey('Aligátoři',\clubCatalogImportAnimalImages());
+        self::assertArrayHasKey('Lvíčci',\clubCatalogImportAnimalImages());
+        self::assertArrayHasKey('Žirafy',\clubCatalogImportAnimalImages());
+    }
+
     public function testImportCreatesCanonicalKisProductsAndIsIdempotent():void
     {
         $pdo=$this->database();$first=\clubCatalogImport($pdo,7,$this->root);
