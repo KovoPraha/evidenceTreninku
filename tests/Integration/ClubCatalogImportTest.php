@@ -15,8 +15,9 @@ final class ClubCatalogImportTest extends TestCase
     private string$root;
     protected function setUp():void
     {
-        $this->root=sys_get_temp_dir().DIRECTORY_SEPARATOR.'club-catalog-import-'.bin2hex(random_bytes(5));mkdir($this->root.'/assets/clubs',0750,true);
+        $this->root=sys_get_temp_dir().DIRECTORY_SEPARATOR.'club-catalog-import-'.bin2hex(random_bytes(5));mkdir($this->root.'/assets/clubs/animals',0750,true);
         foreach(['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg']as$file)copy(dirname(__DIR__,2).'/assets/clubs/'.$file,$this->root.'/assets/clubs/'.$file);
+        foreach(\clubCatalogImportAnimalImages()as$file)copy(dirname(__DIR__,2).'/assets/clubs/'.$file,$this->root.'/assets/clubs/'.$file);
     }
     protected function tearDown():void
     {
@@ -26,12 +27,19 @@ final class ClubCatalogImportTest extends TestCase
 
     public function testImportCreatesCanonicalKisProductsAndIsIdempotent():void
     {
-        $pdo=$this->database();$first=\clubCatalogImport($pdo,7,$this->root);$second=\clubCatalogImport($pdo,7,$this->root);
+        $pdo=$this->database();$first=\clubCatalogImport($pdo,7,$this->root);
+        $animalBefore=$pdo->query("SELECT p.code,i.image_url FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE i.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista' ORDER BY p.code")->fetchAll(PDO::FETCH_KEY_PAIR);
+        $filesBefore=glob($this->root.'/uploads/shop-products/*.jpg')?:[];$second=\clubCatalogImport($pdo,7,$this->root);
         self::assertSame(26,$first['created']);self::assertSame(0,$second['created']);self::assertSame(26,$second['updated']);
         self::assertTrue($second['terms_ready']);self::assertFalse($second['terms_dummy']);
         self::assertSame(26,$second['programs']);self::assertSame(26,$second['products']);self::assertSame(49,$second['variants']);
         self::assertSame(26,(int)$pdo->query("SELECT COUNT(*) FROM club_program_presentations WHERE listing_status='published'")->fetchColumn());
         self::assertSame(26,(int)$pdo->query('SELECT COUNT(*) FROM club_program_images')->fetchColumn());
+        self::assertCount(18,$animalBefore);
+        self::assertSame($animalBefore,$pdo->query("SELECT p.code,i.image_url FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE i.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista' ORDER BY p.code")->fetchAll(PDO::FETCH_KEY_PAIR));
+        self::assertCount(count($filesBefore),glob($this->root.'/uploads/shop-products/*.jpg')?:[]);
+        self::assertSame(18,(int)$pdo->query("SELECT COUNT(*) FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE i.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista'")->fetchColumn());
+        self::assertSame(18,(int)$pdo->query("SELECT COUNT(DISTINCT ci.id) FROM club_program_images ci JOIN club_program_offers o ON o.program_id=ci.program_id JOIN shop_product_images si ON si.product_id=o.product_id WHERE ci.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista' AND ci.image_url<>si.image_url")->fetchColumn());
         self::assertSame(26,(int)$pdo->query("SELECT COUNT(DISTINCT team_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn());
         self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%' AND v.stock_quantity_decimal IS NOT NULL")->fetchColumn());
         $shared=$pdo->query("SELECT COUNT(DISTINCT team_id) teams,COUNT(*) offers FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code='KROUZKY-2627-ALIGATORI'")->fetch(PDO::FETCH_ASSOC);
@@ -46,6 +54,23 @@ final class ClubCatalogImportTest extends TestCase
         $page=(string)file_get_contents(dirname(__DIR__,2).'/booking/cyklisticke_krouzky.php');
         self::assertStringNotContainsString('Koupit ve stávajícím e-shopu',$page);
         self::assertStringNotContainsString('shop.kovopraha.cz',$page);
+    }
+
+    public function testImportReplacesLegacyAnimalPhotographsAndThenStopsChangingThem():void
+    {
+        $pdo=$this->database();\clubCatalogImport($pdo,7,$this->root);
+        $ids=$pdo->query("SELECT p.id program_id,o.product_id FROM club_programs p JOIN club_program_offers o ON o.program_id=p.id WHERE p.code='KROUZKY-2627-ALIGATORI' ORDER BY o.id LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+        $legacyProgram=\shopProductImageStoreFile($this->root.'/assets/clubs/source-group.jpg',false,$this->root);
+        $legacyProduct=\shopProductImageStoreFile($this->root.'/assets/clubs/source-group.jpg',false,$this->root);
+        $pdo->prepare('UPDATE club_program_images SET image_url=?,alt_text=? WHERE program_id=?')->execute([$legacyProgram['image_url'],'Děti na cyklistickém kroužku Aligátoři',(int)$ids['program_id']]);
+        $pdo->prepare('UPDATE shop_product_images SET image_url=? WHERE product_id=?')->execute([$legacyProduct['image_url'],(int)$ids['product_id']]);
+        \clubCatalogImport($pdo,7,$this->root);
+        $afterReplacement=$pdo->query("SELECT i.image_url,i.alt_text FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE p.code='KROUZKY-2627-ALIGATORI'")->fetch(PDO::FETCH_ASSOC);
+        self::assertNotSame($legacyProgram['image_url'],$afterReplacement['image_url']);
+        self::assertSame('Malovaný maskot kroužku Aligátoři jako cyklista',$afterReplacement['alt_text']);
+        $filesBefore=glob($this->root.'/uploads/shop-products/*.jpg')?:[];\clubCatalogImport($pdo,7,$this->root);
+        self::assertSame($afterReplacement,$pdo->query("SELECT i.image_url,i.alt_text FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE p.code='KROUZKY-2627-ALIGATORI'")->fetch(PDO::FETCH_ASSOC));
+        self::assertCount(count($filesBefore),glob($this->root.'/uploads/shop-products/*.jpg')?:[]);
     }
 
     public function testMissingApprovedTermsFallsBackToNonApprovedDrafts():void
