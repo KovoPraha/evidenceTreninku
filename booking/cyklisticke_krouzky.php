@@ -52,13 +52,13 @@ ksort($weekdayOptions);
     .club-kicker { letter-spacing:.13em; text-transform:uppercase; font-size:.76rem; font-weight:800; color:#ffd36a; }
     .club-filter { border:0; border-radius:1.1rem; box-shadow:0 .5rem 1.8rem rgba(17,26,107,.09); }
     .club-card { border:0; border-radius:1.35rem; overflow:hidden; box-shadow:0 .55rem 2rem rgba(17,26,107,.1); }
-    .club-card img { width:100%; height:230px; object-fit:cover; }
+    .club-card img { width:100%; height:180px; padding:.45rem; object-fit:contain; object-position:center; background:var(--club-cream); }
     .club-chip { display:inline-flex; align-items:center; gap:.32rem; border-radius:999px; background:#eef0ff; color:var(--club-blue); padding:.34rem .68rem; font-size:.82rem; font-weight:650; }
     .club-offer { border:1px solid #dde1f6; border-radius:1rem; padding:.85rem; background:#fff; }
     .club-offer.featured { border:2px solid var(--club-red); background:#fff8f7; }
     .club-offer .price { color:var(--club-blue); font-size:1.14rem; font-weight:800; }
     .club-empty { border:2px dashed #c8cde9; border-radius:1.2rem; background:#fff; }
-    @media (max-width:991.98px) { .club-hero-photo { min-height:220px; } }
+    @media (max-width:991.98px) { .club-hero-photo { min-height:220px; } .club-card img { height:160px; } }
   </style>
 </head>
 <body>
