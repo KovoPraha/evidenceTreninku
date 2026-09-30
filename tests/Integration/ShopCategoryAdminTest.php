@@ -28,6 +28,7 @@ final class ShopCategoryAdminTest extends TestCase
         self::assertSame('Oblečení',\shopCategoryAdminMeta($pdo,'Oblečení > Bundy')['parent_path']);
         \shopCategoryAdminSave($pdo,7,['category_path'=>'Oblečení > Volný kořen','display_name'=>'Volný kořen','parent_path'=>'__ROOT__','sort_order'=>'40','visible_in_menu'=>'0','description'=>''],'Výslovné přepsání odvozeného rodiče.',true);
         self::assertNull(\shopCategoryAdminMeta($pdo,'Oblečení > Volný kořen')['parent_path']);
+        \shopCategoryAdminSave($pdo,7,['category_path'=>'Skryté','display_name'=>'Skrytá nabídka','parent_path'=>'','sort_order'=>'50','visible_in_menu'=>'0','description'=>''],'Skrytí kategorie z navigace.',true);
         \shopCategoryAdminSave($pdo,7,['category_path'=>'Nový strom > Virtuální rodič > List','display_name'=>'Nový list','parent_path'=>'','sort_order'=>'0','visible_in_menu'=>'1','description'=>''],'Nová cesta bez existujících rodičů.',true);
         $newNodes=\shopCategoryNodes($pdo);
         self::assertFalse($newNodes['Nový strom']['has_metadata']);
@@ -41,6 +42,7 @@ final class ShopCategoryAdminTest extends TestCase
             ['product_id'=>1,'categories'=>['Oblečení > Dresy > Dlouhý rukáv']],
             ['product_id'=>2,'categories'=>['Oblečení > Bundy']],
             ['product_id'=>3,'categories'=>[]],
+            ['product_id'=>4,'categories'=>['Skryté']],
         ];
         $menu=\shopStorefrontCategoryMenu($pdo,$products);$byPath=[];foreach($menu as$row)$byPath[$row['category_path']]=$row;
         self::assertSame(2,$byPath['Oblečení']['product_count']);
@@ -92,7 +94,7 @@ final class ShopCategoryAdminTest extends TestCase
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
         $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT)');$pdo->exec("INSERT INTO treneri VALUES(7,'Admin')");
-        $pdo->exec('CREATE TABLE shop_products(id INTEGER PRIMARY KEY,name TEXT)');$pdo->exec("INSERT INTO shop_products VALUES(1,'Dres'),(2,'Bunda'),(3,'Kroužek')");
+        $pdo->exec('CREATE TABLE shop_products(id INTEGER PRIMARY KEY,name TEXT)');$pdo->exec("INSERT INTO shop_products VALUES(1,'Dres'),(2,'Bunda'),(3,'Kroužek'),(4,'Skrytý produkt')");
         $pdo->exec('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL,category_path TEXT NOT NULL,is_default INTEGER NOT NULL DEFAULT 0,sort_order INTEGER NOT NULL DEFAULT 0,UNIQUE(product_id,category_path))');
         $pdo->exec("INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES(1,'Oblečení > Dresy > Dlouhý rukáv',1,0),(2,'Oblečení > Bundy',1,0)");
         $pdo->exec('CREATE TABLE shop_member_category_rules(id INTEGER PRIMARY KEY AUTOINCREMENT,category_path TEXT NOT NULL)');

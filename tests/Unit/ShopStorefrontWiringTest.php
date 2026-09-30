@@ -45,7 +45,9 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringContainsString('produkt.php?id=', $source);
         self::assertStringContainsString('shopStorefrontCatalog', $source);
         self::assertStringContainsString("\$_GET['kategorie']",$source);
-        self::assertStringContainsString("rawurlencode((string)\$category['category_path'])",$source);
+        $navigation=(string)file_get_contents(dirname(__DIR__,2).'/includes/shop_public_navigation.php');
+        self::assertStringContainsString("rawurlencode(\$path)",$navigation);
+        self::assertStringContainsString('shopPublicNavigation($pdo',$source);
         self::assertStringContainsString('shopCategoryDescendants',$source);
         self::assertStringContainsString('shopStorefrontCategoryMenu',$source);
         self::assertStringContainsString('clubProgramVariantSaleState',$source);

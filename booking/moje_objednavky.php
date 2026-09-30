@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__).'/includes/session_security.php';app_session_start();
 if(!isset($_SESSION['verejny_uzivatel_id'])){header('Location: prihlaseni.php?redirect=moje_objednavky.php');exit;}
 require_once dirname(__DIR__).'/db.php';require_once dirname(__DIR__).'/includes/shop_checkout.php';
+require_once dirname(__DIR__).'/includes/shop_public_navigation.php';
 
 function myOrdersH(mixed $value):string{return htmlspecialchars((string)$value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
 function myOrdersMoney(int $minor,string $currency):string{return number_format($minor/100,2,',',' ').' '.myOrdersH($currency);}
@@ -17,8 +18,8 @@ $orders=shopOrderListForAccount($pdo,(int)$_SESSION['verejny_uzivatel_id']);
 ?>
 <!doctype html>
 <html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moje objednávky</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><?php appUiAssets(); ?></head>
-<body class="bg-light"><?php publicShellNav(); ?><main class="container py-4" style="max-width:1000px">
-<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-0"><i class="bi bi-bag-check me-2 text-success"></i>Moje objednávky</h1><div class="text-muted">Objednávky přihlášeného účtu, stav platby, přípravy a případné vratky.</div></div><a href="eshop.php" class="btn btn-outline-success">Zpět do e-shopu</a></div>
+<body class="bg-light"><?php publicShellNav();shopPublicNavigation($pdo); ?><main class="container py-4" style="max-width:1000px">
+<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-0"><i class="bi bi-bag-check me-2 text-success"></i>Moje objednávky</h1><div class="text-muted">Objednávky přihlášeného účtu, stav platby, přípravy a případné vratky.</div></div><a href="eshop.php" class="btn btn-outline-success">Nakupovat v e-shopu</a></div>
 <?php if($orders===[]):?><div class="alert alert-light border">Zatím nemáte žádnou objednávku. <a href="eshop.php">Přejít do e-shopu</a>.</div><?php endif;?>
 <div class="row g-3"><?php foreach($orders as$order):[$style,$label]=myOrdersStatus((string)$order['status']);?><div class="col-12"><article class="card border-0 shadow-sm"><div class="card-body"><div class="row align-items-center g-3">
 <div class="col-md-3"><strong><?=myOrdersH($order['public_code'])?></strong><div class="small text-muted"><?=myOrdersH($order['placed_at'])?></div></div>
