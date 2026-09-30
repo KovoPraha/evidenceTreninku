@@ -6,6 +6,7 @@ app_session_start();
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
+require_once dirname(__DIR__) . '/includes/shop_public_navigation.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/shop_product_interest.php';
@@ -154,9 +155,9 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
-<?php publicShellNav('shop'); ?>
+<?php publicShellNav('shop');shopPublicNavigation($pdo,$product['categories'][0]??null); ?>
 <main class="container py-4" style="max-width: 1050px">
-    <a href="eshop.php" class="btn btn-sm btn-outline-secondary mb-3">← Zpět do e-shopu</a>
+    <a href="eshop.php" class="btn btn-sm btn-outline-secondary mb-3">← Hlavní stránka e-shopu</a>
     <?php if ($product === null): ?>
         <div class="alert alert-warning">Produkt není dostupný nebo už není v aktivní nabídce.</div>
     <?php else: ?>

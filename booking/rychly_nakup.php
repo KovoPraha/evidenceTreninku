@@ -9,6 +9,7 @@ header('Referrer-Policy: no-referrer');
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
+require_once dirname(__DIR__) . '/includes/shop_public_navigation.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
 require_once dirname(__DIR__) . '/includes/shop_guest_checkout.php';
 require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
@@ -85,7 +86,7 @@ $variantLabel = $attributes !== [] ? implode(' · ', $attributes) : (string)$var
 ?>
 <!doctype html>
 <html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Rychlý nákup – <?=guestCheckoutH($product['public_name'])?></title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><?php appUiAssets(); ?></head>
-<body class="bg-light"><?php publicShellNav('shop'); ?><main class="container py-4" style="max-width:850px">
+<body class="bg-light"><?php publicShellNav('shop');shopPublicNavigation($pdo,$product['categories'][0]??null); ?><main class="container py-4" style="max-width:850px">
 <a class="btn btn-sm btn-outline-secondary mb-3" href="produkt.php?id=<?=$productId?>">← Zpět na produkt</a>
 <div class="row g-4"><div class="col-lg-5"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-uppercase text-muted fw-semibold mb-2">Nákup bez registrace</div><h1 class="h4"><?=guestCheckoutH($product['public_name'])?></h1><p class="mb-2"><?=guestCheckoutH($variantLabel)?></p><div class="h5 text-primary mb-3"><?=guestCheckoutMoney((int)$variant['amount_minor'],(string)$variant['currency'])?></div><div class="alert alert-info small mb-0">Zboží se nyní vydává osobně. Účet ani heslo nepotřebujete; po objednání dostanete platební údaje a bezpečný odkaz e-mailem.</div></div></div></div>
 <div class="col-lg-7"><?php foreach($errors as$error):?><div class="alert alert-danger"><?=guestCheckoutH($error)?></div><?php endforeach;?><form method="post" class="card border-0 shadow-sm"><div class="card-body p-4"><?=csrf_field()?><input type="hidden" name="product_id" value="<?=$productId?>"><input type="hidden" name="variant_id" value="<?=$variantId?>">

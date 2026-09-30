@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__).'/includes/session_security.php';app_session_start();
 header('Cache-Control: no-store, max-age=0');header('Pragma: no-cache');header('Referrer-Policy: no-referrer');
 require_once dirname(__DIR__).'/db.php';require_once dirname(__DIR__).'/csrf_helper.php';require_once dirname(__DIR__).'/includes/shop_checkout.php';require_once dirname(__DIR__).'/includes/shop_guest_checkout.php';require_once dirname(__DIR__).'/includes/stripe_gateway.php';require_once dirname(__DIR__).'/includes/sumup_gateway.php';
+require_once dirname(__DIR__).'/includes/shop_public_navigation.php';
 
 function orderPublicH(mixed $value):string{return htmlspecialchars((string)$value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
 function orderPublicMoney(int $minor,string $currency):string{return number_format($minor/100,2,',',' ').' '.orderPublicH($currency);}
@@ -60,8 +61,8 @@ if($isQuickProgram)$messages=[
 ?>
 <!doctype html>
 <html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Objednávka <?=orderPublicH($order['public_code'])?></title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><?php appUiAssets(); ?></head>
-<body class="bg-light"><?php publicShellNav(); ?><main class="container py-4" style="max-width:900px">
-<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3 mb-0">Objednávka <?=orderPublicH($order['public_code'])?></h1><div class="d-flex gap-2"><?php if(!$isGuestAccess):?><a href="moje_objednavky.php" class="btn btn-outline-primary">Moje objednávky</a><?php endif;?><a href="eshop.php" class="btn btn-outline-secondary">Zpět do e-shopu</a></div></div>
+<body class="bg-light"><?php publicShellNav();shopPublicNavigation($pdo); ?><main class="container py-4" style="max-width:900px">
+<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3 mb-0">Objednávka <?=orderPublicH($order['public_code'])?></h1><div class="d-flex gap-2"><?php if(!$isGuestAccess):?><a href="moje_objednavky.php" class="btn btn-outline-primary">Moje objednávky</a><?php endif;?><a href="eshop.php" class="btn btn-outline-secondary">Hlavní stránka e-shopu</a></div></div>
 <?php if($isGuestAccess):?><div class="alert alert-info small"><?=$isQuickProgram?'Toto je bezpečný odkaz na přihlášku a platbu. Účet jsme vytvořili automaticky; ověřte e-mail pomocí odkazu, který jsme vám poslali.':'Toto je bezpečný odkaz na nákup bez účtu. Uložte si e-mail s odkazem; stav objednávky se zde průběžně aktualizuje.'?></div><?php endif;?>
 <?php if($paymentError!==''):?><div class="alert alert-danger"><?=orderPublicH($paymentError)?></div><?php endif;?>
 <?php if(($_GET['sumup']??'')==='return'&&$order['payment_record_status']==='pending'):?><div class="alert alert-info">SumUp platbu ověřujeme. Stav objednávky se změní až po potvrzení platební služby.</div><?php endif;?>
