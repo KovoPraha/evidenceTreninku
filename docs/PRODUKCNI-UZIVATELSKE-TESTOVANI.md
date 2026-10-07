@@ -23,8 +23,7 @@ zůstává pouze jako interní podklad; pro běžné testery není určen.
 - `Ema Tester` - osmileté dítě Karla, omezené přihlášení `tester.ema`;
 - `Tester Petra` - druhý rodič, `tester.petra@velocota.com`;
 - `Adam Tester` - dítě Petry, omezené přihlášení `tester.adam`;
-- `KIS testovací superadministrátor` - pracovní účet pro postupné přepnutí
-  všech osmi pozic (v manuálu označený jako Tester Správce).
+- `Tester Správce` - pracovní účet pro postupné přepnutí všech osmi pozic.
 
 Přesné založení, bezpečné uložení hesla, fixture data a cílená deaktivace jsou
 v [`PRODUKCNI-UAT-UCTY-A-DATA.md`](PRODUKCNI-UAT-UCTY-A-DATA.md).
@@ -49,20 +48,49 @@ tedy ještě o skutečné stržení z karty; live režim vyžaduje samostatné r
 4. Pokud nasazený commit není schválenou verzí pro UAT, provádějte pouze
    read-only kontroly. Zapisovací scénáře označte `BLOCKED`.
 
-Při kontrole 7. 10. 2026 nasadil běh
-[`37629360071`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629360071)
-commit `1893c25481a9f9c2209002a82d48e062065666a5`; záloha, migrace, aktivace i
-serverový HTTP smoke byly zelené. Release má `uat_schvaleno=false`, takže jsou
-bez nového schválení povolené jen read-only kontroly. `var/deployment.json` je
-z veřejného webu záměrně nedostupný (HTTP 403); kontroluje se přes chráněný
-workflow a oprávněnou serverovou diagnostiku.
+Aktuální schválený release z 7. 10. 2026 nasadil běh
+[`37636084395`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636084395)
+z commitu `49c38c72c6704826182aff7f59855f47b5818bb8`. Záloha, migrace, aktivace i
+serverový HTTP smoke byly zelené a release má `uat_schvaleno=true`.
+`var/deployment.json` je z veřejného webu záměrně nedostupný (HTTP 403);
+kontroluje se přes chráněný workflow a oprávněnou serverovou diagnostiku.
 
-Read-only kontrola připravenosti
-[`37629771673`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629771673)
-potvrdila připravené testovací identity, správce, testovací Stripe, bankovní
-nastavení a inbox. Zapisovací scénáře jsou `BLOCKED`, protože testovací okno
-skončilo 6. 10. 2026 ve 20:00, část TEST fixture dat chybí a release dosud není
-označený jako schválený pro plné UAT.
+Kontrola připravenosti po konečném nasazení
+[`37636447561`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636447561)
+vrátila `ready=true`: oba rodiče i děti, správce s osmi pozicemi, TEST produkty,
+programová nabídka, placená i bezplatná akce, lekce, trénink, kalendář, testovací
+Stripe, bankovní vlastník a inbox byly připravené. Testovací okno končí
+8. 10. 2026 ve 20:00 Europe/Prague.
+
+## Produkční průchod oprav z dokumentu testera
+
+Průchod byl proveden 7. 10. 2026 v přihlášeném produkčním prohlížeči. Nešlo jen
+o kontrolu HTTP 200. Výsledky jednotlivých bodů:
+
+1. potvrzená klubová akce má otevřené přihlašování; plánovaná akce nabízí
+   společnou volbu „Potvrdit akci a otevřít přihlašování“ - **PASS**;
+2. interní plánovaný trénink lze uložit bez KIS soupisky; běžná evidenční
+   skupina zůstává povinná - **PASS**, ověřeno TEST tréninkem na 16. 10. 2026;
+3. přehled všech výkazů zobrazuje skutečná data i výslovný prázdný stav,
+   nikoli prázdnou stránku - **PASS**;
+4. měsíční plány jsou přímo dostupné ze správy členských předpisů - **PASS**;
+5. výjimka plánu při prázdné soupisce zobrazí srozumitelný prázdný stav a odkaz
+   ke kontrole soupisky - **PASS pro prázdný stav**; pozitivní výběr člena nebyl
+   proveden, aby nevznikl trvalý finanční předpis;
+6. tmavá karta hromadných sazeb má po opravě nadpis, popis i kód v bílé barvě
+   `rgb(255, 255, 255)` - **PASS**;
+7. tmavá karta kreditních období má nadpis i popis v bílé barvě
+   `rgb(255, 255, 255)` - **PASS**;
+8. produkt 247 má v každé ze dvou nabídek právě jedno pole účastníka - **PASS**;
+9. odstranění zastaralé položky košíku je automaticky pokryté, ale celý
+   produkční cyklus zavřít registraci → košík → znovu otevřít nebyl proveden -
+   **PARTIAL**;
+10. cesta kategorie „Kroužky › Dětské“ se zobrazuje jednou a není zaměněná s
+    jinou kategorií Dětské - **PASS**.
+
+Oprava kontrastu je v
+[#43](https://github.com/KovoPraha/evidenceTreninku/pull/43). Lokálně i v CI
+prošlo 840 testů / 11 751 kontrol a oba integrační běhy MariaDB 10.3 a 11.4.
 
 Změny určené k novému průchodu testerů jsou shrnuté v
 [`UAT-OPRAVY-2026-10-07.md`](UAT-OPRAVY-2026-10-07.md).
@@ -70,7 +98,7 @@ Změny určené k novému průchodu testerů jsou shrnuté v
 ## Testovací identity
 
 - Pro běžný test použijte přívětivé identity uvedené v manuálu: Tester Karel,
-  Tester Petra, Ema Tester, Adam Tester a KIS testovací superadministrátor.
+  Tester Petra, Ema Tester, Adam Tester a Tester Správce.
 - Pracovní účet `Tester Správce` (`tester.spravce@velocota.com`) založte jako
   běžný auditovaný pracovní účet a přidělte mu všech osm pozic. Technický účet
   `kis-superadmin-test@velocota.com` se pro nové testovací běhy nepoužívá,
