@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/staff_workspaces.php';
+require_once __DIR__ . '/includes/staff_account_lifecycle.php';
 
 staffRequireActivePosition('system_admin');
 
@@ -75,6 +76,41 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
 
+            if ($action === 'remove_position') {
+                $positionCode = (string)($_POST['position_code'] ?? '');
+                if (!isset($validCodes[$positionCode])) throw new InvalidArgumentException('Vyberte platnou pracovní pozici.');
+                $before = staffAdminSnapshot($pdo, (int)$targetId);
+                $assignedCodes = array_column($before['positions'], 'position_code');
+                if (!in_array($positionCode, $assignedCodes, true)) throw new InvalidArgumentException('Tato pracovní pozice už není přiřazená.');
+                if (count($assignedCodes) <= 1) throw new InvalidArgumentException('Poslední pracovní pozici nelze odebrat. Pokud už člověk nemá mít přístup, deaktivujte celý pracovní účet níže.');
+                $pdo->beginTransaction();
+                $pdo->prepare('DELETE FROM staff_user_positions WHERE trainer_id=? AND position_code=?')->execute([(int)$targetId, $positionCode]);
+                $remaining = array_values(array_filter($before['positions'], static fn(array $row): bool => (string)$row['position_code'] !== $positionCode));
+                $hasDefault = false;
+                foreach ($remaining as $row) if ((int)$row['is_default'] === 1) $hasDefault = true;
+                if (!$hasDefault) {
+                    $pdo->prepare('UPDATE staff_user_positions SET is_default=CASE WHEN position_code=? THEN 1 ELSE 0 END WHERE trainer_id=?')
+                        ->execute([(string)$remaining[0]['position_code'], (int)$targetId]);
+                }
+                $after = staffAdminSnapshot($pdo, (int)$targetId);
+                staffAdminRecordEvent($pdo, (int)$targetId, $actorId, 'position_removed', $before, $after, $reason);
+                $pdo->commit();
+                if ((int)$targetId === $actorId) staffWorkspaceRefreshSession($pdo, $actorId);
+                $_SESSION['flash_success'] = 'Pracovní pozice „' . ($definitions[$positionCode]['label'] ?? $positionCode) . '“ byla odebrána. Historie zůstala zachována.';
+                header('Location: sprava_pracovnich_pozic.php?trainer_id=' . (int)$targetId, true, 303);
+                exit;
+            }
+
+            if ($action === 'set_active') {
+                $active = ($_POST['active'] ?? '') === '1';
+                $result = staffAccountSetActive($pdo, (int)$targetId, $actorId, $active, $reason, ($_POST['confirmed'] ?? '') === '1');
+                $_SESSION['flash_success'] = $result['changed']
+                    ? ($active ? 'Pracovní účet byl znovu aktivován.' : 'Pracovní účet byl deaktivován. Pozice, historie a audit zůstaly zachované.')
+                    : 'Stav pracovního účtu se nezměnil.';
+                header('Location: sprava_pracovnich_pozic.php?trainer_id=' . (int)$targetId, true, 303);
+                exit;
+            }
+
             if ($action === 'set_superadmin') {
                 if (!staffIsSuperadmin()) throw new InvalidArgumentException('Superadmina smí měnit pouze jiný superadmin.');
                 if (($_POST['confirm_superadmin'] ?? '') !== '1') throw new InvalidArgumentException('Citlivou změnu je nutné výslovně potvrdit.');
@@ -105,8 +141,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             throw new InvalidArgumentException('Neznámá změna pracovních pozic.');
         } catch (Throwable $exception) {
             if ($pdo->inTransaction()) $pdo->rollBack();
-            $errors[] = $exception instanceof InvalidArgumentException ? $exception->getMessage() : 'Změnu se nepodařilo bezpečně uložit.';
-            if (!$exception instanceof InvalidArgumentException) error_log('Staff position management failed: ' . $exception->getMessage());
+            $known = $exception instanceof InvalidArgumentException || $exception instanceof StaffAccountLifecycleException;
+            $errors[] = $known ? $exception->getMessage() : 'Změnu se nepodařilo bezpečně uložit.';
+            if (!$known) error_log('Staff position management failed: ' . $exception->getMessage());
         }
     }
 }
@@ -133,12 +170,15 @@ foreach ($snapshot['positions'] as $row) if ((int)$row['is_default'] === 1) $def
 <?php foreach ($trainers as $trainer): ?><a class="list-group-item list-group-item-action <?= (int)$trainer['id'] === $selectedId ? 'active' : '' ?>" href="?trainer_id=<?= (int)$trainer['id'] ?>"><strong><?= staffAdminH($trainer['jmeno']) ?></strong><div class="small <?= (int)$trainer['id'] === $selectedId ? 'text-white-50' : 'text-muted' ?>"><?= staffAdminH($trainer['email']) ?><?= (int)$trainer['aktivni'] === 1 ? '' : ' · neaktivní' ?></div></a><?php endforeach; ?>
 </div></aside>
 <section class="col-lg-8"><?php if ($selected): ?>
-<div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white"><strong><?= staffAdminH($selected['jmeno']) ?></strong><div class="small text-muted">Legacy role <?= staffAdminH($selected['role']) ?> je pouze kompatibilní technický údaj.</div></div><div class="card-body">
+<div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white d-flex justify-content-between align-items-start gap-2"><div><strong><?= staffAdminH($selected['jmeno']) ?></strong><div class="small text-muted">Legacy role <?= staffAdminH($selected['role']) ?> je pouze kompatibilní technický údaj.</div></div><span class="badge <?= (int)$selected['aktivni'] === 1 ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= (int)$selected['aktivni'] === 1 ? 'Aktivní účet' : 'Deaktivovaný účet' ?></span></div><div class="card-body">
 <form method="post" class="row g-3"><?= csrf_field() ?><input type="hidden" name="action" value="save_positions"><input type="hidden" name="trainer_id" value="<?= $selectedId ?>">
 <?php foreach ($definitions as $code => $position): ?><div class="col-md-6"><label class="form-check border rounded p-3 h-100"><input class="form-check-input position-check" type="checkbox" name="positions[]" value="<?= staffAdminH($code) ?>" <?= in_array($code, $assigned, true) ? 'checked' : '' ?>><span class="form-check-label ms-1"><strong><?= staffAdminH($position['label']) ?></strong><span class="d-block small text-muted"><?= staffAdminH($position['description']) ?></span></span></label></div><?php endforeach; ?>
 <div class="col-md-6"><label class="form-label">Výchozí pozice po přihlášení</label><select class="form-select" name="default_position" required><?php foreach ($definitions as $code => $position): ?><option value="<?= staffAdminH($code) ?>" <?= $default === $code ? 'selected' : '' ?>><?= staffAdminH($position['label']) ?></option><?php endforeach; ?></select></div>
 <div class="col-md-6"><label class="form-label">Důvod změny</label><input class="form-control" name="reason" minlength="5" maxlength="1000" required></div>
 <div class="col-12"><button class="btn btn-primary">Uložit pracovní pozice</button></div></form>
+<hr class="my-4"><h2 class="h5">Odebrat konkrétní pracovní pozici</h2><p class="small text-muted">Pozici lze odebrat samostatně. Poslední pozice se nemaže; místo toho deaktivujte celý účet, aby zůstala zachována historie.</p>
+<div class="list-group mb-4"><?php foreach ($snapshot['positions'] as $positionRow): $positionCode=(string)$positionRow['position_code']; ?><div class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2"><div><strong><?= staffAdminH($definitions[$positionCode]['label'] ?? $positionCode) ?></strong><?= (int)$positionRow['is_default'] === 1 ? ' <span class="badge text-bg-primary">výchozí</span>' : '' ?></div><form method="post" class="d-flex flex-wrap gap-2 align-items-center" onsubmit="return confirm('Opravdu odebrat tuto pracovní pozici?');"><?= csrf_field() ?><input type="hidden" name="action" value="remove_position"><input type="hidden" name="trainer_id" value="<?= $selectedId ?>"><input type="hidden" name="position_code" value="<?= staffAdminH($positionCode) ?>"><input class="form-control form-control-sm" name="reason" minlength="5" maxlength="1000" required placeholder="Důvod odebrání"><button class="btn btn-sm btn-outline-danger" <?= count($snapshot['positions']) <= 1 ? 'disabled title="Poslední pozici nelze odebrat; deaktivujte účet."' : '' ?>><i class="bi bi-person-dash me-1"></i>Odebrat pozici</button></form></div><?php endforeach; ?></div>
+<div class="border rounded p-3 <?= (int)$selected['aktivni'] === 1 ? 'border-danger-subtle bg-danger-subtle' : 'border-success-subtle bg-success-subtle' ?>"><h2 class="h5"><?= (int)$selected['aktivni'] === 1 ? 'Ukončit přístup do systému' : 'Obnovit přístup do systému' ?></h2><p class="small mb-3"><?= (int)$selected['aktivni'] === 1 ? 'Deaktivace člověka ihned odhlásí a zabrání dalšímu přihlášení. Účet, pozice i historické záznamy se nemažou.' : 'Aktivace znovu povolí přihlášení se zachovanými pracovními pozicemi.' ?></p><?php if ($selectedId === $actorId && (int)$selected['aktivni'] === 1): ?><div class="alert alert-secondary mb-0">Vlastní pracovní účet zde nelze deaktivovat.</div><?php else: ?><form method="post" class="row g-2 align-items-end"><?= csrf_field() ?><input type="hidden" name="action" value="set_active"><input type="hidden" name="trainer_id" value="<?= $selectedId ?>"><input type="hidden" name="active" value="<?= (int)$selected['aktivni'] === 1 ? '0' : '1' ?>"><div class="col-md-7"><label class="form-label">Důvod změny</label><input class="form-control" name="reason" minlength="5" maxlength="1000" required></div><div class="col-md-5"><label class="form-check mb-2"><input class="form-check-input" type="checkbox" name="confirmed" value="1" required> Potvrzuji změnu přístupu</label><button class="btn <?= (int)$selected['aktivni'] === 1 ? 'btn-danger' : 'btn-success' ?> w-100"><?= (int)$selected['aktivni'] === 1 ? 'Deaktivovat pracovní účet' : 'Aktivovat pracovní účet' ?></button></div></form><?php endif; ?></div>
 </div></div>
 <div class="card <?= $snapshot['superadmin'] ? 'border-warning' : 'border-0' ?> shadow-sm"><div class="card-body"><h2 class="h5"><i class="bi bi-shield-lock me-2 text-warning"></i>Superadmin</h2><p class="small text-muted">Superadmin může přepnout do všech pozic, ale stále vidí vždy jen jeden rozcestník. Tuto schopnost smí změnit pouze jiný superadmin.</p>
 <div class="alert <?= $snapshot['superadmin'] ? 'alert-warning' : 'alert-secondary' ?> py-2">Aktuální stav: <strong><?= $snapshot['superadmin'] ? 'superadmin' : 'běžný pracovní účet' ?></strong></div>

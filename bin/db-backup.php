@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-09-23.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-07.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -294,6 +294,8 @@ const EVIDENCE_TABLES = [
     'trenink_trener',
     'training_roster_expected',
     'training_roster_links',
+    'training_rsvp_events',
+    'training_rsvps',
     'ucto_audit_log',
     'ucto_dokumenty',
     'ucto_gs_kategorie',

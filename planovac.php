@@ -6,6 +6,8 @@ require_once 'includes/funkce.php';
 if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/training_rsvp.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -107,6 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
             foreach ($stZdrojPs->fetchAll(PDO::FETCH_COLUMN) as $psId) {
                 $stInsertPs->execute([$novyId, $psId]);
             }
+            trainingRosterBridgeReplacePlanTeams(
+                $pdo,
+                $novyId,
+                trainingRosterBridgePlanTeamIds($pdo, (int)$zp['id']),
+                $trenerId
+            );
         }
         $pdo->commit();
 
@@ -189,6 +197,7 @@ $stPlan = $pdo->prepare("
 ");
 $stPlan->execute($params);
 $plany = $stPlan->fetchAll(PDO::FETCH_ASSOC);
+$rsvpSummaries = trainingRsvpPlanSummaries($pdo, array_map(static fn(array $plan): int => (int)$plan['id'], $plany));
 
 // Indexovat dle data
 $planyDne = [];
@@ -523,6 +532,7 @@ try {
             <?php foreach ($dne as $p): ?>
                 <?php
                 $isEvidovano = $p['stav'] === 'evidovany';
+                $rsvpSummary = $rsvpSummaries[(int)$p['id']] ?? ['expected'=>0,'going'=>0,'not_going'=>0,'pending'=>0];
                 $meta = $kategorieMeta[$p['kategorie'] ?? ''] ?? null;
                 $cardCls = $isEvidovano ? 'evidovano' : 'planovano';
                 $canDrag = !$isEvidovano && ($p['trener_id'] == $trenerId || roleAtLeast('hlavni'));
@@ -582,11 +592,24 @@ try {
                                 <div class="text-muted" style="font-size:.72rem">
                                     <i class="bi bi-person me-1"></i><?= h($p['trener_jmeno']) ?>
                                 </div>
+                                <?php if ($rsvpSummary['expected'] > 0): ?>
+                                    <div class="d-flex flex-wrap gap-1 mt-1" aria-label="Potvrzení účasti">
+                                        <span class="badge text-bg-success"><?= (int)$rsvpSummary['going'] ?> ano</span>
+                                        <span class="badge text-bg-secondary"><?= (int)$rsvpSummary['not_going'] ?> ne</span>
+                                        <span class="badge text-bg-warning"><?= (int)$rsvpSummary['pending'] ?> bez odpovědi</span>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
                         <!-- Akce -->
                         <div class="d-flex gap-1 mt-2 flex-wrap">
+                            <?php if ($rsvpSummary['expected'] > 0): ?>
+                                <a href="training_rsvps_admin.php?plan_id=<?= (int)$p['id'] ?>"
+                                   class="btn btn-outline-info btn-sm py-0 px-2" style="font-size:.75rem">
+                                    <i class="bi bi-person-check me-1"></i>Odpovědi
+                                </a>
+                            <?php endif; ?>
                             <?php if ($isEvidovano && $p['trenink_id']): ?>
                                 <a href="edit_trenink.php?id=<?= (int)$p['trenink_id'] ?>"
                                    class="btn btn-success btn-sm py-0 px-2" style="font-size:.75rem">

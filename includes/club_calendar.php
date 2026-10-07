@@ -393,7 +393,32 @@ function clubCalendarFamilyRegister(PDO$pdo,int$eventId,int$accountId,int$sporto
 /** @return array{changed:bool,status:string} */
 function clubCalendarSetRegistration(PDO$pdo,int$eventId,int$actorId,bool$open):array
 {
-    $pdo->beginTransaction();try{$event=clubEventLock($pdo,$eventId);if(!$event)throw new ClubCalendarException('Akce nebyla nalezena.');if($open&&!in_array((string)$event['planning_status'],['planned','confirmed'],true))throw new ClubCalendarException('Přihlašování nelze otevřít u zrušené nebo dokončené akce.');$count=$pdo->prepare("SELECT COUNT(*) FROM club_event_sessions WHERE event_id=? AND status='scheduled'");$count->execute([$eventId]);if($open&&(int)$count->fetchColumn()<1)throw new ClubCalendarException('Akce musí mít termín.');$target=$open?'open':'closed';$planningTarget=$open?'confirmed':(string)$event['planning_status'];$changed=$event['status']!==$target||(string)$event['planning_status']!==$planningTarget;if($changed)$pdo->prepare('UPDATE club_events SET status=?,planning_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$target,$planningTarget,$eventId]);clubCalendarAudit($pdo,$eventId,$actorId,$open?'calendar_confirm_and_open_registration':'calendar_close_registration',$open?'Trenér potvrdil akci a otevřel přihlašování.':'Trenér uzavřel přihlašování.',['before'=>['status'=>$event['status'],'planning_status'=>$event['planning_status']],'after'=>['status'=>$target,'planning_status'=>$planningTarget]]);$pdo->commit();return['changed'=>$changed,'status'=>$target];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof ClubCalendarException)throw$e;throw new ClubCalendarException('Stav přihlašování se nepodařilo změnit.',0,$e);}
+    $pdo->beginTransaction();
+    try {
+        $event=clubEventLock($pdo,$eventId);
+        if(!$event)throw new ClubCalendarException('Akce nebyla nalezena.');
+        if($open&&!in_array((string)$event['planning_status'],['planned','confirmed'],true)){
+            throw new ClubCalendarException('Přihlašování nelze otevřít u zrušené nebo dokončené akce.');
+        }
+        $count=$pdo->prepare("SELECT COUNT(*) FROM club_event_sessions WHERE event_id=? AND status='scheduled'");
+        $count->execute([$eventId]);
+        if($open&&(int)$count->fetchColumn()<1){
+            throw new ClubCalendarException('Nejdříve uložte začátek, konec a místo akce. Bez konkrétního termínu nelze přihlašování otevřít.');
+        }
+        $target=$open?'open':'closed';
+        $planningTarget=$open?'confirmed':(string)$event['planning_status'];
+        $changed=$event['status']!==$target||(string)$event['planning_status']!==$planningTarget;
+        if($changed)$pdo->prepare('UPDATE club_events SET status=?,planning_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$target,$planningTarget,$eventId]);
+        clubCalendarAudit($pdo,$eventId,$actorId,$open?'calendar_confirm_and_open_registration':'calendar_close_registration',$open?'Trenér potvrdil akci a otevřel přihlašování.':'Trenér uzavřel přihlašování.',['before'=>['status'=>$event['status'],'planning_status'=>$event['planning_status']],'after'=>['status'=>$target,'planning_status'=>$planningTarget]]);
+        $pdo->commit();
+        return['changed'=>$changed,'status'=>$target];
+    } catch(Throwable$e) {
+        if($pdo->inTransaction())$pdo->rollBack();
+        if($e instanceof ClubCalendarException)throw$e;
+        $reference=strtoupper(substr(bin2hex(random_bytes(6)),0,10));
+        error_log('club_calendar_registration ref='.$reference.' event_id='.$eventId.' actor_id='.$actorId.' error='.$e->getMessage());
+        throw new ClubCalendarException('Přihlašování se nepodařilo změnit. Obnovte stránku a zkuste to znovu. Pokud problém trvá, předejte správci tento referenční kód: '.$reference.'.',0,$e);
+    }
 }
 
 /** @return array{id:int,created:bool} */

@@ -40,6 +40,19 @@ final class ClubCalendarTest extends TestCase
         self::assertSame('confirmed',$audit['after']['planning_status']);
     }
 
+    public function testOpeningRegistrationWithoutProgramTermExplainsExactlyWhatIsMissing(): void
+    {
+        $pdo=$this->database();$event=$this->event($pdo,['visibility'=>'public','planning_status'=>'planned','team_ids'=>[]]);
+        $pdo->prepare('DELETE FROM club_event_sessions WHERE event_id=?')->execute([$event['id']]);
+        try {
+            \clubCalendarSetRegistration($pdo,$event['id'],1,true);
+            self::fail('Registration opened without a program term.');
+        } catch (\ClubCalendarException $exception) {
+            self::assertStringContainsString('začátek, konec a místo', $exception->getMessage());
+        }
+        self::assertSame('draft:planned',$pdo->query("SELECT status||':'||planning_status FROM club_events WHERE id=".$event['id'])->fetchColumn());
+    }
+
     public function testPublicEventListNeverLeaksStaffOnlyOpenPlan(): void
     {
         $pdo=$this->database();

@@ -28,6 +28,7 @@ if ($editId) {
 // ── Vybrané podskupiny (editace / fallback) ───────────────────────────────────
 $selectedPodskupiny = [];
 $selectedTeamIds = [];
+$noRosterConfirmed = false;
 if ($editId && $existujici) {
     $stPs = $pdo->prepare("SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=?");
     $stPs->execute([$editId]);
@@ -62,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $skupinaId     = (int)($_POST['skupina_id'] ?? 0);
         $podskupinyIds = array_values(array_filter(array_map('intval', $_POST['podskupiny_ids'] ?? [])));
         $teamIds        = array_values(array_unique(array_filter(array_map('intval', $_POST['team_ids'] ?? []))));
+        $noRosterConfirmed = isset($_POST['no_roster_confirm']);
         $podskupinaId  = !empty($podskupinyIds) ? $podskupinyIds[0] : null; // legacy FK
         $datum         = trim($_POST['datum'] ?? '');
         $casOd         = trim($_POST['cas_od'] ?? '') ?: null;
@@ -80,6 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$skupinaId)   $errors[] = 'Vyberte skupinu.';
         if (!$datum)       $errors[] = 'Zadejte datum.';
         if ($casOd && $casDo && $casOd >= $casDo) $errors[] = 'Čas "od" musí být před časem "do".';
+        if ($teamIds === [] && !$noRosterConfirmed) {
+            $errors[] = 'Vyberte alespoň jednu KIS soupisku, aby sportovci trénink viděli, nebo výslovně potvrďte, že jde o interní trénink bez účastníků.';
+        }
 
         if (empty($errors)) {
             if ($editId) {
@@ -307,10 +312,10 @@ $kategorieMeta = [
                     </div>
                 </div>
 
-                <!-- KIS soupisky pouze doplňují očekávané účastníky; legacy skupiny zůstávají zachované. -->
+                <!-- KIS soupisky určují viditelnost a možnost potvrdit účast; legacy skupiny zůstávají zachované. -->
                 <div class="mb-3">
-                    <label class="form-label">KIS soupisky <span class="text-muted small">(volitelné)</span></label>
-                    <div class="border rounded p-2 bg-white" style="max-height:180px;overflow-y:auto">
+                    <label class="form-label req">KIS soupisky – komu se trénink zobrazí</label>
+                    <div class="border rounded p-2 bg-white" id="training-roster-options" style="max-height:180px;overflow-y:auto">
                         <?php if ($eligibleTeams === []): ?>
                             <span class="text-muted small">Pro datum tréninku není dostupná aktivní soupiska.</span>
                         <?php else: ?>
@@ -326,7 +331,11 @@ $kategorieMeta = [
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="form-text">Členové soupisek se uloží jako očekávaní účastníci. Docházka vznikne až ručním uložením evidence tréninku.</div>
+                    <div class="form-text">Členové vybraných soupisek trénink uvidí ve sportovním přehledu a mohou potvrdit „zúčastním se / nezúčastním se“. Skutečnou docházku po tréninku dál zapisuje trenér.</div>
+                    <div class="form-check border border-warning rounded bg-warning-subtle p-3 ps-5 mt-2" id="no-roster-confirm-wrap">
+                        <input class="form-check-input" type="checkbox" name="no_roster_confirm" id="no-roster-confirm" value="1" <?= !empty($noRosterConfirmed) ? 'checked' : '' ?>>
+                        <label class="form-check-label" for="no-roster-confirm"><strong>Jde o interní trénink bez účastníků.</strong><br><span class="small">Potvrzuji, že se trénink nemá zobrazit žádnému sportovci.</span></label>
+                    </div>
                 </div>
 
                 <!-- Datum + Časy -->
@@ -475,6 +484,22 @@ function loadPodskupiny(skupinaId) {
 document.getElementById('skupinaId').addEventListener('change', function () {
     loadPodskupiny(this.value);
 });
+
+// ── Soupisky — zabránění nechtěně neviditelnému tréninku ─────────────────────
+(function () {
+    const teams = Array.from(document.querySelectorAll('input[name="team_ids[]"]'));
+    const noRoster = document.getElementById('no-roster-confirm');
+    const wrap = document.getElementById('no-roster-confirm-wrap');
+    if (!noRoster || !wrap) return;
+    const sync = () => {
+        const hasTeam = teams.some(input => input.checked);
+        noRoster.disabled = hasTeam;
+        if (hasTeam) noRoster.checked = false;
+        wrap.classList.toggle('d-none', hasTeam);
+    };
+    teams.forEach(input => input.addEventListener('change', sync));
+    sync();
+})();
 
 // ── Opakování — radio toggle + živý náhled ────────────────────────────────────
 (function () {

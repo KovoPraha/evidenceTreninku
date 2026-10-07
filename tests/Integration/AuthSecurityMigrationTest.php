@@ -105,6 +105,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20260922150000_quick_program_checkout',
                 '20260922190000_member_fee_standing_orders',
                 '20260923200000_club_program_storefront',
+                '20261007120000_training_rsvps',
             ],
             array_keys($catalog)
         );
@@ -114,6 +115,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_catalog_import_runs'));
         self::assertTrue($this->tableExists($pdo, 'child_access_accounts'));
         self::assertTrue($this->tableExists($pdo, 'child_access_events'));
+        self::assertTrue($this->tableExists($pdo, 'training_rsvps'));
+        self::assertTrue($this->tableExists($pdo, 'training_rsvp_events'));
         self::assertTrue($this->tableExists($pdo, 'cviky'));
         self::assertTrue($this->tableExists($pdo, 'gs_kategorie'));
         self::assertTrue($this->tableExists($pdo, 'gs_linky'));

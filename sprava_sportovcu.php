@@ -16,6 +16,7 @@ function h($s): string {
 $createPreview = null;
 $createInput = ['jmeno' => '', 'prijmeni' => '', 'narozeni' => '', 'email' => ''];
 $createError = '';
+$createNotice = '';
 
 // ── POST: uložení změn nebo založení sportovce ──────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -50,7 +51,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $match = personMatchV1($pdo, $createInput);
             $createPreview = $match;
-            if ($match['level'] === PERSON_MATCH_EXACT && $confirmation !== 'exact_override') {
+            if ($confirmation === '') {
+                if ($match['level'] === PERSON_MATCH_EXACT) {
+                    personMatchV1Audit(
+                        $pdo,
+                        (int)$_SESSION['trener_id'],
+                        'exact_discovery',
+                        $match,
+                        null,
+                        '',
+                        ['source' => 'sprava_sportovcu']
+                    );
+                    $createError = 'Nalezena přesná shoda. Osoba zatím nebyla založena. Použijte existující osobu, nebo zdůvodněte výjimku.';
+                } elseif ($match['level'] === PERSON_MATCH_SIMILARITY) {
+                    personMatchV1Audit(
+                        $pdo,
+                        (int)$_SESSION['trener_id'],
+                        'similarity_discovery',
+                        $match,
+                        null,
+                        '',
+                        ['source' => 'sprava_sportovcu']
+                    );
+                    $createNotice = 'Nalezeny podobné osoby. Osoba zatím nebyla založena. Zkontrolujte výsledky a pokračujte druhým krokem.';
+                } else {
+                    $createNotice = 'Nebyla nalezena žádná shoda. Osoba zatím nebyla založena. Ve druhém kroku potvrďte její vytvoření.';
+                }
+            } elseif ($match['level'] === PERSON_MATCH_EXACT && $confirmation !== 'exact_override') {
                 personMatchV1Audit(
                     $pdo,
                     (int)$_SESSION['trener_id'],
@@ -60,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     '',
                     ['source' => 'sprava_sportovcu']
                 );
-                $createError = 'Nalezena přesná shoda. Použijte existující osobu, nebo zdůvodněte výjimku.';
+                $createError = 'Nalezena přesná shoda. Osoba zatím nebyla založena. Použijte existující osobu, nebo zdůvodněte výjimku.';
             } elseif ($match['level'] === PERSON_MATCH_EXACT && mb_strlen($overrideReason, 'UTF-8') < 10) {
                 $createError = 'Důvod výjimky musí mít alespoň 10 znaků.';
             } elseif ($match['level'] === PERSON_MATCH_SIMILARITY && $confirmation !== 'similarity') {
@@ -73,7 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     '',
                     ['source' => 'sprava_sportovcu']
                 );
-                $createError = 'Nalezeny podobné osoby. Zkontrolujte je a založení výslovně potvrďte.';
+                $createNotice = 'Nalezeny podobné osoby. Osoba zatím nebyla založena. Zkontrolujte je a založení výslovně potvrďte.';
+            } elseif ($match['level'] !== PERSON_MATCH_EXACT && $match['level'] !== PERSON_MATCH_SIMILARITY && $confirmation !== 'no_match') {
+                $createNotice = 'Kontrola shod skončila. Osoba zatím nebyla založena; potvrďte druhý krok.';
             } else {
                 $pdo->beginTransaction();
                 $newPersonId = personMatchV1CreateManual($pdo, $createInput);
@@ -365,8 +394,10 @@ try {
             <i class="bi bi-person-plus-fill me-1"></i>Založit novou osobu
         </div>
         <div class="card-body">
-            <p class="text-muted small mb-3">Ruční osoba vznikne ve stavu „čekající“. Před uložením proběhne závazná kontrola shod person-match-v1.</p>
+            <p class="text-muted small mb-3">Ruční založení má dva jasné kroky: nejdříve kontrolu možných shod a teprve potom potvrzení vytvoření. Nová osoba vznikne ve stavu „čekající“.</p>
+            <ol class="small d-flex flex-wrap gap-4 ps-3" aria-label="Postup založení osoby"><li class="<?= is_array($createPreview) ? 'text-success' : 'fw-semibold' ?>">Zkontrolovat možné shody</li><li class="<?= is_array($createPreview) ? 'fw-semibold' : 'text-muted' ?>">Potvrdit založení osoby</li></ol>
             <?php if ($createError !== ''): ?><div class="alert alert-warning"><?= h($createError) ?></div><?php endif; ?>
+            <?php if ($createNotice !== ''): ?><div class="alert alert-info"><strong><?= h($createNotice) ?></strong></div><?php endif; ?>
             <?php if (is_array($createPreview) && $createPreview['candidates'] !== []): ?>
                 <div class="alert <?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'alert-danger' : 'alert-warning' ?>">
                     <div class="fw-semibold mb-2">
@@ -394,7 +425,7 @@ try {
                 <?= csrf_field() ?>
                 <input type="hidden" name="akce" value="create">
                 <?php if (is_array($createPreview)): ?>
-                    <input type="hidden" name="create_confirmation" value="<?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'exact_override' : 'similarity' ?>">
+                    <input type="hidden" name="create_confirmation" value="<?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'exact_override' : ($createPreview['level'] === PERSON_MATCH_SIMILARITY ? 'similarity' : 'no_match') ?>">
                 <?php endif; ?>
                 <div class="col-md-3"><label class="form-label req">Příjmení</label><input class="form-control" name="prijmeni" maxlength="100" required value="<?= h($createInput['prijmeni']) ?>"></div>
                 <div class="col-md-3"><label class="form-label req">Jméno</label><input class="form-control" name="jmeno" maxlength="100" required value="<?= h($createInput['jmeno']) ?>"></div>
@@ -410,10 +441,13 @@ try {
                             ? 'Přesto založit jako novou osobu'
                             : (is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_SIMILARITY
                                 ? 'Potvrzuji kontrolu a zakládám osobu'
-                                : 'Zkontrolovat shody a založit') ?>
+                                : (is_array($createPreview)
+                                    ? 'Potvrzuji kontrolu a zakládám osobu'
+                                    : '1. Zkontrolovat možné shody')) ?>
                     </button>
                 </div>
             </form>
+            <?php if (is_array($createPreview)): ?><script>document.getElementById('create-card')?.scrollIntoView({behavior:'smooth',block:'start'});</script><?php endif; ?>
         </div>
     </div>
     <?php endif; ?>

@@ -17,6 +17,7 @@ require_once dirname(__DIR__) . '/includes/family_weekly_delivery.php';
 require_once dirname(__DIR__) . '/includes/family_annual_paid_overview.php';
 require_once dirname(__DIR__) . '/includes/member_charge_reminder.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
+require_once dirname(__DIR__) . '/includes/training_rsvp.php';
 
 function familyPageH(mixed $value): string
 {
@@ -39,21 +40,40 @@ $calendarMessage = (string)($_SESSION['family_calendar_message'] ?? '');
 $calendarToken = (string)($_SESSION['family_calendar_token_once'] ?? '');
 $reminderMessage = (string)($_SESSION['member_charge_reminder_message'] ?? '');
 $weeklyDeliveryMessage = (string)($_SESSION['family_weekly_delivery_message'] ?? '');
+$trainingRsvpMessage = (string)($_SESSION['training_rsvp_message'] ?? '');
 unset($_SESSION['family_calendar_message'], $_SESSION['family_calendar_token_once']);
 unset($_SESSION['member_charge_reminder_message']);
 unset($_SESSION['family_weekly_delivery_message']);
+unset($_SESSION['training_rsvp_message']);
 $calendarError = '';
 $reminderError = '';
 $weeklyDeliveryError = '';
+$trainingRsvpError = '';
 $action = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $action = (string)($_POST['action'] ?? '');
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
-        if ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
+        if ($action === 'training_rsvp_save') $trainingRsvpError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
+        elseif ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
         else $calendarError = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.';
     } else {
         try {
+            if ($action === 'training_rsvp_save') {
+                $saved = trainingRsvpSave(
+                    $pdo,
+                    (int)($_POST['plan_id'] ?? 0),
+                    (int)($_POST['profile_id'] ?? 0),
+                    (string)($_POST['response'] ?? ''),
+                    'account',
+                    $accountId
+                );
+                $_SESSION['training_rsvp_message'] = $saved['changed']
+                    ? 'Odpověď k tréninku byla uložena: ' . trainingRsvpLabel($saved['response']) . '.'
+                    : 'Odpověď k tréninku už byla uložená.';
+                header('Location: sportovni_prehled.php#potvrzeni-treninku', true, 303);
+                exit;
+            }
             if ($action === 'family_calendar_issue') {
                 $issued = familyCalendarFeedIssue($pdo, $accountId);
                 $_SESSION['family_calendar_token_once'] = $issued['token'];
@@ -90,15 +110,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
             $calendarError = 'Neznámá akce kalendáře.';
-        } catch (InvalidArgumentException | MemberChargeReminderException | FamilyWeeklyDeliveryException $exception) {
-            if ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = $exception->getMessage();
+        } catch (InvalidArgumentException | MemberChargeReminderException | FamilyWeeklyDeliveryException | TrainingRsvpException $exception) {
+            if ($action === 'training_rsvp_save') $trainingRsvpError = $exception->getMessage();
+            elseif ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = $exception->getMessage();
             elseif ($action === 'member_charge_reminder_save') $reminderError = $exception->getMessage();
             else $calendarError = $exception->getMessage();
         } catch (FamilyCalendarFeedException $exception) {
             $calendarError = $exception->getMessage();
         } catch (Throwable $exception) {
             error_log('booking/sportovni_prehled.php calendar action: ' . $exception->getMessage());
-            if ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = 'Nastavení týdenního souhrnu se nyní nepodařilo uložit.';
+            if ($action === 'training_rsvp_save') $trainingRsvpError = 'Odpověď k tréninku se nyní nepodařilo uložit.';
+            elseif ($action === 'family_weekly_delivery_save') $weeklyDeliveryError = 'Nastavení týdenního souhrnu se nyní nepodařilo uložit.';
             elseif ($action === 'member_charge_reminder_save') $reminderError = 'Nastavení připomínek se nyní nepodařilo uložit.';
             else $calendarError = 'Nastavení kalendáře se nyní nepodařilo uložit.';
         }
@@ -114,6 +136,7 @@ $weeklyDeliverySummary = familyWeeklyDeliveryAccountSummary($pdo, $accountId);
 $overview = [];
 $familyOrderItems = [];
 $familyAgenda = [];
+$trainingRsvps = [];
 $weeklySummary = null;
 $annualPaidOverview = null;
 $agendaError = '';
@@ -136,6 +159,7 @@ try {
     $today = new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
     $agendaFrom = $today->format('Y-m-d');
     $familyAgenda = familyCalendarAgenda($pdo, $accountId, $agendaFrom, 30);
+    $trainingRsvps = trainingRsvpUpcomingForAccount($pdo, $accountId, $agendaFrom, $today->modify('+30 days')->format('Y-m-d'));
 } catch (Throwable $exception) {
     error_log('booking/sportovni_prehled.php agenda: ' . $exception->getMessage());
     $agendaError = 'Rodinný program se nyní nepodařilo načíst.';
@@ -188,6 +212,19 @@ $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
     <?php if ($loadError === '' && $overview === []): ?>
         <div class="alert alert-info">Nemáte žádný aktivní schválený profil. O propojení můžete požádat v části <a href="moje_osoby.php">Moje osoby</a>.</div>
     <?php endif; ?>
+
+    <section class="card border-primary shadow-sm mb-4" id="potvrzeni-treninku">
+        <div class="card-header bg-primary-subtle d-flex flex-wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-check2-circle me-2"></i>Potvrzení účasti na trénincích</strong><span class="badge text-bg-light border text-dark"><?= count($trainingRsvps) ?> položek</span></div>
+        <div class="card-body">
+            <p class="small text-muted">Zobrazují se plánované tréninky z KIS soupisek vašich schválených profilů. Odpověď můžete do termínu změnit; skutečnou docházku po tréninku zapisuje trenér.</p>
+            <?php if ($trainingRsvpMessage !== ''): ?><div class="alert alert-success py-2"><?= familyPageH($trainingRsvpMessage) ?></div><?php endif; ?>
+            <?php if ($trainingRsvpError !== ''): ?><div class="alert alert-danger py-2"><?= familyPageH($trainingRsvpError) ?></div><?php endif; ?>
+            <?php if ($trainingRsvps === []): ?><p class="text-muted mb-0">V příštích 30 dnech není žádný trénink, který by čekal na odpověď.</p>
+            <?php else: ?><div class="list-group list-group-flush"><?php foreach ($trainingRsvps as $training): $response=(string)($training['response']??''); ?>
+                <div class="list-group-item px-0"><div class="d-flex flex-wrap justify-content-between gap-3"><div><strong><?= familyPageH($training['nazev']) ?></strong><div class="small text-muted"><?= familyPageH($training['jmeno'].' '.$training['prijmeni']) ?> · <?= familyPageH($training['team_name_snapshot']) ?><br><?= familyPageH((new DateTimeImmutable((string)$training['datum']))->format('d. m. Y')) ?><?= $training['cas_od'] ? ' · '.familyPageH(substr((string)$training['cas_od'],0,5)) : '' ?></div><?php if(trim((string)$training['popis'])!==''):?><div class="small mt-1"><?= familyPageH($training['popis']) ?></div><?php endif;?></div><div class="text-end"><span class="badge <?= $response==='going'?'text-bg-success':($response==='not_going'?'text-bg-secondary':'text-bg-warning') ?> mb-2"><?= familyPageH(trainingRsvpLabel($response)) ?></span><form method="post" class="d-flex gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="training_rsvp_save"><input type="hidden" name="plan_id" value="<?= (int)$training['plan_id'] ?>"><input type="hidden" name="profile_id" value="<?= (int)$training['sportovec_id'] ?>"><button class="btn btn-sm <?= $response==='going'?'btn-success':'btn-outline-success' ?>" name="response" value="going">Zúčastním se</button><button class="btn btn-sm <?= $response==='not_going'?'btn-secondary':'btn-outline-secondary' ?>" name="response" value="not_going">Nezúčastním se</button></form></div></div></div>
+            <?php endforeach; ?></div><?php endif; ?>
+        </div>
+    </section>
 
     <section class="card border-0 shadow-sm mb-4" id="rodinny-program">
         <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-calendar2-week me-2 text-success"></i>Co nás čeká v příštích 30 dnech</strong><span class="badge text-bg-light border text-dark"><?= familyPageH(familyPageItemCount(count($familyAgenda))) ?></span></div>

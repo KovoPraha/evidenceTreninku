@@ -216,11 +216,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="registration-password">Heslo <small class="text-muted">(12–200 znaků)</small></label>
-                        <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="12" maxlength="200">
+                        <div class="input-group">
+                            <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="12" maxlength="200" autocomplete="new-password" aria-describedby="registration-password-help">
+                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password" aria-controls="registration-password" aria-pressed="false">Zobrazit</button>
+                        </div>
+                        <div id="registration-password-help" class="form-text">Nejlépe si zvolte krátkou větu nebo několik slov, která si snadno zapamatujete. Mezery jsou povolené.</div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label" for="registration-password-confirmation">Heslo znovu</label>
-                        <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required minlength="12" maxlength="200">
+                        <div class="input-group">
+                            <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required minlength="12" maxlength="200" autocomplete="new-password">
+                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password-confirmation" aria-controls="registration-password-confirmation" aria-pressed="false">Zobrazit</button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Zaregistrovat se</button>
                 </form>
@@ -241,6 +248,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         hint.textContent = sport ? '(povinné)' : '(jen pro sportovní profil)';
     };
     document.querySelectorAll('input[name="ucel"]').forEach(input => input.addEventListener('change', sync));
+    document.querySelectorAll('[data-password-toggle]').forEach(button => button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.passwordToggle);
+        if (!input) return;
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        button.textContent = show ? 'Skrýt' : 'Zobrazit';
+        button.setAttribute('aria-pressed', show ? 'true' : 'false');
+    }));
     sync();
 })();
 </script>
