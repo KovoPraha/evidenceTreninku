@@ -12,12 +12,12 @@ používat jako důkaz aktuální verze. Před každou novou prací má přednos
 - Repozitář: <https://github.com/KovoPraha/evidenceTreninku>
 - Výchozí větev: `main`
 - Poslední aplikační commit před touto dokumentační synchronizací:
-  `623e161e0b2d7eefeffe6d87d4586926265ba02a`
+  `1893c25481a9f9c2209002a82d48e062065666a5`
 - Otevřené pull requesty při této kontrole: žádné
 - Produkční aplikace: <https://kis.kovopraha.cz/>
 - Poslední ověřené nasazení: GitHub Actions běh
-  [`37605872735`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735)
-  nasadil přesně commit `623e161e0b2d7eefeffe6d87d4586926265ba02a`.
+  [`37629360071`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629360071)
+  nasadil přesně commit `1893c25481a9f9c2209002a82d48e062065666a5`.
 - Nasazení vytvořilo a ověřilo databázovou zálohu, připravilo úplný release,
   aplikovalo migrace, aktivovalo kód a dokončilo HTTP smoke test.
 - Veřejná domovská stránka a registrace po nasazení odpovídají HTTP 200.
@@ -34,15 +34,15 @@ je vždy samostatný ručně spuštěný workflow podle
 ## Poslední automatické ověření
 
 GitHub Actions běh
-[`37605851409`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605851409)
+[`37629208337`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629208337)
 nad stejným commitem prošel v tomto rozsahu:
 
-- PHPUnit na PHP 8.2: **832 testů / 11 668 kontrol**;
+- PHPUnit na PHP 8.2: **839 testů / 11 743 kontrol**;
 - integrační smoke na MariaDB 10.3: úspěch;
 - integrační smoke na MariaDB 11.4: úspěch;
 - kontrola Composer konfigurace: úspěch.
 
-Migrační katalog obsahuje 81 verzovaných PHP migrací a zmrazený legacy
+Migrační katalog obsahuje 82 verzovaných PHP migrací a zmrazený legacy
 baseline 2.20.2. Aktuální zálohovací ownership kontrakt je `2026-10-07.1`.
 Počet souborů není důkazem stavu konkrétní databáze; ten se na každé stanici
 ověřuje pomocí `php bin/migrate.php --check --json` s nastaveným `APP_HOST`.
@@ -51,8 +51,10 @@ ověřuje pomocí `php bin/migrate.php --check --json` s nastaveným `APP_HOST`.
 
 Pull requesty
 [#34](https://github.com/KovoPraha/evidenceTreninku/pull/34),
-[#35](https://github.com/KovoPraha/evidenceTreninku/pull/35) a
-[#36](https://github.com/KovoPraha/evidenceTreninku/pull/36) jsou sloučené do
+[#35](https://github.com/KovoPraha/evidenceTreninku/pull/35),
+[#36](https://github.com/KovoPraha/evidenceTreninku/pull/36),
+[#38](https://github.com/KovoPraha/evidenceTreninku/pull/38) a
+[#39](https://github.com/KovoPraha/evidenceTreninku/pull/39) jsou sloučené do
 `main`. Aktuální release mimo jiné obsahuje:
 
 - srozumitelnější registraci a práci s heslem;
@@ -66,7 +68,9 @@ Pull requesty
   trenéra;
 - zachování vazeb na soupisky při kopírování týdne;
 - opravené produkční spouštění fronty zpráv soupiskám přes neveřejný PHP
-  bootstrap.
+  bootstrap;
+- opravy druhé vlny testerových bodů a pravdivé zobrazení neomezené kapacity
+  ve zrychlené přihlášce.
 
 Produkční běh fronty zpráv
 [`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788)
@@ -89,6 +93,13 @@ samostatném schválení podle
 nezastavuje; pouze poctivě zaznamenává, že plné UAT nebylo schváleno. Hodnotu
 `true` lze zvolit jen tehdy, když byl přesný nasazovaný commit skutečně
 schválen.
+
+Read-only kontrola připravenosti
+[`37629771673`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629771673)
+potvrdila aktivní rodičovské, dětské i správcovské účty, testovací Stripe,
+bankovní nastavení a inbox. Plné zapisovací UAT je ale nadále blokované:
+release není schválený, testovací okno skončilo 6. 10. 2026 ve 20:00 a chybí
+část časově omezených TEST fixture dat.
 
 ## Převzetí práce na jiné stanici
 
