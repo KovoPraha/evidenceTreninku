@@ -3,8 +3,9 @@
 Produkční adresa je <https://kis.kovopraha.cz/>. Nasazení se spouští
 ručně na GitHubu; samotný push do `main` produkci nezmění.
 
-Ověřeno 22. 9. 2026: úspěšný běh `35729597409` nasadil commit
-`0135e34e47243ba983ee9239ab67087a5b6f35f1` a použil
+Ověřeno 7. 10. 2026: úspěšný běh
+[`37605872735`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735)
+nasadil commit `623e161e0b2d7eefeffe6d87d4586926265ba02a` a použil
 `APP_HOST=kis.kovopraha.cz`, `WEB_URL=https://kis.kovopraha.cz` a
 `REMOTE_DIR=kis.kovopraha.cz`; závěrečný HTTP smoke skončil 200. Cíl workflow
 je tedy nový KIS web, nikoli staré, nadále používané nasazení
@@ -18,8 +19,12 @@ workflow je nepřepisuje.
 3. Klikněte na **Run workflow** a ponechte větev **main**.
 4. Do potvrzovacího pole napište přesně `NASADIT`.
 5. Nastavte `uat_schvaleno=true` pouze pro release, jehož UAT brána byla
-   skutečně schválena; jinak workflow záměrně zastavte.
-6. Klikněte na zelené **Run workflow** a počkejte, až jsou všechny kroky zelené.
+   skutečně schválena. Hodnota `false` nasazení nezastaví; uloží do release
+   pravdivou informaci, že přesný commit ještě nemá schválené plné UAT.
+6. `importovat_krouzky=true` použijte pouze tehdy, když má tento konkrétní
+   deploy znovu idempotentně připravit nabídku kroužků 2026/27. Pro běžný
+   kódový release ponechte `false`.
+7. Klikněte na zelené **Run workflow** a počkejte, až jsou všechny kroky zelené.
 
 Workflow před změnou produkčních souborů vždy:
 
@@ -65,6 +70,20 @@ V GitHub environment `production` musí být také tyto Variables:
 
 Workflow skončí před připojením, pokud hodnoty chybí, URL není HTTPS, cílová
 cesta není bezpečná relativní cesta nebo host URL neodpovídá `KIS_APP_HOST`.
+
+## Fronta zpráv soupiskám
+
+Workflow `.github/workflows/roster-messages-production.yml` zpracovává omezenou
+dávku fronty každých pět minut a podporuje i ruční spuštění. Kvůli omezenému
+hostingu nespouští worker s CLI parametry ani se nespoléhá na shellové proměnné;
+nahraje neveřejný dočasný PHP bootstrap, nastaví povolené hodnoty pomocí
+`putenv()`, spustí worker a bootstrap vždy odstraní.
+
+Po opravách z pull requestů
+[#35](https://github.com/KovoPraha/evidenceTreninku/pull/35) a
+[#36](https://github.com/KovoPraha/evidenceTreninku/pull/36) skončil produkční
+běh [`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788)
+úspěšně nad commitem `623e161`.
 
 `DEPLOY_TOKEN` ani `PROD_CONFIG` se už nepoužívají. `config.php` musí být na
 serveru nahraný před prvním nasazením, například přes Total Commander. Workflow

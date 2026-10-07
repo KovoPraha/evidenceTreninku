@@ -33,6 +33,7 @@
 /.codex-remote-attachments/
 /.codex-artifact-qa/
 /tmp/
+/.tmp-kis-feedback-review-*/
 
 .DS_Store
 Thumbs.db

@@ -1,5 +1,10 @@
 # Technická dokumentace — Evidence Tréninků
 
+> Historický technický základ baseline 2.20. Aktuální provozní stav a předání
+> jsou v [`CURRENT_STATE.md`](CURRENT_STATE.md) a
+> [`HANDOFF_CURRENT.md`](HANDOFF_CURRENT.md). Přesné současné chování určuje
+> `origin/main`, migrace a automatické testy.
+
 ## Obsah
 
 1. [Architektura](#1-architektura)

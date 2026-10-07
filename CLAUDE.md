@@ -2,9 +2,10 @@
 
 Projektový vstupní kontext pro Claude Code a Cowork. Před auditem nebo změnou vždy
 nejprve přečti [aktuální stav](docs/CURRENT_STATE.md),
-[předání na další stanici](docs/HANDOFF_2026-08-29.md) a kanonický historický
-[session handoff](docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md). Starší roadmapy
-a historické sekce tohoto souboru nejsou autoritou pro aktuální procenta ani stav funkcí.
+[aktuální předání na další stanici](docs/HANDOFF_CURRENT.md) a podle potřeby
+historický [session handoff](docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md).
+Starší roadmapy, datované handoffy a historické sekce tohoto souboru nejsou
+autoritou pro aktuální SHA, počty testů, procenta ani stav funkcí.
 
 ## Aktuální produktový rozsah
 

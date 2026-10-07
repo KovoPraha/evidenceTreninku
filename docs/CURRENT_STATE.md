@@ -1,375 +1,118 @@
-# Aktuální stav projektu pro AI a vlastníka
+# Aktuální stav projektu
 
-Aktualizováno: 22. 9. 2026, Europe/Prague
+Aktualizováno: 7. 10. 2026, Europe/Prague
 
-## Aktuální produkční release
+Tento soubor je autoritativní stavový rozcestník. Historické audity, předávací
+záznamy a implementační prompty zachycují stav v datu svého vzniku a nesmí se
+používat jako důkaz aktuální verze. Před každou novou prací má přednost čerstvý
+`git fetch`, větev `origin/main`, aktuální GitHub Actions a skutečný kód.
 
-Produkční aplikace je <https://kis.kovopraha.cz/>. Poslední uzavřený release
-před touto změnou byl commit `0135e34e47243ba983ee9239ab67087a5b6f35f1`:
-CI běh `35729444543` prošel na PHP 8.2 a MariaDB 10.3/11.4 a produkční deploy
-`35729597409` dokončil zálohu, migrace, aktivaci stejného commitu a serverový
-HTTP smoke. Deploy byl spuštěn s `potvrzeni=NASADIT` a `uat_schvaleno=true`.
+## GitHub a produkce
 
-Veřejná domovská stránka, registrace a e-shop po tomto release vracely HTTP
-200; administrační trasy bez přihlášení správně přesměrovaly na login. To je
-důkaz nasazeného kódu a základní dostupnosti, nikoli náhrada plného UAT se
-skutečným e-mailem, bankovní platbou a jmenovanými provozními vlastníky.
+- Repozitář: <https://github.com/KovoPraha/evidenceTreninku>
+- Výchozí větev: `main`
+- Poslední aplikační commit před touto dokumentační synchronizací:
+  `623e161e0b2d7eefeffe6d87d4586926265ba02a`
+- Otevřené pull requesty při této kontrole: žádné
+- Produkční aplikace: <https://kis.kovopraha.cz/>
+- Poslední ověřené nasazení: GitHub Actions běh
+  [`37605872735`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735)
+  nasadil přesně commit `623e161e0b2d7eefeffe6d87d4586926265ba02a`.
+- Nasazení vytvořilo a ověřilo databázovou zálohu, připravilo úplný release,
+  aplikovalo migrace, aktivovalo kód a dokončilo HTTP smoke test.
+- Veřejná domovská stránka a registrace po nasazení odpovídají HTTP 200.
+  Soubor `var/deployment.json` není veřejný a správně odpovídá HTTP 403; důkaz
+  release se proto čte z chráněného workflow, nikoli z veřejné URL.
 
-## Produkční UAT účty a scénářová data z 22. 9. 2026
+Publikování tohoto dokumentu vytvoří novější dokumentační commit na `main`, ale
+nemění nasazený aplikační commit. Přesné aktuální SHA `main` se proto vždy čte
+pomocí `git fetch --prune origin` a `git rev-parse origin/main`, nikoli opisem z
+dokumentu. Samotný push ani merge do `main` produkci nemění. Produkční nasazení
+je vždy samostatný ručně spuštěný workflow podle
+[`NASAZENI.md`](NASAZENI.md).
 
-Chráněný provozní workflow umí idempotentně připravit rodiče Tester Karel a
-Tester Petra, děti Ema Tester a Adam Tester a provázaná data označená `TEST -`
-pro e-shop, kroužek, bezplatnou i placenou akci, velodrom, individuální lekci a
-trénink. Heslo se nepíše do Gitu ani do logu a po provedení lze dočasný secret
-odstranit. Stejný workflow obsahuje cílenou deaktivaci účtů a všech veřejných
-TEST položek bez mazání auditní historie. Provozní popis je v
-`docs/PRODUKCNI-UAT-UCTY-A-DATA.md`.
+## Poslední automatické ověření
 
-Placená testovací akce je připravena jako skutečný objednávkový tok: veřejně se
-zobrazuje pouze v části Akce, má cílovou testovací soupisku, neměnné souhlasy a
-storno podmínky a po vložení účastníka pokračuje do společného košíku. Kontrola
-připravenosti ji uzná pouze tehdy, když je propojená s aktivní placenou variantou
-v CZK; samotný otevřený kalendářový záznam už nestačí.
+GitHub Actions běh
+[`37605851409`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605851409)
+nad stejným commitem prošel v tomto rozsahu:
 
-## UAT opravy z 21. 9. 2026
+- PHPUnit na PHP 8.2: **832 testů / 11 668 kontrol**;
+- integrační smoke na MariaDB 10.3: úspěch;
+- integrační smoke na MariaDB 11.4: úspěch;
+- kontrola Composer konfigurace: úspěch.
 
-Součástí aktuální verze jsou opravy produkčního UAT: odolnější Stripe Checkout,
-jednotná nabídka kroužků pouze v e-shopu,
-srozumitelnější akce a programy, automatický kód akce, cena velodromu v Kč a
-datové oddělení veřejného velodromu od individuálních lekcí. Přesný rozsah,
-migrace a provozní hranice jsou v `docs/UAT-OPRAVY-2026-09-21.md`.
+Migrační katalog obsahuje 81 verzovaných PHP migrací a zmrazený legacy
+baseline 2.20.2. Aktuální zálohovací ownership kontrakt je `2026-10-07.1`.
+Počet souborů není důkazem stavu konkrétní databáze; ten se na každé stanici
+ověřuje pomocí `php bin/migrate.php --check --json` s nastaveným `APP_HOST`.
 
-Produkční stav a přesný nasazený commit dokládá workflow `deploy-production.yml`
-a soubor `var/deployment.json`. Stripe zůstává fail-closed bez samostatně
-schválené produkční konfigurace klíčů a webhooku.
+## Funkční stav po změnách z 7. 10. 2026
 
-Tento soubor je krátký vstupní rozcestník. Přesný historický ledger a poslední
-důkazy jsou v `docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md`; produktová
-autorita M2 je `10-milnik-m2-provozni-pilot.md`.
+Pull requesty
+[#34](https://github.com/KovoPraha/evidenceTreninku/pull/34),
+[#35](https://github.com/KovoPraha/evidenceTreninku/pull/35) a
+[#36](https://github.com/KovoPraha/evidenceTreninku/pull/36) jsou sloučené do
+`main`. Aktuální release mimo jiné obsahuje:
 
-## Produkční adresa a aktuální deploy důkaz
+- srozumitelnější registraci a práci s heslem;
+- předletovou kontrolu klubové akce před otevřením přihlašování;
+- dvoukrokové ruční založení sportovce;
+- bezpečné opakování nebo návrat při nedostupné platební bráně;
+- auditované odebírání pracovních pozic a aktivaci/deaktivaci účtů;
+- povinnou vazbu plánovaného tréninku na soupisku, nebo výslovné označení
+  interního tréninku bez účastníků;
+- potvrzení účasti na tréninku rodičem či sportovcem a přehled odpovědí pro
+  trenéra;
+- zachování vazeb na soupisky při kopírování týdne;
+- opravené produkční spouštění fronty zpráv soupiskám přes neveřejný PHP
+  bootstrap.
 
-Aktuální produkční adresa je <https://kis.kovopraha.cz/>. GitHub workflow
-`.github/workflows/deploy-production.yml`
-je parametrizované Variables `KIS_APP_HOST`, `KIS_WEB_URL` a `KIS_REMOTE_DIR`,
-kontroluje jejich vzájemnou shodu a provádí závěrečný HTTP smoke.
+Produkční běh fronty zpráv
+[`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788)
+nad commitem `623e161` skončil úspěšně. Workflow je naplánovaný každých pět
+minut a lze jej spustit také ručně.
 
-Staré nasazení `data.kovopraha.cz/evidence` se nadále používá, ale není cílem
-tohoto GitHub workflow. Jeho stav proto nelze zaměňovat za stav KIS.
+Podrobný uživatelský dopad testerových oprav popisuje
+[`UAT-OPRAVY-2026-10-07.md`](UAT-OPRAVY-2026-10-07.md).
 
-Aktuální ověřený důkaz je deploy `35729597409` nad commitem
-`0135e34e47243ba983ee9239ab67087a5b6f35f1`. Před každým dalším zapisovacím
-UAT se musí znovu porovnat schválený commit s `var/deployment.json` a konkrétním
-během workflow. Podrobný postup je v
-`docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md`.
+## Důležitá provozní hranice
 
-## Aktuální předání na další stanici
+Poslední deploy byl záměrně uložen s `uat_schvaleno=false`. To znamená, že kód
+je technicky nasazený a prošel automatickými kontrolami, ale tento deploy sám o
+sobě není schválením plného přihlášeného produkčního UAT. Zapisovací scénáře se
+skutečnými e-maily, bankovními platbami nebo provozními účty se provádějí až po
+samostatném schválení podle
+[`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
-Pro pokračování z nového počítače je autoritativní
-`docs/HANDOFF_2026-08-29.md` a tag `handoff-2026-08-29`. Čistý clone lze poprvé
-připravit přes `PRIPRAVIT_LOCALHOST_TESTOVANI.cmd`: vznikne oddělená MariaDB na
-portu 3308, všech 70 migrací a pouze syntetické demo. Verzované schéma nemá
-aplikační řádky, hesla ani osobní údaje. Bootstrap, ikony a písma jsou lokální,
-takže po prvním `composer install` lze UAT provádět bez internetu.
+`uat_schvaleno` je metadata konkrétního release. Hodnota `false` nasazení
+nezastavuje; pouze poctivě zaznamenává, že plné UAT nebylo schváleno. Hodnotu
+`true` lze zvolit jen tehdy, když byl přesný nasazovaný commit skutečně
+schválen.
 
-Zdrojová kontrola datových toků je v `outputs/data-flow-audit-2026-08-24/`.
-Aktuální opravy zavírají legacy přímé zapisovače, přesouvají dočasné a citlivé
-soubory do soukromého úložiště, koordinují souborové změny s DB transakcemi a
-ponechávají KIS synchronizaci v preview/sandbox režimu. Produkční deploy není
-součástí tohoto předání.
+## Převzetí práce na jiné stanici
 
-Následující rozsáhlá část zachovává historické provozní důkazy. Starší SHA,
-počty migrací a testů v ní nejsou autoritou pro aktuální checkout; přednost má
-výše uvedené předání a čerstvá lokální kontrola.
+Aktuální postup je v [`HANDOFF_CURRENT.md`](HANDOFF_CURRENT.md). Základní pravidla:
 
-## Identita projektu
+1. vždy začít `git fetch --prune origin`;
+2. ověřit čistý pracovní strom a shodu lokálního `main` s `origin/main`;
+3. novou práci založit z čerstvého `origin/main` na větvi `codex/<téma>`;
+4. nemíchat do commitu `config.php`, tajemství, produkční data, lokální importy
+   ani cizí rozpracované změny;
+5. změnu dostat do `main` přes pull request a zelené kontroly;
+6. produkční deploy považovat za samostatné, výslovně schválené rozhodnutí.
 
-Samostatná aplikace Evidence tréninků + e-shop + KIS v
-`C:\xampp\htdocs\evidencePavel`. Není submodulem Velocoty. Případné budoucí
-sdílení uživatelů je oddělené rozhodnutí, nikoli současná závislost.
+## Autorita dokumentace
 
-Evidence, e-shop a KIS nejsou tři nasazené aplikace. Jde o jednu aplikaci, jeden
-webroot, databázi, migrační katalog, session a kanonickou tabulku `sportovci`.
-Názvy modulů zachovávají historické zadání a funkční orientaci v obrazovkách.
+Pro pokračování ve vývoji platí toto pořadí:
 
-## Poslední přijatý technický stav
+1. skutečný `origin/main`, migrace, testy a workflow;
+2. tento stavový soubor a [`HANDOFF_CURRENT.md`](HANDOFF_CURRENT.md);
+3. provozní runbooky, zejména [`NASAZENI.md`](NASAZENI.md);
+4. tematické dokumenty k jednotlivým funkcím;
+5. datované audity, staré handoffy, roadmapy a implementační prompty pouze jako
+   historický kontext.
 
-- produkce i `origin/main` jsou na commitu `c5f638f`. CI běh `32451633696`
-  úspěšně ověřil PHPUnit a MariaDB 10.3/11.4; deploy běh `32451651704`
-  vytvořil ověřenou zálohu, aplikoval R9–R11 migrace, aktivoval přesně tento
-  release a dokončil serverový HTTP smoke stavem 200. R9 až R12 jsou nasazené,
-
-- lokální i produkční migrační katalog má 64 migrací. Produkční post-check po
-  aplikaci metadat kategorií, číselníku parametrů a provozního pořadí produktů
-  skončil `current: true`, `pending: []`; stejný průchod `check → apply → check`
-  je zelený na MariaDB 10.3.39 i 11.4.0,
-
-- poslední ověřená plná lokální brána R11 je `685 tests / 6211 assertions`
-  s jednou existující PHPUnit deprecation. First-party lint prošel na všech
-  550 PHP souborech.
-  `composer validate --strict`, audit zamčených závislostí, kontrola
-  platformních požadavků i `git diff --check` jsou zelené,
-
-- aktuální lokální ownership kontrakt zálohy je `2026-08-21.1`; vedle
-  bankovního nastavení a sloupců zápisového kontraktu R7 zahrnuje nové tabulky
-  kategorií, definic parametrů, voleb a jejich audit. Obnova zálohy na MariaDB
-  10.3 i 11.4 ověřila 119 vlastněných tabulek,
-
-- R9 zachovává řetězcové `category_path`, odvozuje hierarchii z cest
-  `A > B > C`, dovoluje výslovný přepis rodiče a chybějící rodiče zobrazuje jako
-  bezpečné virtuální uzly. Administrátor spravuje metadata, auditované
-  přiřazení a jednu výchozí kategorii; kategorii používanou produktem nebo
-  cenovým pravidlem nelze smazat. Veřejný filtr zahrnuje podkategorie. Produkt
-  bez kategorie zůstává pouze pod „Vše“ a administrace ho označuje jako
-  neúplný. Živý localhostový průchod ověřil vytvoření stromu, přiřazení produktu
-  i filtrování rodičem a po úklidu nezůstalo žádné testovací schéma,
-
-- R10 ponechává importní `attributes_json` otevřený a nad ním přidává volitelný
-  číselník názvů, jednotek, pořadí, ploch zobrazení a výběrových hodnot. Neznámé
-  klíče ani chybný JSON import nezastaví; neznámé hodnoty se zobrazují za
-  definovanými a deaktivace nemaže varianty ani historii. Administrace používá
-  transakce, CSRF, PRG a audit. Živý localhostový průchod nad reálným Shoptet
-  artefaktem ověřil číselník velikostí, skutečný výběr ve variantě a veřejné
-  zobrazení definované velikosti i neznámé barvy,
-
-- R11 přidává administrátorský provozní přehled katalogu s počty, hledáním,
-  filtry, řazením, hromadnými akcemi a auditovanou korekcí skladu přes samostatný
-  skladový pohyb. Veřejný e-shop umí hledat a řadit. Nabídku kroužku lze nově
-  auditovaně upravit nebo uzavřít a administrace ukazuje přesný důvod, proč ji
-  nelze prodávat. Aktivace respektuje stejnou publikační připravenost jako
-  jednotlivý editor a prohraný souběžný pokus o poslední místo vrací přesný
-  důvod naplněné kapacity. Živý localhostový průchod nad reálným Shoptet
-  artefaktem ověřil správu 243 produktů, skladový pohyb, hromadné pořadí,
-  blokovanou aktivaci nepodporovaného pronájmu, editaci a uzavření kroužku i
-  veřejné hledání a řazení,
-
-- R12 nepřidává nový platební mechanismus. Dokument
-  `docs/shop-program-payment-verification.md` dokládá bankovní/QR tok od košíku
-  a čekajícího řádku `payments` přes potvrzení platby, aktivní účast a zápis na
-  soupisku až po storno, stav `refund_required` a samostatně potvrzenou vratku.
-  Zaměřené sady prošly 36 testy / 763 assertions; plná sada i obě MariaDB smoke
-  matice zůstávají zelené. Produkční objednávka ani live Stripe nebyly použity,
-
-- produkční read-only drill `32454370195` po nasazení ověřil 16 databázových
-  invariantů s nulou porušení. Homepage, e-shop a stránka kroužků odpovídají
-  HTTP 200; správa katalogu, kategorií, parametrů, nabídek kroužků a bankovního
-  účtu existuje a nepřihlášeného uživatele přesměruje na login. Živý e-shop
-  obsahuje nové hledání, řazení a kategoriové menu,
-
-- workflow „Nastavit produkční bankovní účet KIS“ proběhlo úspěšně 14. 8. 2026
-  (běh `31849593079`) a produkční `SHOP_BANK_*` jsou platně nastavené. Potvrdil
-  to i úspěšný deploy preflight běhu `32245326447` s prázdným seznamem varování.
-  Bankovní checkout proto na produkci funguje a není fail-closed. Obrazovka
-  `eshop_bank_admin.php` je nasazená; vlastníkovi stále zbývá po přihlášení
-  vizuálně ověřit, že
-  platný IBAN odpovídá správnému klubovému účtu; hodnoty účtu ani secrets se do
-  dokumentace nezapisují,
-
-- pracovní řez sjednocení aplikace zavádí jeden UI základ pro všech 127 aktivních
-  PHP HTML stránek: společné pozadí a formuláře, stav načítání a ochranu proti
-  dvojímu odeslání, bezpečné toast zprávy a jednu veřejnou navigaci pro e-shop,
-  tréninky, kroužky, velodrom a účty; podrobnosti jsou v
-  `docs/shared-ui-foundation.md`,
-
-- aktuální funkční řez dokončuje M3.2: uživatel má výchozí opt-out, dobrovolné
-  zapnutí a odhlášení jedním krokem; idempotentní týdenní fronta, audit a společný
-  localhost-only outbox jsou ověřené. Produkční e-mailový transport ani CRON
-  nejsou implementované,
-
-- aktuální M3.5a přidává admin-only read-only inventuru kvality tréninků,
-  strukturovaných i historických měření, závodních výsledků a zátěžových testů;
-  zobrazuje pouze agregované počty bez jmen, ID a naměřených hodnot,
-
-- M3.5b přidává aditivní kontrakt `sports-measurement-v1`: výslovnou jednotku
-  vzdálenosti a metry, čas v milisekundách, číselné RPE a uzavřené stavy závodu,
-
-- M3.5c používá tento kontrakt ve všech čtyřech formulářích a handlerech pro
-  vytvoření i editaci tréninku/závodu. Nové řádky ukládají původní i normalizované
-  hodnoty; neplatný čas, RPE nebo chybějící jednotka selžou před transakcí. Historii
-  ani produkci řez nepřevádí a ostrý import nespouští,
-
-- M3.5d přidává admin-only read-only stránku `sports_import_review_admin.php`:
-  pokrytí kontraktu v1 a konkrétní seznam nejednoznačných legacy řádků s důvody
-  k ručnímu rozhodnutí před budoucím jednorázovým importem; nic nepřevádí,
-  neodhaduje a nezobrazuje osoby,
-
-- výchozí větev `main`, vzdálený repozitář `KovoPraha/evidenceTreninku`,
-- poslední nasazený a přijatý base: `0e43a8b` (Prompt F nad commity vlákna B),
-- poslední přijatý base před M3.5d: `e07fc25` (M3.5c); aktuální řez M3.5d přidává
-  read-only přípravu jednorázového importu sportovních dat,
-- předchozí implementace: `12c2300` – M3.4 přidává administrátorský read-only
-  provozní přehled plateb, vratek, kapacit, přihlášek a provozních výjimek; browser
-  ověřil stránku syntetickým administrátorem bez konzolové chyby,
-- bezpečnostní infrastruktura: `6655a39` – kanonická `APP_BASE_URL`, soukromé
-  přílohy mimo webroot, autorizovaný výdej, migrátor existujících souborů, opravy
-  známých XSS sinků a chybějícího CSRF; produkce se nezměnila,
-- předchozí implementace: `63c8ec1` – první řez M3.3 přidává
-  přihlášený roční přehled skutečně uhrazených členských předpisů a e-shopových
-  položek všech schválených profilů; oba zdroje i měny drží odděleně a výslovně
-  nejde o účetní ani daňový doklad,
-- předchozí implementace: `82d41ac` – M3.2 přidává
-  přihlášený týdenní náhled rodinného programu s bezpečným listováním po týdnech,
-  prostým textem a výslovně vypnutým odesíláním,
-- předchozí implementace: `1510c20` – první řez M3 přidává
-  do rodinného sportovního přehledu společný read-only program nejbližších
-  30 dní nad stejnými oprávněními jako soukromý ICS kalendář,
-- předchozí implementace: `9a04c3c` – localhostová
-  závěrečná brána M2 automaticky ověřuje cesty A01–A10, migrace a úplnost demo
-  dat a odděluje je od vlastníkových výsledků PASS/PARTIAL/FAIL/BLOCKED,
-- předchozí implementace: `6d290cc` – administrátor může
-  jednu čekající připomínku na localhostu auditovaně zpracovat do chráněného
-  souborového outboxu, ověřit stav „Odesláno“ a ukázku opakovaně obnovit;
-  skutečný e-mail se nepoužije,
-- předchozí implementace: `5843f70` – jedním potvrzeným localhostovým tlačítkem
-  připraví opakovatelný syntetický předpis, čekající připomínku a její okamžitý
-  náhled bez odeslání,
-- předchozí implementace: `68e1199` – bezpečný
-  administrátorský náhled uloženého textu připomínky a localhost-only
-  testovací outbox, který nic neposílá na internet,
-- předchozí implementace: `66b4241` – administrátorský
-  přehled fronty připomínek členských plateb, bezpečné ruční opakování bez
-  odesílání z webu a audit konkrétního administrátora,
-- předchozí implementace: `29e3d5d` – dobrovolné e-mailové připomínky blížící
-  se splatnosti členského předpisu s idempotentní frontou, auditem,
-  opakovanými pokusy a omezením četnosti,
-- předchozí implementace: `004e4a6` – soukromý rodinný
-  ICS kalendář tréninků, přihlášených akcí, rezervací a splatností pro
-  všechny aktuálně schválené profily účtu,
-- předchozí funkční řez: `3aa39f8` – veřejný ICS kalendář zveřejněných
-  tréninků, otevřených klubových akcí a veřejných hodin velodromu,
-- předchozí funkční řez: `5829171` – read-only přehled členských předpisů pro
-  rodiče, sportovce a administrátora s izolačními testy,
-- předchozí infrastruktura: `281fcd0` – oprava zálohovacího ownership kontraktu
-  `.9`, úplnost všech migračních tabulek a skutečný MariaDB backup smoke,
-- KIS funkční řez: `7c8b444` – M2.3g auditovaný localhost přenos členských
-  předpisů, historických plateb a bezpečný rollback,
-- CI infrastruktura: `ef5ec21` – MariaDB smoke job v CI,
-- migrace localhostu 55/55,
-- automatické testy 600/5358,
-- first-party PHP syntaxe 507 souborů bez chyby,
-- Composer audit bez bezpečnostního nálezu,
-- aktuální ownership kontrakt `2026-08-16.1` zahrnuje pět tabulek registrace
-  sportovce i dosavadní aplikační tabulky,
-- produkce je nasazená na `0e43a8b`; další vývoj Promptu E probíhá odděleně na
-  větvi `codex/prompt-e-r1-r8` a není součástí tohoto nasazeného stavu.
-
-Čísla jsou snapshot a nový agent je musí levně ověřit. Cowork bridge kopie může
-být zastaralá; nepoužívej ji jako důkaz proti skutečnému lokálnímu Gitu.
-
-## Funkční localhost vstupy
-
-- společná homepage: `http://localhost/evidencePavel/`,
-- testovací scénáře: `http://localhost/evidencePavel/testovaci_scenare.php`,
-- KIS M2.3g preview, parita a předpisy: `http://localhost/evidencePavel/kis_sync_center.php?run_id=13`,
-- A07 docházka: `http://localhost/evidencePavel/kis_training_a07_admin.php`,
-- A10 audit osoby: `http://localhost/evidencePavel/person_audit_admin.php?sportovec_id=1`,
-- e-shop: `http://localhost/evidencePavel/booking/eshop.php`,
-- detail demo produktu: `http://localhost/evidencePavel/booking/produkt.php?id=1`,
-- administrativní přehled členských předpisů:
-  `http://localhost/evidencePavel/member_charges_admin.php`,
-- veřejný ICS kalendář:
-  `http://localhost/evidencePavel/booking/verejny_kalendar.php`.
-- nastavení soukromého rodinného kalendáře:
-  `http://localhost/evidencePavel/booking/sportovni_prehled.php#rodinny-kalendar`.
-- dobrovolné připomínky splatnosti:
-  `http://localhost/evidencePavel/booking/sportovni_prehled.php#pripominky-plateb`.
-- administrátorská fronta připomínek:
-  `http://localhost/evidencePavel/member_charge_reminders_admin.php`.
-- roční přehled uhrazených služeb:
-  `http://localhost/evidencePavel/booking/sportovni_prehled.php?year=2026#rocni-prehled-uhrad`.
-- administrátorský provozní přehled:
-  `http://localhost/evidencePavel/provozni_prehled_admin.php`.
-- nastavení týdenního souhrnu:
-  `http://localhost/evidencePavel/booking/sportovni_prehled.php#tydenni-souhrn`.
-- administrátorská fronta týdenních souhrnů:
-  `http://localhost/evidencePavel/family_weekly_summaries_admin.php`.
-- kvalita sportovních dat M3.5a–c:
-  `http://localhost/evidencePavel/sports_data_quality_admin.php`.
-
-Rodič vidí předpisy u každého schváleného dítěte v rodinném sportovním přehledu
-a sportovec ve svém omezeném přístupu. Oba pohledy jsou read-only a odvozují
-osobu výhradně z aktivní session a schválené vazby.
-
-Testovací rozcestník je localhost-only a vyžaduje administrátora. Ke každému
-scénáři ukládá `PASS / PARTIAL / FAIL / BLOCKED`, důležitost a dvě krátké poznámky.
-Data jsou v ignorovaném `var/acceptance-feedback.json`. Tlačítko exportu vytvoří
-Markdown bez automaticky načtených osobních dat; před commitem se musí ručně
-zkontrolovat, že poznámky neobsahují hesla ani ostré osobní údaje.
-
-## Aktuální orientační stav
-
-Následující procenta jsou historický produktový snapshot z 5. 8. 2026. Nejsou
-přepočtená podle nového registračního řezu a neslouží jako důkaz technické shody
-produkce; tu popisuje předchozí sekce konkrétním commitem, migracemi a branami.
-
-- celý M2: 87 %,
-- M2.3 zkouška migrace KIS: 99 %; archiv, fingerprintovaný preview, izolovaný
-  sandbox, `kis-import-field-v1`, paritní report, cílový model, staging i auditovaný
-  localhost přenos a rollback jsou hotové; run #13 přesně spároval dvě osoby,
-  přenesl 2/2 předpisy včetně jedné samostatné historické platby a po ověření byl
-  bezpečně vrácen na 0/2 při zachování auditní historie,
-- M2.6 integrovaná akceptace: 99 %; závěrečná brána živě potvrzuje technickou
-  připravenost 3/3, dostupnost A01–A10 10/10, migrace 50/50 a úplná demo data;
-  vlastníkem je zatím potvrzeno 0/10, takže zbývá jeho průchod a vypořádání
-  připomínek,
-- M2.7 hodnota pro členy: 94 %; veřejný i soukromý rodinný ICS feed, opt-in
-  fronta připomínek, její auditovaná administrátorská obsluha, náhled textu a
-  bezpečný lokální testovací outbox, jedním tlačítkem obnovitelná browserová
-  ukázka i plný přechod Čeká → Odesláno s auditem administrátora jsou technicky
-  hotové; zbývá ověřit
-  kalendář v reálné aplikaci a po schválení textu provést kontrolované doručení
-  na určenou testovací adresu; produkční CRON zůstává vypnutý,
-- KIS/K5: 98 % technického prototypu; ostrý import a cutover nejsou hotové,
-- e-shop: 97 % technického localhost řešení; produkční aktivace a automatické
-  platby nejsou součástí hotového stavu.
-- M3: 65 % technického localhost řešení; M3.1 rodinný program, M3.2 týdenní
-  souhrn a M3.4 read-only provozní přehled správce jsou technicky hotové. M3.2
-  má bezpečný přihlášený náhled, opt-in/opt-out, idempotentní frontu, audit a
-  localhost-only outbox;
-  M3.3 má oddělený read-only roční přehled skutečně uhrazených členských
-  předpisů a e-shopových položek. U M3.3 zbývá vlastníkova kontrola obsahu a
-  rozhodnutí o exportu. M3.5a má read-only inventuru pěti sportovních zdrojů bez
-  osobních a naměřených hodnot; M3.5b definuje aditivní verzi jednotek,
-  normalizovaného času, RPE a výsledkových stavů bez převodu historie. M3.5c již
-  kontrakt zapojuje do všech nových zápisů a editací měření; jednorázový ostrý
-  import a automatický převod historie zůstávají záměrně neprovedené,
-  produkční brána zůstává podmíněná vlastníkovým dokončením A01–A10.
-
-Procenta neznamenají připravenost k produkčnímu deployi. Produkce, ostrý import,
-Stripe, Fio auto-confirm, wallet a TrainingPeaks zůstávají samostatně blokované.
-
-## Kontrolní audity
-
-Rozcestník je v `docs/AUDITY.md`. Druhý AI re-audit a živý adversariální průchod
-jsou uložené jako historické snapshoty `cd38f85`; jejich validační dodatky
-zaznamenávají, že dřívější nálezy N-H1, N-M1 a N-L1 byly následně opraveny a
-ověřeny. Pozdější audit z 5. 8. 2026 potvrdil dva nové HIGH nálezy v legacy
-infrastruktuře (veřejné přílohy a Host poisoning); oba jsou opravené v `6655a39`
-spolu se známými XSS a CSRF cestami. DDL bylo z webového bootstrapu odstraněno;
-otevřené zůstává převedení request-bound e-mailů na společnou frontu. Podrobnosti jsou v
-`docs/security-infrastructure-2026-08-05.md`. Žádný localhost audit nenahrazuje
-produkční penetrační test ani kontrolu konfigurace hostingu.
-
-Produktový `AUDIT-PRILEZITOSTI-A-NAPADY.md` je uložen jako zdroj návrhů, ale
-nenahrazuje schválený plán. Jednotlivé nápady se do roadmapy přesunou teprve po
-potvrzení priority, právních a účetních dopadů a očekávaného rozsahu.
-Vytříděné návrhy a jejich brány jsou v
-`docs/plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md`. Do M2.7 byl
-přijat veřejný i revokovatelný rodinný ICS kalendář a opt-in připomínky
-splatnosti; wallet, zdravotní predikce,
-externí integrace a další personalizované feedy zůstávají za samostatnými
-rozhodnutími.
-
-Kanonický plán navazujícího milníku je
-`docs/plan-eshop-tymova-evidence/12-milnik-m3-clenska-hodnota.md`. M3.1 pouze
-zobrazuje již oprávněná data; nevytváří druhou identitu, kalendářovou logiku ani
-finanční stav.
-
-## Doporučené pořadí další práce
-
-1. Na větvi `codex/prompt-e-r1-r8` realizovat potvrzené řezy R1–R8 z
-   `docs/PROMPT-E-rucni-katalog-a-krouzky.md`, každý s vlastní migrační,
-   testovací a handoff bránou.
-2. Po R8 se zastavit a nechat vlastníka vyzkoušet reálný prodej kroužku; R9–R11
-   bez nového rozhodnutí nezačínat.
-3. Prompt E nenasazovat ani nepushovat bez samostatného výslovného pokynu.
+Starší soubory nebyly mazány, protože zachovávají rozhodovací a auditní stopu.
+Jejich stará SHA, počty testů a tvrzení typu „plánováno“ nejsou aktuálním
+stavem, pokud jsou v rozporu s výše uvedenými autoritami.

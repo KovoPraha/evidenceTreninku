@@ -1,6 +1,6 @@
 # Produkční uživatelské testování
 
-Aktualizováno: 22. 9. 2026, Europe/Prague
+Aktualizováno: 7. 10. 2026, Europe/Prague
 
 Pro toto UAT je cílovou produkční aplikací <https://kis.kovopraha.cz/>. Staré
 nasazení `data.kovopraha.cz/evidence` se stále používá, ale současný GitHub
@@ -49,10 +49,16 @@ tedy ještě o skutečné stržení z karty; live režim vyžaduje samostatné r
 4. Pokud nasazený commit není schválenou verzí pro UAT, provádějte pouze
    read-only kontroly. Zapisovací scénáře označte `BLOCKED`.
 
-Při kontrole 22. 9. 2026 nasadil běh `35729597409` commit
-`0135e34e47243ba983ee9239ab67087a5b6f35f1`; záloha, migrace, aktivace i
-serverový HTTP smoke byly zelené. Tento údaj je historický důkaz konkrétního
-release. Před mutujícími testy vždy ověřte aktuální běh a `var/deployment.json`.
+Při kontrole 7. 10. 2026 nasadil běh
+[`37605872735`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735)
+commit `623e161e0b2d7eefeffe6d87d4586926265ba02a`; záloha, migrace, aktivace i
+serverový HTTP smoke byly zelené. Release má `uat_schvaleno=false`, takže jsou
+bez nového schválení povolené jen read-only kontroly. `var/deployment.json` je
+z veřejného webu záměrně nedostupný (HTTP 403); kontroluje se přes chráněný
+workflow a oprávněnou serverovou diagnostiku.
+
+Změny určené k novému průchodu testerů jsou shrnuté v
+[`UAT-OPRAVY-2026-10-07.md`](UAT-OPRAVY-2026-10-07.md).
 
 ## Testovací identity
 

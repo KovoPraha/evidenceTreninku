@@ -1,5 +1,11 @@
 # Vývojářský průvodce
 
+> Tento dlouhý průvodce vznikl pro baseline 2.19/2.20 a některé inventáře mohou
+> být historické. Aktuální SHA, testy, migrace a předání jsou v
+> [`CURRENT_STATE.md`](CURRENT_STATE.md) a
+> [`HANDOFF_CURRENT.md`](HANDOFF_CURRENT.md); při rozporu má přednost kód na
+> `origin/main` a aktuální workflow.
+
 Průvodce pro vývojáře pracující na projektu **Evidence tréninků**. Obsahuje instalaci, konvence kódu, vzory pro přidávání funkcionality a nasazení.
 
 ---
