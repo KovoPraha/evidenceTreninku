@@ -55,4 +55,14 @@ final class LightweightEshopWorkflowWiringTest extends TestCase
         self::assertStringContainsString('Automatické párování Fio', $payments);
         self::assertStringContainsString('Nastavení bankovního účtu', $payments);
     }
+
+    public function testGuestCheckoutConfirmationIsSubmittedAndVerifiedByTheServer(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $page = (string)file_get_contents($root . '/booking/rychly_nakup.php');
+        $service = (string)file_get_contents($root . '/includes/shop_guest_checkout.php');
+        self::assertStringContainsString('name="confirmed" value="1" required', $page);
+        self::assertStringContainsString("(\$customer['confirmed'] ?? '') !== '1'", $service);
+        self::assertStringContainsString('Před objednáním potvrďte', $service);
+    }
 }

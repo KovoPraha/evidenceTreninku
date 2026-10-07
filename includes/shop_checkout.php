@@ -8,6 +8,23 @@ final class ShopCheckoutException extends RuntimeException
 {
 }
 
+function shopCheckoutPragueNow(?DateTimeImmutable $now = null): DateTimeImmutable
+{
+    $timezone = new DateTimeZone('Europe/Prague');
+    return ($now ?? new DateTimeImmutable('now', $timezone))->setTimezone($timezone);
+}
+
+function shopCheckoutPublicCodeDate(?DateTimeImmutable $now = null): string
+{
+    return shopCheckoutPragueNow($now)->format('ymd');
+}
+
+function shopCheckoutPaymentDueAt(int $dueDays, ?DateTimeImmutable $now = null): string
+{
+    if ($dueDays < 1 || $dueDays > 365) throw new InvalidArgumentException('Splatnost objednávky není platná.');
+    return shopCheckoutPragueNow($now)->modify('+' . $dueDays . ' days')->setTime(23, 59, 59)->format('Y-m-d H:i:s');
+}
+
 require_once __DIR__.'/shop_beneficiary.php';
 require_once __DIR__.'/club_program.php';
 require_once __DIR__.'/club_event_shop.php';
@@ -306,8 +323,8 @@ function shopCheckoutPlace(
         $total=$subtotal-$discount;
         if(!hash_equals($expectedCartFingerprint,shopCartFingerprint($items,$coupon,$velodromeItems,$eventItems)))throw new ShopCheckoutException('Cena, obsah nebo kupón košíku se změnily. Zkontrolujte nový souhrn a odešlete jej znovu.');
         if($currency!=='CZK'||$total<1) throw new ShopCheckoutException('První bankovní checkout podporuje pouze kladnou částku v CZK.');
-        $publicCode='KP'.date('ymd').strtoupper(bin2hex(random_bytes(5)));
-        $dueAt=(new DateTimeImmutable('now +'.$bank['due_days'].' days'))->setTime(23,59,59)->format('Y-m-d H:i:s');
+        $publicCode='KP'.shopCheckoutPublicCodeDate().strtoupper(bin2hex(random_bytes(5)));
+        $dueAt=shopCheckoutPaymentDueAt((int)$bank['due_days']);
         $orderValues=[$publicCode,$accountId,(int)$cart['id'],$keyHash,trim((string)$account['jmeno'].' '.(string)$account['prijmeni']),(string)$account['email'],$subtotal,$discount,$total,$currency];
         if(shopOrderExpirationAvailable($pdo)){
             $insert=$pdo->prepare('INSERT INTO shop_orders(public_code,account_id,source_cart_id,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at,payment_expires_at) '

@@ -114,6 +114,36 @@ function clubCatalogImportPurchaseOption(string$label):string
     return'first_half';
 }
 
+/** @param list<array<string,mixed>>$offers @return list<array<string,mixed>> */
+function clubCatalogImportPaymentOffers(array$offers):array
+{
+    $hasSecondHalf=false;$firstHalf=null;
+    foreach($offers as$offer){
+        $option=clubCatalogImportPurchaseOption((string)($offer['label']??''));
+        if($option==='second_half')$hasSecondHalf=true;
+        if($option==='first_half'&&$firstHalf===null)$firstHalf=$offer;
+    }
+    if($hasSecondHalf||$firstHalf===null)return$offers;
+    $result=[];$secondHalfAdded=false;
+    foreach($offers as$offer){
+        $result[]=$offer;
+        if(!$secondHalfAdded&&clubCatalogImportPurchaseOption((string)($offer['label']??''))==='first_half'){
+            $second=$offer;$second['label']='2. pololetí';$second['url']=null;$result[]=$second;
+            $secondHalfAdded=true;
+        }
+    }
+    return$result;
+}
+
+/** @return array{0:?int,1:?int} */
+function clubCatalogImportBirthYears(string$ageLabel,int$schoolYearStart=2026):array
+{
+    if(preg_match('/(\d{1,2})\s*[–-]\s*(\d{1,2})/u',$ageLabel,$match)!==1)return[null,null];
+    $minAge=(int)$match[1];$maxAge=(int)$match[2];
+    if($minAge<1||$maxAge<$minAge||$maxAge>99)return[null,null];
+    return[$schoolYearStart-$maxAge,$schoolYearStart-$minAge];
+}
+
 /** @return list<array{weekday:int,starts_at:string,ends_at:string}> */
 function clubCatalogImportSchedule(string$value):array
 {
@@ -137,12 +167,13 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
     $images=['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg'];$animalImages=clubCatalogImportAnimalImages();
     foreach(legacyClubCatalog()as$index=>$row){
         $slug=clubCatalogImportSlug((string)$row['name']);$programCode='KROUZKY-2627-'.$slug;$teamCode=substr('KR-2627-'.$slug,0,48);
+        $offers=clubCatalogImportPaymentOffers($row['offers']);[$birthYearFrom,$birthYearTo]=clubCatalogImportBirthYears((string)$row['age']);
         $team=kisRosterCreateTeam($pdo,$seasonId,$actorId,$teamCode,(string)$row['name'].' 2026/27','Cyklistika',(string)$row['age'],$reason);
         $programQuery=$pdo->prepare('SELECT * FROM club_programs WHERE code=?');$programQuery->execute([$programCode]);$program=$programQuery->fetch(PDO::FETCH_ASSOC);
         $animalImage=$animalImages[(string)$row['name']]??null;$imageRelative=$animalImage??$images[$index%count($images)];
         $imagePath=rtrim($applicationRoot,'/\\').DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'clubs'.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$imageRelative);
         if(!is_file($imagePath))throw new ClubCatalogImportException('Chybí importovaný obrázek: '.basename($imagePath));
-        $first=$row['offers'][0];$firstOption=clubCatalogImportPurchaseOption((string)$first['label']);
+        $first=$offers[0];$firstOption=clubCatalogImportPurchaseOption((string)$first['label']);
         if(!$program){
             $firstEnds=$firstOption==='full_year'?'2027-06-30':($firstOption==='second_half'?'2027-06-30':'2027-01-31');
             $result=clubProgramWizardCreate($pdo,$actorId,[
@@ -152,6 +183,7 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
                 'starts_on'=>'2026-09-01','ends_on'=>$firstEnds,'sales_open_at'=>'2026-09-01T00:00','sales_close_at'=>$firstEnds.'T23:59',
                 'capacity'=>'','program_code'=>$programCode,'offer_code'=>substr($programCode.'-'.strtoupper($firstOption),0,64),
                 'sku'=>substr('KP-KR-2627-'.$slug.'-'.strtoupper($firstOption),0,64),'purchase_option'=>$firstOption,'is_featured'=>$firstOption==='full_year',
+                'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,
                 'program_cancellation_source'=>$templates['program_cancellation']['id']>0?'existing':'new',
                 'program_cancellation_version_id'=>$templates['program_cancellation']['id'],'program_cancellation_text'=>$templates['program_cancellation']['text'],
                 'program_consent_source'=>$templates['program_consent']['id']>0?'existing':'new',
@@ -169,13 +201,24 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
             if(!clubProgramTermsCurrent($pdo,'program',$programId,$purpose))clubProgramTermsConfigure($pdo,$actorId,'program',$programId,$purpose,$templates[$purpose]['text'],true);
         }
         $pdo->prepare('UPDATE club_program_offers SET purchase_option=?,is_featured=? WHERE id=?')->execute([$firstOption,$firstOption==='full_year'?1:0,$baseOfferId]);
-        foreach(array_slice($row['offers'],1)as$offer){
+        foreach(array_slice($offers,1)as$offer){
             $option=clubCatalogImportPurchaseOption((string)$offer['label']);$exists=$pdo->prepare('SELECT id FROM club_program_offers WHERE program_id=? AND purchase_option=?');$exists->execute([$programId,$option]);
             if($exists->fetchColumn()!==false)continue;$ends=$option==='full_year'?'2027-06-30':($option==='second_half'?'2027-06-30':'2027-01-31');$starts=$option==='second_half'?'2027-02-01':'2026-09-01';
             clubProgramCreatePaymentOption($pdo,$actorId,$baseOfferId,[
                 'purchase_option'=>$option,'is_featured'=>$option==='full_year','sku'=>substr('KP-KR-2627-'.$slug.'-'.strtoupper($option),0,64),
                 'amount_minor'=>(int)$offer['price']*100,'code'=>substr($programCode.'-'.strtoupper($option),0,64),'name'=>$row['name'].' · '.$offer['label'],
                 'starts_on'=>$starts,'ends_on'=>$ends,'sales_open_at'=>'2026-09-01T00:00','sales_close_at'=>$ends.'T23:59','capacity'=>'','status'=>'active',
+                'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,
+            ],$reason,true);
+        }
+        $offerRows=$pdo->prepare('SELECT * FROM club_program_offers WHERE program_id=? ORDER BY id');$offerRows->execute([$programId]);
+        foreach($offerRows->fetchAll(PDO::FETCH_ASSOC)as$currentOffer){
+            if((string)($currentOffer['birth_year_from']??'')===(string)($birthYearFrom??'')&&(string)($currentOffer['birth_year_to']??'')===(string)($birthYearTo??''))continue;
+            clubProgramUpdateOffer($pdo,$actorId,(int)$currentOffer['id'],[
+                'name'=>$currentOffer['name'],'starts_on'=>$currentOffer['starts_on'],'ends_on'=>$currentOffer['ends_on'],
+                'sales_open_at'=>$currentOffer['sales_open_at'],'sales_close_at'=>$currentOffer['sales_close_at'],'capacity'=>$currentOffer['capacity'],
+                'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,'status'=>$currentOffer['status'],
+                'purchase_option'=>$currentOffer['purchase_option']??'custom','is_featured'=>(int)($currentOffer['is_featured']??0),
             ],$reason,true);
         }
         clubProgramStorefrontSavePresentation($pdo,$actorId,$programId,[

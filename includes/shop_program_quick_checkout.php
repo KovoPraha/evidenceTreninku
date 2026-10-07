@@ -63,7 +63,7 @@ function shopProgramQuickCheckoutPlace(
             $accountId=(int)$pdo->lastInsertId();
             $request=athleteRegistrationSubmit($pdo,$accountId,$input,$submittedVersions,null,null,true,true);$requestId=(int)$request['id'];
             $unit=(int)$variant['amount_minor'];$currency=(string)$variant['currency'];if($unit<1||$currency!=='CZK')throw new ShopCheckoutException('Kroužek má nepodporovanou cenu.');
-            $publicCode='KP'.date('ymd').strtoupper(bin2hex(random_bytes(5)));$dueAt=(new DateTimeImmutable('now +'.$bank['due_days'].' days'))->setTime(23,59,59)->format('Y-m-d H:i:s');
+            $publicCode='KP'.shopCheckoutPublicCodeDate().strtoupper(bin2hex(random_bytes(5)));$dueAt=shopCheckoutPaymentDueAt((int)$bank['due_days']);
             $street=trim((string)($input['address_street']??'').' '.(string)($input['address_house_number']??'').((string)($input['address_orientation_number']??'')!==''?'/'.(string)$input['address_orientation_number']:''));
             $columns='public_code,account_id,source_cart_id,checkout_mode,guest_access_token_hash,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,customer_phone_snapshot,address_street_snapshot,address_city_snapshot,address_postcode_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at';
             $values=[$publicCode,$accountId,null,'quick_program',$tokenHash,$keyHash,trim($parent['first_name'].' '.$parent['last_name']),$parent['email'],$parent['phone'],$street,(string)($input['address_city']??''),(string)($input['address_postcode']??''),$unit,0,$unit,$currency];
