@@ -71,10 +71,11 @@ Změny určené k novému průchodu testerů jsou shrnuté v
 
 - Pro běžný test použijte přívětivé identity uvedené v manuálu: Tester Karel,
   Tester Petra, Ema Tester, Adam Tester a KIS testovací superadministrátor.
-- Pracovní účet `Tester Správce` založte jako běžný auditovaný pracovní účet a
-  přidělte mu všech osm pozic. Technický účet
-  `kis-superadmin-test@velocota.com` může sloužit pouze k počátečnímu založení;
-  jeho heslo se testerům nepředává v dokumentu.
+- Pracovní účet `Tester Správce` (`tester.spravce@velocota.com`) založte jako
+  běžný auditovaný pracovní účet a přidělte mu všech osm pozic. Technický účet
+  `kis-superadmin-test@velocota.com` se pro nové testovací běhy nepoužívá,
+  protože jeho adresa koliduje s existujícím veřejným účtem; hesla se testerům
+  nepředávají v dokumentu.
 - Záznamy označujte krátkým a čitelným prefixem `TEST -`, například
   `TEST - Cyklistický kroužek pro děti`. Nepoužívejte náhodné kódy ani skutečná
   osobní data členů.
