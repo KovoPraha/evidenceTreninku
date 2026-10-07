@@ -1,8 +1,10 @@
 # Klubové akce K3
 
-Administrátor používá stránku `eshop_events_admin.php`. První provozní K3 průchod
-umí otevřít pouze bezplatný kroužek. Přihlášený rodič jej obslouží na
-`booking/krouzky.php` a může vybrat jen osobu schválenou v K2.
+Administrátor používá stránky `club_calendar.php` a `eshop_events_admin.php`.
+Akce může být bezplatná nebo placená a může cílit na jednu či více soupisek.
+Přihlášený rodič ji obslouží v klubovém kalendáři nebo na
+`booking/krouzky.php`; placená přihláška pokračuje přes košík a aktivuje se až
+po kanonickém potvrzení platby.
 
 ## Model
 
@@ -24,11 +26,12 @@ Kanonický produkt lze propojit pouze tehdy, když:
 Jeden produkt smí být napojen nejvýše na jednu akci. Vazbu lze v pracovním stavu
 auditovaně odstranit a opravit.
 
-## Bezplatná přihláška
+## Přihláška
 
-Otevření kroužku je výslovné administrační rozhodnutí s důvodem a potvrzovacím
-checkboxem. Otevřít lze pouze `club_event` s cenovou politikou `free`, alespoň
-jedním naplánovaným termínem a propojeným nulovým produktem.
+Otevření přihlašování je výslovné administrační rozhodnutí s důvodem a
+potvrzovacím checkboxem. Akce musí projít předletovou kontrolou: potvrzený stav,
+alespoň jeden termín, registrační okno, cíle, kapacita a schválené podmínky.
+Bezplatná akce vytvoří registraci přímo; placená vloží cenový snapshot do košíku.
 
 Při přihlášení server v jedné transakci:
 
@@ -80,7 +83,7 @@ vést k duplicitnímu e-mailu.
 Na běžném hostingu lze worker spouštět z CRONu každou minutu například:
 
 ```sh
-APP_HOST=data.kovopraha.cz php /absolutni/cesta/bin/club-event-notifications.php --limit=20
+APP_HOST=kis.kovopraha.cz php /absolutni/cesta/bin/club-event-notifications.php --limit=20
 ```
 
 Na produkčním Thinline hostingu tento příklad **nefunguje**: omezený shell
@@ -108,11 +111,12 @@ držení workerem a stav `sent` nelze vrátit do fronty. Povolené opakování v
 transakci vynuluje pracovní počet pokusů a zapíše původní stav, původní počet
 pokusů, administrátora a důvod do `club_event_notification_events`.
 
-## Záměrně chybí v tomto průchodu
+## Provozní hranice
 
-- obecné ruční změny pořadí čekací listiny,
-- placený kroužek a košík,
-- objednávka, platba, soupiska nebo zápis do KIS.
+- Pořadí čekací listiny je FIFO; obecné ruční přeskládání není podporované.
+- Produkční e-mailový worker se zapíná až po testu určené schránky.
+- Zápis do cílové soupisky a další placené benefity vznikají až po úspěšném
+  kanonickém platebním přechodu, nikoli při pouhém návratu z košíku nebo brány.
 
 ## Nasazení
 

@@ -1,7 +1,7 @@
 # Týdenní rodinné souhrny
 
-Stav k 5. 8. 2026: funkční a ověřené pouze na localhostu. Produkční e-mailový
-transport ani CRON nejsou zapnuté.
+Stav k 7. 10. 2026: fronta, mail transport i localhostový outbox jsou
+implementované. Produkční plán a skutečné rozesílání nejsou zapnuté.
 
 ## Co uživatel umí
 
@@ -58,5 +58,5 @@ ukončí chybou.
 ## Produkční brána
 
 Před produkčním zapnutím je nutné samostatně schválit text, odesílací adresu,
-transport, frekvenci a provozní dohled. Aktuální kód neposkytuje přepínač pro
-skutečný e-mail a produkční nasazení tohoto řezu samo nic neodešle.
+transport, frekvenci a provozní dohled. Kód skutečný mail transport podporuje,
+ale produkční nasazení ani běžný deploy jej samo nespouští.

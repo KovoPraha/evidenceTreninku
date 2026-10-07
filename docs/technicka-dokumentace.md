@@ -601,11 +601,12 @@ GET ?hash=<sportovci.hash>&rok=<YYYY>&typ=<kategorie>
 
 | Parametr | Typ | Popis |
 |----------|-----|-------|
-| `hash` | string | SHA-256 hash sportovce (`sportovci.hash`) — nahrazuje session auth |
+| `hash` | string | Náhodný 256bitový bearer token sportovce (`sportovci.hash`) pro čtení |
 | `rok` | int | Rok filtr (volitelný) |
 | `typ` | string | Kategorie tréninku (volitelný) |
 
-**Autorizace:** Žádná session — veřejný endpoint. Auth přes `hash` z URL (public athlete profile).
+**Autorizace:** Čtení je veřejné přes kryptograficky náhodný `hash` z URL.
+Přihlášená session se načte jen pro rozhodnutí, zda lze upravit vlastní poznámku.
 
 **Odpověď:** HTML fragment — seznam tréninků pro veřejný profil sportovce.
 
@@ -617,11 +618,14 @@ Volá se ze stránky `sportovec_treninky.php` (veřejná karta sportovce bez př
 POST hash=<sportovci.hash>&trenink_id=<id>&poznamka=<text>
 ```
 
-**Autorizace:** Žádná session — veřejný endpoint. Auth přes `hash` z POST body. Bez CSRF (hash auth je postačující pro tento use case).
+**Autorizace:** `hash` identifikuje kartu a trénink musí patřit danému sportovci.
+Zápis navíc vyžaduje CSRF a buď odpovídající aktivní sportovní účet, nebo
+aktivní veřejný účet se schválenou rolí `self`/`guardian`.
 
 **Odpověď:** `{ok: bool}`
 
-Umožňuje sportovci přidat poznámku ke svému tréninku přímo z veřejného profilu.
+Veřejný bearer odkaz je pouze pro čtení. Držitel odkazu bez přihlášení poznámku
+vidí, ale nemůže ji změnit.
 
 ---
 

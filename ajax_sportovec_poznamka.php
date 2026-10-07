@@ -9,6 +9,7 @@ header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store, private');
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/sportovec_note_access.php';
 
 $hash = trim($_POST['hash'] ?? '');
 $tid  = (int)($_POST['trenink_id'] ?? 0);
@@ -34,6 +35,12 @@ if (!$spRow) {
 }
 
 $sportovec_id = (int)$spRow['id'];
+
+if (!sportovecNoteCanWrite($pdo, $sportovec_id)) {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'msg' => 'Pro úpravu poznámky se přihlaste účtem sportovce nebo rodiče.']);
+    exit;
+}
 
 try {
     $own = $pdo->prepare("

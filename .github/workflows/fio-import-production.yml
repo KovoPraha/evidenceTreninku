@@ -1,8 +1,8 @@
-name: Synchronizovat Fio pohyby
+name: Synchronizovat Fio pohyby (dočasně vypnuto)
 
 on:
-  schedule:
-    - cron: '*/10 * * * *'
+  # Fio zatím není součástí provozu. Workflow zůstává dostupný pouze pro
+  # vědomý ruční test po opětovném schválení a zapnutí produkční konfigurace.
   workflow_dispatch:
 
 permissions:
@@ -19,7 +19,7 @@ env:
 
 jobs:
   synchronizovat:
-    name: Fio read-only import (kis.kovopraha.cz)
+    name: Ruční Fio read-only import (kis.kovopraha.cz)
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 10

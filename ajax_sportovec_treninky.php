@@ -3,8 +3,11 @@
  * AJAX endpoint – seznam tréninků pro veřejný profil sportovce
  * Params: hash, rok (0 = vše), typ (optional filter: kolo|beh|posilovna|'')
  */
+require_once __DIR__ . '/includes/session_security.php';
+app_session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
+require_once __DIR__ . '/includes/sportovec_note_access.php';
 header('Content-Type: text/html; charset=utf-8');
 header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store, private');
@@ -67,6 +70,7 @@ if (!$spRow) {
 }
 
 $sportovec_id = (int)$spRow['id'];
+$canWriteNote = sportovecNoteCanWrite($pdo, $sportovec_id);
 $rok = isset($_GET['rok']) && ctype_digit($_GET['rok']) ? (int)$_GET['rok'] : 0;
 
 // --- poznámky sportovce ---
@@ -229,9 +233,10 @@ $totalHlabel = $totalH > 0 ? "{$totalH} h " . ($totalM > 0 ? "{$totalM} min" : '
             </div>
         <?php endif; ?>
 
-        <!-- Athlete note – AJAX save -->
+        <!-- Poznámka sportovce; veřejný hash je pouze pro čtení. -->
         <div class="mt-3">
             <div class="fw-semibold text-muted small mb-1">TVOJE POZNÁMKA</div>
+            <?php if ($canWriteNote): ?>
             <textarea class="form-control athlete-note-input"
                       rows="2"
                       data-tid="<?= $tid_int ?>"><?= h($note) ?></textarea>
@@ -243,6 +248,16 @@ $totalHlabel = $totalH > 0 ? "{$totalH} h " . ($totalM > 0 ? "{$totalM} min" : '
                     ✓ Uloženo
                 </span>
             </div>
+            <?php else: ?>
+                <?php if ($note !== ''): ?>
+                    <div class="border rounded bg-light p-2"><?= nl2br(h($note)) ?></div>
+                <?php else: ?>
+                    <div class="text-muted small">Poznámka zatím není vyplněná.</div>
+                <?php endif; ?>
+                <div class="form-text">
+                    Pro úpravu se přihlaste účtem sportovce nebo rodiče.
+                </div>
+            <?php endif; ?>
         </div>
 
     </div>

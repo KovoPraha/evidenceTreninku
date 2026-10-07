@@ -37,14 +37,18 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - plánovaný trénink ze soupisek, očekávaní účastníci a skutečná docházka,
 - rodinný program, týdenní náhled a dobrovolný týdenní souhrn s odhlášením
   jedním krokem, idempotentní frontou, auditem a pouze localhostovým outboxem;
-  skutečný e-mailový transport není implementovaný,
+  mail transport je implementovaný, ale produkční plán týdenních souhrnů není
+  bez samostatného provozního schválení zapnutý,
 - admin-only read-only M3.5a inventura pěti sportovních datových zdrojů; vrací
   pouze agregované počty a technická zjištění bez osob a naměřených hodnot,
 - M3.5b–c `sports-measurement-v1` s výslovnou jednotkou vzdálenosti, časem v
   milisekundách, číselným RPE a stavy závodu; všechny čtyři formuláře vytvoření
   a editace tréninku/závodu používají společný fail-closed parser a ukládají
   původní i normalizované hodnoty, historie se automaticky nepřevádí,
-- read-only Fio shadow import a návrhy párování; automatické potvrzení je vypnuté,
+- read-only Fio shadow import a návrhy párování; automatické potvrzení je
+  vypnuté a od 7. 10. 2026 je vypnutý i automatický produkční plán importu,
+- hostované platby přes SumUp a Stripe mají serverové ověření a kanonický
+  platební přechod; Stripe je na produkční doméně vedený v testovacím režimu,
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
   a bezpečným JSON reportem; localhost admin může provést auditovaný promote a
   rollback výhradně v odděleném anonymním sandboxu,
@@ -67,7 +71,10 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
 - potvrzení názvů polí na reprezentativním anonymizovaném KIS exportu, závěrečná
   zkouška cutover postupu nad testovací kopií a teprve potom samostatně schválený ostrý cutover,
 - produkční doručování reset e-mailů a produkční konfigurace tajemství,
-- Stripe, automatické Fio potvrzení, kreditní wallet a TrainingPeaks,
+- produkční aktivace konkrétní platební brány, obnovení Fio, kreditní wallet a
+  TrainingPeaks,
+- sjednocení zbývajících starších přímých e-mailů do trvalé fronty a provozní
+  zapnutí dosud neschválených periodických rozesílek,
 - produkční deploy bez výslovného souhlasu vlastníka.
 
 ## Povinné hranice pro AI audit

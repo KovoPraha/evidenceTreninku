@@ -409,14 +409,15 @@ Kreditní (platební) období sportovce.
 | `vyplaceno` | tinyint(1) | 0 = neuhrazeno, 1 = uhrazeno |
 
 ### `sportovec_poznamka`
-Poznámky ke sportovci (viditelné ve veřejném profilu).
+Poznámky sportovce ke konkrétním tréninkům. Ve veřejném profilu jsou čitelné;
+zápis vyžaduje přihlášený odpovídající sportovní nebo rodičovský účet.
 
 | Sloupec | Typ | Popis |
 |---------|-----|-------|
 | `id` | int PK | |
 | `sportovec_id` | int FK → sportovci | |
-| `text` | text | |
-| `created_at` | timestamp | |
+| `trenink_id` | int FK → treninky | Trénink, ke kterému poznámka patří |
+| `poznamka` | text | Text poznámky |
 
 ### `sportovec_interni_poznamka`
 Interní poznámky ke sportovci (pouze pro trenéry).
