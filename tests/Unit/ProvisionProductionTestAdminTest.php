@@ -39,7 +39,10 @@ final class ProvisionProductionTestAdminTest extends TestCase
     {
         $pdo = new PDO('sqlite::memory:');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->exec('CREATE TABLE verejni_uzivatele (id INTEGER PRIMARY KEY AUTOINCREMENT,email TEXT NOT NULL)');
+        $pdo->exec(
+            'CREATE TABLE verejni_uzivatele ('
+            . 'id INTEGER PRIMARY KEY AUTOINCREMENT,email TEXT NOT NULL,trener_id INTEGER NULL)'
+        );
         $pdo->exec(
             'CREATE TABLE treneri ('
             . 'id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT NOT NULL,email TEXT NOT NULL,'
@@ -55,6 +58,11 @@ final class ProvisionProductionTestAdminTest extends TestCase
             'password' => 'Strong-Test-123!',
         ]);
         self::assertTrue($first['created']);
+
+        $pdo->exec(
+            "INSERT INTO verejni_uzivatele(email,trener_id) VALUES "
+            . "('tester.spravce@velocota.com'," . (int)$first['id'] . ')'
+        );
 
         $second = kisProductionTestAdminUpsert($pdo, [
             'email' => 'tester.spravce@velocota.com',
@@ -76,5 +84,34 @@ final class ProvisionProductionTestAdminTest extends TestCase
         self::assertSame('system_admin', (string)$pdo->query('SELECT position_code FROM staff_user_positions WHERE trainer_id=' . (int)$first['id'] . ' AND is_default=1')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM staff_superadmins WHERE trainer_id=' . (int)$first['id'])->fetchColumn());
         self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM staff_position_assignment_events WHERE action='provision_test_superadmin'")->fetchColumn());
+    }
+
+    public function testUpsertRejectsUnrelatedPublicAccountCollision(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec(
+            'CREATE TABLE verejni_uzivatele ('
+            . 'id INTEGER PRIMARY KEY AUTOINCREMENT,email TEXT NOT NULL,trener_id INTEGER NULL)'
+        );
+        $pdo->exec(
+            'CREATE TABLE treneri ('
+            . 'id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT NOT NULL,email TEXT NOT NULL,'
+            . 'heslo TEXT NOT NULL,role TEXT NOT NULL,aktivni INTEGER NOT NULL DEFAULT 1,'
+            . 'session_version INTEGER NOT NULL DEFAULT 1)'
+        );
+        $migration = require dirname(__DIR__, 2) . '/migrations/20260821150000_staff_workspaces.php';
+        $migration['up']($pdo);
+        $pdo->exec(
+            "INSERT INTO verejni_uzivatele(email,trener_id) VALUES "
+            . "('tester.spravce@velocota.com',NULL)"
+        );
+
+        $this->expectException(RuntimeException::class);
+        kisProductionTestAdminUpsert($pdo, [
+            'email' => 'tester.spravce@velocota.com',
+            'name' => 'Tester Správce',
+            'password' => 'Strong-Test-123!',
+        ]);
     }
 }

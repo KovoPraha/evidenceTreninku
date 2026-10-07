@@ -147,14 +147,6 @@ function kisProductionTestAdminUpsert(PDO $pdo, array $settings): array
     $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
     $pdo->beginTransaction();
     try {
-        $publicAccount = $pdo->prepare(
-            'SELECT COUNT(*) FROM verejni_uzivatele WHERE LOWER(TRIM(email))=?'
-        );
-        $publicAccount->execute([$settings['email']]);
-        if ((int)$publicAccount->fetchColumn() !== 0) {
-            throw new RuntimeException('The email is already used by a public account.');
-        }
-
         $select = 'SELECT id FROM treneri WHERE LOWER(TRIM(email))=? ORDER BY id';
         if ($driver === 'mysql') {
             $select .= ' FOR UPDATE';
@@ -164,6 +156,29 @@ function kisProductionTestAdminUpsert(PDO $pdo, array $settings): array
         $ids = array_map('intval', $existing->fetchAll(PDO::FETCH_COLUMN));
         if (count($ids) > 1) {
             throw new RuntimeException('More than one trainer account uses the requested email.');
+        }
+
+        // A successful staff login creates a linked customer profile for the
+        // same trainer. That expected, one-to-one profile must not make the
+        // idempotent password rotation fail. Any unlinked, foreign or
+        // duplicate public account remains a hard collision.
+        $publicSelect = 'SELECT id,trener_id FROM verejni_uzivatele '
+            . 'WHERE LOWER(TRIM(email))=? ORDER BY id';
+        if ($driver === 'mysql') {
+            $publicSelect .= ' FOR UPDATE';
+        }
+        $publicAccount = $pdo->prepare($publicSelect);
+        $publicAccount->execute([$settings['email']]);
+        $publicAccounts = $publicAccount->fetchAll(PDO::FETCH_ASSOC);
+        if ($publicAccounts !== []) {
+            $linkedTrainerId = $publicAccounts[0]['trener_id'] ?? null;
+            if (count($publicAccounts) !== 1
+                || count($ids) !== 1
+                || $linkedTrainerId === null
+                || (int)$linkedTrainerId !== $ids[0]
+            ) {
+                throw new RuntimeException('The email is already used by an unrelated public account.');
+            }
         }
 
         $passwordHash = password_hash($settings['password'], PASSWORD_DEFAULT);
