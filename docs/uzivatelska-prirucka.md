@@ -1,5 +1,10 @@
 # Uživatelská příručka — Evidence Tréninků
 
+> Tato příručka popisuje původní základ aplikace a nemusí obsahovat všechny
+> novější KIS, e-shopové a rodinné obrazovky. Aktuální změny a provozní stav
+> jsou v [`CURRENT_STATE.md`](CURRENT_STATE.md); produkční testování se řídí
+> [`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
+
 ## Obsah
 
 1. [Přihlášení](#1-přihlášení)

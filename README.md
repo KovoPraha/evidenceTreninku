@@ -14,6 +14,11 @@ Variables `KIS_APP_HOST`, `KIS_WEB_URL` a `KIS_REMOTE_DIR`. Samotný push do
 Pro řízené testování na živé aplikaci použijte
 [produkční uživatelské scénáře](docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
+Aktuální SHA, poslední CI a produkční důkaz jsou vždy v
+[aktuálním stavu projektu](docs/CURRENT_STATE.md). Pro další počítač používejte
+stabilní [aktuální předání vývoje](docs/HANDOFF_CURRENT.md); datované handoffy
+jsou už jen historické snapshoty.
+
 Veřejný produktový detail rozlišuje běžné zboží a nabídky navázané na
 sportovce. Zboží lze objednat rychlým nákupem bez účtu; kroužky, členství a
 další sportovní programy vedou přes ověřený účet a chráněnou registraci osoby.
@@ -24,9 +29,10 @@ zákaznická péče jej vyřizuje v auditované provozní frontě.
 
 1. Nainstalujte XAMPP s PHP 8.2+ a Composer.
 2. Naklonujte repozitář do `C:\xampp\htdocs\evidencePavel`.
-3. V kořeni spusťte `PRIPRAVIT_LOCALHOST_TESTOVANI.cmd`.
-4. Po dokončení otevřete `http://localhost/evidencePavel/`.
-5. Pro další offline spouštění používejte `START_LOCALHOST_TESTOVANI.cmd`.
+3. Spusťte `git fetch --prune origin` a `git pull --ff-only origin main`.
+4. V kořeni spusťte `PRIPRAVIT_LOCALHOST_TESTOVANI.cmd`.
+5. Po dokončení otevřete `http://localhost/evidencePavel/`.
+6. Pro další offline spouštění používejte `START_LOCALHOST_TESTOVANI.cmd`.
 
 První příprava vytvoří ignorovaný `config.php`, samostatnou MariaDB na portu
 3308, aplikuje všechny migrace a vloží výhradně syntetická demo data. Zamčené
@@ -36,8 +42,9 @@ a samotné testování potom internet nepotřebuje.
 
 Podrobnosti:
 
-- [předání na další stanici](docs/HANDOFF_2026-08-29.md),
-- [výsledky úplného ověření předání](docs/VERIFICATION_2026-08-29.md),
+- [aktuální předání na další stanici](docs/HANDOFF_CURRENT.md),
+- [historické předání z 29. 8. 2026](docs/HANDOFF_2026-08-29.md),
+- [historické výsledky ověření z 29. 8. 2026](docs/VERIFICATION_2026-08-29.md),
 - [localhost instalace a demo](docs/localhost-testovani.md),
 - [samostatný offline testovací návod](outputs/localhost-test-2026-08-25/OFFLINE_TESTOVANI.md),
 - [aktuální stav a hranice projektu](docs/CURRENT_STATE.md),

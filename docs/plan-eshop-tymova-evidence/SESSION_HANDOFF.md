@@ -1,5 +1,10 @@
 # Session handoff
 
+> Historický chronologický ledger pracovních řezů. Aktuální bod převzetí je v
+> [`../HANDOFF_CURRENT.md`](../HANDOFF_CURRENT.md) a aktuální produkční stav v
+> [`../CURRENT_STATE.md`](../CURRENT_STATE.md). Starší SHA a počty testů níže
+> zůstávají zachované jako auditní stopa.
+
 ## Aktualizace 21. 8. 2026 — R9 až R12 nasazené na produkci (`c5f638f`)
 
 ### Push, CI a deploy

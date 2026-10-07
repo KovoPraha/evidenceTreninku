@@ -1,5 +1,9 @@
 # Ověření předání — 29. 8. 2026
 
+> Historický důkaz pro tag `handoff-2026-08-29`. Aktuální stav je v
+> [`CURRENT_STATE.md`](CURRENT_STATE.md) a aktuální postup převzetí v
+> [`HANDOFF_CURRENT.md`](HANDOFF_CURRENT.md).
+
 Ověření proběhlo nad kompletním pracovním stromem připraveným pro tag
 `handoff-2026-08-29`. Produkční nasazení nebylo spuštěno.
 

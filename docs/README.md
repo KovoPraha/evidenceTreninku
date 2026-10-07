@@ -1,83 +1,65 @@
-# Evidence Tréninků — Dokumentace
+# Dokumentace EvidencePavel / KIS
 
-Samostatná webová aplikace pro správu tréninků, sportovců, závodů a navazujících
-klubových agend Kovoprahy.
+Aktualizováno: 7. 10. 2026, Europe/Prague
 
-## Dokumenty
+Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
+webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
+<https://kis.kovopraha.cz/>.
 
-| Dokument | Popis |
-|----------|-------|
-| [Uživatelská příručka](uzivatelska-prirucka.md) | Návod pro trenéry a administrátory — přihlášení, tréninky, sportovci, reporty, exporty |
-| [Technická dokumentace](technicka-dokumentace.md) | Architektura, AJAX endpointy, autentizace, CSRF, export systém, audit log a Web Push |
-| [Databázové schéma](databazove-schema.md) | Popis všech tabulek, sloupců a vztahů |
-| [Vývojářský průvodce](vyvojarsky-pruvodce.md) | Instalace, konvence kódu, přidání nových stránek, nasazení |
-| [Instalace](instalace.md) | Krok za krokem — XAMPP (Windows), Linux/Apache, shell příkazy |
-| [Produkční nasazení](NASAZENI.md) | Aktuální návod k ručnímu nasazení z GitHub Actions |
-| [Program e-shop + týmová evidence](plan-eshop-tymova-evidence/README.md) | Audit, rozhodnutí, architektura, roadmapa a řízení pracovních tasků |
-| [Hranice vůči Velocotě](integrace-velocota.md) | Rozhodnutí o samostatnosti Evidence a jediném možném budoucím sdílení identity |
-| [Roadmapa rozšíření](roadmapa-rozsireni.md) | Plánované změny — profily sportovců, kreditní wallet, e-shop API |
-| [Implementační prompt: funkční vylepšení 1-8](implementacni-prompt-funkcni-vylepseni-1-8.md) | Připravené zadání pro kartu člena, KIS centrum, chytré párování, workflow aktivity, historii, hromadné akce a dashboard |
+## Začněte zde
+
+| Dokument | Účel |
+|---|---|
+| [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
+| [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
+| [Produkční nasazení](NASAZENI.md) | Ruční chráněný deploy z GitHub Actions, zálohy a řešení chyb |
+| [Produkční UAT](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) | Identity, brány, testovací data a bezpečný úklid |
+| [Localhost testování](localhost-testovani.md) | Příprava izolované lokální databáze a syntetických dat |
+| [Pravidla migrací](../migrations/README.md) | Neměnné číslované databázové migrace |
+
+Při rozporu má přednost čerstvý `origin/main`, skutečné workflow, migrace a
+testy, potom `CURRENT_STATE.md` a `HANDOFF_CURRENT.md`.
+
+## Tematická dokumentace
+
+| Oblast | Dokumenty |
+|---|---|
+| Klubové programy a kroužky | [club-programs.md](club-programs.md), [training-roster-bridge.md](training-roster-bridge.md), [kis-roster-policies.md](kis-roster-policies.md) |
+| E-shop a objednávky | [shop-checkout-k4.md](shop-checkout-k4.md), [shop-beneficiaries.md](shop-beneficiaries.md), [shop-account-person-roles.md](shop-account-person-roles.md), [shop-catalog-publication.md](shop-catalog-publication.md) |
+| Platby | [shop-program-payment-verification.md](shop-program-payment-verification.md), [fio-readonly-import-k4.md](fio-readonly-import-k4.md), [stripe-integration-plan.md](stripe-integration-plan.md) |
+| Akce a soupisky | [club-events-k3.md](club-events-k3.md), [club-event-roster-targets.md](club-event-roster-targets.md), [kis-teams-rosters.md](kis-teams-rosters.md) |
+| Bezpečnost a osoby | [auth-one-time-tokens.md](auth-one-time-tokens.md), [auth-revocation-rate-limit.md](auth-revocation-rate-limit.md), [rodne-cislo-bezpecnost.md](rodne-cislo-bezpecnost.md), [pravidla-shody-osob.md](pravidla-shody-osob.md) |
+| Současná testerová vlna | [UAT-OPRAVY-2026-10-07.md](UAT-OPRAVY-2026-10-07.md) |
+
+## Aktuální funkční oblasti
+
+- evidence tréninků, měření, sportovců, skupin, podskupin a závodů;
+- plánovač tréninků, soupisky, RSVP a trenérský přehled účasti;
+- rodinné a sportovní účty a vazby na kanonické osoby;
+- e-shop pro zboží, kroužky, programy, členství a placené klubové akce;
+- klubové programy, období, kapacity, podmínky a přechod do soupisek;
+- klubový kalendář, události, soustředění a registrace;
+- členské příspěvky, bankovní platby a administrativní párování;
+- veřejný velodrom, individuální lekce a rezervace sportovišť;
+- audit, pracovní pozice, oprávnění, importní kontroly a exporty.
 
 ## Technologie
 
-- **Backend:** PHP 8+ (procedurální, PDO)
-- **Databáze:** MySQL / MariaDB (`utf8mb4`)
-- **Frontend:** Bootstrap 5.3.3, Bootstrap Icons 1.11.3, vanilla JavaScript
-- **Exporty:** PhpSpreadsheet ^5.3 (Composer, aktuálně 5.8.0)
-- **Obrázky:** GD knihovna (story generátor)
-- **Server:** Apache (XAMPP / Linux)
-- **Web Push:** minishlink/web-push (Composer)
+- PHP 8.2+, procedurální aplikační vrstva a PDO;
+- MariaDB; CI ověřuje kompatibilitu s 10.3 a 11.4;
+- Bootstrap 5.3.3, Bootstrap Icons 1.11.3 a vanilla JavaScript;
+- Composer se zamčenými verzemi v `composer.lock`;
+- PHPUnit 11;
+- Apache/XAMPP lokálně a chráněný SSH/rsync deploy z GitHub Actions.
 
-## Hlavní moduly
+## Historické dokumenty
 
-| Modul | Popis | Přístup |
-|-------|-------|---------|
-| Tréninky | Evidence tréninků, měření, sportovců | Všichni trenéři |
-| Sportovci | Profily sportovců, veřejné profily, záložka závodů | Všichni trenéři |
-| Závody | Evidence závodů (kategorie, měření, účastníci, výsledky), detail závodu | Všichni trenéři |
-| Plánovač tréninků | Plánování tréninků dopředu, drag & drop, série, nástěnka skupiny | Všichni trenéři |
-| Rezervace sportovišť | Interní kalendář obsazenosti (kapacita 1–5/5), rezervace pro tréninky | Všichni trenéři |
-| Individuální lekce | Vypisování placených lekcí (zelená/žlutá), slot-based booking, čekací listina | Všichni trenéři |
-| Booking (veřejné) | Zákazníci si registrují účet a rezervují lekce na velodromu / posilovně | Veřejnost |
-| Exporty | Excel/CSV exporty (dráha, UCI, seznam sportovců, měsíční) | Všichni trenéři |
-| Story generátor | Instagram story obrázky z tréninků | Všichni trenéři |
-| Synchronizace evidence | KIS sync ze tří XLSX exportů, mapování soupisek, platební stav bez automatické archivace | Správce+ |
-| Segmenty | Správa segmentů na kole (kroužek / silnice / MTB) | Správce+ |
-| Správa | Skupiny, podskupiny, sportovci, závody, tréninky, sportoviště | Správce+ |
-| Oprávnění | Nastavení přístupu dle rolí (per-funkce) | Admin |
-| Vozidla | Vozový park, jízdy, servis | Admin |
-| Účtenky | Evidence dokladů a účtenek | Admin |
-| Události | Závody, soustředění, vyúčtování | Admin |
-| Trenéři | Správa trenérů a přidělování rolí | Admin |
+Datované audity, roadmapy, staré handoffy, implementační prompty a soubor
+`plan-eshop-tymova-evidence/SESSION_HANDOFF.md` zůstávají v repozitáři jako
+auditní a rozhodovací stopa. Jejich SHA, počty testů, verze a označení
+„plánováno“ popisují dobu vzniku. Nejsou autoritou pro aktuální checkout.
 
-## Role
-
-3 hierarchické úrovně: **Trenér** < **Správce** < **Administrátor**. Oprávnění jsou konfigurovatelná — admin nastavuje minimální roli pro každou funkci v `nastaveni_opravneni.php`.
-
-## Bezpečnost
-
-- CSRF ochrana na všech formulářích (`csrf_helper.php`)
-- [Jednorázové tokeny a bezpečné odhlášení](auth-one-time-tokens.md)
-- Prepared statements (PDO) proti SQL injection
-- XSS ochrana (`htmlspecialchars()`)
-- MIME validace uploadů (`finfo_file()`)
-- Konfigurovatelná oprávnění (`canAccess()` + tabulka `opravneni`)
-- Audit logging všech změn v účetním modulu
-
-## Integrace
-
-- **Legacy Velocota bridge** — vypnutý kompatibilní experiment; není součástí cílové architektury
-- **Web Push** — Service Worker `sw.js` + `push_subscribe.php`; push notifikace při nové rezervaci lekce
-- **E-shop** *(plánováno, Fáze 2)* — API bridge pro kredity a SSO tokeny
-
----
-
-## Novinky 2.20.0
-
-- Administrační karta člena: `sportovec_karta.php`
-- Veřejná karta sportovce zůstává `sportovec_treninky.php?hash=...`
-- KIS centrum: `kis_sync_center.php`
-- Hromadne akce clenu: `sportovci_hromadne.php`
-- Admin dashboard: `admin_dashboard.php`
-
-*Verze dokumentace: 2.20.0 — červen 2026*
+Velké dokumenty `uzivatelska-prirucka.md`, `technicka-dokumentace.md`,
+`databazove-schema.md` a `vyvojarsky-pruvodce.md` jsou historický základ
+baseline 2.20. Aktuální doplňky jsou vedené tematicky a přesný stav určuje kód,
+migrace a testy.

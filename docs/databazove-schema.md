@@ -1,5 +1,9 @@
 # Databázové schéma — Evidence Tréninků
 
+> Historický popis baseline 2.20. Pro aktuální schéma jsou autoritativní
+> `database/local-demo-schema.sql`, neměnné soubory v `migrations/` a jejich
+> testy. Aktuální počet a produkční bod uvádí [`CURRENT_STATE.md`](CURRENT_STATE.md).
+
 Databáze: MariaDB 10.3+ / MySQL, kódování `utf8mb4_general_ci`.
 
 ## Obsah
