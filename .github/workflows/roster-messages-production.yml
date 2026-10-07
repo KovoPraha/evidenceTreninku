@@ -15,6 +15,7 @@ concurrency:
 env:
   APP_HOST: ${{ vars.KIS_APP_HOST }}
   REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  WORKER_BOOTSTRAP: data/.kis-deploy/run-roster-message-worker.php
 
 jobs:
   odeslat:
@@ -41,4 +42,24 @@ jobs:
 
       - name: Zpracovat omezenou dávku
         run: |
-          ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "set -eu;test -s '$REMOTE_DIR/config.php';test -s '$REMOTE_DIR/bin/roster-message-worker.php';APP_HOST='$APP_HOST' ROSTER_MESSAGE_LIMIT=50 ROSTER_MESSAGE_TRANSPORT=mail php '$REMOTE_DIR/bin/roster-message-worker.php'"
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SSH[@]}" "set -eu;umask 077;test -s '$REMOTE_DIR/config.php';test -s '$REMOTE_DIR/bin/roster-message-worker.php';mkdir -p 'data/.kis-deploy'"
+          # Omezený hosting zahazuje shellové prostředí před spuštěním PHP.
+          # Bootstrap proto nastaví hodnoty v PHP procesu a spustí worker bez CLI parametrů.
+          cat > /tmp/run-roster-message-worker.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('ROSTER_MESSAGE_LIMIT=50');
+          putenv('ROSTER_MESSAGE_TRANSPORT=mail');
+          require '$REMOTE_DIR/bin/roster-message-worker.php';
+          EOF
+          "${SCP[@]}" /tmp/run-roster-message-worker.php "$SSH_USER@$SSH_HOST:$WORKER_BOOTSTRAP"
+          "${SSH[@]}" "set -eu;chmod 600 '$WORKER_BOOTSTRAP';test -s '$WORKER_BOOTSTRAP';php '$WORKER_BOOTSTRAP'"
+
+      - name: Odstranit dočasný bootstrap
+        if: always()
+        continue-on-error: true
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$WORKER_BOOTSTRAP'"
+          rm -f /tmp/run-roster-message-worker.php
