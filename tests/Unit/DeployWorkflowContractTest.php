@@ -251,10 +251,14 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("then COUNT=3", $workflow);
         self::assertStringContainsString('test "${#BACKUPS[@]}" = "$COUNT"', $workflow);
         self::assertStringContainsString('CONTAINER="kis-restore-$GITHUB_RUN_ID-$VERIFIED"', $workflow);
-        self::assertStringContainsString('retry_ssh()', $workflow);
-        self::assertStringContainsString('retry_scp()', $workflow);
-        self::assertStringContainsString('ConnectionAttempts=3', $workflow);
-        self::assertStringContainsString('BACKUP_OUTPUT=$(retry_ssh', $workflow);
+        self::assertStringContainsString('source .github/scripts/production-ssh-retry.sh', $workflow);
+        self::assertStringContainsString('BACKUP_OUTPUT=$(production_retry_capture', $workflow);
+        self::assertGreaterThanOrEqual(12, substr_count($workflow, 'production_retry '));
+        $retryScript = $this->source('.github/scripts/production-ssh-retry.sh');
+        self::assertStringContainsString('production_ssh_init()', $retryScript);
+        self::assertStringContainsString('production_retry()', $retryScript);
+        self::assertStringContainsString('production_retry_capture()', $retryScript);
+        self::assertStringContainsString('ConnectionAttempts=3', $retryScript);
         self::assertStringNotContainsString('upload-artifact', $workflow);
         self::assertStringNotContainsString('rsync', $workflow);
 

@@ -83,29 +83,13 @@ jobs:
           OPERACE: ${{ inputs.operace }}
         run: |
           set -euo pipefail
-          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o ConnectTimeout=20 -o ConnectionAttempts=3 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o ConnectTimeout=20 -o ConnectionAttempts=3 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
-          retry_ssh() {
-            local attempt output
-            for attempt in 1 2 3; do
-              if output=$("${SSH[@]}" "$@"); then printf '%s\n' "$output"; return 0; fi
-              if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
-            done
-            return 1
-          }
-          retry_scp() {
-            local attempt
-            for attempt in 1 2 3; do
-              if "${SCP[@]}" "$@"; then return 0; fi
-              if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
-            done
-            return 1
-          }
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
           TMP="/tmp/kis-restore-drill-$GITHUB_RUN_ID"
           install -d -m 700 "$TMP"
           COUNT=1
           if [ "$OPERACE" = 'obnovit-tri-zalohy-izolovane' ]; then COUNT=3; fi
-          BACKUP_OUTPUT=$(retry_ssh "set -eu; ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n '$COUNT'")
+          BACKUP_OUTPUT=$(production_retry_capture "${SSH[@]}" "set -eu; ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n '$COUNT'")
           BACKUPS=()
           while IFS= read -r backup; do [ -n "$backup" ] && BACKUPS+=("$backup"); done <<< "$BACKUP_OUTPUT"
           test "${#BACKUPS[@]}" = "$COUNT"
@@ -114,9 +98,9 @@ jobs:
           for LATEST in "${BACKUPS[@]}"; do
             [[ "$LATEST" =~ ^data/\.kis-backups/evidence_[0-9A-Za-z_-]+\.sql\.gz$ ]]
             BASE="${LATEST%.sql.gz}"
-            retry_scp "$SSH_USER@$SSH_HOST:$LATEST" "$TMP/"
-            retry_scp "$SSH_USER@$SSH_HOST:$BASE.sha256" "$TMP/"
-            retry_scp "$SSH_USER@$SSH_HOST:$BASE.manifest.json" "$TMP/"
+            production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$LATEST" "$TMP/"
+            production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.sha256" "$TMP/"
+            production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.manifest.json" "$TMP/"
             cd "$TMP"
             SQL_FILE=$(basename "$LATEST")
             SHA_FILE="$(basename "$BASE").sha256"
@@ -162,9 +146,9 @@ jobs:
         if: inputs.operace == 'overit-databazove-invarianty'
         run: |
           set -euo pipefail
-          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
-          "${SCP[@]}" bin/production-invariants.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-invariants.php"
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/production-invariants.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-invariants.php"
           cat > /tmp/run-production-invariants.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
@@ -172,8 +156,8 @@ jobs:
           putenv('KIS_INVARIANT_CONFIRM=OVERIT');
           require __DIR__ . '/production-invariants.php';
           EOF
-          "${SCP[@]}" /tmp/run-production-invariants.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-invariants.php"
-          "${SSH[@]}" "php '$DEPLOY_BASE/run-production-invariants.php'"
+          production_retry "${SCP[@]}" /tmp/run-production-invariants.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-invariants.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-production-invariants.php'"
 
       - name: Overit pripravenost produkcniho UAT pouze ctenim
         if: inputs.operace == 'overit-uat-pripravenost'
@@ -184,9 +168,9 @@ jobs:
           UAT_WINDOW_END: ${{ vars.KIS_UAT_WINDOW_END }}
         run: |
           set -euo pipefail
-          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
-          "${SCP[@]}" bin/production-uat-readiness.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-uat-readiness.php"
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/production-uat-readiness.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-uat-readiness.php"
           cat > /tmp/run-production-uat-readiness.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
@@ -198,8 +182,8 @@ jobs:
           putenv('KIS_UAT_WINDOW_END=$UAT_WINDOW_END');
           require __DIR__ . '/production-uat-readiness.php';
           EOF
-          "${SCP[@]}" /tmp/run-production-uat-readiness.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-uat-readiness.php"
-          VYSLEDEK=$("${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-readiness.php'") || STAV=$?
+          production_retry "${SCP[@]}" /tmp/run-production-uat-readiness.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-uat-readiness.php"
+          VYSLEDEK=$(production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-readiness.php'") || STAV=$?
           echo "$VYSLEDEK" | jq .
           if [ "${STAV:-0}" -ne 0 ]; then
             echo 'Produkční UAT je blokován; podrobnosti jsou v kontrolním JSON výše.'
@@ -216,14 +200,14 @@ jobs:
           set -euo pipefail
           test -n "$KIS_UAT_PASSWORD_VALUE"
           test -n "$KIS_UAT_WINDOW_END_VALUE"
-          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
           export KIS_UAT_WINDOW_END_VALUE
           export KIS_UAT_PASSWORD_VALUE
           php -r '$v=["password"=>getenv("KIS_UAT_PASSWORD_VALUE"),"window_end"=>getenv("KIS_UAT_WINDOW_END_VALUE")];file_put_contents("/tmp/kis-uat-settings.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
           chmod 600 /tmp/kis-uat-settings.json
-          "${SCP[@]}" bin/provision-production-uat.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/provision-production-uat.php"
-          "${SCP[@]}" /tmp/kis-uat-settings.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/kis-uat-settings.json"
+          production_retry "${SCP[@]}" bin/provision-production-uat.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/provision-production-uat.php"
+          production_retry "${SCP[@]}" /tmp/kis-uat-settings.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/kis-uat-settings.json"
           cat > /tmp/run-provision-production-uat.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
@@ -233,8 +217,8 @@ jobs:
           require __DIR__ . '/provision-production-uat.php';
           kisUatMain();
           EOF
-          "${SCP[@]}" /tmp/run-provision-production-uat.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-uat.php"
-          "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-uat.php'" | tee /tmp/kis-uat-result.json
+          production_retry "${SCP[@]}" /tmp/run-provision-production-uat.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-uat.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-uat.php'" | tee /tmp/kis-uat-result.json
           jq -e '.ok == true and (.parents|length) == 2 and (.children|length) == 2 and (.products|length) == 3 and (.events|length) == 2 and (.lessons|length) == 2' /tmp/kis-uat-result.json >/dev/null
           echo 'Produkční UAT účty a označená testovací data byly vytvořeny a ověřeny.'
 
@@ -242,9 +226,9 @@ jobs:
         if: inputs.operace == 'deaktivovat-testovaci-ucty'
         run: |
           set -euo pipefail
-          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
-          "${SCP[@]}" bin/production-test-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-test-cleanup.php"
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/production-test-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-test-cleanup.php"
           cat > /tmp/run-production-test-cleanup.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
@@ -252,8 +236,8 @@ jobs:
           putenv('KIS_TEST_CLEANUP_CONFIRM=DEAKTIVOVAT');
           require __DIR__ . '/production-test-cleanup.php';
           EOF
-          "${SCP[@]}" /tmp/run-production-test-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-test-cleanup.php"
-          "${SSH[@]}" "php '$DEPLOY_BASE/run-production-test-cleanup.php'"
+          production_retry "${SCP[@]}" /tmp/run-production-test-cleanup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-test-cleanup.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-production-test-cleanup.php'"
 
       - name: Vytvorit nebo obnovit vyhradne KIS testovaciho administratora
         if: inputs.operace == 'vytvorit-kis-test-admina'
@@ -262,14 +246,14 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$KIS_TEST_ADMIN_PASSWORD_VALUE"
-          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
           export KIS_TEST_ADMIN_EMAIL_VALUE='tester.spravce@velocota.com'
           export KIS_TEST_ADMIN_NAME_VALUE='Tester Správce'
           php -r '$v=["email"=>getenv("KIS_TEST_ADMIN_EMAIL_VALUE"),"name"=>getenv("KIS_TEST_ADMIN_NAME_VALUE"),"password"=>getenv("KIS_TEST_ADMIN_PASSWORD_VALUE")];file_put_contents("/tmp/kis-test-admin.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
           chmod 600 /tmp/kis-test-admin.json
-          "${SCP[@]}" bin/provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/provision-production-test-admin.php"
-          "${SCP[@]}" /tmp/kis-test-admin.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/kis-test-admin.json"
+          production_retry "${SCP[@]}" bin/provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/provision-production-test-admin.php"
+          production_retry "${SCP[@]}" /tmp/kis-test-admin.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/kis-test-admin.json"
           cat > /tmp/run-provision-production-test-admin.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
@@ -279,8 +263,8 @@ jobs:
           require __DIR__ . '/provision-production-test-admin.php';
           kisProductionTestAdminMain();
           EOF
-          "${SCP[@]}" /tmp/run-provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-test-admin.php"
-          "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-test-admin.php'" | tee /tmp/kis-test-admin-result.json
+          production_retry "${SCP[@]}" /tmp/run-provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-test-admin.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-test-admin.php'" | tee /tmp/kis-test-admin-result.json
           jq -e '.ok == true and .email == "tester.spravce@velocota.com" and .role == "admin" and .active == true and .password_verified == true and .positions == 8 and .superadmin == true' /tmp/kis-test-admin-result.json > /dev/null
           echo 'KIS testovaci superadministrator byl vytvoren a overen.'
 
@@ -296,5 +280,7 @@ jobs:
           fi
           rm -f /tmp/kis-test-admin.json /tmp/kis-test-admin-result.json /tmp/run-provision-production-test-admin.php /tmp/run-production-uat-readiness.php /tmp/kis-uat-settings.json /tmp/kis-uat-result.json /tmp/run-provision-production-uat.php
           if [ -n "${SSH_HOST:-}" ]; then
-            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php' '$DEPLOY_BASE/production-invariants.php' '$DEPLOY_BASE/run-production-invariants.php' '$DEPLOY_BASE/production-uat-readiness.php' '$DEPLOY_BASE/run-production-uat-readiness.php' '$DEPLOY_BASE/kis-test-admin.json' '$DEPLOY_BASE/provision-production-test-admin.php' '$DEPLOY_BASE/run-provision-production-test-admin.php' '$DEPLOY_BASE/kis-uat-settings.json' '$DEPLOY_BASE/provision-production-uat.php' '$DEPLOY_BASE/run-provision-production-uat.php'" || true
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/production-test-cleanup.php' '$DEPLOY_BASE/run-production-test-cleanup.php' '$DEPLOY_BASE/production-invariants.php' '$DEPLOY_BASE/run-production-invariants.php' '$DEPLOY_BASE/production-uat-readiness.php' '$DEPLOY_BASE/run-production-uat-readiness.php' '$DEPLOY_BASE/kis-test-admin.json' '$DEPLOY_BASE/provision-production-test-admin.php' '$DEPLOY_BASE/run-provision-production-test-admin.php' '$DEPLOY_BASE/kis-uat-settings.json' '$DEPLOY_BASE/provision-production-uat.php' '$DEPLOY_BASE/run-provision-production-uat.php'" || true
           fi
