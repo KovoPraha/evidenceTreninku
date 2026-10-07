@@ -51,6 +51,11 @@ function memberFeePlanAddExclusion(PDO $pdo, int $planId, int $sportovecId, int 
 {
     $from = memberChargeAdminDate($from, true);$to = memberChargeAdminDate((string)$to);$reason = memberChargeAdminReason($reason);
     if (!$confirmed || min($planId,$sportovecId,$actorId) < 1 || ($to !== null && $to < $from)) throw new InvalidArgumentException('Výjimka vyžaduje osobu, platnost, důvod a potvrzení.');
+    $plan=memberFeePlanRow($pdo,$planId);
+    if(!$plan||$plan['status']!=='active')throw new MemberFeePlanException('Aktivní plán nebyl nalezen.');
+    $periodTo=$to??((string)($plan['ends_on']??'')!==''?(string)$plan['ends_on']:'9999-12-31');
+    if($from>(string)($plan['ends_on']?:'9999-12-31')||$periodTo<(string)$plan['starts_on'])throw new MemberFeePlanException('Výjimka neleží v období platnosti plánu.');
+    if(!memberFeePlanMemberEligibleForPeriod($pdo,$planId,$sportovecId,$from,$periodTo))throw new MemberFeePlanException('Vybraný sportovec nemá v tomto období platné aktivní členství v soupisce plánu.');
     $pdo->prepare('INSERT INTO member_fee_plan_exclusions(plan_id,sportovec_id,valid_from,valid_to,reason,created_by_trainer_id) VALUES(?,?,?,?,?,?)')->execute([$planId,$sportovecId,$from,$to,$reason,$actorId]);
 }
 
@@ -66,6 +71,26 @@ function memberFeePlanPayer(PDO $pdo, int $sportovecId, string $periodFrom, stri
 {
     $statement=$pdo->prepare("SELECT a.id FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id WHERE r.sportovec_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND a.aktivni=1 AND a.email_overeno=1 AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) ORDER BY CASE r.relation_role WHEN 'self' THEN 0 ELSE 1 END,r.id LIMIT 1");
     $statement->execute([$sportovecId,$periodTo.' 23:59:59',$periodFrom.' 00:00:00']);$value=$statement->fetchColumn();return$value===false?null:(int)$value;
+}
+
+/** @return list<array{id:int,jmeno:string,prijmeni:string}> */
+function memberFeePlanEligibleMembers(PDO $pdo,int $planId,string $from,string $to):array
+{
+    $from=memberChargeAdminDate($from,true);$to=memberChargeAdminDate($to,true);
+    if($to<$from)throw new InvalidArgumentException('Konec období členství nesmí být před začátkem.');
+    $plan=memberFeePlanRow($pdo,$planId);
+    if(!$plan||$plan['status']!=='active')return[];
+    if((string)$plan['starts_on']>$to||(!empty($plan['ends_on'])&&(string)$plan['ends_on']<$from))return[];
+    $statement=$pdo->prepare("SELECT DISTINCT s.id,s.jmeno,s.prijmeni FROM club_roster_members m JOIN sportovci s ON s.id=m.sportovec_id WHERE m.team_id=? AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) ORDER BY s.prijmeni,s.jmeno,s.id");
+    $statement->execute([(int)$plan['team_id'],$to,$from]);
+    return$statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function memberFeePlanMemberEligibleForPeriod(PDO $pdo,int $planId,int $sportovecId,string $from,string $to):bool
+{
+    if($sportovecId<1)return false;
+    foreach(memberFeePlanEligibleMembers($pdo,$planId,$from,$to)as$member)if((int)$member['id']===$sportovecId)return true;
+    return false;
 }
 
 function memberFeePlanStandingVariableSymbol(PDO $pdo,int $planId,int $sportovecId):string

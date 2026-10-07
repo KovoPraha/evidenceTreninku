@@ -37,6 +37,18 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringContainsString('athleteRegistrationSubmit',$service);
         self::assertStringContainsString("'quick_program'",$service);
         self::assertStringContainsString('clubProgramBirthDateWarning',$service);
+        self::assertStringContainsString('Koho přihlašujete?',$page);
+        self::assertStringContainsString('quick-athlete-name-fields',$page);
+        self::assertStringContainsString("\$_POST['jmeno']=(string)(\$_POST['parent_first_name']",$page);
+    }
+
+    public function testUnavailableCartItemsAreExplainedBeforeCheckout():void
+    {
+        $root=dirname(__DIR__,2);$checkout=(string)file_get_contents($root.'/includes/shop_checkout.php');$events=(string)file_get_contents($root.'/includes/club_event_shop.php');$page=(string)file_get_contents($root.'/booking/eshop.php');
+        self::assertStringContainsString("availability_error",$checkout);
+        self::assertStringContainsString("availability_error",$events);
+        self::assertStringContainsString('Objednávku zatím nelze dokončit.',$page);
+        self::assertStringContainsString('button.disabled=true',$page);
     }
 
     public function testStorefrontLinksToProductDetail(): void

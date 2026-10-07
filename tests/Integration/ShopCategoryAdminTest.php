@@ -48,6 +48,7 @@ final class ShopCategoryAdminTest extends TestCase
         self::assertSame(2,$byPath['Oblečení']['product_count']);
         self::assertSame(1,$byPath['Oblečení > Dresy']['product_count']);
         self::assertSame('Bundy',$byPath['Oblečení > Bundy']['display_name'],'Cesta bez metadat zůstává viditelná.');
+        self::assertSame('Oblečení pro členy › Bundy',$byPath['Oblečení > Bundy']['menu_label']);
         self::assertArrayNotHasKey('Skryté',$byPath,'Kategorie bez prodejného produktu v menu není.');
     }
 

@@ -49,8 +49,9 @@ final class TesterFeedbackWiringTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $form = (string)file_get_contents($root . '/planovany_trenink_form.php');
-        self::assertStringContainsString('no_roster_confirm', $form);
-        self::assertStringContainsString('komu se trénink zobrazí', $form);
+        self::assertStringContainsString('name="roster_mode"', $form);
+        self::assertStringContainsString('Interní trénink bez účastníků', $form);
+        self::assertStringNotContainsString('no-roster-confirm-wrap', $form);
         $planner = (string)file_get_contents($root . '/planovac.php');
         self::assertStringContainsString('trainingRosterBridgePlanTeamIds', $planner);
         self::assertStringContainsString('trainingRsvpPlanSummaries', $planner);
@@ -60,5 +61,30 @@ final class TesterFeedbackWiringTest extends TestCase
             self::assertStringContainsString('training_rsvp_save', $source);
             self::assertStringContainsString('Potvrzení účasti na trénincích', $source);
         }
+    }
+
+    public function testReportsAndLegacyRouteFailVisiblyAndUseCanonicalMeasurementLinks():void
+    {
+        $root=dirname(__DIR__,2);$report=(string)file_get_contents($root.'/prehled_vsech_vykazu.php');$legacy=(string)file_get_contents($root.'/vypis_vsech_vykazu.php');
+        self::assertStringContainsString('trenink_mereni',$report);
+        self::assertStringContainsString('vendor/autoload.php',$report);
+        self::assertStringContainsString('Referenční kód:',$report);
+        self::assertStringContainsString("(int)\$data['id']",$report);
+        self::assertStringContainsString('prehled_vsech_vykazu.php',$legacy);
+    }
+
+    public function testRewardSectionHeadersHaveStableContrast():void
+    {
+        $root=dirname(__DIR__,2);$css=(string)file_get_contents($root.'/assets/app-ui.css');
+        self::assertStringContainsString('.app-section-header-primary',$css);
+        self::assertStringContainsString('color: #fff !important',$css);
+        foreach(['hromadne_odmeny.php','sprava_sportovec_obdobi.php']as$file)self::assertStringContainsString('app-section-header-',(string)file_get_contents($root.'/'.$file),$file);
+    }
+
+    public function testMonthlyPlansAreDiscoverableFromIndividualCharges():void
+    {
+        $page=(string)file_get_contents(dirname(__DIR__,2).'/member_charges_admin.php');
+        self::assertStringContainsString('member_fee_plans_admin.php',$page);
+        self::assertStringContainsString('Pravidelné měsíční příspěvky',$page);
     }
 }

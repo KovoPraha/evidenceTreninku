@@ -302,7 +302,7 @@ if ($selectedSportovecId > 0) {
 
     <!-- ── Filtr sportovců ───────────────────────────────────────── -->
     <div class="card section-card mb-4">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header app-section-header-primary">
             <i class="bi bi-search"></i>Vyhledání sportovce
         </div>
         <div class="card-body">
@@ -351,7 +351,7 @@ if ($selectedSportovecId > 0) {
 
     <!-- ── Historie kreditních období ────────────────────────────── -->
     <div class="card section-card mb-4">
-        <div class="card-header bg-dark text-white">
+        <div class="card-header app-section-header-dark">
             <i class="bi bi-clock-history"></i>Historie kreditních období
         </div>
         <div class="card-body p-0">
@@ -475,7 +475,7 @@ if ($selectedSportovecId > 0) {
 
     <!-- ── Formulář nové / editace otevřeného období ─────────────── -->
     <div class="card section-card mb-4">
-        <div class="card-header <?= $openObdobi ? 'bg-warning text-dark' : 'bg-success text-white' ?>">
+        <div class="card-header <?= $openObdobi ? 'app-section-header-warning' : 'app-section-header-success' ?>">
             <i class="bi bi-<?= $openObdobi ? 'pencil-square' : 'plus-circle' ?>"></i>
             <?= $openObdobi ? 'Úprava aktivního (otevřeného) období' : 'Vytvořit nové kreditní období' ?>
         </div>

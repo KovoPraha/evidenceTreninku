@@ -323,6 +323,10 @@ function clubEventNullableDateTime(string $value): ?string { return trim($value)
 
 function clubEventAudit(PDO $pdo,int $eventId,int $actorId,string $action,string $subjectType,?int $subjectId,string $note,array $payload): void
 {
+    if ($eventId<1 || $actorId<1 || preg_match('/^[a-z0-9_]{1,64}$/D',$action)!==1
+        || preg_match('/^[a-z0-9_]{1,24}$/D',$subjectType)!==1) {
+        throw new InvalidArgumentException('Audit akce vyžaduje platný objekt, správce, akci a typ předmětu.');
+    }
     $statement=$pdo->prepare('INSERT INTO club_event_admin_events (event_id,actor_trainer_id,action,subject_type,subject_id,note,payload_json) VALUES (?,?,?,?,?,?,?)');
     $statement->execute([$eventId,$actorId,$action,$subjectType,$subjectId,$note,json_encode($payload,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)]);
 }

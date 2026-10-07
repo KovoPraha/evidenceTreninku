@@ -101,6 +101,19 @@ function shopCategoryTreeOrder(array $nodes):array
     return$ordered;
 }
 
+/** @param array<string,array<string,mixed>> $nodes */
+function shopCategoryMenuLabel(array $nodes,string $path):string
+{
+    $labels=[];$visited=[];$current=$path;
+    while(isset($nodes[$current])&&!isset($visited[$current])){
+        $visited[$current]=true;array_unshift($labels,(string)$nodes[$current]['display_name']);
+        $parent=$nodes[$current]['parent_path']??null;
+        if(!is_string($parent)||$parent==='')break;
+        $current=$parent;
+    }
+    return implode(' › ',$labels);
+}
+
 /** @param list<array<string,mixed>> $products @return list<array<string,mixed>> */
 function shopStorefrontCategoryMenu(PDO $pdo,array $products):array
 {
@@ -115,7 +128,7 @@ function shopStorefrontCategoryMenu(PDO $pdo,array $products):array
         $paths=shopCategoryDescendants($nodes,(string)$node['category_path']);$productIds=[];
         foreach($paths as$path)foreach(array_keys($direct[$path]??[])as$productId)$productIds[$productId]=true;
         $count=count($productIds);
-        if($count<1)continue;$node['product_count']=$count;$node['descendant_paths']=$paths;$menu[]=$node;
+        if($count<1)continue;$node['product_count']=$count;$node['descendant_paths']=$paths;$node['menu_label']=shopCategoryMenuLabel($nodes,(string)$node['category_path']);$menu[]=$node;
     }
     return$menu;
 }

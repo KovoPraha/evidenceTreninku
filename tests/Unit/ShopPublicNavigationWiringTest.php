@@ -13,12 +13,12 @@ final class ShopPublicNavigationWiringTest extends TestCase
     {
         $html=\shopPublicNavigationHtml([
             ['category_path'=>'Oblečení','display_name'=>'Oblečení','depth'=>0],
-            ['category_path'=>'Oblečení > Děti','display_name'=>'Děti & mládež','depth'=>1],
+            ['category_path'=>'Oblečení > Děti','display_name'=>'Děti & mládež','menu_label'=>'Oblečení › Děti & mládež','depth'=>1],
         ],'Oblečení > Děti');
         self::assertStringContainsString('aria-label="Navigace e-shopu"',$html);
         self::assertStringContainsString('E-shop – domů',$html);
         self::assertStringContainsString('kategorie=Oble%C4%8Den%C3%AD%20%3E%20D%C4%9Bti',$html);
-        self::assertStringContainsString('Děti &amp; mládež',$html);
+        self::assertStringContainsString('Oblečení › Děti &amp; mládež',$html);
         self::assertSame(1,substr_count($html,'aria-current="page"'));
     }
 

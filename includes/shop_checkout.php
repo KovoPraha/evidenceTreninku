@@ -99,8 +99,11 @@ function shopCartDetail(PDO $pdo, int $accountId): array
         $decoded = json_decode((string)$item['attributes_json'], true);
         $item['attributes'] = is_array($decoded) ? $decoded : [];
         $item['program_terms']=null;
+        $item['availability_error']=null;
         if(($item['offer_type']??null)==='program'){
-            $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id']);
+            $state=clubProgramVariantSaleState($pdo,(int)$item['variant_id']);$offer=$state['offer'];
+            if(!$state['saleable'])$item['availability_error']=$state['reason'];
+            elseif((int)($item['beneficiary_sportovec_id']??0)<1)$item['availability_error']='U kroužku není vybrané dítě nebo účastník.';
             if($offer)$item['program_terms']=clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id']);
         }
     }
