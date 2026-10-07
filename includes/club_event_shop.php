@@ -89,7 +89,13 @@ function clubEventShopCartItems(PDO $pdo,int $cartId):array
     if(!clubEventShopAvailable($pdo)||$cartId<1)return [];
     $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
     $s=$pdo->prepare('SELECT ci.id AS cart_item_id,ci.event_id,ci.variant_id,ci.beneficiary_sportovec_id,ci.consent_version,e.name AS event_name,v.sku,v.amount_minor,v.currency,'.$paymentPolicy.' AS payment_method_policy,s.jmeno,s.prijmeni FROM club_event_cart_items ci JOIN club_events e ON e.id=ci.event_id JOIN shop_variants v ON v.id=ci.variant_id JOIN shop_products p ON p.id=v.product_id JOIN sportovci s ON s.id=ci.beneficiary_sportovec_id WHERE ci.cart_id=? ORDER BY ci.event_id,ci.id');
-    $s->execute([$cartId]);$rows=$s->fetchAll(PDO::FETCH_ASSOC);foreach($rows as &$row){$row['quantity']=1;$row['line_amount_minor']=(int)$row['amount_minor'];}unset($row);return $rows;
+    $s->execute([$cartId]);$rows=$s->fetchAll(PDO::FETCH_ASSOC);
+    foreach($rows as &$row){
+        $row['quantity']=1;$row['line_amount_minor']=(int)$row['amount_minor'];$row['availability_error']=null;
+        try{clubEventShopVariant($pdo,(int)$row['event_id'],(int)$row['variant_id']);}
+        catch(ClubEventShopException|ClubEventRegistrationException $exception){$row['availability_error']=$exception->getMessage();}
+    }
+    unset($row);return $rows;
 }
 
 /** @return list<array<string,mixed>> */

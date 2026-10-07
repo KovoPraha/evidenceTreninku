@@ -232,3 +232,12 @@ body.app-loading .app-loading-bar {
   outline-offset: 2px !important;
   box-shadow: 0 0 0 2px #212529 !important;
 }
+
+/* Stable semantic section headers; independent of Bootstrap theme overrides. */
+.app-section-header-primary { background-color: #0b5ed7 !important; color: #fff !important; }
+.app-section-header-success { background-color: #146c43 !important; color: #fff !important; }
+.app-section-header-dark { background-color: #212529 !important; color: #fff !important; }
+.app-section-header-warning { background-color: #ffc107 !important; color: #212529 !important; }
+.app-section-header-primary :where(a,span,i,strong),
+.app-section-header-success :where(a,span,i,strong),
+.app-section-header-dark :where(a,span,i,strong) { color: inherit; }

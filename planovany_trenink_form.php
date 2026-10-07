@@ -28,7 +28,7 @@ if ($editId) {
 // ── Vybrané podskupiny (editace / fallback) ───────────────────────────────────
 $selectedPodskupiny = [];
 $selectedTeamIds = [];
-$noRosterConfirmed = false;
+$rosterMode = 'teams';
 if ($editId && $existujici) {
     $stPs = $pdo->prepare("SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=?");
     $stPs->execute([$editId]);
@@ -38,6 +38,7 @@ if ($editId && $existujici) {
         $selectedPodskupiny = [(int)$existujici['podskupina_id']];
     }
     $selectedTeamIds = trainingRosterBridgePlanTeamIds($pdo, $editId);
+    if ($selectedTeamIds === []) $rosterMode = 'internal';
 }
 
 // ── Výchozí hodnoty ───────────────────────────────────────────────────────────
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $skupinaId     = (int)($_POST['skupina_id'] ?? 0);
         $podskupinyIds = array_values(array_filter(array_map('intval', $_POST['podskupiny_ids'] ?? [])));
         $teamIds        = array_values(array_unique(array_filter(array_map('intval', $_POST['team_ids'] ?? []))));
-        $noRosterConfirmed = isset($_POST['no_roster_confirm']);
+        $rosterMode     = (string)($_POST['roster_mode'] ?? 'teams');
         $podskupinaId  = !empty($podskupinyIds) ? $podskupinyIds[0] : null; // legacy FK
         $datum         = trim($_POST['datum'] ?? '');
         $casOd         = trim($_POST['cas_od'] ?? '') ?: null;
@@ -82,9 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$skupinaId)   $errors[] = 'Vyberte skupinu.';
         if (!$datum)       $errors[] = 'Zadejte datum.';
         if ($casOd && $casDo && $casOd >= $casDo) $errors[] = 'Čas "od" musí být před časem "do".';
-        if ($teamIds === [] && !$noRosterConfirmed) {
-            $errors[] = 'Vyberte alespoň jednu KIS soupisku, aby sportovci trénink viděli, nebo výslovně potvrďte, že jde o interní trénink bez účastníků.';
-        }
+        if (!in_array($rosterMode, ['teams','internal'], true)) $errors[] = 'Vyberte, zda je trénink určen soupiskám, nebo je interní bez účastníků.';
+        if ($rosterMode === 'teams' && $teamIds === []) $errors[] = 'Pro trénink určený sportovcům vyberte alespoň jednu KIS soupisku.';
+        if ($rosterMode === 'internal') $teamIds = [];
 
         if (empty($errors)) {
             if ($editId) {
@@ -314,7 +315,17 @@ $kategorieMeta = [
 
                 <!-- KIS soupisky určují viditelnost a možnost potvrdit účast; legacy skupiny zůstávají zachované. -->
                 <div class="mb-3">
-                    <label class="form-label req">KIS soupisky – komu se trénink zobrazí</label>
+                    <label class="form-label req">Komu je trénink určen</label>
+                    <div class="border rounded p-3 bg-light mb-2" id="training-roster-mode">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="roster_mode" id="roster-mode-teams" value="teams" <?= $rosterMode === 'teams' ? 'checked' : '' ?> required>
+                            <label class="form-check-label" for="roster-mode-teams"><strong>Sportovcům z vybraných soupisek</strong><br><span class="small text-muted">Trénink se jim zobrazí a mohou potvrdit účast.</span></label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="roster_mode" id="roster-mode-internal" value="internal" <?= $rosterMode === 'internal' ? 'checked' : '' ?> required>
+                            <label class="form-check-label" for="roster-mode-internal"><strong>Interní trénink bez účastníků</strong><br><span class="small text-muted">Trénink se nezobrazí žádnému sportovci.</span></label>
+                        </div>
+                    </div>
                     <div class="border rounded p-2 bg-white" id="training-roster-options" style="max-height:180px;overflow-y:auto">
                         <?php if ($eligibleTeams === []): ?>
                             <span class="text-muted small">Pro datum tréninku není dostupná aktivní soupiska.</span>
@@ -332,10 +343,6 @@ $kategorieMeta = [
                         <?php endif; ?>
                     </div>
                     <div class="form-text">Členové vybraných soupisek trénink uvidí ve sportovním přehledu a mohou potvrdit „zúčastním se / nezúčastním se“. Skutečnou docházku po tréninku dál zapisuje trenér.</div>
-                    <div class="form-check border border-warning rounded bg-warning-subtle p-3 ps-5 mt-2" id="no-roster-confirm-wrap">
-                        <input class="form-check-input" type="checkbox" name="no_roster_confirm" id="no-roster-confirm" value="1" <?= !empty($noRosterConfirmed) ? 'checked' : '' ?>>
-                        <label class="form-check-label" for="no-roster-confirm"><strong>Jde o interní trénink bez účastníků.</strong><br><span class="small">Potvrzuji, že se trénink nemá zobrazit žádnému sportovci.</span></label>
-                    </div>
                 </div>
 
                 <!-- Datum + Časy -->
@@ -485,19 +492,19 @@ document.getElementById('skupinaId').addEventListener('change', function () {
     loadPodskupiny(this.value);
 });
 
-// ── Soupisky — zabránění nechtěně neviditelnému tréninku ─────────────────────
+// ── Soupisky — režim je vždy viditelný a jednoznačný ─────────────────────────
 (function () {
     const teams = Array.from(document.querySelectorAll('input[name="team_ids[]"]'));
-    const noRoster = document.getElementById('no-roster-confirm');
-    const wrap = document.getElementById('no-roster-confirm-wrap');
-    if (!noRoster || !wrap) return;
+    const modes = Array.from(document.querySelectorAll('input[name="roster_mode"]'));
+    const options = document.getElementById('training-roster-options');
+    if (!modes.length || !options) return;
     const sync = () => {
-        const hasTeam = teams.some(input => input.checked);
-        noRoster.disabled = hasTeam;
-        if (hasTeam) noRoster.checked = false;
-        wrap.classList.toggle('d-none', hasTeam);
+        const internal = modes.some(input => input.checked && input.value === 'internal');
+        teams.forEach(input => { input.disabled = internal; });
+        options.classList.toggle('opacity-50', internal);
+        options.setAttribute('aria-disabled', internal ? 'true' : 'false');
     };
-    teams.forEach(input => input.addEventListener('change', sync));
+    modes.forEach(input => input.addEventListener('change', sync));
     sync();
 })();
 

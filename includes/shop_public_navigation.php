@@ -23,16 +23,12 @@ function shopPublicNavigationHtml(array $items, ?string $activeCategory = null, 
         $html .= '<div class="app-shop-nav-categories" aria-label="Kategorie produktů">';
         foreach ($items as $item) {
             $path = (string)($item['category_path'] ?? '');
-            $name = (string)($item['display_name'] ?? $path);
+            $name = (string)($item['menu_label'] ?? $item['display_name'] ?? $path);
             if ($path === '' || $name === '') {
                 continue;
             }
-            $depth = max(0, (int)($item['depth'] ?? 0));
             $active = $activeCategory !== null && $activeCategory === $path;
             $html .= '<a class="app-shop-nav-link' . ($active ? ' active' : '') . '" href="eshop.php?kategorie=' . rawurlencode($path) . '"' . ($active ? ' aria-current="page"' : '') . '>';
-            if ($depth > 0) {
-                $html .= '<span class="app-shop-nav-depth" aria-hidden="true">↳</span>';
-            }
             $html .= shopPublicNavigationH($name) . '</a>';
         }
         $html .= '</div>';

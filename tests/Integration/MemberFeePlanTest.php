@@ -21,6 +21,18 @@ final class MemberFeePlanTest extends TestCase
         self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(DISTINCT variable_symbol) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM member_fee_standing_orders')->fetchColumn());
     }
 
+    public function testEligibleMembersRespectRosterValidityAndExclusionRejectsOutsider():void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260922120000_member_fee_plans.php';$migration['up']($pdo);
+        $pdo->exec("INSERT INTO sportovci VALUES(3,'Cyril','Budoucí'),(4,'Dana','Cizí');INSERT INTO club_roster_members VALUES(10,3,'active','2026-11-01',NULL);UPDATE club_roster_members SET valid_to='2026-08-31' WHERE sportovec_id=2");
+        $plan=\memberFeePlanCreate($pdo,7,['team_id'=>10,'name'=>'Závodní měsíční','charge_title'=>'Příspěvek','amount_minor'=>120000,'due_day'=>15,'starts_on'=>'2026-01-01','ends_on'=>'2026-12-31'],'Zavedení měsíčních příspěvků.',true);
+        $members=\memberFeePlanEligibleMembers($pdo,$plan['id'],'2026-09-01','2026-09-30');
+        self::assertSame([1],array_map('intval',array_column($members,'id')));
+        $this->expectException(\MemberFeePlanException::class);
+        $this->expectExceptionMessage('platné aktivní členství');
+        \memberFeePlanAddExclusion($pdo,$plan['id'],4,7,'2026-09-01','2026-09-30','Nemá být účtováno.',true);
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:');$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);

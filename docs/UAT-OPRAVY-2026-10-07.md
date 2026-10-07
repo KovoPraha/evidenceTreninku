@@ -1,12 +1,41 @@
 # Opravy podle zpětné vazby testerů z 7. 10. 2026
 
-Stav: implementováno, sloučeno do `main` a technicky nasazeno na produkci.
+Stav první vlny: implementováno, sloučeno do `main` a technicky nasazeno na produkci.
 
 Implementační pull request je
 [#34](https://github.com/KovoPraha/evidenceTreninku/pull/34). Produkční commit
 po následných opravách workeru je `623e161e0b2d7eefeffe6d87d4586926265ba02a`.
 
-## Změny pro uživatele
+## Druhá vlna oprav podle dokumentu testera
+
+Stav této části: implementováno ve zdrojovém kódu a automaticky ověřeno.
+Přesný stav GitHubu a produkčního nasazení se eviduje v
+[`CURRENT_STATE.md`](CURRENT_STATE.md), nikoli odhadem v tomto funkčním souhrnu.
+
+- potvrzení akce a současné otevření přihlašování už nepřeteče přes délku
+  auditní akce; nová migrace rozšiřuje sloupec na 64 znaků a aplikační vrstva
+  délku před zápisem kontroluje;
+- založení plánovaného tréninku používá vždy viditelnou volbu mezi soupiskami
+  a interním tréninkem bez účastníků;
+- výpis všech výkazů bezpečně pracuje s přísným SQL režimem, správně odkazuje
+  na trénink, počítá kanonická měření a při chybě zobrazí referenční kód;
+- měsíční plány příspěvků jsou přímo dostupné ze správy jednotlivých předpisů
+  a výjimku lze přidat jen členovi s platným členstvím v soupisce plánu;
+- kontrast záhlaví ve správě odměn a kreditních období už nezávisí na
+  přepsání barev Bootstrapu;
+- rychlá přihláška nejprve rozliší dítě a dospělého; dospělý zadává jméno jen
+  jednou;
+- košík před objednávkou vysvětlí, která událost nebo program už není
+  dostupný, a umožní položku odebrat bez ztráty zbytku košíku;
+- názvy v menu e-shopu obsahují cestu rodičovské kategorie, takže dvě různé
+  kategorie „Dětské“ nejsou zaměnitelné.
+
+Databázová migrace této vlny je
+`20261007130000_club_event_admin_action_width.php`. Kompletní lokální sada po
+změnách: 838 testů / 11 740 kontrol, bez chyby. Toto ověření samo o sobě není
+důkazem nasazení ani produkčního UAT.
+
+## Změny pro uživatele v první vlně
 
 - Registrace vysvětluje, že lze použít zapamatovatelnou delší frázi, a heslo je
   možné bezpečně zobrazit nebo skrýt.

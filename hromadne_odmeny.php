@@ -255,7 +255,7 @@ if ($filterSkupinaId !== '') {
             color: #fff;
         }
         .table-wrap { max-height: 68vh; overflow: auto; }
-        .sticky-head thead th { position: sticky; top: 0; z-index: 5; }
+        .sticky-head thead th { position: sticky; top: 0; z-index: 5; background: #212529; color: #fff; }
         .narrow { white-space: nowrap; }
         .w-odm { width: 160px; }
         .small-muted { font-size: .85rem; color: #666; }
@@ -317,7 +317,7 @@ if ($filterSkupinaId !== '') {
 
     <!-- Filtry skupin -->
     <div class="card section-card mb-4">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header app-section-header-primary">
             <i class="bi bi-funnel"></i>Výběr skupiny / podskupiny
         </div>
         <div class="card-body">
@@ -368,7 +368,7 @@ if ($filterSkupinaId !== '') {
     <?php else: ?>
 
         <div class="card section-card">
-            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <div class="card-header app-section-header-success d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-people me-1"></i>Sportovci</span>
                 <span class="badge bg-light text-dark fw-normal">
                     Nalezeno: <?= count($sportovci) ?>
