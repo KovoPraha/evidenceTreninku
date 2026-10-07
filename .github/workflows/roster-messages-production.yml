@@ -41,4 +41,4 @@ jobs:
 
       - name: Zpracovat omezenou dávku
         run: |
-          ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "set -eu;test -s '$REMOTE_DIR/config.php';test -s '$REMOTE_DIR/bin/roster-message-worker.php';APP_HOST='$APP_HOST' php '$REMOTE_DIR/bin/roster-message-worker.php' --limit=50 --transport=mail"
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "set -eu;test -s '$REMOTE_DIR/config.php';test -s '$REMOTE_DIR/bin/roster-message-worker.php';APP_HOST='$APP_HOST' ROSTER_MESSAGE_LIMIT=50 ROSTER_MESSAGE_TRANSPORT=mail php '$REMOTE_DIR/bin/roster-message-worker.php'"
