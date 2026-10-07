@@ -12,18 +12,25 @@ snapshot z data aktualizace, nikoli náhrada za nový `git fetch`.
 | Položka | Hodnota |
 |---|---|
 | Větev | `main`; přesné aktuální SHA zjistí nový clone pomocí `git rev-parse origin/main` |
-| Nasazený aplikační commit | `623e161e0b2d7eefeffe6d87d4586926265ba02a` |
+| `origin/main` při kontrole | `f5619222402436d7a00e7e720318886bcaffb97a` |
+| Nasazený aplikační commit | `49c38c72c6704826182aff7f59855f47b5818bb8` |
 | Otevřené pull requesty | žádné při kontrole 7. 10. 2026 |
-| CI | [běh 37605851409](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605851409), úspěch |
-| Produkční deploy | [běh 37605872735](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735), úspěch |
+| CI aktuálního `main` | [běh 37636955701](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636955701), úspěch |
+| CI nasazeného aplikačního commitu | [běh 37635967824](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37635967824), úspěch |
+| Produkční deploy | [běh 37636084395](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636084395), úspěch, `uat_schvaleno=true` |
+| UAT připravenost | [běh 37636447561](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636447561), `ready=true` |
+| Produkční invarianty | [běh 37636671525](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636671525), 16/16 bez porušení |
 | Produkční fronta zpráv | [běh 37606107788](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788), úspěch |
 | Produkce | <https://kis.kovopraha.cz/> |
 
-CI nad aplikačním commitem ověřilo 832 testů / 11 668 kontrol a MariaDB 10.3 i
+CI nad aplikačním commitem ověřilo 840 testů / 11 751 kontrol a MariaDB 10.3 i
 11.4. Produkce běží na tomto commitu; dokumentace může být na `main` novější.
-Poslední deploy má
-`uat_schvaleno=false`, takže technické nasazení není vydáváno za dokončené
-produkční UAT.
+Poslední deploy má `uat_schvaleno=true` a navazující připravenost i invarianty
+prošly. Toto potvrzení se vztahuje pouze k uvedenému release a testovacímu oknu.
+
+Automatický Fio import je dočasně vypnutý. Workflow zůstává jen ručně
+spustitelné a produkční `FIO_IMPORT_ENABLED` má zůstat `false`, dokud vlastník
+znovu neschválí token, účet a provozní dohled.
 
 ## Nová stanice: čisté převzetí
 

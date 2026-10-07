@@ -11,13 +11,13 @@ používat jako důkaz aktuální verze. Před každou novou prací má přednos
 
 - Repozitář: <https://github.com/KovoPraha/evidenceTreninku>
 - Výchozí větev: `main`
-- Poslední aplikační commit před touto dokumentační synchronizací:
-  `1893c25481a9f9c2209002a82d48e062065666a5`
+- Stav vzdálené větve `origin/main` při této kontrole:
+  `f5619222402436d7a00e7e720318886bcaffb97a`
 - Otevřené pull requesty při této kontrole: žádné
 - Produkční aplikace: <https://kis.kovopraha.cz/>
 - Poslední ověřené nasazení: GitHub Actions běh
-  [`37629360071`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629360071)
-  nasadil přesně commit `1893c25481a9f9c2209002a82d48e062065666a5`.
+  [`37636084395`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636084395)
+  nasadil přesně commit `49c38c72c6704826182aff7f59855f47b5818bb8`.
 - Nasazení vytvořilo a ověřilo databázovou zálohu, připravilo úplný release,
   aplikovalo migrace, aktivovalo kód a dokončilo HTTP smoke test.
 - Veřejná domovská stránka a registrace po nasazení odpovídají HTTP 200.
@@ -34,10 +34,12 @@ je vždy samostatný ručně spuštěný workflow podle
 ## Poslední automatické ověření
 
 GitHub Actions běh
-[`37629208337`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629208337)
-nad stejným commitem prošel v tomto rozsahu:
+[`37636955701`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636955701)
+nad aktuálním `origin/main` `f5619222402436d7a00e7e720318886bcaffb97a`
+prošel v tomto rozsahu. Aplikační commit nasazeného release dříve ověřil také
+CI běh [`37635967824`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37635967824):
 
-- PHPUnit na PHP 8.2: **839 testů / 11 743 kontrol**;
+- PHPUnit na PHP 8.2: **840 testů / 11 751 kontrol**;
 - integrační smoke na MariaDB 10.3: úspěch;
 - integrační smoke na MariaDB 11.4: úspěch;
 - kontrola Composer konfigurace: úspěch.
@@ -82,24 +84,23 @@ Podrobný uživatelský dopad testerových oprav popisuje
 
 ## Důležitá provozní hranice
 
-Poslední deploy byl záměrně uložen s `uat_schvaleno=false`. To znamená, že kód
-je technicky nasazený a prošel automatickými kontrolami, ale tento deploy sám o
-sobě není schválením plného přihlášeného produkčního UAT. Zapisovací scénáře se
-skutečnými e-maily, bankovními platbami nebo provozními účty se provádějí až po
-samostatném schválení podle
+Poslední deploy má `uat_schvaleno=true`. Tato hodnota potvrzuje schválení
+konkrétního nasazeného commitu, nikoli neomezené povolení budoucích zápisových
+testů. Reálné e-maily, bankovní pohyby a provozní účty se nadále používají jen
+v rozsahu schváleného scénáře podle
 [`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
-`uat_schvaleno` je metadata konkrétního release. Hodnota `false` nasazení
-nezastavuje; pouze poctivě zaznamenává, že plné UAT nebylo schváleno. Hodnotu
-`true` lze zvolit jen tehdy, když byl přesný nasazovaný commit skutečně
-schválen.
-
 Read-only kontrola připravenosti
-[`37629771673`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629771673)
-potvrdila aktivní rodičovské, dětské i správcovské účty, testovací Stripe,
-bankovní nastavení a inbox. Plné zapisovací UAT je ale nadále blokované:
-release není schválený, testovací okno skončilo 6. 10. 2026 ve 20:00 a chybí
-část časově omezených TEST fixture dat.
+[`37636447561`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636447561)
+potvrdila `ready=true`: schválený release, aktivní rodičovské, dětské i
+správcovské účty, TEST data, testovací Stripe, bankovní nastavení, inbox a
+platné testovací okno. Navazující read-only kontrola invariantů
+[`37636671525`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636671525)
+skončila `ok=true` se 16 kontrolami a bez porušení.
+
+Fio import je od 7. 10. 2026 záměrně provozně pozastavený. Automatický plán byl
+odstraněn; kód zůstává připravený pro budoucí ruční obnovení po samostatném
+schválení read-only tokenu a provozního postupu.
 
 ## Převzetí práce na jiné stanici
 

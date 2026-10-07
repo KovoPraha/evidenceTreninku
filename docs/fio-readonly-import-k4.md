@@ -1,5 +1,10 @@
 # Fio read-only import a ruční potvrzení přesné shody K4
 
+> **Provozní stav 7. 10. 2026:** Fio zatím neimplementujeme do běžného provozu.
+> Produkční import musí zůstat vypnutý (`FIO_IMPORT_ENABLED=false`) a workflow
+> nemá časový plán. Kód, migrace a ruční workflow zůstávají zachované pro
+> pozdější samostatně schválené obnovení.
+
 Synchronizace je záměrně **read-only vůči bankovnímu účtu** a sama nepotvrzuje
 platby. Stahuje pohyby, ukládá jejich neměnný otisk a navrhuje shodu s
 objednávkou nebo členským předpisem. Přesnou shodu pak správce výslovně potvrdí
@@ -50,7 +55,7 @@ uloží se datum zaúčtování, správce a jeho poznámka a spustí se běžný
 cyklus platby (včetně auditu a navazujících aktivací objednávky). Chybné nebo
 mezitím změněné návrhy se nepotvrdí.
 
-## Nastavení a CRON
+## Budoucí nastavení a ruční ověření
 
 Nejdříve aplikujte migrace `20260804070000_fio_readonly_import` a
 `20260909170000_fio_bank_reconciliation`. Potom na
@@ -63,20 +68,21 @@ FIO_IMPORT_LOOKBACK_DAYS=3
 ```
 
 Účet uložený v `eshop_bank_admin.php` musí být stejný jako účet tokenu.
-Doporučený CRON je jednou za 10 minut; Fio doporučuje mezi dotazy se stejným
-tokenem nejméně 30 sekund.
-Obecný příkaz (konkrétní absolutní cestu doplní hosting) je:
+Po budoucím schválení může být doporučený interval jednou za 10 minut; Fio
+doporučuje mezi dotazy se stejným tokenem nejméně 30 sekund. Obecný ruční
+příkaz (konkrétní absolutní cestu doplní hosting) je:
 
 ```text
-APP_HOST=data.kovopraha.cz php /absolutni/cesta/evidence/bin/fio-import.php
+APP_HOST=kis.kovopraha.cz php /absolutni/cesta/evidence/bin/fio-import.php
 ```
 
-Na produkci běží verzovaný workflow `fio-import-production.yml` každých deset
-minut. Připojí se přes ověřené SSH, spustí pouze `bin/fio-import.php` a dočasný
-spouštěcí soubor vždy odstraní. Token se do plánovače ani příkazu nevkládá.
-Import vypíše jen počty; při chybě nevypíše token ani bankovní data.
+Verzovaný workflow `fio-import-production.yml` je pouze ručně spustitelný.
+Nemá `schedule`, aby vypnutá integrace nevytvářela periodické chybové běhy.
+Připojí se přes ověřené SSH, spustí pouze `bin/fio-import.php` a dočasný
+spouštěcí soubor vždy odstraní. Při vypnutém příznaku skončí fail-closed bez
+dotazu na banku.
 
-Zapnutí a nouzové vypnutí provádí workflow `configure-fio-production.yml`.
+Budoucí zapnutí a nouzové vypnutí provádí workflow `configure-fio-production.yml`.
 Před zapnutím ověří read-only token skutečným GET dotazem a porovná IBAN tokenu
 s aktuálním účtem z administrace. Původní produkční konfiguraci zálohuje a nový
 blok zapisuje atomicky. Tajný token je GitHub Secret `KIS_FIO_API_TOKEN`.

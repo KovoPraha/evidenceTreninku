@@ -30,6 +30,7 @@
 /var/acceptance-feedback.json
 /var/member-charge-reminder-outbox/
 /var/family-weekly-summary-outbox/
+/var/codex-dataflow-refresh/
 /.codex-remote-attachments/
 /.codex-artifact-qa/
 /tmp/

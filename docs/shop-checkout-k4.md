@@ -1,10 +1,15 @@
-# První checkout K4
+# Checkout e-shopu a programů K4
 
-První vertikála K4 je záměrně úzká: přihlášený veřejný účet může koupit pouze
-aktivní kanonický produkt typu `goods`, zvolí osobní odběr a dostane bankovní
-platební předpis v CZK s QR kódem. Fio import je implementován jen v bezpečném
-shadow režimu bez automatické změny platby. Anonymní checkout, Stripe, Packeta a
-placený kroužek zatím nejsou zapnuté.
+Aktuální checkout obsluhuje fyzické zboží, klubové programy a členství, placené
+klubové akce i placené vstupy na velodrom. Zboží lze koupit zrychleně bez
+předchozí registrace; produkt vázaný na sportovce používá přihlášený účet nebo
+rychlou registraci osoby se souhlasy a následnou kontrolou klubu. Výchozí
+platební předpis je bankovní převod v CZK s QR kódem. Hostované platby podporují
+SumUp a Stripe podle aktivní administrační politiky; návrat z brány sám nikdy
+nepotvrzuje úhradu.
+
+Fio importní kód zůstává read-only a bez automatického potvrzování. Automatický
+produkční plán Fio je od 7. 10. 2026 dočasně vypnutý.
 
 ## Bezpečnostní a účetní kontrakt
 
@@ -110,12 +115,12 @@ podtržítko a porovnává se bez ohledu na velikost písmen.
   Stornovaná objednávka použití kupónu nevrací, aby nešlo limit obcházet
   opakovaným objednáváním; administrátor může místo toho vydat nový kód.
 
-## Migrace a další krok
+## Migrace a provozní hranice
 
 Schéma vyžaduje migrace `20260803230000_shop_checkout`,
 `20260804010000_shop_order_fulfillment` a
 `20260804030000_shop_order_refunds`, `20260804050000_shop_coupons`,
 `20260804070000_fio_readonly_import` a `20260804210000_shop_order_expiration`.
-Před aktivací PHP musí být aplikovány
-migračním runnerem. Částečné vratky má další přírůstek řešit jen tehdy, pokud je
-produktově potřebujeme; jinak následuje kupón nebo automatické Fio párování.
+Před aktivací PHP musí být aplikovány migračním runnerem. Částečné vratky se
+doplní jen při samostatném produktovém zadání. Fio se nesmí aktivovat jako
+vedlejší efekt deploye; vyžaduje vlastní schválený provozní krok.

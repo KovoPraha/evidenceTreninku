@@ -40,7 +40,18 @@ Po aktivaci se sportovec právě jednou přidá do cílové školní soupisky se
 
 Stavy `shop_orders`, `payments`, `club_program_enrollments` a `club_roster_members` zůstávají samostatné. Přechody jsou koordinované transakcí, ale žádný stav se neodvozuje přepisem jiného záznamu.
 
-## Omezení první verze
+## Aktuální provozní model
 
-- Stávající checkout umí prodat pouze katalogový `offer_type=goods` a vyžaduje kladný celkový bankovní checkout. Programová nabídka proto dočasně mapuje existující prodejnou variantu; nulovou položku umí bezpečně aktivovat doménová služba, ale běžné UI zatím nevytvoří samostatnou nulovou objednávku.
-- Automatické storno řeší jen objednávkový lifecycle. Samostatné administrátorské ukončení účasti bez storna objednávky zatím nemá vlastní UI.
+- Veřejný rozcestník kroužků zobrazuje publikované programové nabídky a jejich
+  obrázky; nákup pokračuje na kanonický produkt v KIS.
+- Program lze koupit po přihlášení nebo rychlou registrací sportovce. Bezplatná
+  nabídka se aktivuje bez platební brány, placená až kanonickým potvrzením
+  platby.
+- Jeden program může mít celoroční, první pololetní a druhou pololetní nabídku.
+  Nabídky mohou používat různé ceny, ale stejnou cílovou soupisku. Kapacita se
+  počítá podle unikátních sportovců, takže stejné dítě ve více obdobích stejné
+  skupiny se nezapočítá dvakrát.
+- Únorová nabídka druhého pololetí může být zveřejněná současně s první a má
+  vlastní registrační a platnostní okno.
+- Automatické storno řeší objednávkový lifecycle. Samostatné administrátorské
+  ukončení účasti bez storna objednávky zatím vyžaduje řízený zásah správce.

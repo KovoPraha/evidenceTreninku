@@ -4,8 +4,9 @@ Produkční adresa je <https://kis.kovopraha.cz/>. Nasazení se spouští
 ručně na GitHubu; samotný push do `main` produkci nezmění.
 
 Ověřeno 7. 10. 2026: úspěšný běh
-[`37605872735`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735)
-nasadil commit `623e161e0b2d7eefeffe6d87d4586926265ba02a` a použil
+[`37636084395`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636084395)
+nasadil commit `49c38c72c6704826182aff7f59855f47b5818bb8` se
+`uat_schvaleno=true` a použil
 `APP_HOST=kis.kovopraha.cz`, `WEB_URL=https://kis.kovopraha.cz` a
 `REMOTE_DIR=kis.kovopraha.cz`; závěrečný HTTP smoke skončil 200. Cíl workflow
 je tedy nový KIS web, nikoli staré, nadále používané nasazení
@@ -84,6 +85,13 @@ Po opravách z pull requestů
 [#36](https://github.com/KovoPraha/evidenceTreninku/pull/36) skončil produkční
 běh [`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788)
 úspěšně nad commitem `623e161`.
+
+## Fio je dočasně pozastavené
+
+Workflow `.github/workflows/fio-import-production.yml` nemá časový plán a lze
+jej spustit pouze ručně. Produkční `FIO_IMPORT_ENABLED` má zůstat `false`.
+Obnovení vyžaduje samostatné schválení read-only tokenu, shody účtu a provozního
+dohledu; běžný deploy Fio sám nezapíná.
 
 `DEPLOY_TOKEN` ani `PROD_CONFIG` se už nepoužívají. `config.php` musí být na
 serveru nahraný před prvním nasazením, například přes Total Commander. Workflow

@@ -51,8 +51,10 @@ Podrobnosti:
 - [produkční uživatelské testování](docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md),
 - [souhrn navržených oprav z produkčního UAT](output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf),
 - [produkční nasazení](docs/NASAZENI.md),
-- [datové toky v kódu](outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md),
-- [nálezy a rizika](outputs/data-flow-audit-2026-08-24/NALEZY_A_RIZIKA.md).
+- [aktuální grafická mapa datových toků](outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx),
+- [aktuální datové toky v kódu](outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md),
+- [aktuální nálezy a rizika](outputs/data-flow-audit-2026-10-07/NALEZY_A_RIZIKA.md),
+- [historický audit z 24. 8. 2026](outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md).
 
 ## Vývojová kontrola
 
