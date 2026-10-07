@@ -50,12 +50,19 @@ tedy ještě o skutečné stržení z karty; live režim vyžaduje samostatné r
    read-only kontroly. Zapisovací scénáře označte `BLOCKED`.
 
 Při kontrole 7. 10. 2026 nasadil běh
-[`37605872735`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735)
-commit `623e161e0b2d7eefeffe6d87d4586926265ba02a`; záloha, migrace, aktivace i
+[`37629360071`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629360071)
+commit `1893c25481a9f9c2209002a82d48e062065666a5`; záloha, migrace, aktivace i
 serverový HTTP smoke byly zelené. Release má `uat_schvaleno=false`, takže jsou
 bez nového schválení povolené jen read-only kontroly. `var/deployment.json` je
 z veřejného webu záměrně nedostupný (HTTP 403); kontroluje se přes chráněný
 workflow a oprávněnou serverovou diagnostiku.
+
+Read-only kontrola připravenosti
+[`37629771673`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629771673)
+potvrdila připravené testovací identity, správce, testovací Stripe, bankovní
+nastavení a inbox. Zapisovací scénáře jsou `BLOCKED`, protože testovací okno
+skončilo 6. 10. 2026 ve 20:00, část TEST fixture dat chybí a release dosud není
+označený jako schválený pro plné UAT.
 
 Změny určené k novému průchodu testerů jsou shrnuté v
 [`UAT-OPRAVY-2026-10-07.md`](UAT-OPRAVY-2026-10-07.md).

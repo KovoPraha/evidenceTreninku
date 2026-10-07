@@ -32,8 +32,13 @@ Přesný stav GitHubu a produkčního nasazení se eviduje v
 
 Databázová migrace této vlny je
 `20261007130000_club_event_admin_action_width.php`. Kompletní lokální sada po
-změnách: 838 testů / 11 740 kontrol, bez chyby. Toto ověření samo o sobě není
-důkazem nasazení ani produkčního UAT.
+změnách a následné browserové opravě: 839 testů / 11 743 kontrol, bez chyby.
+
+Produkční browserový průchod navíc odhalil a uzavřel matoucí zobrazení
+neomezené kapacity jako `0` volných míst ve zrychlené přihlášce. Oprava je v
+[#39](https://github.com/KovoPraha/evidenceTreninku/pull/39) a produkční
+prohlížeč nyní zobrazuje „Kapacita není omezena.“ Toto ověření samo o sobě není
+důkazem úplného přihlášeného produkčního UAT.
 
 ## Změny pro uživatele v první vlně
 
@@ -60,9 +65,9 @@ produkčním deploy workflow před aktivací release.
 
 ## Ověření
 
-- CI nad výsledným `main`: 832 testů / 11 668 kontrol;
+- CI nad výsledným `main`: 839 testů / 11 743 kontrol;
 - MariaDB 10.3 a 11.4 integrační smoke: úspěch;
-- produkční deploy: [běh 37605872735](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37605872735), úspěch;
+- produkční deploy: [běh 37629360071](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37629360071), úspěch;
 - produkční worker zpráv soupiskám po opravě hostingu:
   [běh 37606107788](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788), úspěch;
 - veřejná domovská stránka a registrace: HTTP 200.
