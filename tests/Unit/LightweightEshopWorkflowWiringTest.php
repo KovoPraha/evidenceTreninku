@@ -69,6 +69,7 @@ final class LightweightEshopWorkflowWiringTest extends TestCase
     public function testProgramProductUsesHumanPaymentPeriodInsteadOfInternalSku(): void
     {
         $page = (string) file_get_contents(dirname(__DIR__, 2) . '/booking/produkt.php');
-        self::assertStringContainsString("\$offer ? clubProgramPurchaseOptionLabel((string)\$offer['purchase_option']) : shopProductVariantLabel(\$variant)", $page);
+        self::assertStringContainsString('function shopProductProgramPeriodLabel', $page);
+        self::assertStringContainsString("\$offer ? shopProductProgramPeriodLabel((string)\$offer['purchase_option']) : shopProductVariantLabel(\$variant)", $page);
     }
 }
