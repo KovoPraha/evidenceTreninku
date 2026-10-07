@@ -39,6 +39,16 @@ function shopProductVariantLabel(array $variant): string
     return $parts !== [] ? implode(' · ', $parts) : (string)$variant['sku'];
 }
 
+function shopProductProgramPeriodLabel(string $purchaseOption): string
+{
+    return match ($purchaseOption) {
+        'first_half' => '1. pololetí',
+        'second_half' => '2. pololetí',
+        'full_year' => 'Celý rok',
+        default => 'Další varianta',
+    };
+}
+
 $productId = (int)($_GET['id'] ?? 0);
 $product = shopStorefrontProductDetail($pdo, $productId);
 $hasProgramOffer = $product !== null && clubProgramProductHasOfferLink($pdo, $productId);
@@ -188,7 +198,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="border rounded p-3">
                                     <div class="d-flex flex-wrap justify-content-between gap-2 align-items-start">
                                         <div>
-                                            <strong><?= shopProductH($offer ? clubProgramPurchaseOptionLabel((string)$offer['purchase_option']) : shopProductVariantLabel($variant)) ?></strong>
+                                            <strong><?= shopProductH($offer ? shopProductProgramPeriodLabel((string)$offer['purchase_option']) : shopProductVariantLabel($variant)) ?></strong>
                                             <?php if (!$offer): ?><div class="small text-muted">SKU <?= shopProductH($variant['sku']) ?></div><?php endif; ?>
                                             <?php if ($offer): ?>
                                                 <div class="small mt-1">
