@@ -254,8 +254,10 @@ if ($selectedSportovecId > 0) {
         .hero-card {
             border: none; border-radius: 12px;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
-            color: #fff;
+            --bs-card-color: #fff;
+            color: #fff !important;
         }
+        .hero-card :where(h1, .small, code) { color: inherit !important; }
         .mini-muted { font-size: .84rem; color: #6c757d; }
     </style>
 </head>
