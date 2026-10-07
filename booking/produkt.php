@@ -188,7 +188,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="border rounded p-3">
                                     <div class="d-flex flex-wrap justify-content-between gap-2 align-items-start">
                                         <div>
-                                            <strong><?= shopProductH(shopProductVariantLabel($variant)) ?></strong>
+                                            <strong><?= shopProductH($offer ? clubProgramPurchaseOptionLabel((string)$offer['purchase_option']) : shopProductVariantLabel($variant)) ?></strong>
                                             <?php if (!$offer): ?><div class="small text-muted">SKU <?= shopProductH($variant['sku']) ?></div><?php endif; ?>
                                             <?php if ($offer): ?>
                                                 <div class="small mt-1">

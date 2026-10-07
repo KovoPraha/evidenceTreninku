@@ -65,4 +65,10 @@ final class LightweightEshopWorkflowWiringTest extends TestCase
         self::assertStringContainsString("(\$customer['confirmed'] ?? '') !== '1'", $service);
         self::assertStringContainsString('Před objednáním potvrďte', $service);
     }
+
+    public function testProgramProductUsesHumanPaymentPeriodInsteadOfInternalSku(): void
+    {
+        $page = (string) file_get_contents(dirname(__DIR__, 2) . '/booking/produkt.php');
+        self::assertStringContainsString("\$offer ? clubProgramPurchaseOptionLabel((string)\$offer['purchase_option']) : shopProductVariantLabel(\$variant)", $page);
+    }
 }
