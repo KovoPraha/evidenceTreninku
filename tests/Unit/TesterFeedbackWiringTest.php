@@ -87,4 +87,12 @@ final class TesterFeedbackWiringTest extends TestCase
         self::assertStringContainsString('member_fee_plans_admin.php',$page);
         self::assertStringContainsString('Pravidelné měsíční příspěvky',$page);
     }
+
+    public function testQuickProgramCheckoutDoesNotPresentUnlimitedCapacityAsZero():void
+    {
+        $page=(string)file_get_contents(dirname(__DIR__,2).'/booking/rychla_prihlaska.php');
+        self::assertStringContainsString("if(\$offer['capacity']!==null)",$page);
+        self::assertStringContainsString('Kapacita není omezena.',$page);
+        self::assertStringNotContainsString("Volná místa: <strong><?=(int)\$offer['available_count']?></strong><?php if(\$offer['capacity']!==null)",$page);
+    }
 }
