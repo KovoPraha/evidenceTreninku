@@ -251,6 +251,10 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString("then COUNT=3", $workflow);
         self::assertStringContainsString('test "${#BACKUPS[@]}" = "$COUNT"', $workflow);
         self::assertStringContainsString('CONTAINER="kis-restore-$GITHUB_RUN_ID-$VERIFIED"', $workflow);
+        self::assertStringContainsString('retry_ssh()', $workflow);
+        self::assertStringContainsString('retry_scp()', $workflow);
+        self::assertStringContainsString('ConnectionAttempts=3', $workflow);
+        self::assertStringContainsString('BACKUP_OUTPUT=$(retry_ssh', $workflow);
         self::assertStringNotContainsString('upload-artifact', $workflow);
         self::assertStringNotContainsString('rsync', $workflow);
 

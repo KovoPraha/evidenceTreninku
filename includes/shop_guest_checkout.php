@@ -79,6 +79,9 @@ function shopGuestCheckoutPlace(
     ) {
         throw new InvalidArgumentException('Rychlý nákup má neplatné vstupní údaje.');
     }
+    if (($customer['confirmed'] ?? '') !== '1') {
+        throw new InvalidArgumentException('Před objednáním potvrďte správnost údajů a způsob převzetí a platby.');
+    }
     $customer = shopGuestCustomerValidate($customer);
     $bank = shopBankValidateSettings($bank);
     $keyHash = hash('sha256', 'guest:' . $idempotencyKey);
@@ -113,8 +116,8 @@ function shopGuestCheckoutPlace(
                 throw new ShopCheckoutException('Položka má nepodporovanou cenu.');
             }
             $total = $unit * $quantity;
-            $publicCode = 'KP' . date('ymd') . strtoupper(bin2hex(random_bytes(5)));
-            $dueAt = (new DateTimeImmutable('now +' . $bank['due_days'] . ' days'))->setTime(23, 59, 59)->format('Y-m-d H:i:s');
+            $publicCode = 'KP' . shopCheckoutPublicCodeDate() . strtoupper(bin2hex(random_bytes(5)));
+            $dueAt = shopCheckoutPaymentDueAt((int)$bank['due_days']);
             $columns = 'public_code,account_id,source_cart_id,checkout_mode,guest_access_token_hash,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,customer_phone_snapshot,address_street_snapshot,address_city_snapshot,address_postcode_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at';
             $values = [$publicCode, null, null, 'guest', $tokenHash, $keyHash, trim($customer['first_name'] . ' ' . $customer['last_name']), $customer['email'], $customer['phone'], $customer['address_street'], $customer['address_city'], $customer['address_postcode'], $total, 0, $total, $currency];
             if (shopOrderExpirationAvailable($pdo)) {

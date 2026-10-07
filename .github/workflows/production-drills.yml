@@ -83,22 +83,40 @@ jobs:
           OPERACE: ${{ inputs.operace }}
         run: |
           set -euo pipefail
-          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o ConnectTimeout=20 -o ConnectionAttempts=3 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o ConnectTimeout=20 -o ConnectionAttempts=3 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          retry_ssh() {
+            local attempt output
+            for attempt in 1 2 3; do
+              if output=$("${SSH[@]}" "$@"); then printf '%s\n' "$output"; return 0; fi
+              if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
+            done
+            return 1
+          }
+          retry_scp() {
+            local attempt
+            for attempt in 1 2 3; do
+              if "${SCP[@]}" "$@"; then return 0; fi
+              if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
+            done
+            return 1
+          }
           TMP="/tmp/kis-restore-drill-$GITHUB_RUN_ID"
           install -d -m 700 "$TMP"
           COUNT=1
           if [ "$OPERACE" = 'obnovit-tri-zalohy-izolovane' ]; then COUNT=3; fi
-          mapfile -t BACKUPS < <("${SSH[@]}" "set -eu; ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n '$COUNT'")
+          BACKUP_OUTPUT=$(retry_ssh "set -eu; ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n '$COUNT'")
+          BACKUPS=()
+          while IFS= read -r backup; do [ -n "$backup" ] && BACKUPS+=("$backup"); done <<< "$BACKUP_OUTPUT"
           test "${#BACKUPS[@]}" = "$COUNT"
 
           VERIFIED=0
           for LATEST in "${BACKUPS[@]}"; do
             [[ "$LATEST" =~ ^data/\.kis-backups/evidence_[0-9A-Za-z_-]+\.sql\.gz$ ]]
             BASE="${LATEST%.sql.gz}"
-            "${SCP[@]}" "$SSH_USER@$SSH_HOST:$LATEST" "$TMP/"
-            "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.sha256" "$TMP/"
-            "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BASE.manifest.json" "$TMP/"
+            retry_scp "$SSH_USER@$SSH_HOST:$LATEST" "$TMP/"
+            retry_scp "$SSH_USER@$SSH_HOST:$BASE.sha256" "$TMP/"
+            retry_scp "$SSH_USER@$SSH_HOST:$BASE.manifest.json" "$TMP/"
             cd "$TMP"
             SQL_FILE=$(basename "$LATEST")
             SHA_FILE="$(basename "$BASE").sha256"

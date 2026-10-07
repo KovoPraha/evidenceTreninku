@@ -40,7 +40,7 @@ final class ClubCatalogImportTest extends TestCase
         $filesBefore=glob($this->root.'/uploads/shop-products/*.jpg')?:[];$second=\clubCatalogImport($pdo,7,$this->root);
         self::assertSame(26,$first['created']);self::assertSame(0,$second['created']);self::assertSame(26,$second['updated']);
         self::assertTrue($second['terms_ready']);self::assertFalse($second['terms_dummy']);
-        self::assertSame(26,$second['programs']);self::assertSame(26,$second['products']);self::assertSame(49,$second['variants']);
+        self::assertSame(26,$second['programs']);self::assertSame(26,$second['products']);self::assertSame(74,$second['variants']);
         self::assertSame(26,(int)$pdo->query("SELECT COUNT(*) FROM club_program_presentations WHERE listing_status='published'")->fetchColumn());
         self::assertSame(26,(int)$pdo->query('SELECT COUNT(*) FROM club_program_images')->fetchColumn());
         self::assertCount(18,$animalBefore);
@@ -51,7 +51,13 @@ final class ClubCatalogImportTest extends TestCase
         self::assertSame(26,(int)$pdo->query("SELECT COUNT(DISTINCT team_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn());
         self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%' AND v.stock_quantity_decimal IS NOT NULL")->fetchColumn());
         $shared=$pdo->query("SELECT COUNT(DISTINCT team_id) teams,COUNT(*) offers FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code='KROUZKY-2627-ALIGATORI'")->fetch(PDO::FETCH_ASSOC);
-        self::assertSame(1,(int)$shared['teams']);self::assertSame(2,(int)$shared['offers']);
+        self::assertSame(1,(int)$shared['teams']);self::assertSame(3,(int)$shared['offers']);
+        $aligators=$pdo->query("SELECT purchase_option,amount_minor,birth_year_from,birth_year_to FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id JOIN club_programs p ON p.id=o.program_id WHERE p.code='KROUZKY-2627-ALIGATORI' ORDER BY CASE purchase_option WHEN 'first_half' THEN 1 WHEN 'second_half' THEN 2 ELSE 3 END")->fetchAll(PDO::FETCH_ASSOC);
+        self::assertSame(['first_half','second_half','full_year'],array_column($aligators,'purchase_option'));
+        self::assertSame([410000,410000,720000],array_map('intval',array_column($aligators,'amount_minor')));
+        self::assertSame([2018,2018,2018],array_map('intval',array_column($aligators,'birth_year_from')));
+        self::assertSame([2019,2019,2019],array_map('intval',array_column($aligators,'birth_year_to')));
+        self::assertSame([null,null],\clubCatalogImportBirthYears('školní děti'));
     }
 
     public function testFallbackNeverLinksTheOldShopOrDisplaysMigrationCopy():void

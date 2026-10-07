@@ -84,20 +84,24 @@ function trainingRsvpSave(PDO $pdo, int $planId, int $sportovecId, string $respo
         $accountId = null;
         $accessAccountId = $actorId;
     }
+    $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Prague'));
     $eligible = $pdo->prepare(
         'SELECT p.id,p.datum,p.cas_od FROM planovane_treninky p JOIN training_roster_links l ON l.plan_id=p.id '
         . 'JOIN club_roster_members rm ON rm.team_id=l.team_id '
-        . "WHERE p.id=? AND rm.sportovec_id=? AND p.stav='planovany' AND p.datum>=CURRENT_DATE "
+        . "WHERE p.id=? AND rm.sportovec_id=? AND p.stav='planovany' AND p.datum>=? "
         . "AND rm.status='active' AND rm.valid_from<=p.datum AND (rm.valid_to IS NULL OR rm.valid_to>=p.datum) LIMIT 1"
     );
-    $eligible->execute([$planId, $sportovecId]);
+    // Do not mix the database server's CURRENT_DATE (commonly UTC) with the
+    // club's Europe/Prague clock. Around local midnight that made eligibility
+    // depend on where the database server happened to run.
+    $eligible->execute([$planId, $sportovecId, $now->format('Y-m-d')]);
     $eligibleTraining = $eligible->fetch(PDO::FETCH_ASSOC);
     if (!$eligibleTraining) throw new TrainingRsvpException('Trénink už není dostupný nebo sportovec není v jeho soupisce.');
     $trainingStart = new DateTimeImmutable(
         (string)$eligibleTraining['datum'] . ' ' . ((string)($eligibleTraining['cas_od'] ?? '') !== '' ? (string)$eligibleTraining['cas_od'] : '23:59:59'),
         new DateTimeZone('Europe/Prague')
     );
-    if ($trainingStart <= new DateTimeImmutable('now', new DateTimeZone('Europe/Prague'))) {
+    if ($trainingStart <= $now) {
         throw new TrainingRsvpException('Odpověď už nelze změnit, protože trénink začal nebo proběhl.');
     }
 

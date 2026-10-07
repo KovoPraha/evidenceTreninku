@@ -23,7 +23,7 @@ final class ShopCheckoutTest extends TestCase
         $key=bin2hex(random_bytes(16));$token=bin2hex(random_bytes(32));
         $order=\shopGuestCheckoutPlace($pdo,601,2,[
             'first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test','phone'=>'777 123 456',
-            'address_street'=>'','address_city'=>'','address_postcode'=>'',
+            'address_street'=>'','address_city'=>'','address_postcode'=>'','confirmed'=>'1',
         ],$key,$token,self::BANK);
         self::assertFalse($order['replayed']);self::assertSame('guest',$order['checkout_mode']);
         self::assertNull($order['account_id']);self::assertNull($order['source_cart_id']);self::assertSame(25000,(int)$order['total_minor']);
@@ -33,7 +33,7 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_guest_order_placed'")->fetchColumn());
         self::assertSame((string)$order['public_code'],(string)\shopGuestOrderByCode($pdo,(string)$order['public_code'],$token)['public_code']);
         try{\shopGuestOrderByCode($pdo,(string)$order['public_code'],bin2hex(random_bytes(32)));self::fail('A different token must not disclose the order.');}catch(\ShopCheckoutException){}
-        $replay=\shopGuestCheckoutPlace($pdo,601,2,['first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test'],$key,$token,self::BANK);
+        $replay=\shopGuestCheckoutPlace($pdo,601,2,['first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test','confirmed'=>'1'],$key,$token,self::BANK);
         self::assertTrue($replay['replayed']);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
     }
 
@@ -45,6 +45,7 @@ final class ShopCheckoutTest extends TestCase
         try {
             \shopGuestCheckoutPlace($pdo,601,1,[
                 'first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test',
+                'confirmed'=>'1',
             ],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);
             self::fail('A sportsperson-bound product must never enter guest checkout.');
         } catch (\ShopCheckoutException $exception) {
@@ -57,6 +58,29 @@ final class ShopCheckoutTest extends TestCase
             self::assertSame('Tato nabídka vyžaduje sportovce a řádně vypsaný termín.',$exception->getMessage());
         }
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+    }
+
+    public function testGuestCheckoutRequiresServerSideConfirmationBeforeAnyWrite():void
+    {
+        $pdo=$this->database();
+        try{
+            \shopGuestCheckoutPlace($pdo,601,1,[
+                'first_name'=>'Host','last_name'=>'Kupující','email'=>'guest@example.test',
+            ],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);
+            self::fail('HTML required checkbox must not be the only confirmation guard.');
+        }catch(\InvalidArgumentException $exception){
+            self::assertStringContainsString('potvrďte',$exception->getMessage());
+        }
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
+        self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+    }
+
+    public function testCheckoutDatesUsePragueBusinessDayAcrossUtcMidnight():void
+    {
+        $utc=new \DateTimeImmutable('2026-10-07 22:30:00',new \DateTimeZone('UTC'));
+        self::assertSame('261008',\shopCheckoutPublicCodeDate($utc));
+        self::assertSame('2026-10-15 23:59:59',\shopCheckoutPaymentDueAt(7,$utc));
     }
 
     public function testProductInterestIsDeduplicatedAndAdminTransitionIsAudited():void
