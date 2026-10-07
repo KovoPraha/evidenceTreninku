@@ -10,6 +10,7 @@ if (!isset($_SESSION['sportovec_pristup_id'])) {
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/child_access.php';
+require_once dirname(__DIR__) . '/includes/training_rsvp.php';
 
 function childPageH(mixed $value): string
 {
@@ -96,6 +97,41 @@ try {
     exit;
 }
 $person = $overview['person'];
+$trainingRsvpMessage = (string)($_SESSION['training_rsvp_message'] ?? '');
+unset($_SESSION['training_rsvp_message']);
+$trainingRsvpError = '';
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    try {
+        if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) throw new InvalidArgumentException('Formulář vypršel. Obnovte stránku a zkuste to znovu.');
+        if ((string)($_POST['action'] ?? '') !== 'training_rsvp_save') throw new InvalidArgumentException('Neplatná akce.');
+        $saved = trainingRsvpSave(
+            $pdo,
+            (int)($_POST['plan_id'] ?? 0),
+            (int)$person['sportovec_id'],
+            (string)($_POST['response'] ?? ''),
+            'athlete',
+            (int)$_SESSION['sportovec_pristup_id']
+        );
+        $_SESSION['training_rsvp_message'] = $saved['changed']
+            ? 'Odpověď byla uložena: ' . trainingRsvpLabel($saved['response']) . '.'
+            : 'Odpověď už byla uložená.';
+        header('Location: muj_sport.php#potvrzeni-treninku', true, 303);
+        exit;
+    } catch (InvalidArgumentException | TrainingRsvpException $exception) {
+        $trainingRsvpError = $exception->getMessage();
+    } catch (Throwable $exception) {
+        error_log('booking/muj_sport.php training RSVP: ' . $exception->getMessage());
+        $trainingRsvpError = 'Odpověď k tréninku se nyní nepodařilo uložit.';
+    }
+}
+$today = new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
+$upcomingTrainingRsvps = [];
+try {
+    $upcomingTrainingRsvps = trainingRsvpUpcomingForChild($pdo, (int)$_SESSION['sportovec_pristup_id'], $today->format('Y-m-d'), $today->modify('+30 days')->format('Y-m-d'));
+} catch (Throwable $exception) {
+    error_log('booking/muj_sport.php training RSVP list: ' . $exception->getMessage());
+    if ($trainingRsvpError === '') $trainingRsvpError = 'Plánované tréninky se nyní nepodařilo načíst.';
+}
 ?>
 <!doctype html>
 <html lang="cs">
@@ -132,6 +168,13 @@ $person = $overview['person'];
             </div></div></div>
         <?php endforeach; ?>
     </div>
+
+    <section class="card border-primary shadow-sm mb-4" id="potvrzeni-treninku"><div class="card-header bg-primary-subtle fw-semibold"><i class="bi bi-check2-circle me-2"></i>Potvrzení účasti na trénincích</div><div class="card-body">
+        <p class="small text-muted">Tady jsou tréninky vašich aktivních soupisek na příštích 30 dní. Odpověď lze do termínu změnit.</p>
+        <?php if ($trainingRsvpMessage !== ''): ?><div class="alert alert-success py-2"><?= childPageH($trainingRsvpMessage) ?></div><?php endif; ?>
+        <?php if ($trainingRsvpError !== ''): ?><div class="alert alert-danger py-2"><?= childPageH($trainingRsvpError) ?></div><?php endif; ?>
+        <?php if ($upcomingTrainingRsvps === []): ?><p class="text-muted mb-0">Žádný plánovaný trénink nyní nečeká na odpověď.</p><?php else: ?><div class="list-group list-group-flush"><?php foreach ($upcomingTrainingRsvps as $training): $response=(string)($training['response']??''); ?><div class="list-group-item px-0"><div class="d-flex flex-wrap justify-content-between gap-3"><div><strong><?= childPageH($training['nazev']) ?></strong><div class="small text-muted"><?= childPageH((new DateTimeImmutable((string)$training['datum']))->format('d. m. Y')) ?><?= $training['cas_od'] ? ' · '.childPageH(substr((string)$training['cas_od'],0,5)) : '' ?> · <?= childPageH($training['team_name_snapshot']) ?></div></div><div class="text-end"><span class="badge <?= $response==='going'?'text-bg-success':($response==='not_going'?'text-bg-secondary':'text-bg-warning') ?> mb-2"><?= childPageH(trainingRsvpLabel($response)) ?></span><form method="post" class="d-flex gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="training_rsvp_save"><input type="hidden" name="plan_id" value="<?= (int)$training['plan_id'] ?>"><button class="btn btn-sm <?= $response==='going'?'btn-success':'btn-outline-success' ?>" name="response" value="going">Zúčastním se</button><button class="btn btn-sm <?= $response==='not_going'?'btn-secondary':'btn-outline-secondary' ?>" name="response" value="not_going">Nezúčastním se</button></form></div></div></div><?php endforeach; ?></div><?php endif; ?>
+    </div></section>
 
     <section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Moje tréninky</div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Datum</th><th>Náplň</th><th>Kategorie</th><th>Délka</th></tr></thead><tbody>
         <?php if ($overview['trainings'] === []): ?><tr><td colspan="4" class="text-muted p-3">Zatím žádná zaznamenaná účast.</td></tr><?php endif; ?>

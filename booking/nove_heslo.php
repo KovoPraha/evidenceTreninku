@@ -46,12 +46,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></div><?php endforeach; ?>
 <?php if ($success): ?><div class="alert alert-success">Heslo bylo změněno. Všechna starší přihlášení byla odhlášena.</div><a class="btn btn-primary w-100" href="prihlaseni.php">Přejít na přihlášení</a>
 <?php else: ?><form method="post" id="password-reset-form"><?= csrf_field() ?><input type="hidden" name="token" id="password-reset-token">
-<div class="mb-3"><label class="form-label">Nové heslo</label><input class="form-control" type="password" name="heslo" minlength="12" maxlength="200" autocomplete="new-password" required></div>
-<div class="mb-3"><label class="form-label">Nové heslo znovu</label><input class="form-control" type="password" name="heslo2" minlength="12" maxlength="200" autocomplete="new-password" required></div>
+<div class="mb-3"><label class="form-label" for="reset-password">Nové heslo <small class="text-muted">(12–200 znaků)</small></label><div class="input-group"><input id="reset-password" class="form-control" type="password" name="heslo" minlength="12" maxlength="200" autocomplete="new-password" aria-describedby="reset-password-help" required><button class="btn btn-outline-secondary" type="button" data-password-toggle="reset-password" aria-controls="reset-password" aria-pressed="false">Zobrazit</button></div><div id="reset-password-help" class="form-text">Použijte snadno zapamatovatelnou větu nebo několik slov; mezery jsou povolené.</div></div>
+<div class="mb-3"><label class="form-label" for="reset-password-confirmation">Nové heslo znovu</label><div class="input-group"><input id="reset-password-confirmation" class="form-control" type="password" name="heslo2" minlength="12" maxlength="200" autocomplete="new-password" required><button class="btn btn-outline-secondary" type="button" data-password-toggle="reset-password-confirmation" aria-controls="reset-password-confirmation" aria-pressed="false">Zobrazit</button></div></div>
 <button class="btn btn-primary w-100">Změnit heslo</button></form><?php endif; ?>
 </div></div></main>
 <?php if (!$success): ?><script>
 const fragment = new URLSearchParams(window.location.hash.slice(1));
 document.getElementById('password-reset-token').value = fragment.get('token') || '';
 if (window.location.hash) history.replaceState(null, '', window.location.pathname);
+document.querySelectorAll('[data-password-toggle]').forEach(button => button.addEventListener('click', () => {
+    const input = document.getElementById(button.dataset.passwordToggle);
+    if (!input) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    button.textContent = show ? 'Skrýt' : 'Zobrazit';
+    button.setAttribute('aria-pressed', show ? 'true' : 'false');
+}));
 </script><?php endif; ?><?php publicShellFooter(); ?></body></html>

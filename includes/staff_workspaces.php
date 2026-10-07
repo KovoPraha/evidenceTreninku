@@ -262,7 +262,7 @@ function staffRouteOwners(): array
             'ajax_podskupiny.php','ajax_sportovci.php','ajax_treninky.php','ajax_update_plan.php',
             'ajax_update_poznamka.php','duplikovat_trenink.php','edit_trenink.php','generuj_story.php',
             'google_sheets_linky.php','individualni_lekce_form.php','nastaveni_story.php','nacti_podskupiny.php','nacti_skupiny.php',
-            'planovany_trenink_form.php','prehled_podskupin.php','prehled_popisu.php','prehled_skupina.php',
+            'planovany_trenink_form.php','training_rsvps_admin.php','prehled_podskupin.php','prehled_popisu.php','prehled_skupina.php',
             'prehled_skupin.php','prehled_skupiny.php','prehled_stories.php','prehled_trenera.php',
             'prehled_treninku_skupiny_kalendar.php','rezervovat_sportoviste.php','smazat_trenink.php',
             'sportovec_detail.php','ulozit_trenink.php','ulozit_zatezovy_test.php',
