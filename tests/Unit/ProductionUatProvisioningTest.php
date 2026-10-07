@@ -6,6 +6,7 @@ namespace Tests\Unit;
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/bin/provision-production-uat.php';
@@ -59,5 +60,25 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertStringContainsString("e.visibility='public'", $registration);
         self::assertStringContainsString("e.visibility='public'", $paidList);
         self::assertStringContainsString("s.ends_at>=CURRENT_TIMESTAMP", $paidList);
+    }
+
+    public function testExistingUatSeasonIsExpandedForARepeatedRun(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE club_seasons(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,starts_on TEXT,ends_on TEXT,status TEXT,created_by_trainer_id INTEGER,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)');
+        $pdo->exec('CREATE TABLE club_teams(id INTEGER PRIMARY KEY AUTOINCREMENT,season_id INTEGER,code TEXT,name TEXT,discipline TEXT,age_label TEXT,status TEXT,created_by_trainer_id INTEGER)');
+        $pdo->exec("INSERT INTO club_seasons(code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES('TEST-UAT-2026','TEST - UAT období','2026-09-22','2026-11-21','draft',7)");
+        $seasonId = (int)$pdo->lastInsertId();
+        $pdo->exec("INSERT INTO club_teams(season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES($seasonId,'TEST-UAT-DETI','TEST - UAT děti','vše','8–10 let','active',7)");
+        $teamId = (int)$pdo->lastInsertId();
+
+        $result = \kisUatSeasonAndTeam($pdo, 7, '2026-10-07', '2026-12-06');
+
+        self::assertSame(['season_id'=>$seasonId,'team_id'=>$teamId], $result);
+        $season = $pdo->query("SELECT starts_on,ends_on,status FROM club_seasons WHERE code='TEST-UAT-2026'")->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('2026-09-22', $season['starts_on']);
+        self::assertSame('2026-12-06', $season['ends_on']);
+        self::assertSame('active', $season['status']);
     }
 }

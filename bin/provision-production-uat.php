@@ -119,8 +119,22 @@ function kisUatProduct(PDO $pdo, int $actorId, string $sku, string $name, string
 /** @return array{season_id:int,team_id:int} */
 function kisUatSeasonAndTeam(PDO $pdo, int $actorId, string $startsOn, string $endsOn): array
 {
-    $season = $pdo->prepare('SELECT id FROM club_seasons WHERE code=?');$season->execute(['TEST-UAT-2026']);$seasonId=(int)$season->fetchColumn();
-    if ($seasonId<1) {$pdo->prepare("INSERT INTO club_seasons(code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES('TEST-UAT-2026','TEST - UAT období',?,?,'active',?)")->execute([$startsOn,$endsOn,$actorId]);$seasonId=(int)$pdo->lastInsertId();}
+    $season = $pdo->prepare('SELECT id,starts_on,ends_on,status FROM club_seasons WHERE code=?');
+    $season->execute(['TEST-UAT-2026']);
+    $seasonRow = $season->fetch(PDO::FETCH_ASSOC);
+    if (!$seasonRow) {
+        $pdo->prepare("INSERT INTO club_seasons(code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES('TEST-UAT-2026','TEST - UAT období',?,?,'active',?)")
+            ->execute([$startsOn,$endsOn,$actorId]);
+        $seasonId = (int)$pdo->lastInsertId();
+    } else {
+        $seasonId = (int)$seasonRow['id'];
+        $effectiveStartsOn = min((string)$seasonRow['starts_on'], $startsOn);
+        $effectiveEndsOn = max((string)$seasonRow['ends_on'], $endsOn);
+        if ($effectiveStartsOn !== (string)$seasonRow['starts_on'] || $effectiveEndsOn !== (string)$seasonRow['ends_on'] || (string)$seasonRow['status'] !== 'active') {
+            $pdo->prepare("UPDATE club_seasons SET starts_on=?,ends_on=?,status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")
+                ->execute([$effectiveStartsOn,$effectiveEndsOn,$seasonId]);
+        }
+    }
     $team=$pdo->prepare('SELECT id FROM club_teams WHERE season_id=? AND code=?');$team->execute([$seasonId,'TEST-UAT-DETI']);$teamId=(int)$team->fetchColumn();
     if($teamId<1){$pdo->prepare("INSERT INTO club_teams(season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(?,'TEST-UAT-DETI','TEST - UAT děti','všeobecná příprava','8–10 let','active',?)")->execute([$seasonId,$actorId]);$teamId=(int)$pdo->lastInsertId();}
     return ['season_id'=>$seasonId,'team_id'=>$teamId];
@@ -262,10 +276,18 @@ function kisUatProvision(PDO $pdo, array $settings, ?DateTimeImmutable $now = nu
     $starts=$now->format('Y-m-d');$ends=$now->modify('+60 days')->format('Y-m-d');$season=kisUatSeasonAndTeam($pdo,$actorId,$starts,$ends);
     foreach([$ema['id'],$adam['id']]as$personId){$s=$pdo->prepare('SELECT id FROM club_roster_members WHERE team_id=? AND sportovec_id=?');$s->execute([$season['team_id'],$personId]);if(!$s->fetchColumn())$pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,valid_to,created_by_trainer_id) VALUES(?,?,'active','admin',?,NULL,?)")->execute([$season['team_id'],$personId,$starts,$actorId]);}
     $program=clubProgramCreate($pdo,$actorId,'TEST-UAT-KROUZEK','TEST - Cyklistický kroužek','Dočasný program pro produkční UAT.');
+    kisUatPublish($pdo,$actorId,$programProduct['product_id'],'TEST - Cyklistický kroužek');
     $offer=clubProgramCreateOffer($pdo,$actorId,(int)$program['id'],$season['season_id'],$season['team_id'],$programProduct['product_id'],$programProduct['variant_id'],'TEST-UAT-KROUZEK-2026','TEST - Cyklistický kroužek',$starts,$ends,$now->modify('-1 hour')->format('Y-m-d H:i:s'),$windowEnd->format('Y-m-d H:i:s'),20,'active',2016,2019);
+    clubProgramUpdateOffer($pdo,$actorId,(int)$offer['id'],[
+        'name'=>'TEST - Cyklistický kroužek','starts_on'=>$starts,'ends_on'=>$ends,
+        'sales_open_at'=>$now->modify('-1 hour')->format('Y-m-d H:i:s'),
+        'sales_close_at'=>$windowEnd->format('Y-m-d H:i:s'),'capacity'=>20,
+        'birth_year_from'=>2016,'birth_year_to'=>2019,'status'=>'active',
+    ],'Obnovení termínu dočasné nabídky pro aktuální produkční UAT okno.',true);
+    $offerStatement=$pdo->prepare('SELECT * FROM club_program_offers WHERE id=?');$offerStatement->execute([(int)$offer['id']]);$offer=$offerStatement->fetch(PDO::FETCH_ASSOC);
+    if(!$offer)throw new RuntimeException('Obnovená UAT nabídka nebyla nalezena.');
     clubProgramTermsConfigure($pdo,$actorId,'program',(int)$program['id'],'program_cancellation','TEST UAT: účast lze do konce testovacího okna zrušit; nejde o běžnou klubovou nabídku.',true);
     clubProgramTermsConfigure($pdo,$actorId,'program',(int)$program['id'],'program_consent','TEST UAT: zákonný zástupce souhlasí výhradně s provedením produkčního uživatelského testu.',true);
-    kisUatPublish($pdo,$actorId,$programProduct['product_id'],'TEST - Cyklistický kroužek');
 
     $freeEvent=kisUatUpsertCalendarEvent($pdo,$actorId,'TEST - Rodinný nábor',0,$now->modify('+5 days'));
     $paidEventProduct=kisUatProduct($pdo,$actorId,'KP-TEST-UAT-PRIMESTSKY-DEN','TEST - Příměstský den','camp',5000);
