@@ -12,14 +12,15 @@ snapshot z data aktualizace, nikoli náhrada za nový `git fetch`.
 | Položka | Hodnota |
 |---|---|
 | Větev | `main`; přesné aktuální SHA zjistí nový clone pomocí `git rev-parse origin/main` |
-| `origin/main` při kontrole | `7ad2104652efcba978bd5661ebe0c6b02977ff4b` |
-| Nasazený aplikační commit | `7ad2104652efcba978bd5661ebe0c6b02977ff4b` |
+| `origin/main` při kontrole | `134fcb037bbfc62c13ca5df36695407d8d783f65` |
+| Nasazený aplikační commit | `134fcb037bbfc62c13ca5df36695407d8d783f65` |
 | Otevřené pull requesty | žádné při kontrole 8. 10. 2026 |
-| CI aktuálního `main` | [běh 37766181968](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766181968), úspěch |
-| CI nasazeného aplikačního commitu | [běh 37766181968](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766181968), úspěch |
-| Produkční deploy | [běh 37766211885](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766211885), úspěch, `uat_schvaleno=true` |
-| UAT připravenost | [běh 37766687136](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766687136), `ready=true` |
-| Produkční invarianty | [běh 37766630386](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766630386), 16/16 bez porušení |
+| CI aktuálního `main` | [běh 37778040472](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778040472), úspěch |
+| CI nasazeného aplikačního commitu | [běh 37778040472](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778040472), úspěch |
+| CodeQL nasazeného commitu | [běh 37778041269](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778041269), Actions a JavaScript/TypeScript úspěch |
+| Produkční deploy | [běh 37778058404](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778058404), úspěch, `uat_schvaleno=false` |
+| UAT připravenost předchozího release | [běh 37766687136](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766687136), `ready=true`; nepřenáší se automaticky na nový commit |
+| Produkční invarianty předchozího release | [běh 37766630386](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766630386), 16/16 bez porušení |
 | Obnova zálohy | [běh 37701691548](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701691548), 195 tabulek a 2 triggery |
 | Produkční fronta zpráv | [běh 37606107788](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788), úspěch |
 | CodeQL default setup | [běh 37764312992](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37764312992), Actions a JavaScript/TypeScript bez otevřeného nálezu |
@@ -31,10 +32,12 @@ Nová stanice musí před další změnou ověřit aktuální SHA a poslední pr
 běh; stavové hodnoty v tomto dokumentu se po každém release aktualizují
 samostatným dokumentačním commitem.
 
-CI nad aplikačním commitem ověřilo 869 testů / 11 867 kontrol a MariaDB 10.3 i
+CI nad aplikačním commitem ověřilo 875 testů / 11 913 kontrol a MariaDB 10.3 i
 11.4. Produkce běží na tomto commitu; dokumentace může být na `main` novější.
-Poslední deploy má `uat_schvaleno=true` a navazující připravenost i invarianty
-prošly. Toto potvrzení se vztahuje pouze k uvedenému release a testovacímu oknu.
+Po deployi prošla read-only kontrola e-shopu, detailu programu 247 a obou
+veřejných kalendářů bez chyb nebo varování v konzoli. Poslední deploy má
+`uat_schvaleno=false`; dřívější `ready=true` a invarianty se vztahují pouze k
+předchozímu release a jeho testovacímu oknu.
 
 Automatický Fio import je dočasně vypnutý. Workflow zůstává jen ručně
 spustitelné a produkční `FIO_IMPORT_ENABLED` má zůstat `false`, dokud vlastník
