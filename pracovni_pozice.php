@@ -26,6 +26,9 @@ if ($trainerName === '') {
     $trainerName = (string)$statement->fetchColumn();
 }
 $vehicleConflictCount = 0;
+$todayPlans = [];
+$overduePlanCount = 0;
+$pendingLessonCount = 0;
 try {
     $vehicleConflictCount = (int)$pdo->query(
         "SELECT COUNT(*) FROM club_event_vehicle_reservations a "
@@ -35,6 +38,34 @@ try {
     )->fetchColumn();
 } catch (Throwable $exception) {
     error_log('pracovni_pozice vehicle conflicts: ' . $exception->getMessage());
+}
+try {
+    $statement = $pdo->prepare(
+        "SELECT p.id,p.nazev,p.cas_od,p.cas_do,p.kategorie,g.nazev AS skupina,s.nazev AS sportoviste "
+        . "FROM planovane_treninky p LEFT JOIN skupiny g ON g.id=p.skupina_id "
+        . "LEFT JOIN sportovist s ON s.id=p.sportoviste_id "
+        . "WHERE p.trener_id=? AND p.datum=CURRENT_DATE AND p.stav='planovany' ORDER BY COALESCE(p.cas_od,'23:59'),p.id"
+    );
+    $statement->execute([(int)$_SESSION['trener_id']]);
+    $todayPlans = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $statement = $pdo->prepare(
+        "SELECT COUNT(*) FROM planovane_treninky WHERE trener_id=? AND stav='planovany' "
+        . "AND datum<CURRENT_DATE AND datum>=DATE_SUB(CURRENT_DATE,INTERVAL 14 DAY)"
+    );
+    $statement->execute([(int)$_SESSION['trener_id']]);
+    $overduePlanCount = (int)$statement->fetchColumn();
+} catch (Throwable $exception) {
+    error_log('pracovni_pozice training overview: ' . $exception->getMessage());
+}
+try {
+    $statement = $pdo->prepare(
+        "SELECT COUNT(*) FROM verejne_rezervace vr JOIN individualni_lekce il ON il.id=vr.lekce_id "
+        . "WHERE vr.stav='ceka' AND il.trener_id=?"
+    );
+    $statement->execute([(int)$_SESSION['trener_id']]);
+    $pendingLessonCount = (int)$statement->fetchColumn();
+} catch (Throwable $exception) {
+    error_log('pracovni_pozice lesson overview: ' . $exception->getMessage());
 }
 function staffDashboardH(mixed $value): string
 {
@@ -47,8 +78,8 @@ function staffDashboardH(mixed $value): string
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?= staffDashboardH($active['label']) ?> – pracovní rozcestník</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <link href="<?=staffDashboardH(appUiUrl('assets/vendor/bootstrap/bootstrap.min.css'))?>" rel="stylesheet">
+    <?php appUiAssets(); ?>
     <style>
         body{background:#f3f5f8}.workspace-hero{background:linear-gradient(135deg,#173b67,#156b63);color:#fff;border-radius:1rem}
         .workspace-link{display:block;height:100%;color:inherit;text-decoration:none}.workspace-link .card{height:100%;border:0;transition:transform .12s,box-shadow .12s}
@@ -87,6 +118,22 @@ function staffDashboardH(mixed $value): string
             <a class="btn btn-danger" href="<?= staffDashboardH(appUiUrl('club_calendar.php')) ?>">Otevřít klubový kalendář</a>
         </div>
     <?php endif; ?>
+
+    <section class="card border-0 shadow-sm mb-4" aria-labelledby="today-work-title">
+        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2"><strong id="today-work-title"><i class="bi bi-sun me-2 text-warning"></i>Dnes a vyžaduje pozornost</strong><span class="small text-muted"><?=staffDashboardH((new DateTimeImmutable('today'))->format('j. n. Y'))?></span></div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-lg-7"><h2 class="h6">Dnešní tréninky</h2>
+                    <?php if($todayPlans===[]):?><p class="text-muted small">Na dnešek nemáte naplánovaný žádný trénink.</p><?php else:?><div class="list-group list-group-flush"><?php foreach($todayPlans as$plan):?><a class="list-group-item list-group-item-action px-0 d-flex justify-content-between gap-3" href="<?=staffDashboardH(appUiUrl('formular.php?plan_id='.(int)$plan['id']))?>"><div><strong><?=staffDashboardH($plan['nazev'] ?: 'Trénink')?></strong><div class="small text-muted"><?=staffDashboardH($plan['skupina'] ?: 'Bez skupiny')?><?=trim((string)$plan['sportoviste'])!==''?' · '.staffDashboardH($plan['sportoviste']):''?></div></div><span class="text-nowrap"><?=staffDashboardH(substr((string)$plan['cas_od'],0,5))?><?=trim((string)$plan['cas_do'])!==''?'–'.staffDashboardH(substr((string)$plan['cas_do'],0,5)):''?> <i class="bi bi-chevron-right ms-1"></i></span></a><?php endforeach;?></div><?php endif;?>
+                    <div class="d-flex flex-wrap gap-2 mt-3"><a class="btn btn-primary btn-sm" href="<?=staffDashboardH(appUiUrl('formular.php'))?>"><i class="bi bi-plus-circle me-1"></i>Zadat trénink</a><a class="btn btn-outline-primary btn-sm" href="<?=staffDashboardH(appUiUrl('planovac.php'))?>"><i class="bi bi-calendar-week me-1"></i>Otevřít plánovač</a></div>
+                </div>
+                <div class="col-lg-5"><h2 class="h6">Úkoly</h2><div class="list-group">
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=staffDashboardH(appUiUrl('planovac.php'))?>"><span><i class="bi bi-exclamation-triangle me-2 <?=$overduePlanCount>0?'text-danger':'text-success'?>"></i>Proběhlé tréninky bez evidence</span><span class="badge <?=$overduePlanCount>0?'text-bg-danger':'text-bg-success'?>"><?=$overduePlanCount?></span></a>
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=staffDashboardH(appUiUrl('individualni_lekce_sprava.php'))?>"><span><i class="bi bi-hourglass-split me-2 <?=$pendingLessonCount>0?'text-warning':'text-success'?>"></i>Rezervace čekající na potvrzení</span><span class="badge <?=$pendingLessonCount>0?'text-bg-warning':'text-bg-success'?>"><?=$pendingLessonCount?></span></a>
+                </div></div>
+            </div>
+        </div>
+    </section>
 
     <?php if (count($available) > 1): ?>
     <section class="card border-0 shadow-sm mb-4">
