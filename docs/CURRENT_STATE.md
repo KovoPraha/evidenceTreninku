@@ -12,15 +12,16 @@ používat jako důkaz aktuální verze. Před každou novou prací má přednos
 - Repozitář: <https://github.com/KovoPraha/evidenceTreninku>
 - Výchozí větev: `main`
 - Stav vzdálené větve `origin/main` při této kontrole:
-  `0d20a2cc807c2f4a06c6cc92972c47946bb87716`
+  `7ad2104652efcba978bd5661ebe0c6b02977ff4b`
 - Otevřené pull requesty při této kontrole: žádné
 - Produkční aplikace: <https://kis.kovopraha.cz/>
 - Poslední ověřené nasazení: GitHub Actions běh
-  [`37701308547`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701308547)
-  nasadil přesně commit `0d20a2cc807c2f4a06c6cc92972c47946bb87716`.
+  [`37766211885`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766211885)
+  nasadil přesně commit `7ad2104652efcba978bd5661ebe0c6b02977ff4b`.
 - Nasazení vytvořilo a ověřilo databázovou zálohu, připravilo úplný release,
   aplikovalo migrace, aktivovalo kód a dokončilo HTTP smoke test.
-- Veřejná domovská stránka a registrace po nasazení odpovídají HTTP 200.
+- Veřejná domovská stránka a bezpečný vstup k veřejnému profilu po nasazení
+  odpovídají HTTP 200 a posílají nonce CSP bez povolených inline skriptů.
   Soubor `var/deployment.json` není veřejný a správně odpovídá HTTP 403; důkaz
   release se proto čte z chráněného workflow, nikoli z veřejné URL.
 
@@ -42,11 +43,11 @@ v hlavním CI jobu.
 ## Poslední automatické ověření
 
 GitHub Actions běh
-[`37701306330`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701306330)
+[`37766181968`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766181968)
 nad aktuálním `origin/main` a současně nasazeným commitem
-`0d20a2cc807c2f4a06c6cc92972c47946bb87716` prošel v tomto rozsahu:
+`7ad2104652efcba978bd5661ebe0c6b02977ff4b` prošel v tomto rozsahu:
 
-- PHPUnit na PHP 8.2: **852 testů / 11 781 kontrol**;
+- PHPUnit na PHP 8.2: **869 testů / 11 867 kontrol**;
 - integrační smoke na MariaDB 10.3: úspěch;
 - integrační smoke na MariaDB 11.4: úspěch;
 - kontrola Composer konfigurace: úspěch.
@@ -57,7 +58,7 @@ Aktuální zálohovací ownership kontrakt zdrojového kódu je `2026-10-08.1`.
 Počet souborů není důkazem stavu konkrétní databáze; ten se na každé stanici
 ověřuje pomocí `php bin/migrate.php --check --json` s nastaveným `APP_HOST`.
 
-## Funkční stav po změnách z 7. 10. 2026
+## Funkční stav po změnách z 8. 10. 2026
 
 Pull requesty
 [#34](https://github.com/KovoPraha/evidenceTreninku/pull/34),
@@ -80,7 +81,13 @@ Pull requesty
 - opravené produkční spouštění fronty zpráv soupiskám přes neveřejný PHP
   bootstrap;
 - opravy druhé vlny testerových bodů a pravdivé zobrazení neomezené kapacity
-  ve zrychlené přihlášce.
+  ve zrychlené přihlášce;
+- centralizované a validované ukládání souborů mimo veřejný webroot;
+- jednorázové časově omezené odkazy pro veřejný přístup k profilu místo
+  přímého přenosu interního identifikátoru;
+- limity těla Stripe a SumUp webhooků, fail-closed ověření SumUp odpovědi,
+  transakční zápisy a odstranění runtime DDL z obsluhy požadavků;
+- nonce CSP pro inline skripty a styly a zúžený přístup k servisním endpointům.
 
 Produkční běh fronty zpráv
 [`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788)
@@ -99,11 +106,11 @@ v rozsahu schváleného scénáře podle
 [`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
 Read-only kontrola připravenosti
-[`37701627446`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701627446)
+[`37766687136`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766687136)
 potvrdila `ready=true`: schválený release, aktivní rodičovské, dětské i
 správcovské účty, TEST data, testovací Stripe, bankovní nastavení, inbox a
 platné testovací okno. Navazující read-only kontrola invariantů
-[`37701585949`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701585949)
+[`37766630386`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766630386)
 skončila `ok=true` se 16 kontrolami a bez porušení.
 
 Obnova poslední generace produkční zálohy v izolované MariaDB byla ověřena
