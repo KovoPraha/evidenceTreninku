@@ -430,11 +430,11 @@ $kategorieMeta = [
         <h1 class="mb-0">
             <i class="bi bi-person-lines-fill me-2 text-primary"></i>Detail sportovce
         </h1>
-        <?php if ($sportovecId && !empty($sportovec['hash'])): ?>
+        <?php if ($sportovecId): ?>
             <a class="btn btn-outline-secondary btn-sm ms-auto"
-               href="sportovec_treninky.php?hash=<?= urlencode($sportovec['hash']) ?>"
-               target="_blank">
-               <i class="bi bi-box-arrow-up-right me-1"></i>Veřejná karta
+               href="sportovec_treninky.php?id=<?= (int)$sportovecId ?>"
+               target="_blank" rel="noopener">
+               <i class="bi bi-box-arrow-up-right me-1"></i>Náhled karty
             </a>
         <?php endif; ?>
     </div>
@@ -653,19 +653,18 @@ $kategorieMeta = [
                             <i class="bi bi-check-circle me-1"></i>Uloženo
                         </span>
 
-                        <?php if (!empty($sportovec['hash'])): ?>
+                        <?php if ($sportovecId): ?>
                         <a class="btn btn-outline-secondary ms-auto"
-                           href="sportovec_treninky.php?hash=<?= urlencode($sportovec['hash']) ?>"
-                           target="_blank">
-                            <i class="bi bi-box-arrow-up-right me-1"></i>Veřejná karta
+                           href="sportovec_treninky.php?id=<?= (int)$sportovecId ?>"
+                           target="_blank" rel="noopener">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>Náhled karty
                         </a>
                         <?php endif; ?>
                     </div>
 
-                    <?php if (!empty($sportovec['hash'])): ?>
+                    <?php if ($sportovecId): ?>
                     <div class="col-12 text-muted small">
-                        Odkaz pro sportovce:
-                        <code>sportovec_treninky.php?hash=<?= h($sportovec['hash']) ?></code>
+                        Sdílený odkaz se vytváří až při odeslání e-mailu a má omezenou platnost.
                     </div>
                     <?php endif; ?>
                 </div>

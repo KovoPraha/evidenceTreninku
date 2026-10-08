@@ -195,8 +195,8 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                 <span class="badge <?= h($status['class']) ?> fs-6"><?= h($status['label']) ?><?= $status['manual'] ? ' ručně' : '' ?></span>
                 <a href="sprava_sportovcu.php" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Správa</a>
                 <a href="sportovec_detail.php?id=<?= (int)$sportovecId ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-eye"></i> Starý detail</a>
-                <?php if (!empty($sportovec['hash'])): ?>
-                    <a href="sportovec_treninky.php?hash=<?= h($sportovec['hash']) ?>" class="btn btn-outline-light btn-sm" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Veřejná karta sportovce</a>
+                <?php if (!empty($sportovec['id'])): ?>
+                    <a href="sportovec_treninky.php?id=<?= (int)$sportovec['id'] ?>" class="btn btn-outline-light btn-sm" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Náhled karty sportovce</a>
                 <?php endif; ?>
             </div>
         </div>

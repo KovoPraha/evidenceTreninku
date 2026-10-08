@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/secure_upload.php';
 
 if (!isset($_SESSION['trener_id'])) {
     header("Location: login.php");
@@ -46,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $hlavicka     = trim($_POST['hlavicka'] ?? '');
     $paticka      = trim($_POST['paticka'] ?? '');
     $logoFilename = null;
+    $newLogoPath  = null;
 
     // Validace
     if ($entita_id <= 0) {
@@ -53,20 +55,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         header("Location: nastaveni_story.php");
         exit;
     }
+    if (!in_array($typ, ['skupina', 'podskupina'], true)) {
+        $_SESSION['flash_error'] = 'Neplatný typ nastavení.';
+        header('Location: nastaveni_story.php');
+        exit;
+    }
+    if (preg_match('/\A#[0-9a-f]{6}\z/Di', (string)$barva) !== 1 || preg_match('/\A#[0-9a-f]{6}\z/Di', (string)$barva_textu) !== 1) {
+        $_SESSION['flash_error'] = 'Barvy musí být zadány ve formátu #RRGGBB.';
+        header('Location: nastaveni_story.php');
+        exit;
+    }
+    $hlavicka = mb_substr($hlavicka, 0, 100);
+    $paticka = mb_substr($paticka, 0, 100);
 
     // Upload loga
     if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-        $finfo       = finfo_open(FILEINFO_MIME_TYPE);
-        $logoMime    = finfo_file($finfo, $_FILES['logo']['tmp_name']);
-        finfo_close($finfo);
-        $allowedMime = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
-        if (in_array($logoMime, $allowedMime, true)) {
-            $uploadDir = __DIR__ . '/loga_story/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-            $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
-            if (!in_array($ext, ['png','jpg','jpeg','gif','webp'], true)) $ext = 'bin';
-            $logoFilename = uniqid('logo_') . '.' . $ext;
-            move_uploaded_file($_FILES['logo']['tmp_name'], $uploadDir . $logoFilename);
+        try {
+            $stored = secureUploadStorePublicImage(
+                (string)$_FILES['logo']['tmp_name'],
+                'loga_story',
+                'logo'
+            );
+            $logoFilename = basename($stored['relative_path']);
+            $newLogoPath = $stored['absolute_path'];
+        } catch (SecureUploadException $exception) {
+            $_SESSION['flash_error'] = $exception->getMessage();
+            header('Location: nastaveni_story.php');
+            exit;
         }
     }
 
@@ -80,8 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
             paticka     = :paticka_u,
             logo        = COALESCE(:logo_u, logo)
     ";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
         ':typ'            => $typ,
         ':entita_id'      => $entita_id,
         ':barva'          => $barva,
@@ -94,7 +110,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         ':hlavicka_u'     => $hlavicka,
         ':paticka_u'      => $paticka,
         ':logo_u'         => $logoFilename
-    ]);
+        ]);
+    } catch (Throwable $exception) {
+        if (is_string($newLogoPath) && is_file($newLogoPath)) @unlink($newLogoPath);
+        error_log('nastaveni_story save: ' . $exception->getMessage());
+        $_SESSION['flash_error'] = 'Nastavení se nepodařilo bezpečně uložit.';
+        header('Location: nastaveni_story.php');
+        exit;
+    }
 
     $_SESSION['flash_success'] = 'Nastavení uloženo.';
     header("Location: nastaveni_story.php");

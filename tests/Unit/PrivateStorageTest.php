@@ -9,6 +9,28 @@ require_once dirname(__DIR__, 2) . '/includes/private_storage.php';
 
 final class PrivateStorageTest extends TestCase
 {
+    public function testBatchRejectsTooManyFiles(): void
+    {
+        $field = [
+            'name' => array_fill(0, PRIVATE_STORAGE_MAX_BATCH_FILES + 1, 'receipt.jpg'),
+            'error' => array_fill(0, PRIVATE_STORAGE_MAX_BATCH_FILES + 1, UPLOAD_ERR_OK),
+            'size' => array_fill(0, PRIVATE_STORAGE_MAX_BATCH_FILES + 1, 100),
+        ];
+        $this->expectException(\RuntimeException::class);
+        \privateStorageValidateUploadBatch([$field]);
+    }
+
+    public function testBatchRejectsExcessiveAggregateSize(): void
+    {
+        $field = [
+            'name' => ['a.pdf', 'b.pdf', 'c.pdf', 'd.pdf'],
+            'error' => array_fill(0, 4, UPLOAD_ERR_OK),
+            'size' => array_fill(0, 4, 9 * 1024 * 1024),
+        ];
+        $this->expectException(\RuntimeException::class);
+        \privateStorageValidateUploadBatch([$field]);
+    }
+
     private string $root;
     private string|false $previous;
 

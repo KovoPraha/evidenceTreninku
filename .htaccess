@@ -19,7 +19,9 @@ Options -Indexes
     RewriteRule ^uploads/(?:uctenky|zatezove_testy|servis|temp)(?:/|$) - [F,L,NC]
     RewriteRule ^nahrane_zavody/results(?:/|$) - [F,L,NC]
     RewriteRule ^(?:test|analyze_excel|analyze_uci_form)\.php$ - [F,L,NC]
-    RewriteRule ^(?:uploads|nahrane_obrazky|nahrane_zavody|stories|loga_story)/.*\.(?:php[0-9]?|phtml|phar)$ - [F,L,NC]
+    # Upload directories may contain only passive media/documents. Block every
+    # executable or browser-active suffix, not only PHP variants.
+    RewriteRule ^(?:uploads|nahrane_obrazky|nahrane_zavody|stories|loga_story)/.*\.(?:php[0-9]?|phtml|pht|phtm|phar|html?|xhtml|shtml|svg|xml|js|mjs|wasm|cgi|pl|py|sh|htaccess)$ - [F,L,NC]
 </IfModule>
 
 <IfModule mod_headers.c>
@@ -27,5 +29,7 @@ Options -Indexes
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests"
+    # CSP for PHP pages is emitted with a per-response nonce by
+    # includes/session_security.php. Static upload paths are restricted by the
+    # active-extension deny rule above.
 </IfModule>

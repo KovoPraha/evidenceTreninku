@@ -21,7 +21,9 @@ final class LegacySecurityHardeningTest extends TestCase
         self::assertStringContainsString('csrf_verify',$login);self::assertStringContainsString('csrf_field()',$login);
         self::assertStringContainsString("REQUEST_METHOD'] !== 'POST'",$story);self::assertStringContainsString('csrf_verify',$story);self::assertStringNotContainsString("\$_GET['id']",$story);
         self::assertStringContainsString("canAccess('zavod_detail')",$download);self::assertStringContainsString('realpath',$download);
-        self::assertStringContainsString('nahrane_obrazky|nahrane_zavody',$htaccess);self::assertStringContainsString('Content-Security-Policy',$htaccess);
+        self::assertStringContainsString('nahrane_obrazky|nahrane_zavody',$htaccess);
+        self::assertStringNotContainsString('Content-Security-Policy',$htaccess);
+        self::assertStringContainsString('app_session_send_security_headers', (string)file_get_contents($root . '/includes/session_security.php'));
 
         foreach (['edit_zavod.php', 'import_vysledku_zavodu.php'] as $path) {
             $source = (string)file_get_contents($root . '/' . $path);

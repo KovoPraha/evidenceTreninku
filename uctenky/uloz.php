@@ -37,12 +37,16 @@ if ($kategorie === '') {
 }
 
 $old_data = null;
+$newReceiptKey = null;
+$oldReceiptToDelete = null;
 
 try {
+    $pdo->beginTransaction();
     if ($id > 0) {
         $stmt = $pdo->prepare("SELECT * FROM ucto_uctenky WHERE id = ?");
         $stmt->execute([$id]);
         $old_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$old_data) throw new RuntimeException('Účtenka nebyla nalezena.');
 
         $stmt = $pdo->prepare("UPDATE ucto_uctenky SET
             castka = ?, platba = ?, kategorie = ?, vozidlo_id = ?, udalost_id = ?,
@@ -69,17 +73,13 @@ try {
 
     // Upload obrázku s MIME validací
     if (!empty($_FILES['obrazek']['name']) && $_FILES['obrazek']['error'] === UPLOAD_ERR_OK) {
-        try {
-            $obrazek_path = privateStorageStore(
-                (string)$_FILES['obrazek']['tmp_name'],
-                PRIVATE_STORAGE_RECEIPTS
-            );
-        } catch (RuntimeException $exception) {
-            echo json_encode(['status' => 'error', 'message' => $exception->getMessage()]);
-            exit;
-        }
+        $obrazek_path = privateStorageStore(
+            (string)$_FILES['obrazek']['tmp_name'],
+            PRIVATE_STORAGE_RECEIPTS
+        );
+        $newReceiptKey = $obrazek_path;
         if ($old_data && !empty($old_data['obrazek_path'])) {
-            privateStorageSoftDelete((string)$old_data['obrazek_path']);
+            $oldReceiptToDelete = (string)$old_data['obrazek_path'];
         }
         $pdo->prepare("UPDATE ucto_uctenky SET obrazek_path = ? WHERE id = ?")->execute([$obrazek_path, $id]);
     }
@@ -93,8 +93,19 @@ try {
         json_encode($old_data ?? $_POST)
     );
 
+    $pdo->commit();
+    if (is_string($oldReceiptToDelete) && $oldReceiptToDelete !== '') {
+        try { privateStorageSoftDelete($oldReceiptToDelete); } catch (Throwable $cleanupException) {
+            error_log('uctenky/uloz.php old receipt cleanup: ' . $cleanupException->getMessage());
+        }
+    }
     echo json_encode(['status' => 'ok']);
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    if (is_string($newReceiptKey) && $newReceiptKey !== '') {
+        try { privateStorageSoftDelete($newReceiptKey); } catch (Throwable) {}
+    }
     error_log('uctenky/uloz.php: ' . $e->getMessage());
-    echo json_encode(['status' => 'error', 'message' => 'Chyba při ukládání.']);
+    $message = $e instanceof PDOException ? 'Chyba při ukládání.' : $e->getMessage();
+    echo json_encode(['status' => 'error', 'message' => $message]);
 }

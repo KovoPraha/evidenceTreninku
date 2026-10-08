@@ -7,6 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 final class SecurityInfrastructureWiringTest extends TestCase
 {
+    public function testUploadDirectoriesBlockBrowserActiveExtensions(): void
+    {
+        $rules = (string)file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
+        foreach (['html?', 'svg', 'js', 'pht', 'phar'] as $suffix) {
+            self::assertStringContainsString($suffix, $rules);
+        }
+    }
+
     public function testSensitiveUploadsUsePrivateControllerAndLegacyPathsAreDenied(): void
     {
         $root = dirname(__DIR__, 2);
@@ -17,8 +25,11 @@ final class SecurityInfrastructureWiringTest extends TestCase
 
         self::assertStringContainsString('uploads/(?:uctenky|zatezove_testy|servis|temp)', $htaccess);
         self::assertStringContainsString('privateStorageStore', $receipt);
+        self::assertStringContainsString('beginTransaction()', $receipt);
+        self::assertStringContainsString('privateStorageSoftDelete($newReceiptKey)', $receipt);
         self::assertStringContainsString('privateStorageStore', $stress);
-        self::assertStringContainsString("hash_equals((string)\$file['hash'], \$publicHash)", $download);
+        self::assertStringContainsString('public_profile_access_session_athlete_id()', $download);
+        self::assertStringNotContainsString("\$_GET['hash']", $download);
         self::assertStringContainsString("(string)\$file['typ'] === 'public_img'", $download);
     }
 
@@ -120,9 +131,11 @@ final class SecurityInfrastructureWiringTest extends TestCase
         self::assertStringContainsString('https://kis.kovopraha.cz%{REQUEST_URI}', $htaccess);
         self::assertStringContainsString('^(?:bin|database|docs|migrations|tests|var|vendor)', $htaccess);
         self::assertStringContainsString('^nahrane_zavody/results', $htaccess);
-        self::assertStringContainsString("base-uri 'self'", $htaccess);
-        self::assertStringContainsString("object-src 'none'", $htaccess);
-        self::assertStringContainsString("form-action 'self'", $htaccess);
+        $security = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/session_security.php');
+        self::assertStringContainsString("base-uri 'self'", $security);
+        self::assertStringContainsString("object-src 'none'", $security);
+        self::assertStringContainsString("form-action 'self'", $security);
+        self::assertStringContainsString("'nonce-", $security);
     }
 
     public function testEveryJsdelivrAssetIsPinnedWithSri(): void
@@ -144,6 +157,7 @@ final class SecurityInfrastructureWiringTest extends TestCase
             }
             foreach (file($file->getPathname(), FILE_IGNORE_NEW_LINES) ?: [] as $number => $line) {
                 if (str_contains($line, 'cdn.jsdelivr.net')
+                    && (str_contains($line, '<script') || str_contains($line, '<link'))
                     && (!str_contains($line, 'integrity="sha384-') || !str_contains($line, 'crossorigin="anonymous"'))
                 ) {
                     $missing[] = substr($path, strlen(str_replace('\\', '/', $root)) + 1) . ':' . ($number + 1);

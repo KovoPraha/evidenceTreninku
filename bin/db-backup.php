@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-07.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-08.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -226,6 +226,7 @@ const EVIDENCE_TABLES = [
     'podskupiny',
     'push_subscriptions',
     'public_profile_events',
+    'public_profile_access_tokens',
     'public_profile_settings',
     'public_self_profiles',
     'public_velodrome_cart_items',

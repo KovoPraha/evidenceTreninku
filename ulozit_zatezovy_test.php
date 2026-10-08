@@ -42,6 +42,17 @@ if (!$stmt->fetch()) {
     die('Zvolený sportovec neexistuje.');
 }
 
+try {
+    privateStorageValidateUploadBatch(array_values(array_filter([
+        $_FILES['public_img'] ?? null,
+        $_FILES['internal_img'] ?? null,
+        $_FILES['other_files'] ?? null,
+    ], 'is_array')));
+} catch (RuntimeException $exception) {
+    http_response_code(422);
+    die(htmlspecialchars($exception->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+}
+
 // 2) Vložení záznamu zátěžového testu
 try {
     $pdo->beginTransaction();

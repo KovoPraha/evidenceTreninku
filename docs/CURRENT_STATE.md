@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno: 7. 10. 2026, Europe/Prague
+Aktualizováno: 8. 10. 2026, Europe/Prague
 
 Tento soubor je autoritativní stavový rozcestník. Historické audity, předávací
 záznamy a implementační prompty zachycují stav v datu svého vzniku a nesmí se
@@ -12,12 +12,12 @@ používat jako důkaz aktuální verze. Před každou novou prací má přednos
 - Repozitář: <https://github.com/KovoPraha/evidenceTreninku>
 - Výchozí větev: `main`
 - Stav vzdálené větve `origin/main` při této kontrole:
-  `f5619222402436d7a00e7e720318886bcaffb97a`
+  `0d20a2cc807c2f4a06c6cc92972c47946bb87716`
 - Otevřené pull requesty při této kontrole: žádné
 - Produkční aplikace: <https://kis.kovopraha.cz/>
 - Poslední ověřené nasazení: GitHub Actions běh
-  [`37636084395`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636084395)
-  nasadil přesně commit `49c38c72c6704826182aff7f59855f47b5818bb8`.
+  [`37701308547`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701308547)
+  nasadil přesně commit `0d20a2cc807c2f4a06c6cc92972c47946bb87716`.
 - Nasazení vytvořilo a ověřilo databázovou zálohu, připravilo úplný release,
   aplikovalo migrace, aktivovalo kód a dokončilo HTTP smoke test.
 - Veřejná domovská stránka a registrace po nasazení odpovídají HTTP 200.
@@ -31,21 +31,29 @@ dokumentu. Samotný push ani merge do `main` produkci nemění. Produkční nasa
 je vždy samostatný ručně spuštěný workflow podle
 [`NASAZENI.md`](NASAZENI.md).
 
+Bezpečnostní nastavení repozitáře bylo 8. 10. 2026 zpřísněno: je zapnuté
+secret scanning, push protection, Dependabot alerts i automatické bezpečnostní
+aktualizace. GitHub CodeQL default setup běží v rozšířeném režimu pro Actions a
+JavaScript/TypeScript; první běh
+[`37764312992`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37764312992)
+prošel bez otevřeného nálezu. PHP závislosti navíc kontroluje `composer audit`
+v hlavním CI jobu.
+
 ## Poslední automatické ověření
 
 GitHub Actions běh
-[`37636955701`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636955701)
-nad aktuálním `origin/main` `f5619222402436d7a00e7e720318886bcaffb97a`
-prošel v tomto rozsahu. Aplikační commit nasazeného release dříve ověřil také
-CI běh [`37635967824`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37635967824):
+[`37701306330`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701306330)
+nad aktuálním `origin/main` a současně nasazeným commitem
+`0d20a2cc807c2f4a06c6cc92972c47946bb87716` prošel v tomto rozsahu:
 
-- PHPUnit na PHP 8.2: **840 testů / 11 751 kontrol**;
+- PHPUnit na PHP 8.2: **852 testů / 11 781 kontrol**;
 - integrační smoke na MariaDB 10.3: úspěch;
 - integrační smoke na MariaDB 11.4: úspěch;
 - kontrola Composer konfigurace: úspěch.
 
-Migrační katalog obsahuje 82 verzovaných PHP migrací a zmrazený legacy
-baseline 2.20.2. Aktuální zálohovací ownership kontrakt je `2026-10-07.1`.
+Migrační katalog obsahuje 84 verzovaných PHP migrací včetně bezpečnostních
+migrací připravených v pracovní větvi a zmrazený legacy baseline 2.20.2.
+Aktuální zálohovací ownership kontrakt zdrojového kódu je `2026-10-08.1`.
 Počet souborů není důkazem stavu konkrétní databáze; ten se na každé stanici
 ověřuje pomocí `php bin/migrate.php --check --json` s nastaveným `APP_HOST`.
 
@@ -91,12 +99,16 @@ v rozsahu schváleného scénáře podle
 [`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
 Read-only kontrola připravenosti
-[`37636447561`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636447561)
+[`37701627446`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701627446)
 potvrdila `ready=true`: schválený release, aktivní rodičovské, dětské i
 správcovské účty, TEST data, testovací Stripe, bankovní nastavení, inbox a
 platné testovací okno. Navazující read-only kontrola invariantů
-[`37636671525`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636671525)
+[`37701585949`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701585949)
 skončila `ok=true` se 16 kontrolami a bez porušení.
+
+Obnova poslední generace produkční zálohy v izolované MariaDB byla ověřena
+během [`37701691548`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701691548):
+195 tabulek a 2 databázové triggery.
 
 Fio import je od 7. 10. 2026 záměrně provozně pozastavený. Automatický plán byl
 odstraněn; kód zůstává připravený pro budoucí ruční obnovení po samostatném

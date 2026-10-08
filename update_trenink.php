@@ -11,6 +11,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
 require_once __DIR__ . '/includes/file_mutation_transaction.php';
+require_once __DIR__ . '/includes/secure_upload.php';
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     die('Neplatný CSRF token.');
@@ -112,22 +113,17 @@ try {
         $uploadDir = __DIR__ . '/nahrane_obrazky/';
         if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
 
+        secureUploadAssertFileCount((array)$_FILES['obrazky']['name']);
         foreach ($_FILES['obrazky']['tmp_name'] as $i => $tmp) {
             if (!isset($_FILES['obrazky']['error'][$i]) || $_FILES['obrazky']['error'][$i] !== UPLOAD_ERR_OK) continue;
-
-            $ext = strtolower(pathinfo($_FILES['obrazky']['name'][$i] ?? '', PATHINFO_EXTENSION));
-            if (!in_array($ext, ['jpg','jpeg','png','webp','gif'], true)) continue;
-
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime  = finfo_file($finfo, $tmp);
-            finfo_close($finfo);
-            if (!in_array($mime, ['image/jpeg','image/png','image/webp','image/gif'], true)) continue;
-
-            $name = 'trenink_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            $prepared = secureUploadPrepareImage((string)$tmp);
+            $name = 'trenink_' . time() . '_' . bin2hex(random_bytes(8)) . '.jpg';
             $dest = $uploadDir . $name;
-
-            if (fileMutationStage($fileMutations, $tmp, $dest)) {
+            if (fileMutationStage($fileMutations, $prepared['path'], $dest, false)) {
                 $newPaths[] = 'nahrane_obrazky/' . $name;
+            } else {
+                @unlink($prepared['path']);
+                throw new SecureUploadException('Obrázek se nepodařilo připravit k uložení.');
             }
         }
     }

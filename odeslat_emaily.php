@@ -11,6 +11,7 @@ require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/app_url.php';
 require_once __DIR__ . '/includes/html_sanitizer.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 
 // Jen hlavní trenér
 $is_hlavni = canAccess('odeslat_emaily');
@@ -23,27 +24,10 @@ function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-// ── Vytvoř tabulku email_log pokud neexistuje ─────────────────────────────
-try {
-    $pdo->exec("CREATE TABLE IF NOT EXISTS email_log (
-        id           INT AUTO_INCREMENT PRIMARY KEY,
-        sportovec_id INT NOT NULL,
-        email        VARCHAR(255),
-        predmet      VARCHAR(500),
-        stav         ENUM('odeslano','chyba','bez_emailu') NOT NULL,
-        odeslano_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        trener_id    INT,
-        INDEX (odeslano_at),
-        INDEX (sportovec_id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
-} catch (PDOException $e) {
-    error_log('email_log create: ' . $e->getMessage());
-}
-
 // ── Pomocné funkce ────────────────────────────────────────────────────────
 
-function buildProfilUrl(string $hash): string {
-    return appUrl('sportovec_treninky.php') . '?hash=' . urlencode($hash);
+function buildProfilUrl(string $token): string {
+    return appUrl('public_profile_access.php') . '#token=' . rawurlencode($token);
 }
 
 function applyTemplate(string $tpl, array $sp, string $odkaz): string {
@@ -110,12 +94,12 @@ $vsichniSportovci = [];
 $nacistVsechny    = isset($_GET['vsichni']) || isset($_POST['vsichni']);
 
 if ($nacistVsechny) {
-    $stVs = $pdo->query("SELECT id, jmeno, prijmeni, email, hash FROM sportovci ORDER BY prijmeni, jmeno");
+    $stVs = $pdo->query("SELECT id, jmeno, prijmeni, email FROM sportovci ORDER BY prijmeni, jmeno");
     $vsichniSportovci = $stVs->fetchAll(PDO::FETCH_ASSOC);
 } elseif ($filterSkupinaId !== '') {
     $params = [':gid' => (int)$filterSkupinaId];
     $sqlSp  = "
-        SELECT DISTINCT s.id, s.jmeno, s.prijmeni, s.email, s.hash
+        SELECT DISTINCT s.id, s.jmeno, s.prijmeni, s.email
         FROM sportovci s
         JOIN sportovec_skupina sg ON sg.sportovec_id = s.id
         WHERE sg.skupina_id = :gid
@@ -162,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Načíst jen vybrané sportovce z DB (bezpečnostní kontrola)
         $placeholders = implode(',', array_fill(0, count($vybraniIds), '?'));
-        $stSel = $pdo->prepare("SELECT id, jmeno, prijmeni, email, hash FROM sportovci WHERE id IN ($placeholders) ORDER BY prijmeni, jmeno");
+        $stSel = $pdo->prepare("SELECT id, jmeno, prijmeni, email FROM sportovci WHERE id IN ($placeholders) ORDER BY prijmeni, jmeno");
         $stSel->execute($vybraniIds);
         $vybraniSportovci = $stSel->fetchAll(PDO::FETCH_ASSOC);
 
@@ -171,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $preview3 = array_slice($vybraniSportovci, 0, 3);
             $previewData = [];
             foreach ($preview3 as $sp) {
-                $odkaz   = buildProfilUrl($sp['hash']);
+                $odkaz   = appUrl('public_profile_access.php') . '#token=BEZPECNY-ODKAZ-VZNIKNE-PRI-ODESLANI';
                 $subjekt = applySubject($predmetIn, $sp);
                 $telo    = applyTemplate($teloIn, $sp, $odkaz);
                 $previewData[] = [
@@ -214,7 +198,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         continue;
                     }
 
-                    $odkaz   = buildProfilUrl($sp['hash']);
+                    try {
+                        $issued = public_profile_access_issue($pdo, (int)$sp['id'], $trenerId);
+                        $odkaz = buildProfilUrl($issued['token']);
+                    } catch (Throwable $exception) {
+                        error_log('odeslat_emaily profile link: ' . $exception->getMessage());
+                        $log[] = ['sp' => $sp, 'stav' => 'chyba', 'msg' => 'Bezpečný odkaz se nepodařilo vytvořit'];
+                        $cntFail++;
+                        continue;
+                    }
                     $subjekt = applySubject($predmetIn, $sp);
                     $telo    = applyTemplate($teloIn, $sp, $odkaz);
 
@@ -224,6 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $headers .= "X-Mailer: PHP/" . phpversion();
 
                     $ok = @mail($email, $subjekt, $telo, $headers);
+                    if (!$ok) public_profile_access_revoke_for_person($pdo, (int)$sp['id']);
                     $stav = $ok ? 'odeslano' : 'chyba';
                     if ($ok) $cntOk++; else $cntFail++;
 

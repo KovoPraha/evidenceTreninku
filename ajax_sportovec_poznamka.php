@@ -10,8 +10,8 @@ header('Cache-Control: no-store, private');
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sportovec_note_access.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 
-$hash = trim($_POST['hash'] ?? '');
 $tid  = (int)($_POST['trenink_id'] ?? 0);
 $poz  = trim($_POST['poznamka'] ?? '');
 
@@ -21,20 +21,16 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     exit;
 }
 
-if (!$hash || $tid <= 0) {
+if ($tid <= 0) {
     echo json_encode(['ok' => false, 'msg' => 'Neplatné parametry.']);
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT id FROM sportovci WHERE hash = ?');
-$stmt->execute([$hash]);
-$spRow = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$spRow) {
+$sportovec_id = public_profile_access_session_athlete_id() ?? 0;
+if ($sportovec_id < 1) {
     echo json_encode(['ok' => false, 'msg' => 'Neplatný přístup.']);
     exit;
 }
-
-$sportovec_id = (int)$spRow['id'];
 
 if (!sportovecNoteCanWrite($pdo, $sportovec_id)) {
     http_response_code(403);
