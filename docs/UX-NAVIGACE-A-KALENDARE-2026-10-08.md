@@ -62,5 +62,18 @@ nemění.
 - Lokální vizuální průchod nad reálnými daty nebylo možné dokončit, protože
   nakonfigurovaná vývojová MariaDB na portu 3308 nebyla spuštěná. Databáze ani
   migrace se kvůli vizuální kontrole svévolně neměnily.
-- Po nasazení je nutné ověřit veřejný e-shop, detail programu, oba kalendáře a
-  přihlášené přehledy podle dostupných bezpečných testovacích identit.
+- Pull request [#53](https://github.com/KovoPraha/evidenceTreninku/pull/53) byl
+  sloučen jako `134fcb037bbfc62c13ca5df36695407d8d783f65`; CI
+  [37778040472](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778040472)
+  a CodeQL
+  [37778041269](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778041269)
+  prošly.
+- Produkční deploy
+  [37778058404](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778058404)
+  skončil úspěšně a nasadil přesně commit `134fcb0`.
+- Následný průchod v prohlížeči ověřil veřejný e-shop, detail programu 247,
+  veřejný rozvrh tréninků a klubový kalendář. Nová navigace, mřížky, termíny a
+  názvy variant jsou zobrazené a konzole na kontrolovaných stránkách nehlásila
+  chyby ani varování.
+- Přihlášené rodičovské a trenérské přehledy nebyly po tomto deployi zapisově
+  retestované, protože release byl nasazen s `uat_schvaleno=false`.

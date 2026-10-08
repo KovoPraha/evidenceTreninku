@@ -12,14 +12,19 @@ používat jako důkaz aktuální verze. Před každou novou prací má přednos
 - Repozitář: <https://github.com/KovoPraha/evidenceTreninku>
 - Výchozí větev: `main`
 - Stav vzdálené větve `origin/main` při této kontrole:
-  `7ad2104652efcba978bd5661ebe0c6b02977ff4b`
+  `134fcb037bbfc62c13ca5df36695407d8d783f65`
 - Otevřené pull requesty při této kontrole: žádné
 - Produkční aplikace: <https://kis.kovopraha.cz/>
 - Poslední ověřené nasazení: GitHub Actions běh
-  [`37766211885`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766211885)
-  nasadil přesně commit `7ad2104652efcba978bd5661ebe0c6b02977ff4b`.
+  [`37778058404`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778058404)
+  nasadil přesně commit `134fcb037bbfc62c13ca5df36695407d8d783f65`.
 - Nasazení vytvořilo a ověřilo databázovou zálohu, připravilo úplný release,
   aplikovalo migrace, aktivovalo kód a dokončilo HTTP smoke test.
+- Po nasazení byl z prohlížeče ověřen veřejný e-shop, detail programu 247,
+  veřejný rozvrh tréninků a klubový kalendář. Kategorie, stránkování,
+  drobečková navigace, přístupné měsíční mřížky, odkazy na přihlášení a lidské
+  názvy programových variant jsou na produkci přítomné; konzole nehlásila
+  chybu ani varování.
 - Veřejná domovská stránka a bezpečný vstup k veřejnému profilu po nasazení
   odpovídají HTTP 200 a posílají nonce CSP bez povolených inline skriptů.
   Soubor `var/deployment.json` není veřejný a správně odpovídá HTTP 403; důkaz
@@ -43,14 +48,18 @@ v hlavním CI jobu.
 ## Poslední automatické ověření
 
 GitHub Actions běh
-[`37766181968`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766181968)
+[`37778040472`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778040472)
 nad aktuálním `origin/main` a současně nasazeným commitem
-`7ad2104652efcba978bd5661ebe0c6b02977ff4b` prošel v tomto rozsahu:
+`134fcb037bbfc62c13ca5df36695407d8d783f65` prošel v tomto rozsahu:
 
-- PHPUnit na PHP 8.2: **869 testů / 11 867 kontrol**;
+- PHPUnit na PHP 8.2: **875 testů / 11 913 kontrol**;
 - integrační smoke na MariaDB 10.3: úspěch;
 - integrační smoke na MariaDB 11.4: úspěch;
 - kontrola Composer konfigurace: úspěch.
+
+CodeQL běh
+[`37778041269`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778041269)
+nad stejným commitem prošel pro GitHub Actions i JavaScript/TypeScript.
 
 Migrační katalog obsahuje 84 verzovaných PHP migrací včetně bezpečnostních
 migrací připravených v pracovní větvi a zmrazený legacy baseline 2.20.2.
@@ -65,7 +74,8 @@ Pull requesty
 [#35](https://github.com/KovoPraha/evidenceTreninku/pull/35),
 [#36](https://github.com/KovoPraha/evidenceTreninku/pull/36),
 [#38](https://github.com/KovoPraha/evidenceTreninku/pull/38) a
-[#39](https://github.com/KovoPraha/evidenceTreninku/pull/39) jsou sloučené do
+[#39](https://github.com/KovoPraha/evidenceTreninku/pull/39) a
+[#53](https://github.com/KovoPraha/evidenceTreninku/pull/53) jsou sloučené do
 `main`. Aktuální release mimo jiné obsahuje:
 
 - srozumitelnější registraci a práci s heslem;
@@ -105,19 +115,21 @@ jsou popsány v
 
 ## Důležitá provozní hranice
 
-Poslední deploy má `uat_schvaleno=true`. Tato hodnota potvrzuje schválení
-konkrétního nasazeného commitu, nikoli neomezené povolení budoucích zápisových
-testů. Reálné e-maily, bankovní pohyby a provozní účty se nadále používají jen
-v rozsahu schváleného scénáře podle
+Poslední deploy má `uat_schvaleno=false`. Produkční kód je nasazený a veřejné
+read-only obrazovky byly ověřené, ale tento nový commit tím nezískal povolení
+pro neomezené zápisové UAT. Reálné e-maily, bankovní pohyby a provozní účty se
+nadále používají jen v rozsahu samostatně schváleného scénáře podle
 [`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
-Read-only kontrola připravenosti
+Read-only kontrola připravenosti předchozího release
 [`37766687136`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766687136)
 potvrdila `ready=true`: schválený release, aktivní rodičovské, dětské i
 správcovské účty, TEST data, testovací Stripe, bankovní nastavení, inbox a
 platné testovací okno. Navazující read-only kontrola invariantů
 [`37766630386`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766630386)
 skončila `ok=true` se 16 kontrolami a bez porušení.
+Tyto výsledky jsou důkazem tehdejšího release a automaticky neschvalují
+zápisové testování commitu `134fcb0`.
 
 Obnova poslední generace produkční zálohy v izolované MariaDB byla ověřena
 během [`37701691548`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701691548):
