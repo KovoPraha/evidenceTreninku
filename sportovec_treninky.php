@@ -9,6 +9,7 @@ header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store, private');
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
@@ -66,12 +67,28 @@ function renderMereniData(array $mz): string {
     return implode(' · ', $parts) ?: '<span class="text-muted">—</span>';
 }
 
-// 1) Autentizace – hash
-$hash = trim($_GET['hash'] ?? '');
-if (!$hash) { http_response_code(404); exit('Profil není dostupný.'); }
+// 1) Přístup přes krátkou session. Staré odkazy s ?hash= se pouze jednou
+// vymění za session a okamžitě se odstraní z adresního řádku.
+$legacyToken = trim((string)($_GET['hash'] ?? ''));
+if ($legacyToken !== '') {
+    $resolved = public_profile_access_resolve($pdo, $legacyToken);
+    if ($resolved === null) { http_response_code(404); exit('Profil není dostupný.'); }
+    public_profile_access_grant_session($resolved);
+    app_session_mark_authenticated();
+    header('Location: sportovec_treninky.php', true, 303);
+    exit;
+}
+$staffRequestedId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+if (isset($_SESSION['trener_id']) && $staffRequestedId !== false) {
+    $sportovec_id = (int)$staffRequestedId;
+    public_profile_access_grant_session($sportovec_id);
+} else {
+    $sportovec_id = public_profile_access_session_athlete_id() ?? 0;
+}
+if ($sportovec_id < 1) { http_response_code(404); exit('Profil není dostupný.'); }
 
-$stmt = $pdo->prepare('SELECT * FROM sportovci WHERE hash = ?');
-$stmt->execute([$hash]);
+$stmt = $pdo->prepare('SELECT * FROM sportovci WHERE id = ?');
+$stmt->execute([$sportovec_id]);
 $s = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$s) { http_response_code(404); exit('Profil není dostupný.'); }
 
@@ -878,7 +895,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
             <?php if (!empty($files)): ?>
               <div class="d-flex flex-wrap gap-2">
                 <?php foreach ($files as $f): ?>
-                  <?php $downloadUrl = 'private_download.php?kind=stress&amp;id=' . (int)$f['id'] . '&amp;hash=' . rawurlencode($hash); ?>
+                  <?php $downloadUrl = 'private_download.php?kind=stress&amp;id=' . (int)$f['id']; ?>
                   <a href="<?= $downloadUrl ?>" target="_blank" rel="noopener">
                     <img src="<?= $downloadUrl ?>" alt="<?= h($f['nazev'] ?? '') ?>" class="thumb-tr">
                   </a>
@@ -985,7 +1002,6 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 
 <script>
 (function () {
-    const HASH        = <?= json_encode($hash,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
     const CSRF_TOKEN  = <?= json_encode(csrf_token(),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
     const DEFAULT_ROK = <?= json_encode($defaultRok,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 
@@ -1008,7 +1024,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
     function loadTrainings(rok) {
         wrap.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted small">Načítám…</div></div>';
 
-        const url = 'ajax_sportovec_treninky.php?hash=' + encodeURIComponent(HASH) + '&rok=' + rok;
+        const url = 'ajax_sportovec_treninky.php?rok=' + encodeURIComponent(rok);
         fetch(url)
             .then(r => r.text())
             .then(html => {
@@ -1040,7 +1056,6 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
                 btn.textContent = 'Ukládám…';
 
                 const fd = new FormData();
-                fd.append('hash', HASH);
                 fd.append('csrf_token', CSRF_TOKEN);
                 fd.append('trenink_id', tid);
                 fd.append('poznamka', ta.value);

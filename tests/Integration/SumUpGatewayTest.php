@@ -129,6 +129,22 @@ final class SumUpGatewayTest extends TestCase
         self::assertSame(0, $client->retrieved);
     }
 
+    public function testUnknownCheckoutIdIsRejectedBeforeApiCall(): void
+    {
+        $client = $this->paidClient();
+        try {
+            \sumupHandleWebhook(
+                $this->database(),
+                '{"event_type":"CHECKOUT_STATUS_CHANGED","id":"unknown-checkout-unit"}',
+                $client,
+                self::SETTINGS
+            );
+            self::fail('Unknown checkout must be rejected.');
+        } catch (\SumUpWebhookException) {
+        }
+        self::assertSame(0, $client->retrieved);
+    }
+
     public function testIncompleteConfigurationFailsClosed(): void
     {
         self::assertFalse(\sumupIsEnabled(['enabled' => false]));

@@ -45,6 +45,11 @@ function validateKisUpload(string $field, string $label, array &$errors): bool {
         $errors[] = 'Soubor ' . $label . ' neni platny upload.';
         return false;
     }
+    $size = filesize($tmp);
+    if (!is_int($size) || $size < 1 || $size > 10 * 1024 * 1024) {
+        $errors[] = 'Soubor ' . $label . ' musí mít nejvýše 10 MB.';
+        return false;
+    }
     $ext = strtolower(pathinfo((string)$_FILES[$field]['name'], PATHINFO_EXTENSION));
     if (!in_array($ext, ['xlsx', 'xls'], true)) {
         $errors[] = 'Soubor ' . $label . ' ma nepovolenou priponu.';
@@ -61,6 +66,39 @@ function validateKisUpload(string $field, string $label, array &$errors): bool {
     if (!in_array($mimeType, $allowedMimes, true)) {
         $errors[] = 'Soubor ' . $label . ' nema povoleny MIME typ.';
         return false;
+    }
+    if ($ext === 'xlsx') {
+        $zip = new ZipArchive();
+        if ($zip->open($tmp, ZipArchive::RDONLY) !== true) {
+            $errors[] = 'Soubor ' . $label . ' není čitelný XLSX archiv.';
+            return false;
+        }
+        try {
+            if ($zip->numFiles < 1 || $zip->numFiles > 5000) {
+                $errors[] = 'Soubor ' . $label . ' obsahuje nepovolený počet částí.';
+                return false;
+            }
+            $uncompressed = 0;
+            for ($index = 0; $index < $zip->numFiles; $index++) {
+                $stat = $zip->statIndex($index, ZipArchive::FL_UNCHANGED);
+                if (!is_array($stat)) {
+                    $errors[] = 'Soubor ' . $label . ' obsahuje nečitelnou část.';
+                    return false;
+                }
+                $entryName = (string)($stat['name'] ?? '');
+                if ($entryName === '' || str_contains(str_replace('\\', '/', $entryName), '../')) {
+                    $errors[] = 'Soubor ' . $label . ' obsahuje nebezpečnou cestu.';
+                    return false;
+                }
+                $uncompressed += (int)($stat['size'] ?? 0);
+                if ($uncompressed > 50 * 1024 * 1024) {
+                    $errors[] = 'Rozbalený soubor ' . $label . ' je příliš velký.';
+                    return false;
+                }
+            }
+        } finally {
+            $zip->close();
+        }
     }
     return true;
 }

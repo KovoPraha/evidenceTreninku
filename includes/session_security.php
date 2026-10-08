@@ -164,7 +164,9 @@ function app_session_has_authenticated_identity(): bool
 {
     return isset($_SESSION['trener_id'])
         || isset($_SESSION['verejny_uzivatel_id'])
-        || isset($_SESSION['sportovec_pristup_id']);
+        || isset($_SESSION['sportovec_pristup_id'])
+        || (is_array($_SESSION['public_profile_access'] ?? null)
+            && (int)($_SESSION['public_profile_access']['expires_at'] ?? 0) >= time());
 }
 
 function app_session_rotate_csrf_token(): string
@@ -175,13 +177,62 @@ function app_session_rotate_csrf_token(): string
     return $token;
 }
 
+function app_csp_nonce(): string
+{
+    static $nonce = null;
+    if (!is_string($nonce)) $nonce = base64_encode(random_bytes(18));
+    return $nonce;
+}
+
+/** @param list<string> $attributeHashes */
+function app_csp_header_value(array $attributeHashes = []): string
+{
+    $nonce = "'nonce-" . app_csp_nonce() . "'";
+    $attributePolicy = $attributeHashes === []
+        ? "script-src-attr 'none'"
+        : "script-src-attr 'unsafe-hashes' " . implode(' ', array_map(static fn(string $hash): string => "'sha256-{$hash}'", $attributeHashes));
+    return "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; "
+        . "script-src 'self' https://cdn.jsdelivr.net {$nonce}; script-src-elem 'self' https://cdn.jsdelivr.net {$nonce}; {$attributePolicy}; "
+        . "style-src 'self' https://cdn.jsdelivr.net {$nonce}; style-src-elem 'self' https://cdn.jsdelivr.net {$nonce}; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; "
+        . "font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; "
+        . "worker-src 'self' blob:; upgrade-insecure-requests";
+}
+
+function app_csp_filter_output(string $html): string
+{
+    foreach (headers_list() as $responseHeader) {
+        if (stripos($responseHeader, 'Content-Type:') !== 0) continue;
+        $contentType = strtolower(trim(substr($responseHeader, strlen('Content-Type:'))));
+        if (!str_starts_with($contentType, 'text/html') && !str_starts_with($contentType, 'application/xhtml+xml')) {
+            return $html;
+        }
+        break;
+    }
+    $nonce = htmlspecialchars(app_csp_nonce(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $html = preg_replace('/<script\b(?![^>]*\bnonce=)([^>]*)>/i', '<script nonce="' . $nonce . '"$1>', $html) ?? $html;
+    $html = preg_replace('/<style\b(?![^>]*\bnonce=)([^>]*)>/i', '<style nonce="' . $nonce . '"$1>', $html) ?? $html;
+    $hashes = [];
+    if (preg_match_all('/\son[a-z]+\s*=\s*(["\'])(.*?)\1/is', $html, $matches)) {
+        foreach ($matches[2] as $handler) {
+            $decoded = html_entity_decode((string)$handler, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $hashes[] = base64_encode(hash('sha256', $decoded, true));
+        }
+    }
+    if (!headers_sent()) header('Content-Security-Policy: ' . app_csp_header_value(array_values(array_unique($hashes))), true);
+    return $html;
+}
+
 function app_session_send_security_headers(): void
 {
     if (!headers_sent()) {
         header('Referrer-Policy: strict-origin-when-cross-origin', true);
+        header('Content-Security-Policy: ' . app_csp_header_value(), true);
         if (app_session_request_is_https() && !app_session_request_is_local()) {
             header('Strict-Transport-Security: max-age=31536000', true);
         }
+    }
+    if (PHP_SAPI !== 'cli' && !in_array('app_csp_filter_output', ob_list_handlers(), true)) {
+        ob_start('app_csp_filter_output');
     }
 }
 

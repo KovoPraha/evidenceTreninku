@@ -13,11 +13,13 @@ final class CurrentDocumentationContractTest extends TestCase
         $state = (string)file_get_contents($root . '/docs/CURRENT_STATE.md');
         $handoff = (string)file_get_contents($root . '/docs/HANDOFF_CURRENT.md');
         foreach ([$state, $handoff] as $document) {
-            self::assertStringContainsString('f5619222402436d7a00e7e720318886bcaffb97a', $document);
-            self::assertStringContainsString('49c38c72c6704826182aff7f59855f47b5818bb8', $document);
-            self::assertStringContainsString('37636084395', $document);
-            self::assertStringContainsString('37636447561', $document);
-            self::assertStringContainsString('37636671525', $document);
+            self::assertStringContainsString('0d20a2cc807c2f4a06c6cc92972c47946bb87716', $document);
+            self::assertStringContainsString('37701306330', $document);
+            self::assertStringContainsString('37701308547', $document);
+            self::assertStringContainsString('37701627446', $document);
+            self::assertStringContainsString('37701585949', $document);
+            self::assertStringContainsString('37701691548', $document);
+            self::assertStringContainsString('37764312992', $document);
             self::assertStringContainsString('uat_schvaleno=true', $document);
         }
     }

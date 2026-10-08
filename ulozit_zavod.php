@@ -8,6 +8,7 @@ require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
 require_once __DIR__ . '/includes/file_mutation_transaction.php';
+require_once __DIR__ . '/includes/secure_upload.php';
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
 // --------------------
@@ -47,26 +48,22 @@ try {
 // --------------------
 $fotkyPaths = [];
 $fileMutations = fileMutationBegin();
+try {
 if (!empty($_FILES['fotky']['name'][0])) {
     $uploadDir = __DIR__ . '/nahrane_zavody/';
     if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
 
+    secureUploadAssertFileCount((array)$_FILES['fotky']['name']);
     foreach ($_FILES['fotky']['tmp_name'] as $i => $tmp) {
         if ($_FILES['fotky']['error'][$i] !== UPLOAD_ERR_OK) continue;
-
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime  = finfo_file($finfo, $tmp);
-        finfo_close($finfo);
-        if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true)) continue;
-
-        $ext  = strtolower(pathinfo($_FILES['fotky']['name'][$i], PATHINFO_EXTENSION));
-        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true)) continue;
-
-        $name = 'zavod_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $prepared = secureUploadPrepareImage((string)$tmp);
+        $name = 'zavod_' . time() . '_' . bin2hex(random_bytes(8)) . '.jpg';
         $dest = $uploadDir . $name;
-
-        if (fileMutationStage($fileMutations, $tmp, $dest)) {
+        if (fileMutationStage($fileMutations, $prepared['path'], $dest, false)) {
             $fotkyPaths[] = 'nahrane_zavody/' . $name;
+        } else {
+            @unlink($prepared['path']);
+            throw new SecureUploadException('Fotografii se nepodařilo připravit k uložení.');
         }
     }
 }
@@ -86,6 +83,7 @@ if (!empty($_FILES['vysledky']['name'][0])) {
     ];
     $allowedExts = ['pdf', 'xls', 'xlsx'];
 
+    secureUploadAssertFileCount((array)$_FILES['vysledky']['name']);
     foreach ($_FILES['vysledky']['tmp_name'] as $i => $tmp) {
         if ($_FILES['vysledky']['error'][$i] !== UPLOAD_ERR_OK) continue;
 
@@ -93,6 +91,7 @@ if (!empty($_FILES['vysledky']['name'][0])) {
         $mime  = finfo_file($finfo, $tmp);
         finfo_close($finfo);
         if (!in_array($mime, $allowedMimes, true)) continue;
+        secureUploadValidateDocument((string)$tmp, $allowedMimes);
 
         $ext = strtolower(pathinfo($_FILES['vysledky']['name'][$i], PATHINFO_EXTENSION));
         if (!in_array($ext, $allowedExts, true)) continue;
@@ -105,6 +104,14 @@ if (!empty($_FILES['vysledky']['name'][0])) {
             $vysledkyPaths[] = 'nahrane_zavody/results/' . $name;
         }
     }
+}
+} catch (Throwable $exception) {
+    fileMutationRollback($fileMutations);
+    $_SESSION['flash_error'] = $exception instanceof SecureUploadException
+        ? $exception->getMessage()
+        : 'Soubory se nepodařilo bezpečně zpracovat.';
+    header('Location: formular_zavod.php');
+    exit;
 }
 
 // --------------------

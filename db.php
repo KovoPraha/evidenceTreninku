@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/session_security.php';
+app_session_send_security_headers();
 
 // Načti config.php PŘED DB připojením (definuje DB_*, VELOCOTA_INTEGRATION, …)
 if (file_exists(__DIR__ . '/config.php')) {

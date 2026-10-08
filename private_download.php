@@ -7,6 +7,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/includes/private_storage.php';
 require_once __DIR__ . '/includes/person_sensitive.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 
 header('Cache-Control: no-store, private');
 header('Pragma: no-cache');
@@ -35,7 +36,7 @@ if ($kind === 'receipt') {
     $originalName = 'uctenka-' . (int)$id;
 } elseif ($kind === 'stress') {
     $stmt = $pdo->prepare(
-        'SELECT f.cesta, f.nazev, f.typ, s.hash '
+        'SELECT f.cesta, f.nazev, f.typ, s.id AS sportovec_id '
         . 'FROM zatezove_testy_soubory f '
         . 'JOIN zatezove_testy z ON z.id = f.test_id '
         . 'JOIN sportovci s ON s.id = z.sportovec_id WHERE f.id = ?'
@@ -47,10 +48,10 @@ if ($kind === 'receipt') {
         exit('Soubor nebyl nalezen.');
     }
     $trainer = isset($_SESSION['trener_id']) && staffActivePositionIs('coach');
-    $publicHash = trim((string)($_GET['hash'] ?? ''));
+    $publicAthleteId = public_profile_access_session_athlete_id();
     $public = (string)$file['typ'] === 'public_img'
-        && $publicHash !== ''
-        && hash_equals((string)$file['hash'], $publicHash);
+        && $publicAthleteId !== null
+        && (int)$file['sportovec_id'] === $publicAthleteId;
     if (!$trainer && !$public) {
         http_response_code(403);
         exit('Pristup odepren.');

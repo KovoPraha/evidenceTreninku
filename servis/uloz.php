@@ -33,11 +33,17 @@ $dokument_path = null;
 $old_data = null;
 $newDocumentKey = null;
 $oldDocumentToDelete = null;
+$saveSucceeded = false;
 
 if ($id > 0) {
     $stmt = $pdo->prepare("SELECT * FROM ucto_servis WHERE id = ?");
     $stmt->execute([$id]);
     $old_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$old_data) {
+        $_SESSION['flash_error'] = 'Servisní záznam nebyl nalezen.';
+        header('Location: seznam.php?id=' . $vozidlo_id);
+        exit;
+    }
     $dokument_path = $old_data['dokument'] ?? null;
 }
 
@@ -65,6 +71,7 @@ if (!empty($_FILES['dokument']['name']) && $_FILES['dokument']['error'] === UPLO
 }
 
 try {
+    $pdo->beginTransaction();
     if ($id > 0) {
         $stmt = $pdo->prepare("
             UPDATE ucto_servis
@@ -82,22 +89,29 @@ try {
         $new_id = $pdo->lastInsertId();
         zapisAuditLog($pdo, $_SESSION['trener_id'], 'Přidání servisního záznamu', 'ucto_servis', $new_id, json_encode($_POST));
     }
+    $pdo->commit();
+    $saveSucceeded = true;
+    $_SESSION['flash_success'] = 'Servisní záznam uložen.';
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    if (is_string($newDocumentKey) && $newDocumentKey !== '') {
+        try { privateStorageSoftDelete($newDocumentKey); } catch (Throwable) {}
+    }
+    error_log('servis/uloz.php: ' . $e->getMessage());
+    $_SESSION['flash_error'] = 'Chyba při ukládání.';
+}
 
-    if (is_string($oldDocumentToDelete) && $oldDocumentToDelete !== '') {
+if ($saveSucceeded && is_string($oldDocumentToDelete) && $oldDocumentToDelete !== '') {
+    try {
         if (str_starts_with($oldDocumentToDelete, 'private://')) {
             privateStorageSoftDelete($oldDocumentToDelete);
         } else {
             $legacy = __DIR__ . '/../' . ltrim($oldDocumentToDelete, '/\\');
             if (is_file($legacy)) rename($legacy, dirname($legacy) . '/smazano_' . basename($legacy));
         }
+    } catch (Throwable $cleanupException) {
+        error_log('servis/uloz.php old document cleanup: ' . $cleanupException->getMessage());
     }
-    $_SESSION['flash_success'] = 'Servisní záznam uložen.';
-} catch (Throwable $e) {
-    if (is_string($newDocumentKey) && $newDocumentKey !== '') {
-        try { privateStorageSoftDelete($newDocumentKey); } catch (Throwable) {}
-    }
-    error_log('servis/uloz.php: ' . $e->getMessage());
-    $_SESSION['flash_error'] = 'Chyba při ukládání.';
 }
 
 header("Location: seznam.php?id=" . $vozidlo_id);

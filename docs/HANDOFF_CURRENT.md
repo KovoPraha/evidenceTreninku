@@ -1,6 +1,6 @@
 # Aktuální předání vývoje na další stanici
 
-Aktualizováno: 7. 10. 2026, Europe/Prague
+Aktualizováno: 8. 10. 2026, Europe/Prague
 
 Tento dokument je stabilní vstupní bod pro další počítač nebo vývojáře.
 Autoritativní zdroj je vždy vzdálená větev `origin/main` repozitáře
@@ -12,18 +12,20 @@ snapshot z data aktualizace, nikoli náhrada za nový `git fetch`.
 | Položka | Hodnota |
 |---|---|
 | Větev | `main`; přesné aktuální SHA zjistí nový clone pomocí `git rev-parse origin/main` |
-| `origin/main` při kontrole | `f5619222402436d7a00e7e720318886bcaffb97a` |
-| Nasazený aplikační commit | `49c38c72c6704826182aff7f59855f47b5818bb8` |
-| Otevřené pull requesty | žádné při kontrole 7. 10. 2026 |
-| CI aktuálního `main` | [běh 37636955701](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636955701), úspěch |
-| CI nasazeného aplikačního commitu | [běh 37635967824](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37635967824), úspěch |
-| Produkční deploy | [běh 37636084395](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636084395), úspěch, `uat_schvaleno=true` |
-| UAT připravenost | [běh 37636447561](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636447561), `ready=true` |
-| Produkční invarianty | [běh 37636671525](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37636671525), 16/16 bez porušení |
+| `origin/main` při kontrole | `0d20a2cc807c2f4a06c6cc92972c47946bb87716` |
+| Nasazený aplikační commit | `0d20a2cc807c2f4a06c6cc92972c47946bb87716` |
+| Otevřené pull requesty | žádné při kontrole 8. 10. 2026 |
+| CI aktuálního `main` | [běh 37701306330](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701306330), úspěch |
+| CI nasazeného aplikačního commitu | [běh 37701306330](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701306330), úspěch |
+| Produkční deploy | [běh 37701308547](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701308547), úspěch, `uat_schvaleno=true` |
+| UAT připravenost | [běh 37701627446](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701627446), `ready=true` |
+| Produkční invarianty | [běh 37701585949](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701585949), 16/16 bez porušení |
+| Obnova zálohy | [běh 37701691548](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701691548), 195 tabulek a 2 triggery |
 | Produkční fronta zpráv | [běh 37606107788](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788), úspěch |
+| CodeQL default setup | [běh 37764312992](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37764312992), Actions a JavaScript/TypeScript bez otevřeného nálezu |
 | Produkce | <https://kis.kovopraha.cz/> |
 
-CI nad aplikačním commitem ověřilo 840 testů / 11 751 kontrol a MariaDB 10.3 i
+CI nad aplikačním commitem ověřilo 852 testů / 11 781 kontrol a MariaDB 10.3 i
 11.4. Produkce běží na tomto commitu; dokumentace může být na `main` novější.
 Poslední deploy má `uat_schvaleno=true` a navazující připravenost i invarianty
 prošly. Toto potvrzení se vztahuje pouze k uvedenému release a testovacímu oknu.
@@ -97,6 +99,14 @@ se neupravuje. Pokud přidává tabulku vlastněnou aplikací, musí se současn
 aktualizovat zálohovací ownership kontrakt v `bin/db-backup.php` a jeho testy.
 
 ## GitHub pracovní postup
+
+`main` má vynucené aktuální tři CI kontroly, strict aktualizaci větve,
+zamítnutí zastaralých review a pravidla platí i pro administrátora. Povinný
+počet schválení zůstává dočasně `0`, protože repozitář i organizace mají pouze
+jediného člověka s přístupem (`mmmixamarek-source`); hodnota `1` by znemožnila
+schválit vlastní pull request. Jakmile bude přidán druhý důvěryhodný reviewer,
+zvyšte počet na `1` a zapněte stejného reviewera také pro prostředí
+`production`.
 
 1. Pushnout pouze vlastní pracovní větev.
 2. Otevřít pull request do `main`.

@@ -6,6 +6,7 @@
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 require_once __DIR__ . '/includes/sportovec_note_access.php';
 header('Content-Type: text/html; charset=utf-8');
@@ -52,24 +53,20 @@ function renderMereniData(array $mz): string {
     return implode(' · ', $parts) ?: '<span class="text-muted">—</span>';
 }
 
-// --- auth ---
-$hash = trim($_GET['hash'] ?? '');
-if (!$hash) {
+// --- auth: short-lived server-side profile session ---
+$sportovec_id = public_profile_access_session_athlete_id() ?? 0;
+if ($sportovec_id < 1) {
     http_response_code(403);
     echo '<div class="alert alert-danger">Neplatný přístup.</div>';
     exit;
 }
-
-$stmt = $pdo->prepare('SELECT id FROM sportovci WHERE hash = ?');
-$stmt->execute([$hash]);
-$spRow = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$spRow) {
+$stmt = $pdo->prepare('SELECT id FROM sportovci WHERE id = ?');
+$stmt->execute([$sportovec_id]);
+if (!$stmt->fetchColumn()) {
     http_response_code(403);
     echo '<div class="alert alert-danger">Sportovec nenalezen.</div>';
     exit;
 }
-
-$sportovec_id = (int)$spRow['id'];
 $canWriteNote = sportovecNoteCanWrite($pdo, $sportovec_id);
 $rok = isset($_GET['rok']) && ctype_digit($_GET['rok']) ? (int)$_GET['rok'] : 0;
 

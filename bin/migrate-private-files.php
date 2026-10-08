@@ -66,7 +66,9 @@ function migratePrivateRows(
 
         $key = '';
         try {
-            $key = privateStorageStore($source, $category, false);
+            // Existing production files predate application upload limits. The
+            // one-time CLI migration may move them, but new HTTP uploads remain capped.
+            $key = privateStorageStore($source, $category, false, PHP_INT_MAX);
             $stmt = $pdo->prepare("UPDATE {$table} SET {$column} = ? WHERE id = ? AND {$column} = ?");
             $stmt->execute([$key, (int)$row['id'], $value]);
             if ($stmt->rowCount() !== 1) {

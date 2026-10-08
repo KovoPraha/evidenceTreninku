@@ -74,13 +74,12 @@ if (!empty($_GET['ajax'])) {
     } else {
         echo '<table class="table table-striped"><thead class="table-dark"><tr><th>Příjmení</th><th>Jméno</th><th>Profil</th></tr></thead><tbody>';
         foreach ($sportovci as $s) {
-            $hash = urlencode($s['hash'] ?? '');
             $id   = (int)$s['id'];
             echo '<tr>';
             echo '<td>' . htmlspecialchars($s['prijmeni']) . '</td>';
             echo '<td>' . htmlspecialchars($s['jmeno']) . '</td>';
             echo '<td>';
-            echo '<a href="sportovec_treninky.php?hash=' . $hash . '" class="btn btn-sm btn-outline-primary me-1">Veřejný profil</a>';
+            echo '<a href="sportovec_treninky.php?id=' . $id . '" class="btn btn-sm btn-outline-primary me-1">Náhled profilu</a>';
             echo '<a href="sportovec_detail.php?id=' . $id . '" class="btn btn-sm btn-outline-secondary">Profil</a>';
             echo '</td>';
             echo '</tr>';
@@ -156,7 +155,7 @@ if (!empty($_GET['ajax'])) {
                         <td><?= htmlspecialchars($s['prijmeni']) ?></td>
                         <td><?= htmlspecialchars($s['jmeno']) ?></td>
                         <td>
-                            <a href="sportovec_treninky.php?hash=<?= urlencode($s['hash']) ?>" class="btn btn-sm btn-outline-primary me-1">Veřejný profil</a>
+                            <a href="sportovec_treninky.php?id=<?= (int)$s['id'] ?>" class="btn btn-sm btn-outline-primary me-1">Náhled profilu</a>
                             <a href="sportovec_detail.php?id=<?= (int)$s['id'] ?>" class="btn btn-sm btn-outline-secondary">Profil</a>
                         </td>
                     </tr>

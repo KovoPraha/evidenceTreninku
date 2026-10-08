@@ -9,12 +9,6 @@ require_once 'db.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
-// ── Auto-registrace oprávnění ──────────────────────────────────────────────
-try {
-    $pdo->exec("INSERT IGNORE INTO opravneni (klic, nazev, popis, min_role, skupina, poradi)
-        VALUES ('prehled_popisu', 'Přehled popisů tréninků', 'Zobrazení popisů tréninků dle skupiny/podskupiny za zvolené období', 'trener', 'Přehledy', 32)");
-} catch (PDOException $e) { /* záznam již existuje */ }
-
 // ── Role ────────────────────────────────────────────────────────────────────
 $isSupervisor = roleAtLeast('hlavni');           // správce + admin vidí vše
 $trenerId     = (int)$_SESSION['trener_id'];

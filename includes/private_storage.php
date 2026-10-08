@@ -6,6 +6,9 @@ const PRIVATE_STORAGE_STRESS_TESTS = 'stress-tests';
 const PRIVATE_STORAGE_ATHLETE_PHOTOS = 'athlete-photos';
 const PRIVATE_STORAGE_SERVICE_DOCUMENTS = 'service-documents';
 const PRIVATE_STORAGE_UCI_TEMP = 'uci-temp';
+const PRIVATE_STORAGE_DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
+const PRIVATE_STORAGE_MAX_BATCH_FILES = 12;
+const PRIVATE_STORAGE_MAX_BATCH_BYTES = 30 * 1024 * 1024;
 
 /** @return array{extension:string,mime:string} */
 function privateStorageDetectAllowedFile(string $source): array
@@ -73,8 +76,17 @@ function privateStorageEnsureDirectory(string $category): string
     return $directory;
 }
 
-function privateStorageStore(string $source, string $category, bool $uploaded = true): string
+function privateStorageStore(
+    string $source,
+    string $category,
+    bool $uploaded = true,
+    int $maximumBytes = PRIVATE_STORAGE_DEFAULT_MAX_BYTES
+): string
 {
+    $size = is_file($source) ? filesize($source) : false;
+    if (!is_int($size) || $size < 1 || $size > $maximumBytes) {
+        throw new RuntimeException('Soubor musí mít nejvýše ' . (int)ceil($maximumBytes / 1048576) . ' MB.');
+    }
     $detected = privateStorageDetectAllowedFile($source);
     $name = bin2hex(random_bytes(16)) . '.' . $detected['extension'];
     $target = privateStorageEnsureDirectory($category) . DIRECTORY_SEPARATOR . $name;
@@ -84,6 +96,40 @@ function privateStorageStore(string $source, string $category, bool $uploaded = 
     }
     @chmod($target, 0600);
     return 'private://' . $category . '/' . $name;
+}
+
+/** @param list<array<string,mixed>> $fields */
+function privateStorageValidateUploadBatch(
+    array $fields,
+    int $maximumFiles = PRIVATE_STORAGE_MAX_BATCH_FILES,
+    int $maximumFileBytes = PRIVATE_STORAGE_DEFAULT_MAX_BYTES,
+    int $maximumTotalBytes = PRIVATE_STORAGE_MAX_BATCH_BYTES
+): void {
+    $count = 0;
+    $total = 0;
+    foreach ($fields as $field) {
+        $names = is_array($field['name'] ?? null) ? $field['name'] : [$field['name'] ?? ''];
+        $errors = is_array($field['error'] ?? null) ? $field['error'] : [$field['error'] ?? UPLOAD_ERR_NO_FILE];
+        $sizes = is_array($field['size'] ?? null) ? $field['size'] : [$field['size'] ?? 0];
+        foreach ($names as $index => $name) {
+            if (trim((string)$name) === '' || (int)($errors[$index] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) continue;
+            if ((int)($errors[$index] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+                throw new RuntimeException('Některý soubor se nepodařilo kompletně nahrát.');
+            }
+            $bytes = (int)($sizes[$index] ?? 0);
+            if ($bytes < 1 || $bytes > $maximumFileBytes) {
+                throw new RuntimeException('Jeden soubor smí mít nejvýše ' . (int)ceil($maximumFileBytes / 1048576) . ' MB.');
+            }
+            $count++;
+            $total += $bytes;
+        }
+    }
+    if ($count > $maximumFiles) {
+        throw new RuntimeException('Najednou lze nahrát nejvýše ' . $maximumFiles . ' souborů.');
+    }
+    if ($total > $maximumTotalBytes) {
+        throw new RuntimeException('Soubory v jednom požadavku smí mít dohromady nejvýše ' . (int)ceil($maximumTotalBytes / 1048576) . ' MB.');
+    }
 }
 
 function privateStorageResolve(string $key): ?string

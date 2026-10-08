@@ -282,6 +282,12 @@ function sumupHandleWebhook(PDO $pdo, string $payload, SumUpGatewayClient $clien
     }
     if (preg_match('/^[A-Za-z0-9-]{8,64}$/D', $checkoutId) !== 1) throw new SumUpWebhookException('SumUp callback nemá platnou identitu Checkoutu.');
 
+    // Unknown identifiers must not be allowed to amplify anonymous callbacks
+    // into authenticated requests against the SumUp API.
+    $known = $pdo->prepare('SELECT id FROM payments WHERE sumup_checkout_id=? LIMIT 1');
+    $known->execute([$checkoutId]);
+    if (!$known->fetchColumn()) throw new SumUpWebhookException('SumUp Checkout není navázán na lokální platbu.');
+
     // SumUp callback není podepsaný. Autoritativním důkazem je až tento serverový GET.
     $checkout = $client->retrieveCheckout($checkoutId);
     $status = strtoupper(trim((string)($checkout['status'] ?? '')));

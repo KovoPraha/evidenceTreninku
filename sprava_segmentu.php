@@ -10,6 +10,7 @@ if (!isset($_SESSION['trener_id']) || !canAccess('segmenty')) {
 
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/secure_upload.php';
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -42,30 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Handle photo upload
             $fotografie = null;
+            $newPhotoAbsolute = null;
             $keepOldPhoto = true;
             $removePhoto = isset($_POST['remove_photo']);
 
             if (!empty($_FILES['fotografie']['name']) && $_FILES['fotografie']['error'] === UPLOAD_ERR_OK) {
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mime = finfo_file($finfo, $_FILES['fotografie']['tmp_name']);
-                finfo_close($finfo);
-
-                $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-                if (!in_array($mime, $allowedMimes)) {
-                    $errors[] = 'Neplatný formát obrázku. Povolené: JPG, PNG, WEBP, GIF.';
-                } else {
-                    $uploadDir = __DIR__ . '/uploads/segmenty/';
-                    if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
-
-                    $ext = strtolower(pathinfo($_FILES['fotografie']['name'], PATHINFO_EXTENSION));
-                    $newName = 'segment_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-
-                    if (move_uploaded_file($_FILES['fotografie']['tmp_name'], $uploadDir . $newName)) {
-                        $fotografie = 'uploads/segmenty/' . $newName;
-                        $keepOldPhoto = false;
-                    } else {
-                        $errors[] = 'Nepodařilo se nahrát fotografii.';
-                    }
+                try {
+                    $stored = secureUploadStorePublicImage(
+                        (string)$_FILES['fotografie']['tmp_name'],
+                        'uploads/segmenty',
+                        'segment'
+                    );
+                    $fotografie = $stored['relative_path'];
+                    $newPhotoAbsolute = $stored['absolute_path'];
+                    $keepOldPhoto = false;
+                } catch (SecureUploadException $exception) {
+                    $errors[] = $exception->getMessage();
                 }
             }
 
@@ -79,18 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // Determine final photo value
                         if ($removePhoto && $keepOldPhoto) {
-                            // User wants to remove existing photo
-                            if ($oldPhoto && file_exists(__DIR__ . '/' . $oldPhoto)) {
-                                $dir = dirname(__DIR__ . '/' . $oldPhoto);
-                                rename(__DIR__ . '/' . $oldPhoto, $dir . '/smazano_' . basename($oldPhoto));
-                            }
                             $fotoValue = null;
                         } elseif (!$keepOldPhoto) {
-                            // New photo uploaded — soft-delete old
-                            if ($oldPhoto && file_exists(__DIR__ . '/' . $oldPhoto)) {
-                                $dir = dirname(__DIR__ . '/' . $oldPhoto);
-                                rename(__DIR__ . '/' . $oldPhoto, $dir . '/smazano_' . basename($oldPhoto));
-                            }
                             $fotoValue = $fotografie;
                         } else {
                             $fotoValue = $oldPhoto ?: null;
@@ -114,6 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ':fotografie' => $fotoValue,
                             ':id'         => $id,
                         ]);
+                        if (($removePhoto || !$keepOldPhoto) && $oldPhoto && file_exists(__DIR__ . '/' . $oldPhoto)) {
+                            $dir = dirname(__DIR__ . '/' . $oldPhoto);
+                            @rename(__DIR__ . '/' . $oldPhoto, $dir . '/smazano_' . bin2hex(random_bytes(4)) . '_' . basename($oldPhoto));
+                        }
                     } else {
                         $stmt = $pdo->prepare("
                             INSERT INTO segmenty (nazev, popis, kategorie, poradi, aktivni, odkaz_1, odkaz_2, fotografie)
@@ -134,8 +121,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['flash_success'] = 'Segment uložen.';
                     header('Location: sprava_segmentu.php');
                     exit;
-                } catch (PDOException $e) {
-                    $errors[] = 'Chyba při ukládání: ' . $e->getMessage();
+                } catch (Throwable $e) {
+                    if (is_string($newPhotoAbsolute) && is_file($newPhotoAbsolute)) @unlink($newPhotoAbsolute);
+                    error_log('sprava_segmentu save: ' . $e->getMessage());
+                    $errors[] = 'Segment se nepodařilo bezpečně uložit.';
                 }
             }
         }
