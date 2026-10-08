@@ -25,6 +25,12 @@ snapshot z data aktualizace, nikoli náhrada za nový `git fetch`.
 | CodeQL default setup | [běh 37764312992](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37764312992), Actions a JavaScript/TypeScript bez otevřeného nálezu |
 | Produkce | <https://kis.kovopraha.cz/> |
 
+UX navigace, kalendářů, e-shopu a pracovních přehledů je popsána v
+[`UX-NAVIGACE-A-KALENDARE-2026-10-08.md`](UX-NAVIGACE-A-KALENDARE-2026-10-08.md).
+Nová stanice musí před další změnou ověřit aktuální SHA a poslední produkční
+běh; stavové hodnoty v tomto dokumentu se po každém release aktualizují
+samostatným dokumentačním commitem.
+
 CI nad aplikačním commitem ověřilo 869 testů / 11 867 kontrol a MariaDB 10.3 i
 11.4. Produkce běží na tomto commitu; dokumentace může být na `main` novější.
 Poslední deploy má `uat_schvaleno=true` a navazující připravenost i invarianty

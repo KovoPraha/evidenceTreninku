@@ -17,6 +17,7 @@ final class ShopPublicNavigationWiringTest extends TestCase
         ],'Oblečení > Děti');
         self::assertStringContainsString('aria-label="Navigace e-shopu"',$html);
         self::assertStringContainsString('E-shop – domů',$html);
+        self::assertStringContainsString('dropdown-toggle active',$html);
         self::assertStringContainsString('kategorie=Oble%C4%8Den%C3%AD%20%3E%20D%C4%9Bti',$html);
         self::assertStringContainsString('Oblečení › Děti &amp; mládež',$html);
         self::assertSame(1,substr_count($html,'aria-current="page"'));
@@ -29,6 +30,17 @@ final class ShopPublicNavigationWiringTest extends TestCase
         self::assertSame(1,substr_count($html,'aria-current="page"'));
     }
 
+    public function testVisibleChildDoesNotReExposeHiddenParentAsAllLink():void
+    {
+        $html=\shopPublicNavigationHtml([
+            ['category_path'=>'Oblečení > Děti','display_name'=>'Děti','menu_label'=>'Oblečení › Děti','depth'=>1],
+            ['category_path'=>'Oblečení > Dospělí','display_name'=>'Dospělí','menu_label'=>'Oblečení › Dospělí','depth'=>1],
+        ]);
+        self::assertStringContainsString('>Oblečení</button>', $html);
+        self::assertStringNotContainsString('Vše: Oblečení', $html);
+        self::assertStringContainsString('kategorie=Oble%C4%8Den%C3%AD%20%3E%20D%C4%9Bti', $html);
+    }
+
     public function testEveryPublicShopPageUsesSharedNavigation():void
     {
         $root=dirname(__DIR__,2);
@@ -38,7 +50,8 @@ final class ShopPublicNavigationWiringTest extends TestCase
             self::assertStringContainsString('shopPublicNavigation($pdo',$source,$file);
         }
         $product=(string)file_get_contents($root.'/booking/produkt.php');
-        self::assertStringContainsString('Hlavní stránka e-shopu',$product);
+        self::assertStringContainsString('aria-label="Drobečková navigace"',$product);
+        self::assertStringContainsString('<a href="eshop.php">E-shop</a>',$product);
         self::assertStringNotContainsString('← Zpět do e-shopu',$product);
     }
 

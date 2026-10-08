@@ -1,6 +1,6 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 7. 10. 2026, Europe/Prague
+Aktualizováno: 8. 10. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
@@ -30,6 +30,7 @@ testy, potom `CURRENT_STATE.md` a `HANDOFF_CURRENT.md`.
 | Akce a soupisky | [club-events-k3.md](club-events-k3.md), [club-event-roster-targets.md](club-event-roster-targets.md), [kis-teams-rosters.md](kis-teams-rosters.md) |
 | Bezpečnost a osoby | [auth-one-time-tokens.md](auth-one-time-tokens.md), [auth-revocation-rate-limit.md](auth-revocation-rate-limit.md), [rodne-cislo-bezpecnost.md](rodne-cislo-bezpecnost.md), [pravidla-shody-osob.md](pravidla-shody-osob.md) |
 | Současná testerová vlna | [UAT-OPRAVY-2026-10-07.md](UAT-OPRAVY-2026-10-07.md) |
+| UX navigace a kalendáře | [UX-NAVIGACE-A-KALENDARE-2026-10-08.md](UX-NAVIGACE-A-KALENDARE-2026-10-08.md) |
 | Datové toky a rizika | [grafická mapa XLSX](../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx), [aktuální mapa kódu](../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md), [aktuální nálezy](../outputs/data-flow-audit-2026-10-07/NALEZY_A_RIZIKA.md), [historický audit 24. 8.](../outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md) |
 
 ## Aktuální funkční oblasti

@@ -12,6 +12,7 @@ require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/shop_product_interest.php';
 require_once dirname(__DIR__) . '/includes/shop_purchase_mode.php';
 require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
+require_once dirname(__DIR__) . '/includes/ui_format.php';
 
 function shopProductH(mixed $value): string
 {
@@ -47,6 +48,18 @@ function shopProductProgramPeriodLabel(string $purchaseOption): string
         'full_year' => 'Celý rok',
         default => 'Další varianta',
     };
+}
+
+function shopProductInterestVariantLabel(PDO $pdo, array $variant): string
+{
+    $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']);
+    if ($offer !== false) {
+        return shopProductProgramPeriodLabel((string)$offer['purchase_option'])
+            . ' · ' . uiFormatDate((string)$offer['starts_on'], false)
+            . '–' . uiFormatDate((string)$offer['ends_on']);
+    }
+
+    return shopProductVariantLabel($variant);
 }
 
 $productId = (int)($_GET['id'] ?? 0);
@@ -161,13 +174,12 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?= $product ? shopProductH($product['public_name']) : 'Produkt nebyl nalezen' ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
 <?php publicShellNav('shop');shopPublicNavigation($pdo,$product['categories'][0]??null); ?>
 <main class="container py-4" style="max-width: 1050px">
-    <a href="eshop.php" class="btn btn-sm btn-outline-secondary mb-3">← Hlavní stránka e-shopu</a>
+    <nav aria-label="Drobečková navigace" class="mb-3"><ol class="breadcrumb mb-0"><li class="breadcrumb-item"><a href="eshop.php">E-shop</a></li><?php if ($product !== null && ($product['categories'][0] ?? '') !== ''): ?><li class="breadcrumb-item"><a href="eshop.php?kategorie=<?=rawurlencode((string)$product['categories'][0])?>"><?=shopProductH(str_replace(' > ', ' › ', (string)$product['categories'][0]))?></a></li><?php endif; ?><li class="breadcrumb-item active" aria-current="page"><?=shopProductH($product['public_name'] ?? 'Produkt')?></li></ol></nav>
     <?php if ($product === null): ?>
         <div class="alert alert-warning">Produkt není dostupný nebo už není v aktivní nabídce.</div>
     <?php else: ?>
@@ -178,8 +190,8 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if ($interestSuccess !== ''): ?><div class="alert alert-success"><?=shopProductH($interestSuccess)?></div><?php endif; ?>
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="row g-0">
-                <div class="col-lg-5 bg-white d-flex align-items-center justify-content-center p-3">
-                    <img src="<?= shopProductH($imageUrl) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded app-product-image" style="max-height:480px" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='<?=shopProductH(shopStorefrontPlaceholderImageUrl())?>'">
+                <div class="col-lg-5 bg-white p-3 app-product-media-sticky">
+                    <img src="<?= shopProductH($imageUrl) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded app-product-image" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='<?=shopProductH(shopStorefrontPlaceholderImageUrl())?>'">
                 </div>
                 <div class="col-lg-7">
                     <div class="card-body p-4">
@@ -243,7 +255,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="small text-muted mt-4 mb-0"><?= $isProgram ? 'Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.' : 'Cena a dostupnost se při vytvoření objednávky znovu bezpečně ověří. Objednávka používá neměnný cenový snapshot.' ?></p>
                         <section id="mam-zajem" class="card bg-body-tertiary border-0 mt-4"><div class="card-body">
                             <h2 class="h5">Nevyhovuje vám termín nebo varianta?</h2><p class="small text-muted">Zanechte nám e-mail. Ozveme se, jakmile budeme řešit další termín, velikost nebo vhodnou variantu.</p>
-                            <form method="post" class="row g-2 align-items-end"><?=csrf_field()?><input type="hidden" name="action" value="interest"><div class="col-md-6"><label class="form-label" for="interest-email">E-mail</label><input id="interest-email" type="email" name="interest_email" class="form-control" maxlength="254" value="<?=shopProductH($_POST['interest_email']??'')?>" required></div><div class="col-md-6"><label class="form-label" for="interest-variant">Termín / varianta <span class="text-muted">(nepovinné)</span></label><select id="interest-variant" name="interest_variant_id" class="form-select"><option value="">Obecný zájem o produkt</option><?php foreach($product['variants'] as$interestVariant):?><option value="<?=(int)$interestVariant['variant_id']?>"><?=shopProductH(shopProductVariantLabel($interestVariant))?></option><?php endforeach;?></select></div><div class="col-12"><div class="form-check"><input id="contact-consent" class="form-check-input" type="checkbox" name="contact_consent" value="1" required><label class="form-check-label small" for="contact-consent">Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.</label></div></div><div class="col-12"><button class="btn btn-outline-primary">Chci vědět o další možnosti</button></div></form>
+                            <form method="post" class="row g-2 align-items-end"><?=csrf_field()?><input type="hidden" name="action" value="interest"><div class="col-md-6"><label class="form-label" for="interest-email">E-mail</label><input id="interest-email" type="email" name="interest_email" class="form-control" maxlength="254" value="<?=shopProductH($_POST['interest_email']??'')?>" required></div><div class="col-md-6"><label class="form-label" for="interest-variant">Termín / varianta <span class="text-muted">(nepovinné)</span></label><select id="interest-variant" name="interest_variant_id" class="form-select"><option value="">Obecný zájem o produkt</option><?php foreach($product['variants'] as$interestVariant):?><option value="<?=(int)$interestVariant['variant_id']?>"><?=shopProductH(shopProductInterestVariantLabel($pdo, $interestVariant))?></option><?php endforeach;?></select></div><div class="col-12"><div class="form-check"><input id="contact-consent" class="form-check-input" type="checkbox" name="contact_consent" value="1" required><label class="form-check-label small" for="contact-consent">Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.</label></div></div><div class="col-12"><button class="btn btn-outline-primary">Chci vědět o další možnosti</button></div></form>
                         </div></section>
                     </div>
                 </div>

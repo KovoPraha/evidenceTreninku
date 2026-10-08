@@ -97,6 +97,12 @@ minut a lze jej spustit také ručně.
 Podrobný uživatelský dopad testerových oprav popisuje
 [`UAT-OPRAVY-2026-10-07.md`](UAT-OPRAVY-2026-10-07.md).
 
+Navazující UX release sjednocuje veřejné akce a kalendář, přidává skutečný
+měsíční rozvrh tréninků, hierarchickou navigaci e-shopu, kratší anonymní
+nákupní cestu a prioritní přehledy rodiče a trenéra. Rozsah a ověřovací hranice
+jsou popsány v
+[`UX-NAVIGACE-A-KALENDARE-2026-10-08.md`](UX-NAVIGACE-A-KALENDARE-2026-10-08.md).
+
 ## Důležitá provozní hranice
 
 Poslední deploy má `uat_schvaleno=true`. Tato hodnota potvrzuje schválení

@@ -169,7 +169,7 @@ final class SharedUiShellTest extends TestCase
             'booking/eshop.php' => "publicShellNav('shop')",
             'booking/produkt.php' => "publicShellNav('shop')",
             'booking/treninky.php' => "publicShellNav('training')",
-            'booking/krouzky.php' => "publicShellNav('clubs')",
+            'booking/krouzky.php' => "publicShellNav('calendar')",
             'booking/velodrom.php' => "publicShellNav('velodrome')",
             'booking/kalendar.php' => "publicShellNav('lessons')",
             'booking/prihlaseni.php' => 'publicShellNav()',

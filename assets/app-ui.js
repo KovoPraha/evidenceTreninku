@@ -91,6 +91,14 @@
     document.addEventListener('DOMContentLoaded', function () {
         ensureLoadingBar();
         ensureAccessibleFieldNames();
+        if (window.bootstrap?.Popover) {
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (element) {
+                window.bootstrap.Popover.getOrCreateInstance(element, {
+                    container: 'body',
+                    sanitize: true
+                });
+            });
+        }
         document.body.classList.add('app-ui-ready');
     });
 
