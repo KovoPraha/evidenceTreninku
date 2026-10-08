@@ -12,20 +12,20 @@ snapshot z data aktualizace, nikoli náhrada za nový `git fetch`.
 | Položka | Hodnota |
 |---|---|
 | Větev | `main`; přesné aktuální SHA zjistí nový clone pomocí `git rev-parse origin/main` |
-| `origin/main` při kontrole | `0d20a2cc807c2f4a06c6cc92972c47946bb87716` |
-| Nasazený aplikační commit | `0d20a2cc807c2f4a06c6cc92972c47946bb87716` |
+| `origin/main` při kontrole | `7ad2104652efcba978bd5661ebe0c6b02977ff4b` |
+| Nasazený aplikační commit | `7ad2104652efcba978bd5661ebe0c6b02977ff4b` |
 | Otevřené pull requesty | žádné při kontrole 8. 10. 2026 |
-| CI aktuálního `main` | [běh 37701306330](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701306330), úspěch |
-| CI nasazeného aplikačního commitu | [běh 37701306330](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701306330), úspěch |
-| Produkční deploy | [běh 37701308547](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701308547), úspěch, `uat_schvaleno=true` |
-| UAT připravenost | [běh 37701627446](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701627446), `ready=true` |
-| Produkční invarianty | [běh 37701585949](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701585949), 16/16 bez porušení |
+| CI aktuálního `main` | [běh 37766181968](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766181968), úspěch |
+| CI nasazeného aplikačního commitu | [běh 37766181968](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766181968), úspěch |
+| Produkční deploy | [běh 37766211885](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766211885), úspěch, `uat_schvaleno=true` |
+| UAT připravenost | [běh 37766687136](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766687136), `ready=true` |
+| Produkční invarianty | [běh 37766630386](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766630386), 16/16 bez porušení |
 | Obnova zálohy | [běh 37701691548](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701691548), 195 tabulek a 2 triggery |
 | Produkční fronta zpráv | [běh 37606107788](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788), úspěch |
 | CodeQL default setup | [běh 37764312992](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37764312992), Actions a JavaScript/TypeScript bez otevřeného nálezu |
 | Produkce | <https://kis.kovopraha.cz/> |
 
-CI nad aplikačním commitem ověřilo 852 testů / 11 781 kontrol a MariaDB 10.3 i
+CI nad aplikačním commitem ověřilo 869 testů / 11 867 kontrol a MariaDB 10.3 i
 11.4. Produkce běží na tomto commitu; dokumentace může být na `main` novější.
 Poslední deploy má `uat_schvaleno=true` a navazující připravenost i invarianty
 prošly. Toto potvrzení se vztahuje pouze k uvedenému release a testovacímu oknu.
