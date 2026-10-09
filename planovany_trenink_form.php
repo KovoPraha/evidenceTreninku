@@ -237,10 +237,10 @@ $kategorieMeta = [
 <?php include 'hlavicka.php'; ?>
 <div class="container mt-4" style="max-width:640px">
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <h4 class="mb-0">
+        <h1 class="h4 mb-0">
             <i class="bi bi-calendar-plus me-2 text-primary"></i>
             <?= $editId ? 'Upravit plánovaný trénink' : 'Nový plánovaný trénink' ?>
-        </h4>
+        </h1>
         <a href="planovac.php" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Plánovač
         </a>

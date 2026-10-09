@@ -36,6 +36,8 @@ final class LocalhostBootstrapWiringTest extends TestCase
         self::assertStringNotContainsString('localhost-admin', $schema);
         self::assertStringNotContainsString('rodic@localhost.test', $schema);
         self::assertStringNotContainsString('INSERT INTO `', $schema);
+        self::assertStringContainsString('KEY `idx_payment_variable_symbol` (`variable_symbol`)', $schema);
+        self::assertStringNotContainsString('UNIQUE KEY `uq_payment_variable_symbol` (`variable_symbol`)', $schema);
     }
 
     public function testDatabaseBootstrapTreesAreNotPubliclyRoutable(): void

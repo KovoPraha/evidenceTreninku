@@ -326,6 +326,7 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'ajax_sportovci.php' => ['finance_manager'],
         'edit_trenink.php' => ['sports_lead'],
         'update_trenink.php' => ['coach'],
         'smazat_trenink.php' => ['sports_lead'],

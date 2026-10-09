@@ -87,6 +87,12 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertSame('finance_manager', \staffRouteOwner('hromadne_odmeny.php'));
     }
 
+    public function testAthleteLookupIsAvailableToItsFinancialConsumer(): void
+    {
+        self::assertContains('finance_manager', \staffRouteAllowedPositions('ajax_sportovci.php'));
+        self::assertSame('coach', \staffRouteOwner('ajax_sportovci.php'));
+    }
+
     public function testStaffEntryPointInventoryHasNoOrphanRoute(): void
     {
         $root = dirname(__DIR__, 2);

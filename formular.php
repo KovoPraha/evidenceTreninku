@@ -79,6 +79,11 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
     try {
         $did = (int)$_GET['duplikat'];
 
+        $r0 = $pdo->prepare('SELECT datum,napln,delka,kategorie FROM treninky WHERE id = ?');
+        $r0->execute([$did]);
+        $dupSource = $r0->fetch(PDO::FETCH_ASSOC);
+        if (!$dupSource) throw new RuntimeException('Zdrojový trénink nebyl nalezen.');
+
         $r1 = $pdo->prepare('SELECT skupina_id FROM trenink_skupina WHERE trenink_id = ? LIMIT 1');
         $r1->execute([$did]);
         $dupSkupina = (int)($r1->fetchColumn() ?: 0);
@@ -98,6 +103,10 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
         $dupSportovci = $r3->fetchAll(PDO::FETCH_ASSOC);
 
         $duplikat = [
+            'zdroj_datum' => (string)$dupSource['datum'],
+            'napln' => (string)$dupSource['napln'],
+            'delka' => (string)$dupSource['delka'],
+            'kategorie' => (string)$dupSource['kategorie'],
             'skupina_id' => $dupSkupina,
             'podskupiny' => $dupPodskupiny,
             'ucastnici'  => array_map(fn($sp) => [
@@ -105,7 +114,7 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
                 'label' => trim(($sp['prijmeni'] ?? '') . ' ' . ($sp['jmeno'] ?? '')),
             ], $dupSportovci),
         ];
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
         error_log('formular.php duplikat: ' . $e->getMessage());
     }
 }
@@ -371,7 +380,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                                 <i class="bi bi-clock me-1 text-primary"></i>Délka (h)
                             </label>
                             <input type="number" step="0.25" name="delka" id="delka"
-                                   class="form-control" value="1" required>
+                                   class="form-control" value="<?= h($duplikat ? ($duplikat['delka'] ?: '1') : '1') ?>" required>
                         </div>
                         <div class="col-md-4">
                             <label for="kategorie" class="form-label fw-semibold">
@@ -379,14 +388,9 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                             </label>
                             <select name="kategorie" id="kategorie" class="form-select">
                                 <option value="">— vyber —</option>
-                                <option value="silnice">Silnice</option>
-                                <option value="mtb">MTB</option>
-                                <option value="draha">Dráha</option>
-                                <option value="cyklokros">Cyklokros</option>
-                                <option value="posilovna">Posilovna</option>
-                                <option value="atletika">Atletika</option>
-                                <option value="cviceni">Cvičení</option>
-                                <option value="plavani">Plavání</option>
+                                <?php foreach (['silnice'=>'Silnice','mtb'=>'MTB','draha'=>'Dráha','cyklokros'=>'Cyklokros','posilovna'=>'Posilovna','atletika'=>'Atletika','cviceni'=>'Cvičení','plavani'=>'Plavání'] as $value=>$label): ?>
+                                    <option value="<?= h($value) ?>" <?= $duplikat && $duplikat['kategorie']===$value ? 'selected' : '' ?>><?= h($label) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
@@ -439,7 +443,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                             <i class="bi bi-card-text me-1"></i>Náplň tréninku
                         </label>
                         <textarea name="napln" id="napln" rows="3" class="form-control"
-                                  placeholder="Co bylo náplní tréninku?" required></textarea>
+                                  placeholder="Co bylo náplní tréninku?" required><?= h($duplikat['napln'] ?? '') ?></textarea>
                     </div>
                     <div class="mb-0">
                         <label for="poznamka" class="form-label fw-semibold">

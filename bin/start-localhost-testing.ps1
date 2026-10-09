@@ -21,6 +21,7 @@ $mysqlPid = Join-Path $mysqlDataDirectory 'evidence-local.pid'
 $apacheExecutable = Join-Path $XamppRoot 'apache\bin\httpd.exe'
 $applicationFolder = Split-Path -Leaf $applicationRoot
 $applicationUrl = 'http://localhost/{0}/' -f $applicationFolder
+$autoload = Join-Path $applicationRoot 'vendor\autoload.php'
 
 if ($DatabaseName -notmatch '^[a-zA-Z0-9_]+$') {
     throw 'Název databáze smí obsahovat jen písmena, číslice a podtržítko.'
@@ -30,6 +31,10 @@ foreach ($requiredPath in @($mysqlExecutable, $mysqlDataDirectory, $apacheExecut
     if (-not (Test-Path -LiteralPath $requiredPath)) {
         throw "Chybí povinná lokální součást: $requiredPath"
     }
+}
+
+if (-not (Test-Path -LiteralPath $autoload -PathType Leaf)) {
+    throw "Chybí PHP závislosti. Nejprve spusťte PRIPRAVIT_LOCALHOST_TESTOVANI.cmd; samotný START_LOCALHOST_TESTOVANI.cmd neprovádí instalaci."
 }
 
 function Wait-LocalPort([int]$Port, [int]$Seconds = 25) {

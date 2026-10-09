@@ -134,6 +134,19 @@ $trenery = $pdo->query("
   <title>Správa pracovních účtů – Evidence</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+  <style>
+    @media (max-width: 767.98px) {
+      .staff-accounts-table thead { display:none; }
+      .staff-accounts-table, .staff-accounts-table tbody, .staff-accounts-table tr, .staff-accounts-table td { display:block; width:100%; }
+      .staff-accounts-table tr { margin:.75rem; width:calc(100% - 1.5rem); border:1px solid var(--bs-border-color); border-radius:.75rem; padding:.65rem; background:var(--bs-body-bg); }
+      .staff-accounts-table td { border:0; padding:.35rem .25rem; overflow-wrap:anywhere; }
+      .staff-accounts-table td::before { content:attr(data-label); display:block; margin-bottom:.15rem; color:var(--bs-secondary-color); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; }
+      .staff-accounts-table td[data-label="Akce"] > .d-flex { flex-direction:column; align-items:stretch; }
+      .staff-accounts-table td[data-label="Akce"] form { flex-wrap:wrap; }
+      .staff-accounts-table td[data-label="Akce"] form .form-control { width:100%!important; }
+      .staff-accounts-table .edit-btn { width:100%; }
+    }
+  </style>
 </head>
 <body class="bg-light">
 <?php include __DIR__ . '/hlavicka.php'; ?>
@@ -166,7 +179,7 @@ $trenery = $pdo->query("
       <i class="bi bi-people me-2"></i>Seznam trenérů
     </div>
     <div class="table-responsive">
-      <table class="table table-hover mb-0">
+      <table class="table table-hover mb-0 staff-accounts-table">
         <thead class="table-light">
           <tr>
             <th>Jméno</th>
@@ -179,14 +192,14 @@ $trenery = $pdo->query("
         <tbody>
           <?php foreach ($trenery as $tr): ?>
             <tr>
-              <td>
+              <td data-label="Jméno">
                 <strong><?= htmlspecialchars($tr['jmeno']) ?></strong>
                 <?php if ($tr['id'] == $_SESSION['trener_id']): ?>
                   <span class="badge bg-info ms-1">Vy</span>
                 <?php endif; ?>
               </td>
-              <td><?= htmlspecialchars($tr['email']) ?></td>
-              <td>
+              <td data-label="Email"><?= htmlspecialchars($tr['email']) ?></td>
+              <td data-label="Role">
                 <?php if ($tr['role'] === 'admin'): ?>
                   <span class="badge bg-danger"><i class="bi bi-shield-lock me-1"></i>Administrátor</span>
                 <?php elseif ($tr['role'] === 'hlavni'): ?>
@@ -195,8 +208,8 @@ $trenery = $pdo->query("
                   <span class="badge bg-success"><i class="bi bi-person me-1"></i>Trenér</span>
                 <?php endif; ?>
               </td>
-              <td><span class="badge <?=$tr['aktivni']?'text-bg-success':'text-bg-secondary'?>"><?=$tr['aktivni']?'Aktivní':'Deaktivovaný'?></span></td><td><span class="badge bg-light text-dark"><?= (int)$tr['pocet_treninku'] ?></span></td>
-              <td>
+              <td data-label="Stav"><span class="badge <?=$tr['aktivni']?'text-bg-success':'text-bg-secondary'?>"><?=$tr['aktivni']?'Aktivní':'Deaktivovaný'?></span></td><td data-label="Tréninky"><span class="badge bg-light text-dark"><?= (int)$tr['pocet_treninku'] ?></span></td>
+              <td data-label="Akce">
                 <div class="d-flex gap-1">
                   <button class="btn btn-sm btn-outline-primary edit-btn"
                           aria-label="Upravit trenéra <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"
@@ -209,7 +222,7 @@ $trenery = $pdo->query("
                   <?php if ($tr['id'] != $_SESSION['trener_id']): ?>
                     <form method="POST" class="m-0 d-flex gap-1 align-items-center">
                       <?= csrf_field() ?>
-                      <input type="hidden" name="akce" value="set_active"><input type="hidden" name="trainer_id" value="<?= $tr['id'] ?>"><input type="hidden" name="active" value="<?=$tr['aktivni']?'0':'1'?>"><input class="form-control form-control-sm" style="width:150px" name="reason" required placeholder="Důvod změny"><input type="checkbox" name="confirmed" value="1" required title="Potvrdit změnu"><button type="submit" class="btn btn-sm <?=$tr['aktivni']?'btn-outline-danger':'btn-outline-success'?>" aria-label="<?=$tr['aktivni']?'Deaktivovat':'Aktivovat'?> účet <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"><i class="bi <?=$tr['aktivni']?'bi-person-x':'bi-person-check'?>"></i> <?=$tr['aktivni']?'Deaktivovat':'Aktivovat'?></button>
+                      <input type="hidden" name="akce" value="set_active"><input type="hidden" name="trainer_id" value="<?= $tr['id'] ?>"><input type="hidden" name="active" value="<?=$tr['aktivni']?'0':'1'?>"><input class="form-control form-control-sm" style="width:150px" name="reason" required placeholder="Důvod změny" aria-label="Důvod změny účtu <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"><label class="form-check d-flex align-items-center gap-2 mb-0"><input class="form-check-input" type="checkbox" name="confirmed" value="1" required><span class="small">Potvrdit změnu</span></label><button type="submit" class="btn btn-sm <?=$tr['aktivni']?'btn-outline-danger':'btn-outline-success'?>" aria-label="<?=$tr['aktivni']?'Deaktivovat':'Aktivovat'?> účet <?= htmlspecialchars($tr['jmeno'], ENT_QUOTES) ?>"><i class="bi <?=$tr['aktivni']?'bi-person-x':'bi-person-check'?>"></i> <?=$tr['aktivni']?'Deaktivovat':'Aktivovat'?></button>
                     </form>
                   <?php endif; ?>
                 </div>

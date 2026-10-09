@@ -562,7 +562,10 @@ function shopPaymentSpdPayload(string $iban,int $amountMinor,string $currency,st
 
 function shopPaymentQrDataUri(string $payload): string
 {
-    require_once dirname(__DIR__).'/vendor/autoload.php';
+    $autoload=dirname(__DIR__).'/vendor/autoload.php';
+    if(!is_file($autoload))throw new RuntimeException('Generátor QR platby není nainstalovaný.');
+    require_once $autoload;
+    if(!class_exists(Endroid\QrCode\Writer\SvgWriter::class))throw new RuntimeException('Generátor QR platby není dostupný.');
     $writer=new Endroid\QrCode\Writer\SvgWriter();
     $qrCode=new Endroid\QrCode\QrCode(data:$payload,size:280,margin:12);
     return $writer->write($qrCode)->getDataUri();
