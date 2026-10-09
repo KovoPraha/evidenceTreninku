@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno: 8. 10. 2026, Europe/Prague
+Aktualizováno: 9. 10. 2026, Europe/Prague
 
 Tento soubor je autoritativní stavový rozcestník. Historické audity, předávací
 záznamy a implementační prompty zachycují stav v datu svého vzniku a nesmí se
@@ -12,19 +12,17 @@ používat jako důkaz aktuální verze. Před každou novou prací má přednos
 - Repozitář: <https://github.com/KovoPraha/evidenceTreninku>
 - Výchozí větev: `main`
 - Stav vzdálené větve `origin/main` při této kontrole:
-  `134fcb037bbfc62c13ca5df36695407d8d783f65`
+  `16b7d4d60883f3f4f655c097339339c68c1be07d`
 - Otevřené pull requesty při této kontrole: žádné
 - Produkční aplikace: <https://kis.kovopraha.cz/>
 - Poslední ověřené nasazení: GitHub Actions běh
-  [`37778058404`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778058404)
-  nasadil přesně commit `134fcb037bbfc62c13ca5df36695407d8d783f65`.
+  [`37886677875`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886677875)
+  nasadil přesně commit `16b7d4d60883f3f4f655c097339339c68c1be07d`.
 - Nasazení vytvořilo a ověřilo databázovou zálohu, připravilo úplný release,
   aplikovalo migrace, aktivovalo kód a dokončilo HTTP smoke test.
-- Po nasazení byl z prohlížeče ověřen veřejný e-shop, detail programu 247,
-  veřejný rozvrh tréninků a klubový kalendář. Kategorie, stránkování,
-  drobečková navigace, přístupné měsíční mřížky, odkazy na přihlášení a lidské
-  názvy programových variant jsou na produkci přítomné; konzole nehlásila
-  chybu ani varování.
+- Po nasazení byly z prohlížeče ověřeny domovská stránka, e-shop, veřejný
+  rozvrh tréninků, klubový kalendář, velodrom a přihlášení. Žádná z těchto
+  cest neobsahovala fatální chybu ani chybu či varování v konzoli.
 - Veřejná domovská stránka a bezpečný vstup k veřejnému profilu po nasazení
   odpovídají HTTP 200 a posílají nonce CSP bez povolených inline skriptů.
   Soubor `var/deployment.json` není veřejný a správně odpovídá HTTP 403; důkaz
@@ -48,17 +46,17 @@ v hlavním CI jobu.
 ## Poslední automatické ověření
 
 GitHub Actions běh
-[`37778040472`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778040472)
+[`37886667244`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886667244)
 nad aktuálním `origin/main` a současně nasazeným commitem
-`134fcb037bbfc62c13ca5df36695407d8d783f65` prošel v tomto rozsahu:
+`16b7d4d60883f3f4f655c097339339c68c1be07d` prošel v tomto rozsahu:
 
-- PHPUnit na PHP 8.2: **875 testů / 11 913 kontrol**;
+- PHPUnit na PHP 8.2: **877 testů / 11 995 kontrol**;
 - integrační smoke na MariaDB 10.3: úspěch;
 - integrační smoke na MariaDB 11.4: úspěch;
 - kontrola Composer konfigurace: úspěch.
 
 CodeQL běh
-[`37778041269`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37778041269)
+[`37886667406`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886667406)
 nad stejným commitem prošel pro GitHub Actions i JavaScript/TypeScript.
 
 Migrační katalog obsahuje 84 verzovaných PHP migrací včetně bezpečnostních
@@ -67,15 +65,16 @@ Aktuální zálohovací ownership kontrakt zdrojového kódu je `2026-10-08.1`.
 Počet souborů není důkazem stavu konkrétní databáze; ten se na každé stanici
 ověřuje pomocí `php bin/migrate.php --check --json` s nastaveným `APP_HOST`.
 
-## Funkční stav po změnách z 8. 10. 2026
+## Funkční stav po změnách z 9. 10. 2026
 
 Pull requesty
 [#34](https://github.com/KovoPraha/evidenceTreninku/pull/34),
 [#35](https://github.com/KovoPraha/evidenceTreninku/pull/35),
 [#36](https://github.com/KovoPraha/evidenceTreninku/pull/36),
 [#38](https://github.com/KovoPraha/evidenceTreninku/pull/38) a
-[#39](https://github.com/KovoPraha/evidenceTreninku/pull/39) a
-[#53](https://github.com/KovoPraha/evidenceTreninku/pull/53) jsou sloučené do
+[#39](https://github.com/KovoPraha/evidenceTreninku/pull/39),
+[#53](https://github.com/KovoPraha/evidenceTreninku/pull/53) a
+[#55](https://github.com/KovoPraha/evidenceTreninku/pull/55) jsou sloučené do
 `main`. Aktuální release mimo jiné obsahuje:
 
 - srozumitelnější registraci a práci s heslem;
@@ -98,6 +97,10 @@ Pull requesty
 - limity těla Stripe a SumUp webhooků, fail-closed ověření SumUp odpovědi,
   transakční zápisy a odstranění runtime DDL z obsluhy požadavků;
 - nonce CSP pro inline skripty a styly a zúžený přístup k servisním endpointům.
+- opravy druhé iterace prohlížečového UAT: bezpečný přechod mezi účtem
+  sportovce a rodiče, funkční našeptávač poplatků, QR fallback, lepší mobilní
+  správa trenérů, filtrování a stránkování administrativních seznamů a
+  idempotentní lokální demonstrační data.
 
 Produkční běh fronty zpráv
 [`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788)
@@ -115,21 +118,20 @@ jsou popsány v
 
 ## Důležitá provozní hranice
 
-Poslední deploy má `uat_schvaleno=false`. Produkční kód je nasazený a veřejné
-read-only obrazovky byly ověřené, ale tento nový commit tím nezískal povolení
-pro neomezené zápisové UAT. Reálné e-maily, bankovní pohyby a provozní účty se
-nadále používají jen v rozsahu samostatně schváleného scénáře podle
+Poslední deploy má `uat_schvaleno=true`, což označuje schválení přesného
+commitu pro řízené produkční UAT, nikoli neomezené povolení zápisů. Read-only
+kontrola připravenosti
+[`37886988895`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886988895)
+je aktuálně blokovaná, protože provozní proměnná `KIS_UAT_WINDOW_END` skončila
+8. 10. 2026 ve 20:00. Dokud vlastník výslovně neschválí nové časové okno,
+nesmí se spouštět zápisové UAT. Reálné e-maily, bankovní pohyby a provozní účty
+se nadále používají jen v rozsahu samostatně schváleného scénáře podle
 [`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
-Read-only kontrola připravenosti předchozího release
-[`37766687136`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766687136)
-potvrdila `ready=true`: schválený release, aktivní rodičovské, dětské i
-správcovské účty, TEST data, testovací Stripe, bankovní nastavení, inbox a
-platné testovací okno. Navazující read-only kontrola invariantů
-[`37766630386`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37766630386)
-skončila `ok=true` se 16 kontrolami a bez porušení.
-Tyto výsledky jsou důkazem tehdejšího release a automaticky neschvalují
-zápisové testování commitu `134fcb0`.
+Navazující read-only kontrola databázových invariantů
+[`37887161804`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37887161804)
+skončila `ok=true`: 16/16 kontrol bez porušení. Deploy před aktivací vytvořil
+ověřenou komprimovanou zálohu 196 tabulek a 2 triggerů mimo webroot.
 
 Obnova poslední generace produkční zálohy v izolované MariaDB byla ověřena
 během [`37701691548`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701691548):

@@ -13,15 +13,15 @@ final class CurrentDocumentationContractTest extends TestCase
         $state = (string)file_get_contents($root . '/docs/CURRENT_STATE.md');
         $handoff = (string)file_get_contents($root . '/docs/HANDOFF_CURRENT.md');
         foreach ([$state, $handoff] as $document) {
-            self::assertStringContainsString('134fcb037bbfc62c13ca5df36695407d8d783f65', $document);
-            self::assertStringContainsString('37778040472', $document);
-            self::assertStringContainsString('37778041269', $document);
-            self::assertStringContainsString('37778058404', $document);
-            self::assertStringContainsString('37766687136', $document);
-            self::assertStringContainsString('37766630386', $document);
+            self::assertStringContainsString('16b7d4d60883f3f4f655c097339339c68c1be07d', $document);
+            self::assertStringContainsString('37886667244', $document);
+            self::assertStringContainsString('37886667406', $document);
+            self::assertStringContainsString('37886677875', $document);
+            self::assertStringContainsString('37886988895', $document);
+            self::assertStringContainsString('37887161804', $document);
             self::assertStringContainsString('37701691548', $document);
             self::assertStringContainsString('37764312992', $document);
-            self::assertStringContainsString('uat_schvaleno=false', $document);
+            self::assertStringContainsString('uat_schvaleno=true', $document);
         }
     }
 
