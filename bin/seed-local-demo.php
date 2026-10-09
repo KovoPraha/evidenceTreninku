@@ -13,6 +13,7 @@ try{
     require_once $root.'/includes/shop_catalog_review.php';
     require_once $root.'/includes/shop_catalog_promotion.php';
     require_once $root.'/includes/shop_catalog_publication.php';
+    require_once $root.'/includes/shop_product_image.php';
     require_once $root.'/includes/account_person_role.php';
     require_once $root.'/includes/shop_coupon.php';
     require_once $root.'/includes/club_event_registration.php';
@@ -66,6 +67,11 @@ try{
     }
     $people=$demoPeople;
     foreach($people as$personId)accountPersonRoleApprove($pdo,$accountId,(int)$personId,'guardian',$actorId,'Localhost demo vazba rodič–dítě.');
+    $staleGuardianRelations=$pdo->prepare("SELECT id,sportovec_id FROM account_person_roles WHERE account_id=? AND relation_role='guardian' AND status='approved' AND valid_to IS NULL");
+    $staleGuardianRelations->execute([$accountId]);
+    foreach($staleGuardianRelations->fetchAll(PDO::FETCH_ASSOC)as$relation){
+        if(!in_array((int)$relation['sportovec_id'],$people,true))accountPersonRoleRevoke($pdo,(int)$relation['id'],$actorId,'LOCALHOST reset: odstranění starší vazby, která nepatří k aktuálním syntetickým dětem.');
+    }
     $a05Person=$pdo->prepare("SELECT id FROM sportovci WHERE email='a05-transition@localhost.test' ORDER BY id DESC LIMIT 1");$a05Person->execute();$a05PersonId=(int)$a05Person->fetchColumn();
     if($a05PersonId<1){$pdo->prepare("INSERT INTO sportovci(jmeno,prijmeni,narozeni,email,telefon,hash,uci,stav_clenstvi) VALUES ('LOCALHOST','Přechod U17','2012-05-01','a05-transition@localhost.test','',?,0,'aktivni')")->execute([public_profile_token_generate()]);$a05PersonId=(int)$pdo->lastInsertId();}
     else{$pdo->prepare("UPDATE sportovci SET jmeno='LOCALHOST',prijmeni='Přechod U17',narozeni='2012-05-01',stav_clenstvi='aktivni' WHERE id=?")->execute([$a05PersonId]);}
@@ -82,7 +88,7 @@ try{
     $a05GuardianRelations=$pdo->prepare("SELECT r.id FROM account_person_roles r JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.relation_role='guardian' AND r.status='approved' AND r.valid_to IS NULL AND s.email='a05-transition@localhost.test'");$a05GuardianRelations->execute([$accountId]);
     foreach($a05GuardianRelations->fetchAll(PDO::FETCH_COLUMN)as$relationId)accountPersonRoleRevoke($pdo,(int)$relationId,$actorId,'LOCALHOST reset: A05 je samostatný administrační scénář, ne dítě rodiče z A01.');
 
-    $run=$pdo->query("SELECT * FROM shop_catalog_import_runs WHERE status IN ('pending_review','ready_for_promotion','promoted') ORDER BY id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+    $run=$pdo->query("SELECT * FROM shop_catalog_import_runs WHERE status IN ('pending_review','ready_for_promotion','promoted') ORDER BY CASE WHEN status='promoted' THEN 0 ELSE 1 END,id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     if(!$run)throw new RuntimeException('local_demo_requires_staged_shoptet_import');$runId=(int)$run['id'];
     if($run['status']!=='promoted'){
         $demoCandidate=$pdo->prepare('SELECT id FROM shop_catalog_product_candidates WHERE run_id=? AND external_product_key=?');$demoCandidate->execute([$runId,'shoptet:local-demo:club-event']);$demoCandidateId=(int)$demoCandidate->fetchColumn();
@@ -110,13 +116,32 @@ try{
 
     $goods=$pdo->query("SELECT p.id,p.name,v.id variant_id FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.offer_type='goods' AND (v.visible=1 OR v.visible IS NULL) AND v.price_mode='fixed' AND v.amount_minor>0 AND (v.stock_quantity_decimal IS NULL OR v.stock_quantity_decimal>0) ORDER BY p.id,v.id LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     if(!$goods)throw new RuntimeException('local_demo_goods_missing');
-    shopCatalogPublicationActivate($pdo,(int)$goods['id'],$actorId,(string)$goods['name'],'Testovací produkt na localhostu. Objednávka ani QR nejsou určeny ke skutečné platbě.','Localhost demo aktivace.',true);
+    $ensureLocalDemoImage=static function(int$productId)use($pdo,$actorId,$root):void{
+        $rows=$pdo->prepare('SELECT id,image_url FROM shop_product_images WHERE product_id=? ORDER BY id');$rows->execute([$productId]);$rows=$rows->fetchAll(PDO::FETCH_ASSOC);
+        foreach($rows as$row){$path=shopProductImagePath((string)$row['image_url'],$root);if($path!==null&&is_file($path))return;}
+        foreach($rows as$row)shopProductImageRemove($pdo,$actorId,(int)$row['id'],'LOCALHOST seed: nahrazení vzdáleného nebo chybějícího obrázku lokální fixture.',true,$root);
+        shopProductImageAdd($pdo,$actorId,$productId,$root.'/assets/clubs/source-coach.jpg',0,'LOCALHOST seed: bezpečný lokální fixture obrázek.',true,false,$root);
+    };
+    $activateLocalDemoProduct=static function(int$productId,string$publicName,string$publicSummary,string$note)use($pdo,$actorId):void{
+        $current=$pdo->prepare("SELECT p.catalog_status,pub.status publication_status FROM shop_products p LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE p.id=?");
+        $current->execute([$productId]);$current=$current->fetch(PDO::FETCH_ASSOC);
+        if($current&&$current['catalog_status']==='active'&&$current['publication_status']==='active')return;
+        shopCatalogPublicationActivate($pdo,$productId,$actorId,$publicName,$publicSummary,$note,true);
+    };
+    $ensureLocalDemoImage((int)$goods['id']);
+    $activateLocalDemoProduct((int)$goods['id'],(string)$goods['name'],'Testovací produkt na localhostu. Objednávka ani QR nejsou určeny ke skutečné platbě.','Localhost demo aktivace.');
     $pdo->prepare("UPDATE shop_variants SET visible=0,catalog_status='inactive' WHERE product_id=? AND stock_quantity_decimal IS NOT NULL AND stock_quantity_decimal<=0")->execute([(int)$goods['id']]);
-    $programGoodsStatement=$pdo->prepare("SELECT p.id,p.name,v.id variant_id FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.offer_type='goods' AND p.id<>? AND (v.visible=1 OR v.visible IS NULL) AND v.price_mode='fixed' AND v.amount_minor>0 AND (v.stock_quantity_decimal IS NULL OR v.stock_quantity_decimal>0) ORDER BY p.id,v.id LIMIT 1");
-    $programGoodsStatement->execute([(int)$goods['id']]);$programGoods=$programGoodsStatement->fetch(PDO::FETCH_ASSOC)?:$goods;
+    $programGoodsStatement=$pdo->prepare("SELECT p.id,p.name,v.id variant_id FROM club_program_offers o JOIN shop_products p ON p.id=o.product_id JOIN shop_variants v ON v.id=o.variant_id WHERE o.code='LOCAL-CYKLO-PODZIM-2026' LIMIT 1");
+    $programGoodsStatement->execute();$programGoods=$programGoodsStatement->fetch(PDO::FETCH_ASSOC);
+    if(!$programGoods){$programGoodsStatement=$pdo->prepare("SELECT p.id,p.name,v.id variant_id FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.offer_type='goods' AND p.id<>? AND (v.visible=1 OR v.visible IS NULL) AND v.price_mode='fixed' AND v.amount_minor>0 AND (v.stock_quantity_decimal IS NULL OR v.stock_quantity_decimal>0) ORDER BY p.id,v.id LIMIT 1");$programGoodsStatement->execute([(int)$goods['id']]);$programGoods=$programGoodsStatement->fetch(PDO::FETCH_ASSOC)?:$goods;}
+    $pdo->prepare("UPDATE shop_products SET offer_type='program',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([(int)$programGoods['id']]);
     if((int)$programGoods['id']!==(int)$goods['id']){
-        shopCatalogPublicationActivate($pdo,(int)$programGoods['id'],$actorId,'LOCALHOST – placený kroužek (NEPLATIT)','Testovací klubová služba. Částku neposílejte; administrátor ji označí jako uhrazenou pouze na localhostu.','Localhost demo programová nabídka.',true);
+        $ensureLocalDemoImage((int)$programGoods['id']);
+        $activateLocalDemoProduct((int)$programGoods['id'],'LOCALHOST – placený kroužek (NEPLATIT)','Testovací klubová služba. Částku neposílejte; administrátor ji označí jako uhrazenou pouze na localhostu.','Localhost demo programová nabídka.');
     }
+    $staleProgramPublications=$pdo->prepare("SELECT product_id FROM shop_product_publications WHERE status='active' AND public_name='LOCALHOST – placený kroužek (NEPLATIT)' AND product_id<>?");
+    $staleProgramPublications->execute([(int)$programGoods['id']]);
+    foreach($staleProgramPublications->fetchAll(PDO::FETCH_COLUMN)as$staleProgramProductId)shopCatalogPublicationDeactivate($pdo,(int)$staleProgramProductId,$actorId,'LOCALHOST reset: odstranění starší duplicitní veřejné nabídky demo programu.');
 
     $coupon=$pdo->prepare('SELECT id FROM shop_coupons WHERE code=?');$coupon->execute(['LOCAL10']);
     if(!$coupon->fetchColumn())shopCouponAdminCreate($pdo,$actorId,'LOCAL10','percentage',1000,0,50000,100,'','','Localhost demo kupón 10 %.',true);
@@ -176,6 +201,8 @@ try{
     kisRosterAddMember($pdo,(int)$u13Team['id'],$a05PersonId,$actorId,'manual','2026-01-01','Localhost závodník pro náhled automatického přesunu U13 na U15.');
 
     $program=clubProgramCreate($pdo,$actorId,'LOCAL-CYKLO-SKOLA','LOCALHOST Cyklistická škola','Testovací stabilní kroužkový program.');
+    clubProgramTermsConfigure($pdo,$actorId,'program',(int)$program['id'],'program_cancellation','LOCALHOST TEST: přihlášku lze v rámci syntetického testu zrušit; nejde o skutečnou nabídku ani skutečnou platbu.',true);
+    clubProgramTermsConfigure($pdo,$actorId,'program',(int)$program['id'],'program_consent','LOCALHOST TEST: zákonný zástupce souhlasí pouze s provedením syntetického testovacího přihlášení vybraného dítěte.',true);
     $programOffer=clubProgramCreateOffer($pdo,$actorId,(int)$program['id'],(int)$schoolSeason['id'],(int)$hobbyTeam['id'],(int)$programGoods['id'],(int)$programGoods['variant_id'],'LOCAL-CYKLO-PODZIM-2026','LOCALHOST podzimní kroužek 2026','2026-09-01','2027-02-28',null,null,12,'active');
 
     $groupIdStatement=$pdo->prepare("SELECT id FROM skupiny WHERE hash='localhost-demo-group' ORDER BY id LIMIT 1");$groupIdStatement->execute();$groupId=(int)$groupIdStatement->fetchColumn();$planId=0;$demoTrainingDate=(new DateTimeImmutable('today'))->format('Y-m-d');
@@ -185,8 +212,25 @@ try{
 
     if($planId>0){$pdo->prepare('UPDATE planovane_treninky SET je_verejny=1 WHERE id=?')->execute([$planId]);}
 
+    $targetNow=new DateTimeImmutable('now');$targetSessionStart=$targetNow->modify('+30 days')->setTime(9,0);$targetSessionEnd=$targetSessionStart->modify('+8 hours');$targetDeadline=$targetNow->modify('+25 days')->setTime(20,0);
     $targetedEvent=$pdo->prepare('SELECT id,status FROM club_events WHERE code=?');$targetedEvent->execute(['LOCALHOST-SOUPISKY']);$targetedEvent=$targetedEvent->fetch(PDO::FETCH_ASSOC);$targetedEventId=(int)($targetedEvent['id']??0);
-    if($targetedEventId<1){$created=clubEventCreateDraft($pdo,$actorId,['code'=>'LOCALHOST-SOUPISKY','event_type'=>'club_event','name'=>'LOCALHOST – výjezd pro U15 a dráhu','description_plain'=>'Testovací událost cílená na dvě překrývající se soupisky.','audience_label'=>'U15 nebo dráhová soupiska','min_age'=>'','max_age'=>'','capacity'=>2,'pricing_policy'=>'free','currency'=>'CZK','registration_starts_at'=>'2026-08-01T08:00','registration_ends_at'=>'2026-09-30T20:00']);$targetedEventId=(int)$created['id'];clubEventAddSession($pdo,$targetedEventId,$actorId,'2026-10-10T09:00','2026-10-10T17:00','Velodrom – LOCALHOST TEST',2);clubEventLinkProduct($pdo,$targetedEventId,$targetEventProductId,$actorId,'Localhost produkt pro cílenou událost.');clubEventConfigureRegistrationTerms($pdo,$targetedEventId,$actorId,'local-target-v1','Souhlasím s účastí na testovací cílené události.','Přihlášku lze v testu zrušit do uvedeného termínu.','2026-10-01T20:00',true);clubEventRosterReplaceTargets($pdo,$targetedEventId,[(int)$team['id'],(int)$trackTeam['id']],$actorId,'Localhost demo: jedna registrace i při členství ve dvou cílových soupiskách.',true);clubEventOpenFreeRegistration($pdo,$targetedEventId,$actorId,'Otevření cílené localhost události.',true);}
+    if($targetedEventId<1){
+        $created=clubEventCreateDraft($pdo,$actorId,['code'=>'LOCALHOST-SOUPISKY','event_type'=>'club_event','name'=>'LOCALHOST – výjezd pro U15 a dráhu','description_plain'=>'Testovací událost cílená na dvě překrývající se soupisky.','audience_label'=>'U15 nebo dráhová soupiska','min_age'=>'','max_age'=>'','capacity'=>2,'pricing_policy'=>'free','currency'=>'CZK','registration_starts_at'=>$targetNow->modify('-1 day')->format('Y-m-d\TH:i'),'registration_ends_at'=>$targetNow->modify('+20 days')->format('Y-m-d\TH:i')]);
+        $targetedEventId=(int)$created['id'];$targetedEvent=['id'=>$targetedEventId,'status'=>'draft'];
+        clubEventAddSession($pdo,$targetedEventId,$actorId,$targetSessionStart->format('Y-m-d\TH:i'),$targetSessionEnd->format('Y-m-d\TH:i'),'Velodrom – LOCALHOST TEST',2);
+        clubEventLinkProduct($pdo,$targetedEventId,$targetEventProductId,$actorId,'Localhost produkt pro cílenou událost.');
+    }
+    if($targetedEventId>0&&(string)($targetedEvent['status']??'')==='open'){
+        $targetedFresh=$pdo->prepare("SELECT (registration_ends_at>=CURRENT_TIMESTAMP) AND EXISTS(SELECT 1 FROM club_event_sessions s WHERE s.event_id=club_events.id AND s.status='scheduled' AND s.ends_at>=CURRENT_TIMESTAMP) AND cancellation_deadline_at>CURRENT_TIMESTAMP FROM club_events WHERE id=?");$targetedFresh->execute([$targetedEventId]);
+        if(!(bool)$targetedFresh->fetchColumn()){$pdo->beginTransaction();try{$pdo->prepare("UPDATE club_events SET status='draft',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='open'")->execute([$targetedEventId]);clubEventAudit($pdo,$targetedEventId,$actorId,'localhost_seed_refresh','event',$targetedEventId,'Pouze localhost: obnova relativních termínů syntetické cílené události.',['previous_status'=>'open']);$pdo->commit();$targetedEvent['status']='draft';}catch(Throwable$refreshError){if($pdo->inTransaction())$pdo->rollBack();throw$refreshError;}}
+    }
+    if((string)($targetedEvent['status']??'')==='draft'){
+        $pdo->prepare('UPDATE club_events SET registration_starts_at=?,registration_ends_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$targetNow->modify('-1 day')->format('Y-m-d H:i:s'),$targetNow->modify('+20 days')->format('Y-m-d H:i:s'),$targetedEventId]);
+        $pdo->prepare("UPDATE club_event_sessions SET starts_at=?,ends_at=? WHERE event_id=? AND status='scheduled'")->execute([$targetSessionStart->format('Y-m-d H:i:s'),$targetSessionEnd->format('Y-m-d H:i:s'),$targetedEventId]);
+        clubEventConfigureRegistrationTerms($pdo,$targetedEventId,$actorId,'local-target-'.$targetNow->format('Ymd'),'Souhlasím s účastí na testovací cílené události.','Přihlášku lze v testu zrušit do uvedeného termínu.',$targetDeadline->format('Y-m-d\TH:i'),true);
+        clubEventRosterReplaceTargets($pdo,$targetedEventId,[(int)$team['id'],(int)$trackTeam['id']],$actorId,'Localhost demo: jedna registrace i při členství ve dvou cílových soupiskách.',true);
+        clubEventOpenFreeRegistration($pdo,$targetedEventId,$actorId,'Otevření cílené localhost události.',true);
+    }
     // Reset A08 zachovává auditní historii a ruší pouze aktivní přihlášky demo rodiče
     // na seedované bezplatné události. Následující průchod tak může stejný řádek
     // bezpečně reaktivovat a znovu ověřit ochranu proti duplicitě.
@@ -194,13 +238,24 @@ try{
     $a08Registrations->execute([$targetedEventId,$accountId]);
     foreach($a08Registrations->fetchAll(PDO::FETCH_COLUMN)as$a08RegistrationId)clubEventAdminCancelRegistration($pdo,(int)$a08RegistrationId,$actorId,'LOCALHOST reset scénáře A08 před novým průchodem.',true);
 
+    $paidNow=new DateTimeImmutable('now');$paidSessionStart=$paidNow->modify('+30 days')->setTime(9,0);$paidSessionEnd=$paidSessionStart->modify('+8 hours');$paidDeadline=$paidNow->modify('+25 days')->setTime(20,0);
     $paidEvent=$pdo->prepare('SELECT id,status FROM club_events WHERE code=?');$paidEvent->execute(['LOCALHOST-PLACENA-UDALOST']);$paidEvent=$paidEvent->fetch(PDO::FETCH_ASSOC);$paidEventId=(int)($paidEvent['id']??0);
-    if($paidEventId<1){$now=new DateTimeImmutable('now');$sessionStart=$now->modify('+30 days')->setTime(9,0);$created=clubEventCreateDraft($pdo,$actorId,['code'=>'LOCALHOST-PLACENA-UDALOST','event_type'=>'club_event','name'=>'LOCALHOST – placené soustředění (NEPLATIT)','description_plain'=>'Placená testovací událost; kapacita se drží od objednávky do úhrady nebo expirace.','audience_label'=>'U15 nebo dráhová soupiska','min_age'=>'','max_age'=>'','capacity'=>3,'pricing_policy'=>'product_variants','currency'=>'CZK','registration_starts_at'=>$now->modify('-1 day')->format('Y-m-d\TH:i'),'registration_ends_at'=>$now->modify('+20 days')->format('Y-m-d\TH:i')]);$paidEventId=(int)$created['id'];clubEventAddSession($pdo,$paidEventId,$actorId,$sessionStart->format('Y-m-d\TH:i'),$sessionStart->modify('+8 hours')->format('Y-m-d\TH:i'),'Velodrom – LOCALHOST TEST',3);clubEventLinkProduct($pdo,$paidEventId,$paidEventProductId,$actorId,'Localhost placená varianta NEPLATIT.');clubEventConfigureRegistrationTerms($pdo,$paidEventId,$actorId,'local-paid-v1','Souhlasím s účastí na placené testovací události.','Bezplatné storno testovací objednávky je možné do uvedeného termínu.',$now->modify('+25 days')->format('Y-m-d\TH:i'),true);clubEventRosterReplaceTargets($pdo,$paidEventId,[(int)$team['id'],(int)$trackTeam['id']],$actorId,'Localhost demo placené události pro dvě soupisky.',true);clubEventOpenPaidRegistration($pdo,$paidEventId,$actorId,'Otevření placené localhost události NEPLATIT.',true);}
+    if($paidEventId<1){$created=clubEventCreateDraft($pdo,$actorId,['code'=>'LOCALHOST-PLACENA-UDALOST','event_type'=>'club_event','name'=>'LOCALHOST – placené soustředění (NEPLATIT)','description_plain'=>'Placená testovací událost; kapacita se drží od objednávky do úhrady nebo expirace.','audience_label'=>'U15 nebo dráhová soupiska','min_age'=>'','max_age'=>'','capacity'=>3,'pricing_policy'=>'product_variants','currency'=>'CZK','registration_starts_at'=>$paidNow->modify('-1 day')->format('Y-m-d\TH:i'),'registration_ends_at'=>$paidNow->modify('+20 days')->format('Y-m-d\TH:i')]);$paidEventId=(int)$created['id'];$paidEvent=['id'=>$paidEventId,'status'=>'draft'];clubEventAddSession($pdo,$paidEventId,$actorId,$paidSessionStart->format('Y-m-d\TH:i'),$paidSessionEnd->format('Y-m-d\TH:i'),'Velodrom – LOCALHOST TEST',3);clubEventLinkProduct($pdo,$paidEventId,$paidEventProductId,$actorId,'Localhost placená varianta NEPLATIT.');}
+    if($paidEventId>0&&(string)($paidEvent['status']??'')==='open'){$paidFresh=$pdo->prepare("SELECT (registration_ends_at>=CURRENT_TIMESTAMP) AND EXISTS(SELECT 1 FROM club_event_sessions s WHERE s.event_id=club_events.id AND s.status='scheduled' AND s.ends_at>=CURRENT_TIMESTAMP) AND cancellation_deadline_at>CURRENT_TIMESTAMP FROM club_events WHERE id=?");$paidFresh->execute([$paidEventId]);if(!(bool)$paidFresh->fetchColumn()){$pdo->beginTransaction();try{$pdo->prepare("UPDATE club_events SET status='draft',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='open'")->execute([$paidEventId]);clubEventAudit($pdo,$paidEventId,$actorId,'localhost_seed_refresh','event',$paidEventId,'Pouze localhost: obnova relativních termínů syntetické placené události.',['previous_status'=>'open']);$pdo->commit();$paidEvent['status']='draft';}catch(Throwable$refreshError){if($pdo->inTransaction())$pdo->rollBack();throw$refreshError;}}}
+    if((string)($paidEvent['status']??'')==='draft'){$pdo->prepare('UPDATE club_events SET registration_starts_at=?,registration_ends_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$paidNow->modify('-1 day')->format('Y-m-d H:i:s'),$paidNow->modify('+20 days')->format('Y-m-d H:i:s'),$paidEventId]);$pdo->prepare("UPDATE club_event_sessions SET starts_at=?,ends_at=? WHERE event_id=? AND status='scheduled'")->execute([$paidSessionStart->format('Y-m-d H:i:s'),$paidSessionEnd->format('Y-m-d H:i:s'),$paidEventId]);clubEventConfigureRegistrationTerms($pdo,$paidEventId,$actorId,'local-paid-'.$paidNow->format('Ymd'),'Souhlasím s účastí na placené testovací události.','Bezplatné storno testovací objednávky je možné do uvedeného termínu.',$paidDeadline->format('Y-m-d\TH:i'),true);clubEventRosterReplaceTargets($pdo,$paidEventId,[(int)$team['id'],(int)$trackTeam['id']],$actorId,'Localhost demo placené události pro dvě soupisky.',true);clubEventOpenPaidRegistration($pdo,$paidEventId,$actorId,'Otevření placené localhost události NEPLATIT.',true);}
 
     $publicProfile=publicProfileSave($pdo,$accountId,'Testovací','Rodič','1985-01-01','+420 777 000 001');
     $childSportovecId=(int)($people[0]??0);$childLogin='localhost-sportovec';$childPassword='LocalhostSportovec123!';
     if($childSportovecId<1)throw new RuntimeException('local_demo_child_person_missing');
     $childAccess=$pdo->prepare('SELECT id,login_name,password_hash,active FROM child_access_accounts WHERE sportovec_id=?');$childAccess->execute([$childSportovecId]);$childAccess=$childAccess->fetch(PDO::FETCH_ASSOC);
+    if(!$childAccess){
+        $staleAccess=$pdo->prepare('SELECT id,password_hash,active FROM child_access_accounts WHERE login_key=?');$staleAccess->execute([childAccessNormalizeLogin($childLogin)]);$staleAccess=$staleAccess->fetch(PDO::FETCH_ASSOC);
+        if($staleAccess){
+            if((int)$staleAccess['active']===1)childAccessSetActive($pdo,(int)$staleAccess['id'],false,$actorId,'LOCALHOST reset: archivace přístupu navázaného na starší syntetickou identitu.');
+            $archivedLogin='archived-localhost-sportovec-'.(int)$staleAccess['id'];
+            $pdo->prepare('UPDATE child_access_accounts SET login_name=?,login_key=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$archivedLogin,childAccessNormalizeLogin($archivedLogin),(int)$staleAccess['id']]);
+        }
+    }
     if(!$childAccess){$childCreated=childAccessCreate($pdo,$childSportovecId,$childLogin,$childPassword,$actorId,'LOCALHOST demo: vytvoření omezeného přístupu sportovce.');$childAccessId=(int)$childCreated['access_account_id'];}
     else{$childAccessId=(int)$childAccess['id'];$childLogin=(string)$childAccess['login_name'];if(!password_verify($childPassword,(string)$childAccess['password_hash']))childAccessResetPassword($pdo,$childAccessId,$childPassword,$actorId,'LOCALHOST demo: obnova testovacího hesla sportovce.');if((int)$childAccess['active']!==1)childAccessSetActive($pdo,$childAccessId,true,$actorId,'LOCALHOST demo: obnovení přístupu sportovce.');}
     $velodrome=$pdo->query("SELECT id FROM sportovist WHERE kod='velodrom' ORDER BY id LIMIT 1")->fetchColumn();
@@ -209,8 +264,10 @@ try{
     if(!$velodrome)throw new RuntimeException('local_demo_velodrome_missing');
     $freeSlot=$pdo->prepare("SELECT id FROM individualni_lekce WHERE sportoviste_id=? AND datum='2027-06-01' AND cas_od='10:00:00' AND cas_do='11:00:00' AND stav='aktivni'");$freeSlot->execute([(int)$velodrome]);$freeSlotId=(int)$freeSlot->fetchColumn();
     if($freeSlotId<1){$freeSlotId=(int)publicVelodromeCreateSlot($pdo,$actorId,'2027-06-01','10:00','11:00',3,false,0)['id'];$pdo->prepare("UPDATE individualni_lekce SET nazev='LOCALHOST – veřejná hodina zdarma',popis='Pouze localhost test.' WHERE id=?")->execute([$freeSlotId]);}
+    else{$pdo->prepare("UPDATE individualni_lekce SET booking_context='public_velodrome',public_exclusive_booking=0,cena_kc=0,max_osob=3,nazev='LOCALHOST – veřejná hodina zdarma',popis='Pouze localhost test.' WHERE id=?")->execute([$freeSlotId]);}
     $paidSlot=$pdo->prepare("SELECT id FROM individualni_lekce WHERE sportoviste_id=? AND datum='2027-06-01' AND cas_od='12:00:00' AND cas_do='13:00:00' AND stav='aktivni'");$paidSlot->execute([(int)$velodrome]);$paidSlotId=(int)$paidSlot->fetchColumn();
     if($paidSlotId<1){$paidSlotId=(int)publicVelodromeCreateSlot($pdo,$actorId,'2027-06-01','12:00','13:00',1,true,25000)['id'];$pdo->prepare("UPDATE individualni_lekce SET nazev='LOCALHOST – placený velodrom (NEPLATIT)',popis='Pouze localhost test, částku neposílejte.' WHERE id=?")->execute([$paidSlotId]);}
+    else{$pdo->prepare("UPDATE individualni_lekce SET booking_context='public_velodrome',public_exclusive_booking=1,cena_kc=250,max_osob=1,nazev='LOCALHOST – placený velodrom (NEPLATIT)',popis='Pouze localhost test, částku neposílejte.' WHERE id=?")->execute([$paidSlotId]);}
 
     echo json_encode(['ok'=>true,'customer_login_url'=>'http://localhost/evidencePavel/booking/prihlaseni.php','customer_email'=>$email,'customer_password'=>$password,'child_login_url'=>'http://localhost/evidencePavel/booking/sportovec_prihlaseni.php','child_login'=>$childLogin,'child_password'=>$childPassword,'child_access_id'=>$childAccessId,'admin_login_url'=>'http://localhost/evidencePavel/login.php','admin_login'=>$adminLogin,'admin_password'=>$adminPassword,'admin_superadmin'=>true,'admin_positions'=>$positionCodes,'acceptance_hub_url'=>'http://localhost/evidencePavel/testovaci_scenare.php','coupon'=>'LOCAL10','account_id'=>$accountId,'linked_people'=>array_map('intval',$people),'a05_transition_sportovec_id'=>$a05PersonId,'public_profile_sportovec_id'=>(int)$publicProfile['sportovec_id'],'public_profile_url'=>'http://localhost/evidencePavel/booking/verejny_profil.php','velodrome_url'=>'http://localhost/evidencePavel/booking/velodrom.php','velodrome_admin_url'=>'http://localhost/evidencePavel/verejny_velodrom_admin.php','velodrome_slots'=>[$freeSlotId,$paidSlotId],'published_product'=>(string)$goods['name'],'program_offer'=>(string)$programOffer['name'],'program_admin_url'=>'http://localhost/evidencePavel/club_programs_admin.php','training_plan_url'=>$planId>0?'http://localhost/evidencePavel/planovany_trenink_form.php?id='.$planId:null,'targeted_event_id'=>$targetedEventId,'targeted_event_url'=>'http://localhost/evidencePavel/booking/krouzky.php','kis_demo_team'=>(string)$team['name'],'notice'=>'LOCALHOST TEST - NEPLATIT'],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR).PHP_EOL;
 }catch(Throwable $exception){error_log('seed-local-demo.php: '.$exception->getMessage());fwrite(STDERR,"Localhost demo seed selhal: ".$exception->getMessage()."\n");exit(1);}

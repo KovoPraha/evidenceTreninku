@@ -44,6 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 auth_rate_limit_record_success($pdo, $rateScope, $email, $clientIp);
                 app_session_mark_authenticated();
+                unset(
+                    $_SESSION['sportovec_pristup_id'],
+                    $_SESSION['sportovec_pristup_jmeno'],
+                    $_SESSION['sportovec_pristup_session_version'],
+                    $_SESSION['sportovec_pristup_last_verified']
+                );
                 auth_session_bind_public_user(
                     (int)$identity['public']['id'],
                     (int)$identity['public']['session_version']
@@ -92,6 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card-body p-4">
             <h1 class="h4 mb-2 text-center"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení</h1>
             <p class="text-center text-muted small mb-4">Jeden účet platí pro e-shop, rezervace i trenérskou Evidenci.</p>
+
+            <?php if (isset($_SESSION['sportovec_pristup_id'])): ?>
+                <div class="alert alert-info small" role="status">
+                    Nyní jste přihlášený jako sportovec. Přihlášením rodičovského účtu se sportovní režim bezpečně ukončí.
+                </div>
+            <?php endif; ?>
 
             <?php foreach ($errors as $e): ?>
                 <div class="alert alert-danger"><?= $e ?></div>

@@ -285,6 +285,10 @@ details.card > summary.card-header:hover { background-color: var(--bs-tertiary-b
     --app-page-bg: #111827;
 }
 
+[data-bs-theme="dark"] body {
+    background-color: var(--app-page-bg) !important;
+}
+
 [data-bs-theme="dark"] body.bg-light {
     background-color: var(--app-page-bg) !important;
 }

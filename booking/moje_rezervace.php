@@ -105,7 +105,9 @@ $stavBadge = [
                 <div>
                     <strong><?= h($r['nazev']) ?></strong>
                     <span class="badge bg-<?= $bColor ?> ms-2"><?= $bLabel ?></span>
-                    <?php if ($r['zaplaceno'] && $r['stav'] === 'potvrzena'): ?>
+                    <?php if ((float)$r['cena_kc'] <= 0 && $r['stav'] === 'potvrzena'): ?>
+                        <span class="badge bg-info text-dark ms-1"><i class="bi bi-gift me-1"></i>Bez platby</span>
+                    <?php elseif ($r['zaplaceno'] && $r['stav'] === 'potvrzena'): ?>
                         <span class="badge bg-success ms-1"><i class="bi bi-check-circle me-1"></i>Zaplaceno</span>
                     <?php elseif ($r['stav'] === 'potvrzena'): ?>
                         <span class="badge bg-warning text-dark ms-1">Nezaplaceno</span>

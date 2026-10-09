@@ -237,13 +237,13 @@ $volnoSlot = max(0, (int)$lekce['max_osob'] - $obsazenoSlot);
 
     <div class="card shadow">
         <div class="card-body p-4">
-            <h5 class="mb-3">
+            <h1 class="h5 mb-3">
                 <?php if ($waitlist): ?>
                     <i class="bi bi-hourglass-split me-2 text-warning"></i>Přidat na čekací listinu
                 <?php else: ?>
                     <i class="bi bi-calendar-check me-2 text-primary"></i>Potvrdit rezervaci
                 <?php endif; ?>
-            </h5>
+            </h1>
             <?php if ($waitlist): ?>
             <div class="alert alert-warning py-2 mb-3">
                 <i class="bi bi-people-fill me-2"></i>

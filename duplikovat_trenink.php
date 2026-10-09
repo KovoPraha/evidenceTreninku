@@ -12,6 +12,8 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 // ── Filtr skupiny ──────────────────────────────────────────────────────────
 $filterGroup = $_GET['skupina_id'] ?? '';
 if ($filterGroup !== '' && !ctype_digit((string)$filterGroup)) $filterGroup = '';
+$duplicatePeriod = (string)($_GET['obdobi'] ?? '90');
+if (!in_array($duplicatePeriod, ['30','90','365','all'], true)) $duplicatePeriod = '90';
 
 $skupiny = [];
 try {
@@ -46,7 +48,10 @@ try {
         $sql .= ' AND tsk.skupina_id = ?';
         $params[] = (int)$filterGroup;
     }
-    $sql .= ' GROUP BY t.id ORDER BY t.datum DESC LIMIT 200';
+    if ($duplicatePeriod !== 'all') {
+        $sql .= ' AND t.datum >= DATE_SUB(CURRENT_DATE, INTERVAL '.(int)$duplicatePeriod.' DAY)';
+    }
+    $sql .= ' GROUP BY t.id ORDER BY t.datum DESC LIMIT 100';
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
@@ -223,7 +228,7 @@ foreach ($treninky as $t) {
                     <i class="bi bi-copy me-2 opacity-75"></i>Duplikovat trénink
                 </h1>
                 <div class="opacity-75 small">
-                    Vyberte vzorový trénink — přenesou se skupina, podskupiny a účastníci
+                    Vyberte vzorový trénink — přenesou se skupiny, účastníci, kategorie, délka a náplň
                 </div>
             </div>
             <div class="d-flex align-items-center gap-3">
@@ -254,10 +259,16 @@ foreach ($treninky as $t) {
                         </option>
                     <?php endforeach; ?>
                 </select>
+                <label class="visually-hidden" for="duplicate-period">Období</label>
+                <select name="obdobi" id="duplicate-period" class="form-select form-select-sm" style="max-width:220px;">
+                    <?php foreach (['30'=>'Posledních 30 dní','90'=>'Posledních 90 dní','365'=>'Poslední rok','all'=>'Celá historie'] as $value=>$label): ?>
+                        <option value="<?= h($value) ?>" <?= $duplicatePeriod===(string)$value?'selected':'' ?>><?= h($label) ?></option>
+                    <?php endforeach; ?>
+                </select>
                 <button type="submit" class="btn btn-sm btn-primary">
                     <i class="bi bi-search me-1"></i>Filtrovat
                 </button>
-                <?php if ($filterGroup !== ''): ?>
+                <?php if ($filterGroup !== '' || $duplicatePeriod !== '90'): ?>
                 <a href="duplikovat_trenink.php" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x me-1"></i>Zrušit filtr
                 </a>
@@ -371,12 +382,12 @@ foreach ($treninky as $t) {
                         <div class="d-flex gap-2">
                             <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"
                                  style="width:28px;height:28px;font-size:.8rem;font-weight:700;">1</div>
-                            <div class="small">Vyberte trénink ze seznamu vlevo — přenesou se jeho <strong>skupina, podskupiny a seznam účastníků</strong>.</div>
+                            <div class="small">Vyberte trénink ze seznamu vlevo — přenesou se jeho <strong>skupina, podskupiny, účastníci, kategorie, délka a náplň</strong>.</div>
                         </div>
                         <div class="d-flex gap-2">
                             <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"
                                  style="width:28px;height:28px;font-size:.8rem;font-weight:700;">2</div>
-                            <div class="small">Datum bude předvyplněno na <strong>dnešní den</strong>. Náplň, měření a poznámky se nepřenáší — vyplníte je nově.</div>
+                            <div class="small">Datum bude předvyplněno na <strong>dnešní den</strong>. Měření a interní poznámky se z bezpečnostních důvodů nepřenášejí.</div>
                         </div>
                         <div class="d-flex gap-2">
                             <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"

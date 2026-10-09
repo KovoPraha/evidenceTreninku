@@ -1838,7 +1838,7 @@ CREATE TABLE `payments` (
   `stripe_payment_intent_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_payment_payable` (`payable_type`,`payable_id`),
-  UNIQUE KEY `uq_payment_variable_symbol` (`variable_symbol`),
+  KEY `idx_payment_variable_symbol` (`variable_symbol`),
   UNIQUE KEY `uq_payment_stripe_session` (`stripe_checkout_session_id`),
   KEY `idx_payment_status_due` (`status`,`due_at`,`id`),
   KEY `fk_payment_confirmed_by` (`confirmed_by_trainer_id`),

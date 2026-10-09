@@ -117,6 +117,8 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('function ensureAccessibleFieldNames()', $ui);
         self::assertStringContainsString("name.indexOf('min_role[') === 0", $ui);
         self::assertStringContainsString("field.getAttribute('placeholder')", $ui);
+        self::assertStringContainsString(".btn-close:not([aria-label])", $ui);
+        self::assertStringContainsString("button.setAttribute('aria-label', 'Zavřít')", $ui);
         self::assertStringContainsString('ensureAccessibleFieldNames();', $ui);
         self::assertStringContainsString('<h1 class="h5 fw-semibold mb-0">', $trainingSettings);
     }
@@ -254,5 +256,36 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString(':focus-visible', $css);
         self::assertStringContainsString('outline: 3px solid #ffbf47 !important;', $css);
         self::assertStringContainsString('outline-offset: 2px !important;', $css);
+    }
+
+    public function testBrowserUatRegressionFixesRemainWired(): void
+    {
+        $css = (string)file_get_contents($this->root . 'assets/app-ui.css');
+        $trainers = (string)file_get_contents($this->root . 'sprava_treneru.php');
+        $plannedTraining = (string)file_get_contents($this->root . 'planovany_trenink_form.php');
+        $bookingConfirmation = (string)file_get_contents($this->root . 'booking/rezervovat.php');
+        $reservations = (string)file_get_contents($this->root . 'booking/moje_rezervace.php');
+        $duplicatePicker = (string)file_get_contents($this->root . 'duplikovat_trenink.php');
+        $trainingForm = (string)file_get_contents($this->root . 'formular.php');
+        $charges = (string)file_get_contents($this->root . 'member_charges_admin.php');
+        $order = (string)file_get_contents($this->root . 'booking/objednavka.php');
+        $publicTrainings = (string)file_get_contents($this->root . 'booking/treninky.php');
+
+        self::assertStringContainsString('[data-bs-theme="dark"] body {', $css);
+        self::assertStringContainsString('background-color: var(--app-page-bg) !important;', $css);
+        self::assertStringContainsString('staff-accounts-table', $trainers);
+        self::assertStringContainsString('data-label="Akce"', $trainers);
+        self::assertStringContainsString('<span class="small">Potvrdit změnu</span>', $trainers);
+        self::assertStringContainsString('<h1 class="h4 mb-0">', $plannedTraining);
+        self::assertStringContainsString('<h1 class="h5 mb-3">', $bookingConfirmation);
+        self::assertStringContainsString('Bez platby</span>', $reservations);
+        self::assertStringContainsString("['30','90','365','all']", $duplicatePicker);
+        self::assertStringContainsString("'napln' => (string)\$dupSource['napln']", $trainingForm);
+        self::assertStringContainsString('id="charge-athlete-search"', $charges);
+        self::assertStringContainsString("fetch('ajax_sportovci.php?q='", $charges);
+        self::assertStringContainsString('const exact=choices.get(q);if(exact){hidden.value=exact;return;}', $charges);
+        self::assertStringContainsString('QR kód se nepodařilo zobrazit.', $order);
+        self::assertStringContainsString("\$order['payment_record_status']==='pending'", $order);
+        self::assertStringContainsString('text-md-end d-flex flex-wrap justify-content-md-end gap-1', $publicTrainings);
     }
 }

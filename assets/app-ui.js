@@ -55,6 +55,10 @@
             }
             if (label) field.setAttribute('aria-label', label.replace(/\s+/g, ' ').trim());
         });
+
+        document.querySelectorAll('.btn-close:not([aria-label])').forEach(function (button) {
+            button.setAttribute('aria-label', 'Zavřít');
+        });
     }
 
     window.showToast = function (message, type) {
