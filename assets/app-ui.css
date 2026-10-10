@@ -262,6 +262,20 @@ body.app-loading .app-loading-bar {
 .app-calendar-event-time { display: block; font-weight: 700; margin-bottom: .15rem; }
 .app-calendar-event-title { display: block; overflow: hidden; text-overflow: ellipsis; }
 
+@media (max-width: 767.98px) {
+    .app-calendar-wrap { overflow-x: visible; }
+    .app-calendar { display: block; min-width: 0; }
+    .app-calendar-weekday,
+    .app-calendar-day.is-outside,
+    .app-calendar-day.is-empty:not(.is-today) { display: none; }
+    .app-calendar-day {
+        min-height: 0;
+        padding: .75rem;
+        border-right: 0;
+    }
+    .app-calendar-date { margin-bottom: .5rem; }
+}
+
 .app-product-media-sticky { position: sticky; top: 1rem; align-self: flex-start; }
 .app-product-media-sticky img { width: 100%; height: auto; max-height: 34rem; object-fit: contain; }
 .app-anchor-nav { position: sticky; top: 0; z-index: 1010; background: rgba(248, 249, 250, .96); backdrop-filter: blur(8px); }

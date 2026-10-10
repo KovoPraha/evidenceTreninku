@@ -131,6 +131,8 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertStringContainsString('staffPositionAdvancedMenuGroups(', $landing);
         self::assertStringContainsString('Pokročilé a jednorázové nástroje', $landing);
         self::assertStringContainsString('foreach ($activeGroups', $landing);
+        self::assertStringContainsString("if (\$activeCode === 'coach')", $landing);
+        self::assertStringContainsString("staffRouteAllowedPositions('club_calendar.php')", $landing);
         self::assertStringContainsString("appUiUrl((string)\$staff_item['route'])", $header);
         self::assertStringContainsString("appUiUrl((string)\$item['route'])", $landing);
         self::assertStringContainsString("\$position['label']", $landing);

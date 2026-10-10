@@ -33,6 +33,8 @@ final class CalendarUiTest extends TestCase
         self::assertStringContainsString('16:00–17:00', $html);
         self::assertStringContainsString('data-bs-toggle="popover"', $html);
         self::assertStringContainsString('Dráha &amp; venku', $html);
+        self::assertStringContainsString('app-calendar-day has-events', $html);
+        self::assertStringContainsString('app-calendar-day is-empty', $html);
         self::assertStringNotContainsString('<Test>', $html);
     }
 

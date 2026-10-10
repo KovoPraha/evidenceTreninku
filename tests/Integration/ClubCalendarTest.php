@@ -108,6 +108,21 @@ final class ClubCalendarTest extends TestCase
         try{\clubCalendarFamilyRegister($pdo,$event['id'],101,201,true);self::fail('Unrelated account must be rejected.');}catch(\ClubCalendarException$e){self::assertStringContainsString('není určena',$e->getMessage());}
     }
 
+    public function testFamilyCalendarCannotBypassShopCheckoutForPaidProductEvent(): void
+    {
+        $pdo=$this->database();$event=$this->event($pdo,['planning_status'=>'confirmed','visibility'=>'rosters','team_ids'=>[10]]);
+        \clubCalendarSetRegistration($pdo,$event['id'],1,true);
+        $pdo->exec("UPDATE club_events SET pricing_policy='product_variants' WHERE id=".$event['id']);
+        try {
+            \clubCalendarFamilyRegister($pdo,$event['id'],100,200,true);
+            self::fail('Product-linked event must use the audited shop checkout.');
+        } catch (\ClubCalendarException $exception) {
+            self::assertStringContainsString('přidejte do košíku', $exception->getMessage());
+        }
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_planned_participants')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
+    }
+
     public function testMigrationImportsFutureLegacyRaceOnlyOnce(): void
     {
         $pdo=$this->database(false);$pdo->exec("INSERT INTO zavody(id,datum,kategorie,popis,poznamka,url_vysledky,trener_id) VALUES(5,'2099-05-01','silnice','Budoucí závod','','',1),(6,'2000-05-01','silnice','Starý závod','','',1)");$migration=require dirname(__DIR__,2).'/migrations/20260824120000_club_calendar_planning.php';$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_events')->fetchColumn());self::assertSame('race:confirmed:staff:5',$pdo->query("SELECT activity_kind||':'||planning_status||':'||visibility||':'||legacy_race_id FROM club_events")->fetchColumn());
