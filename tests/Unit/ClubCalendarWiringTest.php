@@ -13,6 +13,9 @@ final class ClubCalendarWiringTest extends TestCase
         self::assertStringContainsString("includes/club_calendar.php",$staff);self::assertStringContainsString('csrf_verify',$staff);
         self::assertStringContainsString("includes/club_calendar.php",$family);self::assertStringContainsString('csrf_verify',$family);
         self::assertStringContainsString('clubCalendarFamilyRegister',$family);self::assertStringContainsString("publicShellNav('calendar')",$family);
+        self::assertStringContainsString('$usesShop',$family);
+        self::assertStringContainsString('Vybrat účastníka a přidat do košíku',$family);
+        self::assertStringContainsString('Souhlasím s účastí na této akci.',$family);
         self::assertStringNotContainsString("['internal_note']",$family);
         self::assertStringContainsString('Potvrdit akci a otevřít přihlašování',$staff);
         $service=(string)file_get_contents($root.'/includes/club_calendar.php');

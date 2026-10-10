@@ -474,7 +474,7 @@ try {
                     <option value="bez_skupiny" <?= $kisFilter === 'bez_skupiny' ? 'selected' : '' ?>>Bez skupiny</option>
                     <option value="mimo_import" <?= $kisFilter === 'mimo_import' ? 'selected' : '' ?>>Mimo import</option>
                 </select>
-                <select name="pp" class="form-select form-select-sm" style="max-width: 130px;" title="Počet na stránku">
+                <select name="pp" class="form-select form-select-sm" style="max-width: 130px;" title="Počet na stránku" aria-label="Počet sportovců na stránku">
                     <option value="50"  <?= $perPage === 50  ? 'selected' : '' ?>>50 / stránka</option>
                     <option value="100" <?= $perPage === 100 ? 'selected' : '' ?>>100 / stránka</option>
                     <option value="500" <?= $perPage === 500 ? 'selected' : '' ?>>500 / stránka</option>

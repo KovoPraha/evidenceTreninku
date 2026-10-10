@@ -53,6 +53,7 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString("'lessons' => ['Individuální lekce'", $shell);
         self::assertStringContainsString('@media (max-width: 1199.98px)', $css);
         self::assertStringContainsString('min-height: 44px;', $css);
+        self::assertStringContainsString('.app-calendar-day.is-empty:not(.is-today)', $css);
         self::assertStringContainsString('Žádný produkt neodpovídá zvoleným filtrům.', $shop);
         self::assertStringContainsString('Zrušit filtry', $shop);
         self::assertSame(1, substr_count($clubs, '<h1'));
@@ -84,6 +85,7 @@ final class UxAccessibilityWiringTest extends TestCase
         $payments = (string)file_get_contents($this->root . 'eshop_payments_admin.php');
 
         self::assertStringContainsString('aria-label="Hledat sportovce"', $members);
+        self::assertStringContainsString('aria-label="Počet sportovců na stránku"', $members);
         self::assertStringContainsString('aria-label="Vybrat <?= h(', $members);
         self::assertStringContainsString('for="training-images"', $training);
         self::assertStringContainsString('aria-label="Odebrat měření"', $training);

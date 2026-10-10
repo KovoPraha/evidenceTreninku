@@ -56,11 +56,12 @@ function calendarUiRender(DateTimeImmutable $month, array $items, string $emptyT
         foreach ($week as $date) {
             $key = $date->format('Y-m-d');
             $outside = $date->format('Y-m') !== $month->format('Y-m');
-            $classes = 'app-calendar-day' . ($outside ? ' is-outside' : '') . ($key === $today ? ' is-today' : '');
+            $dayItems = $byDate[$key] ?? [];
+            $classes = 'app-calendar-day' . ($outside ? ' is-outside' : '') . ($key === $today ? ' is-today' : '') . ($dayItems === [] ? ' is-empty' : ' has-events');
             $label = uiFormatDayName($date) . ' ' . uiFormatDate($key);
             $html .= '<section class="' . $classes . '" role="gridcell" aria-label="' . uiFormatH($label) . '">';
             $html .= '<div class="app-calendar-date"><span>' . $date->format('j') . '</span>' . ($key === $today ? '<small>dnes</small>' : '') . '</div>';
-            foreach ($byDate[$key] ?? [] as $item) {
+            foreach ($dayItems as $item) {
                 $title = (string)$item['title'];
                 $time = trim((string)($item['time'] ?? ''));
                 $meta = trim((string)($item['meta'] ?? ''));
@@ -79,7 +80,7 @@ function calendarUiRender(DateTimeImmutable $month, array $items, string $emptyT
                 }
                 $html .= '<span class="app-calendar-event-title">' . uiFormatH($title) . '</span></' . $tag . '>';
             }
-            if (!$outside && ($byDate[$key] ?? []) === []) {
+            if (!$outside && $dayItems === []) {
                 $html .= '<span class="visually-hidden">' . uiFormatH($emptyText) . '</span>';
             }
             $html .= '</section>';

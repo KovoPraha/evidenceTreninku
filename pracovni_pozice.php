@@ -112,13 +112,14 @@ function staffDashboardH(mixed $value): string
         <?php unset($_SESSION['flash_error']); ?>
     <?php endif; ?>
 
-    <?php if ($vehicleConflictCount > 0): ?>
+    <?php if ($vehicleConflictCount > 0 && in_array($activeCode, staffRouteAllowedPositions('club_calendar.php'), true)): ?>
         <div class="alert alert-danger border-3 shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div><strong><i class="bi bi-exclamation-octagon-fill me-2"></i>Kolize klubových vozidel: <?= $vehicleConflictCount ?></strong><div class="small">Překryv může být domluvený mimo systém, ale musí být zkontrolován.</div></div>
             <a class="btn btn-danger" href="<?= staffDashboardH(appUiUrl('club_calendar.php')) ?>">Otevřít klubový kalendář</a>
         </div>
     <?php endif; ?>
 
+    <?php if ($activeCode === 'coach'): ?>
     <section class="card border-0 shadow-sm mb-4" aria-labelledby="today-work-title">
         <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2"><strong id="today-work-title"><i class="bi bi-sun me-2 text-warning"></i>Dnes a vyžaduje pozornost</strong><span class="small text-muted"><?=staffDashboardH((new DateTimeImmutable('today'))->format('j. n. Y'))?></span></div>
         <div class="card-body">
@@ -134,6 +135,7 @@ function staffDashboardH(mixed $value): string
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <?php if (count($available) > 1): ?>
     <section class="card border-0 shadow-sm mb-4">
