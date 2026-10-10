@@ -17,8 +17,9 @@ final class CurrentDocumentationContractTest extends TestCase
             self::assertStringContainsString('37886667244', $document);
             self::assertStringContainsString('37886667406', $document);
             self::assertStringContainsString('37886677875', $document);
-            self::assertStringContainsString('37886988895', $document);
-            self::assertStringContainsString('37887161804', $document);
+            self::assertStringContainsString('38093332413', $document);
+            self::assertStringContainsString('38093377833', $document);
+            self::assertStringContainsString('38093408270', $document);
             self::assertStringContainsString('37701691548', $document);
             self::assertStringContainsString('37764312992', $document);
             self::assertStringContainsString('uat_schvaleno=true', $document);
