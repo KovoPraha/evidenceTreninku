@@ -1,6 +1,6 @@
 # Aktuální předání vývoje na další stanici
 
-Aktualizováno: 9. 10. 2026, Europe/Prague
+Aktualizováno: 11. 10. 2026, Europe/Prague
 
 Tento dokument je stabilní vstupní bod pro další počítač nebo vývojáře.
 Autoritativní zdroj je vždy vzdálená větev `origin/main` repozitáře
@@ -14,13 +14,14 @@ snapshot z data aktualizace, nikoli náhrada za nový `git fetch`.
 | Větev | `main`; přesné aktuální SHA zjistí nový clone pomocí `git rev-parse origin/main` |
 | `origin/main` při kontrole | `16b7d4d60883f3f4f655c097339339c68c1be07d` |
 | Nasazený aplikační commit | `16b7d4d60883f3f4f655c097339339c68c1be07d` |
-| Otevřené pull requesty | žádné při kontrole 9. 10. 2026 |
+| Otevřené pull requesty | žádné při kontrole 11. 10. 2026 |
 | CI aktuálního `main` | [běh 37886667244](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886667244), úspěch |
 | CI nasazeného aplikačního commitu | [běh 37886667244](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886667244), úspěch |
 | CodeQL nasazeného commitu | [běh 37886667406](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886667406), Actions a JavaScript/TypeScript úspěch |
 | Produkční deploy | [běh 37886677875](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886677875), úspěch, `uat_schvaleno=true` |
-| UAT připravenost | [běh 37886988895](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886988895), blokováno vypršeným oknem `KIS_UAT_WINDOW_END` |
-| Produkční invarianty | [běh 37887161804](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37887161804), 16/16 bez porušení |
+| Obnovení UAT účtů a dat | [běh 38093332413](https://github.com/KovoPraha/evidenceTreninku/actions/runs/38093332413), úspěch, okno do 12. 10. 2026 20:00 |
+| UAT připravenost | [běh 38093377833](https://github.com/KovoPraha/evidenceTreninku/actions/runs/38093377833), `ready=true`, 10/10 oblastí |
+| Produkční invarianty | [běh 38093408270](https://github.com/KovoPraha/evidenceTreninku/actions/runs/38093408270), 16/16 bez porušení |
 | Obnova zálohy | [běh 37701691548](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37701691548), 195 tabulek a 2 triggery |
 | Produkční fronta zpráv | [běh 37606107788](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788), úspěch |
 | CodeQL default setup | [běh 37764312992](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37764312992), Actions a JavaScript/TypeScript bez otevřeného nálezu |
@@ -37,8 +38,9 @@ CI nad aplikačním commitem ověřilo 877 testů / 11 995 kontrol a MariaDB 10.
 Po deployi prošla z prohlížeče domovská stránka, e-shop, veřejný rozvrh,
 klubový kalendář, velodrom a přihlášení bez fatálních chyb a bez chyb či
 varování v konzoli. Databázové invarianty jsou zelené. Poslední deploy má
-`uat_schvaleno=true`, ale nové zápisové UAT je blokováno vypršeným časovým
-oknem z 8. 10. 2026; jeho prodloužení vyžaduje nové rozhodnutí vlastníka.
+`uat_schvaleno=true`; nové časově omezené UAT okno bylo schváleno a ověřeno do
+12. 10. 2026 20:00 Europe/Prague. Po jeho skončení je nutné testovací účty a
+data deaktivovat auditovaným workflow.
 
 Automatický Fio import je dočasně vypnutý. Workflow zůstává jen ručně
 spustitelné a produkční `FIO_IMPORT_ENABLED` má zůstat `false`, dokud vlastník

@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno: 9. 10. 2026, Europe/Prague
+Aktualizováno: 11. 10. 2026, Europe/Prague
 
 Tento soubor je autoritativní stavový rozcestník. Historické audity, předávací
 záznamy a implementační prompty zachycují stav v datu svého vzniku a nesmí se
@@ -121,15 +121,19 @@ jsou popsány v
 Poslední deploy má `uat_schvaleno=true`, což označuje schválení přesného
 commitu pro řízené produkční UAT, nikoli neomezené povolení zápisů. Read-only
 kontrola připravenosti
-[`37886988895`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37886988895)
-je aktuálně blokovaná, protože provozní proměnná `KIS_UAT_WINDOW_END` skončila
-8. 10. 2026 ve 20:00. Dokud vlastník výslovně neschválí nové časové okno,
-nesmí se spouštět zápisové UAT. Reálné e-maily, bankovní pohyby a provozní účty
-se nadále používají jen v rozsahu samostatně schváleného scénáře podle
+[`38093377833`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/38093377833)
+potvrdila `ready=true` ve všech deseti oblastech: release, rodiče, děti,
+správce, TEST data, technické vlastnictví, Stripe sandbox, banka, inbox i
+úklidové okno. Časově omezené účty a data byly předtím idempotentně obnoveny
+během
+[`38093332413`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/38093332413).
+Schválené okno končí 12. 10. 2026 ve 20:00 Europe/Prague. Reálné e-maily,
+bankovní pohyby a provozní účty se používají jen v rozsahu schváleného scénáře
+podle
 [`PRODUKCNI-UZIVATELSKE-TESTOVANI.md`](PRODUKCNI-UZIVATELSKE-TESTOVANI.md).
 
 Navazující read-only kontrola databázových invariantů
-[`37887161804`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37887161804)
+[`38093408270`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/38093408270)
 skončila `ok=true`: 16/16 kontrol bez porušení. Deploy před aktivací vytvořil
 ověřenou komprimovanou zálohu 196 tabulek a 2 triggerů mimo webroot.
 
