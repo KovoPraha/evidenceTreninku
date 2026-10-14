@@ -18,6 +18,7 @@ require_once dirname(__DIR__) . '/includes/family_annual_paid_overview.php';
 require_once dirname(__DIR__) . '/includes/member_charge_reminder.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 require_once dirname(__DIR__) . '/includes/training_rsvp.php';
+require_once dirname(__DIR__) . '/includes/calendar_ui.php';
 require_once dirname(__DIR__) . '/includes/ui_format.php';
 
 function familyPageH(mixed $value): string
@@ -37,6 +38,8 @@ function familyPageItemCount(int $count): string
 }
 
 $accountId = (int)$_SESSION['verejny_uzivatel_id'];
+$trainingCalendarMonth = trainingRsvpCalendarMonth((string)($_GET['mesic'] ?? ''));
+$trainingCalendarRange = trainingRsvpCalendarRange($trainingCalendarMonth);
 $calendarMessage = (string)($_SESSION['family_calendar_message'] ?? '');
 $calendarToken = (string)($_SESSION['family_calendar_token_once'] ?? '');
 $reminderMessage = (string)($_SESSION['member_charge_reminder_message'] ?? '');
@@ -67,12 +70,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     (int)($_POST['profile_id'] ?? 0),
                     (string)($_POST['response'] ?? ''),
                     'account',
-                    $accountId
+                    $accountId,
+                    (string)($_POST['member_note'] ?? '')
                 );
-                $_SESSION['training_rsvp_message'] = $saved['changed']
-                    ? 'Odpověď k tréninku byla uložena: ' . trainingRsvpLabel($saved['response']) . '.'
-                    : 'Odpověď k tréninku už byla uložená.';
-                header('Location: sportovni_prehled.php#potvrzeni-treninku', true, 303);
+                $_SESSION['training_rsvp_message'] = $saved['response']==='not_going'
+                    ? ($saved['makeup_eligible']===true ? 'Omluva byla uložena. Nárok na náhradní lekci vznikne až po ověření skutečné docházky trenérem.' : 'Omluva byla uložena. Tato omluva nezakládá nárok na náhradní lekci (lhůta nebo placená účast nesplněna).')
+                    : ($saved['changed'] ? 'Účast a zpráva pro trenéra byly uloženy.' : 'Účast a zpráva pro trenéra už byly uložené.');
+                header('Location: sportovni_prehled.php?mesic=' . $trainingCalendarMonth->format('Y-m') . '#potvrzeni-treninku', true, 303);
                 exit;
             }
             if ($action === 'family_calendar_issue') {
@@ -140,6 +144,7 @@ $familyAgenda = [];
 $trainingRsvps = [];
 $weeklySummary = null;
 $annualPaidOverview = null;
+$makeupProfileSummaries = [];
 $agendaError = '';
 $weeklyError = '';
 $annualPaidOverviewError = '';
@@ -156,11 +161,22 @@ try {
     error_log('booking/sportovni_prehled.php: ' . $exception->getMessage());
     $loadError = 'Sportovní přehled se nyní nepodařilo načíst.';
 }
+if (clubMakeupReady($pdo)) {
+    foreach ($overview as $profile) {
+        $personId = (int)$profile['person']['sportovec_id'];
+        try {
+            clubMakeupSyncPersonCredits($pdo, $personId);
+            $makeupProfileSummaries[$personId] = clubMakeupProfileSummary($pdo, $personId);
+        } catch (Throwable $exception) {
+            error_log('booking/sportovni_prehled.php makeup summary: ' . $exception->getMessage());
+        }
+    }
+}
 try {
     $today = new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
     $agendaFrom = $today->format('Y-m-d');
     $familyAgenda = familyCalendarAgenda($pdo, $accountId, $agendaFrom, 30);
-    $trainingRsvps = trainingRsvpUpcomingForAccount($pdo, $accountId, $agendaFrom, $today->modify('+30 days')->format('Y-m-d'));
+    $trainingRsvps = trainingRsvpUpcomingForAccount($pdo, $accountId, $trainingCalendarRange['from'], $trainingCalendarRange['to']);
 } catch (Throwable $exception) {
     error_log('booking/sportovni_prehled.php agenda: ' . $exception->getMessage());
     $agendaError = 'Rodinný program se nyní nepodařilo načíst.';
@@ -200,6 +216,18 @@ foreach ($overview as $profileSummary) {
     }
 }
 $unansweredTrainings = count(array_filter($trainingRsvps, static fn(array $training): bool => trim((string)($training['response'] ?? '')) === ''));
+$trainingCalendarItems = [];
+foreach ($trainingRsvps as $training) {
+    $response = (string)($training['response'] ?? '');
+    $trainingCalendarItems[] = [
+        'date' => (string)$training['datum'],
+        'title' => (string)$training['nazev'] . ' · ' . (string)$training['jmeno'],
+        'time' => $training['cas_od'] ? uiFormatTime((string)$training['cas_od']) : '',
+        'meta' => trainingRsvpLabel($response),
+        'href' => '#training-rsvp-' . (int)$training['plan_id'] . '-' . (int)$training['sportovec_id'],
+        'tone' => $response === 'going' ? 'success' : ($response === 'not_going' ? 'warning' : 'primary'),
+    ];
+}
 ?>
 <!doctype html>
 <html lang="cs">
@@ -216,7 +244,7 @@ $unansweredTrainings = count(array_filter($trainingRsvps, static fn(array $train
     <p class="text-muted">Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.</p>
 
     <div class="row g-3 mb-3" aria-label="Souhrn sportovního přehledu">
-        <div class="col-6 col-lg-3"><a href="#potvrzeni-treninku" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Čeká na odpověď</span><strong class="fs-3 <?=$unansweredTrainings>0?'text-warning':'text-success'?>"><?=$unansweredTrainings?></strong><span class="small">tréninků</span></a></div>
+        <div class="col-6 col-lg-3"><a href="#potvrzeni-treninku" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Čeká na odpověď v zobrazeném měsíci</span><strong class="fs-3 <?=$unansweredTrainings>0?'text-warning':'text-success'?>"><?=$unansweredTrainings?></strong><span class="small">tréninků</span></a></div>
         <div class="col-6 col-lg-3"><a href="#rodinny-program" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Příštích 30 dní</span><strong class="fs-3 text-primary"><?=count($familyAgenda)?></strong><span class="small">položek programu</span></a></div>
         <div class="col-6 col-lg-3"><a href="#profily" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Rodina</span><strong class="fs-3 text-primary"><?=count($overview)?></strong><span class="small">schválených profilů</span></a></div>
         <div class="col-6 col-lg-3"><a href="#profily" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">K úhradě</span><strong class="fs-3 <?=$pendingCharges>0?'text-danger':'text-success'?>"><?=$pendingCharges?></strong><span class="small">členských předpisů</span></a></div>
@@ -231,12 +259,19 @@ $unansweredTrainings = count(array_filter($trainingRsvps, static fn(array $train
     <section class="card border-primary shadow-sm mb-4" id="potvrzeni-treninku">
         <div class="card-header bg-primary-subtle d-flex flex-wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-check2-circle me-2"></i>Potvrzení účasti na trénincích</strong><span class="badge text-bg-light border text-dark"><?= count($trainingRsvps) ?> položek</span></div>
         <div class="card-body">
-            <p class="small text-muted">Zobrazují se plánované tréninky z KIS soupisek vašich schválených profilů. Odpověď můžete do termínu změnit; skutečnou docházku po tréninku zapisuje trenér.</p>
+            <p class="small text-muted">Zobrazují se plánované tréninky z KIS soupisek vašich schválených profilů. Kliknutím na trénink v kalendáři přejdete k odpovědi a zprávě pro trenéra. Skutečnou docházku po tréninku zapisuje trenér.</p>
+            <p><a class="btn btn-sm btn-outline-primary" href="nahrady.php">Náhradní lekce kroužků a moje nároky</a></p>
             <?php if ($trainingRsvpMessage !== ''): ?><div class="alert alert-success py-2"><?= familyPageH($trainingRsvpMessage) ?></div><?php endif; ?>
             <?php if ($trainingRsvpError !== ''): ?><div class="alert alert-danger py-2"><?= familyPageH($trainingRsvpError) ?></div><?php endif; ?>
-            <?php if ($trainingRsvps === []): ?><p class="text-muted mb-0">V příštích 30 dnech není žádný trénink, který by čekal na odpověď.</p>
+            <nav class="d-flex justify-content-between align-items-center gap-2 mb-3" aria-label="Měsíc tréninků">
+                <?php if ($trainingCalendarMonth > trainingRsvpCalendarMonth('')): ?><a class="btn btn-outline-secondary btn-sm" href="?mesic=<?= $trainingCalendarMonth->modify('-1 month')->format('Y-m') ?>#potvrzeni-treninku">Předchozí měsíc</a><?php else: ?><span></span><?php endif; ?>
+                <strong><?= familyPageH(uiFormatMonthName($trainingCalendarMonth)) ?></strong>
+                <?php if ($trainingCalendarMonth < trainingRsvpCalendarMonth('9999-12')): ?><a class="btn btn-outline-secondary btn-sm" href="?mesic=<?= $trainingCalendarMonth->modify('+1 month')->format('Y-m') ?>#potvrzeni-treninku">Další měsíc</a><?php else: ?><span></span><?php endif; ?>
+            </nav>
+            <?= calendarUiRender($trainingCalendarMonth, $trainingCalendarItems, 'Bez plánovaného tréninku.') ?>
+            <?php if ($trainingRsvps === []): ?><p class="text-muted mt-3 mb-0">V tomto měsíci není žádný další trénink z vašich soupisek.</p>
             <?php else: ?><div class="list-group list-group-flush"><?php foreach ($trainingRsvps as $training): $response=(string)($training['response']??''); ?>
-                <div class="list-group-item px-0"><div class="d-flex flex-wrap justify-content-between gap-3"><div><strong><?= familyPageH($training['nazev']) ?></strong><div class="small text-muted"><?= familyPageH($training['jmeno'].' '.$training['prijmeni']) ?> · <?= familyPageH($training['team_name_snapshot']) ?><br><?= familyPageH(uiFormatDayName(new DateTimeImmutable((string)$training['datum']))) ?> <?= familyPageH(uiFormatDate((string)$training['datum'])) ?><?= $training['cas_od'] ? ' · '.familyPageH(uiFormatTime((string)$training['cas_od'])) : '' ?></div><?php if(trim((string)$training['popis'])!==''):?><div class="small mt-1"><?= familyPageH($training['popis']) ?></div><?php endif;?></div><div class="text-end"><span class="badge <?= $response==='going'?'text-bg-success':($response==='not_going'?'text-bg-secondary':'text-bg-warning') ?> mb-2"><?= familyPageH(trainingRsvpLabel($response)) ?></span><form method="post" class="d-flex gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="training_rsvp_save"><input type="hidden" name="plan_id" value="<?= (int)$training['plan_id'] ?>"><input type="hidden" name="profile_id" value="<?= (int)$training['sportovec_id'] ?>"><button class="btn btn-sm <?= $response==='going'?'btn-success':'btn-outline-success' ?>" name="response" value="going">Zúčastním se</button><button class="btn btn-sm <?= $response==='not_going'?'btn-secondary':'btn-outline-secondary' ?>" name="response" value="not_going">Nezúčastním se</button></form></div></div></div>
+                <div class="list-group-item px-0" id="training-rsvp-<?= (int)$training['plan_id'] ?>-<?= (int)$training['sportovec_id'] ?>"><div class="d-flex flex-wrap justify-content-between gap-3"><div><strong><?= familyPageH($training['nazev']) ?></strong><div class="small text-muted"><?= familyPageH($training['jmeno'].' '.$training['prijmeni']) ?> · <?= familyPageH($training['team_name_snapshot']) ?><br><?= familyPageH(uiFormatDayName(new DateTimeImmutable((string)$training['datum']))) ?> <?= familyPageH(uiFormatDate((string)$training['datum'])) ?><?= $training['cas_od'] ? ' · '.familyPageH(uiFormatTime((string)$training['cas_od'])) : '' ?></div><?php if(trim((string)$training['popis'])!==''):?><div class="small mt-1"><?= familyPageH($training['popis']) ?></div><?php endif;?></div><div><span class="badge <?= $response==='going'?'text-bg-success':($response==='not_going'?'text-bg-secondary':'text-bg-warning') ?> mb-2"><?= familyPageH(trainingRsvpLabel($response)) ?></span><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="training_rsvp_save"><input type="hidden" name="plan_id" value="<?= (int)$training['plan_id'] ?>"><input type="hidden" name="profile_id" value="<?= (int)$training['sportovec_id'] ?>"><label class="form-label small" for="training-note-<?= (int)$training['plan_id'] ?>-<?= (int)$training['sportovec_id'] ?>">Zpráva pro trenéra (nepovinná)</label><textarea class="form-control form-control-sm mb-2" id="training-note-<?= (int)$training['plan_id'] ?>-<?= (int)$training['sportovec_id'] ?>" name="member_note" maxlength="500" rows="2" placeholder="Např. přijdu o 5 minut později"><?= familyPageH($training['member_note'] ?? '') ?></textarea><div class="d-flex flex-wrap gap-2"><button class="btn btn-sm <?= $response==='going'?'btn-success':'btn-outline-success' ?>" name="response" value="going">Zúčastním se</button><button class="btn btn-sm <?= $response==='not_going'?'btn-secondary':'btn-outline-secondary' ?>" name="response" value="not_going">Nezúčastním se</button></div></form></div></div></div>
             <?php endforeach; ?></div><?php endif; ?>
         </div>
     </section>
@@ -386,13 +421,14 @@ $unansweredTrainings = count(array_filter($trainingRsvps, static fn(array $train
     </div>
 
     <div id="profily"></div>
-    <?php foreach ($overview as $profileIndex => $profile): $person = $profile['person']; ?>
+    <?php foreach ($overview as $profileIndex => $profile): $person = $profile['person']; $makeupSummary = $makeupProfileSummaries[(int)$person['sportovec_id']] ?? null; ?>
         <details class="card border-0 shadow-sm mb-4"<?= $profileIndex === 0 ? ' open' : '' ?>>
             <summary class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2">
                 <div><strong class="fs-5"><?= familyPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong><div class="small text-muted">Datum narození: <?= familyPageH($person['narozeni'] ?: 'neuvedeno') ?></div></div>
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php foreach ($person['relation_roles'] as $role): ?><span class="badge text-bg-primary ms-1"><?= familyPageH($roleLabels[$role] ?? $role) ?></span><?php endforeach; ?></div>
             </summary>
             <div class="card-body">
+                <?php if ($makeupSummary !== null): ?><div class="alert alert-light border d-flex flex-wrap align-items-center gap-2"><strong>Náhradní lekce kroužků</strong><span class="badge text-bg-warning">Omluvené, čekají na potvrzení <?= (int)$makeupSummary['pending'] ?></span><span class="badge text-bg-success">K využití <?= (int)$makeupSummary['available'] ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?= (int)$makeupSummary['locked'] ?></span><span class="badge text-bg-primary">Rezervované <?= (int)$makeupSummary['reserved'] ?></span><a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?= (int)$person['sportovec_id'] ?>">Zobrazit náhrady</a></div><?php endif; ?>
                 <h2 class="h6">Soupisky</h2>
                 <?php if ($profile['rosters'] === []): ?><p class="text-muted small">Žádná evidovaná soupiska.</p><?php else: ?>
                 <div class="table-responsive mb-4"><table class="table table-sm align-middle"><thead><tr><th>Tým</th><th>Sezóna</th><th>Platnost</th><th>Stav</th></tr></thead><tbody>

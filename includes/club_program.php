@@ -733,6 +733,8 @@ function clubProgramCancelOrderInTransaction(PDO $pdo, int $orderId, int $actorT
     }
     foreach($enrollments as$enrollment){
         $pdo->prepare("UPDATE club_program_enrollments SET status='cancelled',active_token=NULL,ended_at=CURRENT_TIMESTAMP,ended_reason=?,ended_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='active'")->execute([trim($reason),$actorTrainerId,(int)$enrollment['id']]);
+        require_once __DIR__ . '/club_makeup.php';
+        clubMakeupOnEnrollmentCancelled($pdo,(int)$enrollment['id'],$actorTrainerId);
         $payload=json_encode(['order_id'=>$orderId,'sportovec_id'=>(int)$enrollment['sportovec_id'],'team_id'=>(int)$enrollment['team_id'],'reason'=>trim($reason)],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
         $pdo->prepare("INSERT INTO club_program_enrollment_events(offer_id,enrollment_id,actor_type,actor_id,action,payload_json) VALUES (?,?,'trainer',?,'cancel',?)")->execute([(int)$enrollment['offer_id'],(int)$enrollment['id'],$actorTrainerId,$payload]);
     }

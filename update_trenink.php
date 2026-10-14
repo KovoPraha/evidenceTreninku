@@ -301,6 +301,8 @@ try {
         foreach ($tagIds as $tid) $stmtLinkTag->execute([$treninkId, $tid]);
     }
 
+    require_once __DIR__ . '/includes/club_makeup.php';
+    clubMakeupReconcileRecordedAttendance($pdo, $treninkId, $currentTrener);
     fileMutationFinalize($fileMutations);
     $pdo->commit();
     fileMutationCommitted($fileMutations);

@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-08.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-14.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -90,6 +90,13 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'participant_fee_minor',
         'legacy_race_id',
     ],
+    // A stored excuse may create a credit only under the captured cutoff and
+    // paid enrollment; restore must preserve that source evidence.
+    'training_rsvps' => [
+        'makeup_excused_at',
+        'makeup_source_enrollment_id',
+        'makeup_cutoff_hours',
+    ],
 ];
 
 /**
@@ -133,6 +140,14 @@ const EVIDENCE_TABLES = [
     'athlete_registration_consent_snapshots',
     'athlete_registration_request_details',
     'auth_login_limits',
+    'club_makeup_config_events',
+    'club_makeup_credits',
+    'club_makeup_events',
+    'club_makeup_excuse_rules',
+    'club_makeup_offer_periods',
+    'club_makeup_policies',
+    'club_makeup_reservations',
+    'club_makeup_slots',
     'club_event_admin_events',
     'club_event_links',
     'club_event_people',
