@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['flash_club_registration']=$result['created']?'Placená událost byla přidána do košíku. Dokončete objednávku a platbu.':'Událost už v košíku je.';
                 $_SESSION['flash_club_registration_cart']=true;
             } elseif ($action === 'cancel') {
+                $returnUrl = 'krouzky.php#moje-prihlasky';
                 $result = clubEventCancelRegistration(
                     $pdo,
                     (int)($_POST['registration_id'] ?? 0),
@@ -91,9 +92,19 @@ foreach ($paidEvents as &$event) {
     foreach($participants as $person)if(clubEventRosterEligibility($pdo,(int)$event['id'],(int)$person['sportovec_id']))$eligibleByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]=true;
 }
 unset($event);
-foreach ($registrations as $registration) {
-    if (in_array($registration['status'], ['confirmed', 'waitlisted'], true)) {
-        $activeByEventAndPerson[(int)$registration['event_id']][(int)$registration['sportovec_id']] = true;
+$eventIds = array_values(array_unique(array_map('intval', array_column(array_merge($events, $paidEvents), 'id'))));
+$participantIds = array_values(array_unique(array_map('intval', array_column($participants, 'sportovec_id'))));
+if ($eventIds !== [] && $participantIds !== []) {
+    $eventPlaceholders = implode(',', array_fill(0, count($eventIds), '?'));
+    $participantPlaceholders = implode(',', array_fill(0, count($participantIds), '?'));
+    $activeRegistrations = $pdo->prepare(
+        'SELECT event_id,sportovec_id,status FROM club_event_registrations '
+        . "WHERE event_id IN ($eventPlaceholders) AND sportovec_id IN ($participantPlaceholders) "
+        . "AND status IN ('confirmed','waitlisted','payment_pending')"
+    );
+    $activeRegistrations->execute(array_merge($eventIds, $participantIds));
+    foreach ($activeRegistrations->fetchAll(PDO::FETCH_ASSOC) as $registration) {
+        $activeByEventAndPerson[(int)$registration['event_id']][(int)$registration['sportovec_id']] = (string)$registration['status'];
     }
 }
 $orderLinkedRegistrations=[];
@@ -133,7 +144,7 @@ if(clubEventShopAvailable($pdo)){
                 <?= csrf_field() ?><input type="hidden" name="action" value="register"><input type="hidden" name="event_id" value="<?= (int)$event['id'] ?>"><input type="hidden" name="consent_version" value="<?= clubRegistrationH($event['terms_version']) ?>">
                 <div class="col-8"><label class="visually-hidden" for="person-<?= (int)$event['id'] ?>">Dítě</label><select class="form-select" id="person-<?= (int)$event['id'] ?>" name="sportovec_id" required><option value="">Vyberte dítě</option><?php foreach ($participants as $person):if(!isset($eligibleByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]))continue; ?><option value="<?= (int)$person['sportovec_id'] ?>" <?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? 'disabled' : '' ?>><?= clubRegistrationH($person['prijmeni'] . ' ' . $person['jmeno']) ?><?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? ' — již přihlášeno' : '' ?></option><?php endforeach; ?></select></div>
                 <div class="col-4 d-grid"><button class="btn btn-primary"><?= (int)$event['remaining_capacity'] > 0 ? 'Přihlásit' : 'Zařadit do čekací listiny' ?></button></div>
-                <div class="col-12"><div class="border rounded bg-light p-2 small"><strong>Souhlas <?= clubRegistrationH($event['terms_version']) ?></strong><br><?= nl2br(clubRegistrationH($event['consent_text_plain'])) ?><hr class="my-2"><strong>Bezplatné storno do <?= clubRegistrationH($event['cancellation_deadline_at']) ?></strong><br><?= nl2br(clubRegistrationH($event['cancellation_policy_plain'])) ?></div></div>
+                <div class="col-12"><div class="border rounded bg-light p-2 small"><strong>Souhlas s účastí</strong><br><?= nl2br(clubRegistrationH($event['consent_text_plain'])) ?><hr class="my-2"><strong>Bezplatné storno do <?= clubRegistrationH(uiFormatDateTime((string)$event['cancellation_deadline_at'])) ?></strong><br><?= nl2br(clubRegistrationH($event['cancellation_policy_plain'])) ?></div></div>
                 <div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="consented" value="1" id="consent-<?= (int)$event['id'] ?>" required><label class="form-check-label" for="consent-<?= (int)$event['id'] ?>">Potvrzuji souhlas a storno podmínky pro vybrané dítě.</label></div>
             </form><?php elseif($event['roster_targets'] !== []): ?><div class="alert alert-secondary small mb-0">Žádná z vašich schválených osob není v cílové soupisce.</div><?php endif; ?>
         </div></section></div>
@@ -149,15 +160,70 @@ if(clubEventShopAvailable($pdo)){
             <div class="d-flex justify-content-between"><div><h3 class="h5 mb-1"><?=clubRegistrationH($event['name'])?></h3><div class="small text-muted"><?=clubRegistrationH($event['audience_label'])?></div></div><span class="badge text-bg-primary align-self-start"><?=number_format((int)$event['amount_minor']/100,2,',',' ')?> Kč</span></div>
             <div class="small my-3"><strong>Volná místa:</strong> <?=(int)$event['remaining_capacity']?> z <?=(int)$event['effective_capacity']?><?php if($event['roster_targets']!==[]):?> · <strong>Soupisky:</strong> <?=clubRegistrationH(implode(', ',array_column($event['roster_targets'],'team_name')))?><?php endif;?></div>
             <?php foreach($event['sessions'] as $session):?><div class="border-top py-2 small"><?=clubRegistrationH(uiFormatDateTimeRange((string)$session['starts_at'],(string)$session['ends_at']).(trim((string)$session['location'])!==''?' · '.$session['location']:''))?></div><?php endforeach;?>
-            <?php if(!$isLoggedIn):?><a class="btn btn-outline-primary btn-sm" href="prihlaseni.php?redirect=<?=rawurlencode('krouzky.php#akce-'.(int)$event['id'])?>">Přihlásit se a pokračovat</a><?php elseif(!empty($eligibleByEventAndPerson[(int)$event['id']])&&(int)$event['remaining_capacity']>0):?><form method="post" action="krouzky.php#akce-<?=(int)$event['id']?>" class="row g-2 mt-2"><?=csrf_field()?><input type="hidden" name="action" value="add_paid"><input type="hidden" name="event_id" value="<?=(int)$event['id']?>"><input type="hidden" name="variant_id" value="<?=(int)$event['variant_id']?>"><input type="hidden" name="consent_version" value="<?=clubRegistrationH($event['terms_version'])?>"><div class="col-8"><label class="visually-hidden" for="paid-person-<?=(int)$event['id']?>">Účastník placené akce</label><select class="form-select" id="paid-person-<?=(int)$event['id']?>" name="sportovec_id" required><option value="">Vyberte účastníka</option><?php foreach($participants as $person):if(!isset($eligibleByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]))continue;?><option value="<?=(int)$person['sportovec_id']?>"><?=clubRegistrationH($person['prijmeni'].' '.$person['jmeno'])?></option><?php endforeach;?></select></div><div class="col-4 d-grid"><button class="btn btn-primary">Přidat do košíku</button></div><div class="col-12 small border rounded bg-light p-2"><strong>Souhlas <?=clubRegistrationH($event['terms_version'])?></strong><br><?=nl2br(clubRegistrationH($event['consent_text_plain']))?><hr class="my-2"><strong>Storno do <?=clubRegistrationH(uiFormatDateTime((string)$event['cancellation_deadline_at']))?></strong><br><?=nl2br(clubRegistrationH($event['cancellation_policy_plain']))?></div><div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="consented" value="1" id="paid-consent-<?=(int)$event['id']?>" required><label class="form-check-label" for="paid-consent-<?=(int)$event['id']?>">Potvrzuji podmínky pro vybraného účastníka.</label></div></form><?php elseif((int)$event['remaining_capacity']<1):?><div class="alert alert-warning mb-0">Kapacita je naplněna.</div><?php else:?><div class="alert alert-secondary mb-0">Žádná schválená osoba není v cílové soupisce.</div><?php endif;?>
+            <?php if (!$isLoggedIn): ?>
+                <a class="btn btn-outline-primary btn-sm" href="prihlaseni.php?redirect=<?=rawurlencode('krouzky.php#akce-'.(int)$event['id'])?>">Přihlásit se a pokračovat</a>
+            <?php elseif (!empty($eligibleByEventAndPerson[(int)$event['id']]) && (int)$event['remaining_capacity'] > 0): ?>
+                <form method="post" action="krouzky.php#akce-<?=(int)$event['id']?>" class="row g-2 mt-2">
+                    <?=csrf_field()?>
+                    <input type="hidden" name="action" value="add_paid">
+                    <input type="hidden" name="event_id" value="<?=(int)$event['id']?>">
+                    <input type="hidden" name="variant_id" value="<?=(int)$event['variant_id']?>">
+                    <input type="hidden" name="consent_version" value="<?=clubRegistrationH($event['terms_version'])?>">
+                    <div class="col-8">
+                        <label class="visually-hidden" for="paid-person-<?=(int)$event['id']?>">Účastník placené akce</label>
+                        <select class="form-select" id="paid-person-<?=(int)$event['id']?>" name="sportovec_id" required>
+                            <option value="">Vyberte účastníka</option>
+                            <?php foreach ($participants as $person):
+                                if (!isset($eligibleByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']])) continue;
+                                $activeStatus = $activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']] ?? null;
+                                $activeLabel = $activeStatus === 'payment_pending' ? ' — čeká na platbu' : ($activeStatus === 'waitlisted' ? ' — na čekací listině' : ($activeStatus !== null ? ' — již přihlášeno' : ''));
+                            ?>
+                                <option value="<?=(int)$person['sportovec_id']?>" <?=$activeStatus !== null ? 'disabled' : ''?>><?=clubRegistrationH($person['prijmeni'].' '.$person['jmeno'].$activeLabel)?></option>
+                            <?php endforeach;?>
+                        </select>
+                    </div>
+                    <div class="col-4 d-grid"><button class="btn btn-primary">Přidat do košíku</button></div>
+                    <div class="col-12 small border rounded bg-light p-2"><strong>Souhlas s účastí</strong><br><?=nl2br(clubRegistrationH($event['consent_text_plain']))?><hr class="my-2"><strong>Storno do <?=clubRegistrationH(uiFormatDateTime((string)$event['cancellation_deadline_at']))?></strong><br><?=nl2br(clubRegistrationH($event['cancellation_policy_plain']))?></div>
+                    <div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="consented" value="1" id="paid-consent-<?=(int)$event['id']?>" required><label class="form-check-label" for="paid-consent-<?=(int)$event['id']?>">Potvrzuji podmínky pro vybraného účastníka.</label></div>
+                </form>
+            <?php elseif ((int)$event['remaining_capacity'] < 1): ?>
+                <div class="alert alert-warning mb-0">Kapacita je naplněna.</div>
+            <?php else: ?>
+                <div class="alert alert-secondary mb-0">Žádná schválená osoba není v cílové soupisce.</div>
+            <?php endif;?>
         </div></section></div>
     <?php endforeach;?>
     <?php if($paidEvents===[]):?><div class="col-12"><div class="alert alert-secondary">Momentálně není otevřena žádná placená klubová událost. <a href="klubovy_kalendar.php">Zobrazit další klubové termíny</a>.</div></div><?php endif;?>
     </div>
     </section>
 
-    <?php if($isLoggedIn):?><section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje přihlášky na akce</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Akce</th><th>Účastník</th><th>Stav</th><th></th></tr></thead><tbody>
-    <?php foreach ($registrations as $registration):$isOrderLinked=isset($orderLinkedRegistrations[(int)$registration['id']]);$canCancel=!$isOrderLinked&&($registration['status']==='waitlisted'||($registration['status']==='confirmed'&&!empty($registration['cancellation_deadline_snapshot'])&&new DateTimeImmutable('now')<=new DateTimeImmutable((string)$registration['cancellation_deadline_snapshot'])));$statusLabel=$registration['status']==='payment_pending'?'čeká na platbu':($registration['status']==='confirmed'?'přihlášeno':($registration['status']==='waitlisted'?'čekací listina #'.(int)$registration['waitlist_position']:'zrušeno'));$statusColor=$registration['status']==='confirmed'?'success':(in_array($registration['status'],['waitlisted','payment_pending'],true)?'warning':'secondary');?><tr><td><strong><?= clubRegistrationH($registration['event_name']) ?></strong><div class="small text-muted"><?= clubRegistrationH($registration['registered_at']) ?><?=!empty($registration['promoted_at'])?' · povýšeno '.clubRegistrationH($registration['promoted_at']):''?></div><div class="small text-muted">Souhlas <?=clubRegistrationH($registration['consent_version_snapshot']??'')?> · storno do <?=clubRegistrationH($registration['cancellation_deadline_snapshot']??'')?></div></td><td><?= clubRegistrationH($registration['prijmeni'] . ' ' . $registration['jmeno']) ?></td><td><span class="badge text-bg-<?=$statusColor?>"><?=clubRegistrationH($statusLabel)?></span></td><td><?php if ($canCancel): ?><form method="post" class="d-flex gap-2 justify-content-end"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="registration_id" value="<?= (int)$registration['id'] ?>"><input class="form-control form-control-sm" style="max-width:220px" name="note" maxlength="1000" required placeholder="Důvod zrušení"><button class="btn btn-sm btn-outline-danger"><?= $registration['status']==='waitlisted'?'Opustit čekací listinu':'Zrušit' ?></button></form><?php elseif($isOrderLinked):?><a class="btn btn-sm btn-outline-secondary" href="moje_objednavky.php">Storno přes objednávku</a><?php elseif($registration['status']==='confirmed'):?><span class="small text-muted">Bezplatné storno skončilo</span><?php endif; ?></td></tr><?php endforeach; ?>
+    <?php if($isLoggedIn):?><section class="card border-0 shadow-sm" id="moje-prihlasky"><div class="card-header bg-white fw-semibold">Moje přihlášky na akce</div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Akce</th><th>Účastník</th><th>Stav</th><th></th></tr></thead><tbody>
+    <?php foreach ($registrations as $registration):
+        $isOrderLinked = isset($orderLinkedRegistrations[(int)$registration['id']]);
+        $status = (string)$registration['status'];
+        $canCancel = !$isOrderLinked && ($status === 'waitlisted' || ($status === 'confirmed' && !empty($registration['cancellation_deadline_snapshot']) && new DateTimeImmutable('now') <= new DateTimeImmutable((string)$registration['cancellation_deadline_snapshot'])));
+        $statusLabel = $status === 'payment_pending' ? 'čeká na platbu' : ($status === 'confirmed' ? 'přihlášeno' : ($status === 'waitlisted' ? 'čekací listina #'.(int)$registration['waitlist_position'] : 'zrušeno'));
+        $statusColor = $status === 'confirmed' ? 'success' : (in_array($status, ['waitlisted', 'payment_pending'], true) ? 'warning' : 'secondary');
+    ?>
+        <tr>
+            <td>
+                <strong><?=clubRegistrationH($registration['event_name'])?></strong>
+                <div class="small text-muted"><?=clubRegistrationH(uiFormatDateTime((string)$registration['registered_at']))?><?=!empty($registration['promoted_at'])?' · povýšeno '.clubRegistrationH(uiFormatDateTime((string)$registration['promoted_at'])):''?></div>
+                <?php if (!empty($registration['cancellation_deadline_snapshot'])): ?><div class="small text-muted">Storno do <?=clubRegistrationH(uiFormatDateTime((string)$registration['cancellation_deadline_snapshot']))?></div><?php endif;?>
+            </td>
+            <td><?=clubRegistrationH($registration['prijmeni'].' '.$registration['jmeno'])?></td>
+            <td><span class="badge text-bg-<?=$statusColor?>"><?=clubRegistrationH($statusLabel)?></span></td>
+            <td>
+                <?php if ($canCancel): ?>
+                    <form method="post" class="d-flex gap-2 justify-content-end"><?=csrf_field()?><input type="hidden" name="action" value="cancel"><input type="hidden" name="registration_id" value="<?=(int)$registration['id']?>"><input class="form-control form-control-sm" style="max-width:220px" name="note" maxlength="1000" required placeholder="Důvod zrušení"><button class="btn btn-sm btn-outline-danger"><?=$status === 'waitlisted' ? 'Opustit čekací listinu' : 'Zrušit'?></button></form>
+                <?php elseif ($isOrderLinked && $status !== 'cancelled'): ?>
+                    <a class="btn btn-sm btn-outline-secondary" href="moje_objednavky.php">Řešit přes objednávku</a>
+                <?php elseif ($status === 'confirmed'): ?>
+                    <span class="small text-muted">Bezplatné storno skončilo</span>
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
     <?php if ($registrations === []): ?><tr><td colspan="4" class="text-center text-muted py-3">Zatím nemáte žádnou přihlášku.</td></tr><?php endif; ?>
     </tbody></table></div></section><?php endif;?>
 </main>
