@@ -494,7 +494,24 @@ function shopOrderByCode(PDO $pdo,int $accountId,string $publicCode): array
     $statement->execute([$accountId,$publicCode]);$order=$statement->fetch(PDO::FETCH_ASSOC);
     if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
     $items=$pdo->prepare('SELECT * FROM shop_order_items WHERE order_id=? ORDER BY id');$items->execute([(int)$order['id']]);
-    $order['items']=$items->fetchAll(PDO::FETCH_ASSOC);$order['event_items']=clubEventShopOrderRows($pdo,(int)$order['id']);$order['velodrome_items']=publicVelodromeShopOrderRows($pdo,(int)$order['id']);return $order;
+    $order['items']=$items->fetchAll(PDO::FETCH_ASSOC);
+    $order['event_items']=clubEventShopOrderRows($pdo,(int)$order['id']);
+    if ($order['event_items'] !== []) {
+        $personIds = array_values(array_unique(array_map('intval', array_column($order['event_items'], 'beneficiary_sportovec_id'))));
+        $placeholders = implode(',', array_fill(0, count($personIds), '?'));
+        $people = $pdo->prepare("SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN ($placeholders)");
+        $people->execute($personIds);
+        $names = [];
+        foreach ($people->fetchAll(PDO::FETCH_ASSOC) as $person) {
+            $names[(int)$person['id']] = trim((string)$person['prijmeni'].' '.(string)$person['jmeno']);
+        }
+        foreach ($order['event_items'] as &$eventItem) {
+            $eventItem['participant_name'] = $names[(int)$eventItem['beneficiary_sportovec_id']] ?? 'Účastník akce';
+        }
+        unset($eventItem);
+    }
+    $order['velodrome_items']=publicVelodromeShopOrderRows($pdo,(int)$order['id']);
+    return $order;
 }
 
 /** @return list<array<string,mixed>> */

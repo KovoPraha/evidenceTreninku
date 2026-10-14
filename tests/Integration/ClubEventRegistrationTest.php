@@ -484,6 +484,8 @@ final class ClubEventRegistrationTest extends TestCase
         $bank=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'TEST','due_days'=>7];
         $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),$bank,$cart['fingerprint']);
         self::assertSame('payment_pending',$pdo->query('SELECT status FROM club_event_registrations')->fetchColumn());
+        $orderDetail=\shopOrderByCode($pdo,10,(string)$order['public_code']);
+        self::assertSame('První Anna',$orderDetail['event_items'][0]['participant_name']);
         try{\clubEventShopAddToCart($pdo,10,$eventId,101,602,'paid.1',true);$second=\shopCartDetail($pdo,10);\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),$bank,$second['fingerprint']);self::fail('Held capacity must reject second checkout.');}catch(\ClubEventShopException|\ShopCheckoutException $e){self::assertStringContainsString('kapacit',mb_strtolower($e->getMessage()));}
         \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Platba ověřena.',true);
         self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE sportovec_id=100')->fetchColumn());
