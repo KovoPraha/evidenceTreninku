@@ -10,6 +10,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/club_makeup.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
 require_once __DIR__ . '/includes/venue_calendar.php';
 require_once __DIR__ . '/includes/file_mutation_transaction.php';
@@ -307,6 +308,8 @@ try {
             SET trenink_id = ?, stav = 'evidovany'
             WHERE id = ? AND stav = 'planovany'
         ")->execute([$treninkId, $planId]);
+        clubMakeupFinalizeSource($pdo, $planId, $treninkId, $trenerId);
+        clubMakeupFinalizeTarget($pdo, $planId, $treninkId, $trenerId);
     }
 
     fileMutationFinalize($fileMutations);

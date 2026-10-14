@@ -7,6 +7,7 @@ if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/club_makeup.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -92,6 +93,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Editace — jen aktuální záznam, ignoruje opakování
                 $pdo->beginTransaction();
                 try {
+                    $currentSql = 'SELECT datum,cas_od FROM planovane_treninky WHERE id=?';
+                    if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $currentSql .= ' FOR UPDATE';
+                    $currentPlan = $pdo->prepare($currentSql);
+                    $currentPlan->execute([$editId]);
+                    $current = $currentPlan->fetch(PDO::FETCH_ASSOC);
+                    if (!$current) throw new RuntimeException('Plánovaný trénink již neexistuje.');
+                    $oldTeamIds = trainingRosterBridgePlanTeamIds($pdo, $editId);
+                    sort($oldTeamIds, SORT_NUMERIC);
+                    $newTeamIds = $teamIds;
+                    sort($newTeamIds, SORT_NUMERIC);
+                    $scheduleOrRosterChanged = (string)$current['datum'] !== $datum
+                        || substr((string)($current['cas_od'] ?? ''), 0, 5) !== (string)($casOd ?? '')
+                        || $oldTeamIds !== $newTeamIds;
+                    if ($scheduleOrRosterChanged) {
+                        $hasAnswers = false;
+                        if (familyPortalTableExists($pdo, 'training_rsvps')) {
+                            $answers = $pdo->prepare('SELECT 1 FROM training_rsvps WHERE plan_id=? LIMIT 1');
+                            $answers->execute([$editId]);
+                            $hasAnswers = (bool)$answers->fetchColumn();
+                        }
+                        $hasMakeup = false;
+                        if (clubMakeupReady($pdo)) {
+                            foreach (['club_makeup_slots','club_makeup_credits','club_makeup_reservations'] as $table) {
+                                $column = $table === 'club_makeup_credits' ? 'source_plan_id' : ($table === 'club_makeup_reservations' ? 'target_plan_id' : 'plan_id');
+                                $check = $pdo->prepare("SELECT 1 FROM {$table} WHERE {$column}=? LIMIT 1");
+                                $check->execute([$editId]);
+                                if ($check->fetchColumn()) { $hasMakeup = true; break; }
+                            }
+                        }
+                        if ($hasAnswers || $hasMakeup) throw new RuntimeException('Termín nebo soupisku s odpověďmi či náhradami nelze změnit. Zrušte tento termín a vypište nový.');
+                    }
                     $pdo->prepare("
                         UPDATE planovane_treninky SET
                             nazev=?, kategorie=?, skupina_id=?, podskupina_id=?,
@@ -106,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         foreach ($podskupinyIds as $psId) { $stmtPs->execute([$editId, $psId]); }
                     }
                     trainingRosterBridgeReplacePlanTeams($pdo, $editId, $teamIds, $trenerId);
+                    clubMakeupSyncPlanRules($pdo, $editId);
                     $pdo->commit();
                     $_SESSION['flash_success'] = 'Plánovaný trénink upraven.';
                 } catch (Exception $e) {
@@ -163,6 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             foreach ($podskupinyIds as $psId) { $stmtPs->execute([$planId, $psId]); }
                         }
                         trainingRosterBridgeReplacePlanTeams($pdo, $planId, $teamIds, $trenerId);
+                        clubMakeupSyncPlanRules($pdo, $planId);
                     }
                     // Nastavit serie_id = ID prvního záznamu pro všechny instance série
                     if ($jeSerie && $prveId) {

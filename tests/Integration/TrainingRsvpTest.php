@@ -18,16 +18,23 @@ final class TrainingRsvpTest extends TestCase
         self::assertCount(1, $rows);
         self::assertSame(10, (int)$rows[0]['sportovec_id']);
 
-        $first = \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100);
+        $first = \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100, 'Přijdu o 5 minut později.');
         self::assertTrue($first['changed']);
         self::assertSame('going', $first['response']);
+        self::assertSame('Přijdu o 5 minut později.', $pdo->query('SELECT member_note FROM training_rsvps')->fetchColumn());
+        $same = \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100, 'Přijdu o 5 minut později.');
+        self::assertFalse($same['changed']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM training_rsvp_events')->fetchColumn());
+        $noteChange = \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100, 'Přijdu včas.');
+        self::assertTrue($noteChange['changed']);
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM training_rsvp_events')->fetchColumn());
         $again = \trainingRsvpSave($pdo, 100, 10, 'not_going', 'account', 100);
         self::assertTrue($again['changed']);
-        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM training_rsvp_events')->fetchColumn());
+        self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM training_rsvp_events')->fetchColumn());
 
         $athlete = \trainingRsvpSave($pdo, 100, 10, 'going', 'athlete', 500);
         self::assertTrue($athlete['changed']);
-        self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM training_rsvp_events')->fetchColumn());
+        self::assertSame(4, (int)$pdo->query('SELECT COUNT(*) FROM training_rsvp_events')->fetchColumn());
         self::assertSame('athlete', $pdo->query('SELECT actor_type FROM training_rsvp_events ORDER BY id DESC LIMIT 1')->fetchColumn());
     }
 
@@ -57,11 +64,12 @@ final class TrainingRsvpTest extends TestCase
         $pdo->exec("INSERT INTO training_roster_links(id,plan_id,team_id,team_name_snapshot) VALUES(2,100,3,'Tým B')");
         $pdo->exec('INSERT INTO training_roster_expected(id,link_id,sportovec_id) VALUES(2,2,10)');
         self::assertCount(1, \trainingRsvpUpcomingForAccount($pdo, 100, date('Y-m-d'), date('Y-m-d', strtotime('+30 days'))));
-        \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100);
+        \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100, 'Přijdu později.');
 
         $overview = \trainingRsvpPlanOverview($pdo, 100);
         self::assertCount(1, $overview);
         self::assertSame(10, (int)$overview[0]['sportovec_id']);
+        self::assertSame('Přijdu později.', $overview[0]['member_note']);
         $summary = \trainingRsvpPlanSummaries($pdo, [100, 100]);
         self::assertSame(['expected' => 1, 'going' => 1, 'not_going' => 0, 'pending' => 0], $summary[100]);
     }
@@ -73,6 +81,27 @@ final class TrainingRsvpTest extends TestCase
         $migration['up']($pdo);
         $migration['up']($pdo);
         self::assertTrue($migration['verify']($pdo));
+        $notes = require dirname(__DIR__, 2) . '/migrations/20261014100000_training_rsvp_notes.php';
+        $notes['up']($pdo);
+        $notes['up']($pdo);
+        self::assertTrue($notes['verify']($pdo));
+    }
+
+    public function testInvalidNoteCannotCreateAResponse(): void
+    {
+        $pdo = $this->database();
+        $this->expectException(\InvalidArgumentException::class);
+        \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100, str_repeat('ž', 501));
+    }
+
+    public function testCalendarMonthIsBoundedAndUsesPragueDates(): void
+    {
+        $current = new \DateTimeImmutable('first day of this month', new \DateTimeZone('Europe/Prague'));
+        self::assertSame($current->format('Y-m'), \trainingRsvpCalendarMonth('2000-01')->format('Y-m'));
+        self::assertSame($current->modify('+12 months')->format('Y-m'), \trainingRsvpCalendarMonth('9999-12')->format('Y-m'));
+        self::assertSame($current->format('Y-m'), \trainingRsvpCalendarMonth('invalid')->format('Y-m'));
+        $range = \trainingRsvpCalendarRange($current);
+        self::assertSame($current->modify('last day of this month')->format('Y-m-d'), $range['to']);
     }
 
     private function database(bool $applyMigration = true): PDO
@@ -106,6 +135,9 @@ final class TrainingRsvpTest extends TestCase
             $migration = require dirname(__DIR__, 2) . '/migrations/20261007120000_training_rsvps.php';
             $migration['up']($pdo);
             self::assertTrue($migration['verify']($pdo));
+            $notes = require dirname(__DIR__, 2) . '/migrations/20261014100000_training_rsvp_notes.php';
+            $notes['up']($pdo);
+            self::assertTrue($notes['verify']($pdo));
         }
         return $pdo;
     }

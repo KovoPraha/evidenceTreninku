@@ -59,8 +59,12 @@ final class TesterFeedbackWiringTest extends TestCase
         foreach (['booking/sportovni_prehled.php', 'booking/muj_sport.php'] as $path) {
             $source = (string)file_get_contents($root . '/' . $path);
             self::assertStringContainsString('training_rsvp_save', $source);
-            self::assertStringContainsString('Potvrzení účasti na trénincích', $source);
+            self::assertStringContainsString('calendarUiRender', $source);
+            self::assertStringContainsString('name="member_note"', $source);
         }
+        $prep = (string)file_get_contents($root . '/training_rsvps_admin.php');
+        self::assertStringContainsString('Příprava na trénink', $prep);
+        self::assertStringContainsString('member_note', $prep);
     }
 
     public function testReportsAndLegacyRouteFailVisiblyAndUseCanonicalMeasurementLinks():void

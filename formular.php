@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/club_makeup.php';
 
 $currentTrener = (int)$_SESSION['trener_id'];
 $isAdmin       = canAccess('formular');
@@ -49,6 +50,7 @@ try {
 // ── Předvyplnění z plánovaného tréninku (?plan_id=X) ─────────────────────
 $planPrefill = null;
 $planExpectedParticipants = [];
+$planMakeupParticipants = [];
 $planPrefillSubgroups = [];
 if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
     $planOwnerSql = roleAtLeast('hlavni') ? '' : ' AND pt.trener_id = ?';
@@ -70,6 +72,7 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
         }
         if($planPrefillSubgroups===[]&&(int)($planPrefill['podskupina_id']??0)>0)$planPrefillSubgroups=[(int)$planPrefill['podskupina_id']];
         $planExpectedParticipants = trainingRosterBridgeExpectedForPlan($pdo, (int)$planPrefill['id']);
+        $planMakeupParticipants = clubMakeupReservationsForPlan($pdo, (int)$planPrefill['id']);
     }
 }
 
@@ -332,6 +335,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
             <?php endif; ?>
             </span><br>
             <span class="small text-muted">Datum odpovídá plánu; ostatní údaje můžete upravit. Ze snapshotu soupisek bylo předvybráno <?= count($planExpectedParticipants) ?> očekávaných účastníků; skutečnou docházku před uložením ručně opravte.</span>
+            <?php if ($planMakeupParticipants !== []): ?><br><span class="small text-primary">Přihlášení náhradníci: <?= count($planMakeupParticipants) ?>. Také u nich před uložením potvrďte skutečnou docházku.</span><?php endif; ?>
         </div>
         <input type="hidden" name="plan_id" value="<?= (int)$planPrefill['id'] ?>">
     </div>
@@ -870,7 +874,9 @@ if ((DUPLIKAT && DUPLIKAT.skupina_id) || (PLAN_PREFILL && PLAN_PREFILL.skupina_i
         DUPLIKAT.ucastnici.forEach(sp => addParticipant(sp.id, sp.label));
     }
     const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+    const makeupExpected = <?= json_encode(array_map(static fn(array $person): array => ['id'=>(int)$person['sportovec_id'],'label'=>trim((string)$person['prijmeni'].' '.(string)$person['jmeno'])], $planMakeupParticipants), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     rosterExpected.forEach(sp => addParticipant(parseInt(sp.id, 10), sp.label));
+    makeupExpected.forEach(sp => addParticipant(parseInt(sp.id, 10), sp.label));
 })();
 
 // ── MĚŘENÍ: dynamické řádky + sportovec autocomplete ─────────────────────

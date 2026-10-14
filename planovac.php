@@ -8,6 +8,7 @@ require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/training_rsvp.php';
+require_once __DIR__ . '/includes/club_makeup.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -18,22 +19,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'zrusi
     if (csrf_verify($_POST['csrf_token'] ?? '')) {
         $zrId    = (int)($_POST['plan_id'] ?? 0);
         $zrSerie = !empty($_POST['zrusit_serii']);
-        if ($zrSerie) {
-            // Zjistit serie_id zrušeného plánu a zrušit celou sérii
-            $stSerie = $pdo->prepare("SELECT serie_id, trener_id FROM planovane_treninky WHERE id=?");
-            $stSerie->execute([$zrId]);
-            $rowSerie = $stSerie->fetch(PDO::FETCH_ASSOC);
-            if ($rowSerie && $rowSerie['serie_id'] && (roleAtLeast('hlavni') || (int)$rowSerie['trener_id'] === $trenerId)) {
-                $pdo->prepare("UPDATE planovane_treninky SET stav='zruseny' WHERE serie_id=? AND stav='planovany'")
-                    ->execute([$rowSerie['serie_id']]);
-                $_SESSION['flash_success'] = 'Celá série plánovaných tréninků zrušena.';
+        try {
+            $pdo->beginTransaction();
+            $select=$pdo->prepare('SELECT id,serie_id,trener_id FROM planovane_treninky WHERE id=?');$select->execute([$zrId]);$selected=$select->fetch(PDO::FETCH_ASSOC);
+            if (!$selected || (!roleAtLeast('hlavni') && (int)$selected['trener_id']!==$trenerId)) throw new ClubMakeupException('Trénink nelze zrušit.');
+            $targetIds=[$zrId];
+            if ($zrSerie && (int)$selected['serie_id']>0) {
+                $series=$pdo->prepare("SELECT id FROM planovane_treninky WHERE serie_id=? AND stav='planovany'");
+                $series->execute([(int)$selected['serie_id']]);$targetIds=array_map('intval',$series->fetchAll(PDO::FETCH_COLUMN));
             }
-        } else {
-            $cond   = roleAtLeast('hlavni') ? 'id=?' : 'id=? AND trener_id=?';
-            $params = roleAtLeast('hlavni') ? [$zrId] : [$zrId, $trenerId];
-            $pdo->prepare("UPDATE planovane_treninky SET stav='zruseny' WHERE {$cond} AND stav='planovany'")
-                ->execute($params);
-            $_SESSION['flash_success'] = 'Plánovaný trénink zrušen.';
+            foreach ($targetIds as $targetId) {
+                $update=$pdo->prepare("UPDATE planovane_treninky SET stav='zruseny' WHERE id=? AND stav='planovany'");$update->execute([$targetId]);
+                if ($update->rowCount()>0) clubMakeupCancelPlannedTarget($pdo,$targetId,$trenerId);
+            }
+            $pdo->commit();
+            $_SESSION['flash_success']=$zrSerie?'Celá série plánovaných tréninků zrušena.':'Plánovaný trénink zrušen.';
+        } catch(Throwable $exception) {
+            if($pdo->inTransaction())$pdo->rollBack();
+            error_log('planovac makeup cancellation: '.$exception->getMessage());
+            $_SESSION['flash_error']='Trénink se nepodařilo bezpečně zrušit.';
         }
     }
     header('Location: ' . $_SERVER['REQUEST_URI']); exit;
@@ -115,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
                 trainingRosterBridgePlanTeamIds($pdo, (int)$zp['id']),
                 $trenerId
             );
+            clubMakeupSyncPlanRules($pdo, $novyId);
         }
         $pdo->commit();
 
@@ -604,10 +609,10 @@ try {
 
                         <!-- Akce -->
                         <div class="d-flex gap-1 mt-2 flex-wrap">
-                            <?php if ($rsvpSummary['expected'] > 0): ?>
+                            <?php if ($rsvpSummary['expected'] > 0 && (roleAtLeast('hlavni') || (int)$p['trener_id'] === $trenerId)): ?>
                                 <a href="training_rsvps_admin.php?plan_id=<?= (int)$p['id'] ?>"
                                    class="btn btn-outline-info btn-sm py-0 px-2" style="font-size:.75rem">
-                                    <i class="bi bi-person-check me-1"></i>Odpovědi
+                                    <i class="bi bi-person-check me-1"></i>Příprava
                                 </a>
                             <?php endif; ?>
                             <?php if ($isEvidovano && $p['trenink_id']): ?>

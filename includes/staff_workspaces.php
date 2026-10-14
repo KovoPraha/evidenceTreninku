@@ -105,6 +105,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'club_program_offers_admin.php', 'label' => 'Kroužky', 'description' => 'Založení, úpravy, kapacity a přihlášky', 'icon' => 'calendar2-check'],
                     ['route' => 'club_program_storefront_admin.php', 'label' => 'Veřejný rozcestník', 'description' => 'Texty, rozvrh a fotografie kroužků', 'icon' => 'images'],
                     ['route' => 'club_programs_admin.php', 'label' => 'Programy a podmínky', 'description' => 'Kanonické programy a dokumenty', 'icon' => 'calendar-range'],
+                    ['route' => 'club_makeup_policies_admin.php', 'label' => 'Omluvy a náhrady', 'description' => 'Lhůty omluv a návaznost pololetí', 'icon' => 'arrow-repeat'],
                     ['route' => 'club_program_settings_admin.php', 'label' => 'Správa programů', 'description' => 'Opravy názvů a archivace', 'icon' => 'pencil-square'],
                 ]],
                 ['label' => 'Akce a sportoviště', 'icon' => 'building', 'items' => [
