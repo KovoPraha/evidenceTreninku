@@ -55,6 +55,7 @@ function shopGuestOrderByCode(PDO $pdo, string $publicCode, string $accessToken)
     $statement->execute([$publicCode, hash('sha256', $accessToken)]);
     $order = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$order) throw new ShopCheckoutException('Objednávka nebyla nalezena.');
+    if (isset($order['customer_status_id'])) $order = shopOrderCustomerStatusAttach($pdo,$order);
     $items = $pdo->prepare('SELECT * FROM shop_order_items WHERE order_id=? ORDER BY id');
     $items->execute([(int)$order['id']]);
     $order['items'] = $items->fetchAll(PDO::FETCH_ASSOC);

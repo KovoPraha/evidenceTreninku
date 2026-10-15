@@ -274,6 +274,8 @@ const EVIDENCE_TABLES = [
     'shop_member_price_events',
     'shop_member_product_prices',
     'shop_order_events',
+    'shop_order_status_definitions',
+    'shop_order_status_definition_events',
     'shop_order_items',
     'shop_orders',
     'shop_product_categories',
