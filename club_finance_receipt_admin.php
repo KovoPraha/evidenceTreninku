@@ -22,10 +22,15 @@ if (!$person) {
     if ($sportovecId>0) { http_response_code(404);exit('Sportovec nebyl nalezen.'); }
     $search=trim((string)($_GET['q']??''));$matches=[];
     if ($search!==''&&mb_strlen($search,'UTF-8')<=100) {
-        $s=$pdo->prepare('SELECT id,jmeno,prijmeni FROM sportovci WHERE jmeno LIKE ? OR prijmeni LIKE ? ORDER BY prijmeni,jmeno,id LIMIT 30');
-        $s->execute(['%'.$search.'%','%'.$search.'%']);$matches=$s->fetchAll(PDO::FETCH_ASSOC);
+        $terms=preg_split('/\s+/u',$search,-1,PREG_SPLIT_NO_EMPTY)?:[];
+        if($terms!==[]){
+            $conditions=[];$parameters=[];
+            foreach($terms as$term){$conditions[]='(jmeno LIKE ? OR prijmeni LIKE ?)';$parameters[]='%'.$term.'%';$parameters[]='%'.$term.'%';}
+            $s=$pdo->prepare('SELECT id,jmeno,prijmeni FROM sportovci WHERE '.implode(' AND ',$conditions).' ORDER BY prijmeni,jmeno,id LIMIT 30');
+            $s->execute($parameters);$matches=$s->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
-    ?><!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ověřená platba sportovce</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head><body class="bg-light"><?php require __DIR__.'/hlavicka.php'; ?><main class="container py-4" style="max-width:800px"><h1 class="h3">Ověřená platba sportovce</h1><p>Najděte sportovce; platbu zapíšete až po ověření na bankovním výpisu.</p><form method="get" class="d-flex gap-2 mb-3"><input class="form-control" name="q" value="<?=receiptAdminH($search)?>" placeholder="Jméno nebo příjmení" maxlength="100" required><button class="btn btn-primary">Hledat</button></form><?php if($search!==''):?><ul class="list-group"><?php foreach($matches as$match):?><li class="list-group-item"><a href="?sportovec_id=<?=(int)$match['id']?>"><?=receiptAdminH($match['prijmeni'].' '.$match['jmeno'])?></a></li><?php endforeach;?></ul><?php if($matches===[]):?><div class="alert alert-info">Žádný sportovec nenalezen.</div><?php endif;?><?php endif;?></main></body></html><?php
+    ?><!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ověřená platba sportovce</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head><body class="bg-light"><?php require __DIR__.'/hlavicka.php'; ?><main class="container py-4" style="max-width:800px"><h1 class="h3">Ověřená platba sportovce</h1><p>Najděte sportovce; platbu zapíšete až po ověření na bankovním výpisu.</p><form method="get" class="d-flex gap-2 mb-3"><input class="form-control" name="q" value="<?=receiptAdminH($search)?>" placeholder="Jméno, příjmení nebo celé jméno" maxlength="100" required><button class="btn btn-primary">Hledat</button></form><?php if($search!==''):?><?php if(count($matches)===30):?><div class="alert alert-info">Zobrazeno prvních 30 shod. Zpřesněte hledání celým jménem.</div><?php endif;?><ul class="list-group"><?php foreach($matches as$match):?><li class="list-group-item"><a href="?sportovec_id=<?=(int)$match['id']?>"><?=receiptAdminH($match['jmeno'].' '.$match['prijmeni'])?></a></li><?php endforeach;?></ul><?php if($matches===[]):?><div class="alert alert-info">Žádný sportovec nenalezen.</div><?php endif;?><?php endif;?></main></body></html><?php
     exit;
 }
 if (($_SERVER['REQUEST_METHOD']??'GET')==='POST') {

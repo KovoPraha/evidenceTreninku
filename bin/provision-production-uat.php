@@ -149,14 +149,32 @@ function kisUatUpsertCalendarEvent(PDO $pdo, int $actorId, string $name, int $fe
 {
     $lookup=$pdo->prepare('SELECT id FROM club_events WHERE name=? ORDER BY id');$lookup->execute([$name]);$ids=array_map('intval',$lookup->fetchAll(PDO::FETCH_COLUMN));
     if(count($ids)>1)throw new RuntimeException('Duplicitní UAT akce: '.$name);
+    if ($ids !== [] && kisUatHasNonCancelledRegistrations($pdo, $ids[0])) {
+        return $ids[0];
+    }
     $result=clubCalendarSaveEvent($pdo,$actorId,$ids[0]??0,[
         'name'=>$name,'activity_kind'=>$feeMinor>0?'camp':'other','planning_status'=>'confirmed','visibility'=>'public',
         'starts_at'=>$day->setTime(10,0)->format('Y-m-d\TH:i'),'ends_at'=>$day->setTime(15,0)->format('Y-m-d\TH:i'),
         'location'=>'Velodrom Třebešín','public_description_plain'=>'Dočasná akce pro produkční UAT.','internal_note'=>'TEST data; po UAT deaktivovat.',
         'capacity'=>20,'participant_fee_minor'=>$feeMinor,'fee_due_days'=>7,'team_ids'=>[],
     ]);
-    clubCalendarSetRegistration($pdo,(int)$result['id'],$actorId,true);
-    return (int)$result['id'];
+    $eventId = (int)$result['id'];
+    if ($feeMinor === 0) {
+        // Calendar registration can be opened without versioned terms, but the
+        // public free-event checkout cannot. Rebuild only this synthetic fixture.
+        $pdo->prepare("UPDATE club_events SET status='draft',updated_at=CURRENT_TIMESTAMP WHERE id=?")
+            ->execute([$eventId]);
+        clubEventAudit($pdo, $eventId, $actorId, 'uat_free_event_prepare', 'event', $eventId,
+            'Příprava souhlasu bezplatné TEST akce pro produkční UAT.', []);
+        clubEventConfigureRegistrationTerms(
+            $pdo, $eventId, $actorId, 'uat-free-' . $day->format('Ymd'),
+            'Zákonný zástupce souhlasí s účastí dítěte na této dočasné testovací akci.',
+            'Testovací přihlášku lze bezplatně zrušit do uvedeného termínu.',
+            $day->modify('-1 day')->setTime(20, 0)->format('Y-m-d\TH:i'), true
+        );
+    }
+    clubCalendarSetRegistration($pdo,$eventId,$actorId,true);
+    return $eventId;
 }
 
 function kisUatHasNonCancelledRegistrations(PDO $pdo, int $eventId): bool

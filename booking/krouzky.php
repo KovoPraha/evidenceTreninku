@@ -111,6 +111,17 @@ if ($eventIds !== [] && $participantIds !== []) {
     foreach ($activeRegistrations->fetchAll(PDO::FETCH_ASSOC) as $registration) {
         $activeByEventAndPerson[(int)$registration['event_id']][(int)$registration['sportovec_id']] = (string)$registration['status'];
     }
+    if (clubEventTableExists($pdo, 'club_event_planned_participants')) {
+        $planned = $pdo->prepare(
+            'SELECT event_id,sportovec_id FROM club_event_planned_participants '
+            . "WHERE event_id IN ($eventPlaceholders) AND sportovec_id IN ($participantPlaceholders) "
+            . "AND status='confirmed'"
+        );
+        $planned->execute(array_merge($eventIds, $participantIds));
+        foreach ($planned->fetchAll(PDO::FETCH_ASSOC) as $participant) {
+            $activeByEventAndPerson[(int)$participant['event_id']][(int)$participant['sportovec_id']] ??= 'confirmed';
+        }
+    }
 }
 $orderLinkedRegistrations=[];
 if(clubEventShopAvailable($pdo)){
@@ -151,7 +162,8 @@ if(clubEventShopAvailable($pdo)){
             <div class="small mb-3"><strong>Volná místa:</strong> <?= (int)$event['remaining_capacity'] ?> z <?= (int)$event['effective_capacity'] ?> · <strong>čeká:</strong> <?= (int)$event['waitlist_count'] ?></div>
             <?php if ($event['roster_targets'] !== []): ?><div class="alert alert-info small py-2">Určeno pro soupisky: <?= clubRegistrationH(implode(', ', array_column($event['roster_targets'], 'team_name'))) ?></div><?php endif; ?>
             <?php foreach ($event['sessions'] as $session): ?><div class="border-top py-2 small"><i class="bi bi-calendar3 me-1"></i><?= clubRegistrationH(uiFormatDateTimeRange((string)$session['starts_at'],(string)$session['ends_at'])) ?><br><span class="text-muted"><i class="bi bi-geo-alt me-1"></i><?= clubRegistrationH($session['location']) ?></span></div><?php endforeach; ?>
-            <?php if(!$isLoggedIn):?><a class="btn btn-outline-primary btn-sm" href="prihlaseni.php?redirect=<?=rawurlencode('krouzky.php#akce-'.(int)$event['id'])?>">Přihlásit se a pokračovat</a><?php elseif (!empty($eligibleByEventAndPerson[(int)$event['id']])): ?><form method="post" action="krouzky.php#akce-<?=(int)$event['id']?>" class="row g-2 mt-2">
+            <?php $termsReady = !empty($event['terms_version']) && !empty($event['consent_text_plain']) && !empty($event['cancellation_policy_plain']) && !empty($event['cancellation_deadline_at']); ?>
+            <?php if (!$termsReady): ?><div class="alert alert-warning small mb-0">Přihlašování se připravuje. Pořadatel musí doplnit souhlas a storno podmínky.</div><?php elseif(!$isLoggedIn):?><a class="btn btn-outline-primary btn-sm" href="prihlaseni.php?redirect=<?=rawurlencode('krouzky.php#akce-'.(int)$event['id'])?>">Přihlásit se a pokračovat</a><?php elseif (!empty($eligibleByEventAndPerson[(int)$event['id']])): ?><form method="post" action="krouzky.php#akce-<?=(int)$event['id']?>" class="row g-2 mt-2">
                 <?= csrf_field() ?><input type="hidden" name="action" value="register"><input type="hidden" name="event_id" value="<?= (int)$event['id'] ?>"><input type="hidden" name="consent_version" value="<?= clubRegistrationH($event['terms_version']) ?>">
                 <div class="col-8"><label class="visually-hidden" for="person-<?= (int)$event['id'] ?>">Dítě</label><select class="form-select" id="person-<?= (int)$event['id'] ?>" name="sportovec_id" required><option value="">Vyberte dítě</option><?php foreach ($participants as $person):if(!isset($eligibleByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]))continue; ?><option value="<?= (int)$person['sportovec_id'] ?>" <?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? 'disabled' : '' ?>><?= clubRegistrationH($person['prijmeni'] . ' ' . $person['jmeno']) ?><?= isset($activeByEventAndPerson[(int)$event['id']][(int)$person['sportovec_id']]) ? ' — již přihlášeno' : '' ?></option><?php endforeach; ?></select></div>
                 <div class="col-4 d-grid"><button class="btn btn-primary"><?= (int)$event['remaining_capacity'] > 0 ? 'Přihlásit' : 'Zařadit do čekací listiny' ?></button></div>

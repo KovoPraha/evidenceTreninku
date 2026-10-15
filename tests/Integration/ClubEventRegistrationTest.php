@@ -186,6 +186,34 @@ final class ClubEventRegistrationTest extends TestCase
         );
     }
 
+    public function testCalendarParticipantAlsoOccupiesRegistrationAndShopCapacity(): void
+    {
+        $pdo = $this->database();
+        $eventId = $this->openFreeEvent($pdo, 1);
+        $pdo->exec('CREATE TABLE club_event_planned_participants(event_id INTEGER,sportovec_id INTEGER,status TEXT)');
+        $pdo->exec("INSERT INTO club_event_planned_participants(event_id,sportovec_id,status) VALUES($eventId,100,'confirmed')");
+
+        self::assertSame(1, \clubEventOccupiedCount($pdo, $eventId));
+        self::assertSame(1, \clubEventShopOccupiedCount($pdo, $eventId));
+        self::assertSame(0, \clubEventOpenFreeList($pdo)[0]['remaining_capacity']);
+        try {
+            \clubEventRegisterParticipant($pdo, $eventId, 10, 100, '2026.1', true);
+            self::fail('Calendar-confirmed participant must not be registered twice.');
+        } catch (\ClubEventRegistrationException $exception) {
+            self::assertStringContainsString('klubovém kalendáři', $exception->getMessage());
+        }
+        try {
+            \clubEventShopAssertNoActiveRegistration($pdo, $eventId, 100);
+            self::fail('Calendar-confirmed participant must not enter paid checkout twice.');
+        } catch (\ClubEventShopException $exception) {
+            self::assertStringContainsString('klubovém kalendáři', $exception->getMessage());
+        }
+        self::assertSame('waitlisted', \clubEventRegisterParticipant($pdo, $eventId, 10, 101, '2026.1', true)['status']);
+
+        $pdo->exec("INSERT INTO club_event_registrations(event_id,account_id,sportovec_id,relation_role_snapshot,status,registered_at) VALUES($eventId,10,100,'guardian','confirmed',CURRENT_TIMESTAMP)");
+        self::assertSame(1, \clubEventOccupiedCount($pdo, $eventId));
+    }
+
     public function testUnapprovedOrUnverifiedPersonCannotBeRegistered(): void
     {
         $pdo = $this->database();
