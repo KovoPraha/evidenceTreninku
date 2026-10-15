@@ -7,6 +7,16 @@ require_once __DIR__ . '/shop_coupon.php';
 
 final class ShopManualCatalogException extends RuntimeException {}
 
+function shopManualCatalogHasDeliveryMode(PDO $pdo): bool
+{
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql') {
+        $statement=$pdo->query("SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='shop_products' AND COLUMN_NAME='delivery_mode'");
+        return (bool)$statement->fetchColumn();
+    }
+    foreach ($pdo->query('PRAGMA table_info(shop_products)')->fetchAll(PDO::FETCH_ASSOC) as $row) if ($row['name']==='delivery_mode') return true;
+    return false;
+}
+
 function shopManualCatalogCreationReason(string $reason): string
 {
     $reason = trim($reason);
@@ -84,14 +94,17 @@ function shopManualCatalogCreateInTransaction(PDO $pdo, int $actorId, array $pro
     shopCatalogAssertProductOrigin(ShopCatalogOrigin::MANUAL,null,null,$actorId);
     shopCatalogAssertVariantOrigin(ShopCatalogOrigin::MANUAL,null,$actorId,ShopCatalogOrigin::MANUAL);
     shopManualCatalogAssertSkuAvailable($pdo,$variant['sku']);
+    $hasDeliveryMode=shopManualCatalogHasDeliveryMode($pdo);
+    if (!$hasDeliveryMode && $product['delivery_mode']!=='pickup_only') throw new ShopManualCatalogException('Nastavení zasílání ještě není v databázi připravené.');
     $pdo->prepare(
         'INSERT INTO shop_products '
         . '(source_candidate_id,source_run_id,origin,created_by_trainer_id,external_product_key,'
-        . 'name,short_description,offer_type,visibility,item_type,catalog_status) '
-        . "VALUES(NULL,NULL,'manual',?,?,?,?,?,?,?,'draft')"
+        . 'name,short_description,offer_type,visibility,item_type'.($hasDeliveryMode?',delivery_mode':'').',catalog_status) '
+        . "VALUES(NULL,NULL,'manual',?,?,?,?,?,?,?".($hasDeliveryMode?',?':'').",'draft')"
     )->execute([
         $actorId,$externalKey,$product['name'],$product['short_description'],
         $product['offer_type'],$product['visibility'],$product['item_type'],
+        ...($hasDeliveryMode?[$product['delivery_mode']]:[]),
     ]);
     $productId = (int)$pdo->lastInsertId();
     $variantId = shopManualCatalogInsertVariant($pdo,$actorId,$productId,$variant,'draft');
@@ -133,18 +146,21 @@ function shopManualCatalogUpdateProduct(PDO $pdo, int $actorId, int $productId, 
     try {
         shopManualCatalogDecision($actorId,$reason,$confirmed);
         $before = shopManualCatalogLockProduct($pdo,$productId);
+        if (!array_key_exists('delivery_mode',$input)) $input['delivery_mode']=$before['delivery_mode']??'pickup_only';
         $values = shopManualCatalogProductInput($input);
+        $hasDeliveryMode=shopManualCatalogHasDeliveryMode($pdo);
+        if (!$hasDeliveryMode && $values['delivery_mode']!=='pickup_only') throw new ShopManualCatalogException('Nastavení zasílání ještě není v databázi připravené.');
         $after = $before;
         foreach ($values as $key=>$value) $after[$key]=$value;
         $changed = false;
-        foreach (array_keys($values) as $key) if ((string)($before[$key]??'') !== (string)($after[$key]??'')) $changed=true;
+        foreach (array_keys($values) as $key) if ((string)($before[$key]??($key==='delivery_mode'?'pickup_only':'')) !== (string)($after[$key]??'')) $changed=true;
         if ($changed) {
             $pdo->prepare(
-                'UPDATE shop_products SET name=?,short_description=?,offer_type=?,visibility=?,item_type=?,'
+                'UPDATE shop_products SET name=?,short_description=?,offer_type=?,visibility=?,item_type=?'.($hasDeliveryMode?',delivery_mode=?':'').','
                 . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
             )->execute([
                 $values['name'],$values['short_description'],$values['offer_type'],$values['visibility'],
-                $values['item_type'],$productId,
+                $values['item_type'],...($hasDeliveryMode?[$values['delivery_mode']]:[]),$productId,
             ]);
             $after = shopManualCatalogLockProduct($pdo,$productId);
             shopManualCatalogEvent($pdo,$productId,null,$actorId,'update_product',$before,$after,$reason);
@@ -256,13 +272,16 @@ function shopManualCatalogProductInput(array $input): array
     }
     $itemType = (string)($input['item_type']??'');
     if (!in_array($itemType,['product','service'],true)) throw new InvalidArgumentException('Typ položky musí být product nebo service.');
+    $deliveryMode=(string)($input['delivery_mode']??'pickup_only');
+    if (!in_array($deliveryMode,['pickup_only','shipping_eligible'],true)) throw new InvalidArgumentException('Neplatná možnost předání produktu.');
+    if ($deliveryMode==='shipping_eligible' && ($offerType!=='goods'||$itemType!=='product')) throw new InvalidArgumentException('Zasílání lze označit jen u fyzického zboží.');
     $visibility = mb_strtolower(trim((string)($input['visibility']??'')),'UTF-8');
     if ($visibility === '' || in_array($visibility,['hidden','private','false','no','0'],true)) {
         throw new InvalidArgumentException('Ruční produkt nesmí být označený jako skrytý.');
     }
     return [
         'name'=>$name,'short_description'=>$summary !== '' ? $summary : null,
-        'offer_type'=>$offerType,'item_type'=>$itemType,'visibility'=>$visibility,
+        'offer_type'=>$offerType,'item_type'=>$itemType,'visibility'=>$visibility,'delivery_mode'=>$deliveryMode,
     ];
 }
 

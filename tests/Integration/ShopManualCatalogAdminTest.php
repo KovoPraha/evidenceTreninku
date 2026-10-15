@@ -11,6 +11,29 @@ require_once dirname(__DIR__,2) . '/includes/shop_catalog_management.php';
 
 final class ShopManualCatalogAdminTest extends TestCase
 {
+    public function testDeliveryModeIsStoredAndUnrelatedProductEditKeepsIt(): void
+    {
+        $pdo=$this->database();
+        $migration=require dirname(__DIR__,2).'/migrations/20260817110000_shop_catalog_admin.php';
+        $migration['up']($pdo);
+        $pdo->exec("ALTER TABLE shop_products ADD COLUMN delivery_mode TEXT NOT NULL DEFAULT 'pickup_only'");
+        $created=\shopManualCatalogCreate($pdo,7,[
+            'name'=>'Klubové tričko','offer_type'=>'goods','item_type'=>'product',
+            'visibility'=>'visible','delivery_mode'=>'shipping_eligible',
+        ],$this->variant('KP-TRICKO',25000,'10'),'Nový fyzický produkt.',true);
+        $productId=(int)$created['product_id'];
+        self::assertSame('shipping_eligible',$pdo->query('SELECT delivery_mode FROM shop_products WHERE id='.$productId)->fetchColumn());
+        \shopManualCatalogUpdateProduct($pdo,7,$productId,[
+            'name'=>'Klubové tričko modré','offer_type'=>'goods','item_type'=>'product','visibility'=>'visible',
+        ],'Úprava názvu bez změny předání.',true);
+        self::assertSame('shipping_eligible',$pdo->query('SELECT delivery_mode FROM shop_products WHERE id='.$productId)->fetchColumn());
+        \shopManualCatalogUpdateProduct($pdo,7,$productId,[
+            'name'=>'Klubové tričko modré','offer_type'=>'goods','item_type'=>'product',
+            'visibility'=>'visible','delivery_mode'=>'pickup_only',
+        ],'Jen osobní odběr.',true);
+        self::assertSame('pickup_only',$pdo->query('SELECT delivery_mode FROM shop_products WHERE id='.$productId)->fetchColumn());
+    }
+
     public function testMigrationCreateEditInventoryAndArchiveAreTransactionalAndAudited(): void
     {
         $pdo=$this->database();

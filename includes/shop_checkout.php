@@ -32,6 +32,7 @@ require_once __DIR__.'/public_velodrome_shop.php';
 require_once __DIR__.'/shop_member_pricing.php';
 require_once __DIR__.'/shop_payment_notification.php';
 require_once __DIR__.'/shop_purchase_mode.php';
+require_once __DIR__.'/shop_order_customer_status.php';
 
 function shopCheckoutColumnExists(PDO$pdo,string$table,string$column):bool
 {
@@ -493,6 +494,7 @@ function shopOrderByCode(PDO $pdo,int $accountId,string $publicCode): array
     $statement=$pdo->prepare('SELECT o.*,p.id AS payment_id,p.method,'.$paymentPolicy.' AS accepted_payment_methods,p.status AS payment_record_status,p.variable_symbol,p.iban_snapshot,p.bic_snapshot,p.account_label_snapshot,p.spd_payload,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS coupon_code_snapshot,r.discount_minor AS coupon_discount_minor FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id WHERE o.account_id=? AND o.public_code=?');
     $statement->execute([$accountId,$publicCode]);$order=$statement->fetch(PDO::FETCH_ASSOC);
     if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
+    if (isset($order['customer_status_id'])) $order=shopOrderCustomerStatusAttach($pdo,$order);
     $items=$pdo->prepare('SELECT * FROM shop_order_items WHERE order_id=? ORDER BY id');$items->execute([(int)$order['id']]);
     $order['items']=$items->fetchAll(PDO::FETCH_ASSOC);
     $order['event_items']=clubEventShopOrderRows($pdo,(int)$order['id']);
@@ -521,10 +523,15 @@ function shopOrderListForAccount(PDO $pdo,int $accountId,int $limit=100):array
     $limit=max(1,min(200,$limit));
     $eventItemCount=clubEventShopAvailable($pdo)?'(SELECT COUNT(*) FROM club_event_order_items ei WHERE ei.order_id=o.id)':'0';
     $velodromeItemCount=publicVelodromeShopAvailable($pdo)?'(SELECT COUNT(*) FROM public_velodrome_order_items vi WHERE vi.order_id=o.id)':'0';
+    $customerStatus=shopCheckoutColumnExists($pdo,'shop_orders','customer_status_id')
+        ? 'o.customer_status_id,cs.label AS customer_status_label,' : 'NULL AS customer_status_id,NULL AS customer_status_label,';
+    $customerJoin=shopCheckoutColumnExists($pdo,'shop_orders','customer_status_id')
+        ? ' LEFT JOIN shop_order_status_definitions cs ON cs.id=o.customer_status_id ' : ' ';
     $statement=$pdo->prepare('SELECT o.id,o.public_code,o.status,o.payment_status,o.total_minor,o.currency,o.placed_at,o.created_at,o.cancelled_at,o.ready_at,o.completed_at,'
+        .$customerStatus
         .'p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS coupon_code_snapshot,'
         .'((SELECT COUNT(*) FROM shop_order_items oi WHERE oi.order_id=o.id)+'.$eventItemCount.'+'.$velodromeItemCount.') AS item_count '
-        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '
+        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '.$customerJoin
         .'WHERE o.account_id=? ORDER BY o.created_at DESC,o.id DESC LIMIT '.$limit);
     $statement->execute([$accountId]);return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -615,9 +622,11 @@ function shopOrderAdminList(PDO $pdo,int $limit=200,string $query=''):array
 {
     $limit=max(1,min(500,$limit));
     $query=trim($query);
-    $sql='SELECT o.*,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
+    $withCustomerStatus=shopCheckoutColumnExists($pdo,'shop_orders','customer_status_id');
+    $sql='SELECT o.*,'.($withCustomerStatus?'cs.label':'NULL').' AS customer_status_label,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
         .'e.action AS last_event_action,e.actor_id AS last_event_actor_id,e.note AS last_event_note,e.created_at AS last_event_at '
         .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '
+        .($withCustomerStatus?'LEFT JOIN shop_order_status_definitions cs ON cs.id=o.customer_status_id ':'')
         .'LEFT JOIN shop_order_events e ON e.id=(SELECT MAX(e2.id) FROM shop_order_events e2 WHERE e2.order_id=o.id) ';
     $parameters=[];
     if($query!==''){
