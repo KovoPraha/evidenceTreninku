@@ -29,6 +29,8 @@ final class PublicPortalWiringTest extends TestCase
         self::assertStringContainsString('auth_session_bind_public_user', $trainerLogin);
         self::assertStringContainsString('unifiedAccountAuthenticate', $shopLogin);
         self::assertStringContainsString('auth_session_bind_trainer', $shopLogin);
+        self::assertStringContainsString("\$default = 'sportovni_prehled.php'", $shopLogin);
+        self::assertStringContainsString('publicLoginDestination($_GET[\'redirect\'] ?? null)', $shopLogin);
     }
 
     public function testCustomerLoginAndRegistrationExposeOnePrimaryHeading(): void

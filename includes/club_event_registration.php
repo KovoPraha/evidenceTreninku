@@ -43,6 +43,47 @@ function clubEventHasConfirmedPlannedParticipant(PDO $pdo, int $eventId, int $sp
     return (bool)$statement->fetchColumn();
 }
 
+/** Keep the trainer's roster in sync with the canonical free registration. Called inside the event transaction. */
+function clubEventSyncPlannedParticipant(PDO $pdo, int $eventId, int $sportovecId, int $accountId, int $registrationId, string $status): void
+{
+    if (!clubEventTableExists($pdo, 'club_event_planned_participants')
+        || !clubEventColumnExists($pdo, 'club_event_planned_participants', 'id')) {
+        return;
+    }
+    $find = $pdo->prepare('SELECT id FROM club_event_planned_participants WHERE event_id=? AND sportovec_id=?');
+    $find->execute([$eventId, $sportovecId]);
+    $id = (int)$find->fetchColumn();
+    if ($id > 0) {
+        $pdo->prepare('UPDATE club_event_planned_participants SET account_id=?,registration_id=?,status=?,confirmed_at=CASE WHEN ?=\'confirmed\' THEN COALESCE(confirmed_at,CURRENT_TIMESTAMP) ELSE NULL END,cancelled_at=NULL WHERE id=?')
+            ->execute([$accountId, $registrationId, $status, $status, $id]);
+    } else {
+        $pdo->prepare('INSERT INTO club_event_planned_participants(event_id,sportovec_id,account_id,registration_id,status,confirmed_at) VALUES(?,?,?,?,?,CASE WHEN ?=\'confirmed\' THEN CURRENT_TIMESTAMP ELSE NULL END)')
+            ->execute([$eventId, $sportovecId, $accountId, $registrationId, $status, $status]);
+    }
+}
+
+function clubEventCancelPlannedParticipant(PDO $pdo, int $eventId, int $sportovecId, int $registrationId): void
+{
+    if (!clubEventTableExists($pdo, 'club_event_planned_participants')
+        || !clubEventColumnExists($pdo, 'club_event_planned_participants', 'id')) {
+        return;
+    }
+    $pdo->prepare("UPDATE club_event_planned_participants SET status='cancelled',cancelled_at=CURRENT_TIMESTAMP "
+        . 'WHERE event_id=? AND sportovec_id=? AND (registration_id=? OR registration_id IS NULL)')
+        ->execute([$eventId, $sportovecId, $registrationId]);
+}
+
+function clubEventRegistrationHasCalendarCharge(PDO $pdo, int $registrationId): bool
+{
+    if (!clubEventTableExists($pdo, 'club_event_planned_participants')
+        || !clubEventColumnExists($pdo, 'club_event_planned_participants', 'charge_id')) {
+        return false;
+    }
+    $statement = $pdo->prepare('SELECT 1 FROM club_event_planned_participants WHERE registration_id=? AND charge_id IS NOT NULL LIMIT 1');
+    $statement->execute([$registrationId]);
+    return (bool)$statement->fetchColumn();
+}
+
 /** @return array{id:int,terms_version:string,changed:bool} */
 function clubEventConfigureRegistrationTerms(
     PDO $pdo,
@@ -375,6 +416,12 @@ function clubEventRegisterParticipant(
         ) {
             throw new ClubEventRegistrationException('Kroužek není otevřený pro bezplatné přihlášení.');
         }
+        if (isset($event['planning_status']) && $event['planning_status'] !== 'confirmed') {
+            throw new ClubEventRegistrationException('Akce zatím není potvrzená.');
+        }
+        if (isset($event['visibility']) && !in_array((string)$event['visibility'], ['public', 'members', 'rosters'], true)) {
+            throw new ClubEventRegistrationException('Tato akce není otevřená pro přihlášení účtem.');
+        }
         clubEventAssertRegistrationWindow($event);
         if (empty($event['terms_version']) || !hash_equals((string)$event['terms_version'], $consentVersion)
             || empty($event['consent_text_plain']) || empty($event['cancellation_policy_plain'])
@@ -406,6 +453,9 @@ function clubEventRegisterParticipant(
         $existingStatement->execute([$eventId, $sportovecId]);
         $existing = $existingStatement->fetch(PDO::FETCH_ASSOC);
         if ($existing && in_array($existing['status'], ['confirmed', 'waitlisted', 'payment_pending'], true)) {
+            if (in_array($existing['status'], ['confirmed', 'waitlisted'], true)) {
+                clubEventSyncPlannedParticipant($pdo, $eventId, $sportovecId, (int)$existing['account_id'], (int)$existing['id'], (string)$existing['status']);
+            }
             $pdo->commit();
             return ['id' => (int)$existing['id'], 'status' => (string)$existing['status'], 'created' => false];
         }
@@ -471,6 +521,7 @@ function clubEventRegisterParticipant(
                 : 'Kapacita je plná; oprávněná osoba byla zařazena na čekací listinu.')
             . ' ' . $eligibility['reason']
         );
+        clubEventSyncPlannedParticipant($pdo, $eventId, $sportovecId, $accountId, $registrationId, $targetStatus);
         $pdo->commit();
         return ['id' => $registrationId, 'status' => $targetStatus, 'created' => true];
     } catch (Throwable $exception) {
@@ -520,6 +571,9 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
         ) {
             throw new ClubEventRegistrationException('Placenou přihlášku zrušte přes objednávku; případná vratka musí zůstat auditovaná.');
         }
+        if (clubEventRegistrationHasCalendarCharge($pdo, $registrationId)) {
+            throw new ClubEventRegistrationException('Tato účast má klubový předpis. O storno požádejte oddíl, aby se správně vyřešila platba či vratka.');
+        }
         if ($registration['status'] === 'cancelled') {
             $pdo->commit();
             return ['id' => $registrationId, 'status' => 'cancelled', 'changed' => false, 'promoted_registration_id' => null];
@@ -552,6 +606,7 @@ function clubEventCancelRegistration(PDO $pdo, int $registrationId, int $account
             'cancelled',
             $note
         );
+        clubEventCancelPlannedParticipant($pdo, $eventId, (int)$registration['sportovec_id'], $registrationId);
         $promotedRegistrationId = $fromStatus === 'confirmed'
             ? clubEventPromoteNextWaitlisted($pdo, $eventId)
             : null;
@@ -615,6 +670,9 @@ function clubEventAdminCancelRegistration(
         ) {
             throw new ClubEventRegistrationException('Placenou přihlášku stornujte přes objednávku, aby se správně zpracovala platba a vratka.');
         }
+        if (clubEventRegistrationHasCalendarCharge($pdo, $registrationId)) {
+            throw new ClubEventRegistrationException('Tato účast má klubový předpis. Stornujte ji v klubovém kalendáři včetně platby a případné vratky.');
+        }
         if ($registration['status'] === 'cancelled') {
             $pdo->commit();
             return [
@@ -647,6 +705,7 @@ function clubEventAdminCancelRegistration(
             'cancelled',
             $note
         );
+        clubEventCancelPlannedParticipant($pdo, $eventId, (int)$registration['sportovec_id'], $registrationId);
         $promotedRegistrationId = $fromStatus === 'confirmed'
             ? clubEventPromoteNextWaitlisted($pdo, $eventId)
             : null;
@@ -722,6 +781,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
                 'cancelled',
                 'Automaticky vyřazeno při uvolnění místa: vztah, soupiska nebo souhlas už nejsou platné.'
             );
+            clubEventCancelPlannedParticipant($pdo, $eventId, (int)$candidate['sportovec_id'], (int)$candidate['id']);
             continue;
         }
         $pdo->prepare(
@@ -738,6 +798,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
             'confirmed',
             'Automaticky povýšeno z čekací listiny po uvolnění kapacity.'
         );
+        clubEventSyncPlannedParticipant($pdo, $eventId, (int)$candidate['sportovec_id'], (int)$candidate['account_id'], (int)$candidate['id'], 'confirmed');
         clubEventNotificationEnqueuePromotion($pdo, (int)$candidate['id'], $promotionEventId);
         return (int)$candidate['id'];
     }
@@ -775,8 +836,13 @@ function clubEventMyRegistrations(PDO $pdo, int $accountId): array
     if ($accountId < 1) {
         return [];
     }
+    $calendarCharge = clubEventTableExists($pdo, 'club_event_planned_participants')
+        && clubEventColumnExists($pdo, 'club_event_planned_participants', 'charge_id')
+        ? '(SELECT MAX(p.charge_id) FROM club_event_planned_participants p WHERE p.registration_id=r.id)'
+        : 'NULL';
     $statement = $pdo->prepare(
-        'SELECT r.*, e.name AS event_name, e.code AS event_code, s.jmeno, s.prijmeni '
+        'SELECT r.*, e.name AS event_name, e.code AS event_code, s.jmeno, s.prijmeni, '
+        . $calendarCharge . ' AS calendar_charge_id '
         . 'FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id '
         . 'JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? '
         . 'ORDER BY r.registered_at DESC, r.id DESC'

@@ -15,11 +15,29 @@ final class ClubCalendarWiringTest extends TestCase
         self::assertStringContainsString('clubCalendarFamilyRegister',$family);self::assertStringContainsString("publicShellNav('calendar')",$family);
         self::assertStringContainsString('$usesShop',$family);
         self::assertStringContainsString('Vybrat účastníka a přidat do košíku',$family);
-        self::assertStringContainsString('Souhlasím s účastí na této akci.',$family);
+        self::assertStringContainsString('consent_version',$family);
+        self::assertStringContainsString('cancellation_policy_plain',$family);
+        self::assertStringContainsString('krouzky.php#moje-prihlasky',$family);
+        self::assertStringContainsString("include __DIR__.'/free_event_registration_form.php'",$family);
+        self::assertStringContainsString("include __DIR__.'/free_event_registration_form.php'",(string)file_get_contents($root.'/booking/krouzky.php'));
+        $form=(string)file_get_contents($root.'/booking/free_event_registration_form.php');
+        self::assertStringContainsString('name="consented"',$form);
+        self::assertStringContainsString('cancellation_policy_plain',$form);
         self::assertStringNotContainsString("['internal_note']",$family);
         self::assertStringContainsString('Potvrdit akci a otevřít přihlašování',$staff);
         $service=(string)file_get_contents($root.'/includes/club_calendar.php');
         self::assertStringContainsString('calendar_confirm_and_open_registration',$service);
+        self::assertStringContainsString('clubEventRegisterParticipant',$service);
+        self::assertStringContainsString('clubEventPromoteNextWaitlisted',$service);
+    }
+
+    public function testStaffAthleteChooserSearchesDatabaseInsteadOfLoadingTwoThousandNames(): void
+    {
+        $source=(string)file_get_contents(dirname(__DIR__,2).'/club_calendar.php');
+        self::assertStringContainsString('athlete_q',$source);
+        self::assertStringContainsString('LIMIT 25',$source);
+        self::assertStringContainsString('Vyhledat sportovce jménem nebo ID',$source);
+        self::assertStringNotContainsString('LIMIT 2000',$source);
     }
 
     public function testVisibilityAndVehicleConflictWiringIsFailClosedAndProminent(): void
