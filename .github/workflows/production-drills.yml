@@ -183,7 +183,10 @@ jobs:
           require __DIR__ . '/production-uat-readiness.php';
           EOF
           production_retry "${SCP[@]}" /tmp/run-production-uat-readiness.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-uat-readiness.php"
-          VYSLEDEK=$(production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-readiness.php'") || STAV=$?
+          # Readiness intentionally exits 1 when a gate is red. Preserve its
+          # JSON stdout so the failed check can be diagnosed from the run log.
+          STAV=0
+          VYSLEDEK=$("${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-readiness.php'") || STAV=$?
           echo "$VYSLEDEK" | jq .
           if [ "${STAV:-0}" -ne 0 ]; then
             echo 'Produkční UAT je blokován; podrobnosti jsou v kontrolním JSON výše.'
