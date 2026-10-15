@@ -159,6 +159,13 @@ function kisUatUpsertCalendarEvent(PDO $pdo, int $actorId, string $name, int $fe
     return (int)$result['id'];
 }
 
+function kisUatHasNonCancelledRegistrations(PDO $pdo, int $eventId): bool
+{
+    $statement = $pdo->prepare("SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status<>'cancelled'");
+    $statement->execute([$eventId]);
+    return (int)$statement->fetchColumn() > 0;
+}
+
 function kisUatUpsertPaidShopEvent(
     PDO $pdo,
     int $actorId,
@@ -191,9 +198,10 @@ function kisUatUpsertPaidShopEvent(
         $eventId = (int)$created['id'];
     } else {
         $eventId = (int)$events[0]['id'];
-        $registrations = $pdo->prepare('SELECT COUNT(*) FROM club_event_registrations WHERE event_id=?');
-        $registrations->execute([$eventId]);
-        if ((int)$registrations->fetchColumn() > 0) {
+        // A cancelled registration from an earlier UAT window is audit history,
+        // not a participant commitment to the old date. Never move an event
+        // that still has a live or pending registration.
+        if (kisUatHasNonCancelledRegistrations($pdo, $eventId)) {
             if ((string)$events[0]['pricing_policy'] !== 'product_variants') {
                 throw new RuntimeException('Placenou UAT akci s přihláškami nelze převést na objednávkový tok.');
             }
