@@ -54,7 +54,9 @@ CREATE TABLE club_finance_settings (
 )
 SQL);
         }
-        $pdo->exec('INSERT INTO club_finance_settings(id,enforcement_enabled,grace_days,registration_limit_minor,training_notice_minor) SELECT 1,0,14,200000,500000 WHERE NOT EXISTS (SELECT 1 FROM club_finance_settings WHERE id=1)');
+        $pdo->exec($mysql
+            ? 'INSERT IGNORE INTO club_finance_settings(id,enforcement_enabled,grace_days,registration_limit_minor,training_notice_minor) VALUES(1,0,14,200000,500000)'
+            : 'INSERT OR IGNORE INTO club_finance_settings(id,enforcement_enabled,grace_days,registration_limit_minor,training_notice_minor) VALUES(1,0,14,200000,500000)');
         if (!$financeTableExists($pdo, 'club_finance_setting_events')) {
             $pdo->exec($mysql ? <<<'SQL'
 CREATE TABLE club_finance_setting_events (
