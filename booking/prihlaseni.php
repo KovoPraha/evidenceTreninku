@@ -6,20 +6,12 @@ require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/auth_rate_limit.php';
 require_once __DIR__ . '/../includes/unified_account.php';
+require_once __DIR__ . '/../includes/public_login_destination.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
-function publicLoginDestination(mixed $requested): string
-{
-    $default = 'sportovni_prehled.php';
-    if (!is_string($requested) || !preg_match('~^[a-z0-9_]+\.php(?:\?[^#\r\n]*)?(?:#[a-z0-9_-]+)?$~iD', $requested)) {
-        return $default;
-    }
-    return $requested;
-}
-
 if (isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: ' . publicLoginDestination($_GET['redirect'] ?? null)); exit;
+    header('Location: ' . publicLoginDestination($_GET['redirect'] ?? null, isset($_SESSION['trener_id']))); exit;
 }
 
 $errors = isset($_GET['session']) && $_GET['session'] === 'expired'
@@ -76,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     auth_session_refresh_trainer_authorization($pdo, (int)$identity['trainer']['id']);
                 }
                 // Jen interní relativní cíl; fragment zachová návrat ke konkrétní akci.
-                header('Location: ' . publicLoginDestination($_GET['redirect'] ?? null));
+                header('Location: ' . publicLoginDestination($_GET['redirect'] ?? null, $identity['trainer'] !== null));
                 exit;
             }
         } catch (Throwable $exception) {
