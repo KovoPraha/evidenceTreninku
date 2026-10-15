@@ -9,12 +9,7 @@ $tableExists=static function(PDO$pdo,string$table):bool{
 $variableSymbolIsUnique=static function(PDO$pdo):bool{
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
         $rows=$pdo->query("SELECT INDEX_NAME,NON_UNIQUE,COLUMN_NAME,SEQ_IN_INDEX FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='payments' ORDER BY INDEX_NAME,SEQ_IN_INDEX")->fetchAll(PDO::FETCH_ASSOC);
-        $indexes=[];
-        foreach($rows as$row){
-            $name=(string)$row['INDEX_NAME'];
-            $indexes[$name]['unique']=(int)$row['NON_UNIQUE']===0;
-            $indexes[$name]['columns'][]=(string)$row['COLUMN_NAME'];
-        }
+        $indexes=[];foreach($rows as$row)$indexes[(string)$row['INDEX_NAME']]['unique']=(int)$row['NON_UNIQUE']===0;$indexes[(string)$row['INDEX_NAME']]['columns'][]=(string)$row['COLUMN_NAME'];
         foreach($indexes as$index)if($index['unique']&&$index['columns']===['variable_symbol'])return true;
         return false;
     }
