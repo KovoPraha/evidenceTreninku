@@ -18,6 +18,7 @@ require_once dirname(__DIR__) . '/includes/family_annual_paid_overview.php';
 require_once dirname(__DIR__) . '/includes/member_charge_reminder.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 require_once dirname(__DIR__) . '/includes/training_rsvp.php';
+require_once dirname(__DIR__) . '/includes/club_finance.php';
 require_once dirname(__DIR__) . '/includes/calendar_ui.php';
 require_once dirname(__DIR__) . '/includes/ui_format.php';
 
@@ -149,8 +150,14 @@ $agendaError = '';
 $weeklyError = '';
 $annualPaidOverviewError = '';
 $loadError = '';
+$financeBalances=[];
 try {
     $overview = familyPortalOverview($pdo, $accountId);
+    foreach ($overview as $profile) {
+        $personId=(int)$profile['person']['sportovec_id'];
+        try { $financeBalances[$personId]=clubFinanceBalanceForAthlete($pdo,$personId); }
+        catch (Throwable $exception) { error_log('booking/sportovni_prehled.php finance balance: '.$exception->getMessage()); }
+    }
     if (shopBeneficiaryColumnExists($pdo, 'shop_order_items')) {
         $familyOrderItems = shopBeneficiaryOrderItemsForAccount(
             $pdo,
@@ -244,10 +251,10 @@ foreach ($trainingRsvps as $training) {
     <p class="text-muted">Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.</p>
 
     <div class="row g-3 mb-3" aria-label="Souhrn sportovního přehledu">
-        <div class="col-6 col-lg-3"><a href="#potvrzeni-treninku" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Čeká na odpověď v zobrazeném měsíci</span><strong class="fs-3 <?=$unansweredTrainings>0?'text-warning':'text-success'?>"><?=$unansweredTrainings?></strong><span class="small">tréninků</span></a></div>
-        <div class="col-6 col-lg-3"><a href="#rodinny-program" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Příštích 30 dní</span><strong class="fs-3 text-primary"><?=count($familyAgenda)?></strong><span class="small">položek programu</span></a></div>
+        <div class="col-6 col-lg-3"><a href="#potvrzeni-treninku" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Čeká na odpověď v zobrazeném měsíci</span><strong class="fs-3 <?=$unansweredTrainings>0?'text-warning':'text-success'?>"><?=$unansweredTrainings?></strong><span class="small"><?= $unansweredTrainings === 1 ? 'trénink' : ($unansweredTrainings >= 2 && $unansweredTrainings <= 4 ? 'tréninky' : 'tréninků') ?></span></a></div>
+        <div class="col-6 col-lg-3"><a href="#rodinny-program" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Příštích 30 dní</span><strong class="fs-3 text-primary"><?=count($familyAgenda)?></strong><span class="small"><?= count($familyAgenda) === 1 ? 'položka programu' : (count($familyAgenda) >= 2 && count($familyAgenda) <= 4 ? 'položky programu' : 'položek programu') ?></span></a></div>
         <div class="col-6 col-lg-3"><a href="#profily" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">Rodina</span><strong class="fs-3 text-primary"><?=count($overview)?></strong><span class="small">schválených profilů</span></a></div>
-        <div class="col-6 col-lg-3"><a href="#profily" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">K úhradě</span><strong class="fs-3 <?=$pendingCharges>0?'text-danger':'text-success'?>"><?=$pendingCharges?></strong><span class="small">členských předpisů</span></a></div>
+        <div class="col-6 col-lg-3"><a href="#profily" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted">K úhradě</span><strong class="fs-3 <?=$pendingCharges>0?'text-danger':'text-success'?>"><?=$pendingCharges?></strong><span class="small"><?= $pendingCharges === 1 ? 'členský předpis' : ($pendingCharges >= 2 && $pendingCharges <= 4 ? 'členské předpisy' : 'členských předpisů') ?></span></a></div>
     </div>
     <nav class="app-anchor-nav border rounded p-2 mb-4 d-flex flex-wrap gap-2" aria-label="Obsah sportovního přehledu"><a class="btn btn-sm btn-outline-primary" href="#potvrzeni-treninku">Odpovědi na tréninky</a><a class="btn btn-sm btn-outline-primary" href="#rodinny-program">Program</a><a class="btn btn-sm btn-outline-primary" href="#profily">Profily a platby</a><a class="btn btn-sm btn-outline-secondary" href="#nastaveni">Nastavení a přehledy</a></nav>
 
@@ -428,6 +435,7 @@ foreach ($trainingRsvps as $training) {
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php foreach ($person['relation_roles'] as $role): ?><span class="badge text-bg-primary ms-1"><?= familyPageH($roleLabels[$role] ?? $role) ?></span><?php endforeach; ?></div>
             </summary>
             <div class="card-body">
+                <?php $financeBalance=$financeBalances[(int)$person['sportovec_id']]??null;if($financeBalance!==null):?><div class="alert <?=$financeBalance['overdue_minor']>0?'alert-warning':'alert-light'?> border"><strong>Saldo klubových služeb:</strong> <?=familyPageH(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě · po lhůtě <?=familyPageH(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=familyPageH(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?><div class="small mt-1">Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k <?=familyPageH($financeBalance['as_of'])?>.</div></div><?php endif;?>
                 <?php if ($makeupSummary !== null): ?><div class="alert alert-light border d-flex flex-wrap align-items-center gap-2"><strong>Náhradní lekce kroužků</strong><span class="badge text-bg-warning">Omluvené, čekají na potvrzení <?= (int)$makeupSummary['pending'] ?></span><span class="badge text-bg-success">K využití <?= (int)$makeupSummary['available'] ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?= (int)$makeupSummary['locked'] ?></span><span class="badge text-bg-primary">Rezervované <?= (int)$makeupSummary['reserved'] ?></span><a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?= (int)$person['sportovec_id'] ?>">Zobrazit náhrady</a></div><?php endif; ?>
                 <h2 class="h6">Soupisky</h2>
                 <?php if ($profile['rosters'] === []): ?><p class="text-muted small">Žádná evidovaná soupiska.</p><?php else: ?>
@@ -443,10 +451,11 @@ foreach ($trainingRsvps as $training) {
 
                 <h2 class="h6">Členské předpisy</h2>
                 <?php if ($profile['member_charges'] === []): ?><p class="text-muted small">Žádný členský předpis.</p><?php else: ?>
-                <div class="table-responsive mb-4"><table class="table table-sm align-middle"><thead><tr><th>Předpis</th><th>Částka</th><th>Splatnost</th><th>Stav</th></tr></thead><tbody>
+                <?php $openChargeMinor=[];foreach(($financeBalance['items']??[]) as $financeItem)if(($financeItem['kind']??'')==='member_charge')$openChargeMinor[(int)$financeItem['id']]=(int)$financeItem['amount_minor']; ?>
+                <div class="table-responsive mb-4"><table class="table table-sm align-middle"><thead><tr><th>Předpis</th><th>Předepsáno / zbývá</th><th>Splatnost</th><th>Stav</th></tr></thead><tbody>
                 <?php foreach ($profile['member_charges'] as $charge): ?><tr>
                     <td><strong><?= familyPageH($charge['title_snapshot']) ?></strong><div class="small text-muted"><code><?= familyPageH($charge['public_code']) ?></code></div></td>
-                    <td><?= familyPageH(number_format(((int)$charge['amount_minor']) / 100, 2, ',', ' ') . ' ' . $charge['currency']) ?></td>
+                    <td><?= familyPageH(number_format(((int)$charge['amount_minor']) / 100, 2, ',', ' ') . ' ' . $charge['currency']) ?><?php $remaining=$openChargeMinor[(int)$charge['id']]??null;if($remaining!==null&&$remaining<(int)$charge['amount_minor']):?><div class="small text-success">Po započtení plateb zbývá <?=familyPageH(number_format($remaining/100,2,',',' '))?> Kč</div><?php endif;?></td>
                     <td><?= familyPageH($charge['due_on'] ? uiFormatDate((string)$charge['due_on']) : 'neuvedeno') ?></td>
                     <td><span class="badge <?= $charge['status'] === 'paid' ? 'text-bg-success' : ($charge['status'] === 'pending' ? 'text-bg-warning' : 'text-bg-secondary') ?>"><?= familyPageH(familyPageChargeStatus((string)$charge['status'])) ?></span><?php if ($charge['paid_at']): ?><div class="small text-muted">Uhrazeno <?= familyPageH(substr((string)$charge['paid_at'], 0, 10)) ?></div><?php endif; ?></td>
                 </tr><?php endforeach; ?>

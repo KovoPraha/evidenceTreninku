@@ -5,6 +5,7 @@ require_once __DIR__ . '/club_event.php';
 require_once __DIR__ . '/account_person_role.php';
 require_once __DIR__ . '/club_event_notification.php';
 require_once __DIR__ . '/club_event_roster_target.php';
+require_once __DIR__ . '/club_finance.php';
 
 final class ClubEventRegistrationException extends RuntimeException
 {
@@ -376,6 +377,8 @@ function clubEventRegisterParticipant(
             $pdo->commit();
             return ['id' => (int)$existing['id'], 'status' => (string)$existing['status'], 'created' => false];
         }
+        try { clubFinanceAssertCanRegister($pdo,$sportovecId); }
+        catch (ClubFinanceException $exception) { throw new ClubEventRegistrationException($exception->getMessage(),0,$exception); }
 
         $capacity = clubEventEffectiveCapacity($pdo, $eventId, (int)$event['capacity']);
         $count = $pdo->prepare(

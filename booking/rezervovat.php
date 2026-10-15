@@ -9,10 +9,14 @@ require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
 require_once __DIR__ . '/../includes/app_url.php';
 require_once __DIR__ . '/../includes/individual_lesson_context.php';
+require_once __DIR__ . '/../includes/club_finance.php';
+require_once __DIR__ . '/../includes/family_portal.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
 $uzivatelId = (int)$_SESSION['verejny_uzivatel_id'];
+$financePeople = familyPortalAuthorizedPeople($pdo, $uzivatelId);
+$financePersonId = null;
 $lekceId    = (int)($_GET['lekce_id'] ?? $_POST['lekce_id'] ?? 0);
 $slotOd     = trim($_GET['slot_od'] ?? $_POST['slot_od'] ?? '');
 $slotDo     = trim($_GET['slot_do'] ?? $_POST['slot_do'] ?? '');
@@ -102,6 +106,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
         $errors[] = 'Neplatný token.';
     } else {
+        if ($financePeople !== []) {
+            try {
+                $requested = filter_var($_POST['finance_sportovec_id'] ?? null, FILTER_VALIDATE_INT);
+                $financePersonId = clubFinanceOrderAthlete($pdo, $uzivatelId, $requested === false ? null : $requested);
+                if ($financePersonId !== null) clubFinanceAssertCanRegister($pdo, $financePersonId);
+            } catch (ClubFinanceException $exception) {
+                $errors[] = $exception->getMessage();
+            }
+        }
+        if ($errors === []) {
         $poznamka = trim($_POST['poznamka_klienta'] ?? '');
         $stavNovy = $waitlist ? 'cekaci_listina'
                     : ($lekce['typ'] === 'zelena' ? 'potvrzena' : 'ceka');
@@ -136,12 +150,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: moje_rezervace.php'); exit;
             }
 
-            $pdo->prepare("
-                INSERT INTO verejne_rezervace
-                    (lekce_id, uzivatel_id, stav, poznamka_klienta, potvrzovaci_token,
-                     potvrzovaci_token_expires_at, slot_cas_od, slot_cas_do)
-                VALUES (?,?,?,?,?,?,?,?)
-            ")->execute([
+            $hasAthleteColumn = clubFinanceColumnExists($pdo, 'verejne_rezervace', 'sportovec_id');
+            $reservationColumns = $hasAthleteColumn
+                ? '(lekce_id, uzivatel_id, sportovec_id, stav, poznamka_klienta, potvrzovaci_token, potvrzovaci_token_expires_at, slot_cas_od, slot_cas_do)'
+                : '(lekce_id, uzivatel_id, stav, poznamka_klienta, potvrzovaci_token, potvrzovaci_token_expires_at, slot_cas_od, slot_cas_do)';
+            $reservationPlaceholders = $hasAthleteColumn ? '(?,?,?,?,?,?,?,?,?)' : '(?,?,?,?,?,?,?,?)';
+            $reservationValues = [
                 $lekceId,
                 $uzivatelId,
                 $stavNovy,
@@ -150,7 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $approval['expires_at'] ?? null,
                 $slotOd,
                 $slotDo,
-            ]);
+            ];
+            if ($hasAthleteColumn) array_splice($reservationValues, 2, 0, [$financePersonId]);
+            $pdo->prepare('INSERT INTO verejne_rezervace '.$reservationColumns.' VALUES '.$reservationPlaceholders)->execute($reservationValues);
           } finally {
             $pdo->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
           }
@@ -212,6 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         header('Location: moje_rezervace.php');
         exit;
+        }
         }
     }
 }
@@ -280,6 +297,9 @@ $volnoSlot = max(0, (int)$lekce['max_osob'] - $obsazenoSlot);
 
             <form method="post">
                 <?= csrf_field() ?>
+                <?php if (count($financePeople) > 1): ?>
+                <div class="mb-3"><label for="finance-person" class="form-label">Pro koho rezervujete</label><select id="finance-person" name="finance_sportovec_id" class="form-select" required><option value="">Vyberte sportovce</option><?php foreach ($financePeople as $financePerson): ?><option value="<?= (int)$financePerson['sportovec_id'] ?>" <?= (int)($_POST['finance_sportovec_id'] ?? 0) === (int)$financePerson['sportovec_id'] ? 'selected' : '' ?>><?= h(trim($financePerson['jmeno'].' '.$financePerson['prijmeni'])) ?></option><?php endforeach; ?></select></div>
+                <?php endif; ?>
                 <input type="hidden" name="lekce_id" value="<?= (int)$lekce['id'] ?>">
                 <input type="hidden" name="slot_od"  value="<?= h($slotOd) ?>">
                 <input type="hidden" name="slot_do"  value="<?= h($slotDo) ?>">

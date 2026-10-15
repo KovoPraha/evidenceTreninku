@@ -173,6 +173,9 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_bank_admin.php', 'label' => 'Bankovní účet e-shopu', 'description' => 'IBAN, BIC a splatnost', 'icon' => 'credit-card'],
                     ['route' => 'member_charges_admin.php', 'label' => 'Klubové platby', 'description' => 'Stav členských plateb', 'icon' => 'cash-stack'],
                     ['route' => 'member_fee_plans_admin.php', 'label' => 'Plány příspěvků', 'description' => 'Měsíční předpisy podle platných soupisek', 'icon' => 'calendar2-check'],
+                    ['route' => 'member_fee_annual_admin.php', 'label' => 'Roční úhrady', 'description' => 'Jedna ověřená platba za dvanáct měsíčních předpisů', 'icon' => 'calendar2-range'],
+                    ['route' => 'club_finance_receipt_admin.php', 'label' => 'Přijatá platba sportovce', 'description' => 'Ověřená bankovní platba a rozpis na závazky', 'icon' => 'cash-stack'],
+                    ['route' => 'club_finance_admin.php', 'label' => 'Finanční pravidla', 'description' => 'Lhůta a limity pro nové přihlášky', 'icon' => 'sliders'],
                     ['route' => 'member_charge_reminders_admin.php', 'label' => 'Připomínky plateb', 'description' => 'Auditovaná fronta upomínek', 'icon' => 'bell'],
                 ]],
                 ['label' => 'Kredity a provoz', 'icon' => 'wallet2', 'items' => [
@@ -234,7 +237,7 @@ function staffPositionPrimaryRoutes(): array
         'program_coordinator'=>['club_program_offers_admin.php','eshop_events_admin.php','verejny_velodrom_admin.php'],
         'catalog_manager'=>['eshop_produkt_admin.php','eshop_coupons_admin.php'],
         'order_operator'=>['eshop_orders_admin.php'],
-        'finance_manager'=>['eshop_payments_admin.php','member_charges_admin.php','prehled_kreditu.php'],
+        'finance_manager'=>['eshop_payments_admin.php','member_charges_admin.php','member_fee_plans_admin.php'],
         'system_admin'=>['sprava_pracovnich_pozic.php','sprava_treneru.php'],
     ];
 }

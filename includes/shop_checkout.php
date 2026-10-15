@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__.'/shop_coupon.php';
 require_once __DIR__.'/shop_payment_policy.php';
+require_once __DIR__.'/club_finance.php';
 
 final class ShopCheckoutException extends RuntimeException
 {
@@ -228,7 +229,8 @@ function shopCheckoutPlace(
     string $idempotencyKey,
     array $bank,
     string $expectedCartFingerprint,
-    array $programTermsAccepted = []
+    array $programTermsAccepted = [],
+    ?int $financeSportovecId = null
 ): array
 {
     if ($accountId < 1 || preg_match('/^[a-f0-9]{32}$/D',$idempotencyKey)!==1
@@ -258,6 +260,7 @@ function shopCheckoutPlace(
             || !filter_var((string)$account['email'],FILTER_VALIDATE_EMAIL)) {
             throw new ShopCheckoutException('Objednávku může vytvořit pouze aktivní účet s ověřeným e-mailem.');
         }
+        $financeSportovecId=clubFinanceOrderAthlete($pdo,$accountId,$financeSportovecId);
         $beneficiarySelect=shopBeneficiaryColumnExists($pdo,'shop_cart_items')
             ? 'ci.beneficiary_sportovec_id'
             : 'NULL AS beneficiary_sportovec_id';
@@ -275,6 +278,10 @@ function shopCheckoutPlace(
         $eventItems=clubEventShopLockCheckoutItems($pdo,(int)$cart['id'],$accountId);
         $velodromeItems=publicVelodromeShopLockCheckoutItems($pdo,(int)$cart['id'],$accountId);
         if ($items===[] && $eventItems===[] && $velodromeItems===[]) throw new ShopCheckoutException('Prázdný košík nelze objednat.');
+        $beneficiaries=[];
+        foreach (array_merge($items,$eventItems,$velodromeItems) as $line) if (!empty($line['beneficiary_sportovec_id'])) $beneficiaries[(int)$line['beneficiary_sportovec_id']]=true;
+        if (count($beneficiaries)>1) throw new ShopCheckoutException('Košík obsahuje nabídky pro více sportovců. Kvůli správnému finančnímu saldu vytvořte každému samostatnou objednávku.');
+        if (clubFinanceColumnExists($pdo,'shop_orders','finance_sportovec_id')&&$beneficiaries!==[]&&$financeSportovecId!==array_key_first($beneficiaries)) throw new ShopCheckoutException('Vybraný finanční profil musí odpovídat sportovci v objednávce.');
         $total=0;$currency=null;
         foreach($items as &$item){
             if(!shopCheckoutVariantIsSaleable($item,$pdo,null,true)){
@@ -284,6 +291,8 @@ function shopCheckoutPlace(
             }
             if(($item['offer_type']??null)==='program'){
                 if($item['beneficiary_sportovec_id']===null)throw new ShopCheckoutException('U kroužku vyberte dítě nebo účastníka.');
+                try { clubFinanceAssertCanRegister($pdo,(int)$item['beneficiary_sportovec_id']); }
+                catch (ClubFinanceException $exception) { throw new ShopCheckoutException($exception->getMessage(),0,$exception); }
                 $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id'],null,true);
                 if(!$offer)throw new ShopCheckoutException('Nabídka kroužku už není dostupná.');
                 shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$item['beneficiary_sportovec_id'],true);
@@ -337,6 +346,7 @@ function shopCheckoutPlace(
         }
         $insert->execute($orderValues);
         $orderId=(int)$pdo->lastInsertId();
+        if ($financeSportovecId!==null) $pdo->prepare('UPDATE shop_orders SET finance_sportovec_id=? WHERE id=?')->execute([$financeSportovecId,$orderId]);
         foreach($items as $item){
             $quantity=(int)$item['quantity'];$line=(int)$item['amount_minor']*$quantity;
             $managedStock=($item['offer_type']??null)!=='program'&&$item['stock_quantity_decimal']!==null;
@@ -396,7 +406,7 @@ function shopCheckoutPlace(
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         if($exception instanceof ClubProgramException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
-        if($exception instanceof PublicVelodromeShopException||$exception instanceof ClubEventShopException||$exception instanceof ClubEventRegistrationException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
+        if($exception instanceof PublicVelodromeShopException||$exception instanceof ClubEventShopException||$exception instanceof ClubEventRegistrationException||$exception instanceof ClubFinanceException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         $reference=shopCheckoutDiagnosticReference($keyHash,$orderId);
         if(shopCheckoutIsSerializationFailure($exception)){
             error_log('shop_checkout serialization failure: '.$reference.' '.shopCheckoutDiagnosticTrace($exception));
@@ -794,6 +804,10 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
         return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>false]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
     }
     if($payment['status']!=='pending'||$order['payment_status']!=='pending'||$order['status']!=='placed')throw new ShopCheckoutException('Platbu nebo objednávku v tomto stavu nelze potvrdit.');
+    if(clubFinanceTableExists($pdo,'club_finance_allocations')){
+        $allocated=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM club_finance_allocations WHERE order_id=?');$allocated->execute([$orderId]);$allocatedMinor=(int)$allocated->fetchColumn();
+        if($allocatedMinor>0&&($allocatedMinor!==(int)$order['total_minor']||$source!=='bank_transfer'))throw new ShopCheckoutException('Objednávka má částečnou úhradu. Novou platbu nejprve ověřte a přidělte ve finančním přehledu sportovce.');
+    }
     $trainerId=$actorType==='trainer'?$actorId:null;
     $pdo->prepare("UPDATE payments SET method=?,payment_source=?,status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
         ->execute([$source,$source,$trainerId,$reason,$paymentId]);

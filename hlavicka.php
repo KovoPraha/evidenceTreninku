@@ -459,6 +459,12 @@ if ($is_logged_in) {
                                 <i class="bi bi-bell me-2 text-warning"></i>Připomínky plateb</a></li>
                             <li><a class="dropdown-item<?= _dropActive('member_charges_admin.php') ?>" href="member_charges_admin.php">
                                 <i class="bi bi-cash-stack me-2 text-warning"></i>Členské předpisy</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('member_fee_plans_admin.php') ?>" href="member_fee_plans_admin.php">
+                                <i class="bi bi-calendar-month me-2 text-warning"></i>Měsíční plány příspěvků</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('member_fee_annual_admin.php') ?>" href="member_fee_annual_admin.php">
+                                <i class="bi bi-calendar-check me-2 text-warning"></i>Roční hromadná úhrada</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('club_finance_admin.php') ?>" href="club_finance_admin.php">
+                                <i class="bi bi-sliders me-2 text-warning"></i>Finanční pravidla přihlášek</a></li>
                             <li><a class="dropdown-item<?= _dropActive('family_weekly_summaries_admin.php') ?>" href="family_weekly_summaries_admin.php">
                                 <i class="bi bi-envelope-paper me-2 text-info"></i>Týdenní souhrny</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_identity_admin.php') ?>" href="eshop_identity_admin.php">

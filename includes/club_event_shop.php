@@ -49,6 +49,8 @@ function clubEventShopAddToCart(PDO $pdo,int $accountId,int $eventId,int $sporto
     $relation=clubEventEligibleRelation($pdo,$accountId,$sportovecId);
     if(!$relation)throw new ClubEventShopException('Tuto osobu nemáte schválenou pro přihlášení.');
     if(!clubEventRosterEligibility($pdo,$eventId,$sportovecId))throw new ClubEventShopException('Osoba není členem cílové soupisky události.');
+    try { clubFinanceAssertCanRegister($pdo,$sportovecId); }
+    catch (ClubFinanceException $exception) { throw new ClubEventShopException($exception->getMessage(),0,$exception); }
     $pdo->beginTransaction();
     try{
         $cart=shopCartLockActive($pdo,$accountId);
@@ -59,6 +61,8 @@ function clubEventShopAddToCart(PDO $pdo,int $accountId,int $eventId,int $sporto
         if(!$relation||!$eligibility)throw new ClubEventShopException('Oprávnění nebo soupiska se mezitím změnily.');
         clubEventAssertAge($pdo,$eventId,$relation,$event);
         clubEventShopAssertNoActiveRegistration($pdo,$eventId,$sportovecId);
+        try { clubFinanceAssertCanRegister($pdo,$sportovecId); }
+        catch (ClubFinanceException $exception) { throw new ClubEventShopException($exception->getMessage(),0,$exception); }
         $existing=$pdo->prepare('SELECT id FROM club_event_cart_items WHERE cart_id=? AND event_id=? AND beneficiary_sportovec_id=?');
         $existing->execute([(int)$cart['id'],$eventId,$sportovecId]);$id=(int)$existing->fetchColumn();$created=$id<1;
         if($created){
@@ -109,6 +113,8 @@ function clubEventShopLockCheckoutItems(PDO $pdo,int $cartId,int $accountId):arr
         $relation=clubEventEligibleRelation($pdo,$accountId,(int)$row['beneficiary_sportovec_id']);$eligibility=clubEventRosterEligibility($pdo,(int)$row['event_id'],(int)$row['beneficiary_sportovec_id']);
         if(!$relation||!$eligibility)throw new ClubEventShopException('Oprávnění nebo cílová soupiska události se změnily.');
         clubEventAssertAge($pdo,(int)$row['event_id'],$relation,$event);clubEventShopAssertNoActiveRegistration($pdo,(int)$row['event_id'],(int)$row['beneficiary_sportovec_id']);
+        try { clubFinanceAssertCanRegister($pdo,(int)$row['beneficiary_sportovec_id']); }
+        catch (ClubFinanceException $exception) { throw new ClubEventShopException($exception->getMessage(),0,$exception); }
         $eventId=(int)$row['event_id'];$capacity=clubEventEffectiveCapacity($pdo,$eventId,(int)$event['capacity']);$requested=$requestedByEvent[$eventId]??0;
         if(clubEventShopOccupiedCount($pdo,$eventId)+$requested >= $capacity)throw new ClubEventShopException('Kapacita placené události nestačí pro všechny osoby v košíku.');
         $requestedByEvent[$eventId]=$requested+1;

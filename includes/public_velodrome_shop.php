@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/public_velodrome.php';
 require_once __DIR__ . '/shop_payment_policy.php';
+require_once __DIR__ . '/club_finance.php';
 
 final class PublicVelodromeShopException extends RuntimeException
 {
@@ -46,6 +47,8 @@ function publicVelodromeShopAddToCart(PDO $pdo, int $accountId, int $lessonId, s
         if (!$profile) {
             throw new PublicVelodromeShopException('Nejprve dokončete svůj veřejný profil.');
         }
+        try { clubFinanceAssertCanRegister($pdo,(int)$profile['sportovec_id']); }
+        catch (ClubFinanceException $exception) { throw new PublicVelodromeShopException($exception->getMessage(),0,$exception); }
         $lesson = publicVelodromeShopLockLesson($pdo, $lessonId);
         publicVelodromeShopAssertPaidLesson($lesson);
         $existingReservation = $pdo->prepare(
@@ -150,6 +153,8 @@ function publicVelodromeShopLockCheckoutItems(PDO $pdo, int $cartId, int $accoun
         if ((int)$cartItem['beneficiary_sportovec_id'] !== (int)$profile['sportovec_id']) {
             throw new PublicVelodromeShopException('Placený velodrom musí být objednán pro vlastní veřejný profil.');
         }
+        try { clubFinanceAssertCanRegister($pdo,(int)$profile['sportovec_id']); }
+        catch (ClubFinanceException $exception) { throw new PublicVelodromeShopException($exception->getMessage(),0,$exception); }
         $lesson = publicVelodromeShopLockLesson($pdo, (int)$cartItem['lesson_id']);
         publicVelodromeShopAssertPaidLesson($lesson);
         $existing = $pdo->prepare(

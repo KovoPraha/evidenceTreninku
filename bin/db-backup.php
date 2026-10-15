@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-14.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-15.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -56,6 +56,11 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'program_terms_snapshot_json',
         'program_terms_accepted_at',
         'program_terms_accepted_by_account_id',
+    ],
+    // The buyer's chosen athlete determines whose financial eligibility an
+    // unpaid order can affect; losing it would silently shift that decision.
+    'shop_orders' => [
+        'finance_sportovec_id',
     ],
     // Rows may now legitimately originate outside the Shoptet import.
     'shop_products' => [
@@ -163,6 +168,10 @@ const EVIDENCE_TABLES = [
     'club_event_term_versions',
     'club_event_vehicle_reservations',
     'club_events',
+    'club_finance_allocations',
+    'club_finance_receipts',
+    'club_finance_setting_events',
+    'club_finance_settings',
     'club_member_charge_events',
     'club_member_charges',
     'club_program_enrollment_events',
