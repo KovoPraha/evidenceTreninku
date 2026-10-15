@@ -32,6 +32,21 @@ function familyPageChargeStatus(string $status): string
     return ['pending' => 'Čeká na úhradu', 'paid' => 'Uhrazeno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
 }
 
+function familyPageRosterStatus(string $status): string
+{
+    return ['active' => 'Aktivní', 'pending' => 'Čeká', 'inactive' => 'Neaktivní', 'ended' => 'Ukončeno'][$status] ?? $status;
+}
+
+function familyPageEventType(string $type): string
+{
+    return ['club_event' => 'Klubová akce', 'camp' => 'Soustředění', 'race' => 'Závod', 'training' => 'Trénink', 'meeting' => 'Schůze', 'other' => 'Ostatní'][$type] ?? $type;
+}
+
+function familyPageEventStatus(string $status): string
+{
+    return ['confirmed' => 'Potvrzeno', 'payment_pending' => 'Čeká na platbu', 'waitlisted' => 'Na čekací listině', 'cancelled' => 'Zrušeno'][$status] ?? $status;
+}
+
 function familyPageItemCount(int $count): string
 {
     $word = $count === 1 ? 'položka' : ($count >= 2 && $count <= 4 ? 'položky' : 'položek');
@@ -435,18 +450,18 @@ foreach ($trainingRsvps as $training) {
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php foreach ($person['relation_roles'] as $role): ?><span class="badge text-bg-primary ms-1"><?= familyPageH($roleLabels[$role] ?? $role) ?></span><?php endforeach; ?></div>
             </summary>
             <div class="card-body">
-                <?php $financeBalance=$financeBalances[(int)$person['sportovec_id']]??null;if($financeBalance!==null):?><div class="alert <?=$financeBalance['overdue_minor']>0?'alert-warning':'alert-light'?> border"><strong>Saldo klubových služeb:</strong> <?=familyPageH(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě · po lhůtě <?=familyPageH(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=familyPageH(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?><div class="small mt-1">Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k <?=familyPageH($financeBalance['as_of'])?>.</div></div><?php endif;?>
+                <?php $financeBalance=$financeBalances[(int)$person['sportovec_id']]??null;if($financeBalance!==null):?><div class="alert <?=$financeBalance['overdue_minor']>0?'alert-warning':'alert-light'?> border"><strong>Saldo klubových služeb:</strong> <?=familyPageH(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě · po lhůtě <?=familyPageH(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=familyPageH(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?><div class="small mt-1">Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k <?=familyPageH(uiFormatDateTime((string)$financeBalance['as_of']))?>.</div></div><?php endif;?>
                 <?php if ($makeupSummary !== null): ?><div class="alert alert-light border d-flex flex-wrap align-items-center gap-2"><strong>Náhradní lekce kroužků</strong><span class="badge text-bg-warning">Omluvené, čekají na potvrzení <?= (int)$makeupSummary['pending'] ?></span><span class="badge text-bg-success">K využití <?= (int)$makeupSummary['available'] ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?= (int)$makeupSummary['locked'] ?></span><span class="badge text-bg-primary">Rezervované <?= (int)$makeupSummary['reserved'] ?></span><a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?= (int)$person['sportovec_id'] ?>">Zobrazit náhrady</a></div><?php endif; ?>
                 <h2 class="h6">Soupisky</h2>
                 <?php if ($profile['rosters'] === []): ?><p class="text-muted small">Žádná evidovaná soupiska.</p><?php else: ?>
                 <div class="table-responsive mb-4"><table class="table table-sm align-middle"><thead><tr><th>Tým</th><th>Sezóna</th><th>Platnost</th><th>Stav</th></tr></thead><tbody>
-                <?php foreach ($profile['rosters'] as $roster): ?><tr><td><strong><?= familyPageH($roster['team_name']) ?></strong><div class="small text-muted"><?= familyPageH(trim($roster['discipline'] . ' ' . $roster['age_label'])) ?></div></td><td><?= familyPageH($roster['season_name']) ?></td><td><?= familyPageH(uiFormatDate((string)$roster['valid_from'])) ?> – <?= familyPageH($roster['valid_to'] ? uiFormatDate((string)$roster['valid_to']) : 'dosud') ?></td><td><span class="badge <?= $roster['status'] === 'active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= familyPageH($roster['status']) ?></span></td></tr><?php endforeach; ?>
+                <?php foreach ($profile['rosters'] as $roster): ?><tr><td><strong><?= familyPageH($roster['team_name']) ?></strong><div class="small text-muted"><?= familyPageH(trim($roster['discipline'] . ' ' . $roster['age_label'])) ?></div></td><td><?= familyPageH($roster['season_name']) ?></td><td><?= familyPageH(uiFormatDate((string)$roster['valid_from'])) ?> – <?= familyPageH($roster['valid_to'] ? uiFormatDate((string)$roster['valid_to']) : 'dosud') ?></td><td><span class="badge <?= $roster['status'] === 'active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= familyPageH(familyPageRosterStatus((string)$roster['status'])) ?></span></td></tr><?php endforeach; ?>
                 </tbody></table></div><?php endif; ?>
 
                 <h2 class="h6">Klubové události</h2>
                 <?php if ($profile['events'] === []): ?><p class="text-muted small">Žádná přihláška na klubovou událost.</p><?php else: ?>
                 <div class="table-responsive mb-4"><table class="table table-sm align-middle"><thead><tr><th>Událost</th><th>Typ</th><th>Přihlášeno</th><th>Stav</th></tr></thead><tbody>
-                <?php foreach ($profile['events'] as $event): ?><tr><td><?= familyPageH($event['event_name']) ?></td><td><?= familyPageH($event['event_type']) ?></td><td><?= familyPageH($event['registered_at']) ?></td><td><?= familyPageH($event['status']) ?></td></tr><?php endforeach; ?>
+                <?php foreach ($profile['events'] as $event): ?><tr><td><?= familyPageH($event['event_name']) ?></td><td><?= familyPageH(familyPageEventType((string)$event['event_type'])) ?></td><td><?= familyPageH(uiFormatDateTime((string)$event['registered_at'])) ?></td><td><?= familyPageH(familyPageEventStatus((string)$event['status'])) ?></td></tr><?php endforeach; ?>
                 </tbody></table></div><?php endif; ?>
 
                 <h2 class="h6">Členské předpisy</h2>

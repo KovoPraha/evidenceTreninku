@@ -11,6 +11,38 @@ final class ClubEventRegistrationException extends RuntimeException
 {
 }
 
+/** Count each active participant once across calendar planning and registration. */
+function clubEventOccupiedCount(PDO $pdo, int $eventId): int
+{
+    if (clubEventTableExists($pdo, 'club_event_planned_participants')) {
+        $statement = $pdo->prepare(
+            "SELECT COUNT(*) FROM ("
+            . "SELECT sportovec_id FROM club_event_planned_participants WHERE event_id=? AND status='confirmed' "
+            . "UNION SELECT sportovec_id FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
+            . ") occupied_people"
+        );
+        $statement->execute([$eventId, $eventId]);
+    } else {
+        $statement = $pdo->prepare(
+            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
+        );
+        $statement->execute([$eventId]);
+    }
+    return (int)$statement->fetchColumn();
+}
+
+function clubEventHasConfirmedPlannedParticipant(PDO $pdo, int $eventId, int $sportovecId): bool
+{
+    if (!clubEventTableExists($pdo, 'club_event_planned_participants')) {
+        return false;
+    }
+    $statement = $pdo->prepare(
+        "SELECT 1 FROM club_event_planned_participants WHERE event_id=? AND sportovec_id=? AND status='confirmed' LIMIT 1"
+    );
+    $statement->execute([$eventId, $sportovecId]);
+    return (bool)$statement->fetchColumn();
+}
+
 /** @return array{id:int,terms_version:string,changed:bool} */
 function clubEventConfigureRegistrationTerms(
     PDO $pdo,
@@ -377,15 +409,14 @@ function clubEventRegisterParticipant(
             $pdo->commit();
             return ['id' => (int)$existing['id'], 'status' => (string)$existing['status'], 'created' => false];
         }
+        if (clubEventHasConfirmedPlannedParticipant($pdo, $eventId, $sportovecId)) {
+            throw new ClubEventRegistrationException('Účastník už je na akci potvrzený v klubovém kalendáři.');
+        }
         try { clubFinanceAssertCanRegister($pdo,$sportovecId); }
         catch (ClubFinanceException $exception) { throw new ClubEventRegistrationException($exception->getMessage(),0,$exception); }
 
         $capacity = clubEventEffectiveCapacity($pdo, $eventId, (int)$event['capacity']);
-        $count = $pdo->prepare(
-            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
-        );
-        $count->execute([$eventId]);
-        $targetStatus = (int)$count->fetchColumn() < $capacity ? 'confirmed' : 'waitlisted';
+        $targetStatus = clubEventOccupiedCount($pdo, $eventId) < $capacity ? 'confirmed' : 'waitlisted';
 
         if ($existing) {
             $update = $pdo->prepare(
@@ -649,11 +680,7 @@ function clubEventPromoteNextWaitlisted(PDO $pdo, int $eventId): ?int
         throw new ClubEventRegistrationException('Kroužek pro čekací listinu nebyl nalezen.');
     }
     $capacity = clubEventEffectiveCapacity($pdo, $eventId, (int)$event['capacity']);
-    $count = $pdo->prepare(
-        "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
-    );
-    $count->execute([$eventId]);
-    if ((int)$count->fetchColumn() >= $capacity) {
+    if (clubEventOccupiedCount($pdo, $eventId) >= $capacity) {
         return null;
     }
 
@@ -730,11 +757,7 @@ function clubEventOpenFreeList(PDO $pdo): array
     foreach ($events as &$event) {
         $event['sessions'] = clubEventSessions($pdo, (int)$event['id']);
         $event['effective_capacity'] = clubEventEffectiveCapacity($pdo, (int)$event['id'], (int)$event['capacity']);
-        $count = $pdo->prepare(
-            "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status IN ('confirmed','payment_pending')"
-        );
-        $count->execute([(int)$event['id']]);
-        $event['registration_count'] = (int)$count->fetchColumn();
+        $event['registration_count'] = clubEventOccupiedCount($pdo, (int)$event['id']);
         $event['remaining_capacity'] = max(0, (int)$event['effective_capacity'] - (int)$event['registration_count']);
         $waitlist = $pdo->prepare(
             "SELECT COUNT(*) FROM club_event_registrations WHERE event_id=? AND status='waitlisted'"

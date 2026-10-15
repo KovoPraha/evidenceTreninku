@@ -47,6 +47,8 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertStringContainsString("'KP-TEST-UAT-KROUZEK'", $script);
         self::assertStringContainsString("'KP-TEST-UAT-PRIMESTSKY-DEN'", $script);
         self::assertStringContainsString('clubEventOpenPaidRegistration', $script);
+        self::assertStringContainsString("'uat-free-' . \$day->format('Ymd')", $script);
+        self::assertStringContainsString('clubEventConfigureRegistrationTerms(', $script);
         self::assertStringContainsString('clubEventRosterReplaceTargets', $script);
         self::assertStringContainsString('shopCatalogPublicationActivate(', $script);
         self::assertLessThan(strpos($script,'clubEventOpenPaidRegistration',strpos($script,'function kisUatUpsertPaidShopEvent')),strpos($script,'shopCatalogPublicationActivate(',strpos($script,'function kisUatUpsertPaidShopEvent')));
