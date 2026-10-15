@@ -100,12 +100,60 @@ final class ClubCalendarTest extends TestCase
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_member_charge_events WHERE charge_id=$chargeId AND action='manual_confirm_refund'")->fetchColumn());
     }
 
+    public function testParentCannotBypassCalendarChargeCancellation(): void
+    {
+        $pdo=$this->database();$event=$this->event($pdo,['planning_status'=>'confirmed','participant_fee_minor'=>50000]);
+        $participant=\clubCalendarAddParticipant($pdo,$event['id'],200,1,true,100);
+        $registrationId=(int)$pdo->query('SELECT registration_id FROM club_event_planned_participants WHERE id='.(int)$participant['id'])->fetchColumn();
+        try { \clubEventCancelRegistration($pdo,$registrationId,100,'Storno.'); self::fail('The charge would remain open.'); }
+        catch (\ClubEventRegistrationException $exception) { self::assertStringContainsString('klubový předpis',$exception->getMessage()); }
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_registrations WHERE id='.$registrationId)->fetchColumn());
+        self::assertSame('pending',$pdo->query('SELECT status FROM club_member_charges WHERE id='.(int)$participant['charge_id'])->fetchColumn());
+    }
+
     public function testFamilyCanRegisterOnlyVisibleRosterMemberAfterOpening(): void
     {
         $pdo=$this->database();$event=$this->event($pdo,['planning_status'=>'confirmed','visibility'=>'rosters','team_ids'=>[10]]);\clubCalendarSetRegistration($pdo,$event['id'],1,true);
-        $result=\clubCalendarFamilyRegister($pdo,$event['id'],100,200,true);self::assertSame('confirmed',$result['status']);
+        $result=\clubCalendarFamilyRegister($pdo,$event['id'],100,200,true,'calendar.1');self::assertSame('confirmed',$result['status']);
         self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_event_planned_participants')->fetchColumn());
-        try{\clubCalendarFamilyRegister($pdo,$event['id'],101,201,true);self::fail('Unrelated account must be rejected.');}catch(\ClubCalendarException$e){self::assertStringContainsString('není určena',$e->getMessage());}
+        try{\clubCalendarFamilyRegister($pdo,$event['id'],101,201,true,'calendar.1');self::fail('Unrelated account must be rejected.');}catch(\ClubCalendarException$e){self::assertStringContainsString('není určena',$e->getMessage());}
+    }
+
+    public function testCalendarFreeRegistrationUsesCanonicalConsentAndCancellationPromotesWaitlist(): void
+    {
+        $pdo=$this->database();
+        $pdo->exec("UPDATE club_seasons SET ends_on='2099-12-31' WHERE id=1");
+        $event=$this->event($pdo,['planning_status'=>'confirmed','visibility'=>'rosters','team_ids'=>[10],'capacity'=>1,'starts_at'=>'2099-09-10T09:00','ends_at'=>'2099-09-10T17:00']);
+        $pdo->prepare('UPDATE club_events SET terms_version=?,consent_text_plain=?,cancellation_policy_plain=?,cancellation_deadline_at=? WHERE id=?')
+            ->execute(['calendar.2','Konkrétní souhlas rodiče.','Bezplatné storno do uzávěrky.','2099-09-09 18:00:00',$event['id']]);
+        $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,valid_from) VALUES(10,201,'active','2026-01-01')");
+        \clubCalendarSetRegistration($pdo,$event['id'],1,true);
+        try { \clubCalendarFamilyRegister($pdo,$event['id'],100,200,true,'calendar.1'); self::fail('Old terms must fail.'); }
+        catch (\ClubCalendarException $exception) { self::assertStringContainsString('změnily',$exception->getMessage()); }
+        $first=\clubCalendarFamilyRegister($pdo,$event['id'],100,200,true,'calendar.2');
+        $waiting=\clubCalendarFamilyRegister($pdo,$event['id'],101,201,true,'calendar.2');
+        self::assertSame('confirmed',$first['status']);
+        self::assertSame('waitlisted',$waiting['status']);
+        $snapshot=$pdo->query('SELECT consent_version_snapshot,consent_text_snapshot,cancellation_policy_snapshot,consented_at FROM club_event_registrations WHERE id='.(int)$first['id'])->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('calendar.2',$snapshot['consent_version_snapshot']);
+        self::assertSame('Konkrétní souhlas rodiče.',$snapshot['consent_text_snapshot']);
+        self::assertSame('Bezplatné storno do uzávěrky.',$snapshot['cancellation_policy_snapshot']);
+        self::assertNotEmpty($snapshot['consented_at']);
+        self::assertSame('confirmed:'.(int)$first['id'],$pdo->query('SELECT status||\':\'||registration_id FROM club_event_planned_participants WHERE sportovec_id=200')->fetchColumn());
+        $cancelled=\clubEventCancelRegistration($pdo,(int)$first['id'],100,'Test storna.');
+        self::assertSame((int)$waiting['id'],$cancelled['promoted_registration_id']);
+        self::assertSame('cancelled',$pdo->query('SELECT status FROM club_event_planned_participants WHERE sportovec_id=200')->fetchColumn());
+        self::assertSame('confirmed',$pdo->query('SELECT status FROM club_event_planned_participants WHERE sportovec_id=201')->fetchColumn());
+        self::assertSame(1,\clubCalendarConfirmedCount($pdo,(int)$event['id']));
+    }
+
+    public function testCalendarWillNotOpenFreeRegistrationWithoutTerms(): void
+    {
+        $pdo=$this->database();$event=$this->event($pdo,['planning_status'=>'confirmed']);
+        $pdo->prepare('UPDATE club_events SET terms_version=NULL WHERE id=?')->execute([$event['id']]);
+        try { \clubCalendarSetRegistration($pdo,$event['id'],1,true); self::fail('Incomplete terms must fail.'); }
+        catch (\ClubCalendarException $exception) { self::assertStringContainsString('verzi souhlasu',$exception->getMessage()); }
+        self::assertSame('draft',$pdo->query('SELECT status FROM club_events WHERE id='.(int)$event['id'])->fetchColumn());
     }
 
     public function testFamilyCalendarCannotBypassShopCheckoutForPaidProductEvent(): void
@@ -114,7 +162,7 @@ final class ClubCalendarTest extends TestCase
         \clubCalendarSetRegistration($pdo,$event['id'],1,true);
         $pdo->exec("UPDATE club_events SET pricing_policy='product_variants' WHERE id=".$event['id']);
         try {
-            \clubCalendarFamilyRegister($pdo,$event['id'],100,200,true);
+            \clubCalendarFamilyRegister($pdo,$event['id'],100,200,true,'calendar.1');
             self::fail('Product-linked event must use the audited shop checkout.');
         } catch (\ClubCalendarException $exception) {
             self::assertStringContainsString('přidejte do košíku', $exception->getMessage());
@@ -132,7 +180,10 @@ final class ClubCalendarTest extends TestCase
     private function event(PDO$pdo,array$override=[]):array
     {
         $input=array_replace(['name'=>'Testovací závod','activity_kind'=>'race','planning_status'=>'planned','visibility'=>'staff','starts_at'=>'2026-09-10T09:00','ends_at'=>'2026-09-10T17:00','location'=>'Velodrom','public_description_plain'=>'Informace pro účastníky.','internal_note'=>'Interní plán.','capacity'=>20,'participant_fee_minor'=>0,'fee_due_days'=>14,'team_ids'=>[]],$override);
-        return \clubCalendarSaveEvent($pdo,1,0,$input);
+        $result=\clubCalendarSaveEvent($pdo,1,0,$input);
+        $pdo->prepare('UPDATE club_events SET terms_version=?,consent_text_plain=?,cancellation_policy_plain=?,cancellation_deadline_at=? WHERE id=?')
+            ->execute(['calendar.1','Souhlas s účastí na testovací akci.','Storno do dne před akcí.','2026-09-09 18:00:00',$result['id']]);
+        return $result;
     }
 
     private function database(bool$apply=true):PDO
@@ -150,6 +201,7 @@ final class ClubCalendarTest extends TestCase
         $pdo->exec('CREATE TABLE club_event_admin_events(id INTEGER PRIMARY KEY AUTOINCREMENT,event_id INTEGER,actor_trainer_id INTEGER,action TEXT,subject_type TEXT,subject_id INTEGER,note TEXT,payload_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
         $pdo->exec("CREATE TABLE club_event_registrations(id INTEGER PRIMARY KEY AUTOINCREMENT,event_id INTEGER,account_id INTEGER,sportovec_id INTEGER,relation_role_snapshot TEXT,status TEXT DEFAULT 'confirmed',registered_at TEXT,cancelled_at TEXT,cancellation_note TEXT,waitlisted_at TEXT,promoted_at TEXT,consent_version_snapshot TEXT,consent_text_snapshot TEXT,consented_at TEXT,cancellation_policy_snapshot TEXT,cancellation_deadline_snapshot TEXT,eligibility_team_ids_snapshot TEXT,eligibility_reason_snapshot TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(event_id,sportovec_id))");
         $pdo->exec('CREATE TABLE club_event_registration_events(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
+        $pdo->exec('CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER,registration_event_id INTEGER,notification_type TEXT,recipient_email TEXT,recipient_name TEXT,subject_plain TEXT,body_plain TEXT)');
         $pdo->exec('CREATE TABLE club_event_roster_targets(event_id INTEGER,team_id INTEGER,actor_trainer_id INTEGER,decision_note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY(event_id,team_id))');
         $pdo->exec('CREATE TABLE ucto_vozidla(id INTEGER PRIMARY KEY,znacka_model TEXT,spz TEXT)');$pdo->exec("INSERT INTO ucto_vozidla VALUES(1,'Ford Transit','1A23456')");
         $pdo->exec('CREATE TABLE club_member_charges(id INTEGER PRIMARY KEY AUTOINCREMENT,sportovec_id INTEGER,payer_account_id INTEGER,public_code TEXT UNIQUE,charge_type TEXT,title_snapshot TEXT,period_from TEXT,period_to TEXT,amount_minor INTEGER,currency TEXT,due_on TEXT,status TEXT,source_system TEXT,source_external_id TEXT,source_import_run_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(source_system,source_external_id))');
