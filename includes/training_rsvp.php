@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/family_portal.php';
 require_once __DIR__ . '/child_access.php';
 require_once __DIR__ . '/club_makeup.php';
+require_once __DIR__ . '/club_finance.php';
 
 final class TrainingRsvpException extends RuntimeException {}
 
@@ -142,6 +143,10 @@ function trainingRsvpSave(PDO $pdo, int $planId, int $sportovecId, string $respo
         $select->execute([$planId, $sportovecId]);
         $before = $select->fetch(PDO::FETCH_ASSOC);
         $from = $before ? (string)$before['response'] : null;
+        if ($response==='going' && $from!=='going') {
+            try { clubFinanceAssertCanRegister($pdo,$sportovecId); }
+            catch (ClubFinanceException $exception) { throw new TrainingRsvpException($exception->getMessage(),0,$exception); }
+        }
         $changed = $from !== $response || ($before && (string)$before['member_note'] !== $note);
         if ($before) {
             if ($changed) {

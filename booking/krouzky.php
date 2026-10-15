@@ -17,6 +17,7 @@ function clubRegistrationH(mixed $value): string
 $isLoggedIn = isset($_SESSION['verejny_uzivatel_id']);
 $accountId = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);
 $errors = [];
+$postedEventId = 0;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $postedEventId=(int)($_POST['event_id']??0);$returnUrl='krouzky.php#akce-'.$postedEventId;
     if (!$isLoggedIn) { header('Location: prihlaseni.php?redirect='.rawurlencode($returnUrl),true,303);exit; }
@@ -57,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 throw new InvalidArgumentException('Neplatná akce.');
             }
+            $_SESSION['flash_club_registration_event_id'] = $action === 'cancel' ? 0 : $postedEventId;
             header('Location: '.$returnUrl, true, 303);
             exit;
         } catch (PDOException $exception) {
@@ -72,6 +74,8 @@ $success = (string)($_SESSION['flash_club_registration'] ?? '');
 unset($_SESSION['flash_club_registration']);
 $showCartLink=!empty($_SESSION['flash_club_registration_cart']);
 unset($_SESSION['flash_club_registration_cart']);
+$feedbackEventId = $postedEventId ?: (int)($_SESSION['flash_club_registration_event_id'] ?? 0);
+unset($_SESSION['flash_club_registration_event_id']);
 $participants = $isLoggedIn ? accountPersonEligibleParticipants($pdo, $accountId) : [];
 $events = clubEventOpenFreeList($pdo);
 $paidEvents = clubEventOpenPaidList($pdo);
@@ -93,6 +97,7 @@ foreach ($paidEvents as &$event) {
 }
 unset($event);
 $eventIds = array_values(array_unique(array_map('intval', array_column(array_merge($events, $paidEvents), 'id'))));
+$feedbackInCard = $feedbackEventId > 0 && in_array($feedbackEventId, $eventIds, true);
 $participantIds = array_values(array_unique(array_map('intval', array_column($participants, 'sportovec_id'))));
 if ($eventIds !== [] && $participantIds !== []) {
     $eventPlaceholders = implode(',', array_fill(0, count($eventIds), '?'));
@@ -127,14 +132,20 @@ if(clubEventShopAvailable($pdo)){
 <main class="container py-4" style="max-width:1000px">
     <div class="mb-3"><h1 class="h3 mb-1">Akce</h1><p class="text-muted mb-0">Jednorázové klubové akce, nábory, kempy a závody. Pro pravidelné dětské tréninky použijte <a href="cyklisticke_krouzky.php">rozcestník kroužků</a>.</p></div>
     <nav class="nav nav-pills gap-2 mb-4" aria-label="Akce a kalendář"><a class="nav-link" href="klubovy_kalendar.php"><i class="bi bi-calendar3 me-1"></i>Kalendář</a><a class="nav-link active" aria-current="page" href="krouzky.php"><i class="bi bi-check2-square me-1"></i>K přihlášení</a></nav>
+    <?php if (!$feedbackInCard): ?>
+    <?php foreach ($errors as $error): ?><div class="alert alert-danger" role="alert"><?= clubRegistrationH($error) ?></div><?php endforeach; ?>
+    <?php if ($success !== ''): ?><div class="alert alert-success d-flex flex-wrap justify-content-between align-items-center gap-2" role="status"><span><?= clubRegistrationH($success) ?></span><?php if($showCartLink):?><a class="btn btn-success btn-sm" href="eshop.php#kosik"><i class="bi bi-cart-check me-1"></i>Přejít přímo do košíku</a><?php endif;?></div><?php endif; ?>
+    <?php endif; ?>
     <section aria-labelledby="free-clubs-title"><div class="d-flex flex-wrap justify-content-between align-items-start gap-2"><div><h2 id="free-clubs-title" class="h4 mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Bezplatné akce a nábory</h2><p class="text-muted">Jde o jednorázové akce bez ceny, například nábor, otevřený trénink nebo klubové setkání. Nabídku, termíny a volnou kapacitu vidíte bez registrace; k přihlášení účastníka potřebujete účet.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php">Veřejný kalendář (.ics)</a></div>
-    <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= clubRegistrationH($error) ?></div><?php endforeach; ?>
-    <?php if ($success !== ''): ?><div class="alert alert-success d-flex flex-wrap justify-content-between align-items-center gap-2"><span><?= clubRegistrationH($success) ?></span><?php if($showCartLink):?><a class="btn btn-success btn-sm" href="eshop.php#kosik"><i class="bi bi-cart-check me-1"></i>Přejít přímo do košíku</a><?php endif;?></div><?php endif; ?>
     <?php if ($isLoggedIn && $participants === []): ?><div class="alert alert-info">Nejprve si nechte schválit dítě v části <a href="moje_osoby.php">Moje osoby</a>.</div><?php endif; ?>
 
     <div class="row g-3 mb-4">
     <?php foreach ($events as $event): ?>
         <div class="col-lg-6" id="akce-<?=(int)$event['id']?>"><section class="card border-0 shadow-sm h-100"><div class="card-body">
+            <?php if ($feedbackInCard && $feedbackEventId === (int)$event['id']): ?>
+                <?php foreach ($errors as $error): ?><div class="alert alert-danger" role="alert"><?=clubRegistrationH($error)?></div><?php endforeach; ?>
+                <?php if ($success !== ''): ?><div class="alert alert-success" role="status"><?=clubRegistrationH($success)?></div><?php endif; ?>
+            <?php endif; ?>
             <div class="d-flex justify-content-between gap-2"><div><h3 class="h5 mb-1"><?= clubRegistrationH($event['name']) ?></h3><div class="small text-muted"><?= clubRegistrationH($event['audience_label']) ?></div></div><span class="badge text-bg-success align-self-start">zdarma</span></div>
             <?php if ($event['description_plain'] !== ''): ?><p class="mt-3 mb-2"><?= nl2br(clubRegistrationH($event['description_plain'])) ?></p><?php endif; ?>
             <div class="small mb-3"><strong>Volná místa:</strong> <?= (int)$event['remaining_capacity'] ?> z <?= (int)$event['effective_capacity'] ?> · <strong>čeká:</strong> <?= (int)$event['waitlist_count'] ?></div>
@@ -157,6 +168,10 @@ if(clubEventShopAvailable($pdo)){
     <div class="row g-3 mb-4">
     <?php foreach($paidEvents as $event): ?>
         <div class="col-lg-6" id="akce-<?=(int)$event['id']?>"><section class="card border-0 shadow-sm h-100"><div class="card-body">
+            <?php if ($feedbackInCard && $feedbackEventId === (int)$event['id']): ?>
+                <?php foreach ($errors as $error): ?><div class="alert alert-danger" role="alert"><?=clubRegistrationH($error)?></div><?php endforeach; ?>
+                <?php if ($success !== ''): ?><div class="alert alert-success" role="status"><?=clubRegistrationH($success)?><?php if($showCartLink):?> <a href="eshop.php#kosik" class="alert-link">Přejít do košíku</a><?php endif;?></div><?php endif; ?>
+            <?php endif; ?>
             <div class="d-flex justify-content-between"><div><h3 class="h5 mb-1"><?=clubRegistrationH($event['name'])?></h3><div class="small text-muted"><?=clubRegistrationH($event['audience_label'])?></div></div><span class="badge text-bg-primary align-self-start"><?=number_format((int)$event['amount_minor']/100,2,',',' ')?> Kč</span></div>
             <div class="small my-3"><strong>Volná místa:</strong> <?=(int)$event['remaining_capacity']?> z <?=(int)$event['effective_capacity']?><?php if($event['roster_targets']!==[]):?> · <strong>Soupisky:</strong> <?=clubRegistrationH(implode(', ',array_column($event['roster_targets'],'team_name')))?><?php endif;?></div>
             <?php foreach($event['sessions'] as $session):?><div class="border-top py-2 small"><?=clubRegistrationH(uiFormatDateTimeRange((string)$session['starts_at'],(string)$session['ends_at']).(trim((string)$session['location'])!==''?' · '.$session['location']:''))?></div><?php endforeach;?>

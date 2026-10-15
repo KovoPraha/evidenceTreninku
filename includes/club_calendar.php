@@ -5,6 +5,7 @@ require_once __DIR__ . '/club_event.php';
 require_once __DIR__ . '/club_event_roster_target.php';
 require_once __DIR__ . '/account_person_role.php';
 require_once __DIR__ . '/member_charge_admin.php';
+require_once __DIR__ . '/club_finance.php';
 
 final class ClubCalendarException extends RuntimeException {}
 
@@ -353,6 +354,10 @@ function clubCalendarUpsertParticipantInTransaction(PDO$pdo,array$event,int$spor
     $find=$pdo->prepare('SELECT * FROM club_event_planned_participants WHERE event_id=? AND sportovec_id=?');$find->execute([$eventId,$sportovecId]);$row=$find->fetch(PDO::FETCH_ASSOC);
     $status=$confirmed?'confirmed':'planned';
     $alreadyConfirmed=$row&&$row['status']==='confirmed';
+    if ($confirmed&&!$alreadyConfirmed) {
+        try { clubFinanceAssertCanRegister($pdo,$sportovecId); }
+        catch (ClubFinanceException $exception) { throw new ClubCalendarException($exception->getMessage(),0,$exception); }
+    }
     if($confirmed&&!$alreadyConfirmed&&clubCalendarConfirmedCount($pdo,$eventId)>=(int)$event['capacity'])$status='waitlisted';
     if($row){$id=(int)$row['id'];$pdo->prepare('UPDATE club_event_planned_participants SET account_id=?,status=?,confirmed_by_trainer_id=?,confirmed_at=?,cancelled_at=NULL WHERE id=?')->execute([$payer['account_id']??null,$status,$confirmed&&$actorId>0?$actorId:null,$confirmed?date('Y-m-d H:i:s'):null,$id]);}
     else{$pdo->prepare('INSERT INTO club_event_planned_participants(event_id,sportovec_id,account_id,status,created_by_trainer_id,confirmed_by_trainer_id,confirmed_at) VALUES(?,?,?,?,?,?,?)')->execute([$eventId,$sportovecId,$payer['account_id']??null,$status,$source==='trainer'?$actorId:null,$confirmed&&$actorId>0?$actorId:null,$confirmed?date('Y-m-d H:i:s'):null]);$id=(int)$pdo->lastInsertId();}
@@ -387,6 +392,8 @@ function clubCalendarEnsureChargeInTransaction(PDO$pdo,array$event,int$sportovec
 function clubCalendarFamilyRegister(PDO$pdo,int$eventId,int$accountId,int$sportovecId,bool$consented):array
 {
     if(min($eventId,$accountId,$sportovecId)<1||!$consented)throw new InvalidArgumentException('Přihlášení vyžaduje akci, osobu a potvrzený souhlas.');$relation=clubEventEligibleRelation($pdo,$accountId,$sportovecId);if(!$relation)throw new ClubCalendarException('Tuto osobu nemáte schválenou pro přihlášení.');
+    try { clubFinanceAssertCanRegister($pdo,$sportovecId); }
+    catch (ClubFinanceException $exception) { throw new ClubCalendarException($exception->getMessage(),0,$exception); }
     $pdo->beginTransaction();try{$event=clubEventLock($pdo,$eventId);if(!$event||$event['status']!=='open'||$event['planning_status']!=='confirmed')throw new ClubCalendarException('Přihlašování na tuto akci není otevřené.');if((string)($event['pricing_policy']??'free')==='product_variants')throw new ClubCalendarException('Placenou akci přidejte do košíku v části Akce a dokončete objednávku.');if(!clubCalendarAccountCanSee($pdo,$eventId,$accountId,(string)$event['visibility']))throw new ClubCalendarException('Akce není určena vašemu účtu.');if(!clubEventRosterEligibility($pdo,$eventId,$sportovecId))throw new ClubCalendarException('Vybraná osoba není v cílové soupisce akce.');$event['starts_at']=(string)$pdo->query('SELECT MIN(starts_at) FROM club_event_sessions WHERE event_id='.(int)$eventId)->fetchColumn();$result=clubCalendarUpsertParticipantInTransaction($pdo,$event,$sportovecId,0,true,$accountId,'account');$pdo->commit();return$result;}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof ClubCalendarException)throw$e;throw new ClubCalendarException('Přihlášení se nepodařilo uložit.',0,$e);}
 }
 

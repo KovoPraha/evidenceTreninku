@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sportovec_status_lib.php';
 require_once __DIR__ . '/includes/sportovec_history_lib.php';
+require_once __DIR__ . '/includes/club_finance.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_sportovcu')) {
     header('Location: login.php');
@@ -109,6 +110,11 @@ if (!$sportovec) {
     exit;
 }
 $status = sportovecStatusCompute($sportovec);
+$financeBalance=null;
+if (staffActivePositionIs('registrar') || staffActivePositionIs('finance_manager')) {
+    try { $financeBalance=clubFinanceBalanceForAthlete($pdo,$sportovecId); }
+    catch (Throwable $exception) { error_log('sportovec_karta finance balance: '.$exception->getMessage()); }
+}
 
 $recentTreninky = $pdo->prepare("
     SELECT t.id, t.datum, t.napln, t.kategorie, t.delka
@@ -202,6 +208,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
         </div>
     </div>
 
+    <?php if($financeBalance!==null):?><div class="alert <?=$financeBalance['overdue_minor']>0?'alert-warning':'alert-light'?> border"><strong>Finanční saldo sportovce:</strong> <?=h(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě · po lhůtě <?=h(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=h(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?><div class="small mt-1">Členské předpisy, účasti a platné objednávky e-shopu. Vypočteno <?=h($financeBalance['as_of'])?>. <?php if(staffActivePositionIs('finance_manager')):?><a href="club_finance_receipt_admin.php?sportovec_id=<?=$sportovecId?>">Ověřená platba a rozpis</a><?php endif;?></div></div><?php endif;?>
     <div class="row g-3 mb-3">
         <div class="col-6 col-lg-3"><div class="metric"><div class="val"><?= (int)$sportovec['pocet_treninku'] ?></div><div class="text-muted small">Tréninků</div></div></div>
         <div class="col-6 col-lg-3"><div class="metric"><div class="val"><?= d($sportovec['posledni_trenink'] ?? null) ?></div><div class="text-muted small">Poslední trénink</div></div></div>

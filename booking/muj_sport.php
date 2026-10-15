@@ -11,6 +11,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/child_access.php';
 require_once dirname(__DIR__) . '/includes/training_rsvp.php';
+require_once dirname(__DIR__) . '/includes/club_finance.php';
 require_once dirname(__DIR__) . '/includes/calendar_ui.php';
 
 function childPageH(mixed $value): string
@@ -98,6 +99,10 @@ try {
     exit;
 }
 $person = $overview['person'];
+$financeBalance = null;
+try { $financeBalance=clubFinanceBalanceForAthlete($pdo,(int)$person['sportovec_id']); }
+catch (Throwable $exception) { error_log('booking/muj_sport.php finance balance: '.$exception->getMessage()); }
+$financeSettings=clubFinanceSettings($pdo);
 $makeupSummary = null;
 if (clubMakeupReady($pdo)) {
     try {
@@ -169,6 +174,8 @@ foreach ($upcomingTrainingRsvps as $training) {
 <body class="bg-light">
 <?php publicShellNav(); ?>
 <main class="container py-4" style="max-width:1050px">
+<?php if ($financeBalance!==null):?><section class="card card-body border-0 shadow-sm mb-4" aria-label="Finanční saldo"><div class="d-flex flex-wrap justify-content-between gap-3"><div><strong>Saldo klubových služeb</strong><div class="small text-muted">Neuhrazené předpisy a platné objednávky e-shopu přiřazené tomuto profilu.</div></div><div class="text-end"><strong class="fs-4 <?=$financeBalance['overdue_minor']>0?'text-danger':'text-success'?>"><?=childPageH(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě</strong><div class="small">Po lhůtě <?=childPageH(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=childPageH(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?></div></div></div><div class="small text-muted mt-2">Stav k <?=childPageH($financeBalance['as_of'])?>. Nesouhlasí-li částka s úhradou, kontaktujte hospodáře; bankovní platba se projeví až po ověření.</div></section><?php endif;?>
+<?php if($financeBalance!==null&&$financeSettings['enforcement_enabled']&&$financeBalance['overdue_minor']>0&&$financeBalance['overdue_minor']>=$financeSettings['training_notice_minor']):?><div class="alert alert-warning">Máte vyšší částku po lhůtě. Termíny tréninků dál vidíte, ale novou přihlášku může finanční pravidlo omezit. Pokud jste již zaplatili, kontaktujte hospodáře.</div><?php endif;?>
     <div class="alert alert-info small">Omezený režim sportovce: vidíte výhradně údaje profilu <strong><?= childPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong>. Změny přihlášek, rodiny a objednávek provádí rodič nebo klub.</div>
 
     <section class="card border-0 shadow-sm mb-4"><div class="card-body">

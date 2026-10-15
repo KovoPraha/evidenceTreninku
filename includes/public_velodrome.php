@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/public_profile.php';
 require_once __DIR__ . '/venue_operations.php';
 require_once __DIR__ . '/individual_lesson_context.php';
+require_once __DIR__ . '/club_finance.php';
 
 final class PublicVelodromeException extends RuntimeException
 {
@@ -342,6 +343,8 @@ function publicVelodromeReserve(PDO $pdo, int $lessonId, int $accountId, string 
             $pdo->commit();
             return ['id' => (int)$reservation['id'], 'status' => (string)$reservation['stav'], 'created' => false];
         }
+        try { clubFinanceAssertCanRegister($pdo,(int)$profile['sportovec_id']); }
+        catch (ClubFinanceException $exception) { throw new PublicVelodromeException($exception->getMessage(),0,$exception); }
         $overlap = $pdo->prepare(
             'SELECT r.id FROM verejne_rezervace r JOIN individualni_lekce other ON other.id=r.lekce_id '
             . "WHERE r.sportovec_id=? AND r.active_token='active' AND r.stav IN ('ceka','potvrzena') "

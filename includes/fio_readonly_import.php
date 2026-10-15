@@ -191,6 +191,10 @@ function fioAdminConfirmExactMovement(PDO $pdo,int $movementId,int $actorTrainer
             if(!$payment||$payment['status']!=='paid'||(string)$payment['bank_movement_id']!==(string)$movement['fio_movement_id'])throw new FioImportException('Potvrzený bankovní pohyb není konzistentní s platbou.');
             $pdo->commit();return['movement_id'=>$movementId,'payment_id'=>$paymentId,'payable_type'=>(string)$payment['payable_type'],'payable_id'=>(int)$payment['payable_id'],'changed'=>false];
         }
+        if(fioTableExists($pdo,'club_finance_receipts')){
+            $receipt=$pdo->prepare('SELECT id FROM club_finance_receipts WHERE reference=?');$receipt->execute([(string)$movement['fio_movement_id']]);
+            if($receipt->fetchColumn())throw new FioImportException('Pohyb je již použit v ověřené hromadné platbě sportovce. Nelze jej podruhé potvrdit k objednávce ani předpisu.');
+        }
         $proposal=fioProposePaymentMatch($pdo,(int)$movement['amount_minor'],(string)$movement['currency'],$movement['variable_symbol']!==null?(string)$movement['variable_symbol']:null);
         if($proposal['status']!=='proposed_exact'||!$proposal['payment_id']||!$proposal['payable_type']||!$proposal['payable_id'])throw new FioImportException('Pohyb už nesplňuje přesnou shodu: '.$proposal['reason']);
         $paymentId=(int)$proposal['payment_id'];$auditReason=$reason.' Fio pohyb '.(string)$movement['fio_movement_id'].'.';
