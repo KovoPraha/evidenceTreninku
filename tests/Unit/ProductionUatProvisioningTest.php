@@ -81,4 +81,17 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertSame('2026-12-06', $season['ends_on']);
         self::assertSame('active', $season['status']);
     }
+
+    public function testCancelledRegistrationDoesNotBlockNextUatWindow(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE club_event_registrations(event_id INTEGER NOT NULL,status TEXT NOT NULL)');
+        $pdo->exec("INSERT INTO club_event_registrations(event_id,status) VALUES(2,'cancelled')");
+
+        self::assertFalse(\kisUatHasNonCancelledRegistrations($pdo, 2));
+
+        $pdo->exec("INSERT INTO club_event_registrations(event_id,status) VALUES(2,'payment_pending')");
+        self::assertTrue(\kisUatHasNonCancelledRegistrations($pdo, 2));
+    }
 }
