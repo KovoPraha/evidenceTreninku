@@ -53,6 +53,9 @@ final class ShopPublicNavigationWiringTest extends TestCase
         self::assertStringContainsString('aria-label="Drobečková navigace"',$product);
         self::assertStringContainsString('<a href="eshop.php">E-shop</a>',$product);
         self::assertStringNotContainsString('← Zpět do e-shopu',$product);
+        $navigation=(string)file_get_contents($root.'/includes/shop_public_navigation.php');
+        self::assertStringContainsString('shopPublicSaleableCatalog($pdo)',$navigation);
+        self::assertStringContainsString('return !$isProgram && $offer===false;',$navigation);
     }
 
     public function testCategoryAdministrationExplainsSharedMenuCheckbox():void

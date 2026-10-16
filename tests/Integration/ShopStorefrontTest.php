@@ -7,6 +7,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/shop_storefront.php';
+require_once dirname(__DIR__, 2) . '/includes/shop_public_navigation.php';
 
 final class ShopStorefrontTest extends TestCase
 {
@@ -41,6 +42,21 @@ final class ShopStorefrontTest extends TestCase
         self::assertNull(\shopStorefrontProductDetail($pdo, 503));
         self::assertNull(\shopStorefrontProductDetail($pdo, 504));
         self::assertNull(\shopStorefrontProductDetail($pdo, 0));
+    }
+
+    public function testSaleableCatalogKeepsGoodsButHidesProgramWithoutOffer(): void
+    {
+        $pdo=$this->database();
+        $pdo->exec('CREATE TABLE club_programs(id INTEGER PRIMARY KEY,status TEXT,name TEXT)');
+        $pdo->exec('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,product_id INTEGER,variant_id INTEGER,program_id INTEGER,status TEXT)');
+        $pdo->exec("INSERT INTO shop_products VALUES(505,'goods','active','')");
+        $pdo->exec("INSERT INTO shop_product_publications VALUES(505,'active','Kroužek bez termínu','Zatím jen zájem')");
+        $pdo->exec("INSERT INTO shop_variants VALUES(607,505,'PROGRAM','{}','fixed',490000,'CZK',NULL,1,'active')");
+        $pdo->exec("INSERT INTO shop_product_categories VALUES(4,505,'Kroužky',1,0)");
+
+        $products=\shopPublicSaleableCatalog($pdo);
+        self::assertSame([501],array_column($products,'product_id'));
+        self::assertNotNull(\shopStorefrontProductDetail($pdo,505)); // Direct interest page remains available.
     }
 
     public function testImageAllowListRejectsUnsafeSchemesCredentialsAndControls(): void

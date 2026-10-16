@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/shop_storefront.php';
+require_once __DIR__ . '/shop_purchase_mode.php';
+require_once __DIR__ . '/club_program.php';
 
 function shopPublicNavigationH(mixed $value): string
 {
@@ -9,9 +11,28 @@ function shopPublicNavigationH(mixed $value): string
 }
 
 /** @return list<array<string,mixed>> */
+function shopPublicSaleableCatalog(PDO $pdo): array
+{
+    $products=[];
+    foreach (shopStorefrontCatalog($pdo) as $product) {
+        $hasProgramOffer=clubProgramProductHasOfferLink($pdo,(int)$product['product_id']);
+        $isProgram=shopProductRequiresAthlete($pdo,(int)$product['product_id']);
+        $product['variants']=array_values(array_filter($product['variants'],static function(array $variant)use($pdo,$hasProgramOffer,$isProgram):bool{
+            $offer=clubProgramOfferForVariant($pdo,(int)$variant['variant_id']);
+            if($hasProgramOffer)return clubProgramVariantSaleState($pdo,(int)$variant['variant_id'])['saleable'];
+            // A program without an approved offer can collect interest by direct link,
+            // but does not belong in the purchasable catalog or its category menu.
+            return !$isProgram && $offer===false;
+        }));
+        if($product['variants']!==[])$products[]=$product;
+    }
+    return $products;
+}
+
+/** @return list<array<string,mixed>> */
 function shopPublicNavigationItems(PDO $pdo): array
 {
-    return shopStorefrontCategoryMenu($pdo, shopStorefrontCatalog($pdo));
+    return shopStorefrontCategoryMenu($pdo, shopPublicSaleableCatalog($pdo));
 }
 
 /** @param list<array<string,mixed>> $items */

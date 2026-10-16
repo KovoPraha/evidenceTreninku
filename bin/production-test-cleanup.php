@@ -67,6 +67,15 @@ try {
     );
     $children->execute();
 
+    $roster = $pdo->prepare(
+        "UPDATE club_roster_members m JOIN club_teams t ON t.id=m.team_id "
+        . "JOIN sportovci s ON s.id=m.sportovec_id "
+        . "SET m.status='removed',m.valid_to=GREATEST(m.valid_from,CURRENT_DATE),m.updated_at=CURRENT_TIMESTAMP "
+        . "WHERE t.code='TEST-UAT-DETI' AND m.source='admin' AND m.status='active' "
+        . "AND LOWER(s.prijmeni)='tester' AND (LOWER(s.jmeno) IN ('ema','adam') OR s.jmeno LIKE 'Platba%')"
+    );
+    $roster->execute();
+
     $events = $pdo->prepare(
         "UPDATE club_events SET status='closed',planning_status='cancelled',visibility='staff',updated_at=CURRENT_TIMESTAMP "
         . "WHERE name LIKE 'TEST -%' AND status<>'archived'"
@@ -94,14 +103,14 @@ try {
         . "SET v.catalog_status='inactive',v.updated_at=CURRENT_TIMESTAMP WHERE pub.public_name LIKE 'TEST -%'"
     );
     $eventVariants = $pdo->prepare(
-        "UPDATE shop_variants SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE sku=? AND catalog_status<>'inactive'"
+        "UPDATE shop_variants SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE sku LIKE ? AND catalog_status<>'inactive'"
     );
-    $eventVariants->execute(['KP-TEST-UAT-PRIMESTSKY-DEN']);
+    $eventVariants->execute(['KP-TEST-UAT-PRIMESTSKY-DEN%']);
     $eventProducts = $pdo->prepare(
         "UPDATE shop_products p JOIN shop_variants v ON v.product_id=p.id SET p.catalog_status='inactive',p.updated_at=CURRENT_TIMESTAMP "
-        . "WHERE v.sku=? AND p.catalog_status<>'inactive'"
+        . "WHERE v.sku LIKE ? AND p.catalog_status<>'inactive'"
     );
-    $eventProducts->execute(['KP-TEST-UAT-PRIMESTSKY-DEN']);
+    $eventProducts->execute(['KP-TEST-UAT-PRIMESTSKY-DEN%']);
     $pdo->commit();
     echo json_encode([
         'ok' => true,

@@ -55,7 +55,7 @@ final class ShopStorefrontWiringTest extends TestCase
     {
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/booking/eshop.php');
         self::assertStringContainsString('produkt.php?id=', $source);
-        self::assertStringContainsString('shopStorefrontCatalog', $source);
+        self::assertStringContainsString('shopPublicSaleableCatalog', $source);
         self::assertStringContainsString("\$_GET['kategorie']",$source);
         $navigation=(string)file_get_contents(dirname(__DIR__,2).'/includes/shop_public_navigation.php');
         self::assertStringContainsString("rawurlencode(\$path)",$navigation);
@@ -63,11 +63,15 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringContainsString('shopCategoryDescendants',$source);
         self::assertStringContainsString('shopStorefrontCategoryMenu',$source);
         self::assertStringContainsString('clubProgramVariantSaleState',$source);
+        self::assertStringContainsString('shopPublicSaleableCatalog($pdo)', $source);
         self::assertStringNotContainsString('clubProgramOfferIsOnSale($offer)',$source);
         self::assertStringContainsString("listing_attributes",$source);
         $detail=(string)file_get_contents(dirname(__DIR__,2).'/booking/produkt.php');
         self::assertStringContainsString("attributes_detail",$detail);
         self::assertStringContainsString('clubProgramVariantSaleState',$detail);
+        self::assertStringContainsString('Pro tento program zatím není vypsaný termín', $detail);
+        self::assertStringContainsString('Zanechat zájem o termín', $detail);
+        self::assertStringNotContainsString('>Doplnit sportovce</a>', $detail);
         self::assertStringContainsString("name=\"razeni\"",$source);
         self::assertStringContainsString('Hledat v názvu a popisu',$source);
         $clubs=(string)file_get_contents(dirname(__DIR__,2).'/booking/krouzky.php');
