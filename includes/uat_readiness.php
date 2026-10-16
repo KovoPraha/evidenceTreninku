@@ -83,6 +83,55 @@ function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
         );
     }
 
+    $familyLinks = -1;
+    if (uatReadinessTableExists($pdo, 'account_person_roles') && uatReadinessTableExists($pdo, 'child_access_accounts') && uatReadinessTableExists($pdo, 'verejni_uzivatele')) {
+        $familyLinks = uatReadinessCount($pdo,
+            "SELECT COUNT(*) FROM account_person_roles r JOIN verejni_uzivatele v ON v.id=r.account_id "
+            . "JOIN child_access_accounts a ON a.sportovec_id=r.sportovec_id "
+            . "WHERE v.email IN ('tester.karel@velocota.com','tester.petra@velocota.com') "
+            . "AND a.login_key IN ('tester.ema','tester.adam') AND r.status='approved' AND r.valid_to IS NULL "
+            . "AND r.relation_role='guardian' AND ((v.email='tester.karel@velocota.com' AND a.login_key='tester.ema') "
+            . "OR (v.email='tester.petra@velocota.com' AND a.login_key='tester.adam'))"
+        );
+        $crossLinks = uatReadinessCount($pdo,
+            "SELECT COUNT(*) FROM account_person_roles r JOIN verejni_uzivatele v ON v.id=r.account_id "
+            . "JOIN child_access_accounts a ON a.sportovec_id=r.sportovec_id "
+            . "WHERE v.email IN ('tester.karel@velocota.com','tester.petra@velocota.com') "
+            . "AND a.login_key IN ('tester.ema','tester.adam') AND r.status='approved' AND r.valid_to IS NULL "
+            . "AND ((v.email='tester.karel@velocota.com' AND a.login_key='tester.adam') "
+            . "OR (v.email='tester.petra@velocota.com' AND a.login_key='tester.ema'))"
+        );
+        if ($crossLinks !== 0) $familyLinks = -1;
+    }
+
+    $makeupRuleCount = -1;
+    if (uatReadinessTableExists($pdo, 'club_makeup_excuse_rules') && uatReadinessTableExists($pdo, 'club_makeup_policies') && uatReadinessTableExists($pdo, 'club_programs')) {
+        $makeupRuleCount = uatReadinessCount($pdo,
+            "SELECT COUNT(*) FROM club_makeup_excuse_rules r JOIN club_makeup_policies q ON q.id=r.policy_id "
+            . "JOIN club_programs c ON c.id=q.program_id JOIN planovane_treninky p ON p.id=r.plan_id "
+            . "WHERE c.code='TEST-UAT-KROUZEK' AND p.nazev='TEST - Trénink nového dítěte' "
+            . "AND p.stav='planovany' AND q.enabled=1 AND r.excuse_hours=q.excuse_hours"
+        );
+    }
+
+    $freshPaidParticipants = -1;
+    if ($cutoff !== null && uatReadinessTableExists($pdo, 'club_event_roster_targets') && uatReadinessTableExists($pdo, 'club_event_registrations') && uatReadinessTableExists($pdo, 'club_roster_members') && uatReadinessTableExists($pdo, 'account_person_roles')) {
+        $freshPaidParticipants = uatReadinessCount($pdo,
+            "SELECT COUNT(DISTINCT s.id) FROM sportovci s "
+            . "JOIN account_person_roles r ON r.sportovec_id=s.id AND r.status='approved' AND r.valid_to IS NULL "
+            . "JOIN verejni_uzivatele v ON v.id=r.account_id "
+            . "JOIN club_roster_members rm ON rm.sportovec_id=s.id AND rm.status='active' "
+            . "JOIN club_event_roster_targets t ON t.team_id=rm.team_id "
+            . "JOIN club_events e ON e.id=t.event_id JOIN club_event_sessions es ON es.event_id=e.id "
+            . "LEFT JOIN club_event_registrations er ON er.event_id=e.id AND er.sportovec_id=s.id "
+            . "WHERE v.email='tester.karel@velocota.com' AND s.prijmeni='Tester' AND s.jmeno LIKE 'Platba%' "
+            . "AND e.name LIKE 'TEST - Příměstský den%' AND e.status='open' AND e.pricing_policy='product_variants' "
+            . "AND es.status='scheduled' AND es.ends_at>=CURRENT_TIMESTAMP AND es.ends_at<=? "
+            . "AND (e.registration_ends_at IS NULL OR e.registration_ends_at>=CURRENT_TIMESTAMP) AND er.event_id IS NULL",
+            [$cutoff]
+        );
+    }
+
     $staffId = 0;
     if (uatReadinessTableExists($pdo, 'treneri')) {
         try {
@@ -166,6 +215,9 @@ function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
         'release' => $release,
         'parents' => $parents,
         'children' => $children,
+        'family_links' => $familyLinks,
+        'makeup_rules' => $makeupRuleCount,
+        'fresh_paid_participants' => $freshPaidParticipants,
         'staff_id' => $staffId,
         'positions' => $positions,
         'superadmin' => $superadmin,
@@ -203,6 +255,9 @@ function uatReadinessEvaluate(array $snapshot, ?DateTimeImmutable $now = null): 
         uatReadinessCheck('release', 'Schválený nasazený release', (bool)($release['uat_approved'] ?? false) && preg_match('/^[a-f0-9]{40}$/D', (string)($release['sha'] ?? '')) === 1, 'SHA ' . ((string)($release['sha'] ?? '') ?: 'nezjištěno') . '; deploy ' . ((string)($release['deployed_at'] ?? '') ?: 'nezjištěn'), range(1,20)),
         uatReadinessCheck('parents', 'Tester Karel a Tester Petra', (int)($snapshot['parents'] ?? -1) === 2, 'Aktivní rodičovské účty: ' . (int)($snapshot['parents'] ?? -1) . ' / 2.', [1,2,3,5,6,7,8,9,11,13,14,15,19,20]),
         uatReadinessCheck('children', 'Tester Ema a Tester Adam', (int)($snapshot['children'] ?? -1) === 2, 'Aktivní dětské přístupy: ' . (int)($snapshot['children'] ?? -1) . ' / 2.', [2,3,5,6,9,10,11,12,15,19,20]),
+        uatReadinessCheck('family_access', 'Oddělené TEST rodiny', (int)($snapshot['family_links'] ?? -1) === 2, 'Správné vazby Karel–Ema a Petra–Adam: ' . (int)($snapshot['family_links'] ?? -1) . ' / 2; křížové vazby musí být zrušené.', [2,3,5,6,9,10,11,12,15,19,20]),
+        uatReadinessCheck('makeup_rule', 'Pravidlo omluv TEST tréninku', (int)($snapshot['makeup_rules'] ?? -1) >= 1, 'Aktivní synchronizovaná pravidla: ' . (int)($snapshot['makeup_rules'] ?? -1) . '.', [10,11,12]),
+        uatReadinessCheck('paid_participant', 'Volný účastník placené TEST akce', (int)($snapshot['fresh_paid_participants'] ?? -1) >= 1, 'Nepoužití TEST účastníci v cílové soupisce: ' . (int)($snapshot['fresh_paid_participants'] ?? -1) . '.', [9,20]),
         uatReadinessCheck('staff', 'Tester Správce a osm pozic', (int)($snapshot['staff_id'] ?? 0) > 0 && (int)($snapshot['positions'] ?? -1) === 8 && ($snapshot['superadmin'] ?? false) === true, 'Účet: ' . ((int)($snapshot['staff_id'] ?? 0) > 0 ? 'aktivní' : 'chybí') . '; pozice ' . (int)($snapshot['positions'] ?? -1) . ' / 8; superadmin ' . (($snapshot['superadmin'] ?? false) ? 'ano' : 'ne') . '.', [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20]),
         uatReadinessCheck('fixtures', 'Časově omezená TEST data', $fixturesReady, 'Počty: zboží ' . (int)($fixtures['goods'] ?? -1) . ', kroužek ' . (int)($fixtures['program'] ?? -1) . ', akce zdarma/placená ' . (int)($fixtures['free_event'] ?? -1) . '/' . (int)($fixtures['paid_event'] ?? -1) . ', velodrom ' . (int)($fixtures['velodrome'] ?? -1) . ', lekce ' . (int)($fixtures['lesson'] ?? -1) . ', trénink ' . (int)($fixtures['training'] ?? -1) . ', kalendář ' . (int)($fixtures['calendar_event'] ?? -1) . '.', [3,5,6,7,8,9,10,11,19,20]),
         uatReadinessCheck('technical_owner', 'Žádná anonymní technická nabídka', (int)($snapshot['technical_public_without_prefix'] ?? -1) === 0, 'Veřejné položky technických účtů bez prefixu TEST -: ' . (int)($snapshot['technical_public_without_prefix'] ?? -1) . '.', [9,19,20]),

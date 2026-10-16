@@ -621,11 +621,11 @@ try {
                                     <i class="bi bi-eye me-1"></i>Detail evidence
                                 </a>
                             <?php elseif (!$isEvidovano): ?>
-                                <a href="formular.php?plan_id=<?= (int)$p['id'] ?>"
-                                   class="btn btn-primary btn-sm py-0 px-2" style="font-size:.75rem">
-                                    <i class="bi bi-pencil-square me-1"></i>Zadat evidenci
-                                </a>
-                                <?php if ($p['trener_id'] == $trenerId || roleAtLeast('hlavni')): ?>
+                                <?php if ((int)$p['trener_id'] === $trenerId || roleAtLeast('hlavni')): ?>
+                                    <a href="formular.php?plan_id=<?= (int)$p['id'] ?>"
+                                       class="btn btn-primary btn-sm py-0 px-2" style="font-size:.75rem">
+                                        <i class="bi bi-pencil-square me-1"></i>Zadat evidenci
+                                    </a>
                                     <a href="planovany_trenink_form.php?id=<?= (int)$p['id'] ?>"
                                        class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size:.75rem"
                                        title="Upravit plán" aria-label="Upravit plán">

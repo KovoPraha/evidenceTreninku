@@ -44,6 +44,9 @@ final class UatReadinessTest extends TestCase
             ],
             'parents' => 2,
             'children' => 2,
+            'family_links' => 2,
+            'makeup_rules' => 1,
+            'fresh_paid_participants' => 1,
             'staff_id' => 10,
             'positions' => 8,
             'superadmin' => true,
@@ -65,7 +68,17 @@ final class UatReadinessTest extends TestCase
 
         $ready = \uatReadinessEvaluate($snapshot, $now);
         self::assertTrue($ready['ready']);
-        self::assertCount(10, $ready['checks']);
+        self::assertCount(13, $ready['checks']);
+
+        $snapshot['family_links'] = -1;
+        self::assertFalse(\uatReadinessEvaluate($snapshot, $now)['ready']);
+        $snapshot['family_links'] = 2;
+        $snapshot['makeup_rules'] = 0;
+        self::assertFalse(\uatReadinessEvaluate($snapshot, $now)['ready']);
+        $snapshot['makeup_rules'] = 1;
+        $snapshot['fresh_paid_participants'] = 0;
+        self::assertFalse(\uatReadinessEvaluate($snapshot, $now)['ready']);
+        $snapshot['fresh_paid_participants'] = 1;
 
         $snapshot['stripe']['live_pair'] = true;
         $blocked = \uatReadinessEvaluate($snapshot, $now);
@@ -98,6 +111,38 @@ final class UatReadinessTest extends TestCase
             self::assertSame(1, $snapshot['fixtures']['training']);
         } finally {
             $before === false ? putenv('KIS_UAT_WINDOW_END') : putenv('KIS_UAT_WINDOW_END=' . $before);
+        }
+    }
+
+    public function testPaidFixtureRequiresUnusedParticipantInTargetRoster(): void
+    {
+        if (defined('KIS_UAT_WINDOW_END')) $this->markTestSkipped('UAT window is defined by the host configuration.');
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,email TEXT,aktivni INTEGER)');
+        $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT)');
+        $pdo->exec('CREATE TABLE account_person_roles(account_id INTEGER,sportovec_id INTEGER,status TEXT,valid_to TEXT)');
+        $pdo->exec('CREATE TABLE club_roster_members(team_id INTEGER,sportovec_id INTEGER,status TEXT)');
+        $pdo->exec('CREATE TABLE club_event_roster_targets(event_id INTEGER,team_id INTEGER)');
+        $pdo->exec('CREATE TABLE club_events(id INTEGER PRIMARY KEY,name TEXT,status TEXT,pricing_policy TEXT,registration_ends_at TEXT)');
+        $pdo->exec('CREATE TABLE club_event_sessions(event_id INTEGER,status TEXT,ends_at TEXT)');
+        $pdo->exec('CREATE TABLE club_event_registrations(event_id INTEGER,sportovec_id INTEGER)');
+        $pdo->exec("INSERT INTO verejni_uzivatele VALUES(1,'tester.karel@velocota.com',1)");
+        $pdo->exec("INSERT INTO sportovci VALUES(10,'Platba261016-1','Tester')");
+        $pdo->exec("INSERT INTO account_person_roles VALUES(1,10,'approved',NULL)");
+        $pdo->exec("INSERT INTO club_roster_members VALUES(5,10,'active')");
+        $pdo->exec('INSERT INTO club_event_roster_targets VALUES(7,5)');
+        $end=(new DateTimeImmutable('now',new DateTimeZone('Europe/Prague')))->modify('+5 days')->format('Y-m-d H:i:s');
+        $pdo->prepare("INSERT INTO club_events VALUES(7,'TEST - Příměstský den','open','product_variants',?)")->execute([$end]);
+        $pdo->prepare("INSERT INTO club_event_sessions VALUES(7,'scheduled',?)")->execute([$end]);
+        $previous=getenv('KIS_UAT_WINDOW_END');
+        putenv('KIS_UAT_WINDOW_END='.$end);
+        try {
+            self::assertSame(1,\uatReadinessSnapshot($pdo)['fresh_paid_participants']);
+            $pdo->exec('INSERT INTO club_event_registrations VALUES(7,10)');
+            self::assertSame(0,\uatReadinessSnapshot($pdo)['fresh_paid_participants']);
+        } finally {
+            $previous===false ? putenv('KIS_UAT_WINDOW_END') : putenv('KIS_UAT_WINDOW_END='.$previous);
         }
     }
 }

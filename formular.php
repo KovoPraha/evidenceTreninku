@@ -62,6 +62,18 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
     ");
     $stPlan->execute(roleAtLeast('hlavni') ? [(int)$_GET['plan_id']] : [(int)$_GET['plan_id'],$currentTrener]);
     $planPrefill = $stPlan->fetch(PDO::FETCH_ASSOC) ?: null;
+    if ($planPrefill === null) {
+        // A plan URL must never silently fall back to an unrelated blank record.
+        $planExists = $pdo->prepare('SELECT trener_id,stav FROM planovane_treninky WHERE id=?');
+        $planExists->execute([(int)$_GET['plan_id']]);
+        $plan = $planExists->fetch(PDO::FETCH_ASSOC);
+        http_response_code($plan === false ? 404 : 403);
+        exit($plan === false
+            ? 'Plánovaný trénink nebyl nalezen.'
+            : ((int)$plan['trener_id'] !== $currentTrener && !roleAtLeast('hlavni')
+                ? 'Tento plán patří jinému trenérovi. Pro evidenci přepněte pracovní pozici nebo požádejte hlavního trenéra.'
+                : 'Evidenci lze zadat pouze pro plánovaný trénink.'));
+    }
     if ($planPrefill) {
         try {
             $subgroups=$pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=? ORDER BY podskupina_id');

@@ -18,7 +18,10 @@ Gitu ani v logu workflow.
 - dítě `Adam Tester` – přihlašovací jméno `tester.adam`,
 - správce zůstává samostatný vyhrazený účet `KIS testovací superadministrátor`.
 
-Oba rodiče mají schválenou vazbu na obě děti. Dětské účty mají pouze omezený
+Karel má schválenou vazbu pouze na Emu, Petra pouze na Adama. Křížové vazby
+z předchozího testovacího nastavení se auditovaně ruší jen tehdy, pokud je
+prokazatelně vytvořil UAT provisioning; ručně změněná vazba přípravu zastaví.
+Dětské účty mají pouze omezený
 sportovní přehled; nejsou rodičovskými ani administrátorskými účty.
 
 ## Připravená scénářová data
@@ -30,11 +33,29 @@ Veřejné záznamy mají povinný prefix `TEST -`:
   věkového rozsahu a schválených UAT podmínek,
 - bezplatná akce `TEST - Rodinný nábor`,
 - placená akce `TEST - Příměstský den` s interní aktivní variantou 50 Kč;
-  zobrazuje se v části Akce a vede přes košík, objednávku a zvolenou platební
+zobrazuje se v části Akce a vede přes košík, objednávku a zvolenou platební
   metodu, ale neduplikuje se jako samostatný produkt v běžném e-shopu,
+- pro placenou akci se Karlovi připojí nový nepoužitý TEST účastník
+  `PlatbaYYMMDD-N Tester` v TEST soupisce; skript jej při opakování bezpečně
+  znovu použije jen dokud k této akci nemá žádnou historickou přihlášku,
 - placený termín `TEST - Veřejný velodrom`,
 - `TEST - Individuální lekce`,
 - veřejný plán `TEST - Trénink nového dítěte` napojený na TEST soupisku.
+
+Pro TEST kroužek se při prvním vytvoření nastaví pravidlo včasné omluvy na
+24 hodin; provisioning následně synchronizuje chybějící pravidlo se stávajícím
+TEST plánem. Již ručně upravené pravidlo bez dalšího nepřepisuje. Readiness
+kontroluje oddělení rodin i aktivní synchronizované pravidlo omluv.
+Zároveň kontroluje, že v otevřené placené TEST akci zůstává alespoň jeden
+nepoužitý účastník pro pozitivní nákup; po jeho využití je potřeba znovu
+spustit chráněnou přípravu dat.
+
+Ostré nabídky kroužků nejsou součástí TEST provisioningu. Při prohlížečovém
+UAT bylo 76 nabídek bez potvrzeného typu období; protože klub zatím nemá
+autoritativní mapu, zůstávají převody kreditů pro ně bezpečně nezařazené.
+Koordinátor je jednotlivě označí na stránce `club_makeup_policies_admin.php`
+(filtr „Jen k prověření“) jako celoroční, první/druhé pololetí s konkrétní
+návazností, nebo jednorázové/jiné. Z názvu produktu se nic neodvozuje.
 
 Placená akce ověřuje celý skutečný řetězec: ruční položka typu Tábor se nejprve
 propojí s pracovní akcí, potom se auditovaně aktivuje její katalogová varianta a
@@ -68,12 +89,20 @@ banky; hodnoty pouze evidují, že konkrétní testující tuto odpovědnost př
 Úplný pozitivní scénář náhrad nelze uzavřít jen vytvořením dat: vyžaduje
 potvrzenou placenou účast, včasnou omluvu, proběhlý trénink a skutečně
 uzavřenou docházku. Teprve potom lze ověřit připsání a rezervaci kreditu.
+Předchozí stornovaná objednávka placené akce záměrně neotevírá opakovaný nákup
+téže akce pro stejnou osobu; opakované spuštění připraví dalšího nepoužitého
+TEST účastníka (nejvýše 20 v jednom dni). Provisioning nepřepisuje historii
+přihlášek ani nehýbe akcí se živými přihláškami. Pokud stará akce již leží
+mimo aktuální UAT okno, vytvoří oddělenou TEST akci i produkt označené datem
+konce nového okna; úklid rozpozná oba typy SKU.
 
 ## Úklid
 
 Operace `deaktivovat-testovaci-ucty`:
 
 - zneaktivní oba rodiče a oba dětské přístupy,
+- ukončí aktivní členství TEST dětí a dočasných TEST účastníků placené akce
+  výhradně v soupisce `TEST-UAT-DETI` (bez mazání historických zápisů),
 - uzavře a skryje akce `TEST -`,
 - zruší veřejné lekce a tréninky `TEST -`,
 - deaktivuje publikace, produkty a varianty `TEST -`, včetně neveřejné varianty

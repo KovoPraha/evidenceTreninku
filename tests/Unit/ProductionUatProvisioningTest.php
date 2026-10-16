@@ -85,6 +85,10 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertStringContainsString('clubEventRosterReplaceTargets', $script);
         self::assertStringContainsString('kisUatFixtureSchedule($now,$windowEnd)', $script);
         self::assertStringContainsString('trainingRosterBridgeReplacePlanTeams', $script);
+        self::assertStringContainsString('kisUatEnsureExclusiveFamilies', $script);
+        self::assertStringContainsString('clubMakeupSyncPlanRules($pdo,$trainingId)', $script);
+        self::assertStringContainsString('kisUatFreshPaidParticipant', $script);
+        self::assertStringContainsString('kisUatPaidEventIdentity', $script);
         self::assertStringContainsString('shopCatalogPublicationActivate(', $script);
         self::assertLessThan(strpos($script,'clubEventOpenPaidRegistration',strpos($script,'function kisUatUpsertPaidShopEvent')),strpos($script,'shopCatalogPublicationActivate(',strpos($script,'function kisUatUpsertPaidShopEvent')));
         self::assertStringContainsString("(.products|length) == 3", $workflow);
@@ -130,5 +134,77 @@ final class ProductionUatProvisioningTest extends TestCase
 
         $pdo->exec("INSERT INTO club_event_registrations(event_id,status) VALUES(2,'payment_pending')");
         self::assertTrue(\kisUatHasNonCancelledRegistrations($pdo, 2));
+    }
+
+    public function testExclusiveUatFamiliesRevokeOnlyProvisionedCrossLinks(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY AUTOINCREMENT,account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,source TEXT,valid_from TEXT,valid_to TEXT,created_by_trainer_id INTEGER,approved_by_trainer_id INTEGER,decision_note TEXT,updated_at TEXT)');
+        $pdo->exec('CREATE TABLE account_person_role_events(relation_id INTEGER,actor_trainer_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,relation_role TEXT,note TEXT)');
+        $pdo->exec('INSERT INTO verejni_uzivatele VALUES(1),(2)');
+        $pdo->exec('INSERT INTO sportovci VALUES(11),(12)');
+        $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,decision_note) VALUES(1,12,'guardian','approved','admin',CURRENT_TIMESTAMP,'Schválená vazba výhradně pro produkční UAT.'),(2,11,'guardian','approved','admin',CURRENT_TIMESTAMP,'Schválená vazba výhradně pro produkční UAT.')");
+
+        \kisUatEnsureExclusiveFamilies($pdo,1,2,11,12,7);
+        $rows = $pdo->query('SELECT account_id,sportovec_id,status FROM account_person_roles ORDER BY account_id,sportovec_id')->fetchAll(PDO::FETCH_NUM);
+        self::assertSame([[1,11,'approved'],[1,12,'revoked'],[2,11,'revoked'],[2,12,'approved']], array_map(static fn(array $row): array => [(int)$row[0],(int)$row[1],$row[2]],$rows));
+        \kisUatEnsureExclusiveFamilies($pdo,1,2,11,12,7);
+        self::assertSame(4,(int)$pdo->query('SELECT COUNT(*) FROM account_person_roles')->fetchColumn());
+    }
+
+    public function testExclusiveUatFamiliesRefuseToRevokeManualRelation(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY,account_id INTEGER,sportovec_id INTEGER,status TEXT,decision_note TEXT)');
+        $pdo->exec("INSERT INTO account_person_roles VALUES(1,1,12,'approved','Manuální změna vazby')");
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('automatické zrušení');
+        \kisUatEnsureExclusiveFamilies($pdo,1,2,11,12,7);
+    }
+
+    public function testPaidEventGetsFreshParticipantAfterPreviousOrderHistory(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT,prijmeni TEXT,narozeni TEXT,email TEXT,telefon TEXT,hash TEXT,uci INTEGER,stav_clenstvi TEXT)');
+        $pdo->exec('CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY AUTOINCREMENT,account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,source TEXT,valid_from TEXT,valid_to TEXT,created_by_trainer_id INTEGER,approved_by_trainer_id INTEGER,decision_note TEXT,updated_at TEXT)');
+        $pdo->exec('CREATE TABLE account_person_role_events(relation_id INTEGER,actor_trainer_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,relation_role TEXT,note TEXT)');
+        $pdo->exec('CREATE TABLE club_event_registrations(event_id INTEGER,sportovec_id INTEGER)');
+        $pdo->exec('CREATE TABLE club_roster_members(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,sportovec_id INTEGER,status TEXT,source TEXT,valid_from TEXT,valid_to TEXT,created_by_trainer_id INTEGER,updated_at TEXT)');
+        $pdo->exec('INSERT INTO verejni_uzivatele VALUES(1)');
+        $now = new DateTimeImmutable('2026-10-16 12:00:00',new DateTimeZone('Europe/Prague'));
+
+        $first = \kisUatFreshPaidParticipant($pdo,9,1,3,7,'2026-10-16',$now);
+        self::assertSame($first,\kisUatFreshPaidParticipant($pdo,9,1,3,7,'2026-10-16',$now));
+        $pdo->prepare('INSERT INTO club_event_registrations VALUES(9,?)')->execute([$first]);
+        $second = \kisUatFreshPaidParticipant($pdo,9,1,3,7,'2026-10-16',$now);
+        self::assertNotSame($first,$second);
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
+        $pdo->prepare("UPDATE club_roster_members SET status='removed',valid_to='2026-10-17' WHERE sportovec_id=?")->execute([$second]);
+        \kisUatEnsureRosterMember($pdo,3,$second,'2026-10-18',7);
+        self::assertSame(['active','2026-10-18',null],$pdo->query('SELECT status,valid_from,valid_to FROM club_roster_members WHERE sportovec_id='.$second)->fetch(PDO::FETCH_NUM));
+    }
+
+    public function testPaidEventIdentityRotatesOnlyWhenProtectedEventIsOutsideWindow(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE club_events(id INTEGER PRIMARY KEY,name TEXT,status TEXT,registration_ends_at TEXT)');
+        $pdo->exec('CREATE TABLE club_event_sessions(event_id INTEGER,status TEXT,ends_at TEXT)');
+        $pdo->exec('CREATE TABLE club_event_registrations(event_id INTEGER,status TEXT)');
+        $now = new DateTimeImmutable('2026-10-16 12:00:00',new DateTimeZone('Europe/Prague'));
+        $end = new DateTimeImmutable('2026-10-22 23:00:00',new DateTimeZone('Europe/Prague'));
+        self::assertSame('KP-TEST-UAT-PRIMESTSKY-DEN',\kisUatPaidEventIdentity($pdo,$now,$end)['sku']);
+        $pdo->exec("INSERT INTO club_events VALUES(1,'TEST - Příměstský den','open','2026-10-20 23:00:00')");
+        $pdo->exec("INSERT INTO club_event_sessions VALUES(1,'scheduled','2026-10-21 15:00:00')");
+        $pdo->exec("INSERT INTO club_event_registrations VALUES(1,'payment_pending')");
+        self::assertSame('KP-TEST-UAT-PRIMESTSKY-DEN',\kisUatPaidEventIdentity($pdo,$now,$end)['sku']);
+        $pdo->exec("UPDATE club_event_sessions SET ends_at='2026-10-24 15:00:00'");
+        self::assertSame('KP-TEST-UAT-PRIMESTSKY-DEN-20261022',\kisUatPaidEventIdentity($pdo,$now,$end)['sku']);
     }
 }

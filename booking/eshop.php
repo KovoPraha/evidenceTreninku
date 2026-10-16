@@ -67,18 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $success = (string)($_SESSION['flash_shop'] ?? '');unset($_SESSION['flash_shop']);
 $products = [];
-foreach (shopStorefrontCatalog($pdo) as $product) {
-    $hasProgramOffer = clubProgramProductHasOfferLink($pdo, (int)$product['product_id']);
+foreach (shopPublicSaleableCatalog($pdo) as $product) {
     $isProgram = shopProductRequiresAthlete($pdo, (int)$product['product_id']);
-    $product['variants'] = array_values(array_filter(
-        $product['variants'],
-        static function (array $variant) use ($pdo, $hasProgramOffer, $isProgram): bool {
-            $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']);
-            if ($hasProgramOffer) return clubProgramVariantSaleState($pdo,(int)$variant['variant_id'])['saleable'];
-            return $isProgram || $offer === false;
-        }
-    ));
-    if ($product['variants'] === []) continue;
     if ($isProgram) $product['images'] = array_values(array_filter(
         $product['images'],
         static fn(string $url): bool => shopStorefrontIsLocalImageUrl($url)
