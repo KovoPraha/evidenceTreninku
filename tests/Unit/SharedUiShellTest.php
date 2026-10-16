@@ -162,6 +162,17 @@ final class SharedUiShellTest extends TestCase
         self::assertStringNotContainsString('<details class="acct-menu', $helper);
     }
 
+    public function testPublicAndStaffHeadersUseLocalClubLogo(): void
+    {
+        $root = dirname(__DIR__, 2);
+        self::assertFileExists($root . '/assets/kovo-praha-logo.png');
+        foreach (['includes/ui_shell.php', 'hlavicka.php'] as $relative) {
+            $source = (string)file_get_contents($root . '/' . $relative);
+            self::assertStringContainsString("appUiUrl('assets/kovo-praha-logo.png')", $source, $relative);
+            self::assertStringContainsString('app-brand-logo', $source, $relative);
+        }
+    }
+
     public function testPublicPortalEntrypointsUseOneNavigation(): void
     {
         $root = dirname(__DIR__, 2);

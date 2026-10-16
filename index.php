@@ -37,7 +37,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
   <title><?= $is_logged_in ? 'Evidence tréninků' : 'Kovopraha – klubový portál' ?></title>
   <?php appUiAssets(); ?>
   <style>
-    body { background: #f0f2f5; }
+    body { background: var(--app-page-bg); }
     .section-card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
     .section-card .card-header {
       border-radius: 12px 12px 0 0 !important;
@@ -66,15 +66,17 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
     .role-admin { background: #f8d7da; color: #842029; }
     .welcome-card { border: none; border-radius: 12px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: #fff; }
     .welcome-card .badge-date { background: rgba(255,255,255,.15); font-weight: 400; font-size: .85rem; }
-    .portal-hero { border: 0; border-radius: 20px; color: #fff; overflow: hidden; background: linear-gradient(135deg,#12372a 0%,#1f6f50 55%,#c46a2d 100%); box-shadow: 0 18px 45px rgba(18,55,42,.2); }
+    .portal-hero { position: relative; border: 0; border-radius: 20px; color: #fff; overflow: hidden; background: linear-gradient(115deg,#126ad1 0%,#1964c1 42%,#18386f 100%); box-shadow: 0 18px 45px rgba(24,56,111,.2); }
+    .portal-hero::after { content: ''; position: absolute; inset: auto 0 0; height: 7px; background: linear-gradient(90deg,#fff 0 86%,#d73548 86% 89%,#fff 89%); }
     .portal-hero .hero-kicker { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 700; opacity: .78; }
-    .portal-card { border: 0; border-radius: 16px; box-shadow: 0 8px 26px rgba(18,55,42,.09); transition: transform .15s ease, box-shadow .15s ease; }
-    .portal-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(18,55,42,.14); }
+    .portal-card { border: 1px solid rgba(24,56,111,.1); border-radius: 16px; box-shadow: 0 8px 26px rgba(24,56,111,.09); transition: transform .15s ease, box-shadow .15s ease; }
+    .portal-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(24,56,111,.14); }
     .portal-icon { width: 52px; height: 52px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.45rem; }
     .portal-link { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .62rem 0; color: inherit; text-decoration: none; border-top: 1px solid rgba(0,0,0,.08); }
-    .portal-link:hover { color: #146c43; }
+    .portal-link:hover { color: var(--app-blue); }
+    .portal-icon--navy { background: #e4edfa; color: var(--app-navy); }
     .portal-shortcut { display: block; height: 100%; padding: 1rem; border-radius: 14px; color: inherit; text-decoration: none; background: #fff; box-shadow: 0 3px 14px rgba(0,0,0,.07); }
-    .portal-shortcut:hover { color: #0d6efd; box-shadow: 0 6px 20px rgba(0,0,0,.11); }
+    .portal-shortcut:hover { color: var(--app-blue); box-shadow: 0 6px 20px rgba(0,0,0,.11); }
   </style>
 </head>
 <body>
@@ -124,7 +126,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
         <div class="row g-3">
           <div class="col-lg-4">
             <article class="card portal-card h-100"><div class="card-body p-4">
-              <span class="portal-icon bg-success-subtle text-success mb-3"><i class="bi bi-bag-check"></i></span>
+              <span class="portal-icon bg-primary-subtle text-primary mb-3"><i class="bi bi-bag-check"></i></span>
               <h3 class="h5">E-shop a klubové služby</h3>
               <p class="text-muted">Oblečení, knihy, kroužky, kurzy, výjezdy a placené rezervace.</p>
               <a class="portal-link" href="booking/cyklisticke_krouzky.php"><span>Vybrat dětský kroužek</span><i class="bi bi-arrow-right"></i></a>
@@ -147,7 +149,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
           </div>
           <div class="col-lg-4">
             <article class="card portal-card h-100"><div class="card-body p-4">
-              <span class="portal-icon bg-warning-subtle text-warning-emphasis mb-3"><i class="bi bi-clipboard-data"></i></span>
+              <span class="portal-icon portal-icon--navy mb-3"><i class="bi bi-clipboard-data"></i></span>
               <h3 class="h5">Trenéři a vedení klubu</h3>
               <p class="text-muted">Evidence tréninků, plánovač, KIS soupisky, závody, události a správa objednávek.</p>
               <a class="portal-link" href="login.php"><span>Vstup pro trenéry</span><i class="bi bi-arrow-right"></i></a>
