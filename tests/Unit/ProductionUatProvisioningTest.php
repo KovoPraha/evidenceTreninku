@@ -29,6 +29,39 @@ final class ProductionUatProvisioningTest extends TestCase
         ], $now);
     }
 
+    public function testFixtureScheduleFitsShortApprovedWindowAndFailsBeforeAnyWritesIfTooShort(): void
+    {
+        $zone = new DateTimeZone('Europe/Prague');
+        $now = new DateTimeImmutable('2026-10-16 12:00:00', $zone);
+        $end = new DateTimeImmutable('2026-10-22 23:00:00', $zone);
+        $dates = \kisUatFixtureSchedule($now, $end);
+        self::assertSame('2026-10-18', $dates['training']->format('Y-m-d'));
+        foreach ($dates as $day) self::assertLessThanOrEqual($end, $day->setTime(18, 0));
+
+        $short = \kisUatFixtureSchedule($now, new DateTimeImmutable('2026-10-18 23:00:00', $zone));
+        foreach ($short as $day) self::assertSame('2026-10-18', $day->format('Y-m-d'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('UAT okno je příliš krátké');
+        \kisUatFixtureSchedule($now, new DateTimeImmutable('2026-10-18 17:00:00', $zone));
+    }
+
+    public function testProvisioningRejectsAnAnsweredTrainingOutsideWindowBeforeWrites(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE planovane_treninky(id INTEGER PRIMARY KEY,nazev TEXT,datum TEXT,cas_od TEXT,stav TEXT,trenink_id INTEGER)');
+        $pdo->exec('CREATE TABLE training_rsvps(plan_id INTEGER)');
+        $pdo->exec('CREATE TABLE club_makeup_slots(plan_id INTEGER)');
+        $pdo->exec('CREATE TABLE training_roster_links(plan_id INTEGER,team_id INTEGER)');
+        $pdo->exec("INSERT INTO planovane_treninky VALUES(11,'TEST - Trénink nového dítěte','2026-10-24','17:00:00','planovany',NULL)");
+        $pdo->exec('INSERT INTO training_rsvps VALUES(11)');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Žádná data nebyla změněna');
+        \kisUatExistingTraining($pdo,new DateTimeImmutable('2026-10-16 12:00:00',new DateTimeZone('Europe/Prague')),new DateTimeImmutable('2026-10-22 23:00:00',new DateTimeZone('Europe/Prague')));
+    }
+
     public function testProductionScriptAndWorkflowKeepIdentitiesAndSecretAllowlisted(): void
     {
         $root = dirname(__DIR__, 2);
@@ -50,6 +83,8 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertStringContainsString("'uat-free-' . \$day->format('Ymd')", $script);
         self::assertStringContainsString('clubEventConfigureRegistrationTerms(', $script);
         self::assertStringContainsString('clubEventRosterReplaceTargets', $script);
+        self::assertStringContainsString('kisUatFixtureSchedule($now,$windowEnd)', $script);
+        self::assertStringContainsString('trainingRosterBridgeReplacePlanTeams', $script);
         self::assertStringContainsString('shopCatalogPublicationActivate(', $script);
         self::assertLessThan(strpos($script,'clubEventOpenPaidRegistration',strpos($script,'function kisUatUpsertPaidShopEvent')),strpos($script,'shopCatalogPublicationActivate(',strpos($script,'function kisUatUpsertPaidShopEvent')));
         self::assertStringContainsString("(.products|length) == 3", $workflow);

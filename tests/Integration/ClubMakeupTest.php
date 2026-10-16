@@ -155,6 +155,37 @@ final class ClubMakeupTest extends TestCase
         \clubMakeupPolicySave($pdo,1,1,1,10,true,48,true);
         $late=\trainingRsvpSave($pdo,300,10,'not_going','athlete',50);
         self::assertFalse($late['makeup_eligible']);
+        self::assertSame('late',$late['makeup_reason']);
+        self::assertSame('late',$pdo->query('SELECT makeup_denial_reason FROM training_rsvps WHERE plan_id=300')->fetchColumn());
+        self::assertStringContainsString('po lhůtě',\trainingRsvpSavedMessage($late));
+    }
+
+    public function testRejectedApologyExplainsPolicyPaymentAndRetainsOriginalReason():void
+    {
+        $pdo=$this->fixture();
+        $future=date('Y-m-d',strtotime('+3 days'));
+        $pdo->prepare("INSERT INTO planovane_treninky VALUES(300,1,NULL,'Budoucí trénink',?,'16:00:00','planovany',NULL)")->execute([$future]);
+        $pdo->exec('INSERT INTO training_roster_links VALUES(3,300,10)');
+        $pdo->prepare('UPDATE club_program_offers SET ends_on=? WHERE id=11')->execute([date('Y-m-d',strtotime('+1 week'))]);
+        $pdo->prepare("UPDATE club_program_enrollments SET valid_to=?,status='pending' WHERE id=40")->execute([date('Y-m-d',strtotime('+1 week'))]);
+        self::assertSame('policy_disabled',\clubMakeupExcuseFailureReason($pdo,300,10,\clubMakeupNow()));
+        \clubMakeupPolicySave($pdo,1,1,1,10,true,12,true);
+        self::assertSame('unpaid',\clubMakeupExcuseFailureReason($pdo,300,10,\clubMakeupNow()));
+        $saved=\trainingRsvpSave($pdo,300,10,'not_going','athlete',50);
+        self::assertSame('unpaid',$saved['makeup_reason']);
+        self::assertStringContainsString('není potvrzená placená účast',\trainingRsvpSavedMessage($saved));
+        $pdo->exec("UPDATE club_program_enrollments SET status='active' WHERE id=40");
+        self::assertNotNull(\clubMakeupExcuseEntitlement($pdo,300,10,\clubMakeupNow()));
+        $again=\trainingRsvpSave($pdo,300,10,'not_going','athlete',50,'Přidávám důvod.');
+        self::assertSame('unpaid',$again['makeup_reason']);
+        self::assertSame('unpaid',\clubMakeupDeniedExcusesForPerson($pdo,10)[0]['makeup_denial_reason']);
+    }
+
+    public function testOfferReviewDoesNotInferSemesterFromNameOrDuration():void
+    {
+        self::assertSame('unclassified',\clubMakeupOfferReviewStatus(null));
+        self::assertSame('classified',\clubMakeupOfferReviewStatus(['period_kind'=>'single']));
+        self::assertSame('classified',\clubMakeupOfferReviewStatus(['period_kind'=>'first']));
     }
 
     public function testCancellingTargetOrNextSemesterReleasesReservationAndBlocksNewOne():void
@@ -238,6 +269,7 @@ final class ClubMakeupTest extends TestCase
             'CREATE TABLE trenink_sportovec(trenink_id INTEGER,sportovec_id INTEGER)',
         ] as $schema)$pdo->exec($schema);
         $migration=require dirname(__DIR__,2).'/migrations/20261014110000_club_makeup_lessons.php';$migration['up']($pdo);
+        $reasonMigration=require dirname(__DIR__,2).'/migrations/20261016100000_training_rsvp_makeup_reason.php';$reasonMigration['up']($pdo);self::assertTrue($reasonMigration['verify']($pdo));
         $sourceDate=date('Y-m-d',strtotime('-2 days'));
         $firstEnd=date('Y-m-d',strtotime('-1 day'));
         $secondStart=date('Y-m-d');

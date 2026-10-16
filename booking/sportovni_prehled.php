@@ -89,9 +89,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     $accountId,
                     (string)($_POST['member_note'] ?? '')
                 );
-                $_SESSION['training_rsvp_message'] = $saved['response']==='not_going'
-                    ? ($saved['makeup_eligible']===true ? 'Omluva byla uložena. Nárok na náhradní lekci vznikne až po ověření skutečné docházky trenérem.' : 'Omluva byla uložena. Tato omluva nezakládá nárok na náhradní lekci (lhůta nebo placená účast nesplněna).')
-                    : ($saved['changed'] ? 'Účast a zpráva pro trenéra byly uloženy.' : 'Účast a zpráva pro trenéra už byly uložené.');
+                $_SESSION['training_rsvp_message'] = trainingRsvpSavedMessage($saved);
                 header('Location: sportovni_prehled.php?mesic=' . $trainingCalendarMonth->format('Y-m') . '#potvrzeni-treninku', true, 303);
                 exit;
             }

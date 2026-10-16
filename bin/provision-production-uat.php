@@ -17,6 +17,7 @@ kisUatRequire('includes/club_program.php');
 kisUatRequire('includes/club_program_terms.php');
 kisUatRequire('includes/club_calendar.php');
 kisUatRequire('includes/club_event_registration.php');
+kisUatRequire('includes/training_roster_bridge.php');
 
 const KIS_UAT_PARENT_EMAILS = ['tester.karel@velocota.com', 'tester.petra@velocota.com'];
 const KIS_UAT_CHILD_LOGINS = ['tester.ema', 'tester.adam'];
@@ -36,6 +37,49 @@ function kisUatValidateSettings(array $settings, ?DateTimeImmutable $now = null)
         throw new InvalidArgumentException('UAT okno musí končit během následujících 31 dnů.');
     }
     return ['password'=>$password, 'window_end'=>$windowEnd];
+}
+
+/** @return array{free_event:DateTimeImmutable,paid_event:DateTimeImmutable,velodrome:DateTimeImmutable,lesson:DateTimeImmutable,training:DateTimeImmutable} */
+function kisUatFixtureSchedule(DateTimeImmutable $now, DateTimeImmutable $windowEnd): array
+{
+    $zone = new DateTimeZone('Europe/Prague');
+    $now = $now->setTimezone($zone);
+    $windowEnd = $windowEnd->setTimezone($zone);
+    // Every fixture finishes no later than 18:00. A shorter window must fail
+    // before provisioning changes any account, product or training.
+    $lastDay = $windowEnd->setTime(0, 0);
+    if ($windowEnd->format('H:i:s') < '18:00:00') $lastDay = $lastDay->modify('-1 day');
+    $firstDay = $now->setTime(0, 0)->modify('+2 days');
+    if ($lastDay < $firstDay) {
+        throw new InvalidArgumentException('UAT okno je příliš krátké: testovací termíny vyžadují alespoň dva celé dny a konec nejdříve v 18:00. Žádná data nebyla změněna.');
+    }
+    $pick = static fn(int $offset): DateTimeImmutable => min($now->setTime(0, 0)->modify('+' . $offset . ' days'), $lastDay);
+    return [
+        'free_event'=>$pick(5), 'paid_event'=>$pick(6),
+        'velodrome'=>$pick(7), 'lesson'=>$pick(8),
+        'training'=>$pick(2),
+    ];
+}
+
+/** @return array<string,mixed>|null */
+function kisUatExistingTraining(PDO $pdo, DateTimeImmutable $now, DateTimeImmutable $windowEnd): ?array
+{
+    $query=$pdo->query("SELECT id,datum,cas_od,stav,trenink_id FROM planovane_treninky WHERE nazev='TEST - Trénink nového dítěte' ORDER BY id");
+    $rows=$query->fetchAll(PDO::FETCH_ASSOC);
+    if(count($rows)>1)throw new RuntimeException('Duplicitní UAT trénink.');
+    if($rows===[])return null;
+    $row=$rows[0];$id=(int)$row['id'];
+    $rsvps=$pdo->prepare('SELECT COUNT(*) FROM training_rsvps WHERE plan_id=?');$rsvps->execute([$id]);
+    $slots=$pdo->prepare('SELECT COUNT(*) FROM club_makeup_slots WHERE plan_id=?');$slots->execute([$id]);
+    $row['protected']=(int)$row['trenink_id']>0||(int)$rsvps->fetchColumn()>0||(int)$slots->fetchColumn()>0;
+    if($row['protected']){
+        $start=new DateTimeImmutable((string)$row['datum'].' '.((string)$row['cas_od']?:'23:59:59'),new DateTimeZone('Europe/Prague'));
+        $end=new DateTimeImmutable((string)$row['datum'].' 18:00:00',new DateTimeZone('Europe/Prague'));
+        if($row['stav']!=='planovany'||$start<=$now||$end>$windowEnd||trainingRosterBridgePlanTeamIds($pdo,$id)===[]){
+            throw new RuntimeException('Existující UAT trénink s odpověďmi nebo náhradníky nelze bezpečně přesunout či znovu použít. Založte nový TEST plán ručně. Žádná data nebyla změněna.');
+        }
+    }
+    return $row;
 }
 
 function kisUatAdminId(PDO $pdo): int
@@ -289,6 +333,8 @@ function kisUatProvision(PDO $pdo, array $settings, ?DateTimeImmutable $now = nu
 {
     $validated=kisUatValidateSettings($settings,$now);$password=$validated['password'];$windowEnd=$validated['window_end'];
     $now=($now??new DateTimeImmutable('now',new DateTimeZone('Europe/Prague')))->setTimezone(new DateTimeZone('Europe/Prague'));
+    $schedule=kisUatFixtureSchedule($now,$windowEnd);
+    $existingTraining=kisUatExistingTraining($pdo,$now,$windowEnd);
     $actorId=kisUatAdminId($pdo);
     $karel=kisUatUpsertParent($pdo,KIS_UAT_PARENT_EMAILS[0],'Tester','Karel',$password);
     $petra=kisUatUpsertParent($pdo,KIS_UAT_PARENT_EMAILS[1],'Tester','Petra',$password);
@@ -315,15 +361,33 @@ function kisUatProvision(PDO $pdo, array $settings, ?DateTimeImmutable $now = nu
     clubProgramTermsConfigure($pdo,$actorId,'program',(int)$program['id'],'program_cancellation','TEST UAT: účast lze do konce testovacího okna zrušit; nejde o běžnou klubovou nabídku.',true);
     clubProgramTermsConfigure($pdo,$actorId,'program',(int)$program['id'],'program_consent','TEST UAT: zákonný zástupce souhlasí výhradně s provedením produkčního uživatelského testu.',true);
 
-    $freeEvent=kisUatUpsertCalendarEvent($pdo,$actorId,'TEST - Rodinný nábor',0,$now->modify('+5 days'));
+    $freeEvent=kisUatUpsertCalendarEvent($pdo,$actorId,'TEST - Rodinný nábor',0,$schedule['free_event']);
     $paidEventProduct=kisUatProduct($pdo,$actorId,'KP-TEST-UAT-PRIMESTSKY-DEN','TEST - Příměstský den','camp',5000);
-    $paidEvent=kisUatUpsertPaidShopEvent($pdo,$actorId,$paidEventProduct['product_id'],$season['team_id'],$now->modify('+6 days'),$windowEnd);
-    $velodrome=kisUatUpsertLesson($pdo,$actorId,'velodrom','TEST - Veřejný velodrom',$now->modify('+7 days'),'public_velodrome',250.00);
-    $lesson=kisUatUpsertLesson($pdo,$actorId,'posilovna_horni','TEST - Individuální lekce',$now->modify('+8 days'),'individual_lesson',300.00);
-    $training=$pdo->prepare("SELECT id FROM planovane_treninky WHERE nazev='TEST - Trénink nového dítěte' ORDER BY id");$training->execute();$trainingIds=array_map('intval',$training->fetchAll(PDO::FETCH_COLUMN));if(count($trainingIds)>1)throw new RuntimeException('Duplicitní UAT trénink.');
-    if($trainingIds===[]){$pdo->prepare("INSERT INTO planovane_treninky(trener_id,datum,cas_od,cas_do,nazev,kategorie,popis,stav,je_verejny) VALUES(?,?,'17:00:00','18:00:00','TEST - Trénink nového dítěte','draha','Dočasný trénink pro produkční UAT.','planovany',1)")->execute([$actorId,$now->modify('+9 days')->format('Y-m-d')]);$trainingId=(int)$pdo->lastInsertId();}else{$trainingId=$trainingIds[0];$pdo->prepare("UPDATE planovane_treninky SET trener_id=?,datum=?,cas_od='17:00:00',cas_do='18:00:00',kategorie='draha',popis='Dočasný trénink pro produkční UAT.',stav='planovany',je_verejny=1 WHERE id=?")->execute([$actorId,$now->modify('+9 days')->format('Y-m-d'),$trainingId]);}
+    $paidEvent=kisUatUpsertPaidShopEvent($pdo,$actorId,$paidEventProduct['product_id'],$season['team_id'],$schedule['paid_event'],$windowEnd);
+    $velodrome=kisUatUpsertLesson($pdo,$actorId,'velodrom','TEST - Veřejný velodrom',$schedule['velodrome'],'public_velodrome',250.00);
+    $lesson=kisUatUpsertLesson($pdo,$actorId,'posilovna_horni','TEST - Individuální lekce',$schedule['lesson'],'individual_lesson',300.00);
+    $trainingDay=$schedule['training']->format('Y-m-d');
+    $rebuildRoster=false;
+    if($existingTraining===null){
+        $pdo->prepare("INSERT INTO planovane_treninky(trener_id,datum,cas_od,cas_do,nazev,kategorie,popis,stav,je_verejny) VALUES(?,?,'17:00:00','18:00:00','TEST - Trénink nového dítěte','draha','Dočasný trénink pro produkční UAT.','planovany',1)")->execute([$actorId,$trainingDay]);
+        $trainingId=(int)$pdo->lastInsertId();
+        $rebuildRoster=true;
+    }else{
+        $trainingId=(int)$existingTraining['id'];
+        if($existingTraining['protected']){
+            $trainingDay=(string)$existingTraining['datum'];
+        }else{
+            $pdo->prepare("UPDATE planovane_treninky SET trener_id=?,datum=?,cas_od='17:00:00',cas_do='18:00:00',kategorie='draha',popis='Dočasný trénink pro produkční UAT.',stav='planovany',je_verejny=1 WHERE id=?")->execute([$actorId,$trainingDay,$trainingId]);
+            $rebuildRoster=true;
+        }
+    }
+    if($rebuildRoster){
+        trainingRosterBridgeReplacePlanTeams($pdo,$trainingId,[$season['team_id']],$actorId);
+    }elseif(trainingRosterBridgePlanTeamIds($pdo,$trainingId)!==[$season['team_id']]){
+        throw new RuntimeException('UAT trénink má jinou soupisku; automatická změna by narušila již uložené odpovědi.');
+    }
 
-    return ['ok'=>true,'parents'=>[$karel['id'],$petra['id']],'children'=>[$ema['id'],$adam['id']],'child_access'=>$childAccess,'products'=>[$goods['product_id'],$programProduct['product_id'],$paidEventProduct['product_id']],'program_offer'=>(int)$offer['id'],'events'=>[$freeEvent,$paidEvent],'lessons'=>[$velodrome,$lesson],'training'=>$trainingId,'window_end'=>$windowEnd->format('Y-m-d H:i:s')];
+    return ['ok'=>true,'parents'=>[$karel['id'],$petra['id']],'children'=>[$ema['id'],$adam['id']],'child_access'=>$childAccess,'products'=>[$goods['product_id'],$programProduct['product_id'],$paidEventProduct['product_id']],'program_offer'=>(int)$offer['id'],'events'=>[$freeEvent,$paidEvent],'lessons'=>[$velodrome,$lesson],'training'=>$trainingId,'training_date'=>$trainingDay,'window_end'=>$windowEnd->format('Y-m-d H:i:s')];
 }
 
 function kisUatMain(): void

@@ -21,6 +21,10 @@ ve výchozím stavu vypnutá a zapíná se výslovně v administraci.
 3. Při uložení se znovu ověří oprávnění rodiče/sportovce, členství v soupisce,
    stav a čas tréninku. Změna odpovědi nebo zprávy vytvoří auditní událost.
    Obsah zprávy se nekopíruje do auditní události.
+   Odmítnutý nárok má při uložení konkrétní důvod (vypnutá politika, chybějící
+   pravidlo termínu, nepotvrzená placená účast či pozdní omluva). Důvod se
+   nemění zpětně při úpravě nabídky a rodič jej najde také v přehledu náhrad.
+   Starší omluvy bez uloženého důvodu se nesmějí dodatečně vysvětlovat odhadem.
    Jakmile k termínu existuje odpověď nebo nastavení náhrad, změna data, času
    začátku či soupisky se odmítne; termín je potřeba zrušit a vypsat nový.
 4. Přiřazený trenér nebo hlavní trenér otevře v `planovac.php` odkaz
@@ -28,10 +32,13 @@ ve výchozím stavu vypnutá a zapíná se výslovně v administraci.
    odpovědi, zprávy i součty. Skutečnou docházku zapíše dál odděleně přes
    `formular.php?plan_id=…`.
 
-Tato část používá existující `training_rsvps`; nová migrace
-`20261014100000_training_rsvp_notes` přidává `member_note`. Je potřeba ji
-aplikovat před otevřením upravených stránek. Kalendář a trenérská příprava
-zatím nebyly ověřeny prohlížečem na produkci.
+Tato část používá existující `training_rsvps`; migrace
+`20261014100000_training_rsvp_notes` přidává `member_note` a migrace
+`20261016100000_training_rsvp_makeup_reason` uchovává důvod odmítnutí.
+Je potřeba je aplikovat před otevřením upravených stránek. Kalendář,
+odpovědi rodiče i sportovce a trenérská příprava byly 16. 10. ověřeny
+v prohlížeči na produkčním releasu `276a5969`; pozitivní čerpání a převod
+náhrad v něm ověřeny nebyly.
 
 ## 2. Náhradní lekce kroužků — implementované pravidlo
 
@@ -99,6 +106,8 @@ hodinu o 60 minutách; různé kroužky mají různou délku tréninku.
    této politiky; při změně ji lze výslovně použít na vypsané budoucí
    termíny. Konfigurace a změny termínů mají auditní stopu. V administraci se
    také určí celoroční, první a druhé pololetí a explicitní vazba pokračování.
+   Nezařazená nabídka je označena samostatně, nikoli vydávána za
+   „Jednorázové / jiné“. Systém typ z délky ani názvu neodvozuje.
 2. V `training_rsvps_admin.php` trenér povolí náhradníky u konkrétního
    `planovane_treninky`, vybere kroužek, kapacitu a může zúžit strukturované
    ročníky. Lze použít hromadně na další výskyty stejné série do zvoleného

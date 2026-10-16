@@ -54,6 +54,16 @@ function uatReadinessStringSetting(string $constantName, string $environmentName
 function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
 {
     $release = deploymentReleaseInfo($applicationRoot);
+    $windowEndSetting = uatReadinessStringSetting('KIS_UAT_WINDOW_END', 'KIS_UAT_WINDOW_END');
+    try {
+        $windowEnd = $windowEndSetting === '' ? null : new DateTimeImmutable($windowEndSetting, new DateTimeZone('Europe/Prague'));
+    } catch (Throwable) {
+        $windowEnd = null;
+    }
+    $cutoff = $windowEnd?->format('Y-m-d H:i:s');
+    $cutoffDate = $windowEnd?->format('Y-m-d');
+    $cutoffTime = $windowEnd?->format('H:i:s');
+    $today = (new DateTimeImmutable('now', new DateTimeZone('Europe/Prague')))->format('Y-m-d');
     $parents = -1;
     if (uatReadinessTableExists($pdo, 'verejni_uzivatele')) {
         $parents = uatReadinessCount(
@@ -102,25 +112,25 @@ function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
         $fixtureCounts['goods'] = uatReadinessCount($pdo, "SELECT COUNT(*)$base AND p.offer_type='goods'");
         $fixtureCounts['program'] = uatReadinessCount($pdo, "SELECT COUNT(*)$base AND p.offer_type='program'");
     }
-    if (uatReadinessTableExists($pdo, 'club_events') && uatReadinessTableExists($pdo, 'club_event_sessions')) {
-        $eventBase = " FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id WHERE e.name LIKE 'TEST -%' AND e.status='open' AND e.visibility='public' AND s.status='scheduled' AND s.ends_at>=CURRENT_TIMESTAMP";
-        $fixtureCounts['free_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase AND e.pricing_policy='free'");
+    if ($cutoff !== null && uatReadinessTableExists($pdo, 'club_events') && uatReadinessTableExists($pdo, 'club_event_sessions')) {
+        $eventBase = " FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id WHERE e.name LIKE 'TEST -%' AND e.status='open' AND e.visibility='public' AND s.status='scheduled' AND s.ends_at>=CURRENT_TIMESTAMP AND s.ends_at<=?";
+        $fixtureCounts['free_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase AND e.pricing_policy='free'", [$cutoff]);
         $paidBase = " FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id "
             . "JOIN shop_product_event_links l ON l.event_id=e.id JOIN shop_products p ON p.id=l.product_id "
             . "JOIN shop_variants v ON v.product_id=p.id WHERE e.name LIKE 'TEST -%' AND e.status='open' "
             . "AND e.visibility='public' AND e.pricing_policy='product_variants' AND s.status='scheduled' "
-            . "AND s.ends_at>=CURRENT_TIMESTAMP AND p.catalog_status='active' AND v.catalog_status='active' "
+            . "AND s.ends_at>=CURRENT_TIMESTAMP AND s.ends_at<=? AND p.catalog_status='active' AND v.catalog_status='active' "
             . "AND v.price_mode='fixed' AND v.amount_minor>0 AND v.currency='CZK' AND (v.visible IS NULL OR v.visible=1)";
-        $fixtureCounts['paid_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$paidBase");
-        $fixtureCounts['calendar_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase");
+        $fixtureCounts['paid_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$paidBase", [$cutoff]);
+        $fixtureCounts['calendar_event'] = uatReadinessCount($pdo, "SELECT COUNT(DISTINCT e.id)$eventBase", [$cutoff]);
     }
-    if (uatReadinessTableExists($pdo, 'individualni_lekce') && uatReadinessTableExists($pdo, 'sportovist')) {
-        $lessonBase = " FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.nazev LIKE 'TEST -%' AND il.stav='aktivni' AND il.datum>=CURRENT_DATE AND s.je_verejne=1 AND s.aktivni=1";
-        $fixtureCounts['velodrome'] = uatReadinessCount($pdo, "SELECT COUNT(*)$lessonBase AND s.kod='velodrom'");
-        $fixtureCounts['lesson'] = uatReadinessCount($pdo, "SELECT COUNT(*)$lessonBase AND s.kod<>'velodrom'");
+    if ($cutoffDate !== null && uatReadinessTableExists($pdo, 'individualni_lekce') && uatReadinessTableExists($pdo, 'sportovist')) {
+        $lessonBase = " FROM individualni_lekce il JOIN sportovist s ON s.id=il.sportoviste_id WHERE il.nazev LIKE 'TEST -%' AND il.stav='aktivni' AND il.datum>=? AND il.datum<=? AND (il.datum<? OR il.cas_do<=?) AND s.je_verejne=1 AND s.aktivni=1";
+        $fixtureCounts['velodrome'] = uatReadinessCount($pdo, "SELECT COUNT(*)$lessonBase AND s.kod='velodrom'", [$today,$cutoffDate,$cutoffDate,$cutoffTime]);
+        $fixtureCounts['lesson'] = uatReadinessCount($pdo, "SELECT COUNT(*)$lessonBase AND s.kod<>'velodrom'", [$today,$cutoffDate,$cutoffDate,$cutoffTime]);
     }
-    if (uatReadinessTableExists($pdo, 'planovane_treninky')) {
-        $fixtureCounts['training'] = uatReadinessCount($pdo, "SELECT COUNT(*) FROM planovane_treninky WHERE nazev LIKE 'TEST -%' AND je_verejny=1 AND stav='planovany' AND datum>=CURRENT_DATE");
+    if ($cutoffDate !== null && uatReadinessTableExists($pdo, 'planovane_treninky') && uatReadinessTableExists($pdo, 'training_roster_links')) {
+        $fixtureCounts['training'] = uatReadinessCount($pdo, "SELECT COUNT(*) FROM planovane_treninky p WHERE p.nazev LIKE 'TEST -%' AND p.je_verejny=1 AND p.stav='planovany' AND p.datum>=? AND p.datum<=? AND (p.datum<? OR p.cas_do<=?) AND EXISTS (SELECT 1 FROM training_roster_links l WHERE l.plan_id=p.id)", [$today,$cutoffDate,$cutoffDate,$cutoffTime]);
     }
 
     $technicalPublic = -1;
@@ -168,7 +178,7 @@ function uatReadinessSnapshot(PDO $pdo, ?string $applicationRoot = null): array
         'queue_available' => $queueAvailable,
         'queue_failed' => $queueFailed,
         'owner' => uatReadinessStringSetting('KIS_UAT_OWNER', 'KIS_UAT_OWNER'),
-        'window_end' => uatReadinessStringSetting('KIS_UAT_WINDOW_END', 'KIS_UAT_WINDOW_END'),
+        'window_end' => $windowEndSetting,
     ];
 }
 

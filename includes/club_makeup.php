@@ -130,6 +130,12 @@ function clubMakeupOfferPeriodSave(PDO $pdo, int $actorId, int $offerId, string 
     }
 }
 
+/** A missing mapping is distinct from an explicitly confirmed "other" offer. */
+function clubMakeupOfferReviewStatus(?array $period): string
+{
+    return $period === null ? 'unclassified' : 'classified';
+}
+
 function clubMakeupSyncPlanRules(PDO $pdo, int $planId): void
 {
     if (!clubMakeupReady($pdo)) return;
@@ -160,6 +166,53 @@ function clubMakeupExcuseEntitlement(PDO $pdo, int $planId, int $sportovecId, Da
     if (!$row) return null;
     if ($now > clubMakeupStart($row)->modify('-' . (int)$row['excuse_hours'] . ' hours')) return null;
     return ['enrollment_id'=>(int)$row['enrollment_id'],'hours'=>(int)$row['excuse_hours']];
+}
+
+/** Explain a rejected apology using the same offer, payment and cutoff prerequisites as entitlement. */
+function clubMakeupExcuseFailureReason(PDO $pdo, int $planId, int $sportovecId, DateTimeImmutable $now): string
+{
+    if (!clubMakeupReady($pdo)) return 'unavailable';
+    $query = $pdo->prepare(
+        'SELECT p.datum,p.cas_od,q.id AS policy_id,q.enabled,r.excuse_hours,e.id AS enrollment_id,oi.line_amount_minor '
+        . 'FROM planovane_treninky p JOIN training_roster_links l ON l.plan_id=p.id '
+        . 'JOIN club_program_offers o ON o.team_id=l.team_id AND o.starts_on<=p.datum AND o.ends_on>=p.datum '
+        . 'LEFT JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id '
+        . 'LEFT JOIN club_makeup_excuse_rules r ON r.plan_id=p.id AND r.policy_id=q.id '
+        . "LEFT JOIN club_program_enrollments e ON e.offer_id=o.id AND e.sportovec_id=? AND e.status='active' AND e.valid_from<=p.datum AND e.valid_to>=p.datum "
+        . 'LEFT JOIN shop_order_items oi ON oi.id=e.source_order_item_id '
+        . "WHERE p.id=? AND p.stav='planovany'"
+    );
+    $query->execute([$sportovecId,$planId]);
+    $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+    if ($rows === []) return 'no_program';
+    $enabled = false;
+    $hasRule = false;
+    $hasPaidEnrollment = false;
+    foreach ($rows as $row) {
+        if (!(int)$row['enabled']) continue;
+        $enabled = true;
+        if ($row['excuse_hours'] === null) continue;
+        $hasRule = true;
+        if ((int)$row['line_amount_minor'] <= 0 || (int)$row['enrollment_id'] <= 0) continue;
+        $hasPaidEnrollment = true;
+        if ($now > clubMakeupStart($row)->modify('-' . (int)$row['excuse_hours'] . ' hours')) return 'late';
+    }
+    if (!$enabled) return 'policy_disabled';
+    if (!$hasRule) return 'rule_missing';
+    if (!$hasPaidEnrollment) return 'unpaid';
+    return 'unavailable';
+}
+
+function clubMakeupExcuseFailureMessage(string $reason): string
+{
+    return match ($reason) {
+        'no_program' => 'K tréninku není připojený kroužek s platnou nabídkou.',
+        'policy_disabled' => 'Pro tento kroužek nejsou zapnuté náhradní lekce.',
+        'rule_missing' => 'Pro tento termín zatím není nastavená lhůta omluvy; obraťte se na koordinátora kroužku.',
+        'unpaid' => 'U sportovce není potvrzená placená účast v tomto kroužku.',
+        'late' => 'Omluva přišla po lhůtě pro vznik náhradní lekce.',
+        default => 'Nárok nyní nelze potvrdit; obraťte se na koordinátora kroužku.',
+    };
 }
 
 function clubMakeupFinalizeSource(PDO $pdo, int $planId, int $trainingId, int $actorId): void
@@ -226,6 +279,14 @@ function clubMakeupPendingExcusesForPerson(PDO $pdo, int $personId): array
 {
     if (!clubMakeupReady($pdo)) return [];
     $query=$pdo->prepare("SELECT p.id,p.nazev,p.datum FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='planovany' ORDER BY p.datum,p.id");
+    $query->execute([$personId]);return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/** @return list<array<string,mixed>> */
+function clubMakeupDeniedExcusesForPerson(PDO $pdo, int $personId): array
+{
+    if (!clubMakeupReady($pdo)) return [];
+    $query=$pdo->prepare("SELECT p.id,p.nazev,p.datum,r.makeup_denial_reason FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NULL AND c.id IS NULL AND p.stav IN ('planovany','evidovany') ORDER BY p.datum DESC,p.id DESC LIMIT 25");
     $query->execute([$personId]);return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
