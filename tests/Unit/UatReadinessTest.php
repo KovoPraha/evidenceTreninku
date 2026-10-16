@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use DateTimeImmutable;
+use DateTimeZone;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/uat_readiness.php';
@@ -71,5 +73,31 @@ final class UatReadinessTest extends TestCase
         $stripe = array_values(array_filter($blocked['checks'], static fn(array $check): bool => $check['key'] === 'stripe'))[0];
         self::assertFalse($stripe['ok']);
         self::assertStringContainsString('STOP', $stripe['detail']);
+    }
+
+    public function testTrainingFixtureCountsOnlyRosterLinkedTermInsideUatWindow(): void
+    {
+        if (defined('KIS_UAT_WINDOW_END')) $this->markTestSkipped('UAT window is defined by the host configuration.');
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE planovane_treninky(id INTEGER PRIMARY KEY,nazev TEXT,datum TEXT,cas_do TEXT,je_verejny INTEGER,stav TEXT)');
+        $pdo->exec('CREATE TABLE training_roster_links(plan_id INTEGER,team_id INTEGER)');
+        $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Prague'));
+        $inside = $now->modify('+2 days')->format('Y-m-d');
+        $outside = $now->modify('+4 days')->format('Y-m-d');
+        $close = $now->modify('+3 days')->setTime(18, 30);
+        $insert = $pdo->prepare("INSERT INTO planovane_treninky VALUES(?,'TEST - Trénink nového dítěte',?,'18:00:00',1,'planovany')");
+        $insert->execute([1,$inside]);
+        $insert->execute([2,$outside]);
+        $insert->execute([3,$inside]);
+        $pdo->exec('INSERT INTO training_roster_links VALUES(1,10),(2,10)');
+        $before = getenv('KIS_UAT_WINDOW_END');
+        putenv('KIS_UAT_WINDOW_END=' . $close->format('Y-m-d H:i:s'));
+        try {
+            $snapshot = \uatReadinessSnapshot($pdo);
+            self::assertSame(1, $snapshot['fixtures']['training']);
+        } finally {
+            $before === false ? putenv('KIS_UAT_WINDOW_END') : putenv('KIS_UAT_WINDOW_END=' . $before);
+        }
     }
 }

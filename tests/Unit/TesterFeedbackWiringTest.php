@@ -67,6 +67,24 @@ final class TesterFeedbackWiringTest extends TestCase
         self::assertStringContainsString('member_note', $prep);
     }
 
+    public function testTrainingMakeupGuidanceUsesAuthorizedPositionSwitchInsteadOfDeadLink(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $prep = (string)file_get_contents($root . '/training_rsvps_admin.php');
+        self::assertStringContainsString("staffCanUsePosition('program_coordinator')", $prep);
+        self::assertStringContainsString('action="prepnout_pracovni_pozici.php"', $prep);
+        self::assertStringContainsString('name="position" value="program_coordinator"', $prep);
+        self::assertStringContainsString('name="next" value="club_makeup_policies_admin.php"', $prep);
+        self::assertStringContainsString('Požádejte koordinátora', $prep);
+        self::assertStringNotContainsString('href="club_makeup_policies_admin.php"', $prep);
+        $switch = (string)file_get_contents($root . '/prepnout_pracovni_pozici.php');
+        self::assertStringContainsString('csrf_verify(', $switch);
+        self::assertStringContainsString('staffRouteOwner($next) === $targetPosition', $switch);
+        $policies = (string)file_get_contents($root . '/club_makeup_policies_admin.php');
+        self::assertStringContainsString('Nezařazeno', $policies);
+        self::assertStringContainsString('value="" <?=$period===null?\'selected\':\'\'?> disabled', $policies);
+    }
+
     public function testReportsAndLegacyRouteFailVisiblyAndUseCanonicalMeasurementLinks():void
     {
         $root=dirname(__DIR__,2);$report=(string)file_get_contents($root.'/prehled_vsech_vykazu.php');$legacy=(string)file_get_contents($root.'/vypis_vsech_vykazu.php');

@@ -1,6 +1,6 @@
 # Produkční UAT účty a data
 
-Aktualizováno: 22. 9. 2026
+Aktualizováno: 16. 10. 2026
 
 ## Účel a hranice
 
@@ -34,15 +34,21 @@ Veřejné záznamy mají povinný prefix `TEST -`:
   metodu, ale neduplikuje se jako samostatný produkt v běžném e-shopu,
 - placený termín `TEST - Veřejný velodrom`,
 - `TEST - Individuální lekce`,
-- veřejný plán `TEST - Trénink nového dítěte`.
+- veřejný plán `TEST - Trénink nového dítěte` napojený na TEST soupisku.
 
 Placená akce ověřuje celý skutečný řetězec: ruční položka typu Tábor se nejprve
 propojí s pracovní akcí, potom se auditovaně aktivuje její katalogová varianta a
 nakonec se otevře registrace. Běžná ruční správa katalogu podporuje stejným
 postupem typy Klubová akce i Tábor / soustředění.
 
-Termíny se odvozují od dne spuštění a konec prodeje kroužku od proměnné
-`KIS_UAT_WINDOW_END`. Okno smí být nejvýše 31 dní. Skutečné finanční potvrzení
+Termíny se odvozují od dne spuštění, ale vždy se vejdou do proměnné
+`KIS_UAT_WINDOW_END`. Zdrojový testovací trénink se plánuje na druhý následující
+kalendářní den; ostatní termíny mají preferované rozestupy 5–8 dní, při kratším
+okně se bezpečně posunou na poslední vhodný den. Pokud okno nekončí nejdříve
+v 18:00 druhý následující den, příprava skončí ještě před prvním zápisem.
+Okno smí být nejvýše 31 dní. Opakované spuštění nepřesune již zodpovězený či
+evidovaný trénink do nového okna; je třeba založit nový označený TEST plán.
+Skutečné finanční potvrzení
 není součástí provisioningu: QR, Stripe/SumUp a bankovní spárování se provádějí
 až v uživatelském scénáři s výslovným potvrzením před pohybem peněz.
 
@@ -51,11 +57,17 @@ až v uživatelském scénáři s výslovným potvrzením před pohybem peněz.
 Workflow `production-drills.yml` nabízí operaci
 `pripravit-uat-ucty-a-data`. Vyžaduje přesné potvrzení `PROVEST`, environment
 secret `KIS_UAT_TEST_PASSWORD` a proměnnou `KIS_UAT_WINDOW_END`. Po přípravě se
-spouští read-only operace `overit-uat-pripravenost`.
+spouští read-only operace `overit-uat-pripravenost`. Ta nyní počítá pouze
+termíny, které skutečně končí v rámci UAT okna; testovací trénink navíc musí
+mít vazbu na soupisku. Budoucí termín až za koncem okna proto bránou neprojde.
 
 Brána čte také proměnné `KIS_UAT_OWNER`, `KIS_UAT_INBOX_READY` a
 `KIS_UAT_BANK_RECONCILIATION_READY`. Nejde o náhradu reálné kontroly inboxu a
 banky; hodnoty pouze evidují, že konkrétní testující tuto odpovědnost převzal.
+
+Úplný pozitivní scénář náhrad nelze uzavřít jen vytvořením dat: vyžaduje
+potvrzenou placenou účast, včasnou omluvu, proběhlý trénink a skutečně
+uzavřenou docházku. Teprve potom lze ověřit připsání a rezervaci kreditu.
 
 ## Úklid
 

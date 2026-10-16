@@ -89,7 +89,7 @@ function trainingRsvpCalendarRange(DateTimeImmutable $month): array
     return ['from' => $from->format('Y-m-d'), 'to' => $month->modify('last day of this month')->format('Y-m-d')];
 }
 
-/** @return array{id:int,changed:bool,response:string,makeup_eligible:bool|null} */
+/** @return array{id:int,changed:bool,response:string,makeup_eligible:bool|null,makeup_reason:string|null} */
 function trainingRsvpSave(PDO $pdo, int $planId, int $sportovecId, string $response, string $actorType, int $actorId, string $note = ''): array
 {
     if ($planId < 1 || $sportovecId < 1 || $actorId < 1 || !in_array($response, ['going','not_going'], true) || !in_array($actorType, ['account','athlete'], true)) {
@@ -161,25 +161,44 @@ function trainingRsvpSave(PDO $pdo, int $planId, int $sportovecId, string $respo
         }
         if ($from !== $response && clubMakeupReady($pdo)) {
             $entitlement = $response === 'not_going' ? clubMakeupExcuseEntitlement($pdo,$planId,$sportovecId,$now) : null;
-            $pdo->prepare('UPDATE training_rsvps SET makeup_excused_at=?,makeup_source_enrollment_id=?,makeup_cutoff_hours=? WHERE id=?')
-                ->execute([$entitlement ? $now->format('Y-m-d H:i:s') : null,$entitlement['enrollment_id'] ?? null,$entitlement['hours'] ?? null,$rsvpId]);
+            $denial = $response === 'not_going' && !$entitlement ? clubMakeupExcuseFailureReason($pdo,$planId,$sportovecId,$now) : null;
+            $pdo->prepare('UPDATE training_rsvps SET makeup_excused_at=?,makeup_source_enrollment_id=?,makeup_cutoff_hours=?,makeup_denial_reason=? WHERE id=?')
+                ->execute([$entitlement ? $now->format('Y-m-d H:i:s') : null,$entitlement['enrollment_id'] ?? null,$entitlement['hours'] ?? null,$denial,$rsvpId]);
         }
         if ($changed) {
             $pdo->prepare('INSERT INTO training_rsvp_events(rsvp_id,actor_type,actor_id,from_response,to_response,note) VALUES(?,?,?,?,?,?)')
                 ->execute([$rsvpId, $actorType, $actorId, $from, $response, 'Změna odpovědi nebo poznámky k plánovanému tréninku.']);
         }
         $makeupEligible=null;
+        $makeupReason=null;
         if ($response==='not_going' && clubMakeupReady($pdo)) {
-            $status=$pdo->prepare('SELECT makeup_excused_at FROM training_rsvps WHERE id=?');$status->execute([$rsvpId]);
-            $makeupEligible=$status->fetchColumn()!==null;
+            $status=$pdo->prepare('SELECT makeup_excused_at,makeup_denial_reason FROM training_rsvps WHERE id=?');$status->execute([$rsvpId]);
+            $makeupStatus=$status->fetch(PDO::FETCH_ASSOC);
+            $makeupEligible=$makeupStatus['makeup_excused_at']!==null;
+            if (!$makeupEligible) $makeupReason=(string)($makeupStatus['makeup_denial_reason']?:'unavailable');
         }
         $pdo->commit();
-        return ['id' => $rsvpId, 'changed' => $changed, 'response' => $response, 'makeup_eligible' => $makeupEligible];
+        return ['id' => $rsvpId, 'changed' => $changed, 'response' => $response, 'makeup_eligible' => $makeupEligible, 'makeup_reason' => $makeupReason];
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         if ($exception instanceof InvalidArgumentException || $exception instanceof TrainingRsvpException) throw $exception;
         throw new TrainingRsvpException('Odpověď k tréninku se nepodařilo bezpečně uložit.', 0, $exception);
     }
+}
+
+/** @param array<string,mixed> $saved */
+function trainingRsvpSavedMessage(array $saved): string
+{
+    if (($saved['response'] ?? '') !== 'not_going') {
+        return !empty($saved['changed']) ? 'Účast a zpráva pro trenéra byly uloženy.' : 'Účast a zpráva pro trenéra už byly uložené.';
+    }
+    if (($saved['makeup_eligible'] ?? null) === true) {
+        return 'Omluva byla uložena. Nárok na náhradní lekci vznikne až po ověření skutečné docházky trenérem.';
+    }
+    if (($saved['makeup_eligible'] ?? null) === null) {
+        return 'Omluva byla uložena. Náhradní lekce zatím nejsou dostupné.';
+    }
+    return 'Omluva byla uložena bez nároku na náhradní lekci. ' . clubMakeupExcuseFailureMessage((string)($saved['makeup_reason'] ?? 'unavailable'));
 }
 
 /**
