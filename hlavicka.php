@@ -51,8 +51,8 @@ if ($is_logged_in) {
 <?php appUiAssets(); ?>
 <style>
     .navbar .nav-link { border-bottom: 2px solid transparent; }
-    .navbar .nav-link.active { color: #fff !important; border-bottom-color: #0d6efd; }
-    .dropdown-item.active { background-color: #e8f0fe !important; color: #0d6efd !important; }
+    .navbar .nav-link.active { color: #fff !important; border-bottom-color: var(--app-blue); }
+    .dropdown-item.active { background-color: #e7f0fb !important; color: var(--app-navy) !important; }
 
     /* Povinná pole — vizuální indikátory */
     .form-label.req::after { content: " *"; color: #dc3545; font-weight: 700; }
@@ -127,7 +127,7 @@ if ($is_logged_in) {
 
     /* ── Dark mode — doplňující přepisy ──────────────────────────────────── */
     [data-bs-theme="dark"] .hero-card {
-        background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%) !important;
+        background: linear-gradient(135deg, #1767c9 0%, #18386f 100%) !important;
     }
     [data-bs-theme="dark"] .plan-card  { border-left-color: #60a5fa; }
     [data-bs-theme="dark"] .badge-orange { background-color: #c2600a !important; }
@@ -156,8 +156,8 @@ if ($is_logged_in) {
     #globalSearchInput:focus {
         background: rgba(255,255,255,.95);
         color: #212529;
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 .2rem rgba(13,110,253,.25);
+        border-color: var(--app-blue);
+        box-shadow: var(--app-focus-ring);
     }
     #globalSearchInput:focus::placeholder { color: #6c757d; }
     @media (min-width: 1400px) and (max-width: 1439.98px) {
@@ -205,8 +205,8 @@ if ($is_logged_in) {
         text-align: left;
     }
     .gs-item:hover, .gs-item.gs-focus {
-        background: #e8f0fe;
-        color: #0d6efd;
+        background: #e7f0fb;
+        color: var(--app-navy);
     }
     .gs-item i { font-size: 1rem; flex-shrink: 0; }
     .gs-empty { padding: .6rem .85rem; color: #6c757d; font-size: .85rem; }
@@ -214,8 +214,8 @@ if ($is_logged_in) {
 </style>
 <nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand fw-semibold" href="<?= htmlspecialchars(appUiUrl($is_logged_in ? 'pracovni_pozice.php' : 'index.php')) ?>">
-            <i class="bi bi-bicycle me-1"></i><?= $is_logged_in ? htmlspecialchars((string)($staff_active['label'] ?? 'Pracovní rozcestník')) : 'Kovopraha' ?>
+        <a class="navbar-brand app-brand-link" href="<?= htmlspecialchars(appUiUrl($is_logged_in ? 'pracovni_pozice.php' : 'index.php')) ?>" aria-label="KOVO Praha – <?= $is_logged_in ? 'pracovní rozcestník' : 'úvodní stránka' ?>">
+            <span class="app-brand-logo" aria-hidden="true"><img src="<?= htmlspecialchars(appUiUrl('assets/kovo-praha-logo.png')) ?>" alt="" width="500" height="167"></span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Přepnout navigaci">

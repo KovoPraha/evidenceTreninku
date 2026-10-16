@@ -60,7 +60,7 @@ function publicShellNav(string $active = ''): void
     ?>
     <nav class="app-public-nav navbar navbar-expand-xl bg-white border-bottom shadow-sm" aria-label="Klubový portál">
       <div class="container">
-        <a class="navbar-brand fw-semibold" href="<?= publicShellH(appUiUrl('index.php')) ?>"><i class="bi bi-bicycle me-2 text-primary"></i>Kovopraha</a>
+        <a class="navbar-brand app-brand-link" href="<?= publicShellH(appUiUrl('index.php')) ?>" aria-label="KOVO Praha – úvodní stránka"><span class="app-brand-logo" aria-hidden="true"><img src="<?= publicShellH(appUiUrl('assets/kovo-praha-logo.png')) ?>" alt="" width="500" height="167"></span></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appPublicNav"
                 aria-controls="appPublicNav" aria-expanded="false" aria-label="Otevřít hlavní nabídku">
           <span class="navbar-toggler-icon"></span>
