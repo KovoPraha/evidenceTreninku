@@ -57,8 +57,16 @@ function clubProgramTermsEffective(PDO $pdo,int $programId,int $offerId,bool $lo
 /** @param array<string,array<string,mixed>|null> $terms */
 function clubProgramTermsComplete(array $terms):bool
 {
-    foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose)if(empty($terms[$purpose])||trim((string)($terms[$purpose]['consent_text_plain']??''))==='')return false;
+    foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
+        if(!clubProgramTermTextReady((string)($terms[$purpose]['consent_text_plain']??'')))return false;
+    }
     return true;
+}
+
+function clubProgramTermTextReady(string $text):bool
+{
+    $text=trim($text);
+    return $text!==''&&preg_match('/^\s*(?:vzor(?:ový)?\s+text|vzor\s*[—–-])/iu',$text)!==1;
 }
 
 /** @return array{id:int,terms_version:string,changed:bool} */

@@ -4,6 +4,7 @@ app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/individual_lesson_context.php';
+require_once __DIR__ . '/../includes/public_seo.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function timeToMin(string $t): int { return (int)substr($t,0,2)*60 + (int)substr($t,3,2); }
@@ -204,6 +205,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Rezervace — <?= h($mesiceCS[$mesic]) ?> <?= $rok ?></title>
+    <?php publicSeoHead('Individuální cyklistické lekce – KOVO Praha','Prohlédněte si veřejné termíny individuálních lekcí a volná místa. Vybraný termín můžete po přihlášení rezervovat.','booking/kalendar.php'); ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
     <style>
@@ -441,15 +443,16 @@ function openModal(datum) {
                 } else if (!s.muzRez) {
                     akce = '<span class="badge bg-secondary">Uzavřeno (3 dny)</span>';
                 } else if (s.volno === 0) {
+                    const urlWait = `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}&waitlist=1`;
                     if (!jePrihlasen) {
-                        akce = '<a href="prihlaseni.php?redirect=kalendar.php" class="btn btn-outline-warning btn-sm slot-btn">Přihlásit se</a>';
+                        akce = `<a href="prihlaseni.php?redirect=${encodeURIComponent(urlWait)}" class="btn btn-outline-warning btn-sm slot-btn">Přihlásit se na čekací listinu</a>`;
                     } else {
-                        const urlWait = `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}&waitlist=1`;
                         const listBadge = s.naListine > 0 ? ` (${s.naListine} čeká)` : '';
                         akce = `<a href="${urlWait}" class="btn btn-outline-warning btn-sm slot-btn"><i class="bi bi-hourglass me-1"></i>Čekací listina${listBadge}</a>`;
                     }
                 } else if (!jePrihlasen) {
-                    akce = '<a href="prihlaseni.php?redirect=kalendar.php" class="btn btn-outline-primary btn-sm slot-btn">Přihlásit se</a>';
+                    const url = `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}`;
+                    akce = `<a href="prihlaseni.php?redirect=${encodeURIComponent(url)}" class="btn btn-outline-primary btn-sm slot-btn">Přihlásit se a rezervovat</a>`;
                 } else {
                     const url = `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}`;
                     akce = `<a href="${url}" class="btn btn-primary btn-sm slot-btn"><i class="bi bi-calendar-check me-1"></i>Rezervovat</a>`;

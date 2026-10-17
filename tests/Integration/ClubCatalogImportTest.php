@@ -94,8 +94,12 @@ final class ClubCatalogImportTest extends TestCase
     {
         $pdo=$this->database();$pdo->exec('DELETE FROM club_event_term_versions');$templates=\clubCatalogImportTermTemplates($pdo);
         foreach($templates as$template){self::assertFalse($template['approved']);self::assertTrue($template['dummy']);self::assertSame(0,$template['id']);self::assertStringStartsWith('vzorový text',$template['text']);}
-        $result=\clubCatalogImport($pdo,7,$this->root);self::assertTrue($result['terms_ready']);self::assertTrue($result['terms_dummy']);self::assertSame(26,$result['products']);
+        $result=\clubCatalogImport($pdo,7,$this->root);self::assertFalse($result['terms_ready']);self::assertTrue($result['terms_dummy']);self::assertSame(26,$result['products']);
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM shop_product_publications WHERE status='active'")->fetchColumn());
         self::assertSame(52,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions t JOIN club_programs p ON t.scope_key='program:' || p.id WHERE p.code LIKE 'KROUZKY-2627-%' AND t.status='active' AND t.consent_text_plain LIKE 'vzorový text%'")->fetchColumn());
+        $templatesAfter=\clubCatalogImportTermTemplates($pdo);
+        self::assertTrue($templatesAfter['program_cancellation']['dummy']);
+        self::assertTrue($templatesAfter['program_consent']['dummy']);
     }
 
     private function database():PDO

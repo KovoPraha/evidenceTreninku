@@ -14,6 +14,20 @@ final class AthleteRegistrationTest extends TestCase
     private string $storageRoot;
     private string|false $previousStorageRoot;
 
+    public function testDraftMandatoryNoticeRejectsDirectSubmissionWithoutWrite(): void
+    {
+        $pdo=$this->database();
+        $pdo->exec("UPDATE club_event_term_versions SET consent_text_plain='VZOROVÝ TEXT – čeká na schválení.' WHERE scope_type='athlete_registration' AND consent_purpose='member_data_notice'");
+        $versions=$this->versions(\athleteRegistrationCurrentTerms($pdo));
+        try {
+            \athleteRegistrationSubmit($pdo,1,$this->validInput('2012-03-04',$this->syntheticBirthNumber('2012-03-04')),$versions,null,$this->sensitiveConfig());
+            self::fail('Vzorové informace nesmí projít odesláním.');
+        } catch (\AthleteRegistrationException $exception) {
+            self::assertStringContainsString('pozastavena',$exception->getMessage());
+        }
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_requests')->fetchColumn());
+    }
+
     protected function setUp(): void
     {
         $this->previousStorageRoot = getenv('APP_PRIVATE_STORAGE_ROOT');
@@ -215,6 +229,7 @@ final class AthleteRegistrationTest extends TestCase
             $migration['up']($pdo);
             self::assertTrue($migration['verify']($pdo), $file);
         }
+        $pdo->exec("UPDATE club_event_term_versions SET consent_text_plain='Syntetické schválené informace pro integrační test.' WHERE scope_type='athlete_registration' AND consent_purpose IN ('member_data_notice','birth_number_legal_notice')");
         self::assertSame(1, (int)$pdo->query('PRAGMA foreign_keys')->fetchColumn());
         return $pdo;
     }

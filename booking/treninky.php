@@ -6,6 +6,7 @@ app_session_start();
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/includes/public_training_schedule.php';
 require_once dirname(__DIR__) . '/includes/calendar_ui.php';
+require_once dirname(__DIR__) . '/includes/public_seo.php';
 
 function publicTrainingH(mixed $value): string
 {
@@ -35,7 +36,7 @@ foreach ($trainings as $training) {
 }
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Veřejný rozvrh tréninků</title><?php appUiAssets(); ?></head>
+<title>Veřejný rozvrh tréninků — KOVO Praha</title><?php publicSeoHead('Rozvrh cyklistických tréninků – KOVO Praha','Veřejný rozvrh cyklistických tréninků KOVO Praha: termíny, časy a místa bez zveřejnění osobních údajů sportovců.','booking/treninky.php');appUiAssets(); ?></head>
 <body class="bg-light"><?php publicShellNav('training'); ?><main class="container py-4">
 <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3"><div><h1 class="h3 mb-1">Rozvrh tréninků</h1><p class="text-muted mb-0">Termíny, časy a místa tréninků přehledně v kalendáři. Údaje o sportovcích a docházce nejsou veřejné.</p></div><a class="btn btn-outline-primary btn-sm" href="verejny_kalendar.php"><i class="bi bi-calendar-plus me-1"></i>Stáhnout kalendář (.ics)</a></div>
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 bg-white border rounded p-2 mb-3">

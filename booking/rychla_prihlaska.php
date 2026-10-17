@@ -20,6 +20,7 @@ if($product!==null&&shopProductRequiresAthlete($pdo,$productId))foreach($product
 if($product===null||$variant===null||!is_array($offer)){http_response_code(404);exit('Kroužek není dostupný pro rychlou přihlášku.');}
 if(isset($_SESSION['verejny_uzivatel_id'])){header('Location: produkt.php?id='.$productId,true,303);exit;}
 $terms=athleteRegistrationCurrentTerms($pdo);$programTerms=clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id']);
+if(!athleteRegistrationTermsReady($terms)){http_response_code(409);exit('Přihlášku nelze dokončit, dokud klub neschválí konečné informace k registraci sportovce a rodnému číslu.');}
 if(!clubProgramTermsComplete($programTerms)){http_response_code(409);exit('Kroužek nemá schválené podmínky.');}
 $keyName='shop_quick_program_'.$variantId;if(!isset($_SESSION[$keyName])||!is_array($_SESSION[$keyName]))$_SESSION[$keyName]=['idempotency_key'=>bin2hex(random_bytes(16)),'access_token'=>bin2hex(random_bytes(32))];
 $errors=[];

@@ -17,6 +17,7 @@ if (isset($_SESSION['verejny_uzivatel_id'])) {
 $errors = isset($_GET['session']) && $_GET['session'] === 'expired'
     ? ['Přihlášení již není platné. Přihlaste se znovu.']
     : [];
+$registrationReturn = publicLoginDestination($_GET['redirect'] ?? null, false);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -120,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="btn btn-primary w-100">Přihlásit se</button>
             </form>
             <p class="text-center text-muted small mt-3">
-                Nemáte účet? <a href="registrace.php">Zaregistrujte se</a>
+                Nemáte účet? <a href="registrace.php?redirect=<?=rawurlencode($registrationReturn)?>">Zaregistrujte se</a>
             </p>
             <p class="text-center small"><a href="zapomenute_heslo.php">Zapomenuté heslo</a></p>
             <p class="text-center small mb-0">

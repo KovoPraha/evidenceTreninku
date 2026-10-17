@@ -42,6 +42,16 @@ function athleteRegistrationCurrentTerms(PDO $pdo): array
     return $terms;
 }
 
+/** @param array<string,array{id:int,version:string,text:string}> $terms */
+function athleteRegistrationTermsReady(array $terms): bool
+{
+    foreach (['member_data_notice','birth_number_legal_notice'] as $purpose) {
+        $text=trim((string)($terms[$purpose]['text']??''));
+        if ($text==='' || preg_match('/^\s*vzorový\s+text\b|před produkční aktivací/iu',$text)===1) return false;
+    }
+    return true;
+}
+
 /**
  * @param array<string,mixed> $input
  * @param array<string,string> $submittedVersions
@@ -63,8 +73,11 @@ function athleteRegistrationSubmit(
     if (!$ownTransaction && is_array($photo) && (int)($photo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
         throw new AthleteRegistrationException('Fotografii lze bezpečně uložit jen v samostatné registrační transakci.');
     }
-    $validated = athleteRegistrationValidate($accountId, $input, $photo);
     $terms = athleteRegistrationCurrentTerms($pdo);
+    if (!athleteRegistrationTermsReady($terms)) {
+        throw new AthleteRegistrationException('Registrace sportovce je dočasně pozastavena. Klub musí schválit konečné informace o zpracování údajů a rodném čísle.');
+    }
+    $validated = athleteRegistrationValidate($accountId, $input, $photo);
     foreach ($terms as $purpose => $term) {
         if (!isset($submittedVersions[$purpose])
             || !hash_equals($term['version'], (string)$submittedVersions[$purpose])

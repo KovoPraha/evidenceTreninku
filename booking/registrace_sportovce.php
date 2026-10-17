@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $success = (string)($_SESSION['athlete_registration_success'] ?? '');
 unset($_SESSION['athlete_registration_success']);
 $terms = athleteRegistrationCurrentTerms($pdo);
+$termsReady = athleteRegistrationTermsReady($terms);
 $requests = athleteRegistrationListForAccount($pdo, $accountId);
 $statusLabels = [
     'pending' => ['warning', 'Čeká na kontrolu'],
@@ -96,7 +97,8 @@ $value = static fn(string $key, string $default = ''): string => athleteRegistra
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= athleteRegistrationPageH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= athleteRegistrationPageH($success) ?></div><?php endif; ?>
 
-    <section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Nová žádost</div><div class="card-body">
+    <?php if(!$termsReady):?><div class="alert alert-warning" role="status"><strong>Novou žádost nyní nelze odeslat.</strong> Klub musí nejdříve schválit konečné informace o zpracování údajů a rodném čísle. Dosavadní žádosti můžete stále prohlížet a rušit.</div><?php endif; ?>
+    <?php if($termsReady):?><section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Nová žádost</div><div class="card-body">
         <form method="post" enctype="multipart/form-data" class="row g-3" autocomplete="off">
             <?= csrf_field() ?><input type="hidden" name="action" value="submit"><input type="hidden" name="product_id" value="<?=$productId?>">
             <?php foreach ($terms as $purpose => $term): ?><input type="hidden" name="term_version[<?= athleteRegistrationPageH($purpose) ?>]" value="<?= athleteRegistrationPageH($term['version']) ?>"><?php endforeach; ?>
@@ -131,7 +133,7 @@ $value = static fn(string $key, string $default = ''): string => athleteRegistra
             <div class="col-12"><label for="athlete-message" class="form-label">Poznámka pro administrátora <span class="text-muted">(nepovinná)</span></label><textarea id="athlete-message" name="message" class="form-control" maxlength="1000" rows="2"><?= $value('message') ?></textarea></div>
             <div class="col-12"><button class="btn btn-primary"><i class="bi bi-send me-1"></i>Odeslat žádost ke kontrole</button></div>
         </form>
-    </div></section>
+    </div></section><?php endif; ?>
 
     <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje registrační žádosti</div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Sportovec</th><th>Vztah</th><th>Stav</th><th></th></tr></thead><tbody>
         <?php foreach ($requests as $request): [$color, $label] = $statusLabels[$request['status']] ?? ['secondary', (string)$request['status']]; ?><tr><td><strong><?= athleteRegistrationPageH($request['claimed_prijmeni'] . ' ' . $request['claimed_jmeno']) ?></strong><div class="small text-muted"><?= athleteRegistrationPageH($request['claimed_narozeni']) ?></div></td><td><?= $request['requested_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil' ?></td><td><span class="badge bg-<?= athleteRegistrationPageH($color) ?>"><?= athleteRegistrationPageH($label) ?></span><div class="small text-muted"><?= athleteRegistrationPageH($request['created_at']) ?></div></td><td><?php if ($request['status'] === 'pending'): ?><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="request_id" value="<?= (int)$request['id'] ?>"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php endif; ?></td></tr><?php endforeach; ?>

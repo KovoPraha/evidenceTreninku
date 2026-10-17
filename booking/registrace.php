@@ -13,7 +13,7 @@ function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUB
 function registrationSafeRedirect(mixed $value): string
 {
     $redirect = trim((string)$value);
-    return preg_match('~^[a-z0-9_]+\.php(\?[a-z0-9_=&%.-]*)?$~i', $redirect) === 1
+    return preg_match('~^[a-z0-9_]+\.php(?:\?[a-z0-9_=&%.-]*)?(?:\#[a-z0-9_-]+)?$~iD', $redirect) === 1
         ? $redirect
         : 'kalendar.php';
 }

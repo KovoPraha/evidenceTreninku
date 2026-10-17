@@ -222,6 +222,17 @@ function app_csp_filter_output(string $html): string
     return $html;
 }
 
+/** @param array<string,mixed> $server */
+function app_session_is_private_booking_route(array $server):bool
+{
+    $script=str_replace('\\','/',(string)($server['SCRIPT_NAME']??''));
+    if(preg_match('~(?:^|/)booking/([a-z0-9_]+)\.php$~iD',$script,$match)!==1)return false;
+    return !in_array(strtolower($match[1]),[
+        'cyklisticke_krouzky','eshop','produkt','klubovy_kalendar',
+        'krouzky','treninky','kalendar','velodrom',
+    ],true);
+}
+
 function app_session_send_security_headers(): void
 {
     if (!headers_sent()) {
@@ -247,6 +258,9 @@ function app_session_start(?array $server = null, ?int $now = null, array $overr
     $policy = app_session_policy($server, $overrides);
 
     app_session_send_security_headers();
+    if (app_session_is_private_booking_route($server) && !headers_sent()) {
+        header('X-Robots-Tag: noindex, nofollow, noarchive', true);
+    }
 
     if (session_status() !== PHP_SESSION_ACTIVE) {
         ini_set('session.use_strict_mode', '1');
@@ -257,6 +271,10 @@ function app_session_start(?array $server = null, ?int $now = null, array $overr
         if (!session_start()) {
             throw new RuntimeException('Session could not be started.');
         }
+    }
+
+    if (app_session_has_authenticated_identity() && !headers_sent()) {
+        header('X-Robots-Tag: noindex, nofollow, noarchive', true);
     }
 
     if (!app_session_has_authenticated_identity()) {

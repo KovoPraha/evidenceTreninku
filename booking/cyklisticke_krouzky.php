@@ -7,6 +7,8 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/includes/ui_shell.php';
 require_once dirname(__DIR__) . '/includes/club_program_storefront.php';
 require_once dirname(__DIR__) . '/includes/legacy_club_catalog.php';
+require_once dirname(__DIR__) . '/includes/club_landing_filter.php';
+require_once dirname(__DIR__) . '/includes/public_seo.php';
 
 function clubLandingH(mixed $value): string
 {
@@ -42,6 +44,7 @@ ksort($weekdayOptions);
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Cyklistické kroužky pro děti — KOVO Praha</title>
+  <?php publicSeoHead('Cyklistické kroužky pro děti – KOVO Praha','Vyberte dětský cyklistický kroužek podle věku, dne a místa. Porovnejte rozvrh, volná místa i cenu přímo u KOVO Praha.','booking/cyklisticke_krouzky.php',appUrl('assets/clubs/children-group.webp')); ?>
   <?php appUiAssets(); ?>
   <style>
     :root { --club-blue:#111a6b; --club-red:#ee2722; --club-cream:#fff9ed; }
@@ -80,9 +83,10 @@ ksort($weekdayOptions);
     <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3"><div><h2 id="nabidka-title" class="h2 mb-1">Aktuální kroužky</h2><p class="text-muted mb-0">Jedna skupina může mít více platebních variant. Dítě vždy míří do stejné soupisky.</p></div><a class="btn btn-outline-primary" href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">Celá nabídka v e-shopu</a></div>
     <?php if ($programs !== []): ?>
     <div class="card club-filter mb-4"><div class="card-body row g-3 align-items-end">
-      <div class="col-md-4"><label class="form-label fw-semibold" for="filter-day">Den</label><select class="form-select" id="filter-day"><option value="">Všechny dny</option><?php foreach ($weekdayOptions as $number=>$label): ?><option value="<?=$number?>"><?=clubLandingH($label)?></option><?php endforeach; ?></select></div>
-      <div class="col-md-5"><label class="form-label fw-semibold" for="filter-text">Věk, místo nebo název</label><input class="form-control" id="filter-text" type="search" placeholder="např. 4–6 let nebo Třebešín"></div>
-      <div class="col-md-3"><button class="btn btn-outline-secondary w-100" type="button" id="filter-reset">Zrušit filtry</button></div>
+      <div class="col-md-3"><label class="form-label fw-semibold" for="filter-age">Věk dítěte</label><input class="form-control" id="filter-age" type="number" min="1" max="99" inputmode="numeric" placeholder="např. 5" aria-describedby="filter-age-help"><div class="form-text" id="filter-age-help">Nabídky bez uvedeného věku se při filtrování skryjí.</div></div>
+      <div class="col-md-3"><label class="form-label fw-semibold" for="filter-day">Den</label><select class="form-select" id="filter-day"><option value="">Všechny dny</option><?php foreach ($weekdayOptions as $number=>$label): ?><option value="<?=$number?>"><?=clubLandingH($label)?></option><?php endforeach; ?></select></div>
+      <div class="col-md-4"><label class="form-label fw-semibold" for="filter-text">Místo nebo název</label><input class="form-control" id="filter-text" type="search" placeholder="např. Třebešín"></div>
+      <div class="col-md-2"><button class="btn btn-outline-secondary w-100" type="button" id="filter-reset">Zrušit filtry</button></div>
     </div></div>
     <?php endif; ?>
 
@@ -90,10 +94,11 @@ ksort($weekdayOptions);
     <?php foreach ($programs as $index=>$program):
         $days=array_map('strval',$program['filter_days']??[]);foreach($program['schedule']as$slot)$days[]=(string)(int)$slot['weekday'];$days=array_values(array_unique($days));
         $search=mb_strtolower(implode(' ',[(string)$program['public_name'],(string)$program['public_summary'],(string)$program['location_name'],(string)$program['age_label']]));
+        $ageRange=clubLandingAgeRange((string)$program['age_label']);
         $image=$program['images'][0]['image_url']??appUiUrl($fallbackImages[$index%count($fallbackImages)]);
         $firstProductId=(int)($program['offers'][0]['product_id']??0);
     ?>
-      <div class="col-lg-6 club-entry" data-days="<?=clubLandingH(implode(',',$days))?>" data-search="<?=clubLandingH($search)?>">
+      <div class="col-lg-6 club-entry" data-days="<?=clubLandingH(implode(',',$days))?>" data-search="<?=clubLandingH($search)?>" data-age-min="<?=$ageRange[0]??''?>" data-age-max="<?=$ageRange[1]??''?>">
         <article class="card club-card h-100">
           <img src="<?=clubLandingH($image)?>" alt="<?=clubLandingH($program['images'][0]['alt_text']??('Cyklistický kroužek '.$program['public_name']))?>" loading="lazy">
           <div class="card-body p-4 d-flex flex-column">
@@ -102,6 +107,7 @@ ksort($weekdayOptions);
             <div class="d-flex flex-wrap gap-2 mb-3">
               <?php if((string)$program['age_label']!==''):?><span class="club-chip"><i class="bi bi-people"></i><?=clubLandingH($program['age_label'])?></span><?php endif;?>
               <?php if((string)$program['location_name']!==''):?><span class="club-chip"><i class="bi bi-geo-alt"></i><?=clubLandingH($program['location_name'])?></span><?php endif;?>
+              <?php if(count($program['schedule'])>1&&str_contains((string)$program['public_name'],'1× týdně')):?><span class="small fw-semibold align-self-center">Jeden z těchto dnů; volbu potvrďte s klubem:</span><?php endif;?>
               <?php foreach($program['schedule']as$slot):?><span class="club-chip"><i class="bi bi-calendar3"></i><?=clubLandingH(clubProgramStorefrontWeekdayLabel((int)$slot['weekday']).' '.substr((string)$slot['starts_at'],0,5).'–'.substr((string)$slot['ends_at'],0,5))?></span><?php endforeach;?>
               <?php if(!empty($program['schedule_label'])):?><span class="club-chip"><i class="bi bi-calendar3"></i><?=clubLandingH($program['schedule_label'])?></span><?php endif;?>
             </div>
@@ -130,10 +136,11 @@ ksort($weekdayOptions);
 (() => {
   const entries=[...document.querySelectorAll('.club-entry')];
   const day=document.getElementById('filter-day');
+  const age=document.getElementById('filter-age');
   const text=document.getElementById('filter-text');
-  if(!day||!text)return;
-  const apply=()=>{const q=text.value.trim().toLocaleLowerCase('cs');let visible=0;entries.forEach(entry=>{const days=(entry.dataset.days||'').split(',');const show=(!day.value||days.includes(day.value))&&(!q||(entry.dataset.search||'').includes(q));entry.classList.toggle('d-none',!show);if(show)visible++;});document.getElementById('no-filter-results')?.classList.toggle('d-none',visible>0);};
-  day.addEventListener('change',apply);text.addEventListener('input',apply);document.getElementById('filter-reset')?.addEventListener('click',()=>{day.value='';text.value='';apply();});
+  if(!day||!age||!text)return;
+  const apply=()=>{const q=text.value.trim().toLocaleLowerCase('cs');const selectedAge=age.value===''?null:Number(age.value);let visible=0;entries.forEach(entry=>{const days=(entry.dataset.days||'').split(',');const ageMatches=selectedAge===null||(entry.dataset.ageMin!==''&&selectedAge>=Number(entry.dataset.ageMin)&&selectedAge<=Number(entry.dataset.ageMax));const show=ageMatches&&(!day.value||days.includes(day.value))&&(!q||(entry.dataset.search||'').includes(q));entry.classList.toggle('d-none',!show);if(show)visible++;});document.getElementById('no-filter-results')?.classList.toggle('d-none',visible>0);};
+  day.addEventListener('change',apply);age.addEventListener('input',apply);text.addEventListener('input',apply);document.getElementById('filter-reset')?.addEventListener('click',()=>{day.value='';age.value='';text.value='';apply();});
 })();
 </script>
 </body>
