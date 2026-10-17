@@ -22,6 +22,13 @@ function clubLandingMoney(int $minor, string $currency): string
 
 $canonicalPrograms = clubProgramStorefrontCatalog($pdo);
 $programs = array_merge($canonicalPrograms, legacyClubCatalogFallback($canonicalPrograms));
+$hasSaleableProgram = false;
+foreach ($programs as $listedProgram) {
+    if (clubLandingFirstSaleableProductId($listedProgram) > 0) {
+        $hasSaleableProgram = true;
+        break;
+    }
+}
 $fallbackImages = [
     'assets/clubs/children-group.webp',
     'assets/clubs/children-balance-bike.webp',
@@ -80,7 +87,8 @@ ksort($weekdayOptions);
   </section>
 
   <section id="nabidka" aria-labelledby="nabidka-title">
-    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3"><div><h2 id="nabidka-title" class="h2 mb-1">Aktuální kroužky</h2><p class="text-muted mb-0">Jedna skupina může mít více platebních variant. Dítě vždy míří do stejné soupisky.</p></div><a class="btn btn-outline-primary" href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">Celá nabídka v e-shopu</a></div>
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3"><div><h2 id="nabidka-title" class="h2 mb-1">Aktuální kroužky</h2><p class="text-muted mb-0">Jedna skupina může mít více platebních variant. Dítě vždy míří do stejné soupisky.</p></div><?php if($hasSaleableProgram):?><a class="btn btn-outline-primary" href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">Celá nabídka v e-shopu</a><?php endif;?></div>
+    <?php if($programs!==[]&&!$hasSaleableProgram):?><div class="alert alert-info mb-4" role="status">Přihlášky do kroužků zatím nejsou otevřené. Rozvrh a ceny si můžete prohlédnout níže; na podrobnosti se zeptejte <a href="mailto:velodromtrebesin@gmail.com?subject=Dotaz%20na%20cyklistick%C3%BD%20krou%C5%BEek">klubu e-mailem</a>.</div><?php endif; ?>
     <?php if ($programs !== []): ?>
     <div class="card club-filter mb-4"><div class="card-body row g-3 align-items-end">
       <div class="col-md-3"><label class="form-label fw-semibold" for="filter-age">Věk dítěte</label><input class="form-control" id="filter-age" type="number" min="1" max="99" inputmode="numeric" placeholder="např. 5" aria-describedby="filter-age-help"><div class="form-text" id="filter-age-help">Nabídky bez uvedeného věku se při filtrování skryjí.</div></div>
@@ -96,7 +104,7 @@ ksort($weekdayOptions);
         $search=mb_strtolower(implode(' ',[(string)$program['public_name'],(string)$program['public_summary'],(string)$program['location_name'],(string)$program['age_label']]));
         $ageRange=clubLandingAgeRange((string)$program['age_label']);
         $image=$program['images'][0]['image_url']??appUiUrl($fallbackImages[$index%count($fallbackImages)]);
-        $firstProductId=(int)($program['offers'][0]['product_id']??0);
+        $firstProductId=clubLandingFirstSaleableProductId($program);
     ?>
       <div class="col-lg-6 club-entry" data-days="<?=clubLandingH(implode(',',$days))?>" data-search="<?=clubLandingH($search)?>" data-age-min="<?=$ageRange[0]??''?>" data-age-max="<?=$ageRange[1]??''?>">
         <article class="card club-card h-100">
@@ -116,11 +124,11 @@ ksort($weekdayOptions);
                 <div class="club-offer <?=!empty($offer['is_featured'])?'featured':''?>">
                   <div class="d-flex justify-content-between align-items-start gap-2"><div><strong><?=clubLandingH($offer['purchase_label'])?></strong><?php if(!empty($offer['is_featured'])):?><span class="badge text-bg-danger ms-1">nejvýhodnější</span><?php endif;?><div class="small text-muted"><?=clubLandingH($offer['name'])?></div></div><div class="price text-nowrap"><?=clubLandingMoney((int)$offer['amount_minor'],(string)$offer['currency'])?></div></div>
                   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2"><span class="small <?=!empty($offer['saleable'])?'text-success':'text-muted'?>"><?php if(!empty($offer['saleable'])):?><i class="bi bi-check-circle me-1"></i>Lze se přihlásit<?php else:?><?=clubLandingH($offer['sale_reason'])?><?php endif;?></span>
-                  <?php if(!empty($offer['saleable'])):?><a class="btn btn-primary btn-sm" href="rychla_prihlaska.php?product_id=<?=(int)$offer['product_id']?>&amp;variant_id=<?=(int)$offer['variant_id']?>">Přihlásit dítě</a><?php elseif((int)($offer['product_id']??0)>0):?><a class="btn btn-outline-secondary btn-sm" href="produkt.php?id=<?=(int)$offer['product_id']?>">Detail v KIS</a><?php else:?><a class="btn btn-outline-secondary btn-sm" href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">Nabídka v KIS</a><?php endif;?></div>
+                  <?php if(!empty($offer['saleable'])):?><a class="btn btn-primary btn-sm" href="rychla_prihlaska.php?product_id=<?=(int)$offer['product_id']?>&amp;variant_id=<?=(int)$offer['variant_id']?>">Přihlásit dítě</a><?php endif;?></div>
                 </div>
               <?php endforeach;?>
               <?php if($program['offers']===[]):?><div class="alert alert-info mb-0">Termíny a ceny právě připravujeme.</div><?php endif;?>
-              <?php if(!empty($program['interest_enabled'])):?><?php if($firstProductId>0):?><a class="btn btn-link px-0 text-start" href="produkt.php?id=<?=$firstProductId?>#mam-zajem"><i class="bi bi-envelope me-1"></i>Nevyhovuje vám termín? Nechte nám e-mail.</a><?php else:?><a class="btn btn-link px-0 text-start" href="mailto:velodromtrebesin@gmail.com?subject=Jin%C3%BD%20term%C3%ADn%20krou%C5%BEku%20<?=rawurlencode((string)$program['public_name'])?>"><i class="bi bi-envelope me-1"></i>Nevyhovuje vám termín? Napište nám.</a><?php endif;?><?php endif;?>
+              <?php if(!empty($program['interest_enabled'])||$firstProductId===0):?><?php if($firstProductId>0):?><a class="btn btn-link px-0 text-start" href="produkt.php?id=<?=$firstProductId?>#mam-zajem"><i class="bi bi-envelope me-1"></i>Nevyhovuje vám termín? Nechte nám e-mail.</a><?php else:?><a class="btn btn-link px-0 text-start" href="mailto:velodromtrebesin@gmail.com?subject=Dotaz%20na%20krou%C5%BEek%20<?=rawurlencode((string)$program['public_name'])?>"><i class="bi bi-envelope me-1"></i>Zeptat se klubu na tento kroužek</a><?php endif;?><?php endif;?>
             </div>
           </div>
         </article>

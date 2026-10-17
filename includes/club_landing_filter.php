@@ -10,3 +10,14 @@ function clubLandingAgeRange(string $label): ?array
     }
     return null;
 }
+
+/** @param array<string,mixed> $program */
+function clubLandingFirstSaleableProductId(array $program): int
+{
+    foreach (($program['offers'] ?? []) as $offer) {
+        if (!empty($offer['saleable']) && (int)($offer['product_id'] ?? 0) > 0) {
+            return (int)$offer['product_id'];
+        }
+    }
+    return 0;
+}

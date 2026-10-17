@@ -20,6 +20,15 @@ function publicSeoDescription(string $description,int $limit=160):string
     return rtrim(mb_substr($description,0,$limit-1,'UTF-8'),' ,.;:').'…';
 }
 
+/** @param array<string,mixed> $product */
+function publicSeoProductDescription(array $product):string
+{
+    $summary=publicSeoDescription((string)($product['public_summary']??''),500);
+    if(mb_strlen($summary,'UTF-8')>=40)return $summary;
+    return trim((string)($product['public_name']??''))
+        .' – varianty, aktuální cena a dostupnost v e-shopu KOVO Praha.';
+}
+
 /**
  * Render only trusted canonical paths from the application itself, never the
  * Host header or an unvalidated return URL. Optional schema must describe
@@ -63,7 +72,7 @@ function publicSeoProductSchema(array $product,string $url):?array
     }
     if($offers===[])return null;
     $schema=['@context'=>'https://schema.org','@type'=>'Product','@id'=>$url.'#product','name'=>(string)$product['public_name'],'url'=>$url,'offers'=>$offers];
-    $description=publicSeoDescription((string)($product['public_summary']??''),500);
+    $description=publicSeoProductDescription($product);
     if($description!=='')$schema['description']=$description;
     $images=array_values(array_filter((array)($product['images']??[]),static fn(mixed $image):bool=>is_string($image)&&preg_match('~^https://[^\s<>]+$~iD',$image)===1));
     if($images!==[])$schema['image']=$images;

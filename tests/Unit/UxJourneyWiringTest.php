@@ -18,6 +18,12 @@ final class UxJourneyWiringTest extends TestCase
         $events = (string)file_get_contents($root . '/booking/klubovy_kalendar.php');
         self::assertStringContainsString('K přihlášení', $events);
         self::assertStringContainsString('#akce-', $events);
+        $lessons = (string)file_get_contents($root . '/booking/kalendar.php');
+        self::assertStringContainsString('Přihlásit se a rezervovat', $lessons);
+        self::assertStringNotContainsString('<a href="prihlaseni.php" class="btn btn-outline-primary btn-sm">Přihlásit</a>', $lessons);
+        $velodrome = (string)file_get_contents($root . '/booking/velodrom.php');
+        self::assertStringContainsString("uiFormatDate((string)\$slot['datum'])", $velodrome);
+        self::assertStringContainsString("'velodrom.php#slot-'", $velodrome);
     }
 
     public function testShopAndDashboardsExposePrioritiesInsteadOfDeadEnds(): void
