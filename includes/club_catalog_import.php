@@ -21,12 +21,13 @@ function clubCatalogImportTermTemplates(PDO $pdo):array
         ."JOIN club_programs p ON t.scope_key="
         .((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?"CONCAT('program:',p.id)":"'program:' || p.id")
         ." WHERE t.scope_type='club_program' AND t.consent_purpose=? AND t.status='active' "
-        ."AND p.status='active' AND p.name NOT LIKE 'TEST - %' AND t.consent_text_plain NOT LIKE ? "
-        ."ORDER BY t.id DESC LIMIT 1"
+        ."AND p.status='active' AND p.name NOT LIKE 'TEST - %' "
+        ."ORDER BY t.id DESC"
     );
     foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
-        $statement->execute([$purpose,CLUB_PROGRAM_TERM_DRAFT_MARKER.'%']);$row=$statement->fetch(PDO::FETCH_ASSOC);
-        if(!$row||trim((string)$row['consent_text_plain'])==='')$result[$purpose]=['id'=>0,'text'=>CLUB_CATALOG_DUMMY_TERMS[$purpose],'approved'=>false,'dummy'=>true];
+        $statement->execute([$purpose]);$row=false;
+        foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$candidate)if(clubProgramTermTextReady((string)$candidate['consent_text_plain'])){$row=$candidate;break;}
+        if(!$row)$result[$purpose]=['id'=>0,'text'=>CLUB_CATALOG_DUMMY_TERMS[$purpose],'approved'=>false,'dummy'=>true];
         else$result[$purpose]=['id'=>(int)$row['id'],'text'=>(string)$row['consent_text_plain'],'approved'=>true,'dummy'=>false];
     }
     return$result;
@@ -189,6 +190,7 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
                 'program_consent_source'=>$templates['program_consent']['id']>0?'existing':'new',
                 'program_consent_version_id'=>$templates['program_consent']['id'],'program_consent_text'=>$templates['program_consent']['text'],
                 'team_mode'=>'existing','team_id'=>(int)$team['id'],'reason'=>$reason,'confirmed'=>true,
+                'defer_publication'=>$templates['program_cancellation']['dummy']||$templates['program_consent']['dummy'],
             ],$imagePath,false,$applicationRoot);
             $programId=(int)$result['program_id'];$productId=(int)$result['product_id'];$baseOfferId=(int)$result['offer_id'];$created++;
         }else{
@@ -238,5 +240,5 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
         if($animalImage!==null)clubCatalogImportSyncAnimalImages($pdo,$actorId,$programId,$productId,$imagePath,(string)$row['name'],$reason,$applicationRoot);
     }
     $termsDummy=false;foreach($templates as$template)$termsDummy=$termsDummy||$template['dummy'];
-    return['created'=>$created,'updated'=>$updated,'programs'=>(int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'products'=>(int)$pdo->query("SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'variants'=>(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'terms_ready'=>true,'terms_dummy'=>$termsDummy];
+    return['created'=>$created,'updated'=>$updated,'programs'=>(int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'products'=>(int)$pdo->query("SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'variants'=>(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'terms_ready'=>!$termsDummy,'terms_dummy'=>$termsDummy];
 }

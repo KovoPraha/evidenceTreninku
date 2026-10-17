@@ -11,6 +11,7 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/app_url.php';
 require_once __DIR__ . '/includes/ui_shell.php';
+require_once __DIR__ . '/includes/public_seo.php';
 $is_logged_in = isset($_SESSION['trener_id']);
 $is_customer  = isset($_SESSION['verejny_uzivatel_id']);
 $is_athlete   = isset($_SESSION['sportovec_pristup_id']);
@@ -34,7 +35,8 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= $is_logged_in ? 'Evidence tréninků' : 'Kovopraha – klubový portál' ?></title>
+  <title>KOVO Praha – cyklistické kroužky, tréninky a e-shop</title>
+  <?php publicSeoHead('KOVO Praha – cyklistické kroužky, tréninky a e-shop','Cyklistické kroužky pro děti, klubové tréninky, akce, rezervace velodromu a e-shop KOVO Praha.','',appUrl('assets/kovo-praha-logo.png')); ?>
   <?php appUiAssets(); ?>
   <style>
     body { background: var(--app-page-bg); }

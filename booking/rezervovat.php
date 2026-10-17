@@ -2,7 +2,13 @@
 require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
 if (!isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: prihlaseni.php?redirect=' . urlencode($_SERVER['REQUEST_URI'])); exit;
+    $target = 'rezervovat.php?' . http_build_query([
+        'lekce_id' => max(0, (int)($_GET['lekce_id'] ?? 0)),
+        'slot_od' => (string)($_GET['slot_od'] ?? ''),
+        'slot_do' => (string)($_GET['slot_do'] ?? ''),
+        'waitlist' => !empty($_GET['waitlist']) ? '1' : '0',
+    ]);
+    header('Location: prihlaseni.php?redirect=' . rawurlencode($target)); exit;
 }
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';

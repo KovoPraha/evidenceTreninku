@@ -13,6 +13,7 @@ require_once dirname(__DIR__) . '/includes/shop_product_interest.php';
 require_once dirname(__DIR__) . '/includes/shop_purchase_mode.php';
 require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
 require_once dirname(__DIR__) . '/includes/ui_format.php';
+require_once dirname(__DIR__) . '/includes/public_seo.php';
 
 function shopProductH(mixed $value): string
 {
@@ -173,7 +174,14 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title><?= $product ? shopProductH($product['public_name']) : 'Produkt nebyl nalezen' ?></title>
+    <title><?= $product ? shopProductH($product['public_name'].' – e-shop KOVO Praha') : 'Produkt nebyl nalezen' ?></title>
+    <?php if($product!==null):
+        $seoUrl=appUrl('booking/produkt.php?id='.$productId);
+        $seoImage=$product['images'][0]??null;
+        $seoSchema=publicSeoProductSchema($product,$seoUrl);
+        $seoDescription=trim((string)$product['public_summary'])!==''?(string)$product['public_summary']:(string)$product['public_name'].' v e-shopu KOVO Praha. Prohlédněte si aktuální dostupnost, varianty a cenu.';
+        publicSeoHead($product['public_name'].' – e-shop KOVO Praha',$seoDescription,'booking/produkt.php?id='.$productId,is_string($seoImage)?$seoImage:null,$seoSchema,!publicSeoIsTestContent((string)$product['public_name']));
+    else: ?><meta name="robots" content="noindex,follow"><?php endif; ?>
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">

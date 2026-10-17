@@ -1,6 +1,30 @@
 # Produkční uživatelské testování
 
-Aktualizováno: 7. 10. 2026, Europe/Prague
+## Regresní průchody po UX úpravách 16. 10. 2026
+
+Tyto scénáře popisují očekávání pro další nasazení. Samotná lokální změna a
+PHPUnit testy **nejsou** důkazem produkčního UAT ani schválením releasu.
+TEST zápisy provádějte jen v odsouhlaseném okně, s auditovaným stornem.
+
+| Scénář | Kroky a očekávaný výsledek |
+|---|---|
+| Návrat po založení účtu | Jako host otevřít konkrétní produkt/akci/lekci, přejít přes login na registraci a ověření e-mailu. Po přihlášení se vrátit na tentýž interní cíl včetně kotvy, nikoli na obecný kalendář. Externí `redirect` nesmí fungovat. |
+| Konkrétní slot lekce | V kalendáři jako host zvolit volný slot, přihlásit se a ověřit, že rezervace obsahuje původní datum a čas. Totéž zkusit pro plný slot a čekací listinu. Přímá URL `rezervovat.php` musí zachovat parametry bez návratu na obecný kalendář. |
+| Placená akce z kalendáře | Kliknout na placenou akci v měsíčním kalendáři; otevře se rovnou její karta v části Akce s výběrem účastníka, bez mezistránky „K přihlášení“. Bezplatná akce dál vede na formulář s konkrétním souhlasem. |
+| Filtr věku kroužků | Zadat věk 5: ukázat pouze intervaly zahrnující 5, nikoli 11–15. Kombinovat s dnem a místem; reset vrátí celou nabídku. Položka „školní děti“ bez číselného intervalu se při věkovém filtru skryje. |
+| Více termínů 1× týdně | U Točňáků ověřit, že stránka neimplikuje docházku v oba dny a žádá o potvrzení konkrétního dne s klubem. Samostatná evidence vybraného dne v objednávce stále chybí. |
+| Vzorové právní texty | S aktuálními vzory nesmí jít odeslat registraci sportovce ani koupit kroužek; přímý POST musí být odmítnut bez žádosti/objednávky. Po vydání vlastních verzí klubem zopakovat pozitivní přihlášku a kontrolu verzovaného snapshotu. |
+| Osobní odběr | V nákupu bez účtu před potvrzením ověřit sdělení, že konkrétní místo a čas nejsou určeny a je potřeba je ověřit s klubem. Nezobrazovat vymyšlenou adresu. |
+
+Otevřené věci vyžadující rozhodnutí či data klubu: přesné místo a pravidla
+výdeje zboží; čas kroužku v Kunraticích a výběr jednoho dne u Točňáků v
+datovém modelu; schválené právní texty; izolované TEST rodiny a nepoužitý
+placený TEST účastník; schválení nezařazených nabídek pro náhrady.
+Viditelnost TEST položek ve veřejném kalendáři vyžaduje jednotné označení
+fixture napříč kalendářem, e-shopem a exporty, nikoli lokální filtr podle
+názvu. Tyto body nejsou touto úpravou prohlášeny za vyřešené.
+
+Aktualizováno: 16. 10. 2026, Europe/Prague
 
 Pro toto UAT je cílovou produkční aplikací <https://kis.kovopraha.cz/>. Staré
 nasazení `data.kovopraha.cz/evidence` se stále používá, ale současný GitHub

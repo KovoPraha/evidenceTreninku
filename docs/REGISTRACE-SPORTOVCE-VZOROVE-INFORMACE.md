@@ -7,6 +7,15 @@ platí původní předběžné verze z 16. 8. 2026; novější klubem upravený 
 nepřepisuje. Úplnou informační povinnost ani oprávnění shromažďovat rodné
 číslo tím nepovažujeme za potvrzené.
 
+Od úpravy z 16. 10. 2026 je vytvoření nové žádosti i rychlá přihláška
+blokována, pokud aktuální povinná informace začíná `VZOROVÝ TEXT` nebo
+obsahuje původní příslib doplnění „před produkční aktivací“. Stejnou kontrolu
+provádí serverová služba při odeslání, nestačí tedy skrýt tlačítko. Přehled a
+storno již podaných žádostí zůstávají dostupné. Nejde o automatické právní
+schválení jiného textu: klub musí vydat a odsouhlasit nové verze obou
+povinných informací a následně zopakovat UAT. Do té doby není správné bránu
+obejít ani vrátit vzorové znění do produkčního formuláře.
+
 Klub musí před finálním schválením určit a zveřejnit identitu a kontakt
 správce, konkrétní účely a právní tituly, příjemce/zpracovatele, lhůty
 uchování či jejich kritéria a způsob výkonu práv. U rodného čísla zvlášť

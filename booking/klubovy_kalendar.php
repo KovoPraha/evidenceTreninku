@@ -7,6 +7,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/club_calendar.php';
 require_once dirname(__DIR__) . '/includes/calendar_ui.php';
+require_once dirname(__DIR__) . '/includes/public_seo.php';
 
 function memberCalendarH(mixed $value): string
 {
@@ -85,11 +86,13 @@ foreach ($events as $event) {
         'time' => $time,
         'popover' => implode(' · ', array_filter([$time, $meta, $planned ? 'Předběžný plán' : 'Potvrzeno'])),
         'tone' => $planned ? 'warning' : 'success',
-        'href' => '?zobrazeni=register#akce-' . (int)$event['id'],
+        'href' => (string)($event['pricing_policy']??'free')==='product_variants'
+            ? 'krouzky.php#akce-'.(int)$event['id']
+            : '?zobrazeni=register#akce-'.(int)$event['id'],
     ];
 }
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Akce a kalendář — Kovopraha</title><?php appUiAssets(); ?></head>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Akce a kalendář — KOVO Praha</title><?php publicSeoHead('Akce a kalendář – KOVO Praha','Klubové cyklistické akce, závody, soustředění a další termíny KOVO Praha. Prohlédněte si aktuální kalendář a informace k účasti.','booking/klubovy_kalendar.php');appUiAssets(); ?></head>
 <body class="bg-light"><?php publicShellNav('calendar'); ?>
 <main class="container py-4">
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3"><div><h1 class="h3 mb-1">Akce a klubový kalendář</h1><p class="text-muted mb-0">Závody, soustředění, školení a klubové schůze na jednom místě.</p></div><a class="btn btn-outline-primary" href="verejny_kalendar.php"><i class="bi bi-calendar-plus me-1"></i>Veřejný kalendář (.ics)</a></div>

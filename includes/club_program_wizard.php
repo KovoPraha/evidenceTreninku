@@ -138,7 +138,7 @@ function clubProgramWizardCreate(
             'purchase_option'=>$purchaseOption,'is_featured'=>$featured,
         ],$reason);
         $publication=$pdo->prepare('SELECT status FROM shop_product_publications WHERE product_id=?');$publication->execute([$productId]);
-        if((string)$publication->fetchColumn()!=='active')shopCatalogPublicationActivateInTransaction($pdo,$productId,$actorId,$name,$description,$reason,true);
+        if(empty($input['defer_publication'])&&(string)$publication->fetchColumn()!=='active')shopCatalogPublicationActivateInTransaction($pdo,$productId,$actorId,$name,$description,$reason,true);
         $pdo->commit();
         return['product_id'=>$productId,'variant_id'=>$variantId,'program_id'=>(int)$program['id'],'offer_id'=>(int)$offer['id'],'season_id'=>$seasonId,'team_id'=>$teamId,'image_id'=>$imageId,'category_path'=>$category];
     }catch(Throwable$exception){
