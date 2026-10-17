@@ -16,4 +16,16 @@ final class ClubLandingFilterTest extends TestCase
         self::assertNull(\clubLandingAgeRange('školní děti'));
         self::assertNull(\clubLandingAgeRange('15–11 let'));
     }
+
+    public function testOnlySaleableOfferMayLinkToProductDetail(): void
+    {
+        self::assertSame(0, \clubLandingFirstSaleableProductId(['offers'=>[
+            ['product_id'=>247,'saleable'=>false],
+        ]]));
+        self::assertSame(249, \clubLandingFirstSaleableProductId(['offers'=>[
+            ['product_id'=>247,'saleable'=>false],
+            ['product_id'=>249,'saleable'=>true],
+        ]]));
+        self::assertSame(0, \clubLandingFirstSaleableProductId(['offers'=>[]]));
+    }
 }

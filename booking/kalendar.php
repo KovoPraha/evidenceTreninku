@@ -377,13 +377,6 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
             <div class="modal-body" id="dayModalBody">
                 <div class="text-center text-muted py-3"><i class="bi bi-hourglass-split"></i> Načítám…</div>
             </div>
-            <?php if (!$prihlaseny): ?>
-            <div class="modal-footer bg-light">
-                <small class="text-muted me-auto"><i class="bi bi-info-circle me-1"></i>Pro rezervaci je třeba se přihlásit.</small>
-                <a href="prihlaseni.php" class="btn btn-outline-primary btn-sm">Přihlásit</a>
-                <a href="registrace.php" class="btn btn-primary btn-sm">Registrace</a>
-            </div>
-            <?php endif; ?>
         </div>
     </div>
 </div>

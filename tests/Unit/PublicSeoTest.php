@@ -71,6 +71,17 @@ final class PublicSeoTest extends TestCase
         self::assertNull(\publicSeoProductSchema(['public_name'=>'TEST - Láhev','variants'=>[['offer_type'=>'goods','amount_minor'=>100,'currency'=>'CZK','in_stock'=>true,'sku'=>'X']]],'https://kis.kovopraha.cz/booking/produkt.php?id=43'));
     }
 
+    public function testSparseProductSummaryGetsUsefulFactualDescription():void
+    {
+        $product=['public_name'=>'Bunda ACTIVE 23 MicroFiber Junior','public_summary'=>'bunda'];
+        $description=\publicSeoProductDescription($product);
+        self::assertStringContainsString('Bunda ACTIVE 23 MicroFiber Junior',$description);
+        self::assertStringContainsString('aktuální cena a dostupnost',$description);
+        self::assertSame('Pohodlné cyklistické oblečení pro děti ve více velikostech.',\publicSeoProductDescription([
+            'public_name'=>'Bunda','public_summary'=>'Pohodlné cyklistické oblečení pro děti ve více velikostech.',
+        ]));
+    }
+
     public function testPrivateBookingStepsAreNoindexRoutes():void
     {
         self::assertTrue(\app_session_is_private_booking_route(['SCRIPT_NAME'=>'/booking/objednavka.php']));

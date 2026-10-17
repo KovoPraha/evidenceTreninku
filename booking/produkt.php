@@ -179,7 +179,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $seoUrl=appUrl('booking/produkt.php?id='.$productId);
         $seoImage=$product['images'][0]??null;
         $seoSchema=publicSeoProductSchema($product,$seoUrl);
-        $seoDescription=trim((string)$product['public_summary'])!==''?(string)$product['public_summary']:(string)$product['public_name'].' v e-shopu KOVO Praha. Prohlédněte si aktuální dostupnost, varianty a cenu.';
+        $seoDescription=publicSeoProductDescription($product);
         publicSeoHead($product['public_name'].' – e-shop KOVO Praha',$seoDescription,'booking/produkt.php?id='.$productId,is_string($seoImage)?$seoImage:null,$seoSchema,!publicSeoIsTestContent((string)$product['public_name']));
     else: ?><meta name="robots" content="noindex,follow"><?php endif; ?>
     <?php appUiAssets(); ?>
