@@ -22,7 +22,7 @@ function shopProductH(mixed $value): string
 
 function shopProductMoney(int $minor, string $currency): string
 {
-    return number_format($minor / 100, 2, ',', ' ') . ' ' . shopProductH($currency);
+    return number_format($minor / 100, 2, ',', ' ') . ' ' . shopProductH($currency === 'CZK' ? 'Kč' : $currency);
 }
 
 function shopProductDate(string $date): string
@@ -158,7 +158,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['flash_shop'] = $offer
                 ? 'Období kroužku bylo přidáno pro vybrané dítě.'
                 : 'Položka byla přidána do košíku.';
-            header('Location: eshop.php', true, 303);
+            header('Location: eshop.php#kosik', true, 303);
             exit;
         } catch (PDOException $exception) {
             error_log('booking/produkt.php: ' . $exception->getMessage());
@@ -183,6 +183,17 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         publicSeoHead($product['public_name'].' – e-shop KOVO Praha',$seoDescription,'booking/produkt.php?id='.$productId,is_string($seoImage)?$seoImage:null,$seoSchema,!publicSeoIsTestContent((string)$product['public_name']));
     else: ?><meta name="robots" content="noindex,follow"><?php endif; ?>
     <?php appUiAssets(); ?>
+    <style>
+      .shop-variant-option { transition:box-shadow .18s ease; }
+      .shop-variant-option:not([hidden]) { box-shadow:0 .35rem 1rem rgba(17,26,107,.09); }
+      .app-product-no-photo { min-height:250px; display:grid; place-content:center; text-align:center; gap:.6rem; background:linear-gradient(145deg,#eef3fb,#f8faff); color:#334d79; }
+      .app-product-no-photo i { font-size:3rem; }
+      @media (max-width:575.98px) {
+        .app-product-media-sticky .app-product-image { display:block; width:100%; max-height:230px; object-fit:contain; }
+        .app-product-no-photo { min-height:180px; }
+      }
+      @media (prefers-reduced-motion:reduce) { .shop-variant-option { transition:none; } }
+    </style>
 </head>
 <body class="bg-light">
 <?php publicShellNav('shop');shopPublicNavigation($pdo,$product['categories'][0]??null); ?>
@@ -199,7 +210,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="row g-0">
                 <div class="col-lg-5 bg-white p-3 app-product-media-sticky">
-                    <img src="<?= shopProductH($imageUrl) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded app-product-image" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='<?=shopProductH(shopStorefrontPlaceholderImageUrl())?>'">
+                    <?php if($imageUrl===shopStorefrontPlaceholderImageUrl()):?><div class="rounded app-product-no-photo" role="img" aria-label="Fotografie produktu zatím není k dispozici"><i class="bi bi-image" aria-hidden="true"></i><span>Fotografie produktu se připravuje</span></div><?php else:?><img src="<?= shopProductH($imageUrl) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded app-product-image" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='<?=shopProductH(shopStorefrontPlaceholderImageUrl())?>'"><?php endif; ?>
                 </div>
                 <div class="col-lg-7">
                     <div class="card-body p-4">
@@ -207,16 +218,25 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h1 class="h3"><?= shopProductH($product['public_name']) ?></h1>
                         <p class="text-muted"><?= nl2br(shopProductH($product['public_summary'])) ?></p>
                         <h2 class="h5 mt-4"><?= $isProgram ? 'Termín a přihlášení' : 'Vyberte variantu' ?></h2>
+                        <?php $preferredVariantId=0;
+                        if(!$isProgram&&$product['variants']!==[]){
+                            $requestedVariantId=(int)($_POST['variant_id']??0);
+                            foreach($product['variants']as$option){if((int)$option['variant_id']===$requestedVariantId){$preferredVariantId=$requestedVariantId;break;}}
+                            if($preferredVariantId===0){foreach($product['variants']as$option){if(!empty($option['in_stock'])){$preferredVariantId=(int)$option['variant_id'];break;}}}
+                            if($preferredVariantId===0)$preferredVariantId=(int)$product['variants'][0]['variant_id'];
+                        }
+                        ?>
+                        <?php if(!$isProgram&&count($product['variants'])>1):?><div class="mb-3"><label class="form-label fw-semibold" for="shop-variant-select">Velikost / varianta</label><select class="form-select" id="shop-variant-select" aria-controls="shop-variant-list"><?php foreach($product['variants']as$choice):?><option value="<?=(int)$choice['variant_id']?>" <?=(int)$choice['variant_id']===$preferredVariantId?'selected':''?>><?=shopProductH(shopProductVariantLabel($choice))?> — <?=!empty($choice['in_stock'])?'skladem':'vyprodáno'?></option><?php endforeach;?></select><div class="form-text">Dostupné velikosti najdete v seznamu; cenu a další krok uvidíte po výběru.</div></div><?php endif; ?>
                         <?php if ($isProgram && !$hasProgramOffer): ?><div class="alert alert-info">Pro tento program zatím není vypsaný termín ani schválené podmínky nákupu. Můžete nám níže zanechat e-mail a ozveme se vám.</div><?php endif; ?>
-                        <?php if (!$isLoggedIn && (!$isProgram || $hasProgramOffer)): ?>
+                        <?php if (!$isLoggedIn && $isProgram && $hasProgramOffer): ?>
                             <div class="row g-2 mb-3">
                                 <div class="col-md-6"><div class="border rounded bg-body-tertiary p-3 h-100"><strong>Už máte účet?</strong><p class="small text-muted my-2">Přihlaste se. Uvidíte své osoby, historii a klubové ceny. Po přihlášení se zobrazí případná klubová cena.</p><a class="btn btn-sm btn-outline-primary" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div></div>
                                 <div class="col-md-6"><div class="border rounded border-primary p-3 h-100"><strong><?=$isProgram?'Jste tu poprvé?':'Chcete nakoupit bez účtu?'?></strong><p class="small text-muted my-2"><?=$isProgram?'U vybraného termínu vyplníte jednu krátkou přihlášku a hned se dostanete k platbě. Účet vytvoříme automaticky a e-mail ověříte následně.':'Stačí jméno a e-mail. Adresa je při osobním odběru nepovinná.'?></p><span class="small text-muted"><?=$isProgram?'Vyberte termín níže.':'Rychlý nákup vyberete u konkrétní varianty níže.'?></span></div></div>
                             </div>
-                        <?php endif; ?>
-                        <div class="vstack gap-2">
+                        <?php elseif(!$isLoggedIn&&!$isProgram):?><p class="small text-muted">Zboží můžete koupit bez účtu. <a href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlaste se</a>, pokud chcete použít svůj účet a případnou klubovou cenu.</p><?php endif; ?>
+                        <div class="vstack gap-2" id="shop-variant-list">
                             <?php foreach ($product['variants'] as $variant): $offer = clubProgramOfferForVariant($pdo, (int)$variant['variant_id']); $programSaleState=$offer?clubProgramVariantSaleState($pdo,(int)$variant['variant_id']):['saleable'=>false,'reason'=>'Termín se připravuje.'];$programSaleable=(bool)$programSaleState['saleable']; ?>
-                                <div class="border rounded p-3">
+                                <div class="border rounded p-3 <?=$isProgram?'':'shop-variant-option'?>" <?=$isProgram?'':'data-variant-id="'.(int)$variant['variant_id'].'"'?> <?=!$isProgram&&count($product['variants'])>1&&(int)$variant['variant_id']!==$preferredVariantId?'hidden':''?>>
                                     <div class="d-flex flex-wrap justify-content-between gap-2 align-items-start">
                                         <div>
                                             <strong><?= shopProductH($offer ? shopProductProgramPeriodLabel((string)$offer['purchase_option']) : shopProductVariantLabel($variant)) ?></strong>
@@ -254,16 +274,16 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <input type="hidden" name="action" value="add">
                                                 <input type="hidden" name="variant_id" value="<?= (int)$variant['variant_id'] ?>">
                                                 <?php if($offer):?><label class="form-label small" for="program-person-<?=(int)$variant['variant_id']?>">Dítě / účastník</label><select class="form-select form-select-sm mb-2" id="program-person-<?=(int)$variant['variant_id']?>" name="sportovec_id" required><option value="">Vyberte</option><?php foreach($people as$person):$ageWarning=clubProgramBeneficiaryBirthYearWarning($pdo,$offer,(int)$person['sportovec_id']);?><option value="<?=(int)$person['sportovec_id']?>"><?=shopProductH($person['prijmeni'].' '.$person['jmeno'].($ageWarning!==null?' ⚠ mimo doporučený věk':''))?></option><?php endforeach;?></select><div class="small text-warning mb-2"><i class="bi bi-exclamation-triangle me-1"></i>Nesoulad věku zobrazíme jako varování, přihlášení ale povolíme.</div><?php if($people===[]):?><div class="small text-danger mb-2">Nejdříve propojte dítě v části Moje osoby.</div><?php endif;?><?php endif;?>
-                                                <button class="btn btn-primary btn-sm" <?= ($offer?$programSaleable:$variant['in_stock']) ? '' : 'disabled' ?>><?= $offer ? ($programSaleable?'Přihlásit účastníka':'Přihlášení teď není dostupné') : 'Přidat do košíku' ?></button>
-                                            </form><?php elseif($isLoggedIn && $isProgram):?><div class="d-grid gap-1"><span class="small text-muted">Prodejní termín zatím není vypsán.</span><a class="btn btn-outline-primary btn-sm" href="#mam-zajem">Zanechat zájem o termín</a></div><?php else: ?><?php if($isProgram):?><div class="d-grid gap-1"><?php if($offer):?><a class="btn btn-primary btn-sm <?= !$programSaleable ? 'disabled' : '' ?>" href="<?=$programSaleable?'rychla_prihlaska.php?product_id='.$productId.'&amp;variant_id='.(int)$variant['variant_id']:'#mam-zajem'?>"><?= $programSaleable ? 'Přihlásit sportovce a zaplatit' : 'Přihlášení teď není dostupné' ?></a><?php else:?><a class="btn btn-outline-primary btn-sm" href="#mam-zajem">Zanechat zájem o termín</a><?php endif;?><a class="btn btn-outline-primary btn-sm" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div><?php else:?><div class="d-grid gap-1"><a class="btn btn-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="rychly_nakup.php?product_id=<?=$productId?>&amp;variant_id=<?=(int)$variant['variant_id']?>"><?= $variant['in_stock'] ? 'Koupit bez registrace' : 'Vyprodáno' ?></a><a class="btn btn-outline-primary btn-sm <?= $variant['in_stock'] ? '' : 'disabled' ?>" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div><?php endif;?><?php endif; ?>
+                                                <?php if(!$offer&&!$variant['in_stock']):?><a class="btn btn-outline-primary btn-sm" href="#mam-zajem">Zeptat se na variantu</a><?php else:?><button class="btn btn-primary btn-sm" <?= ($offer?$programSaleable:$variant['in_stock']) ? '' : 'disabled' ?>><?= $offer ? ($programSaleable?'Přihlásit účastníka':'Přihlášení teď není dostupné') : 'Přidat do košíku' ?></button><?php endif; ?>
+                                            </form><?php elseif($isLoggedIn && $isProgram):?><div class="d-grid gap-1"><span class="small text-muted">Prodejní termín zatím není vypsán.</span><a class="btn btn-outline-primary btn-sm" href="#mam-zajem">Zanechat zájem o termín</a></div><?php else: ?><?php if($isProgram):?><div class="d-grid gap-1"><?php if($offer):?><a class="btn btn-primary btn-sm <?= !$programSaleable ? 'disabled' : '' ?>" href="<?=$programSaleable?'rychla_prihlaska.php?product_id='.$productId.'&amp;variant_id='.(int)$variant['variant_id']:'#mam-zajem'?>"><?= $programSaleable ? 'Přihlásit sportovce a zaplatit' : 'Přihlášení teď není dostupné' ?></a><?php else:?><a class="btn btn-outline-primary btn-sm" href="#mam-zajem">Zanechat zájem o termín</a><?php endif;?><a class="btn btn-outline-primary btn-sm" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div><?php else:?><div class="d-grid gap-1"><?php if($variant['in_stock']):?><a class="btn btn-primary btn-sm" href="rychly_nakup.php?product_id=<?=$productId?>&amp;variant_id=<?=(int)$variant['variant_id']?>">Koupit bez účtu</a><?php else:?><a class="btn btn-outline-primary btn-sm" href="#mam-zajem">Zeptat se na variantu</a><?php endif;?></div><?php endif;?><?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <p class="small text-muted mt-4 mb-0"><?= $isProgram ? 'Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.' : 'Cena a dostupnost se při vytvoření objednávky znovu bezpečně ověří. Objednávka používá neměnný cenový snapshot.' ?></p>
+                        <p class="small text-muted mt-4 mb-0"><?= $isProgram ? 'Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.' : 'Před potvrzením objednávky znovu zkontrolujeme cenu a dostupnost.' ?></p>
                         <section id="mam-zajem" class="card bg-body-tertiary border-0 mt-4"><div class="card-body">
-                            <h2 class="h5">Nevyhovuje vám termín nebo varianta?</h2><p class="small text-muted">Zanechte nám e-mail. Ozveme se, jakmile budeme řešit další termín, velikost nebo vhodnou variantu.</p>
+                            <h2 class="h5"><?= $isProgram ? 'Nevyhovuje vám termín?' : 'Chybí vaše velikost nebo varianta?' ?></h2><p class="small text-muted"><?= $isProgram ? 'Zanechte nám e-mail. Ozveme se, až vypíšeme další vhodný termín.' : 'Zanechte nám e-mail. Ozveme se, až bude dostupná vhodná varianta.' ?></p>
                             <form method="post" class="row g-2 align-items-end"><?=csrf_field()?><input type="hidden" name="action" value="interest"><div class="col-md-6"><label class="form-label" for="interest-email">E-mail</label><input id="interest-email" type="email" name="interest_email" class="form-control" maxlength="254" value="<?=shopProductH($_POST['interest_email']??'')?>" required></div><div class="col-md-6"><label class="form-label" for="interest-variant">Termín / varianta <span class="text-muted">(nepovinné)</span></label><select id="interest-variant" name="interest_variant_id" class="form-select"><option value="">Obecný zájem o produkt</option><?php foreach($product['variants'] as$interestVariant):?><option value="<?=(int)$interestVariant['variant_id']?>"><?=shopProductH(shopProductInterestVariantLabel($pdo, $interestVariant))?></option><?php endforeach;?></select></div><div class="col-12"><div class="form-check"><input id="contact-consent" class="form-check-input" type="checkbox" name="contact_consent" value="1" required><label class="form-check-label small" for="contact-consent">Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.</label></div></div><div class="col-12"><button class="btn btn-outline-primary">Chci vědět o další možnosti</button></div></form>
                         </div></section>
                     </div>
@@ -272,6 +292,18 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 </main>
+<noscript><style>.shop-variant-option[hidden]{display:block!important}</style></noscript>
+<script>
+(() => {
+  const picker=document.getElementById('shop-variant-select');
+  if(!picker)return;
+  const options=[...document.querySelectorAll('.shop-variant-option')];
+  const interest=document.getElementById('interest-variant');
+  const sync=()=>{options.forEach(option=>{option.hidden=option.dataset.variantId!==picker.value;});};
+  picker.addEventListener('change',sync);sync();
+  document.querySelectorAll('a[href="#mam-zajem"]').forEach(link=>link.addEventListener('click',()=>{if(interest)interest.value=picker.value;}));
+})();
+</script>
 <?php publicShellFooter(); ?>
 </body>
 </html>

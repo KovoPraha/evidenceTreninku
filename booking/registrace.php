@@ -204,10 +204,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="email" name="email" id="registration-email" class="form-control"
                                value="<?= h($_POST['email'] ?? '') ?>" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="registration-birth-date">Datum narození <span id="registration-birth-required" class="text-muted small">(jen pro sportovní profil)</span></label>
+                    <div class="mb-3" id="registration-birth-field" <?=$purpose==='sport'?'':'hidden'?> >
+                        <label class="form-label" for="registration-birth-date">Datum narození <span id="registration-birth-required" class="text-muted small">(povinné pro sportovní profil)</span></label>
                         <input type="date" name="narozeni" id="registration-birth-date" class="form-control"
-                               value="<?= h($_POST['narozeni'] ?? '') ?>">
+                               value="<?= h($_POST['narozeni'] ?? '') ?>" <?=$purpose==='sport'?'required':'disabled'?> >
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="registration-phone">Telefon (nepovinný)</label>
@@ -241,11 +241,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>
 (() => {
     const birth = document.getElementById('registration-birth-date');
+    const birthField = document.getElementById('registration-birth-field');
     const hint = document.getElementById('registration-birth-required');
     const sync = () => {
         const sport = document.getElementById('registration-purpose-sport').checked;
+        birthField.hidden = !sport;
+        birth.disabled = !sport;
         birth.required = sport;
-        hint.textContent = sport ? '(povinné)' : '(jen pro sportovní profil)';
+        hint.textContent = sport ? '(povinné pro sportovní profil)' : '';
     };
     document.querySelectorAll('input[name="ucel"]').forEach(input => input.addEventListener('change', sync));
     document.querySelectorAll('[data-password-toggle]').forEach(button => button.addEventListener('click', () => {

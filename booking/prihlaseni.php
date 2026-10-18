@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card shadow">
         <div class="card-body p-4">
             <h1 class="h4 mb-2 text-center"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení</h1>
-            <p class="text-center text-muted small mb-4">Jeden účet platí pro e-shop, rezervace i trenérskou Evidenci.</p>
+            <p class="text-center text-muted small mb-4">Přihlaste se k e-shopu, rezervacím a svému sportovnímu přehledu. Trenérská Evidence je dostupná po přidělení oprávnění.</p>
 
             <?php if (isset($_SESSION['sportovec_pristup_id'])): ?>
                 <div class="alert alert-info small" role="status">
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </p>
             <p class="text-center small"><a href="zapomenute_heslo.php">Zapomenuté heslo</a></p>
             <p class="text-center small mb-0">
-                Jste sportovec? <a href="sportovec_prihlaseni.php">Přihlaste se omezeným sportovním účtem</a>
+                Máte od klubu samostatný sportovní přístup? <a href="sportovec_prihlaseni.php">Přihlaste se sportovním účtem</a>
             </p>
         </div>
     </div>

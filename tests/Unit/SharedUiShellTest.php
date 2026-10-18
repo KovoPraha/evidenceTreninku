@@ -192,7 +192,7 @@ final class SharedUiShellTest extends TestCase
         }
         self::assertStringContainsString("publicShellNav('home')", (string)file_get_contents($root . '/index.php'));
         self::assertStringContainsString("require_once __DIR__ . '/config.php';", (string)file_get_contents($root . '/index.php'));
-        self::assertStringContainsString('navbar-expand-xl', (string)file_get_contents($root . '/includes/ui_shell.php'));
+        self::assertStringContainsString('navbar-expand-xxl', (string)file_get_contents($root . '/includes/ui_shell.php'));
     }
 
     /**

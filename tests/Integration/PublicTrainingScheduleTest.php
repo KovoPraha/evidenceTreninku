@@ -30,4 +30,11 @@ final class PublicTrainingScheduleTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         \publicTrainingSchedule(new PDO('sqlite::memory:'), '2026-11-01', '2026-10-01');
     }
+
+    public function testPublicCategoryUsesCzechLabelButPreservesCustomValue(): void
+    {
+        self::assertSame('Dráha', \publicTrainingCategoryLabel('draha'));
+        self::assertSame('MTB', \publicTrainingCategoryLabel('mtb'));
+        self::assertSame('Speciální příprava', \publicTrainingCategoryLabel('Speciální příprava'));
+    }
 }

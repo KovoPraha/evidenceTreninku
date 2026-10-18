@@ -194,6 +194,30 @@ foreach ($lekceArr as $l) {
     }
 }
 
+$upcomingSlots = [];
+foreach ($dayData as $date => $day) {
+    if ($date < date('Y-m-d')) continue;
+    foreach ($day['lekce'] as $lesson) {
+        foreach ($lesson['sloty'] as $slot) {
+            if (!$slot['muzRez'] || $slot['volno'] <= 0 || $slot['moje']) continue;
+            $reservationUrl = 'rezervovat.php?lekce_id=' . (int)$lesson['id']
+                . '&slot_od=' . rawurlencode((string)$slot['cas_od'])
+                . '&slot_do=' . rawurlencode((string)$slot['cas_do']);
+            $upcomingSlots[] = [
+                'date' => $date,
+                'name' => (string)$lesson['nazev'],
+                'place' => (string)$lesson['sport_nazev'],
+                'from' => (string)$slot['cas_od'],
+                'to' => (string)$slot['cas_do'],
+                'price' => (float)$lesson['cena_kc'],
+                'free' => (int)$slot['volno'],
+                'url' => $prihlaseny ? $reservationUrl : 'prihlaseni.php?redirect=' . rawurlencode($reservationUrl),
+            ];
+            if (count($upcomingSlots) >= 3) break 3;
+        }
+    }
+}
+
 // ── Česká lokalizace ──────────────────────────────────────────────────────
 $mesiceCS = ['','Leden','Únor','Březen','Duben','Květen','Červen',
              'Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
@@ -299,10 +323,12 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 
     <!-- Legenda -->
     <div class="d-flex gap-3 mb-3 small flex-wrap">
-        <span><span class="dot dot-green d-inline-block me-1"></span>Zelená — ihned potvrzeno</span>
-        <span><span class="dot dot-yellow d-inline-block me-1"></span>Žlutá — potřebuje potvrzení</span>
+        <span><span class="dot dot-green d-inline-block me-1"></span>Ihned potvrzeno</span>
+        <span><span class="dot dot-yellow d-inline-block me-1"></span>Potvrzuje trenér</span>
         <span class="text-muted"><i class="bi bi-clock me-1"></i>Zpravidla min. 3 dny předem</span>
     </div>
+
+    <?php if($upcomingSlots!==[]):?><section class="mb-4" aria-labelledby="next-lessons-title"><h2 class="h5" id="next-lessons-title">Nejbližší volné termíny</h2><div class="row g-2"><?php foreach($upcomingSlots as$upcoming):?><div class="col-lg-4"><article class="card h-100 border-0 shadow-sm"><div class="card-body d-flex flex-column gap-1"><strong><?=h((new DateTimeImmutable($upcoming['date']))->format('j. n. Y').' · '.$upcoming['from'].'–'.$upcoming['to'])?></strong><span><?=h($upcoming['name'])?></span><span class="small text-muted"><?=h($upcoming['place'])?> · <?=h(number_format($upcoming['price'],0,',',' '))?> Kč · <?=$upcoming['free']?> <?=$upcoming['free']===1?'volné místo':($upcoming['free']<5?'volná místa':'volných míst')?></span><a class="btn btn-primary btn-sm mt-auto align-self-start" href="<?=h($upcoming['url'])?>"><?=$prihlaseny?'Rezervovat':'Přihlásit se a rezervovat'?></a></div></article></div><?php endforeach;?></div></section><?php endif; ?>
 
     <?php if ($dayData === []): ?>
         <div class="alert alert-light border d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -341,7 +367,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
             if ($hasSlots) $cls .= ' has-slots';
         ?>
             <div class="<?= $cls ?>"
-                 <?= $hasSlots ? "onclick=\"openModal('".h($datumStr)."')\" role=\"button\" tabindex=\"0\"" : '' ?>>
+                 <?= $hasSlots ? "onclick=\"openModal('".h($datumStr)."')\" onkeydown=\"if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('".h($datumStr)."')}\" role=\"button\" tabindex=\"0\" aria-label=\"Zobrazit termíny ".h((new DateTimeImmutable($datumStr))->format('j. n. Y'))."\"" : '' ?>>
                 <div class="day-num"><?= $d ?></div>
                 <?php if ($hasSlots): ?>
                 <div class="day-dots">
@@ -401,8 +427,8 @@ function openModal(datum) {
     let html = '';
     for (const l of data.lekce) {
         const typBadge = l.typ === 'zelena'
-            ? '<span class="badge" style="background:#16a34a">Zelená</span>'
-            : '<span class="badge" style="background:#b45309">Žlutá</span>';
+            ? '<span class="badge" style="background:#16a34a">Ihned potvrzeno</span>'
+            : '<span class="badge" style="background:#b45309">Potvrzuje trenér</span>';
         const typNote = l.typ === 'zluta'
             ? '<span class="text-warning small"><i class="bi bi-exclamation-triangle me-1"></i>Potřebuje potvrzení trenéra</span>'
             : '';

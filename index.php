@@ -79,6 +79,8 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
     .portal-icon--navy { background: #e4edfa; color: var(--app-navy); }
     .portal-shortcut { display: block; height: 100%; padding: 1rem; border-radius: 14px; color: inherit; text-decoration: none; background: #fff; box-shadow: 0 3px 14px rgba(0,0,0,.07); }
     .portal-shortcut:hover { color: var(--app-blue); box-shadow: 0 6px 20px rgba(0,0,0,.11); }
+    @media (max-width: 575.98px) { .portal-hero .card-body { padding:1.35rem!important; } .portal-hero h1 { font-size:1.9rem; } .portal-hero .lead { font-size:1rem; } }
+    @media (prefers-reduced-motion:reduce) { .portal-card { transition:none; } .portal-card:hover { transform:none; } }
   </style>
 </head>
 <body>
@@ -90,15 +92,17 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
       <section class="portal-hero card mb-4">
         <div class="card-body p-4 p-lg-5">
           <div class="row align-items-center g-4">
-            <div class="col-lg-8">
+            <div class="<?=($is_customer||$is_athlete)?'col-lg-8':'col-12'?>">
               <div class="hero-kicker mb-2">TJ Kovo Praha · jeden klubový portál</div>
-              <h1 class="display-6 fw-bold mb-3">Nakupujte, přihlašujte děti a sledujte sport na jednom místě.</h1>
-              <p class="lead mb-4 opacity-75">E-shop, kroužky, klubové události, velodrom a sportovní přehled jsou propojené se stejnými osobami a objednávkami.</p>
+              <h1 class="display-6 fw-bold mb-3">Vyberte kroužek, termín nebo klubové zboží.</h1>
+              <p class="lead mb-4 opacity-75">Vše pro vaši cyklistiku na jednom místě. Najděte další krok bez hledání v systému.</p>
               <div class="d-flex flex-wrap gap-2">
-                <a href="<?= htmlspecialchars($shopUrl, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-light btn-lg"><i class="bi bi-bag me-2"></i>Nakoupit v e-shopu</a>
-                <a href="booking/velodrom.php" class="btn btn-outline-light btn-lg"><i class="bi bi-bicycle me-2"></i>Rezervovat velodrom</a>
+                <a href="booking/cyklisticke_krouzky.php" class="btn btn-light btn-lg"><i class="bi bi-people me-2"></i>Vybrat kroužek</a>
+                <a href="booking/kalendar.php" class="btn btn-outline-light btn-lg"><i class="bi bi-calendar3 me-2"></i>Najít termín</a>
+                <a href="<?= htmlspecialchars($shopUrl, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-light btn-lg"><i class="bi bi-bag me-2"></i>E-shop</a>
               </div>
             </div>
+            <?php if($is_customer||$is_athlete): ?>
             <div class="col-lg-4">
               <div class="p-3 p-lg-4 rounded-4" style="background:rgba(255,255,255,.13)">
                 <?php if ($is_customer): ?>
@@ -110,13 +114,10 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
                   <div class="small opacity-75">Přihlášený sportovec</div>
                   <div class="fw-bold fs-5 mb-3"><?= htmlspecialchars($athleteName !== '' ? $athleteName : 'Můj sport', ENT_QUOTES, 'UTF-8') ?></div>
                   <a href="booking/muj_sport.php" class="btn btn-light w-100">Otevřít Můj sport</a>
-                <?php else: ?>
-                  <div class="fw-semibold mb-2">Už u nás máte účet?</div>
-                  <a href="booking/prihlaseni.php" class="btn btn-light w-100 mb-2">Přihlášení rodiče / zákazníka</a>
-                  <a href="booking/sportovec_prihlaseni.php" class="btn btn-outline-light w-100">Přihlášení sportovce</a>
                 <?php endif; ?>
               </div>
             </div>
+            <?php endif; ?>
           </div>
         </div>
       </section>
@@ -145,7 +146,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <h3 class="h5">Rodina a sportovec</h3>
               <p class="text-muted">Jeden rodičovský účet pro děti, platby, přihlášky, soupisky a tréninky.</p>
               <a class="portal-link" href="<?= htmlspecialchars($familyUrl, ENT_QUOTES, 'UTF-8') ?>"><span><?= $is_customer ? 'Moje osoby' : 'Přihlášení rodiče' ?></span><i class="bi bi-arrow-right"></i></a>
-              <a class="portal-link" href="<?= htmlspecialchars($athleteUrl, ENT_QUOTES, 'UTF-8') ?>"><span><?= $is_athlete ? 'Můj sport' : 'Přihlášení sportovce' ?></span><i class="bi bi-arrow-right"></i></a>
+              <?php if($is_athlete):?><a class="portal-link" href="<?= htmlspecialchars($athleteUrl, ENT_QUOTES, 'UTF-8') ?>"><span>Můj sport</span><i class="bi bi-arrow-right"></i></a><?php else:?><a class="portal-link" href="booking/sportovec_prihlaseni.php"><span>Přihlášení sportovce</span><i class="bi bi-arrow-right"></i></a><?php endif; ?>
               <?php if (!$is_customer && !$is_athlete): ?><a class="portal-link" href="booking/registrace.php"><span>Vytvořit účet</span><i class="bi bi-arrow-right"></i></a><?php endif; ?>
             </div></article>
           </div>

@@ -129,7 +129,7 @@ function shopStorefrontSafeImageUrl(string $url): ?string
 
 function shopStorefrontPlaceholderImageUrl(): string
 {
-    return appUrl('assets/product-placeholder.svg');
+    return appUrl('assets/product-placeholder.svg?v=20261017');
 }
 
 /** @param list<string> $urls */

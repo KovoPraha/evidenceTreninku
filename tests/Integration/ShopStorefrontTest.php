@@ -75,7 +75,7 @@ final class ShopStorefrontTest extends TestCase
         self::assertNull(\shopStorefrontSafeImageUrl('/uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'));
         self::assertTrue(\shopStorefrontIsLocalImageUrl(\appUrl('uploads/shop-products/0123456789abcdef0123456789abcdef.jpg')));
         self::assertFalse(\shopStorefrontIsLocalImageUrl('https://attacker.example/uploads/shop-products/0123456789abcdef0123456789abcdef.jpg'));
-        self::assertSame(\appUrl('assets/product-placeholder.svg'), \shopStorefrontPrimaryImageUrl([]));
+        self::assertSame(\appUrl('assets/product-placeholder.svg?v=20261017'), \shopStorefrontPrimaryImageUrl([]));
     }
 
     private function database(): PDO

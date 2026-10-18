@@ -58,7 +58,7 @@ function publicShellNav(string $active = ''): void
         'velodrome' => ['Velodrom', 'booking/velodrom.php'],
     ];
     ?>
-    <nav class="app-public-nav navbar navbar-expand-xl bg-white border-bottom shadow-sm" aria-label="Klubový portál">
+    <nav class="app-public-nav navbar navbar-expand-xxl bg-white border-bottom shadow-sm" aria-label="Klubový portál">
       <div class="container">
         <a class="navbar-brand app-brand-link" href="<?= publicShellH(appUiUrl('index.php')) ?>" aria-label="KOVO Praha – úvodní stránka"><span class="app-brand-logo" aria-hidden="true"><img src="<?= publicShellH(appUiUrl('assets/kovo-praha-logo.png')) ?>" alt="" width="500" height="167"></span></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appPublicNav"
@@ -66,12 +66,12 @@ function publicShellNav(string $active = ''): void
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="appPublicNav">
-          <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+          <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
             <?php foreach ($items as $key => [$label, $href]): ?>
               <li class="nav-item"><a class="nav-link<?= $active === $key ? ' active fw-semibold' : '' ?>" href="<?= publicShellH(appUiUrl($href)) ?>"<?= $active === $key ? ' aria-current="page"' : '' ?>><?= publicShellH($label) ?></a></li>
             <?php endforeach; ?>
           </ul>
-          <div class="d-flex flex-column flex-xl-row align-items-stretch align-items-xl-center gap-2 ms-xl-2 pb-2 pb-xl-0">
+          <div class="d-flex flex-column flex-xxl-row align-items-stretch align-items-xxl-center gap-2 ms-xxl-2 pb-2 pb-xxl-0">
             <?php if ($customer): ?>
               <a class="btn btn-outline-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/sportovni_prehled.php')) ?>"><i class="bi bi-person-heart me-1"></i>Můj přehled</a>
               <div class="dropdown">

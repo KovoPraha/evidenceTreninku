@@ -14,5 +14,5 @@ if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
 }
 
 app_session_destroy();
-header('Location: kalendar.php', true, 303);
+header('Location: ../index.php', true, 303);
 exit;

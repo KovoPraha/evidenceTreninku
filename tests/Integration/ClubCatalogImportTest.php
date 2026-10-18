@@ -68,7 +68,7 @@ final class ClubCatalogImportTest extends TestCase
         $page=(string)file_get_contents(dirname(__DIR__,2).'/booking/cyklisticke_krouzky.php');
         self::assertStringNotContainsString('Koupit ve stávajícím e-shopu',$page);
         self::assertStringNotContainsString('shop.kovopraha.cz',$page);
-        self::assertStringContainsString('height:180px',$page);
+        self::assertStringContainsString('height:148px',$page);
         self::assertStringContainsString('object-fit:contain',$page);
         self::assertStringNotContainsString('object-fit:cover',$page);
     }
