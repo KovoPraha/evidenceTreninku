@@ -10,6 +10,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/account_person_claim.php';
+require_once dirname(__DIR__) . '/includes/athlete_registration.php';
 
 function claimPageH(mixed $value): string
 {
@@ -60,6 +61,7 @@ $success = (string)($_SESSION['flash_claim_success'] ?? '');
 unset($_SESSION['flash_claim_success']);
 $claims = accountPersonClaimListForAccount($pdo, $accountId);
 $participants = accountPersonEligibleParticipants($pdo, $accountId);
+$newAthleteRegistrationOpen = athleteRegistrationTermsReady(athleteRegistrationCurrentTerms($pdo));
 $statusLabels = [
     'pending' => ['warning', 'Čeká na kontrolu'],
     'approved' => ['success', 'Schváleno'],
@@ -81,7 +83,8 @@ $statusLabels = [
 <main class="container py-4" style="max-width:900px">
     <h1 class="h4 mb-1"><i class="bi bi-people me-2 text-primary"></i>Moje osoby</h1>
     <p class="text-muted">Děti a sportovci, které budete moci přihlašovat na kroužky, kurzy a akce.</p>
-    <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2"><span>Kvůli ochraně osobních údajů se osoby nehledají ani nepřipojují automaticky. Administrátor každou vazbu ověří.</span><a class="btn btn-primary btn-sm" href="registrace_sportovce.php"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></div>
+    <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2"><span>Kvůli ochraně osobních údajů se osoby nepřipojují automaticky. Pokud už je sportovec v evidenci klubu, požádejte níže o propojení; administrátor vazbu ověří.</span><a class="btn btn-primary btn-sm" href="#propojeni">Propojit existujícího sportovce</a></div>
+    <?php if ($newAthleteRegistrationOpen): ?><p><a class="btn btn-outline-primary btn-sm" href="registrace_sportovce.php"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></p><?php else: ?><p class="small text-muted">Registrace nového sportovce je dočasně pozastavena, dokud klub neschválí konečné informace o zpracování údajů. Pokud sportovec ještě není v evidenci, <a href="mailto:velodromtrebesin@gmail.com?subject=Registrace%20nov%C3%A9ho%20sportovce">napište klubu</a>.</p><?php endif; ?>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= claimPageH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= claimPageH($success) ?></div><?php endif; ?>
 
@@ -90,7 +93,7 @@ $statusLabels = [
         <?php foreach ($participants as $person): ?><div class="d-flex justify-content-between border-bottom py-2"><span><strong><?= claimPageH($person['prijmeni'] . ' ' . $person['jmeno']) ?></strong><span class="text-muted ms-2"><?= claimPageH($person['narozeni']) ?></span></span><span class="badge bg-success"><?= $person['relation_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil' ?></span></div><?php endforeach; ?>
     </div></section>
 
-    <section class="card border-0 shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Požádat o propojení osoby</div><div class="card-body">
+    <section class="card border-0 shadow-sm mb-3" id="propojeni"><div class="card-header bg-white fw-semibold">Požádat o propojení osoby</div><div class="card-body">
         <form method="post" class="row g-3">
             <?= csrf_field() ?><input type="hidden" name="action" value="submit">
             <div class="col-md-4"><label for="claim-role" class="form-label">Vztah</label><select id="claim-role" class="form-select" name="requested_role" required><option value="guardian">Jsem rodič / zástupce</option><option value="self">Je to můj vlastní profil</option></select></div>

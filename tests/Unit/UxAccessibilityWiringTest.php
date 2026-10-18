@@ -49,9 +49,9 @@ final class UxAccessibilityWiringTest extends TestCase
         $clubs = (string)file_get_contents($this->root . 'booking/krouzky.php');
         $registration = (string)file_get_contents($this->root . 'booking/registrace.php');
 
-        self::assertStringContainsString('navbar-expand-xl', $shell);
+        self::assertStringContainsString('navbar-expand-xxl', $shell);
         self::assertStringContainsString("'lessons' => ['Individuální lekce'", $shell);
-        self::assertStringContainsString('@media (max-width: 1199.98px)', $css);
+        self::assertStringContainsString('@media (max-width: 1399.98px)', $css);
         self::assertStringContainsString('min-height: 44px;', $css);
         self::assertStringContainsString('.app-calendar-day.is-empty:not(.is-today)', $css);
         self::assertStringContainsString('Žádný produkt neodpovídá zvoleným filtrům.', $shop);

@@ -28,4 +28,19 @@ final class ClubLandingFilterTest extends TestCase
         ]]));
         self::assertSame(0, \clubLandingFirstSaleableProductId(['offers'=>[]]));
     }
+
+    public function testCompactOfferSummaryUsesLowestPriceAndRealYearSaving(): void
+    {
+        $offers = [
+            ['purchase_option'=>'full_year','amount_minor'=>720000,'currency'=>'CZK'],
+            ['purchase_option'=>'first_half','amount_minor'=>410000,'currency'=>'CZK'],
+            ['purchase_option'=>'second_half','amount_minor'=>410000,'currency'=>'CZK'],
+        ];
+        self::assertSame(410000, \clubLandingLowestOffer($offers)['amount_minor']);
+        self::assertSame(100000, \clubLandingYearSaving($offers));
+        self::assertNull(\clubLandingLowestOffer([]));
+        self::assertSame(0, \clubLandingYearSaving([$offers[0], $offers[1]]));
+        $offers[2]['currency'] = 'EUR';
+        self::assertSame(0, \clubLandingYearSaving($offers));
+    }
 }

@@ -14,6 +14,17 @@ function memberCalendarH(mixed $value): string
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function memberCalendarPublicStatusLabel(string $status): string
+{
+    return match ($status) {
+        'planned' => 'Předběžný termín',
+        'confirmed' => 'Konání potvrzeno',
+        'cancelled' => 'Zrušeno',
+        'completed' => 'Proběhlo',
+        default => 'Stav se upřesňuje',
+    };
+}
+
 $accountId = isset($_SESSION['verejny_uzivatel_id']) ? (int)$_SESSION['verejny_uzivatel_id'] : null;
 $view = (string)($_GET['zobrazeni'] ?? 'calendar');
 if (!in_array($view, ['calendar', 'register'], true)) $view = 'calendar';
@@ -84,7 +95,7 @@ foreach ($events as $event) {
         'date' => substr((string)$event['starts_at'], 0, 10),
         'title' => (string)$event['name'],
         'time' => $time,
-        'popover' => implode(' · ', array_filter([$time, $meta, $planned ? 'Předběžný plán' : 'Potvrzeno'])),
+        'popover' => implode(' · ', array_filter([$time, $meta, memberCalendarPublicStatusLabel((string)$event['planning_status'])])),
         'tone' => $planned ? 'warning' : 'success',
         'href' => (string)($event['pricing_policy']??'free')==='product_variants'
             ? 'krouzky.php#akce-'.(int)$event['id']
@@ -107,9 +118,9 @@ foreach ($events as $event) {
     <?php if ($events === []): ?><div class="alert alert-light border mt-3">V tomto měsíci nejsou viditelné žádné klubové akce.</div><?php else: ?><p class="small text-muted mt-2">Kliknutím na akci přejdete na detail a přihlášení. Doplňující údaje se zobrazí také při najetí nebo zaměření klávesnicí.</p><?php endif; ?>
   <?php else: ?>
     <div class="row g-3">
-    <?php foreach ($events as $event): $planned=(string)$event['planning_status']==='planned'; $now=date('Y-m-d H:i:s'); $withinWindow=(empty($event['registration_starts_at'])||$event['registration_starts_at']<=$now)&&(empty($event['registration_ends_at'])||$event['registration_ends_at']>=$now); $canRegister=!$planned&&(string)$event['planning_status']==='confirmed'&&(string)$event['status']==='open'&&$withinWindow; $usesShop=(string)($event['pricing_policy']??'free')==='product_variants'; $isFree=(string)($event['pricing_policy']??'free')==='free'; $termsReady=!empty($event['terms_version'])&&!empty($event['consent_text_plain'])&&!empty($event['cancellation_policy_plain'])&&!empty($event['cancellation_deadline_at']); ?>
+    <?php foreach ($events as $event): $planningStatus=(string)$event['planning_status'];$planned=$planningStatus==='planned';$statusBadgeClass=match($planningStatus){'planned'=>'text-bg-warning','confirmed'=>'text-bg-success','cancelled'=>'text-bg-danger',default=>'text-bg-secondary'}; $now=date('Y-m-d H:i:s'); $withinWindow=(empty($event['registration_starts_at'])||$event['registration_starts_at']<=$now)&&(empty($event['registration_ends_at'])||$event['registration_ends_at']>=$now); $canRegister=!$planned&&$planningStatus==='confirmed'&&(string)$event['status']==='open'&&$withinWindow; $usesShop=(string)($event['pricing_policy']??'free')==='product_variants'; $isFree=(string)($event['pricing_policy']??'free')==='free'; $termsReady=!empty($event['terms_version'])&&!empty($event['consent_text_plain'])&&!empty($event['cancellation_policy_plain'])&&!empty($event['cancellation_deadline_at']); ?>
       <div class="col-12" id="akce-<?=(int)$event['id']?>"><article class="card border-0 shadow-sm<?= $planned ? ' border-start border-warning border-5' : '' ?>"><div class="card-body">
-        <div class="d-flex flex-wrap justify-content-between gap-2"><div><h2 class="h5 mb-1"><?=memberCalendarH($event['name'])?></h2><div class="text-muted"><i class="bi bi-calendar3 me-1"></i><?=memberCalendarH(uiFormatDateTimeRange((string)$event['starts_at'], (string)$event['ends_at']))?><?=trim((string)$event['location'])!==''?' · '.memberCalendarH($event['location']):''?></div></div><div class="d-flex gap-2 align-items-start"><span class="badge text-bg-secondary"><?=memberCalendarH(clubCalendarKinds()[(string)$event['activity_kind']] ?? 'Akce')?></span><span class="badge <?=$planned?'text-bg-warning':'text-bg-success'?>"><?=memberCalendarH(clubCalendarPlanningStatuses()[(string)$event['planning_status']] ?? $event['planning_status'])?></span></div></div>
+        <div class="d-flex flex-wrap justify-content-between gap-2"><div><h2 class="h5 mb-1"><?=memberCalendarH($event['name'])?></h2><div class="text-muted"><i class="bi bi-calendar3 me-1"></i><?=memberCalendarH(uiFormatDateTimeRange((string)$event['starts_at'], (string)$event['ends_at']))?><?=trim((string)$event['location'])!==''?' · '.memberCalendarH($event['location']):''?></div></div><div class="d-flex gap-2 align-items-start"><span class="badge text-bg-secondary"><?=memberCalendarH(clubCalendarKinds()[(string)$event['activity_kind']] ?? 'Akce')?></span><span class="badge <?=$statusBadgeClass?>"><?=memberCalendarH(memberCalendarPublicStatusLabel($planningStatus))?></span></div></div>
         <?php if ($planned): ?><div class="alert alert-warning py-2 mt-3 mb-2"><strong>Předběžný plán.</strong> Termín se může změnit a přihlašování zatím není otevřené.</div><?php endif; ?>
         <?php if ((string)$event['public_description_plain'] !== ''): ?><p class="mt-3 mb-2"><?=nl2br(memberCalendarH($event['public_description_plain']))?></p><?php endif; ?>
         <?php if ($event['teams'] !== []): ?><div class="small mb-2"><strong>Soupisky:</strong> <?=memberCalendarH(implode(', ', array_column($event['teams'], 'team_name')))?></div><?php endif; ?>

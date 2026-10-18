@@ -17,6 +17,7 @@ require_once __DIR__ . '/../includes/app_url.php';
 require_once __DIR__ . '/../includes/individual_lesson_context.php';
 require_once __DIR__ . '/../includes/club_finance.php';
 require_once __DIR__ . '/../includes/family_portal.php';
+require_once __DIR__ . '/../includes/ui_format.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -281,14 +282,14 @@ $volnoSlot = max(0, (int)$lekce['max_osob'] - $obsazenoSlot);
                 <div class="fw-semibold mb-2"><?= h($lekce['nazev']) ?></div>
                 <div class="text-muted small">
                     <i class="bi bi-building me-1"></i><?= h($lekce['sport_nazev']) ?><br>
-                    <i class="bi bi-calendar me-1"></i><?= h($lekce['datum']) ?><br>
+                    <i class="bi bi-calendar me-1"></i><?= h(uiFormatDate((string)$lekce['datum'])) ?><br>
                     <i class="bi bi-clock-fill me-1 text-primary"></i>
                     <strong class="text-dark"><?= h($slotOd) ?>–<?= h($slotDo) ?></strong>
-                    <span class="text-muted">(okno <?= h($winOd) ?>–<?= h($winDo) ?>)</span><br>
+                    <br>
                     <i class="bi bi-person me-1"></i>Trenér: <?= h($lekce['trener_jmeno']) ?>
                 </div>
                 <div class="d-flex align-items-center gap-3 mt-2">
-                    <span class="fw-bold text-primary fs-5"><?= number_format($lekce['cena_kc'], 0) ?> Kč</span>
+                    <span class="fw-bold text-primary fs-5"><?= number_format((float)$lekce['cena_kc'], 0, ',', ' ') ?> Kč</span>
                     <span class="text-muted small">
                         <i class="bi bi-people me-1"></i>Volná místa: <?= $volnoSlot ?>/<?= (int)$lekce['max_osob'] ?>
                     </span>
@@ -311,8 +312,8 @@ $volnoSlot = max(0, (int)$lekce['max_osob'] - $obsazenoSlot);
                 <input type="hidden" name="slot_do"  value="<?= h($slotDo) ?>">
                 <?php if ($waitlist): ?><input type="hidden" name="waitlist" value="1"><?php endif; ?>
                 <div class="mb-4">
-                    <label class="form-label">Poznámka pro trenéra (nepovinná)</label>
-                    <textarea name="poznamka_klienta" class="form-control" rows="3"
+                    <label class="form-label" for="reservation-note">Poznámka pro trenéra (nepovinná)</label>
+                    <textarea id="reservation-note" name="poznamka_klienta" class="form-control" rows="3"
                               placeholder="Úroveň jízdy, speciální požadavky…"></textarea>
                 </div>
                 <div class="d-flex gap-2">
@@ -320,7 +321,7 @@ $volnoSlot = max(0, (int)$lekce['max_osob'] - $obsazenoSlot);
                         <i class="bi bi-<?= $waitlist ? 'hourglass' : 'check-lg' ?> me-1"></i>
                         <?= $waitlist ? 'Zařadit na čekací listinu' : ($lekce['typ'] === 'zelena' ? 'Rezervovat' : 'Odeslat žádost') ?>
                     </button>
-                    <a href="javascript:history.back()" class="btn btn-outline-secondary">Zrušit</a>
+                    <a href="kalendar.php?od=<?=h(substr((string)$lekce['datum'],0,7).'-01')?>" class="btn btn-outline-secondary">Zpět na kalendář</a>
                 </div>
             </form>
         </div>

@@ -1,6 +1,18 @@
 <?php
 declare(strict_types=1);
 
+function publicTrainingCategoryLabel(string $category): string
+{
+    return match (mb_strtolower(trim($category), 'UTF-8')) {
+        'draha' => 'Dráha',
+        'silnice' => 'Silnice',
+        'mtb' => 'MTB',
+        'cyklokros' => 'Cyklokros',
+        'hala' => 'Hala',
+        default => $category,
+    };
+}
+
 /**
  * @return list<array<string,mixed>>
  */

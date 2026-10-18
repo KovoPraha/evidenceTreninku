@@ -17,7 +17,7 @@ function clubLandingH(mixed $value): string
 
 function clubLandingMoney(int $minor, string $currency): string
 {
-    return number_format($minor / 100, 0, ',', ' ') . ' ' . clubLandingH($currency);
+    return number_format($minor / 100, 0, ',', ' ') . ' ' . clubLandingH($currency === 'CZK' ? 'Kč' : $currency);
 }
 
 $canonicalPrograms = clubProgramStorefrontCatalog($pdo);
@@ -62,13 +62,24 @@ ksort($weekdayOptions);
     .club-kicker { letter-spacing:.13em; text-transform:uppercase; font-size:.76rem; font-weight:800; color:#ffd36a; }
     .club-filter { border:0; border-radius:1.1rem; box-shadow:0 .5rem 1.8rem rgba(17,26,107,.09); }
     .club-card { border:0; border-radius:1.35rem; overflow:hidden; box-shadow:0 .55rem 2rem rgba(17,26,107,.1); }
-    .club-card img { width:100%; height:180px; padding:.45rem; object-fit:contain; object-position:center; background:var(--club-cream); }
+    .club-card img { width:100%; height:148px; padding:.45rem; object-fit:contain; object-position:center; background:var(--club-cream); }
+    .club-card { transition:transform .18s ease,box-shadow .18s ease; }
+    .club-card:hover { transform:translateY(-2px); box-shadow:0 .85rem 2.2rem rgba(17,26,107,.15); }
     .club-chip { display:inline-flex; align-items:center; gap:.32rem; border-radius:999px; background:#eef0ff; color:var(--club-blue); padding:.34rem .68rem; font-size:.82rem; font-weight:650; }
     .club-offer { border:1px solid #dde1f6; border-radius:1rem; padding:.85rem; background:#fff; }
-    .club-offer.featured { border:2px solid var(--club-red); background:#fff8f7; }
+    .club-offer.featured { border:1px solid #a9bfe7; background:#f2f6ff; }
     .club-offer .price { color:var(--club-blue); font-size:1.14rem; font-weight:800; }
+    .club-options { border:1px solid #d5dded; border-radius:1rem; background:#fff; }
+    .club-options summary { cursor:pointer; list-style:none; padding:.85rem 1rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+    .club-options summary::-webkit-details-marker { display:none; }
+    .club-options summary::after { content:'⌄'; font-size:1.35rem; line-height:1; color:var(--club-blue); transition:transform .18s ease; }
+    .club-options[open] summary::after { transform:rotate(180deg); }
+    .club-options-content { padding:0 1rem 1rem; }
+    .club-options summary:focus-visible { outline:3px solid #146ad1; outline-offset:2px; }
     .club-empty { border:2px dashed #c8cde9; border-radius:1.2rem; background:#fff; }
-    @media (max-width:991.98px) { .club-hero-photo { min-height:220px; } .club-card img { height:160px; } }
+    @media (max-width:991.98px) { .club-hero-photo { min-height:160px; } .club-card img { height:135px; } }
+    @media (max-width:575.98px) { .club-hero h1 { font-size:1.85rem; } .club-hero .lead { font-size:1rem; } .club-hero-photo { min-height:125px; } }
+    @media (prefers-reduced-motion:reduce) { .club-card,.club-options summary::after { transition:none; } .club-card:hover { transform:none; } }
   </style>
 </head>
 <body>
@@ -79,7 +90,7 @@ ksort($weekdayOptions);
       <div class="col-lg-7"><div class="p-4 p-lg-5 h-100 d-flex flex-column justify-content-center">
         <div class="club-kicker mb-2">KOVO Praha · tvoje cyklistická cesta</div>
         <h1 class="display-5 fw-bold mb-3">Kroužek vyberete podle dítěte, dne a místa.</h1>
-        <p class="lead opacity-75 mb-4">Od prvních kilometrů až k pravidelnému tréninku. Bez hledání v e-shopu: na jedné kartě uvidíte rozvrh, cenu i všechny možnosti platby.</p>
+        <p class="lead opacity-75 mb-4">Najděte správnou skupinu podle věku, dne a místa. Rozvrh a ceny máte na jednom místě.</p>
         <div class="d-flex flex-wrap gap-2"><a class="btn btn-light btn-lg" href="#nabidka">Vybrat kroužek</a><a class="btn btn-outline-light btn-lg" href="mailto:velodromtrebesin@gmail.com?subject=Dotaz%20na%20cyklistick%C3%BD%20krou%C5%BEek">Potřebuji poradit</a></div>
       </div></div>
       <div class="col-lg-5 club-hero-photo" style="background-image:url('<?=clubLandingH(appUiUrl('assets/clubs/children-group.webp'))?>')" role="img" aria-label="Děti na cyklistickém kroužku"></div>
@@ -90,12 +101,13 @@ ksort($weekdayOptions);
     <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3"><div><h2 id="nabidka-title" class="h2 mb-1">Aktuální kroužky</h2><p class="text-muted mb-0">Jedna skupina může mít více platebních variant. Dítě vždy míří do stejné soupisky.</p></div><?php if($hasSaleableProgram):?><a class="btn btn-outline-primary" href="eshop.php?kategorie=<?=rawurlencode('Kroužky')?>">Celá nabídka v e-shopu</a><?php endif;?></div>
     <?php if($programs!==[]&&!$hasSaleableProgram):?><div class="alert alert-info mb-4" role="status">Přihlášky do kroužků zatím nejsou otevřené. Rozvrh a ceny si můžete prohlédnout níže; na podrobnosti se zeptejte <a href="mailto:velodromtrebesin@gmail.com?subject=Dotaz%20na%20cyklistick%C3%BD%20krou%C5%BEek">klubu e-mailem</a>.</div><?php endif; ?>
     <?php if ($programs !== []): ?>
-    <div class="card club-filter mb-4"><div class="card-body row g-3 align-items-end">
+    <div class="card club-filter mb-3"><div class="card-body row g-3 align-items-end">
       <div class="col-md-3"><label class="form-label fw-semibold" for="filter-age">Věk dítěte</label><input class="form-control" id="filter-age" type="number" min="1" max="99" inputmode="numeric" placeholder="např. 5" aria-describedby="filter-age-help"><div class="form-text" id="filter-age-help">Nabídky bez uvedeného věku se při filtrování skryjí.</div></div>
       <div class="col-md-3"><label class="form-label fw-semibold" for="filter-day">Den</label><select class="form-select" id="filter-day"><option value="">Všechny dny</option><?php foreach ($weekdayOptions as $number=>$label): ?><option value="<?=$number?>"><?=clubLandingH($label)?></option><?php endforeach; ?></select></div>
       <div class="col-md-4"><label class="form-label fw-semibold" for="filter-text">Místo nebo název</label><input class="form-control" id="filter-text" type="search" placeholder="např. Třebešín"></div>
-      <div class="col-md-2"><button class="btn btn-outline-secondary w-100" type="button" id="filter-reset">Zrušit filtry</button></div>
+      <div class="col-md-2"><button class="btn btn-outline-secondary w-100" type="button" id="filter-reset" disabled>Zrušit filtry</button></div>
     </div></div>
+    <p class="small text-muted mb-3" id="filter-count" role="status" aria-live="polite"></p>
     <?php endif; ?>
 
     <div class="row g-4" id="club-list">
@@ -105,6 +117,9 @@ ksort($weekdayOptions);
         $ageRange=clubLandingAgeRange((string)$program['age_label']);
         $image=$program['images'][0]['image_url']??appUiUrl($fallbackImages[$index%count($fallbackImages)]);
         $firstProductId=clubLandingFirstSaleableProductId($program);
+        $lowestOffer=clubLandingLowestOffer($program['offers']);
+        $yearSaving=clubLandingYearSaving($program['offers']);
+        $offerCount=count($program['offers']);
     ?>
       <div class="col-lg-6 club-entry" data-days="<?=clubLandingH(implode(',',$days))?>" data-search="<?=clubLandingH($search)?>" data-age-min="<?=$ageRange[0]??''?>" data-age-max="<?=$ageRange[1]??''?>">
         <article class="card club-card h-100">
@@ -119,15 +134,17 @@ ksort($weekdayOptions);
               <?php foreach($program['schedule']as$slot):?><span class="club-chip"><i class="bi bi-calendar3"></i><?=clubLandingH(clubProgramStorefrontWeekdayLabel((int)$slot['weekday']).' '.substr((string)$slot['starts_at'],0,5).'–'.substr((string)$slot['ends_at'],0,5))?></span><?php endforeach;?>
               <?php if(!empty($program['schedule_label'])):?><span class="club-chip"><i class="bi bi-calendar3"></i><?=clubLandingH($program['schedule_label'])?></span><?php endif;?>
             </div>
-            <div class="vstack gap-2 mt-auto">
+            <?php if($offerCount>0):?><details class="club-options mt-auto" <?=$offerCount===1?'open':''?>><summary><span><strong><?=$offerCount===1?'Cena a přihlášení':'Zobrazit možnosti platby'?></strong><?php if($yearSaving>0):?><span class="d-block small text-success">Celý rok ušetří <?=clubLandingMoney($yearSaving,(string)$lowestOffer['currency'])?></span><?php endif;?></span><span class="text-nowrap fw-bold text-primary"><?=$offerCount>1?'od ':''?><?=clubLandingMoney((int)$lowestOffer['amount_minor'],(string)$lowestOffer['currency'])?></span></summary><div class="club-options-content"><div class="vstack gap-2">
               <?php foreach($program['offers']as$offer):?>
                 <div class="club-offer <?=!empty($offer['is_featured'])?'featured':''?>">
-                  <div class="d-flex justify-content-between align-items-start gap-2"><div><strong><?=clubLandingH($offer['purchase_label'])?></strong><?php if(!empty($offer['is_featured'])):?><span class="badge text-bg-danger ms-1">nejvýhodnější</span><?php endif;?><div class="small text-muted"><?=clubLandingH($offer['name'])?></div></div><div class="price text-nowrap"><?=clubLandingMoney((int)$offer['amount_minor'],(string)$offer['currency'])?></div></div>
-                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2"><span class="small <?=!empty($offer['saleable'])?'text-success':'text-muted'?>"><?php if(!empty($offer['saleable'])):?><i class="bi bi-check-circle me-1"></i>Lze se přihlásit<?php else:?><?=clubLandingH($offer['sale_reason'])?><?php endif;?></span>
+                  <div class="d-flex justify-content-between align-items-start gap-2"><div><strong><?=clubLandingH($offer['purchase_label'])?></strong><?php if(!empty($offer['is_featured'])&&$yearSaving>0):?><span class="badge text-bg-primary ms-1">výhodnější</span><?php endif;?></div><div class="price text-nowrap"><?=clubLandingMoney((int)$offer['amount_minor'],(string)$offer['currency'])?></div></div>
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2"><?php if(!empty($offer['saleable'])):?><span class="small text-success"><i class="bi bi-check-circle me-1"></i>Lze se přihlásit</span><?php endif; ?>
                   <?php if(!empty($offer['saleable'])):?><a class="btn btn-primary btn-sm" href="rychla_prihlaska.php?product_id=<?=(int)$offer['product_id']?>&amp;variant_id=<?=(int)$offer['variant_id']?>">Přihlásit dítě</a><?php endif;?></div>
                 </div>
               <?php endforeach;?>
-              <?php if($program['offers']===[]):?><div class="alert alert-info mb-0">Termíny a ceny právě připravujeme.</div><?php endif;?>
+            </div></div></details><?php else:?><div class="alert alert-info mb-0 mt-auto">Termíny a ceny právě připravujeme.</div><?php endif; ?>
+            <?php if($offerCount>0&&$firstProductId===0&&$hasSaleableProgram):?><p class="small text-muted mt-2 mb-0">Přihlášky do této skupiny zatím nejsou otevřené.</p><?php endif;?>
+            <div class="vstack gap-2">
               <?php if(!empty($program['interest_enabled'])||$firstProductId===0):?><?php if($firstProductId>0):?><a class="btn btn-link px-0 text-start" href="produkt.php?id=<?=$firstProductId?>#mam-zajem"><i class="bi bi-envelope me-1"></i>Nevyhovuje vám termín? Nechte nám e-mail.</a><?php else:?><a class="btn btn-link px-0 text-start" href="mailto:velodromtrebesin@gmail.com?subject=Dotaz%20na%20krou%C5%BEek%20<?=rawurlencode((string)$program['public_name'])?>"><i class="bi bi-envelope me-1"></i>Zeptat se klubu na tento kroužek</a><?php endif;?><?php endif;?>
             </div>
           </div>
@@ -147,8 +164,9 @@ ksort($weekdayOptions);
   const age=document.getElementById('filter-age');
   const text=document.getElementById('filter-text');
   if(!day||!age||!text)return;
-  const apply=()=>{const q=text.value.trim().toLocaleLowerCase('cs');const selectedAge=age.value===''?null:Number(age.value);let visible=0;entries.forEach(entry=>{const days=(entry.dataset.days||'').split(',');const ageMatches=selectedAge===null||(entry.dataset.ageMin!==''&&selectedAge>=Number(entry.dataset.ageMin)&&selectedAge<=Number(entry.dataset.ageMax));const show=ageMatches&&(!day.value||days.includes(day.value))&&(!q||(entry.dataset.search||'').includes(q));entry.classList.toggle('d-none',!show);if(show)visible++;});document.getElementById('no-filter-results')?.classList.toggle('d-none',visible>0);};
-  day.addEventListener('change',apply);age.addEventListener('input',apply);text.addEventListener('input',apply);document.getElementById('filter-reset')?.addEventListener('click',()=>{day.value='';age.value='';text.value='';apply();});
+  const reset=document.getElementById('filter-reset');
+  const apply=()=>{const q=text.value.trim().toLocaleLowerCase('cs');const selectedAge=age.value===''?null:Number(age.value);let visible=0;entries.forEach(entry=>{const days=(entry.dataset.days||'').split(',');const ageMatches=selectedAge===null||(entry.dataset.ageMin!==''&&selectedAge>=Number(entry.dataset.ageMin)&&selectedAge<=Number(entry.dataset.ageMax));const show=ageMatches&&(!day.value||days.includes(day.value))&&(!q||(entry.dataset.search||'').includes(q));entry.classList.toggle('d-none',!show);if(show)visible++;});document.getElementById('no-filter-results')?.classList.toggle('d-none',visible>0);document.getElementById('filter-count').textContent=`Zobrazeno ${visible} z ${entries.length} kroužků`;if(reset)reset.disabled=selectedAge===null&&!day.value&&!q;};
+  day.addEventListener('change',apply);age.addEventListener('input',apply);text.addEventListener('input',apply);reset?.addEventListener('click',()=>{day.value='';age.value='';text.value='';apply();});apply();
 })();
 </script>
 </body>
