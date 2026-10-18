@@ -16,6 +16,14 @@ final class SecurityAuditRegressionTest extends TestCase
         self::assertStringNotContainsString('HTTP:X-Forwarded-Proto', $rules);
     }
 
+    public function testInternalBootstrapFilesAndIncludesAreNotWebRoutes(): void
+    {
+        $rules = (string) file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
+
+        self::assertStringContainsString('^(?:config|db|csrf_helper)\\.php$', $rules);
+        self::assertStringContainsString('RewriteRule ^includes(?:/|$) - [F,L,NC]', $rules);
+    }
+
     public function testExerciseMutationsRequireAValidCsrfToken(): void
     {
         $source = (string) file_get_contents(dirname(__DIR__, 2) . '/cviky.php');
