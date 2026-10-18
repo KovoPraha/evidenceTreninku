@@ -13,6 +13,7 @@ on:
           - overit-databazove-invarianty
           - overit-uat-pripravenost
           - pripravit-uat-ucty-a-data
+          - obnovit-uat-test-hesla
           - deaktivovat-testovaci-ucty
           - vytvorit-kis-test-admina
       potvrzeni:
@@ -224,6 +225,36 @@ jobs:
           production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-uat.php'" | tee /tmp/kis-uat-result.json
           jq -e '.ok == true and (.parents|length) == 2 and (.children|length) == 2 and (.products|length) == 3 and (.events|length) == 2 and (.lessons|length) == 2' /tmp/kis-uat-result.json >/dev/null
           echo 'Produkční UAT účty a označená testovací data byly vytvořeny a ověřeny.'
+
+      - name: Obnovit hesla pouze ctyr existujicich rodinnych TEST uctu
+        if: inputs.operace == 'obnovit-uat-test-hesla'
+        env:
+          KIS_UAT_PASSWORD_VALUE: ${{ secrets.KIS_UAT_TEST_PASSWORD }}
+          KIS_UAT_WINDOW_END_VALUE: ${{ vars.KIS_UAT_WINDOW_END }}
+        run: |
+          set -euo pipefail
+          test -n "$KIS_UAT_PASSWORD_VALUE"
+          test -n "$KIS_UAT_WINDOW_END_VALUE"
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          export KIS_UAT_PASSWORD_VALUE KIS_UAT_WINDOW_END_VALUE
+          php -r '$v=["password"=>getenv("KIS_UAT_PASSWORD_VALUE"),"window_end"=>getenv("KIS_UAT_WINDOW_END_VALUE")];file_put_contents("/tmp/kis-uat-rotate-settings.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
+          chmod 600 /tmp/kis-uat-rotate-settings.json
+          production_retry "${SCP[@]}" bin/rotate-production-uat-passwords.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/rotate-production-uat-passwords.php"
+          production_retry "${SCP[@]}" /tmp/kis-uat-rotate-settings.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/kis-uat-rotate-settings.json"
+          cat > /tmp/run-rotate-production-uat-passwords.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_UAT_ROTATE_CONFIRM=OBNOVIT-TEST-HESLA');
+          putenv('KIS_UAT_SETTINGS_FILE=$DEPLOY_BASE/kis-uat-rotate-settings.json');
+          require __DIR__ . '/rotate-production-uat-passwords.php';
+          kisUatRotatePasswordsMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-rotate-production-uat-passwords.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-rotate-production-uat-passwords.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-rotate-production-uat-passwords.php'" | tee /tmp/kis-uat-rotate-result.json
+          jq -e '.ok == true and .parents_rotated == 2 and .children_rotated == 2' /tmp/kis-uat-rotate-result.json >/dev/null
+          echo 'Hesla ctyr vyhrazenych TEST uctu byla obnovena bez zmeny testovacich scenarovych dat.'
 
       - name: Deaktivovat vyhradne jednorazove testovaci ucty
         if: inputs.operace == 'deaktivovat-testovaci-ucty'

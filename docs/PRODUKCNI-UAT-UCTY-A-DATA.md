@@ -25,6 +25,13 @@ prokazatelně vytvořil UAT provisioning; ručně změněná vazba přípravu za
 Dětské účty mají pouze omezený
 sportovní přehled; nejsou rodičovskými ani administrátorskými účty.
 
+Pokud opakované založení scénářových dat bezpečně odmítne již využitý TEST
+trénink, lze v produkčním workflow zvolit `obnovit-uat-test-hesla`. Operace
+obnoví přístup pouze existujícím dvěma rodičům a dvěma dětem, přitom ověří
+jejich jména a data narození, zneplatní staré relace a resetovací tokeny a
+nezmění tréninky, akce, objednávky ani jiné scénáře. TEST správce se obnovuje
+samostatnou operací `vytvorit-kis-test-admina`.
+
 ## Připravená scénářová data
 
 Veřejné záznamy mají povinný prefix `TEST -`:
