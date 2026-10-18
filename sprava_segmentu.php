@@ -244,7 +244,7 @@ $form = [
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Správa segmentů</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .btn-xs { padding: .18rem .45rem; font-size: .82rem; }
         .thumb-sm { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
     </style>

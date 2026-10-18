@@ -144,7 +144,7 @@ $csrfToken = csrf_token();
     <title>Správa tréninků</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .badge-orange { background-color: #fd7e14; color: #fff; }
         .badge-teal   { background-color: #20c997; color: #fff; }
         #searchBox:focus { box-shadow: 0 0 0 .25rem rgba(13,110,253,.25); }
@@ -163,7 +163,7 @@ $csrfToken = csrf_token();
         <div class="row g-3">
             <div class="col-md-3">
                 <label class="form-label"><i class="bi bi-people me-1"></i>Skupina</label>
-                <select id="skupinaFilter" name="skupina_id" class="form-select" onchange="this.form.submit()">
+                <select id="skupinaFilter" name="skupina_id" class="form-select" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
                     <option value="">-- všechny --</option>
                     <?php foreach ($groups as $g): ?>
                         <option value="<?= (int)$g['id'] ?>" <?= ($filterGroup == $g['id']) ? 'selected' : '' ?>>
@@ -314,7 +314,7 @@ $csrfToken = csrf_token();
                                  class="img-thumbnail me-1"
                                  style="height:48px; width:48px; object-fit:cover;"
                                  alt="foto"
-                                 onerror="this.style.display='none'">
+                                 data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onerror="this.style.display='none'">
                         <?php endforeach; ?>
                         <?php if (count($imgs) > 3): ?>
                             <span class="text-muted small">+<?= count($imgs) - 3 ?></span>
@@ -365,7 +365,7 @@ $csrfToken = csrf_token();
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // Dynamické načítání podskupin
 document.getElementById('skupinaFilter')?.addEventListener('change', function () {
     const gid = this.value;

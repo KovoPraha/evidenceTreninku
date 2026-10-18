@@ -198,7 +198,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
     <title><?= $duplikat ? 'Duplikovat trénink' : 'Zadání tréninku' ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         body { background: #f0f2f5; }
 
         .section-card {
@@ -679,7 +679,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
     </form>
 </div><!-- /container -->
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Globální předvyplnění z duplikat ─────────────────────────────────────
 const DUPLIKAT = <?= json_encode($duplikat, JSON_UNESCAPED_UNICODE) ?>;
 window.__duplikatPodskupiny = DUPLIKAT ? (DUPLIKAT.podskupiny || []) : [];
@@ -1341,7 +1341,7 @@ if ((DUPLIKAT && DUPLIKAT.skupina_id) || (PLAN_PREFILL && PLAN_PREFILL.skupina_i
 })();
 </script>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Upozornění na neuložené změny ────────────────────────────────────────
 (() => {
     const form = document.getElementById('treninkForm');

@@ -39,14 +39,14 @@ unset($_SESSION['flash_success']);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moje tréninky</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .thumbnail { height: 70px; margin: 2px; object-fit: cover; border-radius: .375rem; }
         .muted-label { color:#6c757d; font-size: .9rem; }
         .kv { margin-bottom: .25rem; }
         #listWrap { min-height: 80px; }
         .spinner-overlay { display:none; text-align:center; padding: 2rem; }
     </style>
-    <script>const CSRF_TOKEN = <?= json_encode(csrf_token()) ?>;</script>
+    <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">const CSRF_TOKEN = <?= json_encode(csrf_token()) ?>;</script>
 </head>
 <body class="bg-light">
 <?php include 'hlavicka.php'; ?>
@@ -125,7 +125,7 @@ unset($_SESSION['flash_success']);
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
     const filterRok     = document.getElementById('filterRok');
     const filterMesic   = document.getElementById('filterMesic');

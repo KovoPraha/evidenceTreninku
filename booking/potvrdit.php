@@ -132,7 +132,7 @@ if ($method === 'POST' && !csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
     </div>
 </div>
 <?php if ($method === 'GET'): ?>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
     const params = new URLSearchParams(window.location.hash.slice(1));
     const token = params.get('token') || '';

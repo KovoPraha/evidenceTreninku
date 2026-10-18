@@ -273,7 +273,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Plánovač tréninků</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .plan-card {
             border-left: 4px solid #6b7280;
             transition: box-shadow .15s;
@@ -356,12 +356,12 @@ try {
         <!-- Přepínač Moje / Vše -->
         <div class="btn-group btn-group-sm" role="group">
             <input type="radio" class="btn-check" name="jen_moje" id="fMoje" value="1"
-                   <?= $filterJenMoje ? 'checked' : '' ?> onchange="toggleTrenerFilter();this.form.submit()">
+                   <?= $filterJenMoje ? 'checked' : '' ?> data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="toggleTrenerFilter();this.form.submit()">
             <label class="btn btn-outline-primary" for="fMoje">
                 <i class="bi bi-person-fill me-1"></i>Moje
             </label>
             <input type="radio" class="btn-check" name="jen_moje" id="fVse" value="0"
-                   <?= !$filterJenMoje ? 'checked' : '' ?> onchange="toggleTrenerFilter();this.form.submit()">
+                   <?= !$filterJenMoje ? 'checked' : '' ?> data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="toggleTrenerFilter();this.form.submit()">
             <label class="btn btn-outline-secondary" for="fVse">
                 <i class="bi bi-people me-1"></i>Vše
             </label>
@@ -370,7 +370,7 @@ try {
         <!-- Trenér select — viditelný jen při "Vše" -->
         <select name="trener_id" id="trenerSelect"
                 class="form-select form-select-sm <?= $filterJenMoje ? 'd-none' : '' ?>"
-                style="width:auto" onchange="this.form.submit()">
+                style="width:auto" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
             <option value="">— všichni trenéři —</option>
             <?php foreach ($treneri as $tr): ?>
                 <option value="<?= $tr['id'] ?>"
@@ -382,7 +382,7 @@ try {
 
         <!-- Skupina -->
         <select name="skupina_id" class="form-select form-select-sm" style="width:auto"
-                onchange="this.form.submit()">
+                data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
             <option value="">Všechny skupiny</option>
             <?php foreach ($skupiny as $sk): ?>
                 <option value="<?= $sk['id'] ?>" <?= $filterSkupina == $sk['id'] ? 'selected' : '' ?>>
@@ -413,7 +413,7 @@ try {
                 <?php if (canAccess('oznameni')): ?>
                 <button type="button" class="btn btn-primary btn-sm py-0 px-2"
                         data-bs-toggle="modal" data-bs-target="#modalNoveOznameni"
-                        onclick="event.stopPropagation()"
+                        data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="event.stopPropagation()"
                         title="Nové oznámení skupině">
                     <i class="bi bi-plus-lg me-1"></i>Nové
                 </button>
@@ -831,7 +831,7 @@ try {
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Drag & Drop plánů ─────────────────────────────────────────────────────
 (function() {
     const CSRF = <?= json_encode(csrf_token()) ?>;

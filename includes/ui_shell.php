@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/app_url.php';
+require_once __DIR__ . '/session_security.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 
 function appUiBasePath(): string
@@ -31,11 +32,12 @@ function appUiAssets(): void
     $icons = htmlspecialchars(appUiUrl('assets/vendor/bootstrap-icons/font/bootstrap-icons.css') . '?v=' . rawurlencode($iconsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $css = htmlspecialchars(appUiUrl('assets/app-ui.css') . '?v=' . rawurlencode($cssVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $js = htmlspecialchars(appUiUrl('assets/app-ui.js') . '?v=' . rawurlencode($jsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $nonce = htmlspecialchars(app_csp_nonce(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     echo '<link href="' . $bootstrapCss . '" rel="stylesheet">';
     echo '<link href="' . $icons . '" rel="stylesheet">';
     echo '<link href="' . $css . '" rel="stylesheet">';
-    echo '<script src="' . $bootstrapJs . '"></script>';
-    echo '<script defer src="' . $js . '"></script>';
+    echo '<script nonce="' . $nonce . '" src="' . $bootstrapJs . '"></script>';
+    echo '<script nonce="' . $nonce . '" defer src="' . $js . '"></script>';
 }
 
 function publicShellH(mixed $value): string

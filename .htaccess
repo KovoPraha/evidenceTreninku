@@ -11,7 +11,6 @@ Options -Indexes
     # ponechava lokalni XAMPP vyvoj beze zmeny.
     RewriteCond %{HTTP_HOST} ^kis\.kovopraha\.cz(?::[0-9]+)?$ [NC]
     RewriteCond %{HTTPS} !=on
-    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
     RewriteRule ^ https://kis.kovopraha.cz%{REQUEST_URI} [R=308,L,NE]
 
     RewriteRule (^|/)\.git(/|$) - [F,L]

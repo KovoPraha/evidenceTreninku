@@ -300,7 +300,7 @@ try {
     <title>Správa sportovců – Evidence</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         body { background: #f0f2f5; }
         .hero-card {
             border: none; border-radius: 12px;
@@ -447,7 +447,7 @@ try {
                     </button>
                 </div>
             </form>
-            <?php if (is_array($createPreview)): ?><script>document.getElementById('create-card')?.scrollIntoView({behavior:'smooth',block:'start'});</script><?php endif; ?>
+            <?php if (is_array($createPreview)): ?><script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">document.getElementById('create-card')?.scrollIntoView({behavior:'smooth',block:'start'});</script><?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
@@ -670,7 +670,7 @@ try {
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Edit tlačítko → vyplnit formulář ────────────────────────────────────────
 document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', () => {

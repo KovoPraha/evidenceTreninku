@@ -448,7 +448,7 @@ if ($form['target_skupina_id'] !== '' && ctype_digit((string)$form['target_skupi
     <meta charset="UTF-8">
     <title>Google Sheets odkazy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .small-muted { font-size: .85rem; color: #666; }
         .url-break { word-break: break-all; }
         .btn-xs { padding: .18rem .45rem; font-size: .82rem; }
@@ -736,7 +736,7 @@ if ($form['target_skupina_id'] !== '' && ctype_digit((string)$form['target_skupi
 
 </div>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 /* UX: když uživatel začne psát novou kategorii, odznačí select (a naopak) */
 (() => {
     const sel = document.getElementById('kategorie_id');
@@ -903,7 +903,7 @@ if (selGroup) {
 })();
 </script>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 window.__initialSportovciLabels = <?= json_encode(
     !empty($editTargets['sportovci']) ? $editTargets['sportovci'] : $formSportLabels,
     JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT

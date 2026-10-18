@@ -81,7 +81,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
     </div>
 </div>
 <?php if (!$attempted): ?>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
     const params = new URLSearchParams(window.location.hash.slice(1));
     const token = params.get('token') || '';

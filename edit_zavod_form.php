@@ -185,7 +185,7 @@ $flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_succe
     <title>Upravit závod — <?= h($titleDate) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         body { background: #f0f2f5; }
 
         .section-card {
@@ -507,7 +507,7 @@ $flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_succe
                                 <img src="nahrane_zavody/<?= h($fotka['soubor']) ?>"
                                      class="existing-thumb d-block mb-1"
                                      alt="Fotka závodu"
-                                     onerror="this.src='';this.alt='chybí soubor'">
+                                     data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onerror="this.src='';this.alt='chybí soubor'">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox"
                                            name="smazat_fotku[]"
@@ -591,7 +591,7 @@ $flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_succe
     </form>
 </div><!-- /container -->
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Předvyplnění účastníků z PHP ─────────────────────────────────────────────
 window.__ucastniciSelected = <?= json_encode($ucastniciJS, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 
@@ -1173,7 +1173,7 @@ document.getElementById('skupina_id').addEventListener('change', function () {
 })();
 </script>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Upozornění na neuložené změny ─────────────────────────────────────────────
 (() => {
     const form = document.getElementById('zavodForm');

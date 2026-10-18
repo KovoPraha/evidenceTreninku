@@ -242,7 +242,7 @@ if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
     <meta charset="UTF-8">
     <title>Kalendář tréninků dle skupin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .calendar-mini th { width: calc(100%/7); }
         .calendar-cell { vertical-align: top; min-width: 120px; }
         .calendar-cell.empty { height: 56px; }
@@ -283,7 +283,7 @@ if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
 
                 <div class="col-md-4">
                     <label class="form-label" for="skupina_id">Skupina</label>
-                    <select class="form-select" id="skupina_id" name="skupina_id" onchange="this.form.submit()">
+                    <select class="form-select" id="skupina_id" name="skupina_id" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
                         <option value="">-- vyber skupinu --</option>
                         <?php foreach ($skupiny as $sk): ?>
                             <option value="<?= (int)$sk['id'] ?>" <?= ($filterSkupinaId == $sk['id']) ? 'selected' : '' ?>>

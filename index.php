@@ -38,7 +38,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
   <title>KOVO Praha – cyklistické kroužky, tréninky a e-shop</title>
   <?php publicSeoHead('KOVO Praha – cyklistické kroužky, tréninky a e-shop','Cyklistické kroužky pro děti, klubové tréninky, akce, rezervace velodromu a e-shop KOVO Praha.','',appUrl('assets/kovo-praha-logo.png')); ?>
   <?php appUiAssets(); ?>
-  <style>
+  <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     body { background: var(--app-page-bg); }
     .section-card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
     .section-card .card-header {

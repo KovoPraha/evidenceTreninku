@@ -169,7 +169,7 @@ $dniLabels    = [7=>'7 dní', 14=>'14 dní', 30=>'1 měsíc', 180=>'6 měsíců'
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Přehled popisů tréninků</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .badge-orange { background-color: #fd7e14; color: #fff; }
         .badge-teal   { background-color: #20c997; color: #fff; }
         .trenink-card {
@@ -328,7 +328,7 @@ $dniLabels    = [7=>'7 dní', 14=>'14 dní', 30=>'1 měsíc', 180=>'6 měsíců'
                 </div>
             </div>
             <?php if (!empty($treninky)): ?>
-            <button class="btn btn-outline-secondary btn-sm no-print" onclick="window.print()">
+            <button class="btn btn-outline-secondary btn-sm no-print" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="window.print()">
                 <i class="bi bi-printer me-1"></i>Tisk
             </button>
             <?php endif; ?>
@@ -415,7 +415,7 @@ $dniLabels    = [7=>'7 dní', 14=>'14 dní', 30=>'1 měsíc', 180=>'6 měsíců'
 </div><!-- /container -->
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 const skupinaSelect    = document.getElementById('skupinaSelect');
 const podskupinaSelect = document.getElementById('podskupinaSelect');
 const submitBtn        = document.getElementById('submitBtn');
@@ -461,7 +461,7 @@ if (skupinaSelect) {
 }
 </script>
 
-<style media="print">
+<style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" media="print">
     .hero-bar, .filter-card, .no-print, nav, footer { display: none !important; }
     .trenink-card { box-shadow: none !important; border: 1px solid #dee2e6 !important; page-break-inside: avoid; }
     body { background: #fff !important; }

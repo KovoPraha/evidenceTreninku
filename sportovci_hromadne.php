@@ -167,7 +167,7 @@ if (!$previewOnly) {
         </div>
     </div>
 </div>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 const action = document.getElementById('bulkAction');
 function syncFields() {
     document.querySelectorAll('.action-field').forEach(el => el.classList.add('d-none'));

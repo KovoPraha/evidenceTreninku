@@ -26,6 +26,25 @@ podvržený Host header proto na produkčním Linuxu cookie neoslabí. Na běžn
 produkční doméně je `Secure` zapnuté i v případě, že proxy nepředá PHP informaci
 o HTTPS.
 
+Produkční host `kis.kovopraha.cz` přesměrovává HTTP na HTTPS podle skutečného
+TLS stavu serveru. Klientská hlavička `X-Forwarded-Proto` tuto kontrolu nesmí
+obcházet; při případném nasazení za reverzní proxy je třeba nejprve ověřit,
+že proxy nastavuje důvěryhodné serverové parametry a nevzniká smyčka přesměrování.
+
+## Content Security Policy
+
+Inline `<script>` a `<style>` v serverové šabloně musí nést výslovný atribut
+`nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>"`.
+Výstupní filtr už nepřidává nonce libovolnému HTML, protože by tím povolil
+i skript vložený přes chybu v escapování. Starší statické `on*` obslužné
+atributy mohou dočasně používat `data-app-csp-handler` s nonce stejné odpovědi;
+filtr počítá CSP hash pouze u takto označeného prvku. Nové interakce mají
+používat `addEventListener` a uživatelská data vkládat přes `textContent`,
+nikoli přes `innerHTML`.
+Direktiva `strict-dynamic` vyžaduje nonce i pro schválené externí skripty;
+společný `appUiAssets()` jej přidává automaticky. Původní seznam hostů
+v CSP slouží jen jako kompatibilní fallback pro starší prohlížeče.
+
 Hodnoty 7 200 / 43 200 / 900 sekund jsou pro první bezpečnostní increment
 **prozatímní a konfigurovatelné**. Helper je čte z konstant
 `APP_SESSION_IDLE_TIMEOUT`, `APP_SESSION_ABSOLUTE_TIMEOUT` a

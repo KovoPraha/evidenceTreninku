@@ -514,7 +514,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
   <title><?= h($sportovec_name) ?> – karta sportovce</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <?php appUiAssets(); ?>
-  <style>
+  <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     body { background: #f5f7fa; }
     .hero-card {
         background: linear-gradient(135deg, #1a56db 0%, #0e9f6e 100%);
@@ -1000,7 +1000,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 </div><!-- /container -->
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (function () {
     const CSRF_TOKEN  = <?= json_encode(csrf_token(),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
     const DEFAULT_ROK = <?= json_encode($defaultRok,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;

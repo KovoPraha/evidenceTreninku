@@ -151,7 +151,7 @@ $otevrene = $pdo->query("
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // Řidič: zobrazit textové pole
 document.getElementById('ridic_id').addEventListener('change', function() {
     const wrap = document.getElementById('jmeno_ridice_wrap');
@@ -171,7 +171,8 @@ document.getElementById('formular-jizda').addEventListener('submit', function(e)
                 el.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Uloženo.</div>';
                 setTimeout(() => window.location.href = 'seznam.php', 800);
             } else {
-                el.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>' + data.message + '</div>';
+                el.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><span></span></div>';
+                el.querySelector('span').textContent = String(data.message || 'Uložení se nezdařilo.');
             }
         })
         .catch(() => {

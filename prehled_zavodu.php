@@ -99,7 +99,7 @@ $monthLabels = [1=>'1 měsíc', 2=>'2 měsíce', 6=>'6 měsíců', 12=>'12 měs�
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Přehled závodů</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .badge-orange { background-color: #fd7e14; color: #fff; }
         .badge-teal   { background-color: #20c997; color: #fff; }
         tr.table-warning td { background-color: #fff8e1 !important; }
@@ -301,7 +301,7 @@ $monthLabels = [1=>'1 měsíc', 2=>'2 měsíce', 6=>'6 měsíců', 12=>'12 měs�
 
 </div>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 document.getElementById('skupina').addEventListener('change', function () {
     fetch('nacti_podskupiny.php?skupina_id=' + this.value)
         .then(r => r.json())

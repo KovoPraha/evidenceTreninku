@@ -421,7 +421,7 @@ if ($selected !== '') {
     <meta charset="UTF-8">
     <title>Hromadná administrace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         /* ---- layout tabulky ---- */
         table { table-layout: fixed; }
 
@@ -529,7 +529,7 @@ if ($selected !== '') {
     <form method="get" class="row g-3 mb-4">
         <div class="col-md-5">
             <label for="skupina" class="form-label">Skupina / režim</label>
-            <select id="skupina" name="skupina" class="form-select" onchange="this.form.submit()">
+            <select id="skupina" name="skupina" class="form-select" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
                 <option value="">— vyber —</option>
                 <?php foreach ($skupiny as $sk): ?>
                     <option value="<?= (int)$sk['id'] ?>" <?= ($selected == (string)$sk['id']) ? 'selected' : '' ?>>
@@ -771,7 +771,7 @@ if ($selected !== '') {
 
 </div>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 
 
 

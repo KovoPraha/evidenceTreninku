@@ -91,7 +91,7 @@ $platba_map = [
     <div class="card-body py-2">
       <form method="GET" class="d-flex align-items-center gap-3">
         <label class="form-label mb-0 fw-semibold small"><i class="bi bi-funnel me-1"></i>Kategorie:</label>
-        <select name="kategorie" class="form-select form-select-sm" style="max-width: 220px;" onchange="this.form.submit()">
+        <select name="kategorie" class="form-select form-select-sm" style="max-width: 220px;" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
           <option value="">Všechny</option>
           <?php foreach ($kategorie_map as $k => $v): ?>
             <option value="<?= $k ?>" <?= $filtr_kategorie === $k ? 'selected' : '' ?>><?= $v ?></option>

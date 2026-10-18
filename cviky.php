@@ -23,8 +23,9 @@ $show = $_GET['show'] ?? 'aktivni'; // aktivni | vse
 // --------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+        http_response_code(403);
         $errors[] = 'Neplatný CSRF token.';
-    }
+    } else {
     $action = $_POST['action'] ?? '';
 
     // Pomocná validace ID
@@ -74,13 +75,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: cviky.php?ok=1');
                 exit;
             } catch (PDOException $e) {
-                // Typicky duplicate unique nazev
-                $errors[] = 'Chyba při ukládání: ' . $e->getMessage();
+                error_log('cviky.php save: ' . $e->getMessage());
+                $errors[] = 'Cvik se nepodařilo uložit. Zkontrolujte, zda název již neexistuje.';
             }
         }
     }
 
-    if ($action === 'delete') {
+    if ($action === 'delete' && empty($errors)) {
         if ($id <= 0) {
             $errors[] = 'Neplatné ID pro smazání.';
         } else {
@@ -90,12 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: cviky.php?ok=1');
                 exit;
             } catch (PDOException $e) {
-                $errors[] = 'Chyba při mazání: ' . $e->getMessage();
+                error_log('cviky.php delete: ' . $e->getMessage());
+                $errors[] = 'Cvik se nepodařilo smazat.';
             }
         }
     }
 
-    if ($action === 'toggle') {
+    if ($action === 'toggle' && empty($errors)) {
         if ($id <= 0) {
             $errors[] = 'Neplatné ID.';
         } else {
@@ -105,9 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: cviky.php?ok=1');
                 exit;
             } catch (PDOException $e) {
-                $errors[] = 'Chyba při změně aktivace: ' . $e->getMessage();
+                error_log('cviky.php toggle: ' . $e->getMessage());
+                $errors[] = 'Aktivaci cviku se nepodařilo změnit.';
             }
         }
+    }
     }
 }
 
@@ -168,7 +172,7 @@ $form = [
     <meta charset="UTF-8">
     <title>Správa cviků</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .btn-xs { padding: .18rem .45rem; font-size: .82rem; }
         .w-120 { width: 120px; }
         .w-90 { width: 90px; }

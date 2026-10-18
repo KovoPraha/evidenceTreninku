@@ -232,7 +232,7 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
     </div>
 </div>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // AJAX načtení podskupin při změně skupiny
 document.getElementById('skupina')?.addEventListener('change', function () {
     fetch('ajax_podskupiny.php?skupina_id=' + encodeURIComponent(this.value))

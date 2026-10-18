@@ -42,14 +42,14 @@ if ($is_logged_in) {
 }
 ?>
 <!-- Dark mode: nastav téma co nejdříve, aby nedošlo k bliknutí -->
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (function(){
     var t = localStorage.getItem('bs-theme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', t);
 })();
 </script>
 <?php appUiAssets(); ?>
-<style>
+<style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     .navbar .nav-link { border-bottom: 2px solid transparent; }
     .navbar .nav-link.active { color: #fff !important; border-bottom-color: var(--app-blue); }
     .dropdown-item.active { background-color: #e7f0fb !important; color: var(--app-navy) !important; }
@@ -553,7 +553,7 @@ if ($is_logged_in) {
                     </button>
                     <?php endif; ?>
                     <button id="themeToggle" class="btn btn-sm btn-outline-secondary border-0 text-white-50"
-                            onclick="toggleTheme()" title="Přepnout tmavý/světlý režim" style="padding:4px 8px">
+                            data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="toggleTheme()" title="Přepnout tmavý/světlý režim" style="padding:4px 8px">
                         <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary border-0 text-white-50"
@@ -686,7 +686,7 @@ if (!empty($_SESSION['flash_info'])) {
     unset($_SESSION['flash_info']);
 }
 ?>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Toast notifikace — globální funkce ──────────────────────────────────────
 // Bezpečné společné toast notifikace poskytuje assets/app-ui.js.
 
@@ -767,7 +767,7 @@ $_gsAppBase = '/' . ltrim(str_replace($_gsDocRoot, '', $_gsHlavickaDir), '/');
 $_gsSearchUrl = $_gsAppBase . '/ajax_global_search.php';
 ?>
 <?php if ($is_logged_in): ?>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Web Push — registrace Service Workeru a subscribe ───────────────────────
 (function() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;

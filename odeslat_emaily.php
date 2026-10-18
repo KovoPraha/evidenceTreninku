@@ -258,7 +258,7 @@ $pocetBezEmailu  = count($vsichniSportovci) - $pocetSEmailem;
     <title>Odeslat emaily sportovcům</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         body { background: #f0f2f5; }
         .section-card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
         .section-card .card-header {
@@ -574,10 +574,10 @@ $pocetBezEmailu  = count($vsichniSportovci) - $pocetSEmailem;
                         <div class="alert alert-light border py-2 px-3 mb-3" style="font-size:.85rem;">
                             <strong><i class="bi bi-braces me-1 text-primary"></i>Dostupné proměnné</strong>
                             (klikni pro zkopírování):<br class="mb-1">
-                            <span class="placeholder-tag" onclick="copyTag(this)">{jmeno}</span> křestní jméno &nbsp;
-                            <span class="placeholder-tag" onclick="copyTag(this)">{prijmeni}</span> příjmení &nbsp;
-                            <span class="placeholder-tag" onclick="copyTag(this)">{odkaz}</span> URL veřejného profilu &nbsp;
-                            <span class="placeholder-tag" onclick="copyTag(this)">{email}</span> e-mail sportovce
+                            <span class="placeholder-tag" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="copyTag(this)">{jmeno}</span> křestní jméno &nbsp;
+                            <span class="placeholder-tag" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="copyTag(this)">{prijmeni}</span> příjmení &nbsp;
+                            <span class="placeholder-tag" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="copyTag(this)">{odkaz}</span> URL veřejného profilu &nbsp;
+                            <span class="placeholder-tag" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="copyTag(this)">{email}</span> e-mail sportovce
                         </div>
 
                         <div class="mb-3">
@@ -615,8 +615,8 @@ $pocetBezEmailu  = count($vsichniSportovci) - $pocetSEmailem;
 </div><!-- /container -->
 
 <!-- TinyMCE -->
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 tinymce.init({
     selector: '#telo',
     menubar: false,
@@ -634,7 +634,7 @@ tinymce.init({
 });
 </script>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // Filtr skupiny – redirect
 document.getElementById('btnFilter')?.addEventListener('click', function() {
     const skId = document.getElementById('skupina_sel').value;

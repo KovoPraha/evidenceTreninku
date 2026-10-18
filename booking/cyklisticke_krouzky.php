@@ -53,7 +53,7 @@ ksort($weekdayOptions);
   <title>Cyklistické kroužky pro děti — KOVO Praha</title>
   <?php publicSeoHead('Cyklistické kroužky pro děti – KOVO Praha','Vyberte dětský cyklistický kroužek podle věku, dne a místa. Porovnejte rozvrh, volná místa i cenu přímo u KOVO Praha.','booking/cyklisticke_krouzky.php',appUrl('assets/clubs/children-group.webp')); ?>
   <?php appUiAssets(); ?>
-  <style>
+  <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     :root { --club-blue:#111a6b; --club-red:#ee2722; --club-cream:#fff9ed; }
     body { background:linear-gradient(180deg,#fff 0,#fff 24rem,var(--club-cream) 24rem,#fff 100%); }
     .club-hero { border-radius:1.8rem; color:#fff; overflow:hidden; background:linear-gradient(125deg,var(--club-blue),#263cb4 72%,var(--club-red)); box-shadow:0 1.5rem 3.5rem rgba(17,26,107,.22); }
@@ -157,7 +157,7 @@ ksort($weekdayOptions);
   </section>
 </main>
 <?php publicShellFooter(); ?>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
   const entries=[...document.querySelectorAll('.club-entry')];
   const day=document.getElementById('filter-day');

@@ -187,7 +187,7 @@ if ($skupinaId !== '' && ctype_digit($skupinaId)) {
     <title>Export – Seznam sportovců</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         table { table-layout: fixed; }
         th.sortable { cursor: pointer; user-select: none; }
         th.sortable .sort-ind { font-size: 12px; opacity: .7; margin-left: 4px; }
@@ -238,7 +238,7 @@ if ($skupinaId !== '' && ctype_digit($skupinaId)) {
     <form method="get" class="row g-3 mb-3">
         <div class="col-md-5">
             <label for="skupina_id" class="form-label fw-semibold">Skupina</label>
-            <select class="form-select" id="skupina_id" name="skupina_id" onchange="this.form.submit()">
+            <select class="form-select" id="skupina_id" name="skupina_id" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
                 <option value="">— vyber skupinu —</option>
                 <?php foreach ($skupiny as $sk): ?>
                     <option value="<?= (int)$sk['id'] ?>" <?= ($skupinaId == (string)$sk['id']) ? 'selected' : '' ?>>
@@ -350,7 +350,7 @@ if ($skupinaId !== '' && ctype_digit($skupinaId)) {
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (function () {
     const table = document.getElementById('expTable');
     if (!table) return;

@@ -268,7 +268,7 @@ $sportovist = $pdo->query("
                     <label class="form-label req">Typ lekce</label>
                     <div class="d-flex gap-3">
                         <div class="card flex-fill border-success <?= $def['typ'] === 'zelena' ? 'border-2' : '' ?>"
-                             style="cursor:pointer" id="cardZelena" onclick="setTyp('zelena')">
+                             style="cursor:pointer" id="cardZelena" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="setTyp('zelena')">
                             <div class="card-body p-3">
                                 <div class="form-check mb-0">
                                     <input class="form-check-input" type="radio" name="typ" id="typZelena"
@@ -281,7 +281,7 @@ $sportovist = $pdo->query("
                             </div>
                         </div>
                         <div class="card flex-fill border-warning <?= $def['typ'] === 'zluta' ? 'border-2' : '' ?>"
-                             style="cursor:pointer" id="cardZluta" onclick="setTyp('zluta')">
+                             style="cursor:pointer" id="cardZluta" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="setTyp('zluta')">
                             <div class="card-body p-3">
                                 <div class="form-check mb-0">
                                     <input class="form-check-input" type="radio" name="typ" id="typZluta"
@@ -403,7 +403,7 @@ $sportovist = $pdo->query("
     </div><!-- /row -->
 </div>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 function setTyp(typ) {
     document.getElementById('typZelena').checked = typ === 'zelena';
     document.getElementById('typZluta').checked  = typ === 'zluta';

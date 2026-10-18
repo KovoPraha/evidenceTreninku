@@ -148,7 +148,7 @@ $trenerColors = ['primary', 'success', 'danger', 'warning', 'info', 'secondary']
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= h($zavod['popis']) ?> — Detail závodu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         /* ── Hero bar ───────────────────────────────────────────── */
         .hero-bar {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);

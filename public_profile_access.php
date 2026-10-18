@@ -55,6 +55,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
     </div>
   </section>
 </main>
-<script src="assets/public-profile-access.js" defer></script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/public-profile-access.js" defer></script>
 </body>
 </html>

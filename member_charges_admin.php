@@ -105,7 +105,7 @@ $payers=$pdo->query("SELECT id,jmeno,prijmeni,email FROM verejni_uzivatele WHERE
         </tr><?php endforeach; ?>
         </tbody></table></div></div>
 </main>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
     const input=document.getElementById('charge-athlete-search');
     const hidden=document.getElementById('charge-athlete-id');

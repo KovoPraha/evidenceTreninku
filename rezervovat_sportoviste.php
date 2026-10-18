@@ -413,7 +413,7 @@ $defaultSport = (int)($editRow['sportoviste_id']??($_GET['sportoviste_id'] ?? 0)
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
     const kapInput = document.getElementById('kapacita');
     const kapLabel = document.getElementById('kapLabel');
