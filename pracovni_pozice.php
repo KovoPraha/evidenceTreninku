@@ -80,7 +80,7 @@ function staffDashboardH(mixed $value): string
     <title><?= staffDashboardH($active['label']) ?> – pracovní rozcestník</title>
     <link href="<?=staffDashboardH(appUiUrl('assets/vendor/bootstrap/bootstrap.min.css'))?>" rel="stylesheet">
     <?php appUiAssets(); ?>
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         body{background:#f3f5f8}.workspace-hero{background:linear-gradient(135deg,#173b67,#156b63);color:#fff;border-radius:1rem}
         .workspace-link{display:block;height:100%;color:inherit;text-decoration:none}.workspace-link .card{height:100%;border:0;transition:transform .12s,box-shadow .12s}
         .workspace-link:hover .card{transform:translateY(-2px);box-shadow:0 .5rem 1.2rem rgba(0,0,0,.12)!important}

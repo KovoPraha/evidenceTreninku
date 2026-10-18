@@ -232,7 +232,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
     <?php publicSeoHead('Individuální cyklistické lekce – KOVO Praha','Prohlédněte si veřejné termíny individuálních lekcí a volná místa. Vybraný termín můžete po přihlášení rezervovat.','booking/kalendar.php'); ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -300,7 +300,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
     <form class="d-flex gap-2 mb-3 align-items-center flex-wrap" method="get">
         <input type="hidden" name="od" value="<?= h($prvniDen->format('Y-m-01')) ?>">
         <label for="calendar-sportoviste" class="small text-muted mb-0">Sportoviště:</label>
-        <select id="calendar-sportoviste" name="sportoviste_id" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+        <select id="calendar-sportoviste" name="sportoviste_id" class="form-select form-select-sm w-auto" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
             <option value="">Všechna veřejná</option>
             <?php foreach ($sportovist as $s): ?>
                 <option value="<?= $s['id'] ?>" <?= $filterSport === (int)$s['id'] ? 'selected' : '' ?>>
@@ -366,7 +366,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
             if ($isPast)   $cls .= ' past';
             if ($hasSlots) $cls .= ' has-slots';
         ?>
-            <div class="<?= $cls ?>"
+            <div class="<?= $cls ?>" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>"
                  <?= $hasSlots ? "onclick=\"openModal('".h($datumStr)."')\" onkeydown=\"if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('".h($datumStr)."')}\" role=\"button\" tabindex=\"0\" aria-label=\"Zobrazit termíny ".h((new DateTimeImmutable($datumStr))->format('j. n. Y'))."\"" : '' ?>>
                 <div class="day-num"><?= $d ?></div>
                 <?php if ($hasSlots): ?>
@@ -408,7 +408,7 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // Data všech dnů serializovaná z PHP
 const dayData = <?= json_encode($dayData, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
 const jePrihlasen = <?= $prihlaseny ? 'true' : 'false' ?>;

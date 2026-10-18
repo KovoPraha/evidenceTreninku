@@ -399,7 +399,7 @@ $kategorieMeta = [
     <title>Detail sportovce<?= $sportovec ? (' – ' . h(($sportovec['jmeno'] ?? '') . ' ' . ($sportovec['prijmeni'] ?? ''))) : '' ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .thumb-test { height: 72px; object-fit: cover; border-radius: .4rem; margin: 2px; }
         .stat-card  { border-left: 4px solid; border-radius: .5rem; padding: .9rem 1.2rem; background: #fff; }
         .stat-card.primary  { border-color: #1a56db; }
@@ -440,11 +440,11 @@ $kategorieMeta = [
     </div>
 
     <?php if ($success): ?>
-        <script>document.addEventListener('DOMContentLoaded', function() { showToast('Profil uložen.', 'success'); });</script>
+        <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">document.addEventListener('DOMContentLoaded', function() { showToast('Profil uložen.', 'success'); });</script>
     <?php endif; ?>
 
     <?php if (!empty($errors)): ?>
-        <script>document.addEventListener('DOMContentLoaded', function() {
+        <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">document.addEventListener('DOMContentLoaded', function() {
             <?php foreach ($errors as $e): ?>
             showToast(<?= json_encode(h($e),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>, 'danger');
             <?php endforeach; ?>
@@ -1055,7 +1055,7 @@ $kategorieMeta = [
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (function () {
     // ── Tab persistence přes URL hash ────────────────────────────────
     var hash = window.location.hash;
@@ -1093,16 +1093,31 @@ $kategorieMeta = [
                     resultsWrap.innerHTML = '<div class="alert alert-warning mt-2 mb-0">Žádný výsledek.</div>';
                     return;
                 }
-                let html = '<ul class="list-group mt-2">';
+                const list = document.createElement('ul');
+                list.className = 'list-group mt-2';
                 data.forEach(r => {
-                    html += `<li class="list-group-item list-group-item-action search-result-item d-flex justify-content-between align-items-center"
-                                  onclick="location.href='sportovec_detail.php?id=${r.id}'">
-                                <span><strong>${r.prijmeni || ''}</strong> ${r.jmeno || ''}</span>
-                                <span class="text-muted small">${r.category || r.kategorie || ''}</span>
-                             </li>`;
+                    const id = Number(r.id);
+                    if (!Number.isSafeInteger(id) || id <= 0) return;
+                    const item = document.createElement('li');
+                    item.className = 'list-group-item list-group-item-action search-result-item d-flex justify-content-between align-items-center';
+                    item.setAttribute('role', 'link');
+                    item.tabIndex = 0;
+                    const open = () => { window.location.href = 'sportovec_detail.php?id=' + id; };
+                    item.addEventListener('click', open);
+                    item.addEventListener('keydown', event => {
+                        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); }
+                    });
+                    const name = document.createElement('span');
+                    const surname = document.createElement('strong');
+                    surname.textContent = String(r.prijmeni || '');
+                    name.append(surname, document.createTextNode(' ' + String(r.jmeno || '')));
+                    const category = document.createElement('span');
+                    category.className = 'text-muted small';
+                    category.textContent = String(r.category || r.kategorie || '');
+                    item.append(name, category);
+                    list.append(item);
                 });
-                html += '</ul>';
-                resultsWrap.innerHTML = html;
+                resultsWrap.replaceChildren(list);
             })
             .catch(() => {});
     }

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__.'/app_url.php';
+require_once __DIR__.'/session_security.php';
 
 function publicSeoH(mixed $value):string
 {
@@ -52,7 +53,7 @@ function publicSeoHead(string $title,string $description,string $path,?string $i
     if($imageUrl!==null&&preg_match('~^https://[^\s<>]+$~iD',$imageUrl)===1)echo '<meta property="og:image" content="'.publicSeoH($imageUrl).'">';
     if($schema!==null){
         $json=json_encode($schema,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
-        echo '<script type="application/ld+json">'.$json.'</script>';
+        echo '<script nonce="'.publicSeoH(app_csp_nonce()).'" type="application/ld+json">'.$json.'</script>';
     }
 }
 

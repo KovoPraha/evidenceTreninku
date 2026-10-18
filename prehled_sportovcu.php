@@ -168,7 +168,7 @@ if (!empty($_GET['ajax'])) {
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
     const qInput      = document.getElementById('q');
     const skupinaEl   = document.getElementById('skupina_id');

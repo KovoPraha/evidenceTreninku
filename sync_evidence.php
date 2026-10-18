@@ -663,7 +663,7 @@ if ($step === 3 || $step === 4) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Synchronizace evidence</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .step-indicator { display: flex; gap: 0; margin-bottom: 1.5rem; }
         .step-item { flex: 1; text-align: center; padding: .6rem .5rem; font-size: .85rem; font-weight: 500;
                      background: #e9ecef; color: #6c757d; border-right: 2px solid #fff; position: relative; }
@@ -773,7 +773,7 @@ if ($step === 3 || $step === 4) {
             <div class="text-muted small">Načtení a spárování tří exportů může trvat několik sekund.</div>
         </div>
     </div>
-    <script>
+    <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     (function () {
         var form = document.getElementById('kisUploadForm');
         if (!form) return;
@@ -872,7 +872,7 @@ if ($step === 3 || $step === 4) {
         </div>
     </div>
 
-    <script>
+    <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     // Dynamic podskupiny loading when skupina changes
     document.querySelectorAll('.sel-skupina').forEach(function(sel) {
         sel.addEventListener('change', function() {

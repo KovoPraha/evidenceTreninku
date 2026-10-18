@@ -189,7 +189,7 @@ $end = $start->modify('+9 months -1 day');
         </div>
     </form>
 </main>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (()=>{const radios=[...document.querySelectorAll('input[name="source_mode"]')];const existing=document.querySelector('[data-existing-product]');const fresh=[...document.querySelectorAll('[data-new-product]')];const select=existing?.querySelector('select');const apply=()=>{const mode=radios.find(r=>r.checked)?.value||'new';const useExisting=mode==='existing';existing?.classList.toggle('d-none',!useExisting);if(select)select.required=useExisting;for(const block of fresh){block.classList.toggle('d-none',useExisting);for(const input of block.querySelectorAll('input,textarea'))input.required=!useExisting&&input.name!=='description';}};for(const radio of radios)radio.addEventListener('change',apply);apply();})();
 </script>
 </body>

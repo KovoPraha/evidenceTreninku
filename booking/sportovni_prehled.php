@@ -392,14 +392,14 @@ foreach ($trainingRsvps as $training) {
                 <div class="alert alert-warning">
                     <strong>Odkaz se zobrazuje pouze nyní.</strong> Zkopírujte jej do aplikace Kalendář jako odebíraný kalendář.
                     <label for="family-calendar-url" class="visually-hidden">Soukromý odkaz kalendáře</label>
-                    <input id="family-calendar-url" class="form-control mt-2" type="text" readonly value="<?= familyPageH($calendarUrl) ?>" onclick="this.select()">
+                    <input id="family-calendar-url" class="form-control mt-2" type="text" readonly value="<?= familyPageH($calendarUrl) ?>" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="this.select()">
                 </div>
             <?php endif; ?>
             <?php if ($calendarState !== null && (int)$calendarState['active'] === 1): ?>
                 <p class="small mb-3">Kalendář je aktivní. Kontrolní konec odkazu: <code>…<?= familyPageH($calendarState['token_hint']) ?></code></p>
                 <div class="d-flex gap-2 flex-wrap">
                     <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_issue"><button class="btn btn-outline-primary btn-sm">Vytvořit nový odkaz</button></form>
-                    <form method="post" onsubmit="return confirm('Opravdu zrušit odběr rodinného kalendáře?');"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_revoke"><button class="btn btn-outline-danger btn-sm">Zrušit odkaz</button></form>
+                    <form method="post" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onsubmit="return confirm('Opravdu zrušit odběr rodinného kalendáře?');"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_revoke"><button class="btn btn-outline-danger btn-sm">Zrušit odkaz</button></form>
                 </div>
             <?php else: ?>
                 <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="family_calendar_issue"><button class="btn btn-primary">Vytvořit soukromý odkaz</button></form>

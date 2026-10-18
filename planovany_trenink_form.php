@@ -482,7 +482,7 @@ $kategorieMeta = [
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Podskupiny — checkbox loader ──────────────────────────────────────────────
 function loadPodskupiny(skupinaId) {
     const container = document.getElementById('podskupinaContainer');

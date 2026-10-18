@@ -128,7 +128,7 @@ $stavBadge = [
             </div>
             <?php if ($muzeStoornovat): ?>
                 <form method="post" class="mt-2"
-                      onsubmit="return confirm('Opravdu zrušit tuto rezervaci?')">
+                      data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onsubmit="return confirm('Opravdu zrušit tuto rezervaci?')">
                     <?= csrf_field() ?>
                     <input type="hidden" name="rezervace_id" value="<?= $r['id'] ?>">
                     <button type="submit" class="btn btn-sm btn-outline-danger">

@@ -181,7 +181,7 @@ function build_week_report_html(array $ctx): string {
 
     ob_start();
     ?>
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
         .muted { color:#666; }
         .box { border:1px solid #ddd; border-radius:10px; padding:12px; margin-bottom:12px; }

@@ -61,7 +61,7 @@ $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <title>Tréninky skupiny “<?= htmlspecialchars($group_name) ?>”</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <?php appUiAssets(); ?>
-  <style>
+  <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     .thumbnail { height: 80px; margin: 2px; object-fit: cover; }
   </style>
 </head>

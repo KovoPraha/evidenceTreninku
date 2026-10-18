@@ -184,7 +184,7 @@ if (!empty($trenink['datum'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Úprava tréninku #<?= (int)$trenink['id'] ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .suggest-box { z-index: 1100; max-height: 220px; overflow-y: auto; width: 100%; }
         .chip { display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .55rem; border-radius:999px; background:#0d6efd; color:#fff; font-size:.9rem; }
         .chip .btn-close { filter: invert(1); opacity: .9; }
@@ -513,7 +513,7 @@ if (!empty($trenink['datum'])) {
     </form>
 </div>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 /* ---------------------------
    Podskupiny po změně skupiny
 ---------------------------- */
@@ -1085,7 +1085,7 @@ if (!empty($trenink['datum'])) {
 })();
 </script>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // Upozornění na neuložené změny
 (() => {
     const form = document.getElementById('treninkForm');

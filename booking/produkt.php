@@ -183,7 +183,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         publicSeoHead($product['public_name'].' – e-shop KOVO Praha',$seoDescription,'booking/produkt.php?id='.$productId,is_string($seoImage)?$seoImage:null,$seoSchema,!publicSeoIsTestContent((string)$product['public_name']));
     else: ?><meta name="robots" content="noindex,follow"><?php endif; ?>
     <?php appUiAssets(); ?>
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
       .shop-variant-option { transition:box-shadow .18s ease; }
       .shop-variant-option:not([hidden]) { box-shadow:0 .35rem 1rem rgba(17,26,107,.09); }
       .app-product-no-photo { min-height:250px; display:grid; place-content:center; text-align:center; gap:.6rem; background:linear-gradient(145deg,#eef3fb,#f8faff); color:#334d79; }
@@ -210,7 +210,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="row g-0">
                 <div class="col-lg-5 bg-white p-3 app-product-media-sticky">
-                    <?php if($imageUrl===shopStorefrontPlaceholderImageUrl()):?><div class="rounded app-product-no-photo" role="img" aria-label="Fotografie produktu zatím není k dispozici"><i class="bi bi-image" aria-hidden="true"></i><span>Fotografie produktu se připravuje</span></div><?php else:?><img src="<?= shopProductH($imageUrl) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded app-product-image" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='<?=shopProductH(shopStorefrontPlaceholderImageUrl())?>'"><?php endif; ?>
+                    <?php if($imageUrl===shopStorefrontPlaceholderImageUrl()):?><div class="rounded app-product-no-photo" role="img" aria-label="Fotografie produktu zatím není k dispozici"><i class="bi bi-image" aria-hidden="true"></i><span>Fotografie produktu se připravuje</span></div><?php else:?><img src="<?= shopProductH($imageUrl) ?>" alt="<?= shopProductH($product['public_name']) ?>" class="img-fluid rounded app-product-image" loading="eager" decoding="async" referrerpolicy="no-referrer" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onerror="this.onerror=null;this.src='<?=shopProductH(shopStorefrontPlaceholderImageUrl())?>'"><?php endif; ?>
                 </div>
                 <div class="col-lg-7">
                     <div class="card-body p-4">
@@ -292,8 +292,8 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 </main>
-<noscript><style>.shop-variant-option[hidden]{display:block!important}</style></noscript>
-<script>
+<noscript><style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">.shop-variant-option[hidden]{display:block!important}</style></noscript>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (() => {
   const picker=document.getElementById('shop-variant-select');
   if(!picker)return;

@@ -192,7 +192,7 @@ $subGroups = $pdo->query("
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.getElementById('form-title').innerText = 'Upravit podskupinu #' + btn.dataset.id;

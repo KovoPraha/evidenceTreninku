@@ -131,7 +131,7 @@ if ($sportovecId > 0) {
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // Varování na neuložené změny + Bootstrap validace
 (() => {
     const form = document.getElementById('zatezovyTestForm');

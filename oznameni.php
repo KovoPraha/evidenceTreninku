@@ -269,7 +269,7 @@ if (!empty($form['target_sportovci'])) {
     <meta charset="UTF-8">
     <title>Oznámení</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .small-muted { font-size: .85rem; color: #666; }
         .chip {
             display: inline-flex; align-items: center; gap: .35rem;
@@ -511,8 +511,8 @@ if (!empty($form['target_sportovci'])) {
 </div>
 
 <!-- TinyMCE je volitelné vylepšení. Bez internetu zůstává funkční obyčejné textarea. -->
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 if (typeof window.tinymce !== 'undefined') {
     window.tinymce.init({
         selector: '#obsah_html',
@@ -527,7 +527,7 @@ if (typeof window.tinymce !== 'undefined') {
 }
 </script>
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 /* =========================================
    AJAX podskupiny podle skupiny
 ========================================= */

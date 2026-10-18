@@ -191,7 +191,7 @@ $platba_map = [
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // Handle uzavrit.php response (returns JSON but form submits normally)
 document.querySelector('form[action="uzavrit.php"]')?.addEventListener('submit', function(e) {
     e.preventDefault();

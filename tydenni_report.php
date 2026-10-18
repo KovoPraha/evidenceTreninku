@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_save']) && $skupin
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <?php appUiAssets(); ?>
-  <style>.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}</style>
+  <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}</style>
 </head>
 <body class="bg-light">
 <div class="container my-4">
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_save']) && $skupin
       <form method="get" class="row g-3 align-items-end">
         <div class="col-md-4">
           <label class="form-label">Skupina</label>
-          <select name="skupina_id" class="form-select" onchange="this.form.submit()">
+          <select name="skupina_id" class="form-select" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
             <option value="0">— vyber skupinu —</option>
             <?php foreach ($groups as $g): ?>
               <option value="<?= (int)$g['id'] ?>" <?= $skupina_id === (int)$g['id'] ? 'selected' : '' ?>>
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_save']) && $skupin
 
         <div class="col-md-4">
           <label class="form-label">Podskupina (volitelné)</label>
-          <select name="podskupina_id" class="form-select" <?= $skupina_id ? '' : 'disabled' ?> onchange="this.form.submit()">
+          <select name="podskupina_id" class="form-select" <?= $skupina_id ? '' : 'disabled' ?> data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
             <option value="0">— všechny podskupiny skupiny —</option>
             <?php foreach ($subgroups as $p): ?>
               <option value="<?= (int)$p['id'] ?>" <?= $podskupina_id === (int)$p['id'] ? 'selected' : '' ?>>
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_save']) && $skupin
 
         <div class="col-md-4">
           <label class="form-label">Týden (vyber datum – vezmeme Po–Ne)</label>
-          <input type="date" name="datum" value="<?= h($datum) ?>" class="form-control" onchange="this.form.submit()">
+          <input type="date" name="datum" value="<?= h($datum) ?>" class="form-control" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
         </div>
       </form>
 

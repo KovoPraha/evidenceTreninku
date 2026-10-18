@@ -199,7 +199,7 @@ if ($id > 0) {
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 document.getElementById('formular-uctenka').addEventListener('submit', function(e) {
     e.preventDefault();
     const fd = new FormData(this);
@@ -211,7 +211,8 @@ document.getElementById('formular-uctenka').addEventListener('submit', function(
                 el.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Uloženo.</div>';
                 setTimeout(() => window.location.href = 'seznam.php', 800);
             } else {
-                el.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>' + data.message + '</div>';
+                el.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><span></span></div>';
+                el.querySelector('span').textContent = String(data.message || 'Uložení se nezdařilo.');
             }
         })
         .catch(() => {

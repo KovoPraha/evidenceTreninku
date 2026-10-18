@@ -83,7 +83,7 @@ $daysCz = [
   <meta charset="UTF-8">
   <title>Správa závodů</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <style>
+  <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     .thumbnail { height: 60px; width: auto; margin-right:5px; object-fit:cover; border:1px solid #ddd; }
   </style>
 </head>
@@ -196,7 +196,7 @@ $daysCz = [
 </div>
 
 
-<script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
   document.getElementById('skupina').addEventListener('change', function() {
     fetch('nacti_podskupiny.php?skupina_id=' + this.value)
       .then(r => r.json())

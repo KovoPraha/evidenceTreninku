@@ -50,7 +50,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <div class="mb-3"><label class="form-label" for="reset-password-confirmation">Nové heslo znovu</label><div class="input-group"><input id="reset-password-confirmation" class="form-control" type="password" name="heslo2" minlength="12" maxlength="200" autocomplete="new-password" required><button class="btn btn-outline-secondary" type="button" data-password-toggle="reset-password-confirmation" aria-controls="reset-password-confirmation" aria-pressed="false">Zobrazit</button></div></div>
 <button class="btn btn-primary w-100">Změnit heslo</button></form><?php endif; ?>
 </div></div></main>
-<?php if (!$success): ?><script>
+<?php if (!$success): ?><script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 const fragment = new URLSearchParams(window.location.hash.slice(1));
 document.getElementById('password-reset-token').value = fragment.get('token') || '';
 if (window.location.hash) history.replaceState(null, '', window.location.pathname);

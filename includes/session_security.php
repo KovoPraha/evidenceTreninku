@@ -192,10 +192,28 @@ function app_csp_header_value(array $attributeHashes = []): string
         ? "script-src-attr 'none'"
         : "script-src-attr 'unsafe-hashes' " . implode(' ', array_map(static fn(string $hash): string => "'sha256-{$hash}'", $attributeHashes));
     return "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; "
-        . "script-src 'self' https://cdn.jsdelivr.net {$nonce}; script-src-elem 'self' https://cdn.jsdelivr.net {$nonce}; {$attributePolicy}; "
+        . "script-src 'self' https://cdn.jsdelivr.net {$nonce} 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net {$nonce} 'strict-dynamic'; {$attributePolicy}; "
         . "style-src 'self' https://cdn.jsdelivr.net {$nonce}; style-src-elem 'self' https://cdn.jsdelivr.net {$nonce}; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; "
         . "font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; "
         . "worker-src 'self' blob:; upgrade-insecure-requests";
+}
+
+/** @return list<string> */
+function app_csp_approved_handler_hashes(string $html): array
+{
+    $hashes = [];
+    if (preg_match_all('/<[^>]+>/s', $html, $tags)) {
+        $marker = 'data-app-csp-handler="' . app_csp_nonce() . '"';
+        foreach ($tags[0] as $tag) {
+            if (!str_contains($tag, $marker)) continue;
+            if (!preg_match_all('/\son[a-z]+\s*=\s*(["\'])(.*?)\1/is', $tag, $matches)) continue;
+            foreach ($matches[2] as $handler) {
+                $decoded = html_entity_decode((string)$handler, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $hashes[] = base64_encode(hash('sha256', $decoded, true));
+            }
+        }
+    }
+    return array_values(array_unique($hashes));
 }
 
 function app_csp_filter_output(string $html): string
@@ -208,17 +226,12 @@ function app_csp_filter_output(string $html): string
         }
         break;
     }
-    $nonce = htmlspecialchars(app_csp_nonce(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    $html = preg_replace('/<script\b(?![^>]*\bnonce=)([^>]*)>/i', '<script nonce="' . $nonce . '"$1>', $html) ?? $html;
-    $html = preg_replace('/<style\b(?![^>]*\bnonce=)([^>]*)>/i', '<style nonce="' . $nonce . '"$1>', $html) ?? $html;
-    $hashes = [];
-    if (preg_match_all('/\son[a-z]+\s*=\s*(["\'])(.*?)\1/is', $html, $matches)) {
-        foreach ($matches[2] as $handler) {
-            $decoded = html_entity_decode((string)$handler, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            $hashes[] = base64_encode(hash('sha256', $decoded, true));
-        }
-    }
-    if (!headers_sent()) header('Content-Security-Policy: ' . app_csp_header_value(array_values(array_unique($hashes))), true);
+    // Only templates that explicitly call app_csp_nonce() may authorize inline
+    // script/style. Granting a nonce to arbitrary assembled HTML would also
+    // authorize a script injected through an otherwise missed escaping bug.
+    // Legacy inline handlers are approved only on source-owned elements that
+    // carry this response's nonce marker. Injected markup cannot create it.
+    if (!headers_sent()) header('Content-Security-Policy: ' . app_csp_header_value(app_csp_approved_handler_hashes($html)), true);
     return $html;
 }
 

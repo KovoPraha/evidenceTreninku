@@ -99,7 +99,7 @@ foreach ($opravneni as $o) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Nastavení oprávnění</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .role-select-trener  { border-left: 3px solid #198754 !important; }
         .role-select-hlavni  { border-left: 3px solid #0d6efd !important; }
         .role-select-admin   { border-left: 3px solid #dc3545 !important; }
@@ -185,7 +185,7 @@ foreach ($opravneni as $o) {
                             <td>
                                 <select name="min_role[<?= h($o['klic']) ?>]"
                                         class="form-select form-select-sm role-select-<?= h($o['min_role']) ?>"
-                                        onchange="this.className='form-select form-select-sm role-select-'+this.value;">
+                                        data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.className='form-select form-select-sm role-select-'+this.value;">
                                     <?php foreach ($roleLabels as $val => $label): ?>
                                         <option value="<?= $val ?>" <?= $o['min_role'] === $val ? 'selected' : '' ?>>
                                             <?= h($label) ?>
