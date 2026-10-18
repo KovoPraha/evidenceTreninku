@@ -1,6 +1,6 @@
 Options -Indexes
 
-<FilesMatch "(^\.|\.sql$|\.log$|\.zip$|\.bak$|\.old$|\.php3$|composer\.(json|lock)$|CLAUDE\.md$|INSTALACE\.txt$)">
+<FilesMatch "(^\.|^(?:config|db|csrf_helper)\.php$|\.sql$|\.log$|\.zip$|\.bak$|\.old$|\.php3$|composer\.(json|lock)$|CLAUDE\.md$|INSTALACE\.txt$)">
     Require all denied
 </FilesMatch>
 
@@ -14,7 +14,7 @@ Options -Indexes
     RewriteRule ^ https://kis.kovopraha.cz%{REQUEST_URI} [R=308,L,NE]
 
     RewriteRule (^|/)\.git(/|$) - [F,L]
-    RewriteRule ^(?:bin|database|docs|migrations|tests|var|vendor)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:bin|database|docs|includes|migrations|tests|var|vendor)(?:/|$) - [F,L,NC]
     RewriteRule ^uploads/(?:uctenky|zatezove_testy|servis|temp)(?:/|$) - [F,L,NC]
     RewriteRule ^nahrane_zavody/results(?:/|$) - [F,L,NC]
     RewriteRule ^(?:test|analyze_excel|analyze_uci_form)\.php$ - [F,L,NC]
