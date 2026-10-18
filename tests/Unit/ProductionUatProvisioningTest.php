@@ -76,6 +76,8 @@ final class ProductionUatProvisioningTest extends TestCase
         self::assertStringContainsString('secrets.KIS_UAT_TEST_PASSWORD', $workflow);
         self::assertStringNotContainsString('Dlouhe!Uat2026-Heslo', $workflow);
         self::assertStringContainsString('pripravit-uat-ucty-a-data', $workflow);
+        self::assertStringContainsString('obnovit-uat-test-hesla', $workflow);
+        self::assertStringContainsString('bin/rotate-production-uat-passwords.php', $workflow);
         self::assertStringContainsString("'KP-TEST-UAT-LAHEV'", $script);
         self::assertStringContainsString("'KP-TEST-UAT-KROUZEK'", $script);
         self::assertStringContainsString("'KP-TEST-UAT-PRIMESTSKY-DEN'", $script);
