@@ -45,7 +45,7 @@ final class LocalhostBootstrapWiringTest extends TestCase
         $root = dirname(__DIR__, 2);
         $htaccess = (string)file_get_contents($root . '/.htaccess');
 
-        self::assertStringContainsString('^(?:bin|database|docs|migrations|tests|var|vendor)', $htaccess);
+        self::assertStringContainsString('^(?:bin|database|docs|migrations|output|tests|var|vendor)', $htaccess);
         self::assertStringContainsString('\\.sql$', $htaccess);
     }
 }

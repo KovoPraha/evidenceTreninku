@@ -248,6 +248,7 @@ jobs:
             --exclude='stories/' \
             --exclude='loga_story/' \
             --exclude='reports/' \
+            --exclude='output/' \
             --exclude='bin/zalohy/' \
             --exclude='tests/' \
             --exclude='phpunit.xml*' \
@@ -308,6 +309,7 @@ jobs:
               --exclude='stories/' \\
               --exclude='loga_story/' \\
               --exclude='reports/' \\
+              --exclude='output/' \\
               --exclude='bin/zalohy/' \\
               --exclude='*.log' \\
               '$RELEASE_DIR/' '$REMOTE_DIR/'

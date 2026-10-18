@@ -7,6 +7,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/public_profile_token.php';
+require_once dirname(__DIR__, 2) . '/includes/auth_session.php';
 
 final class PublicProfileAccessTokenTest extends TestCase
 {
@@ -40,6 +41,94 @@ final class PublicProfileAccessTokenTest extends TestCase
         self::assertSame(9, \public_profile_access_resolve($pdo, $issued['token']));
         self::assertSame(1, \public_profile_access_revoke_for_person($pdo, 9));
         self::assertNull(\public_profile_access_resolve($pdo, $issued['token']));
+    }
+
+    public function testRevocationImmediatelyInvalidatesExistingProfileSession(): void
+    {
+        $before = $_SESSION ?? [];
+        try {
+            $_SESSION = [];
+            $pdo = $this->database();
+            $pdo->prepare('INSERT INTO sportovci(id,hash) VALUES (?,?)')->execute([42, str_repeat('c', 64)]);
+            $migration = require dirname(__DIR__, 2) . '/migrations/20261008101000_public_profile_access_tokens.php';
+            $migration['up']($pdo);
+            $issued = \public_profile_access_issue($pdo, 42, 5, 3600);
+            self::assertSame(42, \public_profile_access_resolve($pdo, $issued['token']));
+            \public_profile_access_grant_session(42, $issued['token']);
+            self::assertSame(42, \public_profile_access_session_athlete_id($pdo));
+            \public_profile_access_revoke_for_person($pdo, 42);
+            self::assertNull(\public_profile_access_session_athlete_id($pdo));
+            self::assertArrayNotHasKey('public_profile_access', $_SESSION);
+        } finally {
+            $_SESSION = $before;
+        }
+    }
+
+    public function testTokenRotationInvalidatesPreviouslyOpenedProfile(): void
+    {
+        $before = $_SESSION ?? [];
+        try {
+            $_SESSION = [];
+            $pdo = $this->database();
+            $pdo->prepare('INSERT INTO sportovci(id,hash) VALUES (?,?)')->execute([42, str_repeat('d', 64)]);
+            $migration = require dirname(__DIR__, 2) . '/migrations/20261008101000_public_profile_access_tokens.php';
+            $migration['up']($pdo);
+            $first = \public_profile_access_issue($pdo, 42, 5, 3600);
+            \public_profile_access_grant_session(42, $first['token']);
+            self::assertSame(42, \public_profile_access_session_athlete_id($pdo));
+            $second = \public_profile_access_issue($pdo, 42, 5, 3600);
+            self::assertNotSame($first['token'], $second['token']);
+            self::assertNull(\public_profile_access_session_athlete_id($pdo));
+            self::assertSame(42, \public_profile_access_resolve($pdo, $second['token']));
+        } finally {
+            $_SESSION = $before;
+        }
+    }
+
+    public function testUnboundLegacySessionGrantIsRejected(): void
+    {
+        $before = $_SESSION ?? [];
+        try {
+            $_SESSION = ['public_profile_access' => ['sportovec_id' => 42, 'expires_at' => time() + 300]];
+            self::assertNull(\public_profile_access_session_athlete_id($this->database()));
+            self::assertArrayNotHasKey('public_profile_access', $_SESSION);
+        } finally {
+            $_SESSION = $before;
+        }
+    }
+
+    public function testIdentityChangeCannotInheritAnotherAthletesProfile(): void
+    {
+        $before = $_SESSION ?? [];
+        try {
+            $_SESSION = [];
+            $pdo = $this->database();
+            $pdo->prepare('INSERT INTO sportovci(id,hash) VALUES (?,?)')->execute([42, str_repeat('c', 64)]);
+            $migration = require dirname(__DIR__, 2) . '/migrations/20261008101000_public_profile_access_tokens.php';
+            $migration['up']($pdo);
+            $issued = \public_profile_access_issue($pdo, 42, 5, 3600);
+            \public_profile_access_grant_session(42, $issued['token']);
+            \auth_session_bind_child(99, 1);
+            self::assertNull(\public_profile_access_session_athlete_id($pdo));
+            self::assertArrayNotHasKey('public_profile_access', $_SESSION);
+        } finally {
+            $_SESSION = $before;
+        }
+    }
+
+    public function testStaffProfileGrantCannotSurviveTrainerIdentityChange(): void
+    {
+        $before = $_SESSION ?? [];
+        try {
+            $_SESSION = ['trener_id' => 5, 'trener_session_version' => 2];
+            $pdo = $this->database();
+            \public_profile_access_grant_staff_session(42);
+            self::assertSame(42, \public_profile_access_session_athlete_id($pdo));
+            \auth_session_clear_identity('trainer');
+            self::assertNull(\public_profile_access_session_athlete_id($pdo));
+        } finally {
+            $_SESSION = $before;
+        }
     }
 
     private function database(): PDO
