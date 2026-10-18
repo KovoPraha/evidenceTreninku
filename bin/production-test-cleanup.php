@@ -32,13 +32,12 @@ $pdo = new PDO(
     ]
 );
 
-$pattern = '^kis-e2e-[0-9]+@velocota[.]com$';
 $pdo->beginTransaction();
 try {
     $ids = $pdo->prepare(
-        'SELECT id FROM verejni_uzivatele WHERE (email REGEXP ? OR LOWER(email) IN (?,?)) AND aktivni=1 FOR UPDATE'
+        'SELECT id FROM verejni_uzivatele WHERE LOWER(TRIM(email)) IN (?,?) AND aktivni=1 FOR UPDATE'
     );
-    $ids->execute([$pattern, 'tester.karel@velocota.com', 'tester.petra@velocota.com']);
+    $ids->execute(['tester.karel@velocota.com', 'tester.petra@velocota.com']);
     $accountIds = array_map('intval', $ids->fetchAll(PDO::FETCH_COLUMN));
 
     $deactivated = 0;
@@ -60,10 +59,61 @@ try {
         $deactivated = $accounts->rowCount();
     }
 
+    // Only the dedicated fixture administrator may be disabled. A collision
+    // or a changed identity is a hard error, never a reason to touch another
+    // staff account. The linked public profile is disabled in the same unit.
+    $admin = $pdo->prepare(
+        'SELECT id,jmeno,role,aktivni FROM treneri WHERE LOWER(TRIM(email))=? FOR UPDATE'
+    );
+    $admin->execute(['tester.spravce@velocota.com']);
+    $adminRows = $admin->fetchAll();
+    if (count($adminRows) > 1) {
+        throw new RuntimeException('Duplicate dedicated TEST administrator identity.');
+    }
+    $adminDeactivated = 0;
+    $adminPublicDeactivated = 0;
+    if ($adminRows !== []) {
+        $adminRow = $adminRows[0];
+        if ((string)$adminRow['jmeno'] !== 'Tester Správce'
+            || (string)$adminRow['role'] !== 'admin') {
+            throw new RuntimeException('Dedicated TEST administrator identity changed.');
+        }
+        $adminId = (int)$adminRow['id'];
+        $linked = $pdo->prepare(
+            'SELECT id,trener_id,aktivni FROM verejni_uzivatele WHERE LOWER(TRIM(email))=? FOR UPDATE'
+        );
+        $linked->execute(['tester.spravce@velocota.com']);
+        $linkedRows = $linked->fetchAll();
+        if (count($linkedRows) > 1
+            || ($linkedRows !== [] && (int)$linkedRows[0]['trener_id'] !== $adminId)) {
+            throw new RuntimeException('TEST administrator public profile is not uniquely linked.');
+        }
+        if ($linkedRows !== [] && (int)$linkedRows[0]['aktivni'] === 1) {
+            $linkedId = (int)$linkedRows[0]['id'];
+            $pdo->prepare(
+                'UPDATE password_reset_tokens SET consumed_at=COALESCE(consumed_at,CURRENT_TIMESTAMP) '
+                . 'WHERE delivery_account_id=?'
+            )->execute([$linkedId]);
+            $linkedUpdate = $pdo->prepare(
+                'UPDATE verejni_uzivatele SET aktivni=0,session_version=session_version+1 WHERE id=? AND aktivni=1'
+            );
+            $linkedUpdate->execute([$linkedId]);
+            $adminPublicDeactivated = $linkedUpdate->rowCount();
+        }
+        if ((int)$adminRow['aktivni'] === 1) {
+            $adminUpdate = $pdo->prepare(
+                'UPDATE treneri SET aktivni=0,session_version=session_version+1 WHERE id=? AND aktivni=1'
+            );
+            $adminUpdate->execute([$adminId]);
+            $adminDeactivated = $adminUpdate->rowCount();
+        }
+    }
+
     $children = $pdo->prepare(
         "UPDATE child_access_accounts a JOIN sportovci s ON s.id=a.sportovec_id "
         . "SET a.active=0,a.session_version=a.session_version+1,a.updated_at=CURRENT_TIMESTAMP "
-        . "WHERE a.active=1 AND LOWER(s.prijmeni)='tester' AND LOWER(s.jmeno) IN ('ema','adam')"
+        . "WHERE a.active=1 AND a.login_key IN ('tester.ema','tester.adam') "
+        . "AND LOWER(s.prijmeni)='tester' AND LOWER(s.jmeno) IN ('ema','adam')"
     );
     $children->execute();
 
@@ -116,6 +166,8 @@ try {
         'ok' => true,
         'matched' => count($accountIds),
         'deactivated' => $deactivated,
+        'admin_deactivated' => $adminDeactivated,
+        'admin_public_deactivated' => $adminPublicDeactivated,
         'tokens_consumed' => $tokensConsumed,
         'children_deactivated' => $children->rowCount(),
         'events_closed' => $events->rowCount(),

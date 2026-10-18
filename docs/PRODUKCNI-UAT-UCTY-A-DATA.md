@@ -1,6 +1,6 @@
 # Produkční UAT účty a data
 
-Aktualizováno: 16. 10. 2026
+Aktualizováno: 18. 10. 2026
 
 ## Účel a hranice
 
@@ -16,7 +16,8 @@ Gitu ani v logu workflow.
 - rodič `Tester Petra` – `tester.petra@velocota.com`,
 - dítě `Ema Tester` – přihlašovací jméno `tester.ema`,
 - dítě `Adam Tester` – přihlašovací jméno `tester.adam`,
-- správce zůstává samostatný vyhrazený účet `KIS testovací superadministrátor`.
+- správce je samostatný vyhrazený účet `Tester Správce`
+  (`tester.spravce@velocota.com`).
 
 Karel má schválenou vazbu pouze na Emu, Petra pouze na Adama. Křížové vazby
 z předchozího testovacího nastavení se auditovaně ruší jen tehdy, pokud je
@@ -100,7 +101,9 @@ konce nového okna; úklid rozpozná oba typy SKU.
 
 Operace `deaktivovat-testovaci-ucty`:
 
-- zneaktivní oba rodiče a oba dětské přístupy,
+- zneaktivní přesně oba vyjmenované rodiče, oba dětské přístupy a
+  vyhrazeného TEST správce včetně jeho propojeného veřejného profilu;
+  změna verze relací odhlásí existující přístupy a resetovací tokeny se spotřebují,
 - ukončí aktivní členství TEST dětí a dočasných TEST účastníků placené akce
   výhradně v soupisce `TEST-UAT-DETI` (bez mazání historických zápisů),
 - uzavře a skryje akce `TEST -`,
