@@ -23,7 +23,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         echo json_encode(['ok' => false, 'message' => 'Odkaz je neplatný, odvolaný nebo mu skončila platnost.'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
         exit;
     }
-    public_profile_access_grant_session($sportovecId);
+    public_profile_access_grant_session($sportovecId, (string)$_POST['token']);
     app_session_mark_authenticated();
     echo json_encode(['ok' => true, 'redirect' => 'sportovec_treninky.php'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
     exit;

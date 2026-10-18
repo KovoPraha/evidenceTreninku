@@ -124,6 +124,7 @@ function auth_session_clear_identity(string $identity): void
     foreach ($definition['clear_keys'] as $key) {
         unset($_SESSION[$key]);
     }
+    unset($_SESSION['public_profile_access']);
 }
 
 function auth_session_version_value(mixed $value): ?int

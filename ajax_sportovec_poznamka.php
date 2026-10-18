@@ -26,7 +26,7 @@ if ($tid <= 0) {
     exit;
 }
 
-$sportovec_id = public_profile_access_session_athlete_id() ?? 0;
+$sportovec_id = public_profile_access_session_athlete_id($pdo) ?? 0;
 if ($sportovec_id < 1) {
     echo json_encode(['ok' => false, 'msg' => 'Neplatný přístup.']);
     exit;

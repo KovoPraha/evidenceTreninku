@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2).'/includes/public_profile_token.php';
@@ -35,10 +36,16 @@ final class PublicProfileTokenTest extends TestCase
         $before = $_SESSION ?? [];
         try {
             $_SESSION = [];
-            \public_profile_access_grant_session(42, 300);
-            self::assertSame(42, \public_profile_access_session_athlete_id());
+            $pdo = new PDO('sqlite::memory:');
+            $pdo->exec('CREATE TABLE public_profile_access_tokens '
+                . '(sportovec_id INTEGER, token_hash TEXT, scope TEXT, revoked_at TEXT, expires_at TEXT)');
+            $token = str_repeat('a', 64);
+            $statement = $pdo->prepare('INSERT INTO public_profile_access_tokens VALUES (?,?,?,?,?)');
+            $statement->execute([42, \public_profile_access_token_hash($token), 'training_read', null, '2099-01-01 00:00:00']);
+            \public_profile_access_grant_session(42, $token, 300);
+            self::assertSame(42, \public_profile_access_session_athlete_id($pdo));
             $_SESSION['public_profile_access']['expires_at'] = time() - 1;
-            self::assertNull(\public_profile_access_session_athlete_id());
+            self::assertNull(\public_profile_access_session_athlete_id($pdo));
         } finally {
             $_SESSION = $before;
         }

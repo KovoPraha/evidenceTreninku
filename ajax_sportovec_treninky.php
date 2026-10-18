@@ -54,7 +54,7 @@ function renderMereniData(array $mz): string {
 }
 
 // --- auth: short-lived server-side profile session ---
-$sportovec_id = public_profile_access_session_athlete_id() ?? 0;
+$sportovec_id = public_profile_access_session_athlete_id($pdo) ?? 0;
 if ($sportovec_id < 1) {
     http_response_code(403);
     echo '<div class="alert alert-danger">Neplatný přístup.</div>';

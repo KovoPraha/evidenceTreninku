@@ -48,7 +48,7 @@ if ($kind === 'receipt') {
         exit('Soubor nebyl nalezen.');
     }
     $trainer = isset($_SESSION['trener_id']) && staffActivePositionIs('coach');
-    $publicAthleteId = public_profile_access_session_athlete_id();
+    $publicAthleteId = public_profile_access_session_athlete_id($pdo);
     $public = (string)$file['typ'] === 'public_img'
         && $publicAthleteId !== null
         && (int)$file['sportovec_id'] === $publicAthleteId;

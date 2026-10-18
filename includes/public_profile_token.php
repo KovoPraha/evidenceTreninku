@@ -59,23 +59,65 @@ function public_profile_access_resolve(PDO $pdo, string $token): ?int
     return (int)$row['sportovec_id'];
 }
 
-function public_profile_access_grant_session(int $sportovecId, int $ttlSeconds = 7200): void
+function public_profile_access_grant_session(int $sportovecId, string $token, int $ttlSeconds = 7200): void
 {
-    if ($sportovecId < 1) throw new InvalidArgumentException('Neplatný profil sportovce.');
+    $tokenHash = public_profile_access_token_hash(trim($token));
+    if ($sportovecId < 1 || $tokenHash === '') {
+        throw new InvalidArgumentException('Neplatný profil sportovce.');
+    }
     $_SESSION['public_profile_access'] = [
         'sportovec_id' => $sportovecId,
+        'token_hash' => $tokenHash,
         'expires_at' => time() + max(300, min($ttlSeconds, 43200)),
     ];
 }
 
-function public_profile_access_session_athlete_id(): ?int
+function public_profile_access_grant_staff_session(int $sportovecId): void
+{
+    $trainerId = (int)($_SESSION['trener_id'] ?? 0);
+    $trainerVersion = (int)($_SESSION['trener_session_version'] ?? 0);
+    if ($sportovecId < 1 || $trainerId < 1 || $trainerVersion < 1) {
+        throw new InvalidArgumentException('Neplatný pracovní přístup k profilu.');
+    }
+    $_SESSION['public_profile_access'] = [
+        'sportovec_id' => $sportovecId,
+        'staff_id' => $trainerId,
+        'staff_version' => $trainerVersion,
+        'expires_at' => time() + 7200,
+    ];
+}
+
+function public_profile_access_session_athlete_id(PDO $pdo): ?int
 {
     $access = $_SESSION['public_profile_access'] ?? null;
     if (!is_array($access) || (int)($access['expires_at'] ?? 0) < time() || (int)($access['sportovec_id'] ?? 0) < 1) {
         unset($_SESSION['public_profile_access']);
         return null;
     }
-    return (int)$access['sportovec_id'];
+    $sportovecId = (int)$access['sportovec_id'];
+    if (isset($access['staff_id'], $access['staff_version'])) {
+        if ((int)$access['staff_id'] === (int)($_SESSION['trener_id'] ?? 0)
+            && (int)$access['staff_version'] === (int)($_SESSION['trener_session_version'] ?? 0)
+            && (int)$access['staff_id'] > 0
+            && (int)$access['staff_version'] > 0
+        ) {
+            return $sportovecId;
+        }
+    } elseif (isset($access['token_hash']) && is_string($access['token_hash'])
+        && preg_match('/\A[a-f0-9]{64}\z/D', $access['token_hash']) === 1
+    ) {
+        $statement = $pdo->prepare(
+            'SELECT 1 FROM public_profile_access_tokens '
+            . "WHERE sportovec_id=? AND token_hash=? AND scope='training_read' "
+            . 'AND revoked_at IS NULL AND expires_at>=CURRENT_TIMESTAMP LIMIT 1'
+        );
+        $statement->execute([$sportovecId, $access['token_hash']]);
+        if ($statement->fetchColumn()) {
+            return $sportovecId;
+        }
+    }
+    unset($_SESSION['public_profile_access']);
+    return null;
 }
 
 function public_profile_access_revoke_for_person(PDO $pdo, int $sportovecId): int

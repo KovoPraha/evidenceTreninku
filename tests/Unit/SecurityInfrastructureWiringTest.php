@@ -7,6 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 final class SecurityInfrastructureWiringTest extends TestCase
 {
+    public function testGeneratedReportsAreNotServedOrDeployed(): void
+    {
+        $root = dirname(__DIR__, 2);
+        self::assertStringContainsString('migrations|output|tests', (string)file_get_contents($root . '/.htaccess'));
+        $workflow = (string)file_get_contents($root . '/.github/workflows/deploy-production.yml');
+        self::assertSame(2, substr_count($workflow, "--exclude='output/'"));
+    }
+
     public function testUploadDirectoriesBlockBrowserActiveExtensions(): void
     {
         $rules = (string)file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
@@ -28,7 +36,7 @@ final class SecurityInfrastructureWiringTest extends TestCase
         self::assertStringContainsString('beginTransaction()', $receipt);
         self::assertStringContainsString('privateStorageSoftDelete($newReceiptKey)', $receipt);
         self::assertStringContainsString('privateStorageStore', $stress);
-        self::assertStringContainsString('public_profile_access_session_athlete_id()', $download);
+        self::assertStringContainsString('public_profile_access_session_athlete_id($pdo)', $download);
         self::assertStringNotContainsString("\$_GET['hash']", $download);
         self::assertStringContainsString("(string)\$file['typ'] === 'public_img'", $download);
     }
@@ -129,7 +137,7 @@ final class SecurityInfrastructureWiringTest extends TestCase
         $htaccess = (string)file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
         self::assertStringContainsString('^kis\\.kovopraha\\.cz', $htaccess);
         self::assertStringContainsString('https://kis.kovopraha.cz%{REQUEST_URI}', $htaccess);
-        self::assertStringContainsString('^(?:bin|database|docs|migrations|tests|var|vendor)', $htaccess);
+        self::assertStringContainsString('^(?:bin|database|docs|migrations|output|tests|var|vendor)', $htaccess);
         self::assertStringContainsString('^nahrane_zavody/results', $htaccess);
         $security = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/session_security.php');
         self::assertStringContainsString("base-uri 'self'", $security);

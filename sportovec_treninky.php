@@ -73,7 +73,7 @@ $legacyToken = trim((string)($_GET['hash'] ?? ''));
 if ($legacyToken !== '') {
     $resolved = public_profile_access_resolve($pdo, $legacyToken);
     if ($resolved === null) { http_response_code(404); exit('Profil není dostupný.'); }
-    public_profile_access_grant_session($resolved);
+    public_profile_access_grant_session($resolved, $legacyToken);
     app_session_mark_authenticated();
     header('Location: sportovec_treninky.php', true, 303);
     exit;
@@ -81,9 +81,9 @@ if ($legacyToken !== '') {
 $staffRequestedId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if (isset($_SESSION['trener_id']) && $staffRequestedId !== false) {
     $sportovec_id = (int)$staffRequestedId;
-    public_profile_access_grant_session($sportovec_id);
+    public_profile_access_grant_staff_session($sportovec_id);
 } else {
-    $sportovec_id = public_profile_access_session_athlete_id() ?? 0;
+    $sportovec_id = public_profile_access_session_athlete_id($pdo) ?? 0;
 }
 if ($sportovec_id < 1) { http_response_code(404); exit('Profil není dostupný.'); }
 

@@ -14,7 +14,7 @@ Options -Indexes
     RewriteRule ^ https://kis.kovopraha.cz%{REQUEST_URI} [R=308,L,NE]
 
     RewriteRule (^|/)\.git(/|$) - [F,L]
-    RewriteRule ^(?:bin|database|docs|migrations|tests|var|vendor)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:bin|database|docs|migrations|output|tests|var|vendor)(?:/|$) - [F,L,NC]
     RewriteRule ^includes(?:/|$) - [F,L,NC]
     RewriteRule ^uploads/(?:uctenky|zatezove_testy|servis|temp)(?:/|$) - [F,L,NC]
     RewriteRule ^nahrane_zavody/results(?:/|$) - [F,L,NC]
