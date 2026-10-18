@@ -21,7 +21,7 @@ final class SecurityAuditRegressionTest extends TestCase
         $rules = (string) file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
 
         self::assertStringContainsString('^(?:config|db|csrf_helper)\\.php$', $rules);
-        self::assertStringContainsString('docs|includes|migrations', $rules);
+        self::assertStringContainsString('RewriteRule ^includes(?:/|$) - [F,L,NC]', $rules);
     }
 
     public function testExerciseMutationsRequireAValidCsrfToken(): void
