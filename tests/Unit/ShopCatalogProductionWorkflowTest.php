@@ -16,6 +16,7 @@ final class ShopCatalogProductionWorkflowTest extends TestCase
         self::assertStringContainsString('[[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]]',$workflow);
         self::assertStringContainsString("test \"\$POTVRZENI\" = 'IMPORTOVAT-ESHOP-JEDNORAZOVE'",$workflow);
         self::assertStringContainsString(".database_writes == 0 and (.blockers|length) == 0",$workflow);
+        self::assertStringContainsString("run-preview.php' || test \\$? -eq 2",$workflow);
         self::assertStringContainsString('.verification.remote_images == 0',$workflow);
         self::assertStringContainsString('.verification.active_products == 0',$workflow);
         self::assertStringContainsString('.verification.active_variants == 0',$workflow);
