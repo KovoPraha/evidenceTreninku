@@ -98,6 +98,18 @@ final class ShopCatalogOneTimeSyncTest extends TestCase
         self::assertSame(654321,(int)$pdo->query("SELECT amount_minor FROM shop_variants WHERE product_id=".$productId." ORDER BY id LIMIT 1")->fetchColumn());
     }
 
+    public function testSignedShoptetStockIsPreservedAndAuditedWithoutWeakeningManualRules():void
+    {
+        $pdo=$this->database();$catalog=$this->catalog();$catalog['source']['sha256']=str_repeat('d',64);$catalog['products'][0]['variants'][0]['stock']['quantity_decimal']='-5';$catalog['products'][0]['variants'][0]['stock']['allow_negative']=true;$manifest=$this->manifest($catalog);
+        $sku=(string)$catalog['products'][0]['variants'][0]['sku'];
+        \shopCatalogOneTimeApply($pdo,$catalog,$manifest,$this->temporaryDirectory.'/app',\SHOP_CATALOG_ONE_TIME_CONFIRM);
+        $statement=$pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE sku=?');$statement->execute([$sku]);
+        self::assertSame('-5',(string)$statement->fetchColumn());
+        $statement=$pdo->prepare('SELECT quantity_delta_decimal,stock_after_decimal FROM shop_inventory_movements m JOIN shop_variants v ON v.id=m.variant_id WHERE v.sku=? ORDER BY m.id DESC LIMIT 1');$statement->execute([$sku]);$movement=$statement->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('-5.000000',$movement['quantity_delta_decimal']);self::assertSame('-5.000000',$movement['stock_after_decimal']);
+        $this->expectException(\InvalidArgumentException::class);\shopManualCatalogStock('-5');
+    }
+
     /** @return array<string,mixed> */
     private function catalog():array{return \ShopCatalogContract::build(\ShoptetProductInput::read(dirname(__DIR__).'/fixtures/shoptet/products-export.xml'));}
 
