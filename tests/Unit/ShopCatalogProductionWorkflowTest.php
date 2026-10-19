@@ -32,4 +32,18 @@ final class ShopCatalogProductionWorkflowTest extends TestCase
         self::assertStringContainsString("set_time_limit(900)",$command);
         self::assertStringContainsString("'failure_type'=>get_debug_type(\$cause)",$command);
     }
+
+    public function testOneTimePublicationWorkflowIsManualBackedUpAndExactlyVerified():void
+    {
+        $workflow=(string)file_get_contents(dirname(__DIR__,2).'/.github/workflows/publish-shop-catalog-production.yml');
+        self::assertStringContainsString('workflow_dispatch:',$workflow);
+        self::assertStringNotContainsString('schedule:',$workflow);
+        self::assertStringContainsString('environment: production',$workflow);
+        self::assertStringContainsString("test \"\$POTVRZENI\" = ZVEREJNIT-SHOPTET-KATALOG",$workflow);
+        self::assertStringContainsString('.database_writes == 0 and (.blockers|length) == 0',$workflow);
+        self::assertStringContainsString('Vytvořit a ověřit bezprostřední produkční zálohu',$workflow);
+        self::assertStringContainsString('.verification.public_storefront_products == $visible',$workflow);
+        self::assertStringContainsString('grep -Fq "$EXPECTED_RESULTS výsledků"',$workflow);
+        self::assertStringNotContainsString('set -x',$workflow);
+    }
 }
