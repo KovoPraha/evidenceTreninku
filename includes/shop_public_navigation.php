@@ -15,6 +15,7 @@ function shopPublicSaleableCatalog(PDO $pdo): array
 {
     $products=[];
     foreach (shopStorefrontCatalog($pdo) as $product) {
+        if(shopPurchaseModeApprovedShoptetGoods($product)){$products[]=$product;continue;}
         $hasProgramOffer=clubProgramProductHasOfferLink($pdo,(int)$product['product_id']);
         $isProgram=shopProductRequiresAthlete($pdo,(int)$product['product_id']);
         $product['variants']=array_values(array_filter($product['variants'],static function(array $variant)use($pdo,$hasProgramOffer,$isProgram):bool{

@@ -44,6 +44,7 @@ final class ShopCatalogProductionWorkflowTest extends TestCase
         self::assertStringContainsString('Vytvořit a ověřit bezprostřední produkční zálohu',$workflow);
         self::assertStringContainsString('.verification.public_storefront_products == $visible',$workflow);
         self::assertStringContainsString('grep -Fq "$EXPECTED_RESULTS výsledků"',$workflow);
+        self::assertStringContainsString('--retry-all-errors --connect-timeout 30 --max-time 120',$workflow);
         self::assertStringNotContainsString('set -x',$workflow);
     }
 }

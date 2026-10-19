@@ -44,7 +44,7 @@ final class ShopStorefrontTest extends TestCase
         self::assertNull(\shopStorefrontProductDetail($pdo, 0));
     }
 
-    public function testSaleableCatalogKeepsGoodsButHidesProgramWithoutOffer(): void
+    public function testSaleableCatalogKeepsApprovedShoptetGoodsButHidesManualProgramWithoutOffer(): void
     {
         $pdo=$this->database();
         $pdo->exec('CREATE TABLE club_programs(id INTEGER PRIMARY KEY,status TEXT,name TEXT)');
@@ -53,9 +53,15 @@ final class ShopStorefrontTest extends TestCase
         $pdo->exec("INSERT INTO shop_product_publications VALUES(505,'active','Kroužek bez termínu','Zatím jen zájem')");
         $pdo->exec("INSERT INTO shop_variants VALUES(607,505,'PROGRAM','{}','fixed',490000,'CZK',NULL,1,'active')");
         $pdo->exec("INSERT INTO shop_product_categories VALUES(4,505,'Kroužky',1,0)");
+        $pdo->exec("ALTER TABLE shop_products ADD COLUMN origin TEXT NULL;ALTER TABLE shop_products ADD COLUMN external_product_key TEXT NULL");
+        $pdo->exec("UPDATE shop_products SET origin='import',external_product_key='shoptet:pair:505' WHERE id=505");
+        $pdo->exec("INSERT INTO shop_products(id,offer_type,catalog_status,description_html_untrusted,origin,external_product_key) VALUES(506,'goods','active','','manual','manual:program')");
+        $pdo->exec("INSERT INTO shop_product_publications VALUES(506,'active','Kroužek ručně','Zatím jen zájem')");
+        $pdo->exec("INSERT INTO shop_variants VALUES(608,506,'MANUAL-PROGRAM','{}','fixed',490000,'CZK',NULL,1,'active')");
+        $pdo->exec("INSERT INTO shop_product_categories VALUES(5,506,'Kroužky',1,0)");
 
         $products=\shopPublicSaleableCatalog($pdo);
-        self::assertSame([501],array_column($products,'product_id'));
+        self::assertSame([501,505],array_column($products,'product_id'));
         self::assertNotNull(\shopStorefrontProductDetail($pdo,505)); // Direct interest page remains available.
     }
 
