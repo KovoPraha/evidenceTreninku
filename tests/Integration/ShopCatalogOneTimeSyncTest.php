@@ -76,6 +76,28 @@ final class ShopCatalogOneTimeSyncTest extends TestCase
         self::assertSame('active',(string)$pdo->query("SELECT catalog_status FROM shop_variants WHERE sku='CLUB-EXAMPLE'")->fetchColumn());
     }
 
+    public function testExplicitlyAllowlistedActiveImportIsUpdatedWithoutActivatingAnythingElse():void
+    {
+        $pdo=$this->database();$catalog=$this->catalog();$manifest=$this->manifest($catalog);
+        \shopCatalogOneTimeApply($pdo,$catalog,$manifest,$this->temporaryDirectory.'/app',\SHOP_CATALOG_ONE_TIME_CONFIRM);
+        $key=(string)$catalog['products'][0]['external_product_key'];
+        $productId=(int)$pdo->query("SELECT id FROM shop_products WHERE external_product_key=".$pdo->quote($key))->fetchColumn();
+        $pdo->prepare("UPDATE shop_products SET catalog_status='active' WHERE id=?")->execute([$productId]);
+        $pdo->prepare("UPDATE shop_variants SET catalog_status='active' WHERE product_id=?")->execute([$productId]);
+        $activeVariantsBefore=(int)$pdo->query("SELECT COUNT(*) FROM shop_variants WHERE catalog_status='active'")->fetchColumn();
+
+        self::assertFalse(\shopCatalogOneTimePreview($pdo,$catalog,$manifest)['ok']);
+        $allowedPreview=\shopCatalogOneTimePreview($pdo,$catalog,$manifest,[$key]);
+        self::assertTrue($allowedPreview['ok']);self::assertSame(1,$allowedPreview['active_imported_products']);
+
+        $catalog['source']['sha256']=str_repeat('c',64);$catalog['products'][0]['variants'][0]['price']['amount_minor']=654321;$manifest=$this->manifest($catalog);
+        $result=\shopCatalogOneTimeApply($pdo,$catalog,$manifest,$this->temporaryDirectory.'/app',\SHOP_CATALOG_ONE_TIME_CONFIRM,[$key]);
+        self::assertTrue($result['applied']);self::assertSame(1,$result['verification']['active_products']);
+        self::assertLessThanOrEqual($activeVariantsBefore,$result['verification']['active_variants']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE catalog_status='active'")->fetchColumn());
+        self::assertSame(654321,(int)$pdo->query("SELECT amount_minor FROM shop_variants WHERE product_id=".$productId." ORDER BY id LIMIT 1")->fetchColumn());
+    }
+
     /** @return array<string,mixed> */
     private function catalog():array{return \ShopCatalogContract::build(\ShoptetProductInput::read(dirname(__DIR__).'/fixtures/shoptet/products-export.xml'));}
 

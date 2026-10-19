@@ -291,6 +291,8 @@ uloží pod obsahově odvozeným názvem.
 
 Opakovaný finální export aktualizuje stejné importované koncepty podle
 stabilního produktového klíče a SKU. Ručně založený produkt, cizí SKU nebo již
-aktivní importovaný produkt způsobí fail-closed zastavení před kanonickým
-zápisem. Tak lze nejprve provést testovací naplnění a těsně před cutoverem ještě
-jedno finální dorovnání bez zavedení trvalé synchronizační služby.
+aktivní importovaný produkt mimo přesný allowlist způsobí fail-closed zastavení
+před kanonickým zápisem. Výslovně povolený existující aktivní produkt zůstane
+aktivní; ostatní importované produkty ani nové varianty se samy neaktivují. Tak
+lze nejprve provést testovací naplnění a těsně před cutoverem ještě jedno
+finální dorovnání bez zavedení trvalé synchronizační služby.

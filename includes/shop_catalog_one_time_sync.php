@@ -78,7 +78,7 @@ function shopCatalogOneTimeSourceImageUrls(array $catalog): array
 }
 
 /** @return array<string,mixed> */
-function shopCatalogOneTimePreview(PDO $pdo, array $catalog, array $manifest): array
+function shopCatalogOneTimePreview(PDO $pdo, array $catalog, array $manifest, array $allowedActiveKeys=[]): array
 {
     if (($catalog['summary']['contract_ready'] ?? null) !== true) {
         throw new ShopCatalogOneTimeSyncException('Zdrojový katalog neprošel vstupním kontraktem.');
@@ -116,9 +116,11 @@ function shopCatalogOneTimePreview(PDO $pdo, array $catalog, array $manifest): a
         }
     }
 
-    $activeImported = (int)$pdo->query(
-        "SELECT COUNT(*) FROM shop_products WHERE origin='import' AND external_product_key LIKE 'shoptet:%' AND catalog_status='active'"
-    )->fetchColumn();
+    $allowedActiveKeys=shopCatalogOneTimeAllowedActiveKeys($allowedActiveKeys);
+    $activeRows=$pdo->query("SELECT external_product_key,name FROM shop_products WHERE origin='import' AND external_product_key LIKE 'shoptet:%' AND catalog_status='active' ORDER BY external_product_key")->fetchAll(PDO::FETCH_ASSOC);
+    $activeKeys=array_map(static fn(array$row):string=>(string)$row['external_product_key'],$activeRows);
+    $activeImported=count($activeRows);
+    $activeImportedVariants=(int)$pdo->query("SELECT COUNT(*) FROM shop_variants v INNER JOIN shop_products p ON p.id=v.product_id WHERE p.origin='import' AND p.external_product_key LIKE 'shoptet:%' AND p.catalog_status='active' AND v.catalog_status='active'")->fetchColumn();
     $existingImported = (int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE origin='import' AND external_product_key LIKE 'shoptet:%'")->fetchColumn();
     $existingManual = (int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE origin='manual'")->fetchColumn();
 
@@ -129,7 +131,7 @@ function shopCatalogOneTimePreview(PDO $pdo, array $catalog, array $manifest): a
     }
     $supportedReview = $unclassified === ['shoptet:pair:250'];
     $blockers = [];
-    if ($activeImported > 0) $blockers[] = 'active_imported_products';
+    if ($activeKeys !== $allowedActiveKeys) $blockers[] = 'active_imported_products_not_allowlisted';
     if ($manualProductCollisions !== []) $blockers[] = 'manual_product_key_collisions';
     if ($skuCollisions !== []) $blockers[] = 'sku_collisions';
     if ($missingAssets > 0) $blockers[] = 'missing_or_invalid_assets';
@@ -145,6 +147,8 @@ function shopCatalogOneTimePreview(PDO $pdo, array $catalog, array $manifest): a
         'existing_manual_products' => $existingManual,
         'matching_imported_products' => $importedMatches,
         'active_imported_products' => $activeImported,
+        'active_imported_variants' => $activeImportedVariants,
+        'active_products' => array_map(static fn(array$row):array=>['external_product_key'=>(string)$row['external_product_key'],'name'=>(string)$row['name']],$activeRows),
         'manual_product_key_collisions' => array_slice(array_values(array_unique($manualProductCollisions)), 0, 20),
         'sku_collisions' => array_slice(array_values(array_unique($skuCollisions)), 0, 20),
         'missing_assets' => $missingAssets,
@@ -197,6 +201,14 @@ function shopCatalogOneTimeActor(PDO $pdo): int
     return $actor;
 }
 
+/** @return list<string> */
+function shopCatalogOneTimeAllowedActiveKeys(array$keys):array
+{
+    $normalized=[];
+    foreach($keys as$key){$key=trim((string)$key);if(preg_match('/^shoptet:pair:[0-9]+$/D',$key)!==1)throw new ShopCatalogOneTimeSyncException('Allowlist aktivních produktů obsahuje neplatný klíč.');$normalized[$key]=true;}
+    $normalized=array_keys($normalized);sort($normalized,SORT_STRING);return$normalized;
+}
+
 /** @return array{copied:int,reused:int} */
 function shopCatalogOneTimeInstallAssets(array $catalog, array $manifest, string $applicationRoot): array
 {
@@ -233,12 +245,14 @@ function shopCatalogOneTimeApply(
     array $catalog,
     array $manifest,
     string $applicationRoot,
-    string $confirmation
+    string $confirmation,
+    array $allowedActiveKeys=[]
 ): array {
     if (!hash_equals(SHOP_CATALOG_ONE_TIME_CONFIRM, $confirmation)) {
         throw new ShopCatalogOneTimeSyncException('Jednorázový import nemá přesné potvrzení.');
     }
-    $preview = shopCatalogOneTimePreview($pdo, $catalog, $manifest);
+    $allowedActiveKeys=shopCatalogOneTimeAllowedActiveKeys($allowedActiveKeys);
+    $preview = shopCatalogOneTimePreview($pdo, $catalog, $manifest, $allowedActiveKeys);
     if (!$preview['ok']) {
         throw new ShopCatalogOneTimeSyncException('Předletová kontrola import zablokovala: ' . implode(', ', $preview['blockers']));
     }
@@ -261,13 +275,13 @@ function shopCatalogOneTimeApply(
         $pdo->prepare("UPDATE shop_catalog_import_runs SET status='ready_for_promotion' WHERE id=? AND status='pending_review'")->execute([$runId]);
     }
     $assets = shopCatalogOneTimeInstallAssets($catalog,$manifest,$applicationRoot);
-    $result = shopCatalogOneTimeSynchronizeRun($pdo,$runId,$actorId,$manifest);
+    $result = shopCatalogOneTimeSynchronizeRun($pdo,$runId,$actorId,$manifest,$allowedActiveKeys);
     $verification = shopCatalogOneTimeVerifyRun($pdo,$runId);
     return array_merge($preview,$result,$assets,['ok'=>true,'applied'=>true,'idempotent'=>false,'verification'=>$verification]);
 }
 
 /** @return array<string,mixed> */
-function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array $manifest):array
+function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array $manifest,array $allowedActiveKeys=[]):array
 {
     $pdo->beginTransaction();
     try{
@@ -283,9 +297,9 @@ function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array
         foreach($candidates as$candidate){
             $payload=shopCatalogOneTimeJson((string)$candidate['payload_json']);$key=(string)$candidate['external_product_key'];$incomingKeys[]=$key;
             $offerType=(string)($candidate['reviewed_offer_type']?:$candidate['offer_type']);
-            $product=shopCatalogOneTimeLockProductByKey($pdo,$key);$productStatus=shopCatalogOneTimeVisible($payload['visibility']??null)?'draft':'inactive';
+            $product=shopCatalogOneTimeLockProductByKey($pdo,$key);$wasActive=$product&&(string)$product['catalog_status']==='active';$productStatus=$wasActive?'active':(shopCatalogOneTimeVisible($payload['visibility']??null)?'draft':'inactive');
             if($product){
-                if((string)($product['origin']??'import')!=='import'||(string)$product['catalog_status']==='active')throw new ShopCatalogOneTimeSyncException('Existující produkt nelze jednorázovým importem bezpečně aktualizovat.');
+                if((string)($product['origin']??'import')!=='import'||($wasActive&&!in_array($key,$allowedActiveKeys,true)))throw new ShopCatalogOneTimeSyncException('Existující produkt nelze jednorázovým importem bezpečně aktualizovat.');
                 $pdo->prepare('UPDATE shop_products SET source_candidate_id=?,source_run_id=?,source_pair_code=?,name=?,short_description=?,description_html_untrusted=?,offer_type=?,visibility=?,item_type=?,catalog_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([(int)$candidate['id'],$runId,$candidate['source_pair_code'],(string)$candidate['name'],$payload['short_description']??null,$payload['description_html_untrusted']??null,$offerType,$payload['visibility']??null,$payload['item_type']??null,$productStatus,(int)$product['id']]);
                 $productId=(int)$product['id'];$counts['products_updated']++;
             }else{
@@ -300,9 +314,9 @@ function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array
             foreach(($payload['images']??[])as$sort=>$url){$image=shopCatalogOneTimeManifestImage($manifest,(string)$url);$insertImage->execute([$productId,$image['image_url'],(int)$sort]);$counts['images_linked']++;}
 
             $variantCandidates=$pdo->prepare('SELECT * FROM shop_catalog_variant_candidates WHERE product_candidate_id=? ORDER BY id');$variantCandidates->execute([(int)$candidate['id']]);$variantCandidates=$variantCandidates->fetchAll(PDO::FETCH_ASSOC);$incomingVariantIds=[];
-            foreach($variantCandidates as$variantCandidate){$variant=shopCatalogOneTimeJson((string)$variantCandidate['payload_json']);$sku=(string)$variantCandidate['sku'];$existing=shopCatalogOneTimeLockVariantBySku($pdo,$sku);$visible=shopCatalogOneTimeBool($variant['visible']??null);$variantStatus=$productStatus==='draft'&&($visible===null||$visible===1)?'draft':'inactive';$beforeStock=$existing['stock_quantity_decimal']??null;
+            foreach($variantCandidates as$variantCandidate){$variant=shopCatalogOneTimeJson((string)$variantCandidate['payload_json']);$sku=(string)$variantCandidate['sku'];$existing=shopCatalogOneTimeLockVariantBySku($pdo,$sku);$visible=shopCatalogOneTimeBool($variant['visible']??null);$variantStatus=$productStatus==='draft'&&($visible===null||$visible===1)?'draft':'inactive';if($productStatus==='active')$variantStatus=$existing&&$existing['catalog_status']==='active'&&($visible===null||$visible===1)?'active':(($visible===null||$visible===1)?'draft':'inactive');$beforeStock=$existing['stock_quantity_decimal']??null;
                 $values=[(int)$variantCandidate['id'],$variant['ean']??null,json_encode($variant['attributes']??[],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),(string)$variantCandidate['price_mode'],$variantCandidate['amount_minor'],$variant['price']['compare_at_amount_minor']??null,$variantCandidate['currency'],shopCatalogOneTimeBool($variant['price']['includes_vat']??null),$variant['price']['vat_rate_basis_points']??null,$variantCandidate['stock_quantity_decimal'],$variant['unit']['code']??null,$variant['stock']['availability_in_stock']??null,$variant['stock']['availability_out_of_stock']??null,shopCatalogOneTimeBool($variant['fulfillment']['free_shipping']??null),shopCatalogOneTimeBool($variant['fulfillment']['free_billing']??null),$visible,$variantStatus];
-                if($existing){if((int)$existing['product_id']!==$productId||(string)($existing['origin']??'import')!=='import'||(string)$existing['catalog_status']==='active')throw new ShopCatalogOneTimeSyncException('SKU koliduje s jiným nebo aktivním produktem.');$pdo->prepare('UPDATE shop_variants SET source_candidate_id=?,ean=?,attributes_json=?,price_mode=?,amount_minor=?,compare_at_amount_minor=?,currency=?,includes_vat=?,vat_rate_basis_points=?,stock_quantity_decimal=?,unit_code=?,availability_in_stock=?,availability_out_of_stock=?,free_shipping=?,free_billing=?,visible=?,catalog_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([...$values,(int)$existing['id']]);$variantId=(int)$existing['id'];$counts['variants_updated']++;}
+                if($existing){if((int)$existing['product_id']!==$productId||(string)($existing['origin']??'import')!=='import'||((string)$existing['catalog_status']==='active'&&!$wasActive))throw new ShopCatalogOneTimeSyncException('SKU koliduje s jiným nebo nepovoleným aktivním produktem.');$pdo->prepare('UPDATE shop_variants SET source_candidate_id=?,ean=?,attributes_json=?,price_mode=?,amount_minor=?,compare_at_amount_minor=?,currency=?,includes_vat=?,vat_rate_basis_points=?,stock_quantity_decimal=?,unit_code=?,availability_in_stock=?,availability_out_of_stock=?,free_shipping=?,free_billing=?,visible=?,catalog_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([...$values,(int)$existing['id']]);$variantId=(int)$existing['id'];$counts['variants_updated']++;}
                 else{$sql="INSERT INTO shop_variants(product_id,source_candidate_id,origin,created_by_trainer_id,sku,ean,attributes_json,price_mode,amount_minor,compare_at_amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,unit_code,availability_in_stock,availability_out_of_stock,free_shipping,free_billing,visible,catalog_status) VALUES(?,?,'import',NULL,".implode(',',array_fill(0,17,'?')).')';$pdo->prepare($sql)->execute([$productId,(int)$variantCandidate['id'],$sku,...array_slice($values,1)]);$variantId=(int)$pdo->lastInsertId();$counts['variants_created']++;}
                 $incomingVariantIds[]=$variantId;$afterStock=$variantCandidate['stock_quantity_decimal'];if(shopCatalogOneTimeStockComparable($beforeStock)!==shopCatalogOneTimeStockComparable($afterStock)&&$afterStock!==null)shopManualCatalogInventoryMovement($pdo,$variantId,$actorId,$beforeStock,$afterStock,'Jednorázový převod stavu skladu ze Shoptetu.');
             }

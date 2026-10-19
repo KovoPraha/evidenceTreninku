@@ -18,8 +18,10 @@ final class ShopCatalogProductionWorkflowTest extends TestCase
         self::assertStringContainsString(".database_writes == 0 and (.blockers|length) == 0",$workflow);
         self::assertStringContainsString("run-preview.php' || test \\$? -eq 2",$workflow);
         self::assertStringContainsString('.verification.remote_images == 0',$workflow);
-        self::assertStringContainsString('.verification.active_products == 0',$workflow);
-        self::assertStringContainsString('.verification.active_variants == 0',$workflow);
+        self::assertStringContainsString('allowed_active_product_keys:',$workflow);
+        self::assertStringContainsString("putenv('SHOPTET_ALLOWED_ACTIVE_KEYS=\$ALLOWED_ACTIVE_KEYS');",$workflow);
+        self::assertStringContainsString('.verification.active_products == $active',$workflow);
+        self::assertStringContainsString('.verification.active_variants <= .active_imported_variants',$workflow);
         self::assertStringContainsString("inputs.mode == 'apply'",$workflow);
         self::assertStringContainsString('Vytvořit a ověřit bezprostřední produkční zálohu',$workflow);
         self::assertStringContainsString('gh release delete "$SOURCE_TAG" --yes --cleanup-tag',$workflow);
