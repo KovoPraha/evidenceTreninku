@@ -117,6 +117,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261016120000_athlete_registration_sample_notices',
                 '20261019100000_auth_mail_outbox',
                 '20261019110000_shop_ppl_box',
+                '20261019130000_shop_packeta_zbox',
             ],
             array_keys($catalog)
         );
