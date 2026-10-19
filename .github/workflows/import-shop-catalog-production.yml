@@ -23,6 +23,14 @@ on:
         description: 'Očekávaný počet unikátních zdrojových obrázků'
         required: true
         type: number
+      expected_active_products:
+        description: 'Očekávaný počet již aktivních importovaných produktů'
+        required: true
+        type: number
+      allowed_active_product_keys:
+        description: 'Přesný čárkou oddělený allowlist aktivních klíčů, nebo none'
+        required: true
+        type: string
       mode:
         description: 'Pouze kontrola, nebo jednorázový zápis'
         required: true
@@ -66,6 +74,8 @@ jobs:
           EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
           EXPECTED_VARIANTS: ${{ inputs.expected_variants }}
           EXPECTED_IMAGES: ${{ inputs.expected_images }}
+          EXPECTED_ACTIVE_PRODUCTS: ${{ inputs.expected_active_products }}
+          ALLOWED_ACTIVE_KEYS: ${{ inputs.allowed_active_product_keys }}
         run: |
           set -euo pipefail
           [[ "$SOURCE_TAG" =~ ^shop-catalog-[0-9]{8}-[0-9]{6}$ ]]
@@ -73,6 +83,13 @@ jobs:
           [[ "$EXPECTED_PRODUCTS" =~ ^[1-9][0-9]*$ ]]
           [[ "$EXPECTED_VARIANTS" =~ ^[1-9][0-9]*$ ]]
           [[ "$EXPECTED_IMAGES" =~ ^[1-9][0-9]*$ ]]
+          [[ "$EXPECTED_ACTIVE_PRODUCTS" =~ ^[0-9]+$ ]]
+          if [ "$ALLOWED_ACTIVE_KEYS" = 'none' ]; then
+            test "$EXPECTED_ACTIVE_PRODUCTS" = 0
+          else
+            [[ "$ALLOWED_ACTIVE_KEYS" =~ ^shoptet:pair:[0-9]+(,shoptet:pair:[0-9]+)*$ ]]
+            test "$(awk -F, '{print NF}' <<< "$ALLOWED_ACTIVE_KEYS")" = "$EXPECTED_ACTIVE_PRODUCTS"
+          fi
           [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]]
           [[ "$WEB_URL" =~ ^https://[a-z0-9.-]+/?$ ]]
           [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
@@ -165,6 +182,8 @@ jobs:
           EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
           EXPECTED_VARIANTS: ${{ inputs.expected_variants }}
           EXPECTED_IMAGES: ${{ inputs.expected_images }}
+          EXPECTED_ACTIVE_PRODUCTS: ${{ inputs.expected_active_products }}
+          ALLOWED_ACTIVE_KEYS: ${{ inputs.allowed_active_product_keys }}
         run: |
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
@@ -175,11 +194,12 @@ jobs:
           putenv('SHOPTET_INPUT=$IMPORT_WORK/productsComplete.xml');
           putenv('SHOPTET_ASSET_MANIFEST=$IMPORT_WORK/assets/manifest.json');
           putenv('SHOPTET_SYNC_ACTION=preview');
+          putenv('SHOPTET_ALLOWED_ACTIVE_KEYS=$ALLOWED_ACTIVE_KEYS');
           require '$REMOTE_DIR/bin/sync-shoptet-catalog-once.php';
           EOF
           production_retry "${SCP[@]}" /tmp/run-shop-preview.php "$SSH_USER@$SSH_HOST:$IMPORT_WORK/run-preview.php"
           production_retry_capture "${SSH[@]}" "php '$IMPORT_WORK/run-preview.php' || test \$? -eq 2" | tee /tmp/kis-shop-preview.json
-          jq -e --arg sha "$SOURCE_SHA" --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" '.ok == true and .source_sha256 == $sha and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .database_writes == 0 and (.blockers|length) == 0' /tmp/kis-shop-preview.json >/dev/null
+          jq -e --arg sha "$SOURCE_SHA" --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" --argjson active "$EXPECTED_ACTIVE_PRODUCTS" '.ok == true and .source_sha256 == $sha and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .active_imported_products == $active and .database_writes == 0 and (.blockers|length) == 0' /tmp/kis-shop-preview.json >/dev/null
 
       - name: Vytvořit a ověřit bezprostřední produkční zálohu
         if: inputs.mode == 'apply'
@@ -209,6 +229,8 @@ jobs:
           EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
           EXPECTED_VARIANTS: ${{ inputs.expected_variants }}
           EXPECTED_IMAGES: ${{ inputs.expected_images }}
+          EXPECTED_ACTIVE_PRODUCTS: ${{ inputs.expected_active_products }}
+          ALLOWED_ACTIVE_KEYS: ${{ inputs.allowed_active_product_keys }}
         run: |
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
@@ -220,11 +242,12 @@ jobs:
           putenv('SHOPTET_ASSET_MANIFEST=$IMPORT_WORK/assets/manifest.json');
           putenv('SHOPTET_SYNC_ACTION=apply');
           putenv('SHOPTET_SYNC_CONFIRM=IMPORTOVAT-ESHOP-JEDNORAZOVE');
+          putenv('SHOPTET_ALLOWED_ACTIVE_KEYS=$ALLOWED_ACTIVE_KEYS');
           require '$REMOTE_DIR/bin/sync-shoptet-catalog-once.php';
           EOF
           production_retry "${SCP[@]}" /tmp/run-shop-apply.php "$SSH_USER@$SSH_HOST:$IMPORT_WORK/run-apply.php"
           production_retry_capture "${SSH[@]}" "php '$IMPORT_WORK/run-apply.php'" | tee /tmp/kis-shop-apply.json
-          jq -e --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" '.ok == true and .applied == true and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .images_linked == $images and .verification.products == $products and .verification.variants == $variants and .verification.images == $images and .verification.remote_images == 0 and .verification.active_products == 0 and .verification.active_variants == 0' /tmp/kis-shop-apply.json >/dev/null
+          jq -e --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" --argjson active "$EXPECTED_ACTIVE_PRODUCTS" '.ok == true and .applied == true and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .images_linked == $images and .verification.products == $products and .verification.variants == $variants and .verification.images == $images and .verification.remote_images == 0 and .verification.active_products == $active and .verification.active_variants <= .active_imported_variants' /tmp/kis-shop-apply.json >/dev/null
 
       - name: Ověřit veřejný e-shop po zápisu draftů
         if: inputs.mode == 'apply'
