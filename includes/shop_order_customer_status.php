@@ -14,6 +14,8 @@ function shopOrderCustomerStatusLabel(array $order): string
 {
     $canonical = (string)($order['status'] ?? '');
     if (in_array($canonical, ['ready','completed','cancelled'], true)) {
+        if (($order['fulfillment_method']??'')==='ppl_box') return ['ready'=>'Připraveno k odeslání','completed'=>'Předáno PPL','cancelled'=>'Stornováno'][$canonical];
+        if (($order['fulfillment_method']??'')==='packeta_zbox') return ['ready'=>'Připraveno k odeslání','completed'=>'Podáno do Z-BOXu','cancelled'=>'Stornováno'][$canonical];
         return ['ready'=>'Připraveno k odběru','completed'=>'Vydáno','cancelled'=>'Stornováno'][$canonical];
     }
     $custom = trim((string)($order['customer_status_label'] ?? ''));

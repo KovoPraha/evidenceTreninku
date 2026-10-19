@@ -72,7 +72,14 @@ function shopGuestCheckoutPlace(
     array $customer,
     string $idempotencyKey,
     string $accessToken,
-    array $bank
+    array $bank,
+    string $deliveryMethod = 'personal_pickup',
+    string $accessPointCode = '',
+    int $expectedShippingMinor = 0,
+    ?callable $pplLookup = null,
+    string $packetaPointId = '',
+    int $expectedPacketaShippingMinor = 0,
+    ?callable $packetaLookup = null
 ): array {
     if ($variantId < 1 || $quantity < 1 || $quantity > 99
         || preg_match('/^[a-f0-9]{32}$/D', $idempotencyKey) !== 1
@@ -116,11 +123,18 @@ function shopGuestCheckoutPlace(
             if ($unit < 1 || $currency !== 'CZK' || $unit > intdiv(PHP_INT_MAX, $quantity)) {
                 throw new ShopCheckoutException('Položka má nepodporovanou cenu.');
             }
-            $total = $unit * $quantity;
+            $goodsTotal = $unit * $quantity;
+            try {$delivery=$deliveryMethod==='packeta_zbox'
+                ?shopPacketaCheckoutChoice($pdo,[$variant],$deliveryMethod,$packetaPointId,$expectedPacketaShippingMinor,$packetaLookup)
+                :shopPplCheckoutChoice($pdo,[$variant],$deliveryMethod,$accessPointCode,(string)($customer['phone']??''),$expectedShippingMinor,$pplLookup);}
+            catch (ShopPplException|ShopPacketaException $exception) {throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+            if($deliveryMethod==='packeta_zbox'&&preg_match('/^\+?[0-9][0-9 ()-]{7,22}$/D',trim((string)($customer['phone']??'')))!==1)throw new ShopCheckoutException('Pro doručení do Z-BOXu zadejte platné telefonní číslo.');
+            if ($goodsTotal>PHP_INT_MAX-$delivery['price_minor']) throw new ShopCheckoutException('Celková částka je mimo podporovaný rozsah.');
+            $total=$goodsTotal+$delivery['price_minor'];
             $publicCode = 'KP' . shopCheckoutPublicCodeDate() . strtoupper(bin2hex(random_bytes(5)));
             $dueAt = shopCheckoutPaymentDueAt((int)$bank['due_days']);
             $columns = 'public_code,account_id,source_cart_id,checkout_mode,guest_access_token_hash,idempotency_key_hash,status,payment_status,fulfillment_method,customer_name_snapshot,customer_email_snapshot,customer_phone_snapshot,address_street_snapshot,address_city_snapshot,address_postcode_snapshot,subtotal_minor,discount_minor,total_minor,currency,placed_at';
-            $values = [$publicCode, null, null, 'guest', $tokenHash, $keyHash, trim($customer['first_name'] . ' ' . $customer['last_name']), $customer['email'], $customer['phone'], $customer['address_street'], $customer['address_city'], $customer['address_postcode'], $total, 0, $total, $currency];
+            $values = [$publicCode, null, null, 'guest', $tokenHash, $keyHash, trim($customer['first_name'] . ' ' . $customer['last_name']), $customer['email'], $customer['phone'], $customer['address_street'], $customer['address_city'], $customer['address_postcode'], $goodsTotal, 0, $total, $currency];
             if (shopOrderExpirationAvailable($pdo)) {
                 $insert = $pdo->prepare('INSERT INTO shop_orders(' . $columns . ',payment_expires_at) '
                     . "VALUES (?,?,?,?,?,?,'placed','pending','personal_pickup',?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?)");
@@ -131,6 +145,12 @@ function shopGuestCheckoutPlace(
             }
             $insert->execute($values);
             $orderId = (int)$pdo->lastInsertId();
+            if ($delivery['method']==='ppl_box') $pdo->prepare('UPDATE shop_orders SET fulfillment_method=?,shipping_amount_minor=?,ppl_access_point_code=?,ppl_access_point_name=?,ppl_access_point_address=? WHERE id=?')->execute([
+                'ppl_box',$delivery['price_minor'],$delivery['point']['code'],$delivery['point']['name'],$delivery['point']['address'],$orderId,
+            ]);
+            elseif($delivery['method']==='packeta_zbox')$pdo->prepare('UPDATE shop_orders SET fulfillment_method=?,shipping_amount_minor=?,packeta_point_id=?,packeta_point_name=?,packeta_point_address=?,customer_phone_snapshot=? WHERE id=?')->execute([
+                'packeta_zbox',$delivery['price_minor'],$delivery['point']['id'],$delivery['point']['name'],$delivery['point']['address'],$customer['phone'],$orderId,
+            ]);
             $managedStock = $variant['stock_quantity_decimal'] !== null;
             if ($managedStock) {
                 $reserve = $pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal-?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND stock_quantity_decimal>=?');
@@ -138,7 +158,7 @@ function shopGuestCheckoutPlace(
                 if ($reserve->rowCount() !== 1) throw new ShopCheckoutException('Vybraná varianta se mezitím vyprodala.');
             }
             $item = $pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
-            $item->execute([$orderId, (int)$variant['product_id'], $variantId, (string)$variant['public_name'], (string)$variant['sku'], (string)$variant['attributes_json'], $quantity, $unit, $total, $currency, $variant['includes_vat'], $variant['vat_rate_basis_points']]);
+            $item->execute([$orderId, (int)$variant['product_id'], $variantId, (string)$variant['public_name'], (string)$variant['sku'], (string)$variant['attributes_json'], $quantity, $unit, $goodsTotal, $currency, $variant['includes_vat'], $variant['vat_rate_basis_points']]);
             $orderItemId = (int)$pdo->lastInsertId();
             if ($managedStock) {
                 $stock = $pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE id=?');
@@ -162,6 +182,11 @@ function shopGuestCheckoutPlace(
                 $subject = 'Objednávka ' . $publicCode . ' – platební údaje';
                 $body = "Dobrý den,\n\nobjednávka {$publicCode} byla přijata.\n"
                     . 'Položka: ' . (string)$variant['public_name'] . ' × ' . $quantity . "\n"
+                    . ($delivery['method']==='ppl_box'
+                        ? 'Doprava PPL Parcelbox: '.number_format($delivery['price_minor']/100,2,',',' ')." CZK\n".'Box: '.$delivery['point']['name'].' ('.$delivery['point']['code'].")\n"
+                        : ($delivery['method']==='packeta_zbox'
+                            ? 'Doprava Zásilkovna Z-BOX: '.number_format($delivery['price_minor']/100,2,',',' ')." CZK\n".'Box: '.$delivery['point']['name'].' ('.$delivery['point']['id'].")\n"
+                            : "Předání: osobní odběr na velodromu\n"))
                     . 'Částka: ' . number_format($total / 100, 2, ',', ' ') . " CZK\n"
                     . 'Variabilní symbol: ' . $variableSymbol . "\n"
                     . 'Splatnost: ' . $dueAt . "\n\n"
