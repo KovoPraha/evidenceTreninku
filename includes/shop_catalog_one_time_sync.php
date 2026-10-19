@@ -318,7 +318,7 @@ function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array
                 $values=[(int)$variantCandidate['id'],$variant['ean']??null,json_encode($variant['attributes']??[],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),(string)$variantCandidate['price_mode'],$variantCandidate['amount_minor'],$variant['price']['compare_at_amount_minor']??null,$variantCandidate['currency'],shopCatalogOneTimeBool($variant['price']['includes_vat']??null),$variant['price']['vat_rate_basis_points']??null,$variantCandidate['stock_quantity_decimal'],$variant['unit']['code']??null,$variant['stock']['availability_in_stock']??null,$variant['stock']['availability_out_of_stock']??null,shopCatalogOneTimeBool($variant['fulfillment']['free_shipping']??null),shopCatalogOneTimeBool($variant['fulfillment']['free_billing']??null),$visible,$variantStatus];
                 if($existing){if((int)$existing['product_id']!==$productId||(string)($existing['origin']??'import')!=='import'||((string)$existing['catalog_status']==='active'&&!$wasActive))throw new ShopCatalogOneTimeSyncException('SKU koliduje s jiným nebo nepovoleným aktivním produktem.');$pdo->prepare('UPDATE shop_variants SET source_candidate_id=?,ean=?,attributes_json=?,price_mode=?,amount_minor=?,compare_at_amount_minor=?,currency=?,includes_vat=?,vat_rate_basis_points=?,stock_quantity_decimal=?,unit_code=?,availability_in_stock=?,availability_out_of_stock=?,free_shipping=?,free_billing=?,visible=?,catalog_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([...$values,(int)$existing['id']]);$variantId=(int)$existing['id'];$counts['variants_updated']++;}
                 else{$sql="INSERT INTO shop_variants(product_id,source_candidate_id,origin,created_by_trainer_id,sku,ean,attributes_json,price_mode,amount_minor,compare_at_amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,unit_code,availability_in_stock,availability_out_of_stock,free_shipping,free_billing,visible,catalog_status) VALUES(?,?,'import',NULL,".implode(',',array_fill(0,17,'?')).')';$pdo->prepare($sql)->execute([$productId,(int)$variantCandidate['id'],$sku,...array_slice($values,1)]);$variantId=(int)$pdo->lastInsertId();$counts['variants_created']++;}
-                $incomingVariantIds[]=$variantId;$afterStock=$variantCandidate['stock_quantity_decimal'];if(shopCatalogOneTimeStockComparable($beforeStock)!==shopCatalogOneTimeStockComparable($afterStock)&&$afterStock!==null)shopManualCatalogInventoryMovement($pdo,$variantId,$actorId,$beforeStock,$afterStock,'Jednorázový převod stavu skladu ze Shoptetu.');
+                $incomingVariantIds[]=$variantId;$afterStock=$variantCandidate['stock_quantity_decimal'];if(shopCatalogOneTimeStockComparable($beforeStock)!==shopCatalogOneTimeStockComparable($afterStock)&&$afterStock!==null)shopCatalogOneTimeInventoryMovement($pdo,$variantId,$actorId,$beforeStock,$afterStock);
             }
             $retired=shopCatalogOneTimeRetireMissingVariants($pdo,$productId,$incomingVariantIds);$counts['variants_retired']+=$retired;
         }
@@ -334,7 +334,18 @@ function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array
 function shopCatalogOneTimeJson(string $json):array{try{$value=json_decode($json,true,32,JSON_THROW_ON_ERROR);}catch(JsonException$e){throw new ShopCatalogOneTimeSyncException('Stagingový payload není platný.',0,$e);}if(!is_array($value))throw new ShopCatalogOneTimeSyncException('Stagingový payload není objekt.');return$value;}
 function shopCatalogOneTimeVisible(mixed$value):bool{return!in_array(mb_strtolower(trim((string)$value),'UTF-8'),['hidden','private','false','no','0'],true);}
 function shopCatalogOneTimeBool(mixed$value):?int{return$value===null?null:($value?1:0);}
-function shopCatalogOneTimeStockComparable(mixed$value):?string{return$value===null?null:shopManualCatalogMicrosDecimal(shopManualCatalogStockMicros((string)$value));}
+function shopCatalogOneTimeStockComparable(mixed$value):?string{$micros=shopCatalogOneTimeStockMicros($value);return$micros===null?null:shopManualCatalogMicrosDecimal($micros);}
+function shopCatalogOneTimeStockMicros(mixed$value):?int
+{
+    if($value===null)return null;$normalized=trim(str_replace(',','.',(string)$value));if($normalized==='')return null;
+    if(preg_match('/^(-?)([0-9]{1,9})(?:\.([0-9]{1,6}))?$/D',$normalized,$matches)!==1)throw new ShopCatalogOneTimeSyncException('Importovaný sklad má nepodporovaný číselný formát.');
+    $micros=(int)$matches[2]*1000000+(int)str_pad((string)($matches[3]??''),6,'0');return($matches[1]??'')==='-'?-$micros:$micros;
+}
+function shopCatalogOneTimeInventoryMovement(PDO$pdo,int$variantId,int$actorId,mixed$before,mixed$after):void
+{
+    $afterMicros=shopCatalogOneTimeStockMicros($after);if($afterMicros===null)throw new ShopCatalogOneTimeSyncException('Importovaný sklad nemá cílový stav.');$beforeMicros=shopCatalogOneTimeStockMicros($before)??0;
+    $pdo->prepare("INSERT INTO shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,actor_type,actor_id,reason,quantity_delta_decimal,stock_after_decimal) VALUES(?,NULL,NULL,'manual_adjustment','trainer',?,?,?,?)")->execute([$variantId,$actorId,'Jednorázový převod stavu skladu ze Shoptetu.',shopManualCatalogMicrosDecimal($afterMicros-$beforeMicros),shopManualCatalogMicrosDecimal($afterMicros)]);
+}
 /** @return array{products:int,variants:int,images:int,remote_images:int,active_products:int,active_variants:int} */
 function shopCatalogOneTimeVerifyRun(PDO$pdo,int$runId):array
 {
