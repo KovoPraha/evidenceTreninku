@@ -246,7 +246,7 @@ jobs:
           require '$REMOTE_DIR/bin/sync-shoptet-catalog-once.php';
           EOF
           production_retry "${SCP[@]}" /tmp/run-shop-apply.php "$SSH_USER@$SSH_HOST:$IMPORT_WORK/run-apply.php"
-          production_retry_capture "${SSH[@]}" "php '$IMPORT_WORK/run-apply.php'" | tee /tmp/kis-shop-apply.json
+          "${SSH[@]}" "php '$IMPORT_WORK/run-apply.php'" | tee /tmp/kis-shop-apply.json
           jq -e --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" --argjson active "$EXPECTED_ACTIVE_PRODUCTS" '.ok == true and .applied == true and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .images_linked == $images and .verification.products == $products and .verification.variants == $variants and .verification.images == $images and .verification.remote_images == 0 and .verification.active_products == $active and .verification.active_variants <= .active_imported_variants' /tmp/kis-shop-apply.json >/dev/null
 
       - name: Ověřit veřejný e-shop po zápisu draftů
@@ -271,5 +271,5 @@ jobs:
             production_retry "${SSH[@]}" "rm -rf -- '$IMPORT_WORK'"
           fi
           if [ "$MODE" = 'apply' ] && [[ "$SOURCE_TAG" =~ ^shop-catalog-[0-9]{8}-[0-9]{6}$ ]]; then
-            gh release delete "$SOURCE_TAG" --yes --cleanup-tag
+            gh release delete "$SOURCE_TAG" --yes
           fi
