@@ -93,7 +93,7 @@ final class ClubMakeupTest extends TestCase
         $pdo=$this->fixture();
         $end=date('Y-m-d',strtotime('+3 months'));
         $start=date('Y-m-d',strtotime('-3 months'));
-        $pdo->prepare('INSERT INTO club_program_offers VALUES(13,1,1,10,?,?,?,2016,2018)')->execute(['Zubříci celoročně',$start,$end]);
+        $pdo->prepare('INSERT INTO club_program_offers(id,program_id,season_id,team_id,name,starts_on,ends_on,birth_year_from,birth_year_to) VALUES(13,1,1,10,?,?,?,2016,2018)')->execute(['Zubříci celoročně',$start,$end]);
         $pdo->exec('INSERT INTO shop_order_items VALUES(34,20000)');
         $pdo->prepare("INSERT INTO club_program_enrollments VALUES(44,13,10,34,'active',?,?)")->execute([$start,$end]);
         $pdo->exec('UPDATE training_rsvps SET makeup_source_enrollment_id=44 WHERE plan_id=100');
@@ -257,7 +257,7 @@ final class ClubMakeupTest extends TestCase
             'CREATE TABLE club_programs(id INTEGER PRIMARY KEY,name TEXT)',
             'CREATE TABLE club_seasons(id INTEGER PRIMARY KEY,name TEXT)',
             'CREATE TABLE club_teams(id INTEGER PRIMARY KEY,season_id INTEGER,name TEXT)',
-            'CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,season_id INTEGER,team_id INTEGER,name TEXT,starts_on TEXT,ends_on TEXT,birth_year_from INTEGER,birth_year_to INTEGER)',
+            'CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,season_id INTEGER,team_id INTEGER,name TEXT,starts_on TEXT,ends_on TEXT,birth_year_from INTEGER,birth_year_to INTEGER,product_id INTEGER,variant_id INTEGER)',
             'CREATE TABLE shop_order_items(id INTEGER PRIMARY KEY,line_amount_minor INTEGER)',
             'CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,sportovec_id INTEGER,source_order_item_id INTEGER,status TEXT,valid_from TEXT,valid_to TEXT)',
             'CREATE TABLE planovane_treninky(id INTEGER PRIMARY KEY,trener_id INTEGER,serie_id INTEGER,nazev TEXT,datum TEXT,cas_od TEXT,stav TEXT,trenink_id INTEGER)',
@@ -280,7 +280,7 @@ final class ClubMakeupTest extends TestCase
         $pdo->exec("INSERT INTO club_programs VALUES(1,'Zdroj'),(2,'Cíl')");
         $pdo->exec("INSERT INTO club_seasons VALUES(1,'Školní rok')");
         $pdo->exec("INSERT INTO club_teams VALUES(10,1,'Zubříci'),(20,1,'Morčata')");
-        $offer=$pdo->prepare('INSERT INTO club_program_offers VALUES(?,?,?,?,?,?,?,?,?)');
+        $offer=$pdo->prepare('INSERT INTO club_program_offers(id,program_id,season_id,team_id,name,starts_on,ends_on,birth_year_from,birth_year_to) VALUES(?,?,?,?,?,?,?,?,?)');
         $offer->execute([11,1,1,10,'Zubříci první',date('Y-m-d',strtotime('-3 months')),$firstEnd,2016,2018]);
         $offer->execute([12,1,1,10,'Zubříci druhé',$secondStart,$secondEnd,2016,2018]);
         $offer->execute([21,2,1,20,'Morčata druhé',$secondStart,$secondEnd,2016,2018]);

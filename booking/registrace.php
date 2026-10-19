@@ -8,6 +8,7 @@ require_once __DIR__ . '/../includes/public_profile.php';
 require_once __DIR__ . '/../includes/app_url.php';
 require_once __DIR__ . '/../includes/password_security.php';
 require_once __DIR__ . '/../includes/auth_rate_limit.php';
+require_once __DIR__ . '/../includes/auth_mail_outbox.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function registrationSafeRedirect(mixed $value): string
@@ -122,7 +123,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $telefon
                     );
                 }
+                $link = appUrl('booking/overeni.php') . '#token=' . rawurlencode($verification['token'])
+                    . '&redirect=' . rawurlencode($redirect);
+                authMailEnqueue($pdo,'verify','public',$accountId,$verification['hash'],$email,
+                    'Ověření registrace — Kovopraha',
+                    "Dobrý den {$jmeno},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.");
                 $pdo->commit();
+                $success = true;
             } catch (Throwable $exception) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
@@ -131,16 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = 'Účet se nepodařilo vytvořit bez částečného zápisu.';
             }
 
-            // Verifikační email
-            if (empty($errors)) {
-                $link = appUrl('booking/overeni.php') . '#token=' . rawurlencode($verification['token'])
-                    . '&redirect=' . rawurlencode($redirect);
-                @mail($email, 'Ověření registrace — Kovopraha',
-                    "Dobrý den {$jmeno},\n\nPro dokončení registrace klikněte na odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",
-                    "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
-
-                $success = true;
-            }
         }
     }
 }
@@ -165,7 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($success): ?>
                 <div class="alert alert-success text-center">
                     <i class="bi bi-envelope-check fs-2 d-block mb-2"></i>
-                    Pokud lze účet s touto adresou vytvořit, poslali jsme na ni další postup.
+                    Pokud lze účet s touto adresou vytvořit, zařadili jsme další postup k odeslání.
+                    <div class="small mt-2"><a href="znovu_overit_email.php">Ověřovací odkaz nedorazil?</a></div>
                 </div>
             <?php else: ?>
 

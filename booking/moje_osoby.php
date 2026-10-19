@@ -17,7 +17,15 @@ function claimPageH(mixed $value): string
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function claimPageReturn(mixed $value): string
+{
+    $return = trim((string)$value);
+    return preg_match('~^(?:eshop\.php(?:#kosik)?|produkt\.php\?id=[1-9][0-9]*(?:&variant_id=[1-9][0-9]*)?(?:#varianta-[1-9][0-9]*)?)$~D', $return) === 1
+        ? $return : '';
+}
+
 $accountId = (int)$_SESSION['verejny_uzivatel_id'];
+$returnTo = claimPageReturn($_POST['return'] ?? $_GET['return'] ?? '');
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
@@ -46,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 throw new InvalidArgumentException('Neplatná akce.');
             }
-            header('Location: moje_osoby.php', true, 303);
+            header('Location: moje_osoby.php' . ($returnTo !== '' ? '?return=' . rawurlencode($returnTo) : ''), true, 303);
             exit;
         } catch (PDOException $exception) {
             error_log('booking/moje_osoby.php: ' . $exception->getMessage());
@@ -83,6 +91,7 @@ $statusLabels = [
 <main class="container py-4" style="max-width:900px">
     <h1 class="h4 mb-1"><i class="bi bi-people me-2 text-primary"></i>Moje osoby</h1>
     <p class="text-muted">Děti a sportovci, které budete moci přihlašovat na kroužky, kurzy a akce.</p>
+    <?php if ($returnTo !== ''): ?><p><a class="btn btn-outline-primary btn-sm" href="<?=claimPageH($returnTo)?>">← Zpět k rozpracovanému nákupu</a> <span class="small text-muted">Pokud je propojení teprve ke schválení, nákup dokončíte po jeho potvrzení.</span></p><?php endif; ?>
     <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2"><span>Kvůli ochraně osobních údajů se osoby nepřipojují automaticky. Pokud už je sportovec v evidenci klubu, požádejte níže o propojení; administrátor vazbu ověří.</span><a class="btn btn-primary btn-sm" href="#propojeni">Propojit existujícího sportovce</a></div>
     <?php if ($newAthleteRegistrationOpen): ?><p><a class="btn btn-outline-primary btn-sm" href="registrace_sportovce.php"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></p><?php else: ?><p class="small text-muted">Registrace nového sportovce je dočasně pozastavena, dokud klub neschválí konečné informace o zpracování údajů. Pokud sportovec ještě není v evidenci, <a href="mailto:velodromtrebesin@gmail.com?subject=Registrace%20nov%C3%A9ho%20sportovce">napište klubu</a>.</p><?php endif; ?>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= claimPageH($error) ?></div><?php endforeach; ?>
@@ -95,7 +104,7 @@ $statusLabels = [
 
     <section class="card border-0 shadow-sm mb-3" id="propojeni"><div class="card-header bg-white fw-semibold">Požádat o propojení osoby</div><div class="card-body">
         <form method="post" class="row g-3">
-            <?= csrf_field() ?><input type="hidden" name="action" value="submit">
+            <?= csrf_field() ?><input type="hidden" name="action" value="submit"><input type="hidden" name="return" value="<?=claimPageH($returnTo)?>">
             <div class="col-md-4"><label for="claim-role" class="form-label">Vztah</label><select id="claim-role" class="form-select" name="requested_role" required><option value="guardian">Jsem rodič / zástupce</option><option value="self">Je to můj vlastní profil</option></select></div>
             <div class="col-md-4"><label for="claim-first-name" class="form-label">Jméno osoby</label><input id="claim-first-name" class="form-control" name="jmeno" maxlength="100" required></div>
             <div class="col-md-4"><label for="claim-last-name" class="form-label">Příjmení osoby</label><input id="claim-last-name" class="form-control" name="prijmeni" maxlength="100" required></div>

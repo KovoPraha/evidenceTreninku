@@ -1,6 +1,17 @@
 # Formuláře — tok dat a uložení
 
-Přehled všech formulářů v aplikaci: co každý dělá, jaká data přijímá a jak je ukládá.
+> Historický detail vybraných formulářů. Aktuální průřezová mapa k 19. 10. 2026
+> je v [DATOVE_TOKY_KOD.md](../outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_KOD.md),
+> prioritizované slepé cesty v [NALEZY_A_RIZIKA.md](../outputs/data-flow-audit-2026-10-19/NALEZY_A_RIZIKA.md)
+> a editovatelný soupis 233 heuristických vstupních bodů a 54 ručně vedených toků
+> v `outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_APLIKACE.xlsx`.
+> Následující text není kompletní inventář současné aplikace; při rozporu
+> použijte novou mapu a aktuální zdrojový kód.
+
+> Lokální implementace návrhů F01–F08 a F11 je popsaná v
+> [provozním toku identity](identity-email-queue.md) a v implementačním
+> dodatku datového auditu. F09 (produkční CRON a doručení) a F10 (ostatní
+> synchronní e-maily) zůstávají otevřené; lokální testy nejsou produkční UAT.
 
 ---
 

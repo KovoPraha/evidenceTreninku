@@ -106,6 +106,7 @@ final class AdminOperationalOverviewTest extends TestCase
         $pdo->exec('CREATE TABLE member_charge_reminders(id INTEGER PRIMARY KEY,status TEXT)');
         $pdo->exec('CREATE TABLE family_weekly_summaries(id INTEGER PRIMARY KEY,status TEXT)');
         $pdo->exec('CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY,status TEXT)');
+        $pdo->exec('CREATE TABLE auth_mail_outbox(id INTEGER PRIMARY KEY,status TEXT)');
         $pdo->exec('CREATE TABLE kis_import_runs(id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE kis_import_matches(id INTEGER PRIMARY KEY,run_id INTEGER,match_status TEXT)');
 

@@ -100,6 +100,8 @@ Pro bezpečný localhostový průchod lze ve stejném bootstrapu nebo shellu pou
 `CLUB_EVENT_NOTIFICATION_OUTBOX_DIR`. Tento transport používá sdílený
 `includes/local_message_outbox.php` a žádný e-mail neposílá.
 
+Worker nyní v rámci stejného limitu zpracovává také zašifrovanou frontu ověření účtu a obnovy hesla. Před jeho spuštěním musí být nasazena migrace `20261019100000_auth_mail_outbox` a šifrovací keyring; podrobnosti v [provozním popisu identity](identity-email-queue.md). JSON navíc uvádí `auth_processed`, `event_processed` a `cancelled` (zastaralé odkazy bez odeslání).
+
 Návratový JSON obsahuje počty `processed`, `sent` a `failed`. Návrat `mail()`
 potvrzuje pouze převzetí lokálním poštovním systémem, nikoliv doručení do schránky.
 

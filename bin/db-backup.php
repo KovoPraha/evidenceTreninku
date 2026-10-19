@@ -145,6 +145,8 @@ const EVIDENCE_TABLES = [
     'athlete_registration_consent_snapshots',
     'athlete_registration_request_details',
     'auth_login_limits',
+    'auth_mail_outbox',
+    'auth_mail_outbox_events',
     'club_makeup_config_events',
     'club_makeup_credits',
     'club_makeup_events',

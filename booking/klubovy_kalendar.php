@@ -43,9 +43,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     } else {
         try {
             $result = clubCalendarFamilyRegister($pdo, $eventId, $accountId, (int)($_POST['sportovec_id'] ?? 0), (string)($_POST['consented'] ?? '') === '1', (string)($_POST['consent_version'] ?? ''));
+            $_SESSION['member_calendar_charge_id'] = (int)($result['charge_id'] ?? 0);
             $_SESSION['member_calendar_flash'] = $result['status'] === 'waitlisted'
                 ? (($result['created'] ?? true) ? 'Kapacita je naplněná. Účastník byl zařazen na čekací listinu.' : 'Účastník už je na čekací listině.')
-                : (($result['created'] ?? true) ? 'Účast byla potvrzena.' : 'Účastník už je na akci přihlášen.');
+                : ((int)($result['charge_id'] ?? 0)>0 ? 'Účast byla potvrzena. Nyní prosím uhraďte předpis za akci.' : (($result['created'] ?? true) ? 'Účast byla potvrzena.' : 'Účastník už je na akci přihlášen.'));
             header('Location: ' . $returnUrl, true, 303);
             exit;
         } catch (InvalidArgumentException | ClubCalendarException $exception) {
@@ -61,6 +62,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
 $success = (string)($_SESSION['member_calendar_flash'] ?? '');
 unset($_SESSION['member_calendar_flash']);
+$chargeLinkId=(int)($_SESSION['member_calendar_charge_id']??0);
+unset($_SESSION['member_calendar_charge_id']);
 $today = new DateTimeImmutable('today');
 $from = $view === 'calendar' ? $month : $today;
 $to = $view === 'calendar' ? $month->modify('last day of this month') : $today->modify('+1 year');
@@ -109,7 +112,7 @@ foreach ($events as $event) {
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3"><div><h1 class="h3 mb-1">Akce a klubový kalendář</h1><p class="text-muted mb-0">Závody, soustředění, školení a klubové schůze na jednom místě.</p></div><a class="btn btn-outline-primary" href="verejny_kalendar.php"><i class="bi bi-calendar-plus me-1"></i>Veřejný kalendář (.ics)</a></div>
   <nav class="nav nav-pills gap-2 mb-3" aria-label="Akce a kalendář"><a class="nav-link<?=$view==='calendar'?' active':''?>" href="?zobrazeni=calendar&amp;mesic=<?=memberCalendarH($month->format('Y-m'))?>"><i class="bi bi-calendar3 me-1"></i>Kalendář</a><a class="nav-link<?=$view==='register'?' active':''?>" href="?zobrazeni=register"><i class="bi bi-check2-square me-1"></i>K přihlášení</a></nav>
   <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?=memberCalendarH($error)?></div><?php endforeach; ?>
-  <?php if ($success !== ''): ?><div class="alert alert-success"><?=memberCalendarH($success)?></div><?php endif; ?>
+  <?php if ($success !== ''): ?><div class="alert alert-success"><?=memberCalendarH($success)?><?php if($chargeLinkId>0):?> <a class="alert-link" href="platba_predpisu.php?id=<?=$chargeLinkId?>">Zobrazit částku, VS a QR platbu</a><?php endif;?></div><?php endif; ?>
   <?php if ($accountId === null): ?><div class="alert alert-info">Bez přihlášení vidíte veřejné akce. <a href="prihlaseni.php?redirect=<?=rawurlencode('klubovy_kalendar.php?zobrazeni='.$view)?>">Přihlaste se</a> pro klubový a soupiskový plán.</div><?php endif; ?>
 
   <?php if ($view === 'calendar'): ?>
