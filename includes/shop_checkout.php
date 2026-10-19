@@ -47,9 +47,11 @@ function shopCheckoutColumnExists(PDO$pdo,string$table,string$column):bool
 function shopStorefrontProducts(PDO $pdo, ?DateTimeImmutable $now = null): array
 {
     $sortOrder=shopCheckoutColumnExists($pdo,'shop_products','sort_order')?'p.sort_order':'0';
+    $origin=shopCheckoutColumnExists($pdo,'shop_products','origin')?'p.origin':'NULL';
+    $externalKey=shopCheckoutColumnExists($pdo,'shop_products','external_product_key')?'p.external_product_key':'NULL';
     $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
     $rows = $pdo->query(
-        "SELECT p.id AS product_id,p.offer_type,p.catalog_status AS product_status,".$paymentPolicy." AS payment_method_policy,".$sortOrder." AS sort_order,"
+        "SELECT p.id AS product_id,p.offer_type,".$origin." AS origin,".$externalKey." AS external_product_key,p.catalog_status AS product_status,".$paymentPolicy." AS payment_method_policy,".$sortOrder." AS sort_order,"
         . "pub.status AS publication_status,pub.public_name,pub.public_summary,"
         . "v.id AS variant_id,v.sku,v.catalog_status,v.visible,v.price_mode,"
         . 'v.attributes_json,v.amount_minor,v.currency,v.stock_quantity_decimal '

@@ -55,6 +55,7 @@ final class ShopPublicNavigationWiringTest extends TestCase
         self::assertStringNotContainsString('← Zpět do e-shopu',$product);
         $navigation=(string)file_get_contents($root.'/includes/shop_public_navigation.php');
         self::assertStringContainsString('shopPublicSaleableCatalog($pdo)',$navigation);
+        self::assertStringContainsString('shopPurchaseModeApprovedShoptetGoods($product)',$navigation);
         self::assertStringContainsString('return !$isProgram && $offer===false;',$navigation);
     }
 

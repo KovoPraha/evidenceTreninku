@@ -23,6 +23,13 @@ function shopPurchaseModeColumnExists(PDO $pdo, string $table, string $column): 
     return false;
 }
 
+/** @param array<string,mixed> $product */
+function shopPurchaseModeApprovedShoptetGoods(array$product):bool
+{
+    return(string)($product['offer_type']??'')==='goods'&&(string)($product['origin']??'')==='import'
+        &&preg_match('/^shoptet:(?:pair|sku):/D',(string)($product['external_product_key']??''))===1;
+}
+
 /**
  * Legacy catalog rows can still be marked as goods even when their public
  * identity clearly describes a sportsperson-bound offer. Fail closed: these
@@ -45,8 +52,7 @@ function shopProductRequiresAthlete(PDO $pdo, int $productId): bool
     // The explicitly approved full Shoptet replacement remains a conventional
     // shop catalogue. Its legacy services and clubs are intentionally sold as
     // ordinary order lines until they are separately migrated to KIS programs.
-    if((string)$product['offer_type']==='goods'&&(string)($product['origin']??'')==='import'
-        &&preg_match('/^shoptet:(?:pair|sku):/D',(string)($product['external_product_key']??''))===1)return false;
+    if(shopPurchaseModeApprovedShoptetGoods($product))return false;
 
     $signals = [(string)($product['public_name'] ?? '')];
     if (shopPurchaseModeTableExists($pdo, 'shop_product_categories')) {

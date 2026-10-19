@@ -204,7 +204,7 @@ jobs:
           EXPECTED_RESULTS: ${{ inputs.expected_public_results }}
         run: |
           set -euo pipefail
-          curl -fsS --connect-timeout 15 --max-time 60 "$WEB_URL/booking/eshop.php" -o /tmp/kis-shop-public.html
+          curl -fsS --retry 2 --retry-delay 5 --retry-all-errors --connect-timeout 30 --max-time 120 "$WEB_URL/booking/eshop.php" -o /tmp/kis-shop-public.html
           grep -Fq "$EXPECTED_RESULTS výsledků" /tmp/kis-shop-public.html
 
       - name: Uklidit pracovní soubory

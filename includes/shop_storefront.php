@@ -20,6 +20,9 @@ function shopStorefrontCatalog(PDO $pdo): array
         if (!isset($products[$productId])) {
             $products[$productId] = [
                 'product_id' => $productId,
+                'offer_type' => (string)$row['offer_type'],
+                'origin' => $row['origin'] === null ? null : (string)$row['origin'],
+                'external_product_key' => $row['external_product_key'] === null ? null : (string)$row['external_product_key'],
                 'public_name' => (string)$row['public_name'],
                 'public_summary' => (string)$row['public_summary'],
                 'variants' => [],
