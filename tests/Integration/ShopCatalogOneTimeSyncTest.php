@@ -24,7 +24,7 @@ final class ShopCatalogOneTimeSyncTest extends TestCase
 
     public function testInitialRunAndFinalRunUpdateSameDraftCatalogWithLocalImages():void
     {
-        $pdo=$this->database();$catalog=$this->catalog();$manifest=$this->manifest($catalog);
+        $pdo=$this->database();$catalog=$this->catalog();$catalog['products'][0]['offer_classification']['type']='rental';$catalog['products'][0]['variants'][0]['price']['mode']='free';$catalog['products'][0]['variants'][0]['price']['amount_minor']=0;$manifest=$this->manifest($catalog);
         $preview=\shopCatalogOneTimePreview($pdo,$catalog,$manifest);
         self::assertTrue($preview['ok']);self::assertSame(0,$preview['database_writes']);
 
@@ -32,6 +32,8 @@ final class ShopCatalogOneTimeSyncTest extends TestCase
         self::assertTrue($first['applied']);self::assertSame(2,$first['products_created']);self::assertSame(3,$first['variants_created']);
         self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
         self::assertSame(3,(int)$pdo->query('SELECT COUNT(*) FROM shop_variants')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE offer_type<>'goods'")->fetchColumn());
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM shop_variants WHERE price_mode='free'")->fetchColumn());
         self::assertSame(3,(int)$pdo->query('SELECT COUNT(*) FROM shop_inventory_movements')->fetchColumn());
         $image=(string)$pdo->query('SELECT image_url FROM shop_product_images')->fetchColumn();
         self::assertMatchesRegularExpression('~^uploads/shop-products/[a-f0-9]{32}\.jpg$~',$image);

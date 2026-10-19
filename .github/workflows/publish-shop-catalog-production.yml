@@ -1,0 +1,219 @@
+name: Jednorázově zveřejnit katalog e-shopu
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha256:
+        description: 'SHA-256 již importovaného XML exportu'
+        required: true
+        type: string
+      expected_products:
+        description: 'Přesný počet importovaných produktů'
+        required: true
+        type: number
+      expected_visible_products:
+        description: 'Přesný počet zdrojově viditelných produktů'
+        required: true
+        type: number
+      expected_hidden_products:
+        description: 'Přesný počet zdrojově skrytých produktů'
+        required: true
+        type: number
+      expected_active_variants:
+        description: 'Přesný počet viditelných variant aktivních produktů'
+        required: true
+        type: number
+      expected_public_results:
+        description: 'Očekávaný celkový počet nabídek na veřejné stránce včetně ručních'
+        required: true
+        type: number
+      mode:
+        description: 'Pouze kontrola, nebo jednorázové zveřejnění'
+        required: true
+        type: choice
+        options:
+          - preview
+          - apply
+      potvrzeni:
+        description: 'OVERIT pro preview; ZVEREJNIT-SHOPTET-KATALOG pro apply'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  WEB_URL: ${{ vars.KIS_WEB_URL }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  publish:
+    name: Zveřejnění katalogu KIS
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 30
+
+    steps:
+      - name: Ověřit vstupy
+        env:
+          MODE: ${{ inputs.mode }}
+          POTVRZENI: ${{ inputs.potvrzeni }}
+          SOURCE_SHA: ${{ inputs.source_sha256 }}
+          EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
+          EXPECTED_VISIBLE: ${{ inputs.expected_visible_products }}
+          EXPECTED_HIDDEN: ${{ inputs.expected_hidden_products }}
+          EXPECTED_VARIANTS: ${{ inputs.expected_active_variants }}
+          EXPECTED_RESULTS: ${{ inputs.expected_public_results }}
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_SHA" =~ ^[a-f0-9]{64}$ ]]
+          [[ "$EXPECTED_PRODUCTS" =~ ^[1-9][0-9]*$ ]]
+          [[ "$EXPECTED_VISIBLE" =~ ^[1-9][0-9]*$ ]]
+          [[ "$EXPECTED_HIDDEN" =~ ^[0-9]+$ ]]
+          [[ "$EXPECTED_VARIANTS" =~ ^[1-9][0-9]*$ ]]
+          [[ "$EXPECTED_RESULTS" =~ ^[1-9][0-9]*$ ]]
+          test $((EXPECTED_VISIBLE + EXPECTED_HIDDEN)) -eq "$EXPECTED_PRODUCTS"
+          [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]]
+          [[ "$WEB_URL" =~ ^https://[a-z0-9.-]+/?$ ]]
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+          if [ "$MODE" = preview ]; then test "$POTVRZENI" = OVERIT;
+          else test "$MODE" = apply; test "$POTVRZENI" = ZVEREJNIT-SHOPTET-KATALOG; fi
+
+      - name: Stáhnout přesně aktuální main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Ověřit, že produkce běží na tomto commitu
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$REMOTE_DIR/var/deployment.json" /tmp/kis-deployment.json
+          test "$(jq -r '.sha' /tmp/kis-deployment.json)" = "$GITHUB_SHA"
+
+      - name: Produkční předletová kontrola bez zápisu
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha256 }}
+          EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
+          EXPECTED_VISIBLE: ${{ inputs.expected_visible_products }}
+          EXPECTED_HIDDEN: ${{ inputs.expected_hidden_products }}
+          EXPECTED_VARIANTS: ${{ inputs.expected_active_variants }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          cat > /tmp/run-shop-publish-preview.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('SHOPTET_PUBLISH_ACTION=preview');
+          putenv('SHOPTET_SOURCE_SHA256=$SOURCE_SHA');
+          putenv('SHOPTET_EXPECTED_PRODUCTS=$EXPECTED_PRODUCTS');
+          putenv('SHOPTET_EXPECTED_VISIBLE_PRODUCTS=$EXPECTED_VISIBLE');
+          putenv('SHOPTET_EXPECTED_HIDDEN_PRODUCTS=$EXPECTED_HIDDEN');
+          putenv('SHOPTET_EXPECTED_ACTIVE_VARIANTS=$EXPECTED_VARIANTS');
+          require '$REMOTE_DIR/bin/publish-shoptet-catalog-once.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-shop-publish-preview.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-shop-publish-preview.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-shop-publish-preview.php' || test \$? -eq 2" | tee /tmp/kis-shop-publish-preview.json
+          jq -e --arg sha "$SOURCE_SHA" --argjson products "$EXPECTED_PRODUCTS" --argjson visible "$EXPECTED_VISIBLE" --argjson hidden "$EXPECTED_HIDDEN" --argjson variants "$EXPECTED_VARIANTS" '.ok == true and .source_sha256 == $sha and .imported_products == $products and .source_visible_products == $visible and .source_hidden_products == $hidden and .source_visible_variants == $variants and .database_writes == 0 and (.blockers|length) == 0' /tmp/kis-shop-publish-preview.json >/dev/null
+
+      - name: Vytvořit a ověřit bezprostřední produkční zálohu
+        if: inputs.mode == 'apply'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php"
+          cat > /tmp/run-shop-publish-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require __DIR__ . '/db-backup.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-shop-publish-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-shop-publish-backup.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-shop-publish-backup.php'" | tee /tmp/kis-shop-publish-backup.json
+          jq -e '.ok == true and .tables > 0 and (.sha256|length) == 64' /tmp/kis-shop-publish-backup.json >/dev/null
+
+      - name: Provést jednorázové transakční zveřejnění
+        if: inputs.mode == 'apply'
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha256 }}
+          EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
+          EXPECTED_VISIBLE: ${{ inputs.expected_visible_products }}
+          EXPECTED_HIDDEN: ${{ inputs.expected_hidden_products }}
+          EXPECTED_VARIANTS: ${{ inputs.expected_active_variants }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          cat > /tmp/run-shop-publish-apply.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('SHOPTET_PUBLISH_ACTION=apply');
+          putenv('SHOPTET_PUBLISH_CONFIRM=ZVEREJNIT-SHOPTET-KATALOG');
+          putenv('SHOPTET_SOURCE_SHA256=$SOURCE_SHA');
+          putenv('SHOPTET_EXPECTED_PRODUCTS=$EXPECTED_PRODUCTS');
+          putenv('SHOPTET_EXPECTED_VISIBLE_PRODUCTS=$EXPECTED_VISIBLE');
+          putenv('SHOPTET_EXPECTED_HIDDEN_PRODUCTS=$EXPECTED_HIDDEN');
+          putenv('SHOPTET_EXPECTED_ACTIVE_VARIANTS=$EXPECTED_VARIANTS');
+          require '$REMOTE_DIR/bin/publish-shoptet-catalog-once.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-shop-publish-apply.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-shop-publish-apply.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-shop-publish-apply.php'" | tee /tmp/kis-shop-publish-apply.json
+          jq -e --argjson visible "$EXPECTED_VISIBLE" --argjson variants "$EXPECTED_VARIANTS" '.ok == true and .applied == true and .verification.active_products == $visible and .verification.active_publications == $visible and .verification.active_variants == $variants and .verification.hidden_active_products == 0 and .verification.active_non_goods == 0 and .verification.public_storefront_products == $visible' /tmp/kis-shop-publish-apply.json >/dev/null
+
+      - name: Ověřit veřejný katalog
+        if: inputs.mode == 'apply'
+        env:
+          EXPECTED_RESULTS: ${{ inputs.expected_public_results }}
+        run: |
+          set -euo pipefail
+          curl -fsS --connect-timeout 15 --max-time 60 "$WEB_URL/booking/eshop.php" -o /tmp/kis-shop-public.html
+          grep -Fq "$EXPECTED_RESULTS výsledků" /tmp/kis-shop-public.html
+
+      - name: Uklidit pracovní soubory
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/kis-shop-publish-*.json /tmp/kis-shop-public.html
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-shop-publish-preview.php' '$DEPLOY_BASE/run-shop-publish-apply.php' '$DEPLOY_BASE/run-shop-publish-backup.php'"
+          fi

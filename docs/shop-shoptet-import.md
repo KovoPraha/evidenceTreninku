@@ -296,3 +296,19 @@ před kanonickým zápisem. Výslovně povolený existující aktivní produkt z
 aktivní; ostatní importované produkty ani nové varianty se samy neaktivují. Tak
 lze nejprve provést testovací naplnění a těsně před cutoverem ještě jedno
 finální dorovnání bez zavedení trvalé synchronizační služby.
+
+Po samostatném schválení lze zdrojově viditelné položky jednorázově zveřejnit
+workflow `publish-shop-catalog-production.yml`. Workflow vyžaduje přesný SHA-256
+již importovaného běhu, očekávané počty viditelných a skrytých produktů i
+variant, nejprve provede náhled bez zápisu a před ostrou transakcí vytvoří
+ověřenou databázovou zálohu. Produkty označené ve Shoptetu jako skryté zůstávají
+neaktivní.
+
+Kompletní náhrada původního e-shopu používá importované Shoptet položky v
+kanonickém katalogu jako běžné `goods`, aby služby, zápůjčky a tábory nezmizely
+z obecného storefrontu dříve, než budou vědomě převedeny na specializované KIS
+workflow. Původní navržená klasifikace zůstává ve stagingovém běhu pro audit.
+Zdrojový režim `free` se v prodejním katalogu normalizuje na pevnou nulovou cenu,
+protože checkout zveřejňuje pouze pevné CZK ceny. Zveřejnění je idempotentní,
+auditované po jednotlivých produktech a po commitu ověřuje přesný počet veřejných
+produktů a aktivních variant.
