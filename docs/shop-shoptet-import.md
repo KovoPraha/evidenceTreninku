@@ -273,3 +273,24 @@ Shoptet podle dokumentace podporuje produktové exporty CSV/XLSX/XML, vlastní
 výběr polí, textový `code`, seskupení variant přes `pairCode` a ochranu úvodních
 nul prefixem `$`. Konkrétní sloupce však závisejí na nastavení obchodu, proto je
 tento kontrakt až do kontroly skutečného klubového exportu pouze prozatímní.
+
+## Jednorázová náhrada původního e-shopu
+
+Pro nahrazení původního Shoptetu se nepoužívá pravidelný plán ani CRON. Ručně
+spouštěný workflow `import-shop-catalog-production.yml` přijme XML pouze jako
+asset dočasného draft release, ověří jeho předem známý SHA-256 a po skončení se
+ostrého běhu draft release automaticky odstraní. Export ani permanentní exportní
+URL se neukládají do Gitu.
+
+Workflow nejdříve provede produkční náhled bez zápisu. Ostrý režim vyžaduje
+přesné potvrzení `IMPORTOVAT-ESHOP-JEDNORAZOVE`, čerstvou ověřenou databázovou
+zálohu a shodu nasazeného SHA s aktuálním `main`. Produkty a varianty zapíše
+jako koncepty; nic automaticky nezveřejňuje. Obrázky stáhne pouze z
+`cdn.myshoptet.com`, ověří jako JPG/PNG, bezpečně překóduje do JPG bez metadat a
+uloží pod obsahově odvozeným názvem.
+
+Opakovaný finální export aktualizuje stejné importované koncepty podle
+stabilního produktového klíče a SKU. Ručně založený produkt, cizí SKU nebo již
+aktivní importovaný produkt způsobí fail-closed zastavení před kanonickým
+zápisem. Tak lze nejprve provést testovací naplnění a těsně před cutoverem ještě
+jedno finální dorovnání bez zavedení trvalé synchronizační služby.

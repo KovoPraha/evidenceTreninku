@@ -1,0 +1,252 @@
+name: Jednorázově importovat katalog e-shopu
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_release_tag:
+        description: 'Tag dočasného draft release s assetem productsComplete.xml'
+        required: true
+        type: string
+      source_sha256:
+        description: 'Očekávaný SHA-256 XML exportu'
+        required: true
+        type: string
+      expected_products:
+        description: 'Očekávaný počet produktů z lokálního dry-run'
+        required: true
+        type: number
+      expected_variants:
+        description: 'Očekávaný počet variant z lokálního dry-run'
+        required: true
+        type: number
+      expected_images:
+        description: 'Očekávaný počet unikátních zdrojových obrázků'
+        required: true
+        type: number
+      mode:
+        description: 'Pouze kontrola, nebo jednorázový zápis'
+        required: true
+        type: choice
+        options:
+          - preview
+          - apply
+      potvrzeni:
+        description: 'OVERIT pro preview; IMPORTOVAT-ESHOP-JEDNORAZOVE pro apply'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  WEB_URL: ${{ vars.KIS_WEB_URL }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  import:
+    name: Jednorázový katalog KIS
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 45
+
+    steps:
+      - name: Ověřit vstupy
+        env:
+          MODE: ${{ inputs.mode }}
+          POTVRZENI: ${{ inputs.potvrzeni }}
+          SOURCE_TAG: ${{ inputs.source_release_tag }}
+          SOURCE_SHA: ${{ inputs.source_sha256 }}
+          EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
+          EXPECTED_VARIANTS: ${{ inputs.expected_variants }}
+          EXPECTED_IMAGES: ${{ inputs.expected_images }}
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_TAG" =~ ^shop-catalog-[0-9]{8}-[0-9]{6}$ ]]
+          [[ "$SOURCE_SHA" =~ ^[a-f0-9]{64}$ ]]
+          [[ "$EXPECTED_PRODUCTS" =~ ^[1-9][0-9]*$ ]]
+          [[ "$EXPECTED_VARIANTS" =~ ^[1-9][0-9]*$ ]]
+          [[ "$EXPECTED_IMAGES" =~ ^[1-9][0-9]*$ ]]
+          [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]]
+          [[ "$WEB_URL" =~ ^https://[a-z0-9.-]+/?$ ]]
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+          if [ "$MODE" = 'preview' ]; then test "$POTVRZENI" = 'OVERIT';
+          else test "$MODE" = 'apply'; test "$POTVRZENI" = 'IMPORTOVAT-ESHOP-JEDNORAZOVE'; fi
+          test -n "$APP_HOST" && test -n "$WEB_URL" && test -n "$REMOTE_DIR"
+
+      - name: Stáhnout přesně aktuální main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit PHP pro kontrolu a obrázky
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.2'
+          extensions: curl, fileinfo, gd, mbstring
+          coverage: none
+
+      - name: Stáhnout dočasný privátní zdrojový asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_TAG: ${{ inputs.source_release_tag }}
+          SOURCE_SHA: ${{ inputs.source_sha256 }}
+          EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
+          EXPECTED_VARIANTS: ${{ inputs.expected_variants }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 /tmp/kis-shop-source
+          gh release download "$SOURCE_TAG" --pattern productsComplete.xml --dir /tmp/kis-shop-source
+          test "$(sha256sum /tmp/kis-shop-source/productsComplete.xml | awk '{print $1}')" = "$SOURCE_SHA"
+          php bin/shoptet-products-dry-run.php --input=/tmp/kis-shop-source/productsComplete.xml --json > /tmp/kis-shop-dry-run.json
+          jq -e --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" '.summary.contract_ready == true and .summary.errors == 0 and .summary.products == $products and .summary.variants == $variants' /tmp/kis-shop-dry-run.json >/dev/null
+          echo "Zdrojový XML export má přesný otisk a očekávaný rozsah $EXPECTED_PRODUCTS produktů / $EXPECTED_VARIANTS variant."
+
+      - name: Převzít a bezpečně překódovat všechny obrázky
+        env:
+          EXPECTED_IMAGES: ${{ inputs.expected_images }}
+        run: |
+          set -euo pipefail
+          php bin/prepare-shoptet-catalog-assets.php \
+            --input=/tmp/kis-shop-source/productsComplete.xml \
+            --output=/tmp/kis-shop-assets --apply | tee /tmp/kis-shop-assets-result.json
+          jq -e --argjson images "$EXPECTED_IMAGES" '.ok == true and .source_images == $images and .unique_files > 0 and .unique_files <= $images' /tmp/kis-shop-assets-result.json >/dev/null
+
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+          echo "IMPORT_WORK=$DEPLOY_BASE/shop-catalog-$GITHUB_RUN_ID" >> "$GITHUB_ENV"
+
+      - name: Ověřit, že produkce běží na tomto commitu
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$REMOTE_DIR/var/deployment.json" /tmp/kis-deployment.json
+          test "$(jq -r '.sha' /tmp/kis-deployment.json)" = "$GITHUB_SHA"
+
+      - name: Přenést zdroj a připravené obrázky mimo webroot
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SSH[@]}" "set -eu; umask 077; mkdir -p '$IMPORT_WORK/assets'; chmod 700 '$IMPORT_WORK' '$IMPORT_WORK/assets'"
+          production_retry "${SCP[@]}" /tmp/kis-shop-source/productsComplete.xml "$SSH_USER@$SSH_HOST:$IMPORT_WORK/productsComplete.xml"
+          rsync -az -e "ssh -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts" /tmp/kis-shop-assets/ "$SSH_USER@$SSH_HOST:$IMPORT_WORK/assets/"
+
+      - name: Produkční předletová kontrola bez zápisu
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha256 }}
+          EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
+          EXPECTED_VARIANTS: ${{ inputs.expected_variants }}
+          EXPECTED_IMAGES: ${{ inputs.expected_images }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          cat > /tmp/run-shop-preview.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('SHOPTET_INPUT=$IMPORT_WORK/productsComplete.xml');
+          putenv('SHOPTET_ASSET_MANIFEST=$IMPORT_WORK/assets/manifest.json');
+          putenv('SHOPTET_SYNC_ACTION=preview');
+          require '$REMOTE_DIR/bin/sync-shoptet-catalog-once.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-shop-preview.php "$SSH_USER@$SSH_HOST:$IMPORT_WORK/run-preview.php"
+          production_retry_capture "${SSH[@]}" "php '$IMPORT_WORK/run-preview.php'" | tee /tmp/kis-shop-preview.json
+          jq -e --arg sha "$SOURCE_SHA" --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" '.ok == true and .source_sha256 == $sha and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .database_writes == 0 and (.blockers|length) == 0' /tmp/kis-shop-preview.json >/dev/null
+
+      - name: Vytvořit a ověřit bezprostřední produkční zálohu
+        if: inputs.mode == 'apply'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php"
+          cat > /tmp/run-shop-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require __DIR__ . '/db-backup.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-shop-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-shop-backup.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-shop-backup.php'" | tee /tmp/kis-shop-backup.json
+          jq -e '.ok == true and .tables > 0 and (.sha256|length) == 64' /tmp/kis-shop-backup.json >/dev/null
+
+      - name: Provést jednorázový transakční zápis
+        if: inputs.mode == 'apply'
+        env:
+          EXPECTED_PRODUCTS: ${{ inputs.expected_products }}
+          EXPECTED_VARIANTS: ${{ inputs.expected_variants }}
+          EXPECTED_IMAGES: ${{ inputs.expected_images }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          cat > /tmp/run-shop-apply.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('SHOPTET_INPUT=$IMPORT_WORK/productsComplete.xml');
+          putenv('SHOPTET_ASSET_MANIFEST=$IMPORT_WORK/assets/manifest.json');
+          putenv('SHOPTET_SYNC_ACTION=apply');
+          putenv('SHOPTET_SYNC_CONFIRM=IMPORTOVAT-ESHOP-JEDNORAZOVE');
+          require '$REMOTE_DIR/bin/sync-shoptet-catalog-once.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-shop-apply.php "$SSH_USER@$SSH_HOST:$IMPORT_WORK/run-apply.php"
+          production_retry_capture "${SSH[@]}" "php '$IMPORT_WORK/run-apply.php'" | tee /tmp/kis-shop-apply.json
+          jq -e --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" '.ok == true and .applied == true and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .images_linked == $images and .verification.products == $products and .verification.variants == $variants and .verification.images == $images and .verification.remote_images == 0 and .verification.active_products == 0 and .verification.active_variants == 0' /tmp/kis-shop-apply.json >/dev/null
+
+      - name: Ověřit veřejný e-shop po zápisu draftů
+        if: inputs.mode == 'apply'
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 15 --max-time 60 "$WEB_URL/booking/eshop.php")
+          test "$code" = 200
+
+      - name: Uklidit zdrojový export a pracovní soubory
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_TAG: ${{ inputs.source_release_tag }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          rm -rf /tmp/kis-shop-source /tmp/kis-shop-assets
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${IMPORT_WORK:-}" ] && [[ "$IMPORT_WORK" =~ ^data/\.kis-deploy/shop-catalog-[0-9]+$ ]]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -rf -- '$IMPORT_WORK'"
+          fi
+          if [ "$MODE" = 'apply' ] && [[ "$SOURCE_TAG" =~ ^shop-catalog-[0-9]{8}-[0-9]{6}$ ]]; then
+            gh release delete "$SOURCE_TAG" --yes --cleanup-tag
+          fi
