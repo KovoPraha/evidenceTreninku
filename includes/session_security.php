@@ -185,16 +185,23 @@ function app_csp_nonce(): string
 }
 
 /** @param list<string> $attributeHashes */
-function app_csp_header_value(array $attributeHashes = []): string
+function app_csp_header_value(array $attributeHashes = [], bool $pplWidget = false, bool $packetaWidget = false): string
 {
     $nonce = "'nonce-" . app_csp_nonce() . "'";
+    $pplStyle=$pplWidget?' https://www.ppl.cz':'';
+    $pplImages=$pplWidget?' https://www.ppl.cz https://api.dhl.com':'';
+    $pplConnect=$pplWidget?' https://api.dhl.com':'';
+    $packetaStyle=$packetaWidget?' https://widget.packeta.com':'';
+    $packetaImages=$packetaWidget?' https://*.packeta.com':'';
+    $packetaConnect=$packetaWidget?' https://pickup-point.api.packeta.com https://*.packeta.com':'';
+    $packetaFrames=$packetaWidget?' https://widget.packeta.com https://*.packeta.com':'';
     $attributePolicy = $attributeHashes === []
         ? "script-src-attr 'none'"
         : "script-src-attr 'unsafe-hashes' " . implode(' ', array_map(static fn(string $hash): string => "'sha256-{$hash}'", $attributeHashes));
     return "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; "
         . "script-src 'self' https://cdn.jsdelivr.net {$nonce} 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net {$nonce} 'strict-dynamic'; {$attributePolicy}; "
-        . "style-src 'self' https://cdn.jsdelivr.net {$nonce}; style-src-elem 'self' https://cdn.jsdelivr.net {$nonce}; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; "
-        . "font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; "
+        . "style-src 'self' https://cdn.jsdelivr.net{$pplStyle}{$packetaStyle} {$nonce}; style-src-elem 'self' https://cdn.jsdelivr.net{$pplStyle}{$packetaStyle} {$nonce}; style-src-attr 'unsafe-inline'; img-src 'self'{$pplImages}{$packetaImages} data: blob:; "
+        . "font-src 'self' https://cdn.jsdelivr.net{$pplStyle} data:; connect-src 'self'{$pplConnect}{$packetaConnect}; frame-src 'self'{$packetaFrames}; manifest-src 'self'; "
         . "worker-src 'self' blob:; upgrade-insecure-requests";
 }
 
@@ -231,7 +238,11 @@ function app_csp_filter_output(string $html): string
     // authorize a script injected through an otherwise missed escaping bug.
     // Legacy inline handlers are approved only on source-owned elements that
     // carry this response's nonce marker. Injected markup cannot create it.
-    if (!headers_sent()) header('Content-Security-Policy: ' . app_csp_header_value(app_csp_approved_handler_hashes($html)), true);
+    $route=str_replace('\\','/',(string)($_SERVER['SCRIPT_NAME']??''));
+    $pplWidget=(str_ends_with($route,'/booking/eshop.php')||str_ends_with($route,'/booking/rychly_nakup.php'))
+        && str_contains($html,'<ppl-access-point-widget');
+    $packetaWidget=(str_ends_with($route,'/booking/eshop.php')||str_ends_with($route,'/booking/rychly_nakup.php'))&&str_contains($html,'widget.packeta.com/v6/www/js/library.js');
+    if (!headers_sent()) header('Content-Security-Policy: ' . app_csp_header_value(app_csp_approved_handler_hashes($html),$pplWidget,$packetaWidget), true);
     return $html;
 }
 

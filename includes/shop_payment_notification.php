@@ -130,7 +130,13 @@ function shopPaymentNotificationBody(array $order, array $items): string
     $next = array_values(array_unique(array_column($items, 'next')));
     $nextLines = [];
     if (in_array('pickup', $next, true)) {
-        $nextLines[] = '- Zboží klub připraví k osobnímu odběru. Až bude připravené, stav uvidíte v Moje objednávky.';
+        if (($order['fulfillment_method']??'')==='ppl_box') {
+            $nextLines[] = '- Zboží klub připraví k odeslání do PPL Parcelboxu '.(string)$order['ppl_access_point_name'].' ('.(string)$order['ppl_access_point_code'].'). Stav uvidíte v detailu objednávky.';
+        } elseif (($order['fulfillment_method']??'')==='packeta_zbox') {
+            $nextLines[] = '- Zboží klub připraví k odeslání do Z-BOXu '.(string)$order['packeta_point_name'].' ('.(string)$order['packeta_point_id'].'). Stav uvidíte v detailu objednávky.';
+        } else {
+            $nextLines[] = '- Zboží klub připraví k osobnímu odběru. Až bude připravené, stav uvidíte v Moje objednávky.';
+        }
     }
     if (in_array('program', $next, true)) {
         $nextLines[] = '- Kroužek byl po přijetí platby aktivován; aktuální stav najdete ve svém účtu.';
@@ -163,8 +169,12 @@ function shopPaymentNotificationEnqueue(PDO $pdo, int $orderId): int
     $checkoutModeSelect = shopPaymentNotificationColumnExists($pdo, 'shop_orders', 'checkout_mode')
         ? 'o.checkout_mode'
         : "'account' AS checkout_mode";
+    $pplSelect=shopPaymentNotificationColumnExists($pdo,'shop_orders','ppl_access_point_code')
+        ? 'o.fulfillment_method,o.ppl_access_point_code,o.ppl_access_point_name,'
+        : "'personal_pickup' AS fulfillment_method,NULL AS ppl_access_point_code,NULL AS ppl_access_point_name,";
+    $packetaSelect=shopPaymentNotificationColumnExists($pdo,'shop_orders','packeta_point_id')?'o.packeta_point_id,o.packeta_point_name,':'NULL AS packeta_point_id,NULL AS packeta_point_name,';
     $statement = $pdo->prepare(
-        'SELECT o.id,o.public_code,' . $checkoutModeSelect . ',o.customer_email_snapshot,o.customer_name_snapshot,o.total_minor,o.currency,'
+        'SELECT o.id,o.public_code,' . $checkoutModeSelect . ','.$pplSelect.$packetaSelect.'o.customer_email_snapshot,o.customer_name_snapshot,o.total_minor,o.currency,'
         . 'p.paid_at FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' '
         . 'AND p.payable_id=o.id AND p.status=\'paid\' '
         . 'WHERE o.id=? AND o.payment_status=\'paid\' AND o.status IN (\'processing\',\'ready\',\'completed\')'
@@ -237,4 +247,42 @@ function shopOrderReadyNotificationEnqueue(PDO $pdo, int $orderId): int
         if ($id < 1) throw $exception;
         return $id;
     }
+}
+
+function shopPplDispatchedNotificationEnqueue(PDO $pdo,int $orderId):int
+{
+    if(!$pdo->inTransaction()||$orderId<1)throw new LogicException('Oznámení o předání PPL vyžaduje aktivní transakci.');
+    $statement=$pdo->prepare("SELECT public_code,customer_email_snapshot,customer_name_snapshot,ppl_access_point_code,ppl_access_point_name,ppl_access_point_address,ppl_tracking_number FROM shop_orders WHERE id=? AND fulfillment_method='ppl_box' AND status='completed'");
+    $statement->execute([$orderId]);$order=$statement->fetch(PDO::FETCH_ASSOC);
+    if(!$order||!filter_var((string)$order['customer_email_snapshot'],FILTER_VALIDATE_EMAIL)||trim((string)$order['ppl_tracking_number'])==='')throw new ShopPaymentNotificationException('Odeslanou PPL objednávku nelze zařadit k oznámení.');
+    $subject='Objednávka '.$order['public_code'].' předána PPL';
+    $body="Dobrý den,\n\nobjednávka ".$order['public_code']." byla předána dopravci PPL.\n"
+        .'Číslo zásilky: '.$order['ppl_tracking_number']."\n"
+        .'Cílový box: '.$order['ppl_access_point_name'].' ('.$order['ppl_access_point_code'].")\n"
+        .'Adresa boxu: '.$order['ppl_access_point_address']."\n\n"
+        ."Doručení do boxu a pokyny k vyzvednutí vám oznámí PPL. Aktuální stav objednávky uvidíte také přes odkaz z původního potvrzení.\n\nKlub KOVO Praha";
+    try{
+        $insert=$pdo->prepare("INSERT INTO club_event_notifications(registration_id,registration_event_id,order_id,notification_type,recipient_email,recipient_name,subject_plain,body_plain) VALUES (NULL,NULL,?,'shop_ppl_dispatched',?,?,?,?)");
+        $insert->execute([$orderId,$order['customer_email_snapshot'],$order['customer_name_snapshot'],$subject,$body]);
+        return (int)$pdo->lastInsertId();
+    }catch(PDOException $error){
+        if((string)$error->getCode()!=='23000')throw $error;
+        $existing=$pdo->prepare("SELECT id FROM club_event_notifications WHERE order_id=? AND notification_type='shop_ppl_dispatched'");$existing->execute([$orderId]);$id=(int)$existing->fetchColumn();
+        if($id<1)throw $error;return $id;
+    }
+}
+
+function shopPacketaDispatchedNotificationEnqueue(PDO $pdo,int $orderId):int
+{
+    if(!$pdo->inTransaction()||$orderId<1)throw new LogicException('Oznámení o podání Zásilkovny vyžaduje aktivní transakci.');
+    $statement=$pdo->prepare("SELECT public_code,customer_email_snapshot,customer_name_snapshot,packeta_point_id,packeta_point_name,packeta_point_address,packeta_tracking_number FROM shop_orders WHERE id=? AND fulfillment_method='packeta_zbox' AND status='completed' AND packeta_deposited_at IS NOT NULL");$statement->execute([$orderId]);$order=$statement->fetch(PDO::FETCH_ASSOC);
+    if(!$order||!filter_var((string)$order['customer_email_snapshot'],FILTER_VALIDATE_EMAIL)||!preg_match('/^Z[0-9]{10}$/D',(string)$order['packeta_tracking_number']))throw new ShopPaymentNotificationException('Podanou zásilku Zásilkovny nelze zařadit k oznámení.');
+    $subject='Objednávka '.$order['public_code'].' podána do Z-BOXu';
+    $body="Dobrý den,\n\nobjednávka ".$order['public_code']." byla podána do sítě Zásilkovny.\n"
+        .'Číslo zásilky: '.$order['packeta_tracking_number']."\n"
+        .'Cílový Z-BOX: '.$order['packeta_point_name'].' ('.$order['packeta_point_id'].')' ."\n"
+        .'Adresa Z-BOXu: '.$order['packeta_point_address']."\n\n"
+        ."Zásilkovna vám pošle pokyny k vyzvednutí. Aktuální stav objednávky najdete přes odkaz z původního potvrzení.\n\nKlub KOVO Praha";
+    try{$insert=$pdo->prepare("INSERT INTO club_event_notifications(registration_id,registration_event_id,order_id,notification_type,recipient_email,recipient_name,subject_plain,body_plain) VALUES (NULL,NULL,?,'shop_packeta_dispatched',?,?,?,?)");$insert->execute([$orderId,$order['customer_email_snapshot'],$order['customer_name_snapshot'],$subject,$body]);return(int)$pdo->lastInsertId();}
+    catch(PDOException $error){if((string)$error->getCode()!=='23000')throw$error;$existing=$pdo->prepare("SELECT id FROM club_event_notifications WHERE order_id=? AND notification_type='shop_packeta_dispatched'");$existing->execute([$orderId]);$id=(int)$existing->fetchColumn();if($id<1)throw$error;return$id;}
 }

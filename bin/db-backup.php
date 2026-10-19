@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-15.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-19.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -61,6 +61,18 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
     // unpaid order can affect; losing it would silently shift that decision.
     'shop_orders' => [
         'finance_sportovec_id',
+        'shipping_amount_minor',
+        'ppl_access_point_code',
+        'ppl_access_point_name',
+        'ppl_access_point_address',
+        'ppl_tracking_number',
+        'ppl_dispatched_at',
+        'packeta_point_id',
+        'packeta_point_name',
+        'packeta_point_address',
+        'packeta_tracking_number',
+        'packeta_consignment_code',
+        'packeta_deposited_at',
     ],
     // Rows may now legitimately originate outside the Shoptet import.
     'shop_products' => [
@@ -289,6 +301,10 @@ const EVIDENCE_TABLES = [
     'shop_order_status_definition_events',
     'shop_order_items',
     'shop_orders',
+    'shop_ppl_settings',
+    'shop_ppl_settings_events',
+    'shop_packeta_settings',
+    'shop_packeta_settings_events',
     'shop_product_categories',
     'shop_product_event_links',
     'shop_product_interest_events',

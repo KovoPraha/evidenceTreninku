@@ -16,6 +16,73 @@ require_once dirname(__DIR__,2).'/includes/local_message_outbox.php';
 final class ShopCheckoutTest extends TestCase
 {
     private const BANK=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'KOVO Praha','due_days'=>7];
+    private array $pplOriginalEnv=[];
+
+    protected function tearDown():void
+    {
+        foreach($this->pplOriginalEnv as $name=>$value)putenv($value===false?$name:$name.'='.$value);
+        parent::tearDown();
+    }
+
+    public function testPplSandboxCannotBeOfferedOnPublicHost():void
+    {
+        $this->pplDatabase();$before=$_SERVER['HTTP_HOST']??null;
+        try{$_SERVER['HTTP_HOST']='kis.kovopraha.cz';self::assertFalse(\shopPplAvailable(['enabled'=>true,'price_minor'=>6900,'widget_api_key'=>'test-widget-key']));}
+        finally{if($before===null)unset($_SERVER['HTTP_HOST']);else $_SERVER['HTTP_HOST']=$before;}
+    }
+
+    public function testPplBoxGuestCheckoutIncludesFeeAndServerVerifiedDestination():void
+    {
+        $pdo=$this->pplDatabase();
+        $lookup=static fn(string $code):array=>['accessPointCode'=>$code,'accessPointType'=>'ParcelBox','country'=>'CZ','name'=>'TEST Parcelbox','street'=>'Testovací 1','zipCode'=>'10000','city'=>'Praha'];
+        $order=\shopGuestCheckoutPlace($pdo,601,2,['first_name'=>'Test','last_name'=>'Kupující','email'=>'ppl@example.test','phone'=>'+420 777 123 456','confirmed'=>'1'],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'ppl_box','KM1234567',6900,$lookup);
+        self::assertSame('ppl_box',$order['fulfillment_method']);self::assertSame(6900,(int)$order['shipping_amount_minor']);
+        self::assertSame(31900,(int)$order['total_minor']);self::assertSame('KM1234567',$order['ppl_access_point_code']);
+        self::assertSame(31900,(int)$pdo->query('SELECT amount_minor FROM payments')->fetchColumn());
+        self::assertSame(25000,(int)$pdo->query('SELECT line_amount_minor FROM shop_order_items')->fetchColumn());
+        self::assertSame('TEST Parcelbox',$order['ppl_access_point_name']);
+    }
+
+    public function testPplBoxRejectsPickupOnlyProductsForgedPointAndStalePriceWithoutWrites():void
+    {
+        $pdo=$this->pplDatabase();$customer=['first_name'=>'Test','last_name'=>'Kupující','email'=>'ppl@example.test','phone'=>'777123456','confirmed'=>'1'];
+        $checkout=static function () use ($pdo,$customer):void {\shopGuestCheckoutPlace($pdo,601,1,$customer,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'ppl_box','KM1234567',6900,static fn(string $code):array=>['accessPointCode'=>$code,'accessPointType'=>'ParcelBox','country'=>'CZ','name'=>'Box','street'=>'Testovací 1','zipCode'=>'10000','city'=>'Praha']);};
+        $pdo->exec("UPDATE shop_products SET delivery_mode='pickup_only' WHERE id=501");
+        try{$checkout();self::fail('Pickup-only goods must not ship.');}catch(\ShopCheckoutException $error){self::assertStringContainsString('není pro tento košík dostupné',$error->getMessage());}
+        $pdo->exec("UPDATE shop_products SET delivery_mode='shipping_eligible' WHERE id=501");
+        \shopPplSaveSettings($pdo,7,7900,'test-widget-key',true,'Změna ceny pro test.',true);
+        try{$checkout();self::fail('A stale shipping quote must fail.');}catch(\ShopCheckoutException $error){self::assertStringContainsString('Cena dopravy se změnila',$error->getMessage());}
+        try{\shopGuestCheckoutPlace($pdo,601,1,$customer,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'ppl_box','KM1234567',7900,static fn(string $code):array=>['accessPointCode'=>$code,'accessPointType'=>'AlzaBox','country'=>'CZ','name'=>'Wrong','street'=>'1','zipCode'=>'10000','city'=>'Praha']);self::fail('Forged box type must fail.');}catch(\ShopCheckoutException $error){self::assertStringContainsString('není dostupný',$error->getMessage());}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+    }
+
+    public function testPplBoxDoesNotSendPickupEmailAndCannotBePickedUp():void
+    {
+        $pdo=$this->pplDatabase();\shopCartSetQuantity($pdo,10,601,1);$cart=\shopCartDetail($pdo,10);
+        $lookup=static fn(string $code):array=>['accessPointCode'=>$code,'accessPointType'=>'ParcelBox','country'=>'CZ','name'=>'TEST Parcelbox','street'=>'Testovací 1','zipCode'=>'10000','city'=>'Praha'];
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],[],null,'ppl_box','KM1234567','777123456',6900,$lookup);
+        self::assertSame(19400,(int)$order['total_minor']);
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Ověřeno v bance.',true);
+        $paymentMail=(string)$pdo->query("SELECT body_plain FROM club_event_notifications WHERE notification_type='shop_payment_received'")->fetchColumn();
+        self::assertStringContainsString('PPL Parcelboxu',$paymentMail);self::assertStringNotContainsString('osobnímu odběru',$paymentMail);
+        \shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'Zabaleno pro PPL.',true);
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_order_ready'")->fetchColumn());
+        try{\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'Pokus o výdej.',true);self::fail('PPL cannot be picked up.');}catch(\ShopCheckoutException $error){self::assertStringContainsString('PPL zásilku',$error->getMessage());}
+        self::assertTrue(\shopOrderAdminDispatchPpl($pdo,(int)$order['id'],7,'1234567890','Předáno dopravci PPL.',true)['changed']);
+        self::assertSame('1234567890',$pdo->query('SELECT ppl_tracking_number FROM shop_orders')->fetchColumn());
+        self::assertSame('completed',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_ppl_dispatched'")->fetchColumn());
+    }
+
+    private function pplDatabase():PDO
+    {
+        $pdo=$this->database();$pdo->exec("ALTER TABLE shop_products ADD COLUMN delivery_mode TEXT NOT NULL DEFAULT 'pickup_only'");
+        $pdo->exec("UPDATE shop_products SET delivery_mode='shipping_eligible' WHERE id=501");
+        $migration=require dirname(__DIR__,2).'/migrations/20261019110000_shop_ppl_box.php';$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
+        foreach(['PPL_API_MODE'=>'test','PPL_CLIENT_ID'=>'test-id','PPL_CLIENT_SECRET'=>'test-secret'] as $name=>$value){$this->pplOriginalEnv[$name]=getenv($name);putenv($name.'='.$value);}
+        \shopPplSaveSettings($pdo,7,6900,'test-widget-key',true,'Aktivace testu PPL.',true);
+        return $pdo;
+    }
 
     public function testGuestGoodsCheckoutUsesCanonicalOrderPaymentStockAndSecureToken():void
     {
