@@ -178,7 +178,7 @@ jobs:
           require '$REMOTE_DIR/bin/sync-shoptet-catalog-once.php';
           EOF
           production_retry "${SCP[@]}" /tmp/run-shop-preview.php "$SSH_USER@$SSH_HOST:$IMPORT_WORK/run-preview.php"
-          production_retry_capture "${SSH[@]}" "php '$IMPORT_WORK/run-preview.php'" | tee /tmp/kis-shop-preview.json
+          production_retry_capture "${SSH[@]}" "php '$IMPORT_WORK/run-preview.php' || test \$? -eq 2" | tee /tmp/kis-shop-preview.json
           jq -e --arg sha "$SOURCE_SHA" --argjson products "$EXPECTED_PRODUCTS" --argjson variants "$EXPECTED_VARIANTS" --argjson images "$EXPECTED_IMAGES" '.ok == true and .source_sha256 == $sha and .incoming_products == $products and .incoming_variants == $variants and .incoming_images == $images and .database_writes == 0 and (.blockers|length) == 0' /tmp/kis-shop-preview.json >/dev/null
 
       - name: Vytvořit a ověřit bezprostřední produkční zálohu
