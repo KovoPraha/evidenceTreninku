@@ -46,6 +46,7 @@ $_SERVER['SERVER_NAME'] = (string)preg_replace('/:\d+$/', '', $appHost);
 try {
     require_once $root . '/config.php';
     require_once $root . '/includes/club_event_notification.php';
+    require_once $root . '/includes/auth_mail_outbox.php';
     require_once $root . '/includes/local_message_outbox.php';
     foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS'] as $constant) {
         if (!defined($constant)) {
@@ -77,16 +78,34 @@ try {
     $processed = 0;
     $sent = 0;
     $failed = 0;
+    $cancelled = 0;
+    $authProcessed = 0;
+    $eventProcessed = 0;
     while ($processed < $limit) {
-        $result = clubEventNotificationProcessOne($pdo, $sender);
-        if ($result === null) {
+        // Alternate queues when both are busy; an obsolete auth link never reaches transport.
+        $authFirst = ($processed % 2) === 0;
+        $authResult = $authFirst ? authMailProcessOne($pdo, $sender) : null;
+        $eventResult = $authResult === null ? clubEventNotificationProcessOne($pdo, $sender) : null;
+        if ($authResult === null && $eventResult === null && !$authFirst) {
+            $authResult = authMailProcessOne($pdo, $sender);
+        }
+        if ($authResult === null && $eventResult === null) {
             break;
         }
         $processed++;
-        $result ? $sent++ : $failed++;
+        if ($authResult !== null) {
+            $authProcessed++;
+            if ($authResult === 'cancelled') $cancelled++;
+            elseif ($authResult === 'sent') $sent++;
+            else $failed++;
+        } else {
+            $eventProcessed++;
+            $eventResult ? $sent++ : $failed++;
+        }
     }
     echo json_encode(
-        ['processed' => $processed, 'sent' => $sent, 'failed' => $failed, 'transport' => $transport],
+        ['processed' => $processed, 'sent' => $sent, 'failed' => $failed, 'cancelled' => $cancelled,
+            'auth_processed' => $authProcessed, 'event_processed' => $eventProcessed, 'transport' => $transport],
         JSON_UNESCAPED_UNICODE
     ) . PHP_EOL;
     exit(0);

@@ -369,7 +369,7 @@ function clubMakeupSlotDisable(PDO $pdo, int $actorId, int $planId, bool $allowO
 function clubMakeupCreditsForPerson(PDO $pdo, int $personId): array
 {
     if (!clubMakeupReady($pdo)) return [];
-    $query = $pdo->prepare('SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC');
+    $query = $pdo->prepare('SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on,n.name AS carry_offer_name,n.product_id AS carry_product_id,n.variant_id AS carry_variant_id FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id LEFT JOIN club_program_offers n ON n.id=c.carry_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC');
     $query->execute([$personId]);
     $rows = $query->fetchAll(PDO::FETCH_ASSOC);
     $today = clubMakeupNow()->format('Y-m-d');
@@ -386,7 +386,7 @@ function clubMakeupCreditsForPerson(PDO $pdo, int $personId): array
 function clubMakeupReservationsForPerson(PDO $pdo, int $personId): array
 {
     if (!clubMakeupReady($pdo)) return [];
-    $query=$pdo->prepare("SELECT r.id,r.status,p.nazev,p.datum,p.cas_od,c.source_plan_id FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_credits c ON c.id=r.credit_id WHERE r.sportovec_id=? AND r.status='booked' ORDER BY p.datum,p.cas_od,r.id");
+    $query=$pdo->prepare("SELECT r.id,r.status,p.nazev,p.datum,p.cas_od,c.source_plan_id,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id JOIN club_makeup_credits c ON c.id=r.credit_id WHERE r.sportovec_id=? AND r.status='booked' ORDER BY p.datum,p.cas_od,r.id");
     $query->execute([$personId]);return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 

@@ -154,6 +154,7 @@ function staffPositionDefinitions(): array
                 ['label' => 'Komunikace', 'icon' => 'envelope', 'items' => [
                     ['route' => 'shop_product_interests_admin.php', 'label' => 'Zájemci o produkty', 'description' => 'Kontakty z nedostupných termínů a variant', 'icon' => 'person-heart'],
                     ['route' => 'eshop_notifications_admin.php', 'label' => 'Fronta e-mailů', 'description' => 'Selhané a čekající zprávy', 'icon' => 'envelope-exclamation'],
+                    ['route' => 'auth_mail_admin.php', 'label' => 'Ověření a obnova', 'description' => 'Bezpečná fronta přístupových odkazů', 'icon' => 'shield-lock'],
                     ['route' => 'family_weekly_summaries_admin.php', 'label' => 'Rodinné souhrny', 'description' => 'Týdenní zákaznické souhrny', 'icon' => 'envelope-paper'],
                 ]],
             ],

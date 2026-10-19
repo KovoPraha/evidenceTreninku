@@ -129,6 +129,11 @@ function adminOperationalOverview(PDO $pdo, ?DateTimeImmutable $now = null): arr
         adminOperationalAdd($sections['exceptions'], 'failed_event_notifications', 'Selhaná oznámení z čekací listiny', $failed, 'Zkontrolujte chybu a případně proveďte auditované ruční opakování.', 'eshop_notifications_admin.php?status=failed', 'danger');
     } else $unavailable[] = 'oznámení klubových akcí';
 
+    if (adminOperationalHasTables($pdo, ['auth_mail_outbox'])) {
+        $failed = (int)$pdo->query("SELECT COUNT(*) FROM auth_mail_outbox WHERE status='failed'")->fetchColumn();
+        adminOperationalAdd($sections['exceptions'], 'failed_auth_mail', 'Selhané ověřovací a obnovovací e-maily', $failed, 'Odkazy mohou vypršet; ověřte transport, platnost a nabídněte nový odkaz.', 'auth_mail_admin.php?status=failed', 'danger');
+    } else $unavailable[] = 'ověřovací e-mailová fronta';
+
     if (adminOperationalHasTables($pdo, ['fio_account_movements'])) {
         $review = (int)$pdo->query("SELECT COUNT(*) FROM fio_account_movements WHERE match_status LIKE 'review_%'")->fetchColumn();
         adminOperationalAdd($sections['exceptions'], 'fio_review', 'Fio pohyby vyžadující kontrolu', $review, 'Chybí jednoznačná shoda VS, částky, měny nebo stavu.', 'eshop_fio_admin.php', 'warning');

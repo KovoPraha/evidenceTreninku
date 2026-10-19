@@ -124,6 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Nemáte účet? <a href="registrace.php?redirect=<?=rawurlencode($registrationReturn)?>">Zaregistrujte se</a>
             </p>
             <p class="text-center small"><a href="zapomenute_heslo.php">Zapomenuté heslo</a></p>
+            <p class="text-center small"><a href="znovu_overit_email.php">Ověřovací e-mail nedorazil?</a></p>
             <p class="text-center small mb-0">
                 Máte od klubu samostatný sportovní přístup? <a href="sportovec_prihlaseni.php">Přihlaste se sportovním účtem</a>
             </p>

@@ -28,7 +28,7 @@ function memberChargeRowsForSportovec(PDO $pdo, int $sportovecId): array
         return [];
     }
     $statement = $pdo->prepare(
-        'SELECT c.id,c.public_code,c.charge_type,c.title_snapshot,c.period_from,c.period_to,'
+        'SELECT c.id,c.public_code,c.payer_account_id,c.charge_type,c.title_snapshot,c.period_from,c.period_to,'
         . 'c.amount_minor,c.currency,c.due_on,c.status,c.source_system,c.created_at,'
         . 'p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at '
         . 'FROM club_member_charges c '

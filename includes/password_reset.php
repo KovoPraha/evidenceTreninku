@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/one_time_token.php';
 require_once __DIR__ . '/child_access.php';
+require_once __DIR__ . '/auth_mail_outbox.php';
 
 final class PasswordResetException extends RuntimeException
 {
@@ -58,6 +59,26 @@ function passwordResetRequest(PDO $pdo, string $identifier, callable $deliver, ?
         error_log('Password reset delivery failed: ' . $exception->getMessage());
     }
     return ['accepted' => true, 'issued' => true];
+}
+
+/** Queue an encrypted reset link. Earlier delivered links remain valid until used or expired. */
+function passwordResetQueueRequest(PDO $pdo,string $identifier,string $resetUrl,?array $keyConfig=null,?int $now=null):array
+{
+    $identifier=trim($identifier);
+    if($identifier===''||strlen($identifier)>160)return ['accepted'=>true,'issued'=>false,'token'=>null];
+    $target=passwordResetResolveTarget($pdo,$identifier);
+    if($target===null)return ['accepted'=>true,'issued'=>false,'token'=>null];
+    $issued=one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET,3600,$now);
+    $pdo->beginTransaction();
+    try{
+        $pdo->prepare('INSERT INTO password_reset_tokens(target_type,target_id,delivery_account_id,token_hash,expires_at) VALUES(?,?,?,?,?)')
+            ->execute([$target['type'],$target['target_id'],$target['delivery_account_id'],$issued['hash'],$issued['expires_at']]);
+        $link=$resetUrl.'#token='.rawurlencode($issued['token']);
+        authMailEnqueue($pdo,'reset',$target['type'],$target['target_id'],$issued['hash'],(string)$target['email'],
+            'Obnova hesla — Kovopraha',"Pro nastavení nového hesla otevřete odkaz:\n{$link}\n\nOdkaz je platný 60 minut.",$keyConfig);
+        $pdo->commit();
+        return ['accepted'=>true,'issued'=>true,'token'=>$issued['token']];
+    }catch(Throwable $exception){if($pdo->inTransaction())$pdo->rollBack();throw $exception;}
 }
 
 /** @return array{type:string,target_id:int,delivery_account_id:int,email:string}|null */

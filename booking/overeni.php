@@ -64,7 +64,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
         <?php elseif ($attempted): ?>
             <i class="bi bi-x-circle-fill text-danger fs-1 mb-3"></i>
             <h5>Neplatný nebo expirovaný odkaz</h5>
-            <p class="text-muted">Zkuste se <a href="registrace.php">zaregistrovat znovu</a>.</p>
+            <p class="text-muted">Požádejte o <a href="znovu_overit_email.php">nový ověřovací odkaz</a>.</p>
         <?php else: ?>
             <i class="bi bi-envelope-check text-primary fs-1 mb-3"></i>
             <h5>Dokončit ověření e-mailu</h5>
