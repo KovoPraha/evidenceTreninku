@@ -24,7 +24,12 @@ final class ShopCatalogProductionWorkflowTest extends TestCase
         self::assertStringContainsString('.verification.active_variants <= .active_imported_variants',$workflow);
         self::assertStringContainsString("inputs.mode == 'apply'",$workflow);
         self::assertStringContainsString('Vytvořit a ověřit bezprostřední produkční zálohu',$workflow);
-        self::assertStringContainsString('gh release delete "$SOURCE_TAG" --yes --cleanup-tag',$workflow);
+        self::assertStringContainsString('gh release delete "$SOURCE_TAG" --yes',$workflow);
+        self::assertStringNotContainsString('--cleanup-tag',$workflow);
+        self::assertStringNotContainsString('production_retry_capture "${SSH[@]}" "php \'$IMPORT_WORK/run-apply.php\'"',$workflow);
         self::assertStringNotContainsString('set -x',$workflow);
+        $command=(string)file_get_contents(dirname(__DIR__,2).'/bin/sync-shoptet-catalog-once.php');
+        self::assertStringContainsString("set_time_limit(900)",$command);
+        self::assertStringContainsString("'failure_type'=>get_debug_type(\$cause)",$command);
     }
 }
