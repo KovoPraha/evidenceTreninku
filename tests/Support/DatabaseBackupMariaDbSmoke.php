@@ -103,7 +103,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-10-15.1') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-10-19.2') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -112,7 +112,12 @@ try {
         'shop_order_items' => [
             'program_terms_snapshot_json', 'program_terms_accepted_at', 'program_terms_accepted_by_account_id',
         ],
-        'shop_orders' => ['finance_sportovec_id'],
+        'shop_orders' => [
+            'finance_sportovec_id', 'shipping_amount_minor', 'ppl_access_point_code', 'ppl_access_point_name',
+            'ppl_access_point_address', 'ppl_tracking_number', 'ppl_dispatched_at', 'packeta_point_id',
+            'packeta_point_name', 'packeta_point_address', 'packeta_tracking_number', 'packeta_consignment_code',
+            'packeta_deposited_at',
+        ],
         'shop_products' => [
             'source_candidate_id', 'source_run_id', 'origin', 'created_by_trainer_id',
         ],

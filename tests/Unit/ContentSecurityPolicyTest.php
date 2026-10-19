@@ -18,6 +18,15 @@ final class ContentSecurityPolicyTest extends TestCase
         self::assertStringContainsString("script-src-attr 'none'", $policy);
     }
 
+    public function testPplWidgetHostsAreScopedToCheckoutPolicy():void
+    {
+        self::assertStringNotContainsString('www.ppl.cz',\app_csp_header_value());
+        $checkout=\app_csp_header_value([],true);
+        self::assertStringContainsString('https://www.ppl.cz',$checkout);
+        self::assertStringContainsString("connect-src 'self' https://api.dhl.com",$checkout);
+        self::assertStringContainsString("'strict-dynamic'",$checkout);
+    }
+
     public function testOutputFilterDoesNotAuthorizeInjectedScriptOrHandler(): void
     {
         $html = '<script>window.x=1</script><button onclick="this.form.submit()">OK</button>';
