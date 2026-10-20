@@ -71,7 +71,15 @@ jobs:
           production_ssh_init
           production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$REMOTE_DIR/var/deployment.json" /tmp/kis-youngest-deployment.json
           test "$(jq -r '.sha' /tmp/kis-youngest-deployment.json)" = "$GITHUB_SHA"
-          production_retry_capture "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' php '$REMOTE_DIR/bin/prepare-youngest-courses.php' --dry-run" | tee /tmp/kis-youngest-preview.json
+          cat > /tmp/run-youngest-preview.php <<EOF
+          <?php
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('APP_HOST=$APP_HOST');
+          require '$REMOTE_DIR/bin/prepare-youngest-courses.php';
+          prepareYoungestCoursesMain(['prepare-youngest-courses.php','--dry-run']);
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-youngest-preview.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-youngest-preview.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-youngest-preview.php'" | tee /tmp/kis-youngest-preview.json
           jq -e '.mode == "dry-run" and .created == 0 and (.groups | length) == 3 and all(.groups[]; .purchase == "email_only")' /tmp/kis-youngest-preview.json >/dev/null
 
       - name: Zálohovat databázi
@@ -100,18 +108,27 @@ jobs:
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
-          production_retry_capture "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' YOUNGEST_COURSES_CONFIRM=PRIPRAVIT-NEJMENSI-2026-27 php '$REMOTE_DIR/bin/prepare-youngest-courses.php' --apply" | tee /tmp/kis-youngest-applied.json
+          cat > /tmp/run-youngest-apply.php <<EOF
+          <?php
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('APP_HOST=$APP_HOST');
+          putenv('YOUNGEST_COURSES_CONFIRM=PRIPRAVIT-NEJMENSI-2026-27');
+          require '$REMOTE_DIR/bin/prepare-youngest-courses.php';
+          prepareYoungestCoursesMain(['prepare-youngest-courses.php','--apply']);
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-youngest-apply.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-youngest-apply.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-youngest-apply.php'" | tee /tmp/kis-youngest-applied.json
           jq -e '.mode == "apply" and (.groups | length) == 3 and all(.groups[]; .program_id > 0 and .team_id > 0 and .purchase == "email_only")' /tmp/kis-youngest-applied.json >/dev/null
-          production_retry_capture "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' php '$REMOTE_DIR/bin/prepare-youngest-courses.php' --dry-run" | tee /tmp/kis-youngest-recheck.json
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-youngest-preview.php'" | tee /tmp/kis-youngest-recheck.json
           jq -e '.mode == "dry-run" and .created == 0 and (.groups | length) == 3 and all(.groups[]; .program_id > 0 and .purchase == "email_only")' /tmp/kis-youngest-recheck.json >/dev/null
 
       - name: Uklidit dočasnou zálohovací obálku
         if: always()
         continue-on-error: true
         run: |
-          rm -f /tmp/run-youngest-backup.php /tmp/kis-youngest-*.json
+          rm -f /tmp/run-youngest-preview.php /tmp/run-youngest-apply.php /tmp/run-youngest-backup.php /tmp/kis-youngest-*.json
           if [ -n "${SSH_HOST:-}" ]; then
             source .github/scripts/production-ssh-retry.sh
             production_ssh_init
-            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-youngest-backup.php'"
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-youngest-preview.php' '$DEPLOY_BASE/run-youngest-apply.php' '$DEPLOY_BASE/run-youngest-backup.php'"
           fi
