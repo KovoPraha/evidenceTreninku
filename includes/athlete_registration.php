@@ -39,6 +39,14 @@ function athleteRegistrationCurrentTerms(PDO $pdo): array
             'text' => (string)$row['consent_text_plain'],
         ];
     }
+    // Federation sharing is optional. Older isolated databases can omit this
+    // version without weakening the two mandatory registration notices.
+    $statement->execute([ATHLETE_REGISTRATION_SCOPE, ATHLETE_REGISTRATION_SCOPE_KEY, 'csc_birth_number_sharing']);
+    $csc = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($csc) $terms['csc_birth_number_sharing'] = [
+        'id' => (int)$csc['id'], 'version' => (string)$csc['terms_version'],
+        'text' => (string)$csc['consent_text_plain'],
+    ];
     return $terms;
 }
 
@@ -90,6 +98,9 @@ function athleteRegistrationSubmit(
     }
     if ($validated['has_photo'] && !$validated['photo_internal']) {
         throw new InvalidArgumentException('Pro uložení fotografie potvrďte samostatný interní souhlas.');
+    }
+    if ($validated['csc_birth_number_sharing'] && (!$validated['has_czech_birth_number'] || !isset($terms['csc_birth_number_sharing']))) {
+        throw new InvalidArgumentException('Souhlas s předáním rodného čísla ČSC lze udělit jen u přiděleného českého rodného čísla a platné verze textu.');
     }
 
     $fingerprint = athleteRegistrationFingerprint(
@@ -177,6 +188,9 @@ function athleteRegistrationSubmit(
             'birth_number_legal_notice' => true,
             'photo_public' => $validated['photo_public'],
         ];
+        if (isset($terms['csc_birth_number_sharing'])) {
+            $acceptedByPurpose['csc_birth_number_sharing'] = $validated['csc_birth_number_sharing'];
+        }
         if ($validated['has_photo']) $acceptedByPurpose['photo_internal'] = true;
         foreach ($acceptedByPurpose as $purpose => $accepted) {
             $term = $terms[$purpose];
@@ -406,7 +420,7 @@ function athleteRegistrationValidate(int $accountId, array $input, ?array $photo
     if (!array_key_exists('photo_public', $input)) {
         throw new InvalidArgumentException('U veřejného použití fotografie zvolte ano nebo ne.');
     }
-    foreach (['member_data_notice', 'birth_number_legal_notice', 'photo_internal', 'photo_public'] as $flag) {
+    foreach (['member_data_notice', 'birth_number_legal_notice', 'photo_internal', 'photo_public', 'csc_birth_number_sharing'] as $flag) {
         $values[$flag] = athleteRegistrationBoolean($input[$flag] ?? false) ?? false;
     }
     $values['has_czech_birth_number'] = $hasCzechBirthNumber;

@@ -9,6 +9,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 require_once dirname(__DIR__,2).'/includes/club_program_wizard.php';
+require_once dirname(__DIR__,2).'/includes/club_kunratice_prepare.php';
 
 final class ClubProgramWizardTest extends TestCase
 {
@@ -90,6 +91,40 @@ final class ClubProgramWizardTest extends TestCase
     {
         self::assertSame('RAJCATKA',\clubProgramWizardSlug('Rajčátka'));
         self::assertStringNotContainsString('-ATKA',\clubProgramWizardSlug('Rajčátka'));
+    }
+
+    public function testKunraticeSplitStaysUnpublishedAndKeepsHistoricProducts():void
+    {
+        $pdo=$this->database();
+        $migration=require dirname(__DIR__,2).'/migrations/20260923200000_club_program_storefront.php';
+        $migration['up']($pdo);
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(227,'import','shoptet:pair:227','Cyklo kroužek ZŠ Kunratice','Původní společná nabídka.','program','visible','service','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,visible,catalog_status) VALUES(793,227,'import','KUNRATICE-OLD','{}','fixed',680000,'CZK','person',1,'active')");
+        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(227,'active','Cyklo kroužek ZŠ Kunratice','Původní společná nabídka.')");
+        $input=$this->input();
+        $input['name']='Cyklo kroužek ZŠ Kunratice';$input['amount_minor']=680000;
+        $input['program_code']='KROUZKY-2627-CYKLO-KROUZEK-ZS-KUNRATICE';
+        $input['purchase_option']='full_year';$input['starts_on']='2026-09-01';$input['ends_on']='2027-06-30';
+        $input['capacity']=30;
+        $old=\clubProgramWizardCreate($pdo,7,$input,null,false);
+        \clubProgramStorefrontSavePresentation($pdo,7,(int)$old['program_id'],[
+            'public_name'=>$input['name'],'public_summary'=>'','location_name'=>'ZŠ Kunratice',
+            'age_label'=>'školní děti','listing_status'=>'published','sort_order'=>25,'interest_enabled'=>1,
+        ],'Založení původní nabídky pro test.',true);
+
+        $first=\clubKunraticePrepare($pdo,7);
+        $second=\clubKunraticePrepare($pdo,7);
+        self::assertSame(2,$first['created']);self::assertSame(0,$second['created']);
+        self::assertSame($first['groups'],$second['groups']);
+        self::assertCount(2,array_unique(array_column($first['groups'],'team_id')));
+        self::assertCount(2,array_unique(array_column($first['groups'],'product_id')));
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_schedule_slots WHERE program_id IN (SELECT id FROM club_programs WHERE code LIKE 'KROUZKY-2627-KUNRATICE-%')")->fetchColumn());
+        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_program_presentations WHERE listing_status='draft' AND program_id IN (SELECT id FROM club_programs WHERE code LIKE 'KROUZKY-2627-KUNRATICE-%')")->fetchColumn());
+        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE capacity=30 AND program_id IN (SELECT id FROM club_programs WHERE code LIKE 'KROUZKY-2627-KUNRATICE-%')")->fetchColumn());
+        self::assertSame('hidden',$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$old['program_id'])->fetchColumn());
+        self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id=227')->fetchColumn());
+        self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id='.(int)$old['product_id'])->fetchColumn());
+        self::assertSame(4,(int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
     }
 
     /** @return array<string,mixed> */

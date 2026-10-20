@@ -131,6 +131,7 @@ function shopCatalogOneTimePreview(PDO $pdo, array $catalog, array $manifest, ar
     }
     $supportedReview = $unclassified === ['shoptet:pair:250'];
     $blockers = [];
+    if (shopCatalogOneTimeManagedPumptrackExists($pdo)) $blockers[] = 'club_pumptrack_price_managed_by_kis';
     if ($activeKeys !== $allowedActiveKeys) $blockers[] = 'active_imported_products_not_allowlisted';
     if ($manualProductCollisions !== []) $blockers[] = 'manual_product_key_collisions';
     if ($skuCollisions !== []) $blockers[] = 'sku_collisions';
@@ -283,6 +284,10 @@ function shopCatalogOneTimeApply(
 /** @return array<string,mixed> */
 function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array $manifest,array $allowedActiveKeys=[]):array
 {
+    // A later Shoptet snapshot must not reset the club-approved prices (or program product type).
+    // The original import had neither of these exact managed variants before it ran.
+    if(shopCatalogOneTimeManagedPumptrackExists($pdo))
+        throw new ShopCatalogOneTimeSyncException('Pumptrack spravuje klubový katalog KIS; jednorázový import jej nesmí přepsat.');
     $pdo->beginTransaction();
     try{
         $runSql='SELECT * FROM shop_catalog_import_runs WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$runSql.=' FOR UPDATE';
@@ -332,6 +337,19 @@ function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array
         $pdo->prepare("UPDATE shop_catalog_import_runs SET status='promoted',promoted_at=CURRENT_TIMESTAMP,promoted_by=? WHERE id=?")->execute([$actorId,$runId]);
         $pdo->commit();return array_merge(['run_id'=>$runId],$counts);
     }catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof ShopCatalogOneTimeSyncException)throw$e;throw new ShopCatalogOneTimeSyncException('Jednorázový převod selhal bez částečného databázového zápisu.',0,$e);}
+}
+
+function shopCatalogOneTimeManagedPumptrackExists(PDO $pdo):bool
+{
+    $query=$pdo->query("SELECT v.id,v.sku,v.product_id,p.origin AS product_origin,v.origin AS variant_origin "
+        ."FROM shop_variants v JOIN shop_products p ON p.id=v.product_id WHERE v.id IN (893,941)");
+    foreach($query->fetchAll(PDO::FETCH_ASSOC)as$row){
+        if(((int)$row['id']===941&&(int)$row['product_id']===290&&(string)$row['sku']==='997')
+            ||((int)$row['id']===893&&(int)$row['product_id']===279&&(string)$row['sku']==='1000')){
+            if((string)$row['product_origin']==='import'&&(string)$row['variant_origin']==='import')return true;
+        }
+    }
+    return false;
 }
 
 /** @return array<string,mixed> */

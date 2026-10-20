@@ -35,6 +35,20 @@ function shopPurchaseModeApprovedShoptetGoods(array$product):bool
 }
 
 /**
+ * These imported classes open irregularly. The legacy 250 CZK is a single
+ * lesson price, not an approved price for an entire course. Keep their public
+ * pages as contact-only until a complete course offer is deliberately issued.
+ *
+ * @param array<string,mixed> $product
+ */
+function shopProductIsInterestOnlyYoungestCourse(array $product): bool
+{
+    return in_array((int)($product['product_id'] ?? 0), [157, 158, 159], true)
+        && (string)($product['origin'] ?? '') === 'import'
+        && str_starts_with((string)($product['external_product_key'] ?? ''), 'shoptet:');
+}
+
+/**
  * Legacy catalog rows can still be marked as goods even when their public
  * identity clearly describes a sportsperson-bound offer. Fail closed: these
  * products must never enter the guest goods checkout until an administrator

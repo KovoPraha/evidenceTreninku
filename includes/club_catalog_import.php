@@ -166,7 +166,17 @@ function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
     $season=kisRosterCreateSeason($pdo,$actorId,'SCHOOL-2026-27','Školní rok 2026/27','2026-09-01','2027-08-31','school_year');
     $seasonId=(int)$season['id'];$created=0;$updated=0;
     $images=['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg'];$animalImages=clubCatalogImportAnimalImages();
+    // Once both day-specific replacements exist, never republish the retired
+    // ambiguous 1×-weekly program on a later catalogue import.
+    $splitPrograms=$pdo->query("SELECT code FROM club_programs WHERE code IN ('KROUZKY-2627-TOCNACI-UTERY','KROUZKY-2627-TOCNACI-CTVRTEK')")
+        ->fetchAll(PDO::FETCH_COLUMN);
+    $tocnaciSplitReady=count($splitPrograms)===2;
+    $kunraticePrograms=$pdo->query("SELECT code FROM club_programs WHERE code IN ('KROUZKY-2627-KUNRATICE-3-4','KROUZKY-2627-KUNRATICE-5-6')")
+        ->fetchAll(PDO::FETCH_COLUMN);
+    $kunraticeSplitReady=count($kunraticePrograms)===2;
     foreach(legacyClubCatalog()as$index=>$row){
+        if($tocnaciSplitReady&&(string)$row['name']==='Točňáci 1× týdně')continue;
+        if($kunraticeSplitReady&&(string)$row['name']==='Cyklo kroužek ZŠ Kunratice')continue;
         $slug=clubCatalogImportSlug((string)$row['name']);$programCode='KROUZKY-2627-'.$slug;$teamCode=substr('KR-2627-'.$slug,0,48);
         $offers=clubCatalogImportPaymentOffers($row['offers']);[$birthYearFrom,$birthYearTo]=clubCatalogImportBirthYears((string)$row['age']);
         $team=kisRosterCreateTeam($pdo,$seasonId,$actorId,$teamCode,(string)$row['name'].' 2026/27','Cyklistika',(string)$row['age'],$reason);

@@ -53,8 +53,9 @@ function legacyClubCatalogFallback(array$canonical,?DateTimeImmutable$now=null):
     $now??=new DateTimeImmutable('now',new DateTimeZone('Europe/Prague'));
     if($now>new DateTimeImmutable('2027-06-30 23:59:59',new DateTimeZone('Europe/Prague')))return[];
     $known=[];foreach($canonical as$program)$known[legacyClubCatalogKey((string)$program['public_name'])]=true;
+    $tocnaciSplit=isset($known[legacyClubCatalogKey('Točňáci – úterý')],$known[legacyClubCatalogKey('Točňáci – čtvrtek')]);
     $result=[];$weekdayNames=['pondělí'=>1,'po'=>1,'úterý'=>2,'středa'=>3,'st'=>3,'čtvrtek'=>4,'pátek'=>5];
-    foreach(legacyClubCatalog()as$index=>$row){if(isset($known[legacyClubCatalogKey($row['name'])]))continue;$days=[];$lower=mb_strtolower($row['schedule'],'UTF-8');foreach($weekdayNames as$word=>$day)if(preg_match('/(^|[^[:alpha:]])'.preg_quote($word,'/').'([^[:alpha:]]|$)/u',$lower)===1)$days[$day]=true;
+    foreach(legacyClubCatalog()as$index=>$row){if(($tocnaciSplit&&(string)$row['name']==='Točňáci 1× týdně')||isset($known[legacyClubCatalogKey($row['name'])]))continue;$days=[];$lower=mb_strtolower($row['schedule'],'UTF-8');foreach($weekdayNames as$word=>$day)if(preg_match('/(^|[^[:alpha:]])'.preg_quote($word,'/').'([^[:alpha:]]|$)/u',$lower)===1)$days[$day]=true;
         $offers=[];foreach($row['offers']as$offer)$offers[]=['purchase_label'=>$offer['label'],'name'=>$offer['label'].' · školní rok 2026/27','amount_minor'=>$offer['price']*100,'currency'=>'CZK','saleable'=>false,'sale_reason'=>'Produkt právě zakládáme v KIS.','source_url'=>null,'is_featured'=>str_contains(mb_strtolower($offer['label'],'UTF-8'),'rok')?1:0,'product_id'=>0,'variant_id'=>0];
         $result[]=['id'=>0,'public_name'=>$row['name'],'public_summary'=>'','location_name'=>$row['location'],'age_label'=>$row['age'],'sort_order'=>1000+$index,'interest_enabled'=>1,'schedule'=>[],'schedule_label'=>$row['schedule'],'filter_days'=>array_keys($days),'images'=>[],'offers'=>$offers,'legacy_fallback'=>true];
     }return$result;

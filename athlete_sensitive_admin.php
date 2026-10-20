@@ -32,11 +32,46 @@ $recordId = filter_var($_POST['record_id'] ?? null, FILTER_VALIDATE_INT, [
     'options' => ['min_range' => 1],
 ]);
 $action = (string)($_POST['action'] ?? '');
-if ($recordId === false || !in_array($action, ['mask', 'reveal'], true)) {
+if (!in_array($action, ['mask', 'reveal', 'erase', 'erase_due'], true)
+    || ($action !== 'erase_due' && $recordId === false)) {
     $respond(422, ['ok' => false, 'message' => 'Požadavek není platný.']);
 }
 
 try {
+    if ($action === 'erase_due') {
+        if ((string)($_POST['confirm'] ?? '') !== 'VYMAZAT-PO-LHUTE') {
+            throw new InvalidArgumentException('Potvrďte řízený výmaz po lhůtě.');
+        }
+        personSensitiveRequireAdmin();
+        $pdo->beginTransaction();
+        try {
+            $ids = $pdo->query(
+                "SELECT id FROM osoba_citlive_udaje WHERE status='retention_pending' "
+                . "AND retention_until IS NOT NULL AND retention_until<=CURRENT_TIMESTAMP ORDER BY id LIMIT 100"
+            )->fetchAll(PDO::FETCH_COLUMN);
+            foreach ($ids as $id) {
+                personSensitiveAdminErase($pdo, (int)$id, 'Výmaz zamítnuté nebo zrušené žádosti po retenční lhůtě.', (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+            }
+            $pdo->commit();
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            throw $exception;
+        }
+        $respond(200, ['ok' => true, 'erased_count' => count($ids)]);
+    }
+    if ($action === 'erase') {
+        if ((string)($_POST['confirm'] ?? '') !== 'VYMAZAT-RODNE-CISLO') {
+            throw new InvalidArgumentException('Potvrďte výmaz rodného čísla.');
+        }
+        if ((string)(personSensitiveAdminRecord($pdo, (int)$recordId)['status'] ?? '') === 'erased') {
+            throw new InvalidArgumentException('Rodné číslo již bylo vymazáno.');
+        }
+        personSensitiveAdminErase(
+            $pdo, (int)$recordId, (string)($_POST['reason'] ?? ''),
+            (string)($_SERVER['REMOTE_ADDR'] ?? '')
+        );
+        $respond(200, ['ok' => true, 'erased' => true]);
+    }
     $value = $action === 'reveal'
         ? personSensitiveAdminReveal(
             $pdo,

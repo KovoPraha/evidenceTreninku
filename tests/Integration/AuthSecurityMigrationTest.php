@@ -119,6 +119,9 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261019110000_shop_ppl_box',
                 '20261019130000_shop_packeta_zbox',
                 '20261020120000_parent_journey_notifications',
+                '20261020130000_athlete_registration_confirmed_facts_draft',
+                '20261020140000_club_program_physical_teams',
+                '20261020160000_athlete_registration_final_notices',
             ],
             array_keys($catalog)
         );
@@ -156,10 +159,11 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_product_interests'));
         self::assertTrue($this->tableExists($pdo, 'shop_product_interest_events'));
         self::assertSame(
-            6,
+            11,
             (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration'")->fetchColumn()
         );
         self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration' AND terms_version LIKE '%-vzor'")->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration' AND consent_purpose='csc_birth_number_sharing' AND terms_version='csc-birth-number-sharing-2026-10-20-v1'")->fetchColumn());
         self::assertTrue($this->tableExists($pdo, 'password_reset_tokens'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feeds'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feed_events'));
