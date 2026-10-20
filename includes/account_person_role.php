@@ -178,7 +178,8 @@ function accountPersonRoleRevoke(
         throw new InvalidArgumentException('Poznámka smí mít nejvýše 1000 znaků.');
     }
 
-    $pdo->beginTransaction();
+    $ownsTransaction = !$pdo->inTransaction();
+    if ($ownsTransaction) $pdo->beginTransaction();
     try {
         $sql = 'SELECT * FROM account_person_roles WHERE id=?';
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
@@ -191,7 +192,7 @@ function accountPersonRoleRevoke(
             throw new AccountPersonRoleException('Vazba účtu a osoby nebyla nalezena.');
         }
         if ($relation['status'] === 'revoked') {
-            $pdo->commit();
+            if ($ownsTransaction) $pdo->commit();
             return ['relation_id' => $relationId, 'changed' => false, 'status' => 'revoked'];
         }
         $update = $pdo->prepare(
@@ -209,10 +210,10 @@ function accountPersonRoleRevoke(
             (string)$relation['relation_role'],
             $note
         );
-        $pdo->commit();
+        if ($ownsTransaction) $pdo->commit();
         return ['relation_id' => $relationId, 'changed' => true, 'status' => 'revoked'];
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
         if ($exception instanceof InvalidArgumentException

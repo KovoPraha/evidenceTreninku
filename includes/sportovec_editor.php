@@ -5,6 +5,7 @@ require_once __DIR__ . '/person_match.php';
 require_once __DIR__ . '/person_sensitive.php';
 require_once __DIR__ . '/sportovec_history_lib.php';
 require_once __DIR__ . '/kis_person_import.php';
+require_once __DIR__ . '/sportovec_editor_details.php';
 
 function sportovecEditorFields(): array
 {
@@ -32,22 +33,32 @@ function sportovecEditorPerson(PDO $pdo, int $id, bool $lock = false): array
 
 function sportovecEditorContext(PDO $pdo, int $id): array
 {
+    $activeLink = clubFinanceColumnExists($pdo, 'kis_person_links', 'ended_at') ? ' AND l.ended_at IS NULL' : '';
+    $sharedLink = $activeLink !== '' ? ' AND shared_link.ended_at IS NULL' : '';
     $profile = $pdo->prepare('SELECT * FROM kis_person_profiles WHERE sportovec_id=?');
     $profile->execute([$id]);
     $parents = $pdo->prepare('SELECT l.*,c.display_name,c.names_json,c.emails_json,c.phones_json,c.account_id,c.account_state, '
-        . 'r.status AS relation_status,r.valid_to,u.aktivni AS account_active,u.email_overeno '
+        . 'r.status AS relation_status,r.valid_to,u.aktivni AS account_active,u.email_overeno,u.email AS login_email, '
+        . '(SELECT COUNT(DISTINCT shared_link.sportovec_id) FROM kis_person_links shared_link WHERE shared_link.contact_key=c.contact_key' . $sharedLink . ') AS shared_people '
         . 'FROM kis_person_links l JOIN kis_person_contacts c ON c.contact_key=l.contact_key '
         . 'LEFT JOIN account_person_roles r ON r.account_id=c.account_id AND r.sportovec_id=l.sportovec_id '
-        . 'LEFT JOIN verejni_uzivatele u ON u.id=c.account_id WHERE l.sportovec_id=? ORDER BY l.source_slot,l.source_key');
+        . 'LEFT JOIN verejni_uzivatele u ON u.id=c.account_id WHERE l.sportovec_id=?' . $activeLink . ' ORDER BY l.source_slot,l.source_key');
     $parents->execute([$id]);
+    $parentRows = [];
+    foreach ($parents->fetchAll(PDO::FETCH_ASSOC) as $parent) {
+        if (!isset($parentRows[$parent['contact_key']])) $parentRows[$parent['contact_key']] = $parent;
+    }
     $roles = $pdo->prepare('SELECT r.*,u.jmeno,u.prijmeni,u.email,u.aktivni,u.email_overeno '
         . 'FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id '
         . 'WHERE r.sportovec_id=? ORDER BY r.relation_role,r.id');
     $roles->execute([$id]);
     $sensitive = $pdo->prepare("SELECT id,status FROM osoba_citlive_udaje WHERE sportovec_id=? AND status<>'erased' ORDER BY id DESC");
     $sensitive->execute([$id]);
-    return ['profile' => $profile->fetch(PDO::FETCH_ASSOC) ?: [], 'parents' => $parents->fetchAll(PDO::FETCH_ASSOC),
-        'roles' => $roles->fetchAll(PDO::FETCH_ASSOC), 'sensitive' => $sensitive->fetchAll(PDO::FETCH_ASSOC)];
+    return ['profile' => $profile->fetch(PDO::FETCH_ASSOC) ?: [], 'parents' => array_values($parentRows),
+        'roles' => $roles->fetchAll(PDO::FETCH_ASSOC), 'sensitive' => $sensitive->fetchAll(PDO::FETCH_ASSOC),
+        'contact_choices' => $pdo->query('SELECT contact_key,display_name,emails_json FROM kis_person_contacts ORDER BY display_name,contact_key')->fetchAll(PDO::FETCH_ASSOC),
+        'account_choices' => $pdo->query('SELECT id,jmeno,prijmeni,email,aktivni,email_overeno FROM verejni_uzivatele ORDER BY prijmeni,jmeno,id')->fetchAll(PDO::FETCH_ASSOC),
+        'rosters' => sportovecEditorRosters($pdo, $id), 'payments' => sportovecEditorPayments($pdo, $id)];
 }
 
 function sportovecEditorSave(PDO $pdo, int $id, array $input, int $actor): void
@@ -121,10 +132,12 @@ function sportovecEditorReveal(PDO $pdo, int $id, string $reason, ?array $keys =
     try {
         $legacyBirthNumber = trim((string)($person['rc'] ?? ''));
         $birthNumbers = $legacyBirthNumber !== '' ? [$legacyBirthNumber . ' (původní evidence)'] : [];
+        $currentBirthNumber = $legacyBirthNumber;
         $stmt = $pdo->prepare("SELECT id FROM osoba_citlive_udaje WHERE sportovec_id=? AND status<>'erased'");
         $stmt->execute([$id]);
         foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $recordId) {
-            $birthNumbers[] = personSensitiveAdminReveal($pdo, (int)$recordId, $reason, $keys, $ip);
+            $currentBirthNumber = personSensitiveAdminReveal($pdo, (int)$recordId, $reason, $keys, $ip);
+            $birthNumbers[] = $currentBirthNumber;
         }
         $stmt = $pdo->prepare('SELECT p.canonical_key,b.* FROM kis_person_profiles p JOIN kis_person_batches b '
             . 'ON b.fingerprint=p.batch_fingerprint WHERE p.sportovec_id=?');
@@ -145,7 +158,17 @@ function sportovecEditorReveal(PDO $pdo, int $id, string $reason, ?array $keys =
         }
         if ($batch || $legacyBirthNumber !== '') personSensitiveAudit($pdo, ['sportovec_id' => $id], 'reveal', $reason, $ip);
         $pdo->commit();
-        return ['birth_numbers' => $birthNumbers, 'source_rows' => $sourceRows];
+        if ($currentBirthNumber === '') {
+            $candidates = [];
+            foreach ($sourceRows as $row) foreach ($row as $key => $value) {
+                if (is_string($value) && preg_match('/^(rc|rodne_?cislo|rodné číslo|rodne cislo)$/iu', (string)$key)) {
+                    try { $digits = personSensitiveNormalizeBirthNumber($value); $candidates[$digits] = substr($digits, 0, 6) . '/' . substr($digits, 6); }
+                    catch (InvalidArgumentException) { /* Keep malformed original data in the source view only. */ }
+                }
+            }
+            if (count($candidates) === 1) $currentBirthNumber = (string)reset($candidates);
+        }
+        return ['birth_numbers' => $birthNumbers, 'source_rows' => $sourceRows, 'current_birth_number' => $currentBirthNumber];
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         throw $exception;

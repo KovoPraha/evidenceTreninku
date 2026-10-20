@@ -14,4 +14,21 @@ final class SportovecEditorWiringTest extends TestCase
         self::assertStringContainsString('Cache-Control: no-store', $source);
         self::assertStringContainsString('csrf_verify', $source);
     }
+
+    public function testEditorAndMemberCardExposeSavedRosterAssignmentAndDetails(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $editor = file_get_contents($root . '/sprava_sportovcu.php');
+        foreach (['sportovecEditorSaveBirthNumber','sportovecEditorSaveParent','sportovecEditorUnlinkParent','sportovecEditorGuardianAccount','sportovecEditorRevokeAccount','sportovecEditorAddRoster'] as $handler) {
+            self::assertStringContainsString($handler, $editor);
+        }
+        $card = file_get_contents($root . '/sportovec_karta.php');
+        self::assertStringContainsString('csrf_verify', $card);
+        self::assertStringContainsString('sportovecEditorAddRoster($pdo, $sportovecId', $card);
+        self::assertStringContainsString('sportovec_editor_rosters_view.php', $card);
+        self::assertStringContainsString('sportovec_editor_payments_view.php', $card);
+        self::assertStringContainsString('&tab=kis#rosters-title', $card);
+        $view = file_get_contents($root . '/includes/sportovec_editor_view.php');
+        foreach (['name="birth_number"','sportovec_editor_parents_view.php','sportovec_editor_rosters_view.php','sportovec_editor_payments_view.php'] as $control) self::assertStringContainsString($control, $view);
+    }
 }
