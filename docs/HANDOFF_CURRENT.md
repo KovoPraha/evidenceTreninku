@@ -1,5 +1,7 @@
 # Aktuální předání vývoje na další stanici
 
+Nejnovější předání: 20. 10. 2026, zbývající administrační formuláře z PR [#144](https://github.com/KovoPraha/evidenceTreninku/pull/144). Nasazený aplikační SHA je `246dee2a4df5dc3152c1a769a9af128b87a91092`, [deploy 39496342888](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39496342888) i živé ověření prošly. Navazujte podle [reportu formulářů](REMAINING_ADMIN_FORMS_2026-10-20.md): společné styly starších editorů, zelené ukládání, funkční popisky, kořenové cesty hlavičky a zachování rozepsaného tréninku při chybějící soupisce. Lokálně 1 138 testů / 25 708 kontrol; 105 adres v osmi rolích, syntetické zápisy, mobil a tmavý režim. Produkčně osm stránek a přepnutí pracovní pozice z vnořeného formuláře. B30 zůstává PARTIAL, plné UAT není schválené. Následující předání jsou historické body.
+
 Nejnovější doplnění: 20. 10. 2026, sjednocená administrace a správa e-shopu z PR #140–142. Release `175f92c7a59294acff7e15fe09cbed258707fa2e` má úspěšný [deploy 39483597831](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39483597831) a produkční browser ověření variant, cen, skladu, archivace konceptu a společného vzhledu. Navazujte podle [produkčního reportu](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md), který uvádí také ponechanou skrytou testovací variantu se skladem 0 a archivovaný testovací koncept. Plné UAT zůstává samostatně otevřené. Níže uvedené starší SHA jsou historické body svých částí.
 
 Produkční doplnění: 20. 10. 2026, Europe/Prague. Hierarchie skupin a soupisek,
