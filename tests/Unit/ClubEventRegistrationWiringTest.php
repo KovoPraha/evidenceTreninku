@@ -72,7 +72,13 @@ final class ClubEventRegistrationWiringTest extends TestCase
         );
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $source);
         self::assertStringContainsString("getenv('APP_HOST')", $source);
-        self::assertStringContainsString('clubEventNotificationProcessOne', $source);
+        self::assertStringContainsString("require_once \$root . '/includes/transactional_notification_worker.php'", $source);
+        self::assertStringContainsString('transactionalNotificationDrain($pdo, $sender, $limit)', $source);
+        $worker = (string)file_get_contents(
+            dirname(__DIR__, 2) . '/includes/transactional_notification_worker.php'
+        );
+        self::assertStringContainsString('clubEventNotificationProcessOne', $worker);
+        self::assertStringContainsString('authMailProcessOne($pdo, $sender, $keyConfig)', $worker);
         self::assertStringContainsString('localMessageOutboxSender', $source);
         self::assertStringContainsString('CLUB_EVENT_NOTIFICATION_TRANSPORT', $source);
         self::assertStringNotContainsString('DB_PASS=', $source);

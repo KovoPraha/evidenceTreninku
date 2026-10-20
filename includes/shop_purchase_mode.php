@@ -23,7 +23,11 @@ function shopPurchaseModeColumnExists(PDO $pdo, string $table, string $column): 
     return false;
 }
 
-/** @param array<string,mixed> $product */
+/**
+ * Publication approval keeps the imported catalogue visible; it does not
+ * approve treating a club registration as ordinary goods at checkout.
+ * @param array<string,mixed> $product
+ */
 function shopPurchaseModeApprovedShoptetGoods(array$product):bool
 {
     return(string)($product['offer_type']??'')==='goods'&&(string)($product['origin']??'')==='import'
@@ -40,20 +44,13 @@ function shopProductRequiresAthlete(PDO $pdo, int $productId): bool
 {
     if ($productId < 1) return false;
     $hasPublications = shopPurchaseModeTableExists($pdo, 'shop_product_publications');
-    $hasMigrationIdentity=shopPurchaseModeColumnExists($pdo,'shop_products','origin')&&shopPurchaseModeColumnExists($pdo,'shop_products','external_product_key');
-    $migrationIdentity=$hasMigrationIdentity?',p.origin,p.external_product_key':",NULL AS origin,NULL AS external_product_key";
     $statement = $pdo->prepare($hasPublications
-        ? 'SELECT p.offer_type,pub.public_name'.$migrationIdentity.' FROM shop_products p LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE p.id=?'
-        : 'SELECT p.offer_type,NULL AS public_name'.$migrationIdentity.' FROM shop_products p WHERE p.id=?');
+        ? 'SELECT p.offer_type,pub.public_name FROM shop_products p LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE p.id=?'
+        : 'SELECT p.offer_type,NULL AS public_name FROM shop_products p WHERE p.id=?');
     $statement->execute([$productId]);
     $product = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$product) return false;
     if ((string)$product['offer_type'] === 'program') return true;
-    // The explicitly approved full Shoptet replacement remains a conventional
-    // shop catalogue. Its legacy services and clubs are intentionally sold as
-    // ordinary order lines until they are separately migrated to KIS programs.
-    if(shopPurchaseModeApprovedShoptetGoods($product))return false;
-
     $signals = [(string)($product['public_name'] ?? '')];
     if (shopPurchaseModeTableExists($pdo, 'shop_product_categories')) {
         $categories = $pdo->prepare('SELECT category_path FROM shop_product_categories WHERE product_id=?');

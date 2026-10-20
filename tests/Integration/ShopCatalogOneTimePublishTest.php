@@ -19,7 +19,7 @@ final class ShopCatalogOneTimePublishTest extends TestCase
         $result=\shopCatalogOneTimePublishApply($pdo,$sha,2,1,1,1,\SHOP_CATALOG_ONE_TIME_PUBLISH_CONFIRM);
         self::assertTrue($result['applied']);self::assertSame(1,$result['products_changed']);self::assertSame(1,$result['verification']['public_storefront_products']);
         self::assertSame('goods',(string)$pdo->query("SELECT offer_type FROM shop_products WHERE external_product_key='shoptet:pair:1'")->fetchColumn());
-        $visibleProductId=(int)$pdo->query("SELECT id FROM shop_products WHERE external_product_key='shoptet:pair:1'")->fetchColumn();self::assertFalse(\shopProductRequiresAthlete($pdo,$visibleProductId));
+        $visibleProductId=(int)$pdo->query("SELECT id FROM shop_products WHERE external_product_key='shoptet:pair:1'")->fetchColumn();self::assertTrue(\shopProductRequiresAthlete($pdo,$visibleProductId));
         self::assertSame('active',(string)$pdo->query("SELECT catalog_status FROM shop_products WHERE external_product_key='shoptet:pair:1'")->fetchColumn());
         self::assertSame('inactive',(string)$pdo->query("SELECT catalog_status FROM shop_products WHERE external_product_key='shoptet:pair:2'")->fetchColumn());
         self::assertSame('fixed',(string)$pdo->query("SELECT price_mode FROM shop_variants WHERE sku='VISIBLE-1'")->fetchColumn());

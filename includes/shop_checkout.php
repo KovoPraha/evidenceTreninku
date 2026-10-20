@@ -129,6 +129,8 @@ function shopCartDetail(PDO $pdo, int $accountId): array
             if(!$state['saleable'])$item['availability_error']=$state['reason'];
             elseif((int)($item['beneficiary_sportovec_id']??0)<1)$item['availability_error']='U kroužku není vybrané dítě nebo účastník.';
             if($offer)$item['program_terms']=clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id']);
+        }elseif(shopProductRequiresAthlete($pdo,(int)$item['product_id'])){
+            $item['availability_error']='Tato nabídka vyžaduje sportovce a řádně vypsaný termín. Odeberte ji z košíku a přejděte na detail nabídky.';
         }
     }
     unset($item);
@@ -298,8 +300,8 @@ function shopCheckoutPlace(
         if (clubFinanceColumnExists($pdo,'shop_orders','finance_sportovec_id')&&$beneficiaries!==[]&&$financeSportovecId!==array_key_first($beneficiaries)) throw new ShopCheckoutException('Vybraný finanční profil musí odpovídat sportovci v objednávce.');
         $total=0;$currency=null;
         foreach($items as &$item){
+            if(($item['offer_type']??null)!=='program'&&shopProductRequiresAthlete($pdo,(int)$item['product_id']))throw new ShopCheckoutException('Tato nabídka vyžaduje sportovce a řádně vypsaný termín.');
             if(!shopCheckoutVariantIsSaleable($item,$pdo,null,true)){
-                if(($item['offer_type']??null)!=='program'&&shopProductRequiresAthlete($pdo,(int)$item['product_id']))throw new ShopCheckoutException('Tato nabídka vyžaduje sportovce a řádně vypsaný termín.');
                 if(($item['offer_type']??null)==='program'){$saleState=clubProgramVariantSaleState($pdo,(int)$item['variant_id'],null,true);if(!$saleState['saleable'])throw new ShopCheckoutException('Kroužek nelze objednat: '.$saleState['reason']);}
                 throw new ShopCheckoutException('Některá položka už není dostupná. Obnovte košík.');
             }
@@ -869,36 +871,50 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
         $order=shopOrderAdminLockOrder($pdo,$orderId);
         if(!$payment||!$order)throw new ShopCheckoutException('Objednávka nebo její platba nebyla nalezena.');
-        if($order['status']==='cancelled'){
-            if(!in_array($payment['status'],['cancelled','refund_required','refunded'],true)||$order['payment_status']!==$payment['status'])throw new ShopCheckoutException('Stornovaná objednávka má nekonzistentní stav platby.');
-            try{$eventSync=clubEventShopCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-            try{$velodromeSync=publicVelodromeShopCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-            $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>(string)$payment['status'],'restocked_items'=>0,'changed'=>false,'velodrome_items'=>$velodromeSync['items'],'velodrome_cancelled'=>$velodromeSync['cancelled']];
-        }
-        if(!in_array($order['status'],['placed','processing','ready'],true))throw new ShopCheckoutException('Objednávku v tomto stavu nelze stornovat.');
-        $paid=in_array($order['status'],['processing','ready'],true);
-        if($paid&&($order['payment_status']!=='paid'||$payment['status']!=='paid'))throw new ShopCheckoutException('Zaplacená objednávka má nekonzistentní stav platby.');
-        if(!$paid&&($order['payment_status']!=='pending'||$payment['status']!=='pending'))throw new ShopCheckoutException('Nezaplacená objednávka má nekonzistentní stav platby.');
-        $paymentStatus=$paid?'refund_required':'cancelled';
-        $restocked=shopOrderAdminRestock($pdo,$orderId);
-        $pdo->prepare('UPDATE payments SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$paymentStatus,(int)$payment['id']]);
-        $cancelSql=shopCheckoutColumnExists($pdo,'shop_orders','packeta_consignment_code')
-            ? 'UPDATE shop_orders SET status=\'cancelled\',payment_status=?,packeta_consignment_code=NULL,cancelled_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?'
-            : 'UPDATE shop_orders SET status=\'cancelled\',payment_status=?,cancelled_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?';
-        $pdo->prepare($cancelSql)->execute([$paymentStatus,$orderId]);
-        $note=$paid?$reason.' Platba vyžaduje samostatné vrácení zákazníkovi.':$reason;
-        $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'cancel\',?,\'cancelled\',?)')
-            ->execute([$orderId,$actorTrainerId,(string)$order['status'],$note]);
+        $result=shopOrderCancelStateInTransaction($pdo,$payment,$order,'trainer',$actorTrainerId,$reason);
         $programSync=['cancelled'=>0,'rosters_ended'=>0];
-        if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+        if($result['changed']&&clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         try{$eventSync=clubEventShopCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         try{$velodromeSync=publicVelodromeShopCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
-        $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>$paymentStatus,'restocked_items'=>$restocked,'changed'=>true]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_cancelled'=>$velodromeSync['cancelled']];
+        $pdo->commit();return $result+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_cancelled'=>$velodromeSync['cancelled']];
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         throw new ShopCheckoutException('Storno selhalo bez částečného zápisu.',0,$exception);
     }
+}
+
+/**
+ * Canonical cancellation state change; callers own the transaction and payment/order locks,
+ * and must either cancel dependent entitlements or prove there are none before committing.
+ * No money is sent: paid orders enter the existing manual refund queue.
+ * @return array{order_id:int,payment_status:string,restocked_items:int,changed:bool}
+ */
+function shopOrderCancelStateInTransaction(PDO $pdo,array $payment,array $order,string $actorType,int $actorId,string $reason):array
+{
+    if(!$pdo->inTransaction()||!in_array($actorType,['trainer','account'],true)||$actorId<1||trim($reason)==='')throw new InvalidArgumentException('Storno vyžaduje transakci, auditora a důvod.');
+    $orderId=(int)$order['id'];
+    if(($payment['payable_type']??'')!=='shop_order'||(int)($payment['payable_id']??0)!==$orderId)throw new ShopCheckoutException('Platba nepatří stornované objednávce.');
+    if($actorType==='account'&&(int)($order['account_id']??0)!==$actorId)throw new ShopCheckoutException('Tuto objednávku nemůžete stornovat.');
+    if($order['status']==='cancelled'){
+        if(!in_array($payment['status'],['cancelled','refund_required','refunded'],true)||$order['payment_status']!==$payment['status'])throw new ShopCheckoutException('Stornovaná objednávka má nekonzistentní stav platby.');
+        return ['order_id'=>$orderId,'payment_status'=>(string)$payment['status'],'restocked_items'=>0,'changed'=>false];
+    }
+    if(!in_array($order['status'],['placed','processing','ready'],true))throw new ShopCheckoutException('Objednávku v tomto stavu nelze stornovat.');
+    $paid=in_array($order['status'],['processing','ready'],true);
+    if($paid&&($order['payment_status']!=='paid'||$payment['status']!=='paid'))throw new ShopCheckoutException('Zaplacená objednávka má nekonzistentní stav platby.');
+    if(!$paid&&($order['payment_status']!=='pending'||$payment['status']!=='pending'))throw new ShopCheckoutException('Nezaplacená objednávka má nekonzistentní stav platby.');
+    $paymentStatus=$paid?'refund_required':'cancelled';
+    $restocked=shopOrderAdminRestock($pdo,$orderId);
+    $pdo->prepare('UPDATE payments SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$paymentStatus,(int)$payment['id']]);
+    $cancelSql=shopCheckoutColumnExists($pdo,'shop_orders','packeta_consignment_code')
+        ? "UPDATE shop_orders SET status='cancelled',payment_status=?,packeta_consignment_code=NULL,cancelled_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+        : "UPDATE shop_orders SET status='cancelled',payment_status=?,cancelled_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?";
+    $pdo->prepare($cancelSql)->execute([$paymentStatus,$orderId]);
+    $note=$paid?$reason.' Platba vyžaduje samostatné vrácení zákazníkovi.':$reason;
+    $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,?,?,'cancel',?,'cancelled',?)")
+        ->execute([$orderId,$actorType,$actorId,(string)$order['status'],$note]);
+    return ['order_id'=>$orderId,'payment_status'=>$paymentStatus,'restocked_items'=>$restocked,'changed'=>true];
 }
 
 /**

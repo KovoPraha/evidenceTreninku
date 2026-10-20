@@ -4,6 +4,7 @@ app_session_start();
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/quick_account_password.php';
 
 header('Cache-Control: no-store');
 header('Referrer-Policy: no-referrer');
@@ -11,10 +12,7 @@ header('Referrer-Policy: no-referrer');
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function verificationSafeRedirect(mixed $value): string
 {
-    $redirect = trim((string)$value);
-    return preg_match('~^[a-z0-9_]+\.php(\?[a-z0-9_=&%.-]*)?$~i', $redirect) === 1
-        ? $redirect
-        : 'kalendar.php';
+    return bookingReturnDestination($value, 'moje_osoby.php');
 }
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -25,7 +23,7 @@ $legacyToken = one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, $legacyTok
     : '';
 $ok = false;
 $attempted = $method === 'POST';
-$redirect = verificationSafeRedirect($_POST['redirect'] ?? 'kalendar.php');
+$redirect = verificationSafeRedirect($_POST['redirect'] ?? $_GET['redirect'] ?? null);
 
 if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !== '') {
     $uzivatel = one_time_email_verification_consume($pdo, $token);
@@ -35,6 +33,18 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
             (int)$uzivatel['id'],
             (int)$uzivatel['session_version']
         );
+        unset($_SESSION['quick_account_password_setup']);
+        try {
+            $setup = quickAccountPasswordSetupIssue($pdo, (int)$uzivatel['id'], (int)$uzivatel['session_version']);
+            if ($setup !== null) {
+                $_SESSION['quick_account_password_setup'] = $setup + ['return' => $redirect];
+                $redirect = 'prvni_heslo.php';
+            }
+        } catch (Throwable $exception) {
+            error_log('Quick account onboarding unavailable: ' . get_class($exception));
+            // Verification remains successful; the ordinary reset flow is available.
+            $redirect = 'prvni_heslo.php';
+        }
         $ok = true;
     }
 }
@@ -64,7 +74,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
         <?php elseif ($attempted): ?>
             <i class="bi bi-x-circle-fill text-danger fs-1 mb-3"></i>
             <h5>Neplatný nebo expirovaný odkaz</h5>
-            <p class="text-muted">Požádejte o <a href="znovu_overit_email.php">nový ověřovací odkaz</a>.</p>
+            <p class="text-muted">Požádejte o <a href="znovu_overit_email.php?redirect=<?=rawurlencode($redirect)?>">nový ověřovací odkaz</a>.</p>
         <?php else: ?>
             <i class="bi bi-envelope-check text-primary fs-1 mb-3"></i>
             <h5>Dokončit ověření e-mailu</h5>
@@ -72,7 +82,7 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
             <form method="post" id="verification-form">
                 <?= csrf_field() ?>
                 <input type="hidden" name="token" id="verification-token" value="<?= h($legacyToken) ?>">
-                <input type="hidden" name="redirect" id="verification-redirect" value="kalendar.php">
+                <input type="hidden" name="redirect" id="verification-redirect" value="<?=h($redirect)?>">
                 <button type="submit" id="verification-submit" class="btn btn-primary" <?= $legacyToken === '' ? 'disabled' : '' ?>>
                     Ověřit e-mail
                 </button>
@@ -94,8 +104,9 @@ if ($attempted && csrf_verify((string)($_POST['csrf_token'] ?? '')) && $token !=
         return;
     }
     document.getElementById('verification-token').value = token;
-    const redirect = params.get('redirect') || 'kalendar.php';
-    if (/^[a-z0-9_]+\.php(\?[a-z0-9_=&%.-]*)?$/i.test(redirect)) {
+    const redirect = params.get('redirect');
+    // Only carry form data here; the shared server allowlist decides the destination.
+    if (redirect && redirect.length <= 1500) {
         document.getElementById('verification-redirect').value = redirect;
     }
     submit.disabled = false;

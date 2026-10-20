@@ -99,7 +99,7 @@ final class AuthWiringTest extends TestCase
     {
         $registration = $this->source('booking/registrace.php');
 
-        self::assertStringContainsString("['nakup', 'sport']", $registration);
+        self::assertStringContainsString("['nakup', 'sport', 'rodina']", $registration);
         self::assertStringContainsString("if (\$purpose === 'sport')", $registration);
         self::assertStringContainsString('publicProfileSave(', $registration);
         self::assertStringContainsString('Jen nákup a rezervace', $registration);

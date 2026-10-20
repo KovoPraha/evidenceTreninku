@@ -3,10 +3,16 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
+require_once dirname(__DIR__) . '/includes/booking_return.php';
 $productId = max(0, (int)($_POST['product_id'] ?? $_GET['product_id'] ?? 0));
+$variantId = max(0, (int)($_POST['variant_id'] ?? $_GET['variant_id'] ?? 0));
+$returnTo = bookingPurchaseReturn($_POST['return'] ?? $_GET['return'] ?? '');
+if ($returnTo === '' && $productId > 0) {
+    $returnTo = 'produkt.php?id=' . $productId . ($variantId > 0 ? '&variant_id=' . $variantId . '#varianta-' . $variantId : '');
+}
+$pageTarget = 'registrace_sportovce.php' . ($returnTo !== '' ? '?return=' . rawurlencode($returnTo) : '');
 if (!isset($_SESSION['verejny_uzivatel_id'])) {
-    $target = 'registrace_sportovce.php' . ($productId > 0 ? '?product_id=' . $productId : '');
-    header('Location: prihlaseni.php?redirect=' . rawurlencode($target));
+    header('Location: prihlaseni.php?redirect=' . rawurlencode($pageTarget));
     exit;
 }
 header('Cache-Control: no-store, max-age=0');
@@ -47,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 throw new InvalidArgumentException('Neplatná akce.');
             }
-            header('Location: registrace_sportovce.php' . ($productId > 0 ? '?product_id=' . $productId : ''), true, 303);
+            header('Location: ' . $pageTarget, true, 303);
             exit;
         } catch (InvalidArgumentException | AthleteRegistrationException $exception) {
             $errors[] = $exception->getMessage();
@@ -90,17 +96,17 @@ $value = static fn(string $key, string $default = ''): string => athleteRegistra
 <main class="container py-4" style="max-width:960px">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
         <div><h1 class="h4 mb-1"><i class="bi bi-person-plus me-2 text-primary"></i>Registrace sportovce</h1><p class="text-muted mb-0">Žádost pro dítě nebo pro dospělého sportovce. Zařazení provede až administrátor.</p></div>
-        <a class="btn btn-outline-secondary btn-sm" href="moje_osoby.php">Zpět na Moje osoby</a>
+        <a class="btn btn-outline-secondary btn-sm" href="moje_osoby.php<?=$returnTo !== '' ? '?return=' . rawurlencode($returnTo) : ''?>">Zpět na Moje osoby</a>
     </div>
     <div class="alert alert-info">Odesláním nevzniká členství automaticky. Údaje se neposílají do veřejných výpisů a rodné číslo se ukládá šifrovaně.</div>
-    <?php if($productId>0):?><div class="alert alert-primary"><strong>Registrujete sportovce kvůli konkrétní nabídce.</strong> Po schválení žádosti se vraťte na produkt a vyberte sportovce. <a href="produkt.php?id=<?=$productId?>" class="alert-link">Zobrazit produkt</a>.</div><?php endif;?>
+    <?php if($returnTo !== ''):?><div class="alert alert-primary"><strong>Registrujete sportovce kvůli rozpracovanému nákupu.</strong> Po schválení žádosti se vraťte k nabídce a vyberte sportovce. <a href="<?=athleteRegistrationPageH($returnTo)?>" class="alert-link">Zpět k nákupu</a>.</div><?php endif;?>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= athleteRegistrationPageH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= athleteRegistrationPageH($success) ?></div><?php endif; ?>
 
     <?php if(!$termsReady):?><div class="alert alert-warning" role="status"><strong>Novou žádost nyní nelze odeslat.</strong> Klub musí nejdříve schválit konečné informace o zpracování údajů a rodném čísle. Dosavadní žádosti můžete stále prohlížet a rušit.</div><?php endif; ?>
     <?php if($termsReady):?><section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Nová žádost</div><div class="card-body">
         <form method="post" enctype="multipart/form-data" class="row g-3" autocomplete="off">
-            <?= csrf_field() ?><input type="hidden" name="action" value="submit"><input type="hidden" name="product_id" value="<?=$productId?>">
+            <?= csrf_field() ?><input type="hidden" name="action" value="submit"><input type="hidden" name="return" value="<?=athleteRegistrationPageH($returnTo)?>">
             <?php foreach ($terms as $purpose => $term): ?><input type="hidden" name="term_version[<?= athleteRegistrationPageH($purpose) ?>]" value="<?= athleteRegistrationPageH($term['version']) ?>"><?php endforeach; ?>
 
             <div class="col-md-4"><label for="athlete-role" class="form-label">Kdo žádost podává</label><select id="athlete-role" name="requested_role" class="form-select" required><option value="guardian" <?= $value('requested_role', 'guardian') === 'guardian' ? 'selected' : '' ?>>Rodič / zákonný zástupce dítěte</option><option value="self" <?= $value('requested_role') === 'self' ? 'selected' : '' ?>>Dospělý sportovec za sebe</option></select></div>
@@ -136,7 +142,7 @@ $value = static fn(string $key, string $default = ''): string => athleteRegistra
     </div></section><?php endif; ?>
 
     <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Moje registrační žádosti</div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Sportovec</th><th>Vztah</th><th>Stav</th><th></th></tr></thead><tbody>
-        <?php foreach ($requests as $request): [$color, $label] = $statusLabels[$request['status']] ?? ['secondary', (string)$request['status']]; ?><tr><td><strong><?= athleteRegistrationPageH($request['claimed_prijmeni'] . ' ' . $request['claimed_jmeno']) ?></strong><div class="small text-muted"><?= athleteRegistrationPageH($request['claimed_narozeni']) ?></div></td><td><?= $request['requested_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil' ?></td><td><span class="badge bg-<?= athleteRegistrationPageH($color) ?>"><?= athleteRegistrationPageH($label) ?></span><div class="small text-muted"><?= athleteRegistrationPageH($request['created_at']) ?></div></td><td><?php if ($request['status'] === 'pending'): ?><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="request_id" value="<?= (int)$request['id'] ?>"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php endif; ?></td></tr><?php endforeach; ?>
+        <?php foreach ($requests as $request): [$color, $label] = $statusLabels[$request['status']] ?? ['secondary', (string)$request['status']]; ?><tr><td><strong><?= athleteRegistrationPageH($request['claimed_prijmeni'] . ' ' . $request['claimed_jmeno']) ?></strong><div class="small text-muted"><?= athleteRegistrationPageH($request['claimed_narozeni']) ?></div></td><td><?= $request['requested_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil' ?></td><td><span class="badge bg-<?= athleteRegistrationPageH($color) ?>"><?= athleteRegistrationPageH($label) ?></span><div class="small text-muted"><?= athleteRegistrationPageH($request['created_at']) ?></div></td><td><?php if ($request['status'] === 'pending'): ?><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="return" value="<?=athleteRegistrationPageH($returnTo)?>"><input type="hidden" name="request_id" value="<?= (int)$request['id'] ?>"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php endif; ?></td></tr><?php endforeach; ?>
         <?php if ($requests === []): ?><tr><td colspan="4" class="text-center text-muted py-3">Zatím jste žádnou registraci sportovce neposlali.</td></tr><?php endif; ?>
     </tbody></table></div></section>
 </main>

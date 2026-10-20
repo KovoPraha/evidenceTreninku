@@ -410,6 +410,7 @@ final class AthleteRegistrationAdminTest extends TestCase
             self::assertTrue($migration['verify']($pdo), $file);
         }
         $pdo->exec("UPDATE club_event_term_versions SET consent_text_plain='Syntetické schválené informace pro integrační test.' WHERE scope_type='athlete_registration' AND consent_purpose IN ('member_data_notice','birth_number_legal_notice')");
+        \Tests\Support\ParentJourneyNotificationFixture::install($pdo);
         return $pdo;
     }
 }

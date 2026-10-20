@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/shop_checkout.php';
 require_once __DIR__ . '/club_program_terms.php';
+require_once __DIR__ . '/club_program_account_status.php';
 
 final class ClubProgramException extends RuntimeException {}
 
@@ -451,12 +452,14 @@ function clubProgramAssertBeneficiaryBirthYear(PDO $pdo, array $offer, int $spor
 /**
  * Capacity has one source of truth: unique athletes enrolled in, or holding a
  * still-payable order for, any offer on the same roster whose dates overlap.
+ * A paid quick registration keeps its place while the club reviews identity;
+ * payment expiry only applies to unpaid orders.
  * This keeps annual and semester payment options from overselling one group.
  *
  * @param array<string,mixed> $offer
  * @return array{active_enrollment_count:int,held_order_count:int,occupied_count:int,available_count:?int}
  */
-function clubProgramOfferCapacityState(PDO $pdo, array $offer, ?DateTimeImmutable $now = null, bool $lock = false): array
+function clubProgramOfferCapacityState(PDO $pdo, array $offer, ?DateTimeImmutable $now = null, bool $lock = false, int $excludeHeldSportovecId = 0): array
 {
     $offerId=(int)($offer['id']??$offer['offer_id']??0);
     $productId=(int)($offer['product_id']??0);$variantId=(int)($offer['variant_id']??0);
@@ -477,21 +480,30 @@ function clubProgramOfferCapacityState(PDO $pdo, array $offer, ?DateTimeImmutabl
         &&clubProgramColumnExists($pdo,'shop_orders','payment_expires_at');
     $heldCount=0;
     if($hasHoldSchema){
-        $beneficiarySelect=clubProgramColumnExists($pdo,'shop_order_items','beneficiary_sportovec_id')?'oi.beneficiary_sportovec_id':'NULL AS beneficiary_sportovec_id';
-        $requestSelect=clubProgramColumnExists($pdo,'shop_order_items','athlete_registration_request_id')?'oi.athlete_registration_request_id':'NULL AS athlete_registration_request_id';
+        $hasBeneficiary=clubProgramColumnExists($pdo,'shop_order_items','beneficiary_sportovec_id');
+        $hasRequest=clubProgramColumnExists($pdo,'shop_order_items','athlete_registration_request_id');
+        $beneficiarySelect=$hasBeneficiary?'oi.beneficiary_sportovec_id':'NULL AS beneficiary_sportovec_id';
+        $requestSelect=$hasRequest?'oi.athlete_registration_request_id':'NULL AS athlete_registration_request_id';
         $heldSql="SELECT oi.id,oi.quantity,$beneficiarySelect,$requestSelect FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id ";
         if($shared)$heldSql.='JOIN club_program_offers x ON x.product_id=oi.product_id AND x.variant_id=oi.variant_id ';
         $heldSql.=$shared
-            ? "WHERE x.team_id=? AND x.starts_on<=? AND x.ends_on>=? AND o.status='placed' AND o.payment_status='pending' "
-            : "WHERE oi.product_id=? AND oi.variant_id=? AND o.status='placed' AND o.payment_status='pending' ";
-        $heldSql.='AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=? ';
+            ? 'WHERE x.team_id=? AND x.starts_on<=? AND x.ends_on>=? '
+            : 'WHERE oi.product_id=? AND oi.variant_id=? ';
+        $heldSql.="AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?)";
+        if($hasBeneficiary&&$hasRequest){
+            $heldSql.=" OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)";
+        }
+        $heldSql.=') ';
+        if($hasRequest&&clubProgramColumnExists($pdo,'account_person_claim_requests','status')){
+            $heldSql.="AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) ";
+        }
         if(clubProgramColumnExists($pdo,'club_program_enrollments','source_order_item_id'))$heldSql.="AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ";
         if($lock&&$mysql)$heldSql.=' FOR UPDATE';
         $held=$pdo->prepare($heldSql);$held->execute($shared?[$teamId,$endsOn,$startsOn,$now->format('Y-m-d H:i:s')]:[$productId,$variantId,$now->format('Y-m-d H:i:s')]);
         $heldIdentities=[];
         foreach($held->fetchAll(PDO::FETCH_ASSOC)as$row){
             $personId=(int)($row['beneficiary_sportovec_id']??0);
-            if($personId>0){if(isset($activePeople[$personId]))continue;$key='person:'.$personId;}
+            if($personId>0){if($personId===$excludeHeldSportovecId||($shared&&isset($activePeople[$personId])))continue;$key='person:'.$personId;}
             elseif((int)($row['athlete_registration_request_id']??0)>0)$key='request:'.(int)$row['athlete_registration_request_id'];
             else$key='item:'.(int)$row['id'];
             $heldIdentities[$key]=max((int)($heldIdentities[$key]??0),(int)$row['quantity']);
@@ -588,18 +600,51 @@ function clubProgramEvent(PDO $pdo, int $programId, ?int $offerId, string $actor
 /** @return list<array<string,mixed>> */
 function clubProgramPendingOrderItems(PDO $pdo, int $accountId): array
 {
+    $hasRequests = clubProgramColumnExists($pdo, 'shop_order_items', 'athlete_registration_request_id')
+        && clubProgramRuntimeTableExists($pdo, 'account_person_claim_requests');
+    $requestSelect = $hasRequests
+        ? 'c.id AS request_id,c.status AS request_status,COALESCE(s.jmeno,c.claimed_jmeno) AS jmeno,COALESCE(s.prijmeni,c.claimed_prijmeni) AS prijmeni,'
+        : 'NULL AS request_id,NULL AS request_status,s.jmeno,s.prijmeni,';
+    $requestJoin = $hasRequests
+        ? ' LEFT JOIN account_person_claim_requests c ON c.id=oi.athlete_registration_request_id AND c.account_id=o.account_id '
+        : '';
+    $requestAccess = $hasRequests ? ' OR (oi.beneficiary_sportovec_id IS NULL AND c.id IS NOT NULL)' : '';
+    $termsSelect = clubProgramTermsAcceptanceAvailable($pdo)
+        ? 'oi.program_terms_snapshot_json,oi.program_terms_accepted_at,oi.program_terms_accepted_by_account_id,'
+        : 'NULL AS program_terms_snapshot_json,NULL AS program_terms_accepted_at,NULL AS program_terms_accepted_by_account_id,';
     $statement = $pdo->prepare(
-        'SELECT DISTINCT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.product_name_snapshot,oi.line_amount_minor,oi.currency,o.public_code,o.payment_status,o.status AS order_status,cp.name AS program_name,co.name AS offer_name,co.starts_on,co.ends_on,s.jmeno,s.prijmeni,e.id AS enrollment_id '
-        . 'FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers co ON co.variant_id=oi.variant_id JOIN club_programs cp ON cp.id=co.program_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id JOIN account_person_roles r ON r.account_id=? AND r.sportovec_id=s.id AND r.relation_role IN (\'self\',\'guardian\') AND r.status=\'approved\' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) LEFT JOIN club_program_enrollments e ON e.source_order_item_id=oi.id WHERE o.account_id=? ORDER BY o.created_at DESC,oi.id DESC'
+        'SELECT DISTINCT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.product_name_snapshot,oi.line_amount_minor,oi.currency,'
+        . $requestSelect . $termsSelect
+        . 'o.account_id,o.public_code,o.payment_status,o.status AS order_status,vu.aktivni AS account_active,vu.email_overeno,'
+        . 'cp.name AS program_name,co.name AS offer_name,co.status AS offer_status,co.starts_on,co.ends_on,'
+        . 'e.id AS enrollment_id,e.status AS enrollment_status,rm.status AS roster_status,rm.source AS roster_source,'
+        . 'EXISTS(SELECT 1 FROM club_program_enrollments other_enrollment WHERE other_enrollment.offer_id=co.id AND other_enrollment.sportovec_id=oi.beneficiary_sportovec_id AND other_enrollment.status=\'active\' AND other_enrollment.source_order_item_id<>oi.id) AS duplicate_enrollment '
+        . 'FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id '
+        . 'JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id JOIN club_programs cp ON cp.id=co.program_id '
+        . 'LEFT JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id AND EXISTS(SELECT 1 FROM account_person_roles r WHERE r.account_id=o.account_id AND r.sportovec_id=s.id AND r.relation_role IN (\'self\',\'guardian\') AND r.status=\'approved\' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP)) '
+        . $requestJoin
+        . 'LEFT JOIN club_program_enrollments e ON e.source_order_item_id=oi.id LEFT JOIN club_roster_members rm ON rm.team_id=co.team_id AND rm.sportovec_id=s.id '
+        . 'WHERE o.account_id=? AND (s.id IS NOT NULL'.$requestAccess.') ORDER BY o.created_at DESC,oi.id DESC'
     );
-    $statement->execute([$accountId,$accountId]);
-    return $statement->fetchAll(PDO::FETCH_ASSOC);
+    $statement->execute([$accountId]);
+    $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $termsRequired = clubProgramTermsAcceptanceAvailable($pdo);
+    foreach ($rows as &$row) {
+        $row['terms_valid'] = !$termsRequired || (
+            (int)$row['program_terms_accepted_by_account_id'] === $accountId
+            && !empty($row['program_terms_accepted_at'])
+            && clubProgramTermsSnapshotValid((string)$row['program_terms_snapshot_json'])
+        );
+        unset($row['program_terms_snapshot_json'], $row['program_terms_accepted_at'], $row['program_terms_accepted_by_account_id']);
+    }
+    unset($row);
+    return $rows;
 }
 
 /** @return list<array<string,mixed>> */
 function clubProgramEnrollmentsForAccount(PDO $pdo, int $accountId): array
 {
-    $statement = $pdo->prepare('SELECT DISTINCT e.*,cp.name AS program_name,co.name AS offer_name,co.code AS offer_code,t.name AS team_name,s.jmeno,s.prijmeni,o.public_code FROM club_program_enrollments e JOIN club_program_offers co ON co.id=e.offer_id JOIN club_programs cp ON cp.id=co.program_id JOIN club_teams t ON t.id=co.team_id JOIN sportovci s ON s.id=e.sportovec_id JOIN shop_order_items oi ON oi.id=e.source_order_item_id JOIN shop_orders o ON o.id=oi.order_id JOIN account_person_roles r ON r.account_id=? AND r.sportovec_id=e.sportovec_id AND r.relation_role IN (\'self\',\'guardian\') AND r.status=\'approved\' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY e.valid_from DESC,e.id DESC');
+    $statement = $pdo->prepare('SELECT DISTINCT e.*,cp.name AS program_name,co.name AS offer_name,co.code AS offer_code,t.name AS team_name,s.jmeno,s.prijmeni,o.public_code,rm.status AS roster_status,rm.valid_from AS roster_valid_from,rm.valid_to AS roster_valid_to FROM club_program_enrollments e JOIN club_program_offers co ON co.id=e.offer_id JOIN club_programs cp ON cp.id=co.program_id JOIN club_teams t ON t.id=co.team_id JOIN sportovci s ON s.id=e.sportovec_id JOIN shop_order_items oi ON oi.id=e.source_order_item_id JOIN shop_orders o ON o.id=oi.order_id JOIN account_person_roles r ON r.account_id=? AND r.sportovec_id=e.sportovec_id AND r.relation_role IN (\'self\',\'guardian\') AND r.status=\'approved\' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) LEFT JOIN club_roster_members rm ON rm.team_id=co.team_id AND rm.sportovec_id=e.sportovec_id ORDER BY e.valid_from DESC,e.id DESC');
     $statement->execute([$accountId]);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -611,6 +656,10 @@ function clubProgramActivateOrderItem(PDO $pdo, int $accountId, int $orderItemId
     $pdo->beginTransaction();
     try {
         $result = clubProgramActivateOrderItemInTransaction($pdo,$accountId,$orderItemId,'account',$accountId);
+        if ($result['created']) {
+            require_once __DIR__ . '/parent_journey_notification.php';
+            parentJourneyNotificationEnqueueActivation($pdo, (int)$result['id']);
+        }
         $pdo->commit();
         return $result;
     } catch (Throwable $exception) {
@@ -650,8 +699,8 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
     if ((string)$item['order_status']==='cancelled' || (string)$item['offer_status']!=='active' || (int)$item['line_amount_minor']<0) throw new ClubProgramException('Objednávka nebo nabídka už není aktivovatelná.');
     if ((int)$item['line_amount_minor'] !== 0 && ((string)$item['payment_status'] !== 'paid' || !in_array((string)$item['order_status'],['processing','ready','completed'],true))) throw new ClubProgramException('Placenou účast lze aktivovat až po potvrzení platby.');
     if ($item['capacity']!==null) {
-        $capacityState=clubProgramOfferCapacityState($pdo,$item,null,true);
-        if((int)$capacityState['active_enrollment_count']>=(int)$item['capacity']&&!clubProgramPersonOccupiesSharedCapacity($pdo,$item,$sportovecId,true))throw new ClubProgramException('Kapacita společné soupisky v tomto období je vyčerpána.');
+        $capacityState=clubProgramOfferCapacityState($pdo,$item,null,true,$sportovecId);
+        if((int)$capacityState['occupied_count']>=(int)$item['capacity']&&!clubProgramPersonOccupiesSharedCapacity($pdo,$item,$sportovecId,true))throw new ClubProgramException('Kapacita společné soupisky v tomto období je vyčerpána.');
     }
     if($termsRequired)$pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,active_token,valid_from,valid_to,activated_at,terms_snapshot_json,terms_accepted_at,terms_accepted_by_account_id) VALUES (?,?,?,?,'active','active',?,?,CURRENT_TIMESTAMP,?,?,?)")
         ->execute([(int)$item['offer_id'],$sportovecId,$accountId,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on'],(string)$item['program_terms_snapshot_json'],(string)$item['program_terms_accepted_at'],$accountId]);
@@ -689,9 +738,28 @@ function clubProgramActivatePaidOrderInTransaction(PDO $pdo, int $orderId, ?int 
     $order=$pdo->prepare("SELECT id,account_id,status,payment_status FROM shop_orders WHERE id=? AND payment_status='paid' AND status IN ('processing','ready','completed')");$order->execute([$orderId]);$order=$order->fetch(PDO::FETCH_ASSOC);
     if (!$order) throw new ClubProgramException('Objednávka není ve stavu potvrzené platby.');
     $requestSelect=clubProgramColumnExists($pdo,'shop_order_items','athlete_registration_request_id')?'oi.athlete_registration_request_id':'NULL AS athlete_registration_request_id';
-    $items=$pdo->prepare('SELECT oi.id,oi.beneficiary_sportovec_id,'.$requestSelect.' FROM shop_order_items oi JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id WHERE oi.order_id=? ORDER BY oi.id');$items->execute([$orderId]);$items=$items->fetchAll(PDO::FETCH_ASSOC);
+    $items=$pdo->prepare('SELECT oi.id,oi.variant_id,oi.quantity,oi.beneficiary_sportovec_id,co.team_id,'.$requestSelect.' FROM shop_order_items oi JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id WHERE oi.order_id=? ORDER BY oi.id');$items->execute([$orderId]);$items=$items->fetchAll(PDO::FETCH_ASSOC);
     $created=0;$pending=0;foreach($items as$item){
-        if($item['beneficiary_sportovec_id']===null&&(int)($item['athlete_registration_request_id']??0)>0){$pending++;continue;}
+        if($item['beneficiary_sportovec_id']===null&&(int)($item['athlete_registration_request_id']??0)>0){
+            $lock=(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+            $request=$pdo->prepare('SELECT account_id,status FROM account_person_claim_requests WHERE id=?'.$lock);
+            $request->execute([(int)$item['athlete_registration_request_id']]);$request=$request->fetch(PDO::FETCH_ASSOC);
+            if(!$request||(int)$request['account_id']!==(int)$order['account_id']||!in_array((string)$request['status'],['pending','approved'],true)||(int)$item['quantity']!==1){
+                throw new ClubProgramException('Žádost rychlé přihlášky již není platná; platbu musí prověřit správce.');
+            }
+            // Use the same roster lock as enrollment activation. Annual and
+            // semester offers must not each admit a late payment into one seat.
+            $team=$pdo->prepare('SELECT id FROM club_teams WHERE id=?'.$lock);$team->execute([(int)$item['team_id']]);
+            if($team->fetchColumn()===false)throw new ClubProgramException('Cílová soupiska programu nebyla nalezena.');
+            $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id'],null,true);
+            if(!$offer)throw new ClubProgramException('Nabídka rychlé přihlášky již není aktivní; platbu musí prověřit správce.');
+            // The current paid item is already included as a hold, so equality
+            // is valid. An expired unpaid order may have lost its seat.
+            if($offer['capacity']!==null&&(int)$offer['occupied_count']>(int)$offer['capacity']){
+                throw new ClubProgramException('Kapacita společné soupisky je vyčerpána. Opožděnou platbu musí správce prověřit a domluvit náhradní místo nebo vrácení peněz.');
+            }
+            $pending++;continue;
+        }
         $result=clubProgramActivateOrderItemInTransaction($pdo,(int)$order['account_id'],(int)$item['id'],$actorType,$actorId);if($result['created'])$created++;
     }
     return ['program_items'=>count($items),'created'=>$created,'pending_identity'=>$pending];
@@ -712,7 +780,12 @@ function clubProgramLinkApprovedAthleteRequestInTransaction(PDO $pdo,int $reques
         if((int)$item['account_id']!==(int)$request['account_id'])throw new ClubProgramException('Rychlá přihláška nepatří účtu objednávky.');
         $update=$pdo->prepare('UPDATE shop_order_items SET beneficiary_sportovec_id=? WHERE id=? AND beneficiary_sportovec_id IS NULL');$update->execute([$sportovecId,(int)$item['id']]);$linked+=$update->rowCount();
         if((string)$item['payment_status']==='paid'&&in_array((string)$item['order_status'],['processing','ready','completed'],true)){
-            $result=clubProgramActivateOrderItemInTransaction($pdo,(int)$item['account_id'],(int)$item['id'],'trainer',$trainerId);if($result['created'])$activated++;
+            $result=clubProgramActivateOrderItemInTransaction($pdo,(int)$item['account_id'],(int)$item['id'],'trainer',$trainerId);
+            if($result['created']){
+                $activated++;
+                require_once __DIR__ . '/parent_journey_notification.php';
+                parentJourneyNotificationEnqueueActivation($pdo,(int)$result['id']);
+            }
         }
     }
     return['linked'=>$linked,'activated'=>$activated];

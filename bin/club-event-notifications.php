@@ -8,6 +8,8 @@ if (PHP_SAPI !== 'cli') {
 
 $root = dirname(__DIR__);
 $arguments = array_slice($argv, 1);
+$statusOnly = false;
+$usage = "Pouziti: APP_HOST=<host> php bin/club-event-notifications.php [--limit=20] [--transport=mail|local-outbox] [--status]\n";
 $envLimit = getenv('CLUB_EVENT_NOTIFICATION_LIMIT');
 $limit = is_string($envLimit) && preg_match('/^(?:[1-9]|[1-9][0-9])$/D', $envLimit) === 1
     ? (int)$envLimit
@@ -15,6 +17,10 @@ $limit = is_string($envLimit) && preg_match('/^(?:[1-9]|[1-9][0-9])$/D', $envLim
 $envTransport = getenv('CLUB_EVENT_NOTIFICATION_TRANSPORT');
 $transport = is_string($envTransport) && $envTransport !== '' ? $envTransport : 'mail';
 foreach ($arguments as $argument) {
+    if ($argument === '--status') {
+        $statusOnly = true;
+        continue;
+    }
     if (preg_match('/^--limit=([1-9]|[1-9][0-9])$/D', $argument, $match) === 1) {
         $limit = (int)$match[1];
         continue;
@@ -24,10 +30,10 @@ foreach ($arguments as $argument) {
         continue;
     }
     if ($argument === '--help') {
-        echo "Pouziti: APP_HOST=<host> php bin/club-event-notifications.php [--limit=20] [--transport=mail|local-outbox]\n";
+        echo $usage;
         exit(0);
     }
-    fwrite(STDERR, "Pouziti: APP_HOST=<host> php bin/club-event-notifications.php [--limit=20] [--transport=mail|local-outbox]\n");
+    fwrite(STDERR, $usage);
     exit(64);
 }
 if (!in_array($transport, ['mail', 'local-outbox'], true)) {
@@ -48,6 +54,7 @@ try {
     require_once $root . '/includes/club_event_notification.php';
     require_once $root . '/includes/auth_mail_outbox.php';
     require_once $root . '/includes/local_message_outbox.php';
+    require_once $root . '/includes/transactional_notification_worker.php';
     foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS'] as $constant) {
         if (!defined($constant)) {
             throw new RuntimeException('missing_database_configuration');
@@ -63,49 +70,26 @@ try {
             PDO::ATTR_EMULATE_PREPARES => false,
         ]
     );
+    $configuredDirectory = getenv('CLUB_EVENT_NOTIFICATION_OUTBOX_DIR');
+    $directory = is_string($configuredDirectory) && trim($configuredDirectory) !== ''
+        ? $configuredDirectory
+        : $root . '/var/club-event-notification-outbox';
+    if ($statusOnly) {
+        $status = transactionalNotificationStatus($pdo, $transport, $appHost, $directory);
+        echo json_encode($status, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . PHP_EOL;
+        exit($status['ready'] && !$status['attention_required'] ? 0 : 1);
+    }
     $sender = 'clubEventNotificationMailSender';
     if ($transport === 'local-outbox') {
-        $configuredDirectory = getenv('CLUB_EVENT_NOTIFICATION_OUTBOX_DIR');
-        $directory = is_string($configuredDirectory) && trim($configuredDirectory) !== ''
-            ? $configuredDirectory
-            : $root . '/var/club-event-notification-outbox';
         $sender = localMessageOutboxSender(
             $appHost,
             'evidence.transactional-notification.v1',
             $directory
         );
     }
-    $processed = 0;
-    $sent = 0;
-    $failed = 0;
-    $cancelled = 0;
-    $authProcessed = 0;
-    $eventProcessed = 0;
-    while ($processed < $limit) {
-        // Alternate queues when both are busy; an obsolete auth link never reaches transport.
-        $authFirst = ($processed % 2) === 0;
-        $authResult = $authFirst ? authMailProcessOne($pdo, $sender) : null;
-        $eventResult = $authResult === null ? clubEventNotificationProcessOne($pdo, $sender) : null;
-        if ($authResult === null && $eventResult === null && !$authFirst) {
-            $authResult = authMailProcessOne($pdo, $sender);
-        }
-        if ($authResult === null && $eventResult === null) {
-            break;
-        }
-        $processed++;
-        if ($authResult !== null) {
-            $authProcessed++;
-            if ($authResult === 'cancelled') $cancelled++;
-            elseif ($authResult === 'sent') $sent++;
-            else $failed++;
-        } else {
-            $eventProcessed++;
-            $eventResult ? $sent++ : $failed++;
-        }
-    }
+    $result = transactionalNotificationDrain($pdo, $sender, $limit);
     echo json_encode(
-        ['processed' => $processed, 'sent' => $sent, 'failed' => $failed, 'cancelled' => $cancelled,
-            'auth_processed' => $authProcessed, 'event_processed' => $eventProcessed, 'transport' => $transport],
+        $result + ['transport' => $transport],
         JSON_UNESCAPED_UNICODE
     ) . PHP_EOL;
     exit(0);

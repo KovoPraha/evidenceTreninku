@@ -7,6 +7,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/account_person_claim.php';
+require_once dirname(__DIR__, 2) . '/includes/club_event_notification.php';
 
 final class AccountPersonClaimTest extends TestCase
 {
@@ -34,6 +35,17 @@ final class AccountPersonClaimTest extends TestCase
         )->fetchColumn());
         self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_events')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM account_person_role_events')->fetchColumn());
+        $notification = $pdo->query('SELECT * FROM club_event_notifications')->fetch();
+        self::assertSame('identity_approved', $notification['notification_type']);
+        self::assertSame('rodina@example.test', $notification['recipient_email']);
+        self::assertStringContainsString('/booking/moje_osoby.php', $notification['body_plain']);
+        self::assertStringContainsString('ještě nepotvrzuje účast', $notification['body_plain']);
+        self::assertStringNotContainsString('členské přihlášce', $notification['body_plain']);
+        self::assertStringNotContainsString('2014-01-01', $notification['body_plain']);
+        $pdo->beginTransaction();
+        self::assertSame((int)$notification['id'], \parentJourneyNotificationEnqueueDecision($pdo, $first['id']));
+        $pdo->commit();
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_event_notifications')->fetchColumn());
     }
 
     public function testUnverifiedAccountAndCrossAccountCancellationAreDenied(): void
@@ -61,6 +73,7 @@ final class AccountPersonClaimTest extends TestCase
         self::assertTrue($cancelled['changed']);
         self::assertFalse($again['changed']);
         self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_events')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='identity_cancelled'")->fetchColumn());
     }
 
     public function testClaimApprovalAndRelationAreOneAtomicTransaction(): void
@@ -97,6 +110,45 @@ final class AccountPersonClaimTest extends TestCase
             'SELECT status FROM account_person_claim_requests WHERE id=' . $claim['id']
         )->fetchColumn());
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM account_person_roles')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_notifications')->fetchColumn());
+    }
+
+    public function testRejectedDecisionUsesExistingWorkerAndRetryDoesNotCreateAnotherMessage(): void
+    {
+        $pdo = $this->database();
+        $claim = \accountPersonClaimSubmit($pdo, 1, 'guardian', 'Eva', 'Dítě', '2014-01-01', '');
+        \accountPersonClaimReject($pdo, $claim['id'], 7, 'INTERNAL PRIVATE NOTE');
+        self::assertFalse(\accountPersonClaimReject($pdo, $claim['id'], 7, 'Different private note')['changed']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_event_notifications')->fetchColumn());
+        self::assertFalse(\clubEventNotificationProcessOne($pdo, static fn(): bool => false));
+        self::assertSame('pending', $pdo->query('SELECT status FROM club_event_notifications')->fetchColumn());
+        $pdo->exec("UPDATE club_event_notifications SET available_at='2000-01-01 00:00:00'");
+        $received = [];
+        self::assertTrue(\clubEventNotificationProcessOne($pdo, static function ($email, $subject, $body) use (&$received): bool {
+            $received[] = [$email, $subject, $body];
+            return true;
+        }));
+        self::assertCount(1, $received);
+        self::assertSame('rodina@example.test', $received[0][0]);
+        self::assertStringNotContainsString('PRIVATE', $received[0][2]);
+        self::assertNull(\clubEventNotificationProcessOne($pdo, static fn(): bool => true));
+        self::assertSame('sent', $pdo->query('SELECT status FROM club_event_notifications')->fetchColumn());
+    }
+
+    public function testOutboxFailureRollsBackApprovalAndRelation(): void
+    {
+        $pdo = $this->database();
+        $claim = \accountPersonClaimSubmit($pdo, 1, 'guardian', 'Eva', 'Dítě', '2014-01-01', '');
+        $pdo->exec("CREATE TRIGGER fail_notification BEFORE INSERT ON club_event_notifications BEGIN SELECT RAISE(ABORT,'synthetic queue failure'); END");
+        try {
+            \accountPersonClaimApprove($pdo, $claim['id'], 10, 7, 'LOCALHOST queue failure.');
+            self::fail('Approval committed without the promised message.');
+        } catch (\AccountPersonClaimException) {
+            self::assertSame('pending', $pdo->query('SELECT status FROM account_person_claim_requests')->fetchColumn());
+            self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM account_person_roles')->fetchColumn());
+            self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_events')->fetchColumn());
+            self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_event_notifications')->fetchColumn());
+        }
     }
 
     public function testAccountCannotAccumulateMoreThanFivePendingClaims(): void
@@ -146,6 +198,7 @@ final class AccountPersonClaimTest extends TestCase
             $migration['up']($pdo);
             self::assertTrue($migration['verify']($pdo));
         }
+        \Tests\Support\ParentJourneyNotificationFixture::install($pdo);
         return $pdo;
     }
 }

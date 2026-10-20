@@ -147,7 +147,7 @@ $is_admin     = $is_logged_in && function_exists('roleAtLeast') && roleAtLeast('
               <p class="text-muted">Jeden rodičovský účet pro děti, platby, přihlášky, soupisky a tréninky.</p>
               <a class="portal-link" href="<?= htmlspecialchars($familyUrl, ENT_QUOTES, 'UTF-8') ?>"><span><?= $is_customer ? 'Moje osoby' : 'Přihlášení rodiče' ?></span><i class="bi bi-arrow-right"></i></a>
               <?php if($is_athlete):?><a class="portal-link" href="<?= htmlspecialchars($athleteUrl, ENT_QUOTES, 'UTF-8') ?>"><span>Můj sport</span><i class="bi bi-arrow-right"></i></a><?php else:?><a class="portal-link" href="booking/sportovec_prihlaseni.php"><span>Přihlášení sportovce</span><i class="bi bi-arrow-right"></i></a><?php endif; ?>
-              <?php if (!$is_customer && !$is_athlete): ?><a class="portal-link" href="booking/registrace.php"><span>Vytvořit účet</span><i class="bi bi-arrow-right"></i></a><?php endif; ?>
+              <?php if (!$is_customer && !$is_athlete): ?><a class="portal-link" href="booking/registrace.php?purpose=rodina"><span>Vytvořit účet</span><i class="bi bi-arrow-right"></i></a><?php endif; ?>
             </div></article>
           </div>
           <div class="col-lg-4">

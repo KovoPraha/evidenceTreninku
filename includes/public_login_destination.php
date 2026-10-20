@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/booking_return.php';
 
 /**
  * Keep customer return links local to booking. Staff may use the fixed
@@ -7,10 +8,5 @@ declare(strict_types=1);
  */
 function publicLoginDestination(mixed $requested, bool $isStaff): string
 {
-    if (is_string($requested)
-        && preg_match('~^[a-z0-9_]+\.php(?:\?[^#\r\n]*)?(?:#[a-z0-9_-]+)?$~iD', $requested)) {
-        return $requested;
-    }
-
-    return $isStaff ? '../pracovni_pozice.php' : 'sportovni_prehled.php';
+    return bookingReturnDestination($requested, $isStaff ? '../pracovni_pozice.php' : 'sportovni_prehled.php');
 }

@@ -9,15 +9,16 @@ require_once __DIR__ . '/../includes/unified_account.php';
 require_once __DIR__ . '/../includes/public_login_destination.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+$requestedReturn = $_POST['redirect'] ?? $_GET['redirect'] ?? null;
 
 if (isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: ' . publicLoginDestination($_GET['redirect'] ?? null, isset($_SESSION['trener_id']))); exit;
+    header('Location: ' . publicLoginDestination($requestedReturn, isset($_SESSION['trener_id']))); exit;
 }
 
 $errors = isset($_GET['session']) && $_GET['session'] === 'expired'
     ? ['Přihlášení již není platné. Přihlaste se znovu.']
     : [];
-$registrationReturn = publicLoginDestination($_GET['redirect'] ?? null, false);
+$registrationReturn = publicLoginDestination($requestedReturn, false);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -69,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     auth_session_refresh_trainer_authorization($pdo, (int)$identity['trainer']['id']);
                 }
                 // Jen interní relativní cíl; fragment zachová návrat ke konkrétní akci.
-                header('Location: ' . publicLoginDestination($_GET['redirect'] ?? null, $identity['trainer'] !== null));
+                header('Location: ' . publicLoginDestination($requestedReturn, $identity['trainer'] !== null));
                 exit;
             }
         } catch (Throwable $exception) {
@@ -109,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form method="post">
                 <?= csrf_field() ?>
+                <input type="hidden" name="redirect" value="<?=h(bookingReturnDestination($requestedReturn))?>">
                 <div class="mb-3">
                     <label class="form-label" for="login-email">Email</label>
                     <input type="email" name="email" id="login-email" class="form-control"
@@ -121,10 +123,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="btn btn-primary w-100">Přihlásit se</button>
             </form>
             <p class="text-center text-muted small mt-3">
-                Nemáte účet? <a href="registrace.php?redirect=<?=rawurlencode($registrationReturn)?>">Zaregistrujte se</a>
+                Nemáte účet? <a href="registrace.php?redirect=<?=rawurlencode(bookingReturnDestination($requestedReturn))?>">Zaregistrujte se</a>
             </p>
             <p class="text-center small"><a href="zapomenute_heslo.php">Zapomenuté heslo</a></p>
-            <p class="text-center small"><a href="znovu_overit_email.php">Ověřovací e-mail nedorazil?</a></p>
+            <p class="text-center small"><a href="znovu_overit_email.php?redirect=<?=rawurlencode($registrationReturn)?>">Ověřovací e-mail nedorazil?</a></p>
             <p class="text-center small mb-0">
                 Máte od klubu samostatný sportovní přístup? <a href="sportovec_prihlaseni.php">Přihlaste se sportovním účtem</a>
             </p>

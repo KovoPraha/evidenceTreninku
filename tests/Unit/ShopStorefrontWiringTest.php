@@ -69,7 +69,7 @@ final class ShopStorefrontWiringTest extends TestCase
         $detail=(string)file_get_contents(dirname(__DIR__,2).'/booking/produkt.php');
         self::assertStringContainsString("attributes_detail",$detail);
         self::assertStringContainsString('clubProgramVariantSaleState',$detail);
-        self::assertStringContainsString('Pro tento program zatím není vypsaný termín', $detail);
+        self::assertStringContainsString('Přihlášení do tohoto kroužku se připravuje.', $detail);
         self::assertStringContainsString('Zanechat zájem o termín', $detail);
         self::assertStringNotContainsString('>Doplnit sportovce</a>', $detail);
         self::assertStringContainsString("name=\"razeni\"",$source);

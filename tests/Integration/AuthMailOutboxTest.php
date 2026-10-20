@@ -83,6 +83,23 @@ final class AuthMailOutboxTest extends TestCase
         self::assertSame(['accepted'=>true,'queued'=>false],\authMailResendVerification($pdo,'nobody@example.test','https://example.test/verify.php',$this->keys));
     }
 
+    public function testResendPreservesVariantThroughEncryptedMailAndRejectsExternalReturn(): void
+    {
+        $pdo=$this->database();
+        $purchase='produkt.php?id=143&variant_id=671#varianta-671';
+        $destination='registrace_sportovce.php?return='.rawurlencode($purchase);
+        foreach ([$destination, 'https://example.test/evil'] as $requested) {
+            \authMailResendVerification($pdo,'parent@example.test','https://example.test/overeni.php',$this->keys,$requested);
+            $row=$pdo->query('SELECT * FROM auth_mail_outbox ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+            $body=\authMailDecrypt($row,$this->keys);
+            self::assertSame(1,preg_match('~https://example.test/overeni.php#([^\s]+)~',$body,$match));
+            parse_str($match[1],$fragment);
+            self::assertSame($requested === $destination ? $destination : 'moje_osoby.php',$fragment['redirect']);
+            self::assertSame($row['token_hash'],\one_time_token_hash(\ONE_TIME_TOKEN_EMAIL_VERIFICATION,$fragment['token']));
+            self::assertStringNotContainsString($fragment['token'],(string)$row['body_ciphertext']);
+        }
+    }
+
     private function database(): PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);

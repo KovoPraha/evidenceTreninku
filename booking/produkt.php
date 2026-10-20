@@ -227,7 +227,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         ?>
                         <?php if(!$isProgram&&count($product['variants'])>1):?><div class="mb-3"><label class="form-label fw-semibold" for="shop-variant-select">Velikost / varianta</label><select class="form-select" id="shop-variant-select" aria-controls="shop-variant-list"><?php foreach($product['variants']as$choice):?><option value="<?=(int)$choice['variant_id']?>" <?=(int)$choice['variant_id']===$preferredVariantId?'selected':''?>><?=shopProductH(shopProductVariantLabel($choice))?> — <?=!empty($choice['in_stock'])?'skladem':'vyprodáno'?></option><?php endforeach;?></select><div class="form-text">Dostupné velikosti najdete v seznamu; cenu a další krok uvidíte po výběru.</div></div><?php endif; ?>
-                        <?php if ($isProgram && !$hasProgramOffer): ?><div class="alert alert-info">Pro tento program zatím není vypsaný termín ani schválené podmínky nákupu. Můžete nám níže zanechat e-mail a ozveme se vám.</div><?php endif; ?>
+                        <?php if ($isProgram && !$hasProgramOffer): ?><div class="alert alert-info">Přihlášení do tohoto kroužku se připravuje. Zatím jej nelze objednat ani zaplatit. <a href="#mam-zajem">Zanechte nám kontakt</a> a ozveme se vám s možností přihlášení.</div><?php endif; ?>
                         <?php if (!$isLoggedIn && $isProgram && $hasProgramOffer): ?>
                             <div class="row g-2 mb-3">
                                 <div class="col-md-6"><div class="border rounded bg-body-tertiary p-3 h-100"><strong>Už máte účet?</strong><p class="small text-muted my-2">Přihlaste se. Uvidíte své osoby, historii a klubové ceny. Po přihlášení se zobrazí případná klubová cena.</p><a class="btn btn-sm btn-outline-primary" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId)?>">Přihlásit se</a></div></div>
@@ -260,6 +260,7 @@ if ($product !== null && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                             <?php if (!$offer && !$isProgram): ?><div class="small <?= $variant['in_stock'] ? 'text-success' : 'text-danger' ?> mt-1"><?= $variant['in_stock'] ? 'Skladem' : 'Momentálně vyprodáno' ?></div><?php elseif(!$offer):?><div class="small text-warning mt-1">Přihlášení k tomuto termínu se připravuje.</div><?php endif; ?>
+                                            <?php if($isProgram && !$offer && isset($_SESSION['trener_id']) && ($_SESSION['role']??'')==='admin'):?><div class="small border rounded p-2 mt-2"><strong>Pro správce:</strong> U této varianty chybí prodejní termín. <a href="../club_program_wizard_admin.php?product_id=<?=$productId?>&amp;variant_id=<?=(int)$variant['variant_id']?>">Propojit existující variantu s programem</a> — vyberte soupisku, období, kapacitu a schválené podmínky.</div><?php endif;?>
                                         </div>
                                         <div class="text-end">
                                             <?php if (!$isProgram || $offer): ?><?php if (($variant['member_price']['is_member_price'] ?? false) === true): ?>
