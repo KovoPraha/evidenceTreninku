@@ -127,17 +127,16 @@ final class UxAccessibilityWiringTest extends TestCase
 
     public function testShopBugReportFormsUsePlainLanguageAndSafeFallbacks(): void
     {
-        $product = (string)file_get_contents($this->root . 'eshop_produkt_admin.php');
+        $product = (string)file_get_contents($this->root . 'includes/shop_admin_view.php');
         self::assertStringNotContainsString('name="attributes_json"', $product);
         self::assertStringNotContainsString('Parametry JSON', $product);
-        self::assertStringContainsString('productAdminAttributeEditor($attributeDefinitions,(string)$v[\'attributes_json\']', $product);
-        self::assertStringContainsString('Volitelné parametry varianty', $product);
-        self::assertStringContainsString('Produkt lze založit i bez nich', $product);
-        self::assertStringContainsString('Každý se zadává jednoduše jako název a hodnota', $product);
+        self::assertStringContainsString('shopAdminAttributes($definitions', $product);
+        self::assertStringContainsString('Parametry varianty', $product);
+        self::assertStringContainsString('Název parametru', $product);
+        self::assertStringContainsString('Hodnota parametru', $product);
         self::assertStringNotContainsString('JSON systém', $product);
-        self::assertStringContainsString('<input type="hidden" name="reason" value="">', $product);
         self::assertStringNotContainsString('Důvod založení', $product);
-        self::assertLessThan(strpos($product, '<div class="row g-3"><section class="col-xxl-4">'), strpos($product, 'Nový ruční produkt'));
+        self::assertStringNotContainsString('col-xxl-4', $product);
 
         $memberPrices = (string)file_get_contents($this->root . 'eshop_member_prices_admin.php');
         self::assertStringContainsString('Klubové ceny pro konkrétní soupisky', $memberPrices);

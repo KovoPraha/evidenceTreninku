@@ -92,7 +92,29 @@ function shopCatalogBulkSetOrder(PDO$pdo,int$actorId,array$ids,array$orders,stri
 }
 
 /** @return array{id:int,product_id:int,changed:bool} */
-function shopCatalogAdjustStock(PDO$pdo,int$actorId,int$variantId,string$newStock,string$reason,bool$confirmed):array
+function shopCatalogAdjustStock(PDO$pdo,int$actorId,int$variantId,string$newStock,string$reason,bool$confirmed,?array$expected=null):array
 {
-    shopManualCatalogDecision($actorId,$reason,$confirmed);$normalized=shopManualCatalogStock($newStock);if($normalized===null)throw new InvalidArgumentException('Cílový sklad je povinný.');$pdo->beginTransaction();try{$before=shopManualCatalogLockVariant($pdo,$variantId);$productId=(int)$before['product_id'];$product=shopManualCatalogLockProduct($pdo,$productId);if((string)$product['offer_type']==='program')throw new ShopManualCatalogException('Kroužek nemá sklad. Dostupnost řídí kapacita jeho termínu.');$changed=shopManualCatalogComparable($before['stock_quantity_decimal'])!==shopManualCatalogComparable($normalized);if($changed){$pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$normalized,$variantId]);shopManualCatalogInventoryMovement($pdo,$variantId,$actorId,$before['stock_quantity_decimal'],$normalized,$reason);$after=shopManualCatalogLockVariant($pdo,$variantId);shopManualCatalogEvent($pdo,$productId,$variantId,$actorId,'adjust_stock',$before,$after,$reason);}$pdo->commit();return['id'=>$variantId,'product_id'=>$productId,'changed'=>$changed];}catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof ShopManualCatalogException)throw$exception;throw new ShopCatalogManagementException('Korekce skladu selhala bez částečné změny.',0,$exception);}
+    shopManualCatalogDecision($actorId,$reason,$confirmed);
+    $normalized=shopManualCatalogStock($newStock);
+    if($normalized===null)throw new InvalidArgumentException('Cílový sklad je povinný.');
+    $pdo->beginTransaction();
+    try {
+        $lookup=$pdo->prepare('SELECT product_id FROM shop_variants WHERE id=?');$lookup->execute([$variantId]);$productId=(int)$lookup->fetchColumn();
+        $product=shopManualCatalogLockProduct($pdo,$productId);
+        $before=shopManualCatalogLockVariant($pdo,$variantId);
+        if($expected!==null && shopManualCatalogComparable($expected['stock']??null)!==shopManualCatalogComparable($before['stock_quantity_decimal'])) throw new ShopManualCatalogException('Sklad se mezitím změnil. Obnovte stránku a zkontrolujte aktuální stav.');
+        if((string)$product['offer_type']==='program')throw new ShopManualCatalogException('Kroužek nemá sklad. Dostupnost řídí kapacita jeho termínu.');
+        $changed=shopManualCatalogComparable($before['stock_quantity_decimal'])!==shopManualCatalogComparable($normalized);
+        if($changed){
+            $pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$normalized,$variantId]);
+            shopManualCatalogInventoryMovement($pdo,$variantId,$actorId,$before['stock_quantity_decimal'],$normalized,$reason);
+            $after=shopManualCatalogLockVariant($pdo,$variantId);
+            shopManualCatalogEvent($pdo,$productId,$variantId,$actorId,'adjust_stock',$before,$after,$reason);
+        }
+        $pdo->commit();return['id'=>$variantId,'product_id'=>$productId,'changed'=>$changed];
+    } catch(Throwable$exception){
+        if($pdo->inTransaction())$pdo->rollBack();
+        if($exception instanceof InvalidArgumentException||$exception instanceof ShopManualCatalogException)throw$exception;
+        throw new ShopCatalogManagementException('Korekce skladu selhala bez částečné změny.',0,$exception);
+    }
 }

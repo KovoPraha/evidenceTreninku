@@ -37,16 +37,18 @@ final class ShopAdminWiringTest extends TestCase
     public function testProductAdminUsesProtectedDomainWritersAndPrg(): void
     {
         $root = dirname(__DIR__, 2);
-        $source = (string)file_get_contents($root . '/eshop_produkt_admin.php');
+        $source = (string)file_get_contents($root . '/includes/shop_admin_page.php');
         self::assertStringContainsString("roleAtLeast('admin')", $source);
         self::assertStringContainsString('csrf_verify', $source);
         self::assertStringContainsString('shopManualCatalogCreate', $source);
         self::assertStringContainsString('shopManualCatalogUpdateProduct', $source);
         self::assertStringContainsString('shopManualCatalogUpdateVariant', $source);
-        self::assertStringContainsString('shopManualCatalogArchive', $source);
-        self::assertStringContainsString('Jednorázová klubová akce', $source);
-        self::assertStringContainsString('Tábor / soustředění', $source);
-        self::assertStringContainsString("header('Location: eshop_produkt_admin.php", $source);
+        self::assertStringContainsString('shopManualCatalogAddVariants', $source);
+        self::assertStringContainsString('shopCatalogPublicationDeactivate', $source);
+        self::assertStringContainsString("header('Location: '.\$redirect,true,303)", $source);
+        foreach(['eshop_produkt_admin.php','eshop_produkt_novy_admin.php','eshop_produkt_stahnout_admin.php','eshop_varianta_admin.php','eshop_ceny_admin.php','eshop_sklad_admin.php'] as $route) {
+            self::assertStringContainsString("require __DIR__.'/includes/shop_admin_page.php'",(string)file_get_contents($root.'/'.$route));
+        }
         self::assertStringNotContainsString('INSERT INTO shop_products', $source);
         self::assertStringContainsString('eshop_produkt_admin.php', (string)file_get_contents($root . '/eshop_admin.php'));
     }
@@ -75,11 +77,11 @@ final class ShopAdminWiringTest extends TestCase
         self::assertStringContainsString('shopAttributeAdminSave',$admin);
         self::assertStringContainsString('shopAttributeDiscoveredKeys',$admin);
         self::assertStringNotContainsString('INSERT INTO shop_attribute_definitions',$admin);
-        $product=(string)file_get_contents($root.'/eshop_produkt_admin.php');
+        $product=(string)file_get_contents($root.'/includes/shop_admin_view.php');
         self::assertStringContainsString('attribute_keys[]',$product);
-        self::assertStringContainsString('data-add-attribute',$product);
-        self::assertStringContainsString("definition.value_type==='choice'",$product);
-        self::assertStringContainsString('eshop_attributes_admin.php',$product);
+        self::assertStringContainsString('data-shop-add-attribute',$product);
+        self::assertStringContainsString("definition.value_type === 'choice'",(string)file_get_contents($root.'/assets/shop-admin.js'));
+        self::assertStringContainsString('shopAttributeFormJson',(string)file_get_contents($root.'/includes/shop_admin_input.php'));
         self::assertStringContainsString('eshop_attributes_admin.php',(string)file_get_contents($root.'/hlavicka.php'));
         self::assertStringContainsString('eshop_attributes_admin.php',(string)file_get_contents($root.'/eshop_admin.php'));
     }

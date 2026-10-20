@@ -89,7 +89,8 @@ final class ShopCatalogOriginTest extends TestCase
             7,
             \ShopCatalogOrigin::MANUAL
         );
-        self::addToAssertionCount(2);
+        \shopCatalogAssertVariantOrigin(\ShopCatalogOrigin::MANUAL,null,7,\ShopCatalogOrigin::IMPORT);
+        self::addToAssertionCount(3);
     }
 
     /** @return iterable<string,array{string,?int,?int,string}> */
@@ -98,7 +99,8 @@ final class ShopCatalogOriginTest extends TestCase
         yield 'import bez zdroje' => [\ShopCatalogOrigin::IMPORT, null, null, \ShopCatalogOrigin::IMPORT];
         yield 'manual se zdrojem' => [\ShopCatalogOrigin::MANUAL, 21, 7, \ShopCatalogOrigin::MANUAL];
         yield 'manual bez autora' => [\ShopCatalogOrigin::MANUAL, null, null, \ShopCatalogOrigin::MANUAL];
-        yield 'jiný původ než produkt' => [\ShopCatalogOrigin::MANUAL, null, 7, \ShopCatalogOrigin::IMPORT];
+        yield 'import k ručnímu produktu' => [\ShopCatalogOrigin::IMPORT, 21, null, \ShopCatalogOrigin::MANUAL];
+        yield 'ruční doplnění importu bez autora' => [\ShopCatalogOrigin::MANUAL, null, null, \ShopCatalogOrigin::IMPORT];
         yield 'neznámý původ' => ['legacy', 21, null, \ShopCatalogOrigin::IMPORT];
     }
 

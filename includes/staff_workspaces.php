@@ -130,7 +130,9 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Katalog', 'icon' => 'boxes', 'items' => [
                     ['route' => 'eshop_catalog_admin.php', 'label' => 'Hromadná správa', 'description' => 'Výjimečné hromadné opravy katalogu', 'icon' => 'boxes'],
-                    ['route' => 'eshop_produkt_admin.php', 'label' => 'Katalog', 'description' => 'Produkty, ceny, sklad a zveřejnění', 'icon' => 'box-seam'],
+                    ['route' => 'eshop_produkt_admin.php', 'label' => 'Produkty', 'description' => 'Přehled produktů a variant', 'icon' => 'box-seam'],
+                    ['route' => 'eshop_ceny_admin.php', 'label' => 'Ceny', 'description' => 'Ceny jednotlivých variant', 'icon' => 'tags'],
+                    ['route' => 'eshop_sklad_admin.php', 'label' => 'Sklad', 'description' => 'Skladové stavy a pohyby variant', 'icon' => 'boxes'],
                     ['route' => 'eshop_categories_admin.php', 'label' => 'Kategorie', 'description' => 'Hierarchie kategorií', 'icon' => 'diagram-3'],
                     ['route' => 'eshop_attributes_admin.php', 'label' => 'Parametry', 'description' => 'Číselník parametrů produktů', 'icon' => 'sliders'],
                 ]],
@@ -243,7 +245,7 @@ function staffPositionPrimaryRoutes(): array
         'sports_lead'=>['sprava_vsech_treninku.php','sprava_zavodu.php','prehled_vsech_vykazu.php'],
         'registrar'=>['sprava_sportovcu.php','kis_rosters_admin.php','eshop_identity_admin.php'],
         'program_coordinator'=>['club_program_offers_admin.php','eshop_events_admin.php','verejny_velodrom_admin.php'],
-        'catalog_manager'=>['eshop_produkt_admin.php','eshop_coupons_admin.php'],
+        'catalog_manager'=>['eshop_produkt_admin.php','eshop_ceny_admin.php','eshop_sklad_admin.php'],
         'order_operator'=>['eshop_orders_admin.php'],
         'finance_manager'=>['eshop_payments_admin.php','member_charges_admin.php','member_fee_plans_admin.php'],
         'system_admin'=>['sprava_pracovnich_pozic.php','sprava_treneru.php'],
@@ -296,7 +298,7 @@ function staffRouteOwners(): array
         'program_coordinator' => [
             'club_event_participants_export.php',
         ],
-        'catalog_manager' => [],
+        'catalog_manager' => ['eshop_produkt_novy_admin.php','eshop_produkt_stahnout_admin.php','eshop_varianta_admin.php'],
         'order_operator' => [],
         'finance_manager' => [
             'jizdy/formular.php','jizdy/seznam.php','jizdy/smazat.php','jizdy/uloz.php',

@@ -7,27 +7,22 @@ use PHPUnit\Framework\TestCase;
 
 final class LightweightEshopWorkflowWiringTest extends TestCase
 {
-    public function testCatalogCreatesSupportedOffersWithSafeDefaultsAndPublishesOnTheSamePage(): void
+    public function testCatalogUsesSeparateCreationAndWithdrawalWithProtectedSharedController(): void
     {
-        $source = (string)file_get_contents(dirname(__DIR__, 2) . '/eshop_produkt_admin.php');
-        self::assertStringContainsString('function productAdminGeneratedSku()', $source);
-        self::assertStringContainsString('name="offer_type" data-catalog-primary', $source);
-        self::assertStringContainsString('value="club_event"', $source);
-        self::assertStringContainsString('value="camp"', $source);
-        self::assertStringContainsString("\$createdOfferType==='goods'?'product':'service'", $source);
-        self::assertStringContainsString("\$_POST['visibility']='visible'", $source);
+        $root=dirname(__DIR__,2);
+        $source = (string)file_get_contents($root . '/includes/shop_admin_page.php');
+        $templates=(string)file_get_contents($root.'/includes/shop_admin_templates.php');
+        self::assertStringContainsString("\$type==='goods'?'product':'service'", $source);
+        self::assertStringContainsString("\$input['visibility']='visible'", $source);
         self::assertStringContainsString("\$action==='publish'", $source);
         self::assertStringContainsString('shopCatalogPublicationActivate(', $source);
         self::assertStringContainsString("\$action==='unpublish'", $source);
         self::assertStringContainsString('shopCatalogPublicationDeactivate(', $source);
-        self::assertStringContainsString('Zveřejnit v e-shopu', $source);
-        self::assertStringContainsString('Zobrazit technické údaje', $source);
-        self::assertStringContainsString("elseif(!\$showArchive)", $source);
-        self::assertStringContainsString("(string)\$row['origin']==='manual'||(string)\$row['catalog_status']==='active'", $source);
-        self::assertStringContainsString('Zobrazit celý archiv', $source);
-        self::assertStringContainsString('productAdminStatusLabel', $source);
-        self::assertStringNotContainsString('href="eshop_catalog_publication_admin.php"', $source);
-        self::assertStringNotContainsString('name="attributes_json"', $source);
+        self::assertStringContainsString("\$screen==='new'",$templates);
+        self::assertStringContainsString("\$screen==='withdraw'",$templates);
+        self::assertStringContainsString('eshop_produkt_novy_admin.php',$source);
+        self::assertStringContainsString('eshop_produkt_stahnout_admin.php',$source);
+        self::assertStringNotContainsString('name="attributes_json"', $templates);
     }
 
     public function testClubProgramIsOneShortFormWithApprovedTermsFilledByTheSystem(): void

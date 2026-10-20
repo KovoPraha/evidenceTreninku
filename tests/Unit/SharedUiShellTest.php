@@ -57,7 +57,7 @@ final class SharedUiShellTest extends TestCase
             if (!str_contains($source, 'hlavicka.php')) {
                 continue;
             }
-            if (!str_contains($source, 'bootstrap.min.css')) {
+            if (!str_contains($source, 'bootstrap.min.css') && !str_contains($source, 'appUiAssets();')) {
                 $missing[] = $relative;
             }
         }
