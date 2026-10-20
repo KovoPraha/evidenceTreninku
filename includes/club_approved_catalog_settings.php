@@ -68,7 +68,9 @@ function clubApprovedCatalogSettings(PDO $pdo,int $actorId,bool $apply):array
                 throw new ClubApprovedCatalogSettingsException('Kanonická cena Pumptracku není jednoznačná: '.$target['option']);
             $pricePlan[]=['product_id'=>$target['product_id'],'variant_id'=>$target['variant_id'],'sku'=>$target['sku'],
                 'before'=>(int)$variant['amount_minor'],'after'=>$target['new_minor'],
-                'changed'=>(int)$variant['amount_minor']!==$target['new_minor'],'_row'=>$variant];
+                'compare_at_before'=>$variant['compare_at_amount_minor']===null?null:(int)$variant['compare_at_amount_minor'],
+                'changed'=>(int)$variant['amount_minor']!==$target['new_minor']||$variant['compare_at_amount_minor']!==null,
+                '_row'=>$variant];
         }
         $capacityChanged=0;$priceChanged=0;
         if($apply){
@@ -81,10 +83,10 @@ function clubApprovedCatalogSettings(PDO $pdo,int $actorId,bool $apply):array
                 clubProgramEvent($pdo,(int)$before['program_id'],$row['id'],'trainer',$actorId,'update_offer',$before,$after);
                 $capacityChanged++;
             }
-            $updatePrice=$pdo->prepare('UPDATE shop_variants SET amount_minor=?,updated_at=CURRENT_TIMESTAMP WHERE id=?');
+            $updatePrice=$pdo->prepare('UPDATE shop_variants SET amount_minor=?,compare_at_amount_minor=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?');
             foreach($pricePlan as$row){
                 if(!$row['changed'])continue;
-                $before=$row['_row'];$after=$before;$after['amount_minor']=$row['after'];
+                $before=$row['_row'];$after=$before;$after['amount_minor']=$row['after'];$after['compare_at_amount_minor']=null;
                 $updatePrice->execute([$row['after'],$row['variant_id']]);
                 shopManualCatalogEvent($pdo,$row['product_id'],$row['variant_id'],$actorId,'update_variant',$before,$after,$reason);
                 $priceChanged++;

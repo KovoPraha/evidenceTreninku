@@ -21,6 +21,7 @@ final class ClubApprovedCatalogSettingsTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_offers WHERE capacity<>30 OR capacity IS NULL')->fetchColumn());
         self::assertSame(650000,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=941')->fetchColumn());
         self::assertSame(1150000,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=893')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_variants WHERE id IN (893,941) AND compare_at_amount_minor IS NOT NULL')->fetchColumn());
         self::assertSame(74,(int)$pdo->query("SELECT COUNT(*) FROM club_program_events WHERE action='update_offer'")->fetchColumn());
         self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM shop_catalog_admin_events WHERE action='update_variant'")->fetchColumn());
         $repeat=\clubApprovedCatalogSettings($pdo,7,true);
@@ -65,14 +66,14 @@ final class ClubApprovedCatalogSettingsTest extends TestCase
             'CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,season_id INTEGER,team_id INTEGER,product_id INTEGER,variant_id INTEGER,capacity INTEGER,status TEXT,starts_on TEXT,ends_on TEXT,updated_at TEXT)',
             'CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,sportovec_id INTEGER,status TEXT)',
             'CREATE TABLE shop_products(id INTEGER PRIMARY KEY,name TEXT,origin TEXT,offer_type TEXT,catalog_status TEXT)',
-            'CREATE TABLE shop_variants(id INTEGER PRIMARY KEY,product_id INTEGER,sku TEXT,origin TEXT,price_mode TEXT,amount_minor INTEGER,currency TEXT,unit_code TEXT,catalog_status TEXT,updated_at TEXT)',
+            'CREATE TABLE shop_variants(id INTEGER PRIMARY KEY,product_id INTEGER,sku TEXT,origin TEXT,price_mode TEXT,amount_minor INTEGER,compare_at_amount_minor INTEGER,currency TEXT,unit_code TEXT,catalog_status TEXT,updated_at TEXT)',
             'CREATE TABLE club_program_events(id INTEGER PRIMARY KEY,program_id INTEGER,offer_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT)',
             'CREATE TABLE shop_catalog_admin_events(id INTEGER PRIMARY KEY,product_id INTEGER,variant_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,reason TEXT)',
         ]as$sql)$pdo->exec($sql);
         $pdo->exec("INSERT INTO club_seasons VALUES(1,'SCHOOL-2026-27','2026-09-01','2027-08-31')");
         $pdo->exec("INSERT INTO club_programs VALUES(1,'KROUZKY-2627-ALIGATORI','Aligátoři'),(2,'KROUZKY-2627-PUMPTRACK','Pumptrack')");
         $pdo->exec("INSERT INTO shop_products VALUES(290,'Pumptrack první pololetí','import','program','active'),(279,'Pumptrack celý rok','import','program','active'),(500,'Kanonický Pumptrack','manual','program','active')");
-        $pdo->exec("INSERT INTO shop_variants VALUES(941,290,'997','import','fixed',440000,'CZK','person','active',NULL),(893,279,'1000','import','fixed',850000,'CZK','person','active',NULL),(501,500,'KP-PUMP-H1','manual','fixed',650000,'CZK','person','active',NULL),(502,500,'KP-PUMP-FULL','manual','fixed',1150000,'CZK','person','active',NULL)");
+        $pdo->exec("INSERT INTO shop_variants VALUES(941,290,'997','import','fixed',440000,600000,'CZK','person','active',NULL),(893,279,'1000','import','fixed',850000,NULL,'CZK','person','active',NULL),(501,500,'KP-PUMP-H1','manual','fixed',650000,NULL,'CZK','person','active',NULL),(502,500,'KP-PUMP-FULL','manual','fixed',1150000,NULL,'CZK','person','active',NULL)");
         for($id=1;$id<=74;$id++){
             $pump=$id>=73;$program=$pump?2:1;$product=$pump?500:1000+$id;$variant=$pump?($id===73?501:502):2000+$id;
             $pdo->prepare("INSERT INTO club_program_offers(id,program_id,season_id,team_id,product_id,variant_id,capacity,status,starts_on,ends_on) VALUES(?,?,1,?,?,?,?, 'active','2026-09-01','2027-06-30')")
