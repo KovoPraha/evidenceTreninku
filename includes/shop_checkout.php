@@ -124,6 +124,10 @@ function shopCartDetail(PDO $pdo, int $accountId): array
         $item['attributes'] = is_array($decoded) ? $decoded : [];
         $item['program_terms']=null;
         $item['availability_error']=null;
+        if(($item['catalog_status']??null)!=='active'){
+            $item['availability_error']='Tato nabídka již není v prodeji. Odeberte ji z košíku a vyberte aktuální kroužek.';
+            continue;
+        }
         if(($item['offer_type']??null)==='program'){
             $state=clubProgramVariantSaleState($pdo,(int)$item['variant_id']);$offer=$state['offer'];
             if(!$state['saleable'])$item['availability_error']=$state['reason'];

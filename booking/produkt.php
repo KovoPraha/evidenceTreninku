@@ -11,6 +11,7 @@ require_once dirname(__DIR__) . '/includes/club_program.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/shop_product_interest.php';
 require_once dirname(__DIR__) . '/includes/shop_purchase_mode.php';
+require_once dirname(__DIR__) . '/includes/club_catalog_unification.php';
 require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
 require_once dirname(__DIR__) . '/includes/ui_format.php';
 require_once dirname(__DIR__) . '/includes/public_seo.php';
@@ -64,6 +65,14 @@ function shopProductInterestVariantLabel(PDO $pdo, array $variant): string
 }
 
 $productId = (int)($_GET['id'] ?? 0);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $legacyTarget=clubCatalogLegacyOfferTarget($pdo,$productId,(int)($_GET['variant_id']??0));
+    if($legacyTarget!==null){
+        $targetProductId=$legacyTarget['product_id'];$targetVariantId=$legacyTarget['variant_id'];
+        header('Location: produkt.php?id='.$targetProductId.'&variant_id='.$targetVariantId.'#varianta-'.$targetVariantId,true,302);
+        exit;
+    }
+}
 $product = shopStorefrontProductDetail($pdo, $productId);
 $hasProgramOffer = $product !== null && clubProgramProductHasOfferLink($pdo, $productId);
 $isProgram = $product !== null && shopProductRequiresAthlete($pdo, $productId);
