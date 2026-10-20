@@ -83,6 +83,14 @@ if($batch) {
 <?php include __DIR__.'/hlavicka.php'; ?>
 <main class="container py-4"><h1>Osoby a kontakty ze starého KIS</h1>
 <?php if($error): ?><div class="alert alert-danger"><?=kpiH($error)?></div><?php endif; ?>
+<?php if($error && str_contains($error,'klíč archivu')): $keyPath=dirname(__DIR__).'/data/.kis-secrets/kis-person-import.json'; ?>
+<details><summary>Diagnostika dostupnosti archivu (bez tajných údajů)</summary><pre><?=kpiH(json_encode([
+    'app_root'=>__DIR__,'key_path'=>$keyPath,
+    'runtime_uid'=>function_exists('posix_geteuid')?posix_geteuid():null,
+    'directory_visible'=>is_dir(dirname($keyPath)),'key_exists'=>is_file($keyPath),'key_readable'=>is_readable($keyPath),
+    'config_uid'=>fileowner(__DIR__.'/config.php'),'config_gid'=>filegroup(__DIR__.'/config.php'),
+    'open_basedir'=>ini_get('open_basedir')],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES))?></pre></details>
+<?php endif; ?>
 <?php if($result): ?><div class="alert alert-success">Import byl dokončen a počty ověřeny. Soupisky nebyly přiřazeny, zprávy nebyly odeslány.</div><?php endif; ?>
 <?php if($batch): $summary=json_decode($batch['summary_json'],true); ?>
 <div class="alert alert-info">
