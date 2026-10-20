@@ -5,6 +5,14 @@ require_once dirname(__DIR__,2).'/includes/kis_person_import.php';
 require_once dirname(__DIR__).'/Support/KisPersonImportFixture.php';
 final class KisPersonImportTest extends TestCase
 {
+    public function testTextTransportHasTheSameFingerprintAndValidation(): void
+    {
+        $json=kisPersonJson(kisPersonImportFixture());
+        $text='KISGZ:'.base64_encode(gzencode($json));
+        self::assertSame(kisPersonReadPayload($json),kisPersonReadPayload($text));
+        $this->expectException(InvalidArgumentException::class);
+        kisPersonReadPayload('KISGZ:not-valid-base64!');
+    }
     public function testUnknownDatesAndEverySourceRelationshipSurvive(): void
     {
         $p=kisPersonReadPayload(gzencode(kisPersonJson(kisPersonImportFixture())));

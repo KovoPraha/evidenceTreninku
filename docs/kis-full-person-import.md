@@ -7,6 +7,9 @@ do `kis_person_aliases`, nikoli jako údajně ověřené společné ID plateb a 
 
 Administrátor otevře `kis_person_import_admin.php`, nahraje schválený JSON/GZ,
 zkontroluje náhled a poté se stejným souborem potvrdí `IMPORTOVAT A NAHRADIT`.
+Pokud prohlížeč nepovoluje výběr místního souboru, lze do stejného formuláře
+vložit JSON nebo `KISGZ:` následované base64 původního gzip souboru. Používá
+se stejná validace a otisk původního rozbaleného JSON, nikoli textového obalu.
 Náhled má platnost 30 minut. Soubor ani jeho osobní údaje nepatří do Gitu.
 Před akcí je nutná úplná ověřená záloha a autorizace odstranění původních osob
 i jejich historie. Hesla, klíče a zdrojová data se nezapisují do logu.

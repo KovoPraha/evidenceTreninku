@@ -15,6 +15,13 @@ function kisPersonJson(mixed $value): string
 function kisPersonReadPayload(string $bytes): array
 {
     if (strlen($bytes)>KIS_PERSON_IMPORT_LIMIT) throw new InvalidArgumentException('Soubor je příliš velký.');
+    // Text transport for browsers that cannot select a local file. It is the
+    // same gzip payload; fingerprints always cover the decoded original JSON.
+    if (str_starts_with($bytes,'KISGZ:')) {
+        $decoded=base64_decode(substr(trim($bytes),6),true);
+        if (!is_string($decoded) || !str_starts_with($decoded,"\x1f\x8b")) throw new InvalidArgumentException('Neplatný textový balík.');
+        $bytes=$decoded;
+    }
     if (str_starts_with($bytes,"\x1f\x8b")) {
         $decoded=@gzdecode($bytes,KIS_PERSON_IMPORT_LIMIT+1);
         if (!is_string($decoded)) throw new InvalidArgumentException('Neplatný komprimovaný soubor.');
