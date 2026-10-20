@@ -8,7 +8,7 @@ Datum: 20. 10. 2026. Navazuje na PR #140–143. Pracovní větev
 - Společná vrstva `assets/app-ui.css` sjednocuje karty, záhlaví sekcí,
   vstupy, rozestupy, měření a ukládací lištu starších administračních formulářů.
   Vybrané lekce, stavové štítky, upozornění a náhledy obsahu si zachovávají význam.
-- Patnáct starších stránek již nemá vlastní kopie barevných karet, přechodů
+- Šestnáct starších stránek již nemá vlastní kopie barevných karet, přechodů
   a zaoblených panelů. Změna pokrývá tréninky, závody, členy, sazby,
   období, kredity a další starší přehledy.
 - Skupiny, podskupiny, sportoviště, bankovní účet a další činnost mají
@@ -20,6 +20,10 @@ Datum: 20. 10. 2026. Navazuje na PR #140–143. Pracovní větev
   odhlášení, veřejný portál, zkratky, hledání a PWA. Opraveno také možné
   `//ajax_global_search.php` při instalaci do kořene domény.
 - Audit log má správný název stránky a mobilní viewport.
+- Při zadání tréninku bez cílové soupisky se chyba zobrazí před odesláním,
+  takže se neztratí vyplněné datum a náplň. Serverová kontrola zůstává zachovaná;
+  evidence z existujícího plánu zachovává svoji výjimku. Blokovaný submit
+  také nevypíná upozornění na neuložené změny.
 
 ## Ověření na localhostu
 
@@ -42,6 +46,10 @@ Vizuálně zkontrolovány trénink, závod, skupiny, sportoviště, bankovní ú
 - zaměření názvu plánovaného tréninku kliknutím na popisek;
 - tréninkový formulář při 390 × 844 px bez vodorovného přetékání,
   dostupnou přichycenou ukládací lištu;
+- zachování vyplněného tréninku při chybějící soupisce, následné doplnění
+  `LOCALHOST Dráha 2026`, úspěšné uložení a načtení editoru tréninku #1
+  s totožnou náplní a sjednoceným bannerem;
+- kartu člena, starší detail sportovce a program místní skupiny;
 - tmavý režim jednoduchého editoru, návrat do světlého režimu a reset viewportu.
 
 Lokální výsledek B30 zapsán přes `testovaci_scenare.php` jako PARTIAL,

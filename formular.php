@@ -383,6 +383,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                     <div data-roster-target-container>
                         <?= rosterTargetSelectorHtml($pdo, (string)($planPrefill['datum'] ?? date('Y-m-d')), $selectedTeamIds) ?>
                     </div>
+                    <div id="training-target-error" class="alert alert-danger mt-2 d-none" role="alert">Vyberte skupinu nebo soupisku pro trénink.</div>
                     <div class="mini-muted mt-1">Celá skupina zahrne všechny její soupisky. Skutečnou účast dále vybírá trenér.</div>
                     <?php if ($planPrefill && $selectedTeamIds === []): ?>
                         <div class="alert alert-warning mt-2 mb-0">Historický plán používá původní skupiny. Jeho cílení zůstane zachováno; pro nové cílení vyberte skupinu či soupisku v plánovači.</div>
@@ -1099,6 +1100,16 @@ if (PLAN_PREFILL) {
             valid = false;
         }
 
+        // Catch the required target before a server redirect can discard the draft.
+        const targetMissing = <?= $planPrefill ? 'false' : 'true' ?> && !form.querySelector('input[name="team_ids[]"]:checked');
+        const targetError = document.getElementById('training-target-error');
+        targetError.classList.toggle('d-none', !targetMissing);
+        if (targetMissing) {
+            valid = false;
+            targetError.scrollIntoView({behavior: 'smooth', block: 'center'});
+            form.querySelector('input[name="team_ids[]"]')?.focus({preventScroll: true});
+        }
+
         // Vlastní validace měření — sportovec musí být vybrán
         Array.from(rowsWrap.querySelectorAll('.mereni-row')).forEach(row => {
             const typ    = row.querySelector('.js-typ').value;
@@ -1242,7 +1253,7 @@ if (PLAN_PREFILL) {
 
     form.addEventListener('input',  () => { dirty = true; });
     form.addEventListener('change', () => { dirty = true; });
-    form.addEventListener('submit', () => { submitting = true; });
+    form.addEventListener('submit', e => { submitting = !e.defaultPrevented; });
 
     window.addEventListener('beforeunload', e => {
         if (dirty && !submitting) {

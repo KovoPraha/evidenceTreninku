@@ -200,7 +200,7 @@ if (!empty($trenink['datum'])) {
 <div class="container mt-4 mb-5">
 
     <!-- Edit banner -->
-    <div class="card mb-3 border-0 shadow-sm" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color:#fff;">
+    <div class="hero-card card mb-3">
         <div class="card-body py-3 px-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
