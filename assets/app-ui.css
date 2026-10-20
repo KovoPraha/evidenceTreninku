@@ -606,7 +606,8 @@ body { font-family: Arial, Helvetica, sans-serif; font-size: .9rem; }
 .app-image-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem; }
 .app-image-grid img { width:100%; height:170px; object-fit:contain; background:#fff; }
 .app-gallery-item { border:1px solid var(--bs-border-color); padding:.75rem; }
-[data-bs-theme="dark"] { --app-blue:#69cbea; --app-blue-hover:#a3e1f3; --app-navy:#78bcd4; --app-page-bg:#171e27; --app-header:#134e65; --app-save:#537a22; }
+[data-bs-theme="dark"] { --app-blue:#69cbea; --app-blue-hover:#a3e1f3; --app-navy:#78bcd4; --app-page-bg:#171e27; --app-header:#134e65; --app-save:#537a22; --bs-primary-rgb:105,203,234; }
+[data-bs-theme="dark"] .btn-primary { --bs-btn-color:#10212d; --bs-btn-hover-color:#10212d; --bs-btn-active-color:#10212d; }
 [data-bs-theme="dark"] .app-page-paper, [data-bs-theme="dark"] .app-sidebar { background:var(--bs-body-bg); }
 @media(min-width:992px) {
     body.app-admin-shell { padding-left:220px; }
