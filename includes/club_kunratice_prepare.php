@@ -11,7 +11,7 @@ function clubKunraticeSource(PDO $pdo):array
     $source=$pdo->query("SELECT p.id AS program_id,o.season_id,o.product_id,o.starts_on,o.ends_on,o.sales_open_at,o.sales_close_at,v.amount_minor
         FROM club_programs p JOIN club_program_offers o ON o.program_id=p.id
         JOIN shop_variants v ON v.id=o.variant_id
-        WHERE p.code='KROUZKY-2627-CYKLO-KROUZEK-ZS-KUNRATICE' AND o.purchase_option='full_year'
+        WHERE p.code='KROUZKY-2627-CYKLO-KROU-EK-Z-KUNRATICE' AND o.purchase_option='full_year'
         ORDER BY o.id LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     if(!$source)throw new ClubKunraticePrepareException('Původní celoroční program Kunratice nebyl nalezen.');
     if((int)$source['amount_minor']!==680000)throw new ClubKunraticePrepareException('Původní cena Kunratic již není 6 800 Kč; rozdělení vyžaduje kontrolu.');
