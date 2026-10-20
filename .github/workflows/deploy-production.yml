@@ -383,7 +383,26 @@ jobs:
       - name: Ověřit zákaz HTTP přístupu ke klíči archivu
         run: |
           KOD=$(curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 15 --max-time 45 "$WEB_URL/var/private/kis-person-import.php") || KOD=0
-          [ "$KOD" = '403' ] || [ "$KOD" = '404' ]
+          if [ "$KOD" = '0' ] || [ "$KOD" = '000' ]; then
+            echo 'ℹ️ Runner nemá síťové spojení; stejný zákaz HTTP ověřuji ze serveru.'
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            cat > /tmp/run-private-http-probe.php <<EOF
+          <?php
+          putenv('SMOKE_URL=$WEB_URL/var/private/kis-person-import.php');
+          putenv('DEPLOY_PROBE=1');
+          require __DIR__ . '/deploy-smoke.php';
+          EOF
+            production_retry "${SCP[@]}" bin/deploy-smoke.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/deploy-smoke.php"
+            production_retry "${SCP[@]}" /tmp/run-private-http-probe.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-private-http-probe.php"
+            production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-private-http-probe.php'" > /tmp/private-http-probe.json
+            jq -e '.ok == true and (.http == 403 or .http == 404)' /tmp/private-http-probe.json >/dev/null
+            KOD=$(jq -r '.http' /tmp/private-http-probe.json)
+          fi
+          if [ "$KOD" != '403' ] && [ "$KOD" != '404' ]; then
+            echo "❌ Konfigurace klíče nemá očekávaný zákaz HTTP přístupu (HTTP $KOD)."
+            exit 1
+          fi
           echo "✅ Konfigurace klíče není dostupná přes HTTP ($KOD)."
 
       - name: HTTP smoke test bez tajného tokenu
@@ -424,5 +443,5 @@ jobs:
         continue-on-error: true
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php' '$DEPLOY_BASE/run-club-catalog-import.php'"
-          rm -f /tmp/run-club-catalog-import.php
+          "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php' '$DEPLOY_BASE/run-club-catalog-import.php' '$DEPLOY_BASE/run-private-http-probe.php'"
+          rm -f /tmp/run-club-catalog-import.php /tmp/run-private-http-probe.php /tmp/private-http-probe.json

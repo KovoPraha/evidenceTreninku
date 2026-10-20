@@ -313,6 +313,21 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringNotContainsString('INSERT ', $readiness);
     }
 
+    public function testPrivateHttpProbeFallbackKeepsForbiddenStatusRequirement(): void
+    {
+        $workflow=$this->source('.github/workflows/deploy-production.yml');
+        $start=strpos($workflow,'- name: Ověřit zákaz HTTP přístupu ke klíči archivu');
+        $end=strpos($workflow,'- name: HTTP smoke test bez tajného tokenu',$start);
+        $probe=substr($workflow,$start,$end-$start);
+        self::assertStringContainsString('if [ "$KOD" = \'0\' ] || [ "$KOD" = \'000\' ]; then',$probe);
+        self::assertStringContainsString(".ok == true and (.http == 403 or .http == 404)",$probe);
+        self::assertStringContainsString('if [ "$KOD" != \'403\' ] && [ "$KOD" != \'404\' ]; then',$probe);
+        self::assertStringContainsString("SMOKE_URL=\$WEB_URL/var/private/kis-person-import.php",$probe);
+        self::assertStringContainsString('production_retry_capture',$probe);
+        self::assertStringContainsString("'\$DEPLOY_BASE/run-private-http-probe.php'",$workflow);
+        self::assertStringNotContainsString('|| true',$probe);
+    }
+
     private function source(string $relativePath): string
     {
         $source = file_get_contents(dirname(__DIR__, 2) . '/' . $relativePath);

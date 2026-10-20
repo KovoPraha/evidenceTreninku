@@ -19,7 +19,9 @@ function shopAdminStock(array $variant): string
     if (($variant['offer_type']??'')==='program') return '<span class="small text-muted">Kapacita termínu</span>';
     if ($stock===null) return '<span class="small text-muted">Sklad se nesleduje</span>';
     $class=(float)$stock<=0?' text-danger':'';
-    return '<span class="app-stock-count'.$class.'">'.shopAdminH(shopAdminStockText($stock)).' '.shopAdminH($variant['unit_code']?:'ks').'</span>';
+    $unit=(string)($variant['unit_code']??'');
+    $label=[''=>'ks','piece'=>'ks','set'=>'sada','other'=>'jedn.','person'=>'os.'][$unit]??$unit;
+    return '<span class="app-stock-count'.$class.'">'.shopAdminH(shopAdminStockText($stock)).' '.shopAdminH($label).'</span>';
 }
 function shopAdminDecision(string $button,string $reason=''): void
 {
