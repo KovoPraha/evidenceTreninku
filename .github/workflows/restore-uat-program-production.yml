@@ -1,0 +1,127 @@
+name: Obnovit vyhrazeny TEST krouzek 100 Kc
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro obnovu pouze TEST programu napiste OBNOVIT-TEST-KROUZEK-100'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  restore:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - name: Overit cil a potvrzeni
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          test "$POTVRZENI" = 'OBNOVIT-TEST-KROUZEK-100'
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+
+      - name: Stahnout aktualni commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Pripravit overene SSH spojeni
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = '22' ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Nahrat kontrolni skript a proverit presnou identitu
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/restore-production-uat-program.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/restore-production-uat-program.php"
+          cat > /tmp/run-restore-production-uat-program.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_UAT_FIXTURE_RESTORE_MODE=' . (\$argv[1] ?? ''));
+          putenv('KIS_UAT_FIXTURE_RESTORE_CONFIRM=' . (\$argv[2] ?? ''));
+          require __DIR__ . '/restore-production-uat-program.php';
+          kisUatFixtureRestoreEntry();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-restore-production-uat-program.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-restore-production-uat-program.php"
+          "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-production-uat-program.php' dry-run" | tee /tmp/kis-uat-fixture-preview.json
+          jq -e '.ok == true and .mode == "dry-run" and .product_id > 0 and .variant_id > 0 and .changed == false and (.before == "inactive" or .before == "active")' /tmp/kis-uat-fixture-preview.json >/dev/null
+
+      - name: Zalohovat produkcni databazi pred zapisem
+        if: success()
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php"
+          cat > /tmp/run-restore-uat-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require __DIR__ . '/db-backup.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-restore-uat-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-restore-uat-backup.php"
+          production_retry_capture "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-uat-backup.php'" | tee /tmp/kis-uat-fixture-backup.json
+          jq -e '.ok == true and .tables > 0 and (.sha256|length) == 64' /tmp/kis-uat-fixture-backup.json >/dev/null
+
+      - name: Obnovit pouze 100 Kc TEST program a znovu proverit
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry_capture "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-production-uat-program.php' apply OBNOVIT-TEST-KROUZEK-100" | tee /tmp/kis-uat-fixture-apply.json
+          jq -e '.ok == true and .mode == "apply" and .after == "active" and .product_id > 0 and .variant_id > 0' /tmp/kis-uat-fixture-apply.json >/dev/null
+          "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-production-uat-program.php' dry-run" | tee /tmp/kis-uat-fixture-verify.json
+          jq -e '.ok == true and .before == "active" and .changed == false' /tmp/kis-uat-fixture-verify.json >/dev/null
+
+      - name: Uklidit pomocne soubory
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-restore-production-uat-program.php /tmp/run-restore-uat-backup.php /tmp/kis-uat-fixture-*.json
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/restore-production-uat-program.php' '$DEPLOY_BASE/run-restore-production-uat-program.php' '$DEPLOY_BASE/run-restore-uat-backup.php'" || true
+          fi
