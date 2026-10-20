@@ -75,7 +75,21 @@ jobs:
           if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
           ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
           SSH=(ssh -p "$PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER_SECRET@$SSH_HOST_SECRET")
-          BANK_STATE="$("${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' php /dev/stdin production-account" < bin/verify-fio-connection.php)"
+          SCP=(scp -P "$PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          cleanup() {
+            rm -f /tmp/run-fio-account-probe.php
+            "${SSH[@]}" "rm -f '$DEPLOY_BASE/run-fio-account-probe.php'" > /dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          cat > /tmp/run-fio-account-probe.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          \$argv[1] = 'production-account';
+          require '$REMOTE_DIR/bin/verify-fio-connection.php';
+          EOF
+          "${SCP[@]}" /tmp/run-fio-account-probe.php "$SSH_USER_SECRET@$SSH_HOST_SECRET:$DEPLOY_BASE/run-fio-account-probe.php"
+          BANK_STATE="$("${SSH[@]}" "php '$DEPLOY_BASE/run-fio-account-probe.php'")"
           printf '%s\n' "$BANK_STATE" | jq -e '.iban != "" and .fio_enabled == false and .auto_confirm_enabled == false' > /dev/null
           EXPECTED_IBAN="$(printf '%s\n' "$BANK_STATE" | jq -r '.iban')" php bin/verify-fio-connection.php verify-token
           echo '✅ Fio API odpovědělo a účet souhlasí s KIS; produkční synchronizace zůstává vypnutá.'
