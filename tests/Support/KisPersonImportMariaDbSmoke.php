@@ -21,6 +21,10 @@ try {
     $pdo->exec('INSERT INTO test_history VALUES(1,1)');
     $pdo->exec('CREATE TABLE test_history_event(id INT PRIMARY KEY,history_id INT NOT NULL,FOREIGN KEY(history_id) REFERENCES test_history(id)) ENGINE=InnoDB');
     $pdo->exec('INSERT INTO test_history_event VALUES(1,1)');
+    $pdo->exec('CREATE TABLE treninky(id INT PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO treninky VALUES(10)');
+    $pdo->exec('CREATE TABLE legacy_training_note(id INT PRIMARY KEY,trenink_id INT) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO legacy_training_note VALUES(1,10)');
     foreach(['20260802230000_account_person_roles','20261020180000_kis_full_person_import'] as $id) {
         $m=require dirname(__DIR__,2).'/migrations/'.$id.'.php';$m['up']($pdo);$check($m['verify']($pdo),'migration verification');
     }
@@ -37,12 +41,14 @@ try {
         $check((int)$pdo->query('SELECT COUNT(*) FROM test_history_event')->fetchColumn()===1,'rollback history');
         $check($pdo->query('SELECT jmeno FROM sportovci')->fetchColumn()==='CHANGED','rollback person');
         $check((int)$pdo->query('SELECT COUNT(*) FROM kis_person_batches')->fetchColumn()===0,'rollback archive');
+        $check((int)$pdo->query('SELECT COUNT(*) FROM treninky')->fetchColumn()===1,'rollback training history');
     }
     $pdo->exec('DROP TRIGGER injected_failure');
     $result=kisPersonImportApply($pdo,$payload,1,$plan['fingerprint'],$config);
     $check($result['people']===1 && $result['links']===2 && $result['aliases']===2,'source cardinality');
     $check($pdo->query('SELECT narozeni FROM sportovci')->fetchColumn()===null,'unknown date');
     $check((int)$pdo->query('SELECT COUNT(*) FROM test_history_event')->fetchColumn()===0,'remove child history');
+    $check((int)$pdo->query('SELECT COUNT(*) FROM legacy_training_note')->fetchColumn()===0,'remove implicit history');
     $check((int)$pdo->query('SELECT aktivni FROM verejni_uzivatele')->fetchColumn()===0,'disabled account');
     $check($pdo->query('SELECT status FROM account_person_roles')->fetchColumn()==='pending','no permission grant');
     $batch=$pdo->query('SELECT * FROM kis_person_batches')->fetch();

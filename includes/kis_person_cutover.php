@@ -9,6 +9,7 @@ function kisPersonCutoverPlan(PDO $pdo, bool $lock = false): array
     if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'mysql') {
         throw new RuntimeException('Cutover requires MariaDB.');
     }
+    $engines=$pdo->query('SELECT TABLE_NAME,ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE()')->fetchAll(PDO::FETCH_KEY_PAIR);
     $columns = $pdo->query('SELECT TABLE_NAME,COLUMN_NAME,COLUMN_KEY FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE()')->fetchAll(PDO::FETCH_ASSOC);
     $schema = [];
     foreach ($columns as $c) {
@@ -35,13 +36,24 @@ function kisPersonCutoverPlan(PDO $pdo, bool $lock = false): array
     $roots = $load('sportovci');
     foreach ($roots as $i => $_) $selected['sportovci'][$i] = true;
     $personIds = array_fill_keys(array_column($roots,'id'), true);
+    // The owner authorized removing the old sports history as well as people.
+    // Future planned sessions and roster definitions are deliberately not roots.
+    $legacyIds=['sportovec_id'=>$personIds];
+    foreach(['treninky'=>'trenink_id','zavody'=>'zavod_id'] as $table=>$column) {
+        $rows=$load($table);
+        foreach($rows as $i=>$_) $selected[$table][$i]=true;
+        $legacyIds[$column]=array_fill_keys(array_column($rows,'id'),true);
+    }
     // Legacy tables without declared foreign keys also belong to this cutover.
     foreach ($schema as $table => $s) {
         if (str_starts_with($table,'kis_person_')) continue;
-        $personColumns = array_filter($s['columns'], static fn($c) => $c === 'sportovec_id' || str_ends_with($c,'_sportovec_id'));
+        $personColumns = array_filter($s['columns'], static fn($c) => in_array($c,['sportovec_id','trenink_id','zavod_id'],true) || str_ends_with($c,'_sportovec_id'));
         if (!$personColumns) continue;
         foreach ($load($table) as $i => $row) {
-            foreach ($personColumns as $c) if (isset($personIds[$row[$c] ?? ''])) $selected[$table][$i] = true;
+            foreach ($personColumns as $c) {
+                $ids=$legacyIds[$c]??$personIds;
+                if (isset($ids[$row[$c] ?? ''])) $selected[$table][$i] = true;
+            }
         }
     }
     // Remove whole affected orders, not just lines leaving false order totals.
@@ -90,6 +102,7 @@ function kisPersonCutoverPlan(PDO $pdo, bool $lock = false): array
     }
     $plan=[]; $digest=hash_init('sha256');
     foreach ($order as $table) {
+        if(strcasecmp((string)($engines[$table]??''),'InnoDB')!==0) throw new RuntimeException('History is not transactional: '.$table);
         $pk=$schema[$table]['pk'] ?? [];
         if (!$pk) throw new RuntimeException('History table has no primary key: '.$table);
         $keys=[];

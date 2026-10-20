@@ -16,8 +16,10 @@ i jejich historie. Hesla, klíče a zdrojová data se nezapisují do logu.
 - Jedna transakce odstraní původní osoby a související historii a vloží nový
   soubor osob, všechny aliasy, kontakty a všechny původní sloty vztahů.
 - Mazání respektuje cizí klíče, zahrnuje známé legacy sloupce bez FK a celé
-  dotčené objednávky. Administrátoři, účty, katalog a konfigurace nejsou kořeny
-  mazání. Neznámé cykly, složené FK a tabulky bez primárního klíče akci zastaví.
+  dotčené objednávky i staré tréninky a závody. Budoucí plánované tréninky,
+  administrátoři, účty, katalog a konfigurace nejsou kořeny
+  mazání. Neznámé cykly, složené FK, netransakční tabulky a tabulky bez
+  primárního klíče akci zastaví.
 - Obsah dotčených řádků musí odpovídat otisku náhledu. Aplikační zámek chrání
   souběžné importy; zamčené řádky a FK chrání probíhající transakci.
 - Opakované předání stejného balíku vrací původní protokol. Jiný balík pro již
