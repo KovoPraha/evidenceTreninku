@@ -3,8 +3,29 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/family_portal.php';
 require_once __DIR__ . '/child_access.php';
+require_once __DIR__ . '/roster_hierarchy.php';
 
 final class ClubMakeupException extends RuntimeException {}
+
+/** A group target covers an offer's child roster and vice versa. */
+function clubMakeupPlanCoversTeam(PDO $pdo, int $planId, int $offerTeamId, string $date): bool
+{
+    $stmt = $pdo->prepare('SELECT team_id FROM training_roster_links WHERE plan_id=?');
+    $stmt->execute([$planId]);
+    $offerBranch = kisRosterDescendantIds($pdo, $offerTeamId, $date);
+    foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $targetId) {
+        $targetId = (int)$targetId;
+        if (in_array($targetId, $offerBranch, true) || in_array($offerTeamId, kisRosterDescendantIds($pdo, $targetId, $date), true)) return true;
+    }
+    return false;
+}
+
+function clubMakeupPersonIsRegular(PDO $pdo, int $planId, int $personId, string $date): bool
+{
+    $stmt = $pdo->prepare('SELECT team_id FROM training_roster_links WHERE plan_id=?');
+    $stmt->execute([$planId]);
+    return kisRosterPersonTargetIds($pdo, $personId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)), $date) !== [];
+}
 
 function clubMakeupReady(PDO $pdo): bool
 {
@@ -62,9 +83,11 @@ function clubMakeupPolicySave(PDO $pdo, int $actorId, int $programId, int $seaso
         }
         clubMakeupConfigEvent($pdo,'policy',$policyId,$actorId,$before,['program_id'=>$programId,'season_id'=>$seasonId,'team_id'=>$teamId,'enabled'=>$enabled,'excuse_hours'=>$hours,'apply_future'=>$applyFuture]);
         if ($applyFuture) {
-            $plans = $pdo->prepare('SELECT DISTINCT p.id FROM planovane_treninky p JOIN training_roster_links l ON l.plan_id=p.id AND l.team_id=? JOIN club_program_offers o ON o.program_id=? AND o.season_id=? AND o.team_id=? AND o.starts_on<=p.datum AND o.ends_on>=p.datum WHERE p.stav=? AND p.datum>=?');
-            $plans->execute([$teamId,$programId,$seasonId,$teamId,'planovany',clubMakeupNow()->format('Y-m-d')]);
-            foreach ($plans->fetchAll(PDO::FETCH_COLUMN) as $planId) {
+            $plans = $pdo->prepare('SELECT DISTINCT p.id,p.datum FROM planovane_treninky p JOIN training_roster_links l ON l.plan_id=p.id JOIN club_program_offers o ON o.program_id=? AND o.season_id=? AND o.team_id=? AND o.starts_on<=p.datum AND o.ends_on>=p.datum WHERE p.stav=? AND p.datum>=?');
+            $plans->execute([$programId,$seasonId,$teamId,'planovany',clubMakeupNow()->format('Y-m-d')]);
+            foreach ($plans->fetchAll(PDO::FETCH_ASSOC) as $candidate) {
+                $planId = (int)$candidate['id'];
+                if (!clubMakeupPlanCoversTeam($pdo,$planId,$teamId,(string)$candidate['datum'])) continue;
                 $future=$pdo->prepare('SELECT datum,cas_od FROM planovane_treninky WHERE id=?');$future->execute([(int)$planId]);
                 if (clubMakeupStart($future->fetch(PDO::FETCH_ASSOC)) <= clubMakeupNow()) continue;
                 if (!$enabled) {
@@ -139,9 +162,10 @@ function clubMakeupOfferReviewStatus(?array $period): string
 function clubMakeupSyncPlanRules(PDO $pdo, int $planId): void
 {
     if (!clubMakeupReady($pdo)) return;
-    $query = $pdo->prepare('SELECT DISTINCT q.id,q.excuse_hours FROM planovane_treninky p JOIN training_roster_links l ON l.plan_id=p.id JOIN club_program_offers o ON o.team_id=l.team_id AND o.starts_on<=p.datum AND o.ends_on>=p.datum JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id AND q.enabled=1 WHERE p.id=? AND p.stav=?');
+    $query = $pdo->prepare('SELECT DISTINCT q.id,q.excuse_hours,o.team_id,p.datum FROM planovane_treninky p JOIN training_roster_links l ON l.plan_id=p.id JOIN club_program_offers o ON o.starts_on<=p.datum AND o.ends_on>=p.datum JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id AND q.enabled=1 WHERE p.id=? AND p.stav=?');
     $query->execute([$planId,'planovany']);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $rule) {
+        if (!clubMakeupPlanCoversTeam($pdo,$planId,(int)$rule['team_id'],(string)$rule['datum'])) continue;
         $exists = $pdo->prepare('SELECT 1 FROM club_makeup_excuse_rules WHERE plan_id=? AND policy_id=?');
         $exists->execute([$planId,(int)$rule['id']]);
         if (!$exists->fetchColumn()) $pdo->prepare('INSERT INTO club_makeup_excuse_rules(plan_id,policy_id,excuse_hours) VALUES(?,?,?)')->execute([$planId,(int)$rule['id'],(int)$rule['excuse_hours']]);
@@ -153,19 +177,21 @@ function clubMakeupExcuseEntitlement(PDO $pdo, int $planId, int $sportovecId, Da
 {
     if (!clubMakeupReady($pdo)) return null;
     $query = $pdo->prepare(
-        'SELECT e.id AS enrollment_id,r.excuse_hours,p.datum,p.cas_od FROM planovane_treninky p '
-        . 'JOIN training_roster_links l ON l.plan_id=p.id JOIN club_program_offers o ON o.team_id=l.team_id AND o.starts_on<=p.datum AND o.ends_on>=p.datum '
+        'SELECT e.id AS enrollment_id,r.excuse_hours,p.datum,p.cas_od,o.team_id FROM planovane_treninky p '
+        . 'JOIN training_roster_links l ON l.plan_id=p.id JOIN club_program_offers o ON o.starts_on<=p.datum AND o.ends_on>=p.datum '
         . 'JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id AND q.enabled=1 '
         . 'JOIN club_makeup_excuse_rules r ON r.plan_id=p.id AND r.policy_id=q.id '
         . "JOIN club_program_enrollments e ON e.offer_id=o.id AND e.sportovec_id=? AND e.status='active' AND e.valid_from<=p.datum AND e.valid_to>=p.datum "
         . 'JOIN shop_order_items oi ON oi.id=e.source_order_item_id AND oi.line_amount_minor>0 '
-        . "WHERE p.id=? AND p.stav='planovany' ORDER BY CASE WHEN o.id IN (SELECT offer_id FROM club_makeup_offer_periods WHERE period_kind='annual') THEN 0 ELSE 1 END,e.id LIMIT 1"
+        . "WHERE p.id=? AND p.stav='planovany' ORDER BY CASE WHEN o.id IN (SELECT offer_id FROM club_makeup_offer_periods WHERE period_kind='annual') THEN 0 ELSE 1 END,e.id"
     );
     $query->execute([$sportovecId,$planId]);
-    $row = $query->fetch(PDO::FETCH_ASSOC);
-    if (!$row) return null;
-    if ($now > clubMakeupStart($row)->modify('-' . (int)$row['excuse_hours'] . ' hours')) return null;
-    return ['enrollment_id'=>(int)$row['enrollment_id'],'hours'=>(int)$row['excuse_hours']];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if (!clubMakeupPlanCoversTeam($pdo,$planId,(int)$row['team_id'],(string)$row['datum'])) continue;
+        if ($now > clubMakeupStart($row)->modify('-' . (int)$row['excuse_hours'] . ' hours')) return null;
+        return ['enrollment_id'=>(int)$row['enrollment_id'],'hours'=>(int)$row['excuse_hours']];
+    }
+    return null;
 }
 
 /** Explain a rejected apology using the same offer, payment and cutoff prerequisites as entitlement. */
@@ -173,9 +199,9 @@ function clubMakeupExcuseFailureReason(PDO $pdo, int $planId, int $sportovecId, 
 {
     if (!clubMakeupReady($pdo)) return 'unavailable';
     $query = $pdo->prepare(
-        'SELECT p.datum,p.cas_od,q.id AS policy_id,q.enabled,r.excuse_hours,e.id AS enrollment_id,oi.line_amount_minor '
+        'SELECT p.datum,p.cas_od,o.team_id,q.id AS policy_id,q.enabled,r.excuse_hours,e.id AS enrollment_id,oi.line_amount_minor '
         . 'FROM planovane_treninky p JOIN training_roster_links l ON l.plan_id=p.id '
-        . 'JOIN club_program_offers o ON o.team_id=l.team_id AND o.starts_on<=p.datum AND o.ends_on>=p.datum '
+        . 'JOIN club_program_offers o ON o.starts_on<=p.datum AND o.ends_on>=p.datum '
         . 'LEFT JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id '
         . 'LEFT JOIN club_makeup_excuse_rules r ON r.plan_id=p.id AND r.policy_id=q.id '
         . "LEFT JOIN club_program_enrollments e ON e.offer_id=o.id AND e.sportovec_id=? AND e.status='active' AND e.valid_from<=p.datum AND e.valid_to>=p.datum "
@@ -183,7 +209,7 @@ function clubMakeupExcuseFailureReason(PDO $pdo, int $planId, int $sportovecId, 
         . "WHERE p.id=? AND p.stav='planovany'"
     );
     $query->execute([$sportovecId,$planId]);
-    $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+    $rows = array_values(array_filter($query->fetchAll(PDO::FETCH_ASSOC), static fn(array $row): bool => clubMakeupPlanCoversTeam($pdo,$planId,(int)$row['team_id'],(string)$row['datum'])));
     if ($rows === []) return 'no_program';
     $enabled = false;
     $hasRule = false;
@@ -240,9 +266,7 @@ function clubMakeupFinalizeSource(PDO $pdo, int $planId, int $trainingId, int $a
         if ($attendance->fetchColumn()) continue;
         $excusedAt = new DateTimeImmutable((string)$row['makeup_excused_at'],new DateTimeZone('Europe/Prague'));
         if ($excusedAt > clubMakeupStart($plan)->modify('-' . (int)$row['makeup_cutoff_hours'] . ' hours')) continue;
-        $coverage = $pdo->prepare('SELECT 1 FROM training_roster_links l WHERE l.plan_id=? AND l.team_id=?');
-        $coverage->execute([$planId,(int)$row['team_id']]);
-        if (!$coverage->fetchColumn()) continue;
+        if (!clubMakeupPlanCoversTeam($pdo,$planId,(int)$row['team_id'],(string)$plan['datum'])) continue;
         $enrollment = $pdo->prepare("SELECT 1 FROM club_program_enrollments WHERE id=? AND status='active' AND valid_from<=? AND valid_to>=?");
         $enrollment->execute([(int)$row['enrollment_id'],(string)$plan['datum'],(string)$plan['datum']]);
         if (!$enrollment->fetchColumn()) continue;
@@ -325,10 +349,10 @@ function clubMakeupSlotSave(PDO $pdo, int $actorId, int $planId, int $offerId, i
 {
     if (!clubMakeupReady($pdo)) throw new ClubMakeupException('Náhradní lekce zatím nejsou dostupné.');
     if ($planId < 1 || $actorId < 1 || $offerId < 1 || $capacity < 1 || $capacity > 500 || $fromYear < 1900 || $toYear > (int)date('Y') || $toYear < $fromYear) throw new InvalidArgumentException('Neplatné nastavení náhradníků.');
-    $query = $pdo->prepare("SELECT p.id,p.datum,p.cas_od,p.stav,o.id AS offer_id,o.birth_year_from,o.birth_year_to FROM planovane_treninky p JOIN club_program_offers o ON o.id=? AND o.starts_on<=p.datum AND o.ends_on>=p.datum JOIN training_roster_links l ON l.plan_id=p.id AND l.team_id=o.team_id WHERE p.id=? AND (p.trener_id=? OR ?=1) AND p.stav='planovany' LIMIT 1");
+    $query = $pdo->prepare("SELECT p.id,p.datum,p.cas_od,p.stav,o.id AS offer_id,o.team_id,o.birth_year_from,o.birth_year_to FROM planovane_treninky p JOIN club_program_offers o ON o.id=? AND o.starts_on<=p.datum AND o.ends_on>=p.datum WHERE p.id=? AND (p.trener_id=? OR ?=1) AND p.stav='planovany' LIMIT 1");
     $query->execute([$offerId,$planId,$actorId,$allowOtherTrainer?1:0]);
     $row = $query->fetch(PDO::FETCH_ASSOC);
-    if (!$row || clubMakeupStart($row) <= clubMakeupNow()) throw new ClubMakeupException('Termín nebo nabídka už nejsou dostupné pro náhradníky.');
+    if (!$row || !clubMakeupPlanCoversTeam($pdo,$planId,(int)$row['team_id'],(string)$row['datum']) || clubMakeupStart($row) <= clubMakeupNow()) throw new ClubMakeupException('Termín nebo nabídka už nejsou dostupné pro náhradníky.');
     if ($row['birth_year_from'] === null || $row['birth_year_to'] === null || $fromYear < (int)$row['birth_year_from'] || $toYear > (int)$row['birth_year_to']) throw new ClubMakeupException('Nejdřív nastavte strukturované věkové rozmezí nabídky; termín jej nesmí rozšířit.');
     $policy = $pdo->prepare('SELECT 1 FROM club_makeup_policies q JOIN club_program_offers o ON o.program_id=q.program_id AND o.season_id=q.season_id AND o.team_id=q.team_id WHERE o.id=? AND q.enabled=1');
     $policy->execute([$offerId]);
@@ -400,10 +424,11 @@ function clubMakeupAvailableSlots(PDO $pdo, int $personId, int $creditId): array
     $birth = $pdo->prepare('SELECT narozeni FROM sportovci WHERE id=?');$birth->execute([$personId]);$born=(string)$birth->fetchColumn();
     if (preg_match('/^\d{4}-\d{2}-\d{2}$/D',$born)!==1) return [];
     $year = (int)substr($born,0,4);
-    $query = $pdo->prepare("SELECT s.plan_id,s.capacity,s.birth_year_from,s.birth_year_to,p.nazev,p.datum,p.cas_od,o.name AS offer_name,(SELECT COUNT(*) FROM club_makeup_reservations r WHERE r.target_plan_id=s.plan_id AND r.status='booked') AS booked FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id AND q.enabled=1 WHERE p.stav='planovany' AND s.accepting=1 AND p.datum>=? AND o.season_id=? AND o.starts_on<=p.datum AND o.ends_on>=p.datum AND s.birth_year_from<=? AND s.birth_year_to>=? AND NOT EXISTS (SELECT 1 FROM training_roster_links l JOIN club_roster_members m ON m.team_id=l.team_id WHERE l.plan_id=p.id AND m.sportovec_id=? AND m.status='active' AND m.valid_from<=p.datum AND (m.valid_to IS NULL OR m.valid_to>=p.datum)) ORDER BY p.datum,p.cas_od,p.id");
-    $query->execute([clubMakeupNow()->format('Y-m-d'),(int)$credit['season_id'],$year,$year,$personId]);
-    return array_values(array_filter($query->fetchAll(PDO::FETCH_ASSOC),static function(array $row) use ($pdo,$credit): bool {
+    $query = $pdo->prepare("SELECT s.plan_id,s.capacity,s.birth_year_from,s.birth_year_to,p.nazev,p.datum,p.cas_od,o.name AS offer_name,(SELECT COUNT(*) FROM club_makeup_reservations r WHERE r.target_plan_id=s.plan_id AND r.status='booked') AS booked FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id AND q.enabled=1 WHERE p.stav='planovany' AND s.accepting=1 AND p.datum>=? AND o.season_id=? AND o.starts_on<=p.datum AND o.ends_on>=p.datum AND s.birth_year_from<=? AND s.birth_year_to>=? ORDER BY p.datum,p.cas_od,p.id");
+    $query->execute([clubMakeupNow()->format('Y-m-d'),(int)$credit['season_id'],$year,$year]);
+    return array_values(array_filter($query->fetchAll(PDO::FETCH_ASSOC),static function(array $row) use ($pdo,$credit,$personId): bool {
         return (int)$row['plan_id'] !== (int)$credit['source_plan_id'] && (int)$row['booked'] < (int)$row['capacity']
+            && !clubMakeupPersonIsRegular($pdo,(int)$row['plan_id'],$personId,(string)$row['datum'])
             && clubMakeupStart($row) > clubMakeupNow() && clubMakeupCreditUsableOn($pdo,$credit,(string)$row['datum']);
     }));
 }
@@ -430,9 +455,7 @@ function clubMakeupReserve(PDO $pdo, int $personId, int $creditId, int $targetPl
         if (!clubMakeupCreditUsableOn($pdo,$credit,(string)$slot['datum'])) throw new ClubMakeupException('Nárok není platný nebo chybí zaplacené navazující pololetí.');
         $count=$pdo->prepare("SELECT COUNT(*) FROM club_makeup_reservations WHERE target_plan_id=? AND status='booked'");$count->execute([$targetPlanId]);
         if ((int)$count->fetchColumn() >= (int)$slot['capacity']) throw new ClubMakeupException('Kapacita náhradníků je obsazená.');
-        $regular=$pdo->prepare("SELECT 1 FROM training_roster_links l JOIN club_roster_members m ON m.team_id=l.team_id WHERE l.plan_id=? AND m.sportovec_id=? AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) LIMIT 1");
-        $regular->execute([$targetPlanId,$personId,(string)$slot['datum'],(string)$slot['datum']]);
-        if ($regular->fetchColumn()) throw new ClubMakeupException('Dítě už patří do soupisek tohoto tréninku.');
+        if (clubMakeupPersonIsRegular($pdo,$targetPlanId,$personId,(string)$slot['datum'])) throw new ClubMakeupException('Dítě už patří do soupisek tohoto tréninku.');
         $pdo->prepare("INSERT INTO club_makeup_reservations(credit_id,target_plan_id,sportovec_id,status,active_token) VALUES(?,?,?,'booked','active')")->execute([$creditId,$targetPlanId,$personId]);
         $reservationId=(int)$pdo->lastInsertId();
         $pdo->prepare("UPDATE club_makeup_credits SET status='reserved' WHERE id=?")->execute([$creditId]);

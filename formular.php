@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 require_once __DIR__ . '/includes/club_makeup.php';
 
 $currentTrener = (int)$_SESSION['trener_id'];
@@ -52,6 +53,7 @@ $planPrefill = null;
 $planExpectedParticipants = [];
 $planMakeupParticipants = [];
 $planPrefillSubgroups = [];
+$selectedTeamIds = [];
 if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
     $planOwnerSql = roleAtLeast('hlavni') ? '' : ' AND pt.trener_id = ?';
     $stPlan = $pdo->prepare("
@@ -84,6 +86,7 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
         }
         if($planPrefillSubgroups===[]&&(int)($planPrefill['podskupina_id']??0)>0)$planPrefillSubgroups=[(int)$planPrefill['podskupina_id']];
         $planExpectedParticipants = trainingRosterBridgeExpectedForPlan($pdo, (int)$planPrefill['id']);
+        $selectedTeamIds = trainingRosterBridgePlanTeamIds($pdo, (int)$planPrefill['id']);
         $planMakeupParticipants = clubMakeupReservationsForPlan($pdo, (int)$planPrefill['id']);
     }
 }
@@ -129,6 +132,7 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
                 'label' => trim(($sp['prijmeni'] ?? '') . ' ' . ($sp['jmeno'] ?? '')),
             ], $dupSportovci),
         ];
+        if ($planPrefill === null) $selectedTeamIds = trainingRosterBridgeTrainingTeamIds($pdo, $did);
     } catch (Throwable $e) {
         error_log('formular.php duplikat: ' . $e->getMessage());
     }
@@ -413,38 +417,19 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                 </div>
             </div>
 
-            <!-- Skupiny -->
+            <!-- Cíl tréninku je stejný jako v plánovači; historické legacy vazby se pouze čtou. -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-info text-white">
-                    <i class="bi bi-diagram-3"></i>Skupiny
+                    <i class="bi bi-diagram-3"></i>Skupina → soupiska
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="skupina_id" class="form-label fw-semibold req">
-                                <i class="bi bi-people me-1 text-info"></i>Skupina
-                            </label>
-                            <select name="skupina_id" id="skupina_id" class="form-select" required>
-                                <option value="">— vyber —</option>
-                                <?php foreach ($skupiny as $s): ?>
-                                    <option value="<?= (int)$s['id'] ?>"
-                                        <?= $duplikat && $duplikat['skupina_id'] === (int)$s['id'] ? 'selected' : '' ?>>
-                                        <?= h($s['nazev']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="podskupina_id" class="form-label fw-semibold">
-                                <i class="bi bi-diagram-2 me-1 text-info"></i>Podskupiny
-                            </label>
-                            <select name="podskupina_id[]" id="podskupina_id"
-                                    class="form-select" multiple size="5">
-                                <option value="">Vyberte nejprve skupinu</option>
-                            </select>
-                            <div class="mini-muted mt-1">Lze vybrat více podskupin.</div>
-                        </div>
+                    <div data-roster-target-container>
+                        <?= rosterTargetSelectorHtml($pdo, (string)($planPrefill['datum'] ?? date('Y-m-d')), $selectedTeamIds) ?>
                     </div>
+                    <div class="mini-muted mt-1">Celá skupina zahrne všechny její soupisky. Skutečnou účast dále vybírá trenér.</div>
+                    <?php if ($planPrefill && $selectedTeamIds === []): ?>
+                        <div class="alert alert-warning mt-2 mb-0">Historický plán používá původní skupiny. Jeho cílení zůstane zachováno; pro nové cílení vyberte skupinu či soupisku v plánovači.</div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -708,14 +693,6 @@ if (PLAN_PREFILL) {
         const katSel = document.querySelector('[name="kategorie"]');
         if (katSel) katSel.value = PLAN_PREFILL.kategorie;
     }
-    // Skupina — nastaví se přes existující DUPLIKAT mechanismus níže
-    if (PLAN_PREFILL.skupina_id && !DUPLIKAT) {
-        window.__planPodskupiny = PLAN_PREFILL.podskupiny || [];
-        const skSel = document.getElementById('skupina_id');
-        if (skSel) {
-            skSel.value = PLAN_PREFILL.skupina_id;
-        }
-    }
     // Rezervace sportoviště — plán nese místo i přesné časy.
     if (PLAN_PREFILL.sportoviste_id) {
         const venueSelect = document.getElementById('rezSportovisteId');
@@ -730,48 +707,6 @@ if (PLAN_PREFILL) {
     if (naplnField && !naplnField.value.trim() && PLAN_PREFILL.nazev) {
         naplnField.value = PLAN_PREFILL.nazev;
     }
-}
-
-// ── Podskupiny podle skupiny ─────────────────────────────────────────────
-document.getElementById('skupina_id').addEventListener('change', function () {
-    const sel = document.getElementById('podskupina_id');
-    sel.innerHTML = '<option>Načítám…</option>';
-
-    fetch('ajax_podskupiny.php?skupina_id=' + encodeURIComponent(this.value))
-        .then(async r => {
-            const data = await r.json().catch(() => null);
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return data;
-        })
-        .then(data => {
-            sel.innerHTML = '';
-            const items = Array.isArray(data) ? data : (data.items || []);
-            if (items.length) {
-                items.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.id;
-                    opt.textContent = p.nazev;
-                    // Předvyber podskupiny z duplikátu nebo z plánu
-                    if (window.__duplikatPodskupiny.includes(parseInt(p.id, 10))) {
-                        opt.selected = true;
-                    } else if ((window.__planPodskupiny || []).includes(parseInt(p.id, 10))) {
-                        opt.selected = true;
-                    }
-                    sel.appendChild(opt);
-                });
-            } else {
-                sel.innerHTML = '<option>Žádné podskupiny</option>';
-            }
-        })
-        .catch(err => {
-            sel.innerHTML = '<option>Chyba načítání</option>';
-            console.error('Podskupiny error:', err);
-        });
-});
-
-// Listener už je připojený: teprve teď načti podskupiny z duplikátu nebo plánu.
-if ((DUPLIKAT && DUPLIKAT.skupina_id) || (PLAN_PREFILL && PLAN_PREFILL.skupina_id)) {
-    document.getElementById('skupina_id').dispatchEvent(new Event('change'));
 }
 
 // ── Účastníci: autocomplete multi-select ─────────────────────────────────
@@ -1418,5 +1353,6 @@ if ((DUPLIKAT && DUPLIKAT.skupina_id) || (PLAN_PREFILL && PLAN_PREFILL.skupina_i
     [sportSel, casOd, casDo, kapSel].forEach(el => el?.addEventListener('change', checkDostupnost));
 })();
 </script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
 </body>
 </html>

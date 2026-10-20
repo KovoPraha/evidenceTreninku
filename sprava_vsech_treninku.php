@@ -8,6 +8,8 @@ if (!isset($_SESSION['trener_id']) || !canAccess('sprava_treninku')) {
 }
 require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -16,12 +18,14 @@ function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'
 // Filtry – validace vstupů
 $filterGroup = $_GET['skupina_id'] ?? '';
 $filterSub   = $_GET['podskupina_id'] ?? '';
+$filterTeam  = $_GET['team_id'] ?? '';
 $filterTr    = $_GET['trenere'] ?? [];
 $filterKat   = $_GET['kategorie'] ?? '';
 $filterQ     = trim($_GET['q'] ?? '');
 
 if ($filterGroup !== '' && !ctype_digit($filterGroup)) $filterGroup = '';
 if ($filterSub   !== '' && !ctype_digit($filterSub))   $filterSub   = '';
+if ($filterTeam  !== '' && !ctype_digit((string)$filterTeam)) $filterTeam = '';
 if (!is_array($filterTr)) $filterTr = [$filterTr];
 $filterTr = array_values(array_filter(array_map('intval', $filterTr), fn($v) => $v > 0));
 
@@ -91,10 +95,12 @@ try {
     $stmt     = $pdo->prepare($sql);
     $stmt->execute($params);
     $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($filterTeam !== '') $treninky = trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam);
 } catch (PDOException $e) {
     error_log('sprava_vsech_treninku main query: ' . $e->getMessage());
     $flashError = 'Chyba při načítání tréninků.';
 }
+$canonicalLabels = trainingRosterBridgeTrainingLabels($pdo, $treninky);
 
 // Batch načtení účastníků – 1 dotaz místo N (oprava N+1)
 $ucastniciByTrenink = [];
@@ -161,8 +167,12 @@ $csrfToken = csrf_token();
     <!-- Filtry -->
     <form method="GET" class="card p-3 mb-4" id="filterForm">
         <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Skupina → soupiska</label>
+                <select name="team_id" class="form-select"><?= rosterTargetFilterOptionsHtml($pdo, date('Y-m-d'), (int)$filterTeam) ?></select>
+            </div>
             <div class="col-md-3">
-                <label class="form-label"><i class="bi bi-people me-1"></i>Skupina</label>
+                <label class="form-label"><i class="bi bi-people me-1"></i>Původní skupina (historie)</label>
                 <select id="skupinaFilter" name="skupina_id" class="form-select" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
                     <option value="">-- všechny --</option>
                     <?php foreach ($groups as $g): ?>
@@ -173,7 +183,7 @@ $csrfToken = csrf_token();
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label"><i class="bi bi-diagram-3 me-1"></i>Podskupina</label>
+                <label class="form-label"><i class="bi bi-diagram-3 me-1"></i>Původní podskupina</label>
                 <select id="podskupinaFilter" name="podskupina_id" class="form-select">
                     <option value="">-- všechny --</option>
                     <?php foreach ($subs as $ps): ?>
@@ -341,6 +351,9 @@ $csrfToken = csrf_token();
                     <td colspan="8" class="bg-light">
                         <div class="p-2 small">
                             <div class="row g-2">
+                                <?php if (isset($canonicalLabels[(int)$t['id']])): ?>
+                                    <div class="col-12"><strong>Skupina / soupiska:</strong> <?= h($canonicalLabels[(int)$t['id']]) ?></div>
+                                <?php endif; ?>
                                 <div class="col-md-8">
                                     <strong><i class="bi bi-card-text me-1"></i>Náplň:</strong>
                                     <div class="text-muted"><?= nl2br(h($t['napln'] ?? '')) ?: '—' ?></div>

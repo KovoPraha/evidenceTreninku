@@ -19,6 +19,7 @@ kisUatRequire('includes/club_calendar.php');
 kisUatRequire('includes/club_event_registration.php');
 kisUatRequire('includes/training_roster_bridge.php');
 kisUatRequire('includes/club_makeup.php');
+kisUatRequire('includes/roster_hierarchy.php');
 
 const KIS_UAT_PARENT_EMAILS = ['tester.karel@velocota.com', 'tester.petra@velocota.com'];
 const KIS_UAT_CHILD_LOGINS = ['tester.ema', 'tester.adam'];
@@ -160,6 +161,13 @@ function kisUatUpsertChildAccess(PDO $pdo, int $sportovecId, string $login, stri
 
 function kisUatEnsureRosterMember(PDO $pdo, int $teamId, int $personId, string $validFrom, int $actorId): void
 {
+    if (kisRosterHierarchyHasColumn($pdo,'club_roster_members','source_ref')) {
+        $query=$pdo->prepare("SELECT id FROM club_roster_members WHERE team_id=? AND sportovec_id=? AND status='active' AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) ORDER BY id DESC LIMIT 1");
+        $query->execute([$teamId,$personId,$validFrom,$validFrom]);
+        if ($query->fetchColumn()) return;
+        kisRosterGrantPeriod($pdo,$teamId,$personId,$actorId,'admin',$validFrom,null,'Dočasné produkční UAT zařazení.','production_uat:'.$teamId.':'.$personId.':'.$validFrom);
+        return;
+    }
     $query=$pdo->prepare('SELECT id,status,source,valid_from,valid_to FROM club_roster_members WHERE team_id=? AND sportovec_id=?');
     $query->execute([$teamId,$personId]);
     $member=$query->fetch(PDO::FETCH_ASSOC);

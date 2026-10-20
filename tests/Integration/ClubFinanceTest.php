@@ -44,6 +44,15 @@ final class ClubFinanceTest extends TestCase
         \clubFinanceRecordBankReceipt($pdo,1,80000,'BANK-RECEIPT-2','2026-10-02',7,'Opakovaná reference nesmí projít.',true);
     }
 
+    public function testPartiallyAllocatedChargeCannotBeCancelled():void
+    {
+        $pdo=$this->database();
+        $charge=\memberChargeAdminCreate($pdo,7,['sportovec_id'=>1,'payer_account_id'=>10,'title_snapshot'=>'Členský příspěvek','period_from'=>'2026-10-01','period_to'=>'2026-10-31','amount_minor'=>100000,'currency'=>'CZK','due_on'=>'2026-10-15'],'Měsíční členský předpis.',true);
+        \clubFinanceRecordBankReceipt($pdo,1,40000,'BANK-PARTIAL-CANCEL','2026-10-01',7,'Ověřeno na bankovním výpisu.',true);
+        $this->expectException(\MemberChargeAdminException::class);
+        \memberChargeAdminCancel($pdo,$charge['id'],7,'Pokusu o zrušení s platbou.',true);
+    }
+
     public function testAnnualReceiptCreatesTwelvePaidMonthlyChargesWithoutDuplicatingRun():void
     {
         $pdo=$this->database();
@@ -119,6 +128,7 @@ final class ClubFinanceTest extends TestCase
         $pdo->exec("INSERT INTO treneri VALUES(7);INSERT INTO sportovci VALUES(1,'Anna','První'),(2,'Borek','Druhý');INSERT INTO club_teams VALUES(10,'Závodní','active');INSERT INTO club_roster_members VALUES(10,1,'active','2026-01-01',NULL);INSERT INTO verejni_uzivatele VALUES(10,'Anna','První','anna@example.test',1,1);INSERT INTO account_person_roles VALUES(1,10,1,'self','approved','2026-01-01',NULL);INSERT INTO shop_bank_settings(id,iban,bic,account_label,due_days,updated_by_trainer_id) VALUES(1,'CZ6508000000192000145399','GIBACZPX','KIS Kovo Praha',14,7)");
         $m=require dirname(__DIR__,2).'/migrations/20260922120000_member_fee_plans.php';$m['up']($pdo);
         $m=require dirname(__DIR__,2).'/migrations/20260922190000_member_fee_standing_orders.php';$m['up']($pdo);
+        $m=require dirname(__DIR__,2).'/migrations/20261021120000_member_payer_variable_symbols.php';$m['up']($pdo);self::assertTrue($m['verify']($pdo));
         $m=require dirname(__DIR__,2).'/migrations/20261015130000_club_financial_balance.php';$m['up']($pdo);self::assertTrue($m['verify']($pdo));
         return $pdo;
     }

@@ -127,6 +127,10 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261020210000_kis_legacy_roster_links',
                 '20261020220000_kis_current_roster_links',
                 '20261020230000_athlete_editor_relations',
+                '20261021090000_roster_hierarchy_temporal',
+                '20261021100000_club_program_recurring_offers',
+                '20261021120000_member_payer_variable_symbols',
+                '20261021130000_member_payer_receipts',
             ],
             array_keys($catalog)
         );

@@ -91,6 +91,11 @@ final class StaffWorkspaceRegistryTest extends TestCase
     {
         self::assertContains('finance_manager', \staffRouteAllowedPositions('ajax_sportovci.php'));
         self::assertSame('coach', \staffRouteOwner('ajax_sportovci.php'));
+        self::assertSame('coach', \staffRouteOwner('ajax_roster_target_selector.php'));
+        self::assertSame(
+            ['coach', 'sports_lead', 'program_coordinator', 'finance_manager'],
+            \staffRouteAllowedPositions('ajax_roster_target_selector.php')
+        );
     }
 
     public function testStaffEntryPointInventoryHasNoOrphanRoute(): void

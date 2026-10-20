@@ -8,6 +8,8 @@ if (!isset($_SESSION['trener_id'])) {
 }
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 
 // -------------------------------
 // Filtry: skupina -> podskupina
@@ -20,9 +22,11 @@ $skupiny = $pdo->query("
 
 $filterSkupinaId    = $_GET['skupina_id'] ?? '';
 $filterPodskupinaId = $_GET['podskupina_id'] ?? '';
+$filterTeamId = $_GET['team_id'] ?? '';
 
 if ($filterSkupinaId !== '' && !ctype_digit($filterSkupinaId)) $filterSkupinaId = '';
 if ($filterPodskupinaId !== '' && !ctype_digit($filterPodskupinaId)) $filterPodskupinaId = '';
+if ($filterTeamId !== '' && !ctype_digit((string)$filterTeamId)) $filterTeamId = '';
 
 // Podskupiny podle vybrané skupiny (pro dropdown)
 $podskupiny = [];
@@ -170,8 +174,12 @@ function renderWeekRow(DateTime $weekStart, DateTime $monthStart, array $trenink
 $treninkyByDate = [];
 $treninkMeta = [];
 
-if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
-    if ($filterPodskupinaId !== '') {
+if ($filterTeamId !== '' || $filterPodskupinaId !== '' || $filterSkupinaId !== '') {
+    if ($filterTeamId !== '') {
+        $stmt = $pdo->prepare('SELECT id,datum,delka,napln,poznamka,mereni,obrazky FROM treninky WHERE datum BETWEEN :d1 AND :d2 ORDER BY datum DESC,id DESC');
+        $stmt->execute([':d1'=>$rangeFrom, ':d2'=>$rangeTo]);
+        $treninky = trainingRosterBridgeFilterTrainingRows($pdo,$stmt->fetchAll(PDO::FETCH_ASSOC),(int)$filterTeamId);
+    } elseif ($filterPodskupinaId !== '') {
         $stmt = $pdo->prepare("
             SELECT DISTINCT t.id, t.datum, t.delka, t.napln, t.poznamka, t.mereni, t.obrazky
             FROM treninky t
@@ -192,8 +200,10 @@ if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
         ");
         $filterId = (int)$filterSkupinaId;
     }
-    $stmt->execute([':filter_id'=>$filterId, ':d1'=>$rangeFrom, ':d2'=>$rangeTo]);
-    $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($filterTeamId === '') {
+        $stmt->execute([':filter_id'=>$filterId, ':d1'=>$rangeFrom, ':d2'=>$rangeTo]);
+        $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     $ids = [];
     foreach ($treninky as $t) {
@@ -282,7 +292,14 @@ if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
                 <input type="hidden" name="ym" value="<?= h($ym) ?>">
 
                 <div class="col-md-4">
-                    <label class="form-label" for="skupina_id">Skupina</label>
+                    <label class="form-label" for="team_id">Skupina → soupiska</label>
+                    <select class="form-select" id="team_id" name="team_id">
+                        <?= rosterTargetFilterOptionsHtml($pdo, $rangeFrom, (int)$filterTeamId) ?>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="skupina_id">Původní skupina (historie)</label>
                     <select class="form-select" id="skupina_id" name="skupina_id" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
                         <option value="">-- vyber skupinu --</option>
                         <?php foreach ($skupiny as $sk): ?>
@@ -294,7 +311,7 @@ if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label" for="podskupina_id">Podskupina</label>
+                    <label class="form-label" for="podskupina_id">Původní podskupina</label>
                     <select class="form-select" id="podskupina_id" name="podskupina_id">
                         <option value="">-- vyber podskupinu --</option>
                         <?php foreach ($podskupiny as $ps): ?>
@@ -307,13 +324,13 @@ if ($filterPodskupinaId !== '' || $filterSkupinaId !== '') {
 
                 <div class="col-md-4 d-flex align-items-end gap-2">
                     <button class="btn btn-primary" type="submit">Načíst kalendář</button>
-                    <a class="btn btn-outline-secondary" href="<?= h(buildUrl(['skupina_id'=>null,'podskupina_id'=>null])) ?>">Reset filtrů</a>
+                    <a class="btn btn-outline-secondary" href="<?= h(buildUrl(['team_id'=>null,'skupina_id'=>null,'podskupina_id'=>null])) ?>">Reset filtrů</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <?php if ($filterSkupinaId === ''): ?>
+    <?php if ($filterTeamId === '' && $filterSkupinaId === ''): ?>
         <div class="alert alert-info">
             Vyber skupinu; podskupina je volitelná. Poté se zobrazí kalendář pro zvolený měsíc.
         </div>

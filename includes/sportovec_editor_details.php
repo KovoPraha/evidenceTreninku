@@ -187,12 +187,13 @@ function sportovecEditorRevokeAccount(PDO $pdo, int $id, int $relationId, int $a
 function sportovecEditorAddRoster(PDO $pdo, int $id, int $teamId, int $actor, string $validFrom, string $reason): void
 {
     sportovecEditorRequireActor($actor);
-    $stmt = $pdo->prepare("SELECT s.starts_on,s.ends_on FROM club_teams t JOIN club_seasons s ON s.id=t.season_id WHERE t.id=? AND t.status='active' AND s.status='active'");
+    $temporal = clubFinanceTableExists($pdo,'club_team_edges');
+    $stmt = $pdo->prepare("SELECT s.starts_on,s.ends_on,s.status AS season_status FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id WHERE t.id=? AND t.status='active'");
     $stmt->execute([$teamId]);
     $season = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$season || $season['ends_on'] < date('Y-m-d')) throw new InvalidArgumentException('Vyberte aktivní soupisku v probíhající nebo budoucí sezoně.');
-    $validFrom = trim($validFrom) ?: max(date('Y-m-d'), $season['starts_on']);
-    if ($validFrom < $season['starts_on'] || $validFrom > $season['ends_on']) throw new InvalidArgumentException('Začátek členství musí patřit do vybrané sezony.');
+    if (!$season || (!$temporal && ($season['season_status'] !== 'active' || $season['ends_on'] < date('Y-m-d')))) throw new InvalidArgumentException('Vyberte aktivní soupisku.');
+    $validFrom = trim($validFrom) ?: max(date('Y-m-d'), (string)($season['starts_on'] ?? ''));
+    if (!$temporal && ($validFrom < $season['starts_on'] || $validFrom > $season['ends_on'])) throw new InvalidArgumentException('Začátek členství musí patřit do vybrané sezony.');
     kisRosterAddMember($pdo, $teamId, $id, $actor, 'manual', $validFrom, trim($reason) ?: 'Zařazení ze stránky detailu sportovce.');
 }
 
@@ -201,12 +202,14 @@ function sportovecEditorRosters(PDO $pdo, int $id, ?string $today = null): array
     $today ??= date('Y-m-d');
     $result = ['current' => [], 'planned' => [], 'history' => [], 'claims' => [], 'current_claims' => [], 'events' => [], 'choices' => []];
     if (!clubFinanceTableExists($pdo, 'club_roster_members')) return $result;
-    $stmt = $pdo->prepare('SELECT m.*,t.name AS team_name,t.status AS team_status,s.name AS season_name,s.starts_on,s.ends_on,s.status AS season_status FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY s.starts_on DESC,t.name,m.id');
+    $temporal = clubFinanceTableExists($pdo,'club_team_edges');
+    $stmt = $pdo->prepare("SELECT m.*,t.name AS team_name,t.status AS team_status,COALESCE(s.name,'Průběžně') AS season_name,s.starts_on,s.ends_on,s.status AS season_status FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY COALESCE(s.starts_on,'9999-12-31') DESC,t.name,m.id");
     $stmt->execute([$id]);
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $active = $row['status'] === 'active' && $row['team_status'] === 'active' && $row['season_status'] === 'active'
-            && $row['ends_on'] >= $today && ($row['valid_to'] === null || $row['valid_to'] >= $today);
-        $bucket = !$active ? 'history' : (($row['starts_on'] > $today || $row['valid_from'] > $today) ? 'planned' : 'current');
+        $active = $row['status'] === 'active' && $row['team_status'] === 'active'
+            && ($temporal || ($row['season_status'] === 'active' && $row['ends_on'] >= $today))
+            && ($row['valid_to'] === null || $row['valid_to'] >= $today);
+        $bucket = !$active ? 'history' : ((($row['starts_on'] ?? '') > $today && !$temporal) || $row['valid_from'] > $today ? 'planned' : 'current');
         $result[$bucket][] = $row;
     }
     if (clubFinanceTableExists($pdo, 'kis_legacy_roster_claims')) {
@@ -221,8 +224,12 @@ function sportovecEditorRosters(PDO $pdo, int $id, ?string $today = null): array
         $stmt = $pdo->prepare('SELECT e.id,e.created_at,e.action,e.note,e.before_json,e.after_json,t.name AS team_name FROM club_roster_events e JOIN club_roster_members m ON m.id=e.roster_member_id JOIN club_teams t ON t.id=e.team_id WHERE m.sportovec_id=? ORDER BY e.created_at DESC,e.id DESC');
         $stmt->execute([$id]); $result['events'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    $stmt = $pdo->prepare("SELECT t.id,t.name,s.name AS season_name,s.starts_on FROM club_teams t JOIN club_seasons s ON s.id=t.season_id WHERE t.status='active' AND s.status='active' AND s.ends_on>=? ORDER BY s.starts_on DESC,t.name");
-    $stmt->execute([$today]); $result['choices'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $choicesSql = "SELECT t.id,t.name,COALESCE(s.name,'Průběžně') AS season_name,s.starts_on FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id WHERE t.status='active'";
+    if ($temporal) $choicesSql .= " AND t.team_kind='roster'";
+    if (!$temporal) $choicesSql .= " AND s.status='active' AND s.ends_on>=?";
+    $choicesSql .= " ORDER BY COALESCE(s.starts_on,'9999-12-31') DESC,t.name";
+    $stmt = $pdo->prepare($choicesSql);
+    $stmt->execute($temporal?[]:[$today]); $result['choices'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
 

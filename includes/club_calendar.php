@@ -218,14 +218,15 @@ function clubCalendarAccountCanSee(PDO $pdo, int $eventId, ?int $accountId, stri
     if ($visibility === 'members') return true;
     if ($visibility !== 'rosters') return false;
     $statement = $pdo->prepare(
-        "SELECT 1 FROM club_event_roster_targets rt JOIN club_roster_members m ON m.team_id=rt.team_id "
-        . "JOIN account_person_roles ar ON ar.sportovec_id=m.sportovec_id "
-        . "JOIN club_teams t ON t.id=m.team_id JOIN club_seasons s ON s.id=t.season_id "
-        . "WHERE rt.event_id=? AND ar.account_id=? AND ar.status='approved' AND m.status='active' "
-        . "AND (m.valid_to IS NULL OR m.valid_to>=CURRENT_DATE) AND t.status='active' AND s.status='active' LIMIT 1"
+        "SELECT DISTINCT sportovec_id FROM account_person_roles WHERE account_id=? "
+        . "AND status='approved' AND relation_role IN ('self','guardian') "
+        . 'AND valid_from<=CURRENT_TIMESTAMP AND (valid_to IS NULL OR valid_to>CURRENT_TIMESTAMP)'
     );
-    $statement->execute([$eventId,$accountId]);
-    return (bool)$statement->fetchColumn();
+    $statement->execute([$accountId]);
+    foreach ($statement->fetchAll(PDO::FETCH_COLUMN) as $sportovecId) {
+        if (clubEventRosterEligibility($pdo, $eventId, (int)$sportovecId) !== false) return true;
+    }
+    return false;
 }
 
 /** @return array<string,mixed>|null */

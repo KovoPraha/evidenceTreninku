@@ -473,7 +473,7 @@ foreach ($trainingRsvps as $training) {
                 </tr><?php endforeach; ?>
                 </tbody></table></div><?php endif; ?>
 
-                <h2 class="h6">Docházka na tréninky</h2>
+                <h2 class="h6">Docházka na tréninky <a class="small fw-normal ms-2" href="soupiskove_treninky.php?sportovec_id=<?= (int)$person['sportovec_id'] ?>">Všechny tréninky ze soupisek</a></h2>
                 <?php if ($profile['trainings'] === []): ?><p class="text-muted small mb-0">Žádná zaznamenaná účast.</p><?php else: ?>
                 <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Datum</th><th>Náplň</th><th>Kategorie</th><th>Délka</th></tr></thead><tbody>
                 <?php foreach ($profile['trainings'] as $training): ?><tr><td><?= familyPageH(uiFormatDate((string)$training['datum'])) ?></td><td><?= familyPageH($training['napln']) ?></td><td><?= familyPageH($training['kategorie']) ?></td><td><?= familyPageH($training['delka']) ?> h</td></tr><?php endforeach; ?>

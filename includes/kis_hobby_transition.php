@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/kis_roster.php';
+require_once __DIR__ . '/roster_hierarchy.php';
 
 /** @return list<array<string,mixed>> */
 function kisHobbyTransitionSources(PDO $pdo): array
@@ -105,8 +106,13 @@ function kisHobbyTransitionPreview(PDO $pdo, int $sourceMemberId, int $targetTea
         throw new KisRosterException('Sportovec podle data narození nepatří do vybrané věkové soupisky.');
     }
 
-    $existing = $pdo->prepare('SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?');
-    $existing->execute([$targetTeamId, (int)$source['sportovec_id']]);
+    $temporal = kisRosterHierarchyHasColumn($pdo,'club_roster_members','source_ref');
+    $existingSql = 'SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?';
+    if ($temporal) $existingSql .= " AND status='active' AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) ORDER BY id DESC LIMIT 1";
+    $existing = $pdo->prepare($existingSql);
+    $existing->execute($temporal
+        ? [$targetTeamId,(int)$source['sportovec_id'],$transitionOn,$transitionOn]
+        : [$targetTeamId,(int)$source['sportovec_id']]);
     $targetMember = $existing->fetch(PDO::FETCH_ASSOC) ?: null;
     $otherAgeTeam = $pdo->prepare(
         "SELECT t.id,t.name FROM club_roster_members m "
@@ -247,13 +253,17 @@ function kisHobbyTransitionExecute(PDO $pdo, int $sourceMemberId, int $targetTea
             ];
         }
 
-        if ($targetBefore === null) {
+        $temporal = kisRosterHierarchyHasColumn($pdo,'club_roster_members','source_ref');
+        if ($temporal && $targetBefore === null) {
+            $grant = kisRosterGrantPeriod($pdo,$targetTeamId,$sportovecId,$actorId,'manual',$transitionOn,null,$reason,'hobby_transition:'.$sourceMemberId.':'.$targetTeamId);
+            $targetMemberId = (int)$grant['id'];
+        } elseif ($targetBefore === null) {
             $pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,kis_external_id_snapshot,valid_from,valid_to,created_by_trainer_id) VALUES(?,?,'active','manual',?,?,NULL,?)")
                 ->execute([$targetTeamId, $sportovecId, $source['kis_external_id_snapshot'] ?? null, $transitionOn, $actorId]);
             $targetMemberId = (int)$pdo->lastInsertId();
         } else {
             $targetMemberId = (int)$targetBefore['id'];
-            if ($targetBefore['status'] !== 'active' || $targetBefore['valid_to'] !== null) {
+            if (!$temporal && ($targetBefore['status'] !== 'active' || $targetBefore['valid_to'] !== null)) {
                 $pdo->prepare("UPDATE club_roster_members SET status='active',source='manual',valid_from=?,valid_to=NULL,created_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
                     ->execute([$transitionOn, $actorId, $targetMemberId]);
             }
@@ -267,7 +277,7 @@ function kisHobbyTransitionExecute(PDO $pdo, int $sourceMemberId, int $targetTea
             'valid_from' => $targetBefore !== null && $targetBefore['status'] === 'active' && $targetBefore['valid_to'] === null ? $targetBefore['valid_from'] : $transitionOn,
             'valid_to' => null,
         ];
-        if ($targetBefore === null || $targetBefore['status'] !== 'active' || $targetBefore['valid_to'] !== null) {
+        if (!$temporal && ($targetBefore === null || $targetBefore['status'] !== 'active' || $targetBefore['valid_to'] !== null)) {
             kisRosterEvent($pdo, $targetTeamId, $targetMemberId, $actorId, 'hobby_to_race_add_member', $targetBefore, $targetAfter, $reason);
         }
 

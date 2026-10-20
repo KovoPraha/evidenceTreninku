@@ -7,6 +7,7 @@ if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 require_once __DIR__ . '/includes/club_makeup.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -62,10 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $nazev         = trim($_POST['nazev'] ?? '');
         $kategorie     = $_POST['kategorie'] ?? '';
-        $skupinaId     = (int)($_POST['skupina_id'] ?? 0);
-        $podskupinyIds = array_values(array_filter(array_map('intval', $_POST['podskupiny_ids'] ?? [])));
         $teamIds        = array_values(array_unique(array_filter(array_map('intval', $_POST['team_ids'] ?? []))));
         $rosterMode     = (string)($_POST['roster_mode'] ?? 'teams');
+        $preserveLegacy = $editId && $selectedTeamIds === [] && $teamIds === [];
+        $skupinaId     = $preserveLegacy ? ($existujici['skupina_id'] ?? null) : null;
+        $podskupinyIds = $preserveLegacy ? $selectedPodskupiny : [];
         $podskupinaId  = !empty($podskupinyIds) ? $podskupinyIds[0] : null; // legacy FK
         $datum         = trim($_POST['datum'] ?? '');
         $casOd         = trim($_POST['cas_od'] ?? '') ?: null;
@@ -81,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $kategorie     = in_array($kategorie, $kategorieEnum, true) ? $kategorie : null;
 
         if ($nazev === '') $errors[] = 'Zadejte název tréninku.';
-        if (!$skupinaId)   $errors[] = 'Vyberte skupinu.';
         if (!$datum)       $errors[] = 'Zadejte datum.';
         if ($casOd && $casDo && $casOd >= $casDo) $errors[] = 'Čas "od" musí být před časem "do".';
         if (!in_array($rosterMode, ['teams','internal'], true)) $errors[] = 'Vyberte, zda je trénink určen soupiskám, nebo je interní bez účastníků.';
@@ -137,7 +138,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmtPs = $pdo->prepare("INSERT IGNORE INTO planovane_treninky_podskupiny (plan_id, podskupina_id) VALUES (?, ?)");
                         foreach ($podskupinyIds as $psId) { $stmtPs->execute([$editId, $psId]); }
                     }
-                    trainingRosterBridgeReplacePlanTeams($pdo, $editId, $teamIds, $trenerId);
+                    if ((string)$current['datum'] !== $datum || $oldTeamIds !== $newTeamIds) {
+                        trainingRosterBridgeReplacePlanTeams($pdo, $editId, $teamIds, $trenerId);
+                    }
                     clubMakeupSyncPlanRules($pdo, $editId);
                     $pdo->commit();
                     $_SESSION['flash_success'] = 'Plánovaný trénink upraven.';
@@ -310,73 +313,26 @@ $kategorieMeta = [
                     </div>
                 </div>
 
-                <!-- Skupina + Podskupiny -->
-                <div class="row g-3 mb-3">
-                    <div class="col-sm-6">
-                        <label class="form-label req">Skupina</label>
-                        <select name="skupina_id" id="skupinaId" class="form-select" required>
-                            <option value="">— vyberte skupinu —</option>
-                            <?php foreach ($skupiny as $sk): ?>
-                                <option value="<?= $sk['id'] ?>"
-                                    <?= ((string)$def['skupina_id'] === (string)$sk['id']) ? 'selected' : '' ?>>
-                                    <?= h($sk['nazev']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-sm-6">
-                        <label class="form-label">Podskupiny <span class="text-muted small">(bez výběru = celá sk.)</span></label>
-                        <div id="podskupinaContainer" class="border rounded p-2 bg-white"
-                             style="min-height:40px;max-height:160px;overflow-y:auto">
-                            <?php if (empty($podskupiny)): ?>
-                                <span class="text-muted small">Nejprve vyberte skupinu</span>
-                            <?php else: ?>
-                                <?php foreach ($podskupiny as $ps): ?>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox"
-                                               name="podskupiny_ids[]" value="<?= $ps['id'] ?>"
-                                               id="ps_<?= $ps['id'] ?>"
-                                               <?= in_array((int)$ps['id'], $selectedPodskupiny) ? 'checked' : '' ?>>
-                                        <label class="form-check-label small" for="ps_<?= $ps['id'] ?>">
-                                            <?= h($ps['nazev']) ?>
-                                        </label>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- KIS soupisky určují viditelnost a možnost potvrdit účast; legacy skupiny zůstávají zachované. -->
+                <!-- Jediný kanonický výběr cílové skupiny či soupisky. -->
                 <div class="mb-3">
                     <label class="form-label req">Komu je trénink určen</label>
                     <div class="border rounded p-3 bg-light mb-2" id="training-roster-mode">
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" name="roster_mode" id="roster-mode-teams" value="teams" <?= $rosterMode === 'teams' ? 'checked' : '' ?> required>
-                            <label class="form-check-label" for="roster-mode-teams"><strong>Sportovcům z vybraných soupisek</strong><br><span class="small text-muted">Trénink se jim zobrazí a mohou potvrdit účast.</span></label>
+                            <label class="form-check-label" for="roster-mode-teams"><strong>Sportovcům z vybraných skupin nebo soupisek</strong><br><span class="small text-muted">Trénink se jim zobrazí a mohou potvrdit účast.</span></label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="roster_mode" id="roster-mode-internal" value="internal" <?= $rosterMode === 'internal' ? 'checked' : '' ?> required>
                             <label class="form-check-label" for="roster-mode-internal"><strong>Interní trénink bez účastníků</strong><br><span class="small text-muted">Trénink se nezobrazí žádnému sportovci.</span></label>
                         </div>
                     </div>
-                    <div class="border rounded p-2 bg-white" id="training-roster-options" style="max-height:180px;overflow-y:auto">
-                        <?php if ($eligibleTeams === []): ?>
-                            <span class="text-muted small">Pro datum tréninku není dostupná aktivní soupiska.</span>
-                        <?php else: ?>
-                            <?php foreach ($eligibleTeams as $team): ?>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="team_ids[]"
-                                           value="<?= (int)$team['id'] ?>" id="team_<?= (int)$team['id'] ?>"
-                                           <?= in_array((int)$team['id'], $selectedTeamIds, true) ? 'checked' : '' ?>>
-                                    <label class="form-check-label small" for="team_<?= (int)$team['id'] ?>">
-                                        <?= h($team['name']) ?> · <?= h($team['season_name']) ?>
-                                    </label>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                    <div id="training-roster-options" data-roster-target-container style="max-height:300px;overflow-y:auto">
+                        <?= rosterTargetSelectorHtml($pdo, (string)$def['datum'], $selectedTeamIds) ?>
                     </div>
-                    <div class="form-text">Členové vybraných soupisek trénink uvidí ve sportovním přehledu a mohou potvrdit „zúčastním se / nezúčastním se“. Skutečnou docházku po tréninku dál zapisuje trenér.</div>
+                    <?php if ($editId && $selectedTeamIds === [] && !empty($existujici['skupina_id'])): ?>
+                        <div class="alert alert-warning mt-2 mb-0">Tento historický plán používá původní skupinu. Pokud nové cílení nevyberete, stará vazba zůstane zachována.</div>
+                    <?php endif; ?>
+                    <div class="form-text">Členové vybraných skupin a soupisek trénink uvidí ve sportovním přehledu a mohou potvrdit „zúčastním se / nezúčastním se“. Skutečnou docházku po tréninku dál zapisuje trenér.</div>
                 </div>
 
                 <!-- Datum + Časy -->
@@ -483,62 +439,19 @@ $kategorieMeta = [
 
 
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
-// ── Podskupiny — checkbox loader ──────────────────────────────────────────────
-function loadPodskupiny(skupinaId) {
-    const container = document.getElementById('podskupinaContainer');
-    if (!container) return;
-    if (!skupinaId) {
-        container.innerHTML = '<span class="text-muted small">Nejprve vyberte skupinu</span>';
-        return;
-    }
-    container.innerHTML = '<span class="text-muted small"><i class="bi bi-hourglass-split me-1"></i>Načítám…</span>';
-    fetch('ajax_podskupiny.php?skupina_id=' + encodeURIComponent(skupinaId))
-        .then(r => r.json())
-        .then(data => {
-            const items = data.items || [];
-            if (items.length === 0) {
-                container.innerHTML = '<span class="text-muted small">Žádné podskupiny</span>';
-                return;
-            }
-            container.innerHTML = '';
-            items.forEach(ps => {
-                const wrap  = document.createElement('div');
-                wrap.className = 'form-check';
-                const inp = document.createElement('input');
-                inp.type = 'checkbox';
-                inp.className = 'form-check-input';
-                inp.name = 'podskupiny_ids[]';
-                inp.value = ps.id;
-                inp.id = 'ps_' + ps.id;
-                const lbl = document.createElement('label');
-                lbl.className = 'form-check-label small';
-                lbl.htmlFor = 'ps_' + ps.id;
-                lbl.textContent = ps.nazev;
-                wrap.appendChild(inp);
-                wrap.appendChild(lbl);
-                container.appendChild(wrap);
-            });
-        })
-        .catch(() => { container.innerHTML = '<span class="text-muted small text-danger">Chyba načítání</span>'; });
-}
-
-document.getElementById('skupinaId').addEventListener('change', function () {
-    loadPodskupiny(this.value);
-});
-
 // ── Soupisky — režim je vždy viditelný a jednoznačný ─────────────────────────
 (function () {
-    const teams = Array.from(document.querySelectorAll('input[name="team_ids[]"]'));
     const modes = Array.from(document.querySelectorAll('input[name="roster_mode"]'));
     const options = document.getElementById('training-roster-options');
     if (!modes.length || !options) return;
     const sync = () => {
         const internal = modes.some(input => input.checked && input.value === 'internal');
-        teams.forEach(input => { input.disabled = internal; });
+        options.querySelectorAll('input[name="team_ids[]"]').forEach(input => { input.disabled = internal; });
         options.classList.toggle('opacity-50', internal);
         options.setAttribute('aria-disabled', internal ? 'true' : 'false');
     };
     modes.forEach(input => input.addEventListener('change', sync));
+    options.addEventListener('roster-targets-refreshed', sync);
     sync();
 })();
 
@@ -600,5 +513,6 @@ document.getElementById('skupinaId').addEventListener('change', function () {
     updateUI();
 })();
 </script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/athlete_registration.php';
 require_once __DIR__ . '/person_match.php';
 require_once __DIR__ . '/kis_roster.php';
+require_once __DIR__ . '/roster_hierarchy.php';
 require_once __DIR__ . '/member_charge.php';
 require_once __DIR__ . '/club_program.php';
 
@@ -236,8 +237,8 @@ function athleteRegistrationAdminAssignmentOptions(PDO $pdo): array
         )->fetchAll(PDO::FETCH_ASSOC),
         'teams' => $pdo->query(
             "SELECT t.id,t.name,t.season_id,s.code AS season_code,s.name AS season_name,s.starts_on,s.ends_on "
-            . "FROM club_teams t JOIN club_seasons s ON s.id=t.season_id "
-            . "WHERE t.status='active' AND s.status='active' AND s.ends_on>=CURRENT_DATE "
+            . "FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id "
+            . "WHERE t.status='active' AND (t.season_id IS NULL OR (s.status='active' AND s.ends_on>=CURRENT_DATE)) "
             . 'ORDER BY s.starts_on DESC,t.name,t.id'
         )->fetchAll(PDO::FETCH_ASSOC),
     ];
@@ -296,8 +297,8 @@ function athleteRegistrationAdminAssign(
         if (!$subgroup) throw new AthleteRegistrationAdminException('Vybraná podskupina nepatří do vybrané skupiny.');
 
         $teamSql = 'SELECT t.id,t.name,t.season_id,s.name AS season_name,s.starts_on,s.ends_on '
-            . 'FROM club_teams t JOIN club_seasons s ON s.id=t.season_id '
-            . "WHERE t.id=? AND t.status='active' AND s.status='active' AND s.ends_on>=CURRENT_DATE";
+            . 'FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id '
+            . "WHERE t.id=? AND t.status='active' AND (t.season_id IS NULL OR (s.status='active' AND s.ends_on>=CURRENT_DATE))";
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $teamSql .= ' FOR UPDATE';
         $team = $pdo->prepare($teamSql);
         $team->execute([$teamId]);
@@ -319,14 +320,20 @@ function athleteRegistrationAdminAssign(
                 ->execute([$personId, $subgroupId]);
         }
 
+        $temporalRoster = kisRosterHierarchyHasColumn($pdo,'club_roster_members','source_ref');
+        $validFrom = max((new DateTimeImmutable('today'))->format('Y-m-d'), (string)($team['starts_on'] ?? ''));
         $memberSql = 'SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?';
+        if ($temporalRoster) $memberSql .= " AND status='active' AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) ORDER BY id DESC LIMIT 1";
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $memberSql .= ' FOR UPDATE';
         $member = $pdo->prepare($memberSql);
-        $member->execute([$teamId, $personId]);
+        $member->execute($temporalRoster?[$teamId,$personId,$validFrom,$validFrom]:[$teamId,$personId]);
         $before = $member->fetch(PDO::FETCH_ASSOC) ?: null;
         $rosterChanged = $before === null || (string)$before['status'] !== 'active' || $before['valid_to'] !== null;
-        $validFrom = max((new DateTimeImmutable('today'))->format('Y-m-d'), (string)$team['starts_on']);
-        if ($before === null) {
+        if ($temporalRoster && $before === null) {
+            $granted = kisRosterGrantPeriod($pdo,$teamId,$personId,$trainerId,'manual',$validFrom,null,$reason,'athlete_registration_request:'.$requestId);
+            $memberId = (int)$granted['id'];
+            $rosterChanged = $granted['created'];
+        } elseif ($before === null) {
             $snapshot = $pdo->prepare('SELECT kis_external_id FROM sportovci WHERE id=?');
             $snapshot->execute([$personId]);
             $kisExternalId = trim((string)$snapshot->fetchColumn()) ?: null;
@@ -346,7 +353,7 @@ function athleteRegistrationAdminAssign(
         }
 
         $changed = $createdGroup || $createdSubgroup || $rosterChanged;
-        if ($rosterChanged) {
+        if ($rosterChanged && !$temporalRoster) {
             $after = [
                 'id' => $memberId,
                 'team_id' => $teamId,

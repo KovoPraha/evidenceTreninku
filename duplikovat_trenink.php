@@ -6,12 +6,16 @@ if (!isset($_SESSION['trener_id'])) {
     exit;
 }
 require_once 'db.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
 // ── Filtr skupiny ──────────────────────────────────────────────────────────
 $filterGroup = $_GET['skupina_id'] ?? '';
+$filterTeam = $_GET['team_id'] ?? '';
 if ($filterGroup !== '' && !ctype_digit((string)$filterGroup)) $filterGroup = '';
+if ($filterTeam !== '' && !ctype_digit((string)$filterTeam)) $filterTeam = '';
 $duplicatePeriod = (string)($_GET['obdobi'] ?? '90');
 if (!in_array($duplicatePeriod, ['30','90','365','all'], true)) $duplicatePeriod = '90';
 
@@ -51,14 +55,17 @@ try {
     if ($duplicatePeriod !== 'all') {
         $sql .= ' AND t.datum >= DATE_SUB(CURRENT_DATE, INTERVAL '.(int)$duplicatePeriod.' DAY)';
     }
-    $sql .= ' GROUP BY t.id ORDER BY t.datum DESC LIMIT 100';
+    $sql .= ' GROUP BY t.id ORDER BY t.datum DESC';
+    if ($filterTeam === '') $sql .= ' LIMIT 100';
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($filterTeam !== '') $treninky = array_slice(trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam), 0, 100);
 } catch (PDOException $e) {
     error_log('duplikovat_trenink.php main: ' . $e->getMessage());
 }
+$canonicalLabels = trainingRosterBridgeTrainingLabels($pdo, $treninky);
 
 // ── Seskupení podle měsíce ─────────────────────────────────────────────────
 // Kategorie meta
@@ -250,8 +257,11 @@ foreach ($treninky as $t) {
         </div>
         <div class="card-body py-2">
             <form method="GET" class="d-flex gap-2 align-items-center flex-wrap">
+                <select name="team_id" class="form-select form-select-sm" style="max-width:300px;">
+                    <?= rosterTargetFilterOptionsHtml($pdo, date('Y-m-d'), (int)$filterTeam) ?>
+                </select>
                 <select name="skupina_id" class="form-select form-select-sm" style="max-width:260px;">
-                    <option value="">— všechny skupiny —</option>
+                    <option value="">— původní skupiny (historie) —</option>
                     <?php foreach ($skupiny as $s): ?>
                         <option value="<?= (int)$s['id'] ?>"
                             <?= (string)$filterGroup === (string)$s['id'] ? 'selected' : '' ?>>
@@ -268,7 +278,7 @@ foreach ($treninky as $t) {
                 <button type="submit" class="btn btn-sm btn-primary">
                     <i class="bi bi-search me-1"></i>Filtrovat
                 </button>
-                <?php if ($filterGroup !== '' || $duplicatePeriod !== '90'): ?>
+                <?php if ($filterGroup !== '' || $filterTeam !== '' || $duplicatePeriod !== '90'): ?>
                 <a href="duplikovat_trenink.php" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x me-1"></i>Zrušit filtr
                 </a>
@@ -322,7 +332,9 @@ foreach ($treninky as $t) {
                 <!-- Metadata -->
                 <div class="trenink-meta">
                     <div class="group-name d-flex align-items-center gap-2">
-                        <?php if ($t['skupiny_nazev']): ?>
+                        <?php if (isset($canonicalLabels[$tid])): ?>
+                            <span><i class="bi bi-people me-1 text-primary"></i><?= h($canonicalLabels[$tid]) ?></span>
+                        <?php elseif ($t['skupiny_nazev']): ?>
                             <span>
                                 <i class="bi bi-people me-1 text-primary" style="font-size:.9rem;"></i>
                                 <?= h($t['skupiny_nazev']) ?>

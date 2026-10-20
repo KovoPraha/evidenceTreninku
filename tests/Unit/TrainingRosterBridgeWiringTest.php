@@ -7,14 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class TrainingRosterBridgeWiringTest extends TestCase
 {
-    public function testPlannerKeepsLegacyGroupsAndUsesProtectedRosterBridge(): void
+    public function testPlannerUsesOneCanonicalSelectorAndProtectedRosterBridge(): void
     {
         $root = dirname(__DIR__, 2);
         $planner = (string)file_get_contents($root . '/planovany_trenink_form.php');
         self::assertStringContainsString("canAccess('planovac')", $planner);
         self::assertStringContainsString('csrf_verify', $planner);
-        self::assertStringContainsString('podskupiny_ids[]', $planner);
-        self::assertStringContainsString('team_ids[]', $planner);
+        self::assertStringContainsString('rosterTargetSelectorHtml', $planner);
+        self::assertStringNotContainsString('name="skupina_id"', $planner);
+        self::assertStringNotContainsString('name="podskupiny_ids[]"', $planner);
         self::assertStringContainsString('trainingRosterBridgeReplacePlanTeams', $planner);
     }
 

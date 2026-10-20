@@ -8,17 +8,21 @@ if (!isset($_SESSION['trener_id']) || !canAccess('sprava_treninku')) {
 }
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
 // ── Vstupní filtry (validace) ──────────────────────────────────────────────
 $filterGroup = $_GET['skupina_id'] ?? '';
 $filterSub   = $_GET['podskupina_id'] ?? '';
+$filterTeam  = $_GET['team_id'] ?? '';
 $filterTr    = $_GET['trenere'] ?? [];
 if (!is_array($filterTr)) $filterTr = [$filterTr];
 
 if ($filterGroup !== '' && !ctype_digit((string)$filterGroup)) $filterGroup = '';
 if ($filterSub   !== '' && !ctype_digit((string)$filterSub))   $filterSub   = '';
+if ($filterTeam  !== '' && !ctype_digit((string)$filterTeam)) $filterTeam = '';
 $filterTr = array_map('intval', array_filter($filterTr, fn($v) => ctype_digit((string)$v)));
 
 // Flash zprávy
@@ -69,10 +73,12 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($filterTeam !== '') $treninky = trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam);
 } catch (PDOException $e) {
     error_log('sprava_treninku.php main query: ' . $e->getMessage());
     $flashError = 'Nepodařilo se načíst tréninky. Zkuste to znovu.';
 }
+$canonicalLabels = trainingRosterBridgeTrainingLabels($pdo, $treninky);
 
 // ── Batch načtení účastníků (místo N+1) ───────────────────────────────────
 $ucastniciByTrenink = [];
@@ -127,8 +133,12 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
     <!-- Filtr -->
     <form method="GET" class="card shadow-sm p-3 mb-4">
         <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Skupina → soupiska:</label>
+                <select name="team_id" class="form-select"><?= rosterTargetFilterOptionsHtml($pdo, date('Y-m-d'), (int)$filterTeam) ?></select>
+            </div>
             <div class="col-md-3">
-                <label class="form-label">Skupina:</label>
+                <label class="form-label">Původní skupina (historie):</label>
                 <select id="skupina" name="skupina_id" class="form-select">
                     <option value="">-- všechny --</option>
                     <?php foreach ($groups as $g): ?>
@@ -139,7 +149,7 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label">Podskupina:</label>
+                <label class="form-label">Původní podskupina:</label>
                 <select id="podskupina" name="podskupina_id" class="form-select">
                     <option value="">-- všechny --</option>
                     <?php foreach ($subs as $ps): ?>
@@ -217,6 +227,7 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
                 </tr>
                 <tr class="collapse" id="detail<?= $tid ?>">
                     <td colspan="6" class="bg-light">
+                        <?php if (isset($canonicalLabels[$tid])): ?><strong>Skupina / soupiska:</strong> <?= h($canonicalLabels[$tid]) ?><br><?php endif; ?>
                         <strong>Náplň:</strong> <?= nl2br(h((string)($t['napln'] ?? ''))) ?><br>
                         <strong>Poznámka:</strong> <?= nl2br(h((string)($t['poznamka'] ?? ''))) ?><br>
                         <strong>Účastníci:</strong>

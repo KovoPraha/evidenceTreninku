@@ -107,11 +107,11 @@ function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId):
         $statement = $pdo->prepare(
             'SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, '
             . 't.id AS team_id, t.code AS team_code, t.name AS team_name, '
-            . 't.discipline, t.age_label, s.code AS season_code, s.name AS season_name, '
+            . "t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, "
             . 's.starts_on AS season_starts_on, s.ends_on AS season_ends_on '
             . 'FROM club_roster_members m '
             . 'JOIN club_teams t ON t.id=m.team_id '
-            . 'JOIN club_seasons s ON s.id=t.season_id '
+            . 'LEFT JOIN club_seasons s ON s.id=t.season_id '
             . 'WHERE m.sportovec_id=? '
             . "ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id"
         );

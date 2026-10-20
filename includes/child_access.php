@@ -331,9 +331,9 @@ function childAccessScopedRows(PDO $pdo, int $accessAccountId, string $section):
             return [];
         }
         $sql = 'SELECT m.status,m.valid_from,m.valid_to,t.name AS team_name,t.discipline,t.age_label,'
-            . 's.name AS season_name FROM child_access_accounts a '
+            . "COALESCE(s.name,'Bez sezóny') AS season_name FROM child_access_accounts a "
             . 'JOIN club_roster_members m ON m.sportovec_id=a.sportovec_id '
-            . 'JOIN club_teams t ON t.id=m.team_id JOIN club_seasons s ON s.id=t.season_id '
+            . 'JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id '
             . 'WHERE a.id=? AND a.active=1 ORDER BY s.starts_on DESC,t.name,m.id';
     } elseif ($section === 'events') {
         if (!childAccessHasTables($pdo, ['club_event_registrations', 'club_events'])) {

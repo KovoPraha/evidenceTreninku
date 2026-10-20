@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/family_portal.php';
 require_once __DIR__ . '/public_calendar_feed.php';
 require_once __DIR__ . '/app_url.php';
+require_once __DIR__ . '/roster_hierarchy.php';
 
 final class FamilyCalendarFeedException extends RuntimeException
 {
@@ -125,24 +126,43 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
     $placeholders = implode(',', array_fill(0, count($personIds), '?'));
     $items = [];
 
+    $personDetails = [];
+    $peopleStatement = $pdo->prepare('SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (' . $placeholders . ')');
+    $peopleStatement->execute($personIds);
+    foreach ($peopleStatement->fetchAll(PDO::FETCH_ASSOC) as $person) $personDetails[(int)$person['id']] = $person;
+    $effectiveMembers = [];
+    $membersForTarget = static function (int $teamId, string $date) use ($pdo, &$effectiveMembers): array {
+        $key = $teamId . ':' . $date;
+        if (!isset($effectiveMembers[$key])) {
+            $effectiveMembers[$key] = array_fill_keys(kisRosterEffectiveMemberIds($pdo, $teamId, $date), true);
+        }
+        return $effectiveMembers[$key];
+    };
+
     if (publicCalendarHasTables($pdo, ['training_roster_links', 'club_roster_members', 'planovane_treninky', 'sportovci', 'sportovist', 'skupiny'])) {
         $statement = $pdo->prepare(
             'SELECT p.id,p.datum,p.cas_od,p.cas_do,p.nazev,p.kategorie,s.nazev AS sportoviste,g.nazev AS skupina,'
-            . 'rm.sportovec_id,sp.jmeno,sp.prijmeni,l.team_name_snapshot FROM training_roster_links l '
-            . 'JOIN club_roster_members rm ON rm.team_id=l.team_id JOIN sportovci sp ON sp.id=rm.sportovec_id '
+            . 'l.team_id,l.team_name_snapshot FROM training_roster_links l '
             . 'JOIN planovane_treninky p ON p.id=l.plan_id LEFT JOIN sportovist s ON s.id=p.sportoviste_id '
-            . 'LEFT JOIN skupiny g ON g.id=p.skupina_id WHERE rm.sportovec_id IN (' . $placeholders . ') '
-            . "AND rm.status='active' AND rm.valid_from<=p.datum AND (rm.valid_to IS NULL OR rm.valid_to>=p.datum) "
-            . "AND p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,rm.sportovec_id"
+            . 'LEFT JOIN skupiny g ON g.id=p.skupina_id '
+            . "WHERE p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,l.team_id"
         );
-        $statement->execute([...$personIds, $from, $to]);
+        $statement->execute([$from, $to]);
         $seen = [];
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $key = (int)$row['id'] . ':' . (int)$row['sportovec_id'];
-            if (isset($seen[$key])) continue;
-            $seen[$key] = true;
-            $item = familyCalendarTrainingItem($row);
-            if ($item !== null) $items[] = $item;
+            $members = $membersForTarget((int)$row['team_id'], (string)$row['datum']);
+            foreach ($personDetails as $sportovecId => $person) {
+                if (!isset($members[$sportovecId])) continue;
+                $key = (int)$row['id'] . ':' . $sportovecId;
+                if (isset($seen[$key])) continue;
+                $seen[$key] = true;
+                $item = familyCalendarTrainingItem($row + [
+                    'sportovec_id' => $sportovecId,
+                    'jmeno' => $person['jmeno'],
+                    'prijmeni' => $person['prijmeni'],
+                ]);
+                if ($item !== null) $items[] = $item;
+            }
         }
     }
 
@@ -173,22 +193,35 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
         && publicCalendarColumnExists($pdo,'club_events','visibility')
         && publicCalendarColumnExists($pdo,'club_events','planning_status')) {
         $statement=$pdo->prepare(
-            'SELECT DISTINCT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,'
-            . 'sp.id AS sportovec_id,sp.jmeno,sp.prijmeni FROM club_events e '
+            'SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,'
+            . 'rt.team_id FROM club_events e '
             . 'JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id '
-            . 'JOIN club_roster_members rm ON rm.team_id=rt.team_id JOIN sportovci sp ON sp.id=rm.sportovec_id '
-            . 'WHERE rm.sportovec_id IN (' . $placeholders . ") AND e.visibility='rosters' "
+            . "WHERE e.visibility='rosters' "
             . "AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' "
-            . "AND rm.status='active' AND (rm.valid_to IS NULL OR rm.valid_to>=CURRENT_DATE) "
-            . 'AND s.starts_at<? AND s.ends_at>=? AND NOT EXISTS (SELECT 1 FROM club_event_registrations r '
-            . "WHERE r.event_id=e.id AND r.sportovec_id=rm.sportovec_id AND r.status IN ('confirmed','waitlisted','payment_pending')) "
-            . 'ORDER BY s.starts_at,s.id,sp.id'
+            . 'AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id'
         );
-        $statement->execute([...$personIds,$toDate->modify('+1 day')->format('Y-m-d 00:00:00'),$from.' 00:00:00']);
+        $statement->execute([$toDate->modify('+1 day')->format('Y-m-d 00:00:00'),$from.' 00:00:00']);
+        $registrations=$pdo->prepare(
+            'SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (' . $placeholders . ") AND status IN ('confirmed','waitlisted','payment_pending')"
+        );
+        $registrations->execute($personIds);
+        $registered=[];
+        foreach($registrations->fetchAll(PDO::FETCH_ASSOC)as$registration){
+            $registered[(int)$registration['event_id'].':'.(int)$registration['sportovec_id']]=true;
+        }
+        $seenPlans=[];
         foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$row){
-            $state=(string)$row['planning_status']==='planned'?'Předběžný plán – termín se může změnit.':'Potvrzená akce, účast zatím není přihlášená.';
-            $item=publicCalendarTimedItem('family-plan-'.(int)$row['event_id'].'-'.(int)$row['session_id'].'-'.(int)$row['sportovec_id'],(string)$row['starts_at'],(string)$row['ends_at'],(string)$row['name'].' – '.trim((string)$row['jmeno'].' '.(string)$row['prijmeni']),(string)$row['location'],$state,'Rodinný plán');
-            if($item!==null)$items[]=$item;
+            $eventDate=substr((string)$row['starts_at'],0,10);
+            $members=$membersForTarget((int)$row['team_id'],$eventDate);
+            foreach($personDetails as$sportovecId=>$person){
+                if(!isset($members[$sportovecId])||isset($registered[(int)$row['event_id'].':'.$sportovecId]))continue;
+                $key=(int)$row['session_id'].':'.$sportovecId;
+                if(isset($seenPlans[$key]))continue;
+                $seenPlans[$key]=true;
+                $state=(string)$row['planning_status']==='planned'?'Předběžný plán – termín se může změnit.':'Potvrzená akce, účast zatím není přihlášená.';
+                $item=publicCalendarTimedItem('family-plan-'.(int)$row['event_id'].'-'.(int)$row['session_id'].'-'.$sportovecId,(string)$row['starts_at'],(string)$row['ends_at'],(string)$row['name'].' – '.trim((string)$person['jmeno'].' '.(string)$person['prijmeni']),(string)$row['location'],$state,'Rodinný plán');
+                if($item!==null)$items[]=$item;
+            }
         }
     }
 

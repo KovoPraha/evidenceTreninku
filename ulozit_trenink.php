@@ -38,8 +38,9 @@ if ($kategorie !== null && $kategorie !== '' && !in_array($kategorie, $kategorie
     $kategorie = null;
 }
 
-$skupinaId  = $_POST['skupina_id'] ?? null;
-$podskupiny = $_POST['podskupina_id'] ?? [];
+$skupinaId  = null;
+$podskupiny = [];
+$teamIds = array_values(array_unique(array_filter(array_map('intval', is_array($_POST['team_ids'] ?? null) ? $_POST['team_ids'] : []))));
 
 $trenere    = $_POST['trenere'] ?? [];
 $ucastnici  = trim((string)($_POST['ucastnici'] ?? ''));
@@ -98,6 +99,7 @@ $obrazky = !empty($imagePaths) ? json_encode($imagePaths, JSON_UNESCAPED_UNICODE
 try {
     if ($datum === '') throw new Exception('Chybí datum.');
     if ($delka < 0) throw new Exception('Neplatná délka.');
+    if ($planId === 0 && $teamIds === []) throw new Exception('Vyberte skupinu nebo soupisku pro trénink.');
 
     // Validace: měření musí mít vybraného sportovce
     foreach ($mereniRows as $i => $row) {
@@ -110,12 +112,20 @@ try {
 
     $planRow=null;
     if($planId>0){
-        $planSql='SELECT id,trener_id,datum,stav FROM planovane_treninky WHERE id=?';
+        $planSql='SELECT id,trener_id,datum,stav,skupina_id,podskupina_id FROM planovane_treninky WHERE id=?';
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$planSql.=' FOR UPDATE';
         $planStatement=$pdo->prepare($planSql);$planStatement->execute([$planId]);$planRow=$planStatement->fetch(PDO::FETCH_ASSOC);
         if(!$planRow||(string)$planRow['stav']!=='planovany')throw new TrainingRosterBridgeException('Plánovaný trénink už není dostupný pro zápis evidence.');
         if((int)$planRow['trener_id']!==$trenerId&&!roleAtLeast('hlavni'))throw new TrainingRosterBridgeException('Cizí plánovaný trénink nemůžete zaevidovat.');
         if((string)$planRow['datum']!==$datum)throw new TrainingRosterBridgeException('Datum evidence musí odpovídat datu plánovaného tréninku.');
+        if (trainingRosterBridgePlanTeamIds($pdo, $planId) === []) {
+            // A historical plan has only legacy targets. Keep its meaning when recorded.
+            $skupinaId = $planRow['skupina_id'];
+            $legacySubs = $pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=?');
+            $legacySubs->execute([$planId]);
+            $podskupiny = $legacySubs->fetchAll(PDO::FETCH_COLUMN);
+            if ($podskupiny === [] && $planRow['podskupina_id'] !== null) $podskupiny = [$planRow['podskupina_id']];
+        }
     }
 
     $mereniRaw = null;
@@ -310,6 +320,8 @@ try {
         ")->execute([$treninkId, $planId]);
         clubMakeupFinalizeSource($pdo, $planId, $treninkId, $trenerId);
         clubMakeupFinalizeTarget($pdo, $planId, $treninkId, $trenerId);
+    } else {
+        trainingRosterBridgeReplaceTrainingTeams($pdo, $treninkId, $teamIds, $trenerId);
     }
 
     fileMutationFinalize($fileMutations);

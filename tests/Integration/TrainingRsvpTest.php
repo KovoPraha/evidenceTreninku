@@ -74,6 +74,22 @@ final class TrainingRsvpTest extends TestCase
         self::assertSame(['expected' => 1, 'going' => 1, 'not_going' => 0, 'pending' => 0], $summary[100]);
     }
 
+    public function testGroupTargetIncludesChildRostersAndDeduplicatesAthlete(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('CREATE TABLE club_team_edges(parent_team_id INTEGER,child_team_id INTEGER,valid_from TEXT,valid_to TEXT)');
+        $pdo->exec("INSERT INTO club_team_edges VALUES(9,1,'2020-01-01',NULL),(9,3,'2020-01-01',NULL)");
+        $pdo->exec("INSERT INTO club_roster_members VALUES(3,3,10,'active','2020-01-01',NULL)");
+        $pdo->exec("UPDATE training_roster_links SET team_id=9,team_name_snapshot='Závodní tým' WHERE id=1");
+
+        $rows = \trainingRsvpUpcomingForAccount($pdo, 100, date('Y-m-d'), date('Y-m-d', strtotime('+30 days')));
+        self::assertCount(1, $rows);
+        self::assertSame(10, (int)$rows[0]['sportovec_id']);
+        \trainingRsvpSave($pdo, 100, 10, 'going', 'account', 100);
+        self::assertCount(1, \trainingRsvpPlanOverview($pdo, 100));
+        self::assertSame(1, \trainingRsvpPlanSummaries($pdo, [100])[100]['expected']);
+    }
+
     public function testMigrationIsIdempotent(): void
     {
         $pdo = $this->database(false);

@@ -1,11 +1,11 @@
 # Plán implementace: skupiny, soupisky, tréninky, akce a časové členství
 
-Stav: návrh k implementaci, 20. 10. 2026. Tento soubor je plán, nikoli doklad o provedených změnách nebo o aktuálním stavu produkce. Před implementací ověřit aktuální `origin/main`, schéma a živé chování. Soupisky importované ze starého KIS a jejich historické vazby se nemažou. Import soupisek pro 2026/27 už proběhl; jejich napojení je vstupem pro tento plán, nikoli důvodem znovu importovat osoby. Automatické rozesílky ani bankovní párování se tímto plánem nezapínají.
+Stav: původní schválený plán z 20. 10. 2026. Stav lokální implementace a kroky před nasazením popisuje `ROSTER_HIERARCHY_IMPLEMENTATION_HANDOFF_2026-10-20.md`. Tento soubor zachycuje výchozí zjištění, nikoli aktuální stav produkce. Soupisky importované ze starého KIS a jejich historické vazby se nemažou. Import soupisek pro 2026/27 už proběhl; jejich napojení je vstupem pro tento plán, nikoli důvodem znovu importovat osoby. Automatické rozesílky ani bankovní párování se tímto plánem nezapínají.
 
 ## Produktová pravidla
 
 - V uživatelském rozhraní znamená **skupina** nejvyšší organizační úroveň, například „Kroužek Třebešín“, „Kroužek Točná“ nebo „Závodní tým“. **Soupiska** je nižší úroveň, například „Aligátoři“, „Kadeti“ nebo „Dráha“. Sportovec smí patřit do více soupisek současně, například podle věku i disciplíny.
-- Členství ve skupině se odvozuje ze všech jejích potomků a případného přímého členství. Stejný sportovec se v souhrnu počítá jednou. Odebrání z jedné soupisky jej neodebere ze skupiny, pokud má další platnou cestu členství.
+- Členství ve skupině se odvozuje ze všech jejích potomků. Přímé nové členství ve skupině se nezakládá. Stejný sportovec se v souhrnu počítá jednou. Odebrání z jedné soupisky jej neodebere ze skupiny, pokud má další platnou cestu členství.
 - Skupina, soupiska a produkt kroužku mají stálou identitu. Konkrétní nabídka „1. pololetí“, „2. pololetí“ nebo „obě pololetí“ má datum začátku a konce. Rok nebo školní rok se pro zobrazení a filtrování odvodí z dat; v běžné správě se ručně nevybírá „sezona“.
 - Závodní oddíl má členství od zadaného dne bez předem stanoveného konce. Ukončení je ruční a auditované. Měsíční příspěvky závodního týmu se řídí platným členstvím, ne sezonou.
 - Historická odpověď na „kdo byl v Aligátorech v listopadu 2026 / březnu 2027“ musí vycházet z intervalů členství platných v daný den. Pozdější změna členství, názvu nebo hierarchie nesmí přepsat minulost. Stav `removed` u dnešního záznamu nesmí skrýt dřívější platné členství.

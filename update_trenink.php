@@ -12,6 +12,7 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sports_measurement_input.php';
 require_once __DIR__ . '/includes/file_mutation_transaction.php';
 require_once __DIR__ . '/includes/secure_upload.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     die('Neplatný CSRF token.');
@@ -36,8 +37,9 @@ $datum      = $_POST['datum'] ?? '';
 $delka      = isset($_POST['delka']) ? (float)str_replace(',', '.', (string)$_POST['delka']) : 0.0;
 $kategorie  = $_POST['kategorie'] ?? null;
 
-$skupinaId  = $_POST['skupina_id'] ?? null;
-$podskupiny = $_POST['podskupina_id'] ?? [];
+$skupinaId  = null;
+$podskupiny = [];
+$teamIds = array_values(array_unique(array_filter(array_map('intval', is_array($_POST['team_ids'] ?? null) ? $_POST['team_ids'] : []))));
 
 $trenere    = $_POST['trenere'] ?? [];
 $ucastnici  = trim((string)($_POST['ucastnici'] ?? ''));
@@ -135,6 +137,20 @@ try {
     // Ulo�en�
     // --------------------
     $pdo->beginTransaction();
+    $oldDateStmt = $pdo->prepare('SELECT datum FROM treninky WHERE id=?');
+    $oldDateStmt->execute([$treninkId]);
+    $oldDate = $oldDateStmt->fetchColumn();
+    if ($oldDate === false) throw new RuntimeException('Trénink nebyl nalezen.');
+    $oldTeamIds = trainingRosterBridgeTrainingTeamIds($pdo, $treninkId);
+    $plannedStmt = $pdo->prepare('SELECT 1 FROM planovane_treninky WHERE trenink_id=? LIMIT 1');
+    $plannedStmt->execute([$treninkId]);
+    $fromPlan = (bool)$plannedStmt->fetchColumn();
+    sort($oldTeamIds, SORT_NUMERIC);
+    sort($teamIds, SORT_NUMERIC);
+    if ($fromPlan && ($oldTeamIds !== $teamIds || $oldDate !== $datum)) {
+        throw new RuntimeException('Cíl nebo datum tréninku převzatého z plánu nelze změnit bez úpravy plánu a kontroly odpovědí.');
+    }
+    if ($teamIds === [] && $oldTeamIds !== []) throw new RuntimeException('Vyberte skupinu nebo soupisku.');
     foreach ($retireImagePaths as $path) {
         fileMutationRetire($fileMutations, $path);
     }
@@ -181,19 +197,22 @@ try {
     }
 
     // skupina
-    $pdo->prepare('DELETE FROM trenink_skupina WHERE trenink_id = ?')->execute([$treninkId]);
+    if ($teamIds !== []) $pdo->prepare('DELETE FROM trenink_skupina WHERE trenink_id = ?')->execute([$treninkId]);
     if ($skupinaId && ctype_digit((string)$skupinaId)) {
         $pdo->prepare('INSERT INTO trenink_skupina (trenink_id, skupina_id) VALUES (?, ?)')->execute([$treninkId, (int)$skupinaId]);
     }
 
     // podskupiny
-    $pdo->prepare('DELETE FROM trenink_podskupina WHERE trenink_id = ?')->execute([$treninkId]);
+    if ($teamIds !== []) $pdo->prepare('DELETE FROM trenink_podskupina WHERE trenink_id = ?')->execute([$treninkId]);
     if (is_array($podskupiny)) {
         $stmtPs = $pdo->prepare('INSERT INTO trenink_podskupina (trenink_id, podskupina_id) VALUES (?, ?)');
         foreach ($podskupiny as $psid) {
             if (!ctype_digit((string)$psid)) continue;
             $stmtPs->execute([$treninkId, (int)$psid]);
         }
+    }
+    if ($teamIds !== [] && ($oldTeamIds !== $teamIds || $oldDate !== $datum)) {
+        trainingRosterBridgeReplaceTrainingTeams($pdo, $treninkId, $teamIds, $currentTrener);
     }
 
     // tren��i (v�dy aktu�ln�; ne-admin nesm� m�nit ciz�)

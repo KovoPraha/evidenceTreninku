@@ -72,7 +72,7 @@ function memberFeeAnnualConfirm(PDO $pdo,int $planId,int $sportovecId,string $fi
             $chargeId=(int)$pdo->lastInsertId();$chargeIds[]=$chargeId;
             $pdo->prepare('INSERT INTO club_finance_allocations(receipt_id,charge_id,amount_minor) VALUES(?,?,?)')
                 ->execute([$receiptId,$chargeId,$quote['monthly_minor']]);
-            $standingVs=memberFeePlanStandingVariableSymbol($pdo,$planId,$sportovecId);
+            $standingVs=memberFeePlanStandingVariableSymbol($pdo,$payer);
             $payment=memberChargeAdminInsertPayment($pdo,$chargeId,['amount_minor'=>$quote['monthly_minor'],'currency'=>'CZK','due_on'=>$dueOn],$bank,$external,$actorId,$paidOn.' 12:00:00','Podíl roční platby '.$bankReference.'.',$standingVs);
             memberChargeAdminEvent($pdo,$chargeId,'annual_bulk_paid',null,'paid',$actorId,$reason,
                 ['receipt_id'=>$receiptId,'payment_id'=>$payment['id'],'period'=>$period,'standard_minor'=>(int)$plan['amount_minor'],'discount_minor'=>(int)$plan['amount_minor']-$quote['monthly_minor']]);

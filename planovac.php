@@ -7,6 +7,7 @@ if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 require_once __DIR__ . '/includes/training_rsvp.php';
 require_once __DIR__ . '/includes/club_makeup.php';
 
@@ -55,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
     $kopJenMoje = !empty($_POST['kopirovat_jen_moje']);
     $kopTrener  = (int)($_POST['kopirovat_trener_id'] ?? 0);
     $kopSkupina = (int)($_POST['kopirovat_skupina_id'] ?? 0);
+    $kopTeam = (int)($_POST['kopirovat_team_id'] ?? 0);
 
     // Řadový trenér smí kopírovat jen vlastní plány (nesmí klonovat cizí týden)
     if (!roleAtLeast('hlavni')) {
@@ -80,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
     ");
     $stKop->execute($kParams);
     $zdrojePlany = $stKop->fetchAll(PDO::FETCH_ASSOC);
+    if ($kopTeam > 0) $zdrojePlany = trainingRosterBridgeFilterPlanRows($pdo, $zdrojePlany, $kopTeam);
 
     $pocet = 0;
     $pdo->beginTransaction();
@@ -135,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
             'jen_moje'   => $kopJenMoje ? '1' : '0',
             'trener_id'  => $kopTrener  ?: '',
             'skupina_id' => $kopSkupina ?: '',
+            'team_id' => $kopTeam ?: '',
         ]);
         header('Location: planovac.php?' . $redirectParams); exit;
 
@@ -163,6 +167,7 @@ $today    = date('Y-m-d');
 
 // ── Filtry ────────────────────────────────────────────────────────────────────
 $filterSkupina = (int)($_GET['skupina_id'] ?? 0);
+$filterTeam = (int)($_GET['team_id'] ?? 0);
 // Výchozí stav: zobrazovat jen moje tréninky (pokud URL neobsahuje jen_moje=0)
 $filterJenMoje = isset($_GET['jen_moje']) ? ((int)$_GET['jen_moje'] === 1) : true;
 $filterTrener  = (int)($_GET['trener_id'] ?? 0); // 0 = bez omezení (jen při jen_moje=0)
@@ -202,6 +207,8 @@ $stPlan = $pdo->prepare("
 ");
 $stPlan->execute($params);
 $plany = $stPlan->fetchAll(PDO::FETCH_ASSOC);
+if ($filterTeam > 0) $plany = trainingRosterBridgeFilterPlanRows($pdo, $plany, $filterTeam);
+$canonicalPlanLabels = trainingRosterBridgePlanLabels($pdo, $plany);
 $rsvpSummaries = trainingRsvpPlanSummaries($pdo, array_map(static fn(array $plan): int => (int)$plan['id'], $plany));
 
 // Indexovat dle data
@@ -226,6 +233,10 @@ $stStats->execute($statsParams);
 $statsRaw = $stStats->fetchAll(PDO::FETCH_ASSOC);
 $stats = ['planovany' => 0, 'evidovany' => 0];
 foreach ($statsRaw as $row) { $stats[$row['stav']] = (int)$row['cnt']; }
+if ($filterTeam > 0) {
+    $stats = ['planovany' => 0, 'evidovany' => 0];
+    foreach ($plany as $plan) if (isset($stats[$plan['stav']])) $stats[$plan['stav']]++;
+}
 $statsCelkem = $stats['planovany'] + $stats['evidovany'];
 
 // ── Metadata kategorií ────────────────────────────────────────────────────────
@@ -327,6 +338,7 @@ try {
         <?php
         // Helper: sestaví URL s aktuálními filtry
         $qFilters = ($filterSkupina ? '&skupina_id='.$filterSkupina : '')
+                  . ($filterTeam ? '&team_id='.$filterTeam : '')
                   . '&jen_moje=' . ($filterJenMoje ? '1' : '0')
                   . (!$filterJenMoje && $filterTrener ? '&trener_id='.$filterTrener : '');
         ?>
@@ -380,10 +392,14 @@ try {
             <?php endforeach; ?>
         </select>
 
-        <!-- Skupina -->
+        <!-- Kanonická skupina / soupiska a oddělený historický filtr. -->
+        <select name="team_id" class="form-select form-select-sm" style="width:auto"
+                data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
+            <?= rosterTargetFilterOptionsHtml($pdo, $today, $filterTeam) ?>
+        </select>
         <select name="skupina_id" class="form-select form-select-sm" style="width:auto"
                 data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
-            <option value="">Všechny skupiny</option>
+            <option value="">Původní skupiny (historie)</option>
             <?php foreach ($skupiny as $sk): ?>
                 <option value="<?= $sk['id'] ?>" <?= $filterSkupina == $sk['id'] ? 'selected' : '' ?>>
                     <?= h($sk['nazev']) ?>
@@ -459,9 +475,11 @@ try {
     if ($filterJenMoje) { $wWhere[] = 'pt.trener_id = ?'; $wParams[] = $trenerId; }
     elseif ($filterTrener) { $wWhere[] = 'pt.trener_id = ?'; $wParams[] = $filterTrener; }
     if ($filterSkupina) { $wWhere[] = 'pt.skupina_id = ?'; $wParams[] = $filterSkupina; }
-    $stWarn = $pdo->prepare("SELECT COUNT(*) FROM planovane_treninky pt WHERE " . implode(' AND ', $wWhere));
+    $stWarn = $pdo->prepare("SELECT pt.id,pt.datum FROM planovane_treninky pt WHERE " . implode(' AND ', $wWhere));
     $stWarn->execute($wParams);
-    $pocetNezaevidovanych = (int)$stWarn->fetchColumn();
+    $warningPlans = $stWarn->fetchAll(PDO::FETCH_ASSOC);
+    if ($filterTeam > 0) $warningPlans = trainingRosterBridgeFilterPlanRows($pdo,$warningPlans,$filterTeam);
+    $pocetNezaevidovanych = count($warningPlans);
     ?>
     <?php if ($pocetNezaevidovanych > 0): ?>
     <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 py-2">
@@ -472,7 +490,7 @@ try {
             proběhl<?= $pocetNezaevidovanych === 1 ? '' : 'o' ?>, ale dosud nej<?= $pocetNezaevidovanych === 1 ? 'je' : 'jsou' ?> zaevidován<?= $pocetNezaevidovanych === 1 ? '' : 'y' ?>.
         </div>
         <div class="d-flex gap-2 flex-wrap">
-            <a href="?datum=<?= h(date('Y-m-d', strtotime('-7 days'))) ?>&<?= http_build_query(['jen_moje' => $filterJenMoje ? 1 : 0, 'trener_id' => $filterTrener, 'skupina_id' => $filterSkupina]) ?>"
+            <a href="?datum=<?= h(date('Y-m-d', strtotime('-7 days'))) ?>&<?= http_build_query(['jen_moje' => $filterJenMoje ? 1 : 0, 'trener_id' => $filterTrener, 'skupina_id' => $filterSkupina, 'team_id' => $filterTeam]) ?>"
                class="btn btn-warning btn-sm">
                 <i class="bi bi-arrow-left me-1"></i>Přejít na minulý týden
             </a>
@@ -582,8 +600,8 @@ try {
                                     </span>
                                 </div>
                                 <div class="text-muted" style="font-size:.78rem">
-                                    <i class="bi bi-people me-1"></i><?= h($p['skupina_nazev'] ?? '—') ?>
-                                    <?php if (!empty($p['podskupiny_nazvy'])): ?>
+                                    <i class="bi bi-people me-1"></i><?= h($canonicalPlanLabels[(int)$p['id']] ?? ($p['skupina_nazev'] ?? '—')) ?>
+                                    <?php if (!isset($canonicalPlanLabels[(int)$p['id']]) && !empty($p['podskupiny_nazvy'])): ?>
                                         <span class="text-muted"> / <?= h($p['podskupiny_nazvy']) ?></span>
                                     <?php endif; ?>
                                 </div>
@@ -765,6 +783,7 @@ try {
                 <input type="hidden" name="kopirovat_jen_moje" value="<?= $filterJenMoje ? '1' : '0' ?>">
                 <input type="hidden" name="kopirovat_trener_id" value="<?= $filterTrener ?>">
                 <input type="hidden" name="kopirovat_skupina_id" value="<?= $filterSkupina ?>">
+                <input type="hidden" name="kopirovat_team_id" value="<?= $filterTeam ?>">
                 <div class="modal-body">
                     <div class="alert alert-info border-0 py-2 mb-3">
                         <i class="bi bi-arrow-right me-1"></i>
@@ -788,6 +807,11 @@ try {
                         $stKC = $pdo->prepare("SELECT COUNT(*) FROM planovane_treninky WHERE " . implode(' AND ', $kStatsWhere));
                         $stKC->execute($kStatsParams);
                         $kCount = (int)$stKC->fetchColumn();
+                        if ($filterTeam > 0) {
+                            $countQuery = $pdo->prepare("SELECT id,datum FROM planovane_treninky WHERE " . implode(' AND ', $kStatsWhere));
+                            $countQuery->execute($kStatsParams);
+                            $kCount = count(trainingRosterBridgeFilterPlanRows($pdo,$countQuery->fetchAll(PDO::FETCH_ASSOC),$filterTeam));
+                        }
                         ?>
                         <div class="d-flex align-items-center gap-2">
                             <span class="fs-3 fw-bold text-primary"><?= $kCount ?></span>

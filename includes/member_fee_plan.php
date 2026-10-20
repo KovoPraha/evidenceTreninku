@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/member_charge_admin.php';
 require_once __DIR__ . '/club_finance.php';
+require_once __DIR__ . '/roster_hierarchy.php';
 
 final class MemberFeePlanException extends RuntimeException {}
 
@@ -82,9 +83,15 @@ function memberFeePlanEligibleMembers(PDO $pdo,int $planId,string $from,string $
     $plan=memberFeePlanRow($pdo,$planId);
     if(!$plan||$plan['status']!=='active')return[];
     if((string)$plan['starts_on']>$to||(!empty($plan['ends_on'])&&(string)$plan['ends_on']<$from))return[];
-    $statement=$pdo->prepare("SELECT DISTINCT s.id,s.jmeno,s.prijmeni FROM club_roster_members m JOIN sportovci s ON s.id=m.sportovec_id WHERE m.team_id=? AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) ORDER BY s.prijmeni,s.jmeno,s.id");
-    $statement->execute([(int)$plan['team_id'],$to,$from]);
-    return$statement->fetchAll(PDO::FETCH_ASSOC);
+    $ids=[];
+    for($day=new DateTimeImmutable($from),$last=new DateTimeImmutable($to);$day<=$last;$day=$day->modify('+1 day')){
+        foreach(kisRosterEffectiveMemberIds($pdo,(int)$plan['team_id'],$day->format('Y-m-d')) as$id)$ids[(int)$id]=true;
+    }
+    if($ids===[])return[];
+    $marks=implode(',',array_fill(0,count($ids),'?'));
+    $statement=$pdo->prepare("SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN ($marks) ORDER BY prijmeni,jmeno,id");
+    $statement->execute(array_keys($ids));
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function memberFeePlanMemberEligibleForPeriod(PDO $pdo,int $planId,int $sportovecId,string $from,string $to):bool
@@ -94,14 +101,22 @@ function memberFeePlanMemberEligibleForPeriod(PDO $pdo,int $planId,int $sportove
     return false;
 }
 
-function memberFeePlanStandingVariableSymbol(PDO $pdo,int $planId,int $sportovecId):string
+function memberFeePlanStandingVariableSymbol(PDO $pdo,int $payerAccountId):string
 {
-    $statement=$pdo->prepare('SELECT variable_symbol FROM member_fee_standing_orders WHERE plan_id=? AND sportovec_id=?');$statement->execute([$planId,$sportovecId]);$existing=$statement->fetchColumn();
+    if($payerAccountId<1)throw new InvalidArgumentException('Plátce není určen.');
+    $statement=$pdo->prepare('SELECT variable_symbol FROM member_payer_variable_symbols WHERE payer_account_id=?');$statement->execute([$payerAccountId]);$existing=$statement->fetchColumn();
     if(is_string($existing)&&preg_match('/^[0-9]{10}$/D',$existing)===1)return$existing;
+    // Keep the oldest previously issued standing-order symbol for this payer.
+    $oldSql="SELECT p.variable_symbol FROM payments p JOIN club_member_charges c ON c.id=p.payable_id AND p.payable_type='member_charge' WHERE c.payer_account_id=? AND c.source_system='member_fee_plan' ORDER BY p.id";
+    $old=$pdo->prepare($oldSql);$old->execute([$payerAccountId]);
+    foreach($old->fetchAll(PDO::FETCH_COLUMN)as$candidate){
+        if(!is_string($candidate)||preg_match('/^[0-9]{10}$/D',$candidate)!==1)continue;
+        try{$pdo->prepare('INSERT INTO member_payer_variable_symbols(payer_account_id,variable_symbol) VALUES(?,?)')->execute([$payerAccountId,$candidate]);return$candidate;}catch(PDOException){$statement->execute([$payerAccountId]);$existing=$statement->fetchColumn();if(is_string($existing))return$existing;}
+    }
     for($attempt=0;$attempt<30;$attempt++){
-        $vs=memberChargeAdminVariableSymbol('fee-plan:'.$planId.':athlete:'.$sportovecId,$attempt);
-        $used=$pdo->prepare('SELECT 1 FROM payments WHERE variable_symbol=? UNION SELECT 1 FROM member_fee_standing_orders WHERE variable_symbol=? LIMIT 1');$used->execute([$vs,$vs]);if($used->fetchColumn())continue;
-        try{$pdo->prepare('INSERT INTO member_fee_standing_orders(plan_id,sportovec_id,variable_symbol) VALUES (?,?,?)')->execute([$planId,$sportovecId,$vs]);return$vs;}catch(PDOException $exception){if($attempt===29)throw$exception;}
+        $vs=memberChargeAdminVariableSymbol('fee-payer:'.$payerAccountId,$attempt);
+        $used=$pdo->prepare('SELECT 1 FROM payments WHERE variable_symbol=? UNION SELECT 1 FROM member_fee_standing_orders WHERE variable_symbol=? UNION SELECT 1 FROM member_payer_variable_symbols WHERE variable_symbol=? LIMIT 1');$used->execute([$vs,$vs,$vs]);if($used->fetchColumn())continue;
+        try{$pdo->prepare('INSERT INTO member_payer_variable_symbols(payer_account_id,variable_symbol) VALUES (?,?)')->execute([$payerAccountId,$vs]);return$vs;}catch(PDOException $exception){$statement->execute([$payerAccountId]);$existing=$statement->fetchColumn();if(is_string($existing))return$existing;if($attempt===29)throw$exception;}
     }
     throw new MemberFeePlanException('Nepodařilo se přidělit stálý variabilní symbol pro trvalý příkaz.');
 }
@@ -113,9 +128,8 @@ function memberFeePlanPreview(PDO $pdo, int $planId, string $period): array
     if(!$plan||$plan['status']!=='active')throw new MemberFeePlanException('Aktivní plán nebyl nalezen.');
     if((string)$plan['starts_on']>$periodTo||(!empty($plan['ends_on'])&&(string)$plan['ends_on']<$periodFrom))throw new MemberFeePlanException('Plán v tomto měsíci není platný.');
     $dueOn=$period.'-'.str_pad((string)(int)$plan['due_day'],2,'0',STR_PAD_LEFT);
-    $members=$pdo->prepare("SELECT m.sportovec_id,s.jmeno,s.prijmeni FROM club_roster_members m JOIN sportovci s ON s.id=m.sportovec_id WHERE m.team_id=? AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) ORDER BY s.prijmeni,s.jmeno,s.id");
-    $members->execute([(int)$plan['team_id'],$periodTo,$periodFrom]);$rows=[];$ready=0;$skipped=0;
-    foreach($members->fetchAll(PDO::FETCH_ASSOC)as$member){$personId=(int)$member['sportovec_id'];$exclusion=$pdo->prepare('SELECT reason FROM member_fee_plan_exclusions WHERE plan_id=? AND sportovec_id=? AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) ORDER BY id DESC LIMIT 1');$exclusion->execute([$planId,$personId,$periodTo,$periodFrom]);$excluded=$exclusion->fetchColumn();$payer=memberFeePlanPayer($pdo,$personId,$periodFrom,$periodTo);$external='feeplan:'.$planId.':'.$period.':'.$personId;$existing=$pdo->prepare("SELECT id FROM club_member_charges WHERE source_system='member_fee_plan' AND source_external_id=?");$existing->execute([$external]);$charge=$existing->fetchColumn();
+    $members=memberFeePlanEligibleMembers($pdo,$planId,$periodFrom,$periodTo);$rows=[];$ready=0;$skipped=0;
+    foreach($members as$member){$personId=(int)$member['id'];$exclusion=$pdo->prepare('SELECT reason FROM member_fee_plan_exclusions WHERE plan_id=? AND sportovec_id=? AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) ORDER BY id DESC LIMIT 1');$exclusion->execute([$planId,$personId,$periodTo,$periodFrom]);$excluded=$exclusion->fetchColumn();$payer=memberFeePlanPayer($pdo,$personId,$periodFrom,$periodTo);$external='feeplan:'.$planId.':'.$period.':'.$personId;$existing=$pdo->prepare("SELECT id FROM club_member_charges WHERE source_system='member_fee_plan' AND source_external_id=?");$existing->execute([$external]);$charge=$existing->fetchColumn();
         $result='ready';$detail='Připraveno k vytvoření.';if($excluded!==false){$result='excluded';$detail='Výjimka: '.$excluded;}elseif($charge!==false){$result='existing';$detail='Předpis již existuje.';}elseif($payer===null){$result='missing_payer';$detail='Chybí aktivní ověřený účet plátce.';}
         if($result==='ready')$ready++;else$skipped++;$rows[]=['sportovec_id'=>$personId,'name'=>(string)$member['prijmeni'].' '.(string)$member['jmeno'],'payer_account_id'=>$payer,'external_id'=>$external,'result'=>$result,'detail'=>$detail,'existing_charge_id'=>$charge===false?null:(int)$charge];}
     $fingerprint=hash('sha256',json_encode(['plan_id'=>$planId,'period'=>$period,'plan_updated_at'=>$plan['updated_at'],'rows'=>$rows],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
@@ -128,7 +142,7 @@ function memberFeePlanGenerate(PDO $pdo,int $planId,string $period,int $actorId,
     $reason=memberChargeAdminReason($reason);if(!$confirmed||min($planId,$actorId)<1||preg_match('/^[a-f0-9]{64}$/D',$fingerprint)!==1)throw new InvalidArgumentException('Vytvoření vyžaduje náhled, hospodáře, důvod a potvrzení.');
     $pdo->beginTransaction();try{$existing=$pdo->prepare('SELECT id,generated_count,skipped_count FROM member_fee_plan_runs WHERE plan_id=? AND period_key=?');$existing->execute([$planId,$period]);$run=$existing->fetch(PDO::FETCH_ASSOC);if($run){$pdo->commit();return['id'=>(int)$run['id'],'generated_count'=>(int)$run['generated_count'],'skipped_count'=>(int)$run['skipped_count'],'idempotent'=>true];}
         if(!memberFeePlanRow($pdo,$planId,true))throw new MemberFeePlanException('Plán nebyl nalezen.');$preview=memberFeePlanPreview($pdo,$planId,$period);if(!hash_equals($preview['fingerprint'],$fingerprint))throw new MemberFeePlanException('Soupiska nebo plátci se od náhledu změnili. Obnovte náhled.');$settings=shopBankSettingsEffective($pdo);$created=[];
-        foreach($preview['rows']as&$row){if($row['result']!=='ready')continue;do{$code=memberChargeAdminPublicCode();$check=$pdo->prepare('SELECT 1 FROM club_member_charges WHERE public_code=?');$check->execute([$code]);}while($check->fetchColumn());$values=['amount_minor'=>(int)$preview['plan']['amount_minor'],'currency'=>(string)$preview['plan']['currency'],'due_on'=>$preview['due_on']];$pdo->prepare("INSERT INTO club_member_charges(sportovec_id,payer_account_id,public_code,charge_type,title_snapshot,period_from,period_to,amount_minor,currency,due_on,status,source_system,source_external_id,source_import_run_id) VALUES(?,?,?,'membership',?,?,?,?,?,?,'pending','member_fee_plan',?,NULL)")->execute([$row['sportovec_id'],$row['payer_account_id'],$code,$preview['plan']['charge_title'],$preview['period_from'],$preview['period_to'],$values['amount_minor'],$values['currency'],$values['due_on'],$row['external_id']]);$chargeId=(int)$pdo->lastInsertId();$standingVs=memberFeePlanStandingVariableSymbol($pdo,$planId,(int)$row['sportovec_id']);$payment=memberChargeAdminInsertPayment($pdo,$chargeId,$values,$settings,$row['external_id'],$actorId,null,'',$standingVs);memberChargeAdminEvent($pdo,$chargeId,'fee_plan_generate',null,'pending',$actorId,$reason,['plan_id'=>$planId,'period'=>$period,'payment_id'=>$payment['id'],'standing_order_variable_symbol'=>$standingVs]);$applied=clubFinanceAllocateCreditToCharge($pdo,(int)$row['sportovec_id'],$chargeId,$actorId,$reason);$row['charge_id']=$chargeId;$row['result']='created';$row['detail']='Předpis vytvořen se stálým VS '.$standingVs.($applied>0?' Použit přeplatek '.number_format($applied/100,2,',',' ').' Kč.':'');$created[]=$chargeId;}unset($row);
+        foreach($preview['rows']as&$row){if($row['result']!=='ready')continue;do{$code=memberChargeAdminPublicCode();$check=$pdo->prepare('SELECT 1 FROM club_member_charges WHERE public_code=?');$check->execute([$code]);}while($check->fetchColumn());$values=['amount_minor'=>(int)$preview['plan']['amount_minor'],'currency'=>(string)$preview['plan']['currency'],'due_on'=>$preview['due_on']];$pdo->prepare("INSERT INTO club_member_charges(sportovec_id,payer_account_id,public_code,charge_type,title_snapshot,period_from,period_to,amount_minor,currency,due_on,status,source_system,source_external_id,source_import_run_id) VALUES(?,?,?,'membership',?,?,?,?,?,?,'pending','member_fee_plan',?,NULL)")->execute([$row['sportovec_id'],$row['payer_account_id'],$code,$preview['plan']['charge_title'],$preview['period_from'],$preview['period_to'],$values['amount_minor'],$values['currency'],$values['due_on'],$row['external_id']]);$chargeId=(int)$pdo->lastInsertId();$standingVs=memberFeePlanStandingVariableSymbol($pdo,(int)$row['payer_account_id']);$payment=memberChargeAdminInsertPayment($pdo,$chargeId,$values,$settings,$row['external_id'],$actorId,null,'',$standingVs);memberChargeAdminEvent($pdo,$chargeId,'fee_plan_generate',null,'pending',$actorId,$reason,['plan_id'=>$planId,'period'=>$period,'payment_id'=>$payment['id'],'standing_order_variable_symbol'=>$standingVs]);$applied=clubFinanceAllocateCreditToCharge($pdo,(int)$row['sportovec_id'],$chargeId,$actorId,$reason);$row['charge_id']=$chargeId;$row['result']='created';$row['detail']='Předpis vytvořen se stálým VS '.$standingVs.($applied>0?' Použit přeplatek '.number_format($applied/100,2,',',' ').' Kč.':'');$created[]=$chargeId;}unset($row);
         $pdo->prepare('INSERT INTO member_fee_plan_runs(plan_id,period_key,preview_fingerprint,generated_count,skipped_count,actor_trainer_id,reason) VALUES(?,?,?,?,?,?,?)')->execute([$planId,$period,$fingerprint,count($created),(int)$preview['skipped_count'],$actorId,$reason]);$runId=(int)$pdo->lastInsertId();foreach($preview['rows']as$row)$pdo->prepare('INSERT INTO member_fee_plan_run_items(run_id,sportovec_id,payer_account_id,charge_id,result,detail) VALUES(?,?,?,?,?,?)')->execute([$runId,$row['sportovec_id'],$row['payer_account_id'],$row['charge_id']??$row['existing_charge_id'],$row['result'],$row['detail']]);$pdo->commit();return['id'=>$runId,'generated_count'=>count($created),'skipped_count'=>(int)$preview['skipped_count'],'idempotent'=>false];
     }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof MemberFeePlanException||$exception instanceof MemberChargeAdminException||$exception instanceof ShopCheckoutException)throw$exception;throw new MemberFeePlanException('Měsíční předpisy se nepodařilo vytvořit bez částečného zápisu.',0,$exception);}
 }

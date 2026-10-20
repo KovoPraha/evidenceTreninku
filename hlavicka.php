@@ -416,8 +416,10 @@ if ($is_logged_in) {
                             <li><a class="dropdown-item<?= _dropActive('kis_sync_center.php') ?>" href="kis_sync_center.php">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>KIS centrum</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_rosters_admin.php') ?>" href="kis_rosters_admin.php">
-                                <i class="bi bi-people-fill me-2 text-primary"></i>KIS týmy a soupisky</a></li>
+                                <i class="bi bi-people-fill me-2 text-primary"></i>Historické soupisky</a></li>
                             <?php if ($is_admin): ?>
+                            <li><a class="dropdown-item<?= _dropActive('kis_roster_hierarchy_admin.php') ?>" href="kis_roster_hierarchy_admin.php">
+                                <i class="bi bi-diagram-3 me-2 text-primary"></i>Skupiny a soupisky</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_current_rosters_admin.php') ?>" href="kis_current_rosters_admin.php">
                                 <i class="bi bi-arrow-right-circle me-2 text-primary"></i>Převod soupisek 2026/27</a></li>
                             <?php endif; ?>

@@ -14,6 +14,7 @@ if ($confirm !== 'DEAKTIVOVAT' || $appRoot === false || !is_file($appRoot . '/co
 }
 
 require $appRoot . '/config.php';
+require_once $appRoot . '/includes/uat_roster_cleanup.php';
 foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS'] as $constant) {
     if (!defined($constant)) {
         fwrite(STDERR, "production_test_cleanup_missing_database_configuration\n");
@@ -117,14 +118,7 @@ try {
     );
     $children->execute();
 
-    $roster = $pdo->prepare(
-        "UPDATE club_roster_members m JOIN club_teams t ON t.id=m.team_id "
-        . "JOIN sportovci s ON s.id=m.sportovec_id "
-        . "SET m.status='removed',m.valid_to=GREATEST(m.valid_from,CURRENT_DATE),m.updated_at=CURRENT_TIMESTAMP "
-        . "WHERE t.code='TEST-UAT-DETI' AND m.source='admin' AND m.status='active' "
-        . "AND LOWER(s.prijmeni)='tester' AND (LOWER(s.jmeno) IN ('ema','adam') OR s.jmeno LIKE 'Platba%')"
-    );
-    $roster->execute();
+    kisUatCleanupRosterMemberships($pdo, (string)$pdo->query('SELECT CURRENT_DATE')->fetchColumn());
 
     $events = $pdo->prepare(
         "UPDATE club_events SET status='closed',planning_status='cancelled',visibility='staff',updated_at=CURRENT_TIMESTAMP "
