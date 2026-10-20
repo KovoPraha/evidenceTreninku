@@ -1,0 +1,57 @@
+name: Produkcni prohlizecovy UAT rodice
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro spusteni napiste presne OVERIT-RODICE-BEZ-OBJEDNAVKY'
+        required: true
+        type: string
+      product_id:
+        description: 'Verejny produkt krouzku (vychozi Pumptrack)'
+        required: true
+        default: '266'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+jobs:
+  parent-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      KIS_UAT_WINDOW_END: ${{ vars.KIS_UAT_WINDOW_END }}
+      KIS_UAT_PRODUCT_ID: ${{ inputs.product_id }}
+    steps:
+      - name: Overit hranice testu
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          test "$POTVRZENI" = 'OVERIT-RODICE-BEZ-OBJEDNAVKY'
+          test -n "$KIS_UAT_WINDOW_END"
+          [[ "$KIS_UAT_PRODUCT_ID" =~ ^[1-9][0-9]*$ ]]
+          test "$(TZ=Europe/Prague date -d "$KIS_UAT_WINDOW_END" +%s)" -gt "$(date +%s)"
+
+      - name: Stahnout kod
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Nainstalovat izolovany Chromium
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/kis-parent-uat --ignore-scripts --no-audit --no-fund --save-exact playwright@1.56.1
+          /tmp/kis-parent-uat/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Projit cestu rodice bez odeslani objednavky
+        env:
+          KIS_UAT_TEST_PASSWORD: ${{ secrets.KIS_UAT_TEST_PASSWORD }}
+          NODE_PATH: /tmp/kis-parent-uat/node_modules
+        run: node .github/scripts/parent-browser-uat.cjs
