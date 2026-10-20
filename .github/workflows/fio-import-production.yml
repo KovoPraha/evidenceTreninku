@@ -66,7 +66,7 @@ jobs:
           cat > /tmp/run-fio-date-diagnostic.php <<'PHP'
           <?php
           declare(strict_types=1);
-          $root=getenv('APP_ROOT');$host=getenv('APP_HOST');
+          $root=$argv[1]??null;$host=$argv[2]??null;
           if(!is_string($root)||!is_string($host))exit(64);
           $_SERVER['HTTP_HOST']=$host;$_SERVER['SERVER_NAME']=$host;
           require $root.'/config.php';require $root.'/includes/fio_readonly_import.php';
@@ -85,7 +85,7 @@ jobs:
           echo json_encode(['period'=>'2026-09-21/2026-09-27','count'=>count($movements),'date_shapes'=>$shapes],JSON_THROW_ON_ERROR).PHP_EOL;
           PHP
           "${SCP[@]}" /tmp/run-fio-date-diagnostic.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-date-diagnostic.php"
-          "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' php '$DEPLOY_BASE/run-fio-date-diagnostic.php'"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-fio-date-diagnostic.php' '$REMOTE_DIR' '$APP_HOST'"
 
       - name: Uklidit spouštěcí soubor
         if: always()
