@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       rezim:
-        description: 'Ověřit spojení, zapnout nebo nouzově vypnout Fio synchronizaci'
+        description: 'Zjistit účet tokenu, ověřit spojení, zapnout nebo nouzově vypnout Fio synchronizaci'
         required: true
         type: choice
-        options: [verify, enable, disable]
+        options: [identify, verify, enable, disable]
       potvrzeni:
-        description: 'Pro ověření OVERIT-FIO; pro změny ZAPNOUT-FIO-READONLY, ZAPNOUT-FIO-AUTOMAT nebo VYPNOUT-FIO'
+        description: 'ZOBRAZIT-FIO-UCET, OVERIT-FIO, ZAPNOUT-FIO-READONLY, ZAPNOUT-FIO-AUTOMAT nebo VYPNOUT-FIO'
         required: true
         type: string
       automaticke_potvrzeni:
@@ -18,6 +18,10 @@ on:
         default: false
       historie_od:
         description: 'První synchronizace od YYYY-MM-DD; prázdné = 30 dní, uložený postup má přednost'
+        type: string
+        required: false
+      ocekavana_koncovka:
+        description: 'Pro zjištění účtu: schválené poslední čtyři číslice IBANu'
         type: string
         required: false
 
@@ -35,6 +39,25 @@ env:
   CONFIG_BACKUP_DIR: data/.kis-backups/config
 
 jobs:
+  ucet:
+    name: Zjistit účet Fio tokenu bez importu
+    if: inputs.rezim == 'identify'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 5
+    steps:
+      - name: Ověřit ruční volbu
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: test "$POTVRZENI" = 'ZOBRAZIT-FIO-UCET'
+      - name: Stáhnout čtecí nástroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Načíst ověřený IBAN a BIC z Fio
+        env:
+          FIO_API_TOKEN_VALUE: ${{ secrets.KIS_FIO_API_TOKEN }}
+          EXPECTED_SUFFIX: ${{ inputs.ocekavana_koncovka }}
+        run: php bin/verify-fio-connection.php describe-token
+
   overit:
     name: Ověřit Fio token a účet bez změny produkce
     if: inputs.rezim == 'verify'
@@ -96,7 +119,7 @@ jobs:
 
   nastavit:
     name: Fio read-only (kis.kovopraha.cz)
-    if: github.ref == 'refs/heads/main' && inputs.rezim != 'verify'
+    if: github.ref == 'refs/heads/main' && inputs.rezim != 'verify' && inputs.rezim != 'identify'
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 15

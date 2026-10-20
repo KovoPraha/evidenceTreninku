@@ -36,12 +36,16 @@ function fioConnectionProductionAccount(): void
     ], JSON_THROW_ON_ERROR) . PHP_EOL;
 }
 
-function fioConnectionVerifyToken(): void
+function fioConnectionVerifyToken(bool $describe = false): void
 {
     $token = (string)getenv('FIO_API_TOKEN_VALUE');
     $expected = fioConnectionNormalizeIban((string)getenv('EXPECTED_IBAN'));
-    if (preg_match('/^[A-Za-z0-9_-]{20,128}$/D', $token) !== 1 || $expected === '') {
+    $suffix = (string)getenv('EXPECTED_SUFFIX');
+    if (preg_match('/^[A-Za-z0-9_-]{20,128}$/D', $token) !== 1 || (!$describe && $expected === '')) {
         throw new RuntimeException('Fio token or expected IBAN is missing or invalid.');
+    }
+    if ($describe && preg_match('/^[0-9]{4}$/D', $suffix) !== 1) {
+        throw new RuntimeException('Expected account suffix must contain four digits.');
     }
     $today = (new DateTimeImmutable('today', new DateTimeZone('Europe/Prague')))->format('Y-m-d');
     $url = 'https://fioapi.fio.cz/v1/rest/periods/' . rawurlencode($token)
@@ -70,6 +74,18 @@ function fioConnectionVerifyToken(): void
     if ($actual === '') {
         throw new RuntimeException('Fio response has no accountStatement.info.iban.');
     }
+    if ($describe) {
+        if (!hash_equals($suffix, substr($actual, -4))) {
+            throw new RuntimeException('Fio token account does not have the approved suffix.');
+        }
+        $bic = strtoupper(trim((string)($document['accountStatement']['info']['bic'] ?? '')));
+        if (preg_match('/^CZ[0-9]{22}$/D', $actual) !== 1
+            || ($bic !== '' && preg_match('/^[A-Z0-9]{8}(?:[A-Z0-9]{3})?$/D', $bic) !== 1)) {
+            throw new RuntimeException('Fio account IBAN or BIC has an invalid format.');
+        }
+        echo json_encode(['ok' => true, 'iban' => $actual, 'bic' => $bic], JSON_THROW_ON_ERROR) . PHP_EOL;
+        return;
+    }
     if (!hash_equals($expected, $actual)) {
         throw new RuntimeException(sprintf(
             'Fio token belongs to a different account (KIS ends %s; Fio ends %s).',
@@ -85,6 +101,7 @@ try {
     match ($argv[1] ?? '') {
         'production-account' => fioConnectionProductionAccount(),
         'verify-token' => fioConnectionVerifyToken(),
+        'describe-token' => fioConnectionVerifyToken(true),
         default => throw new RuntimeException('Unsupported probe mode.'),
     };
 } catch (Throwable $exception) {
