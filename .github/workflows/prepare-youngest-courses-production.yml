@@ -1,0 +1,117 @@
+name: Připravit soupisky nejmenších 2026/27
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro zápis napište přesně PRIPRAVIT-NEJMENSI-2026-27'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    steps:
+      - name: Ověřit cíl a potvrzení
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          test "$POTVRZENI" = 'PRIPRAVIT-NEJMENSI-2026-27'
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+
+      - name: Stáhnout aktuální commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Ověřit verzi a stav před zápisem
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$REMOTE_DIR/var/deployment.json" /tmp/kis-youngest-deployment.json
+          test "$(jq -r '.sha' /tmp/kis-youngest-deployment.json)" = "$GITHUB_SHA"
+          production_retry_capture "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' php '$REMOTE_DIR/bin/prepare-youngest-courses.php' --dry-run" | tee /tmp/kis-youngest-preview.json
+          jq -e '.mode == "dry-run" and .created == 0 and (.groups | length) == 3 and all(.groups[]; .purchase == "email_only")' /tmp/kis-youngest-preview.json >/dev/null
+
+      - name: Zálohovat databázi
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php"
+          cat > /tmp/run-youngest-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require __DIR__ . '/db-backup.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-youngest-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-youngest-backup.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-youngest-backup.php'" | tee /tmp/kis-youngest-backup.json
+          jq -e '.ok == true and .tables > 0 and (.sha256|length) == 64' /tmp/kis-youngest-backup.json >/dev/null
+
+      - name: Připravit a zkontrolovat interní soupisky
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry_capture "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' YOUNGEST_COURSES_CONFIRM=PRIPRAVIT-NEJMENSI-2026-27 php '$REMOTE_DIR/bin/prepare-youngest-courses.php' --apply" | tee /tmp/kis-youngest-applied.json
+          jq -e '.mode == "apply" and (.groups | length) == 3 and all(.groups[]; .program_id > 0 and .team_id > 0 and .purchase == "email_only")' /tmp/kis-youngest-applied.json >/dev/null
+          production_retry_capture "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' php '$REMOTE_DIR/bin/prepare-youngest-courses.php' --dry-run" | tee /tmp/kis-youngest-recheck.json
+          jq -e '.mode == "dry-run" and .created == 0 and (.groups | length) == 3 and all(.groups[]; .program_id > 0 and .purchase == "email_only")' /tmp/kis-youngest-recheck.json >/dev/null
+
+      - name: Uklidit dočasnou zálohovací obálku
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-youngest-backup.php /tmp/kis-youngest-*.json
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-youngest-backup.php'"
+          fi
