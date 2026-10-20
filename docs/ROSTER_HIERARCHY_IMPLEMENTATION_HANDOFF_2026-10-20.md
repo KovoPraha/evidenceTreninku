@@ -1,6 +1,6 @@
 # Skupiny, soupisky a časové členství – implementační předání
 
-Stav: lokální implementace ve větvi `codex/roster-hierarchy-20261020`. Tento dokument není potvrzením nasazení ani změny produkčních dat. Původní požadavky a rozhodnutí jsou v `ROSTER_GROUPS_TRAINING_SEASON_IMPLEMENTATION_PLAN_2026-10-20.md`.
+Stav: implementace sloučena z PR #138 a nasazena na `kis.kovopraha.cz` jako `4991c91f966eb65852876fd0084dd6ad041e3b69` v [běhu 39472709660](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472709660). Migrace jsou aktuální (`catalog_count=106`, `pending=[]`); deploy neprováděl přiřazení živých soupisek ani zapnutí plateb či plánovaného opakování nabídek. Původní požadavky a rozhodnutí jsou v `ROSTER_GROUPS_TRAINING_SEASON_IMPLEMENTATION_PLAN_2026-10-20.md`.
 
 ## Co je připraveno
 
@@ -13,9 +13,9 @@ Stav: lokální implementace ve větvi `codex/roster-hierarchy-20261020`. Tento 
 
 ## Neprovedené kroky a bezpečné uvedení do provozu
 
-1. Zálohovat produkční databázi a ověřit obnovu. Na kopii stejné verze MariaDB provést všechny čtyři nové migrace `20261021090000` až `20261021130000`, kontrolu klíčů a ruční průchod administrací. Lokální automatické testy běží se SQLite; produkční MariaDB a živá data zde ověřeny nebyly.
+1. Produkční workflow vytvořilo a ověřilo zálohu a aplikovalo migrace. Zpětné obnovení této konkrétní zálohy a úplný uživatelský průchod na kopii produkčních dat dosud ověřeny nebyly; před hromadným datovým zařazením je vhodné je provést. CI ověřilo MariaDB 10.3 i 11.4.
 2. V náhledu starých skupin zkontrolovat nejasné vazby a rozhodnout konkrétní zařazení současných soupisek pod Třebešín, Točnou a závodní tým. Před zápisem projít náhled překryvů a dopadu. Historické tréninky, odpovědi, přihlášky a objednávky nepřepisovat plošně.
 3. Na kopii dat ověřit případy z původního plánu: dvě soupisky v jedné skupině, listopad versus březen, trénink celé skupiny a jedné soupisky, editace a duplikace, akce, pozdní úhrada staré nabídky, jeden měsíční předpis a společná rodinná platba. Zkontrolovat paritu počtů před/po migraci.
 4. Pro používané kroužky po kontrole ceny, kapacity a podmínek jednou nastavit opakování nabídky. Plánovaný generátor a jeho zápis zapnout až po produkčním dry-runu s očekávanými počty. Měsíční předpisy i rozdělení bankovních plateb spouštět nejprve v malém ručně kontrolovaném rozsahu.
 
-Nejsou v tomto kroku převedeny nejednoznačné staré skupiny, nejsou automaticky vytvořeny rodičovské vazby pro všechny produkční soupisky a nebyla spuštěna nová fakturace ani produkční migrace.
+Živá administrace ukázala 43 soupisek bez skupiny a read-only porovnání starých názvů 0 přesných shod a 46 položek bez vazby. Nejsou převedeny nejednoznačné staré skupiny, nejsou automaticky vytvořeny rodičovské vazby pro produkční soupisky a nebyla spuštěna nová fakturace ani generátor nabídek.

@@ -1,5 +1,28 @@
 # Aktuální předání vývoje na další stanici
 
+Produkční doplnění: 20. 10. 2026, Europe/Prague. Hierarchie skupin a soupisek,
+časové členství, sjednocené cílení tréninků a akcí, opakované nabídky kroužků
+a rozdělení rodinných bankovních plateb jsou nasazené z PR
+[#138](https://github.com/KovoPraha/evidenceTreninku/pull/138). Přesný aplikační
+SHA je `4991c91f966eb65852876fd0084dd6ad041e3b69`;
+[deploy 39472709660](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472709660)
+prošel zálohou, 106 migracemi bez čekajících kroků, aktivací, ochranou
+soukromého klíče a HTTP smoke testem. [CI 39472026706](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472026706)
+ověřilo PHPUnit i MariaDB 10.3/11.4. Živá stránka správy hierarchie se načetla
+v roli Registrář. První pokus o deploy skončil po aktivaci na síťovém timeoutu
+runneru; druhý běh stejného SHA dokončil celý protokol.
+
+**Další krok je datové zařazení, nikoli opakovaný import osob:** 43 živých
+soupisek zatím nemá skupinu a read-only mapování starých skupin/podskupin
+ukazuje 0 přesných shod a 46 položek bez vazby. V administraci je třeba
+založit cílové skupiny, ověřit každé zařazení a použít náhled dopadu;
+historické tréninky a přihlášky se nepřepisují. Generátor nových nabídek,
+automatické bankovní párování a plné UAT zůstávají vypnuté.
+Podrobný postup je v
+[předání hierarchie](ROSTER_HIERARCHY_IMPLEMENTATION_HANDOFF_2026-10-20.md).
+
+Následující doplnění je historický stav před PR #138.
+
 Produkční doplnění: 20. 10. 2026, Europe/Prague
 
 Aktuální důkazy nasazení a prohlížečového ověření shrnuje
