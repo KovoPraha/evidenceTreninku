@@ -86,6 +86,21 @@ final class AthleteRegistrationTest extends TestCase
         );
     }
 
+    public function testFederationBirthNumberSharingIsSeparatelyRecordedAndOptional(): void
+    {
+        foreach ([false, true] as $accepted) {
+            $pdo = $this->database();
+            $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) VALUES('athlete_registration','athlete-registration-v1','csc_birth_number_sharing','csc-v1','Volitelný souhlas s předáním rodného čísla ČSC.','system',0)");
+            $terms = \athleteRegistrationCurrentTerms($pdo);
+            $input = $this->validInput('2012-03-04', $this->syntheticBirthNumber('2012-03-04'));
+            $input['csc_birth_number_sharing'] = $accepted;
+            \athleteRegistrationSubmit($pdo, 1, $input, $this->versions($terms), null, $this->sensitiveConfig());
+            $row = $pdo->query("SELECT accepted,terms_version FROM athlete_registration_consent_snapshots WHERE purpose='csc_birth_number_sharing'")->fetch(PDO::FETCH_ASSOC);
+            self::assertSame($accepted ? 1 : 0, (int)$row['accepted']);
+            self::assertSame('csc-v1', $row['terms_version']);
+        }
+    }
+
     public function testForeignerWithoutAssignedNumberStoresNoSubstituteAndOptionalPhotoIsPrivate(): void
     {
         $pdo = $this->database();

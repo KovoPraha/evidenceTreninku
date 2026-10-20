@@ -72,13 +72,27 @@ Veřejný souhlas nevytváří veřejnou kopii ani URL.
 
 ## Retence a výmaz
 
-Do doplnění konkrétního právního zdroje jsou výchozí lhůty předběžné:
+Vlastník 20. 10. 2026 potvrdil, že TJ KOVO žádá o státní podporu a předává
+rodná čísla evidovaných sportovců NSA do Rejstříku sportu podle § 3e odst. 2
+písm. c) zákona č. 115/2001 Sb. Rodné číslo klub uchovává po dobu členství.
+Předání rodného čísla ČSC se eviduje odděleným, volitelným souhlasem. Bez
+zaznamenaného souhlasu k tomuto účelu jej klub ČSC nepředá.
 
-- zamítnutá nebo zrušená žádost: 30 dní;
-- po ukončení členství: 90 dní;
-- audit přístupů: doporučeně 3 roky;
-- aktivní členství: pouze po dobu trvání doloženého účelu.
+- Při zamítnutí nebo zrušení žádosti systém nastaví `retention_pending` a
+  `retention_until` na 30 dní od rozhodnutí. Administrátor s pozicí registrátor
+  provede po uplynutí lhůty chráněnou akci `erase_due` v
+  `athlete_sensitive_admin.php` (POST, CSRF, `confirm=VYMAZAT-PO-LHUTE`).
+  Jedna transakce vymaže nejvýše 100 splatných záznamů; akci je nutné opakovat,
+  dokud vrací `erased_count=0`. Provoz musí tento krok pravidelně vykonávat;
+  pouhé dosažení data výmaz samo nespustí.
+- Po ukončení členství administrátor zkontroluje zákonné výjimky a provede
+  chráněnou akci `erase` se `record_id`, důvodem alespoň 10 znaků a
+  `confirm=VYMAZAT-RODNE-CISLO`. Výmaz je auditovaný. Při konkrétní povinnosti
+  či nároku vyžadujícím delší uchování zaznamená důvod a omezenou lhůtu;
+  samotná registrace dobu po skončení členství automaticky neprodlužuje.
+- Fotografie a ostatní údaje žádosti mají samostatný retenční režim; výmaz
+  rodného čísla je sám neodstraní.
 
 Výmaz přepíše ciphertext, nonce a slepý index náhodnými bajty a nastaví stav
-`erased`; zůstává ne-PII audit. Produkční aktivace je blokovaná, dokud vlastník
-nedoplní konkrétní právní zdroj, konečné lhůty a pravidlo pro spor/kontrolu.
+`erased`; zůstává ne-PII audit. Před ostrou registrací musí být odpovědnost za
+pravidelné spuštění výmazu a kontrolu ukončených členství provozně přidělena.
