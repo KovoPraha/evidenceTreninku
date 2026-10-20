@@ -23,7 +23,7 @@ function shopStorefrontCatalog(PDO $pdo): array
                 'offer_type' => (string)$row['offer_type'],
                 'origin' => $row['origin'] === null ? null : (string)$row['origin'],
                 'external_product_key' => $row['external_product_key'] === null ? null : (string)$row['external_product_key'],
-                'public_name' => (string)$row['public_name'],
+                'public_name' => shopProductPublicName($row),
                 'public_summary' => (string)$row['public_summary'],
                 'variants' => [],
                 'images' => [],

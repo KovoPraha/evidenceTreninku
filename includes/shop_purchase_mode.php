@@ -48,6 +48,21 @@ function shopProductIsInterestOnlyYoungestCourse(array $product): bool
         && str_starts_with((string)($product['external_product_key'] ?? ''), 'shoptet:');
 }
 
+/** @param array<string,mixed> $product */
+function shopProductPublicName(array $product): string
+{
+    $sourceName = (string)($product['public_name'] ?? '');
+    if (!shopProductIsInterestOnlyYoungestCourse($product)) return $sourceName;
+
+    // Imported lesson titles contain a historical weekday/time. These courses
+    // open irregularly, so show only their reviewed age groups in public UI.
+    return match ((int)$product['product_id']) {
+        157 => 'Děti 8–14 měsíců',
+        158 => 'Děti 1–2 roky',
+        159 => 'Děti 2–3 roky',
+    };
+}
+
 /**
  * Legacy catalog rows can still be marked as goods even when their public
  * identity clearly describes a sportsperson-bound offer. Fail closed: these
