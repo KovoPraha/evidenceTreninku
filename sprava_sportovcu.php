@@ -17,6 +17,8 @@ $editId = max(0, (int)($_GET['edit_id'] ?? 0));
 $editError = '';
 $editInput = [];
 $revealed = null;
+$birthEditValue = '';
+$editorLastAction = '';
 
 function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -36,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $akce = $_POST['akce'] ?? '';
+    $editorLastAction = is_string($akce) ? $akce : '';
 
     if ($akce === 'create') {
         if (!roleAtLeast('admin')) {
@@ -143,25 +146,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $createError = 'Osobu se nepodařilo bezpečně založit.';
             }
         }
-    } elseif (in_array($akce, ['save', 'reveal_person'], true)) {
+    } elseif (in_array($akce, ['save', 'reveal_person', 'load_birth_number', 'save_birth_number', 'save_parent', 'unlink_parent', 'attach_account', 'revoke_account', 'add_roster'], true)) {
         $editId = max(0, (int)($_POST['id'] ?? 0));
         try {
-            if ($akce === 'save') {
-                sportovecEditorSave($pdo, $editId, $_POST, (int)$_SESSION['trener_id']);
-                $_SESSION['flash_success'] = 'Osobní a kontaktní údaje sportovce byly uloženy.';
+            if (!in_array($akce, ['reveal_person','load_birth_number'], true)) {
+                $actor = (int)$_SESSION['trener_id'];
+                $fragment = 'edit-card';
+                if ($akce === 'save') {
+                    sportovecEditorSave($pdo, $editId, $_POST, $actor);
+                    $notice = 'Osobní a kontaktní údaje sportovce byly uloženy.';
+                } elseif ($akce === 'save_birth_number') {
+                    sportovecEditorSaveBirthNumber($pdo, $editId, (string)($_POST['birth_number'] ?? ''), (string)($_POST['birth_date'] ?? ''), (string)($_POST['reason'] ?? ''), $actor, null, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+                    $notice = 'Rodné číslo a odpovídající datum narození byly uloženy.'; $fragment = 'birth-number-title';
+                } elseif ($akce === 'save_parent') {
+                    sportovecEditorSaveParent($pdo, $editId, (string)($_POST['link_key'] ?? ''), $_POST, $actor);
+                    $notice = 'Rodič a jeho kontaktní údaje byly uloženy.'; $fragment = 'parents-title';
+                } elseif ($akce === 'unlink_parent') {
+                    sportovecEditorUnlinkParent($pdo, $editId, (string)($_POST['link_key'] ?? ''), $actor);
+                    $notice = 'Rodič byl odpojen od sportovce.'; $fragment = 'parents-title';
+                } elseif ($akce === 'attach_account') {
+                    sportovecEditorGuardianAccount($pdo, $editId, (int)($_POST['account_id'] ?? 0), $actor, (string)($_POST['reason'] ?? ''), (string)($_POST['contact_key'] ?? ''));
+                    $notice = 'Účet rodiče byl propojen se sportovcem.'; $fragment = 'accounts-title';
+                } elseif ($akce === 'revoke_account') {
+                    sportovecEditorRevokeAccount($pdo, $editId, (int)($_POST['relation_id'] ?? 0), $actor, 'Odpojení rodičovského přístupu z detailu sportovce.');
+                    $notice = 'Přístup účtu rodiče k tomuto sportovci byl odpojen.'; $fragment = 'accounts-title';
+                } else {
+                    sportovecEditorAddRoster($pdo, $editId, (int)($_POST['team_id'] ?? 0), $actor, (string)($_POST['valid_from'] ?? ''), (string)($_POST['reason'] ?? ''));
+                    $notice = 'Zařazení sportovce do soupisky je uložené.'; $fragment = 'rosters-title';
+                }
+                $_SESSION['flash_success'] = $notice;
                 header('Location: sprava_sportovcu.php?' . http_build_query(array_merge(
                     array_intersect_key($_GET, array_flip(['q','stav','kis','sort','dir','pp','p'])),
                     ['edit_id' => $editId]
-                )) . '#edit-card');
+                )) . '#' . $fragment);
                 exit;
             }
-            $revealed = sportovecEditorReveal($pdo, $editId, (string)($_POST['reason'] ?? ''), null, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+            $readResult = sportovecEditorReveal($pdo, $editId, (string)($_POST['reason'] ?? ''), null, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+            $birthEditValue = $readResult['current_birth_number'];
+            if ($akce === 'reveal_person') $revealed = $readResult;
         } catch (Throwable $exception) {
+            if ($akce === 'save_birth_number' && is_string($_POST['birth_number'] ?? null)) $birthEditValue = $_POST['birth_number'];
             if ($akce === 'save') {
                 $editInput = array_intersect_key($_POST, sportovecEditorFields() + ['country' => [], 'contact_address' => []]);
                 $editInput = array_filter($editInput, 'is_string');
             }
-            $editError = $exception instanceof InvalidArgumentException
+            $editError = $exception instanceof InvalidArgumentException || $exception instanceof PersonSensitiveException || $exception instanceof AccountPersonRoleException || $exception instanceof KisRosterException
                 ? $exception->getMessage()
                 : 'Údaje se nepodařilo bezpečně načíst nebo uložit. Zkuste akci znovu.';
             if (!$exception instanceof InvalidArgumentException) error_log('sportovec editor: ' . get_class($exception));

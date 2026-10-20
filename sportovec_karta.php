@@ -4,6 +4,7 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sportovec_status_lib.php';
 require_once __DIR__ . '/includes/sportovec_history_lib.php';
 require_once __DIR__ . '/includes/club_finance.php';
+require_once __DIR__ . '/includes/sportovec_editor.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_sportovcu')) {
     header('Location: login.php');
@@ -18,6 +19,9 @@ function d(?string $date): string {
 }
 function money($v): string { return number_format((float)$v, 2, ',', ' ') . ' Kč'; }
 
+header('Cache-Control: no-store, private');
+$activeTab = in_array($_GET['tab'] ?? '', ['prehled','kis','sport','poznamky','historie'], true) ? $_GET['tab'] : 'prehled';
+
 $sportovecId = (int)($_GET['sportovec_id'] ?? $_GET['id'] ?? 0);
 if ($sportovecId <= 0) {
     header('Location: sprava_sportovcu.php');
@@ -31,7 +35,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $action = $_POST['action'] ?? '';
+    $action = $_POST['action'] ?? $_POST['akce'] ?? '';
+    if ($action === 'add_roster') {
+        try {
+            sportovecEditorAddRoster($pdo, $sportovecId, (int)($_POST['team_id'] ?? 0), (int)$_SESSION['trener_id'], (string)($_POST['valid_from'] ?? ''), (string)($_POST['reason'] ?? ''));
+            $_SESSION['flash_success'] = 'Zařazení sportovce do soupisky je uložené.';
+        } catch (Throwable $exception) {
+            $_SESSION['flash_error'] = $exception instanceof InvalidArgumentException || $exception instanceof KisRosterException
+                ? $exception->getMessage() : 'Zařazení do soupisky se nepodařilo uložit.';
+        }
+        header('Location: sportovec_karta.php?sportovec_id=' . $sportovecId . '&tab=kis#rosters-title');
+        exit;
+    }
     if ($action === 'set_status') {
         $stav = $_POST['stav_clenstvi'] ?? 'cekajici';
         if (!in_array($stav, ['aktivni','cekajici','neaktivni','archiv'], true)) {
@@ -110,6 +125,9 @@ if (!$sportovec) {
     exit;
 }
 $status = sportovecStatusCompute($sportovec);
+$editId = $sportovecId;
+$editorActionUrl = 'sportovec_karta.php?sportovec_id=' . $sportovecId . '&tab=kis#rosters-title';
+$editContext = ['rosters' => sportovecEditorRosters($pdo, $sportovecId), 'payments' => sportovecEditorPayments($pdo, $sportovecId)];
 $financeBalance=null;
 if (staffActivePositionIs('registrar') || staffActivePositionIs('finance_manager')) {
     try { $financeBalance=clubFinanceBalanceForAthlete($pdo,$sportovecId); }
@@ -199,6 +217,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
             </div>
             <div class="d-flex gap-2 flex-wrap">
                 <span class="badge <?= h($status['class']) ?> fs-6"><?= h($status['label']) ?><?= $status['manual'] ? ' ručně' : '' ?></span>
+                <a href="sprava_sportovcu.php?edit_id=<?= (int)$sportovecId ?>#edit-card" class="btn btn-outline-light btn-sm">Upravit údaje</a>
                 <a href="sprava_sportovcu.php" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Správa</a>
                 <a href="sportovec_detail.php?id=<?= (int)$sportovecId ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-eye"></i> Starý detail</a>
                 <?php if (!empty($sportovec['id'])): ?>
@@ -217,15 +236,15 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
     </div>
 
     <ul class="nav nav-tabs mb-3" role="tablist">
-        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#prehled" type="button">Přehled</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#kis" type="button">KIS a platby</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#sport" type="button">Sport</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#poznamky" type="button">Poznámky</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#historie" type="button">Historie</button></li>
+        <li class="nav-item"><button class="nav-link <?= $activeTab === 'prehled' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#prehled" type="button">Přehled</button></li>
+        <li class="nav-item"><button class="nav-link <?= $activeTab === 'kis' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#kis" type="button">KIS a platby</button></li>
+        <li class="nav-item"><button class="nav-link <?= $activeTab === 'sport' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#sport" type="button">Sport</button></li>
+        <li class="nav-item"><button class="nav-link <?= $activeTab === 'poznamky' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#poznamky" type="button">Poznámky</button></li>
+        <li class="nav-item"><button class="nav-link <?= $activeTab === 'historie' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#historie" type="button">Historie</button></li>
     </ul>
 
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="prehled">
+        <div class="tab-pane fade <?= $activeTab === 'prehled' ? 'show active' : '' ?>" id="prehled">
             <div class="row g-3">
                 <div class="col-lg-7">
                     <div class="card section-card">
@@ -273,7 +292,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
             </div>
         </div>
 
-        <div class="tab-pane fade" id="kis">
+        <div class="tab-pane fade <?= $activeTab === 'kis' ? 'show active' : '' ?>" id="kis">
             <div class="card section-card">
                 <div class="card-header bg-white fw-semibold">KIS stav a soupisky</div>
                 <div class="card-body">
@@ -289,9 +308,13 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                     </dl>
                 </div>
             </div>
+            <div class="card section-card mt-3"><div class="card-body">
+                <?php require __DIR__ . '/includes/sportovec_editor_rosters_view.php'; ?>
+                <?php require __DIR__ . '/includes/sportovec_editor_payments_view.php'; ?>
+            </div></div>
         </div>
 
-        <div class="tab-pane fade" id="sport">
+        <div class="tab-pane fade <?= $activeTab === 'sport' ? 'show active' : '' ?>" id="sport">
             <div class="row g-3">
                 <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Poslední tréninky</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($treninky as $t): ?><tr><td><?= d($t['datum']) ?></td><td><?= h($t['kategorie'] ?: '—') ?></td><td><?= h(mb_strimwidth((string)$t['napln'], 0, 70, '…', 'UTF-8')) ?></td></tr><?php endforeach; if (!$treninky): ?><tr><td class="text-muted p-3">Žádné tréninky.</td></tr><?php endif; ?></table></div></div></div>
                 <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Závody</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($zavody as $z): ?><tr><td><?= d($z['datum']) ?></td><td><?= h($z['kategorie']) ?></td><td><a href="zavod_detail.php?id=<?= (int)$z['id'] ?>"><?= h(mb_strimwidth((string)$z['popis'], 0, 60, '…', 'UTF-8')) ?></a></td><td><?= h($z['cas'] ?? '') ?></td></tr><?php endforeach; if (!$zavody): ?><tr><td class="text-muted p-3">Žádné závody.</td></tr><?php endif; ?></table></div></div></div>
@@ -300,7 +323,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
             </div>
         </div>
 
-        <div class="tab-pane fade" id="poznamky">
+        <div class="tab-pane fade <?= $activeTab === 'poznamky' ? 'show active' : '' ?>" id="poznamky">
             <div class="card section-card mb-3">
                 <div class="card-header bg-white fw-semibold">Přidat interní poznámku</div>
                 <div class="card-body">
@@ -315,7 +338,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
             <div class="card section-card"><div class="card-header bg-white fw-semibold">Poznámky</div><div class="card-body"><?php foreach ($notes as $n): ?><div class="border-bottom pb-2 mb-2"><div class="small text-muted"><?= d($n['datum']) ?> · <?= h($n['trener_jmeno'] ?? '') ?></div><?= nl2br(h($n['text'])) ?></div><?php endforeach; if (!$notes): ?><div class="text-muted">Žádné interní poznámky.</div><?php endif; ?></div></div>
         </div>
 
-        <div class="tab-pane fade" id="historie">
+        <div class="tab-pane fade <?= $activeTab === 'historie' ? 'show active' : '' ?>" id="historie">
             <div class="card section-card">
                 <div class="card-header bg-white fw-semibold">Historie změn</div>
                 <div class="card-body">

@@ -11,7 +11,10 @@
         <div class="d-flex flex-wrap gap-2 mb-3">
             <?= sportovecStatusBadge($editPerson) ?>
             <a class="btn btn-outline-secondary btn-sm" href="sportovec_karta.php?sportovec_id=<?= (int)$editId ?>">Karta člena, skupiny a historie</a>
-            <a class="btn btn-outline-secondary btn-sm" href="eshop_identity_admin.php">Správa vazeb na rodiče a účty</a>
+            <a class="btn btn-outline-secondary btn-sm" href="#parents-title">Rodiče a účty</a>
+            <a class="btn btn-outline-secondary btn-sm" href="#rosters-title">Soupisky a zařazení</a>
+            <a class="btn btn-outline-secondary btn-sm" href="#payments-title">Všechny platby</a>
+            <a class="btn btn-outline-secondary btn-sm" href="#birth-number-title">Upravit RČ</a>
         </div>
         <form method="post" action="<?= h(spUrl(['edit_id' => $editId])) ?>#edit-card" id="sportovec-form">
             <?= csrf_field() ?>
@@ -50,38 +53,24 @@
             </div>
         </form>
 
-        <section class="mt-4" aria-labelledby="parents-title">
-            <h2 class="h6 border-bottom pb-2" id="parents-title">Rodiče a zákonní zástupci ze starého KIS</h2>
-            <?php if (!$editContext['parents']): ?><p class="text-muted">Ve zdrojovém KIS nejsou u tohoto člena uložené vazby na rodiče.</p><?php endif; ?>
-            <div class="row g-3">
-            <?php foreach ($editContext['parents'] as $parent): ?>
-                <div class="col-lg-6"><div class="border rounded p-3 h-100">
-                    <strong><?= h(sportovecEditorContactValues($parent['names_json']) ?: $parent['display_name']) ?></strong>
-                    <div><?= h($parent['relationship_label'] ?: 'Zákonný zástupce') ?> · kontakt <?= (int)$parent['source_slot'] ?></div>
-                    <dl class="row small mb-0 mt-2">
-                        <dt class="col-sm-3">E-mail</dt><dd class="col-sm-9 text-break"><?= h(sportovecEditorContactValues($parent['emails_json']) ?: 'Neuveden') ?></dd>
-                        <dt class="col-sm-3">Telefon</dt><dd class="col-sm-9"><?= h(sportovecEditorContactValues($parent['phones_json']) ?: 'Neuveden') ?></dd>
-                        <dt class="col-sm-3">Účet</dt><dd class="col-sm-9"><?= $parent['account_id'] ? '#' . (int)$parent['account_id'] . ' · ' . ($parent['account_active'] ? 'aktivní' : 'neaktivní') . ' · ' . ($parent['email_overeno'] ? 'e-mail ověřen' : 'e-mail neověřen') : 'Bez uživatelského účtu' ?></dd>
-                        <dt class="col-sm-3">Vazba</dt><dd class="col-sm-9"><?= h(['approved' => $parent['valid_to'] ? 'Ukončená' : 'Schválená', 'pending' => 'Čeká na ověření', 'revoked' => 'Zrušená'][$parent['relation_status'] ?? ''] ?? 'Pouze kontakt v původní evidenci') ?></dd>
-                    </dl>
-                    <div class="small text-muted">Zdroj: <?= h($parent['source_key']) ?></div>
-                </div></div>
-            <?php endforeach; ?>
-            </div>
+        <section class="mt-4" aria-labelledby="birth-number-title">
+            <h2 class="h5 border-bottom pb-2" id="birth-number-title">Upravit rodné číslo</h2>
+            <p class="small text-muted"><?= $editContext['sensitive'] ? 'Aktuální RČ je uložené v chráněné evidenci osoby.' : 'RČ můžete nově uložit do chráněné evidence osoby.' ?> Pro načtení uloženého RČ i pro změnu vyplňte důvod. Prázdné datum narození se doplní z nového RČ.</p>
+            <?php if ($editError !== '' && in_array($editorLastAction ?? '', ['load_birth_number','save_birth_number'], true)): ?><div class="alert alert-danger" role="alert"><?= h($editError) ?></div><?php endif; ?>
+            <form method="post" action="<?= h(spUrl(['edit_id' => $editId])) ?>#birth-number-title" class="border rounded p-3">
+                <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$editId ?>">
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="form-label" for="sp-birth-number">Rodné číslo</label><input class="form-control" type="text" id="sp-birth-number" name="birth_number" value="<?= h($birthEditValue ?? '') ?>" maxlength="11" autocomplete="off" required></div>
+                    <div class="col-md-6"><label class="form-label" for="sp-birth-date">Datum narození k rodnému číslu</label><input class="form-control" type="date" id="sp-birth-date" name="birth_date" value="<?= h(in_array($editorLastAction ?? '', ['load_birth_number','save_birth_number'], true) && is_string($_POST['birth_date'] ?? null) ? $_POST['birth_date'] : ($editPerson['narozeni'] ?? '')) ?>"></div>
+                    <div class="col-12"><label class="form-label" for="sp-birth-reason">Důvod načtení, doplnění nebo opravy</label><input class="form-control" id="sp-birth-reason" name="reason" value="<?= h(in_array($editorLastAction ?? '', ['load_birth_number','save_birth_number'], true) && is_string($_POST['reason'] ?? null) ? $_POST['reason'] : '') ?>" minlength="10" maxlength="1000" required></div>
+                </div>
+                <button class="btn btn-primary mt-3" type="submit" name="akce" value="save_birth_number">Uložit rodné číslo</button>
+                <button class="btn btn-outline-primary mt-3" type="submit" name="akce" value="load_birth_number" formnovalidate>Načíst uložené rodné číslo</button>
+            </form>
         </section>
-
-        <section class="mt-4" aria-labelledby="accounts-title">
-            <h2 class="h6 border-bottom pb-2" id="accounts-title">Napojené uživatelské účty</h2>
-            <?php if (!$editContext['roles']): ?><p class="text-muted">Na sportovce není napojený žádný uživatelský účet.</p><?php else: ?>
-            <div class="table-responsive"><table class="table table-sm"><thead><tr><th>Účet a kontakt</th><th>Vztah</th><th>Stav vazby</th><th>Stav účtu</th></tr></thead><tbody>
-            <?php foreach ($editContext['roles'] as $relation): ?><tr>
-                <td><?= h(trim($relation['prijmeni'] . ' ' . $relation['jmeno'])) ?> · #<?= (int)$relation['account_id'] ?><br><?= h($relation['email']) ?></td>
-                <td><?= $relation['relation_role'] === 'guardian' ? 'Rodič / zákonný zástupce' : 'Vlastní účet sportovce' ?></td>
-                <td><?= h(['approved' => $relation['valid_to'] ? 'Ukončená' : 'Schválená', 'pending' => 'Čeká na ověření', 'revoked' => 'Zrušená'][$relation['status']] ?? $relation['status']) ?></td>
-                <td><?= $relation['aktivni'] ? 'Aktivní' : 'Neaktivní' ?> · <?= $relation['email_overeno'] ? 'e-mail ověřen' : 'e-mail neověřen' ?></td>
-            </tr><?php endforeach; ?></tbody></table></div>
-            <?php endif; ?>
-        </section>
+        <?php require __DIR__ . '/sportovec_editor_parents_view.php'; ?>
+        <?php require __DIR__ . '/sportovec_editor_rosters_view.php'; ?>
+        <?php require __DIR__ . '/sportovec_editor_payments_view.php'; ?>
 
         <section class="mt-4" aria-labelledby="source-title">
             <h2 class="h6 border-bottom pb-2" id="source-title">Rodné číslo a úplná původní evidence</h2>

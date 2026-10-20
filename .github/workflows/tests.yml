@@ -103,3 +103,6 @@ jobs:
 
       - name: Ověřit historické soupisky a rozhodovací frontu na MariaDB
         run: php tests/Support/KisLegacyRosterMariaDbSmoke.php
+
+      - name: Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB
+        run: php tests/Support/SportovecEditorMariaDbSmoke.php

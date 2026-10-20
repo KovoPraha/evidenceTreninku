@@ -42,6 +42,22 @@ function personSensitiveConfig(?array $override = null): array
         $rawIndexKey = defined('PERSON_RC_INDEX_KEY')
             ? PERSON_RC_INDEX_KEY
             : (string)getenv('PERSON_RC_INDEX_KEY');
+        // The protected runtime key already provisioned for imported KIS people
+        // also supports their canonical RČ records. Explicit shared settings win.
+        $runtimePath = dirname(__DIR__) . '/var/private/kis-person-import.php';
+        if (is_file($runtimePath) && is_readable($runtimePath)) {
+            if (!defined('KIS_PERSON_ARCHIVE_KEY_READ')) define('KIS_PERSON_ARCHIVE_KEY_READ', true);
+            $runtime = require $runtimePath;
+            if (!is_array($runtime)) throw new PersonSensitiveException('Konfigurace citlivých údajů není dostupná.');
+            foreach ($runtime['keys'] ?? [] as $version => $key) {
+                if (isset($rawKeys[$version]) && !hash_equals(personSensitiveDecodeKey($rawKeys[$version]), personSensitiveDecodeKey($key))) {
+                    throw new PersonSensitiveException('Konflikt verzí šifrovacího klíče.');
+                }
+                $rawKeys[$version] = $key;
+            }
+            if ($activeVersion === '') $activeVersion = (string)($runtime['active_version'] ?? '');
+            if ($rawIndexKey === '') $rawIndexKey = $runtime['index_key'] ?? '';
+        }
     }
 
     if (!function_exists('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
@@ -170,12 +186,13 @@ function personSensitiveEncrypt(
     string $digits,
     string $recordToken,
     int $requestId,
-    ?array $configOverride = null
+    ?array $configOverride = null,
+    ?int $personId = null
 ): array {
     $config = personSensitiveConfig($configOverride);
     $version = $config['active_version'];
     $nonce = random_bytes(PERSON_SENSITIVE_NONCE_BYTES);
-    $aad = personSensitiveAad($recordToken, $requestId);
+    $aad = personSensitiveAad($recordToken, $requestId, $personId);
     $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
         $digits,
         $aad,
@@ -190,11 +207,12 @@ function personSensitiveEncrypt(
     ];
 }
 
-function personSensitiveAad(string $recordToken, int $requestId): string
+function personSensitiveAad(string $recordToken, int $requestId, ?int $personId = null): string
 {
-    if (preg_match('/^[a-f0-9]{32}$/D', $recordToken) !== 1 || $requestId < 1) {
+    if (preg_match('/^[a-f0-9]{32}$/D', $recordToken) !== 1 || ($requestId < 1 && ($personId ?? 0) < 1)) {
         throw new PersonSensitiveException('Kontext citlivého údaje není platný.');
     }
+    if ($requestId < 1) return 'person-sensitive-person-v1|' . $recordToken . '|' . $personId;
     return PERSON_SENSITIVE_CONTRACT . '|' . $recordToken . '|' . $requestId;
 }
 
@@ -212,7 +230,7 @@ function personSensitiveDecryptForAdmin(array $row, ?array $configOverride = nul
     }
     $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
         (string)($row['rc_ciphertext'] ?? ''),
-        personSensitiveAad((string)($row['record_token'] ?? ''), (int)($row['request_id'] ?? 0)),
+        personSensitiveAad((string)($row['record_token'] ?? ''), (int)($row['request_id'] ?? 0), isset($row['sportovec_id']) ? (int)$row['sportovec_id'] : null),
         (string)($row['rc_nonce'] ?? ''),
         $config['keys'][$version]
     );
@@ -368,7 +386,8 @@ function personSensitiveAdminReplace(
         (string)$digits,
         (string)$row['record_token'],
         (int)$row['request_id'],
-        $configOverride
+        $configOverride,
+        isset($row['sportovec_id']) ? (int)$row['sportovec_id'] : null
     );
     $started = !$pdo->inTransaction();
     if ($started) $pdo->beginTransaction();
@@ -444,7 +463,8 @@ function personSensitiveAdminRotate(
         $digits,
         (string)$row['record_token'],
         (int)$row['request_id'],
-        $configOverride
+        $configOverride,
+        isset($row['sportovec_id']) ? (int)$row['sportovec_id'] : null
     );
     $started = !$pdo->inTransaction();
     if ($started) $pdo->beginTransaction();
