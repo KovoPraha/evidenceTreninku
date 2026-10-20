@@ -26,7 +26,7 @@ final class CurrentDocumentationContractTest extends TestCase
         }
     }
 
-    public function testDocumentationLinksTheCurrentDataFlowAuditAndPausedFioState(): void
+    public function testDocumentationLinksTheCurrentDataFlowAuditAndGatedFioSchedule(): void
     {
         $root = dirname(__DIR__, 2);
         $readme = (string)file_get_contents($root . '/README.md');
@@ -35,8 +35,9 @@ final class CurrentDocumentationContractTest extends TestCase
         $workflow = (string)file_get_contents($root . '/.github/workflows/fio-import-production.yml');
         self::assertStringContainsString('outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx', $readme);
         self::assertStringContainsString('../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx', $docsIndex);
-        self::assertStringContainsString('FIO_IMPORT_ENABLED=false', $fio);
-        self::assertStringNotContainsString('schedule:', $workflow);
+        self::assertStringContainsString('KIS_FIO_SCHEDULE_ENABLED', $fio);
+        self::assertStringContainsString('schedule:', $workflow);
+        self::assertStringContainsString("vars.KIS_FIO_SCHEDULE_ENABLED == 'true'", $workflow);
         self::assertStringContainsString('workflow_dispatch:', $workflow);
     }
 }
