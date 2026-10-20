@@ -46,7 +46,7 @@ $nullable = static function (PDO $pdo, string $table, string $column, string $my
 };
 
 return [
-    'id' => '20261020220000_athlete_editor_relations',
+    'id' => '20261020230000_athlete_editor_relations',
     'up' => static function (PDO $pdo) use ($columns, $nullable): void {
         // Administrative RČ records belong to a person and need no fictitious registration request.
         $nullable($pdo, 'osoba_citlive_udaje', 'request_id', 'BIGINT UNSIGNED');

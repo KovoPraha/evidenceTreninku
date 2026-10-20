@@ -4,8 +4,8 @@ Zdroj je výhradně šifrovaný archiv schváleného úplného importu osob ze s
 KIS (`servis.kovopraha.cz/2026-10-20`). Identita se propojuje přes tabulku
 `kis_person_aliases` podle původního `id_hash`; shoda jména ani licence se
 nepoužívá. Pole `Soupisky` obsahuje 33 doslovných názvů, všechny s označením
-2025/2026. Sezona 2026/27 v novém systému je jiná a automatický převod by
-chybně tvrdil aktuální účast.
+2025/2026. Sezona 2026/27 v novém systému je jiná. Samostatný převod do
+aktuálních soupisek je popsán v `kis-current-rosters-2026-27.md`.
 
 Stránka `kis_legacy_rosters_admin.php` pro administrátora zobrazí otisk
 kontrolního náhledu, po potvrzení atomicky vytvoří uzavřenou historickou
@@ -23,8 +23,7 @@ importu a duplicitnímu běhu. Případy trenéra bez role hráče, nesouladu ro
 v názvu skupiny, chybějícího data narození a rozporu sloučených zdrojových
 účtů zůstanou v administraci ve stavu `review`. Správce u každé vazby ručně
 zvolí potvrzení či ponechání bez vazby a uvede důvod. Stažitelný protokol
-obsahuje stav všech nároků. Žádné automatické přiřazení do roku 2026/27,
-rozeslání zpráv ani změna účtů se zde neprovádí.
+obsahuje stav všech nároků. Tento historický krok neposílá zprávy ani nemění účty.
 
 Lokální zkouška nad všemi 1529 původními řádky a přesnou produkční převodní
 mapou z 20. 10. 2026: 454 zdrojových řádků se soupiskou, 452 výsledných osob,

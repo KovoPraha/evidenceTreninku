@@ -11,7 +11,7 @@ $check = static function (bool $value, string $label): void { if (!$value) throw
 try {
     $pdo = new PDO('mysql:host=127.0.0.1;port=' . $port . ';dbname=' . $database . ';charset=utf8mb4', 'root', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES => false]);
     $fixture = sportovecEditorDetailsFixture($pdo);
-    $migration = require dirname(__DIR__, 2) . '/migrations/20261020220000_athlete_editor_relations.php';
+    $migration = require dirname(__DIR__, 2) . '/migrations/20261020230000_athlete_editor_relations.php';
     $migration['up']($pdo); $check($migration['verify']($pdo), 'idempotent migration');
     $check(personSensitiveAdminReveal($pdo, $fixture['old_record_id'], 'LOCALHOST původní šifrovaný údaj', $fixture['keys']) === '850101/0001', 'original registration context');
     $digits = null;

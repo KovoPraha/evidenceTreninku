@@ -199,7 +199,7 @@ function sportovecEditorAddRoster(PDO $pdo, int $id, int $teamId, int $actor, st
 function sportovecEditorRosters(PDO $pdo, int $id, ?string $today = null): array
 {
     $today ??= date('Y-m-d');
-    $result = ['current' => [], 'planned' => [], 'history' => [], 'claims' => [], 'events' => [], 'choices' => []];
+    $result = ['current' => [], 'planned' => [], 'history' => [], 'claims' => [], 'current_claims' => [], 'events' => [], 'choices' => []];
     if (!clubFinanceTableExists($pdo, 'club_roster_members')) return $result;
     $stmt = $pdo->prepare('SELECT m.*,t.name AS team_name,t.status AS team_status,s.name AS season_name,s.starts_on,s.ends_on,s.status AS season_status FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY s.starts_on DESC,t.name,m.id');
     $stmt->execute([$id]);
@@ -212,6 +212,10 @@ function sportovecEditorRosters(PDO $pdo, int $id, ?string $today = null): array
     if (clubFinanceTableExists($pdo, 'kis_legacy_roster_claims')) {
         $stmt = $pdo->prepare("SELECT c.*,t.name AS team_name,s.name AS season_name FROM kis_legacy_roster_claims c JOIN club_teams t ON t.id=c.team_id JOIN club_seasons s ON s.id=t.season_id WHERE c.sportovec_id=? AND c.member_id IS NULL ORDER BY s.starts_on DESC,t.name");
         $stmt->execute([$id]); $result['claims'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    if (clubFinanceTableExists($pdo, 'kis_current_roster_claims')) {
+        $stmt = $pdo->prepare('SELECT c.*,COALESCE(t.name,legacy.legacy_label) AS team_name,s.name AS season_name FROM kis_current_roster_claims c JOIN kis_current_roster_runs run ON run.id=c.run_id JOIN club_seasons s ON s.id=run.season_id LEFT JOIN club_teams t ON t.id=COALESCE(c.target_team_id,c.suggested_team_id) LEFT JOIN kis_legacy_roster_claims legacy ON legacy.id=c.legacy_claim_id WHERE c.sportovec_id=? AND c.member_id IS NULL ORDER BY s.starts_on DESC,c.id');
+        $stmt->execute([$id]); $result['current_claims'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     if (clubFinanceTableExists($pdo, 'club_roster_events')) {
         $stmt = $pdo->prepare('SELECT e.id,e.created_at,e.action,e.note,e.before_json,e.after_json,t.name AS team_name FROM club_roster_events e JOIN club_roster_members m ON m.id=e.roster_member_id JOIN club_teams t ON t.id=e.team_id WHERE m.sportovec_id=? ORDER BY e.created_at DESC,e.id DESC');

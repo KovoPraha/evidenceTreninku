@@ -42,7 +42,7 @@ function sportovecEditorDetailsFixture(PDO $pdo, bool $migrate = true): array
     $pdo->exec("INSERT INTO kis_person_links VALUES('link10',10,'parent','matka','source10',1),('link10b',10,'parent','matka','source10',2),('link11',11,'parent','matka','source11',1)");
     accountPersonRoleApprove($pdo, 1, 10, 'guardian', 7, 'LOCALHOST schválení rodiče');
     accountPersonRoleApprove($pdo, 1, 11, 'guardian', 7, 'LOCALHOST schválení sourozence');
-    if ($migrate) { $migration = require dirname(__DIR__, 2) . '/migrations/20261020220000_athlete_editor_relations.php'; $migration['up']($pdo); }
+    if ($migrate) { $migration = require dirname(__DIR__, 2) . '/migrations/20261020230000_athlete_editor_relations.php'; $migration['up']($pdo); }
     $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'CURRENT','LOCALHOST aktuální','2026-09-01','2027-08-31','active',7),(2,'OLD','LOCALHOST historie','2025-09-01','2026-08-31','archived',7),(3,'FUTURE','LOCALHOST budoucí','2098-09-01','2099-08-31','active',7)");
     $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'CURRENT','LOCALHOST současná soupiska','kolo','děti','active',7),(2,2,'OLD','LOCALHOST historická soupiska','kolo','děti','active',7),(3,3,'FUTURE','LOCALHOST budoucí soupiska','kolo','děti','active',7)");
     return ['keys' => $keys, 'old_record_id' => $oldId];

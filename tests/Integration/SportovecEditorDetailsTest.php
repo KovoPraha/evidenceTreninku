@@ -12,7 +12,7 @@ final class SportovecEditorDetailsTest extends TestCase
     {
         $pdo = $this->pdo(); $fixture = sportovecEditorDetailsFixture($pdo, false);
         $ciphertext = $pdo->query('SELECT rc_ciphertext FROM osoba_citlive_udaje')->fetchColumn();
-        $migration = require dirname(__DIR__, 2) . '/migrations/20261020220000_athlete_editor_relations.php';
+        $migration = require dirname(__DIR__, 2) . '/migrations/20261020230000_athlete_editor_relations.php';
         self::assertFalse($migration['verify']($pdo));
         $migration['up']($pdo); $migration['up']($pdo);
         self::assertTrue($migration['verify']($pdo));
@@ -146,9 +146,17 @@ final class SportovecEditorDetailsTest extends TestCase
         sportovecEditorAddRoster($pdo, 10, 1, 7, '2026-10-20', 'LOCALHOST přidání');
         sportovecEditorAddRoster($pdo, 10, 1, 7, '2026-10-20', 'LOCALHOST opakování');
         $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,valid_to,created_by_trainer_id) VALUES(2,10,'removed','kis_shadow','2025-09-01','2026-08-31',7),(3,10,'active','manual','2098-09-01',NULL,7),(1,11,'active','manual','2026-10-20',NULL,7)");
+        $pdo->exec('CREATE TABLE kis_legacy_roster_claims(id INTEGER,sportovec_id INTEGER,team_id INTEGER,legacy_label TEXT,member_id INTEGER,status TEXT,decision_note TEXT)');
+        $pdo->exec("INSERT INTO kis_legacy_roster_claims VALUES(1,10,2,'LOCALHOST návrh',NULL,'review',NULL)");
+        $pdo->exec('CREATE TABLE kis_current_roster_runs(id INTEGER,season_id INTEGER)');
+        $pdo->exec('INSERT INTO kis_current_roster_runs VALUES(1,1)');
+        $pdo->exec('CREATE TABLE kis_current_roster_claims(id INTEGER,run_id INTEGER,legacy_claim_id INTEGER,sportovec_id INTEGER,suggested_team_id INTEGER,target_team_id INTEGER,member_id INTEGER,status TEXT,decision_note TEXT)');
+        $pdo->exec("INSERT INTO kis_current_roster_claims VALUES(1,1,1,10,1,NULL,NULL,'review',NULL)");
         $rosters = sportovecEditorRosters($pdo, 10, '2026-10-20');
         self::assertCount(1, $rosters['current']); self::assertCount(1, $rosters['history']); self::assertCount(1, $rosters['planned']);
         self::assertCount(1, $rosters['events']);
+        self::assertCount(1, $rosters['current_claims']);
+        self::assertSame('review', $rosters['current_claims'][0]['status']);
         self::assertSame([3,1], array_map('intval', array_column($rosters['choices'], 'id')));
         $this->expectException(\InvalidArgumentException::class);
         sportovecEditorAddRoster($pdo, 10, 2, 7, '2025-10-20', 'LOCALHOST stará sezona');

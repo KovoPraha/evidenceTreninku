@@ -29,6 +29,9 @@
     <?php if ($rosters['claims']): ?><h3 class="h6 mt-3">Původní zařazení ze starého KIS bez potvrzeného členství</h3>
         <ul><?php foreach ($rosters['claims'] as $claim): ?><li><?= h($claim['season_name'] . ' · ' . $claim['team_name']) ?> · <?= h(sportovecEditorStatusLabel($claim['status'])) ?><?= $claim['decision_note'] ? ' · ' . h($claim['decision_note']) : '' ?></li><?php endforeach; ?></ul>
     <?php endif; ?>
+    <?php if ($rosters['current_claims']): ?><h3 class="h6 mt-3">Návrhy převodu do aktuálních soupisek bez potvrzené vazby</h3>
+        <ul><?php foreach ($rosters['current_claims'] as $claim): ?><li><?= h($claim['season_name'] . ' · ' . $claim['team_name']) ?> · <?= h(sportovecEditorStatusLabel($claim['status'])) ?><?= $claim['decision_note'] ? ' · ' . h($claim['decision_note']) : '' ?></li><?php endforeach; ?></ul>
+    <?php endif; ?>
     <?php if ($rosters['events']): ?><details class="border rounded p-3 mt-3"><summary class="fw-semibold">Všechny zaznamenané změny členství (<?= count($rosters['events']) ?>)</summary>
         <div class="table-responsive mt-2"><table class="table table-sm"><thead><tr><th>Datum</th><th>Soupiska a změna</th><th>Předchozí → nové období</th><th>Poznámka</th></tr></thead><tbody>
         <?php foreach ($rosters['events'] as $event): $before = json_decode($event['before_json'] ?? 'null', true) ?: []; $after = json_decode($event['after_json'] ?? '{}', true) ?: []; ?><tr>

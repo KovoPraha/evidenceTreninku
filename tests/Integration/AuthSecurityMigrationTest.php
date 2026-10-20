@@ -125,7 +125,8 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261020170000_fio_sync_state',
                 '20261020180000_kis_full_person_import',
                 '20261020210000_kis_legacy_roster_links',
-                '20261020220000_athlete_editor_relations',
+                '20261020220000_kis_current_roster_links',
+                '20261020230000_athlete_editor_relations',
             ],
             array_keys($catalog)
         );
