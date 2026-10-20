@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__.'/one_time_token.php';
 require_once __DIR__.'/person_sensitive.php';
+require_once __DIR__.'/booking_return.php';
 
 final class AuthMailOutboxException extends RuntimeException {}
 
@@ -55,7 +56,7 @@ function authMailEnqueue(PDO $pdo,string $kind,string $targetType,int $targetId,
 }
 
 /** @return array{accepted:true,queued:bool} */
-function authMailResendVerification(PDO $pdo,string $email,string $verificationUrl,?array $keyConfig=null):array
+function authMailResendVerification(PDO $pdo,string $email,string $verificationUrl,?array $keyConfig=null,mixed $returnTo=null):array
 {
     $email=strtolower(trim($email));
     if (!filter_var($email,FILTER_VALIDATE_EMAIL)) return ['accepted'=>true,'queued'=>false];
@@ -71,7 +72,8 @@ function authMailResendVerification(PDO $pdo,string $email,string $verificationU
             ->execute([$issued['hash'],$issued['expires_at'],$id]);
         $pdo->prepare("UPDATE auth_mail_outbox SET status='cancelled',body_ciphertext=NULL,last_error='Nahrazeno novým ověřovacím odkazem.' WHERE kind='verify' AND target_type='public' AND target_id=? AND status IN ('pending','failed')")
             ->execute([$id]);
-        $link=$verificationUrl.'#token='.rawurlencode($issued['token']);
+        $link=$verificationUrl.'#token='.rawurlencode($issued['token'])
+            .'&redirect='.rawurlencode(bookingReturnDestination($returnTo, 'moje_osoby.php'));
         authMailEnqueue($pdo,'verify','public',$id,$issued['hash'],(string)$row['email'],'Ověření registrace — Kovopraha',
             "Dobrý den {$row['jmeno']},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",$keyConfig);
         $pdo->commit();return ['accepted'=>true,'queued'=>true];

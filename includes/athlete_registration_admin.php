@@ -213,24 +213,14 @@ function athleteRegistrationAdminReject(
     $pdo->beginTransaction();
     try {
         $claim = athleteRegistrationAdminClaim($pdo, $requestId, true);
-        athleteRegistrationAdminAssertPending($claim);
-        $retentionUntil = (new DateTimeImmutable('+30 days'))->format('Y-m-d H:i:s');
-        $pdo->prepare(
-            "UPDATE account_person_claim_requests SET status='rejected',active_fingerprint=NULL,"
-            . 'decided_by_trainer_id=?,decision_note=?,decided_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?'
-        )->execute([$trainerId, $note, $requestId]);
-        $pdo->prepare(
-            "UPDATE osoba_citlive_udaje SET status='retention_pending',retention_reason='rejected_request',"
-            . "retention_until=?,updated_at=CURRENT_TIMESTAMP WHERE request_id=? AND status<>'erased'"
-        )->execute([$retentionUntil, $requestId]);
-        $pdo->prepare(
-            "UPDATE athlete_private_files SET status='retention_pending' WHERE request_id=? AND status='active'"
-        )->execute([$requestId]);
-        accountPersonClaimEvent($pdo, $requestId, 'trainer', $trainerId, 'rejected', 'pending', 'rejected', $note);
+        $result = athleteRegistrationCloseInTransaction($pdo, $claim, 'trainer', $trainerId, 'rejected', $note);
         $pdo->commit();
-        return ['id' => $requestId, 'status' => 'rejected'];
+        return $result;
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($exception instanceof AthleteRegistrationException) {
+            throw new AthleteRegistrationAdminException($exception->getMessage(), 0, $exception);
+        }
         athleteRegistrationAdminRethrow($exception, 'Registrační žádost se nepodařilo bezpečně zamítnout.');
     }
 }

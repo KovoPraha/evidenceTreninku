@@ -1,6 +1,17 @@
 # Aktuální stav projektu
 
-Aktualizováno: 11. 10. 2026, Europe/Prague
+Lokální doplnění: 20. 10. 2026, Europe/Prague
+
+Ve worktree `evidencePavel-parent-journey-20261020`, větev
+`codex/parent-journey`, je lokálně dokončená a otestovaná rodičovská cesta nad výchozím commitem
+`2b6bc7998d2fb621dc3a694a3c3d5102a3def54b`. Změny nejsou nasazené; skutečné
+Fio/Stripe/SumUp jsou odložené. Rozsah, akceptační důkaz a zbývající provozní
+kroky uvádí [lokální předání rodičovské cesty](PARENT_JOURNEY_2026-10-20.md).
+Závěrečný PHPUnit: **1 017 testů / 23 523 kontrol**, bez selhání a chyb.
+
+Následující původní stavový přehled je **historický snapshot z 11. 10. 2026**,
+včetně SHA, CI a produkčních výsledků. Nepopisuje aktuální lokální změny ani
+nepotvrzuje současný produkční stav.
 
 Tento soubor je autoritativní stavový rozcestník. Historické audity, předávací
 záznamy a implementační prompty zachycují stav v datu svého vzniku a nesmí se

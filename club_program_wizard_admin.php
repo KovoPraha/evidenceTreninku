@@ -141,7 +141,8 @@ foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){$terms=$reference['terms'][$purpo
 $key = (string)$_SESSION['club_program_wizard_key'];
 $old = static fn(string $field, string $default = ''): string => (string)($_POST[$field] ?? $default);
 $requestedProductId=max(0,(int)($_GET['product_id']??0));$requestedVariantId='';
-foreach($existingProducts as$candidate)if((int)$candidate['product_id']===$requestedProductId){$requestedVariantId=(string)$candidate['variant_id'];break;}
+$requestedVariantFilter=max(0,(int)($_GET['variant_id']??0));
+foreach($existingProducts as$candidate)if((int)$candidate['product_id']===$requestedProductId&&($requestedVariantFilter===0||(int)$candidate['variant_id']===$requestedVariantFilter)){$requestedVariantId=(string)$candidate['variant_id'];break;}
 $sourceMode=$old('source_mode',$requestedVariantId!==''?'existing':'new');
 $today = new DateTimeImmutable('today');
 $start = $today->modify('first day of next month');

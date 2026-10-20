@@ -13,24 +13,22 @@ require_once __DIR__ . '/../includes/auth_mail_outbox.php';
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function registrationSafeRedirect(mixed $value): string
 {
-    $redirect = trim((string)$value);
-    return preg_match('~^[a-z0-9_]+\.php(?:\?[a-z0-9_=&%.-]*)?(?:\#[a-z0-9_-]+)?$~iD', $redirect) === 1
-        ? $redirect
-        : 'kalendar.php';
+    return bookingReturnDestination($value, 'sportovni_prehled.php');
 }
 
+$purpose = (string)($_POST['ucel'] ?? $_GET['purpose'] ?? 'rodina');
+if (!in_array($purpose, ['nakup', 'sport', 'rodina'], true)) {
+    $purpose = 'rodina';
+}
+$explicitReturn = bookingReturnDestination($_POST['redirect'] ?? $_GET['redirect'] ?? '');
+$redirect = bookingRegistrationDestination($explicitReturn, $purpose);
 if (isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: ' . registrationSafeRedirect($_GET['redirect'] ?? 'kalendar.php')); exit;
+    header('Location: ' . $redirect); exit;
 }
 
 $errors  = [];
 $success = false;
 $existingAccount = false;
-$purpose = (string)($_POST['ucel'] ?? $_GET['purpose'] ?? 'nakup');
-$redirect = registrationSafeRedirect($_POST['redirect'] ?? $_GET['redirect'] ?? 'kalendar.php');
-if (!in_array($purpose, ['nakup', 'sport'], true)) {
-    $purpose = 'nakup';
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -40,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $prijmeni = trim($_POST['prijmeni'] ?? '');
         $email    = strtolower(trim($_POST['email']  ?? ''));
         $telefon  = trim($_POST['telefon']  ?? '');
-        $purpose  = (string)($_POST['ucel'] ?? 'nakup');
+        $purpose  = (string)($_POST['ucel'] ?? 'rodina');
         $narozeni = trim($_POST['narozeni'] ?? '');
         $heslo    = $_POST['heslo']         ?? '';
         $heslo2   = $_POST['heslo2']        ?? '';
@@ -62,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$jmeno)    $errors[] = 'Zadejte jméno.';
         if (!$prijmeni) $errors[] = 'Zadejte příjmení.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Neplatná emailová adresa.';
-        if (!in_array($purpose, ['nakup', 'sport'], true)) {
+        if (!in_array($purpose, ['nakup', 'sport', 'rodina'], true)) {
             $errors[] = 'Vyberte, k čemu budete účet používat.';
         }
         if ($purpose === 'sport') {
@@ -163,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert alert-success text-center">
                     <i class="bi bi-envelope-check fs-2 d-block mb-2"></i>
                     Pokud lze účet s touto adresou vytvořit, zařadili jsme další postup k odeslání.
-                    <div class="small mt-2"><a href="znovu_overit_email.php">Ověřovací odkaz nedorazil?</a></div>
+                    <div class="small mt-2"><a href="znovu_overit_email.php?redirect=<?=rawurlencode($redirect)?>">Ověřovací odkaz nedorazil?</a></div>
                 </div>
             <?php else: ?>
 
@@ -173,9 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <form method="post">
                     <?= csrf_field() ?>
-                    <input type="hidden" name="redirect" value="<?=h($redirect)?>">
+                    <input type="hidden" name="redirect" value="<?=h($explicitReturn)?>">
                     <fieldset class="mb-3">
                         <legend class="form-label mb-2">K čemu budete účet používat?</legend>
+                        <div class="form-check border rounded p-3 ps-5 mb-2">
+                            <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-family" value="rodina" <?= $purpose === 'rodina' ? 'checked' : '' ?>>
+                            <label class="form-check-label" for="registration-purpose-family"><strong>Jsem rodič / zákonný zástupce</strong><br><span class="text-muted small">Po ověření e-mailu připojíte dítě nebo požádáte o registraci nového sportovce. Údaje níže patří vám.</span></label>
+                        </div>
                         <div class="form-check border rounded p-3 ps-5 mb-2">
                             <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-shop" value="nakup" <?= $purpose === 'nakup' ? 'checked' : '' ?>>
                             <label class="form-check-label" for="registration-purpose-shop"><strong>Jen nákup a rezervace</strong><br><span class="text-muted small">Oblečení, veřejné akce a další nabídky. Datum narození není potřeba.</span></label>

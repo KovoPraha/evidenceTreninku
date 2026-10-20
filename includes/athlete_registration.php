@@ -265,37 +265,11 @@ function athleteRegistrationCancel(PDO $pdo, int $requestId, int $accountId): ar
         ) {
             throw new AthleteRegistrationException('Tuto žádost nemůžete změnit.');
         }
-        if ((string)$claim['status'] === 'cancelled') {
-            $pdo->commit();
-            return ['id' => $requestId, 'status' => 'cancelled', 'changed' => false];
-        }
-        if ((string)$claim['status'] !== 'pending') {
-            throw new AthleteRegistrationException('Zrušit lze pouze čekající žádost.');
-        }
-        $retentionUntil = (new DateTimeImmutable('+30 days'))->format('Y-m-d H:i:s');
-        $pdo->prepare(
-            "UPDATE account_person_claim_requests SET status='cancelled',active_fingerprint=NULL,"
-            . "decision_note='Zrušeno žadatelem.',decided_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?"
-        )->execute([$requestId]);
-        $pdo->prepare(
-            "UPDATE osoba_citlive_udaje SET status='retention_pending',retention_reason='cancelled_request',"
-            . 'retention_until=?,updated_at=CURRENT_TIMESTAMP WHERE request_id=? AND status<>\'erased\''
-        )->execute([$retentionUntil, $requestId]);
-        $pdo->prepare(
-            "UPDATE athlete_private_files SET status='retention_pending' WHERE request_id=? AND status='active'"
-        )->execute([$requestId]);
-        accountPersonClaimEvent(
-            $pdo,
-            $requestId,
-            'account',
-            $accountId,
-            'cancelled',
-            'pending',
-            'cancelled',
-            'athlete_registration_cancel'
+        $result = athleteRegistrationCloseInTransaction(
+            $pdo, $claim, 'account', $accountId, 'cancelled', 'Zrušeno žadatelem.'
         );
         $pdo->commit();
-        return ['id' => $requestId, 'status' => 'cancelled', 'changed' => true];
+        return $result;
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         if ($exception instanceof InvalidArgumentException || $exception instanceof AthleteRegistrationException) {
@@ -303,6 +277,58 @@ function athleteRegistrationCancel(PDO $pdo, int $requestId, int $accountId): ar
         }
         throw new AthleteRegistrationException('Žádost se nepodařilo bezpečně zrušit.', 0, $exception);
     }
+}
+
+/**
+ * Shared by athlete-specific and generic identity decision entry points.
+ * Closing the request, retention changes, order settlement and audit are atomic.
+ * @param array<string,mixed> $claim A locked athlete registration request.
+ * @return array{id:int,status:string,changed:bool}
+ */
+function athleteRegistrationCloseInTransaction(
+    PDO $pdo,
+    array $claim,
+    string $actorType,
+    int $actorId,
+    string $toStatus,
+    string $note
+): array {
+    if (!$pdo->inTransaction() || $actorId < 1 || trim($note) === ''
+        || ($claim['request_kind'] ?? '') !== 'athlete_registration'
+        || !(($actorType === 'account' && $toStatus === 'cancelled')
+            || ($actorType === 'trainer' && $toStatus === 'rejected'))
+    ) {
+        throw new InvalidArgumentException('Neplatné uzavření registrační žádosti.');
+    }
+    if ($actorType === 'account' && (int)$claim['account_id'] !== $actorId) {
+        throw new AthleteRegistrationException('Tuto žádost nemůžete změnit.');
+    }
+    $requestId = (int)$claim['id'];
+    $status = (string)$claim['status'];
+    if ($status !== 'pending' && $status !== $toStatus) {
+        throw new AthleteRegistrationException('Vyřídit lze pouze čekající žádost.');
+    }
+    require_once __DIR__ . '/athlete_registration_order.php';
+    $settledOrders = athleteRegistrationSettleOrdersInTransaction(
+        $pdo, $claim, $actorType, $actorId, 'Uzavření přihlášky #' . $requestId . ': ' . trim($note)
+    );
+    if ($status === $toStatus) return ['id' => $requestId, 'status' => $toStatus, 'changed' => false];
+
+    $pdo->prepare(
+        'UPDATE account_person_claim_requests SET status=?,active_fingerprint=NULL,'
+        . 'decided_by_trainer_id=?,decision_note=?,decided_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+    )->execute([$toStatus, $actorType === 'trainer' ? $actorId : null, trim($note), $requestId]);
+    $pdo->prepare(
+        "UPDATE osoba_citlive_udaje SET status='retention_pending',retention_reason=?,"
+        . "retention_until=?,updated_at=CURRENT_TIMESTAMP WHERE request_id=? AND status<>'erased'"
+    )->execute([$toStatus . '_request', (new DateTimeImmutable('+30 days'))->format('Y-m-d H:i:s'), $requestId]);
+    $pdo->prepare(
+        "UPDATE athlete_private_files SET status='retention_pending' WHERE request_id=? AND status='active'"
+    )->execute([$requestId]);
+    accountPersonClaimEvent($pdo, $requestId, $actorType, $actorId, $toStatus, 'pending', $toStatus, trim($note));
+    $refundRequired = in_array('refund_required', array_column($settledOrders, 'payment_status'), true);
+    parentJourneyNotificationEnqueueDecision($pdo, $requestId, $refundRequired);
+    return ['id' => $requestId, 'status' => $toStatus, 'changed' => true];
 }
 
 /** @return list<array<string,mixed>> */

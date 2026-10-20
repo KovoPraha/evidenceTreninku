@@ -68,8 +68,8 @@ final class ClubProgramWizardTest extends TestCase
     public function testWizardConvertsExistingProductAndClearsMisleadingStock():void
     {
         $pdo=$this->database();
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(243,'manual','manual:243','Přípravka','Přípravný cyklistický kroužek.','goods','visible','physical','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(343,243,'manual','KROUZEK-243','{}','fixed',175000,'CZK','20','piece',1,'active')");
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(243,'import','shoptet:pair:243','Přípravka','Přípravný cyklistický kroužek.','goods','visible','physical','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(343,243,'import','KROUZEK-243','{}','fixed',175000,'CZK','20','piece',1,'active')");
         $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(243,'active','Přípravka','Přípravný cyklistický kroužek.')");
         $input=$this->input();$input['source_mode']='existing';$input['existing_variant_id']=343;
 

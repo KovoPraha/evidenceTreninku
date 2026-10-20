@@ -118,6 +118,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261019100000_auth_mail_outbox',
                 '20261019110000_shop_ppl_box',
                 '20261019130000_shop_packeta_zbox',
+                '20261020120000_parent_journey_notifications',
             ],
             array_keys($catalog)
         );
@@ -143,6 +144,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->columnExists($pdo, 'account_person_claim_requests', 'request_kind'));
         self::assertTrue($this->columnExists($pdo, 'account_person_claim_requests', 'contract_version'));
         self::assertTrue($this->columnExists($pdo, 'club_event_notifications', 'order_id'));
+        self::assertTrue($this->columnExists($pdo, 'club_event_notifications', 'dedupe_key'));
+        self::assertTrue($this->indexExists($pdo, 'uq_parent_journey_notification'));
         self::assertTrue($this->columnExists($pdo, 'club_event_term_versions', 'scope_type'));
         self::assertTrue($this->columnExists($pdo, 'club_event_term_versions', 'scope_key'));
         self::assertTrue($this->columnExists($pdo, 'club_event_term_versions', 'consent_purpose'));

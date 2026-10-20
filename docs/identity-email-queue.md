@@ -1,6 +1,6 @@
 # Ověřovací a obnovovací e-maily
 
-Lokální implementace z 19. 10. 2026. Produkční doručení zatím nebylo ověřeno. Před nasazením je nutná migrace `20261019100000_auth_mail_outbox` a funkční plán `bin/club-event-notifications.php`; samotný úspěch HTTP požadavku ani `mail()` doručení nedokazuje.
+Fronta je součástí kódu `main` od 19. 10. 2026; lokální doplnění diagnostiky a testů z 20. 10. 2026 samo o sobě není nasazením. Produkční doručení zatím nebylo ověřeno. Worker vyžaduje migraci `20261019100000_auth_mail_outbox` a provozně ověřený plán `bin/club-event-notifications.php`; samotný úspěch HTTP požadavku ani `mail()` doručení nedokazuje.
 
 ## Datový tok
 
@@ -10,7 +10,43 @@ Obsah zprávy s odkazem je v databázi šifrovaný XChaCha20-Poly1305. Pro podkl
 
 CLI worker střídá `auth_mail_outbox` a `club_event_notifications` do společného limitu. Před odesláním znovu kontroluje stav tokenu, cílového účtu, e-mailu a u dětského resetu i platnou vazbu rodiče. Po pěti neúspěšných pokusech zůstane zpráva `failed`. Staré/neplatné tokeny se zruší bez odeslání. Pád po předání poště může způsobit duplicitní doručení (at-least-once), nikoli opakované použití tokenu.
 
+Před převzetím první zprávy se ověří struktura obou front; chybějící fronta tedy nezpůsobí částečné odeslání z druhé. Parametry `--limit=1..99`, `--transport=mail|local-outbox` a výstup běžného zpracování zůstávají zachovány.
+
 Správce v `auth_mail_admin.php` vidí stavy, příjemce, typ, pokusy a chybu. Pouze stále platnou selhanou zprávu smí s důvodem a potvrzením auditovaně vrátit do fronty. Obecný provozní přehled signalizuje `failed`. Uživateli vypršelého odkazu nabídněte nový odkaz, nikoli ruční znovuodeslání starého.
+
+## Kontrola bez odesílání
+
+S explicitním `APP_HOST` a nakonfigurovanou databází lze spustit:
+
+```text
+php bin/club-event-notifications.php --status
+```
+
+Tento režim provádí pouze čtení. Nevyzvedává zprávy, nemění jejich stav, neposílá
+poštu a nevytváří lokální adresář ani soubory. JSON obsahuje počty podle stavu,
+počet zpráv připravených k odeslání, stáří nejstarší čekající zprávy v sekundách,
+počet převzetí starších 15 minut a nedostupných verzí šifrovacích klíčů.
+Neobsahuje příjemce, obsah zpráv, tokeny, hashe ani texty chyb transportu.
+
+`ready=true` znamená dostupnost ověřovaných struktur front, konfigurace šifrování
+a lokálních předpokladů zvoleného transportu. Neověřuje všechny registrační
+tabulky ani platnost každého odkazu; tu worker kontroluje při zpracování.
+`attention_required=true` signalizuje chybějící předpoklad, selhanou zprávu,
+zastaralé převzetí nebo čekající zprávu starší 15 minut. Návratový kód je `0`
+pouze pro připravenou frontu bez těchto upozornění; jinak `1` (neplatné CLI
+argumenty `64`). Chyba připojení/konfigurace skončí `1` bez citlivého detailu.
+
+`scheduler_verified=false` a `mailbox_delivery_verified=false` jsou výslovné
+meze této diagnostiky. Existující plán zpráv soupiskám není důkazem běhu tohoto
+workeru. U `mail` se neprovádí síťový test SMTP. U `local-outbox` se kontroluje
+localhost a zapisovatelný existující nadřazený adresář bez zkušebního zápisu.
+
+Test `TransactionalNotificationWorkerTest` používá výhradně SQLite v paměti,
+náhodné testovací klíče a adresy `example.test`. Ověřuje skutečné uložení
+rozšifrovaného ověřovacího e-mailu a klubové zprávy do dočasného lokálního
+outboxu, společný limit obou front, selhání a opakování po prodlevě, zrušení
+neplatného tokenu i read-only diagnostiku se zapnutým SQLite `query_only`.
+Nezapojuje aplikační databázi, SMTP ani produkční plán.
 
 ## Předprodukční a produkční ověření
 

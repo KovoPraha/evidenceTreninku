@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/account_person_role.php';
+require_once __DIR__ . '/parent_journey_notification.php';
 
 final class AccountPersonClaimException extends RuntimeException
 {
@@ -161,6 +162,7 @@ function accountPersonClaimApprove(
         );
         $update->execute([$sportovecId, $trainerId, $note, $requestId]);
         accountPersonClaimEvent($pdo, $requestId, 'trainer', $trainerId, 'approve', 'pending', 'approved', $note);
+        parentJourneyNotificationEnqueueDecision($pdo, $requestId);
         if ($ownsTransaction) {
             $pdo->commit();
         }
@@ -208,6 +210,12 @@ function accountPersonClaimTransition(
         if ($actorType === 'account' && (int)$claim['account_id'] !== $actorId) {
             throw new AccountPersonClaimException('Tuto žádost nemůžete změnit.');
         }
+        if (($claim['request_kind'] ?? '') === 'athlete_registration') {
+            require_once __DIR__ . '/athlete_registration.php';
+            $result = athleteRegistrationCloseInTransaction($pdo, $claim, $actorType, $actorId, $toStatus, $note);
+            $pdo->commit();
+            return $result;
+        }
         if ($claim['status'] === $toStatus) {
             $pdo->commit();
             return ['id' => $requestId, 'status' => $toStatus, 'changed' => false];
@@ -223,6 +231,7 @@ function accountPersonClaimTransition(
         $decider = $actorType === 'trainer' ? $actorId : null;
         $update->execute([$toStatus, $decider, $note, $requestId]);
         accountPersonClaimEvent($pdo, $requestId, $actorType, $actorId, $toStatus, 'pending', $toStatus, $note);
+        parentJourneyNotificationEnqueueDecision($pdo, $requestId);
         $pdo->commit();
         return ['id' => $requestId, 'status' => $toStatus, 'changed' => true];
     } catch (Throwable $exception) {

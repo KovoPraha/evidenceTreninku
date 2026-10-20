@@ -27,8 +27,9 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
 
     public function testUnauthorizedOrFullOfferRollsBackPaymentConfirmation():void
     {
-        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'OFFER-A');$first=$this->checkout($pdo,10,101,601);$second=$this->checkout($pdo,11,103,601);$pdo->exec('UPDATE club_program_offers SET capacity=1');
+        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'OFFER-A');$first=$this->checkout($pdo,10,101,601);$second=$this->checkout($pdo,11,103,601);
         \shopOrderAdminConfirmBankPayment($pdo,(int)$first['payment_id'],7,'První platba.',true);
+        $pdo->exec('UPDATE club_program_offers SET capacity=1');
         try{\shopOrderAdminConfirmBankPayment($pdo,(int)$second['payment_id'],7,'Druhá platba.',true);self::fail('Full capacity must roll back payment.');}catch(\ShopCheckoutException $exception){self::assertStringContainsString('Kapacita',$exception->getMessage());}
         $secondState=$pdo->query('SELECT o.status,o.payment_status,p.status AS payment_record_status FROM shop_orders o JOIN payments p ON p.payable_id=o.id AND p.payable_type=\'shop_order\' WHERE o.id='.(int)$second['id'])->fetch(PDO::FETCH_ASSOC);
         self::assertSame(['status'=>'placed','payment_status'=>'pending','payment_record_status'=>'pending'],$secondState);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());self::assertFalse($pdo->inTransaction());
@@ -65,6 +66,7 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_program_enrollments WHERE status='active' AND active_token='active'")->fetchColumn());
         self::assertSame('active',$pdo->query('SELECT status FROM club_roster_members')->fetchColumn());
+
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_roster_events WHERE action='restore'")->fetchColumn());
     }
 
@@ -146,6 +148,13 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         self::assertSame(105,(int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_order_items')->fetchColumn());
         self::assertSame('active',$pdo->query('SELECT status FROM club_program_enrollments')->fetchColumn());
         self::assertSame('active',$pdo->query('SELECT status FROM club_roster_members')->fetchColumn());
+        $notification=$pdo->query("SELECT * FROM club_event_notifications WHERE notification_type='program_activated'")->fetch();
+        self::assertSame('quick@example.test',$notification['recipient_email']);
+        self::assertStringContainsString('zařazen do soupisky',$notification['body_plain']);
+        self::assertStringContainsString('/booking/moje_programy.php',$notification['body_plain']);
+        $pdo->beginTransaction();$repeated=\clubProgramLinkApprovedAthleteRequestInTransaction($pdo,1,105,7);$pdo->commit();
+        self::assertSame(0,$repeated['activated']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='program_activated'")->fetchColumn());
     }
 
     public function testEmptyBirthYearRangeDoesNotRejectMissingBirthDate():void
@@ -180,6 +189,29 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         $paid=\clubProgramOfferForVariant($paidDb,601);
         self::assertSame(1,$paid['active_enrollment_count']);self::assertSame(0,$paid['held_order_count']);self::assertSame(1,$paid['occupied_count']);self::assertSame(0,$paid['available_count']);
         $admin=\clubProgramAdminOffers($paidDb);self::assertSame(1,$admin[0]['active_enrollment_count']);self::assertSame(0,$admin[0]['held_order_count']);
+    }
+
+    public function testLateKnownAthletePaymentCannotTakePaidIdentityReviewReservation():void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,1,'OFFER-PAID-REVIEW');
+        $late=$this->checkout($pdo,10,101,601);
+        $pdo->prepare("UPDATE shop_orders SET payment_expires_at='2000-01-01' WHERE id=?")->execute([(int)$late['id']]);
+        $review=$this->checkout($pdo,11,103,601);
+        $pdo->exec("INSERT INTO account_person_claim_requests(id,account_id,requested_role,claimed_jmeno,claimed_prijmeni,claimed_narozeni,requester_message,status,request_kind) VALUES(99,11,'guardian','LOCALHOST','NEPLATIT','2012-05-06','','pending','athlete_registration')");
+        $pdo->prepare('UPDATE shop_order_items SET beneficiary_sportovec_id=NULL,athlete_registration_request_id=99 WHERE order_id=?')->execute([(int)$review['id']]);
+        $confirmed=\shopOrderAdminConfirmBankPayment($pdo,(int)$review['payment_id'],7,'Syntetická platba čekající na ověření osoby.',true);
+        self::assertSame(1,$confirmed['pending_identity']);
+
+        try{
+            \shopOrderAdminConfirmBankPayment($pdo,(int)$late['payment_id'],7,'Syntetická opožděná platba.',true);
+            self::fail('A known athlete must not take the paid place of a family awaiting identity review.');
+        }catch(\ShopCheckoutException $exception){
+            self::assertStringContainsString('Kapacita',$exception->getMessage());
+        }
+        $payment=$pdo->prepare('SELECT status FROM payments WHERE id=?');$payment->execute([(int)$late['payment_id']]);self::assertSame('pending',$payment->fetchColumn());
+        $payment->execute([(int)$review['payment_id']]);self::assertSame('paid',$payment->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        self::assertSame(1,\clubProgramOfferForVariant($pdo,601)['held_order_count']);
     }
 
     public function testAgeMigrationIsRepeatableAndValidatesRange():void
@@ -243,6 +275,7 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         foreach(['20260804140000_club_programs.php','20260804160000_club_program_lifecycle.php','20260804235000_club_program_repeat_enrollment.php','20260817090000_club_program_events.php','20260817130000_club_program_offer_age.php','20260817150000_club_program_terms.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         $expiration=require dirname(__DIR__,2).'/migrations/20260804210000_shop_order_expiration.php';$expiration['up']($pdo);self::assertTrue($expiration['verify']($pdo));
         foreach(['20260922140000_low_friction_storefront.php','20260922150000_quick_program_checkout.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
+        \Tests\Support\ParentJourneyNotificationFixture::install($pdo);
         return$pdo;
     }
 }

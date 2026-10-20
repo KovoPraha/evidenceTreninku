@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
+require_once dirname(__DIR__) . '/includes/booking_return.php';
+$returnTo = bookingPurchaseReturn($_POST['return'] ?? $_GET['return'] ?? '');
+$pageTarget = 'moje_osoby.php' . ($returnTo !== '' ? '?return=' . rawurlencode($returnTo) : '');
 if (!isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: prihlaseni.php?redirect=moje_osoby.php');
+    header('Location: prihlaseni.php?redirect=' . rawurlencode($pageTarget));
     exit;
 }
 require_once dirname(__DIR__) . '/db.php';
@@ -19,13 +22,10 @@ function claimPageH(mixed $value): string
 
 function claimPageReturn(mixed $value): string
 {
-    $return = trim((string)$value);
-    return preg_match('~^(?:eshop\.php(?:#kosik)?|produkt\.php\?id=[1-9][0-9]*(?:&variant_id=[1-9][0-9]*)?(?:#varianta-[1-9][0-9]*)?)$~D', $return) === 1
-        ? $return : '';
+    return bookingPurchaseReturn($value);
 }
 
 $accountId = (int)$_SESSION['verejny_uzivatel_id'];
-$returnTo = claimPageReturn($_POST['return'] ?? $_GET['return'] ?? '');
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
@@ -93,7 +93,7 @@ $statusLabels = [
     <p class="text-muted">Děti a sportovci, které budete moci přihlašovat na kroužky, kurzy a akce.</p>
     <?php if ($returnTo !== ''): ?><p><a class="btn btn-outline-primary btn-sm" href="<?=claimPageH($returnTo)?>">← Zpět k rozpracovanému nákupu</a> <span class="small text-muted">Pokud je propojení teprve ke schválení, nákup dokončíte po jeho potvrzení.</span></p><?php endif; ?>
     <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2"><span>Kvůli ochraně osobních údajů se osoby nepřipojují automaticky. Pokud už je sportovec v evidenci klubu, požádejte níže o propojení; administrátor vazbu ověří.</span><a class="btn btn-primary btn-sm" href="#propojeni">Propojit existujícího sportovce</a></div>
-    <?php if ($newAthleteRegistrationOpen): ?><p><a class="btn btn-outline-primary btn-sm" href="registrace_sportovce.php"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></p><?php else: ?><p class="small text-muted">Registrace nového sportovce je dočasně pozastavena, dokud klub neschválí konečné informace o zpracování údajů. Pokud sportovec ještě není v evidenci, <a href="mailto:velodromtrebesin@gmail.com?subject=Registrace%20nov%C3%A9ho%20sportovce">napište klubu</a>.</p><?php endif; ?>
+    <?php if ($newAthleteRegistrationOpen): ?><p><a class="btn btn-outline-primary btn-sm" href="registrace_sportovce.php<?=$returnTo !== '' ? '?return=' . rawurlencode($returnTo) : ''?>"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></p><?php else: ?><p class="small text-muted">Registrace nového sportovce je dočasně pozastavena, dokud klub neschválí konečné informace o zpracování údajů. Pokud sportovec ještě není v evidenci, <a href="mailto:velodromtrebesin@gmail.com?subject=Registrace%20nov%C3%A9ho%20sportovce">napište klubu</a>.</p><?php endif; ?>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= claimPageH($error) ?></div><?php endforeach; ?>
     <?php if ($success !== ''): ?><div class="alert alert-success"><?= claimPageH($success) ?></div><?php endif; ?>
 

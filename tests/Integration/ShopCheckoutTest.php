@@ -127,6 +127,35 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
     }
 
+    public function testImportedClubCategoryBlocksGuestMemberAndAlreadySavedGoodsCart():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("ALTER TABLE shop_products ADD COLUMN origin TEXT NULL");
+        $pdo->exec("ALTER TABLE shop_products ADD COLUMN external_product_key TEXT NULL");
+        $pdo->exec("UPDATE shop_products SET origin='import',external_product_key='shoptet:sku:675' WHERE id=501");
+        // A real imported garment remains purchasable before the category changes.
+        self::assertFalse(\shopProductRequiresAthlete($pdo,501));
+        \shopCartSetQuantity($pdo,10,601,1);
+        $pdo->exec("UPDATE shop_product_categories SET category_path='Cyklo kroužky > Aligátoři' WHERE product_id=501");
+        $pdo->exec("UPDATE shop_product_publications SET public_name='Aligátoři – 1. pololetí' WHERE product_id=501");
+        self::assertTrue(\shopProductRequiresAthlete($pdo,501));
+        foreach(['guest','member','saved_cart']as$path){
+            try{
+                if($path==='guest')\shopGuestCheckoutPlace($pdo,601,1,[
+                    'first_name'=>'LOCALHOST','last_name'=>'NEPLATIT','email'=>'club@example.test','confirmed'=>'1',
+                ],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);
+                elseif($path==='member')\shopCartSetQuantity($pdo,10,601,1);
+                else \shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+                self::fail('Imported club purchase must not bypass the athlete/program flow: '.$path);
+            }catch(\ShopCheckoutException $exception){
+                self::assertStringContainsString($path==='guest'?'bez registrace':'vyžaduje sportovce',$exception->getMessage());
+            }
+        }
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
+        self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+    }
+
     public function testGuestCheckoutRequiresServerSideConfirmationBeforeAnyWrite():void
     {
         $pdo=$this->database();

@@ -30,7 +30,12 @@ final class PublicPortalWiringTest extends TestCase
         self::assertStringContainsString('unifiedAccountAuthenticate', $shopLogin);
         self::assertStringContainsString('auth_session_bind_trainer', $shopLogin);
         self::assertStringContainsString("require_once __DIR__ . '/../includes/public_login_destination.php'", $shopLogin);
-        self::assertStringContainsString("publicLoginDestination(\$_GET['redirect'] ?? null, \$identity['trainer'] !== null)", $shopLogin);
+        self::assertStringContainsString("\$requestedReturn = \$_POST['redirect'] ?? \$_GET['redirect'] ?? null", $shopLogin);
+        self::assertStringContainsString("publicLoginDestination(\$requestedReturn, \$identity['trainer'] !== null)", $shopLogin);
+        self::assertStringContainsString('name="redirect" value="<?=h(bookingReturnDestination($requestedReturn))?>"', $shopLogin);
+        $destination = (string)file_get_contents($root . '/includes/public_login_destination.php');
+        self::assertStringContainsString("require_once __DIR__ . '/booking_return.php'", $destination);
+        self::assertStringContainsString('return bookingReturnDestination($requested,', $destination);
     }
 
     public function testCustomerLoginAndRegistrationExposeOnePrimaryHeading(): void

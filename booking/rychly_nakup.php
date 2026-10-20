@@ -28,6 +28,12 @@ $productId = (int)($_POST['product_id'] ?? $_GET['product_id'] ?? 0);
 $variantId = (int)($_POST['variant_id'] ?? $_GET['variant_id'] ?? 0);
 $product = shopStorefrontProductDetail($pdo, $productId);
 $variant = null;
+if ($product !== null && shopProductRequiresAthlete($pdo, $productId)) {
+    // Old catalogue/bookmarked guest links must lead to the current registration
+    // state without creating an ordinary goods order for a club product.
+    header('Location: produkt.php?id='.$productId.'&variant_id='.$variantId.'#varianta-'.$variantId, true, 303);
+    exit;
+}
 if ($product !== null && !shopProductRequiresAthlete($pdo, $productId)) {
     foreach ($product['variants'] as $candidate) {
         if ((int)$candidate['variant_id'] === $variantId && !clubProgramVariantHasOfferLink($pdo, $variantId)) {

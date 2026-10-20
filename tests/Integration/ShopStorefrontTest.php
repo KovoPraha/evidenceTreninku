@@ -63,6 +63,8 @@ final class ShopStorefrontTest extends TestCase
         $products=\shopPublicSaleableCatalog($pdo);
         self::assertSame([501,505],array_column($products,'product_id'));
         self::assertNotNull(\shopStorefrontProductDetail($pdo,505)); // Direct interest page remains available.
+        self::assertTrue(\shopProductRequiresAthlete($pdo,505)); // Visibility never authorizes a goods checkout.
+        self::assertFalse(\shopProductRequiresAthlete($pdo,501));
     }
 
     public function testImageAllowListRejectsUnsafeSchemesCredentialsAndControls(): void

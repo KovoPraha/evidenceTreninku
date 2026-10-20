@@ -1,6 +1,19 @@
 # Aktuální předání vývoje na další stanici
 
-Aktualizováno: 11. 10. 2026, Europe/Prague
+Lokální doplnění: 20. 10. 2026, Europe/Prague
+
+Aktuální lokální práci na cestě rodiče předává
+[PARENT_JOURNEY_2026-10-20.md](PARENT_JOURNEY_2026-10-20.md).
+Větev `codex/parent-journey` v odděleném worktree vychází z
+`2b6bc7998d2fb621dc3a694a3c3d5102a3def54b`; změny nebyly nasazené.
+Předchozí checkout obsahuje cizí rozpracované výstupy a není místem těchto změn.
+Aktivace platebních poskytovatelů je výslovně odložená.
+Závěrečná lokální sada prošla: **1 017 testů / 23 523 kontrol**; prošel i
+izolovaný MariaDB smoke souběžného checkoutu a kapacity. Provozní a prohlížečové
+meze ověření jsou výslovně uvedené v odkazovaném předání.
+
+Níže je **historický bod předání z 11. 10. 2026**. Jeho SHA, počty testů,
+produkční UAT a stav nasazení nejsou aktuálním důkazem pro lokální větev.
 
 Tento dokument je stabilní vstupní bod pro další počítač nebo vývojáře.
 Autoritativní zdroj je vždy vzdálená větev `origin/main` repozitáře

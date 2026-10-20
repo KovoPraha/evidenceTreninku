@@ -15,6 +15,8 @@ function shopPublicSaleableCatalog(PDO $pdo): array
 {
     $products=[];
     foreach (shopStorefrontCatalog($pdo) as $product) {
+        // Keep the approved full import visible, including interest-only club
+        // products. Athlete/offer validation still applies at every checkout.
         if(shopPurchaseModeApprovedShoptetGoods($product)){$products[]=$product;continue;}
         $hasProgramOffer=clubProgramProductHasOfferLink($pdo,(int)$product['product_id']);
         $isProgram=shopProductRequiresAthlete($pdo,(int)$product['product_id']);
