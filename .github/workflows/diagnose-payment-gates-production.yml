@@ -77,7 +77,7 @@ jobs:
           require __DIR__ . '/diagnose-production-payment-gates.php';
           EOF
           production_retry "${SCP[@]}" /tmp/run-payment-gates-diagnostic.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-payment-gates-diagnostic.php"
-          "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-payment-gates-diagnostic.php'" | tee /tmp/kis-payment-gates.json
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-payment-gates-diagnostic.php'" | tee /tmp/kis-payment-gates.json
           jq -e '.ok == true and .target == "kis.kovopraha.cz" and
             (.fio_import_enabled | type == "boolean") and
             (.fio_auto_confirm_enabled | type == "boolean") and
