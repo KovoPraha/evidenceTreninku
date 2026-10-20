@@ -28,6 +28,20 @@ final class ConfigureProductionFioTest extends TestCase
         $rejected=0;foreach([['token'=>'short','lookback_days'=>3],['token'=>'unit_readonly_token_1234567890','lookback_days'=>31]]as$invalid){try{\kisProductionFioValidate($invalid);self::fail('Neplatné nastavení musí být odmítnuto.');}catch(\RuntimeException){$rejected++;}}self::assertSame(2,$rejected);
     }
 
+    public function testAutomaticConfirmationRequiresExplicitFlagAndDisableClearsIt():void
+    {
+        $default=\kisProductionFioManagedBlock($this->settings(),true);
+        self::assertStringContainsString("define('FIO_AUTO_CONFIRM_ENABLED', false)",$default);
+        $settings=\kisProductionFioValidate(['token'=>'unit_readonly_token_1234567890','auto_confirm'=>true,'start_date'=>'2026-01-01']);
+        self::assertStringContainsString("define('FIO_AUTO_CONFIRM_ENABLED', true)",\kisProductionFioManagedBlock($settings,true));
+        self::assertStringContainsString("define('FIO_AUTO_CONFIRM_ENABLED', false)",\kisProductionFioManagedBlock($settings,false));
+        self::assertStringContainsString("define('FIO_IMPORT_START_DATE', '2026-01-01')",\kisProductionFioManagedBlock($settings,true));
+        foreach([['auto_confirm'=>'true'],['start_date'=>'2026-02-30'],['start_date'=>"2026-01-01\ninjected"]]as$invalid){
+            try{\kisProductionFioValidate($invalid+['token'=>'unit_readonly_token_1234567890']);self::fail('Expected invalid configuration.');}
+            catch(\RuntimeException){self::assertTrue(true);}
+        }
+    }
+
     public function testWorkflowsKeepTokenOutOfCommandsAndUseProtectedProduction():void
     {
         $root=dirname(__DIR__,2);$configure=(string)file_get_contents($root.'/.github/workflows/configure-fio-production.yml');$schedule=(string)file_get_contents($root.'/.github/workflows/fio-import-production.yml');

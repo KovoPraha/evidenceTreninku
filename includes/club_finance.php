@@ -221,15 +221,17 @@ function clubFinanceChargeAllocatedMinor(PDO $pdo,int $chargeId):int
 
 function clubFinanceAssertBankReferenceUnused(PDO $pdo,string $reference,int $amountMinor,string $paidOn):void
 {
-    $duplicate=$pdo->prepare('SELECT 1 FROM club_finance_receipts WHERE reference=?');$duplicate->execute([$reference]);
+    // Serialize manual receipts with automatic/manual Fio confirmation.
+    $lockSuffix=$pdo->inTransaction()&&$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    if (clubFinanceTableExists($pdo,'fio_account_movements')) {
+        $movement=$pdo->prepare('SELECT amount_minor,currency,booked_on FROM fio_account_movements WHERE fio_movement_id=?'.$lockSuffix);$movement->execute([$reference]);$row=$movement->fetch(PDO::FETCH_ASSOC);
+        if ($row&&((int)$row['amount_minor']!==$amountMinor||(string)$row['currency']!=='CZK'||(string)$row['booked_on']!==$paidOn)) throw new ClubFinanceException('Bankovní reference existuje, ale datum nebo částka nesouhlasí s Fio výpisem.');
+    }
+    $duplicate=$pdo->prepare('SELECT 1 FROM club_finance_receipts WHERE reference=?'.$lockSuffix);$duplicate->execute([$reference]);
     if ($duplicate->fetchColumn()) throw new ClubFinanceException('Tato bankovní reference již byla zapsána. Platbu nelze zaúčtovat znovu.');
     if (clubFinanceColumnExists($pdo,'payments','bank_movement_id')) {
-        $matched=$pdo->prepare('SELECT 1 FROM payments WHERE bank_movement_id=?');$matched->execute([$reference]);
+        $matched=$pdo->prepare('SELECT 1 FROM payments WHERE bank_movement_id=?'.$lockSuffix);$matched->execute([$reference]);
         if ($matched->fetchColumn()) throw new ClubFinanceException('Tato bankovní platba již byla přiřazena jiné úhradě.');
-    }
-    if (clubFinanceTableExists($pdo,'fio_account_movements')) {
-        $movement=$pdo->prepare('SELECT amount_minor,currency,booked_on FROM fio_account_movements WHERE fio_movement_id=?');$movement->execute([$reference]);$row=$movement->fetch(PDO::FETCH_ASSOC);
-        if ($row&&((int)$row['amount_minor']!==$amountMinor||(string)$row['currency']!=='CZK'||(string)$row['booked_on']!==$paidOn)) throw new ClubFinanceException('Bankovní reference existuje, ale datum nebo částka nesouhlasí s Fio výpisem.');
     }
 }
 

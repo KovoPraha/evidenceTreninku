@@ -220,6 +220,7 @@ const EVIDENCE_TABLES = [
     'family_weekly_summary_preferences',
     'fio_account_movements',
     'fio_import_runs',
+    'fio_sync_state',
     'fotky',
     'gs_kategorie',
     'gs_link_targets',
