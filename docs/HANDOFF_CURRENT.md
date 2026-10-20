@@ -1,19 +1,39 @@
 # Aktuální předání vývoje na další stanici
 
-Lokální doplnění: 20. 10. 2026, Europe/Prague
+Produkční doplnění: 20. 10. 2026, Europe/Prague
 
-Aktuální lokální práci na cestě rodiče předává
-[PARENT_JOURNEY_2026-10-20.md](PARENT_JOURNEY_2026-10-20.md).
-Větev `codex/parent-journey` v odděleném worktree vychází z
-`2b6bc7998d2fb621dc3a694a3c3d5102a3def54b`; změny nebyly nasazené.
-Předchozí checkout obsahuje cizí rozpracované výstupy a není místem těchto změn.
-Aktivace platebních poskytovatelů je výslovně odložená.
-Závěrečná lokální sada prošla: **1 017 testů / 23 523 kontrol**; prošel i
-izolovaný MariaDB smoke souběžného checkoutu a kapacity. Provozní a prohlížečové
-meze ověření jsou výslovně uvedené v odkazovaném předání.
+Aktuální důkazy nasazení a prohlížečového ověření shrnuje
+[PARENT_JOURNEY_PRODUCTION_2026-10-20.md](PARENT_JOURNEY_PRODUCTION_2026-10-20.md).
+Rodičovská cesta z PR #91 prošla nasazením a ověřením 94 migrací. Poslední
+aplikační release včetně opravy příslušenství z PR #92 je
+`fd6ccc1584beb3a3266e8147497263cb8a38044f`:
+[deploy 39402251446](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39402251446)
+a [CI 39402250654](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39402250654)
+prošly. Lokální implementační a akceptační podrobnosti
+zůstávají v [původním předání](PARENT_JOURNEY_2026-10-20.md).
+
+Produkční prohlížeč potvrdil přihlášení testovacího rodiče, existující rodinu
+a stránku Moje kroužky. **Úplná cesta nové registrace až do soupisky zatím
+ověřena není.** Novou žádost o dítě blokuje chybějící platná informace
+o zpracování osobních údajů. Všech 52 zkontrolovaných účastnických variant
+je veřejně viditelných, ale čeká na propojení; přesné produktové identifikátory
+jsou v novém reportu. Existujících 26 programů a 74 nabídek se soupiskami
+není třeba plošně zakládat znovu: všech 74 nabídek hlásí chybějící platný
+souhlas se storno podmínkami
+a všude je nyní neomezená kapacita. Je třeba rozhodnout skutečné vazby
+a nastavení, včetně rozdílných cen Pumptracku a termínů Točňáků / Kunratic.
+
+Fio, Stripe a SumUp se nezapínaly. Skutečné produktové vazby nebyly měněny.
+Lokální sada po opravě příslušenství v PR #92 prošla:
+**1 019 testů / 23 532 kontrol**. Doručení e-mailu ani skutečná platba
+se tím nepotvrzují. Po posledním deployi jsou Trička a Uskladnění správně
+bez blokace na program; Aligátoři zůstávají blokováni kvůli chybějícím vazbám.
+Syntetický testovací program má připravenou nabídku, ale veřejná prezentace
+TEST programu je koncept; rodičovský katalog jej nenabízí. Pozitivní produkční nákup proto
+nebyl dokončen.
 
 Níže je **historický bod předání z 11. 10. 2026**. Jeho SHA, počty testů,
-produkční UAT a stav nasazení nejsou aktuálním důkazem pro lokální větev.
+produkční UAT a stav nasazení nejsou aktuálním důkazem současného provozu.
 
 Tento dokument je stabilní vstupní bod pro další počítač nebo vývojáře.
 Autoritativní zdroj je vždy vzdálená větev `origin/main` repozitáře

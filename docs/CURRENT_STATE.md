@@ -1,16 +1,39 @@
 # Aktuální stav projektu
 
-Lokální doplnění: 20. 10. 2026, Europe/Prague
+Produkční doplnění: 20. 10. 2026, Europe/Prague
 
-Ve worktree `evidencePavel-parent-journey-20261020`, větev
-`codex/parent-journey`, je lokálně dokončená a otestovaná rodičovská cesta nad výchozím commitem
-`2b6bc7998d2fb621dc3a694a3c3d5102a3def54b`. Změny nejsou nasazené; skutečné
-Fio/Stripe/SumUp jsou odložené. Rozsah, akceptační důkaz a zbývající provozní
-kroky uvádí [lokální předání rodičovské cesty](PARENT_JOURNEY_2026-10-20.md).
-Závěrečný PHPUnit: **1 017 testů / 23 523 kontrol**, bez selhání a chyb.
+Rodičovská cesta z PR #91 je nasazená včetně ověření 94 migrací. Poslední
+aplikační release po opravě příslušenství z PR #92 má SHA
+`fd6ccc1584beb3a3266e8147497263cb8a38044f`:
+[produkční běh 39402251446](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39402251446)
+i [CI 39402250654](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39402250654)
+prošly. Rozsah živého ověření a úplný seznam
+52 nepropojených účastnických variant uvádí
+[produkční report rodičovské cesty](PARENT_JOURNEY_PRODUCTION_2026-10-20.md).
+Podrobnosti implementace a syntetického akceptačního testu zachycuje
+[lokální předání](PARENT_JOURNEY_2026-10-20.md).
+
+V prohlížeči prošlo přihlášení testovacího rodiče, zobrazení jeho rodiny
+a stránka Moje kroužky. Novou žádost o dítě blokuje chybějící platná informace
+o zpracování osobních údajů. Všech 52 kontrolovaných účastnických variant
+správně brání nákupu bez návazností. Současně existuje 26 zveřejněných programů
+a 74 aktivních nabídek se soupiskami: scházejí vazby importovaných variant,
+platný souhlas se storno podmínkami všech 74 nabídek a potvrzení jejich
+neomezené kapacity.
+Pumptrack má rozporné ceny, Točňáci 1× týdně nevyřešený výběr dne
+a Kunratice neúplný čas / rozdělení věkových skupin.
+
+Úplný produkční průchod novou registrací, platbou a zařazením do soupisky
+ani doručení e-mailů zatím nejsou ověřené. Fio, Stripe a SumUp se nezapínaly
+a skutečné produktové vazby se neměnily. Lokální sada po opravě příslušenství
+v PR #92: **1 019 testů / 23 532 kontrol**, bez selhání a chyb.
+Po posledním deployi prohlížeč ověřil správné rozlišení Triček / Uskladnění
+od kroužku Aligátoři. Veřejná prezentace TEST programu je koncept;
+rodičovský katalog jej nenabízí. Pozitivní produkční nákup
+nebyl dokončen.
 
 Následující původní stavový přehled je **historický snapshot z 11. 10. 2026**,
-včetně SHA, CI a produkčních výsledků. Nepopisuje aktuální lokální změny ani
+včetně SHA, CI a produkčních výsledků. Nepopisuje aktuální změny ani
 nepotvrzuje současný produkční stav.
 
 Tento soubor je autoritativní stavový rozcestník. Historické audity, předávací
