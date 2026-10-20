@@ -70,8 +70,10 @@ jobs:
           if(!is_string($root)||!is_string($host))exit(64);
           $_SERVER['HTTP_HOST']=$host;$_SERVER['SERVER_NAME']=$host;
           require $root.'/config.php';require $root.'/includes/fio_readonly_import.php';
-          if(!defined('FIO_IMPORT_ENABLED')||FIO_IMPORT_ENABLED!==true||!defined('FIO_API_TOKEN'))exit(78);
-          $body=fioFetchPeriodJson((string)FIO_API_TOKEN,'2026-09-21','2026-09-27');
+          $token=getenv('FIO_API_TOKEN');
+          if((!is_string($token)||$token==='')&&defined('FIO_API_TOKEN'))$token=(string)FIO_API_TOKEN;
+          if(!is_string($token)||$token===''){fwrite(STDERR,"fio_token_missing\n");exit(78);}
+          $body=fioFetchPeriodJson($token,'2026-09-21','2026-09-27');
           $document=json_decode($body,true,64,JSON_THROW_ON_ERROR);
           $movements=$document['accountStatement']['transactionList']['transaction']??[];
           if(!is_array($movements))exit(65);
