@@ -133,6 +133,12 @@ $fioImportEnabled = getenv('FIO_IMPORT_ENABLED');
 $fioApiToken = getenv('FIO_API_TOKEN');
 $fioImportLookbackDays = getenv('FIO_IMPORT_LOOKBACK_DAYS');
 defined('FIO_IMPORT_ENABLED') || define('FIO_IMPORT_ENABLED', is_string($fioImportEnabled) && $fioImportEnabled === '1');
+// Samostatny prepinac: ulozeni tokenu ani nasazeni kodu nepotvrzuje platby.
+defined('FIO_AUTO_CONFIRM_ENABLED') || define('FIO_AUTO_CONFIRM_ENABLED', getenv('FIO_AUTO_CONFIRM_ENABLED') === '1');
+$fioStartDate = getenv('FIO_IMPORT_START_DATE');
+if (is_string($fioStartDate) && $fioStartDate !== '') {
+    defined('FIO_IMPORT_START_DATE') || define('FIO_IMPORT_START_DATE', $fioStartDate);
+}
 if (!defined('FIO_API_TOKEN') && is_string($fioApiToken) && $fioApiToken !== '') define('FIO_API_TOKEN', $fioApiToken);
 if (is_string($fioImportLookbackDays) && preg_match('/^(?:[1-9]|[12][0-9]|30)$/D', $fioImportLookbackDays) === 1) {
     defined('FIO_IMPORT_LOOKBACK_DAYS') || define('FIO_IMPORT_LOOKBACK_DAYS', (int)$fioImportLookbackDays);

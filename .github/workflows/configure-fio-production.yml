@@ -4,14 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       rezim:
-        description: 'Zapnout nebo nouzově vypnout Fio synchronizaci'
+        description: 'Ověřit spojení, zapnout nebo nouzově vypnout Fio synchronizaci'
         required: true
         type: choice
-        options: [enable, disable]
+        options: [verify, enable, disable]
       potvrzeni:
-        description: 'ZAPNOUT-FIO-READONLY nebo VYPNOUT-FIO'
+        description: 'Pro ověření OVERIT-FIO; pro změny ZAPNOUT-FIO-READONLY, ZAPNOUT-FIO-AUTOMAT nebo VYPNOUT-FIO'
         required: true
         type: string
+      automaticke_potvrzeni:
+        description: 'Automaticky potvrzovat jednoznačné úhrady v KIS'
+        type: boolean
+        default: false
+      historie_od:
+        description: 'První synchronizace od YYYY-MM-DD; prázdné = 30 dní, uložený postup má přednost'
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -27,9 +35,68 @@ env:
   CONFIG_BACKUP_DIR: data/.kis-backups/config
 
 jobs:
+  overit:
+    name: Ověřit Fio token a účet bez změny produkce
+    if: inputs.rezim == 'verify'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Ověřit ruční volbu
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: test "$POTVRZENI" = 'OVERIT-FIO'
+
+      - name: Stáhnout čtecí ověřovací nástroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Ověřit účet v KIS a token u Fio
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+          FIO_API_TOKEN_VALUE: ${{ secrets.KIS_FIO_API_TOKEN }}
+        run: |
+          for promenna in APP_HOST REMOTE_DIR SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET FIO_API_TOKEN_VALUE; do
+            if [ -z "${!promenna}" ]; then echo "❌ Chybí povinná konfigurace: $promenna."; exit 1; fi
+          done
+          [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]] && [[ "$APP_HOST" != .* ]] && [[ "$APP_HOST" != *. ]] || { echo '❌ KIS_APP_HOST nemá bezpečný formát.'; exit 1; }
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo '❌ KIS_REMOTE_DIR obsahuje nepovolené znaky.'; exit 1; }
+          case "$REMOTE_DIR" in /*|*..*|*/./*|./*|*/.) echo '❌ KIS_REMOTE_DIR musí být relativní cesta bez . a .. segmentů'; exit 1 ;; esac
+          [[ "$FIO_API_TOKEN_VALUE" =~ ^[A-Za-z0-9_-]{20,128}$ ]] || { echo '❌ Fio token nemá bezpečný formát.'; exit 1; }
+          PORT="${SSH_PORT_SECRET:-22}"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          SSH=(ssh -p "$PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER_SECRET@$SSH_HOST_SECRET")
+          SCP=(scp -P "$PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          cleanup() {
+            rm -f /tmp/run-fio-account-probe.php
+            "${SSH[@]}" "rm -f '$DEPLOY_BASE/run-fio-account-probe.php'" > /dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          cat > /tmp/run-fio-account-probe.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          \$argv[1] = 'production-account';
+          require '$REMOTE_DIR/bin/verify-fio-connection.php';
+          EOF
+          "${SCP[@]}" /tmp/run-fio-account-probe.php "$SSH_USER_SECRET@$SSH_HOST_SECRET:$DEPLOY_BASE/run-fio-account-probe.php"
+          BANK_STATE="$("${SSH[@]}" "php '$DEPLOY_BASE/run-fio-account-probe.php'")"
+          printf '%s\n' "$BANK_STATE" | jq -e '.iban != "" and .fio_enabled == false and .auto_confirm_enabled == false' > /dev/null
+          EXPECTED_IBAN="$(printf '%s\n' "$BANK_STATE" | jq -r '.iban')" php bin/verify-fio-connection.php verify-token
+          echo '✅ Fio API odpovědělo a účet souhlasí s KIS; produkční synchronizace zůstává vypnutá.'
+
   nastavit:
     name: Fio read-only (kis.kovopraha.cz)
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && inputs.rezim != 'verify'
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 15
@@ -38,8 +105,11 @@ jobs:
         env:
           REZIM: ${{ inputs.rezim }}
           POTVRZENI: ${{ inputs.potvrzeni }}
+          AUTO_CONFIRM: ${{ inputs.automaticke_potvrzeni }}
         run: |
-          if [ "$REZIM" = enable ] && [ "$POTVRZENI" != 'ZAPNOUT-FIO-READONLY' ]; then echo '❌ Chybí potvrzení zapnutí Fio.'; exit 1; fi
+          EXPECTED=ZAPNOUT-FIO-READONLY
+          if [ "$AUTO_CONFIRM" = true ]; then EXPECTED=ZAPNOUT-FIO-AUTOMAT; fi
+          if [ "$REZIM" = enable ] && [ "$POTVRZENI" != "$EXPECTED" ]; then echo '❌ Chybí potvrzení zvoleného režimu Fio.'; exit 1; fi
           if [ "$REZIM" = disable ] && [ "$POTVRZENI" != 'VYPNOUT-FIO' ]; then echo '❌ Chybí potvrzení vypnutí Fio.'; exit 1; fi
 
       - name: Stáhnout konfigurační nástroj
@@ -54,6 +124,8 @@ jobs:
           SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
           FIO_API_TOKEN_VALUE: ${{ secrets.KIS_FIO_API_TOKEN }}
+          AUTO_CONFIRM: ${{ inputs.automaticke_potvrzeni }}
+          START_DATE: ${{ inputs.historie_od }}
         run: |
           for promenna in APP_HOST REMOTE_DIR SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
             if [ -z "${!promenna}" ]; then echo "❌ Chybí povinná konfigurace: $promenna."; exit 1; fi
@@ -69,11 +141,12 @@ jobs:
           if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
           ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
           echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV";echo "SSH_PORT=$PORT" >> "$GITHUB_ENV";echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
-          if [ "$REZIM" = enable ]; then php -r '$v=["token"=>getenv("FIO_API_TOKEN_VALUE"),"lookback_days"=>3];file_put_contents("/tmp/fio-secrets.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);';chmod 600 /tmp/fio-secrets.json;fi
+          if [ "$REZIM" = enable ]; then umask 077; php -r '$v=["token"=>getenv("FIO_API_TOKEN_VALUE"),"lookback_days"=>3,"auto_confirm"=>getenv("AUTO_CONFIRM")==="true","start_date"=>getenv("START_DATE")?:null];file_put_contents("/tmp/fio-secrets.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);';chmod 600 /tmp/fio-secrets.json;fi
 
       - name: Zálohovat a nastavit Fio
         env:
           REZIM: ${{ inputs.rezim }}
+          AUTO_CONFIRM: ${{ inputs.automaticke_potvrzeni }}
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
@@ -94,7 +167,7 @@ jobs:
           EOF
           "${SCP[@]}" /tmp/run-fio-probe.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-probe.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-fio-probe.php'" | tee /tmp/fio-probe-result.json
-          if [ "$REZIM" = enable ]; then jq -e '.ok and .environment == "production" and .fio_enabled and .token_present and .lookback_days == 3' /tmp/fio-probe-result.json > /dev/null; else jq -e '.ok and (.fio_enabled|not)' /tmp/fio-probe-result.json > /dev/null; fi
+          if [ "$REZIM" = enable ]; then jq -e --argjson auto "${AUTO_CONFIRM:-false}" '.ok and .environment == "production" and .fio_enabled and .token_present and .lookback_days == 3 and .auto_confirm_enabled == $auto' /tmp/fio-probe-result.json > /dev/null; else jq -e '.ok and (.fio_enabled|not) and (.auto_confirm_enabled|not)' /tmp/fio-probe-result.json > /dev/null; fi
 
       - name: Uklidit dočasné kopie tokenu
         if: always()

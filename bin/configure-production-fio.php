@@ -4,13 +4,19 @@ declare(strict_types=1);
 const KIS_FIO_BLOCK_BEGIN='// BEGIN KIS MANAGED FIO PRODUCTION';
 const KIS_FIO_BLOCK_END='// END KIS MANAGED FIO PRODUCTION';
 
-/** @param array<string,mixed> $input @return array{token:string,lookback_days:int} */
+/** @param array<string,mixed> $input @return array{token:string,lookback_days:int,auto_confirm:bool,start_date:?string} */
 function kisProductionFioValidate(array $input):array
 {
     $token=trim((string)($input['token']??''));$lookback=(int)($input['lookback_days']??3);
     if(preg_match('/^[A-Za-z0-9_-]{20,128}$/D',$token)!==1)throw new RuntimeException('Fio API token is missing or invalid.');
     if($lookback<1||$lookback>30)throw new RuntimeException('Fio lookback must be between 1 and 30 days.');
-    return['token'=>$token,'lookback_days'=>$lookback];
+    $auto=$input['auto_confirm']??false;if(!is_bool($auto))throw new RuntimeException('Fio auto confirmation must be a boolean.');
+    $start=$input['start_date']??null;if($start==='')$start=null;
+    if($start!==null){
+        $date=is_string($start)?DateTimeImmutable::createFromFormat('!Y-m-d',$start,new DateTimeZone('Europe/Prague')):false;
+        if(!$date||$date->format('Y-m-d')!==$start||$date>new DateTimeImmutable('today',new DateTimeZone('Europe/Prague')))throw new RuntimeException('Fio start date is invalid.');
+    }
+    return['token'=>$token,'lookback_days'=>$lookback,'auto_confirm'=>$auto,'start_date'=>$start];
 }
 
 /** @param array{token:string,lookback_days:int} $settings */
@@ -18,6 +24,8 @@ function kisProductionFioManagedBlock(array $settings,bool $enabled):string
 {
     return KIS_FIO_BLOCK_BEGIN."\n"
         ."defined('FIO_IMPORT_ENABLED') || define('FIO_IMPORT_ENABLED', ".($enabled?'true':'false').");\n"
+        ."defined('FIO_AUTO_CONFIRM_ENABLED') || define('FIO_AUTO_CONFIRM_ENABLED', ".($enabled&&($settings['auto_confirm']??false)?'true':'false').");\n"
+        ."defined('FIO_IMPORT_START_DATE') || define('FIO_IMPORT_START_DATE', ".var_export($settings['start_date']??null,true).");\n"
         ."defined('FIO_API_TOKEN') || define('FIO_API_TOKEN', ".var_export($settings['token'],true).");\n"
         ."defined('FIO_IMPORT_LOOKBACK_DAYS') || define('FIO_IMPORT_LOOKBACK_DAYS', ".$settings['lookback_days'].");\n"
         .KIS_FIO_BLOCK_END;
@@ -49,6 +57,7 @@ function kisProductionFioVerifyReadOnlyAccess(string $appRoot,string $appHost,st
     if(!defined('DB_HOST')||!defined('DB_NAME')||!defined('DB_USER')||!defined('DB_PASS'))throw new RuntimeException('Production database configuration is incomplete.');
     $pdo=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]);
     require_once$appRoot.'/includes/fio_readonly_import.php';require_once$appRoot.'/includes/shop_bank_settings.php';$expected=fioNormalizeIban((string)shopBankSettingsEffective($pdo)['iban']);$today=(new DateTimeImmutable('today',new DateTimeZone('Europe/Prague')))->format('Y-m-d');
+    if(!is_file($appRoot.'/includes/fio_sync.php')||!fioTableExists($pdo,'fio_sync_state'))throw new RuntimeException('Deploy the Fio synchronization code and migration before enabling import.');
     $document=json_decode(fioFetchPeriodJson($token,$today,$today),true,64,JSON_THROW_ON_ERROR|JSON_BIGINT_AS_STRING);$actual=fioNormalizeIban((string)($document['accountStatement']['info']['iban']??''));
     if($actual===''||!hash_equals($expected,$actual))throw new RuntimeException('Fio token belongs to a different account than the account configured in KIS.');
     return['environment'=>defined('JE_LOKALNE')&&JE_LOKALNE===false?'production':'invalid','account_match'=>true];
@@ -58,7 +67,7 @@ function kisProductionFioVerifyReadOnlyAccess(string $appRoot,string $appHost,st
 function kisProductionFioProbe(string $appRoot,string $appHost):array
 {
     $_SERVER['HTTP_HOST']=$appHost;$_SERVER['SERVER_NAME']=$appHost;require$appRoot.'/config.php';
-    return['ok'=>true,'environment'=>defined('JE_LOKALNE')&&JE_LOKALNE===false?'production':'invalid','fio_enabled'=>defined('FIO_IMPORT_ENABLED')&&FIO_IMPORT_ENABLED===true,'token_present'=>defined('FIO_API_TOKEN')&&preg_match('/^[A-Za-z0-9_-]{20,128}$/D',(string)FIO_API_TOKEN)===1,'lookback_days'=>defined('FIO_IMPORT_LOOKBACK_DAYS')?(int)FIO_IMPORT_LOOKBACK_DAYS:3];
+    return['ok'=>true,'environment'=>defined('JE_LOKALNE')&&JE_LOKALNE===false?'production':'invalid','fio_enabled'=>defined('FIO_IMPORT_ENABLED')&&FIO_IMPORT_ENABLED===true,'auto_confirm_enabled'=>defined('FIO_AUTO_CONFIRM_ENABLED')&&FIO_AUTO_CONFIRM_ENABLED===true,'token_present'=>defined('FIO_API_TOKEN')&&preg_match('/^[A-Za-z0-9_-]{20,128}$/D',(string)FIO_API_TOKEN)===1,'lookback_days'=>defined('FIO_IMPORT_LOOKBACK_DAYS')?(int)FIO_IMPORT_LOOKBACK_DAYS:3];
 }
 
 function kisProductionFioMain():void
