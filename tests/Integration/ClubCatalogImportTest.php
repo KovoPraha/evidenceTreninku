@@ -9,6 +9,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 require_once dirname(__DIR__,2).'/includes/club_catalog_import.php';
+require_once dirname(__DIR__,2).'/includes/club_tocnaci_split.php';
 
 final class ClubCatalogImportTest extends TestCase
 {
@@ -58,6 +59,34 @@ final class ClubCatalogImportTest extends TestCase
         self::assertSame([2018,2018,2018],array_map('intval',array_column($aligators,'birth_year_from')));
         self::assertSame([2019,2019,2019],array_map('intval',array_column($aligators,'birth_year_to')));
         self::assertSame([null,null],\clubCatalogImportBirthYears('školní děti'));
+    }
+
+    public function testTocnaciSplitKeepsTwoDayProgramAndRetiresAmbiguousProduct():void
+    {
+        $pdo=$this->database();\clubCatalogImport($pdo,7,$this->root);
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(154,'import','shoptet:154','Točňáci 1× týdně','Úterý nebo čtvrtek','program','visible','service','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,visible,catalog_status) VALUES(682,154,'import','708','{}','fixed',440000,'CZK',1,'active')");
+        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(154,'active','Točňáci 1× týdně','Úterý nebo čtvrtek')");
+        $bothBefore=(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn();
+        $first=\clubTocnaciSplitApply($pdo,7,$this->root);$second=\clubTocnaciSplitApply($pdo,7,$this->root);
+        self::assertSame($first,$second);
+        self::assertNotSame($first['targets']['UTERY']['team_id'],$first['targets']['CTVRTEK']['team_id']);
+        foreach(['UTERY'=>2,'CTVRTEK'=>4]as$key=>$weekday){
+            $programId=$first['targets'][$key]['program_id'];$teamId=$first['targets'][$key]['team_id'];
+            $offers=$pdo->query('SELECT o.*,v.amount_minor FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id WHERE o.program_id='.(int)$programId.' ORDER BY o.id')->fetchAll(PDO::FETCH_ASSOC);
+            self::assertSame(['first_half','second_half'],array_column($offers,'purchase_option'));
+            self::assertSame([30,30],array_map('intval',array_column($offers,'capacity')));
+            self::assertSame([$teamId,$teamId],array_map('intval',array_column($offers,'team_id')));
+            self::assertSame([440000,440000],array_map('intval',array_column($offers,'amount_minor')));
+            self::assertSame((string)$weekday,(string)$pdo->query('SELECT weekday FROM club_program_schedule_slots WHERE program_id='.(int)$programId)->fetchColumn());
+            self::assertSame('published',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$programId)->fetchColumn());
+        }
+        self::assertSame($bothBefore,(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn());
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE program_id=".(int)$first['old_program_id']." AND status<>'closed'")->fetchColumn());
+        self::assertSame('inactive',(string)$pdo->query('SELECT catalog_status FROM shop_products WHERE id=154')->fetchColumn());
+        self::assertSame('hidden',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$first['old_program_id'])->fetchColumn());
+        \clubCatalogImport($pdo,7,$this->root);
+        self::assertSame('hidden',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$first['old_program_id'])->fetchColumn());
     }
 
     public function testFallbackNeverLinksTheOldShopOrDisplaysMigrationCopy():void
