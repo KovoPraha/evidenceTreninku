@@ -116,7 +116,8 @@ function diagnosePumptrackCatalogMain(): void
     }
 }
 
-if (realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? '')) === __FILE__) {
+function diagnosePumptrackCatalogCli(): void
+{
     try {
         diagnosePumptrackCatalogMain();
     } catch (PumptrackCatalogDiagnosticFailure $error) {
@@ -129,4 +130,8 @@ if (realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? '')) === __FILE__) {
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL);
         exit(1);
     }
+}
+
+if (realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? '')) === __FILE__) {
+    diagnosePumptrackCatalogCli();
 }
