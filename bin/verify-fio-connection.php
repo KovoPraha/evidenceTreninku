@@ -67,8 +67,15 @@ function fioConnectionVerifyToken(): void
     }
     $document = json_decode($body, true, 64, JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING);
     $actual = fioConnectionNormalizeIban((string)($document['accountStatement']['info']['iban'] ?? ''));
-    if ($actual === '' || !hash_equals($expected, $actual)) {
-        throw new RuntimeException('Fio token belongs to a different account than the KIS bank account.');
+    if ($actual === '') {
+        throw new RuntimeException('Fio response has no accountStatement.info.iban.');
+    }
+    if (!hash_equals($expected, $actual)) {
+        throw new RuntimeException(sprintf(
+            'Fio token belongs to a different account (KIS ends %s; Fio ends %s).',
+            substr($expected, -4),
+            substr($actual, -4)
+        ));
     }
     echo json_encode(['ok' => true, 'fio_http_status' => $status, 'account_match' => true], JSON_THROW_ON_ERROR) . PHP_EOL;
 }
