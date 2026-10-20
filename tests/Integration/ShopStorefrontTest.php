@@ -44,6 +44,28 @@ final class ShopStorefrontTest extends TestCase
         self::assertNull(\shopStorefrontProductDetail($pdo, 0));
     }
 
+    public function testImportedYoungestCourseTitlesAreAgeOnlyInCatalogAndDetail(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('ALTER TABLE shop_products ADD COLUMN origin TEXT NULL');
+        $pdo->exec('ALTER TABLE shop_products ADD COLUMN external_product_key TEXT NULL');
+        foreach ([157 => ['685', '8–14 měsíců'], 158 => ['686', '1–2 roky'], 159 => ['687', '2–3 roky']] as $productId => [$variantId, $age]) {
+            $pdo->prepare("INSERT INTO shop_products(id,offer_type,catalog_status,description_html_untrusted,origin,external_product_key) VALUES(?,'goods','active','','import',?)")
+                ->execute([$productId, 'shoptet:pair:' . $productId]);
+            $pdo->prepare("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(?,'active',?,'Původní rozvrh')")
+                ->execute([$productId, 'Čtvrtek 9:50 – 10:30 ' . $age]);
+            $pdo->prepare("INSERT INTO shop_variants(id,product_id,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,visible,catalog_status) VALUES(?,?,'KURZ','{}','fixed',25000,'CZK',NULL,1,'active')")
+                ->execute([(int)$variantId, $productId]);
+        }
+
+        $catalog = array_column(\shopStorefrontCatalog($pdo), 'public_name', 'product_id');
+        self::assertSame('Děti 8–14 měsíců', $catalog[157]);
+        self::assertSame('Děti 1–2 roky', $catalog[158]);
+        self::assertSame('Děti 2–3 roky', $catalog[159]);
+        self::assertSame('Děti 8–14 měsíců', \shopStorefrontProductDetail($pdo, 157)['public_name']);
+        self::assertSame('Dres KOVO', $catalog[501]);
+    }
+
     public function testSaleableCatalogKeepsApprovedShoptetGoodsButHidesManualProgramWithoutOffer(): void
     {
         $pdo=$this->database();

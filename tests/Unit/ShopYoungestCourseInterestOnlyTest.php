@@ -33,6 +33,30 @@ final class ShopYoungestCourseInterestOnlyTest extends TestCase
         ]));
     }
 
+    public function testPublicNamesRemoveHistoricalTimesOnlyForReviewedImportedCourses(): void
+    {
+        foreach ([157 => 'Děti 8–14 měsíců', 158 => 'Děti 1–2 roky', 159 => 'Děti 2–3 roky'] as $productId => $expected) {
+            self::assertSame($expected, \shopProductPublicName([
+                'product_id' => $productId,
+                'origin' => 'import',
+                'external_product_key' => 'shoptet:pair:' . $productId,
+                'public_name' => 'Čtvrtek 9:50 – 10:30 ' . $expected,
+            ]));
+        }
+        self::assertSame('Čtvrtek 9:50 – 10:30 8–14 měsíců', \shopProductPublicName([
+            'product_id' => 157,
+            'origin' => 'manual',
+            'external_product_key' => 'manual:157',
+            'public_name' => 'Čtvrtek 9:50 – 10:30 8–14 měsíců',
+        ]));
+        self::assertSame('Úterní trénink', \shopProductPublicName([
+            'product_id' => 160,
+            'origin' => 'import',
+            'external_product_key' => 'shoptet:pair:160',
+            'public_name' => 'Úterní trénink',
+        ]));
+    }
+
     public function testPublicPagesDoNotPresentLegacyLessonPriceAsCoursePrice(): void
     {
         $root = dirname(__DIR__, 2);
