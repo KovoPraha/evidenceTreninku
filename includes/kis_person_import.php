@@ -7,6 +7,29 @@ require_once __DIR__.'/kis_person_cutover.php';
 const KIS_PERSON_IMPORT_CONTRACT = 'kis-full-person-v1';
 const KIS_PERSON_IMPORT_LIMIT = 12000000;
 
+/** Dedicated archive keys live outside the application and have a private backup.
+ * Keep shared keys readable too, so later configuration cannot strand old archives.
+ */
+function kisPersonArchiveConfig(?array $override=null, ?string $privatePath=null): array
+{
+    if($override!==null) return personSensitiveConfig($override);
+    $shared=null;
+    try {$shared=personSensitiveConfig();} catch(PersonSensitiveException) {}
+    $path=$privatePath??dirname(__DIR__,2).'/data/.kis-secrets/kis-person-import.json';
+    if(!is_file($path)) {
+        if($shared!==null)return $shared;
+        throw new PersonSensitiveException('Šifrovací klíč archivu KIS není dostupný.');
+    }
+    $bytes=file_get_contents($path,false,null,0,16385);
+    if(!is_string($bytes) || strlen($bytes)>16384)throw new PersonSensitiveException('Neplatná konfigurace archivu KIS.');
+    $dedicated=personSensitiveConfig(json_decode($bytes,true,16,JSON_THROW_ON_ERROR));
+    foreach($shared['keys']??[] as $version=>$key) {
+        if(isset($dedicated['keys'][$version]) && !hash_equals($key,$dedicated['keys'][$version]))throw new PersonSensitiveException('Konflikt verzí šifrovacího klíče.');
+        $dedicated['keys'][$version]=$key;
+    }
+    return $dedicated;
+}
+
 function kisPersonJson(mixed $value): string
 {
     return json_encode($value, JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
@@ -87,7 +110,7 @@ function kisPersonReadPayload(string $bytes): array
 
 function kisPersonEncryptArchive(string $payload, string $fingerprint, ?array $configOverride=null): array
 {
-    $config=personSensitiveConfig($configOverride); $version=$config['active_version'];
+    $config=kisPersonArchiveConfig($configOverride); $version=$config['active_version'];
     $key=hash_hkdf('sha256',$config['keys'][$version],32,'evidence-kis-full-person-v1');
     $nonce=random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
     return ['key_version'=>$version,'ciphertext'=>base64_encode($nonce.sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
@@ -96,7 +119,7 @@ function kisPersonEncryptArchive(string $payload, string $fingerprint, ?array $c
 
 function kisPersonDecryptArchive(array $row, ?array $configOverride=null): string
 {
-    $config=personSensitiveConfig($configOverride);$version=$row['key_version'];
+    $config=kisPersonArchiveConfig($configOverride);$version=$row['key_version'];
     if (!isset($config['keys'][$version])) throw new RuntimeException('Klíč archivu není dostupný.');
     $raw=base64_decode($row['payload_ciphertext'],true);$n=SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES;
     if (!is_string($raw) || strlen($raw)<=$n) throw new RuntimeException('Archiv je poškozen.');
