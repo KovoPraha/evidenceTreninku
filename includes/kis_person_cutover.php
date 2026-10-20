@@ -62,6 +62,12 @@ function kisPersonCutoverPlan(PDO $pdo, bool $lock = false): array
         ['public_velodrome_order_items','order_id','shop_orders','id'],
         ['shop_order_items','order_id','shop_orders','id'],
     ];
+    // payments uses a typed reference instead of a database foreign key.
+    $paymentParents=['shop_order'=>'shop_orders','member_charge'=>'club_member_charges'];
+    $orderForeign=$foreign;
+    foreach($paymentParents as $parent) {
+        $orderForeign[]=['TABLE_NAME'=>'payments','REFERENCED_TABLE_NAME'=>$parent];
+    }
     for ($iteration=0; $iteration<100; $iteration++) {
         $before = array_sum(array_map('count',$selected));
         foreach ($parentRules as [$child,$column,$parent,$parentColumn]) {
@@ -69,6 +75,14 @@ function kisPersonCutoverPlan(PDO $pdo, bool $lock = false): array
             $values=[];
             foreach ($selected[$child] as $i=>$_) $values[(string)$tables[$child][$i][$column]]=true;
             foreach ($load($parent) as $i=>$row) if (isset($values[(string)$row[$parentColumn]])) $selected[$parent][$i]=true;
+        }
+        foreach($paymentParents as $type=>$parent) {
+            if(empty($selected[$parent]))continue;
+            $values=[];
+            foreach($selected[$parent] as $i=>$_)$values[(string)$tables[$parent][$i]['id']]=true;
+            foreach($load('payments') as $i=>$row) {
+                if(($row['payable_type']??null)===$type && isset($values[(string)($row['payable_id']??'')]))$selected['payments'][$i]=true;
+            }
         }
         foreach ($foreign as $f) {
             $parent=$f['REFERENCED_TABLE_NAME']; $child=$f['TABLE_NAME'];
@@ -91,7 +105,7 @@ function kisPersonCutoverPlan(PDO $pdo, bool $lock = false): array
         $ready=[];
         foreach ($remaining as $table) {
             $hasChild=false;
-            foreach ($foreign as $f) {
+            foreach ($orderForeign as $f) {
                 if ($f['REFERENCED_TABLE_NAME']===$table && $f['TABLE_NAME']!==$table && in_array($f['TABLE_NAME'],$remaining,true)) $hasChild=true;
                 if ($f['REFERENCED_TABLE_NAME']===$table && $f['TABLE_NAME']===$table) throw new RuntimeException('Self-referencing history requires cutover review.');
             }

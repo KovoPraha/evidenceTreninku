@@ -23,6 +23,9 @@ i jejich historie. Hesla, klíče a zdrojová data se nezapisují do logu.
   administrátoři, účty, katalog a konfigurace nejsou kořeny
   mazání. Neznámé cykly, složené FK, netransakční tabulky a tabulky bez
   primárního klíče akci zastaví.
+- Typované vazby plateb `shop_order` a `member_charge` se vyhodnocují i bez
+  databázového FK. Platby odstraněných objednávek/předpisů a jejich navázané
+  události patří do stejné transakce; shodné ID jiného typu platby se nemaže.
 - Obsah dotčených řádků musí odpovídat otisku náhledu. Aplikační zámek chrání
   souběžné importy; zamčené řádky a FK chrání probíhající transakci.
 - Opakované předání stejného balíku vrací původní protokol. Jiný balík pro již

@@ -25,6 +25,16 @@ try {
     $pdo->exec('INSERT INTO treninky VALUES(10)');
     $pdo->exec('CREATE TABLE legacy_training_note(id INT PRIMARY KEY,trenink_id INT) ENGINE=InnoDB');
     $pdo->exec('INSERT INTO legacy_training_note VALUES(1,10)');
+    $pdo->exec('CREATE TABLE shop_orders(id INT PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO shop_orders VALUES(20),(21)');
+    $pdo->exec('CREATE TABLE shop_order_items(id INT PRIMARY KEY,order_id INT,sportovec_id INT,FOREIGN KEY(order_id) REFERENCES shop_orders(id)) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO shop_order_items VALUES(1,20,1)');
+    $pdo->exec('CREATE TABLE club_member_charges(id INT PRIMARY KEY,sportovec_id INT) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO club_member_charges VALUES(30,1)');
+    $pdo->exec('CREATE TABLE payments(id INT PRIMARY KEY,payable_type VARCHAR(32),payable_id INT) ENGINE=InnoDB');
+    $pdo->exec("INSERT INTO payments VALUES(1,'shop_order',20),(2,'member_charge',30),(3,'shop_order',21),(4,'other',20)");
+    $pdo->exec('CREATE TABLE payment_events(id INT PRIMARY KEY,payment_id INT,FOREIGN KEY(payment_id) REFERENCES payments(id)) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO payment_events VALUES(1,1),(2,2),(3,3),(4,4)');
     foreach(['20260802230000_account_person_roles','20261020180000_kis_full_person_import'] as $id) {
         $m=require dirname(__DIR__,2).'/migrations/'.$id.'.php';$m['up']($pdo);$check($m['verify']($pdo),'migration verification');
     }
@@ -42,6 +52,8 @@ try {
         $check($pdo->query('SELECT jmeno FROM sportovci')->fetchColumn()==='CHANGED','rollback person');
         $check((int)$pdo->query('SELECT COUNT(*) FROM kis_person_batches')->fetchColumn()===0,'rollback archive');
         $check((int)$pdo->query('SELECT COUNT(*) FROM treninky')->fetchColumn()===1,'rollback training history');
+        $check((int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn()===4,'rollback payments');
+        $check((int)$pdo->query('SELECT COUNT(*) FROM payment_events')->fetchColumn()===4,'rollback payment events');
     }
     $pdo->exec('DROP TRIGGER injected_failure');
     $result=kisPersonImportApply($pdo,$payload,1,$plan['fingerprint'],$config);
@@ -49,6 +61,9 @@ try {
     $check($pdo->query('SELECT narozeni FROM sportovci')->fetchColumn()===null,'unknown date');
     $check((int)$pdo->query('SELECT COUNT(*) FROM test_history_event')->fetchColumn()===0,'remove child history');
     $check((int)$pdo->query('SELECT COUNT(*) FROM legacy_training_note')->fetchColumn()===0,'remove implicit history');
+    $check($pdo->query('SELECT GROUP_CONCAT(id ORDER BY id) FROM payments')->fetchColumn()==='3,4','remove only typed payments of deleted history');
+    $check($pdo->query('SELECT GROUP_CONCAT(id ORDER BY id) FROM payment_events')->fetchColumn()==='3,4','remove dependent payment events');
+    $check((int)$pdo->query('SELECT id FROM shop_orders')->fetchColumn()===21,'preserve unrelated order');
     $check((int)$pdo->query('SELECT aktivni FROM verejni_uzivatele')->fetchColumn()===0,'disabled account');
     $check($pdo->query('SELECT status FROM account_person_roles')->fetchColumn()==='pending','no permission grant');
     $batch=$pdo->query('SELECT * FROM kis_person_batches')->fetch();
