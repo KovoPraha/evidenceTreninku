@@ -2,28 +2,48 @@
 declare(strict_types=1);
 
 /** A narrowly scoped guard around one browser-submitted, unpaid TEST order. */
+final class KisUatOrderGuardFailure extends RuntimeException
+{
+    public function __construct(public readonly string $category)
+    {
+        parent::__construct($category);
+    }
+}
+
 function kisUatOrderIdentity(PDO $pdo): array
 {
-    $account = $pdo->prepare('SELECT id FROM verejni_uzivatele WHERE LOWER(TRIM(email))=? AND jmeno=? AND prijmeni=? AND aktivni=1 AND email_overeno=1');
-    $account->execute(['tester.karel@velocota.com', 'Tester', 'Karel']);
-    $accounts = $account->fetchAll(PDO::FETCH_COLUMN);
-    if (count($accounts) !== 1) throw new RuntimeException('TEST parent identity is not unique and active.');
+    $account = $pdo->prepare('SELECT id,jmeno,prijmeni,aktivni,email_overeno FROM verejni_uzivatele WHERE LOWER(TRIM(email))=?');
+    $account->execute(['tester.karel@velocota.com']);
+    $accounts = $account->fetchAll(PDO::FETCH_ASSOC);
+    if (count($accounts) !== 1) throw new KisUatOrderGuardFailure('parent_email_unique');
+    if ((string)$accounts[0]['jmeno'] !== 'Tester' || (string)$accounts[0]['prijmeni'] !== 'Karel') throw new KisUatOrderGuardFailure('parent_name');
+    if ((int)$accounts[0]['aktivni'] !== 1 || (int)$accounts[0]['email_overeno'] !== 1) throw new KisUatOrderGuardFailure('parent_active_verified');
 
     $child = $pdo->prepare("SELECT id FROM sportovci WHERE jmeno='Ema' AND prijmeni='Tester' AND narozeni='2018-04-12'");
     $child->execute();
     $children = $child->fetchAll(PDO::FETCH_COLUMN);
-    if (count($children) !== 1) throw new RuntimeException('TEST child identity is not unique.');
+    if (count($children) !== 1) throw new KisUatOrderGuardFailure('child_identity_unique');
 
-    $variant = $pdo->prepare("SELECT v.id AS variant_id,p.id AS product_id FROM shop_variants v JOIN shop_products p ON p.id=v.product_id JOIN shop_product_publications pub ON pub.product_id=p.id JOIN club_program_offers o ON o.variant_id=v.id AND o.product_id=p.id JOIN club_programs cp ON cp.id=o.program_id JOIN club_teams t ON t.id=o.team_id WHERE v.sku='KP-TEST-UAT-KROUZEK' AND p.name='TEST - Cyklistický kroužek' AND p.offer_type='program' AND p.catalog_status='active' AND pub.status='active' AND v.catalog_status='active' AND v.visible=1 AND v.price_mode='fixed' AND v.amount_minor=10000 AND v.currency='CZK' AND o.status='active' AND cp.code='TEST-UAT-KROUZEK' AND t.code='TEST-UAT-DETI'");
+    $variant = $pdo->prepare("SELECT v.id AS variant_id,p.id AS product_id,p.name AS product_name,p.offer_type,p.catalog_status AS product_status,pub.status AS publication_status,v.catalog_status AS variant_status,v.visible,v.price_mode,v.amount_minor,v.currency,o.id AS offer_id,o.status AS offer_status,cp.code AS program_code,t.code AS team_code FROM shop_variants v JOIN shop_products p ON p.id=v.product_id LEFT JOIN shop_product_publications pub ON pub.product_id=p.id LEFT JOIN club_program_offers o ON o.variant_id=v.id AND o.product_id=p.id LEFT JOIN club_programs cp ON cp.id=o.program_id LEFT JOIN club_teams t ON t.id=o.team_id WHERE v.sku='KP-TEST-UAT-KROUZEK'");
     $variant->execute();
     $variants = $variant->fetchAll(PDO::FETCH_ASSOC);
-    if (count($variants) !== 1) throw new RuntimeException('TEST program fixture is not unique and saleable at CZK 100.');
+    if (count($variants) !== 1) throw new KisUatOrderGuardFailure('fixture_sku_unique');
+    $fixture = $variants[0];
+    if ((string)$fixture['product_name'] !== 'TEST - Cyklistický kroužek') throw new KisUatOrderGuardFailure('fixture_product_name');
+    if ((string)$fixture['offer_type'] !== 'program') throw new KisUatOrderGuardFailure('fixture_offer_type');
+    if ((string)$fixture['product_status'] !== 'active') throw new KisUatOrderGuardFailure('fixture_product_active');
+    if ((string)$fixture['publication_status'] !== 'active') throw new KisUatOrderGuardFailure('fixture_publication_active');
+    if ((string)$fixture['variant_status'] !== 'active' || (int)$fixture['visible'] !== 1) throw new KisUatOrderGuardFailure('fixture_variant_active_visible');
+    if ((string)$fixture['price_mode'] !== 'fixed' || (int)$fixture['amount_minor'] !== 10000 || (string)$fixture['currency'] !== 'CZK') throw new KisUatOrderGuardFailure('fixture_price_100_czk');
+    if ((int)$fixture['offer_id'] < 1 || (string)$fixture['offer_status'] !== 'active') throw new KisUatOrderGuardFailure('fixture_program_offer_active');
+    if ((string)$fixture['program_code'] !== 'TEST-UAT-KROUZEK') throw new KisUatOrderGuardFailure('fixture_program_code');
+    if ((string)$fixture['team_code'] !== 'TEST-UAT-DETI') throw new KisUatOrderGuardFailure('fixture_team_code');
 
     $relation = $pdo->prepare("SELECT COUNT(*) FROM account_person_roles WHERE account_id=? AND sportovec_id=? AND relation_role='guardian' AND status='approved' AND valid_from<=CURRENT_TIMESTAMP AND (valid_to IS NULL OR valid_to>CURRENT_TIMESTAMP)");
-    $relation->execute([(int)$accounts[0], (int)$children[0]]);
-    if ((int)$relation->fetchColumn() !== 1) throw new RuntimeException('TEST guardian link is not approved.');
+    $relation->execute([(int)$accounts[0]['id'], (int)$children[0]]);
+    if ((int)$relation->fetchColumn() !== 1) throw new KisUatOrderGuardFailure('guardian_approved_current');
 
-    return ['account_id'=>(int)$accounts[0], 'child_id'=>(int)$children[0], 'product_id'=>(int)$variants[0]['product_id'], 'variant_id'=>(int)$variants[0]['variant_id']];
+    return ['account_id'=>(int)$accounts[0]['id'], 'child_id'=>(int)$children[0], 'product_id'=>(int)$fixture['product_id'], 'variant_id'=>(int)$fixture['variant_id']];
 }
 
 function kisUatOrderCandidates(PDO $pdo, array $identity, int $baseline): array
@@ -39,7 +59,7 @@ function kisUatOrderGuard(PDO $pdo, string $mode, int $baseline): array
     if ($mode === 'baseline') {
         $existing = $pdo->prepare("SELECT COUNT(*) FROM shop_orders o JOIN shop_order_items oi ON oi.order_id=o.id WHERE o.account_id=? AND oi.variant_id=? AND o.status='placed' AND o.payment_status='pending'");
         $existing->execute([$identity['account_id'], $identity['variant_id']]);
-        if ((int)$existing->fetchColumn() !== 0) throw new RuntimeException('An earlier TEST order is still pending; inspect it before a new run.');
+        if ((int)$existing->fetchColumn() !== 0) throw new KisUatOrderGuardFailure('earlier_pending_test_order');
         return ['ok'=>true, 'baseline'=>(int)$pdo->query('SELECT COALESCE(MAX(id),0) FROM shop_orders')->fetchColumn(), 'product_id'=>$identity['product_id'], 'variant_id'=>$identity['variant_id']];
     }
     if ($mode !== 'cleanup' || $baseline < 0) throw new InvalidArgumentException('Invalid UAT guard mode or baseline.');
@@ -68,20 +88,42 @@ function kisUatOrderGuard(PDO $pdo, string $mode, int $baseline): array
 
 function kisUatOrderGuardMain(): void
 {
-    if (PHP_SAPI !== 'cli' || (string)getenv('KIS_UAT_ORDER_GUARD_CONFIRM') !== 'OVERIT-A-UKLIDIT-TEST-OBJEDNAVKU') throw new RuntimeException('Missing guarded UAT confirmation.');
+    if (PHP_SAPI !== 'cli' || (string)getenv('KIS_UAT_ORDER_GUARD_CONFIRM') !== 'OVERIT-A-UKLIDIT-TEST-OBJEDNAVKU') throw new KisUatOrderGuardFailure('confirmation');
     $root = realpath((string)getenv('APP_ROOT'));
     $host = strtolower(trim((string)getenv('APP_HOST')));
-    if ($root === false || $host !== 'kis.kovopraha.cz' || !is_file($root . '/config.php')) throw new RuntimeException('Production target is unavailable.');
+    if ($root === false || $host !== 'kis.kovopraha.cz' || !is_file($root . '/config.php')) throw new KisUatOrderGuardFailure('production_target');
     $_SERVER['HTTP_HOST'] = $host;
     $_SERVER['SERVER_NAME'] = $host;
-    require_once $root . '/config.php';
-    if (!defined('JE_LOKALNE') || JE_LOKALNE !== false) throw new RuntimeException('Target is not production.');
+    try { require_once $root . '/config.php'; }
+    catch (Throwable $exception) { throw new KisUatOrderGuardFailure('configuration_bootstrap'); }
+    if (!defined('JE_LOKALNE') || JE_LOKALNE !== false) throw new KisUatOrderGuardFailure('production_mode');
     $baseline = (string)getenv('KIS_UAT_ORDER_BASELINE');
-    if (!preg_match('/^[0-9]{1,12}$/D', $baseline)) throw new InvalidArgumentException('Invalid order baseline.');
-    $pdo = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]);
-    echo json_encode(kisUatOrderGuard($pdo, (string)getenv('KIS_UAT_ORDER_MODE'), (int)$baseline), JSON_THROW_ON_ERROR|JSON_UNESCAPED_SLASHES) . PHP_EOL;
+    if (!preg_match('/^[0-9]{1,12}$/D', $baseline)) throw new KisUatOrderGuardFailure('baseline_argument');
+    foreach (['DB_HOST','DB_NAME','DB_USER','DB_PASS'] as $constant) if (!defined($constant)) throw new KisUatOrderGuardFailure('database_configuration');
+    try { $pdo = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]); }
+    catch (PDOException $exception) { throw new KisUatOrderGuardFailure('database_connect'); }
+    try { $result = kisUatOrderGuard($pdo, (string)getenv('KIS_UAT_ORDER_MODE'), (int)$baseline); }
+    catch (PDOException $exception) { throw new KisUatOrderGuardFailure('database_query'); }
+    echo json_encode($result, JSON_THROW_ON_ERROR|JSON_UNESCAPED_SLASHES) . PHP_EOL;
+}
+
+/** The remote wrapper uses this entrypoint so no exception message can leak into Actions logs. */
+function kisUatOrderGuardEntry(): void
+{
+    try {
+        kisUatOrderGuardMain();
+    } catch (KisUatOrderGuardFailure $exception) {
+        fwrite(STDERR, 'uat_order_guard_failed category=' . $exception->category . PHP_EOL);
+        exit(1);
+    } catch (PDOException $exception) {
+        fwrite(STDERR, 'uat_order_guard_failed category=database_error' . PHP_EOL);
+        exit(1);
+    } catch (Throwable $exception) {
+        fwrite(STDERR, 'uat_order_guard_failed category=unexpected_error' . PHP_EOL);
+        exit(1);
+    }
 }
 
 if (realpath((string)($_SERVER['SCRIPT_FILENAME'] ?? '')) === __FILE__) {
-    try { kisUatOrderGuardMain(); } catch (Throwable $exception) { fwrite(STDERR, 'UAT order guard failed: ' . $exception->getMessage() . PHP_EOL); exit(1); }
+    kisUatOrderGuardEntry();
 }
