@@ -13,9 +13,9 @@ if ($screen==='new'):
   <?php shopAdminVariantFields([], $definitions); shopAdminDecision('Vytvořit produkt','Založení produktu do katalogu.'); ?>
 </form>
 <?php elseif ($screen==='withdraw'&&$product): ?>
-<div class="alert alert-warning"><strong>Produkt se přestane nabízet v e-shopu.</strong><div>Existující objednávky, skladové pohyby a historie zůstanou zachované.</div></div>
+<div class="alert alert-warning"><strong><?=$product['catalog_status']==='draft'?'Koncept se přesune mezi stažené produkty.':'Produkt se přestane nabízet v e-shopu.'?></strong><div>Existující objednávky, skladové pohyby a historie zůstanou zachované.</div></div>
 <p><?=shopAdminH($product['name'])?></p>
-<form method="post"><?php shopAdminHidden('unpublish',$productId); shopAdminDecision('Potvrdit stažení'); ?></form>
+<form method="post"><?php shopAdminHidden('unpublish',$productId); shopAdminDecision($product['catalog_status']==='draft'?'Archivovat koncept':'Potvrdit stažení'); ?></form>
 <?php elseif ($screen==='variant'&&$product): ?>
 <p class="text-muted"><?=shopAdminH($product['name'])?></p>
 <?php if ($product['offer_type']==='program'&&!$variant): ?>
