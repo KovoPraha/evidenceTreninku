@@ -1,5 +1,7 @@
 # Sjednocená administrace a správa e-shopu
 
+Následné schválené produkční nasazení a browser ověření jsou dokončené; viz [produkční report](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md). Níže je původní lokální implementační předání.
+
 Stav 20. 10. 2026: lokální implementace ve větvi `codex/unified-admin-shop-20261020`, základ `4991c91f`. Pracovní kopie: `C:\xampp\htdocs\evidencePavel-unified-admin-shop-20261020`. Produkční nasazení ani vzdálený Git nejsou součástí tohoto kroku.
 
 ## Výsledná obsluha
