@@ -79,8 +79,14 @@ try {
             $message='Přidáno variant: '.count($ids).'.';$redirect=shopAdminUrl($productId);
         } elseif ($action==='unpublish') {
             if (!$confirmed) throw new InvalidArgumentException('Potvrďte stažení produktu.');
-            shopCatalogPublicationDeactivate($pdo,$productId,$actorId,$reason);
-            $message='Produkt byl stažen z prodeje. Objednávky a historie zůstaly zachované.';$redirect='eshop_produkt_admin.php';
+            if ($product['catalog_status']==='draft') {
+                shopManualCatalogArchive($pdo,$actorId,$productId,$reason,$confirmed);
+                $message='Koncept byl archivován. Údaje a historie zůstaly zachované.';
+            } else {
+                shopCatalogPublicationDeactivate($pdo,$productId,$actorId,$reason);
+                $message='Produkt byl stažen z prodeje. Objednávky a historie zůstaly zachované.';
+            }
+            $redirect='eshop_produkt_admin.php';
         } elseif ($action==='publish') {
             $name=trim((string)($_POST['public_name']??''));$summary=trim((string)($_POST['public_summary']??''));
             shopCatalogPublicationActivate($pdo,$productId,$actorId,$name,$summary!==''?$summary:$name,$reason,$confirmed);
@@ -110,7 +116,7 @@ try {
     error_log('Shop admin: '.$exception->getMessage());$errors[]='Požadavek se nepodařilo dokončit. Obnovte stránku a zkuste to znovu.';
 }
 $flash=(string)($_SESSION['shop_admin_flash']??$_SESSION['product_admin_flash']??'');unset($_SESSION['shop_admin_flash'],$_SESSION['product_admin_flash']);
-$titles=['new'=>'Přidat produkt','variant'=>$variant?'Upravit variantu':'Přidat varianty','withdraw'=>'Stáhnout produkt z prodeje','prices'=>'Ceny produktů','stock'=>'Skladové zásoby'];
+$titles=['new'=>'Přidat produkt','variant'=>$variant?'Upravit variantu':'Přidat varianty','withdraw'=>($product['catalog_status']??'')==='draft'?'Archivovat koncept':'Stáhnout produkt z prodeje','prices'=>'Ceny produktů','stock'=>'Skladové zásoby'];
 $title=$titles[$screen]??($product?$product['name']:'Přehled produktů');
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=shopAdminH($title)?></title><?php appUiAssets(); ?></head><body class="bg-light">
@@ -120,7 +126,7 @@ $title=$titles[$screen]??($product?$product['name']:'Přehled produktů');
   <section class="app-page-paper">
     <div class="app-page-heading"><div><h1 class="app-page-title"><?=shopAdminH($title)?></h1><?php if ($product): ?><div class="d-flex align-items-center flex-wrap gap-2 small"><?=shopAdminBadge($product)?><span class="text-muted"><?=shopAdminH(shopAdminOfferLabel($product['offer_type']))?> · <?=shopAdminH(shopAdminVariantCount(count($detail['variants'])))?></span></div><?php endif; ?></div><div class="d-flex gap-2 flex-wrap">
       <?php if ($screen==='product'&&$product===null): ?><a class="btn btn-primary" href="eshop_produkt_novy_admin.php">Přidat produkt</a><a class="btn btn-outline-secondary" href="club_program_wizard_admin.php">Vypsat kroužek</a>
-      <?php elseif ($product): ?><a class="btn btn-outline-secondary" href="<?=$screen==='product'?'eshop_produkt_admin.php':shopAdminH(shopAdminUrl($productId))?>"><?=$screen==='product'?'← Přehled':'← Zpět na produkt'?></a><?php if ($screen==='product'&&($product['publication_status']??'')==='active'): ?><a class="btn btn-outline-secondary" href="eshop_produkt_stahnout_admin.php?id=<?=$productId?>">Stáhnout z prodeje</a><?php endif; ?>
+      <?php elseif ($product): ?><a class="btn btn-outline-secondary" href="<?=$screen==='product'?'eshop_produkt_admin.php':shopAdminH(shopAdminUrl($productId))?>"><?=$screen==='product'?'← Přehled':'← Zpět na produkt'?></a><?php if ($screen==='product'&&(($product['publication_status']??'')==='active'||$product['catalog_status']==='draft')): ?><a class="btn btn-outline-secondary" href="eshop_produkt_stahnout_admin.php?id=<?=$productId?>"><?=$product['catalog_status']==='draft'?'Archivovat koncept':'Stáhnout z prodeje'?></a><?php endif; ?>
       <?php elseif ($screen==='new'): ?><a class="btn btn-outline-secondary" href="eshop_produkt_admin.php">Zrušit</a><?php endif; ?>
     </div></div>
     <?php foreach ($errors as $error): ?><div class="alert alert-danger" role="alert"><?=shopAdminH($error)?></div><?php endforeach; ?>
