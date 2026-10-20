@@ -1,5 +1,30 @@
 # Aktuální stav projektu
 
+Produkční doplnění: 20. 10. 2026, Europe/Prague, po nasazení hierarchie soupisek.
+PR [#138](https://github.com/KovoPraha/evidenceTreninku/pull/138) byl sloučen jako
+`4991c91f966eb65852876fd0084dd6ad041e3b69` a tento přesný SHA nasadil
+[běh 39472709660](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472709660).
+Povinné PHPUnit a MariaDB 10.3/11.4 kontroly nad `main` prošly v
+[CI 39472026706](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472026706),
+CodeQL v [běhu 39472026146](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472026146).
+Deploy ověřil zálohu, 106 aktuálních migrací bez čekajících kroků, aktivaci
+release, ochranu klíče archivu a HTTP 200. Samostatný živý test potvrdil HTTP
+200 na homepage, HTTP 403 na soukromém klíči a načtení nové administrační
+stránky v roli Registrář členů a KIS. První pokus o deploy
+[39472178866](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472178866)
+skončil po úspěšné aktivaci na síťovém timeoutu bezpečnostního HTTP testu;
+opakovaný běh nad stejným SHA dokončil všechny kroky.
+
+Nasazený kód zatím sám nepřiřadil soupisky k nadřazeným skupinám ani nezapnul
+opakování nabídek či automatické párování plateb. Živá administrace ukázala
+43 soupisek bez skupiny; read-only porovnání starých názvů ukázalo
+0 přesných shod a 46 položek bez vazby. Jejich rozhodnutí a časově platné
+zařazení je další datový krok. Plné produkční UAT tohoto releasu nebylo
+schváleno (`uat_schvaleno=false`). Rozsah a předání popisuje
+[implementační protokol](ROSTER_HIERARCHY_IMPLEMENTATION_HANDOFF_2026-10-20.md).
+
+Níže uvedené dřívější produkční doplnění je historický stav před PR #138.
+
 Produkční doplnění: 20. 10. 2026, Europe/Prague
 
 Rodičovská cesta z PR #91 je nasazená včetně ověření 94 migrací. Poslední
