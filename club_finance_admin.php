@@ -47,5 +47,5 @@ $hasMigration=clubFinanceTableExists($pdo,'club_finance_settings');
 <div class="col-md-4"><label class="form-label" for="finance-notice">Upozornění u tréninků od (Kč)</label><input class="form-control" id="finance-notice" name="training_notice_czk" inputmode="decimal" value="<?=financeAdminH(number_format($settings['training_notice_minor']/100,2,'.',''))?>" required><div class="form-text">Termíny zůstávají viditelné.</div></div>
 <div class="col-12"><label class="form-label" for="finance-reason">Důvod změny</label><input class="form-control" id="finance-reason" name="reason" maxlength="1000" required></div>
 <div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="confirmed" value="1" id="finance-confirm" required><label class="form-check-label" for="finance-confirm">Potvrzuji změnu pravidel a její dopad na nové přihlášky</label></div>
-<div class="col-12"><button class="btn btn-primary" <?=$hasMigration?'':'disabled'?>>Uložit nastavení</button> <a class="btn btn-outline-secondary" href="member_fee_plans_admin.php">Měsíční příspěvky</a></div>
+<div class="col-12"><button class="btn btn-success" <?=$hasMigration?'':'disabled'?>>Uložit nastavení</button> <a class="btn btn-outline-secondary" href="member_fee_plans_admin.php">Měsíční příspěvky</a></div>
 </form></main></body></html>

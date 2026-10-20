@@ -609,7 +609,7 @@ if ($form['target_skupina_id'] !== '' && ctype_digit((string)$form['target_skupi
                 </div>
 
                 <div class="col-12 d-flex gap-2">
-                    <button class="btn btn-primary"><?= ($editId > 0) ? 'Uložit změny' : 'Uložit odkaz' ?></button>
+                    <button class="btn btn-success"><?= ($editId > 0) ? 'Uložit změny' : 'Uložit odkaz' ?></button>
 
                     <?php if ($editId > 0): ?>
                         <button type="submit"

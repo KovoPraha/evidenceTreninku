@@ -372,7 +372,7 @@ $defaultSport = (int)($editRow['sportoviste_id']??($_GET['sportoviste_id'] ?? 0)
                 <?php endif; ?>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-success">
                         <i class="bi bi-floppy me-1"></i>Uložit rezervaci
                     </button>
                     <a href="kalendar_sportovist.php" class="btn btn-outline-secondary">Zrušit</a>

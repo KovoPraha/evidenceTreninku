@@ -203,31 +203,6 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
-        body { background: #f0f2f5; }
-
-        .section-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-        }
-        .section-card .card-header {
-            border-radius: 12px 12px 0 0 !important;
-            font-weight: 600;
-            font-size: .92rem;
-            letter-spacing: .02em;
-            padding: .6rem 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-        }
-        .section-card .card-body { padding: 1.1rem; }
-
-        .hero-card {
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
-            color: #fff;
-        }
 
         /* Autocomplete dropdown */
         .suggest-box {
@@ -250,24 +225,6 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
             font-size: .88rem;
         }
         .chip .btn-close { filter: invert(1); opacity: .9; }
-
-        .mereni-row {
-            border: 1px solid #e0e4ea;
-            border-radius: 10px;
-            padding: .85rem;
-            background: #fff;
-        }
-        .mereni-row + .mereni-row { margin-top: .65rem; }
-
-        .mini-muted { font-size: .84rem; color: #6c757d; }
-
-        .submit-bar {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            background: #fff;
-            padding: 1rem 1.25rem;
-        }
 
         /* Zvýraznění předvyplněného formuláře */
         .duplikat-banner {
@@ -426,6 +383,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                     <div data-roster-target-container>
                         <?= rosterTargetSelectorHtml($pdo, (string)($planPrefill['datum'] ?? date('Y-m-d')), $selectedTeamIds) ?>
                     </div>
+                    <div id="training-target-error" class="alert alert-danger mt-2 d-none" role="alert">Vyberte skupinu nebo soupisku pro trénink.</div>
                     <div class="mini-muted mt-1">Celá skupina zahrne všechny její soupisky. Skutečnou účast dále vybírá trenér.</div>
                     <?php if ($planPrefill && $selectedTeamIds === []): ?>
                         <div class="alert alert-warning mt-2 mb-0">Historický plán používá původní skupiny. Jeho cílení zůstane zachováno; pro nové cílení vyberte skupinu či soupisku v plánovači.</div>
@@ -655,7 +613,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
             <a href="index.php" class="btn btn-outline-secondary">
                 <i class="bi bi-x-lg me-1"></i>Zrušit
             </a>
-            <button type="submit" class="btn btn-primary px-4">
+            <button type="submit" class="btn btn-success px-4">
                 <i class="bi bi-floppy me-1"></i>Uložit trénink
             </button>
         </div>
@@ -1142,6 +1100,16 @@ if (PLAN_PREFILL) {
             valid = false;
         }
 
+        // Catch the required target before a server redirect can discard the draft.
+        const targetMissing = <?= $planPrefill ? 'false' : 'true' ?> && !form.querySelector('input[name="team_ids[]"]:checked');
+        const targetError = document.getElementById('training-target-error');
+        targetError.classList.toggle('d-none', !targetMissing);
+        if (targetMissing) {
+            valid = false;
+            targetError.scrollIntoView({behavior: 'smooth', block: 'center'});
+            form.querySelector('input[name="team_ids[]"]')?.focus({preventScroll: true});
+        }
+
         // Vlastní validace měření — sportovec musí být vybrán
         Array.from(rowsWrap.querySelectorAll('.mereni-row')).forEach(row => {
             const typ    = row.querySelector('.js-typ').value;
@@ -1285,7 +1253,7 @@ if (PLAN_PREFILL) {
 
     form.addEventListener('input',  () => { dirty = true; });
     form.addEventListener('change', () => { dirty = true; });
-    form.addEventListener('submit', () => { submitting = true; });
+    form.addEventListener('submit', e => { submitting = !e.defaultPrevented; });
 
     window.addEventListener('beforeunload', e => {
         if (dirty && !submitting) {

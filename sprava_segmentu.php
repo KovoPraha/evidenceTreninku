@@ -384,7 +384,7 @@ $form = [
                 </div>
 
                 <div class="col-12 d-flex gap-2">
-                    <button class="btn btn-primary">
+                    <button class="btn btn-success">
                         <i class="bi bi-save me-1"></i><?= ($editId > 0) ? 'Uložit změny' : 'Uložit segment' ?>
                     </button>
                     <?php if ($editId > 0): ?>

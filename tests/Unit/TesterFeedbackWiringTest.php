@@ -99,12 +99,13 @@ final class TesterFeedbackWiringTest extends TestCase
     {
         $root=dirname(__DIR__,2);$css=(string)file_get_contents($root.'/assets/app-ui.css');
         self::assertStringContainsString('.app-section-header-primary',$css);
-        self::assertStringContainsString('color: #fff !important',$css);
+        self::assertStringContainsString('.app-admin-shell .card > .card-header',$css);
+        self::assertStringContainsString('background:var(--bs-body-bg) !important',$css);
+        self::assertStringContainsString('color:var(--app-blue) !important',$css);
         foreach(['hromadne_odmeny.php','sprava_sportovec_obdobi.php']as$file){
             $page=(string)file_get_contents($root.'/'.$file);
             self::assertStringContainsString('app-section-header-',$page,$file);
-            self::assertStringContainsString('--bs-card-color: #fff',$page,$file);
-            self::assertStringContainsString('.hero-card :where(h1, .small, code) { color: inherit !important; }',$page,$file);
+            self::assertStringNotContainsString('--bs-card-color: #fff',$page,$file);
         }
     }
 

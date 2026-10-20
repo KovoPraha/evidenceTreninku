@@ -574,7 +574,7 @@ if ($is_logged_in) {
                         <i class="bi bi-keyboard"></i>
                     </button>
                     <?php if ($is_logged_in): ?>
-                    <a href="booking/eshop.php" target="_blank" rel="noopener"
+                    <a href="<?= publicShellH(appUiUrl('booking/eshop.php')) ?>" target="_blank" rel="noopener"
                        class="btn btn-sm btn-outline-secondary border-0 text-white-50"
                        title="Otevřít veřejný portál v nové záložce" style="padding:4px 8px">
                         <i class="bi bi-box-arrow-up-right"></i>
@@ -591,7 +591,7 @@ if ($is_logged_in) {
                             <li><h6 class="dropdown-header">Přepnout pracovní pozici</h6></li>
                             <?php foreach ($staff_available as $staff_code): $staff_position = $staff_definitions[$staff_code]; ?>
                             <li>
-                                <form method="post" action="prepnout_pracovni_pozici.php">
+                                <form method="post" action="<?= publicShellH(appUiUrl('prepnout_pracovni_pozici.php')) ?>">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="position" value="<?= htmlspecialchars($staff_code) ?>">
                                     <button class="dropdown-item<?= $staff_code === $staff_active_code ? ' active' : '' ?>" <?= $staff_code === $staff_active_code ? 'disabled' : '' ?>><i class="bi bi-<?= htmlspecialchars((string)$staff_position['icon']) ?> me-2"></i><?= htmlspecialchars((string)$staff_position['label']) ?></button>
@@ -609,7 +609,7 @@ if ($is_logged_in) {
                         </span>
                     </li>
                     <li class="nav-item">
-                        <form method="post" action="logout.php" class="d-inline">
+                        <form method="post" action="<?= publicShellH(appUiUrl('logout.php')) ?>" class="d-inline">
                             <?= csrf_field() ?>
                             <button type="submit" class="nav-link text-light border-0 bg-transparent">
                                 <i class="bi bi-box-arrow-right me-1"></i>Odhlásit
@@ -736,13 +736,13 @@ document.addEventListener('keydown', function(e) {
             if (si) { si.focus(); si.select(); }
             break;
         case 'n': case 'N':
-            if (!e.shiftKey) window.location.href = 'formular.php';
+            if (!e.shiftKey) window.location.href = <?= json_encode(appUiUrl('formular.php')) ?>;
             break;
         case 'p': case 'P':
-            window.location.href = 'planovac.php';
+            window.location.href = <?= json_encode(appUiUrl('planovac.php')) ?>;
             break;
         case 'k': case 'K':
-            window.location.href = 'kalendar_sportovist.php';
+            window.location.href = <?= json_encode(appUiUrl('kalendar_sportovist.php')) ?>;
             break;
         case '?':
             e.preventDefault();
@@ -774,10 +774,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php
 // Absolutní URL-cesta k search endpointu — funguje z kořene i podadresářů
-$_gsDocRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
-$_gsHlavickaDir = rtrim(str_replace('\\', '/', __DIR__), '/');
-$_gsAppBase = '/' . ltrim(str_replace($_gsDocRoot, '', $_gsHlavickaDir), '/');
-$_gsSearchUrl = $_gsAppBase . '/ajax_global_search.php';
+$_gsSearchUrl = appUiUrl('ajax_global_search.php');
 ?>
 <?php if ($is_logged_in): ?>
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
@@ -797,7 +794,7 @@ $_gsSearchUrl = $_gsAppBase . '/ajax_global_search.php';
         return new Uint8Array([...raw].map(c => c.charCodeAt(0)));
     }
 
-    navigator.serviceWorker.register('/evidence/sw.js', { scope: '/evidence/' })
+    navigator.serviceWorker.register(<?= json_encode(appUiUrl('sw.js')) ?>, { scope: <?= json_encode(appUiUrl('')) ?> })
         .then(function(reg) {
             // Zkontrolovat stav subscripce
             return reg.pushManager.getSubscription().then(function(sub) {
@@ -828,7 +825,7 @@ $_gsSearchUrl = $_gsAppBase . '/ajax_global_search.php';
                 reg.pushManager.getSubscription().then(sub => {
                     if (!sub) return;
                     sub.unsubscribe().then(() => {
-                        fetch('push_subscribe.php', {
+                        fetch(<?= json_encode(appUiUrl('push_subscribe.php')) ?>, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ action: 'unsubscribe', csrf_token: <?= json_encode(csrf_token()) ?>, subscription: { endpoint: sub.endpoint } })
@@ -850,7 +847,7 @@ $_gsSearchUrl = $_gsAppBase . '/ajax_global_search.php';
                         userVisibleOnly: true,
                         applicationServerKey: urlBase64ToUint8Array(PUSH_PUBLIC_KEY)
                     }).then(sub => {
-                        fetch('push_subscribe.php', {
+                        fetch(<?= json_encode(appUiUrl('push_subscribe.php')) ?>, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ action: 'subscribe', csrf_token: <?= json_encode(csrf_token()) ?>, subscription: sub.toJSON() })
@@ -1124,7 +1121,7 @@ window.appConfirm = function (message) {
 
 // ── PWA — manifest + service worker (instalovatelná aplikace) ───────────────
 (function () {
-    var base = <?= json_encode(rtrim(str_replace('\\', '/', substr(__DIR__, strlen((string)($_SERVER['DOCUMENT_ROOT'] ?? '')))), '/') . '/') ?>;
+    var base = <?= json_encode(appUiUrl('')) ?>;
     var link = document.createElement('link');
     link.rel = 'manifest';
     link.href = base + 'manifest.json';

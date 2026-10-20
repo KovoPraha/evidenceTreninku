@@ -279,7 +279,7 @@ $trenery = $pdo->query("
         </div>
 
         <div class="d-flex gap-2 mt-3">
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn btn-success">
             <i class="bi bi-check-lg me-1"></i>Uložit
           </button>
           <button type="button" id="form-reset" class="btn btn-outline-secondary">

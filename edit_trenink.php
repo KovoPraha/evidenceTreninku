@@ -191,14 +191,7 @@ if (!empty($trenink['datum'])) {
         .suggest-box { z-index: 1100; max-height: 220px; overflow-y: auto; width: 100%; }
         .chip { display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .55rem; border-radius:999px; background:#0d6efd; color:#fff; font-size:.9rem; }
         .chip .btn-close { filter: invert(1); opacity: .9; }
-        .mereni-row { border:1px solid #e6e6e6; border-radius:.75rem; padding:.75rem; background: #fff; }
-        .mereni-row + .mereni-row { margin-top: .75rem; }
-        .mini-muted { font-size:.85rem; color:#666; }
         .img-thumb { width:110px; height:80px; object-fit:cover; border-radius:.5rem; border:1px solid #ddd; }
-        .section-card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-        .section-card .card-header { border-radius: 12px 12px 0 0 !important; font-weight: 600; font-size: .95rem; padding: .65rem 1rem; }
-        .submit-bar { position: sticky; bottom: 0; background: #fff; border-top: 2px solid #0d6efd; border-radius: 12px 12px 0 0;
-                      padding: .75rem 1.2rem; box-shadow: 0 -4px 12px rgba(0,0,0,.1); z-index: 100; margin-top: 1rem; }
     </style>
 </head>
 <body class="bg-light">
@@ -207,7 +200,7 @@ if (!empty($trenink['datum'])) {
 <div class="container mt-4 mb-5">
 
     <!-- Edit banner -->
-    <div class="card mb-3 border-0 shadow-sm" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color:#fff;">
+    <div class="hero-card card mb-3">
         <div class="card-body py-3 px-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
@@ -479,7 +472,7 @@ if (!empty($trenink['datum'])) {
             <a href="moje_treninky.php" class="btn btn-outline-secondary">
                 <i class="bi bi-x-lg me-1"></i>Zrušit
             </a>
-            <button type="submit" class="btn btn-primary px-4">
+            <button type="submit" class="btn btn-success px-4">
                 <i class="bi bi-floppy me-1"></i>Uložit změny
             </button>
         </div>

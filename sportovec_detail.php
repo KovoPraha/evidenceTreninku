@@ -643,7 +643,7 @@ $kategorieMeta = [
                     </div>
 
                     <div class="col-12 d-flex gap-2 align-items-center flex-wrap">
-                        <button class="btn btn-primary" id="saveProfileBtn" type="submit">
+                        <button class="btn btn-success" id="saveProfileBtn" type="submit">
                             <span class="profile-save-label">
                                 <i class="bi bi-floppy me-1"></i>Uložit profil
                             </span>

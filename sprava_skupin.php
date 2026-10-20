@@ -156,7 +156,7 @@ $groups = $pdo->query("
       <i class="bi bi-plus-lg me-2"></i><span id="form-title">Přidat novou skupinu</span>
     </div>
     <div class="card-body">
-      <form method="POST" id="group-form">
+      <form method="POST" id="group-form" class="app-form-stack">
         <?= csrf_field() ?>
         <input type="hidden" name="id" id="group-id" value="0">
         <div class="row g-3">
@@ -173,8 +173,8 @@ $groups = $pdo->query("
             <input type="text" class="form-control" id="group-hash" name="hash" placeholder="Auto-generace">
           </div>
         </div>
-        <div class="d-flex gap-2 mt-3">
-          <button type="submit" name="save" class="btn btn-primary">
+        <div class="app-form-actions">
+          <button type="submit" name="save" class="btn btn-success">
             <i class="bi bi-check-lg me-1"></i>Uložit
           </button>
           <button type="button" id="form-reset" class="btn btn-outline-secondary">

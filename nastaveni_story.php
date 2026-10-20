@@ -321,7 +321,7 @@ if (isset($_GET['edit_typ']) && isset($_GET['edit_id'])) {
             </div>
 
             <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-success">
                 <i class="bi bi-check-lg me-1"></i>
                 <?= $editData ? 'Aktualizovat' : 'Uložit nastavení' ?>
               </button>

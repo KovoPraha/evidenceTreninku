@@ -195,10 +195,6 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
-        body { background:#f0f2f5; }
-        .section-card { border:0; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
-        .hero-card { border:0; border-radius:8px; background:#1f2937; color:#fff; }
-        .metric { background:#fff; border-radius:8px; padding:1rem; box-shadow:0 2px 8px rgba(0,0,0,.06); }
         .metric .val { font-size:1.45rem; font-weight:700; }
         .timeline { border-left:3px solid #dee2e6; margin-left:.6rem; padding-left:1rem; }
         .timeline-item { position:relative; margin-bottom:1rem; }
@@ -287,7 +283,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                                     </select>
                                 </div>
                                 <div class="col-5"><input name="stav_duvod" class="form-control form-control-sm" placeholder="Důvod" value="<?= h($sportovec['stav_duvod'] ?? '') ?>"></div>
-                                <div class="col-2"><button class="btn btn-sm btn-primary w-100" title="Uložit"><i class="bi bi-check-lg"></i></button></div>
+                                <div class="col-2"><button class="btn btn-sm btn-success w-100" title="Uložit"><i class="bi bi-check-lg"></i></button></div>
                             </form>
                             <?php if (!empty($sportovec['stav_manualni'])): ?>
                                 <form method="post" class="mt-2">
@@ -348,7 +344,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                         <?= csrf_field() ?>
                         <input type="hidden" name="action" value="add_note">
                         <textarea name="note" class="form-control mb-2" rows="3" required></textarea>
-                        <button class="btn btn-primary btn-sm">Uložit poznámku</button>
+                        <button class="btn btn-success btn-sm">Uložit poznámku</button>
                     </form>
                 </div>
             </div>

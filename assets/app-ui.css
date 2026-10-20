@@ -643,3 +643,78 @@ body { font-family: Arial, Helvetica, sans-serif; font-size: .9rem; }
     body.app-admin-shell { padding-left:0; }
     .app-sidebar, .app-staff-topbar { display:none !important; }
 }
+
+/* Shared form sections also cover the older staff screens. Status badges,
+   alerts, selected lesson cards and content previews keep their semantics. */
+.app-admin-shell .card {
+    --bs-card-bg:var(--bs-body-bg);
+    --bs-card-border-color:var(--bs-border-color);
+    border-radius:.2rem !important;
+    box-shadow:none !important;
+}
+.app-admin-shell .card:not(.border-2):not(.border-success):not(.border-warning):not(.border-danger) { border-width:1px !important; }
+.app-admin-shell .card > .card-header {
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    background:var(--bs-body-bg) !important;
+    color:var(--app-blue) !important;
+    border-radius:.2rem .2rem 0 0 !important;
+    border-bottom:1px solid var(--bs-border-color);
+    padding:1rem 1.25rem;
+    font-size:1rem;
+    font-weight:500;
+    letter-spacing:normal;
+}
+.app-admin-shell .card > .card-header :is(h2,h3,h4,.text-white,.text-dark) { color:inherit !important; }
+.app-admin-shell :is(.hero-bar,.hero-card,.workspace-hero,.page-header) {
+    background:var(--bs-body-bg) !important;
+    color:var(--bs-body-color) !important;
+    border:1px solid var(--bs-border-color);
+    border-radius:.2rem;
+    padding:1.5rem;
+    margin-bottom:1.5rem;
+}
+.app-admin-shell :is(.hero-bar,.hero-card,.workspace-hero,.page-header) :is(h1,h2) { color:var(--app-blue); font-weight:400; }
+.app-admin-shell :is(.metric,.stat-card,.filter-bar,.trenink-card) { background:var(--bs-body-bg); color:var(--bs-body-color); border:1px solid var(--bs-border-color); border-radius:.2rem; box-shadow:none; }
+.app-admin-shell .metric { padding:1rem; }
+.app-admin-shell .filter-bar { padding:.75rem 1rem; margin-bottom:1.5rem; }
+.app-admin-shell .trenink-card:hover { border-color:var(--app-blue); box-shadow:none; transform:none; }
+.app-admin-shell .date-badge { background:var(--app-blue); border-radius:.2rem; }
+.app-admin-shell .stat-pill { background:var(--bs-tertiary-bg); border:1px solid var(--bs-border-color); border-radius:.2rem; }
+.app-admin-shell .hero-bar .btn-outline-light { --bs-btn-color:var(--bs-body-color); --bs-btn-border-color:var(--bs-border-color); --bs-btn-hover-bg:var(--bs-tertiary-bg); --bs-btn-hover-color:var(--bs-body-color); }
+.app-admin-shell :is(.mereni-row,.existing-file-item,.email-preview-card) { background:var(--bs-body-bg); border:1px solid var(--bs-border-color); border-radius:.2rem; padding:1rem; }
+.app-admin-shell .mereni-row + .mereni-row { margin-top:.75rem; }
+.app-admin-shell :is(.mini-muted,.small-muted) { color:var(--bs-secondary-color); font-size:.84rem; }
+.app-admin-shell .submit-bar { position:sticky; bottom:0; z-index:20; background:var(--bs-body-bg); border:1px solid var(--bs-border-color); border-radius:.2rem; padding:1rem 1.25rem; margin-top:1rem; }
+.app-admin-shell :is(.submit-bar,.app-form-actions) .btn-primary { --bs-btn-color:#fff; --bs-btn-bg:var(--app-save); --bs-btn-border-color:var(--app-save); --bs-btn-hover-color:#fff; --bs-btn-hover-bg:var(--app-save-hover); --bs-btn-hover-border-color:var(--app-save-hover); --bs-btn-active-color:#fff; --bs-btn-active-bg:var(--app-save-hover); }
+.app-admin-shell :is(.form-label,.form-check-label) { line-height:1.5; }
+.app-admin-shell .form-control:not(textarea):not([type="color"]),
+.app-admin-shell .form-select { min-height:38px; }
+.app-admin-shell :is(.form-control,.form-select,.input-group-text) { border-radius:.15rem !important; }
+.app-admin-shell .form-text { line-height:1.5; margin-top:.4rem; }
+.app-admin-shell fieldset { min-width:0; }
+.app-admin-shell .table-responsive { max-width:100%; }
+.app-admin-shell :is(.card-body,.card-header,.row > [class*="col-"]) { min-width:0; }
+.app-admin-shell .card-header:has(> .d-flex),
+.app-admin-shell .card-header.d-flex { gap:.75rem; flex-wrap:wrap; }
+.app-form-stack > .row > div:has(> .form-label),
+.app-form-stack.row > div:has(> .form-label) {
+    display:grid; grid-template-columns:170px minmax(0,1fr); gap:.4rem 1rem; width:100%;
+}
+.app-form-stack > .row > div > .form-label,
+.app-form-stack.row > div > .form-label { grid-column:1; grid-row:1; text-align:right; padding-top:.45rem; }
+.app-form-stack > .row > div > :not(.form-label),
+.app-form-stack.row > div > :not(.form-label) { grid-column:2; }
+.app-form-stack .app-form-options { width:100%; padding-left:calc(170px + 1rem + var(--bs-gutter-x) * .5); }
+@media(max-width:600px) {
+    .app-admin-shell .card > .card-header,.app-admin-shell .card-body { padding:1rem; }
+    .app-admin-shell .submit-bar > .d-flex { flex-wrap:wrap; gap:.75rem; }
+    .app-form-stack > .row > div:has(> .form-label),
+    .app-form-stack.row > div:has(> .form-label) { grid-template-columns:minmax(0,1fr); }
+    .app-form-stack > .row > div > .form-label,
+    .app-form-stack.row > div > .form-label { text-align:left; padding:0; grid-row:auto; }
+    .app-form-stack > .row > div > :not(.form-label),
+    .app-form-stack.row > div > :not(.form-label) { grid-column:1; }
+    .app-form-stack .app-form-options { padding-left:calc(var(--bs-gutter-x) * .5); }
+}

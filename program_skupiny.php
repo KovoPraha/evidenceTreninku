@@ -92,7 +92,6 @@ function formatDatum(string $datum, array $czDay, array $czMonth): string {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <?php appUiAssets(); ?>
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
-        body { background: #f0f2f5; font-family: system-ui, -apple-system, sans-serif; }
         .page-header {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
             color: #fff; padding: 2rem 0 1.5rem; margin-bottom: 2rem;

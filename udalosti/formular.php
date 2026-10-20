@@ -135,7 +135,7 @@ if ($id > 0) {
         <div id="ulozeni-vysledek" class="mt-3"></div>
 
         <div class="d-flex gap-2 mt-4">
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn btn-success">
             <i class="bi bi-check-lg me-1"></i><?= $id ? 'Aktualizovat' : 'Uložit' ?>
           </button>
           <a href="seznam.php" class="btn btn-outline-secondary">
