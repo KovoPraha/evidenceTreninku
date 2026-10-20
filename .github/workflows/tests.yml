@@ -100,3 +100,6 @@ jobs:
 
       - name: Ověřit úplný import osob, rollback a vazby na MariaDB
         run: php tests/Support/KisPersonImportMariaDbSmoke.php
+
+      - name: Ověřit historické soupisky a rozhodovací frontu na MariaDB
+        run: php tests/Support/KisLegacyRosterMariaDbSmoke.php
