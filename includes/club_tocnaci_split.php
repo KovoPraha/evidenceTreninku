@@ -5,17 +5,27 @@ require_once __DIR__.'/club_catalog_import.php';
 
 final class ClubTocnaciSplitException extends RuntimeException{}
 
-const CLUB_TOCNACI_OLD_CODE='KROUZKY-2627-TOCNACI-1X-TYDNE';
 const CLUB_TOCNACI_DAYS=[
     'UTERY'=>['name'=>'Točňáci – úterý','weekday'=>2,'label'=>'úterý'],
     'CTVRTEK'=>['name'=>'Točňáci – čtvrtek','weekday'=>4,'label'=>'čtvrtek'],
 ];
 
+/** The legacy import slug depends on server transliteration, so identify the canonical program by its exact name and season. */
+function clubTocnaciSplitFindProgram(PDO $pdo,string $name):?array
+{
+    $query=$pdo->prepare('SELECT * FROM club_programs WHERE name=? ORDER BY id');
+    $query->execute([$name]);$matches=[];
+    foreach($query->fetchAll(PDO::FETCH_ASSOC)as$row){
+        if((string)$row['name']===$name&&str_starts_with((string)$row['code'],'KROUZKY-2627-'))$matches[]=$row;
+    }
+    if(count($matches)>1)throw new ClubTocnaciSplitException('Nalezeno více původních programů Točňáci pro školní rok 2026/27.');
+    return$matches[0]??null;
+}
+
 /** @return array{program:array<string,mixed>,offers:list<array<string,mixed>>,terms:array<string,array<string,mixed>>,import_product_id:int} */
 function clubTocnaciSplitSource(PDO $pdo,int $legacyVariantId=682):array
 {
-    $query=$pdo->prepare('SELECT * FROM club_programs WHERE code=?');
-    $query->execute([CLUB_TOCNACI_OLD_CODE]);$program=$query->fetch(PDO::FETCH_ASSOC);
+    $program=clubTocnaciSplitFindProgram($pdo,'Točňáci 1× týdně');
     if(!$program)throw new ClubTocnaciSplitException('Původní program Točňáci 1× týdně nebyl nalezen.');
     $query=$pdo->prepare('SELECT o.*,v.amount_minor,v.currency FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id WHERE o.program_id=? ORDER BY o.id');
     $query->execute([(int)$program['id']]);$offers=$query->fetchAll(PDO::FETCH_ASSOC);
@@ -26,9 +36,25 @@ function clubTocnaciSplitSource(PDO $pdo,int $legacyVariantId=682):array
     if((int)$first['season_id']!==(int)$second['season_id']||(int)$first['team_id']!==(int)$second['team_id']||(string)$first['currency']!=='CZK'||(string)$second['currency']!=='CZK')throw new ClubTocnaciSplitException('Původní období nemají společnou sezonu, soupisku nebo měnu CZK.');
     $terms=clubProgramTermsEffective($pdo,(int)$program['id'],(int)$first['id']);
     if(!clubProgramTermsComplete($terms))throw new ClubTocnaciSplitException('Před rozdělením je třeba schválit podmínky původního programu.');
-    $legacy=$pdo->prepare('SELECT p.id,p.name,p.origin,v.sku FROM shop_variants v JOIN shop_products p ON p.id=v.product_id WHERE v.id=?');
+    $legacy=$pdo->prepare('SELECT p.id,p.name,p.origin,p.offer_type,p.catalog_status AS product_status,v.origin AS variant_origin,'
+        .'v.sku,v.unit_code,v.stock_quantity_decimal,v.catalog_status AS variant_status,pub.status AS publication_status '
+        .'FROM shop_variants v JOIN shop_products p ON p.id=v.product_id '
+        .'LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE v.id=?');
     $legacy->execute([$legacyVariantId]);$legacy=$legacy->fetch(PDO::FETCH_ASSOC);
-    if(!$legacy||(string)$legacy['origin']!=='import'||preg_match('/Točňáci.*1\s*[×x]/ui',(string)$legacy['name'])!==1)throw new ClubTocnaciSplitException('Importovaný starý produkt Točňáci 1× týdně neodpovídá očekávanému záznamu.');
+    if(!$legacy||(int)$legacy['id']!==154||(string)$legacy['origin']!=='import'||(string)$legacy['variant_origin']!=='import'
+        ||(string)$legacy['sku']!=='708'||(string)$legacy['offer_type']!=='goods'||(string)$legacy['unit_code']!=='piece'
+        ||$legacy['stock_quantity_decimal']===null
+        ||preg_match('/Točňáci.*1\s*[×x]/ui',(string)$legacy['name'])!==1)
+        throw new ClubTocnaciSplitException('Importovaný starý produkt Točňáci 1× týdně neodpovídá očekávanému záznamu.');
+    $active=(string)$legacy['product_status']==='active'&&(string)$legacy['variant_status']==='active'
+        &&(string)$legacy['publication_status']==='active';
+    $inactive=(string)$legacy['product_status']==='inactive'&&(string)$legacy['variant_status']==='inactive'
+        &&(string)$legacy['publication_status']==='inactive';
+    if(!$active&&!$inactive)throw new ClubTocnaciSplitException('Importovaný starý produkt Točňáci je částečně archivován.');
+    $count=$pdo->prepare('SELECT COUNT(*) FROM shop_variants WHERE product_id=?');$count->execute([(int)$legacy['id']]);
+    if((int)$count->fetchColumn()!==1)throw new ClubTocnaciSplitException('Importovaný starý produkt Točňáci má další varianty.');
+    $linked=$pdo->prepare('SELECT id FROM club_program_offers WHERE variant_id=?');$linked->execute([$legacyVariantId]);
+    if($linked->fetchColumn()!==false)throw new ClubTocnaciSplitException('Importovaný starý produkt Točňáci je již navázaný na program.');
     return['program'=>$program,'offers'=>$byOption,'terms'=>$terms,'import_product_id'=>(int)$legacy['id']];
 }
 
@@ -112,8 +138,8 @@ function clubTocnaciSplitApply(PDO $pdo,int $actorId,string $applicationRoot,int
 /** @param array<string,array<string,int>> $dayPrograms */
 function clubTocnaciConnectTwiceWeekly(PDO $pdo,array $dayPrograms,int $seasonId,int $actorId):array
 {
-    $query=$pdo->prepare('SELECT id FROM club_programs WHERE code=?');$query->execute(['KROUZKY-2627-TOCNACI-2X-TYDNE']);
-    $programId=(int)$query->fetchColumn();
+    $program=clubTocnaciSplitFindProgram($pdo,'Točňáci 2× týdně');
+    $programId=(int)($program['id']??0);
     if($programId<1)throw new ClubTocnaciSplitException('Program Točňáci 2× týdně nebyl nalezen.');
     $offers=$pdo->prepare('SELECT id,team_id,season_id,capacity FROM club_program_offers WHERE program_id=?');$offers->execute([$programId]);
     $rows=$offers->fetchAll(PDO::FETCH_ASSOC);
