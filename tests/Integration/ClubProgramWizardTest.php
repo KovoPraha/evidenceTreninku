@@ -98,12 +98,12 @@ final class ClubProgramWizardTest extends TestCase
         $pdo=$this->database();
         $migration=require dirname(__DIR__,2).'/migrations/20260923200000_club_program_storefront.php';
         $migration['up']($pdo);
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(227,'import','shoptet:pair:227','Cyklo kroužek ZŠ Kunratice','Původní společná nabídka.','program','visible','service','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,visible,catalog_status) VALUES(793,227,'import','KUNRATICE-OLD','{}','fixed',680000,'CZK','person',1,'active')");
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(227,'import','shoptet:pair:227','Cyklo kroužek ZŠ Kunratice (září-červen)','Původní společná nabídka.','goods','visible','goods','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(793,227,'import','952','{}','fixed',680000,'CZK','20.000000','piece',1,'active')");
         $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(227,'active','Cyklo kroužek ZŠ Kunratice','Původní společná nabídka.')");
         $input=$this->input();
         $input['name']='Cyklo kroužek ZŠ Kunratice';$input['amount_minor']=680000;
-        $input['program_code']='KROUZKY-2627-CYKLO-KROUZEK-ZS-KUNRATICE';
+        $input['program_code']='KROUZKY-2627-CYKLO-KROU-EK-Z-KUNRATICE';
         $input['purchase_option']='full_year';$input['starts_on']='2026-09-01';$input['ends_on']='2027-06-30';
         $input['capacity']=30;
         $old=\clubProgramWizardCreate($pdo,7,$input,null,false);
@@ -123,6 +123,8 @@ final class ClubProgramWizardTest extends TestCase
         self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE capacity=30 AND program_id IN (SELECT id FROM club_programs WHERE code LIKE 'KROUZKY-2627-KUNRATICE-%')")->fetchColumn());
         self::assertSame('hidden',$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$old['program_id'])->fetchColumn());
         self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id=227')->fetchColumn());
+        self::assertSame('20.000000',$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=793')->fetchColumn());
+        self::assertSame('goods',$pdo->query('SELECT offer_type FROM shop_products WHERE id=227')->fetchColumn());
         self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id='.(int)$old['product_id'])->fetchColumn());
         self::assertSame(4,(int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
     }
