@@ -46,7 +46,21 @@ try {
     if(!is_file($backupFile))$write($backupFile,$bytes);
     if(!hash_equals($bytes,(string)file_get_contents($backupFile)))throw new RuntimeException('Key backup differs; refusing to replace either copy.');
     if(!chmod($keyFile,0600) || !chmod($backupFile,0600))throw new RuntimeException('Cannot protect key files.');
+    // Web PHP has a narrower open_basedir than CLI on this hosting. Reuse the
+    // existing HTTP-denied var area, with a PHP guard as a second barrier.
+    $webPrivate=$appRoot.'/var/private';
+    if(!is_dir($webPrivate) && !mkdir($webPrivate,0700,true))throw new RuntimeException('Cannot create runtime key directory.');
+    if(!chmod($webPrivate,0700))throw new RuntimeException('Cannot protect runtime key directory.');
+    $deny=$webPrivate.'/.htaccess';
+    if(!is_file($deny))$write($deny,"Require all denied\n");
+    if(trim((string)file_get_contents($deny))!=='Require all denied')throw new RuntimeException('Runtime key directory is not HTTP denied.');
+    $webKey=$webPrivate.'/kis-person-import.php';
+    $webBytes="<?php\ndeclare(strict_types=1);\nif(!defined('KIS_PERSON_ARCHIVE_KEY_READ')){http_response_code(404);exit;}\nreturn "
+        .var_export(json_decode($bytes,true,16,JSON_THROW_ON_ERROR),true).";\n";
+    if(!is_file($webKey))$write($webKey,$webBytes);
+    if(!hash_equals($webBytes,(string)file_get_contents($webKey)) || !chmod($webKey,0600))throw new RuntimeException('Runtime key copy is not verified.');
     echo json_encode(['ok'=>true,'created'=>$created,'restored'=>$restored,'private_backup_verified'=>true,
+        'web_copy_verified'=>true,
         'access'=>['app_root'=>$appRoot,'key_path'=>$keyFile,
             'runtime_uid'=>function_exists('posix_geteuid')?posix_geteuid():null,
             'key_uid'=>fileowner($keyFile),'key_gid'=>filegroup($keyFile),

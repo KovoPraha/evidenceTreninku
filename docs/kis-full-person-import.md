@@ -37,7 +37,12 @@ i jejich historie. Hesla, klíče a zdrojová data se nezapisují do logu.
   `data/.kis-secrets/kis-person-import.json` a ověřenou soukromou kopii v
   `data/.kis-backups/keys/kis-person-import.json` (adresáře 0700, soubory 0600).
   Existující klíče nikdy nepřepisuje. Obnova databáze musí zahrnout také tento
-  klíč; kopie není součástí SQL dumpu ani Gitu. Sdílené klíče
+  klíč; kopie není součástí SQL dumpu ani Gitu. Webové PHP má na hostingu
+  užší `open_basedir` než CLI, takže čte ověřenou kopii v
+  `var/private/kis-person-import.php`. Adresář je HTTP zakázán přes `.htaccess`,
+  samotný PHP soubor navíc při přímém spuštění skončí bez výpisu (404).
+  Soubor má 0600, adresář 0700; deploy ověřuje HTTP 403/404. Širší přístup
+  webového procesu k hostingu se nepovoluje. Sdílené klíče
   `PERSON_RC_KEYRING` zůstávají podporované pro starší archivy a nejsou měněny.
   Bez dostupného klíče zápis nezačne.
 - `kis_person_profiles` drží kontaktní adresu odděleně od trvalé adresy.
