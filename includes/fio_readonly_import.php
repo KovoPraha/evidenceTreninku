@@ -230,6 +230,15 @@ function fioConfirmExactMovement(PDO $pdo,int $movementId,?int $actorTrainerId,s
             throw new FioImportException('Pohyb už nesplňuje přesnou shodu: '.$proposal['reason']);
         }
         $paymentId=(int)$proposal['payment_id'];$auditReason=$reason.' Fio pohyb '.(string)$movement['fio_movement_id'].'.';
+        if($automatic){
+            // An older order can retain the former bank account in its payment snapshot.
+            // Leave it for an administrator even if its VS, amount and currency match.
+            $source=$pdo->prepare('SELECT source_account_iban FROM fio_import_runs WHERE id=?');$source->execute([(int)$movement['import_run_id']]);
+            $paymentAccount=$pdo->prepare('SELECT iban_snapshot FROM payments WHERE id=?');$paymentAccount->execute([$paymentId]);
+            $sourceIban=fioNormalizeIban((string)$source->fetchColumn());
+            $paymentIban=fioNormalizeIban((string)$paymentAccount->fetchColumn());
+            if($sourceIban===''||$paymentIban===''||!hash_equals($sourceIban,$paymentIban))throw new FioAutomaticReviewException('Účet uvedený u platby se liší od účtu Fio.');
+        }
         if($automatic&&$proposal['payable_type']==='shop_order'){
             $order=$pdo->prepare('SELECT total_minor,currency FROM shop_orders WHERE id=?');$order->execute([$proposal['payable_id']]);$order=$order->fetch(PDO::FETCH_ASSOC);
             if((int)$order['total_minor']!==(int)$movement['amount_minor']||strtoupper((string)$order['currency'])!==(string)$movement['currency'])throw new FioAutomaticReviewException('Částka nebo měna objednávky se změnila.');
