@@ -1,0 +1,126 @@
+name: Produkcni TEST objednavka rodice s uklidem
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro test 100 Kc TEST krouzku napiste presne OVERIT-A-ZRUSIT-TEST-OBJEDNAVKU'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+jobs:
+  parent-order:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      APP_HOST: ${{ vars.KIS_APP_HOST }}
+      REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+      DEPLOY_BASE: data/.kis-deploy
+      KIS_UAT_WINDOW_END: ${{ vars.KIS_UAT_WINDOW_END }}
+    steps:
+      - name: Overit hranice testu
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          test "$POTVRZENI" = 'OVERIT-A-ZRUSIT-TEST-OBJEDNAVKU'
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          test -n "$REMOTE_DIR" && test -n "$KIS_UAT_WINDOW_END"
+          test "$(TZ=Europe/Prague date -d "$KIS_UAT_WINDOW_END" +%s)" -gt "$(date +%s)"
+
+      - name: Stahnout kod
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Pripravit overene SSH spojeni
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for key in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!key}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = '22' ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Overit TEST identitu a ulozit hranici novych objednavek
+        id: baseline
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/production-uat-order-guard.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/production-uat-order-guard.php"
+          cat > /tmp/run-production-uat-order-guard.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_UAT_ORDER_GUARD_CONFIRM=OVERIT-A-UKLIDIT-TEST-OBJEDNAVKU');
+          putenv('KIS_UAT_ORDER_MODE=' . (\$argv[1] ?? ''));
+          putenv('KIS_UAT_ORDER_BASELINE=' . (\$argv[2] ?? ''));
+          require __DIR__ . '/production-uat-order-guard.php';
+          kisUatOrderGuardMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-production-uat-order-guard.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-uat-order-guard.php"
+          RESULT=$(production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-order-guard.php' baseline 0")
+          echo "$RESULT" | jq -e '.ok == true and .baseline >= 0 and .product_id > 0 and .variant_id > 0' >/dev/null
+          echo "KIS_UAT_ORDER_BASELINE=$(jq -r '.baseline' <<< "$RESULT")" >> "$GITHUB_ENV"
+          echo "KIS_UAT_TEST_PRODUCT_ID=$(jq -r '.product_id' <<< "$RESULT")" >> "$GITHUB_ENV"
+          echo 'Vyhrazeny TEST produkt a ucet overeny; hranice objednavek ulozena.'
+
+      - name: Nainstalovat izolovany Chromium
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/kis-parent-order-uat --ignore-scripts --no-audit --no-fund --save-exact playwright@1.56.1
+          /tmp/kis-parent-order-uat/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Odeslat jedinou TEST objednavku bez platby
+        id: browser
+        env:
+          KIS_UAT_TEST_PASSWORD: ${{ secrets.KIS_UAT_TEST_PASSWORD }}
+          NODE_PATH: /tmp/kis-parent-order-uat/node_modules
+        run: node .github/scripts/parent-browser-order-uat.cjs
+
+      - name: Vzdy zrusit presne identifikovanou cekajici TEST objednavku
+        if: always() && steps.baseline.outcome == 'success'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          RESULT=$(production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-order-guard.php' cleanup '$KIS_UAT_ORDER_BASELINE'")
+          echo "$RESULT" | jq .
+          echo "$RESULT" | jq -e '.ok == true and (.matched == 0 or (.matched == 1 and .cancelled == 1))' >/dev/null
+          if [ '${{ steps.browser.outcome }}' = 'success' ]; then
+            echo "$RESULT" | jq -e '.matched == 1 and .cancelled == 1' >/dev/null
+          fi
+
+      - name: Uklid pomocnych souboru
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-production-uat-order-guard.php
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/production-uat-order-guard.php' '$DEPLOY_BASE/run-production-uat-order-guard.php'" || true
+          fi
