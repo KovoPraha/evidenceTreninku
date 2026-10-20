@@ -120,7 +120,7 @@ jobs:
           production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-youngest-apply.php'" | tee /tmp/kis-youngest-applied.json
           jq -e '.mode == "apply" and (.groups | length) == 3 and all(.groups[]; .program_id > 0 and .team_id > 0 and .purchase == "email_only")' /tmp/kis-youngest-applied.json >/dev/null
           production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-youngest-preview.php'" | tee /tmp/kis-youngest-recheck.json
-          jq -e '.mode == "dry-run" and .created == 0 and (.groups | length) == 3 and all(.groups[]; .program_id > 0 and .purchase == "email_only")' /tmp/kis-youngest-recheck.json >/dev/null
+          jq -e '.mode == "dry-run" and .created == 0 and (.groups | length) == 3 and all(.groups[]; .program_id > 0 and .team_id > 0 and .purchase == "email_only")' /tmp/kis-youngest-recheck.json >/dev/null
 
       - name: Uklidit dočasnou zálohovací obálku
         if: always()
