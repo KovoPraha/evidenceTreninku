@@ -43,6 +43,43 @@ final class ClubApprovedCatalogSettingsTest extends TestCase
         }
     }
 
+    public function testArchivedPumptrackPreviewAndApplyAreIdempotentAfterPriceApproval():void
+    {
+        $pdo=$this->database();
+        \clubApprovedCatalogSettings($pdo,7,true);
+        $pdo->exec("UPDATE shop_products SET catalog_status='inactive' WHERE id IN (290,279)");
+        $pdo->exec("UPDATE shop_variants SET catalog_status='inactive' WHERE id IN (941,893)");
+        $preview=\clubApprovedCatalogSettings($pdo,7,false);
+        self::assertFalse($preview['applied']);
+        self::assertSame(2,$preview['price_variants']);
+        self::assertSame([false,false],array_column($preview['prices'],'changed'));
+        $repeat=\clubApprovedCatalogSettings($pdo,7,true);
+        self::assertSame(0,$repeat['capacity_changed']);
+        self::assertSame(0,$repeat['price_changed']);
+        self::assertSame(74,(int)$pdo->query('SELECT COUNT(*) FROM club_program_events')->fetchColumn());
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_admin_events')->fetchColumn());
+        self::assertSame(['19.000000','-5.000000'],$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id IN (941,893) ORDER BY id DESC')->fetchAll(PDO::FETCH_COLUMN));
+        self::assertSame([650000,1150000],array_map('intval',$pdo->query('SELECT amount_minor FROM shop_variants WHERE id IN (941,893) ORDER BY id DESC')->fetchAll(PDO::FETCH_COLUMN)));
+    }
+
+    public function testPartialArchiveOrChangedArchivedPriceFailsClosed():void
+    {
+        foreach([
+            "UPDATE shop_products SET catalog_status='inactive' WHERE id=290",
+            "UPDATE shop_products SET catalog_status='inactive' WHERE id=290; UPDATE shop_variants SET catalog_status='inactive' WHERE id=941",
+            "UPDATE shop_products SET catalog_status='inactive' WHERE id IN (290,279); UPDATE shop_variants SET catalog_status='inactive' WHERE id IN (941,893)",
+            "UPDATE shop_products SET catalog_status='inactive' WHERE id IN (290,279); UPDATE shop_variants SET catalog_status='inactive',amount_minor=123 WHERE id IN (941,893)",
+        ]as$mutation){
+            $pdo=$this->database();
+            foreach(explode(';',$mutation)as$sql)$pdo->exec($sql);
+            try{\clubApprovedCatalogSettings($pdo,7,true);self::fail('Neúplná archivace nebo neznámá cena musí blokovat zápis.');}
+            catch(\ClubApprovedCatalogSettingsException){
+                self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_events')->fetchColumn());
+                self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_offers WHERE capacity IS NOT NULL')->fetchColumn());
+            }
+        }
+    }
+
     public function testUnexpectedPumptrackIdentityFailsClosed():void
     {
         $pdo=$this->database();$pdo->exec("UPDATE shop_variants SET sku='WRONG' WHERE id=941");
