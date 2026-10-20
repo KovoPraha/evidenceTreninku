@@ -103,7 +103,7 @@ $sportovist = $pdo->query("SELECT * FROM sportovist ORDER BY poradi, nazev")->fe
             <?= $editRow ? 'Upravit sportoviště' : 'Přidat sportoviště' ?>
         </div>
         <div class="card-body">
-            <form method="post">
+            <form method="post" class="app-form-stack">
                 <?= csrf_field() ?>
                 <input type="hidden" name="action" value="save">
                 <?php if ($editRow): ?>
@@ -127,7 +127,7 @@ $sportovist = $pdo->query("SELECT * FROM sportovist ORDER BY poradi, nazev")->fe
                         <input type="number" name="poradi" id="sportoviste-poradi" class="form-control"
                                value="<?= h((string)($editRow['poradi'] ?? 0)) ?>">
                     </div>
-                    <div class="col-md-2 d-flex flex-column justify-content-end gap-2">
+                    <div class="col-md-2 app-form-options d-flex flex-column justify-content-end gap-2">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="je_verejne" id="verejne"
                                    <?= ($editRow['je_verejne'] ?? 0) ? 'checked' : '' ?>>
@@ -140,8 +140,8 @@ $sportovist = $pdo->query("SELECT * FROM sportovist ORDER BY poradi, nazev")->fe
                         </div>
                     </div>
                 </div>
-                <div class="mt-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
+                <div class="app-form-actions">
+                    <button type="submit" class="btn btn-success">
                         <i class="bi bi-floppy me-1"></i><?= $editRow ? 'Uložit změny' : 'Přidat' ?>
                     </button>
                     <?php if ($editRow): ?>

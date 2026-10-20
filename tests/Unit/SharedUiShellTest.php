@@ -7,6 +7,18 @@ use PHPUnit\Framework\TestCase;
 
 final class SharedUiShellTest extends TestCase
 {
+    public function testSharedHeaderActionsUseCanonicalPathsOnNestedStaffForms(): void
+    {
+        $header=(string)file_get_contents(dirname(__DIR__,2).'/hlavicka.php');
+        foreach (['logout.php','prepnout_pracovni_pozici.php','booking/eshop.php','ajax_global_search.php','sw.js','push_subscribe.php'] as $route) {
+            self::assertStringContainsString("appUiUrl('".$route."')",$header);
+        }
+        self::assertStringNotContainsString('action="logout.php"',$header);
+        self::assertStringNotContainsString('action="prepnout_pracovni_pozici.php"',$header);
+        self::assertStringNotContainsString("'/evidence/sw.js'",$header);
+        self::assertStringNotContainsString("\$_gsAppBase . '/ajax_global_search.php'",$header);
+    }
+
     public function testEveryFirstPartyHtmlPhpPageUsesSharedUiFoundation(): void
     {
         $root = dirname(__DIR__, 2);

@@ -253,7 +253,7 @@ $form = [
                 </div>
 
                 <div class="col-12 d-flex gap-2">
-                    <button class="btn btn-primary"><?= ($editId > 0) ? 'Uložit změny' : 'Uložit cvik' ?></button>
+                    <button class="btn btn-success"><?= ($editId > 0) ? 'Uložit změny' : 'Uložit cvik' ?></button>
 
                     <?php if ($editId > 0): ?>
                         <button type="submit"

@@ -209,13 +209,6 @@ $dniLabels    = [7=>'7 dní', 14=>'14 dní', 30=>'1 měsíc', 180=>'6 měsíců'
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,.08);
         }
-        .hero-bar {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
-            color: #fff;
-            border-radius: 12px;
-            padding: 1rem 1.3rem;
-            margin-bottom: 1.2rem;
-        }
     </style>
 </head>
 <body class="bg-light">

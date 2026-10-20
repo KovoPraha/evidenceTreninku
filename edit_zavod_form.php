@@ -186,31 +186,6 @@ $flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_succe
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
-        body { background: #f0f2f5; }
-
-        .section-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-        }
-        .section-card .card-header {
-            border-radius: 12px 12px 0 0 !important;
-            font-weight: 600;
-            font-size: .92rem;
-            letter-spacing: .02em;
-            padding: .6rem 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-        }
-        .section-card .card-body { padding: 1.1rem; }
-
-        .hero-card {
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
-            color: #fff;
-        }
 
         .suggest-box {
             z-index: 1100;
@@ -232,24 +207,6 @@ $flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_succe
             font-size: .88rem;
         }
         .chip .btn-close { filter: invert(1); opacity: .9; }
-
-        .mereni-row {
-            border: 1px solid #e0e4ea;
-            border-radius: 10px;
-            padding: .85rem;
-            background: #fff;
-        }
-        .mereni-row + .mereni-row { margin-top: .65rem; }
-
-        .mini-muted { font-size: .84rem; color: #6c757d; }
-
-        .submit-bar {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            background: #fff;
-            padding: 1rem 1.25rem;
-        }
 
         .existing-thumb {
             width: 80px;

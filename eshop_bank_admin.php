@@ -119,7 +119,7 @@ if (isset($_POST['due_days'])) $form['due_days'] = (int)$_POST['due_days'];
 <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Změnit účet</div>
 <div class="card-body">
 <div class="alert alert-info py-2 mb-3">Změna platí <strong>jen pro objednávky vytvořené potom</strong>. Objednávky, které už mají vystavený platební příkaz, si drží svůj původní účet, variabilní symbol i QR kód.</div>
-<form method="post" class="row g-3"><?= csrf_field() ?>
+<form method="post" class="row g-3 app-form-stack"><?= csrf_field() ?>
 <div class="col-md-7"><label class="form-label req" for="iban">IBAN</label><input class="form-control font-monospace" id="iban" name="iban" maxlength="42" value="<?= bankAdminH($form['iban']) ?>" required><div class="form-text">Mezery se odstraní automaticky. Kontrolní součet se ověřuje; neplatný účet nejde uložit.</div></div>
 <div class="col-md-5"><label class="form-label" for="bic">BIC / SWIFT</label><input class="form-control font-monospace" id="bic" name="bic" maxlength="11" value="<?= bankAdminH($form['bic']) ?>"><div class="form-text">Nepovinné. Pro tuzemský převod se nevyžaduje.</div></div>
 <div class="col-md-7"><label class="form-label req" for="account_label">Název účtu</label><input class="form-control" id="account_label" name="account_label" maxlength="120" value="<?= bankAdminH($form['account_label']) ?>" required><div class="form-text">3–120 znaků. Zobrazí se zákazníkovi na platebním příkazu.</div></div>
@@ -127,6 +127,6 @@ if (isset($_POST['due_days'])) $form['due_days'] = (int)$_POST['due_days'];
 <div class="form-text"><strong>Pozor:</strong> tato hodnota řídí i dobu, po kterou nezaplacená objednávka <strong>drží místo v kroužku</strong>. Nastavením 30 dní zablokujete kapacitu na měsíc. Doporučená hodnota je 7.</div></div>
 <div class="col-12"><label class="form-label req" for="reason">Důvod změny</label><input class="form-control" id="reason" name="reason" maxlength="1000" value="<?= bankAdminH((string)($_POST['reason'] ?? '')) ?>" required><div class="form-text">Zapíše se do auditu spolu s předchozími hodnotami a vaším účtem.</div></div>
 <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" name="confirm_action" value="1" id="confirm" required><label class="form-check-label" for="confirm">Potvrzuji, že na tento účet mají chodit platby klubu.</label></div></div>
-<div class="col-12"><button class="btn btn-primary"><i class="bi bi-save me-1"></i>Uložit bankovní účet</button></div>
+<div class="col-12"><button class="btn btn-success"><i class="bi bi-save me-1"></i>Uložit bankovní účet</button></div>
 </form></div></section>
 </main></body></html>

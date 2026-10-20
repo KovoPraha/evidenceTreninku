@@ -64,24 +64,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($errors !== []): ?><div class="alert alert-danger" role="alert"><strong>Činnost se nepodařilo uložit.</strong><ul class="mb-0 mt-1"><?php foreach ($errors as $error): ?><li><?= htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></li><?php endforeach; ?></ul></div><?php endif; ?>
     <form method="POST" class="card border-0 shadow-sm p-4">
         <?= csrf_field() ?>
-        <div class="mb-3">
+        <div class="app-form-row">
             <label for="datum" class="form-label">Datum</label>
             <input type="date" name="datum" id="datum" class="form-control" value="<?= htmlspecialchars($datum, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" required>
         </div>
-        <div class="mb-3">
+        <div class="app-form-row">
             <label for="nazev" class="form-label">Název činnosti</label>
             <input type="text" name="nazev" id="nazev" class="form-control" value="<?= htmlspecialchars($nazev, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" maxlength="255" required>
         </div>
-        <div class="mb-3">
+        <div class="app-form-row">
             <label for="delka" class="form-label">Délka v hodinách</label>
-            <input type="number" step="0.1" min="0.1" name="delka" id="delka" class="form-control" value="<?= htmlspecialchars($delkaInput, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" required>
-            <div class="form-text">Například 1,5 hodiny zadejte jako 1.5.</div>
+            <div><input type="number" step="0.1" min="0.1" name="delka" id="delka" class="form-control" value="<?= htmlspecialchars($delkaInput, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" required>
+            <div class="form-text">Například 1,5 hodiny zadejte jako 1.5.</div></div>
         </div>
-        <div class="mb-3">
+        <div class="app-form-row">
             <label for="poznamka" class="form-label">Poznámka <span class="text-muted fw-normal">(nepovinná)</span></label>
             <textarea name="poznamka" id="poznamka" class="form-control" rows="3"><?= htmlspecialchars($poznamka, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></textarea>
         </div>
-        <button type="submit" class="btn btn-success">Uložit činnost</button>
+        <div class="app-form-actions"><button type="submit" class="btn btn-success">Uložit činnost</button></div>
     </form>
 </main>
 </body>

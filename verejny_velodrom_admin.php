@@ -162,7 +162,7 @@ $reservations = publicVelodromeAdminReservations($pdo);
                                         <div class="col-4 form-check ms-2"><input class="form-check-input" type="checkbox" name="exclusive" value="1" id="exclusive-<?= (int)$slot['id'] ?>" <?= $slot['public_exclusive_booking'] ? 'checked' : '' ?>><label class="form-check-label" for="exclusive-<?= (int)$slot['id'] ?>">Výhradní</label></div>
                                         <div class="col-5"><input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod změny"></div>
                                         <div class="col-3 form-check"><input class="form-check-input" type="checkbox" name="confirm_action" value="1" required id="confirm-slot-<?= (int)$slot['id'] ?>"><label class="form-check-label" for="confirm-slot-<?= (int)$slot['id'] ?>">Potvrzuji</label></div>
-                                        <div class="col-3 d-grid"><button class="btn btn-primary btn-sm">Uložit změny</button></div>
+                                        <div class="col-3 d-grid"><button class="btn btn-success btn-sm">Uložit změny</button></div>
                                     </form>
                                     <form method="post" class="d-flex gap-2 mt-2">
                                         <?= csrf_field() ?><input type="hidden" name="action" value="close_slot"><input type="hidden" name="slot_id" value="<?= (int)$slot['id'] ?>">

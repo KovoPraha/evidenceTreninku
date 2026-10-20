@@ -203,7 +203,6 @@ $trenerColors = ['primary', 'success', 'danger', 'warning', 'info', 'secondary']
         /* ── Print ──────────────────────────────────────────────── */
         @media print {
             .navbar, .hero-btns, .back-link, .btn { display: none !important; }
-            .hero-bar { background: #fff !important; color: #000 !important; padding: .5rem 0; }
             .hero-bar .badge-category { border: 1px solid #999; color: #333 !important; }
             .card { break-inside: avoid; }
             .photo-thumb { max-height: 120px; }

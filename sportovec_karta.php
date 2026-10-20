@@ -287,7 +287,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                                     </select>
                                 </div>
                                 <div class="col-5"><input name="stav_duvod" class="form-control form-control-sm" placeholder="Důvod" value="<?= h($sportovec['stav_duvod'] ?? '') ?>"></div>
-                                <div class="col-2"><button class="btn btn-sm btn-primary w-100" title="Uložit"><i class="bi bi-check-lg"></i></button></div>
+                                <div class="col-2"><button class="btn btn-sm btn-success w-100" title="Uložit"><i class="bi bi-check-lg"></i></button></div>
                             </form>
                             <?php if (!empty($sportovec['stav_manualni'])): ?>
                                 <form method="post" class="mt-2">
@@ -348,7 +348,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                         <?= csrf_field() ?>
                         <input type="hidden" name="action" value="add_note">
                         <textarea name="note" class="form-control mb-2" rows="3" required></textarea>
-                        <button class="btn btn-primary btn-sm">Uložit poznámku</button>
+                        <button class="btn btn-success btn-sm">Uložit poznámku</button>
                     </form>
                 </div>
             </div>

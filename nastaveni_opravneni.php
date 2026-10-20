@@ -207,7 +207,7 @@ foreach ($opravneni as $o) {
         </div>
 
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-success">
                 <i class="bi bi-save me-1"></i>Uložit oprávnění
             </button>
             <button type="submit" name="action" value="reset" class="btn btn-outline-warning"

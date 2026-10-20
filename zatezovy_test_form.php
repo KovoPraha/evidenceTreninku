@@ -125,7 +125,7 @@ if ($sportovecId > 0) {
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">💾 Uložit zátěžový test</button>
+        <button type="submit" class="btn btn-success">💾 Uložit zátěžový test</button>
         <a href="prehled_sportovcu.php" class="btn btn-secondary">Zpět na seznam sportovců</a>
     </form>
 </div>

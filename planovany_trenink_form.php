@@ -426,7 +426,7 @@ $kategorieMeta = [
                 <?php endif; ?>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-success">
                         <i class="bi bi-floppy me-1"></i>
                         <?= $editId ? 'Uložit změny' : 'Vypsat trénink' ?>
                     </button>
