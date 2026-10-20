@@ -284,7 +284,7 @@ function shopCatalogOneTimeApply(
 /** @return array<string,mixed> */
 function shopCatalogOneTimeSynchronizeRun(PDO $pdo,int $runId,int $actorId,array $manifest,array $allowedActiveKeys=[]):array
 {
-    // A later Shoptet snapshot must not reset the club-approved prices (or program product type).
+    // A later Shoptet snapshot must not reset the club-approved Pumptrack prices.
     // The original import had neither of these exact managed variants before it ran.
     if(shopCatalogOneTimeManagedPumptrackExists($pdo))
         throw new ShopCatalogOneTimeSyncException('Pumptrack spravuje klubový katalog KIS; jednorázový import jej nesmí přepsat.');
