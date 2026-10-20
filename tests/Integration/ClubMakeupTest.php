@@ -11,6 +11,23 @@ require_once dirname(__DIR__,2).'/includes/training_rsvp.php';
 
 final class ClubMakeupTest extends TestCase
 {
+    public function testGroupTargetResolvesChildOfferAndRegularMembership(): void
+    {
+        $pdo = $this->fixture();
+        $pdo->exec('CREATE TABLE club_team_edges(parent_team_id INTEGER,child_team_id INTEGER,valid_from TEXT,valid_to TEXT)');
+        $pdo->exec("INSERT INTO club_team_edges VALUES(99,10,'2020-01-01',NULL)");
+        $future = date('Y-m-d', strtotime('+1 day'));
+        $pdo->prepare("INSERT INTO planovane_treninky VALUES(300,1,NULL,'Skupinový trénink',?,'16:00:00','planovany',NULL)")->execute([$future]);
+        $pdo->exec('INSERT INTO training_roster_links VALUES(3,300,99)');
+        $pdo->exec("UPDATE club_program_enrollments SET status='active' WHERE id=41");
+        \clubMakeupPolicySave($pdo,1,1,1,10,true,12,false);
+        \clubMakeupSyncPlanRules($pdo,300);
+
+        self::assertTrue(\clubMakeupPlanCoversTeam($pdo,300,10,$future));
+        self::assertTrue(\clubMakeupPersonIsRegular($pdo,300,10,$future));
+        self::assertSame(12, \clubMakeupExcuseEntitlement($pdo,300,10,\clubMakeupNow())['hours']);
+    }
+
     public function testExcusedPaidLessonCarriesOnlyAfterNextSemesterIsPaidAndCannotBeSpentTwice():void
     {
         $pdo=$this->fixture();

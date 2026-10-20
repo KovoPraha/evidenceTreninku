@@ -5,6 +5,7 @@ require_once __DIR__ . '/includes/sportovec_status_lib.php';
 require_once __DIR__ . '/includes/sportovec_history_lib.php';
 require_once __DIR__ . '/includes/club_finance.php';
 require_once __DIR__ . '/includes/sportovec_editor.php';
+require_once __DIR__ . '/includes/athlete_training_timeline.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_sportovcu')) {
     header('Location: login.php');
@@ -144,6 +145,15 @@ $recentTreninky = $pdo->prepare("
 ");
 $recentTreninky->execute([$sportovecId]);
 $treninky = $recentTreninky->fetchAll(PDO::FETCH_ASSOC);
+$trainingYear = (int)($_GET['rok'] ?? date('Y'));
+$trainingYear = max(2000, min((int)date('Y') + 2, $trainingYear));
+$rosterTrainings = [];
+$rosterTrainingError = false;
+try { $rosterTrainings = athleteTrainingTimeline($pdo, $sportovecId, $trainingYear); }
+catch (Throwable $exception) {
+    error_log('sportovec_karta roster training timeline: ' . $exception->getMessage());
+    $rosterTrainingError = true;
+}
 
 $zavodyStmt = $pdo->prepare("
     SELECT z.id, z.datum, z.kategorie, z.popis, zs.poradi, zs.cas
@@ -315,6 +325,13 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
         </div>
 
         <div class="tab-pane fade <?= $activeTab === 'sport' ? 'show active' : '' ?>" id="sport">
+            <section class="card section-card mb-3">
+                <div class="card-header bg-white d-flex justify-content-between flex-wrap gap-2"><strong>Tréninky ze všech soupisek · <?= $trainingYear ?></strong><span><a href="?sportovec_id=<?= $sportovecId ?>&amp;tab=sport&amp;rok=<?= $trainingYear - 1 ?>#sport"><?= $trainingYear - 1 ?></a> · <a href="?sportovec_id=<?= $sportovecId ?>&amp;tab=sport&amp;rok=<?= $trainingYear + 1 ?>#sport"><?= $trainingYear + 1 ?></a></span></div>
+                <div class="card-body"><p class="text-muted small">Plánované i evidované tréninky podle členství v den tréninku. Účast je uvedena samostatně.</p>
+                <?php if ($rosterTrainingError): ?><p>Tréninky se nyní nepodařilo načíst.</p><?php elseif (!$rosterTrainings): ?><p>V tomto roce nejsou evidované tréninky.</p><?php else: ?>
+                    <?php foreach ($rosterTrainings as $training): ?><details class="border rounded p-2 mb-2"><summary><strong><?= d($training['datum']) ?></strong> · <?= h($training['title']) ?> · <?= !empty($training['attended']) ? 'účast zaznamenána' : h($training['response'] ?? 'účast nepotvrzena') ?></summary><div class="mt-2 small"><strong>Skupina / soupiska:</strong> <?= h($training['targets'] ? implode(', ', $training['targets']) : 'Historický trénink bez vazby na soupisku') ?><?php if ($training['description'] !== ''): ?><p class="mt-2 mb-0"><?= nl2br(h($training['description'])) ?></p><?php endif; ?></div></details><?php endforeach; ?>
+                <?php endif; ?></div>
+            </section>
             <div class="row g-3">
                 <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Poslední tréninky</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($treninky as $t): ?><tr><td><?= d($t['datum']) ?></td><td><?= h($t['kategorie'] ?: '—') ?></td><td><?= h(mb_strimwidth((string)$t['napln'], 0, 70, '…', 'UTF-8')) ?></td></tr><?php endforeach; if (!$treninky): ?><tr><td class="text-muted p-3">Žádné tréninky.</td></tr><?php endif; ?></table></div></div></div>
                 <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Závody</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($zavody as $z): ?><tr><td><?= d($z['datum']) ?></td><td><?= h($z['kategorie']) ?></td><td><a href="zavod_detail.php?id=<?= (int)$z['id'] ?>"><?= h(mb_strimwidth((string)$z['popis'], 0, 60, '…', 'UTF-8')) ?></a></td><td><?= h($z['cas'] ?? '') ?></td></tr><?php endforeach; if (!$zavody): ?><tr><td class="text-muted p-3">Žádné závody.</td></tr><?php endif; ?></table></div></div></div>

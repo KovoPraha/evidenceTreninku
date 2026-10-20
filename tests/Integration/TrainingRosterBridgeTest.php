@@ -85,6 +85,22 @@ final class TrainingRosterBridgeTest extends TestCase
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM training_roster_links WHERE trenink_id=200 AND plan_id IS NULL')->fetchColumn());
     }
 
+    public function testGroupTargetSnapshotsDescendantMembersAndMatchesChildFilter(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(3,1,'GROUP','Závodní tým','vše','open','active',7)");
+        $pdo->exec('CREATE TABLE club_team_edges(parent_team_id INTEGER,child_team_id INTEGER,valid_from TEXT,valid_to TEXT)');
+        $pdo->exec("INSERT INTO club_team_edges VALUES(3,1,'2026-01-01',NULL),(3,2,'2026-01-01',NULL)");
+        $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,created_by_trainer_id) VALUES(1,10,'active','manual','2026-01-01',7),(2,10,'active','manual','2026-01-01',7),(2,11,'active','manual','2026-01-01',7)");
+
+        $result = \trainingRosterBridgeReplaceTrainingTeams($pdo, 200, [3], 7);
+        self::assertSame(['link_count'=>1,'expected_count'=>2], $result);
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM training_roster_expected')->fetchColumn());
+        $rows = [['id'=>200,'datum'=>'2026-08-10']];
+        self::assertCount(1, \trainingRosterBridgeFilterTrainingRows($pdo, $rows, 1));
+        self::assertCount(1, \trainingRosterBridgeFilterTrainingRows($pdo, $rows, 2));
+    }
+
     public function testActualTrainingCopiesImmutablePlanExpectationAndComparisonSeparatesAttendance():void
     {
         $pdo=$this->database();

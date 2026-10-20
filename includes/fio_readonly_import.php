@@ -46,6 +46,11 @@ function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?s
     $empty=static fn(string$status,string$reason):array=>['status'=>$status,'payment_id'=>null,'order_id'=>null,'payable_type'=>null,'payable_id'=>null,'reason'=>$reason];
     if ($amountMinor <= 0) return $empty('ignored_non_credit','Odchozí nebo nulový pohyb se nepáruje.');
     if ($variableSymbol === null) return $empty('review_missing_vs','Příchozí platba nemá platný variabilní symbol.');
+    if(fioTableExists($pdo,'member_payer_variable_symbols')){
+        $payer=$pdo->prepare('SELECT payer_account_id FROM member_payer_variable_symbols WHERE variable_symbol=?'.$lockSuffix);
+        $payer->execute([$variableSymbol]);
+        if($payer->fetchColumn())return $empty('review_payer_split','Stálý VS plátce může hradit více dětí a období; rozdělte platbu ručně v administraci rodinných plateb.');
+    }
     $hasPlans=fioTableExists($pdo,'club_member_charges')&&fioTableExists($pdo,'member_fee_plan_run_items')&&fioTableExists($pdo,'member_fee_plan_runs');
     $planJoins=$hasPlans?"LEFT JOIN club_member_charges c ON c.id=p.payable_id AND p.payable_type='member_charge' LEFT JOIN member_fee_plan_run_items ri ON ri.charge_id=c.id LEFT JOIN member_fee_plan_runs rr ON rr.id=ri.run_id ":'';
     $statement = $pdo->prepare('SELECT p.id AS payment_id,p.payable_type,p.payable_id,p.method,p.status AS payment_status,p.amount_minor,p.currency'.($hasPlans?',rr.plan_id AS charge_plan_id,c.sportovec_id,c.status AS charge_status,c.due_on':',NULL AS charge_plan_id,NULL AS sportovec_id,NULL AS charge_status,NULL AS due_on').' FROM payments p '.$planJoins.'WHERE p.variable_symbol=? ORDER BY '.($hasPlans?'c.due_on,':'').'p.id'.$lockSuffix);
@@ -198,6 +203,14 @@ function fioConfirmExactMovement(PDO $pdo,int $movementId,?int $actorTrainerId,s
     try{
         $sql='SELECT * FROM fio_account_movements WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$statement=$pdo->prepare($sql);$statement->execute([$movementId]);$movement=$statement->fetch(PDO::FETCH_ASSOC);
         if(!$movement)throw new FioImportException('Bankovní pohyb nebyl nalezen.');
+        if(fioTableExists($pdo,'member_payer_receipts')){
+            $payerReceipt=$pdo->prepare('SELECT id FROM member_payer_receipts WHERE fio_movement_id=? OR reference=?'.($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':''));
+            $payerReceipt->execute([$movementId,(string)$movement['fio_movement_id']]);
+            if($payerReceipt->fetchColumn()){
+                if($automatic)throw new FioAutomaticReviewException('Pohyb je již použit v rodinné platbě.');
+                throw new FioImportException('Pohyb je již použit v rodinné platbě a nelze jej podruhé potvrdit k jednomu předpisu.');
+            }
+        }
         if((string)$movement['match_status']==='confirmed'){
             $paymentId=(int)($movement['candidate_payment_id']??0);$check=$pdo->prepare('SELECT payable_type,payable_id,status,bank_movement_id FROM payments WHERE id=?');$check->execute([$paymentId]);$payment=$check->fetch(PDO::FETCH_ASSOC);
             if(!$payment||$payment['status']!=='paid'||(string)$payment['bank_movement_id']!==(string)$movement['fio_movement_id'])throw new FioImportException('Potvrzený bankovní pohyb není konzistentní s platbou.');

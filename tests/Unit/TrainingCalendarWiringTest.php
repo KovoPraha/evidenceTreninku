@@ -30,12 +30,9 @@ final class TrainingCalendarWiringTest extends TestCase
         self::assertStringContainsString("'cas_do'", $form);
         self::assertStringContainsString("\$reservationFromPlan ? 'show'", $form);
         self::assertStringContainsString('planovane_treninky_podskupiny', $form);
-        self::assertStringContainsString("PLAN_PREFILL && PLAN_PREFILL.skupina_id", $form);
-        $listenerPosition=strpos($form,"document.getElementById('skupina_id').addEventListener");
-        $dispatchPosition=strrpos($form,"document.getElementById('skupina_id').dispatchEvent");
-        self::assertNotFalse($listenerPosition);
-        self::assertNotFalse($dispatchPosition);
-        self::assertGreaterThan($listenerPosition,$dispatchPosition,'Načtení podskupin se smí spustit až po připojení listeneru.');
+        self::assertStringContainsString('trainingRosterBridgePlanTeamIds', $form);
+        self::assertStringContainsString('rosterTargetSelectorHtml', $form);
+        self::assertStringContainsString('roster-target-selector.js', $form);
 
         $save = (string)file_get_contents($root . '/ulozit_trenink.php');
         self::assertStringContainsString('venueCalendarCreateTrainingReservation', $save);
@@ -47,10 +44,11 @@ final class TrainingCalendarWiringTest extends TestCase
         $root = dirname(__DIR__, 2);
         $calendar = (string)file_get_contents($root . '/prehled_treninku_skupiny_kalendar.php');
         self::assertStringContainsString('JOIN trenink_skupina ts', $calendar);
-        self::assertStringContainsString('$filterPodskupinaId !== \'\' || $filterSkupinaId !== \'\'', $calendar);
+        self::assertStringContainsString('trainingRosterBridgeFilterTrainingRows', $calendar);
 
         $planner = (string)file_get_contents($root . '/planovac.php');
         self::assertStringContainsString('popis, je_verejny, stav', $planner);
         self::assertStringContainsString("(int)\$zp['je_verejny']", $planner);
+        self::assertStringContainsString('trainingRosterBridgePlanTeamIds', $planner);
     }
 }

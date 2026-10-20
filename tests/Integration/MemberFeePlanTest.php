@@ -12,13 +12,13 @@ final class MemberFeePlanTest extends TestCase
 {
     public function testPreviewSkipsMissingPayerAndGenerationIsIdempotent():void
     {
-        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260922120000_member_fee_plans.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));$standing=require dirname(__DIR__,2).'/migrations/20260922190000_member_fee_standing_orders.php';$standing['up']($pdo);self::assertTrue($standing['verify']($pdo));
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260922120000_member_fee_plans.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));$standing=require dirname(__DIR__,2).'/migrations/20260922190000_member_fee_standing_orders.php';$standing['up']($pdo);self::assertTrue($standing['verify']($pdo));$payerVs=require dirname(__DIR__,2).'/migrations/20261021120000_member_payer_variable_symbols.php';$payerVs['up']($pdo);self::assertTrue($payerVs['verify']($pdo));
         $plan=\memberFeePlanCreate($pdo,7,['team_id'=>10,'name'=>'Závodní měsíční','charge_title'=>'Příspěvek září','amount_minor'=>120000,'due_day'=>15,'starts_on'=>'2026-01-01','ends_on'=>'2026-12-31'],'Zavedení měsíčních příspěvků.',true);
         $preview=\memberFeePlanPreview($pdo,$plan['id'],'2026-09');self::assertSame(1,$preview['ready_count']);self::assertSame(1,$preview['skipped_count']);self::assertContains('missing_payer',array_column($preview['rows'],'result'));
         $run=\memberFeePlanGenerate($pdo,$plan['id'],'2026-09',7,'Potvrzený měsíční běh.',$preview['fingerprint'],true);self::assertFalse($run['idempotent']);self::assertSame(1,$run['generated_count']);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
         $again=\memberFeePlanGenerate($pdo,$plan['id'],'2026-09',7,'Opakování stejného běhu.',$preview['fingerprint'],true);self::assertTrue($again['idempotent']);self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());
         $october=\memberFeePlanPreview($pdo,$plan['id'],'2026-10');\memberFeePlanGenerate($pdo,$plan['id'],'2026-10',7,'Říjnový měsíční běh.',$october['fingerprint'],true);
-        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(DISTINCT variable_symbol) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM member_fee_standing_orders')->fetchColumn());
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(DISTINCT variable_symbol) FROM payments')->fetchColumn());self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM member_payer_variable_symbols')->fetchColumn());
     }
 
     public function testEligibleMembersRespectRosterValidityAndExclusionRejectsOutsider():void
@@ -31,6 +31,21 @@ final class MemberFeePlanTest extends TestCase
         $this->expectException(\MemberFeePlanException::class);
         $this->expectExceptionMessage('platné aktivní členství');
         \memberFeePlanAddExclusion($pdo,$plan['id'],4,7,'2026-09-01','2026-09-30','Nemá být účtováno.',true);
+    }
+
+    public function testParentPlanDeduplicatesChildMembershipAndUsesOnePayerSymbol():void
+    {
+        $pdo=$this->database();
+        $pdo->exec("INSERT INTO club_teams VALUES(11,'Kadeti','active'),(12,'Závodní tým','active');CREATE TABLE club_team_edges(parent_team_id INTEGER,child_team_id INTEGER,valid_from TEXT,valid_to TEXT);INSERT INTO club_team_edges VALUES(12,10,'2026-01-01',NULL),(12,11,'2026-01-01',NULL);INSERT INTO club_roster_members VALUES(11,1,'active','2026-01-01',NULL);INSERT INTO club_roster_members VALUES(11,2,'active','2026-01-01',NULL);INSERT INTO account_person_roles VALUES(2,20,2,'guardian','approved','2026-01-01',NULL)");
+        foreach(['20260922120000_member_fee_plans','20260922190000_member_fee_standing_orders','20261021120000_member_payer_variable_symbols']as$name){$migration=require dirname(__DIR__,2).'/migrations/'.$name.'.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
+        $plan=\memberFeePlanCreate($pdo,7,['team_id'=>12,'name'=>'Závodní tým','charge_title'=>'Členský příspěvek','amount_minor'=>120000,'due_day'=>15,'starts_on'=>'2026-01-01','ends_on'=>'2026-12-31'],'Měsíční členské příspěvky.',true);
+        $preview=\memberFeePlanPreview($pdo,$plan['id'],'2026-09');
+        self::assertSame(2,$preview['ready_count']);
+        $personIds=array_map('intval',array_column($preview['rows'],'sportovec_id'));sort($personIds);self::assertSame([1,2],$personIds);
+        $run=\memberFeePlanGenerate($pdo,$plan['id'],'2026-09',7,'Potvrzený měsíční běh.',$preview['fingerprint'],true);
+        self::assertSame(2,$run['generated_count']);
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(DISTINCT variable_symbol) FROM payments')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM member_payer_variable_symbols')->fetchColumn());
     }
 
     private function database():PDO

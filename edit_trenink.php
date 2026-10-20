@@ -4,6 +4,8 @@ app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 
 if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
@@ -73,6 +75,7 @@ $skupinaId = (int)($stmtSk->fetchColumn() ?: 0);
 $stmtPs = $pdo->prepare('SELECT podskupina_id FROM trenink_podskupina WHERE trenink_id = :id');
 $stmtPs->execute([':id' => $treninkId]);
 $podskupinySelected = array_map('intval', $stmtPs->fetchAll(PDO::FETCH_COLUMN));
+$selectedTeamIds = trainingRosterBridgeTrainingTeamIds($pdo, $treninkId);
 
 // Podskupiny pro vybranou skupinu (SERVER-SIDE)
 $podskupinyForGroup = [];
@@ -272,46 +275,18 @@ if (!empty($trenink['datum'])) {
                 </div>
             </div>
 
-            <!-- Skupiny -->
+            <!-- Jeden kanonický cíl; historické vazby se při běžné editaci zachovávají. -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-info text-white">
-                    <i class="bi bi-diagram-3 me-1"></i>Skupiny
+                    <i class="bi bi-diagram-3 me-1"></i>Skupina → soupiska
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="skupina_id" class="form-label fw-semibold req">
-                                <i class="bi bi-people me-1 text-info"></i>Skupina
-                            </label>
-                            <select id="skupina_id" name="skupina_id" class="form-select" required>
-                                <option value="">— vyber —</option>
-                                <?php foreach ($skupiny as $sk): ?>
-                                    <option value="<?= (int)$sk['id'] ?>" <?= ((int)$sk['id'] === (int)$skupinaId) ? 'selected' : '' ?>>
-                                        <?= h($sk['nazev']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="podskupina_id" class="form-label fw-semibold">
-                                <i class="bi bi-diagram-2 me-1 text-info"></i>Podskupiny
-                            </label>
-                            <select name="podskupina_id[]" id="podskupina_id" class="form-select" multiple size="5">
-                                <?php if ($skupinaId <= 0): ?>
-                                    <option value="">Nejprve vyber skupinu</option>
-                                <?php elseif (empty($podskupinyForGroup)): ?>
-                                    <option value="">Žádné podskupiny</option>
-                                <?php else: ?>
-                                    <?php foreach ($podskupinyForGroup as $ps): ?>
-                                        <option value="<?= (int)$ps['id'] ?>" <?= in_array((int)$ps['id'], $podskupinySelected, true) ? 'selected' : '' ?>>
-                                            <?= h($ps['nazev']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </select>
-                            <div class="mini-muted mt-1">Lze vybrat více podskupin.</div>
-                        </div>
+                    <div data-roster-target-container>
+                        <?= rosterTargetSelectorHtml($pdo, (string)$trenink['datum'], $selectedTeamIds) ?>
                     </div>
+                    <?php if ($selectedTeamIds === [] && $skupinaId > 0): ?>
+                        <div class="alert alert-warning mt-2 mb-0">Historický trénink patří do původní skupiny. Bez nového výběru ji editace zachová.</div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -514,44 +489,6 @@ if (!empty($trenink['datum'])) {
 </div>
 
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
-/* ---------------------------
-   Podskupiny po změně skupiny
----------------------------- */
-(function(){
-    const selSk = document.getElementById('skupina_id');
-    const selPs = document.getElementById('podskupina_id');
-    if (!selSk || !selPs) return;
-
-    selSk.addEventListener('change', function(){
-        const skupinaId = this.value;
-        if (!skupinaId) {
-            selPs.innerHTML = '<option value="">Nejprve vyber skupinu</option>';
-            return;
-        }
-        selPs.innerHTML = '<option>Načítám...</option>';
-
-        fetch('ajax_podskupiny.php?skupina_id=' + encodeURIComponent(skupinaId))
-            .then(r => r.json())
-            .then(data => {
-                selPs.innerHTML = '';
-                const items = (data && data.items && Array.isArray(data.items)) ? data.items : [];
-                if (!items.length) {
-                    selPs.innerHTML = '<option value="">Žádné podskupiny</option>';
-                    return;
-                }
-                items.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.id;
-                    opt.textContent = p.nazev;
-                    selPs.appendChild(opt);
-                });
-            })
-            .catch(() => {
-                selPs.innerHTML = '<option value="">Chyba načítání</option>';
-            });
-    });
-})();
-
 /* ---------------------------
    Účastníci: chipy + hidden
 ---------------------------- */
@@ -1103,5 +1040,6 @@ if (!empty($trenink['datum'])) {
 })();
 </script>
 
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
 </body>
 </html>

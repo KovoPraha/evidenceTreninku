@@ -11,11 +11,13 @@ if (!isset($_SESSION['trener_id'])) {
 }
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/training_roster_bridge.php';
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
 $userId    = (int)$_SESSION['trener_id'];
 $skupinaId = $_GET['skupina_id'] ?? '';
+$teamId = $_GET['team_id'] ?? '';
 $mesic     = $_GET['mesic'] ?? '';
 $rok       = $_GET['rok'] ?? '';
 
@@ -59,6 +61,10 @@ $sql .= " ORDER BY t.datum DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($teamId !== '' && ctype_digit((string)$teamId)) {
+    $treninky = trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$teamId);
+}
+$canonicalLabels = trainingRosterBridgeTrainingLabels($pdo, $treninky);
 
 $czDays = [
     'Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
@@ -144,7 +150,9 @@ foreach ($treninky as $t) {
                         <?php endif; ?>
                     </div>
                     <div class="text-end">
-                        <?php if (!empty($ps)): ?>
+                        <?php if (isset($canonicalLabels[$treninkId])): ?>
+                            <span class="badge bg-primary"><?= h($canonicalLabels[$treninkId]) ?></span>
+                        <?php elseif (!empty($ps)): ?>
                             <span class="badge bg-primary"><?= h(implode(', ', $ps)) ?></span>
                         <?php elseif (!empty($skup)): ?>
                             <span class="badge bg-primary"><?= h(implode(', ', $skup)) ?></span>

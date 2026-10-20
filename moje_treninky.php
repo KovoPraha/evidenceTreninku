@@ -8,6 +8,7 @@ if (!isset($_SESSION['trener_id'])) {
     exit;
 }
 require_once 'db.php';
+require_once __DIR__ . '/includes/roster_target_selector.php';
 
 $userId  = (int)$_SESSION['trener_id'];
 $isAdmin = canAccess('moje_treninky');
@@ -95,7 +96,13 @@ unset($_SESSION['flash_success']);
                 </select>
             </div>
             <div class="col-auto" style="min-width:180px;">
-                <label class="form-label small mb-1">Skupina</label>
+                <label class="form-label small mb-1">Skupina → soupiska</label>
+                <select id="filterTeam" class="form-select form-select-sm">
+                    <?= rosterTargetFilterOptionsHtml($pdo, date('Y-m-d')) ?>
+                </select>
+            </div>
+            <div class="col-auto" style="min-width:180px;">
+                <label class="form-label small mb-1">Původní skupina (historie)</label>
                 <select id="filterSkupina" class="form-select form-select-sm">
                     <option value="">Všechny skupiny</option>
                     <?php foreach ($skupiny as $s): ?>
@@ -130,6 +137,7 @@ unset($_SESSION['flash_success']);
     const filterRok     = document.getElementById('filterRok');
     const filterMesic   = document.getElementById('filterMesic');
     const filterSkupina = document.getElementById('filterSkupina');
+    const filterTeam = document.getElementById('filterTeam');
     const filterSearch  = document.getElementById('filterSearch');
     const listWrap      = document.getElementById('listWrap');
     const spinner       = document.getElementById('spinner');
@@ -146,6 +154,7 @@ unset($_SESSION['flash_success']);
             rok:        filterRok.value,
             mesic:      filterMesic.value,
             skupina_id: filterSkupina.value,
+            team_id: filterTeam.value,
             q:          filterSearch.value.trim(),
         });
 
@@ -190,6 +199,7 @@ unset($_SESSION['flash_success']);
     filterRok.addEventListener('change', loadDebounced);
     filterMesic.addEventListener('change', loadDebounced);
     filterSkupina.addEventListener('change', loadDebounced);
+    filterTeam.addEventListener('change', loadDebounced);
     filterSearch.addEventListener('input', () => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(load, 400);
@@ -199,6 +209,7 @@ unset($_SESSION['flash_success']);
         filterRok.value     = '';
         filterMesic.value   = '';
         filterSkupina.value = '';
+        filterTeam.value = '';
         filterSearch.value  = '';
         load();
     });

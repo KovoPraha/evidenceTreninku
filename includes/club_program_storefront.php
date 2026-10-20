@@ -86,7 +86,7 @@ function clubProgramStorefrontAddSchedule(PDO$pdo,int$actorId,int$programId,arra
     $reason=clubProgramText($reason,1000,'Důvod změny');
     if($actorId<1||!$confirmed)throw new InvalidArgumentException('Přidání času vyžaduje správce a potvrzení.');
     $seasonId=(int)($input['season_id']??0);$weekday=(int)($input['weekday']??0);
-    if($seasonId<1||$weekday<1||$weekday>7)throw new InvalidArgumentException('Vyberte sezonu a den týdne.');
+    if($weekday<1||$weekday>7)throw new InvalidArgumentException('Vyberte den týdne.');
     $starts=clubProgramStorefrontTime((string)($input['starts_at']??''),'Začátek');
     $ends=clubProgramStorefrontTime((string)($input['ends_at']??''),'Konec');
     if($starts>=$ends)throw new InvalidArgumentException('Konec tréninku musí být po začátku.');
@@ -95,6 +95,7 @@ function clubProgramStorefrontAddSchedule(PDO$pdo,int$actorId,int$programId,arra
     $pdo->beginTransaction();
     try{
         clubProgramStorefrontLockProgram($pdo,$programId);
+        if($seasonId<1)$seasonId=clubProgramTechnicalSeasonInTransaction($pdo,$actorId);
         $season=$pdo->prepare("SELECT id FROM club_seasons WHERE id=? AND status='active'");$season->execute([$seasonId]);if(!$season->fetchColumn())throw new ClubProgramStorefrontException('Aktivní sezona nebyla nalezena.');
         $pdo->prepare('INSERT INTO club_program_schedule_slots(program_id,season_id,weekday,starts_at,ends_at,location_name,sort_order) VALUES(?,?,?,?,?,?,?)')->execute([$programId,$seasonId,$weekday,$starts,$ends,$location?:null,$sort]);
         $id=(int)$pdo->lastInsertId();$after=['id'=>$id,'season_id'=>$seasonId,'weekday'=>$weekday,'starts_at'=>$starts,'ends_at'=>$ends,'location_name'=>$location,'sort_order'=>(int)$sort,'_audit_reason'=>$reason];
@@ -194,12 +195,12 @@ function clubProgramStorefrontCatalog(PDO$pdo,?DateTimeImmutable$now=null):array
     $result=[];
     foreach($programs as$program){
         $programId=(int)$program['id'];
-        $schedule=$pdo->prepare('SELECT ss.*,s.name AS season_name FROM club_program_schedule_slots ss JOIN club_seasons s ON s.id=ss.season_id WHERE ss.program_id=? AND s.status=\'active\' ORDER BY ss.sort_order,ss.weekday,ss.starts_at,ss.id');$schedule->execute([$programId]);
+        $schedule=$pdo->prepare("SELECT ss.*,s.name AS season_name FROM club_program_schedule_slots ss JOIN club_seasons s ON s.id=ss.season_id WHERE ss.program_id=? AND s.status='active' AND (s.code='KIS-STANDING' OR (s.starts_on<=? AND s.ends_on>=? AND NOT EXISTS(SELECT 1 FROM club_program_schedule_slots x JOIN club_seasons sx ON sx.id=x.season_id WHERE x.program_id=ss.program_id AND sx.code='KIS-STANDING'))) ORDER BY ss.sort_order,ss.weekday,ss.starts_at,ss.id");$schedule->execute([$programId,$today,$today]);
         $images=$pdo->prepare('SELECT id,image_url,alt_text,sort_order FROM club_program_images WHERE program_id=? ORDER BY sort_order,id');$images->execute([$programId]);$safeImages=[];
         foreach($images->fetchAll(PDO::FETCH_ASSOC)as$image){$url=shopStorefrontSafeImageUrl((string)$image['image_url']);if($url!==null){$image['image_url']=$url;$safeImages[]=$image;}}
         $offers=$pdo->prepare("SELECT o.*,v.amount_minor,v.currency,v.sku,spub.public_name AS product_public_name FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id JOIN shop_products p ON p.id=o.product_id JOIN shop_product_publications spub ON spub.product_id=p.id WHERE o.program_id=? AND o.status='active' AND o.ends_on>=? AND p.catalog_status='active' AND v.catalog_status='active' AND (v.visible=1 OR v.visible IS NULL) AND spub.status='active' ORDER BY o.is_featured DESC,CASE o.purchase_option WHEN 'full_year' THEN 0 WHEN 'first_half' THEN 1 WHEN 'second_half' THEN 2 ELSE 3 END,o.starts_on,o.id");
         $offers->execute([$programId,$today]);$publicOffers=[];
-        foreach($offers->fetchAll(PDO::FETCH_ASSOC)as$offer){$offer=array_merge($offer,clubProgramOfferCapacityState($pdo,$offer,$now));$sale=clubProgramOfferSaleState($offer,$now);$terms=clubProgramTermsEffective($pdo,$programId,(int)$offer['id']);if($sale['saleable']&&!clubProgramTermsComplete($terms))$sale=['saleable'=>false,'reason'=>'Přihlášení se připravuje.'];$offer['saleable']=$sale['saleable'];$offer['sale_reason']=$sale['reason'];$offer['purchase_label']=clubProgramPurchaseOptionLabel((string)$offer['purchase_option']);$publicOffers[]=$offer;}
+        foreach($offers->fetchAll(PDO::FETCH_ASSOC)as$offer){$offer=array_merge($offer,clubProgramOfferCapacityState($pdo,$offer,$now));$sale=clubProgramOfferSaleState($offer,$now);$terms=clubProgramTermsEffective($pdo,$programId,(int)$offer['id']);if($sale['saleable']&&!clubProgramTermsComplete($terms))$sale=['saleable'=>false,'reason'=>'Přihlášení se připravuje.'];$offer['saleable']=$sale['saleable'];$offer['sale_reason']=$sale['reason'];$offer['purchase_label']=clubProgramPurchaseOptionLabel((string)$offer['purchase_option']).' '.clubProgramSchoolYearLabel((string)$offer['starts_on']);$publicOffers[]=$offer;}
         if($publicOffers===[]&&!$program['interest_enabled'])continue;
         $program['schedule']=$schedule->fetchAll(PDO::FETCH_ASSOC);$program['images']=$safeImages;$program['offers']=$publicOffers;$result[]=$program;
     }

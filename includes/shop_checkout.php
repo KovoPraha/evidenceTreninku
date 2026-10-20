@@ -315,6 +315,7 @@ function shopCheckoutPlace(
                 catch (ClubFinanceException $exception) { throw new ShopCheckoutException($exception->getMessage(),0,$exception); }
                 $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id'],null,true);
                 if(!$offer)throw new ShopCheckoutException('Nabídka kroužku už není dostupná.');
+                $item['club_program_offer_id']=(int)$offer['id'];
                 shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$item['beneficiary_sportovec_id'],true);
                 $item['program_age_warning']=clubProgramBeneficiaryBirthYearWarning($pdo,$offer,(int)$item['beneficiary_sportovec_id'],true);
                 $item['program_terms']=clubProgramTermsEffective($pdo,(int)$offer['program_id'],(int)$offer['id'],true);
@@ -404,6 +405,10 @@ function shopCheckoutPlace(
                 $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
             }
             $orderItemId=(int)$pdo->lastInsertId();
+            if(($item['offer_type']??null)==='program'&&shopCheckoutColumnExists($pdo,'shop_order_items','club_program_offer_id')){
+                if((int)($item['club_program_offer_id']??0)<1)throw new ShopCheckoutException('Položka kroužku nemá určené období.');
+                $pdo->prepare('UPDATE shop_order_items SET club_program_offer_id=? WHERE id=?')->execute([(int)$item['club_program_offer_id'],$orderItemId]);
+            }
             if($managedStock){
                 $stock=$pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE id=?');$stock->execute([(int)$item['id']]);$stockAfter=(string)$stock->fetchColumn();
                 $pdo->prepare('INSERT INTO shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) VALUES (?,?,?,\'reserve\',?,?)')

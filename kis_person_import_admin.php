@@ -86,7 +86,7 @@ if($batch) {
 <?php if($error && str_contains($error,'klíč archivu')): $keyPath=__DIR__.'/var/private/kis-person-import.php'; ?>
 <details><summary>Diagnostika dostupnosti archivu (bez tajných údajů)</summary><pre><?=kpiH(json_encode([
     'app_root'=>__DIR__,'key_path'=>$keyPath,
-    'runtime_uid'=>function_exists('posix_geteuid')?posix_geteuid():null,
+    'runtime_uid'=>function_exists('posix_geteuid')?call_user_func('posix_geteuid'):null,
     'directory_visible'=>is_dir(dirname($keyPath)),'key_exists'=>is_file($keyPath),'key_readable'=>is_readable($keyPath),
     'config_uid'=>fileowner(__DIR__.'/config.php'),'config_gid'=>filegroup(__DIR__.'/config.php'),
     'open_basedir'=>ini_get('open_basedir')],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES))?></pre></details>

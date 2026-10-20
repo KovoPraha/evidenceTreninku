@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/roster_hierarchy.php';
+
 final class ClubEventRosterTargetException extends RuntimeException
 {
 }
@@ -27,8 +29,8 @@ function clubEventRosterAvailableTeams(PDO $pdo): array
 {
     return $pdo->query(
         "SELECT t.id,t.code,t.name,t.status,s.name AS season_name,s.starts_on,s.ends_on "
-        . "FROM club_teams t JOIN club_seasons s ON s.id=t.season_id "
-        . "WHERE t.status='active' AND s.status='active' ORDER BY s.starts_on DESC,t.name,t.id"
+        . "FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id "
+        . "WHERE t.status='active' ORDER BY t.name,t.id"
     )->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -145,24 +147,14 @@ function clubEventRosterEligibility(PDO $pdo, int $eventId, int $sportovecId): a
         return false;
     }
     $eventDate = substr((string)$startsAt, 0, 10);
-    $placeholders = implode(',', array_fill(0, count($targetIds), '?'));
-    $statement = $pdo->prepare(
-        'SELECT DISTINCT m.team_id FROM club_roster_members m '
-        . 'JOIN club_teams t ON t.id=m.team_id JOIN club_seasons s ON s.id=t.season_id '
-        . "WHERE m.sportovec_id=? AND m.team_id IN ($placeholders) "
-        . "AND m.status='active' AND t.status='active' AND s.status='active' "
-        . 'AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) '
-        . 'AND s.starts_on<=? AND s.ends_on>=? ORDER BY m.team_id'
-    );
-    $statement->execute([$sportovecId, ...$targetIds, $eventDate, $eventDate, $eventDate, $eventDate]);
-    $matching = array_map('intval', $statement->fetchAll(PDO::FETCH_COLUMN));
+    $matching = kisRosterPersonTargetIds($pdo, $sportovecId, $targetIds, $eventDate);
     if ($matching === []) {
         return false;
     }
     return [
         'mode' => 'roster_targeted',
         'team_ids' => $matching,
-        'reason' => 'Aktivní členství v cílové soupisce k datu první části události ' . $eventDate . '.',
+        'reason' => 'Platné členství v cílové skupině nebo soupisce k datu první části události ' . $eventDate . '.',
     ];
 }
 

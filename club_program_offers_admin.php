@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__.'/includes/init.php';
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/club_program_storefront.php';
+require_once __DIR__.'/includes/club_program_recurrence.php';
 
 if(!isset($_SESSION['trener_id'])||!roleAtLeast('admin')){header('Location: login.php');exit;}
 
@@ -29,16 +30,27 @@ if(($_SERVER['REQUEST_METHOD']??'GET')==='POST'){
         }elseif($action==='add_payment_option'){
             $input=$_POST;$input['amount_minor']=offerAdminMinor((string)($_POST['amount']??''));$input['compare_at_amount_minor']=offerAdminMinor((string)($_POST['compare_at_amount']??''),true);$input['includes_vat']=null;$input['vat_rate_basis_points']=null;
             $created=clubProgramCreatePaymentOption($pdo,$actorId,$id,$input,$reason,$confirmed);$id=(int)$created['offer_id'];$message='Platební varianta byla přidána ke stejnému programu a stejné soupisce.';
+        }elseif($action==='configure_recurrence'){
+            if(!$confirmed)throw new InvalidArgumentException('Potvrďte změnu opakování.');
+            clubProgramRecurrenceConfigure($pdo,$actorId,$id,($_POST['recurrence_enabled']??'')==='1',(int)($_POST['horizon_years']??1),$reason);
+            $message='Pravidlo opakování bylo uloženo. Další datovaná nabídka vznikne automaticky při obnově nabídek.';
+        }elseif($action==='generate_recurrence'){
+            if(!$confirmed)throw new InvalidArgumentException('Potvrďte vytvoření nabídky pro další rok.');
+            $nextYear=clubProgramSchoolYearStart((new DateTimeImmutable('today',new DateTimeZone('Europe/Prague')))->format('Y-m-d'))+1;
+            $created=clubProgramRecurrenceGenerate($pdo,$nextYear);
+            if($created['errors']!==[])throw new ClubProgramRecurrenceException(implode(' ', $created['errors']));
+            $message='Obnova nabídek: vytvořeno '.$created['created'].', již existuje '.$created['skipped'].'.';
         }else throw new InvalidArgumentException('Neznámá akce nabídky.');
         $_SESSION['offer_admin_flash']=$message;header('Location: club_program_offers_admin.php?id='.$id,true,303);exit;
     }catch(Throwable$exception){
         if(!($exception instanceof InvalidArgumentException||$exception instanceof ClubProgramException||$exception instanceof ClubProgramStorefrontException||$exception instanceof ShopManualCatalogException))error_log('club_program_offers_admin.php: '.$exception->getMessage());
-        $errors[]=$exception instanceof InvalidArgumentException||$exception instanceof ClubProgramException||$exception instanceof ClubProgramStorefrontException||$exception instanceof ShopManualCatalogException?$exception->getMessage():'Operace selhala bez částečné změny.';
+        $errors[]=$exception instanceof InvalidArgumentException||$exception instanceof ClubProgramException||$exception instanceof ClubProgramStorefrontException||$exception instanceof ClubProgramRecurrenceException||$exception instanceof ShopManualCatalogException?$exception->getMessage():'Operace selhala bez částečné změny.';
     }
 }
 
 $success=(string)($_SESSION['offer_admin_flash']??'');unset($_SESSION['offer_admin_flash']);
 $offers=clubProgramAdminOffers($pdo);$selectedId=max(0,(int)($_GET['id']??0));$selected=null;foreach($offers as$offer)if((int)$offer['id']===$selectedId)$selected=$offer;
+$recurrence=null;if($selected!==null){$q=$pdo->prepare('SELECT enabled,horizon_years FROM club_program_recurrence_rules WHERE source_offer_id=?');$q->execute([$selectedId]);$recurrence=$q->fetch(PDO::FETCH_ASSOC)?:null;}
 $events=[];if($selected!==null){$statement=$pdo->prepare("SELECT e.*,t.jmeno AS actor_name FROM club_program_events e LEFT JOIN treneri t ON t.id=e.actor_id AND e.actor_type='trainer' WHERE e.offer_id=? ORDER BY e.id DESC LIMIT 50");$statement->execute([$selectedId]);$events=$statement->fetchAll(PDO::FETCH_ASSOC);foreach($events as&$event){$after=json_decode((string)$event['after_json'],true);$event['reason']=is_array($after)?(string)($after['_audit_reason']??''):'';}unset($event);}
 ?>
 <!doctype html>
@@ -60,6 +72,7 @@ $events=[];if($selected!==null){$statement=$pdo->prepare("SELECT e.*,t.jmeno AS 
 <div class="col-4"><label class="form-label">Kapacita</label><input class="form-control" type="number" min="1" max="100000" name="capacity" value="<?=offerAdminH($selected['capacity'])?>"></div><div class="col-4"><label class="form-label">Ročník od</label><input class="form-control" type="number" min="1900" max="<?=date('Y')?>" name="birth_year_from" value="<?=offerAdminH($selected['birth_year_from'])?>"></div><div class="col-4"><label class="form-label">Ročník do</label><input class="form-control" type="number" min="1900" max="<?=date('Y')?>" name="birth_year_to" value="<?=offerAdminH($selected['birth_year_to'])?>"></div>
 <div class="col-5"><label class="form-label">Stav</label><select class="form-select" name="status"><?php foreach(['draft'=>'koncept','active'=>'aktivní','closed'=>'uzavřená']as$key=>$label):?><option value="<?=$key?>" <?=$selected['status']===$key?'selected':''?>><?=$label?></option><?php endforeach;?></select></div><div class="col-7"><label class="form-label">Důvod změny</label><input class="form-control" name="reason" maxlength="1000" required></div><div class="col-12 d-flex justify-content-between"><label class="form-check"><input class="form-check-input" type="checkbox" name="confirmed" value="1" required> Potvrzuji auditovanou změnu</label><button class="btn btn-primary">Uložit nabídku</button></div>
 </form></div></div>
+<?php if(empty($selected['recurrence_source_offer_id'])):?><div class="card border-0 shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Automaticky opakovat v dalších školních letech</div><div class="card-body"><p class="small text-muted">Stejný produkt a soupiska zůstanou zachované. Každý rok vznikne nová datovaná varianta se zkopírovanou cenou, kapacitou a prodejním oknem. Před zveřejněním systém ověří platné klubové podmínky. Rok se odvodí z termínů.</p><form method="post" class="row g-2"><?=csrf_field()?><input type="hidden" name="action" value="configure_recurrence"><input type="hidden" name="offer_id" value="<?=$selectedId?>"><div class="col-6"><label class="form-label">Opakování</label><select class="form-select" name="recurrence_enabled"><option value="0" <?=empty($recurrence['enabled'])?'selected':''?>>Vypnuto</option><option value="1" <?=!empty($recurrence['enabled'])?'selected':''?>>Zapnuto</option></select></div><div class="col-6"><label class="form-label">Roků dopředu</label><select class="form-select" name="horizon_years"><option value="1" <?=((int)($recurrence['horizon_years']??1)===1)?'selected':''?>>1</option><option value="2" <?=((int)($recurrence['horizon_years']??1)===2)?'selected':''?>>2</option></select></div><div class="col-12"><label class="form-label">Důvod změny</label><input class="form-control" name="reason" maxlength="1000" required></div><div class="col-12 d-flex justify-content-between"><label class="form-check"><input class="form-check-input" type="checkbox" name="confirmed" value="1" required> Potvrzuji</label><button class="btn btn-outline-primary">Uložit pravidlo</button></div></form><form method="post" class="mt-3"><?=csrf_field()?><input type="hidden" name="action" value="generate_recurrence"><input type="hidden" name="offer_id" value="<?=$selectedId?>"><input type="hidden" name="confirmed" value="1"><button class="btn btn-sm btn-outline-secondary">Obnovit nabídky na příští školní rok nyní</button></form></div></div><?php endif;?>
 <?php if($selected['status']!=='closed'):?>
 <div class="card border-primary shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Přidat platební variantu ke stejné skupině</div><div class="card-body"><p class="small text-muted">Nová nabídka použije stejný program, sezonu, produkt a soupisku. Registraci druhého pololetí můžete otevřít okamžitě nastavením „Prodej od“ na dnešek.</p>
 <form method="post" class="row g-2"><?=csrf_field()?><input type="hidden" name="action" value="add_payment_option"><input type="hidden" name="offer_id" value="<?=$selectedId?>"><input type="hidden" name="status" value="active">

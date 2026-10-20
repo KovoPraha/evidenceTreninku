@@ -62,7 +62,7 @@ try {
     echo json_encode(['ok'=>true,'created'=>$created,'restored'=>$restored,'private_backup_verified'=>true,
         'web_copy_verified'=>true,
         'access'=>['app_root'=>$appRoot,'key_path'=>$keyFile,
-            'runtime_uid'=>function_exists('posix_geteuid')?posix_geteuid():null,
+            'runtime_uid'=>function_exists('posix_geteuid')?call_user_func('posix_geteuid'):null,
             'key_uid'=>fileowner($keyFile),'key_gid'=>filegroup($keyFile),
             'config_uid'=>fileowner($appRoot.'/config.php'),'config_gid'=>filegroup($appRoot.'/config.php')]],JSON_THROW_ON_ERROR).PHP_EOL;
 }catch(Throwable $e){

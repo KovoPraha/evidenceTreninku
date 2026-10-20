@@ -125,8 +125,11 @@ function clubFinanceBalanceForAthlete(PDO $pdo,int $sportovecId,?DateTimeImmutab
     $today=$asOf->format('Y-m-d');$settings=clubFinanceSettings($pdo);
     $items=[];$open=0;$overdue=0;
     if (clubFinanceTableExists($pdo,'club_member_charges')) {
-        $allocationJoin=clubFinanceTableExists($pdo,'club_finance_allocations')?' LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id':' ';
-        $allocationSelect=clubFinanceTableExists($pdo,'club_finance_allocations')?'COALESCE(a.allocated_minor,0)':'0';
+        $hasAthleteAllocations=clubFinanceTableExists($pdo,'club_finance_allocations');
+        $hasPayerAllocations=clubFinanceTableExists($pdo,'member_payer_receipt_allocations');
+        $allocationJoin=($hasAthleteAllocations?' LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id':' ')
+            .($hasPayerAllocations?' LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY charge_id) pa ON pa.charge_id=c.id':' ');
+        $allocationSelect=($hasAthleteAllocations?'COALESCE(a.allocated_minor,0)':'0').'+'.($hasPayerAllocations?'COALESCE(pa.allocated_minor,0)':'0');
         $s=$pdo->prepare("SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,$allocationSelect AS allocated_minor FROM club_member_charges c $allocationJoin WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id");
         $s->execute([$sportovecId]);
         foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -191,12 +194,12 @@ function clubFinanceAllocateCreditToCharge(PDO $pdo,int $sportovecId,int $charge
     if (!$pdo->inTransaction()||$sportovecId<1||$chargeId<1) throw new InvalidArgumentException('Přidělení přeplatku vyžaduje otevřenou transakci a předpis.');
     if (!clubFinanceTableExists($pdo,'club_finance_receipts')) return 0;
     require_once __DIR__.'/member_charge_admin.php';
-    $s=$pdo->prepare("SELECT amount_minor,status FROM club_member_charges WHERE id=? AND sportovec_id=? AND currency='CZK'");$s->execute([$chargeId,$sportovecId]);$charge=$s->fetch(PDO::FETCH_ASSOC);
+    $lockSuffix=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    $s=$pdo->prepare("SELECT amount_minor,status FROM club_member_charges WHERE id=? AND sportovec_id=? AND currency='CZK'".$lockSuffix);$s->execute([$chargeId,$sportovecId]);$charge=$s->fetch(PDO::FETCH_ASSOC);
     if (!$charge||$charge['status']!=='pending') return 0;
-    $s=$pdo->prepare("SELECT id,status FROM payments WHERE payable_type='member_charge' AND payable_id=?");$s->execute([$chargeId]);$payment=$s->fetch(PDO::FETCH_ASSOC);
+    $s=$pdo->prepare("SELECT id,status FROM payments WHERE payable_type='member_charge' AND payable_id=?".$lockSuffix);$s->execute([$chargeId]);$payment=$s->fetch(PDO::FETCH_ASSOC);
     if (!$payment||$payment['status']!=='pending') throw new ClubFinanceException('Předpis nemá konzistentní čekající platbu.');
-    $s=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM club_finance_allocations WHERE charge_id=?');$s->execute([$chargeId]);
-    $need=max(0,(int)$charge['amount_minor']-(int)$s->fetchColumn());$applied=0;
+    $need=max(0,(int)$charge['amount_minor']-clubFinanceChargeAllocatedMinor($pdo,$chargeId));$applied=0;
     foreach (clubFinanceAvailableReceipts($pdo,$sportovecId,null,true) as $receipt) {
         if ($need<1) break;
         $part=min($need,$receipt['amount_minor']);
@@ -214,21 +217,35 @@ function clubFinanceAllocateCreditToCharge(PDO $pdo,int $sportovecId,int $charge
 
 function clubFinanceChargeAllocatedMinor(PDO $pdo,int $chargeId):int
 {
-    if (!clubFinanceTableExists($pdo,'club_finance_allocations')) return 0;
-    $s=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM club_finance_allocations WHERE charge_id=?');$s->execute([$chargeId]);
-    return (int)$s->fetchColumn();
+    $total=0;
+    foreach (['club_finance_allocations','member_payer_receipt_allocations'] as $table) {
+        if (!clubFinanceTableExists($pdo,$table)) continue;
+        $s=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM '.$table.' WHERE charge_id=?');$s->execute([$chargeId]);
+        $total+=(int)$s->fetchColumn();
+    }
+    return $total;
 }
 
 function clubFinanceAssertBankReferenceUnused(PDO $pdo,string $reference,int $amountMinor,string $paidOn):void
 {
     // Serialize manual receipts with automatic/manual Fio confirmation.
     $lockSuffix=$pdo->inTransaction()&&$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    // Every receipt writer calls this inside its transaction. The shared row
+    // serializes references across athlete and payer tables, which cannot have
+    // one cross-table UNIQUE index in the legacy schema.
+    if ($lockSuffix!==''&&clubFinanceTableExists($pdo,'club_finance_settings')) {
+        if (!$pdo->query('SELECT id FROM club_finance_settings WHERE id=1 FOR UPDATE')->fetchColumn()) throw new ClubFinanceException('Chybí řádek finančního nastavení pro bezpečné ověření bankovní reference.');
+    }
     if (clubFinanceTableExists($pdo,'fio_account_movements')) {
         $movement=$pdo->prepare('SELECT amount_minor,currency,booked_on FROM fio_account_movements WHERE fio_movement_id=?'.$lockSuffix);$movement->execute([$reference]);$row=$movement->fetch(PDO::FETCH_ASSOC);
         if ($row&&((int)$row['amount_minor']!==$amountMinor||(string)$row['currency']!=='CZK'||(string)$row['booked_on']!==$paidOn)) throw new ClubFinanceException('Bankovní reference existuje, ale datum nebo částka nesouhlasí s Fio výpisem.');
     }
     $duplicate=$pdo->prepare('SELECT 1 FROM club_finance_receipts WHERE reference=?'.$lockSuffix);$duplicate->execute([$reference]);
     if ($duplicate->fetchColumn()) throw new ClubFinanceException('Tato bankovní reference již byla zapsána. Platbu nelze zaúčtovat znovu.');
+    if (clubFinanceTableExists($pdo,'member_payer_receipts')) {
+        $duplicate=$pdo->prepare('SELECT 1 FROM member_payer_receipts WHERE reference=?'.$lockSuffix);$duplicate->execute([$reference]);
+        if ($duplicate->fetchColumn()) throw new ClubFinanceException('Tato bankovní reference již patří rodinné platbě.');
+    }
     if (clubFinanceColumnExists($pdo,'payments','bank_movement_id')) {
         $matched=$pdo->prepare('SELECT 1 FROM payments WHERE bank_movement_id=?'.$lockSuffix);$matched->execute([$reference]);
         if ($matched->fetchColumn()) throw new ClubFinanceException('Tato bankovní platba již byla přiřazena jiné úhradě.');

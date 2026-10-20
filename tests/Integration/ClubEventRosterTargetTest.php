@@ -42,6 +42,20 @@ final class ClubEventRosterTargetTest extends TestCase
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
     }
 
+    public function testGroupTargetIncludesChildRosterAndKeepsSingleRegistration(): void
+    {
+        $pdo=$this->database();
+        $year=(int)date('Y')+1;
+        $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(203,301,'PARENT','Závodní tým','silnice','vše','active',7)");
+        $pdo->exec("CREATE TABLE club_team_edges(parent_team_id INTEGER,child_team_id INTEGER,valid_from TEXT,valid_to TEXT);INSERT INTO club_team_edges VALUES(203,201,'$year-01-01',NULL),(203,202,'$year-01-01',NULL)");
+        $eventId=$this->openEvent($pdo,[203],2);
+        $result=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        $again=\clubEventRegisterParticipant($pdo,$eventId,10,100,'2026.1',true);
+        self::assertSame($result['id'],$again['id']);
+        self::assertSame('[203]',$pdo->query('SELECT eligibility_team_ids_snapshot FROM club_event_registrations')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_event_registrations')->fetchColumn());
+    }
+
     public function testInactiveExpiredAndSiblingMembershipsFailBeforeAnyRegistrationWrite(): void
     {
         $pdo = $this->database();

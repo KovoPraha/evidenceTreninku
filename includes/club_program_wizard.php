@@ -30,7 +30,13 @@ function clubProgramWizardReferenceData(PDO $pdo):array
         . "AND NOT EXISTS(SELECT 1 FROM club_program_offers o WHERE o.variant_id=v.id) "
         . 'ORDER BY COALESCE(pub.public_name,p.name),v.sku,v.id'
     )->fetchAll(PDO::FETCH_ASSOC);
-    return['seasons'=>kisRosterSeasons($pdo),'teams'=>kisRosterTeams($pdo),'categories'=>array_values(array_map('strval',$categories)),'terms'=>$terms,'products'=>$products];
+    $teams=kisRosterTeams($pdo);
+    if(clubProgramColumnExists($pdo,'club_teams','team_kind')){
+        $standing=$pdo->query("SELECT t.id,t.season_id,t.code,t.name,t.status,t.team_kind,'' AS season_name FROM club_teams t WHERE t.season_id IS NULL AND t.status='active' AND t.team_kind='roster' ORDER BY t.name,t.id")->fetchAll(PDO::FETCH_ASSOC);
+        $known=array_fill_keys(array_map(static fn(array$row):int=>(int)$row['id'],$teams),true);
+        foreach($standing as$row)if(!isset($known[(int)$row['id']]))$teams[]=$row;
+    }
+    return['seasons'=>kisRosterSeasons($pdo),'teams'=>$teams,'categories'=>array_values(array_map('strval',$categories)),'terms'=>$terms,'products'=>$products];
 }
 
 /** @return array<string,mixed> */
@@ -132,6 +138,12 @@ function clubProgramWizardCreate(
             $text=clubProgramWizardTermText($pdo,$purpose,$input);
             clubProgramTermsConfigureInTransaction($pdo,$actorId,'program',(int)$program['id'],$purpose,$text,true);
         }
+        if(!empty($input['repeat_annually'])){
+            if(!clubProgramRuntimeTableExists($pdo,'club_program_recurrence_rules'))throw new ClubProgramWizardException('Databáze ještě nepodporuje opakování nabídek.');
+            if($amount<1||!clubProgramTermsComplete(clubProgramTermsEffective($pdo,(int)$program['id'],(int)$offer['id'],true)))throw new ClubProgramWizardException('Opakování vyžaduje kladnou cenu a schválené podmínky.');
+            $pdo->prepare('INSERT INTO club_program_recurrence_rules(source_offer_id,enabled,horizon_years,updated_by_trainer_id) VALUES (?,1,1,?)')->execute([(int)$offer['id'],$actorId]);
+            clubProgramEvent($pdo,(int)$program['id'],(int)$offer['id'],'trainer',$actorId,'configure_recurrence',null,['enabled'=>true,'horizon_years'=>1,'_audit_reason'=>$reason]);
+        }
         shopManualCatalogEvent($pdo,$productId,$variantId,$actorId,'create_program_wizard',null,[
             'product_id'=>$productId,'variant_id'=>$variantId,'program_id'=>(int)$program['id'],'offer_id'=>(int)$offer['id'],
             'season_id'=>$seasonId,'team_id'=>$teamId,'category_path'=>$category,'image_id'=>$imageId,
@@ -155,13 +167,17 @@ function clubProgramWizardTargetInTransaction(PDO $pdo,int $actorId,array $input
     if(!$pdo->inTransaction())throw new LogicException('Výběr soupisky vyžaduje otevřenou transakci.');
     $mode=(string)($input['team_mode']??'existing');
     if($mode==='existing'){
-        $teamId=(int)($input['team_id']??0);$sql="SELECT t.id,t.season_id FROM club_teams t JOIN club_seasons s ON s.id=t.season_id WHERE t.id=? AND t.status='active' AND s.status='active'";
+        $teamId=(int)($input['team_id']??0);$sql="SELECT t.id,t.season_id FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id WHERE t.id=? AND t.status='active' AND (s.status='active' OR t.season_id IS NULL)";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
         $statement=$pdo->prepare($sql);$statement->execute([$teamId]);$team=$statement->fetch(PDO::FETCH_ASSOC);
         if(!$team)throw new ClubProgramWizardException('Vybraná aktivní soupiska nebyla nalezena.');
-        return[(int)$team['season_id'],(int)$team['id']];
+        return[$team['season_id']===null?clubProgramTechnicalSeasonInTransaction($pdo,$actorId):(int)$team['season_id'],(int)$team['id']];
     }
     if($mode!=='new')throw new InvalidArgumentException('Vyberte existující nebo novou soupisku.');
+    if(clubProgramColumnExists($pdo,'club_teams','team_kind')){
+        $team=kisRosterCreateStandingTeam($pdo,$actorId,(string)($input['team_code']??''),(string)($input['team_name']??''),'roster',$reason);
+        return[clubProgramTechnicalSeasonInTransaction($pdo,$actorId),(int)$team['id']];
+    }
     $season=kisRosterCreateSeasonInTransaction($pdo,$actorId,(string)($input['season_code']??''),(string)($input['season_name']??''),(string)($input['season_starts_on']??''),(string)($input['season_ends_on']??''),(string)($input['season_type']??''));
     $team=kisRosterCreateTeamInTransaction($pdo,(int)$season['id'],$actorId,(string)($input['team_code']??''),(string)($input['team_name']??''),(string)($input['team_discipline']??''),(string)($input['team_age_label']??''),$reason,null);
     return[(int)$season['id'],(int)$team['id']];

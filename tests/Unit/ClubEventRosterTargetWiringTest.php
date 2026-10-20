@@ -27,7 +27,8 @@ final class ClubEventRosterTargetWiringTest extends TestCase
         self::assertStringContainsString('function clubEventRosterEligibility', $service);
         self::assertStringContainsString('clubEventRosterEligibilityJson($eligibility)', $registration);
         self::assertStringContainsString("\$action==='set_roster_targets'", $admin);
-        self::assertStringContainsString("name=\"team_ids[]\"", $admin);
+        self::assertStringContainsString('rosterTargetSelectorHtml($pdo', $admin);
+        self::assertStringContainsString('kisRosterPersonTargetIds', $service);
         self::assertStringContainsString('clubEventRosterEligibility($pdo', $portal);
     }
 }

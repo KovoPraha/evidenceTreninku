@@ -81,6 +81,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'kis_sync_center.php', 'label' => 'KIS centrum', 'description' => 'Import a konflikty osob', 'icon' => 'arrow-repeat'],
                     ['route' => 'kis_person_import_admin.php', 'label' => 'Osoby ze starého KIS', 'description' => 'Úplné osoby, kontakty a zdrojové vazby', 'icon' => 'person-lines-fill'],
                     ['route' => 'kis_rosters_admin.php', 'label' => 'Týmy a soupisky', 'description' => 'Sezony, týmy a členství', 'icon' => 'people-fill'],
+                    ['route' => 'kis_roster_hierarchy_admin.php', 'label' => 'Skupiny a soupisky', 'description' => 'Hierarchie a časová platnost', 'icon' => 'diagram-3'],
                     ['route' => 'kis_legacy_rosters_admin.php', 'label' => 'Soupisky ze starého KIS', 'description' => 'Historie 2025/26 a případy k rozhodnutí', 'icon' => 'clipboard-check'],
                     ['route' => 'kis_current_rosters_admin.php', 'label' => 'Převod soupisek 2026/27', 'description' => 'Aktivní přiřazení a nejasné vazby', 'icon' => 'arrow-right-circle'],
                     ['route' => 'kis_roster_settings_admin.php', 'label' => 'Správa struktur soupisek', 'description' => 'Opravy a uzavírání sezon a týmů', 'icon' => 'pencil-square'],
@@ -176,6 +177,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_payments_admin.php', 'label' => 'Platby a vratky', 'description' => 'Úkoly čekající na ověření v bance', 'icon' => 'cash-coin'],
                     ['route' => 'eshop_payment_methods_admin.php', 'label' => 'Způsoby platby', 'description' => 'QR převod nebo karta přes SumUp podle nabídky', 'icon' => 'credit-card-2-front'],
                     ['route' => 'eshop_fio_admin.php', 'label' => 'Fio párování', 'description' => 'Návrhy bankovních shod', 'icon' => 'bank'],
+                    ['route' => 'member_payer_receipts_admin.php', 'label' => 'Rodinné platby', 'description' => 'Ruční rozdělení bankovní platby mezi předpisy dětí', 'icon' => 'people'],
                     ['route' => 'eshop_bank_admin.php', 'label' => 'Bankovní účet e-shopu', 'description' => 'IBAN, BIC a splatnost', 'icon' => 'credit-card'],
                     ['route' => 'member_charges_admin.php', 'label' => 'Klubové platby', 'description' => 'Stav členských plateb', 'icon' => 'cash-stack'],
                     ['route' => 'member_fee_plans_admin.php', 'label' => 'Plány příspěvků', 'description' => 'Měsíční předpisy podle platných soupisek', 'icon' => 'calendar2-check'],
@@ -270,7 +272,7 @@ function staffRouteOwners(): array
     $additional = [
         'coach' => [
             'ajax_denny_rozvrh.php','ajax_dostupnost_sportovist.php','ajax_nova_oznameni.php',
-            'ajax_podskupiny.php','ajax_sportovci.php','ajax_treninky.php','ajax_update_plan.php',
+            'ajax_podskupiny.php','ajax_roster_target_selector.php','ajax_sportovci.php','ajax_treninky.php','ajax_update_plan.php',
             'ajax_update_poznamka.php','duplikovat_trenink.php','edit_trenink.php','generuj_story.php',
             'google_sheets_linky.php','individualni_lekce_form.php','nastaveni_story.php','nacti_podskupiny.php','nacti_skupiny.php',
             'planovany_trenink_form.php','training_rsvps_admin.php','prehled_podskupin.php','prehled_popisu.php','prehled_skupina.php',
@@ -338,6 +340,7 @@ function staffRouteDelegates(): array
 {
     return [
         'ajax_sportovci.php' => ['finance_manager'],
+        'ajax_roster_target_selector.php' => ['sports_lead', 'program_coordinator', 'finance_manager'],
         'edit_trenink.php' => ['sports_lead'],
         'update_trenink.php' => ['coach'],
         'smazat_trenink.php' => ['sports_lead'],
