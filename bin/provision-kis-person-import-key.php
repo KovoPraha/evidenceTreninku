@@ -46,7 +46,11 @@ try {
     if(!is_file($backupFile))$write($backupFile,$bytes);
     if(!hash_equals($bytes,(string)file_get_contents($backupFile)))throw new RuntimeException('Key backup differs; refusing to replace either copy.');
     if(!chmod($keyFile,0600) || !chmod($backupFile,0600))throw new RuntimeException('Cannot protect key files.');
-    echo json_encode(['ok'=>true,'created'=>$created,'restored'=>$restored,'private_backup_verified'=>true],JSON_THROW_ON_ERROR).PHP_EOL;
+    echo json_encode(['ok'=>true,'created'=>$created,'restored'=>$restored,'private_backup_verified'=>true,
+        'access'=>['app_root'=>$appRoot,'key_path'=>$keyFile,
+            'runtime_uid'=>function_exists('posix_geteuid')?posix_geteuid():null,
+            'key_uid'=>fileowner($keyFile),'key_gid'=>filegroup($keyFile),
+            'config_uid'=>fileowner($appRoot.'/config.php'),'config_gid'=>filegroup($appRoot.'/config.php')]],JSON_THROW_ON_ERROR).PHP_EOL;
 }catch(Throwable $e){
     // Exception details may contain connection parameters; never print them.
     fwrite(STDERR,"KIS archive key provisioning failed; no existing key was replaced.\n");
