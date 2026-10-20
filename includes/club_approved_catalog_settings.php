@@ -54,15 +54,21 @@ function clubApprovedCatalogSettings(PDO $pdo,int $actorId,bool $apply):array
         $canonicalQuery=$pdo->prepare("SELECT v.amount_minor FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id "
             ."JOIN shop_variants v ON v.id=o.variant_id JOIN shop_products sp ON sp.id=o.product_id "
             ."WHERE p.code='KROUZKY-2627-PUMPTRACK' AND o.purchase_option=? AND sp.origin='manual'");
+        $pumptrackCatalogStatus=null;
         foreach(clubApprovedPumptrackPrices()as$target){
             $variantQuery->execute([$target['variant_id'],$target['product_id']]);$variant=$variantQuery->fetch(PDO::FETCH_ASSOC);
+            $productStatus=$variant?(string)$variant['product_status']:'';
+            $variantStatus=$variant?(string)$variant['catalog_status']:'';
             if(!$variant||(string)$variant['sku']!==$target['sku']||(string)$variant['origin']!=='import'
                 ||(string)$variant['product_origin']!=='import'||(string)$variant['currency']!=='CZK'
                 ||(string)$variant['price_mode']!=='fixed'||(string)$variant['unit_code']!=='piece'
-                ||(string)$variant['catalog_status']!=='active'||(string)$variant['product_status']!=='active'
+                ||!in_array($productStatus,['active','inactive'],true)||$variantStatus!==$productStatus
+                ||($pumptrackCatalogStatus!==null&&$productStatus!==$pumptrackCatalogStatus)
                 ||(string)$variant['offer_type']!=='goods'||stripos((string)$variant['product_name'],'Pumptrack')===false
+                ||($productStatus==='inactive'&&((int)$variant['amount_minor']!==$target['new_minor']||$variant['compare_at_amount_minor']!==null))
                 ||!in_array((int)$variant['amount_minor'],[$target['old_minor'],$target['new_minor']],true))
                 throw new ClubApprovedCatalogSettingsException('Identita nebo cena importovaného Pumptracku se změnila: '.$target['variant_id']);
+            $pumptrackCatalogStatus=$productStatus;
             $canonicalQuery->execute([$target['option']]);$canonicalPrices=$canonicalQuery->fetchAll(PDO::FETCH_COLUMN);
             if(count($canonicalPrices)!==1||(int)$canonicalPrices[0]!==$target['new_minor'])
                 throw new ClubApprovedCatalogSettingsException('Kanonická cena Pumptracku není jednoznačná: '.$target['option']);
