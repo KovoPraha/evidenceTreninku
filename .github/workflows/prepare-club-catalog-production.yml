@@ -1,0 +1,140 @@
+name: Připravit kroužky 2026/27
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro kontrolovaný zápis napište přesně PRIPRAVIT-KROUZKY-2026-27'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  prepare:
+    name: Schválené podmínky, skupiny a katalog
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 30
+    steps:
+      - name: Ověřit cíl a výslovné potvrzení
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          test "$POTVRZENI" = 'PRIPRAVIT-KROUZKY-2026-27'
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+
+      - name: Stáhnout aktuální commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Ověřit nasazený commit
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$REMOTE_DIR/var/deployment.json" /tmp/kis-club-deployment.json
+          test "$(jq -r '.sha' /tmp/kis-club-deployment.json)" = "$GITHUB_SHA"
+
+      - name: Zálohovat databázi před prvním zápisem
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/db-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/db-backup.php"
+          cat > /tmp/run-club-preparation-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require __DIR__ . '/db-backup.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-club-preparation-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-club-preparation-backup.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-club-preparation-backup.php'" | tee /tmp/kis-club-backup.json
+          jq -e '.ok == true and .tables > 0 and (.sha256|length) == 64' /tmp/kis-club-backup.json >/dev/null
+
+      - name: Náhled a opakovatelná aktivace schválených nastavení
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          run_stage() {
+            local label="$1" script="$2" call="$3" confirmation="$4" assertion="$5"
+            {
+              printf '%s\n' '<?php'
+              printf "putenv('APP_HOST=%s');\n" "$APP_HOST"
+              printf "putenv('APP_ROOT=%s');\n" "$REMOTE_DIR"
+              if [ -n "$confirmation" ]; then printf "putenv('%s');\n" "$confirmation"; fi
+              printf "require '%s/bin/%s';\n" "$REMOTE_DIR" "$script"
+              printf '%s\n' "$call"
+            } > /tmp/run-club-preparation-stage.php
+            production_retry "${SCP[@]}" /tmp/run-club-preparation-stage.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-club-preparation-stage.php"
+            "${SSH[@]}" "php '$DEPLOY_BASE/run-club-preparation-stage.php'" | tee "/tmp/kis-club-$label.json"
+            jq -e "$assertion" "/tmp/kis-club-$label.json" >/dev/null
+          }
+          run_stage terms-preview activate-club-program-terms.php 'clubProgramTermsActivationMain();' '' '.programs >= 26 and .conflicts == [] and .applied == false'
+          run_stage terms-apply activate-club-program-terms.php 'clubProgramTermsActivationMain();' 'CLUB_PROGRAM_TERMS_CONFIRM=AKTIVOVAT-KROUZKY-2026-27' '.programs >= 26 and .conflicts == [] and .applied == true'
+          run_stage initial-settings-preview apply-approved-club-settings.php 'clubApprovedCatalogSettingsMain();' '' '.applied == false and .capacity_offers >= 74 and .price_variants == 2'
+          run_stage initial-settings-apply apply-approved-club-settings.php 'clubApprovedCatalogSettingsMain();' 'CLUB_APPROVED_SETTINGS_CONFIRM=NASTAVIT-KROUZKY-2026-27' '.applied == true and .capacity_offers >= 74 and .price_variants == 2'
+          run_stage tocnaci-preview split-tocnaci.php 'clubTocnaciSplitMain();' '' '.mode == "dry-run"'
+          run_stage tocnaci-apply split-tocnaci.php 'clubTocnaciSplitMain();' 'CLUB_TOCNACI_SPLIT_CONFIRM=ROZDELIT-TOCNACI-2026-27' '.mode == "apply" and (.result.targets | length) == 2'
+          run_stage kunratice-preview prepare-kunratice.php "prepareKunraticeMain(['prepare-kunratice.php','--dry-run']);" '' '.planned_group_count == 2 and .publication == "draft"'
+          run_stage kunratice-apply prepare-kunratice.php "prepareKunraticeMain(['prepare-kunratice.php','--apply']);" 'KUNRATICE_SPLIT_CONFIRM=PRIPRAVIT-KUNRATICE-2026-27' '(.groups | length) == 2'
+          run_stage settings-preview apply-approved-club-settings.php 'clubApprovedCatalogSettingsMain();' '' '.applied == false and .capacity_offers >= 74 and .price_variants == 2'
+          run_stage settings-apply apply-approved-club-settings.php 'clubApprovedCatalogSettingsMain();' 'CLUB_APPROVED_SETTINGS_CONFIRM=NASTAVIT-KROUZKY-2026-27' '.applied == true and .capacity_offers >= 74 and .price_variants == 2'
+          run_stage mapping-preview unify-club-catalog.php 'clubCatalogUnificationMain();' '' '.applied == false and .targets == 47'
+          run_stage mapping-apply unify-club-catalog.php 'clubCatalogUnificationMain();' 'CLUB_CATALOG_UNIFY_CONFIRM=SJEDNOTIT-KROUZKY-2026-27' '.applied == true and .targets == 47 and (.created + .already_linked) == 47'
+          run_stage settings-check apply-approved-club-settings.php 'clubApprovedCatalogSettingsMain();' '' '.applied == false and .capacity_changed == 0 and .price_changed == 0'
+          run_stage mapping-check unify-club-catalog.php 'clubCatalogUnificationMain();' '' '.applied == false and .targets == 47 and .already_linked == 47'
+
+      - name: Uklidit dočasné skripty
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-club-preparation-*.php /tmp/kis-club-*.json
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-club-preparation-backup.php' '$DEPLOY_BASE/run-club-preparation-stage.php'"
+          fi
