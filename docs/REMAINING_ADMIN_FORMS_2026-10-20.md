@@ -48,8 +48,11 @@ Vizuálně zkontrolovány trénink, závod, skupiny, sportoviště, bankovní ú
   dostupnou přichycenou ukládací lištu;
 - zachování vyplněného tréninku při chybějící soupisce, následné doplnění
   `LOCALHOST Dráha 2026`, úspěšné uložení a načtení editoru tréninku #1
-  s totožnou náplní a sjednoceným bannerem;
+  s totožnou náplní a sjednoceným bannerem; následné uložení editované náplně
+  a kontrolu jejího načtení;
 - kartu člena, starší detail sportovce a program místní skupiny;
+- editor skupiny při 390 × 844 px: popisky nad poli, tabulka má vlastní
+  vodorovný posun, celá stránka nepřetéká;
 - tmavý režim jednoduchého editoru, návrat do světlého režimu a reset viewportu.
 
 Lokální výsledek B30 zapsán přes `testovaci_scenare.php` jako PARTIAL,
@@ -60,15 +63,37 @@ Lokální důkazy jsou v ignorovaném `outputs/unified-admin-shop-20261020/`:
 `remaining-forms-browser-checks.json`, `remaining-forms-training.jpg`,
 `remaining-forms-mobile.jpg`, `remaining-forms-dark.jpg`.
 
-PHPUnit: **1 138 testů / 25 707 kontrol, PASS**.
+Konečný PHPUnit: **1 138 testů / 25 708 kontrol, PASS**.
 PHP lint změněných souborů, `node --check assets/app-ui.js`
 a `git diff --check` prošly. Regresní test hlídá kanonické cesty hlavičky;
 starší test kontrastu nyní ověřuje společné theme-aware záhlaví.
 
 ## Produkční stav
 
-Nasazení této navazující změny bude doloženo samostatným záznamem
-s přesným release SHA, výsledkem standardního CI/deploy a živou kontrolou.
-Předchozí nasazený release `175f92c7a59294acff7e15fe09cbed258707fa2e`
-je doložen v `UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md`.
-Plné UAT zůstává otevřené.
+PR [#144](https://github.com/KovoPraha/evidenceTreninku/pull/144) je sloučený.
+Aplikační release **`246dee2a4df5dc3152c1a769a9af128b87a91092`** nasadil
+[běh 39496342888](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39496342888).
+Záloha, 106 migrací, aktivace release, kontrola zákazu přístupu k soukromému
+klíči a HTTP smoke test prošly. Diagnostika `uat_readiness_admin.php`
+v Chrome nezávisle potvrdila totožný SHA a deploy `2026-10-20T20:59:25+00:00`.
+
+[CI 39496114603](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39496114603)
+prošlo: PHPUnit v Linuxu **1 138 testů / 25 700 kontrol**, MariaDB 10.3 i 11.4.
+CodeQL prošel v
+[běhu 39496109424](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39496109424).
+Lokální počet kontrol se liší kvůli podmíněným kontrolám prostředí.
+
+Produkční Chrome po nasazení načetl osm stránek: zadání tréninku,
+další činnost, plánovaný trénink, záznam jízdy, skupiny, podskupiny,
+správu sportovců a audit log. Nebyly zachyceny PHP chyby ani přetékání celé
+stránky. Trénink má bílé panely, modré záhlaví a zelené ukládání.
+Přepnutí Finance → Registrář ze záznamu jízdy skutečně funguje;
+akce odhlášení i přepnutí mají kořenové cesty. Audit log má správný titulek
+a mobilní viewport. Produkční data nebyla editována; měnil se pouze aktivní
+pracovní kontext relace a na konci byl vrácen katalog.
+
+Produkční důkazy jsou v místním ignorovaném podadresáři `production/`:
+`remaining-forms-training.jpg`, `remaining-forms-release.jpg`,
+`remaining-forms-checks.json`. Pozdější aktualizace tohoto reportu a aktuálních
+předání je pouze dokumentace; aplikační SHA výše zůstává identitou release.
+Plné UAT zůstává otevřené, `uat_schvaleno=false`, `importovat_krouzky=false`.
