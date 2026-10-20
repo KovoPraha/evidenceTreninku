@@ -83,7 +83,7 @@ if($batch) {
 <?php include __DIR__.'/hlavicka.php'; ?>
 <main class="container py-4"><h1>Osoby a kontakty ze starého KIS</h1>
 <?php if($error): ?><div class="alert alert-danger"><?=kpiH($error)?></div><?php endif; ?>
-<?php if($error && str_contains($error,'klíč archivu')): $keyPath=dirname(__DIR__).'/data/.kis-secrets/kis-person-import.json'; ?>
+<?php if($error && str_contains($error,'klíč archivu')): $keyPath=__DIR__.'/var/private/kis-person-import.php'; ?>
 <details><summary>Diagnostika dostupnosti archivu (bez tajných údajů)</summary><pre><?=kpiH(json_encode([
     'app_root'=>__DIR__,'key_path'=>$keyPath,
     'runtime_uid'=>function_exists('posix_geteuid')?posix_geteuid():null,

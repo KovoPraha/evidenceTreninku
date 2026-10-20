@@ -239,7 +239,7 @@ jobs:
           EOF
           "${SCP[@]}" /tmp/run-kis-person-key.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-kis-person-key.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-kis-person-key.php'" | tee /tmp/kis-person-key-result.json
-          jq -e '.ok == true and .private_backup_verified == true' /tmp/kis-person-key-result.json >/dev/null
+          jq -e '.ok == true and .private_backup_verified == true and .web_copy_verified == true' /tmp/kis-person-key-result.json >/dev/null
           "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-kis-person-key.php' '$DEPLOY_BASE/provision-kis-person-import-key.php'"
 
       - name: Připravit kompletní release mimo webroot
@@ -379,6 +379,12 @@ jobs:
           grep -Eq '^APPLY summary: candidates=[0-9]+, already_private=[0-9]+, missing=[0-9]+, errors=0$' /tmp/private-migration.log
           "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-deploy-cleanup.php' '$DEPLOY_BASE/run-private-migration.php'"
           echo '✅ Odstraněny byly jen manifestem určené staré soubory; citlivé přílohy jsou mimo webroot.'
+
+      - name: Ověřit zákaz HTTP přístupu ke klíči archivu
+        run: |
+          KOD=$(curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 15 --max-time 45 "$WEB_URL/var/private/kis-person-import.php") || KOD=0
+          [ "$KOD" = '403' ] || [ "$KOD" = '404' ]
+          echo "✅ Konfigurace klíče není dostupná přes HTTP ($KOD)."
 
       - name: HTTP smoke test bez tajného tokenu
         run: |

@@ -7,7 +7,7 @@ require_once __DIR__.'/kis_person_cutover.php';
 const KIS_PERSON_IMPORT_CONTRACT = 'kis-full-person-v1';
 const KIS_PERSON_IMPORT_LIMIT = 12000000;
 
-/** Dedicated archive keys live outside the application and have a private backup.
+/** Web-readable config is HTTP-denied; the original and backup stay outside the app.
  * Keep shared keys readable too, so later configuration cannot strand old archives.
  */
 function kisPersonArchiveConfig(?array $override=null, ?string $privatePath=null): array
@@ -15,14 +15,19 @@ function kisPersonArchiveConfig(?array $override=null, ?string $privatePath=null
     if($override!==null) return personSensitiveConfig($override);
     $shared=null;
     try {$shared=personSensitiveConfig();} catch(PersonSensitiveException) {}
-    $path=$privatePath??dirname(__DIR__,2).'/data/.kis-secrets/kis-person-import.json';
+    $path=$privatePath??dirname(__DIR__).'/var/private/kis-person-import.php';
     if(!is_file($path)) {
         if($shared!==null)return $shared;
         throw new PersonSensitiveException('Šifrovací klíč archivu KIS není dostupný.');
     }
-    $bytes=file_get_contents($path,false,null,0,16385);
-    if(!is_string($bytes) || strlen($bytes)>16384)throw new PersonSensitiveException('Neplatná konfigurace archivu KIS.');
-    $dedicated=personSensitiveConfig(json_decode($bytes,true,16,JSON_THROW_ON_ERROR));
+    if(filesize($path)>16384)throw new PersonSensitiveException('Neplatná konfigurace archivu KIS.');
+    if($privatePath!==null) {
+        $raw=json_decode((string)file_get_contents($path),true,16,JSON_THROW_ON_ERROR);
+    } else {
+        if(!defined('KIS_PERSON_ARCHIVE_KEY_READ'))define('KIS_PERSON_ARCHIVE_KEY_READ',true);
+        $raw=require $path;
+    }
+    $dedicated=personSensitiveConfig($raw);
     foreach($shared['keys']??[] as $version=>$key) {
         if(isset($dedicated['keys'][$version]) && !hash_equals($key,$dedicated['keys'][$version]))throw new PersonSensitiveException('Konflikt verzí šifrovacího klíče.');
         $dedicated['keys'][$version]=$key;
