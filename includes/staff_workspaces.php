@@ -81,6 +81,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'kis_sync_center.php', 'label' => 'KIS centrum', 'description' => 'Import a konflikty osob', 'icon' => 'arrow-repeat'],
                     ['route' => 'kis_person_import_admin.php', 'label' => 'Osoby ze starého KIS', 'description' => 'Úplné osoby, kontakty a zdrojové vazby', 'icon' => 'person-lines-fill'],
                     ['route' => 'kis_rosters_admin.php', 'label' => 'Týmy a soupisky', 'description' => 'Sezony, týmy a členství', 'icon' => 'people-fill'],
+                    ['route' => 'kis_legacy_rosters_admin.php', 'label' => 'Soupisky ze starého KIS', 'description' => 'Historie 2025/26 a případy k rozhodnutí', 'icon' => 'clipboard-check'],
                     ['route' => 'kis_roster_settings_admin.php', 'label' => 'Správa struktur soupisek', 'description' => 'Opravy a uzavírání sezon a týmů', 'icon' => 'pencil-square'],
                     ['route' => 'kis_transition_admin.php', 'label' => 'Přechody sportovců', 'description' => 'Auditovaný přechod do týmu', 'icon' => 'arrow-left-right'],
                     ['route' => 'kis_child_access_admin.php', 'label' => 'Přístupy sportovců', 'description' => 'Samostatné účty dětí', 'icon' => 'key'],
