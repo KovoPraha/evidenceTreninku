@@ -70,7 +70,15 @@ jobs:
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
           production_retry "${SCP[@]}" bin/diagnose-pumptrack-catalog.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/diagnose-pumptrack-catalog.php"
-          "${SSH[@]}" "APP_HOST='$APP_HOST' APP_ROOT='$REMOTE_DIR' php '$DEPLOY_BASE/diagnose-pumptrack-catalog.php'" | tee /tmp/kis-pumptrack-catalog.json
+          cat > /tmp/run-pumptrack-catalog-diagnostic.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          require __DIR__ . '/diagnose-pumptrack-catalog.php';
+          diagnosePumptrackCatalogCli();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-pumptrack-catalog-diagnostic.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-pumptrack-catalog-diagnostic.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-pumptrack-catalog-diagnostic.php'" | tee /tmp/kis-pumptrack-catalog.json
           jq -e '.variants | type == "array"' /tmp/kis-pumptrack-catalog.json >/dev/null
           jq -e '.canonical_offers | type == "array"' /tmp/kis-pumptrack-catalog.json >/dev/null
 
@@ -78,9 +86,9 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          rm -f /tmp/kis-pumptrack-catalog.json
+          rm -f /tmp/kis-pumptrack-catalog.json /tmp/run-pumptrack-catalog-diagnostic.php
           if [ -n "${SSH_HOST:-}" ]; then
             source .github/scripts/production-ssh-retry.sh
             production_ssh_init
-            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/diagnose-pumptrack-catalog.php'"
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/diagnose-pumptrack-catalog.php' '$DEPLOY_BASE/run-pumptrack-catalog-diagnostic.php'"
           fi
