@@ -1,5 +1,7 @@
 # Aktuální stav projektu
 
+Produkční doplnění administrace: 20. 10. 2026. Sjednocený vzhled a správa produktů, importovaných variant, cen a skladu z PR #140–142 jsou nasazené v release `175f92c7a59294acff7e15fe09cbed258707fa2e`; [deploy 39483597831](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39483597831) prošel. Chrome ověřil přidání a editaci skryté varianty importovaného zboží, ceny, sklad 0 → 2 → 0 s auditem, archivaci konceptu, veřejné skrytí testovacích dat, mobilní navigaci i kontrast. CI: 1 137 testů / 25 679 kontrol, MariaDB 10.3/11.4 a CodeQL. Přesné důkazy a stav testovacích dat obsahuje [produkční report](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md). Nejde o schválení plného UAT ani zapnutí plateb, Fio nebo rozesílek. Níže uvedené starší SHA jsou historické body svých částí.
+
 Produkční doplnění: 20. 10. 2026, Europe/Prague, po nasazení hierarchie soupisek.
 PR [#138](https://github.com/KovoPraha/evidenceTreninku/pull/138) byl sloučen jako
 `4991c91f966eb65852876fd0084dd6ad041e3b69` a tento přesný SHA nasadil

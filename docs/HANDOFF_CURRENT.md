@@ -1,5 +1,7 @@
 # Aktuální předání vývoje na další stanici
 
+Nejnovější doplnění: 20. 10. 2026, sjednocená administrace a správa e-shopu z PR #140–142. Release `175f92c7a59294acff7e15fe09cbed258707fa2e` má úspěšný [deploy 39483597831](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39483597831) a produkční browser ověření variant, cen, skladu, archivace konceptu a společného vzhledu. Navazujte podle [produkčního reportu](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md), který uvádí také ponechanou skrytou testovací variantu se skladem 0 a archivovaný testovací koncept. Plné UAT zůstává samostatně otevřené. Níže uvedené starší SHA jsou historické body svých částí.
+
 Produkční doplnění: 20. 10. 2026, Europe/Prague. Hierarchie skupin a soupisek,
 časové členství, sjednocené cílení tréninků a akcí, opakované nabídky kroužků
 a rozdělení rodinných bankovních plateb jsou nasazené z PR
