@@ -3,11 +3,20 @@ require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sportovec_status_lib.php';
 require_once __DIR__ . '/includes/person_match.php';
+require_once __DIR__ . '/includes/sportovec_editor.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_sportovcu')) {
     header("Location: login.php");
     exit;
 }
+
+header('Cache-Control: no-store, private, max-age=0');
+header('Pragma: no-cache');
+header('Referrer-Policy: no-referrer');
+$editId = max(0, (int)($_GET['edit_id'] ?? 0));
+$editError = '';
+$editInput = [];
+$revealed = null;
 
 function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -134,51 +143,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $createError = 'Osobu se nepodařilo bezpečně založit.';
             }
         }
-    } elseif ($akce === 'save') {
-        $id       = (int)($_POST['id'] ?? 0);
-        $jmeno    = trim($_POST['jmeno'] ?? '');
-        $prijmeni = trim($_POST['prijmeni'] ?? '');
-        $narozeni = trim($_POST['narozeni'] ?? '');
-        $category = trim($_POST['category'] ?? '');
-        $uciid    = trim($_POST['uciid'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
-        $oddil    = trim($_POST['oddil'] ?? '');
-
-        if ($id <= 0 || !$jmeno || !$prijmeni) {
-            $_SESSION['flash_error'] = 'Jméno a příjmení jsou povinné.';
-            header("Location: sprava_sportovcu.php");
-            exit;
-        }
-
+    } elseif (in_array($akce, ['save', 'reveal_person'], true)) {
+        $editId = max(0, (int)($_POST['id'] ?? 0));
         try {
-            $stmt = $pdo->prepare("
-                UPDATE sportovci
-                SET jmeno    = :jmeno,
-                    prijmeni = :prijmeni,
-                    narozeni = :narozeni,
-                    category = :category,
-                    uciid    = :uciid,
-                    email    = :email,
-                    oddil    = :oddil
-                WHERE id = :id
-                LIMIT 1
-            ");
-            $stmt->execute([
-                ':jmeno'    => $jmeno,
-                ':prijmeni' => $prijmeni,
-                ':narozeni' => $narozeni ?: null,
-                ':category' => $category,
-                ':uciid'    => $uciid,
-                ':email'    => $email,
-                ':oddil'    => $oddil,
-                ':id'       => $id,
-            ]);
-            $_SESSION['flash_success'] = 'Sportovec ' . $prijmeni . ' ' . $jmeno . ' aktualizován.';
-        } catch (Exception $e) {
-            $_SESSION['flash_error'] = 'Chyba při ukládání: ' . $e->getMessage();
+            if ($akce === 'save') {
+                sportovecEditorSave($pdo, $editId, $_POST, (int)$_SESSION['trener_id']);
+                $_SESSION['flash_success'] = 'Osobní a kontaktní údaje sportovce byly uloženy.';
+                header('Location: sprava_sportovcu.php?' . http_build_query(array_merge(
+                    array_intersect_key($_GET, array_flip(['q','stav','kis','sort','dir','pp','p'])),
+                    ['edit_id' => $editId]
+                )) . '#edit-card');
+                exit;
+            }
+            $revealed = sportovecEditorReveal($pdo, $editId, (string)($_POST['reason'] ?? ''), null, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+        } catch (Throwable $exception) {
+            if ($akce === 'save') {
+                $editInput = array_intersect_key($_POST, sportovecEditorFields() + ['country' => [], 'contact_address' => []]);
+                $editInput = array_filter($editInput, 'is_string');
+            }
+            $editError = $exception instanceof InvalidArgumentException
+                ? $exception->getMessage()
+                : 'Údaje se nepodařilo bezpečně načíst nebo uložit. Zkuste akci znovu.';
+            if (!$exception instanceof InvalidArgumentException) error_log('sportovec editor: ' . get_class($exception));
         }
-        header("Location: sprava_sportovcu.php");
-        exit;
+    }
+}
+
+$editPerson = null;
+$editContext = ['profile' => [], 'parents' => [], 'roles' => [], 'sensitive' => []];
+if ($editId > 0) {
+    try {
+        $editPerson = sportovecEditorPerson($pdo, $editId);
+        $editContext = sportovecEditorContext($pdo, $editId);
+    } catch (Throwable $exception) {
+        $editPerson = null;
+        $editError = $exception instanceof InvalidArgumentException ? $exception->getMessage() : 'Podrobnosti sportovce se nepodařilo načíst.';
     }
 }
 
@@ -336,7 +335,7 @@ try {
                 <h1 class="fw-semibold fs-5 mb-0">
                     <i class="bi bi-person-lines-fill me-2 opacity-75"></i>Správa sportovců
                 </h1>
-                <div class="opacity-75 small">Editace údajů sportovců — jméno, příjmení, kategorie, kontakt.</div>
+                <div class="opacity-75 small">Osobní údaje, adresy, kontakty, rodiče a původní evidence KIS.</div>
             </div>
             <div class="d-flex gap-2 flex-wrap">
                 <a href="index.php" class="btn btn-outline-light btn-sm">
@@ -511,7 +510,7 @@ try {
                 <button type="submit" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-check2-square me-1"></i>Hromadne akce
                 </button>
-                <span class="text-muted small">Vyberte cleny v tabulce a pokracujte na preview hromadne akce.</span>
+                <span class="text-muted small">Pro úpravu jednoho sportovce klikněte na tužku. Zaškrtávátka slouží pro hromadné akce.</span>
             </div>
             <div class="table-wrap">
             <table class="table table-sm table-hover align-middle mb-0 sticky-head">
@@ -559,18 +558,11 @@ try {
                         </td>
                         <td class="text-end"><?= (int)$s['pocet_treninku'] ?></td>
                         <td class="text-nowrap">
-                            <button class="btn btn-sm btn-outline-primary edit-btn"
-                                    data-id="<?= (int)$s['id'] ?>"
-                                    data-jmeno="<?= h($s['jmeno']) ?>"
-                                    data-prijmeni="<?= h($s['prijmeni']) ?>"
-                                    data-narozeni="<?= h($s['narozeni'] ?? '') ?>"
-                                    data-category="<?= h($s['category'] ?? '') ?>"
-                                    data-uciid="<?= h($s['uciid'] ?? '') ?>"
-                                    data-email="<?= h($s['email'] ?? '') ?>"
-                                    data-oddil="<?= h($s['oddil'] ?? '') ?>"
-                                    title="Upravit" aria-label="Upravit sportovce">
+                            <a class="btn btn-sm btn-outline-primary edit-btn"
+                               href="<?= h(spUrl(['edit_id' => (int)$s['id']])) ?>#edit-card"
+                               title="Upravit" aria-label="Upravit sportovce">
                                 <i class="bi bi-pencil"></i>
-                            </button>
+                            </a>
                             <a href="sportovec_karta.php?sportovec_id=<?= (int)$s['id'] ?>"
                                class="btn btn-sm btn-outline-success" title="Administrační karta člena" aria-label="Administrační karta člena">
                                 <i class="bi bi-person-vcard"></i>
@@ -612,105 +604,12 @@ try {
         </div>
     </div>
 
-    <!-- Formulář pro editaci -->
-    <div class="card section-card" id="edit-card">
-        <div class="card-header bg-warning text-dark">
-            <i class="bi bi-pencil-square me-1"></i><span id="form-title">Vyberte sportovce k úpravě</span>
-        </div>
-        <div class="card-body">
-            <form method="POST" id="sportovec-form" novalidate>
-                <?= csrf_field() ?>
-                <input type="hidden" name="akce" value="save">
-                <input type="hidden" name="id" id="sp-id" value="0">
-
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label for="sp-prijmeni" class="form-label req">Příjmení</label>
-                        <input type="text" name="prijmeni" id="sp-prijmeni" class="form-control" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="sp-jmeno" class="form-label req">Jméno</label>
-                        <input type="text" name="jmeno" id="sp-jmeno" class="form-control" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="sp-narozeni" class="form-label">Datum narození</label>
-                        <input type="date" name="narozeni" id="sp-narozeni" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="sp-category" class="form-label">Kategorie</label>
-                        <input type="text" name="category" id="sp-category" class="form-control"
-                               placeholder="např. Elite, U23, masters…">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="sp-uciid" class="form-label">UCI ID</label>
-                        <input type="text" name="uciid" id="sp-uciid" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="sp-email" class="form-label">Email</label>
-                        <input type="email" name="email" id="sp-email" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="sp-oddil" class="form-label">Oddíl</label>
-                        <input type="text" name="oddil" id="sp-oddil" class="form-control">
-                    </div>
-                </div>
-
-                <div class="d-flex gap-2 mt-3">
-                    <button type="submit" class="btn btn-primary" id="btn-save" disabled>
-                        <i class="bi bi-check-lg me-1"></i>Uložit změny
-                    </button>
-                    <button type="button" id="form-reset" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-lg me-1"></i>Zrušit
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <?php require __DIR__ . '/includes/sportovec_editor_view.php'; ?>
 
 </div>
 
 
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
-// ── Edit tlačítko → vyplnit formulář ────────────────────────────────────────
-document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.getElementById('form-title').innerText = 'Upravit: ' + btn.dataset.prijmeni + ' ' + btn.dataset.jmeno;
-        document.getElementById('sp-id').value        = btn.dataset.id;
-        document.getElementById('sp-prijmeni').value  = btn.dataset.prijmeni;
-        document.getElementById('sp-jmeno').value     = btn.dataset.jmeno;
-        document.getElementById('sp-narozeni').value   = btn.dataset.narozeni;
-        document.getElementById('sp-category').value   = btn.dataset.category;
-        document.getElementById('sp-uciid').value      = btn.dataset.uciid;
-        document.getElementById('sp-email').value      = btn.dataset.email;
-        document.getElementById('sp-oddil').value      = btn.dataset.oddil;
-        document.getElementById('btn-save').disabled   = false;
-        document.getElementById('edit-card').scrollIntoView({ behavior: 'smooth' });
-    });
-});
-
-// ── Reset formuláře ─────────────────────────────────────────────────────────
-document.getElementById('form-reset').addEventListener('click', () => {
-    document.getElementById('form-title').innerText   = 'Vyberte sportovce k úpravě';
-    document.getElementById('sp-id').value            = 0;
-    document.getElementById('sp-prijmeni').value      = '';
-    document.getElementById('sp-jmeno').value         = '';
-    document.getElementById('sp-narozeni').value       = '';
-    document.getElementById('sp-category').value       = '';
-    document.getElementById('sp-uciid').value          = '';
-    document.getElementById('sp-email').value          = '';
-    document.getElementById('sp-oddil').value          = '';
-    document.getElementById('btn-save').disabled       = true;
-    document.getElementById('sportovec-form').classList.remove('was-validated');
-});
-
-// ── Validace při submitu ────────────────────────────────────────────────────
-document.getElementById('sportovec-form').addEventListener('submit', function(e) {
-    this.classList.add('was-validated');
-    if (!this.checkValidity() || document.getElementById('sp-id').value === '0') {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-});
 const checkAll = document.getElementById('check-all');
 if (checkAll) {
     checkAll.addEventListener('change', () => {
