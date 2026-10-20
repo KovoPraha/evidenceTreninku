@@ -1,0 +1,96 @@
+name: Ověřit produkční přepínače plateb (pouze čtení)
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro kontrolu kis.kovopraha.cz napište OVERIT-PLATBY-VYPNUTE'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  diagnose:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Ověřit cíl a potvrzení
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          test "$POTVRZENI" = 'OVERIT-PLATBY-VYPNUTE'
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+
+      - name: Stáhnout aktuální commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Přečíst účinné přepínače bez klíčů a síťových volání
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/diagnose-production-payment-gates.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/diagnose-production-payment-gates.php"
+          cat > /tmp/run-payment-gates-diagnostic.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('KIS_PAYMENT_DIAGNOSTIC_ROOT=$REMOTE_DIR');
+          require __DIR__ . '/diagnose-production-payment-gates.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-payment-gates-diagnostic.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-payment-gates-diagnostic.php"
+          "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-payment-gates-diagnostic.php'" | tee /tmp/kis-payment-gates.json
+          jq -e '.ok == true and .target == "kis.kovopraha.cz" and
+            (.fio_import_enabled | type == "boolean") and
+            (.fio_auto_confirm_enabled | type == "boolean") and
+            (.stripe_enabled | type == "boolean") and
+            (.sumup_enabled | type == "boolean") and .all_disabled == true' /tmp/kis-payment-gates.json >/dev/null
+
+      - name: Uklidit dočasné skripty
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/kis-payment-gates.json /tmp/run-payment-gates-diagnostic.php
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/diagnose-production-payment-gates.php' '$DEPLOY_BASE/run-payment-gates-diagnostic.php'"
+          fi
