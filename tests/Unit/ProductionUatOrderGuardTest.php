@@ -52,7 +52,25 @@ final class ProductionUatOrderGuardTest extends TestCase
         self::assertSame(['ok'=>true,'baseline'=>0,'product_id'=>9,'variant_id'=>10], \kisUatOrderGuard($pdo, 'baseline', 0));
         $this->order($pdo);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('earlier TEST order');
+        $this->expectExceptionMessage('earlier_pending_test_order');
+        \kisUatOrderGuard($pdo, 'baseline', 0);
+    }
+
+    public function testBaselineNamesExactFailingFixturePredicateWithoutReturningData(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('UPDATE shop_variants SET amount_minor=9000 WHERE id=10');
+        $this->expectException(\KisUatOrderGuardFailure::class);
+        $this->expectExceptionMessage('fixture_price_100_czk');
+        \kisUatOrderGuard($pdo, 'baseline', 0);
+    }
+
+    public function testBaselineNamesDisabledParentPredicate(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('UPDATE verejni_uzivatele SET aktivni=0 WHERE id=7');
+        $this->expectException(\KisUatOrderGuardFailure::class);
+        $this->expectExceptionMessage('parent_active_verified');
         \kisUatOrderGuard($pdo, 'baseline', 0);
     }
 

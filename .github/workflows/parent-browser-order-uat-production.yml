@@ -79,7 +79,7 @@ jobs:
           putenv('KIS_UAT_ORDER_MODE=' . (\$argv[1] ?? ''));
           putenv('KIS_UAT_ORDER_BASELINE=' . (\$argv[2] ?? ''));
           require __DIR__ . '/production-uat-order-guard.php';
-          kisUatOrderGuardMain();
+          kisUatOrderGuardEntry();
           EOF
           production_retry "${SCP[@]}" /tmp/run-production-uat-order-guard.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-production-uat-order-guard.php"
           RESULT=$(production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-production-uat-order-guard.php' baseline 0")
