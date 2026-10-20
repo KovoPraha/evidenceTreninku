@@ -47,6 +47,7 @@ function clubTocnaciSplitPlan(PDO $pdo,int $legacyVariantId=682):array
 function clubTocnaciSplitApply(PDO $pdo,int $actorId,string $applicationRoot,int $legacyVariantId=682):array
 {
     if($actorId<1)throw new InvalidArgumentException('Převod vyžaduje správce.');
+    if(!clubProgramRuntimeTableExists($pdo,'club_program_physical_teams'))throw new ClubTocnaciSplitException('Chybí migrace fyzických soupisek programu.');
     $source=clubTocnaciSplitSource($pdo,$legacyVariantId);$reason='Rozdělení Točňáků 1× týdně na samostatné úterý a čtvrtek podle rozhodnutí klubu.';
     $first=$source['offers']['first_half'];$second=$source['offers']['second_half'];$seasonId=(int)$first['season_id'];$results=[];
     foreach(CLUB_TOCNACI_DAYS as$key=>$day){
@@ -97,6 +98,7 @@ function clubTocnaciSplitApply(PDO $pdo,int $actorId,string $applicationRoot,int
         ],$reason,true);
         $results[$key]=['program_id'=>$programId,'team_id'=>(int)$team['id'],'product_id'=>(int)$base['product_id'],'first_offer_id'=>(int)$base['id']];
     }
+    $twice=clubTocnaciConnectTwiceWeekly($pdo,$results,$seasonId,$actorId);
     foreach($source['offers']as$offer)clubProgramCloseOffer($pdo,$actorId,(int)$offer['id'],$reason,true);
     clubProgramStorefrontSavePresentation($pdo,$actorId,(int)$source['program']['id'],[
         'public_name'=>'Točňáci 1× týdně','public_summary'=>'','location_name'=>'Točná','age_label'=>'6–10 let',
@@ -104,5 +106,42 @@ function clubTocnaciSplitApply(PDO $pdo,int $actorId,string $applicationRoot,int
     ],$reason,true);
     shopManualCatalogArchive($pdo,$actorId,(int)$first['product_id'],$reason,true);
     shopManualCatalogArchive($pdo,$actorId,$source['import_product_id'],$reason,true);
-    return['old_program_id'=>(int)$source['program']['id'],'old_import_product_id'=>$source['import_product_id'],'targets'=>$results];
+    return['old_program_id'=>(int)$source['program']['id'],'old_import_product_id'=>$source['import_product_id'],'targets'=>$results,'twice_weekly'=>$twice];
+}
+
+/** @param array<string,array<string,int>> $dayPrograms */
+function clubTocnaciConnectTwiceWeekly(PDO $pdo,array $dayPrograms,int $seasonId,int $actorId):array
+{
+    $query=$pdo->prepare('SELECT id FROM club_programs WHERE code=?');$query->execute(['KROUZKY-2627-TOCNACI-2X-TYDNE']);
+    $programId=(int)$query->fetchColumn();
+    if($programId<1)throw new ClubTocnaciSplitException('Program Točňáci 2× týdně nebyl nalezen.');
+    $offers=$pdo->prepare('SELECT id,team_id,season_id,capacity FROM club_program_offers WHERE program_id=?');$offers->execute([$programId]);
+    $rows=$offers->fetchAll(PDO::FETCH_ASSOC);
+    if($rows===[])throw new ClubTocnaciSplitException('Program Točňáci 2× týdně nemá nabídku.');
+    $primary=(int)$rows[0]['team_id'];
+    foreach($rows as$row){
+        if((int)$row['season_id']!==$seasonId||(int)$row['team_id']!==$primary||(int)$row['capacity']!==30)throw new ClubTocnaciSplitException('Točňáci 2× nemají společnou soupisku, sezonu a kapacitu 30.');
+    }
+    $targets=[(int)$dayPrograms['UTERY']['team_id'],(int)$dayPrograms['CTVRTEK']['team_id']];sort($targets,SORT_NUMERIC);
+    if(count(array_unique($targets))!==2||in_array($primary,$targets,true))throw new ClubTocnaciSplitException('Fyzické soupisky úterý a čtvrtek nejsou oddělené.');
+    $pdo->beginTransaction();
+    try{
+        $existing=$pdo->prepare('SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id');$existing->execute([$programId]);
+        $mapped=array_map('intval',$existing->fetchAll(PDO::FETCH_COLUMN));
+        if($mapped!==[]&&$mapped!==$targets)throw new ClubTocnaciSplitException('Program 2× už má jinak nastavené fyzické soupisky.');
+        $insert=$pdo->prepare('INSERT INTO club_program_physical_teams(program_id,team_id) VALUES(?,?)');
+        if($mapped===[])foreach($targets as$teamId)$insert->execute([$programId,$teamId]);
+        $enrollments=$pdo->prepare("SELECT e.id,e.sportovec_id,e.valid_from FROM club_program_enrollments e JOIN club_program_offers o ON o.id=e.offer_id WHERE o.program_id=? AND e.status='active' ORDER BY e.id");
+        $enrollments->execute([$programId]);$active=$enrollments->fetchAll(PDO::FETCH_ASSOC);
+        foreach($targets as$teamId){
+            $team=$pdo->prepare('SELECT id FROM club_teams WHERE id=?'.((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':''));
+            $team->execute([$teamId]);if($team->fetchColumn()===false)throw new ClubTocnaciSplitException('Denní soupiska nebyla nalezena.');
+        }
+        $created=0;
+        foreach($active as$enrollment)foreach($targets as$teamId){
+            if(clubProgramActivateRosterMember($pdo,$teamId,(int)$enrollment['sportovec_id'],(string)$enrollment['valid_from'],$actorId,(int)$enrollment['id'],'Doplnění úterní a čtvrteční soupisky k účasti Točňáci 2× týdně.'))$created++;
+        }
+        $pdo->commit();
+        return['program_id'=>$programId,'physical_team_ids'=>$targets,'active_enrollments'=>count($active),'rosters_created'=>$created];
+    }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();throw$exception;}
 }

@@ -79,6 +79,56 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         $secondCancel=\shopOrderAdminCancel($pdo,(int)$second['id'],7,'Storno druhého období.',true);self::assertSame(1,$secondCancel['rosters_ended']);self::assertSame('removed',$pdo->query('SELECT status FROM club_roster_members')->fetchColumn());
     }
 
+    public function testTwiceWeeklyOccupiesBothDayCapacitiesAndBothAttendanceRosters():void
+    {
+        $pdo=$this->database();
+        $migration=require dirname(__DIR__,2).'/migrations/20261020140000_club_program_physical_teams.php';
+        $migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
+        $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(11,1,'TU','Úterý','vše','děti','active',7),(12,1,'TH','Čtvrtek','vše','děti','active',7)");
+        $pdo->exec("INSERT INTO shop_products VALUES(503,'Točňáci 2×','program','active');INSERT INTO shop_variants(id,product_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(603,503,'BOTH','{}','fixed',15000,'CZK',1,0,NULL,1,'active');INSERT INTO shop_product_publications VALUES(503,'active','Točňáci 2×','Oba dny')");
+        $tuesday=(int)\clubProgramCreate($pdo,7,'TEST-TU','Točňáci úterý')['id'];
+        $thursday=(int)\clubProgramCreate($pdo,7,'TEST-TH','Točňáci čtvrtek')['id'];
+        $both=(int)\clubProgramCreate($pdo,7,'TEST-BOTH','Točňáci 2×')['id'];
+        $this->offer($pdo,601,501,11,2,'TUESDAY',$tuesday);
+        $this->offer($pdo,602,502,12,2,'THURSDAY',$thursday);
+        $this->offer($pdo,603,503,10,2,'BOTH',$both);
+        $pdo->prepare('INSERT INTO club_program_physical_teams(program_id,team_id) VALUES(?,11),(?,12)')->execute([$both,$both]);
+        $tuesdayOrder=$this->checkout($pdo,10,101,601);
+        $bothOrder=$this->checkout($pdo,11,103,603);
+        self::assertSame(0,\clubProgramOfferForVariant($pdo,601)['available_count']);
+        self::assertSame(1,\clubProgramOfferForVariant($pdo,602)['available_count']);
+        self::assertSame(0,\clubProgramOfferForVariant($pdo,603)['available_count']);
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$tuesdayOrder['payment_id'],7,'Platba úterý.',true);
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$bothOrder['payment_id'],7,'Platba oba dny.',true);
+        self::assertSame([10,11,12],array_map('intval',$pdo->query("SELECT team_id FROM club_roster_members WHERE sportovec_id=103 AND status='active' ORDER BY team_id")->fetchAll(PDO::FETCH_COLUMN)));
+        self::assertSame([11],array_map('intval',$pdo->query("SELECT team_id FROM club_roster_members WHERE sportovec_id=101 AND status='active' ORDER BY team_id")->fetchAll(PDO::FETCH_COLUMN)));
+        \shopOrderAdminCancel($pdo,(int)$bothOrder['id'],7,'Odhlášení z obou dnů.',true);
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_roster_members WHERE sportovec_id=103 AND status='active'")->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_roster_members WHERE sportovec_id=101 AND status='active'")->fetchColumn());
+        self::assertSame(1,\clubProgramOfferForVariant($pdo,601)['available_count']);
+        self::assertSame(2,\clubProgramOfferForVariant($pdo,602)['available_count']);
+    }
+
+    public function testExistingTwiceWeeklyEnrollmentIsBackfilledIntoBothDayRostersIdempotently():void
+    {
+        require_once dirname(__DIR__,2).'/includes/club_tocnaci_split.php';
+        $pdo=$this->database();
+        $migration=require dirname(__DIR__,2).'/migrations/20261020140000_club_program_physical_teams.php';$migration['up']($pdo);
+        $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(11,1,'TU','Úterý','vše','děti','active',7),(12,1,'TH','Čtvrtek','vše','děti','active',7)");
+        $program=(int)\clubProgramCreate($pdo,7,'KROUZKY-2627-TOCNACI-2X-TYDNE','Točňáci 2× týdně')['id'];
+        $this->offer($pdo,601,501,10,30,'TOCNACI-BOTH',$program);
+        $order=$this->checkout($pdo,10,101,601);
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Platba před rozdělením.',true);
+        self::assertSame([10],array_map('intval',$pdo->query('SELECT team_id FROM club_roster_members ORDER BY team_id')->fetchAll(PDO::FETCH_COLUMN)));
+        $targets=['UTERY'=>['team_id'=>11],'CTVRTEK'=>['team_id'=>12]];
+        $first=\clubTocnaciConnectTwiceWeekly($pdo,$targets,1,7);
+        self::assertSame(2,$first['rosters_created']);
+        self::assertSame(0,\clubTocnaciConnectTwiceWeekly($pdo,$targets,1,7)['rosters_created']);
+        self::assertSame([10,11,12],array_map('intval',$pdo->query("SELECT team_id FROM club_roster_members WHERE status='active' ORDER BY team_id")->fetchAll(PDO::FETCH_COLUMN)));
+        \shopOrderAdminCancel($pdo,(int)$order['id'],7,'Odhlášení.',true);
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_roster_members WHERE status='active'")->fetchColumn());
+    }
+
     public function testLifecycleMigrationIsRepeatableOnSqlite():void
     {
         $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260804160000_club_program_lifecycle.php';$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
