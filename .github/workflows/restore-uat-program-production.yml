@@ -64,6 +64,14 @@ jobs:
           echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
           echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
 
+      - name: Overit presne nasazeny commit
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$REMOTE_DIR/var/deployment.json" /tmp/kis-uat-fixture-deployment.json
+          test "$(jq -r '.sha' /tmp/kis-uat-fixture-deployment.json)" = "$GITHUB_SHA"
+
       - name: Nahrat kontrolni skript a proverit presnou identitu
         run: |
           set -euo pipefail
