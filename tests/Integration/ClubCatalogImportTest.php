@@ -64,8 +64,8 @@ final class ClubCatalogImportTest extends TestCase
     public function testTocnaciSplitKeepsTwoDayProgramAndRetiresAmbiguousProduct():void
     {
         $pdo=$this->database();\clubCatalogImport($pdo,7,$this->root);
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(154,'import','shoptet:154','Točňáci 1× týdně','Úterý nebo čtvrtek','program','visible','service','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,visible,catalog_status) VALUES(682,154,'import','708','{}','fixed',440000,'CZK',1,'active')");
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(154,'import','shoptet:154','Točňáci 1x týdně (úterý NEBO čtvrtek) září - leden','Úterý nebo čtvrtek','goods','visible','product','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,stock_quantity_decimal,visible,catalog_status) VALUES(682,154,'import','708','{}','fixed',440000,'CZK','piece','4988.000000',1,'active')");
         $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(154,'active','Točňáci 1× týdně','Úterý nebo čtvrtek')");
         $bothBefore=(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn();
         $pdo->exec('UPDATE club_program_offers SET capacity=30 WHERE program_id='.$bothBefore);
@@ -88,6 +88,26 @@ final class ClubCatalogImportTest extends TestCase
         self::assertSame('hidden',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$first['old_program_id'])->fetchColumn());
         \clubCatalogImport($pdo,7,$this->root);
         self::assertSame('hidden',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$first['old_program_id'])->fetchColumn());
+    }
+
+    public function testTocnaciSplitAcceptsProductionImportSlugs():void
+    {
+        $pdo=$this->database();\clubCatalogImport($pdo,7,$this->root);
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(154,'import','shoptet:154','Točňáci 1x týdně (úterý NEBO čtvrtek) září - leden','Úterý nebo čtvrtek','goods','visible','product','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,stock_quantity_decimal,visible,catalog_status) VALUES(682,154,'import','708','{}','fixed',440000,'CZK','piece','4988.000000',1,'active')");
+        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(154,'active','Točňáci 1× týdně','Úterý nebo čtvrtek')");
+        $pdo->exec("UPDATE club_programs SET code='KROUZKY-2627-TO-CI-1X-T-DN' WHERE name='Točňáci 1× týdně'");
+        $pdo->exec("UPDATE club_programs SET code='KROUZKY-2627-TO-CI-2X-T-DN' WHERE name='Točňáci 2× týdně'");
+        $twice=(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TO-CI-2X-T-DN'")->fetchColumn();
+        $pdo->exec('UPDATE club_program_offers SET capacity=30 WHERE program_id='.$twice);
+
+        $first=\clubTocnaciSplitApply($pdo,7,$this->root);
+        $second=\clubTocnaciSplitApply($pdo,7,$this->root);
+
+        self::assertSame($first,$second);
+        self::assertSame($twice,$first['twice_weekly']['program_id']);
+        self::assertCount(2,$first['twice_weekly']['physical_team_ids']);
+        self::assertNotSame($first['targets']['UTERY']['team_id'],$first['targets']['CTVRTEK']['team_id']);
     }
 
     public function testFallbackNeverLinksTheOldShopOrDisplaysMigrationCopy():void
