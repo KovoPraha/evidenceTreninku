@@ -30,6 +30,10 @@ function clubYoungestPreparePlan(PDO $pdo): array
         .'FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.id=?');
     $existing=$pdo->prepare('SELECT p.id AS program_id,p.name,p.description,p.status,pr.listing_status '
         .'FROM club_programs p LEFT JOIN club_program_presentations pr ON pr.program_id=p.id WHERE p.code=?');
+    $teamQuery=$pdo->prepare("SELECT t.id AS team_id,t.name,t.discipline,t.age_label,t.status,
+        s.name AS season_name,s.starts_on,s.ends_on,s.season_type,s.status AS season_status
+        FROM club_teams t JOIN club_seasons s ON s.id=t.season_id
+        WHERE s.code='SCHOOL-2026-27' AND t.code=?");
     $offers=$pdo->prepare('SELECT COUNT(*) FROM club_program_offers WHERE program_id=?');
     $plan=[];
     foreach(clubYoungestGroups() as $group){
@@ -53,7 +57,15 @@ function clubYoungestPreparePlan(PDO $pdo): array
             $offers->execute([(int)$program['program_id']]);
             if((int)$offers->fetchColumn()!==0)throw new ClubYoungestPrepareException('Program již má nabídku a vyžaduje ruční kontrolu: '.$group['code']);
         }
-        $plan[]=$group+['program_id'=>$program===null?null:(int)$program['program_id'],'publication'=>'draft','purchase'=>'email_only'];
+        $teamQuery->execute([$group['team_code']]);$team=$teamQuery->fetch(PDO::FETCH_ASSOC)?:null;
+        if($team!==null&&((string)$team['name']!==$group['name'].' 2026/27'
+            ||(string)$team['discipline']!=='Cyklistika'||(string)$team['age_label']!==$group['age']
+            ||(string)$team['status']!=='active'||(string)$team['season_name']!=='Školní rok 2026/27'
+            ||(string)$team['starts_on']!=='2026-09-01'||(string)$team['ends_on']!=='2027-08-31'
+            ||(string)$team['season_type']!=='school_year'||(string)$team['season_status']!=='active'))
+            throw new ClubYoungestPrepareException('Soupiska nejmenších se změnila: '.$group['team_code']);
+        $plan[]=$group+['program_id'=>$program===null?null:(int)$program['program_id'],
+            'team_id'=>$team===null?null:(int)$team['team_id'],'publication'=>'draft','purchase'=>'email_only'];
     }
     return $plan;
 }
@@ -70,7 +82,7 @@ function clubYoungestPrepare(PDO $pdo,int $actorId,bool $apply): array
     if($actorId<1)throw new InvalidArgumentException('Příprava vyžaduje správce.');
     $plan=clubYoungestPreparePlan($pdo);
     if(!$apply)return ['created'=>0,'groups'=>array_map(static fn(array $row):array=>[
-        'program_id'=>$row['program_id']??0,'team_id'=>0,'product_id'=>$row['product_id'],'purchase'=>'email_only'], $plan)];
+        'program_id'=>$row['program_id']??0,'team_id'=>$row['team_id']??0,'product_id'=>$row['product_id'],'purchase'=>'email_only'], $plan)];
     $reason='Příprava interních soupisek 2026/27 pro nepravidelně otevírané dětské kurzy; bez prodeje a ceny celého kurzu.';
     $pdo->beginTransaction();
     try{

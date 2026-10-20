@@ -15,11 +15,16 @@ final class ClubYoungestPrepareTest extends TestCase
         $preview=\clubYoungestPrepare($pdo,7,false);
         self::assertSame(0,$preview['created']);
         self::assertCount(3,$preview['groups']);
+        self::assertSame([0,0,0],array_column($preview['groups'],'program_id'));
+        self::assertSame([0,0,0],array_column($preview['groups'],'team_id'));
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_programs')->fetchColumn());
 
         $first=\clubYoungestPrepare($pdo,7,true);
+        $afterPreview=\clubYoungestPrepare($pdo,7,false);
         $second=\clubYoungestPrepare($pdo,7,true);
         self::assertSame(3,$first['created']);
+        self::assertSame(0,$afterPreview['created']);
+        self::assertSame($first['groups'],$afterPreview['groups']);
         self::assertSame(0,$second['created']);
         self::assertSame($first['groups'],$second['groups']);
         self::assertCount(3,array_unique(array_column($first['groups'],'team_id')));
@@ -29,6 +34,15 @@ final class ClubYoungestPrepareTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn());
         self::assertSame(3,(int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE offer_type='goods' AND catalog_status='active'")->fetchColumn());
         self::assertSame([25000,25000,25000],array_map('intval',$pdo->query('SELECT amount_minor FROM shop_variants ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
+    }
+
+    public function testDryRunRefusesChangedExistingTeam(): void
+    {
+        $pdo=$this->database();
+        \clubYoungestPrepare($pdo,7,true);
+        $pdo->exec("UPDATE club_teams SET age_label='jiná věková skupina' WHERE code='KR-2627-DETI-1-2R'");
+        $this->expectException(\ClubYoungestPrepareException::class);
+        \clubYoungestPrepare($pdo,7,false);
     }
 
     public function testChangedImportedCourseFailsClosedBeforeAnyWrite(): void
