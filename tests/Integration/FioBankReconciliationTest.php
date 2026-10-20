@@ -91,6 +91,17 @@ final class FioBankReconciliationTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());
     }
 
+    public function testAutomaticConfirmationLeavesOldAccountSnapshotForReview():void
+    {
+        $pdo=$this->database();$this->shopPayment($pdo);
+        $pdo->exec("UPDATE payments SET iban_snapshot='CZ0000000000000000000000' WHERE id=31");
+        $this->import($pdo,'old-account','259.00','11');
+        self::assertSame(['confirmed'=>0,'review'=>1],\fioAutoConfirmPending($pdo,'CZ6508000000192000145399'));
+        self::assertSame('review_auto_conflict',$pdo->query('SELECT match_status FROM fio_account_movements')->fetchColumn());
+        self::assertSame('pending',$pdo->query('SELECT status FROM payments WHERE id=31')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_events')->fetchColumn());
+    }
+
     public function testRevalidationRejectsChangedStateOrReusedVsOrPartialAllocation():void
     {
         foreach(['cancelled','amount','currency','reused_vs','partial','receipt'] as $case){
@@ -246,7 +257,7 @@ final class FioBankReconciliationTest extends TestCase
         $pdo->exec('CREATE TABLE shop_orders(id INTEGER PRIMARY KEY,public_code TEXT,account_id INTEGER,status TEXT,payment_status TEXT,customer_name_snapshot TEXT,customer_email_snapshot TEXT,total_minor INTEGER,currency TEXT,updated_at TEXT)');
         $pdo->exec('CREATE TABLE shop_order_items(id INTEGER PRIMARY KEY,order_id INTEGER,variant_id INTEGER,product_name_snapshot TEXT,quantity INTEGER)');
         $pdo->exec("CREATE TABLE club_event_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,registration_id INTEGER NULL,registration_event_id INTEGER NULL,order_id INTEGER NULL,notification_type TEXT NOT NULL,recipient_email TEXT NOT NULL,recipient_name TEXT NOT NULL,subject_plain TEXT NOT NULL,body_plain TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',attempts INTEGER NOT NULL DEFAULT 0,available_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,claimed_at TEXT NULL,claim_token TEXT NULL,sent_at TEXT NULL,last_error TEXT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(order_id,notification_type))");
-        $pdo->exec('CREATE TABLE payments(id INTEGER PRIMARY KEY,payable_type TEXT,payable_id INTEGER,method TEXT,payment_source TEXT,status TEXT,amount_minor INTEGER,currency TEXT,variable_symbol TEXT,paid_at TEXT,confirmed_by_trainer_id INTEGER,confirmation_note TEXT,updated_at TEXT)');
+        $pdo->exec("CREATE TABLE payments(id INTEGER PRIMARY KEY,payable_type TEXT,payable_id INTEGER,method TEXT,payment_source TEXT,status TEXT,amount_minor INTEGER,currency TEXT,variable_symbol TEXT,iban_snapshot TEXT DEFAULT 'CZ6508000000192000145399',paid_at TEXT,confirmed_by_trainer_id INTEGER,confirmation_note TEXT,updated_at TEXT)");
         $pdo->exec("CREATE TABLE shop_order_events(id INTEGER PRIMARY KEY AUTOINCREMENT,order_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE club_member_charges(id INTEGER PRIMARY KEY,public_code TEXT,title_snapshot TEXT,amount_minor INTEGER,currency TEXT,status TEXT,updated_at TEXT)');
         $pdo->exec('CREATE TABLE club_member_charge_events(id INTEGER PRIMARY KEY AUTOINCREMENT,charge_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,actor_type TEXT,actor_id INTEGER NULL,reason TEXT,snapshot_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
