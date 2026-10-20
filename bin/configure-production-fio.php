@@ -36,6 +36,11 @@ function kisProductionFioMergeConfig(string $config,string $block):string
     if(!str_starts_with(ltrim($config),'<?php'))throw new RuntimeException('Production config.php is not a PHP file.');
     $pattern='/\R*'.preg_quote(KIS_FIO_BLOCK_BEGIN,'/').'.*?'.preg_quote(KIS_FIO_BLOCK_END,'/').'\R*/s';$without=preg_replace($pattern,"\n",$config);
     if(!is_string($without))throw new RuntimeException('Managed Fio block could not be replaced.');
+    // Older private config.php copies define FIO_IMPORT_ENABLED unconditionally.
+    // The managed block precedes them, so guard standalone legacy definitions.
+    $legacy='/^([ \t]*)(define\s*\(\s*[\'\"](FIO_IMPORT_ENABLED|FIO_AUTO_CONFIRM_ENABLED|FIO_IMPORT_START_DATE|FIO_API_TOKEN|FIO_IMPORT_LOOKBACK_DAYS)[\'\"]\s*,[^\r\n]*\);)([ \t]*)$/m';
+    $without=preg_replace_callback($legacy,static fn(array $match):string=>$match[1]."defined('".$match[3]."') || ".$match[2].$match[4],$without);
+    if(!is_string($without))throw new RuntimeException('Legacy Fio configuration could not be guarded.');
     $opening='/\A(<\?php(?:\s*declare\s*\(\s*strict_types\s*=\s*1\s*\)\s*;)?)/';$merged=preg_replace($opening,"$1\n\n".$block,$without,1,$count);
     if(!is_string($merged)||$count!==1)throw new RuntimeException('Managed Fio block could not be inserted safely.');token_get_all($merged,TOKEN_PARSE);return$merged;
 }
