@@ -82,7 +82,7 @@ function fioBookedOn(mixed $value): string
 {
     if (is_string($value)) {
         $value = trim($value);
-        if (preg_match('/^(\d{4}-\d{2}-\d{2})(?:([+-])(\d{2}):(\d{2}))?$/D', $value, $match) === 1) {
+        if (preg_match('/^(\d{4}-\d{2}-\d{2})(?:([+-])(\d{2}):?(\d{2}))?$/D', $value, $match) === 1) {
             $date = DateTimeImmutable::createFromFormat('!Y-m-d', $match[1]);
             if (!$date || $date->format('Y-m-d') !== $match[1]) {
                 throw new FioImportException('fio_invalid_booking_date');
