@@ -71,11 +71,12 @@ final class FioReadonlyImportTest extends TestCase
     public function testOfficialFioBookingDateFormatAndLegacyEpochAreAcceptedStrictly(): void
     {
         self::assertSame('2012-06-30',\fioBookedOn('2012-06-30+02:00'));
+        self::assertSame('2026-09-21',\fioBookedOn('2026-09-21+0200'));
         self::assertSame('2012-06-30',\fioBookedOn('2012-06-30'));
         self::assertSame('2026-08-03',\fioBookedOn(1785715200000));
         self::assertSame('2026-08-03',\fioBookedOn(1785715200));
 
-        foreach (['2012-02-30+02:00','2012-06-30+15:00','not-a-date'] as $invalid) {
+        foreach (['2012-02-30+02:00','2012-06-30+15:00','2026-09-21+1460','2026-09-21+2:00','not-a-date'] as $invalid) {
             try {
                 \fioBookedOn($invalid);
                 self::fail('Invalid Fio booking date must be rejected: '.$invalid);
