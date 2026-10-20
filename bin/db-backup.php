@@ -242,6 +242,8 @@ const EVIDENCE_TABLES = [
     'kis_person_links',
     'kis_legacy_roster_runs',
     'kis_legacy_roster_claims',
+    'kis_current_roster_runs',
+    'kis_current_roster_claims',
     'kis_import_sandbox_events',
     'kis_import_sandbox_items',
     'kis_import_sandbox_promotions',
