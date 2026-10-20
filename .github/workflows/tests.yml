@@ -103,3 +103,6 @@ jobs:
 
       - name: Ověřit historické soupisky a rozhodovací frontu na MariaDB
         run: php tests/Support/KisLegacyRosterMariaDbSmoke.php
+
+      - name: Ověřit převod do aktuálních soupisek a rozhodovací frontu na MariaDB
+        run: php tests/Support/KisCurrentRosterMariaDbSmoke.php

@@ -417,6 +417,10 @@ if ($is_logged_in) {
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>KIS centrum</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_rosters_admin.php') ?>" href="kis_rosters_admin.php">
                                 <i class="bi bi-people-fill me-2 text-primary"></i>KIS týmy a soupisky</a></li>
+                            <?php if ($is_admin): ?>
+                            <li><a class="dropdown-item<?= _dropActive('kis_current_rosters_admin.php') ?>" href="kis_current_rosters_admin.php">
+                                <i class="bi bi-arrow-right-circle me-2 text-primary"></i>Převod soupisek 2026/27</a></li>
+                            <?php endif; ?>
                             <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
                             <li><a class="dropdown-item<?= _dropActive('kis_training_a07_admin.php') ?>" href="kis_training_a07_admin.php">
                                 <i class="bi bi-clipboard-check me-2 text-primary"></i>A07 trénink a docházka</a></li>
