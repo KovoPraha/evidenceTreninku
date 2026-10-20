@@ -23,6 +23,19 @@ final class ConfigureProductionFioTest extends TestCase
         $block=\kisProductionFioManagedBlock($this->settings(),false);self::assertStringContainsString("define('FIO_IMPORT_ENABLED', false)",$block);self::assertStringContainsString('unit_readonly_token_1234567890',$block);
     }
 
+    public function testLegacyStandaloneFioFlagIsGuardedWithoutRepeatedChanges():void
+    {
+        $config="<?php\n\$fioImportEnabled = getenv('FIO_IMPORT_ENABLED');\n"
+            ."define('FIO_IMPORT_ENABLED', is_string(\$fioImportEnabled) && \$fioImportEnabled === '1');\n";
+        $block=\kisProductionFioManagedBlock($this->settings(),true);
+        $merged=\kisProductionFioMergeConfig($config,$block);
+        self::assertStringContainsString(
+            "defined('FIO_IMPORT_ENABLED') || define('FIO_IMPORT_ENABLED', is_string(\$fioImportEnabled) && \$fioImportEnabled === '1');",
+            $merged
+        );
+        self::assertSame($merged,\kisProductionFioMergeConfig($merged,$block));
+    }
+
     public function testMalformedTokenAndLookbackAreRejected():void
     {
         $rejected=0;foreach([['token'=>'short','lookback_days'=>3],['token'=>'unit_readonly_token_1234567890','lookback_days'=>31]]as$invalid){try{\kisProductionFioValidate($invalid);self::fail('Neplatné nastavení musí být odmítnuto.');}catch(\RuntimeException){$rejected++;}}self::assertSame(2,$rejected);
