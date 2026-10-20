@@ -23,9 +23,16 @@ if (($_GET['view']??'')==='protocol' && $batch) {
 if ($_SERVER['REQUEST_METHOD']==='POST') {
     try {
         if(!csrf_verify($_POST['csrf_token']??'')) throw new RuntimeException('Neplatný bezpečnostní token.');
-        if(($_FILES['payload']['error']??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_OK || !is_uploaded_file($_FILES['payload']['tmp_name'])
-            || (int)$_FILES['payload']['size']>KIS_PERSON_IMPORT_LIMIT) throw new RuntimeException('Vyberte úplný importní soubor JSON nebo JSON.GZ.');
-        $payload=kisPersonReadPayload((string)file_get_contents($_FILES['payload']['tmp_name']));
+        $text=(string)($_POST['payload_text']??'');
+        $uploadError=$_FILES['payload']['error']??UPLOAD_ERR_NO_FILE;
+        if($text!=='' && $uploadError!==UPLOAD_ERR_NO_FILE) throw new RuntimeException('Použijte buď soubor, nebo textový balík.');
+        if($text!=='') {
+            $payload=kisPersonReadPayload($text);
+        } else {
+            if($uploadError!==UPLOAD_ERR_OK || !is_uploaded_file($_FILES['payload']['tmp_name'])
+                || (int)$_FILES['payload']['size']>KIS_PERSON_IMPORT_LIMIT) throw new RuntimeException('Vyberte úplný importní soubor nebo vložte textový balík.');
+            $payload=kisPersonReadPayload((string)file_get_contents($_FILES['payload']['tmp_name']));
+        }
         personSensitiveConfig(); // Verify protected archive support before offering apply.
         $action=(string)($_POST['action']??'preview');
         if($action==='apply') {
@@ -104,7 +111,10 @@ Původní údaje jsou uchovány v šifrovaném archivu importu.</p>
 <form method="post" enctype="multipart/form-data" class="card card-body">
 <?=csrf_field()?>
 <label for="payload">Schválený importní balík JSON / JSON.GZ</label>
-<input type="file" class="form-control mb-3" name="payload" id="payload" accept=".json,.gz" required>
+<input type="file" class="form-control mb-3" name="payload" id="payload" accept=".json,.gz">
+<label for="payload_text">Nebo vložte textový importní balík</label>
+<textarea class="form-control mb-3" name="payload_text" id="payload_text" rows="3" maxlength="12000000" autocomplete="off" spellcheck="false"></textarea>
+<p class="text-muted">Použijte schválený JSON nebo komprimovaný textový balík KISGZ. Data se kontrolují stejně jako při nahrání souboru.</p>
 <button class="btn btn-outline-primary mb-3" name="action" value="preview">Zkontrolovat náhled</button>
 <?php if($preview): ?>
 <label for="confirmation">Potvrzení: IMPORTOVAT A NAHRADIT</label><input class="form-control mb-3" name="confirmation" id="confirmation" autocomplete="off">
