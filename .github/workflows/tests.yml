@@ -97,3 +97,6 @@ jobs:
 
       - name: Ověřit M3.5d sportovní import review na MariaDB
         run: php bin/sports-review-smoke.php
+
+      - name: Ověřit úplný import osob, rollback a vazby na MariaDB
+        run: php tests/Support/KisPersonImportMariaDbSmoke.php
