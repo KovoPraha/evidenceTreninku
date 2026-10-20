@@ -80,7 +80,7 @@ jobs:
           kisUatFixtureRestoreEntry();
           EOF
           production_retry "${SCP[@]}" /tmp/run-restore-production-uat-program.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-restore-production-uat-program.php"
-          "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-production-uat-program.php' dry-run" | tee /tmp/kis-uat-fixture-preview.json
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-restore-production-uat-program.php' dry-run" | tee /tmp/kis-uat-fixture-preview.json
           jq -e '.ok == true and .mode == "dry-run" and .product_id > 0 and .variant_id > 0 and .changed == false and (.before == "inactive" or .before == "active")' /tmp/kis-uat-fixture-preview.json >/dev/null
 
       - name: Zalohovat produkcni databazi pred zapisem
@@ -102,7 +102,7 @@ jobs:
           require __DIR__ . '/db-backup.php';
           EOF
           production_retry "${SCP[@]}" /tmp/run-restore-uat-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-restore-uat-backup.php"
-          production_retry_capture "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-uat-backup.php'" | tee /tmp/kis-uat-fixture-backup.json
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-restore-uat-backup.php'" | tee /tmp/kis-uat-fixture-backup.json
           jq -e '.ok == true and .tables > 0 and (.sha256|length) == 64' /tmp/kis-uat-fixture-backup.json >/dev/null
 
       - name: Obnovit pouze 100 Kc TEST program a znovu proverit
@@ -110,9 +110,9 @@ jobs:
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
-          production_retry_capture "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-production-uat-program.php' apply OBNOVIT-TEST-KROUZEK-100" | tee /tmp/kis-uat-fixture-apply.json
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-restore-production-uat-program.php' apply OBNOVIT-TEST-KROUZEK-100" | tee /tmp/kis-uat-fixture-apply.json
           jq -e '.ok == true and .mode == "apply" and .after == "active" and .product_id > 0 and .variant_id > 0' /tmp/kis-uat-fixture-apply.json >/dev/null
-          "${SSH[@]}" "php -d display_errors=0 '$DEPLOY_BASE/run-restore-production-uat-program.php' dry-run" | tee /tmp/kis-uat-fixture-verify.json
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-restore-production-uat-program.php' dry-run" | tee /tmp/kis-uat-fixture-verify.json
           jq -e '.ok == true and .before == "active" and .changed == false' /tmp/kis-uat-fixture-verify.json >/dev/null
 
       - name: Uklidit pomocne soubory

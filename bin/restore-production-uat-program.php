@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/shop_catalog_publication.php';
-
 /** Reopens only the dedicated 100 CZK fixture deactivated by production-test-cleanup.php. */
 final class KisUatFixtureRestoreFailure extends RuntimeException
 {
@@ -107,6 +105,7 @@ function kisUatFixtureRestoreMain(): void
     $_SERVER['SERVER_NAME'] = 'kis.kovopraha.cz';
     require_once $root . '/config.php';
     if (!defined('JE_LOKALNE') || JE_LOKALNE !== false) throw new KisUatFixtureRestoreFailure('production_mode');
+    require_once $root . '/includes/shop_catalog_publication.php';
     foreach (['DB_HOST','DB_NAME','DB_USER','DB_PASS'] as $constant) {
         if (!defined($constant)) throw new KisUatFixtureRestoreFailure('database_configuration');
     }
