@@ -111,6 +111,7 @@ final class ClubProgramWizardTest extends TestCase
             'public_name'=>$input['name'],'public_summary'=>'','location_name'=>'ZŠ Kunratice',
             'age_label'=>'školní děti','listing_status'=>'published','sort_order'=>25,'interest_enabled'=>1,
         ],'Založení původní nabídky pro test.',true);
+        self::assertSame([],\legacyClubCatalogSupersededNames($pdo));
 
         $first=\clubKunraticePrepare($pdo,7);
         $second=\clubKunraticePrepare($pdo,7);
@@ -127,6 +128,10 @@ final class ClubProgramWizardTest extends TestCase
         self::assertSame('goods',$pdo->query('SELECT offer_type FROM shop_products WHERE id=227')->fetchColumn());
         self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id='.(int)$old['product_id'])->fetchColumn());
         self::assertSame(4,(int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
+        self::assertSame(['Cyklo kroužek ZŠ Kunratice'],\legacyClubCatalogSupersededNames($pdo));
+        $fallback=\legacyClubCatalogFallback([],new \DateTimeImmutable('2026-10-20'),\legacyClubCatalogSupersededNames($pdo));
+        self::assertNotContains('Cyklo kroužek ZŠ Kunratice',array_column($fallback,'public_name'));
+        self::assertContains('Aligátoři',array_column($fallback,'public_name'));
     }
 
     /** @return array<string,mixed> */
