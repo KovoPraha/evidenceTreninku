@@ -574,6 +574,7 @@ body { font-family: Arial, Helvetica, sans-serif; font-size: .9rem; }
 .app-admin-shell :is(.workspace-hero,.hero-card) { background:var(--bs-body-bg) !important; color:var(--bs-body-color) !important; border:1px solid var(--bs-border-color); border-radius:.2rem !important; padding:1.5rem !important; }
 .app-admin-shell :is(.workspace-hero,.hero-card) :is(h1,h2,h3) { color:var(--app-blue); font-weight:400; }
 .app-admin-shell :is(.workspace-hero,.hero-card) .text-white-50 { color:var(--bs-secondary-color) !important; }
+.app-admin-shell :is(.workspace-hero,.hero-card) .btn-outline-light { --bs-btn-color:var(--bs-body-color); --bs-btn-border-color:var(--bs-border-color); --bs-btn-hover-color:var(--bs-body-color); --bs-btn-hover-bg:var(--bs-tertiary-bg); --bs-btn-hover-border-color:var(--bs-secondary-color); }
 .app-sidebar .offcanvas-body { padding:1.25rem .8rem; display:block; overflow-y:auto; }
 .app-sidebar a { text-decoration:none; }
 .app-sidebar-home, .app-sidebar-link { display:flex; align-items:center; gap:.6rem; padding:.55rem .65rem; border-radius:2px; color:var(--bs-body-color); font-size:.84rem; }
