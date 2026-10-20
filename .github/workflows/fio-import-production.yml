@@ -4,6 +4,11 @@ on:
   # Fio zatím není součástí provozu. Workflow zůstává dostupný pouze pro
   # vědomý ruční test po opětovném schválení a zapnutí produkční konfigurace.
   workflow_dispatch:
+    inputs:
+      diagnostika_dat:
+        description: 'Jen ověřit tvar dat Fio bez uložení pohybů'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -39,6 +44,7 @@ jobs:
           echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV";echo "SSH_PORT=$PORT" >> "$GITHUB_ENV";echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
 
       - name: Spustit omezený import
+        if: ${{ !inputs.diagnostika_dat }}
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
@@ -52,9 +58,38 @@ jobs:
           "${SCP[@]}" /tmp/run-fio-import.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-import.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-fio-import.php'"
 
+      - name: Zjistit pouze formát data v odpovědi Fio
+        if: ${{ inputs.diagnostika_dat }}
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          cat > /tmp/run-fio-date-diagnostic.php <<'PHP'
+          <?php
+          declare(strict_types=1);
+          $root=getenv('APP_ROOT');$host=getenv('APP_HOST');
+          if(!is_string($root)||!is_string($host))exit(64);
+          $_SERVER['HTTP_HOST']=$host;$_SERVER['SERVER_NAME']=$host;
+          require $root.'/config.php';require $root.'/includes/fio_readonly_import.php';
+          if(!defined('FIO_IMPORT_ENABLED')||FIO_IMPORT_ENABLED!==true||!defined('FIO_API_TOKEN'))exit(78);
+          $body=fioFetchPeriodJson((string)FIO_API_TOKEN,'2026-09-21','2026-09-27');
+          $document=json_decode($body,true,64,JSON_THROW_ON_ERROR);
+          $movements=$document['accountStatement']['transactionList']['transaction']??[];
+          if(!is_array($movements))exit(65);
+          if($movements!==[]&&!array_is_list($movements))$movements=[$movements];
+          $shapes=[];
+          foreach($movements as $movement){
+              $value=$movement['column0']['value']??null;
+              $shape=is_string($value)?'string/'.strlen($value).'/'.preg_replace('/[0-9]/','9',substr($value,0,64)):(get_debug_type($value).'/'.strlen((string)$value));
+              $shapes[$shape]=($shapes[$shape]??0)+1;
+          }
+          echo json_encode(['period'=>'2026-09-21/2026-09-27','count'=>count($movements),'date_shapes'=>$shapes],JSON_THROW_ON_ERROR).PHP_EOL;
+          PHP
+          "${SCP[@]}" /tmp/run-fio-date-diagnostic.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-fio-date-diagnostic.php"
+          "${SSH[@]}" "APP_ROOT='$REMOTE_DIR' APP_HOST='$APP_HOST' php '$DEPLOY_BASE/run-fio-date-diagnostic.php'"
+
       - name: Uklidit spouštěcí soubor
         if: always()
         continue-on-error: true
         run: |
-          rm -f /tmp/run-fio-import.php
-          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f '$DEPLOY_BASE/run-fio-import.php'";fi
+          rm -f /tmp/run-fio-import.php /tmp/run-fio-date-diagnostic.php
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f '$DEPLOY_BASE/run-fio-import.php' '$DEPLOY_BASE/run-fio-date-diagnostic.php'";fi
