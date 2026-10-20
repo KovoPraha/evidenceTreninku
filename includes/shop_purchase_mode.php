@@ -45,12 +45,26 @@ function shopProductRequiresAthlete(PDO $pdo, int $productId): bool
     if ($productId < 1) return false;
     $hasPublications = shopPurchaseModeTableExists($pdo, 'shop_product_publications');
     $statement = $pdo->prepare($hasPublications
-        ? 'SELECT p.offer_type,pub.public_name FROM shop_products p LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE p.id=?'
-        : 'SELECT p.offer_type,NULL AS public_name FROM shop_products p WHERE p.id=?');
+        ? 'SELECT p.*,pub.public_name FROM shop_products p LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE p.id=?'
+        : 'SELECT p.*,NULL AS public_name FROM shop_products p WHERE p.id=?');
     $statement->execute([$productId]);
     $product = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$product) return false;
     if ((string)$product['offer_type'] === 'program') return true;
+    // The reviewed Shoptet catalogue also places these two non-participation
+    // products in Kroužky. Match both their stable source key and public name:
+    // category membership alone must not turn a shirt or bike storage into
+    // enrollment, and this exception must never reopen other imported clubs.
+    $nonParticipationProducts = [
+        'shoptet:pair:250' => 'Trička',
+        'shoptet:pair:852' => 'Uskladnění kol na školní pololetí',
+    ];
+    $sourceKey = (string)($product['external_product_key'] ?? '');
+    if (shopPurchaseModeApprovedShoptetGoods($product)
+        && isset($nonParticipationProducts[$sourceKey])
+        && trim((string)($product['public_name'] ?? '')) === $nonParticipationProducts[$sourceKey]) {
+        return false;
+    }
     $signals = [(string)($product['public_name'] ?? '')];
     if (shopPurchaseModeTableExists($pdo, 'shop_product_categories')) {
         $categories = $pdo->prepare('SELECT category_path FROM shop_product_categories WHERE product_id=?');
