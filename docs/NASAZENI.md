@@ -86,12 +86,14 @@ Po opravách z pull requestů
 běh [`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/37606107788)
 úspěšně nad commitem `623e161`.
 
-## Fio je dočasně pozastavené
+## Fio synchronizace
 
-Workflow `.github/workflows/fio-import-production.yml` nemá časový plán a lze
-jej spustit pouze ručně. Produkční `FIO_IMPORT_ENABLED` má zůstat `false`.
-Obnovení vyžaduje samostatné schválení read-only tokenu, shody účtu a provozního
-dohledu; běžný deploy Fio sám nezapíná.
+Workflow `.github/workflows/fio-import-production.yml` podporuje ruční běh a
+desetiminutový plán. Plán spustí produkční job pouze při repozitářové proměnné
+`KIS_FIO_SCHEDULE_ENABLED=true`; jinak se naplánovaný job přeskočí. Samotný
+import navíc vyžaduje produkční `FIO_IMPORT_ENABLED=true`. Automatické potvrzení
+plateb řídí nezávislý `FIO_AUTO_CONFIRM_ENABLED` a spustí se až po dotažení
+historie. Běžný deploy žádný z těchto přepínačů nezapíná.
 
 `DEPLOY_TOKEN` ani `PROD_CONFIG` se už nepoužívají. `config.php` musí být na
 serveru nahraný před prvním nasazením, například přes Total Commander. Workflow
