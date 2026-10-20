@@ -469,6 +469,8 @@ if ($is_logged_in) {
                                 <i class="bi bi-envelope-paper me-2 text-info"></i>Týdenní souhrny</a></li>
                             <li><a class="dropdown-item<?= _dropActive('eshop_identity_admin.php') ?>" href="eshop_identity_admin.php">
                                 <i class="bi bi-people me-2 text-primary"></i>Účty, rodiče a sportovci</a></li>
+                            <li><a class="dropdown-item<?= _dropActive('kis_person_import_admin.php') ?>" href="kis_person_import_admin.php">
+                                <i class="bi bi-person-lines-fill me-2 text-primary"></i>Osoby a kontakty ze starého KIS</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_child_access_admin.php') ?>" href="kis_child_access_admin.php">
                                 <i class="bi bi-person-badge me-2 text-primary"></i>Přístupy sportovců</a></li>
                             <li><a class="dropdown-item<?= _dropActive('kis_transition_admin.php') ?>" href="kis_transition_admin.php">

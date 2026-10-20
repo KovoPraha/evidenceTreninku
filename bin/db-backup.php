@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-20.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-20.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -38,6 +38,8 @@ const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-20.1';
  * before the migrations of the release it precedes.
  */
 const EVIDENCE_OWNED_COLUMN_CONTRACT = [
+    // Imported profiles may legitimately have an unknown birth date.
+    'sportovci' => ['narozeni'],
     // Rows are no longer always current; a restore that loses the lifecycle
     // would silently present archived consent texts as valid.
     'club_event_term_versions' => [
@@ -233,6 +235,11 @@ const EVIDENCE_TABLES = [
     'kis_import_payment_rows',
     'kis_import_rows',
     'kis_import_runs',
+    'kis_person_batches',
+    'kis_person_profiles',
+    'kis_person_aliases',
+    'kis_person_contacts',
+    'kis_person_links',
     'kis_import_sandbox_events',
     'kis_import_sandbox_items',
     'kis_import_sandbox_promotions',

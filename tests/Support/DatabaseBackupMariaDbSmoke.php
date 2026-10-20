@@ -103,10 +103,11 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-10-20.1') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-10-20.2') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
+        'sportovci' => ['narozeni'],
         'club_event_term_versions' => ['status', 'archived_at', 'archived_by_trainer_id'],
         'club_program_enrollments' => ['terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
         'shop_order_items' => [

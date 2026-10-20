@@ -79,6 +79,7 @@ function staffPositionDefinitions(): array
                 ]],
                 ['label' => 'KIS a soupisky', 'icon' => 'arrow-repeat', 'items' => [
                     ['route' => 'kis_sync_center.php', 'label' => 'KIS centrum', 'description' => 'Import a konflikty osob', 'icon' => 'arrow-repeat'],
+                    ['route' => 'kis_person_import_admin.php', 'label' => 'Osoby ze starého KIS', 'description' => 'Úplné osoby, kontakty a zdrojové vazby', 'icon' => 'person-lines-fill'],
                     ['route' => 'kis_rosters_admin.php', 'label' => 'Týmy a soupisky', 'description' => 'Sezony, týmy a členství', 'icon' => 'people-fill'],
                     ['route' => 'kis_roster_settings_admin.php', 'label' => 'Správa struktur soupisek', 'description' => 'Opravy a uzavírání sezon a týmů', 'icon' => 'pencil-square'],
                     ['route' => 'kis_transition_admin.php', 'label' => 'Přechody sportovců', 'description' => 'Auditovaný přechod do týmu', 'icon' => 'arrow-left-right'],
