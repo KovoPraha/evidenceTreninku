@@ -58,9 +58,9 @@ function clubApprovedCatalogSettings(PDO $pdo,int $actorId,bool $apply):array
             $variantQuery->execute([$target['variant_id'],$target['product_id']]);$variant=$variantQuery->fetch(PDO::FETCH_ASSOC);
             if(!$variant||(string)$variant['sku']!==$target['sku']||(string)$variant['origin']!=='import'
                 ||(string)$variant['product_origin']!=='import'||(string)$variant['currency']!=='CZK'
-                ||(string)$variant['price_mode']!=='fixed'||(string)$variant['unit_code']!=='person'
+                ||(string)$variant['price_mode']!=='fixed'||(string)$variant['unit_code']!=='piece'
                 ||(string)$variant['catalog_status']!=='active'||(string)$variant['product_status']!=='active'
-                ||(string)$variant['offer_type']!=='program'||stripos((string)$variant['product_name'],'Pumptrack')===false
+                ||(string)$variant['offer_type']!=='goods'||stripos((string)$variant['product_name'],'Pumptrack')===false
                 ||!in_array((int)$variant['amount_minor'],[$target['old_minor'],$target['new_minor']],true))
                 throw new ClubApprovedCatalogSettingsException('Identita nebo cena importovaného Pumptracku se změnila: '.$target['variant_id']);
             $canonicalQuery->execute([$target['option']]);$canonicalPrices=$canonicalQuery->fetchAll(PDO::FETCH_COLUMN);
