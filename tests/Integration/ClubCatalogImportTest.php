@@ -68,6 +68,7 @@ final class ClubCatalogImportTest extends TestCase
         $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,visible,catalog_status) VALUES(682,154,'import','708','{}','fixed',440000,'CZK',1,'active')");
         $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(154,'active','Točňáci 1× týdně','Úterý nebo čtvrtek')");
         $bothBefore=(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn();
+        $pdo->exec('UPDATE club_program_offers SET capacity=30 WHERE program_id='.$bothBefore);
         $first=\clubTocnaciSplitApply($pdo,7,$this->root);$second=\clubTocnaciSplitApply($pdo,7,$this->root);
         self::assertSame($first,$second);
         self::assertNotSame($first['targets']['UTERY']['team_id'],$first['targets']['CTVRTEK']['team_id']);
@@ -148,10 +149,12 @@ final class ClubCatalogImportTest extends TestCase
             'CREATE TABLE club_team_series(id INTEGER PRIMARY KEY,season_type TEXT,status TEXT)','CREATE TABLE club_roster_events(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,roster_member_id INTEGER,actor_trainer_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
             "CREATE TABLE club_programs(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,description TEXT,status TEXT DEFAULT 'active',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
             "CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,season_id INTEGER,team_id INTEGER,product_id INTEGER,variant_id INTEGER UNIQUE,code TEXT UNIQUE,name TEXT,starts_on TEXT,ends_on TEXT,sales_open_at TEXT,sales_close_at TEXT,capacity INTEGER,birth_year_from INTEGER,birth_year_to INTEGER,status TEXT,created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            'CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY AUTOINCREMENT,offer_id INTEGER,sportovec_id INTEGER,status TEXT)',
+            'CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY AUTOINCREMENT,offer_id INTEGER,sportovec_id INTEGER,status TEXT,valid_from TEXT)',
             'CREATE TABLE club_program_events(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,offer_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
             "CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT,scope_key TEXT,consent_purpose TEXT,event_id INTEGER,terms_version TEXT,consent_text_plain TEXT,cancellation_policy_plain TEXT,cancellation_deadline_at TEXT,actor_trainer_id INTEGER,actor_type TEXT,actor_id INTEGER,status TEXT DEFAULT 'active',archived_at TEXT,archived_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))",
         ];foreach($schema as$sql)$pdo->exec($sql);
+        $physicalTeams=require dirname(__DIR__,2).'/migrations/20261020140000_club_program_physical_teams.php';
+        $physicalTeams['up']($pdo);self::assertTrue($physicalTeams['verify']($pdo));
         $migration=require dirname(__DIR__,2).'/migrations/20260923200000_club_program_storefront.php';$migration['up']($pdo);
         $pdo->exec("INSERT INTO club_programs(id,code,name,description,status,created_by_trainer_id) VALUES(900,'TEMPLATE','Schválený vzor','Vzor','active',7)");
         $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id,status) VALUES('club_program','program:900','program_cancellation','v1','Schválené storno podmínky.','trainer',7,'active'),('club_program','program:900','program_consent','v1','Schválený souhlas s účastí.','trainer',7,'active')");
