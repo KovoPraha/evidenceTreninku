@@ -5,6 +5,18 @@ require_once dirname(__DIR__,2).'/includes/kis_person_import.php';
 require_once dirname(__DIR__).'/Support/KisPersonImportFixture.php';
 final class KisPersonImportTest extends TestCase
 {
+    public function testDedicatedKeyFileIsValidatedAndLoadsOutsideTheApplication(): void
+    {
+        $path=tempnam(sys_get_temp_dir(),'kis-key-test-');
+        self::assertIsString($path);
+        try {
+            file_put_contents($path,kisPersonJson(['keys'=>['kis-import-v1'=>base64_encode(str_repeat('k',32))],
+                'active_version'=>'kis-import-v1','index_key'=>base64_encode(str_repeat('i',32))]));
+            $config=kisPersonArchiveConfig(null,$path);
+            self::assertSame('kis-import-v1',$config['active_version']);
+            self::assertSame(str_repeat('k',32),$config['keys']['kis-import-v1']);
+        } finally {unlink($path);}
+    }
     public function testTextTransportHasTheSameFingerprintAndValidation(): void
     {
         $json=kisPersonJson(kisPersonImportFixture());

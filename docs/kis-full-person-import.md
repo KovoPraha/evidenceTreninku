@@ -29,8 +29,14 @@ i jejich historie. Hesla, klíče a zdrojová data se nezapisují do logu.
   importovaný zdroj je odmítnut. Pád uprostřed zápisu vrátí i odstraněnou historii.
 - Chybějící datum narození zůstává SQL NULL. Zdrojové varianty, včetně RČ,
   jsou zachovány v autentizovaně šifrovaném archivu. RČ se nekopíruje do starého
-  plaintextového pole `sportovci.rc`. Klíč je oddělen pomocí HKDF od klíče
-  existujícího `PERSON_RC_KEYRING`; bez dostupného klíče zápis nezačne.
+  plaintextového pole `sportovci.rc`. Klíč je oddělen pomocí HKDF. Deploy
+  idempotentně připravuje samostatný klíč mimo aplikaci v
+  `data/.kis-secrets/kis-person-import.json` a ověřenou soukromou kopii v
+  `data/.kis-backups/keys/kis-person-import.json` (adresáře 0700, soubory 0600).
+  Existující klíče nikdy nepřepisuje. Obnova databáze musí zahrnout také tento
+  klíč; kopie není součástí SQL dumpu ani Gitu. Sdílené klíče
+  `PERSON_RC_KEYRING` zůstávají podporované pro starší archivy a nejsou měněny.
+  Bez dostupného klíče zápis nezačne.
 - `kis_person_profiles` drží kontaktní adresu odděleně od trvalé adresy.
   Kontakty mohou existovat bez přihlašovacího účtu a bez známého jména.
 - Nové účty mají náhodná neznámá hesla, `aktivni=0`, `email_overeno=0`.

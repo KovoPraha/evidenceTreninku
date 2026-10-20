@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
                 || (int)$_FILES['payload']['size']>KIS_PERSON_IMPORT_LIMIT) throw new RuntimeException('Vyberte úplný importní soubor nebo vložte textový balík.');
             $payload=kisPersonReadPayload((string)file_get_contents($_FILES['payload']['tmp_name']));
         }
-        personSensitiveConfig(); // Verify protected archive support before offering apply.
+        kisPersonArchiveConfig(); // Verify protected archive support before offering apply.
         $action=(string)($_POST['action']??'preview');
         if($action==='apply') {
             $saved=$_SESSION['kis_person_import_preview']??[];
