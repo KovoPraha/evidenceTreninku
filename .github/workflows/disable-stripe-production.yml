@@ -1,0 +1,107 @@
+name: Vypnout Stripe na produkci KIS
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Pro vypnutí napište přesně VYPNOUT-STRIPE'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  CONFIG_BACKUP_DIR: data/.kis-backups/config
+
+jobs:
+  vypnout:
+    name: Vypnout Stripe (kis.kovopraha.cz)
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - name: Ověřit potvrzení a cíl
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          [ "$POTVRZENI" = 'VYPNOUT-STRIPE' ] || { echo '❌ Chybí přesné potvrzení vypnutí.'; exit 1; }
+          [ "$APP_HOST" = 'kis.kovopraha.cz' ] || { echo '❌ Neočekávaná produkční doména.'; exit 1; }
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo '❌ Neplatná cesta aplikace.'; exit 1; }
+          case "$REMOTE_DIR" in /*|*..*|*/./*|./*|*/.) echo '❌ Neplatná cesta aplikace.'; exit 1 ;; esac
+
+      - name: Stáhnout nástroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Připravit SSH
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          for variable in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
+            [ -n "${!variable}" ] || { echo "❌ Chybí $variable."; exit 1; }
+          done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || { echo '❌ Neplatný SSH port.'; exit 1; }
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Náhled, záloha, vypnutí a nezávislé ověření
+        run: |
+          SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
+          SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          "${SSH[@]}" "set -eu; umask 077; test -d '$REMOTE_DIR'; test -s '$REMOTE_DIR/config.php'; mkdir -p '$DEPLOY_BASE' '$CONFIG_BACKUP_DIR'"
+          "${SCP[@]}" bin/disable-production-stripe.php bin/configure-production-stripe.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/"
+          cat > /tmp/run-stripe-disable.php <<EOF
+          <?php
+          putenv('DISABLE_PRODUCTION_STRIPE=1');
+          putenv('STRIPE_DISABLE_ACTION=' . (\$argv[1] ?? ''));
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('CONFIG_BACKUP_DIR=$CONFIG_BACKUP_DIR');
+          putenv('STRIPE_DISABLE_CONFIRM=' . (\$argv[2] ?? ''));
+          putenv('EXPECTED_CONFIG_SHA256=' . (\$argv[3] ?? ''));
+          require __DIR__ . '/disable-production-stripe.php';
+          kisStripeDisableMain();
+          EOF
+          "${SCP[@]}" /tmp/run-stripe-disable.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-stripe-disable.php"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-stripe-disable.php' probe" > /tmp/stripe-before.json
+          jq -e '.ok == true and .environment == "production"' /tmp/stripe-before.json > /dev/null
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-stripe-disable.php' preview" > /tmp/stripe-preview.json
+          jq -e '.ok == true and (.current_sha256 | test("^[a-f0-9]{64}$")) and (.planned_sha256 | test("^[a-f0-9]{64}$"))' /tmp/stripe-preview.json > /dev/null
+          EXPECTED_HASH="$(jq -r .current_sha256 /tmp/stripe-preview.json)"
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-stripe-disable.php' disable VYPNOUT-STRIPE '$EXPECTED_HASH'" > /tmp/stripe-result.json
+          jq -e '.ok == true and .mode == "disabled"' /tmp/stripe-result.json > /dev/null
+          "${SSH[@]}" "php '$DEPLOY_BASE/run-stripe-disable.php' probe" > /tmp/stripe-after.json
+          jq -e '.ok == true and .environment == "production" and .stripe_enabled == false' /tmp/stripe-after.json > /dev/null
+          jq -n -e --slurpfile before /tmp/stripe-before.json --slurpfile after /tmp/stripe-after.json \
+            '($before[0] | [.stripe_test_pair, .stripe_live_pair, .webhook_secret, .base_url_ok]) == ($after[0] | [.stripe_test_pair, .stripe_live_pair, .webhook_secret, .base_url_ok])' > /dev/null
+          echo '✅ Produkční Stripe je vypnutý; hodnoty klíčů nebyly změněny ani zveřejněny.'
+
+      - name: Uklidit dočasné nástroje
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-stripe-disable.php /tmp/stripe-before.json /tmp/stripe-preview.json /tmp/stripe-result.json /tmp/stripe-after.json
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then
+            ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" "rm -f '$DEPLOY_BASE/run-stripe-disable.php' '$DEPLOY_BASE/disable-production-stripe.php' '$DEPLOY_BASE/configure-production-stripe.php'"
+          fi
