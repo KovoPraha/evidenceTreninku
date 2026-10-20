@@ -21,7 +21,7 @@ function clubLandingMoney(int $minor, string $currency): string
 }
 
 $canonicalPrograms = clubProgramStorefrontCatalog($pdo);
-$programs = array_merge($canonicalPrograms, legacyClubCatalogFallback($canonicalPrograms));
+$programs = array_merge($canonicalPrograms, legacyClubCatalogFallback($canonicalPrograms, null, legacyClubCatalogSupersededNames($pdo)));
 $hasSaleableProgram = false;
 foreach ($programs as $listedProgram) {
     if (clubLandingFirstSaleableProductId($listedProgram) > 0) {

@@ -47,12 +47,41 @@ function legacyClubCatalogKey(string$value):string
     return preg_replace('/[^a-z0-9]+/','',is_string($ascii)?strtolower($ascii):$value)??'';
 }
 
-/** @return list<array<string,mixed>> */
-function legacyClubCatalogFallback(array$canonical,?DateTimeImmutable$now=null):array
+/**
+ * A retired generic card must not come back from the static fallback while
+ * its replacement groups are deliberately unpublished.
+ *
+ * @return list<string>
+ */
+function legacyClubCatalogSupersededNames(PDO $pdo):array
+{
+    $codes=[
+        'KROUZKY-2627-CYKLO-KROU-EK-Z-KUNRATICE',
+        'KROUZKY-2627-KUNRATICE-3-4',
+        'KROUZKY-2627-KUNRATICE-5-6',
+    ];
+    $query=$pdo->prepare('SELECT p.code,pr.listing_status,sp.catalog_status AS product_status '
+        .'FROM club_programs p JOIN club_program_presentations pr ON pr.program_id=p.id '
+        .'JOIN club_program_offers o ON o.program_id=p.id '
+        .'JOIN shop_products sp ON sp.id=o.product_id '
+        .'WHERE p.code IN (?,?,?)');
+    $query->execute($codes);
+    $states=[];
+    foreach($query->fetchAll(PDO::FETCH_ASSOC)as$row)$states[(string)$row['code']][]=$row;
+    $old=$states[$codes[0]]??[];
+    $retired=$old!==[];
+    foreach($old as$row)if((string)$row['listing_status']!=='hidden'||(string)$row['product_status']!=='inactive')$retired=false;
+    if($retired&&isset($states[$codes[1]],$states[$codes[2]]))return['Cyklo kroužek ZŠ Kunratice'];
+    return[];
+}
+
+/** @param list<string> $supersededNames @return list<array<string,mixed>> */
+function legacyClubCatalogFallback(array$canonical,?DateTimeImmutable$now=null,array$supersededNames=[]):array
 {
     $now??=new DateTimeImmutable('now',new DateTimeZone('Europe/Prague'));
     if($now>new DateTimeImmutable('2027-06-30 23:59:59',new DateTimeZone('Europe/Prague')))return[];
     $known=[];foreach($canonical as$program)$known[legacyClubCatalogKey((string)$program['public_name'])]=true;
+    foreach($supersededNames as$name)$known[legacyClubCatalogKey($name)]=true;
     $tocnaciSplit=isset($known[legacyClubCatalogKey('Točňáci – úterý')],$known[legacyClubCatalogKey('Točňáci – čtvrtek')]);
     $result=[];$weekdayNames=['pondělí'=>1,'po'=>1,'úterý'=>2,'středa'=>3,'st'=>3,'čtvrtek'=>4,'pátek'=>5];
     foreach(legacyClubCatalog()as$index=>$row){if(($tocnaciSplit&&(string)$row['name']==='Točňáci 1× týdně')||isset($known[legacyClubCatalogKey($row['name'])]))continue;$days=[];$lower=mb_strtolower($row['schedule'],'UTF-8');foreach($weekdayNames as$word=>$day)if(preg_match('/(^|[^[:alpha:]])'.preg_quote($word,'/').'([^[:alpha:]]|$)/u',$lower)===1)$days[$day]=true;
