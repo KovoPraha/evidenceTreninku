@@ -87,8 +87,8 @@ function shopCatalogAssertVariantOrigin(
     ) {
         throw new InvalidArgumentException('Neznámý původ varianty v katalogu.');
     }
-    if ($origin !== $productOrigin) {
-        throw new InvalidArgumentException('Varianta musí mít stejný původ jako její produkt.');
+    if ($origin === ShopCatalogOrigin::IMPORT && $productOrigin !== ShopCatalogOrigin::IMPORT) {
+        throw new InvalidArgumentException('Importovaná varianta musí patřit k importovanému produktu.');
     }
     if ($origin === ShopCatalogOrigin::IMPORT) {
         if (($sourceCandidateId ?? 0) < 1) {

@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/session_security.php';
 if (session_status() === PHP_SESSION_NONE) app_session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/ui_shell.php';
+require_once __DIR__ . '/includes/admin_shell.php';
 if (file_exists(__DIR__ . '/includes/funkce.php')) {
     require_once __DIR__ . '/includes/funkce.php';
 }
@@ -212,11 +213,14 @@ if ($is_logged_in) {
     .gs-empty { padding: .6rem .85rem; color: #6c757d; font-size: .85rem; }
     .gs-loading { padding: .6rem .85rem; color: #6c757d; font-size: .85rem; }
 </style>
-<nav class="navbar navbar-expand-xxl navbar-dark bg-dark">
+<nav class="navbar navbar-expand-xxl navbar-dark bg-dark app-staff-topbar">
     <div class="container-fluid">
         <a class="navbar-brand app-brand-link" href="<?= htmlspecialchars(appUiUrl($is_logged_in ? 'pracovni_pozice.php' : 'index.php')) ?>" aria-label="KOVO Praha – <?= $is_logged_in ? 'pracovní rozcestník' : 'úvodní stránka' ?>">
             <span class="app-brand-logo" aria-hidden="true"><img src="<?= htmlspecialchars(appUiUrl('assets/kovo-praha-logo.png')) ?>" alt="" width="500" height="167"></span>
         </a>
+        <?php if ($is_logged_in && is_array($staff_active)): ?>
+        <button class="navbar-toggler app-sidebar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#appAdminSidebar" aria-controls="appAdminSidebar" aria-label="Otevřít pracovní nabídku"><span class="navbar-toggler-icon"></span></button>
+        <?php endif; ?>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Přepnout navigaci">
             <span class="navbar-toggler-icon"></span>
@@ -607,7 +611,7 @@ if ($is_logged_in) {
                     <li class="nav-item">
                         <form method="post" action="logout.php" class="d-inline">
                             <?= csrf_field() ?>
-                            <button type="submit" class="nav-link text-danger border-0 bg-transparent">
+                            <button type="submit" class="nav-link text-light border-0 bg-transparent">
                                 <i class="bi bi-box-arrow-right me-1"></i>Odhlásit
                             </button>
                         </form>
@@ -626,6 +630,7 @@ if ($is_logged_in) {
         </div>
     </div>
 </nav>
+<?php if ($is_logged_in && is_array($staff_active)) appAdminSidebar($staff_active_code,staffCurrentRoute(__DIR__)??$_currentPage,defined('JE_LOKALNE') && JE_LOKALNE === true); ?>
 
 <!-- Toast kontejner -->
 <div class="toast-container-global" id="toastContainer" aria-live="polite" aria-atomic="true"></div>

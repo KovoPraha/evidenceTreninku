@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/shop_catalog_origin.php';
 require_once __DIR__ . '/shop_catalog_publication.php';
 require_once __DIR__ . '/shop_coupon.php';
+require_once __DIR__ . '/shop_attribute.php';
 
 final class ShopManualCatalogException extends RuntimeException {}
 
@@ -120,11 +121,11 @@ function shopManualCatalogAddVariant(PDO $pdo, int $actorId, int $productId, arr
     try {
         shopManualCatalogDecision($actorId,$reason,$confirmed);
         $product = shopManualCatalogLockProduct($pdo,$productId);
-        if ((string)$product['origin'] !== ShopCatalogOrigin::MANUAL) {
-            throw new ShopManualCatalogException('Novou ruční variantu lze přidat jen k ručnímu produktu.');
-        }
+        shopManualCatalogAssertCanAddVariant($product);
         $variant = shopManualCatalogVariantInput($variant);
         shopCatalogAssertManualSku($variant['sku']);
+        shopCatalogAssertVariantOrigin(ShopCatalogOrigin::MANUAL,null,$actorId,(string)$product['origin']);
+        shopManualCatalogAssertVariantCombination($pdo,$productId,$variant['attributes_json']);
         shopManualCatalogAssertSkuAvailable($pdo,$variant['sku']);
         $variantStatus = (string)$product['catalog_status'] === 'active' ? 'active' : 'draft';
         $variantId = shopManualCatalogInsertVariant($pdo,$actorId,$productId,$variant,$variantStatus);
@@ -186,15 +187,34 @@ function shopManualCatalogUpdateVariant(PDO $pdo, int $actorId, int $variantId, 
         shopManualCatalogLockProduct($pdo,$productId);
         $before = shopManualCatalogLockVariant($pdo,$variantId);
         if((int)$before['product_id']!==$productId)throw new ShopManualCatalogException('Varianta změnila produkt během úpravy.');
+        // Stock belongs to its own movement writer, never to the general editor.
+        // Preserve signed imported balances and do not overwrite a concurrent checkout.
+        if (array_key_exists('stock_quantity_decimal',$input)) {
+            $submittedStock = trim((string)$input['stock_quantity_decimal']);
+            $sameStock = $submittedStock === (string)($before['stock_quantity_decimal']??'');
+            if (!$sameStock && !str_starts_with($submittedStock,'-')) {
+                $sameStock = shopManualCatalogComparable(shopManualCatalogStock($submittedStock)) === shopManualCatalogComparable($before['stock_quantity_decimal']);
+            }
+            if (!$sameStock) throw new ShopManualCatalogException('Sklad upravte samostatnou auditovanou korekcí, aby vždy vznikl pohyb.');
+        }
+        $input['stock_quantity_decimal']='';
+        if ((string)$before['origin']===ShopCatalogOrigin::IMPORT
+            && trim((string)($input['sku']??''))!==(string)$before['sku']) {
+            throw new ShopManualCatalogException('Původní kód převzaté varianty se nemění.');
+        }
         $values = shopManualCatalogVariantInput($input);
+        $values['stock_quantity_decimal']=$before['stock_quantity_decimal'];
+        if ((string)$before['origin']===ShopCatalogOrigin::IMPORT) $values['sku']=(string)$before['sku'];
         if ((string)$before['origin'] === ShopCatalogOrigin::MANUAL) {
             shopCatalogAssertManualSku($values['sku']);
         } elseif ($values['sku'] !== (string)$before['sku']) {
             throw new ShopManualCatalogException('SKU importované varianty se kvůli budoucím importům nemění.');
         }
         shopManualCatalogAssertSkuAvailable($pdo,$values['sku'],$variantId);
+        if (json_decode($values['attributes_json'],true)!==json_decode((string)$before['attributes_json'],true)) {
+            shopManualCatalogAssertVariantCombination($pdo,$productId,$values['attributes_json'],$variantId);
+        }
         // R11 keeps inventory corrections on their own audited movement path.
-        if(shopManualCatalogComparable($values['stock_quantity_decimal'])!==shopManualCatalogComparable($before['stock_quantity_decimal']))throw new ShopManualCatalogException('Sklad upravte samostatnou auditovanou korekcí, aby vždy vznikl pohyb.');
         $values['stock_quantity_decimal']=$before['stock_quantity_decimal'];
         $changed = false;
         foreach ($values as $key=>$value) {
@@ -446,6 +466,9 @@ function shopManualCatalogInventoryMovement(PDO $pdo, int $variantId, int $actor
 
 function shopManualCatalogStockMicros(string $value): int
 {
+    // Imported opening balances may be negative; an inventory correction must
+    // record the full delta when bringing such a balance back to zero.
+    if (str_starts_with($value,'-')) return -shopManualCatalogStockMicros(substr($value,1));
     $normalized=shopManualCatalogStock($value);
     if($normalized===null)return 0;
     [$whole,$fraction]=explode('.',$normalized,2);
@@ -461,6 +484,71 @@ function shopManualCatalogMicrosDecimal(int $micros): string
 function shopManualCatalogComparable(mixed $value): string
 {
     return $value===null?'__NULL__':(string)$value;
+}
+
+/** @param array<string,mixed> $product */
+function shopManualCatalogAssertCanAddVariant(array $product): void
+{
+    if (($product['catalog_status']??'') === 'inactive') {
+        throw new ShopManualCatalogException('K archivovanému produktu nelze přidat variantu.');
+    }
+    if (($product['origin']??'') === ShopCatalogOrigin::IMPORT
+        && (($product['offer_type']??'') !== 'goods' || ($product['item_type']??'product') !== 'product')) {
+        throw new ShopManualCatalogException('Nové varianty převzatého katalogu lze přidat pouze ke zboží.');
+    }
+    if (!in_array((string)($product['origin']??''),ShopCatalogOrigin::VALUES,true)) {
+        throw new ShopManualCatalogException('Produkt nemá podporovaný původ.');
+    }
+}
+
+function shopManualCatalogAssertVariantCombination(PDO $pdo,int $productId,string $json,?int $exceptId=null): void
+{
+    $normalize=static function(string $json):array {
+        $values=json_decode($json,true,64,JSON_THROW_ON_ERROR);
+        if (!is_array($values)) return [];
+        foreach ($values as &$value) $value=shopAttributeValueText($value);
+        unset($value);
+        ksort($values,SORT_STRING);
+        return $values;
+    };
+    $wanted=$normalize($json);
+    // Existing products may have several unnamed seasonal variants.
+    if ($wanted===[]) return;
+    $query=$pdo->prepare('SELECT id,attributes_json FROM shop_variants WHERE product_id=?');
+    $query->execute([$productId]);
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if ((int)$row['id']===$exceptId) continue;
+        try {$existing=$normalize((string)$row['attributes_json']);} catch (JsonException) {continue;}
+        if ($existing===$wanted) throw new ShopManualCatalogException('Varianta se stejnými parametry už existuje.');
+    }
+}
+
+/** @param list<array<string,mixed>> $variants @return list<int> */
+function shopManualCatalogAddVariants(PDO $pdo,int $actorId,int $productId,array $variants,string $reason,bool $confirmed): array
+{
+    if ($variants===[] || count($variants)>64) throw new InvalidArgumentException('Vyberte 1 až 64 variant.');
+    shopManualCatalogDecision($actorId,$reason,$confirmed);
+    $pdo->beginTransaction();
+    try {
+        $product=shopManualCatalogLockProduct($pdo,$productId);
+        shopManualCatalogAssertCanAddVariant($product);
+        $ids=[];
+        foreach ($variants as $input) {
+            $variant=shopManualCatalogVariantInput($input);
+            shopCatalogAssertManualSku($variant['sku']);
+            shopCatalogAssertVariantOrigin(ShopCatalogOrigin::MANUAL,null,$actorId,(string)$product['origin']);
+            shopManualCatalogAssertSkuAvailable($pdo,$variant['sku']);
+            shopManualCatalogAssertVariantCombination($pdo,$productId,$variant['attributes_json']);
+            $id=shopManualCatalogInsertVariant($pdo,$actorId,$productId,$variant,$product['catalog_status']==='active'?'active':'draft');
+            shopManualCatalogEvent($pdo,$productId,$id,$actorId,'add_variant',null,shopManualCatalogLockVariant($pdo,$id),$reason);
+            $ids[]=$id;
+        }
+        $pdo->commit();
+        return $ids;
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        throw $exception;
+    }
 }
 
 /** @param array<string,mixed>|null $before @param array<string,mixed> $after */

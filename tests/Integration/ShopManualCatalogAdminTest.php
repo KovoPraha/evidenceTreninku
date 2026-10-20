@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2) . '/includes/shop_manual_catalog.php';
 require_once dirname(__DIR__,2) . '/includes/shop_catalog_management.php';
+require_once dirname(__DIR__,2) . '/includes/shop_admin_input.php';
 
 final class ShopManualCatalogAdminTest extends TestCase
 {
@@ -110,6 +111,76 @@ final class ShopManualCatalogAdminTest extends TestCase
         try{\shopManualCatalogCreate($pdo,7,['name'=>'Neplatný typ','offer_type'=>'rental','item_type'=>'service','visibility'=>'visible'],$this->variant('KP-RENTAL',1000,null),'Kontrola typů.',true);self::fail('Unsupported manual type must fail closed.');}
         catch(\InvalidArgumentException){}
         self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE offer_type='rental'")->fetchColumn());
+    }
+
+    public function testImportedGoodsAcceptAuditedManualVariantsWithoutChangingTheirProvenance(): void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260817110000_shop_catalog_admin.php';$migration['up']($pdo);
+        $one=$this->variant('KP-BLUE-M',7000,'3');$one['attributes_json']='{"Barva":"Modrá","Velikost":"M"}';
+        $two=$this->variant('KP-BLUE-L',8000,'0');$two['attributes_json']='{"Barva":"Modrá","Velikost":"L"}';
+        $ids=\shopManualCatalogAddVariants($pdo,7,501,[$one,$two],'LOCALHOST další velikosti.',true);
+        self::assertCount(2,$ids);
+        $rows=$pdo->query('SELECT * FROM shop_variants WHERE id IN ('.implode(',',$ids).') ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
+        foreach($rows as $row){self::assertSame('manual',$row['origin']);self::assertNull($row['source_candidate_id']);self::assertSame(7,(int)$row['created_by_trainer_id']);self::assertSame('active',$row['catalog_status']);}
+        self::assertSame('import',$pdo->query('SELECT origin FROM shop_products WHERE id=501')->fetchColumn());
+        self::assertSame('IMPORT-1',$pdo->query('SELECT sku FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM shop_catalog_admin_events WHERE action='add_variant'")->fetchColumn());
+        $rows[0]['amount_minor']=9000;unset($rows[0]['stock_quantity_decimal']);
+        \shopManualCatalogUpdateVariant($pdo,7,$ids[0],$rows[0],'Úprava ručně doplněné varianty.',true);
+        self::assertSame(9000,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id='.$ids[0])->fetchColumn());
+        self::assertSame('3.000000',$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id='.$ids[0])->fetchColumn());
+    }
+
+    public function testDuplicateCombinationRollsBackTheWholeVariantBatch(): void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260817110000_shop_catalog_admin.php';$migration['up']($pdo);
+        $one=$this->variant('KP-FIRST',7000,'3');$one['attributes_json']='{"Velikost":"128","Barva":"Modrá"}';
+        $two=$this->variant('KP-SECOND',8000,'0');$two['attributes_json']='{"Barva":"Modrá","Velikost":128}';
+        try {\shopManualCatalogAddVariants($pdo,7,501,[$one,$two],'Duplicitní kombinace.',true);self::fail('Duplicate combinations must roll back.');}
+        catch(\ShopManualCatalogException $exception){self::assertStringContainsString('stejnými parametry',$exception->getMessage());}
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_variants')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_admin_events')->fetchColumn());
+        self::assertFalse($pdo->inTransaction());
+    }
+
+    public function testImportedNegativeStockSurvivesPriceEditAndCorrectsThroughOneMovement(): void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260817110000_shop_catalog_admin.php';$migration['up']($pdo);
+        $pdo->exec("UPDATE shop_variants SET stock_quantity_decimal='-2.000000' WHERE id=601");
+        $input=$this->variant('IMPORT-1',7500,null);unset($input['stock_quantity_decimal']);
+        \shopManualCatalogUpdateVariant($pdo,7,601,$input,'Cena se zachováním záporného stavu.',true);
+        self::assertSame('-2.000000',$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+        try {\shopAdminAdjustStock($pdo,7,601,501,'0','-1.000000','Zastaralý formulář.',true);self::fail('Stale balances must be rejected.');} catch(\ShopManualCatalogException){}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_inventory_movements')->fetchColumn());
+        \shopAdminAdjustStock($pdo,7,601,501,'0','-2.000000','Inventura.',true);
+        $move=$pdo->query('SELECT * FROM shop_inventory_movements')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('2.000000',$move['quantity_delta_decimal']);self::assertSame('0.000000',$move['stock_after_decimal']);
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_inventory_movements')->fetchColumn());
+    }
+
+    public function testBulkPriceEditRejectsStalePricesWithoutPartialWrites(): void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260817110000_shop_catalog_admin.php';$migration['up']($pdo);
+        $new=\shopManualCatalogAddVariant($pdo,7,501,$this->variant('KP-PRICE',3000,'0'),'Další varianta.',true);
+        try {\shopAdminUpdatePrices($pdo,7,[601=>['amount'=>6000,'expected'=>5000],$new['id']=>['amount'=>4000,'expected'=>9999]],'Zastaralý ceník.',true,501);self::fail('Stale price must reject all changes.');}catch(\ShopManualCatalogException){}
+        self::assertSame(5000,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM shop_catalog_admin_events WHERE action='update_price'")->fetchColumn());
+        self::assertSame(2,\shopAdminUpdatePrices($pdo,7,[601=>['amount'=>6000,'expected'=>5000],$new['id']=>['amount'=>4000,'expected'=>3000]],'Nový ceník.',true,501));
+        self::assertSame('5.000000',$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM shop_catalog_admin_events WHERE action='update_price'")->fetchColumn());
+    }
+
+    public function testImportedLowercaseSkuAndRetiredChoiceSurviveEditing(): void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260817110000_shop_catalog_admin.php';$migration['up']($pdo);
+        $pdo->exec("UPDATE shop_variants SET sku='old-code/m',attributes_json='{\"Velikost\":\"legacy M\"}' WHERE id=601");
+        $definitions=['Velikost'=>['active'=>1,'value_type'=>'choice','display_name'=>'Velikost','choices'=>['L','XL']]];
+        $input=\shopAdminParseVariant(['sku'=>'old-code/m','amount'=>'75','visible'=>'1','unit_code'=>'ks','attribute_keys'=>['Velikost'],'attribute_values'=>['legacy M']],$definitions,['Velikost'=>'legacy M']);
+        unset($input['stock_quantity_decimal']);
+        \shopManualCatalogUpdateVariant($pdo,7,601,$input,'Změna ceny původní varianty.',true);
+        self::assertSame('old-code/m',$pdo->query('SELECT sku FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame('{"Velikost":"legacy M"}',$pdo->query('SELECT attributes_json FROM shop_variants WHERE id=601')->fetchColumn());
+        self::assertSame(7500,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=601')->fetchColumn());
     }
 
     /** @return array<string,mixed> */
