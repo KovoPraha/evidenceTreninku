@@ -665,6 +665,35 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_items')->fetchColumn());
     }
 
+    public function testNumberSeriesAreUsedByAccountAndGuestCheckoutAndReplay():void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20261021210000_shop_number_series.php';$migration['up']($pdo);
+        \shopNumberSeriesSave($pdo,7,['action'=>'mapping','mapping_type'=>'product','mapping_key'=>'501','category_id'=>32,'revision'=>0],'LOCALHOST účetní zařazení',true);
+        $prefix=(new \DateTimeImmutable('now',new \DateTimeZone('Europe/Prague')))->format('y').'302';
+        $key=bin2hex(random_bytes(16));$token=bin2hex(random_bytes(32));$customer=['first_name'=>'LOCALHOST','last_name'=>'NEPLATIT','email'=>'series@example.test','confirmed'=>'1'];
+        $guest=\shopGuestCheckoutPlace($pdo,601,1,$customer,$key,$token,self::BANK);
+        self::assertSame($prefix.'00001',$guest['variable_symbol']);
+        self::assertStringContainsString('*X-VS:'.$guest['variable_symbol'].'*',$guest['spd_payload']);
+        \shopCartSetQuantity($pdo,10,601,1);$cart=\shopCartDetail($pdo,10);
+        $account=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint']);
+        self::assertSame($prefix.'00002',$account['variable_symbol']);
+        $replay=\shopGuestCheckoutPlace($pdo,601,1,$customer,$key,$token,self::BANK);
+        self::assertTrue($replay['replayed']);self::assertSame($guest['variable_symbol'],$replay['variable_symbol']);
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_number_assignments')->fetchColumn());
+        self::assertSame(3,(int)$pdo->query('SELECT next_number FROM shop_number_series_counters')->fetchColumn());
+    }
+
+    public function testExhaustedSeriesRollsBackGuestOrderStockPaymentAndMail():void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20261021210000_shop_number_series.php';$migration['up']($pdo);
+        $year=(int)(new \DateTimeImmutable('now',new \DateTimeZone('Europe/Prague')))->format('Y');
+        $pdo->prepare('INSERT INTO shop_number_series_counters VALUES(80,?,100000)')->execute([$year]);
+        try {\shopGuestCheckoutPlace($pdo,601,1,['first_name'=>'LOCALHOST','last_name'=>'NEPLATIT','email'=>'series@example.test','confirmed'=>'1'],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);self::fail('Exhaustion must refuse checkout.');}
+        catch(\ShopCheckoutException $e){self::assertStringContainsString('vyčerpaná',$e->getMessage());}
+        foreach(['shop_orders','shop_order_items','payments','shop_inventory_movements','shop_order_number_assignments','shop_order_accounting_items','club_event_notifications'] as $table) self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM '.$table)->fetchColumn(),$table);
+        self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');

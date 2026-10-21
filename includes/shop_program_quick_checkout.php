@@ -75,7 +75,7 @@ function shopProgramQuickCheckoutPlace(
             $item->execute([$orderId,(int)$variant['product_id'],$variantId,null,$requestId,(string)$variant['public_name'],(string)$variant['sku'],(string)$variant['attributes_json'],$unit,$unit,$currency,$variant['includes_vat'],$variant['vat_rate_basis_points'],clubProgramTermsSnapshotJson($terms),$acceptedAt,$accountId]);
             $orderItemId=(int)$pdo->lastInsertId();
             clubConsentStore($pdo,$orderItemId,$accountId,$customConsentSnapshots);
-            $variableSymbol=shopPaymentVariableSymbol($orderId);$spd=shopPaymentSpdPayload($bank['iban'],$unit,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
+            $variableSymbol=shopOrderAssignVariableSymbol($pdo,$orderId);$spd=shopPaymentSpdPayload($bank['iban'],$unit,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
             if(shopPaymentPolicyColumnExists($pdo,'payments','accepted_payment_methods'))$pdo->prepare("INSERT INTO payments(payable_type,payable_id,method,accepted_payment_methods,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) VALUES('shop_order',?,'bank_transfer',?,'pending',?,?,?,?,?,?,?,?)")
                 ->execute([$orderId,SHOP_PAYMENT_POLICY_BANK_ONLY,$unit,$currency,$variableSymbol,$bank['iban'],$bank['bic']!==''?$bank['bic']:null,$bank['account_label'],$spd,$dueAt]);
             else$pdo->prepare("INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) VALUES('shop_order',?,'bank_transfer','pending',?,?,?,?,?,?,?,?)")
@@ -99,6 +99,7 @@ function shopProgramQuickCheckoutPlace(
         }catch(Throwable$exception){
             if($pdo->inTransaction())$pdo->rollBack();
             if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException||$exception instanceof ShopProgramQuickCheckoutException||$exception instanceof AthleteRegistrationException||$exception instanceof PersonSensitiveException)throw$exception;
+            if($exception instanceof ShopNumberSeriesException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
             $reference=shopCheckoutDiagnosticReference($keyHash,$orderId);error_log('shop_program_quick_checkout failed: '.$reference.' '.shopCheckoutDiagnosticTrace($exception));
             throw new ShopProgramQuickCheckoutException('Přihlášku se nepodařilo vytvořit bez částečného zápisu.',0,$exception);
         }
