@@ -265,6 +265,115 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame('active',$pdo->query('SELECT status FROM shop_carts')->fetchColumn());
     }
 
+    public function testCashReceiptChangesMethodActivatesOrderAndIsIdempotent():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $paymentId=(int)$order['payment_id'];
+        $result=\shopOrderAdminConfirmManualPayment($pdo,$paymentId,7,'cash','Hotovost převzata osobně, doklad P123.',true);
+        self::assertTrue($result['changed']);
+        $payment=$pdo->query('SELECT * FROM payments')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('cash',$payment['method']);self::assertSame('cash',$payment['payment_source']);
+        self::assertSame('paid',$payment['status']);self::assertNotNull($payment['paid_at']);
+        self::assertSame(7,(int)$payment['confirmed_by_trainer_id']);
+        self::assertSame('Hotovost převzata osobně, doklad P123.',$payment['confirmation_note']);
+        self::assertSame('processing',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());
+        self::assertSame('paid',$pdo->query('SELECT payment_status FROM shop_orders')->fetchColumn());
+        $event=$pdo->query('SELECT * FROM shop_order_events ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('confirm_cash_payment',$event['action']);self::assertSame('trainer',$event['actor_type']);self::assertSame(7,(int)$event['actor_id']);
+        self::assertStringContainsString('z převodu na hotovost',$event['note']);
+        self::assertStringContainsString('P123',$event['note']);
+        self::assertSame('cash',\shopOrderAdminList($pdo)[0]['method']);
+        self::assertSame('cash',\shopOrderByCode($pdo,10,(string)$order['public_code'])['method']);
+        self::assertFalse(\shopOrderAdminConfirmManualPayment($pdo,$paymentId,7,'cash','Opakované potvrzení.',true)['changed']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='confirm_cash_payment'")->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_payment_received'")->fetchColumn());
+        self::assertSame(4.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+    }
+
+    public function testCashRequiresExplicitReceiptReasonAndManualActor():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $paymentId=(int)$order['payment_id'];
+        foreach([['cash','Převzato.',false],['cash',' ',true],['cash',str_repeat('x',1001),true],['stripe','Převzato.',true],['forged','Převzato.',true]] as [$method,$reason,$confirmed]){
+            try{\shopOrderAdminConfirmManualPayment($pdo,$paymentId,7,$method,$reason,$confirmed);self::fail('Invalid receipt must fail.');}catch(\InvalidArgumentException){}
+        }
+        try{\shopOrderConfirmPayment($pdo,$paymentId,'cash','system',null,'Automaticky.');self::fail('Cash needs a named staff actor.');}catch(\InvalidArgumentException){}
+        self::assertSame('bank_transfer',$pdo->query('SELECT method FROM payments')->fetchColumn());
+        self::assertSame('pending',$pdo->query('SELECT status FROM payments')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_notifications')->fetchColumn());
+    }
+
+    public function testCashCannotRewriteSettledOrCancelledPayment():void
+    {
+        foreach(['paid','cancelled'] as $state){
+            $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+            $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+            if($state==='paid')\shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'Ověřeno v bance.',true);
+            else \shopOrderAdminCancel($pdo,(int)$order['id'],7,'Storno zákazníkem.',true);
+            try{\shopOrderAdminConfirmManualPayment($pdo,(int)$order['payment_id'],7,'cash','Převzato.',true);self::fail('A terminal payment cannot change method.');}catch(\ShopCheckoutException){}
+            self::assertSame('bank_transfer',$pdo->query('SELECT method FROM payments')->fetchColumn());
+            self::assertSame($state,$pdo->query('SELECT status FROM payments')->fetchColumn());
+        }
+    }
+
+    public function testCashReceiptRollsBackWhenAuditCannotBeWritten():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $pdo->exec("CREATE TRIGGER reject_cash_audit BEFORE INSERT ON shop_order_events WHEN NEW.action='confirm_cash_payment' BEGIN SELECT RAISE(ABORT,'test audit failure'); END");
+        try{\shopOrderAdminConfirmManualPayment($pdo,(int)$order['payment_id'],7,'cash','Převzato.',true);self::fail('Receipt must roll back with its audit.');}catch(\ShopCheckoutException){}
+        self::assertSame('bank_transfer',$pdo->query('SELECT method FROM payments')->fetchColumn());
+        self::assertSame('pending',$pdo->query('SELECT status FROM payments')->fetchColumn());
+        self::assertNull($pdo->query('SELECT paid_at FROM payments')->fetchColumn());
+        self::assertSame('placed',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_event_notifications')->fetchColumn());
+    }
+
+    public function testCashRejectsPartialAllocationAndMismatchedAmount():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $pdo->exec('CREATE TABLE club_finance_allocations(order_id INTEGER,amount_minor INTEGER)');
+        $pdo->prepare('INSERT INTO club_finance_allocations VALUES (?,100)')->execute([(int)$order['id']]);
+        try{\shopOrderAdminConfirmManualPayment($pdo,(int)$order['payment_id'],7,'cash','Převzato.',true);self::fail('Partial allocations must be reconciled separately.');}catch(\ShopCheckoutException){}
+        $pdo->exec('DELETE FROM club_finance_allocations');$pdo->exec('UPDATE payments SET amount_minor=1');
+        try{\shopOrderAdminConfirmManualPayment($pdo,(int)$order['payment_id'],7,'cash','Převzato.',true);self::fail('Mismatched amount must fail.');}catch(\ShopCheckoutException){}
+        self::assertSame('bank_transfer',$pdo->query('SELECT method FROM payments')->fetchColumn());
+        self::assertSame('pending',$pdo->query('SELECT status FROM payments')->fetchColumn());
+    }
+
+    public function testLaterOnlineOrBankConfirmationCannotOverwriteCashReceipt():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        $paymentId=(int)$order['payment_id'];
+        $pdo->exec("UPDATE payments SET stripe_checkout_session_id='cs_test_existing'");
+        \shopOrderAdminConfirmManualPayment($pdo,$paymentId,7,'cash','Převzato.',true);
+        foreach(['bank_transfer','stripe'] as $source){
+            try{\shopOrderConfirmPayment($pdo,$paymentId,$source,'trainer',7,'Pozdní potvrzení.');self::fail('Cash cannot be overwritten.');}catch(\ShopCheckoutException){}
+        }
+        self::assertSame('cash',$pdo->query('SELECT method FROM payments')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='confirm_cash_payment'")->fetchColumn());
+    }
+
+    public function testCashPaymentCanBeCancelledAndRefundedWithReceiptReference():void
+    {
+        $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);
+        \shopOrderAdminConfirmManualPayment($pdo,(int)$order['payment_id'],7,'cash','Doklad P123.',true);
+        $cancel=\shopOrderAdminCancel($pdo,(int)$order['id'],7,'Vrácení zboží.',true);
+        self::assertSame('refund_required',$cancel['payment_status']);
+        self::assertTrue(\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'V456','Hotovost předána zákazníkovi.',true)['changed']);
+        self::assertFalse(\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'V456','Opakování.',true)['changed']);
+        self::assertSame('refunded',$pdo->query('SELECT payment_status FROM shop_orders')->fetchColumn());
+        self::assertSame('refunded',$pdo->query('SELECT status FROM payments')->fetchColumn());
+        self::assertSame('cash',$pdo->query('SELECT method FROM payments')->fetchColumn());
+        self::assertSame('V456',$pdo->query('SELECT refund_reference FROM payments')->fetchColumn());
+        self::assertSame(5.0,(float)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=601')->fetchColumn());
+    }
+
     public function testAdminBankConfirmationIsExplicitAuditedAndIdempotent():void
     {
         $pdo=$this->database();\shopCartSetQuantity($pdo,10,601,1);$order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,\shopCartDetail($pdo,10)['fingerprint']);$paymentId=(int)$order['payment_id'];

@@ -93,7 +93,7 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('aria-label="Výsledný typ produktu', $catalog);
         self::assertStringContainsString('aria-label="Poznámka k produktu', $catalog);
         self::assertStringContainsString('aria-label="Důvod storna', $orders);
-        self::assertStringContainsString('placeholder="Reference bankovní transakce', $payments);
+        self::assertStringContainsString('placeholder="Reference transakce nebo pokladního dokladu', $payments);
     }
 
     public function testRemainingCustomerBookingFormsHaveHeadingsAndLabels(): void
