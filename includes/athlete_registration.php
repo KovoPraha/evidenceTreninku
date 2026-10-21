@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/account_person_claim.php';
 require_once __DIR__ . '/person_sensitive.php';
 require_once __DIR__ . '/private_storage.php';
+require_once __DIR__ . '/registration_text_labels.php';
 
 const ATHLETE_REGISTRATION_CONTRACT = 'athlete-registration-v1';
 const ATHLETE_REGISTRATION_SCOPE = 'athlete_registration';
@@ -14,7 +15,7 @@ final class AthleteRegistrationException extends RuntimeException
 {
 }
 
-/** @return array<string,array{id:int,version:string,text:string}> */
+/** @return array<string,array{id:int,version:string,text:string,title:string}> */
 function athleteRegistrationCurrentTerms(PDO $pdo): array
 {
     $purposes = [
@@ -24,7 +25,7 @@ function athleteRegistrationCurrentTerms(PDO $pdo): array
         'photo_public',
     ];
     $statement = $pdo->prepare(
-        'SELECT id,terms_version,consent_text_plain FROM club_event_term_versions '
+        'SELECT * FROM club_event_term_versions '
         . 'WHERE scope_type=? AND scope_key=? AND consent_purpose=? '
         . 'ORDER BY created_at DESC,id DESC LIMIT 1'
     );
@@ -37,6 +38,7 @@ function athleteRegistrationCurrentTerms(PDO $pdo): array
             'id' => (int)$row['id'],
             'version' => (string)$row['terms_version'],
             'text' => (string)$row['consent_text_plain'],
+            'title' => registrationTextTitle($row, $purpose),
         ];
     }
     // Federation sharing is optional. Older isolated databases can omit this
@@ -46,6 +48,7 @@ function athleteRegistrationCurrentTerms(PDO $pdo): array
     if ($csc) $terms['csc_birth_number_sharing'] = [
         'id' => (int)$csc['id'], 'version' => (string)$csc['terms_version'],
         'text' => (string)$csc['consent_text_plain'],
+        'title' => registrationTextTitle($csc, 'csc_birth_number_sharing'),
     ];
     return $terms;
 }

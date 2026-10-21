@@ -34,6 +34,10 @@ try {
     ($migration['up'])($pdo);
     ($migration['up'])($pdo);
     if (!(($migration['verify'])($pdo))) throw new RuntimeException('Migration did not verify.');
+    $titles = require dirname(__DIR__,2).'/migrations/20261021170000_registration_text_titles.php';
+    ($titles['up'])($pdo);
+    ($titles['up'])($pdo);
+    if (!(($titles['verify'])($pdo))) throw new RuntimeException('Title migration did not verify.');
     $purpose = 'birth_number_legal_notice';
     $base = registrationTextsCurrent($pdo, $purpose);
     $first = registrationTextsSaveDraft($pdo,$purpose,'LOCALHOST První konečné znění.','LOCALHOST test A',(int)$base['id']);
@@ -62,6 +66,13 @@ try {
     $published = (int)$pdo->query('SELECT id FROM athlete_registration_text_drafts WHERE published_term_id IS NOT NULL')->fetchColumn();
     $termId = registrationTextsPublish($pdo,$published,true);
     if (registrationTextsPublish($pdo,$published,true) !== $termId) throw new RuntimeException('Retry is not idempotent.');
+    $base = registrationTextsCurrent($pdo,$purpose);
+    $draft = registrationTextsSaveDraft($pdo,$purpose,$base['consent_text_plain'],'LOCALHOST Pouze název',(int)$base['id'],'LOCALHOST Nový název souhlasu');
+    registrationTextsPublish($pdo,$draft,true);
+    $renamed = registrationTextsCurrent($pdo,$purpose);
+    if ($renamed['title_plain'] !== 'LOCALHOST Nový název souhlasu' || $renamed['consent_text_plain'] !== $base['consent_text_plain']) throw new RuntimeException('Title-only publication did not preserve body.');
+    $history = registrationTextsHistory($pdo,$purpose);
+    if ($history[1]['title_plain'] !== 'Informace k rodnému číslu') throw new RuntimeException('Original title was not preserved in history.');
     echo 'MariaDB registration texts smoke OK ('.$pdo->query('SELECT VERSION()')->fetchColumn().")\n";
 } finally {
     $server->exec('DROP DATABASE '.$quoted);
