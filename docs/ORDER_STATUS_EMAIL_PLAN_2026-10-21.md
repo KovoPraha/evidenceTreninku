@@ -2,6 +2,23 @@
 
 Aktualizace: 21. 10. 2026, Europe/Prague.
 
+## Aktuální autorizace vydání 21. 10. 2026
+
+Vlastník následně výslovně schválil commit, push a nasazení na produkci.
+Tím nahrazuje dřívější zákaz vzdálených kroků níže; zákaz skutečných e-mailů
+při ověřování a odložení fakturace trvají. Lokální simulace Zásilkovny byla
+v ignorovaném configu vypnuta (`SHOP_PACKETA_LOCAL_DEMO=false`).
+
+- [x] Vypnout lokální simulaci; config a testovací artefakty nevstupují do Gitu.
+- [ ] Začlenit aktuální `origin/main` včetně PR #154–155; zachovat oba nové
+  datové kontrakty, migrační checksummy a ruční editace ostatních worktrees.
+- [ ] Ověřit PHPUnit, migrace/zálohu a souběh editoru; push, PR a zelené CI.
+- [ ] Sloučit chráněným postupem a nasadit přes `deploy-production.yml`,
+  `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`.
+- [ ] Ověřit SHA, zálohu, migrace a živý přehled stavů, editor/náhled a frontu.
+  Bez ukládání produkčních šablon, přepnutí objednávek a běhu poštovního workeru.
+- [ ] Zapsat odkazy na PR/CI/deploy, produkční důkazy a aktuální bod do handoffů.
+
 ## Schválený rozsah a pracovní bod
 
 Vlastník schválil lokální opravu Zásilkovny, zpřehlednění systémových a vlastních
