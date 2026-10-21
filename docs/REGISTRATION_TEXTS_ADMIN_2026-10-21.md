@@ -57,4 +57,27 @@ dokončily úspěšně. Historická migrace nebyla měněna.
 
 ## Produkční stav
 
-Nasazení čeká na povinné PR kontroly a chráněný produkční workflow.
+- PR [#148](https://github.com/KovoPraha/evidenceTreninku/pull/148) je sloučený.
+  Nasazený aplikační commit je `3c64dc530fa8025854f2cc8be07e74bdc1a51aab`.
+- [Povinné CI 39588482727](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39588482727)
+  prošlo včetně nového souběhového smoke na MariaDB **10.3 i 11.4**.
+  [CodeQL 39588480674](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39588480674)
+  prošel bez nového nálezu.
+- [Produkční deploy 39588673226](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39588673226)
+  dokončil všechny kroky. Ověřil **1 147 testů / 25 863 kontrol** na runneru,
+  serverový preflight PHP 8.2.33 bez varování, zálohu **233 tabulek a dvou
+  triggerů**, migrační katalog **107 / current: true / pending: []**, aktivaci
+  release a závěrečný HTTP smoke `{"ok":true,"http":200,"via":"curl"}`.
+  `uat_schvaleno=false`, `importovat_krouzky=false`.
+- Živý Chrome: přepnutí přihlášeného správce na **Registrář členů a KIS**,
+  nový odkaz v běžném menu i na rozcestníku a načtení všech pěti editorů s
+  aktuálními texty a historickými verzemi. Konzole bez varování a chyb.
+  Produkční koncept ani nové veřejné znění se při ověření nevytvářely.
+- Produkční stránka k RČ stále zobrazuje původní schválenou verzi
+  `birth-number-legal-notice-2026-10-20-v1` z 20. 10. 2026; syntetický text
+  z lokálního testu se na produkci nepřenášel.
+
+Přímý vstup: <https://kis.kovopraha.cz/registration_texts_admin.php>.
+Před otevřením musí být aktivní pozice registráře. Lokální samostatná MariaDB
+na portu 33109 byla po ověření vypnuta; původní rozpracované změny ve výchozí
+složce zůstaly nedotčené.

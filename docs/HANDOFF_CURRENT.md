@@ -1,5 +1,17 @@
 # Aktuální předání vývoje na další stanici
 
+Nejnovější předání: 21. 10. 2026, správa registračních textů a souhlasů z PR
+[#148](https://github.com/KovoPraha/evidenceTreninku/pull/148). Nasazený aplikační
+SHA je `3c64dc530fa8025854f2cc8be07e74bdc1a51aab`,
+[deploy 39588673226](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39588673226)
+prošel zálohou, 107 aktuálními migracemi a HTTP smoke. Registrář má v běžném
+menu **Členové → Registrační texty a souhlasy**: neměnné koncepty, samostatné
+zveřejnění, historie a audit autora/času/důvodu. Dosavadní přihláškové snapshoty
+i schválené veřejné texty zůstaly zachované. Živý prohlížeč načetl všech pět
+typů textů; publikační zápisy se ověřily v odděleném localhostu. Podrobný
+[report a návod](REGISTRATION_TEXTS_ADMIN_2026-10-21.md) obsahuje CI, produkční
+důkazy a hranice ověření. Plné UAT aplikace zůstává otevřené.
+
 Nejnovější předání: 21. 10. 2026, oprava rychlé přihlášky z PR
 [#146](https://github.com/KovoPraha/evidenceTreninku/pull/146). Nasazený aplikační
 SHA je `e935950ed5be7181687dadba4b1fc2daf8dd5095`,
