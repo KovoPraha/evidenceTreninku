@@ -26,6 +26,13 @@ zůstává stažený, sklad 1 → 0 → 1. Skutečné objednávky ani peníze se
 původní pracovní pozice byla obnovena. [Přesný protokol](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md)
 rozlišuje tuto simulaci od plného UAT a ověření skutečného převodu.
 
+Platební scénář je uzavřený; nečeká na další potvrzení ani vratku. Protokol
+byl začleněn v [PR #157](https://github.com/KovoPraha/evidenceTreninku/pull/157),
+commit `a0e2bac12cf6818120f2dd5515499bfe5d7dc601`; PHPUnit, MariaDB 10.3/11.4
+a CodeQL prošly. [Provozní návod](ORDER_PAYMENTS_2026-10-21.md) obsahuje příjem
+i samostatnou vratku. TEST záznamy ponechat pro audit. Tato dokumentační
+aktualizace nevyžaduje nový produkční deploy; plné UAT zůstává samostatné.
+
 
 Lokální výsledek 21. 10. 2026: na větvi
 `codex/order-status-system-mail-20261021` je připravena oprava Zásilkovny,

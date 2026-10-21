@@ -21,6 +21,11 @@ převod → hotovost → příjem → storno → vratka. Nová TEST objednávka
 a sklad se vrátil na původní 1 kus. Skutečné peníze ani objednávky se neměnily.
 [Protokol a důkazy](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md) zachycují
 audit, přesný rozsah, úklid a vztah k souběžnému navazujícímu deployi.
+Scénář je uzavřený, žádná TEST vratka již nečeká na dokončení. Dokumentace
+testu je v [PR #157](https://github.com/KovoPraha/evidenceTreninku/pull/157),
+commit `a0e2bac1`, s úspěšnými PHPUnit, MariaDB 10.3/11.4 a CodeQL.
+[Provozní postup příjmu a vratky](ORDER_PAYMENTS_2026-10-21.md) je dostupný
+také z [rozcestníku dokumentace](README.md). Plné UAT tím není schválené.
 
 Nejnovější doplnění: 21. 10. 2026. [PR #152](https://github.com/KovoPraha/evidenceTreninku/pull/152)
 přidal možnost změnit **název registračního dokumentu**, i bez změny jeho těla.
