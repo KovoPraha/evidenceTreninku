@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-20.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -157,6 +157,7 @@ const EVIDENCE_TABLES = [
     'account_person_roles',
     'athlete_private_files',
     'athlete_registration_consent_snapshots',
+    'athlete_registration_text_drafts',
     'athlete_registration_request_details',
     'auth_login_limits',
     'auth_mail_outbox',
