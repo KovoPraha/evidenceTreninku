@@ -1,5 +1,18 @@
 # Aktuální stav projektu
 
+Nejnovější doplnění: 21. 10. 2026. PR [#148](https://github.com/KovoPraha/evidenceTreninku/pull/148)
+přidal **Registrační texty a souhlasy** pod pozici **Registrář členů a KIS**.
+Samostatně se ukládá neměnný koncept a zveřejňuje jeho přesné znění; historie
+obsahuje předchozí verze, autora a důvod. Nasazený aplikační commit je
+`3c64dc530fa8025854f2cc8be07e74bdc1a51aab`,
+[deploy 39588673226](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39588673226)
+prošel zálohou 233 tabulek / dvou triggerů, 107 migracemi bez čekajících kroků
+a HTTP smoke. CI ověřilo PHPUnit i MariaDB 10.3/11.4; živý browser potvrdil
+menu a všech pět typů textů. Dosavadní schválená znění a staré přihláškové
+snapshoty se neměnily. Návod a přesné důkazy jsou v
+[reportu registračních textů](REGISTRATION_TEXTS_ADMIN_2026-10-21.md).
+Plné UAT zůstává otevřené. Následující release jsou historické body.
+
 Nejnovější produkční oprava: 21. 10. 2026. PR
 [#146](https://github.com/KovoPraha/evidenceTreninku/pull/146) opravil chybějící
 načtení bankovního nastavení v rychlé přihlášce a rychlém nákupu bez účtu.
