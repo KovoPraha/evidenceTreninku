@@ -1,5 +1,13 @@
 # Session handoff
 
+Aktualizace autorizace 21. 10. 2026: schválen commit, push a nasazení tohoto
+řezu na produkci; starší omezení na lokální práci níže je historické.
+Ověřovat bez skutečných e-mailů a bez změn produkčních objednávek/šablon.
+Lokální simulace Zásilkovny vypnuta. Integrace `61ed7385` zachovala vlastní
+souhlasy, kontrakt `.4`, PHPUnit 1 178/26 530 a MariaDB obnova 190 tabulek OK.
+Aktuální release checklist a výchozí otisk produkční fronty jsou v
+[plánu](../ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#aktuální-autorizace-vydání-21-10-2026).
+
 ## Lokální výsledek 21. 10. 2026 — stavy, Zásilkovna a systémové e-maily
 
 Pracovní větev `codex/order-status-system-mail-20261021`, původní základ `f813264b`,

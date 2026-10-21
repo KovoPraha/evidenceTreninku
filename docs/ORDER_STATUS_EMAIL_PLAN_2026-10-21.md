@@ -10,7 +10,7 @@ při ověřování a odložení fakturace trvají. Lokální simulace Zásilkovn
 v ignorovaném configu vypnuta (`SHOP_PACKETA_LOCAL_DEMO=false`).
 
 - [x] Vypnout lokální simulaci; config a testovací artefakty nevstupují do Gitu.
-- [ ] Začlenit aktuální `origin/main` včetně PR #154–155; zachovat oba nové
+- [x] Začlenit aktuální `origin/main` včetně PR #154–155; zachovat oba nové
   datové kontrakty, migrační checksummy a ruční editace ostatních worktrees.
 - [ ] Ověřit PHPUnit, migrace/zálohu a souběh editoru; push, PR a zelené CI.
 - [ ] Sloučit chráněným postupem a nasadit přes `deploy-production.yml`,
@@ -18,6 +18,23 @@ v ignorovaném configu vypnuta (`SHOP_PACKETA_LOCAL_DEMO=false`).
 - [ ] Ověřit SHA, zálohu, migrace a živý přehled stavů, editor/náhled a frontu.
   Bez ukládání produkčních šablon, přepnutí objednávek a běhu poštovního workeru.
 - [ ] Zapsat odkazy na PR/CI/deploy, produkční důkazy a aktuální bod do handoffů.
+
+Příprava vydání: začleněn `61ed7385` (PR #155) v commitu `11db284d`.
+Migrační katalog zachovává nové systémové e-maily i vlastní registrační
+souhlasy; kombinovaný zálohovací kontrakt je `2026-10-21.4`. Nová migrace
+e-mailů zachovává původní LF bytes/checksum. Po integraci: PHPUnit
+**1 178 testů / 26 530 kontrol, OK**, MariaDB souběh editorů a zachování staré
+zprávy OK, záloha/obnova **190 tabulek, OK**. Smoke e-mailů přidán i do CI matice
+MariaDB 10.3/11.4. Lokální DB před kontrolou neběžela; znovu spuštěna pouze
+soukromá instance :3310, bez resetu dat. Známé varování historické migrace
+o `columns` nezabránilo úspěšné obnově; historická migrace se neměnila.
+
+Výchozí produkční kontrola přes přihlášený prohlížeč: fronta obsahuje právě
+1 pending, 0 processing/failed/sent a pokusy 0. Předmět+tělo uložené zprávy #1
+má SHA-256 (oddělovač LF)
+`a6cb0ad2a10944e8ec55cd091ad93322a7586b66385e93bb8c8ca6421a82562b`.
+Příjemce, obsah a přístupové odkazy se do veřejného reportu nekopírují.
+Žádná zpráva nebyla vrácena do fronty ani odeslána.
 
 ## Schválený rozsah a pracovní bod
 

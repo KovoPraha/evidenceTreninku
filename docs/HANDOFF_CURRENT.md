@@ -1,5 +1,13 @@
 # Aktuální předání vývoje na další stanici
 
+Aktuální autorizace 21. 10. 2026: vlastník schválil commit, push a produkční
+nasazení stavů/Zásilkovny/systémových e-mailů. Starší zákaz nasazení níže je
+historický. Platí zákaz skutečné pošty při ověřování a odložení fakturace.
+Simulace v lokálním configu vypnuta. Začleněno `61ed7385`, kontrakt `.4`,
+nové testy 1 178/26 530 a MariaDB záloha/obnova 190 tabulek prošly.
+[Aktuální kroky vydání](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#aktuální-autorizace-vydání-21-10-2026)
+jsou nyní autoritou pro tento řez; pokračovat push/PR/CI a chráněným deployem.
+
 Lokální výsledek 21. 10. 2026: na větvi
 `codex/order-status-system-mail-20261021` je připravena oprava Zásilkovny,
 oddělené zobrazení systémového a zákaznického stavu a editor šesti existujících
