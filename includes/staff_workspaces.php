@@ -157,7 +157,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_orders_admin.php', 'label' => 'Objednávky', 'description' => 'Příprava, výdej a provozní storna', 'icon' => 'receipt'],
                     ['route' => 'eshop_ppl_admin.php', 'label' => 'Doprava PPL', 'description' => 'Cena doručení a volba PPL Parcelbox', 'icon' => 'box-seam'],
                     ['route' => 'eshop_packeta_admin.php', 'label' => 'Doručení Zásilkovnou', 'description' => 'Cena doručení a volba Z-BOXu', 'icon' => 'box-seam'],
-                    ['route' => 'eshop_order_statuses_admin.php', 'label' => 'Stavy a e-maily', 'description' => 'Zákaznické stavy a zprávy při jejich změně', 'icon' => 'tags'],
+                    ['route' => 'eshop_order_statuses_admin.php', 'label' => 'Stavy a e-maily', 'description' => 'Systémové stavy, zákaznická upřesnění a texty e-mailů', 'icon' => 'tags'],
                     ['route' => 'eshop_order_expiry_admin.php', 'label' => 'Expirace objednávek', 'description' => 'Potvrzené ukončení nezaplacených objednávek', 'icon' => 'hourglass-split'],
                 ]],
                 ['label' => 'Komunikace', 'icon' => 'envelope', 'items' => [

@@ -83,12 +83,14 @@ function shopProgramQuickCheckoutPlace(
             if(shopPaymentNotificationTableExists($pdo,'club_event_notifications')){
                 $orderUrl=appUrl('booking/objednavka.php?code='.rawurlencode($publicCode).'&access='.rawurlencode($accessToken));
                 $verifyUrl=appUrl('booking/overeni.php').'#token='.rawurlencode($verification['token']).'&redirect='.rawurlencode('objednavka.php?code='.$publicCode.'&access='.$accessToken);
-                $subject='Přihláška '.$publicCode.' – platební údaje';
-                $body="Dobrý den,\n\npřihláška {$publicCode} byla přijata a místo je dočasně rezervované.\n"
-                    .'Kroužek: '.(string)$variant['public_name']."\nČástka: ".number_format($unit/100,2,',',' ')." CZK\nVariabilní symbol: {$variableSymbol}\nSplatnost: {$dueAt}\n\n"
-                    ."Objednávka a QR platba:\n{$orderUrl}\n\nOvěření e-mailu pro správu přihlášky:\n{$verifyUrl}\n\nKlub KOVO Praha";
+                $message=shopSystemEmailMessage($pdo,'shop_quick_program_order_placed',[
+                    'order_code'=>$publicCode,'customer_name'=>trim($parent['first_name'].' '.$parent['last_name']),
+                    'payment_instruction'=>'Kroužek: '.(string)$variant['public_name']."\nČástka: ".number_format($unit/100,2,',',' ')." CZK\nVariabilní symbol: {$variableSymbol}\nSplatnost: {$dueAt}",
+                    'order_url'=>$orderUrl,'verification_url'=>$verifyUrl]);
+                $subject=$message['subject'];$body=$message['body'];
                 $pdo->prepare("INSERT INTO club_event_notifications(registration_id,registration_event_id,order_id,notification_type,recipient_email,recipient_name,subject_plain,body_plain) VALUES(NULL,NULL,?,'shop_quick_program_order_placed',?,?,?,?)")
                     ->execute([$orderId,$parent['email'],trim($parent['first_name'].' '.$parent['last_name']),$subject,$body]);
+                shopSystemEmailRecord($pdo,(int)$pdo->lastInsertId(),$message);
             }
             $pdo->commit();return shopGuestOrderByCode($pdo,$publicCode,$accessToken)+['replayed'=>false,'age_warning'=>$ageWarning,'verification_token'=>$verification['token']];
         }catch(Throwable$exception){

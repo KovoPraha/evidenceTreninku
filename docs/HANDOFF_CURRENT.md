@@ -1,5 +1,34 @@
 # Aktuální předání vývoje na další stanici
 
+Lokální výsledek 21. 10. 2026: na větvi
+`codex/order-status-system-mail-20261021` je připravena oprava Zásilkovny,
+oddělené zobrazení systémového a zákaznického stavu a editor šesti existujících
+systémových e-mailů s náhledem, historií a verzí uloženou ve frontě.
+[Plán a výsledky](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md) obsahují všechny hranice
+ověření po integraci `06e0a9b1`: PHPUnit 1 166/26 263, MariaDB souběh editorů,
+záloha/obnova 188 tabulek, 109 aktuálních migrací a lokální browser prohlídka editoru. B09 zůstává PARTIAL
+pro úplný browser nákup/výdej. Jen lokální příprava; žádný push, merge, deploy
+ani skutečná rozesílka. Fakturace a dokončování služeb zůstávají navazující práce.
+
+## Pravidlo pro větší změny a pokračování po kompaktaci
+
+Na výslovný pokyn vlastníka z 21. 10. 2026 ukládej před větší implementací
+konkrétní plán do samostatného souboru v `docs/` a odkazuj na něj z tohoto
+handoffu. Průběžně zapisuj rozsah autorizace, pracovní větev/složku,
+dokončené kroky, výsledky testů, zbývající práci a přesný další krok.
+Před kompaktací nebo předáním stav obnov; chat nesmí být jediným úložištěm
+plánu. Po pokračování nejdřív přečti plán a aktuální stav souborů.
+
+Lokální práce 21. 10. 2026: oprava Zásilkovny, přehled stavů a editor
+systémových e-mailů se připravují na větvi
+`codex/order-status-system-mail-20261021` v odděleném worktree
+`C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
+Podrobný rozsah, průběžné úkoly a odložená rozhodnutí jsou v
+[plánu stavů a e-mailů](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md).
+Vlastník schválil pouze lokální přípravu a testování; žádný push, merge,
+deploy ani skutečná rozesílka. Fakturace je výslovně odložená.
+
+
 Nejnovější předání: 21. 10. 2026, názvy registračních textů z
 [PR #152](https://github.com/KovoPraha/evidenceTreninku/pull/152). Nasazený aplikační
 SHA je `f5d6276838239ace6426aa8c326c01a213730a36`,

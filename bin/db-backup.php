@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.3';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -38,6 +38,7 @@ const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.2';
  * before the migrations of the release it precedes.
  */
 const EVIDENCE_OWNED_COLUMN_CONTRACT = [
+    'club_event_notifications' => ['system_template_key', 'system_template_version'],
     // Imported profiles may legitimately have an unknown birth date.
     'sportovci' => ['narozeni'],
     // Rows are no longer always current; a restore that loses the lifecycle
@@ -321,6 +322,8 @@ const EVIDENCE_TABLES = [
     'shop_order_events',
     'shop_order_status_definitions',
     'shop_order_status_definition_events',
+    'shop_system_email_templates',
+    'shop_system_email_versions',
     'shop_order_items',
     'shop_orders',
     'shop_ppl_settings',

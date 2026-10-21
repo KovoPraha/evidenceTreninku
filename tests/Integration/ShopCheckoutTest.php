@@ -74,6 +74,36 @@ final class ShopCheckoutTest extends TestCase
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_ppl_dispatched'")->fetchColumn());
     }
 
+    public function testPacketaActionsFollowPhysicalDepositAndUseTheEditedSystemEmail():void
+    {
+        $pdo=$this->pplDatabase();
+        foreach(['20261019130000_shop_packeta_zbox.php','20261021170000_shop_system_email_templates.php'] as $file) {
+            $migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
+        }
+        \shopPacketaSaveSettings($pdo,7,7900,'abcdefghijklmnop',true,'LOCALHOST NEPLATIT',true);
+        $lookup=static fn(string $id):array=>['id'=>$id,'type'=>'zbox','country'=>'cz','displayFrontend'=>1,'status'=>['statusId'=>1],'name'=>'LOCALHOST Z-BOX','street'=>'Testovací 1','zip'=>'10000','city'=>'Praha'];
+        $order=\shopGuestCheckoutPlace($pdo,601,1,['first_name'=>'LOCALHOST','last_name'=>'NEPLATIT','email'=>'zbox@example.test','phone'=>'777123456','confirmed'=>'1'],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'packeta_zbox','',0,null,'12345',7900,$lookup);
+        try {\shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'LOCALHOST bez úhrady',true);self::fail('Unpaid parcel cannot become ready.');}catch(\ShopCheckoutException){}
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'LOCALHOST ověřeno',true);
+        \shopOrderAdminMarkReady($pdo,(int)$order['id'],7,'LOCALHOST zabaleno',true);
+        self::assertSame('prepare_packeta',\shopOrderFulfillmentAction($pdo->query('SELECT * FROM shop_orders')->fetch(),false));
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_order_ready'")->fetchColumn());
+        try {\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'LOCALHOST pokus',true);self::fail('Z-BOX cannot use personal pickup.');}catch(\ShopCheckoutException){}
+        try {\shopOrderAdminDepositPacketa($pdo,(int)$order['id'],7,'LOCALHOST bez štítku',true);self::fail('Parcel needs label details.');}catch(\ShopCheckoutException){}
+        \shopOrderAdminPreparePacketa($pdo,(int)$order['id'],7,'Z1234567890','987654321','LOCALHOST štítek',true);
+        self::assertSame('deposit_packeta',\shopOrderFulfillmentAction($pdo->query('SELECT * FROM shop_orders')->fetch(),false));
+        $t=\shopSystemEmailCurrent($pdo,'shop_packeta_dispatched');
+        \shopSystemEmailSave($pdo,'shop_packeta_dispatched',7,0,$t['subject_plain'],$t['body_plain']."\nKontakt: LOCALHOST recepce.",'LOCALHOST kontakt');
+        self::assertTrue(\shopOrderAdminDepositPacketa($pdo,(int)$order['id'],7,'LOCALHOST skutečně vloženo',true)['changed']);
+        self::assertFalse(\shopOrderAdminDepositPacketa($pdo,(int)$order['id'],7,'LOCALHOST opakování',true)['changed']);
+        self::assertNull($pdo->query('SELECT packeta_consignment_code FROM shop_orders')->fetchColumn());
+        $mail=$pdo->query("SELECT * FROM club_event_notifications WHERE notification_type='shop_packeta_dispatched'")->fetch();
+        self::assertSame(1,(int)$mail['system_template_version']);self::assertStringContainsString('LOCALHOST recepce',$mail['body_plain']);
+        self::assertStringNotContainsString('987654321',$mail['body_plain']);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='deposit_packeta'")->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_packeta_dispatched'")->fetchColumn());
+    }
+
     private function pplDatabase():PDO
     {
         $pdo=$this->database();$pdo->exec("ALTER TABLE shop_products ADD COLUMN delivery_mode TEXT NOT NULL DEFAULT 'pickup_only'");

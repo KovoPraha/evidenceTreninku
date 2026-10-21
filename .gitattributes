@@ -1,2 +1,5 @@
 *.pdf binary
 *.docx binary
+
+# This new migration has byte-sensitive checksums; keep the same bytes on Windows and Linux.
+migrations/20261021170000_shop_system_email_templates.php text eol=lf
