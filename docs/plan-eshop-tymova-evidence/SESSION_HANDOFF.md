@@ -6,8 +6,15 @@ Pracovní větev `codex/order-status-system-mail-20261021`, původní základ `f
 převedeno na `06e0a9b1` se zachováním nových registračních názvů.
 Implementace a lokální kontroly jsou dokončené, nasazení není schválené.
 [Trvalý plán a výsledky](../ORDER_STATUS_EMAIL_PLAN_2026-10-21.md) obsahují
-přesný rozsah, šest šablon, novou migraci, PHP testy 1 166/26 263, MariaDB
-zálohu/obnovu, browser výsledky, lokální prostředí a odloženou fakturaci.
+přesný rozsah, šest šablon, novou migraci, aktuální PHP testy 1 169/26 302,
+MariaDB zálohu/obnovu a dokončené lokální browser nákupy/výdeje. B09 je PASS
+pro osobní odběr i Z-BOX; dvě dokončené objednávky, sklad 10→9→7, ve frontě
+5 pending / 0 pokusů / 0 odesláno. Ověřeny všechny náhledy, příjemci, částky,
+verze, neměnnost starší zprávy po editaci a odstranění interního podacího kódu.
+Z-BOX výběr/štítek/podání a platby jsou výslovné simulace v odděleném localhostu,
+bez dopravce a skutečné pošty. Demo jde zapnout jen serverovým příznakem
+`SHOP_PACKETA_LOCAL_DEMO === true` a striktním loopbackem; běžná produkční
+konfigurace ho nepovoluje. Worker nespouštěn. Fakturace zůstává odložená.
 Při pokračování začni tímto souborem a aktuálním Git stavem uvedeného worktree.
 
 ## Pravidlo vlastníka pro větší změny od 21. 10. 2026

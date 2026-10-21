@@ -13,9 +13,10 @@ function shopPplDeliveryFields(string $formId,array $settings,int $baseTotalMino
     $pplAvailable=shopPplAvailable($settings);$packetaAvailable=$packetaSettings!==[]&&shopPacketaAvailable($packetaSettings);
     if(!$pplAvailable&&!$packetaAvailable)return;
     $pplPrice=(int)($settings['price_minor']??0);$packetaPrice=(int)($packetaSettings['price_minor']??0);
+    $pplSelected=$selectedMethod==='ppl_box';$packetaSelected=$selectedMethod==='packeta_zbox';
+    $packetaDemo=shopPacketaLocalDemoEnabled();
     if($pplSelected&&isset($_POST['ppl_access_point_code']))$selectedCode=(string)$_POST['ppl_access_point_code'];
     $postedPacketaId=(string)($_POST['packeta_point_id']??'');
-    $pplSelected=$selectedMethod==='ppl_box';$packetaSelected=$selectedMethod==='packeta_zbox';
     $widgetKey=shopPplWidgetH($settings['widget_api_key']??'');$packetaKey=shopPplWidgetH($packetaSettings['widget_api_key']??'');
     $activePrice=$pplSelected?$pplPrice:($packetaSelected?$packetaPrice:0);
     $displayTotal=number_format(($baseTotalMinor+$activePrice)/100,2,',',' ');
@@ -33,13 +34,18 @@ function shopPplDeliveryFields(string $formId,array $settings,int $baseTotalMino
 </div>
 <div data-packeta-panel <?=$packetaSelected?'':'hidden'?> class="border-top pt-3 mt-2">
 <?php if(!$externalPhone):?><label class="form-label" for="<?=$formId?>-packeta-phone">Telefon pro doručení do Z-BOXu</label><input id="<?=$formId?>-packeta-phone" type="tel" name="ppl_phone" class="form-control mb-2" maxlength="50" autocomplete="tel" value="<?=shopPplWidgetH($phone)?>" <?=$packetaSelected?'required':''?> pattern="\+?[0-9][0-9 ()-]{7,22}"><?php else:?><p class="small text-muted mb-2">Pro doručení použijeme telefon z kontaktních údajů výše.</p><?php endif;?>
-<button type="button" class="btn btn-outline-primary btn-sm" data-packeta-open>Vybrat Z-BOX na mapě Zásilkovny</button><span class="small ms-2" data-packeta-selected aria-live="polite"><?= $packetaSelected&&$selectedCode!==''?'Vybraný Z-BOX '.shopPplWidgetH($selectedCode):'Box zatím není vybraný.' ?></span><div class="small text-danger mt-2 d-none" data-packeta-error role="alert"></div>
-<input type="hidden" name="packeta_point_id" value="<?=shopPplWidgetH($packetaSelected?($postedPacketaId!==''?$postedPacketaId:$selectedCode):'')?>"><input type="hidden" name="packeta_shipping_price_minor" value="<?=$packetaPrice?>">
+<?php if($packetaDemo):?>
+<div class="alert alert-warning">LOCALHOST TEST: syntetický výběr boxu. Bez spojení se Zásilkovnou a bez skutečného odeslání.</div>
+<label for="<?=$formId?>-demo-box" class="form-label">Testovací Z-BOX</label><select id="<?=$formId?>-demo-box" name="packeta_point_id" class="form-select"><option value="">Vyberte testovací box</option><?php foreach(shopPacketaLocalDemoPoints()as$point):?><option value="<?=shopPplWidgetH($point['id'])?>" <?=($postedPacketaId!==''?$postedPacketaId:$selectedCode)===$point['id']?'selected':''?>><?=shopPplWidgetH($point['name'])?></option><?php endforeach;?></select>
+<?php else:?>
+<button type="button" class="btn btn-outline-primary btn-sm" data-packeta-open>Vybrat Z-BOX na mapě Zásilkovny</button><span class="small ms-2" data-packeta-selected aria-live="polite"><?= $packetaSelected&&$selectedCode!==''?'Vybraný Z-BOX '.shopPplWidgetH($selectedCode):'Box zatím není vybraný.' ?></span>
+<input type="hidden" name="packeta_point_id" value="<?=shopPplWidgetH($packetaSelected?($postedPacketaId!==''?$postedPacketaId:$selectedCode):'')?>">
+<?php endif;?><div class="small text-danger mt-2 d-none" data-packeta-error role="alert"></div><input type="hidden" name="packeta_shipping_price_minor" value="<?=$packetaPrice?>">
 </div>
 <div class="d-flex justify-content-between fw-semibold border-top pt-2 mt-2"><span>K úhradě včetně předání</span><span data-box-total><?=$displayTotal?> Kč</span></div>
 </fieldset>
 <?php if($pplAvailable):?><script src="https://www.ppl.cz/accesspointwidget/loader.js" nonce="<?=shopPplWidgetH(app_csp_nonce())?>" async></script><?php endif;?>
-<?php if($packetaAvailable):?><script src="https://widget.packeta.com/v6/www/js/library.js" nonce="<?=shopPplWidgetH(app_csp_nonce())?>" async></script><?php endif;?>
+<?php if($packetaAvailable&&!$packetaDemo):?><script src="https://widget.packeta.com/v6/www/js/library.js" nonce="<?=shopPplWidgetH(app_csp_nonce())?>" async></script><?php endif;?>
 <script nonce="<?=shopPplWidgetH(app_csp_nonce())?>">
 document.addEventListener('DOMContentLoaded',()=>{
  const form=document.getElementById(<?=json_encode($formId,JSON_THROW_ON_ERROR)?>);if(!form)return;

@@ -93,6 +93,26 @@ Od vlastníka před fakturací potřebujeme určit:
 
 ## Průběžný záznam
 
+### Navazující autorizace lokálního browser průchodu
+
+Vlastník 21. 10. 2026 požaduje dokončit celý nákup a výdej v lokálním
+prohlížeči včetně Zásilkovny a kontroly e-mailové fronty. Stále bez nasazení,
+push/merge a skutečných e-mailů. Použít tutéž izolovanou databázi a standardní
+UI. Externí výběr Z-BOXu nahradit explicitním localhost simulátorem se
+syntetickými boxy, bez klíčů a bez volání dopravce. Skutečnou mapu dopravce,
+vytvoření štítku u dopravce a fyzické doručení tím nelze certifikovat.
+
+- [x] Doplnit striktně lokální simulátor výběru Z-BOXu a jeho bezpečnostní test.
+- [x] Přes správu katalogu založit a zveřejnit syntetické skladové zboží.
+- [x] Přes zákaznický formulář vytvořit nákup s osobním odběrem.
+- [x] Přes hospodáře potvrdit syntetickou úhradu, přes objednávky přípravu/výdej.
+- [x] Totéž projít pro Z-BOX včetně výběru boxu, štítku a potvrzení podání.
+- [x] Ve frontě ověřit příjemce, částky, obsah, šablonu/verzi a počty zpráv.
+- [x] Ověřit, že příprava Z-BOXu neposílá odběrový e-mail a interní podací kód
+  není v zákaznické zprávě; po podání je odstraněn.
+- [x] Zkontrolovat sklad, zákaznický konečný stav, opakování a nulové odesílání.
+- [x] Doplnit přesné výsledky a screenshoty, B09 a oba handoffy.
+
 - 21. 10. 2026: uložen plán a hranice autorizace před implementací.
 - Další aktualizace musí uvést dokončené kroky, přesné výsledky kontrol,
   zbývající práci a bod, odkud pokračovat. Nasazení zůstává zakázané.
@@ -138,13 +158,13 @@ Od vlastníka před fakturací potřebujeme určit:
   Nastavení je pouze v ignorovaném `config.php`, nevzniklo kopírováním produkce.
 - Použitá lokální MariaDB je 10.4.32. Matice 10.3/11.4 na GitHub CI v tomto
   řezu spuštěna nebyla, protože vzdálené kroky nejsou autorizované.
-- Konečná kontrola lokálního prostředí: jedna uložená verze šablony, nula zpráv
-  v transakční frontě. Žádný worker nebyl spuštěn.
+- Kontrola po první prohlídce editoru: jedna uložená verze šablony, nula zpráv
+  v transakční frontě. Navazující úplný nákup je popsán níže. Worker nespouštěn.
 - Syntetický správce upravil přes UI odběrovou šablonu na verzi 1; text obsahuje
   pouze LOCALHOST/NEPLATIT, ukázkovou recepci a adresu `example.test`.
-- Lokální `testovaci_scenare.php` obsahuje u B09 PARTIAL a přesný popis rozsahu.
-  Úplný nákup a výdej přes browser nebyl součástí prohlídky. Backendový průchod
-  dopravců je ověřen integračními testy; doručení skutečné pošty ověřeno není.
+- První prohlídka zanechala B09 PARTIAL, protože ještě neobsahovala browser
+  nákup/výdej. Navazující průchod níže tento nedostatek uzavřel jako lokální PASS;
+  doručení skutečné pošty ani doprava tím ověřeny nejsou.
 - Screenshot editoru: `var/local-status-mail-review/editor.jpg` (lokální artefakt).
 - Při úplné inicializaci/backup smoke vydává již existující migrace
   `20260922190000_member_fee_standing_orders.php:13` varování o klíči `columns`.
@@ -167,3 +187,107 @@ Fakturaci, číselné řady, přílohy ani změnu dokončování kroužků tento
 - Nová migrace má v `.gitattributes` výslovně LF, aby Git při checkoutu na
   Windows nezměnil její byte-sensitive checksum. Při rebase byla obnovena
   původní LF podoba; obsah migrace ani databázový ledger se nepřepisovaly.
+
+## Úplný lokální browser průchod 21. 10. 2026
+
+Dokončeno přes skutečné formuláře lokálního webu v prohlížeči. Produkční ani
+zdrojový Shoptet se neměnil. Data nebyla zakládána SQL příkazy; SQL sloužilo
+jen k následnému čtení skladových pohybů, auditu a fronty.
+
+### Prostředí a simulace Zásilkovny
+
+- Doplněn výslovný režim `SHOP_PACKETA_LOCAL_DEMO === true`, povolený pouze
+  v ignorovaném lokálním `config.php`. Nestačí obecné `JE_LOKALNE`: HTTP host,
+  serverová a klientská adresa musí být loopback, stejně jako případný APP_HOST.
+  Parametr URL/formuláře režim nezapne. Bez příznaku zůstává reálná validace
+  veřejného klíče a dostupnosti dopravce zachovaná.
+- V testovacím režimu UI označí simulaci a nabídne jediný syntetický bod
+  `999000001`, „LOCALHOST TEST Z-BOX – NEODESÍLAT“. Nezavádí Packeta script,
+  nevolá feed, nepoužívá skutečné klíče; neznámé ID odmítne. Server stále
+  ověřuje dopravu, cenu, zboží a ukládá snapshot boxu běžným checkoutem.
+- Bezpečnostní/regresní testy pokrývají chybějící/vzdálené adresy, cizí doménu,
+  výchozí vypnutí, absenci carrier scriptu, syntetický resolver a opětovné
+  odmítnutí po změně klienta na vzdálenou adresu: 3 testy / 20 kontrol, OK.
+- Opravena i neinicializovaná `$pplSelected` ve společném formuláři dopravy.
+  Produkční větev mapy Zásilkovny ani PPL se testovacím režimem nenahrazuje.
+
+### Objednávky a sklad
+
+Přes správu katalogu založen produkt/varianta 5, SKU `KP-LOCAL-STATUS-MAIL-001`,
+cena 125 Kč, počáteční sklad 10 ks, povolen osobní odběr i doprava a zveřejněno
+pouze v tomto lokálním katalogu.
+
+| Průchod | Objednávka | Ověřený výsledek |
+|---|---|---|
+| Nákup s účtem | `KP2610210B2799C10B` | 1 ks, 125 Kč, syntetický účet `admin@localhost.test`; zákaznický košík → QR/převod → hospodář potvrdil testovací převod → příprava → osobní výdej → `completed/paid`, UI „Vydáno“. |
+| Nákup bez účtu, Z-BOX | `KP26102146FFE0B1F9` | 2 ks 250 Kč + doprava 79 Kč = 329 Kč, `zbox@localhost.test`; chybějící výběr boxu blokován → testovací box → objednávka/QR → hospodář změnil převod na hotovost a přijal testovací platbu → příprava → údaje štítku → podání → `completed/paid`, UI „Podáno do Z-BOXu“. |
+
+- Sklad skutečně `10 → 9 → 7`. Právě dva rezervační pohyby (-1 a -2), žádný
+  další odečet při úhradě, přípravě nebo výdeji.
+- U každé objednávky právě jedna událost každého očekávaného přechodu. Koncové
+  UI nenabízí opakování výdeje/podání. Obnovení zákaznických stránek nevytvořilo
+  další objednávku ani zprávu; opakovaný POST stejného přechodu nadále pokrývá
+  integrační regrese `ShopCheckoutTest`.
+- Z-BOX po přípravě nabídl formulář štítku, nikoli osobní výdej. Uloženy pouze
+  syntetické údaje `Z1234567890` a interní devítimístný kód. Po simulovaném
+  fyzickém podání zůstal tracking, `packeta_consignment_code IS NULL`.
+- Zákaznická stránka před podáním ukázala „Připraveno k odeslání“ a vysvětlení;
+  po podání „Podáno do Z-BOXu“ s očekáváním dalších pokynů od dopravce. Nikdy
+  netvrdí, že už byla zásilka doručena. Interní poznámka ani podací kód se
+  nezobrazily.
+
+### Skutečná lokální fronta
+
+V administraci otevřeny náhledy všech pěti uložených zpráv a porovnány příjemce,
+položky/částky, druh dopravy a verze. Všechny zůstaly `pending`, `attempts=0`,
+`sent_at=NULL`; `processing=failed=sent=0`. Žádný worker, CRON, mail transport
+ani skutečné e-maily nebyly spuštěny.
+
+| ID | Objednávka | Typ zprávy | Příjemce | Verze |
+|---|---|---|---|---|
+| 1 | osobní odběr | `shop_payment_received` – 125 Kč, osobní odběr | `admin@localhost.test` | 0 |
+| 2 | osobní odběr | `shop_order_ready` – položka, místo, čas, kontakt | `admin@localhost.test` | 1 |
+| 3 | Z-BOX | `shop_guest_order_placed` – 329 Kč, VS, box, bezpečný localhost odkaz | `zbox@localhost.test` | 0 |
+| 4 | Z-BOX | `shop_payment_received` – 329 Kč, příprava k odeslání | `zbox@localhost.test` | 0 |
+| 5 | Z-BOX | `shop_packeta_dispatched` – tracking, box, adresa | `zbox@localhost.test` | 0 |
+
+- Nákup s účtem v dosavadním toku nemá úvodní platební e-mail; údaje zobrazí
+  detail s QR. Proto jsou pro první objednávku dvě zprávy a pro hosta tři.
+- Z-BOX `mark_ready` ani uložení štítku nezařazuje odběrový e-mail. Jediné
+  dopravní oznámení vzniklo při potvrzení podání. Dokončení osobního odběru
+  nepřidalo další zprávu. Žádné duplicitní typy/události.
+- Ve všech pěti tělech je nulový výskyt interního podacího kódu i označení
+  interní police. Syntetické adresy používají `.test`.
+- Po zařazení zprávy #2 byla přes editor uložena verze 2 s jinou recepcí,
+  časem a kontaktem. Náhled #2 stále ukazuje verzi 1, původní 16–18 hodin
+  a původní kontakt. SHA-256 předmětu+těla před/po je shodně
+  `d8c5cd332abed680bad5919729ace01f8017b26815f79fca6cf87edf1d1cd15f`.
+- B09 přes formulář `testovaci_scenare.php` uložen jako **PASS** s popisem obou
+  průchodů a omezení. Nejde o celkové UAT všech scénářů. Browser konzole fronty
+  bez chyb a varování.
+
+### Lokální důkazy a hranice
+
+Po doplnění localhost simulace prošla znovu **celá PHPUnit sada: 1 169 testů /
+26 302 kontrol, OK** (PHP 8.2.12). PHP lint všech pěti změněných/nových PHP
+souborů a `git diff --check` prošly. Browser akceptační hub potvrzuje 109/109
+migrací ve shodě s kódem. Nová simulace nemění databázové schéma; předchozí
+MariaDB souběh editorů a záloha/obnova 188 tabulek zůstávají platným důkazem
+pro nezměněnou migraci.
+
+Artefakty zůstávají v `var/local-status-mail-review/` (místní, neverzované):
+`pickup-completed.jpg`, `zbox-checkout.jpg`, `zbox-completed.jpg`,
+`queue-frozen-v1.jpg`, `queue-zbox.jpg`, `b09-pass.jpg`, `db-verification.tsv`.
+TSV neobsahuje přístupový token hosta ani těla se soukromým odkazem.
+Výsledek B09 je v ignorovaném `var/acceptance-feedback.json`.
+
+Fyzické předání, skutečná platba, mapa/feed dopravce, založení a tisk skutečného
+štítku, vložení balíku a doručení e-mailu byly mimo rozsah této lokální zkoušky.
+Štítek aplikace stále sama nevystavuje přes API: v ostrém provozu se založí
+ručně v Klientu Zásilkovny a následně zaznamená v KIS. Ani tuto funkci, ani
+fakturaci testovací simulace nezavádí.
+
+Při pokračování otevřít tento plán a Git stav izolovaného worktree. Lokální
+databáze obsahuje dvě dokončené testovací objednávky a pět čekajících zpráv;
+nespouštět nad nimi skutečný poštovní transport. Aktivní pozice obnovena na
+Zákaznickou péči a objednávky. Připraveno k revizi, bez push/merge/deploy.

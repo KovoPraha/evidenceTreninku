@@ -4,11 +4,18 @@ Lokální výsledek 21. 10. 2026: na větvi
 `codex/order-status-system-mail-20261021` je připravena oprava Zásilkovny,
 oddělené zobrazení systémového a zákaznického stavu a editor šesti existujících
 systémových e-mailů s náhledem, historií a verzí uloženou ve frontě.
-[Plán a výsledky](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md) obsahují všechny hranice
-ověření po integraci `06e0a9b1`: PHPUnit 1 166/26 263, MariaDB souběh editorů,
-záloha/obnova 188 tabulek, 109 aktuálních migrací a lokální browser prohlídka editoru. B09 zůstává PARTIAL
-pro úplný browser nákup/výdej. Jen lokální příprava; žádný push, merge, deploy
-ani skutečná rozesílka. Fakturace a dokončování služeb zůstávají navazující práce.
+[Plán a výsledky](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#úplný-lokální-browser-průchod-21-10-2026)
+obsahují dokončený browser nákup/výdej osobního odběru i Z-BOXu, lokální B09
+PASS a přesnou kontrolu pěti zpráv ve frontě (5 pending, 0 pokusů, 0 odesláno).
+Sklad 10→9→7, oba koncové stavy, odstranění podacího kódu a zachování starší
+zprávy po editaci šablony ověřeny. Nová úplná PHPUnit sada: 1 169/26 302, OK;
+předchozí MariaDB souběh editorů, záloha/obnova 188 tabulek a 109 migrací platí.
+Výběr boxu, štítek, platby a fyzické předání byly syntetické lokální simulace;
+reálný dopravce ani doručení pošty tím nejsou ověřeny. Režim Z-BOX demo vyžaduje
+výslovný příznak v ignorovaném configu a striktní loopback všech adres.
+Pracovní složka: `C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
+Žádný push, merge, deploy ani skutečná rozesílka. Worker nespouštěn; čekající
+testovací zprávy nepředávat skutečnému mail transportu. Fakturace je odložená.
 
 ## Pravidlo pro větší změny a pokračování po kompaktaci
 
