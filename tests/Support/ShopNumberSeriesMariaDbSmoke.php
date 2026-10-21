@@ -2,6 +2,8 @@
 declare(strict_types=1);
 require_once dirname(__DIR__,2).'/includes/shop_checkout.php';
 require_once __DIR__.'/ShopNumberSeriesFixture.php';
+defined('SHOP_VS_PRESERVATION_LIBRARY_ONLY')||define('SHOP_VS_PRESERVATION_LIBRARY_ONLY',true);
+require_once dirname(__DIR__,2).'/bin/verify-shop-variable-symbols.php';
 
 $port=(string)(getenv('EVIDENCE_MARIADB_SMOKE_PORT')?:'3306');
 if (!preg_match('/^[1-9][0-9]{0,4}$/D',$port)||(int)$port>65535) throw new RuntimeException('Invalid test port.');
@@ -50,7 +52,15 @@ try {
     if((int)$pdo->query('SELECT next_number FROM shop_number_series_counters')->fetchColumn()!==4) throw new RuntimeException('Wrong final counter.');
     if($race('admin',['A','B'])!==['conflict','saved']) throw new RuntimeException('Lost-update protection failed.');
     if((int)$pdo->query('SELECT COUNT(*) FROM shop_order_accounting_items')->fetchColumn()!==3) throw new RuntimeException('Missing/duplicate accounting snapshots.');
+    $pdo->exec('ALTER TABLE member_fee_standing_orders ADD plan_id INT NULL, ADD sportovec_id INT NULL');
+    $before=shopVsPreservationSnapshot($pdo);
+    if($before!==shopVsPreservationSnapshot($pdo,$before['bounds'])) throw new RuntimeException('Read-only preservation snapshot changed.');
+    $pdo->exec("INSERT INTO payments VALUES(1,'shop_order',1,'2680000001')");
+    $before=shopVsPreservationSnapshot($pdo);
+    $pdo->exec("UPDATE payments SET variable_symbol='2680000099' WHERE id=1");
+    if($before===shopVsPreservationSnapshot($pdo,$before['bounds'])) throw new RuntimeException('Changed VS was not detected.');
     echo "MariaDB number series smoke OK: idempotent migration, concurrent allocation after old snapshot, same-order replay, one winning editor.\n";
+    echo "MariaDB read-only VS snapshot OK: stable digests and changed symbol detection.\n";
 } finally {
     if($pdo&&$pdo->inTransaction())$pdo->rollBack();
     foreach($workers as [$process,$pipes]) {proc_terminate($process);foreach($pipes as $pipe)if(is_resource($pipe))fclose($pipe);proc_close($process);}
