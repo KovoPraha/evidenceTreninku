@@ -30,6 +30,10 @@ try {
     $_SESSION['flash_success'] = 'Aktivní pracovní pozice byla přepnuta.';
     $next = staffNormalizeRoute((string)($_POST['next'] ?? ''));
     if ($next !== '' && staffRouteOwner($next) === $targetPosition) {
+        $orderCode = (string)($_POST['payment_order_code'] ?? '');
+        if ($next === 'eshop_payments_admin.php' && preg_match('/^[A-Z0-9-]{1,64}$/D', $orderCode) === 1) {
+            $next .= '?q=' . rawurlencode($orderCode);
+        }
         header('Location: ' . $next, true, 303);
         exit;
     }

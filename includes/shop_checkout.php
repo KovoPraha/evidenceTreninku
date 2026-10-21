@@ -666,13 +666,18 @@ function shopCartFingerprint(array $items,?array $coupon=null,array $velodromeIt
     return hash('sha256',(string)json_encode(['items'=>$contract,'event_items'=>$eventContract,'velodrome_items'=>$velodromeContract,'coupon'=>$couponContract],JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR));
 }
 
+function shopOrderPaymentMethodLabel(string $method):string
+{
+    return ['bank_transfer'=>'Bankovním převodem','cash'=>'Hotově','sumup'=>'Online přes SumUp','stripe'=>'Kartou online'][$method]??$method;
+}
+
 /** @return list<array<string,mixed>> */
 function shopOrderAdminList(PDO $pdo,int $limit=200,string $query=''):array
 {
     $limit=max(1,min(500,$limit));
     $query=trim($query);
     $withCustomerStatus=shopCheckoutColumnExists($pdo,'shop_orders','customer_status_id');
-    $sql='SELECT o.*,'.($withCustomerStatus?'cs.label':'NULL').' AS customer_status_label,p.id AS payment_id,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
+    $sql='SELECT o.*,'.($withCustomerStatus?'cs.label':'NULL').' AS customer_status_label,p.id AS payment_id,p.method,p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
         .'e.action AS last_event_action,e.actor_id AS last_event_actor_id,e.note AS last_event_note,e.created_at AS last_event_at '
         .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '
         .($withCustomerStatus?'LEFT JOIN shop_order_status_definitions cs ON cs.id=o.customer_status_id ':'')
@@ -798,10 +803,17 @@ function shopOrderExpirePending(PDO $pdo,int $orderId,DateTimeImmutable $now,boo
 /** @return array{order_id:int,payment_status:string,changed:bool} */
 function shopOrderAdminConfirmBankPayment(PDO $pdo,int $paymentId,int $actorTrainerId,string $reason,bool $confirmed):array
 {
+    return shopOrderAdminConfirmManualPayment($pdo,$paymentId,$actorTrainerId,'bank_transfer',$reason,$confirmed);
+}
+
+/** Change the actual payment method and confirm receipt in one audited transaction. */
+function shopOrderAdminConfirmManualPayment(PDO $pdo,int $paymentId,int $actorTrainerId,string $method,string $reason,bool $confirmed):array
+{
     $reason=trim($reason);
     if($paymentId<1||$actorTrainerId<1||$reason===''||!$confirmed)throw new InvalidArgumentException('Potvrzení platby vyžaduje platbu, administrátora, důvod a výslovné potvrzení.');
     if(mb_strlen($reason,'UTF-8')>1000)throw new InvalidArgumentException('Důvod smí mít nejvýše 1000 znaků.');
-    return shopOrderConfirmPayment($pdo,$paymentId,'bank_transfer','trainer',$actorTrainerId,$reason);
+    if(!in_array($method,['bank_transfer','cash'],true))throw new InvalidArgumentException('Ručně lze potvrdit pouze převod nebo hotovost.');
+    return shopOrderConfirmPayment($pdo,$paymentId,$method,'trainer',$actorTrainerId,$reason);
 }
 
 /** @return array<string,mixed> */
@@ -843,6 +855,10 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
         return ['order_id'=>$orderId,'payment_status'=>'paid','changed'=>false]+$programSync+['velodrome_items'=>$velodromeSync['items'],'velodrome_activated'=>$velodromeSync['activated']];
     }
     if($payment['status']!=='pending'||$order['payment_status']!=='pending'||$order['status']!=='placed')throw new ShopCheckoutException('Platbu nebo objednávku v tomto stavu nelze potvrdit.');
+    if($source==='cash'){
+        if($payment['method']!=='bank_transfer')throw new ShopCheckoutException('Na hotovost lze změnit pouze čekající platbu převodem.');
+        if((int)$payment['amount_minor']!==(int)$order['total_minor']||$payment['currency']!==$order['currency'])throw new ShopCheckoutException('Částka nebo měna platby neodpovídá objednávce.');
+    }
     if(clubFinanceTableExists($pdo,'club_finance_allocations')){
         $allocated=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM club_finance_allocations WHERE order_id=?');$allocated->execute([$orderId]);$allocatedMinor=(int)$allocated->fetchColumn();
         if($allocatedMinor>0&&($allocatedMinor!==(int)$order['total_minor']||$source!=='bank_transfer'))throw new ShopCheckoutException('Objednávka má částečnou úhradu. Novou platbu nejprve ověřte a přidělte ve finančním přehledu sportovce.');
@@ -851,9 +867,10 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
     $pdo->prepare("UPDATE payments SET method=?,payment_source=?,status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
         ->execute([$source,$source,$trainerId,$reason,$paymentId]);
     $pdo->prepare("UPDATE shop_orders SET payment_status='paid',status='processing',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
-    $action=match($source){'stripe'=>'confirm_stripe_payment','sumup'=>'confirm_sumup_payment',default=>'confirm_bank_payment'};
+    $action=match($source){'stripe'=>'confirm_stripe_payment','sumup'=>'confirm_sumup_payment','cash'=>'confirm_cash_payment',default=>'confirm_bank_payment'};
+    $eventNote=$source==='cash'?'Způsob úhrady změněn z převodu na hotovost; přijata celá částka. '.$reason:$reason;
     $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,?,?,?,\'placed\',\'processing\',?)')
-        ->execute([$orderId,$actorType,$actorId,$action,$reason]);
+        ->execute([$orderId,$actorType,$actorId,$action,$eventNote]);
     $programSync=['program_items'=>0,'created'=>0];
     if(clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
     try{$eventSync=clubEventShopActivatePaidOrderInTransaction($pdo,$orderId,$actorId,$actorType);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
@@ -865,7 +882,7 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo,int $paymentId,string $so
 function shopOrderValidatePaymentActor(int $paymentId,string $source,string $actorType,?int $actorId,string $reason):void
 {
     $reason=trim($reason);
-    if($paymentId<1||!in_array($source,['bank_transfer','stripe','sumup'],true)||!in_array($actorType,['trainer','system'],true)||($actorType==='trainer'&&($actorId??0)<1)||($actorType==='system'&&$actorId!==null)||$reason==='')throw new InvalidArgumentException('Potvrzení platby nemá platný zdroj, auditora nebo důvod.');
+    if($paymentId<1||!in_array($source,['bank_transfer','cash','stripe','sumup'],true)||!in_array($actorType,['trainer','system'],true)||($source==='cash'&&$actorType!=='trainer')||($actorType==='trainer'&&($actorId??0)<1)||($actorType==='system'&&$actorId!==null)||$reason==='')throw new InvalidArgumentException('Potvrzení platby nemá platný zdroj, auditora nebo důvod.');
     if(mb_strlen($reason,'UTF-8')>1000)throw new InvalidArgumentException('Důvod smí mít nejvýše 1000 znaků.');
 }
 
@@ -962,14 +979,14 @@ function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,s
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Potvrzení vratky');
     $reference=trim($reference);
     $referenceControlCheck=preg_match('/[\x00-\x1F\x7F]/u',$reference);
-    if($reference===''||mb_strlen($reference,'UTF-8')>255||$referenceControlCheck!==0)throw new InvalidArgumentException('Vratka vyžaduje platnou bankovní referenci bez řídicích znaků, nejvýše 255 znaků.');
+    if($reference===''||mb_strlen($reference,'UTF-8')>255||$referenceControlCheck!==0)throw new InvalidArgumentException('Vratka vyžaduje platnou referenci transakce nebo pokladního dokladu bez řídicích znaků, nejvýše 255 znaků.');
     $pdo->beginTransaction();
     try{
         $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
         $order=shopOrderAdminLockOrder($pdo,$orderId);
-        if(!$payment||!$order||$payment['method']!=='bank_transfer')throw new ShopCheckoutException('Objednávka nebo její bankovní platba nebyla nalezena.');
+        if(!$payment||!$order||!in_array($payment['method'],['bank_transfer','cash'],true))throw new ShopCheckoutException('Objednávka nebo její ručně vypořádaná platba nebyla nalezena.');
         if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         try{clubEventShopAssertRefundableInTransaction($pdo,$orderId);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         try{publicVelodromeShopAssertRefundableInTransaction($pdo,$orderId);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
@@ -981,7 +998,7 @@ function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,s
         $pdo->prepare("UPDATE payments SET status='refunded',refund_sent_at=CURRENT_TIMESTAMP,refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
             ->execute([$reference,$actorTrainerId,$reason,(int)$payment['id']]);
         $pdo->prepare("UPDATE shop_orders SET payment_status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
-        $note='Bankovní reference: '.$reference.'. '.$reason;
+        $note=($payment['method']==='cash'?'Reference vratky hotovostní platby: ':'Bankovní reference: ').$reference.'. '.$reason;
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
             ->execute([$orderId,$actorTrainerId,$note]);
         $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>true];

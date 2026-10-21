@@ -12,6 +12,24 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
 {
     private const BANK=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'KOVO Praha','due_days'=>7];
 
+    public function testCashActivatesProgramOnceAndCapacityFailureRollsBackMethod():void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'OFFER-CASH');
+        $first=$this->checkout($pdo,10,101,601);$second=$this->checkout($pdo,11,103,601);
+        $result=\shopOrderAdminConfirmManualPayment($pdo,(int)$first['payment_id'],7,'cash','Hotovost převzata.',true);
+        self::assertTrue($result['changed']);self::assertSame(1,$result['created']);
+        self::assertSame('active',$pdo->query('SELECT status FROM club_program_enrollments')->fetchColumn());
+        self::assertSame('active',$pdo->query('SELECT status FROM club_roster_members')->fetchColumn());
+        self::assertFalse(\shopOrderAdminConfirmManualPayment($pdo,(int)$first['payment_id'],7,'cash','Opakování.',true)['changed']);
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_payment_received'")->fetchColumn());
+        $pdo->exec('UPDATE club_program_offers SET capacity=1');
+        try{\shopOrderAdminConfirmManualPayment($pdo,(int)$second['payment_id'],7,'cash','Další hotovost.',true);self::fail('Capacity failure must roll back cash receipt.');}catch(\ShopCheckoutException){}
+        $payment=$pdo->query('SELECT method,status FROM payments WHERE id='.(int)$second['payment_id'])->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(['method'=>'bank_transfer','status'=>'pending'],$payment);
+        self::assertFalse($pdo->inTransaction());
+    }
+
     public function testPaidConfirmationAutomaticallyActivatesExactlyOnce():void
     {
         $pdo=$this->database();$this->offer($pdo,601,501,10,2,'OFFER-A');$order=$this->checkout($pdo,10,101,601);

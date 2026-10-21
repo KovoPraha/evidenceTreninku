@@ -1,5 +1,11 @@
 # Aktuální předání vývoje na další stanici
 
+Lokální navazující práce 21. 10. 2026: větev `codex/order-cash-payment`
+z `2d86a5c3` doplňuje přijetí hotovosti
+místo převodu, audit, přechod z objednávky na její platbu a vratku.
+Postup a hranice ověření jsou v [předání plateb](ORDER_PAYMENTS_2026-10-21.md).
+Tato změna zatím není nasazená a nemění následující produkční důkazy.
+
 Nejnovější předání: 21. 10. 2026, správa registračních textů a souhlasů z PR
 [#148](https://github.com/KovoPraha/evidenceTreninku/pull/148). Nasazený aplikační
 SHA je `3c64dc530fa8025854f2cc8be07e74bdc1a51aab`,
