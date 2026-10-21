@@ -1,5 +1,20 @@
 # Aktuální stav projektu
 
+Nejnovější vydání 21. 10. 2026: číselné řady RR N KK XXXXX a účetní kategorie
+z [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160) jsou na produkci.
+Aplikační SHA `1441683ae1ae2bb9da16d8be3af62ce40f35385c`,
+[deploy 39609254832](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39609254832)
+je zelený: záloha 238 tabulek / 2 triggerů, 111 migrací aktuálních, porovnání
+dosavadních VS `unchanged=true`, aktivace a HTTP smoke 200. Osm starých plateb
+zachováno, obě tabulky stálých příspěvkových VS zatím prázdné. CI výsledného
+main, MariaDB 10.3/11.4 i CodeQL prošly; 1 193 testů / 26 739 kontrol.
+Hospodář má správu řad, kategorií, mapování a čítačů; smíšené košíky mají 9/00,
+nezařazené 8/00. Živá prohlídka bez ukládání prošla, původní VS objednávky
+`0000000013` nezměněn. Fakturace a účetní export nejsou součástí vydání,
+`uat_schvaleno=false`, `importovat_krouzky=false`. Podrobnosti a hranice jsou
+v [produkčním reportu](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md).
+Následující záznamy jsou historická vydání.
+
 Nejnovější vydání 21. 10. 2026: [PR #156](https://github.com/KovoPraha/evidenceTreninku/pull/156)
 opravil výdejové akce Zásilkovny a oddělil skutečné systémové stavy od vlastních
 zákaznických upřesnění. Správa stavů nyní obsahuje editor šesti existujících

@@ -1,5 +1,20 @@
 # Aktuální předání vývoje na další stanici
 
+Nasazeno 21. 10. 2026: číselné řady a účetní kategorie z [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160).
+Aplikační SHA `1441683ae1ae2bb9da16d8be3af62ce40f35385c`,
+[deploy 39609254832](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39609254832)
+prošel zálohou 238 tabulek / 2 triggerů, 111 aktuálními migracemi, aktivací a HTTP 200.
+Kontrola VS před/po vrátila `unchanged=true`: osm plateb nezměněno; obě
+tabulky stálých příspěvkových VS jsou prázdné a zůstaly prázdné. CI výsledného
+main i CodeQL zelené; 1 193 testů / 26 739 kontrol a MariaDB 10.3/11.4.
+Živě ověřeno finanční menu, sedm řad, náhledy, mapování, audit, ochrana formulářů
+a odmítnutí jiné aktivní pozice. Původní VS objednávky `0000000013` zachován,
+role Objednávky obnovena. Žádné nastavení, objednávka ani úhrada se při browser
+kontrole nezapsaly; mapování z localhostu se nepřenášelo. `uat_schvaleno=false`,
+`importovat_krouzky=false`. [Produkční report](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md)
+a [návod](SHOP_NUMBER_SERIES_2026-10-21.md) jsou aktuální. Tento navazující
+dokumentační řez nepřidává aplikační změny; následující lokální stavy jsou historie.
+
 Aktuální autorizace 21. 10. 2026 pro číselné řady: vlastník výslovně schválil
 push, PR, merge po zelených kontrolách a chráněné produkční nasazení. Starší
 lokální omezení tohoto řezu níže je historické. Zachovat všechny existující

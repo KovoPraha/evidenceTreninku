@@ -1,5 +1,17 @@
 # Číselné řady a účetní kategorie e-shopu
 
+## Aktuální produkční výsledek
+
+**Nasazeno a ověřeno 21. 10. 2026.** [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160),
+SHA `1441683ae1ae2bb9da16d8be3af62ce40f35385c`,
+[deploy 39609254832](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39609254832)
+úspěšný: záloha 238 tabulek / 2 triggerů, 111 aktuálních migrací, otisky VS
+před/po stejné a HTTP 200. CI main, CodeQL a MariaDB 10.3/11.4 zelené,
+1 193 testů / 26 739 kontrol. Produkční prohlídka proběhla pouze čtením;
+VS původní objednávky `0000000013` se nezměnil a role byla obnovena.
+[Produkční report](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md) je autoritou
+pro důkazy a omezení. Starší lokální zákazy a průběžné kroky níže jsou historie.
+
 ## Aktuální autorizace vydání 21. 10. 2026
 
 Vlastník nyní výslovně schválil push, vytvoření PR, merge po zelených kontrolách
