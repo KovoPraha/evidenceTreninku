@@ -1,5 +1,13 @@
 # Aktuální předání vývoje na další stanici
 
+Navazující TEST ověření 21. 10. 2026: produkční cyklus změny převodu na
+hotovost, příjmu, storna a samostatné vratky byl dokončen na nové objednávce
+`KP2610218B7C69C006` za 1 Kč. Konečný stav Stornováno/Vráceno, způsob Hotově,
+TEST reference a audit zachovány. Nový TEST produkt #296 / varianta #950
+zůstává stažený, sklad 1 → 0 → 1. Skutečné objednávky ani peníze se neměnily;
+původní pracovní pozice byla obnovena. [Přesný protokol](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md)
+rozlišuje tuto simulaci od plného UAT a ověření skutečného převodu.
+
 Aktuální autorizace 21. 10. 2026: vlastník schválil commit, push a produkční
 nasazení stavů/Zásilkovny/systémových e-mailů. Starší zákaz nasazení níže je
 historický. Platí zákaz skutečné pošty při ověřování a odložení fakturace.

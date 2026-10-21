@@ -1,5 +1,12 @@
 # Aktuální stav projektu
 
+Navazující produkční ověření 21. 10. 2026: **PASS** pro celý TEST cyklus
+převod → hotovost → příjem → storno → vratka. Nová TEST objednávka
+`KP2610218B7C69C006` za 1 Kč je Stornováno/Vráceno, TEST produkt je stažený
+a sklad se vrátil na původní 1 kus. Skutečné peníze ani objednávky se neměnily.
+[Protokol a důkazy](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md) zachycují
+audit, přesný rozsah, úklid a vztah k souběžnému navazujícímu deployi.
+
 Nejnovější doplnění: 21. 10. 2026. [PR #152](https://github.com/KovoPraha/evidenceTreninku/pull/152)
 přidal možnost změnit **název registračního dokumentu**, i bez změny jeho těla.
 Koncept a zveřejněná verze uchovávají název spolu s textem; přihlášky a historie
