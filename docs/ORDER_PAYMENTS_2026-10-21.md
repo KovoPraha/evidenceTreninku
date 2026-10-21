@@ -1,5 +1,12 @@
 # Přijetí hotovosti místo převodu
 
+Navazující ověření 21. 10. 2026: **celý TEST cyklus převod → hotovost →
+příjem → storno → vratka prošel v produkčním UI**. Samostatná objednávka
+`KP2610218B7C69C006` za 1 Kč skončila Stornováno/Vráceno; sklad nové TEST
+varianty prošel 1 → 0 → 1 a produkt je stažený. Skutečné peníze ani objednávky
+se neměnily. Podrobný [protokol](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md)
+obsahuje oddělená TEST data, audit a hranice ověření. Níže je předchozí průchod.
+
 Stav 21. 10. 2026: změna je sloučená v [PR #150](https://github.com/KovoPraha/evidenceTreninku/pull/150)
 a nasazená na <https://kis.kovopraha.cz/>. Aplikační SHA:
 `f813264b16ffd49224bd41a908adc33d9687af88`.
