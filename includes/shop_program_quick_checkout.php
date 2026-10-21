@@ -48,6 +48,7 @@ function shopProgramQuickCheckoutPlace(
         try{
             $existingOrder=$pdo->prepare("SELECT public_code FROM shop_orders WHERE idempotency_key_hash=? AND checkout_mode='quick_program'");$existingOrder->execute([$keyHash]);$existingCode=$existingOrder->fetchColumn();
             if($existingCode!==false){$pdo->commit();return shopGuestOrderByCode($pdo,(string)$existingCode,$accessToken)+['replayed'=>true];}
+            $customConsentSnapshots=clubConsentValidate($pdo,$input);
             $variant=shopCheckoutLockVariant($pdo,$variantId);
             if(!$variant||($variant['offer_type']??null)!=='program'||!shopCheckoutVariantIsSaleable($variant,$pdo,null,true))throw new ShopCheckoutException('Tento kroužek už není možné objednat.');
             $offer=clubProgramOfferForVariant($pdo,$variantId,null,true);if(!$offer)throw new ShopCheckoutException('Termín kroužku není dostupný.');
@@ -72,6 +73,8 @@ function shopProgramQuickCheckoutPlace(
             $insert->execute($values);$orderId=(int)$pdo->lastInsertId();$acceptedAt=(new DateTimeImmutable('now',new DateTimeZone('Europe/Prague')))->format('Y-m-d H:i:s');
             $item=$pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,beneficiary_sportovec_id,athlete_registration_request_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot,program_terms_snapshot_json,program_terms_accepted_at,program_terms_accepted_by_account_id) VALUES(?,?,?,?,?,?,?,?,1,?,?,?,?,?,?,?,?)');
             $item->execute([$orderId,(int)$variant['product_id'],$variantId,null,$requestId,(string)$variant['public_name'],(string)$variant['sku'],(string)$variant['attributes_json'],$unit,$unit,$currency,$variant['includes_vat'],$variant['vat_rate_basis_points'],clubProgramTermsSnapshotJson($terms),$acceptedAt,$accountId]);
+            $orderItemId=(int)$pdo->lastInsertId();
+            clubConsentStore($pdo,$orderItemId,$accountId,$customConsentSnapshots);
             $variableSymbol=shopPaymentVariableSymbol($orderId);$spd=shopPaymentSpdPayload($bank['iban'],$unit,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
             if(shopPaymentPolicyColumnExists($pdo,'payments','accepted_payment_methods'))$pdo->prepare("INSERT INTO payments(payable_type,payable_id,method,accepted_payment_methods,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) VALUES('shop_order',?,'bank_transfer',?,'pending',?,?,?,?,?,?,?,?)")
                 ->execute([$orderId,SHOP_PAYMENT_POLICY_BANK_ONLY,$unit,$currency,$variableSymbol,$bank['iban'],$bank['bic']!==''?$bank['bic']:null,$bank['account_label'],$spd,$dueAt]);

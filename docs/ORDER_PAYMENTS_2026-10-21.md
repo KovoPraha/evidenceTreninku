@@ -69,7 +69,34 @@ Samostatná HTTP kontrola po nasazení: homepage a veřejný e-shop vracejí 200
 `eshop_orders_admin.php` a `eshop_payments_admin.php` vracejí nepřihlášenému
 302 na `login.php`. Odpovědi neobsahují PHP fatal/parse chybu ani warning.
 
-Přihlášené prohlížečové ověření nového formuláře zůstává neprovedené:
-připojení k Chrome během pokusu o kontrolu přestalo fungovat. Nejde o důkaz
-aplikační chyby. Žádná produkční platba nebyla potvrzována a plné UAT není
-schválené. Backendové scénáře příjmu a vratky ověřují uvedené integrační testy.
+## Dokončené přihlášené ověření formuláře 21. 10. 2026
+
+Původní výpadek připojení Chrome byl překonán novou kartou a dokumentovaným
+DOM ovládáním. Kontrola proběhla na produkci po úspěšném navazujícím
+[deployi 39593524611](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39593524611)
+nad SHA `f5d6276838239ace6426aa8c326c01a213730a36`, který obsahuje i platební změnu.
+
+Ověřeno na již existující objednávce testovacího účtu, bez platebního zápisu:
+
+- Stránka plateb odmítá nesprávnou aktivní pracovní pozici.
+- Z objednávky funguje **Přejít na Hospodáře a přijmout platbu**:
+  přepne pozici a otevře platbu přesné objednávky s filtrem `q`.
+- Výchozí je převod; lze vybrat hotovost a vyplnit poznámku.
+- Způsob úhrady, poznámka a checkbox přijetí celé částky jsou povinné.
+  Poznámka má limit 1000 znaků. Prázdná poznámka i nezaškrtnuté potvrzení
+  mají v prohlížeči `validity.valueMissing=true`; po vyplnění je poznámka platná.
+- Potvrzovací formulář používá POST a obsahuje CSRF ochranu; hodnota tokenu
+  se nikam neexportovala.
+- Částka v potvrzovacím textu odpovídá objednávce. Checkbox zůstal nezaškrtnutý
+  a tlačítko **Zaevidovat přijatou platbu** nebylo stisknuto.
+- Formulář byl vizuálně zkontrolován; konzole neobsahovala warning ani error.
+- Volba a poznámka byly vyčištěny. Po obnovení stránky zůstal výchozí převod.
+  Po návratu do objednávek byl celý text řádku shodný s počátečním stavem:
+  čekající úhrada, převod, stejná částka i poslední událost. Původní pracovní
+  pozice Registrář členů a KIS byla obnovena.
+
+Výsledek: **PASS pro přihlášené ověření formuláře bez zápisu platby**.
+Žádná platba ani vratka, včetně testovací, nebyla potvrzena. Prohlížečová kontrola
+neověřovala serverové zpracování platebního POST; to pokrývají integrační testy.
+Plné UAT aplikace zůstává samostatné. Lokální snímek formuláře:
+`output/browser/cash-payment-form-2026-10-21.png` (není součástí Git repozitáře).

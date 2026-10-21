@@ -58,8 +58,11 @@ Hospodář může současně změnit převod na hotovost a přijmout celou platb
 objednávka má audit, navazující aktivace a podporuje ruční vratku.
 CI: 1 155 testů / 26 040 kontrol, MariaDB 10.3/11.4 a CodeQL.
 Postup a hranice ověření jsou v [předání plateb](ORDER_PAYMENTS_2026-10-21.md).
-Přihlášená prohlížečová kontrola formuláře zůstává otevřená kvůli nefunkčnímu
-připojení Chrome; skutečné objednávky ani platby se při ověření neměnily.
+Přihlášená kontrola formuláře byla 21. 10. dokončena: role, přechod na správnou
+platbu, volba hotovosti, povinná pole, CSRF a čistá konzole. Platební formulář
+nebyl odeslán; následná kontrola potvrdila nezměněný řádek objednávky.
+Podrobné ověření proběhlo na navazujícím release `f5d6276`; původní pracovní
+pozice byla obnovena. Skutečné ani testovací platby nebyly potvrzovány.
 `uat_schvaleno=false`, `importovat_krouzky=false`. Následující předání jsou historická.
 
 Nejnovější předání: 21. 10. 2026, správa registračních textů a souhlasů z PR

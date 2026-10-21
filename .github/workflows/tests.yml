@@ -98,6 +98,9 @@ jobs:
       - name: Ověřit zveřejnění registračních textů a souběh na MariaDB
         run: php tests/Support/RegistrationTextsMariaDbSmoke.php
 
+      - name: Ověřit systémové e-maily a souběh editorů na MariaDB
+        run: php tests/Support/ShopSystemEmailMariaDbSmoke.php
+
       - name: Ověřit M3.5d sportovní import review na MariaDB
         run: php bin/sports-review-smoke.php
 

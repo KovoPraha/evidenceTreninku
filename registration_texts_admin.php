@@ -9,6 +9,11 @@ if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('registrar')) {
     exit('Správa textů je dostupná v pracovní pozici Registrář členů a KIS.');
 }
 header('Cache-Control: no-store, private');
+require_once __DIR__.'/includes/club_registration_consent_admin.php';
+if(isset($_GET['custom'])||isset($_POST['custom_action'])) {
+    require __DIR__.'/includes/club_registration_consent_page.php';
+    exit;
+}
 function registrationTextH(mixed $value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -73,6 +78,10 @@ foreach (array_keys(ATHLETE_REGISTRATION_TEXT_PURPOSES) as $key) $currentTitles[
     <p class="text-body-secondary">Upravte název i text, připravte koncept a samostatně ho zveřejněte. Nová verze platí pro nové přihlášky; historie dřívějších potvrzení se nepřepisuje.</p>
     <?php if ($error !== ''): ?><div class="alert alert-danger" role="alert"><?=registrationTextH($error)?></div><?php endif; ?>
     <?php if ($flash !== ''): ?><div class="alert alert-success" role="status"><?=registrationTextH($flash)?></div><?php endif; ?>
+    <section class="card mb-4"><div class="card-header d-flex justify-content-between align-items-center"><h2 class="h5 mb-0">Vlastní souhlasy ke kroužkům</h2><a class="btn btn-primary btn-sm" href="?custom=0">Přidat vlastní souhlas</a></div><div class="card-body">
+    <p class="small text-body-secondary">Společné pro všechny kroužky. Každý může být povinný nebo volitelný; skrytím zmizí z nových přihlášek a historie zůstane zachována.</p>
+    <?php $customConsents=clubConsentCurrent($pdo,true);foreach($customConsents as $custom):?><div class="mb-2"><a class="text-break" href="?custom=<?=(int)$custom['custom_consent_id']?>"><?=registrationTextH($custom['title_plain'])?></a> · <?=(int)$custom['custom_visible']===1?'Viditelný':'Skrytý'?> · <?=(int)$custom['custom_required']===1?'Povinný':'Volitelný'?></div><?php endforeach;?>
+    <?php if($customConsents===[]):?><div class="text-body-secondary">Zatím nejsou vytvořené vlastní souhlasy.</div><?php endif;?></div></section>
     <nav class="nav nav-pills gap-2 mb-4" aria-label="Typ registračního textu">
         <?php foreach ($currentTitles as $key => $label): ?><a class="nav-link text-break <?=$purpose === $key ? 'active' : ''?>" <?=$purpose === $key ? 'aria-current="page"' : ''?> href="?purpose=<?=registrationTextH($key)?>"><?=registrationTextH($label)?></a><?php endforeach; ?>
     </nav>
