@@ -1,5 +1,17 @@
 # Aktuální předání vývoje na další stanici
 
+Nejnovější předání: 21. 10. 2026, názvy registračních textů z
+[PR #152](https://github.com/KovoPraha/evidenceTreninku/pull/152). Nasazený aplikační
+SHA je `f5d6276838239ace6426aa8c326c01a213730a36`,
+[deploy 39593524611](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39593524611)
+prošel zálohou 234 tabulek / dvou triggerů, 108 aktuálními migracemi a HTTP smoke.
+Registrář může upravit **Název souhlasu / informace** a zveřejnit i změnu samotného
+názvu. Název se verzovaně ukládá s textem; nové nadpisy používají přihlášky
+i historie. Původní potvrzení zachovávají vazbu na původní dokument a název.
+Živě bylo ověřeno nové pole na `registration_texts_admin.php?purpose=member_data_notice`;
+produkční názvy a texty se při kontrole neměnily. Podrobnosti a návod jsou v
+[reportu názvů souhlasů](REGISTRATION_TEXT_TITLES_2026-10-21.md). Plné UAT zůstává otevřené.
+
 Nejnovější předání: 21. 10. 2026, hotovostní platby objednávek z [PR #150](https://github.com/KovoPraha/evidenceTreninku/pull/150).
 Nasazený aplikační SHA je `f813264b16ffd49224bd41a908adc33d9687af88`;
 [deploy 39590481900](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39590481900)
