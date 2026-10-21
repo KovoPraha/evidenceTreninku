@@ -1,9 +1,12 @@
 # Přijetí hotovosti místo převodu
 
-Stav 21. 10. 2026: lokální implementace na větvi `codex/order-cash-payment`,
-základ `origin/main` = `2d86a5c3 (aktualizováno před vydáním)`.
-Pracovní kopie: `C:\xampp\htdocs\evidencePavel-order-payments-20261021`.
-Produkční nasazení ani změny skutečných objednávek nebyly provedeny.
+Stav 21. 10. 2026: změna je sloučená v [PR #150](https://github.com/KovoPraha/evidenceTreninku/pull/150)
+a nasazená na <https://kis.kovopraha.cz/>. Aplikační SHA:
+`f813264b16ffd49224bd41a908adc33d9687af88`.
+[Produkční deploy 39590481900](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39590481900)
+prošel včetně ověřené zálohy, 107 aktuálních migrací bez čekajících kroků,
+aktivace release a HTTP 200. `uat_schvaleno=false`, `importovat_krouzky=false`.
+Skutečné objednávky ani platby nebyly při ověřování změněny.
 Databázové schéma se nemění; skutečný způsob úhrady se ukládá do existujících
 polí `payments.method` a `payments.payment_source`.
 
@@ -57,4 +60,16 @@ v paměti; skutečné objednávky, platby a bankovní účty se nepoužily.
 PHP syntaxe pěti změněných aplikačních souborů a `composer validate --strict`
 prošly. Kompletní `composer test`: **1 148 testů / 25 883 kontrol**, úspěch;
 `git diff --check` bez chyb. Nových je osm integračních testů.
-MariaDB ani produkční či prohlížečové UAT této změny nebyly provedeny.
+Po aktualizaci základu prošlo [CI PR 39590307956](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39590307956):
+**1 155 testů / 26 040 kontrol**, MariaDB 10.3 i 11.4. CodeQL prošel.
+[CI výsledného main 39590445587](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39590445587)
+je také úspěšné. Produkční workflow zopakovalo kontrolu PHP, Composer a testy.
+
+Samostatná HTTP kontrola po nasazení: homepage a veřejný e-shop vracejí 200;
+`eshop_orders_admin.php` a `eshop_payments_admin.php` vracejí nepřihlášenému
+302 na `login.php`. Odpovědi neobsahují PHP fatal/parse chybu ani warning.
+
+Přihlášené prohlížečové ověření nového formuláře zůstává neprovedené:
+připojení k Chrome během pokusu o kontrolu přestalo fungovat. Nejde o důkaz
+aplikační chyby. Žádná produkční platba nebyla potvrzována a plné UAT není
+schválené. Backendové scénáře příjmu a vratky ověřují uvedené integrační testy.
