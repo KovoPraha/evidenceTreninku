@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2).'/includes/athlete_registration_texts.php';
+require_once dirname(__DIR__, 2).'/includes/club_registration_consent_admin.php';
 $database = getenv('EVIDENCE_REGISTRATION_TEXTS_SMOKE_DB') ?: 'evidence_registration_texts_test';
 if (preg_match('/\Aevidence_registration_texts_test(?:_[a-z0-9_]+)?\z/', $database) !== 1) {
     throw new RuntimeException('Refusing to use a non-test database.');
@@ -12,6 +13,11 @@ $_SESSION = ['trener_id'=>7,'staff_positions'=>['registrar'],'staff_active_posit
 if (($argv[1] ?? '') === 'publish') {
     try { registrationTextsPublish($connect($database), (int)($argv[2] ?? 0), true); echo 'published'; }
     catch (InvalidArgumentException|PDOException) { echo 'rejected'; }
+    exit;
+}
+if (($argv[1] ?? '') === 'custom-publish') {
+    try { clubConsentPublish($connect($database),(int)$argv[2],(int)$argv[3],true); echo 'published'; }
+    catch(InvalidArgumentException|PDOException){echo 'rejected';}
     exit;
 }
 $server = $connect();
@@ -38,6 +44,13 @@ try {
     ($titles['up'])($pdo);
     ($titles['up'])($pdo);
     if (!(($titles['verify'])($pdo))) throw new RuntimeException('Title migration did not verify.');
+    $pdo->exec('CREATE TABLE verejni_uzivatele(id INT PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO verejni_uzivatele VALUES(10)');
+    $pdo->exec('CREATE TABLE shop_order_items(id BIGINT UNSIGNED PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->exec('INSERT INTO shop_order_items VALUES(100)');
+    $customMigration=require dirname(__DIR__,2).'/migrations/20261021190000_custom_club_registration_consents.php';
+    ($customMigration['up'])($pdo);($customMigration['up'])($pdo);
+    if(!(($customMigration['verify'])($pdo)))throw new RuntimeException('Custom consent migration did not verify.');
     $purpose = 'birth_number_legal_notice';
     $base = registrationTextsCurrent($pdo, $purpose);
     $first = registrationTextsSaveDraft($pdo,$purpose,'LOCALHOST První konečné znění.','LOCALHOST test A',(int)$base['id']);
@@ -73,7 +86,24 @@ try {
     if ($renamed['title_plain'] !== 'LOCALHOST Nový název souhlasu' || $renamed['consent_text_plain'] !== $base['consent_text_plain']) throw new RuntimeException('Title-only publication did not preserve body.');
     $history = registrationTextsHistory($pdo,$purpose);
     if ($history[1]['title_plain'] !== 'Informace k rodnému číslu') throw new RuntimeException('Original title was not preserved in history.');
-    echo 'MariaDB registration texts smoke OK ('.$pdo->query('SELECT VERSION()')->fetchColumn().")\n";
+    $custom=clubConsentCreate($pdo,'LOCALHOST Vlastní souhlas','LOCALHOST Platné znění.','LOCALHOST Vytvoření',true,true);
+    if(clubConsentCurrent($pdo)!==[])throw new RuntimeException('An unpublished custom consent became visible.');
+    $base=clubConsentTerm($pdo,$custom['id']);
+    $other=clubConsentSaveDraft($pdo,$custom['id'],(int)$base['id'],'LOCALHOST Konkurenční','LOCALHOST Jiné znění.','LOCALHOST Jiný koncept',true,true);
+    $workers=[];
+    foreach([$custom['draft_id'],$other] as $draftId){
+        $pipes=[];$process=proc_open([PHP_BINARY,__FILE__,'custom-publish',(string)$custom['id'],(string)$draftId],[0=>['pipe','r'],1=>['pipe','w'],2=>['pipe','w']],$pipes);
+        if(!is_resource($process))throw new RuntimeException('Custom publication worker failed to start.');
+        fclose($pipes[0]);$workers[]=[$process,$pipes];
+    }
+    $outcomes=[];
+    foreach($workers as [$process,$pipes]){$outcomes[]=stream_get_contents($pipes[1]);$error=stream_get_contents($pipes[2]);fclose($pipes[1]);fclose($pipes[2]);if(proc_close($process)!==0||$error!=='')throw new RuntimeException('Custom publication worker failed.');}
+    sort($outcomes);if($outcomes!==['published','rejected'])throw new RuntimeException('Custom consent publication was not serialized.');
+    $terms=clubConsentCurrent($pdo);$input=['club_consent_manifest'=>clubConsentManifest($terms),'club_consent_accepted'=>[(int)$terms[0]['id']=>'1']];
+    $pdo->beginTransaction();$snapshots=clubConsentValidate($pdo,$input);clubConsentStore($pdo,100,10,$snapshots);$pdo->commit();
+    clubConsentHide($pdo,$custom['id'],(int)$terms[0]['id'],true);
+    if(clubConsentCurrent($pdo)!==[]||(int)$pdo->query('SELECT COUNT(*) FROM club_registration_consent_acceptances')->fetchColumn()!==1)throw new RuntimeException('Hiding lost history or left the consent visible.');
+    echo 'MariaDB registration texts and custom consents smoke OK ('.$pdo->query('SELECT VERSION()')->fetchColumn().")\n";
 } finally {
     $server->exec('DROP DATABASE '.$quoted);
 }

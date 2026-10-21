@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/club_registration_consents.php';
+
 require_once __DIR__.'/shop_coupon.php';
 require_once __DIR__.'/shop_payment_policy.php';
 require_once __DIR__.'/club_finance.php';
@@ -249,7 +251,8 @@ function shopCheckoutPlace(
     ?callable $pplLookup = null,
     string $packetaPointId = '',
     int $expectedPacketaShippingMinor = 0,
-    ?callable $packetaLookup = null
+    ?callable $packetaLookup = null,
+    array $customConsentInput = []
 ): array
 {
     if ($accountId < 1 || preg_match('/^[a-f0-9]{32}$/D',$idempotencyKey)!==1
@@ -302,6 +305,8 @@ function shopCheckoutPlace(
         foreach (array_merge($items,$eventItems,$velodromeItems) as $line) if (!empty($line['beneficiary_sportovec_id'])) $beneficiaries[(int)$line['beneficiary_sportovec_id']]=true;
         if (count($beneficiaries)>1) throw new ShopCheckoutException('Košík obsahuje nabídky pro více sportovců. Kvůli správnému finančnímu saldu vytvořte každému samostatnou objednávku.');
         if (clubFinanceColumnExists($pdo,'shop_orders','finance_sportovec_id')&&$beneficiaries!==[]&&$financeSportovecId!==array_key_first($beneficiaries)) throw new ShopCheckoutException('Vybraný finanční profil musí odpovídat sportovci v objednávce.');
+        $customConsentSnapshots=[];
+        foreach($items as $consentItem) if(($consentItem['offer_type']??null)==='program') { $customConsentSnapshots=clubConsentValidate($pdo,$customConsentInput); break; }
         $total=0;$currency=null;
         foreach($items as &$item){
             if(($item['offer_type']??null)!=='program'&&shopProductRequiresAthlete($pdo,(int)$item['product_id']))throw new ShopCheckoutException('Tato nabídka vyžaduje sportovce a řádně vypsaný termín.');
@@ -405,6 +410,7 @@ function shopCheckoutPlace(
                 $orderItem->execute([$orderId,(int)$item['product_id'],(int)$item['id'],(string)$item['public_name'],(string)$item['sku'],(string)$item['attributes_json'],$quantity,(int)$item['amount_minor'],$line,(string)$item['currency'],$item['includes_vat'],$item['vat_rate_basis_points']]);
             }
             $orderItemId=(int)$pdo->lastInsertId();
+            if(($item['offer_type']??null)==='program') clubConsentStore($pdo,$orderItemId,$accountId,$customConsentSnapshots);
             if(($item['offer_type']??null)==='program'&&shopCheckoutColumnExists($pdo,'shop_order_items','club_program_offer_id')){
                 if((int)($item['club_program_offer_id']??0)<1)throw new ShopCheckoutException('Položka kroužku nemá určené období.');
                 $pdo->prepare('UPDATE shop_order_items SET club_program_offer_id=? WHERE id=?')->execute([(int)$item['club_program_offer_id'],$orderItemId]);
