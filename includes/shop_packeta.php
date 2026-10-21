@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/shop_packeta_local_demo.php';
+
 final class ShopPacketaException extends RuntimeException{}
 
 /** @return array{enabled:bool,price_minor:int,widget_api_key:string} */
@@ -15,8 +17,8 @@ function shopPacketaSettings(PDO $pdo):array
 function shopPacketaAvailable(array $settings):bool
 {
     return ($settings['enabled']??false)===true&&(int)($settings['price_minor']??0)>0
-        &&preg_match('/^[A-Za-z0-9]{16}$/D',(string)($settings['widget_api_key']??''))===1
-        &&function_exists('curl_init');
+        &&(shopPacketaLocalDemoEnabled()||(preg_match('/^[A-Za-z0-9]{16}$/D',(string)($settings['widget_api_key']??''))===1
+        &&function_exists('curl_init')));
 }
 
 /** Fetch a current Z-BOX feed, caching it for four hours as Packeta recommends regular feed refreshes. */
@@ -62,6 +64,10 @@ function shopPacketaResolveBox(string $id,?callable $lookup=null,string $apiKey=
 {
     if(preg_match('/^[0-9]{1,12}$/D',$id)!==1)throw new ShopPacketaException('Vyberte Z-BOX z mapy Zásilkovny.');
     if($lookup!==null)return shopPacketaNormalizeBox($lookup($id),$id);
+    if(shopPacketaLocalDemoEnabled()){
+        foreach(shopPacketaLocalDemoPoints()as$point)if($point['id']===$id)return shopPacketaNormalizeBox($point,$id);
+        throw new ShopPacketaException('Vyberte dostupný syntetický localhost Z-BOX.');
+    }
     if(preg_match('/^[A-Za-z0-9]{16}$/D',$apiKey)!==1)throw new ShopPacketaException('Doručení do Z-BOXu není dostupné.');
     foreach(shopPacketaBoxFeed($apiKey)as$point)if(is_array($point)&&(string)($point['id']??'')===$id)return shopPacketaNormalizeBox($point,$id);
     throw new ShopPacketaException('Zvolený Z-BOX už není dostupný. Vyberte jiný.');

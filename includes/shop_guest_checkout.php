@@ -179,20 +179,19 @@ function shopGuestCheckoutPlace(
                 ->execute([$orderId]);
             if (shopPaymentNotificationTableExists($pdo, 'club_event_notifications')) {
                 $orderUrl = appUrl('booking/objednavka.php?code=' . rawurlencode($publicCode) . '&access=' . rawurlencode($accessToken));
-                $subject = 'Objednávka ' . $publicCode . ' – platební údaje';
-                $body = "Dobrý den,\n\nobjednávka {$publicCode} byla přijata.\n"
-                    . 'Položka: ' . (string)$variant['public_name'] . ' × ' . $quantity . "\n"
-                    . ($delivery['method']==='ppl_box'
+                $deliveryInstruction = ($delivery['method']==='ppl_box'
                         ? 'Doprava PPL Parcelbox: '.number_format($delivery['price_minor']/100,2,',',' ')." CZK\n".'Box: '.$delivery['point']['name'].' ('.$delivery['point']['code'].")\n"
                         : ($delivery['method']==='packeta_zbox'
                             ? 'Doprava Zásilkovna Z-BOX: '.number_format($delivery['price_minor']/100,2,',',' ')." CZK\n".'Box: '.$delivery['point']['name'].' ('.$delivery['point']['id'].")\n"
-                            : "Předání: osobní odběr na velodromu\n"))
-                    . 'Částka: ' . number_format($total / 100, 2, ',', ' ') . " CZK\n"
-                    . 'Variabilní symbol: ' . $variableSymbol . "\n"
-                    . 'Splatnost: ' . $dueAt . "\n\n"
-                    . "Bezpečný odkaz na objednávku a QR platbu:\n{$orderUrl}\n\nKlub KOVO Praha";
+                            : "Předání: osobní odběr na velodromu\n"));
+                $message=shopSystemEmailMessage($pdo,'shop_guest_order_placed',[
+                    'order_code'=>$publicCode,'customer_name'=>trim($customer['first_name'].' '.$customer['last_name']),
+                    'items'=>(string)$variant['public_name'].' × '.$quantity,'delivery_instruction'=>rtrim($deliveryInstruction),
+                    'amount'=>number_format($total/100,2,',',' ').' CZK','variable_symbol'=>$variableSymbol,'due_at'=>$dueAt,'order_url'=>$orderUrl]);
+                $subject=$message['subject'];$body=$message['body'];
                 $pdo->prepare('INSERT INTO club_event_notifications(registration_id,registration_event_id,order_id,notification_type,recipient_email,recipient_name,subject_plain,body_plain) VALUES (NULL,NULL,?,\'shop_guest_order_placed\',?,?,?,?)')
                     ->execute([$orderId, $customer['email'], trim($customer['first_name'] . ' ' . $customer['last_name']), $subject, $body]);
+                shopSystemEmailRecord($pdo,(int)$pdo->lastInsertId(),$message);
             }
             $pdo->commit();
             return shopGuestOrderByCode($pdo, $publicCode, $accessToken) + ['replayed' => false];

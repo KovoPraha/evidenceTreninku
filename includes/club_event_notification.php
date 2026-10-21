@@ -216,9 +216,13 @@ function clubEventNotificationAdminPreview(PDO $pdo, int $notificationId): array
     if ($notificationId < 1) {
         throw new InvalidArgumentException('Neplatné oznámení pro náhled.');
     }
+    require_once __DIR__.'/shop_system_email.php';
+    $templateColumns=shopSystemEmailTableExists($pdo,'shop_system_email_templates')
+        ? 'system_template_key,system_template_version,'
+        : 'NULL AS system_template_key,NULL AS system_template_version,';
     $statement = $pdo->prepare(
         'SELECT id,notification_type,recipient_email,subject_plain,body_plain,status,attempts,'
-        . 'available_at,sent_at,last_error FROM club_event_notifications WHERE id=?'
+        . $templateColumns . 'available_at,sent_at,last_error FROM club_event_notifications WHERE id=?'
     );
     $statement->execute([$notificationId]);
     $row = $statement->fetch(PDO::FETCH_ASSOC);

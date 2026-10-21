@@ -23,6 +23,38 @@ function shopOrderCustomerStatusLabel(array $order): string
     return $canonical === 'processing' ? 'Připravuje se' : 'Vytvořená objednávka';
 }
 
+/** Actual lifecycle label, never overridden by a customer-facing note. */
+function shopOrderSystemStatusLabel(array $order): string
+{
+    unset($order['customer_status_label']);
+    return shopOrderCustomerStatusLabel($order);
+}
+
+function shopOrderSystemStatusDefinitions(): array
+{
+    return [
+        ['label'=>'Vytvořená objednávka','effect'=>'Vznikne při nákupu. Čeká na ověřenou úhradu.','email'=>'Platební údaje pro nákup bez účtu a rychlou přihlášku.'],
+        ['label'=>'Připravuje se','effect'=>'Vznikne po potvrzení platby. Kroužek se aktivuje, nebo čeká na schválení údajů sportovce.','email'=>'Potvrzení přijaté platby.'],
+        ['label'=>'Připraveno k odběru / odeslání','effect'=>'Obsluha potvrdí přípravu zaplaceného zboží. Kroužek nemá výdejový stav.','email'=>'Osobní odběr ano; příprava PPL a Z-BOXu bez e-mailu.'],
+        ['label'=>'Vydáno / Předáno PPL / Podáno do Z-BOXu','effect'=>'Obsluha potvrdí skutečný výdej nebo expedici. Předání dopravci nepotvrzuje doručení zákazníkovi.','email'=>'PPL a Zásilkovna posílají sledovací údaje; osobní výdej bez další zprávy.'],
+        ['label'=>'Stornováno','effect'=>'Storno vrátí sklad. U zaplacené objednávky vznikne požadavek na samostatnou vratku.','email'=>'Storno v tomto toku nemá samostatný e-mail.'],
+    ];
+}
+
+/** Select one real fulfillment action; carriers must never fall through to pickup. */
+function shopOrderFulfillmentAction(array $order, bool $hasProgram): ?string
+{
+    if ($hasProgram) return null;
+    if (($order['status']??'')==='processing') return 'ready';
+    if (($order['status']??'')!=='ready') return null;
+    return match($order['fulfillment_method']??'personal_pickup') {
+        'personal_pickup'=>'complete',
+        'ppl_box'=>'dispatch_ppl',
+        'packeta_zbox'=>trim((string)($order['packeta_consignment_code']??''))===''?'prepare_packeta':'deposit_packeta',
+        default=>null,
+    };
+}
+
 /** @return array<string,mixed> */
 function shopOrderCustomerStatusAttach(PDO $pdo, array $order): array
 {

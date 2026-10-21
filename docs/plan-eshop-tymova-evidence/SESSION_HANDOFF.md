@@ -1,5 +1,41 @@
 # Session handoff
 
+Aktualizace autorizace 21. 10. 2026: schválen commit, push a nasazení tohoto
+řezu na produkci; starší omezení na lokální práci níže je historické.
+Ověřovat bez skutečných e-mailů a bez změn produkčních objednávek/šablon.
+Lokální simulace Zásilkovny vypnuta. Integrace `61ed7385` zachovala vlastní
+souhlasy, kontrakt `.4`, PHPUnit 1 178/26 530 a MariaDB obnova 190 tabulek OK.
+Aktuální release checklist a výchozí otisk produkční fronty jsou v
+[plánu](../ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#aktuální-autorizace-vydání-21-10-2026).
+
+## Lokální výsledek 21. 10. 2026 — stavy, Zásilkovna a systémové e-maily
+
+Pracovní větev `codex/order-status-system-mail-20261021`, původní základ `f813264b`,
+převedeno na `06e0a9b1` se zachováním nových registračních názvů.
+Implementace a lokální kontroly jsou dokončené, nasazení není schválené.
+[Trvalý plán a výsledky](../ORDER_STATUS_EMAIL_PLAN_2026-10-21.md) obsahují
+přesný rozsah, šest šablon, novou migraci, aktuální PHP testy 1 169/26 302,
+MariaDB zálohu/obnovu a dokončené lokální browser nákupy/výdeje. B09 je PASS
+pro osobní odběr i Z-BOX; dvě dokončené objednávky, sklad 10→9→7, ve frontě
+5 pending / 0 pokusů / 0 odesláno. Ověřeny všechny náhledy, příjemci, částky,
+verze, neměnnost starší zprávy po editaci a odstranění interního podacího kódu.
+Z-BOX výběr/štítek/podání a platby jsou výslovné simulace v odděleném localhostu,
+bez dopravce a skutečné pošty. Demo jde zapnout jen serverovým příznakem
+`SHOP_PACKETA_LOCAL_DEMO === true` a striktním loopbackem; běžná produkční
+konfigurace ho nepovoluje. Worker nespouštěn. Fakturace zůstává odložená.
+Při pokračování začni tímto souborem a aktuálním Git stavem uvedeného worktree.
+
+## Pravidlo vlastníka pro větší změny od 21. 10. 2026
+
+Před větší implementací ulož konkrétní plán do souboru v `docs/` a propoj ho
+s `docs/HANDOFF_CURRENT.md`. Plán průběžně aktualizuj o dokončené kroky,
+testy, zbývající práci, větev/worktree a hranice autorizace. Před kompaktací
+nebo předáním zapiš aktuální bod pokračování; nespoléhej na historii chatu.
+
+Aktivní lokální práce: [stavy objednávek, Zásilkovna a systémové e-maily](../ORDER_STATUS_EMAIL_PLAN_2026-10-21.md),
+větev `codex/order-status-system-mail-20261021`. Pouze lokální příprava a
+testování; bez push/merge/deploy a skutečné pošty. Fakturace je odložená.
+
 > Historický chronologický ledger pracovních řezů. Aktuální bod převzetí je v
 > [`../HANDOFF_CURRENT.md`](../HANDOFF_CURRENT.md) a aktuální produkční stav v
 > [`../CURRENT_STATE.md`](../CURRENT_STATE.md). Starší SHA a počty testů níže

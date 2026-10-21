@@ -1,5 +1,51 @@
 # Aktuální předání vývoje na další stanici
 
+Aktuální autorizace 21. 10. 2026: vlastník schválil commit, push a produkční
+nasazení stavů/Zásilkovny/systémových e-mailů. Starší zákaz nasazení níže je
+historický. Platí zákaz skutečné pošty při ověřování a odložení fakturace.
+Simulace v lokálním configu vypnuta. Začleněno `61ed7385`, kontrakt `.4`,
+nové testy 1 178/26 530 a MariaDB záloha/obnova 190 tabulek prošly.
+[Aktuální kroky vydání](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#aktuální-autorizace-vydání-21-10-2026)
+jsou nyní autoritou pro tento řez; pokračovat push/PR/CI a chráněným deployem.
+
+Lokální výsledek 21. 10. 2026: na větvi
+`codex/order-status-system-mail-20261021` je připravena oprava Zásilkovny,
+oddělené zobrazení systémového a zákaznického stavu a editor šesti existujících
+systémových e-mailů s náhledem, historií a verzí uloženou ve frontě.
+[Plán a výsledky](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#úplný-lokální-browser-průchod-21-10-2026)
+obsahují dokončený browser nákup/výdej osobního odběru i Z-BOXu, lokální B09
+PASS a přesnou kontrolu pěti zpráv ve frontě (5 pending, 0 pokusů, 0 odesláno).
+Sklad 10→9→7, oba koncové stavy, odstranění podacího kódu a zachování starší
+zprávy po editaci šablony ověřeny. Nová úplná PHPUnit sada: 1 169/26 302, OK;
+předchozí MariaDB souběh editorů, záloha/obnova 188 tabulek a 109 migrací platí.
+Výběr boxu, štítek, platby a fyzické předání byly syntetické lokální simulace;
+reálný dopravce ani doručení pošty tím nejsou ověřeny. Režim Z-BOX demo vyžaduje
+výslovný příznak v ignorovaném configu a striktní loopback všech adres.
+Pracovní složka: `C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
+Žádný push, merge, deploy ani skutečná rozesílka. Worker nespouštěn; čekající
+testovací zprávy nepředávat skutečnému mail transportu. Fakturace je odložená.
+Implementační commity jsou `55f43e68` a `690fefd8`. Plán eviduje i navazující
+dokumentační PR #154 na `origin/main`, který zatím není do pracovní větve převzat.
+
+## Pravidlo pro větší změny a pokračování po kompaktaci
+
+Na výslovný pokyn vlastníka z 21. 10. 2026 ukládej před větší implementací
+konkrétní plán do samostatného souboru v `docs/` a odkazuj na něj z tohoto
+handoffu. Průběžně zapisuj rozsah autorizace, pracovní větev/složku,
+dokončené kroky, výsledky testů, zbývající práci a přesný další krok.
+Před kompaktací nebo předáním stav obnov; chat nesmí být jediným úložištěm
+plánu. Po pokračování nejdřív přečti plán a aktuální stav souborů.
+
+Lokální práce 21. 10. 2026: oprava Zásilkovny, přehled stavů a editor
+systémových e-mailů se připravují na větvi
+`codex/order-status-system-mail-20261021` v odděleném worktree
+`C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
+Podrobný rozsah, průběžné úkoly a odložená rozhodnutí jsou v
+[plánu stavů a e-mailů](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md).
+Vlastník schválil pouze lokální přípravu a testování; žádný push, merge,
+deploy ani skutečná rozesílka. Fakturace je výslovně odložená.
+
+
 Nejnovější předání: 21. 10. 2026, názvy registračních textů z
 [PR #152](https://github.com/KovoPraha/evidenceTreninku/pull/152). Nasazený aplikační
 SHA je `f5d6276838239ace6426aa8c326c01a213730a36`,
