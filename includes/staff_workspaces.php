@@ -75,6 +75,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'sprava_skupin.php', 'label' => 'Skupiny', 'description' => 'Klubové skupiny', 'icon' => 'diagram-2'],
                     ['route' => 'sprava_podskupin.php', 'label' => 'Podskupiny', 'description' => 'Zařazení sportovců', 'icon' => 'diagram-3'],
                     ['route' => 'eshop_identity_admin.php', 'label' => 'Účty a osoby', 'description' => 'Rodiče, sportovci a propojení', 'icon' => 'person-badge'],
+                    ['route' => 'registration_texts_admin.php', 'label' => 'Registrační texty a souhlasy', 'description' => 'Koncepty, zveřejnění a historie verzí', 'icon' => 'file-earmark-text'],
                     ['route' => 'member_engagement_admin.php', 'label' => 'Úrovně zapojení', 'description' => 'Veřejnost, kroužky a závodní oddíl podle živých dat', 'icon' => 'layers'],
                 ]],
                 ['label' => 'KIS a soupisky', 'icon' => 'arrow-repeat', 'items' => [
@@ -243,7 +244,7 @@ function staffPositionPrimaryRoutes(): array
     return [
         'coach'=>['club_calendar.php','formular.php','planovac.php'],
         'sports_lead'=>['sprava_vsech_treninku.php','sprava_zavodu.php','prehled_vsech_vykazu.php'],
-        'registrar'=>['sprava_sportovcu.php','kis_rosters_admin.php','eshop_identity_admin.php'],
+        'registrar'=>['sprava_sportovcu.php','kis_rosters_admin.php','eshop_identity_admin.php','registration_texts_admin.php'],
         'program_coordinator'=>['club_program_offers_admin.php','eshop_events_admin.php','verejny_velodrom_admin.php'],
         'catalog_manager'=>['eshop_produkt_admin.php','eshop_ceny_admin.php','eshop_sklad_admin.php'],
         'order_operator'=>['eshop_orders_admin.php'],

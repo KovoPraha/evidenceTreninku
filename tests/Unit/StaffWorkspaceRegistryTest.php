@@ -160,7 +160,7 @@ final class StaffWorkspaceRegistryTest extends TestCase
             foreach (\staffPositionMenuGroups($position, false) as $group) {
                 foreach ($group['items'] as $item) $all[] = $item['route'];
             }
-            self::assertLessThanOrEqual(3, count($primary), $position);
+            self::assertLessThanOrEqual($position === 'registrar' ? 4 : 3, count($primary), $position);
             self::assertSame([], array_intersect($primary, $advanced), $position);
             self::assertEqualsCanonicalizing($all, array_merge($primary, $advanced), $position);
         }

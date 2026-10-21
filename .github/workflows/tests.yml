@@ -95,6 +95,9 @@ jobs:
       - name: Ověřit pracovní pozice a superadmin audit na MariaDB
         run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
 
+      - name: Ověřit zveřejnění registračních textů a souběh na MariaDB
+        run: php tests/Support/RegistrationTextsMariaDbSmoke.php
+
       - name: Ověřit M3.5d sportovní import review na MariaDB
         run: php bin/sports-review-smoke.php
 

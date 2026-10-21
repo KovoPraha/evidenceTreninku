@@ -131,6 +131,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261021100000_club_program_recurring_offers',
                 '20261021120000_member_payer_variable_symbols',
                 '20261021130000_member_payer_receipts',
+                '20261021150000_athlete_registration_text_drafts',
             ],
             array_keys($catalog)
         );
