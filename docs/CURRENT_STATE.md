@@ -1,5 +1,21 @@
 # Aktuální stav projektu
 
+Nejnovější produkční oprava: 21. 10. 2026. PR
+[#146](https://github.com/KovoPraha/evidenceTreninku/pull/146) opravil chybějící
+načtení bankovního nastavení v rychlé přihlášce a rychlém nákupu bez účtu.
+Nasazený aplikační SHA je `e935950ed5be7181687dadba4b1fc2daf8dd5095`;
+[deploy 39585582515](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39585582515)
+dokončil ověřenou zálohu 233 tabulek, kontrolu 106 migrací bez čekajících kroků,
+aktivaci a HTTP smoke. [CI main](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39585403375)
+ověřilo PHPUnit a MariaDB 10.3/11.4, CodeQL také prošel. Celá testovací sada
+včetně dvou nových regresních testů: 1 140 testů / 25 706 kontrol.
+Po nasazení byla rychlá přihláška Aligátoři (`product_id=247&variant_id=813`)
+ověřena v prohlížeči; přihláška, detail produktu, e-shop a homepage vracejí
+HTTP 200 bez PHP fatální chyby. Ověření nevytvářelo produkční přihlášku ani
+objednávku. Nasazení má `uat_schvaleno=false` a `importovat_krouzky=false`.
+Podrobnosti jsou v [aktuálním předání](HANDOFF_CURRENT.md); následující
+produkční záznamy zachycují historické body.
+
 Nejnovější doplnění administrace: 20. 10. 2026. PR [#144](https://github.com/KovoPraha/evidenceTreninku/pull/144) sjednotil zbývající starší formuláře, ukládací tlačítka, navazující karty a opravil vnořené akce hlavičky i ztrátu vyplněného tréninku při chybějící soupisce. Release `246dee2a4df5dc3152c1a769a9af128b87a91092` má úspěšný [deploy 39496342888](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39496342888) a nezávislé potvrzení SHA v produkčním prohlížeči. Lokálně prošlo 1 138 testů / 25 708 kontrol, 105 adres v osmi rolích a konkrétní syntetické zápisy; produkčně osm formulářových stránek a přepnutí role z podadresáře. Přesný rozsah a omezení popisuje [report formulářů](REMAINING_ADMIN_FORMS_2026-10-20.md). Plné UAT zůstává otevřené. Následující release jsou historické body.
 
 Produkční doplnění administrace: 20. 10. 2026. Sjednocený vzhled a správa produktů, importovaných variant, cen a skladu z PR #140–142 jsou nasazené v release `175f92c7a59294acff7e15fe09cbed258707fa2e`; [deploy 39483597831](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39483597831) prošel. Chrome ověřil přidání a editaci skryté varianty importovaného zboží, ceny, sklad 0 → 2 → 0 s auditem, archivaci konceptu, veřejné skrytí testovacích dat, mobilní navigaci i kontrast. CI: 1 137 testů / 25 679 kontrol, MariaDB 10.3/11.4 a CodeQL. Přesné důkazy a stav testovacích dat obsahuje [produkční report](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md). Nejde o schválení plného UAT ani zapnutí plateb, Fio nebo rozesílek. Níže uvedené starší SHA jsou historické body svých částí.
