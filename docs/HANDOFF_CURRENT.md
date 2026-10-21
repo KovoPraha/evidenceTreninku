@@ -1,5 +1,19 @@
 # Aktuální předání vývoje na další stanici
 
+Lokální práce 21. 10. 2026: číselné řady e-shopu RR N KK XXXXX a účetní
+kategorie na větvi `codex/shop-number-series-20261021`, worktree
+`C:\xampp\htdocs\evidencePavel-number-series-20261021`.
+[Plán a stav](SHOP_NUMBER_SERIES_2026-10-21.md) je autoritou pro tento řez.
+Vlastník schválil implementaci bez produkčního nasazení; staré VS a stálé VS
+příspěvků zachovat. Následující autorizace jiných řezů se na tuto práci nevztahují.
+Lokálně dokončeno: administrace v agendě Hospodář a platby, účetní číselník,
+mapování s děděním, smíšená řada 9/00, nezařazené 8/00, všechny tři nákupní
+cesty a neměnné zařazení položek. Závěrem 1 190 testů / 26 730 kontrol, nový
+MariaDB souběh a původní checkout smoke prošly; záloha/obnova 198 tabulek.
+Browser ověřil oprávnění, uložení čítače a mapování i audit bez konzolových chyb.
+Bez push, merge a nasazení. Lokální náhled je `http://localhost:8921/`;
+podrobnosti, limity a historické migrační varování jsou v odkazovaném plánu.
+
 Aktuální autorizace 21. 10. 2026: vlastník schválil commit, push a produkční
 nasazení stavů/Zásilkovny/systémových e-mailů. Starší zákaz nasazení níže je
 historický. Platí zákaz skutečné pošty při ověřování a odložení fakturace.

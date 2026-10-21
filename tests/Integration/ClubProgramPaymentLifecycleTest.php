@@ -217,6 +217,7 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
     public function testQuickProgramCheckoutPaysBeforeReviewThenActivatesAfterApproval():void
     {
         $pdo=$this->database();$this->offer($pdo,601,501,10,5,'OFFER-QUICK',null,'2026-09-01','2027-01-31',2016,2019);
+        $seriesMigration=require dirname(__DIR__,2).'/migrations/20261021210000_shop_number_series.php';$seriesMigration['up']($pdo);
         $terms=\athleteRegistrationCurrentTerms($pdo);$versions=[];foreach($terms as$purpose=>$term)$versions[$purpose]=$term['version'];
         $programTerms=\clubProgramTermsEffective($pdo,(int)$pdo->query('SELECT id FROM club_programs')->fetchColumn(),(int)$pdo->query('SELECT id FROM club_program_offers')->fetchColumn());
         $input=[
@@ -235,6 +236,8 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         try{\shopProgramQuickCheckoutPlace($pdo,601,$stale,$versions,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);self::fail('Stale consent must fail before account or order creation.');}catch(\ShopCheckoutException $exception){self::assertStringContainsString('Podmínky kroužku se změnily',$exception->getMessage());}
         self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_requests')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
         $result=\shopProgramQuickCheckoutPlace($pdo,601,$input,$versions,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);
+        self::assertSame((new \DateTimeImmutable('now',new \DateTimeZone('Europe/Prague')))->format('y').'10000001',$result['variable_symbol']);
+        self::assertSame('Kroužky – bez rozlišení',$pdo->query('SELECT category_name_snapshot FROM shop_order_accounting_items')->fetchColumn());
         self::assertSame('quick_program',$result['checkout_mode']);self::assertStringContainsString('mimo doporučení',(string)$result['age_warning']);
         self::assertSame([1,0],array_map('intval',$pdo->query('SELECT accepted FROM club_registration_consent_acceptances ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
         self::assertSame(0,(int)$pdo->query("SELECT email_overeno FROM verejni_uzivatele WHERE email='quick@example.test'")->fetchColumn());

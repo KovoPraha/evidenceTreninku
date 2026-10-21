@@ -166,7 +166,7 @@ function shopGuestCheckoutPlace(
                 $pdo->prepare("INSERT INTO shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) VALUES (?,?,?,'reserve',?,?)")
                     ->execute([$variantId, $orderId, $orderItemId, (string)(-$quantity), (string)$stock->fetchColumn()]);
             }
-            $variableSymbol = shopPaymentVariableSymbol($orderId);
+            $variableSymbol = shopOrderAssignVariableSymbol($pdo, $orderId);
             $spd = shopPaymentSpdPayload($bank['iban'], $total, $currency, $variableSymbol, 'OBJEDNAVKA ' . $publicCode);
             if (shopPaymentPolicyColumnExists($pdo, 'payments', 'accepted_payment_methods')) {
                 $pdo->prepare("INSERT INTO payments(payable_type,payable_id,method,accepted_payment_methods,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) VALUES ('shop_order',?,'bank_transfer',?,'pending',?,?,?,?,?,?,?,?)")
@@ -198,6 +198,7 @@ function shopGuestCheckoutPlace(
         } catch (Throwable $exception) {
             if ($pdo->inTransaction()) $pdo->rollBack();
             if ($exception instanceof InvalidArgumentException || $exception instanceof ShopCheckoutException) throw $exception;
+            if ($exception instanceof ShopNumberSeriesException) throw new ShopCheckoutException($exception->getMessage(),0,$exception);
             $reference = shopCheckoutDiagnosticReference($keyHash, $orderId);
             error_log('shop_guest_checkout failed: ' . $reference . ' ' . shopCheckoutDiagnosticTrace($exception));
             throw new ShopCheckoutException('Objednávku se nepodařilo vytvořit bez částečného zápisu.', 0, $exception);

@@ -182,6 +182,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_fio_admin.php', 'label' => 'Fio párování', 'description' => 'Návrhy bankovních shod', 'icon' => 'bank'],
                     ['route' => 'member_payer_receipts_admin.php', 'label' => 'Rodinné platby', 'description' => 'Ruční rozdělení bankovní platby mezi předpisy dětí', 'icon' => 'people'],
                     ['route' => 'eshop_bank_admin.php', 'label' => 'Bankovní účet e-shopu', 'description' => 'IBAN, BIC a splatnost', 'icon' => 'credit-card'],
+                    ['route' => 'eshop_number_series_admin.php', 'label' => 'Číselné řady a účetní kategorie', 'description' => 'Variabilní symboly nových nákupů, mapování a historie', 'icon' => '123'],
                     ['route' => 'member_charges_admin.php', 'label' => 'Klubové platby', 'description' => 'Stav členských plateb', 'icon' => 'cash-stack'],
                     ['route' => 'member_fee_plans_admin.php', 'label' => 'Plány příspěvků', 'description' => 'Měsíční předpisy podle platných soupisek', 'icon' => 'calendar2-check'],
                     ['route' => 'member_fee_annual_admin.php', 'label' => 'Roční úhrady', 'description' => 'Jedna ověřená platba za dvanáct měsíčních předpisů', 'icon' => 'calendar2-range'],
