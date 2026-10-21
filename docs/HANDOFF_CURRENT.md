@@ -1,5 +1,24 @@
 # Aktuální předání vývoje na další stanici
 
+Nejnovější předání: 21. 10. 2026, oprava rychlé přihlášky z PR
+[#146](https://github.com/KovoPraha/evidenceTreninku/pull/146). Nasazený aplikační
+SHA je `e935950ed5be7181687dadba4b1fc2daf8dd5095`,
+[deploy 39585582515](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39585582515)
+prošel. Formulář `booking/rychla_prihlaska.php` volal
+`shopBankSettingsEffective()` bez načtení její definice a po odeslání zobrazil
+obecnou chybu ukládání. Explicitní načtení `includes/shop_bank_settings.php`
+je doplněno do rychlé přihlášky i rychlého nákupu bez účtu.
+Oba nové testy samostatného načtení před opravou selhaly; po opravě prošlo
+1 140 testů / 25 706 kontrol, MariaDB 10.3/11.4 a CodeQL.
+[CI výsledného main](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39585403375)
+je zelené. Deploy ověřil zálohu 233 tabulek, 106 migrací bez čekajících kroků,
+aktivaci a HTTP smoke. Po aktivaci byla přihláška Aligátoři
+`product_id=247&variant_id=813` načtena v prohlížeči; přihláška, detail produktu,
+e-shop a homepage vracejí HTTP 200 bez PHP fatální chyby. Produkční přihláška
+ani objednávka nebyla v rámci ověření vytvořena. `uat_schvaleno=false`,
+`importovat_krouzky=false`; další plné UAT zůstává samostatné.
+Následující předání jsou historické body.
+
 Nejnovější předání: 20. 10. 2026, zbývající administrační formuláře z PR [#144](https://github.com/KovoPraha/evidenceTreninku/pull/144). Nasazený aplikační SHA je `246dee2a4df5dc3152c1a769a9af128b87a91092`, [deploy 39496342888](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39496342888) i živé ověření prošly. Navazujte podle [reportu formulářů](REMAINING_ADMIN_FORMS_2026-10-20.md): společné styly starších editorů, zelené ukládání, funkční popisky, kořenové cesty hlavičky a zachování rozepsaného tréninku při chybějící soupisce. Lokálně 1 138 testů / 25 708 kontrol; 105 adres v osmi rolích, syntetické zápisy, mobil a tmavý režim. Produkčně osm stránek a přepnutí pracovní pozice z vnořeného formuláře. B30 zůstává PARTIAL, plné UAT není schválené. Následující předání jsou historické body.
 
 Nejnovější doplnění: 20. 10. 2026, sjednocená administrace a správa e-shopu z PR #140–142. Release `175f92c7a59294acff7e15fe09cbed258707fa2e` má úspěšný [deploy 39483597831](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39483597831) a produkční browser ověření variant, cen, skladu, archivace konceptu a společného vzhledu. Navazujte podle [produkčního reportu](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md), který uvádí také ponechanou skrytou testovací variantu se skladem 0 a archivovaný testovací koncept. Plné UAT zůstává samostatně otevřené. Níže uvedené starší SHA jsou historické body svých částí.
