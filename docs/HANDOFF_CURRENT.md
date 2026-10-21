@@ -18,6 +18,15 @@ autoritou; starší zákazy push/deploy a průběžné počty níže jsou histor
 Dokumentační větev `codex/order-status-release-proof-20261021` nepřidává
 aplikační změny a nevyžaduje nové nasazení; vývojový worktree zůstává stejný.
 
+Navazující TEST ověření 21. 10. 2026: produkční cyklus změny převodu na
+hotovost, příjmu, storna a samostatné vratky byl dokončen na nové objednávce
+`KP2610218B7C69C006` za 1 Kč. Konečný stav Stornováno/Vráceno, způsob Hotově,
+TEST reference a audit zachovány. Nový TEST produkt #296 / varianta #950
+zůstává stažený, sklad 1 → 0 → 1. Skutečné objednávky ani peníze se neměnily;
+původní pracovní pozice byla obnovena. [Přesný protokol](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md)
+rozlišuje tuto simulaci od plného UAT a ověření skutečného převodu.
+
+
 Lokální výsledek 21. 10. 2026: na větvi
 `codex/order-status-system-mail-20261021` je připravena oprava Zásilkovny,
 oddělené zobrazení systémového a zákaznického stavu a editor šesti existujících
