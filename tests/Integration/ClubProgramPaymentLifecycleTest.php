@@ -7,10 +7,46 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2) . '/includes/shop_program_quick_checkout.php';
+require_once dirname(__DIR__,2) . '/includes/club_registration_consent_admin.php';
 
 final class ClubProgramPaymentLifecycleTest extends TestCase
 {
     private const BANK=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'KOVO Praha','due_days'=>7];
+
+    public function testExistingAthleteCheckoutEnforcesCustomConsentsAndStoresOptionalDeclineOnce():void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,5,'CUSTOM-CONSENTS');$input=$this->installCustomConsents($pdo);
+        \shopCartSetQuantity($pdo,10,601,1,101);$cart=\shopCartDetail($pdo,10);$key=bin2hex(random_bytes(16));
+        try{\shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint'],[601=>1]);self::fail('Missing custom confirmation must fail.');}catch(\InvalidArgumentException){}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        $order=\shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint'],[601=>1],customConsentInput:$input);
+        self::assertSame([1,0],array_map('intval',$pdo->query('SELECT accepted FROM club_registration_consent_acceptances ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
+        self::assertSame(101,(int)$pdo->query('SELECT oi.beneficiary_sportovec_id FROM shop_order_items oi JOIN club_registration_consent_acceptances a ON a.order_item_id=oi.id LIMIT 1')->fetchColumn());
+        $repeat=\shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint'],[601=>1]);
+        self::assertSame($order['id'],$repeat['id']);self::assertTrue($repeat['replayed']);
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM club_registration_consent_acceptances')->fetchColumn());
+    }
+
+    public function testCustomConsentSnapshotFailureRollsBackTheWholeCheckout():void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,5,'CUSTOM-FAIL');$input=$this->installCustomConsents($pdo);
+        \shopCartSetQuantity($pdo,10,601,1,101);$cart=\shopCartDetail($pdo,10);
+        $pdo->exec("CREATE TRIGGER fail_consent_snapshot BEFORE INSERT ON club_registration_consent_acceptances BEGIN SELECT RAISE(ABORT,'LOCALHOST injected failure'); END");
+        try{\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],[601=>1],customConsentInput:$input);self::fail('Snapshot failure must roll back the order.');}catch(\ShopCheckoutException){}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_order_items')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
+        self::assertFalse($pdo->inTransaction());
+    }
+
+    private function installCustomConsents(PDO $pdo):array
+    {
+        foreach(['20261021150000_athlete_registration_text_drafts.php','20261021170000_registration_text_titles.php','20261021190000_custom_club_registration_consents.php'] as $file){$m=require dirname(__DIR__,2).'/migrations/'.$file;($m['up'])($pdo);self::assertTrue(($m['verify'])($pdo));}
+        $prior=$_SESSION??[];$_SESSION=['trener_id'=>7,'staff_positions'=>['registrar'],'staff_active_position'=>'registrar'];
+        try{foreach([true,false] as $required){$c=\clubConsentCreate($pdo,$required?'LOCALHOST Povinný':'LOCALHOST Volitelný','LOCALHOST Platný souhlas.','LOCALHOST test',$required,true);\clubConsentPublish($pdo,$c['id'],$c['draft_id'],true);}}finally{$_SESSION=$prior;}
+        $terms=\clubConsentCurrent($pdo);$accepted=[];foreach($terms as $term)if((int)$term['custom_required']===1)$accepted[(int)$term['id']]='1';
+        return ['club_consent_manifest'=>\clubConsentManifest($terms),'club_consent_accepted'=>$accepted];
+    }
 
     public function testCashActivatesProgramOnceAndCapacityFailureRollsBackMethod():void
     {
@@ -190,11 +226,17 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
             'has_czech_birth_number'=>'0','birth_number'=>'','member_data_notice'=>'1','birth_number_legal_notice'=>'1','photo_internal'=>'0','photo_public'=>'0',
             'program_terms_accepted'=>'1','program_term_version'=>['program_cancellation'=>$programTerms['program_cancellation']['terms_version'],'program_consent'=>$programTerms['program_consent']['terms_version']],'message'=>'',
         ];
+        $input+=$this->installCustomConsents($pdo);
+        $missing=$input;$missing['club_consent_accepted']=[];
+        try{\shopProgramQuickCheckoutPlace($pdo,601,$missing,$versions,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);self::fail('Mandatory custom consent must fail before creating an account.');}catch(\InvalidArgumentException $e){self::assertStringContainsString('povinný souhlas',$e->getMessage());}
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
         $stale=$input;$stale['program_term_version']['program_consent']='stale';
         try{\shopProgramQuickCheckoutPlace($pdo,601,$stale,$versions,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);self::fail('Stale consent must fail before account or order creation.');}catch(\ShopCheckoutException $exception){self::assertStringContainsString('Podmínky kroužku se změnily',$exception->getMessage());}
         self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_requests')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
         $result=\shopProgramQuickCheckoutPlace($pdo,601,$input,$versions,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK);
         self::assertSame('quick_program',$result['checkout_mode']);self::assertStringContainsString('mimo doporučení',(string)$result['age_warning']);
+        self::assertSame([1,0],array_map('intval',$pdo->query('SELECT accepted FROM club_registration_consent_acceptances ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
         self::assertSame(0,(int)$pdo->query("SELECT email_overeno FROM verejni_uzivatele WHERE email='quick@example.test'")->fetchColumn());
         self::assertSame('pending',$pdo->query("SELECT status FROM account_person_claim_requests WHERE request_kind='athlete_registration'")->fetchColumn());
         self::assertSame(1,(int)$pdo->query('SELECT athlete_registration_request_id FROM shop_order_items')->fetchColumn());
