@@ -17,6 +17,8 @@ final class DeployWorkflowContractTest extends TestCase
         $activate = strpos($workflow, '- name: Aktivovat ověřený release');
         $cleanup = strpos($workflow, '- name: Odstranit jen vyjmenované osiřelé soubory');
         $smoke = strpos($workflow, '- name: HTTP smoke test bez tajného tokenu');
+        $vsBefore = strpos($workflow, '- name: Zachytit otisky dosavadních variabilních symbolů');
+        $vsAfter = strpos($workflow, '- name: Ověřit zachování dosavadních variabilních symbolů');
 
         foreach ([$backup, $prepare, $migrate, $activate, $cleanup, $smoke] as $position) {
             self::assertNotFalse($position);
@@ -26,6 +28,13 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertLessThan($activate, $migrate);
         self::assertLessThan($cleanup, $activate);
         self::assertLessThan($smoke, $cleanup);
+        self::assertNotFalse($vsBefore);
+        self::assertNotFalse($vsAfter);
+        self::assertLessThan($vsBefore, $prepare);
+        self::assertLessThan($migrate, $vsBefore);
+        self::assertLessThan($vsAfter, $migrate);
+        self::assertLessThan($activate, $vsAfter);
+        self::assertStringContainsString('.ok == true and .unchanged == true', $workflow);
 
         // Hostingový omezený shell zakazuje `php -r`; validace configu proto
         // běží v nahraném bin/deploy-preflight.php a workflow žádné `php -r`

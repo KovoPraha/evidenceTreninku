@@ -292,6 +292,21 @@ jobs:
           "
           echo "✅ Kompletní release je připravený mimo veřejný webroot; UAT schválení: $UAT_SCHVALENO."
 
+      - name: Zachytit otisky dosavadních variabilních symbolů
+        run: |
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          cat > /tmp/run-vs-preservation.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('SHOP_VS_APP_ROOT=$REMOTE_DIR');
+          require '$RELEASE_DIR/bin/verify-shop-variable-symbols.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-vs-preservation.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-vs-preservation.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-vs-preservation.php'" > /tmp/vs-before.json
+          jq -e '.ok == true and .snapshot.format == 1' /tmp/vs-before.json >/dev/null
+          cat /tmp/vs-before.json
+
       - name: Aplikovat migrace z připraveného release
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
@@ -311,6 +326,25 @@ jobs:
           # Bootstrapy nesmí zůstat v release, aktivace by je zkopírovala do webrootu.
           "${SSH[@]}" "rm -f '$RELEASE_DIR/run-migrate-apply.php' '$RELEASE_DIR/run-migrate-check.php'"
           echo '✅ Migrace jsou aktuální; produkční PHP zatím nebylo aktivováno.'
+
+      - name: Ověřit zachování dosavadních variabilních symbolů
+        run: |
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          BASELINE=$(base64 -w 0 /tmp/vs-before.json)
+          cat > /tmp/run-vs-preservation.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('SHOP_VS_APP_ROOT=$REMOTE_DIR');
+          putenv('SHOP_VS_BASELINE_BASE64=$BASELINE');
+          require '$RELEASE_DIR/bin/verify-shop-variable-symbols.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-vs-preservation.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-vs-preservation.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-vs-preservation.php'" > /tmp/vs-after.json
+          jq -e '.ok == true and .unchanged == true' /tmp/vs-after.json >/dev/null
+          cat /tmp/vs-after.json
+          production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-vs-preservation.php'"
+          rm -f /tmp/run-vs-preservation.php
 
       - name: Aktivovat ověřený release
         run: |

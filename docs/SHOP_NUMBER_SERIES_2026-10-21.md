@@ -1,5 +1,28 @@
 # Číselné řady a účetní kategorie e-shopu
 
+## Aktuální autorizace vydání 21. 10. 2026
+
+Vlastník nyní výslovně schválil push, vytvoření PR, merge po zelených kontrolách
+a chráněné produkční nasazení číselných řad. Starší omezení lokální práce níže
+je historické. Zachovat všechny dosavadní VS a stálé příspěvkové rezervace;
+produkční administraci ověřovat bez ukládání nastavení či tvorby objednávek.
+
+Větev začlenila main `45ada1356d950abce1313c646330f0be56bf239e` (pouze tři
+novější dokumentační řezy). Doplníme read-only kontrolu otisků existujících VS
+před migrací a po ní do chráněného deploye. Následuje push/PR/CI, merge,
+deploy s `uat_schvaleno=false`, `importovat_krouzky=false`, read-only browser
+ověření a následný dokumentační PR se skutečnými důkazy vydání.
+
+Doplněná kontrola `bin/verify-shop-variable-symbols.php` čte databázi v read-only
+transakci. Před migrací zachytí počty, maximální ID a SHA-256 otisky vazeb/VS
+v `payments`, `member_fee_standing_orders` a `member_payer_variable_symbols`.
+Po migraci porovná stejný rozsah; při rozdílu se nový release neaktivuje.
+Log neobsahuje jednotlivé VS, osobní data ani přístupové údaje. Nové řádky
+nad původními hranicemi do srovnání nevstupují. Jde o konzervativní kontrolu:
+nově přidaná rezervace se starším ID plátce může vyžadovat prohlídku rozdílu.
+Nové regresní testy ověřují změnu VS, odstranění rezervace, prázdné tabulky,
+neplatné hranice i ignorování nových řádků nad původním maximem.
+
 ## Autorizace a pracovní stav
 
 Vlastník 21. 10. 2026 schválil lokální implementaci RR N KK XXXXX,
