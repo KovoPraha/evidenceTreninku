@@ -1,5 +1,32 @@
 # Aktuální stav projektu
 
+Nejnovější vydání 21. 10. 2026: [PR #156](https://github.com/KovoPraha/evidenceTreninku/pull/156)
+opravil výdejové akce Zásilkovny a oddělil skutečné systémové stavy od vlastních
+zákaznických upřesnění. Správa stavů nyní obsahuje editor šesti existujících
+systémových e-mailů, syntetický náhled, historii a zmrazený obsah/verzi ve frontě.
+Nasazeno SHA `574328421fff748b48f7d744a3ce454b9b50dd1e`,
+[deploy 39603396933](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39603396933)
+prošel zálohou 236 tabulek / 2 triggerů, 110 migracemi bez čekajících kroků a
+HTTP 200. PHPUnit 1 178/26 530, MariaDB 10.3/11.4 a CodeQL zelené. Živě ověřen
+přehled stavů, editor/náhled bez zápisu a fronta; starší zpráva nezměněna,
+3 pending / 0 pokusů / 0 sent. Simulace Zásilkovny vypnuta; ostrá doprava
+neaktivní do zadání ceny, veřejného klíče a povolení. Fakturace je odložená,
+`uat_schvaleno=false`, `importovat_krouzky=false`. Podrobnosti a hranice v
+[produkčním reportu](ORDER_STATUS_EMAIL_RELEASE_2026-10-21.md).
+Následující záznamy jsou historická vydání.
+
+Navazující produkční ověření 21. 10. 2026: **PASS** pro celý TEST cyklus
+převod → hotovost → příjem → storno → vratka. Nová TEST objednávka
+`KP2610218B7C69C006` za 1 Kč je Stornováno/Vráceno, TEST produkt je stažený
+a sklad se vrátil na původní 1 kus. Skutečné peníze ani objednávky se neměnily.
+[Protokol a důkazy](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md) zachycují
+audit, přesný rozsah, úklid a vztah k souběžnému navazujícímu deployi.
+Scénář je uzavřený, žádná TEST vratka již nečeká na dokončení. Dokumentace
+testu je v [PR #157](https://github.com/KovoPraha/evidenceTreninku/pull/157),
+commit `a0e2bac1`, s úspěšnými PHPUnit, MariaDB 10.3/11.4 a CodeQL.
+[Provozní postup příjmu a vratky](ORDER_PAYMENTS_2026-10-21.md) je dostupný
+také z [rozcestníku dokumentace](README.md). Plné UAT tím není schválené.
+
 Nejnovější doplnění: 21. 10. 2026. [PR #152](https://github.com/KovoPraha/evidenceTreninku/pull/152)
 přidal možnost změnit **název registračního dokumentu**, i bez změny jeho těla.
 Koncept a zveřejněná verze uchovávají název spolu s textem; přihlášky a historie
