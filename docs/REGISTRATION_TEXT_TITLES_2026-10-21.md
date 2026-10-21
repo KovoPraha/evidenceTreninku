@@ -41,10 +41,25 @@ Historie zobrazuje název příslušné verze, nikoli pouze aktuální název.
 
 Starší migrace `20260922190000_member_fee_standing_orders` při čistém lokálním
 bootstrapu a zálohovacím smoke nadále vypisuje existující varování o klíči
-`columns`; úspěšnému dokončení nebrání a nebyla měněna. První pokus o start
-dřívějšího lokálního datového adresáře neuspěl, test proto použil novou
-samostatnou MariaDB na portu 33110. Ostatní lokální databázové procesy se neměnily.
+`columns`; úspěšnému dokončení nebrání a nebyla měněna. Lokální testy běžely
+v samostatné syntetické MariaDB na portu 33110, která byla poté vypnuta.
+Ostatní lokální databázové procesy se neměnily.
 
 ## Produkční stav
 
-Nasazení čeká na povinné PR kontroly a chráněný produkční workflow.
+- PR [#152](https://github.com/KovoPraha/evidenceTreninku/pull/152) je sloučený;
+  všechny povinné kontroly včetně MariaDB 10.3/11.4 a CodeQL prošly.
+- Nasazený aplikační commit: `f5d6276838239ace6426aa8c326c01a213730a36`.
+  [Deploy 39593524611](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39593524611)
+  je úspěšný. Ověřil **1 158 testů / 26 099 kontrol** na runneru, serverový
+  preflight PHP 8.2.33 bez varování, zálohu **234 tabulek a dvou triggerů**,
+  **108 migrací / current: true / pending: []**, aktivaci a HTTP smoke.
+  Vstupy `uat_schvaleno=false`, `importovat_krouzky=false`.
+- Živá přihlášená administrace registráře na
+  <https://kis.kovopraha.cz/registration_texts_admin.php?purpose=member_data_notice>
+  zobrazuje pole **Název souhlasu / informace** s původním názvem a historii
+  pojmenovaných verzí. Při produkčním ověření se koncept neukládal a žádný
+  název ani text se nepřejmenovával. Publikační průchod byl ověřen lokálně.
+
+Plné UAT aplikace zůstává otevřené. Změna upravuje nadpisy verzovaných dokumentů;
+nemění význam jednotlivých účelů, povinnost potvrzení ani pravidla souhlasů.

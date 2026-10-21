@@ -1,5 +1,17 @@
 # Aktuální stav projektu
 
+Nejnovější doplnění: 21. 10. 2026. [PR #152](https://github.com/KovoPraha/evidenceTreninku/pull/152)
+přidal možnost změnit **název registračního dokumentu**, i bez změny jeho těla.
+Koncept a zveřejněná verze uchovávají název spolu s textem; přihlášky a historie
+zobrazují název příslušné verze. Registrář má nové pole přímo v editoru.
+Nasazený aplikační SHA `f5d6276838239ace6426aa8c326c01a213730a36` má úspěšný
+[deploy 39593524611](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39593524611),
+zálohu 234 tabulek / dvou triggerů, 108 migrací bez čekajících kroků a živé
+ověření nového pole. PHPUnit, MariaDB 10.3/11.4 i CodeQL prošly; produkční
+texty se při ověření neměnily. Podrobnosti jsou v
+[reportu názvů](REGISTRATION_TEXT_TITLES_2026-10-21.md). Plné UAT zůstává otevřené.
+Následující release jsou historické body.
+
 Nejnovější produkční doplnění: 21. 10. 2026, hotovostní úhrady objednávek z
 [PR #150](https://github.com/KovoPraha/evidenceTreninku/pull/150).
 Aplikační SHA `f813264b16ffd49224bd41a908adc33d9687af88` má úspěšný
