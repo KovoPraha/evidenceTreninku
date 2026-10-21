@@ -1,5 +1,23 @@
 # Aktuální předání vývoje na další stanici
 
+Nasazeno 21. 10. 2026: stavy, oprava akcí Zásilkovny a verzovaný editor šesti
+systémových e-mailů z [PR #156](https://github.com/KovoPraha/evidenceTreninku/pull/156).
+Aplikační SHA `574328421fff748b48f7d744a3ce454b9b50dd1e`,
+[deploy 39603396933](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39603396933)
+je zelený: záloha 236 tabulek / 2 triggerů, 110 aktuálních migrací a HTTP 200.
+PHPUnit 1 178/26 530, CI MariaDB 10.3/11.4 a CodeQL prošly. Živě ověřeny
+systémové stavy, editor a syntetický náhled bez uložení a odeslání, seznam
+objednávek a fronta. Starší zpráva zachovala obsah; konečná fronta 3 pending,
+0 pokusů a 0 sent. Dvě další zprávy jsou z nezávislého testu před aktivací.
+Simulace Zásilkovny vypnuta; ostrá doprava také zůstává neaktivní, protože
+chybí cena a veřejný klíč. Žádné objednávky ani produkční šablony jsme při
+této kontrole neměnili, worker nespouštěli. Fakturace je odložená.
+[Plán](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md) a
+[produkční report](ORDER_STATUS_EMAIL_RELEASE_2026-10-21.md) jsou aktuální
+autoritou; starší zákazy push/deploy a průběžné počty níže jsou historie.
+Dokumentační větev `codex/order-status-release-proof-20261021` nepřidává
+aplikační změny a nevyžaduje nové nasazení; vývojový worktree zůstává stejný.
+
 Navazující TEST ověření 21. 10. 2026: produkční cyklus změny převodu na
 hotovost, příjmu, storna a samostatné vratky byl dokončen na nové objednávce
 `KP2610218B7C69C006` za 1 Kč. Konečný stav Stornováno/Vráceno, způsob Hotově,
@@ -8,13 +26,6 @@ zůstává stažený, sklad 1 → 0 → 1. Skutečné objednávky ani peníze se
 původní pracovní pozice byla obnovena. [Přesný protokol](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md)
 rozlišuje tuto simulaci od plného UAT a ověření skutečného převodu.
 
-Aktuální autorizace 21. 10. 2026: vlastník schválil commit, push a produkční
-nasazení stavů/Zásilkovny/systémových e-mailů. Starší zákaz nasazení níže je
-historický. Platí zákaz skutečné pošty při ověřování a odložení fakturace.
-Simulace v lokálním configu vypnuta. Začleněno `61ed7385`, kontrakt `.4`,
-nové testy 1 178/26 530 a MariaDB záloha/obnova 190 tabulek prošly.
-[Aktuální kroky vydání](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#aktuální-autorizace-vydání-21-10-2026)
-jsou nyní autoritou pro tento řez; pokračovat push/PR/CI a chráněným deployem.
 
 Lokální výsledek 21. 10. 2026: na větvi
 `codex/order-status-system-mail-20261021` je připravena oprava Zásilkovny,

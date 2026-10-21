@@ -1,5 +1,22 @@
 # Session handoff
 
+## Produkční výsledek 21. 10. 2026 — stavy a systémové e-maily
+
+[PR #156](https://github.com/KovoPraha/evidenceTreninku/pull/156) sloučen a
+[deploy 39603396933](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39603396933)
+nasadil SHA `574328421fff748b48f7d744a3ce454b9b50dd1e`. Záloha 236 tabulek / 2
+triggerů, 110 migrací aktuálních, HTTP 200. Testy 1 178/26 530, CI MariaDB
+10.3/11.4 a CodeQL zelené. Živý přehled stavů, editor a náhled bez odeslání,
+seznam objednávek a fronta ověřeny. Fronta 3 pending / 0 pokusů / 0 sent;
+starší zpráva #1 zachovala kontrolní otisk. Dvě nové zprávy pocházejí ze
+souběžného hotovostního testu před aktivací. Žádné skutečné e-maily nebyly
+odesílány a worker neběžel. Lokální simulace vypnuta, produkční guard neaktivní;
+ostrá doprava stále čeká na cenu/veřejný klíč a povolení. Fakturace je odložená.
+[Plán](../ORDER_STATUS_EMAIL_PLAN_2026-10-21.md) a
+[produkční report](../ORDER_STATUS_EMAIL_RELEASE_2026-10-21.md) obsahují důkazy.
+Starší lokální omezení a počty níže jsou historické; dokumentační doplnění
+na `codex/order-status-release-proof-20261021` nemění nasazený aplikační SHA.
+
 Aktualizace autorizace 21. 10. 2026: schválen commit, push a nasazení tohoto
 řezu na produkci; starší omezení na lokální práci níže je historické.
 Ověřovat bez skutečných e-mailů a bez změn produkčních objednávek/šablon.

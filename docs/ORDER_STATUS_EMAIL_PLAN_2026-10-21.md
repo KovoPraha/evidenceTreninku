@@ -12,12 +12,12 @@ v ignorovaném configu vypnuta (`SHOP_PACKETA_LOCAL_DEMO=false`).
 - [x] Vypnout lokální simulaci; config a testovací artefakty nevstupují do Gitu.
 - [x] Začlenit aktuální `origin/main` včetně PR #154–155; zachovat oba nové
   datové kontrakty, migrační checksummy a ruční editace ostatních worktrees.
-- [ ] Ověřit PHPUnit, migrace/zálohu a souběh editoru; push, PR a zelené CI.
-- [ ] Sloučit chráněným postupem a nasadit přes `deploy-production.yml`,
+- [x] Ověřit PHPUnit, migrace/zálohu a souběh editoru; push, PR a zelené CI.
+- [x] Sloučit chráněným postupem a nasadit přes `deploy-production.yml`,
   `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`.
-- [ ] Ověřit SHA, zálohu, migrace a živý přehled stavů, editor/náhled a frontu.
+- [x] Ověřit SHA, zálohu, migrace a živý přehled stavů, editor/náhled a frontu.
   Bez ukládání produkčních šablon, přepnutí objednávek a běhu poštovního workeru.
-- [ ] Zapsat odkazy na PR/CI/deploy, produkční důkazy a aktuální bod do handoffů.
+- [x] Zapsat odkazy na PR/CI/deploy, produkční důkazy a aktuální bod do handoffů.
 
 Příprava vydání: začleněn `61ed7385` (PR #155) v commitu `11db284d`.
 Migrační katalog zachovává nové systémové e-maily i vlastní registrační
@@ -35,6 +35,24 @@ má SHA-256 (oddělovač LF)
 `a6cb0ad2a10944e8ec55cd091ad93322a7586b66385e93bb8c8ca6421a82562b`.
 Příjemce, obsah a přístupové odkazy se do veřejného reportu nekopírují.
 Žádná zpráva nebyla vrácena do fronty ani odeslána.
+
+Vydání sloučeno v [PR #156](https://github.com/KovoPraha/evidenceTreninku/pull/156)
+na aplikační SHA `574328421fff748b48f7d744a3ce454b9b50dd1e`.
+[CI 39603132938](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39603132938)
+(PHPUnit a MariaDB 10.3/11.4) a CodeQL 39603127501 jsou zelené.
+[Deploy 39603396933](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39603396933)
+úspěšně skončil na shodném SHA s oběma volitelnými příznaky false.
+Záloha 236 tabulek / 2 triggerů, migrace 110/110 aktuální, pending=[], HTTP 200.
+Živě ověřen přehled stavů, výchozí editor/náhled a fronta; původní zpráva #1
+zachovala otisk uvedený výše. Konečná fronta: 3 pending / 0 pokusů / 0 sent.
+Dvě zprávy vznikly souběžným testem hotovosti v 14:51:55 a 14:53:58, tedy před
+aktivací vydání v 14:56:27; nejde o zprávy z migrace nebo našeho náhledu.
+Žádný poštovní worker spuštěn nebyl. Ostrá Zásilkovna zůstává vypnutá: cena 0,
+prázdný veřejný klíč a nezaškrtnuté povolení; simulace není aktivní.
+Podrobné důkazy a omezení jsou v
+[produkčním reportu](ORDER_STATUS_EMAIL_RELEASE_2026-10-21.md).
+Předávací dokumentace je na `codex/order-status-release-proof-20261021`, stejný
+worktree; tato větev nemění aplikační kód a nevyžaduje další deploy.
 
 ## Schválený rozsah a pracovní bod
 
