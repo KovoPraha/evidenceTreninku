@@ -1,10 +1,16 @@
 # Aktuální předání vývoje na další stanici
 
-Lokální navazující práce 21. 10. 2026: větev `codex/order-cash-payment`
-z `2d86a5c3` doplňuje přijetí hotovosti
-místo převodu, audit, přechod z objednávky na její platbu a vratku.
+Nejnovější předání: 21. 10. 2026, hotovostní platby objednávek z [PR #150](https://github.com/KovoPraha/evidenceTreninku/pull/150).
+Nasazený aplikační SHA je `f813264b16ffd49224bd41a908adc33d9687af88`;
+[deploy 39590481900](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39590481900)
+prošel ověřenou zálohou, 107 aktuálními migracemi, aktivací a HTTP 200.
+Hospodář může současně změnit převod na hotovost a přijmout celou platbu;
+objednávka má audit, navazující aktivace a podporuje ruční vratku.
+CI: 1 155 testů / 26 040 kontrol, MariaDB 10.3/11.4 a CodeQL.
 Postup a hranice ověření jsou v [předání plateb](ORDER_PAYMENTS_2026-10-21.md).
-Tato změna zatím není nasazená a nemění následující produkční důkazy.
+Přihlášená prohlížečová kontrola formuláře zůstává otevřená kvůli nefunkčnímu
+připojení Chrome; skutečné objednávky ani platby se při ověření neměnily.
+`uat_schvaleno=false`, `importovat_krouzky=false`. Následující předání jsou historická.
 
 Nejnovější předání: 21. 10. 2026, správa registračních textů a souhlasů z PR
 [#148](https://github.com/KovoPraha/evidenceTreninku/pull/148). Nasazený aplikační

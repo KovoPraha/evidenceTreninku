@@ -1,5 +1,18 @@
 # Aktuální stav projektu
 
+Nejnovější produkční doplnění: 21. 10. 2026, hotovostní úhrady objednávek z
+[PR #150](https://github.com/KovoPraha/evidenceTreninku/pull/150).
+Aplikační SHA `f813264b16ffd49224bd41a908adc33d9687af88` má úspěšný
+[deploy 39590481900](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39590481900):
+ověřená záloha, 107 aktuálních migrací, aktivace a HTTP 200. Hospodář může
+společně změnit převod na hotovost a zaevidovat příjem celé částky; součástí
+je audit, navazující aktivace, zobrazení způsobu úhrady a ruční vratka.
+CI: 1 155 testů / 26 040 kontrol, MariaDB 10.3/11.4 a CodeQL.
+[Postup a ověřovací hranice](ORDER_PAYMENTS_2026-10-21.md) rozlišují automatické
+testy a dosud neprovedenou přihlášenou kontrolu formuláře kvůli výpadku spojení
+Chrome. Skutečné platby se neměnily; plné UAT zůstává otevřené.
+Následující produkční záznamy jsou historické.
+
 Nejnovější doplnění: 21. 10. 2026. PR [#148](https://github.com/KovoPraha/evidenceTreninku/pull/148)
 přidal **Registrační texty a souhlasy** pod pozici **Registrář členů a KIS**.
 Samostatně se ukládá neměnný koncept a zveřejňuje jeho přesné znění; historie
