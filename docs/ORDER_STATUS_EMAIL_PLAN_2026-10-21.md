@@ -291,3 +291,10 @@ Při pokračování otevřít tento plán a Git stav izolovaného worktree. Lok�
 databáze obsahuje dvě dokončené testovací objednávky a pět čekajících zpráv;
 nespouštět nad nimi skutečný poštovní transport. Aktivní pozice obnovena na
 Zákaznickou péči a objednávky. Připraveno k revizi, bez push/merge/deploy.
+
+Lokální implementační commity: `55f43e68` a `690fefd8`. Na konci práce ukazuje
+již existující remote reference `origin/main` navíc dokumentační commit
+`e7e0d44d` (PR #154, ověření hotovostního formuláře); nebyl do tohoto řezu
+automaticky integrován. Nemění PHP ani schéma. Před budoucím slučováním převzít
+jeho dokumentaci a zachovat oba aktuální handoffy. V tomto průchodu nebyl
+proveden fetch, push, merge ani deploy.

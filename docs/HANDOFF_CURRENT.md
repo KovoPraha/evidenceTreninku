@@ -16,6 +16,8 @@ výslovný příznak v ignorovaném configu a striktní loopback všech adres.
 Pracovní složka: `C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
 Žádný push, merge, deploy ani skutečná rozesílka. Worker nespouštěn; čekající
 testovací zprávy nepředávat skutečnému mail transportu. Fakturace je odložená.
+Implementační commity jsou `55f43e68` a `690fefd8`. Plán eviduje i navazující
+dokumentační PR #154 na `origin/main`, který zatím není do pracovní větve převzat.
 
 ## Pravidlo pro větší změny a pokračování po kompaktaci
 
