@@ -12,6 +12,7 @@ require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 require_once dirname(__DIR__) . '/includes/shop_public_navigation.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
 require_once dirname(__DIR__) . '/includes/shop_guest_checkout.php';
+require_once dirname(__DIR__) . '/includes/shop_bank_settings.php';
 require_once dirname(__DIR__) . '/includes/shop_ppl_widget.php';
 require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
 
