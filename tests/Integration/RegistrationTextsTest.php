@@ -27,6 +27,10 @@ final class RegistrationTextsTest extends TestCase
         ($migration['up'])($this->pdo);
         ($migration['up'])($this->pdo);
         self::assertTrue(($migration['verify'])($this->pdo));
+        $titles = require dirname(__DIR__,2).'/migrations/20261021170000_registration_text_titles.php';
+        ($titles['up'])($this->pdo);
+        ($titles['up'])($this->pdo);
+        self::assertTrue(($titles['verify'])($this->pdo));
     }
 
     protected function tearDown(): void { $_SESSION = []; }
@@ -136,5 +140,56 @@ final class RegistrationTextsTest extends TestCase
             self::assertSame($id, (int)\registrationTextsCurrent($this->pdo, $purpose)['id']);
             self::assertCount(2, \registrationTextsHistory($this->pdo, $purpose));
         }
+    }
+
+    public function testRenameWithoutChangingBodyIsVersionedAndDoesNotChangeTheOldAcceptedTitle(): void
+    {
+        $purpose = 'member_data_notice';
+        $old = \athleteRegistrationCurrentTerms($this->pdo)[$purpose];
+        $draft = \registrationTextsSaveDraft($this->pdo, $purpose, $old['text'], 'LOCALHOST Přejmenování', $old['id'], 'LOCALHOST Informace o zpracování údajů');
+        self::assertSame($old, \athleteRegistrationCurrentTerms($this->pdo)[$purpose]);
+        $this->pdo->exec('CREATE TABLE title_acceptance(term_version_id INTEGER REFERENCES club_event_term_versions(id))');
+        $this->pdo->prepare('INSERT INTO title_acceptance VALUES(?)')->execute([$old['id']]);
+        \registrationTextsPublish($this->pdo, $draft, true);
+        $new = \athleteRegistrationCurrentTerms($this->pdo)[$purpose];
+        self::assertSame('LOCALHOST Informace o zpracování údajů', $new['title']);
+        self::assertSame($old['text'], $new['text']);
+        self::assertNotSame($old['version'], $new['version']);
+        $history = \registrationTextsHistory($this->pdo, $purpose);
+        self::assertSame($new['title'], $history[0]['title_plain']);
+        self::assertSame('Informace o evidenci člena', $history[1]['title_plain']);
+        self::assertSame('Informace o evidenci člena', $this->pdo->query('SELECT t.title_plain FROM title_acceptance a JOIN club_event_term_versions t ON t.id=a.term_version_id')->fetchColumn());
+        // Re-running the title backfill must not overwrite the custom title.
+        $migration = require dirname(__DIR__,2).'/migrations/20261021170000_registration_text_titles.php';
+        ($migration['up'])($this->pdo);
+        self::assertSame($new, \athleteRegistrationCurrentTerms($this->pdo)[$purpose]);
+    }
+
+    public function testEmptyLongOrMultilineTitleIsRejectedButPlainTextTitleRemainsLiteral(): void
+    {
+        $old = \athleteRegistrationCurrentTerms($this->pdo)['member_data_notice'];
+        foreach (['', '  ', str_repeat('Ž',201), "Titulek\nDruhý řádek"] as $title) {
+            try { \registrationTextsSaveDraft($this->pdo, 'member_data_notice', $old['text'], 'LOCALHOST Změna názvu', $old['id'], $title); self::fail('Invalid title must be rejected.'); }
+            catch (InvalidArgumentException $e) { self::assertStringContainsString('název', $e->getMessage()); }
+        }
+        $title = 'LOCALHOST <img src=x onerror=alert(1)> & údaje';
+        $draft = \registrationTextsSaveDraft($this->pdo, 'member_data_notice', $old['text'], 'LOCALHOST Prostý text', $old['id'], $title);
+        \registrationTextsPublish($this->pdo,$draft,true);
+        self::assertSame($title, \athleteRegistrationCurrentTerms($this->pdo)['member_data_notice']['title']);
+    }
+
+    public function testEveryPublicHeadingReadsTheVersionedTitle(): void
+    {
+        $root = dirname(__DIR__,2);
+        foreach (['booking/registrace_sportovce.php','booking/rychla_prihlaska.php'] as $page) {
+            $source = (string)file_get_contents($root.'/'.$page);
+            foreach (['member_data_notice','birth_number_legal_notice','csc_birth_number_sharing'] as $purpose) {
+                self::assertStringContainsString("\$terms['".$purpose."']['title']", $source);
+            }
+        }
+        $source = (string)file_get_contents($root.'/registration_texts_admin.php');
+        self::assertStringContainsString('name="title"', $source);
+        self::assertStringContainsString('registrationTextH($editorTitle)', $source);
+        self::assertStringContainsString('registrationTextH(registrationTextTitle($term, $purpose))', $source);
     }
 }

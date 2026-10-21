@@ -15,7 +15,8 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
         $contract = EVIDENCE_OWNED_COLUMN_CONTRACT;
 
         // R7: životní cyklus verzí podmínek a neměnný důkaz souhlasu.
-        self::assertSame(['status', 'archived_at', 'archived_by_trainer_id'], $contract['club_event_term_versions']);
+        self::assertSame(['status', 'archived_at', 'archived_by_trainer_id', 'title_plain'], $contract['club_event_term_versions']);
+        self::assertSame(['title_plain'], $contract['athlete_registration_text_drafts']);
         self::assertSame(
             ['terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
             $contract['club_program_enrollments']

@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -46,7 +46,9 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'status',
         'archived_at',
         'archived_by_trainer_id',
+        'title_plain',
     ],
+    'athlete_registration_text_drafts' => ['title_plain'],
     // Immutable proof of the terms a parent accepted, carried from the order.
     'club_program_enrollments' => [
         'terms_snapshot_json',
