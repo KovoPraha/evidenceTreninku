@@ -20,9 +20,11 @@ ověřená záloha, 107 aktuálních migrací, aktivace a HTTP 200. Hospodář m
 společně změnit převod na hotovost a zaevidovat příjem celé částky; součástí
 je audit, navazující aktivace, zobrazení způsobu úhrady a ruční vratka.
 CI: 1 155 testů / 26 040 kontrol, MariaDB 10.3/11.4 a CodeQL.
-[Postup a ověřovací hranice](ORDER_PAYMENTS_2026-10-21.md) rozlišují automatické
-testy a dosud neprovedenou přihlášenou kontrolu formuláře kvůli výpadku spojení
-Chrome. Skutečné platby se neměnily; plné UAT zůstává otevřené.
+[Postup a ověřovací hranice](ORDER_PAYMENTS_2026-10-21.md) obsahují dokončené
+přihlášené ověření formuláře z 21. 10.: přechod od objednávky, volbu hotovosti,
+povinná pole, CSRF, vizuální kontrolu a konzoli bez chyb. Formulář platby nebyl
+odeslán a následná kontrola potvrdila nezměněnou objednávku. Kontrola proběhla
+na navazujícím release `f5d6276`. Plné UAT aplikace zůstává samostatné.
 Následující produkční záznamy jsou historické.
 
 Nejnovější doplnění: 21. 10. 2026. PR [#148](https://github.com/KovoPraha/evidenceTreninku/pull/148)
