@@ -5,6 +5,19 @@ require_once __DIR__.'/shop_packeta_local_demo.php';
 
 final class ShopPacketaException extends RuntimeException{}
 
+/** Independent from PPL; all physical items must explicitly allow Packeta. */
+function shopPacketaCartEligible(array $items):bool
+{
+    if($items===[])return false;
+    foreach($items as$item)if(($item['offer_type']??'')!=='goods'||(int)($item['packeta_shipping_enabled']??0)!==1)return false;
+    return true;
+}
+
+function shopPacketaProductSelect(PDO $pdo):string
+{
+    return shopCheckoutColumnExists($pdo,'shop_products','packeta_shipping_enabled')?'p.packeta_shipping_enabled':'0';
+}
+
 /** @return array{enabled:bool,price_minor:int,widget_api_key:string} */
 function shopPacketaSettings(PDO $pdo):array
 {
@@ -69,8 +82,25 @@ function shopPacketaResolveBox(string $id,?callable $lookup=null,string $apiKey=
         throw new ShopPacketaException('Vyberte dostupný syntetický localhost Z-BOX.');
     }
     if(preg_match('/^[A-Za-z0-9]{16}$/D',$apiKey)!==1)throw new ShopPacketaException('Doručení do Z-BOXu není dostupné.');
-    foreach(shopPacketaBoxFeed($apiKey)as$point)if(is_array($point)&&(string)($point['id']??'')===$id)return shopPacketaNormalizeBox($point,$id);
-    throw new ShopPacketaException('Zvolený Z-BOX už není dostupný. Vyberte jiný.');
+    $curl=curl_init('https://widget.packeta.com/v6/pps/api/widget/v1/validate');
+    if($curl===false)throw new ShopPacketaException('Z-BOX se nyní nepodařilo ověřit.');
+    curl_setopt_array($curl,[CURLOPT_POST=>true,CURLOPT_POSTFIELDS=>json_encode(['apiKey'=>$apiKey,'point'=>['id'=>$id],'options'=>['country'=>'cz','vendors'=>[['country'=>'cz','group'=>'zbox']],'cashOnDelivery'=>false]],JSON_THROW_ON_ERROR),CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>4,CURLOPT_TIMEOUT=>12,CURLOPT_FOLLOWLOCATION=>false,CURLOPT_SSL_VERIFYPEER=>true,CURLOPT_SSL_VERIFYHOST=>2,CURLOPT_HTTPHEADER=>['Content-Type: application/json','X-Language: cs']]);
+    $body=curl_exec($curl);$status=(int)curl_getinfo($curl,CURLINFO_HTTP_CODE);curl_close($curl);
+    if(!is_string($body)||strlen($body)>100000||$status!==200)throw new ShopPacketaException('Z-BOX se nyní nepodařilo ověřit. Zkuste to později nebo zvolte osobní odběr.');
+    $response=json_decode($body,true);
+    if(!is_array($response))throw new ShopPacketaException('Zásilkovna vrátila neplatné ověření boxu.');
+    return shopPacketaNormalizeValidatedBox($response,$id);
+}
+
+/** HTTP 200 can still mean isValid=false; never accept only the HTTP status. */
+function shopPacketaNormalizeValidatedBox(array $response,string $id):array
+{
+    if(($response['isValid']??false)!==true)throw new ShopPacketaException('Vybraný Z-BOX není dostupný. Vyberte jiný.');
+    $point=$response['point']??[];
+    if(!is_array($point))throw new ShopPacketaException('Zásilkovna nevrátila úplné údaje o boxu.');
+    $address=$point['address']??[];
+    if(!is_array($address))throw new ShopPacketaException('Zásilkovna nevrátila úplné údaje o boxu.');
+    return shopPacketaNormalizeBox(['id'=>$id,'type'=>$point['group']??'','country'=>$address['country']??'','displayFrontend'=>1,'status'=>['statusId'=>1],'name'=>$point['name']??'','street'=>$address['street']??'','city'=>$address['city']??'','zip'=>$address['zip']??''],$id);
 }
 
 /** @return array{method:string,price_minor:int,point:?array} */
@@ -79,7 +109,7 @@ function shopPacketaCheckoutChoice(PDO $pdo,array $items,string $method,string $
     if($method==='personal_pickup')return ['method'=>$method,'price_minor'=>0,'point'=>null];
     if($method!=='packeta_zbox')throw new ShopPacketaException('Vyberte způsob předání.');
     $settings=shopPacketaSettings($pdo);
-    if(!shopPacketaAvailable($settings)||!shopPplCartEligible($items))throw new ShopPacketaException('Doručení do Z-BOXu není pro tento košík dostupné.');
+    if(!shopPacketaAvailable($settings)||!shopPacketaCartEligible($items))throw new ShopPacketaException('Doručení do Z-BOXu není pro tento košík dostupné.');
     if($expectedPrice!==$settings['price_minor'])throw new ShopPacketaException('Cena dopravy se změnila. Zkontrolujte nový souhrn objednávky.');
     $point=shopPacketaResolveBox($pointId,$lookup,$settings['widget_api_key']);
     return ['method'=>$method,'price_minor'=>$settings['price_minor'],'point'=>$point];

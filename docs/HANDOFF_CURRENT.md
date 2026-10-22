@@ -1,5 +1,69 @@
 # Aktuální předání vývoje na další stanici
 
+## Veřejný klíč a skutečná mapa — lokální PASS 22. 10. 2026
+
+Po přihlášení vlastníka převzat jen veřejný klíč widgetu do lokálního KIS,
+uložen přes UI (audit #3); API heslo se nepřenášelo. In-app browser načetl
+skutečnou mapu CZ Z-BOXů a callback vybral **22312, Nad Kapličkou 3324/15
+(TJ Kovo Praha)** do guest checkoutu 5/5; součet 125 + 150 = 275 Kč.
+Serverová aktuální validace stejného boxu PASS, pobočka 39209 a syntetické
+ID 999000001 správně odmítnuty. Po zkoušce UI dopravu vypnulo (audit #4).
+Konečné lokální nastavení **enabled=0, cena=15000, délka klíče=16,
+SHOP_PACKETA_LOCAL_DEMO=false**. Fronta nezměněna: 5 pending / 0 pokusů,
+2 objednávky, auth/roster fronty a email_log 0. Nic objednáno, odesláno,
+commitnuto, pushnuto ani nasazeno. První mapa se načítala několik minut;
+starý nepoužívaný celý v5 feed timeout 12 s, bodová validace prošla.
+[Výsledek a důkazy](PACKETA_MODULE_AUDIT_2026-10-21.md#propojení-veřejného-klíče-a-skutečná-mapa--dokončeno-22-10-2026).
+Zbývá ověřit obchodní připravenost účtu, skutečný štítek/podání/doručení
+a budoucí schválené nasazení/aktivaci. Fakturace nadále odložena.
+
+## Živý účet Packeta — nastavení po přihlášení vlastníka
+
+Účet již existuje. Uložen kontakt Marek Mixa (+420724116963,
+`mixa@kovopraha.cz`), firemní adresa IČO 00541753 / Nad Kapličkou 3324/15,
+100 00 Praha 10 (#718887) a po výslovném potvrzení VOP odesílatel Kovo Praha
+(`#577459`, označení `kovopraha`). Povoleny jen CZ Z-BOXy, ostatní země,
+pobočky a externí místa vypnuté. Veřejný klíč nyní pouze v lokální DB;
+API heslo nebylo kopírováno.
+**Vratkové místo dokončeno:** podle výslovné volby vlastníka uložena
+Praha 10, Strašnice, Počernická 3492/1a **#39209** místo automatického depa
+Olomouc #9936. Úspěšné uložení i přetrvání po novém otevření ověřeny;
+důkaz `var/local-status-mail-review/packeta-account-return-39209.png`.
+Veřejný klíč a mapa již lokálně ověřeny podle aktuálního výsledku výše.
+Žádná zásilka nebyla vytvořena/podána a KIS nebyl nasazen ani zapnut.
+[Detaily a důkazy v plánu](PACKETA_MODULE_AUDIT_2026-10-21.md).
+
+## Lokálně připraven jednoduchý ruční provoz Zásilkovny
+
+Rozhodnutí vlastníka a výsledky jsou v
+[plánu modulu](PACKETA_MODULE_AUDIT_2026-10-21.md#schválené-zjednodušení-od-vlastníka--21-10-2026).
+CZ Z-BOXy, podání pouze přes box, vše vyřizuje Kovo Praha; účet nastaven výše.
+Výchozí dopravné 150 Kč měnitelné v administraci; nový samostatný checkbox
+u fyzického produktu, kroužky blokované. Lokálně dále opraven widget a
+aktuální validace, expediční přehled, oprava/duplicita štítku a potvrzení
+storna v Klientu. Žádný API konektor pro založení nebo tracking.
+PHPUnit 1 183 / 26 590 PASS; MariaDB backup/restore 190 tabulek PASS,
+lokálních 111 migrací aktuálních. UI cena/checkbox uloženy a ověřeny.
+Lokálně doprava vypnutá, cena 150 Kč, veřejný klíč uložen, simulace false,
+fronta 5 pending / 0 pokusů. Žádný worker/skutečný e-mail či balík.
+Změny jsou necommitnuté na `codex/packeta-module-audit-20261021` ve stejném
+worktree. Neprovádět nové nasazení/aktivaci; fakturace odložená. Zbývá ověřit
+obchodní připravenost účtu, skutečný štítek/podání a poštovní provoz před
+pozdější schválenou aktivací.
+
+## Historie auditu a předchozího nasazení
+
+Navazující analýza Zásilkovny 21. 10. 2026 dokončena: plán a výsledky jsou v
+[auditu modulu](PACKETA_MODULE_AUDIT_2026-10-21.md), větev
+`codex/packeta-module-audit-20261021`, stejný vývojový worktree. Pouze analýza
+a dokumentace; neaktivovat dopravu ani skutečné zásilky/e-maily. Výchozí
+nasazený kód a doklady o vydání zůstávají níže. Zdrojově zjištěn nesoulad
+widgetu `carrierId:czzbox` proti současnému `group:zbox`, chybějící aktuální
+validace, expediční přehled Packety, limity balení a náprava štítku/storna.
+Audit obsahuje úkoly mimo KIS, oddělení cílového boxu od místa podání,
+bezpečný postup pro sdílenou poštovní frontu, API etapu a šest rozhodnutí
+vlastníka. Ostrý účet/mapa, CRON ani doručení nebyly v analýze ověřeny.
+
 Nasazeno 21. 10. 2026: stavy, oprava akcí Zásilkovny a verzovaný editor šesti
 systémových e-mailů z [PR #156](https://github.com/KovoPraha/evidenceTreninku/pull/156).
 Aplikační SHA `574328421fff748b48f7d744a3ce454b9b50dd1e`,

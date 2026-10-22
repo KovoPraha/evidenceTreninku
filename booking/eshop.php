@@ -108,7 +108,7 @@ $cart = $isLoggedIn ? shopCartDetail($pdo,$accountId) : ['items'=>[],'event_item
 $pplSettings=shopPplSettings($pdo);
 $packetaSettings=shopPacketaSettings($pdo);
 $pplCanShip=$isLoggedIn&&shopPplAvailable($pplSettings)&&shopPplCartEligible($cart['items'])&&$cart['event_items']===[]&&$cart['velodrome_items']===[];
-$packetaCanShip=$isLoggedIn&&shopPacketaAvailable($packetaSettings)&&shopPplCartEligible($cart['items'])&&$cart['event_items']===[]&&$cart['velodrome_items']===[];
+$packetaCanShip=$isLoggedIn&&shopPacketaAvailable($packetaSettings)&&shopPacketaCartEligible($cart['items'])&&$cart['event_items']===[]&&$cart['velodrome_items']===[];
 $boxDeliveryAvailable=$pplCanShip||$packetaCanShip;
 $pplSettings['_packeta']=$packetaCanShip?$packetaSettings:[];
 $pplCanShip=$boxDeliveryAvailable;

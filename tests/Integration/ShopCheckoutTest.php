@@ -80,6 +80,8 @@ final class ShopCheckoutTest extends TestCase
         foreach(['20261019130000_shop_packeta_zbox.php','20261021170000_shop_system_email_templates.php'] as $file) {
             $migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
         }
+        $pdo->exec("ALTER TABLE shop_products ADD COLUMN item_type TEXT NOT NULL DEFAULT 'product'");
+        $migration=require dirname(__DIR__,2).'/migrations/20261021200000_shop_packeta_manual_products.php';$migration['up']($pdo);
         \shopPacketaSaveSettings($pdo,7,7900,'abcdefghijklmnop',true,'LOCALHOST NEPLATIT',true);
         $lookup=static fn(string $id):array=>['id'=>$id,'type'=>'zbox','country'=>'cz','displayFrontend'=>1,'status'=>['statusId'=>1],'name'=>'LOCALHOST Z-BOX','street'=>'Testovací 1','zip'=>'10000','city'=>'Praha'];
         $order=\shopGuestCheckoutPlace($pdo,601,1,['first_name'=>'LOCALHOST','last_name'=>'NEPLATIT','email'=>'zbox@example.test','phone'=>'777123456','confirmed'=>'1'],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'packeta_zbox','',0,null,'12345',7900,$lookup);
@@ -91,6 +93,14 @@ final class ShopCheckoutTest extends TestCase
         try {\shopOrderAdminCompletePickup($pdo,(int)$order['id'],7,'LOCALHOST pokus',true);self::fail('Z-BOX cannot use personal pickup.');}catch(\ShopCheckoutException){}
         try {\shopOrderAdminDepositPacketa($pdo,(int)$order['id'],7,'LOCALHOST bez štítku',true);self::fail('Parcel needs label details.');}catch(\ShopCheckoutException){}
         \shopOrderAdminPreparePacketa($pdo,(int)$order['id'],7,'Z1234567890','987654321','LOCALHOST štítek',true);
+        try{\shopOrderAdminCancel($pdo,(int)$order['id'],7,'LOCALHOST bez storna dopravce.',true);self::fail('Carrier cancellation must be acknowledged.');}catch(\ShopCheckoutException){}
+        \shopOrderAdminPreparePacketa($pdo,(int)$order['id'],7,'Z1234567890','123456789','LOCALHOST oprava po kontrole Klienta.',true,true);
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='correct_packeta'")->fetchColumn());
+        $other=\shopGuestCheckoutPlace($pdo,601,1,['first_name'=>'TEST','last_name'=>'Storno','email'=>'cancel@example.test','phone'=>'777123456','confirmed'=>'1'],bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'packeta_zbox','',0,null,'12345',7900,$lookup);
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$other['payment_id'],7,'LOCALHOST ověřeno',true);\shopOrderAdminMarkReady($pdo,(int)$other['id'],7,'LOCALHOST připraveno',true);
+        try{\shopOrderAdminPreparePacketa($pdo,(int)$other['id'],7,'Z1234567890','555444333','LOCALHOST duplicitní štítek.',true);self::fail('Barcode belongs to another order.');}catch(\ShopCheckoutException){}
+        \shopOrderAdminPreparePacketa($pdo,(int)$other['id'],7,'Z2234567890','555444333','LOCALHOST jiný štítek.',true);
+        self::assertSame('refund_required',\shopOrderAdminCancel($pdo,(int)$other['id'],7,'LOCALHOST zrušeno v Klientu.',true,true)['payment_status']);
         self::assertSame('deposit_packeta',\shopOrderFulfillmentAction($pdo->query('SELECT * FROM shop_orders')->fetch(),false));
         $t=\shopSystemEmailCurrent($pdo,'shop_packeta_dispatched');
         \shopSystemEmailSave($pdo,'shop_packeta_dispatched',7,0,$t['subject_plain'],$t['body_plain']."\nKontakt: LOCALHOST recepce.",'LOCALHOST kontakt');
@@ -102,6 +112,32 @@ final class ShopCheckoutTest extends TestCase
         self::assertStringNotContainsString('987654321',$mail['body_plain']);
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='deposit_packeta'")->fetchColumn());
         self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE notification_type='shop_packeta_dispatched'")->fetchColumn());
+    }
+
+    public function testPacketaUsesItsOwnProductCheckboxAndAdminPriceForAccountAndGuest():void
+    {
+        $pdo=$this->pplDatabase();
+        $migration=require dirname(__DIR__,2).'/migrations/20261019130000_shop_packeta_zbox.php';$migration['up']($pdo);
+        $pdo->exec("ALTER TABLE shop_products ADD COLUMN item_type TEXT NOT NULL DEFAULT 'product'");
+        $migration=require dirname(__DIR__,2).'/migrations/20261021200000_shop_packeta_manual_products.php';$migration['up']($pdo);
+        \shopPacketaSaveSettings($pdo,7,15000,'abcdefghijklmnop',true,'Pouze syntetický test.',true);
+        $pdo->exec("UPDATE shop_products SET delivery_mode='pickup_only' WHERE id=501");
+        $lookup=static fn(string $id):array=>['id'=>$id,'type'=>'zbox','country'=>'cz','displayFrontend'=>1,'status'=>['statusId'=>1],'name'=>'TEST Z-BOX','street'=>'Testovací 1','zip'=>'10000','city'=>'Praha'];
+        \shopCartSetQuantity($pdo,10,601,1);$cart=\shopCartDetail($pdo,10);
+        self::assertTrue(\shopPacketaCartEligible($cart['items']));self::assertFalse(\shopPplCartEligible($cart['items']));
+        $account=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],[],null,'packeta_zbox','','777123456',0,null,'12345',15000,$lookup);
+        self::assertSame(27500,(int)$account['total_minor']);
+        $customer=['first_name'=>'Test','last_name'=>'Host','email'=>'host@example.test','phone'=>'777123456','confirmed'=>'1'];
+        $guest=\shopGuestCheckoutPlace($pdo,601,1,$customer,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'packeta_zbox','',0,null,'12345',15000,$lookup);
+        self::assertSame(27500,(int)$guest['total_minor']);
+        \shopPacketaSaveSettings($pdo,7,18000,'abcdefghijklmnop',true,'Změna testovací ceny.',true);
+        try{\shopGuestCheckoutPlace($pdo,601,1,$customer,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'packeta_zbox','',0,null,'12345',15000,$lookup);self::fail('Changed price must require a new review.');}catch(\ShopCheckoutException $e){self::assertStringContainsString('Cena dopravy se změnila',$e->getMessage());}
+        self::assertSame(15000,(int)$pdo->query('SELECT shipping_amount_minor FROM shop_orders WHERE id='.(int)$account['id'])->fetchColumn());
+        $pdo->exec('UPDATE shop_products SET packeta_shipping_enabled=0 WHERE id=501');
+        try{\shopGuestCheckoutPlace($pdo,601,1,$customer,bin2hex(random_bytes(16)),bin2hex(random_bytes(32)),self::BANK,'packeta_zbox','',0,null,'12345',18000,$lookup);self::fail('Unchecked product cannot be sent.');}catch(\ShopCheckoutException $e){self::assertStringContainsString('není pro tento košík dostupné',$e->getMessage());}
+        \shopCartSetQuantity($pdo,11,601,1);$cart=\shopCartDetail($pdo,11);
+        try{\shopCheckoutPlace($pdo,11,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],[],null,'packeta_zbox','','777123456',0,null,'12345',18000,$lookup);self::fail('Account cannot bypass unchecked product.');}catch(\ShopCheckoutException){}
+        self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
     }
 
     private function pplDatabase():PDO
