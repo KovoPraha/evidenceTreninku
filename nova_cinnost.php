@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__.'/includes/club_rewards.php';
 
 if (!isset($_SESSION['trener_id'])) {
     header("Location: login.php");
@@ -41,11 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $trener_id = $_SESSION['trener_id'];
 
     if ($errors === []) {
+      try {
+       accountingLedgerTransaction($pdo,function()use($pdo,$trener_id,$nazev,$delka,$poznamka,$datum){
+        clubRewardActor($pdo,(int)$trener_id,['coach','sports_lead']);
+        accountingLedgerDate($datum);
+        clubRewardAssertOtherWorkMutable($pdo,(int)$trener_id,$datum);
         $stmt = $pdo->prepare("INSERT INTO dalsi_cinnosti (trener_id, nazev, delka, poznamka, datum) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$trener_id, $nazev, $delka, $poznamka, $datum]);
+       });
         $_SESSION['flash_success'] = 'Činnost byla uložena a je zahrnuta ve výkazu.';
         header('Location: vypis_vykazu.php?mesic=' . rawurlencode(substr($datum, 0, 7)), true, 303);
         exit;
+      }catch(DomainException|AccountingLedgerException $e){$errors[]=$e->getMessage();http_response_code(422);}
     }
 }
 ?>

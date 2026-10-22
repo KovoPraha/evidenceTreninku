@@ -26,6 +26,7 @@ if (!$id) {
 try {
     $pdo->beginTransaction();
     financialEventAssertOpen(financialEventLock($pdo, $id));
+    financialEventAssertLegacyMutable($pdo, $id);
     $stmt = $pdo->prepare("UPDATE ucto_udalosti SET stav = 'uzavrena' WHERE id = ?");
     $stmt->execute([$id]);
 

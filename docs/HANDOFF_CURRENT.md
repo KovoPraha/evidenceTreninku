@@ -1,5 +1,19 @@
 # Aktuální předání vývoje na další stanici
 
+Lokální R31–R37 dokončené v pracovní kopii
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
+`codex/club-administration-r31-r37-20261023`, základ `4033bf18`.
+[Rozsah](CLUB_ADMINISTRATION_R31_R37_IMPLEMENTATION.md),
+[výsledky](verification/r31-r37/RESULTS.md).
+133 migrací tohoto vydání; zálohovací kontrakt `2026-10-23.2`.
+Pouze syntetický localhost, žádný push ani produkční změna.
+Uživatel požaduje autonomně pokračovat: navazují R38–R44 technická příprava
+migrace a přechodu. Reálná rozhodnutí jsou v
+[registru k pozdějšímu potvrzení](CLUB_COMPLETION_DECISIONS.md).
+Pilot, účetní převzetí a nasazení nejsou místními testy nahrazeny.
+
+Následuje předchozí předání:
+
 Lokální vývoj 23. 10. 2026: **R25–R30 — členská a sportovní agenda**,
 větev `codex/membership-sports-r25-r30-20261023`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R18–R24

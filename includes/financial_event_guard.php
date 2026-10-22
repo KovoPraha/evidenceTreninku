@@ -56,6 +56,10 @@ function financialReceiptLock(PDO $pdo, int $id): array
 function financialReceiptAssertMutable(PDO $pdo, ?array $lockedReceipt, ?int $targetEventId): void
 {
     financialEventLockSuffix($pdo);
+    if ($lockedReceipt && financialExpenseTableExists($pdo, 'club_expense_claims')) {
+        $q=$pdo->prepare('SELECT id FROM club_expense_claims WHERE receipt_id=? LIMIT 1');$q->execute([(int)$lockedReceipt['id']]);
+        if($q->fetchColumn()) throw new FinancialEventConflict('Účtenka již patří do verzovaného výdaje. Použijte opravnou verzi ve Výdajích a zálohách; originál ani přílohu nelze přepsat.');
+    }
     $ids = [];
     foreach ([$lockedReceipt['udalost_id'] ?? null, $targetEventId] as $id) {
         if ($id === null || $id === '') continue;
@@ -66,4 +70,14 @@ function financialReceiptAssertMutable(PDO $pdo, ?array $lockedReceipt, ?int $ta
     foreach ($ids as $id) {
         financialEventAssertOpen(financialEventLock($pdo, $id));
     }
+}
+
+function financialExpenseTableExists(PDO $pdo,string $table):bool {
+    if(!in_array($table,['club_expense_claims','club_expense_cases'],true))return false;
+    try{$pdo->query('SELECT 1 FROM '.$table.' LIMIT 0');return true;}catch(PDOException){return false;}
+}
+function financialEventAssertLegacyMutable(PDO $pdo,int $id):void {
+    if(!financialExpenseTableExists($pdo,'club_expense_cases'))return;
+    $q=$pdo->prepare('SELECT id FROM club_expense_cases WHERE legacy_event_id=?');$q->execute([$id]);
+    if($q->fetchColumn())throw new FinancialEventConflict('Akce má navázané výdaje a zálohy. Uzavření a opravy vyřizujte přes Výdaje a zálohy.');
 }

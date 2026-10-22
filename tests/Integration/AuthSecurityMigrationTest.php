@@ -155,6 +155,9 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261023020000_training_closure',
                 '20261023030000_sports_activity',
                 '20261023040000_medical_clearance',
+                '20261023050000_club_expenses',
+                '20261023060000_club_rewards',
+                '20261023070000_financial_decisions',
 
             ],
             array_keys($catalog)

@@ -1,0 +1,37 @@
+{
+    "database": "evidence_decision_race_17bb868c",
+    "checks": 6,
+    "results": [
+        {
+            "scenario": "replacement",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "id": 2
+                },
+                {
+                    "status": "denied",
+                    "message": "Podklad již má novější verzi. Obnovte stránku."
+                }
+            ],
+            "status": "PASS"
+        },
+        {
+            "scenario": "handover",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "id": 0
+                },
+                {
+                    "status": "denied",
+                    "message": "Stav předání se změnil; obnovte stránku."
+                }
+            ],
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

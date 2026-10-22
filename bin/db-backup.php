@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -355,6 +355,18 @@ const EVIDENCE_TABLES = [
     'medical_clearance_watches',
     'medical_clearance_records',
     'medical_clearance_events',
+    'club_expense_cases',
+    'club_expense_claims',
+    'club_expense_advances',
+    'club_expense_consumptions',
+    'club_expense_transfers',
+    'club_expense_events',
+    'club_reward_rules',
+    'club_reward_claims',
+    'club_reward_versions',
+    'club_reward_decisions',
+    'club_reward_payouts',
+    'financial_decisions',
 
     'oznameni_targets',
     'payments',

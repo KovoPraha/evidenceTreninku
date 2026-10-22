@@ -22,6 +22,7 @@ if ($id > 0) {
         $pdo->beginTransaction();
         $udalost = financialEventLock($pdo, $id);
         financialEventAssertOpen($udalost);
+        financialEventAssertLegacyMutable($pdo, $id);
 
         if ($udalost) {
             $pdo->prepare("DELETE FROM ucto_udalosti WHERE id = ?")->execute([$id]);

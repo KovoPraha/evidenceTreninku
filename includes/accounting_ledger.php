@@ -95,6 +95,12 @@ function accountingLedgerRecord(PDO $pdo,array $input,int $actor,string $reason,
             if(!$original||$original['currency']!==$clean['currency']||((int)$original['amount_minor']>0)===($clean['amount_minor']>0)||$clean['effective_on']<$original['effective_on'])throw new AccountingLedgerException('Opravný pohyb neodpovídá původnímu pohybu.');
             $q=$pdo->prepare('SELECT COALESCE(SUM(ABS(amount_minor)),0) FROM accounting_movements WHERE reversal_of_id=?');$q->execute([$clean['reversal_of_id']]);
             if((int)$q->fetchColumn()+abs($clean['amount_minor'])>abs((int)$original['amount_minor']))throw new AccountingLedgerException('Součet vratek nebo oprav přesahuje původní peněžní pohyb.');
+            // Every correction shares the allocation guard. Calling it a reversal,
+            // income or expense must not consume money already assigned to a case.
+            $q=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM accounting_allocations WHERE movement_id=?');$q->execute([$original['id']]);$allocated=(int)$q->fetchColumn();
+            $q=$pdo->prepare('SELECT COALESCE(SUM(ABS(amount_minor)),0) FROM accounting_movements WHERE reversal_of_id=?');$q->execute([$original['id']]);$returned=(int)$q->fetchColumn();
+            $reserved=accountingLedgerReservedMinor($pdo,(int)$original['id'],$clean['kind']==='refund'?$clean['refund_decision_id']:null);
+            if($allocated+$returned+$reserved+abs($clean['amount_minor'])>abs((int)$original['amount_minor']))throw new AccountingLedgerException('Nejprve doložte uvolnění rozdělení; oprava nesmí spotřebovat přidělené nebo vyhrazené peníze.');
             if($clean['kind']==='refund'){
                 $legacyPaymentId=null;
                 if($clean['source_context']==='legacy-refund'){
@@ -153,10 +159,17 @@ function accountingLedgerAllocate(PDO $pdo,int $movementId,string $caseType,int 
         if($prior){if(!hash_equals($prior['fingerprint'],$fingerprint))throw new AccountingLedgerException('Klíč rozdělení již patří jinému požadavku.');return $prior;}
         $q=$pdo->prepare('SELECT * FROM accounting_movements WHERE id=?');$q->execute([$movementId]);$movement=$q->fetch(PDO::FETCH_ASSOC);
         if(!$movement||$movement['kind']==='transfer'||$effectiveOn<$movement['effective_on'])throw new AccountingLedgerException('Pohyb není dostupný pro toto rozdělení.');
-        $table=match($caseType){'shop_order'=>'shop_orders','member_charge'=>'club_member_charges','shop_return'=>'shop_return_cases',default=>null};
+        $table=match($caseType){'shop_order'=>'shop_orders','member_charge'=>'club_member_charges','shop_return'=>'shop_return_cases','expense_claim','expense_claim_return'=>'club_expense_claims','expense_advance_out','expense_advance_in'=>'club_expense_advances','reward_claim'=>'club_reward_claims',default=>null};
         if($table===null||!accountingLedgerTable($pdo,$table))throw new AccountingLedgerException('Rozdělení vyžaduje existující obchodní případ.');
         $q=$pdo->prepare('SELECT currency FROM '.$table.' WHERE id=?');$q->execute([$caseId]);$caseCurrency=$q->fetchColumn();
         if($caseCurrency===false||$caseCurrency!==$movement['currency'])throw new AccountingLedgerException('Případ nebyl nalezen nebo má jinou měnu.');
+        if(in_array($caseType,['expense_claim','expense_claim_return','expense_advance_out','expense_advance_in'],true)){
+            require_once __DIR__.'/club_expenses.php';
+            clubExpenseValidateAllocation($pdo,$movement,$caseType,$caseId,$amountMinor,$reversesId);
+        }elseif($caseType==='reward_claim'){
+            require_once __DIR__.'/club_rewards.php';
+            clubRewardValidateAllocation($pdo,$movement,$caseType,$caseId,$amountMinor,$reversesId);
+        }
         if($caseType==='shop_return'){
             if($amountMinor>0&&($movement['kind']!=='income'||(int)$movement['amount_minor']<=0))throw new AccountingLedgerException('Doplatek výměny lze pokrýt pouze skutečným kladným příjmem.');
             $q=$pdo->prepare('SELECT state,exchange_delta_minor,exchange_reservation_id FROM shop_return_cases WHERE id=?');$q->execute([$caseId]);$exchange=$q->fetch(PDO::FETCH_ASSOC);

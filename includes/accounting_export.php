@@ -3,8 +3,9 @@ declare(strict_types=1);
 require_once __DIR__.'/private_storage.php';
 require_once __DIR__.'/accounting_ledger.php';
 require_once __DIR__.'/accounting_stock_export.php';
+require_once __DIR__.'/accounting_club_export.php';
 
-const ACCOUNTING_EXPORT_VERSION = 'club-accounting-stock-v2';
+const ACCOUNTING_EXPORT_VERSION = 'club-accounting-administration-v3';
 
 function accountingExportActor(PDO $pdo,int $actor):void
 {
@@ -28,12 +29,12 @@ function accountingExportSnapshot(PDO $pdo,string $from,string $to):array
     $mysql=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql';
     $databaseTimezone=$mysql?$pdo->query('SELECT @@session.time_zone AS session_zone,@@system_time_zone AS server_zone')->fetch(PDO::FETCH_ASSOC):['session_zone'=>'UTC','server_zone'=>'UTC'];
     $snapshot=['version'=>ACCOUNTING_EXPORT_VERSION,'period_from'=>$from,'period_to'=>$to,'timezone'=>'Europe/Prague','snapshot_timezone'=>'UTC','recorded_database_timezone'=>$databaseTimezone,
-        'snapshot_at'=>(string)$pdo->query($mysql?'SELECT UTC_TIMESTAMP()':'SELECT CURRENT_TIMESTAMP')->fetchColumn(),'scope'=>'R13–R24: evidované peníze, doklady a sklad',
+        'snapshot_at'=>(string)$pdo->query($mysql?'SELECT UTC_TIMESTAMP()':'SELECT CURRENT_TIMESTAMP')->fetchColumn(),'scope'=>'R13–R36: peníze, doklady, sklad, výdaje, zálohy, odměny a rozhodnutí',
         'status'=>'NEÚPLNÝ','limitations'=>[
-            'Pracovní podklady R13–R24; nejde o úplný účetní měsíc oddílu ani o potvrzení metodiky účetní.',
-            'Výdaje, zálohy a odměny pracovníků doplní navazující balíky R31–R36. Sklad obsahuje jen doloženou evidenci.',
+            'Podklady R13–R36; označení úplnosti čeká na odsouhlasení metodiky, zdrojů a otevíracích stavů oddílu.',
+            'Výdaje, zálohy a odměny jsou nepeněžní podklady a závazky. Skutečné pohyby jsou pouze jednou v listu Penize.',
             'Dosud nepřevzaté zdroje a neověřitelná skutečná data jsou uvedena ve výjimkách. Nejsou nahrazena nulou.',
-            'Saldo zde znamená pouze nepřidělený zůstatek evidovaného příjmu; úplné historické pohledávky a závazky dokončí R36.',
+            'Saldo odděluje účty, nepřidělené příjmy, vratky, závazky a zálohy. Historický stav nepřevzaté pohledávky není nahrazen nulou.',
         ]];
     $snapshot['accounts']=$rows('SELECT id,code,name,kind,currency,opened_on,opening_minor FROM accounting_accounts WHERE opened_on<=? ORDER BY id',[$to]);
     $snapshot['movements']=$rows('SELECT id,account_id,kind,amount_minor,currency,effective_on,recorded_at,source_context,source_reference,reversal_of_id,transfer_key,case_type,case_id,evidence FROM accounting_movements WHERE effective_on<=? ORDER BY effective_on,id',[$to]);
@@ -66,6 +67,7 @@ function accountingExportSnapshot(PDO $pdo,string $from,string $to):array
     }
     $stock=accountingStockSnapshot($pdo,$from,$to);$snapshot=array_merge($snapshot,$stock);
     $snapshot['exceptions']=array_merge($snapshot['exceptions'],$stock['stock_exceptions']);
+    $club=accountingClubSnapshot($pdo,$from,$to);$snapshot=array_merge($snapshot,$club);$snapshot['exceptions']=array_merge($snapshot['exceptions'],$club['club_exceptions']);
     return $snapshot;
 }
 
@@ -115,12 +117,14 @@ function accountingExportWorkbook(array $snapshot,string $path):void
     foreach($snapshot['movements'] as $m){$c=$latest[(int)$m['id']]??null;if(!$c)continue;foreach(json_decode($c['splits_json'],true,512,JSON_THROW_ON_ERROR) as $part)$classification[]=[(string)$m['id'],(string)$c['id'],$part['category_code']??null,$part['activity']??null,((int)$m['amount_minor']<0?-1:1)*(int)$part['amount_minor']/100,'Verze členění; ne nové peníze'];}
     $sheet('Parovani',['ID přídělu','ID pohybu','Případ','ID případu','Částka','Účinné datum','Zapsáno','Ruší příděl'],$alloc,[4]);
     $sheet('Cleneni_penez',['ID pohybu','Verze členění','Členění','Činnost','Částka se znaménkem','Význam'],$classification,[4]);
+    foreach($snapshot['club_receivables']??[] as$r)$claims[]=[$r['case_type'],(string)$r['case_id'],$r['reference'],$r['label'].'; nominální '.number_format((int)$r['amount_minor']/100,2,',',' ').' '.$r['currency'].'; '.$r['historical_status']];
     $sheet('Predpisy',['Zdroj','ID případu','Doklad','Význam'],$claims);
     $balances=[];foreach($snapshot['accounts'] as $account){$opening=(int)$account['opening_minor'];$turnover=0;foreach($snapshot['movements'] as $m)if((int)$m['account_id']===(int)$account['id']){if($m['effective_on']<$snapshot['period_from'])$opening+=(int)$m['amount_minor'];else$turnover+=(int)$m['amount_minor'];}$late=$account['opened_on']>$snapshot['period_from'];$meaning=$account['name'].($late?' — doložený počátek až '.$account['opened_on'].': '.number_format((int)$account['opening_minor']/100,2,',',' ').' '.$account['currency'].'; dřívější stav neznámý':'');$balances[]=['Účet',(string)$account['id'],$meaning,$late?null:$opening/100,$turnover/100,($opening+$turnover)/100,$account['currency']];}
     foreach($snapshot['movements'] as $m)if((int)$m['amount_minor']>0&&$m['kind']==='income'){$net=(int)$m['amount_minor'];foreach($snapshot['allocations'] as $a)if((int)$a['movement_id']===(int)$m['id'])$net-=(int)$a['amount_minor'];foreach($snapshot['movements'] as $r)if((int)($r['reversal_of_id']??0)===(int)$m['id'])$net+=(int)$r['amount_minor'];$balances[]=['Nepřiděleno',(string)$m['id'],'Příjem po přídělech a skutečných vratkách',null,null,$net/100,$m['currency']];}
     foreach($snapshot['refund_decisions'] as $decision){$cancelled=false;foreach($snapshot['adjustment_events'] as $event)if((int)($event['decision_id']??0)===(int)$decision['id']&&$event['event_type']==='decision_cancelled')$cancelled=true;$paid=0;foreach($snapshot['refund_payments'] as $payment)if((int)$payment['decision_id']===(int)$decision['id'])$paid+=(int)$payment['amount_minor'];$balances[]=['Vratka k vyplacení',(string)$decision['id'],($cancelled?'Zrušeno; ':'').'pohyb '.$decision['original_movement_id'].'; opravný doklad '.($decision['correction_document_id']??'přeplatek'),null,null,($cancelled?0:(int)$decision['amount_minor']-$paid)/100,$decision['currency']];}
+    $balances=array_merge($balances,accountingClubBalanceRows($snapshot));
     $sheet('Saldo',['Druh','ID','Význam','Počátek','Čistý obrat','Konec','Měna'],$balances,[3,4,5]);
-    $sheet('Vydaje',['Pokrytí','Další krok'],[['NEZAPOJENO','Navazující R31–R34; pohyby výdajů evidované v Penize se nesčítají podruhé.']]);
+    $sheet('Vydaje',['Druh','ID verze','ID případu','Číslo / verze','Dodavatel / osoba','Věřitel / příjemce','Datum','Splatnost','Stav podkladu','Celkem / limit','Uznáno','Uhrazena část','Zůstatek','Měna','Doložení'],accountingClubExpenseRows($snapshot),[9,10,11,12]);
     $sheet('Sklad',['Řádek','ID','SKU / vazba (text)','Popis','Datum','Fyzické kusy','Rezervováno','Blokováno','Dostupné','Ocenění Kč','Kusy bez ceny','Podklad / význam'],accountingStockWorkbookRows($snapshot),[5,6,7,8,9,10]);
     $book->setActiveSheetIndex(0);$writer=new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($book);$writer->setPreCalculateFormulas(false);$writer->save($path);$book->disconnectWorksheets();
 }
@@ -150,7 +154,7 @@ function accountingExportCreate(PDO $pdo,string $from,string $to,string $key,int
         $snapshot['replacement_mode']='Úplná náhrada předchozí revize stejného období. Nesmí se přičíst k původnímu exportu.';
         $snapshot['previous_snapshot_sha256']=$prior?$prior['snapshot_sha256']:null;
         $snapshot['changes']=[];
-        if($prior){$previous=json_decode(accountingExportGet($pdo,(int)$prior['id'])['snapshot_json'],true,512,JSON_THROW_ON_ERROR);foreach(['accounts','movements','allocations','classifications','documents','refund_decisions','refund_payments','adjustment_events','reconciliations','stock_balances','stock_movements','stock_cost_revisions','stock_documents','stock_lots','stock_lot_uses'] as $section){$before=[];foreach($previous[$section]??[] as $v)$before[(string)$v['id']]=hash('sha256',json_encode($v,JSON_THROW_ON_ERROR));foreach($snapshot[$section] as $v){$id=(string)$v['id'];$hashNow=hash('sha256',json_encode($v,JSON_THROW_ON_ERROR));if(!isset($before[$id]))$snapshot['changes'][]=['section'=>$section,'id'=>$id,'change'=>'added'];elseif($before[$id]!==$hashNow)$snapshot['changes'][]=['section'=>$section,'id'=>$id,'change'=>'changed'];unset($before[$id]);}foreach($before as $id=>$unused)$snapshot['changes'][]=['section'=>$section,'id'=>(string)$id,'change'=>'removed'];}}
+        if($prior){$previous=json_decode(accountingExportGet($pdo,(int)$prior['id'])['snapshot_json'],true,512,JSON_THROW_ON_ERROR);foreach(['accounts','movements','allocations','classifications','documents','refund_decisions','refund_payments','adjustment_events','reconciliations','stock_balances','stock_movements','stock_cost_revisions','stock_documents','stock_lots','stock_lot_uses','club_expenses','club_advances','club_consumptions','club_transfers','club_expense_events','club_reward_claims','club_reward_versions','club_reward_decisions','club_reward_payouts','club_reward_rules','club_decisions','club_receivables','club_attachments'] as $section){$before=[];foreach($previous[$section]??[] as $v)$before[(string)$v['id']]=hash('sha256',json_encode($v,JSON_THROW_ON_ERROR));foreach($snapshot[$section] as $v){$id=(string)$v['id'];$hashNow=hash('sha256',json_encode($v,JSON_THROW_ON_ERROR));if(!isset($before[$id]))$snapshot['changes'][]=['section'=>$section,'id'=>$id,'change'=>'added'];elseif($before[$id]!==$hashNow)$snapshot['changes'][]=['section'=>$section,'id'=>$id,'change'=>'changed'];unset($before[$id]);}foreach($before as $id=>$unused)$snapshot['changes'][]=['section'=>$section,'id'=>(string)$id,'change'=>'removed'];}}
         $json=json_encode($snapshot,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR);
         $name=bin2hex(random_bytes(16));$dir=privateStorageEnsureDirectory(PRIVATE_STORAGE_ACCOUNTING_EXPORTS);
         $xlsx=$dir.'/'.$name.'.tmp.xlsx';$zipPath=$dir.'/'.$name.'.zip';$files=[$xlsx,$zipPath];
@@ -160,6 +164,8 @@ function accountingExportCreate(PDO $pdo,string $from,string $to,string $key,int
             $manifest=['version'=>ACCOUNTING_EXPORT_VERSION,'files'=>[]];
             $zip->addFromString('data.json',$json);$manifest['files'][]=['path'=>'data.json','bytes'=>strlen($json),'sha256'=>hash('sha256',$json)];
             $zip->addFile($xlsx,'ucetni-podklady.xlsx');$manifest['files'][]=['path'=>'ucetni-podklady.xlsx','bytes'=>filesize($xlsx),'sha256'=>hash_file('sha256',$xlsx)];
+            $statement=accountingClubStatementPdf($snapshot);$zip->addFromString('klubove-vyporadani.pdf',$statement);$manifest['files'][]=['path'=>'klubove-vyporadani.pdf','bytes'=>strlen($statement),'sha256'=>hash('sha256',$statement)];
+            foreach($snapshot['club_attachments']??[] as$attachment){$path=privateStorageResolve($attachment['storage_key']);if(!$path||!hash_equals($attachment['sha256'],hash_file('sha256',$path)))throw new RuntimeException('Klubový podklad se během přípravy změnil.');$zip->addFile($path,$attachment['archive_path']);$manifest['files'][]=['path'=>$attachment['archive_path'],'bytes'=>filesize($path),'sha256'=>$attachment['sha256']];}
             foreach(array_merge($snapshot['documents'],$snapshot['stock_documents']??[]) as $document)if(!empty($document['archive_path'])){
                 $path=privateStorageResolve($document['pdf_storage_key']);if(!$path||!hash_equals($document['pdf_sha256'],hash_file('sha256',$path)))throw new RuntimeException('PDF se během přípravy změnilo.');
                 $zip->addFile($path,$document['archive_path']);$manifest['files'][]=['path'=>$document['archive_path'],'bytes'=>filesize($path),'sha256'=>$document['pdf_sha256']];
@@ -170,7 +176,7 @@ function accountingExportCreate(PDO $pdo,string $from,string $to,string $key,int
         try{foreach($manifest['files'] as $entry){$bytes=$verify->getFromName($entry['path']);if(!is_string($bytes)||strlen($bytes)!==$entry['bytes']||!hash_equals($entry['sha256'],hash('sha256',$bytes)))throw new RuntimeException('Obsah archivu neodpovídá manifestu.');}}finally{$verify->close();}
         chmod($zipPath,0600);unlink($xlsx);
         $q=$pdo->prepare('INSERT INTO accounting_export_batches(request_key,request_sha256,period_from,period_to,revision,predecessor_id,snapshot_at,scope_code,status,snapshot_json,snapshot_sha256,storage_key,archive_sha256,created_by,reason) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        $q->execute([$key,$hash,$from,$to,$snapshot['revision'],$snapshot['predecessor_id'],$snapshot['snapshot_at'],'r13-r24','incomplete',$json,hash('sha256',$json),'private://accounting-exports/'.$name.'.zip',hash_file('sha256',$zipPath),$actor,$reason]);
+        $q->execute([$key,$hash,$from,$to,$snapshot['revision'],$snapshot['predecessor_id'],$snapshot['snapshot_at'],'r13-r36','incomplete',$json,hash('sha256',$json),'private://accounting-exports/'.$name.'.zip',hash_file('sha256',$zipPath),$actor,$reason]);
         $id=(int)$pdo->lastInsertId();accountingExportEvent($pdo,$id,$actor,'created',$reason);$result=accountingExportGet($pdo,$id);$pdo->commit();return $result;
     }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();foreach($files as $file)if(is_file($file))unlink($file);throw $e;}
 }

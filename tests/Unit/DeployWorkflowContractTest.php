@@ -154,7 +154,7 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.1'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.2'",
             $backup
         );
         foreach (['source_candidate_id', 'source_run_id', 'origin', 'created_by_trainer_id'] as $column) {
@@ -205,7 +205,9 @@ final class DeployWorkflowContractTest extends TestCase
         foreach (glob(dirname(__DIR__, 2) . '/migrations/*.php') ?: [] as $migration) {
             $source = file_get_contents($migration);
             self::assertIsString($source);
-            preg_match_all('/CREATE TABLE(?: IF NOT EXISTS)?\\s+`?([A-Za-z0-9_]+)/i', $source, $createdMatches);
+            // Do not backtrack to interpreting IF as a table when the actual
+            // name is interpolated; dynamic tables have an explicit contract test.
+            preg_match_all('/CREATE TABLE(?> IF NOT EXISTS)?\\s+`?(?!IF\\b)([A-Za-z0-9_]+)/i', $source, $createdMatches);
             foreach ($createdMatches[1] as $table) {
                 if (str_ends_with($table, '_next')) continue;
                 if (!isset($owned[$table])) $missing[$table] = basename($migration);

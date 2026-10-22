@@ -120,4 +120,24 @@ final class OperationalCasesTest extends TestCase
         $p->exec("INSERT INTO club_event_notification_events VALUES(2,30,'manual_retry',1)");
         self::assertCount(1,\operationalCaseList($p,'order_operator')['items']);
     }
+    public function testAccountingDecisionAndHandoverRemainOpenUntilCanonicalEvidence():void
+    {
+        $p=$this->database();$p->exec("INSERT INTO staff_user_positions VALUES(1,'finance_manager')");
+        $p->exec('CREATE TABLE financial_decisions(id INTEGER PRIMARY KEY,state TEXT,replaces_id INTEGER)');
+        $p->exec("INSERT INTO financial_decisions VALUES(1,'pending',NULL)");
+        $p->exec('CREATE TABLE accounting_export_batches(id INTEGER PRIMARY KEY);CREATE TABLE accounting_export_events(id INTEGER PRIMARY KEY,batch_id INTEGER,action TEXT)');
+        $p->exec('INSERT INTO accounting_export_batches VALUES(1)');
+        self::assertSame(['financial_decision','accounting_handover'],array_column(\operationalCaseList($p,'finance_manager')['items'],'source_type'));
+        $input=$this->input(['source_type'=>'accounting_handover','source_id'=>1]);
+        \operationalCaseSave($p,1,'finance_manager',$input);
+        $p->exec("INSERT INTO accounting_export_events VALUES(1,1,'downloaded'),(2,1,'handed_over')");
+        $this->rejected(fn()=>\operationalCaseSave($p,1,'finance_manager',array_replace($input,['revision'=>1,'status'=>'closed'])));
+        $p->exec("INSERT INTO accounting_export_events VALUES(3,1,'accepted')");
+        \operationalCaseSave($p,1,'finance_manager',array_replace($input,['revision'=>1,'status'=>'closed']));
+        $p->exec("INSERT INTO accounting_export_events VALUES(4,1,'downloaded')");
+        self::assertSame(['financial_decision'],array_column(\operationalCaseList($p,'finance_manager')['items'],'source_type'));
+        $p->exec("INSERT INTO financial_decisions VALUES(2,'confirmed',1);INSERT INTO accounting_export_events VALUES(5,1,'returned')");
+        self::assertSame(['accounting_handover'],array_column(\operationalCaseList($p,'finance_manager')['items'],'source_type'));
+        self::assertSame([],\operationalCaseList($p,'coach')['items']);
+    }
 }

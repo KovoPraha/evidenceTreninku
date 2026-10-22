@@ -50,6 +50,20 @@ final class AccountingLedgerTest extends TestCase
         $this->denied(fn()=>$this->record($pdo,['request_key'=>'other-key']),'jinými údaji');
         self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn());self::assertSame(60000,\accountingLedgerBalance($pdo,1,'2026-10-01')['closing_minor']);
     }
+    public function testReversalCannotBypassAllocationProtectionOnOutgoingMovement():void
+    {
+        $p=$this->db();
+        $m=$this->record($p,['kind'=>'expense','amount_minor'=>-10000]);
+        $allocation=\accountingLedgerAllocate($p,(int)$m['id'],'shop_order',10,6000,'expense-part',7,'LOCALHOST assigned actual expenditure.',true,null,'','',date('Y-m-d'));
+        foreach(['reversal','income'] as $kind){
+            $this->denied(fn()=>$this->record($p,['kind'=>$kind,'amount_minor'=>5000,'reversal_of_id'=>(int)$m['id'],'source_reference'=>'blocked-'.$kind,'request_key'=>'blocked-'.$kind,'effective_on'=>date('Y-m-d')]),'uvolnění');
+        }
+        $this->record($p,['kind'=>'reversal','amount_minor'=>4000,'reversal_of_id'=>(int)$m['id'],'source_reference'=>'unassigned-return','request_key'=>'unassigned-return','effective_on'=>date('Y-m-d')]);
+        $this->denied(fn()=>$this->record($p,['kind'=>'reversal','amount_minor'=>1,'reversal_of_id'=>(int)$m['id'],'source_reference'=>'extra-return','request_key'=>'extra-return','effective_on'=>date('Y-m-d')]),'uvolnění');
+        \accountingLedgerAllocate($p,(int)$m['id'],'shop_order',10,-6000,'expense-release',7,'LOCALHOST release erroneous assignment.',true,(int)$allocation['id'],'','',date('Y-m-d'));
+        $this->record($p,['kind'=>'reversal','amount_minor'=>6000,'reversal_of_id'=>(int)$m['id'],'source_reference'=>'released-return','request_key'=>'released-return','effective_on'=>date('Y-m-d')]);
+        self::assertSame(0,(int)$p->query('SELECT SUM(amount_minor) FROM accounting_movements')->fetchColumn());
+    }
     public function testRoleIsVerifiedAgainInsideMutationTransaction():void
     {
         $pdo=$this->db();$this->denied(fn()=>\accountingLedgerRecord($pdo,$this->input(),8,'LOCALHOST unauthorized actor.',true),'oprávnění');

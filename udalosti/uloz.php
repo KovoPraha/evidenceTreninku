@@ -43,6 +43,7 @@ try {
     if ($id > 0) {
         $old_data = financialEventLock($pdo, $id);
         financialEventAssertOpen($old_data);
+        financialEventAssertLegacyMutable($pdo, $id);
 
         $stmt = $pdo->prepare("
             UPDATE ucto_udalosti

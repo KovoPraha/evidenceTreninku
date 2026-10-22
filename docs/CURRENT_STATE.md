@@ -1,5 +1,18 @@
 # Aktuální stav projektu
 
+Lokální vývoj 23. 10. 2026: **R31–R37 — výdaje, zálohy, odměny a účetní předání**,
+větev `codex/club-administration-r31-r37-20261023`, izolovaná pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ `4033bf18`.
+[Implementace](CLUB_ADMINISTRATION_R31_R37_IMPLEMENTATION.md),
+[přejímka](verification/r31-r37/RESULTS.md),
+[odložená rozhodnutí](CLUB_COMPLETION_DECISIONS.md).
+**Bez nasazení a produkčních změn.** Lokálně ověřeno 1 479 testů,
+93 skutečných HTTP kontrol, 36 souběžných kontrol a souvislý syntetický scénář.
+Uživatelská přejímka, skutečné účetní předání a ostrý přechod zůstávají oddělené.
+Pokračuje technická příprava migrace a přechodu R38–R44.
+
+Následuje předchozí místní balík:
+
 Lokální vývoj 23. 10. 2026: **R25–R30 — členská a sportovní agenda**,
 větev `codex/membership-sports-r25-r30-20261023`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R18–R24
