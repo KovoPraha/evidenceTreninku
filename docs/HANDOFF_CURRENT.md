@@ -1,5 +1,17 @@
 # Aktuální předání vývoje na další stanici
 
+Aktuální úkol 22. 10. 2026: **R13–R17**, izolovaná pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
+`codex/finance-r13-r17-20261022`, základ `0e23e9e766079ce658bbc7687fed7f19b53779de`.
+Implementace a ověření se subagenty autorizovány, produkční změny a nasazení
+výslovně zakázány. Žádný push/PR/merge/deploy tohoto balíku.
+Nejprve přečíst [předání R13–R17](FINANCE_R13_R17_IMPLEMENTATION.md)
+a [výsledky přejímky](verification/r13-r17/RESULTS.md). Dále podle plánu
+R18–R24 (sklady/prodej); úplné měsíční předání uzavírá R36.
+Syntetické účetní nastavení není schválením skutečných údajů a číselných řad.
+
+Následuje předchozí lokální úkol a dále historický produkční kontext:
+
 Aktuální úkol 22. 10. 2026: balík **R07–R12** v izolované pracovní kopii
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
 `codex/club-foundation-r07-r12-20261022`, základ B1 `2ccd30e27fa209302db4d1e17d4eb411a4c87cca`.

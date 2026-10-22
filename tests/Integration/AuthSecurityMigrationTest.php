@@ -142,6 +142,10 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261022212000_operational_delivery',
                 '20261022213000_operational_cases',
                 '20261022214000_coach_scope',
+                '20261022220000_accounting_ledger',
+                '20261022221000_accounting_documents',
+                '20261022222000_accounting_adjustments',
+                '20261022223000_accounting_exports',
             ],
             array_keys($catalog)
         );

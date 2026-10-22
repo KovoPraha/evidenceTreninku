@@ -1,0 +1,79 @@
+{
+    "run": "LOCALHOST NEPLATIT R17 18ea9beb3b",
+    "checks": 18,
+    "results": [
+        {
+            "scenario": "Finance GET renders and does not create decisions",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot view or mutate refunds",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF rejected without write",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit confirmation required",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Future decision date rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Decision created through HTTP without money movement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Decision reserves exactly 40 CZK",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Decision double submit is idempotent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Replay with changed amount rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Partial actual payout through HTTP succeeds",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Payout replay creates no second outgoing movement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Excess payout rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Partially paid decision cannot be cancelled",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Second partial payout completes the decision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Completed payout balances money, reservation and free amount",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Independent overpayment decision created",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unpaid decision cancellation releases only reservation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked finance role rejected on next HTTP request",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

@@ -180,6 +180,10 @@ function staffPositionDefinitions(): array
             'sort' => 70,
             'groups' => [
                 ['label' => 'Platby', 'icon' => 'bank', 'items' => [
+                    ['route'=>'accounting_ledger_admin.php','label'=>'Peněžní evidence a pokladna','description'=>'Skutečné pohyby, příděly a odsouhlasení zůstatků','icon'=>'journal-text'],
+                    ['route'=>'accounting_documents_admin.php','label'=>'Účetní doklady','description'=>'Vystavovatel, dokladové řady, náhled a vydání PDF','icon'=>'file-earmark-pdf'],
+                    ['route'=>'accounting_adjustments_admin.php','label'=>'Opravy a částečné vratky','description'=>'Rozhodnutí, vrácené peníze a samostatné předání zboží','icon'=>'arrow-return-left'],
+                    ['route'=>'accounting_exports_admin.php','label'=>'Účetní podklady','description'=>'Neměnné revize XLSX a PDF s přehledem úplnosti','icon'=>'file-earmark-spreadsheet'],
                     ['route' => 'eshop_payments_admin.php', 'label' => 'Platby a vratky', 'description' => 'Úkoly čekající na ověření v bance', 'icon' => 'cash-coin'],
                     ['route' => 'eshop_payment_methods_admin.php', 'label' => 'Způsoby platby', 'description' => 'QR převod nebo karta přes SumUp podle nabídky', 'icon' => 'credit-card-2-front'],
                     ['route' => 'eshop_fio_admin.php', 'label' => 'Fio párování', 'description' => 'Návrhy bankovních shod', 'icon' => 'bank'],
@@ -308,6 +312,7 @@ function staffRouteOwners(): array
         'catalog_manager' => ['eshop_produkt_novy_admin.php','eshop_produkt_stahnout_admin.php','eshop_varianta_admin.php'],
         'order_operator' => [],
         'finance_manager' => [
+            'accounting_export_download.php','accounting_document_download.php',
             'jizdy/formular.php','jizdy/seznam.php','jizdy/smazat.php','jizdy/uloz.php',
             'servis/formular.php','servis/seznam.php','servis/smazat.php','servis/uloz.php',
             'uctenky/formular.php','uctenky/smazat.php','uctenky/uloz.php',

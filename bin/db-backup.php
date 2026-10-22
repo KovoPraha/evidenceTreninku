@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.3';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -303,6 +303,24 @@ const EVIDENCE_TABLES = [
     'operational_case_events',
     'coach_scope_grants',
     'coach_scope_events',
+    'accounting_ledger_mutex',
+    'accounting_accounts',
+    'accounting_movements',
+    'accounting_movement_sources',
+    'accounting_allocations',
+    'accounting_classifications',
+    'accounting_reconciliations',
+    'accounting_issuer_versions',
+    'accounting_rules',
+    'accounting_document_series',
+    'accounting_documents',
+    'accounting_document_events',
+    'accounting_refund_decisions',
+    'accounting_refund_payments',
+    'accounting_adjustment_events',
+    'accounting_export_mutex',
+    'accounting_export_batches',
+    'accounting_export_events',
     'oznameni_targets',
     'payments',
     'password_reset_tokens',

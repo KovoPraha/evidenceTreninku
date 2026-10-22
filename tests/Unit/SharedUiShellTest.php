@@ -36,6 +36,9 @@ final class SharedUiShellTest extends TestCase
             if (preg_match('#^(vendor|tests|migrations|scripts)/#', $relative) === 1) {
                 continue;
             }
+            // This is the standalone, self-contained HTML input to the PDF renderer,
+            // not an application page. The guarded admin page uses appUiAssets.
+            if ($relative === 'includes/accounting_documents.php') continue;
             $source = (string)file_get_contents($path);
             if (stripos($source, '<head') === false) {
                 continue;

@@ -1,0 +1,12 @@
+{
+    "status": "PASS",
+    "database": "evidence_b3_restore_290f7141",
+    "tables": 272,
+    "new_owned_tables": 18,
+    "triggers": 2,
+    "private_references_checked": 34,
+    "backup_sha256": "e7f9dcf9154c7cc9ba3e50e5efe7594ae888e7e0fe5fd177c1c5b8c68d9400b6",
+    "private_storage_restored": true,
+    "private_files_restored": 51,
+    "private_archive_sha256": "e8808a95049ca2eeeecd5c4cb6335eccc8da2484369b329d6a803acc853a3ee8"
+}

@@ -988,12 +988,14 @@ function shopOrderCancelLocked(PDO $pdo,array $payment,array $order,string $acto
 /** @return array{order_id:int,payment_status:string,changed:bool} */
 function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,string $reference,string $reason,bool $confirmed):array
 {
+    require_once __DIR__.'/accounting_adjustments.php';
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Potvrzení vratky');
     $reference=trim($reference);
     $referenceControlCheck=preg_match('/[\x00-\x1F\x7F]/u',$reference);
     if($reference===''||mb_strlen($reference,'UTF-8')>255||$referenceControlCheck!==0)throw new InvalidArgumentException('Vratka vyžaduje platnou referenci transakce nebo pokladního dokladu bez řídicích znaků, nejvýše 255 znaků.');
     $pdo->beginTransaction();
     try{
+        if (clubFinanceTableExists($pdo,'accounting_ledger_mutex')) $pdo->exec('UPDATE accounting_ledger_mutex SET revision=revision+1 WHERE id=1');
         $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
@@ -1007,18 +1009,31 @@ function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,s
             $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>false];
         }
         if($payment['status']!=='refund_required'||$order['status']!=='cancelled'||$order['payment_status']!=='refund_required')throw new ShopCheckoutException('Vratku lze potvrdit pouze u stornované zaplacené objednávky čekající na vrácení peněz.');
-        $pdo->prepare("UPDATE payments SET status='refunded',refund_sent_at=CURRENT_TIMESTAMP,refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
-            ->execute([$reference,$actorTrainerId,$reason,(int)$payment['id']]);
-        $pdo->prepare("UPDATE shop_orders SET payment_status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
-        $note=($payment['method']==='cash'?'Reference vratky hotovostní platby: ':'Bankovní reference: ').$reference.'. '.$reason;
-        $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
-            ->execute([$orderId,$actorTrainerId,$note]);
+        try {accountingAdjustmentAssertLegacyRefundAllowed($pdo,$orderId);} catch(DomainException $e) {throw new ShopCheckoutException($e->getMessage(),0,$e);}
+        shopOrderCompleteRefundInTransaction($pdo,$payment,$order,$actorTrainerId,$reference,$reason);
         $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>true];
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         throw new ShopCheckoutException('Potvrzení vratky selhalo bez částečného zápisu.',0,$exception);
     }
+}
+
+/** Shared final state transition. Callers prove money separately and hold payment/order locks. */
+function shopOrderCompleteRefundInTransaction(PDO $pdo,array $payment,array $order,int $actorTrainerId,string $reference,string $reason,?string $actualRefundAt=null):void
+{
+    if (!$pdo->inTransaction()) throw new LogicException('Potvrzení vratky vyžaduje transakci.');
+    $orderId=(int)$order['id'];
+    if ($payment['payable_type']!=='shop_order' || (int)$payment['payable_id']!==$orderId || $payment['status']!=='refund_required' || $order['status']!=='cancelled' || $order['payment_status']!=='refund_required') throw new ShopCheckoutException('Vratku lze dokončit jen u stornované zaplacené objednávky čekající na vrácení peněz.');
+    if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    try{clubEventShopAssertRefundableInTransaction($pdo,$orderId);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    try{publicVelodromeShopAssertRefundableInTransaction($pdo,$orderId);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    $pdo->prepare("UPDATE payments SET status='refunded',refund_sent_at=COALESCE(?,CURRENT_TIMESTAMP),refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
+        ->execute([$actualRefundAt,$reference,$actorTrainerId,$reason,(int)$payment['id']]);
+    $pdo->prepare("UPDATE shop_orders SET payment_status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
+    $note=($payment['method']==='cash'?'Reference vratky hotovostní platby: ':'Bankovní reference: ').$reference.'. '.$reason;
+    $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
+        ->execute([$orderId,$actorTrainerId,$note]);
 }
 
 /** @return array{order_id:int,status:string,changed:bool} */

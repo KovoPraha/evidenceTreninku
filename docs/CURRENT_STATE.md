@@ -1,5 +1,16 @@
 # Aktuální stav projektu
 
+Lokální vývoj 22. 10. 2026: na B1 a R07–R12 navazuje **R13–R17** ve větvi
+`codex/finance-r13-r17-20261022`. Peněžní evidence, doklady/PDF, účetní
+členění, vratky a první export jsou popsány v
+[předání finančního základu](FINANCE_R13_R17_IMPLEMENTATION.md).
+Výsledky ověření jsou v [protokolu R13–R17](verification/r13-r17/RESULTS.md).
+**Pouze izolovaný lokální vývoj; bez push, merge, nasazení a produkčních změn.**
+Export je pracovní rozsah R13–R17; úplné účetní předání včetně skladu,
+výdajů a odměn dokončí R36. Metodiku a reálnou konfiguraci schvaluje účetní.
+
+Následuje předchozí dokončený lokální balík:
+
 Lokální vývoj 22. 10. 2026: na B1 navazuje balík **R07–R12** ve větvi
 `codex/club-foundation-r07-r12-20261022`. Identita, oddělené členství, trenérské
 rozsahy, papírové podklady, bezpečné fronty a provozní případy jsou popsány v

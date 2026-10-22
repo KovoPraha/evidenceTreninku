@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "tests": 1349,
+  "assertions": 28532,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "time_seconds": 71.899991,
+  "php": "8.2.12",
+  "phpunit": "11.5.56",
+  "base_commit": "0e23e9e766079ce658bbc7687fed7f19b53779de",
+  "production_modified": false
+}
