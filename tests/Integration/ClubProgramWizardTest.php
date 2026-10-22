@@ -10,6 +10,7 @@ use RecursiveIteratorIterator;
 
 require_once dirname(__DIR__,2).'/includes/club_program_wizard.php';
 require_once dirname(__DIR__,2).'/includes/club_kunratice_prepare.php';
+require_once dirname(__DIR__).'/Support/ShopAccountingPublicationFixture.php';
 
 final class ClubProgramWizardTest extends TestCase
 {
@@ -93,6 +94,68 @@ final class ClubProgramWizardTest extends TestCase
         self::assertStringNotContainsString('-ATKA',\clubProgramWizardSlug('Rajčátka'));
     }
 
+    public function testWizardRollsBackNewProgramWhenAccountingIsUnassigned(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE shop_accounting_mappings SET category_id=80 WHERE mapping_type='kind' AND mapping_key='program'");
+        try {
+            \clubProgramWizardCreate($pdo, 7, $this->input(), null, false);
+            self::fail('Unassigned accounting must block the wizard.');
+        } catch (\ShopCatalogPublicationException $exception) {
+            self::assertStringContainsString('Nezařazeno', $exception->getMessage());
+        }
+        foreach (['shop_products','shop_variants','shop_product_categories','shop_catalog_admin_events',
+            'shop_product_publications','shop_product_publication_events','club_programs','club_program_offers',
+            'club_program_events','club_event_term_versions','club_seasons','club_teams','shop_number_series_counters'] as $table) {
+            self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM $table")->fetchColumn(), $table);
+        }
+        self::assertFalse($pdo->inTransaction());
+    }
+
+    public function testPublishedProductConversionCannotBypassAccountingCheck(): void
+    {
+        $pdo = $this->database();
+        $this->seedConversionProduct($pdo, 'active');
+        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(601,'active','Přípravka','Původní zveřejněná nabídka.')");
+        $pdo->exec("INSERT INTO shop_accounting_mappings VALUES('product','601',80)");
+        $input = $this->input();
+        $input['source_mode'] = 'existing';
+        $input['existing_variant_id'] = 701;
+        try {
+            \clubProgramWizardCreate($pdo, 7, $input, null, false);
+            self::fail('Already published source must not bypass the new offer check.');
+        } catch (\ShopCatalogPublicationException $exception) {
+            self::assertStringContainsString('Nezařazeno', $exception->getMessage());
+        }
+        self::assertSame('goods', $pdo->query('SELECT offer_type FROM shop_products WHERE id=601')->fetchColumn());
+        self::assertSame('20', $pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=701')->fetchColumn());
+        self::assertSame('active', $pdo->query('SELECT status FROM shop_product_publications WHERE product_id=601')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_admin_events')->fetchColumn());
+    }
+
+    public function testDeferredConversionRemainsDraftWithoutAccounting(): void
+    {
+        $pdo = $this->database();
+        $this->seedConversionProduct($pdo, 'draft');
+        $pdo->exec("UPDATE shop_accounting_mappings SET category_id=80 WHERE mapping_type='kind' AND mapping_key='program'");
+        $input = $this->input();
+        $input['source_mode'] = 'existing';
+        $input['existing_variant_id'] = 701;
+        $input['defer_publication'] = true;
+        \clubProgramWizardCreate($pdo, 7, $input, null, false);
+        self::assertSame('draft', $pdo->query('SELECT catalog_status FROM shop_products WHERE id=601')->fetchColumn());
+        self::assertSame('draft', $pdo->query('SELECT catalog_status FROM shop_variants WHERE id=701')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publications')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_number_series_counters')->fetchColumn());
+    }
+
+    private function seedConversionProduct(PDO $pdo, string $status): void
+    {
+        $pdo->prepare("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(601,'manual','manual:conversion','Přípravka','Přípravný cyklistický kroužek.','goods','visible','physical',?)")->execute([$status]);
+        $pdo->prepare("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(701,601,'manual','CONVERSION-601','{}','fixed',175000,'CZK','20','piece',1,?)")->execute([$status]);
+    }
+
     public function testKunraticeSplitStaysUnpublishedAndKeepsHistoricProducts():void
     {
         $pdo=$this->database();
@@ -169,6 +232,8 @@ final class ClubProgramWizardTest extends TestCase
             'CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY AUTOINCREMENT,offer_id INTEGER,status TEXT)',
             'CREATE TABLE club_program_events(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,offer_id INTEGER NULL,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
             "CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT,scope_key TEXT,consent_purpose TEXT,event_id INTEGER NULL,terms_version TEXT,consent_text_plain TEXT,cancellation_policy_plain TEXT NULL,cancellation_deadline_at TEXT NULL,actor_trainer_id INTEGER NULL,actor_type TEXT,actor_id INTEGER NULL,status TEXT DEFAULT 'active',archived_at TEXT NULL,archived_by_trainer_id INTEGER NULL,created_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))",
-        ];foreach($schema as$sql)$pdo->exec($sql);return$pdo;
+        ];foreach($schema as$sql)$pdo->exec($sql);
+        \shopAccountingPublicationFixture($pdo);
+        return$pdo;
     }
 }

@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace Tests\Integration;
 
+require_once dirname(__DIR__).'/Support/ShopAccountingPublicationFixture.php';
+
 use FilesystemIterator;
 use PDO;
 use PHPUnit\Framework\TestCase;
@@ -173,6 +175,7 @@ final class ClubCatalogImportTest extends TestCase
             'CREATE TABLE club_program_events(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,offer_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
             "CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT,scope_key TEXT,consent_purpose TEXT,event_id INTEGER,terms_version TEXT,consent_text_plain TEXT,cancellation_policy_plain TEXT,cancellation_deadline_at TEXT,actor_trainer_id INTEGER,actor_type TEXT,actor_id INTEGER,status TEXT DEFAULT 'active',archived_at TEXT,archived_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))",
         ];foreach($schema as$sql)$pdo->exec($sql);
+        \shopAccountingPublicationFixture($pdo);
         $physicalTeams=require dirname(__DIR__,2).'/migrations/20261020140000_club_program_physical_teams.php';
         $physicalTeams['up']($pdo);self::assertTrue($physicalTeams['verify']($pdo));
         $migration=require dirname(__DIR__,2).'/migrations/20260923200000_club_program_storefront.php';$migration['up']($pdo);

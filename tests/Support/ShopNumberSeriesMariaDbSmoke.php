@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__,2).'/includes/shop_checkout.php';
+require_once dirname(__DIR__,2).'/includes/shop_catalog_publication.php';
 require_once __DIR__.'/ShopNumberSeriesFixture.php';
 defined('SHOP_VS_PRESERVATION_LIBRARY_ONLY')||define('SHOP_VS_PRESERVATION_LIBRARY_ONLY',true);
 require_once dirname(__DIR__,2).'/bin/verify-shop-variable-symbols.php';
@@ -31,6 +32,19 @@ $server->exec('CREATE DATABASE '.$quoted.' CHARACTER SET utf8mb4 COLLATE utf8mb4
 $pdo=null;$workers=[];
 try {
     $pdo=$connect($database);shopNumberSeriesFixture($pdo);
+    if (!str_contains(implode(' ',shopCatalogPublicationAccountingBlockers($pdo,501,'goods')),'Nezařazeno')) {
+        throw new RuntimeException('Publication accepted an unassigned accounting category.');
+    }
+    $pdo->beginTransaction();
+    $pdo->exec("INSERT INTO shop_accounting_mappings VALUES('product','501',31)");
+    if (shopCatalogPublicationAccountingBlockers($pdo,501,'goods')!==[]) {
+        throw new RuntimeException('Publication rejected an explicit accounting category.');
+    }
+    if ((int)$pdo->query('SELECT COUNT(*) FROM shop_number_series_counters')->fetchColumn()!==0
+        || (int)$pdo->query('SELECT COUNT(*) FROM shop_order_number_assignments')->fetchColumn()!==0) {
+        throw new RuntimeException('Publication check consumed an order number.');
+    }
+    $pdo->rollBack();
     $race=static function(string $action,array $ids) use($pdo,&$workers):array {
         $pdo->beginTransaction();shopNumberSeriesLock($pdo);$workers=[];
         foreach($ids as $id) {
@@ -61,6 +75,7 @@ try {
     if($before===shopVsPreservationSnapshot($pdo,$before['bounds'])) throw new RuntimeException('Changed VS was not detected.');
     echo "MariaDB number series smoke OK: idempotent migration, concurrent allocation after old snapshot, same-order replay, one winning editor.\n";
     echo "MariaDB read-only VS snapshot OK: stable digests and changed symbol detection.\n";
+    echo "MariaDB publication accounting guard OK: unassigned blocked, explicit mapping accepted in transaction, no number allocated.\n";
 } finally {
     if($pdo&&$pdo->inTransaction())$pdo->rollBack();
     foreach($workers as [$process,$pipes]) {proc_terminate($process);foreach($pipes as $pipe)if(is_resource($pipe))fclose($pipe);proc_close($process);}

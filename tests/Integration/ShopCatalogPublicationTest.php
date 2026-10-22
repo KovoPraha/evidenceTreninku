@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use PDO;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/shoptet_product_input.php';
@@ -11,6 +12,7 @@ require_once dirname(__DIR__, 2) . '/includes/shop_catalog_stage.php';
 require_once dirname(__DIR__, 2) . '/includes/shop_catalog_review.php';
 require_once dirname(__DIR__, 2) . '/includes/shop_catalog_promotion.php';
 require_once dirname(__DIR__, 2) . '/includes/shop_catalog_publication.php';
+require_once dirname(__DIR__) . '/Support/ShopAccountingPublicationFixture.php';
 
 final class ShopCatalogPublicationTest extends TestCase
 {
@@ -196,6 +198,127 @@ final class ShopCatalogPublicationTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publications')->fetchColumn());
     }
 
+    public static function invalidAccounting(): iterable
+    {
+        yield 'unassigned fallback' => ['unassigned', 'Nezařazeno'];
+        yield 'no fallback' => ['missing_mapping', 'Chybí výchozí'];
+        yield 'multiple categories without default' => ['no_default', 'výchozí kategorii'];
+        yield 'multiple defaults' => ['two_defaults', 'výchozí kategorii'];
+        yield 'inactive target' => ['inactive', 'neaktivní'];
+        yield 'mixed is order only' => ['mixed', 'Smíšená řada'];
+        yield 'category ancestry cycle' => ['cycle', 'cyklus'];
+        yield 'unmigrated schema' => ['missing_schema', 'migraci'];
+        yield 'missing settings row' => ['missing_settings', 'Chybí nastavení'];
+    }
+
+    #[DataProvider('invalidAccounting')]
+    public function testInvalidAccountingBlocksActivationWithoutChangingPaymentsOrCatalog(string $fault, string $message): void
+    {
+        $pdo = $this->databaseWithDraftCatalog();
+        $id = $this->readyGoodsId($pdo);
+        $pdo->exec("DELETE FROM shop_product_categories WHERE product_id=$id");
+        if ($fault === 'unassigned') {
+            $pdo->exec("UPDATE shop_accounting_mappings SET category_id=80 WHERE mapping_type='kind' AND mapping_key='goods'");
+        } elseif ($fault === 'missing_mapping') {
+            $pdo->exec("DELETE FROM shop_accounting_mappings WHERE mapping_type='kind' AND mapping_key='goods'");
+        } elseif (in_array($fault, ['no_default', 'two_defaults'], true)) {
+            $default = $fault === 'two_defaults' ? 1 : 0;
+            $pdo->exec("INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES($id,'Knihy',$default,0),($id,'Oblečení',$default,1)");
+        } elseif (in_array($fault, ['inactive', 'mixed'], true)) {
+            $target = $fault === 'mixed' ? 90 : 31;
+            $pdo->exec("INSERT INTO shop_accounting_mappings VALUES('product','$id',$target)");
+            if ($fault === 'inactive') $pdo->exec('UPDATE shop_accounting_categories SET active=0 WHERE id=31');
+        } elseif ($fault === 'cycle') {
+            $pdo->exec("CREATE TABLE shop_category_meta(category_path TEXT PRIMARY KEY,parent_path TEXT)");
+            $pdo->exec("INSERT INTO shop_category_meta VALUES('A','B'),('B','A')");
+            $pdo->exec("INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES($id,'A',1,0)");
+        } elseif ($fault === 'missing_schema') {
+            $pdo->exec('DROP TABLE shop_accounting_mappings');
+        } else {
+            $pdo->exec('DELETE FROM shop_number_series_settings');
+        }
+        $this->seedHistoricalSymbols($pdo);
+        $before = $this->publicationState($pdo);
+        $ready = \shopCatalogPublicationReadiness($pdo, $id);
+        self::assertFalse($ready['ready']);
+        self::assertStringContainsString($message, implode(' ', $ready['blockers']));
+        self::assertSame($before, $this->publicationState($pdo), 'Readiness must only read.');
+        try {
+            \shopCatalogPublicationActivate($pdo, $id, 7, 'Nová nabídka', 'Veřejný popis nabídky.', 'Kontrola účetní řady.', true);
+            self::fail('Invalid accounting must block publication.');
+        } catch (\ShopCatalogPublicationException $exception) {
+            self::assertStringContainsString($message, $exception->getMessage());
+        }
+        self::assertFalse($pdo->inTransaction());
+        self::assertSame($before, $this->publicationState($pdo), 'Failed publication must leave no partial changes or renumbering.');
+    }
+
+    public function testAccountingInheritanceAndExplicitOverrideMatchCheckoutClassification(): void
+    {
+        $pdo = $this->databaseWithDraftCatalog();
+        $id = $this->readyGoodsId($pdo);
+        $pdo->exec("UPDATE shop_accounting_mappings SET category_id=80 WHERE mapping_type='kind' AND mapping_key='goods'");
+        $pdo->exec("DELETE FROM shop_product_categories WHERE product_id=$id");
+        $pdo->exec("INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES($id,'Zboží > Knihy > Dětské',1,0)");
+        $pdo->exec("INSERT INTO shop_accounting_mappings VALUES('catalog','Zboží',30),('catalog','Zboží > Knihy',31)");
+        self::assertTrue(\shopCatalogPublicationReadiness($pdo, $id)['ready']);
+        self::assertSame(31, (int)\shopNumberSeriesClassify($pdo, $id, 'goods')['id']);
+        $pdo->exec("INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES($id,'Kroužky',1,1)");
+        self::assertFalse(\shopCatalogPublicationReadiness($pdo, $id)['ready']);
+        $pdo->exec("INSERT INTO shop_accounting_mappings VALUES('product','$id',32)");
+        self::assertTrue(\shopCatalogPublicationReadiness($pdo, $id)['ready']);
+        self::assertSame(32, (int)\shopNumberSeriesClassify($pdo, $id, 'goods')['id']);
+        $this->seedHistoricalSymbols($pdo);
+        $symbols = $this->historicalSymbols($pdo);
+        \shopCatalogPublicationActivate($pdo, $id, 7, 'Tričko', 'Ověřená produktová výjimka.', 'Schválené účetní přiřazení.', true);
+        self::assertSame('active', $pdo->query("SELECT catalog_status FROM shop_products WHERE id=$id")->fetchColumn());
+        self::assertSame($symbols, $this->historicalSymbols($pdo));
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_number_series_counters')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_order_number_assignments')->fetchColumn());
+    }
+
+    public function testExistingDisputedProductsAreNotAutomaticallyChangedByReadiness(): void
+    {
+        $pdo = $this->databaseWithDraftCatalog();
+        $pdo->exec("UPDATE shop_accounting_mappings SET category_id=80 WHERE mapping_type='kind' AND mapping_key='goods'");
+        foreach ([274 => 'Magazin', 243 => 'Předpřípravka', 245 => 'TEST - Cyklistický kroužek'] as $id => $name) {
+            $pdo->prepare("INSERT INTO shop_products(id,origin,external_product_key,name,offer_type,catalog_status) VALUES(?,'manual',?,?,'goods','active')")
+                ->execute([$id, 'manual:disputed:' . $id, $name]);
+            $pdo->prepare("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note,activated_by_trainer_id) VALUES(?,'active',?,'Původní nabídka.','Původní schválení.',7)")->execute([$id, $name]);
+        }
+        $this->seedHistoricalSymbols($pdo);
+        $before = $this->publicationState($pdo);
+        foreach ([274, 243, 245] as $id) self::assertFalse(\shopCatalogPublicationReadiness($pdo, $id)['ready']);
+        self::assertSame($before, $this->publicationState($pdo));
+        self::assertSame(3, (int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE id IN (274,243,245) AND catalog_status='active'")->fetchColumn());
+    }
+
+    private function seedHistoricalSymbols(PDO $pdo): void
+    {
+        $pdo->exec("CREATE TABLE payments(id INTEGER PRIMARY KEY,variable_symbol TEXT)");
+        $pdo->exec("INSERT INTO payments VALUES(1,'0000000013')");
+        $pdo->exec("CREATE TABLE member_fee_standing_orders(id INTEGER PRIMARY KEY,variable_symbol TEXT)");
+        $pdo->exec("INSERT INTO member_fee_standing_orders VALUES(1,'1234567890')");
+        $pdo->exec("CREATE TABLE member_payer_variable_symbols(id INTEGER PRIMARY KEY,variable_symbol TEXT)");
+        $pdo->exec("INSERT INTO member_payer_variable_symbols VALUES(1,'9876543210')");
+    }
+
+    private function historicalSymbols(PDO $pdo): array
+    {
+        return array_map(static fn(string $table): array => $pdo->query("SELECT * FROM $table ORDER BY id")->fetchAll(),
+            ['payments', 'member_fee_standing_orders', 'member_payer_variable_symbols']);
+    }
+
+    private function publicationState(PDO $pdo): array
+    {
+        $state = $this->historicalSymbols($pdo);
+        foreach (['shop_products', 'shop_variants', 'shop_product_publications', 'shop_product_publication_events',
+            'shop_number_series_counters', 'shop_order_number_assignments', 'shop_order_accounting_items', 'shop_number_series_events'] as $table) {
+            $state[$table] = $pdo->query("SELECT * FROM $table")->fetchAll();
+        }
+        return $state;
+    }
+
     private function databaseWithDraftCatalog(): PDO
     {
         $pdo = new PDO('sqlite::memory:', null, null, [
@@ -231,6 +354,7 @@ final class ShopCatalogPublicationTest extends TestCase
         $pdo->exec('CREATE TABLE club_programs(id INTEGER PRIMARY KEY,name TEXT,status TEXT)');
         $pdo->exec('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,product_id INTEGER,variant_id INTEGER,status TEXT,ends_on TEXT,sales_open_at TEXT NULL,sales_close_at TEXT NULL,capacity INTEGER NULL)');
         $pdo->exec('CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,status TEXT)');
+        \shopAccountingPublicationFixture($pdo);
         return $pdo;
     }
 

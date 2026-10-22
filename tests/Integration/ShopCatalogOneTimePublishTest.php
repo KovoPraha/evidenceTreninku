@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2).'/includes/shop_catalog_one_time_publish.php';
 require_once dirname(__DIR__,2).'/includes/shop_purchase_mode.php';
+require_once dirname(__DIR__).'/Support/ShopAccountingPublicationFixture.php';
 
 final class ShopCatalogOneTimePublishTest extends TestCase
 {
@@ -30,6 +31,24 @@ final class ShopCatalogOneTimePublishTest extends TestCase
         self::assertSame(0,$same['products_changed']);self::assertSame(1,$same['products_unchanged']);self::assertSame(0,$same['offer_types_normalized']);self::assertSame(0,$same['prices_normalized']);
     }
 
+    public function testImportedPublicationAlsoRollsBackNormalizationWithoutAccounting(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE shop_accounting_mappings SET category_id=80 WHERE mapping_type='kind' AND mapping_key='goods'");
+        try {
+            \shopCatalogOneTimePublishApply($pdo, str_repeat('a',64), 2, 1, 1, 1, \SHOP_CATALOG_ONE_TIME_PUBLISH_CONFIRM);
+            self::fail('Imported products must pass the same accounting guard.');
+        } catch (\ShopCatalogPublicationException $exception) {
+            self::assertStringContainsString('Nezařazeno', $exception->getMessage());
+        }
+        self::assertFalse($pdo->inTransaction());
+        self::assertSame('club_event', $pdo->query("SELECT offer_type FROM shop_products WHERE external_product_key='shoptet:pair:1'")->fetchColumn());
+        self::assertSame('draft', $pdo->query("SELECT catalog_status FROM shop_products WHERE external_product_key='shoptet:pair:1'")->fetchColumn());
+        self::assertSame('free', $pdo->query("SELECT price_mode FROM shop_variants WHERE sku='VISIBLE-1'")->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publication_events')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_number_series_counters')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
@@ -43,6 +62,7 @@ final class ShopCatalogOneTimePublishTest extends TestCase
         $insertVariant=$pdo->prepare("INSERT INTO shop_variants(product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,visible,catalog_status) VALUES(?,'import',?,'{}',?,?,?,?,?)");
         $insertVariant->execute([$visibleId,'VISIBLE-1','free',0,'CZK',1,'draft']);$insertVariant->execute([$hiddenId,'HIDDEN-1','fixed',100,'CZK',1,'inactive']);
         $pdo->prepare("INSERT INTO shop_product_images(product_id,image_url,sort_order) VALUES(?,'uploads/shop-products/0123456789abcdef0123456789abcdef.jpg',0)")->execute([$visibleId]);
+        \shopAccountingPublicationFixture($pdo);
         return$pdo;
     }
 }

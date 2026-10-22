@@ -7,6 +7,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2).'/includes/shop_catalog_management.php';
+require_once dirname(__DIR__).'/Support/ShopAccountingPublicationFixture.php';
 
 final class ShopCatalogManagementTest extends TestCase
 {
@@ -27,6 +28,26 @@ final class ShopCatalogManagementTest extends TestCase
         $pdo=$this->database();$result=\shopCatalogAdjustStock($pdo,7,11,'7,5','Inventura skladu.',true);self::assertTrue($result['changed']);
         $movement=$pdo->query('SELECT * FROM shop_inventory_movements')->fetch(PDO::FETCH_ASSOC);self::assertSame('manual_adjustment',$movement['movement_type']);self::assertSame('2.500000',$movement['quantity_delta_decimal']);self::assertSame('7.500000',$movement['stock_after_decimal']);self::assertSame('Inventura skladu.',$movement['reason']);
         self::assertSame('adjust_stock',$pdo->query('SELECT action FROM shop_catalog_admin_events')->fetchColumn());
+    }
+
+    public function testBulkActivationRollsBackEarlierProductsWhenAccountingIsUnassigned(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('UPDATE shop_variants SET amount_minor=2000 WHERE id=22');
+        $pdo->exec("UPDATE shop_accounting_mappings SET category_id=80 WHERE mapping_type='kind' AND mapping_key='goods'");
+        $pdo->exec("INSERT INTO shop_accounting_mappings VALUES('product','1',32)");
+        try {
+            \shopCatalogBulkActivate($pdo, 7, [1,2], [1=>'První',2=>'Druhý'],
+                [1=>'První popis.',2=>'Druhý popis.'], 'Ověření účetního zařazení.', true);
+            self::fail('Second product has no accounting classification.');
+        } catch (\ShopCatalogPublicationException $exception) {
+            self::assertStringContainsString('Nezařazeno', $exception->getMessage());
+        }
+        self::assertFalse($pdo->inTransaction());
+        self::assertSame(2, (int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE catalog_status='draft'")->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publications')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_product_publication_events')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_number_series_counters')->fetchColumn());
     }
 
     public function testOverviewFiltersOrderingAndBulkCategoryAreConsistent():void
@@ -51,6 +72,8 @@ final class ShopCatalogManagementTest extends TestCase
         $pdo->exec('CREATE TABLE shop_category_meta(category_path TEXT PRIMARY KEY,display_name TEXT,parent_path TEXT NULL,sort_order INTEGER,visible_in_menu INTEGER,description TEXT NULL,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)');$pdo->exec("INSERT INTO shop_category_meta VALUES('Oblečení','Oblečení',NULL,0,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
         $pdo->exec('CREATE TABLE shop_member_category_rules(id INTEGER PRIMARY KEY,category_path TEXT)');
         $pdo->exec('CREATE TABLE shop_catalog_admin_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,variant_id INTEGER NULL,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT NULL,after_json TEXT,reason TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
-        $pdo->exec('CREATE TABLE shop_inventory_movements(id INTEGER PRIMARY KEY AUTOINCREMENT,variant_id INTEGER,order_id INTEGER NULL,order_item_id INTEGER NULL,movement_type TEXT,actor_type TEXT NULL,actor_id INTEGER NULL,reason TEXT NULL,quantity_delta_decimal TEXT,stock_after_decimal TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');return$pdo;
+        $pdo->exec('CREATE TABLE shop_inventory_movements(id INTEGER PRIMARY KEY AUTOINCREMENT,variant_id INTEGER,order_id INTEGER NULL,order_item_id INTEGER NULL,movement_type TEXT,actor_type TEXT NULL,actor_id INTEGER NULL,reason TEXT NULL,quantity_delta_decimal TEXT,stock_after_decimal TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
+        \shopAccountingPublicationFixture($pdo);
+        return$pdo;
     }
 }

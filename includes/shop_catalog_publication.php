@@ -2,9 +2,38 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/club_program.php';
+require_once __DIR__ . '/shop_number_series.php';
 
 final class ShopCatalogPublicationException extends RuntimeException
 {
+}
+
+/** Validate classification without allocating a number or changing existing offers/payments.
+ * @return list<string>
+ */
+function shopCatalogPublicationAccountingBlockers(PDO $pdo, int $productId, string $offerType): array
+{
+    $help = 'Účetní zařazení nastaví hospodář v agendě Číselné řady a účetní kategorie.';
+    foreach (['shop_number_series_settings', 'shop_accounting_groups', 'shop_accounting_categories', 'shop_accounting_mappings'] as $table) {
+        if (!shopNumberSeriesTableExists($pdo, $table)) {
+            return ['Účetní řady nejsou připravené. Nejprve dokončete databázovou migraci.'];
+        }
+    }
+    try {
+        // Activation holds this lock until commit, just like checkout/settings changes.
+        if ($pdo->inTransaction()) {
+            shopNumberSeriesLock($pdo);
+        } elseif (!$pdo->query('SELECT 1 FROM shop_number_series_settings WHERE id=1')->fetchColumn()) {
+            throw new ShopNumberSeriesException('Chybí nastavení číselných řad.');
+        }
+        $category = shopNumberSeriesClassify($pdo, $productId, $offerType === 'program' ? 'program' : 'goods');
+        if ((int)$category['group_code'] === 8) {
+            return ['Produkt patří do řady Nezařazeno. Před zveřejněním doplňte účetní zařazení. ' . $help];
+        }
+    } catch (ShopNumberSeriesException $exception) {
+        return ['Účetní zařazení není jednoznačné nebo platné: ' . $exception->getMessage() . ' ' . $help];
+    }
+    return [];
 }
 
 /** @return list<array<string,mixed>> */
@@ -60,7 +89,7 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
     if (!$product) {
         return ['ready' => false, 'blockers' => ['Produkt nebyl nalezen.'], 'visible_variants' => 0];
     }
-    $blockers = [];
+    $blockers = shopCatalogPublicationAccountingBlockers($pdo, $productId, (string)$product['offer_type']);
     if ((string)$product['offer_type'] === 'program') {
         if (!clubProgramProductHasOfferLink($pdo, $productId)) {
             $blockers[] = 'Program nemá navázanou žádnou nabídku.';
