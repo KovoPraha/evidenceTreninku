@@ -7,6 +7,18 @@ zákaz aktivace dopravy/simulace a skutečných e-mailů/zásilek trvá.
 [Aktuální checklist](../PACKETA_RELEASE_2026-10-22.md) nahrazuje historické
 lokální omezení tohoto řezu níže. Začleněn main `886c07b2`, zachovány
 číselné řady, VS a migrace; zálohovací kontrakt `2026-10-22.1`.
+PR #162 sloučen na `b6b4251548fc6a99a4c654dc00a70589cc8d2386` po zeleném
+CI 39776280900 a CodeQL 39776275878. Deploy 39776493246 **úspěšný**, false/false.
+Lokálně 1 198 testů / 26 816 kontrol, obnova 198 tabulek, 112 migrací PASS.
+Záloha 246 tabulek / 2 triggerů, 112 migrací aktuálních, osm původních VS
+nezměněno, HTTP 200. Živě ověřeny doprava **vypnutá**, simulace **vypnutá**,
+cena **150 Kč**, klíč **prázdný**; checkbox produktu #296 viditelný, produkt
+zůstává Stažený, PPL samostatné. Objednávky a stavy fungují. Fronta před/po
+**3 pending / 0 pokusů / 0 sent**, shodný otisk celé tabulky. Nic nebylo
+objednáno, podáno, odesláno ani vráceno do fronty; worker neběžel. Pozice
+Finance obnovena, veřejný klíč zůstává pouze lokálně. Produkční Packeta
+objednávky nejsou, expediční akce prokázány testy, nikoli skutečným podáním.
+Dokumentační větev `codex/packeta-release-proof-20261022`.
 
 ## Veřejný klíč a skutečná mapa — dokončeno lokálně 22. 10. 2026
 
