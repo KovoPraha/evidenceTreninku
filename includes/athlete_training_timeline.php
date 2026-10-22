@@ -98,6 +98,15 @@ function athleteTrainingTimeline(PDO $pdo, int $sportovecId, int $year): array
         foreach ($rows as &$row) if ($row['kind'] === 'actual') $row['targets'] = array_values(array_unique(array_values($row['targets'])));
         unset($row);
     }
+    // Raw attendance remains visible as evidence but only a closed actual revision
+    // confirms attendance. A planned row and its actual training still form one item.
+    if (is_file(__DIR__.'/training_closure.php') && kisRosterHierarchyHasTable($pdo,'training_closures')) {
+        require_once __DIR__.'/training_closure.php';
+        $closed=[];
+        foreach(trainingClosedActivitiesForPerson($pdo,$sportovecId,$from,$to) as $activity)$closed[(int)$activity['training_id']]=$activity;
+        foreach($rows as &$row){$actualId=(int)$row['actual_id'];$row['attendance_recorded']=$row['attended'];$row['attended']=isset($closed[$actualId]);$row['closure_version']=$closed[$actualId]['version']??null;$row['duration_minutes']=$closed[$actualId]['duration_minutes']??null;}
+        unset($row);
+    }
     $result = array_values($rows);
     usort($result, static fn(array $a, array $b): int => [$b['datum'], $b['cas_od'], $b['id']] <=> [$a['datum'], $a['cas_od'], $a['id']]);
     return $result;

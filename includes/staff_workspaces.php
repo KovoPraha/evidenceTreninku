@@ -25,6 +25,8 @@ function staffPositionDefinitions(): array
                     ['route' => 'formular.php', 'label' => 'Zadat trénink', 'description' => 'Evidence tréninku a účasti', 'icon' => 'calendar-plus'],
                     ['route' => 'planovac.php', 'label' => 'Plánovač', 'description' => 'Naplánované tréninky', 'icon' => 'calendar3-week'],
                     ['route' => 'moje_treninky.php', 'label' => 'Moje tréninky', 'description' => 'Vlastní historie a úpravy', 'icon' => 'list-check'],
+                    ['route'=>'training_closure_admin.php','label'=>'Docházka a uzavření','description'=>'Potvrzení skutečné účasti a auditované opravy','icon'=>'clipboard-check'],
+                    ['route'=>'sports_activity_admin.php','label'=>'Sportovní činnost a podklady','description'=>'Skutečné starty a verzované podklady za období','icon'=>'activity'],
                     ['route' => 'moje_skupiny.php', 'label' => 'Moje skupiny', 'description' => 'Svěřené skupiny sportovců', 'icon' => 'people'],
                 ]],
                 ['label' => 'Evidence', 'icon' => 'clipboard-data', 'items' => [
@@ -78,6 +80,8 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_identity_admin.php', 'label' => 'Účty a osoby', 'description' => 'Rodiče, sportovci a propojení', 'icon' => 'person-badge'],
                     ['route' => 'identity_reviews_admin.php', 'label' => 'Ověření identity', 'description' => 'Nejasné a duplicitní osoby, ověřené zdrojové vazby', 'icon' => 'person-check'],
                     ['route' => 'paper_registrations_admin.php', 'label' => 'Papírové přihlášky a souhlasy', 'description' => 'Záznam osobního podání a jeho doložení', 'icon' => 'file-earmark-text'],
+                    ['route'=>'medical_clearance_admin.php','label'=>'Zdravotní prohlídky','description'=>'Ověření a platnost soukromých podkladů','icon'=>'clipboard-heart'],
+                    ['route'=>'club_program_admissions_admin.php','label'=>'Osobní přijetí do programu','description'=>'Přihláška, plátce a návazná účast','icon'=>'person-check'],
                     ['route' => 'registration_texts_admin.php', 'label' => 'Registrační texty a souhlasy', 'description' => 'Koncepty, zveřejnění a historie verzí', 'icon' => 'file-earmark-text'],
                     ['route' => 'member_engagement_admin.php', 'label' => 'Úrovně zapojení', 'description' => 'Veřejnost, kroužky a závodní oddíl podle živých dat', 'icon' => 'layers'],
                 ]],
@@ -293,6 +297,7 @@ function staffRouteOwners(): array
             'planovany_trenink_form.php','training_rsvps_admin.php',
             'rezervovat_sportoviste.php','smazat_trenink.php',
             'sportovec_detail.php','ulozit_trenink.php','ulozit_zatezovy_test.php',
+            'medical_clearance_status.php','sports_activity_export.php',
             'zatezove_testy/ulozit_zatezovy_test.php','zatezove_testy/zatezovy_test_form.php',
         ],
         'sports_lead' => [
@@ -309,6 +314,7 @@ function staffRouteOwners(): array
         'registrar' => [
             'athlete_sensitive_admin.php','hromadne_podskupiny.php','kis_training_a07_admin.php',
             'sportovci_hromadne.php','sportovec_karta.php','paper_registration_file.php',
+            'medical_clearance_file.php',
         ],
         'program_coordinator' => [
             'club_event_participants_export.php',
@@ -357,11 +363,18 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'medical_clearance_status.php'=>['sports_lead','registrar'],
+        'training_closure_admin.php'=>['sports_lead'],
+        'ajax_update_plan.php'=>['sports_lead'],
+        'planovac.php'=>['sports_lead'],
+        'planovany_trenink_form.php'=>['sports_lead'],
+        'sports_activity_admin.php'=>['sports_lead'],
+        'sports_activity_export.php'=>['sports_lead'],
         'eshop_inventory_admin.php'=>['finance_manager'],
         'shop_returns_admin.php'=>['catalog_manager','finance_manager'],
         'shop_stock_document.php'=>['catalog_manager','finance_manager'],
         'ajax_sportovci.php' => ['finance_manager'],
-        'provozni_prehled_admin.php' => ['registrar','order_operator','finance_manager'],
+        'provozni_prehled_admin.php' => ['registrar','order_operator','finance_manager','sports_lead'],
         'ajax_roster_target_selector.php' => ['sports_lead', 'program_coordinator', 'finance_manager'],
         'edit_trenink.php' => ['sports_lead'],
         'update_trenink.php' => ['coach'],
@@ -399,7 +412,7 @@ function staffPositionMenuGroups(string $position, bool $isLocal): array
         $group['items'] = $items;
         $groups[] = $group;
     }
-    if (in_array($position,['registrar','order_operator','finance_manager'],true)) {
+    if (in_array($position,['registrar','order_operator','finance_manager','sports_lead'],true)) {
         $groups[]=['label'=>'K dořešení','icon'=>'clipboard-check','items'=>[
             ['route'=>'provozni_prehled_admin.php','label'=>'Případy a odpovědnosti','description'=>'Další kroky, termíny kontroly a historie předání','icon'=>'clipboard-check'],
         ]];

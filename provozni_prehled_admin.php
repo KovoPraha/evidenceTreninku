@@ -8,7 +8,7 @@ require_once __DIR__ . '/includes/operational_jobs.php';
 require_once __DIR__ . '/csrf_helper.php';
 
 header('Cache-Control: no-store, private');
-if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
+if (!isset($_SESSION['trener_id']) || !in_array(staffActivePosition(),['system_admin','registrar','order_operator','finance_manager','sports_lead'],true)) {
     header('Location: login.php');
     exit;
 }
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 if (isset($_GET['saved'])) $caseMessage='Odpovědnost a další krok byly uloženy do historie.';
 try {
     $overview = $position==='system_admin' ? adminOperationalOverview($pdo) : ['generated_at'=>date('Y-m-d H:i:s'),'sections'=>[],'unavailable'=>[],'signal_count'=>0];
-    if (in_array($position,['registrar','order_operator','finance_manager'],true)) {
+    if (in_array($position,['registrar','order_operator','finance_manager','sports_lead'],true)) {
         $cases=operationalCaseList($pdo,$position,(int)($_GET['page']??1),($_GET['closed']??'')==='1');
         $owners=operationalCaseOwners($pdo,$position);
         $overview['signal_count']=count($cases['items']);

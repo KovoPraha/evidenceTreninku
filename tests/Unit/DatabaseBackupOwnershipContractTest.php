@@ -20,9 +20,10 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
         self::assertContains('club_registration_consents', EVIDENCE_TABLES);
         self::assertContains('club_registration_consent_acceptances', EVIDENCE_TABLES);
         self::assertSame(
-            ['terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
+            ['account_id', 'terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
             $contract['club_program_enrollments']
         );
+        self::assertSame(['payer_account_id','payer_name_snapshot','payer_relation_snapshot'],$contract['club_program_admissions']);
         self::assertSame(
             ['program_terms_snapshot_json', 'program_terms_accepted_at', 'program_terms_accepted_by_account_id'],
             $contract['shop_order_items']

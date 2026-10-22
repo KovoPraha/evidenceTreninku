@@ -12,6 +12,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 require_once __DIR__ . '/includes/sportovec_note_access.php';
+require_once __DIR__ . '/includes/sports_activity.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -552,6 +553,10 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 <body>
 
 <div class="container py-4">
+  <?php $verifiedSports=sportsActivitySummary($pdo,$sportovec_id,date('Y-01-01'),date('Y-m-d')); ?>
+  <section class="alert alert-info"><strong>Ověřená činnost letos:</strong>
+    <?= (int)$verifiedSports['training_count'] ?> uzavřených tréninků · <?= (int)$verifiedSports['training_minutes'] ?> doložených minut · <?= (int)$verifiedSports['race_count'] ?> doložených startů.
+    Neuzavřené historické záznamy níže neprokazují skutečnou účast.</section>
 
   <!-- HERO -->
   <div class="hero-card mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
@@ -564,7 +569,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
     <div class="d-flex flex-wrap gap-2">
       <?php if ($statCelkem !== null): ?>
         <div class="stat-pill">
-          <i class="bi bi-calendar-check me-1"></i><?= (int)$statCelkem ?> tréninků celkem
+          <i class="bi bi-calendar-check me-1"></i><?= (int)$statCelkem ?> původních záznamů tréninků (včetně neověřených)
         </div>
       <?php endif; ?>
       <?php if (!empty($mojeMereni)): ?>

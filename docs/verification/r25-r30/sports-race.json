@@ -1,0 +1,42 @@
+{
+    "database": "evidence_sports_race_8750afc0",
+    "checks": 6,
+    "results": [
+        {
+            "scenario": "conflict",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "id": 1,
+                    "version": 1
+                },
+                {
+                    "status": "denied",
+                    "message": "Účast mezitím změnil jiný pracovník. Načtěte aktuální verzi."
+                }
+            ],
+            "one_revision": true,
+            "status": "PASS"
+        },
+        {
+            "scenario": "retry",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "id": 2,
+                    "version": 1
+                },
+                {
+                    "status": "ok",
+                    "id": 2,
+                    "version": 1
+                }
+            ],
+            "one_revision": true,
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

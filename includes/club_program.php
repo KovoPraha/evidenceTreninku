@@ -765,10 +765,14 @@ function clubProgramActivateOrderItem(PDO $pdo, int $accountId, int $orderItemId
 function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int $orderItemId, string $actorType, ?int $actorId): array
 {
     if (!$pdo->inTransaction()) throw new LogicException('Aktivace programu vyžaduje otevřenou transakci.');
-    if ($accountId < 1 || $orderItemId < 1 || !in_array($actorType,['account','trainer','system'],true) || ($actorType==='system'&&$actorId!==null) || ($actorType!=='system'&&($actorId??0)<1)) throw new InvalidArgumentException('Aktivace programu nemá platného vlastníka nebo auditora.');
+    if ($accountId < 0 || ($accountId===0&&$actorType==='account') || $orderItemId < 1 || !in_array($actorType,['account','trainer','system'],true) || ($actorType==='system'&&$actorId!==null) || ($actorType!=='system'&&($actorId??0)<1)) throw new InvalidArgumentException('Aktivace programu nemá platného vlastníka nebo auditora.');
     $termsSelect=clubProgramTermsAcceptanceAvailable($pdo)?'oi.program_terms_snapshot_json,oi.program_terms_accepted_at,oi.program_terms_accepted_by_account_id':'NULL AS program_terms_snapshot_json,NULL AS program_terms_accepted_at,NULL AS program_terms_accepted_by_account_id';
     $offerIdSelect=clubProgramColumnExists($pdo,'shop_order_items','club_program_offer_id')?'oi.club_program_offer_id':'NULL AS club_program_offer_id';
     $itemSql='SELECT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.line_amount_minor,oi.product_id,oi.variant_id,'.$offerIdSelect.','.$termsSelect.',o.id AS order_id,o.account_id,o.status AS order_status,o.payment_status FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id AND vu.aktivni=1 AND vu.email_overeno=1 WHERE oi.id=? AND o.account_id=?';
+    if($accountId===0){
+        if(!clubProgramRuntimeTableExists($pdo,'club_program_admissions'))throw new ClubProgramException('Chybí doložené osobní přijetí.');
+        $itemSql='SELECT oi.id AS order_item_id,oi.beneficiary_sportovec_id,oi.quantity,oi.line_amount_minor,oi.product_id,oi.variant_id,'.$offerIdSelect.','.$termsSelect.',o.id AS order_id,o.account_id,o.status AS order_status,o.payment_status FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_admissions a ON a.order_item_id=oi.id AND a.order_id=o.id AND a.sportovec_id=oi.beneficiary_sportovec_id AND a.payer_account_id IS NULL WHERE oi.id=? AND o.account_id IS NULL AND ?=0';
+    }
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$itemSql.=' FOR UPDATE';
     $itemStatement=$pdo->prepare($itemSql);$itemStatement->execute([$orderItemId,$accountId]);$item=$itemStatement->fetch(PDO::FETCH_ASSOC);
     if(!$item)throw new ClubProgramException('Objednávková položka programu nebyla nalezena.');
@@ -785,13 +789,17 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
     }
     if ($item['beneficiary_sportovec_id'] === null || (int)$item['quantity'] !== 1) throw new ClubProgramException('Položka programu musí mít právě jednoho příjemce a množství 1.');
     $termsRequired=clubProgramTermsAcceptanceAvailable($pdo);
-    if($termsRequired&&((int)($item['program_terms_accepted_by_account_id']??0)!==$accountId||empty($item['program_terms_accepted_at'])||!clubProgramTermsSnapshotValid((string)($item['program_terms_snapshot_json']??''))))throw new ClubProgramException('Objednávka nemá doložitelný souhlas s podmínkami kroužku.');
+    require_once __DIR__.'/club_program_admission.php';
+    $paperAdmission=clubAdmissionForItem($pdo,$orderItemId,(int)$item['beneficiary_sportovec_id'],$accountId);
+    if($paperAdmission){$item['starts_on']=max((string)$item['starts_on'],(string)$paperAdmission['starts_on']);$item['program_terms_accepted_at']=$paperAdmission['created_at'];}
+    if($termsRequired&&(($paperAdmission===null&&(int)($item['program_terms_accepted_by_account_id']??0)!==$accountId)||empty($item['program_terms_accepted_at'])||!clubProgramTermsSnapshotValid((string)($item['program_terms_snapshot_json']??''))))throw new ClubProgramException('Objednávka nemá doložitelný souhlas s podmínkami kroužku.');
     $sportovecId=(int)$item['beneficiary_sportovec_id'];
     $existing=$pdo->prepare('SELECT id FROM club_program_enrollments WHERE source_order_item_id=?');$existing->execute([$orderItemId]);$existingId=$existing->fetchColumn();
     if ($existingId) return ['id'=>(int)$existingId,'created'=>false,'roster_created'=>false];
     $duplicate=$pdo->prepare("SELECT id FROM club_program_enrollments WHERE offer_id=? AND sportovec_id=? AND status='active'");$duplicate->execute([(int)$item['offer_id'],$sportovecId]);
     if($duplicate->fetchColumn()!==false)throw new ClubProgramException('Tento sportovec už má stejné období aktivované jinou objednávkou. Duplicitní platbu nelze potvrdit.');
-    shopBeneficiaryAssertAccessible($pdo,$accountId,$sportovecId,true);
+    if($accountId>0)shopBeneficiaryAssertAccessible($pdo,$accountId,$sportovecId,true);
+    elseif($paperAdmission===null)throw new ClubProgramException('Osobní přijetí bez účtu nemá doložený podklad.');
     if ((string)$item['order_status']==='cancelled' || (string)$item['offer_status']!=='active' || (int)$item['line_amount_minor']<0) throw new ClubProgramException('Objednávka nebo nabídka už není aktivovatelná.');
     if ((int)$item['line_amount_minor'] !== 0 && ((string)$item['payment_status'] !== 'paid' || !in_array((string)$item['order_status'],['processing','ready','completed'],true))) throw new ClubProgramException('Placenou účast lze aktivovat až po potvrzení platby.');
     if ($item['capacity']!==null) {
@@ -801,9 +809,9 @@ function clubProgramActivateOrderItemInTransaction(PDO $pdo, int $accountId, int
         }
     }
     if($termsRequired)$pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,active_token,valid_from,valid_to,activated_at,terms_snapshot_json,terms_accepted_at,terms_accepted_by_account_id) VALUES (?,?,?,?,'active','active',?,?,CURRENT_TIMESTAMP,?,?,?)")
-        ->execute([(int)$item['offer_id'],$sportovecId,$accountId,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on'],(string)$item['program_terms_snapshot_json'],(string)$item['program_terms_accepted_at'],$accountId]);
+        ->execute([(int)$item['offer_id'],$sportovecId,$accountId?:null,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on'],(string)$item['program_terms_snapshot_json'],(string)$item['program_terms_accepted_at'],$paperAdmission===null?$accountId:null]);
     else $pdo->prepare("INSERT INTO club_program_enrollments(offer_id,sportovec_id,account_id,source_order_item_id,status,active_token,valid_from,valid_to,activated_at) VALUES (?,?,?,?,'active','active',?,?,CURRENT_TIMESTAMP)")
-        ->execute([(int)$item['offer_id'],$sportovecId,$accountId,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on']]);
+        ->execute([(int)$item['offer_id'],$sportovecId,$accountId?:null,$orderItemId,(string)$item['starts_on'],(string)$item['ends_on']]);
     $enrollmentId=(int)$pdo->lastInsertId();
     $rosterCreated=false;foreach($rosterTeamIds as$rosterTeamId){
         $rosterCreated=clubProgramActivateRosterMember($pdo,$rosterTeamId,$sportovecId,(string)$item['starts_on'],(int)$item['created_by_trainer_id'],$enrollmentId,'Automatické zařazení po aktivaci kroužku.',(string)$item['ends_on'])||$rosterCreated;

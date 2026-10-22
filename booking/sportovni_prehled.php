@@ -11,6 +11,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
+require_once dirname(__DIR__) . '/includes/medical_clearance.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_summary.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_delivery.php';
@@ -457,6 +458,8 @@ foreach ($trainingRsvps as $training) {
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php foreach ($person['relation_roles'] as $role): ?><span class="badge text-bg-primary ms-1"><?= familyPageH($roleLabels[$role] ?? $role) ?></span><?php endforeach; ?></div>
             </summary>
             <div class="card-body">
+                <?php if(isset($profile['sports_summary'])):$actual=$profile['sports_summary'];?><p class="alert alert-light border"><strong>Ověřená činnost letos:</strong> <?=(int)$actual['training_count']?> tréninků · <?=(int)$actual['training_minutes']?> minut · <?=(int)$actual['race_count']?> závodních startů. Započtena je potvrzená skutečná účast.</p><?php endif;?>
+                <?php if(familyPortalTableExists($pdo,'medical_clearance_watches')):$medicalRows=medicalClearanceView($pdo,(int)$person['sportovec_id'],date('Y-m-d'),$accountId);if($medicalRows):?><section class="border rounded p-3 mb-3"><h2 class="h6">Platnost podkladů dnes</h2><?php foreach($medicalRows as$medical):?><p class="mb-1"><strong><?=familyPageH($medical['purpose'])?>:</strong> <?=familyPageH(['missing'=>'Nedoloženo','pending'=>'Čeká na ověření','valid'=>'Platné','expired'=>'Platnost skončila','not_yet_valid'=>'Dosud neplatné','revoked'=>'Odvoláno'][$medical['status']])?><?= $medical['valid_until']?' do '.familyPageH(uiFormatDate($medical['valid_until'])):''?>. <?=familyPageH($medical['next_step'])?></p><?php endforeach;?></section><?php endif;endif;?>
                 <?php $financeBalance=$financeBalances[(int)$person['sportovec_id']]??null;if($financeBalance!==null):?><div class="alert <?=$financeBalance['overdue_minor']>0?'alert-warning':'alert-light'?> border"><strong>Saldo klubových služeb:</strong> <?=familyPageH(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě · po lhůtě <?=familyPageH(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=familyPageH(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?><div class="small mt-1">Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k <?=familyPageH(uiFormatDateTime((string)$financeBalance['as_of']))?>.</div></div><?php endif;?>
                 <?php if ($makeupSummary !== null): ?><div class="alert alert-light border d-flex flex-wrap align-items-center gap-2"><strong>Náhradní lekce kroužků</strong><span class="badge text-bg-warning">Omluvené, čekají na potvrzení <?= (int)$makeupSummary['pending'] ?></span><span class="badge text-bg-success">K využití <?= (int)$makeupSummary['available'] ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?= (int)$makeupSummary['locked'] ?></span><span class="badge text-bg-primary">Rezervované <?= (int)$makeupSummary['reserved'] ?></span><a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?= (int)$person['sportovec_id'] ?>">Zobrazit náhrady</a></div><?php endif; ?>
                 <h2 class="h6">Soupisky</h2>
@@ -486,7 +489,7 @@ foreach ($trainingRsvps as $training) {
                 <h2 class="h6">Docházka na tréninky <a class="small fw-normal ms-2" href="soupiskove_treninky.php?sportovec_id=<?= (int)$person['sportovec_id'] ?>">Všechny tréninky ze soupisek</a></h2>
                 <?php if ($profile['trainings'] === []): ?><p class="text-muted small mb-0">Žádná zaznamenaná účast.</p><?php else: ?>
                 <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Datum</th><th>Náplň</th><th>Kategorie</th><th>Délka</th></tr></thead><tbody>
-                <?php foreach ($profile['trainings'] as $training): ?><tr><td><?= familyPageH(uiFormatDate((string)$training['datum'])) ?></td><td><?= familyPageH($training['napln']) ?></td><td><?= familyPageH($training['kategorie']) ?></td><td><?= familyPageH($training['delka']) ?> h</td></tr><?php endforeach; ?>
+                <?php foreach ($profile['trainings'] as $training): ?><tr><td><?= familyPageH(uiFormatDate((string)$training['datum'])) ?></td><td><?= familyPageH($training['napln']) ?><div class="small text-muted"><?=!empty($training['attendance_confirmed'])?'Účast potvrzena':'Historický záznam — účast zatím neověřena'?></div></td><td><?= familyPageH($training['kategorie']) ?></td><td><?= familyPageH($training['delka']) ?> h</td></tr><?php endforeach; ?>
                 </tbody></table></div><?php endif; ?>
             </div>
         </details>

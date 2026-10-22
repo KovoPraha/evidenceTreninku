@@ -10,6 +10,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 require_once __DIR__.'/includes/coach_scope.php';
+require_once __DIR__.'/includes/sports_activity.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -349,6 +350,7 @@ $kategorieMeta = [
             <i class="bi bi-person-lines-fill me-2 text-primary"></i>Detail sportovce
         </h1>
         <?php if ($sportovecId): ?>
+            <a class="btn btn-outline-primary btn-sm" href="sports_activity_admin.php?person_id=<?= (int)$sportovecId ?>">Ověřená činnost a podklady</a>
             <a class="btn btn-outline-secondary btn-sm ms-auto"
                href="sportovec_treninky.php?id=<?= (int)$sportovecId ?>"
                target="_blank" rel="noopener">
@@ -356,6 +358,16 @@ $kategorieMeta = [
             </a>
         <?php endif; ?>
     </div>
+
+    <?php if ($sportovec): $verifiedSports=sportsActivitySummary($pdo,(int)$sportovecId,date('Y-01-01'),date('Y-m-d')); ?>
+    <section class="alert alert-info"><strong>Ověřená činnost letos:</strong>
+        <?= (int)$verifiedSports['training_count'] ?> uzavřených tréninků,
+        <?= (int)$verifiedSports['training_minutes'] ?> doložených minut,
+        <?= (int)$verifiedSports['race_count'] ?> doložených startů.
+        <a href="sports_activity_admin.php?person_id=<?= (int)$sportovecId ?>">Období, zdroje a export</a>.
+        Níže jsou také původní historické záznamy; neuzavřená docházka sama neprokazuje účast.
+    </section>
+    <?php endif; ?>
 
     <?php if ($success): ?>
         <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">document.addEventListener('DOMContentLoaded', function() { showToast('Profil uložen.', 'success'); });</script>
@@ -429,7 +441,7 @@ $kategorieMeta = [
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
             <div class="stat-card primary">
-                <div class="text-muted small">Tréninků celkem</div>
+                <div class="text-muted small">Původních záznamů tréninků (včetně neověřených)</div>
                 <div class="fs-3 fw-bold text-primary"><?= (int)$statCelkemTr ?></div>
             </div>
         </div>
@@ -443,7 +455,7 @@ $kategorieMeta = [
         </div>
         <div class="col-6 col-md-3">
             <div class="stat-card info">
-                <div class="text-muted small">Poslední trénink</div>
+                <div class="text-muted small">Poslední původní záznam</div>
                 <div class="fw-semibold" style="color:#0ea5e9;"><?= $statPosledni ? fmtDate($statPosledni) : '—' ?></div>
             </div>
         </div>

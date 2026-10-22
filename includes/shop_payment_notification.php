@@ -285,6 +285,9 @@ function shopPacketaDispatchedNotificationEnqueue(PDO $pdo,int $orderId):int
 /** Only recorded staff personal sales may deliberately use paper instead of email. */
 function shopPaymentNotificationIsOfflineSale(PDO $pdo,int $orderId,string $email):bool
 {
+    if($email===''&&shopPaymentNotificationTableExists($pdo,'club_program_admissions')){
+        $s=$pdo->prepare("SELECT a.id FROM club_program_admissions a JOIN shop_orders o ON o.id=a.order_id WHERE a.order_id=? AND a.payer_account_id IS NULL AND o.account_id IS NULL AND a.payer_name_snapshot IS NOT NULL AND o.fulfillment_method='personal_pickup'");$s->execute([$orderId]);if($s->fetchColumn())return true;
+    }
     if($email!==''||!shopPaymentNotificationTableExists($pdo,'shop_assisted_sales'))return false;
     $s=$pdo->prepare("SELECT a.id FROM shop_assisted_sales a JOIN shop_orders o ON o.id=a.order_id WHERE a.order_id=? AND o.fulfillment_method='personal_pickup'");$s->execute([$orderId]);return(bool)$s->fetchColumn();
 }

@@ -1,0 +1,42 @@
+{
+    "run": "LOCALHOST NEPLATIT R25 735453c509",
+    "checks": 5,
+    "results": [
+        {
+            "scenario": "Two independent admissions observed waiting on the same catalog variant lock",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Exactly one distinct-person admission wins the last program place",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Losing transaction leaves no admission",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Losing transaction leaves no orphan order item",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Shared canonical capacity is exactly one pending participant",
+            "status": "PASS"
+        }
+    ],
+    "outcomes": [
+        {
+            "ok": true,
+            "result": {
+                "id": 11,
+                "order_id": 18,
+                "replayed": false
+            }
+        },
+        {
+            "ok": false,
+            "type": "DomainException",
+            "message": "Přesná nabídka není dostupná nebo nemá volnou kapacitu."
+        }
+    ],
+    "production_mutations": false
+}

@@ -36,6 +36,11 @@ function bookingNotificationEnqueue(PDO $pdo, int $reservationId, string $kind, 
 function bookingNotificationInvalidReason(PDO $pdo, array $notification): ?string
 {
     if (!filter_var((string)$notification['recipient_email'],FILTER_VALIDATE_EMAIL)) return 'manual_contact_required';
+    if(($notification['notification_type']??'')==='training_schedule_changed'){
+        if(!preg_match('/^training_schedule:([1-9][0-9]*):([1-9][0-9]*):([1-9][0-9]*)$/D',(string)($notification['dedupe_key']??''),$m))return 'missing_training_context';
+        $s=$pdo->prepare("SELECT 1 FROM training_schedule_events e JOIN planovane_treninky p ON p.id=e.plan_id WHERE e.id=? AND p.stav='zruseny'");$s->execute([(int)$m[1]]);if(!$s->fetchColumn())return 'training_state_changed';
+        return operationalNotificationPersonAllowed($pdo,(int)$m[3],(int)$m[2],(string)$notification['recipient_email'])?null:'family_authorization_revoked';
+    }
     if (($notification['notification_type']??'')==='waitlist_promoted') {
         $q=$pdo->prepare("SELECT account_id,sportovec_id,status FROM club_event_registrations WHERE id=?");
         $q->execute([(int)($notification['registration_id']??0)]);$registration=$q->fetch(PDO::FETCH_ASSOC);

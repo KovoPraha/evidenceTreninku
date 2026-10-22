@@ -14,6 +14,7 @@ require_once __DIR__ . '/includes/sports_measurement_input.php';
 require_once __DIR__ . '/includes/file_mutation_transaction.php';
 require_once __DIR__ . '/includes/secure_upload.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/training_closure.php';
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     die('Neplatný CSRF token.');
@@ -141,6 +142,7 @@ try {
     // Ulo�en�
     // --------------------
     $pdo->beginTransaction();
+    trainingClosureAssertLegacyMutable($pdo, $treninkId);
     coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
     coachScopeAssertTeams($pdo, $teamIds, $datum);
     $oldDateStmt = $pdo->prepare('SELECT datum FROM treninky WHERE id=?');

@@ -6,6 +6,12 @@ require_once __DIR__.'/admin_operational_overview.php';
 function operationalCaseSources(): array
 {
     return [
+        'medical_watch' => ['table'=>'medical_clearance_watches','position'=>'registrar','label'=>'Platnost zdravotního podkladu','href'=>'medical_clearance_admin.php',
+            'unresolved'=>"s.next_review_on<='".date('Y-m-d')."'"],
+        'training_attendance' => ['table'=>'treninky','position'=>'sports_lead','label'=>'Neuzavřená docházka','href'=>'training_closure_admin.php','requires'=>['training_closures'],
+            'unresolved'=>"s.datum<'".date('Y-m-d')."' AND NOT EXISTS(SELECT 1 FROM training_closures tc WHERE tc.training_id=s.id AND tc.status IN ('closed','void'))"],
+        'program_admission' => ['table'=>'club_program_admissions','position'=>'registrar','label'=>'Nedokončené přijetí do programu','href'=>'club_program_admissions_admin.php','requires'=>['shop_orders'],
+            'unresolved'=>"EXISTS(SELECT 1 FROM shop_orders so WHERE so.id=s.order_id AND so.status<>'cancelled' AND so.payment_status='pending')"],
         'identity_review' => ['table'=>'person_identity_reviews','position'=>'registrar','label'=>'Ověření identity','href'=>'identity_reviews_admin.php',
             'unresolved'=>"s.status IN ('review','deferred')"],
         'family_claim' => ['table'=>'account_person_claim_requests','position'=>'registrar','label'=>'Propojení rodiny','href'=>'eshop_identity_admin.php',
@@ -47,6 +53,7 @@ function operationalCaseList(PDO $pdo, string $position, int $page=1, bool $clos
     foreach (operationalCaseSources() as $type=>$def) {
         if ($def['position']!==$position) continue;
         $required=[$def['table'],'operational_cases','operational_case_events'];
+        $required=array_merge($required,$def['requires']??[]);
         if ($type==='paper_record') $required[]='club_paper_record_events';
         if ($type==='notification') $required[]='club_event_notification_events';
         if (!adminOperationalHasTables($pdo,$required)) { $unavailable[]=$def['label']; continue; }
@@ -58,7 +65,7 @@ function operationalCaseList(PDO $pdo, string $position, int $page=1, bool $clos
         $st=$pdo->prepare($sql);$st->execute([$type]);
         $rows=$st->fetchAll(PDO::FETCH_ASSOC);
         if (count($rows)>30) {$hasNext=true;array_pop($rows);}
-        foreach ($rows as $row) $items[]=$row+['source_type'=>$type,'label'=>$def['label'],'href'=>$def['href'].(in_array($type,['identity_review','paper_record'],true)?'?id='.(int)$row['source_id']:'')];
+        foreach ($rows as $row) $items[]=$row+['source_type'=>$type,'label'=>$def['label'],'href'=>$def['href'].(in_array($type,['identity_review','paper_record','medical_watch','training_attendance'],true)?'?id='.(int)$row['source_id']:'')];
     }
     return ['items'=>$items,'unavailable'=>$unavailable,'page'=>$page,'has_next'=>$hasNext,'closed'=>$closed];
 }

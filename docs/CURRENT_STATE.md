@@ -1,5 +1,18 @@
 # Aktuální stav projektu
 
+Lokální vývoj 23. 10. 2026: **R25–R30 — členská a sportovní agenda**,
+větev `codex/membership-sports-r25-r30-20261023`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R18–R24
+`12f28b611a8781968ca6b73821c0df3e2e4075dc`.
+[Rozsah a pracovní postupy](MEMBERSHIP_SPORTS_R25_R30_IMPLEMENTATION.md),
+[výsledky přejímky](verification/r25-r30/RESULTS.md).
+**Výhradně izolovaná syntetická data; bez push, merge, nasazení a produkčních změn.**
+Skutečná klubová pravidla, ostré historické převody a aktivace rozesílání nejsou
+tímto balíkem schváleny. Navazují výdaje, zálohy a odměny R31–R34;
+úplné účetní předání dokončuje R36.
+
+Následuje historické předání předchozích lokálních balíků:
+
 Lokální vývoj 22. 10. 2026: **R18–R24 — sklady, prodej a vratky**, větev
 `codex/inventory-r18-r24-20261022`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R13–R17

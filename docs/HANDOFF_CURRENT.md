@@ -1,5 +1,20 @@
 # Aktuální předání vývoje na další stanici
 
+Lokální vývoj 23. 10. 2026: **R25–R30 — členská a sportovní agenda**,
+větev `codex/membership-sports-r25-r30-20261023`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R18–R24
+`12f28b611a8781968ca6b73821c0df3e2e4075dc`.
+Nejprve číst [předání R25–R30](MEMBERSHIP_SPORTS_R25_R30_IMPLEMENTATION.md)
+a [ověření](verification/r25-r30/RESULTS.md).
+**Bez push, merge, nasazení a produkčních změn; pouze izolované syntetické prostředí.**
+Migrace 130 položek, zálohovací kontrakt `2026-10-23.1`.
+Osobní přijetí podporuje doloženého plátce bez účtu. Sportovní skutečnost je
+verzovaná; zdravotní skeny čte jen registrář. Reálné politiky a údaje nebyly
+odhadnuty ani importovány, automatické úlohy nebyly aktivovány.
+Navazují R31–R34; úplný účetní export R36 a ostrá migrace/pilot později.
+
+Následuje historické předání předchozích lokálních balíků:
+
 Lokální vývoj 22. 10. 2026: **R18–R24 — sklady, prodej a vratky**, větev
 `codex/inventory-r18-r24-20261022`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R13–R17

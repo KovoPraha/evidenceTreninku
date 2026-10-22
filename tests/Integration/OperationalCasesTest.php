@@ -38,7 +38,7 @@ final class OperationalCasesTest extends TestCase
     {
         $p=$this->database();$view=\operationalCaseList($p,'registrar');
         self::assertSame(['identity_review','family_claim'],array_column($view['items'],'source_type'));
-        self::assertSame(['Papírový dokument','Zpráva soupisce'],$view['unavailable']);
+        self::assertSame(['Platnost zdravotního podkladu','Nedokončené přijetí do programu','Papírový dokument','Zpráva soupisce'],$view['unavailable']);
         self::assertSame(0,(int)$p->query('SELECT COUNT(*) FROM operational_cases')->fetchColumn());
         self::assertSame(['notification'],array_column(\operationalCaseList($p,'order_operator')['items'],'source_type'));
         self::assertSame([],\operationalCaseList($p,'coach')['items']);
@@ -86,6 +86,28 @@ final class OperationalCasesTest extends TestCase
             $this->rejected(fn()=>\operationalCaseSave($p,1,'registrar',$this->input($bad)));
         }
     }
+    public function testSportsAndAdmissionsCasesRequireCanonicalResolution():void
+    {
+        $p=$this->database();
+        $p->exec("INSERT INTO staff_user_positions VALUES(3,'sports_lead')");
+        $p->exec('CREATE TABLE treninky(id INTEGER PRIMARY KEY,datum TEXT);CREATE TABLE training_closures(training_id INTEGER,status TEXT)');
+        $p->exec("INSERT INTO treninky VALUES(41,'2020-01-01'),(42,'2099-01-01')");
+        $p->exec('CREATE TABLE club_program_admissions(id INTEGER PRIMARY KEY,order_id INTEGER);CREATE TABLE shop_orders(id INTEGER PRIMARY KEY,status TEXT,payment_status TEXT)');
+        $p->exec("INSERT INTO shop_orders VALUES(51,'placed','pending');INSERT INTO club_program_admissions VALUES(61,51)");
+        $sports=\operationalCaseList($p,'sports_lead')['items'];self::assertSame([41],array_map('intval',array_column($sports,'source_id')));
+        self::assertStringContainsString('training_closure_admin.php?id=41',$sports[0]['href']);
+        $input=$this->input(['source_type'=>'training_attendance','source_id'=>41,'owner_trainer_id'=>3]);
+        \operationalCaseSave($p,3,'sports_lead',$input);
+        $this->rejected(fn()=>\operationalCaseSave($p,3,'sports_lead',array_replace($input,['revision'=>1,'status'=>'closed'])));
+        $p->exec("INSERT INTO training_closures VALUES(41,'closed')");
+        \operationalCaseSave($p,3,'sports_lead',array_replace($input,['revision'=>1,'status'=>'closed']));
+        self::assertContains('program_admission',array_column(\operationalCaseList($p,'registrar')['items'],'source_type'));
+        $input=$this->input(['source_type'=>'program_admission','source_id'=>61]);\operationalCaseSave($p,1,'registrar',$input);
+        $this->rejected(fn()=>\operationalCaseSave($p,1,'registrar',array_replace($input,['revision'=>1,'status'=>'closed'])));
+        self::assertSame('pending',$p->query('SELECT payment_status FROM shop_orders')->fetchColumn());
+        $p->exec("UPDATE shop_orders SET status='cancelled'");\operationalCaseSave($p,1,'registrar',array_replace($input,['revision'=>1,'status'=>'closed']));
+    }
+
     public function testManualContactEvidenceResolvesCaseWithoutPretendingEmailWasSent():void
     {
         $p=$this->database();$in=$this->input(['source_type'=>'notification','source_id'=>30,'owner_trainer_id'=>4]);

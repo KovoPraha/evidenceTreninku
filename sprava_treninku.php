@@ -116,6 +116,7 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
 <?php include 'hlavicka.php'; ?>
 <div class="container mt-4 mb-5">
     <h1 class="h3 mb-3">Správa tréninků</h1>
+    <p><a class="btn btn-outline-primary" href="training_closure_admin.php">Docházka, uzavření a opravy</a></p>
 
     <?php if ($flashError): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">

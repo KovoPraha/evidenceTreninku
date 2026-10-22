@@ -7,6 +7,7 @@ if (!canAccess('rezervace_sportovist')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/venue_operations.php';
+require_once __DIR__ . '/includes/training_closure.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -95,6 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $pdo->beginTransaction();
+                require_once __DIR__.'/includes/training_closure.php';
+                if(trainingClosureReady($pdo)){
+                    // Linked plans have RSVP, roster and makeup dependencies. Keep one canonical planner.
+                    if($editId>0){$linked=$pdo->prepare('SELECT 1 FROM planovane_treninky WHERE rezervace_id=? LIMIT 1');$linked->execute([$editId]);if($linked->fetchColumn())throw new RuntimeException('Rezervace patří plánované lekci. Nejprve vyřešte zrušení nebo přesun lekce v plánovači.');}
+                    if(!empty($_POST['vytvorit_plan']))throw new RuntimeException('Lekci založte v plánovači tréninků, kde se ověří soupiska, trenér a kolize.');
+                    $venueLock=$pdo->prepare('SELECT id FROM sportovist WHERE id=? FOR UPDATE');$venueLock->execute([$sportoviste]);
+                    $planned=$pdo->prepare("SELECT 1 FROM planovane_treninky WHERE sportoviste_id=? AND datum=? AND stav<>'zruseny' AND COALESCE(cas_od,'00:00:00')<? AND COALESCE(cas_do,'23:59:59')>? LIMIT 1");$planned->execute([$sportoviste,$datum,$casDo,$casOd]);if($planned->fetchColumn())throw new RuntimeException('Sportoviště má v tomto čase plánovanou lekci.');
+                }
 
                 $stmtKap = $pdo->prepare("
                     SELECT COALESCE(SUM(kapacita_dilu), 0) AS obsazeno
@@ -273,7 +282,8 @@ $defaultSport = (int)($editRow['sportoviste_id']??($_GET['sportoviste_id'] ?? 0)
                 <?php if($editRow):?><div class="mb-3"><label class="form-label req" for="rezervace-reason">Důvod změny</label><input class="form-control" id="rezervace-reason" name="reason" maxlength="1000" required placeholder="Proč se rezervace přesouvá nebo mění"></div><?php endif;?>
 
                 <!-- Volitelně: plánovaný trénink -->
-                <?php if (!$editRow && canAccess('planovac')): ?>
+                <?php if (!$editRow && trainingClosureReady($pdo)): ?><p class="alert alert-info">Plánovanou lekci založte v <a href="planovac.php">rozvrhu tréninků</a> v pracovní pozici trenéra. Tam se společně ověří soupiska, čas a sportoviště.</p><?php endif; ?>
+                <?php if (!$editRow && canAccess('planovac') && !trainingClosureReady($pdo)): ?>
                 <div class="mb-4">
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" name="vytvorit_plan"

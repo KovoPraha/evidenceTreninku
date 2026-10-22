@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.4';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -54,10 +54,12 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
     'athlete_registration_text_drafts' => ['title_plain', 'custom_consent_id', 'custom_required', 'custom_visible'],
     // Immutable proof of the terms a parent accepted, carried from the order.
     'club_program_enrollments' => [
+        'account_id',
         'terms_snapshot_json',
         'terms_accepted_at',
         'terms_accepted_by_account_id',
     ],
+    'club_program_admissions' => ['payer_account_id','payer_name_snapshot','payer_relation_snapshot'],
     // A program item cannot be written without them; checkout is fail-closed.
     'shop_order_items' => [
         'program_terms_snapshot_json',
@@ -337,6 +339,22 @@ const EVIDENCE_TABLES = [
     'shop_return_events',
     'shop_return_finance_links',
     'shop_stock_documents',
+    'member_fee_agreements',
+    'member_fee_period_decisions',
+    'club_program_admissions',
+    'training_closures',
+    'training_closure_revisions',
+    'training_closure_reviews',
+    'training_schedule_mutex',
+    'training_schedule_events',
+    'training_personal_excuses',
+    'sports_event_participation',
+    'sports_event_revisions',
+    'sports_activity_statements',
+    'medical_clearance_policies',
+    'medical_clearance_watches',
+    'medical_clearance_records',
+    'medical_clearance_events',
 
     'oznameni_targets',
     'payments',

@@ -107,9 +107,9 @@ function clubProgramRecurrenceGenerateOne(PDO $pdo,int $sourceOfferId,int $schoo
     $variantId=shopManualCatalogInsertVariant($pdo,$actorId,(int)$source['product_id'],$variant,'active');
     $open=$source['sales_open_at']===null?null:clubProgramShiftYear((string)$source['sales_open_at'],$diff,true);
     $close=$source['sales_close_at']===null?null:clubProgramShiftYear((string)$source['sales_close_at'],$diff,true);
-    $offer=clubProgramCreateOfferInTransaction($pdo,$actorId,(int)$source['program_id'],(int)$source['season_id'],(int)$source['team_id'],(int)$source['product_id'],$variantId,$code,$name,$start,$end,$open,$close,$source['capacity']===null?null:(int)$source['capacity'],'active',$source['birth_year_from']===null?null:(int)$source['birth_year_from'],$source['birth_year_to']===null?null:(int)$source['birth_year_to']);
+    $offer=clubProgramCreateOfferInTransaction($pdo,$actorId,(int)$source['program_id'],(int)$source['season_id'],(int)$source['team_id'],(int)$source['product_id'],$variantId,$code,$name,$start,$end,$open,$close,$source['capacity']===null?null:(int)$source['capacity'],'draft',$source['birth_year_from']===null?null:(int)$source['birth_year_from']+$diff,$source['birth_year_to']===null?null:(int)$source['birth_year_to']+$diff);
     $pdo->prepare('UPDATE club_program_offers SET recurrence_source_offer_id=?,purchase_option=?,is_featured=? WHERE id=?')->execute([$sourceOfferId,(string)$source['purchase_option'],(int)$source['is_featured'],(int)$offer['id']]);
     if(!clubProgramTermsComplete(clubProgramTermsEffective($pdo,(int)$source['program_id'],(int)$offer['id'],true)))throw new ClubProgramRecurrenceException('Nová nabídka nemá schválené podmínky; nebyla vytvořena.');
-    clubProgramEvent($pdo,(int)$source['program_id'],(int)$offer['id'],'trainer',$actorId,'repeat_offer',$source,['source_offer_id'=>$sourceOfferId,'target_school_year'=>$schoolYearStart,'offer_id'=>(int)$offer['id']]);
+    clubProgramEvent($pdo,(int)$source['program_id'],(int)$offer['id'],'trainer',$actorId,'repeat_offer',$source,['source_offer_id'=>$sourceOfferId,'target_school_year'=>$schoolYearStart,'status'=>'draft','requires_price_capacity_terms_review'=>true,'offer_id'=>(int)$offer['id']]);
     return true;
 }

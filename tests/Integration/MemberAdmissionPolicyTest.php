@@ -1,0 +1,21 @@
+<?php
+declare(strict_types=1);
+namespace Tests\Integration;
+use PDO;
+use PHPUnit\Framework\TestCase;
+require_once dirname(__DIR__,2).'/includes/member_fee_plan.php';
+require_once dirname(__DIR__,2).'/includes/kis_roster.php';
+final class MemberAdmissionPolicyTest extends TestCase {
+ private function db():PDO {
+  $p=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
+  $p->exec("CREATE TABLE verejni_uzivatele(id INTEGER,aktivni INTEGER,email_overeno INTEGER);CREATE TABLE account_person_roles(id INTEGER,account_id INTEGER,sportovec_id INTEGER,status TEXT,relation_role TEXT,valid_from TEXT,valid_to TEXT);CREATE TABLE member_fee_agreements(id INTEGER PRIMARY KEY,plan_id INTEGER,sportovec_id INTEGER,payer_account_id INTEGER,valid_from TEXT,valid_to TEXT);INSERT INTO verejni_uzivatele VALUES(10,1,1),(11,1,1);INSERT INTO account_person_roles VALUES(1,10,1,'approved','guardian','2020-01-01',NULL),(2,11,1,'approved','guardian','2020-01-01',NULL)");return$p;
+ }
+ public function testTwoAuthorizedParentsNeverImplicitlySelectFirst():void {$p=$this->db();self::assertNull(\memberFeePlanPayer($p,1,'2026-10-01','2026-10-31'));self::assertNull(\memberFeeAgreementPayer($p,9,1,'2026-10-01','2026-10-31'));$p->exec("INSERT INTO member_fee_agreements VALUES(1,9,1,11,'2026-10-01','2026-10-31')");self::assertSame(11,\memberFeeAgreementPayer($p,9,1,'2026-10-01','2026-10-31'));$p->exec("UPDATE account_person_roles SET status='revoked' WHERE account_id=11");self::assertNull(\memberFeeAgreementPayer($p,9,1,'2026-10-01','2026-10-31'));}
+ public function testMidMonthPayerChangeBlocksSingleMonthlyCharge():void {$p=$this->db();$p->exec("INSERT INTO member_fee_agreements VALUES(1,9,1,10,'2026-10-01','2026-10-31'),(2,9,1,11,'2026-10-15','2026-10-31')");self::assertNull(\memberFeeAgreementPayer($p,9,1,'2026-10-01','2026-10-31'));self::assertSame(11,\memberFeeAgreementPayer($p,9,1,'2026-10-15','2026-10-31'));}
+ public function testMissingAmountDoesNotInventProrata():void {$p=$this->db();$p->exec('CREATE TABLE member_fee_period_decisions(id INTEGER,plan_id INTEGER,sportovec_id INTEGER,period_key TEXT)');self::assertSame('missing_rule',\memberFeePeriodQuote($p,9,1,'2026-10')['result']);}
+ public function testOfflineMigrationPreservesExistingAccountsRowsAndIndexes():void {
+  $p=$this->db();$p->exec('CREATE TABLE club_program_admissions(id INTEGER PRIMARY KEY,payer_account_id INTEGER NOT NULL,request_key TEXT UNIQUE);CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY,account_id INTEGER NOT NULL,source_order_item_id INTEGER UNIQUE);CREATE INDEX enrollment_account ON club_program_enrollments(account_id);INSERT INTO club_program_admissions VALUES(1,10,\'original\');INSERT INTO club_program_enrollments VALUES(1,10,111)');
+  $m=require dirname(__DIR__,2).'/migrations/20261023010100_offline_program_admissions.php';$m['up']($p);$m['up']($p);self::assertTrue($m['verify']($p));self::assertSame(10,(int)$p->query('SELECT account_id FROM club_program_enrollments WHERE id=1')->fetchColumn());$p->exec('INSERT INTO club_program_admissions(id,payer_account_id,request_key,payer_name_snapshot,payer_relation_snapshot) VALUES(2,NULL,\'offline\',\'Paper parent\',\'guardian\');INSERT INTO club_program_enrollments VALUES(2,NULL,222)');self::assertSame(2,(int)$p->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());self::assertSame('enrollment_account',$p->query("SELECT name FROM sqlite_master WHERE type='index' AND name='enrollment_account'")->fetchColumn());
+ }
+ public function testAgeProgressionRejectsUnknownAndWrongCohort():void {$p=$this->db();$p->exec("CREATE TABLE club_teams(id INTEGER,series_id INTEGER);CREATE TABLE club_team_series(id INTEGER,series_type TEXT,birth_year_from INTEGER,birth_year_to INTEGER,age_from_years INTEGER,age_to_years INTEGER);INSERT INTO club_teams VALUES(7,1);INSERT INTO club_team_series VALUES(1,'age',NULL,NULL,13,14)");self::assertSame('age_verification_required',\kisRosterRolloverAgeCheck($p,7,'1900-01-01','2027-01-01'));self::assertSame('age_verification_required',\kisRosterRolloverAgeCheck($p,7,'2014-02-30','2027-01-01'));self::assertSame('age_outside_target',\kisRosterRolloverAgeCheck($p,7,'2010-02-01','2027-01-01'));self::assertNull(\kisRosterRolloverAgeCheck($p,7,'2014-02-01','2027-01-01'));}
+}

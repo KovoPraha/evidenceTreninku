@@ -1,0 +1,95 @@
+{
+    "run": "LOCALHOST NEPLATIT R29 319f1bf171",
+    "checks": 22,
+    "results": [
+        {
+            "scenario": "Registrar can open medical administration",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach and warehouse cannot access private administration",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Sports lead has dedicated work cases while coach has no club-wide case access",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF cannot approve policy",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit policy records purpose retention and human activity decision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Missing proof registered as unresolved watch",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated monitoring does not duplicate person or purpose",
+            "status": "PASS"
+        },
+        {
+            "scenario": "R12 case has owner next step and date for missing proof",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual multipart scan stored outside webroot",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Scoped coach sees pending status without medical scan metadata",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach and sports lead direct download denied",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Registrar download is checksum-identical and audited",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Separate explicit verification accepts scanned proof",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Expiry date itself remains valid",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Following day is expired at activity date",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stale form cannot revoke newer verified revision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Personal followup recorded without sending mail",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Verified parent sees own status in existing family portal without scan",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Family cannot use private registrar download",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked parent loses medical and person overview on next request",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked coach scope loses even status-only direct URL",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked registrar stale session cannot download scan",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

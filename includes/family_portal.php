@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/member_charge_read.php';
 require_once __DIR__ . '/sportovec_status_lib.php';
+require_once __DIR__ . '/sports_activity.php';
 
 final class FamilyPortalAccessDenied extends RuntimeException
 {
@@ -151,7 +152,11 @@ function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId):
 
     $memberCharges = memberChargeRowsForSportovec($pdo, $sportovecId);
 
-    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings, 'member_charges' => $memberCharges];
+    $summary=sportsActivitySummary($pdo,$sportovecId,date('Y-01-01'),date('Y-m-d'));
+    $confirmed=[];
+    if(function_exists('trainingClosedActivitiesForPerson')&&familyPortalTableExists($pdo,'training_closures'))foreach(trainingClosedActivitiesForPerson($pdo,$sportovecId,'1900-01-01',date('Y-m-d')) as $activity)$confirmed[(int)$activity['training_id']]=$activity;
+    foreach($trainings as &$training){$closure=$confirmed[(int)$training['id']]??null;$training['attendance_confirmed']=$closure!==null;$training['closure_version']=$closure['version']??null;}unset($training);
+    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings, 'member_charges' => $memberCharges,'sports_summary'=>$summary];
 }
 
 /** @return list<array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,member_charges:list<array<string,mixed>>}> */

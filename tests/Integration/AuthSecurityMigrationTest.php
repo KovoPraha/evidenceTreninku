@@ -150,6 +150,11 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261022231000_shop_fulfillment',
                 '20261022232000_shop_returns',
                 '20261022233000_shop_stock_documents',
+                '20261023010000_member_admissions',
+                '20261023010100_offline_program_admissions',
+                '20261023020000_training_closure',
+                '20261023030000_sports_activity',
+                '20261023040000_medical_clearance',
 
             ],
             array_keys($catalog)
