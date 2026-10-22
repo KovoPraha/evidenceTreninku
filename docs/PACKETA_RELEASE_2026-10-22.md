@@ -15,7 +15,7 @@ a potvrzení ručního storna zásilky. Nezavádí privátní API pro podání.
 
 ## Postup a kontrolní body
 
-- [ ] Commit vyjmenovaných souborů a začlenění aktuálního `origin/main`;
+- [x] Commit vyjmenovaných souborů a začlenění aktuálního `origin/main`;
   zachovat číselné řady, variabilní symboly, všechny migrace a zálohovací kontrakt.
 - [ ] PHP syntaxe, PHPUnit a MariaDB záloha/obnova, potřebné integrační smoke.
 - [ ] Push, PR a zelené CI včetně MariaDB 10.3/11.4 a CodeQL; sloučení.
@@ -35,3 +35,24 @@ enabled=0, cena 150 Kč, délka klíče 16, simulace false; fronta 5 pending /
 
 Při revizi doplněno aktuální zamykací čtení kontroly duplicitního čísla
 zásilky: nesmí použít starý transakční snapshot po čekání na společný zámek.
+
+## Příprava vydání
+
+Implementace `300cf993`, integrace main `886c07b2` v commitu `55fdf973`.
+Sloučení zachovává číselné řady, všechny dosavadní migrační položky a jejich
+checksummy, zálohovací tabulky i nový produktový atribut. Společný kontrakt
+zálohy `2026-10-22.1`. Nová migrace má výslovné LF v `.gitattributes`.
+
+Dosavadní kontroly: 17 změněných PHP souborů syntaxe PASS, Composer validace
+a audit bez známých zranitelností, MariaDB záloha/obnova **198 tabulek PASS**,
+souběžný checkout/potvrzení platby/poslední místo programu PASS, lokálně
+**112 migrací aktuálních**. PHPUnit v tomto checkpointu ještě běží.
+Historické varování `20260922190000_member_fee_standing_orders.php:13`
+o `columns` zůstává beze změny; smoke prošel.
+
+Výchozí produkční UI před vydáním: doprava **vypnutá**, klíč prázdný,
+cena **0 Kč** (migrace ji má předvyplnit na 150 Kč). Fronta **3 pending,
+0 processing/failed/sent, všechny pokusy 0**, žádné opakování/worker.
+Otisk tabulky fronty SHA-256:
+`b8a0744fcaea8d6575441dae9e30268bee0c8bb52fe60646f627ebc927e1e29e`.
+Původní pracovní pozice Finance; po ověření ji obnovit.
