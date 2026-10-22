@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.2';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.3';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -367,6 +367,16 @@ const EVIDENCE_TABLES = [
     'club_reward_decisions',
     'club_reward_payouts',
     'financial_decisions',
+    'club_migration_mutex',
+    'club_migration_batches',
+    'club_migration_items',
+    'club_migration_maps',
+    'club_migration_events',
+    'club_cutover_runs',
+    'club_cutover_entries',
+    'club_cutover_checkpoints',
+    'club_cutover_reviews',
+    'club_payment_returns',
 
     'oznameni_targets',
     'payments',

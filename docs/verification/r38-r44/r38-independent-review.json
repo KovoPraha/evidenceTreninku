@@ -1,0 +1,13 @@
+{
+    "status": "PASS",
+    "checks": {
+        "registrar_cannot_archive_finance": "PASS: Vyberte oprávněnou pracovní pozici.",
+        "archive_not_complete": "PASS",
+        "concurrent_map_different_target": "PASS: Souběžně vzniklá mapa neodpovídá výslovně schválenému cíli.",
+        "reserved_tombstone": "PASS: Zdrojový obsah nesmí přepsat vyhrazený příznak výmazu.",
+        "wrong_family_target": "PASS",
+        "original_archive_survives_input_change": "PASS",
+        "archive_byte_tamper": "PASS: Originální soubor v archivu se změnil. Převod je zablokován.",
+        "source_manifest_tamper": "PASS: Úplný zdrojový snímek neodpovídá schválenému otisku."
+    }
+}

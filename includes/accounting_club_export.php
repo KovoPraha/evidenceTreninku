@@ -12,14 +12,17 @@ function accountingClubSnapshot(PDO $pdo,string $from,string $to):array
   foreach(['claims'=>'club_expenses','advances'=>'club_advances','consumptions'=>'club_consumptions','transfers'=>'club_transfers','events'=>'club_expense_events'] as$source=>$target)$out[$target]=$r[$source]??[];
   $out['club_coverage'][]='Výdaje, skutečné úhrady, zálohy a jejich vypořádání';
   foreach($out['club_expenses'] as$claim){
+   if(!empty($claim['late_recorded']))$out['club_exceptions'][]='Výdaj #'.$claim['id'].': podklad byl evidován po hranici období, ale obsahuje dřívější skutečné vypořádání. Historické schválení není potvrzeno.';
    if(!empty($claim['attachment_reference']))accountingClubAttachment($out,'výdaj #'.$claim['id'],(string)$claim['attachment_reference'],(string)$claim['attachment_sha256'],'vydaje/V-'.$claim['id']);
    elseif(trim((string)($claim['document_evidence']??''))==='')$out['club_exceptions'][]='Výdaj #'.$claim['id'].': chybí doklad i umístění původního podkladu.';
    if(in_array($claim['state_current']??$claim['state'],['draft','submitted'],true))$out['club_exceptions'][]='Výdaj #'.$claim['id'].': dosud není rozhodnuto o uznání.';
   }
+  foreach($out['club_advances']as$advance)if(!empty($advance['late_recorded']))$out['club_exceptions'][]='Záloha #'.$advance['id'].': podklad byl evidován po hranici období; skutečné dřívější vypořádání vyžaduje kontrolu.';
  }else$out['club_exceptions'][]='Výdaje a zálohy nejsou dostupné.';
  if(accountingLedgerTable($pdo,'club_reward_claims')){
   require_once __DIR__.'/club_rewards.php';$r=clubRewardExportRows($pdo,$from,$to);foreach(['claims','versions','decisions','payouts','rules'] as$key)$out['club_reward_'.$key]=$r[$key]??[];
   $out['club_coverage'][]='Odměny trenérů a sportovců: verze podkladů, rozhodnutí a vazby úhrad';
+  foreach($out['club_reward_versions']as$version)if(!empty($version['late_recorded']))$out['club_exceptions'][]='Odměna #'.$version['claim_id'].' / verze #'.$version['id'].': podklad byl evidován po hranici období, ale obsahuje dřívější skutečnou výplatu. Historické schválení není potvrzeno.';
   foreach($out['club_reward_claims'] as$claim)if(empty($claim['approved_version_id']))$out['club_exceptions'][]='Odměna #'.$claim['id'].': není schválena; návrh není závazek ani výplata.';
   foreach($out['club_reward_claims'] as$claim)if(!empty($claim['review_required']))$out['club_exceptions'][]='Odměna #'.$claim['id'].': sportovní podklad se od schválení změnil. Původní verze zůstává zachována; je nutné posoudit opravu.';
  }else$out['club_exceptions'][]='Odměny trenérů a sportovců nejsou dostupné.';
@@ -27,10 +30,12 @@ function accountingClubSnapshot(PDO $pdo,string $from,string $to):array
   $q=$pdo->prepare('SELECT * FROM financial_decisions WHERE valid_from<=? ORDER BY id');$q->execute([$to]);$out['club_decisions']=$q->fetchAll(PDO::FETCH_ASSOC);
   foreach($out['club_decisions'] as$d)if($d['storage_key'])accountingClubAttachment($out,'rozhodnutí #'.$d['id'],$d['storage_key'],$d['file_sha256'],'rozhodnuti/R-'.$d['id']);
  }
+ $out['club_payment_returns']=[];
+ if(accountingLedgerTable($pdo,'club_payment_returns')){$q=$pdo->prepare('SELECT r.*,a.effective_on,a.movement_id FROM club_payment_returns r JOIN accounting_allocations a ON a.id=r.return_allocation_id WHERE a.effective_on<=? ORDER BY r.id');$q->execute([$to]);$out['club_payment_returns']=$q->fetchAll(PDO::FETCH_ASSOC);}
  // Preserve source statuses as observed. Historical decisions are not inferred from today's paid/cancelled flag.
  foreach([
   'member_charge'=>['club_member_charges','amount_minor','created_at','public_code','title_snapshot'],
-  'order'=>['shop_orders','total_minor','placed_at','public_code','customer_name_snapshot']
+  'shop_order'=>['shop_orders','total_minor','placed_at','public_code','customer_name_snapshot']
  ]as$type=>[$table,$amount,$date,$reference,$label]){
   if(!accountingLedgerTable($pdo,$table)){$out['club_exceptions'][]='Zdroj pohledávek '.$table.' není dostupný.';continue;}
   $q=$pdo->prepare('SELECT id,'.$reference.' AS reference,'.$label.' AS label,'.$amount.' AS amount_minor,currency,status,'.$date.' AS originated_at FROM '.$table.' WHERE '.$date.'<? ORDER BY id');$q->execute([(new DateTimeImmutable($to))->modify('+1 day')->format('Y-m-d')]);
@@ -51,9 +56,10 @@ function accountingClubAttachment(array &$out,string $label,string $key,string $
 function accountingClubExpenseRows(array $s):array
 {
  $rows=[];
- foreach($s['club_expenses']??[] as$r)$rows[]=['Výdaj',(string)$r['id'],(string)$r['root_id'],$r['document_number'],$r['supplier'],$r['creditor_label'],$r['document_on'],$r['due_on'],$r['state'],(int)$r['amount_minor']/100,(int)$r['accepted_minor']/100,isset($r['net_paid_minor'])?(int)$r['net_paid_minor']/100:(isset($r['paid_minor'])?(int)$r['paid_minor']/100:null),isset($r['remaining_minor'])?(int)$r['remaining_minor']/100:null,$r['currency'],$r['document_evidence']];
- foreach($s['club_advances']??[] as$r)$rows[]=['Záloha',(string)$r['id'],(string)$r['case_id'],'',$r['recipient_label'],$r['recipient_label'],substr($r['created_at'],0,10),$r['due_on'],$r['state'],(int)$r['limit_minor']/100,null,isset($r['out_minor'])?(int)$r['out_minor']/100:null,isset($r['balance_minor'])?(int)$r['balance_minor']/100:null,$r['currency'],$r['purpose']];
- foreach($s['club_reward_versions']??[] as$r)$rows[]=['Podklad odměny',(string)$r['id'],(string)$r['claim_id'],'Verze '.$r['version'],'',$r['recipient_kind'].' #'.$r['recipient_id'],substr($r['submitted_at'],0,10),'','Návrh; rozhodnutí v příloze',(int)$r['amount_minor']/100,null,null,null,'CZK',$r['recipient_evidence']];
+ foreach($s['club_expenses']??[] as$r)$rows[]=['Výdaj',(string)$r['id'],(string)$r['root_id'],$r['document_number'],$r['supplier'],$r['creditor_label'],$r['document_on'],$r['due_on'],$r['state'].(!empty($r['late_recorded'])?' / podklad evidován po období':''),(int)$r['amount_minor']/100,(int)$r['accepted_minor']/100,isset($r['net_paid_minor'])?(int)$r['net_paid_minor']/100:(isset($r['paid_minor'])?(int)$r['paid_minor']/100:null),isset($r['remaining_minor'])?(int)$r['remaining_minor']/100:null,$r['currency'],$r['document_evidence']];
+ foreach($s['club_advances']??[] as$r)$rows[]=['Záloha',(string)$r['id'],(string)$r['case_id'],'',$r['recipient_label'],$r['recipient_label'],substr($r['created_at'],0,10),$r['due_on'],$r['state'].(!empty($r['late_recorded'])?' / podklad evidován po období':''),(int)$r['limit_minor']/100,null,isset($r['out_minor'])?(int)$r['out_minor']/100:null,isset($r['balance_minor'])?(int)$r['balance_minor']/100:null,$r['currency'],$r['purpose']];
+ foreach($s['club_reward_versions']??[] as$r)$rows[]=['Podklad odměny',(string)$r['id'],(string)$r['claim_id'],'Verze '.$r['version'],'',$r['recipient_kind'].' #'.$r['recipient_id'],substr($r['submitted_at'],0,10),'','Návrh; rozhodnutí v příloze'.(!empty($r['late_recorded'])?' / podklad evidován po období':''),(int)$r['amount_minor']/100,null,null,null,'CZK',$r['recipient_evidence']];
+ foreach($s['club_payment_returns']??[]as$r)$rows[]=['Vazba návratu platby',(string)$r['id'],$r['domain'].' #'.$r['case_id'],'Příděl #'.$r['original_allocation_id'].' → #'.$r['return_allocation_id'],'','',$r['effective_on'],'','Podklad kanonického pohybu #'.$r['movement_id'],(int)$r['amount_minor']/100,null,null,null,'CZK','Částka je již v peněžní evidenci; tento řádek ji znovu nezaúčtovává.'];
  return $rows;
 }
 
@@ -79,6 +85,7 @@ function accountingClubStatementPdf(array $snapshot):string
  $html='<!doctype html><html lang="cs"><meta charset="utf-8"><style>body{font-family:DejaVu Sans;font-size:9pt}table{border-collapse:collapse;width:100%}td,th{border:1px solid #aaa;padding:4px}h1{font-size:16pt}</style><h1>Klubové závazky a podklady</h1><p>'.$h($snapshot['period_from'].' – '.$snapshot['period_to']).' · '.$h($snapshot['status']).'</p><p>Skutečné peníze jsou pouze v listu Penize. Tento přehled je podklad závazků a vypořádání; schválení není výplata.</p><table><thead><tr><th>Druh / ID</th><th>Význam</th><th>Počátek</th><th>Změna</th><th>Konec</th></tr></thead><tbody>';
  foreach(accountingClubBalanceRows($snapshot)as$r){$html.='<tr><td>'.$h($r[0].' #'.$r[1]).'</td><td>'.$h($r[2]).'</td>';foreach([3,4,5]as$i)$html.='<td>'.($r[$i]===null?'NEZNÁMÉ':$h(number_format($r[$i],2,',',' ').' '.$r[6])).'</td>';$html.='</tr>';}
  $html.='</tbody></table>';
+ if($snapshot['club_payment_returns']??[]){$html.='<h2>Návraty již odeslaných plateb</h2><p>Vazby na skutečné kanonické příděly. Částky nejsou další peněžní obrat.</p><table><thead><tr><th>Případ</th><th>Datum návratu</th><th>Původní / návratový příděl</th><th>Peněžní pohyb</th><th>Částka CZK</th></tr></thead><tbody>';foreach($snapshot['club_payment_returns']as$r)$html.='<tr><td>'.$h($r['domain'].' #'.$r['case_id']).'</td><td>'.$h($r['effective_on']).'</td><td>'.$h($r['original_allocation_id'].' / '.$r['return_allocation_id']).'</td><td>'.$h($r['movement_id']).'</td><td>'.$h(number_format((int)$r['amount_minor']/100,2,',',' ')).'</td></tr>';$html.='</tbody></table>';}
  foreach($snapshot['club_reward_versions']??[]as$v){if(!isset($v['snapshot_json']))continue;$data=json_decode($v['snapshot_json'],true,512,JSON_THROW_ON_ERROR);$decision='Čeká na rozhodnutí';foreach($snapshot['club_reward_decisions']??[]as$d)if((int)$d['version_id']===(int)$v['id'])$decision=($d['outcome']==='approved'?'Schváleno':'Vráceno').' '.$d['decided_on'].' pracovníkem #'.$d['actor_trainer_id'].'; '.$d['reason'];
   $html.='<h2>Odměna #'.$h($v['claim_id']).' / verze '.$h($v['version']).'</h2><p>'.$h($decision).'</p><p>Příjemce: '.$h($v['recipient_kind'].' #'.$v['recipient_id'].'; '.$v['recipient_evidence']).'</p><p>Pravidlo: '.$h(($data['rule']['title']??'').' - '.($data['rule']['approval_evidence']??'').' / '.($data['rule']['accounting_method']??'')).'</p><table><thead><tr><th>Datum</th><th>Činnost a zdroj</th><th>Minuty</th><th>Částka CZK</th></tr></thead><tbody>';
   foreach($data['lines']??[]as$l)$html.='<tr><td>'.$h($l['date']).'</td><td>'.$h($l['label'].'; '.$l['source'].' #'.$l['id']).'</td><td>'.$h($l['minutes']).'</td><td>'.$h(number_format((int)$l['amount_minor']/100,2,',',' ')).'</td></tr>';

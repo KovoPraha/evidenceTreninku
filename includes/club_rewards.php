@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__.'/accounting_ledger.php';
 require_once __DIR__.'/sports_activity.php';
+require_once __DIR__.'/club_payment_returns.php';
 
 /** Remuneration evidence, not payroll: no implicit tax regime, rate, bank send or historical paid flag. */
 function clubRewardActor(PDO $pdo,int $actor,array $positions):void {
@@ -77,20 +78,23 @@ function clubRewardDecide(PDO $pdo,int $versionId,string $outcome,int $actor,str
 /** Called by the shared ledger too: arbitrary allocation cannot manufacture a reward payment. */
 function clubRewardValidateAllocation(PDO $pdo,array $movement,string $caseType,int $caseId,int $amountMinor,?int $reversesId):void {
     if(($GLOBALS['club_reward_allocation_context']??null)!==[$caseId,$amountMinor,(int)$movement['id']]||$reversesId!==null||$amountMinor<1)throw new DomainException('Výplatu odměny přiřaďte ve schváleném nároku, včetně příjemce a podkladu.');
+    if(isset($GLOBALS['club_reward_return_original'])){clubPaymentReturnOriginal($pdo,'reward',$caseId,(int)$GLOBALS['club_reward_return_original'],$movement,$amountMinor,$movement['effective_on']);return;}
     $c=clubRewardClaim($pdo,$caseId);if(!$c['approved_version_id']||(int)$c['approved_version_id']!==(int)$c['current_version_id'])throw new DomainException('Výplata vyžaduje schválenou aktuální verzi.');$v=clubRewardVersion($pdo,(int)$c['approved_version_id']);if(clubRewardChanged($pdo,$c,$v))throw new DomainException('Podklady se změnily; nejprve opravte a znovu schvalte výkaz.');
     $balance=(int)$v['amount_minor']-clubRewardPaid($pdo,$caseId);$expense=(int)$movement['amount_minor']<0;
     if(($expense&&!in_array($movement['kind'],['expense'],true))||(!$expense&&!in_array($movement['kind'],['income','reversal'],true))||($expense&&($balance<$amountMinor))||(!$expense&&(-$balance<$amountMinor)))throw new DomainException('Pohyb neodpovídá schválenému doplatku nebo přeplatku odměny.');
 }
 function clubRewardPay(PDO $pdo,int $claimId,array $input,int $actor,string $reason,bool $confirmed):array {
     $reason=accountingLedgerAudit($actor,$reason,$confirmed);$movement=(int)($input['movement_id']??0);$amount=$input['amount_minor']??null;if(!is_int($amount)||$amount<1)throw new DomainException('Uveďte kladnou skutečně vypořádanou částku.');
-    $received=accountingLedgerText((string)($input['received_by']??''),2000);$key=accountingLedgerText((string)($input['request_key']??''),100);$date=accountingLedgerDate((string)($input['paid_on']??''));$hash=clubRewardHash([$claimId,$movement,$amount,$received,$date,$reason,$actor]);
-    return accountingLedgerTransaction($pdo,function()use($pdo,$claimId,$movement,$amount,$received,$key,$date,$hash,$actor,$reason){clubRewardActor($pdo,$actor,['finance_manager']);accountingLedgerActor($pdo,$actor);
+    $received=accountingLedgerText((string)($input['received_by']??''),2000);$key=accountingLedgerText((string)($input['request_key']??''),100);$date=accountingLedgerDate((string)($input['paid_on']??''));$originalPayout=(int)($input['return_of_payout_id']??0);$hash=clubRewardHash($originalPayout>0?[$claimId,$movement,$amount,$received,$date,$reason,$actor,$originalPayout]:[$claimId,$movement,$amount,$received,$date,$reason,$actor]);
+    return accountingLedgerTransaction($pdo,function()use($pdo,$claimId,$movement,$amount,$received,$key,$date,$hash,$actor,$reason,$originalPayout){clubRewardActor($pdo,$actor,['finance_manager']);accountingLedgerActor($pdo,$actor);
         $q=$pdo->prepare('SELECT * FROM club_reward_payouts WHERE request_key=?');$q->execute([$key]);$retry=$q->fetch(PDO::FETCH_ASSOC);if($retry){if(!hash_equals($retry['request_hash'],$hash))throw new DomainException('Klíč výplaty patří jinému úkonu.');return $retry;}
         $c=clubRewardClaim($pdo,$claimId);$q=$pdo->prepare('SELECT * FROM accounting_movements WHERE id=?');$q->execute([$movement]);$m=$q->fetch(PDO::FETCH_ASSOC);if(!$m)throw new DomainException('Skutečný peněžní pohyb nebyl nalezen.');
         if($date!==$m['effective_on'])throw new DomainException('Datum výplaty musí odpovídat doloženému pohybu.');
-        $GLOBALS['club_reward_allocation_context']=[$claimId,$amount,$movement];try{$allocation=accountingLedgerAllocate($pdo,$movement,'reward_claim',$claimId,$amount,'reward-'.$key,$actor,$reason,true,null,'','',$date);}finally{unset($GLOBALS['club_reward_allocation_context']);}
+        $original=null;if($originalPayout>0){$q=$pdo->prepare('SELECT * FROM club_reward_payouts WHERE id=? AND claim_id=? AND amount_minor>0');$q->execute([$originalPayout,$claimId]);$original=$q->fetch(PDO::FETCH_ASSOC);if(!$original)throw new DomainException('Původní výplata nebyla nalezena v tomto nároku.');$GLOBALS['club_reward_return_original']=(int)$original['allocation_id'];}
+        $GLOBALS['club_reward_allocation_context']=[$claimId,$amount,$movement];try{$allocation=accountingLedgerAllocate($pdo,$movement,'reward_claim',$claimId,$amount,'reward-'.$key,$actor,$reason,true,null,'','',$date);}finally{unset($GLOBALS['club_reward_allocation_context'],$GLOBALS['club_reward_return_original']);}
+        if($original)clubPaymentReturnLink($pdo,'reward',$claimId,(int)$original['allocation_id'],(int)$allocation['id'],$amount);
         $signed=(int)$m['amount_minor']<0?$amount:-$amount;
-        $pdo->prepare('INSERT INTO club_reward_payouts(claim_id,version_id,movement_id,allocation_id,amount_minor,received_by,reason,actor_trainer_id,request_key,request_hash,paid_on) VALUES(?,?,?,?,?,?,?,?,?,?,?)')->execute([$claimId,$c['approved_version_id'],$movement,$allocation['id'],$signed,$received,$reason,$actor,$key,$hash,$date]);$id=(int)$pdo->lastInsertId();$q=$pdo->prepare('SELECT * FROM club_reward_payouts WHERE id=?');$q->execute([$id]);return $q->fetch(PDO::FETCH_ASSOC);
+        $pdo->prepare('INSERT INTO club_reward_payouts(claim_id,version_id,movement_id,allocation_id,amount_minor,received_by,reason,actor_trainer_id,request_key,request_hash,paid_on) VALUES(?,?,?,?,?,?,?,?,?,?,?)')->execute([$claimId,$original?$original['version_id']:$c['approved_version_id'],$movement,$allocation['id'],$signed,$received,$reason,$actor,$key,$hash,$date]);$id=(int)$pdo->lastInsertId();$q=$pdo->prepare('SELECT * FROM club_reward_payouts WHERE id=?');$q->execute([$id]);return $q->fetch(PDO::FETCH_ASSOC);
     });
 }
 /** Guard legacy other-work insertion/deletion after submission; corrections use a new remuneration version. */
@@ -100,14 +104,14 @@ function clubRewardAssertOtherWorkMutable(PDO $pdo,int $trainer,string $date):vo
 }
 function clubRewardExportRows(PDO $pdo,string $from,string $to):array {
     $out=['claims'=>[],'versions'=>[],'decisions'=>[],'payouts'=>[],'rules'=>[]];if(!accountingLedgerTable($pdo,'club_reward_claims'))return $out;
-    $q=$pdo->prepare('SELECT * FROM club_reward_claims WHERE date_from<=? ORDER BY id');$q->execute([$to]);$out['claims']=$q->fetchAll(PDO::FETCH_ASSOC);
+    $q=$pdo->prepare('SELECT * FROM club_reward_claims WHERE date_from<=? OR id IN (SELECT claim_id FROM club_reward_payouts WHERE paid_on<=?) ORDER BY id');$q->execute([$to,$to]);$out['claims']=$q->fetchAll(PDO::FETCH_ASSOC);
     foreach($out['claims'] as &$c){
         $q=$pdo->prepare('SELECT v.id FROM club_reward_versions v JOIN club_reward_decisions d ON d.version_id=v.id WHERE v.claim_id=? AND d.outcome=\'approved\' AND d.decided_on<=? ORDER BY v.version DESC LIMIT 1');$q->execute([$c['id'],$to]);$c['approved_version_id']=$q->fetchColumn()?:null;
         $q=$pdo->prepare('SELECT id FROM club_reward_versions WHERE claim_id=? AND submitted_at<=? ORDER BY version DESC LIMIT 1');$q->execute([$c['id'],$to.' 23:59:59']);$c['current_version_id']=$q->fetchColumn()?:null;
         $v=$c['approved_version_id']?clubRewardVersion($pdo,(int)$c['approved_version_id']):null;$c['approved_minor']=$v?(int)$v['amount_minor']:0;$q=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM club_reward_payouts WHERE claim_id=? AND paid_on<=?');$q->execute([$c['id'],$to]);$c['paid_minor']=(int)$q->fetchColumn();$c['balance_minor']=$c['approved_minor']-$c['paid_minor'];$c['review_required']=$v&&(clubRewardChanged($pdo,$c,$v)||(int)$c['current_version_id']!==(int)$c['approved_version_id'])?1:0;$c['state_as_of']=$to;
     }
     unset($c);$ids=array_map('intval',array_column($out['claims'],'id'));if(!$ids)return $out;$in=implode(',',$ids);
-    $q=$pdo->prepare('SELECT * FROM club_reward_versions WHERE claim_id IN ('.$in.') AND submitted_at<=? ORDER BY id');$q->execute([$to.' 23:59:59']);$out['versions']=$q->fetchAll(PDO::FETCH_ASSOC);
+    $end=(new DateTimeImmutable($to))->modify('+1 day')->format('Y-m-d');$q=$pdo->prepare('SELECT * FROM club_reward_versions WHERE claim_id IN ('.$in.') AND (submitted_at<? OR id IN (SELECT version_id FROM club_reward_payouts WHERE paid_on<=?)) ORDER BY id');$q->execute([$end,$to]);$out['versions']=$q->fetchAll(PDO::FETCH_ASSOC);foreach($out['versions'] as &$version)$version['late_recorded']=$version['submitted_at']>=$end;unset($version);
     $q=$pdo->prepare('SELECT d.* FROM club_reward_decisions d JOIN club_reward_versions v ON v.id=d.version_id WHERE v.claim_id IN ('.$in.') AND d.decided_on<=? ORDER BY d.id');$q->execute([$to]);$out['decisions']=$q->fetchAll(PDO::FETCH_ASSOC);
     $q=$pdo->prepare('SELECT * FROM club_reward_payouts WHERE claim_id IN ('.$in.') AND paid_on<=? ORDER BY id');$q->execute([$to]);$out['payouts']=$q->fetchAll(PDO::FETCH_ASSOC);
     $q=$pdo->prepare('SELECT * FROM club_reward_rules WHERE created_at<=? ORDER BY id');$q->execute([$to.' 23:59:59']);$out['rules']=$q->fetchAll(PDO::FETCH_ASSOC);return $out;

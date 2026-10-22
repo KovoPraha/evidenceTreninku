@@ -1,0 +1,28 @@
+{
+    "status": "PASS",
+    "synthetic_only": true,
+    "production_mutations": false,
+    "human_uat": false,
+    "period_from": "2026-09-24",
+    "period_to": "2026-10-23",
+    "checks": 13,
+    "scenarios": [
+        "Actual attendance counted once in person history",
+        "Two actual hours at explicit 250 CZK produce 500 CZK claim",
+        "Unreturned 800 CZK blocks closing",
+        "5000 advance = 4200 approved spending + actual 800 return",
+        "Reward retry reuses same payout",
+        "Shared movement settles expense and reward exactly once",
+        "Generic reversal cannot erase assigned expense and reward",
+        "Personal sale reserves one physical garment",
+        "Actual garment issue clears reservation exactly once",
+        "Cash reconciles: 10000 opening -5000 +800 -1100 +100 = 4800 CZK",
+        "One export contains four real movements; consumption and payout produce no duplicate money",
+        "Same export links the month expense and sporting reward",
+        "Synthetic rehearsal cannot declare accountant acceptance or real source completeness"
+    ],
+    "export_id": 20,
+    "export_sha256": "5aa618acc48e05dc75e19605f381e1648e15629a69d3c3289270955a10d9c619",
+    "account_id": 25,
+    "closing_minor": 480000
+}

@@ -1,5 +1,21 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — místní implementace a technická příprava R38–R44 dokončena.**
+Větev `codex/migration-cutover-r38-r44-20261023`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ `67121f0b`.
+Nejprve číst [společné předání R01–R44](CLUB_IMPLEMENTATION_HANDOFF.md)
+a [výsledky](verification/r38-r44/RESULTS.md). Pro uživatele je připravený
+[návod k místní kontrole](CLUB_LOCAL_REVIEW.md) a dva izolované účty.
+Finální regrese: 1 526 testů / 31 327 assertions, 132 HTTP kontrol,
+326 obnovených tabulek a 157 soukromých souborů. Katalog 136 migrací current;
+kontrakt záloh `2026-10-23.3`.
+**Žádný push, merge, deploy, reálný import ani produkční zápis.**
+Produkční brána zůstává zavřená; skutečný pilot, převzetí účetní a přepnutí
+neproběhly. Rozhodnutí D01–D16 jsou odložená, nikoli automaticky schválená.
+Původní checkout `C:\xampp\htdocs\evidencePavel` má cizí WIP a neupravoval se.
+
+Následuje historické předání předchozího balíku:
+
 Lokální R31–R37 dokončené v pracovní kopii
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
 `codex/club-administration-r31-r37-20261023`, základ `4033bf18`.

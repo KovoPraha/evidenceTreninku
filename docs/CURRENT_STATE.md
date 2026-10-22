@@ -1,5 +1,18 @@
 # Aktuální stav projektu
 
+Lokální vývoj 23. 10. 2026: **dokončená technická příprava R38–R44** a
+závěrečná finanční regrese ve větvi `codex/migration-cutover-r38-r44-20261023`.
+Pracovní kopie `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
+[Společné předání R01–R44](CLUB_IMPLEMENTATION_HANDOFF.md),
+[místní prohlídka](CLUB_LOCAL_REVIEW.md),
+[závěrečné ověření](verification/r38-r44/RESULTS.md).
+**1 526 testů, 132 HTTP kontrol a obnova 326 tabulek / 157 souborů PASS.**
+136 migrací, zálohovací kontrakt `2026-10-23.3`.
+Bez push, merge, nasazení a produkčních změn. Skutečné zdroje, metodika,
+pilot, účetní převzetí a přepnutí zůstávají odložené podle D01–D16.
+
+Následuje historické místní předání; jeho stav „pokračuje“ je překryt výše:
+
 Lokální vývoj 23. 10. 2026: **R31–R37 — výdaje, zálohy, odměny a účetní předání**,
 větev `codex/club-administration-r31-r37-20261023`, izolovaná pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ `4033bf18`.

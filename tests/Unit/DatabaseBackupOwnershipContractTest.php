@@ -51,6 +51,10 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
 
     public function testEveryOwnedTableIsListedOnceAndTheNewOnesAreThere(): void
     {
+        self::assertContains('club_payment_returns', EVIDENCE_TABLES);
+        foreach (['club_migration_mutex','club_migration_batches','club_migration_items','club_migration_maps','club_migration_events','club_cutover_runs','club_cutover_entries','club_cutover_checkpoints','club_cutover_reviews'] as $table) {
+            self::assertContains($table, EVIDENCE_TABLES);
+        }
         foreach (['club_expense_cases','club_expense_claims','club_expense_advances','club_expense_consumptions','club_expense_transfers','club_expense_events','club_reward_rules','club_reward_claims','club_reward_versions','club_reward_decisions','club_reward_payouts','financial_decisions'] as $table) {
             self::assertContains($table, EVIDENCE_TABLES);
         }
