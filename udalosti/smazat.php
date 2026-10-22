@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/funkce.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/financial_event_guard.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('udalosti')) {
     header('Location: ../login.php');
@@ -18,18 +19,20 @@ $id = (int)($_POST['id'] ?? 0);
 
 if ($id > 0) {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM ucto_udalosti WHERE id = ?");
-        $stmt->execute([$id]);
-        $udalost = $stmt->fetch(PDO::FETCH_ASSOC);
+        $pdo->beginTransaction();
+        $udalost = financialEventLock($pdo, $id);
+        financialEventAssertOpen($udalost);
 
         if ($udalost) {
             $pdo->prepare("DELETE FROM ucto_udalosti WHERE id = ?")->execute([$id]);
             zapisAuditLog($pdo, $_SESSION['trener_id'], 'Smazání události', 'ucto_udalosti', $id, json_encode($udalost));
+            $pdo->commit();
             $_SESSION['flash_success'] = 'Událost smazána.';
         }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
         error_log('udalosti/smazat.php: ' . $e->getMessage());
-        $_SESSION['flash_error'] = 'Chyba při mazání.';
+        $_SESSION['flash_error'] = $e instanceof FinancialEventConflict ? $e->getMessage() : 'Chyba při mazání.';
     }
 }
 

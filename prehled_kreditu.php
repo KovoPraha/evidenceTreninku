@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/athlete_reward_guard.php';
 
 // Jen hlavní trenér
 $is_hlavni = canAccess('prehled_kreditu');
@@ -52,43 +53,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sportovec_id = (int)($_POST['sportovec_id'] ?? 0);
         $obdobi_id    = (int)($_POST['obdobi_id']    ?? 0);
 
-        if ($action === 'pay' && $sportovec_id > 0 && $obdobi_id > 0) {
-            try {
-                $stmt = $pdo->prepare("
-                    UPDATE sportovec_obdobi
-                    SET vyplaceno = 1
-                    WHERE id = :id AND sportovec_id = :sid AND datum_do IS NOT NULL
-                ");
-                $stmt->execute([':id' => $obdobi_id, ':sid' => $sportovec_id]);
-                $_SESSION['flash_success'] = 'Odměna označena jako vyplacená.';
-            } catch (Exception $e) {
-                $_SESSION['flash_error'] = 'Chyba: ' . $e->getMessage();
+        try {
+            if ($action === 'pay') {
+                athleteRewardMarkPaid($pdo, $sportovec_id, $obdobi_id);
+                $_SESSION['flash_success'] = 'Odměna označena jako vyplacená. Označení samo není dokladem peněžního pohybu.';
+            } elseif ($action === 'close') {
+                $stats = athleteRewardClose($pdo, $sportovec_id, $obdobi_id, date('Y-m-d'));
+                $_SESSION['flash_success'] = 'Období uzavřeno. Souhrn: ' . $stats['pocet'] . ' tréninků, '
+                    . number_format($stats['kredit'], 2, ',', ' ') . ' Kč.';
+            } else {
+                throw new DomainException('Nepodporovaná operace. Období nebylo změněno.');
             }
-        } elseif ($action === 'close' && $sportovec_id > 0 && $obdobi_id > 0) {
-            try {
-                $closeDate = date('Y-m-d');
-                $stmtFetch = $pdo->prepare("SELECT datum_od, sazba_kc FROM sportovec_obdobi WHERE id = ? AND sportovec_id = ?");
-                $stmtFetch->execute([$obdobi_id, $sportovec_id]);
-                $oInfo = $stmtFetch->fetch(PDO::FETCH_ASSOC);
-                if (!$oInfo) throw new Exception('Období nenalezeno.');
-                $pocet  = getLivePocet($pdo, $sportovec_id, $oInfo['datum_od'], $closeDate);
-                $castka = round($pocet * (float)$oInfo['sazba_kc'], 2);
-                $stmt = $pdo->prepare("
-                    UPDATE sportovec_obdobi
-                    SET datum_do = :do, pocet_treninku = :pocet, castka_celkem = :castka
-                    WHERE id = :id AND sportovec_id = :sid
-                ");
-                $stmt->execute([
-                    ':do'     => $closeDate,
-                    ':pocet'  => $pocet,
-                    ':castka' => $castka,
-                    ':id'     => $obdobi_id,
-                    ':sid'    => $sportovec_id,
-                ]);
-                $_SESSION['flash_success'] = "Období uzavřeno k {$closeDate}. Snapshot: {$pocet} tréninků, " . number_format($castka, 2, ',', ' ') . " Kč.";
-            } catch (Exception $e) {
-                $_SESSION['flash_error'] = 'Chyba při uzavírání: ' . $e->getMessage();
-            }
+        } catch (DomainException $e) {
+            $_SESSION['flash_error'] = $e->getMessage();
+        } catch (Throwable $e) {
+            error_log('Reward overview mutation failed: ' . $e->getMessage());
+            $_SESSION['flash_error'] = 'Změnu období se nepodařilo uložit. Nic nebylo změněno; kontaktujte správce.';
         }
         header('Location: prehled_kreditu.php');
         exit;
@@ -105,7 +85,7 @@ $stmtAktivni = $pdo->query("
         so.id AS obdobi_id, so.datum_od, so.sazba_kc
     FROM sportovci s
     JOIN sportovec_obdobi so ON so.sportovec_id = s.id
-    WHERE so.datum_do IS NULL
+    WHERE (so.datum_do IS NULL OR so.datum_do = '0000-00-00') AND so.vyplaceno = 0
     ORDER BY s.prijmeni, s.jmeno
 ");
 $aktivniRows = $stmtAktivni->fetchAll(PDO::FETCH_ASSOC);
@@ -128,7 +108,7 @@ $stmtNevypl = $pdo->query("
         so.pocet_treninku, so.castka_celkem
     FROM sportovci s
     JOIN sportovec_obdobi so ON so.sportovec_id = s.id
-    WHERE so.datum_do IS NOT NULL
+    WHERE so.datum_do IS NOT NULL AND so.datum_do <> '0000-00-00'
       AND so.vyplaceno = 0
     ORDER BY so.datum_do ASC, s.prijmeni, s.jmeno
 ");
@@ -141,20 +121,25 @@ foreach ($nevyplRows as $row) {
         $pocet  = (int)$row['pocet_treninku'];
         $kredit = (float)$row['castka_celkem'];
     } else {
-        // Fallback: live výpočet (pro starší záznamy bez snapshotu)
-        $pocet  = getLivePocet($pdo, (int)$row['sportovec_id'], $row['datum_od'], $row['datum_do']);
-        $kredit = round($pocet * (float)$row['sazba_kc'], 2);
+        $pocet = null;
+        $kredit = null; // Historical amount is unresolved, not a current live calculation.
     }
-    $totalNevyplKredit += $kredit;
+    $totalNevyplKredit += $kredit ?? 0;
     $nevyplacene[] = array_merge($row, ['pocet' => $pocet, 'kredit' => $kredit]);
 }
+
+// Inconsistent or missing historical snapshots remain visible even when marked paid.
+$unresolvedRewards = $pdo->query("SELECT id, sportovec_id FROM sportovec_obdobi
+    WHERE ((datum_do IS NOT NULL AND datum_do <> '0000-00-00') OR vyplaceno <> 0)
+      AND (pocet_treninku IS NULL OR castka_celkem IS NULL OR datum_do IS NULL OR datum_do = '0000-00-00')
+    ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
 
 // ── Statistiky vyplacených (za posledních 12 měsíců) ─────────────────────
 $stmtVypl = $pdo->prepare("
     SELECT
         COUNT(*) AS pocet_obdobi,
-        COALESCE(SUM(castka_celkem), 0) AS suma_castka,
-        COALESCE(SUM(pocet_treninku), 0) AS suma_treninku
+        COALESCE(SUM(CASE WHEN pocet_treninku IS NOT NULL AND castka_celkem IS NOT NULL THEN castka_celkem ELSE 0 END), 0) AS suma_castka,
+        COALESCE(SUM(CASE WHEN pocet_treninku IS NOT NULL AND castka_celkem IS NOT NULL THEN pocet_treninku ELSE 0 END), 0) AS suma_treninku
     FROM sportovec_obdobi
     WHERE vyplaceno = 1
       AND datum_do >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
@@ -287,9 +272,9 @@ $vyplStats = $stmtVypl->fetch(PDO::FETCH_ASSOC);
                         </td>
                         <td class="text-end"><?= number_format((float)$r['sazba_kc'], 2, ',', ' ') ?></td>
                         <td><?= h($r['datum_od']) ?></td>
-                        <td class="text-end"><?= $r['pocet'] ?></td>
+                        <td class="text-end"><?= $r['pocet'] === null ? '—' : $r['pocet'] ?></td>
                         <td class="text-end fw-semibold text-success">
-                            <?= number_format($r['kredit'], 2, ',', ' ') ?> Kč
+                            <?= $r['kredit'] === null ? 'Nezjištěno' : number_format($r['kredit'], 2, ',', ' ') . ' Kč' ?>
                         </td>
                         <td class="text-nowrap">
                             <form method="post" class="d-inline">
@@ -322,6 +307,17 @@ $vyplStats = $stmtVypl->fetch(PDO::FETCH_ASSOC);
         <?php endif; ?>
         </div>
     </div>
+
+    <?php if ($unresolvedRewards): ?>
+    <div class="alert alert-warning">
+        <strong>Nevyřešená historická období: <?= count($unresolvedRewards) ?>.</strong>
+        Chybí uzavřený souhrn nebo je vyplacené období stále otevřené. Nezjištěné částky se nedopočítávají ani nezahrnují do součtů.
+        Opravu předejte hospodáři; běžná oprava zatím není dostupná.
+        <?php foreach ($unresolvedRewards as $unresolved): ?>
+            <a href="sprava_sportovec_obdobi.php?sportovec_id=<?= (int)$unresolved['sportovec_id'] ?>">Období #<?= (int)$unresolved['id'] ?></a>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
 
     <!-- ── Uzavřená nevyplacená období ───────────────────────────── -->
     <div class="card section-card mb-4">
@@ -364,11 +360,12 @@ $vyplStats = $stmtVypl->fetch(PDO::FETCH_ASSOC);
                             <span class="fw-semibold"><?= h($r['datum_do']) ?></span>
                         </td>
                         <td class="text-end"><?= number_format((float)$r['sazba_kc'], 2, ',', ' ') ?></td>
-                        <td class="text-end"><?= $r['pocet'] ?></td>
+                        <td class="text-end"><?= $r['pocet'] === null ? '—' : $r['pocet'] ?></td>
                         <td class="text-end fw-semibold text-warning">
-                            <?= number_format($r['kredit'], 2, ',', ' ') ?> Kč
+                            <?= $r['kredit'] === null ? 'Nezjištěno' : number_format($r['kredit'], 2, ',', ' ') . ' Kč' ?>
                         </td>
                         <td class="text-nowrap">
+                            <?php if ($r['kredit'] !== null && canAccess('kreditni_obdobi')): ?>
                             <form method="post" class="d-inline">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="pay">
@@ -379,6 +376,9 @@ $vyplStats = $stmtVypl->fetch(PDO::FETCH_ASSOC);
                                     <i class="bi bi-cash-coin me-1"></i>Vyplaceno
                                 </button>
                             </form>
+                            <?php elseif ($r['kredit'] === null): ?>
+                                <span class="text-danger small">Nevyřešeno: chybí souhrn. Předat hospodáři.</span>
+                            <?php endif; ?>
                             <a href="sprava_sportovec_obdobi.php?sportovec_id=<?= (int)$r['sportovec_id'] ?>"
                                class="btn btn-sm btn-outline-secondary ms-1" title="Detail">
                                 <i class="bi bi-pencil"></i>
@@ -389,7 +389,7 @@ $vyplStats = $stmtVypl->fetch(PDO::FETCH_ASSOC);
                 </tbody>
                 <tfoot class="table-warning">
                     <tr>
-                        <td colspan="4" class="text-end fw-bold">Celkem k výplatě:</td>
+                        <td colspan="4" class="text-end fw-bold">Celkem známé částky k výplatě:</td>
                         <td class="text-end fw-bold"><?= number_format($totalNevyplKredit, 2, ',', ' ') ?> Kč</td>
                         <td></td>
                     </tr>

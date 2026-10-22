@@ -34,7 +34,10 @@ final class SecurityInfrastructureWiringTest extends TestCase
         self::assertStringContainsString('uploads/(?:uctenky|zatezove_testy|servis|temp)', $htaccess);
         self::assertStringContainsString('privateStorageStore', $receipt);
         self::assertStringContainsString('beginTransaction()', $receipt);
-        self::assertStringContainsString('privateStorageSoftDelete($newReceiptKey)', $receipt);
+        // Receipt files now participate in reversible mutations, then retain
+        // retired originals in the private soft-delete archive after commit.
+        self::assertStringContainsString('fileMutationRollback($fileMutations)', $receipt);
+        self::assertStringContainsString('financialReceiptFilesCommitted($fileMutations)', $receipt);
         self::assertStringContainsString('privateStorageStore', $stress);
         self::assertStringContainsString('public_profile_access_session_athlete_id($pdo)', $download);
         self::assertStringNotContainsString("\$_GET['hash']", $download);

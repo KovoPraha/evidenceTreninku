@@ -251,7 +251,7 @@ if ($sportovecId !== null) {
         try {
             $stmtOpen = $pdo->prepare("
                 SELECT * FROM sportovec_obdobi
-                WHERE sportovec_id = ? AND (datum_do IS NULL OR datum_do = '0000-00-00')
+                WHERE sportovec_id = ? AND (datum_do IS NULL OR datum_do = '0000-00-00') AND vyplaceno = 0
                 ORDER BY datum_od DESC LIMIT 1
             ");
             $stmtOpen->execute([$sportovecId]);

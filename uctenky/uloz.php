@@ -3,6 +3,8 @@ require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/funkce.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/private_storage.php';
+require_once __DIR__ . '/../includes/financial_event_guard.php';
+require_once __DIR__ . '/../includes/financial_receipt_files.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -11,7 +13,7 @@ if (!isset($_SESSION['trener_id']) || !canAccess('uctenky')) {
     exit;
 }
 
-if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_verify($_POST['csrf_token'] ?? '')) {
     echo json_encode(['status' => 'error', 'message' => 'Neplatný CSRF token.']);
     exit;
 }
@@ -37,16 +39,16 @@ if ($kategorie === '') {
 }
 
 $old_data = null;
-$newReceiptKey = null;
-$oldReceiptToDelete = null;
+$fileMutations = fileMutationBegin();
 
 try {
     $pdo->beginTransaction();
     if ($id > 0) {
-        $stmt = $pdo->prepare("SELECT * FROM ucto_uctenky WHERE id = ?");
-        $stmt->execute([$id]);
-        $old_data = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$old_data) throw new RuntimeException('Účtenka nebyla nalezena.');
+        $old_data = financialReceiptLock($pdo, $id);
+    }
+    financialReceiptAssertMutable($pdo, $old_data, $udalost_id);
+
+    if ($id > 0) {
 
         $stmt = $pdo->prepare("UPDATE ucto_uctenky SET
             castka = ?, platba = ?, kategorie = ?, vozidlo_id = ?, udalost_id = ?,
@@ -77,9 +79,12 @@ try {
             (string)$_FILES['obrazek']['tmp_name'],
             PRIVATE_STORAGE_RECEIPTS
         );
-        $newReceiptKey = $obrazek_path;
+        $newPath = privateStorageResolve($obrazek_path);
+        if ($newPath === null) throw new RuntimeException('Novou přílohu nelze ověřit.');
+        $fileMutations['finalized'][] = $newPath;
         if ($old_data && !empty($old_data['obrazek_path'])) {
-            $oldReceiptToDelete = (string)$old_data['obrazek_path'];
+            $oldPath = privateStorageResolve((string)$old_data['obrazek_path']);
+            if ($oldPath !== null) fileMutationRetire($fileMutations, $oldPath);
         }
         $pdo->prepare("UPDATE ucto_uctenky SET obrazek_path = ? WHERE id = ?")->execute([$obrazek_path, $id]);
     }
@@ -94,17 +99,11 @@ try {
     );
 
     $pdo->commit();
-    if (is_string($oldReceiptToDelete) && $oldReceiptToDelete !== '') {
-        try { privateStorageSoftDelete($oldReceiptToDelete); } catch (Throwable $cleanupException) {
-            error_log('uctenky/uloz.php old receipt cleanup: ' . $cleanupException->getMessage());
-        }
-    }
+    financialReceiptFilesCommitted($fileMutations);
     echo json_encode(['status' => 'ok']);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
-    if (is_string($newReceiptKey) && $newReceiptKey !== '') {
-        try { privateStorageSoftDelete($newReceiptKey); } catch (Throwable) {}
-    }
+    fileMutationRollback($fileMutations);
     error_log('uctenky/uloz.php: ' . $e->getMessage());
     $message = $e instanceof PDOException ? 'Chyba při ukládání.' : $e->getMessage();
     echo json_encode(['status' => 'error', 'message' => $message]);

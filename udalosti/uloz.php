@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/funkce.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/financial_event_guard.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -10,7 +11,7 @@ if (!isset($_SESSION['trener_id']) || !canAccess('udalosti')) {
     exit;
 }
 
-if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_verify($_POST['csrf_token'] ?? '')) {
     echo json_encode(['status' => 'error', 'message' => 'Neplatný CSRF token.']);
     exit;
 }
@@ -27,16 +28,21 @@ $zalohova_castka = isset($_POST['zalohova_castka']) && $_POST['zalohova_castka']
 $zalohu_predal   = trim($_POST['zalohu_predal'] ?? '');
 $stav            = $_POST['stav'] ?? 'otevrena';
 
+if (!in_array($stav, ['otevrena', 'uzavrena'], true)) {
+    echo json_encode(['status' => 'error', 'message' => 'Neplatný stav finanční akce.']);
+    exit;
+}
+
 if (!$nazev || !$datum_od || !$datum_do || !$typ) {
     echo json_encode(['status' => 'error', 'message' => 'Chybí povinné údaje (název, datum od, datum do, typ).']);
     exit;
 }
 
 try {
+    $pdo->beginTransaction();
     if ($id > 0) {
-        $stmt = $pdo->prepare("SELECT * FROM ucto_udalosti WHERE id = ?");
-        $stmt->execute([$id]);
-        $old_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $old_data = financialEventLock($pdo, $id);
+        financialEventAssertOpen($old_data);
 
         $stmt = $pdo->prepare("
             UPDATE ucto_udalosti
@@ -57,8 +63,10 @@ try {
         zapisAuditLog($pdo, $vytvoril_id, 'Přidání události', 'ucto_udalosti', $new_id, json_encode($_POST));
     }
 
+    $pdo->commit();
     echo json_encode(['status' => 'ok']);
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
     error_log('udalosti/uloz.php: ' . $e->getMessage());
-    echo json_encode(['status' => 'error', 'message' => 'Chyba při ukládání.']);
+    echo json_encode(['status' => 'error', 'message' => $e instanceof FinancialEventConflict ? $e->getMessage() : 'Chyba při ukládání.']);
 }

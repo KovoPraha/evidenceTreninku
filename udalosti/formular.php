@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/financial_event_guard.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('udalosti')) {
     header('Location: ../login.php');
@@ -27,6 +28,7 @@ if ($id > 0) {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row) $udalost = $row;
 }
+$readOnly = $id > 0 && ($udalost['stav'] ?? '') !== 'otevrena';
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -56,7 +58,11 @@ if ($id > 0) {
 
   <div class="card shadow-sm">
     <div class="card-body">
+      <?php if ($readOnly): ?>
+        <div class="alert alert-warning" role="status"><?= h(financialEventBlockedMessage($id)) ?></div>
+      <?php endif; ?>
       <form id="formular-udalost">
+        <fieldset <?= $readOnly ? 'disabled' : '' ?>>
         <?= csrf_field() ?>
         <input type="hidden" name="id" value="<?= $id ?>">
 
@@ -142,6 +148,7 @@ if ($id > 0) {
             <i class="bi bi-arrow-left me-1"></i>Zpět
           </a>
         </div>
+        </fieldset>
       </form>
     </div>
   </div>
