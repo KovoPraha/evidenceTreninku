@@ -6,7 +6,10 @@ Vlastník 22. 10. 2026 schválil doplnění kontroly před zveřejněním produk
 Produkty #274, #243 a #245 mají zůstat beze změny; historické a stálé
 příspěvkové VS se nesmějí přepisovat. Implementace je v odděleném worktree
 `evidencePavel-publication-accounting-20261022`, založeném z `origin/main`
-`b6b4251548fc6a99a4c654dc00a70589cc8d2386`. Tento řez zatím není nasazený.
+`b6b4251548fc6a99a4c654dc00a70589cc8d2386`. Řez byl následně vydán z
+[PR #164](https://github.com/KovoPraha/evidenceTreninku/pull/164) a úspěšně
+nasazen 22. 10. 2026 jako `cc9c9280f137465eb59f20523d827b5502416e20`.
+[Produkční důkazy a hranice ověření](SHOP_PUBLICATION_ACCOUNTING_RELEASE_2026-10-22.md).
 
 Samostatně schválené produkční mapování bylo před touto implementací uloženo
 přes administraci: 2 nadkategorie, 12 nových řad, 13 katalogových mapování,
@@ -49,9 +52,12 @@ PHP souborů a `git diff --check` prošly.
 (loopback port 3319, samostatná syntetická databáze následně odstraněna).
 Ověřil odmítnutí Nezařazeno, přijetí explicitní řady v transakci bez
 přidělení čísla, souběžnou alokaci, idempotenci, ochranu před dvěma editory
-a kontrolní otisky VS. Matice CI MariaDB 10.3/11.4 pro tento řez zatím neběžela.
+a kontrolní otisky VS. Matice CI MariaDB 10.3/11.4 a CodeQL prošly na PR
+i výsledném aplikačním main; produkční deploy i porovnání historických VS
+jsou úspěšné. Tři odložené produkty byly porovnány před/po bez jejich uložení.
 
 Neobsahuje migraci ani produkční datovou opravu. Vlastník následně 22. 10.
 2026 výslovně schválil push, PR, merge po zelených kontrolách a chráněné
-produkční nasazení. Ověření blokace bude provedeno bez zápisu produktů;
-nasazení tohoto řezu se teprve připravuje.
+produkční nasazení. Ověření blokace bylo provedeno bez zápisu produktů;
+deploy [39779478133](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39779478133)
+je úspěšný, `uat_schvaleno=false`, `importovat_krouzky=false`.
