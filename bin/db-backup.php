@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.5';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -157,6 +157,14 @@ function ownedColumnsPresentInSnapshot(array $columns): array
  * jidlo_*, bar_*, results_* and legacy/archive tables are not owned here.
  */
 const EVIDENCE_TABLES = [
+    'shop_accounting_groups',
+    'shop_accounting_categories',
+    'shop_accounting_mappings',
+    'shop_number_series_settings',
+    'shop_number_series_counters',
+    'shop_order_number_assignments',
+    'shop_order_accounting_items',
+    'shop_number_series_events',
     'account_person_claim_events',
     'account_person_claim_requests',
     'account_person_role_events',

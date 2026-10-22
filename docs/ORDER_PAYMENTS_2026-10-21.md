@@ -36,6 +36,30 @@ polí `payments.method` a `payments.payment_source`.
 Stejný formulář je dostupný přímo v pracovní pozici **Hospodář a platby**
 na stránce **Platby a vratky**.
 
+## Jak stornovat zaplacenou objednávku a zaevidovat vratku
+
+1. V **Objednávkách** vyhledejte přesný kód objednávky. V části
+   **Stornovat objednávku** vyplňte důvod, potvrďte storno a klikněte
+   na **Stornovat**.
+2. Objednávka přejde do **Stornováno**, sklad se vrátí a platba do
+   **Čeká na vrácení hospodářem**. Peníze tím ještě nejsou vrácené.
+3. Použijte **Přepnout na Hospodáře a otevřít vratku**. Na stránce
+   **Platby a vratky** vyhledejte kód objednávky a zkontrolujte zákazníka
+   i částku; tento přechod sám nepředvyplňuje filtr objednávky.
+4. Po skutečném vrácení peněz zapište do **Potvrdit odeslanou vratku**
+   referenci transakce nebo pokladního dokladu a způsob ověření vratky.
+   Formulář pouze eviduje již provedené vrácení; peníze sám neodesílá.
+5. Zaškrtněte **Peníze byly skutečně odeslány** a klikněte na
+   **Potvrdit vratku**. U hotovosti tím potvrzujete skutečné vydání peněz
+   zákazníkovi podle uvedeného pokladního dokladu.
+6. Zkontrolujte konečný stav **Stornováno / Vráceno**, zachovaný způsob
+   úhrady **Hotově** a zapsanou referenci, autora, čas a důvod vratky.
+
+Tento postup byl ověřen na izolované TEST objednávce za 1 Kč; příjem i vratka
+byly výslovně označené simulace. [Produkční protokol](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md)
+obsahuje jednotlivé stavy a důkazy. U skutečné objednávky potvrzujte pouze
+skutečně převzaté nebo vrácené peníze.
+
 ## Pravidla
 
 - Změna způsobu a potvrzení přijetí probíhají společně v jedné transakci.
@@ -76,7 +100,7 @@ Samostatná HTTP kontrola po nasazení: homepage a veřejný e-shop vracejí 200
 `eshop_orders_admin.php` a `eshop_payments_admin.php` vracejí nepřihlášenému
 302 na `login.php`. Odpovědi neobsahují PHP fatal/parse chybu ani warning.
 
-## Dokončené přihlášené ověření formuláře 21. 10. 2026
+## Předchozí přihlášené ověření formuláře bez zápisu 21. 10. 2026
 
 Původní výpadek připojení Chrome byl překonán novou kartou a dokumentovaným
 DOM ovládáním. Kontrola proběhla na produkci po úspěšném navazujícím

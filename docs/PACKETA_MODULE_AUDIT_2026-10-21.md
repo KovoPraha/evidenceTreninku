@@ -31,6 +31,13 @@ tímto reportem ověřeny. Lokální simulace zůstává vypnutá.
 
 ## Závěr a doporučení
 
+### Autorizace vydání 22. 10. 2026
+
+Vlastník výslovně schválil commit, push a nasazení připravených úprav.
+Dopravu i simulaci ponechat vypnutou, neodesílat skutečné e-maily/zásilky.
+[Průběh vydání a produkční důkazy](PACKETA_RELEASE_2026-10-22.md) mají
+přednost před staršími zákazy nasazení níže. Fakturace nadále odložená.
+
 ### Propojení veřejného klíče a skutečná mapa — dokončeno 22. 10. 2026
 
 Vlastník autorizoval převzetí veřejného klíče do lokálního KIS a ověření

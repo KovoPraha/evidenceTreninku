@@ -1,5 +1,14 @@
 # Aktuální předání vývoje na další stanici
 
+## Autorizované vydání Zásilkovny — 22. 10. 2026
+
+Vlastník schválil commit, push a nasazení připravených úprav. Dopravu i
+simulaci ponechat vypnutou, neodesílat e-maily ani zásilky, fakturace odložená.
+[Aktuální release checklist](PACKETA_RELEASE_2026-10-22.md) má přednost před
+staršími zákazy vzdálených kroků a historickými průběžnými výsledky níže.
+Začleněn main `886c07b2` včetně číselných řad a ochrany původních VS;
+společný zálohovací kontrakt `2026-10-22.1` zachovává obě nové datové smlouvy.
+
 ## Veřejný klíč a skutečná mapa — lokální PASS 22. 10. 2026
 
 Po přihlášení vlastníka převzat jen veřejný klíč widgetu do lokálního KIS,
@@ -64,6 +73,48 @@ Audit obsahuje úkoly mimo KIS, oddělení cílového boxu od místa podání,
 bezpečný postup pro sdílenou poštovní frontu, API etapu a šest rozhodnutí
 vlastníka. Ostrý účet/mapa, CRON ani doručení nebyly v analýze ověřeny.
 
+Nasazeno 21. 10. 2026: číselné řady a účetní kategorie z [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160).
+Aplikační SHA `1441683ae1ae2bb9da16d8be3af62ce40f35385c`,
+[deploy 39609254832](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39609254832)
+prošel zálohou 238 tabulek / 2 triggerů, 111 aktuálními migracemi, aktivací a HTTP 200.
+Kontrola VS před/po vrátila `unchanged=true`: osm plateb nezměněno; obě
+tabulky stálých příspěvkových VS jsou prázdné a zůstaly prázdné. CI výsledného
+main i CodeQL zelené; 1 193 testů / 26 739 kontrol a MariaDB 10.3/11.4.
+Živě ověřeno finanční menu, sedm řad, náhledy, mapování, audit, ochrana formulářů
+a odmítnutí jiné aktivní pozice. Původní VS objednávky `0000000013` zachován,
+role Objednávky obnovena. Žádné nastavení, objednávka ani úhrada se při browser
+kontrole nezapsaly; mapování z localhostu se nepřenášelo. `uat_schvaleno=false`,
+`importovat_krouzky=false`. [Produkční report](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md)
+a [návod](SHOP_NUMBER_SERIES_2026-10-21.md) jsou aktuální. Tento navazující
+dokumentační řez nepřidává aplikační změny; následující lokální stavy jsou historie.
+
+Aktuální autorizace 21. 10. 2026 pro číselné řady: vlastník výslovně schválil
+push, PR, merge po zelených kontrolách a chráněné produkční nasazení. Starší
+lokální omezení tohoto řezu níže je historické. Zachovat všechny existující
+VS a příspěvkové rezervace; produkční ověření administrace pouze čtením.
+Podrobný průběh vydání je v [plánu číselných řad](SHOP_NUMBER_SERIES_2026-10-21.md).
+
+Lokální práce 21. 10. 2026: číselné řady e-shopu RR N KK XXXXX a účetní
+kategorie na větvi `codex/shop-number-series-20261021`, worktree
+`C:\xampp\htdocs\evidencePavel-number-series-20261021`.
+[Plán a stav](SHOP_NUMBER_SERIES_2026-10-21.md) je autoritou pro tento řez.
+Vlastník schválil implementaci bez produkčního nasazení; staré VS a stálé VS
+příspěvků zachovat. Následující autorizace jiných řezů se na tuto práci nevztahují.
+Lokálně dokončeno: administrace v agendě Hospodář a platby, účetní číselník,
+mapování s děděním, smíšená řada 9/00, nezařazené 8/00, všechny tři nákupní
+cesty a neměnné zařazení položek. Závěrem 1 190 testů / 26 730 kontrol, nový
+MariaDB souběh a původní checkout smoke prošly; záloha/obnova 198 tabulek.
+Browser ověřil oprávnění, uložení čítače a mapování i audit bez konzolových chyb.
+Bez push, merge a nasazení. Lokální náhled je `http://localhost:8921/`;
+podrobnosti, limity a historické migrační varování jsou v odkazovaném plánu.
+
+Aktuální autorizace 21. 10. 2026: vlastník schválil commit, push a produkční
+nasazení stavů/Zásilkovny/systémových e-mailů. Starší zákaz nasazení níže je
+historický. Platí zákaz skutečné pošty při ověřování a odložení fakturace.
+Simulace v lokálním configu vypnuta. Začleněno `61ed7385`, kontrakt `.4`,
+nové testy 1 178/26 530 a MariaDB záloha/obnova 190 tabulek prošly.
+[Aktuální kroky vydání](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md#aktuální-autorizace-vydání-21-10-2026)
+jsou nyní autoritou pro tento řez; pokračovat push/PR/CI a chráněným deployem.
 Nasazeno 21. 10. 2026: stavy, oprava akcí Zásilkovny a verzovaný editor šesti
 systémových e-mailů z [PR #156](https://github.com/KovoPraha/evidenceTreninku/pull/156).
 Aplikační SHA `574328421fff748b48f7d744a3ce454b9b50dd1e`,
@@ -89,6 +140,13 @@ TEST reference a audit zachovány. Nový TEST produkt #296 / varianta #950
 zůstává stažený, sklad 1 → 0 → 1. Skutečné objednávky ani peníze se neměnily;
 původní pracovní pozice byla obnovena. [Přesný protokol](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md)
 rozlišuje tuto simulaci od plného UAT a ověření skutečného převodu.
+
+Platební scénář je uzavřený; nečeká na další potvrzení ani vratku. Protokol
+byl začleněn v [PR #157](https://github.com/KovoPraha/evidenceTreninku/pull/157),
+commit `a0e2bac12cf6818120f2dd5515499bfe5d7dc601`; PHPUnit, MariaDB 10.3/11.4
+a CodeQL prošly. [Provozní návod](ORDER_PAYMENTS_2026-10-21.md) obsahuje příjem
+i samostatnou vratku. TEST záznamy ponechat pro audit. Tato dokumentační
+aktualizace nevyžaduje nový produkční deploy; plné UAT zůstává samostatné.
 
 
 Lokální výsledek 21. 10. 2026: na větvi

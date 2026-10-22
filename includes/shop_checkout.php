@@ -6,6 +6,7 @@ require_once __DIR__.'/club_registration_consents.php';
 require_once __DIR__.'/shop_coupon.php';
 require_once __DIR__.'/shop_payment_policy.php';
 require_once __DIR__.'/club_finance.php';
+require_once __DIR__.'/shop_number_series.php';
 
 final class ShopCheckoutException extends RuntimeException
 {
@@ -429,7 +430,7 @@ function shopCheckoutPlace(
             $pdo->prepare('INSERT INTO shop_coupon_redemptions(coupon_id,order_id,account_id,code_snapshot,discount_type_snapshot,value_snapshot,discount_minor,eligible_subtotal_minor,applicability_mask_snapshot) VALUES (?,?,?,?,?,?,?,?,?)')
                 ->execute([(int)$coupon['id'],$orderId,$accountId,(string)$coupon['code'],(string)$coupon['discount_type'],(int)$coupon['value_minor_or_basis_points'],$discount,(int)$coupon['eligible_subtotal_minor'],(int)$coupon['applicability_mask']]);
         }
-        $variableSymbol=shopPaymentVariableSymbol($orderId);
+        $variableSymbol=shopOrderAssignVariableSymbol($pdo,$orderId);
         $spd=shopPaymentSpdPayload($bank['iban'],$total,$currency,$variableSymbol,'OBJEDNAVKA '.$publicCode);
         if(shopPaymentPolicyColumnExists($pdo,'payments','accepted_payment_methods')){
             $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,accepted_payment_methods,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) '
@@ -450,6 +451,7 @@ function shopCheckoutPlace(
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
+        if($exception instanceof ShopNumberSeriesException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         if($exception instanceof ClubProgramException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         if($exception instanceof PublicVelodromeShopException||$exception instanceof ClubEventShopException||$exception instanceof ClubEventRegistrationException||$exception instanceof ClubFinanceException)throw new ShopCheckoutException($exception->getMessage(),0,$exception);
         $reference=shopCheckoutDiagnosticReference($keyHash,$orderId);

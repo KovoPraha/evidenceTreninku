@@ -1,5 +1,13 @@
 # Session handoff
 
+## Autorizované vydání Zásilkovny — 22. 10. 2026
+
+Schválen commit, push a chráněné produkční nasazení připravených úprav;
+zákaz aktivace dopravy/simulace a skutečných e-mailů/zásilek trvá.
+[Aktuální checklist](../PACKETA_RELEASE_2026-10-22.md) nahrazuje historické
+lokální omezení tohoto řezu níže. Začleněn main `886c07b2`, zachovány
+číselné řady, VS a migrace; zálohovací kontrakt `2026-10-22.1`.
+
 ## Veřejný klíč a skutečná mapa — dokončeno lokálně 22. 10. 2026
 
 Uživatel obnovil přihlášení. Veřejný 16znakový klíč uložen přes lokální UI;
@@ -64,6 +72,25 @@ Sdílený mail worker zahrnuje i auth frontu; bez posouzení backlogu nespoušt�
 Soubor obsahuje vnější nastavení, rozhodnutí Marka, etapy a akceptační bránu.
 Žádný aplikační kód, konfigurace, skutečná zásilka/e-mail ani nasazení se
 v této analýze neměnily; simulace zůstává vypnutá a fakturace odložená.
+## Produkční výsledek 21. 10. 2026 — číselné řady a účetní kategorie
+
+[PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160) je sloučený;
+[deploy 39609254832](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39609254832)
+nasadil přesně `1441683ae1ae2bb9da16d8be3af62ce40f35385c`. Záloha 238 tabulek / 2
+triggerů, 111 migrací aktuálních, HTTP 200. CI main, CodeQL, MariaDB 10.3/11.4
+a 1 193 testů / 26 739 kontrol zelené. Otisky všech osmi dosavadních plateb
+před/po stejné, `unchanged=true`; tabulky stálých příspěvkových VS mají 0/0
+řádků. Neprázdné příspěvkové rezervace pokrývají automatické testy.
+
+Živá administrace má sedm výchozích řad, správu účetních kategorií, mapování
+91 katalogových kategorií a 292 produktů, roční čítače a audit. Smíšené 9/00,
+nezařazené 8/00. Přihlášená prohlídka neodeslala formuláře, nevytvořila novou
+objednávku ani nepotvrdila platbu. Původní VS `0000000013` znovu ověřen po
+aktivaci a původní role Objednávky obnovena. `uat_schvaleno=false`,
+`importovat_krouzky=false`; faktury a účetní export zůstávají mimo rozsah.
+[Report](../SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md) a
+[návod](../SHOP_NUMBER_SERIES_2026-10-21.md) obsahují důkazy a hranice.
+Navazující dokumentace nemění nasazené aplikační SHA a nevyžaduje další deploy.
 
 ## Produkční výsledek 21. 10. 2026 — stavy a systémové e-maily
 
