@@ -2,8 +2,9 @@
 
 Aktualizace: 22. 10. 2026, Europe/Prague. Původní analýza nasazeného modulu byla
 následným rozhodnutím vlastníka rozšířena o lokální přípravu jednoduchého
-ručního provozu. Aktuální výsledek je níže. Žádné nové nasazení, změny
-produkce, skutečné zásilky/e-maily ani fakturace nejsou součástí této etapy.
+ručního provozu. Po autorizaci vlastníka byl modul 22. 10. 2026 nasazen
+s vypnutou dopravou a simulací. Skutečné zásilky/e-maily ani fakturace
+nejsou součástí této etapy; aktuální produkční důkazy jsou níže.
 
 Pracovní větev: `codex/packeta-module-audit-20261021`, worktree
 `C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
@@ -37,6 +38,16 @@ Vlastník výslovně schválil commit, push a nasazení připravených úprav.
 Dopravu i simulaci ponechat vypnutou, neodesílat skutečné e-maily/zásilky.
 [Průběh vydání a produkční důkazy](PACKETA_RELEASE_2026-10-22.md) mají
 přednost před staršími zákazy nasazení níže. Fakturace nadále odložená.
+
+**Nasazeno:** [PR #162](https://github.com/KovoPraha/evidenceTreninku/pull/162),
+SHA `b6b4251548fc6a99a4c654dc00a70589cc8d2386`,
+[deploy 39776493246](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39776493246).
+Záloha 246 tabulek / 2 triggerů, 112 aktuálních migrací, původní VS
+nezměněny, HTTP 200. Po nasazení přes UI: **cena 150 Kč, doprava vypnutá,
+simulace vypnutá, klíč prázdný**. Checkbox fyzického produktu a samostatné
+PPL zobrazeny; fronta beze změny **3 pending / 0 pokusů / 0 sent** se shodným
+otiskem tabulky. Žádné nové objednávky, zásilky, e-maily ani spuštění workeru.
+Lokální veřejný klíč se nepřenášel. Podrobné důkazy a limity v release reportu.
 
 ### Propojení veřejného klíče a skutečná mapa — dokončeno 22. 10. 2026
 

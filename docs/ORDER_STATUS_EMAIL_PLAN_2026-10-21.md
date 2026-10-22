@@ -2,6 +2,19 @@
 
 Aktualizace: 22. 10. 2026, Europe/Prague.
 
+## Nasazení ruční Zásilkovny — dokončeno 22. 10. 2026
+
+[PR #162](https://github.com/KovoPraha/evidenceTreninku/pull/162) a úspěšný
+[deploy 39776493246](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39776493246)
+nasadily `b6b4251548fc6a99a4c654dc00a70589cc8d2386` po zeleném CI včetně
+MariaDB 10.3/11.4 a CodeQL. Zachovány číselné řady a původní VS, záloha
+246 tabulek / 2 triggerů, 112 aktuálních migrací, HTTP 200.
+Živě ověřeny cena 150 Kč, checkbox produktu, objednávky/stavy a fronta;
+**doprava i simulace vypnuté, klíč prázdný**, 3 pending / 0 pokusů / 0 sent,
+shodný otisk fronty před/po. Žádné objednání, e-mail nebo podání zásilky.
+[Úplný report a důkazy](PACKETA_RELEASE_2026-10-22.md) mají přednost před
+historickými lokálními omezeními a průběžnými počty níže. Fakturace odložena.
+
 ## Navazující jednoduchý ruční provoz — lokálně hotovo
 
 Vlastník zvolil české Z-BOXy a podání pouze boxem, Kovo Praha jako odesílatele

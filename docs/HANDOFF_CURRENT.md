@@ -23,6 +23,21 @@ Vlastník schválil commit, push a nasazení připravených úprav. Dopravu i
 simulaci ponechat vypnutou, neodesílat e-maily ani zásilky, fakturace odložená.
 [Aktuální release checklist](PACKETA_RELEASE_2026-10-22.md) má přednost před
 staršími zákazy vzdálených kroků a historickými průběžnými výsledky níže.
+PR #162 sloučen na `b6b4251548fc6a99a4c654dc00a70589cc8d2386`;
+CI 39776280900 (PHPUnit, MariaDB 10.3/11.4) a CodeQL 39776275878 zelené.
+Deploy 39776493246 úspěšně nasadil tento SHA, oba volitelné příznaky false.
+Lokálně 1 198/26 816 PASS, záloha/obnova 198 tabulek PASS, 112 migrací.
+Záloha 246 tabulek / 2 triggerů, 112 aktuálních migrací, původní VS
+nezměněny (osm plateb), HTTP 200. Produkčně přes UI ověřeny cena **150 Kč**,
+**doprava vypnutá, simulace vypnutá, klíč prázdný**. Produkt #296 zůstává
+Stažený a má nový checkbox Packety; PPL je samostatné. Objednávky i stavy
+se načítají. Fronta před/po shodná: **3 pending / 0 pokusů / 0 sent**,
+shodný otisk celé tabulky. Žádné objednání, podání, opakování zprávy ani
+worker; původní pozice Finance obnovena. Veřejný klíč zůstal jen lokálně.
+Packeta objednávky na produkci nejsou, expediční akce tedy ověřeny testy,
+nikoli skutečným podáním. Aktuální produkční protokol je v release checklistu.
+Dokumentační větev nyní
+`codex/packeta-release-proof-20261022`, žádná změna aplikace v tomto řezu.
 Začleněn main `886c07b2` včetně číselných řad a ochrany původních VS;
 společný zálohovací kontrakt `2026-10-22.1` zachovává obě nové datové smlouvy.
 
