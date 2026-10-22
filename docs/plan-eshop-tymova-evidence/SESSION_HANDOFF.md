@@ -1,5 +1,24 @@
 # Session handoff
 
+## Produkční účetní kontrola publikace — 22. 10. 2026
+
+Schválený push, PR a deploy dokončeny: [PR #164](https://github.com/KovoPraha/evidenceTreninku/pull/164),
+aplikační SHA `cc9c9280f137465eb59f20523d827b5502416e20`,
+[deploy 39779478133](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39779478133)
+úspěšný (false/false). PHPUnit 1 214/26 960, MariaDB 10.3/11.4 a CodeQL
+zelené na PR i aplikačním main. Záloha 246 tabulek / 2 triggerů, migrace
+aktuální, `pending=[]`, HTTP 200. Osm původních platebních VS má shodný
+otisk před/po; obě tabulky stálých VS zůstaly prázdné.
+Živě pouze čtením ověřena blokace Nezařazeno u #274 a #243; všechny tři
+odložené produkty #274/#243/#245 zachovaly katalogový řádek, hlavní údaje,
+variantu, SKU, cenu, sklad i stav Zveřejněný. Program smí použít platnou
+výchozí řadu 1/00. Žádný produkt ani platba se při ověření neuložily.
+Nedělat automatickou opravu/stažení odložených produktů ani změnu starých VS.
+[Produkční report](../SHOP_PUBLICATION_ACCOUNTING_RELEASE_2026-10-22.md),
+[implementace](../SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md).
+Dokumentační větev `codex/shop-publication-release-proof-20261022` nevyžaduje
+nové nasazení aplikace.
+
 ## Autorizované vydání Zásilkovny — 22. 10. 2026
 
 Schválen commit, push a chráněné produkční nasazení připravených úprav;

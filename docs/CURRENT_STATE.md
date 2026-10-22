@@ -1,5 +1,19 @@
 # Aktuální stav projektu
 
+22. 10. 2026: kontrola účetního zařazení před zveřejněním produktu je na
+produkci z [PR #164](https://github.com/KovoPraha/evidenceTreninku/pull/164),
+SHA `cc9c9280f137465eb59f20523d827b5502416e20`,
+[deploy 39779478133](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39779478133)
+úspěšný. PR i aplikační main: 1 214 testů / 26 960 kontrol, MariaDB 10.3/11.4
+a CodeQL zelené. Záloha 246 tabulek / 2 triggerů, migrace aktuální,
+`pending=[]`, HTTP 200. Osm původních VS nezměněno (`unchanged=true`), obě
+tabulky stálých VS zůstaly prázdné. Živé GET ověření ukázalo blokaci
+Nezařazeno bez publikačního formuláře u #274 a #243; data, ceny, sklady
+a dosavadní stav zveřejnění všech tří odložených produktů jsou shodné.
+Bez migrace a automatické datové opravy, false/false. Podrobnosti v
+[produkčním reportu](SHOP_PUBLICATION_ACCOUNTING_RELEASE_2026-10-22.md).
+Následující časové záznamy zachycují starší vydání.
+
 Nejnovější vydání 21. 10. 2026: číselné řady RR N KK XXXXX a účetní kategorie
 z [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160) jsou na produkci.
 Aplikační SHA `1441683ae1ae2bb9da16d8be3af62ce40f35385c`,
