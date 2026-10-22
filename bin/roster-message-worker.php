@@ -57,6 +57,8 @@ try {
         }
         $sender = localMessageOutboxSender($appHost, 'roster-message-local-outbox-v1', $directory);
     }
+    require_once $root.'/includes/operational_jobs.php';
+    $jobRun=operationalJobStart($pdo,'roster_messages');
     $processed = 0;
     $sent = 0;
     $failed = 0;
@@ -68,12 +70,14 @@ try {
         $processed++;
         $result ? $sent++ : $failed++;
     }
+    operationalJobFinish($pdo,$jobRun,$failed===0,$failed===0?'completed':'queue_delivery_failed');
     echo json_encode(
         ['processed' => $processed, 'sent' => $sent, 'failed' => $failed, 'transport' => $transport],
         JSON_UNESCAPED_UNICODE
     ) . PHP_EOL;
     exit($failed > 0 ? 2 : 0);
 } catch (Throwable $exception) {
+    if(isset($jobRun,$pdo)){try{operationalJobFinish($pdo,$jobRun,false,'worker_exception');}catch(Throwable){}}
     error_log('roster-message-worker.php: ' . $exception->getMessage());
     fwrite(STDERR, "Zpracovani zprav soupisky selhalo.\n");
     exit(1);

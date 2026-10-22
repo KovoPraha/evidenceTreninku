@@ -17,7 +17,7 @@ function localMessageOutboxSender(string $appHost, string $schema, string $direc
     if (preg_match('/^[a-z0-9][a-z0-9.-]{2,80}$/D', $schema) !== 1) {
         throw new InvalidArgumentException('Neplatné schéma lokálního outboxu.');
     }
-    if (!is_dir($directory) && !mkdir($directory, 0700, true) && !is_dir($directory)) {
+    if (!is_dir($directory) && !@mkdir($directory, 0700, true) && !is_dir($directory)) {
         throw new RuntimeException('Adresář testovacího outboxu nelze vytvořit.');
     }
     $resolved = realpath($directory);

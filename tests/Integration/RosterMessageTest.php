@@ -17,6 +17,16 @@ final class RosterMessageTest extends TestCase
         $message=\rosterMessageEnqueue($pdo,10,$preview['subject'],$preview['body'],$preview['fingerprint'],7,'Provozní změna času.',true);self::assertSame(1,$message['recipient_count']);$sent=[];$result=\rosterMessageProcessOne($pdo,static function(string$email,string$subject,string$body)use(&$sent):bool{$sent=[$email,$subject,$body];return true;});self::assertTrue($result);self::assertSame('parent@example.test',$sent[0]);self::assertSame('sent',$pdo->query('SELECT status FROM roster_messages')->fetchColumn());self::assertNull(\rosterMessageProcessOne($pdo,static fn():bool=>true));
     }
 
+    public function testRemovedRelationshipBlocksAlreadyQueuedMessage():void
+    {
+        $pdo=$this->database();$migration=require dirname(__DIR__,2).'/migrations/20260922130000_roster_messages.php';$migration['up']($pdo);
+        $preview=\rosterMessagePreview($pdo,10,'Změna','LOCALHOST NEPLATIT');
+        \rosterMessageEnqueue($pdo,10,$preview['subject'],$preview['body'],$preview['fingerprint'],7,'Test doručení.',true);
+        $pdo->exec("UPDATE account_person_roles SET status='revoked'");$calls=0;
+        self::assertFalse(\rosterMessageProcessOne($pdo,static function()use(&$calls){$calls++;return true;}));
+        self::assertSame(0,$calls);self::assertSame('failed',$pdo->query('SELECT status FROM roster_message_recipients')->fetchColumn());
+    }
+
     private function database():PDO
     {
         $pdo=new PDO('sqlite::memory:');$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);

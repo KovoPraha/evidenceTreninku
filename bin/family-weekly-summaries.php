@@ -55,6 +55,8 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
+    require_once $root.'/includes/operational_jobs.php';
+    $jobRun=operationalJobStart($pdo,'family_weekly');
     $generation = $generate ? familyWeeklyDeliveryGenerate($pdo, null, $force) : null;
     $processed = $sent = $failed = 0;
     $transport = 'none';
@@ -68,8 +70,10 @@ try {
             $outcome ? $sent++ : $failed++;
         }
     }
+    operationalJobFinish($pdo,$jobRun,$failed===0,$failed===0?'completed':'queue_delivery_failed');
     echo json_encode(['generation' => $generation, 'transport' => $transport, 'processed' => $processed, 'sent' => $sent, 'failed' => $failed], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
 } catch (Throwable $exception) {
+    if(isset($jobRun,$pdo)){try{operationalJobFinish($pdo,$jobRun,false,'worker_exception');}catch(Throwable){}}
     error_log('family-weekly-summaries.php: ' . $exception->getMessage());
     fwrite(STDERR, "Zpracovani tydennich souhrnu selhalo; podrobnosti jsou pouze v serverovem logu.\n");
     exit(1);

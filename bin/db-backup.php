@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -292,6 +292,17 @@ const EVIDENCE_TABLES = [
     'staff_superadmins',
     'staff_user_positions',
     'staff_account_events',
+    'person_identity_reviews',
+    'person_identity_review_events',
+    'club_paper_records',
+    'club_paper_record_events',
+    'booking_notification_context',
+    'operational_job_runs',
+    'notification_authorization_snapshots',
+    'operational_cases',
+    'operational_case_events',
+    'coach_scope_grants',
+    'coach_scope_events',
     'oznameni_targets',
     'payments',
     'password_reset_tokens',

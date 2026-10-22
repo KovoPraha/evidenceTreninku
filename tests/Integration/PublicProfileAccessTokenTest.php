@@ -120,8 +120,17 @@ final class PublicProfileAccessTokenTest extends TestCase
     {
         $before = $_SESSION ?? [];
         try {
-            $_SESSION = ['trener_id' => 5, 'trener_session_version' => 2];
+            $_SESSION = ['trener_id' => 5, 'trener_session_version' => 2, 'staff_positions'=>['coach'], 'staff_active_position'=>'coach'];
             $pdo = $this->database();
+            $pdo->exec("INSERT INTO sportovci VALUES(42,'synthetic')");
+            $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,aktivni INTEGER)');
+            $pdo->exec('INSERT INTO treneri VALUES(5,1)');
+            $pdo->exec('CREATE TABLE staff_user_positions(trainer_id INTEGER,position_code TEXT)');
+            $pdo->exec("INSERT INTO staff_user_positions VALUES(5,'coach')");
+            $pdo->exec('CREATE TABLE sportovec_podskupina(sportovec_id INTEGER,podskupina_id INTEGER)');
+            $pdo->exec('INSERT INTO sportovec_podskupina VALUES(42,10)');
+            $migration=require dirname(__DIR__,2).'/migrations/20261022214000_coach_scope.php';$migration['up']($pdo);
+            $pdo->exec("INSERT INTO coach_scope_grants(trainer_id,scope_kind,scope_id,valid_from,reason,created_by_trainer_id) VALUES(5,'subgroup',10,'2020-01-01 00:00:00','LOCALHOST explicit grant',5)");
             \public_profile_access_grant_staff_session(42);
             self::assertSame(42, \public_profile_access_session_athlete_id($pdo));
             \auth_session_clear_identity('trainer');

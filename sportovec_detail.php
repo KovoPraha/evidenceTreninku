@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
+require_once __DIR__.'/includes/coach_scope.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -50,7 +51,7 @@ if (!empty($_GET['ajax']) && $_GET['ajax'] === 'search') {
     $q   = trim($_GET['q'] ?? '');
     $gid = (isset($_GET['skupina_id']) && ctype_digit($_GET['skupina_id'])) ? (int)$_GET['skupina_id'] : 0;
 
-    $where  = [];
+    $where  = [coachScopePersonPredicate($pdo)];
     $params = [];
 
     if ($q !== '') {
@@ -87,69 +88,10 @@ if (!empty($_GET['ajax']) && $_GET['ajax'] === 'search') {
 
 // ── AJAX: Uložení profilu ───────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save_profile') {
-    $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']);
-    if (!csrf_verify($_POST['csrf_token'] ?? '')) {
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['ok' => false, 'error' => 'Neplatný CSRF token.']);
-            exit;
-        }
-        die('Neplatný CSRF token.');
-    }
-    $sid    = (isset($_POST['sportovec_id']) && ctype_digit($_POST['sportovec_id'])) ? (int)$_POST['sportovec_id'] : 0;
+    // Identity/contact edits use the registrar's audited canonical editor.
+    http_response_code(403);
+    exit('Osobní údaje upravuje registrář v evidenci osob.');
 
-    $uciid    = trim($_POST['uciid']    ?? '');
-    $email    = trim($_POST['email']    ?? '');
-    $kategorie = trim($_POST['kategorie'] ?? '');
-    $narozeni = trim($_POST['narozeni'] ?? '');
-    $oddil    = trim($_POST['oddil']    ?? '');
-
-    if ($sid <= 0) {
-        $errors[] = 'Neplatné ID sportovce.';
-    }
-    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'E-mail není ve správném formátu.';
-    }
-    if ($narozeni !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $narozeni)) {
-        $narozeni = '';  // ignore invalid
-    }
-
-    if (empty($errors)) {
-        try {
-            $pdo->prepare("
-                UPDATE sportovci
-                SET uciid     = :uciid,
-                    email     = :email,
-                    category  = :kat,
-                    narozeni  = :nar,
-                    oddil     = :oddil
-                WHERE id = :id LIMIT 1
-            ")->execute([
-                ':uciid'  => $uciid    ?: null,
-                ':email'  => $email    ?: null,
-                ':kat'    => $kategorie ?: null,
-                ':nar'    => $narozeni ?: null,
-                ':oddil'  => $oddil    ?: null,
-                ':id'     => $sid,
-            ]);
-
-            if ($isAjax) {
-                header('Content-Type: application/json');
-                echo json_encode(['ok' => true]);
-                exit;
-            }
-            header('Location: sportovec_detail.php?id=' . $sid . '&ok=1');
-            exit;
-        } catch (PDOException $e) {
-            $errors[] = 'Chyba při ukládání: ' . $e->getMessage();
-        }
-    }
-
-    if ($isAjax) {
-        header('Content-Type: application/json');
-        echo json_encode(['ok' => false, 'errors' => $errors]);
-        exit;
-    }
 }
 
 if (isset($_GET['ok']) && $_GET['ok'] === '1') $success = true;
@@ -176,7 +118,7 @@ $sportovecId = (isset($_GET['id']) && ctype_digit($_GET['id'])) ? (int)$_GET['id
 // Vyhledávání (bez AJAX)
 $searchResults = [];
 if ($sportovecId === null && (!empty($filterJmeno) || !empty($filterSkupinaId) || !empty($filterPodskupinaId))) {
-    $where  = [];
+    $where  = [coachScopePersonPredicate($pdo)];
     $params = [];
 
     if ($filterJmeno !== '') {
@@ -222,6 +164,7 @@ $statCelkemMereni = 0;
 $statPosledni     = null;
 
 if ($sportovecId !== null) {
+    coachScopeRequirePerson($pdo, $sportovecId);
     $stmt = $pdo->prepare("SELECT * FROM sportovci WHERE id = ?");
     $stmt->execute([$sportovecId]);
     $sportovec = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -246,31 +189,6 @@ if ($sportovecId !== null) {
 
         $statCelkemTr = count($treninky);
         $statPosledni = !empty($treninky) ? $treninky[0]['datum'] : null;
-
-        // ── Kredit ──────────────────────────────────────────────────
-        try {
-            $stmtOpen = $pdo->prepare("
-                SELECT * FROM sportovec_obdobi
-                WHERE sportovec_id = ? AND (datum_do IS NULL OR datum_do = '0000-00-00') AND vyplaceno = 0
-                ORDER BY datum_od DESC LIMIT 1
-            ");
-            $stmtOpen->execute([$sportovecId]);
-            $aktualniObdobi = $stmtOpen->fetch(PDO::FETCH_ASSOC);
-
-            if ($aktualniObdobi) {
-                $od = $aktualniObdobi['datum_od'];
-                $sazbaVObdobi = isset($aktualniObdobi['sazba_kc']) ? (float)$aktualniObdobi['sazba_kc'] : 0.0;
-
-                $stmtCount = $pdo->prepare("
-                    SELECT COUNT(DISTINCT ts.trenink_id) AS pocet
-                    FROM trenink_sportovec ts JOIN treninky t ON t.id = ts.trenink_id
-                    WHERE ts.sportovec_id = :sid AND t.datum >= :od AND t.datum <= :do
-                ");
-                $stmtCount->execute([':sid' => $sportovecId, ':od' => $od, ':do' => date('Y-m-d')]);
-                $pocetTrObdobi = (int)($stmtCount->fetchColumn() ?? 0);
-                $castkaObdobi  = $pocetTrObdobi * $sazbaVObdobi;
-            }
-        } catch (PDOException $e) {}
 
         // ── Zátěžové testy ───────────────────────────────────────────
         try {
@@ -521,11 +439,7 @@ $kategorieMeta = [
                 <div class="fs-3 fw-bold text-success"><?= (int)$statCelkemMereni ?></div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card warning">
-                <div class="text-muted small">Tréninků v období</div>
-                <div class="fs-3 fw-bold" style="color:#f59e0b;"><?= $aktualniObdobi ? (int)$pocetTrObdobi : '—' ?></div>
-            </div>
+
         </div>
         <div class="col-6 col-md-3">
             <div class="stat-card info">
@@ -608,7 +522,7 @@ $kategorieMeta = [
             <?php endif; ?>
 
             <!-- Editace profilu -->
-            <form id="profileForm" method="POST">
+            <p class="small text-muted">Osobní údaje upravuje registrář v evidenci osob.</p><fieldset disabled>
                 <?= csrf_field() ?>
                 <input type="hidden" name="action"       value="save_profile">
                 <input type="hidden" name="sportovec_id" value="<?= (int)$sportovecId ?>">
@@ -643,7 +557,7 @@ $kategorieMeta = [
                     </div>
 
                     <div class="col-12 d-flex gap-2 align-items-center flex-wrap">
-                        <button class="btn btn-success" id="saveProfileBtn" type="submit">
+                        <button class="btn btn-secondary d-none" id="saveProfileBtn" type="button">
                             <span class="profile-save-label">
                                 <i class="bi bi-floppy me-1"></i>Uložit profil
                             </span>
@@ -668,35 +582,8 @@ $kategorieMeta = [
                     </div>
                     <?php endif; ?>
                 </div>
-            </form>
+            </fieldset>
 
-            <!-- Kredit -->
-            <hr class="my-4">
-            <h6 class="mb-3"><i class="bi bi-coin me-1 text-warning"></i>Aktuální kredit</h6>
-            <?php if ($aktualniObdobi): ?>
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="text-muted small">Období od</div>
-                        <div class="fw-semibold"><?= fmtDate($aktualniObdobi['datum_od']) ?></div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="text-muted small">Tréninků v období</div>
-                        <div class="fw-semibold"><?= (int)$pocetTrObdobi ?></div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="text-muted small">Sazba / trénink</div>
-                        <div class="fw-semibold"><?= number_format($sazbaVObdobi, 2, ',', ' ') ?> Kč</div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="text-muted small">Kredit</div>
-                        <div class="fw-bold fs-5 text-success"><?= number_format($castkaObdobi, 2, ',', ' ') ?> Kč</div>
-                    </div>
-                </div>
-            <?php else: ?>
-                <div class="alert alert-warning mb-0">
-                    Není otevřené období v <code>sportovec_obdobi</code>. Kredit se nepočítá.
-                </div>
-            <?php endif; ?>
         </div>
 
         <!-- ═══ TRÉNINKY ════════════════════════════════════════════ -->

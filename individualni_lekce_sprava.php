@@ -7,6 +7,7 @@ if (!canAccess('individualni_lekce')) { header('Location: index.php'); exit; }
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/venue_operations.php';
+require_once __DIR__ . '/includes/booking_notification.php';
 require_once __DIR__ . '/includes/individual_lesson_context.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
         if ($lek) {
             // Načti zákazníky s živými rezervacemi pro informační email
             $stCust = $pdo->prepare("
-                SELECT vu.email, vu.jmeno
+                SELECT vr.id, vu.email, vu.jmeno
                 FROM verejne_rezervace vr
                 JOIN verejni_uzivatele vu ON vu.id = vr.uzivatel_id
                 WHERE vr.lekce_id=? AND vr.stav IN ('ceka','potvrzena','cekaci_listina')
@@ -43,18 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
                 $pdo->prepare("UPDATE individualni_lekce SET stav='zrusena' WHERE id=?")->execute([$lekceId]);
                 $pdo->prepare("UPDATE verejne_rezervace SET stav='zrusena' WHERE lekce_id=? AND stav IN ('ceka','potvrzena','cekaci_listina')")->execute([$lekceId]);
                 $pdo->prepare("DELETE FROM rezervace_sportovist WHERE lekce_id=?")->execute([$lekceId]);
+                foreach ($dotceni as $d) bookingNotificationEnqueue($pdo, (int)$d['id'], 'cancelled');
                 venueOperationAudit($pdo,'lesson',$lekceId,$trenerId,'cancel',$reason,['affected_reservations'=>count($dotceni)]);
                 $pdo->commit();
             }catch(Throwable$exception){if($pdo->inTransaction())$pdo->rollBack();throw$exception;}
 
-            foreach ($dotceni as $d) {
-                $subject = 'Lekce zrušena — ' . str_replace(["\r","\n"], ' ', (string)$lek['nazev']);
-                $body = "Dobrý den {$d['jmeno']},\n\nLekce \"{$lek['nazev']}\" dne {$lek['datum']} ("
-                    . substr($lek['cas_od'],0,5) . '–' . substr($lek['cas_do'],0,5)
-                    . ") byla bohužel zrušena.\n\nOmlouváme se za komplikace.";
-                @mail($d['email'], $subject, $body, "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
-            }
-            $_SESSION['flash_success'] = 'Lekce zrušena, informováno ' . count($dotceni) . ' zákazníků.';
+            $_SESSION['flash_success'] = 'Lekce zrušena, informováno ' . count($dotceni) . ' oznámení zařazeno do fronty.';
         }
     }
 
@@ -70,18 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
         $st->execute([$rezervId]);
         $rez = $st->fetch(PDO::FETCH_ASSOC);
         if ($rez && (int)$rez['trener_id'] === $trenerId && in_array($rez['stav'], ['ceka','cekaci_listina'], true)) {
-            $pdo->prepare("UPDATE verejne_rezervace SET stav='potvrzena', cas_potvrzeni=NOW() WHERE id=?")
-                ->execute([$rezervId]);
-            // Email zákazníkovi
-            $subject = 'Rezervace potvrzena — ' . str_replace(["\r","\n"], ' ', (string)$rez['nazev']);
-            $body = "Dobrý den {$rez['jmeno']},\n\nVaše rezervace byla potvrzena:\n"
-                . "Lekce: {$rez['nazev']}\n"
-                . "Datum: {$rez['datum']}\n"
-                . "Čas: " . substr($rez['cas_od'], 0, 5) . "–" . substr($rez['cas_do'], 0, 5) . "\n\n"
-                . "Těšíme se na Vás!";
-            @mail($rez['email'], $subject, $body,
-                "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
-            $_SESSION['flash_success'] = 'Rezervace potvrzena, zákazník informován.';
+            $pdo->beginTransaction();
+            try {
+                $q=$pdo->prepare("UPDATE verejne_rezervace SET stav='potvrzena',cas_potvrzeni=CURRENT_TIMESTAMP WHERE id=? AND stav IN ('ceka','cekaci_listina')");
+                $q->execute([$rezervId]);
+                if ($q->rowCount()===1) bookingNotificationEnqueue($pdo,$rezervId,'confirmed');
+                $pdo->commit();
+            } catch (Throwable $exception) { if ($pdo->inTransaction()) $pdo->rollBack(); throw $exception; }
+            $_SESSION['flash_success'] = 'Rezervace potvrzena, oznámení zařazeno do fronty.';
         }
     }
 
@@ -96,15 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
         $st->execute([$rezervId]);
         $rez = $st->fetch(PDO::FETCH_ASSOC);
         if ($rez && (int)$rez['trener_id'] === $trenerId && in_array($rez['stav'], ['ceka','cekaci_listina'], true)) {
-            $pdo->prepare("UPDATE verejne_rezervace SET stav='zamitnuta' WHERE id=?")
-                ->execute([$rezervId]);
-            // Upozornit dalšího na čekací listině
-            require_once __DIR__ . '/booking/waiting_list.php';
-            notifyWaitingList($pdo, (int)$rez['lekce_id'], (string)($rez['slot_cas_od'] ?? ''));
-            $subject = 'Rezervace zamítnuta — ' . str_replace(["\r","\n"], ' ', (string)$rez['nazev']);
-            $body = "Dobrý den {$rez['jmeno']},\n\nBohužel Vaše rezervace na {$rez['datum']} ({$rez['nazev']}) byla zamítnuta.\n\nV případě dotazů nás kontaktujte.";
-            @mail($rez['email'], $subject, $body,
-                "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
+            $pdo->beginTransaction();
+            try {
+                $q=$pdo->prepare("UPDATE verejne_rezervace SET stav='zamitnuta' WHERE id=? AND stav IN ('ceka','cekaci_listina')");
+                $q->execute([$rezervId]);
+                if ($q->rowCount()===1) bookingNotificationEnqueue($pdo,$rezervId,'rejected');
+                $pdo->commit();
+            } catch (Throwable $exception) { if ($pdo->inTransaction()) $pdo->rollBack(); throw $exception; }
+            require_once __DIR__.'/booking/waiting_list.php';
+            notifyWaitingList($pdo,(int)$rez['lekce_id'],(string)($rez['slot_cas_od']??''));
             $_SESSION['flash_success'] = 'Rezervace zamítnuta.';
         }
     }

@@ -182,6 +182,18 @@ final class MemberChargeReminderTest extends TestCase
         self::assertSame('cancelled', $pdo->query('SELECT status FROM member_charge_reminders WHERE id=1')->fetchColumn());
     }
 
+    public function testRevokedGuardianNeverReceivesQueuedFinancialReminder(): void
+    {
+        $pdo=$this->database();
+        \memberChargeReminderSavePreference($pdo,1,true,7);
+        \memberChargeReminderGenerate($pdo,$this->today());
+        $pdo->exec("UPDATE account_person_roles SET status='revoked' WHERE account_id=1");
+        $calls=0;
+        self::assertFalse(\memberChargeReminderProcessOne($pdo,static function()use(&$calls){$calls++;return true;}));
+        self::assertSame(0,$calls);
+        self::assertSame('failed',$pdo->query('SELECT status FROM member_charge_reminders ORDER BY id LIMIT 1')->fetchColumn());
+    }
+
     private function today(): DateTimeImmutable
     {
         return new DateTimeImmutable('2026-08-05', new DateTimeZone('Europe/Prague'));

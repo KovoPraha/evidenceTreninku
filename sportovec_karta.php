@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/sportovec_status_lib.php';
+require_once __DIR__ . '/includes/person_state.php';
 require_once __DIR__ . '/includes/sportovec_history_lib.php';
 require_once __DIR__ . '/includes/club_finance.php';
 require_once __DIR__ . '/includes/sportovec_editor.php';
@@ -48,47 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: sportovec_karta.php?sportovec_id=' . $sportovecId . '&tab=kis#rosters-title');
         exit;
     }
-    if ($action === 'set_status') {
-        $stav = $_POST['stav_clenstvi'] ?? 'cekajici';
-        if (!in_array($stav, ['aktivni','cekajici','neaktivni','archiv'], true)) {
-            $stav = 'cekajici';
+    if (in_array($action, ['set_status','clear_manual_status'], true)) {
+        try {
+            sportovecMembershipDecide($pdo, $sportovecId,
+                $action === 'clear_manual_status' ? 'review' : (string)($_POST['stav_clenstvi'] ?? ''),
+                (string)($_POST['stav_duvod'] ?? ''), (int)$_SESSION['trener_id'],
+                (string)($_POST['membership_revision'] ?? ''));
+            $_SESSION['flash_success'] = $action === 'clear_manual_status' ? 'Stav byl předán k ověření; ostatní vazby zůstaly zachovány.' : 'Rozhodnutí o členství bylo uloženo.';
+        } catch (Throwable $e) {
+            $_SESSION['flash_error'] = $e instanceof PDOException ? 'Změna se nezdařila; nebyl uložen částečný výsledek.' : $e->getMessage();
         }
-        $duvod = trim((string)($_POST['stav_duvod'] ?? ''));
-        $oldStmt = $pdo->prepare('SELECT stav_clenstvi, stav_duvod, stav_manualni FROM sportovci WHERE id = ?');
-        $oldStmt->execute([$sportovecId]);
-        $old = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-
-        $stmt = $pdo->prepare("
-            UPDATE sportovci
-            SET stav_clenstvi = :stav,
-                stav_duvod = :duvod,
-                stav_manualni = 1,
-                stav_aktualizovan = CURRENT_TIMESTAMP
-            WHERE id = :id
-            LIMIT 1
-        ");
-        $stmt->execute([':stav' => $stav, ':duvod' => $duvod ?: null, ':id' => $sportovecId]);
-        sportovecLogEvent($pdo, $sportovecId, 'status_manual', 'Ruční změna stavu člena', $old, [
-            'stav_clenstvi' => $stav,
-            'stav_duvod' => $duvod,
-            'stav_manualni' => 1,
-        ], 'manual', (int)$_SESSION['trener_id']);
-        $_SESSION['flash_success'] = 'Stav člena byl uložen.';
-        header('Location: sportovec_karta.php?sportovec_id=' . $sportovecId);
-        exit;
-    }
-
-    if ($action === 'clear_manual_status') {
-        $oldStmt = $pdo->prepare('SELECT * FROM sportovci WHERE id = ?');
-        $oldStmt->execute([$sportovecId]);
-        $old = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-        $pdo->prepare("UPDATE sportovci SET stav_manualni = 0, stav_aktualizovan = CURRENT_TIMESTAMP WHERE id = ? LIMIT 1")->execute([$sportovecId]);
-        $freshStmt = $pdo->prepare('SELECT * FROM sportovci WHERE id = ?');
-        $freshStmt->execute([$sportovecId]);
-        $fresh = $freshStmt->fetch(PDO::FETCH_ASSOC);
-        if ($fresh) sportovecStatusUpdate($pdo, $sportovecId, $fresh);
-        sportovecLogEvent($pdo, $sportovecId, 'status_auto', 'Návrat na automatický stav', $old, [], 'manual', (int)$_SESSION['trener_id']);
-        $_SESSION['flash_success'] = 'Ruční stav byl zrušen.';
         header('Location: sportovec_karta.php?sportovec_id=' . $sportovecId);
         exit;
     }
@@ -204,6 +174,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
 <body>
 <?php include __DIR__ . '/hlavicka.php'; ?>
 <div class="container py-4" style="max-width:1280px;">
+<?= personStateSummaryHtml(personStateSummary($pdo, $sportovecId)) ?>
     <?php if (!empty($_SESSION['flash_success'])): ?>
         <div class="alert alert-success"><?= h($_SESSION['flash_success']); unset($_SESSION['flash_success']); ?></div>
     <?php endif; ?>
@@ -275,6 +246,7 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                             <form method="post" class="row g-2">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="set_status">
+                                <input type="hidden" name="membership_revision" value="<?= h(sportovecMembershipRevision($sportovec)) ?>">
                                 <div class="col-5">
                                     <select name="stav_clenstvi" class="form-select form-select-sm">
                                         <?php foreach (['aktivni'=>'Aktivní','cekajici'=>'Čekající','neaktivni'=>'Neaktivní','archiv'=>'Archiv'] as $k => $v): ?>
@@ -282,14 +254,16 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class="col-5"><input name="stav_duvod" class="form-control form-control-sm" placeholder="Důvod" value="<?= h($sportovec['stav_duvod'] ?? '') ?>"></div>
+                                <div class="col-5"><input name="stav_duvod" required minlength="10" maxlength="1000" class="form-control form-control-sm" placeholder="Důvod" value="<?= h($sportovec['stav_duvod'] ?? '') ?>"></div>
                                 <div class="col-2"><button class="btn btn-sm btn-success w-100" title="Uložit"><i class="bi bi-check-lg"></i></button></div>
                             </form>
                             <?php if (!empty($sportovec['stav_manualni'])): ?>
                                 <form method="post" class="mt-2">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="clear_manual_status">
-                                    <button class="btn btn-sm btn-outline-secondary">Vrátit na automatický stav</button>
+                                    <input type="hidden" name="membership_revision" value="<?= h(sportovecMembershipRevision($sportovec)) ?>">
+                                    <input name="stav_duvod" class="form-control form-control-sm mb-2" required minlength="10" maxlength="1000" placeholder="Proč je nutné znovu ověřit členství">
+                                    <button class="btn btn-sm btn-outline-secondary">Předat členství k ověření</button>
                                 </form>
                             <?php endif; ?>
                         </div>

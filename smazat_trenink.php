@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 /**
  * smazat_trenink.php
@@ -29,6 +30,7 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
 }
 
 $treninkId = isset($_POST['trenink_id']) ? (int)$_POST['trenink_id'] : 0;
+coachScopeRequireTraining($pdo, $treninkId);
 if ($treninkId <= 0) {
     $_SESSION['flash_error'] = 'Neplatné ID tréninku.';
     header('Location: sprava_treninku.php');

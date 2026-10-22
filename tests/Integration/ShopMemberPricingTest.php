@@ -10,6 +10,19 @@ require_once dirname(__DIR__,2).'/includes/shop_member_pricing.php';
 
 final class ShopMemberPricingTest extends TestCase
 {
+    public function testInactiveUnverifiedOrEndedRelationshipCannotReceiveMemberPrice():void
+    {
+        $pdo=$this->database();
+        self::assertCount(2,\shopMemberPricingEligibleTeams($pdo,1,'2026-08-04'));
+        $pdo->exec('UPDATE verejni_uzivatele SET aktivni=0 WHERE id=1');
+        self::assertSame([],\shopMemberPricingEligibleTeams($pdo,1,'2026-08-04'));
+        $pdo->exec('UPDATE verejni_uzivatele SET aktivni=1,email_overeno=0 WHERE id=1');
+        self::assertSame([],\shopMemberPricingEligibleTeams($pdo,1,'2026-08-04'));
+        $pdo->exec('UPDATE verejni_uzivatele SET email_overeno=1 WHERE id=1');
+        $pdo->exec("UPDATE account_person_roles SET valid_to='2026-08-04 00:00:00' WHERE id=1");
+        self::assertSame([],\shopMemberPricingEligibleTeams($pdo,1,'2026-08-04'),'End timestamp is exclusive, not end of same day');
+    }
+
     public function testAnonymousKeepsPublicPriceAndParentGetsCheapestEligibleRosterPrice():void
     {
         $pdo=$this->database();
@@ -53,6 +66,8 @@ final class ShopMemberPricingTest extends TestCase
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
         $pdo->exec('PRAGMA foreign_keys=ON');
         $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY)');$pdo->exec('INSERT INTO treneri VALUES(7)');
+        $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,aktivni INTEGER,email_overeno INTEGER)');
+        $pdo->exec('INSERT INTO verejni_uzivatele VALUES(1,1,1)');
         $pdo->exec('CREATE TABLE shop_products(id INTEGER PRIMARY KEY)');$pdo->exec('INSERT INTO shop_products VALUES(100)');
         $pdo->exec('CREATE TABLE club_teams(id INTEGER PRIMARY KEY,name TEXT,status TEXT)');
         $pdo->exec("INSERT INTO club_teams VALUES(10,'U15','active'),(11,'Dráha','active')");

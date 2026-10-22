@@ -21,6 +21,8 @@ require_once dirname(__DIR__) . '/includes/training_rsvp.php';
 require_once dirname(__DIR__) . '/includes/club_finance.php';
 require_once dirname(__DIR__) . '/includes/calendar_ui.php';
 require_once dirname(__DIR__) . '/includes/ui_format.php';
+require_once dirname(__DIR__) . '/includes/sportovec_status_lib.php';
+header('Cache-Control: no-store, private');
 
 function familyPageH(mixed $value): string
 {
@@ -229,6 +231,11 @@ try {
 }
 
 $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
+$pendingFamilyClaims=null;
+try {
+    $claimCount=$pdo->prepare("SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'");
+    $claimCount->execute([$accountId]);$pendingFamilyClaims=(int)$claimCount->fetchColumn();
+} catch (PDOException $e) { error_log('Family pending claims unavailable'); }
 $pendingCharges = 0;
 foreach ($overview as $profileSummary) {
     foreach ($profileSummary['member_charges'] as $chargeSummary) {
@@ -262,6 +269,9 @@ foreach ($trainingRsvps as $training) {
 <main class="container py-4" style="max-width:1100px">
     <h1 class="h4 mb-1"><i class="bi bi-person-vcard me-2 text-primary"></i>Sportovní přehled</h1>
     <p class="text-muted">Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.</p>
+    <?php if ($pendingFamilyClaims===null): ?><div class="alert alert-warning">Stav žádostí o propojení nyní nelze ověřit. Zkontrolujte jej v <a href="moje_osoby.php">Mých osobách</a>.</div>
+    <?php elseif ($pendingFamilyClaims>0): ?><div class="alert alert-info"><strong>Čeká na ověření klubem: <?=$pendingFamilyClaims?> žádostí o propojení.</strong> Žádost nepodávejte znovu. V <a href="moje_osoby.php">Mých osobách</a> najdete její stav; pro osobní doložení kontaktujte registráře.</div><?php endif; ?>
+    <p class="small text-muted">Přehled obsahuje dostupná převedená data. Chybějící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte trenérovi.</p>
     <?php if ($loadError !== ''): ?><div class="alert alert-danger"><?= familyPageH($loadError) ?></div>
     <?php elseif ($overview === []): ?>
         <section class="card border-0 shadow-sm mb-4" aria-labelledby="overview-first-step"><div class="card-body p-4"><h2 class="h5" id="overview-first-step">Začněte propojením sportovce</h2><p>Účet je připravený. Pokud už jste vy nebo vaše dítě v evidenci klubu, požádejte o propojení profilu. Po schválení tu uvidíte tréninky, akce a platby.</p><div class="d-flex flex-wrap gap-2"><a class="btn btn-primary" href="moje_osoby.php#propojeni">Propojit existující profil</a><a class="btn btn-outline-primary" href="eshop.php">Přejít do e-shopu</a></div></div></section>
@@ -443,7 +453,7 @@ foreach ($trainingRsvps as $training) {
     <?php foreach ($overview as $profileIndex => $profile): $person = $profile['person']; $makeupSummary = $makeupProfileSummaries[(int)$person['sportovec_id']] ?? null; ?>
         <details class="card border-0 shadow-sm mb-4"<?= $profileIndex === 0 ? ' open' : '' ?>>
             <summary class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div><strong class="fs-5"><?= familyPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong><div class="small text-muted">Rok narození: <?= familyPageH($person['narozeni'] ? substr((string)$person['narozeni'],0,4) : 'neuveden') ?></div></div>
+                <div><strong class="fs-5"><?= familyPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong> <?=sportovecStatusBadge($person)?><div class="small text-muted">Rok narození: <?= familyPageH($person['narozeni'] ? substr((string)$person['narozeni'],0,4) : 'neuveden') ?></div></div>
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php foreach ($person['relation_roles'] as $role): ?><span class="badge text-bg-primary ms-1"><?= familyPageH($roleLabels[$role] ?? $role) ?></span><?php endforeach; ?></div>
             </summary>
             <div class="card-body">

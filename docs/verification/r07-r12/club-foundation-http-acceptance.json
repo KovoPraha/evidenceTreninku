@@ -1,0 +1,446 @@
+{
+    "status": "PASS",
+    "count": 110,
+    "results": [
+        {
+            "scenario": "Identity creation rejects forged CSRF without writes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Source identity case created through registrar HTTP form",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Exact candidate does not become verified identity automatically",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Registrar explicitly verifies canonical identity link",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stale identity decision cannot overwrite a newer verified mapping",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Changed payload under same source ID cannot silently replace identity evidence",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Person card provides optimistic membership revision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit membership accepted independently from source mapping",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stale membership form cannot overwrite accepted state",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Registrar can open paper evidence administration",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Bad CSRF cannot create evidence",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Direct evidence write forbidden for coach",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Direct evidence write forbidden for finance_manager",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP paper application with actual private upload succeeds",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Evidence bytes stored privately with verified fingerprint",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Historical signature remains unknown version with actual date",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Paper guardian declaration creates no account access",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Registrar downloads the exact private evidence bytes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Private file denied to coach",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Private file denied to finance_manager",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Anonymous known file ID does not grant access",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged evidence ID yields no file",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Reading unresolved overview creates no case or audit writes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Operational assignment rejects invalid CSRF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance cannot assign registrar paper cases through direct URL",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance overview does not expose registrar paper cases",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged source ID cannot create operational case",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Case cannot be assigned to staff without required registrar position",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Operational owner, next step and date assigned through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Initial case revision and concrete next step persisted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stale parallel operational form rejected without overwriting assignment",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unresolved source cannot be bypassed by closing operational task",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Registrar accepts paper evidence explicitly",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Acceptance preserves immutable original record",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged correction of another person makes no record or file change",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Correction creates a separate revision through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Correction retains original record and evidence bytes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Correction explicitly supersedes previous version and awaits review",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Resolved original source permits explicit closure of assigned task",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closing retains both assignment and closure revisions in audit",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed cases remain available for subsequent review",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Corrected identity mapping appends another explicit decision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Original person retains identity decision history after mapping correction alongside paper history",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked evidence cannot be silently reaccepted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual upload is removed and database rolled back when audit fails",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit guardian relationship approved through registrar UI",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit guardian relationship approved through registrar UI",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit guardian relationship approved through registrar UI",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit guardian relationship approved through registrar UI",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Verified parent sees both explicitly linked children",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Synthetic historical bearer link grants a profile session before revocation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Training-read bearer link does not expose financial rewards",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Verified currently authorized parent retains own child reward visibility",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoking guardian also invalidates an already-open legacy bearer profile session",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Previously issued legacy link cannot be reopened after guardian revocation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Raw historical person hash never bypasses revoked token validation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked relationship disappears from existing family session immediately",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Second parent retains own authorized child only",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unverified email does not expose child despite approved relationship",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Parent with revoked relationship cannot fetch private paper evidence by known URL",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy contact-email profile route explains replacement workflow",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy profile-email POST creates neither token nor queued email",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open an unassigned athlete by direct ID",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot assign their own athlete scope",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF cannot create staff scope grant",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Sports lead explicitly grants scoped athlete access",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach can read explicitly assigned athlete",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Assigned scope does not expose unrelated athlete",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Athlete AJAX search returns only current coach scope",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open privileged endpoint ajax_global_search.php?q=LOCALHOST",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open privileged endpoint search_sportovci.php?q=LOCALHOST",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open privileged endpoint export_xls.php",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open privileged endpoint uctenky\/seznam.php",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open privileged endpoint prehled_skupiny.php?hash=known",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open privileged endpoint prehled_skupina.php?hash=known",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot open privileged endpoint prehled_treninku_skupiny_kalendar.php",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged training attendance cannot assign arbitrary athlete or grant scope",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot create a plan for a team without explicit team grant",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Historical plan ownership does not bypass current scope on training_rsvps_admin.php?plan_id=1",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Historical plan ownership does not bypass current scope on planovany_trenink_form.php?id=1",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Historical plan ownership does not bypass current scope on formular.php?plan_id=1",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Sports lead grants explicit team planning scope",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach can create plan for explicitly granted own team",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Granted own plan attendance administration remains usable",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Assigned coach reads authorized private sports attachment",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Assigned coach obtains scoped training profile session",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Staff-only coach scope does not grant athlete financial reward access",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Sports lead revokes coach scope through standard UI",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Existing coach session loses athlete profile after scope revocation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Existing coach session loses private attachment after scope revocation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Cached training profile session is revalidated after scope revocation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked scope disappears from AJAX athlete list",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoking staff identity retains separately authorized private parent access",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Offboarded worker cannot regain staff profile from mixed parent session",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Manual contact resolution requires valid CSRF, explicit confirmation and reason: csrf_token",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Manual contact resolution requires valid CSRF, explicit confirmation and reason: confirm_retry",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Manual contact resolution requires valid CSRF, explicit confirmation and reason: reason",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Registrar cannot resolve order-operator notification through direct endpoint",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Failed manual-contact notification receives responsible operator task",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Operator cannot close failed-contact task before recording actual resolution",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Operator records explicit manual contact outcome via HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Manual resolution preserves failed delivery and does not pretend an email was sent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Manual resolution audit records responsible actor, attempt and actual explanation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated manual resolution does not duplicate audit event",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Operator can close task only after matching manual resolution event",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Resolved notification case closure is persisted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "System administrator sees explicit job status and duration on provozni_prehled_admin.php",
+            "status": "PASS"
+        },
+        {
+            "scenario": "System administrator sees explicit job status and duration on diagnostika_site_admin.php",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Operational overview and diagnostics emit no PHP warnings or fatal errors",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Offboarded registrar loses already-known private file access",
+            "status": "PASS"
+        }
+    ]
+}

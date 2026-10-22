@@ -6,6 +6,7 @@
 
 require_once dirname(__DIR__) . '/includes/one_time_token.php';
 require_once dirname(__DIR__) . '/includes/app_url.php';
+require_once dirname(__DIR__) . '/includes/booking_notification.php';
 
 function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
 {
@@ -17,14 +18,8 @@ function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
         return;
     }
 
-    $customerEmail = null;
-    $customerSubject = null;
-    $customerBody = null;
-    $trainerEmail = null;
-    $trainerSubject = null;
-    $trainerBody = null;
-
     try {
+        $pdo->beginTransaction();
         $capacity = $pdo->prepare("
             SELECT il.max_osob,
                    (SELECT COUNT(*) FROM verejne_rezervace active
@@ -70,56 +65,11 @@ function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
             return;
         }
 
-        $from = substr((string)$waiting['slot_cas_od'], 0, 5);
-        $to = substr((string)$waiting['slot_cas_do'], 0, 5);
-        $name = trim($waiting['jmeno'] . ' ' . $waiting['prijmeni']);
-        $base = appUrl('booking');
-        $customerEmail = (string)$waiting['uzivatel_email'];
-
-        if ($waiting['typ'] === 'zelena') {
-            $customerSubject = "✓ Váš slot je potvrzen: {$waiting['lekce_nazev']}";
-            $customerBody = "Dobrý den {$name},\n\n"
-                . "Slot, na který jste čekali, se uvolnil a byl vám automaticky přiřazen.\n\n"
-                . "Lekce: {$waiting['lekce_nazev']}\n"
-                . "Sportoviště: {$waiting['sport_nazev']}\n"
-                . "Datum: {$waiting['datum']}\nČas: {$from}–{$to}\n\n"
-                . "Vaše rezervace je POTVRZENA.\n\nPřehled: {$base}/moje_rezervace.php";
-        } else {
-            $approval = one_time_token_issue(ONE_TIME_TOKEN_BOOKING_APPROVAL, 172800);
-            $storeApproval = $pdo->prepare(
-                "UPDATE verejne_rezervace SET potvrzovaci_token=?, "
-                . "potvrzovaci_token_expires_at=? WHERE id=? AND stav='ceka'"
-            );
-            $storeApproval->execute([$approval['hash'], $approval['expires_at'], $waiting['id']]);
-            if ($storeApproval->rowCount() !== 1) {
-                return;
-            }
-
-            $customerSubject = "Slot k dispozici: {$waiting['lekce_nazev']}";
-            $customerBody = "Dobrý den {$name},\n\nSlot, na který jste čekali, se uvolnil.\n"
-                . "Vaše žádost byla automaticky předána trenérovi ke schválení.\n\n"
-                . "Lekce: {$waiting['lekce_nazev']}\nDatum: {$waiting['datum']}, {$from}–{$to}\n\n"
-                . "Přehled: {$base}/moje_rezervace.php";
-
-            if ($waiting['trener_email']) {
-                $host = $base . '/potvrdit.php';
-                $trainerEmail = (string)$waiting['trener_email'];
-                $trainerSubject = "Žádost z čekací listiny: {$waiting['lekce_nazev']}";
-                $trainerBody = "Zákazník {$name} ze čekací listiny žádá o potvrzení lekce:\n"
-                    . "{$waiting['lekce_nazev']} — {$waiting['datum']}, {$from}–{$to}\n\n"
-                    . "✓ POTVRDIT: {$host}#token=" . rawurlencode($approval['token']) . "&akce=potvrdit\n"
-                    . "✗ ZAMÍTNOUT: {$host}#token=" . rawurlencode($approval['token']) . "&akce=zamit";
-            }
-        }
+        bookingNotificationEnqueue($pdo, (int)$waiting['id'], 'promoted');
+        if ($newState === 'ceka') bookingNotificationEnqueue($pdo, (int)$waiting['id'], 'promoted', 'trainer');
+        $pdo->commit();
     } finally {
+        if ($pdo->inTransaction()) $pdo->rollBack();
         $pdo->prepare('SELECT RELEASE_LOCK(?)')->execute([$lockName]);
-    }
-
-    $headers = "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8";
-    if ($customerEmail !== null && $customerSubject !== null && $customerBody !== null) {
-        @mail($customerEmail, $customerSubject, $customerBody, $headers);
-    }
-    if ($trainerEmail !== null && $trainerSubject !== null && $trainerBody !== null) {
-        @mail($trainerEmail, $trainerSubject, $trainerBody, $headers);
     }
 }

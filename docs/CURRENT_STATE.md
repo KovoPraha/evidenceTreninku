@@ -1,6 +1,17 @@
 # Aktuální stav projektu
 
-Nejnovější vydání 21. 10. 2026: číselné řady RR N KK XXXXX a účetní kategorie
+Lokální vývoj 22. 10. 2026: na B1 navazuje balík **R07–R12** ve větvi
+`codex/club-foundation-r07-r12-20261022`. Identita, oddělené členství, trenérské
+rozsahy, papírové podklady, bezpečné fronty a provozní případy jsou popsány v
+[předání R07–R12](CLUB_FOUNDATION_R07_R12.md). Lokální implementace a přejímka jsou
+dokončené: 1 294 testů, 110 HTTP scénářů, souběhy a obnova syntetické DB.
+**Bez push, merge, nasazení nebo aktivace produkčních služeb.**
+Výsledky společné přejímky jsou v [protokolu](verification/r07-r12/RESULTS.md).
+
+Následující produkční údaje jsou dříve zaznamenaný stav, v tomto lokálním úkolu
+se znovu neověřovaly:
+
+Vydání 21. 10. 2026: číselné řady RR N KK XXXXX a účetní kategorie
 z [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160) jsou na produkci.
 Aplikační SHA `1441683ae1ae2bb9da16d8be3af62ce40f35385c`,
 [deploy 39609254832](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39609254832)

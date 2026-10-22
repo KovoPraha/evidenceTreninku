@@ -180,7 +180,7 @@ foreach ($upcomingTrainingRsvps as $training) {
         <h1 class="h4 mb-1"><?= childPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></h1>
         <div class="text-muted small d-flex flex-wrap align-items-center gap-2">
             <span>Datum narození: <?= childPageH(childPageDateLabel($person['narozeni'] ?: null)) ?></span>
-            <span class="badge <?= childPageH(childPageStatusClass((string)$person['stav_clenstvi'])) ?>"><?= childPageH(childPageStatusLabel((string)$person['stav_clenstvi'], 'membership')) ?></span>
+            <?= sportovecStatusBadge($person) ?>
         </div>
         <?php if ($makeupSummary !== null): ?><div class="d-flex flex-wrap align-items-center gap-2 mt-3"><span class="small fw-semibold">Náhradní lekce:</span><span class="badge text-bg-warning">Omluvené, čekají na potvrzení <?= (int)$makeupSummary['pending'] ?></span><span class="badge text-bg-success">K využití <?= (int)$makeupSummary['available'] ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?= (int)$makeupSummary['locked'] ?></span><span class="badge text-bg-primary">Rezervované <?= (int)$makeupSummary['reserved'] ?></span><a class="btn btn-sm btn-outline-primary" href="nahrady.php">Zobrazit náhrady</a></div><?php endif; ?>
     </div></section>

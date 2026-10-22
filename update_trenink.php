@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
@@ -27,6 +28,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 $treninkId = $_POST['id'] ?? null;
 if (!$treninkId || !ctype_digit((string)$treninkId)) die('Neplatn� ID tr�ninku.');
 $treninkId = (int)$treninkId;
+coachScopeRequireTraining($pdo, $treninkId);
 
 $currentTrener = (int)$_SESSION['trener_id'];
 // Cizí tréninky smí editovat jen správce/admin; řadový trenér projde ownership checkem níže.
@@ -62,6 +64,8 @@ if (!$isAdmin) {
     if (!$stmtAuth->fetchColumn()) die('Nem�te opr�vn�n� tento tr�nink upravit.');
 }
 
+try { coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows)); coachScopeAssertTeams($pdo, $teamIds); }
+catch (RuntimeException $e) { http_response_code(403); exit($e->getMessage()); }
 $fileMutations = fileMutationBegin();
 try {
     if ($datum === '') throw new Exception('Chyb� datum.');
@@ -137,6 +141,8 @@ try {
     // Ulo�en�
     // --------------------
     $pdo->beginTransaction();
+    coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
+    coachScopeAssertTeams($pdo, $teamIds, $datum);
     $oldDateStmt = $pdo->prepare('SELECT datum FROM treninky WHERE id=?');
     $oldDateStmt->execute([$treninkId]);
     $oldDate = $oldDateStmt->fetchColumn();

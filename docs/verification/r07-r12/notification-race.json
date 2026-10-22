@@ -1,0 +1,7 @@
+{
+    "checks": 7,
+    "two_process_claim": "pass",
+    "single_local_outbox_artifact": true,
+    "unknown_delivery_held": true,
+    "database": "evidence_b2_notifications"
+}

@@ -2,6 +2,8 @@
 declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/person_audit_timeline.php';
+require_once __DIR__ . '/includes/person_state.php';
+header('Cache-Control: no-store, private');
 
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
@@ -24,6 +26,7 @@ $error = '';
 if ($sportovecId > 0) {
     try {
         $timeline = personAuditTimeline($pdo, $sportovecId, $page, $pageSize);
+        $stateSummary = personStateSummary($pdo,$sportovecId);
     } catch (PersonAuditTimelineException $exception) {
         $error = $exception->getMessage();
     } catch (Throwable $exception) {
@@ -50,7 +53,10 @@ function paPageUrl(int $sportovecId, int $page, int $pageSize): string
 <?php foreach ($searchResults as $person): ?><a class="list-group-item list-group-item-action" href="?sportovec_id=<?=(int)$person['id']?>">
 <strong><?=pah($person['prijmeni'] . ' ' . $person['jmeno'])?></strong> <span class="text-muted">#<?=(int)$person['id']?> · <?=pah($person['narozeni'] ?: 'datum narození neuvedeno')?> · <?=pah($person['stav_clenstvi'])?></span></a><?php endforeach; ?></div><?php endif; ?>
 </div></div>
-<?php if ($timeline !== null): $person = $timeline['person']; ?><div class="d-flex justify-content-between align-items-start mb-3"><div><h2 class="h5 mb-1"><?=pah($person['prijmeni'] . ' ' . $person['jmeno'])?> <span class="text-muted">#<?=(int)$person['id']?></span></h2>
+<?php if ($timeline !== null): $person = $timeline['person']; ?>
+<?php if (isset($stateSummary)): ?><?=personStateSummaryHtml($stateSummary)?><?php endif; ?>
+<p><a href="provozni_prehled_admin.php#pripady">Případy, odpovědnosti a termíny kontroly</a></p>
+<div class="d-flex justify-content-between align-items-start mb-3"><div><h2 class="h5 mb-1"><?=pah($person['prijmeni'] . ' ' . $person['jmeno'])?> <span class="text-muted">#<?=(int)$person['id']?></span></h2>
 <div class="small text-muted">Narození <?=pah($person['narozeni'] ?: 'neuvedeno')?> · členství <?=pah($person['stav_clenstvi'])?></div></div>
 <form method="get"><input type="hidden" name="sportovec_id" value="<?=(int)$person['id']?>"><select class="form-select form-select-sm" name="page_size" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()"><option value="25" <?=$pageSize===25?'selected':''?>>25 / strana</option><option value="50" <?=$pageSize===50?'selected':''?>>50 / strana</option><option value="100" <?=$pageSize===100?'selected':''?>>100 / strana</option></select></form></div>
 <div class="card"><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Čas</th><th>Zdroj a akce</th><th>Aktér</th><th>Změna</th><th>Důvod</th><th></th></tr></thead><tbody>

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/notification_delivery_guard.php';
 
 require_once __DIR__.'/one_time_token.php';
 require_once __DIR__.'/person_sensitive.php';
@@ -109,7 +110,8 @@ function authMailClaim(PDO $pdo):?array
     try{
         $mysql=(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql';
         $stale=$mysql?'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE':"datetime('now','-15 minutes')";
-        $sql="SELECT * FROM auth_mail_outbox WHERE (status='pending' AND available_at<=CURRENT_TIMESTAMP) OR (status='processing' AND claimed_at<".$stale.") ORDER BY id LIMIT 1";
+        notificationQueueHoldStale($pdo,'auth_mail_outbox',$stale);
+        $sql="SELECT * FROM auth_mail_outbox WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP ORDER BY id LIMIT 1";
         if($mysql)$sql.=' FOR UPDATE';
         $row=$pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         if(!$row){$pdo->commit();return null;}
@@ -149,7 +151,7 @@ function authMailProcessOne(PDO $pdo,callable $sender,?array $keyConfig=null):?s
         authMailComplete($pdo,$row,$sent?'sent':'failed',$sent?'':'Transport odmítl zprávu.');
         return $sent?'sent':'failed';
     }catch(Throwable $exception){
-        authMailComplete($pdo,$row,'failed','Transport nebo šifrování vyvolaly chybu typu '.get_class($exception).'.');
+        notificationQueueHold($pdo,'auth_mail_outbox',$row,'delivery_unknown: ověřit doručení nebo šifrovací konfiguraci před opakováním.');
         return 'failed';
     }
 }

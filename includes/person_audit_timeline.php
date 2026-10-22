@@ -112,6 +112,16 @@ function personAuditSources(): array
 {
     return [
         [
+            'tables'=>['club_paper_records','club_paper_record_events'],
+            'source'=>'paper_record','label'=>'Papírové podání','link'=>'paper_registrations_admin.php',
+            'sql'=>"SELECT e.id AS source_id,e.created_at AS occurred_at,e.event_type AS action,e.note AS reason,e.actor_id,'trainer' AS actor_type,NULL AS from_status,NULL AS to_status,NULL AS payload_json FROM club_paper_record_events e JOIN club_paper_records r ON r.id=e.record_id WHERE r.sportovec_id=? ORDER BY e.created_at DESC,e.id DESC",
+        ],
+        [
+            'tables'=>['person_identity_reviews','person_identity_review_events'],
+            'source'=>'identity_review','label'=>'Ověření identity','link'=>'identity_reviews_admin.php',
+            'sql'=>"SELECT e.id AS source_id,e.created_at AS occurred_at,'identity_review' AS action,NULL AS reason,e.actor_trainer_id AS actor_id,'trainer' AS actor_type,NULL AS from_status,NULL AS to_status,e.after_json AS payload_json FROM person_identity_review_events e JOIN person_identity_reviews r ON r.id=e.review_id JOIN sportovci subject ON subject.id=? WHERE r.sportovec_id=subject.id OR CAST(JSON_EXTRACT(e.before_json,'$.sportovec_id') AS SIGNED)=subject.id OR CAST(JSON_EXTRACT(e.after_json,'$.sportovec_id') AS SIGNED)=subject.id ORDER BY e.created_at DESC,e.id DESC",
+        ],
+        [
             'tables' => ['account_person_roles', 'account_person_role_events'],
             'source' => 'identity_relation', 'label' => 'Vztah účtu a osoby',
             'link' => 'eshop_identity_admin.php',

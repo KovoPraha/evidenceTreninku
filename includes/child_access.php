@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/sportovec_status_lib.php';
 
 require_once __DIR__ . '/member_charge_read.php';
 require_once __DIR__ . '/password_security.php';
@@ -300,7 +301,7 @@ function childAccessIdentity(PDO $pdo, int $accessAccountId): ?array
     );
     $statement->execute([$accessAccountId]);
     $row = $statement->fetch(PDO::FETCH_ASSOC);
-    return is_array($row) ? $row : null;
+    return is_array($row) ? array_replace($row, sportovecMembershipFields($pdo, (int)$row['sportovec_id'])) : null;
 }
 
 /** @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,payments:list<array<string,mixed>>,member_charges:list<array<string,mixed>>} */

@@ -11,6 +11,37 @@ require_once dirname(__DIR__, 2) . '/includes/account_person_role.php';
 
 final class AccountPersonRoleTest extends TestCase
 {
+    public function testRevocationInvalidatesLegacyBearerLinksWithoutRemovingOtherParent(): void
+    {
+        $pdo=$this->database();
+        $pdo->exec('CREATE TABLE public_profile_access_tokens(id INTEGER PRIMARY KEY,sportovec_id INTEGER,revoked_at TEXT)');
+        $pdo->exec('INSERT INTO public_profile_access_tokens VALUES(1,10,NULL),(2,10,NULL),(3,11,NULL)');
+        $pdo->exec("UPDATE verejni_uzivatele SET email_overeno=1 WHERE id=1");
+        $pdo->exec("INSERT INTO verejni_uzivatele VALUES(2,'Druhý','Rodič','other@example.test',1,1)");
+        $first=\accountPersonRoleApprove($pdo,1,10,'guardian',7,'První rodič.');
+        \accountPersonRoleApprove($pdo,2,10,'guardian',7,'Druhý rodič.');
+        \accountPersonRoleRevoke($pdo,$first['relation_id'],7,'Odvolání prvního rodiče.');
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM public_profile_access_tokens WHERE sportovec_id=10 AND revoked_at IS NULL')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM public_profile_access_tokens WHERE sportovec_id=11 AND revoked_at IS NULL')->fetchColumn());
+        self::assertFalse(\accountPersonCanManage($pdo,1,10));
+        self::assertTrue(\accountPersonCanManage($pdo,2,10));
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM account_person_role_events WHERE action='revoke_legacy_links'")->fetchColumn());
+    }
+
+    public function testFailedRevocationAuditAlsoRestoresLegacyLinkValidity(): void
+    {
+        $pdo=$this->database();
+        $pdo->exec('CREATE TABLE public_profile_access_tokens(id INTEGER PRIMARY KEY,sportovec_id INTEGER,revoked_at TEXT)');
+        $pdo->exec('INSERT INTO public_profile_access_tokens VALUES(1,10,NULL)');
+        $relation=\accountPersonRoleApprove($pdo,1,10,'guardian',7,'Doloženo.');
+        $pdo->exec("CREATE TRIGGER reject_role_audit BEFORE INSERT ON account_person_role_events BEGIN SELECT RAISE(FAIL,'synthetic audit failure'); END");
+        try { \accountPersonRoleRevoke($pdo,$relation['relation_id'],7,'Odvolání.'); self::fail(); }
+        catch (\AccountPersonRoleException) {
+            self::assertSame('approved',$pdo->query('SELECT status FROM account_person_roles')->fetchColumn());
+            self::assertNull($pdo->query('SELECT revoked_at FROM public_profile_access_tokens')->fetchColumn());
+        }
+    }
+
     public function testOnlyExplicitApprovedRelationMakesPersonEligible(): void
     {
         $pdo = $this->database();

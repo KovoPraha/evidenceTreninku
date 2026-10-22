@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/member_charge_read.php';
+require_once __DIR__ . '/sportovec_status_lib.php';
 
 final class FamilyPortalAccessDenied extends RuntimeException
 {
@@ -62,6 +63,7 @@ function familyPortalAuthorizedPeople(PDO $pdo, int $accountId): array
         $personId = (int)$row['sportovec_id'];
         $role = (string)$row['relation_role'];
         if (!isset($people[$personId])) {
+            $row = array_replace($row, sportovecMembershipFields($pdo, $personId));
             $row['sportovec_id'] = $personId;
             $row['relation_roles'] = [];
             unset($row['relation_role']);

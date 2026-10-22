@@ -11,6 +11,7 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
+require_once __DIR__ . '/includes/sportovec_note_access.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -81,6 +82,7 @@ if ($legacyToken !== '') {
 $staffRequestedId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if (isset($_SESSION['trener_id']) && $staffRequestedId !== false) {
     $sportovec_id = (int)$staffRequestedId;
+    coachScopeRequirePerson($pdo, $sportovec_id);
     public_profile_access_grant_staff_session($sportovec_id);
 } else {
     $sportovec_id = public_profile_access_session_athlete_id($pdo) ?? 0;
@@ -95,7 +97,8 @@ if (!$s) { http_response_code(404); exit('Profil není dostupný.'); }
 $sportovec_id   = (int)$s['id'];
 $sportovec_name = trim(($s['jmeno'] ?? '') . ' ' . ($s['prijmeni'] ?? ''));
 
-$odmena_default = isset($s['odmena_za_trenink']) ? (float)$s['odmena_za_trenink'] : 0.0;
+$canViewOwnRewards = sportovecNoteCanWrite($pdo, $sportovec_id);
+$odmena_default = $canViewOwnRewards && isset($s['odmena_za_trenink']) ? (float)$s['odmena_za_trenink'] : 0.0;
 
 // 2) Dostupné roky tréninků (pro dropdown)
 $rokyAvailable = [];
@@ -167,7 +170,7 @@ $pocetTrObdobi  = 0;
 $sazba_v_obdobi = $odmena_default;
 $castkaObdobi   = 0.0;
 
-try {
+if ($canViewOwnRewards) try {
     $stmtOpen = $pdo->prepare("
         SELECT * FROM sportovec_obdobi
         WHERE sportovec_id = ?
@@ -573,7 +576,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
   </div>
 
   <!-- KREDIT -->
-  <?php if ($aktualniObdobi || $odmena_default > 0): ?>
+  <?php if ($canViewOwnRewards && ($aktualniObdobi || $odmena_default > 0)): ?>
   <div class="card mb-4 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title mb-3"><i class="bi bi-coin me-2 text-warning"></i>Aktuální kredit</h5>

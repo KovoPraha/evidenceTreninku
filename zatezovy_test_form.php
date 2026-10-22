@@ -8,12 +8,14 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__.'/includes/coach_scope.php';
+$scopePredicate = coachScopePersonPredicate($pdo);
 
 // Načteme seznam sportovců pro výběr v select (vše kromě archivu)
 $sportovci = $pdo->query("
     SELECT id, jmeno, prijmeni
-    FROM sportovci
-    WHERE id NOT IN (
+    FROM sportovci s
+    WHERE ($scopePredicate) AND id NOT IN (
         SELECT ss.sportovec_id FROM sportovec_skupina ss
         JOIN skupiny sk ON ss.skupina_id = sk.id
         WHERE LOWER(sk.nazev) = 'archiv'
@@ -25,6 +27,7 @@ $sportovecId = isset($_GET['sportovec_id']) ? (int)$_GET['sportovec_id'] : 0;
 $vybranySportovec = null;
 
 if ($sportovecId > 0) {
+    coachScopeRequirePerson($pdo, $sportovecId);
     $stmt = $pdo->prepare("SELECT id, jmeno, prijmeni FROM sportovci WHERE id = ?");
     $stmt->execute([$sportovecId]);
     $vybranySportovec = $stmt->fetch(PDO::FETCH_ASSOC);

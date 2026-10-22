@@ -108,7 +108,8 @@ function one_time_booking_approval_consume(
     PDO $pdo,
     string $token,
     string $action,
-    ?int $now = null
+    ?int $now = null,
+    ?callable $onConsumed = null
 ): ?array {
     if (!in_array($action, ['potvrdit', 'zamit'], true)) {
         return null;
@@ -142,6 +143,7 @@ function one_time_booking_approval_consume(
             return null;
         }
 
+        if ($onConsumed !== null) $onConsumed($pdo, (int)$reservation['id'], $action);
         $pdo->commit();
         $reservation['stav'] = $newState;
         $reservation['cas_potvrzeni'] = $confirmedAt;

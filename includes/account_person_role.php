@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/member_charge_read.php';
+
 final class AccountPersonRoleException extends RuntimeException
 {
 }
@@ -190,6 +192,14 @@ function accountPersonRoleRevoke(
         $relation = $statement->fetch(PDO::FETCH_ASSOC);
         if (!$relation) {
             throw new AccountPersonRoleException('Vazba účtu a osoby nebyla nalezena.');
+        }
+        // Historical bearer links are not bound to a particular parent. Their
+        // holder cannot be distinguished, so withdrawal invalidates all such
+        // links for this person, while other canonical family relations remain.
+        if (memberChargeReadTableExists($pdo,'public_profile_access_tokens')) {
+            $tokens=$pdo->prepare('UPDATE public_profile_access_tokens SET revoked_at=CURRENT_TIMESTAMP WHERE sportovec_id=? AND revoked_at IS NULL');
+            $tokens->execute([(int)$relation['sportovec_id']]);
+            if ($tokens->rowCount()>0) accountPersonRoleEvent($pdo,$relationId,$actorTrainerId,'revoke_legacy_links',(string)$relation['status'],(string)$relation['status'],(string)$relation['relation_role'],'Při odvolání zastupování zneplatněny starší veřejné odkazy osoby: '.$tokens->rowCount().'.');
         }
         if ($relation['status'] === 'revoked') {
             if ($ownsTransaction) $pdo->commit();

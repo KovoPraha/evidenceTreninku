@@ -1,6 +1,18 @@
 # Aktuální předání vývoje na další stanici
 
-Aktuální autorizace 22. 10. 2026: vlastník výslovně schválil push kontroly
+Aktuální úkol 22. 10. 2026: balík **R07–R12** v izolované pracovní kopii
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
+`codex/club-foundation-r07-r12-20261022`, základ B1 `2ccd30e27fa209302db4d1e17d4eb411a4c87cca`.
+Vlastník schválil implementaci a ověření se subagenty; výslovně **zakázal změny
+produkce a nasazení**. Žádný push/PR/merge/deploy tohoto balíku není proveden.
+Před pokračováním přečíst [předání balíku](CLUB_FOUNDATION_R07_R12.md)
+a [výsledky přejímky](verification/r07-r12/RESULTS.md). Další realizační balík:
+R13–R17. Reálné trenérské rozsahy ani historické identity se nemigrovaly.
+
+Následující odstavce jsou kontext předchozího úkolu; nejsou autorizací k nasazení
+R07–R12:
+
+Předchozí autorizace 22. 10. 2026: vlastník výslovně schválil push kontroly
 účetního zařazení před publikací, PR, merge po zelených kontrolách a chráněné
 produkční nasazení. Ověření blokace pouze čtením; produkty #274, #243, #245
 a existující/stálé VS zachovat. Nasazení tohoto řezu se teprve připravuje.

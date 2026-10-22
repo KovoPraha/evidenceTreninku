@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/coach_scope.php';
 
 /** Public profile URLs are bearer credentials and require cryptographic entropy. */
 function public_profile_token_generate(): string
@@ -100,6 +101,7 @@ function public_profile_access_session_athlete_id(PDO $pdo): ?int
             && (int)$access['staff_version'] === (int)($_SESSION['trener_session_version'] ?? 0)
             && (int)$access['staff_id'] > 0
             && (int)$access['staff_version'] > 0
+            && coachScopeCanViewPerson($pdo, $sportovecId)
         ) {
             return $sportovecId;
         }

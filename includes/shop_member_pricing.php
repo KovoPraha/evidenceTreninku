@@ -20,17 +20,19 @@ function shopMemberPricingAvailable(PDO $pdo): bool
 function shopMemberPricingEligibleTeams(PDO $pdo, int $accountId, ?string $onDate = null): array
 {
     if ($accountId < 1 || !shopMemberPricingAvailable($pdo)) return [];
+    $at = $onDate === null ? date('Y-m-d H:i:s') : $onDate . ' 00:00:00';
     $onDate ??= date('Y-m-d');
     $statement = $pdo->prepare(
         "SELECT DISTINCT t.id,t.name FROM account_person_roles r "
+        . "JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 "
         . "JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id "
         . "JOIN club_teams t ON t.id=m.team_id "
         . "WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') "
-        . "AND DATE(r.valid_from)<=? AND (r.valid_to IS NULL OR DATE(r.valid_to)>=?) "
+        . "AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) "
         . "AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) "
         . "AND t.status='active' ORDER BY t.name,t.id"
     );
-    $statement->execute([$accountId,$onDate,$onDate,$onDate,$onDate]);
+    $statement->execute([$accountId,$at,$at,$onDate,$onDate]);
     return array_map(static fn(array $row): array => ['id'=>(int)$row['id'],'name'=>(string)$row['name']], $statement->fetchAll(PDO::FETCH_ASSOC));
 }
 

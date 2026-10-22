@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 /**
  * AJAX endpoint: vrací HTML accordion-items pro tréninky trenéra
@@ -26,7 +27,7 @@ $sql = "SELECT t.id, t.datum, t.delka, t.napln, t.poznamka, t.obrazky, t.mereni
         FROM trenink_trener tt
         JOIN treninky t ON tt.trenink_id = t.id";
 
-$where   = ['tt.trener_id = :uid'];
+$where   = ['tt.trener_id = :uid', coachScopeTrainingPredicate($pdo)];
 $params  = [':uid' => $userId];
 
 // Filtr skupiny

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
@@ -77,6 +78,7 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
                 : 'Evidenci lze zadat pouze pro plánovaný trénink.'));
     }
     if ($planPrefill) {
+        coachScopeRequirePlan($pdo,(int)$planPrefill['id']);
         try {
             $subgroups=$pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=? ORDER BY podskupina_id');
             $subgroups->execute([(int)$planPrefill['id']]);
@@ -88,6 +90,7 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
         $planExpectedParticipants = trainingRosterBridgeExpectedForPlan($pdo, (int)$planPrefill['id']);
         $selectedTeamIds = trainingRosterBridgePlanTeamIds($pdo, (int)$planPrefill['id']);
         $planMakeupParticipants = clubMakeupReservationsForPlan($pdo, (int)$planPrefill['id']);
+        foreach (array_merge($planExpectedParticipants, $planMakeupParticipants) as $participant) coachScopeRequirePerson($pdo, (int)($participant['sportovec_id'] ?? $participant['id'] ?? 0));
     }
 }
 
@@ -96,6 +99,7 @@ $duplikat = null;
 if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
     try {
         $did = (int)$_GET['duplikat'];
+        coachScopeRequireTraining($pdo, $did);
 
         $r0 = $pdo->prepare('SELECT datum,napln,delka,kategorie FROM treninky WHERE id = ?');
         $r0->execute([$did]);
