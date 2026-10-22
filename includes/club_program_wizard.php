@@ -99,8 +99,8 @@ function clubProgramWizardCreate(
             $locked=clubProgramWizardExistingProduct($pdo,(int)$existingProduct['variant_id'],true);
             $productId=(int)$locked['id'];$variantId=(int)$locked['variant_id'];
             $beforeProduct=$locked;$beforeVariant=shopManualCatalogLockVariant($pdo,$variantId);
-            $pdo->prepare("UPDATE shop_products SET offer_type='program',item_type='service',visibility='visible',catalog_status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
-            $pdo->prepare("UPDATE shop_variants SET stock_quantity_decimal=NULL,unit_code='person',visible=1,catalog_status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$variantId]);
+            $pdo->prepare("UPDATE shop_products SET offer_type='program',item_type='service',visibility='visible',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
+            $pdo->prepare("UPDATE shop_variants SET stock_quantity_decimal=NULL,unit_code='person',visible=1,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$variantId]);
             shopManualCatalogEvent($pdo,$productId,null,$actorId,'convert_to_program',$beforeProduct,shopManualCatalogLockProduct($pdo,$productId),$reason);
             shopManualCatalogEvent($pdo,$productId,$variantId,$actorId,'clear_program_stock',$beforeVariant,shopManualCatalogLockVariant($pdo,$variantId),$reason);
         }
@@ -150,7 +150,12 @@ function clubProgramWizardCreate(
             'purchase_option'=>$purchaseOption,'is_featured'=>$featured,
         ],$reason);
         $publication=$pdo->prepare('SELECT status FROM shop_product_publications WHERE product_id=?');$publication->execute([$productId]);
-        if(empty($input['defer_publication'])&&(string)$publication->fetchColumn()!=='active')shopCatalogPublicationActivateInTransaction($pdo,$productId,$actorId,$name,$description,$reason,true);
+        $publicationStatus=(string)$publication->fetchColumn();
+        if($publicationStatus==='active'){
+            // Converting a published product creates a new offer even without reactivation.
+            $accountingBlockers=shopCatalogPublicationAccountingBlockers($pdo,$productId,'program');
+            if($accountingBlockers!==[])throw new ShopCatalogPublicationException('Vypsání kroužku je blokované: '.implode(' ',$accountingBlockers));
+        }elseif(empty($input['defer_publication']))shopCatalogPublicationActivateInTransaction($pdo,$productId,$actorId,$name,$description,$reason,true);
         $pdo->commit();
         return['product_id'=>$productId,'variant_id'=>$variantId,'program_id'=>(int)$program['id'],'offer_id'=>(int)$offer['id'],'season_id'=>$seasonId,'team_id'=>$teamId,'image_id'=>$imageId,'category_path'=>$category];
     }catch(Throwable$exception){

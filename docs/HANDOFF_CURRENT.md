@@ -1,5 +1,22 @@
 # Aktuální předání vývoje na další stanici
 
+Aktuální autorizace 22. 10. 2026: vlastník výslovně schválil push kontroly
+účetního zařazení před publikací, PR, merge po zelených kontrolách a chráněné
+produkční nasazení. Ověření blokace pouze čtením; produkty #274, #243, #245
+a existující/stálé VS zachovat. Nasazení tohoto řezu se teprve připravuje.
+
+22. 10. 2026: schválené účetní mapování uloženo v produkční administraci
+(38 auditovaných změn); produkty #274, #243, #245 a kontrolované původní VS
+zachovány. Následná nová kontrola účetního zařazení před zveřejněním produktu
+je implementována lokálně v `evidencePavel-publication-accounting-20261022`
+na větvi `codex/shop-publication-accounting-guard-20261022`; zatím není nasazená.
+Ověření: 1 214 testů / 26 960 kontrol, PHP lint, `git diff --check` a lokální
+MariaDB smoke číslování včetně nové publikační kontroly prošly.
+Podrobnosti, rozsah ověření a omezení jsou v
+[plánu kontroly publikace](SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md).
+Neprovádět automatickou opravu ani deaktivaci tří odložených produktů,
+nepřepisovat existující VS. Následující datované záznamy popisují starší řezy.
+
 ## Autorizované vydání Zásilkovny — 22. 10. 2026
 
 Vlastník schválil commit, push a nasazení připravených úprav. Dopravu i
