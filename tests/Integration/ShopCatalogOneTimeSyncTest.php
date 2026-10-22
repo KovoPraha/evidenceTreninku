@@ -54,6 +54,18 @@ final class ShopCatalogOneTimeSyncTest extends TestCase
         self::assertSame(2,(int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_promotions')->fetchColumn());
     }
 
+    public function testImportCannotOverwriteVerifiedStockAndRollsBackMetadata():void
+    {
+        $pdo=$this->database();$catalog=$this->catalog();$manifest=$this->manifest($catalog);
+        \shopCatalogOneTimeApply($pdo,$catalog,$manifest,$this->temporaryDirectory.'/app',\SHOP_CATALOG_ONE_TIME_CONFIRM);
+        $migration=require dirname(__DIR__,2).'/migrations/20261022230000_shop_inventory.php';$migration['up']($pdo);
+        $id=(int)$pdo->query("SELECT id FROM shop_variants WHERE sku='DRES-M'")->fetchColumn();
+        $pdo->prepare("INSERT INTO shop_stock_balances(variant_id,mode,actor_trainer_id) VALUES(?,'tracked',7)")->execute([$id]);
+        $before=$pdo->query('SELECT * FROM shop_variants ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
+        $catalog['source']['sha256']=str_repeat('f',64);$catalog['products'][1]['variants'][0]['stock']['quantity_decimal']='99';$manifest=$this->manifest($catalog);
+        try{\shopCatalogOneTimeApply($pdo,$catalog,$manifest,$this->temporaryDirectory.'/app',\SHOP_CATALOG_ONE_TIME_CONFIRM);self::fail('Managed stock cannot be imported over');}catch(\ShopCatalogOneTimeSyncException){self::assertSame($before,$pdo->query('SELECT * FROM shop_variants ORDER BY id')->fetchAll(PDO::FETCH_ASSOC));}
+    }
+
     public function testManualSkuCollisionAndActiveImportFailClosedWithoutWrites():void
     {
         $pdo=$this->database();$catalog=$this->catalog();$manifest=$this->manifest($catalog);

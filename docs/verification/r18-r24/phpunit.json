@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 1403,
+  "assertions": 29526,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 167.59966,
+  "runtime": "PHP 8.2.12",
+  "phpunit": "11.5.56",
+  "isolated_only": true
+}

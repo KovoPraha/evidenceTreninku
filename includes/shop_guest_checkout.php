@@ -6,7 +6,7 @@ require_once __DIR__ . '/app_url.php';
 require_once __DIR__ . '/shop_purchase_mode.php';
 
 /** @param array<string,mixed> $customer @return array<string,string|null> */
-function shopGuestCustomerValidate(array $customer): array
+function shopGuestCustomerValidate(array $customer,bool $requireEmail=true): array
 {
     $firstName = trim((string)($customer['first_name'] ?? ''));
     $lastName = trim((string)($customer['last_name'] ?? ''));
@@ -17,7 +17,7 @@ function shopGuestCustomerValidate(array $customer): array
     $postcode = trim((string)($customer['address_postcode'] ?? ''));
     if ($firstName === '' || mb_strlen($firstName, 'UTF-8') > 100) throw new InvalidArgumentException('Zadejte platné jméno.');
     if ($lastName === '' || mb_strlen($lastName, 'UTF-8') > 100) throw new InvalidArgumentException('Zadejte platné příjmení.');
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email, 'UTF-8') > 254) throw new InvalidArgumentException('Zadejte platný e-mail.');
+    if (($requireEmail || $email!=='') && (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email, 'UTF-8') > 254)) throw new InvalidArgumentException('Zadejte platný e-mail.');
     if (mb_strlen($phone, 'UTF-8') > 50) throw new InvalidArgumentException('Telefon je příliš dlouhý.');
     if (mb_strlen($street, 'UTF-8') > 200 || mb_strlen($city, 'UTF-8') > 100 || mb_strlen($postcode, 'UTF-8') > 20) {
         throw new InvalidArgumentException('Adresa je příliš dlouhá.');
@@ -79,7 +79,8 @@ function shopGuestCheckoutPlace(
     ?callable $pplLookup = null,
     string $packetaPointId = '',
     int $expectedPacketaShippingMinor = 0,
-    ?callable $packetaLookup = null
+    ?callable $packetaLookup = null,
+    ?array $staffSale = null
 ): array {
     if ($variantId < 1 || $quantity < 1 || $quantity > 99
         || preg_match('/^[a-f0-9]{32}$/D', $idempotencyKey) !== 1
@@ -90,7 +91,7 @@ function shopGuestCheckoutPlace(
     if (($customer['confirmed'] ?? '') !== '1') {
         throw new InvalidArgumentException('Před objednáním potvrďte správnost údajů a způsob převzetí a platby.');
     }
-    $customer = shopGuestCustomerValidate($customer);
+    $customer = shopGuestCustomerValidate($customer,$staffSale===null);
     $bank = shopBankValidateSettings($bank);
     $keyHash = hash('sha256', 'guest:' . $idempotencyKey);
     $tokenHash = hash('sha256', $accessToken);
@@ -109,6 +110,7 @@ function shopGuestCheckoutPlace(
             $existing->execute([$keyHash]);
             $existingCode = $existing->fetchColumn();
             if ($existingCode !== false) {
+                if($staffSale!==null)shopAssistedSaleAssertReplay($pdo,(string)$existingCode,$staffSale);
                 $pdo->commit();
                 return shopGuestOrderByCode($pdo, (string)$existingCode, $accessToken) + ['replayed' => true];
             }
@@ -118,7 +120,12 @@ function shopGuestCheckoutPlace(
                 || !shopCheckoutVariantIsSaleable($variant, $pdo, null, true)) {
                 throw new ShopCheckoutException('Tuto položku nelze koupit bez registrace.');
             }
+            if($staffSale!==null){
+                shopAssistedSaleValidateInTransaction($pdo,$staffSale,$variant,$customer);
+                if((int)($staffSale['account_id']??0)>0)shopMemberPriceApplyToItem($pdo,(int)$staffSale['account_id'],$variant);
+            }
             $unit = (int)$variant['amount_minor'];
+            if($staffSale!==null && isset($staffSale['expected_price']) && (int)$staffSale['expected_price']!==$unit)throw new ShopCheckoutException('Cena se změnila. Nejdříve znovu ověřte cenu prodeje.');
             $currency = (string)$variant['currency'];
             if ($unit < 1 || $currency !== 'CZK' || $unit > intdiv(PHP_INT_MAX, $quantity)) {
                 throw new ShopCheckoutException('Položka má nepodporovanou cenu.');
@@ -151,8 +158,9 @@ function shopGuestCheckoutPlace(
             elseif($delivery['method']==='packeta_zbox')$pdo->prepare('UPDATE shop_orders SET fulfillment_method=?,shipping_amount_minor=?,packeta_point_id=?,packeta_point_name=?,packeta_point_address=?,customer_phone_snapshot=? WHERE id=?')->execute([
                 'packeta_zbox',$delivery['price_minor'],$delivery['point']['id'],$delivery['point']['name'],$delivery['point']['address'],$customer['phone'],$orderId,
             ]);
+            $physicalStock = shopInventoryManaged($pdo,$variantId);
             $managedStock = $variant['stock_quantity_decimal'] !== null;
-            if ($managedStock) {
+            if ($managedStock && !$physicalStock) {
                 $reserve = $pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal-?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND stock_quantity_decimal>=?');
                 $reserve->execute([$quantity, $variantId, $quantity]);
                 if ($reserve->rowCount() !== 1) throw new ShopCheckoutException('Vybraná varianta se mezitím vyprodala.');
@@ -160,12 +168,15 @@ function shopGuestCheckoutPlace(
             $item = $pdo->prepare('INSERT INTO shop_order_items(order_id,product_id,variant_id,product_name_snapshot,sku_snapshot,attributes_json_snapshot,quantity,unit_amount_minor,line_amount_minor,currency,includes_vat_snapshot,vat_rate_basis_points_snapshot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
             $item->execute([$orderId, (int)$variant['product_id'], $variantId, (string)$variant['public_name'], (string)$variant['sku'], (string)$variant['attributes_json'], $quantity, $unit, $goodsTotal, $currency, $variant['includes_vat'], $variant['vat_rate_basis_points']]);
             $orderItemId = (int)$pdo->lastInsertId();
-            if ($managedStock) {
+            if ($physicalStock) {
+                shopInventoryReserveInTransaction($pdo,$variantId,$orderId,$orderItemId,$quantity,'checkout:'.$orderItemId,$staffSale!==null?(int)$staffSale['actor_id']:null);
+            } elseif ($managedStock) {
                 $stock = $pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE id=?');
                 $stock->execute([$variantId]);
                 $pdo->prepare("INSERT INTO shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) VALUES (?,?,?,'reserve',?,?)")
                     ->execute([$variantId, $orderId, $orderItemId, (string)(-$quantity), (string)$stock->fetchColumn()]);
             }
+            if($staffSale!==null)shopAssistedSaleRecordInTransaction($pdo,$orderId,$staffSale,$variant);
             $variableSymbol = shopOrderAssignVariableSymbol($pdo, $orderId);
             $spd = shopPaymentSpdPayload($bank['iban'], $total, $currency, $variableSymbol, 'OBJEDNAVKA ' . $publicCode);
             if (shopPaymentPolicyColumnExists($pdo, 'payments', 'accepted_payment_methods')) {
@@ -177,7 +188,7 @@ function shopGuestCheckoutPlace(
             }
             $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,'guest',NULL,'place',NULL,'placed','Objednávka vytvořena rychlým nákupem bez účtu.')")
                 ->execute([$orderId]);
-            if (shopPaymentNotificationTableExists($pdo, 'club_event_notifications')) {
+            if ($customer['email']!=='' && shopPaymentNotificationTableExists($pdo, 'club_event_notifications')) {
                 $orderUrl = appUrl('booking/objednavka.php?code=' . rawurlencode($publicCode) . '&access=' . rawurlencode($accessToken));
                 $deliveryInstruction = ($delivery['method']==='ppl_box'
                         ? 'Doprava PPL Parcelbox: '.number_format($delivery['price_minor']/100,2,',',' ')." CZK\n".'Box: '.$delivery['point']['name'].' ('.$delivery['point']['code'].")\n"

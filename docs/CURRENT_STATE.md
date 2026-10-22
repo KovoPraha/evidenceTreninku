@@ -1,5 +1,17 @@
 # Aktuální stav projektu
 
+Lokální vývoj 22. 10. 2026: **R18–R24 — sklady, prodej a vratky**, větev
+`codex/inventory-r18-r24-20261022`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R13–R17
+`fd402b6d9e12a86d932f376c8eaff76877d9a029`.
+Předání: [implementace R18–R24](INVENTORY_R18_R24_IMPLEMENTATION.md),
+[důkazy přejímky](verification/r18-r24/RESULTS.md).
+**Pouze izolované syntetické prostředí; bez push, merge, nasazení a produkčních změn.**
+Fyzické počátky, FIFO a účetní údaje pro skutečný provoz se nepřebíraly.
+Úplnost účetního předání dokončí R36; navazuje R25–R30.
+
+Následuje historické předání předchozího lokálního balíku:
+
 Lokální vývoj 22. 10. 2026: na B1 a R07–R12 navazuje **R13–R17** ve větvi
 `codex/finance-r13-r17-20261022`. Peněžní evidence, doklady/PDF, účetní
 členění, vratky a první export jsou popsány v

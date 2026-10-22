@@ -37,7 +37,8 @@ function shopAdminCatalogPage(PDO $pdo,array $filters,bool $variants=false): arr
     if (!$variants) $from.=' LEFT JOIN shop_product_publications pub ON pub.product_id=p.id';
     $statement=$pdo->prepare('SELECT '.$columns.' FROM '.$from.$sqlWhere.' ORDER BY p.name,p.id'.($variants?',v.id':'').' LIMIT '.$size.' OFFSET '.(($page-1)*$size));
     $statement->execute($params);
-    return ['rows'=>$statement->fetchAll(PDO::FETCH_ASSOC),'total'=>$total,'page'=>$page,'pages'=>$pages];
+    $rows=$statement->fetchAll(PDO::FETCH_ASSOC);if($variants&&shopInventoryTable($pdo))foreach($rows as&$stockRow)$stockRow['inventory_balance']=shopInventoryBalance($pdo,(int)$stockRow['id']);unset($stockRow);
+    return ['rows'=>$rows,'total'=>$total,'page'=>$page,'pages'=>$pages];
 }
 
 function shopAdminVariantName(array $variant): string

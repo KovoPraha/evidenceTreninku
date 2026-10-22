@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/shop_inventory.php';
 
 require_once __DIR__ . '/shop_catalog_origin.php';
 require_once __DIR__ . '/shop_catalog_publication.php';
@@ -159,6 +160,7 @@ function shopManualCatalogUpdateProduct(PDO $pdo, int $actorId, int $productId, 
         if (!array_key_exists('delivery_mode',$input)) $input['delivery_mode']=$before['delivery_mode']??'pickup_only';
         if (!array_key_exists('packeta_shipping_enabled',$input)) $input['packeta_shipping_enabled']=$before['packeta_shipping_enabled']??0;
         $values = shopManualCatalogProductInput($input);
+        if($values['offer_type']!=='goods'&&shopInventoryTable($pdo)){$stockGuard=$pdo->prepare('SELECT b.variant_id FROM shop_stock_balances b JOIN shop_variants v ON v.id=b.variant_id WHERE v.product_id=? LIMIT 1');$stockGuard->execute([$productId]);if($stockGuard->fetchColumn())throw new ShopManualCatalogException('Produkt s fyzickou skladovou historií nelze změnit na službu.');}
         $hasDeliveryMode=shopManualCatalogHasDeliveryMode($pdo);
         $hasPacketa=shopManualCatalogHasProductColumn($pdo,'packeta_shipping_enabled');
         if (!$hasDeliveryMode && $values['delivery_mode']!=='pickup_only') throw new ShopManualCatalogException('Nastavení zasílání ještě není v databázi připravené.');
@@ -215,6 +217,7 @@ function shopManualCatalogUpdateVariant(PDO $pdo, int $actorId, int $variantId, 
             throw new ShopManualCatalogException('Původní kód převzaté varianty se nemění.');
         }
         $values = shopManualCatalogVariantInput($input);
+        if(shopInventoryManaged($pdo,$variantId)&&($values['sku']!==$before['sku']||$values['unit_code']!==$before['unit_code']))throw new ShopManualCatalogException('SKU a jednotka evidované skladové varianty jsou neměnné.');
         $values['stock_quantity_decimal']=$before['stock_quantity_decimal'];
         if ((string)$before['origin']===ShopCatalogOrigin::IMPORT) $values['sku']=(string)$before['sku'];
         if ((string)$before['origin'] === ShopCatalogOrigin::MANUAL) {

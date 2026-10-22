@@ -30,6 +30,19 @@ final class AccountingLedgerTest extends TestCase
     private function record(PDO $pdo,array $overrides=[]):array{return \accountingLedgerRecord($pdo,$this->input($overrides),7,'LOCALHOST confirmed movement.',true);}
     private function denied(callable $fn,string $contains=''):void{try{$fn();self::fail('Expected refusal');}catch(\AccountingLedgerException $e){if($contains!=='')self::assertStringContainsString($contains,$e->getMessage());else self::assertNotSame('',$e->getMessage());}}
 
+    public function testExchangeAllocationCannotExceedDeltaAndAllowsAuditedRelease():void
+    {
+        $p=$this->db();$p->exec("CREATE TABLE shop_return_cases(id INT PRIMARY KEY,currency TEXT,state TEXT,exchange_delta_minor INT,exchange_reservation_id INT);INSERT INTO shop_return_cases VALUES(1,'CZK','open',2000,1)");$m=$this->record($p);
+        $a=\accountingLedgerAllocate($p,(int)$m['id'],'shop_return',1,2000,'exchange-alloc',7,'LOCALHOST actual delta payment.',true,null,'','',date('Y-m-d'));
+        $this->denied(fn()=>\accountingLedgerAllocate($p,(int)$m['id'],'shop_return',1,1,'exchange-over',7,'LOCALHOST excess delta payment.',true));
+        $p->exec("UPDATE shop_return_cases SET state='cancelled'");
+        \accountingLedgerAllocate($p,(int)$m['id'],'shop_return',1,-2000,'exchange-release',7,'LOCALHOST released mistaken payment.',true,(int)$a['id']);
+        self::assertSame(0,(int)$p->query("SELECT SUM(amount_minor) FROM accounting_allocations WHERE case_type='shop_return'")->fetchColumn());
+        $p->exec("UPDATE shop_return_cases SET state='open'");
+        $expense=$this->record($p,['kind'=>'expense','amount_minor'=>-5000,'source_reference'=>'exchange-expense','request_key'=>'exchange-expense']);
+        $this->denied(fn()=>\accountingLedgerAllocate($p,(int)$expense['id'],'shop_return',1,2000,'expense-cannot-fund',7,'LOCALHOST expense is not payment.',true),'kladným příjmem');
+    }
+
     public function testStableIdentityAndConflictingRetryCannotDuplicateMoney():void
     {
         $pdo=$this->db();$first=$this->record($pdo);self::assertSame($first,$this->record($pdo));

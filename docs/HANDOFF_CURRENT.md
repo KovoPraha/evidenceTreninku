@@ -1,5 +1,17 @@
 # Aktuální předání vývoje na další stanici
 
+Lokální vývoj 22. 10. 2026: **R18–R24 — sklady, prodej a vratky**, větev
+`codex/inventory-r18-r24-20261022`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R13–R17
+`fd402b6d9e12a86d932f376c8eaff76877d9a029`.
+Předání: [implementace R18–R24](INVENTORY_R18_R24_IMPLEMENTATION.md),
+[důkazy přejímky](verification/r18-r24/RESULTS.md).
+**Pouze izolované syntetické prostředí; bez push, merge, nasazení a produkčních změn.**
+Fyzické počátky, FIFO a účetní údaje pro skutečný provoz se nepřebíraly.
+Úplnost účetního předání dokončí R36; navazuje R25–R30.
+
+Následuje historické předání předchozího lokálního balíku:
+
 Aktuální úkol 22. 10. 2026: **R13–R17**, izolovaná pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
 `codex/finance-r13-r17-20261022`, základ `0e23e9e766079ce658bbc7687fed7f19b53779de`.

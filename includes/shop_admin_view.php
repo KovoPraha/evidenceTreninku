@@ -16,6 +16,7 @@ function shopAdminBadge(array $product): string
 function shopAdminStock(array $variant): string
 {
     $stock=$variant['stock_quantity_decimal']??null;
+    if(isset($variant['inventory_balance'])){$b=$variant['inventory_balance'];return '<span class="app-stock-count">'.(int)$b['available_quantity'].' ks dostupné</span><small>Fyzicky '.(int)$b['physical_quantity'].' · rezervováno '.(int)$b['reserved_quantity'].' · blokováno '.(int)$b['blocked_quantity'].'</small>';}
     if (($variant['offer_type']??'')==='program') return '<span class="small text-muted">Kapacita termínu</span>';
     if ($stock===null) return '<span class="small text-muted">Sklad se nesleduje</span>';
     $class=(float)$stock<=0?' text-danger':'';

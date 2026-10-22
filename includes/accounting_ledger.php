@@ -153,10 +153,17 @@ function accountingLedgerAllocate(PDO $pdo,int $movementId,string $caseType,int 
         if($prior){if(!hash_equals($prior['fingerprint'],$fingerprint))throw new AccountingLedgerException('Klíč rozdělení již patří jinému požadavku.');return $prior;}
         $q=$pdo->prepare('SELECT * FROM accounting_movements WHERE id=?');$q->execute([$movementId]);$movement=$q->fetch(PDO::FETCH_ASSOC);
         if(!$movement||$movement['kind']==='transfer'||$effectiveOn<$movement['effective_on'])throw new AccountingLedgerException('Pohyb není dostupný pro toto rozdělení.');
-        $table=match($caseType){'shop_order'=>'shop_orders','member_charge'=>'club_member_charges',default=>null};
+        $table=match($caseType){'shop_order'=>'shop_orders','member_charge'=>'club_member_charges','shop_return'=>'shop_return_cases',default=>null};
         if($table===null||!accountingLedgerTable($pdo,$table))throw new AccountingLedgerException('Rozdělení vyžaduje existující obchodní případ.');
         $q=$pdo->prepare('SELECT currency FROM '.$table.' WHERE id=?');$q->execute([$caseId]);$caseCurrency=$q->fetchColumn();
         if($caseCurrency===false||$caseCurrency!==$movement['currency'])throw new AccountingLedgerException('Případ nebyl nalezen nebo má jinou měnu.');
+        if($caseType==='shop_return'){
+            if($amountMinor>0&&($movement['kind']!=='income'||(int)$movement['amount_minor']<=0))throw new AccountingLedgerException('Doplatek výměny lze pokrýt pouze skutečným kladným příjmem.');
+            $q=$pdo->prepare('SELECT state,exchange_delta_minor,exchange_reservation_id FROM shop_return_cases WHERE id=?');$q->execute([$caseId]);$exchange=$q->fetch(PDO::FETCH_ASSOC);
+            if($amountMinor>0&&($exchange['state']==='cancelled'||empty($exchange['exchange_reservation_id'])||(int)$exchange['exchange_delta_minor']<=0))throw new AccountingLedgerException('Výměna nemá platný doplatek.');
+            $q=$pdo->prepare("SELECT COALESCE(SUM(amount_minor),0) FROM accounting_allocations WHERE case_type='shop_return' AND case_id=?");$q->execute([$caseId]);
+            if($amountMinor>0&&(int)$q->fetchColumn()+$amountMinor>(int)$exchange['exchange_delta_minor'])throw new AccountingLedgerException('Příděly přesahují dohodnutý doplatek výměny.');
+        }
         accountingLedgerAssertOpen($pdo,(int)$movement['account_id'],$effectiveOn);
         if($amountMinor<0){
             $q=$pdo->prepare('SELECT * FROM accounting_allocations WHERE id=?');$q->execute([$reversesId]);$original=$q->fetch(PDO::FETCH_ASSOC);

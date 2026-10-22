@@ -134,6 +134,15 @@ final class ClubProgramWizardTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_admin_events')->fetchColumn());
     }
 
+    public function testStockHistoryCannotBeErasedByConversionToService():void
+    {
+        $pdo=$this->database();$this->seedConversionProduct($pdo,'draft');
+        $migration=require dirname(__DIR__,2).'/migrations/20261022230000_shop_inventory.php';$migration['up']($pdo);
+        $pdo->exec("INSERT INTO shop_stock_balances(variant_id,mode,actor_trainer_id) VALUES(701,'tracked',7)");
+        $input=$this->input();$input['source_mode']='existing';$input['existing_variant_id']=701;$input['defer_publication']=true;
+        try{\clubProgramWizardCreate($pdo,7,$input,null,false);self::fail('Managed stock must survive');}catch(\ClubProgramWizardException){self::assertSame('goods',$pdo->query('SELECT offer_type FROM shop_products WHERE id=601')->fetchColumn());self::assertSame('20',$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=701')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn());}
+    }
+
     public function testDeferredConversionRemainsDraftWithoutAccounting(): void
     {
         $pdo = $this->database();

@@ -137,6 +137,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_produkt_admin.php', 'label' => 'Produkty', 'description' => 'Přehled produktů a variant', 'icon' => 'box-seam'],
                     ['route' => 'eshop_ceny_admin.php', 'label' => 'Ceny', 'description' => 'Ceny jednotlivých variant', 'icon' => 'tags'],
                     ['route' => 'eshop_sklad_admin.php', 'label' => 'Sklad', 'description' => 'Skladové stavy a pohyby variant', 'icon' => 'boxes'],
+                    ['route'=>'eshop_inventory_admin.php','label'=>'Skladové doklady a inventura','description'=>'Ověřený počátek, příjemky, blokace a inventura','icon'=>'boxes'],
                     ['route' => 'eshop_categories_admin.php', 'label' => 'Kategorie', 'description' => 'Hierarchie kategorií', 'icon' => 'diagram-3'],
                     ['route' => 'eshop_attributes_admin.php', 'label' => 'Parametry', 'description' => 'Číselník parametrů produktů', 'icon' => 'sliders'],
                 ]],
@@ -158,6 +159,9 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Objednávky', 'icon' => 'receipt', 'items' => [
                     ['route' => 'eshop_orders_admin.php', 'label' => 'Objednávky', 'description' => 'Příprava, výdej a provozní storna', 'icon' => 'receipt'],
+                    ['route'=>'eshop_assisted_sale_admin.php','label'=>'Prodej na místě','description'=>'Prodej členu nebo veřejnosti za platné ceny','icon'=>'cart'],
+                    ['route'=>'eshop_fulfillment_admin.php','label'=>'Položkové výdeje','description'=>'Skutečné předání zboží a doručení','icon'=>'box-seam'],
+                    ['route'=>'shop_returns_admin.php','label'=>'Vratky a výměny','description'=>'Převzetí, posouzení, výměna a finanční vyřešení','icon'=>'arrow-return-left'],
                     ['route' => 'eshop_ppl_admin.php', 'label' => 'Doprava PPL', 'description' => 'Cena doručení a volba PPL Parcelbox', 'icon' => 'box-seam'],
                     ['route' => 'eshop_packeta_admin.php', 'label' => 'Doručení Zásilkovnou', 'description' => 'Cena doručení a volba Z-BOXu', 'icon' => 'box-seam'],
                     ['route' => 'eshop_order_statuses_admin.php', 'label' => 'Stavy a e-maily', 'description' => 'Systémové stavy, zákaznická upřesnění a texty e-mailů', 'icon' => 'tags'],
@@ -310,7 +314,7 @@ function staffRouteOwners(): array
             'club_event_participants_export.php',
         ],
         'catalog_manager' => ['eshop_produkt_novy_admin.php','eshop_produkt_stahnout_admin.php','eshop_varianta_admin.php'],
-        'order_operator' => [],
+        'order_operator' => ['shop_stock_document.php'],
         'finance_manager' => [
             'accounting_export_download.php','accounting_document_download.php',
             'jizdy/formular.php','jizdy/seznam.php','jizdy/smazat.php','jizdy/uloz.php',
@@ -353,6 +357,9 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'eshop_inventory_admin.php'=>['finance_manager'],
+        'shop_returns_admin.php'=>['catalog_manager','finance_manager'],
+        'shop_stock_document.php'=>['catalog_manager','finance_manager'],
         'ajax_sportovci.php' => ['finance_manager'],
         'provozni_prehled_admin.php' => ['registrar','order_operator','finance_manager'],
         'ajax_roster_target_selector.php' => ['sports_lead', 'program_coordinator', 'finance_manager'],

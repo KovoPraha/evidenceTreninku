@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__.'/private_storage.php';
+require_once __DIR__.'/accounting_ledger.php';
+
+function accountingDocumentFinancialLock(PDO $pdo):void {if(accountingLedgerTable($pdo,'accounting_ledger_mutex'))$pdo->exec('UPDATE accounting_ledger_mutex SET revision=revision+1 WHERE id=1');}
 
 function accountingDocumentRequireFinance(?PDO $pdo=null):int {
  $actor=(int)($_SESSION['trener_id']??0);
@@ -48,7 +51,7 @@ function accountingDocumentConfigureIssuer(PDO $pdo,array $input):int {
 function accountingDocumentConfigureRule(PDO $pdo,array $input):int {
  if(!$pdo->inTransaction())return accountingDocumentConfigureTransaction($pdo,static fn():int=>accountingDocumentConfigureRule($pdo,$input));
  $actor=accountingDocumentRequireFinance($pdo);$source=(string)($input['source_type']??'');$kind=(string)($input['document_kind']??'');
- if(!in_array($source,['order','member_charge','movement'],true)||!in_array($kind,['invoice','contribution_confirmation','cash_receipt','cash_disbursement'],true)||($input['confirmed']??'')!=='1')throw new InvalidArgumentException('Potvrďte účel a schválenou metodiku dokladu.');
+ if(!in_array($source,['order','member_charge','movement','shop_return'],true)||!in_array($kind,['invoice','contribution_confirmation','cash_receipt','cash_disbursement'],true)||($input['confirmed']??'')!=='1')throw new InvalidArgumentException('Potvrďte účel a schválenou metodiku dokladu.');
  $args=[accountingDocumentText($input['category_code']??'',40),accountingDocumentText($input['activity']??'',100),accountingDocumentText($input['title']??'',200),$source,$kind,accountingDocumentDate($input['valid_from']??''),$actor,accountingDocumentText($input['approval_evidence']??'')];
  $pdo->prepare('INSERT INTO accounting_rules(category_code,activity,title,source_type,document_kind,valid_from,approved_by,approval_evidence) VALUES(?,?,?,?,?,?,?,?)')->execute($args);return (int)$pdo->lastInsertId();
 }
@@ -79,12 +82,16 @@ function accountingDocumentSource(PDO $pdo,string $type,int $id,bool $lock=false
  } elseif($type==='member_charge') {
   $q=$pdo->prepare('SELECT c.*,s.jmeno,s.prijmeni FROM club_member_charges c JOIN sportovci s ON s.id=c.sportovec_id WHERE c.id=?'.$suffix);$q->execute([$id]);$r=$q->fetch(PDO::FETCH_ASSOC);if(!$r||$r['status']==='cancelled')throw new DomainException('Platný předpis neexistuje.');
   $result=['source_type'=>$type,'source_id'=>$id,'reference'=>$r['public_code'],'total_minor'=>(int)$r['amount_minor'],'currency'=>$r['currency'],'buyer_suggestion'=>'','lines'=>[['line_key'=>'charge:'.$id,'label'=>$r['title_snapshot'],'quantity'=>1,'amount_minor'=>(int)$r['amount_minor'],'beneficiary'=>['person_id'=>(int)$r['sportovec_id'],'name'=>trim($r['jmeno'].' '.$r['prijmeni'])],'service_period'=>[$r['period_from'],$r['period_to']]]]];
+ } elseif($type==='shop_return') {
+  $q=$pdo->prepare('SELECT c.*,o.public_code,o.customer_name_snapshot FROM shop_return_cases c JOIN shop_orders o ON o.id=c.order_id WHERE c.id=?'.$suffix);$q->execute([$id]);$r=$q->fetch(PDO::FETCH_ASSOC);
+  if(!$r||$r['state']==='cancelled'||empty($r['exchange_reservation_id'])||(int)$r['exchange_delta_minor']<=0)throw new DomainException('Doklad k výměně vyžaduje platný dohodnutý doplatek a rezervaci náhradní varianty.');
+  $result=['source_type'=>$type,'source_id'=>$id,'reference'=>'Výměna #'.$id.' / '.$r['public_code'],'total_minor'=>(int)$r['exchange_delta_minor'],'currency'=>$r['currency'],'buyer_suggestion'=>$r['customer_name_snapshot'],'lines'=>[['line_key'=>'exchange:'.$id,'label'=>'Doplatek při výměně zboží, objednávka '.$r['public_code'],'quantity'=>1,'amount_minor'=>(int)$r['exchange_delta_minor'],'beneficiary'=>null]],'exchange'=>['original_amount_minor'=>(int)$r['original_amount_minor'],'replacement_amount_minor'=>(int)$r['exchange_amount_minor'],'replacement_variant_id'=>(int)$r['exchange_variant_id']]];
  } elseif($type==='movement') {
   $q=$pdo->prepare('SELECT m.*,a.kind AS account_kind,a.name AS account_name FROM accounting_movements m JOIN accounting_accounts a ON a.id=m.account_id WHERE m.id=?'.$suffix);$q->execute([$id]);$r=$q->fetch(PDO::FETCH_ASSOC);
   if(!$r||$r['account_kind']!=='cash')throw new DomainException('Pokladní doklad vyžaduje doložený pohyb hotovosti.');
   $amount=abs((int)$r['amount_minor']);$result=['source_type'=>$type,'source_id'=>$id,'reference'=>$r['source_reference'],'total_minor'=>$amount,'currency'=>$r['currency'],'buyer_suggestion'=>'','movement_effective_on'=>$r['effective_on'],'movement_kind'=>(int)$r['amount_minor']>0?'cash_receipt':'cash_disbursement','lines'=>[['line_key'=>'movement:'.$id,'label'=>$r['account_name'].' - '.$r['evidence'],'quantity'=>1,'amount_minor'=>$amount,'beneficiary'=>null]]];
  } else throw new InvalidArgumentException('Nepodporovaný obchodní případ.');
- if($type!=='movement'){$q=$pdo->prepare('SELECT variable_symbol,iban_snapshot,due_at FROM payments WHERE payable_type=? AND payable_id=?');$q->execute([$type==='order'?'shop_order':'member_charge',$id]);$payment=$q->fetch(PDO::FETCH_ASSOC);$result['variable_symbol']=$payment?$payment['variable_symbol']:null;$result['payment_bank_account']=$payment?$payment['iban_snapshot']:null;$result['due_on_suggestion']=$payment?substr($payment['due_at'],0,10):null;}
+ if(in_array($type,['order','member_charge'],true)){$q=$pdo->prepare('SELECT variable_symbol,iban_snapshot,due_at FROM payments WHERE payable_type=? AND payable_id=?');$q->execute([$type==='order'?'shop_order':'member_charge',$id]);$payment=$q->fetch(PDO::FETCH_ASSOC);$result['variable_symbol']=$payment?$payment['variable_symbol']:null;$result['payment_bank_account']=$payment?$payment['iban_snapshot']:null;$result['due_on_suggestion']=$payment?substr($payment['due_at'],0,10):null;}
  if($result['currency']!=='CZK'||$result['total_minor']<1||$result['lines']===[])throw new DomainException('První verze dokladů vyžaduje kladný případ v CZK.');
  return $result;
 }
@@ -97,6 +104,7 @@ function accountingDocumentCreateDraft(PDO $pdo,array $input):int {
  $issuerId=(int)($input['issuer_id']??0);$request=accountingDocumentText($input['request_key']??'',120);$rules=(array)($input['line_rules']??[]);
  if($pdo->inTransaction())throw new LogicException('Doklad vyžaduje vlastní transakci.');$pdo->beginTransaction();
  try {
+  accountingDocumentFinancialLock($pdo);
   accountingDocumentRequireFinance($pdo);
   $source=accountingDocumentSource($pdo,$type,$sourceId,true);$unique=$type.':'.$sourceId.':'.$kind;
   if(($type==='movement'&&($kind!==$source['movement_kind']||$effective!==$source['movement_effective_on']))||($type!=='movement'&&str_starts_with($kind,'cash_')))throw new DomainException('Druh a datum pokladního dokladu musí odpovídat skutečnému pohybu.');
@@ -115,6 +123,7 @@ function accountingDocumentCreateCorrection(PDO $pdo,int $originalId,array $line
  $actor=accountingDocumentRequireFinance($pdo);$requestKey=accountingDocumentText($requestKey,120);$reason=accountingDocumentText($reason);
  if($pdo->inTransaction())throw new LogicException('Oprava vyžaduje vlastní transakci.');$pdo->beginTransaction();
  try {
+  accountingDocumentFinancialLock($pdo);
   accountingDocumentRequireFinance($pdo);
   $original=accountingDocumentGet($pdo,$originalId,true);if($original['status']!=='issued'||!in_array($original['kind'],['invoice','contribution_confirmation'],true))throw new DomainException('Oprava vyžaduje vydaný původní prodejní nebo členský doklad.');
   $q=$pdo->prepare('SELECT * FROM accounting_documents WHERE idempotency_key=?');$q->execute([$requestKey]);$existing=$q->fetch(PDO::FETCH_ASSOC);if($existing){if((int)$existing['original_document_id']!==$originalId)throw new DomainException('Klíč opravy již patří jinému dokladu.');$pdo->commit();return (int)$existing['id'];}
@@ -158,6 +167,7 @@ function accountingDocumentIssue(PDO $pdo,int $id,string $reason):array {
  $actor=accountingDocumentRequireFinance($pdo);$reason=accountingDocumentText($reason);
  if($pdo->inTransaction())throw new LogicException('Vydání vyžaduje vlastní transakci.');$pdo->beginTransaction();
  try {
+  accountingDocumentFinancialLock($pdo);
   accountingDocumentRequireFinance($pdo);
   $r=accountingDocumentGet($pdo,$id,true);if($r['status']==='issued'){$pdo->commit();return $r;}
   if(!in_array($r['status'],['draft','rendering','failed'],true))throw new DomainException('Zrušený koncept nelze vydat.');
@@ -171,6 +181,7 @@ function accountingDocumentIssue(PDO $pdo,int $id,string $reason):array {
  }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
  $key=null;$temp=null;$pdo->beginTransaction();
  try {
+  accountingDocumentFinancialLock($pdo);
   accountingDocumentRequireFinance($pdo);
   $r=accountingDocumentGet($pdo,$id,true);if($r['status']==='issued'){$pdo->commit();return $r;}
   if(!hash_equals($r['snapshot_sha256'],hash('sha256',$r['snapshot_json'])))throw new DomainException('Nesouhlasí otisk obsahu.');
@@ -191,12 +202,12 @@ function accountingDocumentDownload(PDO $pdo,int $id):string {
 function accountingDocumentReviseParties(PDO $pdo,int $id,array $buyer,array $payer,string $reason):void {
  $actor=accountingDocumentRequireFinance($pdo);$reason=accountingDocumentText($reason);$buyer=accountingDocumentParty($buyer);$payer=accountingDocumentParty($payer,false);
  if($pdo->inTransaction())throw new LogicException('Oprava konceptu vyžaduje vlastní transakci.');$pdo->beginTransaction();
- try{accountingDocumentRequireFinance($pdo);$r=accountingDocumentGet($pdo,$id,true);if($r['status']!=='draft'||$r['number']!==null||$r['kind']==='correction')throw new DomainException('Měnit lze pouze nevydaný koncept bez přiděleného čísla.');
+ try{accountingDocumentFinancialLock($pdo);accountingDocumentRequireFinance($pdo);$r=accountingDocumentGet($pdo,$id,true);if($r['status']!=='draft'||$r['number']!==null||$r['kind']==='correction')throw new DomainException('Měnit lze pouze nevydaný koncept bez přiděleného čísla.');
  $s=json_decode($r['snapshot_json'],true,512,JSON_THROW_ON_ERROR);$s['buyer']=$buyer;$s['payer']=$payer;$json=accountingDocumentJson($s);$pdo->prepare('UPDATE accounting_documents SET snapshot_json=?,snapshot_sha256=? WHERE id=?')->execute([$json,hash('sha256',$json),$id]);accountingDocumentEvent($pdo,$id,$actor,'parties_revised',$reason);$pdo->commit();}catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
 }
 
 /** Only an unnumbered draft can be abandoned; originals and reserved numbers stay permanent. */
 function accountingDocumentVoidDraft(PDO $pdo,int $id,string $reason):void {
  $actor=accountingDocumentRequireFinance($pdo);$reason=accountingDocumentText($reason);if($pdo->inTransaction())throw new LogicException('Zrušení konceptu vyžaduje vlastní transakci.');$pdo->beginTransaction();
- try{accountingDocumentRequireFinance($pdo);$r=accountingDocumentGet($pdo,$id);if($r['original_document_id']!==null)accountingDocumentGet($pdo,(int)$r['original_document_id'],true);$r=accountingDocumentGet($pdo,$id,true);if($r['status']!=='draft'||$r['number']!==null)throw new DomainException('Zrušit lze pouze koncept bez přiděleného čísla.');$pdo->prepare("UPDATE accounting_documents SET status='void',source_unique_key=NULL WHERE id=?")->execute([$id]);accountingDocumentEvent($pdo,$id,$actor,'draft_voided',$reason);$pdo->commit();}catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
+ try{accountingDocumentFinancialLock($pdo);accountingDocumentRequireFinance($pdo);$r=accountingDocumentGet($pdo,$id);if($r['original_document_id']!==null)accountingDocumentGet($pdo,(int)$r['original_document_id'],true);$r=accountingDocumentGet($pdo,$id,true);if($r['status']!=='draft'||$r['number']!==null)throw new DomainException('Zrušit lze pouze koncept bez přiděleného čísla.');$pdo->prepare("UPDATE accounting_documents SET status='void',source_unique_key=NULL WHERE id=?")->execute([$id]);accountingDocumentEvent($pdo,$id,$actor,'draft_voided',$reason);$pdo->commit();}catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
 }

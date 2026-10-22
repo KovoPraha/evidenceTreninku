@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.3';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.4';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -321,6 +321,23 @@ const EVIDENCE_TABLES = [
     'accounting_export_mutex',
     'accounting_export_batches',
     'accounting_export_events',
+    'shop_stock_policy',
+    'shop_stock_balances',
+    'shop_stock_movements',
+    'shop_stock_reservations',
+    'shop_stock_lots',
+    'shop_stock_lot_uses',
+    'shop_stock_cost_revisions',
+    'shop_stock_counts',
+    'shop_fulfillments',
+    'shop_fulfillment_items',
+    'shop_delivery_events',
+    'shop_assisted_sales',
+    'shop_return_cases',
+    'shop_return_events',
+    'shop_return_finance_links',
+    'shop_stock_documents',
+
     'oznameni_targets',
     'payments',
     'password_reset_tokens',
