@@ -12,6 +12,23 @@ require_once dirname(__DIR__,2) . '/includes/shop_admin_input.php';
 
 final class ShopManualCatalogAdminTest extends TestCase
 {
+    public function testPacketaCheckboxIsIndependentAuditedAndPreservedOnUnrelatedEdit():void
+    {
+        $pdo=$this->database();
+        foreach(['20260817110000_shop_catalog_admin.php','20261019130000_shop_packeta_zbox.php','20261021200000_shop_packeta_manual_products.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);}
+        $created=\shopManualCatalogCreate($pdo,7,['name'=>'Tričko','offer_type'=>'goods','item_type'=>'product','visibility'=>'visible','packeta_shipping_enabled'=>1],$this->variant('KP-ZBOX',25000,'10'),'Zboží pro Z-BOX.',true);
+        $id=(int)$created['product_id'];
+        self::assertSame(1,(int)$pdo->query('SELECT packeta_shipping_enabled FROM shop_products WHERE id='.$id)->fetchColumn());
+        \shopManualCatalogUpdateProduct($pdo,7,$id,['name'=>'Tričko modré','offer_type'=>'goods','item_type'=>'product','visibility'=>'visible'],'Jen změna názvu.',true);
+        self::assertSame(1,(int)$pdo->query('SELECT packeta_shipping_enabled FROM shop_products WHERE id='.$id)->fetchColumn());
+        \shopManualCatalogUpdateProduct($pdo,7,$id,['name'=>'Tričko modré','offer_type'=>'goods','item_type'=>'product','visibility'=>'visible','packeta_shipping_enabled'=>0],'Zrušení možnosti zaslání.',true);
+        self::assertSame(0,(int)$pdo->query('SELECT packeta_shipping_enabled FROM shop_products WHERE id='.$id)->fetchColumn());
+        $event=json_decode($pdo->query("SELECT after_json FROM shop_catalog_admin_events WHERE action='update_product' ORDER BY id DESC LIMIT 1")->fetchColumn(),true,512,JSON_THROW_ON_ERROR);
+        self::assertSame(0,(int)$event['packeta_shipping_enabled']);
+        $this->expectException(\InvalidArgumentException::class);
+        \shopManualCatalogProductInput(['name'=>'Kroužek','offer_type'=>'program','item_type'=>'service','visibility'=>'visible','packeta_shipping_enabled'=>1]);
+    }
+
     public function testDeliveryModeIsStoredAndUnrelatedProductEditKeepsIt(): void
     {
         $pdo=$this->database();

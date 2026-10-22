@@ -1,5 +1,77 @@
 # Session handoff
 
+## Autorizované vydání Zásilkovny — 22. 10. 2026
+
+Schválen commit, push a chráněné produkční nasazení připravených úprav;
+zákaz aktivace dopravy/simulace a skutečných e-mailů/zásilek trvá.
+[Aktuální checklist](../PACKETA_RELEASE_2026-10-22.md) nahrazuje historické
+lokální omezení tohoto řezu níže. Začleněn main `886c07b2`, zachovány
+číselné řady, VS a migrace; zálohovací kontrakt `2026-10-22.1`.
+
+## Veřejný klíč a skutečná mapa — dokončeno lokálně 22. 10. 2026
+
+Uživatel obnovil přihlášení. Veřejný 16znakový klíč uložen přes lokální UI;
+API heslo nepřevzato. Skutečná mapa v in-app browseru a výběr Z-BOXu
+**22312 Nad Kapličkou 3324/15 (TJ Kovo Praha)** do checkoutu 5/5 PASS,
+cena 125 + 150 = 275 Kč. Aktuální serverová validace stejného bodu PASS;
+běžná pobočka vratek 39209 i syntetické ID 999000001 správně odmítnuty.
+Doprava po zkoušce opět vypnuta; **enabled=0, cena=15000, délka klíče=16,
+simulace=false**. Beze změny 2 objednávky, 5 pending / 0 pokusů, auth/roster
+fronty a email_log 0. Žádné vytvoření objednávky/štítku, podání, e-mail,
+commit/push/deploy nebo aktivace produkce. První načítání mapy pomalé;
+starý nepoužívaný v5 feed timeout, aktuální bodová validace funkční.
+[Výsledky a důkazy](../PACKETA_MODULE_AUDIT_2026-10-21.md#propojení-veřejného-klíče-a-skutečná-mapa--dokončeno-22-10-2026).
+Zbývá obchodní připravenost účtu a po samostatném souhlasu skutečný ruční
+štítek/podání/doručení a nasazení. Fakturace odložena.
+
+## Aktuální živé nastavení Packety
+
+Vlastník zpřístupnil účet a potvrdil VOP pro odesílatele. Uloženi Marek Mixa
+(kontakt #679131), firemní adresa #718887 (IČO 00541753, Nad Kapličkou 3324/15,
+100 00 Praha 10) a odesílatel Kovo Praha #577459 / `kovopraha`. Jen CZ Z-BOXy,
+bez externích míst, běžných poboček, dobírkových karet a vratkového portálu.
+**Vratková pobočka uložena a ověřena:** vlastník vybral Praha 10, Strašnice,
+Počernická 3492/1a **#39209**. U adresy #718887 nahrazuje automatické depo
+Olomouc #9936; po opětovném otevření formuláře přetrvává správná volba.
+Důkaz `var/local-status-mail-review/packeta-account-return-39209.png`.
+Veřejný klíč propojen s lokálním KIS a mapa ověřena dle výsledku výše;
+ostrý provoz neaktivovat. API heslo se nekopírovalo.
+Žádná zásilka nevytvořena, žádné nasazení/aktivace KIS ani poštovní worker.
+[Plán a důkazy](../PACKETA_MODULE_AUDIT_2026-10-21.md). Starší informace níže
+o neexistujícím účtu jsou historické.
+
+## Aktuální lokální stav — jednoduchá ruční Zásilkovna
+
+Vlastník rozhodl CZ Z-BOXy a podání pouze boxem, obsluha/odesílatel/vratky
+Kovo Praha, účet již nastaven výše, admin cena dopravy 150 Kč. Hotová lokální
+implementace: samostatný checkbox produktu pro Packetu (mimo kroužky),
+výchozí cena a stávající editor ceny, opravený widget/aktuální validace,
+expediční údaje, auditovaná oprava štítku, blokace duplicity a potvrzení
+storna v Klientu. Ruční vytvoření zásilky v Klientu a tisk jeho štítku;
+bez privátního API pro zakládání/sledování.
+PHPUnit 1 183 / 26 590 PASS; MariaDB backup/restore 190 tabulek PASS.
+Lokálně 111 migrací aktuálních, cena 150 Kč, enabled false, veřejný klíč uložen,
+simulace false, fronta 5 pending / 0 pokusů. Browser uložení ceny i checkboxu
+ověřeno. Nastavení účtu ověřeno výše; jeho obchodní připravenost,
+ostrý štítek/podání a doručení pošty nejsou ověřené; skutečná mapa již PASS.
+[Úplný plán a výsledky](../PACKETA_MODULE_AUDIT_2026-10-21.md).
+Větev `codex/packeta-module-audit-20261021`, necommitnuto ve worktree
+`C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
+Bez dalšího push/deploy, dopravu ani poštu neaktivovat; fakturace odložená.
+
+## Audit Zásilkovny 21. 10. 2026 — pouze analýza
+
+Dokončen [audit funkčnosti a plán modulu](../PACKETA_MODULE_AUDIT_2026-10-21.md)
+na větvi `codex/packeta-module-audit-20261021` ve worktree
+`C:\xampp\htdocs\evidencePavel-order-status-system-mail-20261021`.
+KIS dnes podporuje ruční evidenci expedice do CZ Z-BOXů; plné API chybí.
+Před zapnutím řešit konfiguraci widgetu (`group:zbox` místo neodpovídajícího
+`carrierId:czzbox`), aktuální validaci, expediční údaje, balíkové limity,
+opravu štítku a storno. Rozhodnout podání KOVO nezávisle na cílovém boxu.
+Sdílený mail worker zahrnuje i auth frontu; bez posouzení backlogu nespouštět.
+Soubor obsahuje vnější nastavení, rozhodnutí Marka, etapy a akceptační bránu.
+Žádný aplikační kód, konfigurace, skutečná zásilka/e-mail ani nasazení se
+v této analýze neměnily; simulace zůstává vypnutá a fakturace odložená.
 ## Produkční výsledek 21. 10. 2026 — číselné řady a účetní kategorie
 
 [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160) je sloučený;

@@ -43,6 +43,7 @@ try {
             $type=(string)($_POST['offer_type']??'goods');
             if (!in_array($type,['goods','club_event','camp'],true)) throw new InvalidArgumentException('Kroužek založte průvodcem.');
             $input=$_POST;$input['item_type']=$type==='goods'?'product':'service';$input['visibility']='visible';
+            if($type!=='goods')$input['packeta_shipping_enabled']=0;
             $variantInput=shopAdminParseVariant($_POST,$definitions);$variantInput['visible']=1;
             $result=shopManualCatalogCreate($pdo,$actorId,$input,$variantInput,$reason,$confirmed);
             $redirect=shopAdminUrl((int)$result['product_id'],'main');$message='Produkt byl založen jako koncept. Doplňte obrázky a kategorii a potom jej zveřejněte.';

@@ -56,7 +56,9 @@ if (shopCheckoutColumnExists($pdo,'shop_products','delivery_mode')) {
     $productDeliveryMode=(string)$modeQuery->fetchColumn();
 }
 $pplCanShip=shopPplAvailable($pplSettings)&&$productDeliveryMode==='shipping_eligible';
-$packetaCanShip=shopPacketaAvailable($packetaSettings)&&$productDeliveryMode==='shipping_eligible';
+$packetaProduct=$pdo->prepare('SELECT offer_type,'.shopPacketaProductSelect($pdo).' AS packeta_shipping_enabled FROM shop_products p WHERE p.id=?');
+$packetaProduct->execute([$productId]);
+$packetaCanShip=shopPacketaAvailable($packetaSettings)&&shopPacketaCartEligible($packetaProduct->fetchAll(PDO::FETCH_ASSOC));
 $pplSettings['_packeta']=$packetaCanShip?$packetaSettings:[];
 $pplCanShip=$pplCanShip||$packetaCanShip;
 $deliverySelected=(string)($_POST['delivery_method']??'personal_pickup');

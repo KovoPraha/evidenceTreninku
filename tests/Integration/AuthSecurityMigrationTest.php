@@ -135,6 +135,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261021170000_registration_text_titles',
                 '20261021170000_shop_system_email_templates',
                 '20261021190000_custom_club_registration_consents',
+                '20261021200000_shop_packeta_manual_products',
                 '20261021210000_shop_number_series',
             ],
             array_keys($catalog)

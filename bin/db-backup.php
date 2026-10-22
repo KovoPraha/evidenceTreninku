@@ -21,7 +21,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-21.5';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-22.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -83,6 +83,7 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
     ],
     // Rows may now legitimately originate outside the Shoptet import.
     'shop_products' => [
+        'packeta_shipping_enabled',
         'source_candidate_id',
         'source_run_id',
         'origin',

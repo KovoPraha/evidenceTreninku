@@ -109,7 +109,7 @@ function shopCartDetail(PDO $pdo, int $accountId): array
     $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
     $deliveryMode=shopCheckoutColumnExists($pdo,'shop_products','delivery_mode')?'p.delivery_mode':"'pickup_only'";
     $statement = $pdo->prepare(
-        'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,'.$deliveryMode.' AS delivery_mode,'.$paymentPolicy.' AS payment_method_policy,pub.public_name,'
+        'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,'.shopPacketaProductSelect($pdo).' AS packeta_shipping_enabled,'.$deliveryMode.' AS delivery_mode,'.$paymentPolicy.' AS payment_method_policy,pub.public_name,'
         . 'v.id AS variant_id,v.sku,v.attributes_json,v.amount_minor,v.currency,v.catalog_status '
         . 'FROM shop_cart_items ci JOIN shop_variants v ON v.id=ci.variant_id '
         . 'JOIN shop_products p ON p.id=v.product_id '
@@ -289,7 +289,7 @@ function shopCheckoutPlace(
             : 'NULL AS beneficiary_sportovec_id';
         $paymentPolicySelect=shopPaymentPolicyProductSelect($pdo,'p');
         $deliveryMode=shopCheckoutColumnExists($pdo,'shop_products','delivery_mode')?'p.delivery_mode':"'pickup_only'";
-        $sql = 'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,'.$deliveryMode.' AS delivery_mode,'.$paymentPolicySelect.' AS payment_method_policy,p.catalog_status AS product_status,'
+        $sql = 'SELECT ci.id AS cart_item_id,ci.quantity,'.$beneficiarySelect.',p.id AS product_id,p.offer_type,'.shopPacketaProductSelect($pdo).' AS packeta_shipping_enabled,'.$deliveryMode.' AS delivery_mode,'.$paymentPolicySelect.' AS payment_method_policy,p.catalog_status AS product_status,'
             . 'pub.status AS publication_status,pub.public_name,v.id AS variant_id,v.* FROM shop_cart_items ci '
             . 'JOIN shop_variants v ON v.id=ci.variant_id JOIN shop_products p ON p.id=v.product_id '
             . 'JOIN shop_product_publications pub ON pub.product_id=p.id WHERE ci.cart_id=? ORDER BY v.id';
@@ -895,7 +895,7 @@ function shopOrderValidatePaymentActor(int $paymentId,string $source,string $act
 }
 
 /** @return array{order_id:int,payment_status:string,restocked_items:int,changed:bool} */
-function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $reason,bool $confirmed):array
+function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $reason,bool $confirmed,bool $packetaCancelled=false):array
 {
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Storno');
     $pdo->beginTransaction();
@@ -905,7 +905,7 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
         $order=shopOrderAdminLockOrder($pdo,$orderId);
         if(!$payment||!$order)throw new ShopCheckoutException('Objednávka nebo její platba nebyla nalezena.');
-        $result=shopOrderCancelStateInTransaction($pdo,$payment,$order,'trainer',$actorTrainerId,$reason);
+        $result=shopOrderCancelStateInTransaction($pdo,$payment,$order,'trainer',$actorTrainerId,$reason,$packetaCancelled);
         $programSync=['cancelled'=>0,'rosters_ended'=>0];
         if($result['changed']&&clubProgramLifecycleAvailable($pdo))try{$programSync=clubProgramCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
         try{$eventSync=clubEventShopCancelOrderInTransaction($pdo,$orderId,$actorTrainerId,$reason);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
@@ -924,7 +924,7 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
  * No money is sent: paid orders enter the existing manual refund queue.
  * @return array{order_id:int,payment_status:string,restocked_items:int,changed:bool}
  */
-function shopOrderCancelStateInTransaction(PDO $pdo,array $payment,array $order,string $actorType,int $actorId,string $reason):array
+function shopOrderCancelStateInTransaction(PDO $pdo,array $payment,array $order,string $actorType,int $actorId,string $reason,bool $packetaCancelled=false):array
 {
     if(!$pdo->inTransaction()||!in_array($actorType,['trainer','account'],true)||$actorId<1||trim($reason)==='')throw new InvalidArgumentException('Storno vyžaduje transakci, auditora a důvod.');
     $orderId=(int)$order['id'];
@@ -935,6 +935,10 @@ function shopOrderCancelStateInTransaction(PDO $pdo,array $payment,array $order,
         return ['order_id'=>$orderId,'payment_status'=>(string)$payment['status'],'restocked_items'=>0,'changed'=>false];
     }
     if(!in_array($order['status'],['placed','processing','ready'],true))throw new ShopCheckoutException('Objednávku v tomto stavu nelze stornovat.');
+    if(($order['fulfillment_method']??'')==='packeta_zbox'&&!empty($order['packeta_tracking_number'])){
+        if($actorType!=='trainer'||!$packetaCancelled)throw new ShopCheckoutException('Nejdříve zrušte zásilku v Klientu Zásilkovny a potvrďte její zrušení.');
+        $reason.=' Obsluha potvrdila zrušení zásilky v Klientu Zásilkovny.';
+    }
     $paid=in_array($order['status'],['processing','ready'],true);
     if($paid&&($order['payment_status']!=='paid'||$payment['status']!=='paid'))throw new ShopCheckoutException('Zaplacená objednávka má nekonzistentní stav platby.');
     if(!$paid&&($order['payment_status']!=='pending'||$payment['status']!=='pending'))throw new ShopCheckoutException('Nezaplacená objednávka má nekonzistentní stav platby.');
@@ -1083,7 +1087,7 @@ function shopOrderAdminDispatchPpl(PDO $pdo,int $orderId,int $actorTrainerId,str
 }
 
 /** Stores Packeta Client label details before a real Z-BOX deposit. The consign code is admin-only and temporary. */
-function shopOrderAdminPreparePacketa(PDO $pdo,int $orderId,int $actorTrainerId,string $trackingNumber,string $consignmentCode,string $reason,bool $confirmed):array
+function shopOrderAdminPreparePacketa(PDO $pdo,int $orderId,int $actorTrainerId,string $trackingNumber,string $consignmentCode,string $reason,bool $confirmed,bool $replacePrevious=false):array
 {
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Příprava zásilky Zásilkovny');
     $trackingNumber=strtoupper(trim($trackingNumber));$consignmentCode=trim($consignmentCode);
@@ -1096,9 +1100,24 @@ function shopOrderAdminPreparePacketa(PDO $pdo,int $orderId,int $actorTrainerId,
         if(($order['fulfillment_method']??'')!=='packeta_zbox')throw new ShopCheckoutException('Objednávka není určena pro Zásilkovnu.');
         if($order['status']!=='ready'||$order['payment_status']!=='paid')throw new ShopCheckoutException('Zásilku lze připravit až po zaplacení a zabalení objednávky.');
         $payment=$pdo->prepare("SELECT status FROM payments WHERE payable_type='shop_order' AND payable_id=?");$payment->execute([$orderId]);if($payment->fetchColumn()!=='paid')throw new ShopCheckoutException('Platba objednávky není potvrzena.');
-        if(trim((string)($order['packeta_consignment_code']??''))!==''||trim((string)($order['packeta_tracking_number']??''))!=='')throw new ShopCheckoutException('Zásilka Zásilkovny už má uložené podací údaje.');
+        $previousTracking=trim((string)($order['packeta_tracking_number']??''));
+        $previousCode=trim((string)($order['packeta_consignment_code']??''));
+        if($previousCode!==''&&str_contains($reason,$previousCode))throw new InvalidArgumentException('Podací kód nepište do poznámky.');
+        $hasPrevious=$previousTracking!==''||trim((string)($order['packeta_consignment_code']??''))!=='';
+        if($hasPrevious&&!$replacePrevious)throw new ShopCheckoutException('Zásilka už má podací údaje. Pro opravu použijte opravu údajů štítku.');
+        // Low-volume manual operation: serialize label assignment across orders.
+        $settingsSql='SELECT id FROM shop_packeta_settings WHERE id=1';
+        if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$settingsSql.=' FOR UPDATE';
+        if(!$pdo->query($settingsSql)->fetchColumn())throw new ShopCheckoutException('Nastavení Zásilkovny není připravené.');
+        // A current read must see assignments committed while waiting for the settings lock.
+        $duplicateSql='SELECT id FROM shop_orders WHERE packeta_tracking_number=? AND id<>? LIMIT 1';
+        if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$duplicateSql.=' FOR UPDATE';
+        $duplicate=$pdo->prepare($duplicateSql);$duplicate->execute([$trackingNumber,$orderId]);
+        if($duplicate->fetchColumn())throw new ShopCheckoutException('Toto číslo zásilky je již u jiné objednávky. Zkontrolujte štítek.');
         $pdo->prepare('UPDATE shop_orders SET packeta_tracking_number=?,packeta_consignment_code=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$trackingNumber,$consignmentCode,$orderId]);
-        $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,'trainer',?,'prepare_packeta','ready','ready',?)")->execute([$orderId,$actorTrainerId,$reason.' | Zásilkovna '.$trackingNumber]);
+        $eventAction=$hasPrevious?'correct_packeta':'prepare_packeta';
+        $eventNote=$reason.' | Zásilkovna '.$trackingNumber.($hasPrevious?' | Oprava po kontrole v Klientu; původní číslo '.$previousTracking:'');
+        $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,'trainer',?,?,'ready','ready',?)")->execute([$orderId,$actorTrainerId,$eventAction,$eventNote]);
         $pdo->commit();return ['order_id'=>$orderId,'status'=>'ready','changed'=>true];
     }catch(Throwable $error){if($pdo->inTransaction())$pdo->rollBack();if($error instanceof InvalidArgumentException||$error instanceof ShopCheckoutException)throw $error;throw new ShopCheckoutException('Příprava zásilky Zásilkovny selhala bez částečného zápisu.',0,$error);}
 }
@@ -1174,7 +1193,7 @@ function shopCheckoutLockVariant(PDO $pdo,int $variantId): array|false
 {
     $paymentPolicy=shopPaymentPolicyProductSelect($pdo,'p');
     $deliveryMode=shopCheckoutColumnExists($pdo,'shop_products','delivery_mode')?'p.delivery_mode':"'pickup_only'";
-    $sql='SELECT v.*,p.offer_type,'.$deliveryMode.' AS delivery_mode,'.$paymentPolicy.' AS payment_method_policy,p.catalog_status AS product_status,pub.status AS publication_status,pub.public_name FROM shop_variants v JOIN shop_products p ON p.id=v.product_id JOIN shop_product_publications pub ON pub.product_id=p.id WHERE v.id=?';
+    $sql='SELECT v.*,p.offer_type,'.shopPacketaProductSelect($pdo).' AS packeta_shipping_enabled,'.$deliveryMode.' AS delivery_mode,'.$paymentPolicy.' AS payment_method_policy,p.catalog_status AS product_status,pub.status AS publication_status,pub.public_name FROM shop_variants v JOIN shop_products p ON p.id=v.product_id JOIN shop_product_publications pub ON pub.product_id=p.id WHERE v.id=?';
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
     $statement=$pdo->prepare($sql);$statement->execute([$variantId]);return $statement->fetch(PDO::FETCH_ASSOC);
 }

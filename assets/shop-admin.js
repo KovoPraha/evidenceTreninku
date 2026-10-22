@@ -1,5 +1,12 @@
 (function () {
     'use strict';
+    var offerType = document.getElementById('new-type');
+    var packeta = document.getElementById('new-packeta');
+    if (offerType && packeta) {
+        var adaptShipping = function () { packeta.disabled = offerType.value !== 'goods'; };
+        offerType.addEventListener('change', adaptShipping);
+        adaptShipping();
+    }
     var definitions = window.shopAdminDefinitions || {};
     document.querySelectorAll('[data-shop-attribute-editor]').forEach(function (editor) {
         var rows = editor.querySelector('[data-shop-attribute-rows]');

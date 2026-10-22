@@ -1,6 +1,32 @@
 # Plán dokončení stavů objednávek a e-mailů
 
-Aktualizace: 21. 10. 2026, Europe/Prague.
+Aktualizace: 22. 10. 2026, Europe/Prague.
+
+## Navazující jednoduchý ruční provoz — lokálně hotovo
+
+Vlastník zvolil české Z-BOXy a podání pouze boxem, Kovo Praha jako odesílatele
+i obsluhu, ruční Klient a dopravné 150 Kč měnitelné v administraci. Připraven
+checkbox fyzického produktu pro Packetu mimo kroužky, oprava widgetu/validace,
+expediční přehled, oprava a kontrola duplicity štítku, potvrzení storna
+v Klientu. Výsledky: PHPUnit 1 183 / 26 590 PASS, MariaDB backup/restore
+190 tabulek PASS, browser cena a checkbox PASS. Doprava i simulace vypnuté,
+fronta 5 pending / 0 pokusů, skutečná pošta neběžela. Účet je již nastaven
+včetně vratkové pobočky Počernická #39209. Veřejný klíč 22. 10. 2026 uložen
+pouze lokálně a skutečná mapa ověřena výběrem Z-BOXu #22312 u Kovo Praha.
+Callback a aktuální serverová validace PASS; pobočka a syntetický box
+správně odmítnuty. Doprava po zkoušce vypnutá, cena 150 Kč, simulace false,
+délka uloženého veřejného klíče 16. Beze změny 2 objednávky a fronta 5/0;
+žádná objednávka, zásilka, skutečný e-mail nebo nasazení v této kontrole.
+Podrobnosti a hranice jsou v [plánu Zásilkovny](PACKETA_MODULE_AUDIT_2026-10-21.md).
+Tato lokální etapa nebyla commitnuta, pushnuta ani nasazena.
+
+## Navazující audit Zásilkovny
+
+[Analýza modulu a plán dokončení](PACKETA_MODULE_AUDIT_2026-10-21.md) rozepisuje
+současný ruční tok, mezery widgetu/validace/expedice/storna, potřebná nastavení
+účtu a pošty, rozhodnutí vlastníka a samostatnou budoucí API etapu. Pouze
+analýza, bez dalšího nasazení, zapnutí dopravy nebo odesílání. Předchozí
+lokální simulace neprokazuje ostrý účet, skutečnou mapu ani doručení.
 
 ## Aktuální autorizace vydání 21. 10. 2026
 
