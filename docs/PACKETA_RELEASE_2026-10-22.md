@@ -56,3 +56,11 @@ cena **0 Kč** (migrace ji má předvyplnit na 150 Kč). Fronta **3 pending,
 Otisk tabulky fronty SHA-256:
 `b8a0744fcaea8d6575441dae9e30268bee0c8bb52fe60646f627ebc927e1e29e`.
 Původní pracovní pozice Finance; po ověření ji obnovit.
+
+První CI `39775992411`: PHPUnit, CodeQL a MariaDB 11.4 prošly, MariaDB 10.3
+odmítla `INSERT ... SELECT` bez FROM před WHERE v nové migraci Packety.
+Dosud nenasazená migrace opravena na přímý INSERT po kontrole existence
+pod migračním zámkem. Historické produkční migrace se nemění. Před vydáním
+se opakuje CI; lokální ledger tohoto jediného nového kroku bude odstraněn
+a opravena migrace znovu aplikována běžným runnerem (bez přepisování checksumu
+a bez resetu lokálních obchodních dat).

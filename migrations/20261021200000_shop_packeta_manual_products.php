@@ -17,7 +17,9 @@ return [
             $pdo->exec("UPDATE shop_packeta_settings SET price_minor=15000 WHERE id=1 AND enabled=0 AND price_minor=0 AND widget_api_key=''");
         }
         // Seed once; a repeated migration must never overwrite an admin's price.
-        $pdo->exec("INSERT INTO shop_packeta_settings(id,enabled,price_minor,widget_api_key) SELECT 1,0,15000,'' WHERE NOT EXISTS(SELECT 1 FROM shop_packeta_settings WHERE id=1)");
+        if(!$pdo->query('SELECT 1 FROM shop_packeta_settings WHERE id=1')->fetchColumn()){
+            $pdo->exec("INSERT INTO shop_packeta_settings(id,enabled,price_minor,widget_api_key) VALUES (1,0,15000,'')");
+        }
     },
     'verify'=>static function(PDO $pdo)use($hasColumn):bool {
         return $hasColumn($pdo)&&(bool)$pdo->query('SELECT 1 FROM shop_packeta_settings WHERE id=1')->fetchColumn();
