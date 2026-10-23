@@ -1,5 +1,20 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — společné vydání R01–R44 nasazené, provozní přejímka má otevřený P0 blok.**
+Živé SHA `0b03b564dfa6b20817478848fa8721fea09ca082`; [deploy SUCCESS](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39922198281).
+[Produkční důkazy a zbývající práce](verification/production-club-20261023/RESULTS.md):
+1 572 testů / 31 989 assertions PASS; 64 čtecích browser pozorování / 59 cest.
+Opravený vstup do položkových výdejů, ochrana pracovních pozic a vyprodaná varianta přejaté prohlížečem.
+**P0: webové PHP `open_basedir` nepovoluje připravené soukromé úložiště.**
+[Konkrétní zásah hostingu a následné ověření](CLUB_STORAGE_HOSTING_BLOCKER.md).
+Do vyřešení není vystavování soukromých PDF/archivů provozně převzaté.
+Doložit granty 36 trenérů, počáteční inventuru 799 variant a dohodu/částku jednoho plánu příspěvků.
+Nic z toho nebylo doplněno odhadem. Shoptet/Evidence běží dál, žádné finanční testovací zápisy ani aktivace integrací.
+43 scénářů lidské přejímky nadále NEPROVEDENO, účetní převzetí NEPŘEVZATO.
+
+Následující záznamy popisují historický stav před autorizovaným nasazením:
+
+
 **23. 10. 2026 — připravená lidská přejímka a ukázkové předání účetní.**
 Větev `codex/club-acceptance-package-20261023`, aplikační základ `abbb4be9`.
 [Předání balíčku](acceptance-20261023/README.md): 43 scénářů / 188 kroků,

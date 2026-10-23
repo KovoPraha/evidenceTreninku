@@ -77,3 +77,7 @@ Nasazení nyní po ověřené DB záloze a před kopírováním konfigurace do r
 Browser potvrzuje přesné SHA a nový kód. Webová dostupnost úložiště je však BLOCKED (nastavené a mimo web, ale adresář/zápis nedostupné). Postdeploy CLI drill [39921278568](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39921278568) naopak potvrzuje existenci/zapisovatelnost: rozdíl webového procesu vyžaduje diagnostiku, nikoli prohlášení plné přejímky.
 
 Čtecí průchod již načetl finanční, skladové, členské a sportovní agendy bez fatální chyby. Odkaz na položkové výdeje bez objednávky zobrazoval jen „Objednávka nebyla nalezena“; další oprava doplňuje vstupní stránku s volbou objednávky a zachovává 404 pro konkrétní neplatné ID.
+
+## Závěrečný stav tohoto průchodu
+
+Druhé chráněné nasazení [39922198281](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39922198281) SUCCESS, živé SHA `0b03b564dfa6b20817478848fa8721fea09ca082`. 1 572 testů / 31 989 assertions PASS, ověřená záloha 329 produkčních tabulek. Browser dokončil 64 čtecích pozorování nad 59 cestami a přejal opravený vstup do výdejů. **Plná provozní přejímka BLOCKED kvůli webovému open_basedir a odloženým skutečným podkladům.** [Úplný protokol](verification/production-club-20261023/RESULTS.md), [postup pro hosting](CLUB_STORAGE_HOSTING_BLOCKER.md). Předchozí přípravné stavy v tomto dokumentu jsou historické.
