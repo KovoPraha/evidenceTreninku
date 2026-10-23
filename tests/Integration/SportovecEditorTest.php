@@ -13,7 +13,7 @@ final class SportovecEditorTest extends TestCase
     public function testSavePersistsAddressesAndContactsWithoutChangingRelationsOrBirthNumber(): void
     {
         $pdo = $this->database();
-        sportovecEditorSave($pdo, 1, ['jmeno' => ' Eva ', 'prijmeni' => 'Test', 'narozeni' => '',
+        sportovecEditorSave($pdo, 1, ['profile_revision' => $this->revision($pdo, 1), 'jmeno' => ' Eva ', 'prijmeni' => 'Test', 'narozeni' => '',
             'email' => 'a@example.test; b@example.test', 'telefon' => '+420 123', 'adresa_ulice' => 'Nová',
             'adresa_cp' => '5', 'adresa_co' => '7a', 'adresa_obec' => 'Praha', 'adresa_psc' => '100 00',
             'country' => 'Česká republika', 'contact_address' => 'Doručovací adresa',
@@ -38,7 +38,7 @@ final class SportovecEditorTest extends TestCase
     {
         $pdo = $this->database();
         try {
-            sportovecEditorSave($pdo, 1, ['jmeno' => 'Changed', 'country' => str_repeat('x', 101)], 7);
+            sportovecEditorSave($pdo, 1, ['profile_revision' => $this->revision($pdo, 1), 'jmeno' => 'Changed', 'country' => str_repeat('x', 101)], 7);
             self::fail('Invalid profile accepted');
         } catch (\InvalidArgumentException) {
             self::assertSame('LOCALHOST', sportovecEditorPerson($pdo, 1)['jmeno']);
@@ -51,7 +51,7 @@ final class SportovecEditorTest extends TestCase
     {
         $pdo = $this->database();
         foreach ([[1, ['narozeni' => '2026-02-30']], [999, ['jmeno' => 'Changed']], [1, ['jmeno' => '']]] as [$id, $input]) {
-            try { sportovecEditorSave($pdo, $id, $input, 7); self::fail('Invalid save accepted'); }
+            try { sportovecEditorSave($pdo, $id, $input + ['profile_revision' => $this->revision($pdo, 1)], 7); self::fail('Invalid save accepted'); }
             catch (\InvalidArgumentException) { self::assertFalse($pdo->inTransaction()); }
         }
         self::assertSame('LOCALHOST', sportovecEditorPerson($pdo, 1)['jmeno']);
@@ -87,8 +87,8 @@ final class SportovecEditorTest extends TestCase
             str_repeat('a', 32), $encrypted['ciphertext'], $encrypted['nonce'], $encrypted['key_version'],
         ]);
         try {
-            sportovecEditorSave($pdo, 1, ['narozeni' => '1985-01-01'], 7);
-            sportovecEditorSave($pdo, 1, ['narozeni' => '1986-01-01', 'telefon' => 'Changed'], 7);
+            sportovecEditorSave($pdo, 1, ['profile_revision' => $this->revision($pdo, 1), 'narozeni' => '1985-01-01'], 7);
+            sportovecEditorSave($pdo, 1, ['profile_revision' => $this->revision($pdo, 1), 'narozeni' => '1986-01-01', 'telefon' => 'Changed'], 7);
             self::fail('Conflicting birth date accepted');
         } catch (\InvalidArgumentException $exception) {
             self::assertStringContainsString('neodpovídá datu narození', $exception->getMessage());
@@ -126,6 +126,60 @@ final class SportovecEditorTest extends TestCase
         $pdo->exec('DROP TABLE osoba_citlive_pristupy');
         try { sportovecEditorReveal($pdo, 1, 'Kontrola evidence člena', $keys); self::fail('Unaudited reveal'); }
         catch (\PDOException) { self::assertFalse($pdo->inTransaction()); }
+    }
+
+    public function testStaleProfileCannotOverwriteAnotherRegistrarsContactChange(): void
+    {
+        $pdo = $this->database();
+        $revision = $this->revision($pdo, 1);
+        sportovecEditorSave($pdo, 1, ['profile_revision' => $revision, 'telefon' => 'LOCALHOST first'], 7);
+        try {
+            sportovecEditorSave($pdo, 1, ['profile_revision' => $revision, 'telefon' => 'LOCALHOST stale', 'jmeno' => 'Changed'], 7);
+            self::fail('Stale form overwrote a newer contact');
+        } catch (\InvalidArgumentException $exception) {
+            self::assertStringContainsString('Nic nebylo přepsáno', $exception->getMessage());
+            self::assertSame('LOCALHOST first', sportovecEditorPerson($pdo, 1)['telefon']);
+            self::assertSame('LOCALHOST', sportovecEditorPerson($pdo, 1)['jmeno']);
+            self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_history')->fetchColumn());
+            self::assertFalse($pdo->inTransaction());
+        }
+        sportovecEditorSave($pdo, 1, ['profile_revision' => $this->revision($pdo, 1), 'telefon' => 'LOCALHOST fresh'], 7);
+        self::assertSame('LOCALHOST fresh', sportovecEditorPerson($pdo, 1)['telefon']);
+    }
+
+    public function testRevisionAlsoProtectsImportedContactProfileAndCannotBeOmitted(): void
+    {
+        $pdo = $this->database();
+        $revision = $this->revision($pdo, 1);
+        $pdo->exec("UPDATE kis_person_profiles SET contact_address='LOCALHOST new address' WHERE sportovec_id=1");
+        foreach ([$revision, '', null, ['invalid']] as $stale) {
+            try {
+                sportovecEditorSave($pdo, 1, ['profile_revision' => $stale, 'contact_address' => 'Old', 'telefon' => 'Changed'], 7);
+                self::fail('Missing or stale revision accepted');
+            } catch (\InvalidArgumentException) {
+                self::assertSame('LOCALHOST new address', $pdo->query('SELECT contact_address FROM kis_person_profiles')->fetchColumn());
+                self::assertNull(sportovecEditorPerson($pdo, 1)['telefon']);
+                self::assertFalse($pdo->inTransaction());
+            }
+        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM sportovec_history')->fetchColumn());
+    }
+
+    public function testValidationFailureCanBeCorrectedUsingSameUnchangedRevision(): void
+    {
+        $pdo = $this->database();
+        $revision = $this->revision($pdo, 1);
+        try { sportovecEditorSave($pdo, 1, ['profile_revision' => $revision, 'jmeno' => ''], 7); self::fail('Empty name accepted'); }
+        catch (\InvalidArgumentException) { self::assertSame($revision, $this->revision($pdo, 1)); }
+        sportovecEditorSave($pdo, 1, ['profile_revision' => $revision, 'jmeno' => 'LOCALHOST corrected'], 7);
+        self::assertSame('LOCALHOST corrected', sportovecEditorPerson($pdo, 1)['jmeno']);
+    }
+
+    private function revision(\PDO $pdo, int $id): string
+    {
+        $profile = $pdo->prepare('SELECT country,contact_address FROM kis_person_profiles WHERE sportovec_id=?');
+        $profile->execute([$id]);
+        return sportovecEditorRevision(sportovecEditorPerson($pdo, $id), $profile->fetch(\PDO::FETCH_ASSOC) ?: []);
     }
 
     private function archive(\PDO $pdo): array

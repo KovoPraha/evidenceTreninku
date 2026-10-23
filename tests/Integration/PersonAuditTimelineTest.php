@@ -69,6 +69,28 @@ final class PersonAuditTimelineTest extends TestCase
         self::assertSame('Oprava po ověření originálu',$old['events'][0]['reason']);
     }
 
+    public function testRegistrarHistoryIsVisibleOnlyForItsPersonWithoutContactPayloads(): void
+    {
+        $pdo = $this->database(false);
+        $pdo->exec("INSERT INTO sportovci VALUES(1,'LOCALHOST','Jedna',NULL,'','','aktivni'),(2,'LOCALHOST','Druhá',NULL,'','','aktivni')");
+        $pdo->exec("INSERT INTO treneri VALUES(7,'LOCALHOST Registrář','registrar@example.invalid')");
+        $pdo->exec('CREATE TABLE sportovec_history(id INTEGER PRIMARY KEY,sportovec_id INTEGER,created_by INTEGER,event_type TEXT,detail TEXT,old_json TEXT,new_json TEXT,created_at TEXT)');
+        $stmt = $pdo->prepare('INSERT INTO sportovec_history VALUES(?,?,?,?,?,?,?,?)');
+        $stmt->execute([1,1,7,'profile_edit',null,'{}','{"telefon":"PRIVATE_CONTACT_SENTINEL"}','2026-10-23 10:00:00']);
+        $stmt->execute([2,1,7,'status_manual',null,'{"stav_clenstvi":"cekajici"}','{"stav_clenstvi":"aktivni","stav_duvod":"LOCALHOST doložené rozhodnutí"}','2026-10-23 11:00:00']);
+        $stmt->execute([3,2,7,'note','FOREIGN_NOTE_SENTINEL','{}','{}','2026-10-23 12:00:00']);
+        $timeline = personAuditTimeline($pdo, 1);
+        self::assertSame([2,1], array_column($timeline['events'], 'source_id'));
+        self::assertSame(['person_history','person_history'], array_column($timeline['events'], 'source'));
+        self::assertSame('cekajici', $timeline['events'][0]['from_status']);
+        self::assertSame('aktivni', $timeline['events'][0]['to_status']);
+        self::assertSame('LOCALHOST doložené rozhodnutí', $timeline['events'][0]['reason']);
+        self::assertSame('LOCALHOST Registrář', $timeline['events'][0]['actor_label']);
+        self::assertSame('sportovec_karta.php?sportovec_id=1&tab=historie#historie', $timeline['events'][0]['source_link']);
+        self::assertStringNotContainsString('PRIVATE_CONTACT_SENTINEL', json_encode($timeline));
+        self::assertStringNotContainsString('FOREIGN_NOTE_SENTINEL', json_encode($timeline));
+    }
+
     private function database(bool $withIdentity = true): PDO
     {
         $pdo = new PDO('sqlite::memory:');

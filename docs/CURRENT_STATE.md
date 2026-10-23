@@ -1,5 +1,19 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — detailní kontrola osob, tréninků a vazeb na e-shop.**
+[Nový protokol a přesné meze](verification/people-training-20261023/RESULTS.md).
+Opraven souběh editace osob, atomická poznámka/audit, rychlá přihláška kurzu,
+aktuální oprávnění rodiny a historické soupisky. Tréninky: opraven JavaScript,
+identita měření, zachování spolutrenérů, bezpečnost snímků, opakování formuláře
+včetně návratu Zpět, rozepsaná docházka a viditelné odmítnutí změny uzavřeného záznamu.
+Browser B1 potvrdil osobu92 a plán15/trénink31 s uzávěrkou v2; zkouška34 po opravě
+nevytvořila při návratu Zpět duplicitu. Pouze syntetická místní data.
+Cílená sada 232/2491 PASS, Node 8/8 PASS; plná Windows sada má známé POSIX selhání.
+Vydání čeká na finální Linux CI a chráněný deploy. Produkční přihlášení při reloadu
+vypršelo; přihlášená živá prohlídka zůstává odložená. Lidských43 scénářů NEPROVEDENO,
+účetní NEPŘEVZATO. Žádné aktivace integrací ani opravy historických vazeb odhadem.
+
+
 **23. 10. 2026 — souvislá technická browser přejímka a opravy obsluhy.**
 V izolovaném B1 prošel řetězec sklad → osobní prodej → úhrada → částečný výdej
 → doklady → vratky → stažený účetní export a řetězec papírová přihláška

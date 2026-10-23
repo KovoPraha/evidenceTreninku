@@ -117,6 +117,32 @@ final class ParentJourneyAcceptanceTest extends TestCase
         self::assertStringContainsString('Vrácení peněz musí vyřídit správce klubu', $body);
     }
 
+    public function testQuickCheckoutPinsOfferAndPaymentActivatesAlreadyApprovedPersonOnCurrentSchema(): void
+    {
+        [$pdo, $order, $requestId] = $this->place(true);
+        self::assertSame((int)$pdo->query('SELECT id FROM club_program_offers')->fetchColumn(), (int)$pdo->query('SELECT club_program_offer_id FROM shop_order_items')->fetchColumn());
+        \one_time_email_verification_consume($pdo, $order['verification_token']);
+        \athleteRegistrationAdminApproveExisting($pdo, $requestId, 101, 7, 'LOCALHOST ověřená osoba před přijetím platby.');
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        \shopOrderAdminConfirmBankPayment($pdo, (int)$order['payment_id'], 7, 'LOCALHOST NEPLATIT potvrzení po schválení osoby.', true);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
+        self::assertSame('active', $this->overviewState($pdo, (int)$order['account_id']));
+    }
+
+    public function testQuickPaymentBeforeIdentityKeepsCapacityHoldOnCurrentSchema(): void
+    {
+        [$pdo, $order, $requestId] = $this->place(true);
+        \one_time_email_verification_consume($pdo, $order['verification_token']);
+        $paid = \shopOrderAdminConfirmBankPayment($pdo, (int)$order['payment_id'], 7, 'LOCALHOST NEPLATIT platba před schválením osoby.', true);
+        self::assertSame(1, $paid['pending_identity']);
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        self::assertSame(1, \clubProgramOfferForVariant($pdo, 601)['held_order_count']);
+        \athleteRegistrationAdminApproveExisting($pdo, $requestId, 101, 7, 'LOCALHOST ověřená osoba po přijetí platby.');
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        self::assertSame(0, \clubProgramOfferForVariant($pdo, 601)['held_order_count']);
+    }
+
     private function overviewState(PDO $pdo, int $accountId): string
     {
         $items = \clubProgramPendingOrderItems($pdo, $accountId);
@@ -124,9 +150,10 @@ final class ParentJourneyAcceptanceTest extends TestCase
         return \clubProgramAccountItemState($items[0])['code'];
     }
 
-    private function place(): array
+    private function place(bool $withOfferSnapshot = false): array
     {
         $pdo = ParentJourneyAcceptanceFixture::create();
+        if ($withOfferSnapshot) $pdo->exec('ALTER TABLE shop_order_items ADD COLUMN club_program_offer_id INTEGER NULL');
         $programId = (int)\clubProgramCreate($pdo, 7, 'LOCALHOST-ACCEPTANCE', 'LOCALHOST NEPLATIT kroužek')['id'];
         foreach (['program_cancellation','program_consent'] as $purpose) {
             \clubProgramTermsConfigure($pdo, 7, 'program', $programId, $purpose, 'Syntetický schválený text pouze pro izolovaný test.', true);

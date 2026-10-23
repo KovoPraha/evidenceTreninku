@@ -15,6 +15,8 @@ if (!isset($_SESSION['trener_id'])) {
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_closure.php';
+require_once __DIR__ . '/includes/training_edit.php';
+require_once __DIR__ . '/includes/file_mutation_transaction.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -48,8 +50,10 @@ if (!canAccess('sprava_treninku') && !$stmtAuth->fetch()) {
 }
 
 // Transakční smazání – SPRÁVNÉ pořadí a kompletní seznam tabulek
+$fileMutations = fileMutationBegin();
 try {
     $pdo->beginTransaction();
+    trainingClosureAssertTraining($pdo, $treninkId, (int)$_SESSION['trener_id']);
     trainingClosureAssertLegacyMutable($pdo, $treninkId, true);
 
     // 1) Nejdříve smaž záznamy z mereni_zaznamy (přes trenink_mereni)
@@ -96,37 +100,30 @@ try {
         error_log('smazat_trenink: rezervace_sportovist: ' . $e->getMessage());
     }
 
-    // 2c) Soft-delete nahraných obrázků (JSON pole v treninky.obrazky)
-    try {
-        $stImg = $pdo->prepare('SELECT obrazky FROM treninky WHERE id = ?');
-        $stImg->execute([$treninkId]);
-        $obrazkyJson = $stImg->fetchColumn();
-        $obrazky = $obrazkyJson ? json_decode((string)$obrazkyJson, true) : null;
-        if (is_array($obrazky)) {
-            foreach ($obrazky as $img) {
-                $rel = ltrim(str_replace('\\', '/', (string)$img), '/');
-                $path = __DIR__ . '/' . $rel;
-                // Bezpečnostní pojistka — jen v nahrane_obrazky/
-                if (strpos($rel, 'nahrane_obrazky/') === 0 && is_file($path)) {
-                    @rename($path, dirname($path) . '/smazano_' . basename($path));
-                }
-            }
+    // 2c) Files follow the database transaction; a failed deletion restores them.
+    $stImg = $pdo->prepare('SELECT obrazky FROM treninky WHERE id = ?');
+    $stImg->execute([$treninkId]);
+    $obrazkyJson = $stImg->fetchColumn();
+    $obrazky = $obrazkyJson ? json_decode((string)$obrazkyJson, true) : [];
+    if (is_array($obrazky)) {
+        foreach (trainingEditOwnedImageRemovals($obrazky, $obrazky) as $rel) {
+            fileMutationRetire($fileMutations, __DIR__ . '/' . $rel);
         }
-    } catch (Throwable $e) {
-        error_log('smazat_trenink: obrazky: ' . $e->getMessage());
     }
 
     // 3) Smaž vlastní trénink
     $pdo->prepare('DELETE FROM treninky WHERE id = ?')->execute([$treninkId]);
 
     $pdo->commit();
+    fileMutationCommitted($fileMutations);
 
     $_SESSION['flash_success'] = 'Trénink byl úspěšně smazán.';
     header('Location: sprava_treninku.php');
     exit;
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
+    fileMutationRollback($fileMutations);
     error_log('smazat_trenink error: ' . $e->getMessage());
     $_SESSION['flash_error'] = $e instanceof TrainingClosureException ? $e->getMessage() : 'Chyba při mazání tréninku. Zkuste to znovu.';
     header('Location: sprava_treninku.php');

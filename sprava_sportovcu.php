@@ -187,8 +187,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Throwable $exception) {
             if ($akce === 'save_birth_number' && is_string($_POST['birth_number'] ?? null)) $birthEditValue = $_POST['birth_number'];
             if ($akce === 'save') {
-                $editInput = array_intersect_key($_POST, sportovecEditorFields() + ['country' => [], 'contact_address' => []]);
+                $editInput = array_intersect_key($_POST, sportovecEditorFields() + ['country' => [], 'contact_address' => [], 'profile_revision' => []]);
                 $editInput = array_filter($editInput, 'is_string');
+                // Never silently rebase a rejected stale draft onto the current record.
+                $editInput['profile_revision'] = is_string($_POST['profile_revision'] ?? null) ? $_POST['profile_revision'] : '';
             }
             $editError = $exception instanceof InvalidArgumentException || $exception instanceof PersonSensitiveException || $exception instanceof AccountPersonRoleException || $exception instanceof KisRosterException
                 ? $exception->getMessage()

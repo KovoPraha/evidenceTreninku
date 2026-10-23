@@ -65,13 +65,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'add_note') {
         $text = trim((string)($_POST['note'] ?? ''));
-        if ($text !== '') {
-            $stmt = $pdo->prepare("INSERT INTO sportovec_interni_poznamka (sportovec_id, trener_id, text) VALUES (?, ?, ?)");
-            $stmt->execute([$sportovecId, (int)$_SESSION['trener_id'], $text]);
-            sportovecLogEvent($pdo, $sportovecId, 'note', 'Interní poznámka', [], ['text' => $text], 'manual', (int)$_SESSION['trener_id'], $text);
+        try {
+            sportovecInternalNoteAdd($pdo, $sportovecId, (int)$_SESSION['trener_id'], $text);
             $_SESSION['flash_success'] = 'Poznámka byla přidána.';
+        } catch (Throwable $exception) {
+            $_SESSION['flash_error'] = $exception instanceof InvalidArgumentException
+                ? $exception->getMessage() : 'Poznámku se nepodařilo bezpečně uložit. Nebyl uložen částečný výsledek.';
+            if (!$exception instanceof InvalidArgumentException) error_log('sportovec_karta note: ' . get_class($exception));
         }
-        header('Location: sportovec_karta.php?sportovec_id=' . $sportovecId . '#historie');
+        header('Location: sportovec_karta.php?sportovec_id=' . $sportovecId . '&tab=poznamky#poznamky');
         exit;
     }
 }

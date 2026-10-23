@@ -38,13 +38,13 @@ function cfMixedSession(int $trainer,int $account): array {
 }
 function cfRequest(array $session,string $route,?array $post=null): array {
     $curl=curl_init('http://127.0.0.1:18086/'.$route);
-    $cookie=$session['cookie'];
+    $cookie=$session['cookie'];$location='';
     curl_setopt_array($curl,[CURLOPT_RETURNTRANSFER=>true,CURLOPT_FOLLOWLOCATION=>false,CURLOPT_COOKIE=>$session['cookie'],CURLOPT_TIMEOUT=>15,CURLOPT_PROXY=>'',CURLOPT_PROTOCOLS=>CURLPROTO_HTTP,
-        CURLOPT_HEADERFUNCTION=>static function($curl,string $line)use(&$cookie):int{if(preg_match('/^Set-Cookie:\s*(EVIDENCESESSID=[^;]+)/i',$line,$match))$cookie=$match[1];return strlen($line);}]);
+        CURLOPT_HEADERFUNCTION=>static function($curl,string $line)use(&$cookie,&$location):int{if(preg_match('/^Set-Cookie:\s*(EVIDENCESESSID=[^;]+)/i',$line,$match))$cookie=$match[1];if(preg_match('/^Location:\s*(.+)/i',$line,$match))$location=trim($match[1]);return strlen($line);}]);
     if($post!==null){$post+=['csrf_token'=>$session['csrf']];curl_setopt($curl,CURLOPT_POST,true);curl_setopt($curl,CURLOPT_POSTFIELDS,count(array_filter($post,static fn($v)=>$v instanceof CURLFile))>0?$post:http_build_query($post));}
     $body=curl_exec($curl);$status=(int)curl_getinfo($curl,CURLINFO_RESPONSE_CODE);$error=curl_error($curl);curl_close($curl);clearstatcache(true);
     if(!is_string($body)||$status>=500||$status===0)throw new RuntimeException('HTTP failure '.$route.': '.$status.' '.$error);
-    return ['status'=>$status,'body'=>$body,'cookie'=>$cookie];
+    return ['status'=>$status,'body'=>$body,'cookie'=>$cookie,'location'=>$location];
 }
 function cfPaperCount(): int { return (int)$GLOBALS['pdo']->query('SELECT COUNT(*) FROM club_paper_records')->fetchColumn(); }
 function cfPaperFiles(): array { $out=[];foreach(glob(privateStorageRoot().'/paper-documents/*')?:[] as $path)if(is_file($path))$out[basename($path)]=hash_file('sha256',$path);ksort($out);return $out; }
@@ -209,7 +209,11 @@ try {
     cfCheck($search['status']===200&&is_array($athletes)&&array_map('intval',array_column($athletes,'id'))===[$person],'Athlete AJAX search returns only current coach scope');
     foreach(['ajax_global_search.php?q=LOCALHOST','search_sportovci.php?q=LOCALHOST','export_xls.php','uctenky/seznam.php','prehled_skupiny.php?hash=known','prehled_skupina.php?hash=known','prehled_treninku_skupiny_kalendar.php'] as $forbidden)cfCheck(cfRequest($coach,$forbidden)['status']===403,'Coach cannot open privileged endpoint '.$forbidden);
     $trainingBefore=(int)$pdo->query('SELECT COUNT(*) FROM treninky')->fetchColumn();
-    cfCheck(cfRequest($coach,'ulozit_trenink.php',['datum'=>date('Y-m-d'),'delka'=>60,'napln'=>$run,'ucastnici'=>$foreign.':LOCALHOST foreign','podskupiny'=>[$subgroup],'trenere'=>[$trainers['coach']]])['status']===403&&(int)$pdo->query('SELECT COUNT(*) FROM treninky')->fetchColumn()===$trainingBefore,'Forged training attendance cannot assign arbitrary athlete or grant scope');
+    $trainingForm=cfRequest($coach,'formular.php');$coach['cookie']=$trainingForm['cookie'];
+    if($trainingForm['status']!==303||!str_starts_with($trainingForm['location'],'formular.php?submission_key='))throw new RuntimeException('Missing stable training form URL');
+    $trainingForm=cfRequest($coach,$trainingForm['location']);$coach['cookie']=$trainingForm['cookie'];
+    if(!preg_match('/name="submission_key" value="([a-f0-9]{48})"/',$trainingForm['body'],$trainingKey))throw new RuntimeException('Missing training submission key');
+    cfCheck(cfRequest($coach,'ulozit_trenink.php',['submission_key'=>$trainingKey[1],'datum'=>date('Y-m-d'),'delka'=>60,'napln'=>$run,'ucastnici'=>$foreign.':LOCALHOST foreign','podskupiny'=>[$subgroup],'trenere'=>[$trainers['coach']]])['status']===403&&(int)$pdo->query('SELECT COUNT(*) FROM treninky')->fetchColumn()===$trainingBefore,'Forged training attendance cannot assign arbitrary athlete or grant scope');
     $season=cfInsert('club_seasons',['code'=>'LOCALHOST-'.bin2hex(random_bytes(6)),'name'=>$run,'starts_on'=>'2020-01-01','ends_on'=>'2099-12-31','status'=>'active','created_by_trainer_id'=>$trainers['sports_lead']]);
     $ownTeam=cfInsert('club_teams',['season_id'=>$season,'code'=>'LOCALHOST-own','name'=>$run.' own team','discipline'=>'cyklistika','age_label'=>'LOCALHOST','status'=>'active','created_by_trainer_id'=>$trainers['sports_lead']]);
     $foreignTeam=cfInsert('club_teams',['season_id'=>$season,'code'=>'LOCALHOST-foreign','name'=>$run.' foreign team','discipline'=>'cyklistika','age_label'=>'LOCALHOST','status'=>'active','created_by_trainer_id'=>$trainers['sports_lead']]);

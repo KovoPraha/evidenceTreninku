@@ -61,12 +61,30 @@ function sportovecEditorContext(PDO $pdo, int $id): array
         'rosters' => sportovecEditorRosters($pdo, $id), 'payments' => sportovecEditorPayments($pdo, $id)];
 }
 
+/** Detect stale forms without placing contact data or protected values in the token. */
+function sportovecEditorRevision(array $person, array $profile): string
+{
+    $values = ['id' => (int)$person['id']];
+    foreach (sportovecEditorFields() as $field => $_) $values[$field] = $person[$field] ?? null;
+    $values['profile_exists'] = (bool)$profile;
+    foreach (['country', 'contact_address'] as $field) $values[$field] = $profile[$field] ?? null;
+    return hash('sha256', json_encode($values, JSON_THROW_ON_ERROR));
+}
+
 function sportovecEditorSave(PDO $pdo, int $id, array $input, int $actor): void
 {
     if ($id < 1 || $actor < 1) throw new InvalidArgumentException('Nejprve vyberte sportovce k úpravě.');
     $pdo->beginTransaction();
     try {
         $old = sportovecEditorPerson($pdo, $id, true);
+        $profile = $pdo->prepare('SELECT country,contact_address FROM kis_person_profiles WHERE sportovec_id=?'
+            . ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+        $profile->execute([$id]);
+        $oldProfile = $profile->fetch(PDO::FETCH_ASSOC);
+        $revision = $input['profile_revision'] ?? null;
+        if (!is_string($revision) || !hash_equals(sportovecEditorRevision($old, $oldProfile ?: []), $revision)) {
+            throw new InvalidArgumentException('Údaje osoby se mezitím změnily nebo formulář již není aktuální. Nic nebylo přepsáno. Načtěte aktuální údaje a změnu zopakujte.');
+        }
         $new = [];
         foreach (sportovecEditorFields() as $field => [$label, $type, $limit]) {
             // Missing controls must not erase data (also supports an older open form).
@@ -98,9 +116,6 @@ function sportovecEditorSave(PDO $pdo, int $id, array $input, int $actor): void
             $assignments = implode(',', array_map(static fn($field) => $field . '=?', array_keys($new)));
             $pdo->prepare('UPDATE sportovci SET ' . $assignments . ' WHERE id=?')->execute([...array_values($new), $id]);
         }
-        $profile = $pdo->prepare('SELECT country,contact_address FROM kis_person_profiles WHERE sportovec_id=?');
-        $profile->execute([$id]);
-        $oldProfile = $profile->fetch(PDO::FETCH_ASSOC);
         $newProfile = [];
         foreach (['country' => 100, 'contact_address' => 2000] as $field => $limit) {
             if (!$oldProfile || !array_key_exists($field, $input)) continue;

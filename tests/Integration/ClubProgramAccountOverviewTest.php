@@ -71,6 +71,48 @@ final class ClubProgramAccountOverviewTest extends TestCase
         self::assertSame('refunded', \clubProgramAccountItemState(\clubProgramPendingOrderItems($pdo, 10)[0])['code']);
     }
 
+    public function testOrderUsesItsOwnRosterPeriodInsteadOfUnrelatedMembershipHistory(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('ALTER TABLE club_roster_members ADD COLUMN source_ref TEXT');
+        $pdo->exec("UPDATE shop_order_items SET beneficiary_sportovec_id=100");
+        $pdo->exec("INSERT INTO account_person_roles VALUES(10,100,'guardian','approved','2020-01-01',NULL)");
+        $pdo->exec("INSERT INTO club_program_enrollments VALUES(1,1,100,10,1,'active','2026-09-01','2027-01-31')");
+        $pdo->exec("INSERT INTO club_roster_members VALUES
+            (1,100,'removed','manual','2025-01-01','2025-12-31',NULL),
+            (1,100,'active','shop','2026-09-01','2027-01-31','club_program_enrollment:1'),
+            (1,100,'removed','shop','2026-01-01','2026-06-30','club_program_enrollment:2')");
+
+        $rows = \clubProgramPendingOrderItems($pdo, 10);
+        self::assertCount(1, $rows, 'One order item must not be multiplied by historical roster periods.');
+        self::assertSame('active', \clubProgramAccountItemState($rows[0])['code']);
+        self::assertCount(1, \clubProgramEnrollmentsForAccount($pdo, 10));
+
+        $pdo->exec("UPDATE club_roster_members SET status='removed' WHERE source_ref='club_program_enrollment:1'");
+        $pdo->exec("UPDATE club_roster_members SET status='active' WHERE source_ref='club_program_enrollment:2'");
+        $rows = \clubProgramPendingOrderItems($pdo, 10);
+        self::assertCount(1, $rows);
+        self::assertSame('roster_review', \clubProgramAccountItemState($rows[0])['code'], 'An unrelated active interval cannot hide the ended interval of this enrollment.');
+    }
+
+    public function testInactiveOrUnverifiedViewerCannotReadMatchedPeopleThroughOldSession(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE shop_order_items SET beneficiary_sportovec_id=100");
+        $pdo->exec("INSERT INTO account_person_roles VALUES(10,100,'guardian','approved','2020-01-01',NULL),(11,100,'guardian','approved','2020-01-01',NULL)");
+        $pdo->exec("INSERT INTO club_program_enrollments VALUES(1,1,100,10,1,'active','2026-09-01','2027-01-31')");
+        self::assertCount(1, \clubProgramPendingOrderItems($pdo, 10));
+        self::assertCount(1, \clubProgramEnrollmentsForAccount($pdo, 10));
+        self::assertCount(1, \clubProgramEnrollmentsForAccount($pdo, 11), 'A second approved guardian sees their child even when another account paid.');
+        foreach (['aktivni', 'email_overeno'] as $column) {
+            $pdo->exec("UPDATE verejni_uzivatele SET $column=0 WHERE id=10");
+            self::assertSame([], \clubProgramPendingOrderItems($pdo, 10));
+            self::assertSame([], \clubProgramEnrollmentsForAccount($pdo, 10));
+            self::assertCount(1, \clubProgramEnrollmentsForAccount($pdo, 11), 'Payer deactivation must not hide a child from another valid guardian.');
+            $pdo->exec("UPDATE verejni_uzivatele SET $column=1 WHERE id=10");
+        }
+    }
+
     public function testActivationActionIsSuppressedForEveryKnownBlockingState(): void
     {
         $ready = [
