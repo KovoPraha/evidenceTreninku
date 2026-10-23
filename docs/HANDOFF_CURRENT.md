@@ -9,8 +9,8 @@ včetně návratu Zpět, rozepsaná docházka a viditelné odmítnutí změny uz
 Browser B1 potvrdil osobu92 a plán15/trénink31 s uzávěrkou v2; zkouška34 po opravě
 nevytvořila při návratu Zpět duplicitu. Pouze syntetická místní data.
 Cílená sada 232/2491 PASS, Node 8/8 PASS; plná Windows sada má známé POSIX selhání.
-Vydání čeká na finální Linux CI a chráněný deploy. Produkční přihlášení při reloadu
-vypršelo; přihlášená živá prohlídka zůstává odložená. Lidských43 scénářů NEPROVEDENO,
+PR #175 nasazen jako `ee6cff62`, deploy **39987332095 SUCCESS**. Linux CI **1 650 testů / 32 947 assertions PASS**, MariaDB i CodeQL PASS. Produkční přihlášení při reloadu
+vypršelo; přihlášená živá prohlídka zůstává odložená. Lidských 43 scénářů NEPROVEDENO,
 účetní NEPŘEVZATO. Žádné aktivace integrací ani opravy historických vazeb odhadem.
 
 
