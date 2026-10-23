@@ -1,4 +1,30 @@
-# Provozní blok: webové PHP nemá přístup k privátnímu úložišti
+# Soukromé úložiště: odstranění hostingového omezení
+
+## Aktuální stav 23. 10. 2026 po změně PHP
+
+Přihlášená administrace Českého hostingu nabízí pro `open_basedir` jen
+**Výchozí / Posunuto**, nikoli přidání jednoho adresáře. Vlastník výslovně
+schválil změnu na **Posunuto** pouze pro `kis.kovopraha.cz`, včetně informace,
+že PHP tím získá přístup také k souborům ostatních subdomén. Nastavení bylo
+uloženo; ostatní hodnoty PHP, verze 8.2, DNS, SSL a DocumentRoot se neměnily.
+
+Nový webový požadavek v 10:32:03 potvrdil `configured`, `outside_webroot`,
+`directory_exists`, `writable`, `open_basedir_allows_configured_root`,
+`root_realpath_available`, `directory_stat_available` = true. Omezení
+`open_basedir` zůstává zapnuté. Runtime UID není dostupné; tento údaj není
+důvodem vydávat shodu vlastníků za ověřenou.
+
+Původní zákaz přístupu je odstraněný. Samostatné ověření skutečného zápisu,
+čtení a odstranění syntetického souboru webovým PHP navazuje níže; samotný
+read-only PASS ještě není tímto důkazem. Finanční doklady se k testu nepoužívají.
+
+Čisté aplikační PHP nemůže povolený rozsah rozšířit: runtime `ini_set()` umí
+`open_basedir` jen zpřísnit; symlink restrikci neobchází
+([PHP manual](https://www.php.net/manual/en/ini.core.php#ini.open-basedir)).
+Původní cílený požadavek níže zůstává vhodnější možností, pokud jej někdy
+poskytovatel zpřístupní. Není popisem rozsahu nyní schváleného režimu Posunuto.
+
+## Historický nález před změnou
 
 Stav ověřený 23. 10. 2026, produkční vydání `0b03b564`. Jde o blok
 hostingu, nikoli o pokyn k přesunu příloh či změně účetních dat.
@@ -18,8 +44,9 @@ Přihlášená webová diagnostika `uat_readiness_admin.php` vrátila:
 
 Webové omezení tedy nepovoluje nakonfigurovanou cestu. Nedostupné UID/stat
 neprokazují nesprávného vlastníka ani neexistenci adresáře. Úspěšný CLI
-provisioning není důkaz přístupu webového PHP. V dostupném browser inventáři
-nebyl přístup do administrace hostingu; tento krok proto zůstává odložený.
+provisioning není důkaz přístupu webového PHP. Při původním průchodu ještě
+nebyl dostupný přístup do administrace hostingu; další průchod a schválená
+změna jsou zaznamenané výše.
 
 ## Přesný požadavek pro správce hostingu
 

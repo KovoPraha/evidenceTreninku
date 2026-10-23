@@ -1,5 +1,12 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — hostingový přístup k soukromému úložišti obnoven.**
+Po výslovném schválení vlastníkem změněno pouze PHP `open_basedir` pro KIS
+na režim Posunuto. Nový webový požadavek potvrzuje dostupný soukromý adresář
+a oprávnění k zápisu; ostatní nastavení hostingu beze změny.
+[Navazující důkazy a stav skutečné souborové zkoušky](verification/private-storage-20261023/RESULTS.md).
+Původní P0 nález níže je historický. Plná provozní přejímka zůstává otevřená.
+
 **23. 10. 2026 — společné vydání R01–R44 nasazené, provozní přejímka má otevřený P0 blok.**
 Živé SHA `0b03b564dfa6b20817478848fa8721fea09ca082`; [deploy SUCCESS](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39922198281).
 [Produkční důkazy a zbývající práce](verification/production-club-20261023/RESULTS.md):
