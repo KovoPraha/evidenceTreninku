@@ -1,15 +1,18 @@
 # Aktuální stav projektu
 
-**23. 10. 2026 — společná objednávka stejného kurzu pro více dětí, ověřeno v B1.**
+**23. 10. 2026 21:12 — stejný kurz pro více dětí v jedné objednávce, nasazeno.**
 [Protokol a důkazy](verification/multi-child-course-20261023/RESULTS.md).
 Samostatné položky a souhlasy, přesná kapacita, neměnné finanční podíly,
 jména v detailu objednávky. Browser B1 objednávka33/varianta55: Anna91 + Bára93,
 300 Kč, účasti12/13 aktivní, podíly150+150Kč. Nativní MariaDB smoke včetně
 postupné úhrady podílů PASS. Migrace137 zahrnuje zálohování finančních podílů.
 Předchozí omezení na samostatné objednávky sourozenců je nahrazeno touto změnou.
-Nasazení výslovně autorizováno uživatelem; produkční SHA a finální CI budou doplněny
-po chráněném nasazení. B15 nadále PARTIAL; částečné storno uhrazené objednávky
-nepřidáno. Produkční zkušební objednávky ani integrace se nezapínají.
+PR #181, release `43a825e01235e66baa1601c3bc957365df011009`, chráněný deploy
+**40009024140 SUCCESS**, záloha/migrace/zachování VS/HTTP smoke PASS.
+Linux **1659 testů / 33138 assertions**, MariaDB10.3/11.4 a CodeQL PASS.
+Živý browser potvrdil release, úložiště PASS a nový postup na produktu247.
+B15 nadále PARTIAL; částečné storno uhrazené objednávky nepřidáno.
+Produkční doménová data pouze čtena, žádné zkušební objednávky ani aktivace integrací.
 
 **23. 10. 2026 20:28 — přejímka rodinných a sportovních účtů, opravy nasazeny.**
 [Protokol a přesné meze](verification/family-course-20261023/RESULTS.md).
