@@ -64,4 +64,30 @@ poslední místo, rodinná objednávka, dvě postupné úhrady podílů a násle
 Stará migrace standing orders vypisuje na lokální MariaDB varování `columns`;
 smoke dokončil s exit0. Produkční kompatibilitu dále ověřuje CI MariaDB10.3/11.4.
 
-Přesné finální CI a produkční SHA budou doplněny po dokončení chráněného nasazení.
+Plná Windows sada: 1659 testů / 33106 assertions, 3 platformní skipy a jediné
+již známé selhání statického POSIX scanneru (`posix_geteuid` na Windows).
+Linux CI: **1659 testů / 33138 assertions PASS**, MariaDB10.3/11.4 a CodeQL PASS.
+PR [181](https://github.com/KovoPraha/evidenceTreninku/pull/181), head
+`7d6575ed705b70a8a65c3421aa2b098891561387`, testy
+[40008566705](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40008566705),
+CodeQL [40008562916](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40008562916).
+Merge `43a825e01235e66baa1601c3bc957365df011009`: main testy
+[40008832711](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40008832711)
+a CodeQL [40008832239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40008832239) PASS.
+
+Chráněný deploy [40009024140](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40009024140)
+spuštěn přesně pro tento merge, s `uat_schvaleno=false`, `importovat_krouzky=false`.
+**SUCCESS 23.10.2026 21:12:38 SELČ**. Kontroly zálohy, migrace137, zachování
+variabilních symbolů, aktivace release i HTTP smoke PASS. Produkční kód:
+`43a825e01235e66baa1601c3bc957365df011009`.
+
+Živý přihlášený browser následně potvrdil přesné SHA a soukromé úložiště PASS
+([release](production-release.png)). Produkt247/varianta813 Aligátoři zobrazuje
+nový postup společného nákupu pro více dětí ([stránka kurzu](production-course.png)).
+Produkční účet nemá přiřazené děti; nebyly vytvářeny žádné produkční osoby,
+vazby, košíky ani objednávky. Zápisový průchod byl ověřen pouze v B1.
+Celková připravenost lidského UAT nadále BLOCKED z dosavadních provozních důvodů;
+není to selhání nasazení ani potvrzení lidské přejímky.
+
+[Hotová zaplacená B1 objednávka](local-order-paid.png) zůstává otevřená k prohlídce.
+Závěrečné úpravy tohoto protokolu jsou pouze dokumentace, ne další release aplikace.
