@@ -69,3 +69,11 @@ kontrolor. Tato zjištění neopravujeme vymyšlenými souhlasy nebo aktivací S
 - Soukromé úložiště nebylo v CLI prokázané. První verze diagnostiky při chybějícím nastavení nesprávně odvozovala lokální fallback i pro produkci; aktuální verze rozlišuje explicitní nastavení a lokální fallback. Původní výsledek sám nedokládá webovou dostupnost.
 
 Nasazení nyní po ověřené DB záloze a před kopírováním konfigurace do release připraví úložiště v soukromém `data/kis-private`. Existující povolené nastavení zachová; neznámou cestu, symlink nebo prázdnou konstantu odmítne. Při doplnění konfigurace nejprve ověří její soukromou zálohu. Nemění DB, role, přílohy ani historická data. CLI ověřuje vlastní dočasný zápis/čtení/smazání; kvůli odlišnému webovému open_basedir se webová dostupnost ověří zvlášť v administraci.
+
+## První skutečné nasazení
+
+[Deploy 39920859510](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39920859510) úspěšně aktivoval `ab7d67d924451bc99876b76da7f3ec334579188b` (PR #167 + #168). CI před nasazením: 1 567 testů / 31 821 assertions PASS. Produkční záloha měla 246 tabulek; migrace a zachování všech dosavadních VS PASS, import kroužků nebyl spuštěn. Úložiště bylo vytvořeno, konfigurace doplněna po ověřené soukromé záloze. Historická kontrola příloh hlásila candidates=0, already_private=0, missing=2, errors=0; chybějící staré přílohy tím nejsou opravené.
+
+Browser potvrzuje přesné SHA a nový kód. Webová dostupnost úložiště je však BLOCKED (nastavené a mimo web, ale adresář/zápis nedostupné). Postdeploy CLI drill [39921278568](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39921278568) naopak potvrzuje existenci/zapisovatelnost: rozdíl webového procesu vyžaduje diagnostiku, nikoli prohlášení plné přejímky.
+
+Čtecí průchod již načetl finanční, skladové, členské a sportovní agendy bez fatální chyby. Odkaz na položkové výdeje bez objednávky zobrazoval jen „Objednávka nebyla nalezena“; další oprava doplňuje vstupní stránku s volbou objednávky a zachovává 404 pro konkrétní neplatné ID.

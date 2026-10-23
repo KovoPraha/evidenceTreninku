@@ -12,7 +12,8 @@ if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
 }
 
 $privateStorageReadiness = privateStorageReadiness();
-$privateStorageReady = !in_array(false, $privateStorageReadiness, true);
+$privateStorageReady = $privateStorageReadiness['configured'] && $privateStorageReadiness['outside_webroot']
+    && $privateStorageReadiness['directory_exists'] && $privateStorageReadiness['writable'];
 
 function uatPageH(mixed $value): string
 {
@@ -54,6 +55,11 @@ try {
                 <li><?=uatPageH($label)?>: <?= $privateStorageReadiness[$key] ? 'ANO' : 'NE' ?></li>
             <?php endforeach; ?>
             </ul>
+            <details class="mt-2"><summary>Technická kontrola přístupu</summary><ul>
+            <?php foreach (['configured_from_environment'=>'Nastavení z prostředí', 'configured_from_constant'=>'Nastavení z konfigurace', 'environment_constant_mismatch'=>'Prostředí přebíjí jinou cestu v konfiguraci', 'open_basedir_enabled'=>'Hosting omezuje přístup k adresářům', 'open_basedir_allows_configured_root'=>'Cesta je v povoleném rozsahu hostingu', 'root_realpath_available'=>'Lze ověřit skutečnou cestu', 'directory_stat_available'=>'Lze přečíst údaje adresáře', 'effective_uid_available'=>'Lze zjistit vlastníka webového procesu', 'directory_owner_uid_available'=>'Lze zjistit vlastníka adresáře', 'directory_owner_matches_effective_uid'=>'Vlastník adresáře odpovídá webovému procesu'] as $key=>$label): ?>
+                <li><?=uatPageH($label)?>: <?= $privateStorageReadiness[$key] ? 'ANO' : 'NE' ?></li>
+            <?php endforeach; ?>
+            </ul><p class="small text-muted mb-0">Nedostupné údaje neprokazují rozdílného vlastníka. Rozhodující je dostupný adresář a oprávnění k zápisu.</p></details>
         </div>
     </section>
     <div class="alert alert-warning">Produkční účetnictví a sklad nemají oddělenou testovací evidenci. Fiktivní doklady, platby, výdeje a vratky zkoušejte pouze v izolovaném prostředí. Tento přehled nepotvrzuje dokončení uživatelské přejímky.</div>

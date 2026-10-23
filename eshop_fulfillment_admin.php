@@ -3,6 +3,20 @@ declare(strict_types=1);
 require_once __DIR__.'/includes/init.php';require_once __DIR__.'/csrf_helper.php';require_once __DIR__.'/includes/shop_checkout.php';
 staffRequireActivePosition('order_operator');
 function fulfillmentH(mixed $v):string{return htmlspecialchars((string)$v,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !array_key_exists('order_id', $_GET)) {
+    require_once __DIR__.'/includes/ui_shell.php';
+    header('Cache-Control: no-store, private');
+    ?>
+    <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Položkové výdeje</title><?php appUiAssets(); ?></head>
+    <body class="bg-light"><?php include __DIR__.'/hlavicka.php'; ?><main class="container py-4">
+        <h1>Položkové výdeje</h1>
+        <p>Nejprve vyberte objednávku. V jejím přehledu otevřete odkaz „Položkový výdej a doručení“.</p>
+        <p>U vybrané objednávky uvidíte jednotlivé položky, zbývající rezervace a historii předání.</p>
+        <a class="btn btn-primary" href="eshop_orders_admin.php">Vybrat objednávku</a>
+    </main></body></html>
+    <?php
+    exit;
+}
 $orderId=(int)($_GET['order_id']??$_POST['order_id']??0);$error='';$message='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
  try{if(!csrf_verify((string)($_POST['csrf_token']??'')))throw new InvalidArgumentException('Formulář vypršel.');if(($_POST['confirmed']??'')!=='1')throw new InvalidArgumentException('Potvrďte skutečné předání nebo ověřený stav zásilky.');
