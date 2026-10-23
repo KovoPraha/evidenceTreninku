@@ -5,7 +5,7 @@ require_once __DIR__.'/accounting_ledger.php';
 require_once __DIR__.'/accounting_stock_export.php';
 require_once __DIR__.'/accounting_club_export.php';
 
-const ACCOUNTING_EXPORT_VERSION = 'club-accounting-administration-v3';
+const ACCOUNTING_EXPORT_VERSION = 'club-accounting-order-links-v4';
 
 function accountingExportActor(PDO $pdo,int $actor):void
 {
@@ -104,13 +104,19 @@ function accountingExportWorkbook(array $snapshot,string $path):void
     $sheet('Manifest',['Údaj','Hodnota'],$meta);
     $docs=[];$items=[];$claims=[];
     foreach($snapshot['documents'] as $d){
-        $docs[]=[(string)$d['id'],$d['number'],$d['kind'],$d['source_type'],(string)$d['source_id'],$d['original_document_id'],$d['status'],$d['effective_on'],$d['issued_at'],(int)$d['total_minor']/100,$d['currency'],$d['archive_path']??null,$d['pdf_sha256']];
         $data=json_decode($d['snapshot_json'],true,512,JSON_THROW_ON_ERROR);
-        foreach($data['lines']??[] as $line)$items[]=[(string)$d['id'],(string)($line['line_key']??''),$line['label']??'',(string)($line['quantity']??''),(int)($line['amount_minor']??0)/100,$line['category_code']??null,$line['activity']??null];
+        $docs[]=[(string)$d['id'],$d['number'],$d['kind'],$d['source_type'],(string)$d['source_id'],$d['original_document_id'],$d['status'],$d['effective_on'],$d['issued_at'],(int)$d['total_minor']/100,$d['currency'],$d['archive_path']??null,$d['pdf_sha256'],$data['reference']??null,$data['variable_symbol']??'',$data['due_on']??''];
+        // Read frozen document metadata, never today's person or catalog records.
+        foreach($data['lines']??[] as $line){
+            $period=$line['service_period']??null;
+            $from=is_array($period)?($period[0]??null):($period??'');
+            $to=is_array($period)?($period[1]??null):($period??'');
+            $items[]=[(string)$d['id'],(string)($line['line_key']??''),$line['label']??'',(string)($line['quantity']??''),(int)($line['amount_minor']??0)/100,$line['category_code']??null,$line['activity']??null,isset($line['beneficiary']['person_id'])?(string)$line['beneficiary']['person_id']:'',$line['beneficiary']['name']??'',$from,$to];
+        }
         if($d['status']==='issued'&&$d['original_document_id']===null)$claims[]=[(string)$d['source_type'],(string)$d['source_id'],(string)$d['id'],'Vazba na původní případ, nikoli nová pohledávka'];
     }
-    $sheet('Doklady',['ID','Číslo (text)','Druh','Zdroj','ID zdroje','Původní doklad','Stav','Datum případu','Vydáno','Částka','Měna','PDF v archivu','SHA-256 PDF'],$docs,[9]);
-    $sheet('Polozky',['ID dokladu','Klíč položky','Popis','Množství','Částka','Členění','Činnost'],$items,[4]);
+    $sheet('Doklady',['ID','Číslo (text)','Druh','Zdroj','ID zdroje','Původní doklad','Stav','Datum případu','Vydáno','Částka','Měna','PDF v archivu','SHA-256 PDF','Reference případu','VS (text)','Splatnost'],$docs,[9]);
+    $sheet('Polozky',['ID dokladu','Klíč položky','Popis','Množství','Částka','Členění','Činnost','ID účastníka (text)','Účastník','Období od','Období do'],$items,[4]);
     $money=[];foreach($snapshot['movements'] as $m)$money[]=[(string)$m['id'],(string)$m['account_id'],$m['kind'],$m['effective_on'],$m['recorded_at'],(int)$m['amount_minor']/100,$m['currency'],$m['source_context'],$m['source_reference'],$m['reversal_of_id'],$m['transfer_key'],$m['effective_on']>=$snapshot['period_from']?'V OBDOBÍ':'MIMO OBRAT'];
     $sheet('Penize',['ID pohybu','Účet','Druh','Skutečné datum','Zapsáno','Částka se znaménkem','Měna','Zdroj','Reference (text)','Původní pohyb','Převod','Obrat'],$money,[5]);
     $alloc=[];$classification=[];

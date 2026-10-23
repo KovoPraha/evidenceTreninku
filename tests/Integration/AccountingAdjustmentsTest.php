@@ -110,6 +110,38 @@ final class AccountingAdjustmentsTest extends TestCase
         $this->pdo->exec("UPDATE payments SET status='paid',refund_sent_at=NULL");$this->decide();
         $this->pdo->beginTransaction();$this->reject(fn()=>\accountingAdjustmentAssertLegacyRefundAllowed($this->pdo,4),'rozpracovanou');$this->pdo->rollBack();
     }
+    private function receiptLinkedOnlyByAllocation():void
+    {
+        $this->pdo->exec("UPDATE accounting_movements SET case_type=NULL,case_id=NULL,source_context='bank-reference',source_reference='LOCALHOST-SPLIT' WHERE id=".$this->income);
+        $allocation=\accountingLedgerAllocate($this->pdo,$this->income,'shop_order',4,10000,'split-allocation',7,'LOCALHOST receipt allocation.',true,null,'','','2026-01-10');
+        \accountingLedgerAllocate($this->pdo,$this->income,'shop_order',4,-4000,'split-release',7,'LOCALHOST refund release.',true,(int)$allocation['id'],'','','2026-01-11');
+    }
+    public function testReceiptAllocationBlocksLegacyRefundAfterAccountingReservationAndPayout():void
+    {
+        $this->receiptLinkedOnlyByAllocation();$decision=$this->decide();
+        $this->pdo->beginTransaction();
+        try {$this->reject(fn()=>\accountingAdjustmentAssertLegacyRefundAllowed($this->pdo,4),'rozpracovanou');}
+        finally {$this->pdo->rollBack();}
+        $this->pay((int)$decision['id'],4000);
+        $this->pdo->beginTransaction();
+        try {$this->reject(fn()=>\accountingAdjustmentAssertLegacyRefundAllowed($this->pdo,4),'rozpracovanou');}
+        finally {$this->pdo->rollBack();}
+    }
+    public function testReceiptAllocationBlocksAccountingRefundAfterLegacyFullRefund():void
+    {
+        $this->receiptLinkedOnlyByAllocation();
+        $this->pdo->exec("UPDATE payments SET status='refunded',refund_sent_at='2026-01-11 12:00:00'");
+        $this->reject(fn()=>$this->decide(),'celou vratku');
+        self::assertSame(0,(int)$this->pdo->query('SELECT COUNT(*) FROM accounting_refund_decisions')->fetchColumn());
+    }
+    public function testReceiptAllocationBlocksDirectLedgerRefundAfterLegacyFullRefund():void
+    {
+        $this->receiptLinkedOnlyByAllocation();
+        $this->pdo->exec("UPDATE payments SET status='refunded',refund_sent_at='2026-01-11 12:00:00'");
+        $this->reject(fn()=>\accountingLedgerRecord($this->pdo,['account_id'=>1,'kind'=>'refund','amount_minor'=>-4000,'currency'=>'CZK','effective_on'=>'2026-01-12','source_context'=>'manual-refund','source_reference'=>'LOCALHOST-DOUBLE','request_key'=>'split-double-refund','reversal_of_id'=>$this->income,'evidence'=>'LOCALHOST synthetic bank proof'],7,'LOCALHOST duplicate receipt refund.',true),'celou vratku');
+        self::assertSame(1,(int)$this->pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn());
+    }
+
     public function testDocumentLinkAndCumulativeCorrectionRefundLimit():void
     {
         $this->correction(4000,1);$this->decide(3000,'decision-one',['correction_document_id'=>2]);
@@ -145,6 +177,29 @@ final class AccountingAdjustmentsTest extends TestCase
         self::assertSame(3,(int)$this->pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn());
         self::assertSame(1,(int)$this->pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='confirm_refund'")->fetchColumn());
     }
+    public function testMultipleReceiptsCompleteRefundOnlyWhenOrderIsFullyRepaidExcludingOverpayment():void
+    {
+        foreach(['amount_minor INT DEFAULT 10000',"currency TEXT DEFAULT 'CZK'","method TEXT DEFAULT 'bank_transfer'",'refund_reference TEXT','refund_confirmed_by_trainer_id INT','refund_confirmation_note TEXT','updated_at TEXT'] as $definition)$this->pdo->exec('ALTER TABLE payments ADD COLUMN '.$definition);
+        $this->pdo->exec("UPDATE shop_orders SET status='cancelled',payment_status='refund_required';UPDATE payments SET status='refund_required';CREATE TABLE shop_order_events(id INTEGER PRIMARY KEY,order_id INT,actor_type TEXT,actor_id INT,action TEXT,from_status TEXT,to_status TEXT,note TEXT);UPDATE accounting_movements SET case_type=NULL,case_id=NULL,amount_minor=4500 WHERE id=1");
+        $second=\accountingLedgerRecord($this->pdo,['account_id'=>1,'kind'=>'income','amount_minor'=>6000,'currency'=>'CZK','effective_on'=>'2026-01-10','source_context'=>'bank-reference','source_reference'=>'LOCALHOST-SECOND','request_key'=>'family-second-income','evidence'=>'LOCALHOST receipt'],7,'LOCALHOST second receipt.',true);
+        foreach([[$this->income,4000],[(int)$second['id'],6000]] as [$movement,$amount]){
+            $a=\accountingLedgerAllocate($this->pdo,$movement,'shop_order',4,$amount,'family-allocate-'.$movement,7,'LOCALHOST allocation.',true,null,'','','2026-01-10');
+            \accountingLedgerAllocate($this->pdo,$movement,'shop_order',4,-$amount,'family-release-'.$movement,7,'LOCALHOST release.',true,(int)$a['id'],'','','2026-01-11');
+        }
+        $overpayment=$this->decide(500,'overpayment-refund',['original_document_id'=>0]);$this->pay((int)$overpayment['id'],500,'overpayment-paid');
+        $first=$this->decide(4000,'family-refund-first');$this->pay((int)$first['id'],4000,'family-paid-first');
+        self::assertSame(4000,\accountingLedgerOrderRefundCoverage($this->pdo,4,'CZK')['total']);
+        self::assertSame('refund_required',$this->pdo->query('SELECT status FROM payments')->fetchColumn());
+        $last=$this->decide(6000,'family-refund-second',['original_movement_id'=>(int)$second['id']]);$paid=$this->pay((int)$last['id'],6000,'family-paid-second');
+        $payment=$this->pdo->query('SELECT * FROM payments')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('refunded',$payment['status']);self::assertSame('accounting-order:4',$payment['refund_reference']);
+        self::assertTrue(\accountingLedgerRefundDerived($this->pdo,$payment));
+        $this->reject(fn()=>\accountingLedgerSource($this->pdo,'legacy_refund',1),'odvozené');
+        self::assertSame($paid['id'],$this->pay((int)$last['id'],6000,'family-paid-second')['id']);
+        self::assertSame(5,(int)$this->pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn());
+        self::assertSame(1,(int)$this->pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='confirm_refund'")->fetchColumn());
+    }
+
     private function correction(int $amount,int $quantity):void
     {
         $snapshot=json_encode(['lines'=>[['line_key'=>'item:10','quantity'=>$quantity,'amount_minor'=>-$amount]]],JSON_THROW_ON_ERROR);

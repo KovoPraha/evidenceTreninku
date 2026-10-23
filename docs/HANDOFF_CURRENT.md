@@ -1,5 +1,13 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — účetní návaznosti objednávek opravené, zatím nenasazeno.**
+[Protokol](verification/accounting-followup-20261023/RESULTS.md).
+XLSX nově zachová účastníka, období, referenci případu, VS a splatnost z dokladu.
+Opraveny kontroly dvojí vratky přes dílčí příjmy a dokončení úplné vratky z více příjmů.
+73 cílených testů / 456 assertions PASS; nativní průchod PDF → příjmy → XLSX/ZIP
+→ opravný doklad a vratka → neměnná revize exportu. Ukázka pouze syntetická.
+Bez migrace a bez produkční změny. Účetní převzetí i browser UAT zůstávají otevřené.
+
 **23. 10. 2026 — rozšířená technická přejímka rodinného nákupu, bez nasazení.**
 [Protokol](verification/family-followup-20261023/RESULTS.md), PR #183.
 38 cílených testů / 960 assertions a nativní MariaDB smoke PASS: dva sourozenci,

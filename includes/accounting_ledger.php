@@ -112,7 +112,7 @@ function accountingLedgerRecord(PDO $pdo,array $input,int $actor,string $reason,
                     if($legacy['amount_minor']!==$clean['amount_minor']||$legacy['currency']!==$clean['currency'])throw new AccountingLedgerException('Původní vratka neodpovídá částce nebo měně.');
                 }
                 if(accountingLedgerTable($pdo,'payments')){
-                    $q=$pdo->prepare("SELECT p.* FROM payments p WHERE p.id IN (SELECT source_id FROM accounting_movement_sources WHERE movement_id=? AND source_type='payments') OR (p.payable_type=? AND p.payable_id=?)".accountingLedgerLock($pdo));$q->execute([$original['id'],$original['case_type'],$original['case_id']]);
+                    $q=$pdo->prepare("SELECT p.* FROM payments p WHERE p.id IN (SELECT source_id FROM accounting_movement_sources WHERE movement_id=? AND source_type='payments') OR (p.payable_type=? AND p.payable_id=?) OR EXISTS (SELECT 1 FROM accounting_allocations a WHERE a.movement_id=? AND a.case_type=p.payable_type AND a.case_id=p.payable_id AND a.amount_minor>0)".accountingLedgerLock($pdo));$q->execute([$original['id'],$original['case_type'],$original['case_id'],$original['id']]);
                     foreach($q->fetchAll(PDO::FETCH_ASSOC) as $payment)if(($payment['status']==='refunded'||!empty($payment['refund_sent_at']))&&(int)$payment['id']!==$legacyPaymentId)throw new AccountingLedgerException('Původní platba již má doloženou celou vratku.');
                 }
                 $q=$pdo->prepare('SELECT COALESCE(SUM(amount_minor),0) FROM accounting_allocations WHERE movement_id=?');$q->execute([$original['id']]);$allocated=(int)$q->fetchColumn();
@@ -380,11 +380,26 @@ function accountingLedgerPendingSources(PDO $pdo,int $limit=200):array
 
 function accountingLedgerRefundDerived(PDO $pdo,array $payment):bool
 {
+    $orderPrefix='accounting-order:';
+    if(str_starts_with((string)($payment['refund_reference']??''),$orderPrefix)){
+        $orderId=substr($payment['refund_reference'],strlen($orderPrefix));
+        if(!ctype_digit($orderId)||($payment['payable_type']??'')!=='shop_order'||(int)$orderId!==(int)$payment['payable_id'])return false;
+        return accountingLedgerOrderRefundCoverage($pdo,(int)$orderId,(string)$payment['currency'])['total']===(int)$payment['amount_minor'];
+    }
     $reference=(string)($payment['refund_reference']??'');if(!str_starts_with($reference,'accounting-ledger:'))return false;
     $id=substr($reference,strlen('accounting-ledger:'));
     if(!ctype_digit($id)||!accountingLedgerTable($pdo,'accounting_refund_payments'))return false;
     $q=$pdo->prepare("SELECT COALESCE(SUM(p.amount_minor),0) FROM accounting_refund_payments p JOIN accounting_refund_decisions d ON d.id=p.decision_id JOIN accounting_movements m ON m.id=d.original_movement_id WHERE d.original_movement_id=? AND m.currency=? AND m.amount_minor=? AND ((m.case_type=? AND m.case_id=?) OR EXISTS(SELECT 1 FROM accounting_movement_sources s WHERE s.movement_id=m.id AND s.source_type='payments' AND s.source_id=?))");$q->execute([(int)$id,$payment['currency'],$payment['amount_minor'],$payment['payable_type'],$payment['payable_id'],$payment['id']]);
     return (int)$q->fetchColumn()===(int)$payment['amount_minor'];
+}
+
+/** Only explicitly attributable repayments settle an order; unassigned overpayment refunds do not. */
+function accountingLedgerOrderRefundCoverage(PDO $pdo,int $orderId,string $currency):array
+{
+    if(!accountingLedgerTable($pdo,'accounting_refund_payments')||!accountingLedgerTable($pdo,'accounting_documents'))return ['total'=>0,'last_date'=>null];
+    $q=$pdo->prepare("SELECT COALESCE(SUM(p.amount_minor),0) AS total,MAX(p.effective_on) AS last_date FROM accounting_refund_payments p JOIN accounting_refund_decisions d ON d.id=p.decision_id JOIN accounting_movements m ON m.id=d.original_movement_id LEFT JOIN accounting_documents doc ON doc.id=d.original_document_id WHERE d.currency=? AND m.currency=? AND ((doc.status='issued' AND doc.source_type='order' AND doc.source_id=?) OR (d.original_document_id IS NULL AND m.case_type='shop_order' AND m.case_id=?))");
+    $q->execute([$currency,$currency,$orderId,$orderId]);$row=$q->fetch(PDO::FETCH_ASSOC);
+    return ['total'=>(int)$row['total'],'last_date'=>$row['last_date']];
 }
 
 /** Exact operational allocation rows are projected, never inferred from a child's paid state. */

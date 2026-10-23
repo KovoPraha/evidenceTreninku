@@ -384,6 +384,8 @@ try {
     $stock=shopInventoryBalance($pdo,601);
     if(!$issued['changed']||$replayed['changed']||$stock['physical_quantity']!==2||$stock['reserved_quantity']!==1
         ||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn()!==2)throw new RuntimeException('Goods handover must be idempotent and preserve both course enrollments.');
+    require_once __DIR__.'/FamilyAccountingAcceptance.php';
+    FamilyAccountingAcceptance::run($pdo,$family,[$firstReceipt,$partialReceipt,$secondReceipt]);
     echo "MariaDB concurrent checkout, payment idempotency, last-place rollback, mixed siblings/coupon/stock/accounting/partial receipts/overpayment/handover smoke OK\n";
 } finally {
     if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
