@@ -1,11 +1,11 @@
-✔ participant: Tab to result survives blur; keyboard-generated click adds one chip and hidden ID (6.1059ms)
-✔ participant: pointer click selects once and duplicate selection does not add another chip (1.8685ms)
-✔ participant: leaving suggestions by keyboard closes the list (1.6633ms)
-✔ measurement: keyboard result selection survives blur, preserves ID/label and syncs exactly once (2.1273ms)
-✔ measurement: leaving without a selected identity clears free text, as before (0.9673ms)
-✔ all training edit inline scripts compile (PHP lint does not check JavaScript) (2.8962ms)
-✔ changing measurement search text clears the old athlete identity before any new selection (3.8956ms)
-✔ existing measurement fields prefill safely, including optional missing fields and zero values (5.1186ms)
+✔ participant: Tab to result survives blur; keyboard-generated click adds one chip and hidden ID (5.2539ms)
+✔ participant: pointer click selects once and duplicate selection does not add another chip (1.6592ms)
+✔ participant: leaving suggestions by keyboard closes the list (1.3762ms)
+✔ measurement: keyboard result selection survives blur, preserves ID/label and syncs exactly once (2.0027ms)
+✔ measurement: leaving without a selected identity clears free text, as before (0.9634ms)
+✔ all training edit inline scripts compile (PHP lint does not check JavaScript) (5.7187ms)
+✔ changing measurement search text clears the old athlete identity before any new selection (3.6559ms)
+✔ existing measurement fields prefill safely, including optional missing fields and zero values (3.8056ms)
 ℹ tests 8
 ℹ suites 0
 ℹ pass 8
@@ -13,4 +13,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 136.1619
+ℹ duration_ms 102.5276
