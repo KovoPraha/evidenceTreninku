@@ -404,6 +404,7 @@ const EVIDENCE_TABLES = [
     'shop_category_meta',
     'shop_category_meta_events',
     'shop_cart_items',
+    'shop_order_finance_shares',
     'shop_carts',
     'shop_catalog_admin_events',
     'shop_catalog_import_runs',

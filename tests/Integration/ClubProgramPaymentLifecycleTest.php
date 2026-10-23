@@ -13,26 +13,96 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
 {
     private const BANK=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'KOVO Praha','due_days'=>7];
 
-    public function testAddingSameCourseForSiblingCannotSilentlyReplaceFirstChild(): void
+    public function testSiblingsHaveIndependentCartLinesAndOneAtomicPayment(): void
     {
-        $pdo = $this->database();
-        $this->offer($pdo, 601, 501, 10, 5, 'SIBLING-CART');
-        \shopCartSetQuantity($pdo, 10, 601, 1, 101);
-        $before = \shopCartDetail($pdo, 10);
-        try {
-            \shopCartSetQuantity($pdo, 10, 601, 1, 104);
-            self::fail('Adding a sibling must not silently replace the first participant.');
-        } catch (\ShopCheckoutException $exception) {
-            self::assertStringContainsString('jiného účastníka', $exception->getMessage());
-        }
-        self::assertSame($before['fingerprint'], \shopCartDetail($pdo, 10)['fingerprint']);
-        self::assertSame(101, (int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_cart_items')->fetchColumn());
-        self::assertFalse($pdo->inTransaction());
-        // Re-adding the same child stays idempotent; deliberate selection remains available.
-        \shopCartSetQuantity($pdo, 10, 601, 1, 101);
-        \shopCartSetBeneficiary($pdo, 10, (int)$before['items'][0]['cart_item_id'], 104);
-        self::assertSame(104, (int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_cart_items')->fetchColumn());
-        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM shop_cart_items')->fetchColumn());
+        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'SIBLINGS');
+        \shopCartSetQuantity($pdo,10,601,1,101);$before=\shopCartDetail($pdo,10);
+        \shopCartSetQuantity($pdo,10,601,1,104);$cart=\shopCartDetail($pdo,10);
+        self::assertCount(2,$cart['items']);self::assertSame(20000,$cart['total_minor']);
+        self::assertNotSame($before['fingerprint'],$cart['fingerprint']);
+        \shopCartSetQuantity($pdo,10,601,1,101);
+        self::assertSame($cart['fingerprint'],\shopCartDetail($pdo,10)['fingerprint']);
+        try { \shopCartSetBeneficiary($pdo,10,(int)$cart['items'][1]['cart_item_id'],101);self::fail('Duplicate child must fail.'); }
+        catch (\ShopCheckoutException $e) { self::assertStringContainsString('už má',$e->getMessage()); }
+        try { \shopCartSetQuantity($pdo,10,601,0);self::fail('Ambiguous removal must fail.'); }
+        catch (\ShopCheckoutException) {}
+        try { \shopCartSetQuantity($pdo,11,601,0,null,(int)$cart['items'][0]['cart_item_id']);self::fail('Foreign row must fail.'); }
+        catch (\ShopCheckoutException) {}
+        $key=bin2hex(random_bytes(16));$accepted=[];foreach($cart['items'] as $i)$accepted['item:'.$i['cart_item_id']]=1;
+        try { \shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint'],[601=>1]);self::fail('Each child needs consent.'); }
+        catch (\ShopCheckoutException) {}
+        $pdo->exec("UPDATE account_person_roles SET status='revoked' WHERE account_id=10 AND sportovec_id=104");
+        try { \shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint'],$accepted);self::fail('A revoked sibling must roll back the whole order.'); }
+        catch (\ShopCheckoutException) {}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        $pdo->exec("UPDATE account_person_roles SET status='approved' WHERE account_id=10 AND sportovec_id=104");
+        $order=\shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint'],$accepted);
+        self::assertSame(20000,(int)$order['total_minor']);
+        self::assertSame([101=>10000,104=>10000],array_map('intval',$pdo->query('SELECT sportovec_id,amount_minor FROM shop_order_finance_shares ORDER BY sportovec_id')->fetchAll(PDO::FETCH_KEY_PAIR)));
+        self::assertSame(10000,\clubFinanceBalanceForAthlete($pdo,101)['open_minor']);
+        self::assertSame(10000,\clubFinanceBalanceForAthlete($pdo,104)['open_minor']);
+        self::assertSame(0,\clubFinanceBalanceForAthlete($pdo,103)['open_minor']);
+        self::assertSame(2,\clubProgramOfferForVariant($pdo,601)['held_order_count']);
+        self::assertTrue(\shopCheckoutPlace($pdo,10,$key,self::BANK,$cart['fingerprint'],$accepted)['replayed']);
+        $paid=\shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'LOCALHOST společná platba.',true);
+        self::assertSame(2,$paid['created']);
+        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_roster_members WHERE status='active'")->fetchColumn());
+        self::assertFalse(\shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'LOCALHOST opakování.',true)['changed']);
+        self::assertSame(0,\clubFinanceBalanceForAthlete($pdo,101)['open_minor']);
+        self::assertSame(0,\clubFinanceBalanceForAthlete($pdo,104)['open_minor']);
+        $cancel=\shopOrderAdminCancel($pdo,(int)$order['id'],7,'LOCALHOST storno rodiny.',true);
+        self::assertSame(2,$cancel['cancelled']);self::assertSame(2,$cancel['rosters_ended']);
+        self::assertSame(0,\clubProgramOfferForVariant($pdo,601)['occupied_count']);
+        self::assertTrue(\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'LOCALHOST-FAMILY-RETURN','LOCALHOST společná vratka.',true)['changed']);
+        self::assertFalse(\shopOrderAdminConfirmRefund($pdo,(int)$order['id'],7,'LOCALHOST-FAMILY-RETURN','LOCALHOST opakování vratky.',true)['changed']);
+        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_enrollments WHERE status='active'")->fetchColumn());
+    }
+
+    public function testFamilyCapacityFailureRollsBackEverythingAndRemovingOneChildPreservesOther(): void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,1,'LAST-PLACE');
+        \shopCartSetQuantity($pdo,10,601,1,101);\shopCartSetQuantity($pdo,10,601,1,104);
+        $cart=\shopCartDetail($pdo,10);$accepted=[];foreach($cart['items'] as $i)$accepted['item:'.$i['cart_item_id']]=1;
+        try { \shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],$accepted);self::fail('Two children cannot hold one place.'); }
+        catch (\ShopCheckoutException $e) { self::assertStringContainsString('Kapacita',$e->getMessage()); }
+        foreach(['shop_orders','shop_order_items','payments','shop_order_finance_shares'] as $table)self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM '.$table)->fetchColumn());
+        self::assertSame($cart['fingerprint'],\shopCartDetail($pdo,10)['fingerprint']);
+        \shopCartSetQuantity($pdo,10,601,0,null,(int)$cart['items'][0]['cart_item_id']);
+        $remaining=\shopCartDetail($pdo,10);self::assertCount(1,$remaining['items']);self::assertSame(104,(int)$remaining['items'][0]['beneficiary_sportovec_id']);
+        self::assertSame(10000,(int)\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$remaining['fingerprint'],[601=>1])['total_minor']);
+    }
+
+    public function testFamilyMigrationPreservesLegacyCartAndIsRepeatable(): void
+    {
+        $pdo=$this->database(false);$this->offer($pdo,601,501,10,5,'MIGRATION');
+        $order=$this->checkout($pdo,11,103,601);
+        \shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'LOCALHOST migration history.',true);
+        $historical=$pdo->query('SELECT id,order_id,beneficiary_sportovec_id,line_amount_minor,program_terms_snapshot_json FROM shop_order_items')->fetchAll();
+        \shopCartSetQuantity($pdo,10,601,1,101);$before=\shopCartDetail($pdo,10);
+        $migration=require dirname(__DIR__,2).'/migrations/20261023210000_family_course_cart.php';
+        $migration['up']($pdo);$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
+        self::assertSame($historical,$pdo->query('SELECT id,order_id,beneficiary_sportovec_id,line_amount_minor,program_terms_snapshot_json FROM shop_order_items')->fetchAll());
+        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_program_enrollments WHERE status='active'")->fetchColumn());
+        self::assertFalse($pdo->query('PRAGMA foreign_key_check')->fetch());
+        self::assertSame($before['fingerprint'],\shopCartDetail($pdo,10)['fingerprint']);
+        self::assertSame(101,(int)$pdo->query('SELECT ci.participant_key FROM shop_cart_items ci JOIN shop_carts c ON c.id=ci.cart_id WHERE c.account_id=10')->fetchColumn());
+        \shopCartSetQuantity($pdo,10,601,1,104);self::assertCount(2,\shopCartDetail($pdo,10)['items']);
+        $this->expectException(\PDOException::class);
+        $pdo->exec('INSERT INTO shop_cart_items(cart_id,variant_id,quantity,beneficiary_sportovec_id,participant_key) SELECT cart_id,variant_id,quantity,beneficiary_sportovec_id,participant_key FROM shop_cart_items LIMIT 1');
+    }
+
+    public function testFamilySharesRespectCouponCategoriesAndPreserveEveryMinorUnit(): void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,5,'SHARES');
+        $order=$this->checkout($pdo,10,101,601);
+        $items=[['offer_type'=>'goods','beneficiary_sportovec_id'=>null,'quantity'=>2,'amount_minor'=>101],
+            ['offer_type'=>'program','beneficiary_sportovec_id'=>101,'quantity'=>1,'amount_minor'=>10001],
+            ['offer_type'=>'program','beneficiary_sportovec_id'=>104,'quantity'=>1,'amount_minor'=>10000]];
+        $pdo->beginTransaction();
+        \clubFinanceStoreOrderShares($pdo,(int)$order['id'],$items,[],[],['discount_minor'=>101,'eligible_subtotal_minor'=>20001,'applicability_mask'=>2],104,50,20152);
+        $pdo->commit();
+        $shares=array_map('intval',$pdo->query('SELECT sportovec_id,amount_minor FROM shop_order_finance_shares ORDER BY sportovec_id')->fetchAll(PDO::FETCH_KEY_PAIR));
+        self::assertSame([101=>9951,104=>10201],$shares);self::assertSame(20152,array_sum($shares));
     }
 
     public function testExistingAthleteCheckoutEnforcesCustomConsentsAndStoresOptionalDeclineOnce():void
@@ -393,7 +463,7 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         return(int)\clubProgramCreateOffer($pdo,7,$programId,1,$teamId,$productId,$variantId,$code,'Období '.$code,$from,$to,null,null,$capacity,'active',$birthYearFrom,$birthYearTo)['id'];
     }
 
-    private function database():PDO
+    private function database(bool $family=true):PDO
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
         $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT,prijmeni TEXT,email TEXT,heslo_hash TEXT DEFAULT \'\',telefon TEXT NULL,verifikacni_token TEXT NULL,verifikacni_token_expires_at TEXT NULL,aktivni INTEGER,email_overeno INTEGER)');$pdo->exec("INSERT INTO verejni_uzivatele(id,jmeno,prijmeni,email,aktivni,email_overeno) VALUES(10,'Rodič','A','a@test.test',1,1),(11,'Rodič','B','b@test.test',1,1)");
@@ -412,6 +482,7 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         $expiration=require dirname(__DIR__,2).'/migrations/20260804210000_shop_order_expiration.php';$expiration['up']($pdo);self::assertTrue($expiration['verify']($pdo));
         foreach(['20260922140000_low_friction_storefront.php','20260922150000_quick_program_checkout.php']as$file){$migration=require dirname(__DIR__,2).'/migrations/'.$file;$migration['up']($pdo);self::assertTrue($migration['verify']($pdo));}
         \Tests\Support\ParentJourneyNotificationFixture::install($pdo);
+        if($family){$m=require dirname(__DIR__,2).'/migrations/20261023210000_family_course_cart.php';$m['up']($pdo);self::assertTrue($m['verify']($pdo));}
         return$pdo;
     }
 }

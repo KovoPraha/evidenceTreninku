@@ -323,7 +323,26 @@ try {
     ) {
         throw new RuntimeException('Concurrent last-place checkout did not produce exactly one hold and one fail-closed rejection: ' . json_encode($programOutcomes, JSON_THROW_ON_ERROR));
     }
-    echo "MariaDB concurrent checkout, payment idempotency, and last-program-place smoke OK\n";
+    // Native prepares + migrated unique keys: two siblings, one payment, two financial shares.
+    shopOrderAdminCancel($pdo,(int)$programOutcomes[0]['id'],7,'SMOKE release last-place order.',true);
+    $pdo->exec('UPDATE club_program_offers SET capacity=2 WHERE variant_id=602');
+    $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,created_by_trainer_id,approved_by_trainer_id,decision_note) VALUES(10,102,'guardian','approved','admin','2020-01-01',7,7,'SMOKE sibling')");
+    shopCartSetQuantity($pdo,10,602,1,101);shopCartSetQuantity($pdo,10,602,1,102);
+    $familyCart=shopCartDetail($pdo,10);$accept=[];
+    foreach($familyCart['items'] as $line)$accept['item:'.$line['cart_item_id']]=1;
+    $family=shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'SMOKE','due_days'=>7],$familyCart['fingerprint'],$accept);
+    if((int)$family['total_minor']!==30000 || (int)clubProgramOfferForVariant($pdo,602)['held_order_count']!==2)throw new RuntimeException('Family checkout did not reserve two places.');
+    require_once dirname(__DIR__,2).'/includes/accounting_documents.php';
+    $document=accountingDocumentSource($pdo,'order',(int)$family['id']);
+    if(count($document['lines'])!==2||count(array_unique(array_column($document['lines'],'line_key')))!==2
+        ||array_map('intval',array_column(array_column($document['lines'],'beneficiary'),'person_id'))!==[101,102])throw new RuntimeException('Accountant source must preserve both child lines.');
+    $firstReceipt=clubFinanceRecordBankReceipt($pdo,101,15000,'SMOKE-SIBLING-101',date('Y-m-d'),7,'SMOKE first child share.',true);
+    $status=$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
+    if($status!=='pending'||$firstReceipt['allocated_minor']!==15000||clubFinanceBalanceForAthlete($pdo,102)['open_minor']!==15000)throw new RuntimeException('First child payment must not settle sibling debt.');
+    $secondReceipt=clubFinanceRecordBankReceipt($pdo,102,15000,'SMOKE-SIBLING-102',date('Y-m-d'),7,'SMOKE second child share.',true);
+    $status=$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
+    if($status!=='paid'||$secondReceipt['allocated_minor']!==15000||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn()!==2)throw new RuntimeException('Both shares must activate both children exactly once.');
+    echo "MariaDB concurrent checkout, payment idempotency, last-program-place and family checkout/finance smoke OK\n";
 } finally {
     if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);

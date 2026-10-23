@@ -1,5 +1,16 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — společná objednávka stejného kurzu pro více dětí, ověřeno v B1.**
+[Protokol a důkazy](verification/multi-child-course-20261023/RESULTS.md).
+Samostatné položky a souhlasy, přesná kapacita, neměnné finanční podíly,
+jména v detailu objednávky. Browser B1 objednávka33/varianta55: Anna91 + Bára93,
+300 Kč, účasti12/13 aktivní, podíly150+150Kč. Nativní MariaDB smoke včetně
+postupné úhrady podílů PASS. Migrace137 zahrnuje zálohování finančních podílů.
+Předchozí omezení na samostatné objednávky sourozenců je nahrazeno touto změnou.
+Nasazení výslovně autorizováno uživatelem; produkční SHA a finální CI budou doplněny
+po chráněném nasazení. B15 nadále PARTIAL; částečné storno uhrazené objednávky
+nepřidáno. Produkční zkušební objednávky ani integrace se nezapínají.
+
 **23. 10. 2026 20:28 — rodinné účty a nákup kurzů, PR #179 nasazen.**
 [Nový protokol](verification/family-course-20261023/RESULTS.md) obsahuje tři opravy,
 browser B1 objednávku32 / osobu91 / vazbu86, čtecí produkční kontrolu a odložený
