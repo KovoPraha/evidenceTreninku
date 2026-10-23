@@ -32,10 +32,12 @@ function personAuditSearch(PDO $pdo, string $query, int $limit = 30): array
                 . 'ORDER BY prijmeni,jmeno,id LIMIT ' . $limit
             );
         } else {
+            // Legacy imports can give the two name columns different collations.
+            // Normalize the expression only, leaving stored person data untouched.
             $statement = $pdo->prepare(
                 "SELECT id,jmeno,prijmeni,narozeni,stav_clenstvi FROM sportovci "
-                . "WHERE CONCAT_WS(' ',jmeno,prijmeni) LIKE ? ESCAPE '!' "
-                . "OR CONCAT_WS(' ',prijmeni,jmeno) LIKE ? ESCAPE '!' "
+                . "WHERE CONVERT(CONCAT_WS(' ',jmeno,prijmeni) USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE ? ESCAPE '!' "
+                . "OR CONVERT(CONCAT_WS(' ',prijmeni,jmeno) USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE ? ESCAPE '!' "
                 . 'ORDER BY prijmeni,jmeno,id LIMIT ' . $limit
             );
         }
