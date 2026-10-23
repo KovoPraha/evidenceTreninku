@@ -1,0 +1,1261 @@
+[
+  {
+    "id": "UAT-F01",
+    "title": "Syntetický vystavovatel, členění a oddělené dokladové řady",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "accounting_documents_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Název TEST Oddíl UAT-B; adresa Testovací 1, Testov 000 00; IČ 00000000 je pouze syntetický identifikátor.",
+      "Rok 2026; předpony UATBFA, UATBOP, UATBPPD; první číslo 1. B nahraďte alfanumerickým suffixem.",
+      "Pravidlo TEST Prodej zboží; zdroj Objednávka; doklad Faktura; členění TEST-ZBOZI; středisko TEST-ODDIL; platí od 2026-10-01."
+    ],
+    "steps": [
+      {
+        "action": "V Účetních dokladech rozbalte „Schválit novou verzi vystavovatele“. Vyplňte syntetické údaje, podklad „SIMULACE UAT-B; nejde o schválení účetní“, důvod a potvrzení; klikněte „Uložit schválenou verzi“.",
+        "expected": "Vznikne verze výhradně testovacího vystavovatele. Nikdo nepovažuje tento zápis za splnění D01."
+      },
+      {
+        "action": "V „Schválit nové účetní členění a pravidlo vydání“ vyplňte testovací pravidlo a klikněte „Uložit nové pravidlo“. Zvlášť založte pravidlo pro Pokladní pohyb / Příjmový pokladní doklad.",
+        "expected": "Pravidla mají vlastní ID a odpovídající zdroj. Žádná skutečná účetní klasifikace se neodhaduje."
+      },
+      {
+        "action": "V „Nová číselná řada dokladů (samostatná od VS)“ založte řady Faktury, Opravy a PPD tlačítkem „Založit řadu“.",
+        "expected": "Přehled ukáže samostatné předpony a další číslo. Existující ostré ani jiné testovací řady se nepřepisují."
+      },
+      {
+        "action": "Otevřete stránku pod rolí Trenér bez finančního oprávnění.",
+        "expected": "Finanční administrace je odepřena; nevzniká doklad ani pravidlo."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D01",
+      "D02"
+    ],
+    "sources": [
+      "accounting_documents_admin.php:42",
+      "accounting_documents_admin.php:47",
+      "accounting_documents_admin.php:49"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F02",
+    "title": "Doložená pokladna, příjem a převod mezi vlastními účty",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "accounting_ledger_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "TEST Pokladna B, kód UATB-CASH, počátek 5 000 Kč k 2026-10-01.",
+      "TEST Banka B, kód UATB-BANK, počátek 0 Kč k 2026-10-01.",
+      "Příjem 1 000 Kč dne 2026-10-10, reference UATB-DAR; převod 2 000 Kč dne 2026-10-11, připsání 2026-10-12, poplatek 0 Kč, reference UATB-PREVOD."
+    ],
+    "steps": [
+      {
+        "action": "Založte obě pokladny/účty v „Založit účet nebo pokladnu s doloženým počátečním stavem“. Vyplňte i podklad, důvod alespoň 10 znaků a potvrzení. Použijte „Uložit s auditní stopou“.",
+        "expected": "Přehled ukazuje 5 000 Kč a 0 Kč. Počátek není znovu běžným příjmem."
+      },
+      {
+        "action": "V „Ostatní doložený příjem nebo výdaj mimo existující zdroje“ založte příjem 1 000 Kč na pokladnu. Podklad musí obsahovat SIMULACE UAT-B.",
+        "expected": "Pokladna je 6 000 Kč, existuje jeden pohyb s datem skutečnosti a datem zápisu."
+      },
+      {
+        "action": "V „Převod mezi vlastními účty / vypořádání brány“ převeďte 2 000 Kč z pokladny na banku, doložte obě data a uložte.",
+        "expected": "Pokladna 4 000 Kč, banka 2 000 Kč. Převod není druhý výnos; oba pohyby mají společnou vazbu."
+      },
+      {
+        "action": "Zkuste nový příjem se stejnou jedinečnou referencí UATB-DAR a jinou částkou.",
+        "expected": "Nevznikne duplicitní příjem. Zaznamenejte chybové hlášení a zůstatky beze změny."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02"
+    ],
+    "sources": [
+      "accounting_ledger_admin.php:41",
+      "accounting_ledger_admin.php:45",
+      "accounting_ledger_admin.php:46"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F03",
+    "title": "Uzávěrka samostatné pokladny a blokace zpětného zápisu",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "accounting_ledger_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Samostatná TEST Uzávěrka B, kód UATB-CLOSE; 1 000 Kč k 2026-10-01.",
+      "Napočítáno chybně 900 Kč, správně 1 000 Kč k 2026-10-10; nový příjem 100 Kč k 2026-10-11."
+    ],
+    "steps": [
+      {
+        "action": "Založte samostatnou pokladnu přes „Založit účet nebo pokladnu s doloženým počátečním stavem“. Nepoužívejte účet dalších scénářů.",
+        "expected": "Vznikne izolovaný účet se zůstatkem 1 000 Kč."
+      },
+      {
+        "action": "V „Inventura hotovosti / odsouhlasení výpisu“ zadejte 900 Kč, datum 2026-10-10 a zaškrtněte „Uzavřít účet do tohoto dne“. Uložte.",
+        "expected": "Rozdíl 100 Kč brání uzavření. Systém nevytvoří automatický vyrovnávací příjem."
+      },
+      {
+        "action": "Opakujte se správnými 1 000 Kč a simulovaným inventurním podkladem.",
+        "expected": "Uzavření projde při nulovém rozdílu."
+      },
+      {
+        "action": "Zkuste přes „Ostatní doložený příjem nebo výdaj mimo existující zdroje“ přidat 100 Kč k 2026-10-10.",
+        "expected": "Zápis je odmítnut jako uzavřené období. Zůstatek zůstává 1 000 Kč."
+      },
+      {
+        "action": "Stejný nový příjem doložte datem 2026-10-11 a novou referencí UATB-AFTER.",
+        "expected": "Příjem v otevřeném období projde; zůstatek 1 100 Kč. Původní uzávěrka se nepřepisuje."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02"
+    ],
+    "sources": [
+      "accounting_ledger_admin.php:42",
+      "includes/accounting_ledger.php:70",
+      "includes/accounting_ledger.php:148"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F04",
+    "title": "Počáteční sklad podle kusů a rezervací",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby",
+      "Správce katalogu e-shopu"
+    ],
+    "routes": [
+      "eshop_inventory_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "Připraven produkt 44 LOCALHOST UAT 20261023 Dres: M = varianta 50, SKU KP-UAT20261023-M; L = 51, KP-UAT20261023-L. Obě aktivní a zveřejněné pouze lokálně; fyzický sklad dosud neotevřen. Viz fixtures.json."
+    ],
+    "test_data": [
+      "Použijte již připravený produkt 44, varianty M 50 a L 51, obě za 500 Kč. Nezakládejte duplicitu.",
+      "M: fyzicky 10 ks, blokované 2, žádná otevřená objednávka; L: fyzicky 5 ks, blokované 0."
+    ],
+    "steps": [
+      {
+        "action": "Hospodář v „Ocenění a schválení“ vybere „Schválit hlavní sklad a FIFO“, zadá testovací název a podklad SIMULACE, důvod a potvrzení; „Potvrdit úkon“.",
+        "expected": "Metoda je doložená testovacím rozhodnutím. Nejde o rozhodnutí účetní pro produkci."
+      },
+      {
+        "action": "Správce katalogu vybere novou variantu M, úkon „Ověřit počáteční stav varianty“, 10 skutečných kusů a 2 blokované, datum a inventurní podklad. Ověří seznam otevřených položek; „Potvrdit úkon“.",
+        "expected": "M má fyzicky 10, rezervováno 0, blokováno 2 a dostupných 8. Historické kusy se nepřičítají."
+      },
+      {
+        "action": "Opakujte počátek L s 5 kusy a 0 blokovanými. Otevřete doklad v „Poslední pohyby“.",
+        "expected": "L má dostupných 5. Počáteční pohyb má archivovaný skladový doklad; cenu lze doložit samostatně."
+      },
+      {
+        "action": "Pokus o opakované otevření stejné M proveďte s důvodem SIMULACE opakování.",
+        "expected": "Další počátek nezvýší počet kusů. Přesný výsledek zaznamenejte."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02",
+      "D09"
+    ],
+    "sources": [
+      "eshop_inventory_admin.php:42",
+      "eshop_inventory_admin.php:46",
+      "eshop_inventory_admin.php:51"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F05",
+    "title": "Dodavatelský příjem, chybějící ocenění a doložení ceny",
+    "priority": "P0",
+    "roles": [
+      "Správce katalogu e-shopu",
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "eshop_inventory_admin.php",
+      "shop_stock_document.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F04"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Varianta M z F04; skutečně dodáno 3 ks, očekáváno 4; dodavatel TEST Textil, reference UATB-DOD-01.",
+      "Cena 300 Kč/ks; podklad SIMULACE faktury dodavatele."
+    ],
+    "steps": [
+      {
+        "action": "Jako Správce katalogu zvolte „Příjem od dodavatele“, M, skutečné 3, očekávané 4, blokované 0, dodavatele, referenci, datum a podklad; „Potvrdit úkon“.",
+        "expected": "Vznikne pouze 3kusový příjem. Fyzicky M naroste o 3, nevytvoří se chybějící čtvrtý kus."
+      },
+      {
+        "action": "Otevřete příjemku přes „Poslední pohyby“. Zapište ID pohybu. Jako Hospodář otevřete „Příjmové dávky a ocenění“.",
+        "expected": "Nová dávka má ID a bez doložené ceny označení NEOCENĚNO, nikoli nulu."
+      },
+      {
+        "action": "Zvolte „Doložit / opravit pořizovací cenu“, ID této dávky a 300 Kč, důvod a podklad; „Potvrdit úkon“.",
+        "expected": "Dávka je oceněna na 300 Kč/ks; příjem 900 Kč. Počet kusů a rezervace se oceněním nezmění."
+      },
+      {
+        "action": "Znovu otevřete archivovanou příjemku a porovnejte s evidencí ocenění.",
+        "expected": "Doklad fyzického příjmu zůstává dohledatelný; cena má vlastní doložení."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02",
+      "D09"
+    ],
+    "sources": [
+      "eshop_inventory_admin.php:42",
+      "eshop_inventory_admin.php:44",
+      "eshop_inventory_admin.php:50"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F06",
+    "title": "Osobní prodej veřejnosti bez e-mailu a oddělení platby",
+    "priority": "P0",
+    "roles": [
+      "Zákaznická péče a objednávky"
+    ],
+    "routes": [
+      "eshop_assisted_sale_admin.php",
+      "eshop_orders_admin.php",
+      "eshop_fulfillment_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F04"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Kupující TEST Jana Nakupující B; plátce TEST Petr Plátce B; přebírající TEST Jana Nakupující B; e-mail prázdný; účet člena prázdný.",
+      "2 ks M × 500 Kč = 1 000 Kč; poznámka SIMULACE UAT-B-F06."
+    ],
+    "steps": [
+      {
+        "action": "V Osobním prodeji vyberte M, účet nechte prázdný a klikněte „Ověřit cenu“.",
+        "expected": "Zobrazí se veřejná cena 500 Kč a dostupnost."
+      },
+      {
+        "action": "Vyplňte 2 kusy a tři rozlišené osoby podle podkladu. E-mail nechte prázdný, potvrďte údaje a klikněte „Uložit prodej a rezervaci“.",
+        "expected": "Vznikne objednávka 1 000 Kč a rezervace 2 ks. Platební stav není automaticky zaplaceno."
+      },
+      {
+        "action": "Klikněte „Otevřít objednávku a potvrzení platby“ a zaznamenejte kód, ID a VS. Pak otevřete „Položkový výdej“.",
+        "expected": "Nezaplacené zboží nelze vydat. Rezervace sníží dostupnost, fyzické kusy zůstanou."
+      },
+      {
+        "action": "Obnovte stránku po uložení; nezakládejte „Nový prodej“.",
+        "expected": "Nevznikne druhá objednávka ani druhá rezervace stejného odeslání."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [],
+    "sources": [
+      "eshop_assisted_sale_admin.php:20",
+      "eshop_assisted_sale_admin.php:22",
+      "eshop_assisted_sale_admin.php:24"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F07",
+    "title": "Přijetí hotovosti, účetní zařazení a částečný fyzický výdej",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby",
+      "Zákaznická péče a objednávky"
+    ],
+    "routes": [
+      "eshop_payments_admin.php",
+      "accounting_ledger_admin.php",
+      "eshop_fulfillment_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F02",
+      "UAT-F06"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Objednávka F06 1 000 Kč; pokladna F02; simulovaný doklad UATB-CASH-SALE.",
+      "Předat pouze 1 ze 2 kusů; přebírající TEST Jana Nakupující B."
+    ],
+    "steps": [
+      {
+        "action": "Jako Hospodář vyhledejte kód F06 v Platbách. Zvolte „Hotově – změnit z převodu a přijmout platbu“, uveďte simulovaný doklad, zaškrtněte přijetí celé částky a klikněte „Zaevidovat přijatou platbu“.",
+        "expected": "Objednávka je zaplacená; fyzický sklad stále není vydaný."
+      },
+      {
+        "action": "V peněžní knize v „Podklady čekající na účetní zařazení“ vyhledejte tento zdroj. Vyberte pokladnu F02, skutečné datum testu a podklad; „Uložit s auditní stopou“.",
+        "expected": "Vznikne jeden příjem 1 000 Kč, navázaný na již existující platbu. Nevkládejte jej zároveň jako ostatní příjem."
+      },
+      {
+        "action": "Přepněte na Objednávky a otevřete Položkový výdej. V „Předat nyní“ zadejte 1 kus, přebírajícího, skutečný čas a poznámku SIMULACE; potvrďte a klikněte „Zapsat položkový výdej“.",
+        "expected": "Fyzicky odejde 1 kus, rezervace klesne z 2 na 1; objednávka není plně vydaná."
+      },
+      {
+        "action": "Otevřete „Archivovaná výdejka PDF“ a „Vytisknout předávací podklad“.",
+        "expected": "Obsahuje přesnou variantu, jeden kus, příjemce a čas. Tisk není potvrzení další platby."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02"
+    ],
+    "sources": [
+      "eshop_payments_admin.php:71",
+      "accounting_ledger_admin.php:44",
+      "eshop_fulfillment_admin.php:31",
+      "eshop_fulfillment_admin.php:36"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F08",
+    "title": "Faktura: koncept bez čísla, odlišný plátce a neměnné PDF",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "accounting_documents_admin.php",
+      "accounting_document_download.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F01",
+      "UAT-F06"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Faktura za 2 ks z F06: 1 000 Kč; odběratel TEST Jana Nakupující B, Testovací 2, Testov.",
+      "Uvedený plátce TEST Petr Plátce B, Testovací 3, Testov; splatnost 2026-10-30."
+    ],
+    "steps": [
+      {
+        "action": "V „Připravit doklad“ zvolte Objednávka a ID F06; „Načíst případ a položky“. Vyberte Faktura, testovacího vystavovatele F01, datum, splatnost, odběratele/plátce a pravidlo TEST-ZBOZI pro každou položku.",
+        "expected": "Načte se původní objednávka 1 000 Kč včetně jejího VS; doklad nepřidá novou pohledávku."
+      },
+      {
+        "action": "S důvodem a potvrzením klikněte „Vytvořit koncept a náhled bez čísla“.",
+        "expected": "Náhled je koncept bez přiděleného čísla; osoby a částka jsou správné, neplátce DPH."
+      },
+      {
+        "action": "V „Opravit odběratele nebo uvedeného plátce v konceptu“ doplňte označení odběratele TEST-UAT; „Uložit opravu konceptu“.",
+        "expected": "Oprava zachová tentýž koncept a nečerpá další číslo."
+      },
+      {
+        "action": "Klikněte „Vydat / opakovat vydání stejného dokladu“, poté „Stáhnout vydané PDF“. Znovu otevřete doklad a stáhněte jej podruhé.",
+        "expected": "Vydané PDF má jediné číslo a shodný obsah; není nabídnuta úprava vydaného odběratele. VS a stav platby se nevydáváním nepřepisují."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D01",
+      "D02"
+    ],
+    "sources": [
+      "accounting_documents_admin.php:37",
+      "accounting_documents_admin.php:41",
+      "accounting_documents_admin.php:43"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F09",
+    "title": "Oprava nevydaného kusu a uvolnění rezervace bez předstírání vratky",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby",
+      "Zákaznická péče a objednávky"
+    ],
+    "routes": [
+      "accounting_documents_admin.php",
+      "eshop_fulfillment_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F07",
+      "UAT-F08"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Objednávka F06: objednáno 2, vydáno 1; opravovaný nevydaný kus 1 × 500 Kč."
+    ],
+    "steps": [
+      {
+        "action": "Otevřete vydanou fakturu F08 a „Částečná nebo úplná oprava vydaného dokladu“. U položky zadejte množství 1 a částku 500 Kč. Uveďte důvod „SIMULACE zrušení nevydaného kusu UAT-B“, potvrďte a „Připravit opravu bez čísla“.",
+        "expected": "Oprava rezervuje jen 500 Kč; původní faktura zůstává 1 000 Kč. Zatím se neuvolnil sklad ani nevrátily peníze."
+      },
+      {
+        "action": "Vydejte opravný doklad tlačítkem „Vydat / opakovat vydání stejného dokladu“ a zaznamenejte ID a číslo.",
+        "expected": "Vznikne vydaná oprava -500 Kč provázaná s původní fakturou."
+      },
+      {
+        "action": "Jako Objednávky otevřete „Vypořádat nevydaný zbytek podle opravného dokladu“, vyberte položku a ID opravy, potvrďte nevydání a klikněte „Uvolnit doložený nevydaný zbytek“.",
+        "expected": "Zbývající rezervace se uvolní o 1. Fyzický sklad se nezvýší, protože kus nikdy neodešel."
+      },
+      {
+        "action": "Zkontrolujte peněžní knihu a možnost dalšího výdeje objednávky.",
+        "expected": "Tímto krokem nevznikla peněžní vratka; dobropisovaný nevydaný kus již nesmí být znovu vydán."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D01",
+      "D02"
+    ],
+    "sources": [
+      "accounting_documents_admin.php:39",
+      "eshop_fulfillment_admin.php:34"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F10",
+    "title": "Vrácení vydaného kusu: blokace, posouzení, opravný doklad a peníze",
+    "priority": "P0",
+    "roles": [
+      "Zákaznická péče a objednávky",
+      "Správce katalogu e-shopu",
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "shop_returns_admin.php",
+      "accounting_documents_admin.php",
+      "accounting_adjustments_admin.php",
+      "accounting_ledger_admin.php"
+    ],
+    "minutes": 35,
+    "depends_on": [
+      "UAT-F07",
+      "UAT-F08",
+      "UAT-F09"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "Před finanční částí musí existovat pracovní export s listem Parovani a jednoznačné ID původního přídělu; samotná obrazovka peněžní knihy jeho přehled nezobrazuje. Bez této identifikace scénář zastavit, nepoužívat SQL ani odhad ID."
+    ],
+    "test_data": [
+      "Z F07 skutečně vydaný 1 ks M za 500 Kč; důvod SIMULACE UAT-B-F10; testovací kontaktní cesta „osobně u testovací obsluhy“.",
+      "K finanční vratce použít příjem F07 a opravu vydaného kusu; opravu nevydaného kusu F09 evidovat odděleně."
+    ],
+    "steps": [
+      {
+        "action": "V „Založit požadavek k vydanému zboží“ vyberte přesný původní výdej, Odstoupení, 1 kus, pracovníka, další termín, kontakt, požadavek a testovací dohodu; „Založit případ“.",
+        "expected": "Samotný požadavek nemění sklad ani peníze."
+      },
+      {
+        "action": "V „Převzít kusy“ zvolte převzetí zpět do vlastnictví oddílu a „Potvrdit skutečné převzetí“.",
+        "expected": "Fyzicky přibude 1 kus do blokace; dostupnost pro prodej se nezvýší."
+      },
+      {
+        "action": "Jako Katalog v „Posoudit vlastní blokované kusy“ zvolte „Schválit prodejnost a uvolnit“; „Potvrdit posouzení“.",
+        "expected": "Blokace klesne o 1 a dostupnost vzroste o 1. Druhé převzetí téhož kusu nesmí být možné."
+      },
+      {
+        "action": "Jako Hospodář vystavte další opravu původní faktury, množství 1 a 500 Kč. V peněžní knize uvolněte 500 Kč z původního přídělu s jeho přesným ID; ID přídělu zjistěte z listu Parovani pracovního exportu, nikoli odhadem.",
+        "expected": "Součet obou oprav F09 a F10 nepřekročí původních 1 000 Kč. Uvolnění přídělu samo není refundace."
+      },
+      {
+        "action": "V Opravách a vratkách „Rozhodnout o vratce nebo přeplatku“ vyberte příjem F07, původní doklad a novou opravu, 500 Kč; „Zaznamenat rozhodnutí“. V jeho detailu „Zaznamenat již provedenou výplatu“ doložte simulovaný výdaj 500 Kč a „Potvrdit skutečnou výplatu“.",
+        "expected": "Teprve výplata zapíše -500 Kč. Rozhodnutí ani dobropis peníze samy neodečítají."
+      },
+      {
+        "action": "Na případu vratky „Potvrdit finanční a dokladové řešení“ vyplňte opravu, rozhodnutí a podklad; „Potvrdit účetní vazby“. Jako Objednávky „Uzavřít po kontrole všech kroků“.",
+        "expected": "Uzavření vyžaduje úplné fyzické i účetní řešení; historie je dohledatelná."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02"
+    ],
+    "sources": [
+      "shop_returns_admin.php:46",
+      "shop_returns_admin.php:51",
+      "shop_returns_admin.php:56",
+      "accounting_adjustments_admin.php:52",
+      "accounting_adjustments_admin.php:60",
+      "accounting_ledger_admin.php:48"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Před finanční částí musí existovat pracovní export s listem Parovani a jednoznačné ID původního přídělu; samotná obrazovka peněžní knihy jeho přehled nezobrazuje. Bez této identifikace scénář zastavit, nepoužívat SQL ani odhad ID."
+    ]
+  },
+  {
+    "id": "UAT-F11",
+    "title": "Dobrovolná výměna stejné ceny se samostatným výdejem nové velikosti",
+    "priority": "P0",
+    "roles": [
+      "Zákaznická péče a objednávky",
+      "Správce katalogu e-shopu",
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "eshop_assisted_sale_admin.php",
+      "eshop_payments_admin.php",
+      "eshop_fulfillment_admin.php",
+      "shop_returns_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F04",
+      "UAT-F07"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Samostatná nová objednávka UAT-B-F11: 1 ks M za 500 Kč; nová velikost L za stejných 500 Kč."
+    ],
+    "steps": [
+      {
+        "action": "Zopakujte osobní prodej F06 pro jediný kus a nový suffix F11, potvrzení platby a plný výdej podle F07. Zaznamenejte nové ID, nepoužijte kus F10.",
+        "expected": "Existuje samostatný dokončený fyzický výdej 1 M."
+      },
+      {
+        "action": "Založte „Dobrovolná výměna“ k tomuto výdeji. V „Rezervovat novou velikost“ vyberte L, dohodnutou celkovou cenu 500 Kč a „Rezervovat novou variantu“.",
+        "expected": "L má rezervaci 1, fyzický stav se nemění, rozdíl ceny je 0 Kč."
+      },
+      {
+        "action": "Původní M „Potvrdit skutečné převzetí“ do blokace. Jako Hospodář v „Potvrdit finanční a dokladové řešení“ zvolte „Bez změny ceny a bez peněžního závazku“, doložte dohodu a „Potvrdit účetní vazby“.",
+        "expected": "Případ nezakládá novou hotovostní platbu ani refundaci; původní kus není automaticky prodejný."
+      },
+      {
+        "action": "Jako Objednávky v „Vydat novou variantu“ vyplňte přebírajícího a „Potvrdit skutečný výdej výměny“. Katalog samostatně posoudí vrácený M.",
+        "expected": "L fyzicky ubude 1 a její rezervace zanikne; M se uvolní až posouzením. Historie zachová oba kusy."
+      },
+      {
+        "action": "Zkuste uzavřít případ až po dokončení všech kroků.",
+        "expected": "Uzavření nepřijme nevyřešený sklad nebo finance; dokončenou výměnu lze uzavřít."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02"
+    ],
+    "sources": [
+      "shop_returns_admin.php:46",
+      "shop_returns_admin.php:54",
+      "shop_returns_admin.php:55",
+      "shop_returns_admin.php:58"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F12",
+    "title": "Zrušení výměny s doplatkem nesmí skrýt přijaté peníze",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby",
+      "Zákaznická péče a objednávky"
+    ],
+    "routes": [
+      "shop_returns_admin.php",
+      "accounting_documents_admin.php",
+      "accounting_ledger_admin.php",
+      "accounting_adjustments_admin.php"
+    ],
+    "minutes": 35,
+    "depends_on": [
+      "UAT-F01",
+      "UAT-F11"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "Je třeba nejprve doplnit testovací účetní pravidlo pro zdroj Doplatek výměny / Faktura přes formulář F01 a získat přesné ID přídělu z pracovního exportu. Bez nich scénář neprovádět."
+    ],
+    "test_data": [
+      "Nový samostatný případ F12, původní vydaný M 500 Kč zůstává zákazníkovi; nová L dohodnuta za 600 Kč, doplatek 100 Kč.",
+      "Syntetická platba doplatku 100 Kč; druhý samostatný příjem se stejným účelem bez přídělu pro rozšířenou technickou přejímku není v tomto scénáři předpokládán."
+    ],
+    "steps": [
+      {
+        "action": "Připravte nový dokončený prodej 1 M podle F06/F07, založte dobrovolnou výměnu a rezervujte L za 600 Kč. Původní M nepřebírejte.",
+        "expected": "Rozdíl je 100 Kč; původní kus zůstává zákazníkovi."
+      },
+      {
+        "action": "Hospodář vydá fakturu ze zdroje „Doplatek výměny“, ID případu, za 100 Kč; v peněžní knize doloží příjem 100 Kč a přidělí jej typu „Doplatek výměny“.",
+        "expected": "Fakturovaný doplatek a příjem mají vlastní vazby. Nemění se původní 500Kč prodej."
+      },
+      {
+        "action": "Zkuste „Zrušit finančně vypořádanou výměnu“ před opravou doplatku a refundací.",
+        "expected": "Zrušení musí být odmítnuto; rezervace L zůstane."
+      },
+      {
+        "action": "Vystavte úplnou opravu faktury doplatku. Uvolněte příděl podle ID z pracovního exportu. Znovu zkuste zrušení před skutečnou vratkou.",
+        "expected": "Pouhé uvolnění přídělu neznamená vrácení přijatých 100 Kč; zrušení zůstane blokováno."
+      },
+      {
+        "action": "Rozhodněte o vratce 100 Kč a doložte její simulovanou výplatu přes Opravy a vratky. Poté zrušení zopakujte.",
+        "expected": "Teprve kompletní finanční vypořádání uvolní rezervovanou L; původní M se nevrací do skladu."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D01",
+      "D02"
+    ],
+    "sources": [
+      "shop_returns_admin.php:57",
+      "accounting_documents_admin.php:42",
+      "accounting_ledger_admin.php:48",
+      "accounting_adjustments_admin.php:60"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Je třeba nejprve doplnit testovací účetní pravidlo pro zdroj Doplatek výměny / Faktura přes formulář F01 a získat přesné ID přídělu z pracovního exportu. Bez nich scénář neprovádět."
+    ]
+  },
+  {
+    "id": "UAT-F13",
+    "title": "Inventura s rozdílem a odděleným schválením",
+    "priority": "P0",
+    "roles": [
+      "Správce katalogu e-shopu",
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "eshop_inventory_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F04"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "Připraven produkt 45 LOCALHOST UAT 20261023 Inventura, varianta 52, SKU KP-UAT20261023-I, cena 500 Kč; bez skladového počátku."
+    ],
+    "test_data": [
+      "Samostatná připravená varianta 52 (produkt 45); tester otevře počátek 5 ks, bez rezervací; následně fyzicky napočítá 4 ks."
+    ],
+    "steps": [
+      {
+        "action": "Správce otevře připravenou variantu 52 postupem F04 s 5 ks. Nepoužívejte varianty 50/51 obchodního řetězce F06–F12 ani nezakládejte další produkt.",
+        "expected": "Inventurní rozdíl neovlivní pokračující obchodní scénáře."
+      },
+      {
+        "action": "Katalog zvolí „Založit inventurní soupis“, variantu I, datum, podklad SIMULACE inventury a „Potvrdit úkon“. Zaznamená ID soupisu.",
+        "expected": "Vznikne zachycený stav 5 fyzicky / 0 rezervováno / 0 blokováno; samotný soupis sklad neupraví."
+      },
+      {
+        "action": "Hospodář vybere „Schválit spočítanou inventuru“, ID soupisu, fyzicky 4, blokované 0, datum a důvod zjištěného rozdílu; „Potvrdit úkon“.",
+        "expected": "Vznikne doložený inventurní rozdíl -1, nový fyzický stav 4. Historie pohybů není přepsána."
+      },
+      {
+        "action": "Otevřete doklad vzniklého pohybu. Pokuste se schválit tentýž soupis znovu.",
+        "expected": "Existuje jeden vypořádaný rozdíl; opakování nesníží zásobu na 3."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D09"
+    ],
+    "sources": [
+      "eshop_inventory_admin.php:42",
+      "eshop_inventory_admin.php:49",
+      "eshop_inventory_admin.php:51"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F14",
+    "title": "Kurz: objednávka, úhrada a místo bez skladového výdeje",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby",
+      "Zákaznická péče a objednávky"
+    ],
+    "routes": [
+      "eshop_orders_admin.php",
+      "eshop_payments_admin.php",
+      "accounting_documents_admin.php",
+      "club_program_admissions_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-F01",
+      "UAT-P06"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "Nutná dokončená příprava a první objednávka Anny z UAT-P06 (kurz 1 200 Kč, kapacita 1). Konkrétní ID předá tester P06; do té doby je finanční část blokovaná."
+    ],
+    "test_data": [
+      "Kurz a první přihláška Anny ze scénáře UAT-P06: cena 1 200 Kč, kapacita 1. Použijte přesné ID objednávky z P06; nezakládejte druhý kurz s jinou kapacitou.",
+      "Nepoužít žádný skutečný kurz ani skutečné přihlášené dítě."
+    ],
+    "steps": [
+      {
+        "action": "Převezměte přesné ID první objednávky Anny ze scénáře UAT-P06. V Objednávkách ověřte účastnici, částku 1 200 Kč a platební stav. Nezakládejte duplicitní přihlášku ani druhý kurz.",
+        "expected": "Programový případ je odlišen od zboží, nevznikají SKU ani skladové kusy."
+      },
+      {
+        "action": "Hospodář vyhledá objednávku, doloží simulované přijetí 1 200 Kč tlačítkem „Zaevidovat přijatou platbu“.",
+        "expected": "Změní se platba; podmínky aktivace místa se vyhodnotí podle nastavení, nikoli podle fyzického výdeje."
+      },
+      {
+        "action": "Otevřete přihlášku v Osobním přijetí do programu a účetní doklad ze zdroje Objednávka.",
+        "expected": "Je dohledatelný konkrétní účastník a plátce; doklad lze připravit s testovacím pravidlem pro kurz."
+      },
+      {
+        "action": "Ověřte, že pracovník není nucen potvrdit skladový položkový výdej jako podmínku účasti.",
+        "expected": "Kurz nemění fyzický sklad. Pokud aktivaci brání chybějící dohoda či souhlas, zůstane viditelná jako podmínka, nesmí se obejít finančním tlačítkem."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D01",
+      "D03"
+    ],
+    "sources": [
+      "eshop_orders_admin.php:97",
+      "eshop_payments_admin.php:75",
+      "accounting_documents_admin.php:42",
+      "club_program_admissions_admin.php:1"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Nutná dokončená příprava a první objednávka Anny z UAT-P06 (kurz 1 200 Kč, kapacita 1). Konkrétní ID předá tester P06; do té doby je finanční část blokovaná."
+    ]
+  },
+  {
+    "id": "UAT-F15",
+    "title": "Výdaj z osobních peněz: uznaná část, nezávislé schválení a proplacení",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "club_expenses_admin.php",
+      "accounting_ledger_admin.php"
+    ],
+    "minutes": 30,
+    "depends_on": [
+      "UAT-F02"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "Použijte dvě odlišné existující identity: LOCALHOST Kontrola 1 (ID 326) jako podatel i příjemce a LOCALHOST Kontrola 2 (ID 327) jako schvalovatel. Oba mají Finance a superadmin; testují nezávislost osoby, nikoli omezené role. Hesla pouze soukromý runtime/local-review-access.json."
+    ],
+    "test_data": [
+      "TEST Dodavatel UAT-B; doklad UATB-VYD-01; celkem 1 200 Kč; uznaná doprava 1 000 Kč a osobní část 200 Kč.",
+      "Hospodář A = LOCALHOST Kontrola 1, ID 326; hospodář B = LOCALHOST Kontrola 2, ID 327. Plátce i příjemce výdaje: Pracovník 326, přesné označení LOCALHOST Kontrola 1."
+    ],
+    "steps": [
+      {
+        "action": "V „Zapsat výdaj nebo novou opravnou verzi“ založí hospodář A výdaj. Zdroj Vlastní peníze osoby, explicitní plátce a věřitel, účel a umístění simulovaného originálu. Položky: „1000;ano;0;TEST-ODDIL;Doprava“ a „200;ne;0;TEST-OSOBNI;Osobní část“. „Uložit“.",
+        "expected": "Vznikne koncept 1 200 Kč s uznanou částí 1 000 Kč; nikomu se ještě neposílají peníze."
+      },
+      {
+        "action": "V „Předložit / schválit / vrátit / zamítnout verzi“ zvolte ID a Předložit; Uložit. Tentýž hospodář A se pak pokusí Schválit.",
+        "expected": "Předložení projde; schválení vlastního podání je odmítnuto. Pouhé přepnutí role stejného účtu nestačí."
+      },
+      {
+        "action": "Odhlaste A a přihlaste jiného hospodáře B. Ověřte podklad a schvalte stejné ID.",
+        "expected": "Vznikne nezávislé schválení uznaných 1 000 Kč."
+      },
+      {
+        "action": "V peněžní knize doložte simulovaný výdaj -1 000 Kč s referencí UATB-PROPL. Ve Výdajích „Přiřadit skutečnou platbu / vratku nebo opravit příděl“ vyberte Proplacení výdaje (základní ID), správná ID a částku 1 000 Kč.",
+        "expected": "Výdaj je vyrovnán do uznané částky; osobních 200 Kč se neproplácí. Příděl nevytvoří druhý výdaj."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02",
+      "D05"
+    ],
+    "sources": [
+      "club_expenses_admin.php:27",
+      "club_expenses_admin.php:32",
+      "club_expenses_admin.php:33",
+      "club_expenses_admin.php:37"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F16",
+    "title": "Svěřená záloha: předání, čerpání dokladu a návrat zbytku",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "club_expenses_admin.php",
+      "accounting_ledger_admin.php"
+    ],
+    "minutes": 35,
+    "depends_on": [
+      "UAT-F02",
+      "UAT-F15"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "TEST Akce UAT-B; záloha 2 000 Kč; uznaný nákup 1 500 Kč; návrat 500 Kč; termín vyúčtování 2026-10-31.",
+      "Dvě nezávislé identity dle F15: ID 326 podatel/příjemce zálohy, ID 327 jiný schvalovatel. Nepoužívat dvě pozice stejného přihlášení."
+    ],
+    "steps": [
+      {
+        "action": "V „Založit finanční případ“ uveďte testovací akci, odpovědného vedoucího a termín. „Požádat o zálohu / doplnění další zálohou“ na její ID založte 2 000 Kč pro konkrétní osobu.",
+        "expected": "Případ a žádost mají oddělená ID. Žádost ještě není předaná hotovost."
+      },
+      {
+        "action": "Jiný hospodář zálohu schválí v „Schválit nebo uzavřít zálohu“. V peněžní knize doložte -2 000 Kč a přiřaďte jako Předání zálohy.",
+        "expected": "Saldo svěřených peněz je 2 000 Kč; peníze nejsou automaticky nákladem na nákup."
+      },
+      {
+        "action": "Založte a nezávisle schvalte výdaj 1 500 Kč podle F15, ale se zdrojem „Svěřená záloha konkrétní osoby“ a týmž příjemcem. V „Přiřadit uznaný doklad k záloze / opravit čerpání“ přiřaďte 1 500 Kč.",
+        "expected": "Čerpáno 1 500 Kč, zbývá vrátit 500 Kč. Nezapisuje se další peněžní výdaj 1 500 Kč."
+      },
+      {
+        "action": "Pokuste se „Uzavřít vypořádanou zálohu“ před vrácením zbytku.",
+        "expected": "Neuhrazené saldo brání uzavření."
+      },
+      {
+        "action": "Doložte příjem +500 Kč s referencí UATB-ZAL-NAVRAT, přiřaďte jako Vrácení zálohy, poté zálohu a finanční případ uzavřete.",
+        "expected": "Saldo je 0 Kč; původní předání, čerpání i návrat zůstávají dohledatelné."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02",
+      "D05"
+    ],
+    "sources": [
+      "club_expenses_admin.php:30",
+      "club_expenses_admin.php:35",
+      "club_expenses_admin.php:38",
+      "club_expenses_admin.php:40"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F17",
+    "title": "Trenérský výkaz: skutečná činnost, sazba, jiné schválení a výplata",
+    "priority": "P0",
+    "roles": [
+      "Trenér",
+      "Vedoucí sportu",
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "club_rewards_admin.php",
+      "training_closure_admin.php",
+      "accounting_ledger_admin.php"
+    ],
+    "minutes": 30,
+    "depends_on": [
+      "UAT-F02"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "Musí být připraven uzavřený syntetický 60minutový trénink z členské/sportovní části a dvě nezávislé identity trenéra a schvalovatele. Zatím nejsou přiřazena konkrétní ID; bez nich je scénář blokován.",
+      "Připravte nový samostatný 60minutový trénink postupem UAT-P10. Nepoužívejte trénink opravený v UAT-P11 na 50 minut. U tohoto samostatného tréninku musí být trenérem konkrétní testovací podatel nároku."
+    ],
+    "test_data": [
+      "Nový samostatný trénink podle UAT-P10: 60 minut, uzavřený, jediný v testovacím období nároku. Nepoužít P11 (opraveno na 50 minut). Trenér a jiný schvalovatel se zaznamenají konkrétními ID.",
+      "TEST sazba 300 Kč/hod pouze pro tento trénink; samostatný vedoucí sportu; výplata 300 Kč."
+    ],
+    "steps": [
+      {
+        "action": "Po ručním potvrzení uzavřeného tréninku vedoucí sportu otevře „Uložit doložené pravidlo a sazbu“. Zvolí Trenér, Hodina (trenér), 300 Kč, platnost a podklad SIMULACE, účetní metodiku „TEST; není mzdový výpočet“. „Uložit neměnné pravidlo“.",
+        "expected": "Pravidlo je verzované a výslovně testovací. Systém neodvozuje reálnou mzdu ani odvody."
+      },
+      {
+        "action": "Trenér v „Předložit nový výkaz nebo odměnu sportovce“ vybere období s jediným připraveným tréninkem, testovací pravidlo, konkrétního příjemce a podklad; „Předložit výkaz“.",
+        "expected": "Podklady a historie ukazují 60 minut, konkrétní uzavření a 300 Kč. Otevřený trénink není nahrazen odhadem."
+      },
+      {
+        "action": "Jiný Vedoucí sportu otevře nárok, ověří zdroje a zvolí „Schválit doloženou verzi“, „Zaznamenat rozhodnutí“.",
+        "expected": "Schválení jinou osobou zachová předloženou verzi; podatel/příjemce nesmí schválit sám sobě."
+      },
+      {
+        "action": "Hospodář doloží -300 Kč v peněžní knize a v „Přiřadit skutečnou výplatu nebo návrat platby“ vybere pohyb, částku, datum a potvrzení převzetí; „Přiřadit doložené vypořádání“.",
+        "expected": "Skutečně vyplaceno 300 Kč a zbývá 0 Kč. Schválení samo předtím výplatu nevytvořilo."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D04",
+      "D05",
+      "D06"
+    ],
+    "sources": [
+      "club_rewards_admin.php:38",
+      "club_rewards_admin.php:45",
+      "club_rewards_admin.php:51",
+      "club_rewards_admin.php:53"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Musí být připraven uzavřený syntetický 60minutový trénink z členské/sportovní části a dvě nezávislé identity trenéra a schvalovatele. Zatím nejsou přiřazena konkrétní ID; bez nich je scénář blokován."
+    ]
+  },
+  {
+    "id": "UAT-F18",
+    "title": "Chybějící účetní podklad a neměnné verze rozhodnutí",
+    "priority": "P1",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "financial_decisions_admin.php",
+      "financial_decision_file.php"
+    ],
+    "minutes": 20,
+    "depends_on": [],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "TEST Metodika UAT-B; druh Účetní metodika; stav K doložení; obsah „SIMULACE: čeká se na potvrzení členění odměn“.",
+      "Soukromá syntetická příloha PDF nebo PNG bez osobních údajů; testovací originál u správce přejímky."
+    ],
+    "steps": [
+      {
+        "action": "V „Zapsat podklad“ vyplňte TEST Metodika, druh Účetní metodika, stav K doložení, platnost, zdroj označený SIMULACE a rozsah chybějícího rozhodnutí; „Uložit neměnnou verzi“.",
+        "expected": "Chybějící podklad je viditelně K doložení. Zápis nepovolí výplatu ani nezmění role."
+      },
+      {
+        "action": "Otevřete podklad a „Zapsat novou verzi vybraného podkladu“. Přiložte syntetickou přílohu a popis „Přiložen ukázkový vzor, rozhodnutí stále chybí“, ponechte K doložení a uložte.",
+        "expected": "Vznikne další verze s odkazem Předchozí verze. Původní neúplnost není přepsána."
+      },
+      {
+        "action": "Otevřete „Soukromá příloha“ jako Hospodář. Odkaz zkuste v odhlášeném okně.",
+        "expected": "Oprávněná osoba soubor stáhne, nepřihlášená jej nedostane. Nevkládejte přímou cestu souboru do veřejného webu."
+      },
+      {
+        "action": "V přejímacím protokolu spojte podklad s D02/D06; žádnou testovací verzi neoznačujte za skutečné schválení účetní.",
+        "expected": "Rozhodnutí zůstávají odložená. Člověk rozliší dodaný vzor od schválené metodiky."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D02",
+      "D06"
+    ],
+    "sources": [
+      "financial_decisions_admin.php:9",
+      "financial_decisions_admin.php:13",
+      "financial_decisions_admin.php:14"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F19",
+    "title": "XLSX + PDF: kontrola částek, vazeb a otevřených nedostatků",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "accounting_exports_admin.php",
+      "accounting_export_download.php"
+    ],
+    "minutes": 35,
+    "depends_on": [
+      "UAT-F02",
+      "UAT-F08",
+      "UAT-F15",
+      "UAT-F16",
+      "UAT-F17",
+      "UAT-F18"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet."
+    ],
+    "test_data": [
+      "Období 2026-10-01 až 2026-10-31; revize UAT-B; označení výhradně syntetické.",
+      "Kontrolní případy F02, F08, F15–F18. Archiv může obsahovat i jiné syntetické testy; kontrolovat podle zaznamenaných ID, nikoli zaměňovat jejich součet s vlastním během."
+    ],
+    "steps": [
+      {
+        "action": "Vyplňte Od/Do, důvod „SIMULACE účetní předání UAT-B“, potvrďte rozsah a „Připravit archiv XLSX + PDF“.",
+        "expected": "Vznikne konkrétní neměnná revize s rozhodným okamžikem, seznamem nedostatků a označením NEÚPLNÝ."
+      },
+      {
+        "action": "Klikněte „Stáhnout tuto revizi“, uložte původní archiv beze změn a rozbalte kopii. Otevřete XLSX a PDF F08.",
+        "expected": "Existují listy Manifest, Doklady, Polozky, Penize, Parovani, Cleneni_penez, Predpisy, Saldo, Vydaje a Sklad. PDF částka/číslo odpovídají řádku Doklady."
+      },
+      {
+        "action": "V Manifestu projděte všechny položky K dořešení, Omezení a Nepřevzatý zdroj. V Penize kontrolujte F02 převod a příjmy; do obratu počítejte jen V OBDOBÍ.",
+        "expected": "Starší reference MIMO OBRAT se nepočítají znovu; interní převod nezvyšuje skutečný příjem oddílu."
+      },
+      {
+        "action": "Podle ID ověřte u F15 uznaných 1 000 Kč a výplatu, F16 zálohu 2 000/čerpání 1 500/návrat 500, F17 schválených a vyplacených 300 Kč. Ve Sklad kontrolujte množství odděleně od peněz.",
+        "expected": "Účetní může spojit pohyb, případ a doklad. Chybějící cena je zřetelná, nikoli tiše nula."
+      },
+      {
+        "action": "Zaznamenejte nevyřešené metodické nedostatky do přejímky; neodstraňujte NEÚPLNÝ a neupravujte export tak, aby vypadal schválený.",
+        "expected": "Stažení nemění platby, nepředává archiv a neznamená účetní převzetí."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D01",
+      "D02",
+      "D16"
+    ],
+    "sources": [
+      "accounting_exports_admin.php:30",
+      "accounting_exports_admin.php:35",
+      "includes/accounting_export.php:104",
+      "includes/accounting_export.php:129"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-F20",
+    "title": "Revize exportu a rozlišení stažení, předání, vrácení a převzetí",
+    "priority": "P0",
+    "roles": [
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "accounting_exports_admin.php",
+      "financial_decisions_admin.php"
+    ],
+    "minutes": 25,
+    "depends_on": [
+      "UAT-F18",
+      "UAT-F19"
+    ],
+    "prerequisites": [
+      "Pouze izolované prostředí 127.0.0.1:18086 s vypnutým odesíláním; správce potvrdil čerstvou zálohu a izolaci. Nikdy nepoužít skutečné osoby, peníze ani produkční účty.",
+      "Pro tento průchod zvolte jedinečný suffix běhu B a zapisujte vzniklá ID. Obsluha se přihlašuje vlastní přidělenou testovací rolí; chybějící oprávnění je blokace, nikoli důvod použít sdílený superadmin účet.",
+      "K nácviku převzetí je nutný druhý testující člověk, který skutečně prohlédne lokální kopii. Agent ani samotný hospodář nesmějí za účetní potvrdit převzetí."
+    ],
+    "test_data": [
+      "Revize z F19; příjemce „TEST Účetní – simulovaná role přejímky“; žádný skutečný e-mail.",
+      "Důvod předání „SIMULACE UAT-B: předáno druhému testujícímu na této stanici“. Druhý testující skutečně obdrží lokální kopii."
+    ],
+    "steps": [
+      {
+        "action": "Po pouhém stažení revize F19 ověřte „Předání této revize“.",
+        "expected": "Stále „Dosud nezaznamenáno“; stažení samo není předání."
+      },
+      {
+        "action": "Předejte lokální kopii druhému testujícímu, ne externí účetní. V „Krok“ zvolte Předáno účetní, důvod výslovně SIMULACE se jménem testujícího a časem, potvrďte a „Zapsat předání“.",
+        "expected": "Vznikne pouze auditní událost simulovaného předání této konkrétní revize. Systém nic neodesílá."
+      },
+      {
+        "action": "Druhý testující najde chybějící podklad F18; hospodář zapíše „Vráceno k doplnění“ se simulovaným důvodem.",
+        "expected": "Historie zachová původní předání i vrácení; archiv se nemění."
+      },
+      {
+        "action": "Doplňte další verzi testovacího podkladu F18 a vytvořte nový archiv téhož období s důvodem navazující revize. Otevřete znovu i předchozí revizi.",
+        "expected": "Nová revize nahrazuje předchozí ve smyslu úplného balíku, původní zůstává dostupná. Historie předání se vztahuje k vybrané revizi."
+      },
+      {
+        "action": "Novou revizi skutečně lokálně předejte druhému testujícímu; zaznamenejte simulované Předáno účetní. Pouze po jeho potvrzení lze pro nácvik zapsat „Převzato účetní“ s výslovným SIMULACE. Bez druhého člověka tento krok odložte.",
+        "expected": "Převzetí je samostatný doložený krok, nemění NEÚPLNÝ archiv na právně či účetně schválený. D16 zůstává otevřené pro první skutečný měsíc."
+      }
+    ],
+    "evidence": [
+      "Datum, jméno testujícího, aktivní role, identifikátor běhu a verze aplikace.",
+      "ID všech použitých případů a snímky výsledků včetně odmítnutých kroků; před a po zaznamenat částky či kusy.",
+      "Skutečný výsledek a případná odchylka. Stav NEPROVEDENO změnit až po ruční přejímce, nikdy podle starého automatického testu."
+    ],
+    "decisions": [
+      "D01",
+      "D13",
+      "D16"
+    ],
+    "sources": [
+      "accounting_exports_admin.php:25",
+      "accounting_exports_admin.php:29",
+      "accounting_exports_admin.php:39",
+      "accounting_exports_admin.php:40"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "K nácviku převzetí je nutný druhý testující člověk, který skutečně prohlédne lokální kopii. Agent ani samotný hospodář nesmějí za účetní potvrdit převzetí."
+    ]
+  }
+]

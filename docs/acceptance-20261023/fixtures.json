@@ -1,0 +1,176 @@
+{
+  "prepared_on": "2026-10-23",
+  "environment": {
+    "url": "http://127.0.0.1:18086",
+    "database": "evidence_b1",
+    "port": 33426,
+    "synthetic_only": true,
+    "external_transports_disabled": true,
+    "read_only_probe": "PASS",
+    "readable_tables": 326
+  },
+  "scope": "Příprava katalogových předpokladů přes skutečné UI; lidská přejímka nebyla provedena.",
+  "accounts": [
+    {
+      "trainer_id": 326,
+      "label": "LOCALHOST Kontrola 1",
+      "active": true,
+      "superadmin": true,
+      "roles": [
+        "catalog_manager",
+        "coach",
+        "finance_manager",
+        "order_operator",
+        "program_coordinator",
+        "registrar",
+        "sports_lead",
+        "system_admin"
+      ],
+      "suitable_for": [
+        "UAT-F15 podatel a příjemce",
+        "UAT-F16 příjemce zálohy"
+      ],
+      "not_suitable_for": [
+        "Test izolace běžného trenéra bez superadmina"
+      ]
+    },
+    {
+      "trainer_id": 327,
+      "label": "LOCALHOST Kontrola 2",
+      "active": true,
+      "superadmin": true,
+      "roles": [
+        "catalog_manager",
+        "coach",
+        "finance_manager",
+        "order_operator",
+        "program_coordinator",
+        "registrar",
+        "sports_lead",
+        "system_admin"
+      ],
+      "suitable_for": [
+        "UAT-F15 jiný schvalovatel",
+        "UAT-F16 jiný schvalovatel"
+      ],
+      "not_suitable_for": [
+        "Test izolace běžného trenéra bez superadmina"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "product_id": 44,
+      "name": "LOCALHOST UAT 20261023 Dres",
+      "published_local": true,
+      "variants": [
+        {
+          "id": 50,
+          "sku": "KP-UAT20261023-M",
+          "size": "M",
+          "amount_minor": 50000,
+          "catalog_status": "active"
+        },
+        {
+          "id": 51,
+          "sku": "KP-UAT20261023-L",
+          "size": "L",
+          "amount_minor": 50000,
+          "catalog_status": "active"
+        }
+      ],
+      "scenarios": [
+        "UAT-F04",
+        "UAT-F05",
+        "UAT-F06",
+        "UAT-F07",
+        "UAT-F08",
+        "UAT-F09",
+        "UAT-F10",
+        "UAT-F11",
+        "UAT-F12"
+      ]
+    },
+    {
+      "product_id": 45,
+      "name": "LOCALHOST UAT 20261023 Inventura",
+      "published_local": true,
+      "variants": [
+        {
+          "id": 52,
+          "sku": "KP-UAT20261023-I",
+          "size": null,
+          "amount_minor": 50000,
+          "catalog_status": "active"
+        }
+      ],
+      "scenarios": [
+        "UAT-F13"
+      ]
+    }
+  ],
+  "accounting_catalog_category": {
+    "id": 91,
+    "group_code": "3",
+    "category_code": "98",
+    "label": "LOCALHOST UAT 20261023 – pouze simulace",
+    "mapped_product_ids": [
+      44,
+      45
+    ],
+    "real_accountant_approval": false,
+    "existing_defaults_unchanged": true
+  },
+  "initial_inventory": {
+    "variant_ids": [
+      50,
+      51,
+      52
+    ],
+    "stock_balance_rows": 0,
+    "stock_movements": 0,
+    "order_items": 0,
+    "ui_catalog_quantity": 0,
+    "opening_must_be_performed_by_human_in_scenarios": true
+  },
+  "credentials_location": "Soukromý runtime/local-review-access.json; hesla nejsou součástí artefaktu.",
+  "remaining_blockers": [
+    {
+      "id": "FIX-ACCOUNT-LIMITED",
+      "affected": [
+        "Omezený trenér / negativní přístupové scénáře"
+      ],
+      "reason": "Dostupné známé kontrolní účty 326 a 327 jsou superadmini. Založení/reset nového hesla vyžaduje podle pravidel CUA předání člověku; tento krok byl odložen bez změny práv existujících účtů.",
+      "status": "ODLOŽENO"
+    },
+    {
+      "id": "FIX-PROGRAM",
+      "affected": [
+        "UAT-F14"
+      ],
+      "reason": "Navazuje první objednávka Anny z UAT-P06: kurz 1200 Kč, kapacita 1. Nezakládat druhý kurz; zaznamenat skutečné ID po P06.",
+      "status": "ODLOŽENO"
+    },
+    {
+      "id": "FIX-TRAINING",
+      "affected": [
+        "UAT-F17"
+      ],
+      "reason": "Nový samostatný 60minutový trénink postupem UAT-P10; nepoužít opravený 50minutový trénink P11. ID doplní tester.",
+      "status": "ODLOŽENO"
+    },
+    {
+      "id": "FIX-HANDOVER",
+      "affected": [
+        "UAT-F20"
+      ],
+      "reason": "Nácvik účetního převzetí potřebuje druhého člověka, nikoli pouze druhý pracovní účet.",
+      "status": "ODLOŽENO"
+    }
+  ],
+  "evidence": [
+    "fixtures-catalog.png"
+  ],
+  "human_uat_status": "NEPROVEDENO",
+  "production_changed": false
+}

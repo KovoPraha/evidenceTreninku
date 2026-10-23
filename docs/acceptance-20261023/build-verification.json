@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "scenarios": 43,
+  "steps": 188,
+  "pdf_pages": 53,
+  "all_human_results": "NEPROVEDENO",
+  "archive": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\KOVO-prejimka-a-ucetni-20261023.zip",
+  "archive_files": 47,
+  "archive_sha256": "0b850c4d2968f061a29dae7fa367ca49ace33353add5ac9cf9a497d32b29a304",
+  "route_and_source_files_validated": true,
+  "manifest_hashes_verified": true,
+  "production_mutations": false
+}

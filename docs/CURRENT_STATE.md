@@ -1,5 +1,16 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — připravená lidská přejímka a ukázkové předání účetní.**
+Větev `codex/club-acceptance-package-20261023`, aplikační základ `abbb4be9`.
+[Předání balíčku](acceptance-20261023/README.md): 43 scénářů / 188 kroků,
+18 účetních kontrol, přenosný HTML průvodce, PDF a nezměněný nativní export.
+Veškerá lidská přejímka **NEPROVEDENO**, účetní převzetí **NEPŘEVZATO**.
+Nově jen dokumenty/nástroje balíčku a syntetické katalogové podklady přes místní UI;
+aplikační kód ani produkce se neměnily. D01–D16 a omezený testovací účet odložené.
+Žádný push, merge, deploy ani odeslání účetní.
+
+Následující technické výsledky pocházejí z předchozího balíku:
+
 **23. 10. 2026 — navazující společná kontrola R01–R44 dokončena lokálně.**
 Větev `codex/club-followup-review-20261023`, základ `7aff7884`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.

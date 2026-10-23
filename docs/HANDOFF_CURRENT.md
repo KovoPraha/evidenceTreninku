@@ -1,5 +1,19 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — balíček pro skutečnou uživatelskou přejímku je připraven.**
+Začít [návodem a mezemi přejímky](acceptance-20261023/README.md),
+[inventářem podkladů](acceptance-20261023/fixtures.md)
+a [ověřením artefaktů](acceptance-20261023/verification.md).
+Větev `codex/club-acceptance-package-20261023`, základ `abbb4be9`.
+ZIP je v `output/KOVO-prejimka-a-ucetni-20261023.zip`; není verzovaný v Gitu.
+Nezaměnit technické kontroly za výsledky člověka: 43 scénářů je NEPROVEDENO,
+účetní ukázka NEPŘEVZATO. Podklady v isolated B1 přibyly jen přes UI (produkty
+44/45, varianty 50–52); žádný skladový pohyb ani peníze. Přístupy zůstávají soukromé.
+Omezený trenér, rozhodnutí D01–D16 a produkční přechod jsou odložené.
+Bez změny aplikačního kódu, push, merge, nasazení a odesílání podkladů.
+
+Následuje předání před přípravou tohoto balíčku:
+
 **23. 10. 2026 — společné navazující opravy a místní přejímka dokončeny.**
 Větev `codex/club-followup-review-20261023`, základ `7aff7884`, izolovaná kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
