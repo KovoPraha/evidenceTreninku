@@ -9,7 +9,7 @@ const rendered=source.replace(/<\?[\s\S]*?\?>/g,'[]');
 
 test('all training edit inline scripts compile (PHP lint does not check JavaScript)',()=>{
     let count=0;
-    for(const match of rendered.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)){
+    for(const match of rendered.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script[^>]*>/gi)){
         if(match[1].trim()){new vm.Script(match[1]);count++;}
     }
     assert.ok(count>=2);
