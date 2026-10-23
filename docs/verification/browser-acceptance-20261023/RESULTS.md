@@ -1,12 +1,12 @@
 # Souvislá technická přejímka v prohlížeči — 23. 10. 2026
 
-**Souvislý obchodní řetězec a navazující členská/sportovní agenda byly ověřeny v izolovaném B1. Osm skupin nalezených chyb je opraveno a znovu ověřeno prohlížečem. Nasazení této sady oprav: ČEKÁ.**
+**Souvislý obchodní řetězec a navazující členská/sportovní agenda byly ověřeny v izolovaném B1. Osm skupin nalezených chyb je opraveno a znovu ověřeno prohlížečem. Opravy jsou nasazeny na produkci: e78af565, chráněný deploy 39937236344 SUCCESS.**
 
 Jde o technickou přejímku provedenou agentem přes skutečné UI, nikoli o převzetí odpovědnými lidmi. **43 scénářů lidské přejímky zůstává NEPROVEDENO, účetní převzetí NEPŘEVZATO.** Nevznikly skutečné platby ani produkční finanční zápisy. Půjčované vybavení je mimo dohodnutý rozsah.
 
 ## Prostředí a důkazní základ
 
-- Větev codex/browser-acceptance-fixes-20261023, základ **6f574033a3b06ff3280542a6d268e087c54268be**. Opravy tohoto průchodu navazují v pracovním stromu.
+- Větev codex/browser-acceptance-fixes-20261023, základ **6f574033a3b06ff3280542a6d268e087c54268be**. Opravy sloučeny v PR #173; odevzdaný head **653758dc7e937dd8de17c1a104c9130e10efe187**, nasazený squash commit **e78af565d6d89492e54f0b9e2ecb2b63a4b534c7**.
 - Izolované UI http://127.0.0.1:18086, databáze evidence_b1 na 127.0.0.1:33426, vnější transporty vypnuté. Před zápisy ověřen probe izolace.
 - Předchozí záloha evidence_2026-10-23_091911_e6019c50.sql.gz: **326 tabulek, 2 triggery**; SHA-256 **5e6c9da4613c464079cd3d5c7b957640fb594fd36d9d397bc8837b1b585f233d**.
 - Doménové zápisy vznikly přes standardní formuláře, výhradně syntetická data LOCALHOST / NEPLATIT / SIMULACE UAT-BROWSER23. Existující dokladové řady a jejich čítače nebyly resetovány.
@@ -78,9 +78,9 @@ Další omezení důkazu:
 
 ## Technické kontroly a zápis do lokální brány
 
-Výstupy jsou v [test-results.txt](test-results.txt); tento soubor aktualizuje samostatná ověřovací větev práce. K okamžiku sestavení protokolu poslední zaznamenaná cílená regrese: **71 testů / 651 assertions PASS**. Klávesnicový smoke samostatně **5/5 PASS**. Composer validate, platform requirements a audit prošly; PHP lint **1 071 souborů, 0 chyb**, git diff --check PASS. Pozdější změny vyžadují finální ověření k odevzdávanému commitu.
+Výstupy jsou v [test-results.txt](test-results.txt). Cílená regrese: **71 testů / 651 assertions PASS**. Klávesnicový smoke samostatně **5/5 PASS**. Composer validate, platform requirements a audit prošly; PHP lint **1 071 souborů, 0 chyb**, git diff --check PASS. Finální Linux CI a znovu chráněný deploy potvrzují **1 614 testů / 32 689 assertions PASS**; integrační matice MariaDB 10.3 a 11.4 i CodeQL prošly.
 
-Plná místní sada na Windows měla **1 604 testů / 32 520 assertions, 1 selhání a 3 přeskočení**. Selhání GlobalFunctionAvailabilityTest souvisí s chybějící funkcí posix_geteuid na Windows; aplikační volání je chráněné function_exists. Nebyl proveden bypass skeneru ani aplikace. **Plná místní sada proto není bezpodmínečné PASS.** Linux CI a MariaDB integrační matice se musí doložit samostatně.
+Plná místní sada na Windows měla **1 604 testů / 32 520 assertions, 1 selhání a 3 přeskočení**. Selhání GlobalFunctionAvailabilityTest souvisí s chybějící funkcí posix_geteuid na Windows; aplikační volání je chráněné function_exists. Nebyl proveden bypass skeneru ani aplikace. **Plná místní sada proto není bezpodmínečné PASS.** Finální Linux CI a MariaDB integrační matice jsou doloženy v [release-checks.json](release-checks.json).
 
 Starší lokální brána **testovaci_scenare.php** nejprve v B1 vracela **404 Nenalezeno** kvůli chybějícímu SERVER_ADDR. Oprava je omezena na B1 router: doplní pouze chybějící hodnotu při SAPI cli-server, SERVER_NAME/REMOTE_ADDR 127.0.0.1, portu 18086 a přesném Host 127.0.0.1:18086. Existující adresu nepřepisuje, hlavičky forwardovaného hostu/adresy nepoužívá; aplikační guard zůstává nezměněný. Browser potvrdil odmítnutí trenéra a dostupnost pod Správcem systému.
 
@@ -88,6 +88,8 @@ Do této brány byly zapsány **B03/B09/B10/B15 jako PARTIAL** s výslovným tex
 
 ## Nasazení a dokončení předání
 
-**Nasazení této sady oprav: ČEKÁ.** Tento dokument zatím neuvádí finální commit, výsledek CI ani důkaz nasazení. Zápisové browser scénáře výše proběhly pouze v B1; jejich výsledek sám nedokládá produkční provoz.
+**Nasazení dokončeno.** [PR #173](https://github.com/KovoPraha/evidenceTreninku/pull/173) je sloučen; [chráněný deploy 39937236344](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39937236344) skončil SUCCESS pro **e78af565d6d89492e54f0b9e2ecb2b63a4b534c7**. Před nasazením ověřena záloha 329 tabulek; kontrola osmi existujících plateb potvrzuje nezměněné VS. Vstupy uat_schvaleno=false a importovat_krouzky=false zachovaly oddělení technického vydání od lidského schválení a importu. Žádná integrace nebyla aktivována.
 
-K doplnění zbývají finální technické výsledky k odevzdávanému commitu, již autorizované kontrolované nasazení s ověřením. Lidská přejímka, rozhodnutí účetní a provozní přechod ze starých systémů zůstávají samostatné otevřené kroky. Testovací schválení odměny ani stažení exportu nejsou účetním převzetím nebo souhlasem s ostrým přechodem.
+Živý prohlížeč potvrdil přesný release a **soukromé úložiště PASS**, nové prodejní okno programu, přehled přídělů, skladový výběr varianty přes GET, dostupnost asistovaného prodeje a přihlášek, rozlišené papírové souhlasy a formulář tréninku. Produkční testovaci_scenare.php nadále vrací Nenalezeno. Kontroly byly pouze čtecí kromě přepínání vlastní pracovní role; žádné produkční objednávky, doklady, peněžní ani skladové pohyby nevznikly. [Strojový protokol](release-checks.json), [produkční obrazovka](production-release.jpg).
+
+Celková produkční připravenost zůstává **BLOKOVÁNO** kvůli zbývajícím provozním předpokladům a rozhodnutím. Lidská přejímka, rozhodnutí účetní a provozní přechod ze starých systémů zůstávají samostatné otevřené kroky. Testovací schválení odměny ani stažení exportu nejsou účetním převzetím nebo souhlasem s ostrým přechodem. Následné doplnění tohoto důkazního protokolu je pouze dokumentační změna; nevyžaduje nové produkční nasazení.
