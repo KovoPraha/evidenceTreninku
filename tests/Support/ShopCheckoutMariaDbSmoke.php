@@ -327,22 +327,64 @@ try {
     shopOrderAdminCancel($pdo,(int)$programOutcomes[0]['id'],7,'SMOKE release last-place order.',true);
     $pdo->exec('UPDATE club_program_offers SET capacity=2 WHERE variant_id=602');
     $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,created_by_trainer_id,approved_by_trainer_id,decision_note) VALUES(10,102,'guardian','approved','admin','2020-01-01',7,7,'SMOKE sibling')");
+    // Upgrade the synthetic goods fixture to the physical warehouse, preserving its older open order.
+    $pdo->exec("INSERT INTO staff_superadmins(trainer_id,reason) VALUES(7,'SMOKE isolated warehouse actor')");
+    $pdo->exec("UPDATE shop_variants SET unit_code='piece' WHERE id=601");
+    shopInventoryConfigure($pdo,7,'SMOKE warehouse','fifo','SMOKE policy','SMOKE isolated warehouse policy.',true);
+    $legacyItemId=(int)$pdo->query('SELECT id FROM shop_order_items WHERE order_id='.$orderId.' AND variant_id=601')->fetchColumn();
+    shopInventoryOpen($pdo,7,601,['physical_quantity'=>4,'blocked_quantity'=>0,'unit_cost_minor'=>5000,'evidence'=>'SMOKE counted stock','effective_on'=>date('Y-m-d'),'reservations'=>[$legacyItemId=>1]],'SMOKE verified opening stock.',true,'smoke-family-opening');
     shopCartSetQuantity($pdo,10,602,1,101);shopCartSetQuantity($pdo,10,602,1,102);
+    shopCartSetQuantity($pdo,10,601,2);
+    shopCouponAdminCreate($pdo,7,'SMOKE-FAMILY','fixed',1001,0,null,1,'','','SMOKE program-only discount.',true,SHOP_COUPON_CLUB_PROGRAM);
+    shopCouponApplyToCart($pdo,10,'SMOKE-FAMILY');
     $familyCart=shopCartDetail($pdo,10);$accept=[];
     foreach($familyCart['items'] as $line)$accept['item:'.$line['cart_item_id']]=1;
-    $family=shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'SMOKE','due_days'=>7],$familyCart['fingerprint'],$accept);
-    if((int)$family['total_minor']!==30000 || (int)clubProgramOfferForVariant($pdo,602)['held_order_count']!==2)throw new RuntimeException('Family checkout did not reserve two places.');
+    $beforeOrders=(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn();
+    $beforeStock=shopInventoryBalance($pdo,601);
+    $pdo->exec('UPDATE club_program_offers SET capacity=1 WHERE variant_id=602');
+    try {
+        shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),SHOP_CHECKOUT_SMOKE_BANK,$familyCart['fingerprint'],$accept,102);
+        throw new RuntimeException('Two siblings unexpectedly fit into the last place.');
+    } catch (ShopCheckoutException $e) {
+        if(!str_contains($e->getMessage(),'Kapacita'))throw $e;
+    }
+    if((int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn()!==$beforeOrders
+        ||shopInventoryBalance($pdo,601)!==$beforeStock
+        ||(int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_redemptions')->fetchColumn()!==0
+        ||shopCartDetail($pdo,10)['fingerprint']!==$familyCart['fingerprint'])throw new RuntimeException('Failed family checkout did not roll back stock, coupon, order and cart atomically.');
+    $pdo->exec('UPDATE club_program_offers SET capacity=2 WHERE variant_id=602');
+    $family=shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),SHOP_CHECKOUT_SMOKE_BANK,$familyCart['fingerprint'],$accept,102);
+    if((int)$family['total_minor']!==53999 || (int)clubProgramOfferForVariant($pdo,602)['held_order_count']!==2)throw new RuntimeException('Family checkout did not reserve two places with the exact discounted total.');
+    $shares=$pdo->query('SELECT sportovec_id,amount_minor FROM shop_order_finance_shares WHERE order_id='.(int)$family['id'].' ORDER BY sportovec_id')->fetchAll(PDO::FETCH_KEY_PAIR);
+    if(array_map('intval',$shares)!==[101=>14500,102=>39499])throw new RuntimeException('Program-only coupon must preserve every minor unit and assign goods to their explicit owner.');
+    $stock=shopInventoryBalance($pdo,601);
+    if($stock['physical_quantity']!==4||$stock['reserved_quantity']!==3||$stock['available_quantity']!==1)throw new RuntimeException('Mixed order stock was not reserved exactly once.');
     require_once dirname(__DIR__,2).'/includes/accounting_documents.php';
     $document=accountingDocumentSource($pdo,'order',(int)$family['id']);
-    if(count($document['lines'])!==2||count(array_unique(array_column($document['lines'],'line_key')))!==2
-        ||array_map('intval',array_column(array_column($document['lines'],'beneficiary'),'person_id'))!==[101,102])throw new RuntimeException('Accountant source must preserve both child lines.');
-    $firstReceipt=clubFinanceRecordBankReceipt($pdo,101,15000,'SMOKE-SIBLING-101',date('Y-m-d'),7,'SMOKE first child share.',true);
+    $childLines=array_values(array_filter($document['lines'],static fn(array $line):bool=>!empty($line['beneficiary']['person_id'])));
+    if(count($document['lines'])!==4||count(array_unique(array_column($document['lines'],'line_key')))!==4
+        ||array_sum(array_column($document['lines'],'amount_minor'))!==53999
+        ||array_map('intval',array_column(array_column($childLines,'beneficiary'),'person_id'))!==[101,102])throw new RuntimeException('Accountant source must preserve goods, both child lines and the exact discount.');
+    $firstReceipt=clubFinanceRecordBankReceipt($pdo,101,14500,'SMOKE-SIBLING-101',date('Y-m-d'),7,'SMOKE first child share.',true);
     $status=$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
-    if($status!=='pending'||$firstReceipt['allocated_minor']!==15000||clubFinanceBalanceForAthlete($pdo,102)['open_minor']!==15000)throw new RuntimeException('First child payment must not settle sibling debt.');
-    $secondReceipt=clubFinanceRecordBankReceipt($pdo,102,15000,'SMOKE-SIBLING-102',date('Y-m-d'),7,'SMOKE second child share.',true);
+    if($status!=='pending'||$firstReceipt['allocated_minor']!==14500||clubFinanceBalanceForAthlete($pdo,102)['open_minor']!==39499)throw new RuntimeException('First child payment must not settle sibling debt.');
+    $partialReceipt=clubFinanceRecordBankReceipt($pdo,102,10000,'SMOKE-SIBLING-102-PART',date('Y-m-d'),7,'SMOKE partial second share.',true);
+    if($partialReceipt['allocated_minor']!==10000||clubFinanceBalanceForAthlete($pdo,102)['open_minor']!==29499
+        ||$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn()!=='pending'
+        ||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn()!==0)throw new RuntimeException('A partial second share must keep both enrollments inactive.');
+    $secondReceipt=clubFinanceRecordBankReceipt($pdo,102,30000,'SMOKE-SIBLING-102',date('Y-m-d'),7,'SMOKE second child balance and overpayment.',true);
     $status=$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
-    if($status!=='paid'||$secondReceipt['allocated_minor']!==15000||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn()!==2)throw new RuntimeException('Both shares must activate both children exactly once.');
-    echo "MariaDB concurrent checkout, payment idempotency, last-program-place and family checkout/finance smoke OK\n";
+    if($status!=='paid'||$secondReceipt['allocated_minor']!==29499||$secondReceipt['credit_minor']!==501
+        ||clubFinanceBalanceForAthlete($pdo,101)['credit_minor']!==0||clubFinanceBalanceForAthlete($pdo,102)['credit_minor']!==501
+        ||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn()!==2)throw new RuntimeException('Both shares must activate both children once and retain overpayment only for its owner.');
+    $goodsItemId=(int)$pdo->query('SELECT id FROM shop_order_items WHERE order_id='.(int)$family['id'].' AND variant_id=601')->fetchColumn();
+    $issuedAt=date('Y-m-d H:i:s');
+    $issued=shopFulfillmentIssue($pdo,(int)$family['id'],[$goodsItemId=>2],7,'SMOKE parent',$issuedAt,'SMOKE mixed goods handover.','smoke-family-issue');
+    $replayed=shopFulfillmentIssue($pdo,(int)$family['id'],[$goodsItemId=>2],7,'SMOKE parent',$issuedAt,'SMOKE mixed goods handover.','smoke-family-issue');
+    $stock=shopInventoryBalance($pdo,601);
+    if(!$issued['changed']||$replayed['changed']||$stock['physical_quantity']!==2||$stock['reserved_quantity']!==1
+        ||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn()!==2)throw new RuntimeException('Goods handover must be idempotent and preserve both course enrollments.');
+    echo "MariaDB concurrent checkout, payment idempotency, last-place rollback, mixed siblings/coupon/stock/accounting/partial receipts/overpayment/handover smoke OK\n";
 } finally {
     if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);

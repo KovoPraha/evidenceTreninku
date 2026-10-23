@@ -1,5 +1,12 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — rozšířená technická přejímka rodinného nákupu, bez nasazení.**
+[Protokol](verification/family-followup-20261023/RESULTS.md), PR #183.
+38 cílených testů / 960 assertions a nativní MariaDB smoke PASS: dva sourozenci,
+zboží, různé rozsahy kupónu, přesné finanční podíly, rollback posledního místa,
+účetní řádky, dílčí příjmy, přeplatek a idempotentní výdej. Pouze testy a dokumentace.
+Prohlížeč se odpojil; mobilní přejímka, doplnění B15 přes UI a nový export odloženy.
+B15 zůstává PARTIAL, lidské převzetí i účetní otevřené. Produkce se v tomto kole nemění.
 **23. 10. 2026 21:12 — stejný kurz pro více dětí v jedné objednávce, nasazeno.**
 [Protokol a důkazy](verification/multi-child-course-20261023/RESULTS.md).
 Samostatné položky a souhlasy, přesná kapacita, neměnné finanční podíly,
