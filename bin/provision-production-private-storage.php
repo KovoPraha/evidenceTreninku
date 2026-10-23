@@ -37,6 +37,32 @@ function productionPrivateStorageDirectory(string $path): void
     productionPrivateStorageSafePath($path);
 }
 
+/** Append under the caller's exclusive lock; the original backup is already verified. */
+function productionPrivateStorageAppend($handle, string $original, string $append): void
+{
+    if (!rewind($handle) || !hash_equals($original, (string)stream_get_contents($handle))) throw new RuntimeException('config_changed_concurrently');
+    try {
+        if (fseek($handle, 0, SEEK_END) !== 0
+            || fwrite($handle, $append) !== strlen($append)
+            || !fflush($handle)
+            || !rewind($handle)
+            || !hash_equals($original . $append, (string)stream_get_contents($handle))) {
+            throw new RuntimeException('config_append_verification_failed');
+        }
+    } catch (Throwable $failure) {
+        // A throwing global warning handler must not bypass restoration. Try
+        // truncation, flush, and verification independently, even if one fails.
+        set_error_handler(static fn(): bool => true);
+        $truncated = $flushed = $verified = false;
+        try {
+            try { $truncated = ftruncate($handle, strlen($original)); } catch (Throwable) {}
+            try { $flushed = fflush($handle); } catch (Throwable) {}
+            try { $verified = rewind($handle) && hash_equals($original, (string)stream_get_contents($handle)); } catch (Throwable) {}
+        } finally { restore_error_handler(); }
+        throw new RuntimeException($truncated && $flushed && $verified ? 'config_append_failed_restored' : 'config_append_failed_restore_required', 0, $failure);
+    }
+}
+
 /** @return array<string,bool> */
 function productionPrivateStorageProvision(string $appRoot, string $configured, string $configBytes, $configHandle): array
 {
@@ -101,14 +127,7 @@ function productionPrivateStorageProvision(string $appRoot, string $configured, 
             rewind($backupHandle);
             if (!hash_equals($configBytes, (string)stream_get_contents($backupHandle))) throw new RuntimeException('backup_verify_failed');
         } finally { fclose($backupHandle); }
-        rewind($configHandle);
-        if (!hash_equals($configBytes, (string)stream_get_contents($configHandle))) throw new RuntimeException('config_changed_concurrently');
-        fseek($configHandle, 0, SEEK_END);
-        if (fwrite($configHandle, $append) !== strlen($append) || !fflush($configHandle)) {
-            ftruncate($configHandle, strlen($configBytes));
-            fflush($configHandle);
-            throw new RuntimeException('config_append_failed');
-        }
+        productionPrivateStorageAppend($configHandle, $configBytes, $append);
         $changed = true;
     }
     return ['ok'=>true, 'storage_created'=>$created, 'existing_configuration_preserved'=>!$changed,

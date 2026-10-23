@@ -5,6 +5,67 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
+require_once dirname(__DIR__, 2) . '/bin/provision-production-private-storage.php';
+
+/** Deterministic stream faults after bytes have already been appended. */
+final class PrivateStorageFaultStream
+{
+    public mixed $context;
+    public static string $bytes = '';
+    public static string $mode = '';
+    public static int $truncations = 0;
+    public static int $flushes = 0;
+    private int $position = 0;
+    private bool $failed = false;
+
+    public function stream_open(string $path, string $mode, int $options, ?string &$openedPath): bool { return true; }
+    public function stream_read(int $count): string
+    {
+        $read = substr(self::$bytes, $this->position, $count);
+        $this->position += strlen($read);
+        return $read;
+    }
+    public function stream_eof(): bool { return $this->position >= strlen(self::$bytes); }
+    public function stream_tell(): int { return $this->position; }
+    public function stream_stat(): array { return ['size'=>strlen(self::$bytes)]; }
+    public function stream_seek(int $offset, int $whence): bool
+    {
+        $this->position = match ($whence) { SEEK_SET=>$offset, SEEK_CUR=>$this->position+$offset, SEEK_END=>strlen(self::$bytes)+$offset };
+        return $this->position >= 0;
+    }
+    public function stream_write(string $data): int
+    {
+        $written = self::$mode === 'partial_write_warning' ? substr($data, 0, 3) : $data;
+        if (self::$mode === 'corrupt_readback') $written[0] = '!';
+        self::$bytes = substr(self::$bytes, 0, $this->position) . $written;
+        $this->position += strlen($written);
+        if (self::$mode === 'partial_write_warning' && !$this->failed) {
+            $this->failed = true;
+            trigger_error('Injected warning after partial append.', E_USER_WARNING);
+        }
+        return strlen($written);
+    }
+    public function stream_flush(): bool
+    {
+        self::$flushes++;
+        if (in_array(self::$mode, ['flush_warning','rollback_flush_warning'], true) && !$this->failed) {
+            $this->failed = true;
+            trigger_error('Injected flush warning after append.', E_USER_WARNING);
+        }
+        if (self::$mode === 'rollback_flush_warning' && self::$truncations > 0) {
+            trigger_error('Injected warning during rollback flush.', E_USER_WARNING);
+            return false;
+        }
+        return true;
+    }
+    public function stream_truncate(int $size): bool
+    {
+        self::$truncations++;
+        self::$bytes = substr(self::$bytes, 0, $size);
+        return true;
+    }
+}
+
 final class ProductionPrivateStorageProvisionTest extends TestCase
 {
     private string $root;
@@ -120,6 +181,34 @@ final class ProductionPrivateStorageProvisionTest extends TestCase
         $this->config('?>');
         self::assertSame(0, $this->runProvision()[0]);
         self::assertSame(0, $this->runProvision()[0]);
+    }
+
+    public function testPartialWriteAndFlushWarningsAlwaysAttemptVerifiedRollback(): void
+    {
+        self::assertTrue(stream_wrapper_register('kisfault', PrivateStorageFaultStream::class));
+        $original = "<?php\n// original synthetic configuration\n";
+        try {
+            foreach (['partial_write_warning','flush_warning','corrupt_readback','rollback_flush_warning'] as $mode) {
+                PrivateStorageFaultStream::$bytes = $original;
+                PrivateStorageFaultStream::$mode = $mode;
+                PrivateStorageFaultStream::$truncations = PrivateStorageFaultStream::$flushes = 0;
+                $handle = fopen('kisfault://config', 'r+b');
+                set_error_handler(static function (): never { throw new \RuntimeException('same_throwing_handler_as_cli'); });
+                try {
+                    \productionPrivateStorageAppend($handle, $original, "// appended setting\n");
+                    self::fail('Injected append failure was accepted: ' . $mode);
+                } catch (\RuntimeException $exception) {
+                    self::assertSame($mode === 'rollback_flush_warning' ? 'config_append_failed_restore_required' : 'config_append_failed_restored', $exception->getMessage(), $mode);
+                    self::assertSame($original, PrivateStorageFaultStream::$bytes, $mode);
+                    self::assertSame(1, PrivateStorageFaultStream::$truncations, $mode);
+                    self::assertGreaterThanOrEqual(1, PrivateStorageFaultStream::$flushes, $mode);
+                } finally {
+                    restore_error_handler();
+                    PrivateStorageFaultStream::$mode = '';
+                    fclose($handle);
+                }
+            }
+        } finally { stream_wrapper_unregister('kisfault'); }
     }
 
     public function testRefusesSymlinkedDataBeforeChanges(): void
