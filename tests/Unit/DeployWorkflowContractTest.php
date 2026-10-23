@@ -308,6 +308,18 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringNotContainsString('FOR UPDATE', $invariants);
     }
 
+    public function testAccountingAuditUsesReadOnlyTransactionWithoutApplicationBootstrap(): void
+    {
+        $source=$this->source('bin/production-accounting-audit.php');
+        $workflow=$this->source('.github/workflows/production-drills.yml');
+        self::assertStringContainsString('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY',$source);
+        self::assertStringContainsString('KIS_ACCOUNTING_AUDIT_CONFIRM=OVERIT-UCETNI-VAZBY',$workflow);
+        self::assertStringContainsString('ZipArchive::RDONLY',$source);
+        self::assertStringContainsString("PHP_SAPI !== 'cli'",$source);
+        foreach (['INSERT ','UPDATE ','DELETE ','CREATE TABLE','db.php','accountingExportCreate(','accountingDocumentDownload('] as $forbidden) self::assertStringNotContainsString($forbidden,$source);
+        self::assertStringContainsString("always() && inputs.operace == 'overit-ucetni-vazby'",$workflow);
+    }
+
     public function testDeployPublishesPrivateReleaseEvidenceAndUatDrillIsReadOnly(): void
     {
         $deploy = $this->source('.github/workflows/deploy-production.yml');

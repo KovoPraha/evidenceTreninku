@@ -88,6 +88,41 @@ final class FamilyAccountingAcceptance
             $check($frozenHash===hash_file('sha256',$frozen['path'])&&$originalJson===accountingDocumentGet($pdo,$id)['snapshot_json'],'New revision rewrote an old archive or issued invoice.');
             $check((int)$pdo->query("SELECT COUNT(*) FROM club_program_enrollments WHERE status='active'")->fetchColumn()===2,'Price correction changed course enrollment.');
 
+            require_once dirname(__DIR__,2).'/bin/production-accounting-audit.php';
+            $audit=productionAccountingAudit($pdo,$root);
+            $check($audit['ok'],'Read-only accounting audit failed: '.json_encode($audit['checks']));
+            $check($audit['issued_pdfs_checked']===2&&$audit['archive_entries_checked']>=9,'Audit did not inspect real PDF/ZIP files.');
+            $check(!$pdo->inTransaction(),'Read-only audit leaked its transaction.');
+            $beforeEvents=(int)$pdo->query('SELECT COUNT(*) FROM accounting_document_events')->fetchColumn();
+            $beforeExportEvents=(int)$pdo->query('SELECT COUNT(*) FROM accounting_export_events')->fetchColumn();
+            // Corrupt only this disposable fixture, prove detection, then restore it exactly.
+            $pdo->prepare('UPDATE accounting_documents SET snapshot_sha256=? WHERE id=?')->execute([str_repeat('0',64),$id]);
+            $bad=productionAccountingAudit($pdo,$root);
+            $check(!$bad['ok']&&$bad['checks']['document_snapshot_integrity']['count']===1,'Audit missed a changed document snapshot.');
+            $pdo->prepare('UPDATE accounting_documents SET snapshot_sha256=? WHERE id=?')->execute([hash('sha256',$originalJson),$id]);
+            $pdf=privateStorageResolve($document['pdf_storage_key']);$pdfBytes=file_get_contents($pdf);file_put_contents($pdf,'LOCALHOST damaged PDF');
+            $bad=productionAccountingAudit($pdo,$root);
+            $check(!$bad['ok']&&$bad['checks']['issued_pdf_integrity']['count']===1,'Audit missed a changed PDF.');
+            file_put_contents($pdf,$pdfBytes);
+            $pdo->prepare('UPDATE accounting_refund_payments SET amount_minor=amount_minor+1 WHERE decision_id=?')->execute([$decision['id']]);
+            $bad=productionAccountingAudit($pdo,$root);
+            $check(!$bad['ok']&&$bad['checks']['refund_payment_links']['count']===1,'Audit missed inconsistent refund money.');
+            $pdo->prepare('UPDATE accounting_refund_payments SET amount_minor=amount_minor-1 WHERE decision_id=?')->execute([$decision['id']]);
+            $archiveBytes=file_get_contents($frozen['path']);file_put_contents($frozen['path'],'LOCALHOST damaged archive');
+            $bad=productionAccountingAudit($pdo,$root);
+            $check(!$bad['ok']&&$bad['checks']['export_archive_integrity']['count']===1,'Audit missed a changed export archive.');
+            file_put_contents($frozen['path'],$archiveBytes);
+            $tampered=new ZipArchive();$check($tampered->open($frozen['path'])===true,'Cannot open synthetic ZIP.');
+            $tampered->addFromString('ucetni-podklady.xlsx','LOCALHOST altered entry');$tampered->close();
+            $pdo->prepare('UPDATE accounting_export_batches SET archive_sha256=? WHERE id=?')->execute([hash_file('sha256',$frozen['path']),$batch['id']]);
+            $bad=productionAccountingAudit($pdo,$root);
+            $check(!$bad['ok']&&$bad['checks']['export_manifest_integrity']['count']===1,'Audit missed an altered entry behind a matching outer ZIP hash.');
+            file_put_contents($frozen['path'],$archiveBytes);
+            $pdo->prepare('UPDATE accounting_export_batches SET archive_sha256=? WHERE id=?')->execute([$frozenHash,$batch['id']]);
+            $check(productionAccountingAudit($pdo,$root)['ok'],'Restored fixture failed read-only audit.');
+            $check($beforeEvents===(int)$pdo->query('SELECT COUNT(*) FROM accounting_document_events')->fetchColumn()&&$beforeExportEvents===(int)$pdo->query('SELECT COUNT(*) FROM accounting_export_events')->fetchColumn(),'Read-only audit wrote download/export events.');
+            echo "Read-only accounting audit and isolated corruption detection OK\n";
+
             $out=trim((string)getenv('EVIDENCE_FAMILY_ACCOUNTING_OUTPUT'));
             if($out!==''){
                 if(!is_dir($out)&&!mkdir($out,0700,true))throw new RuntimeException('Cannot save synthetic acceptance output.');
