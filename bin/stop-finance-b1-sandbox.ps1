@@ -4,6 +4,14 @@ $applicationRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $sandboxRoot = Join-Path $env:LOCALAPPDATA 'EvidencePavelB1\finance-b1-20261022'
 $ownership = Join-Path $sandboxRoot 'owner.txt'
 if (-not (Test-Path -LiteralPath $ownership) -or (Get-Content -LiteralPath $ownership -Raw).Trim() -ne $applicationRoot) { throw 'Sandbox ownership does not match this checkout.' }
+# Validate both ports before stopping either service. A foreign DB must leave the web untouched.
+foreach ($port in @(18086,33426)) {
+    $expected = if ($port -eq 18086) { $applicationRoot } else { Join-Path $sandboxRoot 'mysql' }
+    foreach ($listener in @(Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue)) {
+        $process = Get-CimInstance Win32_Process -Filter "ProcessId=$($listener.OwningProcess)"
+        if ($listener.LocalAddress -ne '127.0.0.1' -or -not $process.CommandLine -or -not $process.CommandLine.Contains($expected)) { throw "Port $port is not the owned sandbox; no services were stopped." }
+    }
+}
 foreach ($port in @(18086,33426)) {
     $expected = if ($port -eq 18086) { $applicationRoot } else { Join-Path $sandboxRoot 'mysql' }
     $listeners = @(Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue)

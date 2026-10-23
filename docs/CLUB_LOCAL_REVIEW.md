@@ -22,6 +22,22 @@ prostředí a aplikuje místní migrace; není to postup nasazení do produkce.
 `bin/prepare-club-local-review.php` vytvoří kontrolní účty pouze v této
 ověřené syntetické instanci. Při opakování zachová existující přístup.
 
+Spuštění v PowerShellu z uvedené pracovní kopie:
+
+```powershell
+& .\bin\setup-finance-b1-sandbox.ps1
+& C:\xampp\php\php.exe -c "$env:LOCALAPPDATA\EvidencePavelB1\finance-b1-20261022\php-web.ini" .\bin\probe-finance-b1-sandbox.php
+```
+
+Kontrola je pouze čtecí a má vrátit `status: PASS`. Neúspěch neobcházejte
+jiným konfiguračním souborem. Při hlášení probíhající obnovy MariaDB vyčkejte
+a setup zopakujte; nemažte databázové soubory. Nový HTTP router chrání interní
+adresáře i při použití vestavěného PHP serveru. Starý server bez routeru setup
+odmítne převzít. Ukončení této místní kopie zajišťuje
+`bin/stop-finance-b1-sandbox.ps1`; data a kontrolní účty ponechá na disku.
+Podrobnosti a meze externích služeb obsahuje
+[provozní inventura](CLUB_OPERATIONS_SOURCE_INVENTORY.md).
+
 ## Doporučené pořadí prohlídky
 
 | Pozice | Co projít | Co kontrolovat |

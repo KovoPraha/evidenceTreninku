@@ -24,8 +24,11 @@ function accountingLedgerAudit(int $actor,string $reason,bool $confirmed):string
 function accountingLedgerActor(PDO $pdo,int $actor):void
 {
     if(!$pdo->inTransaction())throw new LogicException('Finanční oprávnění se ověřuje v transakci.');
-    $q=$pdo->prepare("SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code='finance_manager') OR EXISTS(SELECT 1 FROM staff_superadmins s WHERE s.trainer_id=t.id))".accountingLedgerLock($pdo));$q->execute([$actor]);
+    $lock=accountingLedgerLock($pdo);
+    $q=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);$q->execute([$actor]);
     if(!$q->fetchColumn())throw new AccountingLedgerException('Úkon vyžaduje aktivní oprávnění Hospodář a platby.');
+    $q=$pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='finance_manager'".$lock);$q->execute([$actor]);
+    if(!$q->fetchColumn()){$q=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$q->execute([$actor]);if(!$q->fetchColumn())throw new AccountingLedgerException('Úkon vyžaduje aktivní oprávnění Hospodář a platby.');}
 }
 function accountingLedgerText(string $value,int $max=160):string
 {

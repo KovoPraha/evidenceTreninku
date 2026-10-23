@@ -95,4 +95,21 @@ final class ShopFulfillmentTest extends TestCase
   self::assertTrue(\shopFulfillmentReleaseRemainder($pdo,(int)$o['id'],$item,2,7,'TEST další nevydané kusy','test:laterremainder')['changed']);$b=\shopInventoryBalance($pdo,601);self::assertSame([4,0,1,3],[$b['physical_quantity'],$b['reserved_quantity'],$b['blocked_quantity'],$b['available_quantity']]);self::assertSame(3,(int)\shopInventoryReservation($pdo,$item)['released_quantity']);$resolution=\shopFulfillmentResolution($pdo,(int)$o['id']);self::assertTrue($resolution['settled']);self::assertStringContainsString('3 kusů nevydáno',\shopFulfillmentResolutionLabel($resolution));self::assertSame('processing',$pdo->query('SELECT status FROM shop_orders')->fetchColumn());
  }
 
+ public function testExchangeReturnDoesNotPermitIssueOfCorrectedUnissuedRemainder():void {
+  require_once dirname(__DIR__,2).'/includes/shop_returns.php';
+  $pdo=$this->db();$m=require dirname(__DIR__,2).'/migrations/20261022232000_shop_returns.php';$m['up']($pdo);
+  $pdo->exec('CREATE TABLE accounting_ledger_mutex(id INTEGER PRIMARY KEY,revision INT); INSERT INTO accounting_ledger_mutex VALUES(1,0); CREATE TABLE accounting_documents(id INTEGER PRIMARY KEY,kind TEXT,source_type TEXT,source_id INTEGER,status TEXT,snapshot_json TEXT)');
+  $o=$this->order($pdo);$this->paid($pdo,$o);$item=(int)$o['items'][0]['id'];
+  \shopFulfillmentIssue($pdo,(int)$o['id'],[$item=>1],7,'TEST',date('Y-m-d H:i:s'),'TEST first piece handed over','test:swap-original');
+  $issue=(int)$pdo->query('SELECT inventory_movement_id FROM shop_fulfillment_items')->fetchColumn();
+  $input=['issue_movement_id'=>$issue,'quantity'=>1,'request_type'=>'voluntary_exchange','owner_trainer_id'=>7,'next_due_on'=>date('Y-m-d'),'occurred_on'=>date('Y-m-d'),'contact_path'=>'Personal handoff','customer_request'=>'Exchange first issued piece','policy_evidence'=>'Synthetic approved policy','request_key'=>'test:swap-return'];
+  $pdo->exec('CREATE TABLE accounting_refund_decisions(id INTEGER PRIMARY KEY,original_movement_id INTEGER,amount_minor INTEGER); CREATE TABLE accounting_movements(id INTEGER PRIMARY KEY,case_type TEXT,case_id INTEGER); CREATE TABLE accounting_adjustment_events(decision_id INTEGER,event_type TEXT); CREATE TABLE accounting_movement_sources(movement_id INTEGER,source_type TEXT,source_id INTEGER)');
+  $r=\shopReturnOpen($pdo,$input,7,'TEST agreed replacement request',true);
+  $r=\shopReturnReceive($pdo,(int)$r['id'],(int)$r['revision'],'owned',date('Y-m-d'),7,'TEST original returned for exchange',true,'test:swap-receive');
+  $q=$pdo->prepare("INSERT INTO accounting_documents VALUES(1,'correction','order',?,'issued',?)");$q->execute([$o['id'],json_encode(['lines'=>[['line_key'=>'item:'.$item,'quantity'=>1,'amount_minor'=>-12500]]])]);
+  try{\shopFulfillmentIssue($pdo,(int)$o['id'],[$item=>1],7,'TEST',date('Y-m-d H:i:s'),'TEST cancelled second piece','test:swap-overissue');self::fail('Exchange reception must not free another financial entitlement');}catch(\ShopCheckoutException){}
+  self::assertSame(1,(int)\shopInventoryReservation($pdo,$item)['remaining_quantity']);
+  self::assertTrue(\shopFulfillmentReleaseRemainder($pdo,(int)$o['id'],$item,1,7,'TEST corrected unissued piece','test:swap-release')['changed']);
+ }
+
 }

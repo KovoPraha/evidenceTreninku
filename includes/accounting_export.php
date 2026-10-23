@@ -10,9 +10,11 @@ const ACCOUNTING_EXPORT_VERSION = 'club-accounting-administration-v3';
 function accountingExportActor(PDO $pdo,int $actor):void
 {
     $lock=$pdo->inTransaction()&&$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
-    $q=$pdo->prepare('SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code=?) OR EXISTS(SELECT 1 FROM staff_superadmins s WHERE s.trainer_id=t.id))'.$lock);
-    $q->execute([$actor,'finance_manager']);
+    $q=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);
+    $q->execute([$actor]);
     if(!$q->fetchColumn())throw new DomainException('Účetní export je dostupný pouze hospodáři.');
+    $q=$pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='finance_manager'".$lock);$q->execute([$actor]);
+    if(!$q->fetchColumn()){$q=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$q->execute([$actor]);if(!$q->fetchColumn())throw new DomainException('Účetní export je dostupný pouze hospodáři.');}
 }
 
 function accountingExportDates(string $from,string $to):void

@@ -34,9 +34,16 @@ function operationalCaseSources(): array
 function operationalCaseActor(PDO $pdo, int $actor, string $position): void
 {
     $lock=$pdo->inTransaction() && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
-    $st=$pdo->prepare('SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code=?) OR EXISTS(SELECT 1 FROM staff_superadmins a WHERE a.trainer_id=t.id))'.$lock);
-    $st->execute([$actor,$position]);
+    $st=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);
+    $st->execute([$actor]);
     if (!$st->fetchColumn()) throw new DomainException('Pracovní oprávnění již neplatí.');
+    // The assignment must remain valid for the whole transaction, including waits on case/evidence rows.
+    $st=$pdo->prepare('SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?'.$lock);
+    $st->execute([$actor,$position]);
+    if (!$st->fetchColumn()) {
+        $st=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$st->execute([$actor]);
+        if (!$st->fetchColumn()) throw new DomainException('Pracovní oprávnění již neplatí.');
+    }
 }
 
 function operationalCaseSource(PDO $pdo, string $type, int $id, string $position): array

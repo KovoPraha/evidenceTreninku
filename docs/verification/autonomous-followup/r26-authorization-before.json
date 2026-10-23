@@ -1,0 +1,69 @@
+{
+    "database": "evidence_training_auth_02263e3c",
+    "production_mutations": false,
+    "checks": 2,
+    "results": [
+        {
+            "scenario": "role_revoked",
+            "real_lock_wait": true,
+            "worker": {
+                "status": "ok",
+                "result": {
+                    "revision_id": 1,
+                    "version": 1,
+                    "status": "closed",
+                    "review_required": false,
+                    "training_id": 100,
+                    "actual_date": "2026-01-02",
+                    "actual_started_at": "2026-01-02 15:00:00",
+                    "actual_ended_at": "2026-01-02 16:00:00",
+                    "duration_minutes": 60,
+                    "participant_ids": [
+                        10
+                    ],
+                    "coach_ids": [
+                        2
+                    ],
+                    "guest_reasons": [],
+                    "record_source": "coach",
+                    "plan_id": null,
+                    "category": "draha",
+                    "description": "LOCALHOST Session"
+                }
+            },
+            "revision_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "scenario": "account_deactivated",
+            "real_lock_wait": true,
+            "worker": {
+                "status": "ok",
+                "result": {
+                    "revision_id": 2,
+                    "version": 1,
+                    "status": "closed",
+                    "review_required": false,
+                    "training_id": 100,
+                    "actual_date": "2026-01-02",
+                    "actual_started_at": "2026-01-02 15:00:00",
+                    "actual_ended_at": "2026-01-02 16:00:00",
+                    "duration_minutes": 60,
+                    "participant_ids": [
+                        10
+                    ],
+                    "coach_ids": [
+                        2
+                    ],
+                    "guest_reasons": [],
+                    "record_source": "coach",
+                    "plan_id": null,
+                    "category": "draha",
+                    "description": "LOCALHOST Session"
+                }
+            },
+            "revision_count": 1,
+            "status": "FAIL"
+        }
+    ]
+}

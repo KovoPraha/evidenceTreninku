@@ -13,9 +13,12 @@ function accountingAdjustmentActor(PDO $pdo,int $actor,string $reason,bool $conf
     if (!$confirmed || mb_strlen(trim($reason))<10 || mb_strlen($reason)>1000 || preg_match('/^[A-Za-z0-9:_.-]{8,100}$/D',$requestKey)!==1) {
         throw new DomainException('Potvrďte úkon, vyplňte důvod (10–1000 znaků) a platný identifikátor požadavku.');
     }
-    $st=$pdo->prepare('SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code=\'finance_manager\') OR EXISTS(SELECT 1 FROM staff_superadmins s WHERE s.trainer_id=t.id))'.accountingAdjustmentLock($pdo));
+    $lock=accountingAdjustmentLock($pdo);
+    $st=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);
     $st->execute([$actor]);
     if (!$st->fetchColumn()) throw new DomainException('Úkon vyžaduje aktivní oprávnění Hospodář a platby.');
+    $st=$pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='finance_manager'".$lock);$st->execute([$actor]);
+    if (!$st->fetchColumn()) {$st=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$st->execute([$actor]);if (!$st->fetchColumn()) throw new DomainException('Úkon vyžaduje aktivní oprávnění Hospodář a platby.');}
 }
 
 function accountingAdjustmentDate(string $date):void

@@ -18,14 +18,12 @@ $date = cli_arg('date') ?: date('Y-m-d');
 $group = cli_arg('group');
 $subgroup = cli_arg('subgroup');
 
-$baseDir = __DIR__ . '/reports/weekly';
-
 if ($group) {
     $skupina_id = (int)$group;
     $pod_id = $subgroup ? (int)$subgroup : null;
 
     $ctx = build_report_context($pdo, $skupina_id, $pod_id, $date);
-    $saved = save_week_report($pdo, $ctx, $baseDir);
+    $saved = save_week_report($pdo, $ctx);
 
     echo "OK: skupina {$skupina_id} ulozeno: {$saved['pdf']}\n";
     exit;
@@ -38,7 +36,7 @@ foreach ($groups as $g) {
     $skupina_id = (int)$g['id'];
     try {
         $ctx = build_report_context($pdo, $skupina_id, null, $date);
-        $saved = save_week_report($pdo, $ctx, $baseDir);
+        $saved = save_week_report($pdo, $ctx);
         $ok++;
         echo "OK: skupina {$skupina_id} ({$g['nazev']}) -> {$saved['pdf']}\n";
     } catch (Throwable $e) {

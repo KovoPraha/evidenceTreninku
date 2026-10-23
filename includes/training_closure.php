@@ -13,8 +13,16 @@ function trainingClosureLockSuffix(PDO $pdo):string {
 function trainingClosureAssertActor(PDO $pdo,int $actor):void {
     $position=staffActivePosition();
     if($actor<1||$actor!==(int)($_SESSION['trener_id']??0)||!in_array($position,['coach','sports_lead'],true))throw new TrainingClosureException('Docházku spravuje trenér nebo vedoucí sportu.');
-    $s=$pdo->prepare('SELECT 1 FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code=?) OR EXISTS(SELECT 1 FROM staff_superadmins a WHERE a.trainer_id=t.id))');$s->execute([$actor,$position]);
+    // Serialize deactivation and role removal before any training mutation.
+    // The role editor locks assignment rows, so locking only treneri is not enough.
+    $lock=$pdo->inTransaction()?trainingClosureLockSuffix($pdo):'';
+    $s=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);$s->execute([$actor]);
     if(!$s->fetchColumn())throw new TrainingClosureException('Pracovní oprávnění již neplatí.');
+    $s=$pdo->prepare('SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?'.$lock);$s->execute([$actor,$position]);
+    if(!$s->fetchColumn()){
+        $s=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$s->execute([$actor]);
+        if(!$s->fetchColumn())throw new TrainingClosureException('Pracovní oprávnění již neplatí.');
+    }
 }
 function trainingClosureAssertTraining(PDO $pdo,int $id,int $actor):array {
     trainingClosureAssertActor($pdo,$actor);

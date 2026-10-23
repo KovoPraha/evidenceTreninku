@@ -10,9 +10,16 @@ function shopInventoryText(string $value,int $max=1000):string {$value=trim($val
 function shopInventoryDate(string $value):string {$d=DateTimeImmutable::createFromFormat('!Y-m-d',$value);if(!$d||$d->format('Y-m-d')!==$value||$value>date('Y-m-d'))throw new ShopInventoryException('Datum musí být platné, nejvýše dnešní.');return$value;}
 function shopInventoryDecision(int $actor,string $reason,bool $confirmed):string {if($actor<1||!$confirmed||mb_strlen(trim($reason))<10)throw new ShopInventoryException('Vyžaduje pracovníka, potvrzení a důvod alespoň 10 znaků.');return shopInventoryText($reason);}
 function shopInventoryActor(PDO $pdo,int $actor,string $role='catalog_manager'):void {
- if(!$pdo->inTransaction())throw new LogicException('Oprávnění skladu vyžaduje transakci.');
  if(!in_array($role,['catalog_manager','order_operator','finance_manager'],true))throw new LogicException('Neplatné oprávnění.');
- $s=$pdo->prepare('SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code=?) OR EXISTS(SELECT 1 FROM staff_superadmins s WHERE s.trainer_id=t.id))'.shopInventoryLock($pdo));$s->execute([$actor,$role]);if(!$s->fetchColumn())throw new ShopInventoryException('Chybí aktuální oprávnění pro tento skladový úkon.');
+ shopInventoryAssertActorRoles($pdo,$actor,[$role]);
+}
+/** Lock grants themselves: a locking outer trainer SELECT does not refresh an EXISTS snapshot. */
+function shopInventoryAssertActorRoles(PDO $pdo,int $actor,array $roles):void {
+ if(!$pdo->inTransaction())throw new LogicException('Oprávnění skladu vyžaduje transakci.');
+ if($roles===[]||array_diff($roles,['catalog_manager','order_operator','finance_manager']))throw new LogicException('Neplatné oprávnění.');
+ $s=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.shopInventoryLock($pdo));$s->execute([$actor]);if(!$s->fetchColumn())throw new ShopInventoryException('Chybí aktuální oprávnění pro tento skladový úkon.');
+ $s=$pdo->prepare('SELECT position_code FROM staff_user_positions WHERE trainer_id=? AND position_code IN ('.implode(',',array_fill(0,count($roles),'?')).')'.shopInventoryLock($pdo));$s->execute([$actor,...$roles]);if($s->fetchColumn()!==false)return;
+ $s=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.shopInventoryLock($pdo));$s->execute([$actor]);if(!$s->fetchColumn())throw new ShopInventoryException('Chybí aktuální oprávnění pro tento skladový úkon.');
 }
 function shopInventoryTransaction(PDO $pdo,callable $operation):mixed {$own=!$pdo->inTransaction();if($own)$pdo->beginTransaction();try{$r=$operation();if($own)$pdo->commit();return$r;}catch(Throwable$e){if($own&&$pdo->inTransaction())$pdo->rollBack();throw$e;}}
 function shopInventoryBalance(PDO $pdo,int $variantId,bool $lock=false):?array {

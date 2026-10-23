@@ -93,13 +93,25 @@ function shopFulfillmentLockFinance(PDO $pdo):void
     if(!$pdo->inTransaction())throw new LogicException('Finanční zámek výdeje vyžaduje transakci.');
     if(clubFinanceTableExists($pdo,'accounting_ledger_mutex'))$pdo->exec('UPDATE accounting_ledger_mutex SET revision=revision+1 WHERE id=1');
 }
+/** Exchange reception keeps the original entitlement alive, including while its replacement is pending.
+ * A later final return of the replacement belongs to the original item through its immutable case link.
+ */
+function shopFulfillmentReturnedQuantity(PDO $pdo,int $itemId):int
+{
+    if(clubFinanceTableExists($pdo,'shop_return_cases')){
+        $s=$pdo->prepare("SELECT COALESCE(SUM(m.physical_delta),0) FROM shop_stock_movements m LEFT JOIN shop_return_cases c ON c.return_movement_id=m.id WHERE m.kind='return' AND (m.order_item_id=? OR c.order_item_id=?) AND (c.id IS NULL OR c.request_type<>'voluntary_exchange')".shopInventoryLock($pdo));$s->execute([$itemId,$itemId]);
+    }else{
+        $s=$pdo->prepare("SELECT COALESCE(SUM(physical_delta),0) FROM shop_stock_movements WHERE kind='return' AND order_item_id=?".shopInventoryLock($pdo));$s->execute([$itemId]);
+    }
+    return (int)$s->fetchColumn();
+}
 function shopFulfillmentAssertFinancialQuantity(PDO $pdo,array $order,array $items,array $quantities):void
 {
     $orderId=(int)$order['id'];$corrected=[];
     if(clubFinanceTableExists($pdo,'accounting_documents')){
         $s=$pdo->prepare("SELECT snapshot_json FROM accounting_documents WHERE source_type='order' AND source_id=? AND kind='correction' AND status<>'void'".shopInventoryLock($pdo));$s->execute([$orderId]);
         foreach($s->fetchAll(PDO::FETCH_COLUMN) as $json)foreach(json_decode($json,true,512,JSON_THROW_ON_ERROR)['lines'] as $line){$key=(string)$line['line_key'];$corrected[$key]=($corrected[$key]??0)+(int)$line['quantity'];}
-        foreach($items as $item){$id=(int)$item['id'];if(!isset($quantities[$id])||empty($corrected['item:'.$id]))continue;$r=shopInventoryReservation($pdo,$id,true);$s=$pdo->prepare("SELECT COALESCE(SUM(physical_delta),0) FROM shop_stock_movements WHERE kind='return' AND order_item_id=?".shopInventoryLock($pdo));$s->execute([$id]);$returned=(int)$s->fetchColumn();
+        foreach($items as $item){$id=(int)$item['id'];if(!isset($quantities[$id])||empty($corrected['item:'.$id]))continue;$r=shopInventoryReservation($pdo,$id,true);$returned=shopFulfillmentReturnedQuantity($pdo,$id);
             if((int)($r['issued_quantity']??0)-$returned+$quantities[$id]>(int)$item['quantity']-$corrected['item:'.$id])throw new ShopCheckoutException('Oprava účetního dokladu snížila množství k plnění. Nejdříve vypořádejte opravu a rezervaci s hospodářem.');
         }
     }
@@ -128,7 +140,7 @@ function shopFulfillmentReleaseRemainder(PDO $pdo,int $orderId,int $itemId,int $
         $selectedQty=0;foreach(json_decode($doc['snapshot_json'],true,512,JSON_THROW_ON_ERROR)['lines'] as $line)if($line['line_key']==='item:'.$itemId)$selectedQty+=(int)$line['quantity'];
         if($selectedQty<1)throw new ShopCheckoutException('Vybraný opravný doklad neobsahuje rušené množství této položky.');
         $s=$pdo->prepare("SELECT snapshot_json FROM accounting_documents WHERE source_type='order' AND source_id=? AND kind='correction' AND status='issued'".shopInventoryLock($pdo));$s->execute([$orderId]);$qty=0;foreach($s->fetchAll(PDO::FETCH_COLUMN) as $json)foreach(json_decode($json,true,512,JSON_THROW_ON_ERROR)['lines'] as $line)if($line['line_key']==='item:'.$itemId)$qty+=(int)$line['quantity'];
-        $s=$pdo->prepare("SELECT COALESCE(SUM(physical_delta),0) FROM shop_stock_movements WHERE kind='return' AND order_item_id=?".shopInventoryLock($pdo));$s->execute([$itemId]);$returned=(int)$s->fetchColumn();
+        $returned=shopFulfillmentReturnedQuantity($pdo,$itemId);
         $remaining=(int)$r['remaining_quantity'];$meta=['correction_document_id'=>$correctionId,'order_item_id'=>$itemId];
         if($remaining===0){$s=$pdo->prepare("SELECT id,meta_json FROM shop_stock_movements WHERE request_key=? AND kind='release' AND order_item_id=?".shopInventoryLock($pdo));$s->execute([$key,$itemId]);$old=$s->fetch(PDO::FETCH_ASSOC);if($old&&(int)(json_decode($old['meta_json'],true)['correction_document_id']??0)===$correctionId){$pdo->commit();return ['order_id'=>$orderId,'changed'=>false,'movement_id'=>(int)$old['id']];}throw new ShopCheckoutException('Nevydaný zbytek už byl vypořádán.');}
         if($qty-$returned-(int)$r['released_quantity']<$remaining)throw new ShopCheckoutException('Opravný doklad nepokrývá celý nevydaný zbytek po odečtení již vrácených kusů.');

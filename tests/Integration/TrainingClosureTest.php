@@ -70,6 +70,16 @@ final class TrainingClosureTest extends TestCase {
     try{\trainingClosureClose($p,100,0,$this->input(),2);self::fail('Unexplained guest accepted');}catch(\TrainingClosureException $e){self::assertStringContainsString('hosta',$e->getMessage());}
     $input=$this->input();$input['guest_reasons']=[10=>'LOCALHOST zkušební účast'];self::assertSame(1,\trainingClosureClose($p,100,0,$input,2)['version']);
  }
+ public function testInactiveActorCannotCloseAndExplicitSuperadminRemainsSupported():void {
+    $p=$this->fixture();$p->exec('UPDATE treneri SET aktivni=0 WHERE id=2');
+    try{\trainingClosureClose($p,100,0,$this->input(),2);self::fail('Inactive actor accepted');}catch(\TrainingClosureException $e){self::assertStringContainsString('neplatí',$e->getMessage());}
+    self::assertSame(0,(int)$p->query('SELECT COUNT(*) FROM training_closure_revisions')->fetchColumn());
+    $p->exec('UPDATE treneri SET aktivni=1 WHERE id=2;DELETE FROM staff_user_positions WHERE trainer_id=2;INSERT INTO staff_superadmins VALUES(2)');
+    self::assertSame(1,\trainingClosureClose($p,100,0,$this->input(),2)['version']);
+    $p->exec('DELETE FROM staff_superadmins WHERE trainer_id=2');
+    try{\trainingClosureClose($p,100,1,$this->input(),2);self::fail('Revoked superadmin accepted');}catch(\TrainingClosureException $e){self::assertStringContainsString('neplatí',$e->getMessage());}
+    self::assertSame(1,(int)$p->query('SELECT COUNT(*) FROM training_closure_revisions')->fetchColumn());
+ }
  public function testPlanningCollisionBlocksTrainerAndRosterButAllowsAdjacentTimes():void {
     $p=$this->fixture();$p->exec("INSERT INTO planovane_treninky VALUES(4,1,'2026-01-02','15:00','16:30',NULL,'planovany',NULL,'LOCALHOST')");$p->exec('INSERT INTO training_roster_links VALUES(1,4,NULL,3)');
     $p->beginTransaction();

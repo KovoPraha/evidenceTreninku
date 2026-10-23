@@ -1,0 +1,47 @@
+{
+    "database": "evidence_training_auth_e03daaa3",
+    "production_mutations": false,
+    "checks": 4,
+    "results": [
+        {
+            "scenario": "role_revoked",
+            "real_lock_wait": true,
+            "worker": {
+                "status": "denied",
+                "message": "Pracovní oprávnění již neplatí."
+            },
+            "revision_count": 0,
+            "status": "PASS"
+        },
+        {
+            "scenario": "account_deactivated",
+            "real_lock_wait": true,
+            "worker": {
+                "status": "denied",
+                "message": "Pracovní oprávnění již neplatí."
+            },
+            "revision_count": 0,
+            "status": "PASS"
+        },
+        {
+            "scenario": "role_assignment_revoked",
+            "real_lock_wait": true,
+            "worker": {
+                "status": "denied",
+                "message": "Pracovní oprávnění již neplatí."
+            },
+            "revision_count": 0,
+            "status": "PASS"
+        },
+        {
+            "scenario": "superadmin_revoked",
+            "real_lock_wait": true,
+            "worker": {
+                "status": "denied",
+                "message": "Pracovní oprávnění již neplatí."
+            },
+            "revision_count": 0,
+            "status": "PASS"
+        }
+    ]
+}

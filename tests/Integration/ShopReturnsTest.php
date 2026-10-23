@@ -106,4 +106,33 @@ final class ShopReturnsTest extends TestCase {
   $e=\shopReturnCancelAfterFinance($this->pdo,(int)$e['id'],(int)$e['revision'],10,'Full financial reversal verified.',true,'cancel-paid-complete');self::assertSame('cancelled',$e['state']);self::assertSame(1,$this->b(2)['available_quantity']);self::assertSame(0,$this->b()['physical_quantity']);self::assertSame(2,(int)$this->pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn());self::assertSame('cancelled_after_finance',$this->pdo->query('SELECT event_type FROM shop_return_events ORDER BY id DESC LIMIT 1')->fetchColumn());
  }
 
+ public function testUnallocatedActualExchangeIncomePreventsOrdinaryCancellation():void {
+  $e=$this->open('voluntary_exchange');$e=\shopReturnExchangeReserve($this->pdo,(int)$e['id'],(int)$e['revision'],2,6000,8,'Reserve exchange with supplement.',true,'unallocated-reserve');
+  $this->money(1000,'shop_return',(int)$e['id']);
+  self::assertSame(0,(int)$this->pdo->query('SELECT COUNT(*) FROM accounting_allocations')->fetchColumn());
+  $this->reject(fn()=>\shopReturnCancel($this->pdo,(int)$e['id'],(int)$e['revision'],8,'Cannot abandon received customer money.',true,'unallocated-cancel'),'příjem');
+  self::assertSame('open',\shopReturnRow($this->pdo,(int)$e['id'])['state']);self::assertSame(0,$this->b(2)['available_quantity']);
+ }
+
+ public function testReleasedAllocationDoesNotHideReceivedExchangeMoney():void {
+  $e=$this->open('voluntary_exchange');$e=\shopReturnExchangeReserve($this->pdo,(int)$e['id'],(int)$e['revision'],2,6000,8,'Reserve exchange with supplement.',true,'released-cash-reserve');
+  $income=$this->money(1000);$a=\accountingLedgerAllocate($this->pdo,$income,'shop_return',(int)$e['id'],1000,'released-cash-allocate',10,'Allocate real exchange supplement.',true);
+  \accountingLedgerAllocate($this->pdo,$income,'shop_return',(int)$e['id'],-1000,'released-cash-unassign',10,'Release allocation before actual repayment.',true,(int)$a['id']);
+  self::assertSame(0,(int)$this->pdo->query('SELECT SUM(amount_minor) FROM accounting_allocations')->fetchColumn());
+  $this->reject(fn()=>\shopReturnCancel($this->pdo,(int)$e['id'],(int)$e['revision'],8,'Allocation release is not repayment.',true,'released-cash-cancel'),'příjem');
+  self::assertSame('open',\shopReturnRow($this->pdo,(int)$e['id'])['state']);
+ }
+
+ public function testFinalReplacementReturnCountsOnceAgainstOriginalEntitlement():void {
+  require_once dirname(__DIR__,2).'/includes/club_finance.php';
+  require_once dirname(__DIR__,2).'/includes/shop_fulfillment.php';
+  $e=$this->open('voluntary_exchange');$e=\shopReturnExchangeReserve($this->pdo,(int)$e['id'],(int)$e['revision'],2,5000,8,'Equal price replacement agreed.',true,'final-return-reserve');$e=$this->receive($e);
+  self::assertSame(0,\shopFulfillmentReturnedQuantity($this->pdo,1));
+  $e=\shopReturnFinancialResolution($this->pdo,(int)$e['id'],(int)$e['revision'],'no_adjustment',0,0,'Equal replacement, no financial difference.',10,'Verify equal replacement price.',true,'final-return-finance');
+  $e=\shopReturnExchangeIssue($this->pdo,(int)$e['id'],(int)$e['revision'],'LOCALHOST recipient',date('Y-m-d'),8,'Replacement handed to customer.',true,'final-return-issue');
+  $r=\shopReturnOpen($this->pdo,['issue_movement_id'=>(int)$e['exchange_issue_movement_id']]+$this->input(),8,'Customer returns replacement permanently.',true);$r=$this->receive($r);
+  self::assertSame(1,\shopFulfillmentReturnedQuantity($this->pdo,1));
+  self::assertNull($this->pdo->query('SELECT order_item_id FROM shop_stock_movements WHERE id='.(int)$r['return_movement_id'])->fetchColumn());
+ }
+
 }

@@ -2,6 +2,7 @@
 // report_tyden_lib.php
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
+require_once __DIR__ . '/includes/weekly_report_storage.php';
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -302,47 +303,46 @@ function build_week_report_html(array $ctx): string {
     return ob_get_clean();
 }
 
-function save_week_report(PDO $pdo, array $ctx, string $baseDirAbs): array {
-    if (!is_dir($baseDirAbs)) @mkdir($baseDirAbs, 0775, true);
-
-    $weekStart  = $ctx['week_start'] ?? '';
-    $weekEnd    = $ctx['week_end'] ?? '';
-    $skupina_id = (int)($ctx['skupina_id'] ?? 0);
-    $podsk_id   = (int)($ctx['podskupina_id'] ?? 0);
-
-    $stamp = date('Ymd_His');
-    $key = "week_{$weekStart}_{$weekEnd}_g{$skupina_id}" . ($podsk_id ? "_p{$podsk_id}" : "") . "_{$stamp}";
-
-    $dir = rtrim($baseDirAbs, '/\\') . DIRECTORY_SEPARATOR . substr($weekStart, 0, 4) . DIRECTORY_SEPARATOR . $key;
-    @mkdir($dir, 0775, true);
+function save_week_report(PDO $pdo, array $ctx): array {
+    $trainingIds = array_map(static fn(array $row): int => (int)$row['id'], $ctx['trainings'] ?? []);
+    $personIds = array_map('intval', $ctx['person_ids'] ?? []);
+    if (PHP_SAPI !== 'cli' || isset($_SESSION['trener_id'])) weeklyReportAssertAccess($pdo, $trainingIds, $personIds);
+    $id = bin2hex(random_bytes(16));
+    $dir = weeklyReportDirectory() . DIRECTORY_SEPARATOR . $id;
+    if (!mkdir($dir, 0700)) throw new RuntimeException('Report nelze uložit.');
 
     $html = build_week_report_html($ctx);
 
-    $htmlPath = $dir . DIRECTORY_SEPARATOR . $key . '.html';
-    file_put_contents($htmlPath, $html);
+    $htmlPath = $dir . DIRECTORY_SEPARATOR . 'report.html';
+    if (file_put_contents($htmlPath, $html, LOCK_EX) !== strlen($html)) throw new RuntimeException('Report nelze uložit.');
+    @chmod($htmlPath, 0600);
 
-    $pdfPath = $dir . DIRECTORY_SEPARATOR . $key . '.pdf';
+    $pdfPath = $dir . DIRECTORY_SEPARATOR . 'report.pdf';
 
     $vendor = __DIR__ . '/vendor/autoload.php';
     if (!file_exists($vendor)) {
-        throw new RuntimeException("Chybi vendor/autoload.php. Spust composer require mpdf/mpdf");
+        throw new RuntimeException('Chybí lokální závislosti pro PDF.');
     }
     require_once $vendor;
 
-    $mpdf = new \Mpdf\Mpdf([
-        'mode' => 'utf-8',
-        'format' => 'A4',
-        'margin_left' => 10,
-        'margin_right' => 10,
-        'margin_top' => 10,
-        'margin_bottom' => 10,
-        'default_font' => 'dejavusans'
-    ]);
-
-    $mpdf->WriteHTML($html);
-    $mpdf->Output($pdfPath, \Mpdf\Output\Destination::FILE);
-
-    return ['dir' => $dir, 'html' => $htmlPath, 'pdf' => $pdfPath];
+    $options = new \Dompdf\Options();
+    $options->set('isRemoteEnabled', false);
+    $options->set('isPhpEnabled', false);
+    $options->set('isJavascriptEnabled', false);
+    $options->set('defaultFont', 'DejaVu Sans');
+    $options->set('chroot', __DIR__ . '/vendor/dompdf');
+    $pdf = new \Dompdf\Dompdf($options);
+    $pdf->loadHtml($html, 'UTF-8');
+    $pdf->setPaper('A4');
+    $pdf->render();
+    $bytes = $pdf->output();
+    if (file_put_contents($pdfPath, $bytes, LOCK_EX) !== strlen($bytes)) throw new RuntimeException('PDF reportu nelze uložit.');
+    @chmod($pdfPath, 0600);
+    $manifest = ['contract'=>'weekly-report-private-v1','id'=>$id,'created_at'=>date(DATE_ATOM),'created_by'=>(int)($_SESSION['trener_id']??0),'group_id'=>(int)($ctx['skupina_id']??0),'subgroup_id'=>(int)($ctx['podskupina_id']??0),'week_start'=>(string)($ctx['week_start']??''),'week_end'=>(string)($ctx['week_end']??''),'training_ids'=>$trainingIds,'person_ids'=>$personIds,'pdf_sha256'=>hash_file('sha256',$pdfPath),'html_sha256'=>hash_file('sha256',$htmlPath)];
+    $json = json_encode($manifest, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
+    if (file_put_contents($dir . '/manifest.json', $json, LOCK_EX) !== strlen($json)) throw new RuntimeException('Manifest reportu nelze uložit.');
+    @chmod($dir . '/manifest.json', 0600);
+    return ['id'=>$id, 'dir' => $dir, 'html' => $htmlPath, 'pdf' => $pdfPath];
 }
 
 function build_report_context(PDO $pdo, int $skupina_id, ?int $podskupina_id, string $anyDate): array {
@@ -367,6 +367,14 @@ function build_report_context(PDO $pdo, int $skupina_id, ?int $podskupina_id, st
     $trainings = load_week_trainings($pdo, $skupina_id, $podskupina_id, $start, $endEx);
     $ids = array_map(fn($r) => (int)$r['id'], $trainings);
 
+    $personIds = [];
+    if ($ids) {
+        $st = $pdo->prepare('SELECT DISTINCT sportovec_id FROM trenink_sportovec WHERE trenink_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')');
+        $st->execute($ids);
+        $personIds = array_map('intval', $st->fetchAll(PDO::FETCH_COLUMN));
+    }
+    if (PHP_SAPI !== 'cli' || isset($_SESSION['trener_id'])) weeklyReportAssertAccess($pdo, $ids, $personIds);
+
     $trainersByT = load_trainers_for_trainings($pdo, $ids);
     $participantsByT = load_participants_for_trainings($pdo, $ids);
     $measurementsByT = load_measurements_for_trainings_present($pdo, $ids);
@@ -379,6 +387,7 @@ function build_report_context(PDO $pdo, int $skupina_id, ?int $podskupina_id, st
         'week_start' => $weekStart,
         'week_end' => $weekEnd,
         'trainings' => $trainings,
+        'person_ids' => $personIds,
         'trainersByT' => $trainersByT,
         'participantsByT' => $participantsByT,
         'measurementsByT' => $measurementsByT,

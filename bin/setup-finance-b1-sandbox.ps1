@@ -1,5 +1,6 @@
 param([string]$XamppRoot = 'C:\xampp')
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'finance-b1-process-guards.ps1')
 $applicationRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $sandboxRoot = Join-Path $env:LOCALAPPDATA 'EvidencePavelB1\finance-b1-20261022'
 $dataDirectory = Join-Path $sandboxRoot 'mysql'
@@ -10,6 +11,9 @@ $dbPort = 33426
 $webPort = 18086
 $marker = 'EVIDENCE_FINANCE_B1_SYNTHETIC_ONLY'
 $config = Join-Path $applicationRoot 'config.php'
+$iniPath = Join-Path $sandboxRoot 'php-web.ini'
+$router = Join-Path $applicationRoot 'bin\finance-b1-router.php'
+if (-not (Test-Path -LiteralPath $router)) { throw 'The isolated HTTP router is missing.' }
 if ((Test-Path -LiteralPath $config) -and -not ((Get-Content -LiteralPath $config -Raw).Contains($marker))) {
     throw 'Refusing to replace an existing non-B1 config.php.'
 }
@@ -21,7 +25,7 @@ if (Test-Path -LiteralPath $ownership) {
     if ((Get-Content -LiteralPath $ownership -Raw).Trim() -ne $applicationRoot) { throw 'Sandbox belongs to a different checkout.' }
 } else {
     if (@(Get-ChildItem -LiteralPath $dataDirectory -Force).Count -gt 0) { throw 'Refusing existing unowned database files.' }
-    Set-Content -LiteralPath $ownership -Value $applicationRoot -Encoding utf8
+    Write-FinanceB1Utf8 $ownership $applicationRoot
 }
 function Assert-OwnedListener([int]$Port, [string]$ExpectedCommand) {
     $listeners = @(Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue)
@@ -31,16 +35,32 @@ function Assert-OwnedListener([int]$Port, [string]$ExpectedCommand) {
     }
     return $listeners.Count -gt 0
 }
+function Assert-OwnedHttpListener {
+    $listeners = @(Get-NetTCPConnection -State Listen -LocalPort $webPort -ErrorAction SilentlyContinue)
+    if ($listeners.Count -gt 1) { throw 'Multiple HTTP listeners cannot be adopted.' }
+    foreach ($listener in $listeners) {
+        $process = Get-CimInstance Win32_Process -Filter "ProcessId=$($listener.OwningProcess)"
+        if (-not (Test-FinanceB1HttpProcess $process $listener.LocalAddress $php $iniPath $applicationRoot $router $webPort)) { throw 'HTTP port is not the exact owned executable, ini, bind, document root and router.' }
+    }
+    return $listeners.Count -gt 0
+}
+$null = Assert-OwnedHttpListener
 if (-not (Test-Path -LiteralPath (Join-Path $dataDirectory 'mysql'))) {
     & (Join-Path $mysqlBase 'bin\mysql_install_db.exe') "--datadir=$dataDirectory" "--port=$dbPort" --default-user --silent
     if ($LASTEXITCODE -ne 0) { throw 'Isolated database initialization failed.' }
 }
 if (-not (Assert-OwnedListener $dbPort $dataDirectory)) {
     $arguments = '--no-defaults --basedir="{0}" --datadir="{1}" --port={2} --bind-address=127.0.0.1 --skip-name-resolve --log-error="{3}" --pid-file="{4}"' -f $mysqlBase,$dataDirectory,$dbPort,(Join-Path $sandboxRoot 'mysql.log'),(Join-Path $sandboxRoot 'mysql.pid')
-    Start-Process -FilePath (Join-Path $mysqlBase 'bin\mysqld.exe') -ArgumentList $arguments -WindowStyle Hidden | Out-Null
+    # Crash recovery may run before the TCP listener appears. Never start a second
+    # instance on the same files merely because a previous readiness wait expired.
+    $starting = @(Get-CimInstance Win32_Process -Filter "Name='mysqld.exe'" | Where-Object { $_.CommandLine -and $_.CommandLine.Contains('--datadir="' + $dataDirectory + '"') })
+    if ($starting.Count -gt 1) { throw 'Multiple processes reference the isolated database files.' }
+    if ($starting.Count -eq 0) {
+        Start-Process -FilePath (Join-Path $mysqlBase 'bin\mysqld.exe') -ArgumentList $arguments -WindowStyle Hidden | Out-Null
+    }
     $deadline = (Get-Date).AddSeconds(25)
     do { Start-Sleep -Milliseconds 250; $ready = Assert-OwnedListener $dbPort $dataDirectory } until ($ready -or (Get-Date) -gt $deadline)
-    if (-not $ready) { throw 'Isolated MariaDB did not start.' }
+    if (-not $ready) { throw 'Isolated MariaDB is not ready yet; recovery may still be running. Inspect mysql.log, then rerun setup; do not delete database files or start another instance.' }
 }
 $connection = @('--no-defaults', '--protocol=tcp', '-h127.0.0.1', "-P$dbPort", '-uroot')
 $readyDeadline = (Get-Date).AddSeconds(25)
@@ -75,7 +95,6 @@ define('SHOP_BANK_IBAN', '');
 define('SHOP_BANK_ACCOUNT_LABEL', 'LOCALHOST B1 NEPLATIT');
 '@
 [IO.File]::WriteAllText($config, $configBody.Replace('__ROOT__',$portableRoot), [Text.UTF8Encoding]::new($false))
-$iniPath = Join-Path $sandboxRoot 'php-web.ini'
 $extensionPath = (Join-Path $XamppRoot 'php\ext').Replace('\','/')
 $iniBody = @"
 [PHP]
@@ -118,15 +137,27 @@ if (-not (Test-Path -LiteralPath (Join-Path $applicationRoot 'vendor\autoload.ph
 $env:APP_HOST = 'localhost'
 $migrationOutput = & $php -c $iniPath (Join-Path $applicationRoot 'bin\migrate.php') --apply --json
 $migrationExit = $LASTEXITCODE
-$migrationOutput | Set-Content -LiteralPath (Join-Path $sandboxRoot 'migrations.json') -Encoding utf8
+Write-FinanceB1Utf8 (Join-Path $sandboxRoot 'migrations.json') ($migrationOutput -join [Environment]::NewLine)
 if ($migrationExit -ne 0) { throw 'Isolated migrations failed; see migrations.json.' }
-if (-not (Assert-OwnedListener $webPort $applicationRoot)) {
-    $arguments = '-c "{0}" -S 127.0.0.1:{1} -t "{2}"' -f $iniPath,$webPort,$applicationRoot
+$descriptor = @{ application_root=$applicationRoot; runtime_root=$sandboxRoot; php=$php; web_ini=$iniPath; base_url='http://127.0.0.1:18086'; db_host='127.0.0.1'; db_port=$dbPort; db_name='evidence_b1'; db_user='b1_app'; session_path=(Join-Path $sandboxRoot 'sessions'); private_path=(Join-Path $sandboxRoot 'private'); outbox_path=(Join-Path $sandboxRoot 'outbox'); synthetic_only=$true; external_sends_disabled=$true }
+Write-FinanceB1Utf8 (Join-Path $sandboxRoot 'environment.json') ($descriptor | ConvertTo-Json)
+$readinessOutput = & $php -c $iniPath (Join-Path $applicationRoot 'bin\probe-finance-b1-sandbox.php')
+$readinessExit = $LASTEXITCODE
+Write-FinanceB1Utf8 (Join-Path $sandboxRoot 'readiness.json') ($readinessOutput -join [Environment]::NewLine)
+if ($readinessExit -ne 0) { throw 'Isolated database/storage readiness failed; see readiness.json. Preserve files and backups; do not reset or delete the database.' }
+# Reload only the fully verified owned web process, so it uses the ini just probed.
+if (Assert-OwnedHttpListener) {
+    $listener = Get-NetTCPConnection -State Listen -LocalPort $webPort
+    $process = Get-CimInstance Win32_Process -Filter "ProcessId=$($listener.OwningProcess)"
+    if (-not (Test-FinanceB1HttpProcess $process $listener.LocalAddress $php $iniPath $applicationRoot $router $webPort)) { throw 'HTTP ownership changed during setup.' }
+    Stop-Process -Id $listener.OwningProcess
+    if (Get-Process -Id $listener.OwningProcess -ErrorAction SilentlyContinue) { Wait-Process -Id $listener.OwningProcess -Timeout 25 }
+}
+if (-not (Assert-OwnedHttpListener)) {
+    $arguments = '-c "{0}" -S 127.0.0.1:{1} -t "{2}" "{3}"' -f $iniPath,$webPort,$applicationRoot,$router
     Start-Process -FilePath $php -ArgumentList $arguments -WorkingDirectory $applicationRoot -WindowStyle Hidden -RedirectStandardOutput (Join-Path $sandboxRoot 'http-stdout.log') -RedirectStandardError (Join-Path $sandboxRoot 'http-stderr.log') | Out-Null
     $deadline = (Get-Date).AddSeconds(10)
-    do { Start-Sleep -Milliseconds 250; $ready = Assert-OwnedListener $webPort $applicationRoot } until ($ready -or (Get-Date) -gt $deadline)
+    do { Start-Sleep -Milliseconds 250; $ready = Assert-OwnedHttpListener } until ($ready -or (Get-Date) -gt $deadline)
     if (-not $ready) { throw 'Isolated PHP HTTP server did not start.' }
 }
-$descriptor = @{ application_root=$applicationRoot; runtime_root=$sandboxRoot; php=$php; web_ini=$iniPath; base_url='http://127.0.0.1:18086'; db_host='127.0.0.1'; db_port=$dbPort; db_name='evidence_b1'; db_user='b1_app'; session_path=(Join-Path $sandboxRoot 'sessions'); private_path=(Join-Path $sandboxRoot 'private'); outbox_path=(Join-Path $sandboxRoot 'outbox'); synthetic_only=$true; external_sends_disabled=$true }
-$descriptor | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $sandboxRoot 'environment.json') -Encoding utf8
 Write-Output ('B1 sandbox ready: http://127.0.0.1:18086 ; MariaDB 127.0.0.1:33426/evidence_b1 ; descriptor ' + (Join-Path $sandboxRoot 'environment.json'))

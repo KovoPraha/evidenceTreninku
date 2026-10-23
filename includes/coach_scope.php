@@ -124,8 +124,11 @@ function coachScopeTrainingPredicate(PDO $pdo,string $trainingExpression='t.id')
 function coachScopeAssertManager(PDO $pdo,int $actor):void
 {
     if($actor<1 || $actor!==(int)($_SESSION['trener_id']??0) || !staffActivePositionIs('sports_lead'))throw new RuntimeException('Rozsahy smí měnit vedoucí sportu v aktivní pracovní pozici.');
-    $s=$pdo->prepare("SELECT 1 FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code='sports_lead') OR EXISTS(SELECT 1 FROM staff_superadmins a WHERE a.trainer_id=t.id))");$s->execute([$actor]);
+    $lock=$pdo->inTransaction()&&$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    $s=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);$s->execute([$actor]);
     if(!$s->fetchColumn())throw new RuntimeException('Pracovní oprávnění vedoucího sportu již neplatí.');
+    $s=$pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='sports_lead'".$lock);$s->execute([$actor]);
+    if(!$s->fetchColumn()){$s=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$s->execute([$actor]);if(!$s->fetchColumn())throw new RuntimeException('Pracovní oprávnění vedoucího sportu již neplatí.');}
 }
 
 function coachScopeParticipantIds(string $participants,array $measurements=[]): array

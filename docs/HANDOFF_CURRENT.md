@@ -1,5 +1,21 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — společné navazující opravy a místní přejímka dokončeny.**
+Větev `codex/club-followup-review-20261023`, základ `7aff7884`, izolovaná kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
+Začít [předáním oprav](CLUB_AUTONOMOUS_FOLLOWUP.md),
+[finálními důkazy](verification/autonomous-followup/RESULTS.md)
+a [návodem k prohlídce](CLUB_LOCAL_REVIEW.md).
+1 545 testů / 31 583 assertions PASS; záloha a nezávislá obnova 326 tabulek,
+2 triggerů a 175 soukromých souborů PASS. 136 migrací current.
+Nový runtime DB vznikl po izolované obnově jediné nečitelné tabulky;
+původní datadir je zachovaný, nejistota její historie je zdokumentovaná.
+Nepouštět souběžně starý archivovaný datadir a nemažte jej jako odpad.
+Žádný push, merge, deploy ani produkční změna. D01–D16 nadále odložené;
+technické ověření není skutečný pilot nebo převzetí účetní.
+
+Následuje historické předání před společnou kontrolou:
+
 **23. 10. 2026 — místní implementace a technická příprava R38–R44 dokončena.**
 Větev `codex/migration-cutover-r38-r44-20261023`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ `67121f0b`.

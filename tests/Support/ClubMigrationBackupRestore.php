@@ -114,5 +114,13 @@ foreach($restored->query('SELECT r.*,o.case_type AS original_type,o.case_id AS o
  $id=(int)$row['original_allocation_id'];$returnedByOriginal[$id]=($returnedByOriginal[$id]??0)+(int)$row['amount_minor'];if($returnedByOriginal[$id]>(int)$row['original_amount'])throw new RuntimeException('Restored returns exceed original payout.');$returnChecks++;
 }
 $report['payment_return_links_reconciled']=$returnChecks;
+$weeklyChecks=0;
+foreach(glob($restoreRoot.'/week-reports/*/manifest.json')?:[] as $path){
+ $weekly=json_decode((string)file_get_contents($path),true,512,JSON_THROW_ON_ERROR);$id=basename(dirname($path));
+ if(($weekly['contract']??'')!=='weekly-report-private-v1'||!preg_match('/^[a-f0-9]{32}$/D',$id)||($weekly['id']??'')!==$id||!is_array($weekly['person_ids']??null)||!is_array($weekly['training_ids']??null))throw new RuntimeException('Restored weekly report manifest is invalid.');
+ foreach(['pdf','html'] as $extension){$content=dirname($path).'/report.'.$extension;if(!is_file($content)||!hash_equals((string)($weekly[$extension.'_sha256']??''),(string)hash_file('sha256',$content)))throw new RuntimeException('Restored weekly report content differs from its manifest.');}
+ $weeklyChecks++;
+}
+$report['private_weekly_reports_reconciled']=$weeklyChecks;
 file_put_contents($runtime.'/club-migration-backup-restore.json',json_encode($report,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR));
 echo json_encode($report,JSON_THROW_ON_ERROR).PHP_EOL;

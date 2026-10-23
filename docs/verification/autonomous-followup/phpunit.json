@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 1545,
+  "assertions": 31583,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 84.913121,
+  "source": "followup-junit.xml",
+  "synthetic_only": true,
+  "production_mutations": false
+}

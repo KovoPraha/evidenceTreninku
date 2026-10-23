@@ -6,8 +6,12 @@ require_once __DIR__.'/shop_bank_settings.php';
 
 function clubAdmissionActor(PDO $pdo,int $actor):void {
  if(!$pdo->inTransaction())throw new LogicException('Přijetí vyžaduje transakci.');
- $q=$pdo->prepare("SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code='registrar') OR EXISTS(SELECT 1 FROM staff_superadmins s WHERE s.trainer_id=t.id))".shopInventoryLock($pdo));$q->execute([$actor]);
+ $lock=shopInventoryLock($pdo);
+ $q=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);$q->execute([$actor]);
  if(!$q->fetchColumn())throw new DomainException('Přijetí vyžaduje aktuální oprávnění registráře.');
+ // Role edits lock the assignment itself; an outer account lock does not lock an EXISTS subquery.
+ $q=$pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='registrar'".$lock);$q->execute([$actor]);
+ if(!$q->fetchColumn()){$q=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$q->execute([$actor]);if(!$q->fetchColumn())throw new DomainException('Přijetí vyžaduje aktuální oprávnění registráře.');}
 }
 /** Paper evidence never impersonates online acceptance by the payer. */
 function clubAdmissionPaperEvidence(PDO $pdo,int $person,int $program,array $terms,array $paperIds):array {

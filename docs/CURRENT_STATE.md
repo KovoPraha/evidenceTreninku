@@ -1,5 +1,18 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — navazující společná kontrola R01–R44 dokončena lokálně.**
+Větev `codex/club-followup-review-20261023`, základ `7aff7884`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
+[Předání oprav](CLUB_AUTONOMOUS_FOLLOWUP.md),
+[aktuální důkazy](verification/autonomous-followup/RESULTS.md).
+**1 545 testů / 31 583 assertions PASS; obnova 326 tabulek a 175 souborů PASS.**
+136 migrací current, kontrakt `2026-10-23.3`. Opravena i nalezená závada místní
+databáze: původní datadir zůstal zachovaný; nejistota historie jediné nečitelné
+tabulky je uvedena v protokolu. Produkce, skutečný pilot a převzetí účetní
+zůstávají beze změny, D01–D16 odložené. Žádný push, merge ani deploy.
+
+Následuje historické předání před touto navazující kontrolou:
+
 Lokální vývoj 23. 10. 2026: **dokončená technická příprava R38–R44** a
 závěrečná finanční regrese ve větvi `codex/migration-cutover-r38-r44-20261023`.
 Pracovní kopie `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.

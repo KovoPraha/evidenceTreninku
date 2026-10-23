@@ -1,10 +1,18 @@
 # Společný systém oddílu — předání místní implementace
 
 Pracovní kopie: `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
-Větev: `codex/migration-cutover-r38-r44-20261023`.
+Větev: `codex/club-followup-review-20261023`.
 Stav: 23. 10. 2026. Toto předání rozlišuje implementaci, místní ověření
 a skutečné převzetí provozu. Žádný balík tohoto realizačního plánu nebyl
 v rámci práce nasazen a žádná skutečná agenda nebyla převedena.
+
+Navazující společná kontrola opravila souběžnou autorizaci, výměny a
+dobropisy, soukromé týdenní reporty, dostupnost navazujících agend a místní
+spuštění. [Rozsah a předání](CLUB_AUTONOMOUS_FOLLOWUP.md),
+[poslední ověření](verification/autonomous-followup/RESULTS.md):
+1 545 testů / 31 583 assertions PASS, nová obnova 326 tabulek a 175 souborů.
+Protokol zahrnuje i opravu izolované databáze se zachováním původních souborů
+a výslovně popsanou nejistotou historie jedné nečitelné tabulky.
 
 ## Co lze zkontrolovat nyní
 
@@ -35,7 +43,8 @@ Zahrnuje i záměrně neúplné a zamítnuté případy pro negativní přejímk
 - [R25–R30: členové a sport](MEMBERSHIP_SPORTS_R25_R30_IMPLEMENTATION.md).
 - [R31–R37: klubová administrativa a účetní předání](CLUB_ADMINISTRATION_R31_R37_IMPLEMENTATION.md).
 - [R38–R44: migrace a technická příprava přechodu](CLUB_MIGRATION_R38_R44_IMPLEMENTATION.md).
-- [Závěrečné místní ověření](verification/r38-r44/RESULTS.md).
+- [Původní místní ověření R38–R44](verification/r38-r44/RESULTS.md).
+- [Navazující opravy a konečné společné ověření](verification/autonomous-followup/RESULTS.md).
 
 Každý balík má vlastní protokol. Starší počty testů popisují tehdejší revizi;
 závěrečný protokol určuje ověření posledního společného stavu.

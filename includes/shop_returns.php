@@ -7,8 +7,7 @@ function shopReturnJson(array $value):string {return json_encode($value,JSON_THR
 function shopReturnActor(PDO $pdo,int $actor,string $reason,bool $confirmed,string $key,string $scope='operations'):void {
  if(!$confirmed||mb_strlen(trim($reason))<10||mb_strlen($reason)>1000||!preg_match('/^[A-Za-z0-9:_.-]{8,90}$/D',$key))throw new DomainException('Potvrďte úkon a uveďte interní důvod (10–1000 znaků).');
  $roles=$scope==='finance'?['finance_manager']:($scope==='stock'?['catalog_manager']:['catalog_manager','order_operator']);
- $s=$pdo->prepare('SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code IN ('.implode(',',array_fill(0,count($roles),'?')).')) OR EXISTS(SELECT 1 FROM staff_superadmins a WHERE a.trainer_id=t.id))'.shopReturnLock($pdo));$s->execute([$actor,...$roles]);
- if(!$s->fetchColumn())throw new DomainException('Nemáte aktuální oprávnění k tomuto úkonu.');
+ try{shopInventoryAssertActorRoles($pdo,$actor,$roles);}catch(ShopInventoryException $e){throw new DomainException('Nemáte aktuální oprávnění k tomuto úkonu.',0,$e);}
 }
 function shopReturnOwner(PDO $pdo,int $owner):void {
  $s=$pdo->prepare("SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code IN ('catalog_manager','order_operator')) OR EXISTS(SELECT 1 FROM staff_superadmins a WHERE a.trainer_id=t.id))");$s->execute([$owner]);if(!$s->fetchColumn())throw new DomainException('Vyberte aktivní obsluhu odpovědnou za případ.');
@@ -148,6 +147,9 @@ function shopReturnCancel(PDO $pdo,int $id,int $revision,int $actor,string $reas
  return shopReturnChange($pdo,$id,$revision,'cancelled',[],$actor,$reason,$confirmed,$key,static function(array $r)use($pdo,$actor,$reason,$key):void {
   if($r['physical_state']!=='requested'||$r['finance_state']!=='pending'||$r['exchange_issue_movement_id']||$r['correction_document_id'])throw new DomainException('Zrušit lze jen neprovedený požadavek bez fyzického a účetního řešení.');
   $q=$pdo->prepare("SELECT COUNT(*) FROM accounting_documents WHERE source_type='shop_return' AND source_id=? AND (status='issued' OR number IS NOT NULL)");$q->execute([$r['id']]);if($q->fetchColumn())throw new DomainException('Výměna má vydaný nebo již číslovaný doklad; nejprve samostatně vypořádejte účetní povinnost.');$q=$pdo->prepare("SELECT COALESCE(SUM(amount_minor),0) FROM accounting_allocations WHERE case_type='shop_return' AND case_id=?");$q->execute([$r['id']]);if((int)$q->fetchColumn()!==0)throw new DomainException('Výměna má přidělené peníze; nejprve vypořádejte úhradu.');
+  // Unallocated receipts and released allocations still represent actual customer money.
+  // Their cancellation belongs to the financial reversal workflow, not the operator shortcut.
+  $q=$pdo->prepare("SELECT COUNT(*) FROM accounting_movements m WHERE m.kind='income' AND m.amount_minor>0 AND ((m.case_type='shop_return' AND m.case_id=?) OR EXISTS(SELECT 1 FROM accounting_allocations a WHERE a.movement_id=m.id AND a.case_type='shop_return' AND a.case_id=? AND a.amount_minor>0))");$q->execute([$r['id'],$r['id']]);if($q->fetchColumn())throw new DomainException('Výměna má doložený finanční příjem; zrušení musí dokončit hospodář po skutečném vypořádání peněz.');
   if($r['exchange_reservation_id'])shopInventoryReleaseExchangeInTransaction($pdo,(int)$r['exchange_reservation_id'],$key.':stock',$actor,$reason);
   $pdo->prepare("UPDATE shop_return_cases SET state='cancelled' WHERE id=?")->execute([$r['id']]);
  });

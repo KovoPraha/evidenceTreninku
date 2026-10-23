@@ -1,0 +1,22 @@
+{
+    "status": "PASS",
+    "checks": 11,
+    "results": [
+        "Repeated saves preserve separate original files",
+        "PDF stored outside web root",
+        "Real PDF generated",
+        "Authorized actual HTTP download matches PDF checksum",
+        "Private attachment and no-store response",
+        "Other active workspace cannot download: coach",
+        "Other active workspace cannot download: finance_manager",
+        "Anonymous download denied",
+        "Legacy public report directory is denied by local router",
+        "Traversal denied",
+        "Revoked sports lead cannot reuse cached authenticated cookie"
+    ],
+    "private_report_ids": [
+        "6e24f008ec42af956f7361483d241dea",
+        "05ca56a59b45b8e52895a7a40f728c1b"
+    ],
+    "production_mutations": false
+}

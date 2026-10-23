@@ -14,7 +14,7 @@ function sportsActivityAssertActor(PDO $pdo,int $actor,int $personId):void {
     if($actor<1||$actor!==(int)($_SESSION['trener_id']??0)||!in_array($position,['coach','sports_lead'],true))throw new RuntimeException('Sportovní evidence není v této pracovní pozici dostupná.');
     $lock=$pdo->inTransaction()&&$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
     $s=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);$s->execute([$actor]);if(!$s->fetchColumn())throw new RuntimeException('Pracovní oprávnění již neplatí.');
-    $s=$pdo->prepare('SELECT 1 FROM staff_user_positions WHERE trainer_id=? AND position_code=?');$s->execute([$actor,$position]);
+    $s=$pdo->prepare('SELECT 1 FROM staff_user_positions WHERE trainer_id=? AND position_code=?'.$lock);$s->execute([$actor,$position]);
     if(!$s->fetchColumn())throw new RuntimeException('Pracovní oprávnění již neplatí.');
     if($personId>0&&!coachScopeCanViewPerson($pdo,$personId))throw new RuntimeException('Sportovec není ve vašem pracovním rozsahu.');
 }

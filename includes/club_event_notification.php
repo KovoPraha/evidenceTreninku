@@ -336,8 +336,10 @@ function clubEventNotificationResolveManually(PDO $pdo,int $id,int $actor,string
     $pdo->beginTransaction();
     try {
         $lock=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
-        $q=$pdo->prepare("SELECT t.id FROM treneri t WHERE t.id=? AND t.aktivni=1 AND (EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code='order_operator') OR EXISTS(SELECT 1 FROM staff_superadmins a WHERE a.trainer_id=t.id))".$lock);
+        $q=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);
         $q->execute([$actor]);if (!$q->fetchColumn()) throw new ClubEventNotificationException('Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek.');
+        $q=$pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='order_operator'".$lock);$q->execute([$actor]);
+        if (!$q->fetchColumn()) {$q=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$q->execute([$actor]);if (!$q->fetchColumn()) throw new ClubEventNotificationException('Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek.');}
         $q=$pdo->prepare('SELECT status,attempts,last_error FROM club_event_notifications WHERE id=?'.$lock);$q->execute([$id]);$row=$q->fetch(PDO::FETCH_ASSOC);
         if (!$row || $row['status']!=='failed' || !preg_match('/^(manual_contact_required|delivery_blocked|delivery_unknown):/',(string)$row['last_error'])) throw new ClubEventNotificationException('Tento výsledek nelze vyřídit osobním předáním. Nejprve ověřte chybu fronty.');
         $q=$pdo->prepare('SELECT action,attempts_before FROM club_event_notification_events WHERE notification_id=? ORDER BY id DESC LIMIT 1');$q->execute([$id]);$last=$q->fetch(PDO::FETCH_ASSOC);

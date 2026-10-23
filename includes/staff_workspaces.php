@@ -311,7 +311,7 @@ function staffRouteOwners(): array
             'ajax_global_search.php','download_import.php','edit_zavod.php','edit_zavod_form.php',
             'export.php','export_csv.php','export_draha.php','export_seznam.php','export_uci.php','export_xls.php',
             'formular_zavod.php','import_vysledku_zavodu.php','oznameni.php','prehled_zavodu.php',
-            'search_sportovci.php','sprava_treninku.php','tydenni_report.php','ulozit_zavod.php',
+            'search_sportovci.php','sprava_treninku.php','tydenni_report.php','weekly_report_file.php','ulozit_zavod.php',
             'update_trenink.php','update_zavod.php','verejny_prehled.php','vypis_vsech_vykazu.php',
             'zavod_detail.php',
         ],
@@ -417,6 +417,29 @@ function staffPositionMenuGroups(string $position, bool $isLocal): array
         if ($items === []) continue;
         $group['items'] = $items;
         $groups[] = $group;
+    }
+    // A delegated screen must be reachable by its actual operator without
+    // changing the canonical owner or exposing unrelated actions from that role.
+    $workflowRoutes = [
+        'coach' => ['club_rewards_admin.php'],
+        'sports_lead' => ['planovac.php', 'training_closure_admin.php', 'sports_activity_admin.php', 'club_rewards_admin.php'],
+        'catalog_manager' => ['shop_returns_admin.php'],
+        'finance_manager' => ['eshop_inventory_admin.php', 'shop_returns_admin.php'],
+    ][$position] ?? [];
+    $workflowItems = [];
+    foreach (staffPositionDefinitions() as $ownerDefinition) {
+        foreach ($ownerDefinition['groups'] as $ownerGroup) {
+            foreach ($ownerGroup['items'] as $item) {
+                if (in_array($item['route'], $workflowRoutes, true)
+                    && in_array($position, staffRouteAllowedPositions($item['route']), true)
+                    && ($isLocal || empty($item['local_only']))) {
+                    $workflowItems[] = $item;
+                }
+            }
+        }
+    }
+    if ($workflowItems !== []) {
+        $groups[] = ['label'=>'Navazující agenda', 'icon'=>'arrow-left-right', 'items'=>$workflowItems];
     }
     if (in_array($position,['registrar','order_operator','finance_manager','sports_lead'],true)) {
         $groups[]=['label'=>'K dořešení','icon'=>'clipboard-check','items'=>[
