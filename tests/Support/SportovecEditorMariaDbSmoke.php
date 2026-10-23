@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/SportovecEditorDetailsFixture.php';
+require_once dirname(__DIR__, 2) . '/includes/person_audit_timeline.php';
 $port = getenv('EVIDENCE_MARIADB_SMOKE_PORT') ?: '3306';
 if (!ctype_digit($port)) throw new RuntimeException('Invalid test port.');
 $server = new PDO('mysql:host=127.0.0.1;port=' . $port . ';charset=utf8mb4', 'root', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -36,5 +37,12 @@ try {
     $payments = sportovecEditorPayments($pdo, 10);
     $check(count($payments['charges']) === 2 && count($payments['orders']) === 2 && count($payments['receipts']) === 1, 'all assigned payment scopes');
     $check((int)$payments['orders'][0]['athlete_items_minor'] === 3000, 'shared order attribution');
-    echo json_encode(['ok' => true, 'migration' => true, 'encrypted_birth_number' => true, 'parents' => true, 'roster' => true, 'payments' => true], JSON_THROW_ON_ERROR) . PHP_EOL;
+    // Imported legacy name columns can use different collations. Search must
+    // work with native prepared statements without rewriting any person data.
+    $pdo->exec('ALTER TABLE sportovci MODIFY jmeno TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, MODIFY prijmeni TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci');
+    $check(array_column(personAuditSearch($pdo, 'Jedna LOCALHOST'), 'id') === [10], 'mixed-collation surname-first search');
+    $check(array_column(personAuditSearch($pdo, 'LOCALHOST Jedna'), 'id') === [10], 'mixed-collation first-name-first search');
+    $check(array_column(personAuditSearch($pdo, '10'), 'id') === [10], 'exact person ID search');
+    $check(personAuditSearch($pdo, '%') === [], 'literal wildcard search');
+    echo json_encode(['ok' => true, 'migration' => true, 'encrypted_birth_number' => true, 'parents' => true, 'roster' => true, 'payments' => true, 'identity_search_mixed_collations' => true], JSON_THROW_ON_ERROR) . PHP_EOL;
 } finally { $server->exec("DROP DATABASE IF EXISTS `$database`"); }

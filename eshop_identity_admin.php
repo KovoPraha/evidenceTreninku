@@ -7,6 +7,7 @@ require_once __DIR__ . '/includes/account_person_role.php';
 require_once __DIR__ . '/includes/account_person_claim.php';
 require_once __DIR__ . '/includes/person_match.php';
 require_once __DIR__ . '/includes/athlete_registration_admin.php';
+require_once __DIR__ . '/includes/person_audit_timeline.php';
 
 if (!isset($_SESSION['trener_id']) || !staffActivePositionIs('registrar')) {
     header('Location: login.php');
@@ -310,14 +311,12 @@ $accounts = $pdo->query(
 $peopleTotal = (int)$pdo->query('SELECT COUNT(*) FROM sportovci')->fetchColumn();
 $personSearch = trim((string)($_GET['person_q'] ?? ''));
 $people = [];
-if (mb_strlen($personSearch, 'UTF-8') >= 2) {
-    $personSearchStatement = $pdo->prepare(
-        'SELECT id,jmeno,prijmeni,narozeni,stav_clenstvi FROM sportovci '
-        . 'WHERE jmeno LIKE :q OR prijmeni LIKE :q OR CONCAT(prijmeni,\' \',jmeno) LIKE :q '
-        . 'OR CAST(id AS CHAR)=:id ORDER BY prijmeni,jmeno,narozeni,id LIMIT 100'
-    );
-    $personSearchStatement->execute([':q'=>'%' . $personSearch . '%', ':id'=>$personSearch]);
-    $people = $personSearchStatement->fetchAll(PDO::FETCH_ASSOC);
+if (ctype_digit($personSearch) || mb_strlen($personSearch, 'UTF-8') >= 2) {
+    try {
+        $people = personAuditSearch($pdo, $personSearch, 100);
+    } catch (InvalidArgumentException $exception) {
+        $errors[] = $exception->getMessage();
+    }
 }
 $relations = accountPersonRoleList($pdo);
 $events = accountPersonRoleEvents($pdo);
@@ -364,7 +363,7 @@ $activeRelations = count(array_filter(
         <div class="card-body py-2">
             <form method="get" class="d-flex gap-2 align-items-center flex-wrap">
                 <label class="form-label mb-0 fw-semibold" for="person-q">Vyhledat osobu pro schválení</label>
-                <input id="person-q" class="form-control form-control-sm" style="max-width:360px" name="person_q" value="<?= identityAdminH($personSearch) ?>" placeholder="Alespoň 2 znaky jména, příjmení nebo celé ID">
+                <input id="person-q" class="form-control form-control-sm" style="max-width:360px" name="person_q" maxlength="100" value="<?= identityAdminH($personSearch) ?>" placeholder="Alespoň 2 znaky jména, příjmení nebo celé ID">
                 <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search me-1"></i>Hledat</button>
                 <?php if ($personSearch !== ''): ?><a class="btn btn-sm btn-outline-secondary" href="eshop_identity_admin.php">Zrušit</a><?php endif; ?>
                 <span class="text-muted small"><?= $personSearch === '' ? 'Seznam se nenačítá celý; hledání funguje i při desítkách tisíc osob.' : 'Nalezeno: ' . count($people) ?></span>

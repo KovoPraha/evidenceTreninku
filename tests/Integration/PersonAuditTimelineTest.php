@@ -50,6 +50,9 @@ final class PersonAuditTimelineTest extends TestCase
         $pdo->exec("INSERT INTO sportovci VALUES (1,'Eva','Sto%','2014-01-01','','','aktivni'),(12,'Eva','Jina','2014-01-01','','','aktivni')");
         self::assertSame([1], array_column(personAuditSearch($pdo, 'Sto%'), 'id'));
         self::assertSame([1], array_column(personAuditSearch($pdo, '1'), 'id'));
+        self::assertSame([12], array_column(personAuditSearch($pdo, 'Jina Eva'), 'id'));
+        self::assertSame([12], array_column(personAuditSearch($pdo, 'Eva Jina'), 'id'));
+        self::assertSame([], personAuditSearch($pdo, ''));
     }
 
     public function testIdentityRemapRetainsEvidenceOnPreviousPerson(): void

@@ -11,6 +11,7 @@ require_once __DIR__ . '/includes/roster_target_selector.php';
 require_once __DIR__ . '/includes/training_rsvp.php';
 require_once __DIR__ . '/includes/club_makeup.php';
 require_once __DIR__ . '/includes/training_closure.php';
+require_once __DIR__ . '/includes/training_planner_view.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -460,7 +461,7 @@ try {
                                 </span>
                             </div>
                             <div class="text-muted small mt-1" style="font-size:.8rem">
-                                <?= h(mb_substr(strtok(strip_tags($oz['obsah_html']), "\n") ?: '', 0, 160)) ?>
+                                <?= h(trainingPlannerAnnouncementExcerpt((string)$oz['obsah_html'])) ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -483,19 +484,19 @@ try {
     $warningPlans = $stWarn->fetchAll(PDO::FETCH_ASSOC);
     if ($filterTeam > 0) $warningPlans = trainingRosterBridgeFilterPlanRows($pdo,$warningPlans,$filterTeam);
     $pocetNezaevidovanych = count($warningPlans);
+    $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
     ?>
     <?php if ($pocetNezaevidovanych > 0): ?>
     <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 py-2">
         <div>
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong><?= $pocetNezaevidovanych ?></strong>
-            plánovan<?= $pocetNezaevidovanych === 1 ? 'ý trénink' : ($pocetNezaevidovanych < 5 ? 'é tréninky' : 'ých tréninků') ?>
-            proběhl<?= $pocetNezaevidovanych === 1 ? '' : 'o' ?>, ale dosud nej<?= $pocetNezaevidovanych === 1 ? 'je' : 'jsou' ?> zaevidován<?= $pocetNezaevidovanych === 1 ? '' : 'y' ?>.
+            Počet minulých plánovaných lekcí bez zápisu: <strong><?= $pocetNezaevidovanych ?></strong>.
+            Ověřte, zda se uskutečnily, a doplňte evidenci nebo zrušení.
         </div>
         <div class="d-flex gap-2 flex-wrap">
-            <a href="?datum=<?= h(date('Y-m-d', strtotime('-7 days'))) ?>&<?= http_build_query(['jen_moje' => $filterJenMoje ? 1 : 0, 'trener_id' => $filterTrener, 'skupina_id' => $filterSkupina, 'team_id' => $filterTeam]) ?>"
+            <a href="?datum=<?= h((string)$oldestPendingDate) ?>&<?= h(http_build_query(['jen_moje' => $filterJenMoje ? 1 : 0, 'trener_id' => $filterTrener, 'skupina_id' => $filterSkupina, 'team_id' => $filterTeam])) ?>"
                class="btn btn-warning btn-sm">
-                <i class="bi bi-arrow-left me-1"></i>Přejít na minulý týden
+                <i class="bi bi-arrow-left me-1"></i>Zobrazit nejstarší nezapsanou lekci
             </a>
             <?php if (roleAtLeast('hlavni')): ?>
             <a href="#"
