@@ -1,0 +1,82 @@
+{
+  "recorded_at": "2026-10-23T18:35:49.5841537+02:00",
+  "pull_request": 175,
+  "source_head": "d794455f",
+  "release_sha": "ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30",
+  "ci_tests_run": 39987112156,
+  "ci_codeql_run": 39987105652,
+  "linux_tests": 1650,
+  "linux_assertions": 32947,
+  "targeted_tests": 232,
+  "targeted_assertions": 2491,
+  "node_tests": 8,
+  "checks": [
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/runs/120529267322",
+      "name": "CodeQL",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987112156/job/120529052821",
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987112156/job/120529052356",
+      "name": "PHPUnit na PHP 8.2",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987112156/job/120529052570",
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987105652/job/120529033633",
+      "name": "Analyze (actions)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987105652/job/120529033673",
+      "name": "Analyze (javascript-typescript)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987105652/job/120529033788",
+      "name": "Analyze (python)",
+      "state": "SUCCESS"
+    }
+  ],
+  "deployment": {
+    "id": 39987332095,
+    "state": "success",
+    "uat_approved": false,
+    "import_programs": false,
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987332095",
+    "backup_verified": true,
+    "variable_symbols_unchanged": true,
+    "private_key_http_status": 403,
+    "http_smoke_status": 200
+  },
+  "browser": {
+    "environment": "B1",
+    "domain_writes": "synthetic_local_ui_only",
+    "person": 92,
+    "plan": 15,
+    "closed_training": 31,
+    "closure_version": 2,
+    "back_reproduction_trainings": [
+      32,
+      33
+    ],
+    "back_fixed_training": 34,
+    "production_authenticated": "deferred_session_expired",
+    "human_acceptance": "NOT_PERFORMED",
+    "accountant_acceptance": "NOT_ACCEPTED",
+    "production_public_pages": [
+      "booking/treninky.php",
+      "booking/cyklisticke_krouzky.php"
+    ]
+  },
+  "main_ci_run": 39987280849
+}

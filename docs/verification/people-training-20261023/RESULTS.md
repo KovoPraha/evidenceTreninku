@@ -27,7 +27,7 @@ Před zápisy probe PASS, 326 čitelných vlastněných tabulek; chybějí pouze
 | P2 | Historické soupisky mohly rozmnožit řádky objednávky a ukazovat nesprávný stav v Moje programy. | Vazba na konkrétní `club_program_enrollment:<id>`; test aktuální i historické účasti. |
 | P2 | Odebrání ověření e-mailu nemuselo okamžitě skrýt navázané přehledy. | Přehled kontroluje současný aktivní a ověřený účet, nikoliv jen historického plátce. Druhý oprávněný rodič zůstává funkční. Deaktivaci již předtím blokoval auth middleware; nově uzavřený konkrétní problém je revokace ověření. |
 | P2 | Chybný interval docházky zahodil rozepsané údaje. | Po odmítnutí zůstávají časy, důvody, účastníci, trenéři, potvrzení a původní verze; explicitní prázdný výběr se neobnovuje z DB. Browser a testy. |
-| P2 | Odmítnutá přímá editace uzavřeného tréninku se vrátila bez viditelné chyby. | Escapovaná chybová zpráva s odkazem na verzovanou opravu stejného tréninku. Browser po POST31 vidí odmítnutí; délka 1,25 h a původní účastník zachováni. |
+| P2 | Odmítnutá přímá editace uzavřeného tréninku se vrátila bez viditelné chyby. | Escapovaná chybová zpráva s odkazem na verzovanou opravu stejného tréninku. Browser po POST 31 vidí odmítnutí; délka 1,25 h a původní účastník zachováni. |
 
 ## Skutečný browser průchod — osoby
 
@@ -40,39 +40,49 @@ Před zápisy probe PASS, 326 čitelných vlastněných tabulek; chybějí pouze
 
 ## Skutečný browser průchod — kurz, plán a trénink
 
-Navazuje na [předchozí přejímku](../browser-acceptance-20261023/RESULTS.md): osoba91 Anna TEST, program16, nabídka15, soupiska20, uhrazená objednávka31 za1200Kč. V tomto průchodu se finanční záznamy neměnily. Kontakt či archivace jiné osoby nepřenesly objednávku ani účast.
+Navazuje na [předchozí přejímku](../browser-acceptance-20261023/RESULTS.md): osoba 91 Anna TEST, program 16, nabídka 15, soupiska 20, uhrazená objednávka 31 za 1 200 Kč. V tomto průchodu se finanční záznamy neměnily. Kontakt či archivace jiné osoby nepřenesly objednávku ani účast.
 
-- **Plán15** vytvořen 23. 10. 2026, 10:00–11:00, Cvičení, soupiska20, neveřejný. Příprava ukázala jednu očekávanou osobu91 a jednu odpověď „bez odpovědi“; RSVP nebylo vydáváno za docházku.
-- Z plánu přes skutečný formulář vznikl **trénink31**, předvybraná osoba91, dva trenéři326/327, měření Běh1000m/05:12.345. Plán následně Evidováno, žádný čekající záznam.
-- Editace změnila měření na **05:10.125**, náplň na suffix „– opraveno“, zachovala osobu91 a oba trenéry. Našeptávač fungoval i Enterem.
-- Neplatný interval 10:00–09:00 odmítnut; po opravě formuláře zůstal celý rozepsaný obsah. Změna pouze konce na11:00 umožnila **uzavření v1** v18:05:16.
-- Následná oprava do11:15 s důvodem vytvořila **v2** v18:06:08; historie obsahuje obě verze. Přímý POST editace uzavřeného tréninku byl odmítnut s viditelnou hláškou. Žádná odměna pro31 nebyla vytvořena či vyplacena.
-- Karta91/Sport ukázala oba tréninky30 a31 se skutečnou účastí. Zdravotní přehled správně uvedl, že sledovaný podklad není určen a musí se ověřit požadavek s registrářem; platnost nebyla domyšlena.
+- **Plán 15** vytvořen 23. 10. 2026, 10:00–11:00, Cvičení, soupiska 20, neveřejný. Příprava ukázala jednu očekávanou osobu 91 a jednu odpověď „bez odpovědi“; RSVP nebylo vydáváno za docházku.
+- Z plánu přes skutečný formulář vznikl **trénink 31**, předvybraná osoba 91, dva trenéři 326/327, měření Běh 1000 m / 05:12.345. Plán následně Evidováno, žádný čekající záznam.
+- Editace změnila měření na **05:10.125**, náplň na suffix „– opraveno“, zachovala osobu 91 a oba trenéry. Našeptávač fungoval i Enterem.
+- Neplatný interval 10:00–09:00 odmítnut; po opravě formuláře zůstal celý rozepsaný obsah. Změna pouze konce na 11:00 umožnila **uzavření v1** v 18:05:16.
+- Následná oprava do 11:15 s důvodem vytvořila **v2** v 18:06:08; historie obsahuje obě verze. Přímý POST editace uzavřeného tréninku byl odmítnut s viditelnou hláškou. Žádná odměna pro 31 nebyla vytvořena či vyplacena.
+- Karta 91/Sport ukázala oba tréninky 30 a31 se skutečnou účastí. Zdravotní přehled správně uvedl, že sledovaný podklad není určen a musí se ověřit požadavek s registrářem; platnost nebyla domyšlena.
 
 ## Opakované vytvoření — dodatečně reprodukovaná chyba
 
 Po prvním vytvoření tréninku **32** (23.10., 0,25h, náplň „LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání“) návrat Zpět vyvolal nový GET formuláře. Browser obnovil textové hodnoty, ale vydal se nový formulářový klíč. Druhé odeslání vytvořilo **33**, bez obnoveného JS výběru účastníka. Nešlo o opakování stejného serverového klíče; potvrzeno pouze čtecí kontrolou místního runtime. Původní porovnání atributu v browser nástroji nebylo dostatečným důkazem identity klíče.
 
-Nasazení bylo do opravy tohoto toku pozastaveno. Záznamy32/33 zůstávají syntetickými důkazy v B1, nebyly vymazány ani uzavřeny.
+Nasazení bylo do opravy tohoto toku pozastaveno. Záznamy 32/33 zůstávají syntetickými důkazy v B1, nebyly vymazány ani uzavřeny.
 
-**Opakování po opravě PASS:** první GET po ověření oprávnění přesměruje na stabilní adresu s vlastním klíčem formuláře. Nový test vytvořil pouze **trénink34**, 0,50 h, stejnou soupisku20 a osobu91. Tlačítko Zpět následně otevřelo přehled s textem „Tento formulář již byl odeslán. Nejprve ověřte výsledek v přehledu tréninků.“ Žádný druhý formulář nebyl nabídnut, 34 je v přehledu jednou. [Browser důkaz](training-back-protected.jpg). Jiný záměrně otevřený nový formulář stále funguje nezávisle. Poslední opravu nezávisle schválil druhý agent; samostatný replay stejného POST ověřují automatické testy, nikoliv tato Back zkouška.
+**Opakování po opravě PASS:** první GET po ověření oprávnění přesměruje na stabilní adresu s vlastním klíčem formuláře. Nový test vytvořil pouze **trénink 34**, 0,50 h, stejnou soupisku 20 a osobu 91. Tlačítko Zpět následně otevřelo přehled s textem „Tento formulář již byl odeslán. Nejprve ověřte výsledek v přehledu tréninků.“ Žádný druhý formulář nebyl nabídnut, 34 je v přehledu jednou. [Browser důkaz](training-back-protected.jpg). Jiný záměrně otevřený nový formulář stále funguje nezávisle. Poslední opravu nezávisle schválil druhý agent; samostatný replay stejného POST ověřují automatické testy, nikoliv tato Back zkouška.
 
 ## Testy a meze důkazu
 
 Dosavadní plná Windows sada: **1648 testů, 32905 assertions, 1 selhání, 3 přeskočení**. Jediné selhání GlobalFunctionAvailabilityTest je známá platformní absence posix_geteuid na Windows; aplikační volání je chráněné function_exists. Skener ani aplikace nebyly obcházeny. [Celý výstup](phpunit-full-windows.txt). Následná změna ochrany browser Back vyžaduje novou cílenou sadu a finální Linux CI.
 
-Před doplněním browser Back prošlo 8 Node testů, skutečná persistence session přes uzavření a opětovné otevření a lint32 změněných PHP souborů. [JavaScript](javascript-tests.txt), [session](session-smoke.txt). Dílčí agentní sady: osoby88/562, propojení171/2156, tréninky65/325; jejich počty se překrývají a nesčítají do nezávislého celkového počtu.
+Před doplněním browser Back prošlo 8 Node testů, skutečná persistence session přes uzavření a opětovné otevření a lint 32 změněných PHP souborů. [JavaScript](javascript-tests.txt), [session](session-smoke.txt). Dílčí agentní sady: osoby 88/562, propojení 171/2156, tréninky 65/325; jejich počty se překrývají a nesčítají do nezávislého celkového počtu.
 
 Rychlý anonymní checkout s novým účtem je pozitivně ověřen integračními testy, nikoliv browser založením nových přihlašovacích údajů. Historické položky s chybějící nabídkou nebyly opraveny odhadem; případná inventura a individuální náprava zůstávají samostatným krokem. Hromadné změny osob, kopie/rušení celých sérií, upload fotografií a všechny sportovní disciplíny nebyly v tomto browser průchodu opakovány.
 
-Ochrana opakování je session, ne trvalá databázová idempotence: 50 formulářů, platnost2h, vazba na pracovníka/plán. Pád s nejasným výsledkem se automaticky neopakuje a odkazuje na kontrolu přehledu. Nový záměrně otevřený formulář ani jiná relace nejsou deduplikovány podle podobnosti náplně.
+Ochrana opakování je session, ne trvalá databázová idempotence: 50 formulářů, platnost 2 h, vazba na pracovníka/plán. Pád s nejasným výsledkem se automaticky neopakuje a odkazuje na kontrolu přehledu. Nový záměrně otevřený formulář ani jiná relace nejsou deduplikovány podle podobnosti náplně.
 
 ## Zápis výsledků a produkční ověření
 
-Do `testovaci_scenare.php` doplněny **B01/B02/B05/B26/B29 = PARTIAL**, označené TECHNICKÁ KONTROLA AGENTEM. Zachovány starší výsledky B03/B09/B10/B15. Souhrn **PASS0 / PARTIAL9 / NETESTOVÁNO31**; A01–A10 stále0/10. [Skutečně stažený Markdown export](acceptance-hub-export.md) byl před zařazením přečten, bez přihlašovacích údajů a ostrých osobních dat. Novější lidská sada43 scénářů zůstává NEPROVEDENO a účetní převzetí NEPŘEVZATO.
+Do `testovaci_scenare.php` doplněny **B01/B02/B05/B26/B29 = PARTIAL**, označené TECHNICKÁ KONTROLA AGENTEM. Zachovány starší výsledky B03/B09/B10/B15. Souhrn **PASS 0 / PARTIAL 9 / NETESTOVÁNO 31**; A01–A10 stále 0/10. [Skutečně stažený Markdown export](acceptance-hub-export.md) byl před zařazením přečten, bez přihlašovacích údajů a ostrých osobních dat. Novější lidská sada 43 scénářů zůstává NEPROVEDENO a účetní převzetí NEPŘEVZATO.
 
 Při čerstvém načtení produkční administrace přihlášení vypršelo. Dříve otevřená stránka stále ukazovala starý release e78af565, ale není to aktuální read-only důkaz po reloadu. Přihlášená produkční prohlídka se proto odkládá; nebude nahrazena tvrzením, že úspěšný deploy rovná se úplné UAT.
 
-Konečný stav vydání a opakované zkoušky následují po dokončení kontrol.
+Konečný stav vydání je uveden na konci protokolu.
 
-Finální místní cílená sada po poslední opravě: **232 testů / 2491 assertions PASS**, [výstup](phpunit-targeted.txt). Tréninková dílčí sada po Back opravě 67/335 PASS. Opakovaný read-only B1 probe v18:22:38 PASS: 326 tabulek, žádné chybějící povinné tabulky, transporty vypnuté. Finální export brány stažen a přečten v18:23:07, zachovává všech devět PARTIAL a žádné lidské PASS.
+Finální místní cílená sada po poslední opravě: **232 testů / 2491 assertions PASS**, [výstup](phpunit-targeted.txt). Tréninková dílčí sada po Back opravě 67/335 PASS. Opakovaný read-only B1 probe v 18:22:38 PASS: 326 tabulek, žádné chybějící povinné tabulky, transporty vypnuté. Finální export brány stažen a přečten v 18:23:07, zachovává všech devět PARTIAL a žádné lidské PASS.
+
+## Konečný stav vydání
+
+**Nasazeno:** [PR #175](https://github.com/KovoPraha/evidenceTreninku/pull/175), release **ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30**; [chráněný deploy 39987332095](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39987332095) **SUCCESS** v 18:33:59 SELČ. Deploy znovu spustil celou sadu **1 650 testů / 32 947 assertions PASS**, ověřil zálohu mimo webroot, zachování dosavadních VS a HTTP 200; soukromý klíč z HTTP vrací 403. UAT schválení zůstalo false a import kroužků byl vypnutý. Nebyla přidána migrace ani zapnuta integrace.
+
+Finální PR CI 39987112156, CodeQL 39987105652 a následná main CI 39987280849 prošly včetně MariaDB 10.3 a 11.4. CodeQL původně odhalil neúplné rozpoznávání script tagů v novém testovacím extraktoru; rozpoznávání velikosti písmen a koncového HTML tagu bylo opraveno, bez vypnutí pravidla. Node testy po opravě 8/8 PASS. První pokus spustit deploy skončil HTTP 500 na GitHub API; ověřeno, že běh nevznikl, následný pokus založil jediný úspěšný běh.
+
+Browser po nasazení načetl veřejný rozvrh a katalog kroužků. V říjnovém veřejném rozvrhu nejsou zveřejněné tréninky; tímto prázdným výstupem nelze dokazovat úplnost publikace ani všechny hranice soukromí. [Produkční veřejná obrazovka](production-public-training.jpg). Čerstvé otevření připravenosti administrace vrací přihlášení. **Přihlášená produkční prohlídka osob a tréninků zůstává odložená kvůli vypršené relaci**; provedený browser důkaz změnových toků pochází z B1.
+
+[Strojové výsledky a odkazy](release-checks.json). Následný commit této dokumentace nemění běžící kód a nevyžaduje nové nasazení. Lidská přejímka, účetní převzetí, posouzení případných historických rychlých přihlášek bez nabídky a ostrý přechod ze starých systémů zůstávají otevřené samostatné kroky.
