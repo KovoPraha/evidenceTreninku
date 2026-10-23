@@ -8,7 +8,10 @@ V izolovaném B1 prošel řetězec sklad → osobní prodej → úhrada → čá
 Všechny nové provozní záznamy jsou syntetické a pouze místní. Účetní export
 má 20 ověřených technických kontrol, ale zůstává NEÚPLNÝ bez schváleného
 členění a odsouhlasení. Lidských 43 scénářů je nadále NEPROVEDENO,
-účetní převzetí NEPŘEVZATO; stav vydání oprav je uveden v protokolu.
+účetní převzetí NEPŘEVZATO. Opravy PR #173 jsou nasazeny jako `e78af565`,
+chráněný deploy **39937236344 SUCCESS**, Linux **1 614 testů / 32 689 assertions PASS**.
+Živá čtecí kontrola změněných obrazovek prošla; soukromé úložiště PASS.
+Celková připravenost zůstává BLOKOVÁNO provozními předpoklady a rozhodnutími.
 
 
 **23. 10. 2026 — hostingový přístup k soukromému úložišti obnoven.**

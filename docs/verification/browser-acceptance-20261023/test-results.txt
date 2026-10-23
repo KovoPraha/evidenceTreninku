@@ -123,3 +123,14 @@ Final changed PHP lint: files=18 failures=0
 warning: in the working copy of 'bin/finance-b1-router.php', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tests/Unit/FinanceB1RouterTest.php', LF will be replaced by CRLF the next time Git touches it
 Final git diff --check exit: 0
+
+Final PR Linux CI (head 653758dc7e937dd8de17c1a104c9130e10efe187):
+https://github.com/KovoPraha/evidenceTreninku/actions/runs/39937027630
+PHPUnit PHP 8.2: OK (1614 tests, 32689 assertions)
+MariaDB 10.3 integration smoke: SUCCESS
+MariaDB 11.4 integration smoke: SUCCESS
+CodeQL: SUCCESS (run 39937023522)
+Native browser keyboard: participant Tab+Enter and measurement Tab+Space PASS.
+Node actual-handler smoke: 5 tests PASS, 0 failures.
+B1 post-UAT read-only probe: PASS at 2026-10-23T12:11:20+02:00,
+326 readable owned tables; external transports disabled, private paths outside web root.

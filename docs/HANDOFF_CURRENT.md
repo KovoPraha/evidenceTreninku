@@ -3,8 +3,11 @@
 **23. 10. 2026 — technická browser přejímka dvou propojených toků.**
 Začít [aktuálním protokolem](verification/browser-acceptance-20261023/RESULTS.md),
 který obsahuje reprodukované chyby, opravy, identifikátory syntetických záznamů,
-ověření skutečně staženého exportu a stav vydání. Větev
-`codex/browser-acceptance-fixes-20261023`, pracovní kopie
+ověření skutečně staženého exportu a stav vydání. PR #173 sloučen a nasazen
+jako `e78af565`, chráněný deploy **39937236344 SUCCESS**. Linux CI
+**1 614 testů / 32 689 assertions PASS**; produkční čtecí ověření prošlo.
+Větev oprav `codex/browser-acceptance-fixes-20261023`, dokumentační doplnění
+`codex/browser-acceptance-release-proof-20261023`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
 Původní pracovní kopie obsahuje cizí rozpracované změny; nepřepisovat.
 Technické ověření agenta není lidské převzetí ani schválení účetní metodiky.

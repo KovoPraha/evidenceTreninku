@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-23",
+  "scope": "Agent technical browser acceptance; synthetic domain writes only in isolated B1",
+  "pull_request": 173,
+  "reviewed_head": "653758dc7e937dd8de17c1a104c9130e10efe187",
+  "deployed_sha": "e78af565d6d89492e54f0b9e2ecb2b63a4b534c7",
+  "ci": {
+    "pr_tests_run": 39937027630,
+    "codeql_run": 39937023522,
+    "merged_main_tests_run": 39937225314,
+    "conclusion": "success",
+    "linux_phpunit_tests": 1614,
+    "linux_phpunit_assertions": 32689,
+    "mariadb_smoke": {"10.3": "PASS", "11.4": "PASS"}
+  },
+  "deployment": {
+    "run": 39937236344,
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/39937236344",
+    "conclusion": "success",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false,
+    "release_timestamp": "2026-10-23T10:13:36+00:00",
+    "backup_tables": 329,
+    "backup_sha256": "64b56d60e13696ecac42f28e9dba1d3715d09341fc192c35ce895b4ac9c6c26a",
+    "existing_payment_vs_checked": 8,
+    "existing_payment_vs_unchanged": true,
+    "new_schema_changes": false,
+    "integrations_activated": false
+  },
+  "production_browser": {
+    "method": "Logged-in UI, GET navigation and own active-role switches; no domain writes",
+    "release_sha_matches": true,
+    "private_storage": "PASS",
+    "program_sales_window_fields": "PASS",
+    "allocation_overview": "PASS",
+    "inventory_variant_get_selection": "PASS",
+    "assisted_sale_page": "PASS",
+    "paper_consent_purpose_version_labels": "PASS",
+    "program_admission_page": "PASS",
+    "training_form": "PASS",
+    "local_only_acceptance_hub": "DENIED_NENALEZENO",
+    "domain_records_created": 0,
+    "overall_uat_readiness": "BLOCKED",
+    "final_active_role": "Spravce systemu"
+  },
+  "acceptance_boundaries": {
+    "human_scenarios": {"count": 43, "status": "NEPROVEDENO"},
+    "accountant_handoff": "NEPREVZATO",
+    "accountant_sample": "NEUPLNY",
+    "accountant_archive_technical_checks": {"passed": 20, "total": 20},
+    "old_system_cutover": "NOT_APPROVED_BY_THIS_TECHNICAL_CHECK"
+  }
+}
