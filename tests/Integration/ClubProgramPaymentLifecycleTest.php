@@ -105,6 +105,51 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
         self::assertSame([101=>9951,104=>10201],$shares);self::assertSame(20152,array_sum($shares));
     }
 
+    public static function mixedFamilyCoupons(): array
+    {
+        return [
+            'program-only fixed' => [SHOP_COUPON_CLUB_PROGRAM,'fixed',101,[101=>9950,104=>10151]],
+            'goods-only fixed' => [SHOP_COUPON_GOODS,'fixed',101,[101=>10000,104=>10101]],
+            'all categories fixed' => [SHOP_COUPON_ALL,'fixed',101,[101=>9950,104=>10151]],
+            'program percentage' => [SHOP_COUPON_CLUB_PROGRAM,'percentage',9900,[101=>100,104=>302]],
+            'zero second course share' => [SHOP_COUPON_CLUB_PROGRAM,'fixed',19999,[101=>1,104=>202]],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('mixedFamilyCoupons')]
+    public function testMixedSiblingCheckoutKeepsCouponSharesAndStockTogether(int $mask,string $type,int $value,array $expectedShares): void
+    {
+        $pdo=$this->database();$this->offer($pdo,601,501,10,2,'MIXED-SIBLINGS');
+        $migration=require dirname(__DIR__,2).'/migrations/20260804234000_shop_coupon_applicability.php';
+        $migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
+        $pdo->exec("INSERT INTO shop_products VALUES(503,'LOCALHOST NEPLATIT tričko','goods','active')");
+        $pdo->exec("INSERT INTO shop_variants VALUES(603,503,'TEST-SHIRT','{}','fixed',101,'CZK',1,0,'5',1,'active',CURRENT_TIMESTAMP)");
+        $pdo->exec("INSERT INTO shop_product_publications VALUES(503,'active','LOCALHOST NEPLATIT tričko','Test')");
+        // This fixture predates the optional financial-profile migration; exercise its current contract.
+        $pdo->exec('ALTER TABLE shop_orders ADD COLUMN finance_sportovec_id INTEGER NULL');
+        \shopCartSetQuantity($pdo,10,601,1,101);\shopCartSetQuantity($pdo,10,601,1,104);
+        \shopCartSetQuantity($pdo,10,603,2);
+        \shopCouponAdminCreate($pdo,7,'LOCALHOST-MIXED',$type,$value,0,null,1,'','','LOCALHOST isolated coupon.',true,$mask);
+        \shopCouponApplyToCart($pdo,10,'LOCALHOST-MIXED');
+        $cart=\shopCartDetail($pdo,10);$accepted=[];
+        foreach($cart['items'] as $line)$accepted['item:'.$line['cart_item_id']]=1;
+        try { \shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],$accepted);self::fail('Unassigned goods require an explicit financial profile.'); }
+        catch (\ShopCheckoutException|\ClubFinanceException) {}
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        self::assertSame(5,(int)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=603')->fetchColumn());
+        $order=\shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),self::BANK,$cart['fingerprint'],$accepted,104);
+        self::assertSame(array_sum($expectedShares),(int)$order['total_minor']);
+        self::assertSame($expectedShares,array_map('intval',$pdo->query('SELECT sportovec_id,amount_minor FROM shop_order_finance_shares ORDER BY sportovec_id')->fetchAll(PDO::FETCH_KEY_PAIR)));
+        self::assertSame(3,(int)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=603')->fetchColumn());
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_redemptions')->fetchColumn());
+        $paid=\shopOrderAdminConfirmBankPayment($pdo,(int)$order['payment_id'],7,'LOCALHOST mixed payment.',true);
+        self::assertSame(2,$paid['created']);
+        self::assertSame(3,(int)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=603')->fetchColumn());
+        \shopOrderAdminCancel($pdo,(int)$order['id'],7,'LOCALHOST mixed cancellation.',true);
+        self::assertSame(5,(int)$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=603')->fetchColumn());
+        self::assertSame(0,\clubProgramOfferForVariant($pdo,601)['occupied_count']);
+    }
+
     public function testExistingAthleteCheckoutEnforcesCustomConsentsAndStoresOptionalDeclineOnce():void
     {
         $pdo=$this->database();$this->offer($pdo,601,501,10,5,'CUSTOM-CONSENTS');$input=$this->installCustomConsents($pdo);
