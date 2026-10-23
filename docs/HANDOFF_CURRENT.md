@@ -1,5 +1,18 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — účetní opravy PR #184 nasazeny; další kontroly bez prohlížeče hotové.**
+[Protokol a důkazy](verification/accounting-production-20261023/RESULTS.md).
+Produkční release `ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9`, deploy40025423618 SUCCESS.
+Záloha330 tabulek, pending=[], VS zachovány; 16 čtecích databázových kontrol PASS.
+Účetní audit40026086361 PASS, živé hashe souborů odpovídají commitu.
+**8 objednávek, účetní tabulky zatím prázdné**: nevydávat testovací doklady/exporty
+v produkci; produkční PDF/ZIP ani lidské převzetí zatím nelze označit za prokázané.
+Diagnostika PR #185 (main59725050) není další aplikační deploy. Běží přes
+`production-drills.yml`, operace `overit-ucetni-vazby`, potvrzení `PROVEST`, READ ONLY;
+dočasné skripty mimo webroot se uklidí. 1674 testů / 33371 assertions,
+MariaDB10.3/11.4 + CodeQL PASS, detekce poškození ověřena izolovaně.
+Žádné nové produkční účetní/doménové zápisy ani aktivace integrací.
+
 **23. 10. 2026 — účetní návaznosti objednávek opravené, zatím nenasazeno.**
 [Protokol](verification/accounting-followup-20261023/RESULTS.md).
 XLSX nově zachová účastníka, období, referenci případu, VS a splatnost z dokladu.
