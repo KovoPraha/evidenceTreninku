@@ -1,5 +1,16 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — souvislá technická browser přejímka a opravy obsluhy.**
+V izolovaném B1 prošel řetězec sklad → osobní prodej → úhrada → částečný výdej
+→ doklady → vratky → stažený účetní export a řetězec papírová přihláška
+→ kroužek → úhrada → soupiska → docházka → oddělené schválení odměny.
+[Protokol, opravy a přesné meze](verification/browser-acceptance-20261023/RESULTS.md).
+Všechny nové provozní záznamy jsou syntetické a pouze místní. Účetní export
+má 20 ověřených technických kontrol, ale zůstává NEÚPLNÝ bez schváleného
+členění a odsouhlasení. Lidských 43 scénářů je nadále NEPROVEDENO,
+účetní převzetí NEPŘEVZATO; stav vydání oprav je uveden v protokolu.
+
+
 **23. 10. 2026 — hostingový přístup k soukromému úložišti obnoven.**
 Po výslovném schválení vlastníkem změněno pouze PHP `open_basedir` pro KIS
 na režim Posunuto. Nový webový požadavek potvrzuje dostupný soukromý adresář

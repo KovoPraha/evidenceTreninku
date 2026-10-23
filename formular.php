@@ -722,10 +722,12 @@ if (PLAN_PREFILL) {
             a.type = 'button';
             a.className = 'list-group-item list-group-item-action';
             a.textContent = item.label;
-            // mousedown + preventDefault: zabrání blur na inputu → dropdown zůstane otevřený do kliknutí
-            a.addEventListener('mousedown', e => {
-                e.preventDefault();
+            // Keep pointer focus on the input; native click also handles Enter/Space.
+            a.addEventListener('mousedown', e => e.preventDefault());
+            a.addEventListener('click', () => {
                 addParticipant(item.id, item.label);
+                input.focus();
+                close();
             });
             sug.appendChild(a);
         });
@@ -739,7 +741,13 @@ if (PLAN_PREFILL) {
         }
     });
 
-    input.addEventListener('blur', () => { setTimeout(() => close(), 150); });
+    function closeWhenFocusLeaves() {
+        setTimeout(() => {
+            if (document.activeElement !== input && !sug.contains(document.activeElement)) close();
+        }, 150);
+    }
+    input.addEventListener('blur', closeWhenFocusLeaves);
+    sug.addEventListener('focusout', closeWhenFocusLeaves);
 
     input.addEventListener('input', () => {
         const q = input.value.trim();
@@ -945,10 +953,12 @@ if (PLAN_PREFILL) {
                 b.type = 'button';
                 b.className = 'list-group-item list-group-item-action';
                 b.textContent = it.label;
-                // mousedown + preventDefault: blur na inputu nenastane → výběr je spolehlivý
-                b.addEventListener('mousedown', e => {
-                    e.preventDefault();
+                // Keep pointer focus on the input; native click also handles Enter/Space.
+                b.addEventListener('mousedown', e => e.preventDefault());
+                b.addEventListener('click', () => {
                     choose(it.id, it.label);
+                    inp.focus();
+                    close();
                 });
                 sug.appendChild(b);
             });
@@ -1004,8 +1014,9 @@ if (PLAN_PREFILL) {
                 });
         });
 
-        inp.addEventListener('blur', () => {
+        function closeWhenFocusLeaves() {
             setTimeout(() => {
+                if (document.activeElement === inp || sug.contains(document.activeElement)) return;
                 close();
                 const idv = String(hid.value || '').trim();
                 if (inp.value.trim() === '' || idv === '' || idv === '0') {
@@ -1013,7 +1024,9 @@ if (PLAN_PREFILL) {
                     try { syncHidden(); } catch (e) {}
                 }
             }, 150);
-        });
+        }
+        inp.addEventListener('blur', closeWhenFocusLeaves);
+        sug.addEventListener('focusout', closeWhenFocusLeaves);
     }
 
     function addRow() {

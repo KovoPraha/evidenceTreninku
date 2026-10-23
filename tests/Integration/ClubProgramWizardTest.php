@@ -40,6 +40,27 @@ final class ClubProgramWizardTest extends TestCase
         self::assertFalse($pdo->inTransaction());
     }
 
+    public function testWizardCanPublishCourseAlreadyInProgressWithAutomaticSalesWindow(): void
+    {
+        $pdo = $this->database();
+        $input = $this->input();
+        $input['starts_on'] = '2026-10-16';
+        $input['ends_on'] = '2026-12-22';
+        $input['amount_minor'] = 120000;
+        $input['capacity'] = 1;
+        unset($input['sales_open_at'], $input['sales_close_at']);
+        $input = array_replace($input, \clubProgramWizardSalesWindow($input, new \DateTimeImmutable('2026-10-23T12:00:00+02:00')));
+        \clubProgramWizardCreate($pdo, 7, $input, null, false);
+        $offer = $pdo->query('SELECT * FROM club_program_offers')->fetch();
+        self::assertSame('2026-10-16', $offer['starts_on']);
+        self::assertSame('2026-12-22', $offer['ends_on']);
+        self::assertSame('2026-10-23 00:00:00', $offer['sales_open_at']);
+        self::assertSame('2026-12-22 23:59:00', $offer['sales_close_at']);
+        self::assertSame(1, (int)$offer['capacity']);
+        self::assertSame('active', $offer['status']);
+        self::assertSame(120000, (int)$pdo->query('SELECT amount_minor FROM shop_variants')->fetchColumn());
+    }
+
     public function testLateFailureRollsBackEveryWizardRow():void
     {
         $pdo=$this->database();$input=$this->input();$input['team_mode']='existing';$input['team_id']=999;

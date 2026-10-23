@@ -1,0 +1,125 @@
+Browser acceptance local verification
+Started UTC: 2026-10-23T09:54:21.4320589Z
+Branch: codex/browser-acceptance-fixes-20261023
+HEAD: 6f574033a3b06ff3280542a6d268e087c54268be
+Scope: local SQLite and static checks only; no production or MariaDB writes.
+Command: C:\xampp\php\php.exe vendor/bin/phpunit --configuration phpunit.xml.dist --do-not-cache-result --colors=never
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\xampp\htdocs\evidencePavel-finance-b1-20261022\phpunit.xml.dist
+
+.............................................................   61 / 1604 (  3%)
+.............................................................  122 / 1604 (  7%)
+...................F.........................................  183 / 1604 ( 11%)
+.............................................................  244 / 1604 ( 15%)
+..............................................SS.............  305 / 1604 ( 19%)
+.........S...................................................  366 / 1604 ( 22%)
+.............................................................  427 / 1604 ( 26%)
+.............................................................  488 / 1604 ( 30%)
+.............................................................  549 / 1604 ( 34%)
+.............................................................  610 / 1604 ( 38%)
+.............................................................  671 / 1604 ( 41%)
+.............................................................  732 / 1604 ( 45%)
+.............................................................  793 / 1604 ( 49%)
+.............................................................  854 / 1604 ( 53%)
+.............................................................  915 / 1604 ( 57%)
+shop_checkout failed: ref=bc314711edd13729 order=1 PDOException sqlstate=23000 driver=19 at club_registration_consents.php:60
+.............................................................  976 / 1604 ( 60%)
+............................................................. 1037 / 1604 ( 64%)
+............................................................. 1098 / 1604 ( 68%)
+............................................................. 1159 / 1604 ( 72%)
+............................................................. 1220 / 1604 ( 76%)
+............................................................. 1281 / 1604 ( 79%)
+............................................................. 1342 / 1604 ( 83%)
+............................................................. 1403 / 1604 ( 87%)
+............................................................. 1464 / 1604 ( 91%)
+............................................................. 1525 / 1604 ( 95%)
+stripe_webhook: ignored event type customer.updated
+stripe_webhook: ignored incomplete checkout session evt_checkout_unpaid_unit
+............................................................. 1586 / 1604 ( 98%)
+..................                                            1604 / 1604 (100%)
+
+Time: 01:59.675, Memory: 90.00 MB
+
+There was 1 failure:
+
+1) Tests\Unit\GlobalFunctionAvailabilityTest::testEveryStaticallyCalledGlobalFunctionIsAvailableOrDeclaredByTheApplication
+Unavailable global function calls:
+posix_geteuid called at includes/private_storage_readiness.php:64
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+@@ @@
+-Array &0 []
++Array &0 [
++    0 => 'posix_geteuid called at includes/private_storage_readiness.php:64',
++]
+
+C:\xampp\htdocs\evidencePavel-finance-b1-20261022\tests\Unit\GlobalFunctionAvailabilityTest.php:49
+
+FAILURES!
+Tests: 1604, Assertions: 32520, Failures: 1, Skipped: 3.
+PHPUnit exit: 1
+
+Static checks (local Windows PHP 8.2.12):
++./composer.json is valid
+Checking platform requirements for packages in the vendor dir
+ext-ctype     8.2.12     success
+ext-curl      8.2.12     success
+ext-dom       20031129   success
+ext-fileinfo  8.2.12     success
+ext-filter    8.2.12     success
+ext-gd        8.2.12     success
+ext-iconv     8.2.12     success
+ext-json      8.2.12     success
+ext-libxml    8.2.12     success
+ext-mbstring  8.2.12     success
+ext-openssl   8.2.12     success
+ext-phar      8.2.12     success
+ext-simplexml 8.2.12     success
+ext-sodium    8.2.12     success
+ext-tokenizer 8.2.12     success
+ext-xml       8.2.12     success
+ext-xmlreader 8.2.12     success
+ext-xmlwriter 8.2.12     success
+ext-zip       1.21.1     success
+ext-zlib      8.2.12     success
+php           8.2.12     success
+php-64bit     8.2.12     success
+No security vulnerability advisories found.
+Composer exits validate=0 platform=0 audit=0
+
+git diff --check: PASS
+PHP lint (rg --files --hidden -g '*.php' excluding vendor/.git): 1071 files, 0 failures, exit 0.
+Full suite platform limitation: GlobalFunctionAvailabilityTest reports posix_geteuid at includes/private_storage_readiness.php:64. The actual call is guarded by function_exists; Windows lacks POSIX. No scanner or application bypass was applied. Full local suite is NOT an unconditional PASS.
+CI requirements inspected: .github/workflows/tests.yml and deploy-production.yml require Composer validate/audit, PHPUnit; deployment also platform requirements and PHP lint. MariaDB CI matrix 10.3/11.4 smoke jobs were not run here; no MariaDB or production writes were performed by this verification.
+Post-edit targeted verification: ClubRegistrationPages|PaperRegistration|MemberAdmissionPolicy|ClubProgramWizard|ClubProgramRecurrence|AccountingLedgerAllocationView|ShopAssistedSalePage|ShopInventoryNavigation
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\xampp\htdocs\evidencePavel-finance-b1-20261022\phpunit.xml.dist
+
+......................................................            54 / 54 (100%)
+
+Time: 00:03.477, Memory: 48.00 MB
+
+OK (54 tests, 470 assertions)
+Targeted PHPUnit exit: 0
+Final freeze targeted verification (including B1 router normalization and final admission labels)
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\xampp\htdocs\evidencePavel-finance-b1-20261022\phpunit.xml.dist
+
+................................................................. 65 / 71 ( 91%)
+......                                                            71 / 71 (100%)
+
+Time: 00:03.916, Memory: 48.00 MB
+
+OK (71 tests, 651 assertions)
+Final targeted PHPUnit exit: 0
+Final changed PHP lint: files=18 failures=0
+warning: in the working copy of 'bin/finance-b1-router.php', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/Unit/FinanceB1RouterTest.php', LF will be replaced by CRLF the next time Git touches it
+Final git diff --check exit: 0

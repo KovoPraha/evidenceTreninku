@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__.'/shop_checkout.php';
 require_once __DIR__.'/paper_registration.php';
+require_once __DIR__.'/paper_registration_labels.php';
 require_once __DIR__.'/shop_bank_settings.php';
 
 function clubAdmissionActor(PDO $pdo,int $actor):void {
@@ -21,7 +22,7 @@ function clubAdmissionPaperEvidence(PDO $pdo,int $person,int $program,array $ter
   $papers[]=$r;if($r['kind']==='application')$application=true;if((int)$r['term_version_id']>0)$covered[(int)$r['term_version_id']]=true;
  }
  if(!$application)throw new DomainException('Chybí přijatá papírová přihláška pro tento program.');
- foreach($terms as$t)if(!isset($covered[(int)$t['id']]))throw new DomainException('Chybí přijatý papírový souhlas s aktuální verzí: '.($t['title_plain']??$t['consent_purpose']??'podmínky'));
+ foreach($terms as$t)if(!isset($covered[(int)$t['id']]))throw new DomainException('Chybí přijatý papírový souhlas s aktuální verzí: '.paperRegistrationTermLabel($t));
  return$papers;
 }
 function clubAdmissionPlace(PDO $pdo,int $actor,array $input):array {
