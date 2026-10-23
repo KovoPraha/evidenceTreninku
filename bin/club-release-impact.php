@@ -16,14 +16,15 @@ function clubReleaseImpactIdentity(string $host, array $config): bool
         && !isset($url['user']) && !isset($url['pass']);
 }
 
-function clubReleaseImpactPrivateStorage(string $appRoot, mixed $configured): array
+function clubReleaseImpactPrivateStorage(string $appRoot, mixed $configured, bool $local = false): array
 {
-    $path = is_string($configured) && trim($configured) !== '' ? $configured : dirname($appRoot, 2).'/private/evidencePavel';
-    $resolved = realpath($path); $app = realpath($appRoot);
+    $explicit = is_string($configured) && trim($configured) !== '';
+    $path = $explicit ? trim($configured) : ($local ? dirname($appRoot, 2).'/private/evidencePavel' : '');
+    $resolved = $path === '' ? false : realpath($path); $app = realpath($appRoot);
     $normalize = static fn(string $v): string => strtolower(rtrim(str_replace('\\', '/', $v), '/'));
     $outside = $resolved !== false && $app !== false && $normalize($resolved) !== $normalize($app)
         && !str_starts_with($normalize($resolved), $normalize($app).'/');
-    return ['exists'=>$resolved !== false && is_dir($resolved), 'writable'=>$resolved !== false && is_writable($resolved),
+    return ['configured'=>$explicit, 'local_fallback'=>$local && !$explicit, 'exists'=>$resolved !== false && is_dir($resolved), 'writable'=>$resolved !== false && is_writable($resolved),
         'outside_application_tree'=>$outside, 'public_webroot_not_proven_by_cli'=>true, 'write_probe_performed'=>false];
 }
 
@@ -156,7 +157,7 @@ function clubReleaseImpactMain(): int
         $report=clubReleaseImpact($pdo, (new DateTimeImmutable('now', new DateTimeZone('Europe/Prague')))->format('Y-m-d'));
         $storage = getenv('APP_PRIVATE_STORAGE_ROOT');
         if ($storage === false || trim($storage) === '') $storage = defined('APP_PRIVATE_STORAGE_ROOT') ? constant('APP_PRIVATE_STORAGE_ROOT') : null;
-        $report['private_storage']=clubReleaseImpactPrivateStorage($root, $storage);
+        $report['private_storage']=clubReleaseImpactPrivateStorage($root, $storage, $config['JE_LOKALNE'] === true);
         echo json_encode($report, JSON_THROW_ON_ERROR|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n";
         return 0;
     } catch (Throwable) { echo "{\"ok\":false,\"error\":\"impact_probe_failed\"}\n"; return 2; }

@@ -339,6 +339,27 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringNotContainsString('|| true',$probe);
     }
 
+    public function testPrivateStorageProvisionFollowsBackupAndPrecedesReleaseConfigCopy(): void
+    {
+        $workflow = $this->source('.github/workflows/deploy-production.yml');
+        $backup = strpos($workflow, '- name: Vytvořit a ověřit produkční zálohu');
+        $provision = strpos($workflow, '- name: Připravit soukromé úložiště dokumentů');
+        $release = strpos($workflow, '- name: Připravit kompletní release mimo webroot');
+        self::assertNotFalse($backup);
+        self::assertNotFalse($provision);
+        self::assertNotFalse($release);
+        self::assertLessThan($provision, $backup);
+        self::assertLessThan($release, $provision);
+        self::assertStringContainsString('KIS_PRIVATE_STORAGE_CONFIRM=PRIPRAVIT-PRIVATNI-ULOZISTE', $workflow);
+        self::assertStringContainsString('exit(provisionProductionPrivateStorageMain());', $workflow);
+        self::assertStringContainsString('.private_config_backup_verified == true', $workflow);
+        self::assertStringContainsString('.database_accessed == false and .attachments_moved == false', $workflow);
+        $cleanup = substr($workflow, strpos($workflow, '- name: Odstranit kopii produkční konfigurace z release'));
+        self::assertStringContainsString('if: always()', $cleanup);
+        self::assertStringContainsString('provision-production-private-storage.php', $cleanup);
+        self::assertStringContainsString('run-private-storage.php', $cleanup);
+    }
+
     private function source(string $relativePath): string
     {
         $source = file_get_contents(dirname(__DIR__, 2) . '/' . $relativePath);
