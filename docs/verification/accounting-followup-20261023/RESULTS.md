@@ -1,5 +1,9 @@
 # Přejímka objednávek, účetních dokladů a exportů
 
+Následný stav: opravy byly na další výslovné zadání nasazeny jako `ebc3081c`.
+[Nasazení a čtecí produkční kontroly](../accounting-production-20261023/RESULTS.md).
+Níže je zachován protokol původního izolovaného implementačního kola.
+
 Datum: 23. 10. 2026. Výchozí commit: `c9724de9c100766f4a6f4c90fb69abfacbb8c8c8`.
 Všechny zápisy proběhly v dočasných testovacích databázích a dočasném soukromém
 úložišti. Žádné produkční nasazení, migrace, změna nastavení, skutečná platba ani

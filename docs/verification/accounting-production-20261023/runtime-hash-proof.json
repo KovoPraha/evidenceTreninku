@@ -1,0 +1,14 @@
+{
+  "includes/accounting_export.php": {
+    "matches_deployed_commit": true,
+    "sha256": "b73936af141024b870e6870ea9589e05fbaf98cf7daa8fe31a8c2b2743435e34"
+  },
+  "includes/accounting_adjustments.php": {
+    "matches_deployed_commit": true,
+    "sha256": "98e3550bd9a04fc7608e46acc9c2ba96f2292c6a0873f43c74730f942d9a7905"
+  },
+  "includes/accounting_ledger.php": {
+    "matches_deployed_commit": true,
+    "sha256": "03d73a29204d7b9e7879b48a026815a6d787f3c9cb0b07beafad1c200082ec0a"
+  }
+}

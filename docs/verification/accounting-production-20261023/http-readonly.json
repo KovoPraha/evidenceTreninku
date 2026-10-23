@@ -1,0 +1,34 @@
+[
+  {
+    "path": "index.php",
+    "response": "200 "
+  },
+  {
+    "path": "var/deployment.json",
+    "response": "403 "
+  },
+  {
+    "path": "eshop_orders_admin.php",
+    "response": "302 https://kis.kovopraha.cz/login.php"
+  },
+  {
+    "path": "accounting_documents_admin.php",
+    "response": "403 "
+  },
+  {
+    "path": "accounting_exports_admin.php",
+    "response": "302 https://kis.kovopraha.cz/login.php"
+  },
+  {
+    "path": "accounting_adjustments_admin.php",
+    "response": "302 https://kis.kovopraha.cz/login.php"
+  },
+  {
+    "path": "accounting_document_download.php?id=0",
+    "response": "403 "
+  },
+  {
+    "path": "accounting_export_download.php?id=0",
+    "response": "302 https://kis.kovopraha.cz/login.php"
+  }
+]

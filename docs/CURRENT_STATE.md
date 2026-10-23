@@ -1,5 +1,18 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — účetní opravy nasazeny, přejímka bez prohlížeče dokončena v čtecím rozsahu.**
+[Protokol a důkazy](verification/accounting-production-20261023/RESULTS.md).
+Release `ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9`, deploy **40025423618 SUCCESS**:
+1669 testů, záloha 330 tabulek, žádné pending migrace, dosavadní VS beze změny.
+Produkce: 16 databázových kontrol PASS; čtecí účetní audit 40026086361 PASS,
+otisky tří nasazených účetních souborů přesně souhlasí s ověřeným commitem.
+Produkce má **8 objednávek a 0 účetních dokladů/pohybů/exportů**: PDF/ZIP průchod
+je prokázán izolovaně, nikoli nad neexistujícími produkčními podklady.
+Nová opakovatelná diagnostika PR #185: 1674 testů / 33371 assertions,
+MariaDB 10.3/11.4 a CodeQL PASS včetně detekce záměrně poškozených testovacích souborů.
+Žádné testovací doménové zápisy do produkce, žádné aktivace integrací.
+Lidská přejímka, metodika a převzetí účetní zůstávají otevřené.
+
 **23. 10. 2026 — účetní návaznosti objednávek opravené, zatím nenasazeno.**
 [Protokol](verification/accounting-followup-20261023/RESULTS.md).
 XLSX nově zachová účastníka, období, referenci případu, VS a splatnost z dokladu.
