@@ -1,6 +1,25 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * cli-server exposes its bound address as SERVER_NAME but omits SERVER_ADDR.
+ * Normalize only this exact local runtime, never a Host/forwarded header alone.
+ * @param array<string,mixed> $server
+ * @return array<string,mixed>
+ */
+function financeB1NormalizeServerAddress(array $server, string $sapi = PHP_SAPI): array
+{
+    if ($sapi === 'cli-server'
+        && !array_key_exists('SERVER_ADDR', $server)
+        && ($server['SERVER_NAME'] ?? null) === '127.0.0.1'
+        && (string)($server['SERVER_PORT'] ?? '') === '18086'
+        && ($server['REMOTE_ADDR'] ?? null) === '127.0.0.1'
+        && ($server['HTTP_HOST'] ?? null) === '127.0.0.1:18086') {
+        $server['SERVER_ADDR'] = $server['SERVER_NAME'];
+    }
+    return $server;
+}
+
 /** The PHP development server does not apply Apache .htaccess rules. */
 function financeB1PublicPath(string $uri, string $root): ?string
 {
@@ -27,6 +46,7 @@ function financeB1PublicPath(string $uri, string $root): ?string
 }
 
 if (PHP_SAPI === 'cli-server') {
+    $_SERVER = financeB1NormalizeServerAddress($_SERVER);
     $host = $_SERVER['HTTP_HOST'] ?? '';
     if ($host !== '127.0.0.1:18086'
         || financeB1PublicPath($_SERVER['REQUEST_URI'] ?? '/', dirname(__DIR__)) === null) {

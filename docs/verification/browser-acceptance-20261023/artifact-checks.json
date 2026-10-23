@@ -1,0 +1,347 @@
+{
+  "schema": "browser-artifact-checks-v1",
+  "verified_at": "2026-10-23",
+  "scope": "Skutečný browser stažený export23, syntetický případ UAT-BROWSER23. Read-only artefaktová kontrola; nejde o lidskou přejímku ani schválení účetní.",
+  "source_zip": {
+    "path": "C:\\Users\\Marek\\Desktop\\downloads\\ucetni-podklady-2026-10-01-r1.zip",
+    "bytes": 481909,
+    "sha256": "26e5de586e2eba8487b7dcf7482f404a967b4104cee0bfaf5744087be71c650d"
+  },
+  "extract_root": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23",
+  "period": {
+    "from": "2026-10-01",
+    "to": "2026-10-23",
+    "revision": 1,
+    "snapshot_at": "2026-10-23 09:41:10",
+    "snapshot_timezone": "UTC"
+  },
+  "technical_checks_pass": true,
+  "accountant_handoff_complete": false,
+  "human_acceptance": "NEPROVEDENO",
+  "checks": [
+    {
+      "id": "archive-integrity",
+      "status": "PASS",
+      "observed": "24 bezpečně rozbalených položek; velikosti a SHA-256 všech 23 souborů manifestu odpovídají. Zdrojový ZIP a artefakty nezměněny.",
+      "source": "manifest.json"
+    },
+    {
+      "id": "period-and-revision",
+      "status": "PASS",
+      "observed": "Období 1.–23.10.2026, revize1, snímek09:41:10UTC. ID exportu23 pochází z browser handoffu; archiv sám ID exportu neobsahuje.",
+      "source": "data.json; Manifest!A3:B7"
+    },
+    {
+      "id": "canonical-cash",
+      "status": "PASS",
+      "observed": "Jediné tři skutečné pohyby účtu28: příjem1000Kč a vratky500+500Kč; čistý obrat0Kč. Vazba platba30 / objednávka30.",
+      "source": "data.json:movements; Penize!A80:L82"
+    },
+    {
+      "id": "cash-xlsx-exact",
+      "status": "PASS",
+      "observed": "XLSX obsahuje částky1000/−500/−500CZK jednou, v období.",
+      "source": "Penize!A80:L82"
+    },
+    {
+      "id": "allocation-reversal",
+      "status": "PASS",
+      "observed": "Příděly79/80/81 mají součet0; oba záporné ruší příděl79 původního pohybu79. Nejde o další peněžní pohyby80/81.",
+      "source": "data.json:allocations; Parovani!A80:H82"
+    },
+    {
+      "id": "allocation-xlsx-exact",
+      "status": "PASS",
+      "observed": "XLSX částky i původní movement_id79 souhlasí s JSON.",
+      "source": "Parovani!A80:H82"
+    },
+    {
+      "id": "refund-payment-links",
+      "status": "PASS",
+      "observed": "Dvě evidované výplaty vratek odkazují na kanonické pohyby80 a81; nezapočítávat znovu jako další výdaj.",
+      "source": "data.json:refund_payments"
+    },
+    {
+      "id": "documents-and-corrections",
+      "status": "PASS",
+      "observed": "Faktura11 + dvě opravy12/13 původního dokladu11: nominální součet0Kč; skutečné peníze dokládá odděleně Penize.",
+      "source": "data.json:documents; Doklady!A12:M14"
+    },
+    {
+      "id": "documents-xlsx-exact",
+      "status": "PASS",
+      "observed": "XLSX doklady1000/−500/−500, množství2/1/1; textová čísla a původní doklad zachovány.",
+      "source": "Doklady!A12:M14; Polozky!A12:G14"
+    },
+    {
+      "id": "account-opening-boundary",
+      "status": "PASS",
+      "observed": "Pokladna má doložený počátek0 až23.10. Proto začátek celého období1.10 NEZNÁMÉ, čistý obrat0 a konec0. Žádná domyšlená historická nula.",
+      "source": "data.json:accounts; Saldo!A29:G29"
+    },
+    {
+      "id": "stock-movement-chain",
+      "status": "PASS",
+      "observed": "Sedm pohybů: počátek10/0/2, příjem3, rezervace2, výdej1, uvolnění1, vratka1 do blokace, odblokování1.",
+      "source": "data.json:stock_movements; Sklad!A182:L189"
+    },
+    {
+      "id": "stock-final-balance",
+      "status": "PASS",
+      "observed": "Fyzicky13, rezervace0, blokace2, dostupné11; celková hodnota NEZNÁMÉ, 10 kusů bez ceny.",
+      "source": "data.json:stock_balances; Sklad!A72:L73"
+    },
+    {
+      "id": "unknown-lot-not-zero",
+      "status": "PASS",
+      "observed": "Šarže49 původních10ks a vrácený kus mají neznámou cenu zachovanou jako null/NEZNÁMÉ, nikoli0.",
+      "source": "data.json:stock_lots; Sklad!A253:L253; Sklad!J73"
+    },
+    {
+      "id": "separate-known-receipt-cost",
+      "status": "PASS",
+      "observed": "Oprava ceny15 oceňuje jen novou šarži50:3ks×300Kč; nedoplňuje cenu šarže49 a není výdajem.",
+      "source": "data.json:stock_cost_revisions; Sklad!A204:L204"
+    },
+    {
+      "id": "no-duplicate-records-or-turnover",
+      "status": "PASS",
+      "observed": "Unikátní ID ve všech čtyřech evidencích; peněžní obrat účtu28 je pouze součet Penize. Párování, doklady, sklad a návraty jsou analytické vazby, nikoli další obrat.",
+      "source": "data.json; Manifest!A11:B14; Penize!A80:L82"
+    },
+    {
+      "id": "pdf-document-11",
+      "status": "PASS",
+      "observed": "PDF číslo, VS2639800001, objednávka a částka souhlasí; hash odpovídá snapshotu i manifestu. Jedna stránka vizuálně zkontrolována, český text bez zjevného přetečení. Plaintext payer/recipient odlišeny. Vystavení dokladu není potvrzením přijetí peněz.",
+      "source": "doklady/11.pdf"
+    },
+    {
+      "id": "pdf-document-12",
+      "status": "PASS",
+      "observed": "PDF číslo, VS2639800001, objednávka a částka souhlasí; hash odpovídá snapshotu i manifestu. Jedna stránka vizuálně zkontrolována, český text bez zjevného přetečení. Plaintext payer/recipient odlišeny. Vystavení dokladu není potvrzením přijetí peněz.",
+      "source": "doklady/12.pdf"
+    },
+    {
+      "id": "pdf-document-13",
+      "status": "PASS",
+      "observed": "PDF číslo, VS2639800001, objednávka a částka souhlasí; hash odpovídá snapshotu i manifestu. Jedna stránka vizuálně zkontrolována, český text bez zjevného přetečení. Plaintext payer/recipient odlišeny. Vystavení dokladu není potvrzením přijetí peněz.",
+      "source": "doklady/13.pdf"
+    },
+    {
+      "id": "xlsx-load-and-error-cells",
+      "status": "PASS",
+      "observed": {
+        "sheets": 10,
+        "error_cells": 0,
+        "formulas": 0,
+        "method": "Artifact-tool read-only import+6 region renders; independent OOXML cell extraction. No recalculation/export."
+      },
+      "source": "ucetni-podklady.xlsx"
+    },
+    {
+      "id": "pdf-parse-and-visual-check",
+      "status": "PASS",
+      "observed": {
+        "parsed_pdfs": 21,
+        "parsed_pages": 34,
+        "rendered_visual_pages": 19,
+        "visual_scope": [
+          "doklady/11.pdf",
+          "doklady/12.pdf",
+          "doklady/13.pdf",
+          "klubove-vyporadani.pdf:all14pages",
+          "sklad/SK-21.pdf",
+          "sklad/SK-22.pdf"
+        ],
+        "observation": "Rozvržení bez zjevného překrytí/ořezu; doklady11–13 a detail přehledu str.6/13 čitelné při normální velikosti. Přehled je klubové vypořádání, nikoli náhrada peněžního deníku."
+      },
+      "source": "pdf-render/*.png; xlsx-preview-1..6.png"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "INCOMPLETE_DATA",
+      "title": "Export je správně označen NEÚPLNÝ",
+      "detail": "118 výjimek a14 nepřevzatých zdrojů. U této sady chybí úplné členění pohybů79–81 a uzavřené odsouhlasení účtu28. Dokladové členění TEST-ZBOZI/LOCALHOST nenahrazuje členění skutečných peněžních pohybů.",
+      "sources": [
+        "Manifest!B9",
+        "Manifest!A90:B92",
+        "Manifest!A120:B120",
+        "data.json:exceptions"
+      ]
+    },
+    {
+      "severity": "EXPECTED_UNKNOWN",
+      "title": "Neověřené historické stavy a ceny zůstávají neznámé",
+      "detail": "Počátek pokladny28 ani skladu50 k1.10 není nula. Účet má doložený počátek0 dne23.10. Cena lot49 zůstává neznámá (null); známá novější cena lot50 nemění10 neoceněných kusů."
+    },
+    {
+      "severity": "SCOPE_LIMIT",
+      "title": "Uzavření vratkového případu25 nelze doložit jen tímto archivem",
+      "detail": "Skladové pohyby111/112 a opravný doklad13 odkazují na případ25; export nemá samostatný záznam stavu return_case. Browserem doložené closed musí zůstat zvláštní UI důkaz."
+    },
+    {
+      "severity": "SCOPE_LIMIT",
+      "title": "Skladová PDF21/22 nepatří variantě50",
+      "detail": "PDFs v archivu jsou původní jiné testovací skladové doklady. Sedm pohybů varianty50 je ověřeno v JSON/XLSX; samostatný PDF skladový doklad varianty50 v tomto archivu není."
+    },
+    {
+      "severity": "SCOPE_LIMIT",
+      "title": "Pohledávka objednávky30 není potvrzené historické saldo",
+      "detail": "Přehled PDF str.6 zachovává nominální1000Kč/příděly0 a stav NEOVĚŘENO. Nelze z tohoto čísla odvodit znovu dlužných1000Kč po dvou opravách; finanční dokumenty a skutečné peníze mají součet0."
+    }
+  ],
+  "files": [
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\data.json",
+      "relative": "data.json",
+      "bytes": 371239,
+      "sha256": "82d945af9712a96b244d078cc00f72ce6535478bd942807be7bad619287b7293"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\ucetni-podklady.xlsx",
+      "relative": "ucetni-podklady.xlsx",
+      "bytes": 62340,
+      "sha256": "5d6458b3e4a8c3a29414d4708fc3cef435b2911c9beaf67cb9cf4090e61c2290"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\klubove-vyporadani.pdf",
+      "relative": "klubove-vyporadani.pdf",
+      "bytes": 70344,
+      "sha256": "de38fc3e2d4d602af5ad1e298c8cd3d1711c62b13c3f3622210ed973357e5c1e"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\rozhodnuti\\R-1.pdf",
+      "relative": "rozhodnuti/R-1.pdf",
+      "bytes": 1139,
+      "sha256": "e065cc493355026b50860b11d27c1c2002c0a38ebf2a30567fefbe129368dffe"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\rozhodnuti\\R-3.pdf",
+      "relative": "rozhodnuti/R-3.pdf",
+      "bytes": 1139,
+      "sha256": "451565d24aff656b7b49225b4bc3e4000a9b1e0a233bfe43769d7ca90db7a4ea"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\rozhodnuti\\R-5.pdf",
+      "relative": "rozhodnuti/R-5.pdf",
+      "bytes": 1139,
+      "sha256": "c7116fa9d90b76f6b8d8bc02a81927fa7891441c26a29e8c68af93c8838521f0"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\rozhodnuti\\R-7.pdf",
+      "relative": "rozhodnuti/R-7.pdf",
+      "bytes": 1139,
+      "sha256": "51873e9cdd1a630376396aaaeb9ebaf965c01a07fe2186ecfaceeafb44b22ba9"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\rozhodnuti\\R-9.pdf",
+      "relative": "rozhodnuti/R-9.pdf",
+      "bytes": 1139,
+      "sha256": "a163a20e806242938f02bd888a5c51fa64a34bde0542e8d9bdcd0dd5a4beaf99"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\1.pdf",
+      "relative": "doklady/1.pdf",
+      "bytes": 23658,
+      "sha256": "5b32ddb45749c3cd4cd6b0fc3a107d521a29d93d98c41c1a60b6473bd1a444b2"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\2.pdf",
+      "relative": "doklady/2.pdf",
+      "bytes": 23141,
+      "sha256": "bca644be8a06830d9495fcff1bfc5f6654b9d327fe8898ce98bfc515e3fd72ac"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\3.pdf",
+      "relative": "doklady/3.pdf",
+      "bytes": 23638,
+      "sha256": "f9e410ab92e0365882a7e8ba7301bd0629628e3e7fb03a5b575fed6dd648225a"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\4.pdf",
+      "relative": "doklady/4.pdf",
+      "bytes": 23263,
+      "sha256": "1ae3481587e215b635f2cb837ad8df2d3e38ebba771a2603329e5caca90705a2"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\5.pdf",
+      "relative": "doklady/5.pdf",
+      "bytes": 23714,
+      "sha256": "020a80c3ba0d96c9947a6733fc169cd6f4a26cc9dd847ce3e13dea0b85e2eca2"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\6.pdf",
+      "relative": "doklady/6.pdf",
+      "bytes": 23602,
+      "sha256": "8b2eaaa03ef12bed5dffcd5c41fdabf7e30591430c6efaa481c2798a7b81623a"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\7.pdf",
+      "relative": "doklady/7.pdf",
+      "bytes": 23814,
+      "sha256": "43a3432b67c64484b1866167a2b4ba1423030f4e441ff8daf00e827bb930c97d"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\8.pdf",
+      "relative": "doklady/8.pdf",
+      "bytes": 23708,
+      "sha256": "9c0cfb953b026234eeffa40ab69e5ec829902fc787011cba80e4eb76004e07a0"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\9.pdf",
+      "relative": "doklady/9.pdf",
+      "bytes": 23816,
+      "sha256": "a6098e7322a69c024579669ac7236a2d6baaff24ab6cecfe29240cbca5f6ff5d"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\10.pdf",
+      "relative": "doklady/10.pdf",
+      "bytes": 23584,
+      "sha256": "69e25d2ab5c83c77561ac3b083f6f64895be16647500f11fae6ea10594c7f6f3"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\11.pdf",
+      "relative": "doklady/11.pdf",
+      "bytes": 25026,
+      "sha256": "cdfc8d2eb4b75fa8b3bf154c37ebfa2128587fa7827b28b147cc959840413765"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\12.pdf",
+      "relative": "doklady/12.pdf",
+      "bytes": 24836,
+      "sha256": "d628793c2e71bde8eaf5ef4c95794c4fee336d49cbda0b430fe661d8fa6ebce8"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\doklady\\13.pdf",
+      "relative": "doklady/13.pdf",
+      "bytes": 24924,
+      "sha256": "054e320298956c797c0cbd870158d6cdaceba342dcfabd0f691d1ec74b201aeb"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\sklad\\SK-21.pdf",
+      "relative": "sklad/SK-21.pdf",
+      "bytes": 24537,
+      "sha256": "3d782ba91b304e7da8906847fb39de5220c75a76cf97891901483da02caeaef5"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\sklad\\SK-22.pdf",
+      "relative": "sklad/SK-22.pdf",
+      "bytes": 23767,
+      "sha256": "65ca5c58763d34a78f80956e2b2a1ebc5823f576dff97cc8dfb64b63e7b8d79c"
+    },
+    {
+      "path": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\export23\\manifest.json",
+      "relative": "manifest.json",
+      "bytes": 4161,
+      "sha256": "23ba7d00cb44e743d104fa295c5c6806dadcc0e51da0069c24fba6bdc15f919c"
+    }
+  ],
+  "evidence": {
+    "archive_inspection": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\archive-inspection.json",
+    "xlsx_cells": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\xlsx-cells.json",
+    "xlsx_regions": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\xlsx-key-regions.json",
+    "pdf_renders": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\output\\browser-acceptance-20261023\\pdf-render",
+    "source_artifacts_unchanged": true
+  }
+}

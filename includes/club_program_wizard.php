@@ -9,6 +9,31 @@ require_once __DIR__.'/shop_inventory.php';
 
 final class ClubProgramWizardException extends RuntimeException{}
 
+/**
+ * Empty controls choose the documented wizard defaults. Explicit dates remain
+ * authoritative, including the source window copied by annual recurrence.
+ * @param array<string,mixed> $input
+ * @return array{sales_open_at:string,sales_close_at:string}
+ */
+function clubProgramWizardSalesWindow(array $input, ?DateTimeImmutable $now = null): array
+{
+    $today = ($now ?? new DateTimeImmutable('now', new DateTimeZone('Europe/Prague')))
+        ->setTimezone(new DateTimeZone('Europe/Prague'))->format('Y-m-d');
+    $startsOn = trim((string)($input['starts_on'] ?? ''));
+    $endsOn = trim((string)($input['ends_on'] ?? ''));
+    $open = trim((string)($input['sales_open_at'] ?? '')) ?: $today . 'T00:00';
+    // Future courses retain their original default. Admission to a course
+    // already in progress can stay open through its last day.
+    $close = trim((string)($input['sales_close_at'] ?? ''))
+        ?: ($startsOn < $today ? $endsOn : $startsOn) . 'T23:59';
+    $normalizedOpen = clubProgramInputDateTime($open);
+    $normalizedClose = clubProgramInputDateTime($close);
+    if ($normalizedOpen >= $normalizedClose) {
+        throw new ClubProgramWizardException('Konec prodeje musí být po jeho otevření. Zkontrolujte prodejní období; ukončený kurz nelze automaticky otevřít k prodeji.');
+    }
+    return ['sales_open_at' => $open, 'sales_close_at' => $close];
+}
+
 /** @return array{seasons:list<array<string,mixed>>,teams:list<array<string,mixed>>,categories:list<string>,terms:array<string,list<array<string,mixed>>>,products:list<array<string,mixed>>} */
 function clubProgramWizardReferenceData(PDO $pdo):array
 {

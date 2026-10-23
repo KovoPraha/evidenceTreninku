@@ -1,5 +1,16 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — technická browser přejímka dvou propojených toků.**
+Začít [aktuálním protokolem](verification/browser-acceptance-20261023/RESULTS.md),
+který obsahuje reprodukované chyby, opravy, identifikátory syntetických záznamů,
+ověření skutečně staženého exportu a stav vydání. Větev
+`codex/browser-acceptance-fixes-20261023`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
+Původní pracovní kopie obsahuje cizí rozpracované změny; nepřepisovat.
+Technické ověření agenta není lidské převzetí ani schválení účetní metodiky.
+A01–A10 ani 43 scénářů lidské přejímky tím nejsou uzavřeny.
+
+
 **23. 10. 2026 — hostingový přístup k soukromému úložišti obnoven.**
 Po výslovném schválení vlastníkem změněno pouze PHP `open_basedir` pro KIS
 na režim Posunuto. Nový webový požadavek potvrzuje dostupný soukromý adresář
