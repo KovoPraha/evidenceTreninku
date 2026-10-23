@@ -1,10 +1,14 @@
 # Aktuální předání vývoje na další stanici
 
-**23. 10. 2026 — rodinné účty a nákup kurzů.**
+**23. 10. 2026 20:28 — rodinné účty a nákup kurzů, PR #179 nasazen.**
 [Nový protokol](verification/family-course-20261023/RESULTS.md) obsahuje tři opravy,
 browser B1 objednávku32 / osobu91 / vazbu86, čtecí produkční kontrolu a odložený
 sportovní login. Cílené testy 229/2596 + 8/78 PASS; plná Windows sada má pouze
-známé selhání POSIX scanneru. Čeká Linux CI, MariaDB a chráněný release.
+známé selhání POSIX scanneru. Linux **1656/33008**, MariaDB 10.3/11.4 a CodeQL PASS.
+Produkční release `c6e3328be0567a1ea4b242f18eb6d66c4e1e9202`, chráněný deploy
+**40002714298 SUCCESS**, dokončen 20:28:10 SELČ. Browser SHA a private storage PASS;
+celková UAT brána zůstává BLOKOVÁNO. Moje kroužky načteny bez cizích údajů.
+Další browser krok vyžaduje existující izolovaný sportovní účet; nevytvářet heslo za uživatele.
 Nenahrazovat tím lidské přijetí, nevytvářet syntetické zápisy v produkci.
 
 **23. 10. 2026 19:49 — produkční prohlídka osob a tréninků po obnoveném přihlášení.**

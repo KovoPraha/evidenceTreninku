@@ -49,6 +49,7 @@ Opravy nemění schema ani historické doménové záznamy.
 | B1: úhrada a aktivace | Hospodář zaznamenal simulovanou bankovní úhradu 125 Kč s důvodem. Moje kroužky zobrazily Zaplaceno, Účast aktivována a novou aktivní soupisku. Viz `local-paid-course.png`. |
 | B1: odvolání | Registrář odvolal vazbu86. Moje kroužky skryly účasti a rodinné položky. Přímé otevření `nahrady.php?person_id=91` odmítnuto: K profilu nemáte oprávnění. Viz `local-revoked-course.png`. |
 | B1: plátce po odvolání | Vlastní zaplacená objednávka32 zůstala v detailu dostupná, bez přístupu k aktuálním sportovním údajům. |
+| B1: objednávka jiného plátce | I po znovuschválení rodinné vazby přímý detail objednávky31 odmítnut hláškou Objednávka nebyla nalezena. Oprávnění k dítěti nedává přístup k celé objednávce jiného zákazníka. |
 | B1: opětovné schválení | Vazba86 obnovena běžným UI s důvodem; historie schválení/odvolání zůstala zachována. |
 | B1: pracovní hranice | Hospodář nemůže otevřít administraci objednávek pro zákaznickou péči; platbu potvrdil ve své finanční agendě. |
 
@@ -65,7 +66,28 @@ Opravy nemění schema ani historické doménové záznamy.
   vazby, atomické schválení, revalidaci při checkoutu, kapacitu a platební
   aktivaci, vzájemné vyloučení omezené sportovní identity s rodinnou/pracovní,
   zneplatnění session a obnovu hesel přes oprávněného rodiče.
-- Linux CI, MariaDB a chráněný release: doplnit po dokončení běhu.
+- Obnova hesel a návrat k nákupu: dalších **8 testů / 78 assertions PASS**.
+- Nativní prepared statements nad B1 MariaDB, nový společný dotaz s `FOR UPDATE`:
+  schválená osoba91 povolena, cizí osoba92 odmítnuta; transakce pouze četla a byla vrácena.
+- Read-only kontrola po UI: objednávka32 paid/processing, položka32 má osobu91
+  a nabídku11, jediná aktivní účast11 zdrojovaná položkou32. Vazba86 má audit
+  approve → revoke → reactivate. Žádná přímá SQL oprava dat.
+- PR #179, hlava `43168b1161b4ac6c832a10e2fa6b24c46489cb29`:
+  Testy **40002328789**, CodeQL **40002325568** SUCCESS.
+- Sloučený commit `c6e3328be0567a1ea4b242f18eb6d66c4e1e9202`:
+  Testy **40002524668**, CodeQL **40002525408** SUCCESS.
+- Linux: **1656 testů / 33008 assertions PASS**. MariaDB 10.3 a 11.4 PASS.
+- Chráněný release **40002714298 SUCCESS**, dokončen **20:28:10 SELČ** pro uvedený
+  přesný commit, `uat_schvaleno=false`, `importovat_krouzky=false`.
+  Před přepnutím ověřená produkční záloha, opakované testy 1656/33008 PASS,
+  ochrana původních platebních symbolů `unchanged=true`; nové migrace tento balík nemá.
+  Přímé HTTPS spojení CI runneru timeoutovalo na síti; standardní serverový
+  fallback vrátil HTTP200. Nejde o selhání aplikace ani o náhradu browser přejímky.
+- Živý přihlášený browser **20:27:46** načetl SHA `c6e3328b…`, soukromé úložiště PASS
+  a následně Moje kroužky bez cizích profilů. Viz `production-release.png`.
+  Celková brána UAT zůstává BLOKOVÁNO provozními předpoklady; nebyla obejita.
+- B1 hub B15 a B18 aktualizován, export z **20:18:28** stažen a zkontrolován:
+  `acceptance-hub-export.md`, 10 PARTIAL / 40 celkem, A01–A10 dosud netestovány.
 
 ## Přesně odložené části
 
