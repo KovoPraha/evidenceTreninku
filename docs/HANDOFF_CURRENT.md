@@ -1,5 +1,15 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 19:49 — produkční prohlídka osob a tréninků po obnoveném přihlášení.**
+Začít [novým protokolem](verification/people-training-production-20261023/RESULTS.md).
+Aktuální produkční kód `313cd61ba5111f0d88e158b5107bb1160cb0d374` (PR #177), chráněný
+deploy **39997113354 SUCCESS**, dokončen 19:46:45 SELČ. Opravené hledání osoby nad
+různými kolacemi, odkaz na skutečný nejstarší nezapsaný plán a české entity v oznámeních.
+Browser na produkci ověřil obě opravy, auditní hledání a soukromé úložiště; bez doménových zápisů.
+CI 1653/32963, MariaDB 10.3/11.4 a CodeQL PASS. B1 protokol B05/B26 doplněn, stále PARTIAL.
+Přihlášení již není překážkou této kontroly. Plná lidská/účetní přejímka zůstává otevřená;
+neprovádět historické opravy vazeb, přidělování přístupů ani zapnutí integrací odhadem.
+
 **23. 10. 2026 — detailní kontrola osob, tréninků a vazeb na e-shop.**
 [Nový protokol a přesné meze](verification/people-training-20261023/RESULTS.md).
 Opraven souběh editace osob, atomická poznámka/audit, rychlá přihláška kurzu,

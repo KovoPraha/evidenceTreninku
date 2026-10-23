@@ -42,7 +42,20 @@ Soukromé úložiště: PASS při čtení aktuálního webového procesu.
 - Nativní MariaDB read-only dotazy: `UAT-OSOBY23` a `92` vracejí pouze 92; doslovné `%` a neexistující jméno nic.
 - B1 UI hledání vrací jednu archivovanou syntetickou osobu, bez HTTP 500. [Vizuální důkaz](local-identity-search.png).
 - B1 UI plánovač: z prázdného týdne 26. 10. se opraveným odkazem otevře 22. 10. se skutečným plánem 2 a zachovanou soupiskou `team_id=3`.
-- MariaDB CI smoke rozšířen o různé kolace jména/příjmení, nativní prepare a hledání celého jména oběma směry. Výsledky CI a nasazení doplnit po dokončení.
+- MariaDB CI smoke rozšířen o různé kolace jména/příjmení, nativní prepare a hledání celého jména oběma směry; MariaDB 10.3 a 11.4 PASS.
+- [Lokální cílový týden a zachovaný filtr](local-pending-plan.png).
+
+## Nasazení a opakovaná produkční kontrola
+
+- [PR #177](https://github.com/KovoPraha/evidenceTreninku/pull/177), kód `7f2d5e0a`, merge/release **`313cd61ba5111f0d88e158b5107bb1160cb0d374`**.
+- PR CI **39996659275** a CodeQL **39996654683** PASS. Linux PHPUnit **1 653 testů / 32 963 assertions**. Main CI **39996941822** a CodeQL **39996941776** PASS.
+- [Chráněný deploy 39997113354](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39997113354) **SUCCESS**, dokončen 19:46:45 SELČ. `uat_schvaleno=false`, `importovat_krouzky=false`. Ověřená záloha a ochrana soukromého klíče HTTP 403. Nové migrace tento balík nemá. Přímé spojení CI runneru na web timeoutovalo; standardní serverový fallback ověřil HTTP 200, následně také přihlášený browser načetl aplikaci.
+- Browser readiness 19:46:31: přesný SHA `313cd61b`, soukromé úložiště PASS, celková lidská UAT brána nadále BLOCKED dle chybějících předpokladů.
+- **Hledání osob PASS:** opakovaný původně chybující dotaz `TEST-PR137` vrací jednu správnou archivovanou syntetickou osobu. [Produkční důkaz](production-identity-search.png) je omezen na záhlaví a výsledek hledání; nezahrnuje osobní údaje žadatelů níže.
+- **Auditní hledání PASS:** stejný text vrátí odkaz na správnou osobu a její historii.
+- **Plánovač PASS:** filtry Vše, tři staré plány; opravený odkaz otevře skutečný plán v týdnu 25.–31. 5. 2026. Náhled „testovací oznámení“ obsahuje české znaky, nikoli entity. [Produkční důkaz](production-pending-plan.png).
+- Další kontrola: historická testovací soupiska obsahuje stejné ukončené členství jako karta; obrazovka sportovní činnosti vysvětluje odvození z uzavřené docházky.
+- [Export lokálního protokolu](acceptance-hub-export.md) byl stažen přes UI a zkontrolován před přidáním do Gitu. Nejde o účetní export ani potvrzení lidské přejímky.
 
 ## Nezaměňovat s dokončenou lidskou přejímkou
 

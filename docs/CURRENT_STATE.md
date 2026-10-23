@@ -1,5 +1,15 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 19:49 — přihlášená produkční přejímka osob a tréninků dokončena v čtecím rozsahu.**
+[Protokol, opravy a meze](verification/people-training-production-20261023/RESULTS.md).
+Opraveno HTTP 500 při hledání osoby nad rozdílnými kolacemi jmen, chybný cíl upozornění
+na nezapsané lekce a HTML entity v náhledu oznámení. PR #177, release `313cd61b`,
+deploy **39997113354 SUCCESS**. Linux **1653 testů / 32963 assertions**, MariaDB 10.3/11.4
+a CodeQL PASS. Produkční browser potvrdil správné hledání osoby i auditní osy,
+skutečný cílový týden nezapsané lekce, aktuální SHA a soukromé úložiště PASS.
+Produkční osoby, vztahy a tréninky se neměnily. Zápis výsledků jen v izolovaném B1.
+Předchozí překážka přihlášení je vyřešena; lidská přejímka, účetní převzetí a aktivace integrací zůstávají otevřené.
+
 **23. 10. 2026 — detailní kontrola osob, tréninků a vazeb na e-shop.**
 [Nový protokol a přesné meze](verification/people-training-20261023/RESULTS.md).
 Opraven souběh editace osob, atomická poznámka/audit, rychlá přihláška kurzu,
