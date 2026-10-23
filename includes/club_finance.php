@@ -94,6 +94,33 @@ function clubFinanceOrderAthlete(PDO $pdo,int $accountId,?int $requested):?int
     return $requested;
 }
 
+/** Immutable financial split of a family order. Coupon rounding follows category then item order. */
+function clubFinanceStoreOrderShares(PDO $pdo,int $orderId,array $items,array $eventItems,array $velodromeItems,?array $coupon,?int $unassignedOwner,int $shipping,int $expectedTotal):void
+{
+    if (!$pdo->inTransaction()) throw new LogicException('Financial shares require the checkout transaction.');
+    $groups=[1=>[],2=>[],4=>$eventItems,8=>$velodromeItems];
+    foreach ($items as $item) $groups[($item['offer_type']??null)==='program'?2:1][]=$item;
+    $shares=[];$prefix=0;$discount=(int)($coupon['discount_minor']??0);$eligible=(int)($coupon['eligible_subtotal_minor']??0);$mask=(int)($coupon['applicability_mask']??0);
+    foreach ($groups as $flag=>$lines) foreach ($lines as $item) {
+        $owner=(int)($item['beneficiary_sportovec_id']??$unassignedOwner??0);
+        if ($owner<1) throw new ClubFinanceException('U položek bez příjemce vyberte finanční profil.');
+        $gross=(int)$item['amount_minor']*(int)($item['quantity']??1);$part=0;
+        if ($discount>0 && ($mask&$flag)) {
+            if ($eligible<1 || $discount>$eligible || $prefix+$gross>intdiv(PHP_INT_MAX,$discount)) throw new ClubFinanceException('Slevu nelze bezpečně rozdělit mezi děti.');
+            $part=intdiv(($prefix+$gross)*$discount,$eligible)-intdiv($prefix*$discount,$eligible);$prefix+=$gross;
+        }
+        $shares[$owner]=($shares[$owner]??0)+$gross-$part;
+    }
+    if ($shipping>0) {
+        if (($unassignedOwner??0)<1) throw new ClubFinanceException('Doprava vyžaduje finanční profil.');
+        $shares[$unassignedOwner]=($shares[$unassignedOwner]??0)+$shipping;
+    }
+    if (array_sum($shares)!==$expectedTotal || ($discount>0&&$prefix!==$eligible)) throw new ClubFinanceException('Rozpis částek neodpovídá celé objednávce.');
+    ksort($shares,SORT_NUMERIC);
+    $insert=$pdo->prepare('INSERT INTO shop_order_finance_shares(order_id,sportovec_id,amount_minor) VALUES(?,?,?)');
+    foreach ($shares as $owner=>$amount) $insert->execute([$orderId,$owner,$amount]);
+}
+
 /** Allocations to an unpaid item cancelled later become reusable credit; refund-required items do not. */
 function clubFinanceAvailableReceipts(PDO $pdo,int $sportovecId,?DateTimeImmutable $asOf=null,bool $lock=false):array
 {
@@ -149,8 +176,22 @@ function clubFinanceBalanceForAthlete(PDO $pdo,int $sportovecId,?DateTimeImmutab
         $s=$pdo->query("SELECT o.id,o.account_id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,$expiration,$selected,p.due_at,$allocationSelect AS allocated_minor FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id $allocationJoin WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending'");
         foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['currency']!=='CZK') continue;
-            $owner=$row['finance_sportovec_id']===null?clubFinanceOnlyAthleteForAccount($pdo,(int)$row['account_id']):(int)$row['finance_sportovec_id'];
-            if ($owner!==$sportovecId) continue;
+            $familyShares=[];
+            if (clubFinanceTableExists($pdo,'shop_order_finance_shares')) {
+                $shares=$pdo->prepare('SELECT sportovec_id,amount_minor FROM shop_order_finance_shares WHERE order_id=?');$shares->execute([(int)$row['id']]);
+                $familyShares=$shares->fetchAll(PDO::FETCH_KEY_PAIR);
+            }
+            if ($familyShares!==[]) {
+                if (!array_key_exists($sportovecId,$familyShares)) continue;
+                $row['total_minor']=(int)$familyShares[$sportovecId];$row['allocated_minor']=0;
+                if (clubFinanceTableExists($pdo,'club_finance_allocations')) {
+                    $allocated=$pdo->prepare('SELECT COALESCE(SUM(a.amount_minor),0) FROM club_finance_allocations a JOIN club_finance_receipts r ON r.id=a.receipt_id WHERE a.order_id=? AND r.sportovec_id=?');
+                    $allocated->execute([(int)$row['id'],$sportovecId]);$row['allocated_minor']=(int)$allocated->fetchColumn();
+                }
+            } else {
+                $owner=$row['finance_sportovec_id']===null?clubFinanceOnlyAthleteForAccount($pdo,(int)$row['account_id']):(int)$row['finance_sportovec_id'];
+                if ($owner!==$sportovecId) continue;
+            }
             // An expired order is cancelled, not an enforceable debt, even if the expiry worker is late.
             if (!empty($row['payment_expires_at'])&&(string)$row['payment_expires_at']<=$asOf->format('Y-m-d H:i:s')) continue;
             $minor=max(0,(int)$row['total_minor']-(int)$row['allocated_minor']);$open+=$minor;
@@ -292,7 +333,7 @@ function clubFinanceRecordBankReceipt(PDO $pdo,int $sportovecId,int $amountMinor
                 }
             } else {
                 $orderId=(int)$item['id'];
-                $payment=$pdo->prepare("SELECT id,method,status FROM payments WHERE payable_type='shop_order' AND payable_id=?");$payment->execute([$orderId]);$payment=$payment->fetch(PDO::FETCH_ASSOC);
+                $payment=$pdo->prepare("SELECT id,method,status FROM payments WHERE payable_type='shop_order' AND payable_id=?".($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':''));$payment->execute([$orderId]);$payment=$payment->fetch(PDO::FETCH_ASSOC);
                 if (!$payment||$payment['status']!=='pending'||$payment['method']!=='bank_transfer') continue;
                 $applied=0;
                 foreach (clubFinanceAvailableReceipts($pdo,$sportovecId,null,true) as $available) {
@@ -301,7 +342,8 @@ function clubFinanceRecordBankReceipt(PDO $pdo,int $sportovecId,int $amountMinor
                     $pdo->prepare('INSERT INTO club_finance_allocations(receipt_id,order_id,amount_minor) VALUES(?,?,?)')->execute([$available['id'],$orderId,$part]);
                     $applied+=$part;
                 }
-                if ($applied===$need) shopOrderConfirmPaymentInTransaction($pdo,(int)$payment['id'],'bank_transfer','trainer',$actorId,'Uhrazeno z ověřených příjmů včetně #'.$receiptId.'. '.$reason);
+                $covered=$pdo->prepare('SELECT o.total_minor,COALESCE(SUM(a.amount_minor),0) AS allocated_minor FROM shop_orders o LEFT JOIN club_finance_allocations a ON a.order_id=o.id WHERE o.id=? GROUP BY o.id,o.total_minor'.($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':''));$covered->execute([$orderId]);$coverage=$covered->fetch(PDO::FETCH_ASSOC);
+                if ($coverage && (int)$coverage['allocated_minor']===(int)$coverage['total_minor']) shopOrderConfirmPaymentInTransaction($pdo,(int)$payment['id'],'bank_transfer','trainer',$actorId,'Uhrazeno z ověřených příjmů včetně #'.$receiptId.'. '.$reason);
             }
         }
         $remaining=0;

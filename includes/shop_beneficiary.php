@@ -44,6 +44,7 @@ function shopCartSetBeneficiary(PDO $pdo, int $accountId, int $cartItemId, ?int 
     }
     $pdo->beginTransaction();
     try {
+        shopCartLockActive($pdo,$accountId);
         $sql = 'SELECT ci.id,ci.cart_id,ci.variant_id,p.offer_type FROM shop_cart_items ci '
             . 'JOIN shop_carts c ON c.id=ci.cart_id JOIN shop_variants v ON v.id=ci.variant_id '
             . 'JOIN shop_products p ON p.id=v.product_id '
@@ -53,6 +54,7 @@ function shopCartSetBeneficiary(PDO $pdo, int $accountId, int $cartItemId, ?int 
         $statement->execute([$cartItemId, $accountId]);
         $item=$statement->fetch(PDO::FETCH_ASSOC);
         if (!$item) throw new ShopCheckoutException('Položka aktivního košíku nebyla nalezena.');
+        if ((string)$item['offer_type']==='program' && $sportovecId===null) throw new ShopCheckoutException('U kurzu musí zůstat vybrané dítě.');
         if ($sportovecId !== null) {
             $offer=false;
             if((string)$item['offer_type']==='program'){
@@ -62,8 +64,14 @@ function shopCartSetBeneficiary(PDO $pdo, int $accountId, int $cartItemId, ?int 
             shopBeneficiaryAssertAccessible($pdo,$accountId,$sportovecId,true);
             // Věkové rozpětí je doporučení; rozpor se ukáže jako varování v UI.
         }
-        $pdo->prepare('UPDATE shop_cart_items SET beneficiary_sportovec_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')
-            ->execute([$sportovecId, $cartItemId]);
+        $familyCart=shopCheckoutColumnExists($pdo,'shop_cart_items','participant_key') && (string)$item['offer_type']==='program';
+        if ($familyCart) {
+            $duplicate=$pdo->prepare('SELECT id FROM shop_cart_items WHERE cart_id=? AND variant_id=? AND beneficiary_sportovec_id=? AND id<>?');
+            $duplicate->execute([(int)$item['cart_id'],(int)$item['variant_id'],$sportovecId,$cartItemId]);
+            if ($duplicate->fetchColumn()) throw new ShopCheckoutException('Toto dítě už má stejné období kurzu v košíku.');
+        }
+        $pdo->prepare('UPDATE shop_cart_items SET beneficiary_sportovec_id=?,'.($familyCart?'participant_key=?,':'').'updated_at=CURRENT_TIMESTAMP WHERE id=?')
+            ->execute($familyCart?[$sportovecId,$sportovecId,$cartItemId]:[$sportovecId,$cartItemId]);
         $pdo->commit();
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) $pdo->rollBack();
