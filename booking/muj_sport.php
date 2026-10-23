@@ -215,7 +215,7 @@ foreach ($upcomingTrainingRsvps as $training) {
 
     <section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white d-flex justify-content-between"><strong>Moje tréninky</strong><a href="soupiskove_treninky.php">Všechny tréninky ze soupisek</a></div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Datum</th><th>Náplň</th><th>Kategorie</th><th>Délka</th></tr></thead><tbody>
         <?php if ($overview['trainings'] === []): ?><tr><td colspan="4" class="text-muted p-3">Zatím žádná zaznamenaná účast.</td></tr><?php endif; ?>
-        <?php foreach ($overview['trainings'] as $row): ?><tr><td><?= childPageH(childPageDateLabel((string)$row['datum'])) ?></td><td><?= childPageH($row['napln']) ?></td><td><?= childPageH($row['kategorie']) ?></td><td><?= childPageH($row['delka']) ?> h</td></tr><?php endforeach; ?>
+        <?php foreach ($overview['trainings'] as $row): ?><tr><td><?= childPageH(childPageDateLabel((string)$row['datum'])) ?></td><td><?= childPageH($row['napln']) ?><div class="small <?= $row['attendance_confirmed'] ? 'text-success' : 'text-muted' ?>"><?= $row['attendance_confirmed'] ? 'Účast potvrzena' : 'Záznam tréninku — účast zatím neověřena' ?></div></td><td><?= childPageH($row['kategorie']) ?></td><td><?= childPageH($row['delka']) ?> h</td></tr><?php endforeach; ?>
     </tbody></table></div></section>
 
     <section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white fw-semibold">Moje soupisky</div><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Tým</th><th>Sezóna</th><th>Platnost</th><th>Stav</th></tr></thead><tbody>

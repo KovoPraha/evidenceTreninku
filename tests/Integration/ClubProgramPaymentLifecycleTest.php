@@ -13,6 +13,28 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
 {
     private const BANK=['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'KOVO Praha','due_days'=>7];
 
+    public function testAddingSameCourseForSiblingCannotSilentlyReplaceFirstChild(): void
+    {
+        $pdo = $this->database();
+        $this->offer($pdo, 601, 501, 10, 5, 'SIBLING-CART');
+        \shopCartSetQuantity($pdo, 10, 601, 1, 101);
+        $before = \shopCartDetail($pdo, 10);
+        try {
+            \shopCartSetQuantity($pdo, 10, 601, 1, 104);
+            self::fail('Adding a sibling must not silently replace the first participant.');
+        } catch (\ShopCheckoutException $exception) {
+            self::assertStringContainsString('jiného účastníka', $exception->getMessage());
+        }
+        self::assertSame($before['fingerprint'], \shopCartDetail($pdo, 10)['fingerprint']);
+        self::assertSame(101, (int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_cart_items')->fetchColumn());
+        self::assertFalse($pdo->inTransaction());
+        // Re-adding the same child stays idempotent; deliberate selection remains available.
+        \shopCartSetQuantity($pdo, 10, 601, 1, 101);
+        \shopCartSetBeneficiary($pdo, 10, (int)$before['items'][0]['cart_item_id'], 104);
+        self::assertSame(104, (int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_cart_items')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM shop_cart_items')->fetchColumn());
+    }
+
     public function testExistingAthleteCheckoutEnforcesCustomConsentsAndStoresOptionalDeclineOnce():void
     {
         $pdo=$this->database();$this->offer($pdo,601,501,10,5,'CUSTOM-CONSENTS');$input=$this->installCustomConsents($pdo);
@@ -210,7 +232,8 @@ final class ClubProgramPaymentLifecycleTest extends TestCase
 
         \shopCartSetQuantity($pdo,10,601,1,104);
         self::assertStringContainsString('nebylo možné ověřit',\clubProgramBeneficiaryBirthYearWarning($pdo,\clubProgramOfferForVariant($pdo,601),104));
-        \shopCartSetQuantity($pdo,10,601,1,101);$allowedItem=(int)$pdo->query('SELECT ci.id FROM shop_cart_items ci JOIN shop_carts c ON c.id=ci.cart_id WHERE c.account_id=10')->fetchColumn();
+        $allowedItem=(int)$pdo->query('SELECT ci.id FROM shop_cart_items ci JOIN shop_carts c ON c.id=ci.cart_id WHERE c.account_id=10')->fetchColumn();
+        \shopCartSetBeneficiary($pdo,10,$allowedItem,101);
         self::assertSame(101,(int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_cart_items WHERE id='.$allowedItem)->fetchColumn());
     }
 

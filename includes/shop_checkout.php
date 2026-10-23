@@ -201,6 +201,14 @@ function shopCartSetQuantity(PDO $pdo, int $accountId, int $variantId, int $quan
                 $offer=clubProgramOfferForVariant($pdo,$variantId,null,true);
                 if(!$offer)throw new ShopCheckoutException('Nabídka kroužku už není dostupná.');
                 shopBeneficiaryAssertAccessible($pdo,$accountId,(int)$beneficiary,true);
+                if ($existing && (int)$existing['beneficiary_sportovec_id'] > 0
+                    && (int)$existing['beneficiary_sportovec_id'] !== (int)$beneficiary) {
+                    throw new ShopCheckoutException(
+                        'Toto období kroužku už je v košíku pro jiného účastníka. '
+                        . 'Pro další dítě dokončete samostatnou objednávku. '
+                        . 'Pokud chcete opravit výběr dítěte, změňte ho přímo u položky v košíku.'
+                    );
+                }
                 $beneficiarySportovecId=(int)$beneficiary;
             }
             if ($existing) {

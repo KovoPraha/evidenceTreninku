@@ -1,5 +1,15 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — přejímka rodinných a sportovních účtů, opravy připravené k CI.**
+[Protokol a přesné meze](verification/family-course-20261023/RESULTS.md).
+B1 browser prošel žádost → schválení → nákup kurzu → simulovaná úhrada → soupiska,
+odvolání přístupu a obnovení vazby. Produkce pouze čtení; návrat ke konkrétnímu
+termínu a prázdné profily bez vazeb PASS. Opravy: kontrola aktuálního ověření účtu
+při výběru příjemce, ochrana před tichým přepsáním dítěte v košíku a rozlišení
+potvrzené docházky sportovce. Cílené testy 229/2596 + reset/návrat 8/78 PASS.
+Browser sportovního účtu odložen: B1 nemá žádný existující sportovní účet.
+Nový kód dosud není nasazen; platí níže uvedený produkční release313cd61b.
+
 **23. 10. 2026 19:49 — přihlášená produkční přejímka osob a tréninků dokončena v čtecím rozsahu.**
 [Protokol, opravy a meze](verification/people-training-production-20261023/RESULTS.md).
 Opraveno HTTP 500 při hledání osoby nad rozdílnými kolacemi jmen, chybný cíl upozornění

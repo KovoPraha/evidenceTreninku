@@ -97,6 +97,27 @@ final class ChildAccessTest extends TestCase
         }
     }
 
+    public function testAttendanceRequiresCurrentClosureIncludingThisAthlete(): void
+    {
+        $pdo = $this->fullDatabase();
+        self::assertFalse(\childAccessOverview($pdo, 1)['trainings'][0]['attendance_confirmed']);
+        $pdo->exec('CREATE TABLE training_closures(training_id INTEGER,status TEXT,current_revision_id INTEGER)');
+        $pdo->exec('CREATE TABLE training_closure_revisions(id INTEGER,training_id INTEGER,actual_date TEXT,snapshot_json TEXT,version INTEGER,closed_at TEXT,closed_by INTEGER)');
+        $insert = $pdo->prepare('INSERT INTO training_closure_revisions VALUES(?,?,?, ?,?,CURRENT_TIMESTAMP,1)');
+        foreach ([[1, 1, [10], 1], [2, 1, [11], 2], [3, 2, [11], 1]] as [$id, $trainingId, $participants, $version]) {
+            $insert->execute([$id, $trainingId, '2026-08-01', json_encode(['training_id'=>$trainingId, 'participant_ids'=>$participants]), $version]);
+        }
+        $pdo->exec("INSERT INTO training_closures VALUES(1,'closed',1),(2,'closed',3)");
+        $anna = \childAccessOverview($pdo, 1);
+        self::assertTrue($anna['trainings'][0]['attendance_confirmed']);
+        self::assertSame(1, $anna['trainings'][0]['closure_version']);
+        $pdo->exec('UPDATE training_closures SET current_revision_id=2 WHERE training_id=1');
+        self::assertFalse(\childAccessOverview($pdo, 1)['trainings'][0]['attendance_confirmed'], 'Old closure must not certify a participant removed by a correction.');
+        self::assertTrue(\childAccessOverview($pdo, 2)['trainings'][0]['attendance_confirmed']);
+        $pdo->exec("UPDATE training_closures SET status='reopened' WHERE training_id=2");
+        self::assertFalse(\childAccessOverview($pdo, 2)['trainings'][0]['attendance_confirmed']);
+    }
+
     public function testInactiveOrUnknownAccessAccountCannotReadAnyPerson(): void
     {
         $pdo = $this->fullDatabase();
