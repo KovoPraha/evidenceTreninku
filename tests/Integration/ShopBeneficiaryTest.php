@@ -116,6 +116,27 @@ final class ShopBeneficiaryTest extends TestCase
         }
     }
 
+    public function testBeneficiaryAssignmentRechecksCurrentAccountVerificationAndActivity(): void
+    {
+        $pdo = $this->database();
+        \shopCartSetQuantity($pdo, 10, 601, 1);
+        $itemId = (int)$pdo->query('SELECT id FROM shop_cart_items')->fetchColumn();
+        foreach (['email_overeno', 'aktivni'] as $column) {
+            $pdo->exec("UPDATE verejni_uzivatele SET $column=0 WHERE id=10");
+            self::assertFalse(\shopBeneficiaryActiveRelation($pdo, 10, 101));
+            try {
+                \shopCartSetBeneficiary($pdo, 10, $itemId, 101);
+                self::fail('A previously approved relation must not bypass current account state.');
+            } catch (\ShopCheckoutException) {
+            }
+            self::assertNull($pdo->query('SELECT beneficiary_sportovec_id FROM shop_cart_items')->fetchColumn());
+            self::assertFalse($pdo->inTransaction());
+            $pdo->exec("UPDATE verejni_uzivatele SET $column=1 WHERE id=10");
+        }
+        \shopCartSetBeneficiary($pdo, 10, $itemId, 101);
+        self::assertSame(101, (int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_cart_items')->fetchColumn());
+    }
+
     private function database(): PDO
     {
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);

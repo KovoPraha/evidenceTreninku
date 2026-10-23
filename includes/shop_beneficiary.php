@@ -18,10 +18,12 @@ function shopBeneficiaryColumnExists(PDO $pdo, string $table): bool
 function shopBeneficiaryActiveRelation(PDO $pdo, int $accountId, int $sportovecId, bool $lock = false): array|false
 {
     if ($accountId < 1 || $sportovecId < 1) return false;
-    $sql = 'SELECT id,account_id,sportovec_id,relation_role,status,valid_from,valid_to '
-        . 'FROM account_person_roles WHERE account_id=? AND sportovec_id=? '
-        . "AND relation_role IN ('self','guardian') AND status='approved' "
-        . 'AND valid_from<=CURRENT_TIMESTAMP AND (valid_to IS NULL OR valid_to>CURRENT_TIMESTAMP)';
+    $sql = 'SELECT r.id,r.account_id,r.sportovec_id,r.relation_role,r.status,r.valid_from,r.valid_to '
+        . 'FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id '
+        . 'WHERE r.account_id=? AND r.sportovec_id=? '
+        . "AND r.relation_role IN ('self','guardian') AND r.status='approved' "
+        . 'AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) '
+        . 'AND vu.aktivni=1 AND vu.email_overeno=1';
     if ($lock && (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
     $statement = $pdo->prepare($sql);
     $statement->execute([$accountId, $sportovecId]);

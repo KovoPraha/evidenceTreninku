@@ -4,6 +4,7 @@ require_once __DIR__ . '/sportovec_status_lib.php';
 
 require_once __DIR__ . '/member_charge_read.php';
 require_once __DIR__ . '/password_security.php';
+require_once __DIR__ . '/training_closure.php';
 
 final class ChildAccessException extends RuntimeException
 {
@@ -315,6 +316,16 @@ function childAccessOverview(PDO $pdo, int $accessAccountId): array
     $rosters = childAccessScopedRows($pdo, $accessAccountId, 'rosters');
     $events = childAccessScopedRows($pdo, $accessAccountId, 'events');
     $trainings = childAccessScopedRows($pdo, $accessAccountId, 'trainings');
+    $confirmed = [];
+    foreach (trainingClosedActivitiesForPerson($pdo, (int)$person['sportovec_id'], '1900-01-01', date('Y-m-d')) as $activity) {
+        $confirmed[(int)$activity['training_id']] = $activity;
+    }
+    foreach ($trainings as &$training) {
+        $closure = $confirmed[(int)$training['id']] ?? null;
+        $training['attendance_confirmed'] = $closure !== null;
+        $training['closure_version'] = $closure['version'] ?? null;
+    }
+    unset($training);
     $payments = childAccessScopedRows($pdo, $accessAccountId, 'payments');
     $memberCharges = memberChargeRowsForSportovec($pdo, (int)$person['sportovec_id']);
 
@@ -349,7 +360,7 @@ function childAccessScopedRows(PDO $pdo, int $accessAccountId, string $section):
         if (!childAccessHasTables($pdo, ['trenink_sportovec', 'treninky'])) {
             return [];
         }
-        $sql = 'SELECT t.datum,t.napln,t.delka,t.kategorie FROM child_access_accounts a '
+        $sql = 'SELECT t.id,t.datum,t.napln,t.delka,t.kategorie FROM child_access_accounts a '
             . 'JOIN trenink_sportovec ts ON ts.sportovec_id=a.sportovec_id '
             . 'JOIN treninky t ON t.id=ts.trenink_id '
             . 'WHERE a.id=? AND a.active=1 ORDER BY t.datum DESC,t.id DESC';

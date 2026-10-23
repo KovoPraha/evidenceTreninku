@@ -1,5 +1,12 @@
 # Aktuální předání vývoje na další stanici
 
+**23. 10. 2026 — rodinné účty a nákup kurzů.**
+[Nový protokol](verification/family-course-20261023/RESULTS.md) obsahuje tři opravy,
+browser B1 objednávku32 / osobu91 / vazbu86, čtecí produkční kontrolu a odložený
+sportovní login. Cílené testy 229/2596 + 8/78 PASS; plná Windows sada má pouze
+známé selhání POSIX scanneru. Čeká Linux CI, MariaDB a chráněný release.
+Nenahrazovat tím lidské přijetí, nevytvářet syntetické zápisy v produkci.
+
 **23. 10. 2026 19:49 — produkční prohlídka osob a tréninků po obnoveném přihlášení.**
 Začít [novým protokolem](verification/people-training-production-20261023/RESULTS.md).
 Aktuální produkční kód `313cd61ba5111f0d88e158b5107bb1160cb0d374` (PR #177), chráněný
