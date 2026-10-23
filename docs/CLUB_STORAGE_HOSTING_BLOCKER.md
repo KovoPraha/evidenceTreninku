@@ -14,9 +14,12 @@ Nový webový požadavek v 10:32:03 potvrdil `configured`, `outside_webroot`,
 `open_basedir` zůstává zapnuté. Runtime UID není dostupné; tento údaj není
 důvodem vydávat shodu vlastníků za ověřenou.
 
-Původní zákaz přístupu je odstraněný. Samostatné ověření skutečného zápisu,
-čtení a odstranění syntetického souboru webovým PHP navazuje níže; samotný
-read-only PASS ještě není tímto důkazem. Finanční doklady se k testu nepoužívají.
+Původní zákaz přístupu je odstraněný. Následně v **10:44:11 Europe/Prague**
+na vydání `fb2e00c7` prošla i samostatná admin/CSRF webová zkouška:
+vytvoření vlastního souboru, ověření 0600, úplný zápis, shoda čtení a
+potvrzené odstranění. **P0 blok je uzavřený.**
+[Nasazení, testy a browser důkazy](verification/private-storage-20261023/RESULTS.md).
+Finanční doklady ani skutečné přílohy nebyly k testu použity.
 
 Čisté aplikační PHP nemůže povolený rozsah rozšířit: runtime `ini_set()` umí
 `open_basedir` jen zpřísnit; symlink restrikci neobchází

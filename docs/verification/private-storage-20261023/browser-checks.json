@@ -32,5 +32,12 @@
     "path": "/uat_readiness_admin.php",
     "result": "After hosting change: storage PASS; configured/outside/exists/writable true",
     "details": "Technická kontrola přístupu\nNastavení z prostředí: NE\nNastavení z konfigurace: ANO\nProstředí přebíjí jinou cestu v konfiguraci: NE\nHosting omezuje přístup k adresářům: ANO\nCesta je v povoleném rozsahu hostingu: ANO\nLze ověřit skutečnou cestu: ANO\nLze přečíst údaje adresáře: ANO\nLze zjistit vlastníka webového procesu: NE\nLze zjistit vlastníka adresáře: ANO\nVlastník adresáře odpovídá webovému procesu: NE\n\nNedostupné údaje neprokazují rozdílného vlastníka. Rozhodující je dostupný adresář a oprávnění k zápisu."
+  },
+  {
+    "path": "/uat_readiness_admin.php",
+    "release": "fb2e00c72eaeb576b79fc413000278df8174b153",
+    "time": "2026-10-23 10:44:11 Europe/Prague",
+    "action": "admin CSRF POST private_storage_probe",
+    "result": "Technická zkouška: PASS\nPřístup k úložišti: ANO\nDočasný soubor vytvořen: ANO\nOmezená práva nastavena: ANO\nÚplný zápis a uložení: ANO\nPřečtený obsah souhlasí: ANO\nVlastní dočasný soubor odstraněn: ANO\n\nOprávnění 0600 ověřena: ANO."
   }
 ]

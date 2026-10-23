@@ -36,10 +36,42 @@ předání účetní při tomto průchodu nevznikly. Staré systémy nebyly vypn
 
 ## Technická zkouška webového zápisu
 
-Navazuje samostatný admin/CSRF POST v `uat_readiness_admin.php`, který
+PR [#171](https://github.com/KovoPraha/evidenceTreninku/pull/171) přidává
+samostatný admin/CSRF POST v `uat_readiness_admin.php`, který
 vytvoří pouze vlastní náhodný soubor, ověří 0600, zápis a obsah a soubor
-odstraní. GET zůstává read-only. Finální výsledek nasazení a webové zkoušky
-se doplní po provedení; samotný předchozí read-only PASS jej nenahrazuje.
+odstraní. GET zůstává read-only.
+
+[Nasazení 39926289201](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39926289201)
+**SUCCESS**, živé SHA `fb2e00c72eaeb576b79fc413000278df8174b153`,
+deploy timestamp `2026-10-23T08:42:47+00:00`. Vydání ověřeno také v prohlížeči.
+Deploy znovu ověřil zálohu 329 produkčních tabulek a zachování dosavadních
+variabilních symbolů (`unchanged=true`). Import kroužků zůstal vypnutý.
+
+**23. 10. 2026 v 10:44:11 Europe/Prague skutečný webový POST: PASS.**
+Přístup, vytvoření vlastního souboru, nastavení a ověření práv 0600,
+úplný zápis/flush, shoda přečteného obsahu a potvrzené odstranění = ANO.
+Sonda proběhla jednou. Nebyl použit účetní doklad ani změněna databázová evidence.
+[Celý panel](web-probe-pass.jpg), [všech šest kroků a práva 0600](web-probe-result.jpg).
+**Původní P0 blok soukromého úložiště je uzavřený.**
+
+## Ověření implementace
+
+- Linux CI: **1 584 testů / 32 313 assertions PASS**, MariaDB 10.3 / 11.4
+  integrační kontroly a CodeQL PASS. Stejné kontroly PASS také na výsledném
+  merge commitu `fb2e00c72eaeb576b79fc413000278df8174b153`.
+- Windows cílená sada: 41 testů / 2 135 assertions PASS; dva unixové
+  symlinkové testy lokálně přeskočeny, skutečně provedeny v Linux CI.
+- Testy zahrnují částečný zápis, chybu flush, nesouhlas obsahu, odmítnuté
+  vytvoření/práva/mazání, ochranu nahrazeného symlinku a cizího souboru.
+  Subprocess vykonává skutečný autorizační a POST blok stránky s testovacím
+  session bootstrapem: anonymní/coach/nesprávný kontext/CSRF/GET nevolají
+  sondu, oprávněný POST projde a uklidí soubor. Nejde o produkční zápisové
+  testy s omezenými účty.
+- Celý místní Windows běh našel jeden existující falešný poplach statického
+  scanneru: volitelná funkce `posix_geteuid` v předchozí diagnostice není na
+  Windows dostupná, ačkoli runtime volání chrání `function_exists`.
+  Tento test nebyl oslaben ani vydáván za zelený; autoritativní Linux sada
+  včetně tohoto scanneru prošla. Žádná další lokální chyba se neobjevila.
 
 ## Co zůstává otevřené
 

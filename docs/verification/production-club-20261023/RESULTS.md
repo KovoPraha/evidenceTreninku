@@ -1,5 +1,10 @@
 # Produkční nasazení a čtecí browser přejímka — 23. 10. 2026
 
+**Navazující aktualizace:** P0 úložiště popsaný v tomto původním průchodu
+byl vyřešen schválenou změnou PHP a skutečnou webovou zkouškou na vydání
+`fb2e00c7`. [Aktuální důkaz](../private-storage-20261023/RESULTS.md).
+Následující SHA, počty a nález blokace zachycují stav před touto opravou.
+
 **Kód R01–R44 je nasazený; plná provozní přejímka není dokončená.**
 Aktuálně živé SHA `0b03b564dfa6b20817478848fa8721fea09ca082`, ověřené přímo přihlášeným prohlížečem. Závěrečný [deploy 39922198281](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39922198281) SUCCESS. PR [#167](https://github.com/KovoPraha/evidenceTreninku/pull/167), [#168](https://github.com/KovoPraha/evidenceTreninku/pull/168), [#169](https://github.com/KovoPraha/evidenceTreninku/pull/169).
 
