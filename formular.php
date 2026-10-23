@@ -12,6 +12,7 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
 require_once __DIR__ . '/includes/club_makeup.php';
+require_once __DIR__ . '/includes/training_submission.php';
 
 $currentTrener = (int)$_SESSION['trener_id'];
 $isAdmin       = canAccess('formular');
@@ -140,6 +141,18 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
     } catch (Throwable $e) {
         error_log('formular.php duplikat: ' . $e->getMessage());
     }
+}
+
+try {
+    $submissionKey = trainingSubmissionIssue($_SESSION, $currentTrener, (int)($_GET['plan_id'] ?? 0), isset($_GET['submission_key']) ? (string)$_GET['submission_key'] : null);
+    if (!isset($_GET['submission_key'])) {
+        header('Location: ' . trainingSubmissionFormUrl($submissionKey, $_GET), true, 303);
+        exit;
+    }
+} catch (RuntimeException $exception) {
+    $_SESSION['flash_error'] = $exception->getMessage();
+    header('Location: moje_treninky.php', true, 303);
+    exit;
 }
 
 // ── Datum – pro omezený výběr (ne-hlavní trenéři) ─────────────────────────
@@ -295,6 +308,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
     <form id="treninkForm" action="ulozit_trenink.php" method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
+    <input type="hidden" name="submission_key" value="<?= h($submissionKey) ?>">
 
     <?php if ($planPrefill): ?>
     <!-- Info lišta — evidence z plánu -->

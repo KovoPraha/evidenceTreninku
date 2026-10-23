@@ -100,6 +100,22 @@ final class ShopBeneficiaryTest extends TestCase
         self::assertCount(1, \shopBeneficiaryOrderItemsForAccount($pdo, 12));
     }
 
+    public function testFamilyOrderReadRechecksViewerVerificationWithoutDeletingPurchaseHistory(): void
+    {
+        $pdo = $this->database();
+        \shopCartSetQuantity($pdo, 10, 601, 1);
+        $itemId = (int)$pdo->query('SELECT id FROM shop_cart_items')->fetchColumn();
+        \shopCartSetBeneficiary($pdo, 10, $itemId, 101);
+        \shopCheckoutPlace($pdo, 10, bin2hex(random_bytes(16)), self::BANK, \shopCartDetail($pdo, 10)['fingerprint']);
+        foreach (['email_overeno', 'aktivni'] as $column) {
+            $pdo->exec("UPDATE verejni_uzivatele SET $column=0 WHERE id=10");
+            self::assertSame([], \shopBeneficiaryOrderItemsForAccount($pdo, 10));
+            self::assertCount(1, \shopBeneficiaryOrderItemsForAccount($pdo, 12), 'An independently authorized beneficiary keeps their own purchase view.');
+            self::assertSame(101, (int)$pdo->query('SELECT beneficiary_sportovec_id FROM shop_order_items')->fetchColumn());
+            $pdo->exec("UPDATE verejni_uzivatele SET $column=1 WHERE id=10");
+        }
+    }
+
     private function database(): PDO
     {
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);

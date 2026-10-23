@@ -86,6 +86,7 @@ function shopBeneficiaryOrderItemsForAccount(PDO $pdo, int $accountId, int $limi
         . 'o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,'
         . 'r.relation_role AS viewer_relation_role '
         . 'FROM account_person_roles r '
+        . 'JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 '
         . 'JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id '
         . 'JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id '
         . "WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' "

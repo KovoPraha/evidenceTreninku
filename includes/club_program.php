@@ -688,6 +688,12 @@ function clubProgramEvent(PDO $pdo, int $programId, ?int $offerId, string $actor
 /** @return list<array<string,mixed>> */
 function clubProgramPendingOrderItems(PDO $pdo, int $accountId): array
 {
+    $rosterJoin = clubProgramColumnExists($pdo, 'club_roster_members', 'source_ref')
+        ? "LEFT JOIN club_roster_members rm ON rm.team_id=co.team_id AND rm.sportovec_id=s.id AND rm.source_ref=CONCAT('club_program_enrollment:',e.id) "
+        : 'LEFT JOIN club_roster_members rm ON rm.team_id=co.team_id AND rm.sportovec_id=s.id ';
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
+        $rosterJoin = str_replace("CONCAT('club_program_enrollment:',e.id)", "('club_program_enrollment:'||e.id)", $rosterJoin);
+    }
     $hasRequests = clubProgramColumnExists($pdo, 'shop_order_items', 'athlete_registration_request_id')
         && clubProgramRuntimeTableExists($pdo, 'account_person_claim_requests');
     $requestSelect = $hasRequests
@@ -709,9 +715,9 @@ function clubProgramPendingOrderItems(PDO $pdo, int $accountId): array
         . 'EXISTS(SELECT 1 FROM club_program_enrollments other_enrollment WHERE other_enrollment.offer_id=co.id AND other_enrollment.sportovec_id=oi.beneficiary_sportovec_id AND other_enrollment.status=\'active\' AND other_enrollment.source_order_item_id<>oi.id) AS duplicate_enrollment '
         . 'FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN verejni_uzivatele vu ON vu.id=o.account_id '
         . 'JOIN club_program_offers co ON co.variant_id=oi.variant_id AND co.product_id=oi.product_id JOIN club_programs cp ON cp.id=co.program_id '
-        . 'LEFT JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id AND EXISTS(SELECT 1 FROM account_person_roles r WHERE r.account_id=o.account_id AND r.sportovec_id=s.id AND r.relation_role IN (\'self\',\'guardian\') AND r.status=\'approved\' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP)) '
+        . 'LEFT JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id AND vu.aktivni=1 AND vu.email_overeno=1 AND EXISTS(SELECT 1 FROM account_person_roles r WHERE r.account_id=o.account_id AND r.sportovec_id=s.id AND r.relation_role IN (\'self\',\'guardian\') AND r.status=\'approved\' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP)) '
         . $requestJoin
-        . 'LEFT JOIN club_program_enrollments e ON e.source_order_item_id=oi.id LEFT JOIN club_roster_members rm ON rm.team_id=co.team_id AND rm.sportovec_id=s.id '
+        . 'LEFT JOIN club_program_enrollments e ON e.source_order_item_id=oi.id ' . $rosterJoin
         . 'WHERE o.account_id=? AND (s.id IS NOT NULL'.$requestAccess.') ORDER BY o.created_at DESC,oi.id DESC'
     );
     $statement->execute([$accountId]);
@@ -732,6 +738,11 @@ function clubProgramPendingOrderItems(PDO $pdo, int $accountId): array
 /** @return list<array<string,mixed>> */
 function clubProgramEnrollmentsForAccount(PDO $pdo, int $accountId): array
 {
+    // Recheck the viewer, not the historical payer. A stale login session must
+    // not retain access after deactivation or withdrawal of email verification.
+    $viewer = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1');
+    $viewer->execute([$accountId]);
+    if (!$viewer->fetchColumn()) return [];
     $rosterJoin=clubProgramColumnExists($pdo,'club_roster_members','source_ref')
         ? "LEFT JOIN club_roster_members rm ON rm.team_id=co.team_id AND rm.sportovec_id=e.sportovec_id AND rm.source_ref=CONCAT('club_program_enrollment:',e.id)"
         : 'LEFT JOIN club_roster_members rm ON rm.team_id=co.team_id AND rm.sportovec_id=e.sportovec_id';

@@ -216,6 +216,16 @@ if (!empty($trenink['datum'])) {
         </div>
     </div>
 
+    <?php if ($flashError): ?>
+        <div class="alert alert-danger" role="alert">
+            <?= h($flashError) ?>
+            <a class="alert-link d-block mt-2" href="training_closure_admin.php?id=<?= $treninkId ?>">Docházka a uzavření — verzovaná oprava tréninku</a>
+        </div>
+    <?php endif; ?>
+    <?php if ($flashSuccess): ?>
+        <div class="alert alert-success" role="status"><?= h($flashSuccess) ?></div>
+    <?php endif; ?>
+
     <form id="treninkForm" method="POST" action="update_trenink.php" enctype="multipart/form-data">
         <?= csrf_field() ?>
         <input type="hidden" name="id" value="<?= (int)$trenink['id'] ?>">
@@ -532,7 +542,8 @@ if (!empty($trenink['datum'])) {
                     const b = document.createElement('button');
                     b.type = 'button';
                     b.className = 'list-group-item list-group-item-action';
-                    b.textContent = it.jmeno;
+                    const personLabel = [it.prijmeni, it.jmeno].filter(Boolean).join(' ') || it.label || '';
+                    b.textContent = it.label || personLabel;
                     b.addEventListener('click', () => {
                         // už existuje?
                         if (wrap.querySelector('.chip[data-id="' + it.id + '"]')) {
@@ -543,7 +554,7 @@ if (!empty($trenink['datum'])) {
                         const chip = document.createElement('span');
                         chip.className = 'chip';
                         chip.setAttribute('data-id', it.id);
-                        chip.appendChild(document.createTextNode(String(it.jmeno) + ' '));
+                        chip.appendChild(document.createTextNode(personLabel + ' '));
                         const close = document.createElement('button');
                         close.type = 'button';
                         close.className = 'btn-close btn-close-white btn-sm ms-2';
@@ -846,6 +857,9 @@ if (!empty($trenink['datum'])) {
         // autocomplete sportovec pro měření
         let aborter = null;
         spName.addEventListener('input', () => {
+            // Free text must never retain the previously selected person's ID.
+            spId.value = '';
+            syncHidden();
             const q = spName.value.trim();
             if (q.length < 2) { spSug.innerHTML = ''; return; }
 
@@ -862,10 +876,11 @@ if (!empty($trenink['datum'])) {
                         const b = document.createElement('button');
                         b.type = 'button';
                         b.className = 'list-group-item list-group-item-action';
-                        b.textContent = it.jmeno;
+                        const personLabel = [it.prijmeni, it.jmeno].filter(Boolean).join(' ') || it.label || '';
+                        b.textContent = it.label || personLabel;
                         b.addEventListener('click', () => {
                             spId.value = it.id;
-                            spName.value = it.jmeno;
+                            spName.value = personLabel;
                             spSug.innerHTML = '';
                             syncHidden();
                         });
@@ -879,6 +894,11 @@ if (!empty($trenink['datum'])) {
             if (!spSug.contains(e.target) && e.target !== spName) spSug.innerHTML = '';
         });
 
+        const setFieldValue = (selector, value) => {
+            const field = row.querySelector(selector);
+            if (field) field.value = value;
+        };
+
         // prefill
         if (prefill && typeof prefill === 'object') {
             if (prefill.typ) typSel.value = prefill.typ;
@@ -888,23 +908,23 @@ if (!empty($trenink['datum'])) {
             if (prefill.sportovec_label) spName.value = prefill.sportovec_label;
 
             if (prefill.typ === 'kolo' || prefill.typ === 'beh') {
-                row.querySelector('.js-vzdalenost')?.value = prefill.vzdalenost ?? '';
+                setFieldValue('.js-vzdalenost', prefill.vzdalenost ?? '');
                 if (row.querySelector('.js-distance-unit')) row.querySelector('.js-distance-unit').value = prefill.distance_unit ?? '';
-                row.querySelector('.js-cas')?.value = prefill.cas ?? '';
-                row.querySelector('.js-prevod')?.value = prefill.prevod ?? '';
-                row.querySelector('.js-poznamka')?.value = prefill.poznamka ?? '';
+                setFieldValue('.js-cas', prefill.cas ?? '');
+                setFieldValue('.js-prevod', prefill.prevod ?? '');
+                setFieldValue('.js-poznamka', prefill.poznamka ?? '');
             } else if (prefill.typ === 'posilovna') {
                 const sel = row.querySelector('.js-cvik_id');
                 if (sel && prefill.cvik_id != null) sel.value = String(prefill.cvik_id);
-                row.querySelector('.js-vaha')?.value = prefill.vaha ?? '';
-                row.querySelector('.js-opakovani')?.value = prefill.opakovani ?? '';
-                row.querySelector('.js-rpe')?.value = prefill.rpe ?? '';
-                row.querySelector('.js-poznamka')?.value = prefill.poznamka ?? '';
+                setFieldValue('.js-vaha', prefill.vaha ?? '');
+                setFieldValue('.js-opakovani', prefill.opakovani ?? '');
+                setFieldValue('.js-rpe', prefill.rpe ?? '');
+                setFieldValue('.js-poznamka', prefill.poznamka ?? '');
             } else if (prefill.typ === 'kolo_krouzek' || prefill.typ === 'kolo_silnice' || prefill.typ === 'kolo_mtb') {
                 const segSel = row.querySelector('.js-segment_id');
                 if (segSel && prefill.segment_id != null) segSel.value = String(prefill.segment_id);
-                row.querySelector('.js-cas')?.value = prefill.cas ?? '';
-                row.querySelector('.js-poznamka')?.value = prefill.poznamka ?? '';
+                setFieldValue('.js-cas', prefill.cas ?? '');
+                setFieldValue('.js-poznamka', prefill.poznamka ?? '');
             }
         } else {
             renderFields(row);

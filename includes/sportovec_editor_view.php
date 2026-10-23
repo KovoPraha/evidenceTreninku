@@ -15,11 +15,16 @@
             <a class="btn btn-outline-secondary btn-sm" href="#rosters-title">Soupisky a zařazení</a>
             <a class="btn btn-outline-secondary btn-sm" href="#payments-title">Všechny platby</a>
             <a class="btn btn-outline-secondary btn-sm" href="#birth-number-title">Upravit RČ</a>
+            <?php if ($editError !== '' && ($editorLastAction ?? '') === 'save'): ?>
+                <?php // A distinct GET URL must reload the record, not only scroll the current POST response. ?>
+                <a class="btn btn-outline-primary btn-sm" href="<?= h(spUrl(['edit_id' => $editId, 'reload' => bin2hex(random_bytes(8))])) ?>#edit-card">Načíst aktuální údaje</a>
+            <?php endif; ?>
         </div>
         <form method="post" action="<?= h(spUrl(['edit_id' => $editId])) ?>#edit-card" id="sportovec-form">
             <?= csrf_field() ?>
             <input type="hidden" name="akce" value="save">
             <input type="hidden" name="id" id="sp-id" value="<?= (int)$editId ?>">
+            <input type="hidden" name="profile_revision" value="<?= h($editInput['profile_revision'] ?? sportovecEditorRevision($editPerson, $editContext['profile'])) ?>">
             <?php foreach ([
                 'Osobní a sportovní údaje' => ['prijmeni','jmeno','narozeni','category','uciid','oddil'],
                 'Kontakt sportovce' => ['email','telefon'],

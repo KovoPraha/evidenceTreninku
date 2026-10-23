@@ -16,6 +16,8 @@ require_once __DIR__ . '/includes/sports_measurement_input.php';
 require_once __DIR__ . '/includes/venue_calendar.php';
 require_once __DIR__ . '/includes/file_mutation_transaction.php';
 require_once __DIR__ . '/includes/secure_upload.php';
+require_once __DIR__ . '/includes/training_submission.php';
+require_once __DIR__ . '/includes/training_closure.php';
 
 if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
@@ -46,6 +48,23 @@ $teamIds = array_values(array_unique(array_filter(array_map('intval', is_array($
 $trenere    = $_POST['trenere'] ?? [];
 $ucastnici  = trim((string)($_POST['ucastnici'] ?? ''));
 $planId     = (int)($_POST['plan_id'] ?? 0);
+$submissionKey = (string)($_POST['submission_key'] ?? '');
+try {
+    $submission = trainingSubmissionEntry($_SESSION, $submissionKey, $trenerId, $planId);
+    if ($submission['state'] === 'completed') {
+        $_SESSION['flash_success'] = 'Tento trénink již byl uložen. Opakované odeslání nevytvořilo další záznam.';
+        header('Location: ' . $submission['redirect'], true, 303);
+        exit;
+    }
+    if ($submission['state'] !== 'issued') throw new RuntimeException('Předchozí odeslání se právě ukládá nebo má nejistý výsledek. Zápis se neopakuje; ověřte přehled tréninků.');
+} catch (RuntimeException $exception) {
+    $_SESSION['flash_error'] = $exception->getMessage();
+    header('Location: moje_treninky.php', true, 303);
+    exit;
+}
+$retryUrl = 'formular.php?' . http_build_query(['submission_key' => $submissionKey] + ($planId > 0 ? ['plan_id' => $planId] : []));
+$submissionStarted = false;
+$commitAttempted = false;
 
 $napln      = trim((string)($_POST['napln'] ?? ''));
 $poznamka   = trim((string)($_POST['poznamka'] ?? ''));
@@ -56,7 +75,7 @@ try {
     $mereniRows = sportsMeasurementRowsFromPost($_POST);
 } catch (InvalidArgumentException $exception) {
     $_SESSION['flash_error'] = $exception->getMessage();
-    header('Location: formular.php');
+    header('Location: ' . $retryUrl, true, 303);
     exit;
 }
 
@@ -91,7 +110,7 @@ if (!empty($_FILES['obrazky']['name'][0])) {
     $_SESSION['flash_error'] = $exception instanceof SecureUploadException
         ? $exception->getMessage()
         : 'Obrázky se nepodařilo bezpečně zpracovat.';
-    header('Location: formular.php' . ($planId > 0 ? '?plan_id=' . $planId : ''));
+    header('Location: ' . $retryUrl, true, 303);
     exit;
 }
 $obrazky = !empty($imagePaths) ? json_encode($imagePaths, JSON_UNESCAPED_UNICODE) : null;
@@ -111,7 +130,11 @@ try {
         }
     }
 
+    trainingSubmissionBegin($_SESSION, $submissionKey, $trenerId, $planId);
+    trainingSubmissionPersistPending($submissionKey, $trenerId, $planId);
+    $submissionStarted = true;
     $pdo->beginTransaction();
+    trainingClosureAssertActor($pdo, $trenerId);
     coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
     coachScopeAssertTeams($pdo, $teamIds, $datum);
 
@@ -331,16 +354,20 @@ try {
     }
 
     fileMutationFinalize($fileMutations);
+    $commitAttempted = true;
     $pdo->commit();
-    fileMutationCommitted($fileMutations);
     $redirectBack = ($planId > 0) ? 'planovac.php' : 'index.php';
-    header('Location: ' . $redirectBack);
+    trainingSubmissionComplete($_SESSION, $submissionKey, $treninkId, $redirectBack);
+    fileMutationCommitted($fileMutations);
+    header('Location: ' . $redirectBack, true, 303);
     exit;
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
-    fileMutationRollback($fileMutations);
+    if (!$commitAttempted) fileMutationRollback($fileMutations);
+    if ($submissionStarted && !$commitAttempted) trainingSubmissionRetryAfterRollback($_SESSION, $submissionKey);
     $_SESSION['flash_error'] = 'Chyba při ukládání: ' . $e->getMessage();
-    header('Location: formular.php' . ($planId > 0 ? '?plan_id=' . $planId : ''));
+    if ($commitAttempted) $_SESSION['flash_error'] = 'Výsledek ukládání je nejistý. Zápis se neopakuje; před novým zadáním ověřte přehled tréninků.';
+    header('Location: ' . ($commitAttempted ? 'moje_treninky.php' : $retryUrl), true, 303);
     exit;
 }

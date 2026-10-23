@@ -13,6 +13,7 @@ final class SportovecEditorWiringTest extends TestCase
         self::assertStringNotContainsString('btn.dataset.email', $source);
         self::assertStringContainsString('Cache-Control: no-store', $source);
         self::assertStringContainsString('csrf_verify', $source);
+        self::assertStringContainsString("$" . "editInput['profile_revision'] = is_string", $source);
     }
 
     public function testEditorAndMemberCardExposeSavedRosterAssignmentAndDetails(): void
@@ -30,5 +31,10 @@ final class SportovecEditorWiringTest extends TestCase
         self::assertStringContainsString('&tab=kis#rosters-title', $card);
         $view = file_get_contents($root . '/includes/sportovec_editor_view.php');
         foreach (['name="birth_number"','sportovec_editor_parents_view.php','sportovec_editor_rosters_view.php','sportovec_editor_payments_view.php'] as $control) self::assertStringContainsString($control, $view);
+        self::assertStringContainsString('name="profile_revision"', $view);
+        self::assertStringContainsString("$" . "editInput['profile_revision'] ?? sportovecEditorRevision", $view);
+        self::assertStringContainsString("'reload' => bin2hex(random_bytes(8))", $view);
+        self::assertStringContainsString('sportovecInternalNoteAdd($pdo, $sportovecId', $card);
+        self::assertStringContainsString('&tab=poznamky#poznamky', $card);
     }
 }

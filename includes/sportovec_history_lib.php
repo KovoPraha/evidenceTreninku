@@ -90,3 +90,29 @@ function sportovecHistoryFetch(PDO $pdo, int $sportovecId, int $limit = 80): arr
     $stmt->execute([$sportovecId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+/** A registrar's internal note and its history must either both persist or neither. */
+function sportovecInternalNoteAdd(PDO $pdo, int $sportovecId, int $actor, string $text): int
+{
+    $text = trim($text);
+    if ($sportovecId < 1 || $actor < 1 || $text === '') {
+        throw new InvalidArgumentException('Vyberte osobu a vyplňte interní poznámku.');
+    }
+    $pdo->beginTransaction();
+    try {
+        $person = $pdo->prepare('SELECT id FROM sportovci WHERE id=?'
+            . ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+        $person->execute([$sportovecId]);
+        if (!$person->fetchColumn()) throw new InvalidArgumentException('Osoba nebyla nalezena.');
+        $pdo->prepare('INSERT INTO sportovec_interni_poznamka (sportovec_id, trener_id, text) VALUES (?, ?, ?)')
+            ->execute([$sportovecId, $actor, $text]);
+        $id = (int)$pdo->lastInsertId();
+        sportovecLogEvent($pdo, $sportovecId, 'note', 'Interní poznámka', [], ['text' => $text], 'manual', $actor, $text,
+            'sportovec_interni_poznamka', $id);
+        $pdo->commit();
+        return $id;
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        throw $exception;
+    }
+}

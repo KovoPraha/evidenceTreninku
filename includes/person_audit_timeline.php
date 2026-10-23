@@ -85,7 +85,11 @@ function personAuditTimeline(PDO $pdo, int $sportovecId, int $page = 1, int $pag
         $statement = $pdo->prepare($source['sql'] . ' LIMIT ' . $sourceLimit);
         $statement->execute([$sportovecId]);
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $events[] = personAuditNormalize($row, $source);
+            $event = personAuditNormalize($row, $source);
+            if ($source['source'] === 'person_history') {
+                $event['source_link'] .= '?sportovec_id=' . $sportovecId . '&tab=historie#historie';
+            }
+            $events[] = $event;
         }
     }
 
@@ -111,6 +115,15 @@ function personAuditTimeline(PDO $pdo, int $sportovecId, int $page = 1, int $pag
 function personAuditSources(): array
 {
     return [
+        [
+            'tables' => ['sportovec_history'],
+            'source' => 'person_history', 'label' => 'Evidence osoby',
+            'link' => 'sportovec_karta.php',
+            'sql' => "SELECT id AS source_id,created_at AS occurred_at,event_type AS action,detail AS reason,"
+                . "created_by AS actor_id,'trainer' AS actor_type,NULL AS from_status,NULL AS to_status,"
+                . 'old_json AS before_payload_json,new_json AS payload_json '
+                . 'FROM sportovec_history WHERE sportovec_id=? ORDER BY created_at DESC,id DESC',
+        ],
         [
             'tables'=>['club_paper_records','club_paper_record_events'],
             'source'=>'paper_record','label'=>'Papírové podání','link'=>'paper_registrations_admin.php',
@@ -208,6 +221,18 @@ function personAuditSources(): array
 function personAuditNormalize(array $row, array $source): array
 {
     $payload = personAuditDecodeJson($row['payload_json'] ?? null);
+    // Show membership transitions, never arbitrary profile/contact payload values.
+    if ($source['source'] === 'person_history') {
+        $before = personAuditDecodeJson($row['before_payload_json'] ?? null);
+        foreach (['from_status' => $before, 'to_status' => $payload] as $key => $state) {
+            if (isset($state['stav_clenstvi']) && in_array($state['stav_clenstvi'], ['aktivni','cekajici','neaktivni','archiv'], true)) {
+                $row[$key] = $state['stav_clenstvi'];
+            }
+        }
+        if (is_string($payload['stav_duvod'] ?? null) && trim((string)($row['reason'] ?? '')) === '') {
+            $row['reason'] = $payload['stav_duvod'];
+        }
+    }
     $reason = trim((string)($row['reason'] ?? ''));
     if ($reason === '') {
         foreach (['reason', 'note', 'ended_reason'] as $key) {

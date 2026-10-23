@@ -20,7 +20,7 @@ final class PersonAuditTimelineWiringTest extends TestCase
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/person_audit_timeline.php');
         foreach (['account_person_role_events', 'shop_order_events', 'club_program_enrollment_events',
             'club_roster_events', 'club_roster_rollover_run_items', 'club_event_registration_events',
-            'public_profile_events', 'public_velodrome_reservation_events', 'child_access_events'] as $table) {
+            'public_profile_events', 'public_velodrome_reservation_events', 'child_access_events', 'sportovec_history'] as $table) {
             self::assertStringContainsString($table, $source);
         }
         self::assertStringContainsString('WHERE r.sportovec_id=?', $source);
