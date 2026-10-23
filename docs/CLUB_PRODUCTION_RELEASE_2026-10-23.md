@@ -60,3 +60,12 @@ Příprava release a čtecího dopadu. Nasazení ani úplná produkční přejí
 nejsou označené za dokončené. Starý produkční UAT přehled je BLOKOVÁNO: mimo jiné
 chybí aktivní dětské testovací přístupy, potvrzené testovací okno/inbox a bankovní
 kontrolor. Tato zjištění neopravujeme vymyšlenými souhlasy nebo aktivací Stripe.
+
+## Ověření před prvním nasazením
+
+- PR #167 sloučen jako `57c9e65ad1c00feb06916d7bdbb8fece058cd316`.
+- CI [39919053665](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39919053665): PHP testy, MariaDB 10.3/11.4 a obnova všech 281 tabulek čisté testovací databáze PASS.
+- Produkční čtecí dopad [39919279588](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39919279588): 36 aktivních trenérů bez nových grantů; 799 publikovaných variant bez nových skladových zůstatků, z toho žádná s NULL původní zásobou; jeden současný plán členských plateb bez nové dohody/rozhodnutí; žádný čekající rodinný souhrn.
+- Soukromé úložiště nebylo v CLI prokázané. První verze diagnostiky při chybějícím nastavení nesprávně odvozovala lokální fallback i pro produkci; aktuální verze rozlišuje explicitní nastavení a lokální fallback. Původní výsledek sám nedokládá webovou dostupnost.
+
+Nasazení nyní po ověřené DB záloze a před kopírováním konfigurace do release připraví úložiště v soukromém `data/kis-private`. Existující povolené nastavení zachová; neznámou cestu, symlink nebo prázdnou konstantu odmítne. Při doplnění konfigurace nejprve ověří její soukromou zálohu. Nemění DB, role, přílohy ani historická data. CLI ověřuje vlastní dočasný zápis/čtení/smazání; kvůli odlišnému webovému open_basedir se webová dostupnost ověří zvlášť v administraci.

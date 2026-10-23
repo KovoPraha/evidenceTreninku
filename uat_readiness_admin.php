@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/uat_readiness.php';
+require_once __DIR__ . '/includes/private_storage_readiness.php';
 
 header('Cache-Control: no-store, private');
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
     exit;
 }
+
+$privateStorageReadiness = privateStorageReadiness();
+$privateStorageReady = !in_array(false, $privateStorageReadiness, true);
 
 function uatPageH(mixed $value): string
 {
@@ -41,6 +45,18 @@ try {
     </div>
     <?php if ($loadError !== ''): ?><div class="alert alert-danger"><?=uatPageH($loadError)?></div><?php endif; ?>
     <div class="alert alert-info"><strong>Zápisové scénáře spusťte jen při zeleném výsledku.</strong> Červená položka uvádí konkrétní scénáře, které blokuje. Hesla, Stripe klíče ani bankovní údaje tato stránka nikdy nezobrazuje.</div>
+    <section class="card mb-3 border-<?= $privateStorageReady ? 'success' : 'danger' ?>">
+        <div class="card-body">
+            <h2 class="h5">Soukromé úložiště dokumentů <span class="badge text-bg-<?= $privateStorageReady ? 'success' : 'danger' ?>"><?= $privateStorageReady ? 'PASS' : 'BLOCKED' ?></span></h2>
+            <p class="mb-1">Ověřeno aktuálním webovým procesem, bez vytváření souborů.</p>
+            <ul class="mb-0">
+            <?php foreach (['configured'=>'Nastavení úložiště', 'outside_webroot'=>'Umístění mimo veřejný web', 'directory_exists'=>'Dostupný adresář', 'writable'=>'Oprávnění k zápisu'] as $key=>$label): ?>
+                <li><?=uatPageH($label)?>: <?= $privateStorageReadiness[$key] ? 'ANO' : 'NE' ?></li>
+            <?php endforeach; ?>
+            </ul>
+        </div>
+    </section>
+    <div class="alert alert-warning">Produkční účetnictví a sklad nemají oddělenou testovací evidenci. Fiktivní doklady, platby, výdeje a vratky zkoušejte pouze v izolovaném prostředí. Tento přehled nepotvrzuje dokončení uživatelské přejímky.</div>
     <div class="vstack gap-3">
         <?php foreach ($readiness['checks'] as $check): ?>
             <section class="card border-0 shadow-sm border-start border-5 border-<?= $check['ok'] ? 'success' : 'danger' ?>">

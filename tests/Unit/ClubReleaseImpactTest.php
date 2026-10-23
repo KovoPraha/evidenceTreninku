@@ -80,6 +80,10 @@ final class ClubReleaseImpactTest extends TestCase
         $r=\clubReleaseImpactPrivateStorage($root,$path);
         self::assertFalse($r['exists']); self::assertFalse($r['write_probe_performed']); self::assertDirectoryDoesNotExist($path);
         self::assertFalse(\clubReleaseImpactPrivateStorage($root,$root)['outside_application_tree']);
+        $unconfigured=\clubReleaseImpactPrivateStorage($root,null);
+        self::assertFalse($unconfigured['configured']);
+        self::assertFalse($unconfigured['local_fallback']);
+        self::assertFalse($unconfigured['exists']);
     }
 
     public function testProbeHasExplicitReadOnlyTransactionAndNoApplicationBootstrap(): void

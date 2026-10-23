@@ -242,6 +242,25 @@ jobs:
           jq -e '.ok == true and .private_backup_verified == true and .web_copy_verified == true' /tmp/kis-person-key-result.json >/dev/null
           "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-kis-person-key.php' '$DEPLOY_BASE/provision-kis-person-import-key.php'"
 
+      - name: Připravit soukromé úložiště dokumentů
+        run: |
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/provision-production-private-storage.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/provision-production-private-storage.php"
+          cat > /tmp/run-private-storage.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('KIS_PRIVATE_STORAGE_CONFIRM=PRIPRAVIT-PRIVATNI-ULOZISTE');
+          require __DIR__ . '/provision-production-private-storage.php';
+          exit(provisionProductionPrivateStorageMain());
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-private-storage.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-private-storage.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-private-storage.php'" > /tmp/private-storage-result.json
+          cat /tmp/private-storage-result.json
+          jq -e '.ok == true and .cli_write_read_delete_probe == true and .database_accessed == false and .attachments_moved == false and (.config_appended == false or .private_config_backup_verified == true)' /tmp/private-storage-result.json >/dev/null
+          production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-private-storage.php' '$DEPLOY_BASE/provision-production-private-storage.php'"
+
       - name: Připravit kompletní release mimo webroot
         env:
           UAT_SCHVALENO: ${{ inputs.uat_schvaleno }}
@@ -477,5 +496,5 @@ jobs:
         continue-on-error: true
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
-          "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php' '$DEPLOY_BASE/run-club-catalog-import.php' '$DEPLOY_BASE/run-private-http-probe.php'"
-          rm -f /tmp/run-club-catalog-import.php /tmp/run-private-http-probe.php /tmp/private-http-probe.json
+          "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php' '$DEPLOY_BASE/run-club-catalog-import.php' '$DEPLOY_BASE/run-private-http-probe.php' '$DEPLOY_BASE/run-private-storage.php' '$DEPLOY_BASE/provision-production-private-storage.php'"
+          rm -f /tmp/run-club-catalog-import.php /tmp/run-private-http-probe.php /tmp/private-http-probe.json /tmp/run-private-storage.php /tmp/private-storage-result.json
