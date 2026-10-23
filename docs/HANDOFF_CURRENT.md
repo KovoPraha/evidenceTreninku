@@ -4,8 +4,11 @@
 Po výslovném schválení vlastníkem změněno pouze PHP `open_basedir` pro KIS
 na režim Posunuto. Nový webový požadavek potvrzuje dostupný soukromý adresář
 a oprávnění k zápisu; ostatní nastavení hostingu beze změny.
+Nasazený diagnostický doplněk `fb2e00c7`, deploy 39926289201 SUCCESS.
+Skutečná webová zkouška vytvoření/0600/zápisu/čtení/odstranění PASS;
+1 584 testů / 32 313 assertions a obě MariaDB integrační sady v Linux CI PASS.
 [Navazující důkazy a stav skutečné souborové zkoušky](verification/private-storage-20261023/RESULTS.md).
-Původní P0 nález níže je historický. Plná provozní přejímka zůstává otevřená.
+Původní P0 nález níže je uzavřený. Plná provozní přejímka zůstává otevřená.
 
 **23. 10. 2026 — společné vydání R01–R44 nasazené, provozní přejímka má otevřený P0 blok.**
 Živé SHA `0b03b564dfa6b20817478848fa8721fea09ca082`; [deploy SUCCESS](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39922198281).
