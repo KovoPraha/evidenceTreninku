@@ -103,7 +103,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-10-22.1') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-10-23.3') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -111,7 +111,8 @@ try {
         'sportovci' => ['narozeni'],
         'club_event_term_versions' => ['status', 'archived_at', 'archived_by_trainer_id', 'title_plain', 'custom_required', 'custom_visible'],
         'athlete_registration_text_drafts' => ['title_plain', 'custom_consent_id', 'custom_required', 'custom_visible'],
-        'club_program_enrollments' => ['terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
+        'club_program_enrollments' => ['account_id', 'terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
+        'club_program_admissions' => ['payer_account_id', 'payer_name_snapshot', 'payer_relation_snapshot'],
         'shop_order_items' => [
             'program_terms_snapshot_json', 'program_terms_accepted_at', 'program_terms_accepted_by_account_id',
         ],
@@ -169,11 +170,48 @@ try {
         'club_event_links', 'club_event_people', 'club_event_planned_participants',
         'club_event_vehicle_reservations',
         'club_finance_allocations', 'club_finance_receipts', 'club_finance_setting_events', 'club_finance_settings',
+        // Complete club release addition, independently pinned from the backup implementation.
+        'person_identity_reviews', 'person_identity_review_events',
+        'club_paper_records', 'club_paper_record_events',
+        'booking_notification_context', 'operational_job_runs', 'notification_authorization_snapshots',
+        'operational_cases', 'operational_case_events', 'coach_scope_grants', 'coach_scope_events',
+        'accounting_ledger_mutex', 'accounting_accounts', 'accounting_movements',
+        'accounting_movement_sources', 'accounting_allocations', 'accounting_classifications',
+        'accounting_reconciliations', 'accounting_issuer_versions', 'accounting_rules',
+        'accounting_document_series', 'accounting_documents', 'accounting_document_events',
+        'accounting_refund_decisions', 'accounting_refund_payments', 'accounting_adjustment_events',
+        'accounting_export_mutex', 'accounting_export_batches', 'accounting_export_events',
+        'shop_stock_policy', 'shop_stock_balances', 'shop_stock_movements', 'shop_stock_reservations',
+        'shop_stock_lots', 'shop_stock_lot_uses', 'shop_stock_cost_revisions', 'shop_stock_counts',
+        'shop_fulfillments', 'shop_fulfillment_items', 'shop_delivery_events', 'shop_assisted_sales',
+        'shop_return_cases', 'shop_return_events', 'shop_return_finance_links', 'shop_stock_documents',
+        'member_fee_agreements', 'member_fee_period_decisions', 'club_program_admissions',
+        'training_closures', 'training_closure_revisions', 'training_closure_reviews',
+        'training_schedule_mutex', 'training_schedule_events', 'training_personal_excuses',
+        'sports_event_participation', 'sports_event_revisions', 'sports_activity_statements',
+        'medical_clearance_policies', 'medical_clearance_watches', 'medical_clearance_records',
+        'medical_clearance_events', 'club_expense_cases', 'club_expense_claims', 'club_expense_advances',
+        'club_expense_consumptions', 'club_expense_transfers', 'club_expense_events',
+        'club_reward_rules', 'club_reward_claims', 'club_reward_versions', 'club_reward_decisions',
+        'club_reward_payouts', 'financial_decisions', 'club_migration_mutex', 'club_migration_batches',
+        'club_migration_items', 'club_migration_maps', 'club_migration_events', 'club_cutover_runs',
+        'club_cutover_entries', 'club_cutover_checkpoints', 'club_cutover_reviews', 'club_payment_returns',
     ];
     foreach ($required as $table) {
         if (!array_key_exists($table, $manifest['tables'] ?? [])) {
             throw new RuntimeException('Database backup smoke omitted table: ' . $table);
         }
+    }
+    // This isolated fixture contains only Evidence tables. Checking the actual
+    // schema catches omissions anywhere in the catalog, not only in $required.
+    $expectedTables = $pdo->query(
+        "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE' ORDER BY TABLE_NAME"
+    )->fetchAll(PDO::FETCH_COLUMN);
+    $backedUpTables = array_keys($manifest['tables'] ?? []);
+    sort($expectedTables, SORT_STRING);
+    sort($backedUpTables, SORT_STRING);
+    if ($backedUpTables !== $expectedTables) {
+        throw new RuntimeException('Database backup smoke table count or exact table list differs from the migrated fixture.');
     }
 
     $compressedSql = file_get_contents($backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['backup']));
