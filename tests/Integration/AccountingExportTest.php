@@ -37,6 +37,32 @@ final class AccountingExportTest extends TestCase
         self::assertEquals(300,$saldo->getCell('F4')->getValue(),'2500 less two real allocations1000+1200 leaves300');
         self::assertStringContainsString('NEZNÁMÉ',$b->getSheetByName('Sklad')->getCell('B2')->getValue());$b->disconnectWorksheets();
     }
+    public function testWorkbookPreservesOrderReferencePaymentSymbolAndEachChildPeriod():void {
+        $p=$this->db();$snapshot=\accountingExportSnapshot($p,'2025-10-01','2025-10-31');
+        $data=['reference'=>'LOCALHOST-FAMILY','variable_symbol'=>'0000000013','due_on'=>'2025-11-01','lines'=>[
+            ['line_key'=>'item:41','label'=>'LOCALHOST společný kurz','quantity'=>1,'amount_minor'=>6000,'category_code'=>'KURZ','activity'=>'ODDIL','beneficiary'=>['person_id'=>91,'name'=>'Anna LOCALHOST'],'service_period'=>['2025-11-01','2026-06-30']],
+            ['line_key'=>'item:42','label'=>'LOCALHOST společný kurz','quantity'=>1,'amount_minor'=>6000,'category_code'=>'KURZ','activity'=>'ODDIL','beneficiary'=>['person_id'=>93,'name'=>'=LOCALHOST test'],'service_period'=>['2025-11-01','2026-06-30']],
+            ['line_key'=>'velodrome:43','label'=>'LOCALHOST lekce','quantity'=>1,'amount_minor'=>1000,'beneficiary'=>null,'service_period'=>'2025-11-02'],
+            ['line_key'=>'discount','label'=>'Sleva','quantity'=>1,'amount_minor'=>-101,'beneficiary'=>null,'service_period'=>null],
+        ]];
+        $snapshot['documents']=[['id'=>7,'number'=>'FA-2025-000001','kind'=>'invoice','source_type'=>'order','source_id'=>33,'original_document_id'=>null,'status'=>'issued','effective_on'=>'2025-10-23','issued_at'=>'2025-10-23 12:00:00','total_minor'=>12899,'currency'=>'CZK','archive_path'=>'doklady/7.pdf','pdf_sha256'=>str_repeat('a',64),'snapshot_json'=>json_encode($data,JSON_THROW_ON_ERROR)]];
+        $path=$this->root.'/family.xlsx';\accountingExportWorkbook($snapshot,$path);
+        $book=\PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+        try {
+            $docs=$book->getSheetByName('Doklady');$items=$book->getSheetByName('Polozky');
+            self::assertSame('LOCALHOST-FAMILY',$docs->getCell('N2')->getValue());
+            self::assertSame('0000000013',$docs->getCell('O2')->getValue());self::assertSame('s',$docs->getCell('O2')->getDataType());
+            self::assertSame('2025-11-01',$docs->getCell('P2')->getValue());
+            self::assertSame('91',$items->getCell('H2')->getValue());self::assertSame('Anna LOCALHOST',$items->getCell('I2')->getValue());
+            self::assertSame('93',$items->getCell('H3')->getValue());self::assertSame('=LOCALHOST test',$items->getCell('I3')->getValue());self::assertSame('s',$items->getCell('I3')->getDataType());
+            self::assertSame('2025-11-01',$items->getCell('J2')->getValue());self::assertSame('2026-06-30',$items->getCell('K2')->getValue());
+            self::assertSame('2025-11-02',$items->getCell('J4')->getValue());self::assertSame('2025-11-02',$items->getCell('K4')->getValue());
+            self::assertSame('',(string)$items->getCell('J5')->getValue());self::assertSame('',(string)$items->getCell('I5')->getValue());
+            self::assertEquals(128.99,array_sum(array_map(static fn(int $row)=>(float)$items->getCell('E'.$row)->getValue(),[2,3,4,5])));
+            self::assertSame('n',$items->getCell('E2')->getDataType());
+        } finally {$book->disconnectWorksheets();}
+    }
+
     public function testArchivesAreImmutableIdempotentAndRevisionsReplaceNotAppend():void {
         $p=$this->db();$a=\accountingExportCreate($p,'2025-10-01','2025-10-31','test-request-001',1,'LOCALHOST první příprava',true);
         $file=\accountingExportDownload($p,(int)$a['id'],1);$bytes=file_get_contents($file['path']);self::assertSame($a['archive_sha256'],hash('sha256',$bytes));

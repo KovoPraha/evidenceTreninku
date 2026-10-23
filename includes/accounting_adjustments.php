@@ -59,11 +59,16 @@ function accountingAdjustmentLockLegacyPayment(PDO $pdo,int $movementId):void
     if (!clubFinanceTableExists($pdo,'payments')) return;
     $st=$pdo->prepare('SELECT case_type,case_id FROM accounting_movements WHERE id=?');$st->execute([$movementId]);$movement=$st->fetch(PDO::FETCH_ASSOC);
     if (!$movement) return;
+    $links=['(payable_type=? AND payable_id=?)'];$args=[$movement['case_type'],$movement['case_id']];
     if (clubFinanceTableExists($pdo,'accounting_movement_sources')) {
-        $st=$pdo->prepare("SELECT * FROM payments WHERE id IN (SELECT source_id FROM accounting_movement_sources WHERE movement_id=? AND source_type='payments') OR (payable_type=? AND payable_id=?)".accountingAdjustmentLock($pdo));$st->execute([$movementId,$movement['case_type'],$movement['case_id']]);
-    } else {
-        $st=$pdo->prepare('SELECT * FROM payments WHERE payable_type=? AND payable_id=?'.accountingAdjustmentLock($pdo));$st->execute([$movement['case_type'],$movement['case_id']]);
+        $links[]="id IN (SELECT source_id FROM accounting_movement_sources WHERE movement_id=? AND source_type='payments')";$args[]=$movementId;
     }
+    // Split bank receipts do not have a single case_id or a direct payment alias.
+    // Keep the original positive allocation as evidence even after its release.
+    if (clubFinanceTableExists($pdo,'accounting_allocations')) {
+        $links[]='EXISTS (SELECT 1 FROM accounting_allocations a WHERE a.movement_id=? AND a.case_type=payments.payable_type AND a.case_id=payments.payable_id AND a.amount_minor>0)';$args[]=$movementId;
+    }
+    $st=$pdo->prepare('SELECT * FROM payments WHERE ('.implode(' OR ',$links).')'.accountingAdjustmentLock($pdo));$st->execute($args);
     foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $payment) {
         if ($payment['status']==='refunded' || !empty($payment['refund_sent_at'])) throw new DomainException('Původní platba již má potvrzenou celou vratku. Nejdříve vypořádejte původní podklady.');
     }
@@ -166,23 +171,31 @@ function accountingRefundPay(PDO $pdo,int $decisionId,array $input,int $actor,st
         $s=$pdo->prepare('SELECT decision_id FROM accounting_refund_payments WHERE movement_id=?');$s->execute([$movement['id']]);$already=$s->fetchColumn();
         if ($already && (int)$already!==$decisionId) throw new DomainException('Pohyb již vypořádal jinou vratku.');
         if (!$already) $pdo->prepare('INSERT INTO accounting_refund_payments(decision_id,movement_id,amount_minor,effective_on) VALUES(?,?,?,?)')->execute([$decisionId,$movement['id'],$amount,$date]);
-        accountingAdjustmentCompleteCanonicalRefund($pdo,$original,$actor,$reason);
+        accountingAdjustmentCompleteCanonicalRefund($pdo,$original,$actor,$reason,$decision);
         return $movement;
     });
 }
 
 /** Reconcile only an exact, fully repaid cancelled order; this adds no money and touches no stock. */
-function accountingAdjustmentCompleteCanonicalRefund(PDO $pdo,array $original,int $actor,string $reason):void
+function accountingAdjustmentCompleteCanonicalRefund(PDO $pdo,array $original,int $actor,string $reason,?array $decision=null):void
 {
-    if (($original['case_type']??'')!=='shop_order' || !clubFinanceTableExists($pdo,'shop_orders') || !clubFinanceTableExists($pdo,'payments')) return;
-    $s=$pdo->prepare("SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?".accountingAdjustmentLock($pdo));$s->execute([$original['case_id']]);$payment=$s->fetch(PDO::FETCH_ASSOC);
-    if (!$payment || $payment['status']!=='refund_required' || (int)$payment['amount_minor']!==(int)$original['amount_minor'] || $payment['currency']!==$original['currency']) return;
-    $s=$pdo->prepare('SELECT COALESCE(SUM(p.amount_minor),0) AS total,MAX(p.effective_on) AS last_date FROM accounting_refund_payments p JOIN accounting_refund_decisions d ON d.id=p.decision_id WHERE d.original_movement_id=?');$s->execute([$original['id']]);$paid=$s->fetch(PDO::FETCH_ASSOC);
-    if ((int)$paid['total']!==(int)$payment['amount_minor']) return;
+    if (!clubFinanceTableExists($pdo,'shop_orders') || !clubFinanceTableExists($pdo,'payments')) return;
+    $orderId=($original['case_type']??'')==='shop_order'?(int)$original['case_id']:0;
+    if(!empty($decision['original_document_id'])){
+        $s=$pdo->prepare("SELECT source_id FROM accounting_documents WHERE id=? AND source_type='order' AND status='issued'");$s->execute([$decision['original_document_id']]);
+        $linked=$s->fetchColumn();if($linked!==false)$orderId=(int)$linked;
+    }
+    if($orderId<1)return;
+    $s=$pdo->prepare("SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?".accountingAdjustmentLock($pdo));$s->execute([$orderId]);$payment=$s->fetch(PDO::FETCH_ASSOC);
+    if (!$payment || $payment['status']!=='refund_required' || $payment['currency']!==$original['currency']) return;
+    $paid=accountingLedgerOrderRefundCoverage($pdo,$orderId,(string)$payment['currency']);
+    if ($paid['total']!==(int)$payment['amount_minor']) return;
     require_once __DIR__.'/shop_checkout.php';
-    $order=shopOrderAdminLockOrder($pdo,(int)$original['case_id']);
+    $order=shopOrderAdminLockOrder($pdo,$orderId);
     if (!$order || $order['status']!=='cancelled' || $order['payment_status']!=='refund_required') return;
-    shopOrderCompleteRefundInTransaction($pdo,$payment,$order,$actor,'accounting-ledger:'.$original['id'],'Úplná vratka doložena dílčími účetními výplatami příjmu #'.$original['id'].'. '.$reason,$paid['last_date'].' 00:00:00');
+    $legacyReference='accounting-ledger:'.$original['id'];
+    $reference=accountingLedgerRefundDerived($pdo,array_replace($payment,['refund_reference'=>$legacyReference]))?$legacyReference:'accounting-order:'.$orderId;
+    shopOrderCompleteRefundInTransaction($pdo,$payment,$order,$actor,$reference,'Úplná vratka doložena účetními výplatami objednávky #'.$orderId.'. '.$reason,$paid['last_date'].' 00:00:00');
 }
 
 function accountingRefundCancel(PDO $pdo,int $decisionId,int $actor,string $reason,bool $confirmed,string $key):void
@@ -224,8 +237,10 @@ function accountingAdjustmentAssertLegacyRefundAllowed(PDO $pdo,int $orderId):vo
 {
     if (!clubFinanceTableExists($pdo,'accounting_movements') || !clubFinanceTableExists($pdo,'accounting_refund_decisions')) return;
     $aliases=clubFinanceTableExists($pdo,'accounting_movement_sources')&&clubFinanceTableExists($pdo,'payments');
-    $where=$aliases?"((case_type='shop_order' AND case_id=?) OR id IN (SELECT ms.movement_id FROM accounting_movement_sources ms JOIN payments p ON p.id=ms.source_id WHERE ms.source_type='payments' AND p.payable_type='shop_order' AND p.payable_id=?))":"(case_type='shop_order' AND case_id=?)";
-    $s=$pdo->prepare('SELECT id FROM accounting_movements WHERE '.$where.' AND amount_minor>0'.accountingAdjustmentLock($pdo));$s->execute($aliases?[$orderId,$orderId]:[$orderId]);
+    $links=["(case_type='shop_order' AND case_id=?)"];$args=[$orderId];
+    if($aliases){$links[]="id IN (SELECT ms.movement_id FROM accounting_movement_sources ms JOIN payments p ON p.id=ms.source_id WHERE ms.source_type='payments' AND p.payable_type='shop_order' AND p.payable_id=?)";$args[]=$orderId;}
+    if(clubFinanceTableExists($pdo,'accounting_allocations')){$links[]="id IN (SELECT movement_id FROM accounting_allocations WHERE case_type='shop_order' AND case_id=? AND amount_minor>0)";$args[]=$orderId;}
+    $s=$pdo->prepare('SELECT id FROM accounting_movements WHERE ('.implode(' OR ',$links).') AND amount_minor>0'.accountingAdjustmentLock($pdo));$s->execute($args);
     foreach ($s->fetchAll(PDO::FETCH_COLUMN) as $id) {
         $b=accountingAdjustmentBalance($pdo,(int)$id);
         if ($b['refunded_minor']>0 || $b['reserved_minor']>0) throw new DomainException('Objednávka má rozpracovanou nebo vyplacenou účetní vratku. Dokončete její zbývající část v Opravách a vratkách; celou platbu nelze potvrdit znovu.');

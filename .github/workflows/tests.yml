@@ -74,8 +74,11 @@ jobs:
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2, verified tag 2026-06-08
         with:
           php-version: '8.2'
-          extensions: mbstring, pdo_mysql
+          extensions: mbstring, pdo_mysql, gd, zip
           coverage: none
+
+      - name: Nainstalovat závislosti pro účetní doklady a exporty
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Ověřit přístup sportovce na MariaDB
         run: php tests/Support/ChildAccessMariaDbSmoke.php
