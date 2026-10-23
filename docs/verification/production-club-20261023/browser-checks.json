@@ -1,0 +1,572 @@
+{
+  "scope": "Authenticated production read-only browser smoke; not complete transactional UAT",
+  "initialRelease": "ab7d67d924451bc99876b76da7f3ec334579188b",
+  "finalRelease": "0b03b564dfa6b20817478848fa8721fea09ca082",
+  "checks": [
+    {
+      "path": "/uat_readiness_admin.php",
+      "result": "release PASS; private storage BLOCKED (directory/writable false)"
+    },
+    {
+      "path": "/club_cutover_admin.php",
+      "result": "GET form and scope notice rendered; no submission"
+    },
+    {
+      "path": "/provozni_prehled_admin.php",
+      "result": "GET rendered"
+    },
+    {
+      "errors": [],
+      "forms": 47,
+      "headings": [],
+      "path": "/sprava_treneru.php"
+    },
+    {
+      "errors": [],
+      "forms": 20,
+      "headings": [
+        "Pracovní pozice a rozcestníky",
+        "Odebrat konkrétní pracovní pozici",
+        "Ukončit přístup do systému",
+        "Superadmin"
+      ],
+      "path": "/sprava_pracovnich_pozic.php"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 15,
+      "headings": [
+        "Platby a vratky"
+      ],
+      "path": "/eshop_payments_admin.php",
+      "title": "Platby a vratky"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Členské předpisy"
+      ],
+      "path": "/member_charges_admin.php",
+      "title": "Členské předpisy"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Plány členských příspěvků"
+      ],
+      "path": "/member_fee_plans_admin.php",
+      "title": "Plány členských příspěvků"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 27,
+      "headings": [
+        "Peněžní pohyby a pokladny"
+      ],
+      "path": "/accounting_ledger_admin.php",
+      "title": "Peněžní pohyby a pokladny"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 13,
+      "headings": [
+        "Účetní doklady"
+      ],
+      "path": "/accounting_documents_admin.php",
+      "title": "Účetní doklady"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Opravy a vratky"
+      ],
+      "path": "/accounting_adjustments_admin.php",
+      "title": "Opravy a vratky"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Účetní podklady"
+      ],
+      "path": "/accounting_exports_admin.php",
+      "title": "Účetní podklady"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 18,
+      "headings": [
+        "Výdaje, zálohy a vyúčtování"
+      ],
+      "path": "/club_expenses_admin.php",
+      "title": "Výdaje a zálohy"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 9,
+      "headings": [
+        "Výkazy a odměny"
+      ],
+      "path": "/club_rewards_admin.php",
+      "title": "Výkazy a odměny"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Finanční rozhodnutí a podklady"
+      ],
+      "path": "/financial_decisions_admin.php",
+      "title": "Finanční rozhodnutí"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Přehled produktů"
+      ],
+      "path": "/eshop_produkt_admin.php",
+      "title": "Přehled produktů"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Ceny produktů"
+      ],
+      "path": "/eshop_ceny_admin.php",
+      "title": "Ceny produktů"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Skladové zásoby"
+      ],
+      "path": "/eshop_sklad_admin.php",
+      "title": "Skladové zásoby"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Fyzický sklad"
+      ],
+      "path": "/eshop_inventory_admin.php",
+      "title": "Fyzický sklad"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Vratky, výměny a reklamace"
+      ],
+      "path": "/shop_returns_admin.php",
+      "title": "Vratky, výměny a reklamace"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 19,
+      "headings": [
+        "Objednávky"
+      ],
+      "path": "/eshop_orders_admin.php",
+      "title": "Objednávky"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Osobní prodej"
+      ],
+      "path": "/eshop_assisted_sale_admin.php",
+      "title": "Osobní prodej"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 0,
+      "headings": [],
+      "path": "/eshop_fulfillment_admin.php",
+      "title": ""
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Vratky, výměny a reklamace"
+      ],
+      "path": "/shop_returns_admin.php",
+      "title": "Vratky, výměny a reklamace"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 12,
+      "headings": [
+        "Fronta transakčních e-mailů"
+      ],
+      "path": "/eshop_notifications_admin.php",
+      "title": "Fronta transakčních e-mailů"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 9,
+      "headings": [
+        "Týdenní rodinné souhrny"
+      ],
+      "path": "/family_weekly_summaries_admin.php",
+      "title": "Týdenní rodinné souhrny"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 12,
+      "headings": [
+        "Správa sportovců"
+      ],
+      "path": "/sprava_sportovcu.php",
+      "title": "Správa sportovců – Evidence"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 1280,
+      "headings": [
+        "Účty, rodiče a sportovci"
+      ],
+      "path": "/eshop_identity_admin.php",
+      "title": "Účty, rodiče a sportovci"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Registrační texty a souhlasy"
+      ],
+      "path": "/registration_texts_admin.php",
+      "title": "Registrační texty a souhlasy"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 12,
+      "headings": [
+        "KIS – historické sezony a soupisky"
+      ],
+      "path": "/kis_rosters_admin.php",
+      "title": "KIS soupisky"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Ověření identity a zdrojové vazby"
+      ],
+      "path": "/identity_reviews_admin.php",
+      "title": "Ověření identity"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Papírové přihlášky a souhlasy"
+      ],
+      "path": "/paper_registrations_admin.php",
+      "title": "Papírové přihlášky a souhlasy"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Zdravotní prohlídky"
+      ],
+      "path": "/medical_clearance_admin.php",
+      "title": "Zdravotní prohlídky"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Osobní přihlášky do programů"
+      ],
+      "path": "/club_program_admissions_admin.php",
+      "title": "Osobní přihlášky do programů"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Úrovně zapojení osob"
+      ],
+      "path": "/member_engagement_admin.php",
+      "title": "Úrovně zapojení"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "KIS synchronizační centrum"
+      ],
+      "path": "/kis_sync_center.php",
+      "title": "KIS synchronizační centrum"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Správa tréninků"
+      ],
+      "path": "/sprava_vsech_treninku.php",
+      "title": "Správa tréninků"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Správa závodů"
+      ],
+      "path": "/sprava_zavodu.php",
+      "title": "Správa závodů"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Výpis všech výkazů"
+      ],
+      "path": "/prehled_vsech_vykazu.php",
+      "title": "Výpis všech výkazů"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Svěřenci trenérů"
+      ],
+      "path": "/coach_scope_admin.php",
+      "title": "Svěřenci trenérů"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 9,
+      "headings": [
+        "Kvalita sportovních dat"
+      ],
+      "path": "/sports_data_quality_admin.php",
+      "title": "Kvalita sportovních dat"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Plánovač tréninků"
+      ],
+      "path": "/planovac.php",
+      "title": "Plánovač tréninků"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Docházka a uzavření"
+      ],
+      "path": "/training_closure_admin.php",
+      "title": "Docházka a uzavření"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 10,
+      "headings": [
+        "Ověřená sportovní činnost"
+      ],
+      "path": "/sports_activity_admin.php",
+      "title": "Ověřená sportovní činnost"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 9,
+      "headings": [
+        "Kroužky"
+      ],
+      "path": "/club_program_offers_admin.php",
+      "title": "Kroužky"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 19,
+      "headings": [
+        "Klubové akce K3"
+      ],
+      "path": "/eshop_events_admin.php",
+      "title": "Klubové akce K3"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Veřejné hodiny velodromu"
+      ],
+      "path": "/verejny_velodrom_admin.php",
+      "title": "Veřejné hodiny velodromu"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 11,
+      "headings": [
+        "Kroužkové programy a podmínky"
+      ],
+      "path": "/club_programs_admin.php",
+      "title": "Kroužkové programy"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 123,
+      "headings": [
+        "Omluvy a náhradní lekce"
+      ],
+      "path": "/club_makeup_policies_admin.php",
+      "title": "Omluvy a náhradní lekce kroužků"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 9,
+      "headings": [
+        "Kurzy a rezervační okna"
+      ],
+      "path": "/bookable_services_admin.php",
+      "title": "Kurzy a rezervační okna"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "forms": 16,
+      "headings": [
+        "Správa sportovišť"
+      ],
+      "path": "/sprava_sportovist.php",
+      "title": "Správa sportovišť"
+    },
+    {
+      "path": "/formular.php",
+      "result": "coach form rendered; no submission",
+      "fatal": false
+    },
+    {
+      "path": "/booking/eshop.php",
+      "result": "search Bunda ACTIVE 23 returns one matching product; existing cart untouched"
+    },
+    {
+      "path": "/booking/produkt.php?id=67",
+      "result": "variant128 in stock; selecting158 shows sold out and removes add-to-cart action; no cart mutation"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "headings": [
+        "Kroužek vyberete podle dítěte, dne a místa."
+      ],
+      "path": "/booking/cyklisticke_krouzky.php",
+      "title": "Cyklistické kroužky pro děti — KOVO Praha"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "headings": [
+        "Rozvrh tréninků"
+      ],
+      "path": "/booking/treninky.php",
+      "title": "Veřejný rozvrh tréninků — KOVO Praha"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "headings": [
+        "Akce a klubový kalendář"
+      ],
+      "path": "/booking/klubovy_kalendar.php",
+      "title": "Akce a kalendář — KOVO Praha"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "headings": [
+        "Individuální lekce"
+      ],
+      "path": "/booking/kalendar.php",
+      "title": "Rezervace — Říjen 2026"
+    },
+    {
+      "errors": [],
+      "fatal": false,
+      "headings": [
+        "Veřejné hodiny velodromu"
+      ],
+      "path": "/booking/velodrom.php",
+      "title": "Veřejné hodiny velodromu — KOVO Praha"
+    },
+    {
+      "path": "/accounting_ledger_admin.php (coach context)",
+      "result": "denied with required finance position; no ledger visible"
+    },
+    {
+      "path": "/eshop_fulfillment_admin.php?order_id=13",
+      "result": "existing production order detail rendered; no handover mutation"
+    },
+    {
+      "path": "/var/private/kis-person-import.php",
+      "result": "403 Forbidden in browser; no file content exposed"
+    },
+    {
+      "path": "/eshop_fulfillment_admin.php (0b03b564)",
+      "result": "fixed landing PASS; order-selection link opens orders with8 fulfillment links"
+    },
+    {
+      "path": "/uat_readiness_admin.php (0b03b564)",
+      "result": "final release PASS; storage BLOCKED by web open_basedir, constant source, no environment override"
+    }
+  ]
+}
