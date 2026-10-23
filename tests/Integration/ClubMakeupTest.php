@@ -65,6 +65,9 @@ final class ClubMakeupTest extends TestCase
         $pdo->exec('INSERT INTO treninky(id,datum) VALUES(501,\''.date('Y-m-d',strtotime('+1 day')).'\')');
         $pdo->exec('INSERT INTO trenink_sportovec(trenink_id,sportovec_id) VALUES(501,10)');
         \clubMakeupFinalizeTarget($pdo,200,501,1);
+        self::assertSame('reserved',$pdo->query('SELECT status FROM club_makeup_credits')->fetchColumn(),'A future, unfinished lesson cannot consume a credit.');
+        $this->finishTarget($pdo);
+        \clubMakeupFinalizeTarget($pdo,200,501,1);
         self::assertSame('used',$pdo->query('SELECT status FROM club_makeup_credits')->fetchColumn());
         self::assertSame('attended',$pdo->query('SELECT status FROM club_makeup_reservations ORDER BY id DESC LIMIT 1')->fetchColumn());
     }
@@ -238,6 +241,7 @@ final class ClubMakeupTest extends TestCase
         $credit=(int)$pdo->query('SELECT id FROM club_makeup_credits')->fetchColumn();
         \clubMakeupReserve($pdo,10,$credit,200,'athlete',50);
         $pdo->exec('INSERT INTO treninky(id,datum) VALUES(501,\''.date('Y-m-d',strtotime('+1 day')).'\')');
+        $this->finishTarget($pdo);
         \clubMakeupFinalizeTarget($pdo,200,501,1);
         $pdo->beginTransaction();
         $pdo->exec("UPDATE club_program_enrollments SET status='cancelled' WHERE id=41");
@@ -261,6 +265,33 @@ final class ClubMakeupTest extends TestCase
         $pdo->commit();
         \clubMakeupReconcileRecordedAttendance($pdo,500,1);
         self::assertSame('revoked',$pdo->query('SELECT status FROM club_makeup_credits')->fetchColumn());
+    }
+
+    public function testPersonalExcusePreservesActualReceiptTimeAndDoesNotIssueFromDraft():void
+    {
+        require_once dirname(__DIR__,2).'/includes/training_closure.php';
+        $pdo=$this->fixture();$pdo->exec('ALTER TABLE treneri ADD COLUMN aktivni INTEGER NOT NULL DEFAULT 1');
+        $pdo->exec('CREATE TABLE staff_user_positions(trainer_id INTEGER,position_code TEXT)');$pdo->exec("INSERT INTO staff_user_positions VALUES(1,'sports_lead')");$pdo->exec('CREATE TABLE staff_superadmins(trainer_id INTEGER)');
+        $m=require dirname(__DIR__,2).'/migrations/20261023020000_training_closure.php';$m['up']($pdo);
+        $_SESSION=['trener_id'=>1,'staff_positions'=>['sports_lead'],'staff_active_position'=>'sports_lead'];
+        try {
+            \clubMakeupPolicySave($pdo,1,1,1,10,true,12,false);
+            $policy=(int)$pdo->query('SELECT id FROM club_makeup_policies')->fetchColumn();$pdo->prepare('INSERT INTO club_makeup_excuse_rules(plan_id,policy_id,excuse_hours) VALUES(100,?,12)')->execute([$policy]);
+            $received=date('Y-m-d',strtotime('-3 days')).' 08:00:00';
+            $r=\trainingPersonalExcuseRecord($pdo,100,10,$received,'paper','LOCALHOST papírová omluva přepsaná po lekci.',1);
+            self::assertTrue($r['eligible']);$row=$pdo->query('SELECT * FROM training_personal_excuses')->fetch();self::assertSame($received,$row['received_at']);self::assertNotSame($received,$row['recorded_at']);self::assertSame(1,(int)$row['recorded_by']);
+            self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_makeup_credits')->fetchColumn(),'Recorded attendance without explicit closure creates no credit.');
+            try{\trainingPersonalExcuseRecord($pdo,100,10,$received,'phone','LOCALHOST opakované zadání času.',1);self::fail('Receipt timestamp overwritten');}catch(\TrainingClosureException $e){self::assertStringContainsString('již existuje',$e->getMessage());}
+        }finally{$_SESSION=[];}
+    }
+
+    /** Advance the fixture lifecycle from a future reservation to a completed historical lesson. */
+    private function finishTarget(PDO $pdo):void
+    {
+        $date=date('Y-m-d',strtotime('-1 day'));
+        $pdo->prepare("UPDATE planovane_treninky SET datum=?,stav='evidovany',trenink_id=501 WHERE id=200")->execute([$date]);
+        $pdo->prepare('UPDATE treninky SET datum=? WHERE id=501')->execute([$date]);
+        $pdo->prepare('UPDATE club_program_offers SET ends_on=? WHERE id=11')->execute([date('Y-m-d',strtotime('-2 days'))]);
     }
 
     private function fixture():PDO

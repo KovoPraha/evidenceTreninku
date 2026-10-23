@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 1443,
+  "assertions": 30230,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "junit_sha256": "6cae0a7a592723986ed63b610f316bfc3a489728b0ae7cd8526216be08e9f014",
+  "base_commit": "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+  "branch": "codex/membership-sports-r25-r30-20261023",
+  "production_mutations": false
+}

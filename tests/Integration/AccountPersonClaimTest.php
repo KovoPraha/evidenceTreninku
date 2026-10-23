@@ -135,6 +135,20 @@ final class AccountPersonClaimTest extends TestCase
         self::assertSame('sent', $pdo->query('SELECT status FROM club_event_notifications')->fetchColumn());
     }
 
+    public function testApprovedClaimNoticeRechecksRevokedGuardianBeforeSending(): void
+    {
+        $pdo=$this->database();
+        $claim=\accountPersonClaimSubmit($pdo,1,'guardian','Eva','Dítě','2014-01-01','');
+        \accountPersonClaimApprove($pdo,$claim['id'],10,7,'LOCALHOST verified guardian.');
+        $pdo->exec("UPDATE account_person_roles SET status='revoked' WHERE account_id=1 AND sportovec_id=10");
+        $calls=0;
+        self::assertFalse(\clubEventNotificationProcessOne($pdo,static function()use(&$calls){$calls++;return true;}));
+        self::assertSame(0,$calls);
+        self::assertSame('failed',$pdo->query('SELECT status FROM club_event_notifications')->fetchColumn());
+        self::assertStringContainsString('family_authorization_revoked',$pdo->query('SELECT last_error FROM club_event_notifications')->fetchColumn());
+        self::assertSame('approved',$pdo->query('SELECT status FROM account_person_claim_requests')->fetchColumn());
+    }
+
     public function testOutboxFailureRollsBackApprovalAndRelation(): void
     {
         $pdo = $this->database();

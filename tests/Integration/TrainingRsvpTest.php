@@ -11,6 +11,23 @@ require_once dirname(__DIR__, 2) . '/includes/training_rsvp.php';
 
 final class TrainingRsvpTest extends TestCase
 {
+    public function testRevokedGuardianCannotReadOrChangeExistingExcuseButChildAccessRemainsIndependent(): void
+    {
+        $pdo = $this->database();
+        \trainingRsvpSave($pdo,100,10,'not_going','account',100,'Původní omluva.');
+        $before = $pdo->query('SELECT * FROM training_rsvps')->fetchAll(PDO::FETCH_ASSOC);
+        $pdo->exec("UPDATE account_person_roles SET status='revoked',valid_to=CURRENT_TIMESTAMP WHERE id=1");
+        self::assertSame([],\trainingRsvpUpcomingForAccount($pdo,100,date('Y-m-d'),date('Y-m-d',strtotime('+30 days'))));
+        try {
+            \trainingRsvpSave($pdo,100,10,'going','account',100,'Nesmí projít.');
+            self::fail('Revoked guardian can still modify attendance response.');
+        } catch (TrainingRsvpException) {
+            self::assertSame($before,$pdo->query('SELECT * FROM training_rsvps')->fetchAll(PDO::FETCH_ASSOC));
+        }
+        self::assertCount(1,\trainingRsvpUpcomingForChild($pdo,500,date('Y-m-d'),date('Y-m-d',strtotime('+30 days'))));
+        self::assertTrue(\trainingRsvpSave($pdo,100,10,'going','athlete',500)['changed']);
+    }
+
     public function testGuardianAndAthleteCanAnswerOnlyForTheirUpcomingRosterTraining(): void
     {
         $pdo = $this->database();

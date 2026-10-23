@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/auth_rate_limit.php';
+require_once __DIR__ . '/includes/operational_jobs.php';
 
 header('Cache-Control: no-store, private, max-age=0');
 header('Pragma: no-cache');
@@ -76,6 +77,12 @@ $headers = [
             </tbody>
         </table>
     </div>
+    <h2 class="h4 mt-4">Provoz plánovaných úloh</h2>
+    <p class="text-muted">Dohled nic nespouští. Režim je deklarace správce, poslední úspěch je doložený běh; aktivita externího plánovače není tímto ověřena.</p>
+    <div class="table-responsive"><table class="table table-bordered bg-white"><thead><tr><th>Úloha / vlastník</th><th>Očekávaný interval</th><th>Stav</th><th>Poslední úspěch</th><th>Další krok</th></tr></thead><tbody>
+    <?php foreach (operationalJobsStatus($pdo) as $job): ?>
+        <tr><td><?=siteDiagnosticsH($job['label'])?><br><small><?=siteDiagnosticsH($job['owner'])?></small></td><td><?=(int)$job['interval_seconds']?> s</td><td><?=siteDiagnosticsH($job['status_label'])?></td><td><?=siteDiagnosticsH($job['last_success_at']??'Nedoložen')?><?php if($job['last_duration_seconds']!==null):?><br><small>Poslední běh: <?=(int)$job['last_duration_seconds']?> s</small><?php endif;?></td><td><?=siteDiagnosticsH($job['next_action'])?><br><small>Ruční vstup: <code><?=siteDiagnosticsH($job['command'])?></code> (po ověření konfigurace a parametrů)</small></td></tr>
+    <?php endforeach; ?></tbody></table></div>
 </main>
 </body>
 </html>

@@ -11,6 +11,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
+require_once dirname(__DIR__) . '/includes/medical_clearance.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_summary.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_delivery.php';
@@ -21,6 +22,8 @@ require_once dirname(__DIR__) . '/includes/training_rsvp.php';
 require_once dirname(__DIR__) . '/includes/club_finance.php';
 require_once dirname(__DIR__) . '/includes/calendar_ui.php';
 require_once dirname(__DIR__) . '/includes/ui_format.php';
+require_once dirname(__DIR__) . '/includes/sportovec_status_lib.php';
+header('Cache-Control: no-store, private');
 
 function familyPageH(mixed $value): string
 {
@@ -229,6 +232,11 @@ try {
 }
 
 $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
+$pendingFamilyClaims=null;
+try {
+    $claimCount=$pdo->prepare("SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'");
+    $claimCount->execute([$accountId]);$pendingFamilyClaims=(int)$claimCount->fetchColumn();
+} catch (PDOException $e) { error_log('Family pending claims unavailable'); }
 $pendingCharges = 0;
 foreach ($overview as $profileSummary) {
     foreach ($profileSummary['member_charges'] as $chargeSummary) {
@@ -262,6 +270,9 @@ foreach ($trainingRsvps as $training) {
 <main class="container py-4" style="max-width:1100px">
     <h1 class="h4 mb-1"><i class="bi bi-person-vcard me-2 text-primary"></i>Sportovní přehled</h1>
     <p class="text-muted">Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.</p>
+    <?php if ($pendingFamilyClaims===null): ?><div class="alert alert-warning">Stav žádostí o propojení nyní nelze ověřit. Zkontrolujte jej v <a href="moje_osoby.php">Mých osobách</a>.</div>
+    <?php elseif ($pendingFamilyClaims>0): ?><div class="alert alert-info"><strong>Čeká na ověření klubem: <?=$pendingFamilyClaims?> žádostí o propojení.</strong> Žádost nepodávejte znovu. V <a href="moje_osoby.php">Mých osobách</a> najdete její stav; pro osobní doložení kontaktujte registráře.</div><?php endif; ?>
+    <p class="small text-muted">Přehled obsahuje dostupná převedená data. Chybějící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte trenérovi.</p>
     <?php if ($loadError !== ''): ?><div class="alert alert-danger"><?= familyPageH($loadError) ?></div>
     <?php elseif ($overview === []): ?>
         <section class="card border-0 shadow-sm mb-4" aria-labelledby="overview-first-step"><div class="card-body p-4"><h2 class="h5" id="overview-first-step">Začněte propojením sportovce</h2><p>Účet je připravený. Pokud už jste vy nebo vaše dítě v evidenci klubu, požádejte o propojení profilu. Po schválení tu uvidíte tréninky, akce a platby.</p><div class="d-flex flex-wrap gap-2"><a class="btn btn-primary" href="moje_osoby.php#propojeni">Propojit existující profil</a><a class="btn btn-outline-primary" href="eshop.php">Přejít do e-shopu</a></div></div></section>
@@ -443,10 +454,12 @@ foreach ($trainingRsvps as $training) {
     <?php foreach ($overview as $profileIndex => $profile): $person = $profile['person']; $makeupSummary = $makeupProfileSummaries[(int)$person['sportovec_id']] ?? null; ?>
         <details class="card border-0 shadow-sm mb-4"<?= $profileIndex === 0 ? ' open' : '' ?>>
             <summary class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div><strong class="fs-5"><?= familyPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong><div class="small text-muted">Rok narození: <?= familyPageH($person['narozeni'] ? substr((string)$person['narozeni'],0,4) : 'neuveden') ?></div></div>
+                <div><strong class="fs-5"><?= familyPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong> <?=sportovecStatusBadge($person)?><div class="small text-muted">Rok narození: <?= familyPageH($person['narozeni'] ? substr((string)$person['narozeni'],0,4) : 'neuveden') ?></div></div>
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php foreach ($person['relation_roles'] as $role): ?><span class="badge text-bg-primary ms-1"><?= familyPageH($roleLabels[$role] ?? $role) ?></span><?php endforeach; ?></div>
             </summary>
             <div class="card-body">
+                <?php if(isset($profile['sports_summary'])):$actual=$profile['sports_summary'];?><p class="alert alert-light border"><strong>Ověřená činnost letos:</strong> <?=(int)$actual['training_count']?> tréninků · <?=(int)$actual['training_minutes']?> minut · <?=(int)$actual['race_count']?> závodních startů. Započtena je potvrzená skutečná účast.</p><?php endif;?>
+                <?php if(familyPortalTableExists($pdo,'medical_clearance_watches')):$medicalRows=medicalClearanceView($pdo,(int)$person['sportovec_id'],date('Y-m-d'),$accountId);if($medicalRows):?><section class="border rounded p-3 mb-3"><h2 class="h6">Platnost podkladů dnes</h2><?php foreach($medicalRows as$medical):?><p class="mb-1"><strong><?=familyPageH($medical['purpose'])?>:</strong> <?=familyPageH(['missing'=>'Nedoloženo','pending'=>'Čeká na ověření','valid'=>'Platné','expired'=>'Platnost skončila','not_yet_valid'=>'Dosud neplatné','revoked'=>'Odvoláno'][$medical['status']])?><?= $medical['valid_until']?' do '.familyPageH(uiFormatDate($medical['valid_until'])):''?>. <?=familyPageH($medical['next_step'])?></p><?php endforeach;?></section><?php endif;endif;?>
                 <?php $financeBalance=$financeBalances[(int)$person['sportovec_id']]??null;if($financeBalance!==null):?><div class="alert <?=$financeBalance['overdue_minor']>0?'alert-warning':'alert-light'?> border"><strong>Saldo klubových služeb:</strong> <?=familyPageH(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě · po lhůtě <?=familyPageH(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=familyPageH(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?><div class="small mt-1">Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k <?=familyPageH(uiFormatDateTime((string)$financeBalance['as_of']))?>.</div></div><?php endif;?>
                 <?php if ($makeupSummary !== null): ?><div class="alert alert-light border d-flex flex-wrap align-items-center gap-2"><strong>Náhradní lekce kroužků</strong><span class="badge text-bg-warning">Omluvené, čekají na potvrzení <?= (int)$makeupSummary['pending'] ?></span><span class="badge text-bg-success">K využití <?= (int)$makeupSummary['available'] ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?= (int)$makeupSummary['locked'] ?></span><span class="badge text-bg-primary">Rezervované <?= (int)$makeupSummary['reserved'] ?></span><a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?= (int)$person['sportovec_id'] ?>">Zobrazit náhrady</a></div><?php endif; ?>
                 <h2 class="h6">Soupisky</h2>
@@ -476,7 +489,7 @@ foreach ($trainingRsvps as $training) {
                 <h2 class="h6">Docházka na tréninky <a class="small fw-normal ms-2" href="soupiskove_treninky.php?sportovec_id=<?= (int)$person['sportovec_id'] ?>">Všechny tréninky ze soupisek</a></h2>
                 <?php if ($profile['trainings'] === []): ?><p class="text-muted small mb-0">Žádná zaznamenaná účast.</p><?php else: ?>
                 <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Datum</th><th>Náplň</th><th>Kategorie</th><th>Délka</th></tr></thead><tbody>
-                <?php foreach ($profile['trainings'] as $training): ?><tr><td><?= familyPageH(uiFormatDate((string)$training['datum'])) ?></td><td><?= familyPageH($training['napln']) ?></td><td><?= familyPageH($training['kategorie']) ?></td><td><?= familyPageH($training['delka']) ?> h</td></tr><?php endforeach; ?>
+                <?php foreach ($profile['trainings'] as $training): ?><tr><td><?= familyPageH(uiFormatDate((string)$training['datum'])) ?></td><td><?= familyPageH($training['napln']) ?><div class="small text-muted"><?=!empty($training['attendance_confirmed'])?'Účast potvrzena':'Historický záznam — účast zatím neověřena'?></div></td><td><?= familyPageH($training['kategorie']) ?></td><td><?= familyPageH($training['delka']) ?> h</td></tr><?php endforeach; ?>
                 </tbody></table></div><?php endif; ?>
             </div>
         </details>

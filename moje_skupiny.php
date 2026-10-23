@@ -6,13 +6,15 @@ if (!isset($_SESSION['trener_id'])) {
     exit;
 }
 require_once 'db.php';
+require_once __DIR__.'/includes/coach_scope.php';
+$scopePredicate = coachScopeTargetPredicate($pdo, 'subgroup', 'p.id');
 
 // Přihlášený trenér
 $trenerId = $_SESSION['trener_id'];
 
 // Načtení seznamu podskupin pro filtr
 $podskupinyList = $pdo->query(
-    "SELECT id, nazev FROM podskupiny ORDER BY poradi, nazev"
+    "SELECT p.id, p.nazev FROM podskupiny p WHERE ($scopePredicate) ORDER BY p.poradi, p.nazev"
 )->fetchAll(PDO::FETCH_ASSOC);
 
 // Zpracování filtru podskupiny přes GET['podskupina_id'] nebo hash
@@ -39,7 +41,7 @@ $czDays = [
 // Načtení přehledu skupin/podskupin
 $sql = 
     "SELECT s.nazev AS skupina, p.id AS podskupina_id, p.nazev AS podskupina, 
-            COUNT(tp.trenink_id) AS pocet_treninku 
+            COUNT(t.id) AS pocet_treninku
      FROM skupiny s
      LEFT JOIN podskupiny p ON p.skupina_id = s.id
      LEFT JOIN trenink_podskupina tp ON tp.podskupina_id = p.id
@@ -48,9 +50,11 @@ $sql =
          WHERE tt.trenink_id = t.id AND tt.trener_id = :trener_id
      ) > 0
     ";
+$sql .= ' WHERE '. $scopePredicate;
 $params = [':trener_id' => $trenerId];
 if ($filterPodId !== 'all' && ctype_digit($filterPodId)) {
-    $sql .= " WHERE p.id = :podskupina_id";
+    if (!in_array((int)$filterPodId, array_map('intval', array_column($podskupinyList, 'id')), true)) { http_response_code(403); exit('Podskupina není ve vašem pracovním rozsahu.'); }
+    $sql .= " AND p.id = :podskupina_id";
     $params[':podskupina_id'] = $filterPodId;
 }
 $sql .= " GROUP BY s.id, p.id ORDER BY s.poradi, s.nazev, p.poradi, p.nazev";

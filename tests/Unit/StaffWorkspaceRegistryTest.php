@@ -134,7 +134,7 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertStringContainsString('staffIsSuperadmin()', $header);
         self::assertStringContainsString('staffPositionPrimaryMenuGroups(', $landing);
         self::assertStringContainsString('staffPositionAdvancedMenuGroups(', $landing);
-        self::assertStringContainsString('Pokročilé a jednorázové nástroje', $landing);
+        self::assertStringContainsString('Další agendy a nástroje', $landing);
         self::assertStringContainsString('foreach ($activeGroups', $landing);
         self::assertStringContainsString("if (\$activeCode === 'coach')", $landing);
         self::assertStringContainsString("staffRouteAllowedPositions('club_calendar.php')", $landing);
@@ -167,6 +167,27 @@ final class StaffWorkspaceRegistryTest extends TestCase
         $catalogPrimary = array_merge(...array_map(static fn(array $group): array => array_column($group['items'], 'route'), \staffPositionPrimaryMenuGroups('catalog_manager', false)));
         self::assertContains('eshop_produkt_admin.php', $catalogPrimary);
         self::assertNotContains('eshop_admin.php', $catalogPrimary);
+    }
+
+    public function testDelegatedWorkflowsAreReachableWithoutChangingOwnershipOrPermissions(): void
+    {
+        $routes = static fn(string $position): array => array_merge(...array_map(
+            static fn(array $group): array => array_column($group['items'], 'route'),
+            \staffPositionMenuGroups($position, false)
+        ));
+        self::assertContains('club_rewards_admin.php', $routes('coach'));
+        foreach (['club_rewards_admin.php','training_closure_admin.php','sports_activity_admin.php','planovac.php'] as $route) {
+            self::assertContains($route, $routes('sports_lead'));
+        }
+        self::assertContains('shop_returns_admin.php', $routes('catalog_manager'));
+        self::assertContains('eshop_inventory_admin.php', $routes('finance_manager'));
+        self::assertSame('finance_manager', \staffRouteOwner('club_rewards_admin.php'));
+        self::assertNotContains('accounting_ledger_admin.php', $routes('coach'));
+        foreach (\staffPositionCodes() as $position) {
+            $visible = $routes($position);
+            self::assertSame(array_values(array_unique($visible)), $visible);
+            foreach ($visible as $route) self::assertContains($position, \staffRouteAllowedPositions($route));
+        }
     }
 
     public function testActivePositionControlsLegacyCompatibilityWithoutMergingMenus(): void

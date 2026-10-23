@@ -180,8 +180,8 @@ function staffDashboardH(mixed $value): string
 
     <?php if($advancedGroups!==[]):?>
     <details class="card border-0 shadow-sm mt-4 mb-3">
-        <summary class="card-header bg-white fw-semibold py-3" style="cursor:pointer"><i class="bi bi-tools me-2 text-secondary"></i>Pokročilé a jednorázové nástroje</summary>
-        <div class="card-body"><p class="small text-muted">Tyto nástroje nejsou součástí běžné práce. Použijte je pouze pro výjimečnou opravu, jednorázový převod dat nebo systémové nastavení.</p>
+        <summary class="card-header bg-white fw-semibold py-3" style="cursor:pointer"><i class="bi bi-tools me-2 text-secondary"></i>Další agendy a nástroje</summary>
+        <div class="card-body"><p class="small text-muted">Další pracovní postupy vaší pozice, související evidence a jednorázová nastavení.</p>
         <?php foreach($advancedGroups as$group):?><h2 class="h6 mt-3"><?=staffDashboardH($group['label'])?></h2><div class="d-flex flex-wrap gap-2"><?php foreach($group['items']as$item):?><a class="btn btn-sm btn-outline-secondary" href="<?=staffDashboardH(appUiUrl((string)$item['route']))?>"><i class="bi bi-<?=staffDashboardH($item['icon'])?> me-1"></i><?=staffDashboardH($item['label'])?></a><?php endforeach;?></div><?php endforeach;?>
         </div>
     </details>

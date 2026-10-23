@@ -8,12 +8,21 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/athlete_reward_guard.php';
+if (!canAccess('kreditni_obdobi')) {
+    http_response_code(403);
+    exit('Nemáte oprávnění ke změně kreditních období. Obraťte se na hospodáře.');
+}
 
 function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
 $messages = [];
+if (isset($_SESSION['reward_bulk_success'])) {
+    $messages[] = $_SESSION['reward_bulk_success'];
+    unset($_SESSION['reward_bulk_success']);
+}
 $errors   = [];
 
 // -------------------------------
@@ -105,33 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ulozit_odmeny'])) {
                 $allowedIds = array_map('intval', $allowedIds);
                 $allowedSet = array_fill_keys($allowedIds, true);
 
-                $pdo->beginTransaction();
-
-                $stFindOpen = $pdo->prepare("
-                    SELECT id
-                    FROM sportovec_obdobi
-                    WHERE sportovec_id = ?
-                      AND (datum_do IS NULL OR datum_do = '0000-00-00')
-                    ORDER BY datum_od DESC
-                    LIMIT 1
-                ");
-
-                $stUpdOpen = $pdo->prepare("
-                    UPDATE sportovec_obdobi
-                    SET sazba_kc = ?
-                    WHERE id = ?
-                    LIMIT 1
-                ");
-
-                $stInsOpen = $pdo->prepare("
-                    INSERT INTO sportovec_obdobi (sportovec_id, datum_od, datum_do, sazba_kc)
-                    VALUES (?, ?, NULL, ?)
-                ");
-
-                $today    = (new DateTime('today'))->format('Y-m-d');
-                $updated  = 0;
-                $inserted = 0;
-
+                $rates = [];
                 $applyToIds = $allowedIds;
 
                 if ($applyAllValue === null) {
@@ -145,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ulozit_odmeny'])) {
 
                         $norm = str_replace(',', '.', $val);
                         if (!is_numeric($norm) || (float)$norm < 0) {
-                            throw new Exception("Neplatná sazba u sportovce ID $sid (povoleno nezáporné číslo).");
+                            throw new DomainException("Neplatná sazba u sportovce ID $sid (povoleno nezáporné číslo).");
                         }
 
                         $applyToIds[] = $sid;
@@ -162,20 +145,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ulozit_odmeny'])) {
                         $newRate = (float)str_replace(',', '.', $val);
                     }
 
-                    $stFindOpen->execute([$sid]);
-                    $openId = (int)$stFindOpen->fetchColumn();
-
-                    if ($openId > 0) {
-                        $stUpdOpen->execute([$newRate, $openId]);
-                        $updated++;
-                    } else {
-                        $stInsOpen->execute([$sid, $today, $newRate]);
-                        $inserted++;
-                    }
+                    $rates[$sid] = $newRate;
                 }
-
-                $pdo->commit();
-                $messages[] = "Uloženo. Aktualizováno otevřených období: $updated, nově založeno: $inserted.";
+                $counts = athleteRewardBulkRates($pdo, $rates, date('Y-m-d'));
+                $_SESSION['reward_bulk_success'] = "Uloženo. Aktualizováno otevřených období: {$counts['updated']}, nově založeno: {$counts['inserted']}.";
 
                 // PRG redirect
                 $qs = [
@@ -187,7 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ulozit_odmeny'])) {
 
             } catch (Throwable $e) {
                 if ($pdo->inTransaction()) $pdo->rollBack();
-                $errors[] = 'Chyba při ukládání: ' . $e->getMessage();
+                if (!$e instanceof DomainException) error_log('Reward bulk mutation failed: ' . $e->getMessage());
+                $errors[] = $e instanceof DomainException ? $e->getMessage() : 'Hromadnou změnu se nepodařilo uložit. Nic nebylo změněno; kontaktujte správce.';
             }
         }
     }

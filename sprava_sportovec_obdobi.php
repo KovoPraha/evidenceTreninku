@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 
 require_once 'db.php';
 require_once 'csrf_helper.php';
+require_once __DIR__ . '/includes/athlete_reward_guard.php';
 
 // Jen hlavní trenér
 $is_hlavni = canAccess('kreditni_obdobi');
@@ -21,160 +22,44 @@ function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-// Funkce: statistiky za období (live z DB)
-function getPeriodStats(PDO $pdo, int $sportovec_id, string $datum_od, ?string $datum_do, float $sazba_kc): array {
-    $sql = "
-        SELECT COUNT(DISTINCT t.id) AS pocet
-        FROM treninky t
-        JOIN trenink_sportovec ts ON ts.trenink_id = t.id
-        WHERE ts.sportovec_id = :sid
-          AND t.datum >= :od
-    ";
-    $params = [':sid' => $sportovec_id, ':od' => $datum_od];
-    if ($datum_do !== null) {
-        $sql .= " AND t.datum <= :do";
-        $params[':do'] = $datum_do;
-    }
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $pocet = (int)$stmt->fetchColumn();
-    return [
-        'pocet'  => $pocet,
-        'kredit' => round($pocet * $sazba_kc, 2),
-    ];
-}
-
 $flashError   = null;
 $flashSuccess = null;
 
-// ── Zpracování POST ────────────────────────────────────────────────────────
+// All reward writes share the same transaction, row locks and protected-state rules.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
         $flashError = 'Neplatný CSRF token.';
     } else {
-        $action       = $_POST['action']       ?? 'save';
+        $action = (string)($_POST['action'] ?? 'save');
         $sportovec_id = (int)($_POST['sportovec_id'] ?? 0);
-        $obdobi_id    = (int)($_POST['obdobi_id']    ?? 0);
-        $sazba_kc_raw = str_replace(',', '.', (string)($_POST['sazba_kc'] ?? ''));
-        $sazba_kc     = $sazba_kc_raw !== '' ? (float)$sazba_kc_raw : null;
-        $datum_od     = $_POST['datum_od'] ?? '';
-        $datum_do     = $_POST['datum_do'] ?? '';
-
-        if ($sportovec_id <= 0) {
-            $flashError = 'Musíte vybrat sportovce.';
-        } elseif ($action === 'save') {
-            // ── Uložení / vytvoření období ──────────────────────────────
-            if ($sazba_kc === null) {
-                $flashError = 'Musíte zadat sazbu (Kč za trénink).';
-            } elseif ($datum_od === '') {
-                $flashError = 'Musíte zadat datum začátku období.';
+        $obdobi_id = (int)($_POST['obdobi_id'] ?? 0);
+        try {
+            if ($sportovec_id <= 0) throw new DomainException('Musíte vybrat sportovce.');
+            if ($action === 'save') {
+                $rawRate = str_replace(',', '.', trim((string)($_POST['sazba_kc'] ?? '')));
+                if ($rawRate === '' || !is_numeric($rawRate)) throw new DomainException('Musíte zadat platnou sazbu (Kč za trénink).');
+                $end = trim((string)($_POST['datum_do'] ?? ''));
+                athleteRewardSave($pdo, $sportovec_id, $obdobi_id, (float)$rawRate,
+                    (string)($_POST['datum_od'] ?? ''), $end === '' ? null : $end);
+                $_SESSION['flash_success'] = $end === '' ? 'Kreditní období uloženo.' : 'Kreditní období uloženo a uzavřeno se souhrnem.';
+            } elseif ($action === 'close') {
+                $end = trim((string)($_POST['datum_do'] ?? '')) ?: date('Y-m-d');
+                $stats = athleteRewardClose($pdo, $sportovec_id, $obdobi_id, $end);
+                $_SESSION['flash_success'] = "Období uzavřeno k {$end}. Souhrn: {$stats['pocet']} tréninků, "
+                    . number_format($stats['kredit'], 2, ',', ' ') . ' Kč.';
+            } elseif ($action === 'pay') {
+                athleteRewardMarkPaid($pdo, $sportovec_id, $obdobi_id);
+                $_SESSION['flash_success'] = 'Odměna označena jako vyplacená. Označení samo není dokladem peněžního pohybu.';
             } else {
-                try {
-                    if ($obdobi_id > 0) {
-                        $stmt = $pdo->prepare("
-                            UPDATE sportovec_obdobi
-                            SET sazba_kc = :sazba, datum_od = :od, datum_do = :do
-                            WHERE id = :id AND sportovec_id = :sid
-                        ");
-                        $stmt->execute([
-                            ':sazba' => $sazba_kc,
-                            ':od'    => $datum_od,
-                            ':do'    => $datum_do !== '' ? $datum_do : null,
-                            ':id'    => $obdobi_id,
-                            ':sid'   => $sportovec_id,
-                        ]);
-                        $_SESSION['flash_success'] = 'Změny období uloženy.';
-                    } else {
-                        $stmt = $pdo->prepare("
-                            INSERT INTO sportovec_obdobi (sportovec_id, sazba_kc, datum_od, datum_do)
-                            VALUES (:sid, :sazba, :od, :do)
-                        ");
-                        $stmt->execute([
-                            ':sid'   => $sportovec_id,
-                            ':sazba' => $sazba_kc,
-                            ':od'    => $datum_od,
-                            ':do'    => $datum_do !== '' ? $datum_do : null,
-                        ]);
-                        $_SESSION['flash_success'] = 'Nové kreditní období vytvořeno.';
-                    }
-                    header('Location: sprava_sportovec_obdobi.php?sportovec_id=' . $sportovec_id);
-                    exit;
-                } catch (Exception $e) {
-                    $flashError = 'Chyba při ukládání: ' . $e->getMessage();
-                }
+                throw new DomainException('Nepodporovaná operace. Období nebylo změněno.');
             }
-
-        } elseif ($action === 'close') {
-            // ── Uzavřít otevřené období: datum_do + snapshot ────────────
-            if ($obdobi_id <= 0) {
-                $flashError = 'Není určeno období k ukončení.';
-            } else {
-                $closeDate = ($datum_do !== '') ? $datum_do : date('Y-m-d');
-                try {
-                    // Načíst info o období
-                    $stmtFetch = $pdo->prepare("
-                        SELECT datum_od, sazba_kc
-                        FROM sportovec_obdobi
-                        WHERE id = ? AND sportovec_id = ?
-                    ");
-                    $stmtFetch->execute([$obdobi_id, $sportovec_id]);
-                    $oInfo = $stmtFetch->fetch(PDO::FETCH_ASSOC);
-                    if (!$oInfo) throw new Exception('Období nenalezeno.');
-
-                    // Spočítat snapshot
-                    $stats = getPeriodStats(
-                        $pdo,
-                        $sportovec_id,
-                        $oInfo['datum_od'],
-                        $closeDate,
-                        (float)$oInfo['sazba_kc']
-                    );
-
-                    $stmt = $pdo->prepare("
-                        UPDATE sportovec_obdobi
-                        SET datum_do = :do,
-                            pocet_treninku = :pocet,
-                            castka_celkem  = :castka
-                        WHERE id = :id AND sportovec_id = :sid
-                    ");
-                    $stmt->execute([
-                        ':do'     => $closeDate,
-                        ':pocet'  => $stats['pocet'],
-                        ':castka' => $stats['kredit'],
-                        ':id'     => $obdobi_id,
-                        ':sid'    => $sportovec_id,
-                    ]);
-                    $_SESSION['flash_success'] =
-                        "Období uzavřeno k {$closeDate}. " .
-                        "Snapshot: {$stats['pocet']} tréninků, " .
-                        number_format($stats['kredit'], 2, ',', ' ') . " Kč. " .
-                        "Nyní lze označit jako vyplacené.";
-                    header('Location: sprava_sportovec_obdobi.php?sportovec_id=' . $sportovec_id);
-                    exit;
-                } catch (Exception $e) {
-                    $flashError = 'Chyba při ukončení: ' . $e->getMessage();
-                }
-            }
-
-        } elseif ($action === 'pay') {
-            // ── Označit uzavřené období jako vyplacené ──────────────────
-            if ($obdobi_id <= 0) {
-                $flashError = 'Není určeno období.';
-            } else {
-                try {
-                    $stmt = $pdo->prepare("
-                        UPDATE sportovec_obdobi
-                        SET vyplaceno = 1
-                        WHERE id = :id AND sportovec_id = :sid AND datum_do IS NOT NULL
-                    ");
-                    $stmt->execute([':id' => $obdobi_id, ':sid' => $sportovec_id]);
-                    $_SESSION['flash_success'] = 'Odměna označena jako vyplacená.';
-                    header('Location: sprava_sportovec_obdobi.php?sportovec_id=' . $sportovec_id);
-                    exit;
-                } catch (Exception $e) {
-                    $flashError = 'Chyba: ' . $e->getMessage();
-                }
-            }
+            header('Location: sprava_sportovec_obdobi.php?sportovec_id=' . $sportovec_id);
+            exit;
+        } catch (DomainException $e) {
+            $flashError = $e->getMessage();
+        } catch (Throwable $e) {
+            error_log('Reward period mutation failed: ' . $e->getMessage());
+            $flashError = 'Změnu období se nepodařilo uložit. Nic nebylo změněno; kontaktujte správce.';
         }
     }
 }
@@ -226,7 +111,7 @@ if ($selectedSportovecId > 0) {
     $obdobi = $stmtO->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($obdobi as $o) {
-        if ($o['datum_do'] === null) {
+        if (!athleteRewardIsProtected($o)) {
             $openObdobi = $o;
             break;
         }
@@ -359,12 +244,13 @@ if ($selectedSportovecId > 0) {
                 </thead>
                 <tbody>
                 <?php foreach ($obdobi as $o):
-                    $isOpen      = ($o['datum_do'] === null);
-                    $isVyplaceno = ((int)$o['vyplaceno'] === 1);
+                    $isOpen      = !athleteRewardIsProtected($o);
+                    $isVyplaceno = ((int)$o['vyplaceno'] !== 0);
+                    $isInconsistent = $isVyplaceno && in_array($o['datum_do'], [null, '', '0000-00-00'], true);
 
                     if ($isOpen) {
                         // Otevřené: vždy live výpočet
-                        $stats  = getPeriodStats($pdo, (int)$o['sportovec_id'], $o['datum_od'], null, (float)$o['sazba_kc']);
+                        $stats  = athleteRewardStats($pdo, (int)$o['sportovec_id'], $o['datum_od'], null, (float)$o['sazba_kc']);
                         $pocet  = $stats['pocet'];
                         $kredit = $stats['kredit'];
                         $source = 'live';
@@ -374,11 +260,10 @@ if ($selectedSportovecId > 0) {
                         $kredit = (float)$o['castka_celkem'];
                         $source = 'snapshot';
                     } else {
-                        // Uzavřené bez snapshotu – live fallback
-                        $stats  = getPeriodStats($pdo, (int)$o['sportovec_id'], $o['datum_od'], $o['datum_do'], (float)$o['sazba_kc']);
-                        $pocet  = $stats['pocet'];
-                        $kredit = $stats['kredit'];
-                        $source = 'live';
+                        // Historical amount is unknown; never reconstruct it using today's records.
+                        $pocet = null;
+                        $kredit = null;
+                        $source = 'missing';
                     }
 
                     if ($isOpen) {
@@ -401,18 +286,22 @@ if ($selectedSportovecId > 0) {
                         </td>
                         <td class="text-end"><?= number_format((float)$o['sazba_kc'], 2, ',', ' ') ?></td>
                         <td class="text-end">
-                            <?= $pocet ?>
+                            <?= $pocet === null ? '—' : $pocet ?>
                             <?php if ($source === 'live'): ?>
                                 <span class="mini-muted" title="živý výpočet">(live)</span>
-                            <?php else: ?>
+                            <?php elseif ($source === 'snapshot'): ?>
                                 <i class="bi bi-camera-fill text-secondary" style="font-size:.75rem;" title="snapshot při uzavření"></i>
                             <?php endif; ?>
                         </td>
                         <td class="text-end fw-semibold">
-                            <?= number_format($kredit, 2, ',', ' ') ?> Kč
+                            <?= $kredit === null ? 'Nezjištěno' : number_format($kredit, 2, ',', ' ') . ' Kč' ?>
                         </td>
                         <td>
-                            <?php if ($isOpen): ?>
+                            <?php if ($isInconsistent): ?>
+                                <span class="badge bg-danger">Nevyřešeno: vyplaceno bez uzavření</span>
+                            <?php elseif ($source === 'missing'): ?>
+                                <span class="badge bg-danger">Nevyřešeno: chybí souhrn</span>
+                            <?php elseif ($isOpen): ?>
                                 <span class="badge bg-success">Aktivní</span>
                             <?php elseif ($isVyplaceno): ?>
                                 <span class="badge bg-secondary">Vyplaceno</span>
@@ -433,6 +322,8 @@ if ($selectedSportovecId > 0) {
                                         <i class="bi bi-calendar-x me-1"></i>Ukončit
                                     </button>
                                 </form>
+                            <?php elseif ($source === 'missing' || $isInconsistent): ?>
+                                <span class="text-danger small">Období #<?= (int)$o['id'] ?>: předat hospodáři; oprava zatím není dostupná.</span>
                             <?php elseif (!$isVyplaceno): ?>
                                 <!-- Označit uzavřené období jako vyplacené -->
                                 <form method="post" class="d-inline">
@@ -485,7 +376,7 @@ if ($selectedSportovecId > 0) {
                 </div>
                 <div class="col-md-3">
                     <label class="form-label fw-semibold">Datum do
-                        <span class="text-muted fw-normal small">(volitelné)</span>
+                        <span class="text-muted fw-normal small">(vyplnění období uzavře)</span>
                     </label>
                     <input type="date" name="datum_do" class="form-control"
                            value="<?= ($openObdobi && $openObdobi['datum_do']) ? h($openObdobi['datum_do']) : '' ?>">

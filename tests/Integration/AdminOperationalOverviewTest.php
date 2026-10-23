@@ -70,15 +70,18 @@ final class AdminOperationalOverviewTest extends TestCase
         self::assertContains('KIS importní kontrola', $overview['unavailable']);
     }
 
-    public function testPageIsAdminOnlyReadOnlyAndLinkedFromNavigation(): void
+    public function testPageKeepsAdminBoundaryAndDelegatesOnlyAuditedCaseChanges(): void
     {
         $root = dirname(__DIR__, 2);
         $page = (string)file_get_contents($root . '/provozni_prehled_admin.php');
         $header = (string)file_get_contents($root . '/hlavicka.php');
-        self::assertStringContainsString("roleAtLeast('admin')", $page);
+        self::assertStringContainsString("in_array(staffActivePosition(),['system_admin','registrar','order_operator','finance_manager','sports_lead'],true)", $page);
+        self::assertStringContainsString("\$position==='system_admin' ? adminOperationalOverview", $page);
         self::assertStringContainsString("Cache-Control: no-store, private", $page);
-        self::assertStringContainsString('Přehled je pouze ke čtení', $page);
-        self::assertStringNotContainsString("REQUEST_METHOD", $page);
+        self::assertStringContainsString('Přihlášku, identitu ani platbu tím neschválíte', $page);
+        self::assertStringContainsString('csrf_verify', $page);
+        self::assertStringContainsString('operationalCaseSave', $page);
+        self::assertStringNotContainsString('UPDATE shop_orders', $page);
         self::assertStringContainsString('provozni_prehled_admin.php', $header);
     }
 

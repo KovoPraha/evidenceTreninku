@@ -20,9 +20,10 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
         self::assertContains('club_registration_consents', EVIDENCE_TABLES);
         self::assertContains('club_registration_consent_acceptances', EVIDENCE_TABLES);
         self::assertSame(
-            ['terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
+            ['account_id', 'terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
             $contract['club_program_enrollments']
         );
+        self::assertSame(['payer_account_id','payer_name_snapshot','payer_relation_snapshot'],$contract['club_program_admissions']);
         self::assertSame(
             ['program_terms_snapshot_json', 'program_terms_accepted_at', 'program_terms_accepted_by_account_id'],
             $contract['shop_order_items']
@@ -50,6 +51,13 @@ final class DatabaseBackupOwnershipContractTest extends TestCase
 
     public function testEveryOwnedTableIsListedOnceAndTheNewOnesAreThere(): void
     {
+        self::assertContains('club_payment_returns', EVIDENCE_TABLES);
+        foreach (['club_migration_mutex','club_migration_batches','club_migration_items','club_migration_maps','club_migration_events','club_cutover_runs','club_cutover_entries','club_cutover_checkpoints','club_cutover_reviews'] as $table) {
+            self::assertContains($table, EVIDENCE_TABLES);
+        }
+        foreach (['club_expense_cases','club_expense_claims','club_expense_advances','club_expense_consumptions','club_expense_transfers','club_expense_events','club_reward_rules','club_reward_claims','club_reward_versions','club_reward_decisions','club_reward_payouts','financial_decisions'] as $table) {
+            self::assertContains($table, EVIDENCE_TABLES);
+        }
         self::assertContains('athlete_registration_text_drafts', EVIDENCE_TABLES);
         self::assertContains('fio_sync_state', EVIDENCE_TABLES);
         self::assertSame(array_values(array_unique(EVIDENCE_TABLES)), array_values(EVIDENCE_TABLES));

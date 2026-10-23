@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "tests": 1526,
+  "assertions": 31327,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "seconds": 97.682712,
+  "production_mutations": false
+}

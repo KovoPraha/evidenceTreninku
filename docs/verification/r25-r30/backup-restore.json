@@ -1,0 +1,16 @@
+{
+    "status": "PASS",
+    "stock_variants_reconciled": 18,
+    "closure_revisions_reconciled": 4,
+    "sports_statement_hashes_checked": 2,
+    "offline_admissions_checked": 2,
+    "database": "evidence_b5_restore_a9268461",
+    "tables": 304,
+    "new_owned_tables": 16,
+    "triggers": 2,
+    "private_references_checked": 51,
+    "backup_sha256": "bca8dae89b60a6597f55ab0bdaa489a67633f832343f48253bd5a9415d29bc12",
+    "private_storage_restored": true,
+    "private_files_restored": 72,
+    "private_archive_sha256": "3b24b3af5198104d0c0cd77164ad2577fdf045b2a057e93a4da5d9231849f299"
+}

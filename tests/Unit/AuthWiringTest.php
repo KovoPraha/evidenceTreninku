@@ -119,8 +119,10 @@ final class AuthWiringTest extends TestCase
 
         self::assertStringContainsString("appUrl('booking/overeni.php')", $registration);
         self::assertStringContainsString("'#token='", $registration);
-        self::assertStringContainsString("#token=", $reservation);
-        self::assertStringContainsString("#token=", $waitingList);
+        self::assertStringContainsString("bookingNotificationEnqueue", $reservation);
+        self::assertStringNotContainsString("@mail(", $reservation);
+        self::assertStringContainsString("bookingNotificationEnqueue", $waitingList);
+        self::assertStringNotContainsString("#token=", $waitingList);
         self::assertStringNotContainsString("overeni.php?token=", $registration);
         self::assertStringContainsString('history.replaceState', $verification);
         self::assertStringContainsString('csrf_verify', $verification);

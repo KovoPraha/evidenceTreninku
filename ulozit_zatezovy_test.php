@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/private_storage.php';
+require_once __DIR__.'/includes/coach_scope.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: zatezovy_test_form.php');
@@ -21,6 +22,7 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
 
 // 1) Načtení a základní kontrola vstupů
 $sportovec_id     = isset($_POST['sportovec_id']) ? (int)$_POST['sportovec_id'] : 0;
+coachScopeRequirePerson($pdo, $sportovec_id);
 $datum            = $_POST['datum'] ?? '';
 $vek              = $_POST['vek'] !== '' ? (int)$_POST['vek'] : null;
 $vaha_kg          = isset($_POST['vaha_kg'])  && $_POST['vaha_kg']  !== '' ? (float)$_POST['vaha_kg']  : null;
@@ -56,6 +58,7 @@ try {
 // 2) Vložení záznamu zátěžového testu
 try {
     $pdo->beginTransaction();
+    coachScopeAssertPeople($pdo, [$sportovec_id]);
 
     $stmtIns = $pdo->prepare("
         INSERT INTO zatezove_testy

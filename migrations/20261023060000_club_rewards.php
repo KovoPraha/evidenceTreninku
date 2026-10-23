@@ -1,0 +1,14 @@
+<?php
+declare(strict_types=1);
+return [
+ 'id'=>'20261023060000_club_rewards',
+ 'up'=>static function(PDO $pdo):void {
+  $mysql=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql';$id=$mysql?'INT AUTO_INCREMENT PRIMARY KEY':'INTEGER PRIMARY KEY AUTOINCREMENT';$tail=$mysql?' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci':'';
+  $pdo->exec('CREATE TABLE IF NOT EXISTS club_reward_rules(id '.$id.',kind VARCHAR(20) NOT NULL,unit VARCHAR(20) NOT NULL,rate_minor BIGINT NOT NULL,valid_from DATE NOT NULL,valid_to DATE NOT NULL,title VARCHAR(160) NOT NULL,approval_evidence TEXT NOT NULL,accounting_method TEXT NOT NULL,approved_by INT NOT NULL,created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)'.$tail);
+  $pdo->exec('CREATE TABLE IF NOT EXISTS club_reward_claims(id '.$id.',kind VARCHAR(20) NOT NULL,subject_id INT NOT NULL,date_from DATE NOT NULL,date_to DATE NOT NULL,currency CHAR(3) NOT NULL DEFAULT \'CZK\',current_version_id INT NULL,approved_version_id INT NULL,created_by INT NOT NULL,created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(kind,subject_id,date_from,date_to))'.$tail);
+  $pdo->exec('CREATE TABLE IF NOT EXISTS club_reward_versions(id '.$id.',claim_id INT NOT NULL,version INT NOT NULL,rule_id INT NOT NULL,amount_minor BIGINT NOT NULL,recipient_kind VARCHAR(20) NOT NULL,recipient_id INT NOT NULL,recipient_evidence TEXT NOT NULL,source_hash CHAR(64) NOT NULL,snapshot_json TEXT NOT NULL,reason TEXT NOT NULL,submitted_by INT NOT NULL,request_key VARCHAR(100) NOT NULL UNIQUE,request_hash CHAR(64) NOT NULL,submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(claim_id,version),FOREIGN KEY(claim_id) REFERENCES club_reward_claims(id),FOREIGN KEY(rule_id) REFERENCES club_reward_rules(id))'.$tail);
+  $pdo->exec('CREATE TABLE IF NOT EXISTS club_reward_decisions(id '.$id.',version_id INT NOT NULL UNIQUE,outcome VARCHAR(20) NOT NULL,reason TEXT NOT NULL,actor_trainer_id INT NOT NULL,decided_on DATE NOT NULL,created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(version_id) REFERENCES club_reward_versions(id))'.$tail);
+  $pdo->exec('CREATE TABLE IF NOT EXISTS club_reward_payouts(id '.$id.',claim_id INT NOT NULL,version_id INT NOT NULL,movement_id INT NOT NULL,allocation_id INT NOT NULL UNIQUE,amount_minor BIGINT NOT NULL,received_by TEXT NOT NULL,reason TEXT NOT NULL,actor_trainer_id INT NOT NULL,request_key VARCHAR(100) NOT NULL UNIQUE,request_hash CHAR(64) NOT NULL,paid_on DATE NOT NULL,created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(claim_id) REFERENCES club_reward_claims(id),FOREIGN KEY(version_id) REFERENCES club_reward_versions(id))'.$tail);
+ },
+ 'verify'=>static function(PDO $pdo):bool {try{foreach(['club_reward_rules','club_reward_claims','club_reward_versions','club_reward_decisions','club_reward_payouts'] as $t)$pdo->query('SELECT id FROM '.$t.' LIMIT 0');return true;}catch(PDOException){return false;}},
+];

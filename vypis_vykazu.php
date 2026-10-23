@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__.'/includes/club_rewards.php';
 
 // Autoload a import tříd pro Excel export
 require 'vendor/autoload.php';
@@ -18,11 +19,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
         $_SESSION['flash_error'] = 'Platnost formuláře vypršela. Obnovte stránku a zkuste to znovu.';
     } elseif (($_POST['action'] ?? '') === 'delete_activity' && ($_POST['confirm_action'] ?? '') === '1') {
+      try {
+       accountingLedgerTransaction($pdo,function()use($pdo){
+        clubRewardActor($pdo,(int)$_SESSION['trener_id'],['coach','sports_lead']);
+        $q=$pdo->prepare('SELECT datum FROM dalsi_cinnosti WHERE id=? AND trener_id=?'.accountingLedgerLock($pdo));$q->execute([(int)($_POST['activity_id']??0),(int)$_SESSION['trener_id']]);$date=$q->fetchColumn();if(!$date)throw new DomainException('Činnost nebyla nalezena.');
+        clubRewardAssertOtherWorkMutable($pdo,(int)$_SESSION['trener_id'],(string)$date);
         $delete = $pdo->prepare('DELETE FROM dalsi_cinnosti WHERE id = ? AND trener_id = ?');
         $delete->execute([(int)($_POST['activity_id'] ?? 0), (int)$_SESSION['trener_id']]);
         $_SESSION[$delete->rowCount() === 1 ? 'flash_success' : 'flash_error'] = $delete->rowCount() === 1
             ? 'Činnost byla odstraněna z výkazu.'
             : 'Činnost nebyla nalezena nebo ji nemůžete odstranit.';
+       });
+      }catch(DomainException $e){$_SESSION['flash_error']=$e->getMessage();}
     } else {
         $_SESSION['flash_error'] = 'Odstranění činnosti je nutné výslovně potvrdit.';
     }

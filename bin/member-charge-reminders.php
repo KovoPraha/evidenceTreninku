@@ -50,6 +50,8 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
+    require_once $root.'/includes/operational_jobs.php';
+    $jobRun=operationalJobStart($pdo,'member_reminders');
     $generation = $generate ? memberChargeReminderGenerate($pdo) : ['queued' => 0, 'existing' => 0, 'skipped' => 0];
     $processed = $sent = $failed = 0;
     if ($send) {
@@ -63,8 +65,10 @@ try {
             $result ? $sent++ : $failed++;
         }
     }
+    operationalJobFinish($pdo,$jobRun,$failed===0,$failed===0?'completed':'queue_delivery_failed');
     echo json_encode(['generation' => $generation, 'transport' => $transport, 'processed' => $processed, 'sent' => $sent, 'failed' => $failed], JSON_UNESCAPED_UNICODE) . PHP_EOL;
 } catch (Throwable $exception) {
+    if(isset($jobRun,$pdo)){try{operationalJobFinish($pdo,$jobRun,false,'worker_exception');}catch(Throwable){}}
     error_log('member-charge-reminders.php: ' . $exception->getMessage());
     fwrite(STDERR, "Zpracovani pripominek selhalo; podrobnosti jsou pouze v serverovem logu.\n");
     exit(1);

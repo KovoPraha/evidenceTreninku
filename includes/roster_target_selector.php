@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/roster_hierarchy.php';
+require_once __DIR__ . '/coach_scope.php';
 
 /**
  * One selector for both training and event targets. A selected group ID targets
@@ -20,6 +21,15 @@ function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [
         return '<div class="alert alert-warning mb-0">Nejprve zadejte platné datum tréninku nebo akce.</div>';
     }
     $selected = array_fill_keys(array_map('intval', $selectedIds), true);
+    $scopeAllowed=null;
+    if(staffActivePositionIs('coach')){
+        $scopeAllowed=[];
+        foreach(array_unique(array_merge(array_column($rows,'id'),$selectedIds)) as $id){
+            try{coachScopeAssertTeams($pdo,[(int)$id],$date);$scopeAllowed[(int)$id]=true;}catch(RuntimeException){}
+        }
+        $rows=array_values(array_filter($rows,static fn(array $row):bool=>isset($scopeAllowed[(int)$row['id']])));
+        $selected=array_intersect_key($selected,$scopeAllowed);
+    }
     $nameIds = [];
     foreach ($rows as $row) $nameIds[(string)$row['name']][(int)$row['id']] = true;
     $labelFor = static function (int $id, string $name) use ($nameIds): string {
@@ -52,6 +62,7 @@ function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [
             . $escape($labelFor($groupId, $group['name'])) . '</legend>';
         $html .= '<div class="form-check"><input class="form-check-input" type="checkbox" name="' . $name
             . '" value="' . $groupId . '" id="' . $inputId . '"' . (isset($selected[$groupId]) ? ' checked' : '')
+            . ($scopeAllowed!==null&&!isset($scopeAllowed[$groupId]) ? ' disabled' : '')
             . '><label class="form-check-label fw-semibold" for="' . $inputId . '">Celá skupina</label></div>';
         foreach ($group['children'] as $childId => $childName) {
             $childInputId = 'roster-target-' . $instance . '-' . $groupId . '-' . $childId;

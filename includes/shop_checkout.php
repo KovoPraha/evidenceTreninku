@@ -7,6 +7,8 @@ require_once __DIR__.'/shop_coupon.php';
 require_once __DIR__.'/shop_payment_policy.php';
 require_once __DIR__.'/club_finance.php';
 require_once __DIR__.'/shop_number_series.php';
+require_once __DIR__.'/shop_inventory.php';
+require_once __DIR__.'/shop_fulfillment.php';
 
 final class ShopCheckoutException extends RuntimeException
 {
@@ -390,8 +392,9 @@ function shopCheckoutPlace(
         if ($financeSportovecId!==null) $pdo->prepare('UPDATE shop_orders SET finance_sportovec_id=? WHERE id=?')->execute([$financeSportovecId,$orderId]);
         foreach($items as $item){
             $quantity=(int)$item['quantity'];$line=(int)$item['amount_minor']*$quantity;
+            $physicalStock=($item['offer_type']??null)==='goods'&&shopInventoryManaged($pdo,(int)$item['id']);
             $managedStock=($item['offer_type']??null)!=='program'&&$item['stock_quantity_decimal']!==null;
-            if($managedStock){
+            if($managedStock&&!$physicalStock){
                 $reserve=$pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal-?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND stock_quantity_decimal>=?');
                 $reserve->execute([$quantity,(int)$item['id'],$quantity]);
                 if($reserve->rowCount()!==1) throw new ShopCheckoutException('Mezitím se vyprodala položka '.$item['sku'].'. Objednávka nebyla vytvořena.');
@@ -416,7 +419,9 @@ function shopCheckoutPlace(
                 if((int)($item['club_program_offer_id']??0)<1)throw new ShopCheckoutException('Položka kroužku nemá určené období.');
                 $pdo->prepare('UPDATE shop_order_items SET club_program_offer_id=? WHERE id=?')->execute([(int)$item['club_program_offer_id'],$orderItemId]);
             }
-            if($managedStock){
+            if($physicalStock){
+                shopInventoryReserveInTransaction($pdo,(int)$item['id'],$orderId,$orderItemId,$quantity,'checkout:'.$orderItemId);
+            }elseif($managedStock){
                 $stock=$pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE id=?');$stock->execute([(int)$item['id']]);$stockAfter=(string)$stock->fetchColumn();
                 $pdo->prepare('INSERT INTO shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) VALUES (?,?,?,\'reserve\',?,?)')
                     ->execute([(int)$item['id'],$orderId,$orderItemId,(string)(-$quantity),$stockAfter]);
@@ -785,6 +790,7 @@ function shopOrderExpirePending(PDO $pdo,int $orderId,DateTimeImmutable $now,boo
     if($orderId<1||!$confirmed)throw new InvalidArgumentException('Expirace vyžaduje objednávku a výslovné potvrzení.');
     $pdo->beginTransaction();
     try{
+        shopFulfillmentLockFinance($pdo);
         $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
@@ -900,6 +906,7 @@ function shopOrderAdminCancel(PDO $pdo,int $orderId,int $actorTrainerId,string $
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Storno');
     $pdo->beginTransaction();
     try{
+        shopFulfillmentLockFinance($pdo);
         $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
@@ -930,6 +937,7 @@ function shopOrderCancelStateInTransaction(PDO $pdo,array $payment,array $order,
     $orderId=(int)$order['id'];
     if(($payment['payable_type']??'')!=='shop_order'||(int)($payment['payable_id']??0)!==$orderId)throw new ShopCheckoutException('Platba nepatří stornované objednávce.');
     if($actorType==='account'&&(int)($order['account_id']??0)!==$actorId)throw new ShopCheckoutException('Tuto objednávku nemůžete stornovat.');
+    if(shopFulfillmentIssuedQuantity($pdo,$orderId)>0)throw new ShopCheckoutException('Objednávka už obsahuje vydané kusy. Použijte položkovou vratku; nevydaný zbytek řešte samostatně.');
     if($order['status']==='cancelled'){
         if(!in_array($payment['status'],['cancelled','refund_required','refunded'],true)||$order['payment_status']!==$payment['status'])throw new ShopCheckoutException('Stornovaná objednávka má nekonzistentní stav platby.');
         return ['order_id'=>$orderId,'payment_status'=>(string)$payment['status'],'restocked_items'=>0,'changed'=>false];
@@ -942,6 +950,7 @@ function shopOrderCancelStateInTransaction(PDO $pdo,array $payment,array $order,
     $paid=in_array($order['status'],['processing','ready'],true);
     if($paid&&($order['payment_status']!=='paid'||$payment['status']!=='paid'))throw new ShopCheckoutException('Zaplacená objednávka má nekonzistentní stav platby.');
     if(!$paid&&($order['payment_status']!=='pending'||$payment['status']!=='pending'))throw new ShopCheckoutException('Nezaplacená objednávka má nekonzistentní stav platby.');
+    if(!$paid)shopFulfillmentAssertUnpaid($pdo,$orderId);
     $paymentStatus=$paid?'refund_required':'cancelled';
     $restocked=shopOrderAdminRestock($pdo,$orderId);
     $pdo->prepare('UPDATE payments SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$paymentStatus,(int)$payment['id']]);
@@ -969,6 +978,7 @@ function shopOrderCancelLocked(PDO $pdo,array $payment,array $order,string $acto
     if($order['status']!=='placed'||$order['payment_status']!=='pending'||$payment['status']!=='pending'){
         throw new ShopCheckoutException('Expirovat lze pouze nezaplacenou objednávku čekající na platbu.');
     }
+    shopFulfillmentAssertUnpaid($pdo,$orderId);
     $programSync=['cancelled'=>0,'rosters_ended'=>0];
     if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
     $timestamp=$now->format('Y-m-d H:i:s');
@@ -988,12 +998,14 @@ function shopOrderCancelLocked(PDO $pdo,array $payment,array $order,string $acto
 /** @return array{order_id:int,payment_status:string,changed:bool} */
 function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,string $reference,string $reason,bool $confirmed):array
 {
+    require_once __DIR__.'/accounting_adjustments.php';
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Potvrzení vratky');
     $reference=trim($reference);
     $referenceControlCheck=preg_match('/[\x00-\x1F\x7F]/u',$reference);
     if($reference===''||mb_strlen($reference,'UTF-8')>255||$referenceControlCheck!==0)throw new InvalidArgumentException('Vratka vyžaduje platnou referenci transakce nebo pokladního dokladu bez řídicích znaků, nejvýše 255 znaků.');
     $pdo->beginTransaction();
     try{
+        if (clubFinanceTableExists($pdo,'accounting_ledger_mutex')) $pdo->exec('UPDATE accounting_ledger_mutex SET revision=revision+1 WHERE id=1');
         $paymentSql="SELECT * FROM payments WHERE payable_type='shop_order' AND payable_id=?";
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$paymentSql.=' FOR UPDATE';
         $paymentStatement=$pdo->prepare($paymentSql);$paymentStatement->execute([$orderId]);$payment=$paymentStatement->fetch(PDO::FETCH_ASSOC);
@@ -1007,18 +1019,31 @@ function shopOrderAdminConfirmRefund(PDO $pdo,int $orderId,int $actorTrainerId,s
             $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>false];
         }
         if($payment['status']!=='refund_required'||$order['status']!=='cancelled'||$order['payment_status']!=='refund_required')throw new ShopCheckoutException('Vratku lze potvrdit pouze u stornované zaplacené objednávky čekající na vrácení peněz.');
-        $pdo->prepare("UPDATE payments SET status='refunded',refund_sent_at=CURRENT_TIMESTAMP,refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
-            ->execute([$reference,$actorTrainerId,$reason,(int)$payment['id']]);
-        $pdo->prepare("UPDATE shop_orders SET payment_status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
-        $note=($payment['method']==='cash'?'Reference vratky hotovostní platby: ':'Bankovní reference: ').$reference.'. '.$reason;
-        $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
-            ->execute([$orderId,$actorTrainerId,$note]);
+        try {accountingAdjustmentAssertLegacyRefundAllowed($pdo,$orderId);} catch(DomainException $e) {throw new ShopCheckoutException($e->getMessage(),0,$e);}
+        shopOrderCompleteRefundInTransaction($pdo,$payment,$order,$actorTrainerId,$reference,$reason);
         $pdo->commit();return ['order_id'=>$orderId,'payment_status'=>'refunded','changed'=>true];
     }catch(Throwable $exception){
         if($pdo->inTransaction())$pdo->rollBack();
         if($exception instanceof InvalidArgumentException||$exception instanceof ShopCheckoutException)throw $exception;
         throw new ShopCheckoutException('Potvrzení vratky selhalo bez částečného zápisu.',0,$exception);
     }
+}
+
+/** Shared final state transition. Callers prove money separately and hold payment/order locks. */
+function shopOrderCompleteRefundInTransaction(PDO $pdo,array $payment,array $order,int $actorTrainerId,string $reference,string $reason,?string $actualRefundAt=null):void
+{
+    if (!$pdo->inTransaction()) throw new LogicException('Potvrzení vratky vyžaduje transakci.');
+    $orderId=(int)$order['id'];
+    if ($payment['payable_type']!=='shop_order' || (int)$payment['payable_id']!==$orderId || $payment['status']!=='refund_required' || $order['status']!=='cancelled' || $order['payment_status']!=='refund_required') throw new ShopCheckoutException('Vratku lze dokončit jen u stornované zaplacené objednávky čekající na vrácení peněz.');
+    if(clubProgramLifecycleAvailable($pdo))try{clubProgramAssertOrderHasNoActiveEnrollments($pdo,$orderId);}catch(ClubProgramException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    try{clubEventShopAssertRefundableInTransaction($pdo,$orderId);}catch(ClubEventShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    try{publicVelodromeShopAssertRefundableInTransaction($pdo,$orderId);}catch(PublicVelodromeShopException $exception){throw new ShopCheckoutException($exception->getMessage(),0,$exception);}
+    $pdo->prepare("UPDATE payments SET status='refunded',refund_sent_at=COALESCE(?,CURRENT_TIMESTAMP),refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
+        ->execute([$actualRefundAt,$reference,$actorTrainerId,$reason,(int)$payment['id']]);
+    $pdo->prepare("UPDATE shop_orders SET payment_status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
+    $note=($payment['method']==='cash'?'Reference vratky hotovostní platby: ':'Bankovní reference: ').$reference.'. '.$reason;
+    $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
+        ->execute([$orderId,$actorTrainerId,$note]);
 }
 
 /** @return array{order_id:int,status:string,changed:bool} */
@@ -1050,6 +1075,7 @@ function shopOrderAdminFulfillmentTransition(PDO $pdo,int $orderId,int $actorTra
         $ppl=($order['fulfillment_method']??'')==='ppl_box';$boxCarrier=in_array(($order['fulfillment_method']??''),['ppl_box','packeta_zbox'],true);
         if($ppl && $action==='complete_pickup')throw new ShopCheckoutException('PPL zásilku nelze dokončit jako osobní výdej. Použijte předání PPL.');
         if(($order['fulfillment_method']??'')==='packeta_zbox'&&$action==='complete_pickup')throw new ShopCheckoutException('Zásilku Zásilkovny nelze dokončit jako osobní výdej. Potvrďte podání do Z-BOXu.');
+        if($action==='complete_pickup' && shopFulfillmentHasManagedItems($pdo,$orderId))throw new ShopCheckoutException('Sledované zboží vydejte po položkách s příjemcem a množstvím.');
         if($order['status']===$to){$pdo->commit();return ['order_id'=>$orderId,'status'=>$to,'changed'=>false];}
         if($order['status']!==$from||$order['payment_status']!=='paid')throw new ShopCheckoutException('Objednávka není ve stavu povoleném pro tuto akci.');
         $pdo->prepare("UPDATE shop_orders SET status=?,{$timestampColumn}=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$to,$orderId]);
@@ -1072,6 +1098,7 @@ function shopOrderAdminDispatchPpl(PDO $pdo,int $orderId,int $actorTrainerId,str
     if(preg_match('/^[A-Za-z0-9-]{6,64}$/D',$trackingNumber)!==1)throw new InvalidArgumentException('Zadejte platné číslo zásilky PPL.');
     $pdo->beginTransaction();
     try{
+        shopFulfillmentLockFinance($pdo);
         $order=shopOrderAdminLockOrder($pdo,$orderId);
         if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
         if(($order['fulfillment_method']??'')!=='ppl_box')throw new ShopCheckoutException('Objednávka není určena k doručení PPL.');
@@ -1079,6 +1106,7 @@ function shopOrderAdminDispatchPpl(PDO $pdo,int $orderId,int $actorTrainerId,str
         if($order['status']!=='ready'||$order['payment_status']!=='paid')throw new ShopCheckoutException('PPL lze předat až po zaplacení a přípravě objednávky.');
         $payment=$pdo->prepare("SELECT status FROM payments WHERE payable_type='shop_order' AND payable_id=?");$payment->execute([$orderId]);
         if($payment->fetchColumn()!=='paid')throw new ShopCheckoutException('Platba objednávky není potvrzena.');
+        shopFulfillmentDispatchManagedInTransaction($pdo,$order,$actorTrainerId,'PPL',$reason,'ppl:'.$orderId);
         $pdo->prepare('UPDATE shop_orders SET status=\'completed\',completed_at=CURRENT_TIMESTAMP,ppl_dispatched_at=CURRENT_TIMESTAMP,ppl_tracking_number=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$trackingNumber,$orderId]);
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'dispatch_ppl\',\'ready\',\'completed\',?)')->execute([$orderId,$actorTrainerId,$reason.' | PPL '.$trackingNumber]);
         shopPplDispatchedNotificationEnqueue($pdo,$orderId);
@@ -1127,12 +1155,14 @@ function shopOrderAdminDepositPacketa(PDO $pdo,int $orderId,int $actorTrainerId,
 {
     $reason=shopOrderAdminValidateAction($orderId,$actorTrainerId,$reason,$confirmed,'Podání zásilky do Z-BOXu');$pdo->beginTransaction();
     try{
+        shopFulfillmentLockFinance($pdo);
         $order=shopOrderAdminLockOrder($pdo,$orderId);if(!$order)throw new ShopCheckoutException('Objednávka nebyla nalezena.');
         if(($order['fulfillment_method']??'')!=='packeta_zbox')throw new ShopCheckoutException('Objednávka není určena pro Zásilkovnu.');
         if($order['status']==='completed'&&$order['packeta_deposited_at']!==null){$pdo->commit();return ['order_id'=>$orderId,'status'=>'completed','changed'=>false];}
         if($order['status']!=='ready'||$order['payment_status']!=='paid'||!preg_match('/^Z[0-9]{10}$/D',(string)($order['packeta_tracking_number']??''))||!preg_match('/^[0-9]{9}$/D',(string)($order['packeta_consignment_code']??'')))throw new ShopCheckoutException('Zásilku lze potvrdit až po zaplacení, zabalení a uložení platných údajů ze Zásilkovny.');
         if(str_contains($reason,(string)$order['packeta_consignment_code']))throw new InvalidArgumentException('Podací kód nepište do poznámky; ukládá se odděleně a po podání se smaže.');
         $payment=$pdo->prepare("SELECT status FROM payments WHERE payable_type='shop_order' AND payable_id=?");$payment->execute([$orderId]);if($payment->fetchColumn()!=='paid')throw new ShopCheckoutException('Platba objednávky není potvrzena.');
+        shopFulfillmentDispatchManagedInTransaction($pdo,$order,$actorTrainerId,'Zásilkovna',$reason,'packeta:'.$orderId);
         $pdo->prepare("UPDATE shop_orders SET status='completed',completed_at=CURRENT_TIMESTAMP,packeta_deposited_at=CURRENT_TIMESTAMP,packeta_consignment_code=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
         $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,'trainer',?,'deposit_packeta','ready','completed',?)")->execute([$orderId,$actorTrainerId,$reason.' | Zásilkovna '.(string)$order['packeta_tracking_number']]);
         shopPacketaDispatchedNotificationEnqueue($pdo,$orderId);$pdo->commit();return ['order_id'=>$orderId,'status'=>'completed','changed'=>true];
@@ -1156,12 +1186,21 @@ function shopOrderAdminValidateAction(int $orderId,int $actorTrainerId,string $r
 
 function shopOrderAdminRestock(PDO $pdo,int $orderId):int
 {
+    $managedCount=0;
+    $managed=$pdo->prepare('SELECT id,variant_id FROM shop_order_items WHERE order_id=? ORDER BY variant_id,id');$managed->execute([$orderId]);
+    foreach($managed->fetchAll(PDO::FETCH_ASSOC) as $line){
+        if(!shopInventoryManaged($pdo,(int)$line['variant_id']))continue;
+        $reservation=shopInventoryReservation($pdo,(int)$line['id']);
+        if(!$reservation)throw new ShopCheckoutException('Sledovaná položka nemá doloženou rezervaci. Vyžaduje opravu evidence.');
+        if((int)$reservation['remaining_quantity']>0){shopInventoryReleaseInTransaction($pdo,(int)$line['id'],'cancel:'.$line['id'],null,'Uvolnění nevydané rezervace objednávky');$managedCount++;}
+    }
     $sql="SELECT oi.id AS order_item_id,oi.variant_id,oi.quantity FROM shop_order_items oi "
         ."JOIN shop_inventory_movements reserve ON reserve.order_item_id=oi.id AND reserve.movement_type='reserve' "
         ."WHERE oi.order_id=? ORDER BY oi.id";
     if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';
     $statement=$pdo->prepare($sql);$statement->execute([$orderId]);$items=$statement->fetchAll(PDO::FETCH_ASSOC);$count=0;
     foreach($items as$item){
+        if(shopInventoryManaged($pdo,(int)$item['variant_id']))continue;
         $restock=$pdo->prepare("SELECT id FROM shop_inventory_movements WHERE order_item_id=? AND movement_type='restock'");$restock->execute([(int)$item['order_item_id']]);
         if($restock->fetchColumn()!==false)continue;
         $variantSql='SELECT stock_quantity_decimal FROM shop_variants WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$variantSql.=' FOR UPDATE';
@@ -1175,7 +1214,7 @@ function shopOrderAdminRestock(PDO $pdo,int $orderId):int
             ->execute([(int)$item['variant_id'],$orderId,(int)$item['order_item_id'],(string)(int)$item['quantity'],(string)$stock->fetchColumn()]);
         $count++;
     }
-    return $count;
+    return $count+$managedCount;
 }
 
 /** @return array<string,mixed> */
@@ -1215,7 +1254,10 @@ function shopCheckoutVariantIsSaleable(
         && (int)$variant['amount_minor']>=0
         && ($variant['currency']??null)==='CZK';
     if (!$structurallySaleable) return false;
-    if (($variant['offer_type']??null)==='goods') return true;
+    if (($variant['offer_type']??null)==='goods') {
+        if($pdo!==null && shopInventoryTable($pdo) && ($variant['stock_quantity_decimal']??null)===null)return false;
+        return true;
+    }
     if (($variant['offer_type']??null)!=='program' || $pdo === null) return false;
     $variantId = (int)($variant['variant_id'] ?? $variant['id'] ?? 0);
     return $variantId > 0 && clubProgramVariantSaleState($pdo,$variantId,$now,$lockProgramOffer)['saleable'];

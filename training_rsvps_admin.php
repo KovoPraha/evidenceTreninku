@@ -10,6 +10,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_rsvp.php';
 require_once __DIR__ . '/includes/club_makeup.php';
+require_once __DIR__ . '/includes/coach_scope.php';
 
 function trainingRsvpAdminH(mixed $value): string
 {
@@ -31,6 +32,7 @@ if (!roleAtLeast('hlavni') && (int)$plan['trener_id'] !== (int)$_SESSION['trener
     http_response_code(403);
     exit('K přípravě tohoto tréninku nemáte oprávnění.');
 }
+coachScopeRequirePlan($pdo,$planId);
 $makeupError='';$makeupMessage=(string)($_SESSION['makeup_plan_flash']??'');unset($_SESSION['makeup_plan_flash']);
 if (($_SERVER['REQUEST_METHOD']??'GET')==='POST') {
     try {
@@ -46,12 +48,18 @@ if (($_SERVER['REQUEST_METHOD']??'GET')==='POST') {
             }
             $pdo->beginTransaction();
             try {
+                foreach($planIds as $id) coachScopeAssertPlan($pdo,(int)$id);
                 foreach($planIds as $id) clubMakeupSlotSave($pdo,(int)$_SESSION['trener_id'],$id,(int)($_POST['offer_id']??0),(int)($_POST['capacity']??0),(int)($_POST['birth_year_from']??0),(int)($_POST['birth_year_to']??0),roleAtLeast('hlavni'));
                 $pdo->commit();
             } catch(Throwable $exception) { if($pdo->inTransaction())$pdo->rollBack();throw $exception; }
             $_SESSION['makeup_plan_flash']='Náhradníci jsou povoleni na '.count($planIds).' termínu/termínech.';
         } elseif ($action==='makeup_slot_disable') {
-            clubMakeupSlotDisable($pdo,(int)$_SESSION['trener_id'],$planId,roleAtLeast('hlavni'));
+            $pdo->beginTransaction();
+            try {
+                coachScopeAssertPlan($pdo,$planId);
+                clubMakeupSlotDisable($pdo,(int)$_SESSION['trener_id'],$planId,roleAtLeast('hlavni'));
+                $pdo->commit();
+            } catch(Throwable $exception) { if($pdo->inTransaction())$pdo->rollBack();throw $exception; }
             $_SESSION['makeup_plan_flash']='Přijímání nových náhradníků bylo vypnuto; existující rezervace zůstávají platné.';
         } else throw new InvalidArgumentException('Neznámá akce.');
         header('Location: training_rsvps_admin.php?plan_id='.$planId.'#nahradnici',true,303);exit;

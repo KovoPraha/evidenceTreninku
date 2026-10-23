@@ -1,0 +1,101 @@
+{
+    "database": "evidence_training_race_887e702f",
+    "checks": 12,
+    "results": [
+        {
+            "scenario": "closure",
+            "two_real_lock_waits": true,
+            "single_committed_record": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "result": {
+                        "revision_id": 1,
+                        "version": 1,
+                        "status": "closed",
+                        "review_required": false,
+                        "training_id": 100,
+                        "actual_date": "2026-01-02",
+                        "actual_started_at": "2026-01-02 15:00:00",
+                        "actual_ended_at": "2026-01-02 16:00:00",
+                        "duration_minutes": 60,
+                        "participant_ids": [
+                            10
+                        ],
+                        "coach_ids": [
+                            1
+                        ],
+                        "guest_reasons": [],
+                        "record_source": "coach",
+                        "plan_id": null,
+                        "category": "draha",
+                        "description": "LOCALHOST Session"
+                    }
+                },
+                {
+                    "status": "denied",
+                    "message": "Docházku mezitím změnil jiný pracovník. Obnovte přehled; nic nebylo přepsáno."
+                }
+            ],
+            "status": "PASS"
+        },
+        {
+            "scenario": "schedule",
+            "two_real_lock_waits": true,
+            "single_committed_record": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "result": {
+                        "plan_id": 1
+                    }
+                },
+                {
+                    "status": "denied",
+                    "message": "Kolize: trenér má v tomto čase lekci #1. Společnou lekci založte jako jeden termín s více soupiskami."
+                }
+            ],
+            "status": "PASS"
+        },
+        {
+            "scenario": "makeup_last_slot",
+            "two_real_lock_waits": true,
+            "single_committed_record": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "result": {
+                        "reservation_id": 1
+                    }
+                },
+                {
+                    "status": "denied",
+                    "message": "Kapacita náhradníků je obsazená."
+                }
+            ],
+            "status": "PASS"
+        },
+        {
+            "scenario": "void_vs_finalize",
+            "two_real_lock_waits": true,
+            "void_state_preserved": true,
+            "no_consumed_credit": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "result": {
+                        "finalizer_completed": true
+                    }
+                },
+                {
+                    "status": "ok",
+                    "result": {
+                        "finalizer_completed": true
+                    }
+                }
+            ],
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

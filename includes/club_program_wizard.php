@@ -5,6 +5,7 @@ require_once __DIR__.'/shop_product_image.php';
 require_once __DIR__.'/shop_attribute.php';
 require_once __DIR__.'/kis_roster.php';
 require_once __DIR__.'/club_program_terms.php';
+require_once __DIR__.'/shop_inventory.php';
 
 final class ClubProgramWizardException extends RuntimeException{}
 
@@ -99,6 +100,8 @@ function clubProgramWizardCreate(
             $locked=clubProgramWizardExistingProduct($pdo,(int)$existingProduct['variant_id'],true);
             $productId=(int)$locked['id'];$variantId=(int)$locked['variant_id'];
             $beforeProduct=$locked;$beforeVariant=shopManualCatalogLockVariant($pdo,$variantId);
+            $stockVariants=$pdo->prepare('SELECT id FROM shop_variants WHERE product_id=? ORDER BY id'.shopInventoryLock($pdo));$stockVariants->execute([$productId]);
+            foreach($stockVariants->fetchAll(PDO::FETCH_COLUMN) as $stockVariant)if(shopInventoryManaged($pdo,(int)$stockVariant))throw new ClubProgramWizardException('Produkt se skladovou historií nelze převést na službu. Založte samostatný kroužek.');
             $pdo->prepare("UPDATE shop_products SET offer_type='program',item_type='service',visibility='visible',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
             $pdo->prepare("UPDATE shop_variants SET stock_quantity_decimal=NULL,unit_code='person',visible=1,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$variantId]);
             shopManualCatalogEvent($pdo,$productId,null,$actorId,'convert_to_program',$beforeProduct,shopManualCatalogLockProduct($pdo,$productId),$reason);

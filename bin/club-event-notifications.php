@@ -87,13 +87,17 @@ try {
             $directory
         );
     }
+    require_once $root.'/includes/operational_jobs.php';
+    $jobRun = operationalJobStart($pdo, 'transactional_notifications');
     $result = transactionalNotificationDrain($pdo, $sender, $limit);
+    operationalJobFinish($pdo, $jobRun, $result['failed'] === 0, $result['failed'] === 0 ? 'completed' : 'queue_delivery_failed');
     echo json_encode(
         $result + ['transport' => $transport],
         JSON_UNESCAPED_UNICODE
     ) . PHP_EOL;
     exit(0);
 } catch (Throwable $exception) {
+    if (isset($jobRun, $pdo)) { try { operationalJobFinish($pdo, $jobRun, false, 'worker_exception'); } catch (Throwable) {} }
     error_log('club-event-notifications.php: ' . $exception->getMessage());
     fwrite(STDERR, "Zpracovani oznameni selhalo; podrobnosti jsou pouze v serverovem logu.\n");
     exit(1);

@@ -8,6 +8,7 @@ require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/includes/private_storage.php';
 require_once __DIR__ . '/includes/person_sensitive.php';
 require_once __DIR__ . '/includes/public_profile_token.php';
+require_once __DIR__ . '/includes/coach_scope.php';
 
 header('Cache-Control: no-store, private');
 header('Pragma: no-cache');
@@ -47,7 +48,7 @@ if ($kind === 'receipt') {
         http_response_code(404);
         exit('Soubor nebyl nalezen.');
     }
-    $trainer = isset($_SESSION['trener_id']) && staffActivePositionIs('coach');
+    $trainer = isset($_SESSION['trener_id']) && coachScopeCanViewPerson($pdo, (int)$file['sportovec_id']);
     $publicAthleteId = public_profile_access_session_athlete_id($pdo);
     $public = (string)$file['typ'] === 'public_img'
         && $publicAthleteId !== null

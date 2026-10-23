@@ -1,5 +1,106 @@
 # Aktuální stav projektu
 
+**23. 10. 2026 — připravená lidská přejímka a ukázkové předání účetní.**
+Větev `codex/club-acceptance-package-20261023`, aplikační základ `abbb4be9`.
+[Předání balíčku](acceptance-20261023/README.md): 43 scénářů / 188 kroků,
+18 účetních kontrol, přenosný HTML průvodce, PDF a nezměněný nativní export.
+Veškerá lidská přejímka **NEPROVEDENO**, účetní převzetí **NEPŘEVZATO**.
+Nově jen dokumenty/nástroje balíčku a syntetické katalogové podklady přes místní UI;
+aplikační kód ani produkce se neměnily. D01–D16 a omezený testovací účet odložené.
+Žádný push, merge, deploy ani odeslání účetní.
+
+Následující technické výsledky pocházejí z předchozího balíku:
+
+**23. 10. 2026 — navazující společná kontrola R01–R44 dokončena lokálně.**
+Větev `codex/club-followup-review-20261023`, základ `7aff7884`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
+[Předání oprav](CLUB_AUTONOMOUS_FOLLOWUP.md),
+[aktuální důkazy](verification/autonomous-followup/RESULTS.md).
+**1 545 testů / 31 583 assertions PASS; obnova 326 tabulek a 175 souborů PASS.**
+136 migrací current, kontrakt `2026-10-23.3`. Opravena i nalezená závada místní
+databáze: původní datadir zůstal zachovaný; nejistota historie jediné nečitelné
+tabulky je uvedena v protokolu. Produkce, skutečný pilot a převzetí účetní
+zůstávají beze změny, D01–D16 odložené. Žádný push, merge ani deploy.
+
+Následuje historické předání před touto navazující kontrolou:
+
+Lokální vývoj 23. 10. 2026: **dokončená technická příprava R38–R44** a
+závěrečná finanční regrese ve větvi `codex/migration-cutover-r38-r44-20261023`.
+Pracovní kopie `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
+[Společné předání R01–R44](CLUB_IMPLEMENTATION_HANDOFF.md),
+[místní prohlídka](CLUB_LOCAL_REVIEW.md),
+[závěrečné ověření](verification/r38-r44/RESULTS.md).
+**1 526 testů, 132 HTTP kontrol a obnova 326 tabulek / 157 souborů PASS.**
+136 migrací, zálohovací kontrakt `2026-10-23.3`.
+Bez push, merge, nasazení a produkčních změn. Skutečné zdroje, metodika,
+pilot, účetní převzetí a přepnutí zůstávají odložené podle D01–D16.
+
+Následuje historické místní předání; jeho stav „pokračuje“ je překryt výše:
+
+Lokální vývoj 23. 10. 2026: **R31–R37 — výdaje, zálohy, odměny a účetní předání**,
+větev `codex/club-administration-r31-r37-20261023`, izolovaná pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ `4033bf18`.
+[Implementace](CLUB_ADMINISTRATION_R31_R37_IMPLEMENTATION.md),
+[přejímka](verification/r31-r37/RESULTS.md),
+[odložená rozhodnutí](CLUB_COMPLETION_DECISIONS.md).
+**Bez nasazení a produkčních změn.** Lokálně ověřeno 1 479 testů,
+93 skutečných HTTP kontrol, 36 souběžných kontrol a souvislý syntetický scénář.
+Uživatelská přejímka, skutečné účetní předání a ostrý přechod zůstávají oddělené.
+Pokračuje technická příprava migrace a přechodu R38–R44.
+
+Následuje předchozí místní balík:
+
+Lokální vývoj 23. 10. 2026: **R25–R30 — členská a sportovní agenda**,
+větev `codex/membership-sports-r25-r30-20261023`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R18–R24
+`12f28b611a8781968ca6b73821c0df3e2e4075dc`.
+[Rozsah a pracovní postupy](MEMBERSHIP_SPORTS_R25_R30_IMPLEMENTATION.md),
+[výsledky přejímky](verification/r25-r30/RESULTS.md).
+**Výhradně izolovaná syntetická data; bez push, merge, nasazení a produkčních změn.**
+Skutečná klubová pravidla, ostré historické převody a aktivace rozesílání nejsou
+tímto balíkem schváleny. Navazují výdaje, zálohy a odměny R31–R34;
+úplné účetní předání dokončuje R36.
+
+Následuje historické předání předchozích lokálních balíků:
+
+Lokální vývoj 22. 10. 2026: **R18–R24 — sklady, prodej a vratky**, větev
+`codex/inventory-r18-r24-20261022`, pracovní kopie
+`C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, základ R13–R17
+`fd402b6d9e12a86d932f376c8eaff76877d9a029`.
+Předání: [implementace R18–R24](INVENTORY_R18_R24_IMPLEMENTATION.md),
+[důkazy přejímky](verification/r18-r24/RESULTS.md).
+**Pouze izolované syntetické prostředí; bez push, merge, nasazení a produkčních změn.**
+Fyzické počátky, FIFO a účetní údaje pro skutečný provoz se nepřebíraly.
+Úplnost účetního předání dokončí R36; navazuje R25–R30.
+
+Následuje historické předání předchozího lokálního balíku:
+
+Lokální vývoj 22. 10. 2026: na B1 a R07–R12 navazuje **R13–R17** ve větvi
+`codex/finance-r13-r17-20261022`. Peněžní evidence, doklady/PDF, účetní
+členění, vratky a první export jsou popsány v
+[předání finančního základu](FINANCE_R13_R17_IMPLEMENTATION.md).
+Výsledky ověření jsou v [protokolu R13–R17](verification/r13-r17/RESULTS.md).
+**Pouze izolovaný lokální vývoj; bez push, merge, nasazení a produkčních změn.**
+Export je pracovní rozsah R13–R17; úplné účetní předání včetně skladu,
+výdajů a odměn dokončí R36. Metodiku a reálnou konfiguraci schvaluje účetní.
+
+Následuje předchozí dokončený lokální balík:
+
+Lokální vývoj 22. 10. 2026: na B1 navazuje balík **R07–R12** ve větvi
+`codex/club-foundation-r07-r12-20261022`. Identita, oddělené členství, trenérské
+rozsahy, papírové podklady, bezpečné fronty a provozní případy jsou popsány v
+[předání R07–R12](CLUB_FOUNDATION_R07_R12.md). Lokální implementace a přejímka jsou
+dokončené: 1 294 testů, 110 HTTP scénářů, souběhy a obnova syntetické DB.
+**Bez push, merge, nasazení nebo aktivace produkčních služeb.**
+Výsledky společné přejímky jsou v [protokolu](verification/r07-r12/RESULTS.md).
+
+Následující produkční údaje jsou dříve zaznamenaný stav, v tomto lokálním úkolu
+se znovu neověřovaly:
+
+Vydání 21. 10. 2026: číselné řady RR N KK XXXXX a účetní kategorie
+
+Historický produkční záznam převzatý z origin/main při přípravě vydání:
+
 22. 10. 2026: kontrola účetního zařazení před zveřejněním produktu je na
 produkci z [PR #164](https://github.com/KovoPraha/evidenceTreninku/pull/164),
 SHA `cc9c9280f137465eb59f20523d827b5502416e20`,

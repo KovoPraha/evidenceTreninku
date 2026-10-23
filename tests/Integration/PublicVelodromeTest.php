@@ -12,6 +12,16 @@ require_once dirname(__DIR__, 2) . '/includes/public_velodrome.php';
 
 final class PublicVelodromeTest extends TestCase
 {
+    public function testNewSelfProfileWithExistingPersonRequiresReviewAndNeverGrantsAccess():void
+    {
+        $pdo=$this->database();
+        \publicProfileSave($pdo,10,'LOCALHOST','Duplicita','1990-01-01','');
+        try {\publicProfileSave($pdo,11,'LOCALHOST','Duplicita','1990-01-01','');self::fail('Duplicate self profile');}
+        catch(\PublicProfileException $e){self::assertStringContainsString('Moje osoby',$e->getMessage());}
+        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM sportovci')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM account_person_roles WHERE account_id=11')->fetchColumn());
+        self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM public_self_profiles WHERE account_id=11')->fetchColumn());
+    }
     public function testCzkPriceInputIsConvertedExactlyToMinorUnits():void
     {
         self::assertSame(25000,\publicVelodromeCzkToMinor('250'));
@@ -235,7 +245,7 @@ final class PublicVelodromeTest extends TestCase
         $pdo->exec("INSERT INTO treneri VALUES(7,'Admin','admin@example.test','x','admin',1)");
         $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,jmeno TEXT,prijmeni TEXT,email TEXT,telefon TEXT,aktivni INTEGER,email_overeno INTEGER)');
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES(10,'Účet','První','account10@example.test',NULL,1,1),(11,'Účet','Druhý','account11@example.test',NULL,1,1),(12,'Neověřený','Účet','account12@example.test',NULL,1,0),(13,'Bez','Kontaktu','neplatny-email',NULL,1,1)");
-        $pdo->exec("CREATE TABLE sportovci(id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT NOT NULL,prijmeni TEXT NOT NULL,narozeni TEXT NOT NULL,email TEXT NOT NULL,telefon TEXT NULL,hash TEXT NOT NULL,uci INTEGER NOT NULL,stav_clenstvi TEXT NOT NULL)");
+        $pdo->exec("CREATE TABLE sportovci(id INTEGER PRIMARY KEY AUTOINCREMENT,jmeno TEXT NOT NULL,prijmeni TEXT NOT NULL,narozeni TEXT NOT NULL,email TEXT NOT NULL,telefon TEXT NULL,hash TEXT NOT NULL,uci INTEGER NOT NULL,stav_clenstvi TEXT NOT NULL,kis_external_id TEXT NULL)");
         $pdo->exec('CREATE TABLE sportovist(id INTEGER PRIMARY KEY,kod TEXT UNIQUE,nazev TEXT,je_verejne INTEGER,aktivni INTEGER,max_kapacita INTEGER)');
         $pdo->exec("INSERT INTO sportovist VALUES(20,'velodrom','Velodrom',1,1,10)");
         $pdo->exec("CREATE TABLE individualni_lekce(id INTEGER PRIMARY KEY AUTOINCREMENT,trener_id INTEGER NOT NULL,sportoviste_id INTEGER NOT NULL,datum TEXT NOT NULL,cas_od TEXT NOT NULL,cas_do TEXT NOT NULL,slot_delka_min INTEGER NOT NULL,typ TEXT NOT NULL,nazev TEXT NOT NULL,popis TEXT,cena_kc NUMERIC NOT NULL,max_osob INTEGER NOT NULL,vyjimka_3_dny INTEGER NOT NULL,stav TEXT NOT NULL)");

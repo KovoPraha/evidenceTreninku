@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_save']) && $skupin
             throw new RuntimeException('Neplatny CSRF token.');
         }
         $ctx = build_report_context($pdo, $skupina_id, $podskupina_id > 0 ? $podskupina_id : null, $datum);
-        $saved = save_week_report($pdo, $ctx, __DIR__ . '/reports/weekly');
+        $saved = save_week_report($pdo, $ctx);
     } catch (Throwable $e) {
         $error = $e->getMessage();
     }
@@ -67,8 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_save']) && $skupin
   <?php if ($saved): ?>
     <div class="alert alert-success">
       Uloženo ✅<br>
-      <div class="mono small">HTML: <?= h($saved['html']) ?></div>
-      <div class="mono small">PDF: <?= h($saved['pdf']) ?></div>
+      <a href="weekly_report_file.php?id=<?= h($saved['id']) ?>">Stáhnout PDF reportu</a>
     </div>
   <?php endif; ?>
 

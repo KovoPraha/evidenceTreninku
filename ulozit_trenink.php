@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 
@@ -63,6 +64,8 @@ try {
 // Obrázky
 // --------------------
 $imagePaths = [];
+try { coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows)); coachScopeAssertTeams($pdo, $teamIds); }
+catch (RuntimeException $e) { http_response_code(403); exit($e->getMessage()); }
 $fileMutations = fileMutationBegin();
 try {
 if (!empty($_FILES['obrazky']['name'][0])) {
@@ -109,9 +112,12 @@ try {
     }
 
     $pdo->beginTransaction();
+    coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
+    coachScopeAssertTeams($pdo, $teamIds, $datum);
 
     $planRow=null;
     if($planId>0){
+        coachScopeAssertPlan($pdo,$planId);
         $planSql='SELECT id,trener_id,datum,stav,skupina_id,podskupina_id FROM planovane_treninky WHERE id=?';
         if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$planSql.=' FOR UPDATE';
         $planStatement=$pdo->prepare($planSql);$planStatement->execute([$planId]);$planRow=$planStatement->fetch(PDO::FETCH_ASSOC);

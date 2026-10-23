@@ -102,6 +102,7 @@ function shopCatalogAdjustStock(PDO$pdo,int$actorId,int$variantId,string$newStoc
         $lookup=$pdo->prepare('SELECT product_id FROM shop_variants WHERE id=?');$lookup->execute([$variantId]);$productId=(int)$lookup->fetchColumn();
         $product=shopManualCatalogLockProduct($pdo,$productId);
         $before=shopManualCatalogLockVariant($pdo,$variantId);
+        if(shopInventoryManaged($pdo,$variantId))throw new ShopManualCatalogException('Ověřený fyzický sklad upravte příjemkou, výdejem nebo schválenou inventurou.');
         if($expected!==null && shopManualCatalogComparable($expected['stock']??null)!==shopManualCatalogComparable($before['stock_quantity_decimal'])) throw new ShopManualCatalogException('Sklad se mezitím změnil. Obnovte stránku a zkontrolujte aktuální stav.');
         if((string)$product['offer_type']==='program')throw new ShopManualCatalogException('Kroužek nemá sklad. Dostupnost řídí kapacita jeho termínu.');
         $changed=shopManualCatalogComparable($before['stock_quantity_decimal'])!==shopManualCatalogComparable($normalized);

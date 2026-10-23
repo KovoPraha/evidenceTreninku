@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/admin_operational_overview.php';
+require_once __DIR__ . '/includes/operational_cases.php';
+require_once __DIR__ . '/includes/operational_jobs.php';
+require_once __DIR__ . '/csrf_helper.php';
 
 header('Cache-Control: no-store, private');
-if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
+if (!isset($_SESSION['trener_id']) || !in_array(staffActivePosition(),['system_admin','registrar','order_operator','finance_manager','sports_lead'],true)) {
     header('Location: login.php');
     exit;
 }
@@ -15,13 +18,31 @@ function operationalPageH(mixed $value): string
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+$position=(string)($_SESSION['staff_active_position']??'');
+$caseMessage='';$caseError='';$cases=['items'=>[],'unavailable'=>[],'page'=>1,'has_next'=>false,'closed'=>false];$owners=[];$jobs=[];
+if ($_SERVER['REQUEST_METHOD']==='POST') {
+    if (!csrf_verify($_POST['csrf_token']??'')) { http_response_code(403);$caseError='Neplatné potvrzení formuláře.'; }
+    else try {
+        operationalCaseSave($pdo,(int)$_SESSION['trener_id'],$position,$_POST);
+        header('Location: provozni_prehled_admin.php?saved=1#pripady',true,303);exit;
+    } catch (DomainException $e) { http_response_code(409);$caseError=$e->getMessage(); }
+    catch (Throwable $e) { error_log('Operational case save: '.$e->getMessage());http_response_code(409);$caseError='Případ se nepodařilo uložit. Obnovte přehled.'; }
+}
+if (isset($_GET['saved'])) $caseMessage='Odpovědnost a další krok byly uloženy do historie.';
 try {
-    $overview = adminOperationalOverview($pdo);
+    $overview = $position==='system_admin' ? adminOperationalOverview($pdo) : ['generated_at'=>date('Y-m-d H:i:s'),'sections'=>[],'unavailable'=>[],'signal_count'=>0];
+    if (in_array($position,['registrar','order_operator','finance_manager','sports_lead'],true)) {
+        $cases=operationalCaseList($pdo,$position,(int)($_GET['page']??1),($_GET['closed']??'')==='1');
+        $owners=operationalCaseOwners($pdo,$position);
+        $overview['signal_count']=count($cases['items']);
+    }
+    if ($position==='system_admin') $jobs=operationalJobsStatus($pdo);
     $loadError = '';
 } catch (Throwable $exception) {
     error_log('provozni_prehled_admin.php: ' . $exception->getMessage());
     $overview = ['generated_at' => '', 'sections' => [], 'unavailable' => [], 'signal_count' => 0];
     $loadError = 'Provozní přehled se nyní nepodařilo bezpečně načíst.';
+    if ($position!=='system_admin') $cases['unavailable'][]='pracovní případy';
 }
 
 ?>
@@ -41,10 +62,11 @@ try {
             <h1 class="h3 mb-1"><i class="bi bi-speedometer2 me-2 text-primary"></i>Provozní přehled správce</h1>
             <div class="text-muted">Jedno místo pro signály vyžadující kontrolu. Změny se provádějí až v navazujících auditovaných obrazovkách.</div>
         </div>
-        <div class="text-end"><span class="badge text-bg-<?= (int)$overview['signal_count'] > 0 ? 'warning' : 'success' ?> fs-6"><?= (int)$overview['signal_count'] ?> signálů</span><?php if ($overview['generated_at'] !== ''): ?><div class="small text-muted mt-1">Stav k <?= operationalPageH($overview['generated_at']) ?></div><?php endif; ?></div>
+        <div class="text-end"><?php if ($loadError!=='' || $overview['unavailable'] || $cases['unavailable']): ?><span class="badge text-bg-warning fs-6">Neúplné údaje</span><?php else: ?><span class="badge text-bg-<?= (int)$overview['signal_count'] > 0 ? 'warning' : 'success' ?> fs-6"><?= (int)$overview['signal_count'] ?> <?=$position==='system_admin'?'signálů':'zobrazených případů'?></span><?php endif; ?><?php if ($overview['generated_at'] !== ''): ?><div class="small text-muted mt-1">Stav k <?= operationalPageH($overview['generated_at']) ?></div><?php endif; ?></div>
     </div>
 
-    <div class="alert alert-info"><strong>Přehled je pouze ke čtení.</strong> Nic nepotvrzuje, neodesílá ani nemění. Po otevření cílové obrazovky stále platí její vlastní oprávnění, potvrzení, CSRF ochrana a audit.</div>
+    <div class="alert alert-info">Zde určíte odpovědnou osobu, další krok a datum kontroly. Přihlášku, identitu ani platbu tím neschválíte. Věcnou změnu proveďte v odkazované agendě; platí její oprávnění, potvrzení a audit.</div>
+    <?php require __DIR__.'/includes/operational_cases_view.php'; ?>
     <?php if ($loadError !== ''): ?><div class="alert alert-danger"><?= operationalPageH($loadError) ?></div><?php endif; ?>
     <?php if ($overview['unavailable'] !== []): ?><div class="alert alert-warning small"><strong>Neúplný přehled:</strong> nelze ověřit zdroje <?= operationalPageH(implode(', ', $overview['unavailable'])) ?>. Nejsou proto vydávány za nulový stav.</div><?php endif; ?>
 

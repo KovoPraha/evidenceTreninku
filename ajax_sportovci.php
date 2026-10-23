@@ -15,6 +15,7 @@ if (!isset($_SESSION['trener_id'])) {
 }
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__.'/includes/coach_scope.php';
 
 function out(array $data, int $code = 200): void {
     http_response_code($code);
@@ -42,6 +43,7 @@ $like = str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], $q);
 $like = '%' . $like . '%';
 
 try {
+    $scopePredicate = coachScopePersonPredicate($pdo);
     // Pozn.: collation fix – explicitně převádíme na utf8mb4 a sjednotíme collation,
     // aby nepadalo na "Illegal mix of collations" (pokud je DB mixovaná).
     $sql = "
@@ -57,7 +59,7 @@ try {
             OR CONVERT(s.prijmeni USING utf8mb4) COLLATE utf8mb4_general_ci LIKE :q
             OR CONVERT(s.uci USING utf8mb4) COLLATE utf8mb4_general_ci LIKE :q
         )
-        AND s.id NOT IN (
+        AND ($scopePredicate) AND s.id NOT IN (
             SELECT ss.sportovec_id FROM sportovec_skupina ss
             JOIN skupiny sk ON ss.skupina_id = sk.id
             WHERE LOWER(sk.nazev) = 'archiv'

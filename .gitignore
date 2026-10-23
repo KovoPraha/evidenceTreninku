@@ -38,3 +38,8 @@
 
 .DS_Store
 Thumbs.db
+
+# Generated synthetic acceptance deliverables (rebuild from tools and docs).
+/output/uat-accountant-20261023/
+/output/pdf/PRIJIMACI-PRUVODCE-20261023.pdf
+/tools/__pycache__/

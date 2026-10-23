@@ -33,7 +33,7 @@ final class ClubProgramRecurrenceTest extends TestCase
         self::assertSame([], $run['errors']);self::assertSame(1,$run['created']);
         self::assertSame(0,\clubProgramRecurrenceRefresh($pdo,$now,true)['created']);
         $next=$pdo->query('SELECT * FROM club_program_offers WHERE recurrence_source_offer_id='.(int)$offer['id'])->fetch(PDO::FETCH_ASSOC);
-        self::assertSame('2027-09-01',$next['starts_on']);self::assertSame('2028-06-30',$next['ends_on']);
+        self::assertSame('draft',$next['status']);self::assertSame('2027-09-01',$next['starts_on']);self::assertSame('2028-06-30',$next['ends_on']);
         self::assertSame('Aligátoři 2027/28',$next['name']);self::assertSame(10,(int)$next['team_id']);self::assertSame(501,(int)$next['product_id']);self::assertNotSame(601,(int)$next['variant_id']);
         self::assertSame((int)$offer['id'],(int)$pdo->query('SELECT club_program_offer_id FROM shop_order_items WHERE id=1')->fetchColumn());
         self::assertSame('2027/28',\clubProgramSchoolYearLabel($next['starts_on']));

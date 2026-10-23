@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+if($screen==='stock'||($tab??'')==='inventory')echo '<p><a class="btn btn-primary" href="eshop_inventory_admin.php">Fyzický sklad: příjemky, inventury a pohyby</a></p><p class="text-muted">Ověřené varianty: fyzicky / rezervováno / blokováno / dostupné. Starší údaj je dostupnost po rezervacích; není fyzický počet.</p>';
 if ($screen==='new'):
 ?>
 <form method="post"><?php shopAdminHidden('create'); ?>

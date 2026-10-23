@@ -1,0 +1,969 @@
+[
+  {
+    "id": "UAT-P01",
+    "title": "Založení osoby, kontrola shod a stabilní ID",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS"
+    ],
+    "routes": [
+      "sprava_sportovcu.php",
+      "sportovec_karta.php"
+    ],
+    "minutes": 15,
+    "depends_on": [],
+    "prerequisites": [
+      "Přihlášený místní registrář; základní kontrola prostředí dle společného návodu. Použijte nový suffix běhu B01; při opakování B02 atd."
+    ],
+    "test_data": [
+      "Jméno Anna, příjmení UATB01, narození 2014-03-12; e-mail prázdný.",
+      "Druhá osoba Boris UATB01, 2013-05-14; třetí Cyril UATB01, 2014-06-15."
+    ],
+    "steps": [
+      {
+        "action": "Ve Správě sportovců vyplňte Annu v části založení. Stiskněte „1. Zkontrolovat možné shody“.",
+        "expected": "Zobrazí se vyhodnocení shod; osoba ještě není bez potvrzení založená."
+      },
+      {
+        "action": "Je-li bez shod, stiskněte „Potvrzuji kontrolu a zakládám osobu“. Otevřete kartu a opište její sportovec_id z URL.",
+        "expected": "Vznikne jedna osoba s interním ID. E-mail zůstane prázdný; nevznikne tím rodinné oprávnění."
+      },
+      {
+        "action": "Zopakujte kontrolu se stejným jménem a narozením. Tentokrát nepoužívejte „Přesto založit jako novou osobu“.",
+        "expected": "Zobrazí se existující shoda. Otevřením její karty získáte stejné ID; duplicitní osoba nevznikla."
+      },
+      {
+        "action": "Stejným dvoukrokovým postupem založte Borise a Cyrila; zapište jejich ID.",
+        "expected": "Každá osoba má jiné ID, dohromady tři zkušební osoby."
+      }
+    ],
+    "evidence": [
+      "ID Anny/Borise/Cyrila, snímek kontroly duplicity, počet shod."
+    ],
+    "decisions": [
+      "D07"
+    ],
+    "sources": [
+      "sprava_sportovcu.php:439",
+      "sprava_sportovcu.php:454"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P02",
+    "title": "Neznámá identita se odloží, ověření nepřiděluje účet",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS"
+    ],
+    "routes": [
+      "identity_reviews_admin.php"
+    ],
+    "minutes": 12,
+    "depends_on": [
+      "UAT-P01"
+    ],
+    "prerequisites": [
+      "Znáte ID Anny z P01; jde pouze o ručně vytvořený fiktivní zdroj."
+    ],
+    "test_data": [
+      "Zdroj uat-b01, ID old-anna-01, jméno Anna UATB01, narození prázdné, podklad UAT-B01-karta-01."
+    ],
+    "steps": [
+      {
+        "action": "Rozbalte „Založit případ ze zdroje“, zadejte uvedené údaje, narození ponechte prázdné a použijte „Založit případ bez přiřazení“.",
+        "expected": "Případ má vlastní ID, stav čeká na ověření a neznámé narození; nevznikla nová osoba."
+      },
+      {
+        "action": "V detailu vyberte „Odložit — identita není doložená“, důvod „UAT B01 chybí ověřený podklad“, podklad UAT-B01-karta-01. Uložte výslovné rozhodnutí.",
+        "expected": "Vznikne dohledatelná revize odložení bez cílové osoby."
+      },
+      {
+        "action": "Po simulovaném doložení zvolte „Ověřit vazbu na vybranou osobu“, vyplňte ID Anny, důvod „UAT B01 kontrola syntetické karty“ a podklad. Uložte.",
+        "expected": "Vznikne ověřená zdrojová vazba na přesné ID. Historie zachová odložení i ověření; nevytvoří se účet ani automatické sloučení."
+      },
+      {
+        "action": "Otevřete tentýž případ z druhé, dříve otevřené karty prohlížeče a zkuste uložit staré rozhodnutí s důvodem.",
+        "expected": "Zastaralá revize je odmítnuta; nové rozhodnutí nebylo přepsáno. Pokud prohlížeč kartu sám aktualizoval, tuto dílčí kontrolu zapište jako neprovedenou."
+      }
+    ],
+    "evidence": [
+      "ID případu, čísla revizí, stav po starém formuláři."
+    ],
+    "decisions": [
+      "D07"
+    ],
+    "sources": [
+      "identity_reviews_admin.php:26",
+      "identity_reviews_admin.php:44"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P03",
+    "title": "Rodič, účet a plátce jsou samostatné vztahy",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS",
+      "Zkušební rodič"
+    ],
+    "routes": [
+      "eshop_identity_admin.php",
+      "booking/moje_osoby.php"
+    ],
+    "minutes": 15,
+    "depends_on": [
+      "UAT-P01"
+    ],
+    "prerequisites": [
+      "Dva syntetické veřejné účty UAT rodič A a UAT rodič B jsou aktivní a mají ověřený e-mail; bez dostupného místního ověření účtu scénář zastavte. Neodesílejte skutečný ověřovací e-mail.",
+      "Samostatné profily prohlížeče pro registráře a rodiče; nepoužívejte administrátora jako náhradu rodičovského účtu."
+    ],
+    "test_data": [
+      "Rodič A: rodic-a-b01@example.invalid; rodič B: rodic-b-b01@example.invalid.",
+      "Anna UATB01; doložení UAT-B01-rodic-A."
+    ],
+    "steps": [
+      {
+        "action": "Před přidělením vazby otevřete jako rodič A Moje osoby.",
+        "expected": "Anna není přístupná jen díky podobnému jménu nebo e-mailu."
+      },
+      {
+        "action": "Jako registrář otevřete „Schválit vazbu“: účet A, Anna, „Rodič / zástupce“, podklad „UAT B01 fiktivní ověření rodiče A“. Potvrďte „Schválit vazbu“.",
+        "expected": "Vazba je schválená a audit ukazuje autora a důvod; osoba se nezdvojí."
+      },
+      {
+        "action": "Obnovte Moje osoby rodiče A; pak je otevřete jako rodič B.",
+        "expected": "A vidí Annu; B ji nevidí. Toto ověření neprohlašuje A za automaticky sjednaného plátce příspěvků."
+      },
+      {
+        "action": "V řádku vazby A vyplňte důvod „UAT B01 zkouška odvolání přístupu“ a stiskněte „Zrušit“. Obnovte již otevřenou rodičovskou stránku.",
+        "expected": "Vazba je revoked a obnovený přístup k Anně zmizí; osoba i audit zůstávají."
+      },
+      {
+        "action": "Znovu výslovně schvalte syntetickou vazbu A pro navazující scénáře.",
+        "expected": "Aktuální schválená vazba je obnovena doloženým úkonem; historické odvolání nezmizí."
+      }
+    ],
+    "evidence": [
+      "ID účtů a vazby bez hesel, snímek dostupnosti před/po odvolání, audit."
+    ],
+    "decisions": [
+      "D03",
+      "D07"
+    ],
+    "sources": [
+      "eshop_identity_admin.php:575",
+      "eshop_identity_admin.php:597",
+      "booking/moje_osoby.php:1"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Nutné ověřené syntetické veřejné účty nejsou tímto balíkem vytvořené ani ověřené. Správce musí potvrdit jejich dostupnost v odděleném prostředí."
+    ]
+  },
+  {
+    "id": "UAT-P04",
+    "title": "Vlastní zkušební kroužek, cena a kapacita",
+    "priority": "P0",
+    "roles": [
+      "Koordinátor programů a sportovišť"
+    ],
+    "routes": [
+      "club_program_wizard_admin.php",
+      "club_program_offers_admin.php",
+      "club_programs_admin.php"
+    ],
+    "minutes": 15,
+    "depends_on": [],
+    "prerequisites": [
+      "Aktivní místní role koordinátora. D = den provádění; nabídka začíná D a končí D+60 dní. Neměňte existující nabídky jiných testů."
+    ],
+    "test_data": [
+      "Název UAT-B01-krouzek, cena 1200 Kč, 1 místo, nová automatická soupiska, bez omezení ročníku.",
+      "Texty, pokud chybí: „Pouze syntetické podmínky UAT B01, nejsou určeny skutečným členům.“"
+    ],
+    "steps": [
+      {
+        "action": "Otevřete Vypsat kroužek. Vyberte „Vytvořit nový produkt“, název, cenu, od/do a 1 místo. Vypněte každoroční opakování; soupisku nechte vytvořit automaticky.",
+        "expected": "Před uložením jsou uvedené konkrétní parametry testu."
+      },
+      {
+        "action": "Pokud chybí podmínky, vyplňte obě pole výhradně syntetickým textem a potvrďte jen jejich použití v tomto místním testu. Stiskněte „Vypsat a zveřejnit kroužek“.",
+        "expected": "Vznikne místní nabídka, produkt a soupiska; nic se nezveřejní na produkční doméně."
+      },
+      {
+        "action": "V Kroužcích otevřete „Upravit“, opište ID nabídky z URL, datum, kapacitu a stav. V Programy a podmínky opište ID programu z odkazu Výchozí podmínky a verze obou textů.",
+        "expected": "Nabídka má cenu 1200 Kč, kapacitu 1, odpovídající program a doložitelné verze podmínek."
+      },
+      {
+        "action": "V nabídce zkuste nastavit kapacitu 0 a uložit.",
+        "expected": "Formulář nebo server odmítne neplatnou kapacitu; po obnovení zůstane 1."
+      }
+    ],
+    "evidence": [
+      "ID nabídky/programu/soupisky/produktu, verze podmínek, snímek ceny a kapacity."
+    ],
+    "decisions": [
+      "D03"
+    ],
+    "sources": [
+      "club_program_wizard_admin.php:151",
+      "club_program_offers_admin.php:68",
+      "club_programs_admin.php:51"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P05",
+    "title": "Papírová přihláška a souhlasy, ověření a oprava",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS"
+    ],
+    "routes": [
+      "paper_registrations_admin.php",
+      "paper_registration_file.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-P01",
+      "UAT-P04"
+    ],
+    "prerequisites": [
+      "Máte ID programu a aktuální verze obou podmínek z P04. Použijte fiktivní umístění originálu; žádné skutečné podpisy ani zdravotní údaje."
+    ],
+    "test_data": [
+      "Osoba Anna; podpis D; podepisující UAT Rodič A; vztah Zákonný zástupce; originál UAT-B01/fiktivni-sanon/01.",
+      "Přihláška UAT-B01 a dva souhlasy s přesnými verzemi storno podmínek a souhlasu s účastí."
+    ],
+    "steps": [
+      {
+        "action": "V Novém papírovém podkladu vyberte Annu, druh Přihláška, účel Kurz / kroužek a konkrétní UAT program. Vyplňte název, podepisujícího, vztah, podpis, umístění a důvod; verzi přihlášky nedokládanou textem nechte neověřenou. Zaevidujte.",
+        "expected": "Vznikne podklad „Zaevidováno – k posouzení“, nikoli ověřený souhlas nebo členství."
+      },
+      {
+        "action": "Vyplňte důvod „UAT B01 kontrola fiktivního originálu“ a stiskněte „Potvrdit ověření podkladu“.",
+        "expected": "Stav je Podklad ověřen, historie rozlišuje datum podpisu a okamžik evidence/ověření."
+      },
+      {
+        "action": "Založte dva podklady druhu Souhlas pro stejnou osobu/program. U každého vyberte přesnou aktuální verzi z P04; oba samostatně ověřte.",
+        "expected": "Dva samostatné ověřené podklady zachovávají své názvy a verze."
+      },
+      {
+        "action": "Na přihlášce použijte „Opravit novou verzí“, změňte umístění na UAT-B01/fiktivni-sanon/02, uveďte důvod a zaevidujte. Novou verzi výslovně ověřte.",
+        "expected": "Původní důkaz zůstane dohledatelný; nová verze má vlastní ID a vazbu na opravený podklad. Do P06 předejte aktuálně ověřenou přihlášku."
+      },
+      {
+        "action": "Založte pomocný souhlas UAT-B01-neovereny s neověřenou verzí a ponechte jej bez ověření.",
+        "expected": "Pomocný podklad není rovnocenný aktuálnímu ověřenému souhlasu a nemá nahradit povinný podklad v P06."
+      }
+    ],
+    "evidence": [
+      "ID přihlášky, opravy, obou souhlasů a pomocného podkladu; snímek auditu."
+    ],
+    "decisions": [
+      "D03",
+      "D11"
+    ],
+    "sources": [
+      "paper_registrations_admin.php:64",
+      "paper_registrations_admin.php:77",
+      "paper_registrations_admin.php:78"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P06",
+    "title": "Osobní přijetí bez účtu a poslední volné místo",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS",
+      "Koordinátor programů a sportovišť"
+    ],
+    "routes": [
+      "club_program_admissions_admin.php",
+      "club_programs_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-P01",
+      "UAT-P04",
+      "UAT-P05"
+    ],
+    "prerequisites": [
+      "Nová nabídka UAT-B01 má právě jedno volné místo. Pro Borise připravte analogické ověřené podklady dle P05; zaznamenejte jejich ID."
+    ],
+    "test_data": [
+      "Offline plátce UAT Rodič A, Zákonný zástupce; vstup D; důvod UAT B01 osobní dohoda 1200 Kč."
+    ],
+    "steps": [
+      {
+        "action": "V Osobních přihláškách vyhledejte Annu a zvolte přesnou nabídku UAT. Otevřete osobu. Vyberte „Osobně podle papírové přihlášky — bez online účtu“, vyplňte plátce, vztah, vstup a důvod; označte jen přihlášku, nikoli souhlasy. Potvrďte formulář.",
+        "expected": "Systém přijetí odmítne pro chybějící povinné podklady; nevznikne objednávka ani rezervace místa."
+      },
+      {
+        "action": "Obnovte formulář a označte přihlášku i oba platné souhlasy z P05. Potvrďte cenu, plátce, datum a podklady; použijte „Vytvořit přihlášku a objednávku k úhradě“.",
+        "expected": "Vznikne přihláška a objednávka čekající na úhradu; cena je 1200 Kč, nevznikne nový veřejný účet ani automatické oprávnění rodiče."
+      },
+      {
+        "action": "Opište kód objednávky z Posledních přihlášek a ověřte kapacitu v Programy a podmínky.",
+        "expected": "Jedno místo drží nezaplacená objednávka, skutečně volné je 0; účast není označená jako zaplacená."
+      },
+      {
+        "action": "Stejně se pokuste přihlásit Borise s jeho správnými podklady.",
+        "expected": "Plná kapacita znemožní druhé přijetí; nevznikne druhá objednávka. Nepotvrzujte fiktivní úhradu jen kvůli této kontrole."
+      },
+      {
+        "action": "Předejte hospodáři kód první objednávky a testovací částku do samostatné finanční přejímky.",
+        "expected": "Registrář nemá samotným přijetím připsat peněžní příjem."
+      }
+    ],
+    "evidence": [
+      "Kód objednávky, ID přijetí je-li dostupné, stav platby, kapacita před/po, text odmítnutí."
+    ],
+    "decisions": [
+      "D03"
+    ],
+    "sources": [
+      "club_program_admissions_admin.php:18",
+      "club_program_admissions_admin.php:19",
+      "club_programs_admin.php:51"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P07",
+    "title": "Členství a datovaná soupiska se evidují samostatně",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS"
+    ],
+    "routes": [
+      "sportovec_karta.php",
+      "sprava_sportovcu.php",
+      "kis_rosters_admin.php"
+    ],
+    "minutes": 15,
+    "depends_on": [
+      "UAT-P01",
+      "UAT-P04"
+    ],
+    "prerequisites": [
+      "Boris je testovací člen, nepoužívejte Annu s čekající placenou účastí. Soupiska UAT z P04 existuje; její ID je zapsáno."
+    ],
+    "test_data": [
+      "Boris UATB01; důvod UAT B01 fiktivní rozhodnutí o členství; zařazení od D."
+    ],
+    "steps": [
+      {
+        "action": "Otevřete kartu Borise podle ID. V části Stav člena vyberte Aktivní, vyplňte důvod UAT B01 fiktivní rozhodnutí o členství a uložte zeleným tlačítkem se zaškrtnutím (popis Uložit).",
+        "expected": "Karta zachovává autora/důvod rozhodnutí. Členství není potvrzení platby ani souhlas rodiče."
+      },
+      {
+        "action": "Ve Správě sportovců otevřete Borisovu editaci a sekci Soupisky sportovce. Vyberte UAT soupisku a D, poznámku „UAT B01 zařazení“, stiskněte „Uložit zařazení“.",
+        "expected": "Vznikne datované zařazení do správné sezony."
+      },
+      {
+        "action": "Stejné zařazení uložte znovu.",
+        "expected": "Nevznikne druhé totožné aktivní zařazení; historie je čitelná."
+      },
+      {
+        "action": "V samostatné pomocné osobě Cyril proveďte zařazení od D+1 a zkontrolujte sekci Budoucí zařazení.",
+        "expected": "Budoucí zařazení se nevydává za dnešní účast nebo docházku."
+      }
+    ],
+    "evidence": [
+      "ID členství/soupisky, datum účinnosti, snímek historie, přesný název zvoleného členského stavu."
+    ],
+    "decisions": [
+      "D03"
+    ],
+    "sources": [
+      "sportovec_karta.php:245",
+      "includes/sportovec_editor_rosters_view.php:5",
+      "includes/sportovec_editor_rosters_view.php:18"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P08",
+    "title": "Příspěvek: výslovný plátce, schválená částka a jediný běh",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS",
+      "Hospodář a platby"
+    ],
+    "routes": [
+      "eshop_identity_admin.php",
+      "member_fee_plans_admin.php",
+      "member_charges_admin.php"
+    ],
+    "minutes": 25,
+    "depends_on": [
+      "UAT-P03",
+      "UAT-P07"
+    ],
+    "prerequisites": [
+      "Boris má platné členství i soupisku v aktuálním měsíci. Registrář podle postupu P03 výslovně schválil vazbu účtu A i k Borisovi. Pouze nový UAT plán; neprovádějte běh na cizí soupisce."
+    ],
+    "test_data": [
+      "UAT-B01-mesic, měsíční základ 600 Kč, splatnost 15., platnost od prvního dne aktuálního měsíce; pro Borise výslovně schváleno 300 Kč."
+    ],
+    "steps": [
+      {
+        "action": "V Novém měsíčním plánu vyberte UAT soupisku, název, text UAT-B01-prispevek, 600 Kč, den 15 a data. Potvrďte parametry a „Založit plán“.",
+        "expected": "Vznikne plán, nikoli okamžitý předpis."
+      },
+      {
+        "action": "Otevřete plán a použijte „Nejdříve náhled“ pro aktuální měsíc.",
+        "expected": "U Borise je chybějící plátce / schválení částky viditelná překážka, nikoli automatický výběr rodiče."
+      },
+      {
+        "action": "V „Dohoda plátce a schválení částky“ vyberte stejný měsíc a Borise, klikněte „Otevřít dohodu“. Zvolte účet A, platnost celého měsíce, podklad „UAT B01 výslovná dohoda“. Potvrďte a uložte dohodu.",
+        "expected": "Dohoda se uloží do historie; cena zatím není odhadnuta podle data vstupu."
+      },
+      {
+        "action": "Znovu otevřete Borise a měsíc, zadejte schválenou částku 300 Kč a důvod „UAT B01 přesně schválená úleva“. Souběh nepovolujte. Potvrďte a „Schválit částku období“.",
+        "expected": "Uloženo výslovné rozhodnutí 300 Kč; výchozích 600 Kč není automaticky použito."
+      },
+      {
+        "action": "Vytvořte nový náhled. Pokud obsahuje jiné připravené osoby než Borise, zastavte a zaznamenejte blokaci dat. Jinak potvrďte počet 1 a „Vytvořit“.",
+        "expected": "Vznikne jediný předpis 300 Kč pro Borise a účet A. Stálý VS plátce se nemění."
+      },
+      {
+        "action": "Zopakujte náhled a běh, je-li jeho potvrzení dostupné. V Jednotlivých předpisech vyhledejte UAT-B01-prispevek.",
+        "expected": "Existující předpis se označí jako již existující; nevznikne druhý příjem ani předpis."
+      }
+    ],
+    "evidence": [
+      "ID plánu/dohody a kód předpisu, částka 300 Kč, původní VS, náhled před/po."
+    ],
+    "decisions": [
+      "D03"
+    ],
+    "sources": [
+      "member_fee_plans_admin.php:38",
+      "includes/member_fee_agreement_fields.php:13",
+      "includes/member_fee_agreement_fields.php:15",
+      "member_fee_plans_admin.php:43"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Navazuje na ověřené veřejné účty a vazbu P03; bez nich nelze z UI vybrat sjednaného plátce."
+    ]
+  },
+  {
+    "id": "UAT-P09",
+    "title": "Rozvrh: vytvoření, kolize, přesun a auditované zrušení",
+    "priority": "P0",
+    "roles": [
+      "Trenér",
+      "Vedoucí sportu"
+    ],
+    "routes": [
+      "planovany_trenink_form.php",
+      "planovac.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-P04",
+      "UAT-P07"
+    ],
+    "prerequisites": [
+      "Trenér má UAT soupisku ve svém aktuálním rozsahu; může jej přidělit vedoucí podle P15, bez následného odvolání do konce tréninkových scénářů."
+    ],
+    "test_data": [
+      "UAT-B01-plan, D+2, 16:00–17:00; druhý kolidující UAT-B01-kolize, stejný den 16:30–17:30; přesun D+3."
+    ],
+    "steps": [
+      {
+        "action": "V novém plánovaném tréninku vyplňte název, datum a časy, zvolte „Sportovcům z vybraných skupin nebo soupisek“ a pouze UAT soupisku. Veřejné zobrazení nechte vypnuté, opakování Bez opakování. Uložte tlačítkem formuláře.",
+        "expected": "V Plánovači je jeden termín pro příslušnou soupisku; opište ID z odkazu na editaci."
+      },
+      {
+        "action": "Zkuste druhý plán stejného trenéra v překrývajícím se čase.",
+        "expected": "Kolize se odmítne; druhý plán není uložen."
+      },
+      {
+        "action": "U prvního plánu použijte ovladač s popisem „Přesunout na jiný den“, vyberte D+3 a stiskněte „Přesunout“.",
+        "expected": "Termín se přesune; ID zůstane dohledatelné. Pokud je přesun blokován závislostí, zachyťte důvod a nevytvářejte náhradní zápis naslepo."
+      },
+      {
+        "action": "U téhož plánu zadejte „UAT B01 zkouška zrušení termínu“ do Důvodu zrušení lekce a použijte „Zrušit tento trénink“, potvrďte dialog.",
+        "expected": "Plán je zrušen, nepovažuje se za uskutečněný trénink. Neměňte celou sérii."
+      }
+    ],
+    "evidence": [
+      "ID plánu, původní a nový den, text kolize, výsledek storna."
+    ],
+    "decisions": [
+      "D13"
+    ],
+    "sources": [
+      "planovany_trenink_form.php:310",
+      "planovany_trenink_form.php:330",
+      "planovac.php:646",
+      "planovac.php:664",
+      "planovac.php:707"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P10",
+    "title": "Papírová docházka: zápis není uzavření skutečnosti",
+    "priority": "P0",
+    "roles": [
+      "Trenér",
+      "Vedoucí sportu"
+    ],
+    "routes": [
+      "formular.php",
+      "training_closure_admin.php",
+      "sports_activity_admin.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-P01",
+      "UAT-P07"
+    ],
+    "prerequisites": [
+      "UAT trenér vidí Borise; použijte ukončený den D−1. Záznam musí být samostatný, ne již zrušený plán P09."
+    ],
+    "test_data": [
+      "Trénink UAT-B01-dochazka, D−1, 60 minut; skutečný čas 16:00–17:00, přítomen Boris a jeden skutečný UAT trenér."
+    ],
+    "steps": [
+      {
+        "action": "Ve formuláři tréninku vyplňte Datum D−1, Délku 60, Náplň UAT-B01-dochazka. Přes vyhledání účastníků vyberte Borise a v trenérech zvolte skutečného UAT trenéra. Použijte „Uložit trénink“.",
+        "expected": "Vznikne zapsaný trénink s ID. Samotný zápis ještě není uzavřená verze skutečnosti."
+      },
+      {
+        "action": "V Docházce a uzavření otevřete odpovídající „Docházka #ID“. Zkontrolujte stav Rozepsaná docházka.",
+        "expected": "Účast není vydávána za potvrzenou jen podle rozvrhu nebo času."
+      },
+      {
+        "action": "Vyplňte skutečný začátek/konec, skutečně přítomného Borise a trenéra. Podklad zvolte „Přepis papírové docházky“, důvod „UAT B01 přepis fiktivní listiny 01“; potvrďte a „Uzavřít docházku“.",
+        "expected": "Vznikne uzavřená verze 1, zachováno skutečné datum i okamžik zápisu."
+      },
+      {
+        "action": "Ve Sportovní činnosti vyhledejte Borise a zobrazte jen D−1.",
+        "expected": "Je započten právě tento uzavřený trénink a 60 doložených minut; případné jiné záznamy s jiným ID evidujte zvlášť."
+      }
+    ],
+    "evidence": [
+      "ID tréninku, verze uzavření, seznam přítomných, 60 minut."
+    ],
+    "decisions": [],
+    "sources": [
+      "formular.php:334",
+      "formular.php:463",
+      "formular.php:620",
+      "training_closure_admin.php:45",
+      "sports_activity_admin.php:28"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P11",
+    "title": "Oprava docházky zachová historii a změní podklad k posouzení",
+    "priority": "P0",
+    "roles": [
+      "Trenér",
+      "Vedoucí sportu"
+    ],
+    "routes": [
+      "training_closure_admin.php",
+      "sports_activity_admin.php",
+      "sports_activity_export.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-P10"
+    ],
+    "prerequisites": [
+      "Uzavřený trénink P10; dvě karty prohlížeče s jeho stejnou verzí."
+    ],
+    "test_data": [
+      "Oprava konce z 17:00 na 16:50; důvod UAT B01 oprava podle fiktivní listiny 02."
+    ],
+    "steps": [
+      {
+        "action": "Ve Sportovní činnosti Borise za D−1 zaškrtněte potvrzení a klikněte „Uložit neměnný podklad“. Stáhněte CSV přes nové číslo podkladu.",
+        "expected": "Podklad má ID a obsahuje původních 60 minut; uložte soubor jako před-opravou.csv."
+      },
+      {
+        "action": "Na první kartě Docházky a uzavření změňte konec na 16:50, ponechte správné účastníky, vyplňte důvod a potvrzení. Klikněte „Uložit opravenou verzi“.",
+        "expected": "Vznikne verze 2 s 50 minutami, historie zachová původní verzi."
+      },
+      {
+        "action": "Na druhé, dosud neobnovené kartě zkuste uložit jiný důvod nad starou verzí.",
+        "expected": "Zastaralý formulář je odmítnut; nemůže tiše přepsat novější skutečnost."
+      },
+      {
+        "action": "Obnovte Sportovní činnost a stáhněte znovu původní podklad přes stejné ID.",
+        "expected": "Živý přehled má 50 minut; původní podklad je označen ZMĚNA K POSOUZENÍ a jeho CSV zachovává 60 minut."
+      },
+      {
+        "action": "Otevřete historii uzavření a opište oba důvody/verze.",
+        "expected": "Oprava není odstranění historie ani automatické přepočítání schválené odměny."
+      }
+    ],
+    "evidence": [
+      "ID snímku, obě CSV, verze 1/2, 60→50 minut, chyba staré karty."
+    ],
+    "decisions": [],
+    "sources": [
+      "training_closure_admin.php:13",
+      "training_closure_admin.php:56",
+      "sports_activity_admin.php:35",
+      "sports_activity_admin.php:36"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P12",
+    "title": "Osobní omluva, nárok a kapacita náhrad",
+    "priority": "P0",
+    "roles": [
+      "Koordinátor programů a sportovišť",
+      "Trenér",
+      "Zkušební rodič"
+    ],
+    "routes": [
+      "club_makeup_policies_admin.php",
+      "training_rsvps_admin.php",
+      "training_closure_admin.php",
+      "booking/nahrady.php"
+    ],
+    "minutes": 30,
+    "depends_on": [
+      "UAT-P03",
+      "UAT-P09",
+      "UAT-P10"
+    ],
+    "prerequisites": [
+      "Samostatná syntetická placená účast a oprávněný veřejný rodič, zřízené kompletním finančním scénářem; samotná čekající objednávka P06 nestačí. Pravidlo náhrad musí být platné již ve zdrojové lekci; dnešní nastavení se nemusí zpětně přenést na minulý plán. Správce musí předem připravit návaznost přes UI včas nebo rozdělit přejímku do více dnů.",
+      "Zdrojová lekce proběhla D−1 a souvisí s programem; zkušební osoba na ní chyběla. Budoucí cílová lekce D+3 je ve stejném povoleném programu a věku. Pokud chybí návaznost, scénář blokujte; nepřidávejte účast SQL."
+    ],
+    "test_data": [
+      "Pravidlo jen pro UAT program: omluva 12 hodin před lekcí; skutečné přijetí D−2 12:00; náhrady kapacita 1."
+    ],
+    "steps": [
+      {
+        "action": "Koordinátor v Omluvy a náhradní lekce u UAT programu povolí náhradní lekce, nastaví 12 hodin a „Uložit pravidlo“; určí zkušební období jako Jednorázové / jiné.",
+        "expected": "Pravidlo patří jen zkušebnímu programu a je dohledatelné."
+      },
+      {
+        "action": "V Docházce a uzavření do Osobně přijaté omluvy vložte ID zdrojového plánu, nepřítomnou osobu, D−2 12:00, Telefonicky a důvod „UAT B01 fiktivní telefonická omluva“. Zapište omluvu ještě před uzavřením lekce.",
+        "expected": "Přijetí omluvy je evidované; hláška říká, že nárok vznikne až po uzavření skutečné lekce."
+      },
+      {
+        "action": "Uzavřete proběhlou zdrojovou lekci se skutečnými účastníky bez omluveného dítěte dle P10; jako rodič otevřete Náhrady.",
+        "expected": "Teprve nyní je zobrazen použitelný nárok, pokud jsou všechny podmínky splněny; omluva sama není docházka."
+      },
+      {
+        "action": "V odpovědích budoucí cílové lekce trenér zvolí správný kroužek, 1 místo a doložené ročníky; použije „Povolit / upravit náhradníky“. Rodič použije „Rezervovat“.",
+        "expected": "Vznikne jedna rezervace, kapacita klesne a nárok se nepoužije podruhé."
+      },
+      {
+        "action": "Před limitem zrušení klikněte jako rodič „Zrušit rezervaci“.",
+        "expected": "Nárok a místo se vrátí podle pravidla; historie rezervace zůstává. Pokud limit již uplynul, tlačítko chybí a obsluha nemá předstírat včasné storno."
+      }
+    ],
+    "evidence": [
+      "ID účasti, plánu, nároku a rezervace; čas přijetí omluvy; kapacita před/po."
+    ],
+    "decisions": [
+      "D03"
+    ],
+    "sources": [
+      "club_makeup_policies_admin.php:44",
+      "club_makeup_policies_admin.php:57",
+      "training_closure_admin.php:60",
+      "training_rsvps_admin.php:122",
+      "booking/nahrady.php:47"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Vyžaduje úplnou placenou účast, správně propojené lekce a rodinný účet. Tyto fixture nyní nejsou potvrzené; do jejich přípravy nelze scénář považovat za proveditelný."
+    ]
+  },
+  {
+    "id": "UAT-P13",
+    "title": "Nominace není start; skutečný výsledek a historický export",
+    "priority": "P1",
+    "roles": [
+      "Vedoucí sportu"
+    ],
+    "routes": [
+      "sports_activity_admin.php",
+      "sports_activity_export.php",
+      "club_calendar.php"
+    ],
+    "minutes": 25,
+    "depends_on": [
+      "UAT-P01",
+      "UAT-P07"
+    ],
+    "prerequisites": [
+      "Vedoucí sportu vytvoří vlastní syntetickou kalendářovou akci níže; nepoužívat žádný existující reálný závod."
+    ],
+    "test_data": [
+      "Boris, UAT-B01-zavod; původní výsledek neznámý, opravený 3 s jednotkou pořadí; podklad UAT-B01-vysledky-01."
+    ],
+    "steps": [
+      {
+        "action": "V Kalendáři klubových akcí klikněte Nová akce. Název UAT-B01-zavod, Druh Závod, Stav Proběhlo, Viditelnost Pouze trenéři, Začátek D−2 10:00, Konec D−2 12:00, Místo UAT fiktivní dráha, kapacita 10. V Soupisky a cena ponechte cenu 0 a bez cílových soupisek. Klikněte Uložit akci a opište event_id z URL. Neotevírejte přihlašování.",
+        "expected": "Vznikne vlastní interní akce typu závod s konkrétním ID; její dokončení samo nepřipíše Borisovi start."
+      },
+      {
+        "action": "Ve Sportovní činnosti vyhledejte Borise; v Účast na akci zadejte ID závodu, aktuální verze 0, stav Nominován, podklad a důvod „UAT B01 fiktivní nominace“. Potvrďte a uložte verzi účasti.",
+        "expected": "Nominace je vidět v historii, nezvýší počet doložených startů."
+      },
+      {
+        "action": "Zadejte stejné ID a aktuální verzi z tabulky, stav Skutečně odstartoval, datum D−2, Neznámý výsledek, hodnotu a jednotku prázdné; doplňte podklad/důvod a potvrďte.",
+        "expected": "Počet startů vzroste o 1; neznámý výsledek není nula."
+      },
+      {
+        "action": "Uložte neměnný podklad a stáhněte jeho CSV.",
+        "expected": "Export obsahuje konkrétní ID a verzi skutečného startu."
+      },
+      {
+        "action": "Novou verzí opravte výsledek na Dokončil, hodnotu 3, jednotku pořadí, důvod „UAT B01 oprava dle výsledkové listiny“.",
+        "expected": "Historie zachová nominaci i první start; původní export se nezmění a hlásí změnu k posouzení."
+      },
+      {
+        "action": "Zkuste znovu použít původní číslo verze.",
+        "expected": "Zápis se odmítne jako zastaralý; nevznikne druhý start téhož závodu."
+      }
+    ],
+    "evidence": [
+      "ID akce/účasti/podkladu, revize, počet startů a CSV."
+    ],
+    "decisions": [
+      "D07"
+    ],
+    "sources": [
+      "sports_activity_admin.php:30",
+      "sports_activity_admin.php:33",
+      "sports_activity_admin.php:36",
+      "includes/sports_activity.php:6",
+      "club_calendar.php:68",
+      "club_calendar.php:69",
+      "includes/club_calendar.php:14"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P14",
+    "title": "Prohlídky: čekání na ověření, datum platnosti a odvolání",
+    "priority": "P0",
+    "roles": [
+      "Registrář členů a KIS",
+      "Trenér"
+    ],
+    "routes": [
+      "medical_clearance_admin.php",
+      "medical_clearance_status.php",
+      "medical_clearance_file.php"
+    ],
+    "minutes": 25,
+    "depends_on": [
+      "UAT-P01",
+      "UAT-P07"
+    ],
+    "prerequisites": [
+      "Pouze syntetické podklady, žádné zdravotní závěry. Zkušební PDF s velkým textem SYNTHETICKÝ UAT B01, bez osobních zdravotních údajů; lze jej připravit tiskem tohoto textu do PDF. D−30 a D+30 jsou platnost první zkoušky."
+    ],
+    "test_data": [
+      "Účel UAT-B01-prohlidka; právní důvod „Syntetický test bez reálných osob“; uchování „Zkušební data, bez automatického výmazu“; pravidlo „UAT, kontroluje zkušební registrář“, upozornění 14 dní."
+    ],
+    "steps": [
+      {
+        "action": "Rozbalte Potvrdit pravidla nového účelu. Vyplňte uvedené syntetické parametry, potvrďte a Uložit pravidla; pak Začít sledovat podklad osoby → Boris, daný účel, důvod → Založit sledování.",
+        "expected": "Vznikne sledování se stavem Nedoloženo; nejde o schválení reálného právního důvodu."
+      },
+      {
+        "action": "V detailu doložte nový podklad: vystaveno D−30, platnost do D+30, testovací PDF a důvod. Použijte Uložit k ověření.",
+        "expected": "Podklad má stav Čeká na ověření, nikoli automaticky Platné."
+      },
+      {
+        "action": "Vyplňte důvod ověření a „Potvrdit ověření a nahradit předchozí podklad“. Ve stavové stránce změňte Den aktivity postupně na D−31, D a D+31.",
+        "expected": "Před vydáním není platný, v D je Platné, po konci Platnost skončila; aplikace si nevymyslí roční lhůtu."
+      },
+      {
+        "action": "Doložte druhý podklad D až D+60. Před ověřením zkontrolujte dnešní stav; pak jej ověřte.",
+        "expected": "Do ověření platí první ověřený dokument, poté je nahrazený a nový přebírá platnost."
+      },
+      {
+        "action": "U nového podkladu zapište důvod „UAT B01 omylem ověřený doklad“ a Odvolat. Dnešní stav znovu obnovte.",
+        "expected": "Odvolání neobnoví automaticky předchozí nahrazený dokument. Historie obou zůstane."
+      },
+      {
+        "action": "Zaznamenejte Osobní kontakt „UAT B01 předáno fiktivnímu rodiči osobně, čekáme nový doklad“.",
+        "expected": "Kontakt nevytvoří platnost ani tvrzení, že byl odeslán e-mail."
+      }
+    ],
+    "evidence": [
+      "ID pravidla/sledování/obou dokumentů, stavy ke třem datům, audit odvolání."
+    ],
+    "decisions": [
+      "D11"
+    ],
+    "sources": [
+      "medical_clearance_admin.php:35",
+      "medical_clearance_admin.php:38",
+      "medical_clearance_admin.php:41",
+      "medical_clearance_status.php:11"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  },
+  {
+    "id": "UAT-P15",
+    "title": "Svěřený rozsah a soukromé doklady po odvolání",
+    "priority": "P0",
+    "roles": [
+      "Vedoucí sportu",
+      "Trenér",
+      "Registrář členů a KIS"
+    ],
+    "routes": [
+      "coach_scope_admin.php",
+      "sports_activity_admin.php",
+      "medical_clearance_status.php",
+      "medical_clearance_file.php",
+      "paper_registration_file.php"
+    ],
+    "minutes": 20,
+    "depends_on": [
+      "UAT-P07",
+      "UAT-P14"
+    ],
+    "prerequisites": [
+      "Samostatný aktivní UAT trenér s rolí Trenér, bez superadmina/registráře/vedoucího a bez dalších širokých rozsahů. Druhý profil prohlížeče. Přístupové údaje poskytne správce mimo report."
+    ],
+    "test_data": [
+      "UAT trenér, pouze UAT soupiska s Borisem, důvod UAT B01 zkouška svěřeného rozsahu."
+    ],
+    "steps": [
+      {
+        "action": "Jako Vedoucí sportu ve Svěřencích trenérů přidělte UAT trenérovi UAT soupisku od nynějška, s důvodem a „Přidělit rozsah“.",
+        "expected": "Vznikne konkrétní přidělení s ID a platností, nikoli celoklubové oprávnění."
+      },
+      {
+        "action": "Jako UAT trenér vyhledejte Borise ve Sportovní činnosti a otevřete jeho stav zdravotních podkladů.",
+        "expected": "Sportovní přehled a stav jsou dostupné ve svěřeném rozsahu; stav neobsahuje sken ani umístění zdravotního originálu."
+      },
+      {
+        "action": "Přímou adresou medical_clearance_file.php?id=ID z P14 se jako trenér pokuste otevřít testovací PDF.",
+        "expected": "Přístup je odmítnut, soubor se nestáhne. Registrář stejný testovací soubor načte."
+      },
+      {
+        "action": "Vedoucí u konkrétního přidělení uvede důvod a „Ukončit přístup“. Trenér bez nového přihlášení obnoví již otevřený přehled Borise.",
+        "expected": "Aktuální kontrola odebere přístup; historicky vedený trénink jej neopravňuje trvale."
+      },
+      {
+        "action": "Zapište výsledek a případně znovu udělte rozsah výslovným novým přidělením, jen pokud zbývají jiné UAT scénáře.",
+        "expected": "Audit zachová odvolání i nové přidělení."
+      }
+    ],
+    "evidence": [
+      "ID přidělení, snímek odmítnutí souboru, stav před/po odvolání, ID pracovníků bez hesel."
+    ],
+    "decisions": [
+      "D13"
+    ],
+    "sources": [
+      "coach_scope_admin.php:27",
+      "coach_scope_admin.php:31",
+      "coach_scope_admin.php:37",
+      "medical_clearance_file.php:1",
+      "medical_clearance_status.php:7"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "BLOKOVÁNO",
+    "blockers": [
+      "Nutný samostatný účet trenéra s úzkými granty; existenci takového účtu musí potvrdit správce. Superadmin není průkazný negativní test."
+    ]
+  },
+  {
+    "id": "UAT-P16",
+    "title": "Navazující období vznikne k posouzení, ne jako úhrada",
+    "priority": "P1",
+    "roles": [
+      "Koordinátor programů a sportovišť"
+    ],
+    "routes": [
+      "club_program_offers_admin.php"
+    ],
+    "minutes": 15,
+    "depends_on": [
+      "UAT-P04",
+      "UAT-P06"
+    ],
+    "prerequisites": [
+      "Pouze UAT nabídka; zaznamenaný původní kód objednávky P06. Lokální test nesmí zapnout cron/worker."
+    ],
+    "test_data": [
+      "Opakování UAT-B01 na 1 rok dopředu, důvod UAT B01 zkouška návazné nabídky."
+    ],
+    "steps": [
+      {
+        "action": "V editaci původní UAT nabídky v Automaticky opakovat nastavte Zapnuto a 1 rok dopředu, důvod, potvrzení a Uložit pravidlo.",
+        "expected": "Pravidlo je u konkrétní původní nabídky; nic se nezaplatilo ani neodeslalo."
+      },
+      {
+        "action": "Klikněte „Obnovit nabídky na příští školní rok nyní“. Otevřete vzniklou nabídku a zapište ID, období, cenu a stav.",
+        "expected": "Nové období má vlastní ID a koncept k posouzení; pokud je místo konceptu rovnou aktivní, zaznamenejte NEPROŠLO a nerozšiřujte prodej."
+      },
+      {
+        "action": "Zopakujte obnovu a porovnejte seznam nabídek; znovu otevřete původní objednávku v evidenci osobního přijetí.",
+        "expected": "Stejné navazující období se neduplikuje; původní objednávka drží původní nabídku/cenu a stav úhrady."
+      },
+      {
+        "action": "U původní nabídky opakování vypněte s důvodem „UAT B01 test dokončen“ a uložte pravidlo. Navazující koncept nezveřejňujte.",
+        "expected": "Zůstane dohledatelný koncept a historie; nebyla předstírána nová účast nebo úhrada."
+      }
+    ],
+    "evidence": [
+      "Původní a nové ID nabídky, stav koncept, cena, kód původní objednávky."
+    ],
+    "decisions": [
+      "D03"
+    ],
+    "sources": [
+      "club_program_offers_admin.php:75",
+      "docs/MEMBERSHIP_SPORTS_R25_R30_IMPLEMENTATION.md:17",
+      "includes/club_program_recurrence.php:110"
+    ],
+    "status": "NEPROVEDENO",
+    "preparation_status": "PŘIPRAVENO",
+    "blockers": []
+  }
+]

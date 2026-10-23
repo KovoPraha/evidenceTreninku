@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "sheets": [
+    "Manifest",
+    "Doklady",
+    "Polozky",
+    "Penize",
+    "Parovani",
+    "Cleneni_penez",
+    "Predpisy",
+    "Saldo",
+    "Vydaje",
+    "Sklad"
+  ],
+  "stock_rows": 28,
+  "formula_cells": 0,
+  "numeric_stock_quantities": true,
+  "pdf_pages": 1,
+  "pdf_render_checked": true,
+  "diacritics_checked": true,
+  "physical_pdf_without_acquisition_prices": true
+}

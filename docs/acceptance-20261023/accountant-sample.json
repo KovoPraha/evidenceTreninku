@@ -1,0 +1,325 @@
+{
+  "prepared_on": "2026-10-23",
+  "synthetic_only": true,
+  "production_mutations": false,
+  "database_mutations": false,
+  "source_files_modified": false,
+  "sent_to_accountant": false,
+  "human_acceptance": "NEPŘEVZATO",
+  "accounting_model_as_user_reported": "jednoduché účetnictví, neplátce DPH",
+  "metadata": {
+    "id": 22,
+    "period_from": "2026-09-24",
+    "period_to": "2026-10-23",
+    "revision": 5,
+    "predecessor_id": 21,
+    "snapshot_at": "2026-10-23 05:59:28",
+    "status": "incomplete",
+    "snapshot_sha256": "6618948e206341aaea625ef33b098d2b011e5d5fbb5443c60742654718f06545",
+    "archive_sha256": "b7ca30348c812e584df076d5c8d2b6bd32f45fb430d3c2d7ae781f44c2428f66"
+  },
+  "spreadsheet_sha256": "6903d4ffc7d218f4f23aa7a4c0b271c7530bb0680403c3d27c01e18340ec7850",
+  "file_counts": {
+    "archive": 21,
+    "manifest_entries_verified": 20,
+    "xlsx": 1,
+    "pdf": 18,
+    "pdf_pages": 30,
+    "json_in_original_archive": 2
+  },
+  "sheets": [
+    {
+      "sheet": "Manifest",
+      "data_rows": 197,
+      "columns": 2,
+      "headers": [
+        "Údaj",
+        "Hodnota"
+      ]
+    },
+    {
+      "sheet": "Doklady",
+      "data_rows": 10,
+      "columns": 13,
+      "headers": [
+        "ID",
+        "Číslo (text)",
+        "Druh",
+        "Zdroj",
+        "ID zdroje",
+        "Původní doklad",
+        "Stav",
+        "Datum případu",
+        "Vydáno",
+        "Částka",
+        "Měna",
+        "PDF v archivu",
+        "SHA-256 PDF"
+      ]
+    },
+    {
+      "sheet": "Polozky",
+      "data_rows": 10,
+      "columns": 7,
+      "headers": [
+        "ID dokladu",
+        "Klíč položky",
+        "Popis",
+        "Množství",
+        "Částka",
+        "Členění",
+        "Činnost"
+      ]
+    },
+    {
+      "sheet": "Penize",
+      "data_rows": 78,
+      "columns": 12,
+      "headers": [
+        "ID pohybu",
+        "Účet",
+        "Druh",
+        "Skutečné datum",
+        "Zapsáno",
+        "Částka se znaménkem",
+        "Měna",
+        "Zdroj",
+        "Reference (text)",
+        "Původní pohyb",
+        "Převod",
+        "Obrat"
+      ]
+    },
+    {
+      "sheet": "Parovani",
+      "data_rows": 78,
+      "columns": 8,
+      "headers": [
+        "ID přídělu",
+        "ID pohybu",
+        "Případ",
+        "ID případu",
+        "Částka",
+        "Účinné datum",
+        "Zapsáno",
+        "Ruší příděl"
+      ]
+    },
+    {
+      "sheet": "Cleneni_penez",
+      "data_rows": 3,
+      "columns": 6,
+      "headers": [
+        "ID pohybu",
+        "Verze členění",
+        "Členění",
+        "Činnost",
+        "Částka se znaménkem",
+        "Význam"
+      ]
+    },
+    {
+      "sheet": "Predpisy",
+      "data_rows": 42,
+      "columns": 4,
+      "headers": [
+        "Zdroj",
+        "ID případu",
+        "Doklad",
+        "Význam"
+      ]
+    },
+    {
+      "sheet": "Saldo",
+      "data_rows": 160,
+      "columns": 7,
+      "headers": [
+        "Druh",
+        "ID",
+        "Význam",
+        "Počátek",
+        "Čistý obrat",
+        "Konec",
+        "Měna"
+      ]
+    },
+    {
+      "sheet": "Vydaje",
+      "data_rows": 64,
+      "columns": 15,
+      "headers": [
+        "Druh",
+        "ID verze",
+        "ID případu",
+        "Číslo / verze",
+        "Dodavatel / osoba",
+        "Věřitel / příjemce",
+        "Datum",
+        "Splatnost",
+        "Stav podkladu",
+        "Celkem / limit",
+        "Uznáno",
+        "Uhrazena část",
+        "Zůstatek",
+        "Měna",
+        "Doložení"
+      ]
+    },
+    {
+      "sheet": "Sklad",
+      "data_rows": 261,
+      "columns": 12,
+      "headers": [
+        "Řádek",
+        "ID",
+        "SKU / vazba (text)",
+        "Popis",
+        "Datum",
+        "Fyzické kusy",
+        "Rezervováno",
+        "Blokováno",
+        "Dostupné",
+        "Ocenění Kč",
+        "Kusy bez ceny",
+        "Podklad / význam"
+      ]
+    }
+  ],
+  "period_totals_minor": {
+    "positive": 1340000,
+    "negative": -7850000,
+    "net": -6510000,
+    "rows": 61
+  },
+  "outside_period_totals_minor": {
+    "net": -37997,
+    "rows": 17
+  },
+  "document_totals_minor": {
+    "invoice": 75000,
+    "contribution_confirmation": 40000,
+    "correction": -47500,
+    "net": 67500
+  },
+  "exceptions": {
+    "unclassified_movements": 75,
+    "unreconciled_accounts": 27,
+    "stock": 7,
+    "historical_receivables": 1,
+    "acceptance_missing": 1,
+    "total": 111,
+    "pending_sources_separately": 14,
+    "pending_sources_nominal_minor": 222500
+  },
+  "month_example": {
+    "account_id": 27,
+    "account_kind": "bank",
+    "opening_minor": 1000000,
+    "movement_ids": [
+      75,
+      76,
+      77,
+      78
+    ],
+    "amounts_minor": [
+      -500000,
+      80000,
+      -110000,
+      10000
+    ],
+    "closing_minor": 480000,
+    "advance_id": 13,
+    "advance_consumed_minor": 420000,
+    "advance_returned_minor": 80000,
+    "expense_claim_ids": [
+      29,
+      30
+    ],
+    "reward_id": 13,
+    "reward_minor": 50000,
+    "order_id": 29,
+    "variant_id": 49,
+    "stock_closing_quantity": 1,
+    "stock_closing_value_minor": 6000,
+    "missing_invoice": true,
+    "missing_external_receipts": true,
+    "unclassified": true,
+    "unreconciled": true
+  },
+  "document_example": {
+    "order_id": 23,
+    "invoice_id": 9,
+    "correction_id": 10,
+    "net_minor": 12500,
+    "pending_payment_source_id": 24,
+    "separate_from_month_example": true
+  },
+  "technical_validation": {
+    "result": "PASS",
+    "checks": [
+      "10 original XLSX sheets",
+      "No formulas or error cells in static original XLSX",
+      "10 accounting documents are issued",
+      "All document issuers explicitly synthetic",
+      "All supplied document issuers are non-VAT payers",
+      "Saldo D28:F28 reconciles month account 27",
+      "Penize rows 76-79 are month movement IDs 75-78",
+      "Month movement amounts reconcile",
+      "Shared 1100 CZK movement allocates only 600 + 500",
+      "Advance 13 fully settled",
+      "Reward 13 fully settled",
+      "Missing invoice for month order 29 explicitly disclosed",
+      "Separate invoice 9 + correction 10 = 125 CZK",
+      "111 exceptions and 14 pending sources preserved",
+      "18 original PDF files / 30 rendered pages",
+      "61 period movements total -65100 CZK",
+      "17 reference movements total -379.97 CZK excluded from turnover"
+    ],
+    "pdf_visual_review": "All 30 rendered pages reviewed; no obvious clipping/overlap; five explicit LOCALHOST TEST attachments",
+    "xlsx_visual_review_in_accountant_program": "NOT PERFORMED; UC01 and UC16 pending"
+  },
+  "human_checklist_ids": [
+    "UC01",
+    "UC02",
+    "UC03",
+    "UC04",
+    "UC05",
+    "UC06",
+    "UC07",
+    "UC08",
+    "UC09",
+    "UC10",
+    "UC11",
+    "UC12",
+    "UC13",
+    "UC14",
+    "UC15",
+    "UC16",
+    "UC17",
+    "UC18"
+  ],
+  "deferred_decisions": [
+    "D01",
+    "D02",
+    "D03",
+    "D04",
+    "D05",
+    "D06",
+    "D09",
+    "D11",
+    "D13",
+    "D15",
+    "D16"
+  ],
+  "signatures": {
+    "accountant": null,
+    "treasurer": null,
+    "date": null
+  },
+  "limitations": [
+    "Global synthetic export includes multiple independent tests, not a clean club month.",
+    "No actual accountant program compatibility or human acceptance established.",
+    "Original PDF decisions are placeholders, not signed approvals.",
+    "No financial or tax classification was chosen on behalf of the accountant."
+  ]
+}

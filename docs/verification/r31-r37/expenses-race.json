@@ -1,0 +1,29 @@
+{
+    "database": "evidence_r31_expenses_067e0a3f",
+    "checks": 21,
+    "passed": [
+        "Migration verified 20261022220000_accounting_ledger",
+        "Migration verified 20261023050000_club_expenses",
+        "Real worker connection published",
+        "Competing financial write observed in InnoDB LOCK WAIT",
+        "No competing write before lock release",
+        "Approval worker exited cleanly",
+        "Concurrent second approval rejected after lock",
+        "Exactly one immutable approval event",
+        "Real worker connection published",
+        "Competing financial write observed in InnoDB LOCK WAIT",
+        "No competing write before lock release",
+        "Overpayment worker exited cleanly",
+        "Concurrent overpayment rejected by fresh liability balance",
+        "Liability remains 400 CZK",
+        "Real worker connection published",
+        "Competing financial write observed in InnoDB LOCK WAIT",
+        "No competing write before lock release",
+        "Retry worker exited cleanly",
+        "Concurrent same key returns original allocation",
+        "Exactly one payment allocation",
+        "Races create no duplicate money"
+    ],
+    "observed_mariadb_lock_wait": true,
+    "production_mutations": false
+}

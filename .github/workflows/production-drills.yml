@@ -12,6 +12,7 @@ on:
           - obnovit-tri-zalohy-izolovane
           - overit-databazove-invarianty
           - overit-uat-pripravenost
+          - overit-dopad-kluboveho-vydani
           - pripravit-uat-ucty-a-data
           - obnovit-uat-test-hesla
           - deaktivovat-testovaci-ucty
@@ -301,6 +302,38 @@ jobs:
           production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-test-admin.php'" | tee /tmp/kis-test-admin-result.json
           jq -e '.ok == true and .email == "tester.spravce@velocota.com" and .role == "admin" and .active == true and .password_verified == true and .positions == 8 and .superadmin == true' /tmp/kis-test-admin-result.json > /dev/null
           echo 'KIS testovaci superadministrator byl vytvoren a overen.'
+
+      - name: Precist dopad kluboveho vydani bez zmeny dat
+        if: inputs.operace == 'overit-dopad-kluboveho-vydani'
+        run: |
+          set -euo pipefail
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]] && [[ "$REMOTE_DIR" != /* ]]
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/club-release-impact.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/club-release-impact.php"
+          cat > /tmp/run-club-release-impact.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('CLUB_RELEASE_IMPACT_CONFIRM=OVERIT-DOPAD-VYDANI');
+          require __DIR__ . '/club-release-impact.php';
+          exit(clubReleaseImpactMain());
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-club-release-impact.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-club-release-impact.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-club-release-impact.php'" | tee /tmp/club-release-impact.json
+          jq -e '.ok == true and .read_only_session == true' /tmp/club-release-impact.json >/dev/null
+
+      - name: Uklid docasneho cteciho prehledu dopadu
+        if: always() && inputs.operace == 'overit-dopad-kluboveho-vydani'
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-club-release-impact.php /tmp/club-release-impact.json
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/club-release-impact.php' '$DEPLOY_BASE/run-club-release-impact.php'"
+          fi
 
       - name: Uklid docasnych dat drillu
         if: always()

@@ -183,6 +183,7 @@ function shopPaymentNotificationEnqueue(PDO $pdo, int $orderId): int
     );
     $statement->execute([$orderId]);
     $order = $statement->fetch(PDO::FETCH_ASSOC);
+    if($order && shopPaymentNotificationIsOfflineSale($pdo,$orderId,(string)$order['customer_email_snapshot']))return 0;
     if (!$order || !filter_var((string)$order['customer_email_snapshot'], FILTER_VALIDATE_EMAIL)) {
         throw new ShopPaymentNotificationException('Zaplacenou objednávku nelze zařadit k oznámení.');
     }
@@ -225,6 +226,7 @@ function shopOrderReadyNotificationEnqueue(PDO $pdo, int $orderId): int
     $statement = $pdo->prepare("SELECT id,public_code,customer_email_snapshot,customer_name_snapshot FROM shop_orders WHERE id=? AND status='ready'");
     $statement->execute([$orderId]);
     $order = $statement->fetch(PDO::FETCH_ASSOC);
+    if($order && shopPaymentNotificationIsOfflineSale($pdo,$orderId,(string)$order['customer_email_snapshot']))return 0;
     if (!$order || !filter_var((string)$order['customer_email_snapshot'], FILTER_VALIDATE_EMAIL)) {
         throw new ShopPaymentNotificationException('Připravenou objednávku nelze zařadit k oznámení.');
     }
@@ -278,4 +280,14 @@ function shopPacketaDispatchedNotificationEnqueue(PDO $pdo,int $orderId):int
     $subject=$message['subject'];$body=$message['body'];
     try{$insert=$pdo->prepare("INSERT INTO club_event_notifications(registration_id,registration_event_id,order_id,notification_type,recipient_email,recipient_name,subject_plain,body_plain) VALUES (NULL,NULL,?,'shop_packeta_dispatched',?,?,?,?)");$insert->execute([$orderId,$order['customer_email_snapshot'],$order['customer_name_snapshot'],$subject,$body]);$id=(int)$pdo->lastInsertId();shopSystemEmailRecord($pdo,$id,$message);return $id;}
     catch(PDOException $error){if((string)$error->getCode()!=='23000')throw$error;$existing=$pdo->prepare("SELECT id FROM club_event_notifications WHERE order_id=? AND notification_type='shop_packeta_dispatched'");$existing->execute([$orderId]);$id=(int)$existing->fetchColumn();if($id<1)throw$error;return$id;}
+}
+
+/** Only recorded staff personal sales may deliberately use paper instead of email. */
+function shopPaymentNotificationIsOfflineSale(PDO $pdo,int $orderId,string $email):bool
+{
+    if($email===''&&shopPaymentNotificationTableExists($pdo,'club_program_admissions')){
+        $s=$pdo->prepare("SELECT a.id FROM club_program_admissions a JOIN shop_orders o ON o.id=a.order_id WHERE a.order_id=? AND a.payer_account_id IS NULL AND o.account_id IS NULL AND a.payer_name_snapshot IS NOT NULL AND o.fulfillment_method='personal_pickup'");$s->execute([$orderId]);if($s->fetchColumn())return true;
+    }
+    if($email!==''||!shopPaymentNotificationTableExists($pdo,'shop_assisted_sales'))return false;
+    $s=$pdo->prepare("SELECT a.id FROM shop_assisted_sales a JOIN shop_orders o ON o.id=a.order_id WHERE a.order_id=? AND o.fulfillment_method='personal_pickup'");$s->execute([$orderId]);return(bool)$s->fetchColumn();
 }

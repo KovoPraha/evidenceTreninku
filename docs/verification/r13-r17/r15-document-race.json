@@ -1,0 +1,23 @@
+{
+    "schema": "evidence_r15_79e86724",
+    "checks": 15,
+    "passed": [
+        "issue real InnoDB lock wait observed",
+        "issue worker exited successfully",
+        "issue worker exited successfully",
+        "Both requests return an issued document",
+        "Same number and identical stored PDF on race",
+        "Race consumed exactly one number",
+        "Exactly one successful issuance audit",
+        "correction real InnoDB lock wait observed",
+        "correction worker exited successfully",
+        "correction worker exited successfully",
+        "Concurrent corrections cannot exceed original amount",
+        "Only the accepted correction reserves its amount",
+        "Real MariaDB render\/storage failure is recoverable",
+        "MariaDB recovery preserves reserved number",
+        "Recovery did not consume another number"
+    ],
+    "pdf": "C:\\Users\\Marek\\AppData\\Local\/EvidencePavelB1\/finance-b1-20261022\/r15-sample.pdf",
+    "multipage_preview": "C:\\Users\\Marek\\AppData\\Local\/EvidencePavelB1\/finance-b1-20261022\/r15-multipage-preview.pdf"
+}

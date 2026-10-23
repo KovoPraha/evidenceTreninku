@@ -18,7 +18,7 @@ function personMatchV1(PDO $pdo, array $input): array
 {
     $firstName = personMatchV1NormalizeName((string)($input['jmeno'] ?? ''));
     $lastName = personMatchV1NormalizeName((string)($input['prijmeni'] ?? ''));
-    $birthDate = personMatchV1Date($input['narozeni'] ?? null);
+    $birthDate = personMatchV1BirthDate($input['narozeni'] ?? null);
     if ($firstName === '' || $lastName === '') {
         return personMatchV1Result([]);
     }
@@ -30,7 +30,7 @@ function personMatchV1(PDO $pdo, array $input): array
     foreach ($rows as $row) {
         $rowFirstName = personMatchV1NormalizeName((string)($row['jmeno'] ?? ''));
         $rowLastName = personMatchV1NormalizeName((string)($row['prijmeni'] ?? ''));
-        $rowBirthDate = personMatchV1Date($row['narozeni'] ?? null);
+        $rowBirthDate = personMatchV1BirthDate($row['narozeni'] ?? null);
         $sameFirstName = hash_equals($rowFirstName, $firstName);
         $sameLastName = hash_equals($rowLastName, $lastName);
 
@@ -43,7 +43,7 @@ function personMatchV1(PDO $pdo, array $input): array
         if ($sameLastName && !$sameFirstName && $birthDate !== null && $rowBirthDate === $birthDate) {
             $rules[] = 'P1';
         }
-        if ($sameFirstName && $sameLastName && $birthDate !== null && $rowBirthDate === null) {
+        if ($sameFirstName && $sameLastName && ($birthDate === null || $rowBirthDate === null)) {
             $rules[] = 'P2';
         }
         if ($sameFirstName && $sameLastName && $birthDate !== null && $rowBirthDate !== null) {
@@ -99,6 +99,13 @@ function personMatchV1Date(mixed $value): ?string
     return $date && $date->format('Y-m-d') === $value ? $value : null;
 }
 
+/** The historical placeholder is missing evidence, never an exact identity key. */
+function personMatchV1BirthDate(mixed $value): ?string
+{
+    $date = personMatchV1Date($value);
+    return $date === '1900-01-01' ? null : $date;
+}
+
 /** @return array<string,mixed> */
 function personMatchV1Candidate(array $row, string $level, array $rules): array
 {
@@ -106,7 +113,7 @@ function personMatchV1Candidate(array $row, string $level, array $rules): array
         'id' => (int)$row['id'],
         'jmeno' => (string)($row['jmeno'] ?? ''),
         'prijmeni' => (string)($row['prijmeni'] ?? ''),
-        'narozeni' => personMatchV1Date($row['narozeni'] ?? null),
+        'narozeni' => personMatchV1BirthDate($row['narozeni'] ?? null),
         'kis_external_id' => trim((string)($row['kis_external_id'] ?? '')) ?: null,
         'level' => $level,
         'rules' => $rules,

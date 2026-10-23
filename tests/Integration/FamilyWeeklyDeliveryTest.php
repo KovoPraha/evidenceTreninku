@@ -95,6 +95,20 @@ final class FamilyWeeklyDeliveryTest extends TestCase
     }
 
     /** @return callable(PDO,int,string):array<string,mixed> */
+    public function testRevokedFamilyOrChangedAddressBlocksFrozenSummary(): void
+    {
+        foreach (["UPDATE account_person_roles SET status='revoked'", "UPDATE verejni_uzivatele SET email='other@example.test' WHERE id=1"] as $change) {
+            $pdo=$this->database();
+            $pdo->exec("INSERT INTO account_person_roles VALUES(1,12,'approved','guardian','2020-01-01',NULL)");
+            \familyWeeklyDeliverySavePreference($pdo,1,true);
+            \familyWeeklyDeliveryGenerate($pdo,$this->today(),true,$this->previewFactory());
+            $pdo->exec($change);$calls=0;
+            self::assertFalse(\familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls){$calls++;return true;}));
+            self::assertSame(0,$calls);
+            self::assertSame('failed',$pdo->query('SELECT status FROM family_weekly_summaries')->fetchColumn());
+        }
+    }
+
     private function previewFactory(): callable
     {
         return static fn (PDO $pdo, int $accountId, string $from): array => [
@@ -115,6 +129,8 @@ final class FamilyWeeklyDeliveryTest extends TestCase
     {
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
         $pdo->exec('PRAGMA foreign_keys=ON');
+        $pdo->exec('CREATE TABLE account_person_roles(account_id INTEGER,sportovec_id INTEGER,status TEXT,relation_role TEXT,valid_from TEXT,valid_to TEXT)');
+        $migration=require dirname(__DIR__,2).'/migrations/20261022212000_operational_delivery.php';$migration['up']($pdo);
         $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,email TEXT,jmeno TEXT,prijmeni TEXT,aktivni INTEGER,email_overeno INTEGER)');
         $migration = require dirname(__DIR__, 2) . '/migrations/20260805040000_family_weekly_summaries.php';
         $migration['up']($pdo);

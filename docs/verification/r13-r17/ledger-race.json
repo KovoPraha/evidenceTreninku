@@ -1,0 +1,8 @@
+{
+    "database": "evidence_r13_race_4c54891b",
+    "checks": 9,
+    "source_alias_race": "PASS",
+    "overallocation_race": "PASS",
+    "observed_lock_waits": 4,
+    "money_movements": 1
+}

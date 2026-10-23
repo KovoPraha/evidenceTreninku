@@ -1,0 +1,25 @@
+{
+    "checks": 18,
+    "passed": [
+        "Finance can open documents",
+        "Coach cannot open document registry",
+        "Bad CSRF cannot configure issuer",
+        "Issuer approved through HTTP",
+        "Accounting rule explicitly approved through HTTP",
+        "Draft created through HTTP without a number",
+        "Draft does not consume number",
+        "Draft cannot be downloaded as issued PDF",
+        "Guarded preview contains Czech beneficiary and draft mark",
+        "Missing confirmation cannot issue",
+        "Document issued through actual HTTP",
+        "Private PDF download has expected immutable hash",
+        "Coach cannot download PDF by guessing ID",
+        "Repeated HTTP issuance preserves number",
+        "Partial correction draft through HTTP",
+        "Correction references original and negative exact amount",
+        "Correction PDF issued through HTTP",
+        "Revoked finance cannot download via stale session"
+    ],
+    "document_id": 3,
+    "correction_id": 4
+}

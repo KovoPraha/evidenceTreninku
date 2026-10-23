@@ -1,0 +1,33 @@
+{
+    "run": "LOCALHOST NEPLATIT R26 107c9385b6",
+    "checks": 25,
+    "passed": [
+        "Actual closure form is readable with Czech UI",
+        "Finance workspace cannot rewrite sporting attendance",
+        "CSRF rejects mutation",
+        "Unassigned coach cannot close foreign attendance",
+        "Direct training URL respects foreign measurement athlete scope",
+        "Closure write cannot bypass measurement athlete scope",
+        "Explicit actual attendance confirmation required",
+        "Future end cannot close attendance",
+        "Paper actual attendance closes after ended lesson",
+        "Actual time and paper provenance stored independently of transcription timestamp",
+        "Canonical history counts actual training once",
+        "Repeated stale version cannot duplicate closure",
+        "Reasoned correction creates new version",
+        "Original approved source duration is immutable",
+        "Approved amount and paid flag remain unchanged",
+        "Correction registers review of existing closed reward period",
+        "Legacy delete cannot erase closed training",
+        "Reasoned invalidation keeps history",
+        "Voided training disappears from current actual totals only",
+        "AJAX move checks trainer overlap",
+        "Existing RSVP prohibits silent date rewrite",
+        "Reschedule retains canceled source and explicit replacement",
+        "Replacement is linked in immutable schedule history",
+        "Offline family generates visible manual-contact task without fake delivery",
+        "Revoked active role blocks stale session on next request"
+    ],
+    "training_id": 24,
+    "production_mutations": false
+}

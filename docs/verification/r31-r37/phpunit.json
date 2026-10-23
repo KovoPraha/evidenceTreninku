@@ -1,0 +1,9 @@
+{
+  "tests": 1479,
+  "errors": 0,
+  "failures": 0,
+  "junit_sha256": "8c24cdd8319a0fff43adb72de3c956358703ee25db930c0ba6c1414ad29dff8b",
+  "skipped": 0,
+  "status": "PASS",
+  "assertions": 30751
+}

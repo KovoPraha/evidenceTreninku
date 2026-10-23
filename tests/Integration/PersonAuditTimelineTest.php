@@ -52,6 +52,23 @@ final class PersonAuditTimelineTest extends TestCase
         self::assertSame([1], array_column(personAuditSearch($pdo, '1'), 'id'));
     }
 
+    public function testIdentityRemapRetainsEvidenceOnPreviousPerson(): void
+    {
+        $pdo=$this->database(false);
+        $pdo->exec("INSERT INTO sportovci VALUES(1,'Eva','Původní',NULL,'','','aktivni'),(2,'Eva','Opravená',NULL,'','','aktivni')");
+        $pdo->exec("INSERT INTO treneri VALUES(7,'Registrář','registrar@example.invalid')");
+        $pdo->exec('CREATE TABLE person_identity_reviews(id INTEGER PRIMARY KEY,sportovec_id INTEGER)');
+        $pdo->exec('CREATE TABLE person_identity_review_events(id INTEGER PRIMARY KEY,review_id INTEGER,actor_trainer_id INTEGER,before_json TEXT,after_json TEXT,created_at TEXT)');
+        $pdo->exec('INSERT INTO person_identity_reviews VALUES(1,2)');
+        $st=$pdo->prepare('INSERT INTO person_identity_review_events VALUES(?,?,?,?,?,?)');
+        $st->execute([1,1,7,'{}','{"sportovec_id":1,"reason":"Původní doložení"}','2026-10-22 10:00:00']);
+        $st->execute([2,1,7,'{"sportovec_id":1}','{"sportovec_id":2,"reason":"Oprava po ověření originálu"}','2026-10-22 11:00:00']);
+        $old=personAuditTimeline($pdo,1);$new=personAuditTimeline($pdo,2);
+        self::assertSame([2,1],array_column($old['events'],'source_id'));
+        self::assertSame([2,1],array_column($new['events'],'source_id'));
+        self::assertSame('Oprava po ověření originálu',$old['events'][0]['reason']);
+    }
+
     private function database(bool $withIdentity = true): PDO
     {
         $pdo = new PDO('sqlite::memory:');

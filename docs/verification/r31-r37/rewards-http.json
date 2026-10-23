@@ -1,0 +1,94 @@
+{
+    "run": "LOCALHOST NEPLATIT R33-R34 05417279ecb3",
+    "checks": 20,
+    "results": [
+        {
+            "scenario": "Sports lead gets remuneration workspace",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach gets own remuneration workspace",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance gets payout workspace",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF cannot create financial rules",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot approve own rate",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit approved rule saved through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unconfirmed report rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot submit another worker claim",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach submits actual work",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual 90 minutes at explicit 100 CZK gives exact 150 CZK",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated report creates one immutable version",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy direct delete cannot change submitted report",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance cannot substitute sporting approval",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Separate sports lead approves immutable report",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Sporting approval does not grant payout permission",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual partial payment linked to canonical movement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated payment does not duplicate allocation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Overpayment refuses whole transaction",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach sees approved amount and remaining actual balance",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked stale finance role cannot replay payout",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false,
+    "fixture": {
+        "claim_id": 5,
+        "movement_id": 25,
+        "account_id": 12,
+        "coach": 296,
+        "lead": 295
+    }
+}

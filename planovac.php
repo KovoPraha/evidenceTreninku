@@ -10,6 +10,7 @@ require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
 require_once __DIR__ . '/includes/training_rsvp.php';
 require_once __DIR__ . '/includes/club_makeup.php';
+require_once __DIR__ . '/includes/training_closure.php';
 
 function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -30,15 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'zrusi
                 $series->execute([(int)$selected['serie_id']]);$targetIds=array_map('intval',$series->fetchAll(PDO::FETCH_COLUMN));
             }
             foreach ($targetIds as $targetId) {
-                $update=$pdo->prepare("UPDATE planovane_treninky SET stav='zruseny' WHERE id=? AND stav='planovany'");$update->execute([$targetId]);
-                if ($update->rowCount()>0) clubMakeupCancelPlannedTarget($pdo,$targetId,$trenerId);
+                if(trainingClosureReady($pdo)) trainingScheduleCancel($pdo,$targetId,$trenerId,trim((string)($_POST['cancel_reason']??'')),(int)($_POST['replacement_plan_id']??0)?:null);
+                else {$update=$pdo->prepare("UPDATE planovane_treninky SET stav='zruseny' WHERE id=? AND stav='planovany'");$update->execute([$targetId]);if($update->rowCount()>0)clubMakeupCancelPlannedTarget($pdo,$targetId,$trenerId);}
             }
             $pdo->commit();
             $_SESSION['flash_success']=$zrSerie?'Celá série plánovaných tréninků zrušena.':'Plánovaný trénink zrušen.';
         } catch(Throwable $exception) {
             if($pdo->inTransaction())$pdo->rollBack();
             error_log('planovac makeup cancellation: '.$exception->getMessage());
-            $_SESSION['flash_error']='Trénink se nepodařilo bezpečně zrušit.';
+            $_SESSION['flash_error']=$exception instanceof TrainingClosureException?$exception->getMessage():'Trénink se nepodařilo bezpečně zrušit.';
         }
     }
     header('Location: ' . $_SERVER['REQUEST_URI']); exit;
@@ -102,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
 
         foreach ($zdrojePlany as $zp) {
             $noveDatum = (new DateTime($zp['datum']))->modify('+7 days')->format('Y-m-d');
+            trainingScheduleAssertAvailable($pdo,$trenerId,(int)$zp['trener_id'],$noveDatum,$zp['cas_od'],$zp['cas_do'],(int)$zp['sportoviste_id']?:null,trainingRosterBridgePlanTeamIds($pdo,(int)$zp['id']));
             $stInsert->execute([
                 $zp['trener_id'], $zp['nazev'], $zp['kategorie'],
                 $zp['skupina_id'], $zp['podskupina_id'],
@@ -335,6 +337,7 @@ try {
     <!-- Hlavička -->
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
         <h1 class="h5 mb-0 me-2"><i class="bi bi-calendar3-week me-2 text-primary"></i>Plánovač tréninků</h1>
+        <a class="btn btn-outline-primary btn-sm" href="training_closure_admin.php">Docházka a uzavření</a>
         <?php
         // Helper: sestaví URL s aktuálními filtry
         $qFilters = ($filterSkupina ? '&skupina_id='.$filterSkupina : '')
@@ -662,6 +665,8 @@ try {
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="action" value="zrusit">
                                         <input type="hidden" name="plan_id" value="<?= (int)$p['id'] ?>">
+                                        <input name="cancel_reason" required minlength="10" maxlength="1000" placeholder="Důvod zrušení lekce" aria-label="Důvod zrušení lekce" class="form-control form-control-sm">
+                                        <input type="number" min="1" name="replacement_plan_id" placeholder="Číslo nového termínu při přesunu" aria-label="Číslo náhradní lekce" class="form-control form-control-sm">
                                         <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
                                                 style="font-size:.75rem" title="Zrušit tento trénink">
                                             <i class="bi bi-x"></i>
@@ -674,6 +679,7 @@ try {
                                         <input type="hidden" name="action" value="zrusit">
                                         <input type="hidden" name="plan_id" value="<?= (int)$p['id'] ?>">
                                         <input type="hidden" name="zrusit_serii" value="1">
+                                        <input name="cancel_reason" required minlength="10" maxlength="1000" placeholder="Důvod zrušení série" aria-label="Důvod zrušení série" class="form-control form-control-sm">
                                         <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
                                                 style="font-size:.75rem" title="Zrušit celou sérii">
                                             <i class="bi bi-arrow-repeat"></i><i class="bi bi-x-sm"></i>

@@ -13,6 +13,7 @@ if (!isset($_SESSION['verejny_uzivatel_id'])) {
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/one_time_token.php';
+require_once __DIR__ . '/../includes/booking_notification.php';
 require_once __DIR__ . '/../includes/app_url.php';
 require_once __DIR__ . '/../includes/individual_lesson_context.php';
 require_once __DIR__ . '/../includes/club_finance.php';
@@ -157,6 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: moje_rezervace.php'); exit;
             }
 
+            $pdo->beginTransaction();
             $hasAthleteColumn = clubFinanceColumnExists($pdo, 'verejne_rezervace', 'sportovec_id');
             $reservationColumns = $hasAthleteColumn
                 ? '(lekce_id, uzivatel_id, sportovec_id, stav, poznamka_klienta, potvrzovaci_token, potvrzovaci_token_expires_at, slot_cas_od, slot_cas_do)'
@@ -174,11 +176,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
             if ($hasAthleteColumn) array_splice($reservationValues, 2, 0, [$financePersonId]);
             $pdo->prepare('INSERT INTO verejne_rezervace '.$reservationColumns.' VALUES '.$reservationPlaceholders)->execute($reservationValues);
+            $reservationId = (int)$pdo->lastInsertId();
+            if (!$waitlist) bookingNotificationEnqueue($pdo, $reservationId, 'created', 'trainer');
+            $pdo->commit();
+          } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            throw $exception;
           } finally {
             $pdo->prepare("SELECT RELEASE_LOCK(?)")->execute([$lockName]);
           }
 
-        // Načtení jména uživatele pro email
+        // Stávající nepovinný WebPush; e-mailové doručení vlastní trvalá fronta.
         $stUz = $pdo->prepare("SELECT jmeno, prijmeni FROM verejni_uzivatele WHERE id=?");
         $stUz->execute([$uzivatelId]);
         $uzivatel = $stUz->fetch(PDO::FETCH_ASSOC);
@@ -199,39 +207,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (Throwable $ex) { /* push je nepovinný */ }
         }
 
-        if ($waitlist) {
-            // Čekací listina — jen potvrzení zákazníkovi
-            $_SESSION['flash_booking_success'] = 'Byli jste zařazeni na čekací listinu. Jakmile se slot uvolní, dostanete email.';
-        } elseif ($lekce['typ'] === 'zelena') {
-            // Trenér dostane info
-            $subject = "Nová rezervace: {$lekce['nazev']}";
-            $body = "Zákazník {$uzJmeno} si zarezervoval lekci:\n"
-                . "Lekce: {$lekce['nazev']}\n"
-                . "Sportoviště: {$lekce['sport_nazev']}\n"
-                . "Datum: {$lekce['datum']}, {$slotInfo}\n\n"
-                . "Přehled lekcí: " . appUrl('individualni_lekce_sprava.php');
-            @mail($lekce['trener_email'], $subject, $body,
-                "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
-
-            $_SESSION['flash_booking_success'] = 'Rezervace potvrzena! Uvidíte ji v přehledu svých rezervací.';
-        } else {
-            // Trenér musí potvrdit
-            $host = appUrl('booking/potvrdit.php');
-            $rawApprovalToken = (string)($approval['token'] ?? '');
-            $linkPotvrdit = $host . '#token=' . rawurlencode($rawApprovalToken) . '&akce=potvrdit';
-            $linkZamit    = $host . '#token=' . rawurlencode($rawApprovalToken) . '&akce=zamit';
-
-            $subject = "Žádost o rezervaci (Žlutá): {$lekce['nazev']}";
-            $body = "Zákazník {$uzJmeno} žádá o rezervaci:\n"
-                . "Lekce: {$lekce['nazev']}\n"
-                . "Datum: {$lekce['datum']}, {$slotInfo}\n\n"
-                . "✓ POTVRDIT: {$linkPotvrdit}\n"
-                . "✗ ZAMÍTNOUT: {$linkZamit}";
-            @mail($lekce['trener_email'], $subject, $body,
-                "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
-
-            $_SESSION['flash_booking_success'] = 'Žádost o rezervaci odeslána — trenér vás brzy kontaktuje.';
-        }
+        $_SESSION['flash_booking_success'] = $waitlist
+            ? 'Byli jste zařazeni na čekací listinu. Stav najdete v přehledu rezervací.'
+            : ($lekce['typ'] === 'zelena' ? 'Rezervace potvrzena. Oznámení čeká na zpracování.'
+                : 'Žádost uložena. Trenér ji vyřídí v přehledu rezervací.');
 
         header('Location: moje_rezervace.php');
         exit;

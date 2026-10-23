@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/account_person_role.php';
 require_once __DIR__ . '/public_profile_token.php';
+require_once __DIR__ . '/person_match.php';
 
 final class PublicProfileException extends RuntimeException
 {
@@ -105,6 +106,12 @@ function publicProfileSave(
                 ]);
                 $action = 'adopt_approved_self';
             } else {
+                $match = personMatchV1($pdo, ['jmeno'=>$firstName,'prijmeni'=>$lastName,'narozeni'=>$birthDate]);
+                if ($match['candidates'] !== []) {
+                    // Neither reveal another person's data nor grant access by
+                    // name/date/email. The existing claim review resolves it.
+                    throw new PublicProfileException('Údaje vyžadují posouzení registráře; nový sportovní profil nebyl založen. Máte-li již účet, podejte žádost v sekci Moje osoby. Jinak kontaktujte registráře oddílu.');
+                }
                 $hash = public_profile_token_generate();
                 $collision = $pdo->prepare('SELECT id FROM sportovci WHERE hash=?');
                 $collision->execute([$hash]);

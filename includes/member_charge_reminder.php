@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/notification_delivery_guard.php';
 
 require_once __DIR__ . '/local_message_outbox.php';
 require_once __DIR__ . '/app_url.php';
@@ -185,11 +186,11 @@ function memberChargeReminderClaim(PDO $pdo, string $actorType = 'system', ?int 
         $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
         $stale = $mysql ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE' : "datetime('now','-15 minutes')";
         $recent = $mysql ? 'CURRENT_TIMESTAMP - INTERVAL 20 HOUR' : "datetime('now','-20 hours')";
+        notificationQueueHoldStale($pdo,'member_charge_reminders',$stale);
         $sql = 'SELECT n.* FROM member_charge_reminders n '
             . 'JOIN member_charge_reminder_preferences p ON p.account_id=n.account_id '
             . 'JOIN club_member_charges c ON c.id=n.charge_id '
-            . "WHERE p.enabled=1 AND c.status='pending' AND ((n.status='pending' AND n.available_at<=CURRENT_TIMESTAMP) "
-            . "OR (n.status='processing' AND n.claimed_at<" . $stale . ')) '
+            . "WHERE p.enabled=1 AND c.status='pending' AND n.status='pending' AND n.available_at<=CURRENT_TIMESTAMP "
             . "AND NOT EXISTS(SELECT 1 FROM member_charge_reminders sent WHERE sent.account_id=n.account_id "
             . "AND sent.status='sent' AND sent.sent_at>" . $recent . ') '
             . "AND NOT EXISTS(SELECT 1 FROM member_charge_reminders busy WHERE busy.account_id=n.account_id "
@@ -254,11 +255,17 @@ function memberChargeReminderProcessOne(PDO $pdo, callable $sender, string $acto
     $row = memberChargeReminderClaim($pdo, $actorType, $actorId);
     if ($row === null) return null;
     try {
+        $q=$pdo->prepare("SELECT 1 FROM club_member_charges c JOIN account_person_roles r ON r.sportovec_id=c.sportovec_id JOIN verejni_uzivatele a ON a.id=r.account_id WHERE c.id=? AND r.account_id=? AND a.email=? AND a.aktivni=1 AND a.email_overeno=1 AND c.status='pending' AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP)");
+        $q->execute([(int)$row['charge_id'],(int)$row['account_id'],$row['recipient_email']]);
+        if (!$q->fetchColumn()) {
+            notificationQueueHold($pdo,'member_charge_reminders',$row,'delivery_blocked: oprávnění, kontakt nebo předpis se změnily.');
+            return false;
+        }
         $sent = $sender((string)$row['recipient_email'], (string)$row['subject_plain'], (string)$row['body_plain']);
         memberChargeReminderComplete($pdo, (int)$row['id'], (string)$row['claim_token'], $sent, $sent ? null : 'Transport odmítl zprávu.', $actorType, $actorId);
         return $sent;
     } catch (Throwable $exception) {
-        memberChargeReminderComplete($pdo, (int)$row['id'], (string)$row['claim_token'], false, 'Transport vyvolal chybu typu ' . get_class($exception) . '.', $actorType, $actorId);
+        notificationQueueHold($pdo,'member_charge_reminders',$row,'delivery_unknown: ověřit oprávnění a doručení před opakováním.');
         return false;
     }
 }

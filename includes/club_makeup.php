@@ -173,7 +173,7 @@ function clubMakeupSyncPlanRules(PDO $pdo, int $planId): void
 }
 
 /** @return array{enrollment_id:int,hours:int}|null */
-function clubMakeupExcuseEntitlement(PDO $pdo, int $planId, int $sportovecId, DateTimeImmutable $now): ?array
+function clubMakeupExcuseEntitlement(PDO $pdo, int $planId, int $sportovecId, DateTimeImmutable $now, bool $allowRecorded = false): ?array
 {
     if (!clubMakeupReady($pdo)) return null;
     $query = $pdo->prepare(
@@ -183,7 +183,7 @@ function clubMakeupExcuseEntitlement(PDO $pdo, int $planId, int $sportovecId, Da
         . 'JOIN club_makeup_excuse_rules r ON r.plan_id=p.id AND r.policy_id=q.id '
         . "JOIN club_program_enrollments e ON e.offer_id=o.id AND e.sportovec_id=? AND e.status='active' AND e.valid_from<=p.datum AND e.valid_to>=p.datum "
         . 'JOIN shop_order_items oi ON oi.id=e.source_order_item_id AND oi.line_amount_minor>0 '
-        . "WHERE p.id=? AND p.stav='planovany' ORDER BY CASE WHEN o.id IN (SELECT offer_id FROM club_makeup_offer_periods WHERE period_kind='annual') THEN 0 ELSE 1 END,e.id"
+        . "WHERE p.id=? AND p.stav IN (" . ($allowRecorded ? "'planovany','evidovany'" : "'planovany'") . ") ORDER BY CASE WHEN o.id IN (SELECT offer_id FROM club_makeup_offer_periods WHERE period_kind='annual') THEN 0 ELSE 1 END,e.id"
     );
     $query->execute([$sportovecId,$planId]);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -195,7 +195,7 @@ function clubMakeupExcuseEntitlement(PDO $pdo, int $planId, int $sportovecId, Da
 }
 
 /** Explain a rejected apology using the same offer, payment and cutoff prerequisites as entitlement. */
-function clubMakeupExcuseFailureReason(PDO $pdo, int $planId, int $sportovecId, DateTimeImmutable $now): string
+function clubMakeupExcuseFailureReason(PDO $pdo, int $planId, int $sportovecId, DateTimeImmutable $now, bool $allowRecorded = false): string
 {
     if (!clubMakeupReady($pdo)) return 'unavailable';
     $query = $pdo->prepare(
@@ -206,7 +206,7 @@ function clubMakeupExcuseFailureReason(PDO $pdo, int $planId, int $sportovecId, 
         . 'LEFT JOIN club_makeup_excuse_rules r ON r.plan_id=p.id AND r.policy_id=q.id '
         . "LEFT JOIN club_program_enrollments e ON e.offer_id=o.id AND e.sportovec_id=? AND e.status='active' AND e.valid_from<=p.datum AND e.valid_to>=p.datum "
         . 'LEFT JOIN shop_order_items oi ON oi.id=e.source_order_item_id '
-        . "WHERE p.id=? AND p.stav='planovany'"
+        . "WHERE p.id=? AND p.stav IN (" . ($allowRecorded ? "'planovany','evidovany'" : "'planovany'") . ")"
     );
     $query->execute([$sportovecId,$planId]);
     $rows = array_values(array_filter($query->fetchAll(PDO::FETCH_ASSOC), static fn(array $row): bool => clubMakeupPlanCoversTeam($pdo,$planId,(int)$row['team_id'],(string)$row['datum'])));
@@ -244,7 +244,13 @@ function clubMakeupExcuseFailureMessage(string $reason): string
 function clubMakeupFinalizeSource(PDO $pdo, int $planId, int $trainingId, int $actorId): void
 {
     if (!clubMakeupReady($pdo)) return;
-    $planQuery = $pdo->prepare('SELECT datum,cas_od,stav,trenink_id FROM planovane_treninky WHERE id=?');
+    if(!$pdo->inTransaction()){
+        $pdo->beginTransaction();try{clubMakeupFinalizeSource($pdo,$planId,$trainingId,$actorId);$pdo->commit();return;}catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
+    }
+    clubMakeupLockFinalization($pdo,$planId,$trainingId);
+    if (!clubMakeupTrainingEnded($pdo, $planId, $trainingId)) return;
+    $locking=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    $planQuery = $pdo->prepare('SELECT datum,cas_od,stav,trenink_id FROM planovane_treninky WHERE id=?'.$locking);
     $planQuery->execute([$planId]);
     $plan = $planQuery->fetch(PDO::FETCH_ASSOC);
     if (!$plan || $plan['stav'] !== 'evidovany' || (int)$plan['trenink_id'] !== $trainingId || clubMakeupStart($plan) > clubMakeupNow()) return;
@@ -255,11 +261,11 @@ function clubMakeupFinalizeSource(PDO $pdo, int $planId, int $trainingId, int $a
         . 'JOIN shop_order_items oi ON oi.id=e.source_order_item_id AND oi.line_amount_minor>0 '
         . 'JOIN club_program_offers o ON o.id=e.offer_id LEFT JOIN club_makeup_offer_periods cfg ON cfg.offer_id=o.id '
         . 'LEFT JOIN club_program_offers n ON n.id=cfg.next_offer_id '
-        . "WHERE r.plan_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND e.status='active'"
+        . "WHERE r.plan_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND e.status='active'".$locking
     );
     $query->execute([$planId]);
-    $attendance = $pdo->prepare('SELECT 1 FROM trenink_sportovec WHERE trenink_id=? AND sportovec_id=?');
-    $exists = $pdo->prepare('SELECT id FROM club_makeup_credits WHERE source_plan_id=? AND sportovec_id=?');
+    $attendance = $pdo->prepare('SELECT 1 FROM trenink_sportovec WHERE trenink_id=? AND sportovec_id=?'.$locking);
+    $exists = $pdo->prepare('SELECT id FROM club_makeup_credits WHERE source_plan_id=? AND sportovec_id=?'.($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':''));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $personId = (int)$row['sportovec_id'];
         $attendance->execute([$trainingId,$personId]);
@@ -289,9 +295,7 @@ function clubMakeupSyncPersonCredits(PDO $pdo, int $personId): void
     foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
         $pdo->beginTransaction();
         try{
-            if($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
-                $lock=$pdo->prepare('SELECT id FROM planovane_treninky WHERE id=? FOR UPDATE');$lock->execute([(int)$row['id']]);
-            }
+            clubMakeupLockFinalization($pdo,(int)$row['id'],(int)$row['trenink_id']);
             clubMakeupFinalizeSource($pdo,(int)$row['id'],(int)$row['trenink_id'],0);
             $pdo->commit();
         }catch(Throwable $exception){if($pdo->inTransaction())$pdo->rollBack();throw $exception;}
@@ -502,13 +506,45 @@ function clubMakeupReservationsForPlan(PDO $pdo, int $planId): array
 function clubMakeupFinalizeTarget(PDO $pdo, int $planId, int $trainingId, int $actorId): void
 {
     if (!clubMakeupReady($pdo)) return;
-    $query=$pdo->prepare("SELECT id,credit_id,sportovec_id FROM club_makeup_reservations WHERE target_plan_id=? AND status='booked'");$query->execute([$planId]);
-    $attendance=$pdo->prepare('SELECT 1 FROM trenink_sportovec WHERE trenink_id=? AND sportovec_id=?');
+    if(!$pdo->inTransaction()){
+        $pdo->beginTransaction();try{clubMakeupFinalizeTarget($pdo,$planId,$trainingId,$actorId);$pdo->commit();return;}catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
+    }
+    clubMakeupLockFinalization($pdo,$planId,$trainingId);
+    if (!clubMakeupTrainingEnded($pdo, $planId, $trainingId)) return;
+    $locking=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    $query=$pdo->prepare("SELECT id,credit_id,sportovec_id FROM club_makeup_reservations WHERE target_plan_id=? AND status='booked'".$locking);$query->execute([$planId]);
+    $attendance=$pdo->prepare('SELECT 1 FROM trenink_sportovec WHERE trenink_id=? AND sportovec_id=?'.$locking);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $attendance->execute([$trainingId,(int)$row['sportovec_id']]);$present=(bool)$attendance->fetchColumn();
         $pdo->prepare('UPDATE club_makeup_reservations SET status=?,active_token=NULL WHERE id=?')->execute([$present?'attended':'no_show',(int)$row['id']]);
         $pdo->prepare("UPDATE club_makeup_credits SET status='used' WHERE id=? AND status='reserved'")->execute([(int)$row['credit_id']]);
         clubMakeupEvent($pdo,(int)$row['credit_id'],(int)$row['id'],$present?'attended':'no_show','trainer',$actorId);
+    }
+}
+
+/** A started lesson is not a completed lesson. New records require explicit closure. */
+function clubMakeupTrainingEnded(PDO $pdo,int $planId,int $trainingId):bool
+{
+    $locking=$pdo->inTransaction()&&$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    if(familyPortalTableExists($pdo,'training_closures')){
+        $s=$pdo->prepare("SELECT r.actual_ended_at FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.training_id=? AND c.status='closed'".$locking);$s->execute([$trainingId]);$end=$s->fetchColumn();
+        if(!$end||new DateTimeImmutable((string)$end,new DateTimeZone('Europe/Prague'))>clubMakeupNow())return false;
+    }
+    $s=$pdo->prepare('SELECT * FROM planovane_treninky WHERE id=?'.$locking);$s->execute([$planId]);$plan=$s->fetch(PDO::FETCH_ASSOC);
+    if(!$plan||$plan['stav']!=='evidovany'||(int)$plan['trenink_id']!==$trainingId)return false;
+    if(familyPortalTableExists($pdo,'training_closures'))return true;
+    // Legacy data without the closure migration cannot prove a same-day end if time is unknown.
+    $end=new DateTimeImmutable((string)$plan['datum'].' '.((string)($plan['cas_do']??'')?:'23:59:59'),new DateTimeZone('Europe/Prague'));
+    return $end<=clubMakeupNow();
+}
+
+/** Same ordering as closure/void: actual training first, then plan; reads after waits are current reads. */
+function clubMakeupLockFinalization(PDO $pdo,int $planId,int $trainingId):void
+{
+    if(!$pdo->inTransaction())throw new LogicException('Uzavření náhrad vyžaduje transakci.');
+    if($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'){
+        $s=$pdo->prepare('SELECT id FROM treninky WHERE id=? FOR UPDATE');$s->execute([$trainingId]);
+        $s=$pdo->prepare('SELECT id FROM planovane_treninky WHERE id=? FOR UPDATE');$s->execute([$planId]);
     }
 }
 
@@ -526,27 +562,30 @@ function clubMakeupCancelPlannedTarget(PDO $pdo, int $planId, int $actorId): voi
 function clubMakeupReconcileRecordedAttendance(PDO $pdo, int $trainingId, int $actorId): void
 {
     if (!clubMakeupReady($pdo)) return;
-    $planQuery=$pdo->prepare('SELECT p.id,p.datum,t.datum AS actual_date FROM planovane_treninky p JOIN treninky t ON t.id=p.trenink_id WHERE p.trenink_id=?');
+    if(!$pdo->inTransaction()){$pdo->beginTransaction();try{clubMakeupReconcileRecordedAttendance($pdo,$trainingId,$actorId);$pdo->commit();return;}catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}}
+    $locking=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+    $s=$pdo->prepare('SELECT id FROM treninky WHERE id=?'.$locking);$s->execute([$trainingId]);
+    $planQuery=$pdo->prepare('SELECT p.id,p.datum,t.datum AS actual_date FROM planovane_treninky p JOIN treninky t ON t.id=p.trenink_id WHERE p.trenink_id=?'.$locking);
     $planQuery->execute([$trainingId]);$plan=$planQuery->fetch(PDO::FETCH_ASSOC);
     if (!$plan) return;
     if ((string)$plan['datum'] !== (string)$plan['actual_date']) throw new ClubMakeupException('Datum tréninku s náhradními lekcemi musí odpovídat plánovanému termínu.');
     $planId=(int)$plan['id'];
-    $query=$pdo->prepare('SELECT c.id,c.sportovec_id,c.status,e.status AS enrollment_status,oi.line_amount_minor,r.response,r.makeup_excused_at FROM club_makeup_credits c JOIN club_program_enrollments e ON e.id=c.source_enrollment_id JOIN shop_order_items oi ON oi.id=e.source_order_item_id LEFT JOIN training_rsvps r ON r.plan_id=c.source_plan_id AND r.sportovec_id=c.sportovec_id WHERE c.source_plan_id=?');$query->execute([$planId]);
-    $attendance=$pdo->prepare('SELECT 1 FROM trenink_sportovec WHERE trenink_id=? AND sportovec_id=?');
+    $query=$pdo->prepare('SELECT c.id,c.sportovec_id,c.status,e.status AS enrollment_status,oi.line_amount_minor,r.response,r.makeup_excused_at FROM club_makeup_credits c JOIN club_program_enrollments e ON e.id=c.source_enrollment_id JOIN shop_order_items oi ON oi.id=e.source_order_item_id LEFT JOIN training_rsvps r ON r.plan_id=c.source_plan_id AND r.sportovec_id=c.sportovec_id WHERE c.source_plan_id=?'.$locking);$query->execute([$planId]);
+    $attendance=$pdo->prepare('SELECT 1 FROM trenink_sportovec WHERE trenink_id=? AND sportovec_id=?'.$locking);
     foreach($query->fetchAll(PDO::FETCH_ASSOC) as $credit){
         $attendance->execute([$trainingId,(int)$credit['sportovec_id']]);$present=(bool)$attendance->fetchColumn();
         if($present && $credit['status']==='available'){
-            $pdo->prepare("UPDATE club_makeup_credits SET status='revoked' WHERE id=?")->execute([(int)$credit['id']]);
+            $pdo->prepare("UPDATE club_makeup_credits SET status='revoked' WHERE id=? AND status='available'")->execute([(int)$credit['id']]);
             clubMakeupEvent($pdo,(int)$credit['id'],null,'attendance_revoke','trainer',$actorId);
         }elseif($present && in_array((string)$credit['status'],['reserved','used'],true)){
             throw new ClubMakeupException('Změna docházky by zneplatnila už rezervovaný nebo využitý nárok. Nejdřív případ vyřešte se správcem.');
         }elseif(!$present && $credit['status']==='revoked' && $credit['enrollment_status']==='active' && (int)$credit['line_amount_minor']>0 && $credit['response']==='not_going' && $credit['makeup_excused_at']!==null){
-            $pdo->prepare("UPDATE club_makeup_credits SET status='available' WHERE id=?")->execute([(int)$credit['id']]);
+            $pdo->prepare("UPDATE club_makeup_credits SET status='available' WHERE id=? AND status='revoked'")->execute([(int)$credit['id']]);
             clubMakeupEvent($pdo,(int)$credit['id'],null,'attendance_restore','trainer',$actorId);
         }
     }
     clubMakeupFinalizeSource($pdo,$planId,$trainingId,$actorId);
-    $reservations=$pdo->prepare("SELECT id,credit_id,sportovec_id,status FROM club_makeup_reservations WHERE target_plan_id=? AND status IN ('attended','no_show')");$reservations->execute([$planId]);
+    $reservations=$pdo->prepare("SELECT id,credit_id,sportovec_id,status FROM club_makeup_reservations WHERE target_plan_id=? AND status IN ('attended','no_show')".$locking);$reservations->execute([$planId]);
     foreach($reservations->fetchAll(PDO::FETCH_ASSOC) as $row){
         $attendance->execute([$trainingId,(int)$row['sportovec_id']]);$wanted=$attendance->fetchColumn()?'attended':'no_show';
         if($wanted!==$row['status']){

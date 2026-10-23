@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 1294,
+  "assertions": 27798,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "php": "8.2.12",
+  "phpunit": "11.5.56",
+  "elapsed_test_seconds": 112.465662,
+  "scope": "isolated synthetic fixtures; no production"
+}

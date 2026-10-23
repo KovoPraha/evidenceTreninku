@@ -34,10 +34,11 @@ function sportovecNoteCanWrite(PDO $pdo, int $sportovecId): bool
     }
 
     $statement = $pdo->prepare(
-        'SELECT 1 FROM account_person_roles '
-        . "WHERE account_id=? AND sportovec_id=? AND relation_role IN ('self','guardian') "
-        . "AND status='approved' AND valid_from<=CURRENT_TIMESTAMP "
-        . 'AND (valid_to IS NULL OR valid_to>CURRENT_TIMESTAMP) LIMIT 1'
+        'SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id '
+        . "WHERE r.account_id=? AND r.sportovec_id=? AND r.relation_role IN ('self','guardian') "
+        . "AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP "
+        . 'AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) '
+        . 'AND a.aktivni=1 AND a.email_overeno=1 LIMIT 1'
     );
     $statement->execute([(int)$accountId, $sportovecId]);
     return (bool)$statement->fetchColumn();

@@ -34,7 +34,10 @@ final class SecurityInfrastructureWiringTest extends TestCase
         self::assertStringContainsString('uploads/(?:uctenky|zatezove_testy|servis|temp)', $htaccess);
         self::assertStringContainsString('privateStorageStore', $receipt);
         self::assertStringContainsString('beginTransaction()', $receipt);
-        self::assertStringContainsString('privateStorageSoftDelete($newReceiptKey)', $receipt);
+        // Receipt files now participate in reversible mutations, then retain
+        // retired originals in the private soft-delete archive after commit.
+        self::assertStringContainsString('fileMutationRollback($fileMutations)', $receipt);
+        self::assertStringContainsString('financialReceiptFilesCommitted($fileMutations)', $receipt);
         self::assertStringContainsString('privateStorageStore', $stress);
         self::assertStringContainsString('public_profile_access_session_athlete_id($pdo)', $download);
         self::assertStringNotContainsString("\$_GET['hash']", $download);
@@ -68,13 +71,15 @@ final class SecurityInfrastructureWiringTest extends TestCase
         self::assertStringNotContainsString("chip.innerHTML = it.jmeno", $training);
         self::assertStringNotContainsString('el.innerHTML = `<span>${label}', $sheets);
         self::assertStringContainsString('JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT', $sheets);
-        self::assertStringContainsString('safeEmailHtml', $email);
+        self::assertStringContainsString('http_response_code(410)', $email);
+        self::assertStringNotContainsString('public_profile_access_issue(', $email);
+        self::assertStringNotContainsString('@mail(', $email);
     }
 
     public function testSecuritySensitiveUrlWiringDoesNotReadHostHeader(): void
     {
         $root = dirname(__DIR__, 2);
-        foreach (['booking/zapomenute_heslo.php', 'booking/registrace.php', 'booking/rezervovat.php', 'booking/waiting_list.php', 'cron_upominky.php'] as $path) {
+        foreach (['booking/zapomenute_heslo.php', 'booking/registrace.php', 'includes/booking_notification.php', 'cron_upominky.php'] as $path) {
             $source = (string)file_get_contents($root . '/' . $path);
             self::assertStringContainsString('appUrl(', $source, $path);
             self::assertStringNotContainsString('HTTP_HOST', $source, $path);

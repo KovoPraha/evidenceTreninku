@@ -9,8 +9,10 @@ require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
 require_once __DIR__ . '/includes/club_makeup.php';
+require_once __DIR__ . '/includes/coach_scope.php';
+require_once __DIR__ . '/includes/training_closure.php';
 
-function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function h(mixed $s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
 $trenerId = (int)$_SESSION['trener_id'];
 $errors   = [];
@@ -25,6 +27,7 @@ if ($editId) {
     if (!$existujici || (!roleAtLeast('hlavni') && (int)$existujici['trener_id'] !== $trenerId)) {
         header('Location: planovac.php'); exit;
     }
+    coachScopeRequirePlan($pdo,$editId);
 }
 
 // ── Vybrané podskupiny (editace / fallback) ───────────────────────────────────
@@ -94,18 +97,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Editace — jen aktuální záznam, ignoruje opakování
                 $pdo->beginTransaction();
                 try {
-                    $currentSql = 'SELECT datum,cas_od FROM planovane_treninky WHERE id=?';
+                    coachScopeAssertPlan($pdo,$editId);
+                    coachScopeAssertTeams($pdo,$teamIds,$datum);
+                    $currentSql = 'SELECT datum,cas_od,cas_do,sportoviste_id,trener_id,stav FROM planovane_treninky WHERE id=?';
                     if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $currentSql .= ' FOR UPDATE';
                     $currentPlan = $pdo->prepare($currentSql);
                     $currentPlan->execute([$editId]);
                     $current = $currentPlan->fetch(PDO::FETCH_ASSOC);
                     if (!$current) throw new RuntimeException('Plánovaný trénink již neexistuje.');
+                    if ($current['stav'] !== 'planovany') throw new RuntimeException('Zapsaný trénink upravte přes skutečnou docházku.');
+                    trainingScheduleAssertAvailable($pdo,$trenerId,(int)$current['trener_id'],$datum,$casOd,$casDo,$sportId,$teamIds,$editId);
                     $oldTeamIds = trainingRosterBridgePlanTeamIds($pdo, $editId);
                     sort($oldTeamIds, SORT_NUMERIC);
                     $newTeamIds = $teamIds;
                     sort($newTeamIds, SORT_NUMERIC);
                     $scheduleOrRosterChanged = (string)$current['datum'] !== $datum
                         || substr((string)($current['cas_od'] ?? ''), 0, 5) !== (string)($casOd ?? '')
+                        || substr((string)($current['cas_do'] ?? ''), 0, 5) !== (string)($casDo ?? '')
+                        || (int)$current['sportoviste_id'] !== (int)$sportId
                         || $oldTeamIds !== $newTeamIds;
                     if ($scheduleOrRosterChanged) {
                         $hasAnswers = false;
@@ -152,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Nový — s případným opakováním
                 $pdo->beginTransaction();
                 try {
+                    coachScopeAssertTeams($pdo,$teamIds,$datum);
                     $stmt   = $pdo->prepare("
                         INSERT INTO planovane_treninky
                             (trener_id, nazev, kategorie, skupina_id, podskupina_id,
@@ -191,6 +201,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $jeSerie   = count($datumy) > 1;
                     $prveId    = null;
                     foreach ($datumy as $d) {
+                        coachScopeAssertTeams($pdo,$teamIds,$d);
+                        trainingScheduleAssertAvailable($pdo,$trenerId,$trenerId,$d,$casOd,$casDo,$sportId,$teamIds);
                         $stmt->execute([$trenerId, $nazev, $kategorie, $skupinaId, $podskupinaId,
                                         $d, $casOd, $casDo, $sportId, $popis, null, $jeVerejny]);
                         $planId = (int)$pdo->lastInsertId();

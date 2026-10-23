@@ -1,0 +1,10 @@
+{
+    "status": "PASS",
+    "database": "evidence_b2_restore_53ebc017",
+    "tables": 254,
+    "new_owned_tables": 11,
+    "triggers": 2,
+    "private_references_checked": 24,
+    "backup_sha256": "c841737a26c9d33d68b75e02417bc48943303f45d6d68784903d9405987bbcfd",
+    "private_storage_restored": false
+}

@@ -1,0 +1,27 @@
+{
+    "database": "evidence_b3_refund_1eec8bd5",
+    "checks": 18,
+    "results": [
+        "Migration verified: 20261022220000_accounting_ledger",
+        "Migration verified: 20261022221000_accounting_documents",
+        "Migration verified: 20261022222000_accounting_adjustments",
+        "Worker connection ID published atomically",
+        "Competing financial write actually waits on InnoDB mutex",
+        "No competing commit before releasing lock",
+        "Worker exited cleanly",
+        "Competing excessive operation rejected after current balance reread",
+        "Exactly one competing decision reserved",
+        "Decisions create no money",
+        "Worker connection ID published atomically",
+        "Competing financial write actually waits on InnoDB mutex",
+        "No competing commit before releasing lock",
+        "Worker exited cleanly",
+        "Competing excessive operation rejected after current balance reread",
+        "Exactly one competing partial payout recorded",
+        "Cash, remaining reservation and free amount reconcile",
+        "Actual bank balance includes a single outgoing movement"
+    ],
+    "decision_race": "PASS",
+    "partial_payout_race": "PASS",
+    "observed_mariadb_lock_wait": true
+}

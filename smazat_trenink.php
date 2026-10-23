@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 /**
  * smazat_trenink.php
@@ -13,6 +14,7 @@ if (!isset($_SESSION['trener_id'])) {
 }
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/training_closure.php';
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
@@ -29,6 +31,7 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
 }
 
 $treninkId = isset($_POST['trenink_id']) ? (int)$_POST['trenink_id'] : 0;
+coachScopeRequireTraining($pdo, $treninkId);
 if ($treninkId <= 0) {
     $_SESSION['flash_error'] = 'Neplatné ID tréninku.';
     header('Location: sprava_treninku.php');
@@ -47,6 +50,7 @@ if (!canAccess('sprava_treninku') && !$stmtAuth->fetch()) {
 // Transakční smazání – SPRÁVNÉ pořadí a kompletní seznam tabulek
 try {
     $pdo->beginTransaction();
+    trainingClosureAssertLegacyMutable($pdo, $treninkId, true);
 
     // 1) Nejdříve smaž záznamy z mereni_zaznamy (přes trenink_mereni)
     $stmtMZ = $pdo->prepare('
@@ -124,7 +128,7 @@ try {
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     error_log('smazat_trenink error: ' . $e->getMessage());
-    $_SESSION['flash_error'] = 'Chyba při mazání tréninku. Zkuste to znovu.';
+    $_SESSION['flash_error'] = $e instanceof TrainingClosureException ? $e->getMessage() : 'Chyba při mazání tréninku. Zkuste to znovu.';
     header('Location: sprava_treninku.php');
     exit;
 }

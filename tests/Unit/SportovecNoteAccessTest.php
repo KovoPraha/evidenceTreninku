@@ -17,6 +17,8 @@ final class SportovecNoteAccessTest extends TestCase
         $_SESSION = [];
         $this->pdo = new PDO('sqlite::memory:');
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,aktivni INTEGER,email_overeno INTEGER)');
+        $this->pdo->exec('INSERT INTO verejni_uzivatele VALUES(21,1,1)');
         $this->pdo->exec(
             'CREATE TABLE child_access_accounts '
             . '(id INTEGER PRIMARY KEY,sportovec_id INTEGER NOT NULL,active INTEGER NOT NULL)'
@@ -66,6 +68,20 @@ final class SportovecNoteAccessTest extends TestCase
         $_SESSION['verejny_uzivatel_id'] = 21;
         self::assertFalse(\sportovecNoteCanWrite($this->pdo, 7));
         self::assertFalse(\sportovecNoteCanWrite($this->pdo, 8));
+    }
+
+    public function testUnverifiedDisabledAndRevokedGuardianCannotWriteEvenWithProfileAccess(): void
+    {
+        $this->pdo->exec("INSERT INTO account_person_roles VALUES(21,7,'guardian','approved','2020-01-01',NULL)");
+        $_SESSION['verejny_uzivatel_id']=21;
+        $_SESSION['public_profile_access']=['sportovec_id'=>7,'expires_at'=>time()+1000];
+        foreach (['email_overeno=0','email_overeno=1,aktivni=0'] as $change) {
+            $this->pdo->exec('UPDATE verejni_uzivatele SET '.$change.' WHERE id=21');
+            self::assertFalse(\sportovecNoteCanWrite($this->pdo,7));
+        }
+        $this->pdo->exec('UPDATE verejni_uzivatele SET aktivni=1,email_overeno=1 WHERE id=21');
+        $this->pdo->exec("UPDATE account_person_roles SET status='revoked'");
+        self::assertFalse(\sportovecNoteCanWrite($this->pdo,7));
     }
 
     public function testPublicEndpointsUseTheAuthenticatedWriteGate(): void

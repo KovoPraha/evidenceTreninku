@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "database": "evidence_migration_test_1b2ff990",
+  "checks": 21,
+  "passed": [
+    "Migration verified 20261022220000_accounting_ledger",
+    "Migration verified 20261022230000_shop_inventory",
+    "Migration verified 20261023080000_club_migration",
+    "Actual MariaDB account opening applied",
+    "Opening balance preserves exact minor amount",
+    "Opening produces no duplicate historical money",
+    "Actual MariaDB physical opening retains reserved and blocked units separately",
+    "Existing leading-zero VS unchanged",
+    "No historic paid status invented",
+    "Repeated source across snapshots links same account once",
+    "Migration observed in real InnoDB LOCK WAIT",
+    "No import commit before canonical lock release",
+    "Competing account import exits cleanly",
+    "Changed opening rejected after canonical financial lock release",
+    "Newer actual account balance preserved",
+    "Migration observed in real InnoDB LOCK WAIT",
+    "No import commit before canonical lock release",
+    "Competing stock import exits cleanly",
+    "Changed stock target rejected under variant lock",
+    "Failed stale inventory imports no partial balance",
+    "Newer target catalog value preserved"
+  ],
+  "observed_mariadb_lock_wait": true,
+  "production_mutations": false
+}

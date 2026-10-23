@@ -1,0 +1,44 @@
+{
+  "private_application_files_unchanged": true,
+  "original_datadir_preserved": "C:\\Users\\Marek\\AppData\\Local\\EvidencePavelB1\\finance-b1-20261022\\mysql-quarantine-recovery-20261023-075136-e4945a30",
+  "source_snapshot_sha256": "08f938c918b3d4231ae4acdf0f9dfcc92d46d7b7cfc3765c163a64720b16931f",
+  "recovery_source_sha256": "2083e3e22a940e9dc950280339cafe7a35604a23b019891e1e51ed99ade38fe9",
+  "readiness": {
+    "readable_owned_tables": 326,
+    "missing_required_tables": 0,
+    "unreadable_tables": 0,
+    "status": "PASS",
+    "explicit_optional_absent": [
+      "ucto_gs_kategorie",
+      "ucto_gs_link_targets",
+      "ucto_gs_linky"
+    ]
+  },
+  "initial_failure": {
+    "driver_code": 1932,
+    "sqlstate": "42S02",
+    "table": "child_access_events",
+    "cause": "Unknown; no 1932 entry in server error log; prior crash recovery observed",
+    "readable_tables": 338,
+    "first_timestamped_read_check": "2026-10-23T07:46:48+02:00"
+  },
+  "schema_comparison": "Full DDL except ordering of identical secondary KEY lines; original raw snapshot retained",
+  "data_loss_interval": "Unknown for previously unreadable child_access_events only; verified prior backup and current child_accounts are empty; no invented events",
+  "status": "PASS",
+  "readable_dump_sha256": "2b2ea9379ffec1d6585ddd31cf1f4b81436faca1330018682c5649149920bc22",
+  "recovery": {
+    "status": "PASS",
+    "source_unchanged": true,
+    "tables_identical": 338,
+    "triggers_identical": 2,
+    "child_recovered_from_verified_backup": true,
+    "child_rows": 0,
+    "unrecoverable_interval_status": "Unknown; prior verified backup at 2026-10-22T23:30:37Z had zero child events; current child accounts also zero. No invented events.",
+    "candidate_port": 33427,
+    "candidate_datadir": "C:\\Users\\Marek\\AppData\\Local\\EvidencePavelB1\\finance-b1-20261022\\mysql-recovery-20261023-075136-e4945a30"
+  },
+  "synthetic_only": true,
+  "checked_at": "2026-10-23T07:58:26.8821616+02:00",
+  "final_port": 33426,
+  "production_mutations": false
+}

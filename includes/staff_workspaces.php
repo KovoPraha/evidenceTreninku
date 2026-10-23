@@ -25,6 +25,8 @@ function staffPositionDefinitions(): array
                     ['route' => 'formular.php', 'label' => 'Zadat trénink', 'description' => 'Evidence tréninku a účasti', 'icon' => 'calendar-plus'],
                     ['route' => 'planovac.php', 'label' => 'Plánovač', 'description' => 'Naplánované tréninky', 'icon' => 'calendar3-week'],
                     ['route' => 'moje_treninky.php', 'label' => 'Moje tréninky', 'description' => 'Vlastní historie a úpravy', 'icon' => 'list-check'],
+                    ['route'=>'training_closure_admin.php','label'=>'Docházka a uzavření','description'=>'Potvrzení skutečné účasti a auditované opravy','icon'=>'clipboard-check'],
+                    ['route'=>'sports_activity_admin.php','label'=>'Sportovní činnost a podklady','description'=>'Skutečné starty a verzované podklady za období','icon'=>'activity'],
                     ['route' => 'moje_skupiny.php', 'label' => 'Moje skupiny', 'description' => 'Svěřené skupiny sportovců', 'icon' => 'people'],
                 ]],
                 ['label' => 'Evidence', 'icon' => 'clipboard-data', 'items' => [
@@ -50,6 +52,7 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Sportovní provoz', 'icon' => 'clipboard-check', 'items' => [
                     ['route' => 'sprava_vsech_treninku.php', 'label' => 'Všechny tréninky', 'description' => 'Kontrola klubové evidence', 'icon' => 'clipboard-data'],
+                    ['route'=>'coach_scope_admin.php','label'=>'Svěřenci trenérů','description'=>'Časově omezené svěření skupin a soupisek','icon'=>'person-check'],
                     ['route' => 'sprava_zavodu.php', 'label' => 'Závody', 'description' => 'Kalendář a správa závodů', 'icon' => 'flag'],
                     ['route' => 'sprava_segmentu.php', 'label' => 'Segmenty', 'description' => 'Správa sportovních segmentů', 'icon' => 'signpost-split'],
                     ['route' => 'nastaveni_zadavani.php', 'label' => 'Okno zadávání', 'description' => 'Pravidla evidence tréninků', 'icon' => 'calendar-lock'],
@@ -75,6 +78,10 @@ function staffPositionDefinitions(): array
                     ['route' => 'sprava_skupin.php', 'label' => 'Skupiny', 'description' => 'Klubové skupiny', 'icon' => 'diagram-2'],
                     ['route' => 'sprava_podskupin.php', 'label' => 'Podskupiny', 'description' => 'Zařazení sportovců', 'icon' => 'diagram-3'],
                     ['route' => 'eshop_identity_admin.php', 'label' => 'Účty a osoby', 'description' => 'Rodiče, sportovci a propojení', 'icon' => 'person-badge'],
+                    ['route' => 'identity_reviews_admin.php', 'label' => 'Ověření identity', 'description' => 'Nejasné a duplicitní osoby, ověřené zdrojové vazby', 'icon' => 'person-check'],
+                    ['route' => 'paper_registrations_admin.php', 'label' => 'Papírové přihlášky a souhlasy', 'description' => 'Záznam osobního podání a jeho doložení', 'icon' => 'file-earmark-text'],
+                    ['route'=>'medical_clearance_admin.php','label'=>'Zdravotní prohlídky','description'=>'Ověření a platnost soukromých podkladů','icon'=>'clipboard-heart'],
+                    ['route'=>'club_program_admissions_admin.php','label'=>'Osobní přijetí do programu','description'=>'Přihláška, plátce a návazná účast','icon'=>'person-check'],
                     ['route' => 'registration_texts_admin.php', 'label' => 'Registrační texty a souhlasy', 'description' => 'Koncepty, zveřejnění a historie verzí', 'icon' => 'file-earmark-text'],
                     ['route' => 'member_engagement_admin.php', 'label' => 'Úrovně zapojení', 'description' => 'Veřejnost, kroužky a závodní oddíl podle živých dat', 'icon' => 'layers'],
                 ]],
@@ -134,6 +141,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'eshop_produkt_admin.php', 'label' => 'Produkty', 'description' => 'Přehled produktů a variant', 'icon' => 'box-seam'],
                     ['route' => 'eshop_ceny_admin.php', 'label' => 'Ceny', 'description' => 'Ceny jednotlivých variant', 'icon' => 'tags'],
                     ['route' => 'eshop_sklad_admin.php', 'label' => 'Sklad', 'description' => 'Skladové stavy a pohyby variant', 'icon' => 'boxes'],
+                    ['route'=>'eshop_inventory_admin.php','label'=>'Skladové doklady a inventura','description'=>'Ověřený počátek, příjemky, blokace a inventura','icon'=>'boxes'],
                     ['route' => 'eshop_categories_admin.php', 'label' => 'Kategorie', 'description' => 'Hierarchie kategorií', 'icon' => 'diagram-3'],
                     ['route' => 'eshop_attributes_admin.php', 'label' => 'Parametry', 'description' => 'Číselník parametrů produktů', 'icon' => 'sliders'],
                 ]],
@@ -155,6 +163,9 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Objednávky', 'icon' => 'receipt', 'items' => [
                     ['route' => 'eshop_orders_admin.php', 'label' => 'Objednávky', 'description' => 'Příprava, výdej a provozní storna', 'icon' => 'receipt'],
+                    ['route'=>'eshop_assisted_sale_admin.php','label'=>'Prodej na místě','description'=>'Prodej členu nebo veřejnosti za platné ceny','icon'=>'cart'],
+                    ['route'=>'eshop_fulfillment_admin.php','label'=>'Položkové výdeje','description'=>'Skutečné předání zboží a doručení','icon'=>'box-seam'],
+                    ['route'=>'shop_returns_admin.php','label'=>'Vratky a výměny','description'=>'Převzetí, posouzení, výměna a finanční vyřešení','icon'=>'arrow-return-left'],
                     ['route' => 'eshop_ppl_admin.php', 'label' => 'Doprava PPL', 'description' => 'Cena doručení a volba PPL Parcelbox', 'icon' => 'box-seam'],
                     ['route' => 'eshop_packeta_admin.php', 'label' => 'Doručení Zásilkovnou', 'description' => 'Cena doručení a volba Z-BOXu', 'icon' => 'box-seam'],
                     ['route' => 'eshop_order_statuses_admin.php', 'label' => 'Stavy a e-maily', 'description' => 'Systémové stavy, zákaznická upřesnění a texty e-mailů', 'icon' => 'tags'],
@@ -177,6 +188,13 @@ function staffPositionDefinitions(): array
             'sort' => 70,
             'groups' => [
                 ['label' => 'Platby', 'icon' => 'bank', 'items' => [
+                    ['route'=>'accounting_ledger_admin.php','label'=>'Peněžní evidence a pokladna','description'=>'Skutečné pohyby, příděly a odsouhlasení zůstatků','icon'=>'journal-text'],
+                    ['route'=>'accounting_documents_admin.php','label'=>'Účetní doklady','description'=>'Vystavovatel, dokladové řady, náhled a vydání PDF','icon'=>'file-earmark-pdf'],
+                    ['route'=>'accounting_adjustments_admin.php','label'=>'Opravy a částečné vratky','description'=>'Rozhodnutí, vrácené peníze a samostatné předání zboží','icon'=>'arrow-return-left'],
+                    ['route'=>'accounting_exports_admin.php','label'=>'Účetní podklady','description'=>'Neměnné revize XLSX a PDF s přehledem úplnosti','icon'=>'file-earmark-spreadsheet'],
+                    ['route'=>'club_expenses_admin.php','label'=>'Výdaje a zálohy','description'=>'Schválení výdajů, proplacení a vyúčtování akcí','icon'=>'receipt'],
+                    ['route'=>'club_rewards_admin.php','label'=>'Výkazy a odměny','description'=>'Schválené nároky, doložené výplaty a opravné verze','icon'=>'journal-check'],
+                    ['route'=>'financial_decisions_admin.php','label'=>'Finanční rozhodnutí','description'=>'Doložená pravidla a otevřené úkoly hospodáře','icon'=>'clipboard-check'],
                     ['route' => 'eshop_payments_admin.php', 'label' => 'Platby a vratky', 'description' => 'Úkoly čekající na ověření v bance', 'icon' => 'cash-coin'],
                     ['route' => 'eshop_payment_methods_admin.php', 'label' => 'Způsoby platby', 'description' => 'QR převod nebo karta přes SumUp podle nabídky', 'icon' => 'credit-card-2-front'],
                     ['route' => 'eshop_fio_admin.php', 'label' => 'Fio párování', 'description' => 'Návrhy bankovních shod', 'icon' => 'bank'],
@@ -218,6 +236,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'diagnostika_site_admin.php', 'label' => 'Diagnostika', 'description' => 'Bezpečný technický stav aplikace', 'icon' => 'activity'],
                     ['route' => 'provozni_prehled_admin.php', 'label' => 'Kontrolní přehled', 'description' => 'Read-only souhrn provozních výjimek', 'icon' => 'speedometer2'],
                     ['route' => 'uat_readiness_admin.php', 'label' => 'Připravenost UAT', 'description' => 'Read-only brána produkčního uživatelského testu', 'icon' => 'clipboard2-check'],
+                    ['route'=>'club_cutover_admin.php','label'=>'Příprava přechodu','description'=>'Zdroje, odpovědnosti, kontrolní snímky a podmínky přechodu','icon'=>'signpost-split'],
                     ['route' => 'testovaci_scenare.php', 'label' => 'Lokální testovací scénáře', 'description' => 'Pouze localhost', 'icon' => 'check2-square', 'local_only' => true],
                 ]],
             ],
@@ -277,32 +296,38 @@ function staffRouteOwners(): array
         'coach' => [
             'ajax_denny_rozvrh.php','ajax_dostupnost_sportovist.php','ajax_nova_oznameni.php',
             'ajax_podskupiny.php','ajax_roster_target_selector.php','ajax_sportovci.php','ajax_treninky.php','ajax_update_plan.php',
-            'ajax_update_poznamka.php','duplikovat_trenink.php','edit_trenink.php','generuj_story.php',
-            'google_sheets_linky.php','individualni_lekce_form.php','nastaveni_story.php','nacti_podskupiny.php','nacti_skupiny.php',
-            'planovany_trenink_form.php','training_rsvps_admin.php','prehled_podskupin.php','prehled_popisu.php','prehled_skupina.php',
-            'prehled_skupin.php','prehled_skupiny.php','prehled_stories.php','prehled_trenera.php',
-            'prehled_treninku_skupiny_kalendar.php','rezervovat_sportoviste.php','smazat_trenink.php',
+            'ajax_update_poznamka.php','duplikovat_trenink.php','edit_trenink.php',
+            'individualni_lekce_form.php','nacti_podskupiny.php','nacti_skupiny.php',
+            'planovany_trenink_form.php','training_rsvps_admin.php',
+            'rezervovat_sportoviste.php','smazat_trenink.php',
             'sportovec_detail.php','ulozit_trenink.php','ulozit_zatezovy_test.php',
+            'medical_clearance_status.php','sports_activity_export.php',
             'zatezove_testy/ulozit_zatezovy_test.php','zatezove_testy/zatezovy_test_form.php',
         ],
         'sports_lead' => [
+            'generuj_story.php','nastaveni_story.php','google_sheets_linky.php',
+            'prehled_podskupin.php','prehled_popisu.php','prehled_skupina.php','prehled_skupin.php',
+            'prehled_skupiny.php','prehled_stories.php','prehled_trenera.php','prehled_treninku_skupiny_kalendar.php',
             'ajax_global_search.php','download_import.php','edit_zavod.php','edit_zavod_form.php',
             'export.php','export_csv.php','export_draha.php','export_seznam.php','export_uci.php','export_xls.php',
             'formular_zavod.php','import_vysledku_zavodu.php','oznameni.php','prehled_zavodu.php',
-            'search_sportovci.php','sprava_treninku.php','tydenni_report.php','ulozit_zavod.php',
+            'search_sportovci.php','sprava_treninku.php','tydenni_report.php','weekly_report_file.php','ulozit_zavod.php',
             'update_trenink.php','update_zavod.php','verejny_prehled.php','vypis_vsech_vykazu.php',
             'zavod_detail.php',
         ],
         'registrar' => [
             'athlete_sensitive_admin.php','hromadne_podskupiny.php','kis_training_a07_admin.php',
-            'sportovci_hromadne.php','sportovec_karta.php',
+            'sportovci_hromadne.php','sportovec_karta.php','paper_registration_file.php',
+            'medical_clearance_file.php',
         ],
         'program_coordinator' => [
             'club_event_participants_export.php',
         ],
         'catalog_manager' => ['eshop_produkt_novy_admin.php','eshop_produkt_stahnout_admin.php','eshop_varianta_admin.php'],
-        'order_operator' => [],
+        'order_operator' => ['shop_stock_document.php'],
         'finance_manager' => [
+            'accounting_export_download.php','accounting_document_download.php',
+            'financial_decision_file.php',
             'jizdy/formular.php','jizdy/seznam.php','jizdy/smazat.php','jizdy/uloz.php',
             'servis/formular.php','servis/seznam.php','servis/smazat.php','servis/uloz.php',
             'uctenky/formular.php','uctenky/smazat.php','uctenky/uloz.php',
@@ -343,7 +368,19 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'club_rewards_admin.php'=>['coach','sports_lead'],
+        'medical_clearance_status.php'=>['sports_lead','registrar'],
+        'training_closure_admin.php'=>['sports_lead'],
+        'ajax_update_plan.php'=>['sports_lead'],
+        'planovac.php'=>['sports_lead'],
+        'planovany_trenink_form.php'=>['sports_lead'],
+        'sports_activity_admin.php'=>['sports_lead'],
+        'sports_activity_export.php'=>['sports_lead'],
+        'eshop_inventory_admin.php'=>['finance_manager'],
+        'shop_returns_admin.php'=>['catalog_manager','finance_manager'],
+        'shop_stock_document.php'=>['catalog_manager','finance_manager'],
         'ajax_sportovci.php' => ['finance_manager'],
+        'provozni_prehled_admin.php' => ['registrar','order_operator','finance_manager','sports_lead'],
         'ajax_roster_target_selector.php' => ['sports_lead', 'program_coordinator', 'finance_manager'],
         'edit_trenink.php' => ['sports_lead'],
         'update_trenink.php' => ['coach'],
@@ -380,6 +417,34 @@ function staffPositionMenuGroups(string $position, bool $isLocal): array
         if ($items === []) continue;
         $group['items'] = $items;
         $groups[] = $group;
+    }
+    // A delegated screen must be reachable by its actual operator without
+    // changing the canonical owner or exposing unrelated actions from that role.
+    $workflowRoutes = [
+        'coach' => ['club_rewards_admin.php'],
+        'sports_lead' => ['planovac.php', 'training_closure_admin.php', 'sports_activity_admin.php', 'club_rewards_admin.php'],
+        'catalog_manager' => ['shop_returns_admin.php'],
+        'finance_manager' => ['eshop_inventory_admin.php', 'shop_returns_admin.php'],
+    ][$position] ?? [];
+    $workflowItems = [];
+    foreach (staffPositionDefinitions() as $ownerDefinition) {
+        foreach ($ownerDefinition['groups'] as $ownerGroup) {
+            foreach ($ownerGroup['items'] as $item) {
+                if (in_array($item['route'], $workflowRoutes, true)
+                    && in_array($position, staffRouteAllowedPositions($item['route']), true)
+                    && ($isLocal || empty($item['local_only']))) {
+                    $workflowItems[] = $item;
+                }
+            }
+        }
+    }
+    if ($workflowItems !== []) {
+        $groups[] = ['label'=>'Navazující agenda', 'icon'=>'arrow-left-right', 'items'=>$workflowItems];
+    }
+    if (in_array($position,['registrar','order_operator','finance_manager','sports_lead'],true)) {
+        $groups[]=['label'=>'K dořešení','icon'=>'clipboard-check','items'=>[
+            ['route'=>'provozni_prehled_admin.php','label'=>'Případy a odpovědnosti','description'=>'Další kroky, termíny kontroly a historie předání','icon'=>'clipboard-check'],
+        ]];
     }
     return $groups;
 }

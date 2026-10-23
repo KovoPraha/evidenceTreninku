@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "html_relative_links_checked": 16,
+  "broken_links": 0,
+  "original_export_and_xlsx_unchanged": true,
+  "archive_file_count": 47,
+  "archive_hashes_match": true,
+  "credential_paths_absent": true,
+  "rendered_guide_pages": 53,
+  "human_uat": false
+}

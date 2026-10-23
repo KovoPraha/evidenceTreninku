@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../csrf_helper.php';
+require_once __DIR__ . '/../includes/financial_event_guard.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('uctenky')) {
     header('Location: ../login.php');
@@ -10,7 +11,7 @@ if (!isset($_SESSION['trener_id']) || !canAccess('uctenky')) {
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
 $vozidla = $pdo->query("SELECT id, znacka_model, spz FROM ucto_vozidla ORDER BY znacka_model")->fetchAll(PDO::FETCH_ASSOC);
-$udalosti = $pdo->query("SELECT id, nazev FROM ucto_udalosti ORDER BY datum_od DESC")->fetchAll(PDO::FETCH_ASSOC);
+$udalosti = $pdo->query("SELECT id, nazev, stav FROM ucto_udalosti ORDER BY datum_od DESC")->fetchAll(PDO::FETCH_ASSOC);
 $treneri  = $pdo->query("SELECT id, jmeno FROM treneri ORDER BY jmeno")->fetchAll(PDO::FETCH_ASSOC);
 
 $id = (int)($_GET['id'] ?? 0);
@@ -32,6 +33,13 @@ if ($id > 0) {
     $stmt->execute([$id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row) $uctenka = $row;
+}
+$readOnly = false;
+foreach ($udalosti as $event) {
+    if ((int)$event['id'] === (int)($uctenka['udalost_id'] ?? 0) && $event['stav'] !== 'otevrena') {
+        $readOnly = true;
+        break;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -62,7 +70,11 @@ if ($id > 0) {
 
   <div class="card shadow-sm">
     <div class="card-body">
+      <?php if ($readOnly): ?>
+        <div class="alert alert-warning" role="status"><?= h(financialEventBlockedMessage((int)$uctenka['udalost_id'])) ?></div>
+      <?php endif; ?>
       <form id="formular-uctenka" enctype="multipart/form-data">
+        <fieldset <?= $readOnly ? 'disabled' : '' ?>>
         <?= csrf_field() ?>
         <input type="hidden" name="id" value="<?= $id ?>">
 
@@ -121,8 +133,8 @@ if ($id > 0) {
             <select name="udalost_id" id="udalost_id" class="form-select">
               <option value="">—</option>
               <?php foreach ($udalosti as $e): ?>
-                <option value="<?= $e['id'] ?>" <?= $e['id'] == ($uctenka['udalost_id'] ?? '') ? 'selected' : '' ?>>
-                  <?= h($e['nazev']) ?>
+                <option value="<?= $e['id'] ?>" <?= $e['id'] == ($uctenka['udalost_id'] ?? '') ? 'selected' : '' ?> <?= $e['stav'] !== 'otevrena' ? 'disabled' : '' ?>>
+                  <?= h($e['nazev']) ?><?= $e['stav'] !== 'otevrena' ? ' — uzavřená / nelze měnit' : '' ?>
                 </option>
               <?php endforeach; ?>
             </select>
@@ -193,6 +205,7 @@ if ($id > 0) {
             <i class="bi bi-arrow-left me-1"></i>Zpět
           </a>
         </div>
+        </fieldset>
       </form>
     </div>
   </div>

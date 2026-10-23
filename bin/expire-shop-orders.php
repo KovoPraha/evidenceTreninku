@@ -26,7 +26,10 @@ try{
     foreach(['DB_HOST','DB_NAME','DB_USER','DB_PASS']as$constant)if(!defined($constant))throw new RuntimeException('missing_database_configuration');
     require_once $root.'/includes/shop_checkout.php';
     $pdo=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]);
+    require_once $root.'/includes/operational_jobs.php';
+    if($apply)$jobRun=operationalJobStart($pdo,'order_expiration');
     $summary=shopOrderExpireBatch($pdo,$now??new DateTimeImmutable('now'),$apply,$limit);
+    if(isset($jobRun))operationalJobFinish($pdo,$jobRun,$summary['failed']===0,$summary['failed']===0?'completed':'expiration_failed');
     $summary['mode']=$apply?'apply':'dry-run';
     if($json)echo json_encode($summary,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR).PHP_EOL;
     else{
@@ -34,4 +37,4 @@ try{
         foreach($summary['results']as$result)echo $result['public_code'].' #'.$result['order_id'].' '.$result['status'].(isset($result['error'])?' - '.$result['error']:'').PHP_EOL;
     }
     exit($summary['failed']>0?2:0);
-}catch(Throwable $exception){fwrite(STDERR,'Expirace objednávek selhala: '.$exception->getMessage().PHP_EOL);exit(1);}
+}catch(Throwable $exception){if(isset($jobRun,$pdo)){try{operationalJobFinish($pdo,$jobRun,false,'worker_exception');}catch(Throwable){}}fwrite(STDERR,'Expirace objednávek selhala: '.$exception->getMessage().PHP_EOL);exit(1);}

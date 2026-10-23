@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/notification_delivery_guard.php';
 
 require_once __DIR__ . '/family_weekly_summary.php';
 require_once __DIR__ . '/local_message_outbox.php';
@@ -153,6 +154,7 @@ function familyWeeklyDeliveryGenerate(
                 (string)$preview['subject'], (string)$preview['body'], (int)($preview['counts']['total'] ?? count($preview['items'] ?? [])),
             ]);
             $id = (int)$pdo->lastInsertId();
+            notificationAuthorizationRecord($pdo,'family_weekly_summaries',$id,$accountId);
             familyWeeklyDeliveryAudit($pdo, $id, $accountId, 'enqueue', null, 'pending', 'Souhrn byl idempotentně zařazen do fronty.');
             $pdo->commit();
             $result['queued']++;
@@ -175,11 +177,11 @@ function familyWeeklyDeliveryClaim(PDO $pdo, string $actorType = 'system', ?int 
     try {
         $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
         $stale = $mysql ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE' : "datetime('now','-15 minutes')";
+        notificationQueueHoldStale($pdo,'family_weekly_summaries',$stale);
         $sql = 'SELECT n.* FROM family_weekly_summaries n '
             . 'JOIN family_weekly_summary_preferences p ON p.account_id=n.account_id '
             . 'JOIN verejni_uzivatele a ON a.id=n.account_id '
-            . "WHERE p.enabled=1 AND a.aktivni=1 AND a.email_overeno=1 AND ((n.status='pending' AND n.available_at<=CURRENT_TIMESTAMP) "
-            . "OR (n.status='processing' AND n.claimed_at<" . $stale . ')) ORDER BY n.available_at,n.id LIMIT 1';
+            . "WHERE p.enabled=1 AND a.aktivni=1 AND a.email_overeno=1 AND n.status='pending' AND n.available_at<=CURRENT_TIMESTAMP ORDER BY n.available_at,n.id LIMIT 1";
         if ($mysql) $sql .= ' FOR UPDATE';
         $row = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         if (!$row) {
@@ -234,10 +236,14 @@ function familyWeeklyDeliveryProcessOne(PDO $pdo, callable $sender, string $acto
     $row = familyWeeklyDeliveryClaim($pdo, $actorType, $actorId);
     if ($row === null) return null;
     try {
+        if (!notificationAuthorizationCurrent($pdo,'family_weekly_summaries',$row)) {
+            notificationQueueHold($pdo,'family_weekly_summaries',$row,'delivery_blocked: oprávnění nebo kontakt se změnily; ověřit rodinu.');
+            return false;
+        }
         $sent = $sender((string)$row['recipient_email'], (string)$row['subject_plain'], (string)$row['body_plain']);
     } catch (Throwable $exception) {
         try {
-            familyWeeklyDeliveryComplete($pdo, (int)$row['id'], (string)$row['claim_token'], false, 'Transport vyvolal chybu typu ' . get_class($exception) . '.', $actorType, $actorId);
+            notificationQueueHold($pdo,'family_weekly_summaries',$row,'delivery_unknown: ověřit oprávnění a doručení před opakováním.');
         } catch (FamilyWeeklyDeliveryException) {
             // Opt-out may safely cancel a claimed row while a local sender is finishing.
         }

@@ -1,0 +1,13 @@
+{
+    "status": "PASS",
+    "stock_variants_reconciled": 14,
+    "database": "evidence_b4_restore_c59e68e2",
+    "tables": 288,
+    "new_owned_tables": 16,
+    "triggers": 2,
+    "private_references_checked": 42,
+    "backup_sha256": "d8f9ccec3cd0addd67e01d4440f49168914163d72cfac4a34b05c0c9a2155fee",
+    "private_storage_restored": true,
+    "private_files_restored": 65,
+    "private_archive_sha256": "b23b0433629495e3b972310fe8bac5d8f1b61011d8104eee4b76cb97bb3128fa"
+}

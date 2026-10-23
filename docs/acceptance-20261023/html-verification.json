@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "checks": 12,
+  "scenarios": 43,
+  "external_requests_allowed": false,
+  "human_uat": false,
+  "checks_exercised": [
+    "initial states",
+    "search",
+    "priority",
+    "role",
+    "local persistence",
+    "JSON export",
+    "JSON import roundtrip",
+    "production authorization false",
+    "reset to clean state",
+    "desktop screenshot",
+    "mobile no horizontal overflow",
+    "accountant page and no JS errors"
+  ]
+}

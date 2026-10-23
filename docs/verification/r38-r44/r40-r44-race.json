@@ -1,0 +1,17 @@
+{
+    "status": "PASS",
+    "database": "evidence_cutover_race_1aef79a7",
+    "checks": 3,
+    "two_real_lock_waits": true,
+    "results": [
+        {
+            "status": "ok",
+            "id": 1
+        },
+        {
+            "status": "denied",
+            "message": "Registr se změnil. Obnovte náhled a zapište novou verzi."
+        }
+    ],
+    "production_mutations": false
+}

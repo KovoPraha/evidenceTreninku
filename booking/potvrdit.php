@@ -36,36 +36,12 @@ if ($method === 'POST' && !csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
     $msg = 'Načítáme bezpečný náhled rezervace…';
 } elseif ($token !== '' && $akce !== '') {
     if ($method === 'POST' && ($_POST['faze'] ?? '') === 'potvrdit') {
-        $reservation = one_time_booking_approval_consume($pdo, $token, $akce);
+        $reservation = one_time_booking_approval_consume($pdo, $token, $akce, null, static function (PDO $db, int $id, string $action): void { bookingNotificationEnqueue($db, $id, $action === 'potvrdit' ? 'confirmed' : 'rejected'); });
         if ($reservation) {
             $ok = true;
             $msg = $akce === 'potvrdit' ? 'Rezervace potvrzena.' : 'Rezervace zamítnuta.';
 
-            $terminInfo = !empty($reservation['slot_cas_od']) && !empty($reservation['slot_cas_do'])
-                ? 'Datum: ' . $reservation['datum'] . ', Slot: '
-                    . substr((string)$reservation['slot_cas_od'], 0, 5) . '–'
-                    . substr((string)$reservation['slot_cas_do'], 0, 5)
-                : 'Datum: ' . $reservation['datum'] . ', '
-                    . substr((string)$reservation['cas_od'], 0, 5) . '–'
-                    . substr((string)$reservation['cas_do'], 0, 5);
-
-            if ($akce === 'potvrdit') {
-                $subject = 'Rezervace potvrzena — ' . $reservation['nazev'];
-                $body = "Dobrý den {$reservation['jmeno']},\n\nVaše rezervace byla potvrzena trenérem:\n"
-                    . "Lekce: {$reservation['nazev']}\n{$terminInfo}\n\nTěšíme se na Vás!";
-            } else {
-                notifyWaitingList(
-                    $pdo,
-                    (int)$reservation['lekce_id'],
-                    (string)($reservation['slot_cas_od'] ?? '')
-                );
-                $subject = 'Rezervace zamítnuta — ' . $reservation['nazev'];
-                $body = "Dobrý den {$reservation['jmeno']},\n\nBohužel Vaše žádost o rezervaci byla zamítnuta.\n"
-                    . "{$terminInfo}\nV případě dotazů nás kontaktujte.";
-            }
-
-            @mail((string)$reservation['email'], $subject, $body,
-                "From: evidence@kovopraha.cz\r\nContent-Type: text/plain; charset=utf-8");
+            if ($akce === 'zamit') notifyWaitingList($pdo, (int)$reservation['lekce_id'], (string)($reservation['slot_cas_od'] ?? ''));
         } else {
             $msg = 'Odkaz není platný, expiroval nebo byla rezervace již zpracována.';
         }

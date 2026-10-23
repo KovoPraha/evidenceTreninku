@@ -1,0 +1,9 @@
+{
+    "database": "evidence_b2_coach_scope",
+    "checks": 9,
+    "revoke_after_precheck": "PASS",
+    "write_lock_serializes_revoke": "PASS",
+    "observed_mariadb_lock_wait": true,
+    "authorized_writes": 1,
+    "next_request_denied": true
+}

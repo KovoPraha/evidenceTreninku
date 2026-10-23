@@ -20,6 +20,7 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     exit;
 }
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/training_closure.php';
 
 $treninkId = $_POST['trenink_id'] ?? '';
 $poznamka  = $_POST['poznamka'] ?? '';
@@ -45,14 +46,19 @@ if (!$isAdmin) {
 $poznamkaClean = trim((string)$poznamka);
 
 try {
+    $pdo->beginTransaction();
+    trainingClosureAssertTraining($pdo,$treninkId,$userId);
+    trainingClosureAssertLegacyMutable($pdo,$treninkId);
     $stmt = $pdo->prepare('UPDATE treninky SET poznamka = :poz WHERE id = :id');
     $stmt->execute([
         ':poz' => $poznamkaClean === '' ? null : $poznamkaClean,
         ':id'  => $treninkId,
     ]);
+    $pdo->commit();
     echo json_encode(['ok' => true, 'message' => 'Uloženo.', 'poznamka' => $poznamkaClean]);
 } catch (Exception $e) {
+    if($pdo->inTransaction())$pdo->rollBack();
     error_log('ajax_update_poznamka: '.$e->getMessage());
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'message' => 'Poznámku se nepodařilo bezpečně uložit.']);
+    http_response_code($e instanceof TrainingClosureException?422:500);
+    echo json_encode(['ok' => false, 'message' => $e instanceof TrainingClosureException?$e->getMessage():'Poznámku se nepodařilo bezpečně uložit.']);
 }

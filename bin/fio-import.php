@@ -19,11 +19,14 @@ try{
     $startEnv=getenv('FIO_IMPORT_START_DATE');
     $startDate=is_string($startEnv)&&$startEnv!==''?$startEnv:(defined('FIO_IMPORT_START_DATE')&&is_string(FIO_IMPORT_START_DATE)&&FIO_IMPORT_START_DATE!==''?FIO_IMPORT_START_DATE:null);
     $pdo=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]);
+    require_once $root.'/includes/operational_jobs.php';
+    $jobRun=operationalJobStart($pdo,'fio_import');
     // Zdrojem pravdy o klubovém účtu je databáze; konstanta je jen záloha.
     try{$clubIban=shopBankSettingsEffective($pdo)['iban'];}catch(Throwable){throw new RuntimeException('shop_bank_iban_missing');}
     if((int)$pdo->query("SELECT GET_LOCK('evidence:fio-readonly-import',0)")->fetchColumn()!==1)throw new RuntimeException('fio_import_already_running');
     try{
         $result=fioSynchronize($pdo,$clubIban,static fn(string $from,string $to):string=>fioFetchPeriodJson($token,$from,$to),$to,$autoConfirm,$lookback,$startDate);
     }finally{$pdo->query("SELECT RELEASE_LOCK('evidence:fio-readonly-import')");}
+    operationalJobFinish($pdo,$jobRun,true);
     echo json_encode($result,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).PHP_EOL;
-}catch(Throwable $exception){error_log('fio-import.php: '.$exception->getMessage());fwrite(STDERR,"Fio import selhal; token ani bankovni data nebyla vypsana. Detail je v serverovem logu.\n");exit(1);}
+}catch(Throwable $exception){if(isset($jobRun,$pdo)){try{operationalJobFinish($pdo,$jobRun,false,'worker_exception');}catch(Throwable){}}error_log('fio-import.php: '.$exception->getMessage());fwrite(STDERR,"Fio import selhal; token ani bankovni data nebyla vypsana. Detail je v serverovem logu.\n");exit(1);}

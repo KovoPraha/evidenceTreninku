@@ -6,6 +6,11 @@ const PRIVATE_STORAGE_STRESS_TESTS = 'stress-tests';
 const PRIVATE_STORAGE_ATHLETE_PHOTOS = 'athlete-photos';
 const PRIVATE_STORAGE_SERVICE_DOCUMENTS = 'service-documents';
 const PRIVATE_STORAGE_UCI_TEMP = 'uci-temp';
+const PRIVATE_STORAGE_PAPER_DOCUMENTS = 'paper-documents';
+const PRIVATE_STORAGE_ACCOUNTING_DOCUMENTS = 'accounting-documents';
+const PRIVATE_STORAGE_ACCOUNTING_EXPORTS = 'accounting-exports';
+const PRIVATE_STORAGE_STOCK_DOCUMENTS = 'stock-documents';
+const PRIVATE_STORAGE_MEDICAL_DOCUMENTS = 'medical-documents';
 const PRIVATE_STORAGE_DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const PRIVATE_STORAGE_MAX_BATCH_FILES = 12;
 const PRIVATE_STORAGE_MAX_BATCH_BYTES = 30 * 1024 * 1024;
@@ -65,6 +70,11 @@ function privateStorageEnsureDirectory(string $category): string
         PRIVATE_STORAGE_ATHLETE_PHOTOS,
         PRIVATE_STORAGE_SERVICE_DOCUMENTS,
         PRIVATE_STORAGE_UCI_TEMP,
+        PRIVATE_STORAGE_PAPER_DOCUMENTS,
+        PRIVATE_STORAGE_ACCOUNTING_DOCUMENTS,
+        PRIVATE_STORAGE_ACCOUNTING_EXPORTS,
+        PRIVATE_STORAGE_STOCK_DOCUMENTS,
+        PRIVATE_STORAGE_MEDICAL_DOCUMENTS,
     ], true)) {
         throw new InvalidArgumentException('Neplatna kategorie soukromeho souboru.');
     }
@@ -134,7 +144,8 @@ function privateStorageValidateUploadBatch(
 
 function privateStorageResolve(string $key): ?string
 {
-    if (preg_match('~^private://(receipts|stress-tests|athlete-photos|service-documents)/([a-f0-9]{32}\.(?:jpg|png|pdf))$~D', $key, $match) !== 1
+    if (preg_match('~^private://(receipts|stress-tests|athlete-photos|service-documents|paper-documents|medical-documents|accounting-documents|stock-documents)/([a-f0-9]{32}\.(?:jpg|png|pdf))$~D', $key, $match) !== 1
+        && preg_match('~^private://(accounting-exports)/([a-f0-9]{32}\.zip)$~D', $key, $match) !== 1
         && preg_match('~^private://(uci-temp)/([a-f0-9]{32}\.xlsx)$~D', $key, $match) !== 1
     ) {
         return null;

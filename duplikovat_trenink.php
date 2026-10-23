@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 if (!isset($_SESSION['trener_id'])) {
@@ -48,6 +49,7 @@ try {
         WHERE 1=1
     ";
     $params = [];
+    $sql .= ' AND '.coachScopeTrainingPredicate($pdo);
     if ($filterGroup !== '') {
         $sql .= ' AND tsk.skupina_id = ?';
         $params[] = (int)$filterGroup;

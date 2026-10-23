@@ -1,0 +1,51 @@
+{
+    "database": "evidence_shop_auth_ab855cc1",
+    "checks": 6,
+    "results": [
+        {
+            "helper": "inventory",
+            "revocation": "position",
+            "observed_lock_wait": true,
+            "result": "denied",
+            "passed": true
+        },
+        {
+            "helper": "inventory",
+            "revocation": "superadmin",
+            "observed_lock_wait": true,
+            "result": "denied",
+            "passed": true
+        },
+        {
+            "helper": "inventory",
+            "revocation": "inactive",
+            "observed_lock_wait": true,
+            "result": "denied",
+            "passed": true
+        },
+        {
+            "helper": "return",
+            "revocation": "position",
+            "observed_lock_wait": true,
+            "result": "denied",
+            "passed": true
+        },
+        {
+            "helper": "return",
+            "revocation": "superadmin",
+            "observed_lock_wait": true,
+            "result": "denied",
+            "passed": true
+        },
+        {
+            "helper": "return",
+            "revocation": "inactive",
+            "observed_lock_wait": true,
+            "result": "denied",
+            "passed": true
+        }
+    ],
+    "unauthorized_writes": 0,
+    "passed": true,
+    "production_mutations": false
+}

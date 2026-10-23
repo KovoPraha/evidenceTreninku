@@ -1,0 +1,67 @@
+{
+  "database": "evidence_reward_race_93c4ab49",
+  "checks": 12,
+  "results": [
+    {
+      "scenario": "payout",
+      "two_real_lock_waits": true,
+      "results": [
+        {
+          "status": "ok",
+          "id": 1
+        },
+        {
+          "status": "denied",
+          "message": "Pohyb neodpovídá schválenému doplatku nebo přeplatku odměny."
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "scenario": "retry",
+      "two_real_lock_waits": true,
+      "results": [
+        {
+          "status": "ok",
+          "id": 2
+        },
+        {
+          "status": "ok",
+          "id": 2
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "scenario": "overlap",
+      "two_real_lock_waits": true,
+      "results": [
+        {
+          "status": "ok",
+          "id": 3
+        },
+        {
+          "status": "denied",
+          "message": "Období se překrývá s již předloženým nárokem. Opravte jeho verzi."
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "scenario": "return",
+      "two_real_lock_waits": true,
+      "results": [
+        {
+          "status": "ok",
+          "id": 3
+        },
+        {
+          "status": "denied",
+          "message": "Návrat přesahuje dosud nevrácenou část původní výplaty."
+        }
+      ],
+      "status": "PASS"
+    }
+  ],
+  "production_mutations": false
+}

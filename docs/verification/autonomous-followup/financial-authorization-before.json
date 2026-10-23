@@ -1,0 +1,155 @@
+{
+    "database": "evidence_membership_auth_e9d70021",
+    "production_mutations": false,
+    "checks": 13,
+    "results": [
+        {
+            "guard": "admission",
+            "revoked_grant": "role",
+            "real_lock_wait": true,
+            "authorized_before_revocation_commit": false,
+            "worker": {
+                "status": "denied",
+                "message": "Přijetí vyžaduje aktuální oprávnění registráře."
+            },
+            "post_revocation_write_count": 0,
+            "status": "PASS"
+        },
+        {
+            "guard": "admission",
+            "revoked_grant": "superadmin",
+            "real_lock_wait": true,
+            "authorized_before_revocation_commit": false,
+            "worker": {
+                "status": "denied",
+                "message": "Přijetí vyžaduje aktuální oprávnění registráře."
+            },
+            "post_revocation_write_count": 0,
+            "status": "PASS"
+        },
+        {
+            "guard": "operational",
+            "revoked_grant": "role",
+            "real_lock_wait": true,
+            "authorized_before_revocation_commit": false,
+            "worker": {
+                "status": "denied",
+                "message": "Pracovní oprávnění již neplatí."
+            },
+            "post_revocation_write_count": 0,
+            "status": "PASS"
+        },
+        {
+            "guard": "operational",
+            "revoked_grant": "superadmin",
+            "real_lock_wait": true,
+            "authorized_before_revocation_commit": false,
+            "worker": {
+                "status": "denied",
+                "message": "Pracovní oprávnění již neplatí."
+            },
+            "post_revocation_write_count": 0,
+            "status": "PASS"
+        },
+        {
+            "guard": "sports",
+            "revoked_grant": "role",
+            "real_lock_wait": true,
+            "authorized_before_revocation_commit": false,
+            "worker": {
+                "status": "denied",
+                "message": "Pracovní oprávnění již neplatí."
+            },
+            "post_revocation_write_count": 0,
+            "status": "PASS"
+        },
+        {
+            "guard": "coach_manager",
+            "revoked_grant": "role",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "guard": "coach_manager",
+            "revoked_grant": "superadmin",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "guard": "ledger",
+            "revoked_grant": "role",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "guard": "ledger",
+            "revoked_grant": "superadmin",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "guard": "adjustment",
+            "revoked_grant": "role",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "guard": "adjustment",
+            "revoked_grant": "superadmin",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "guard": "export",
+            "revoked_grant": "role",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        },
+        {
+            "guard": "export",
+            "revoked_grant": "superadmin",
+            "real_lock_wait": false,
+            "authorized_before_revocation_commit": true,
+            "worker": {
+                "status": "ok"
+            },
+            "post_revocation_write_count": 1,
+            "status": "FAIL"
+        }
+    ]
+}

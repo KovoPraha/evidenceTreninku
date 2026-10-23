@@ -7,6 +7,7 @@ if (!isset($_SESSION['trener_id'])) {
 }
 
 require_once 'db.php';
+require_once __DIR__.'/includes/coach_scope.php';
 
 // ---- Načtení filtrů z GET ----
 $q            = trim($_GET['q'] ?? '');
@@ -41,6 +42,7 @@ $sql = "
     WHERE 1=1
 ";
 $params = [];
+$sql .= ' AND '.coachScopePersonPredicate($pdo);
 
 // filtr podle jména
 if ($q !== '') {
