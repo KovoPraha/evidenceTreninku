@@ -72,3 +72,12 @@ Doklad rozhodnutí musí určit osobu, datum, rozsah, konkrétní verzi podkladu
 a důvod. Změna vstupu nebo relevantního cíle vyžaduje nové posouzení.
 Provozní záznam lze následně uložit v příslušné administraci; tento pracovní
 registr sám nemění role, pravidla, platby, členství ani stav předání účetní.
+
+## Doplnění pro balík E — 24. 10. 2026
+
+[Společná technická přejímka](verification/final-system-20261024/RESULTS.md)
+ověřila propojení agend včetně e-shopu, účetních podkladů, souběhů a obnovy.
+Připraven je nový syntetický vzorek předání účetní s původní a opravenou revizí.
+Žádné rozhodnutí D01–D20 tím není uzavřeno. Stav uživatelského převzetí i převzetí
+účetní zůstává NEPROVEDENO / NEPŘEVZATO. Produkce a skutečné integrační transporty
+nebyly v tomto balíku kontaktované, změněné ani aktivované.

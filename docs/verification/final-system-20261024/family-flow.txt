@@ -1,0 +1,5 @@
+Read-only accounting audit and isolated corruption detection OK
+Family order -> issued PDF -> receipts -> XLSX/ZIP -> correction/refund -> immutable revision accounting acceptance OK
+Read-only stock audit: balances, handoff, refund and PDF corruption detected; no domain writes OK
+Stock issue -> owned blocked return -> inspection -> correction -> actual refund -> stock PDF/accounting ZIP acceptance OK
+MariaDB concurrent checkout, payment idempotency, last-place rollback, mixed siblings/coupon/stock/accounting/partial receipts/overpayment/handover smoke OK

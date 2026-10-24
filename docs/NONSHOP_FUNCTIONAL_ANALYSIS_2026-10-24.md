@@ -249,3 +249,12 @@ mapa nahrazovaných postupů. [Implementace a ověření](verification/season-op
 rozlišují hotový kód od nevyřešených provozních podkladů D03/D07/D10–D17.
 Skutečné převody a odstavení zůstávají odložené. E-shop nebyl do balíku D zahrnut;
 společná přejímka E v této práci nezačala.
+
+## Následná společná přejímka E — 24. 10. 2026
+
+Dokončena autonomní technická přejímka balíků A–D společně s e-shopem, sklady,
+doklady a exporty. [Protokol a důkazy](verification/final-system-20261024/RESULTS.md)
+zahrnují 25 společných běhů, celou regresní sadu, souběh zápisů, obnovení zálohy
+a nový syntetický vzorek pro účetní. Opravena migrace indexu variabilního symbolu
+a přechod ze starých obrazovek odměn do současné agendy. Lidské převzetí,
+rozhodnutí D01–D20 a produkční nasazení zůstávají oddělené a neprovedené.

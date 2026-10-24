@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "checks": 10,
+  "scenarios": [
+    "Frozen migration checksum is unchanged",
+    "All single-column unique indexes detected independently of index ordering",
+    "Fresh install corrected execution passes without warnings",
+    "Existing payment identifiers and leading-zero symbols remain exact",
+    "Second charge can reuse payer variable symbol",
+    "Canonical payable and composite constraints remain enforced",
+    "Canonical payable and composite constraints remain enforced",
+    "Forward migration identifies a previously missed unique symbol index",
+    "Forward repair is idempotent and preserves all historical values",
+    "Corrected legacy execution is idempotent"
+  ],
+  "synthetic_only": true,
+  "production_mutations": false
+}
