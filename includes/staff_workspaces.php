@@ -92,6 +92,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'kis_sync_center.php', 'label' => 'KIS centrum', 'description' => 'Import a konflikty osob', 'icon' => 'arrow-repeat'],
                     ['route' => 'kis_person_import_admin.php', 'label' => 'Osoby ze starého KIS', 'description' => 'Úplné osoby, kontakty a zdrojové vazby', 'icon' => 'person-lines-fill'],
                     ['route' => 'kis_rosters_admin.php', 'label' => 'Týmy a soupisky', 'description' => 'Sezony, týmy a členství', 'icon' => 'people-fill'],
+                    ['route'=>'season_preparation_admin.php','label'=>'Příprava dalšího období','description'=>'Pokračující osoby, svěření trenérům a navazující lekce','icon'=>'calendar-range'],
                     ['route' => 'kis_roster_hierarchy_admin.php', 'label' => 'Skupiny a soupisky', 'description' => 'Hierarchie a časová platnost', 'icon' => 'diagram-3'],
                     ['route' => 'kis_legacy_rosters_admin.php', 'label' => 'Soupisky ze starého KIS', 'description' => 'Historie 2025/26 a případy k rozhodnutí', 'icon' => 'clipboard-check'],
                     ['route' => 'kis_current_rosters_admin.php', 'label' => 'Převod soupisek 2026/27', 'description' => 'Aktivní přiřazení a nejasné vazby', 'icon' => 'arrow-right-circle'],
@@ -240,6 +241,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'provozni_prehled_admin.php', 'label' => 'Kontrolní přehled', 'description' => 'Read-only souhrn provozních výjimek', 'icon' => 'speedometer2'],
                     ['route' => 'uat_readiness_admin.php', 'label' => 'Připravenost UAT', 'description' => 'Read-only brána produkčního uživatelského testu', 'icon' => 'clipboard2-check'],
                     ['route'=>'club_cutover_admin.php','label'=>'Příprava přechodu','description'=>'Zdroje, odpovědnosti, kontrolní snímky a podmínky přechodu','icon'=>'signpost-split'],
+                    ['route'=>'club_communication_admin.php','label'=>'Stav komunikace','description'=>'Fronty zpráv a meze ověření doručení','icon'=>'envelope-paper'],
                     ['route' => 'testovaci_scenare.php', 'label' => 'Lokální testovací scénáře', 'description' => 'Pouze localhost', 'icon' => 'check2-square', 'local_only' => true],
                 ]],
             ],
@@ -371,6 +373,8 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'season_preparation_admin.php'=>['sports_lead'],
+        'club_communication_admin.php'=>['registrar','order_operator'],
         'club_rewards_admin.php'=>['coach','sports_lead'],
         'medical_clearance_status.php'=>['sports_lead','registrar'],
         'medical_activity_admin.php'=>['sports_lead','registrar'],

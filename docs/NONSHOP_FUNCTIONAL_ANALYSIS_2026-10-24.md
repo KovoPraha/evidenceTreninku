@@ -240,3 +240,12 @@ veškeré ověřování až na konec, ale nemá nahrazovat funkční dokončová
 - Skutečná pravidla členství, sazby odměn, schvalovatelé, obsah původních webů
   a sporné historické vazby jsou podklady k rozhodnutí. Neurčuje je počet testů
   ani automatický odhad. Jejich nevyřešení nemá brzdit nezávislé úkoly balíku A.
+
+## Následná implementace balíku D — 24. 10. 2026
+
+Dokončen místní průvodce pokračováním období, komunikace s trvalými skupinami,
+osobní kontakt u chybějícího ověřeného účtu, pravdivý přehled front a verzovaná
+mapa nahrazovaných postupů. [Implementace a ověření](verification/season-operations-20261024/RESULTS.md)
+rozlišují hotový kód od nevyřešených provozních podkladů D03/D07/D10–D17.
+Skutečné převody a odstavení zůstávají odložené. E-shop nebyl do balíku D zahrnut;
+společná přejímka E v této práci nezačala.

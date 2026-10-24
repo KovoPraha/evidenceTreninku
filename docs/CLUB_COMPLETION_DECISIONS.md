@@ -52,6 +52,22 @@ pod D05. Balík C je neodhaduje. Syntetická sazba v přejímce není klubové r
 Sporné vazby původních akcí a dokladů zůstávají pod D07/D08; shoda času a vozidla
 nepřiřazuje skutečnou jízdu k akci. Žádná stará agenda se tím nevypíná.
 
+## Doplnění pro balík D — 24. 10. 2026
+
+Příprava období, přehled komunikace a verzovaná mapa starých postupů jsou
+implementované a ověřené lokálně. [Výsledky a rozsah](verification/season-operations-20261024/RESULTS.md)
+a [pracovní mapa](verification/season-operations-20261024/MAPA_PRECHODU.md)
+nezakládají skutečné vlastnictví agendy ani termín přechodu.
+
+D03/D17 stále určují pravidla pokračování členství. D07/D10/D11 vyžadují konkrétní
+staré obrazovky, identity a rozsah historie. D12 vyžaduje vlastníka a zástupce
+komunikace, četnost běhů, transport a povolený přejímací kontakt. D13–D16 vyžadují
+jmenovanou obsluhu, jediný skutečný zapisující systém, datum přepnutí, pilot,
+obnovu a samostatné povolení skutečného převodu či odstavení.
+
+Tyto odpovědi nebyly odhadnuty. Žádné zprávy se nezapnuly, žádná skutečná mapa
+nebyla automaticky založena a původní Evidence/KIS nebyly měněny.
+
 Doklad rozhodnutí musí určit osobu, datum, rozsah, konkrétní verzi podkladu
 a důvod. Změna vstupu nebo relevantního cíle vyžaduje nové posouzení.
 Provozní záznam lze následně uložit v příslušné administraci; tento pracovní
