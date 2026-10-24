@@ -1,9 +1,11 @@
 # Balík E — společná technická přejímka systému
 
-Následné ověření 24. 10.: [Linux CI a přejímka v prohlížeči](../linux-browser-20261024/RESULTS.md)
-uzavírají níže původně uvedenou mezeru tří přeskočených unixových testů a doplňují
-19 úspěšných kontrol v Chrome. Stažení ZIP v tomto profilu Chrome zůstává
-blokované. Níže je zachovaný původní rozsah a důkaz předchozího běhu.
+Aktuální sjednocený stav: [uzavření technické přejímky](../final-closure-20261024/RESULTS.md).
+[Linux CI a prohlížeč](../linux-browser-20261024/RESULTS.md) uzavřely mezeru tří
+přeskočených unixových testů. [Navazující předání účetní](../accountant-handover-20261024/RESULTS.md)
+ověřilo také skutečné stažení ZIP v Chrome; původní blokace již není otevřená.
+Následně byl doplněn souvislý HTTP průchod náhrad tréninků. Níže je zachovaný
+původní rozsah a důkaz předchozího běhu, nikoli seznam aktuálních blokátorů.
 
 24. 10. 2026. Navazuje na balíky A–D, základ `d14ee589`, místní větev
 `codex/final-system-acceptance-20261024` v `evidencePavel-finance-b1-20261022`.

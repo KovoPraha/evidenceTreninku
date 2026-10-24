@@ -7,7 +7,7 @@ $output = Join-Path $appRoot 'output/final-system'
 $scripts = @(
  'FinanceB1HttpAcceptance','FinanceB1RouterHttpAcceptance','ClubFoundationHttpAcceptance',
  'MemberAdmissionHttpAcceptance','DailyCoachRegistrarHttpAcceptance','PersonLifeDocumentsHttpAcceptance',
- 'TrainingClosureHttpAcceptance','SportsActivityHttpAcceptance','MedicalClearanceHttpAcceptance',
+ 'TrainingClosureHttpAcceptance','MakeupJourneyHttpAcceptance','SportsActivityHttpAcceptance','MedicalClearanceHttpAcceptance',
  'ClubAdministrationHttpAcceptance','ClubExpensesHttpAcceptance','ClubRewardsHttpAcceptance',
  'SeasonOperationsHttpAcceptance','ShopInventoryHttpAcceptance','ShopFulfillmentHttpAcceptance',
  'ShopReturnsHttpAcceptance','AccountingLedgerHttpAcceptance','AccountingDocumentsHttpAcceptance',
