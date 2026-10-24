@@ -1,0 +1,55 @@
+{
+  "release": "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93",
+  "source": "git blob bytes; no Windows line-ending conversion",
+  "ok": true,
+  "checks": [
+    {
+      "file": "includes/accounting_export.php",
+      "expected_sha256": "b73936af141024b870e6870ea9589e05fbaf98cf7daa8fe31a8c2b2743435e34",
+      "production_sha256": "b73936af141024b870e6870ea9589e05fbaf98cf7daa8fe31a8c2b2743435e34",
+      "match": true
+    },
+    {
+      "file": "includes/accounting_adjustments.php",
+      "expected_sha256": "98e3550bd9a04fc7608e46acc9c2ba96f2292c6a0873f43c74730f942d9a7905",
+      "production_sha256": "98e3550bd9a04fc7608e46acc9c2ba96f2292c6a0873f43c74730f942d9a7905",
+      "match": true
+    },
+    {
+      "file": "includes/accounting_ledger.php",
+      "expected_sha256": "03d73a29204d7b9e7879b48a026815a6d787f3c9cb0b07beafad1c200082ec0a",
+      "production_sha256": "03d73a29204d7b9e7879b48a026815a6d787f3c9cb0b07beafad1c200082ec0a",
+      "match": true
+    },
+    {
+      "file": "includes/shop_inventory.php",
+      "expected_sha256": "eecf8b42ea762774dfc3219b27502d30747df5e9ca396b8a6d6829060b040816",
+      "production_sha256": "eecf8b42ea762774dfc3219b27502d30747df5e9ca396b8a6d6829060b040816",
+      "match": true
+    },
+    {
+      "file": "includes/shop_fulfillment.php",
+      "expected_sha256": "3ff547e2bccaff35e084defbe535ea7ef099e3c891d716e56b0908602a68b93b",
+      "production_sha256": "3ff547e2bccaff35e084defbe535ea7ef099e3c891d716e56b0908602a68b93b",
+      "match": true
+    },
+    {
+      "file": "includes/shop_returns.php",
+      "expected_sha256": "cc7ca899797586187682baf480c1c3f1524029e65ef51b51d8d9d0f63d35fbb7",
+      "production_sha256": "cc7ca899797586187682baf480c1c3f1524029e65ef51b51d8d9d0f63d35fbb7",
+      "match": true
+    },
+    {
+      "file": "includes/accounting_stock_export.php",
+      "expected_sha256": "52d0cbaa7728056d7b3c069e530236d9abd046ee6e7b2c0679aaed0cc4a0d051",
+      "production_sha256": "52d0cbaa7728056d7b3c069e530236d9abd046ee6e7b2c0679aaed0cc4a0d051",
+      "match": true
+    },
+    {
+      "file": "includes/shop_stock_documents.php",
+      "expected_sha256": "cb3b145a852a11a49c70cab3cbf27b32fd9cabeb0f6ee80a5843e818240adbf3",
+      "production_sha256": "cb3b145a852a11a49c70cab3cbf27b32fd9cabeb0f6ee80a5843e818240adbf3",
+      "match": true
+    }
+  ]
+}

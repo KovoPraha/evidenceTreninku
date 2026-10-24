@@ -1,5 +1,9 @@
 # Sklady, výdeje, vratky a účetní návaznosti — 24. 10. 2026
 
+Navazující stav: oprava byla následně na výslovné zadání nasazena; aktuální
+[produkční protokol](../stock-production-20261024/RESULTS.md) obsahuje živé počty
+a limity ověření. Níže zůstává záznam původního izolovaného kola před nasazením.
+
 Rozsah: zdrojová kontrola a automatická přejímka bez prohlížeče. Všechny testovací
 zápisy proběhly v izolovaných syntetických databázích / dočasném soukromém úložišti.
 Produkce v tomto kole nebyla měněna ani nově čtena. Žádné nasazení, skutečné platby,
