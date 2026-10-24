@@ -82,6 +82,27 @@ final class ShopFulfillmentTest extends TestCase
   $pdo->exec("INSERT INTO accounting_adjustment_events VALUES(1,'decision_cancelled')");self::assertTrue(\shopFulfillmentIssue($pdo,(int)$o['id'],[$item=>1],7,'TEST',date('Y-m-d H:i:s'),'TEST zrušení vratky','test:refundwithdrawn')['changed']);
  }
 
+ public function testReleasedReceiptAllocationsStillBlockIssueForFullRefund():void {
+  $pdo=$this->db();$o=$this->order($pdo);$this->paid($pdo,$o);$item=(int)$o['items'][0]['id'];
+  foreach(['20261022220000_accounting_ledger','20261022221000_accounting_documents','20261022222000_accounting_adjustments'] as $name){$m=require dirname(__DIR__,2).'/migrations/'.$name.'.php';$m['up']($pdo);}
+  $pdo->exec("INSERT INTO accounting_accounts(id,code,name,kind,currency,opened_on,opening_minor,evidence,reason,actor_trainer_id) VALUES(1,'TEST','TEST','bank','CZK','2026-01-01',0,'TEST','TEST',7)");
+  foreach([1=>10000,2=>15000] as $id=>$amount){
+   $pdo->prepare("INSERT INTO accounting_movements(id,account_id,kind,amount_minor,currency,effective_on,source_context,source_reference,request_key,fingerprint,evidence,reason,actor_trainer_id) VALUES(?,1,'income',?,'CZK',?,'test',?,?,?,'TEST','TEST',7)")->execute([$id,$amount,date('Y-m-d'),'receipt-'.$id,'receipt-'.$id,str_repeat('a',64)]);
+   foreach([$amount,-$amount] as $n)$pdo->prepare("INSERT INTO accounting_allocations(movement_id,case_type,case_id,amount_minor,classification_code,activity_code,effective_on,request_key,fingerprint,reason,actor_trainer_id) VALUES(?,'shop_order',?,?,'TEST','TEST',?,?,?,'TEST',7)")->execute([$id,$o['id'],$n,date('Y-m-d'),'alloc-'.$id.'-'.$n,str_repeat('b',64)]);
+   $pdo->prepare("INSERT INTO accounting_refund_decisions(id,original_movement_id,amount_minor,currency,decided_on,reason,actor_trainer_id,request_key,input_hash) VALUES(?,?,?,'CZK',?,'TEST',7,?,?)")->execute([$id,$id,$amount,date('Y-m-d'),'decision-'.$id,str_repeat('c',64)]);
+  }
+  try{\shopFulfillmentIssue($pdo,(int)$o['id'],[$item=>1],7,'TEST',date('Y-m-d H:i:s'),'TEST full refund from split receipts','test:allocated-refund');self::fail('Full receipt refund must block physical issue.');}catch(\ShopCheckoutException $e){self::assertStringContainsString('vrácení',$e->getMessage());}
+  self::assertSame(5,\shopInventoryBalance($pdo,601)['physical_quantity']);self::assertSame(2,\shopInventoryBalance($pdo,601)['reserved_quantity']);self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM shop_fulfillments')->fetchColumn());
+  $pdo->exec("INSERT INTO accounting_adjustment_events(decision_id,event_type,reason,actor_trainer_id,request_key,input_hash) VALUES(1,'decision_cancelled','TEST',7,'cancel-decision','test')");
+  self::assertTrue(\shopFulfillmentIssue($pdo,(int)$o['id'],[$item=>1],7,'TEST',date('Y-m-d H:i:s'),'TEST no longer fully refunded','test:partial-refund-allowed')['changed']);
+ }
+ public function testExplicitOtherOrderRefundDoesNotBlockSharedReceiptHandoff():void {
+  $pdo=$this->db();$o=$this->order($pdo);$other=$this->order($pdo);$this->paid($pdo,$o);$item=(int)$o['items'][0]['id'];
+  $pdo->exec('CREATE TABLE accounting_documents(id INTEGER PRIMARY KEY,kind TEXT,source_type TEXT,source_id INTEGER,status TEXT,snapshot_json TEXT); CREATE TABLE accounting_refund_decisions(id INTEGER PRIMARY KEY,original_movement_id INTEGER,amount_minor INTEGER,original_document_id INTEGER); CREATE TABLE accounting_movements(id INTEGER PRIMARY KEY,case_type TEXT,case_id INTEGER); CREATE TABLE accounting_adjustment_events(decision_id INTEGER,event_type TEXT); CREATE TABLE accounting_movement_sources(movement_id INTEGER,source_type TEXT,source_id INTEGER)');
+  $pdo->prepare("INSERT INTO accounting_documents VALUES(1,'invoice','order',?,'issued','{}')")->execute([$other['id']]);
+  $pdo->prepare("INSERT INTO accounting_movements VALUES(1,'shop_order',?)")->execute([$o['id']]);$pdo->exec('INSERT INTO accounting_refund_decisions VALUES(1,1,25000,1)');
+  self::assertTrue(\shopFulfillmentIssue($pdo,(int)$o['id'],[$item=>1],7,'TEST',date('Y-m-d H:i:s'),'TEST refund belongs to other invoice','test:shared-receipt')['changed']);
+ }
  public function testPartialAllocationBlocksExpiryAndPendingCancellation():void {
   $pdo=$this->db();$o=$this->order($pdo);$pdo->exec('CREATE TABLE club_finance_allocations(id INTEGER PRIMARY KEY,order_id INTEGER,amount_minor INTEGER)');$pdo->prepare('INSERT INTO club_finance_allocations VALUES(1,?,1000)')->execute([$o['id']]);$pdo->exec("UPDATE shop_orders SET payment_expires_at='2020-01-01 00:00:00'");
   try{\shopOrderExpirePending($pdo,(int)$o['id'],new \DateTimeImmutable('now'),true);self::fail('partial paid expiration');}catch(\ShopCheckoutException $e){self::assertStringContainsString('částečnou úhradu',$e->getMessage());}

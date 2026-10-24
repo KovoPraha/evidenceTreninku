@@ -1,5 +1,15 @@
 # Aktuální stav projektu
 
+**24. 10. 2026 — přejímka skladů, výdejů a vratek bez prohlížeče; oprava zatím nenasazena.**
+[Protokol](verification/stock-followup-20261024/RESULTS.md), PR #187.
+Opraveno přehlédnutí úplné vratky z příjmů propojených jen příděly a chybné
+blokování výdeje kvůli vratce jiné objednávky ze společného příjmu.
+80 cílených testů / 834 assertions; CI 1676 / 33403, MariaDB10.3/11.4 a CodeQL PASS.
+Ověřen celý průchod výdej → blokovaná vratka → posouzení → opravný doklad
+→ skutečná vratka peněz → skladové PDF v účetním ZIP; kurzy obou dětí zachovány.
+Souběhy skladu/výdejů/vratek a konzistentní export PASS. Produkce v tomto kole
+nebyla měněna ani čtena, testovací zápisy pouze v izolovaných datech.
+
 **23. 10. 2026 — účetní opravy nasazeny, přejímka bez prohlížeče dokončena v čtecím rozsahu.**
 [Protokol a důkazy](verification/accounting-production-20261023/RESULTS.md).
 Release `ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9`, deploy **40025423618 SUCCESS**:

@@ -30,10 +30,11 @@ $dsn='mysql:host=127.0.0.1;port=33426;dbname='.$database.';charset=utf8mb4';
 $reader=new StockSnapshotHookPdo($dsn,'b1_app','',$options);$writer=new PDO($dsn,'b1_app','',$options);
 $reader->exec('SET SESSION innodb_lock_wait_timeout=8');$writer->exec('SET SESSION innodb_lock_wait_timeout=8');
 $reader->exec('CREATE TABLE treneri(id INT PRIMARY KEY,aktivni INT) ENGINE=InnoDB');
-$reader->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code VARCHAR(40)) ENGINE=InnoDB');
-$reader->exec('CREATE TABLE staff_superadmins(trainer_id INT) ENGINE=InnoDB');
+$reader->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code VARCHAR(40),PRIMARY KEY(trainer_id,position_code)) ENGINE=InnoDB');
+$reader->exec('CREATE TABLE staff_superadmins(trainer_id INT PRIMARY KEY) ENGINE=InnoDB');
 $reader->exec("INSERT INTO treneri VALUES(7,1),(8,1);INSERT INTO staff_user_positions VALUES(7,'finance_manager'),(8,'finance_manager')");
 $reader->exec("CREATE TABLE shop_orders(id BIGINT UNSIGNED PRIMARY KEY,currency CHAR(3),status VARCHAR(30),payment_status VARCHAR(30)) ENGINE=InnoDB;INSERT INTO shop_orders VALUES(4,'CZK','completed','paid'),(5,'CZK','completed','paid')");
+$reader->exec("ALTER TABLE shop_orders ADD public_code VARCHAR(40) NOT NULL DEFAULT 'LOCALHOST',ADD customer_name_snapshot VARCHAR(100) NOT NULL DEFAULT 'LOCALHOST',ADD total_minor BIGINT NOT NULL DEFAULT 0,ADD placed_at DATETIME NOT NULL DEFAULT '2026-01-01 00:00:00'");
 $checks=[];
 function asrCheck(bool $condition,string $label):void {if(!$condition)throw new RuntimeException($label);$GLOBALS['checks'][]=$label;}
 $reader->exec("INSERT INTO staff_user_positions VALUES(8,'catalog_manager');CREATE TABLE shop_products(id BIGINT UNSIGNED PRIMARY KEY,name VARCHAR(100),offer_type VARCHAR(30));INSERT INTO shop_products VALUES(1,'LOCALHOST stock','goods');CREATE TABLE shop_variants(id BIGINT UNSIGNED PRIMARY KEY,product_id BIGINT UNSIGNED,sku VARCHAR(100),unit_code VARCHAR(20),stock_quantity_decimal VARCHAR(30));INSERT INTO shop_variants VALUES(1,1,'LOCALHOST-STOCK','piece',NULL);CREATE TABLE shop_order_items(id BIGINT UNSIGNED PRIMARY KEY,order_id BIGINT UNSIGNED,variant_id BIGINT UNSIGNED,quantity INT)");

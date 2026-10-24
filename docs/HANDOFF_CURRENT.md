@@ -1,5 +1,13 @@
 # Aktuální předání vývoje na další stanici
 
+**24. 10. 2026 — skladové návaznosti ověřeny, PR #187 zatím bez nasazení.**
+[Protokol a souběžné kontroly](verification/stock-followup-20261024/RESULTS.md).
+Výdej respektuje úplné účetní vratky z historie přídělů; při sdíleném příjmu
+má přednost výslovný původní doklad. Obě chyby reprodukovány před opravou.
+1676 testů / 33403 assertions, MariaDB10.3/11.4, CodeQL PASS; fyzická vratka
+trička prošla až do skladového PDF v účetním exportu a nezměnila kurzy dětí.
+Produkce nedotčena; testovací data jen izolovaná. Další nasazení nebylo provedeno.
+
 **23. 10. 2026 — účetní opravy PR #184 nasazeny; další kontroly bez prohlížeče hotové.**
 [Protokol a důkazy](verification/accounting-production-20261023/RESULTS.md).
 Produkční release `ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9`, deploy40025423618 SUCCESS.

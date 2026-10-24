@@ -133,6 +133,8 @@ final class FamilyAccountingAcceptance
                 file_put_contents($out.'/verification.json',json_encode(['status'=>'PASS','synthetic_only'=>true,'order_minor'=>53999,'actual_receipts_minor'=>54500,'overpayment_minor'=>501,'correction_minor'=>-1000,'net_cash_minor'=>53500,'net_document_minor'=>52999,'export_version'=>ACCOUNTING_EXPORT_VERSION,'archive1_sha256'=>$frozenHash,'invoice_sha256'=>$originalHash],JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR));
             }
             echo "Family order -> issued PDF -> receipts -> XLSX/ZIP -> correction/refund -> immutable revision accounting acceptance OK\n";
+            require_once __DIR__.'/StockReturnAccountingAcceptance.php';
+            stockReturnAccountingAcceptance($pdo,$order,$id,(int)$account['id'],$movements,$today,$reason);
         } finally {
             $_SESSION=$oldSession;$oldRoot===false?putenv('APP_PRIVATE_STORAGE_ROOT'):putenv('APP_PRIVATE_STORAGE_ROOT='.$oldRoot);
             foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root,FilesystemIterator::SKIP_DOTS),RecursiveIteratorIterator::CHILD_FIRST) as $file){$file->isDir()?rmdir($file->getPathname()):unlink($file->getPathname());}

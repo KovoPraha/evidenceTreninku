@@ -1,0 +1,88 @@
+{
+    "database": "evidence_stock_race_0b6e1593",
+    "checks": 9,
+    "results": [
+        {
+            "scenario": "reserve",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "id": 3
+                },
+                {
+                    "status": "denied",
+                    "message": "Úkon by způsobil nedostatek nebo překryv rezervovaných a blokovaných kusů."
+                }
+            ],
+            "balance": {
+                "variant_id": 1,
+                "mode": "tracked",
+                "physical_quantity": 1,
+                "reserved_quantity": 1,
+                "blocked_quantity": 0,
+                "revision": 2,
+                "opening_evidence": "LOCALHOST signed opening",
+                "actor_trainer_id": 1,
+                "recorded_at": "2026-10-24 09:47:53",
+                "available_quantity": 0
+            },
+            "status": "PASS"
+        },
+        {
+            "scenario": "receipt",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "id": 4
+                },
+                {
+                    "status": "ok",
+                    "id": 4
+                }
+            ],
+            "balance": {
+                "variant_id": 2,
+                "mode": "tracked",
+                "physical_quantity": 3,
+                "reserved_quantity": 0,
+                "blocked_quantity": 0,
+                "revision": 2,
+                "opening_evidence": "LOCALHOST signed opening",
+                "actor_trainer_id": 1,
+                "recorded_at": "2026-10-24 09:47:53",
+                "available_quantity": 3
+            },
+            "status": "PASS"
+        },
+        {
+            "scenario": "return",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "id": 7
+                },
+                {
+                    "status": "denied",
+                    "message": "Vráceno by bylo více kusů než bylo skutečně vydáno."
+                }
+            ],
+            "balance": {
+                "variant_id": 2,
+                "mode": "tracked",
+                "physical_quantity": 3,
+                "reserved_quantity": 0,
+                "blocked_quantity": 1,
+                "revision": 5,
+                "opening_evidence": "LOCALHOST signed opening",
+                "actor_trainer_id": 1,
+                "recorded_at": "2026-10-24 09:47:53",
+                "available_quantity": 2
+            },
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

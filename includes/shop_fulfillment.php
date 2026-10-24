@@ -116,9 +116,30 @@ function shopFulfillmentAssertFinancialQuantity(PDO $pdo,array $order,array $ite
         }
     }
     if(clubFinanceTableExists($pdo,'accounting_refund_decisions')&&clubFinanceTableExists($pdo,'accounting_movements')){
-        $s=$pdo->prepare("SELECT COALESCE(SUM(d.amount_minor),0) FROM accounting_refund_decisions d JOIN accounting_movements m ON m.id=d.original_movement_id WHERE NOT EXISTS(SELECT 1 FROM accounting_adjustment_events e WHERE e.decision_id=d.id AND e.event_type='decision_cancelled') AND ((m.case_type='shop_order' AND m.case_id=?) OR EXISTS(SELECT 1 FROM accounting_movement_sources src JOIN payments p ON p.id=src.source_id AND src.source_type='payments' WHERE src.movement_id=m.id AND p.payable_type='shop_order' AND p.payable_id=?))".shopInventoryLock($pdo));$s->execute([$orderId,$orderId]);
-        if((int)$s->fetchColumn()>=(int)$order['total_minor'])throw new ShopCheckoutException('Celá platba je určena k vrácení. Výdej vyžaduje nejprve vypořádání s hospodářem.');
+        if(shopFulfillmentRefundCommittedMinor($pdo,$orderId)>=(int)$order['total_minor'])throw new ShopCheckoutException('Celá platba je určena k vrácení. Výdej vyžaduje nejprve vypořádání s hospodářem.');
     }
+}
+
+/** The finance mutex serializes this decision with refunds; released allocations retain source history. */
+function shopFulfillmentRefundCommittedMinor(PDO $pdo,int $orderId):int
+{
+    $s=$pdo->query("SELECT d.*,m.case_type,m.case_id FROM accounting_refund_decisions d JOIN accounting_movements m ON m.id=d.original_movement_id WHERE NOT EXISTS(SELECT 1 FROM accounting_adjustment_events e WHERE e.decision_id=d.id AND e.event_type='decision_cancelled')".shopInventoryLock($pdo));
+    $total=0;
+    foreach($s->fetchAll(PDO::FETCH_ASSOC) as $d){
+        // A shared receipt may fund several orders: an explicit document determines whose refund it is.
+        if((int)($d['original_document_id']??0)>0){
+            $q=$pdo->prepare("SELECT source_id FROM accounting_documents WHERE id=? AND source_type='order' AND status='issued'");$q->execute([$d['original_document_id']]);
+            if((int)$q->fetchColumn()===$orderId)$total+=(int)$d['amount_minor'];
+            continue;
+        }
+        $linked=$d['case_type']==='shop_order'&&(int)$d['case_id']===$orderId;
+        if(!$linked){$q=$pdo->prepare("SELECT COUNT(*) FROM accounting_movement_sources src JOIN payments p ON p.id=src.source_id AND src.source_type='payments' WHERE src.movement_id=? AND p.payable_type='shop_order' AND p.payable_id=?");$q->execute([$d['original_movement_id'],$orderId]);$linked=(int)$q->fetchColumn()>0;}
+        if(!$linked&&clubFinanceTableExists($pdo,'accounting_allocations')){
+            $q=$pdo->prepare("SELECT COUNT(*) FROM accounting_allocations WHERE movement_id=? AND case_type='shop_order' AND case_id=? AND amount_minor>0");$q->execute([$d['original_movement_id'],$orderId]);$linked=(int)$q->fetchColumn()>0;
+        }
+        if($linked)$total+=(int)$d['amount_minor'];
+    }
+    return $total;
 }
 
 /** A pending payment label does not prove no actual money has been allocated. */
