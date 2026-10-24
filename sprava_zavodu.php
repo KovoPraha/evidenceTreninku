@@ -2,11 +2,11 @@
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
+require_once __DIR__ . '/db.php';
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_zavodu')) {
     header('Location: login.php');
     exit;
 }
-require_once __DIR__ . '/db.php';
 
 // Filtry
 $filterGroup = isset($_GET['skupina_id']) ? (int)$_GET['skupina_id'] : '';

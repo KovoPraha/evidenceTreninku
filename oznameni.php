@@ -6,11 +6,11 @@ if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
     exit;
 }
+require_once __DIR__ . '/db.php';
 if (!canAccess('oznameni')) {
     http_response_code(403);
     exit('Pristup odepren.');
 }
-require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 
 function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }

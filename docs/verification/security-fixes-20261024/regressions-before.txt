@@ -1,0 +1,86 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\phpunit.xml.dist
+
+Time: 00:00.568, Memory: 8.00 MB
+
+There were 6 failures:
+
+1) Tests\Integration\SecurityAuditRegressionTest::testFirstPostUsesCurrentPermissionBeforeCancellingOwnedLesson with data set "revoked permission, first POST" ('admin', 'planovana', 0, 1)
+Failed asserting that two strings are identical.
+--- Expected
++++ Actual
+@@ @@
+-'planovana'
++'zrusena'
+
+C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\tests\Integration\SecurityAuditRegressionTest.php:83
+
+2) Tests\Integration\SecurityAuditRegressionTest::testEveryDirectPermissionGuardFollowsDatabaseBootstrap
+Permission check before live authorization refresh
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+@@ @@
+-Array &0 []
++Array &0 [
++    0 => 'ajax_nova_oznameni.php',
++    1 => 'ajax_update_plan.php',
++    2 => 'download_import.php',
++    3 => 'edit_zavod_form.php',
++    4 => 'eshop_bank_admin.php',
++    5 => 'formular_zavod.php',
++    6 => 'hromadne_podskupiny.php',
++    7 => 'individualni_lekce_form.php',
++    8 => 'individualni_lekce_sprava.php',
++    9 => 'kalendar_sportovist.php',
++    10 => 'nastaveni_zadavani.php',
++    11 => 'oznameni.php',
++    12 => 'planovac.php',
++    13 => 'planovany_trenink_form.php',
++    14 => 'prehled_popisu.php',
++    15 => 'prehled_vsech_vykazu.php',
++    16 => 'rezervovat_sportoviste.php',
++    17 => 'sprava_segmentu.php',
++    18 => 'sprava_sportovist.php',
++    19 => 'sprava_treninku.php',
++    20 => 'sprava_vsech_treninku.php',
++    21 => 'sprava_zavodu.php',
++    22 => 'sync_evidence.php',
++    23 => 'training_rsvps_admin.php',
++    24 => 'ulozit_zavod.php',
++    25 => 'update_zavod.php',
++    26 => 'zavod_detail.php',
++]
+
+C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\tests\Integration\SecurityAuditRegressionTest.php:101
+
+3) Tests\Integration\SecurityAuditRegressionTest::testUciWorkbookRoundTripKeepsAllPersonFieldsAsLiteralText
+K15 must be text
+Failed asserting that two strings are identical.
+--- Expected
++++ Actual
+@@ @@
+-'s'
++'f'
+
+C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\tests\Integration\SecurityAuditRegressionTest.php:153
+
+4) Tests\Integration\SecurityAuditRegressionTest::testParticipantJsonCannotCreateHtmlOutsideScript with data set #0 ('rosterExpected')
+Failed asserting that 1 is identical to 0.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\tests\Integration\SecurityAuditRegressionTest.php:185
+
+5) Tests\Integration\SecurityAuditRegressionTest::testParticipantJsonCannotCreateHtmlOutsideScript with data set #1 ('makeupExpected')
+Failed asserting that 1 is identical to 0.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\tests\Integration\SecurityAuditRegressionTest.php:185
+
+6) Tests\Integration\SecurityAuditRegressionTest::testLegacyGroupListRequiresTheSportsWorkspace
+Failed asserting that null is identical to 'sports_lead'.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\tests\Integration\SecurityAuditRegressionTest.php:192
+
+FAILURES!
+Tests: 7, Assertions: 36, Failures: 6.

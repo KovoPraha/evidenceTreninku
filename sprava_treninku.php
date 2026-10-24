@@ -2,11 +2,11 @@
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
+require_once 'db.php';
 if (!isset($_SESSION['trener_id']) || !canAccess('sprava_treninku')) {
     header('Location: login.php');
     exit;
 }
-require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';

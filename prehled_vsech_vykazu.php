@@ -4,11 +4,11 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
+require_once __DIR__ . '/db.php';
 if (!isset($_SESSION['trener_id']) || !canAccess('vsechny_vykazy')) { header('Location: login.php'); exit; }
 $autoload=__DIR__ . '/vendor/autoload.php';
 if(!is_file($autoload)){http_response_code(503);exit('Chybí lokální PHP závislosti. Spusťte PRIPRAVIT_LOCALHOST_TESTOVANI.cmd.');}
 require_once $autoload;
-require_once __DIR__ . '/db.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;

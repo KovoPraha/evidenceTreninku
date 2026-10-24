@@ -804,8 +804,8 @@ if (PLAN_PREFILL) {
     if (DUPLIKAT && DUPLIKAT.ucastnici) {
         DUPLIKAT.ucastnici.forEach(sp => addParticipant(sp.id, sp.label));
     }
-    const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-    const makeupExpected = <?= json_encode(array_map(static fn(array $person): array => ['id'=>(int)$person['sportovec_id'],'label'=>trim((string)$person['prijmeni'].' '.(string)$person['jmeno'])], $planMakeupParticipants), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+    const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const makeupExpected = <?= json_encode(array_map(static fn(array $person): array => ['id'=>(int)$person['sportovec_id'],'label'=>trim((string)$person['prijmeni'].' '.(string)$person['jmeno'])], $planMakeupParticipants), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     rosterExpected.forEach(sp => addParticipant(parseInt(sp.id, 10), sp.label));
     makeupExpected.forEach(sp => addParticipant(parseInt(sp.id, 10), sp.label));
 })();

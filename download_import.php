@@ -9,8 +9,8 @@ if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
     exit;
 }
-if (!canAccess('zavod_detail')) { http_response_code(403); exit('Přístup odepřen.'); }
 require_once __DIR__ . '/db.php';
+if (!canAccess('zavod_detail')) { http_response_code(403); exit('Přístup odepřen.'); }
 
 // Načtení ID importu
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;

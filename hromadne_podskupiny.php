@@ -6,12 +6,11 @@ if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
     exit;
 }
+require_once 'db.php';
 if (!canAccess('sprava_sportovcu')) {
     http_response_code(403);
     exit('Pristup odepren.');
 }
-
-require_once 'db.php';
 require_once __DIR__ . '/csrf_helper.php';
 
 function h(string $s): string {

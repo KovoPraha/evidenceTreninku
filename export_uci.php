@@ -12,6 +12,7 @@ require_once __DIR__ . '/includes/private_storage.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 function h(string $s): string {
@@ -263,30 +264,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export'])) {
                         if ($subIdx >= count($substituteRows)) break;
                         $row = $substituteRows[$subIdx];
                     }
-                    $sheet->setCellValue("K{$row}", (string)($s['prijmeni'] ?? ''));
-                    $sheet->setCellValue("L{$row}", (string)($s['jmeno']    ?? ''));
+                    // Person fields are literal text, even when they start with '='.
+                    $sheet->setCellValueExplicit("K{$row}", (string)($s['prijmeni'] ?? ''), DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit("L{$row}", (string)($s['jmeno']    ?? ''), DataType::TYPE_STRING);
                     $sheet->setCellValue("M{$row}", 'CZE');
                     $sheet->setCellValue("N{$row}", dobToUci($s['narozeni'] ?? null));
-                    $sheet->setCellValue("O{$row}", (string)($s['uciid']    ?? ''));
+                    $sheet->setCellValueExplicit("O{$row}", (string)($s['uciid']    ?? ''), DataType::TYPE_STRING);
                 }
 
                 // ---- Fill Titular Sport Director (row 33) ----
                 if (isset($directors[0])) {
                     $d = $directors[0];
-                    $sheet->setCellValue("K33", (string)($d['prijmeni'] ?? ''));
-                    $sheet->setCellValue("L33", (string)($d['jmeno']    ?? ''));
+                    $sheet->setCellValueExplicit("K33", (string)($d['prijmeni'] ?? ''), DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit("L33", (string)($d['jmeno']    ?? ''), DataType::TYPE_STRING);
                     $sheet->setCellValue("M33", 'CZE');
-                    $sheet->setCellValue("N33", (string)($d['uciid']    ?? ''));
+                    $sheet->setCellValueExplicit("N33", (string)($d['uciid']    ?? ''), DataType::TYPE_STRING);
                 }
 
                 // ---- Fill Sport Directors on event (rows 38–39) ----
                 foreach ($directors as $idx => $d) {
                     if ($idx >= 2) break;
                     $row = 38 + $idx;
-                    $sheet->setCellValue("K{$row}", (string)($d['prijmeni'] ?? ''));
-                    $sheet->setCellValue("L{$row}", (string)($d['jmeno']    ?? ''));
+                    $sheet->setCellValueExplicit("K{$row}", (string)($d['prijmeni'] ?? ''), DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit("L{$row}", (string)($d['jmeno']    ?? ''), DataType::TYPE_STRING);
                     $sheet->setCellValue("M{$row}", 'CZE');
-                    $sheet->setCellValue("N{$row}", (string)($d['uciid']    ?? ''));
+                    $sheet->setCellValueExplicit("N{$row}", (string)($d['uciid']    ?? ''), DataType::TYPE_STRING);
                 }
 
                 // ---- Stream download ----

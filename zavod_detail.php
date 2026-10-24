@@ -3,8 +3,8 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
-if (!canAccess('zavod_detail')) { header('Location: index.php'); exit; }
 require_once 'db.php';
+if (!canAccess('zavod_detail')) { header('Location: index.php'); exit; }
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 
 function h($s): string {

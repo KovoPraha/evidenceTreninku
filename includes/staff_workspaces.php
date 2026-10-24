@@ -306,7 +306,7 @@ function staffRouteOwners(): array
         ],
         'sports_lead' => [
             'generuj_story.php','nastaveni_story.php','google_sheets_linky.php',
-            'prehled_podskupin.php','prehled_popisu.php','prehled_skupina.php','prehled_skupin.php',
+            'prehled_podskupin.php','prehled_popisu.php','prehled_skupina.php','prehled_skupin.php','list.php',
             'prehled_skupiny.php','prehled_stories.php','prehled_trenera.php','prehled_treninku_skupiny_kalendar.php',
             'ajax_global_search.php','download_import.php','edit_zavod.php','edit_zavod_form.php',
             'export.php','export_csv.php','export_draha.php','export_seznam.php','export_uci.php','export_xls.php',

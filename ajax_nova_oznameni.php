@@ -8,8 +8,8 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 if (!isset($_SESSION['trener_id'])) { http_response_code(403); echo json_encode(['ok'=>false,'msg'=>'Nepřihlášen']); exit; }
 require_once 'includes/funkce.php';
-if (!canAccess('oznameni')) { http_response_code(403); echo json_encode(['ok'=>false,'msg'=>'Přístup odepřen']); exit; }
 require_once 'db.php';
+if (!canAccess('oznameni')) { http_response_code(403); echo json_encode(['ok'=>false,'msg'=>'Přístup odepřen']); exit; }
 require_once 'csrf_helper.php';
 
 header('Content-Type: application/json; charset=utf-8');

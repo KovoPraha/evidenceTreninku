@@ -1,5 +1,13 @@
 # Aktuální stav projektu
 
+**24. 10. 2026 — čtyři bezpečnostní nálezy opraveny lokálně, NENASAZENO.**
+[Opravy a regresní důkazy](verification/security-fixes-20261024/RESULTS.md).
+Větev `codex/security-audit-fixes-20261024`: aktuální práva před akcí na 27 cestách,
+textové buňky UCI, bezpečné JSON účastníků a pracovní vlastnictví `list.php`.
+38 cílených testů / 2017 assertions PASS, syntaxe 1088 PHP/PHP3 PASS.
+Plná Windows sada 1685 / 33580: pouze známý failure POSIX scanneru a 3 skips.
+Bez migrací, push, merge, produkčních změn a deploye; nové Linux CI neproběhlo.
+
 **24. 10. 2026 — skladové opravy PR #187 nasazeny, čtecí produkční kontrola dokončena.**
 [Protokol a důkazy](verification/stock-production-20261024/RESULTS.md).
 Release `065ed2a6fb797e21928d0eb5d1d5b84af0c04d93`, deploy **40085679569 SUCCESS**:
