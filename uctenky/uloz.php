@@ -38,11 +38,19 @@ if ($kategorie === '') {
     exit;
 }
 
+$expenseCaseId=max(0,(int)($_POST['expense_case_id']??0));
 $old_data = null;
 $fileMutations = fileMutationBegin();
 
 try {
     $pdo->beginTransaction();
+    if($expenseCaseId){
+        require_once __DIR__.'/../includes/club_administration.php';
+        clubAdminFinanceActor($pdo);clubExpenseOpenCase($pdo,$expenseCaseId);
+        $expenseCase=clubExpenseOne($pdo,'club_expense_cases',$expenseCaseId);
+        if((int)($expenseCase['legacy_event_id']??0)!==(int)$udalost_id)throw new DomainException('Účtenka musí odpovídat výslovně propojené provozní akci.');
+    }
+    if(isset($_FILES['obrazek'])&&!in_array((int)$_FILES['obrazek']['error'],[UPLOAD_ERR_OK,UPLOAD_ERR_NO_FILE],true))throw new DomainException('Příloha se nenahrála. Vyberte ji znovu a opakujte uložení.');
     if ($id > 0) {
         $old_data = financialReceiptLock($pdo, $id);
     }
@@ -100,7 +108,7 @@ try {
 
     $pdo->commit();
     financialReceiptFilesCommitted($fileMutations);
-    echo json_encode(['status' => 'ok']);
+    echo json_encode(['status'=>'ok','next'=>$expenseCaseId?'../club_expenses_admin.php?'.http_build_query(['case_id'=>$expenseCaseId,'receipt_id'=>(int)$id]).'#claim-form':'seznam.php']);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     fileMutationRollback($fileMutations);

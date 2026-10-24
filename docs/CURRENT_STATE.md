@@ -1,5 +1,17 @@
 # Aktuální stav projektu
 
+**24. 10. 2026 — balík C „Akce a klubová administrativa“ lokálně implementován, NENASAZEN.**
+[Protokol, přejímka a hranice](verification/event-administration-20261024/RESULTS.md).
+Větev `codex/event-administration-20261024`, navazuje na B (`f521a10d`).
+Přehled akce s účastníky a odkazy na skutečnost, dopravu a vyúčtování;
+pojmenované finanční výběry, tabulka položek, soukromá účtenka s návratem do
+případu, detaily/historie/salda výdajů a záloh, filtry vypořádání odměn.
+79 testů / 2110 assertions; HTTP C 49, výdaje 47, odměny 29, regrese A 32 PASS.
+Otevřené D20 (samoobslužné předkládání výdajů), D04/D06 (sazby a metodika),
+D05 (schvalovatelé a výjimky); předchozí D17–D19 se tím nepotvrzují.
+Bez migrací, změn e-shopu, produkčních zásahů a aktivace transportů.
+Další nezávislý krok je balík D; reálné převody a komunikace vyžadují podklady.
+
 **24. 10. 2026 — balík B „Život osoby a podklady“ lokálně implementován v rozsahu bez otevřených rozhodnutí, NENASAZEN.**
 [Protokol a odložený rozsah](verification/person-life-documents-20261024/RESULTS.md).
 Větev `codex/person-life-documents-20261024` navazuje na A (`1925f88c`).

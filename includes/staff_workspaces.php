@@ -27,6 +27,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'moje_treninky.php', 'label' => 'Moje tréninky', 'description' => 'Vlastní historie a úpravy', 'icon' => 'list-check'],
                     ['route'=>'training_closure_admin.php','label'=>'Docházka a uzavření','description'=>'Potvrzení skutečné účasti a auditované opravy','icon'=>'clipboard-check'],
                     ['route'=>'medical_activity_admin.php','label'=>'Podklady před aktivitou','description'=>'Platnost podkladů skupiny nebo lekce','icon'=>'clipboard-heart'],
+                    ['route'=>'club_event_work_admin.php','label'=>'Zajištění akce','description'=>'Účast, doprava a návazné vyúčtování','icon'=>'calendar-check'],
                     ['route'=>'sports_activity_admin.php','label'=>'Sportovní činnost a podklady','description'=>'Skutečné starty a verzované podklady za období','icon'=>'activity'],
                     ['route' => 'moje_skupiny.php', 'label' => 'Moje skupiny', 'description' => 'Svěřené skupiny sportovců', 'icon' => 'people'],
                 ]],
@@ -396,6 +397,7 @@ function staffRouteDelegates(): array
         'kalendar_sportovist.php' => ['program_coordinator'],
         'rezervovat_sportoviste.php' => ['program_coordinator'],
         'club_calendar.php' => ['sports_lead','program_coordinator','finance_manager'],
+        'club_event_work_admin.php' => ['sports_lead','finance_manager'],
         'individualni_lekce_sprava.php' => ['program_coordinator'],
         'individualni_lekce_form.php' => ['program_coordinator'],
     ];

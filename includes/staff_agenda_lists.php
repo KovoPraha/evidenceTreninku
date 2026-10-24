@@ -23,5 +23,12 @@ function staffRewardList(PDO $pdo, array $input, string $position, int $actor): 
         LEFT JOIN sportovci s ON c.kind='athlete' AND s.id=c.subject_id LEFT JOIN treneri t ON c.kind='coach' AND t.id=c.subject_id";
     $where=staffListWhere($f,['s.jmeno','s.prijmeni','t.jmeno','c.id'],'c.date_from',"COALESCE(d.outcome,'pending')",$params);
     if($position==='coach'){$where.=" AND c.kind='coach' AND c.subject_id=?";$params[]=$actor;}
+    if((int)staffListText($input,'reward_id')>0){$where.=' AND c.id=?';$params[]=(int)staffListText($input,'reward_id');}
+    $settlement=staffListText($input,'reward_settlement');
+    $balance="COALESCE((SELECT v.amount_minor FROM club_reward_versions v WHERE v.id=c.approved_version_id),0)-COALESCE((SELECT SUM(p.amount_minor) FROM club_reward_payouts p WHERE p.claim_id=c.id),0)";
+    if($settlement==='due')$where.=' AND ('.$balance.')>0';
+    elseif($settlement==='return')$where.=' AND ('.$balance.')<0';
+    elseif($settlement==='settled')$where.=' AND c.approved_version_id IS NOT NULL AND ('.$balance.')=0';
+    elseif($settlement!==''){$where.=' AND 0=1';$f['error']='Vyberte stav vypořádání z nabídky.';}
     return ['filters'=>$f]+staffListPage($pdo,'c.*,s.jmeno AS person_first_name,s.prijmeni AS person_last_name,t.jmeno AS trainer_name',$from.' WHERE '.$where,'c.id DESC',$params,$f['page']);
 }

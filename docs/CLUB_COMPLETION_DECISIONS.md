@@ -41,6 +41,17 @@ Odesílání zpráv a jeho plánování zůstává pod D12; zapnutí odběru nen
 transportu ani doručení. Pravidla v D17–D19 nejsou schválena implementací přehledu.
 Balík B je dokončen v rozsahu nezávislém na těchto rozhodnutích.
 
+## Doplnění pro balík C — 24. 10. 2026
+
+| ID | Odložené rozhodnutí | Co je připravené bez něj | Co se neprovádí |
+|---|---|---|---|
+| D20 | Zda trenér sám předkládá výdaje a žádá zálohu; kdo požadavek přebírá a smí číst soukromé přílohy | Pojmenované výběry, položkový formulář a soukromá účtenka pro hospodáře, návaznost z akce, osobní předání | Nová samoobslužná finanční role nebo zpřístupnění dokladů trenérovi |
+
+Skutečné sazby a metodika zůstávají pod D04/D06, jména schvalovatelů a výjimky
+pod D05. Balík C je neodhaduje. Syntetická sazba v přejímce není klubové rozhodnutí.
+Sporné vazby původních akcí a dokladů zůstávají pod D07/D08; shoda času a vozidla
+nepřiřazuje skutečnou jízdu k akci. Žádná stará agenda se tím nevypíná.
+
 Doklad rozhodnutí musí určit osobu, datum, rozsah, konkrétní verzi podkladu
 a důvod. Změna vstupu nebo relevantního cíle vyžaduje nové posouzení.
 Provozní záznam lze následně uložit v příslušné administraci; tento pracovní
