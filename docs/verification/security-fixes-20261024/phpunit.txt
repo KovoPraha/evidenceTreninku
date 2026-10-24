@@ -1,0 +1,28 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\phpunit.xml.dist
+
+shop_checkout failed: ref=ef6f0b6b87a7d220 order=1 PDOException sqlstate=23000 driver=19 at club_registration_consents.php:60
+stripe_webhook: ignored event type customer.updated
+stripe_webhook: ignored incomplete checkout session evt_checkout_unpaid_unit
+Time: 02:57.684, Memory: 92.00 MB
+
+There was 1 failure:
+
+1) Tests\Unit\GlobalFunctionAvailabilityTest::testEveryStaticallyCalledGlobalFunctionIsAvailableOrDeclaredByTheApplication
+Unavailable global function calls:
+posix_geteuid called at includes/private_storage_readiness.php:64
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+@@ @@
+-Array &0 []
++Array &0 [
++    0 => 'posix_geteuid called at includes/private_storage_readiness.php:64',
++]
+
+C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024\tests\Unit\GlobalFunctionAvailabilityTest.php:49
+
+FAILURES!
+Tests: 1685, Assertions: 33580, Failures: 1, Skipped: 3.

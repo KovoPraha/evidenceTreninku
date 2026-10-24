@@ -3,8 +3,8 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
 require_once 'includes/funkce.php';
-if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once 'db.php';
+if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';

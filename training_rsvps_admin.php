@@ -5,8 +5,8 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
 require_once __DIR__ . '/includes/funkce.php';
-if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once __DIR__ . '/db.php';
+if (!canAccess('planovac')) { header('Location: index.php'); exit; }
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_rsvp.php';
 require_once __DIR__ . '/includes/club_makeup.php';

@@ -3,8 +3,8 @@ require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
 require_once __DIR__ . '/includes/funkce.php';
 if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
-if (!canAccess('sprava_zavodu')) { header('Location: index.php'); exit; }
 require_once 'db.php';
+if (!canAccess('sprava_zavodu')) { header('Location: index.php'); exit; }
 require_once 'csrf_helper.php';
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'); }
 

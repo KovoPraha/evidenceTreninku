@@ -16,7 +16,8 @@ function roleAtLeast(string $requiredRole): bool {
 
 /**
  * Kontrola oprávnění dle konfigurovatelné tabulky.
- * Čte z $_SESSION['opravneni'] (načteno při loginu).
+ * Čte z $_SESSION['opravneni']; volat až po db.php / includes/init.php,
+ * které v každém požadavku obnoví aktuální oprávnění z databáze.
  * Neznamy klic je fail-closed. Pracovni pozice resi vlastnictvi cele trasy;
  * legacy tabulka zde docasne ridi pouze vnitrni funkce starych obrazovek.
  */

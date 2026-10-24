@@ -1,5 +1,17 @@
 # Aktuální předání vývoje na další stanici
 
+**24. 10. 2026 — opravy SEC-01 až SEC-04 v PR #190, Linux CI PASS, výslovně NENASAZOVAT.**
+[Protokol a testy](verification/security-fixes-20261024/RESULTS.md).
+Větev `codex/security-audit-fixes-20261024` vychází z `f2626b86`; checkout
+`C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024`.
+27 pořadí bootstrap/autorizace, UCI literal text, JSON v HTML, `list.php` sports_lead.
+Nových 8 regresí; 38 cílených testů PASS. Plná Windows sada 1685 / 33580:
+stejný známý POSIX failure, 3 symlink skips, bez nových selhání. Lint 1088 PASS.
+Implementační commit `f7d58d8d` odeslán; [PR #190](https://github.com/KovoPraha/evidenceTreninku/pull/190) je otevřený do main.
+Linux CI40130990758: 1685 / 33629 PASS, MariaDB10.3/11.4 a CodeQL PASS.
+Původní checkout s rozpracovaným `kis_rosters_admin.php` zachován. Bez migrací,
+merge a nasazení; další krok je rozhodnutí o sloučení PR, deploy samostatně.
+
 **24. 10. 2026 — PR #187 nasazen, produkční skladový/účetní audit PASS.**
 [Protokol a souhrnné důkazy](verification/stock-production-20261024/RESULTS.md).
 Živý release `065ed2a6fb797e21928d0eb5d1d5b84af0c04d93`, deploy40085679569 SUCCESS.

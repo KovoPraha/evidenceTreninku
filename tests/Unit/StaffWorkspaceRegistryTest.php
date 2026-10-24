@@ -105,7 +105,7 @@ final class StaffWorkspaceRegistryTest extends TestCase
         $excludedDirectories = ['vendor/','tests/','migrations/','includes/','bin/','booking/','pdf/','auth/','cron/'];
         $excludedFiles = [
             'config.php','config.example.php','csrf_helper.php','db.php','hlavicka.php',
-            'cron_report_tyden.php','cron_upominky.php','report_tyden_lib.php','pub.php','list.php',
+            'cron_report_tyden.php','cron_upominky.php','report_tyden_lib.php','pub.php',
             'sportovec_treninky.php','test.php','analyze_excel.php','analyze_uci_form.php',
         ];
         $orphans = [];

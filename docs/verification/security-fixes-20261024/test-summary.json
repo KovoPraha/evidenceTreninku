@@ -1,0 +1,57 @@
+{
+  "tests": 1685,
+  "failures": [
+    {
+      "class": "Tests\\Unit\\GlobalFunctionAvailabilityTest",
+      "name": "testEveryStaticallyCalledGlobalFunctionIsAvailableOrDeclaredByTheApplication"
+    }
+  ],
+  "skipped": [
+    {
+      "class": "Tests\\Unit\\PrivateStorageProbeTest",
+      "name": "testCanonicalPublicSymlinkFailsBeforeWriting"
+    },
+    {
+      "class": "Tests\\Unit\\PrivateStorageProbeTest",
+      "name": "testCleanupDoesNotFollowOrDeleteReplacementSymlink"
+    },
+    {
+      "class": "Tests\\Unit\\ProductionPrivateStorageProvisionTest",
+      "name": "testRefusesSymlinkedDataBeforeChanges"
+    }
+  ],
+  "new_regressions": [
+    {
+      "name": "testFirstPostUsesCurrentPermissionBeforeCancellingOwnedLesson with data set \"revoked permission, first POST\"",
+      "passed": true
+    },
+    {
+      "name": "testFirstPostUsesCurrentPermissionBeforeCancellingOwnedLesson with data set \"permission retained, valid POST\"",
+      "passed": true
+    },
+    {
+      "name": "testEveryDirectPermissionGuardFollowsDatabaseBootstrap",
+      "passed": true
+    },
+    {
+      "name": "testUciWorkbookRoundTripKeepsAllPersonFieldsAsLiteralText",
+      "passed": true
+    },
+    {
+      "name": "testParticipantJsonCannotCreateHtmlOutsideScript with data set #0",
+      "passed": true
+    },
+    {
+      "name": "testParticipantJsonCannotCreateHtmlOutsideScript with data set #1",
+      "passed": true
+    },
+    {
+      "name": "testLegacyGroupListRequiresTheSportsWorkspace",
+      "passed": true
+    },
+    {
+      "name": "testLegacyGroupListGuardRejectsOtherWorkspacesOverHttp",
+      "passed": true
+    }
+  ]
+}
