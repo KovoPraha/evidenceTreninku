@@ -80,6 +80,13 @@ final class StaffWorkspaceRegistryTest extends TestCase
         self::assertContains('testovaci_scenare.php', $routes($systemLocal));
     }
 
+    public function testDailyLessonJourneyIsAvailableOnlyToCoachingPositions(): void
+    {
+        foreach (['training_rsvps_admin.php','formular.php','ulozit_trenink.php','ajax_dostupnost_sportovist.php'] as $route) {
+            self::assertSame(['coach','sports_lead'], \staffRouteAllowedPositions($route), $route);
+        }
+    }
+
     public function testPublicGroupProgramIsSharedAndMoneyRatesBelongToFinance(): void
     {
         self::assertContains('program_skupiny.php', \staffSharedRoutes());

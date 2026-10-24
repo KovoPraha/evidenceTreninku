@@ -69,7 +69,8 @@ function operationalCaseList(PDO $pdo, string $position, int $page=1, bool $clos
         if ($type==='notification') $required[]='club_event_notification_events';
         if (!adminOperationalHasTables($pdo,$required)) { $unavailable[]=$def['label']; continue; }
         $filter=$closed ? "c.status='closed' AND NOT (".$def['unresolved'].")" : '('.$def['unresolved'].") OR c.status='open'";
-        $sql='SELECT s.id AS source_id,c.id AS case_id,c.owner_trainer_id,c.next_step,c.review_on,c.status,c.revision,t.jmeno AS owner_name,t.aktivni AS owner_active, '
+        $context=$type==='training_attendance' ? 's.datum AS context_date,' . (adminOperationalColumnExists($pdo,'treninky','napln')?'s.napln':"''") . ' AS context_label,' : '';
+        $sql='SELECT '.$context.'s.id AS source_id,c.id AS case_id,c.owner_trainer_id,c.next_step,c.review_on,c.status,c.revision,t.jmeno AS owner_name,t.aktivni AS owner_active, '
             .'CASE WHEN '.$def['unresolved'].' THEN 1 ELSE 0 END AS unresolved '
             .'FROM '.$def['table'].' s LEFT JOIN operational_cases c ON c.source_type=? AND c.source_id=s.id LEFT JOIN treneri t ON t.id=c.owner_trainer_id '
             .'WHERE '.$filter.' ORDER BY CASE WHEN c.id IS NULL THEN 0 ELSE 1 END,c.review_on,s.id LIMIT 31 OFFSET '.$offset;

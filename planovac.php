@@ -630,6 +630,7 @@ try {
                         </div>
 
                         <!-- Akce -->
+                        <a class="btn btn-outline-primary btn-sm mt-2" href="training_closure_admin.php?plan_id=<?= (int)$p['id'] ?>#lesson-work">Lekce, omluvy a docházka</a>
                         <div class="d-flex gap-1 mt-2 flex-wrap">
                             <?php if ($rsvpSummary['expected'] > 0 && (roleAtLeast('hlavni') || (int)$p['trener_id'] === $trenerId)): ?>
                                 <a href="training_rsvps_admin.php?plan_id=<?= (int)$p['id'] ?>"

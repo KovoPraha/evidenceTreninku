@@ -88,7 +88,7 @@ if (clubMakeupReady($pdo)) {
 <body class="bg-light">
 <?php include __DIR__ . '/hlavicka.php'; ?>
 <main class="container py-4" style="max-width:1000px">
-    <div class="d-flex flex-wrap gap-2 mb-3"><a class="btn btn-sm btn-outline-secondary" href="planovac.php?datum=<?= trainingRsvpAdminH($plan['datum']) ?>"><i class="bi bi-arrow-left me-1"></i>Zpět do plánovače</a><a class="btn btn-sm btn-outline-primary" href="formular.php?plan_id=<?= (int)$planId ?>">Zapsat skutečnou docházku</a></div>
+    <div class="d-flex flex-wrap gap-2 mb-3"><a class="btn btn-sm btn-outline-secondary" href="planovac.php?datum=<?= trainingRsvpAdminH($plan['datum']) ?>"><i class="bi bi-arrow-left me-1"></i>Zpět do plánovače</a><a class="btn btn-sm btn-outline-primary" href="training_closure_admin.php?plan_id=<?= (int)$planId ?>#lesson-work">Lekce, omluvy a docházka</a></div>
     <div class="card border-0 shadow-sm">
         <div class="card-body">
             <h1 class="h4 mb-1">Příprava na trénink · <?= trainingRsvpAdminH($plan['nazev']) ?></h1>
@@ -105,7 +105,7 @@ if (clubMakeupReady($pdo)) {
                 <div class="table-responsive"><table class="table align-middle mb-0">
                     <thead><tr><th>Sportovec</th><th>Soupiska</th><th>Odpověď</th><th>Zpráva pro trenéra</th><th>Změněno</th></tr></thead>
                     <tbody><?php foreach ($responses as $row): $response=(string)($row['response'] ?? ''); ?><tr>
-                        <td><strong><?= trainingRsvpAdminH(trim((string)$row['prijmeni'] . ' ' . (string)$row['jmeno'])) ?></strong></td>
+                        <td><strong><?= trainingRsvpAdminH(trim((string)$row['prijmeni'] . ' ' . (string)$row['jmeno'])) ?></strong><br><a class="small" href="training_closure_admin.php?plan_id=<?=$planId?>&amp;person_id=<?=(int)$row['sportovec_id']?>#personal-excuse">Osobně přijatá omluva</a></td>
                         <td><?= trainingRsvpAdminH($row['team_name']) ?></td>
                         <td><span class="badge <?= $response === 'going' ? 'text-bg-success' : ($response === 'not_going' ? 'text-bg-secondary' : 'text-bg-warning') ?>"><?= trainingRsvpAdminH(trainingRsvpLabel($response)) ?></span></td>
                         <td><?= trim((string)($row['member_note'] ?? '')) !== '' ? nl2br(trainingRsvpAdminH($row['member_note'])) : '<span class="text-muted">—</span>' ?></td>

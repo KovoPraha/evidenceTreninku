@@ -4,7 +4,7 @@ if (!isset($cases,$pdo,$position)) { http_response_code(404);exit; }
 <?php if ($caseError!==''): ?><div class="alert alert-danger"><?=operationalPageH($caseError)?></div><?php endif; ?>
 <?php if ($caseMessage!==''): ?><div class="alert alert-success"><?=operationalPageH($caseMessage)?></div><?php endif; ?>
 <?php if ($cases['unavailable']): ?><div class="alert alert-warning">Nedostupné zdroje: <?=operationalPageH(implode(', ',$cases['unavailable']))?>. Chybějící údaje neznamenají vyřešené případy.</div><?php endif; ?>
-<?php if (in_array($position,['registrar','order_operator','finance_manager'],true)): ?>
+<?php if (in_array($position,['registrar','order_operator','finance_manager','sports_lead'],true)): ?>
 <section id="pripady" class="mb-4"><h2 class="h4">Případy k dořešení</h2>
 <p class="text-muted">Nejvýše 30 položek z každého zdroje na stránku. Nepřidělené případy jsou uvedeny první.</p>
 <p><a href="?closed=0#pripady">Otevřené případy</a> · <a href="?closed=1#pripady">Historie uzavřených případů</a></p>
@@ -12,6 +12,7 @@ if (!isset($cases,$pdo,$position)) { http_response_code(404);exit; }
 <?php foreach($cases['items'] as $case): $key=$case['source_type'].'-'.$case['source_id']; ?>
 <article class="card mb-3" id="case-<?=operationalPageH($key)?>"><div class="card-body">
 <h3 class="h6"><?=operationalPageH($case['label'])?> #<?=(int)$case['source_id']?> <a href="<?=operationalPageH($case['href'])?>" class="btn btn-sm btn-outline-primary">Otevřít agendu</a></h3>
+<?php if(isset($case['context_date'])):?><p><?=operationalPageH($case['context_date'].' · '.$case['context_label'])?></p><?php endif;?>
 <?php if (!$case['owner_trainer_id']): ?><p class="text-danger">Chybí odpovědná osoba.</p>
 <?php elseif (!(int)$case['owner_active'] || !in_array((int)$case['owner_trainer_id'],array_map('intval',array_column($owners,'id')),true)): ?><p class="text-danger">Odpovědná osoba již nemá oprávnění. Případ předejte.</p><?php endif; ?>
 <?php if ($case['review_on'] && $case['review_on']<date('Y-m-d')): ?><p class="text-danger">Termín kontroly již uplynul.</p><?php endif; ?>

@@ -1,5 +1,16 @@
 # Aktuální stav projektu
 
+**24. 10. 2026 — balík A „Každodenní práce trenéra a registráře“ implementován lokálně, NENASAZEN.**
+[Protokol a rozsah](verification/daily-coach-registrar-20261024/RESULTS.md).
+Větev `codex/daily-coach-registrar-20261024` v izolovaném B1 checkoutu.
+Případy vedoucího sportu; propojení lekce/omluvy/zápisu/uzavření;
+pojmenovaný výběr a opravy sportovní účasti; hledání, stav a stránky přehledů;
+registrátorský přehled kroků u osoby. Opravené chybějící delegace trenérských tras
+pro vedoucího sportu; souběhy a rozsah přístupu zachované.
+135 testů / 2433 assertions, nový HTTP průchod 32 scénářů PASS.
+Bez produkčních zásahů, migrací a změn e-shopu. Navazují balíky B–D;
+společná přejímka včetně e-shopu až E. Živý release zůstává uveden níže.
+
 **24. 10. 2026 — skladové opravy PR #187 nasazeny, čtecí produkční kontrola dokončena.**
 [Protokol a důkazy](verification/stock-production-20261024/RESULTS.md).
 Release `065ed2a6fb797e21928d0eb5d1d5b84af0c04d93`, deploy **40085679569 SUCCESS**:
