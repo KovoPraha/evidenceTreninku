@@ -34,6 +34,20 @@ final class ProductionAccountingAuditTest extends TestCase
         catch (\PDOException) { self::assertFalse($pdo->inTransaction());self::assertSame(0,(int)$pdo->query('PRAGMA query_only')->fetchColumn()); }
     }
 
+    public function testStockAuditDistinguishesMissingSchemaFromEmptyVerifiedSchema(): void
+    {
+        $pdo=$this->db();
+        try { \productionAccountingAudit($pdo,'',true);self::fail('Stock schema must not silently be skipped.'); }
+        catch (\PDOException) {self::assertFalse($pdo->inTransaction());}
+        $pdo->exec('CREATE TABLE shop_products(id INTEGER PRIMARY KEY,offer_type TEXT);CREATE TABLE shop_variants(id INTEGER PRIMARY KEY,product_id INT,stock_quantity_decimal TEXT);CREATE TABLE shop_order_items(id INTEGER PRIMARY KEY,order_id INT,variant_id INT,quantity INT)');
+        foreach (['20261022230000_shop_inventory','20261022231000_shop_fulfillment','20261022232000_shop_returns','20261022233000_shop_stock_documents'] as $name) {$m=require dirname(__DIR__,2).'/migrations/'.$name.'.php';$m['up']($pdo);}
+        $result=\productionAccountingAudit($pdo,'',true);self::assertTrue($result['ok']);self::assertCount(20,$result['stock']['checks']);self::assertSame(0,$result['stock']['pdfs_checked']);
+        $pdo->exec("INSERT INTO shop_products VALUES(1,'goods');INSERT INTO shop_variants VALUES(1,1,'3');INSERT INTO shop_stock_balances(variant_id,mode,physical_quantity,actor_trainer_id) VALUES(1,'tracked',3,1)");
+        $changes=(int)$pdo->query('SELECT total_changes()')->fetchColumn();$bad=\productionAccountingAudit($pdo,'',true);
+        self::assertFalse($bad['ok']);self::assertSame(1,$bad['stock']['checks']['balance_vs_movements']['count']);self::assertSame(1,$bad['stock']['checks']['balance_vs_lots']['count']);
+        self::assertSame($changes,(int)$pdo->query('SELECT total_changes()')->fetchColumn());
+    }
+
     public function testCallerTransactionIsNeverRolledBack(): void
     {
         $pdo=$this->db();$pdo->beginTransaction();
