@@ -1,11 +1,32 @@
 # Opravy bezpečnostního auditu — 24. 10. 2026
 
-**Všechny čtyři nálezy opraveny lokálně; produkce nebyla nasazena ani změněna.**
+**Všechny čtyři nálezy opraveny, PR #190 otevřen, Linux CI PASS; produkce nebyla nasazena ani změněna.**
 Základ: `origin/main` / `f2626b86b714ffd1ec90f572170dac839857dfcc`, ověřen po fetch.
 Větev: `codex/security-audit-fixes-20261024`.
 Checkout: `C:\Users\Marek\Documents\Codex\evidencePavel-security-fixes-20261024`.
 Původní checkout a jeho rozpracovaný `kis_rosters_admin.php` zůstaly zachované.
-Bez migrací, změn konfigurace, aktivace integrací, push, merge a deploye.
+Větev byla na následný výslovný pokyn odeslána a vznikl
+[PR #190 do main](https://github.com/KovoPraha/evidenceTreninku/pull/190).
+Bez migrací, změn konfigurace, aktivace integrací, merge a deploye.
+
+## Linux CI a připravenost PR
+
+Implementační commit `f7d58d8dee5526f0c3a406944c38936456fd4349`:
+
+- [Testy 40130990758](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40130990758):
+  Linux / PHP 8.2.35 **1 685 testů / 33 629 assertions PASS**; MariaDB 10.3 a 11.4 PASS.
+- [CodeQL 40130988763](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40130988763):
+  Actions, JavaScript/TypeScript a Python PASS, souhrnná kontrola CodeQL PASS.
+- Composer validate, instalace a audit závislostí PASS. Žádné selhání Linux CI;
+  další změna aplikačního kódu nebyla potřeba.
+- GitHub potvrzuje PR `OPEN`, `MERGEABLE`, stav `CLEAN`, všechny tři povinné
+  kontroly splněné a žádný konflikt s `main`. Požadavek nezávislého review je 0;
+  nejde o tvrzení, že proběhlo nezávislé lidské review.
+
+Doporučení: sloučit tuto bezpečnostní větev přes PR #190 do `main`.
+Starší lokální pracovní větve a cizí rozpracované změny nejsou součástí PR.
+Nasazení je samostatný ruční workflow a nebylo spuštěno. Tento záznam zachycuje
+ověřený implementační commit; po dokumentačním commitu se kontroluje také nový HEAD PR.
 
 ## Opravy
 
@@ -70,8 +91,8 @@ chráněné `function_exists()`. Tento nesouvisející scanner ani bezpečnostn�
 testy nebyly oslabeny. Plnou lokální sadu proto neoznačujeme za zelenou;
 žádné nové selhání proti auditovanému základu nepřibylo.
 
-Linux CI nových změn nebylo spuštěno, protože větev nebyla odeslána. Starší zelené
-CI základního commitu není důkazem těchto nových změn. Neproběhl nový produkční
+Linux CI následně ověřilo nové změny v PR #190, viz konkrétní běhy výše.
+Windows failure a tři skips se v Linux CI neopakovaly. Neproběhl nový produkční
 test, čtení živé databáze, zaslání zpráv, skutečná objednávka ani platba.
 
 ## Opakování
@@ -84,5 +105,5 @@ php vendor/bin/phpunit --configuration phpunit.xml.dist
 git diff --check
 ```
 
-Další krok je revize změn. Nasazení vyžaduje samostatné zadání vlastníka;
+Další krok je sloučení PR po rozhodnutí vlastníka. Nasazení vyžaduje samostatné zadání;
 aktuální pokyn výslovně říká zatím nenasazovat.
