@@ -1,5 +1,16 @@
 # Aktuální stav projektu
 
+**24. 10. 2026 — skladové opravy PR #187 nasazeny, čtecí produkční kontrola dokončena.**
+[Protokol a důkazy](verification/stock-production-20261024/RESULTS.md).
+Release `065ed2a6fb797e21928d0eb5d1d5b84af0c04d93`, deploy **40085679569 SUCCESS**:
+záloha330 tabulek, pending=[], VS zachovány, HTTP200; 8/8 živých otisků souhlasí.
+16 základních + 20 skladových + 14 účetních kontrol PASS. Produkce: 8 objednávek,
+skladové/účetní tabulky zatím prázdné; **855 katalogových variant zboží bez řízeného
+skladového stavu**. Není to počet kusů ani závěr o aktivní nabídce. Skutečné
+počátky vyžadují inventuru, nebyly doplněny odhadem. Celý průchod prokázán izolovaně.
+Diagnostika PR #188: 1677 testů / 33411 assertions, MariaDB10.3/11.4 a CodeQL PASS.
+Bez prohlížeče a bez testovacích doménových zápisů do produkce. Lidská přejímka otevřená.
+
 **24. 10. 2026 — přejímka skladů, výdejů a vratek bez prohlížeče; oprava zatím nenasazena.**
 [Protokol](verification/stock-followup-20261024/RESULTS.md), PR #187.
 Opraveno přehlédnutí úplné vratky z příjmů propojených jen příděly a chybné

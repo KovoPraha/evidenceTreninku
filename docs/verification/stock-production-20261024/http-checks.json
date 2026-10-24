@@ -1,0 +1,42 @@
+{
+  "browser_used": false,
+  "authenticated": false,
+  "method": "GET",
+  "checks": [
+    {
+      "path": "index.php",
+      "exit_code": 0,
+      "response": "200"
+    },
+    {
+      "path": "eshop_inventory_admin.php",
+      "exit_code": 0,
+      "response": "302 https://kis.kovopraha.cz/login.php"
+    },
+    {
+      "path": "eshop_fulfillment_admin.php",
+      "exit_code": 0,
+      "response": "302 https://kis.kovopraha.cz/login.php"
+    },
+    {
+      "path": "shop_returns_admin.php",
+      "exit_code": 0,
+      "response": "302 https://kis.kovopraha.cz/login.php"
+    },
+    {
+      "path": "shop_stock_document.php?id=0",
+      "exit_code": 0,
+      "response": "403"
+    },
+    {
+      "path": "accounting_exports_admin.php",
+      "exit_code": 0,
+      "response": "302 https://kis.kovopraha.cz/login.php"
+    },
+    {
+      "path": "var/deployment.json",
+      "exit_code": 0,
+      "response": "403"
+    }
+  ]
+}

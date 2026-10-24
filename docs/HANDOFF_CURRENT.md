@@ -1,5 +1,18 @@
 # Aktuální předání vývoje na další stanici
 
+**24. 10. 2026 — PR #187 nasazen, produkční skladový/účetní audit PASS.**
+[Protokol a souhrnné důkazy](verification/stock-production-20261024/RESULTS.md).
+Živý release `065ed2a6fb797e21928d0eb5d1d5b84af0c04d93`, deploy40085679569 SUCCESS.
+Záloha330 tabulek, pending=[], VS zachovány, HTTP200; ověřeny hashe8 souborů.
+Drill40085999249: 16 kontrol PASS; audit40086062724: 20 skladových + 14 účetních PASS.
+Produkce: 8 objednávek, 0 skladových/účetních záznamů a souborů, 855 katalogových
+variant zboží bez řízeného skladového stavu. Bez skutečné inventury nelze doplnit
+počátky; nulové tabulky nejsou dokladem reálného průchodu. Testovací zápisy jen izolovaně.
+Opakovatelná diagnostika PR #188 (main283c46db) není další aplikační deploy:
+1677 testů / 33411 assertions, MariaDB10.3/11.4, CodeQL a negativní kontroly PASS.
+Použít `production-drills.yml`, `overit-ucetni-vazby`, `PROVEST`; žádný aplikační
+bootstrap, konzistentní READ ONLY, dočasné skripty mimo webroot se odstraní.
+
 **24. 10. 2026 — skladové návaznosti ověřeny, PR #187 zatím bez nasazení.**
 [Protokol a souběžné kontroly](verification/stock-followup-20261024/RESULTS.md).
 Výdej respektuje úplné účetní vratky z historie přídělů; při sdíleném příjmu
