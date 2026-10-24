@@ -1,0 +1,134 @@
+{
+    "status": "PASS",
+    "read_only": true,
+    "synthetic_only": true,
+    "batches": [
+        {
+            "id": 36,
+            "revision": 8,
+            "predecessor_id": 34,
+            "status": "incomplete",
+            "archive_sha256": "cae8e9faac9cfd4baacc7bedd26c60baa6febbdc4913090f0240bf7131bf2f0f",
+            "bytes": 764431,
+            "download": "C:\\Users\\Marek/Desktop/downloads/ucetni-podklady-2026-10-01-r8.zip",
+            "repeat_download_identical": false,
+            "events": [
+                {
+                    "id": 92,
+                    "action": "created",
+                    "reason": "LOCALHOST NEPLATIT – přejímka exportu z prohlížeče 24. 10. 2026.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:13:29"
+                },
+                {
+                    "id": 93,
+                    "action": "downloaded",
+                    "reason": "Stažení neměnné revize.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:13:46"
+                },
+                {
+                    "id": 94,
+                    "action": "downloaded",
+                    "reason": "Stažení neměnné revize.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:30:41"
+                }
+            ]
+        },
+        {
+            "id": 37,
+            "revision": 9,
+            "predecessor_id": 36,
+            "status": "incomplete",
+            "archive_sha256": "42e8fe289ab0a2335f917f4f71ab7abb21dee21cb523b211a00e6d88eada1d3f",
+            "bytes": 763557,
+            "download": "C:\\Users\\Marek/Desktop/downloads/ucetni-podklady-2026-10-01-r9.zip",
+            "repeat_download_identical": true,
+            "events": [
+                {
+                    "id": 95,
+                    "action": "created",
+                    "reason": "LOCALHOST NEPLATIT – přejímka celého předání účetní 24. 10. 2026, první pracovní revize tohoto scénáře.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:31:49"
+                },
+                {
+                    "id": 96,
+                    "action": "downloaded",
+                    "reason": "Stažení neměnné revize.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:31:55"
+                },
+                {
+                    "id": 97,
+                    "action": "handed_over",
+                    "reason": "LOCALHOST NEPLATIT – simulované předání kontrolní účetní 24. 10. 2026. Revize 9 byla stažena přes Chrome; jde pouze o syntetický test, nic nebylo odesláno.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:34:19"
+                },
+                {
+                    "id": 98,
+                    "action": "returned",
+                    "reason": "LOCALHOST NEPLATIT – simulované vrácení revize 9 kontrolní účetní 24. 10. 2026. Požadavek: opakovat předání nové revize s výslovným seznamem nevyřešených podkladů. Skutečná metodika není schválena.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:38:24"
+                },
+                {
+                    "id": 104,
+                    "action": "downloaded",
+                    "reason": "Stažení neměnné revize.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:40:14"
+                }
+            ]
+        },
+        {
+            "id": 38,
+            "revision": 10,
+            "predecessor_id": 37,
+            "status": "incomplete",
+            "archive_sha256": "bcb8287ed4b022f03bd34fdf8ae4c34f83812024ef43e6d1998288e8ed466248",
+            "bytes": 763579,
+            "download": "C:\\Users\\Marek/Desktop/downloads/ucetni-podklady-2026-10-01-r10.zip",
+            "repeat_download_identical": true,
+            "events": [
+                {
+                    "id": 99,
+                    "action": "created",
+                    "reason": "LOCALHOST NEPLATIT – nové předání po vrácení revize 9. Seznam nevyřešených podkladů zůstává výslovně součástí balíku; metodika není schválena. Technická simulace 24. 10. 2026.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:38:36"
+                },
+                {
+                    "id": 100,
+                    "action": "downloaded",
+                    "reason": "Stažení neměnné revize.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:38:42"
+                },
+                {
+                    "id": 101,
+                    "action": "handed_over",
+                    "reason": "LOCALHOST NEPLATIT – simulované předání nové revize 10 kontrolní účetní dne 24. 10. 2026. Soubor stažen přes Chrome, výjimky zůstávají uvedené. Nic nebylo skutečně odesláno.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:38:45"
+                },
+                {
+                    "id": 102,
+                    "action": "accepted",
+                    "reason": "LOCALHOST NEPLATIT – simulované technické převzetí revize 10 dne 24. 10. 2026. ZIP, XLSX a PDF zkontrolovány. Nejde o skutečné schválení účetní ani účetní metodiky; podklady zůstávají NEÚPLNÉ.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:39:04"
+                },
+                {
+                    "id": 103,
+                    "action": "downloaded",
+                    "reason": "Stažení neměnné revize.",
+                    "actor_trainer_id": 326,
+                    "created_at": "2026-10-24 22:39:49"
+                }
+            ]
+        }
+    ]
+}

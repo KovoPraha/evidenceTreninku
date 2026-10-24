@@ -5,6 +5,11 @@ Výsledek: Linuxová mezera uzavřena, **19 kontrol v prohlížeči prošlo, 1 s
 odloženo kvůli blokaci Chrome**. Opravena jedna skutečná vada zobrazení.
 Nejde o úplné lidské převzetí oddílem ani účetní, produkční pilot nebo schválení metodiky.
 
+**Doplnění z 24. 10. 2026:** odložené stažení bylo následně skutečně ověřeno
+v Chrome, včetně klientského SHA-256, nové revize a celého simulovaného předání.
+Viz [navazující protokol](../accountant-handover-20261024/RESULTS.md).
+Níže je zachovaný původní stav a jeho tehdejší omezení důkazu.
+
 ## Rozsah a izolace
 
 - Pracovní kopie `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
