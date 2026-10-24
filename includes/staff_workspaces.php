@@ -26,6 +26,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'planovac.php', 'label' => 'Plánovač', 'description' => 'Naplánované tréninky', 'icon' => 'calendar3-week'],
                     ['route' => 'moje_treninky.php', 'label' => 'Moje tréninky', 'description' => 'Vlastní historie a úpravy', 'icon' => 'list-check'],
                     ['route'=>'training_closure_admin.php','label'=>'Docházka a uzavření','description'=>'Potvrzení skutečné účasti a auditované opravy','icon'=>'clipboard-check'],
+                    ['route'=>'medical_activity_admin.php','label'=>'Podklady před aktivitou','description'=>'Platnost podkladů skupiny nebo lekce','icon'=>'clipboard-heart'],
                     ['route'=>'sports_activity_admin.php','label'=>'Sportovní činnost a podklady','description'=>'Skutečné starty a verzované podklady za období','icon'=>'activity'],
                     ['route' => 'moje_skupiny.php', 'label' => 'Moje skupiny', 'description' => 'Svěřené skupiny sportovců', 'icon' => 'people'],
                 ]],
@@ -74,6 +75,7 @@ function staffPositionDefinitions(): array
             'sort' => 30,
             'groups' => [
                 ['label' => 'Členové', 'icon' => 'people', 'items' => [
+                    ['route'=>'person_lifecycle_admin.php','label'=>'Vyřízení osoby','description'=>'Přijetí, odchod, návrat a návazné kroky','icon'=>'person-check'],
                     ['route' => 'sprava_sportovcu.php', 'label' => 'Sportovci', 'description' => 'Kmenová evidence členů', 'icon' => 'person-lines-fill'],
                     ['route' => 'sprava_skupin.php', 'label' => 'Skupiny', 'description' => 'Klubové skupiny', 'icon' => 'diagram-2'],
                     ['route' => 'sprava_podskupin.php', 'label' => 'Podskupiny', 'description' => 'Zařazení sportovců', 'icon' => 'diagram-3'],
@@ -370,6 +372,7 @@ function staffRouteDelegates(): array
     return [
         'club_rewards_admin.php'=>['coach','sports_lead'],
         'medical_clearance_status.php'=>['sports_lead','registrar'],
+        'medical_activity_admin.php'=>['sports_lead','registrar'],
         'training_closure_admin.php'=>['sports_lead'],
         'training_rsvps_admin.php'=>['sports_lead'],
         'formular.php'=>['sports_lead'],

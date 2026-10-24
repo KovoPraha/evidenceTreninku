@@ -3,6 +3,7 @@
 <?php if($plan):?>
 <p><strong><?=tcH($plan['nazev'])?></strong> · <?=tcH($plan['datum'].' · '.substr((string)$plan['cas_od'],0,5).'–'.substr((string)$plan['cas_do'],0,5))?></p>
 <?php if($plan['stav']==='zruseny'):?><p class="alert alert-warning">Lekce je zrušená. Její historie zůstává dostupná.</p><?php endif;?>
+<p><a href="medical_activity_admin.php?plan_id=<?=(int)$plan['id']?>">Podklady účastníků k datu lekce</a></p>
 <ol>
 <li><a href="training_rsvps_admin.php?plan_id=<?=(int)$plan['id']?>">Příprava, odpovědi účastníků a náhradníci</a> · <a href="#personal-excuse">Zapsat osobně přijatou omluvu</a></li>
 <li><?php if($training):?>Skutečný trénink je zapsaný. <a href="#actual-attendance">Potvrdit nebo opravit skutečnou docházku</a><?php elseif($plan['stav']!=='zruseny'):?><a href="formular.php?plan_id=<?=(int)$plan['id']?>">Zapsat skutečný trénink z této lekce</a>. Teprve potom potvrďte skutečnou docházku.<?php else:?>Zrušený termín se nepotvrzuje jako skutečná docházka.<?php endif;?></li>

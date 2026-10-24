@@ -2,6 +2,7 @@
 require_once __DIR__.'/person_workflow.php';
 $personSteps=personWorkflowSteps($pdo,$editPerson,$editContext);
 ?>
+<p><a class="btn btn-outline-primary" href="person_lifecycle_admin.php?id=<?=(int)$editPerson['id']?>">Přijetí, odchod nebo návrat — vyřízení osoby</a></p>
 <section class="border rounded p-3 mb-4" aria-labelledby="person-workflow-title">
 <h2 class="h5" id="person-workflow-title">Co u osoby zbývá vyřídit</h2>
 <p class="small text-muted">Přehled propojuje existující agendy. Nevytváří další registraci ani automaticky nepotvrzuje členství, souhlasy nebo rodinný přístup.</p>

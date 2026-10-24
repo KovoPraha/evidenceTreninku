@@ -1,5 +1,16 @@
 # Aktuální předání vývoje na další stanici
 
+**24. 10. 2026 — balík B „Život osoby a podklady“ lokálně implementován v rozsahu bez otevřených rozhodnutí, NENASAZEN.**
+[Protokol a odložený rozsah](verification/person-life-documents-20261024/RESULTS.md).
+Větev `codex/person-life-documents-20261024` navazuje na A (`1925f88c`).
+Vyřízení osoby s odpovědností a historií, dohledatelná rozhodnutí o členství,
+upozornění na neověřené znění papírového podkladu, zdravotní stav skupiny/lekce
+k datu a úkoly rodiny. Role, soukromé dokumenty a oddělení členství od závazků zachovány.
+155 testů / 2563 assertions; HTTP B 30 + regrese A 32 scénářů PASS v syntetickém B1.
+D17 datovaná účinnost členství, D18 zdravotní pravidla a D19 online změny/přílohy
+rodiny zůstávají odložené. Bez migrací, změn e-shopu, produkčních zásahů a aktivace zpráv.
+Další nezávislý balík C lze realizovat bez schvalování těchto odložených bodů.
+
 **24. 10. 2026 — balík A „Každodenní práce trenéra a registráře“ implementován lokálně, NENASAZEN.**
 [Protokol a rozsah](verification/daily-coach-registrar-20261024/RESULTS.md).
 Větev `codex/daily-coach-registrar-20261024` v izolovaném B1 checkoutu.

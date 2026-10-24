@@ -16,7 +16,8 @@ if (!isset($cases,$pdo,$position)) { http_response_code(404);exit; }
 <?php if (!$case['owner_trainer_id']): ?><p class="text-danger">Chybí odpovědná osoba.</p>
 <?php elseif (!(int)$case['owner_active'] || !in_array((int)$case['owner_trainer_id'],array_map('intval',array_column($owners,'id')),true)): ?><p class="text-danger">Odpovědná osoba již nemá oprávnění. Případ předejte.</p><?php endif; ?>
 <?php if ($case['review_on'] && $case['review_on']<date('Y-m-d')): ?><p class="text-danger">Termín kontroly již uplynul.</p><?php endif; ?>
-<?php if (!(int)$case['unresolved']): ?><p class="text-success">Zdroj je vyřešený; lze uzavřít úkol.</p><?php endif; ?>
+<?php if ($case['source_type']==='person_followup'): ?><p>Ruční pracovní úkol. Jeho uzavření nemění členství, přístupy, soupisky ani závazky osoby.</p>
+<?php elseif (!(int)$case['unresolved']): ?><p class="text-success">Zdroj je vyřešený; lze uzavřít úkol.</p><?php endif; ?>
 <form method="post" class="row g-2"><?=csrf_field()?>
 <input type="hidden" name="source_type" value="<?=operationalPageH($case['source_type'])?>"><input type="hidden" name="source_id" value="<?=(int)$case['source_id']?>"><input type="hidden" name="revision" value="<?=(int)$case['revision']?>">
 <div class="col-md-4"><label class="form-label" for="owner-<?=$key?>">Odpovědná osoba</label><select class="form-select" name="owner_trainer_id" id="owner-<?=$key?>" required><option value="">Vyberte</option><?php foreach($owners as $owner): ?><option value="<?=(int)$owner['id']?>" <?=(int)$case['owner_trainer_id']===(int)$owner['id']?'selected':''?>><?=operationalPageH($owner['jmeno'])?></option><?php endforeach; ?></select></div>

@@ -38,7 +38,7 @@ final class OperationalCasesTest extends TestCase
     {
         $p=$this->database();$view=\operationalCaseList($p,'registrar');
         self::assertSame(['identity_review','family_claim'],array_column($view['items'],'source_type'));
-        self::assertSame(['Platnost zdravotního podkladu','Nedokončené přijetí do programu','Papírový dokument','Zpráva soupisce'],$view['unavailable']);
+        self::assertSame(['Vyřízení osoby','Platnost zdravotního podkladu','Nedokončené přijetí do programu','Papírový dokument','Zpráva soupisce'],$view['unavailable']);
         self::assertSame(0,(int)$p->query('SELECT COUNT(*) FROM operational_cases')->fetchColumn());
         self::assertSame(['notification'],array_column(\operationalCaseList($p,'order_operator')['items'],'source_type'));
         self::assertSame([],\operationalCaseList($p,'coach')['items']);

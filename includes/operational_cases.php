@@ -10,6 +10,7 @@ function operationalCaseSources(): array
             'unresolved'=>"s.state='pending' AND NOT EXISTS(SELECT 1 FROM financial_decisions n WHERE n.replaces_id=s.id)"],
         'accounting_handover' => ['table'=>'accounting_export_batches','position'=>'finance_manager','label'=>'Předání účetních podkladů','href'=>'accounting_exports_admin.php','requires'=>['accounting_export_events'],
             'unresolved'=>"COALESCE((SELECT e.action FROM accounting_export_events e WHERE e.batch_id=s.id AND e.action IN ('handed_over','returned','accepted') ORDER BY e.id DESC LIMIT 1),'new')<>'accepted'"],
+        'person_followup' => ['table'=>'sportovci','position'=>'registrar','label'=>'Vyřízení osoby','href'=>'person_lifecycle_admin.php','unresolved'=>'0=1'],
         'medical_watch' => ['table'=>'medical_clearance_watches','position'=>'registrar','label'=>'Platnost zdravotního podkladu','href'=>'medical_clearance_admin.php',
             'unresolved'=>"s.next_review_on<='".date('Y-m-d')."'"],
         'training_attendance' => ['table'=>'treninky','position'=>'sports_lead','label'=>'Neuzavřená docházka','href'=>'training_closure_admin.php','requires'=>['training_closures'],
@@ -77,7 +78,7 @@ function operationalCaseList(PDO $pdo, string $position, int $page=1, bool $clos
         $st=$pdo->prepare($sql);$st->execute([$type]);
         $rows=$st->fetchAll(PDO::FETCH_ASSOC);
         if (count($rows)>30) {$hasNext=true;array_pop($rows);}
-        foreach ($rows as $row) $items[]=$row+['source_type'=>$type,'label'=>$def['label'],'href'=>$def['href'].(in_array($type,['identity_review','paper_record','medical_watch','training_attendance'],true)?'?id='.(int)$row['source_id']:'')];
+        foreach ($rows as $row) $items[]=$row+['source_type'=>$type,'label'=>$def['label'],'href'=>$def['href'].(in_array($type,['identity_review','paper_record','medical_watch','training_attendance','person_followup'],true)?'?id='.(int)$row['source_id']:'')];
     }
     return ['items'=>$items,'unavailable'=>$unavailable,'page'=>$page,'has_next'=>$hasNext,'closed'=>$closed];
 }

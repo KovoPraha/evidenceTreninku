@@ -29,6 +29,18 @@ klasifikaci, pracovněprávní vztahy ani daňový režim jednotlivých odměn.
 | D15 | Samostatné povolení nasazení, reálných importů a otevření provozu | Uživatel + garanti agend | Produkční změna | Žádný push, deploy ani produkční zápis v tomto zadání |
 | D16 | Převzetí prvního skutečného měsíce účetní a povolení ukončit staré služby | Účetní + vedení | R44 | Staré služby se nevypínají; technický test není účetní převzetí |
 
+## Doplnění pro balík B — 24. 10. 2026
+
+| ID | Odložené rozhodnutí | Co je připravené bez něj | Co se neprovádí |
+|---|---|---|---|
+| D17 | Pravidla účinnosti přijetí, přerušení, ukončení a návratu; kdo je potvrzuje, zda lze rozhodnutí zadat zpětně / do budoucna a jak opravovat překryvy | Průvodce vyřízením, současné členství, historie zaznamenaných rozhodnutí, odpovědný registrář a další krok | Nové intervaly členství, seznam členů k minulému datu, automatické odpojování vazeb nebo převod staré historie na účinnost |
+| D18 | Které zdravotní podklady jsou požadované pro konkrétní činnost a kdo rozhodne o účasti při chybějícím podkladu; navazuje na D11 | Přehled podle skupiny/lekce a dne, současné schválené účely a lhůty upozornění, osobní předání registráři | Odhad nové zdravotní povinnosti, diagnózy v přehledu, automatický zákaz účasti nebo nové retenční pravidlo |
+| D19 | Zda rodina smí podávat online změny kontaktů a nahrávat nové podklady, kdo je přebírá a schvaluje | Seznam vlastních úkolů, čekání na klub, existující žádost o propojení a osobní vyřízení | Nový veřejný formulář změn údajů / soukromých příloh ani udělení přístupu podle kontaktu |
+
+Odesílání zpráv a jeho plánování zůstává pod D12; zapnutí odběru není potvrzení
+transportu ani doručení. Pravidla v D17–D19 nejsou schválena implementací přehledu.
+Balík B je dokončen v rozsahu nezávislém na těchto rozhodnutích.
+
 Doklad rozhodnutí musí určit osobu, datum, rozsah, konkrétní verzi podkladu
 a důvod. Změna vstupu nebo relevantního cíle vyžaduje nové posouzení.
 Provozní záznam lze následně uložit v příslušné administraci; tento pracovní

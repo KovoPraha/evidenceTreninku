@@ -23,9 +23,10 @@ function personWorkflowSteps(PDO $pdo,array $person,array $context): array
     foreach($context['roles']??[] as $role){if(($role['status']??'')==='approved'&&(int)($role['aktivni']??0)===1&&(int)($role['email_overeno']??0)===1&&($role['valid_from']??'')<=$now&&(($role['valid_to']??null)===null||$role['valid_to']>$now))$active++;}
     $add('Rodiče a přístupy',$active?'Platné schválené online vazby: '.$active.'.':'Není platný schválený online přístup. Osobní vyřízení bez účtu je možné; kontakt není přístup.', 'sprava_sportovcu.php?edit_id='.$id.'#parents-title');
     if(adminOperationalHasTables($pdo,['club_paper_records','club_paper_record_events'])){
-        $q=$pdo->prepare("SELECT (SELECT e.event_type FROM club_paper_record_events e WHERE e.record_id=p.id AND e.event_type<>'file_viewed' ORDER BY e.id DESC LIMIT 1) AS state FROM club_paper_records p WHERE p.sportovec_id=?");$q->execute([$id]);$states=$q->fetchAll(PDO::FETCH_COLUMN);
+        $q=$pdo->prepare("SELECT (SELECT e.event_type FROM club_paper_record_events e WHERE e.record_id=p.id AND e.event_type<>'file_viewed' ORDER BY e.id DESC LIMIT 1) AS state,p.term_version_id,p.version_label FROM club_paper_records p WHERE p.sportovec_id=?");$q->execute([$id]);$records=$q->fetchAll(PDO::FETCH_ASSOC);$states=array_column($records,'state');
         $pending=count(array_filter($states,static fn($s)=>$s==='recorded'));$accepted=count(array_filter($states,static fn($s)=>$s==='accepted'));
-        $add('Přihlášky a souhlasy','K posouzení: '.$pending.', ověřené podklady: '.$accepted.'. Úplnost se posuzuje pro konkrétní účel a aktuální znění.', 'paper_registrations_admin.php?person_id='.$id.'#record',$pending>0);
+        $unverified=count(array_filter($records,static fn($r)=>$r['state']==='accepted'&&$r['term_version_id']===null&&$r['version_label']==='verze neověřena'));
+        $add('Přihlášky a souhlasy','K posouzení: '.$pending.', ověřené podklady: '.$accepted.', z toho s neověřeným zněním: '.$unverified.'. Úplnost se posuzuje pro konkrétní účel a aktuální znění.', 'paper_registrations_admin.php?person_id='.$id.'#record',$pending>0||$unverified>0);
     }else $add('Přihlášky a souhlasy','Zdroj papírových podkladů není dostupný.','paper_registrations_admin.php?person_id='.$id,true);
     $recorded=(int)($person['stav_manualni']??0)===1;
     $status=sportovecStatusCompute($person);
