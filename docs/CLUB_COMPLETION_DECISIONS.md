@@ -54,6 +54,11 @@ používání; samotný zápis v plánu nic nevypíná ani nepovoluje.
 
 ## Krátký seznam podkladů od uživatele pro D12–D15
 
+Konkrétní [návrh pilotu D12–D14](CLUB_PILOT_D12_D14.md) rozepisuje první
+skupinu, pořadí agend a integrací, přípravu, přechod a návrat při problému.
+Jména a termín zůstávají k doplnění. Jde o navržené provedení schváleného
+základu, nikoli schválení nového detailního rozsahu nebo povolení D15.
+
 1. **D12 — integrace:** jméno správce a zástupce, kontrolní e-mail a seznam
    služeb požadovaných při prvním spuštění. Pro zvolené služby určit požadovaný
    režim/četnost, případně nechat připravit návrh. Nové neschválené automatické
