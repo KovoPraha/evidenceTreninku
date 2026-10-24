@@ -46,5 +46,25 @@ function stockReturnAccountingAcceptance(PDO $pdo,array $order,int $invoiceId,in
     $zip=new ZipArchive();$file=accountingExportDownload($pdo,(int)$export['id'],7);$check($zip->open($file['path'],ZipArchive::RDONLY)===true,'Cannot inspect stock export.');
     try{$bytes=$zip->getFromName('sklad/SK-'.$case['return_movement_id'].'.pdf');$check(is_string($bytes)&&hash('sha256',$bytes)===$stockDoc['pdf_sha256'],'Private return PDF missing from accounting archive.');}finally{$zip->close();}
     $check((int)$pdo->query("SELECT COUNT(*) FROM club_program_enrollments WHERE status='active'")->fetchColumn()===2,'Goods return changed either course enrollment.');
+    $audit=productionAccountingAudit($pdo,privateStorageRoot(),true);
+    $check($audit['ok']&&$audit['stock']['pdfs_checked']===1,'Read-only stock/accounting audit failed: '.json_encode($audit['stock']['checks']));
+    $events=(int)$pdo->query('SELECT COUNT(*) FROM shop_return_events')->fetchColumn();
+    $pdo->prepare('UPDATE shop_stock_balances SET physical_quantity=physical_quantity+1 WHERE variant_id=?')->execute([$variant]);
+    $bad=productionAccountingAudit($pdo,privateStorageRoot(),true);
+    $check(!$bad['ok']&&$bad['stock']['checks']['balance_vs_movements']['count']===1&&$bad['stock']['checks']['balance_vs_lots']['count']===1,'Audit missed stock cache corruption.');
+    $pdo->prepare('UPDATE shop_stock_balances SET physical_quantity=physical_quantity-1 WHERE variant_id=?')->execute([$variant]);
+    $pdo->prepare('UPDATE shop_fulfillment_items SET quantity=quantity+1 WHERE id=?')->execute([$issued['id']]);
+    $bad=productionAccountingAudit($pdo,privateStorageRoot(),true);
+    $check(!$bad['ok']&&$bad['stock']['checks']['fulfillment_order_links']['count']===1,'Audit missed handoff/movement mismatch.');
+    $pdo->prepare('UPDATE shop_fulfillment_items SET quantity=quantity-1 WHERE id=?')->execute([$issued['id']]);
+    $pdo->prepare('UPDATE accounting_refund_payments SET amount_minor=amount_minor-1 WHERE decision_id=?')->execute([$decision['id']]);
+    $bad=productionAccountingAudit($pdo,privateStorageRoot(),true);
+    $check(!$bad['ok']&&$bad['stock']['checks']['closed_return_unpaid_refund']['count']===1,'Audit missed a closed return without full actual repayment.');
+    $pdo->prepare('UPDATE accounting_refund_payments SET amount_minor=amount_minor+1 WHERE decision_id=?')->execute([$decision['id']]);
+    $path=privateStorageResolve($stockDoc['storage_key']);$bytes=file_get_contents($path);file_put_contents($path,'LOCALHOST broken stock PDF');
+    $bad=productionAccountingAudit($pdo,privateStorageRoot(),true);
+    $check(!$bad['ok']&&$bad['stock']['checks']['stock_pdf_integrity']['count']===1,'Audit missed damaged stock PDF.');file_put_contents($path,$bytes);
+    $check(productionAccountingAudit($pdo,privateStorageRoot(),true)['ok']&&$events===(int)$pdo->query('SELECT COUNT(*) FROM shop_return_events')->fetchColumn(),'Restored read-only stock audit failed or wrote return events.');
+    echo "Read-only stock audit: balances, handoff, refund and PDF corruption detected; no domain writes OK\n";
     echo "Stock issue -> owned blocked return -> inspection -> correction -> actual refund -> stock PDF/accounting ZIP acceptance OK\n";
 }
