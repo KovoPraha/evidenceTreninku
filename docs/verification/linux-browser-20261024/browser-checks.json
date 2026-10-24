@@ -1,0 +1,102 @@
+[
+  {
+    "id": "B01",
+    "status": "PASS",
+    "scenario": "Existing local staff login and registrar workspace"
+  },
+  {
+    "id": "B02",
+    "status": "PASS",
+    "scenario": "Two-step person creation; no match preview followed by one pending person"
+  },
+  {
+    "id": "B03",
+    "status": "PASS",
+    "scenario": "Person card preserves pending membership, no access, no enrollment, no financial obligation"
+  },
+  {
+    "id": "B04",
+    "status": "PASS",
+    "scenario": "Dark table header fixed from white on rgb(248,249,250) to white on rgb(33,37,41)"
+  },
+  {
+    "id": "B05",
+    "status": "PASS",
+    "scenario": "Internal note saved through browser and visible with author/date"
+  },
+  {
+    "id": "B06",
+    "status": "PASS",
+    "scenario": "Browser creates training #55 with named participant and 75 minutes"
+  },
+  {
+    "id": "B07",
+    "status": "PASS",
+    "scenario": "Browser closes attendance; revision 1, actual 16:00–17:15, participant #91 and acting coach preserved"
+  },
+  {
+    "id": "B08",
+    "status": "PASS",
+    "scenario": "Training links person #91 to medical requirement status on activity date; missing requirement is explicitly reported"
+  },
+  {
+    "id": "B09",
+    "status": "PASS",
+    "scenario": "UI creates accounting export #36 revision 8; prior revisions retained, incomplete sources and non-additive replacement explained"
+  },
+  {
+    "id": "B10",
+    "status": "BLOCKED_BROWSER",
+    "scenario": "Export download #36 returns HTTP 200 in local server log but Chrome displays ERR_BLOCKED_BY_CLIENT; browser protection unchanged"
+  },
+  {
+    "id": "B11",
+    "status": "PASS",
+    "scenario": "Issued invoice #18 renders 250 CZK, non-VAT issuer, original VS, buyer and items; correction #19 listed separately"
+  },
+  {
+    "id": "B12",
+    "status": "PASS",
+    "scenario": "Expense case filter returns exactly one closed case #25 linked to sports event #25"
+  },
+  {
+    "id": "B13",
+    "status": "PASS",
+    "scenario": "Closed case #25 retains approved v2 and superseded v1, zero settled advance; link opens event #25 and separates planned from actual participation"
+  },
+  {
+    "id": "B14",
+    "status": "PASS",
+    "scenario": "Rewards overview distinguishes submitted, approved and paid amounts; example #20 approved 500 CZK, paid 500 CZK, remaining zero"
+  },
+  {
+    "id": "B15",
+    "status": "PASS",
+    "scenario": "Existing synthetic family session shows exactly approved children Anna and Bara, same options in course selector, no new unlinked person #370"
+  },
+  {
+    "id": "B16",
+    "status": "PASS",
+    "scenario": "Previously prepared paid sibling order KP2610238684A82F7F displays same course twice, Anna and Bara separately, 150+150=300 CZK"
+  },
+  {
+    "id": "B17",
+    "status": "PASS",
+    "scenario": "Both sibling participations retain order link and roster dates; November course explicitly future, current courses active"
+  },
+  {
+    "id": "B18",
+    "status": "PASS",
+    "scenario": "Parent sees newly closed training #55 as confirmed 1.25 h; annual confirmed total 3 trainings/210 minutes; unverified legacy attendance distinguished and new internal note absent"
+  },
+  {
+    "id": "B19",
+    "status": "PASS",
+    "scenario": "Cutover #10 shows registry revision 3, attendance map as proposal and owner decision missing; no live cutover implied"
+  },
+  {
+    "id": "B20",
+    "status": "PASS",
+    "scenario": "Communication status explicitly detects blocked PHP mail and distinguishes queue processing from delivery; old processing entries flagged without retry/send"
+  }
+]
