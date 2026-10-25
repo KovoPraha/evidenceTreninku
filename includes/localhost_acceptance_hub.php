@@ -407,14 +407,13 @@ function localhostAcceptanceScenariosB(string $root): array
             ],
         ],
         [
-            'id' => 'B03', 'role' => 'Trenér', 'area' => 'Tréninky', 'declared_status' => 'ready',
+            'id' => 'B03', 'role' => 'Trenér + vedoucí sportu', 'area' => 'Tréninky', 'declared_status' => 'ready',
             'steps' => ['Projděte výkaz činností za aktuální měsíc.', 'Stáhněte měsíční XLSX a CSV export.', 'Zkontrolujte přehled trenéra a kalendář skupiny.'],
             'expected' => 'Součty ve výkazu odpovídají zadaným tréninkům; exporty se stáhnou a jdou otevřít.',
             'note' => '',
             'links' => [
                 ['label' => 'Výkaz činností', 'path' => 'vypis_vykazu.php', 'scope' => 'trainer'],
-                ['label' => 'Export XLSX', 'path' => 'export_xls.php', 'scope' => 'trainer'],
-                ['label' => 'Export CSV', 'path' => 'export_csv.php', 'scope' => 'trainer'],
+                ['label' => 'Měsíční exporty (vedoucí sportu)', 'path' => 'prehled_trenera.php', 'scope' => 'trainer'],
                 ['label' => 'Přehled trenéra', 'path' => 'prehled_trenera.php', 'scope' => 'trainer'],
             ],
         ],
@@ -425,8 +424,7 @@ function localhostAcceptanceScenariosB(string $root): array
             'note' => '',
             'links' => [
                 ['label' => 'Nový závod', 'path' => 'formular_zavod.php', 'scope' => 'trainer'],
-                ['label' => 'Detail závodu', 'path' => 'zavod_detail.php', 'scope' => 'trainer'],
-                ['label' => 'Editace závodu', 'path' => 'edit_zavod_form.php', 'scope' => 'trainer'],
+                ['label' => 'Vybrat závod pro detail a editaci', 'path' => 'prehled_zavodu.php', 'scope' => 'trainer'],
                 ['label' => 'Přehled závodů', 'path' => 'prehled_zavodu.php', 'scope' => 'trainer'],
             ],
         ],
@@ -520,7 +518,7 @@ function localhostAcceptanceScenariosB(string $root): array
             'expected' => 'Detail ukazuje jen aktivní publikované varianty, obrázky se načítají přes HTTPS a bez referreru.',
             'note' => '',
             'links' => [
-                ['label' => 'Detail produktu', 'path' => 'booking/produkt.php', 'scope' => 'customer'],
+                ['label' => 'Vybrat produkt a jeho variantu', 'path' => 'booking/eshop.php', 'scope' => 'customer'],
             ],
         ],
         [
@@ -550,7 +548,7 @@ function localhostAcceptanceScenariosB(string $root): array
             'note' => '',
             'links' => [
                 ['label' => 'Klubové akce a soupisky', 'path' => 'eshop_events_admin.php', 'scope' => 'trainer'],
-                ['label' => 'Export účastníků', 'path' => 'club_event_participants_export.php', 'scope' => 'trainer'],
+                ['label' => 'Vybrat akci pro export účastníků', 'path' => 'eshop_events_admin.php', 'scope' => 'trainer'],
             ],
         ],
         [
@@ -580,7 +578,6 @@ function localhostAcceptanceScenariosB(string $root): array
             'note' => '',
             'links' => [
                 ['label' => 'Zapomenuté heslo', 'path' => 'booking/zapomenute_heslo.php', 'scope' => 'customer'],
-                ['label' => 'Nové heslo', 'path' => 'booking/nove_heslo.php', 'scope' => 'customer'],
             ],
         ],
         [
@@ -589,7 +586,7 @@ function localhostAcceptanceScenariosB(string $root): array
             'expected' => 'ICS obsahuje jen oprávněné položky rodiny, rotace zneplatní starý odkaz a program ukazuje správné děti.',
             'note' => '',
             'links' => [
-                ['label' => 'Rodinný kalendář', 'path' => 'booking/rodinny_kalendar.php', 'scope' => 'customer'],
+                ['label' => 'Vytvořit odkaz rodinného kalendáře', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
                 ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
             ],
         ],

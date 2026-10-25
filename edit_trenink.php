@@ -707,7 +707,7 @@ if (!empty($trenink['datum'])) {
 
     function buildCvikSelect(selectedId) {
         if (!Array.isArray(CVIKY) || !CVIKY.length) {
-            return `<input type="text" class="form-control js-cvik_text" placeholder="Cvik (tabulka cviky neexistuje)">`;
+            return `<span class="small text-muted">Seznam cviků je prázdný. Název cviku uveďte do poznámky měření.</span>`;
         }
         const opts = CVIKY.map(c => {
             const sel = (String(c.id) === String(selectedId)) ? 'selected' : '';
@@ -739,7 +739,7 @@ if (!empty($trenink['datum'])) {
             fields.innerHTML = `
                 <div class="row g-2">
                     <div class="col-md-3">
-                        <label class="form-label mb-1">Vzdálenost (m)</label>
+                        <label class="form-label mb-1">Vzdálenost</label>
                         <div class="input-group">
                             <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" placeholder="Vzdálenost">
                             <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">

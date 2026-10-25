@@ -392,6 +392,7 @@ function staffRouteDelegates(): array
         'shop_returns_admin.php'=>['catalog_manager','finance_manager'],
         'shop_stock_document.php'=>['catalog_manager','finance_manager'],
         'ajax_sportovci.php' => ['finance_manager','sports_lead'],
+        'nacti_podskupiny.php' => ['sports_lead'],
         'provozni_prehled_admin.php' => ['registrar','order_operator','finance_manager','sports_lead'],
         'ajax_roster_target_selector.php' => ['sports_lead', 'program_coordinator', 'finance_manager'],
         'edit_trenink.php' => ['sports_lead'],

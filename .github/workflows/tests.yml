@@ -37,6 +37,9 @@ jobs:
       - name: Ověřit známé zranitelnosti závislostí
         run: composer audit --locked --no-interaction
 
+      - name: Ověřit JavaScript trenérských formulářů a plánovače
+        run: node --test tests/Support/PlannerJavascriptSmoke.cjs tests/Support/TrainingEditJavascriptSmoke.cjs tests/Support/FormularAutocompleteKeyboardSmoke.cjs
+
       - name: Spustit testy
         run: composer test
 
