@@ -165,3 +165,11 @@ U zbývajících 22 scénářů není tímto navazujícím průchodem prohláše
 Syntetické objednávky tohoto průchodu byly stornovány, u uhrazeného kurzu byla vratka potvrzena pouze v izolaci. Auditní historie, místní trénink #20 a ochranná testovací osoba regresního skriptu zůstávají v izolaci. V navazujícím průchodu nevznikl žádný produkční zápis. Aktuální stav lze osobně testovat na localhostu; lokální stav není tvrzením o nasazení změn.
 
 Pracovní důkazy navíc: `merge-integration.log`, `merge-integration-junit.xml`, `demo-rollover-regression.json`, `merge-training-edited.jpg`, `merge-browser-order.jpg` v `output/hub-full-acceptance-20261025/`. Privátní přístupy, dumpy ani živé kalendářové tokeny nejsou přiloženy.
+
+### Doplňující kontrola rozcestníku po sloučení PR #201
+
+PR #201 byl sloučen do main jako `ba2c9eef96d6bcb4e5a7f1dd2686362c6b63bd0a`; jeho strom se shoduje s ověřeným headem. Poslední předslučovací [CI #40217477153](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40217477153) prošlo. Nasazení nebylo spuštěno.
+
+Při obnově lokálního dema se našlo další falešné hlášení neúplnosti: M2 kontrola hledala pevné přihlašovací jméno `localhost-sportovec`, přestože seed legitimně zachovává již existující dětský účet. Kontrola nyní vyžaduje aktivní dětský účet navázaný na schválené dítě konkrétního demo rodiče. Cizí, neaktivní ani odvolaný přístup nestačí. Cílená sada M2: **3 testy / 16 assertions PASS**; obsahuje přejmenovaný login i negativní vazby. Prohlížeč po opravě potvrzuje **technickou připravenost 3/3** a **138/138 migrací**.
+
+Doložených 18 výsledků bylo jednotlivě uloženo přes formuláře localhostového rozcestníku. Celkový přehled je **14 PASS, 6 PARTIAL, 20 NETESTOVÁNO**: zahrnuje 12 nových PASS a dva dříve uložené PASS A07/B26, které nebyly přepsány. Závěrečná brána zůstává správně otevřená (A01–A10: 8/10 PASS). Screenshot: `output/hub-full-acceptance-20261025/merge-final-hub.jpg`. Oprava připravenosti není schválení přejímky ani nasazení.

@@ -60,6 +60,23 @@ final class M2FinalizationTest extends TestCase
         }
     }
 
+    public function testDemoReadinessUsesActiveChildBindingInsteadOfFixedLogin(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE child_access_accounts SET login_key='existing-athlete-login'");
+        self::assertSame('pass', \m2FinalizationDemoCheck($pdo)['status']);
+
+        $pdo->exec('UPDATE child_access_accounts SET sportovec_id=99');
+        self::assertSame('wait', \m2FinalizationDemoCheck($pdo)['status']);
+
+        $pdo->exec('UPDATE child_access_accounts SET sportovec_id=10,active=0');
+        self::assertSame('wait', \m2FinalizationDemoCheck($pdo)['status']);
+
+        $pdo->exec('UPDATE child_access_accounts SET active=1');
+        $pdo->exec("UPDATE account_person_roles SET status='revoked' WHERE sportovec_id=10");
+        self::assertSame('wait', \m2FinalizationDemoCheck($pdo)['status']);
+    }
+
     private function database(): PDO
     {
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
@@ -68,13 +85,13 @@ final class M2FinalizationTest extends TestCase
         $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,email TEXT,aktivni INTEGER,email_overeno INTEGER)');
         $pdo->exec('CREATE TABLE sportovci(id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE account_person_roles(account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,valid_to TEXT)');
-        $pdo->exec('CREATE TABLE child_access_accounts(login_key TEXT,active INTEGER)');
+        $pdo->exec('CREATE TABLE child_access_accounts(login_key TEXT,active INTEGER,sportovec_id INTEGER)');
         $pdo->exec('CREATE TABLE shop_products(external_product_key TEXT,catalog_status TEXT)');
         $pdo->exec("INSERT INTO treneri VALUES(1,'localhost-admin',1)");
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES(1,'rodic@localhost.test',1,1)");
         $pdo->exec('INSERT INTO sportovci VALUES(10),(11)');
         $pdo->exec("INSERT INTO account_person_roles VALUES(1,10,'guardian','approved',NULL),(1,11,'guardian','approved',NULL)");
-        $pdo->exec("INSERT INTO child_access_accounts VALUES('localhost-sportovec',1)");
+        $pdo->exec("INSERT INTO child_access_accounts VALUES('localhost-sportovec',1,10)");
         $pdo->exec("INSERT INTO shop_products VALUES('local-demo:club-event','active')");
         return $pdo;
     }
