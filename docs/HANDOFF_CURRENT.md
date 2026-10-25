@@ -1,22 +1,26 @@
 # Aktuální předání vývoje na další stanici
 
-**25. 10. 2026 — dokončené opravy přejímky připravené k výslovně povolenému nasazení.**
-Aktuální integrační základ je `origin/main@f7dfd509`; poslední nasazená aplikace
-je zatím `115a617d` (deploy `40189517120`). Nový commit `bb5c8a23` doplňuje
-úplný přehled starších nezaevidovaných tréninků, viditelné rodinné kotvy,
-pravdivé označení výsledků přejímky a správný vstup do hromadných akcí.
-[Přejímka omezených účtů, oprava místní MariaDB a důkazy](verification/browser-acceptance-20261025/DOKONCENI.md):
-111 cílených testů, 185 HTTP kontrol, 13 čtecích invariantů a browserové průchody
-trenéra, registráře, rodiče i sportovce PASS. Probíhá nová úplná automatizovaná
-přejímka a chráněný release; tento přípravný zápis ještě nepotvrzuje nasazení.
-Uživatel nyní povolil sjednotit a nasadit všechny dokončené změny. Nové integrace,
-importy a automatické schvalování reálných vazeb se tím nezapínají.
-Původní checkout `C:\xampp\htdocs\evidencePavel` je stará pracovní větev s WIP;
-není zdrojem aktuálního release. Historické větve už klasifikuje
-[inventura integrace](verification/integration-20261025/BRANCH_INVENTORY.md).
-Poslední čtecí UI kontrola: 0 schválených rodinných vazeb. Příprava skutečné
-pilotní rodiny, počáteční skladové podklady a účetní převzetí zůstávají otevřené.
-Následující záznamy jsou historie; aktuální provozní bod je vždy tato horní část.
+**25. 10. 2026 — dokončené opravy sloučené, nasazené a automatizovaně ověřené.**
+Produkce: `a23e393f64eeffafd75df834e6e5ba8c78213b72` (PR #194,
+[deploy 40198413027](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40198413027), SUCCESS).
+[Souhrnný protokol a otevřené provozní body](verification/release-acceptance-20261025/RESULTS.md).
+Linux: 1 718 testů / 34 748 assertions; MariaDB 10.3/11.4 a CodeQL PASS.
+Izolovaně: 26 HTTP sad / 805 kontrol, 6 sad souběhů / 78 kontrol a 17 migračních
+kontrol PASS. Produkce pouze čtením: 16 databázových + 14 účetních + 20 skladových
+kontrol PASS; záloha obnovena v izolaci (330 tabulek, 2 triggery).
+Živý trenérský přehled už odkazuje na nejstarší nezapsanou lekci z 30. 5. 2026.
+Konfigurace, dosavadní VS a 139 migračních záznamů zachovány; nové integrace,
+importy ani automatické schvalování vazeb nebyly zapnuté. Bez testovacích
+obchodních zápisů v produkci. D15 je splněno pro toto vydání kódu.
+Technická přejímka nenahrazuje lidské převzetí ani doplnění provozních dat:
+36 trenérů bez aktuálního rozsahového oprávnění, 0 schválených rodinných vazeb
+(poslední čtecí UI kontrola), 799 zveřejněných variant bez počátečního řízeného
+skladu, příspěvkový plán bez dohod/rozhodnutí částek a 2 již dříve chybějící
+přílohy účtenek. Přesné hranice a kroky uvádí protokol; nic se nedoplňuje odhadem.
+Původní checkout `C:\xampp\htdocs\evidencePavel` zůstává starou větví s WIP
+`kis_rosters_admin.php`; není zdrojem release. Aktuální důkazy jsou v main a
+checkoutu `C:\xampp\htdocs\evidencePavel-browser-acceptance-20261025`.
+Následující datované zápisy jsou historie, nikoli aktuální stav nasazení.
 
 **25. 10. 2026 — integrační vydání sloučeno a nasazeno.**
 Produkce běží na `115a617d3660bc9e3cba48891737b56fc6ab068f` (PR #191 + #192,

@@ -1,0 +1,26 @@
+[
+  {
+    "operation": "overit-dopad-kluboveho-vydani",
+    "run_id": 40198749487,
+    "conclusion": "success",
+    "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72"
+  },
+  {
+    "operation": "overit-databazove-invarianty",
+    "run_id": 40198783643,
+    "conclusion": "success",
+    "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72"
+  },
+  {
+    "operation": "overit-ucetni-vazby",
+    "run_id": 40198840148,
+    "conclusion": "success",
+    "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72"
+  },
+  {
+    "operation": "obnovit-zalohu-izolovane",
+    "run_id": 40198896312,
+    "conclusion": "success",
+    "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72"
+  }
+]

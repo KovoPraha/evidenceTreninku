@@ -1,0 +1,32 @@
+[
+  {
+    "suite": "ShopFulfillmentMariaDbRace",
+    "checks": 6,
+    "status": "PASS"
+  },
+  {
+    "suite": "ShopReturnsMariaDbRace",
+    "checks": 19,
+    "status": "PASS"
+  },
+  {
+    "suite": "AccountingExportSnapshotMariaDbTest",
+    "checks": 15,
+    "status": "PASS"
+  },
+  {
+    "suite": "AccountingStockSnapshotMariaDbTest",
+    "checks": 11,
+    "status": "PASS"
+  },
+  {
+    "suite": "TrainingClosureMariaDbRace",
+    "checks": 12,
+    "status": "PASS"
+  },
+  {
+    "suite": "MembershipAuthorizationMariaDbRace",
+    "checks": 15,
+    "status": "PASS"
+  }
+]

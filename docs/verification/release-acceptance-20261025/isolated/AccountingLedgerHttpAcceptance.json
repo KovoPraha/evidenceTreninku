@@ -1,0 +1,75 @@
+{
+    "run": "LOCALHOST NEPLATIT R13 b77ddf25aa",
+    "checks": 17,
+    "results": [
+        {
+            "scenario": "Finance GET is read-only",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach direct account write denied",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Bad CSRF has no account write",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Account opening requires explicit confirmation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Opening cash count recorded through actual HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Scientific or malformed monetary input rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual cash receipt recorded in minor units",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated receipt POST is idempotent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Same receipt request cannot overwrite amount",
+            "status": "PASS"
+        },
+        {
+            "scenario": "100.01 CZK stored exactly as 10001 minor units",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Accounting split mismatch prevents save",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Approved accounting classification independent from allocation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "One-cent physical difference blocks account closure",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Balanced physical count closes account through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed cash evidence refuses late receipt",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed classification cannot be rewritten",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked finance session cannot write money",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

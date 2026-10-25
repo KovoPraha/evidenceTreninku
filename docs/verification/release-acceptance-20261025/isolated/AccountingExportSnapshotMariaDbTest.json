@@ -1,0 +1,27 @@
+{
+    "status": "PASS",
+    "database": "evidence_b3_export_rr_098470ee",
+    "checks": 15,
+    "results": [
+        "Migration verified: 20261022220000_accounting_ledger",
+        "Migration verified: 20261022221000_accounting_documents",
+        "Migration verified: 20261022222000_accounting_adjustments",
+        "Migration verified: 20261022223000_accounting_exports",
+        "Reader session starts in READ COMMITTED",
+        "Reader and writer use distinct MariaDB connections",
+        "Independent writer committed between money and allocation SELECTs",
+        "Export excludes money committed after its snapshot",
+        "Export excludes the matching late allocation release",
+        "Export excludes the matching late decision and refund payment",
+        "Independent connection proves all excluded rows really committed",
+        "Exporter changes isolation only for its own transaction",
+        "Frozen export archive opens",
+        "Archive retains the same consistent snapshot",
+        "READ COMMITTED negative control exposes a refund payment absent from the earlier money read"
+    ],
+    "two_connections": true,
+    "session_isolation": "READ-COMMITTED",
+    "export_snapshot_consistent": true,
+    "negative_control_mixed_snapshot_detected": true,
+    "private_proof_root": "C:\\Users\\Marek\\AppData\\Local\/EvidencePavelB1\/browser-acceptance-20261025\/snapshot-proof-2ff445007ef8407b"
+}

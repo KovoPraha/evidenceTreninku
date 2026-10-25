@@ -1,5 +1,10 @@
 # Návrh pilotu D12–D14 — jedna tréninková skupina
 
+**Aktualizace 25. 10. 2026:** opravy přejímky jsou nasazené jako `a23e393f`
+([aktuální protokol](verification/release-acceptance-20261025/RESULTS.md)).
+D15 je schváleno pro nasazení tohoto kódu. Jména, termín pilotu, skutečné převody,
+nové integrace a účetní převzetí zůstávají samostatné otevřené body.
+
 **25. 10. 2026 — integrační vydání sloučeno a nasazeno.**
 Produkce běží na `115a617d3660bc9e3cba48891737b56fc6ab068f` (PR #191 + #192,
 deploy `40189517120`). Uživatel výslovně povolil tento merge a deploy včetně
@@ -15,7 +20,8 @@ Pilot níže zůstává návrhem k doplnění jmen a termínu, nikoli potvrzenou
 Stav 24. 10. 2026: konkrétní návrh k doplnění jmen a termínu. Navazuje na
 [schválený základ D01–D20](CLUB_COMPLETION_DECISIONS.md), nenahrazuje jej.
 Níže navržené počty, harmonogram a provozní rozsah nejsou novým schválením
-produkčních změn. **D15 zůstává NEPOVOLENO.** Tento dokument nic nenasazuje,
+produkčních změn. Historické D15 bylo následně splněno pro vydání kódu uvedená
+v aktuální hlavičce; neopravňuje k dalším aktivacím nebo importům. Tento dokument nic nenasazuje,
 neimportuje, nepřiděluje oprávnění a nezapíná služby.
 
 ## 1. Doporučený rozsah a pořadí
