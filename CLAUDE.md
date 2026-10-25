@@ -4,7 +4,8 @@ Aktualizováno 25. 10. 2026. Před změnou přečti [aktuální stav](docs/CURRE
 a [postup převzetí stanice](docs/HANDOFF_CURRENT.md), potom proveď
 `git fetch --prune origin` a ověř Git, CI a dotčený kód.
 Stav release patří pouze do CURRENT_STATE; historie do [provozního archivu](docs/CHANGELOG-PROVOZ.md).
-[Zadání dozoru a pět oddělených balíků](docs/DOZOR_2026-10-25.md) stanoví pro tuto práci zákaz merge a deploye.
+[Zadání dozoru](docs/DOZOR_2026-10-25.md) a [navazující opravy](docs/DOZOR_OPRAVY_2026-10-25.md)
+jsou datované záznamy rozsahu konkrétní práce; aktuální oprávnění určuje vlastník.
 [Původní kontext](docs/CLAUDE_HISTORY.md) je archiv, nikoli návod pro novou implementaci.
 
 ## Rozsah a technologie
@@ -55,7 +56,7 @@ Závislosti určuje composer.lock. Webové requesty nesmějí provádět migrace
 | Soupisky a programy | includes/kis_roster.php, includes/club_program.php; club_teams, club_roster_members, club_program_admissions |
 | Tréninky a skutečnost | includes/training_closure.php, includes/sports_activity.php; treninky, planovane_treninky, training_closures |
 | Zdravotní podklady | includes/medical_clearance.php, includes/medical_activity.php; medical_clearance_watches, medical_clearance_records |
-| Objednávky a platby | includes/shop_checkout.php, eshop_payments_admin.php; shop_orders, shop_order_items, shop_payments |
+| Objednávky a platby | includes/shop_checkout.php, eshop_payments_admin.php; shop_orders, shop_order_items, payments |
 | Sklad a vratky | includes/shop_inventory.php, includes/shop_returns.php, includes/shop_fulfillment.php |
 | Účetnictví | includes/accounting_documents.php, includes/accounting_export.php; accounting_documents, accounting_export_batches |
 | Klubová administrativa | includes/club_expenses.php, includes/club_rewards.php, includes/club_event_work.php |
@@ -75,11 +76,12 @@ jsou kompatibilita; nová stránka používá vlastníka v `staffRouteOwners()`,
 pracovní pozici a doménovou actor funkci s kontrolou aktuálního oprávnění v DB.
 Superadmin přepíná pracovní kontext, neslučuje všechna menu.
 
-Nová PHP stránka musí projít anonymous sweep z balíku 2
-(`php tests/Support/AnonymousSweep.php`, samostatný PR). Dokud není tento PR
-sloučen, nejde o již dostupný příkaz na main. Veřejná výjimka musí být jednotlivě
-zdůvodněná v allowlistu; ostatní cesty bez session musejí skončit přihlášením nebo
-401/403/404/405. Při kontrole se nesmí přeskakovat podle textu názvů guardů.
+Nová trackovaná PHP stránka musí projít `php tests/Support/AnonymousSweep.php`.
+Veřejná výjimka musí být jednotlivě zdůvodněná v allowlistu; ostatní cesty bez
+session musejí prokázat odmítnutí přihlášením nebo 401/403. Samotná 404/405
+není důkazem autentizace. Výjimky pro záměrné skrytí jsou explicitní; privátní
+download používá platné syntetické ID a všechny podporované druhy souborů.
+Při kontrole se nesmí přeskakovat podle textu názvů guardů ani kvůli lokální cache.
 
 ## Vzor nové pracovní stránky
 

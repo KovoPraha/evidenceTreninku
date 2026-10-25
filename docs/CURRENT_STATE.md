@@ -22,8 +22,8 @@ Ověřeno 25. 10. 2026 (Europe/Prague); další vydání musí tento přehled na
   [Rozhodnutí D01–D20](CLUB_COMPLETION_DECISIONS.md),
   [pilot](CLUB_PILOT_D12_D14.md), [provozní zjištění](verification/release-acceptance-20261025/RESULTS.md).
   D15 platí pro uvedené vydání, UAT flag zůstává false; další vydání mají vlastní souhlas.
-- **Další krok:** posoudit pět oddělených PR podle [zadání dozoru](DOZOR_2026-10-25.md),
-  dokončit lidské/účetní převzetí a doplnit ověřená provozní data. Bez automatického
-  merge, deploye, importu nebo aktivace služeb.
+- **Další krok:** dokončit lidské/účetní převzetí a doplnit ověřená provozní data.
+  Před každým vydáním ověřit společný stav schválených změn, CI a konkrétní souhlas
+  vlastníka; po vydání aktualizovat tento přehled včetně SHA a důkazů.
 
 [Postup převzetí stanice](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
