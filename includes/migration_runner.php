@@ -83,6 +83,10 @@ final class EvidenceMigrationCatalog
                 );
             }
 
+            // Preserve immutable historical checksums while correcting the known MySQL index reader.
+            // Already migrated databases receive the separate forward repair migration.
+            require_once __DIR__.'/payment_variable_symbol_schema.php';
+            $definition = paymentStandingOrderMigrationCompatibility($definition, $checksum);
             $catalog[$stem] = [
                 'id' => $stem,
                 'checksum' => $checksum,

@@ -1,19 +1,32 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__.'/notification_delivery_guard.php';
+require_once __DIR__.'/roster_hierarchy.php';
 
 final class RosterMessageException extends RuntimeException{}
 
 function rosterMessageText(string$value,int$max,string$label):string{$value=str_replace(["\r\n","\r"],"\n",trim($value));if($value===''||mb_strlen($value,'UTF-8')>$max||preg_match('/[\r\n]/u',$label==='Předmět'?$value:'')===1)throw new InvalidArgumentException($label.' není platný text.');return$value;}
 
-/** @return array{team:array<string,mixed>,subject:string,body:string,recipients:list<array<string,mixed>>,fingerprint:string} */
+/** @return array{team:array<string,mixed>,subject:string,body:string,recipients:list<array<string,mixed>>,fingerprint:string,manual_person_ids:list<int>} */
 function rosterMessagePreview(PDO$pdo,int$teamId,string$subject,string$body,?string$onDate=null):array
 {
     $subject=rosterMessageText($subject,255,'Předmět');$body=rosterMessageText($body,10000,'Zpráva');$onDate??=(new DateTimeImmutable('today'))->format('Y-m-d');
-    $team=$pdo->prepare("SELECT t.id,t.name,s.name AS season_name FROM club_teams t JOIN club_seasons s ON s.id=t.season_id WHERE t.id=? AND t.status='active' AND s.status='active'");$team->execute([$teamId]);$team=$team->fetch(PDO::FETCH_ASSOC);if(!$team)throw new RosterMessageException('Aktivní soupiska nebyla nalezena.');
-    $statement=$pdo->prepare("SELECT DISTINCT a.id AS account_id,a.email,a.jmeno,a.prijmeni FROM club_roster_members m JOIN account_person_roles r ON r.sportovec_id=m.sportovec_id AND r.status='approved' AND r.relation_role IN ('self','guardian') JOIN verejni_uzivatele a ON a.id=r.account_id AND a.aktivni=1 AND a.email_overeno=1 WHERE m.team_id=? AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) ORDER BY a.prijmeni,a.jmeno,a.id");
-    $statement->execute([$teamId,$onDate,$onDate,$onDate.' 23:59:59',$onDate.' 00:00:00']);$recipients=[];foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$row){if(!filter_var((string)$row['email'],FILTER_VALIDATE_EMAIL))continue;$recipients[]=['account_id'=>(int)$row['account_id'],'email'=>(string)$row['email'],'name'=>trim((string)$row['jmeno'].' '.(string)$row['prijmeni'])];}
-    $fingerprint=hash('sha256',json_encode(['team_id'=>$teamId,'subject'=>$subject,'body'=>$body,'recipients'=>$recipients],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));return['team'=>$team,'subject'=>$subject,'body'=>$body,'recipients'=>$recipients,'fingerprint'=>$fingerprint];
+    $audience=rosterMessageAudience($pdo,$teamId,$onDate);$team=$audience['team'];$recipients=$audience['recipients'];
+    $fingerprint=hash('sha256',json_encode(['team_id'=>$teamId,'subject'=>$subject,'body'=>$body,'recipients'=>$recipients,'person_ids'=>$audience['person_ids'],'manual_person_ids'=>$audience['manual_person_ids']],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));return['team'=>$team,'subject'=>$subject,'body'=>$body,'recipients'=>$recipients,'fingerprint'=>$fingerprint,'manual_person_ids'=>$audience['manual_person_ids']];
+}
+
+/** Same effective roster as sports planning, including standing groups and dated descendants. */
+function rosterMessageAudience(PDO $pdo,int $teamId,string $onDate):array {
+    $onDate=kisRosterDate($onDate);
+    $q=$pdo->prepare("SELECT t.id,t.name,s.name AS season_name FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id WHERE t.id=? AND t.status='active' AND (t.season_id IS NULL OR s.status='active')");$q->execute([$teamId]);$team=$q->fetch(PDO::FETCH_ASSOC);if(!$team)throw new RosterMessageException('Aktivní skupina nebo soupiska nebyla nalezena.');
+    $ids=kisRosterEffectiveMemberIds($pdo,$teamId,$onDate);$recipients=[];$covered=[];
+    if($ids){
+        // For today's delivery, a relationship must be valid now, not merely overlap some part of today.
+        $at=$onDate===date('Y-m-d')?date('Y-m-d H:i:s'):$onDate.' 00:00:00';
+        $q=$pdo->prepare("SELECT r.sportovec_id,a.id AS account_id,a.email,a.jmeno,a.prijmeni FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id AND a.aktivni=1 AND a.email_overeno=1 WHERE r.sportovec_id IN (".implode(',',array_fill(0,count($ids),'?')).") AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) ORDER BY a.prijmeni,a.jmeno,a.id,r.sportovec_id");$q->execute([...$ids,$at,$at]);
+        foreach($q->fetchAll(PDO::FETCH_ASSOC) as $r){if(!filter_var($r['email'],FILTER_VALIDATE_EMAIL))continue;$covered[(int)$r['sportovec_id']]=true;$recipients[(int)$r['account_id']]=['account_id'=>(int)$r['account_id'],'email'=>$r['email'],'name'=>trim($r['jmeno'].' '.$r['prijmeni'])];}
+    }
+    return ['team'=>$team,'person_ids'=>$ids,'recipients'=>array_values($recipients),'manual_person_ids'=>array_values(array_filter($ids,static fn($id)=>!isset($covered[$id])))];
 }
 
 /** @return array{id:int,recipient_count:int} */

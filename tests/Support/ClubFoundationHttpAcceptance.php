@@ -225,7 +225,8 @@ try {
     cfInsert('training_roster_links',['plan_id'=>$foreignPlan,'team_id'=>$foreignTeam,'target_date'=>date('Y-m-d'),'team_code_snapshot'=>'LOCALHOST-foreign','team_name_snapshot'=>$run.' foreign team','created_by_trainer_id'=>$trainers['sports_lead']]);
     foreach(['training_rsvps_admin.php?plan_id='.$foreignPlan,'planovany_trenink_form.php?id='.$foreignPlan,'formular.php?plan_id='.$foreignPlan] as $planRoute)cfCheck(cfRequest($coach,$planRoute)['status']===403,'Historical plan ownership does not bypass current scope on '.$planRoute);
     cfCheck(cfRequest($sportsLead,'coach_scope_admin.php',array_replace($grantData,['scope_kind'=>'team','scope_id'=>$ownTeam]))['status']===302,'Sports lead grants explicit team planning scope');
-    cfCheck(cfRequest($coach,'planovany_trenink_form.php',array_replace($planData,['team_ids'=>[$ownTeam]]))['status']===302,'Coach can create plan for explicitly granted own team');
+    // The historical foreign plan already occupies 16:00–17:00 for this trainer.
+    cfCheck(cfRequest($coach,'planovany_trenink_form.php',array_replace($planData,['team_ids'=>[$ownTeam],'cas_od'=>'18:00','cas_do'=>'19:00']))['status']===302,'Coach can create non-overlapping plan for explicitly granted own team');
     $q=$pdo->prepare('SELECT id FROM planovane_treninky WHERE trener_id=? AND nazev=? ORDER BY id DESC LIMIT 1');$q->execute([$trainers['coach'],$planData['nazev']]);$ownPlan=(int)$q->fetchColumn();
     cfCheck($ownPlan>0&&cfRequest($coach,'training_rsvps_admin.php?plan_id='.$ownPlan)['status']===200,'Granted own plan attendance administration remains usable');
     $test=cfInsert('zatezove_testy',['sportovec_id'=>$person,'datum'=>date('Y-m-d'),'popis_interni'=>$run]);

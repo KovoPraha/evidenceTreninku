@@ -356,7 +356,7 @@ try {
     fileMutationFinalize($fileMutations);
     $commitAttempted = true;
     $pdo->commit();
-    $redirectBack = ($planId > 0) ? 'planovac.php' : 'index.php';
+    $redirectBack = 'training_closure_admin.php?id='.(int)$treninkId;
     trainingSubmissionComplete($_SESSION, $submissionKey, $treninkId, $redirectBack);
     fileMutationCommitted($fileMutations);
     header('Location: ' . $redirectBack, true, 303);

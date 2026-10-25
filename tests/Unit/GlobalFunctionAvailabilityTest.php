@@ -161,9 +161,31 @@ PHP;
                 continue;
             }
 
+            // Optional platform extensions are safe only in this positive, direct ternary guard.
+            // Do not whitelist a function globally: another unguarded call must still fail.
+            if ($this->isGuardedOptionalCall($tokens, $index, $token[1])) continue;
+
             $calls[$token[1]] = $token[2];
         }
         return $calls;
+    }
+
+    private function isGuardedOptionalCall(array $tokens, int $index, string $function): bool
+    {
+        $before=[];
+        for($i=$index-1;$i>=0&&count($before)<6;$i--)if(!$this->isIgnorable($tokens[$i]))$before[]=$tokens[$i];
+        if(count($before)!==6||$before[0]!=='?'||$before[1]!==')'||$before[3]!=='(')return false;
+        if(!is_array($before[2])||$before[2][0]!==T_CONSTANT_ENCAPSED_STRING||!in_array($before[2][1],["'".$function."'",'"'.$function.'"'],true))return false;
+        if(!is_array($before[4])||$before[4][0]!==T_STRING||strtolower($before[4][1])!=='function_exists')return false;
+        return $before[5]==='='||(is_array($before[5])&&$before[5][0]===T_RETURN);
+    }
+
+    public function testOptionalPlatformGuardDoesNotHideUnguardedNegatedOrBooleanCalls():void
+    {
+        $guarded=token_get_all("<?php \$id = function_exists('posix_geteuid') ? posix_geteuid() : null;", TOKEN_PARSE);
+        self::assertArrayNotHasKey('posix_geteuid',$this->globalFunctionCalls($guarded));
+        foreach(["posix_geteuid();","\$id = !function_exists('posix_geteuid') ? posix_geteuid() : null;","\$id = true || function_exists('posix_geteuid') ? posix_geteuid() : null;","\$id = function_exists('other') ? posix_geteuid() : null;"] as $call)self::assertArrayHasKey('posix_geteuid',$this->globalFunctionCalls(token_get_all('<?php '.$call,TOKEN_PARSE)));
+        self::assertArrayHasKey('posix_geteuid',$this->globalFunctionCalls(token_get_all("<?php \$id = function_exists('posix_geteuid') ? posix_geteuid() : null; posix_geteuid();",TOKEN_PARSE)));
     }
 
     /** @param list<array{0:int,1:string,2:int}|string> $tokens */

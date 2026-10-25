@@ -1,0 +1,347 @@
+- navigation:
+  - link "KOVO Praha – pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+  - text:     
+  - list:
+    - text: 
+    - button "":
+      - generic: 
+    - button "":
+      - generic: 
+    - link "":
+      - /url: /booking/eshop.php
+      - generic: 
+    - button " Superadmin · Finance":
+      - generic: 
+      - text: Superadmin · Finance
+    - text:        
+    - generic: 
+    - text: LOCALHOST Kontrola 1
+    - button " Odhlásit":
+      - generic: 
+      - text: Odhlásit
+- complementary "Pracovní nabídka":
+  - link "Pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+    - generic: 
+    - text: Pracovní rozcestník
+  - heading "Platby" [level=2]
+  - link "Platby a vratky":
+    - /url: /eshop_payments_admin.php
+    - generic: 
+    - generic: Platby a vratky
+  - link "Klubové platby":
+    - /url: /member_charges_admin.php
+    - generic: 
+    - generic: Klubové platby
+  - link "Plány příspěvků":
+    - /url: /member_fee_plans_admin.php
+    - generic: 
+    - generic: Plány příspěvků
+  - generic "Další nástroje"
+  - link "Peněžní evidence a pokladna":
+    - /url: /accounting_ledger_admin.php
+    - generic: 
+    - generic: Peněžní evidence a pokladna
+  - link "Účetní doklady":
+    - /url: /accounting_documents_admin.php
+    - generic: 
+    - generic: Účetní doklady
+  - link "Opravy a částečné vratky":
+    - /url: /accounting_adjustments_admin.php
+    - generic: 
+    - generic: Opravy a částečné vratky
+  - link "Účetní podklady":
+    - /url: /accounting_exports_admin.php
+    - generic: 
+    - generic: Účetní podklady
+  - link "Výdaje a zálohy":
+    - /url: /club_expenses_admin.php
+    - generic: 
+    - generic: Výdaje a zálohy
+  - link "Výkazy a odměny":
+    - /url: /club_rewards_admin.php
+    - generic: 
+    - generic: Výkazy a odměny
+  - link "Finanční rozhodnutí":
+    - /url: /financial_decisions_admin.php
+    - generic: 
+    - generic: Finanční rozhodnutí
+  - link "Způsoby platby":
+    - /url: /eshop_payment_methods_admin.php
+    - generic: 
+    - generic: Způsoby platby
+  - link "Fio párování":
+    - /url: /eshop_fio_admin.php
+    - generic: 
+    - generic: Fio párování
+  - link "Rodinné platby":
+    - /url: /member_payer_receipts_admin.php
+    - generic: 
+    - generic: Rodinné platby
+  - link "Bankovní účet e-shopu":
+    - /url: /eshop_bank_admin.php
+    - generic: 
+    - generic: Bankovní účet e-shopu
+  - link "Číselné řady a účetní kategorie":
+    - /url: /eshop_number_series_admin.php
+    - generic: 
+    - generic: Číselné řady a účetní kategorie
+  - link "Roční úhrady":
+    - /url: /member_fee_annual_admin.php
+    - generic: 
+    - generic: Roční úhrady
+  - link "Přijatá platba sportovce":
+    - /url: /club_finance_receipt_admin.php
+    - generic: 
+    - generic: Přijatá platba sportovce
+  - link "Finanční pravidla":
+    - /url: /club_finance_admin.php
+    - generic: 
+    - generic: Finanční pravidla
+  - link "Připomínky plateb":
+    - /url: /member_charge_reminders_admin.php
+    - generic: 
+    - generic: Připomínky plateb
+  - heading "Kredity a provoz" [level=2]
+  - generic "Další nástroje"
+  - text:      
+  - heading "Navazující agenda" [level=2]
+  - generic "Další nástroje"
+  - text:  
+  - heading "K dořešení" [level=2]
+  - generic "Další nástroje"
+  - text: 
+  - generic: KOVO Praha · KIS
+- text:   
+- paragraph:
+  - link "Hospodář a platby":
+    - /url: club_finance_admin.php
+  - text: ·
+  - link "Přehled dokladů":
+    - /url: accounting_documents_admin.php
+- heading "Účetní doklady" [level=1]
+- paragraph: Neplátce DPH. Doklad nemění pohledávku, platbu, členství ani původní variabilní symbol. Účetní členění a vystavovatele nejprve výslovně schvalte podle podkladu účetní.
+- 'heading "Doklad #18 · TESTFA-2026-000006 · issued" [level=2]'
+- iframe:
+  - heading "Faktura" [level=1]
+  - paragraph:
+    - strong: TESTFA-2026-000006
+  - paragraph: "Datum vystavení: 2026-10-24 | Splatnost: 2026-10-31"
+  - paragraph:
+    - text: "Variabilní symbol:"
+    - strong: "2680000013"
+  - paragraph: "Bankovní účet: CZ6508000000192000145399"
+  - paragraph: "Datum dokladu: 2026-10-24 | Případ: KP26102405D3123E1A"
+  - table:
+    - rowgroup:
+      - 'row "Vystavovatel LOCALHOST NEPLATIT R21 86faa9de90 LOCALHOST Praha 1 IČ: LOCALHOST Nejsme plátci DPH. Odběratel LOCALHOST kupující LOCALHOST Praha 1"':
+        - 'cell "Vystavovatel LOCALHOST NEPLATIT R21 86faa9de90 LOCALHOST Praha 1 IČ: LOCALHOST Nejsme plátci DPH."':
+          - heading "Vystavovatel" [level=2]
+          - text: LOCALHOST NEPLATIT R21 86faa9de90
+          - text: LOCALHOST Praha 1
+          - text: "IČ: LOCALHOST"
+          - text: Nejsme plátci DPH.
+        - cell "Odběratel LOCALHOST kupující LOCALHOST Praha 1":
+          - heading "Odběratel" [level=2]
+          - text: LOCALHOST kupující
+          - text: LOCALHOST Praha 1
+  - table:
+    - rowgroup:
+      - row "Položka / účastník Počet Částka":
+        - columnheader "Položka / účastník"
+        - columnheader "Počet"
+        - columnheader "Částka"
+    - rowgroup:
+      - row "LOCALHOST NEPLATIT R21 86faa9de90 2 250,00 Kč":
+        - cell "LOCALHOST NEPLATIT R21 86faa9de90": LOCALHOST NEPLATIT R21 86faa9de90
+        - cell "2"
+        - cell "250,00 Kč"
+  - paragraph: Celkem 250,00 Kč
+  - paragraph: Vystavení dokladu nepotvrzuje přijetí ani vrácení peněz. Původní platební reference / VS se nemění.
+  - paragraph: Šablona nonvat-v1 | Otisk obsahu d895e1e7a1809bdd039c
+- paragraph:
+  - link "Stáhnout vydané PDF":
+    - /url: accounting_document_download.php?id=18
+- generic "Částečná nebo úplná oprava vydaného dokladu"
+- heading "Připravit doklad" [level=2]
+- text: Zdroj
+- combobox "Zdroj":
+  - option "Objednávka" [selected]
+  - option "Členský předpis"
+  - option "Pokladní pohyb"
+  - option "Doplatek výměny"
+- text: ID
+- spinbutton "ID"
+- button "Načíst případ a položky"
+- heading "Poslední doklady" [level=2]
+- table:
+  - rowgroup:
+    - row "Číslo Druh / případ Stav Částka":
+      - columnheader "Číslo"
+      - columnheader "Druh / případ"
+      - columnheader "Stav"
+      - columnheader "Částka"
+    - 'row "HTTPOPR-2026-000011 correction · member_charge #11 issued -50,00 CZK"':
+      - cell "HTTPOPR-2026-000011":
+        - link "HTTPOPR-2026-000011":
+          - /url: "?id=21"
+      - 'cell "correction · member_charge #11"'
+      - cell "issued"
+      - cell "-50,00 CZK"
+    - 'row "HTTPCLEN-2026-000004 contribution_confirmation · member_charge #11 issued 200,00 CZK"':
+      - cell "HTTPCLEN-2026-000004":
+        - link "HTTPCLEN-2026-000004":
+          - /url: "?id=20"
+      - 'cell "contribution_confirmation · member_charge #11"'
+      - cell "issued"
+      - cell "200,00 CZK"
+    - 'row "HTTPOPR-2026-000010 correction · order #42 issued -125,00 CZK"':
+      - cell "HTTPOPR-2026-000010":
+        - link "HTTPOPR-2026-000010":
+          - /url: "?id=19"
+      - 'cell "correction · order #42"'
+      - cell "issued"
+      - cell "-125,00 CZK"
+    - 'row "TESTFA-2026-000006 invoice · order #42 issued 250,00 CZK"':
+      - cell "TESTFA-2026-000006":
+        - link "TESTFA-2026-000006":
+          - /url: "?id=18"
+      - 'cell "invoice · order #42"'
+      - cell "issued"
+      - cell "250,00 CZK"
+    - 'row "HTTPOPR-2026-000009 correction · member_charge #9 issued -50,00 CZK"':
+      - cell "HTTPOPR-2026-000009":
+        - link "HTTPOPR-2026-000009":
+          - /url: "?id=17"
+      - 'cell "correction · member_charge #9"'
+      - cell "issued"
+      - cell "-50,00 CZK"
+    - 'row "HTTPCLEN-2026-000003 contribution_confirmation · member_charge #9 issued 200,00 CZK"':
+      - cell "HTTPCLEN-2026-000003":
+        - link "HTTPCLEN-2026-000003":
+          - /url: "?id=16"
+      - 'cell "contribution_confirmation · member_charge #9"'
+      - cell "issued"
+      - cell "200,00 CZK"
+    - 'row "HTTPOPR-2026-000008 correction · order #35 issued -125,00 CZK"':
+      - cell "HTTPOPR-2026-000008":
+        - link "HTTPOPR-2026-000008":
+          - /url: "?id=15"
+      - 'cell "correction · order #35"'
+      - cell "issued"
+      - cell "-125,00 CZK"
+    - 'row "TESTFA-2026-000005 invoice · order #35 issued 250,00 CZK"':
+      - cell "TESTFA-2026-000005":
+        - link "TESTFA-2026-000005":
+          - /url: "?id=14"
+      - 'cell "invoice · order #35"'
+      - cell "issued"
+      - cell "250,00 CZK"
+    - 'row "HTTPOPR-2026-000007 correction · order #30 issued -500,00 CZK"':
+      - cell "HTTPOPR-2026-000007":
+        - link "HTTPOPR-2026-000007":
+          - /url: "?id=13"
+      - 'cell "correction · order #30"'
+      - cell "issued"
+      - cell "-500,00 CZK"
+    - 'row "HTTPOPR-2026-000006 correction · order #30 issued -500,00 CZK"':
+      - cell "HTTPOPR-2026-000006":
+        - link "HTTPOPR-2026-000006":
+          - /url: "?id=12"
+      - 'cell "correction · order #30"'
+      - cell "issued"
+      - cell "-500,00 CZK"
+    - 'row "TESTFA-2026-000004 invoice · order #30 issued 1 000,00 CZK"':
+      - cell "TESTFA-2026-000004":
+        - link "TESTFA-2026-000004":
+          - /url: "?id=11"
+      - 'cell "invoice · order #30"'
+      - cell "issued"
+      - cell "1 000,00 CZK"
+    - 'row "HTTPOPR-2026-000005 correction · order #23 issued -125,00 CZK"':
+      - cell "HTTPOPR-2026-000005":
+        - link "HTTPOPR-2026-000005":
+          - /url: "?id=10"
+      - 'cell "correction · order #23"'
+      - cell "issued"
+      - cell "-125,00 CZK"
+    - 'row "TESTFA-2026-000003 invoice · order #23 issued 250,00 CZK"':
+      - cell "TESTFA-2026-000003":
+        - link "TESTFA-2026-000003":
+          - /url: "?id=9"
+      - 'cell "invoice · order #23"'
+      - cell "issued"
+      - cell "250,00 CZK"
+    - 'row "HTTPOPR-2026-000004 correction · order #7 issued -125,00 CZK"':
+      - cell "HTTPOPR-2026-000004":
+        - link "HTTPOPR-2026-000004":
+          - /url: "?id=8"
+      - 'cell "correction · order #7"'
+      - cell "issued"
+      - cell "-125,00 CZK"
+    - 'row "TESTFA-2026-000002 invoice · order #7 issued 250,00 CZK"':
+      - cell "TESTFA-2026-000002":
+        - link "TESTFA-2026-000002":
+          - /url: "?id=7"
+      - 'cell "invoice · order #7"'
+      - cell "issued"
+      - cell "250,00 CZK"
+    - 'row "HTTPOPR-2026-000003 correction · order #5 issued -125,00 CZK"':
+      - cell "HTTPOPR-2026-000003":
+        - link "HTTPOPR-2026-000003":
+          - /url: "?id=6"
+      - 'cell "correction · order #5"'
+      - cell "issued"
+      - cell "-125,00 CZK"
+    - 'row "TESTFA-2026-000001 invoice · order #5 issued 250,00 CZK"':
+      - cell "TESTFA-2026-000001":
+        - link "TESTFA-2026-000001":
+          - /url: "?id=5"
+      - 'cell "invoice · order #5"'
+      - cell "issued"
+      - cell "250,00 CZK"
+    - 'row "HTTPOPR-2026-000002 correction · member_charge #2 issued -50,00 CZK"':
+      - cell "HTTPOPR-2026-000002":
+        - link "HTTPOPR-2026-000002":
+          - /url: "?id=4"
+      - 'cell "correction · member_charge #2"'
+      - cell "issued"
+      - cell "-50,00 CZK"
+    - 'row "HTTPCLEN-2026-000002 contribution_confirmation · member_charge #2 issued 200,00 CZK"':
+      - cell "HTTPCLEN-2026-000002":
+        - link "HTTPCLEN-2026-000002":
+          - /url: "?id=3"
+      - 'cell "contribution_confirmation · member_charge #2"'
+      - cell "issued"
+      - cell "200,00 CZK"
+    - 'row "HTTPOPR-2026-000001 correction · member_charge #1 issued -50,00 CZK"':
+      - cell "HTTPOPR-2026-000001":
+        - link "HTTPOPR-2026-000001":
+          - /url: "?id=2"
+      - 'cell "correction · member_charge #1"'
+      - cell "issued"
+      - cell "-50,00 CZK"
+    - 'row "HTTPCLEN-2026-000001 contribution_confirmation · member_charge #1 issued 200,00 CZK"':
+      - cell "HTTPCLEN-2026-000001":
+        - link "HTTPCLEN-2026-000001":
+          - /url: "?id=1"
+      - 'cell "contribution_confirmation · member_charge #1"'
+      - cell "issued"
+      - cell "200,00 CZK"
+- generic "Schválit novou verzi vystavovatele"
+- generic "Schválit nové účetní členění a pravidlo vydání"
+- option "Objednávka" [selected]
+- option "Členský předpis"
+- option "Pokladní pohyb"
+- option "Doplatek výměny"
+- option "Faktura" [selected]
+- option "Doklad k členskému příspěvku"
+- option "Příjmový pokladní doklad"
+- option "Výdajový pokladní doklad"
+- generic "Nová číselná řada dokladů (samostatná od VS)"
+- option "Faktury" [selected]
+- option "Příspěvky"
+- option "Opravy"
+- option "PPD"
+- option "VPD"

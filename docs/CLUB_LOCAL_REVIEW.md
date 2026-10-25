@@ -3,6 +3,11 @@
 Tento návod se týká výhradně izolované syntetické kopie. Zde provedená operace
 nemění skutečný oddíl, produkční web, banku, e-mail ani Shoptet.
 
+Aktuální [souhrn technické přejímky](verification/final-closure-20261024/RESULTS.md)
+rozlišuje hotové kontroly a rozhodnutí před ostrým provozem.
+[Mapa všech 43 scénářů](verification/final-closure-20261024/POKRYTI.md) propojuje
+uživatelský průvodce s konkrétními důkazy; lidské převzetí tím není vyplněné.
+
 ## Přístup
 
 1. Otevřete `http://127.0.0.1:18086/login.php` na tomto počítači.

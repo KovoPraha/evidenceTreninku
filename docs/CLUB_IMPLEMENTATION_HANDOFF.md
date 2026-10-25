@@ -1,5 +1,15 @@
 # Společný systém oddílu — předání místní implementace
 
+Aktualizace plánu 24. 10. 2026: uživatel schválil doporučené varianty D01–D20
+**jako základ**, nikoli konkrétní provozní údaje nebo účetní metodiku.
+[Aktuální registr](CLUB_COMPLETION_DECISIONS.md) obsahuje všech 20 schválených
+variant, zbývající podklady, brány a krátký seznam pro D12–D15. D19/D20 se
+pro první spuštění odkládají. D15 zůstává NEPOVOLENO; nic se nenasazuje.
+[Návrh pilotu D12–D14](CLUB_PILOT_D12_D14.md) doplňuje pořadí agend,
+integrací, podmínky přechodu a návratu; jména a termín zůstávají otevřené.
+[Aktuální technická přejímka](verification/final-closure-20261024/RESULTS.md)
+je samostatný důkaz. Níže zůstává historické předání implementace z 23. 10.
+
 Pracovní kopie: `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.
 Větev: `codex/club-followup-review-20261023`.
 Stav: 23. 10. 2026. Toto předání rozlišuje implementaci, místní ověření

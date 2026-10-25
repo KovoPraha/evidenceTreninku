@@ -1,0 +1,462 @@
+[
+  {
+    "exit_code": 0,
+    "status": "PASS",
+    "script": "ShopFulfillmentMariaDbRace",
+    "result": {
+      "database": "evidence_fulfill_race_68f611a5",
+      "checks": 6,
+      "results": [
+        {
+          "scenario": "repeated partial issue",
+          "two_real_lock_waits": true,
+          "results": [
+            {
+              "status": "ok",
+              "changed": true
+            },
+            {
+              "status": "ok",
+              "changed": false
+            }
+          ],
+          "balance": {
+            "variant_id": 1,
+            "mode": "tracked",
+            "physical_quantity": 2,
+            "reserved_quantity": 1,
+            "blocked_quantity": 0,
+            "revision": 3,
+            "opening_evidence": "LOCALHOST signed count",
+            "actor_trainer_id": 1,
+            "recorded_at": "2026-10-24 19:59:54",
+            "available_quantity": 1
+          },
+          "status": "PASS"
+        },
+        {
+          "scenario": "partial issue versus cancellation",
+          "two_real_lock_waits": true,
+          "results": [
+            {
+              "status": "ok",
+              "changed": true
+            },
+            {
+              "status": "denied",
+              "message": "Objednávka už obsahuje vydané kusy. Použijte položkovou vratku; nevydaný zbytek řešte samostatně."
+            }
+          ],
+          "balance": {
+            "variant_id": 2,
+            "mode": "tracked",
+            "physical_quantity": 2,
+            "reserved_quantity": 1,
+            "blocked_quantity": 0,
+            "revision": 3,
+            "opening_evidence": "LOCALHOST signed count",
+            "actor_trainer_id": 1,
+            "recorded_at": "2026-10-24 19:59:54",
+            "available_quantity": 1
+          },
+          "status": "PASS"
+        }
+      ],
+      "production_mutations": false
+    },
+    "source_sha256": "ad48b57e1e3651fcd555f1162a49f2600ed43aaf9f185b5116ff4bfc401975a3"
+  },
+  {
+    "exit_code": 0,
+    "status": "PASS",
+    "script": "ShopReturnsMariaDbRace",
+    "result": {
+      "database": "evidence_r23_returns_e1c9e52e",
+      "checks": 19,
+      "passed": [
+        "Migration verified 20261022220000_accounting_ledger",
+        "Migration verified 20261022221000_accounting_documents",
+        "Migration verified 20261022222000_accounting_adjustments",
+        "Migration verified 20261022230000_shop_inventory",
+        "Migration verified 20261022232000_shop_returns",
+        "Real worker connection published atomically",
+        "Competing return write observed in InnoDB LOCK WAIT",
+        "No competing write before lock release",
+        "Quantity competitor exited cleanly",
+        "Concurrent excess return rejected after fresh quantity reread",
+        "Requested quantities never exceed actual issue",
+        "Real worker connection published atomically",
+        "Competing return write observed in InnoDB LOCK WAIT",
+        "No competing write before lock release",
+        "Reception competitor exited cleanly",
+        "Concurrent repeated reception returns original movement",
+        "Exactly one physical return is recorded",
+        "Physical blocked balance reconciles after reception race",
+        "Concurrent returns create no money"
+      ],
+      "observed_mariadb_lock_wait": true,
+      "production_mutations": false
+    },
+    "source_sha256": "dc84df4a4660f50a398f91c75456a62ac0f0cf317cbb8b27ff9e493daf7fdb19"
+  },
+  {
+    "exit_code": 0,
+    "status": "PASS",
+    "script": "AccountingExportSnapshotMariaDbTest",
+    "corrected_rerun_at": "2026-10-24T20:03:10.8534885+02:00",
+    "result": {
+      "status": "PASS",
+      "database": "evidence_b3_export_rr_bd14b039",
+      "checks": 15,
+      "results": [
+        "Migration verified: 20261022220000_accounting_ledger",
+        "Migration verified: 20261022221000_accounting_documents",
+        "Migration verified: 20261022222000_accounting_adjustments",
+        "Migration verified: 20261022223000_accounting_exports",
+        "Reader session starts in READ COMMITTED",
+        "Reader and writer use distinct MariaDB connections",
+        "Independent writer committed between money and allocation SELECTs",
+        "Export excludes money committed after its snapshot",
+        "Export excludes the matching late allocation release",
+        "Export excludes the matching late decision and refund payment",
+        "Independent connection proves all excluded rows really committed",
+        "Exporter changes isolation only for its own transaction",
+        "Frozen export archive opens",
+        "Archive retains the same consistent snapshot",
+        "READ COMMITTED negative control exposes a refund payment absent from the earlier money read"
+      ],
+      "two_connections": true,
+      "session_isolation": "READ-COMMITTED",
+      "export_snapshot_consistent": true,
+      "negative_control_mixed_snapshot_detected": true,
+      "private_proof_root": "C:\\Users\\Marek\\AppData\\Local/EvidencePavelB1/finance-b1-20261022/snapshot-proof-30fe440592460401"
+    },
+    "source_sha256": "d80197e3a2ed13af1ed4ff8c1d8c8318f9e65396111977e313ce38e5b6ba4d62"
+  },
+  {
+    "exit_code": 0,
+    "status": "PASS",
+    "script": "AccountingStockSnapshotMariaDbTest",
+    "result": {
+      "status": "PASS",
+      "checks": 11,
+      "results": [
+        "Migration verified: 20261022220000_accounting_ledger",
+        "Migration verified: 20261022221000_accounting_documents",
+        "Migration verified: 20261022222000_accounting_adjustments",
+        "Migration verified: 20261022223000_accounting_exports",
+        "Migration verified: 20261022230000_shop_inventory",
+        "Migration verified: 20261022233000_shop_stock_documents",
+        "Writer committed receipt between movement and lot SELECTs",
+        "Snapshot contains matched original stock movements and FIFO lots",
+        "Late receipt absent from all stock snapshot sections",
+        "Independent connection proves late receipt committed",
+        "READ COMMITTED negative control detects mixed movements and lots"
+      ],
+      "database": "evidence_b4_stock_rr_ccea6669",
+      "two_connections": true,
+      "negative_control_mixed_stock_detected": true
+    },
+    "source_sha256": "67023a1a3387308758045d08e72822d198bad1a89c86a260628869b45614aee3"
+  },
+  {
+    "exit_code": 0,
+    "status": "PASS",
+    "script": "TrainingClosureMariaDbRace",
+    "result": {
+      "database": "evidence_training_race_09e0dc09",
+      "checks": 12,
+      "results": [
+        {
+          "scenario": "closure",
+          "two_real_lock_waits": true,
+          "single_committed_record": true,
+          "results": [
+            {
+              "status": "ok",
+              "result": {
+                "revision_id": 1,
+                "version": 1,
+                "status": "closed",
+                "review_required": false,
+                "training_id": 100,
+                "actual_date": "2026-01-02",
+                "actual_started_at": "2026-01-02 15:00:00",
+                "actual_ended_at": "2026-01-02 16:00:00",
+                "duration_minutes": 60,
+                "participant_ids": [
+                  10
+                ],
+                "coach_ids": [
+                  1
+                ],
+                "guest_reasons": [],
+                "record_source": "coach",
+                "plan_id": null,
+                "category": "draha",
+                "description": "LOCALHOST Session"
+              }
+            },
+            {
+              "status": "denied",
+              "message": "Docházku mezitím změnil jiný pracovník. Obnovte přehled; nic nebylo přepsáno."
+            }
+          ],
+          "status": "PASS"
+        },
+        {
+          "scenario": "schedule",
+          "two_real_lock_waits": true,
+          "single_committed_record": true,
+          "results": [
+            {
+              "status": "ok",
+              "result": {
+                "plan_id": 1
+              }
+            },
+            {
+              "status": "denied",
+              "message": "Kolize: trenér má v tomto čase lekci #1. Společnou lekci založte jako jeden termín s více soupiskami."
+            }
+          ],
+          "status": "PASS"
+        },
+        {
+          "scenario": "makeup_last_slot",
+          "two_real_lock_waits": true,
+          "single_committed_record": true,
+          "results": [
+            {
+              "status": "ok",
+              "result": {
+                "reservation_id": 1
+              }
+            },
+            {
+              "status": "denied",
+              "message": "Kapacita náhradníků je obsazená."
+            }
+          ],
+          "status": "PASS"
+        },
+        {
+          "scenario": "void_vs_finalize",
+          "two_real_lock_waits": true,
+          "void_state_preserved": true,
+          "no_consumed_credit": true,
+          "results": [
+            {
+              "status": "ok",
+              "result": {
+                "finalizer_completed": true
+              }
+            },
+            {
+              "status": "ok",
+              "result": {
+                "finalizer_completed": true
+              }
+            }
+          ],
+          "status": "PASS"
+        }
+      ],
+      "production_mutations": false
+    },
+    "source_sha256": "1fef31d516e23baad459243c91494f7c4dacd7ccd547378341674e1624751179"
+  },
+  {
+    "exit_code": 0,
+    "status": "PASS",
+    "script": "MembershipAuthorizationMariaDbRace",
+    "result": {
+      "database": "evidence_membership_auth_6981f2ce",
+      "production_mutations": false,
+      "checks": 15,
+      "results": [
+        {
+          "guard": "admission",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Přijetí vyžaduje aktuální oprávnění registráře."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "admission",
+          "revoked_grant": "superadmin",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Přijetí vyžaduje aktuální oprávnění registráře."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "operational",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Pracovní oprávnění již neplatí."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "operational",
+          "revoked_grant": "superadmin",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Pracovní oprávnění již neplatí."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "sports",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Pracovní oprávnění již neplatí."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "coach_manager",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Pracovní oprávnění vedoucího sportu již neplatí."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "coach_manager",
+          "revoked_grant": "superadmin",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Pracovní oprávnění vedoucího sportu již neplatí."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "ledger",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Úkon vyžaduje aktivní oprávnění Hospodář a platby."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "ledger",
+          "revoked_grant": "superadmin",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Úkon vyžaduje aktivní oprávnění Hospodář a platby."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "adjustment",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Úkon vyžaduje aktivní oprávnění Hospodář a platby."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "adjustment",
+          "revoked_grant": "superadmin",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Úkon vyžaduje aktivní oprávnění Hospodář a platby."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "export",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Účetní export je dostupný pouze hospodáři."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "export",
+          "revoked_grant": "superadmin",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Účetní export je dostupný pouze hospodáři."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "notification",
+          "revoked_grant": "role",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        },
+        {
+          "guard": "notification",
+          "revoked_grant": "superadmin",
+          "real_lock_wait": true,
+          "authorized_before_revocation_commit": false,
+          "worker": {
+            "status": "denied",
+            "message": "Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek."
+          },
+          "post_revocation_write_count": 0,
+          "status": "PASS"
+        }
+      ]
+    },
+    "source_sha256": "3800ce97f63a6740de9bd10e09df6739d53f72698bc880dea351e0bea8e71e8c"
+  }
+]
