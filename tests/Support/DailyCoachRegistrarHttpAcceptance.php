@@ -126,6 +126,13 @@ dwCheck($saved['status']===303 && preg_match('/^training_closure_admin\.php\?id=
 $training=(int)$pdo->query('SELECT trenink_id FROM planovane_treninky WHERE id='.$plan)->fetchColumn();
 $count=(int)$pdo->query('SELECT COUNT(*) FROM treninky')->fetchColumn();$retry=dwRequest($lead,'ulozit_trenink.php',$post);
 dwCheck($retry['location']===$saved['location'] && (int)$pdo->query('SELECT COUNT(*) FROM treninky')->fetchColumn()===$count,'Duplicate training submission retains closure redirect and creates no second record');
+$editPage=dwRequest($lead,'edit_trenink.php?id='.$training);$editDom=dwDom($editPage);
+dwCheck($editPage['status']===200 && (int)$editDom->evaluate('count(//a[@href="moje_treninky.php"])')===0
+    && (int)$editDom->evaluate('count(//a[@href="sprava_vsech_treninku.php"])')>=2,'Sports lead edit form returns to its permitted training list');
+$edited=dwRequest($lead,'update_trenink.php',['id'=>$training,'datum'=>'2026-01-02','delka'=>1.25,'kategorie'=>'draha','napln'=>$run.' edited','team_ids'=>[$team],'ucastnici'=>'','trenere'=>[$actors['sports_lead']]]);
+dwCheck($edited['status']===302 && $edited['location']==='sprava_vsech_treninku.php'
+    && (float)$pdo->query('SELECT delka FROM treninky WHERE id='.$training)->fetchColumn()===1.25,'Sports lead edit persists and redirects to an authorized destination');
+dwCheck(dwRequest($lead,$edited['location'])['status']===200,'Following sports lead edit redirect never produces workspace access denied');
 dwCheck(dwRequest($finance,'ulozit_trenink.php',$post)['status']===403 && dwRequest($registrar,'formular.php?plan_id='.$plan)['status']===403,'New lesson delegation does not grant finance or registrar training writes');
 dwCheck(dwRequest($lead,'ajax_sportovci.php?q='.rawurlencode($run))['status']===200 && dwRequest($lead,'ajax_dostupnost_sportovist.php')['status']!==403,'Sports lead can use athlete lookup and venue availability in training form');
 $page=dwRequest($lead,'training_closure_admin.php?plan_id='.$plan);$dom=dwDom($page);
