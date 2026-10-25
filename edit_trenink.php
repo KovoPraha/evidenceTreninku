@@ -209,7 +209,7 @@ if (!empty($trenink['datum'])) {
                     <h1 class="fw-semibold fs-5 mb-0"><i class="bi bi-pencil-square me-2"></i>Úprava tréninku #<?= (int)$trenink['id'] ?></h1>
                     <div class="opacity-75 small"><i class="bi bi-calendar3 me-1"></i><?= h($dupDatumStr) ?></div>
                 </div>
-                <a href="moje_treninky.php" class="btn btn-outline-light btn-sm">
+                <a href="<?= staffActivePositionIs('sports_lead') ? 'sprava_vsech_treninku.php' : 'moje_treninky.php' ?>" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-arrow-left me-1"></i>Zpět na tréninky
                 </a>
             </div>
@@ -481,7 +481,7 @@ if (!empty($trenink['datum'])) {
             Upravujete trénink ze dne <strong><?= h($dupDatumStr) ?></strong>
         </div>
         <div class="d-flex gap-2">
-            <a href="moje_treninky.php" class="btn btn-outline-secondary">
+            <a href="<?= staffActivePositionIs('sports_lead') ? 'sprava_vsech_treninku.php' : 'moje_treninky.php' ?>" class="btn btn-outline-secondary">
                 <i class="bi bi-x-lg me-1"></i>Zrušit
             </a>
             <button type="submit" class="btn btn-success px-4">
