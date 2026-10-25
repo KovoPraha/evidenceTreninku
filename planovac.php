@@ -545,16 +545,12 @@ try {
             <div class="day-header <?= $headerCls ?>">
                 <?= $dayNames[$i] ?> <?= $dt->format('j. n.') ?>
                 <?php if ($isToday): ?><span class="badge bg-warning text-dark ms-1" style="font-size:.65rem">Dnes</span><?php endif; ?>
-                <?php if (!empty($dne)): ?>
-                    <span class="badge bg-secondary ms-1" style="font-size:.65rem"><?= count($dne) ?></span>
-                <?php endif; ?>
+                <span class="badge bg-secondary ms-1 day-count" style="font-size:.65rem;<?= empty($dne) ? 'display:none' : '' ?>"><?= count($dne) ?></span>
             </div>
 
-            <?php if (empty($dne)): ?>
-                <div class="empty-day text-center py-3" style="font-size:.8rem;color:#d1d5db;border:2px dashed transparent;border-radius:.5rem">
+                <div class="empty-day text-center py-3" style="font-size:.8rem;color:#d1d5db;border:2px dashed transparent;border-radius:.5rem;<?= empty($dne) ? '' : 'display:none' ?>">
                     <i class="bi bi-dash d-block fs-4 mb-1"></i>Žádné tréninky
                 </div>
-            <?php endif; ?>
 
             <?php foreach ($dne as $p): ?>
                 <?php
@@ -983,7 +979,13 @@ try {
 
     function updateEmptyDays() {
         document.querySelectorAll('.drop-zone').forEach(zone => {
-            const hasCards = zone.querySelectorAll('.plan-card').length > 0;
+            const count = zone.querySelectorAll('.plan-card').length;
+            const hasCards = count > 0;
+            const badge = zone.querySelector('.day-count');
+            if (badge) {
+                badge.textContent = String(count);
+                badge.style.display = hasCards ? '' : 'none';
+            }
             const empty = zone.querySelector('.empty-day');
             if (empty) empty.style.display = hasCards ? 'none' : '';
         });

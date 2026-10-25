@@ -521,7 +521,7 @@ document.getElementById('skupina_id').addEventListener('change', function () {
 
     function cvikySelectHtml() {
         if (!CVIKY || !CVIKY.length) {
-            return `<input type="text" class="form-control form-control-sm js-cvik_text" placeholder="Cvik (text)">`;
+            return `<span class="small text-muted">Seznam cviků je prázdný. Název cviku uveďte do poznámky měření.</span>`;
         }
         let opts = `<option value="">-- vyber cvik --</option>`;
         CVIKY.forEach(c => { opts += `<option value="${c.id}">${escapeHtml(c.nazev)}</option>`; });

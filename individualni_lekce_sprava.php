@@ -64,12 +64,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
         ");
         $st->execute([$rezervId]);
         $rez = $st->fetch(PDO::FETCH_ASSOC);
-        if ($rez && (int)$rez['trener_id'] === $trenerId && in_array($rez['stav'], ['ceka','cekaci_listina'], true)) {
+        // Only a pending reservation already owns a capacity slot. Waitlisted
+        // reservations are promoted exclusively by the capacity-locked queue.
+        if ($rez && (int)$rez['trener_id'] === $trenerId && $rez['stav'] === 'ceka') {
             $pdo->beginTransaction();
             try {
-                $q=$pdo->prepare("UPDATE verejne_rezervace SET stav='potvrzena',cas_potvrzeni=CURRENT_TIMESTAMP WHERE id=? AND stav IN ('ceka','cekaci_listina')");
+                $q=$pdo->prepare("UPDATE verejne_rezervace SET stav='potvrzena',cas_potvrzeni=CURRENT_TIMESTAMP WHERE id=? AND stav='ceka'");
                 $q->execute([$rezervId]);
-                if ($q->rowCount()===1) bookingNotificationEnqueue($pdo,$rezervId,'confirmed');
+                if ($q->rowCount()===1) {
+                    bookingNotificationEnqueue($pdo,$rezervId,'confirmed');
+                    venueOperationAudit($pdo,'lesson',(int)$rez['lekce_id'],$trenerId,'reservation_confirmed','Ruční potvrzení čekající rezervace.', ['reservation_id'=>$rezervId,'before'=>'ceka','after'=>'potvrzena']);
+                }
                 $pdo->commit();
             } catch (Throwable $exception) { if ($pdo->inTransaction()) $pdo->rollBack(); throw $exception; }
             $_SESSION['flash_success'] = 'Rezervace potvrzena, oznámení zařazeno do fronty.';
@@ -91,7 +96,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_verify($_POST['csrf_token'] ??
             try {
                 $q=$pdo->prepare("UPDATE verejne_rezervace SET stav='zamitnuta' WHERE id=? AND stav IN ('ceka','cekaci_listina')");
                 $q->execute([$rezervId]);
-                if ($q->rowCount()===1) bookingNotificationEnqueue($pdo,$rezervId,'rejected');
+                if ($q->rowCount()===1) {
+                    bookingNotificationEnqueue($pdo,$rezervId,'rejected');
+                    venueOperationAudit($pdo,'lesson',(int)$rez['lekce_id'],$trenerId,'reservation_rejected','Ruční zamítnutí rezervace.', ['reservation_id'=>$rezervId,'before'=>$rez['stav'],'after'=>'zamitnuta']);
+                }
                 $pdo->commit();
             } catch (Throwable $exception) { if ($pdo->inTransaction()) $pdo->rollBack(); throw $exception; }
             require_once __DIR__.'/booking/waiting_list.php';
