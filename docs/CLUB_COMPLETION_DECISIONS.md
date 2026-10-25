@@ -1,5 +1,21 @@
 # Rozhodnutí před ostrým provozem — schválený základ a otevřené podklady
 
+## Aktuální povolení D15 — 25. 10. 2026
+
+Uživatel zadal: „Slouč ověřenou integrační větev do main a nasaď ji na produkci.
+Postupuj autonomně, ověř zálohu a možnost návratu. Nové integrace nezapínej,
+skutečná data neimportuj a po nasazení proveď kontroly bez testovacích zápisů.“
+Toto povolení nahrazuje dřívější zákaz nasazení pouze pro konkrétní integrační
+vydání. Merge PR #191/#192 a nasazení `115a617d` včetně nutné dopředné migrace
+jsou dokončené; [důkazy](verification/production-integration-20261025/RESULTS.md).
+Nejde o potvrzení účetní, lidské přejímky, převodu skutečných dat, pilotních jmen
+či termínů ani aktivace integrací. D12: konfigurace zachována bez nové aktivace;
+D13: konkrétní pilot otevřený; D14: záloha a technický návrat ověřeny, provozní
+RTO/RPO zatím negarantované. Ostatní konkrétní podklady zůstávají otevřené.
+
+Níže uvedený souhlas z 24. 10. je historický základ plánu; jeho tehdejší zákaz
+nasazení je v rozsahu výše nahrazen aktuálním povolením.
+
 Pracovní registr k realizačnímu plánu R01–R44, založen 23. 10. 2026.
 Aktualizace 24. 10. 2026: uživatel v tomto chatu schválil doporučené varianty
 **jako základ plánu**, s výslovným ponecháním konkrétních údajů a potvrzení účetní
@@ -9,7 +25,7 @@ do plánu, konkrétní údaje a potvrzení účetní nech otevřené.“ Součas
 
 Schválení se týká níže zapsané verze doporučení D01–D20. Nejde o úplné uzavření
 jednotlivých rozhodnutí, účetní převzetí, přidělení skutečných oprávnění ani
-povolení produkční změny. D15 zůstává **NEPOVOLENO**. Nové funkce označené jako
+povolení produkční změny. D15 bylo k 24. 10. **NEPOVOLENO**; aktuální omezené povolení je uvedeno výše. Nové funkce označené jako
 budoucí nejsou tímto zápisem implementované. Původní záznamy níže jsou historické;
 aktuální stav určuje tato část „Schválený základ“.
 
@@ -45,7 +61,7 @@ používání; samotný zápis v plánu nic nevypíná ani nepovoluje.
 | D12 | Výslovně vymezit rozsah nových automatických úloh. Aktivovat postupně, nejprve nezbytné provozní zprávy; import banky a automatické potvrzování plateb schvalovat odděleně. | Správce a zástupce, seznam služeb pro první spuštění, kontrolní kontakt, běhy a pozdější souhlas s aktivací každé služby. | NASAZENÍ — rozsah; AGENDA — před jednotlivou aktivací. |
 | D13 | Registrář, hospodář a vedoucí sportu se zástupci; role může zastávat tentýž člověk při zachování D05. Pilot přibližně dva týdny s jednou skupinou a několika rodinami, jeden zapisující systém pro převzatou agendu. | Jména, skupina a rodiny, termíny, skutečný rozsah pilotu a rozdělení zápisů. | NASAZENÍ. |
 | D14 | Mimo tréninky/prodej, pozastavení dotčených zápisů a úplná záloha před převodem. Plánovací cíle: obnova do 4 hodin, nejvýše 1 hodina ztráty dat v běžném provozu; při řízeném přechodu zachovat všechny potvrzené zápisy. | Konkrétní okno a nejzazší návrat, rozhodující osoba; technické ověření dosažitelnosti cílů na hostingu. Cíle zatím nejsou provozní záruka. | NASAZENÍ. |
-| D15 | Samostatně schvalovat konkrétní verzi, nasazení kódu, migrace, import skutečných dat a aktivaci služeb. | Výslovné budoucí povolení konkrétní produkční změny. Aktuální stav NEPOVOLENO; nynější souhlas se základem není povolení. | NASAZENÍ. |
+| D15 | Samostatně schvalovat konkrétní verzi, nasazení kódu, migrace, import skutečných dat a aktivaci služeb. | Nasazení vydání `115a617d` a nutná migrace povoleny a dokončeny 25. 10. Další importy, aktivace služeb a jiná vydání nejsou tímto automaticky povoleny. | NASAZENÍ. |
 | D16 | Staré služby rušit až po úspěšném pilotu a převzetí prvního skutečného měsíce účetní; zachovat dostupnou historii a omezení zápisů podle D09/D13. | Skutečná přejímka, potvrzení účetní a výslovné povolení odstavení služeb. | POZDĚJI — před zrušením starých služeb. |
 | D17 | Pro první provoz zapisovat doložená aktuální rozhodnutí o členství. Zpětné/budoucí účinnosti posuzovat jako výjimky; ukončení členství nemaže historii ani dluh. | Konkrétní pravidla, osoby a výjimky; případné rozšíření časové evidence vyžaduje další implementaci. | AGENDA — před ostrými změnami členství. |
 | D18 | Převzít doložená platná pravidla konkrétní činnosti. Registrář ověřuje podklady; trenér vidí potřebný stav a relevantní omezení. Systém sám neurčuje zdravotní způsobilost. | Skutečné požadavky podle činnosti a odpovědná osoba pro nejasné případy. | AGENDA — před spoléháním na přehled při skutečné účasti. |
@@ -72,9 +88,9 @@ základu, nikoli schválení nového detailního rozsahu nebo povolení D15.
    čas návratu a člověk oprávněný rozhodnout o návratu. Dosažitelnost schválených
    plánovacích cílů 4 h / 1 h musí doložit technická příprava; není třeba je
    znovu schvalovat, pokud se nezmění nebo se neprokáže jejich nedosažitelnost.
-4. **D15 — povolení až později:** po předložení konkrétní verze a seznamu kroků
-   výslovně povolit jejich rozsah. Nyní není požadováno ani uděleno povolení
-   nasazení, importů, migrací na produkci nebo aktivace služeb.
+4. **D15 — konkrétní vydání povoleno:** nasazení `115a617d` je dokončené.
+   Pro budoucí importy skutečných dat a aktivace služeb zůstává nutné samostatné
+   povolení; nynější nasazení jej nenahrazuje.
 
 Konkrétní údaje a potvrzení účetní zůstávají otevřené. Souhlas s variantami
 není potvrzení skutečných počátečních stavů, fyzické inventury, jmen, sazeb,

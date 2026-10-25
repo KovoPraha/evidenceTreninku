@@ -1,0 +1,4 @@
+Run 40190272106
+evidence_2026-10-25_113748_a2b42505.sql.gz: OK
+Generace 1 obnovena: 330 tabulek, 2 triggeru.
+Izolovana obnova overena pro 1 generaci zaloh.

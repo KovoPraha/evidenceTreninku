@@ -1,0 +1,219 @@
+{
+  "conclusion": "success",
+  "headSha": "115a617d3660bc9e3cba48891737b56fc6ab068f",
+  "jobs": [
+    {
+      "completedAt": "2026-10-25T11:40:40Z",
+      "conclusion": "success",
+      "databaseId": 121157327133,
+      "name": "Nasazení KIS (kis.kovopraha.cz)",
+      "startedAt": "2026-10-25T11:35:43Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-25T11:35:44Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-25T11:35:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:44Z",
+          "conclusion": "success",
+          "name": "Ověřit ruční potvrzení",
+          "number": 2,
+          "startedAt": "2026-10-25T11:35:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:44Z",
+          "conclusion": "success",
+          "name": "Ověřit konfigurační Variables",
+          "number": 3,
+          "startedAt": "2026-10-25T11:35:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:46Z",
+          "conclusion": "success",
+          "name": "Stáhnout kód z main",
+          "number": 4,
+          "startedAt": "2026-10-25T11:35:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:48Z",
+          "conclusion": "success",
+          "name": "Připravit PHP",
+          "number": 5,
+          "startedAt": "2026-10-25T11:35:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:36:40Z",
+          "conclusion": "success",
+          "name": "Kontrola PHP syntaxe",
+          "number": 6,
+          "startedAt": "2026-10-25T11:35:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:37:27Z",
+          "conclusion": "success",
+          "name": "Nainstalovat závislosti a spustit testy",
+          "number": 7,
+          "startedAt": "2026-10-25T11:36:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:37:27Z",
+          "conclusion": "success",
+          "name": "Připravit ověřené SSH spojení",
+          "number": 8,
+          "startedAt": "2026-10-25T11:37:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:37:40Z",
+          "conclusion": "success",
+          "name": "Předletová kontrola serveru bez změny aplikace",
+          "number": 9,
+          "startedAt": "2026-10-25T11:37:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:37:43Z",
+          "conclusion": "success",
+          "name": "Nahrát zálohovací nástroj mimo aplikaci",
+          "number": 10,
+          "startedAt": "2026-10-25T11:37:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:39:09Z",
+          "conclusion": "success",
+          "name": "Vytvořit a ověřit produkční zálohu",
+          "number": 11,
+          "startedAt": "2026-10-25T11:37:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:39:19Z",
+          "conclusion": "success",
+          "name": "Připravit soukromý klíč archivu KIS a jeho zálohu",
+          "number": 12,
+          "startedAt": "2026-10-25T11:39:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:39:29Z",
+          "conclusion": "success",
+          "name": "Připravit soukromé úložiště dokumentů",
+          "number": 13,
+          "startedAt": "2026-10-25T11:39:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:39:40Z",
+          "conclusion": "success",
+          "name": "Připravit kompletní release mimo webroot",
+          "number": 14,
+          "startedAt": "2026-10-25T11:39:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:39:48Z",
+          "conclusion": "success",
+          "name": "Zachytit otisky dosavadních variabilních symbolů",
+          "number": 15,
+          "startedAt": "2026-10-25T11:39:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:11Z",
+          "conclusion": "success",
+          "name": "Aplikovat migrace z připraveného release",
+          "number": 16,
+          "startedAt": "2026-10-25T11:39:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:20Z",
+          "conclusion": "success",
+          "name": "Ověřit zachování dosavadních variabilních symbolů",
+          "number": 17,
+          "startedAt": "2026-10-25T11:40:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:22Z",
+          "conclusion": "success",
+          "name": "Aktivovat ověřený release",
+          "number": 18,
+          "startedAt": "2026-10-25T11:40:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:22Z",
+          "conclusion": "skipped",
+          "name": "Založit produkty kroužků 2026/27 v KIS",
+          "number": 19,
+          "startedAt": "2026-10-25T11:40:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:37Z",
+          "conclusion": "success",
+          "name": "Odstranit jen vyjmenované osiřelé soubory a přesunout soukromé přílohy",
+          "number": 20,
+          "startedAt": "2026-10-25T11:40:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:37Z",
+          "conclusion": "success",
+          "name": "Ověřit zákaz HTTP přístupu ke klíči archivu",
+          "number": 21,
+          "startedAt": "2026-10-25T11:40:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:38Z",
+          "conclusion": "success",
+          "name": "HTTP smoke test bez tajného tokenu",
+          "number": 22,
+          "startedAt": "2026-10-25T11:40:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:39Z",
+          "conclusion": "success",
+          "name": "Odstranit kopii produkční konfigurace z release",
+          "number": 23,
+          "startedAt": "2026-10-25T11:40:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:39Z",
+          "conclusion": "success",
+          "name": "Post Stáhnout kód z main",
+          "number": 46,
+          "startedAt": "2026-10-25T11:40:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:40:39Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 47,
+          "startedAt": "2026-10-25T11:40:39Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40189517120/job/121157327133"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40189517120"
+}

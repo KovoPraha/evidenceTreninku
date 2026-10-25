@@ -1,0 +1,163 @@
+{
+  "conclusion": "success",
+  "headSha": "115a617d3660bc9e3cba48891737b56fc6ab068f",
+  "jobs": [
+    {
+      "completedAt": "2026-10-25T11:47:35Z",
+      "conclusion": "success",
+      "databaseId": 121159590074,
+      "name": "drill",
+      "startedAt": "2026-10-25T11:46:34Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-25T11:46:35Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-25T11:46:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:46:35Z",
+          "conclusion": "success",
+          "name": "Overit potvrzeni a konfiguraci",
+          "number": 2,
+          "startedAt": "2026-10-25T11:46:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:46:39Z",
+          "conclusion": "success",
+          "name": "Stahnout kod",
+          "number": 3,
+          "startedAt": "2026-10-25T11:46:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:46:39Z",
+          "conclusion": "success",
+          "name": "Pripravit overene SSH spojeni",
+          "number": 4,
+          "startedAt": "2026-10-25T11:46:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "success",
+          "name": "Obnovit vybrane generace zaloh do izolovane MariaDB",
+          "number": 5,
+          "startedAt": "2026-10-25T11:46:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Overit databazove invarianty pouze ctenim",
+          "number": 6,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Overit ucetni vazby a archivovane soubory pouze ctenim",
+          "number": 7,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Uklidit docasny ucetni diagnosticky skript",
+          "number": 8,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Overit pripravenost produkcniho UAT pouze ctenim",
+          "number": 9,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Pripravit casove omezene UAT ucty a data",
+          "number": 10,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Obnovit hesla pouze ctyr existujicich rodinnych TEST uctu",
+          "number": 11,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Deaktivovat vyhradne jednorazove testovaci ucty",
+          "number": 12,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Vytvorit nebo obnovit vyhradne KIS testovaciho administratora",
+          "number": 13,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Precist dopad kluboveho vydani bez zmeny dat",
+          "number": 14,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:31Z",
+          "conclusion": "skipped",
+          "name": "Uklid docasneho cteciho prehledu dopadu",
+          "number": 15,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:33Z",
+          "conclusion": "success",
+          "name": "Uklid docasnych dat drillu",
+          "number": 16,
+          "startedAt": "2026-10-25T11:47:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:33Z",
+          "conclusion": "success",
+          "name": "Post Stahnout kod",
+          "number": 32,
+          "startedAt": "2026-10-25T11:47:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:47:33Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 33,
+          "startedAt": "2026-10-25T11:47:33Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40190272106/job/121159590074"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40190272106"
+}

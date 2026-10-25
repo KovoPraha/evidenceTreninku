@@ -1,0 +1,8 @@
+{
+  "repo_variables_changed": [],
+  "repo_variable_count": 0,
+  "workflow_states_changed": [],
+  "workflow_count": 24,
+  "unchanged": true,
+  "scope": "Repository-scoped variable inventory and GitHub workflow states only. Environment-scoped variables were not inventoried. Runtime configuration was compared separately byte-for-byte."
+}

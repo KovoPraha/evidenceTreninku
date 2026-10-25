@@ -1,0 +1,20 @@
+{
+  "live": {
+    "sha": "115a617d3660bc9e3cba48891737b56fc6ab068f",
+    "run_id": "40189517120",
+    "deployed_at": "2026-10-25T11:39:35+00:00",
+    "uat_approved": false
+  },
+  "source_files_checked": 54,
+  "source_mismatches": 0,
+  "config_unchanged": true,
+  "integration_flags_unchanged": true,
+  "migration_applied": true,
+  "private_candidates": {
+    "movable": 0,
+    "missing": 2,
+    "already_private": 0,
+    "invalid": 0
+  },
+  "old_release_preserved": true
+}
