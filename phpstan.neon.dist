@@ -14,7 +14,7 @@ parameters:
             - output
             - outputs
             - .git
-            - .phpstan-cache
+            - .phpstan-cache (?)
             - config.php (?)
     bootstrapFiles:
         - tools/phpstan-bootstrap.php
