@@ -6,9 +6,9 @@ Základ: `3b164e91`, 25. 10. 2026. Pouze změna aliasu exportu a vyloučení nep
 
 - `export.php` a `export_csv.php` byly bajtově shodné (SHA-256 `bd282f08e7a10cb50dcd6b0b871b032a88b63259006085a791be72db95867996`).
 - Přesný název export.php je v runtime referencován jen v `staffRouteOwners()` (pozice coach); navigace používá export_csv.php. Staré záložky zachovává přesměrování s query parametry. Guard a obnovení autorizace před redirectem zůstávají.
-- `ebook.pdf`: žádná aplikační reference; vyloučeno z obou rsync kroků. Stejný řádek přidává také balík 1; při budoucím sloučení ponechat jednu výjimku v každém bloku.
+- `ebook.pdf`: žádná aplikační reference; vyloučeno z obou rsync kroků v předchozím PR #196. Navázaná větev již obsahuje sjednocené výjimky, jednou v každém bloku.
 - `arial.ttf`: používá `generuj_story.php` při renderování, zůstává v release. Soubory se nyní nepřesouvají z repozitáře.
-- Rsync nepoužívá --delete; vyloučení samo neuklízí dříve nasazený ebook.pdf. Případné odstranění řešit následným explicitním manifestem.
+- Rsync nepoužívá --delete; historicky nasazený ebook.pdf blokuje nové pravidlo v .htaccess z PR #196. Žádný soubor se na produkci ručně nemaže.
 
 ## Runtime introspekce schématu
 
