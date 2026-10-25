@@ -64,7 +64,14 @@ function m2FinalizationDemoCheck(PDO $pdo): array
         . "JOIN verejni_uzivatele a ON a.id=r.account_id WHERE a.email='rodic@localhost.test' "
         . "AND r.relation_role='guardian' AND r.status='approved' AND r.valid_to IS NULL"
     )->fetchColumn();
-    $childAccess = (int)$pdo->query("SELECT COUNT(*) FROM child_access_accounts WHERE login_key='localhost-sportovec' AND active=1")->fetchColumn();
+    // The seed preserves an existing child's login; verify its family binding instead.
+    $childAccess = (int)$pdo->query(
+        "SELECT COUNT(DISTINCT c.sportovec_id) FROM child_access_accounts c "
+        . "JOIN account_person_roles r ON r.sportovec_id=c.sportovec_id "
+        . "JOIN verejni_uzivatele a ON a.id=r.account_id "
+        . "WHERE a.email='rodic@localhost.test' AND c.active=1 "
+        . "AND r.relation_role='guardian' AND r.status='approved' AND r.valid_to IS NULL"
+    )->fetchColumn();
     $products = (int)$pdo->query("SELECT COUNT(*) FROM shop_products WHERE external_product_key LIKE 'local-demo:%' AND catalog_status='active'")->fetchColumn();
 
     if ($admin < 1 || $parent < 1 || $children < 2 || $childAccess < 1 || $products < 1) {
