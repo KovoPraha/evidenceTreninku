@@ -1,0 +1,5 @@
+PHPUnit na PHP 8.2	Spustit testy	2026-10-24T20:17:42.6531751Z OK (1709 tests, 34526 assertions)
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-10-24T20:17:43.2880623Z  ✔ Canonical public symlink fails before writing
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-10-24T20:17:43.2881307Z  ✔ Cleanup does not follow or delete replacement symlink
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-10-24T20:17:43.2882930Z  ✔ Refuses symlinked data before changes
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-10-24T20:17:43.2883441Z OK (3 tests, 45 assertions)

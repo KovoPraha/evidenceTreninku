@@ -40,6 +40,11 @@ jobs:
       - name: Spustit testy
         run: composer test
 
+      - name: Ověřit unixové hranice soukromého úložiště bez přeskočení
+        run: |
+          php -r 'if (PHP_OS_FAMILY !== "Linux") { exit(1); }'
+          vendor/bin/phpunit --colors=never --fail-on-skipped --testdox --filter 'testCanonicalPublicSymlinkFailsBeforeWriting|testCleanupDoesNotFollowOrDeleteReplacementSymlink|testRefusesSymlinkedDataBeforeChanges'
+
   mariadb-smoke:
     name: MariaDB integrační smoke (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest
@@ -88,6 +93,9 @@ jobs:
 
       - name: Ověřit skutečnou Evidence zálohu na MariaDB
         run: php tests/Support/DatabaseBackupMariaDbSmoke.php
+
+      - name: Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB
+        run: php tests/Support/PaymentVariableSymbolMariaDbSmoke.php
 
       - name: Ověřit souběžný idempotentní checkout na MariaDB
         run: php tests/Support/ShopCheckoutMariaDbSmoke.php

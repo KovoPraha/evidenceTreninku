@@ -30,10 +30,13 @@ $dsn='mysql:host=127.0.0.1;port=33426;dbname='.$database.';charset=utf8mb4';
 $reader=new AccountingSnapshotHookPdo($dsn,'b1_app','',$options);$writer=new PDO($dsn,'b1_app','',$options);
 $reader->exec('SET SESSION innodb_lock_wait_timeout=8');$writer->exec('SET SESSION innodb_lock_wait_timeout=8');
 $reader->exec('CREATE TABLE treneri(id INT PRIMARY KEY,aktivni INT) ENGINE=InnoDB');
-$reader->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code VARCHAR(40)) ENGINE=InnoDB');
-$reader->exec('CREATE TABLE staff_superadmins(trainer_id INT) ENGINE=InnoDB');
+// Match the production role lookup keys. A heap fixture locks both actors on scan,
+// preventing the independent commit that this snapshot test must actually exercise.
+$reader->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code VARCHAR(40),PRIMARY KEY(trainer_id,position_code)) ENGINE=InnoDB');
+$reader->exec('CREATE TABLE staff_superadmins(trainer_id INT PRIMARY KEY) ENGINE=InnoDB');
 $reader->exec("INSERT INTO treneri VALUES(7,1),(8,1);INSERT INTO staff_user_positions VALUES(7,'finance_manager'),(8,'finance_manager')");
 $reader->exec("CREATE TABLE shop_orders(id INT PRIMARY KEY,currency CHAR(3)) ENGINE=InnoDB;INSERT INTO shop_orders VALUES(4,'CZK'),(5,'CZK')");
+$reader->exec("ALTER TABLE shop_orders ADD public_code VARCHAR(40) NOT NULL DEFAULT 'LOCALHOST',ADD customer_name_snapshot VARCHAR(100) NOT NULL DEFAULT 'LOCALHOST',ADD total_minor BIGINT NOT NULL DEFAULT 0,ADD status VARCHAR(30) NOT NULL DEFAULT 'completed',ADD payment_status VARCHAR(30) NOT NULL DEFAULT 'paid',ADD placed_at DATETIME NOT NULL DEFAULT '2026-01-01 00:00:00'");
 $checks=[];
 function asrCheck(bool $condition,string $label):void {if(!$condition)throw new RuntimeException($label);$GLOBALS['checks'][]=$label;}
 foreach(['20261022220000_accounting_ledger','20261022221000_accounting_documents','20261022222000_accounting_adjustments','20261022223000_accounting_exports'] as $id){$migration=require dirname(__DIR__,2).'/migrations/'.$id.'.php';$migration['up']($reader);asrCheck($migration['verify']($reader),'Migration verified: '.$id);}

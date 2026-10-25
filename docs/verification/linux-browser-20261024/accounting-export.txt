@@ -1,0 +1,659 @@
+- navigation:
+  - link "KOVO Praha – pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+  - text:     
+  - list:
+    - text: 
+    - button "":
+      - generic: 
+    - button "":
+      - generic: 
+    - link "":
+      - /url: /booking/eshop.php
+      - generic: 
+    - button " Superadmin · Finance":
+      - generic: 
+      - text: Superadmin · Finance
+    - text:        
+    - generic: 
+    - text: LOCALHOST Kontrola 1
+    - button " Odhlásit":
+      - generic: 
+      - text: Odhlásit
+- complementary "Pracovní nabídka":
+  - link "Pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+    - generic: 
+    - text: Pracovní rozcestník
+  - heading "Platby" [level=2]
+  - link "Platby a vratky":
+    - /url: /eshop_payments_admin.php
+    - generic: 
+    - generic: Platby a vratky
+  - link "Klubové platby":
+    - /url: /member_charges_admin.php
+    - generic: 
+    - generic: Klubové platby
+  - link "Plány příspěvků":
+    - /url: /member_fee_plans_admin.php
+    - generic: 
+    - generic: Plány příspěvků
+  - generic "Další nástroje"
+  - link "Peněžní evidence a pokladna":
+    - /url: /accounting_ledger_admin.php
+    - generic: 
+    - generic: Peněžní evidence a pokladna
+  - link "Účetní doklady":
+    - /url: /accounting_documents_admin.php
+    - generic: 
+    - generic: Účetní doklady
+  - link "Opravy a částečné vratky":
+    - /url: /accounting_adjustments_admin.php
+    - generic: 
+    - generic: Opravy a částečné vratky
+  - link "Účetní podklady":
+    - /url: /accounting_exports_admin.php
+    - generic: 
+    - generic: Účetní podklady
+  - link "Výdaje a zálohy":
+    - /url: /club_expenses_admin.php
+    - generic: 
+    - generic: Výdaje a zálohy
+  - link "Výkazy a odměny":
+    - /url: /club_rewards_admin.php
+    - generic: 
+    - generic: Výkazy a odměny
+  - link "Finanční rozhodnutí":
+    - /url: /financial_decisions_admin.php
+    - generic: 
+    - generic: Finanční rozhodnutí
+  - link "Způsoby platby":
+    - /url: /eshop_payment_methods_admin.php
+    - generic: 
+    - generic: Způsoby platby
+  - link "Fio párování":
+    - /url: /eshop_fio_admin.php
+    - generic: 
+    - generic: Fio párování
+  - link "Rodinné platby":
+    - /url: /member_payer_receipts_admin.php
+    - generic: 
+    - generic: Rodinné platby
+  - link "Bankovní účet e-shopu":
+    - /url: /eshop_bank_admin.php
+    - generic: 
+    - generic: Bankovní účet e-shopu
+  - link "Číselné řady a účetní kategorie":
+    - /url: /eshop_number_series_admin.php
+    - generic: 
+    - generic: Číselné řady a účetní kategorie
+  - link "Roční úhrady":
+    - /url: /member_fee_annual_admin.php
+    - generic: 
+    - generic: Roční úhrady
+  - link "Přijatá platba sportovce":
+    - /url: /club_finance_receipt_admin.php
+    - generic: 
+    - generic: Přijatá platba sportovce
+  - link "Finanční pravidla":
+    - /url: /club_finance_admin.php
+    - generic: 
+    - generic: Finanční pravidla
+  - link "Připomínky plateb":
+    - /url: /member_charge_reminders_admin.php
+    - generic: 
+    - generic: Připomínky plateb
+  - heading "Kredity a provoz" [level=2]
+  - generic "Další nástroje"
+  - text:      
+  - heading "Navazující agenda" [level=2]
+  - generic "Další nástroje"
+  - text:  
+  - heading "K dořešení" [level=2]
+  - generic "Další nástroje"
+  - text: 
+  - generic: KOVO Praha · KIS
+- text:   
+- main:
+  - heading "Účetní podklady" [level=1]
+  - paragraph: Připravte neměnnou revizi XLSX a souvisejících PDF. Nová revize stejného období nahrazuje předchozí; původní archiv zůstává dostupný.
+  - text: Balík zahrnuje peníze, doklady, sklad, výdaje, zálohy, odměny a rozhodnutí.
+  - strong: NEÚPLNÝ
+  - text: znamená, že zbývá odsouhlasení zdrojů, otevíracích stavů a metodiky oddílu nebo některá uvedená kontrola. Stažení archivu není předání účetní ani provedená platba.
+  - text: Od
+  - textbox "Od": 2026-10-01
+  - text: Do
+  - textbox "Do": 2026-10-31
+  - text: Důvod / popis revize
+  - textbox "Důvod / popis revize"
+  - checkbox "Potvrzuji přípravu pracovních podkladů v uvedeném rozsahu."
+  - text: Potvrzuji přípravu pracovních podkladů v uvedeném rozsahu.
+  - button "Připravit archiv XLSX + PDF"
+  - 'heading "Revize 8: 2026-10-01 – 2026-10-31" [level=2]'
+  - paragraph: Úplná náhrada předchozí revize stejného období. Nesmí se přičíst k původnímu exportu.
+  - paragraph: "Rozhodný okamžik: 2026-10-24 20:13:08. Nepřevzaté zdroje: 22."
+  - list:
+    - listitem: Podklady R13–R36; označení úplnosti čeká na odsouhlasení metodiky, zdrojů a otevíracích stavů oddílu.
+    - listitem: Výdaje, zálohy a odměny jsou nepeněžní podklady a závazky. Skutečné pohyby jsou pouze jednou v listu Penize.
+    - listitem: Dosud nepřevzaté zdroje a neověřitelná skutečná data jsou uvedena ve výjimkách. Nejsou nahrazena nulou.
+    - listitem: Saldo odděluje účty, nepřidělené příjmy, vratky, závazky a zálohy. Historický stav nepřevzaté pohledávky není nahrazen nulou.
+    - listitem: "Pohyb #1 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #4 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #121 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #143 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #2 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #3 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #5 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #6 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #122 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #123 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #144 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #145 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #10 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #25 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #45 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #46 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #47 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #59 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #61 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #62 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #90 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #91 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #92 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #104 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #105 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #106 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #117 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #118 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #119 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #139 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #140 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #141 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #11 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #12 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #13 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #14 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #15 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #16 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #17 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #18 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #19 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #20 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #21 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #22 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #23 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #24 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #26 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #27 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #28 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #29 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #30 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #31 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #32 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #33 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #34 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #35 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #36 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #37 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #38 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #39 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #40 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #41 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #42 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #43 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #44 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #48 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #49 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #50 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #51 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #52 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #53 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #54 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #55 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #56 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #57 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #58 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #60 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #63 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #64 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #65 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #66 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #67 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #68 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #69 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #70 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #71 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #72 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #73 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #74 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #75 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #76 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #77 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #78 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #79 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #80 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #81 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #82 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #83 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #84 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #85 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #86 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #87 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #88 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #89 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #93 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #94 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #95 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #96 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #97 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #98 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #99 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #100 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #101 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #102 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #103 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #107 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #108 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #109 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #110 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #111 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #112 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #113 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #114 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #115 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #116 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #124 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #125 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #126 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #127 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #128 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #129 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #130 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #131 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #132 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #133 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #134 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #135 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #136 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #137 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #138 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #146 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #147 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #148 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #149 nemá doložené úplné účetní členění."
+    - listitem: "Pohyb #150 nemá doložené úplné účetní členění."
+    - listitem: Účet R17-153768ef2fec nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R17-f1bc5479cd8d nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R13-1f7f0b047449 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R13-fe4aa9de97c9 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R13-a8d662b3fbfa nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-b40414f41e56f2fa nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-7f20be1ef32494 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-8705f2669bef6b nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-f02c1894da nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-73aabe47d9472b nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-a4d2632b533990 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-5686f792af7cb476 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-5712ded1b16cd0 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-336a9d71abafe7 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-4863fa7a41 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-351fc883d0c31a nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet CUTOVER-9255797C nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet CUTOVER-4ACBBC0C nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-abf00bcdf40bad26 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-7f0b55bf70 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet CUTOVER-DD78EAA4 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet CUTOVER-C9B2DF44 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-d96dd92252 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-e6e797f845f22927 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-668dda58ee3a7e nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-4be2c1e57ca350 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-d1390ffc2f5a86 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet UAT-BROWSER23 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-df519ce32f nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-0dbbf43acea44a9a nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-ab669f9679 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet EV-f304a0a3d733 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet EV-50094e42f500 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-9cd4729e0bee8353 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet EV-dc6b200dae71 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-33e0705d52 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-9dccf80c16a5cb6b nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R13-d2b7fcc344a9 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R17-8e7632cdfac5 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet CUTOVER-B9F456BB nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-6430ee1e9639cb nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet EV-010c05de9054 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R31-0fe647daad nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet RW-1423615d4a49a693 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R13-60e063a31ef7 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet R17-61aced389d73 nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet CUTOVER-7E7EA17B nemá uzavřené odsouhlasení ke konci období.
+    - listitem: Účet r37-c3a61508f9123f nemá uzavřené odsouhlasení ke konci období.
+    - listitem: "SKU KP-LOCALHOST-8A689288CB: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU R23-c8c81539a97e-M: chybí ověřený fyzický počátek ke konci období."
+    - listitem: "SKU R23-e1f64fee77b6-M: chybí ověřený fyzický počátek ke konci období."
+    - listitem: "SKU KP-LOCALHOST-1712201393: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU KP-LOCALHOST-B8063D2951: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU r37-8705f2669bef6b: chybí ověřený fyzický počátek ke konci období."
+    - listitem: "SKU KP-LOCALHOST-ECA5D8D069: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU KP-UAT20261023-M: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU KP-UAT20261023-L: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU KP-UAT20261023-I: chybí ověřený fyzický počátek ke konci období."
+    - listitem: "SKU KP-LOCALHOST-367410E627: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU KP-LOCALHOST-0FE0C4214B: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "SKU KP-LOCALHOST-BF62F087AF: ocenění není úplné (neznámá cena nebo nesoulad historických šarží)."
+    - listitem: "Výdaj #37: dosud není rozhodnuto o uznání."
+    - listitem: Historické stavy pohledávek z objednávek a příspěvků vyžadují odsouhlasení; nominální částka a kanonické příděly jsou oddělené. Neověřený počátek není nula.
+    - listitem: Potvrzení úplnosti převzatých zdrojů, otevíracích stavů a účetní metodiky za oddíl čeká na odpovědné osoby. Technické pokrytí modulů není převzetí účetní.
+  - link "Stáhnout tuto revizi":
+    - /url: accounting_export_download.php?id=36
+  - 'heading "Předání této revize: Dosud nezaznamenáno" [level=3]'
+  - paragraph: Zaznamenejte skutečný osobní nebo jinak doložený krok. Zde se nic neodesílá. Převzetí účetní nemění kontrolní označení historického archivu.
+  - text: Krok
+  - combobox "Krok":
+    - option "Předáno účetní" [selected]
+  - text: Komu, kdy, doklad o předání / důvod vrácení
+  - textbox "Komu, kdy, doklad o předání / důvod vrácení"
+  - checkbox "Potvrzuji skutečně provedený krok."
+  - text: Potvrzuji skutečně provedený krok.
+  - button "Zapsat předání"
+  - list
+  - heading "Archiv revizí" [level=2]
+  - table:
+    - rowgroup:
+      - row "Období Revize Vytvořeno Stav":
+        - columnheader "Období"
+        - columnheader "Revize"
+        - columnheader "Vytvořeno"
+        - columnheader "Stav"
+        - columnheader
+    - rowgroup:
+      - row "2026-10-01 – 2026-10-31 8 2026-10-24 22:13:29 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "8"
+        - cell "2026-10-24 22:13:29"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=36
+      - row "2026-09-25 – 2026-10-24 2 2026-10-24 20:01:37 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-09-25 – 2026-10-24"
+        - cell "2"
+        - cell "2026-10-24 20:01:37"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=35
+      - row "2026-10-01 – 2026-10-31 7 2026-10-24 20:01:23 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "7"
+        - cell "2026-10-24 20:01:23"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=34
+      - row "2026-10-01 – 2026-10-24 4 2026-10-24 20:01:16 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-24"
+        - cell "4"
+        - cell "2026-10-24 20:01:16"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=33
+      - row "2026-10-01 – 2026-10-24 3 2026-10-24 20:01:12 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-24"
+        - cell "3"
+        - cell "2026-10-24 20:01:12"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=32
+      - row "2025-09-01 – 2025-09-30 8 2026-10-24 20:01:06 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "8"
+        - cell "2026-10-24 20:01:06"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=31
+      - row "2025-09-01 – 2025-09-30 7 2026-10-24 20:01:04 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "7"
+        - cell "2026-10-24 20:01:04"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=30
+      - row "2026-09-25 – 2026-10-24 1 2026-10-24 19:50:46 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-09-25 – 2026-10-24"
+        - cell "1"
+        - cell "2026-10-24 19:50:46"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=29
+      - row "2026-10-01 – 2026-10-31 6 2026-10-24 19:50:37 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "6"
+        - cell "2026-10-24 19:50:37"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=28
+      - row "2026-10-01 – 2026-10-24 2 2026-10-24 19:50:34 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-24"
+        - cell "2"
+        - cell "2026-10-24 19:50:34"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=27
+      - row "2026-10-01 – 2026-10-24 1 2026-10-24 19:50:31 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-24"
+        - cell "1"
+        - cell "2026-10-24 19:50:31"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=26
+      - row "2025-09-01 – 2025-09-30 6 2026-10-24 19:50:28 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "6"
+        - cell "2026-10-24 19:50:28"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=25
+      - row "2025-09-01 – 2025-09-30 5 2026-10-24 19:50:27 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "5"
+        - cell "2026-10-24 19:50:27"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=24
+      - row "2026-10-01 – 2026-10-23 1 2026-10-23 11:41:13 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-23"
+        - cell "1"
+        - cell "2026-10-23 11:41:13"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=23
+      - row "2026-09-24 – 2026-10-23 5 2026-10-23 07:59:30 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-09-24 – 2026-10-23"
+        - cell "5"
+        - cell "2026-10-23 07:59:30"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=22
+      - row "2026-09-24 – 2026-10-23 4 2026-10-23 07:40:16 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-09-24 – 2026-10-23"
+        - cell "4"
+        - cell "2026-10-23 07:40:16"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=21
+      - row "2026-09-24 – 2026-10-23 3 2026-10-23 01:30:21 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-09-24 – 2026-10-23"
+        - cell "3"
+        - cell "2026-10-23 01:30:21"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=20
+      - row "2026-10-01 – 2026-10-31 5 2026-10-23 01:29:01 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "5"
+        - cell "2026-10-23 01:29:01"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=19
+      - row "2026-10-01 – 2026-10-31 4 2026-10-23 01:26:53 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "4"
+        - cell "2026-10-23 01:26:53"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=18
+      - row "2026-10-01 – 2026-10-31 3 2026-10-23 01:26:23 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "3"
+        - cell "2026-10-23 01:26:23"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=17
+      - row "2026-09-24 – 2026-10-23 2 2026-10-23 01:08:04 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-09-24 – 2026-10-23"
+        - cell "2"
+        - cell "2026-10-23 01:08:04"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=16
+      - row "2026-10-01 – 2026-10-31 2 2026-10-23 01:03:25 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "2"
+        - cell "2026-10-23 01:03:25"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=15
+      - row "2026-09-24 – 2026-10-23 1 2026-10-23 01:02:25 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-09-24 – 2026-10-23"
+        - cell "1"
+        - cell "2026-10-23 01:02:25"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=14
+      - row "2026-10-01 – 2026-10-31 1 2026-10-23 00:57:54 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-31"
+        - cell "1"
+        - cell "2026-10-23 00:57:54"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=13
+      - row "2025-09-01 – 2025-09-30 4 2026-10-22 23:31:32 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "4"
+        - cell "2026-10-22 23:31:32"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=12
+      - row "2025-09-01 – 2025-09-30 3 2026-10-22 23:31:30 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "3"
+        - cell "2026-10-22 23:31:30"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=11
+      - row "2025-09-01 – 2025-09-30 2 2026-10-22 23:30:42 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "2"
+        - cell "2026-10-22 23:30:42"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=10
+      - row "2025-09-01 – 2025-09-30 1 2026-10-22 23:30:41 Neúplný pracovní balík Podrobnosti":
+        - cell "2025-09-01 – 2025-09-30"
+        - cell "1"
+        - cell "2026-10-22 23:30:41"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=9
+      - row "2026-10-01 – 2026-10-22 8 2026-10-22 22:48:10 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "8"
+        - cell "2026-10-22 22:48:10"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=8
+      - row "2026-10-01 – 2026-10-22 7 2026-10-22 22:48:10 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "7"
+        - cell "2026-10-22 22:48:10"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=7
+      - row "2026-10-01 – 2026-10-22 6 2026-10-22 22:42:46 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "6"
+        - cell "2026-10-22 22:42:46"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=6
+      - row "2026-10-01 – 2026-10-22 5 2026-10-22 22:42:46 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "5"
+        - cell "2026-10-22 22:42:46"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=5
+      - row "2026-10-01 – 2026-10-22 4 2026-10-22 22:40:17 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "4"
+        - cell "2026-10-22 22:40:17"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=4
+      - row "2026-10-01 – 2026-10-22 3 2026-10-22 22:40:17 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "3"
+        - cell "2026-10-22 22:40:17"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=3
+      - row "2026-10-01 – 2026-10-22 2 2026-10-22 22:37:00 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "2"
+        - cell "2026-10-22 22:37:00"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=2
+      - row "2026-10-01 – 2026-10-22 1 2026-10-22 22:36:59 Neúplný pracovní balík Podrobnosti":
+        - cell "2026-10-01 – 2026-10-22"
+        - cell "1"
+        - cell "2026-10-22 22:36:59"
+        - cell "Neúplný pracovní balík"
+        - cell "Podrobnosti":
+          - link "Podrobnosti":
+            - /url: accounting_exports_admin.php?id=1

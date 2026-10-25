@@ -1,0 +1,139 @@
+DOM evidence excerpt; long select-option lists omitted.
+- navigation:
+  - link "KOVO Praha – pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+  - text:    
+  - list:
+    - text: 
+    - button "":
+      - generic: 
+    - button "":
+      - generic: 
+    - link "":
+      - /url: /booking/eshop.php
+      - generic: 
+    - button " Superadmin · Systém":
+      - generic: 
+      - text: Superadmin · Systém
+    - text:        
+    - generic: 
+    - text: LOCALHOST Kontrola 1
+    - button " Odhlásit":
+      - generic: 
+      - text: Odhlásit
+- complementary "Pracovní nabídka":
+  - link "Pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+    - generic: 
+    - text: Pracovní rozcestník
+  - heading "Účty a přístupy" [level=2]
+  - link "Pracovní pozice":
+    - /url: /sprava_pracovnich_pozic.php
+    - generic: 
+    - generic: Pracovní pozice
+  - link "Pracovní účty":
+    - /url: /sprava_treneru.php
+    - generic: 
+    - generic: Pracovní účty
+  - generic "Další nástroje"
+  - text: 
+  - heading "Bezpečnost a diagnostika" [level=2]
+  - generic "Další nástroje"
+  - link "Systémový audit":
+    - /url: /auditlog/seznam.php
+    - generic: 
+    - generic: Systémový audit
+  - link "Diagnostika":
+    - /url: /diagnostika_site_admin.php
+    - generic: 
+    - generic: Diagnostika
+  - link "Kontrolní přehled":
+    - /url: /provozni_prehled_admin.php
+    - generic: 
+    - generic: Kontrolní přehled
+  - link "Připravenost UAT":
+    - /url: /uat_readiness_admin.php
+    - generic: 
+    - generic: Připravenost UAT
+  - link "Příprava přechodu":
+    - /url: /club_cutover_admin.php
+    - generic: 
+    - generic: Příprava přechodu
+  - link "Stav komunikace":
+    - /url: /club_communication_admin.php
+    - generic: 
+    - generic: Stav komunikace
+  - link "Lokální testovací scénáře":
+    - /url: /testovaci_scenare.php
+    - generic: 
+    - generic: Lokální testovací scénáře
+  - generic: KOVO Praha · KIS
+- text:   
+- main:
+  - heading "Příprava přechodu a provozu" [level=1]
+  - generic: Tato agenda připravuje podklady a místní zkoušku. Nespouští produkční pilot, import, aktivaci integrací, obnovu ani ukončení služby. Skutečná přejímka odpovědnými osobami zůstává samostatným krokem.
+  - paragraph:
+    - link "Přehled příprav":
+      - /url: club_cutover_admin.php
+    - text: ·
+    - link "Odpovědnosti a otevřené případy":
+      - /url: provozni_prehled_admin.php
+  - heading "LOCALHOST NEPLATIT SEASON 1d7eb5697a transition" [level=2]
+  - paragraph: LOCALHOST nonshop only
+  - paragraph: "Zdroj: LOCALHOST paper. Cíl: http://localhost:18086. Deklarovaný release: LOCALHOST. Revize registru 3."
+  - heading "Mapa původních postupů" [level=3]
+  - paragraph: Návrhy níže pouze předvyplní formulář. Vlastník, konkrétní stará obrazovka, historie a datum přechodu vyžadují ověření. Výběr návrhu nic nezapisuje ani nepřepíná.
+  - generic "Navržené neobchodní postupy"
+  - heading "Registr aktuálních položek" [level=3]
+  - paragraph: Každá oprava vytvoří novou verzi. Ověření mapy obsluhou samo neschvaluje import ani odstavení služby.
+  - table:
+    - rowgroup:
+      - row "Položka Postup a historie Odpovědnost a hranice Doložení":
+        - columnheader "Položka"
+        - columnheader "Postup a historie"
+        - columnheader "Odpovědnost a hranice"
+        - columnheader "Doložení"
+        - columnheader
+      - row "Docházka a omluvenky agenda:attendance LOCALHOST signed attendance book → training_closure_admin.php Historické tréninky, účast a omluvy s původními identifikátory Návrh LOCALHOST NEPLATIT SEASON 1d7eb5697a registrar Neurčeno – vyžaduje rozhodnutí vlastníka Návrh podle funkční analýzy; skutečný zdroj, vlastník a rozsah zatím nepotvrzeny. Opravit / historie":
+        - cell "Docházka a omluvenky agenda:attendance":
+          - text: Docházka a omluvenky
+          - text: agenda:attendance
+        - cell "LOCALHOST signed attendance book → training_closure_admin.php Historické tréninky, účast a omluvy s původními identifikátory Návrh":
+          - text: LOCALHOST signed attendance book → training_closure_admin.php
+          - text: Historické tréninky, účast a omluvy s původními identifikátory
+          - strong: Návrh
+        - cell "LOCALHOST NEPLATIT SEASON 1d7eb5697a registrar Neurčeno – vyžaduje rozhodnutí vlastníka":
+          - text: LOCALHOST NEPLATIT SEASON 1d7eb5697a registrar
+          - text: Neurčeno – vyžaduje rozhodnutí vlastníka
+        - cell "Návrh podle funkční analýzy; skutečný zdroj, vlastník a rozsah zatím nepotvrzeny."
+        - cell "Opravit / historie":
+          - link "Opravit / historie":
+            - /url: "?id=10&edit=agenda%3Aattendance#entry-agenda"
+      - row "LOCALHOST NEPLATIT SEASON 1d7eb5697a paper source:paper Zdroj a historie LOCALHOST NEPLATIT SEASON 1d7eb5697a registrar LOCALHOST paper only Opravit / historie":
+        - cell "LOCALHOST NEPLATIT SEASON 1d7eb5697a paper source:paper":
+          - text: LOCALHOST NEPLATIT SEASON 1d7eb5697a paper
+          - text: source:paper
+        - cell "Zdroj a historie"
+        - cell "LOCALHOST NEPLATIT SEASON 1d7eb5697a registrar": LOCALHOST NEPLATIT SEASON 1d7eb5697a registrar
+        - cell "LOCALHOST paper only"
+        - cell "Opravit / historie":
+          - link "Opravit / historie":
+            - /url: "?id=10&edit=source%3Apaper#entry-source"
+  - 'generic "Zapsat / opravit: Zdroj a historie"'
+  - 'generic "Zapsat / opravit: Jediný zapisující systém"'
+  - 'generic "Zapsat / opravit: Mapa starých adres"'
+  - 'generic "Zapsat / opravit: Inventura soukromé přílohy"'
+  - 'generic "Zapsat / opravit: Integrace a ruční zastoupení"'
+  - 'generic "Zapsat / opravit: Scénář pilotu nebo provozní přejímky"'
+  - 'generic "Zapsat / opravit: Odkaz na konkrétní migrační dávku"'
+  - heading "Skutečné kontrolní snímky" [level=3]
+  - paragraph: Snímek zachytí počty a otisky uvedených kritických dat v této databázi. Neobsahuje obnovitelnou zálohu a neověřuje cizí systém. Uložení náhledu brány zachová také aktuální rozdíl dat pro posouzení návratu.
+  - text: Označení snímku
+  - textbox "Označení snímku"
+  - text: Důvod
+  - textbox "Důvod"
+  - checkbox "Zachytit aktuální místní data."
+  - text: Zachytit aktuální místní data.
+  - button "Pořídit snímek"
+  - heading "Uchované kontroly (30 nejnovějších)" [level=3]
+  - list

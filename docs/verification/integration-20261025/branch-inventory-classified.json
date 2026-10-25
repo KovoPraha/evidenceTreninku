@@ -1,0 +1,2911 @@
+[
+  {
+    "ref": "codex/accounting-deploy-proof-20261023",
+    "sha": "de613f309eda2f39c2c3c2b4181d3d69ffd18334",
+    "mergebase": "59725050cf78927bfa6fb5cf71bef995038715d6",
+    "aggregate_matches": [
+      "0f8eddff8bc1ceba00624118304408b82907d7aa"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0f8eddff8bc1ceba00624118304408b82907d7aa"
+  },
+  {
+    "ref": "codex/accounting-followup-20261023",
+    "sha": "4208d65e5a81ca55d1a51adac2b16024929833f3",
+    "mergebase": "c9724de9c100766f4a6f4c90fb69abfacbb8c8c8",
+    "aggregate_matches": [
+      "ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9"
+  },
+  {
+    "ref": "codex/accounting-production-audit-20261023",
+    "sha": "b63fea7004803fc081f12ad7964cc3e6ef582367",
+    "mergebase": "ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9",
+    "aggregate_matches": [
+      "59725050cf78927bfa6fb5cf71bef995038715d6"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 59725050cf78927bfa6fb5cf71bef995038715d6"
+  },
+  {
+    "ref": "codex/admin-hero-contrast-20261020",
+    "sha": "64bde60be75f0eabdcaf6142d29bb7c64593c505",
+    "mergebase": "f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e",
+    "aggregate_matches": [
+      "175f92c7a59294acff7e15fe09cbed258707fa2e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 175f92c7a59294acff7e15fe09cbed258707fa2e"
+  },
+  {
+    "ref": "codex/admin-shop-production-fixes-20261020",
+    "sha": "5bf4fb3f08e49d02ce0cbeaa837a343b2101b28c",
+    "mergebase": "872ac1a471e4aece6963345eef3aa9ed4d8c4994",
+    "aggregate_matches": [
+      "f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e"
+    ],
+    "unmatched": [
+      "5bf4fb3f08e49d02ce0cbeaa837a343b2101b28c",
+      "12fac2aad1bc2530a332c420f9ebe06eb690fd84",
+      "95045760d44cb666dafa61d2c2305f6e9bc4f267"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e"
+  },
+  {
+    "ref": "codex/athlete-editor-20261020",
+    "sha": "da6f1186b76369a7ea6c893236e80661219b4227",
+    "mergebase": "f4e355bee3e6cfe53efea82d36da3f842c1501c6",
+    "aggregate_matches": [
+      "7c0d5ce7e931b43018a5b1cffeda8b89fde404c5"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7c0d5ce7e931b43018a5b1cffeda8b89fde404c5"
+  },
+  {
+    "ref": "codex/athlete-editor-relations-20261020",
+    "sha": "80ad21b35ca1f225db7918c389724fdd99bb7583",
+    "mergebase": "c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1",
+    "aggregate_matches": [
+      "6a1c878922b45782490066478f1008f8ead1ccf9"
+    ],
+    "unmatched": [
+      "3d3d8969169d96a5068b38ff6c10105f2f86637d"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6a1c878922b45782490066478f1008f8ead1ccf9"
+  },
+  {
+    "ref": "codex/athlete-financial-balance",
+    "sha": "bd907cff9e3e2eb7182db5b07adcede29402f7bd",
+    "mergebase": "d64141fc7a72a553507846a09ea81fa87125a5b0",
+    "aggregate_matches": [],
+    "unmatched": [
+      "5805de673da7ccc8632a15c2ebce26e97d14fd83",
+      "a47af5a63411b94de740dd32820ee69e675b8f02"
+    ],
+    "classification": "exact-tree-main-history",
+    "evidence": "git diff codex/athlete-financial-balance90067fa6 empty; 5805de67 tree equals fd325172."
+  },
+  {
+    "ref": "codex/browser-acceptance-fixes-20261023",
+    "sha": "653758dc7e937dd8de17c1a104c9130e10efe187",
+    "mergebase": "6f574033a3b06ff3280542a6d268e087c54268be",
+    "aggregate_matches": [
+      "e78af565d6d89492e54f0b9e2ecb2b63a4b534c7"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e78af565d6d89492e54f0b9e2ecb2b63a4b534c7"
+  },
+  {
+    "ref": "codex/browser-acceptance-release-proof-20261023",
+    "sha": "0f546c6afaefdc1be95bbc435c28d971191d7d11",
+    "mergebase": "e78af565d6d89492e54f0b9e2ecb2b63a4b534c7",
+    "aggregate_matches": [
+      "dc75dcc55f115a883a1c3cf621f4bc3162253cab"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals dc75dcc55f115a883a1c3cf621f4bc3162253cab"
+  },
+  {
+    "ref": "codex/cash-refund-production-test-20261021",
+    "sha": "d113a09a71e0bd2b6a3ed323be68329444d73fa0",
+    "mergebase": "574328421fff748b48f7d744a3ce454b9b50dd1e",
+    "aggregate_matches": [
+      "a0e2bac12cf6818120f2dd5515499bfe5d7dc601"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals a0e2bac12cf6818120f2dd5515499bfe5d7dc601"
+  },
+  {
+    "ref": "codex/club-acceptance-package-20261023",
+    "sha": "2158b52b34e3647ae3a7c2e3d5166c94db217c8b",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "2158b52b34e3647ae3a7c2e3d5166c94db217c8b",
+      "abbb4be9d29838abd27b16ff6d158c656d4a967b",
+      "7aff7884ad40cfa8c9c6003ed566759b73ffff0c",
+      "67121f0b70c85eecd9d52d4448bb1b2267851bbd",
+      "4033bf183a8fde32a92faca94ee196664d968e6a",
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/club-administration-r31-r37-20261023",
+    "sha": "67121f0b70c85eecd9d52d4448bb1b2267851bbd",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "67121f0b70c85eecd9d52d4448bb1b2267851bbd",
+      "4033bf183a8fde32a92faca94ee196664d968e6a",
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/club-catalog-unification-20261020",
+    "sha": "cddf6cfaeb09008c44e3cc20c2ade7c8d7536f06",
+    "mergebase": "fe4b71e04248a28ac201bb53f612992a48f1bd09",
+    "aggregate_matches": [
+      "2439a1b4afea842546f042b6b11407a5b4bb56fa"
+    ],
+    "unmatched": [
+      "cddf6cfaeb09008c44e3cc20c2ade7c8d7536f06",
+      "571c5304826bdd601218b96fa29503082fc4ad1e",
+      "ea8973f4b6253e87df949b291de086370718b78b",
+      "4f9717e790976244aeea84813875d2b06e684d0f",
+      "a2a16d7f509b38192c486496a88ca9ae379eb125",
+      "2f770a37ea978ae03582f0bcc6715612d79b36be",
+      "d678a7220b045b5d381f5818e29a0d1e784efd77",
+      "3e6dc25fa30086013f4cb2e21e76a0f1bfa3acc7",
+      "18ee6c3ddc0fad564a462fb0e110ea9cc7161744",
+      "bdfce0edc8a64b366a60128329350c7b12be245a",
+      "98237c0072ee1034ab2110052ab37cff9d39fd2c",
+      "01967b28c7c0ded4683ab7082dd72ec7fd24d35e",
+      "a2d4277140c8632f3058b5c700322fbf1867bb8c",
+      "f0c39ed7cd51349190561c2c810cc19c12872fda"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 2439a1b4afea842546f042b6b11407a5b4bb56fa"
+  },
+  {
+    "ref": "codex/club-followup-review-20261023",
+    "sha": "abbb4be9d29838abd27b16ff6d158c656d4a967b",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "abbb4be9d29838abd27b16ff6d158c656d4a967b",
+      "7aff7884ad40cfa8c9c6003ed566759b73ffff0c",
+      "67121f0b70c85eecd9d52d4448bb1b2267851bbd",
+      "4033bf183a8fde32a92faca94ee196664d968e6a",
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/club-foundation-r07-r12-20261022",
+    "sha": "0e23e9e766079ce658bbc7687fed7f19b53779de",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/club-goods-alias-20261020",
+    "sha": "687acb83f3811ff557b8c4f21c00260ed93cf565",
+    "mergebase": "792058af53336897190a6a55ecc629dcc1e56dcd",
+    "aggregate_matches": [
+      "fbeccaf32fe6a9cd4a4fb6d77bed3287fb085283"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fbeccaf32fe6a9cd4a4fb6d77bed3287fb085283"
+  },
+  {
+    "ref": "codex/club-live-verification-20261023",
+    "sha": "5c072241ab4e034bc85e6a84d83869f699ed7ff0",
+    "mergebase": "ab7d67d924451bc99876b76da7f3ec334579188b",
+    "aggregate_matches": [
+      "0b03b564dfa6b20817478848fa8721fea09ca082"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0b03b564dfa6b20817478848fa8721fea09ca082"
+  },
+  {
+    "ref": "codex/club-production-proof-20261023",
+    "sha": "43f2ab1cb2676ead6fb92c67f75a7a8d81a46c78",
+    "mergebase": "57c9e65ad1c00feb06916d7bdbb8fece058cd316",
+    "aggregate_matches": [
+      "ab7d67d924451bc99876b76da7f3ec334579188b"
+    ],
+    "unmatched": [
+      "43f2ab1cb2676ead6fb92c67f75a7a8d81a46c78",
+      "53199664789ee590040293a97cea6971064b3d75"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ab7d67d924451bc99876b76da7f3ec334579188b"
+  },
+  {
+    "ref": "codex/club-production-release-20261023",
+    "sha": "1e3c81f768e64cb326fb043924f157ac7f704993",
+    "mergebase": "3fdd1e16a6de7ec9323b27123ae9dc5b56dae16d",
+    "aggregate_matches": [
+      "57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+    ],
+    "unmatched": [
+      "1e3c81f768e64cb326fb043924f157ac7f704993",
+      "3897cffd7bbcb613934dff432ede905bdf3439d7",
+      "2158b52b34e3647ae3a7c2e3d5166c94db217c8b",
+      "abbb4be9d29838abd27b16ff6d158c656d4a967b",
+      "7aff7884ad40cfa8c9c6003ed566759b73ffff0c",
+      "67121f0b70c85eecd9d52d4448bb1b2267851bbd",
+      "4033bf183a8fde32a92faca94ee196664d968e6a",
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/club-production-report-20261023",
+    "sha": "16d78c5d7050d282cdf460268a31e33ac85a0c73",
+    "mergebase": "0b03b564dfa6b20817478848fa8721fea09ca082",
+    "aggregate_matches": [
+      "a159df09869d8c28755fb9ee9e635b057863e132"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals a159df09869d8c28755fb9ee9e635b057863e132"
+  },
+  {
+    "ref": "codex/club-targets-diagnostic-20261020",
+    "sha": "a3a9af1f16455b9a4429bd3866cca8cfff193c86",
+    "mergebase": "0db907a7dea5baef5a0531ea66a6360b313aaea9",
+    "aggregate_matches": [
+      "cb202b7509a5ed3451caf15d8afce65281f9aed1"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals cb202b7509a5ed3451caf15d8afce65281f9aed1"
+  },
+  {
+    "ref": "codex/custom-consents-production-proof-20261021",
+    "sha": "61ed73854b57ff44a6b3bf56fb3b5401c8ae7941",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/custom-registration-consents-20261021",
+    "sha": "557c260f65a34ab532bf3229dcb052b65af2c289",
+    "mergebase": "e7e0d44d95f607e2dbd4d13ac7b2bcdf53b5046a",
+    "aggregate_matches": [
+      "61ed73854b57ff44a6b3bf56fb3b5401c8ae7941"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 61ed73854b57ff44a6b3bf56fb3b5401c8ae7941"
+  },
+  {
+    "ref": "codex/daily-coach-registrar-20261024",
+    "sha": "1925f88c437663b51785264a719d41965589c293",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/event-administration-20261024",
+    "sha": "964d73da4456c5eb432a8e006973ffa1d3b3919c",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/family-course-production-proof-20261023",
+    "sha": "4c27e6e0d1e266ddfdcf3390d7fef9ed46316e88",
+    "mergebase": "c6e3328be0567a1ea4b242f18eb6d66c4e1e9202",
+    "aggregate_matches": [
+      "b3f179c185d1cdf1e1b95101adf1392a8523c4d4"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals b3f179c185d1cdf1e1b95101adf1392a8523c4d4"
+  },
+  {
+    "ref": "codex/family-course-uat-20261023",
+    "sha": "43168b1161b4ac6c832a10e2fa6b24c46489cb29",
+    "mergebase": "20af547c03462a185b7f1e4141d8cb6074d0495a",
+    "aggregate_matches": [
+      "c6e3328be0567a1ea4b242f18eb6d66c4e1e9202"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c6e3328be0567a1ea4b242f18eb6d66c4e1e9202"
+  },
+  {
+    "ref": "codex/family-followup-20261023",
+    "sha": "eb18acd0202dd6cb927c56690fac0f06c608fff4",
+    "mergebase": "4d7aacf84d75639ccf0c202c2b05b4d824d44347",
+    "aggregate_matches": [
+      "c9724de9c100766f4a6f4c90fb69abfacbb8c8c8"
+    ],
+    "unmatched": [
+      "eb18acd0202dd6cb927c56690fac0f06c608fff4",
+      "5ca2b37f4f88c2bc3a4b65387d595fab070765f4"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c9724de9c100766f4a6f4c90fb69abfacbb8c8c8"
+  },
+  {
+    "ref": "codex/final-system-acceptance-20261024",
+    "sha": "80d583ad9426706dd028bc8681ce888c5304a43c",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/finance-b1-20261022",
+    "sha": "2ccd30e27fa209302db4d1e17d4eb411a4c87cca",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/finance-migration-checksum",
+    "sha": "10de26e698c4e34a9819e18b96fc487a27203762",
+    "mergebase": "fd3251720c8d8ee337d79b9e830e11315724413f",
+    "aggregate_matches": [
+      "90067fa6434afddc9483bf9d9ace589df2cf0bbf"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 90067fa6434afddc9483bf9d9ace589df2cf0bbf"
+  },
+  {
+    "ref": "codex/finance-r13-r17-20261022",
+    "sha": "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/fio-account-switch-20261020",
+    "sha": "2a4630f31bf84a0a461fa6b9a6c10cb911b30dae",
+    "mergebase": "7575a3e947a5e27fafc3a101fe39b92466db51c5",
+    "aggregate_matches": [],
+    "unmatched": [
+      "2a4630f31bf84a0a461fa6b9a6c10cb911b30dae"
+    ],
+    "classification": "closed-unmerged-excluded",
+    "evidence": "GitHub PR109 CLOSED 2026-10-20, mergedAt null; unique manual one-off account identification diagnostic, excluded from completed accepted rollout."
+  },
+  {
+    "ref": "codex/fio-auto-account-snapshot",
+    "sha": "513eea85a4b88da0a489de5d792bb92b5fd3260d",
+    "mergebase": "acdbbd38e9910212d838d0c05d4fd3535041ebd7",
+    "aggregate_matches": [
+      "d06f6ac132c935e46d8deff6f081781a9f633fba"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d06f6ac132c935e46d8deff6f081781a9f633fba"
+  },
+  {
+    "ref": "codex/fio-auto-reconciliation-recovery",
+    "sha": "d1221f3594a965096d98da5e86a27097f66cd380",
+    "mergebase": "b02aeddbf3a4d133199b2dece220dada061136cc",
+    "aggregate_matches": [],
+    "unmatched": [
+      "d1221f3594a965096d98da5e86a27097f66cd380",
+      "d591d87c85eee28cd3bcfc5a80b0fa7bb60de1c9",
+      "8a56a236b6f5ef13da70a990c5eed5d0bb1cd8cf"
+    ],
+    "classification": "superseded-alternate-fio",
+    "evidence": "d1221f35 range-diff equivalent to84233b99 except migration ID120000\u2192170000. Canonical branch aggregate matches main c4f5d92f; older delivery changes match0f7098cb. Do not duplicate migration."
+  },
+  {
+    "ref": "codex/fio-booking-date-offset",
+    "sha": "6b0eda2eeb3ba69334998feb33227d70de4e33fc",
+    "mergebase": "e23aa3e81a9dfeab219101aac1b90a5e21824fef",
+    "aggregate_matches": [
+      "acdbbd38e9910212d838d0c05d4fd3535041ebd7"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals acdbbd38e9910212d838d0c05d4fd3535041ebd7"
+  },
+  {
+    "ref": "codex/fio-config-legacy-guard",
+    "sha": "70b9b8c70f53bcc32158dd5743a3c571729ebe84",
+    "mergebase": "bfe633d21aa035ff4441f8916734e92965cb3ebf",
+    "aggregate_matches": [
+      "ca653bb5b04d993bbe59aba6b9ca069b790a851f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ca653bb5b04d993bbe59aba6b9ca069b790a851f"
+  },
+  {
+    "ref": "codex/fio-date-diagnostic-args",
+    "sha": "1147c4b9f3b0e00e5fc44ff38c93c06c7a9373e4",
+    "mergebase": "4ea278a305317552bde79211e6fb287caac7638f",
+    "aggregate_matches": [
+      "d0e01a539f4ffd077eb26cb7dcf4d791da1f68e0"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d0e01a539f4ffd077eb26cb7dcf4d791da1f68e0"
+  },
+  {
+    "ref": "codex/fio-date-diagnostic-token",
+    "sha": "722059104ba93ab4a31677cd610c6a9278ede32e",
+    "mergebase": "dffd4a063ef2f140bc5a1d3d1912f40b784c3bc4",
+    "aggregate_matches": [
+      "e23aa3e81a9dfeab219101aac1b90a5e21824fef"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e23aa3e81a9dfeab219101aac1b90a5e21824fef"
+  },
+  {
+    "ref": "codex/fio-live-date-diagnostic",
+    "sha": "a9d33e80ce271cb5b8d6d2c1f9b572f2166621ce",
+    "mergebase": "1138f7a818a93a29476475639e76a70d1c173719",
+    "aggregate_matches": [
+      "4ea278a305317552bde79211e6fb287caac7638f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4ea278a305317552bde79211e6fb287caac7638f"
+  },
+  {
+    "ref": "codex/fio-reconciliation-recovery-main",
+    "sha": "218ea64fae4190ad285fb4b780d19e262ff73f67",
+    "mergebase": "5bff9e05da239e324fd9c7da23b770c2b7f73b83",
+    "aggregate_matches": [
+      "c4f5d92fe6aa56df51ec886af01ee0b4385a18b9"
+    ],
+    "unmatched": [
+      "36673a9e2cdcf904b403dc5d8f056952b6b1d0a5",
+      "f5265383cf13ad940145ff49457f20f2aeaa60c3",
+      "84233b994eaa627409ebdcd231839592e7914068"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c4f5d92fe6aa56df51ec886af01ee0b4385a18b9"
+  },
+  {
+    "ref": "codex/fio-scheduled-import-gated",
+    "sha": "c2f84a9a9f7747e3ec9f24eca8261f122fcb8afb",
+    "mergebase": "0db2a09229800bd037f3a30c937f8b087d980d01",
+    "aggregate_matches": [
+      "7b7422f0a0e4b2a0ea7b33a16805a96c5f832599"
+    ],
+    "unmatched": [
+      "c2f84a9a9f7747e3ec9f24eca8261f122fcb8afb",
+      "aae13dde70e00ad5f8ac2ba958dfbacb3aa9108a",
+      "61fde650852350a6f45ca40a7054178c8fa1cd49"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7b7422f0a0e4b2a0ea7b33a16805a96c5f832599"
+  },
+  {
+    "ref": "codex/fio-token-account-diagnostic",
+    "sha": "2f8e4478a07613833dd7438f015f9a21e3b47b0a",
+    "mergebase": "c4f5d92fe6aa56df51ec886af01ee0b4385a18b9",
+    "aggregate_matches": [
+      "5ca02abbd887152eb22be2c08607e1c7da21f003"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 5ca02abbd887152eb22be2c08607e1c7da21f003"
+  },
+  {
+    "ref": "codex/identity-flow-ux-20261019",
+    "sha": "bf954d96c9261d19c9148f4e479b18ad3501f92a",
+    "mergebase": "76ae9ebeb4bdb774968285337aa2ccefa12eeefa",
+    "aggregate_matches": [
+      "7e29bdcd304d53db99fbea0fbd741019020d6586"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7e29bdcd304d53db99fbea0fbd741019020d6586"
+  },
+  {
+    "ref": "codex/integration-20261025",
+    "sha": "6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/inventory-r18-r24-20261022",
+    "sha": "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/kis-current-rosters-20261020",
+    "sha": "036097272b60e011b907b7f9fc13c5f3f84bb02c",
+    "mergebase": "190fb0763119dfb676e16611c828331eecf01cc2",
+    "aggregate_matches": [
+      "c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1"
+    ],
+    "unmatched": [
+      "48399a2852b2880ed6e1c1941f1522438e71386e",
+      "e2fe0e095386f29a7b22bb823e28fb446693b89b"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1"
+  },
+  {
+    "ref": "codex/kis-full-person-import-20261020",
+    "sha": "6d5490d92eda8054ab9b6c91de88a0cb4d34b608",
+    "mergebase": "2dc0f6b3d80ae4fe66407feb5b0c5be5b9117480",
+    "aggregate_matches": [
+      "313cb9aa5aea37267f796dd63e070dab8a3d92ca"
+    ],
+    "unmatched": [
+      "6d5490d92eda8054ab9b6c91de88a0cb4d34b608",
+      "e20f2321c65a8f19b128fa1695e97050c23961aa"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 313cb9aa5aea37267f796dd63e070dab8a3d92ca"
+  },
+  {
+    "ref": "codex/kis-import-payment-history-20261020",
+    "sha": "dd9433b0e0868e9ef154125bd11d9c2c0da61d2f",
+    "mergebase": "899f1a1f8be1580106bd03f02fd70608c3054a2e",
+    "aggregate_matches": [
+      "daccea3575e2f11195b1bda916832c7d81ec635c"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals daccea3575e2f11195b1bda916832c7d81ec635c"
+  },
+  {
+    "ref": "codex/kis-import-private-key-20261020",
+    "sha": "045f435f30cd6ff803f02a040204dfc2605cf367",
+    "mergebase": "a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67",
+    "aggregate_matches": [
+      "899f1a1f8be1580106bd03f02fd70608c3054a2e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 899f1a1f8be1580106bd03f02fd70608c3054a2e"
+  },
+  {
+    "ref": "codex/kis-import-text-transfer-20261020",
+    "sha": "30ec6eb6aeb8a2632f65ad7e8d397cff41a26675",
+    "mergebase": "313cb9aa5aea37267f796dd63e070dab8a3d92ca",
+    "aggregate_matches": [
+      "a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67"
+  },
+  {
+    "ref": "codex/kis-jersey-branding",
+    "sha": "da8ef9c77c79ebf0b0796fdf30987b6a9889e49a",
+    "mergebase": "a6f92e0f8d77b79c96344c64a63beb5681e4da86",
+    "aggregate_matches": [
+      "276a5969314c7ae5834433b9ebe65f31dd80a267"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 276a5969314c7ae5834433b9ebe65f31dd80a267"
+  },
+  {
+    "ref": "codex/kis-key-access-diagnostics-20261020",
+    "sha": "48053636ab25276025e2976a4ed4175832debe7f",
+    "mergebase": "daccea3575e2f11195b1bda916832c7d81ec635c",
+    "aggregate_matches": [
+      "4711b822240db446589fd10a8b83ecc7b5ae2aa1"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4711b822240db446589fd10a8b83ecc7b5ae2aa1"
+  },
+  {
+    "ref": "codex/kis-rosters-from-old-20261020",
+    "sha": "3baa0690130bcb23ada41cc3978876c873670731",
+    "mergebase": "1d62b42326f0ce93fee92dd0c208f1584d99466f",
+    "aggregate_matches": [
+      "f4e355bee3e6cfe53efea82d36da3f842c1501c6"
+    ],
+    "unmatched": [
+      "3baa0690130bcb23ada41cc3978876c873670731",
+      "9b41cd38b923c5adb244952c4cb8fb708ebdccd6"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f4e355bee3e6cfe53efea82d36da3f842c1501c6"
+  },
+  {
+    "ref": "codex/kis-uat-hotfix-20261017",
+    "sha": "5c30beb81e9ab3236dc6e5b9bf96cde12d77b1ec",
+    "mergebase": "44a651fa5a49f6f5e8973fa938f0e66e1b1eb897",
+    "aggregate_matches": [
+      "99d6d633f049cc8d0c23289d09c20794e83cb74b"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 99d6d633f049cc8d0c23289d09c20794e83cb74b"
+  },
+  {
+    "ref": "codex/kis-ux-20261017",
+    "sha": "010877b61e9b9bab71fe1226e2eddd23225df416",
+    "mergebase": "99d6d633f049cc8d0c23289d09c20794e83cb74b",
+    "aggregate_matches": [
+      "26b62e1654bba901b3647ba9f666f4e86ee97190"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 26b62e1654bba901b3647ba9f666f4e86ee97190"
+  },
+  {
+    "ref": "codex/kis-web-key-storage-20261020",
+    "sha": "64db0b7b1110bf6e485e39af9dce304ef5f2a888",
+    "mergebase": "4711b822240db446589fd10a8b83ecc7b5ae2aa1",
+    "aggregate_matches": [
+      "1d62b42326f0ce93fee92dd0c208f1584d99466f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1d62b42326f0ce93fee92dd0c208f1584d99466f"
+  },
+  {
+    "ref": "codex/kunratice-fallback-hide-20261020",
+    "sha": "73b8acd5bf3d997e0202abfbd38f71d55c68449c",
+    "mergebase": "e04bf9b62636976e03b4dd72b97855e3f1f51d50",
+    "aggregate_matches": [
+      "bfe633d21aa035ff4441f8916734e92965cb3ebf"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals bfe633d21aa035ff4441f8916734e92965cb3ebf"
+  },
+  {
+    "ref": "codex/kunratice-prod-fix-20261020",
+    "sha": "2b5e3ece3e678584450b532b5a30cf1bbeacebe1",
+    "mergebase": "6460d1087f71145a9b9eb80adb7282d83e78ea4f",
+    "aggregate_matches": [
+      "659aa7fafcb373b496d20831099bea7b4c785600"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 659aa7fafcb373b496d20831099bea7b4c785600"
+  },
+  {
+    "ref": "codex/kunratice-source-fix-20261020",
+    "sha": "e1eac0784d25c6bd77c9817ecbd939ee448e9648",
+    "mergebase": "659aa7fafcb373b496d20831099bea7b4c785600",
+    "aggregate_matches": [
+      "b62b2b9ff484f35b320d5d8a093d56956c7e0954"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals b62b2b9ff484f35b320d5d8a093d56956c7e0954"
+  },
+  {
+    "ref": "codex/linux-browser-acceptance-20261024",
+    "sha": "420e78a0a68183db189186d9dc465fc7aa406deb",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/membership-sports-r25-r30-20261023",
+    "sha": "4033bf183a8fde32a92faca94ee196664d968e6a",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "4033bf183a8fde32a92faca94ee196664d968e6a",
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/migration-cutover-r38-r44-20261023",
+    "sha": "7aff7884ad40cfa8c9c6003ed566759b73ffff0c",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [],
+    "unmatched": [
+      "7aff7884ad40cfa8c9c6003ed566759b73ffff0c",
+      "67121f0b70c85eecd9d52d4448bb1b2267851bbd",
+      "4033bf183a8fde32a92faca94ee196664d968e6a",
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "earlier-stage-of-squash",
+    "evidence": "Ancestor of codex/club-production-release-20261023 whose aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "codex/multi-child-course-20261023",
+    "sha": "7d6575ed705b70a8a65c3421aa2b098891561387",
+    "mergebase": "b3f179c185d1cdf1e1b95101adf1392a8523c4d4",
+    "aggregate_matches": [
+      "43a825e01235e66baa1601c3bc957365df011009"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 43a825e01235e66baa1601c3bc957365df011009"
+  },
+  {
+    "ref": "codex/order-cash-payment",
+    "sha": "b2220153d3f6b0b9a305c5a4aa30d397d9f531da",
+    "mergebase": "2d86a5c3cc3ca10a8554beb12992c431cd5a766e",
+    "aggregate_matches": [
+      "f813264b16ffd49224bd41a908adc33d9687af88"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f813264b16ffd49224bd41a908adc33d9687af88"
+  },
+  {
+    "ref": "codex/order-cash-payment-browser-verification",
+    "sha": "533a53b11c8def2198226ba746b5b06358525e0f",
+    "mergebase": "06e0a9b17217bf55c23e9507428ed12f48685b16",
+    "aggregate_matches": [
+      "e7e0d44d95f607e2dbd4d13ac7b2bcdf53b5046a"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e7e0d44d95f607e2dbd4d13ac7b2bcdf53b5046a"
+  },
+  {
+    "ref": "codex/order-cash-payment-deploy-handoff",
+    "sha": "70f86cfd47937c8470120fc008f72780aca2f8a1",
+    "mergebase": "f813264b16ffd49224bd41a908adc33d9687af88",
+    "aggregate_matches": [
+      "3395a07688114056700a83b868be8930b60ec47d"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3395a07688114056700a83b868be8930b60ec47d"
+  },
+  {
+    "ref": "codex/order-payment-docs-closeout-20261021",
+    "sha": "3c935b292ed125a3768719daa7be13fe65cc187b",
+    "mergebase": "06c3b5a611b91f01001489671b7c6f27bade595d",
+    "aggregate_matches": [
+      "45ada1356d950abce1313c646330f0be56bf239e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 45ada1356d950abce1313c646330f0be56bf239e"
+  },
+  {
+    "ref": "codex/order-status-release-proof-20261021",
+    "sha": "3a1f2b99907fa687fb911afb981aa736f8a3fba9",
+    "mergebase": "a0e2bac12cf6818120f2dd5515499bfe5d7dc601",
+    "aggregate_matches": [
+      "06c3b5a611b91f01001489671b7c6f27bade595d"
+    ],
+    "unmatched": [
+      "7b1e0138a3f87d1c12ce84dfa7142d78fd4b15da"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 06c3b5a611b91f01001489671b7c6f27bade595d"
+  },
+  {
+    "ref": "codex/order-status-system-mail-20261021",
+    "sha": "f68dc8a88353a9c39a1e5ca8bdf53fbed65933f9",
+    "mergebase": "61ed73854b57ff44a6b3bf56fb3b5401c8ae7941",
+    "aggregate_matches": [
+      "574328421fff748b48f7d744a3ce454b9b50dd1e"
+    ],
+    "unmatched": [
+      "f68dc8a88353a9c39a1e5ca8bdf53fbed65933f9",
+      "dc3b4620100968b1fc089fdf59dc4a622882aef5",
+      "f235e185c7b1a9cd7021679eceb352b12d8d944c",
+      "690fefd880c5e04d3610fe72f763055caa12bc46",
+      "55f43e688453450a5c854dbb9ea920732eae599d"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 574328421fff748b48f7d744a3ce454b9b50dd1e"
+  },
+  {
+    "ref": "codex/packeta-module-audit-20261021",
+    "sha": "acb191ff83510ff8adc6dbf2066249c066e04e8a",
+    "mergebase": "886c07b2ce784ddc0beceaca1214ba640783aa8c",
+    "aggregate_matches": [
+      "b6b4251548fc6a99a4c654dc00a70589cc8d2386"
+    ],
+    "unmatched": [
+      "acb191ff83510ff8adc6dbf2066249c066e04e8a",
+      "0d488fba6e3808f6b2295d715296c4d12f1618f4",
+      "300cf993686d589bae9bebf2dc6f4c2684e2aec8"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals b6b4251548fc6a99a4c654dc00a70589cc8d2386"
+  },
+  {
+    "ref": "codex/packeta-readonly-checks-20261022",
+    "sha": "7a0dd5926f071be18f60000ce8ffa47b8a78205e",
+    "mergebase": "cc9c9280f137465eb59f20523d827b5502416e20",
+    "aggregate_matches": [
+      "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 68b22bd2b3b666dbb4fb571a2731eae5b7f056d9"
+  },
+  {
+    "ref": "codex/packeta-release-proof-20261022",
+    "sha": "735d35c282df602337d97c535fc0d896880ae747",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/parent-browser-uat-20261020",
+    "sha": "474c1ffe0e039ae1e406a7cfe091d2f0f6e5b036",
+    "mergebase": "5c6a8b3158e685b8ef5dd58dfd667f4e6b292b93",
+    "aggregate_matches": [
+      "6460d1087f71145a9b9eb80adb7282d83e78ea4f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6460d1087f71145a9b9eb80adb7282d83e78ea4f"
+  },
+  {
+    "ref": "codex/parent-journey",
+    "sha": "aacb2b78676d20fc87022bf7e727ba0652d2047f",
+    "mergebase": "2b6bc7998d2fb621dc3a694a3c3d5102a3def54b",
+    "aggregate_matches": [
+      "d6b10e70230f1e5497e0a59bcfaf217594523f4c"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d6b10e70230f1e5497e0a59bcfaf217594523f4c"
+  },
+  {
+    "ref": "codex/parent-journey-accessories",
+    "sha": "326cb710bd63430d010c417e09d9be69a2ef45a4",
+    "mergebase": "d6b10e70230f1e5497e0a59bcfaf217594523f4c",
+    "aggregate_matches": [
+      "fd6ccc1584beb3a3266e8147497263cb8a38044f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fd6ccc1584beb3a3266e8147497263cb8a38044f"
+  },
+  {
+    "ref": "codex/parent-journey-production-report",
+    "sha": "3d2c971c139bf443d6d083e28374638ae546ccfe",
+    "mergebase": "fd6ccc1584beb3a3266e8147497263cb8a38044f",
+    "aggregate_matches": [
+      "fe4b71e04248a28ac201bb53f612992a48f1bd09"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fe4b71e04248a28ac201bb53f612992a48f1bd09"
+  },
+  {
+    "ref": "codex/payment-gates-php-cli-fix-20261020",
+    "sha": "64444a0a529839ca99a0f09d0acf28bc8a81640d",
+    "mergebase": "ca653bb5b04d993bbe59aba6b9ca069b790a851f",
+    "aggregate_matches": [
+      "9ab78d9b5e17bb7a820f894d509d988eb1130c7c"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 9ab78d9b5e17bb7a820f894d509d988eb1130c7c"
+  },
+  {
+    "ref": "codex/people-training-acceptance-20261023",
+    "sha": "d794455f1d831ac00071754fcbed75d9d6f18286",
+    "mergebase": "dc75dcc55f115a883a1c3cf621f4bc3162253cab",
+    "aggregate_matches": [
+      "ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30"
+    ],
+    "unmatched": [
+      "d794455f1d831ac00071754fcbed75d9d6f18286",
+      "cc923e3c27b6e2dfaee8cb697cd4a1debf10ae51",
+      "88c45452d23e51821011a65532a14741b5594aee"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30"
+  },
+  {
+    "ref": "codex/people-training-production-20261023",
+    "sha": "7f2d5e0a6b88b082380d9ac738f6cee1c2176bd6",
+    "mergebase": "dfb2b0e5180775750f5810ed4d5c88494c0974d4",
+    "aggregate_matches": [
+      "313cd61ba5111f0d88e158b5107bb1160cb0d374"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 313cd61ba5111f0d88e158b5107bb1160cb0d374"
+  },
+  {
+    "ref": "codex/people-training-production-proof-20261023",
+    "sha": "d7d6b62a0a36a44dc2cc725d873670811db2d7d6",
+    "mergebase": "313cd61ba5111f0d88e158b5107bb1160cb0d374",
+    "aggregate_matches": [
+      "20af547c03462a185b7f1e4141d8cb6074d0495a"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 20af547c03462a185b7f1e4141d8cb6074d0495a"
+  },
+  {
+    "ref": "codex/people-training-release-proof-20261023",
+    "sha": "3d776e7765d02ae92e75351be41ae24e354ae29e",
+    "mergebase": "ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30",
+    "aggregate_matches": [
+      "dfb2b0e5180775750f5810ed4d5c88494c0974d4"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals dfb2b0e5180775750f5810ed4d5c88494c0974d4"
+  },
+  {
+    "ref": "codex/person-life-documents-20261024",
+    "sha": "f521a10d79323caa802d80bc2524117fa58b4e3c",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/ppl-box-checkout",
+    "sha": "d591d87c85eee28cd3bcfc5a80b0fa7bb60de1c9",
+    "mergebase": "b02aeddbf3a4d133199b2dece220dada061136cc",
+    "aggregate_matches": [
+      "0f7098cb33c31091384b58f71860368d86fd099d"
+    ],
+    "unmatched": [
+      "d591d87c85eee28cd3bcfc5a80b0fa7bb60de1c9",
+      "8a56a236b6f5ef13da70a990c5eed5d0bb1cd8cf"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0f7098cb33c31091384b58f71860368d86fd099d"
+  },
+  {
+    "ref": "codex/private-storage-production-proof-20261023",
+    "sha": "af466c824bc458b8d4f00dfbdf82c2ad2559fb84",
+    "mergebase": "fb2e00c72eaeb576b79fc413000278df8174b153",
+    "aggregate_matches": [
+      "6f574033a3b06ff3280542a6d268e087c54268be"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6f574033a3b06ff3280542a6d268e087c54268be"
+  },
+  {
+    "ref": "codex/private-storage-web-probe-20261023",
+    "sha": "a2f6d6709bdb7a7782d98fe7ee3638f7a76f345d",
+    "mergebase": "a159df09869d8c28755fb9ee9e635b057863e132",
+    "aggregate_matches": [
+      "fb2e00c72eaeb576b79fc413000278df8174b153"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fb2e00c72eaeb576b79fc413000278df8174b153"
+  },
+  {
+    "ref": "codex/publish-shoptet-catalog",
+    "sha": "1767e8212479d899fc248b93e043c340fae4b948",
+    "mergebase": "0f7098cb33c31091384b58f71860368d86fd099d",
+    "aggregate_matches": [
+      "9de3ba9d1075be8f070950dab157771ba3ab359a"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 9de3ba9d1075be8f070950dab157771ba3ab359a"
+  },
+  {
+    "ref": "codex/pumptrack-archived-pricing-20261020",
+    "sha": "976ce485fe79f94d8331c7cca2034e7acc1d3d7a",
+    "mergebase": "fbeccaf32fe6a9cd4a4fb6d77bed3287fb085283",
+    "aggregate_matches": [
+      "5c6a8b3158e685b8ef5dd58dfd667f4e6b292b93"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 5c6a8b3158e685b8ef5dd58dfd667f4e6b292b93"
+  },
+  {
+    "ref": "codex/pumptrack-catalog-diagnostic-20261020",
+    "sha": "4c4e2a1ed4878901cb0e6dc2981899ea2ce3f3d4",
+    "mergebase": "fefdd8114b6fa37db5191e66cb0cf99e82b7cebc",
+    "aggregate_matches": [
+      "d8b69b31440797b8f7e2a5e030eea0edcad5fa72"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d8b69b31440797b8f7e2a5e030eea0edcad5fa72"
+  },
+  {
+    "ref": "codex/pumptrack-diagnostic-bootstrap-20261020",
+    "sha": "8e98204efb6bf7042275efc434abf37b0195bb2c",
+    "mergebase": "d8b69b31440797b8f7e2a5e030eea0edcad5fa72",
+    "aggregate_matches": [
+      "0db907a7dea5baef5a0531ea66a6360b313aaea9"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0db907a7dea5baef5a0531ea66a6360b313aaea9"
+  },
+  {
+    "ref": "codex/pumptrack-diagnostic-errors-20261020",
+    "sha": "4c4e2a1ed4878901cb0e6dc2981899ea2ce3f3d4",
+    "mergebase": "fefdd8114b6fa37db5191e66cb0cf99e82b7cebc",
+    "aggregate_matches": [
+      "d8b69b31440797b8f7e2a5e030eea0edcad5fa72"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d8b69b31440797b8f7e2a5e030eea0edcad5fa72"
+  },
+  {
+    "ref": "codex/pumptrack-goods-pricing-20261020",
+    "sha": "895f0186c72bc84ae02a74f17002c62884561616",
+    "mergebase": "cb202b7509a5ed3451caf15d8afce65281f9aed1",
+    "aggregate_matches": [
+      "792058af53336897190a6a55ecc629dcc1e56dcd"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 792058af53336897190a6a55ecc629dcc1e56dcd"
+  },
+  {
+    "ref": "codex/quick-program-registration-fix-20261021",
+    "sha": "3f19f64836e7d798b96b0fe5ceccfb6599b7ab43",
+    "mergebase": "1482cdbd888c1d1c4535769137f38a5728e17287",
+    "aggregate_matches": [
+      "e935950ed5be7181687dadba4b1fc2daf8dd5095"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e935950ed5be7181687dadba4b1fc2daf8dd5095"
+  },
+  {
+    "ref": "codex/quick-registration-handoff-20261021",
+    "sha": "996aa426d8a76c9bca1d8c363b735d8fb77cf164",
+    "mergebase": "e935950ed5be7181687dadba4b1fc2daf8dd5095",
+    "aggregate_matches": [
+      "8bf4056807a8ad1eb687a13943d2f680b2f21ec6"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 8bf4056807a8ad1eb687a13943d2f680b2f21ec6"
+  },
+  {
+    "ref": "codex/registration-text-titles-20261021",
+    "sha": "8c1560e13f9a632de6afe23cd005842481212104",
+    "mergebase": "3395a07688114056700a83b868be8930b60ec47d",
+    "aggregate_matches": [
+      "f5d6276838239ace6426aa8c326c01a213730a36"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f5d6276838239ace6426aa8c326c01a213730a36"
+  },
+  {
+    "ref": "codex/registration-texts-admin-20261021",
+    "sha": "ac52b777d613a9fe21e2bd2aa16e8e05ab378ef9",
+    "mergebase": "8bf4056807a8ad1eb687a13943d2f680b2f21ec6",
+    "aggregate_matches": [
+      "3c64dc530fa8025854f2cc8be07e74bdc1a51aab"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3c64dc530fa8025854f2cc8be07e74bdc1a51aab"
+  },
+  {
+    "ref": "codex/registration-texts-production-proof-20261021",
+    "sha": "46daf6d4f8f195e4d831ae07720c568a6ca0c9bb",
+    "mergebase": "3c64dc530fa8025854f2cc8be07e74bdc1a51aab",
+    "aggregate_matches": [
+      "2d86a5c3cc3ca10a8554beb12992c431cd5a766e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 2d86a5c3cc3ca10a8554beb12992c431cd5a766e"
+  },
+  {
+    "ref": "codex/registration-titles-proof-20261021",
+    "sha": "c1a72392083fefb5111cd3fabcd6d6406872732d",
+    "mergebase": "f5d6276838239ace6426aa8c326c01a213730a36",
+    "aggregate_matches": [
+      "06e0a9b17217bf55c23e9507428ed12f48685b16"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 06e0a9b17217bf55c23e9507428ed12f48685b16"
+  },
+  {
+    "ref": "codex/remaining-admin-forms-20261020",
+    "sha": "6054711b37c000264086dc56952b80979006f5a6",
+    "mergebase": "42a66caba8c842369ef664714cc65d5b2a07b0fe",
+    "aggregate_matches": [
+      "246dee2a4df5dc3152c1a769a9af128b87a91092"
+    ],
+    "unmatched": [
+      "6054711b37c000264086dc56952b80979006f5a6",
+      "cc86c2510df00d251e1fca5f09ecfc70eeabe445"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 246dee2a4df5dc3152c1a769a9af128b87a91092"
+  },
+  {
+    "ref": "codex/remaining-admin-forms-evidence-20261020",
+    "sha": "b294166fa5d76ef90456e5c1cf5a087c497477e9",
+    "mergebase": "246dee2a4df5dc3152c1a769a9af128b87a91092",
+    "aggregate_matches": [
+      "1482cdbd888c1d1c4535769137f38a5728e17287"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1482cdbd888c1d1c4535769137f38a5728e17287"
+  },
+  {
+    "ref": "codex/roster-form-help-20261020",
+    "sha": "dce43d2bb0e76f9401e88ff7a1096be746a1eee8",
+    "mergebase": "7c0d5ce7e931b43018a5b1cffeda8b89fde404c5",
+    "aggregate_matches": [
+      "190fb0763119dfb676e16611c828331eecf01cc2"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 190fb0763119dfb676e16611c828331eecf01cc2"
+  },
+  {
+    "ref": "codex/roster-hierarchy-20261020",
+    "sha": "c3ae67f3c7890b52802cf64df10f699ce75ef5d8",
+    "mergebase": "6a1c878922b45782490066478f1008f8ead1ccf9",
+    "aggregate_matches": [
+      "4991c91f966eb65852876fd0084dd6ad041e3b69"
+    ],
+    "unmatched": [
+      "c3ae67f3c7890b52802cf64df10f699ce75ef5d8",
+      "31536e8841f543e6156119a0acc520de12666b71"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4991c91f966eb65852876fd0084dd6ad041e3b69"
+  },
+  {
+    "ref": "codex/roster-release-proof-20261020",
+    "sha": "20f48d205a260eb2cae938000d403bf5a783b4bb",
+    "mergebase": "4991c91f966eb65852876fd0084dd6ad041e3b69",
+    "aggregate_matches": [
+      "56dcd6ba7c9d4dc85d9fd5c24393be37dfdbd4ea"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 56dcd6ba7c9d4dc85d9fd5c24393be37dfdbd4ea"
+  },
+  {
+    "ref": "codex/season-operations-transition-20261024",
+    "sha": "d14ee589f643495966e7fe7c8905f35f28fb9fba",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "codex/security-audit-fixes-20261024",
+    "sha": "81f5adebd082e8cee142c04e4facee56fcd2e1e4",
+    "mergebase": "f2626b86b714ffd1ec90f572170dac839857dfcc",
+    "aggregate_matches": [
+      "6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51"
+    ],
+    "unmatched": [
+      "81f5adebd082e8cee142c04e4facee56fcd2e1e4",
+      "f7d58d8dee5526f0c3a406944c38936456fd4349"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51"
+  },
+  {
+    "ref": "codex/security-hardening-20261018",
+    "sha": "5d1a58d1f230b8c8e9a64959e1f7ff5c2776de18",
+    "mergebase": "26b62e1654bba901b3647ba9f666f4e86ee97190",
+    "aggregate_matches": [
+      "219995ed99ad0b693ac8443578240d5b464fe217"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 219995ed99ad0b693ac8443578240d5b464fe217"
+  },
+  {
+    "ref": "codex/security-private-route-20261018",
+    "sha": "763c6357e9452b580a268fcc18712db7314e0705",
+    "mergebase": "219995ed99ad0b693ac8443578240d5b464fe217",
+    "aggregate_matches": [
+      "452b060cae7a025b39e86648d3e7f63fd1cf7881"
+    ],
+    "unmatched": [
+      "763c6357e9452b580a268fcc18712db7314e0705",
+      "073d61c580c26510c01d048cbef2460194186464"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 452b060cae7a025b39e86648d3e7f63fd1cf7881"
+  },
+  {
+    "ref": "codex/shop-number-series-20261021",
+    "sha": "f6d008c1e3f5f07fae5955f28cbf3111cbaf5f6a",
+    "mergebase": "45ada1356d950abce1313c646330f0be56bf239e",
+    "aggregate_matches": [
+      "1441683ae1ae2bb9da16d8be3af62ce40f35385c"
+    ],
+    "unmatched": [
+      "f6d008c1e3f5f07fae5955f28cbf3111cbaf5f6a",
+      "ddfba65d3490fad2cfcf8efe34927a0e5075da90",
+      "35b8e504057eb2e28e237c5088cc588e7b73fea8"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1441683ae1ae2bb9da16d8be3af62ce40f35385c"
+  },
+  {
+    "ref": "codex/shop-number-series-release-proof-20261021",
+    "sha": "4913e32279ff1b630e5ed10423d76993c02b4e34",
+    "mergebase": "1441683ae1ae2bb9da16d8be3af62ce40f35385c",
+    "aggregate_matches": [
+      "886c07b2ce784ddc0beceaca1214ba640783aa8c"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 886c07b2ce784ddc0beceaca1214ba640783aa8c"
+  },
+  {
+    "ref": "codex/shop-order-statuses-20261015",
+    "sha": "9faad6ef1626cd13f662228c2ea6f11c974e863a",
+    "mergebase": "c745afa5b502fa46884e09ce6308aac78d2cd9bb",
+    "aggregate_matches": [
+      "d64141fc7a72a553507846a09ea81fa87125a5b0"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d64141fc7a72a553507846a09ea81fa87125a5b0"
+  },
+  {
+    "ref": "codex/shop-publication-accounting-guard-20261022",
+    "sha": "95faa736152af3478a0a4682ce5daa126252c835",
+    "mergebase": "735d35c282df602337d97c535fc0d896880ae747",
+    "aggregate_matches": [
+      "cc9c9280f137465eb59f20523d827b5502416e20"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals cc9c9280f137465eb59f20523d827b5502416e20"
+  },
+  {
+    "ref": "codex/shop-publication-release-proof-20261022",
+    "sha": "d2552858df24f78454e1092d1699aef48c37a5c4",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [
+      "3fdd1e16a6de7ec9323b27123ae9dc5b56dae16d"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3fdd1e16a6de7ec9323b27123ae9dc5b56dae16d"
+  },
+  {
+    "ref": "codex/shoptet-public-catalog-hotfix",
+    "sha": "c2c8b32e85ef03fbdbd90b687cf8470f6accb17a",
+    "mergebase": "9de3ba9d1075be8f070950dab157771ba3ab359a",
+    "aggregate_matches": [
+      "7fbaf9acd14d055aa81b318bdc5593a570fbbde7"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7fbaf9acd14d055aa81b318bdc5593a570fbbde7"
+  },
+  {
+    "ref": "codex/shoptet-storefront-performance",
+    "sha": "f7baa69b40d0a31294b68aeaf97d06087ceaf982",
+    "mergebase": "7fbaf9acd14d055aa81b318bdc5593a570fbbde7",
+    "aggregate_matches": [
+      "2b6bc7998d2fb621dc3a694a3c3d5102a3def54b"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 2b6bc7998d2fb621dc3a694a3c3d5102a3def54b"
+  },
+  {
+    "ref": "codex/sibling-production-proof-20261023",
+    "sha": "f16e757e5263b09fc07f529de94941b1329165ea",
+    "mergebase": "43a825e01235e66baa1601c3bc957365df011009",
+    "aggregate_matches": [
+      "4d7aacf84d75639ccf0c202c2b05b4d824d44347"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4d7aacf84d75639ccf0c202c2b05b4d824d44347"
+  },
+  {
+    "ref": "codex/stock-followup-20261024",
+    "sha": "802ba543b6b3da04b24feb76f48fbb0181f3d6bf",
+    "mergebase": "0f8eddff8bc1ceba00624118304408b82907d7aa",
+    "aggregate_matches": [
+      "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93"
+    ],
+    "unmatched": [
+      "802ba543b6b3da04b24feb76f48fbb0181f3d6bf",
+      "b1dbbd6f9ae18606ffa580cb9a90819bf8683675"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 065ed2a6fb797e21928d0eb5d1d5b84af0c04d93"
+  },
+  {
+    "ref": "codex/stock-production-audit-20261024",
+    "sha": "fc366db1aef7e1908d8319ac6b0a492b178e5a29",
+    "mergebase": "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93",
+    "aggregate_matches": [
+      "283c46db7b5d31dda26ae2faef63da944715aedc"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 283c46db7b5d31dda26ae2faef63da944715aedc"
+  },
+  {
+    "ref": "codex/stock-production-proof-20261024",
+    "sha": "f4a25f52e98b89c306fe06b3b68d6f1e4a9efa07",
+    "mergebase": "283c46db7b5d31dda26ae2faef63da944715aedc",
+    "aggregate_matches": [
+      "f2626b86b714ffd1ec90f572170dac839857dfcc"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f2626b86b714ffd1ec90f572170dac839857dfcc"
+  },
+  {
+    "ref": "codex/stripe-disable-20261020",
+    "sha": "ebe48894c134701e818ad47cca88cde1501493ac",
+    "mergebase": "d0e01a539f4ffd077eb26cb7dcf4d791da1f68e0",
+    "aggregate_matches": [
+      "dffd4a063ef2f140bc5a1d3d1912f40b784c3bc4"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals dffd4a063ef2f140bc5a1d3d1912f40b784c3bc4"
+  },
+  {
+    "ref": "codex/tocnaci-prod-fix-20261020",
+    "sha": "09f93361e37c750208c8424e26eb7dde86e648e3",
+    "mergebase": "b62b2b9ff484f35b320d5d8a093d56956c7e0954",
+    "aggregate_matches": [
+      "5bff9e05da239e324fd9c7da23b770c2b7f73b83"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 5bff9e05da239e324fd9c7da23b770c2b7f73b83"
+  },
+  {
+    "ref": "codex/training-rsvp-notes-calendar-20261014",
+    "sha": "c69c6c5249253f87aab9bf6dabc9a701fef783b4",
+    "mergebase": "2905c985a88bca2890df917d877eac8b9a7f6420",
+    "aggregate_matches": [
+      "c745afa5b502fa46884e09ce6308aac78d2cd9bb"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c745afa5b502fa46884e09ce6308aac78d2cd9bb"
+  },
+  {
+    "ref": "codex/uat-capacity-search-ux",
+    "sha": "b95f6e43319d8e3ac6ba3e250c8faa063de3a680",
+    "mergebase": "d041eec17b672843ef3e3f74d839da3a9a0d98fb",
+    "aggregate_matches": [
+      "42cbe6bba4b7bffd3d44410d5808fb99e5aa6d7f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 42cbe6bba4b7bffd3d44410d5808fb99e5aa6d7f"
+  },
+  {
+    "ref": "codex/uat-fixes-20261016",
+    "sha": "2eee37f0764b473c9861ac5bb14f83b41c2d2b2c",
+    "mergebase": "37623d3d53e3ea7db8d7e9d2cc82b2039f6a01ae",
+    "aggregate_matches": [],
+    "unmatched": [
+      "12585e981c55ae4b69fdc7aeb45c4f50a4ac345f",
+      "646b26b08b677ad317772355ebd85606600b3486"
+    ],
+    "classification": "exact-tree-main-history",
+    "evidence": "git diff codex/uat-fixes-20261016 99d6d633 empty;12585e98 tree equals44a651fa."
+  },
+  {
+    "ref": "codex/uat-fixture-restore-20261020",
+    "sha": "e632ea5240be829300c6c29cd83893a66fc039c1",
+    "mergebase": "e38af3b27f52a7cd2590f5835d4fa4c4f867e1c8",
+    "aggregate_matches": [
+      "1138f7a818a93a29476475639e76a70d1c173719"
+    ],
+    "unmatched": [
+      "e632ea5240be829300c6c29cd83893a66fc039c1",
+      "cf17136110cd26f806c6e7d93bc5f380b4f78dac",
+      "8755c7da89e1509cd212a9a75b7231afa4eaf132"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1138f7a818a93a29476475639e76a70d1c173719"
+  },
+  {
+    "ref": "codex/uat-makeup-readiness-20261016",
+    "sha": "c1e096e1d997686954b1ee0be9faf95867746add",
+    "mergebase": "276a5969314c7ae5834433b9ebe65f31dd80a267",
+    "aggregate_matches": [
+      "3204d66b1ee6e025bd513ed3aa12fa4ec220e4c2"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3204d66b1ee6e025bd513ed3aa12fa4ec220e4c2"
+  },
+  {
+    "ref": "codex/uat-order-cancel-20261020",
+    "sha": "264a34f7ac5dc99c474c8c44d90e2b049296d16e",
+    "mergebase": "5ca02abbd887152eb22be2c08607e1c7da21f003",
+    "aggregate_matches": [
+      "7575a3e947a5e27fafc3a101fe39b92466db51c5"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7575a3e947a5e27fafc3a101fe39b92466db51c5"
+  },
+  {
+    "ref": "codex/uat-order-guard-diagnostics-20261020",
+    "sha": "86d4aa7da12ecdcb684d21706c45c67482444587",
+    "mergebase": "1b2d92e8c0dc9e27e029bf2083f4d97b1610218e",
+    "aggregate_matches": [
+      "e04bf9b62636976e03b4dd72b97855e3f1f51d50"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e04bf9b62636976e03b4dd72b97855e3f1f51d50"
+  },
+  {
+    "ref": "codex/uat-paid-event-reopen",
+    "sha": "659d43b3f1a57ec940d9bd36bb1e84ff867a38fb",
+    "mergebase": "bbc3dbf33c5cec175555c389202b50331d1fc1fd",
+    "aggregate_matches": [
+      "d041eec17b672843ef3e3f74d839da3a9a0d98fb"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d041eec17b672843ef3e3f74d839da3a9a0d98fb"
+  },
+  {
+    "ref": "codex/uat-readiness-diagnostics",
+    "sha": "e6ad23b61744476712beea11f83634dc17b2579c",
+    "mergebase": "90067fa6434afddc9483bf9d9ace589df2cf0bbf",
+    "aggregate_matches": [
+      "bbc3dbf33c5cec175555c389202b50331d1fc1fd"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals bbc3dbf33c5cec175555c389202b50331d1fc1fd"
+  },
+  {
+    "ref": "codex/unified-admin-production-evidence-20261020",
+    "sha": "3b265059a1ec882a2d952f128b4ebd8c26ed6882",
+    "mergebase": "175f92c7a59294acff7e15fe09cbed258707fa2e",
+    "aggregate_matches": [
+      "42a66caba8c842369ef664714cc65d5b2a07b0fe"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 42a66caba8c842369ef664714cc65d5b2a07b0fe"
+  },
+  {
+    "ref": "codex/unified-admin-shop-20261020",
+    "sha": "8cb1707aa7f6a1fbc06c262b395e7970cc17c83a",
+    "mergebase": "56dcd6ba7c9d4dc85d9fd5c24393be37dfdbd4ea",
+    "aggregate_matches": [
+      "872ac1a471e4aece6963345eef3aa9ed4d8c4994"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 872ac1a471e4aece6963345eef3aa9ed4d8c4994"
+  },
+  {
+    "ref": "codex/youngest-draft-groups-20261020",
+    "sha": "e2dd6093bdf4e040630f3a8ba8d3cff60a7b0858",
+    "mergebase": "9ab78d9b5e17bb7a820f894d509d988eb1130c7c",
+    "aggregate_matches": [
+      "e38af3b27f52a7cd2590f5835d4fa4c4f867e1c8"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e38af3b27f52a7cd2590f5835d4fa4c4f867e1c8"
+  },
+  {
+    "ref": "codex/youngest-dryrun-team-20261020",
+    "sha": "be4da468625a705b5b2bafab129ee9448b063d4d",
+    "mergebase": "7b7422f0a0e4b2a0ea7b33a16805a96c5f832599",
+    "aggregate_matches": [
+      "2dc0f6b3d80ae4fe66407feb5b0c5be5b9117480"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 2dc0f6b3d80ae4fe66407feb5b0c5be5b9117480"
+  },
+  {
+    "ref": "codex/youngest-public-titles-20261020",
+    "sha": "7d297354f56ac7fe2f9b8e072a01a186b28dcfe0",
+    "mergebase": "1545306542e0b9698dcc1fd923031eb559fa5e4e",
+    "aggregate_matches": [
+      "0db2a09229800bd037f3a30c937f8b087d980d01"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0db2a09229800bd037f3a30c937f8b087d980d01"
+  },
+  {
+    "ref": "codex/youngest-wrapper-no-args-20261020",
+    "sha": "997d8b14b3e905fae0d83c98d982bb778d1447fc",
+    "mergebase": "d06f6ac132c935e46d8deff6f081781a9f633fba",
+    "aggregate_matches": [
+      "1545306542e0b9698dcc1fd923031eb559fa5e4e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1545306542e0b9698dcc1fd923031eb559fa5e4e"
+  },
+  {
+    "ref": "main",
+    "sha": "1b2d92e8c0dc9e27e029bf2083f4d97b1610218e",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "origin",
+    "sha": "6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "origin/codex/accounting-deploy-proof-20261023",
+    "sha": "de613f309eda2f39c2c3c2b4181d3d69ffd18334",
+    "mergebase": "59725050cf78927bfa6fb5cf71bef995038715d6",
+    "aggregate_matches": [
+      "0f8eddff8bc1ceba00624118304408b82907d7aa"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0f8eddff8bc1ceba00624118304408b82907d7aa"
+  },
+  {
+    "ref": "origin/codex/accounting-followup-20261023",
+    "sha": "4208d65e5a81ca55d1a51adac2b16024929833f3",
+    "mergebase": "c9724de9c100766f4a6f4c90fb69abfacbb8c8c8",
+    "aggregate_matches": [
+      "ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9"
+  },
+  {
+    "ref": "origin/codex/accounting-production-audit-20261023",
+    "sha": "b63fea7004803fc081f12ad7964cc3e6ef582367",
+    "mergebase": "ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9",
+    "aggregate_matches": [
+      "59725050cf78927bfa6fb5cf71bef995038715d6"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 59725050cf78927bfa6fb5cf71bef995038715d6"
+  },
+  {
+    "ref": "origin/codex/admin-hero-contrast-20261020",
+    "sha": "64bde60be75f0eabdcaf6142d29bb7c64593c505",
+    "mergebase": "f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e",
+    "aggregate_matches": [
+      "175f92c7a59294acff7e15fe09cbed258707fa2e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 175f92c7a59294acff7e15fe09cbed258707fa2e"
+  },
+  {
+    "ref": "origin/codex/admin-shop-production-fixes-20261020",
+    "sha": "5bf4fb3f08e49d02ce0cbeaa837a343b2101b28c",
+    "mergebase": "872ac1a471e4aece6963345eef3aa9ed4d8c4994",
+    "aggregate_matches": [
+      "f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e"
+    ],
+    "unmatched": [
+      "5bf4fb3f08e49d02ce0cbeaa837a343b2101b28c",
+      "12fac2aad1bc2530a332c420f9ebe06eb690fd84",
+      "95045760d44cb666dafa61d2c2305f6e9bc4f267"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e"
+  },
+  {
+    "ref": "origin/codex/athlete-editor-20261020",
+    "sha": "da6f1186b76369a7ea6c893236e80661219b4227",
+    "mergebase": "f4e355bee3e6cfe53efea82d36da3f842c1501c6",
+    "aggregate_matches": [
+      "7c0d5ce7e931b43018a5b1cffeda8b89fde404c5"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7c0d5ce7e931b43018a5b1cffeda8b89fde404c5"
+  },
+  {
+    "ref": "origin/codex/athlete-editor-relations-20261020",
+    "sha": "80ad21b35ca1f225db7918c389724fdd99bb7583",
+    "mergebase": "c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1",
+    "aggregate_matches": [
+      "6a1c878922b45782490066478f1008f8ead1ccf9"
+    ],
+    "unmatched": [
+      "3d3d8969169d96a5068b38ff6c10105f2f86637d"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6a1c878922b45782490066478f1008f8ead1ccf9"
+  },
+  {
+    "ref": "origin/codex/athlete-financial-balance",
+    "sha": "5805de673da7ccc8632a15c2ebce26e97d14fd83",
+    "mergebase": "d64141fc7a72a553507846a09ea81fa87125a5b0",
+    "aggregate_matches": [
+      "fd3251720c8d8ee337d79b9e830e11315724413f"
+    ],
+    "unmatched": [
+      "5805de673da7ccc8632a15c2ebce26e97d14fd83",
+      "a47af5a63411b94de740dd32820ee69e675b8f02"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fd3251720c8d8ee337d79b9e830e11315724413f"
+  },
+  {
+    "ref": "origin/codex/browser-acceptance-fixes-20261023",
+    "sha": "653758dc7e937dd8de17c1a104c9130e10efe187",
+    "mergebase": "6f574033a3b06ff3280542a6d268e087c54268be",
+    "aggregate_matches": [
+      "e78af565d6d89492e54f0b9e2ecb2b63a4b534c7"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e78af565d6d89492e54f0b9e2ecb2b63a4b534c7"
+  },
+  {
+    "ref": "origin/codex/browser-acceptance-release-proof-20261023",
+    "sha": "0f546c6afaefdc1be95bbc435c28d971191d7d11",
+    "mergebase": "e78af565d6d89492e54f0b9e2ecb2b63a4b534c7",
+    "aggregate_matches": [
+      "dc75dcc55f115a883a1c3cf621f4bc3162253cab"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals dc75dcc55f115a883a1c3cf621f4bc3162253cab"
+  },
+  {
+    "ref": "origin/codex/cash-refund-production-test-20261021",
+    "sha": "d113a09a71e0bd2b6a3ed323be68329444d73fa0",
+    "mergebase": "574328421fff748b48f7d744a3ce454b9b50dd1e",
+    "aggregate_matches": [
+      "a0e2bac12cf6818120f2dd5515499bfe5d7dc601"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals a0e2bac12cf6818120f2dd5515499bfe5d7dc601"
+  },
+  {
+    "ref": "origin/codex/club-catalog-unification-20261020",
+    "sha": "cddf6cfaeb09008c44e3cc20c2ade7c8d7536f06",
+    "mergebase": "fe4b71e04248a28ac201bb53f612992a48f1bd09",
+    "aggregate_matches": [
+      "2439a1b4afea842546f042b6b11407a5b4bb56fa"
+    ],
+    "unmatched": [
+      "cddf6cfaeb09008c44e3cc20c2ade7c8d7536f06",
+      "571c5304826bdd601218b96fa29503082fc4ad1e",
+      "ea8973f4b6253e87df949b291de086370718b78b",
+      "4f9717e790976244aeea84813875d2b06e684d0f",
+      "a2a16d7f509b38192c486496a88ca9ae379eb125",
+      "2f770a37ea978ae03582f0bcc6715612d79b36be",
+      "d678a7220b045b5d381f5818e29a0d1e784efd77",
+      "3e6dc25fa30086013f4cb2e21e76a0f1bfa3acc7",
+      "18ee6c3ddc0fad564a462fb0e110ea9cc7161744",
+      "bdfce0edc8a64b366a60128329350c7b12be245a",
+      "98237c0072ee1034ab2110052ab37cff9d39fd2c",
+      "01967b28c7c0ded4683ab7082dd72ec7fd24d35e",
+      "a2d4277140c8632f3058b5c700322fbf1867bb8c",
+      "f0c39ed7cd51349190561c2c810cc19c12872fda"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 2439a1b4afea842546f042b6b11407a5b4bb56fa"
+  },
+  {
+    "ref": "origin/codex/club-goods-alias-20261020",
+    "sha": "687acb83f3811ff557b8c4f21c00260ed93cf565",
+    "mergebase": "792058af53336897190a6a55ecc629dcc1e56dcd",
+    "aggregate_matches": [
+      "fbeccaf32fe6a9cd4a4fb6d77bed3287fb085283"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fbeccaf32fe6a9cd4a4fb6d77bed3287fb085283"
+  },
+  {
+    "ref": "origin/codex/club-live-verification-20261023",
+    "sha": "5c072241ab4e034bc85e6a84d83869f699ed7ff0",
+    "mergebase": "ab7d67d924451bc99876b76da7f3ec334579188b",
+    "aggregate_matches": [
+      "0b03b564dfa6b20817478848fa8721fea09ca082"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0b03b564dfa6b20817478848fa8721fea09ca082"
+  },
+  {
+    "ref": "origin/codex/club-production-proof-20261023",
+    "sha": "43f2ab1cb2676ead6fb92c67f75a7a8d81a46c78",
+    "mergebase": "57c9e65ad1c00feb06916d7bdbb8fece058cd316",
+    "aggregate_matches": [
+      "ab7d67d924451bc99876b76da7f3ec334579188b"
+    ],
+    "unmatched": [
+      "43f2ab1cb2676ead6fb92c67f75a7a8d81a46c78",
+      "53199664789ee590040293a97cea6971064b3d75"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ab7d67d924451bc99876b76da7f3ec334579188b"
+  },
+  {
+    "ref": "origin/codex/club-production-release-20261023",
+    "sha": "1e3c81f768e64cb326fb043924f157ac7f704993",
+    "mergebase": "3fdd1e16a6de7ec9323b27123ae9dc5b56dae16d",
+    "aggregate_matches": [
+      "57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+    ],
+    "unmatched": [
+      "1e3c81f768e64cb326fb043924f157ac7f704993",
+      "3897cffd7bbcb613934dff432ede905bdf3439d7",
+      "2158b52b34e3647ae3a7c2e3d5166c94db217c8b",
+      "abbb4be9d29838abd27b16ff6d158c656d4a967b",
+      "7aff7884ad40cfa8c9c6003ed566759b73ffff0c",
+      "67121f0b70c85eecd9d52d4448bb1b2267851bbd",
+      "4033bf183a8fde32a92faca94ee196664d968e6a",
+      "12f28b611a8781968ca6b73821c0df3e2e4075dc",
+      "fd402b6d9e12a86d932f376c8eaff76877d9a029",
+      "0e23e9e766079ce658bbc7687fed7f19b53779de",
+      "2ccd30e27fa209302db4d1e17d4eb411a4c87cca"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 57c9e65ad1c00feb06916d7bdbb8fece058cd316"
+  },
+  {
+    "ref": "origin/codex/club-production-report-20261023",
+    "sha": "16d78c5d7050d282cdf460268a31e33ac85a0c73",
+    "mergebase": "0b03b564dfa6b20817478848fa8721fea09ca082",
+    "aggregate_matches": [
+      "a159df09869d8c28755fb9ee9e635b057863e132"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals a159df09869d8c28755fb9ee9e635b057863e132"
+  },
+  {
+    "ref": "origin/codex/club-targets-diagnostic-20261020",
+    "sha": "a3a9af1f16455b9a4429bd3866cca8cfff193c86",
+    "mergebase": "0db907a7dea5baef5a0531ea66a6360b313aaea9",
+    "aggregate_matches": [
+      "cb202b7509a5ed3451caf15d8afce65281f9aed1"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals cb202b7509a5ed3451caf15d8afce65281f9aed1"
+  },
+  {
+    "ref": "origin/codex/custom-registration-consents-20261021",
+    "sha": "557c260f65a34ab532bf3229dcb052b65af2c289",
+    "mergebase": "e7e0d44d95f607e2dbd4d13ac7b2bcdf53b5046a",
+    "aggregate_matches": [
+      "61ed73854b57ff44a6b3bf56fb3b5401c8ae7941"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 61ed73854b57ff44a6b3bf56fb3b5401c8ae7941"
+  },
+  {
+    "ref": "origin/codex/family-course-production-proof-20261023",
+    "sha": "4c27e6e0d1e266ddfdcf3390d7fef9ed46316e88",
+    "mergebase": "c6e3328be0567a1ea4b242f18eb6d66c4e1e9202",
+    "aggregate_matches": [
+      "b3f179c185d1cdf1e1b95101adf1392a8523c4d4"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals b3f179c185d1cdf1e1b95101adf1392a8523c4d4"
+  },
+  {
+    "ref": "origin/codex/family-course-uat-20261023",
+    "sha": "43168b1161b4ac6c832a10e2fa6b24c46489cb29",
+    "mergebase": "20af547c03462a185b7f1e4141d8cb6074d0495a",
+    "aggregate_matches": [
+      "c6e3328be0567a1ea4b242f18eb6d66c4e1e9202"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c6e3328be0567a1ea4b242f18eb6d66c4e1e9202"
+  },
+  {
+    "ref": "origin/codex/family-followup-20261023",
+    "sha": "eb18acd0202dd6cb927c56690fac0f06c608fff4",
+    "mergebase": "4d7aacf84d75639ccf0c202c2b05b4d824d44347",
+    "aggregate_matches": [
+      "c9724de9c100766f4a6f4c90fb69abfacbb8c8c8"
+    ],
+    "unmatched": [
+      "eb18acd0202dd6cb927c56690fac0f06c608fff4",
+      "5ca2b37f4f88c2bc3a4b65387d595fab070765f4"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c9724de9c100766f4a6f4c90fb69abfacbb8c8c8"
+  },
+  {
+    "ref": "origin/codex/finance-migration-checksum",
+    "sha": "10de26e698c4e34a9819e18b96fc487a27203762",
+    "mergebase": "fd3251720c8d8ee337d79b9e830e11315724413f",
+    "aggregate_matches": [
+      "90067fa6434afddc9483bf9d9ace589df2cf0bbf"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 90067fa6434afddc9483bf9d9ace589df2cf0bbf"
+  },
+  {
+    "ref": "origin/codex/fio-account-switch-20261020",
+    "sha": "2a4630f31bf84a0a461fa6b9a6c10cb911b30dae",
+    "mergebase": "7575a3e947a5e27fafc3a101fe39b92466db51c5",
+    "aggregate_matches": [],
+    "unmatched": [
+      "2a4630f31bf84a0a461fa6b9a6c10cb911b30dae"
+    ],
+    "classification": "closed-unmerged-excluded",
+    "evidence": "GitHub PR109 CLOSED 2026-10-20, mergedAt null; unique manual one-off account identification diagnostic, excluded from completed accepted rollout."
+  },
+  {
+    "ref": "origin/codex/fio-auto-account-snapshot",
+    "sha": "513eea85a4b88da0a489de5d792bb92b5fd3260d",
+    "mergebase": "acdbbd38e9910212d838d0c05d4fd3535041ebd7",
+    "aggregate_matches": [
+      "d06f6ac132c935e46d8deff6f081781a9f633fba"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d06f6ac132c935e46d8deff6f081781a9f633fba"
+  },
+  {
+    "ref": "origin/codex/fio-booking-date-offset",
+    "sha": "6b0eda2eeb3ba69334998feb33227d70de4e33fc",
+    "mergebase": "e23aa3e81a9dfeab219101aac1b90a5e21824fef",
+    "aggregate_matches": [
+      "acdbbd38e9910212d838d0c05d4fd3535041ebd7"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals acdbbd38e9910212d838d0c05d4fd3535041ebd7"
+  },
+  {
+    "ref": "origin/codex/fio-config-legacy-guard",
+    "sha": "70b9b8c70f53bcc32158dd5743a3c571729ebe84",
+    "mergebase": "bfe633d21aa035ff4441f8916734e92965cb3ebf",
+    "aggregate_matches": [
+      "ca653bb5b04d993bbe59aba6b9ca069b790a851f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ca653bb5b04d993bbe59aba6b9ca069b790a851f"
+  },
+  {
+    "ref": "origin/codex/fio-date-diagnostic-args",
+    "sha": "1147c4b9f3b0e00e5fc44ff38c93c06c7a9373e4",
+    "mergebase": "4ea278a305317552bde79211e6fb287caac7638f",
+    "aggregate_matches": [
+      "d0e01a539f4ffd077eb26cb7dcf4d791da1f68e0"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d0e01a539f4ffd077eb26cb7dcf4d791da1f68e0"
+  },
+  {
+    "ref": "origin/codex/fio-date-diagnostic-token",
+    "sha": "722059104ba93ab4a31677cd610c6a9278ede32e",
+    "mergebase": "dffd4a063ef2f140bc5a1d3d1912f40b784c3bc4",
+    "aggregate_matches": [
+      "e23aa3e81a9dfeab219101aac1b90a5e21824fef"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e23aa3e81a9dfeab219101aac1b90a5e21824fef"
+  },
+  {
+    "ref": "origin/codex/fio-live-date-diagnostic",
+    "sha": "a9d33e80ce271cb5b8d6d2c1f9b572f2166621ce",
+    "mergebase": "1138f7a818a93a29476475639e76a70d1c173719",
+    "aggregate_matches": [
+      "4ea278a305317552bde79211e6fb287caac7638f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4ea278a305317552bde79211e6fb287caac7638f"
+  },
+  {
+    "ref": "origin/codex/fio-reconciliation-recovery-main",
+    "sha": "218ea64fae4190ad285fb4b780d19e262ff73f67",
+    "mergebase": "5bff9e05da239e324fd9c7da23b770c2b7f73b83",
+    "aggregate_matches": [
+      "c4f5d92fe6aa56df51ec886af01ee0b4385a18b9"
+    ],
+    "unmatched": [
+      "36673a9e2cdcf904b403dc5d8f056952b6b1d0a5",
+      "f5265383cf13ad940145ff49457f20f2aeaa60c3",
+      "84233b994eaa627409ebdcd231839592e7914068"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c4f5d92fe6aa56df51ec886af01ee0b4385a18b9"
+  },
+  {
+    "ref": "origin/codex/fio-scheduled-import-gated",
+    "sha": "c2f84a9a9f7747e3ec9f24eca8261f122fcb8afb",
+    "mergebase": "0db2a09229800bd037f3a30c937f8b087d980d01",
+    "aggregate_matches": [
+      "7b7422f0a0e4b2a0ea7b33a16805a96c5f832599"
+    ],
+    "unmatched": [
+      "c2f84a9a9f7747e3ec9f24eca8261f122fcb8afb",
+      "aae13dde70e00ad5f8ac2ba958dfbacb3aa9108a",
+      "61fde650852350a6f45ca40a7054178c8fa1cd49"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7b7422f0a0e4b2a0ea7b33a16805a96c5f832599"
+  },
+  {
+    "ref": "origin/codex/fio-token-account-diagnostic",
+    "sha": "2f8e4478a07613833dd7438f015f9a21e3b47b0a",
+    "mergebase": "c4f5d92fe6aa56df51ec886af01ee0b4385a18b9",
+    "aggregate_matches": [
+      "5ca02abbd887152eb22be2c08607e1c7da21f003"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 5ca02abbd887152eb22be2c08607e1c7da21f003"
+  },
+  {
+    "ref": "origin/codex/identity-flow-ux-20261019",
+    "sha": "bf954d96c9261d19c9148f4e479b18ad3501f92a",
+    "mergebase": "76ae9ebeb4bdb774968285337aa2ccefa12eeefa",
+    "aggregate_matches": [
+      "7e29bdcd304d53db99fbea0fbd741019020d6586"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7e29bdcd304d53db99fbea0fbd741019020d6586"
+  },
+  {
+    "ref": "origin/codex/kis-current-rosters-20261020",
+    "sha": "036097272b60e011b907b7f9fc13c5f3f84bb02c",
+    "mergebase": "190fb0763119dfb676e16611c828331eecf01cc2",
+    "aggregate_matches": [
+      "c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1"
+    ],
+    "unmatched": [
+      "48399a2852b2880ed6e1c1941f1522438e71386e",
+      "e2fe0e095386f29a7b22bb823e28fb446693b89b"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1"
+  },
+  {
+    "ref": "origin/codex/kis-full-person-import-20261020",
+    "sha": "6d5490d92eda8054ab9b6c91de88a0cb4d34b608",
+    "mergebase": "2dc0f6b3d80ae4fe66407feb5b0c5be5b9117480",
+    "aggregate_matches": [
+      "313cb9aa5aea37267f796dd63e070dab8a3d92ca"
+    ],
+    "unmatched": [
+      "6d5490d92eda8054ab9b6c91de88a0cb4d34b608",
+      "e20f2321c65a8f19b128fa1695e97050c23961aa"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 313cb9aa5aea37267f796dd63e070dab8a3d92ca"
+  },
+  {
+    "ref": "origin/codex/kis-import-payment-history-20261020",
+    "sha": "dd9433b0e0868e9ef154125bd11d9c2c0da61d2f",
+    "mergebase": "899f1a1f8be1580106bd03f02fd70608c3054a2e",
+    "aggregate_matches": [
+      "daccea3575e2f11195b1bda916832c7d81ec635c"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals daccea3575e2f11195b1bda916832c7d81ec635c"
+  },
+  {
+    "ref": "origin/codex/kis-import-private-key-20261020",
+    "sha": "045f435f30cd6ff803f02a040204dfc2605cf367",
+    "mergebase": "a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67",
+    "aggregate_matches": [
+      "899f1a1f8be1580106bd03f02fd70608c3054a2e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 899f1a1f8be1580106bd03f02fd70608c3054a2e"
+  },
+  {
+    "ref": "origin/codex/kis-import-text-transfer-20261020",
+    "sha": "30ec6eb6aeb8a2632f65ad7e8d397cff41a26675",
+    "mergebase": "313cb9aa5aea37267f796dd63e070dab8a3d92ca",
+    "aggregate_matches": [
+      "a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67"
+  },
+  {
+    "ref": "origin/codex/kis-jersey-branding",
+    "sha": "da8ef9c77c79ebf0b0796fdf30987b6a9889e49a",
+    "mergebase": "a6f92e0f8d77b79c96344c64a63beb5681e4da86",
+    "aggregate_matches": [
+      "276a5969314c7ae5834433b9ebe65f31dd80a267"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 276a5969314c7ae5834433b9ebe65f31dd80a267"
+  },
+  {
+    "ref": "origin/codex/kis-key-access-diagnostics-20261020",
+    "sha": "48053636ab25276025e2976a4ed4175832debe7f",
+    "mergebase": "daccea3575e2f11195b1bda916832c7d81ec635c",
+    "aggregate_matches": [
+      "4711b822240db446589fd10a8b83ecc7b5ae2aa1"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4711b822240db446589fd10a8b83ecc7b5ae2aa1"
+  },
+  {
+    "ref": "origin/codex/kis-uat-hotfix-20261017",
+    "sha": "5c30beb81e9ab3236dc6e5b9bf96cde12d77b1ec",
+    "mergebase": "44a651fa5a49f6f5e8973fa938f0e66e1b1eb897",
+    "aggregate_matches": [
+      "99d6d633f049cc8d0c23289d09c20794e83cb74b"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 99d6d633f049cc8d0c23289d09c20794e83cb74b"
+  },
+  {
+    "ref": "origin/codex/kis-ux-20261017",
+    "sha": "010877b61e9b9bab71fe1226e2eddd23225df416",
+    "mergebase": "99d6d633f049cc8d0c23289d09c20794e83cb74b",
+    "aggregate_matches": [
+      "26b62e1654bba901b3647ba9f666f4e86ee97190"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 26b62e1654bba901b3647ba9f666f4e86ee97190"
+  },
+  {
+    "ref": "origin/codex/kis-web-key-storage-20261020",
+    "sha": "64db0b7b1110bf6e485e39af9dce304ef5f2a888",
+    "mergebase": "4711b822240db446589fd10a8b83ecc7b5ae2aa1",
+    "aggregate_matches": [
+      "1d62b42326f0ce93fee92dd0c208f1584d99466f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1d62b42326f0ce93fee92dd0c208f1584d99466f"
+  },
+  {
+    "ref": "origin/codex/kunratice-prod-fix-20261020",
+    "sha": "2b5e3ece3e678584450b532b5a30cf1bbeacebe1",
+    "mergebase": "6460d1087f71145a9b9eb80adb7282d83e78ea4f",
+    "aggregate_matches": [
+      "659aa7fafcb373b496d20831099bea7b4c785600"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 659aa7fafcb373b496d20831099bea7b4c785600"
+  },
+  {
+    "ref": "origin/codex/kunratice-source-fix-20261020",
+    "sha": "e1eac0784d25c6bd77c9817ecbd939ee448e9648",
+    "mergebase": "659aa7fafcb373b496d20831099bea7b4c785600",
+    "aggregate_matches": [
+      "b62b2b9ff484f35b320d5d8a093d56956c7e0954"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals b62b2b9ff484f35b320d5d8a093d56956c7e0954"
+  },
+  {
+    "ref": "origin/codex/linux-browser-acceptance-20261024",
+    "sha": "a0fcfbc8d154b8688867b8bbba1a43bc43d15e9e",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  },
+  {
+    "ref": "origin/codex/multi-child-course-20261023",
+    "sha": "7d6575ed705b70a8a65c3421aa2b098891561387",
+    "mergebase": "b3f179c185d1cdf1e1b95101adf1392a8523c4d4",
+    "aggregate_matches": [
+      "43a825e01235e66baa1601c3bc957365df011009"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 43a825e01235e66baa1601c3bc957365df011009"
+  },
+  {
+    "ref": "origin/codex/order-cash-payment",
+    "sha": "b2220153d3f6b0b9a305c5a4aa30d397d9f531da",
+    "mergebase": "2d86a5c3cc3ca10a8554beb12992c431cd5a766e",
+    "aggregate_matches": [
+      "f813264b16ffd49224bd41a908adc33d9687af88"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f813264b16ffd49224bd41a908adc33d9687af88"
+  },
+  {
+    "ref": "origin/codex/order-cash-payment-browser-verification",
+    "sha": "533a53b11c8def2198226ba746b5b06358525e0f",
+    "mergebase": "06e0a9b17217bf55c23e9507428ed12f48685b16",
+    "aggregate_matches": [
+      "e7e0d44d95f607e2dbd4d13ac7b2bcdf53b5046a"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e7e0d44d95f607e2dbd4d13ac7b2bcdf53b5046a"
+  },
+  {
+    "ref": "origin/codex/order-cash-payment-deploy-handoff",
+    "sha": "70f86cfd47937c8470120fc008f72780aca2f8a1",
+    "mergebase": "f813264b16ffd49224bd41a908adc33d9687af88",
+    "aggregate_matches": [
+      "3395a07688114056700a83b868be8930b60ec47d"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3395a07688114056700a83b868be8930b60ec47d"
+  },
+  {
+    "ref": "origin/codex/order-payment-docs-closeout-20261021",
+    "sha": "3c935b292ed125a3768719daa7be13fe65cc187b",
+    "mergebase": "06c3b5a611b91f01001489671b7c6f27bade595d",
+    "aggregate_matches": [
+      "45ada1356d950abce1313c646330f0be56bf239e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 45ada1356d950abce1313c646330f0be56bf239e"
+  },
+  {
+    "ref": "origin/codex/order-status-release-proof-20261021",
+    "sha": "3a1f2b99907fa687fb911afb981aa736f8a3fba9",
+    "mergebase": "a0e2bac12cf6818120f2dd5515499bfe5d7dc601",
+    "aggregate_matches": [
+      "06c3b5a611b91f01001489671b7c6f27bade595d"
+    ],
+    "unmatched": [
+      "7b1e0138a3f87d1c12ce84dfa7142d78fd4b15da"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 06c3b5a611b91f01001489671b7c6f27bade595d"
+  },
+  {
+    "ref": "origin/codex/order-status-system-mail-20261021",
+    "sha": "f68dc8a88353a9c39a1e5ca8bdf53fbed65933f9",
+    "mergebase": "61ed73854b57ff44a6b3bf56fb3b5401c8ae7941",
+    "aggregate_matches": [
+      "574328421fff748b48f7d744a3ce454b9b50dd1e"
+    ],
+    "unmatched": [
+      "f68dc8a88353a9c39a1e5ca8bdf53fbed65933f9",
+      "dc3b4620100968b1fc089fdf59dc4a622882aef5",
+      "f235e185c7b1a9cd7021679eceb352b12d8d944c",
+      "690fefd880c5e04d3610fe72f763055caa12bc46",
+      "55f43e688453450a5c854dbb9ea920732eae599d"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 574328421fff748b48f7d744a3ce454b9b50dd1e"
+  },
+  {
+    "ref": "origin/codex/packeta-module-audit-20261021",
+    "sha": "acb191ff83510ff8adc6dbf2066249c066e04e8a",
+    "mergebase": "886c07b2ce784ddc0beceaca1214ba640783aa8c",
+    "aggregate_matches": [
+      "b6b4251548fc6a99a4c654dc00a70589cc8d2386"
+    ],
+    "unmatched": [
+      "acb191ff83510ff8adc6dbf2066249c066e04e8a",
+      "0d488fba6e3808f6b2295d715296c4d12f1618f4",
+      "300cf993686d589bae9bebf2dc6f4c2684e2aec8"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals b6b4251548fc6a99a4c654dc00a70589cc8d2386"
+  },
+  {
+    "ref": "origin/codex/packeta-readonly-checks-20261022",
+    "sha": "7a0dd5926f071be18f60000ce8ffa47b8a78205e",
+    "mergebase": "cc9c9280f137465eb59f20523d827b5502416e20",
+    "aggregate_matches": [
+      "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 68b22bd2b3b666dbb4fb571a2731eae5b7f056d9"
+  },
+  {
+    "ref": "origin/codex/packeta-release-proof-20261022",
+    "sha": "c0d7bc048ff6b4b8168a6214865dde096de4159e",
+    "mergebase": "b6b4251548fc6a99a4c654dc00a70589cc8d2386",
+    "aggregate_matches": [
+      "735d35c282df602337d97c535fc0d896880ae747"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 735d35c282df602337d97c535fc0d896880ae747"
+  },
+  {
+    "ref": "origin/codex/parent-browser-uat-20261020",
+    "sha": "474c1ffe0e039ae1e406a7cfe091d2f0f6e5b036",
+    "mergebase": "5c6a8b3158e685b8ef5dd58dfd667f4e6b292b93",
+    "aggregate_matches": [
+      "6460d1087f71145a9b9eb80adb7282d83e78ea4f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6460d1087f71145a9b9eb80adb7282d83e78ea4f"
+  },
+  {
+    "ref": "origin/codex/parent-journey",
+    "sha": "aacb2b78676d20fc87022bf7e727ba0652d2047f",
+    "mergebase": "2b6bc7998d2fb621dc3a694a3c3d5102a3def54b",
+    "aggregate_matches": [
+      "d6b10e70230f1e5497e0a59bcfaf217594523f4c"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d6b10e70230f1e5497e0a59bcfaf217594523f4c"
+  },
+  {
+    "ref": "origin/codex/parent-journey-accessories",
+    "sha": "326cb710bd63430d010c417e09d9be69a2ef45a4",
+    "mergebase": "d6b10e70230f1e5497e0a59bcfaf217594523f4c",
+    "aggregate_matches": [
+      "fd6ccc1584beb3a3266e8147497263cb8a38044f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fd6ccc1584beb3a3266e8147497263cb8a38044f"
+  },
+  {
+    "ref": "origin/codex/parent-journey-production-report",
+    "sha": "3d2c971c139bf443d6d083e28374638ae546ccfe",
+    "mergebase": "fd6ccc1584beb3a3266e8147497263cb8a38044f",
+    "aggregate_matches": [
+      "fe4b71e04248a28ac201bb53f612992a48f1bd09"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fe4b71e04248a28ac201bb53f612992a48f1bd09"
+  },
+  {
+    "ref": "origin/codex/people-training-acceptance-20261023",
+    "sha": "d794455f1d831ac00071754fcbed75d9d6f18286",
+    "mergebase": "dc75dcc55f115a883a1c3cf621f4bc3162253cab",
+    "aggregate_matches": [
+      "ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30"
+    ],
+    "unmatched": [
+      "d794455f1d831ac00071754fcbed75d9d6f18286",
+      "cc923e3c27b6e2dfaee8cb697cd4a1debf10ae51",
+      "88c45452d23e51821011a65532a14741b5594aee"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30"
+  },
+  {
+    "ref": "origin/codex/people-training-production-20261023",
+    "sha": "7f2d5e0a6b88b082380d9ac738f6cee1c2176bd6",
+    "mergebase": "dfb2b0e5180775750f5810ed4d5c88494c0974d4",
+    "aggregate_matches": [
+      "313cd61ba5111f0d88e158b5107bb1160cb0d374"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 313cd61ba5111f0d88e158b5107bb1160cb0d374"
+  },
+  {
+    "ref": "origin/codex/people-training-production-proof-20261023",
+    "sha": "d7d6b62a0a36a44dc2cc725d873670811db2d7d6",
+    "mergebase": "313cd61ba5111f0d88e158b5107bb1160cb0d374",
+    "aggregate_matches": [
+      "20af547c03462a185b7f1e4141d8cb6074d0495a"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 20af547c03462a185b7f1e4141d8cb6074d0495a"
+  },
+  {
+    "ref": "origin/codex/people-training-release-proof-20261023",
+    "sha": "3d776e7765d02ae92e75351be41ae24e354ae29e",
+    "mergebase": "ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30",
+    "aggregate_matches": [
+      "dfb2b0e5180775750f5810ed4d5c88494c0974d4"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals dfb2b0e5180775750f5810ed4d5c88494c0974d4"
+  },
+  {
+    "ref": "origin/codex/ppl-box-checkout",
+    "sha": "d591d87c85eee28cd3bcfc5a80b0fa7bb60de1c9",
+    "mergebase": "b02aeddbf3a4d133199b2dece220dada061136cc",
+    "aggregate_matches": [
+      "0f7098cb33c31091384b58f71860368d86fd099d"
+    ],
+    "unmatched": [
+      "d591d87c85eee28cd3bcfc5a80b0fa7bb60de1c9",
+      "8a56a236b6f5ef13da70a990c5eed5d0bb1cd8cf"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0f7098cb33c31091384b58f71860368d86fd099d"
+  },
+  {
+    "ref": "origin/codex/private-storage-production-proof-20261023",
+    "sha": "af466c824bc458b8d4f00dfbdf82c2ad2559fb84",
+    "mergebase": "fb2e00c72eaeb576b79fc413000278df8174b153",
+    "aggregate_matches": [
+      "6f574033a3b06ff3280542a6d268e087c54268be"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6f574033a3b06ff3280542a6d268e087c54268be"
+  },
+  {
+    "ref": "origin/codex/private-storage-web-probe-20261023",
+    "sha": "a2f6d6709bdb7a7782d98fe7ee3638f7a76f345d",
+    "mergebase": "a159df09869d8c28755fb9ee9e635b057863e132",
+    "aggregate_matches": [
+      "fb2e00c72eaeb576b79fc413000278df8174b153"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fb2e00c72eaeb576b79fc413000278df8174b153"
+  },
+  {
+    "ref": "origin/codex/publish-shoptet-catalog",
+    "sha": "1767e8212479d899fc248b93e043c340fae4b948",
+    "mergebase": "0f7098cb33c31091384b58f71860368d86fd099d",
+    "aggregate_matches": [
+      "9de3ba9d1075be8f070950dab157771ba3ab359a"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 9de3ba9d1075be8f070950dab157771ba3ab359a"
+  },
+  {
+    "ref": "origin/codex/pumptrack-archived-pricing-20261020",
+    "sha": "976ce485fe79f94d8331c7cca2034e7acc1d3d7a",
+    "mergebase": "fbeccaf32fe6a9cd4a4fb6d77bed3287fb085283",
+    "aggregate_matches": [
+      "5c6a8b3158e685b8ef5dd58dfd667f4e6b292b93"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 5c6a8b3158e685b8ef5dd58dfd667f4e6b292b93"
+  },
+  {
+    "ref": "origin/codex/pumptrack-catalog-diagnostic-20261020",
+    "sha": "4bdf0c1c019628289e79cd9de32f2f10d484c42b",
+    "mergebase": "2439a1b4afea842546f042b6b11407a5b4bb56fa",
+    "aggregate_matches": [
+      "fefdd8114b6fa37db5191e66cb0cf99e82b7cebc"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals fefdd8114b6fa37db5191e66cb0cf99e82b7cebc"
+  },
+  {
+    "ref": "origin/codex/pumptrack-diagnostic-bootstrap-20261020",
+    "sha": "8e98204efb6bf7042275efc434abf37b0195bb2c",
+    "mergebase": "d8b69b31440797b8f7e2a5e030eea0edcad5fa72",
+    "aggregate_matches": [
+      "0db907a7dea5baef5a0531ea66a6360b313aaea9"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 0db907a7dea5baef5a0531ea66a6360b313aaea9"
+  },
+  {
+    "ref": "origin/codex/pumptrack-diagnostic-errors-20261020",
+    "sha": "4c4e2a1ed4878901cb0e6dc2981899ea2ce3f3d4",
+    "mergebase": "fefdd8114b6fa37db5191e66cb0cf99e82b7cebc",
+    "aggregate_matches": [
+      "d8b69b31440797b8f7e2a5e030eea0edcad5fa72"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d8b69b31440797b8f7e2a5e030eea0edcad5fa72"
+  },
+  {
+    "ref": "origin/codex/pumptrack-goods-pricing-20261020",
+    "sha": "895f0186c72bc84ae02a74f17002c62884561616",
+    "mergebase": "cb202b7509a5ed3451caf15d8afce65281f9aed1",
+    "aggregate_matches": [
+      "792058af53336897190a6a55ecc629dcc1e56dcd"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 792058af53336897190a6a55ecc629dcc1e56dcd"
+  },
+  {
+    "ref": "origin/codex/quick-program-registration-fix-20261021",
+    "sha": "3f19f64836e7d798b96b0fe5ceccfb6599b7ab43",
+    "mergebase": "1482cdbd888c1d1c4535769137f38a5728e17287",
+    "aggregate_matches": [
+      "e935950ed5be7181687dadba4b1fc2daf8dd5095"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e935950ed5be7181687dadba4b1fc2daf8dd5095"
+  },
+  {
+    "ref": "origin/codex/quick-registration-handoff-20261021",
+    "sha": "996aa426d8a76c9bca1d8c363b735d8fb77cf164",
+    "mergebase": "e935950ed5be7181687dadba4b1fc2daf8dd5095",
+    "aggregate_matches": [
+      "8bf4056807a8ad1eb687a13943d2f680b2f21ec6"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 8bf4056807a8ad1eb687a13943d2f680b2f21ec6"
+  },
+  {
+    "ref": "origin/codex/registration-text-titles-20261021",
+    "sha": "8c1560e13f9a632de6afe23cd005842481212104",
+    "mergebase": "3395a07688114056700a83b868be8930b60ec47d",
+    "aggregate_matches": [
+      "f5d6276838239ace6426aa8c326c01a213730a36"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f5d6276838239ace6426aa8c326c01a213730a36"
+  },
+  {
+    "ref": "origin/codex/registration-texts-admin-20261021",
+    "sha": "ac52b777d613a9fe21e2bd2aa16e8e05ab378ef9",
+    "mergebase": "8bf4056807a8ad1eb687a13943d2f680b2f21ec6",
+    "aggregate_matches": [
+      "3c64dc530fa8025854f2cc8be07e74bdc1a51aab"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3c64dc530fa8025854f2cc8be07e74bdc1a51aab"
+  },
+  {
+    "ref": "origin/codex/registration-texts-production-proof-20261021",
+    "sha": "46daf6d4f8f195e4d831ae07720c568a6ca0c9bb",
+    "mergebase": "3c64dc530fa8025854f2cc8be07e74bdc1a51aab",
+    "aggregate_matches": [
+      "2d86a5c3cc3ca10a8554beb12992c431cd5a766e"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 2d86a5c3cc3ca10a8554beb12992c431cd5a766e"
+  },
+  {
+    "ref": "origin/codex/registration-titles-proof-20261021",
+    "sha": "c1a72392083fefb5111cd3fabcd6d6406872732d",
+    "mergebase": "f5d6276838239ace6426aa8c326c01a213730a36",
+    "aggregate_matches": [
+      "06e0a9b17217bf55c23e9507428ed12f48685b16"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 06e0a9b17217bf55c23e9507428ed12f48685b16"
+  },
+  {
+    "ref": "origin/codex/remaining-admin-forms-20261020",
+    "sha": "6054711b37c000264086dc56952b80979006f5a6",
+    "mergebase": "42a66caba8c842369ef664714cc65d5b2a07b0fe",
+    "aggregate_matches": [
+      "246dee2a4df5dc3152c1a769a9af128b87a91092"
+    ],
+    "unmatched": [
+      "6054711b37c000264086dc56952b80979006f5a6",
+      "cc86c2510df00d251e1fca5f09ecfc70eeabe445"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 246dee2a4df5dc3152c1a769a9af128b87a91092"
+  },
+  {
+    "ref": "origin/codex/remaining-admin-forms-evidence-20261020",
+    "sha": "b294166fa5d76ef90456e5c1cf5a087c497477e9",
+    "mergebase": "246dee2a4df5dc3152c1a769a9af128b87a91092",
+    "aggregate_matches": [
+      "1482cdbd888c1d1c4535769137f38a5728e17287"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1482cdbd888c1d1c4535769137f38a5728e17287"
+  },
+  {
+    "ref": "origin/codex/roster-form-help-20261020",
+    "sha": "dce43d2bb0e76f9401e88ff7a1096be746a1eee8",
+    "mergebase": "7c0d5ce7e931b43018a5b1cffeda8b89fde404c5",
+    "aggregate_matches": [
+      "190fb0763119dfb676e16611c828331eecf01cc2"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 190fb0763119dfb676e16611c828331eecf01cc2"
+  },
+  {
+    "ref": "origin/codex/roster-hierarchy-20261020",
+    "sha": "c3ae67f3c7890b52802cf64df10f699ce75ef5d8",
+    "mergebase": "6a1c878922b45782490066478f1008f8ead1ccf9",
+    "aggregate_matches": [
+      "4991c91f966eb65852876fd0084dd6ad041e3b69"
+    ],
+    "unmatched": [
+      "c3ae67f3c7890b52802cf64df10f699ce75ef5d8",
+      "31536e8841f543e6156119a0acc520de12666b71"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4991c91f966eb65852876fd0084dd6ad041e3b69"
+  },
+  {
+    "ref": "origin/codex/roster-release-proof-20261020",
+    "sha": "20f48d205a260eb2cae938000d403bf5a783b4bb",
+    "mergebase": "4991c91f966eb65852876fd0084dd6ad041e3b69",
+    "aggregate_matches": [
+      "56dcd6ba7c9d4dc85d9fd5c24393be37dfdbd4ea"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 56dcd6ba7c9d4dc85d9fd5c24393be37dfdbd4ea"
+  },
+  {
+    "ref": "origin/codex/security-audit-fixes-20261024",
+    "sha": "81f5adebd082e8cee142c04e4facee56fcd2e1e4",
+    "mergebase": "f2626b86b714ffd1ec90f572170dac839857dfcc",
+    "aggregate_matches": [
+      "6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51"
+    ],
+    "unmatched": [
+      "81f5adebd082e8cee142c04e4facee56fcd2e1e4",
+      "f7d58d8dee5526f0c3a406944c38936456fd4349"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51"
+  },
+  {
+    "ref": "origin/codex/security-hardening-20261018",
+    "sha": "5d1a58d1f230b8c8e9a64959e1f7ff5c2776de18",
+    "mergebase": "26b62e1654bba901b3647ba9f666f4e86ee97190",
+    "aggregate_matches": [
+      "219995ed99ad0b693ac8443578240d5b464fe217"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 219995ed99ad0b693ac8443578240d5b464fe217"
+  },
+  {
+    "ref": "origin/codex/security-private-route-20261018",
+    "sha": "763c6357e9452b580a268fcc18712db7314e0705",
+    "mergebase": "219995ed99ad0b693ac8443578240d5b464fe217",
+    "aggregate_matches": [
+      "452b060cae7a025b39e86648d3e7f63fd1cf7881"
+    ],
+    "unmatched": [
+      "763c6357e9452b580a268fcc18712db7314e0705",
+      "073d61c580c26510c01d048cbef2460194186464"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 452b060cae7a025b39e86648d3e7f63fd1cf7881"
+  },
+  {
+    "ref": "origin/codex/shop-number-series-20261021",
+    "sha": "f6d008c1e3f5f07fae5955f28cbf3111cbaf5f6a",
+    "mergebase": "45ada1356d950abce1313c646330f0be56bf239e",
+    "aggregate_matches": [
+      "1441683ae1ae2bb9da16d8be3af62ce40f35385c"
+    ],
+    "unmatched": [
+      "f6d008c1e3f5f07fae5955f28cbf3111cbaf5f6a",
+      "ddfba65d3490fad2cfcf8efe34927a0e5075da90",
+      "35b8e504057eb2e28e237c5088cc588e7b73fea8"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 1441683ae1ae2bb9da16d8be3af62ce40f35385c"
+  },
+  {
+    "ref": "origin/codex/shop-number-series-release-proof-20261021",
+    "sha": "4913e32279ff1b630e5ed10423d76993c02b4e34",
+    "mergebase": "1441683ae1ae2bb9da16d8be3af62ce40f35385c",
+    "aggregate_matches": [
+      "886c07b2ce784ddc0beceaca1214ba640783aa8c"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 886c07b2ce784ddc0beceaca1214ba640783aa8c"
+  },
+  {
+    "ref": "origin/codex/shop-order-statuses-20261015",
+    "sha": "9faad6ef1626cd13f662228c2ea6f11c974e863a",
+    "mergebase": "c745afa5b502fa46884e09ce6308aac78d2cd9bb",
+    "aggregate_matches": [
+      "d64141fc7a72a553507846a09ea81fa87125a5b0"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d64141fc7a72a553507846a09ea81fa87125a5b0"
+  },
+  {
+    "ref": "origin/codex/shop-publication-accounting-guard-20261022",
+    "sha": "95faa736152af3478a0a4682ce5daa126252c835",
+    "mergebase": "735d35c282df602337d97c535fc0d896880ae747",
+    "aggregate_matches": [
+      "cc9c9280f137465eb59f20523d827b5502416e20"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals cc9c9280f137465eb59f20523d827b5502416e20"
+  },
+  {
+    "ref": "origin/codex/shop-publication-release-proof-20261022",
+    "sha": "d2552858df24f78454e1092d1699aef48c37a5c4",
+    "mergebase": "68b22bd2b3b666dbb4fb571a2731eae5b7f056d9",
+    "aggregate_matches": [
+      "3fdd1e16a6de7ec9323b27123ae9dc5b56dae16d"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3fdd1e16a6de7ec9323b27123ae9dc5b56dae16d"
+  },
+  {
+    "ref": "origin/codex/shoptet-public-catalog-hotfix",
+    "sha": "c2c8b32e85ef03fbdbd90b687cf8470f6accb17a",
+    "mergebase": "9de3ba9d1075be8f070950dab157771ba3ab359a",
+    "aggregate_matches": [
+      "7fbaf9acd14d055aa81b318bdc5593a570fbbde7"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7fbaf9acd14d055aa81b318bdc5593a570fbbde7"
+  },
+  {
+    "ref": "origin/codex/shoptet-storefront-performance",
+    "sha": "f7baa69b40d0a31294b68aeaf97d06087ceaf982",
+    "mergebase": "7fbaf9acd14d055aa81b318bdc5593a570fbbde7",
+    "aggregate_matches": [
+      "2b6bc7998d2fb621dc3a694a3c3d5102a3def54b"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 2b6bc7998d2fb621dc3a694a3c3d5102a3def54b"
+  },
+  {
+    "ref": "origin/codex/sibling-production-proof-20261023",
+    "sha": "f16e757e5263b09fc07f529de94941b1329165ea",
+    "mergebase": "43a825e01235e66baa1601c3bc957365df011009",
+    "aggregate_matches": [
+      "4d7aacf84d75639ccf0c202c2b05b4d824d44347"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 4d7aacf84d75639ccf0c202c2b05b4d824d44347"
+  },
+  {
+    "ref": "origin/codex/stock-followup-20261024",
+    "sha": "802ba543b6b3da04b24feb76f48fbb0181f3d6bf",
+    "mergebase": "0f8eddff8bc1ceba00624118304408b82907d7aa",
+    "aggregate_matches": [
+      "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93"
+    ],
+    "unmatched": [
+      "802ba543b6b3da04b24feb76f48fbb0181f3d6bf",
+      "b1dbbd6f9ae18606ffa580cb9a90819bf8683675"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 065ed2a6fb797e21928d0eb5d1d5b84af0c04d93"
+  },
+  {
+    "ref": "origin/codex/stock-production-audit-20261024",
+    "sha": "fc366db1aef7e1908d8319ac6b0a492b178e5a29",
+    "mergebase": "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93",
+    "aggregate_matches": [
+      "283c46db7b5d31dda26ae2faef63da944715aedc"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 283c46db7b5d31dda26ae2faef63da944715aedc"
+  },
+  {
+    "ref": "origin/codex/stock-production-proof-20261024",
+    "sha": "f4a25f52e98b89c306fe06b3b68d6f1e4a9efa07",
+    "mergebase": "283c46db7b5d31dda26ae2faef63da944715aedc",
+    "aggregate_matches": [
+      "f2626b86b714ffd1ec90f572170dac839857dfcc"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals f2626b86b714ffd1ec90f572170dac839857dfcc"
+  },
+  {
+    "ref": "origin/codex/tocnaci-prod-fix-20261020",
+    "sha": "09f93361e37c750208c8424e26eb7dde86e648e3",
+    "mergebase": "b62b2b9ff484f35b320d5d8a093d56956c7e0954",
+    "aggregate_matches": [
+      "5bff9e05da239e324fd9c7da23b770c2b7f73b83"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 5bff9e05da239e324fd9c7da23b770c2b7f73b83"
+  },
+  {
+    "ref": "origin/codex/training-rsvp-notes-calendar-20261014",
+    "sha": "c69c6c5249253f87aab9bf6dabc9a701fef783b4",
+    "mergebase": "2905c985a88bca2890df917d877eac8b9a7f6420",
+    "aggregate_matches": [
+      "c745afa5b502fa46884e09ce6308aac78d2cd9bb"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals c745afa5b502fa46884e09ce6308aac78d2cd9bb"
+  },
+  {
+    "ref": "origin/codex/uat-capacity-search-ux",
+    "sha": "b95f6e43319d8e3ac6ba3e250c8faa063de3a680",
+    "mergebase": "d041eec17b672843ef3e3f74d839da3a9a0d98fb",
+    "aggregate_matches": [
+      "42cbe6bba4b7bffd3d44410d5808fb99e5aa6d7f"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 42cbe6bba4b7bffd3d44410d5808fb99e5aa6d7f"
+  },
+  {
+    "ref": "origin/codex/uat-fixes-20261016",
+    "sha": "12585e981c55ae4b69fdc7aeb45c4f50a4ac345f",
+    "mergebase": "37623d3d53e3ea7db8d7e9d2cc82b2039f6a01ae",
+    "aggregate_matches": [
+      "44a651fa5a49f6f5e8973fa938f0e66e1b1eb897"
+    ],
+    "unmatched": [
+      "12585e981c55ae4b69fdc7aeb45c4f50a4ac345f",
+      "646b26b08b677ad317772355ebd85606600b3486"
+    ],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 44a651fa5a49f6f5e8973fa938f0e66e1b1eb897"
+  },
+  {
+    "ref": "origin/codex/uat-makeup-readiness-20261016",
+    "sha": "c1e096e1d997686954b1ee0be9faf95867746add",
+    "mergebase": "276a5969314c7ae5834433b9ebe65f31dd80a267",
+    "aggregate_matches": [
+      "3204d66b1ee6e025bd513ed3aa12fa4ec220e4c2"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 3204d66b1ee6e025bd513ed3aa12fa4ec220e4c2"
+  },
+  {
+    "ref": "origin/codex/uat-order-cancel-20261020",
+    "sha": "264a34f7ac5dc99c474c8c44d90e2b049296d16e",
+    "mergebase": "5ca02abbd887152eb22be2c08607e1c7da21f003",
+    "aggregate_matches": [
+      "7575a3e947a5e27fafc3a101fe39b92466db51c5"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 7575a3e947a5e27fafc3a101fe39b92466db51c5"
+  },
+  {
+    "ref": "origin/codex/uat-order-guard-diagnostics-20261020",
+    "sha": "86d4aa7da12ecdcb684d21706c45c67482444587",
+    "mergebase": "1b2d92e8c0dc9e27e029bf2083f4d97b1610218e",
+    "aggregate_matches": [
+      "e04bf9b62636976e03b4dd72b97855e3f1f51d50"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals e04bf9b62636976e03b4dd72b97855e3f1f51d50"
+  },
+  {
+    "ref": "origin/codex/uat-paid-event-reopen",
+    "sha": "659d43b3f1a57ec940d9bd36bb1e84ff867a38fb",
+    "mergebase": "bbc3dbf33c5cec175555c389202b50331d1fc1fd",
+    "aggregate_matches": [
+      "d041eec17b672843ef3e3f74d839da3a9a0d98fb"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals d041eec17b672843ef3e3f74d839da3a9a0d98fb"
+  },
+  {
+    "ref": "origin/codex/uat-readiness-diagnostics",
+    "sha": "e6ad23b61744476712beea11f83634dc17b2579c",
+    "mergebase": "90067fa6434afddc9483bf9d9ace589df2cf0bbf",
+    "aggregate_matches": [
+      "bbc3dbf33c5cec175555c389202b50331d1fc1fd"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals bbc3dbf33c5cec175555c389202b50331d1fc1fd"
+  },
+  {
+    "ref": "origin/codex/unified-admin-production-evidence-20261020",
+    "sha": "3b265059a1ec882a2d952f128b4ebd8c26ed6882",
+    "mergebase": "175f92c7a59294acff7e15fe09cbed258707fa2e",
+    "aggregate_matches": [
+      "42a66caba8c842369ef664714cc65d5b2a07b0fe"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 42a66caba8c842369ef664714cc65d5b2a07b0fe"
+  },
+  {
+    "ref": "origin/codex/unified-admin-shop-20261020",
+    "sha": "8cb1707aa7f6a1fbc06c262b395e7970cc17c83a",
+    "mergebase": "56dcd6ba7c9d4dc85d9fd5c24393be37dfdbd4ea",
+    "aggregate_matches": [
+      "872ac1a471e4aece6963345eef3aa9ed4d8c4994"
+    ],
+    "unmatched": [],
+    "classification": "exact-aggregate-squash",
+    "evidence": "Stable aggregate patch equals 872ac1a471e4aece6963345eef3aa9ed4d8c4994"
+  },
+  {
+    "ref": "origin/main",
+    "sha": "6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51",
+    "classification": "ancestry-contained",
+    "evidence": "Ancestor of origin/main6bf57d6f or accepted club420e78a0"
+  }
+]

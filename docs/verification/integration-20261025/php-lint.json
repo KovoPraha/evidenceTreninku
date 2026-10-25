@@ -1,0 +1,381 @@
+{
+  "status": "PASS",
+  "files": 75,
+  "results": [
+    {
+      "path": "booking/sportovni_prehled.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "club_calendar.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "club_communication_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "club_cutover_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "club_event_work_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "club_expenses_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "club_rewards_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "family_weekly_summaries_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "hromadne_odmeny.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/athlete_reward_guard.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/club_administration.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/club_administration_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/club_communication.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/club_cutover.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/club_event_work.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/club_transition_map.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/club_transition_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/family_tasks.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/family_tasks_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/medical_activity.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/medical_clearance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/migration_runner.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/operational_cases.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/operational_cases_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/payment_variable_symbol_schema.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/person_lifecycle.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/person_workflow.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/person_workflow_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/roster_message.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/season_preparation.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/sportovec_editor_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/sports_activity_form.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/sports_activity_form_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/staff_agenda_lists.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/staff_record_list.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/staff_workspaces.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/training_day.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "includes/training_day_view.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "medical_activity_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "medical_clearance_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "migrations/20261024200000_payment_variable_symbol_index_repair.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "person_lifecycle_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "planovac.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "prehled_kreditu.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "roster_messages_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "season_preparation_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "sports_activity_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "sprava_sportovec_obdobi.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Integration/AuthSecurityMigrationTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Integration/ClubAdministrationTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Integration/DailyWorkReadModelsTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Integration/OperationalCasesTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Integration/PersonLifeDocumentsTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Integration/SeasonOperationsTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/AccountingExportSnapshotMariaDbTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/ClubAdministrationHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/ClubFoundationHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/ClubRewardsHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/DailyCoachRegistrarHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/FinanceB1HttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/MakeupJourneyHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/MemberAdmissionHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/PaymentVariableSymbolMigrationMariaDb.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/PersonLifeDocumentsHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/SeasonOperationsHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Support/ShopInventoryHttpAcceptance.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Unit/FamilyCalendarWiringTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Unit/GlobalFunctionAvailabilityTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Unit/PaymentVariableSymbolSchemaTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "tests/Unit/StaffWorkspaceRegistryTest.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "training_closure_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "training_rsvps_admin.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "uctenky/formular.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "uctenky/uloz.php",
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "path": "ulozit_trenink.php",
+      "exit_code": 0,
+      "error": null
+    }
+  ]
+}

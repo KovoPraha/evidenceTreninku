@@ -95,6 +95,11 @@ function medicalClearanceDecide(PDO $pdo,int $id,int $revision,string $action,st
 function medicalClearanceStatus(PDO $pdo,int $person,string $purpose,string $on):array {
  medicalClearanceDate($on);
  $q=$pdo->prepare('SELECT r.* FROM medical_clearance_records r JOIN medical_clearance_watches w ON w.id=r.watch_id WHERE w.sportovec_id=? AND w.purpose=? ORDER BY r.id DESC');$q->execute([$person,$purpose]);$rows=$q->fetchAll(PDO::FETCH_ASSOC);
+ return medicalClearanceStatusFromRecords($rows,$on);
+}
+/** Same evaluation for the person detail and the filtered list, including replacement chains. */
+function medicalClearanceStatusFromRecords(array $rows,string $on):array {
+ medicalClearanceDate($on);
  $state='missing';$until=null;
  $byId=[];foreach($rows as$r)$byId[(int)$r['id']]=$r;
  $hasVerified=false;
@@ -115,6 +120,20 @@ function medicalClearanceStatus(PDO $pdo,int $person,string $purpose,string $on)
  // Revoking the current evidence never reactivates an older superseded scan.
  if(!$hasVerified&&$rows)$state=match($rows[0]['state']){'pending'=>'pending','revoked'=>'revoked',default=>'missing'};
  return['status'=>$state,'valid_until'=>$until,'on'=>$on,'next_step'=>$state==='valid'?'Podklad je k vybranému dni platný.':'Kontaktujte registráře k doložení nebo ověření podkladu. O účasti rozhodne pověřený pracovník.'];
+}
+function medicalClearanceList(PDO $pdo,array $input):array {
+ require_once __DIR__.'/staff_record_list.php';
+ $f=staffListFilters($input,'medical_',['missing'=>'Nedoloženo','pending'=>'Čeká na ověření','valid'=>'Platné','expired'=>'Platnost skončila','not_yet_valid'=>'Dosud neplatné','revoked'=>'Odvoláno']);
+ $params=[];$where=staffListWhere($f,['s.jmeno','s.prijmeni','w.purpose','w.id'],'w.next_review_on',null,$params);
+ $person=max(0,(int)staffListText($input,'person_id'));if($person){$where.=' AND w.sportovec_id=?';$params[]=$person;}
+ $base='FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id WHERE '.$where;
+ $q=$pdo->prepare('SELECT w.*,s.jmeno,s.prijmeni '.$base.' ORDER BY w.next_review_on,w.id');$q->execute($params);$rows=$q->fetchAll(PDO::FETCH_ASSOC);
+ // Batch-load only status metadata; no document content or file paths enter this list.
+ $q=$pdo->prepare('SELECT r.id,r.watch_id,r.state,r.issued_on,r.valid_until,r.replaces_id FROM medical_clearance_records r JOIN medical_clearance_watches w ON w.id=r.watch_id JOIN sportovci s ON s.id=w.sportovec_id WHERE '.$where.' ORDER BY r.id DESC');$q->execute($params);$records=[];
+ foreach($q->fetchAll(PDO::FETCH_ASSOC) as $r)$records[(int)$r['watch_id']][]=$r;
+ $filtered=[];$on=date('Y-m-d');foreach($rows as $row){$row['evaluated_status']=medicalClearanceStatusFromRecords($records[(int)$row['id']]??[],$on);if($f['state']===''||$f['state']===$row['evaluated_status']['status'])$filtered[]=$row;}
+ $total=count($filtered);$pages=max(1,(int)ceil($total/25));$page=min($f['page'],$pages);
+ return ['filters'=>$f,'rows'=>array_slice($filtered,($page-1)*25,25),'total'=>$total,'page'=>$page,'pages'=>$pages];
 }
 function medicalClearanceView(PDO $pdo,int $person,string $on,?int $account=null):array {
  if($account!==null){if(!familyPortalCanViewPerson($pdo,$account,$person))throw new DomainException('K osobě nemáte platné rodinné oprávnění.');}

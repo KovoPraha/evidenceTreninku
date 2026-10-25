@@ -1,0 +1,262 @@
+[
+  {
+    "script": "FinanceB1HttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:02:58.9641316+01:00",
+    "seconds": 5.6,
+    "log": "http/FinanceB1HttpAcceptance.log",
+    "checks": 58,
+    "source_sha256": "f484ff060650ae42618650b187754962d2c599eea85c6510727315a7523396c0"
+  },
+  {
+    "script": "FinanceB1RouterHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:04.7428123+01:00",
+    "seconds": 0.63,
+    "log": "http/FinanceB1RouterHttpAcceptance.log",
+    "checks": 14,
+    "source_sha256": "09307be88c099baf5e445cd2973e7e76d7783f0bede4c34b3136cc58a6a2f96f"
+  },
+  {
+    "script": "ClubFoundationHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:05.3862654+01:00",
+    "seconds": 28.11,
+    "log": "http/ClubFoundationHttpAcceptance.log",
+    "checks": 110,
+    "source_sha256": "1ae515987f4a5bb3aa3b0fa964556e5e2cdf1a88c81a8c65eed741e586e4b0ad"
+  },
+  {
+    "script": "MemberAdmissionHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:33.5051716+01:00",
+    "seconds": 21.56,
+    "log": "http/MemberAdmissionHttpAcceptance.log",
+    "checks": 30,
+    "source_sha256": "6c3fc18b2658490c4cf469bb2b5c6af3cf906e7bc41c30969f0aac1c79f2b800"
+  },
+  {
+    "script": "DailyCoachRegistrarHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:55.0729815+01:00",
+    "seconds": 6.08,
+    "log": "http/DailyCoachRegistrarHttpAcceptance.log",
+    "checks": 32,
+    "source_sha256": "5142c4963ad159f3735c79f4cad7c5669529043cead43c1ece243378814f017d"
+  },
+  {
+    "script": "PersonLifeDocumentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:01.1562029+01:00",
+    "seconds": 6.67,
+    "log": "http/PersonLifeDocumentsHttpAcceptance.log",
+    "checks": 30,
+    "source_sha256": "2593d115729a56ac19535e961fff6862185e61b1e3a14c1e4e267042b982ad89"
+  },
+  {
+    "script": "TrainingClosureHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:07.8258556+01:00",
+    "seconds": 2.38,
+    "log": "http/TrainingClosureHttpAcceptance.log",
+    "checks": 25,
+    "source_sha256": "b1e058522761e3faf31e3d4b07c1926cd84e83a7a47c9f3e0ebeb5383ee36297"
+  },
+  {
+    "script": "MakeupJourneyHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:10.2161138+01:00",
+    "seconds": 2.9,
+    "log": "http/MakeupJourneyHttpAcceptance.log",
+    "checks": 23,
+    "source_sha256": "0e499765b388e125cb00f467893b563f5d2d3548158bad45c23d08c75e9e8548"
+  },
+  {
+    "script": "SportsActivityHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:13.1301982+01:00",
+    "seconds": 4.91,
+    "log": "http/SportsActivityHttpAcceptance.log",
+    "checks": 23,
+    "source_sha256": "d4adc04ffc1b1ed9c1fa22c2d6faeb2b0a7e94bc7c91f60751faf107ee611820"
+  },
+  {
+    "script": "MedicalClearanceHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:18.0498464+01:00",
+    "seconds": 3.71,
+    "log": "http/MedicalClearanceHttpAcceptance.log",
+    "checks": 22,
+    "source_sha256": "0390a2ae83c87efcee64550fabf349fe778b773a45cbebdb74208e56b381add0"
+  },
+  {
+    "script": "ClubAdministrationHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:21.7609462+01:00",
+    "seconds": 7.16,
+    "log": "http/ClubAdministrationHttpAcceptance.log",
+    "checks": 49,
+    "source_sha256": "ccea326020fa724410cdc4b7ac50b1c568000d7a9fa258d90bd60bdc5811bcba"
+  },
+  {
+    "script": "ClubExpensesHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:28.9269236+01:00",
+    "seconds": 3.9,
+    "log": "http/ClubExpensesHttpAcceptance.log",
+    "checks": 47,
+    "source_sha256": "7becf35a903aa16a7ce65d84cbbab41cf31c7249c83f8a678080a5bf6dee82ba"
+  },
+  {
+    "script": "ClubRewardsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:32.8326887+01:00",
+    "seconds": 2.94,
+    "log": "http/ClubRewardsHttpAcceptance.log",
+    "checks": 29,
+    "source_sha256": "8a55ecf31e91f00fe4bbbf2dcff5e8c8af9e83635ac4dbdd6117b07d1a04d251"
+  },
+  {
+    "script": "SeasonOperationsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:35.7771170+01:00",
+    "seconds": 4.61,
+    "log": "http/SeasonOperationsHttpAcceptance.log",
+    "checks": 41,
+    "source_sha256": "c04e5a5569bb4b5c683fa11ea7c5a6ba5bccf2dfd93b7427ce02ff7fb2b5c062"
+  },
+  {
+    "script": "ShopInventoryHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:40.3899533+01:00",
+    "seconds": 3.44,
+    "log": "http/ShopInventoryHttpAcceptance.log",
+    "checks": 21,
+    "source_sha256": "7b577b6bd20fb6c6d5c8c2d374e2ab27f0f95beada0b25b110069c00676e76c6"
+  },
+  {
+    "script": "ShopFulfillmentHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:43.8405945+01:00",
+    "seconds": 6.52,
+    "log": "http/ShopFulfillmentHttpAcceptance.log",
+    "checks": 33,
+    "source_sha256": "1e7cbb601c003e40da8fbd2032983567ce91679136c28945e1ca2f5df61ea57b"
+  },
+  {
+    "script": "ShopReturnsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:50.3607152+01:00",
+    "seconds": 5.45,
+    "log": "http/ShopReturnsHttpAcceptance.log",
+    "checks": 33,
+    "source_sha256": "5fa60f755ddbe0720612c4214ad73b6ff91765fa9da2b21a3ed4d69704779f80"
+  },
+  {
+    "script": "AccountingLedgerHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:55.8160666+01:00",
+    "seconds": 2.65,
+    "log": "http/AccountingLedgerHttpAcceptance.log",
+    "checks": 17,
+    "source_sha256": "68fd6ccb278854f0b7d8189e3ec74d35b747208557ecbc36f07713dcfbdf58f3"
+  },
+  {
+    "script": "AccountingDocumentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:58.4745126+01:00",
+    "seconds": 3.38,
+    "log": "http/AccountingDocumentsHttpAcceptance.log",
+    "checks": 19,
+    "source_sha256": "5fa07c094a65dedcab3b1b4c4393e9bbb549b84a55abd2c59c0c554b2ccb0688"
+  },
+  {
+    "script": "AccountingAdjustmentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:01.8633734+01:00",
+    "seconds": 2.57,
+    "log": "http/AccountingAdjustmentsHttpAcceptance.log",
+    "checks": 18,
+    "source_sha256": "ddf250e978d72cdd027c3cb1db39b1ff58e101498c293ed13524b43a7a1ebb1e"
+  },
+  {
+    "script": "AccountingStockHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:04.4408347+01:00",
+    "seconds": 5.39,
+    "log": "http/AccountingStockHttpAcceptance.log",
+    "checks": 16,
+    "source_sha256": "63d25fcb148ca1e3507c65bbb5203d00d627fdaa866ee7d257f5fdf605cb078f"
+  },
+  {
+    "script": "AccountingExportHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:09.8406001+01:00",
+    "seconds": 7.6,
+    "log": "http/AccountingExportHttpAcceptance.log",
+    "checks": 31,
+    "source_sha256": "e54d98bda06b411c849922b76e541c936256e8ddfd66dc39478d15ea14df7d6f"
+  },
+  {
+    "script": "ClubAccountingHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:17.4514530+01:00",
+    "seconds": 5.48,
+    "log": "http/ClubAccountingHttpAcceptance.log",
+    "checks": 34,
+    "source_sha256": "35d9039a00c69f58edd9176465deaac563903603144caa442d71c3caf7f981a9"
+  },
+  {
+    "script": "ClubCutoverHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:06:09.0998005+01:00",
+    "seconds": 5.1,
+    "log": "http/ClubCutoverHttpAcceptance.log",
+    "checks": 26,
+    "source_sha256": "66945c771ba3842077f847a3a8482100cd8be4f21dbf55799cdb9ffddbd40ba1"
+  },
+  {
+    "script": "WeeklyReportPrivacyHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:39.1638629+01:00",
+    "seconds": 5.29,
+    "log": "http/WeeklyReportPrivacyHttpAcceptance.log",
+    "checks": 11,
+    "source_sha256": "8f6160affb57bd13923d33d84dbdfb8bc8d30ce70cb8ba433fd9c28ea858f77c"
+  },
+  {
+    "script": "ClubOperatingMonth",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:44.4551936+01:00",
+    "seconds": 4.22,
+    "log": "http/ClubOperatingMonth.log",
+    "checks": 13,
+    "source_sha256": "35e0d9517a24e9031dfb1688453db28167a87b3d12776c58d4cfef212120bd3d"
+  }
+]

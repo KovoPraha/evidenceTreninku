@@ -1,0 +1,301 @@
+- navigation "Klubový portál":
+  - link "KOVO Praha – úvodní stránka":
+    - /url: /index.php
+  - list:
+    - link "Domů":
+      - /url: /index.php
+    - link "Kroužky":
+      - /url: /booking/cyklisticke_krouzky.php
+    - link "E-shop":
+      - /url: /booking/eshop.php
+    - link "Tréninky":
+      - /url: /booking/treninky.php
+    - link "Akce a kalendář":
+      - /url: /booking/klubovy_kalendar.php
+    - link "Individuální lekce":
+      - /url: /booking/kalendar.php
+    - link "Velodrom":
+      - /url: /booking/velodrom.php
+  - link " Můj přehled":
+    - /url: /booking/sportovni_prehled.php
+    - generic: 
+    - text: Můj přehled
+  - button " Můj účet":
+    - generic: 
+    - text: Můj účet
+  - link " Evidence":
+    - /url: /index.php
+    - generic: 
+    - text: Evidence
+  - button "Odhlásit"
+- main:
+  - heading " Sportovní přehled" [level=1]:
+    - generic: 
+    - text: Sportovní přehled
+  - paragraph: Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.
+  - region "Co zbývá vyřídit":
+    - heading "Co zbývá vyřídit" [level=2]
+    - paragraph: Podklady a odpovědi k tréninkům v příštích 30 dnech. Osobní vyřízení s oddílem zůstává možné.
+    - heading "Na vás / domluvit s oddílem (0)" [level=3]
+    - paragraph: V dostupných údajích není další úkol této skupiny.
+    - heading "Čeká na vyřízení klubem (0)" [level=3]
+    - paragraph: V dostupných údajích není další úkol této skupiny.
+  - paragraph: Přehled obsahuje dostupná převedená data. Chybějící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte trenérovi.
+  - generic "Souhrn sportovního přehledu":
+    - link "Čeká na odpověď v zobrazeném měsíci 0 tréninků":
+      - /url: "#potvrzeni-treninku"
+      - generic: Čeká na odpověď v zobrazeném měsíci
+      - strong: "0"
+      - generic: tréninků
+    - link "Příštích 30 dní 0 položek programu":
+      - /url: "#rodinny-program"
+      - generic: Příštích 30 dní
+      - strong: "0"
+      - generic: položek programu
+    - link "Propojené profily 2 schválené profily":
+      - /url: "#profily"
+      - generic: Propojené profily
+      - strong: "2"
+      - generic: schválené profily
+    - link "K úhradě 0 členských předpisů":
+      - /url: "#profily"
+      - generic: K úhradě
+      - strong: "0"
+      - generic: členských předpisů
+  - navigation "Obsah sportovního přehledu":
+    - link "Odpovědi na tréninky":
+      - /url: "#potvrzeni-treninku"
+    - link "Program":
+      - /url: "#rodinny-program"
+    - link "Profily a platby":
+      - /url: "#profily"
+    - link "Nastavení a přehledy":
+      - /url: "#nastaveni"
+  - strong:
+    - generic: 
+    - text: Potvrzení účasti na trénincích
+  - generic: 0 položek
+  - paragraph: Zobrazují se tréninky schválených profilů. U konkrétního tréninku můžete potvrdit účast a napsat trenérovi. Docházku po tréninku zaznamenává trenér.
+  - paragraph:
+    - link "Náhradní lekce kroužků a moje nároky":
+      - /url: nahrady.php
+  - paragraph: V tomto měsíci nemáte žádný plánovaný trénink.
+  - strong:
+    - generic: 
+    - text: Co nás čeká v příštích 30 dnech
+  - generic: 0 položek
+  - paragraph: Tréninky, přihlášené akce, rezervace a splatnosti všech vašich propojených profilů na jednom místě.
+  - paragraph: V nejbližších 30 dnech není evidovaná žádná položka.
+  - heading "Nastavení a podrobné přehledy" [level=2]
+  - generic " Týdenní souhrn vypnutý 24. 10.–30. 10. 2026":
+    - strong:
+      - generic: 
+      - text: Týdenní souhrn
+    - generic: vypnutý
+    - generic: 24. 10.–30. 10. 2026
+  - generic " Roční přehled uhrazených klubových služeb Rok 2026":
+    - strong:
+      - generic: 
+      - text: Roční přehled uhrazených klubových služeb
+    - generic: Rok 2026
+  - generic " Rodinný kalendář v telefonu nenastavený":
+    - strong:
+      - generic: 
+      - text: Rodinný kalendář v telefonu
+    - generic: nenastavený
+  - generic " Připomínky klubových plateb vypnuté":
+    - strong:
+      - generic: 
+      - text: Připomínky klubových plateb
+    - generic: vypnuté
+  - option "Vypnuté" [selected]
+  - option "Zapnuté"
+  - option "3 dní"
+  - option "7 dní" [selected]
+  - option "14 dní"
+  - 'generic "Bára TEST LOCALHOST SOUROZENCI23 Čekající Rok narození: 2016 Rozbalit detail rodič / zástupce"':
+    - strong: Bára TEST LOCALHOST SOUROZENCI23
+    - generic "Evidovaný stav členství; účet, účast a úhrady se posuzují samostatně.": Čekající
+    - generic: "Rok narození: 2016"
+    - generic: Rozbalit detail
+    - generic: rodič / zástupce
+  - paragraph:
+    - strong: "Ověřená činnost letos:"
+    - text: 0 tréninků · 0 minut · 0 závodních startů. Započtena je potvrzená skutečná účast.
+  - strong: "Saldo klubových služeb:"
+  - text: 0,00 Kč k úhradě · po lhůtě 0,00 Kč
+  - generic: Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k 24. 10. 2026 22:17.
+  - strong: Náhradní lekce kroužků
+  - generic: Omluvené, čekají na potvrzení 0
+  - generic: K využití 0
+  - generic: Převedené uzamčené 0
+  - generic: Rezervované 0
+  - link "Zobrazit náhrady":
+    - /url: nahrady.php?person_id=93
+  - heading "Soupisky" [level=2]
+  - table:
+    - rowgroup:
+      - row "Tým Sezóna Platnost Stav":
+        - columnheader "Tým"
+        - columnheader "Sezóna"
+        - columnheader "Platnost"
+        - columnheader "Stav"
+    - rowgroup:
+      - row "LOCALHOST NEPLATIT – kurz pro sourozence vše vše Bez sezóny 1. 11. 2026 – 31. 7. 2027 Aktivní":
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence vše vše":
+          - strong: LOCALHOST NEPLATIT – kurz pro sourozence
+          - generic: vše vše
+        - cell "Bez sezóny"
+        - cell "1. 11. 2026 – 31. 7. 2027"
+        - cell "Aktivní":
+          - generic: Aktivní
+  - heading "Klubové události" [level=2]
+  - paragraph: Žádná přihláška na klubovou událost.
+  - heading "Členské předpisy" [level=2]
+  - paragraph: Žádný členský předpis.
+  - heading "Docházka na tréninky Všechny tréninky ze soupisek" [level=2]:
+    - text: Docházka na tréninky
+    - link "Všechny tréninky ze soupisek":
+      - /url: soupiskove_treninky.php?sportovec_id=93
+  - paragraph: Žádná zaznamenaná účast.
+  - 'generic "Anna TEST LOCALHOST UAT-BROWSER23 Aktivní Rok narození: 2014 Rozbalit detail rodič / zástupce" [active]':
+    - strong: Anna TEST LOCALHOST UAT-BROWSER23
+    - generic "Evidovaný stav členství; účet, účast a úhrady se posuzují samostatně.": Aktivní
+    - generic: "Rok narození: 2014"
+    - generic: Rozbalit detail
+    - generic: rodič / zástupce
+  - paragraph:
+    - strong: "Ověřená činnost letos:"
+    - text: 3 tréninků · 210 minut · 0 závodních startů. Započtena je potvrzená skutečná účast.
+  - strong: "Saldo klubových služeb:"
+  - text: 0,00 Kč k úhradě · po lhůtě 0,00 Kč
+  - generic: Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k 24. 10. 2026 22:17.
+  - strong: Náhradní lekce kroužků
+  - generic: Omluvené, čekají na potvrzení 0
+  - generic: K využití 0
+  - generic: Převedené uzamčené 0
+  - generic: Rezervované 0
+  - link "Zobrazit náhrady":
+    - /url: nahrady.php?person_id=91
+  - heading "Soupisky" [level=2]
+  - table:
+    - rowgroup:
+      - row "Tým Sezóna Platnost Stav":
+        - columnheader "Tým"
+        - columnheader "Sezóna"
+        - columnheader "Platnost"
+        - columnheader "Stav"
+    - rowgroup:
+      - row "LOCALHOST NEPLATIT R25 1eb83e8d71 dráha vše LOCALHOST NEPLATIT R25 1eb83e8d71 1. 10. 2026 – 23. 1. 2027 Aktivní":
+        - cell "LOCALHOST NEPLATIT R25 1eb83e8d71 dráha vše":
+          - strong: LOCALHOST NEPLATIT R25 1eb83e8d71
+          - generic: dráha vše
+        - cell "LOCALHOST NEPLATIT R25 1eb83e8d71"
+        - cell "1. 10. 2026 – 23. 1. 2027"
+        - cell "Aktivní":
+          - generic: Aktivní
+      - row "LOCALHOST NEPLATIT – kurz pro sourozence vše vše Bez sezóny 1. 11. 2026 – 31. 7. 2027 Aktivní":
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence vše vše":
+          - strong: LOCALHOST NEPLATIT – kurz pro sourozence
+          - generic: vše vše
+        - cell "Bez sezóny"
+        - cell "1. 11. 2026 – 31. 7. 2027"
+        - cell "Aktivní":
+          - generic: Aktivní
+      - row "LOCALHOST NEPLATIT UAT-BROWSER23 kroužek vše vše Bez sezóny 16. 10. 2026 – 22. 12. 2026 Aktivní":
+        - cell "LOCALHOST NEPLATIT UAT-BROWSER23 kroužek vše vše":
+          - strong: LOCALHOST NEPLATIT UAT-BROWSER23 kroužek
+          - generic: vše vše
+        - cell "Bez sezóny"
+        - cell "16. 10. 2026 – 22. 12. 2026"
+        - cell "Aktivní":
+          - generic: Aktivní
+  - heading "Klubové události" [level=2]
+  - paragraph: Žádná přihláška na klubovou událost.
+  - heading "Členské předpisy" [level=2]
+  - paragraph: Žádný členský předpis.
+  - heading "Docházka na tréninky Všechny tréninky ze soupisek" [level=2]:
+    - text: Docházka na tréninky
+    - link "Všechny tréninky ze soupisek":
+      - /url: soupiskove_treninky.php?sportovec_id=91
+  - table:
+    - rowgroup:
+      - row "Datum Náplň Kategorie Délka":
+        - columnheader "Datum"
+        - columnheader "Náplň"
+        - columnheader "Kategorie"
+        - columnheader "Délka"
+    - rowgroup:
+      - 'row "24. 10. 2026 LOCALHOST NEPLATIT – přejímka E: technika na kole, 75 minut. Účast potvrzena mtb 1.25 h"':
+        - cell "24. 10. 2026"
+        - 'cell "LOCALHOST NEPLATIT – přejímka E: technika na kole, 75 minut. Účast potvrzena"':
+          - text: "LOCALHOST NEPLATIT – přejímka E: technika na kole, 75 minut."
+          - generic: Účast potvrzena
+        - cell "mtb"
+        - cell "1.25 h"
+      - row "23. 10. 2026 LOCALHOST NEPLATIT UAT-OSOBY23 návrat Zpět po opravě Historický záznam — účast zatím neověřena cviceni 0.50 h":
+        - cell "23. 10. 2026"
+        - cell "LOCALHOST NEPLATIT UAT-OSOBY23 návrat Zpět po opravě Historický záznam — účast zatím neověřena":
+          - text: LOCALHOST NEPLATIT UAT-OSOBY23 návrat Zpět po opravě
+          - generic: Historický záznam — účast zatím neověřena
+        - cell "cviceni"
+        - cell "0.50 h"
+      - row "23. 10. 2026 LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání Historický záznam — účast zatím neověřena cviceni 0.25 h":
+        - cell "23. 10. 2026"
+        - cell "LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání Historický záznam — účast zatím neověřena":
+          - text: LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání
+          - generic: Historický záznam — účast zatím neověřena
+        - cell "cviceni"
+        - cell "0.25 h"
+      - row "23. 10. 2026 LOCALHOST NEPLATIT UAT-OSOBY23 plán a měření – opraveno Účast potvrzena cviceni 1.25 h":
+        - cell "23. 10. 2026"
+        - cell "LOCALHOST NEPLATIT UAT-OSOBY23 plán a měření – opraveno Účast potvrzena":
+          - text: LOCALHOST NEPLATIT UAT-OSOBY23 plán a měření – opraveno
+          - generic: Účast potvrzena
+        - cell "cviceni"
+        - cell "1.25 h"
+      - row "22. 10. 2026 LOCALHOST NEPLATIT SIMULACE UAT-BROWSER23 koordinace a technika Účast potvrzena cviceni 1.00 h":
+        - cell "22. 10. 2026"
+        - cell "LOCALHOST NEPLATIT SIMULACE UAT-BROWSER23 koordinace a technika Účast potvrzena":
+          - text: LOCALHOST NEPLATIT SIMULACE UAT-BROWSER23 koordinace a technika
+          - generic: Účast potvrzena
+        - cell "cviceni"
+        - cell "1.00 h"
+  - strong: Rodinné platby za klubové služby
+  - table:
+    - rowgroup:
+      - row "Objednávka Příjemce Položka Částka Platba":
+        - columnheader "Objednávka"
+        - columnheader "Příjemce"
+        - columnheader "Položka"
+        - columnheader "Částka"
+        - columnheader "Platba"
+    - rowgroup:
+      - row "KP2610238684A82F7F Anna TEST LOCALHOST UAT-BROWSER23 LOCALHOST NEPLATIT – kurz pro sourozence 150,00 CZK paid":
+        - cell "KP2610238684A82F7F":
+          - code: KP2610238684A82F7F
+        - cell "Anna TEST LOCALHOST UAT-BROWSER23"
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence"
+        - cell "150,00 CZK"
+        - cell "paid"
+      - row "KP2610238684A82F7F Bára TEST LOCALHOST SOUROZENCI23 LOCALHOST NEPLATIT – kurz pro sourozence 150,00 CZK paid":
+        - cell "KP2610238684A82F7F":
+          - code: KP2610238684A82F7F
+        - cell "Bára TEST LOCALHOST SOUROZENCI23"
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence"
+        - cell "150,00 CZK"
+        - cell "paid"
+      - row "KP261023678C565F1E Anna TEST LOCALHOST UAT-BROWSER23 LOCALHOST NEPLATIT R25 1eb83e8d71 125,00 CZK paid":
+        - cell "KP261023678C565F1E":
+          - code: KP261023678C565F1E
+        - cell "Anna TEST LOCALHOST UAT-BROWSER23"
+        - cell "LOCALHOST NEPLATIT R25 1eb83e8d71"
+        - cell "125,00 CZK"
+        - cell "paid"
+      - row "KP2610232CB836E42F Anna TEST LOCALHOST UAT-BROWSER23 LOCALHOST NEPLATIT UAT-BROWSER23 kroužek 1 200,00 CZK paid":
+        - cell "KP2610232CB836E42F":
+          - code: KP2610232CB836E42F
+        - cell "Anna TEST LOCALHOST UAT-BROWSER23"
+        - cell "LOCALHOST NEPLATIT UAT-BROWSER23 kroužek"
+        - cell "1 200,00 CZK"
+        - cell "paid"

@@ -1,0 +1,11 @@
+{
+    "ok": true,
+    "current": true,
+    "reason": "current",
+    "legacy_version": "2.20.2",
+    "legacy_target": "2.20.2",
+    "legacy_state": "current",
+    "ledger_exists": true,
+    "catalog_count": 138,
+    "pending": []
+}

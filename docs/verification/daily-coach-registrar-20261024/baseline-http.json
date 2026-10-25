@@ -1,0 +1,27 @@
+[
+  {
+    "script": "TrainingClosureHttpAcceptance.php",
+    "checks": 25,
+    "status": "PASS"
+  },
+  {
+    "script": "SportsActivityHttpAcceptance.php",
+    "checks": 23,
+    "status": "PASS"
+  },
+  {
+    "script": "MedicalClearanceHttpAcceptance.php",
+    "checks": 22,
+    "status": "PASS"
+  },
+  {
+    "script": "ClubExpensesHttpAcceptance.php",
+    "checks": 47,
+    "status": "PASS"
+  },
+  {
+    "script": "ClubRewardsHttpAcceptance.php",
+    "checks": 25,
+    "status": "PASS"
+  }
+]

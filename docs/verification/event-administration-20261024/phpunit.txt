@@ -1,0 +1,11 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\xampp\htdocs\evidencePavel-finance-b1-20261022\phpunit.xml.dist
+
+................................................................. 65 / 79 ( 82%)
+..............                                                    79 / 79 (100%)
+
+Time: 00:01.790, Memory: 50.00 MB
+
+OK (79 tests, 2110 assertions)

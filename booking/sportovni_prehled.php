@@ -12,6 +12,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/medical_clearance.php';
+require_once dirname(__DIR__) . '/includes/family_tasks.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_summary.php';
 require_once dirname(__DIR__) . '/includes/family_weekly_delivery.php';
@@ -231,6 +232,9 @@ try {
     $annualPaidOverviewError = 'Roční přehled uhrazených služeb se nyní nepodařilo načíst.';
 }
 
+$familyTasks=['tasks'=>[],'unavailable'=>[]];$familyTasksError='';
+try{$familyTasks=familyTasksRead($pdo,$accountId);}catch(Throwable $e){$familyTasksError='Úkoly nyní nelze ověřit. Stav konkrétního podkladu zjistěte u registráře.';error_log('Family tasks unavailable: '.get_class($e));}
+
 $roleLabels = ['guardian' => 'rodič / zástupce', 'self' => 'vlastní profil'];
 $pendingFamilyClaims=null;
 try {
@@ -272,6 +276,7 @@ foreach ($trainingRsvps as $training) {
     <p class="text-muted">Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.</p>
     <?php if ($pendingFamilyClaims===null): ?><div class="alert alert-warning">Stav žádostí o propojení nyní nelze ověřit. Zkontrolujte jej v <a href="moje_osoby.php">Mých osobách</a>.</div>
     <?php elseif ($pendingFamilyClaims>0): ?><div class="alert alert-info"><strong>Čeká na ověření klubem: <?=$pendingFamilyClaims?> žádostí o propojení.</strong> Žádost nepodávejte znovu. V <a href="moje_osoby.php">Mých osobách</a> najdete její stav; pro osobní doložení kontaktujte registráře.</div><?php endif; ?>
+    <?php require dirname(__DIR__).'/includes/family_tasks_view.php';?>
     <p class="small text-muted">Přehled obsahuje dostupná převedená data. Chybějící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte trenérovi.</p>
     <?php if ($loadError !== ''): ?><div class="alert alert-danger"><?= familyPageH($loadError) ?></div>
     <?php elseif ($overview === []): ?>
@@ -328,7 +333,7 @@ foreach ($trainingRsvps as $training) {
             <div class="alert alert-info py-2">
                 <strong><?= $weeklyDeliveryPreference['enabled'] ? 'Odběr je zapnutý.' : 'Odběr je vypnutý.' ?></strong>
                 Souhrn se připravuje nejvýše jednou týdně a používá vždy aktuální oprávnění k rodinným profilům.
-                Produkční e-mailový transport zatím není aktivní; na localhostu lze zprávu bezpečně projít v testovacím outboxu.
+                <?=familyPageH(familyTasksDeliveryNotice())?>
             </div>
             <form method="post" class="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <?= csrf_field() ?><input type="hidden" name="action" value="family_weekly_delivery_save">
@@ -452,7 +457,7 @@ foreach ($trainingRsvps as $training) {
 
     <div id="profily"></div>
     <?php foreach ($overview as $profileIndex => $profile): $person = $profile['person']; $makeupSummary = $makeupProfileSummaries[(int)$person['sportovec_id']] ?? null; ?>
-        <details class="card border-0 shadow-sm mb-4"<?= $profileIndex === 0 ? ' open' : '' ?>>
+        <details id="family-profile-<?=(int)$person['sportovec_id']?>" class="card border-0 shadow-sm mb-4"<?= $profileIndex === 0 ? ' open' : '' ?>>
             <summary class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2">
                 <div><strong class="fs-5"><?= familyPageH($person['jmeno'] . ' ' . $person['prijmeni']) ?></strong> <?=sportovecStatusBadge($person)?><div class="small text-muted">Rok narození: <?= familyPageH($person['narozeni'] ? substr((string)$person['narozeni'],0,4) : 'neuveden') ?></div></div>
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php foreach ($person['relation_roles'] as $role): ?><span class="badge text-bg-primary ms-1"><?= familyPageH($roleLabels[$role] ?? $role) ?></span><?php endforeach; ?></div>

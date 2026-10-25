@@ -558,6 +558,8 @@ body { font-family: Arial, Helvetica, sans-serif; font-size: .9rem; }
 .form-control, .form-select { border-color: var(--bs-border-color); }
 .table { --bs-table-striped-bg: rgba(110,125,140,.035); font-size: .86rem; }
 .table > thead > tr > th { padding: .8rem .7rem; background: var(--bs-tertiary-bg); border-bottom: 2px solid var(--app-header); vertical-align: middle; }
+/* Keep Bootstrap's dark header background paired with its white text. */
+.table > thead.table-dark > tr > th { background: var(--bs-table-bg); color: var(--bs-table-color); }
 .table > tbody > tr > td { padding: .75rem .7rem; vertical-align: middle; }
 .nav-tabs .nav-link { border-radius: 0; color: var(--bs-body-color); background: var(--bs-tertiary-bg); font-size: .85rem; }
 .nav-tabs .nav-link.active { border-top: 3px solid var(--app-save); padding-top: calc(.5rem - 2px); }

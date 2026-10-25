@@ -1,0 +1,240 @@
+{
+    "status": "PASS",
+    "scenario_count": 58,
+    "scenarios": [
+        {
+            "scenario": "HTTP create open financial event",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP create receipt with real upload",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Uploaded attachment exists in isolated private storage",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP edit receipt in open event",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Create disposable receipt for successful deletion",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Successful open receipt deletion removes live record\/file",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Successful deletion preserves original bytes in hidden archive",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Audit failure rolls back receipt replacement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Failed replacement restores original attachment bytes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Failed replacement leaves no orphan or retired upload",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Audit failure rolls back receipt deletion",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Failed deletion restores original attachment bytes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Failed deletion preserves complete file inventory",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot write through direct receipt URL",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach receipt request rejected by route permission",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Receipt invalid CSRF preserves record",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Receipt explicitly rejects invalid CSRF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP close financial event",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed receipt edit blocked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed receipt explains state conflict",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed event refuses new receipt",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Move out of closed source blocked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Move into closed target blocked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed receipt deletion blocked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed receipt file replacement blocked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed receipt rejection leaves file inventory unchanged",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Rejected changes preserve attachment bytes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed event cannot be edited or reopened",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed event cannot be deleted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated event close preserves row",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Vehicle deletion cannot indirectly change closed receipt",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed receipt vehicle reference remains intact",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unused vehicle still deletable",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy creation directs finance to canonical rewards without new period",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Closed reward edit rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated reward close preserves snapshot",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Credit overview repeated close preserves snapshot",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Paid reward edit rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Missing historical snapshot is not recomputed",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Bulk rate preserves closed and paid snapshot",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Bulk legacy rates cannot create a competing reward workflow",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Bulk refuses inconsistent paid but open period",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Historical snapshot issue visible in rendered page",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy reward page links directly to canonical workflow: sprava_sportovec_obdobi.php?sportovec_id=1",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy reward page offers no enabled obsolete submit: sprava_sportovec_obdobi.php?sportovec_id=1",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy reward page links directly to canonical workflow: prehled_kreditu.php",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy reward page offers no enabled obsolete submit: prehled_kreditu.php",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy reward page links directly to canonical workflow: hromadne_odmeny.php?skupina_id=1",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy reward page offers no enabled obsolete submit: hromadne_odmeny.php?skupina_id=1",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach direct reward write denied",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach reward request rejected by route permission",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Reward invalid CSRF preserves row",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Reward explicitly rejects invalid CSRF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Deactivated account cannot mutate receipt",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Deactivated account rejected by live authentication middleware",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Removed financial position blocks existing session",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Removed position rejected by central route guard",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Successful changes have audit evidence",
+            "status": "PASS"
+        }
+    ],
+    "environment": "isolated MariaDB 127.0.0.1:33426 \/ evidence_b1; HTTP 127.0.0.1:18086",
+    "scope": "Synthetic HTTP requests with real application session, route, CSRF and file handling; not human acceptance."
+}

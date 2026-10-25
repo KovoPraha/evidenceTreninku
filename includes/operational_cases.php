@@ -10,6 +10,7 @@ function operationalCaseSources(): array
             'unresolved'=>"s.state='pending' AND NOT EXISTS(SELECT 1 FROM financial_decisions n WHERE n.replaces_id=s.id)"],
         'accounting_handover' => ['table'=>'accounting_export_batches','position'=>'finance_manager','label'=>'Předání účetních podkladů','href'=>'accounting_exports_admin.php','requires'=>['accounting_export_events'],
             'unresolved'=>"COALESCE((SELECT e.action FROM accounting_export_events e WHERE e.batch_id=s.id AND e.action IN ('handed_over','returned','accepted') ORDER BY e.id DESC LIMIT 1),'new')<>'accepted'"],
+        'person_followup' => ['table'=>'sportovci','position'=>'registrar','label'=>'Vyřízení osoby','href'=>'person_lifecycle_admin.php','unresolved'=>'0=1'],
         'medical_watch' => ['table'=>'medical_clearance_watches','position'=>'registrar','label'=>'Platnost zdravotního podkladu','href'=>'medical_clearance_admin.php',
             'unresolved'=>"s.next_review_on<='".date('Y-m-d')."'"],
         'training_attendance' => ['table'=>'treninky','position'=>'sports_lead','label'=>'Neuzavřená docházka','href'=>'training_closure_admin.php','requires'=>['training_closures'],
@@ -69,14 +70,15 @@ function operationalCaseList(PDO $pdo, string $position, int $page=1, bool $clos
         if ($type==='notification') $required[]='club_event_notification_events';
         if (!adminOperationalHasTables($pdo,$required)) { $unavailable[]=$def['label']; continue; }
         $filter=$closed ? "c.status='closed' AND NOT (".$def['unresolved'].")" : '('.$def['unresolved'].") OR c.status='open'";
-        $sql='SELECT s.id AS source_id,c.id AS case_id,c.owner_trainer_id,c.next_step,c.review_on,c.status,c.revision,t.jmeno AS owner_name,t.aktivni AS owner_active, '
+        $context=$type==='training_attendance' ? 's.datum AS context_date,' . (adminOperationalColumnExists($pdo,'treninky','napln')?'s.napln':"''") . ' AS context_label,' : '';
+        $sql='SELECT '.$context.'s.id AS source_id,c.id AS case_id,c.owner_trainer_id,c.next_step,c.review_on,c.status,c.revision,t.jmeno AS owner_name,t.aktivni AS owner_active, '
             .'CASE WHEN '.$def['unresolved'].' THEN 1 ELSE 0 END AS unresolved '
             .'FROM '.$def['table'].' s LEFT JOIN operational_cases c ON c.source_type=? AND c.source_id=s.id LEFT JOIN treneri t ON t.id=c.owner_trainer_id '
             .'WHERE '.$filter.' ORDER BY CASE WHEN c.id IS NULL THEN 0 ELSE 1 END,c.review_on,s.id LIMIT 31 OFFSET '.$offset;
         $st=$pdo->prepare($sql);$st->execute([$type]);
         $rows=$st->fetchAll(PDO::FETCH_ASSOC);
         if (count($rows)>30) {$hasNext=true;array_pop($rows);}
-        foreach ($rows as $row) $items[]=$row+['source_type'=>$type,'label'=>$def['label'],'href'=>$def['href'].(in_array($type,['identity_review','paper_record','medical_watch','training_attendance'],true)?'?id='.(int)$row['source_id']:'')];
+        foreach ($rows as $row) $items[]=$row+['source_type'=>$type,'label'=>$def['label'],'href'=>$def['href'].(in_array($type,['identity_review','paper_record','medical_watch','training_attendance','person_followup'],true)?'?id='.(int)$row['source_id']:'')];
     }
     return ['items'=>$items,'unavailable'=>$unavailable,'page'=>$page,'has_next'=>$hasNext,'closed'=>$closed];
 }
