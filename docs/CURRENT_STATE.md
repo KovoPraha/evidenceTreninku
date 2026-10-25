@@ -5,10 +5,10 @@ Ověřeno 25. 10. 2026 (Europe/Prague); další vydání musí tento přehled na
 - **Produkce:** `a23e393f64eeffafd75df834e6e5ba8c78213b72`,
   [deploy 40198413027](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40198413027),
   25. 10. 2026, SUCCESS. [Přejímka a hranice důkazů](verification/release-acceptance-20261025/RESULTS.md).
-- **Poslední CI main:** `ba2c9eef96d6bcb4e5a7f1dd2686362c6b63bd0a`,
-  [Testy 40217568068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40217568068)
-  a [CodeQL 40217568282](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40217568282), SUCCESS.
-  1 718 testů / 34 750 assertions; MariaDB 10.3/11.4 PASS.
+- **Poslední CI main:** `83ebee72a564ed130049d7c9c998f01325dc2787`,
+  [Testy 40218039729](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40218039729)
+  a [CodeQL 40218039206](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40218039206), SUCCESS.
+  1 719 testů / 34 754 assertions; MariaDB 10.3/11.4 PASS.
 - **Zapnuté:** společná Evidence/KIS, veřejný katalog, rodinné a sportovní účty,
   klubová, finanční, účetní a skladová implementace; bankovní/ruční platební postup.
   Technické ověření samo nepotvrzuje připravenost obsluhy ani dodání provozních dat.
