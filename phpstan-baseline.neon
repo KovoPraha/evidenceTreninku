@@ -1228,12 +1228,6 @@ parameters:
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: export.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
 			path: export_csv.php
 
 		-

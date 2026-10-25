@@ -26,6 +26,11 @@ jobs:
       - run: composer install --prefer-dist --no-interaction --no-progress
       - name: PHPStan analysis against the reviewed baseline
         run: composer analyse
+      - name: Verify anonymous inventory after analysis has populated its cache
+        run: |
+          test ! -e .phpstan-cache
+          php tests/Support/AnonymousSweep.php
+          php vendor/bin/phpunit --filter 'AnonymousSweepPolicyTest|StaffWorkspaceRegistryTest|DeploymentExposureTest|SharedUiShellTest'
       - name: PSR-12, line length and control-flow braces on PR files only
         if: github.event_name == 'pull_request'
         env:

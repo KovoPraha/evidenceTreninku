@@ -1,30 +1,40 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
+require_once dirname(__DIR__) . '/Support/AnonymousRouteInventory.php';
+
 final class SharedUiShellTest extends TestCase
 {
+    /** @return list<\SplFileInfo> */
+    private static function trackedPhpFiles(string $root): array
+    {
+        return array_map(
+            static fn (string $path): \SplFileInfo => new \SplFileInfo($root . '/' . $path),
+            \anonymousTrackedPhpFiles($root)
+        );
+    }
+
     public function testSharedHeaderActionsUseCanonicalPathsOnNestedStaffForms(): void
     {
-        $header=(string)file_get_contents(dirname(__DIR__,2).'/hlavicka.php');
+        $header = (string)file_get_contents(dirname(__DIR__, 2).'/hlavicka.php');
         foreach (['logout.php','prepnout_pracovni_pozici.php','booking/eshop.php','ajax_global_search.php','sw.js','push_subscribe.php'] as $route) {
-            self::assertStringContainsString("appUiUrl('".$route."')",$header);
+            self::assertStringContainsString("appUiUrl('".$route."')", $header);
         }
-        self::assertStringNotContainsString('action="logout.php"',$header);
-        self::assertStringNotContainsString('action="prepnout_pracovni_pozici.php"',$header);
-        self::assertStringNotContainsString("'/evidence/sw.js'",$header);
-        self::assertStringNotContainsString("\$_gsAppBase . '/ajax_global_search.php'",$header);
+        self::assertStringNotContainsString('action="logout.php"', $header);
+        self::assertStringNotContainsString('action="prepnout_pracovni_pozici.php"', $header);
+        self::assertStringNotContainsString("'/evidence/sw.js'", $header);
+        self::assertStringNotContainsString("\$_gsAppBase . '/ajax_global_search.php'", $header);
     }
 
     public function testEveryFirstPartyHtmlPhpPageUsesSharedUiFoundation(): void
     {
         $root = dirname(__DIR__, 2);
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)
-        );
+        $iterator = self::trackedPhpFiles($root);
         $missing = [];
 
         foreach ($iterator as $file) {
@@ -38,7 +48,9 @@ final class SharedUiShellTest extends TestCase
             }
             // This is the standalone, self-contained HTML input to the PDF renderer,
             // not an application page. The guarded admin page uses appUiAssets.
-            if (in_array($relative,['includes/accounting_documents.php','includes/shop_stock_documents.php'],true)) continue;
+            if (in_array($relative, ['includes/accounting_documents.php','includes/shop_stock_documents.php'], true)) {
+                continue;
+            }
             $source = (string)file_get_contents($path);
             if (stripos($source, '<head') === false) {
                 continue;
@@ -54,9 +66,7 @@ final class SharedUiShellTest extends TestCase
     public function testEveryHlavickaIncludingPageHasOwnBootstrapCss(): void
     {
         $root = dirname(__DIR__, 2);
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)
-        );
+        $iterator = self::trackedPhpFiles($root);
         $missing = [];
 
         foreach ($iterator as $file) {
@@ -88,9 +98,7 @@ final class SharedUiShellTest extends TestCase
         self::assertStringNotContainsString('cdn.jsdelivr.net/npm/bootstrap@', $helper);
 
         $manualCopies = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)
-        );
+        $iterator = self::trackedPhpFiles($root);
         foreach ($iterator as $file) {
             if (!$file->isFile() || $file->getExtension() !== 'php') {
                 continue;
@@ -314,9 +322,7 @@ final class SharedUiShellTest extends TestCase
         $root = dirname(__DIR__, 2);
         $header = (string)file_get_contents($root . '/hlavicka.php');
         $css = (string)file_get_contents($root . '/assets/app-ui.css');
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($root, \FilesystemIterator::SKIP_DOTS)
-        );
+        $iterator = self::trackedPhpFiles($root);
         $automaticThemePages = [];
 
         foreach ($iterator as $file) {

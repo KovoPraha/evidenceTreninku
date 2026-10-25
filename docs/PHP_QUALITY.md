@@ -14,7 +14,9 @@ nikoli webroot. Případnou starou `.phpstan-cache/` blokuje obecné Apache prav
 pro tečkové cesty a inventura sweepu ji ignoruje. Exclude v konfiguraci zůstává
 pro staré lokální zbytky; jejich existence nesmí ovlivnit analýzu ani testy.
 
-`phpstan-baseline.neon` obsahuje 556 položek pro 2 540 dosavadních výskytů chyb.
+`phpstan-baseline.neon` obsahuje 555 položek pro 2 539 dosavadních výskytů chyb.
+Po spojení s úpravou export.php byl odstraněn právě jeho jeden zastaralý nález;
+regenerace nepřidala žádné nové potlačení.
 Baseline je počítaná podle souboru, zprávy a počtu výskytů, nikoli plošným ignore.
 Nové chyby nad tyto počty shodí CI. Odstraněná chyba vyžaduje zúžit baseline
 (výchozí reportUnmatchedIgnoredErrors); nepřidávat automaticky nové potlačení.
@@ -42,6 +44,11 @@ Zdroje: [baseline PHPStan](https://phpstan.org/user-guide/baseline),
 
 CI workflow `php-quality.yml` spouští analýzu vždy a styl jen v PR. Nový projektový
 kód této změny prošel formátovačem; žádné cizí aplikační soubory se nepřepisovaly.
+Po analýze CI ve stejném checkoutu ověří, že nevznikla `.phpstan-cache`, spustí
+anonymous sweep a regresní testy inventury a deploy ochrany. Tím kontroluje
+také souběh těchto nástrojů, nikoli pouze jejich oddělené běhy.
+Inventura testů SharedUiShellTest rovněž používá trackované PHP soubory bez
+tečkových cest. Již existující stará cache tedy nevyvolává falešné UI nálezy.
 [Použití PHP-CS-Fixer](https://cs.symfony.com/doc/usage.html).
 
 Konfigurace/baseline/cache/formátovač jsou vyloučené z obou rsync bloků;
