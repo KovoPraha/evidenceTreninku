@@ -1,5 +1,7 @@
 # Zbývající přejímka A/B — 25. 10. 2026
 
+Aktualizace: následný [průchod deseti částečných scénářů prohlížečem](../partial-browser-acceptance-20261025/RESULTS.md) je dokončil. Tento dokument zachovává původní historický stav; aktuálně 38 PASS a 2 BLOCKED.
+
 Rozsah: 20 dosud neověřených a 6 částečných scénářů; pouze izolované prostředí. Opravy jsou připravené ve [společném PR #203](https://github.com/KovoPraha/evidenceTreninku/pull/203). Nasazení ani produkční zápisy nejsou součástí této práce. Stav sloučení a CI určuje PR, nikoli tento předběžný dokument.
 
 **Výsledek těchto 26 scénářů: 14 PASS, 10 PARTIAL, 2 BLOCKED.** Každý scénář byl technicky prověřen; není to tvrzení o dokončené klikací přejímce celého systému. PASS může kombinovat prohlížeč, skutečné HTTP formuláře a integrační testy; metody i omezení jsou uvedeny jednotlivě. Zelená automatizace nenahrazuje chybějící UI důkaz.

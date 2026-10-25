@@ -137,6 +137,16 @@ $lekce = $pdo->query("
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 // Rezervace pro každou lekci
+$historyLessonId = (int)($_GET['history_lesson_id'] ?? 0);
+$historyLesson = null;
+$historyEvents = [];
+if ($historyLessonId > 0) {
+    foreach ($lekce as $visibleLesson) {
+        if ((int)$visibleLesson['id'] === $historyLessonId) $historyLesson = $visibleLesson;
+    }
+    if ($historyLesson === null) { http_response_code(404); exit('Lekce není dostupná.'); }
+    $historyEvents = venueLessonHistory($pdo, $historyLessonId);
+}
 $rezervaceByLekce = [];
 if (!empty($lekce)) {
     $lekceIds = implode(',', array_column($lekce, 'id'));
@@ -188,6 +198,21 @@ $stavBadge = [
         </div>
     </div>
 
+    <?php if ($historyLesson !== null): ?>
+    <section class="card mb-3" aria-label="Historie lekce">
+        <div class="card-body">
+        <h2 class="h5">Historie lekce: <?= h($historyLesson['nazev']) ?></h2>
+        <p class="text-muted small">Pouze čtení. Nejnovějších nejvýše 100 auditních událostí. Chybějící události ani důvody se nedoplňují odhadem.</p>
+        <div class="table-responsive"><table class="table table-sm">
+            <thead><tr><th>Kdy</th><th>Kdo</th><th>Co</th><th>Důvod</th></tr></thead><tbody>
+            <?php foreach ($historyEvents as $event): ?>
+            <tr><td><?= h($event['created_at']) ?></td><td><?= h($event['actor_name'] ?? 'Neznámý aktér') ?> (#<?= (int)$event['actor_trainer_id'] ?>)</td><td><?= h(['reservation_confirmed'=>'Potvrzení rezervace','reservation_rejected'=>'Zamítnutí rezervace','cancel'=>'Zrušení lekce','update'=>'Úprava lekce'][$event['action']] ?? $event['action']) ?></td><td><?= h($event['reason']) ?></td></tr>
+            <?php endforeach; ?>
+            <?php if (!$historyEvents): ?><tr><td colspan="4">Dosud žádné auditní události.</td></tr><?php endif; ?>
+            </tbody></table></div>
+        </div>
+    </section>
+    <?php endif; ?>
     <?php if (empty($lekce)): ?>
         <div class="alert alert-info">
             <i class="bi bi-info-circle me-2"></i>
@@ -209,6 +234,7 @@ $stavBadge = [
                 <span class="text-muted ms-2 small"><?= h($l['sport_nazev']) ?></span>
             </div>
             <div class="d-flex align-items-center gap-2">
+                <a href="?history_lesson_id=<?= (int)$l['id'] ?><?= $zobrazitVse ? '&amp;vse=1' : '' ?>" class="btn btn-sm btn-outline-secondary">Historie lekce</a>
                 <span class="text-muted small">
                     <i class="bi bi-calendar me-1"></i><?= h($l['datum']) ?>
                     <?= h(substr($l['cas_od'], 0, 5)) ?>–<?= h(substr($l['cas_do'], 0, 5)) ?>
@@ -247,7 +273,7 @@ $stavBadge = [
                 <?php if ($l['cekajicich'] > 0): ?>
                     <span class="text-warning fw-semibold"><i class="bi bi-clock me-1"></i>Čeká: <?= $l['cekajicich'] ?></span>
                 <?php endif; ?>
-                <?php if ($l['potvrzenych'] > 0): ?>
+                <?php if ($l['potvrzenych'] > 0 && (float)$l['cena_kc'] > 0): ?>
                     <span class="text-<?= $l['zaplaceno'] >= $l['potvrzenych'] ? 'success' : 'danger' ?>">
                         <i class="bi bi-cash me-1"></i>Zaplaceno: <?= $l['zaplaceno'] ?>/<?= $l['potvrzenych'] ?>
                     </span>
@@ -291,7 +317,9 @@ $stavBadge = [
                         <td><span class="badge bg-<?= $bColor ?>"><?= $bLabel ?></span></td>
                         <td>
                             <?php if ($r['stav'] === 'potvrzena'): ?>
-                                <?php if ($r['zaplaceno']): ?>
+                                <?php if ((float)$l['cena_kc'] <= 0): ?>
+                                    <span class="text-muted small">Bez platby</span>
+                                <?php elseif ($r['zaplaceno']): ?>
                                     <span class="text-success small"><i class="bi bi-check-circle-fill me-1"></i>Zaplaceno</span>
                                 <?php else: ?>
                                     <span class="text-danger small"><i class="bi bi-x-circle me-1"></i>Nezaplaceno</span>
@@ -316,7 +344,7 @@ $stavBadge = [
                                         <i class="bi bi-x-lg"></i>
                                     </button>
                                 </form>
-                            <?php elseif ($r['stav'] === 'potvrzena'): ?>
+                            <?php elseif ($r['stav'] === 'potvrzena' && (float)$l['cena_kc'] > 0): ?>
                                 <span class="small text-muted">Platbu ověřuje Hospodář a platby.</span>
                             <?php endif; ?>
                         </td>
