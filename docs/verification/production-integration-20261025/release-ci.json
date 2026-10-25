@@ -1,0 +1,489 @@
+{
+  "conclusion": "success",
+  "headSha": "115a617d3660bc9e3cba48891737b56fc6ab068f",
+  "jobs": [
+    {
+      "completedAt": "2026-10-25T11:35:13Z",
+      "conclusion": "success",
+      "databaseId": 121157039590,
+      "name": "PHPUnit na PHP 8.2",
+      "startedAt": "2026-10-25T11:34:19Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-25T11:34:21Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-25T11:34:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:23Z",
+          "conclusion": "success",
+          "name": "Stáhnout kód",
+          "number": 2,
+          "startedAt": "2026-10-25T11:34:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:27Z",
+          "conclusion": "success",
+          "name": "Připravit PHP",
+          "number": 3,
+          "startedAt": "2026-10-25T11:34:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:27Z",
+          "conclusion": "success",
+          "name": "Ověřit Composer konfiguraci",
+          "number": 4,
+          "startedAt": "2026-10-25T11:34:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:31Z",
+          "conclusion": "success",
+          "name": "Nainstalovat závislosti",
+          "number": 5,
+          "startedAt": "2026-10-25T11:34:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:31Z",
+          "conclusion": "success",
+          "name": "Ověřit známé zranitelnosti závislostí",
+          "number": 6,
+          "startedAt": "2026-10-25T11:34:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:10Z",
+          "conclusion": "success",
+          "name": "Spustit testy",
+          "number": 7,
+          "startedAt": "2026-10-25T11:34:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:11Z",
+          "conclusion": "success",
+          "name": "Ověřit unixové hranice soukromého úložiště bez přeskočení",
+          "number": 8,
+          "startedAt": "2026-10-25T11:35:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:11Z",
+          "conclusion": "success",
+          "name": "Post Stáhnout kód",
+          "number": 16,
+          "startedAt": "2026-10-25T11:35:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:11Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-10-25T11:35:11Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40189420611/job/121157039590"
+    },
+    {
+      "completedAt": "2026-10-25T11:34:54Z",
+      "conclusion": "success",
+      "databaseId": 121157039710,
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "startedAt": "2026-10-25T11:34:19Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-25T11:34:20Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-25T11:34:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:32Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "startedAt": "2026-10-25T11:34:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:34Z",
+          "conclusion": "success",
+          "name": "Stáhnout kód",
+          "number": 3,
+          "startedAt": "2026-10-25T11:34:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:36Z",
+          "conclusion": "success",
+          "name": "Připravit PHP s MariaDB ovladačem",
+          "number": 4,
+          "startedAt": "2026-10-25T11:34:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:39Z",
+          "conclusion": "success",
+          "name": "Nainstalovat závislosti pro účetní doklady a exporty",
+          "number": 5,
+          "startedAt": "2026-10-25T11:34:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:39Z",
+          "conclusion": "success",
+          "name": "Ověřit přístup sportovce na MariaDB",
+          "number": 6,
+          "startedAt": "2026-10-25T11:34:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:39Z",
+          "conclusion": "success",
+          "name": "Ověřit KIS přechod a idempotenci na MariaDB",
+          "number": 7,
+          "startedAt": "2026-10-25T11:34:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:43Z",
+          "conclusion": "success",
+          "name": "Ověřit skutečnou Evidence zálohu na MariaDB",
+          "number": 8,
+          "startedAt": "2026-10-25T11:34:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:43Z",
+          "conclusion": "success",
+          "name": "Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB",
+          "number": 9,
+          "startedAt": "2026-10-25T11:34:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:48Z",
+          "conclusion": "success",
+          "name": "Ověřit souběžný idempotentní checkout na MariaDB",
+          "number": 10,
+          "startedAt": "2026-10-25T11:34:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:48Z",
+          "conclusion": "success",
+          "name": "Ověřit ruční původ katalogu na MariaDB",
+          "number": 11,
+          "startedAt": "2026-10-25T11:34:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:48Z",
+          "conclusion": "success",
+          "name": "Ověřit pracovní pozice a superadmin audit na MariaDB",
+          "number": 12,
+          "startedAt": "2026-10-25T11:34:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:48Z",
+          "conclusion": "success",
+          "name": "Ověřit zveřejnění registračních textů a souběh na MariaDB",
+          "number": 13,
+          "startedAt": "2026-10-25T11:34:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:48Z",
+          "conclusion": "success",
+          "name": "Ověřit systémové e-maily a souběh editorů na MariaDB",
+          "number": 14,
+          "startedAt": "2026-10-25T11:34:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:49Z",
+          "conclusion": "success",
+          "name": "Ověřit číselné řady, souběh nákupů a editorů na MariaDB",
+          "number": 15,
+          "startedAt": "2026-10-25T11:34:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:49Z",
+          "conclusion": "success",
+          "name": "Ověřit M3.5d sportovní import review na MariaDB",
+          "number": 16,
+          "startedAt": "2026-10-25T11:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:49Z",
+          "conclusion": "success",
+          "name": "Ověřit úplný import osob, rollback a vazby na MariaDB",
+          "number": 17,
+          "startedAt": "2026-10-25T11:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:49Z",
+          "conclusion": "success",
+          "name": "Ověřit historické soupisky a rozhodovací frontu na MariaDB",
+          "number": 18,
+          "startedAt": "2026-10-25T11:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:49Z",
+          "conclusion": "success",
+          "name": "Ověřit převod do aktuálních soupisek a rozhodovací frontu na MariaDB",
+          "number": 19,
+          "startedAt": "2026-10-25T11:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:50Z",
+          "conclusion": "success",
+          "name": "Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB",
+          "number": 20,
+          "startedAt": "2026-10-25T11:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:50Z",
+          "conclusion": "success",
+          "name": "Post Stáhnout kód",
+          "number": 39,
+          "startedAt": "2026-10-25T11:34:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:52Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 40,
+          "startedAt": "2026-10-25T11:34:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:52Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 41,
+          "startedAt": "2026-10-25T11:34:52Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40189420611/job/121157039710"
+    },
+    {
+      "completedAt": "2026-10-25T11:35:10Z",
+      "conclusion": "success",
+      "databaseId": 121157039806,
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "startedAt": "2026-10-25T11:34:19Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-25T11:34:20Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-25T11:34:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:46Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "startedAt": "2026-10-25T11:34:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:48Z",
+          "conclusion": "success",
+          "name": "Stáhnout kód",
+          "number": 3,
+          "startedAt": "2026-10-25T11:34:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:50Z",
+          "conclusion": "success",
+          "name": "Připravit PHP s MariaDB ovladačem",
+          "number": 4,
+          "startedAt": "2026-10-25T11:34:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:54Z",
+          "conclusion": "success",
+          "name": "Nainstalovat závislosti pro účetní doklady a exporty",
+          "number": 5,
+          "startedAt": "2026-10-25T11:34:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:54Z",
+          "conclusion": "success",
+          "name": "Ověřit přístup sportovce na MariaDB",
+          "number": 6,
+          "startedAt": "2026-10-25T11:34:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:54Z",
+          "conclusion": "success",
+          "name": "Ověřit KIS přechod a idempotenci na MariaDB",
+          "number": 7,
+          "startedAt": "2026-10-25T11:34:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:59Z",
+          "conclusion": "success",
+          "name": "Ověřit skutečnou Evidence zálohu na MariaDB",
+          "number": 8,
+          "startedAt": "2026-10-25T11:34:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:34:59Z",
+          "conclusion": "success",
+          "name": "Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB",
+          "number": 9,
+          "startedAt": "2026-10-25T11:34:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:03Z",
+          "conclusion": "success",
+          "name": "Ověřit souběžný idempotentní checkout na MariaDB",
+          "number": 10,
+          "startedAt": "2026-10-25T11:34:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:03Z",
+          "conclusion": "success",
+          "name": "Ověřit ruční původ katalogu na MariaDB",
+          "number": 11,
+          "startedAt": "2026-10-25T11:35:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:04Z",
+          "conclusion": "success",
+          "name": "Ověřit pracovní pozice a superadmin audit na MariaDB",
+          "number": 12,
+          "startedAt": "2026-10-25T11:35:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:05Z",
+          "conclusion": "success",
+          "name": "Ověřit zveřejnění registračních textů a souběh na MariaDB",
+          "number": 13,
+          "startedAt": "2026-10-25T11:35:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:05Z",
+          "conclusion": "success",
+          "name": "Ověřit systémové e-maily a souběh editorů na MariaDB",
+          "number": 14,
+          "startedAt": "2026-10-25T11:35:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:06Z",
+          "conclusion": "success",
+          "name": "Ověřit číselné řady, souběh nákupů a editorů na MariaDB",
+          "number": 15,
+          "startedAt": "2026-10-25T11:35:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:06Z",
+          "conclusion": "success",
+          "name": "Ověřit M3.5d sportovní import review na MariaDB",
+          "number": 16,
+          "startedAt": "2026-10-25T11:35:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:06Z",
+          "conclusion": "success",
+          "name": "Ověřit úplný import osob, rollback a vazby na MariaDB",
+          "number": 17,
+          "startedAt": "2026-10-25T11:35:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:06Z",
+          "conclusion": "success",
+          "name": "Ověřit historické soupisky a rozhodovací frontu na MariaDB",
+          "number": 18,
+          "startedAt": "2026-10-25T11:35:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:06Z",
+          "conclusion": "success",
+          "name": "Ověřit převod do aktuálních soupisek a rozhodovací frontu na MariaDB",
+          "number": 19,
+          "startedAt": "2026-10-25T11:35:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:07Z",
+          "conclusion": "success",
+          "name": "Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB",
+          "number": 20,
+          "startedAt": "2026-10-25T11:35:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:07Z",
+          "conclusion": "success",
+          "name": "Post Stáhnout kód",
+          "number": 39,
+          "startedAt": "2026-10-25T11:35:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:07Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 40,
+          "startedAt": "2026-10-25T11:35:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-25T11:35:07Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 41,
+          "startedAt": "2026-10-25T11:35:07Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40189420611/job/121157039806"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40189420611"
+}

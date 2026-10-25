@@ -1,0 +1,157 @@
+{
+  "method": "GET",
+  "authenticated": false,
+  "browser_used": false,
+  "domain_writes": false,
+  "checks": [
+    {
+      "path": "index.php",
+      "http": 200,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "club_calendar.php",
+      "http": 302,
+      "location": "login.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "booking/sportovni_prehled.php",
+      "http": 302,
+      "location": "prihlaseni.php?redirect=sportovni_prehled.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "person_lifecycle_admin.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "medical_activity_admin.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "season_preparation_admin.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "club_event_work_admin.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "club_communication_admin.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "training_closure_admin.php",
+      "http": 302,
+      "location": "login.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "training_rsvps_admin.php",
+      "http": 302,
+      "location": "login.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "eshop_inventory_admin.php",
+      "http": 302,
+      "location": "login.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "eshop_fulfillment_admin.php",
+      "http": 302,
+      "location": "login.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "shop_returns_admin.php",
+      "http": 302,
+      "location": "login.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "accounting_exports_admin.php",
+      "http": 302,
+      "location": "login.php",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "config.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "db.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "var/deployment.json",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "var/private/kis-person-import.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "docs/verification/integration-20261025/RESULTS.md",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "bin/club-release-impact.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    },
+    {
+      "path": "migrations/20261024200000_payment_variable_symbol_index_repair.php",
+      "http": 403,
+      "location": "",
+      "pass": true,
+      "fatal_error_visible": false
+    }
+  ],
+  "passed": 21,
+  "total": 21
+}

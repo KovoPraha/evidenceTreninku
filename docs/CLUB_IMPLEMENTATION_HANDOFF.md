@@ -1,5 +1,15 @@
 # Společný systém oddílu — předání místní implementace
 
+**25. 10. 2026 — integrační vydání sloučeno a nasazeno.**
+Produkce běží na `115a617d3660bc9e3cba48891737b56fc6ab068f` (PR #191 + #192,
+deploy `40189517120`). Uživatel výslovně povolil tento merge a deploy včetně
+nutných migrací. Nové integrace nebyly zapnuté, skutečná data nebyla importovaná
+a nevznikaly testovací obchodní záznamy na produkci. D15 je splněno pro toto
+vydání; souhlas účetní, podklady pilotu a další aktivace zůstávají samostatné.
+[Protokol nasazení a čtecí kontroly](verification/production-integration-20261025/RESULTS.md)
+a [ověřená příprava návratu](verification/production-integration-20261025/ROLLBACK.md).
+Následující datované zápisy popisují historický stav před tímto nasazením.
+
 Aktualizace 25. 10. 2026: [společná integrační větev a nové izolované ověření](verification/integration-20261025/RESULTS.md)
 sjednocují dokončené balíky s aktuálními bezpečnostními opravami. Nic nebylo
 nasazeno ani sloučeno do main; D15 zůstává NEPOVOLENO.
