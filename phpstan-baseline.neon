@@ -1,0 +1,3337 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 11
+			path: accounting_adjustments_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: accounting_document_download.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 15
+			path: accounting_documents_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: accounting_export_download.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: accounting_exports_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 16
+			path: accounting_ledger_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: admin_dashboard.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: ajax_denny_rozvrh.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: ajax_denny_rozvrh.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: ajax_dostupnost_sportovist.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: ajax_global_search.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: ajax_nova_oznameni.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: ajax_podskupiny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: ajax_roster_target_selector.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: ajax_sportovci.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: ajax_sportovec_poznamka.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed~\(0\|0\.0\|''''\|''0''\|array\{\}\|false\|null\) and ''0'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: ajax_sportovec_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: ajax_sportovec_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: ajax_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 19
+			path: ajax_update_plan.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: ajax_update_poznamka.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: athlete_sensitive_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: auditlog/seznam.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: auth_mail_admin.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 1
+			path: bin/club-migration.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''http\://localhost/evidencePavel'' and ''http\://127\.0\.0\.1…'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: bin/club-migration.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: bin/club-migration.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: bin/club-release-impact.php
+
+		-
+			message: '#^Call to function token_get_all\(\) on a separate line has no effect\.$#'
+			identifier: function.resultUnused
+			count: 1
+			path: bin/configure-production-bank.php
+
+		-
+			message: '#^Offset ''account_label'' on array\{iban\: string, bic\: string, account_label\: string, due_days\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/configure-production-bank.php
+
+		-
+			message: '#^Offset ''bic'' on array\{iban\: string, bic\: string, account_label\: string, due_days\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/configure-production-bank.php
+
+		-
+			message: '#^Offset ''due_days'' on array\{iban\: string, bic\: string, account_label\: string, due_days\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/configure-production-bank.php
+
+		-
+			message: '#^Offset ''iban'' on array\{iban\: string, bic\: string, account_label\: string, due_days\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/configure-production-bank.php
+
+		-
+			message: '#^Call to function token_get_all\(\) on a separate line has no effect\.$#'
+			identifier: function.resultUnused
+			count: 1
+			path: bin/configure-production-fio.php
+
+		-
+			message: '#^Offset ''auto_confirm'' on array\{token\: string, lookback_days\: int\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/configure-production-fio.php
+
+		-
+			message: '#^Offset ''start_date'' on array\{token\: string, lookback_days\: int\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/configure-production-fio.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: bin/configure-production-fio.php
+
+		-
+			message: '#^Call to function token_get_all\(\) on a separate line has no effect\.$#'
+			identifier: function.resultUnused
+			count: 1
+			path: bin/configure-production-stripe.php
+
+		-
+			message: '#^Call to function token_get_all\(\) on a separate line has no effect\.$#'
+			identifier: function.resultUnused
+			count: 1
+			path: bin/configure-production-sumup.php
+
+		-
+			message: '#^Comparison operation "\<" between 46 and 32 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: bin/deploy-preflight.php
+
+		-
+			message: '#^Call to function is_array\(\) with list\<string\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: bin/deploy-smoke.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: bin/deploy-smoke.php
+
+		-
+			message: '#^Variable \$http_response_header on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: bin/deploy-smoke.php
+
+		-
+			message: '#^Instanceof between null and PDO will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: bin/diagnose-production-packeta.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: bin/diagnose-production-packeta.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 2
+			path: bin/diagnose-production-packeta.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''http\://localhost…'' and ''https\://kis…'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: bin/diagnose-production-packeta.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: bin/diagnose-production-packeta.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 1
+			path: bin/diagnose-production-payment-gates.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''http\://localhost…'' and ''https\://kis…'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: bin/diagnose-production-payment-gates.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: bin/diagnose-production-payment-gates.php
+
+		-
+			message: '#^Call to function token_get_all\(\) on a separate line has no effect\.$#'
+			identifier: function.resultUnused
+			count: 1
+			path: bin/disable-production-stripe.php
+
+		-
+			message: '#^Constant B1_REWARD_RACE_DSN not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: bin/finance-b1-reward-concurrency.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: bin/migrate-private-files.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: bin/migrate-private-files.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: bin/migrate-private-files.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 4
+			path: bin/prepare-club-local-review.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''http\://localhost/evidencePavel'' and ''http\://127\.0\.0\.1…'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: bin/prepare-club-local-review.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: bin/prepare-club-local-review.php
+
+		-
+			message: '#^Constant APP_PRIVATE_STORAGE_ROOT not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: bin/probe-finance-b1-sandbox.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: bin/probe-finance-b1-sandbox.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''http\://localhost…'' and ''http\://127\.0\.0\.1…'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: bin/probe-finance-b1-sandbox.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: bin/production-accounting-audit.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 1
+			path: bin/production-accounting-audit.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''http\://localhost/evidencePavel'' and ''https\://kis…'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: bin/production-accounting-audit.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: bin/production-accounting-audit.php
+
+		-
+			message: '#^Offset ''changed'' on array\{order_id\: int, payment_status\: ''cancelled'', restocked_items\: int, changed\: bool\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/production-uat-order-guard.php
+
+		-
+			message: '#^Offset ''payment_status'' on array\{order_id\: int, payment_status\: string, restocked_items\: int, changed\: bool\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/production-uat-order-guard.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: bin/production-uat-readiness.php
+
+		-
+			message: '#^Call to function token_get_all\(\) on a separate line has no effect\.$#'
+			identifier: function.resultUnused
+			count: 2
+			path: bin/provision-production-private-storage.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: bin/provision-production-private-storage.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 1
+			path: bin/provision-production-private-storage.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''cli'' and ''cli'' will always evaluate to false\.$#'
+			identifier: notIdentical.alwaysFalse
+			count: 1
+			path: bin/provision-production-private-storage.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''http\://localhost…'' and ''https\://kis…'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: bin/provision-production-private-storage.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: bin/provision-production-private-storage.php
+
+		-
+			message: '#^Call to function is_string\(\) with non\-empty\-string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: bin/provision-production-test-admin.php
+
+		-
+			message: '#^Result of \|\| is always false\.$#'
+			identifier: booleanOr.alwaysFalse
+			count: 1
+			path: bin/provision-production-test-admin.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-empty\-string and '''' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: bin/provision-production-test-admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: bin/publish-shoptet-catalog-once.php
+
+		-
+			message: '#^Call to function is_string\(\) with non\-empty\-string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: bin/rotate-production-uat-passwords.php
+
+		-
+			message: '#^Offset 0 on array\{int, int\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: bin/seed-local-demo.php
+
+		-
+			message: '#^Offset 0 on array\{int, int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: bin/seed-local-demo.php
+
+		-
+			message: '#^Offset 1 on array\{int, int\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 2
+			path: bin/seed-local-demo.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: bin/sync-shoptet-catalog-once.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: bin/verify-shop-variable-symbols.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 1
+			path: bin/verify-shop-variable-symbols.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''http\://localhost…'' and ''https\://kis…'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: bin/verify-shop-variable-symbols.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: bin/verify-shop-variable-symbols.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: bookable_services_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/cyklisticke_krouzky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 32
+			path: booking/eshop.php
+
+		-
+			message: '#^Variable \$freeFormAction in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: booking/free_event_registration_form.php
+
+		-
+			message: '#^Variable \$freeFormEvent in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: booking/free_event_registration_form.php
+
+		-
+			message: '#^Variable \$freeFormPeople in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: booking/free_event_registration_form.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: booking/kalendar.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: booking/kalendar.php
+
+		-
+			message: '#^Offset ''created'' on array\{id\: int, status\: ''waitlisted'', payer_missing\: bool, charge_id\: int\|null\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: booking/klubovy_kalendar.php
+
+		-
+			message: '#^Offset ''created'' on array\{id\: int, status\: string, payer_missing\: bool, charge_id\: int\|null\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: booking/klubovy_kalendar.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 2
+			path: booking/klubovy_kalendar.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: booking/klubovy_kalendar.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 16
+			path: booking/krouzky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/moje_objednavky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: booking/moje_osoby.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: booking/moje_programy.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: booking/moje_rezervace.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: booking/muj_sport.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: booking/nahrady.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/nove_heslo.php
+
+		-
+			message: '#^Variable \$isGuestAccess might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: booking/objednavka.php
+
+		-
+			message: '#^Variable \$order might not be defined\.$#'
+			identifier: variable.undefined
+			count: 58
+			path: booking/objednavka.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: booking/objednavka.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/overeni.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/platba_predpisu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: booking/potvrdit.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: booking/prihlaseni.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: booking/produkt.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-list and array\{\} will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: booking/produkt.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 3
+			path: booking/produkt.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 19
+			path: booking/produkt.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/prvni_heslo.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: booking/registrace.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: booking/registrace_sportovce.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 24
+			path: booking/rezervovat.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/rodinny_kalendar.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: booking/rychla_prihlaska.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 14
+			path: booking/rychly_nakup.php
+
+		-
+			message: '#^Variable \$items might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/soupiskove_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: booking/soupiskove_treninky.php
+
+		-
+			message: '#^Variable \$people might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/soupiskove_treninky.php
+
+		-
+			message: '#^Variable \$person might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: booking/soupiskove_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/sportovec_odhlaseni.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: booking/sportovec_prihlaseni.php
+
+		-
+			message: '#^Offset ''sports_summary'' on array\{person\: array\<string, mixed\>, rosters\: list\<array\<string, mixed\>\>, events\: list\<array\<string, mixed\>\>, trainings\: list\<array\<string, mixed\>\>, member_charges\: list\<array\<string, mixed\>\>\} in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: booking/sportovni_prehled.php
+
+		-
+			message: '#^Variable \$annualPaidOverviewNext might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/sportovni_prehled.php
+
+		-
+			message: '#^Variable \$annualPaidOverviewPrevious might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/sportovni_prehled.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 26
+			path: booking/sportovni_prehled.php
+
+		-
+			message: '#^Variable \$today on left side of \?\?\= always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 2
+			path: booking/sportovni_prehled.php
+
+		-
+			message: '#^Variable \$weeklyNext might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/sportovni_prehled.php
+
+		-
+			message: '#^Variable \$weeklyPrevious might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/sportovni_prehled.php
+
+		-
+			message: '#^Constant STRIPE_SECRET_KEY not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: booking/stripe_webhook.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/stripe_webhook.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/sumup_webhook.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: booking/velodrom.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: booking/verejny_kalendar.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: booking/verejny_profil.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/zapomenute_heslo.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: booking/znovu_overit_email.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 17
+			path: club_calendar.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: club_communication_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 13
+			path: club_cutover_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: club_event_participants_export.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: club_event_work_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 25
+			path: club_expenses_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: club_finance_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: club_finance_receipt_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: club_makeup_policies_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: club_program_admissions_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: club_program_offers_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: club_program_settings_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: club_program_storefront_admin.php
+
+		-
+			message: '#^Call to function is_array\(\) with list\<array\<string, mixed\>\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: club_program_wizard_admin.php
+
+		-
+			message: '#^Offset ''products'' on array\{seasons\: list\<array\<string, mixed\>\>, teams\: list\<array\<string, mixed\>\>, categories\: list\<string\>, terms\: array\<string, list\<array\<string, mixed\>\>\>, products\: list\<array\<string, mixed\>\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: club_program_wizard_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: club_program_wizard_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: club_programs_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 18
+			path: club_rewards_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: coach_scope_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: cron_report_tyden.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: cron_upominky.php
+
+		-
+			message: '#^Variable \$errors in empty\(\) always exists and is always falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: cviky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: cviky.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: db.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: diagnostika_site_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: download_import.php
+
+		-
+			message: '#^Cannot assign new offset to string\.$#'
+			identifier: offsetAssign.dimType
+			count: 2
+			path: duplikovat_trenink.php
+
+		-
+			message: '#^Offset 1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11\|12 on array\{1\: ''Leden'', 2\: ''Únor'', 3\: ''Březen'', 4\: ''Duben'', 5\: ''Květen'', 6\: ''Červen'', 7\: ''Červenec'', 8\: ''Srpen'', \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: duplikovat_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: duplikovat_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 19
+			path: edit_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 13
+			path: edit_zavod_form.php
+
+		-
+			message: '#^Function shopAdminMoney invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: eshop_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: eshop_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: eshop_assisted_sale_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: eshop_attributes_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: eshop_bank_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: eshop_catalog_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: eshop_catalog_publication_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: eshop_categories_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: eshop_coupons_admin.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: eshop_events_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 23
+			path: eshop_events_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: eshop_fio_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 13
+			path: eshop_fulfillment_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 41
+			path: eshop_identity_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 15
+			path: eshop_inventory_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: eshop_member_prices_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: eshop_notifications_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: eshop_number_series_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: eshop_order_expiry_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: eshop_order_statuses_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 13
+			path: eshop_orders_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: eshop_packeta_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: eshop_payment_methods_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: eshop_payments_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: eshop_ppl_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: export.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: export_csv.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: export_draha.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: export_seznam.php
+
+		-
+			message: '#^Comparison operation "\>\=" between 0\|1 and 2 is always false\.$#'
+			identifier: greaterOrEqual.alwaysFalse
+			count: 1
+			path: export_uci.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: export_uci.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: export_xls.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: family_weekly_summaries_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: financial_decision_file.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: financial_decisions_admin.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 22
+			path: formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: formular_zavod.php
+
+		-
+			message: '#^Offset 1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11\|12 on array\{1\: ''ledna'', 2\: ''února'', 3\: ''března'', 4\: ''dubna'', 5\: ''května'', 6\: ''června'', 7\: ''července'', 8\: ''srpna'', \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: generuj_story.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: generuj_story.php
+
+		-
+			message: '#^Offset ''podskupina_id'' on array\{skupina_id\: ''''\|decimal\-int\-string, podskupina_id\: ''''\|decimal\-int\-string, sportovci\: array\<int, non\-empty\-string\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: google_sheets_linky.php
+
+		-
+			message: '#^Offset ''skupina_id'' on array\{skupina_id\: ''''\|decimal\-int\-string, podskupina_id\: ''''\|decimal\-int\-string, sportovci\: array\<int, non\-empty\-string\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: google_sheets_linky.php
+
+		-
+			message: '#^Offset ''sportovci'' on array\{skupina_id\: ''''\|decimal\-int\-string, podskupina_id\: ''''\|decimal\-int\-string, sportovci\: array\<int, non\-empty\-string\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: google_sheets_linky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 32
+			path: google_sheets_linky.php
+
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
+			count: 1
+			path: hlavicka.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: hlavicka.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: hromadne_odmeny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 31
+			path: hromadne_podskupiny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: identity_reviews_admin.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: includes/accounting_adjustments.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: includes/accounting_ledger.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: includes/athlete_registration_texts.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: includes/athlete_reward_guard.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: includes/athlete_training_timeline.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\{\} will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/auth_rate_limit.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/auth_rate_limit.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\{\}\) to function array_values is empty, call has no effect\.$#'
+			identifier: arrayValues.empty
+			count: 1
+			path: includes/auth_rate_limit.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 2
+			path: includes/auth_rate_limit.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/auto_migrace.php
+
+		-
+			message: '#^Offset ''date'' on array\{date\: string, title\: string, time\?\: string, meta\?\: string, href\?\: string, tone\?\: string, popover\?\: string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/calendar_ui.php
+
+		-
+			message: '#^Function clubCalendarFamilyRegister\(\) should return array\{id\: int, status\: string, payer_missing\: bool, charge_id\: int\|null\} but returns array\{id\: int, status\: string, created\: bool\}\.$#'
+			identifier: return.type
+			count: 1
+			path: includes/club_calendar.php
+
+		-
+			message: '#^PHPDoc tag @return has invalid value \(array\{program_cancellation\:array\{id\:int,text\:string,approved\:bool,dummy\:bool\},program_consent\:array\{id\:int,text\:string,approved\:bool,dummy\:bool\>\}\)\: Unexpected token "\:", expected ''\}'' at offset 105 on line 1$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: includes/club_catalog_import.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: includes/club_cutover.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<int\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: includes/club_event_roster_target.php
+
+		-
+			message: '#^Function clubEventRegistrationAudit invoked with 9 parameters, 8 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: includes/club_event_shop.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: includes/club_migration.php
+
+		-
+			message: '#^Offset ''opening_minor'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/club_migration_finance.php
+
+		-
+			message: '#^Offset ''coach_source_ids'' on array\{participant_source_ids\?\: non\-empty\-array\<string, array\>, coach_source_ids\: non\-empty\-array\<string, array\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/club_migration_sports.php
+
+		-
+			message: '#^Comparison operation "\>" between 4 and 1 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 1
+			path: includes/club_program.php
+
+		-
+			message: '#^Function clubProgramPhysicalTeamIds\(\) should return array\{active_enrollment_count\: int, held_order_count\: int, occupied_count\: int, available_count\: int\|null\} but returns array\{int\<1, max\>\}\.$#'
+			identifier: return.type
+			count: 2
+			path: includes/club_program.php
+
+		-
+			message: '#^Function clubProgramPhysicalTeamIds\(\) should return array\{active_enrollment_count\: int, held_order_count\: int, occupied_count\: int, available_count\: int\|null\} but returns array\{\}\.$#'
+			identifier: return.type
+			count: 1
+			path: includes/club_program.php
+
+		-
+			message: '#^Offset 0 on array\{active_enrollment_count\: int, held_order_count\: int, occupied_count\: int, available_count\: int\|null\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/club_program.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: includes/club_program.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: includes/club_program_wizard.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 2
+			path: includes/club_registration_consent_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: includes/club_registration_consent_page.php
+
+		-
+			message: '#^Function clubTocnaciSplitSource\(\) should return array\{program\: array\<string, mixed\>, offers\: list\<array\<string, mixed\>\>, terms\: array\<string, array\<string, mixed\>\>, import_product_id\: int\} but returns array\{program\: non\-empty\-array, offers\: non\-empty\-array\<string, mixed\>, terms\: array\{program_cancellation\: array\<string, mixed\>\|null, program_consent\: array\<string, mixed\>\|null\}, import_product_id\: 154\}\.$#'
+			identifier: return.type
+			count: 1
+			path: includes/club_tocnaci_split.php
+
+		-
+			message: '#^Offset ''first_half'' does not exist on list\<array\<string, mixed\>\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: includes/club_tocnaci_split.php
+
+		-
+			message: '#^Offset ''second_half'' does not exist on list\<array\<string, mixed\>\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: includes/club_tocnaci_split.php
+
+		-
+			message: '#^Match expression does not handle remaining values\: int\<min, 156\>\|int\<160, max\>$#'
+			identifier: match.unhandled
+			count: 1
+			path: includes/club_youngest_prepare.php
+
+		-
+			message: '#^Variable \$familyTasks might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: includes/family_tasks_view.php
+
+		-
+			message: '#^Variable \$familyTasksError might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/family_tasks_view.php
+
+		-
+			message: '#^Offset 1 on array\{0\: non\-empty\-string, 1\: ''''\|''\-'', 2\: numeric\-string, 3\?\: numeric\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/fio_readonly_import.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: includes/fio_readonly_import.php
+
+		-
+			message: '#^Offset 1 on array\{non\-falsy\-string, string, non\-empty\-string, string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/html_sanitizer.php
+
+		-
+			message: '#^Offset 3 on array\{non\-falsy\-string, string, non\-empty\-string, string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/html_sanitizer.php
+
+		-
+			message: '#^Offset 1 on array\{0\: non\-empty\-string, 1\: ''''\|''\+''\|''\-'', 2\: numeric\-string, 3\?\: numeric\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/kis_import_parity_report.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: includes/kis_import_run_lib.php
+
+		-
+			message: '#^Offset 1 on array\{non\-falsy\-string, '''', '''', non\-falsy\-string&numeric\-string, non\-falsy\-string&numeric\-string\}\|array\{non\-falsy\-string, non\-falsy\-string&numeric\-string, non\-falsy\-string&numeric\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/kis_legacy_rosters.php
+
+		-
+			message: '#^Offset 2 on array\{non\-falsy\-string, '''', '''', non\-falsy\-string&numeric\-string, non\-falsy\-string&numeric\-string\}\|array\{non\-falsy\-string, non\-falsy\-string&numeric\-string, non\-falsy\-string&numeric\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/kis_legacy_rosters.php
+
+		-
+			message: '#^Offset ''_match_score'' on array\{id\: int, jmeno\: string, prijmeni\: string, narozeni\: mixed, uciid\: string, _match_score\: 60\|85\|95\|100, _match_reason\: literal\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 2
+			path: includes/kis_match_lib.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/kis_parity_contract.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\<non\-empty\-array\<true\>\>\) to function array_filter does not contain falsy values, the array will always stay the same\.$#'
+			identifier: arrayFilter.same
+			count: 1
+			path: includes/kis_person_cutover.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<int\|string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: includes/kis_sync_lib.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<string, string\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/localhost_acceptance_hub.php
+
+		-
+			message: '#^Function localhostAcceptanceScenarios\(\) should return list\<array\{id\: string, role\: string, area\: string, status\: string, steps\: list\<string\>, expected\: string, note\: string, links\: list\<array\{label\: string, path\: string, scope\: string\}\>\}\> but returns array\{array\{id\: ''A01'', role\: ''Rodič'', area\: ''Zákaznická část'', declared_status\: ''ready'', steps\: array\{''Přihlaste se…'', ''Otevřete Moje osoby…'', ''Zkontrolujte obě…''\}, expected\: ''Rodič vidí právě…'', note\: ''Použijte…'', links\: array\{array\{label\: ''Přihlášení zákazníka'', path\: ''booking/prihlaseni…'', scope\: ''customer''\}, array\{label\: ''Moje osoby'', path\: ''booking/moje_osoby…'', scope\: ''customer''\}, array\{label\: ''Sportovní přehled'', path\: ''booking/sportovni…'', scope\: ''customer''\}\}\}, array\{id\: ''A02'', role\: ''Dítě'', area\: ''Sportovní část'', declared_status\: ''ready'', steps\: array\{''Přihlaste se…'', ''Otevřete Můj sport\.'', ''Ověřte, že nejsou…''\}, expected\: ''Dítě vidí jen…'', note\: ''Seed vytváří jeden…'', links\: array\{array\{label\: ''Přihlášení sportovce'', path\: ''booking/sportovec…'', scope\: ''customer''\}, array\{label\: ''Můj sport'', path\: ''booking/muj_sport…'', scope\: ''customer''\}\}\}, array\{id\: ''A03'', role\: ''Rodič'', area\: ''Zákaznická část'', declared_status\: ''ready'', steps\: array\{''V e\-shopu vložte…'', ''Jako příjemce…'', ''Dokončete…''\}, expected\: ''Objednávka patří…'', note\: ''Nevybírejte druhé…'', links\: array\{array\{label\: ''E\-shop'', path\: ''booking/eshop\.php'', scope\: ''customer''\}, array\{label\: ''Moje objednávky'', path\: ''booking/moje…'', scope\: ''customer''\}\}\}, array\{id\: ''A04'', role\: ''Administrátor'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''V objednávkách…'', ''Ručně potvrďte…'', ''Zkontrolujte…''\}, expected\: ''Vznikne právě jedna…'', note\: ''Přepnutí role…'', links\: array\{array\{label\: ''Objednávky'', path\: ''eshop_orders_admin…'', scope\: ''admin''\}, array\{label\: ''Programy'', path\: ''club_programs_admin…'', scope\: ''admin''\}, array\{label\: ''Soupisky'', path\: ''kis_rosters_admin…'', scope\: ''admin''\}\}\}, array\{id\: ''A05'', role\: ''Administrátor'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''V průvodci vyberte…'', ''Zkontrolujte náhled…'', ''Proveďte potvrzený…''\}, expected\: ''Sportovec zůstane…'', note\: ''Průvodce zachovává…'', links\: array\{array\{label\: ''Průvodce přechodem'', path\: ''kis_transition…'', scope\: ''admin''\}, array\{label\: ''Soupisky a rollover'', path\: ''kis_rosters_admin…'', scope\: ''admin''\}\}\}, array\{id\: ''A06'', role\: ''Administrátor'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''Vyberte demo…'', ''Nejprve…'', ''Teprve potom…''\}, expected\: ''Věkový člen se…'', note\: ''Proveďte pouze nad…'', links\: array\{array\{label\: ''Průvodce A06'', path\: ''kis_rollover_a06…'', scope\: ''admin''\}, array\{label\: ''Soupisky a rollover'', path\: ''kis_rosters_admin…'', scope\: ''admin''\}\}\}, array\{id\: ''A07'', role\: ''Trenér'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''Otevřete testovací…'', ''Zkontrolujte cílové…'', ''Zapište skutečnou…''\}, expected\: ''Očekávaní účastníci…'', note\: ''Používejte jen…'', links\: array\{array\{label\: ''Průvodce A07'', path\: ''kis_training_a07…'', scope\: ''admin''\}, array\{label\: ''Plánovač tréninků'', path\: ''planovac\.php'', scope\: ''admin''\}, array\{label\: ''Sportovní přehled'', path\: ''booking/sportovni…'', scope\: ''customer''\}\}\}, array\{id\: ''A08'', role\: ''Rodič'', area\: ''Zákaznická část'', declared_status\: ''ready'', steps\: array\{''Otevřete cílené…'', ''Vyberte oprávněné…'', ''Přihlášku odešlete…''\}, expected\: ''Vznikne právě jedna…'', note\: ''Neoprávněné dítě…'', links\: array\{array\{label\: ''Klubové události'', path\: ''booking/krouzky\.php'', scope\: ''customer''\}\}\}, \.\.\.\}\.$#'
+			identifier: return.type
+			count: 1
+			path: includes/localhost_acceptance_hub.php
+
+		-
+			message: '#^Variable \$currentPeriod might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/member_fee_agreement_fields.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: includes/member_fee_agreement_fields.php
+
+		-
+			message: '#^Variable \$plan might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/member_fee_agreement_fields.php
+
+		-
+			message: '#^Variable \$selectedPlan might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: includes/member_fee_agreement_fields.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: includes/member_fee_plan.php
+
+		-
+			message: '#^Variable \$caseError might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/operational_cases_view.php
+
+		-
+			message: '#^Variable \$caseMessage might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/operational_cases_view.php
+
+		-
+			message: '#^Variable \$jobs might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/operational_cases_view.php
+
+		-
+			message: '#^Variable \$owners might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/operational_cases_view.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/password_security.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/person_sensitive.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: includes/person_sensitive.php
+
+		-
+			message: '#^Variable \$editContext might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/person_workflow_view.php
+
+		-
+			message: '#^Variable \$editPerson might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/person_workflow_view.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/person_workflow_view.php
+
+		-
+			message: '#^Offset 0 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/private_storage.php
+
+		-
+			message: '#^Offset 1 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/private_storage.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: includes/private_storage.php
+
+		-
+			message: '#^Offset ''uid'' on array\{0\: int, 1\: int, 2\: int, 3\: int, 4\: int, 5\: int, 6\: int, 7\: int, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: includes/private_storage_readiness.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: includes/private_storage_readiness.php
+
+		-
+			message: '#^Offset 0 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/secure_upload.php
+
+		-
+			message: '#^Offset 1 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/secure_upload.php
+
+		-
+			message: '#^Call to function is_int\(\) with int will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/shop_admin_catalog.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 17
+			path: includes/shop_admin_page.php
+
+		-
+			message: '#^Variable \$definitions might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$detail might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$page might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$product might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$productId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 19
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$screen might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$tab might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$variant might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Variable \$variantId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/shop_admin_templates.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/shop_catalog_migration_assets.php
+
+		-
+			message: '#^Offset 0 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_catalog_migration_assets.php
+
+		-
+			message: '#^Offset 1 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_catalog_migration_assets.php
+
+		-
+			message: '#^Offset 1 on array\{0\: non\-empty\-string, 1\: ''''\|''\-'', 2\: numeric\-string, 3\?\: numeric\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_catalog_one_time_sync.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: includes/shop_catalog_promotion.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\{''goods'', ''program'', ''club_event'', ''camp'', ''bookable_service'', ''bookable_rental'', ''rental'', ''custom_quote''\}\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: includes/shop_catalog_review.php
+
+		-
+			message: '#^Comparison operation "\<" between int\<0, max\> and 0 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: includes/shop_checkout.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: includes/shop_checkout.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: includes/shop_coupon.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: includes/shop_inventory.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<1, 99999\> and 99999 is always false\.$#'
+			identifier: greater.alwaysFalse
+			count: 1
+			path: includes/shop_number_series.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: includes/shop_number_series.php
+
+		-
+			message: '#^Offset ''byte_size'' on array\{image_url\: string, sha256_hex\: string, byte_size\: int, mime_type\: string, width_px\: int, height_px\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_product_image.php
+
+		-
+			message: '#^Offset ''image_url'' on array\{image_url\: string, sha256_hex\: string, byte_size\: int, mime_type\: string, width_px\: int, height_px\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_product_image.php
+
+		-
+			message: '#^Offset ''mime_type'' on array\{image_url\: string, sha256_hex\: string, byte_size\: int, mime_type\: string, width_px\: int, height_px\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_product_image.php
+
+		-
+			message: '#^Offset ''sha256_hex'' on array\{image_url\: string, sha256_hex\: string, byte_size\: int, mime_type\: string, width_px\: int, height_px\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_product_image.php
+
+		-
+			message: '#^Offset 0 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_product_image.php
+
+		-
+			message: '#^Offset 1 on array\{0\: int\<0, max\>, 1\: int\<0, max\>, 2\: int, 3\: string, mime\: string, channels\?\: int, bits\?\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/shop_product_image.php
+
+		-
+			message: '#^Match expression does not handle remaining values\: int\<min, 156\>\|int\<160, max\>$#'
+			identifier: match.unhandled
+			count: 1
+			path: includes/shop_purchase_mode.php
+
+		-
+			message: '#^Variable \$systemDraft might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/shop_system_email_admin_view.php
+
+		-
+			message: '#^Variable \$systemPreview might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/shop_system_email_admin_view.php
+
+		-
+			message: '#^Parameter &\$values by\-ref type of method ShoptetProductXml\:\:addNumberedValues\(\) expects array\<string, string\>, array\<string, mixed\> given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: includes/shoptet_product_xml.php
+
+		-
+			message: '#^Variable \$editContext might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: includes/sportovec_editor_parents_view.php
+
+		-
+			message: '#^Variable \$editError might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/sportovec_editor_parents_view.php
+
+		-
+			message: '#^Variable \$editId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: includes/sportovec_editor_parents_view.php
+
+		-
+			message: '#^Variable \$editContext might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sportovec_editor_payments_view.php
+
+		-
+			message: '#^Variable \$editId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sportovec_editor_payments_view.php
+
+		-
+			message: '#^Variable \$editContext might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sportovec_editor_rosters_view.php
+
+		-
+			message: '#^Variable \$editId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: includes/sportovec_editor_rosters_view.php
+
+		-
+			message: '#^Variable \$editContext might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: includes/sportovec_editor_view.php
+
+		-
+			message: '#^Variable \$editError might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sportovec_editor_view.php
+
+		-
+			message: '#^Variable \$editId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: includes/sportovec_editor_view.php
+
+		-
+			message: '#^Variable \$editInput might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sportovec_editor_view.php
+
+		-
+			message: '#^Variable \$revealed might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sportovec_editor_view.php
+
+		-
+			message: '#^Variable \$error might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Variable \$eventChoices might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Variable \$eventForm might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Variable \$eventId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Variable \$eventSearch might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Variable \$from might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Variable \$personId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Variable \$to might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: includes/sports_activity_form_view.php
+
+		-
+			message: '#^Offset ''hours'' on array\{0\: non\-falsy\-string, hours\: ''''\|numeric\-string, 1\: ''''\|numeric\-string, minutes\: ''''\|\(non\-falsy\-string&numeric\-string\), 2\: ''''\|\(non\-falsy\-string&numeric\-string\), total_minutes\: ''''\|numeric\-string, 3\: ''''\|numeric\-string, seconds\: non\-falsy\-string&numeric\-string, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: includes/sports_measurement_contract.php
+
+		-
+			message: '#^Offset ''minutes'' on array\{0\: non\-falsy\-string, hours\: ''''\|numeric\-string, 1\: ''''\|numeric\-string, minutes\: ''''\|\(non\-falsy\-string&numeric\-string\), 2\: ''''\|\(non\-falsy\-string&numeric\-string\), total_minutes\: '''', 3\: ''''\|numeric\-string, seconds\: non\-falsy\-string&numeric\-string, \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/sports_measurement_contract.php
+
+		-
+			message: '#^Offset ''total_minutes'' on array\{0\: non\-falsy\-string, hours\: ''''\|numeric\-string, 1\: ''''\|numeric\-string, minutes\: ''''\|\(non\-falsy\-string&numeric\-string\), 2\: ''''\|\(non\-falsy\-string&numeric\-string\), total_minutes\: ''''\|numeric\-string, 3\: ''''\|numeric\-string, seconds\: non\-falsy\-string&numeric\-string, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: includes/sports_measurement_contract.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/sports_measurement_input.php
+
+		-
+			message: '#^Offset 1 on array\{non\-falsy\-string, ''live''\|''test''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 2
+			path: includes/stripe_gateway.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/sumup_gateway.php
+
+		-
+			message: '#^Variable \$excusePerson might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/training_day_view.php
+
+		-
+			message: '#^Variable \$lessonChoices might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/training_day_view.php
+
+		-
+			message: '#^Variable \$lessonOn might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/training_day_view.php
+
+		-
+			message: '#^Variable \$lessonSearch might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/training_day_view.php
+
+		-
+			message: '#^Variable \$plan might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/training_day_view.php
+
+		-
+			message: '#^Variable \$training might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: includes/training_day_view.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 2
+			path: includes/training_roster_bridge.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: includes/training_rsvp.php
+
+		-
+			message: '#^Offset ''available'' on array\{available\: false\}\|array\{available\: true, counts\: array\{pending\: int, processing\: int, sent\: int, failed\: int, cancelled\: int\}, due\: int, stale_processing\: int, oldest_pending_age_seconds\: int\<0, max\>\|null\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/transactional_notification_worker.php
+
+		-
+			message: '#^Offset 1\|2\|3\|4\|5\|6\|7 on array\{1\: ''Pondělí'', 2\: ''Úterý'', 3\: ''Středa'', 4\: ''Čtvrtek'', 5\: ''Pátek'', 6\: ''Sobota'', 7\: ''Neděle''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/ui_format.php
+
+		-
+			message: '#^Offset 1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11\|12 on array\{1\: ''leden'', 2\: ''únor'', 3\: ''březen'', 4\: ''duben'', 5\: ''květen'', 6\: ''červen'', 7\: ''červenec'', 8\: ''srpen'', \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/ui_format.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: includes/unified_account.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 3
+			path: index.php
+
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
+			count: 3
+			path: index.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: index.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: index.php
+
+		-
+			message: '#^Ternary operator condition is always false\.$#'
+			identifier: ternary.alwaysFalse
+			count: 5
+			path: index.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: index.php
+
+		-
+			message: '#^Variable \$statPendingPlans on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: index.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 13
+			path: individualni_lekce_form.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 29
+			path: individualni_lekce_sprava.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: jizdy/formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: jizdy/seznam.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: jizdy/smazat.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed~\(0\|0\.0\|''''\|''0''\|array\{\}\|false\|null\) and ''0'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: jizdy/uloz.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: jizdy/uloz.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: kalendar_sportovist.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: kis_child_access_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: kis_current_rosters_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: kis_legacy_rosters_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: kis_person_import_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: kis_rollover_a06_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 11
+			path: kis_roster_hierarchy_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: kis_roster_settings_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 13
+			path: kis_rosters_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: kis_sync_center.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: kis_training_a07_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: kis_transition_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: list.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: login.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: medical_activity_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: medical_clearance_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: medical_clearance_file.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: medical_clearance_status.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: member_charge_reminders_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: member_charges_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: member_engagement_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: member_fee_annual_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 11
+			path: member_fee_plans_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: member_payer_receipts_admin.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: migrations/20260804235000_club_program_repeat_enrollment.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: migrations/20260804235500_public_profile_token_rotation.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: migrations/20260816200000_shop_manual_catalog_origin.php
+
+		-
+			message: '#^Variable \$row might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: migrations/20260922190000_member_fee_standing_orders.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: migrations/20261020230000_athlete_editor_relations.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: migrations/20261021090000_roster_hierarchy_temporal.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: migrations/20261023010100_offline_program_admissions.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: migrations/20261023210000_family_course_cart.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: moje_skupiny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: moje_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: nacti_podskupiny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: nacti_skupiny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: nastaveni_opravneni.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: nastaveni_story.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: nastaveni_zadavani.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: nova_cinnost.php
+
+		-
+			message: '#^Offset ''podskupiny'' on array\{skupiny\: list\<int\>, podskupiny\: list\<int\>, sportovci\: list\<int\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: oznameni.php
+
+		-
+			message: '#^Offset ''skupiny'' on array\{skupiny\: list\<int\>, podskupiny\: list\<int\>, sportovci\: list\<int\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: oznameni.php
+
+		-
+			message: '#^Offset ''sportovci'' on array\{skupiny\: list\<int\>, podskupiny\: list\<int\>, sportovci\: list\<int\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: oznameni.php
+
+		-
+			message: '#^Offset 3 on array\{non\-falsy\-string, string, non\-empty\-string, string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: oznameni.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 17
+			path: oznameni.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: paper_registration_file.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: paper_registrations_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: person_audit_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: person_lifecycle_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 41
+			path: planovac.php
+
+		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 1
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^Variable \$jeVerejny on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 40
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^Variable \$podskupinyIds in empty\(\) always exists and is always falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^Variable \$podskupinyIds on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^Variable \$teamIds on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: planovany_trenink_form.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: pracovni_pozice.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between float and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: prehled_kreditu.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between int and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: prehled_kreditu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: prehled_kreditu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: prehled_podskupin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: prehled_popisu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: prehled_skupin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: prehled_skupina.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: prehled_skupiny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: prehled_sportovcu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: prehled_stories.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: prehled_trenera.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: prehled_treninku_skupiny_kalendar.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: prehled_vsech_vykazu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: prehled_zavodu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: prepnout_pracovni_pozici.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: private_download.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: program_skupiny.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: provozni_prehled_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: public_profile_access.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: push_subscribe.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: registration_texts_admin.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: rezervovat_sportoviste.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 1
+			path: rezervovat_sportoviste.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 29
+			path: rezervovat_sportoviste.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: roster_messages_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: search_sportovci.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: season_preparation_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: servis/formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: servis/seznam.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: servis/smazat.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: servis/uloz.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: shop_product_interests_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 21
+			path: shop_returns_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: shop_stock_document.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: sitemap.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 14
+			path: smazat_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 14
+			path: sportovci_hromadne.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 2
+			path: sportovec_detail.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed~\(0\|0\.0\|''''\|''0''\|array\{\}\|false\|null\) and ''0'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: sportovec_detail.php
+
+		-
+			message: '#^Variable \$errors in empty\(\) always exists and is always falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: sportovec_detail.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 16
+			path: sportovec_detail.php
+
+		-
+			message: '#^Variable \$statCelkemZavodu might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: sportovec_detail.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 15
+			path: sportovec_karta.php
+
+		-
+			message: '#^Offset 1\|2\|3\|4\|5\|6\|7 on array\{1\: ''Pondělí'', 2\: ''Úterý'', 3\: ''Středa'', 4\: ''Čtvrtek'', 5\: ''Pátek'', 6\: ''Sobota'', 7\: ''Neděle''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: sportovec_treninky.php
+
+		-
+			message: '#^Offset 3 on array\{non\-falsy\-string, string, non\-empty\-string, string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: sportovec_treninky.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed~\(0\|0\.0\|''''\|''0''\|array\{\}\|false\|null\) and ''0'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: sportovec_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 24
+			path: sportovec_treninky.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: sports_activity_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: sports_activity_export.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: sports_data_quality_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: sports_import_review_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: sprava_podskupin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 32
+			path: sprava_pracovnich_pozic.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 14
+			path: sprava_segmentu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: sprava_skupin.php
+
+		-
+			message: '#^Variable \$dir on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: sprava_sportovcu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 25
+			path: sprava_sportovcu.php
+
+		-
+			message: '#^Variable \$sort on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: sprava_sportovcu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: sprava_sportovec_obdobi.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: sprava_sportovist.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 14
+			path: sprava_treneru.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: sprava_treninku.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: sprava_vsech_treninku.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: sprava_zavodu.php
+
+		-
+			message: '#^Comparison operation "\>" between 1\|2 and 3 is always false\.$#'
+			identifier: greater.alwaysFalse
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Comparison operation "\>" between 2\|3 and 1 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Offset ''name'' on array\{name\: string, index\: int, crc\: int, size\: int, mtime\: int, comp_size\: int, comp_method\: int, encryption_method\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Offset ''size'' on array\{name\: string, index\: int, crc\: int, size\: int, mtime\: int, comp_size\: int, comp_method\: int, encryption_method\: int\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 3
+			path: sync_evidence.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between null and null will always evaluate to false\.$#'
+			identifier: notIdentical.alwaysFalse
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between 1\|2 and 4 will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between 1\|2\|3 and 4 will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: sync_evidence.php
+
+		-
+			message: '#^Variable \$narozeni on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: sync_evidence.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 9
+			path: sync_evidence.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: testovaci_scenare.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: testovaci_scenare.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 16
+			path: training_closure_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 21
+			path: training_rsvps_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: tydenni_report.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: uat_readiness_admin.php
+
+		-
+			message: '#^Variable \$expenseCase might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: uctenky/formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: uctenky/formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: uctenky/seznam.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: uctenky/smazat.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 14
+			path: uctenky/uloz.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: udalosti/formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: udalosti/seznam.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: udalosti/smazat.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 11
+			path: udalosti/uloz.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: udalosti/uzavrit.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: udalosti/vyuctovat.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between null and '''' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 3
+			path: ulozit_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 42
+			path: ulozit_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 10
+			path: ulozit_zatezovy_test.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 15
+			path: ulozit_zavod.php
+
+		-
+			message: '#^Call to function ctype_digit\(\) with \*NEVER\* will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: update_trenink.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\{\} will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: update_trenink.php
+
+		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 1
+			path: update_trenink.php
+
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
+			count: 1
+			path: update_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 40
+			path: update_trenink.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 26
+			path: update_zavod.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: verejny_prehled.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: verejny_velodrom_admin.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: vozidla/formular.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: vozidla/seznam.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 11
+			path: vozidla/smazat.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: vozidla/uloz.php
+
+		-
+			message: '#^Offset 1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11\|12 on array\{1\: ''leden'', 2\: ''únor'', 3\: ''březen'', 4\: ''duben'', 5\: ''květen'', 6\: ''červen'', 7\: ''červenec'', 8\: ''srpen'', \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: vypis_vykazu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: vypis_vykazu.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: weekly_report_file.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: zatezovy_test_form.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed~\(0\|0\.0\|''''\|''0''\|array\{\}\|false\|null\) and ''0'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: zavod_detail.php
+
+		-
+			message: '#^Variable \$pdo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: zavod_detail.php

@@ -31,3 +31,12 @@ checksumem `sha256('legacy-schema:2.20.2')` jako dukaz baseline.
 
 Pred pouzitim CLI musi byt explicitne nastavene `APP_HOST`, napriklad
 `APP_HOST=localhost php bin/migrate.php --check`.
+
+## Čitelnost nových migrací
+
+Nové migrace musí projít PSR-12 a kontrolou změněných PHP souborů
+(`composer style:check`): nejvýše 200 znaků na řádek, těla podmínek a smyček
+ve složených závorkách, jeden srozumitelný krok na řádek. `composer style:fix`
+upravuje pouze soubory změněné proti `origin/main`. Existující migrace jsou
+neměnné kvůli checksumům: chybu opravuje nová následná migrace, nikdy přepis
+aplikované migrace. PHPStan úrovně 5 hlídá nové chyby nad commitnutou baseline.

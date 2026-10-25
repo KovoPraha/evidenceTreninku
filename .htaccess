@@ -1,6 +1,6 @@
 Options -Indexes
 
-<FilesMatch "(^\.|^(?:config|db|csrf_helper)\.php$|\.sql$|\.log$|\.zip$|\.bak$|\.old$|\.php3$|composer\.(json|lock)$|CLAUDE\.md$|INSTALACE\.txt$)">
+<FilesMatch "(^\.|^(?:config|db|csrf_helper)\.php$|\.sql$|\.log$|\.zip$|\.bak$|\.old$|\.php3$|composer\.(json|lock)$|phpstan[^/]*\.neon(?:\.dist)?$|CLAUDE\.md$|INSTALACE\.txt$)">
     Require all denied
 </FilesMatch>
 

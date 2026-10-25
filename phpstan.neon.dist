@@ -1,0 +1,25 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    phpVersion: 80200
+    paths:
+        - .
+    excludePaths:
+        analyseAndScan:
+            - vendor
+            - tests
+            - docs
+            - output
+            - outputs
+            - .git
+            - .phpstan-cache
+            - config.php (?)
+    bootstrapFiles:
+        - tools/phpstan-bootstrap.php
+    scanDirectories:
+        - includes
+    tmpDir: .phpstan-cache
+    parallel:
+        maximumNumberOfProcesses: 2

@@ -284,6 +284,9 @@ jobs:
             --exclude='loga_story/' \
             --exclude='reports/' \
             --exclude='output/' \
+            --exclude='phpstan*.neon*' \
+            --exclude='.phpstan-cache/' \
+            --exclude='.php-cs-fixer*' \
             --exclude='bin/zalohy/' \
             --exclude='tests/' \
             --exclude='phpunit.xml*' \
@@ -379,6 +382,9 @@ jobs:
               --exclude='loga_story/' \\
               --exclude='reports/' \\
               --exclude='output/' \\
+              --exclude='phpstan*.neon*' \\
+              --exclude='.phpstan-cache/' \\
+              --exclude='.php-cs-fixer*' \\
               --exclude='bin/zalohy/' \\
               --exclude='*.log' \\
               '$RELEASE_DIR/' '$REMOTE_DIR/'
