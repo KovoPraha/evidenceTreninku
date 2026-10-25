@@ -13,3 +13,29 @@ uctenky/vypis_vykazu (4) - kopie.php
 udalosti/vypis_vykazu (4) - kopie.php
 vozidla/vypis_vykazu (3) - kopie.php
 vozidla/vypis_vykazu (4) - kopie.php
+
+# Rollback of club integration: remove only new code, never data or preserved migrations.
+club_communication_admin.php
+club_event_work_admin.php
+includes/club_administration.php
+includes/club_administration_view.php
+includes/club_communication.php
+includes/club_event_work.php
+includes/club_transition_map.php
+includes/club_transition_view.php
+includes/family_tasks.php
+includes/family_tasks_view.php
+includes/medical_activity.php
+includes/person_lifecycle.php
+includes/person_workflow.php
+includes/person_workflow_view.php
+includes/season_preparation.php
+includes/sports_activity_form.php
+includes/sports_activity_form_view.php
+includes/staff_agenda_lists.php
+includes/staff_record_list.php
+includes/training_day.php
+includes/training_day_view.php
+medical_activity_admin.php
+person_lifecycle_admin.php
+season_preparation_admin.php

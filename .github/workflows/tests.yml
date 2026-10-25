@@ -89,6 +89,9 @@ jobs:
       - name: Ověřit skutečnou Evidence zálohu na MariaDB
         run: php tests/Support/DatabaseBackupMariaDbSmoke.php
 
+      - name: Ověřit kompatibilitu návratu s novou migrací VS
+        run: php tests/Support/PaymentVariableSymbolMariaDbSmoke.php
+
       - name: Ověřit souběžný idempotentní checkout na MariaDB
         run: php tests/Support/ShopCheckoutMariaDbSmoke.php
 
