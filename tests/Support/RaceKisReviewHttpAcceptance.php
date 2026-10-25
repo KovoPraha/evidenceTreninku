@@ -112,4 +112,3 @@ dwCheck(str_contains($page['body'],'Přímá synchronizace byla bezpečně vyřa
 dwCheck($before===$pdo->query('SELECT * FROM race_result_revisions ORDER BY id')->fetchAll(),'Negative HTTP checks did not modify results');
 foreach($canonicalBefore as $table=>$rows)dwCheck($rows===$pdo->query('SELECT * FROM '.$table.' ORDER BY id')->fetchAll(),'Negative HTTP checks did not modify '.$table);
 echo json_encode(['status'=>'PASS','checks'=>count($checks),'evidence'=>$checks,'production_writes'=>false],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).PHP_EOL;
-

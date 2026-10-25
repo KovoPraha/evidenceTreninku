@@ -33,6 +33,7 @@ final class RaceResultsTest extends TestCase {
   self::assertCount(4,\raceResultsRevision($p,1,$pub['id'])['rows']);
   self::assertSame(3,(int)$p->query('SELECT COUNT(*) FROM race_participants')->fetchColumn());
   self::assertSame(1,(int)$p->query('SELECT COUNT(*) FROM sportovci')->fetchColumn());
+  try{\raceResultsWrite($p,1,7,true,2,'published',$rows,'Publish without draft',str_repeat('e',32));self::fail('Expected draft requirement');}catch(\DomainException){self::assertSame(2,(int)\raceResultsState($p,1)['version']);}
   $rows[0]['time']='00:11.999';\raceResultsWrite($p,1,7,true,2,'draft',$rows,'Oprava času',str_repeat('c',32));
   self::assertSame($pub['id'],(int)\raceResultsState($p,1)['published_revision_id']);
   \raceResultsWrite($p,1,7,true,3,'draft',\raceResultsRevision($p,1,$draft['id'])['rows'],'Návrat původního času',str_repeat('d',32));
@@ -55,6 +56,8 @@ final class RaceResultsTest extends TestCase {
   $valid=$rows;$valid[2]['status']='dsq';$valid[3]['discipline']='Keirin';
   self::assertSame('dsq',\raceResultsNormalize($p,1,$valid)[2]['status']);
   self::assertSame('Keirin',\raceResultsNormalize($p,1,$valid)[3]['discipline']);
+  $caseCollision=$rows;$caseCollision[2]['key']='EXT:A';
+  try{\raceResultsNormalize($p,1,$caseCollision);self::fail('Expected case collision');}catch(\InvalidArgumentException){self::assertSame(1,(int)\raceResultsState($p,1)['version']);}
   self::assertSame(\raceResultsNormalize($p,1,$rows),\raceResultsNormalize($p,1,\raceResultsParseCsv(\raceResultsCsv($rows))));
   $this->expectException(\InvalidArgumentException::class);\raceResultsParseCsv("name;time\nSomeone;01:00");
  }

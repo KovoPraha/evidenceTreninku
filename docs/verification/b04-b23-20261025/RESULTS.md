@@ -72,7 +72,7 @@ node --test tests/Support/PlannerJavascriptSmoke.cjs tests/Support/TrainingEditJ
 
 MariaDB smoke vytváří a uklízí pouze náhodnou vlastní databázi; lokálně `EVIDENCE_MARIADB_SMOKE_PORT=33437`, v CI výchozí 3306. HTTP scénář je záměrně vázán na výše uvedený syntetický runtime a odmítne jiný owner, host, datadir či chybějící fixtures. Vytváří pouze syntetického trenéra pro negativní přístupové kontroly. Samostatná PHPUnit sada nepotřebuje běžící web.
 
-Dosud ověřeno: 16 cílených testů / 70 assertions; MariaDB smoke 7 kontrol; HTTP 19 kontrol včetně neměnnosti osob, soupisek, plánů, událostí a revizí při odmítnutých požadavcích; JavaScript 14/14. Úplná lokální regrese: 1738 testů / 35040 assertions, bez chyb, tři unixové testy přeskočené na Windows. Následně doplněný čtecí legacy test i další validace prošly cílenou sadou 16/70. Linux CI včetně nepřeskočených unixových testů a MariaDB 10.3/11.4 je podmínkou sloučení.
+Dosud ověřeno: 16 cílených testů / 72 assertions; MariaDB smoke 7 kontrol; HTTP 19 kontrol včetně neměnnosti osob, soupisek, plánů, událostí a revizí při odmítnutých požadavcích; JavaScript 14/14. Úplná lokální regrese: 1738 testů / 35040 assertions, bez chyb, tři unixové testy přeskočené na Windows. Následně doplněný čtecí legacy test i další validace prošly cílenou sadou 16/72. Linux CI včetně nepřeskočených unixových testů a MariaDB 10.3/11.4 je podmínkou sloučení.
 
 ## Odložená rozhodnutí a provozní hranice
 
@@ -82,3 +82,5 @@ Dosud ověřeno: 16 cílených testů / 70 assertions; MariaDB smoke 7 kontrol; 
 4. Skutečné importy, automatické integrace, produkční migrace a nasazení jsou mimo tento souhlas. Nový kanonický KIS zápis je navíc programově omezen na lokálního administrátora.
 
 UX pro další iteraci: výběr klubového závodníka místo ručního ID, přidávání libovolného počtu řádků bez CSV a přehled stojících soupisek bez sezony v administraci. Poslední bod se nezasahoval do souběžné uživatelovy rozpracované změny `kis_rosters_admin.php`; skutečné členství bylo ověřeno běžnou kartou osoby.
+
+Sloučení a výsledky CI: [PR #205](https://github.com/KovoPraha/evidenceTreninku/pull/205). Lokální konfigurace, runtime a pomocné startovací skripty zůstávají mimo Git.

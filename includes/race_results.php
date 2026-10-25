@@ -34,7 +34,8 @@ function raceResultsNormalize(PDO $pdo,int $raceId,array $rows): array {
     foreach($rows as $index=>$row) {
         try {
             if(!is_array($row)) throw new InvalidArgumentException('Neplatný řádek.');
-            $key=raceResultsText($row['key']??'',100,'Klíč účastníka',true);
+            // Keep stable keys identical under SQLite and MariaDB's case-insensitive collation.
+            $key=strtolower(raceResultsText($row['key']??'',100,'Klíč účastníka',true));
             if(!preg_match('/^[a-zA-Z0-9_.:-]+$/D',$key)) throw new InvalidArgumentException('Klíč účastníka obsahuje nepovolené znaky.');
             $person=trim((string)($row['person_id']??''));
             if($person!==''&&(!ctype_digit($person)||(int)$person<1)) throw new InvalidArgumentException('Neplatné ID osoby.');
@@ -98,7 +99,7 @@ function raceResultsWrite(PDO $pdo,int $raceId,int $actorId,bool $allowed,int $v
         if((int)$state['version']!==$version) throw new DomainException('Výsledky mezitím změnil jiný uživatel. Obnovte náhled.');
         if($kind==='published') {
             $draft=raceResultsRevision($pdo,$raceId,(int)$state['latest_revision_id']);
-            if(!$draft||raceResultsJson($draft['rows'])!==raceResultsJson($normalized)) throw new DomainException('Nejprve uložte a zkontrolujte tento koncept.');
+            if(!$draft||$draft['kind']!=='draft'||raceResultsJson($draft['rows'])!==raceResultsJson($normalized)) throw new DomainException('Nejprve uložte a zkontrolujte tento koncept.');
         }
         foreach($normalized as $row) {
             $q=$pdo->prepare('SELECT * FROM race_participants WHERE race_id=? AND source_key=?');$q->execute([$raceId,$row['key']]);$p=$q->fetch(PDO::FETCH_ASSOC);
