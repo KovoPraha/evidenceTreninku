@@ -15,6 +15,7 @@ Options -Indexes
 
     RewriteRule (^|/)\.git(/|$) - [F,L]
     RewriteRule ^(?:bin|database|docs|migrations|output|tests|var|vendor)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:outputs|tools)(?:/|$) - [F,L,NC]
     RewriteRule ^reports(?:/|$) - [F,L,NC]
     RewriteRule ^includes(?:/|$) - [F,L,NC]
     RewriteRule ^uploads/(?:uctenky|zatezove_testy|servis|temp)(?:/|$) - [F,L,NC]
