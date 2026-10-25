@@ -1,0 +1,20 @@
+{
+    "status": "PASS",
+    "checks": 13,
+    "passed": [
+        "Owned MariaDB uses synchronous InnoDB IO",
+        "Owned MariaDB uses buffered IO after durable restart",
+        "Original closure preserved, correction versioned, second training closed",
+        "Registrar-created person remains active after archive and return",
+        "Three membership decisions remain in history",
+        "Exactly one registrar-created person",
+        "Browser-created plan retains two expected participants",
+        "Actual attendance contains only selected child A",
+        "Sibling RSVP responses remain independent",
+        "No notification has been marked delivered",
+        "Removed roster membership retains its historical interval",
+        "Bulk note affects exactly the two previewed people once each",
+        "Bulk note preserves one audit event per selected person"
+    ],
+    "production_mutations": false
+}
