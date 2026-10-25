@@ -7,6 +7,23 @@ use PHPUnit\Framework\TestCase;
 
 final class DeploymentExposureTest extends TestCase
 {
+    public function testHistoricalArtifactsAndEveryDotPathAreDenied(): void
+    {
+        $htaccess = (string) file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
+        preg_match_all('/^\s*RewriteRule\s+(\S+)\s+-\s+\[F,L(?:,NC)?\]/m', $htaccess, $rules);
+        foreach ([
+            'ebook.pdf', '.phpstan-cache/resultCache.php', '.claude/settings.json',
+            '.codex-work/session.txt', '.ssh/id_ed25519', '.git/config',
+            '.php-cs-fixer.dist.php', 'assets/.hidden/probe.txt', 'booking/.secret',
+        ] as $path) {
+            $denied = false;
+            foreach ($rules[1] as $rule) {
+                $denied = $denied || preg_match('~' . str_replace('~', '\\~', $rule) . '~i', $path) === 1;
+            }
+            self::assertTrue($denied, 'Historical artifact is still reachable: ' . $path);
+        }
+    }
+
     // These directories intentionally contain public application entry points/assets.
     private const PUBLIC_DIRECTORIES = [
         'assets', 'auth', 'booking', 'icons', 'templates',
