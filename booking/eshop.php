@@ -71,11 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $success = (string)($_SESSION['flash_shop'] ?? '');unset($_SESSION['flash_shop']);
 $products = [];
 foreach (shopPublicSaleableCatalog($pdo) as $product) {
-    if ($isLoggedIn) {
-        foreach ($product['variants'] as &$variant) shopMemberPriceApplyToItem($pdo, $accountId, $variant);
-        unset($variant);
-    }
-    $product['has_member_price'] = count(array_filter($product['variants'], static fn(array $variant): bool => ($variant['member_price']['is_member_price'] ?? false) === true)) > 0;
     $isProgram = shopProductRequiresAthlete($pdo, (int)$product['product_id']);
     if ($isProgram) $product['images'] = array_values(array_filter(
         $product['images'],
@@ -164,7 +159,6 @@ appUiAssets(); ?></head><body class="bg-light"><?php publicShellNav('shop');shop
         <?php endif; ?>
         <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
             <strong><?= $product['interest_only_course'] ? 'Cena kurzu na dotaz' : (((int)$product['min_amount_minor'] !== (int)$product['max_amount_minor'] ? 'od ' : '') . shopPublicMoney((int)$product['min_amount_minor'],(string)$product['currency'])) ?></strong>
-            <?php if ($product['has_member_price'] && !$product['interest_only_course']): ?><div class="small text-success">Klubové ceny pro váš účet</div><?php endif; ?>
             <a class="btn btn-sm btn-primary" href="produkt.php?id=<?=(int)$product['product_id']?>"><?=$product['interest_only_course']?'Zeptat se na kurz':($product['is_program']?($product['program_offers']!==[]?'Detail a přihlášení':'Detail a zájem'):($product['in_stock']?'Detail a varianty':'Zobrazit detail'))?></a>
         </div>
     </div>

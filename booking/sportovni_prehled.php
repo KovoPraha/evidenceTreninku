@@ -33,7 +33,7 @@ function familyPageH(mixed $value): string
 
 function familyPageChargeStatus(string $status): string
 {
-    return ['pending' => 'Čeká na úhradu', 'paid' => 'Uhrazeno', 'refund_required' => 'Čeká na vrácení', 'refunded' => 'Vráceno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
+    return ['pending' => 'Čeká na úhradu', 'paid' => 'Uhrazeno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
 }
 
 function familyPageRosterStatus(string $status): string
@@ -513,7 +513,7 @@ foreach ($trainingRsvps as $training) {
                         <td><?= familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name']) ?></td>
                         <td><?= familyPageH($item['product_name_snapshot']) ?></td>
                         <td><?= familyPageH(number_format(((int)$item['line_amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency']) ?></td>
-                        <td><?= familyPageH(familyPageChargeStatus((string)$item['payment_status'])) ?></td>
+                        <td><?= familyPageH($item['payment_status']) ?></td>
                     </tr><?php endforeach; ?></tbody>
                 </table></div>
             <?php endif; ?>

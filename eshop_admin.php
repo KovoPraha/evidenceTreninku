@@ -162,7 +162,7 @@ $statusLabels = [
         <div class="row g-3 mb-3">
             <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Pracovní katalog</div><div class="h3 mb-0"><?= $canonicalSummary['products'] ?> produktů</div></div></div></div>
             <div class="col-md-4"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Varianty</div><div class="h3 mb-0"><?= $canonicalSummary['variants'] ?></div></div></div></div>
-            <div class="col-md-4"><a href="eshop_catalog_publication_admin.php" class="text-decoration-none text-reset"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Připravené jako aktivní</div><div class="h3 mb-0"><?= $canonicalSummary['active_products'] ?></div><div class="small text-muted">Publikaci ve veřejném katalogu ověřte v přehledu produktů.</div></div></div></a></div>
+            <div class="col-md-4"><a href="eshop_catalog_publication_admin.php" class="text-decoration-none text-reset"><div class="card border-0 shadow-sm"><div class="card-body"><div class="text-muted small">Připravené jako aktivní</div><div class="h3 mb-0"><?= $canonicalSummary['active_products'] ?></div><div class="small text-muted">storefront zatím neexistuje</div></div></div></a></div>
         </div>
         <div class="row g-3 mb-3">
             <?php foreach ($runs as $run): ?>

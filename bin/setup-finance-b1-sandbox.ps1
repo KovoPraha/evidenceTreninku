@@ -45,7 +45,6 @@ function Assert-OwnedHttpListener {
     return $listeners.Count -gt 0
 }
 $null = Assert-OwnedHttpListener
-Assert-FinanceB1DataDirectoryUncompressed $dataDirectory
 if (-not (Test-Path -LiteralPath (Join-Path $dataDirectory 'mysql'))) {
     & (Join-Path $mysqlBase 'bin\mysql_install_db.exe') "--datadir=$dataDirectory" "--port=$dbPort" --default-user --silent
     if ($LASTEXITCODE -ne 0) { throw 'Isolated database initialization failed.' }

@@ -73,9 +73,7 @@ final class PublicVelodromeShopTest extends TestCase
         self::assertSame(1, $cancel['velodrome_cancelled']);
         self::assertSame('zrusena', $pdo->query('SELECT stav FROM verejne_rezervace')->fetchColumn());
         self::assertNull($pdo->query('SELECT active_token FROM verejne_rezervace')->fetchColumn() ?: null);
-        self::assertSame('Čeká na vrácení platby', \publicVelodromeReservationPaymentLabel(\publicVelodromeReservationsForAccount($pdo, 10)[0]));
         self::assertTrue(\shopOrderAdminConfirmRefund($pdo, (int)$order['id'], 7, 'REF-VELO-1', 'Vratka odeslána.', true)['changed']);
-        self::assertSame('Peníze vráceny', \publicVelodromeReservationPaymentLabel(\publicVelodromeReservationsForAccount($pdo, 10)[0]));
     }
 
     public function testMixedGoodsAndVelodromeCartKeepsBothItemShapesIntact(): void

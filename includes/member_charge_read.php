@@ -72,19 +72,3 @@ function memberChargeAdminRows(PDO $pdo, string $query = '', string $status = ''
     $statement->execute($parameters);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
-
-/** Finance-only caller; return display fields, never the full sensitive snapshot.
- * @return list<array<string,mixed>>
- */
-function memberChargeAdminHistory(PDO $pdo, int $chargeId): array
-{
-    if ($chargeId < 1 || !memberChargeReadTableExists($pdo, 'club_member_charge_events')) return [];
-    $statement = $pdo->prepare(
-        'SELECT e.id,e.charge_id,e.action,e.from_status,e.to_status,e.actor_type,e.actor_id,'
-        . 'e.reason,e.created_at,t.jmeno AS actor_name FROM club_member_charge_events e '
-        . "LEFT JOIN treneri t ON e.actor_type='trainer' AND t.id=e.actor_id "
-        . 'WHERE e.charge_id=? ORDER BY e.id DESC LIMIT 100'
-    );
-    $statement->execute([$chargeId]);
-    return $statement->fetchAll(PDO::FETCH_ASSOC);
-}

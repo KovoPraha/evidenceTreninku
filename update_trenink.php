@@ -327,7 +327,7 @@ try {
     $pdo->commit();
     fileMutationCommitted($fileMutations);
     $_SESSION['flash_success'] = 'Trénink byl úspěšně uložen.';
-    header('Location: ' . (staffActivePositionIs('sports_lead') ? 'sprava_vsech_treninku.php' : 'moje_treninky.php'));
+    header('Location: moje_treninky.php');
     exit;
 
 } catch (Throwable $e) {

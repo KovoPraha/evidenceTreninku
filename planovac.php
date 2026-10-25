@@ -545,12 +545,16 @@ try {
             <div class="day-header <?= $headerCls ?>">
                 <?= $dayNames[$i] ?> <?= $dt->format('j. n.') ?>
                 <?php if ($isToday): ?><span class="badge bg-warning text-dark ms-1" style="font-size:.65rem">Dnes</span><?php endif; ?>
-                <span class="badge bg-secondary ms-1 day-count" style="font-size:.65rem;<?= empty($dne) ? 'display:none' : '' ?>"><?= count($dne) ?></span>
+                <?php if (!empty($dne)): ?>
+                    <span class="badge bg-secondary ms-1" style="font-size:.65rem"><?= count($dne) ?></span>
+                <?php endif; ?>
             </div>
 
-                <div class="empty-day text-center py-3" style="font-size:.8rem;color:#d1d5db;border:2px dashed transparent;border-radius:.5rem;<?= empty($dne) ? '' : 'display:none' ?>">
+            <?php if (empty($dne)): ?>
+                <div class="empty-day text-center py-3" style="font-size:.8rem;color:#d1d5db;border:2px dashed transparent;border-radius:.5rem">
                     <i class="bi bi-dash d-block fs-4 mb-1"></i>Žádné tréninky
                 </div>
+            <?php endif; ?>
 
             <?php foreach ($dne as $p): ?>
                 <?php
@@ -979,13 +983,7 @@ try {
 
     function updateEmptyDays() {
         document.querySelectorAll('.drop-zone').forEach(zone => {
-            const count = zone.querySelectorAll('.plan-card').length;
-            const hasCards = count > 0;
-            const badge = zone.querySelector('.day-count');
-            if (badge) {
-                badge.textContent = String(count);
-                badge.style.display = hasCards ? '' : 'none';
-            }
+            const hasCards = zone.querySelectorAll('.plan-card').length > 0;
             const empty = zone.querySelector('.empty-day');
             if (empty) empty.style.display = hasCards ? 'none' : '';
         });
@@ -1024,7 +1022,6 @@ try {
                 newSpan.textContent = data.ok ? nazev : current;
                 input.replaceWith(newSpan);
                 if (data.ok) showToast('Přejmenováno', 'success');
-                else showToast(data.msg || 'Název se nepodařilo uložit. Původní název zůstal zachován.', 'danger');
             })
             .catch(() => {
                 const fallback = document.createElement('span');
@@ -1032,7 +1029,6 @@ try {
                 fallback.dataset.planId = planId;
                 fallback.textContent = current;
                 input.replaceWith(fallback);
-                showToast('Spojení se serverem selhalo. Ověřte název obnovením stránky.', 'danger');
             });
         }
 

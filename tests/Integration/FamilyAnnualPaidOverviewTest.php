@@ -43,22 +43,6 @@ final class FamilyAnnualPaidOverviewTest extends TestCase
         self::assertSame([], $overview['totals']['shop_items']);
     }
 
-    public function testGoodsUseExplicitFinancialProfileWithoutOverridingForeignLineOrRevokedRelation(): void
-    {
-        $pdo = $this->database();
-        $pdo->exec('ALTER TABLE shop_orders ADD COLUMN finance_sportovec_id INTEGER');
-        $pdo->exec("INSERT INTO shop_orders VALUES(50,'ORD-GOODS',1,'completed','paid',10),(51,'ORD-FOREIGN-LINE',1,'completed','paid',10),(52,'ORD-UNASSIGNED',1,'completed','paid',NULL)");
-        $pdo->exec("INSERT INTO shop_order_items VALUES(50,50,NULL,'Book',1,44100,'CZK'),(51,51,11,'Foreign child',1,90000,'CZK'),(52,52,NULL,'Unassigned',1,80000,'CZK')");
-        $pdo->exec("INSERT INTO payments VALUES(50,'shop_order',50,'paid','2026-06-01 10:00:00'),(51,'shop_order',51,'paid','2026-06-01 10:00:00'),(52,'shop_order',52,'paid','2026-06-01 10:00:00')");
-        $overview = familyAnnualPaidOverview($pdo, 1, 2026);
-        self::assertContains('ORD-GOODS', array_column($overview['shop_items'], 'public_code'));
-        self::assertNotContains('ORD-FOREIGN-LINE', array_column($overview['shop_items'], 'public_code'));
-        self::assertNotContains('ORD-UNASSIGNED', array_column($overview['shop_items'], 'public_code'));
-        self::assertSame(['CZK' => 204000], $overview['totals']['shop_items']);
-        $pdo->exec("UPDATE account_person_roles SET status='revoked' WHERE account_id=1");
-        self::assertSame([], familyAnnualPaidOverview($pdo, 1, 2026)['shop_items']);
-    }
-
     public function testYearInputDefaultsToCurrentYearAndRejectsFutureOrMalformedValues(): void
     {
         $today = new DateTimeImmutable('2026-08-05 12:00:00');

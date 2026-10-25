@@ -13,3 +13,10 @@ uctenky/vypis_vykazu (4) - kopie.php
 udalosti/vypis_vykazu (4) - kopie.php
 vozidla/vypis_vykazu (3) - kopie.php
 vozidla/vypis_vykazu (4) - kopie.php
+# Rollback of B04/B23 release: code only, retain schema and data.
+includes/kis_review_handoff.php
+includes/race_results.php
+includes/race_results_table.php
+includes/shop_payment_presentation.php
+kis_review_admin.php
+zavod_vysledky.php

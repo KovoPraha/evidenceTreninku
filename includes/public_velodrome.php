@@ -178,23 +178,6 @@ function publicVelodromeSlots(PDO $pdo): array
     return $slots;
 }
 
-/** Canonical order payment state takes precedence over the historical paid flag. */
-function publicVelodromeReservationPaymentLabel(array $reservation): string
-{
-    if (!empty($reservation['shop_order_id'])) {
-        return match ((string)($reservation['shop_payment_status'] ?? '')) {
-            'paid' => 'Zaplaceno',
-            'refund_required' => 'Čeká na vrácení platby',
-            'refunded' => 'Peníze vráceny',
-            'cancelled' => 'Předpis zrušen',
-            'pending' => 'Čeká na úhradu',
-            default => 'Stav platby ověřte v objednávce',
-        };
-    }
-    if (isset($reservation['cena_kc']) && (float)$reservation['cena_kc'] === 0.0) return 'Bezplatná rezervace';
-    return !empty($reservation['zaplaceno']) ? 'Zaplaceno' : 'Čeká na úhradu';
-}
-
 /** @return list<array<string,mixed>> */
 function publicVelodromeReservationsForAccount(PDO $pdo, int $accountId): array
 {
@@ -203,8 +186,8 @@ function publicVelodromeReservationsForAccount(PDO $pdo, int $accountId): array
     }
     $shopAvailable = function_exists('publicVelodromeShopAvailable') && publicVelodromeShopAvailable($pdo);
     $shopSelect = $shopAvailable
-        ? ',voi.order_id AS shop_order_id,o.public_code AS shop_order_code,o.payment_status AS shop_payment_status '
-        : ',NULL AS shop_order_id,NULL AS shop_order_code,NULL AS shop_payment_status ';
+        ? ',voi.order_id AS shop_order_id,o.public_code AS shop_order_code '
+        : ',NULL AS shop_order_id,NULL AS shop_order_code ';
     $shopJoin = $shopAvailable
         ? 'LEFT JOIN public_velodrome_order_items voi ON voi.reservation_id=r.id LEFT JOIN shop_orders o ON o.id=voi.order_id '
         : '';
@@ -226,8 +209,8 @@ function publicVelodromeAdminReservations(PDO $pdo): array
 {
     $shopAvailable = function_exists('publicVelodromeShopAvailable') && publicVelodromeShopAvailable($pdo);
     $shopSelect = $shopAvailable
-        ? ',voi.order_id AS shop_order_id,o.public_code AS shop_order_code,o.payment_status AS shop_payment_status '
-        : ',NULL AS shop_order_id,NULL AS shop_order_code,NULL AS shop_payment_status ';
+        ? ',voi.order_id AS shop_order_id,o.public_code AS shop_order_code '
+        : ',NULL AS shop_order_id,NULL AS shop_order_code ';
     $shopJoin = $shopAvailable
         ? 'LEFT JOIN public_velodrome_order_items voi ON voi.reservation_id=r.id LEFT JOIN shop_orders o ON o.id=voi.order_id '
         : '';

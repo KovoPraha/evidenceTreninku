@@ -45,12 +45,10 @@ nesmí se však vydávat za aktivní architekturu ani rozšiřovat bez nového r
   milisekundách, číselným RPE a stavy závodu; všechny čtyři formuláře vytvoření
   a editace tréninku/závodu používají společný fail-closed parser a ukládají
   původní i normalizované hodnoty, historie se automaticky nepřevádí,
-- read-only Fio shadow import a návrhy párování; automatické potvrzení i import jsou
-  podle produkční kontroly 25. 10. 2026 vypnuté. Naplánovaný workflow může existovat,
-  ale jeho gated job se tím neaktivuje,
+- read-only Fio shadow import a návrhy párování; automatické potvrzení je
+  vypnuté a od 7. 10. 2026 je vypnutý i automatický produkční plán importu,
 - hostované platby přes SumUp a Stripe mají serverové ověření a kanonický
-  platební přechod; produkční kontrola 25. 10. 2026 potvrzuje
-  `SUMUP_ENABLED=false` i `STRIPE_ENABLED=false`,
+  platební přechod; Stripe je na produkční doméně vedený v testovacím režimu,
 - KIS preview s archivním manifestem, úplnou klasifikací, stabilním fingerprintem
   a bezpečným JSON reportem; localhost admin může provést auditovaný promote a
   rollback výhradně v odděleném anonymním sandboxu,

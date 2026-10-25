@@ -10,9 +10,7 @@ require_once dirname(__DIR__) . '/includes/booking_notification.php';
 
 function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
 {
-    // TIME columns return HH:MM:SS; the booking form sends HH:MM.
-    // Both writers must acquire the same advisory lock.
-    $lockName = 'rez_' . $lekceId . '_' . preg_replace('/[^0-9]/', '', substr($slotOd, 0, 5));
+    $lockName = 'rez_' . $lekceId . '_' . preg_replace('/[^0-9]/', '', $slotOd);
     $lockStatement = $pdo->prepare('SELECT GET_LOCK(?, 5)');
     $lockStatement->execute([$lockName]);
     if ((int)$lockStatement->fetchColumn() !== 1) {
@@ -28,7 +26,7 @@ function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
                     WHERE active.lekce_id = il.id AND active.slot_cas_od = ?
                       AND active.stav IN ('ceka','potvrzena')) AS obsazeno
             FROM individualni_lekce il
-            WHERE il.id = ? AND il.stav = 'aktivni'
+            WHERE il.id = ?
         ");
         $capacity->execute([$slotOd, $lekceId]);
         $slot = $capacity->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +46,7 @@ function notifyWaitingList(PDO $pdo, int $lekceId, string $slotOd): void
             JOIN sportovist s ON s.id = il.sportoviste_id
             JOIN treneri t ON t.id = il.trener_id
             WHERE vr.lekce_id = ? AND vr.slot_cas_od = ? AND vr.stav = 'cekaci_listina'
-            ORDER BY vr.cas_rezervace ASC, vr.id ASC
+            ORDER BY vr.cas_rezervace ASC
             LIMIT 1
         ");
         $candidate->execute([$lekceId, $slotOd]);

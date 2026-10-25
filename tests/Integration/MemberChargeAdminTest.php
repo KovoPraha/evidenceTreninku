@@ -7,7 +7,6 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__,2).'/includes/member_charge_admin.php';
-require_once dirname(__DIR__,2).'/includes/member_charge_read.php';
 
 final class MemberChargeAdminTest extends TestCase
 {
@@ -26,24 +25,6 @@ final class MemberChargeAdminTest extends TestCase
         $pdo=$this->database();$first=\memberChargeAdminCreate($pdo,7,$this->input(),'Založení prvního předpisu.',true);self::assertTrue(\memberChargeAdminCancel($pdo,$first['id'],7,'Členství bylo ukončeno před sezonou.',true)['changed']);self::assertSame('cancelled',$pdo->query('SELECT status FROM payments WHERE payable_id='.$first['id'])->fetchColumn());
         $second=\memberChargeAdminCreate($pdo,7,$this->input(),'Založení druhého předpisu.',true);\memberChargeAdminConfirmPaid($pdo,$second['id'],7,'2026-08-22','Platba ověřena na výpisu.',true);
         $this->expectException(\MemberChargeAdminException::class);\memberChargeAdminCancel($pdo,$second['id'],7,'Chybné zrušení uhrazeného předpisu.',true);
-    }
-
-    public function testHistoryIsScopedOrderedAndOmitsSnapshots(): void
-    {
-        $pdo=$this->database();
-        $first=\memberChargeAdminCreate($pdo,7,$this->input(),'První předpis.',true);
-        \memberChargeAdminCancel($pdo,$first['id'],7,'Zrušení prvního.',true);
-        $second=\memberChargeAdminCreate($pdo,7,$this->input(),'Druhý předpis.',true);
-        $before=(int)$pdo->query('SELECT COUNT(*) FROM club_member_charge_events')->fetchColumn();
-        $history=\memberChargeAdminHistory($pdo,$first['id']);
-        self::assertCount(2,$history);
-        self::assertSame(['Zrušení prvního.','První předpis.'],array_column($history,'reason'));
-        self::assertSame(['Finance','Finance'],array_column($history,'actor_name'));
-        self::assertSame('cancelled',$history[0]['to_status']);
-        self::assertArrayNotHasKey('snapshot_json',$history[0]);
-        self::assertSame(['Druhý předpis.'],array_column(\memberChargeAdminHistory($pdo,$second['id']),'reason'));
-        self::assertSame([],\memberChargeAdminHistory($pdo,999));
-        self::assertSame($before,(int)$pdo->query('SELECT COUNT(*) FROM club_member_charge_events')->fetchColumn());
     }
 
     private function input():array{return['sportovec_id'=>101,'payer_account_id'=>10,'title_snapshot'=>'Členský příspěvek 2026/27','period_from'=>'2026-09-01','period_to'=>'2027-08-31','amount_minor'=>150000,'currency'=>'CZK','due_on'=>'2026-09-15'];}
