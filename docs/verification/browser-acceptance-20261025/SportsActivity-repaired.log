@@ -1,0 +1,99 @@
+{
+    "run": "LOCALHOST NEPLATIT R28 486a1977611f",
+    "checks": 23,
+    "results": [
+        {
+            "scenario": "Sports workspace GET is read-only",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance workspace cannot mutate actual sports evidence",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach without explicit scope cannot write foreign athlete",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF writes nothing",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual evidence requires explicit confirmation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Nomination recorded through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated nomination returns same version",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Completed calendar planning and nomination do not imply start",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Accepted nomination is separate factual stage",
+            "status": "PASS"
+        },
+        {
+            "scenario": "External registration remains separate from start",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Future actual date rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "DNS cannot count as a start",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual DNF start recorded after evidence check",
+            "status": "PASS"
+        },
+        {
+            "scenario": "One DNF start counted, unknown value remains null",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP CSV uses exactly the canonical summary and source revision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Verified period frozen as a versioned statement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated period handover deduplicates immutable statement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stale form cannot overwrite newer actual revision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Correction removes actual count without destroying prior version",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Export of old statement retains original DNF after correction",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Correction visibly flags statement for review",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Foreign coach cannot download another athlete statement directly",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked stale lead session cannot download private statement",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}
