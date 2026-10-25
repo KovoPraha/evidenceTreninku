@@ -1,0 +1,14 @@
+{
+    "status": "PASS",
+    "checks": 7,
+    "evidence": [
+        "Owner can view lesson history",
+        "Reason is escaped",
+        "Actor and lesson names are escaped",
+        "Private payload is omitted",
+        "Reading history does not write events",
+        "Foreign coach cannot inspect guessed history ",
+        "Foreign coach cannot inspect guessed history &vse=1"
+    ],
+    "production_writes": false
+}

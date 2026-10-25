@@ -1,0 +1,156 @@
+{
+    "orders": [
+        {
+            "id": 30,
+            "status": "processing",
+            "payment_status": "paid",
+            "total_minor": 30000
+        },
+        {
+            "id": 31,
+            "status": "completed",
+            "payment_status": "paid",
+            "total_minor": 10500
+        },
+        {
+            "id": 32,
+            "status": "cancelled",
+            "payment_status": "cancelled",
+            "total_minor": 12500
+        },
+        {
+            "id": 33,
+            "status": "cancelled",
+            "payment_status": "refunded",
+            "total_minor": 12500
+        }
+    ],
+    "stock": {
+        "variant_id": 38,
+        "physical_quantity": 4,
+        "reserved_quantity": 0,
+        "blocked_quantity": 0
+    },
+    "movements": [
+        {
+            "id": 61,
+            "kind": "reserve",
+            "order_id": 31,
+            "physical_delta": 0,
+            "reserved_delta": 1,
+            "blocked_delta": 0
+        },
+        {
+            "id": 62,
+            "kind": "reserve",
+            "order_id": 32,
+            "physical_delta": 0,
+            "reserved_delta": 1,
+            "blocked_delta": 0
+        },
+        {
+            "id": 63,
+            "kind": "release",
+            "order_id": 32,
+            "physical_delta": 0,
+            "reserved_delta": -1,
+            "blocked_delta": 0
+        },
+        {
+            "id": 64,
+            "kind": "issue",
+            "order_id": 31,
+            "physical_delta": -1,
+            "reserved_delta": -1,
+            "blocked_delta": 0
+        },
+        {
+            "id": 65,
+            "kind": "return",
+            "order_id": 31,
+            "physical_delta": 1,
+            "reserved_delta": 0,
+            "blocked_delta": 1
+        },
+        {
+            "id": 67,
+            "kind": "reserve",
+            "order_id": 33,
+            "physical_delta": 0,
+            "reserved_delta": 1,
+            "blocked_delta": 0
+        },
+        {
+            "id": 68,
+            "kind": "release",
+            "order_id": 33,
+            "physical_delta": 0,
+            "reserved_delta": -1,
+            "blocked_delta": 0
+        }
+    ],
+    "refunds": [
+        {
+            "payable_id": 31,
+            "status": "paid",
+            "refund_reference": null
+        },
+        {
+            "payable_id": 32,
+            "status": "cancelled",
+            "refund_reference": null
+        },
+        {
+            "payable_id": 33,
+            "status": "refunded",
+            "refund_reference": "LOCALHOST-FINAL10-CANCEL-33"
+        }
+    ],
+    "case": {
+        "id": 13,
+        "state": "closed",
+        "finance_state": "adjustment",
+        "disposition": "saleable",
+        "correction_document_id": 14,
+        "refund_decision_id": 7
+    },
+    "planner": [
+        {
+            "id": 34,
+            "nazev": "LOCALHOST FINAL10 přejmenováno",
+            "datum": "2026-10-23",
+            "stav": "zruseny"
+        },
+        {
+            "id": 35,
+            "nazev": "LOCALHOST TEST FINAL26 – série",
+            "datum": "2026-11-01",
+            "stav": "zruseny"
+        },
+        {
+            "id": 36,
+            "nazev": "LOCALHOST TEST FINAL26 – série",
+            "datum": "2026-11-08",
+            "stav": "zruseny"
+        },
+        {
+            "id": 37,
+            "nazev": "LOCALHOST TEST FINAL26 – série",
+            "datum": "2026-10-31",
+            "stav": "planovany"
+        },
+        {
+            "id": 38,
+            "nazev": "LOCALHOST – trénink pro soupisky",
+            "datum": "2026-11-01",
+            "stav": "planovany"
+        }
+    ],
+    "ledger_refund": [
+        {
+            "decision_id": 7,
+            "amount_minor": 10500,
+            "effective_on": "2026-10-25"
+        }
+    ]
+}

@@ -4,6 +4,21 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync(require('node:path').join(__dirname,'../../planovac.php'),'utf8');
+for (const failure of ['rejected','network']) test(`rename ${failure} restores the title and explains failure`,async()=>{
+ const listeners={},toasts=[];let replacement;
+ const input={value:'',addEventListener(n,f){listeners[n]=f;},focus(){},select(){},replaceWith(e){replacement=e;}};
+ const span={dataset:{planId:'5'},textContent:'Původní název',replaceWith(){}};
+ let dblclick;
+ const document={addEventListener(n,f){if(n==='dblclick')dblclick=f;},createElement(tag){return tag==='input'?input:{dataset:{},style:{}};}};
+ const start=source.indexOf("    document.addEventListener('dblclick'");
+ const end=source.indexOf('\n})();',start);
+ vm.runInNewContext(source.slice(start,end),{document,CSRF:'test',showToast:(...args)=>toasts.push(args),fetch:()=>failure==='network'?Promise.reject(new Error('offline')):Promise.resolve({json:()=>Promise.resolve({ok:false,msg:'Nemáte oprávnění.'})})});
+ dblclick({target:{closest:()=>span}});input.value='Nový název';listeners.blur();
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(replacement.textContent,'Původní název');
+ assert.equal(toasts.length,1);assert.equal(toasts[0][1],'danger');
+ assert.match(toasts[0][0],failure==='network'?/Ověřte název/:/Nemáte oprávnění/);
+});
 test('planner inline JavaScript compiles after PHP rendering',()=>{
  let count=0;
  for(const match of source.replace(/<\?[\s\S]*?\?>/g,'[]').matchAll(/<script\b[^>]*>([\s\S]*?)<\/script[^>]*>/gi))if(match[1].trim()){new vm.Script(match[1]);count++;}

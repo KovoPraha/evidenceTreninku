@@ -1024,6 +1024,7 @@ try {
                 newSpan.textContent = data.ok ? nazev : current;
                 input.replaceWith(newSpan);
                 if (data.ok) showToast('Přejmenováno', 'success');
+                else showToast(data.msg || 'Název se nepodařilo uložit. Původní název zůstal zachován.', 'danger');
             })
             .catch(() => {
                 const fallback = document.createElement('span');
@@ -1031,6 +1032,7 @@ try {
                 fallback.dataset.planId = planId;
                 fallback.textContent = current;
                 input.replaceWith(fallback);
+                showToast('Spojení se serverem selhalo. Ověřte název obnovením stránky.', 'danger');
             });
         }
 

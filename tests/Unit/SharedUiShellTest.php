@@ -169,10 +169,11 @@ final class SharedUiShellTest extends TestCase
         );
     }
 
-    public function testPublicAccountMenuUsesBootstrapDropdown(): void
+    public function testPublicAccountMenuWorksWithoutBootstrapJavascript(): void
     {
         $helper = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/ui_shell.php');
-        self::assertStringContainsString('data-bs-toggle="dropdown"', $helper);
+        self::assertStringContainsString('<details class="dropdown app-account-menu">', $helper);
+        self::assertStringContainsString('<summary class="btn btn-outline-secondary btn-sm dropdown-toggle">', $helper);
         self::assertStringContainsString('dropdown-menu dropdown-menu-end', $helper);
         self::assertStringNotContainsString('<details class="acct-menu', $helper);
     }
