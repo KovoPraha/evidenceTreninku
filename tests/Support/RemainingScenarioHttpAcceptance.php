@@ -87,8 +87,9 @@ dwCheck($state($reservations[1])==='cekaci_listina','B06: crafted manual confirm
 dwRequest($session,'individualni_lekce_sprava.php',['action'=>'potvrdit','rezervace_id'=>$reservations[0]]);
 dwCheck($state($reservations[0])==='potvrzena','B06: pending reserved slot can be confirmed');
 dwRequest($session,'individualni_lekce_sprava.php',['action'=>'potvrdit','rezervace_id'=>$reservations[0]]);
-$q=$pdo->prepare("SELECT COUNT(*) FROM venue_operation_events WHERE target_type='lesson' AND target_id=? AND action='reservation_confirmed'");$q->execute([$lesson]);
-dwCheck((int)$q->fetchColumn()===1,'A10: repeated confirmation creates one actor/time/reason audit event');
+$q=$pdo->prepare("SELECT * FROM venue_operation_events WHERE target_type='lesson' AND target_id=? AND action='reservation_confirmed'");$q->execute([$lesson]);$audit=$q->fetchAll();
+$payload=count($audit)===1 ? json_decode($audit[0]['payload_json'],true) : [];
+dwCheck(count($audit)===1 && (int)$audit[0]['actor_trainer_id']===$actor && trim($audit[0]['reason'])!=='' && strtotime($audit[0]['created_at'])!==false && (int)($payload['reservation_id']??0)===$reservations[0] && ($payload['before']??'')==='ceka' && ($payload['after']??'')==='potvrzena','A10: repeated confirmation creates one actor/time/reason audit event');
 // Rejection of an independently pending synthetic lesson exercises queue promotion.
 $pdo->prepare("UPDATE verejne_rezervace SET stav='ceka' WHERE id=?")->execute([$reservations[0]]);
 dwRequest($session,'individualni_lekce_sprava.php',['action'=>'zamit','rezervace_id'=>$reservations[0]]);
@@ -112,9 +113,7 @@ $pdo->prepare("UPDATE verejne_rezervace SET stav='zrusena' WHERE lekce_id=?")->e
 // Exact staff route delegation needed by the race form.
 dwInsert('staff_user_positions',['trainer_id'=>$actor,'position_code'=>'sports_lead','is_default'=>0]);
 $lead=dwSession($actor);
-dwRequest($lead,'pracovni_pozice.php',['position'=>'sports_lead']);
-// Explicitly bind the synthetic session context; no browser or production session is reused.
-session_id(substr($lead['cookie'],strlen(session_name())+1));app_session_start();$_SESSION['staff_active_position']='sports_lead';session_write_close();
+dwRequest($lead,'prepnout_pracovni_pozici.php',['position'=>'sports_lead']);
 $page=dwRequest($lead,'nacti_podskupiny.php?skupina_id=1');
 dwCheck($page['status']===200 && is_array(json_decode($page['body'],true)),'B04: sports lead can load race subgroups');
 
@@ -160,4 +159,52 @@ dwCheck($card!==null && str_contains($card->textContent,'441,00') && str_contain
 $anonymous=['cookie'=>'','csrf'=>''];$public=dwRequest($anonymous,'booking/eshop.php');$publicDom=dwDom($public);$publicCard=$publicDom->query('//h3[normalize-space(.)="Fiktivní kniha o cyklistice"]/ancestor::*[contains(concat(" ",normalize-space(@class)," ")," card ")][1]')->item(0);
 dwCheck($publicCard!==null && str_contains($publicCard->textContent,'490,00') && !str_contains($publicCard->textContent,'Klubové ceny pro váš účet'),'B12: anonymous catalog retains public price');
 
-echo json_encode(['status'=>'PASS','checks'=>count($checks),'evidence'=>$checks,'scope'=>'localhost synthetic MariaDB + HTTP; not browser UAT','production_writes'=>false],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).PHP_EOL;
+
+// A09/B18/B19: complete public HTTP registration, verification, claim and reset.
+require_once $root.'/includes/auth_mail_outbox.php';
+session_id('');app_session_start();$_SESSION=[];$newSession=['cookie'=>session_name().'='.session_id(),'csrf'=>csrf_token()];session_write_close();
+$email='final26-'.bin2hex(random_bytes(8)).'@example.invalid';$password='LOCALHOST!'.bin2hex(random_bytes(12));
+$registration=['jmeno'=>'LOCALHOST','prijmeni'=>$run.' public','email'=>$email,'ucel'=>'sport','narozeni'=>'1985-01-02','heslo'=>$password,'heslo2'=>$password,'telefon'=>''];
+$r=dwRequest($newSession,'booking/registrace.php',$registration);
+$q=$pdo->prepare('SELECT id,email_overeno,session_version FROM verejni_uzivatele WHERE email=?');$q->execute([$email]);$newAccount=$q->fetch();
+dwCheck($newAccount && !(int)$newAccount['email_overeno'] && str_contains($r['body'],'Pokud lze účet'),'A09/B18: HTTP registration creates an unverified account with generic response');
+$q=$pdo->prepare("SELECT s.id FROM account_person_roles r JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.relation_role='self' AND s.narozeni='1985-01-02'");$q->execute([$newAccount['id']]);$selves=$q->fetchAll(PDO::FETCH_COLUMN);dwCheck(count($selves)===1,'A09: registration creates exactly one self person with the submitted birth date');
+$again=dwRequest($newSession,'booking/registrace.php',$registration);
+dwCheck(str_contains($again['body'],'Pokud lze účet'),'B18: duplicate email receives same generic registration response');
+$q=$pdo->prepare("SELECT * FROM auth_mail_outbox WHERE target_type='public' AND target_id=? AND kind='verify' ORDER BY id DESC LIMIT 1");$q->execute([$newAccount['id']]);$mail=$q->fetch();$body=authMailDecrypt($mail);if(!preg_match('/#token=([a-f0-9]+)/',$body,$token))throw new RuntimeException('Synthetic verification token missing');
+dwRequest($newSession,'booking/overeni.php',['token'=>$token[1]]);
+$q=$pdo->prepare('SELECT email_overeno FROM verejni_uzivatele WHERE id=?');$q->execute([$newAccount['id']]);dwCheck((int)$q->fetchColumn()===1,'B18: delivered-test-token verification activates the account');
+unset($body,$token);
+$page=dwRequest($newSession,'booking/moje_osoby.php');$newSession['csrf']=dwValue(dwDom($page),'csrf_token');
+dwCheck($page['status']===200 && str_contains($page['body'],$run.' public'),'A09: verified account sees its own profile through HTTP');
+$claimPerson=dwInsert('sportovci',['jmeno'=>'LOCALHOST','prijmeni'=>$run.' claim','narozeni'=>'2015-01-02','stav_clenstvi'=>'cekajici','hash'=>bin2hex(random_bytes(32)),'uci'=>0,'email'=>'']);
+dwRequest($newSession,'booking/moje_osoby.php',['action'=>'submit','requested_role'=>'guardian','jmeno'=>'LOCALHOST','prijmeni'=>$run.' claim','narozeni'=>'2015-01-02','message'=>'LOCALHOST synthetic relationship']);
+$q=$pdo->prepare("SELECT id,status FROM account_person_claim_requests WHERE account_id=? ORDER BY id DESC LIMIT 1");$q->execute([$newAccount['id']]);$claim=$q->fetch();dwCheck($claim && $claim['status']==='pending','B18: existing-person claim stays pending until staff decision');
+$registrar=dwInsert('treneri',['jmeno'=>$run.' registrar','email'=>bin2hex(random_bytes(8)).'@example.invalid','heslo'=>password_hash(bin2hex(random_bytes(20)),PASSWORD_DEFAULT),'role'=>'admin','aktivni'=>1,'session_version'=>1]);dwInsert('staff_user_positions',['trainer_id'=>$registrar,'position_code'=>'registrar','is_default'=>1]);$registrarSession=dwSession($registrar);
+dwRequest($registrarSession,'eshop_identity_admin.php',['action'=>'approve_claim','request_id'=>$claim['id'],'sportovec_id'=>$claimPerson,'note'=>'LOCALHOST ověření syntetické přihlášky']);
+$q=$pdo->prepare("SELECT COUNT(*) FROM account_person_roles WHERE account_id=? AND sportovec_id=? AND status='approved'");$q->execute([$newAccount['id'],$claimPerson]);dwCheck((int)$q->fetchColumn()===1,'B18: approval creates exactly one approved relationship');
+$page=dwRequest($newSession,'booking/moje_osoby.php');dwCheck(str_contains($page['body'],$run.' claim'),'B18: approved child is visible to the requesting account');
+$newSession['csrf']=dwValue(dwDom($page),'csrf_token');
+// Keep the existing login for the revocation test; reset in a different anonymous session.
+session_id('');app_session_start();$_SESSION=[];$resetSession=['cookie'=>session_name().'='.session_id(),'csrf'=>csrf_token()];session_write_close();
+$r=dwRequest($resetSession,'booking/zapomenute_heslo.php',['identifier'=>$email]);$resetDom=dwDom($r);$url=(string)$resetDom->evaluate('string(//a[contains(@href,"nove_heslo.php#token=")]/@href)');if(!preg_match('/#token=([a-f0-9]+)/',$url,$resetToken))throw new RuntimeException('Synthetic reset token missing');
+$newPassword='LOCALHOST!'.bin2hex(random_bytes(12));$reset=['token'=>$resetToken[1],'heslo'=>$newPassword,'heslo2'=>$newPassword];
+$r=dwRequest($resetSession,'booking/nove_heslo.php',$reset);dwCheck(str_contains($r['body'],'Heslo bylo změněno'),'B19: password reset works through HTTP for the newly owned synthetic account');
+$r=dwRequest($newSession,'booking/moje_osoby.php');dwCheck(in_array($r['status'],[302,303,401,403],true),'B19: old public session is revoked immediately after reset');
+$page=dwRequest($resetSession,'booking/nove_heslo.php');$resetSession['csrf']=dwValue(dwDom($page),'csrf_token');$r=dwRequest($resetSession,'booking/nove_heslo.php',$reset);dwCheck(str_contains($r['body'],'Odkaz není platný nebo už byl použit'),'B19: consumed reset token cannot be replayed');
+unset($resetToken,$reset,$newPassword,$password,$registration,$url);
+
+// B25: finance can inspect persisted history without a write; other roles cannot.
+dwInsert('staff_user_positions',['trainer_id'=>$actor,'position_code'=>'finance_manager','is_default'=>0]);
+$finance=dwSession($actor);dwRequest($finance,'prepnout_pracovni_pozici.php',['position'=>'finance_manager']);
+$chargeInput=['action'=>'create','sportovec_id'=>$claimPerson,'payer_account_id'=>$newAccount['id'],'title_snapshot'=>$run.' member charge','amount_czk'=>'1250','currency'=>'CZK','due_on'=>date('Y-m-d',strtotime('+7 days')),'reason'=>$run.' <audit>','confirmed'=>1];
+dwRequest($finance,'member_charges_admin.php',$chargeInput);
+$q=$pdo->prepare('SELECT id,public_code FROM club_member_charges WHERE title_snapshot=?');$q->execute([$chargeInput['title_snapshot']]);$charge=$q->fetch();
+dwCheck($charge!==false,'B25: finance creates the owned synthetic member charge through HTTP');
+$before=(int)$pdo->query('SELECT COUNT(*) FROM club_member_charge_events')->fetchColumn();
+$page=dwRequest($finance,'member_charges_admin.php?history_id='.$charge['id']);$history=dwDom($page)->query('//*[@id="charge-history"]')->item(0);
+dwCheck($page['status']===200 && $history!==null && str_contains($history->textContent,$run.' <audit>') && str_contains($history->textContent,$charge['public_code']) && !str_contains($page['body'],'<audit>') && (int)$pdo->query('SELECT COUNT(*) FROM club_member_charge_events')->fetchColumn()===$before,'B25: finance history displays escaped actor/reason/status without creating an audit event');
+$page=dwRequest($registrarSession,'member_charges_admin.php?history_id='.$charge['id']);dwCheck($page['status']===403,'B25: registrar cannot read finance history via a guessed URL');
+dwRequest($finance,'member_charges_admin.php',['action'=>'cancel','charge_id'=>$charge['id'],'amount_czk'=>'1250','reason'=>$run.' cleanup','confirmed'=>1]);
+
+echo json_encode(['status'=>'PASS','checks'=>count($checks),'evidence'=>$checks,'scope'=>'localhost synthetic MariaDB + HTTP; not browser UAT','production_writes'=>false,'synthetic_charge_id'=>(int)$charge['id']],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).PHP_EOL;
