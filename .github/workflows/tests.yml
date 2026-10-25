@@ -37,6 +37,9 @@ jobs:
       - name: Ověřit známé zranitelnosti závislostí
         run: composer audit --locked --no-interaction
 
+      - name: Ověřit anonymní přístup ke všem neveřejným trasám
+        run: php tests/Support/AnonymousSweep.php
+
       - name: Spustit testy
         run: composer test
 

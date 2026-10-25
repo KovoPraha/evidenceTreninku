@@ -13,8 +13,12 @@ Options -Indexes
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://kis.kovopraha.cz%{REQUEST_URI} [R=308,L,NE]
 
-    RewriteRule (^|/)\.git(/|$) - [F,L]
+    # Also deny old/local tooling directories, including nested dot paths.
+    RewriteRule (^|/)\. - [F,L]
+    # Rsync exclusions do not remove files from previous releases.
+    RewriteRule ^ebook\.pdf$ - [F,L,NC]
     RewriteRule ^(?:bin|database|docs|migrations|output|tests|var|vendor)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:outputs|tools)(?:/|$) - [F,L,NC]
     RewriteRule ^reports(?:/|$) - [F,L,NC]
     RewriteRule ^includes(?:/|$) - [F,L,NC]
     RewriteRule ^uploads/(?:uctenky|zatezove_testy|servis|temp)(?:/|$) - [F,L,NC]
