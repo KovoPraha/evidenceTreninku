@@ -29,6 +29,20 @@ foreach ($paths as $path) {
         $links++;
         if (!file_exists(dirname($root . '/' . $path) . '/' . $target)) {
             $errors[] = $path . ': missing ' . $target;
+        } elseif (str_contains($link, '#') && str_ends_with($target, '.md')) {
+            $fragment = rawurldecode(explode('#', $link, 2)[1]);
+            $linked = (string) file_get_contents(dirname($root . '/' . $path) . '/' . $target);
+            preg_match_all('/^#{1,6}\s+(.+)$/m', $linked, $headings);
+            $found = false;
+            foreach ($headings[1] as $heading) {
+                $slug = str_replace(' ', '-', preg_replace('/[^\p{L}\p{N}_\- ]/u', '', trim($heading)));
+                if (preg_match('~^' . preg_quote($fragment, '~') . '$~iu', $slug)) {
+                    $found = true;
+                }
+            }
+            if (!$found) {
+                $errors[] = $path . ': missing heading ' . $link;
+            }
         }
     }
 }
