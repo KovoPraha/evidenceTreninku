@@ -1,19 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/** All outstanding past plans of this trainer, matching the planner's default scope. */
-function trainingPlannerTrainerBacklog(PDO $pdo, int $trainerId, string $today): array
-{
-    if ($trainerId < 1) throw new InvalidArgumentException('Trainer is required.');
-    $statement = $pdo->prepare(
-        "SELECT COUNT(*) AS total, MIN(datum) AS oldest_date FROM planovane_treninky "
-        . "WHERE trener_id=? AND stav='planovany' AND datum<?"
-    );
-    $statement->execute([$trainerId, $today]);
-    $row = $statement->fetch(PDO::FETCH_ASSOC);
-    return ['count' => (int)$row['total'], 'oldest_date' => $row['oldest_date'] ?: null];
-}
-
 /** The caller supplies the already authorized and filtered overdue plans. */
 function trainingPlannerOldestPendingDate(array $plans): ?string
 {

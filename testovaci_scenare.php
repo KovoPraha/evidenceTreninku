@@ -167,7 +167,7 @@ $statusLabels = [
         </div>
         <div class="row g-3 mb-3">
             <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Technická připravenost</div><div class="h3 mb-0"><?= (int)$finalization['technical_passed'] ?>/<?= (int)$finalization['technical_total'] ?></div></div></div>
-            <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Scénáře s výsledkem PASS</div><div class="h3 mb-0"><?= (int)$finalization['accepted'] ?>/<?= (int)$finalization['scenario_total'] ?></div><div class="small text-muted">Zápis výsledku testu není souhlas vlastníka s nasazením.</div></div></div>
+            <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Vlastníkem potvrzeno</div><div class="h3 mb-0"><?= (int)$finalization['accepted'] ?>/<?= (int)$finalization['scenario_total'] ?></div></div></div>
             <div class="col-md-4"><div class="border rounded p-3 h-100"><div class="small text-muted">Blokující výsledky</div><div class="h3 mb-0"><?= (int)$finalization['blocking'] ?></div></div></div>
         </div>
         <ul class="list-group list-group-flush">

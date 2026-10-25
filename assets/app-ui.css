@@ -415,10 +415,6 @@ body.app-loading .app-loading-bar {
 .app-product-media-sticky { position: sticky; top: 1rem; align-self: flex-start; }
 .app-product-media-sticky img { width: 100%; height: auto; max-height: 34rem; object-fit: contain; }
 .app-anchor-nav { position: sticky; top: 0; z-index: 1010; background: rgba(248, 249, 250, .96); backdrop-filter: blur(8px); }
-@media (min-width: 992px) {
-    #potvrzeni-treninku, #rodinny-program, #profily, #nastaveni,
-    [id^="family-profile-"], [id^="training-rsvp-"] { scroll-margin-top: 4rem; }
-}
 details.card > summary.card-header { cursor: pointer; }
 details.card > summary.card-header:hover { background-color: var(--bs-tertiary-bg) !important; }
 

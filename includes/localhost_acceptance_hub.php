@@ -642,13 +642,13 @@ function localhostAcceptanceScenariosB(string $root): array
         ],
         [
             'id' => 'B26', 'role' => 'Administrátor', 'area' => 'KIS a členství', 'declared_status' => 'ready',
-            'steps' => ['Projděte správu soupisek: přidání a historické odebrání člena.', 'Zkontrolujte kartu sportovce s auditní historií.', 'V seznamu sportovců zaškrtněte testovací osoby a otevřete Hromadné akce. Zkontrolujte náhled a potvrďte změnu.'],
+            'steps' => ['Projděte správu soupisek: přidání a historické odebrání člena.', 'Zkontrolujte kartu sportovce s auditní historií.', 'Použijte hromadné akce s preview.'],
             'expected' => 'Odebrání nemaže historii, karta ukazuje časovou osu a hromadné akce běží v transakci.',
             'note' => '',
             'links' => [
                 ['label' => 'Soupisky', 'path' => 'kis_rosters_admin.php', 'scope' => 'trainer'],
                 ['label' => 'Karta sportovce', 'path' => 'sportovec_karta.php', 'scope' => 'trainer'],
-                ['label' => 'Vybrat osoby pro hromadnou akci', 'path' => 'sprava_sportovcu.php', 'scope' => 'trainer'],
+                ['label' => 'Hromadné akce', 'path' => 'sportovci_hromadne.php', 'scope' => 'trainer'],
             ],
         ],
         [
