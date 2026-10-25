@@ -9,6 +9,7 @@ require_once __DIR__ . '/../includes/financial_receipt_files.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if (!isset($_SESSION['trener_id']) || !canAccess('uctenky')) {
+    http_response_code(403);
     echo json_encode(['status' => 'error', 'message' => 'Přístup odepřen.']);
     exit;
 }

@@ -287,6 +287,10 @@ jobs:
             --exclude='phpstan*.neon*' \
             --exclude='.phpstan-cache/' \
             --exclude='.php-cs-fixer*' \
+            --exclude='outputs/' \
+            --exclude='tools/' \
+            --exclude='docs/' \
+            --exclude='ebook.pdf' \
             --exclude='bin/zalohy/' \
             --exclude='tests/' \
             --exclude='phpunit.xml*' \
@@ -375,6 +379,7 @@ jobs:
             set -eu
             rsync -a --itemize-changes \\
               --exclude='config.php' \\
+              --exclude='.git*' \\
               --exclude='uploads/' \\
               --exclude='nahrane_obrazky/' \\
               --exclude='nahrane_zavody/' \\
@@ -385,6 +390,10 @@ jobs:
               --exclude='phpstan*.neon*' \\
               --exclude='.phpstan-cache/' \\
               --exclude='.php-cs-fixer*' \\
+              --exclude='outputs/' \\
+              --exclude='tools/' \\
+              --exclude='docs/' \\
+              --exclude='ebook.pdf' \\
               --exclude='bin/zalohy/' \\
               --exclude='*.log' \\
               '$RELEASE_DIR/' '$REMOTE_DIR/'

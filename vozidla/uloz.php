@@ -6,6 +6,7 @@ require_once __DIR__ . '/../csrf_helper.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if (!isset($_SESSION['trener_id']) || !canAccess('vozidla')) {
+    http_response_code(403);
     echo json_encode(['status' => 'error', 'message' => 'Přístup odepřen.']);
     exit;
 }
