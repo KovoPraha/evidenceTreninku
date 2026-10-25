@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 if (PHP_SAPI !== 'cli') {
@@ -6,6 +7,7 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 require __DIR__ . '/AnonymousRouteInventory.php';
+require __DIR__ . '/AnonymousHttpPolicy.php';
 $root = dirname(__DIR__, 2);
 $routes = anonymousEntryPoints($root);
 $public = anonymousPublicRoutes();
@@ -16,21 +18,18 @@ foreach ($public as $route => $reason) {
         $errors[] = 'Stale/unexplained public exception: ' . $route;
     }
 }
+foreach (array_merge(anonymousCliRoutes(), anonymousHiddenRoutes()) as $route => $reason) {
+    if (!in_array($route, $routes, true)) {
+        $errors[] = 'Stale CLI/hidden route: ' . $route;
+    }
+}
 
 // Copy source into a disposable tree. No real config, database, uploads or sessions.
 $sandbox = sys_get_temp_dir() . '/evidence-anonymous-' . bin2hex(random_bytes(8));
 mkdir($sandbox, 0700);
 $server = null;
 try {
-    $sourceFiles = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
-    $sourceFilter = new RecursiveCallbackFilterIterator($sourceFiles, static function ($file): bool {
-        return !$file->isDir() || !in_array($file->getFilename(), [
-            'vendor', 'tests', 'docs', 'output', 'outputs', '.git', 'migrations', 'bin', 'tools', 'var',
-        ], true);
-    });
-    $files = new RecursiveIteratorIterator($sourceFilter);
-    foreach ($files as $file) {
-        $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
+    foreach (anonymousTrackedPhpFiles($root) as $relative) {
         if (!preg_match('~^(?:includes/.*|[^/]+|(?:auth|booking|auditlog|jizdy|servis|uctenky|udalosti|vozidla|zatezove_testy)/.*)\.php$~', $relative)
             || $relative === 'config.php') {
             continue;
@@ -39,7 +38,7 @@ try {
         if (!is_dir(dirname($target))) {
             mkdir(dirname($target), 0700, true);
         }
-        copy($file->getPathname(), $target);
+        copy($root . '/' . $relative, $target);
     }
     // Include every inventoried future entry point, including new subdirectories.
     foreach ($routes as $route) {
@@ -62,6 +61,10 @@ try {
     // Keep session validation and workspace enforcement from the real bootstrap.
     $db = substr($db, 0, $start) . '$pdo = new PDO("sqlite::memory:");'
         . '$pdo->exec("CREATE TABLE treneri (id INTEGER PRIMARY KEY, aktivni INTEGER)");'
+        . '$pdo->exec("CREATE TABLE sportovci (id INTEGER PRIMARY KEY); INSERT INTO sportovci VALUES (1)");'
+        . '$pdo->exec("CREATE TABLE zatezove_testy (id INTEGER PRIMARY KEY, sportovec_id INTEGER); INSERT INTO zatezove_testy VALUES (1, 1)");'
+        . '$pdo->exec("CREATE TABLE zatezove_testy_soubory (id INTEGER PRIMARY KEY, test_id INTEGER, cesta TEXT, nazev TEXT, typ TEXT);'
+        . 'INSERT INTO zatezove_testy_soubory VALUES (1, 1, \'private://synthetic\', \'SYNTHETIC\', \'public_img\')");'
         . "\n" . substr($db, $end);
     file_put_contents($sandbox . '/db.php', $db);
     $socket = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
@@ -70,11 +73,21 @@ try {
     }
     $address = stream_socket_get_name($socket, false);
     fclose($socket);
-    $server = proc_open([
+    // PHP's built-in server omits SERVER_ADDR. Supply only its actual loopback
+    // address, so localhost-only pages reach their real identity guard too.
+    file_put_contents($sandbox . '/sweep-prepend.php', '<?php $_SERVER["SERVER_ADDR"] = "127.0.0.1";');
+    $server = proc_open(
+        [
         PHP_BINARY, '-d', 'session.save_path=' . $sandbox . '/sessions',
         '-d', 'display_errors=0', '-d', 'log_errors=1', '-d', 'disable_functions=mail',
+        '-d', 'auto_prepend_file=' . $sandbox . '/sweep-prepend.php',
         '-S', $address, '-t', $sandbox,
-    ], [0 => ['pipe', 'r'], 1 => ['file', $sandbox . '/server.log', 'a'], 2 => ['file', $sandbox . '/server.log', 'a']], $pipes, $sandbox);
+    ],
+        [0 => ['pipe', 'r'], 1 => ['file', $sandbox . '/server.log', 'a'], 2 => ['file', $sandbox . '/server.log', 'a']],
+        $pipes,
+        $sandbox,
+        array_merge(getenv(), ['APP_HOST' => 'localhost'])
+    );
     if (!is_resource($server)) {
         throw new RuntimeException('Cannot start isolated PHP HTTP server.');
     }
@@ -92,49 +105,46 @@ try {
             $counts['public']++;
             continue;
         }
-        $source = (string) file_get_contents($root . '/' . $route);
-        $cli = preg_match('/PHP_SAPI\s*!==?\s*[\'"]cli[\'"]/', $source) === 1;
+        $cli = isset(anonymousCliRoutes()[$route]);
         $counts[$cli ? 'cli' : 'protected']++;
-        foreach (['GET', 'POST'] as $method) {
-            $requestRoute = $route;
-            $requestMethod = $method;
-            for ($redirect = 0; $redirect < 4; $redirect++) {
-            $curl = curl_init('http://' . $address . '/' . $requestRoute);
-            curl_setopt_array($curl, [
-                CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => false,
-                CURLOPT_HEADER => true, CURLOPT_TIMEOUT => 15, CURLOPT_PROXY => '',
-                CURLOPT_CUSTOMREQUEST => $requestMethod,
-            ]);
-            $response = curl_exec($curl);
-            $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
-            $headerSize = (int) curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-            $headers = substr((string) $response, 0, $headerSize);
-            curl_close($curl);
-            $denied = in_array($status, [401, 403, 404, 405], true);
-            $login = in_array($status, [302, 303], true)
-                && preg_match('~^Location:\s*(?:https?://[^/]+)?[^\r\n]*\b(?:login|prihlaseni|sportovec_prihlaseni)\.php(?:[?\s]|$)~mi', $headers);
-            if ($denied || $login || !in_array($status, [301, 302, 303, 307, 308], true)) {
-                break;
-            }
-            // Legacy aliases are checked through to their canonical route, never exempted.
-            if (!preg_match('~^Location:\s*([^\r\n]+)~mi', $headers, $location)
-                || str_contains($location[1], ':') || str_starts_with($location[1], '//')) {
-                break;
-            }
-            $target = parse_url($location[1], PHP_URL_PATH);
-            $parts = [];
-            foreach (explode('/', str_starts_with($target, '/') ? $target : dirname($requestRoute) . '/' . $target) as $part) {
-                if ($part === '..') {
-                    array_pop($parts);
-                } elseif ($part !== '' && $part !== '.') {
-                    $parts[] = $part;
+        foreach (anonymousRouteQueries($route) as $query) {
+            $provedDenial = false;
+            foreach (['GET', 'POST'] as $method) {
+                $requestRoute = $route . $query;
+                $requestMethod = $method;
+                for ($redirect = 0; $redirect < 4; $redirect++) {
+                    $curl = curl_init('http://' . $address . '/' . $requestRoute);
+                    curl_setopt_array($curl, [
+                        CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => false,
+                        CURLOPT_HEADER => true, CURLOPT_TIMEOUT => 15, CURLOPT_PROXY => '',
+                        CURLOPT_CUSTOMREQUEST => $requestMethod,
+                    ]);
+                    $response = curl_exec($curl);
+                    $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+                    $headerSize = (int) curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+                    $headers = substr((string) $response, 0, $headerSize);
+                    curl_close($curl);
+                    $denied = anonymousResponseProvesDenial((string) parse_url($requestRoute, PHP_URL_PATH), $status, $headers);
+                    if ($denied || !in_array($status, [301, 302, 303, 307, 308], true)) {
+                        break;
+                    }
+                    // Legacy aliases are checked through to their canonical route, never exempted.
+                    $target = anonymousLocalRedirect($requestRoute, $headers);
+                    if ($target === null) {
+                        break;
+                    }
+                    $requestRoute = $target;
+                    $requestMethod = in_array($status, [307, 308], true) ? $requestMethod : 'GET';
+                }
+                $provedDenial = $provedDenial || $denied;
+                if (!$denied && $status !== 405) {
+                    $errors[] = $method . ' ' . $route . $query . ': HTTP ' . $status;
                 }
             }
-            $requestRoute = implode('/', $parts);
-            $requestMethod = 'GET';
-            }
-            if (!$denied && !$login) {
-                $errors[] = $method . ' ' . $route . ': HTTP ' . $status;
+            // Method rejection alone proves no authentication. The other method
+            // must reach a login/401/403 (or an explicitly reviewed concealment).
+            if (!$provedDenial) {
+                $errors[] = $route . $query . ': neither GET nor POST proved access denial';
             }
         }
     }

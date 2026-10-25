@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Explicit exceptions, reviewed as routes rather than inferred from source strings.
@@ -45,6 +46,7 @@ function anonymousLibraryFiles(): array
     return [
         'auth/sso_bridge.php' => 'Function-only optional SSO adapter.',
         'booking/waiting_list.php' => 'Function-only queue helper.',
+        'booking/free_event_registration_form.php' => 'Included form fragment; requires caller-provided variables, not request parameters.',
         'config.example.php' => 'Example constants, never an application route.',
         'csrf_helper.php' => 'CSRF library; Apache FilesMatch denies direct access.',
         'db.php' => 'Database bootstrap; Apache FilesMatch denies direct access.',
@@ -55,17 +57,12 @@ function anonymousLibraryFiles(): array
 
 function anonymousEntryPoints(string $root): array
 {
-    $excluded = ['includes', 'vendor', 'tests', 'migrations', 'bin', 'tools', 'database', '.git'];
-    $directory = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
-    $filter = new RecursiveCallbackFilterIterator($directory, static function ($file) use ($excluded): bool {
-        return !$file->isDir() || !in_array($file->getFilename(), $excluded, true);
-    });
+    $excluded = ['includes', 'vendor', 'tests', 'migrations', 'bin', 'tools', 'database', 'docs', 'output', 'outputs', 'var'];
     $routes = [];
-    foreach (new RecursiveIteratorIterator($filter) as $file) {
-        if (!$file->isFile() || $file->getExtension() !== 'php') {
+    foreach (anonymousTrackedPhpFiles($root) as $relative) {
+        if (in_array(explode('/', $relative)[0], $excluded, true)) {
             continue;
         }
-        $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
         if ($relative === 'config.php' || isset(anonymousLibraryFiles()[$relative])) {
             continue;
         }
@@ -73,4 +70,51 @@ function anonymousEntryPoints(string $root): array
     }
     sort($routes);
     return $routes;
+}
+
+function anonymousTrackedPhpFiles(string $root): array
+{
+    $process = proc_open(['git', '-C', $root, 'ls-files', '-z', '--', '*.php'], [
+        1 => ['pipe', 'w'], 2 => ['pipe', 'w'],
+    ], $pipes);
+    if (!is_resource($process)) {
+        throw new RuntimeException('Cannot start tracked PHP inventory.');
+    }
+    $output = stream_get_contents($pipes[1]);
+    $error = stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    if (proc_close($process) !== 0) {
+        throw new RuntimeException('git ls-files failed: ' . $error);
+    }
+    return array_values(array_filter(explode("\0", (string) $output), static function (string $path): bool {
+        // Matches the Apache rule for every dot-prefixed path component.
+        return $path !== '' && !preg_match('~(^|/)\.~', $path) && $path !== 'config.php';
+    }));
+}
+
+function anonymousCliRoutes(): array
+{
+    return [
+        'cron_report_tyden.php' => 403,
+        'cron_upominky.php' => 404,
+    ];
+}
+
+function anonymousHiddenRoutes(): array
+{
+    return [
+        'diagnostika_site_admin.php' => 'Admin identity guard intentionally hides this diagnostic with 404.',
+    ];
+}
+
+function anonymousRouteQueries(string $route): array
+{
+    if ($route === 'private_download.php') {
+        // Valid IDs reach each authorization branch; an absent ID only proves validation.
+        return array_map(static fn (string $kind): string => '?id=1&kind=' . $kind, [
+            'receipt', 'stress', 'athlete-photo', 'service',
+        ]);
+    }
+    return ['', '?id=1'];
 }
