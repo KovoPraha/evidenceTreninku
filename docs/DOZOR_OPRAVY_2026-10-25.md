@@ -3,6 +3,8 @@
 Vlastník schválil implementaci připomínek dozoru. Bez merge do main, deploye,
 aktivace integrací, nových migrací a zásahů do skutečných dat.
 Práce probíhá v izolovaných worktrees mimo htdocs; původní WIP zůstává zachován.
+Během práce se main posunul cizím PR #201 na ba2c9eef; všechny navázané větve
+byly aktualizovány na tento základ. Poslední doložený deploy zůstal a23e393f.
 
 ## Plán a závislosti
 
