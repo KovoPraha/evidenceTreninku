@@ -19,6 +19,7 @@ try{
     require_once $root.'/includes/club_event_registration.php';
     require_once $root.'/includes/shop_checkout.php';
     require_once $root.'/includes/kis_roster.php';
+    require_once $root.'/includes/kis_a06_acceptance.php';
     require_once $root.'/includes/club_program.php';
     require_once $root.'/includes/club_event_roster_target.php';
     require_once $root.'/includes/training_roster_bridge.php';
@@ -45,7 +46,8 @@ try{
     // Seed vytváří dvě stabilní syntetické identity a rodiče váže pouze k nim.
     $demoPeople=[];
     foreach([
-        ['LOCALHOST','Sportovec A','2013-04-15','localhost-sportovec-a@localhost.test'],
+        // A06 advances U15 in 2026 to U17 in 2027: the fixture must turn 15.
+        ['LOCALHOST','Sportovec A','2012-04-15','localhost-sportovec-a@localhost.test'],
         ['LOCALHOST','Sportovec B','2015-09-20','localhost-sportovec-b@localhost.test'],
     ]as$demoPerson){
         [$firstName,$lastName,$birthDate,$personEmail]=$demoPerson;
@@ -194,7 +196,14 @@ try{
     $a06Runs->execute([(int)$nextRaceSeason['id'],...$a06SourceIds]);$a06RunIds=array_map('intval',$a06Runs->fetchAll(PDO::FETCH_COLUMN));
     if($a06RunIds!==[]){$runPlaceholders=implode(',',array_fill(0,count($a06RunIds),'?'));$pdo->prepare('DELETE FROM club_roster_rollover_run_items WHERE run_id IN ('.$runPlaceholders.')')->execute($a06RunIds);$pdo->prepare('DELETE FROM club_roster_rollover_runs WHERE id IN ('.$runPlaceholders.')')->execute($a06RunIds);}
     $targetPlaceholders=implode(',',array_fill(0,count($a06TargetIds),'?'));
-    $pdo->prepare("UPDATE club_roster_members SET status='removed',valid_to='2027-01-01',updated_at=CURRENT_TIMESTAMP WHERE team_id IN (".$targetPlaceholders.") AND status='active'")->execute($a06TargetIds);
+    // Cancel only this seed's synthetic target periods. Clear their replay key
+    // so the next A06 run can create a fresh period without deleting history.
+    $a06People=[...array_map('intval',$people),$a05PersonId];
+    $a06PeoplePlaceholders=implode(',',array_fill(0,count($a06People),'?'));
+    $pdo->prepare("UPDATE club_roster_members SET status='cancelled',source_ref=NULL,valid_to='2027-01-01',updated_at=CURRENT_TIMESTAMP WHERE team_id IN (".$targetPlaceholders.") AND sportovec_id IN (".$a06PeoplePlaceholders.") AND source='manual' AND valid_from='2027-01-01' AND (source_ref IS NULL OR source_ref LIKE 'roster_rollover:%')")->execute([...$a06TargetIds,...$a06People]);
+    foreach ([[(int)$team['id'],(int)$people[0]],[(int)$trackTeam['id'],(int)$people[0]],[(int)$u13Team['id'],(int)$people[1]],[(int)$roadTeam['id'],(int)$people[1]]] as [$demoTeamId,$demoPersonId]) {
+        $pdo->prepare("UPDATE club_roster_members SET status='active',valid_to=NULL,updated_at=CURRENT_TIMESTAMP WHERE team_id=? AND sportovec_id=? AND source='manual' AND source_ref IS NULL AND valid_from='2026-01-01' AND status='removed' AND valid_to='2026-12-31'")->execute([$demoTeamId,$demoPersonId]);
+    }
     if(isset($people[0])){kisRosterAddMember($pdo,(int)$team['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost věkové zařazení.');kisRosterAddMember($pdo,(int)$trackTeam['id'],(int)$people[0],$actorId,'manual','2026-01-01','Localhost disciplínové zařazení.');}
     if(isset($people[1]))kisRosterAddMember($pdo,(int)$hobbyTeam['id'],(int)$people[1],$actorId,'manual','2026-09-01','Localhost kroužkové zařazení.');
     if(isset($people[1])){kisRosterAddMember($pdo,(int)$u13Team['id'],(int)$people[1],$actorId,'manual','2026-01-01','Localhost zdroj věkového přesunu.');kisRosterAddMember($pdo,(int)$roadTeam['id'],(int)$people[1],$actorId,'manual','2026-01-01','Localhost silniční disciplína.');kisRosterSetRolloverException($pdo,(int)$u13Team['id'],(int)$nextRaceSeason['id'],(int)$people[1],'skip',null,$actorId,'LOCALHOST ukázka individuální výjimky.',true);}
@@ -215,6 +224,8 @@ try{
     }
     kisRosterAddMember($pdo,(int)$hobbyTeam['id'],$a05PersonId,$actorId,'manual','2026-09-01','Localhost kroužkové zařazení pro scénář A05.');
     kisRosterAddMember($pdo,(int)$u13Team['id'],$a05PersonId,$actorId,'manual','2026-01-01','Localhost závodník pro náhled automatického přesunu U13 na U15.');
+    // Validate real previews, not merely the presence of teams and demo people.
+    kisA06Scenario($pdo);
 
     $program=clubProgramCreate($pdo,$actorId,'LOCAL-CYKLO-SKOLA','LOCALHOST Cyklistická škola','Testovací stabilní kroužkový program.');
     clubProgramTermsConfigure($pdo,$actorId,'program',(int)$program['id'],'program_cancellation','LOCALHOST TEST: přihlášku lze v rámci syntetického testu zrušit; nejde o skutečnou nabídku ani skutečnou platbu.',true);
