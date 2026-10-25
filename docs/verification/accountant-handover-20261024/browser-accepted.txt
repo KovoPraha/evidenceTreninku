@@ -1,0 +1,448 @@
+Browser tab: 2033022702, Title: "Účetní podklady", URL: "http://127.0.0.1:18086/accounting_exports_admin.php?id=38".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 739, 744-750, 753-1178
+~		731 heading Předání této revize: Převzato účetní, Value: 3
+~			732 text Předání této revize: Převzato účetní
++			739 text Komu, kdy, doklad o předání / důvod vrácení
+~			740 text entry area (settable) Komu, kdy, doklad o předání / důvod vrácení
+~			741 checkbox (settable, integer) Description: Potvrzuji skutečně provedený krok., Value: 0
+~			742 text  Potvrzuji skutečně provedený krok.
+~			743 button Zapsat předání
++		744 content list
++			745 container
++				746 AXListMarker •
++				747 text 2026-10-24 22:39:04 · LOCALHOST Kontrola 1 · Převzato účetní · LOCALHOST NEPLATIT – simulované technické převzetí revize 10 dne 24. 10. 2026. ZIP, XLSX a PDF zkontrolovány. Nejde o skutečné schválení účetní ani účetní metodiky; podklady zůstávají NEÚPLNÉ.
++			748 container
++				749 AXListMarker •
++				750 text 2026-10-24 22:38:45 · LOCALHOST Kontrola 1 · Předáno účetní · LOCALHOST NEPLATIT – simulované předání nové revize 10 kontrolní účetní dne 24. 10. 2026. Soubor stažen přes Chrome, výjimky zůstávají uvedené. Nic nebylo skutečně odesláno.
+~		751 heading Archiv revizí, Value: 2
+~			752 text Archiv revizí
++		753 table
++			754 row
++				755 cell
++					756 text Období
++				757 cell
++					758 text Revize
++				759 cell
++					760 text Vytvořeno
++				761 cell
++					762 text Stav
++			763 row
++				764 cell
++					765 text 2026-10-01 – 2026-10-31
++				766 cell
++					767 text 10
++				768 cell
++					769 text 2026-10-24 22:38:36
++				770 cell
++					771 text Neúplný pracovní balík
++				772 cell
++					773 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=38
++			774 row
++				775 cell
++					776 text 2026-10-01 – 2026-10-31
++				777 cell
++					778 text 9
++				779 cell
++					780 text 2026-10-24 22:31:49
++				781 cell
++					782 text Neúplný pracovní balík
++				783 cell
++					784 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=37
++			785 row
++				786 cell
++					787 text 2026-10-01 – 2026-10-31
++				788 cell
++					789 text 8
++				790 cell
++					791 text 2026-10-24 22:13:29
++				792 cell
++					793 text Neúplný pracovní balík
++				794 cell
++					795 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=36
++			796 row
++				797 cell
++					798 text 2026-09-25 – 2026-10-24
++				799 cell
++					800 text 2
++				801 cell
++					802 text 2026-10-24 20:01:37
++				803 cell
++					804 text Neúplný pracovní balík
++				805 cell
++					806 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=35
++			807 row
++				808 cell
++					809 text 2026-10-01 – 2026-10-31
++				810 cell
++					811 text 7
++				812 cell
++					813 text 2026-10-24 20:01:23
++				814 cell
++					815 text Neúplný pracovní balík
++				816 cell
++					817 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=34
++			818 row
++				819 cell
++					820 text 2026-10-01 – 2026-10-24
++				821 cell
++					822 text 4
++				823 cell
++					824 text 2026-10-24 20:01:16
++				825 cell
++					826 text Neúplný pracovní balík
++				827 cell
++					828 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=33
++			829 row
++				830 cell
++					831 text 2026-10-01 – 2026-10-24
++				832 cell
++					833 text 3
++				834 cell
++					835 text 2026-10-24 20:01:12
++				836 cell
++					837 text Neúplný pracovní balík
++				838 cell
++					839 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=32
++			840 row
++				841 cell
++					842 text 2025-09-01 – 2025-09-30
++				843 cell
++					844 text 8
++				845 cell
++					846 text 2026-10-24 20:01:06
++				847 cell
++					848 text Neúplný pracovní balík
++				849 cell
++					850 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=31
++			851 row
++				852 cell
++					853 text 2025-09-01 – 2025-09-30
++				854 cell
++					855 text 7
++				856 cell
++					857 text 2026-10-24 20:01:04
++				858 cell
++					859 text Neúplný pracovní balík
++				860 cell
++					861 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=30
++			862 row
++				863 cell
++					864 text 2026-09-25 – 2026-10-24
++				865 cell
++					866 text 1
++				867 cell
++					868 text 2026-10-24 19:50:46
++				869 cell
++					870 text Neúplný pracovní balík
++				871 cell
++					872 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=29
++			873 row
++				874 cell
++					875 text 2026-10-01 – 2026-10-31
++				876 cell
++					877 text 6
++				878 cell
++					879 text 2026-10-24 19:50:37
++				880 cell
++					881 text Neúplný pracovní balík
++				882 cell
++					883 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=28
++			884 row
++				885 cell
++					886 text 2026-10-01 – 2026-10-24
++				887 cell
++					888 text 2
++				889 cell
++					890 text 2026-10-24 19:50:34
++				891 cell
++					892 text Neúplný pracovní balík
++				893 cell
++					894 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=27
++			895 row
++				896 cell
++					897 text 2026-10-01 – 2026-10-24
++				898 cell
++					899 text 1
++				900 cell
++					901 text 2026-10-24 19:50:31
++				902 cell
++					903 text Neúplný pracovní balík
++				904 cell
++					905 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=26
++			906 row
++				907 cell
++					908 text 2025-09-01 – 2025-09-30
++				909 cell
++					910 text 6
++				911 cell
++					912 text 2026-10-24 19:50:28
++				913 cell
++					914 text Neúplný pracovní balík
++				915 cell
++					916 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=25
++			917 row
++				918 cell
++					919 text 2025-09-01 – 2025-09-30
++				920 cell
++					921 text 5
++				922 cell
++					923 text 2026-10-24 19:50:27
++				924 cell
++					925 text Neúplný pracovní balík
++				926 cell
++					927 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=24
++			928 row
++				929 cell
++					930 text 2026-10-01 – 2026-10-23
++				931 cell
++					932 text 1
++				933 cell
++					934 text 2026-10-23 11:41:13
++				935 cell
++					936 text Neúplný pracovní balík
++				937 cell
++					938 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=23
++			939 row
++				940 cell
++					941 text 2026-09-24 – 2026-10-23
++				942 cell
++					943 text 5
++				944 cell
++					945 text 2026-10-23 07:59:30
++				946 cell
++					947 text Neúplný pracovní balík
++				948 cell
++					949 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=22
++			950 row
++				951 cell
++					952 text 2026-09-24 – 2026-10-23
++				953 cell
++					954 text 4
++				955 cell
++					956 text 2026-10-23 07:40:16
++				957 cell
++					958 text Neúplný pracovní balík
++				959 cell
++					960 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=21
++			961 row
++				962 cell
++					963 text 2026-09-24 – 2026-10-23
++				964 cell
++					965 text 3
++				966 cell
++					967 text 2026-10-23 01:30:21
++				968 cell
++					969 text Neúplný pracovní balík
++				970 cell
++					971 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=20
++			972 row
++				973 cell
++					974 text 2026-10-01 – 2026-10-31
++				975 cell
++					976 text 5
++				977 cell
++					978 text 2026-10-23 01:29:01
++				979 cell
++					980 text Neúplný pracovní balík
++				981 cell
++					982 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=19
++			983 row
++				984 cell
++					985 text 2026-10-01 – 2026-10-31
++				986 cell
++					987 text 4
++				988 cell
++					989 text 2026-10-23 01:26:53
++				990 cell
++					991 text Neúplný pracovní balík
++				992 cell
++					993 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=18
++			994 row
++				995 cell
++					996 text 2026-10-01 – 2026-10-31
++				997 cell
++					998 text 3
++				999 cell
++					1000 text 2026-10-23 01:26:23
++				1001 cell
++					1002 text Neúplný pracovní balík
++				1003 cell
++					1004 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=17
++			1005 row
++				1006 cell
++					1007 text 2026-09-24 – 2026-10-23
++				1008 cell
++					1009 text 2
++				1010 cell
++					1011 text 2026-10-23 01:08:04
++				1012 cell
++					1013 text Neúplný pracovní balík
++				1014 cell
++					1015 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=16
++			1016 row
++				1017 cell
++					1018 text 2026-10-01 – 2026-10-31
++				1019 cell
++					1020 text 2
++				1021 cell
++					1022 text 2026-10-23 01:03:25
++				1023 cell
++					1024 text Neúplný pracovní balík
++				1025 cell
++					1026 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=15
++			1027 row
++				1028 cell
++					1029 text 2026-09-24 – 2026-10-23
++				1030 cell
++					1031 text 1
++				1032 cell
++					1033 text 2026-10-23 01:02:25
++				1034 cell
++					1035 text Neúplný pracovní balík
++				1036 cell
++					1037 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=14
++			1038 row
++				1039 cell
++					1040 text 2026-10-01 – 2026-10-31
++				1041 cell
++					1042 text 1
++				1043 cell
++					1044 text 2026-10-23 00:57:54
++				1045 cell
++					1046 text Neúplný pracovní balík
++				1047 cell
++					1048 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=13
++			1049 row
++				1050 cell
++					1051 text 2025-09-01 – 2025-09-30
++				1052 cell
++					1053 text 4
++				1054 cell
++					1055 text 2026-10-22 23:31:32
++				1056 cell
++					1057 text Neúplný pracovní balík
++				1058 cell
++					1059 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=12
++			1060 row
++				1061 cell
++					1062 text 2025-09-01 – 2025-09-30
++				1063 cell
++					1064 text 3
++				1065 cell
++					1066 text 2026-10-22 23:31:30
++				1067 cell
++					1068 text Neúplný pracovní balík
++				1069 cell
++					1070 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=11
++			1071 row
++				1072 cell
++					1073 text 2025-09-01 – 2025-09-30
++				1074 cell
++					1075 text 2
++				1076 cell
++					1077 text 2026-10-22 23:30:42
++				1078 cell
++					1079 text Neúplný pracovní balík
++				1080 cell
++					1081 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=10
++			1082 row
++				1083 cell
++					1084 text 2025-09-01 – 2025-09-30
++				1085 cell
++					1086 text 1
++				1087 cell
++					1088 text 2026-10-22 23:30:41
++				1089 cell
++					1090 text Neúplný pracovní balík
++				1091 cell
++					1092 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=9
++			1093 row
++				1094 cell
++					1095 text 2026-10-01 – 2026-10-22
++				1096 cell
++					1097 text 8
++				1098 cell
++					1099 text 2026-10-22 22:48:10
++				1100 cell
++					1101 text Neúplný pracovní balík
++				1102 cell
++					1103 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=8
++			1104 row
++				1105 cell
++					1106 text 2026-10-01 – 2026-10-22
++				1107 cell
++					1108 text 7
++				1109 cell
++					1110 text 2026-10-22 22:48:10
++				1111 cell
++					1112 text Neúplný pracovní balík
++				1113 cell
++					1114 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=7
++			1115 row
++				1116 cell
++					1117 text 2026-10-01 – 2026-10-22
++				1118 cell
++					1119 text 6
++				1120 cell
++					1121 text 2026-10-22 22:42:46
++				1122 cell
++					1123 text Neúplný pracovní balík
++				1124 cell
++					1125 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=6
++			1126 row
++				1127 cell
++					1128 text 2026-10-01 – 2026-10-22
++				1129 cell
++					1130 text 5
++				1131 cell
++					1132 text 2026-10-22 22:42:46
++				1133 cell
++					1134 text Neúplný pracovní balík
++				1135 cell
++					1136 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=5
++			1137 row
++				1138 cell
++					1139 text 2026-10-01 – 2026-10-22
++				1140 cell
++					1141 text 4
++				1142 cell
++					1143 text 2026-10-22 22:40:17
++				1144 cell
++					1145 text Neúplný pracovní balík
++				1146 cell
++					1147 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=4
++			1148 row
++				1149 cell
++					1150 text 2026-10-01 – 2026-10-22
++				1151 cell
++					1152 text 3
++				1153 cell
++					1154 text 2026-10-22 22:40:17
++				1155 cell
++					1156 text Neúplný pracovní balík
++				1157 cell
++					1158 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=3
++			1159 row
++				1160 cell
++					1161 text 2026-10-01 – 2026-10-22
++				1162 cell
++					1163 text 2
++				1164 cell
++					1165 text 2026-10-22 22:37:00
++				1166 cell
++					1167 text Neúplný pracovní balík
++				1168 cell
++					1169 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=2
++			1170 row
++				1171 cell
++					1172 text 2026-10-01 – 2026-10-22
++				1173 cell
++					1174 text 1
++				1175 cell
++					1176 text 2026-10-22 22:36:59
++				1177 cell
++					1178 text Neúplný pracovní balík
++				1179 cell
++					1180 link Description: Podrobnosti, Value: 127.0.0.1:18086/accounting_exports_admin.php?id=1
+The focused UI element is 1 AXWebArea Účetní podklady, URL: 127.0.0.1:18086/accounting_exports_admin.php?id=38

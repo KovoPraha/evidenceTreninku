@@ -174,12 +174,8 @@ try {
     $periodData=['action'=>'save','sportovec_id'=>$athlete,'datum_od'=>'2026-10-01','datum_do'=>'','sazba_kc'=>'100'];
     $res=b1Request($finance,'sprava_sportovec_obdobi.php',$periodData);
     $st=$pdo->prepare('SELECT id FROM sportovec_obdobi WHERE sportovec_id=? ORDER BY id DESC LIMIT 1');$st->execute([$athlete]);$period=(int)$st->fetchColumn();
-    b1Check($period>0&&$res['status']===302,'HTTP create open reward period');
-    b1Request($finance,'sprava_sportovec_obdobi.php',array_replace($periodData,['obdobi_id'=>$period,'sazba_kc'=>'120']));
-    b1Check((float)b1Row('sportovec_obdobi',$period)['sazba_kc']===120.0,'HTTP edit open reward period');
-    b1Request($finance,'sprava_sportovec_obdobi.php',['action'=>'close','sportovec_id'=>$athlete,'obdobi_id'=>$period,'datum_do'=>'2026-10-22']);
-    $closed=b1Row('sportovec_obdobi',$period);
-    b1Check((int)$closed['pocet_treninku']===1&&(float)$closed['castka_celkem']===120.0,'First close stores actual reward snapshot');
+    b1Check($period===0&&str_contains($res['body'],'Výkazy a odměny'),'Legacy creation directs finance to canonical rewards without new period');
+    $period=b1Insert('sportovec_obdobi',['sportovec_id'=>$athlete,'datum_od'=>'2026-10-01','datum_do'=>'2026-10-22','sazba_kc'=>120,'pocet_treninku'=>1,'castka_celkem'=>120]);
     b1Same('sportovec_obdobi',$period,fn()=>b1Request($finance,'sprava_sportovec_obdobi.php',array_replace($periodData,['obdobi_id'=>$period,'sazba_kc'=>'999'])),'Closed reward edit rejected');
     b1Same('sportovec_obdobi',$period,fn()=>b1Request($finance,'sprava_sportovec_obdobi.php',['action'=>'close','sportovec_id'=>$athlete,'obdobi_id'=>$period,'datum_do'=>'2026-12-31']),'Repeated reward close preserves snapshot');
     b1Same('sportovec_obdobi',$period,fn()=>b1Request($finance,'prehled_kreditu.php',['action'=>'close','sportovec_id'=>$athlete,'obdobi_id'=>$period]),'Credit overview repeated close preserves snapshot');
@@ -192,11 +188,20 @@ try {
     $bulk=['ulozit_odmeny'=>1,'skupina_id'=>$group,'apply_all'=>'200'];
     b1Same('sportovec_obdobi',$period,fn()=>b1Request($finance,'hromadne_odmeny.php',$bulk),'Bulk rate preserves closed and paid snapshot');
     $st=$pdo->prepare('SELECT id FROM sportovec_obdobi WHERE sportovec_id=? AND datum_do IS NULL ORDER BY id DESC LIMIT 1');$st->execute([$athlete]);$openPeriod=(int)$st->fetchColumn();
-    b1Check($openPeriod>0&&(float)b1Row('sportovec_obdobi',$openPeriod)['sazba_kc']===200.0,'Bulk creates a new open period without rewriting history');
+    b1Check($openPeriod===0,'Bulk legacy rates cannot create a competing reward workflow');
+    $openPeriod=b1Insert('sportovec_obdobi',['sportovec_id'=>$athlete,'datum_od'=>'2026-10-23','sazba_kc'=>200]);
     $pdo->prepare('UPDATE sportovec_obdobi SET vyplaceno=1 WHERE id=?')->execute([$openPeriod]);
     b1Same('sportovec_obdobi',$openPeriod,fn()=>b1Request($finance,'hromadne_odmeny.php',array_replace($bulk,['apply_all'=>'300'])),'Bulk refuses inconsistent paid but open period');
     $page=b1Request($finance,'sprava_sportovec_obdobi.php?sportovec_id='.$athlete);
     b1Check($page['status']===200&&str_contains($page['body'],'Nevyřešeno: chybí souhrn'),'Historical snapshot issue visible in rendered page');
+    foreach (['sprava_sportovec_obdobi.php?sportovec_id='.$athlete, 'prehled_kreditu.php', 'hromadne_odmeny.php?skupina_id='.$group] as $route) {
+        $page=b1Request($finance,$route);
+        $document=new DOMDocument();$previous=libxml_use_internal_errors(true);
+        $document->loadHTML('<?xml encoding="UTF-8">'.$page['body']);libxml_clear_errors();libxml_use_internal_errors($previous);
+        $xpath=new DOMXPath($document);
+        b1Check($page['status']===200&&$xpath->query('//div[@role="status"]//a[@href="club_rewards_admin.php"]')->length===1,'Legacy reward page links directly to canonical workflow: '.$route);
+        b1Check($xpath->query('//div[contains(@class,"container py-4")]//form[translate(@method,"POST","post")="post"]//button[@type="submit" and not(@disabled)]')->length===0,'Legacy reward page offers no enabled obsolete submit: '.$route);
+    }
     $res=b1Same('sportovec_obdobi',$period,fn()=>b1Request($coach,'sprava_sportovec_obdobi.php',$periodData+['obdobi_id'=>$period]),'Coach direct reward write denied');
     b1Check($res['status']===403,'Coach reward request rejected by route permission');
     $res=b1Same('sportovec_obdobi',$period,fn()=>b1Request($finance,'sprava_sportovec_obdobi.php',$periodData+['obdobi_id'=>$period,'csrf_token'=>'invalid']),'Reward invalid CSRF preserves row');

@@ -1,0 +1,195 @@
+{
+    "status": "PASS",
+    "scenarios": 47,
+    "checks": [
+        {
+            "scenario": "Finance dashboard loads",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot read global financial evidence",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Case created through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Expense split accepted 1000 of 1200 through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Identical claim retry idempotent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Expense submitted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Self approval rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Independent approval accepted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual ledger pay through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Partial payment allocation through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Partial payment leaves 400 CZK",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated payment allocation creates no duplicate",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual ledger bank-return through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP partial bank return reopens original expense",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP bank return retry is idempotent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP full bank return restores approved expense",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP bank over-return refused",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual ledger bank-repayment through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "HTTP replacement payment leaves correct expense balance",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Downward correction creates new immutable version",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Correction submitted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Correction independently approved",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Lower approved amount creates real receivable of 200 CZK",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unreturned expense overpayment prevents case closure",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual ledger return through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual income settles expense overpayment",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Receivable clears only after actual income",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance requested through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance independently approved",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Approval alone creates no money",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual ledger advance-out through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual advance handoff linked once",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance expense recorded",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance expense submitted",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance expense approved",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual approved receipt consumes correct advance",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance leaves 800 CZK to return",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unsettled advance cannot close",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual ledger advance-return-500 through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance actual return 500 linked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual ledger advance-return-300 through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Advance actual return 300 linked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Zero balance advance closes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Fully settled financial case closes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Late addition to closed case rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked finance role fails on next HTTP request",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

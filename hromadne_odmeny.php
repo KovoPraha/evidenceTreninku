@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/athlete_reward_guard.php';
+$legacyRewardsReadOnly = athleteRewardLegacyReadOnly($pdo);
 if (!canAccess('kreditni_obdobi')) {
     http_response_code(403);
     exit('Nemáte oprávnění ke změně kreditních období. Obraťte se na hospodáře.');
@@ -226,6 +227,13 @@ if ($filterSkupinaId !== '') {
 <?php include 'hlavicka.php'; ?>
 
 <div class="container py-4">
+    <?php if ($legacyRewardsReadOnly): ?>
+    <div class="alert alert-info" role="status">
+        <strong>Historická evidence odměn.</strong> Nové sazby, podklady, schválení a výplaty vyřizujte v agendě
+        <a href="club_rewards_admin.php" class="alert-link">Výkazy a odměny</a>.
+        Zde zůstávají původní záznamy k nahlédnutí.
+    </div>
+    <?php endif; ?>
 
     <!-- Hero banner -->
     <div class="hero-card card mb-4 p-3 px-4">
@@ -362,7 +370,7 @@ if ($filterSkupinaId !== '') {
                             </div>
 
                             <div class="col-md-8 d-flex gap-2 justify-content-md-end align-items-end">
-                                <button class="btn btn-success" type="submit" name="ulozit_odmeny" value="1">
+                                <button <?= $legacyRewardsReadOnly ? 'disabled' : '' ?> class="btn btn-success" type="submit" name="ulozit_odmeny" value="1">
                                     <i class="bi bi-floppy me-1"></i>Uložit změny
                                 </button>
                             </div>
@@ -416,7 +424,7 @@ if ($filterSkupinaId !== '') {
                         </div>
 
                         <div class="d-flex gap-2 mt-3">
-                            <button class="btn btn-success" type="submit" name="ulozit_odmeny" value="1">
+                            <button <?= $legacyRewardsReadOnly ? 'disabled' : '' ?> class="btn btn-success" type="submit" name="ulozit_odmeny" value="1">
                                 <i class="bi bi-floppy me-1"></i>Uložit změny
                             </button>
                         </div>

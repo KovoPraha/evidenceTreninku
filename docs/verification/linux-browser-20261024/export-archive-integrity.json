@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "scope": "server-side archive integrity only; Chrome download remains blocked",
+  "export_id": 36,
+  "revision": 8,
+  "bytes": 764431,
+  "sha256": "cae8e9faac9cfd4baacc7bedd26c60baa6febbdc4913090f0240bf7131bf2f0f",
+  "files": 45,
+  "xlsx_files": [
+    "ucetni-podklady.xlsx"
+  ],
+  "pdf_count": 33,
+  "crc_errors": 0
+}

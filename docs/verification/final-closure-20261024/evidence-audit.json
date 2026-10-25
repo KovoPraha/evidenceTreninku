@@ -1,0 +1,176 @@
+{
+  "status": "PASS",
+  "application_changes_since_linux": [],
+  "linux_tested_commit": "ad4ba012aa4cc6c7b59f6b0c02343db16a9f86ec",
+  "linux_jobs": [
+    {
+      "name": "PHPUnit na PHP 8.2",
+      "conclusion": "success"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "conclusion": "success"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "conclusion": "success"
+    }
+  ],
+  "historical_http_sources": [
+    {
+      "script": "FinanceB1HttpAcceptance",
+      "sha256": "f484ff060650ae42618650b187754962d2c599eea85c6510727315a7523396c0",
+      "checks": 58,
+      "unchanged": true
+    },
+    {
+      "script": "FinanceB1RouterHttpAcceptance",
+      "sha256": "b20839f5589c484aa366d1a5b6733de78a44bbb0df8fc16d7f5729ce83772e89",
+      "checks": 14,
+      "unchanged": true
+    },
+    {
+      "script": "ClubFoundationHttpAcceptance",
+      "sha256": "acc6dcc8ca0f048705a84c01c00f3d4ae0c3d155ad8afcb77f9317d2573aca0d",
+      "checks": 110,
+      "unchanged": true
+    },
+    {
+      "script": "MemberAdmissionHttpAcceptance",
+      "sha256": "6c3fc18b2658490c4cf469bb2b5c6af3cf906e7bc41c30969f0aac1c79f2b800",
+      "checks": 30,
+      "unchanged": true
+    },
+    {
+      "script": "DailyCoachRegistrarHttpAcceptance",
+      "sha256": "422b716511909449b9cd209e64b79b0cc0ec1c7064637409968fbbf3793619a2",
+      "checks": 32,
+      "unchanged": true
+    },
+    {
+      "script": "PersonLifeDocumentsHttpAcceptance",
+      "sha256": "2593d115729a56ac19535e961fff6862185e61b1e3a14c1e4e267042b982ad89",
+      "checks": 30,
+      "unchanged": true
+    },
+    {
+      "script": "TrainingClosureHttpAcceptance",
+      "sha256": "a234173d4b4f6eca7961dff26ecb2f52bc720d7e861f98428bf3a819afc640cf",
+      "checks": 25,
+      "unchanged": true
+    },
+    {
+      "script": "SportsActivityHttpAcceptance",
+      "sha256": "c17549ccab02cc246065fee2cb1759b8168d30b9ae5c511176bdb878c7b5c95d",
+      "checks": 23,
+      "unchanged": true
+    },
+    {
+      "script": "MedicalClearanceHttpAcceptance",
+      "sha256": "9a1df7233090724c3b29c05f87e2396a28a7cebecfd6e73a0e96b1eab69ff9c5",
+      "checks": 22,
+      "unchanged": true
+    },
+    {
+      "script": "ClubAdministrationHttpAcceptance",
+      "sha256": "ccea326020fa724410cdc4b7ac50b1c568000d7a9fa258d90bd60bdc5811bcba",
+      "checks": 49,
+      "unchanged": true
+    },
+    {
+      "script": "ClubExpensesHttpAcceptance",
+      "sha256": "9cfe9c1cf150b95fd09e9d65a42dea2a147056d153b1b41db3cb2c150a26146d",
+      "checks": 47,
+      "unchanged": true
+    },
+    {
+      "script": "ClubRewardsHttpAcceptance",
+      "sha256": "8a55ecf31e91f00fe4bbbf2dcff5e8c8af9e83635ac4dbdd6117b07d1a04d251",
+      "checks": 29,
+      "unchanged": true
+    },
+    {
+      "script": "SeasonOperationsHttpAcceptance",
+      "sha256": "c04e5a5569bb4b5c683fa11ea7c5a6ba5bccf2dfd93b7427ce02ff7fb2b5c062",
+      "checks": 41,
+      "unchanged": true
+    },
+    {
+      "script": "ShopInventoryHttpAcceptance",
+      "sha256": "7b577b6bd20fb6c6d5c8c2d374e2ab27f0f95beada0b25b110069c00676e76c6",
+      "checks": 21,
+      "unchanged": true
+    },
+    {
+      "script": "ShopFulfillmentHttpAcceptance",
+      "sha256": "1e7cbb601c003e40da8fbd2032983567ce91679136c28945e1ca2f5df61ea57b",
+      "checks": 31,
+      "unchanged": true
+    },
+    {
+      "script": "ShopReturnsHttpAcceptance",
+      "sha256": "5fa60f755ddbe0720612c4214ad73b6ff91765fa9da2b21a3ed4d69704779f80",
+      "checks": 33,
+      "unchanged": true
+    },
+    {
+      "script": "AccountingLedgerHttpAcceptance",
+      "sha256": "0433fc17ac0eef0ba65050d9c8b16fb2d226cb077cf2c27e0ca3a08f3237a655",
+      "checks": 17,
+      "unchanged": true
+    },
+    {
+      "script": "AccountingDocumentsHttpAcceptance",
+      "sha256": "d244912f844326e8de37b10c697b3463a97a9d304b366f42ec4cd2d67526dfab",
+      "checks": 18,
+      "unchanged": true
+    },
+    {
+      "script": "AccountingAdjustmentsHttpAcceptance",
+      "sha256": "912944152b0abded9a613f42428cbb5885de85aad8e259d0abdda7119c24c72a",
+      "checks": 18,
+      "unchanged": true
+    },
+    {
+      "script": "AccountingStockHttpAcceptance",
+      "sha256": "63d25fcb148ca1e3507c65bbb5203d00d627fdaa866ee7d257f5fdf605cb078f",
+      "checks": 16,
+      "unchanged": true
+    },
+    {
+      "script": "AccountingExportHttpAcceptance",
+      "sha256": "df28d776ee6d87b4e291cdcaa15801a1b4c27ab04a5e78b4d97e58b3dd383648",
+      "checks": 64,
+      "unchanged": true
+    },
+    {
+      "script": "ClubAccountingHttpAcceptance",
+      "sha256": "1cc5dd8b48da6e4b77344673457486afa708c95fbabc33e9612ef9458552552f",
+      "checks": 34,
+      "unchanged": true
+    },
+    {
+      "script": "ClubCutoverHttpAcceptance",
+      "sha256": "0690fe7b5e3dcc9ff26912b3606d0aa5daafe1793478f3947cf0f714b4ec1934",
+      "checks": 26,
+      "unchanged": true
+    },
+    {
+      "script": "WeeklyReportPrivacyHttpAcceptance",
+      "sha256": "1d62fa72d1e435b35d23eec7a987c1fd0e6b0064e6de86d4acd4c0de237b59fc",
+      "checks": 11,
+      "unchanged": true
+    },
+    {
+      "script": "ClubOperatingMonth",
+      "sha256": "cb8a9b710b5e9dc313fa96e558c1b5f0cbbb1edabfa7c823dbe5133390b5f74a",
+      "checks": 13,
+      "unchanged": true
+    }
+  ],
+  "new_http_source_sha256": "0c405d2fcd535be4164a291b555b98480ea4b0deea96a757864893ab83d64d2a",
+  "new_http_checks": 23,
+  "focused_tests": 32,
+  "focused_assertions": 221,
+  "scope": "Evidence continuity, not a fresh full-suite or production run."
+}

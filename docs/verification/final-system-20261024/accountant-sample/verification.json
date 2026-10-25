@@ -1,0 +1,13 @@
+{
+    "status": "PASS",
+    "synthetic_only": true,
+    "order_minor": 53999,
+    "actual_receipts_minor": 54500,
+    "overpayment_minor": 501,
+    "correction_minor": -1000,
+    "net_cash_minor": 53500,
+    "net_document_minor": 52999,
+    "export_version": "club-accounting-order-links-v4",
+    "archive1_sha256": "5216254f195918f0c416c7a074a254714ef305808173447148de4785d18a86ad",
+    "invoice_sha256": "9f3f6b5f8210e62cef391a5301f4a88ff1f25d5f82932e43036305072efe1cd5"
+}

@@ -1,0 +1,210 @@
+[
+  {
+    "script": "FinanceB1HttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:02:58.9641316+01:00",
+    "seconds": 5.6,
+    "log": "FinanceB1HttpAcceptance.log"
+  },
+  {
+    "script": "FinanceB1RouterHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:04.7428123+01:00",
+    "seconds": 0.63,
+    "log": "FinanceB1RouterHttpAcceptance.log"
+  },
+  {
+    "script": "ClubFoundationHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:05.3862654+01:00",
+    "seconds": 28.11,
+    "log": "ClubFoundationHttpAcceptance.log"
+  },
+  {
+    "script": "MemberAdmissionHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:33.5051716+01:00",
+    "seconds": 21.56,
+    "log": "MemberAdmissionHttpAcceptance.log"
+  },
+  {
+    "script": "DailyCoachRegistrarHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:03:55.0729815+01:00",
+    "seconds": 6.08,
+    "log": "DailyCoachRegistrarHttpAcceptance.log"
+  },
+  {
+    "script": "PersonLifeDocumentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:01.1562029+01:00",
+    "seconds": 6.67,
+    "log": "PersonLifeDocumentsHttpAcceptance.log"
+  },
+  {
+    "script": "TrainingClosureHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:07.8258556+01:00",
+    "seconds": 2.38,
+    "log": "TrainingClosureHttpAcceptance.log"
+  },
+  {
+    "script": "MakeupJourneyHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:10.2161138+01:00",
+    "seconds": 2.9,
+    "log": "MakeupJourneyHttpAcceptance.log"
+  },
+  {
+    "script": "SportsActivityHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:13.1301982+01:00",
+    "seconds": 4.91,
+    "log": "SportsActivityHttpAcceptance.log"
+  },
+  {
+    "script": "MedicalClearanceHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:18.0498464+01:00",
+    "seconds": 3.71,
+    "log": "MedicalClearanceHttpAcceptance.log"
+  },
+  {
+    "script": "ClubAdministrationHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:21.7609462+01:00",
+    "seconds": 7.16,
+    "log": "ClubAdministrationHttpAcceptance.log"
+  },
+  {
+    "script": "ClubExpensesHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:28.9269236+01:00",
+    "seconds": 3.9,
+    "log": "ClubExpensesHttpAcceptance.log"
+  },
+  {
+    "script": "ClubRewardsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:32.8326887+01:00",
+    "seconds": 2.94,
+    "log": "ClubRewardsHttpAcceptance.log"
+  },
+  {
+    "script": "SeasonOperationsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:35.7771170+01:00",
+    "seconds": 4.61,
+    "log": "SeasonOperationsHttpAcceptance.log"
+  },
+  {
+    "script": "ShopInventoryHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:40.3899533+01:00",
+    "seconds": 3.44,
+    "log": "ShopInventoryHttpAcceptance.log"
+  },
+  {
+    "script": "ShopFulfillmentHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:43.8405945+01:00",
+    "seconds": 6.52,
+    "log": "ShopFulfillmentHttpAcceptance.log"
+  },
+  {
+    "script": "ShopReturnsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:50.3607152+01:00",
+    "seconds": 5.45,
+    "log": "ShopReturnsHttpAcceptance.log"
+  },
+  {
+    "script": "AccountingLedgerHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:55.8160666+01:00",
+    "seconds": 2.65,
+    "log": "AccountingLedgerHttpAcceptance.log"
+  },
+  {
+    "script": "AccountingDocumentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:04:58.4745126+01:00",
+    "seconds": 3.38,
+    "log": "AccountingDocumentsHttpAcceptance.log"
+  },
+  {
+    "script": "AccountingAdjustmentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:01.8633734+01:00",
+    "seconds": 2.57,
+    "log": "AccountingAdjustmentsHttpAcceptance.log"
+  },
+  {
+    "script": "AccountingStockHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:04.4408347+01:00",
+    "seconds": 5.39,
+    "log": "AccountingStockHttpAcceptance.log"
+  },
+  {
+    "script": "AccountingExportHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:09.8406001+01:00",
+    "seconds": 7.6,
+    "log": "AccountingExportHttpAcceptance.log"
+  },
+  {
+    "script": "ClubAccountingHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:17.4514530+01:00",
+    "seconds": 5.48,
+    "log": "ClubAccountingHttpAcceptance.log"
+  },
+  {
+    "script": "ClubCutoverHttpAcceptance",
+    "status": "FAIL",
+    "exit_code": 1,
+    "started_at": "2026-10-25T12:05:22.9440136+01:00",
+    "seconds": 16.22,
+    "log": "ClubCutoverHttpAcceptance.log"
+  },
+  {
+    "script": "WeeklyReportPrivacyHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:39.1638629+01:00",
+    "seconds": 5.29,
+    "log": "WeeklyReportPrivacyHttpAcceptance.log"
+  },
+  {
+    "script": "ClubOperatingMonth",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T12:05:44.4551936+01:00",
+    "seconds": 4.22,
+    "log": "ClubOperatingMonth.log"
+  }
+]

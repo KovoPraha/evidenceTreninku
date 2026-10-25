@@ -20,6 +20,7 @@
                 <a class="btn btn-outline-primary btn-sm" href="<?= h(spUrl(['edit_id' => $editId, 'reload' => bin2hex(random_bytes(8))])) ?>#edit-card">Načíst aktuální údaje</a>
             <?php endif; ?>
         </div>
+        <?php require __DIR__.'/person_workflow_view.php'; ?>
         <form method="post" action="<?= h(spUrl(['edit_id' => $editId])) ?>#edit-card" id="sportovec-form">
             <?= csrf_field() ?>
             <input type="hidden" name="akce" value="save">

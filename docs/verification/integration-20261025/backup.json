@@ -1,0 +1,10 @@
+{
+    "ok": true,
+    "backup": "evidence_2026-10-25_110808_0de6e3c6.sql.gz",
+    "manifest": "evidence_2026-10-25_110808_0de6e3c6.manifest.json",
+    "sha256": "a6fb670e3f879c767c29e289a696e7c6e38e54b86d6695bed32d580467f1347c",
+    "tables": 327,
+    "triggers": 2,
+    "compressed_bytes": 568012,
+    "location": "C:\\Users\\Marek\\AppData\\Local\\EvidencePavelIntegration20261025\\EvidencePavelB1\\finance-b1-20261022\\backups-r38-r44"
+}

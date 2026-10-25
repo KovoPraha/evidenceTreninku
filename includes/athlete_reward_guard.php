@@ -86,12 +86,17 @@ function athleteRewardStats(PDO $pdo, int $personId, string $start, ?string $end
     return ['pocet' => $count, 'kredit' => round($count * $rate, 2)];
 }
 
+function athleteRewardLegacyReadOnly(PDO $pdo): bool
+{
+    require_once __DIR__ . '/accounting_ledger.php';
+    return accountingLedgerTable($pdo, 'club_reward_claims');
+}
+
 /** One atomic transaction, including audit. A failed audit must roll back the change. */
 function athleteRewardTransaction(PDO $pdo, callable $operation): mixed
 {
     athleteRewardRequireWriteAccess();
-    require_once __DIR__.'/accounting_ledger.php';
-    if(accountingLedgerTable($pdo,'club_reward_claims'))throw new DomainException('Nové sazby, uzavření a skutečné výplaty se vedou v agendě Výkazy a odměny. Původní období zůstává historickým podkladem.');
+    if(athleteRewardLegacyReadOnly($pdo))throw new DomainException('Nové sazby, uzavření a skutečné výplaty se vedou v agendě Výkazy a odměny. Původní období zůstává historickým podkladem.');
     if ($pdo->inTransaction()) throw new LogicException('Reward mutation requires its own transaction.');
     $pdo->beginTransaction();
     try {

@@ -1,5 +1,17 @@
 # Aktuální stav projektu
 
+**25. 10. 2026 — společná integrační větev ověřena, NENASAZENO.**
+Větev `codex/integration-20261025` v samostatném checkoutu
+`C:\xampp\htdocs\evidencePavel-integration-20261025` sjednocuje aktuální
+`origin/main` (`6bf57d6f`, bezpečnostní PR #190) a dokončené klubové balíky
+z `420e78a0`. Ověřený technický commit `075d92ac` prošel Linuxem
+(1 717 testů / 34 744 assertions), MariaDB 10.3/11.4, 26 místními HTTP sadami,
+souběhy, migracemi a obnovou. [Výsledky, rozsah a výjimky](verification/integration-20261025/RESULTS.md).
+Inventura 249 výchozích odkazů neodhalila další chybějící dokončenou implementaci.
+Žádný merge do main, nasazení, aktivace služeb ani převod skutečných dat neproběhl.
+Následující datované záznamy jsou historické; jejich údaje o otevřeném PR #190,
+produkčním SHA a počtech testů nejsou stavem dnešní integrační větve.
+
 **24. 10. 2026 — čtyři bezpečnostní nálezy opraveny, PR #190 / Linux CI PASS, NENASAZENO.**
 [Opravy a regresní důkazy](verification/security-fixes-20261024/RESULTS.md).
 Větev `codex/security-audit-fixes-20261024`: aktuální práva před akcí na 27 cestách,
@@ -9,6 +21,40 @@ Plná Windows sada 1685 / 33580: pouze známý failure POSIX scanneru a 3 skips.
 Větev odeslána, [PR #190](https://github.com/KovoPraha/evidenceTreninku/pull/190) otevřen.
 Linux CI40130990758: 1685 / 33629 PASS, MariaDB10.3/11.4 a CodeQL PASS.
 Bez konfliktů s main; bez migrací, merge, produkčních změn a deploye.
+
+**24. 10. 2026 — balík C „Akce a klubová administrativa“ lokálně implementován, NENASAZEN.**
+[Protokol, přejímka a hranice](verification/event-administration-20261024/RESULTS.md).
+Větev `codex/event-administration-20261024`, navazuje na B (`f521a10d`).
+Přehled akce s účastníky a odkazy na skutečnost, dopravu a vyúčtování;
+pojmenované finanční výběry, tabulka položek, soukromá účtenka s návratem do
+případu, detaily/historie/salda výdajů a záloh, filtry vypořádání odměn.
+79 testů / 2110 assertions; HTTP C 49, výdaje 47, odměny 29, regrese A 32 PASS.
+Otevřené D20 (samoobslužné předkládání výdajů), D04/D06 (sazby a metodika),
+D05 (schvalovatelé a výjimky); předchozí D17–D19 se tím nepotvrzují.
+Bez migrací, změn e-shopu, produkčních zásahů a aktivace transportů.
+Další nezávislý krok je balík D; reálné převody a komunikace vyžadují podklady.
+
+**24. 10. 2026 — balík B „Život osoby a podklady“ lokálně implementován v rozsahu bez otevřených rozhodnutí, NENASAZEN.**
+[Protokol a odložený rozsah](verification/person-life-documents-20261024/RESULTS.md).
+Větev `codex/person-life-documents-20261024` navazuje na A (`1925f88c`).
+Vyřízení osoby s odpovědností a historií, dohledatelná rozhodnutí o členství,
+upozornění na neověřené znění papírového podkladu, zdravotní stav skupiny/lekce
+k datu a úkoly rodiny. Role, soukromé dokumenty a oddělení členství od závazků zachovány.
+155 testů / 2563 assertions; HTTP B 30 + regrese A 32 scénářů PASS v syntetickém B1.
+D17 datovaná účinnost členství, D18 zdravotní pravidla a D19 online změny/přílohy
+rodiny zůstávají odložené. Bez migrací, změn e-shopu, produkčních zásahů a aktivace zpráv.
+Další nezávislý balík C lze realizovat bez schvalování těchto odložených bodů.
+
+**24. 10. 2026 — balík A „Každodenní práce trenéra a registráře“ implementován lokálně, NENASAZEN.**
+[Protokol a rozsah](verification/daily-coach-registrar-20261024/RESULTS.md).
+Větev `codex/daily-coach-registrar-20261024` v izolovaném B1 checkoutu.
+Případy vedoucího sportu; propojení lekce/omluvy/zápisu/uzavření;
+pojmenovaný výběr a opravy sportovní účasti; hledání, stav a stránky přehledů;
+registrátorský přehled kroků u osoby. Opravené chybějící delegace trenérských tras
+pro vedoucího sportu; souběhy a rozsah přístupu zachované.
+135 testů / 2433 assertions, nový HTTP průchod 32 scénářů PASS.
+Bez produkčních zásahů, migrací a změn e-shopu. Navazují balíky B–D;
+společná přejímka včetně e-shopu až E. Živý release zůstává uveden níže.
 
 **24. 10. 2026 — skladové opravy PR #187 nasazeny, čtecí produkční kontrola dokončena.**
 [Protokol a důkazy](verification/stock-production-20261024/RESULTS.md).

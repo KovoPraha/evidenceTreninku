@@ -1,0 +1,866 @@
+DOM evidence excerpt; long select-option lists omitted.
+- navigation:
+  - link "KOVO Praha – pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+  - text:     
+  - list:
+    - text: 
+    - button "":
+      - generic: 
+    - button "":
+      - generic: 
+    - link "":
+      - /url: /booking/eshop.php
+      - generic: 
+    - button " Superadmin · Finance":
+      - generic: 
+      - text: Superadmin · Finance
+    - text:        
+    - generic: 
+    - text: LOCALHOST Kontrola 1
+    - button " Odhlásit":
+      - generic: 
+      - text: Odhlásit
+- complementary "Pracovní nabídka":
+  - link "Pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+    - generic: 
+    - text: Pracovní rozcestník
+  - heading "Platby" [level=2]
+  - link "Platby a vratky":
+    - /url: /eshop_payments_admin.php
+    - generic: 
+    - generic: Platby a vratky
+  - link "Klubové platby":
+    - /url: /member_charges_admin.php
+    - generic: 
+    - generic: Klubové platby
+  - link "Plány příspěvků":
+    - /url: /member_fee_plans_admin.php
+    - generic: 
+    - generic: Plány příspěvků
+  - generic "Další nástroje"
+  - link "Peněžní evidence a pokladna":
+    - /url: /accounting_ledger_admin.php
+    - generic: 
+    - generic: Peněžní evidence a pokladna
+  - link "Účetní doklady":
+    - /url: /accounting_documents_admin.php
+    - generic: 
+    - generic: Účetní doklady
+  - link "Opravy a částečné vratky":
+    - /url: /accounting_adjustments_admin.php
+    - generic: 
+    - generic: Opravy a částečné vratky
+  - link "Účetní podklady":
+    - /url: /accounting_exports_admin.php
+    - generic: 
+    - generic: Účetní podklady
+  - link "Výdaje a zálohy":
+    - /url: /club_expenses_admin.php
+    - generic: 
+    - generic: Výdaje a zálohy
+  - link "Výkazy a odměny":
+    - /url: /club_rewards_admin.php
+    - generic: 
+    - generic: Výkazy a odměny
+  - link "Finanční rozhodnutí":
+    - /url: /financial_decisions_admin.php
+    - generic: 
+    - generic: Finanční rozhodnutí
+  - link "Způsoby platby":
+    - /url: /eshop_payment_methods_admin.php
+    - generic: 
+    - generic: Způsoby platby
+  - link "Fio párování":
+    - /url: /eshop_fio_admin.php
+    - generic: 
+    - generic: Fio párování
+  - link "Rodinné platby":
+    - /url: /member_payer_receipts_admin.php
+    - generic: 
+    - generic: Rodinné platby
+  - link "Bankovní účet e-shopu":
+    - /url: /eshop_bank_admin.php
+    - generic: 
+    - generic: Bankovní účet e-shopu
+  - link "Číselné řady a účetní kategorie":
+    - /url: /eshop_number_series_admin.php
+    - generic: 
+    - generic: Číselné řady a účetní kategorie
+  - link "Roční úhrady":
+    - /url: /member_fee_annual_admin.php
+    - generic: 
+    - generic: Roční úhrady
+  - link "Přijatá platba sportovce":
+    - /url: /club_finance_receipt_admin.php
+    - generic: 
+    - generic: Přijatá platba sportovce
+  - link "Finanční pravidla":
+    - /url: /club_finance_admin.php
+    - generic: 
+    - generic: Finanční pravidla
+  - link "Připomínky plateb":
+    - /url: /member_charge_reminders_admin.php
+    - generic: 
+    - generic: Připomínky plateb
+  - heading "Kredity a provoz" [level=2]
+  - generic "Další nástroje"
+  - text:      
+  - heading "Navazující agenda" [level=2]
+  - generic "Další nástroje"
+  - text:  
+  - heading "K dořešení" [level=2]
+  - generic "Další nástroje"
+  - text: 
+  - generic: KOVO Praha · KIS
+- text:   
+- main:
+  - heading "Výdaje, zálohy a vyúčtování" [level=1]
+  - paragraph:
+    - text: Hospodář přepíše i osobní nebo papírový požadavek. Každý příjemce je vybrán výslovně. Schválení provádí jiný pověřený hospodář. Skutečné platby doložte v
+    - link "peněžní knize":
+      - /url: accounting_ledger_admin.php
+    - text: a zde přiřaďte jejich pohyb.
+  - heading "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 závod — vyúčtování" [level=2]
+  - paragraph: Termín 2026-10-24 · closed · LOCALHOST NEPLATIT EVENT 1e80f4c9c4 explicit calendar link
+  - paragraph:
+    - link "Zajištění a účast na akci":
+      - /url: club_event_work_admin.php?event_id=25
+  - paragraph:
+    - link "Zapsat výdaj":
+      - /url: "#claim-form"
+    - text: ·
+    - link "Požádat o zálohu":
+      - /url: "#advance-form"
+    - text: ·
+    - link "Připojit novou účtenku / přílohu":
+      - /url: uctenky/formular.php?expense_case_id=25
+  - heading "Co zbývá před uzavřením" [level=3]
+  - paragraph: V aktuálních výdajích a zálohách nebyla nalezena překážka. Konečnou kontrolu provede samostatné potvrzení uzavření případu.
+  - heading "Doklady a opravné verze" [level=3]
+  - list:
+    - link "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice · v2 · approved":
+      - /url: "?case_id=25&claim_id=50#claim-detail"
+    - text: · 0,00 Kč zbývá za celý závazek
+    - link "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice · v1 · superseded":
+      - /url: "?case_id=25&claim_id=49#claim-detail"
+    - text: · 0,00 Kč zbývá za celý závazek
+  - heading "Zálohy" [level=3]
+  - list:
+    - link "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach renamed · LOCALHOST NEPLATIT EVENT 1e80f4c9c4 travel advance":
+      - /url: "?case_id=25&advance_id=20#advance-detail"
+    - text: · 0,00 Kč saldo · closed
+  - generic "Historie vyřízení případu"
+  - heading "Finanční případy" [level=2]
+  - form "Filtry přehledu":
+    - text: Hledat jméno, označení nebo číslo
+    - textbox "Hledat jméno, označení nebo číslo"
+    - text: Stav
+    - combobox "Stav":
+    - text: Vyúčtování od
+    - textbox "Vyúčtování od"
+    - text: Do
+    - textbox "Do"
+    - button "Vyhledat"
+  - status: "Nalezeno: 27 · strana 1 z 2"
+  - link "Další":
+    - /url: "?case_q=&case_state=&case_from=&case_to=&case_page=2"
+  - table:
+    - rowgroup:
+      - row "Případ Vazby / vedoucí Termín Stav":
+        - columnheader "Případ"
+        - columnheader "Vazby / vedoucí"
+        - columnheader "Termín"
+        - columnheader "Stav"
+      - 'row "LOCALHOST NEPLATIT R37 1a9b23744e Provozní akce # · sportovní akce # · vedoucí #751 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT R37 1a9b23744e":
+          - link "LOCALHOST NEPLATIT R37 1a9b23744e":
+            - /url: "?case_id=27#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #751"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 fc653f2b0a Provozní akce # · sportovní akce # · vedoucí #706 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT R31-R32 fc653f2b0a":
+          - link "LOCALHOST NEPLATIT R31-R32 fc653f2b0a":
+            - /url: "?case_id=26#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #706"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 závod Provozní akce # · sportovní akce #25 · vedoucí #699 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 závod":
+          - link "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 závod":
+            - /url: "?case_id=25#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #25 · vedoucí #699"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 e15aa84ba4 Provozní akce # · sportovní akce # · vedoucí #647 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT R37 e15aa84ba4":
+          - link "LOCALHOST NEPLATIT R37 e15aa84ba4":
+            - /url: "?case_id=24#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #647"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 dd302a94ee Provozní akce # · sportovní akce # · vedoucí #602 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT R31-R32 dd302a94ee":
+          - link "LOCALHOST NEPLATIT R31-R32 dd302a94ee":
+            - /url: "?case_id=23#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #602"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT EVENT 8abfa632b9 závod Provozní akce # · sportovní akce #21 · vedoucí #595 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT EVENT 8abfa632b9 závod":
+          - link "LOCALHOST NEPLATIT EVENT 8abfa632b9 závod":
+            - /url: "?case_id=22#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #21 · vedoucí #595"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT EVENT f86c5d09b3 závod Provozní akce # · sportovní akce #16 · vedoucí #527 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT EVENT f86c5d09b3 závod":
+          - link "LOCALHOST NEPLATIT EVENT f86c5d09b3 závod":
+            - /url: "?case_id=21#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #16 · vedoucí #527"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT EVENT 67fcfcd188 závod Provozní akce # · sportovní akce #15 · vedoucí #521 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT EVENT 67fcfcd188 závod":
+          - link "LOCALHOST NEPLATIT EVENT 67fcfcd188 závod":
+            - /url: "?case_id=20#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #15 · vedoucí #521"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT EVENT ad1a0f5dbf závod Provozní akce # · sportovní akce #14 · vedoucí #515 2026-10-24 open"':
+        - cell "LOCALHOST NEPLATIT EVENT ad1a0f5dbf závod":
+          - link "LOCALHOST NEPLATIT EVENT ad1a0f5dbf závod":
+            - /url: "?case_id=19#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #14 · vedoucí #515"'
+        - cell "2026-10-24"
+        - cell "open"
+      - 'row "LOCALHOST NEPLATIT EVENT fc8d7ff97c závod Provozní akce # · sportovní akce #13 · vedoucí #509 2026-10-24 open"':
+        - cell "LOCALHOST NEPLATIT EVENT fc8d7ff97c závod":
+          - link "LOCALHOST NEPLATIT EVENT fc8d7ff97c závod":
+            - /url: "?case_id=18#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #13 · vedoucí #509"'
+        - cell "2026-10-24"
+        - cell "open"
+      - 'row "LOCALHOST NEPLATIT EVENT caa234a710 závod Provozní akce # · sportovní akce #12 · vedoucí #503 2026-10-24 open"':
+        - cell "LOCALHOST NEPLATIT EVENT caa234a710 závod":
+          - link "LOCALHOST NEPLATIT EVENT caa234a710 závod":
+            - /url: "?case_id=17#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #12 · vedoucí #503"'
+        - cell "2026-10-24"
+        - cell "open"
+      - 'row "LOCALHOST NEPLATIT EVENT c6ae272853 závod Provozní akce # · sportovní akce #11 · vedoucí #497 2026-10-24 open"':
+        - cell "LOCALHOST NEPLATIT EVENT c6ae272853 závod":
+          - link "LOCALHOST NEPLATIT EVENT c6ae272853 závod":
+            - /url: "?case_id=16#case-detail"
+        - 'cell "Provozní akce # · sportovní akce #11 · vedoucí #497"'
+        - cell "2026-10-24"
+        - cell "open"
+      - 'row "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c Provozní akce # · sportovní akce # · vedoucí #489 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c":
+          - link "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c":
+            - /url: "?case_id=15#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #489"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 95da4b93be Provozní akce # · sportovní akce # · vedoucí #451 2026-10-24 closed"':
+        - cell "LOCALHOST NEPLATIT R31-R32 95da4b93be":
+          - link "LOCALHOST NEPLATIT R31-R32 95da4b93be":
+            - /url: "?case_id=14#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #451"'
+        - cell "2026-10-24"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 717ef5b039 Provozní akce # · sportovní akce # · vedoucí #436 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 717ef5b039":
+          - link "LOCALHOST NEPLATIT R37 717ef5b039":
+            - /url: "?case_id=13#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #436"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 2e5766558b Provozní akce # · sportovní akce # · vedoucí #420 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 2e5766558b":
+          - link "LOCALHOST NEPLATIT R37 2e5766558b":
+            - /url: "?case_id=12#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #420"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 c1e59a5b9b Provozní akce # · sportovní akce # · vedoucí #385 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 c1e59a5b9b":
+          - link "LOCALHOST NEPLATIT R37 c1e59a5b9b":
+            - /url: "?case_id=11#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #385"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 b4e03d9f45 Provozní akce # · sportovní akce # · vedoucí #380 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R31-R32 b4e03d9f45":
+          - link "LOCALHOST NEPLATIT R31-R32 b4e03d9f45":
+            - /url: "?case_id=10#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #380"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 2c0155c02a Provozní akce # · sportovní akce # · vedoucí #354 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R31-R32 2c0155c02a":
+          - link "LOCALHOST NEPLATIT R31-R32 2c0155c02a":
+            - /url: "?case_id=9#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #354"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 61ec197cfe Provozní akce # · sportovní akce # · vedoucí #319 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 61ec197cfe":
+          - link "LOCALHOST NEPLATIT R37 61ec197cfe":
+            - /url: "?case_id=8#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #319"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 6b47b76644 Provozní akce # · sportovní akce # · vedoucí #315 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R31-R32 6b47b76644":
+          - link "LOCALHOST NEPLATIT R31-R32 6b47b76644":
+            - /url: "?case_id=7#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #315"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 5fc3850ef4 Provozní akce # · sportovní akce # · vedoucí #307 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 5fc3850ef4":
+          - link "LOCALHOST NEPLATIT R37 5fc3850ef4":
+            - /url: "?case_id=6#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #307"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 8a7d98114d Provozní akce # · sportovní akce # · vedoucí #301 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 8a7d98114d":
+          - link "LOCALHOST NEPLATIT R37 8a7d98114d":
+            - /url: "?case_id=5#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #301"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 47df48520e Provozní akce # · sportovní akce # · vedoucí #292 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 47df48520e":
+          - link "LOCALHOST NEPLATIT R37 47df48520e":
+            - /url: "?case_id=4#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #292"'
+        - cell "2026-10-23"
+        - cell "closed"
+      - 'row "LOCALHOST NEPLATIT R37 94be922a52 Provozní akce # · sportovní akce # · vedoucí #286 2026-10-23 closed"':
+        - cell "LOCALHOST NEPLATIT R37 94be922a52":
+          - link "LOCALHOST NEPLATIT R37 94be922a52":
+            - /url: "?case_id=3#case-detail"
+        - 'cell "Provozní akce # · sportovní akce # · vedoucí #286"'
+        - cell "2026-10-23"
+        - cell "closed"
+  - generic "Založit finanční případ"
+  - text: Název
+  - textbox "Název"
+  - text: Původní provozní akce — připojit pouze podle doložené shody
+  - combobox "Původní provozní akce — připojit pouze podle doložené shody":
+  - text: Akce v kalendáři
+  - combobox "Akce v kalendáři":
+  - text: Odpovědný vedoucí
+  - combobox "Odpovědný vedoucí":
+  - text: Termín vyúčtování
+  - textbox "Termín vyúčtování"
+  - text: Podklad propojení a odpovědnosti
+  - textbox "Podklad propojení a odpovědnosti"
+  - text: Důvod zápisu (alespoň 10 znaků)
+  - textbox "Důvod zápisu (alespoň 10 znaků)"
+  - checkbox "Ověřil/a jsem podklady a potvrzuji tento zápis."
+  - text: Ověřil/a jsem podklady a potvrzuji tento zápis.
+  - button "Uložit"
+  - heading "Výdaje a závazky" [level=2]
+  - form "Filtry přehledu":
+    - text: Hledat jméno, označení nebo číslo
+    - textbox "Hledat jméno, označení nebo číslo"
+    - text: Stav
+    - combobox "Stav":
+    - text: Datum dokladu od
+    - textbox "Datum dokladu od"
+    - text: Do
+    - textbox "Do"
+    - button "Vyhledat"
+  - status: "Nalezeno: 55 · strana 1 z 3"
+  - link "Další":
+    - /url: "?claim_q=&claim_state=&claim_from=&claim_to=&claim_page=2"
+  - paragraph: Včetně původních a opravných verzí. Záporný zůstatek je pohledávka vůči příjemci; doložte skutečný příjem vratky. Uvolnění chybného přídělu samo o sobě není vrácení peněz. Schválené podklady se nepřepisují; opravná verze zachová původní obsah a již doložené úhrady.
+  - table:
+    - rowgroup:
+      - row "Doklad / verze Příjemce / stav Celkem / uznáno Skutečně vypořádáno / zbývá":
+        - columnheader "Doklad / verze"
+        - columnheader "Příjemce / stav"
+        - columnheader "Celkem / uznáno"
+        - columnheader "Skutečně vypořádáno / zbývá"
+      - 'row "Detail výdaje #55 / základ #55 v1 LOCALHOST NEPLATIT R37 1a9b23744e r37-c3a61508f9123f-personal LOCALHOST NEPLATIT R37 1a9b23744e coach · approved 600,00 Kč / 600,00 Kč 600,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #55 / základ #55 v1 LOCALHOST NEPLATIT R37 1a9b23744e r37-c3a61508f9123f-personal"':
+          - 'link "Detail výdaje #55"':
+            - /url: "?claim_id=55#claim-detail"
+          - text: "/ základ #55 v1 LOCALHOST NEPLATIT R37 1a9b23744e r37-c3a61508f9123f-personal"
+        - cell "LOCALHOST NEPLATIT R37 1a9b23744e coach · approved"
+        - cell "600,00 Kč / 600,00 Kč"
+        - cell "600,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #54 / základ #54 v1 LOCALHOST NEPLATIT R37 1a9b23744e r37-c3a61508f9123f-receipt LOCALHOST NEPLATIT R37 1a9b23744e coach · approved 4 200,00 Kč / 4 200,00 Kč 4 200,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #54 / základ #54 v1 LOCALHOST NEPLATIT R37 1a9b23744e r37-c3a61508f9123f-receipt"':
+          - 'link "Detail výdaje #54"':
+            - /url: "?claim_id=54#claim-detail"
+          - text: "/ základ #54 v1 LOCALHOST NEPLATIT R37 1a9b23744e r37-c3a61508f9123f-receipt"
+        - cell "LOCALHOST NEPLATIT R37 1a9b23744e coach · approved"
+        - cell "4 200,00 Kč / 4 200,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #53 / základ #53 v1 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-receipt LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · approved 4 200,00 Kč / 4 200,00 Kč 4 200,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #53 / základ #53 v1 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-receipt"':
+          - 'link "Detail výdaje #53"':
+            - /url: "?claim_id=53#claim-detail"
+          - text: "/ základ #53 v1 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-receipt"
+        - cell "LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · approved"
+        - cell "4 200,00 Kč / 4 200,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #52 / základ #51 v2 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-doc LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · approved 1 200,00 Kč / 400,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #52 / základ #51 v2 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-doc"':
+          - 'link "Detail výdaje #52"':
+            - /url: "?claim_id=52#claim-detail"
+          - text: "/ základ #51 v2 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · approved"
+        - cell "1 200,00 Kč / 400,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #51 / základ #51 v1 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-doc LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · superseded 1 200,00 Kč / 1 000,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #51 / základ #51 v1 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-doc"':
+          - 'link "Detail výdaje #51"':
+            - /url: "?claim_id=51#claim-detail"
+          - text: "/ základ #51 v1 LOCALHOST NEPLATIT R31-R32 fc653f2b0a LOCALHOST NEPLATIT R31-R32 fc653f2b0a-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · superseded"
+        - cell "1 200,00 Kč / 1 000,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #50 / základ #49 v2 LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach · approved 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #50 / základ #49 v2 LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice"':
+          - 'link "Detail výdaje #50"':
+            - /url: "?claim_id=50#claim-detail"
+          - text: "/ základ #49 v2 LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach · approved"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #49 / základ #49 v1 LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach · superseded 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #49 / základ #49 v1 LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice"':
+          - 'link "Detail výdaje #49"':
+            - /url: "?claim_id=49#claim-detail"
+          - text: "/ základ #49 v1 LOCALHOST NEPLATIT EVENT 1e80f4c9c4 supplier LOCALHOST NEPLATIT EVENT 1e80f4c9c4 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach · superseded"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #48 / základ #48 v1 LOCALHOST NEPLATIT R37 e15aa84ba4 r37-6430ee1e9639cb-personal LOCALHOST NEPLATIT R37 e15aa84ba4 coach · approved 600,00 Kč / 600,00 Kč 600,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #48 / základ #48 v1 LOCALHOST NEPLATIT R37 e15aa84ba4 r37-6430ee1e9639cb-personal"':
+          - 'link "Detail výdaje #48"':
+            - /url: "?claim_id=48#claim-detail"
+          - text: "/ základ #48 v1 LOCALHOST NEPLATIT R37 e15aa84ba4 r37-6430ee1e9639cb-personal"
+        - cell "LOCALHOST NEPLATIT R37 e15aa84ba4 coach · approved"
+        - cell "600,00 Kč / 600,00 Kč"
+        - cell "600,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #47 / základ #47 v1 LOCALHOST NEPLATIT R37 e15aa84ba4 r37-6430ee1e9639cb-receipt LOCALHOST NEPLATIT R37 e15aa84ba4 coach · approved 4 200,00 Kč / 4 200,00 Kč 4 200,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #47 / základ #47 v1 LOCALHOST NEPLATIT R37 e15aa84ba4 r37-6430ee1e9639cb-receipt"':
+          - 'link "Detail výdaje #47"':
+            - /url: "?claim_id=47#claim-detail"
+          - text: "/ základ #47 v1 LOCALHOST NEPLATIT R37 e15aa84ba4 r37-6430ee1e9639cb-receipt"
+        - cell "LOCALHOST NEPLATIT R37 e15aa84ba4 coach · approved"
+        - cell "4 200,00 Kč / 4 200,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #46 / základ #46 v1 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-receipt LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · approved 4 200,00 Kč / 4 200,00 Kč 4 200,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #46 / základ #46 v1 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-receipt"':
+          - 'link "Detail výdaje #46"':
+            - /url: "?claim_id=46#claim-detail"
+          - text: "/ základ #46 v1 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-receipt"
+        - cell "LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · approved"
+        - cell "4 200,00 Kč / 4 200,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #45 / základ #44 v2 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-doc LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · approved 1 200,00 Kč / 400,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #45 / základ #44 v2 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-doc"':
+          - 'link "Detail výdaje #45"':
+            - /url: "?claim_id=45#claim-detail"
+          - text: "/ základ #44 v2 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · approved"
+        - cell "1 200,00 Kč / 400,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #44 / základ #44 v1 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-doc LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · superseded 1 200,00 Kč / 1 000,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #44 / základ #44 v1 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-doc"':
+          - 'link "Detail výdaje #44"':
+            - /url: "?claim_id=44#claim-detail"
+          - text: "/ základ #44 v1 LOCALHOST NEPLATIT R31-R32 dd302a94ee LOCALHOST NEPLATIT R31-R32 dd302a94ee-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · superseded"
+        - cell "1 200,00 Kč / 1 000,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #43 / základ #42 v2 LOCALHOST NEPLATIT EVENT 8abfa632b9 supplier LOCALHOST NEPLATIT EVENT 8abfa632b9 invoice LOCALHOST NEPLATIT EVENT 8abfa632b9 coach · approved 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #43 / základ #42 v2 LOCALHOST NEPLATIT EVENT 8abfa632b9 supplier LOCALHOST NEPLATIT EVENT 8abfa632b9 invoice"':
+          - 'link "Detail výdaje #43"':
+            - /url: "?claim_id=43#claim-detail"
+          - text: "/ základ #42 v2 LOCALHOST NEPLATIT EVENT 8abfa632b9 supplier LOCALHOST NEPLATIT EVENT 8abfa632b9 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT 8abfa632b9 coach · approved"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #42 / základ #42 v1 LOCALHOST NEPLATIT EVENT 8abfa632b9 supplier LOCALHOST NEPLATIT EVENT 8abfa632b9 invoice LOCALHOST NEPLATIT EVENT 8abfa632b9 coach · superseded 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #42 / základ #42 v1 LOCALHOST NEPLATIT EVENT 8abfa632b9 supplier LOCALHOST NEPLATIT EVENT 8abfa632b9 invoice"':
+          - 'link "Detail výdaje #42"':
+            - /url: "?claim_id=42#claim-detail"
+          - text: "/ základ #42 v1 LOCALHOST NEPLATIT EVENT 8abfa632b9 supplier LOCALHOST NEPLATIT EVENT 8abfa632b9 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT 8abfa632b9 coach · superseded"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #41 / základ #40 v2 LOCALHOST NEPLATIT EVENT f86c5d09b3 supplier LOCALHOST NEPLATIT EVENT f86c5d09b3 invoice LOCALHOST NEPLATIT EVENT f86c5d09b3 coach · approved 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #41 / základ #40 v2 LOCALHOST NEPLATIT EVENT f86c5d09b3 supplier LOCALHOST NEPLATIT EVENT f86c5d09b3 invoice"':
+          - 'link "Detail výdaje #41"':
+            - /url: "?claim_id=41#claim-detail"
+          - text: "/ základ #40 v2 LOCALHOST NEPLATIT EVENT f86c5d09b3 supplier LOCALHOST NEPLATIT EVENT f86c5d09b3 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT f86c5d09b3 coach · approved"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #40 / základ #40 v1 LOCALHOST NEPLATIT EVENT f86c5d09b3 supplier LOCALHOST NEPLATIT EVENT f86c5d09b3 invoice LOCALHOST NEPLATIT EVENT f86c5d09b3 coach · superseded 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #40 / základ #40 v1 LOCALHOST NEPLATIT EVENT f86c5d09b3 supplier LOCALHOST NEPLATIT EVENT f86c5d09b3 invoice"':
+          - 'link "Detail výdaje #40"':
+            - /url: "?claim_id=40#claim-detail"
+          - text: "/ základ #40 v1 LOCALHOST NEPLATIT EVENT f86c5d09b3 supplier LOCALHOST NEPLATIT EVENT f86c5d09b3 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT f86c5d09b3 coach · superseded"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #39 / základ #38 v2 LOCALHOST NEPLATIT EVENT 67fcfcd188 supplier LOCALHOST NEPLATIT EVENT 67fcfcd188 invoice LOCALHOST NEPLATIT EVENT 67fcfcd188 coach · approved 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #39 / základ #38 v2 LOCALHOST NEPLATIT EVENT 67fcfcd188 supplier LOCALHOST NEPLATIT EVENT 67fcfcd188 invoice"':
+          - 'link "Detail výdaje #39"':
+            - /url: "?claim_id=39#claim-detail"
+          - text: "/ základ #38 v2 LOCALHOST NEPLATIT EVENT 67fcfcd188 supplier LOCALHOST NEPLATIT EVENT 67fcfcd188 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT 67fcfcd188 coach · approved"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #38 / základ #38 v1 LOCALHOST NEPLATIT EVENT 67fcfcd188 supplier LOCALHOST NEPLATIT EVENT 67fcfcd188 invoice LOCALHOST NEPLATIT EVENT 67fcfcd188 coach · superseded 120,00 Kč / 100,00 Kč 100,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #38 / základ #38 v1 LOCALHOST NEPLATIT EVENT 67fcfcd188 supplier LOCALHOST NEPLATIT EVENT 67fcfcd188 invoice"':
+          - 'link "Detail výdaje #38"':
+            - /url: "?claim_id=38#claim-detail"
+          - text: "/ základ #38 v1 LOCALHOST NEPLATIT EVENT 67fcfcd188 supplier LOCALHOST NEPLATIT EVENT 67fcfcd188 invoice"
+        - cell "LOCALHOST NEPLATIT EVENT 67fcfcd188 coach · superseded"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "100,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #37 / základ #37 v1 LOCALHOST NEPLATIT EVENT fc8d7ff97c supplier LOCALHOST NEPLATIT EVENT fc8d7ff97c invoice LOCALHOST NEPLATIT EVENT fc8d7ff97c coach · submitted 120,00 Kč / 100,00 Kč 0,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #37 / základ #37 v1 LOCALHOST NEPLATIT EVENT fc8d7ff97c supplier LOCALHOST NEPLATIT EVENT fc8d7ff97c invoice"':
+          - 'link "Detail výdaje #37"':
+            - /url: "?claim_id=37#claim-detail"
+          - text: "/ základ #37 v1 LOCALHOST NEPLATIT EVENT fc8d7ff97c supplier LOCALHOST NEPLATIT EVENT fc8d7ff97c invoice"
+        - cell "LOCALHOST NEPLATIT EVENT fc8d7ff97c coach · submitted"
+        - cell "120,00 Kč / 100,00 Kč"
+        - cell "0,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #36 / základ #36 v1 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-receipt LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · approved 4 200,00 Kč / 4 200,00 Kč 4 200,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #36 / základ #36 v1 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-receipt"':
+          - 'link "Detail výdaje #36"':
+            - /url: "?claim_id=36#claim-detail"
+          - text: "/ základ #36 v1 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-receipt"
+        - cell "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · approved"
+        - cell "4 200,00 Kč / 4 200,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #35 / základ #34 v2 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-doc LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · approved 1 200,00 Kč / 400,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #35 / základ #34 v2 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-doc"':
+          - 'link "Detail výdaje #35"':
+            - /url: "?claim_id=35#claim-detail"
+          - text: "/ základ #34 v2 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · approved"
+        - cell "1 200,00 Kč / 400,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #34 / základ #34 v1 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-doc LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · superseded 1 200,00 Kč / 1 000,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #34 / základ #34 v1 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-doc"':
+          - 'link "Detail výdaje #34"':
+            - /url: "?claim_id=34#claim-detail"
+          - text: "/ základ #34 v1 LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · superseded"
+        - cell "1 200,00 Kč / 1 000,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #33 / základ #33 v1 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-receipt LOCALHOST NEPLATIT R31-R32 95da4b93be coach · approved 4 200,00 Kč / 4 200,00 Kč 4 200,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #33 / základ #33 v1 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-receipt"':
+          - 'link "Detail výdaje #33"':
+            - /url: "?claim_id=33#claim-detail"
+          - text: "/ základ #33 v1 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-receipt"
+        - cell "LOCALHOST NEPLATIT R31-R32 95da4b93be coach · approved"
+        - cell "4 200,00 Kč / 4 200,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #32 / základ #31 v2 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-doc LOCALHOST NEPLATIT R31-R32 95da4b93be coach · approved 1 200,00 Kč / 400,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #32 / základ #31 v2 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-doc"':
+          - 'link "Detail výdaje #32"':
+            - /url: "?claim_id=32#claim-detail"
+          - text: "/ základ #31 v2 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 95da4b93be coach · approved"
+        - cell "1 200,00 Kč / 400,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+      - 'row "Detail výdaje #31 / základ #31 v1 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-doc LOCALHOST NEPLATIT R31-R32 95da4b93be coach · superseded 1 200,00 Kč / 1 000,00 Kč 400,00 Kč / 0,00 Kč"':
+        - 'cell "Detail výdaje #31 / základ #31 v1 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-doc"':
+          - 'link "Detail výdaje #31"':
+            - /url: "?claim_id=31#claim-detail"
+          - text: "/ základ #31 v1 LOCALHOST NEPLATIT R31-R32 95da4b93be LOCALHOST NEPLATIT R31-R32 95da4b93be-doc"
+        - cell "LOCALHOST NEPLATIT R31-R32 95da4b93be coach · superseded"
+        - cell "1 200,00 Kč / 1 000,00 Kč"
+        - cell "400,00 Kč / 0,00 Kč"
+  - generic "Zapsat výdaj nebo novou opravnou verzi"
+  - text: Předchozí verze — pouze pro opravu
+  - combobox "Předchozí verze — pouze pro opravu":
+  - text: Finanční případ
+  - combobox "Finanční případ":
+  - text: Účtenka / soukromá příloha
+  - combobox "Účtenka / soukromá příloha":
+  - text: Dodavatel
+  - textbox "Dodavatel"
+  - text: Číslo dokladu / papírová reference
+  - textbox "Číslo dokladu / papírová reference"
+  - text: Datum případu
+  - textbox "Datum případu"
+  - text: Splatnost
+  - textbox "Splatnost"
+  - text: Celková částka Kč
+  - textbox "Celková částka Kč"
+  - text: Původní měna
+  - textbox "Původní měna": CZK
+  - text: Původní částka (prázdné = částka Kč)
+  - textbox "Původní částka (prázdné = částka Kč)"
+  - text: Doložený přepočet cizí měny
+  - textbox "Doložený přepočet cizí měny"
+  - text: Zdroj úhrady
+  - combobox "Zdroj úhrady":
+  - heading "Skutečný plátce" [level=3]
+  - text: Konkrétní osoba nebo dodavatel
+  - combobox "Konkrétní osoba nebo dodavatel":
+  - text: Označení dodavatele (u vybrané osoby se jméno načte z evidence)
+  - textbox "Označení dodavatele (u vybrané osoby se jméno načte z evidence)"
+  - heading "Věřitel / příjemce proplacení" [level=3]
+  - text: Konkrétní osoba nebo dodavatel
+  - combobox "Konkrétní osoba nebo dodavatel":
+  - text: Označení dodavatele (u vybrané osoby se jméno načte z evidence)
+  - textbox "Označení dodavatele (u vybrané osoby se jméno načte z evidence)"
+  - text: Doložení příjemce a ověřeného způsobu předání
+  - textbox "Doložení příjemce a ověřeného způsobu předání"
+  - text: Účel
+  - textbox "Účel"
+  - text: Doložení dokladu / umístění papírového originálu
+  - textbox "Doložení dokladu / umístění papírového originálu"
+  - text: Prověření případné duplicity
+  - textbox "Prověření případné duplicity"
+  - heading "Položky dokladu" [level=3]
+  - paragraph: Uveďte celý doklad včetně neuznané části. Součet musí odpovídat celkové částce.
+  - table:
+    - rowgroup:
+      - row "Částka Kč Uznání Finanční případ Činnost Účel":
+        - columnheader "Částka Kč"
+        - columnheader "Uznání"
+        - columnheader "Finanční případ"
+        - columnheader "Činnost"
+        - columnheader "Účel"
+        - columnheader
+    - rowgroup:
+      - row "Uznaná část LOCALHOST NEPLATIT EVENT 1e80f4c9c4 závod · 2026-10-24 · closed Odebrat":
+        - cell:
+          - textbox "Částka položky Kč"
+        - cell "Uznaná část":
+          - combobox "Uznání položky":
+        - cell "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 závod · 2026-10-24 · closed":
+          - combobox "Případ položky":
+        - cell:
+          - textbox "Činnost položky"
+        - cell:
+          - textbox "Účel položky"
+        - cell "Odebrat":
+          - button "Odebrat"
+  - button "Přidat položku"
+  - text: Důvod zápisu (alespoň 10 znaků)
+  - textbox "Důvod zápisu (alespoň 10 znaků)"
+  - checkbox "Ověřil/a jsem podklady a potvrzuji tento zápis."
+  - text: Ověřil/a jsem podklady a potvrzuji tento zápis.
+  - button "Uložit"
+  - generic "Předložit / schválit / vrátit / zamítnout verzi"
+  - heading "Zálohy podle osob" [level=2]
+  - form "Filtry přehledu":
+    - text: Hledat jméno, označení nebo číslo
+    - textbox "Hledat jméno, označení nebo číslo"
+    - text: Stav
+    - combobox "Stav":
+    - text: Vyúčtování od
+    - textbox "Vyúčtování od"
+    - text: Do
+    - textbox "Do"
+    - button "Vyhledat"
+  - status: "Nalezeno: 22 · strana 1 z 1"
+  - table:
+    - rowgroup:
+      - row "Záloha / příjemce Předáno / vráceno Čerpáno / převody Saldo / stav":
+        - columnheader "Záloha / příjemce"
+        - columnheader "Předáno / vráceno"
+        - columnheader "Čerpáno / převody"
+        - columnheader "Saldo / stav"
+      - 'row "LOCALHOST NEPLATIT R37 1a9b23744e coach · případ #27 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 1a9b23744e coach · případ #27"':
+          - link "LOCALHOST NEPLATIT R37 1a9b23744e coach":
+            - /url: "?advance_id=22#advance-detail"
+          - text: "· případ #27"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · případ #26 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach · případ #26"':
+          - link "LOCALHOST NEPLATIT R31-R32 fc653f2b0a coach":
+            - /url: "?advance_id=21#advance-detail"
+          - text: "· případ #26"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach renamed · případ #25 200,00 Kč / 200,00 Kč 0,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach renamed · případ #25"':
+          - link "LOCALHOST NEPLATIT EVENT 1e80f4c9c4 coach renamed":
+            - /url: "?advance_id=20#advance-detail"
+          - text: "· případ #25"
+        - cell "200,00 Kč / 200,00 Kč"
+        - cell "0,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 e15aa84ba4 coach · případ #24 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 e15aa84ba4 coach · případ #24"':
+          - link "LOCALHOST NEPLATIT R37 e15aa84ba4 coach":
+            - /url: "?advance_id=19#advance-detail"
+          - text: "· případ #24"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · případ #23 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 dd302a94ee coach · případ #23"':
+          - link "LOCALHOST NEPLATIT R31-R32 dd302a94ee coach":
+            - /url: "?advance_id=18#advance-detail"
+          - text: "· případ #23"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT EVENT 8abfa632b9 coach renamed · případ #22 200,00 Kč / 200,00 Kč 0,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT EVENT 8abfa632b9 coach renamed · případ #22"':
+          - link "LOCALHOST NEPLATIT EVENT 8abfa632b9 coach renamed":
+            - /url: "?advance_id=17#advance-detail"
+          - text: "· případ #22"
+        - cell "200,00 Kč / 200,00 Kč"
+        - cell "0,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT EVENT f86c5d09b3 coach renamed · případ #21 200,00 Kč / 200,00 Kč 0,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT EVENT f86c5d09b3 coach renamed · případ #21"':
+          - link "LOCALHOST NEPLATIT EVENT f86c5d09b3 coach renamed":
+            - /url: "?advance_id=16#advance-detail"
+          - text: "· případ #21"
+        - cell "200,00 Kč / 200,00 Kč"
+        - cell "0,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · případ #15 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach · případ #15"':
+          - link "LOCALHOST NEPLATIT R31-R32 ec0e2bdc8c coach":
+            - /url: "?advance_id=15#advance-detail"
+          - text: "· případ #15"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 95da4b93be coach · případ #14 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 95da4b93be coach · případ #14"':
+          - link "LOCALHOST NEPLATIT R31-R32 95da4b93be coach":
+            - /url: "?advance_id=14#advance-detail"
+          - text: "· případ #14"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 717ef5b039 coach · případ #13 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 717ef5b039 coach · případ #13"':
+          - link "LOCALHOST NEPLATIT R37 717ef5b039 coach":
+            - /url: "?advance_id=13#advance-detail"
+          - text: "· případ #13"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 2e5766558b coach · případ #12 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 2e5766558b coach · případ #12"':
+          - link "LOCALHOST NEPLATIT R37 2e5766558b coach":
+            - /url: "?advance_id=12#advance-detail"
+          - text: "· případ #12"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 c1e59a5b9b coach · případ #11 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 c1e59a5b9b coach · případ #11"':
+          - link "LOCALHOST NEPLATIT R37 c1e59a5b9b coach":
+            - /url: "?advance_id=11#advance-detail"
+          - text: "· případ #11"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 b4e03d9f45 coach · případ #10 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 b4e03d9f45 coach · případ #10"':
+          - link "LOCALHOST NEPLATIT R31-R32 b4e03d9f45 coach":
+            - /url: "?advance_id=10#advance-detail"
+          - text: "· případ #10"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 2c0155c02a coach · případ #9 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 2c0155c02a coach · případ #9"':
+          - link "LOCALHOST NEPLATIT R31-R32 2c0155c02a coach":
+            - /url: "?advance_id=9#advance-detail"
+          - text: "· případ #9"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 61ec197cfe coach · případ #8 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 61ec197cfe coach · případ #8"':
+          - link "LOCALHOST NEPLATIT R37 61ec197cfe coach":
+            - /url: "?advance_id=8#advance-detail"
+          - text: "· případ #8"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 6b47b76644 coach · případ #7 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 6b47b76644 coach · případ #7"':
+          - link "LOCALHOST NEPLATIT R31-R32 6b47b76644 coach":
+            - /url: "?advance_id=7#advance-detail"
+          - text: "· případ #7"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 5fc3850ef4 coach · případ #6 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 5fc3850ef4 coach · případ #6"':
+          - link "LOCALHOST NEPLATIT R37 5fc3850ef4 coach":
+            - /url: "?advance_id=6#advance-detail"
+          - text: "· případ #6"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 8a7d98114d coach · případ #5 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 8a7d98114d coach · případ #5"':
+          - link "LOCALHOST NEPLATIT R37 8a7d98114d coach":
+            - /url: "?advance_id=5#advance-detail"
+          - text: "· případ #5"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 47df48520e coach · případ #4 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 47df48520e coach · případ #4"':
+          - link "LOCALHOST NEPLATIT R37 47df48520e coach":
+            - /url: "?advance_id=4#advance-detail"
+          - text: "· případ #4"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 94be922a52 coach · případ #3 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 94be922a52 coach · případ #3"':
+          - link "LOCALHOST NEPLATIT R37 94be922a52 coach":
+            - /url: "?advance_id=3#advance-detail"
+          - text: "· případ #3"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R31-R32 0295a86107 coach · případ #2 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R31-R32 0295a86107 coach · případ #2"':
+          - link "LOCALHOST NEPLATIT R31-R32 0295a86107 coach":
+            - /url: "?advance_id=2#advance-detail"
+          - text: "· případ #2"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+      - 'row "LOCALHOST NEPLATIT R37 43b77bebc5 coach · případ #1 5 000,00 Kč / 800,00 Kč 4 200,00 Kč / 0,00 Kč 0,00 Kč · closed"':
+        - 'cell "LOCALHOST NEPLATIT R37 43b77bebc5 coach · případ #1"':
+          - link "LOCALHOST NEPLATIT R37 43b77bebc5 coach":
+            - /url: "?advance_id=1#advance-detail"
+          - text: "· případ #1"
+        - cell "5 000,00 Kč / 800,00 Kč"
+        - cell "4 200,00 Kč / 0,00 Kč"
+        - cell "0,00 Kč · closed"
+  - generic "Požádat o zálohu / doplnění další zálohou"
+  - generic "Schválit nebo uzavřít zálohu"
+  - generic "Přiřadit skutečnou platbu / vratku nebo opravit příděl"
+  - generic "Přiřadit uznaný doklad k záloze / opravit čerpání"
+  - generic "Doložit předání svěřených peněz mezi osobami / akcemi"
+  - generic "Uzavřít finanční případ"

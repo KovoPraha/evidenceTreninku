@@ -10,6 +10,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once 'db.php';
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/athlete_reward_guard.php';
+$legacyRewardsReadOnly = athleteRewardLegacyReadOnly($pdo);
 
 // Jen hlavní trenér
 $is_hlavni = canAccess('kreditni_obdobi');
@@ -133,6 +134,13 @@ if ($selectedSportovecId > 0) {
 <?php include 'hlavicka.php'; ?>
 
 <div class="container py-4" style="max-width: 1000px;">
+    <?php if ($legacyRewardsReadOnly): ?>
+    <div class="alert alert-info" role="status">
+        <strong>Historická evidence odměn.</strong> Nové sazby, podklady, schválení a výplaty vyřizujte v agendě
+        <a href="club_rewards_admin.php" class="alert-link">Výkazy a odměny</a>.
+        Zde zůstávají původní záznamy k nahlédnutí.
+    </div>
+    <?php endif; ?>
 
     <!-- Hero banner -->
     <div class="hero-card card mb-4 p-3 px-4">
@@ -317,7 +325,7 @@ if ($selectedSportovecId > 0) {
                                     <input type="hidden" name="action" value="close">
                                     <input type="hidden" name="sportovec_id" value="<?= (int)$o['sportovec_id'] ?>">
                                     <input type="hidden" name="obdobi_id" value="<?= (int)$o['id'] ?>">
-                                    <button type="submit" class="btn btn-sm btn-warning"
+                                    <button <?= $legacyRewardsReadOnly ? 'disabled' : '' ?> type="submit" class="btn btn-sm btn-warning"
                                             data-confirm="Uzavřít aktivní období k dnešnímu dni a zaznamenat snapshot?">
                                         <i class="bi bi-calendar-x me-1"></i>Ukončit
                                     </button>
@@ -331,7 +339,7 @@ if ($selectedSportovecId > 0) {
                                     <input type="hidden" name="action" value="pay">
                                     <input type="hidden" name="sportovec_id" value="<?= (int)$o['sportovec_id'] ?>">
                                     <input type="hidden" name="obdobi_id" value="<?= (int)$o['id'] ?>">
-                                    <button type="submit" class="btn btn-sm btn-success"
+                                    <button <?= $legacyRewardsReadOnly ? 'disabled' : '' ?> type="submit" class="btn btn-sm btn-success"
                                             data-confirm="Označit <?= number_format($kredit, 2, ",", " ") ?> Kč jako vyplacenou odměnu?">
                                         <i class="bi bi-cash-coin me-1"></i>Vyplaceno
                                     </button>
@@ -388,7 +396,7 @@ if ($selectedSportovecId > 0) {
                            placeholder="např. 50" required>
                 </div>
                 <div class="col-md-3 align-self-end">
-                    <button type="submit" class="btn btn-success w-100">
+                    <button <?= $legacyRewardsReadOnly ? 'disabled' : '' ?> type="submit" class="btn btn-success w-100">
                         <i class="bi bi-floppy me-1"></i>
                         <?= $openObdobi ? 'Uložit změny' : 'Vytvořit období' ?>
                     </button>

@@ -26,6 +26,8 @@ function staffPositionDefinitions(): array
                     ['route' => 'planovac.php', 'label' => 'Plánovač', 'description' => 'Naplánované tréninky', 'icon' => 'calendar3-week'],
                     ['route' => 'moje_treninky.php', 'label' => 'Moje tréninky', 'description' => 'Vlastní historie a úpravy', 'icon' => 'list-check'],
                     ['route'=>'training_closure_admin.php','label'=>'Docházka a uzavření','description'=>'Potvrzení skutečné účasti a auditované opravy','icon'=>'clipboard-check'],
+                    ['route'=>'medical_activity_admin.php','label'=>'Podklady před aktivitou','description'=>'Platnost podkladů skupiny nebo lekce','icon'=>'clipboard-heart'],
+                    ['route'=>'club_event_work_admin.php','label'=>'Zajištění akce','description'=>'Účast, doprava a návazné vyúčtování','icon'=>'calendar-check'],
                     ['route'=>'sports_activity_admin.php','label'=>'Sportovní činnost a podklady','description'=>'Skutečné starty a verzované podklady za období','icon'=>'activity'],
                     ['route' => 'moje_skupiny.php', 'label' => 'Moje skupiny', 'description' => 'Svěřené skupiny sportovců', 'icon' => 'people'],
                 ]],
@@ -74,6 +76,7 @@ function staffPositionDefinitions(): array
             'sort' => 30,
             'groups' => [
                 ['label' => 'Členové', 'icon' => 'people', 'items' => [
+                    ['route'=>'person_lifecycle_admin.php','label'=>'Vyřízení osoby','description'=>'Přijetí, odchod, návrat a návazné kroky','icon'=>'person-check'],
                     ['route' => 'sprava_sportovcu.php', 'label' => 'Sportovci', 'description' => 'Kmenová evidence členů', 'icon' => 'person-lines-fill'],
                     ['route' => 'sprava_skupin.php', 'label' => 'Skupiny', 'description' => 'Klubové skupiny', 'icon' => 'diagram-2'],
                     ['route' => 'sprava_podskupin.php', 'label' => 'Podskupiny', 'description' => 'Zařazení sportovců', 'icon' => 'diagram-3'],
@@ -89,6 +92,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'kis_sync_center.php', 'label' => 'KIS centrum', 'description' => 'Import a konflikty osob', 'icon' => 'arrow-repeat'],
                     ['route' => 'kis_person_import_admin.php', 'label' => 'Osoby ze starého KIS', 'description' => 'Úplné osoby, kontakty a zdrojové vazby', 'icon' => 'person-lines-fill'],
                     ['route' => 'kis_rosters_admin.php', 'label' => 'Týmy a soupisky', 'description' => 'Sezony, týmy a členství', 'icon' => 'people-fill'],
+                    ['route'=>'season_preparation_admin.php','label'=>'Příprava dalšího období','description'=>'Pokračující osoby, svěření trenérům a navazující lekce','icon'=>'calendar-range'],
                     ['route' => 'kis_roster_hierarchy_admin.php', 'label' => 'Skupiny a soupisky', 'description' => 'Hierarchie a časová platnost', 'icon' => 'diagram-3'],
                     ['route' => 'kis_legacy_rosters_admin.php', 'label' => 'Soupisky ze starého KIS', 'description' => 'Historie 2025/26 a případy k rozhodnutí', 'icon' => 'clipboard-check'],
                     ['route' => 'kis_current_rosters_admin.php', 'label' => 'Převod soupisek 2026/27', 'description' => 'Aktivní přiřazení a nejasné vazby', 'icon' => 'arrow-right-circle'],
@@ -237,6 +241,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'provozni_prehled_admin.php', 'label' => 'Kontrolní přehled', 'description' => 'Read-only souhrn provozních výjimek', 'icon' => 'speedometer2'],
                     ['route' => 'uat_readiness_admin.php', 'label' => 'Připravenost UAT', 'description' => 'Read-only brána produkčního uživatelského testu', 'icon' => 'clipboard2-check'],
                     ['route'=>'club_cutover_admin.php','label'=>'Příprava přechodu','description'=>'Zdroje, odpovědnosti, kontrolní snímky a podmínky přechodu','icon'=>'signpost-split'],
+                    ['route'=>'club_communication_admin.php','label'=>'Stav komunikace','description'=>'Fronty zpráv a meze ověření doručení','icon'=>'envelope-paper'],
                     ['route' => 'testovaci_scenare.php', 'label' => 'Lokální testovací scénáře', 'description' => 'Pouze localhost', 'icon' => 'check2-square', 'local_only' => true],
                 ]],
             ],
@@ -368,9 +373,16 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'season_preparation_admin.php'=>['sports_lead'],
+        'club_communication_admin.php'=>['registrar','order_operator'],
         'club_rewards_admin.php'=>['coach','sports_lead'],
         'medical_clearance_status.php'=>['sports_lead','registrar'],
+        'medical_activity_admin.php'=>['sports_lead','registrar'],
         'training_closure_admin.php'=>['sports_lead'],
+        'training_rsvps_admin.php'=>['sports_lead'],
+        'formular.php'=>['sports_lead'],
+        'ulozit_trenink.php'=>['sports_lead'],
+        'ajax_dostupnost_sportovist.php'=>['sports_lead'],
         'ajax_update_plan.php'=>['sports_lead'],
         'planovac.php'=>['sports_lead'],
         'planovany_trenink_form.php'=>['sports_lead'],
@@ -379,7 +391,7 @@ function staffRouteDelegates(): array
         'eshop_inventory_admin.php'=>['finance_manager'],
         'shop_returns_admin.php'=>['catalog_manager','finance_manager'],
         'shop_stock_document.php'=>['catalog_manager','finance_manager'],
-        'ajax_sportovci.php' => ['finance_manager'],
+        'ajax_sportovci.php' => ['finance_manager','sports_lead'],
         'provozni_prehled_admin.php' => ['registrar','order_operator','finance_manager','sports_lead'],
         'ajax_roster_target_selector.php' => ['sports_lead', 'program_coordinator', 'finance_manager'],
         'edit_trenink.php' => ['sports_lead'],
@@ -389,6 +401,7 @@ function staffRouteDelegates(): array
         'kalendar_sportovist.php' => ['program_coordinator'],
         'rezervovat_sportoviste.php' => ['program_coordinator'],
         'club_calendar.php' => ['sports_lead','program_coordinator','finance_manager'],
+        'club_event_work_admin.php' => ['sports_lead','finance_manager'],
         'individualni_lekce_sprava.php' => ['program_coordinator'],
         'individualni_lekce_form.php' => ['program_coordinator'],
     ];

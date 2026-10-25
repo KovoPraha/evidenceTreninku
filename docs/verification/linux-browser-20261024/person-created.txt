@@ -1,0 +1,188 @@
+- navigation:
+  - link "KOVO Praha – pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+  - text:       
+  - list:
+    - text: 
+    - button "":
+      - generic: 
+    - button "":
+      - generic: 
+    - link "":
+      - /url: /booking/eshop.php
+      - generic: 
+    - button " Superadmin · Členové a KIS":
+      - generic: 
+      - text: Superadmin · Členové a KIS
+    - text:        
+    - generic: 
+    - text: LOCALHOST Kontrola 1
+    - button " Odhlásit":
+      - generic: 
+      - text: Odhlásit
+- complementary "Pracovní nabídka":
+  - link "Pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+    - generic: 
+    - text: Pracovní rozcestník
+  - heading "Členové" [level=2]
+  - link "Sportovci":
+    - /url: /sprava_sportovcu.php
+    - generic: 
+    - generic: Sportovci
+  - link "Účty a osoby":
+    - /url: /eshop_identity_admin.php
+    - generic: 
+    - generic: Účty a osoby
+  - link "Registrační texty a souhlasy":
+    - /url: /registration_texts_admin.php
+    - generic: 
+    - generic: Registrační texty a souhlasy
+  - generic "Další nástroje"
+  - text:        
+  - heading "KIS a soupisky" [level=2]
+  - link "Týmy a soupisky":
+    - /url: /kis_rosters_admin.php
+    - generic: 
+    - generic: Týmy a soupisky
+  - generic "Další nástroje"
+  - text:          
+  - heading "Kontrola" [level=2]
+  - generic "Další nástroje"
+  - text:   
+  - heading "K dořešení" [level=2]
+  - generic "Další nástroje"
+  - text: 
+  - generic: KOVO Praha · KIS
+- text:   
+- heading " Správa sportovců" [level=1]:
+  - generic: 
+  - text: Správa sportovců
+- generic: Osobní údaje, adresy, kontakty, rodiče a původní evidence KIS.
+- link " Rozcestník":
+  - /url: index.php
+  - generic: 
+  - text: Rozcestník
+- generic: "1"
+- generic: 
+- text: Nalezeno
+- generic: "0"
+- generic: 
+- text: S tréninky
+- generic: "0"
+- generic: 
+- text: KIS aktivni
+- generic: "0"
+- generic: 
+- text: KIS dluh
+- generic: 
+- text: Založit novou osobu
+- paragraph: "Ruční založení má dva jasné kroky: nejdříve kontrolu možných shod a teprve potom potvrzení vytvoření. Nová osoba vznikne ve stavu „čekající“."
+- list "Postup založení osoby":
+  - listitem: Zkontrolovat možné shody
+  - listitem: Potvrdit založení osoby
+- generic: Příjmení *
+- textbox "Příjmení"
+- generic: Jméno *
+- textbox "Jméno"
+- generic: Datum narození *
+- textbox "Datum narození"
+- generic: E-mail
+- textbox "E-mail"
+- button " 1. Zkontrolovat možné shody":
+  - generic: 
+  - text: 1. Zkontrolovat možné shody
+- generic: 
+- textbox "Hledat sportovce":
+  - /placeholder: Hledat příjmení, jméno, UCI ID, email…
+  - text: <redacted>
+- combobox "Filtrovat podle stavu":
+  - option "Vsechny stavy" [selected]
+  - option "Aktivni"
+  - option "Cekajici"
+  - option "Neaktivni"
+  - option "Archiv"
+  - option "Rucni stav"
+- combobox "Filtrovat podle KIS":
+  - option "KIS filtr" [selected]
+  - option "KIS aktivni"
+  - option "Dluh > 0"
+  - option "Bez skupiny"
+  - option "Mimo import"
+- combobox "Počet sportovců na stránku":
+  - option "50 / stránka"
+  - option "100 / stránka" [selected]
+  - option "500 / stránka"
+  - option "Všichni"
+- button " Hledat":
+  - generic: 
+  - text: Hledat
+- link " Zrušit filtr":
+  - /url: sprava_sportovcu.php
+  - generic: 
+  - text: Zrušit filtr
+- generic: 
+- text: Seznam sportovců
+- generic: "1"
+- button " Hromadne akce":
+  - generic: 
+  - text: Hromadne akce
+- generic: Pro úpravu jednoho sportovce klikněte na tužku. Zaškrtávátka slouží pro hromadné akce.
+- table:
+  - rowgroup:
+    - row "Vyber Příjmení  Jméno Stav Nar. Kategorie UCI ID Skupiny KIS Tréninků Akce":
+      - columnheader "Vyber"
+      - columnheader "Příjmení ":
+        - link "Příjmení ":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&sort=prijmeni&dir=desc&p=1
+          - text: Příjmení
+          - generic: 
+      - columnheader "Jméno":
+        - link "Jméno":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&sort=jmeno&dir=asc&p=1
+      - columnheader "Stav"
+      - columnheader "Nar.":
+        - link "Nar.":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&sort=narozeni&dir=asc&p=1
+      - columnheader "Kategorie":
+        - link "Kategorie":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&sort=category&dir=asc&p=1
+      - columnheader "UCI ID":
+        - link "UCI ID":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&sort=uciid&dir=asc&p=1
+      - columnheader "Skupiny"
+      - columnheader "KIS":
+        - link "KIS":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&sort=kis&dir=asc&p=1
+      - columnheader "Tréninků":
+        - link "Tréninků":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&sort=treninku&dir=asc&p=1
+      - columnheader "Akce"
+  - rowgroup:
+    - row "Vybrat LOCALHOST Browser 2410 Přejímka LOCALHOST Browser 2410 Přejímka Čekající 2015-02-03 — — — neaktivni 0 Upravit sportovce Administrační karta člena":
+      - cell "Vybrat LOCALHOST Browser 2410 Přejímka":
+        - checkbox "Vybrat LOCALHOST Browser 2410 Přejímka"
+      - cell "LOCALHOST Browser 2410":
+        - link "LOCALHOST Browser 2410":
+          - /url: sportovec_karta.php?sportovec_id=370
+      - cell "Přejímka"
+      - cell "Čekající":
+        - generic "Evidovaný stav členství; účet, účast a úhrady se posuzují samostatně.": Čekající
+      - cell "2015-02-03"
+      - cell "—"
+      - cell "—"
+      - cell "—"
+      - cell "neaktivni":
+        - generic: neaktivni
+      - cell "0"
+      - cell "Upravit sportovce Administrační karta člena":
+        - link "Upravit sportovce":
+          - /url: sprava_sportovcu.php?q=LOCALHOST+Browser+2410&edit_id=370#edit-card
+          - generic: 
+        - link "Administrační karta člena":
+          - /url: sportovec_karta.php?sportovec_id=370
+          - generic: 
+- region "Vyberte sportovce k úpravě":
+  - generic: 
+  - generic: Vyberte sportovce k úpravě
+  - paragraph: Klikněte na tužku v řádku sportovce. Pro jednotlivou úpravu není potřeba zaškrtávat člena.

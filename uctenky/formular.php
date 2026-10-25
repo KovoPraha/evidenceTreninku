@@ -34,6 +34,12 @@ if ($id > 0) {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row) $uctenka = $row;
 }
+$expenseCaseId=max(0,(int)($_GET['expense_case_id']??0));
+if($expenseCaseId){
+    require_once __DIR__.'/../includes/club_administration.php';
+    try{clubAdminFinanceActor($pdo);$expenseCase=clubExpenseOne($pdo,'club_expense_cases',$expenseCaseId);if($expenseCase['state']!=='open')throw new DomainException('Finanční případ je uzavřený.');if(!$id)$uctenka['udalost_id']=$expenseCase['legacy_event_id'];}
+    catch(Throwable $e){http_response_code(422);exit(h($e instanceof PDOException?'Případ nelze načíst.':$e->getMessage()));}
+}
 $readOnly = false;
 foreach ($udalosti as $event) {
     if ((int)$event['id'] === (int)($uctenka['udalost_id'] ?? 0) && $event['stav'] !== 'otevrena') {
@@ -68,6 +74,7 @@ foreach ($udalosti as $event) {
     <?php unset($_SESSION['flash_error']); ?>
   <?php endif; ?>
 
+  <?php if($expenseCaseId):?><p>Podklad pro <?=h($expenseCase['title'])?>. Uložení účtenky samo nepředloží ani neschválí výdaj. Po uložení doplňte výdaj v navazujícím formuláři.</p><p><a href="../club_expenses_admin.php?case_id=<?=$expenseCaseId?>#case-detail">Zpět na finanční případ</a></p><?php endif;?>
   <div class="card shadow-sm">
     <div class="card-body">
       <?php if ($readOnly): ?>
@@ -76,6 +83,7 @@ foreach ($udalosti as $event) {
       <form id="formular-uctenka" enctype="multipart/form-data">
         <fieldset <?= $readOnly ? 'disabled' : '' ?>>
         <?= csrf_field() ?>
+        <input type="hidden" name="expense_case_id" value="<?=$expenseCaseId?>">
         <input type="hidden" name="id" value="<?= $id ?>">
 
         <div class="row g-3">
@@ -222,7 +230,7 @@ document.getElementById('formular-uctenka').addEventListener('submit', function(
             const el = document.getElementById('ulozeni-vysledek');
             if (data.status === 'ok') {
                 el.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Uloženo.</div>';
-                setTimeout(() => window.location.href = 'seznam.php', 800);
+                setTimeout(() => window.location.href = data.next || 'seznam.php', 800);
             } else {
                 el.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><span></span></div>';
                 el.querySelector('span').textContent = String(data.message || 'Uložení se nezdařilo.');
