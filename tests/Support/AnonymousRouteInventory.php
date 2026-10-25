@@ -7,9 +7,8 @@ function anonymousPublicRoutes(): array
     return [
         'index.php' => 'Public landing page.',
         'login.php' => 'Staff sign-in.',
-        'registrace.php' => 'Public account registration entry.',
         'sitemap.php' => 'Public search-engine sitemap.',
-        'pub.php' => 'Published group view gated by an unguessable link.',
+        'pub.php' => 'Legacy redirect to the published training schedule.',
         'sportovec_treninky.php' => 'Published athlete view gated by a token.',
         'public_profile_access.php' => 'Token exchange for a published profile.',
         'ajax_sportovec_poznamka.php' => 'Published profile token plus CSRF and athlete/family authorization.',

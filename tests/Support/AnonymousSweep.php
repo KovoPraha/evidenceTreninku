@@ -22,7 +22,13 @@ $sandbox = sys_get_temp_dir() . '/evidence-anonymous-' . bin2hex(random_bytes(8)
 mkdir($sandbox, 0700);
 $server = null;
 try {
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
+    $sourceFiles = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
+    $sourceFilter = new RecursiveCallbackFilterIterator($sourceFiles, static function ($file): bool {
+        return !$file->isDir() || !in_array($file->getFilename(), [
+            'vendor', 'tests', 'docs', 'output', 'outputs', '.git', 'migrations', 'bin', 'tools', 'var',
+        ], true);
+    });
+    $files = new RecursiveIteratorIterator($sourceFilter);
     foreach ($files as $file) {
         $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
         if (!preg_match('~^(?:includes/.*|[^/]+|(?:auth|booking|auditlog|jizdy|servis|uctenky|udalosti|vozidla|zatezove_testy)/.*)\.php$~', $relative)
