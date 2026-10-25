@@ -1,12 +1,14 @@
 # Aktuální předání vývoje na další stanici
 
-**25. 10. 2026 — příprava společné integrační větve, NENASAZOVAT.**
+**25. 10. 2026 — společná integrační větev ověřena, NENASAZENO.**
 Větev `codex/integration-20261025` v samostatném checkoutu
-`C:\xampp\htdocs\evidencePavel-integration-20261025` spojuje aktuální
-`origin/main` (`6bf57d6f`, včetně již sloučeného bezpečnostního PR #190)
-a dokončené klubové balíky z `420e78a0`. Probíhá inventura ostatních větví
-zohledňující squash merge, kontrola překryvů a nové izolované ověření.
-Žádné nasazení, aktivace integrací ani převod skutečných dat nejsou povoleny.
+`C:\xampp\htdocs\evidencePavel-integration-20261025` sjednocuje aktuální
+`origin/main` (`6bf57d6f`, bezpečnostní PR #190) a dokončené klubové balíky
+z `420e78a0`. Ověřený technický commit `075d92ac` prošel Linuxem
+(1 717 testů / 34 744 assertions), MariaDB 10.3/11.4, 26 místními HTTP sadami,
+souběhy, migracemi a obnovou. [Výsledky, rozsah a výjimky](verification/integration-20261025/RESULTS.md).
+Inventura 249 výchozích odkazů neodhalila další chybějící dokončenou implementaci.
+Žádný merge do main, nasazení, aktivace služeb ani převod skutečných dat neproběhl.
 Následující datované záznamy jsou historické; jejich údaje o otevřeném PR #190,
 produkčním SHA a počtech testů nejsou stavem dnešní integrační větve.
 

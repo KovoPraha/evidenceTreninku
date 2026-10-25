@@ -1,5 +1,9 @@
 # Společný systém oddílu — předání místní implementace
 
+Aktualizace 25. 10. 2026: [společná integrační větev a nové izolované ověření](verification/integration-20261025/RESULTS.md)
+sjednocují dokončené balíky s aktuálními bezpečnostními opravami. Nic nebylo
+nasazeno ani sloučeno do main; D15 zůstává NEPOVOLENO.
+
 Aktualizace plánu 24. 10. 2026: uživatel schválil doporučené varianty D01–D20
 **jako základ**, nikoli konkrétní provozní údaje nebo účetní metodiku.
 [Aktuální registr](CLUB_COMPLETION_DECISIONS.md) obsahuje všech 20 schválených
