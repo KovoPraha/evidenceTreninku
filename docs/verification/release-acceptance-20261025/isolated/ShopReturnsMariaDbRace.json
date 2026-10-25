@@ -1,0 +1,27 @@
+{
+    "database": "evidence_r23_returns_99fb5cdb",
+    "checks": 19,
+    "passed": [
+        "Migration verified 20261022220000_accounting_ledger",
+        "Migration verified 20261022221000_accounting_documents",
+        "Migration verified 20261022222000_accounting_adjustments",
+        "Migration verified 20261022230000_shop_inventory",
+        "Migration verified 20261022232000_shop_returns",
+        "Real worker connection published atomically",
+        "Competing return write observed in InnoDB LOCK WAIT",
+        "No competing write before lock release",
+        "Quantity competitor exited cleanly",
+        "Concurrent excess return rejected after fresh quantity reread",
+        "Requested quantities never exceed actual issue",
+        "Real worker connection published atomically",
+        "Competing return write observed in InnoDB LOCK WAIT",
+        "No competing write before lock release",
+        "Reception competitor exited cleanly",
+        "Concurrent repeated reception returns original movement",
+        "Exactly one physical return is recorded",
+        "Physical blocked balance reconciles after reception race",
+        "Concurrent returns create no money"
+    ],
+    "observed_mariadb_lock_wait": true,
+    "production_mutations": false
+}

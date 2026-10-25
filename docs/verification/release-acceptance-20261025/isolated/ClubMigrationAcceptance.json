@@ -1,0 +1,78 @@
+{
+    "run": "LOCALHOST NEPLATIT R38-R41 1ffc2ec2d9",
+    "checks": 17,
+    "results": [
+        {
+            "scenario": "CLI stage retains two unapproved identities without canonical mutation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Identical private source file stages once",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Bounded item transaction supports interrupted batch",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Same plan resumes without duplicate person or staff grant",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Completed batch replay retains canonical mappings",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Both concurrent migration workers observed in real MariaDB LOCK WAIT",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Concurrent same-plan apply completes idempotently",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Concurrent same-plan apply completes idempotently",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Concurrent replay creates one canonical actual activity with original duration",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Existing canonical activity becomes review conflict instead of duplicate",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicit exact duplicate links existing training without replacing it",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Replay refuses newer canonical target under locking reads",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stable source ID with changed content cannot silently replace mapping",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Import waits on canonical identity row while concurrent editor holds it",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Concurrent canonical identity edit invalidates approved import without a partial training",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Source files outside owned private import directory are refused",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked migration role cannot reuse cached CLI identity",
+            "status": "PASS"
+        }
+    ],
+    "source_namespace": "test-evidence-e2a8ccc28199",
+    "canonical_training_id": 8,
+    "production_mutations": false,
+    "synthetic_only": true
+}

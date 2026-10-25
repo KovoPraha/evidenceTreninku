@@ -1,0 +1,51 @@
+[
+  {
+    "path": "/index.php",
+    "http": 200,
+    "final_url": "https://kis.kovopraha.cz/index.php",
+    "expected_http": 200,
+    "pass": true
+  },
+  {
+    "path": "/booking/eshop.php",
+    "http": 200,
+    "final_url": "https://kis.kovopraha.cz/booking/eshop.php",
+    "expected_http": 200,
+    "pass": true
+  },
+  {
+    "path": "/booking/verejny_kalendar.php",
+    "http": 200,
+    "final_url": "https://kis.kovopraha.cz/booking/verejny_kalendar.php",
+    "expected_http": 200,
+    "pass": true
+  },
+  {
+    "path": "/booking/rodinny_kalendar.php",
+    "http": 404,
+    "final_url": "https://kis.kovopraha.cz/booking/rodinny_kalendar.php",
+    "expected_http": 404,
+    "pass": true
+  },
+  {
+    "path": "/pracovni_pozice.php",
+    "http": 200,
+    "final_url": "https://kis.kovopraha.cz/login.php",
+    "expected_http": 200,
+    "pass": true
+  },
+  {
+    "path": "/sprava_sportovcu.php",
+    "http": 200,
+    "final_url": "https://kis.kovopraha.cz/login.php",
+    "expected_http": 200,
+    "pass": true
+  },
+  {
+    "path": "/planovac.php",
+    "http": 200,
+    "final_url": "https://kis.kovopraha.cz/login.php",
+    "expected_http": 200,
+    "pass": true
+  }
+]

@@ -1,0 +1,132 @@
+[
+  {
+    "suite": "FinanceB1HttpAcceptance",
+    "checks": 58,
+    "status": "PASS"
+  },
+  {
+    "suite": "FinanceB1RouterHttpAcceptance",
+    "checks": 14,
+    "status": "PASS"
+  },
+  {
+    "suite": "ClubFoundationHttpAcceptance",
+    "checks": 110,
+    "status": "PASS"
+  },
+  {
+    "suite": "MemberAdmissionHttpAcceptance",
+    "checks": 30,
+    "status": "PASS"
+  },
+  {
+    "suite": "DailyCoachRegistrarHttpAcceptance",
+    "checks": 32,
+    "status": "PASS"
+  },
+  {
+    "suite": "PersonLifeDocumentsHttpAcceptance",
+    "checks": 30,
+    "status": "PASS"
+  },
+  {
+    "suite": "TrainingClosureHttpAcceptance",
+    "checks": 25,
+    "status": "PASS"
+  },
+  {
+    "suite": "MakeupJourneyHttpAcceptance",
+    "checks": 23,
+    "status": "PASS"
+  },
+  {
+    "suite": "SportsActivityHttpAcceptance",
+    "checks": 23,
+    "status": "PASS"
+  },
+  {
+    "suite": "MedicalClearanceHttpAcceptance",
+    "checks": 22,
+    "status": "PASS"
+  },
+  {
+    "suite": "ClubAdministrationHttpAcceptance",
+    "checks": 49,
+    "status": "PASS"
+  },
+  {
+    "suite": "ClubExpensesHttpAcceptance",
+    "checks": 47,
+    "status": "PASS"
+  },
+  {
+    "suite": "ClubRewardsHttpAcceptance",
+    "checks": 29,
+    "status": "PASS"
+  },
+  {
+    "suite": "SeasonOperationsHttpAcceptance",
+    "checks": 41,
+    "status": "PASS"
+  },
+  {
+    "suite": "ShopInventoryHttpAcceptance",
+    "checks": 21,
+    "status": "PASS"
+  },
+  {
+    "suite": "ShopFulfillmentHttpAcceptance",
+    "checks": 33,
+    "status": "PASS"
+  },
+  {
+    "suite": "ShopReturnsHttpAcceptance",
+    "checks": 33,
+    "status": "PASS"
+  },
+  {
+    "suite": "AccountingLedgerHttpAcceptance",
+    "checks": 17,
+    "status": "PASS"
+  },
+  {
+    "suite": "AccountingDocumentsHttpAcceptance",
+    "checks": 19,
+    "status": "PASS"
+  },
+  {
+    "suite": "AccountingAdjustmentsHttpAcceptance",
+    "checks": 18,
+    "status": "PASS"
+  },
+  {
+    "suite": "AccountingStockHttpAcceptance",
+    "checks": 16,
+    "status": "PASS"
+  },
+  {
+    "suite": "AccountingExportHttpAcceptance",
+    "checks": 31,
+    "status": "PASS"
+  },
+  {
+    "suite": "ClubAccountingHttpAcceptance",
+    "checks": 34,
+    "status": "PASS"
+  },
+  {
+    "suite": "ClubCutoverHttpAcceptance",
+    "checks": 26,
+    "status": "PASS"
+  },
+  {
+    "suite": "WeeklyReportPrivacyHttpAcceptance",
+    "checks": 11,
+    "status": "PASS"
+  },
+  {
+    "suite": "ClubOperatingMonth",
+    "checks": 13,
+    "status": "PASS"
+  }
+]

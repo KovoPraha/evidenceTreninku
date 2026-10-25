@@ -1,3 +1,6 @@
+**Aktualizace:** tento dokument zaznamenává izolovanou přejímku před vydáním.
+Opravy byly následně nasazené; aktuální produkční důkazy jsou v
+[protokolu společného vydání](../release-acceptance-20261025/RESULTS.md).
 # Dokončení izolované přejímky — 25. 10. 2026
 
 **Dokončena technická přejímka vymezených návazností trenér–registrář–rodina. Nic nebylo nasazeno ani zapisováno do produkce.** Tento protokol nahrazuje otevřené místní technické blokace v `PREJIMKA.md`; původní produkční pozorování zůstávají historickými pozorováními, nikoli nově ověřenými fakty.

@@ -1,0 +1,10 @@
+{
+  "run_id": 40198896312,
+  "status": "PASS",
+  "backup": "evidence_2026-10-25_133822_b4a9be32.sql.gz",
+  "sha256": "b8a242deb8bf23e055504d5340fb039399f8a13701f7cbce447ee35a3aef239f",
+  "tables_verified_against_manifest": 330,
+  "triggers_verified": 2,
+  "database": "isolated MariaDB 11.4 in disposable CI container",
+  "production_restore": false
+}

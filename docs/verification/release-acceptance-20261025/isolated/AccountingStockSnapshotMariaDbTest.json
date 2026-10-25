@@ -1,0 +1,20 @@
+{
+    "status": "PASS",
+    "checks": 11,
+    "results": [
+        "Migration verified: 20261022220000_accounting_ledger",
+        "Migration verified: 20261022221000_accounting_documents",
+        "Migration verified: 20261022222000_accounting_adjustments",
+        "Migration verified: 20261022223000_accounting_exports",
+        "Migration verified: 20261022230000_shop_inventory",
+        "Migration verified: 20261022233000_shop_stock_documents",
+        "Writer committed receipt between movement and lot SELECTs",
+        "Snapshot contains matched original stock movements and FIFO lots",
+        "Late receipt absent from all stock snapshot sections",
+        "Independent connection proves late receipt committed",
+        "READ COMMITTED negative control detects mixed movements and lots"
+    ],
+    "database": "evidence_b4_stock_rr_6f4a9cb1",
+    "two_connections": true,
+    "negative_control_mixed_stock_detected": true
+}

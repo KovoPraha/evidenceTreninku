@@ -1,0 +1,22 @@
+{
+  "live": {
+    "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72",
+    "run_id": "40198413027",
+    "deployed_at": "2026-10-25T13:38:49+00:00",
+    "uat_approved": false
+  },
+  "checks_unchanged": true,
+  "config_unchanged": true,
+  "integration_flags_unchanged": true,
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": false,
+    "FIO_AUTO_CONFIRM_ENABLED": false,
+    "SUMUP_ENABLED": false,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "migration_ledger_before": 139,
+  "migration_ledger_after": 139,
+  "domain_mutations": false
+}

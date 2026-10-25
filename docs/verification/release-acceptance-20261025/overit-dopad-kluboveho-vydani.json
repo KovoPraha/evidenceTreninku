@@ -1,0 +1,778 @@
+{
+  "ok": true,
+  "read_only": true,
+  "read_only_session": true,
+  "deployment_ready": false,
+  "as_of": "2026-10-25",
+  "month": "2026-10",
+  "complete": true,
+  "checks": {
+    "active_staff_with_coach_position": {
+      "status": "counted",
+      "count": 36,
+      "basis": "explicit_coach_position"
+    },
+    "coaches_without_current_scope_grant": {
+      "status": "counted",
+      "count": 36,
+      "basis": "current_nonrevoked_grant_any_scope"
+    },
+    "published_goods_variants": {
+      "status": "counted",
+      "count": 799,
+      "basis": "active_visible_published_goods"
+    },
+    "published_goods_null_legacy_quantity": {
+      "status": "counted",
+      "count": 0,
+      "basis": "new_checkout_rejects_null_stock_quantity"
+    },
+    "published_goods_without_stock_opening": {
+      "status": "counted",
+      "count": 799,
+      "basis": "no_physical_stock_balance_row"
+    },
+    "active_fee_plans_current_month": {
+      "status": "counted",
+      "count": 1,
+      "basis": "active_plans_overlapping_report_month"
+    },
+    "active_fee_plans_without_any_month_agreement": {
+      "status": "counted",
+      "count": 1,
+      "basis": "no_agreement_overlapping_month_for_any_person"
+    },
+    "active_fee_plans_without_any_month_amount_decision": {
+      "status": "counted",
+      "count": 1,
+      "basis": "no_amount_decision_for_any_person_in_month"
+    },
+    "pending_family_weekly_summaries": {
+      "status": "counted",
+      "count": 0,
+      "basis": "pending_queue"
+    },
+    "pending_family_summaries_without_authorization_snapshot": {
+      "status": "counted",
+      "count": 0,
+      "basis": "worker_will_hold_missing_snapshot"
+    }
+  },
+  "limitations": [
+    "Counts are an impact inventory, not permission to deploy or evidence of complete operating readiness.",
+    "A current coach grant is not proof of coverage of every assigned athlete or historical training.",
+    "A stock balance row is not proof of an approved physical inventory or valid valuation.",
+    "One agreement or amount decision does not prove coverage of all members, all days, or a valid payer; plans with partial coverage need separate review.",
+    "No roles, payers, amounts, stock quantities, or source identities are inferred or changed."
+  ],
+  "private_storage": {
+    "configured": true,
+    "local_fallback": false,
+    "exists": true,
+    "writable": true,
+    "outside_application_tree": true,
+    "public_webroot_not_proven_by_cli": true,
+    "write_probe_performed": false
+  },
+  "release_verification": {
+    "live": {
+      "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72",
+      "run_id": "40198413027",
+      "deployed_at": "2026-10-25T13:38:49+00:00",
+      "uat_approved": false
+    },
+    "old_source": {
+      "checked": 54,
+      "mismatches": 54,
+      "files": [
+        {
+          "file": "assets/app-ui.css",
+          "match": false
+        },
+        {
+          "file": "booking/sportovni_prehled.php",
+          "match": false
+        },
+        {
+          "file": "club_calendar.php",
+          "match": false
+        },
+        {
+          "file": "club_communication_admin.php",
+          "match": false
+        },
+        {
+          "file": "club_cutover_admin.php",
+          "match": false
+        },
+        {
+          "file": "club_event_work_admin.php",
+          "match": false
+        },
+        {
+          "file": "club_expenses_admin.php",
+          "match": false
+        },
+        {
+          "file": "club_rewards_admin.php",
+          "match": false
+        },
+        {
+          "file": "family_weekly_summaries_admin.php",
+          "match": false
+        },
+        {
+          "file": "hromadne_odmeny.php",
+          "match": false
+        },
+        {
+          "file": "includes/athlete_reward_guard.php",
+          "match": false
+        },
+        {
+          "file": "includes/club_administration.php",
+          "match": false
+        },
+        {
+          "file": "includes/club_administration_view.php",
+          "match": false
+        },
+        {
+          "file": "includes/club_communication.php",
+          "match": false
+        },
+        {
+          "file": "includes/club_cutover.php",
+          "match": false
+        },
+        {
+          "file": "includes/club_event_work.php",
+          "match": false
+        },
+        {
+          "file": "includes/club_transition_map.php",
+          "match": false
+        },
+        {
+          "file": "includes/club_transition_view.php",
+          "match": false
+        },
+        {
+          "file": "includes/family_tasks.php",
+          "match": false
+        },
+        {
+          "file": "includes/family_tasks_view.php",
+          "match": false
+        },
+        {
+          "file": "includes/medical_activity.php",
+          "match": false
+        },
+        {
+          "file": "includes/medical_clearance.php",
+          "match": false
+        },
+        {
+          "file": "includes/migration_runner.php",
+          "match": false
+        },
+        {
+          "file": "includes/operational_cases.php",
+          "match": false
+        },
+        {
+          "file": "includes/operational_cases_view.php",
+          "match": false
+        },
+        {
+          "file": "includes/payment_variable_symbol_schema.php",
+          "match": false
+        },
+        {
+          "file": "includes/person_lifecycle.php",
+          "match": false
+        },
+        {
+          "file": "includes/person_workflow.php",
+          "match": false
+        },
+        {
+          "file": "includes/person_workflow_view.php",
+          "match": false
+        },
+        {
+          "file": "includes/roster_message.php",
+          "match": false
+        },
+        {
+          "file": "includes/season_preparation.php",
+          "match": false
+        },
+        {
+          "file": "includes/sportovec_editor_view.php",
+          "match": false
+        },
+        {
+          "file": "includes/sports_activity_form.php",
+          "match": false
+        },
+        {
+          "file": "includes/sports_activity_form_view.php",
+          "match": false
+        },
+        {
+          "file": "includes/staff_agenda_lists.php",
+          "match": false
+        },
+        {
+          "file": "includes/staff_record_list.php",
+          "match": false
+        },
+        {
+          "file": "includes/staff_workspaces.php",
+          "match": false
+        },
+        {
+          "file": "includes/training_day.php",
+          "match": false
+        },
+        {
+          "file": "includes/training_day_view.php",
+          "match": false
+        },
+        {
+          "file": "medical_activity_admin.php",
+          "match": false
+        },
+        {
+          "file": "medical_clearance_admin.php",
+          "match": false
+        },
+        {
+          "file": "migrations/20261024200000_payment_variable_symbol_index_repair.php",
+          "match": false
+        },
+        {
+          "file": "person_lifecycle_admin.php",
+          "match": false
+        },
+        {
+          "file": "planovac.php",
+          "match": false
+        },
+        {
+          "file": "prehled_kreditu.php",
+          "match": false
+        },
+        {
+          "file": "roster_messages_admin.php",
+          "match": false
+        },
+        {
+          "file": "season_preparation_admin.php",
+          "match": false
+        },
+        {
+          "file": "sports_activity_admin.php",
+          "match": false
+        },
+        {
+          "file": "sprava_sportovec_obdobi.php",
+          "match": false
+        },
+        {
+          "file": "training_closure_admin.php",
+          "match": false
+        },
+        {
+          "file": "training_rsvps_admin.php",
+          "match": false
+        },
+        {
+          "file": "uctenky/formular.php",
+          "match": false
+        },
+        {
+          "file": "uctenky/uloz.php",
+          "match": false
+        },
+        {
+          "file": "ulozit_trenink.php",
+          "match": false
+        }
+      ]
+    },
+    "new_source": {
+      "checked": 54,
+      "mismatches": 1,
+      "files": [
+        {
+          "file": "assets/app-ui.css",
+          "match": false
+        },
+        {
+          "file": "booking/sportovni_prehled.php",
+          "match": true
+        },
+        {
+          "file": "club_calendar.php",
+          "match": true
+        },
+        {
+          "file": "club_communication_admin.php",
+          "match": true
+        },
+        {
+          "file": "club_cutover_admin.php",
+          "match": true
+        },
+        {
+          "file": "club_event_work_admin.php",
+          "match": true
+        },
+        {
+          "file": "club_expenses_admin.php",
+          "match": true
+        },
+        {
+          "file": "club_rewards_admin.php",
+          "match": true
+        },
+        {
+          "file": "family_weekly_summaries_admin.php",
+          "match": true
+        },
+        {
+          "file": "hromadne_odmeny.php",
+          "match": true
+        },
+        {
+          "file": "includes/athlete_reward_guard.php",
+          "match": true
+        },
+        {
+          "file": "includes/club_administration.php",
+          "match": true
+        },
+        {
+          "file": "includes/club_administration_view.php",
+          "match": true
+        },
+        {
+          "file": "includes/club_communication.php",
+          "match": true
+        },
+        {
+          "file": "includes/club_cutover.php",
+          "match": true
+        },
+        {
+          "file": "includes/club_event_work.php",
+          "match": true
+        },
+        {
+          "file": "includes/club_transition_map.php",
+          "match": true
+        },
+        {
+          "file": "includes/club_transition_view.php",
+          "match": true
+        },
+        {
+          "file": "includes/family_tasks.php",
+          "match": true
+        },
+        {
+          "file": "includes/family_tasks_view.php",
+          "match": true
+        },
+        {
+          "file": "includes/medical_activity.php",
+          "match": true
+        },
+        {
+          "file": "includes/medical_clearance.php",
+          "match": true
+        },
+        {
+          "file": "includes/migration_runner.php",
+          "match": true
+        },
+        {
+          "file": "includes/operational_cases.php",
+          "match": true
+        },
+        {
+          "file": "includes/operational_cases_view.php",
+          "match": true
+        },
+        {
+          "file": "includes/payment_variable_symbol_schema.php",
+          "match": true
+        },
+        {
+          "file": "includes/person_lifecycle.php",
+          "match": true
+        },
+        {
+          "file": "includes/person_workflow.php",
+          "match": true
+        },
+        {
+          "file": "includes/person_workflow_view.php",
+          "match": true
+        },
+        {
+          "file": "includes/roster_message.php",
+          "match": true
+        },
+        {
+          "file": "includes/season_preparation.php",
+          "match": true
+        },
+        {
+          "file": "includes/sportovec_editor_view.php",
+          "match": true
+        },
+        {
+          "file": "includes/sports_activity_form.php",
+          "match": true
+        },
+        {
+          "file": "includes/sports_activity_form_view.php",
+          "match": true
+        },
+        {
+          "file": "includes/staff_agenda_lists.php",
+          "match": true
+        },
+        {
+          "file": "includes/staff_record_list.php",
+          "match": true
+        },
+        {
+          "file": "includes/staff_workspaces.php",
+          "match": true
+        },
+        {
+          "file": "includes/training_day.php",
+          "match": true
+        },
+        {
+          "file": "includes/training_day_view.php",
+          "match": true
+        },
+        {
+          "file": "medical_activity_admin.php",
+          "match": true
+        },
+        {
+          "file": "medical_clearance_admin.php",
+          "match": true
+        },
+        {
+          "file": "migrations/20261024200000_payment_variable_symbol_index_repair.php",
+          "match": true
+        },
+        {
+          "file": "person_lifecycle_admin.php",
+          "match": true
+        },
+        {
+          "file": "planovac.php",
+          "match": true
+        },
+        {
+          "file": "prehled_kreditu.php",
+          "match": true
+        },
+        {
+          "file": "roster_messages_admin.php",
+          "match": true
+        },
+        {
+          "file": "season_preparation_admin.php",
+          "match": true
+        },
+        {
+          "file": "sports_activity_admin.php",
+          "match": true
+        },
+        {
+          "file": "sprava_sportovec_obdobi.php",
+          "match": true
+        },
+        {
+          "file": "training_closure_admin.php",
+          "match": true
+        },
+        {
+          "file": "training_rsvps_admin.php",
+          "match": true
+        },
+        {
+          "file": "uctenky/formular.php",
+          "match": true
+        },
+        {
+          "file": "uctenky/uloz.php",
+          "match": true
+        },
+        {
+          "file": "ulozit_trenink.php",
+          "match": true
+        }
+      ]
+    },
+    "config_sha256": "326c832d891a99d2780099391854a8daee3936adcdacf62c62f0a00b616fb772",
+    "previous_release": {
+      "available": true,
+      "metadata": {
+        "sha": "6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51",
+        "run_id": "40131981680",
+        "deployed_at": "2026-10-24T20:59:19+00:00",
+        "uat_approved": false
+      },
+      "source": {
+        "checked": 54,
+        "mismatches": 0,
+        "files": [
+          {
+            "file": "assets/app-ui.css",
+            "match": true
+          },
+          {
+            "file": "booking/sportovni_prehled.php",
+            "match": true
+          },
+          {
+            "file": "club_calendar.php",
+            "match": true
+          },
+          {
+            "file": "club_communication_admin.php",
+            "match": true
+          },
+          {
+            "file": "club_cutover_admin.php",
+            "match": true
+          },
+          {
+            "file": "club_event_work_admin.php",
+            "match": true
+          },
+          {
+            "file": "club_expenses_admin.php",
+            "match": true
+          },
+          {
+            "file": "club_rewards_admin.php",
+            "match": true
+          },
+          {
+            "file": "family_weekly_summaries_admin.php",
+            "match": true
+          },
+          {
+            "file": "hromadne_odmeny.php",
+            "match": true
+          },
+          {
+            "file": "includes/athlete_reward_guard.php",
+            "match": true
+          },
+          {
+            "file": "includes/club_administration.php",
+            "match": true
+          },
+          {
+            "file": "includes/club_administration_view.php",
+            "match": true
+          },
+          {
+            "file": "includes/club_communication.php",
+            "match": true
+          },
+          {
+            "file": "includes/club_cutover.php",
+            "match": true
+          },
+          {
+            "file": "includes/club_event_work.php",
+            "match": true
+          },
+          {
+            "file": "includes/club_transition_map.php",
+            "match": true
+          },
+          {
+            "file": "includes/club_transition_view.php",
+            "match": true
+          },
+          {
+            "file": "includes/family_tasks.php",
+            "match": true
+          },
+          {
+            "file": "includes/family_tasks_view.php",
+            "match": true
+          },
+          {
+            "file": "includes/medical_activity.php",
+            "match": true
+          },
+          {
+            "file": "includes/medical_clearance.php",
+            "match": true
+          },
+          {
+            "file": "includes/migration_runner.php",
+            "match": true
+          },
+          {
+            "file": "includes/operational_cases.php",
+            "match": true
+          },
+          {
+            "file": "includes/operational_cases_view.php",
+            "match": true
+          },
+          {
+            "file": "includes/payment_variable_symbol_schema.php",
+            "match": true
+          },
+          {
+            "file": "includes/person_lifecycle.php",
+            "match": true
+          },
+          {
+            "file": "includes/person_workflow.php",
+            "match": true
+          },
+          {
+            "file": "includes/person_workflow_view.php",
+            "match": true
+          },
+          {
+            "file": "includes/roster_message.php",
+            "match": true
+          },
+          {
+            "file": "includes/season_preparation.php",
+            "match": true
+          },
+          {
+            "file": "includes/sportovec_editor_view.php",
+            "match": true
+          },
+          {
+            "file": "includes/sports_activity_form.php",
+            "match": true
+          },
+          {
+            "file": "includes/sports_activity_form_view.php",
+            "match": true
+          },
+          {
+            "file": "includes/staff_agenda_lists.php",
+            "match": true
+          },
+          {
+            "file": "includes/staff_record_list.php",
+            "match": true
+          },
+          {
+            "file": "includes/staff_workspaces.php",
+            "match": true
+          },
+          {
+            "file": "includes/training_day.php",
+            "match": true
+          },
+          {
+            "file": "includes/training_day_view.php",
+            "match": true
+          },
+          {
+            "file": "medical_activity_admin.php",
+            "match": true
+          },
+          {
+            "file": "medical_clearance_admin.php",
+            "match": true
+          },
+          {
+            "file": "migrations/20261024200000_payment_variable_symbol_index_repair.php",
+            "match": true
+          },
+          {
+            "file": "person_lifecycle_admin.php",
+            "match": true
+          },
+          {
+            "file": "planovac.php",
+            "match": true
+          },
+          {
+            "file": "prehled_kreditu.php",
+            "match": true
+          },
+          {
+            "file": "roster_messages_admin.php",
+            "match": true
+          },
+          {
+            "file": "season_preparation_admin.php",
+            "match": true
+          },
+          {
+            "file": "sports_activity_admin.php",
+            "match": true
+          },
+          {
+            "file": "sprava_sportovec_obdobi.php",
+            "match": true
+          },
+          {
+            "file": "training_closure_admin.php",
+            "match": true
+          },
+          {
+            "file": "training_rsvps_admin.php",
+            "match": true
+          },
+          {
+            "file": "uctenky/formular.php",
+            "match": true
+          },
+          {
+            "file": "uctenky/uloz.php",
+            "match": true
+          },
+          {
+            "file": "ulozit_trenink.php",
+            "match": true
+          }
+        ]
+      }
+    },
+    "integration_flags": {
+      "FIO_IMPORT_ENABLED": false,
+      "FIO_AUTO_CONFIRM_ENABLED": false,
+      "SUMUP_ENABLED": false,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    },
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "migration_ledger_count": 139,
+    "forward_vs_repair_applied": true,
+    "domain_mutations": false
+  }
+}

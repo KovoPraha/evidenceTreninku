@@ -1,0 +1,91 @@
+{
+    "run": "LOCALHOST NEPLATIT R18 fc6e9247b8",
+    "checks": 21,
+    "results": [
+        {
+            "scenario": "Accountant explicitly approves physical warehouse and FIFO",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stock GET is read-only",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot activate physical stock",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF creates no opening",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Opening requires explicit confirmation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Fractional garment quantity rejected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Verified opening saved through HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Opening retry returns same evidence without double stock",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Partial physical supplier receipt with blocked garment saved",
+            "status": "PASS"
+        },
+        {
+            "scenario": "P18 B1 A17 displayed without pretending ordered10 arrived",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated receipt POST is idempotent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Catalog alone cannot approve acquisition cost",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance records evidenced late acquisition cost",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Cost stored exactly as integer minor units",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Acquisition prices visible only to active finance workspace",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Warehouse starts revision-bound inventory count",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Independent finance approval posts discrepancy without changing money",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Warehouse reads issued physical movement slip",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Foreign sports role cannot read physical stock slip",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Legacy target-quantity editor cannot overwrite managed physical stock",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked stale staff session cannot write stock",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}
