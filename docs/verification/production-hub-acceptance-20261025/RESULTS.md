@@ -1,5 +1,7 @@
 # Produkční přejímka scénářů A01–B30 — 25. 10. 2026
 
+> Aktualizace po navazujícím izolovaném průchodu: viz závěrečná sekce „Dokončení oprav a příprava sloučení“. Produkční tabulka níže zachycuje původní průchod, nikoli výsledky pozdějšího localhostového ověření.
+
 ## Rozsah a stav
 
 Uživatel schválil čtecí přejímku produkce a zápisy na vyhrazených testovacích osobách a trénincích. Finance, importy a změny přístupů mají zůstat v izolaci. V tomto průchodu nebyl nasazen žádný nový kód. Výchozí produkční verze: `a23e393f64eeffafd75df834e6e5ba8c78213b72`; lokální větev `codex/hub-full-acceptance-20261025` vznikla z dokumentačního následníka `3b164e91`.
@@ -21,7 +23,7 @@ První neúspěšné pokusy o zápis v trenérském kontextu nevytvořily tréni
 
 `update_trenink.php` vždy přesměrovával na `moje_treninky.php`. Vedoucí sportu tam nemá přístup, přestože editace v databázi uspěje. Stejný nesprávný cíl měly dva návratové odkazy v editoru.
 
-Oprava: vedoucí sportu se vrací na `sprava_vsech_treninku.php`; trenér dál na `moje_treninky.php`. Regresní HTTP test kontroluje skutečné uložení, oba odkazy, hlavičku Location a úspěšné načtení cílové stránky. **Oprava zůstává lokální, není nasazená.**
+Oprava: vedoucí sportu se vrací na `sprava_vsech_treninku.php`; trenér dál na `moje_treninky.php`. Regresní HTTP test kontroluje skutečné uložení, oba odkazy, hlavičku Location a úspěšné načtení cílové stránky. **Oprava je součástí PR #201; není nasazená.**
 
 ### Příprava demonstračních dat
 
@@ -114,4 +116,52 @@ Pracovní artefakty: `output/hub-full-acceptance-20261025/` v tomto checkoutu. O
 
 Další uživatelské průchody blokovalo spojení automatizace s Chrome (opakované chyby CDP včetně `Emulation.setFocusEmulationEnabled` a načítání stromu přístupnosti). Obnova připojení ani nová karta nepřinesly trvalou nápravu. Zbývá skutečný průchod rodičovského a omezeného sportovního účtu, rezervací a dalších cest označených jako nedokončené v tabulce; technické sady je nenahrazují. Poslední pracovní kontext uživatelské session zůstal koordinátor programů, přidělená oprávnění se neměnila.
 
-Lokální runtime není důkaz přejímky všech produkčních uživatelských rolí. Zůstává zákaz produkčních finančních/importních/přístupových zápisů podle posledního pokynu uživatele. Lokální opravy nebyly nasazeny ani odeslány do vzdálené větve.
+Lokální runtime není důkaz přejímky všech produkčních uživatelských rolí. Zůstává zákaz produkčních finančních/importních/přístupových zápisů podle posledního pokynu uživatele. Při uzavření prvního průchodu opravy ještě nebyly odeslány. Navazující stav je uveden níže; produkční nasazení se nadále neprovádí.
+
+
+## Dokončení oprav a příprava sloučení
+
+Navazující průchod 25. 10. 2026: opravy jsou na větvi `codex/hub-full-acceptance-20261025`, PR [#201](https://github.com/KovoPraha/evidenceTreninku/pull/201). Tento krok zahrnuje sloučení do main, nikoli produkční nasazení. Workflow nasazení je ruční; nebylo spuštěno. Výchozí main byl ověřen jako `3b164e91`.
+
+### Nový nález: opakovatelnost A06
+
+Skutečný UI průchod odhalil nesprávný ročník demo sportovce A: narození v roce 2013 nevytvářelo očekávaný přechod U15 2026 do U17 2027. Syntetický profil má nyní rok 2012. Seed následně ověřuje skutečné náhledy A06, ne pouze existenci záznamů. Po provedení převodu navíc reset narážel na překryv historie. Reset nyní ruší jen přesně vymezené demonstrační cílové intervaly a obnovuje jen původní zdrojové intervaly známých testovacích osob. Nesouvisející osoby ve stejné cílové soupisce se nemění. Produkční kontrola překryvů zůstává zachována.
+
+Nový regresní skript `tests/Support/LocalDemoRolloverAcceptance.php` kontroluje vlastníka runtime, loopback, datadir, syntetický režim a vypnuté integrace před zápisem. Dvakrát provede seed → převod → opakované potvrzení → reset a porovná cizí syntetické členství beze změny. **7 kontrol PASS**, finální seed zůstává připravený pro další průchod.
+
+### Čerstvé technické ověření
+
+- 1051 integračních testů / 10282 assertions PASS na opravě návratu trenéra, před navazující opravou A06 seedu.
+- 26 cílených testů / 184 assertions PASS po finální opravě seedu.
+- 7 kontrol reálného cyklu MariaDB popsaných výše PASS; PHP syntaxe a `git diff --check` PASS.
+- GitHub Actions [Testy #40216216412](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40216216412) PASS pro přesný aplikační commit `eb5a86c62acafb3be30a9455942a2c6d0cc4b1ca`. Zahrnuje Linux a databázové smoke úlohy. Dokumentační doplnění se kontroluje znovu před sloučením.
+- Předchozí 26 HTTP sad / 800 kontrol zůstává samostatným technickým důkazem s popsaným přechodným timeoutem. Nejde o 800 nových UI kliknutí.
+
+### Izolovaný prohlížeč: skutečné výsledky
+
+Chrome se nepodařilo stabilně připojit; pokračovalo se funkčním vestavěným prohlížečem na `127.0.0.1:18096`. Přihlašování používalo výhradně syntetické místní účty. Žádná produkční session nebyla kopírována. Původní blokace Chrome tedy již neznamená, že se neprovedly žádné další UI kontroly.
+
+[Podrobná evidence cest](isolated-browser-flows.json) obsahuje **12 PASS a 6 PARTIAL**. PASS se vztahuje k popsanému průchodu, nikoli ke všem kombinacím a souběhům. [Čtecí průchod](isolated-browser-routes.json) obsahuje **36 otevření stránek**, včetně očekávaného odmítnutí A07 v trenérském kontextu a úspěchu po přepnutí registráře. Načtení stránky samo o sobě není přejímka zápisové funkce.
+
+| Stav | Scénáře a konkrétní důkaz |
+|---|---|
+| PASS | A01, A02: rodič vidí dvě vlastní děti a vlastní profil; sportovní účet jen vlastní údaje, bez sourozence a rodiče. |
+| PASS | A03, A04: kurz 1290 Kč pro konkrétní dítě, testovací QR, ruční potvrzení v izolaci, jediná účast a aktivní školní soupiska viditelná sportovci. |
+| PASS | A05, A06: individuální přechod se zachováním identity; hromadný přechod 2 přesuny a 2 ponechání, následná opakovatelnost technicky ověřena. |
+| PASS | A08, B14: jediná přihláška dítěte přes dvě cílové soupisky, druhé dítě není způsobilé, duplicita v UI zakázána, storno obnovilo 2/2 místa. |
+| PASS | B02: u nového izolovaného tréninku #20 editace délky a km, zachování času 02:13.450 a osoby; návrat na povolený přehled vedoucího sportu. |
+| PASS | B15: storno uhrazeného kurzu vytvořilo samostatnou vratku; hospodář potvrdil testovací referenci; program má 0 aktivních a 12/12 volných míst. |
+| PASS | B27: uložení intervalu upozornění, vypnutí, konkrétní náhled zprávy a 1 doručení do lokálního souborového outboxu; žádný skutečný e-mail. |
+| PASS | B29: provozní přehled, dashboard, kvalita dat, kontrola importu a skutečně použitý filtr trenéra v audit logu. |
+| PARTIAL | A10: časová osa dítěte obsahuje objednávkové/programové události a aktéra; samostatná rezervační historie rodiče neověřena. |
+| PARTIAL | B01: vytvoření tréninku s měřením a odmítnutí neplatného času; zbývající jednotky a RPE kryjí technické testy. |
+| PARTIAL | B10: storno nezaplacené rezervace a vratka uhrazeného kurzu; fyzické zboží v tomto UI průchodu nevydáváno. |
+| PARTIAL | B17: bezplatná rezervace/storno 3→2→3, placená objednávka s QR a její storno, admin kapacita 3→4→3; potvrzení platby placeného slotu nebylo provedeno v UI. |
+| PARTIAL | B20: vytvoření, rotace a revokace ICS, starý odkaz odmítnut; aktivní ICS nebylo přidáno do externího kalendáře. |
+| PARTIAL | B21: opt-in/out, přesný náhled týdenního souhrnu a prázdný roční přehled; filtr uhrazených položek kryjí technické testy. |
+
+U zbývajících 22 scénářů není tímto navazujícím průchodem prohlášena úplná UI přejímka. Jejich původní produkční a technické důkazy jsou uvedené výše. Otevřené zůstávají zejména přetahování v plánovači (dostupné ovládání prohlížeče tuto interakci nepodporuje), externí kalendář a doručení skutečných zpráv (v izolaci záměrně vypnuté), kompletní UI výdej fyzického zboží, závody, importní/revokační cesty a kontrola stažených exportů. To neblokuje sloučení regresně ověřených oprav, ale nesmí být vykázáno jako dokončená přejímka celého systému.
+
+Syntetické objednávky tohoto průchodu byly stornovány, u uhrazeného kurzu byla vratka potvrzena pouze v izolaci. Auditní historie, místní trénink #20 a ochranná testovací osoba regresního skriptu zůstávají v izolaci. V navazujícím průchodu nevznikl žádný produkční zápis. Aktuální stav lze osobně testovat na localhostu; lokální stav není tvrzením o nasazení změn.
+
+Pracovní důkazy navíc: `merge-integration.log`, `merge-integration-junit.xml`, `demo-rollover-regression.json`, `merge-training-edited.jpg`, `merge-browser-order.jpg` v `output/hub-full-acceptance-20261025/`. Privátní přístupy, dumpy ani živé kalendářové tokeny nejsou přiloženy.
