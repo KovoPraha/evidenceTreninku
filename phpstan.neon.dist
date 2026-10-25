@@ -20,6 +20,6 @@ parameters:
         - tools/phpstan-bootstrap.php
     scanDirectories:
         - includes
-    tmpDir: .phpstan-cache
+    # Use PHPStan's default sys_get_temp_dir()/phpstan, outside the webroot.
     parallel:
         maximumNumberOfProcesses: 2

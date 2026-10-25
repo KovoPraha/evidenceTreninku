@@ -9,6 +9,10 @@ balíku hromadně neformátují a aplikované migrace se nemění.
 CLI a migracemi. Vynechává vendor, testy, výstupy, docs, lokální config a cache.
 Procedurální symboly z includes/ objevuje staticky; bootstrap načítá pouze
 Composer autoload, nikdy init.php/db.php/config.php ani skutečnou databázi.
+Cache používá výchozí `sys_get_temp_dir()/phpstan` (ověřeno v PHPStan 2.3.2),
+nikoli webroot. Případnou starou `.phpstan-cache/` blokuje obecné Apache pravidlo
+pro tečkové cesty a inventura sweepu ji ignoruje. Exclude v konfiguraci zůstává
+pro staré lokální zbytky; jejich existence nesmí ovlivnit analýzu ani testy.
 
 `phpstan-baseline.neon` obsahuje 556 položek pro 2 540 dosavadních výskytů chyb.
 Baseline je počítaná podle souboru, zprávy a počtu výskytů, nikoli plošným ignore.
@@ -29,9 +33,10 @@ Zdroje: [baseline PHPStan](https://phpstan.org/user-guide/baseline),
   u if/elseif/foreach/for; alternativní PHP syntaxe HTML šablon je povolená.
 - `composer style:fix`: opraví PSR-12 pouze v témže seznamu. Dlouhé řádky je
   potřeba smysluplně rozdělit ručně, kontrola je automaticky nepřepisuje.
-- Seznam je diff pracovní kopie proti merge-base s origin/main plus nové
-  neignorované PHP soubory. CI používá úplnou Git historii. Pro jiný základ
-  lze výslovně nastavit STYLE_BASE_REF.
+- Lokálně je seznam diff pracovní kopie proti merge-base s origin/main plus
+  nové neignorované PHP soubory. CI používá úplnou Git historii a skutečnou
+  základní větev PR přes STYLE_BASE_REF (také u navázaných PR). Lokálně lze
+  stejným nastavením zvolit základ navázaného PR.
 - Změna, smazání nebo přejmenování existující PHP migrace shodí kontrolu;
   nový migrační soubor projde stejným stylem. README migrační pravidlo doplňuje.
 

@@ -28,4 +28,6 @@ jobs:
         run: composer analyse
       - name: PSR-12, line length and control-flow braces on PR files only
         if: github.event_name == 'pull_request'
+        env:
+          STYLE_BASE_REF: origin/${{ github.base_ref }}
         run: composer style:check
