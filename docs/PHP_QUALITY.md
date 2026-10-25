@@ -1,6 +1,6 @@
 # PHPStan a styl změněných souborů
 
-Balík dozoru 3, společný stav nad main `ba2c9eef`, 25. 10. 2026. Aplikační soubory se v tomto
+Balík dozoru 3, společný stav nad main `83ebee72`, 25. 10. 2026. Aplikační soubory se v tomto
 balíku hromadně neformátují a aplikované migrace se nemění.
 
 ## Statická analýza

@@ -42,7 +42,22 @@ a znovu ověřit CI; zejména squash/rebase merge mění předky commitů.
 - Regrese inventury/HTTP politiky a pracovního registru: 16 / 2041 PASS.
 - Dokumentace: payments potvrzeno v migraci 20260803230000_shop_checkout.php;
   CURRENT_STATE 29 řádků, 168 lokálních odkazů, 69 archivních bloků, 0 chyb.
-- Společný výsledek PHPStanu, stylu a celého test suite doplní závěrečný PR #200.
+- PHPStan: 555 položek / 2539 výskytů, odstraněn jen zastaralý nález export.php,
+  žádné přidané potlačení. Cache vzniká v systémovém temp/phpstan. Starý adresář
+  je v excludePaths volitelný, aby prošel i čistý checkout bez jeho existence.
+- Testy SharedUiShellTest nyní také používají trackované soubory bez tečkových
+  cest. Skutečná stará cache zůstala při lokálním testu na místě: původní dva
+  falešné UI nálezy jsou odstraněné, nic se nemuselo ručně mazat.
+- Společný stav nad ba2c9eef: [Linux test suite](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40218167562)
+  1722 testů / 35106 assertions PASS, MariaDB 10.3/11.4 PASS;
+  [PHP quality](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40218167599) PASS.
+  Lokálně Windows 1722 / 35090, bez selhání, 3 unixové symlink testy přeskočené;
+  Linux je ověřil. Styl: 4 změněné PHP soubory / 0 chyb, Composer valid.
+- Následná aktualizace zahrnuje i main 83ebee72 (#202). Přesné poslední head SHA
+  a opakované kontroly kompletního stavu jsou v [závěrečném PR #200](https://github.com/KovoPraha/evidenceTreninku/pull/200).
+  CI po analýze ve stejném checkoutu spouští sweep i UI/inventory/deploy regrese.
+- Všech 31 produkčních package záznamů composer.lock je beze změny; přibylo
+  pouze 34 dev balíků, deploy používá --no-dev. Žádná aplikovaná migrace se nezměnila.
 
 Samotný sweep nedokazuje přístupové matice přihlášených rolí ani úplné obchodní
 UAT. Výjimka 404 je jen explicitní CLI cron a admin diagnostika; obecná 404 ani
