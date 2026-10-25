@@ -1,5 +1,23 @@
 # Aktuální předání vývoje na další stanici
 
+**25. 10. 2026 — dokončené opravy přejímky připravené k výslovně povolenému nasazení.**
+Aktuální integrační základ je `origin/main@f7dfd509`; poslední nasazená aplikace
+je zatím `115a617d` (deploy `40189517120`). Nový commit `bb5c8a23` doplňuje
+úplný přehled starších nezaevidovaných tréninků, viditelné rodinné kotvy,
+pravdivé označení výsledků přejímky a správný vstup do hromadných akcí.
+[Přejímka omezených účtů, oprava místní MariaDB a důkazy](verification/browser-acceptance-20261025/DOKONCENI.md):
+111 cílených testů, 185 HTTP kontrol, 13 čtecích invariantů a browserové průchody
+trenéra, registráře, rodiče i sportovce PASS. Probíhá nová úplná automatizovaná
+přejímka a chráněný release; tento přípravný zápis ještě nepotvrzuje nasazení.
+Uživatel nyní povolil sjednotit a nasadit všechny dokončené změny. Nové integrace,
+importy a automatické schvalování reálných vazeb se tím nezapínají.
+Původní checkout `C:\xampp\htdocs\evidencePavel` je stará pracovní větev s WIP;
+není zdrojem aktuálního release. Historické větve už klasifikuje
+[inventura integrace](verification/integration-20261025/BRANCH_INVENTORY.md).
+Poslední čtecí UI kontrola: 0 schválených rodinných vazeb. Příprava skutečné
+pilotní rodiny, počáteční skladové podklady a účetní převzetí zůstávají otevřené.
+Následující záznamy jsou historie; aktuální provozní bod je vždy tato horní část.
+
 **25. 10. 2026 — integrační vydání sloučeno a nasazeno.**
 Produkce běží na `115a617d3660bc9e3cba48891737b56fc6ab068f` (PR #191 + #192,
 deploy `40189517120`). Uživatel výslovně povolil tento merge a deploy včetně

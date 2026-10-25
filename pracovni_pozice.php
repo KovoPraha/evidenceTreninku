@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/staff_workspaces.php';
+require_once __DIR__ . '/includes/training_planner_view.php';
 
 if (!isset($_SESSION['trener_id'])) {
     header('Location: login.php');
@@ -28,6 +29,7 @@ if ($trainerName === '') {
 $vehicleConflictCount = 0;
 $todayPlans = [];
 $overduePlanCount = 0;
+$overduePlanUrl = 'planovac.php';
 $pendingLessonCount = 0;
 try {
     $vehicleConflictCount = (int)$pdo->query(
@@ -48,12 +50,11 @@ try {
     );
     $statement->execute([(int)$_SESSION['trener_id']]);
     $todayPlans = $statement->fetchAll(PDO::FETCH_ASSOC);
-    $statement = $pdo->prepare(
-        "SELECT COUNT(*) FROM planovane_treninky WHERE trener_id=? AND stav='planovany' "
-        . "AND datum<CURRENT_DATE AND datum>=DATE_SUB(CURRENT_DATE,INTERVAL 14 DAY)"
-    );
-    $statement->execute([(int)$_SESSION['trener_id']]);
-    $overduePlanCount = (int)$statement->fetchColumn();
+    $backlog = trainingPlannerTrainerBacklog($pdo, (int)$_SESSION['trener_id'], date('Y-m-d'));
+    $overduePlanCount = $backlog['count'];
+    if ($backlog['oldest_date'] !== null) {
+        $overduePlanUrl .= '?' . http_build_query(['datum' => $backlog['oldest_date'], 'jen_moje' => 1]);
+    }
 } catch (Throwable $exception) {
     error_log('pracovni_pozice training overview: ' . $exception->getMessage());
 }
@@ -129,7 +130,7 @@ function staffDashboardH(mixed $value): string
                     <div class="d-flex flex-wrap gap-2 mt-3"><a class="btn btn-primary btn-sm" href="<?=staffDashboardH(appUiUrl('formular.php'))?>"><i class="bi bi-plus-circle me-1"></i>Zadat trénink</a><a class="btn btn-outline-primary btn-sm" href="<?=staffDashboardH(appUiUrl('planovac.php'))?>"><i class="bi bi-calendar-week me-1"></i>Otevřít plánovač</a></div>
                 </div>
                 <div class="col-lg-5"><h2 class="h6">Úkoly</h2><div class="list-group">
-                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=staffDashboardH(appUiUrl('planovac.php'))?>"><span><i class="bi bi-exclamation-triangle me-2 <?=$overduePlanCount>0?'text-danger':'text-success'?>"></i>Proběhlé tréninky bez evidence</span><span class="badge <?=$overduePlanCount>0?'text-bg-danger':'text-bg-success'?>"><?=$overduePlanCount?></span></a>
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=staffDashboardH(appUiUrl($overduePlanUrl))?>"><span><i class="bi bi-exclamation-triangle me-2 <?=$overduePlanCount>0?'text-danger':'text-success'?>"></i>Proběhlé tréninky bez evidence</span><span class="badge <?=$overduePlanCount>0?'text-bg-danger':'text-bg-success'?>"><?=$overduePlanCount?></span></a>
                     <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=staffDashboardH(appUiUrl('individualni_lekce_sprava.php'))?>"><span><i class="bi bi-hourglass-split me-2 <?=$pendingLessonCount>0?'text-warning':'text-success'?>"></i>Rezervace čekající na potvrzení</span><span class="badge <?=$pendingLessonCount>0?'text-bg-warning':'text-bg-success'?>"><?=$pendingLessonCount?></span></a>
                 </div></div>
             </div>

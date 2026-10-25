@@ -1,0 +1,10 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\xampp\htdocs\evidencePavel-browser-acceptance-20261025\phpunit.xml.dist
+
+...................                                               19 / 19 (100%)
+
+Time: 00:00.486, Memory: 50.00 MB
+
+OK (19 tests, 173 assertions)
