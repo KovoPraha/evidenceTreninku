@@ -703,7 +703,7 @@ if ($step === 3 || $step === 4) {
             <i class="bi bi-eye me-1"></i>3. Preview
         </div>
         <div class="step-item <?= $step === 4 ? 'active' : '' ?>">
-            <i class="bi bi-check2-all me-1"></i>4. Provedení
+            <i class="bi bi-check2-all me-1"></i>4. Řízené předání
         </div>
     </div>
 
