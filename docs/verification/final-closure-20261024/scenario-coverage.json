@@ -1,0 +1,565 @@
+{
+  "scope": "Technical evidence mapped to 43 UAT scenarios; not 188 newly executed browser steps or human approval.",
+  "scenarios": [
+    {
+      "id": "UAT-S01",
+      "title": "Vstup do testu a přepínání pracovních pozic",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D13"
+      ]
+    },
+    {
+      "id": "UAT-S02",
+      "title": "Omezený pracovní účet a odebrání přístupu",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance",
+        "PersonLifeDocumentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D13"
+      ]
+    },
+    {
+      "id": "UAT-S03",
+      "title": "Předání odpovědnosti neznamená vyřešení případu",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance",
+        "DailyCoachRegistrarHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D05",
+        "D13"
+      ]
+    },
+    {
+      "id": "UAT-S04",
+      "title": "Verzovaný registr přechodu a jediný zapisující systém",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubCutoverHttpAcceptance",
+        "SeasonOperationsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D10",
+        "D12",
+        "D13",
+        "D15"
+      ]
+    },
+    {
+      "id": "UAT-S05",
+      "title": "Kontrolní snímek není záloha ani povolení nasazení",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubCutoverHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D14",
+        "D15",
+        "D16"
+      ]
+    },
+    {
+      "id": "UAT-S06",
+      "title": "Soukromé týdenní PDF a přístup podle role",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "WeeklyReportPrivacyHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D11",
+        "D13"
+      ]
+    },
+    {
+      "id": "UAT-S07",
+      "title": "Převzetí technických důkazů obnovy a mezí migrace",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubCutoverHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D07",
+        "D08",
+        "D09",
+        "D10",
+        "D14",
+        "D15",
+        "D16"
+      ]
+    },
+    {
+      "id": "UAT-P01",
+      "title": "Založení osoby, kontrola shod a stabilní ID",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D07"
+      ]
+    },
+    {
+      "id": "UAT-P02",
+      "title": "Neznámá identita se odloží, ověření nepřiděluje účet",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D07"
+      ]
+    },
+    {
+      "id": "UAT-P03",
+      "title": "Rodič, účet a plátce jsou samostatné vztahy",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance",
+        "PersonLifeDocumentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03",
+        "D07"
+      ]
+    },
+    {
+      "id": "UAT-P04",
+      "title": "Vlastní zkušební kroužek, cena a kapacita",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "MemberAdmissionHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03"
+      ]
+    },
+    {
+      "id": "UAT-P05",
+      "title": "Papírová přihláška a souhlasy, ověření a oprava",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance",
+        "PersonLifeDocumentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03",
+        "D11"
+      ]
+    },
+    {
+      "id": "UAT-P06",
+      "title": "Osobní přijetí bez účtu a poslední volné místo",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "MemberAdmissionHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03"
+      ]
+    },
+    {
+      "id": "UAT-P07",
+      "title": "Členství a datovaná soupiska se evidují samostatně",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance",
+        "PersonLifeDocumentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03"
+      ]
+    },
+    {
+      "id": "UAT-P08",
+      "title": "Příspěvek: výslovný plátce, schválená částka a jediný běh",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubFoundationHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03"
+      ]
+    },
+    {
+      "id": "UAT-P09",
+      "title": "Rozvrh: vytvoření, kolize, přesun a auditované zrušení",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "TrainingClosureHttpAcceptance",
+        "DailyCoachRegistrarHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D13"
+      ]
+    },
+    {
+      "id": "UAT-P10",
+      "title": "Papírová docházka: zápis není uzavření skutečnosti",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "TrainingClosureHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": []
+    },
+    {
+      "id": "UAT-P11",
+      "title": "Oprava docházky zachová historii a změní podklad k posouzení",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "TrainingClosureHttpAcceptance",
+        "ClubRewardsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": []
+    },
+    {
+      "id": "UAT-P12",
+      "title": "Osobní omluva, nárok a kapacita náhrad",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "MakeupJourneyHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03"
+      ]
+    },
+    {
+      "id": "UAT-P13",
+      "title": "Nominace není start; skutečný výsledek a historický export",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "SportsActivityHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D07"
+      ]
+    },
+    {
+      "id": "UAT-P14",
+      "title": "Prohlídky: čekání na ověření, datum platnosti a odvolání",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "MedicalClearanceHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D11"
+      ]
+    },
+    {
+      "id": "UAT-P15",
+      "title": "Svěřený rozsah a soukromé doklady po odvolání",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "TrainingClosureHttpAcceptance",
+        "PersonLifeDocumentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D13"
+      ]
+    },
+    {
+      "id": "UAT-P16",
+      "title": "Navazující období vznikne k posouzení, ne jako úhrada",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "SeasonOperationsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D03"
+      ]
+    },
+    {
+      "id": "UAT-F01",
+      "title": "Syntetický vystavovatel, členění a oddělené dokladové řady",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "AccountingDocumentsHttpAcceptance",
+        "ClubAccountingHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D01",
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F02",
+      "title": "Doložená pokladna, příjem a převod mezi vlastními účty",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "AccountingLedgerHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F03",
+      "title": "Uzávěrka samostatné pokladny a blokace zpětného zápisu",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "AccountingLedgerHttpAcceptance",
+        "FinanceB1HttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F04",
+      "title": "Počáteční sklad podle kusů a rezervací",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopInventoryHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02",
+        "D09"
+      ]
+    },
+    {
+      "id": "UAT-F05",
+      "title": "Dodavatelský příjem, chybějící ocenění a doložení ceny",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopInventoryHttpAcceptance",
+        "AccountingStockHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02",
+        "D09"
+      ]
+    },
+    {
+      "id": "UAT-F06",
+      "title": "Osobní prodej veřejnosti bez e-mailu a oddělení platby",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopFulfillmentHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": []
+    },
+    {
+      "id": "UAT-F07",
+      "title": "Přijetí hotovosti, účetní zařazení a částečný fyzický výdej",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopFulfillmentHttpAcceptance",
+        "AccountingLedgerHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F08",
+      "title": "Faktura: koncept bez čísla, odlišný plátce a neměnné PDF",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "AccountingDocumentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D01",
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F09",
+      "title": "Oprava nevydaného kusu a uvolnění rezervace bez předstírání vratky",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopFulfillmentHttpAcceptance",
+        "AccountingAdjustmentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D01",
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F10",
+      "title": "Vrácení vydaného kusu: blokace, posouzení, opravný doklad a peníze",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopReturnsHttpAcceptance",
+        "AccountingAdjustmentsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F11",
+      "title": "Dobrovolná výměna stejné ceny se samostatným výdejem nové velikosti",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopReturnsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F12",
+      "title": "Zrušení výměny s doplatkem nesmí skrýt přijaté peníze",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopReturnsHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D01",
+        "D02"
+      ]
+    },
+    {
+      "id": "UAT-F13",
+      "title": "Inventura s rozdílem a odděleným schválením",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ShopInventoryHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D09"
+      ]
+    },
+    {
+      "id": "UAT-F14",
+      "title": "Kurz: objednávka, úhrada a místo bez skladového výdeje",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "MemberAdmissionHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D01",
+        "D03"
+      ]
+    },
+    {
+      "id": "UAT-F15",
+      "title": "Výdaj z osobních peněz: uznaná část, nezávislé schválení a proplacení",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubExpensesHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02",
+        "D05"
+      ]
+    },
+    {
+      "id": "UAT-F16",
+      "title": "Svěřená záloha: předání, čerpání dokladu a návrat zbytku",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubExpensesHttpAcceptance",
+        "ClubOperatingMonth"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02",
+        "D05"
+      ]
+    },
+    {
+      "id": "UAT-F17",
+      "title": "Trenérský výkaz: skutečná činnost, sazba, jiné schválení a výplata",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubRewardsHttpAcceptance",
+        "ClubOperatingMonth"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D04",
+        "D05",
+        "D06"
+      ]
+    },
+    {
+      "id": "UAT-F18",
+      "title": "Chybějící účetní podklad a neměnné verze rozhodnutí",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "ClubAccountingHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D02",
+        "D06"
+      ]
+    },
+    {
+      "id": "UAT-F19",
+      "title": "XLSX + PDF: kontrola částek, vazeb a otevřených nedostatků",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "AccountingExportHttpAcceptance",
+        "ClubAccountingHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D01",
+        "D02",
+        "D16"
+      ]
+    },
+    {
+      "id": "UAT-F20",
+      "title": "Revize exportu a rozlišení stažení, předání, vrácení a převzetí",
+      "technical_scope": "covered_by_named_tests",
+      "technical_sources": [
+        "AccountingExportHttpAcceptance",
+        "ClubAccountingHttpAcceptance"
+      ],
+      "human_status": "NEPROVEDENO",
+      "decisions": [
+        "D01",
+        "D13",
+        "D16"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2364 @@
+{
+  "status": "PASS",
+  "scripts": 25,
+  "checks": 812,
+  "runs": [
+    {
+      "script": "FinanceB1HttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T19:59:24.7208867+02:00",
+      "seconds": 1.99,
+      "log": "FinanceB1HttpAcceptance.log",
+      "corrected_rerun_at": "2026-10-24T20:01:58.7725257+02:00",
+      "check_count": 58,
+      "result": {
+        "status": "PASS",
+        "scenario_count": 58,
+        "scenarios": [
+          {
+            "scenario": "HTTP create open financial event",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP create receipt with real upload",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Uploaded attachment exists in isolated private storage",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP edit receipt in open event",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Create disposable receipt for successful deletion",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Successful open receipt deletion removes live record/file",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Successful deletion preserves original bytes in hidden archive",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Audit failure rolls back receipt replacement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Failed replacement restores original attachment bytes",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Failed replacement leaves no orphan or retired upload",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Audit failure rolls back receipt deletion",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Failed deletion restores original attachment bytes",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Failed deletion preserves complete file inventory",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot write through direct receipt URL",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach receipt request rejected by route permission",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Receipt invalid CSRF preserves record",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Receipt explicitly rejects invalid CSRF",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP close financial event",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed receipt edit blocked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed receipt explains state conflict",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed event refuses new receipt",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Move out of closed source blocked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Move into closed target blocked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed receipt deletion blocked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed receipt file replacement blocked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed receipt rejection leaves file inventory unchanged",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Rejected changes preserve attachment bytes",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed event cannot be edited or reopened",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed event cannot be deleted",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated event close preserves row",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Vehicle deletion cannot indirectly change closed receipt",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed receipt vehicle reference remains intact",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Unused vehicle still deletable",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy creation directs finance to canonical rewards without new period",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed reward edit rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated reward close preserves snapshot",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Credit overview repeated close preserves snapshot",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Paid reward edit rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Missing historical snapshot is not recomputed",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Bulk rate preserves closed and paid snapshot",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Bulk legacy rates cannot create a competing reward workflow",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Bulk refuses inconsistent paid but open period",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Historical snapshot issue visible in rendered page",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy reward page links directly to canonical workflow: sprava_sportovec_obdobi.php?sportovec_id=369",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy reward page offers no enabled obsolete submit: sprava_sportovec_obdobi.php?sportovec_id=369",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy reward page links directly to canonical workflow: prehled_kreditu.php",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy reward page offers no enabled obsolete submit: prehled_kreditu.php",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy reward page links directly to canonical workflow: hromadne_odmeny.php?skupina_id=28",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy reward page offers no enabled obsolete submit: hromadne_odmeny.php?skupina_id=28",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach direct reward write denied",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach reward request rejected by route permission",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Reward invalid CSRF preserves row",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Reward explicitly rejects invalid CSRF",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Deactivated account cannot mutate receipt",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Deactivated account rejected by live authentication middleware",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Removed financial position blocks existing session",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Removed position rejected by central route guard",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Successful changes have audit evidence",
+            "status": "PASS"
+          }
+        ],
+        "environment": "isolated MariaDB 127.0.0.1:33426 / evidence_b1; HTTP 127.0.0.1:18086",
+        "scope": "Synthetic HTTP requests with real application session, route, CSRF and file handling; not human acceptance."
+      },
+      "source_sha256": "f484ff060650ae42618650b187754962d2c599eea85c6510727315a7523396c0"
+    },
+    {
+      "script": "FinanceB1RouterHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T19:59:26.7623656+02:00",
+      "seconds": 0.31,
+      "log": "FinanceB1RouterHttpAcceptance.log",
+      "check_count": 14,
+      "result": {
+        "status": "PASS",
+        "read_only_http_checks": 14,
+        "production_mutations": false
+      },
+      "source_sha256": "b20839f5589c484aa366d1a5b6733de78a44bbb0df8fc16d7f5729ce83772e89"
+    },
+    {
+      "script": "ClubFoundationHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T19:59:27.0867435+02:00",
+      "seconds": 9.32,
+      "log": "ClubFoundationHttpAcceptance.log",
+      "check_count": 110,
+      "result": {
+        "status": "PASS",
+        "count": 110
+      },
+      "source_sha256": "acc6dcc8ca0f048705a84c01c00f3d4ae0c3d155ad8afcb77f9317d2573aca0d"
+    },
+    {
+      "script": "MemberAdmissionHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T19:59:36.4080738+02:00",
+      "seconds": 28.18,
+      "log": "MemberAdmissionHttpAcceptance.log",
+      "check_count": 30,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R25 60f60cc6e2",
+        "checks": 30,
+        "results": [
+          {
+            "scenario": "Registrar can open assisted admissions",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot create admission",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Admission rejects forged CSRF",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Admission rejects missing paper application and consents",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Changed agreed price cannot be charged",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Payer must be selected explicitly despite two parents",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Paper admission creates canonical order via HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Explicitly chosen second parent remains payer",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Same admission retry is idempotent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Reused key cannot silently change agreement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Paper reception never forges online parent consent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Unpaid paper admission does not activate roster",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Second order for same person and period is blocked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Canonical confirmed payment activates dated attendance with paper provenance",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Full physical program capacity rejects another admission before writes",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Offline payer must match approved paper signer",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Offline family admitted without any online account",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Offline payer name and relationship stored without fake account",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Canonical confirmed payment activates offline enrollment with NULL account",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Offline admission creates no account, email verification or online guardian grant",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Offline confirmation never pretends an email was queued or sent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Monthly preview blocks unspecified payer and amount",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Finance records explicit period payer through existing form",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Stale payer agreement cannot overwrite history",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Finance approves exact midmonth amount without implicit prorata",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Preview shows exact payer amount and decision evidence",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Canonical fee generation uses approved period amount",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Generated obligation matches explicit agreement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated monthly run preserves one obligation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked registrar cannot replay admission from stale session",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "6c3fc18b2658490c4cf469bb2b5c6af3cf906e7bc41c30969f0aac1c79f2b800"
+    },
+    {
+      "script": "DailyCoachRegistrarHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:04.592796+02:00",
+      "seconds": 4.81,
+      "log": "DailyCoachRegistrarHttpAcceptance.log",
+      "check_count": 32,
+      "result": {
+        "run": "LOCALHOST NEPLATIT DAILY 29d2183204",
+        "checks": 32,
+        "passed": [
+          "Planned lesson links to its actual training form",
+          "Personal excuse preserves named plan and selected person",
+          "Unassigned coach cannot open lesson via new context route",
+          "Lesson search does not reveal another coach plan",
+          "Assigned coach can use own lesson workflow and return to own history",
+          "RSVP list offers person-specific excuse link",
+          "Registrar sees seven contextual person workflow steps",
+          "Person checklist keeps selected person in linked agendas",
+          "Medical context preselects person without creating a watch",
+          "Read-only lesson and person workflows create no domain records",
+          "Personal excuse records and redirects with lesson and person context",
+          "Personal excuse updates RSVP but never confirms actual attendance",
+          "Actual training form issues a stable submission URL",
+          "Training form is usable from selected lesson",
+          "Saving actual training leads directly to its closure",
+          "Duplicate training submission retains closure redirect and creates no second record",
+          "New lesson delegation does not grant finance or registrar training writes",
+          "Sports lead can use athlete lookup and venue availability in training form",
+          "Lesson route resolves actual training and exposes closure form",
+          "Sports lead sees pending attendance case with lesson context",
+          "Assigning attendance case changes responsibility only",
+          "Actual attendance can be confirmed after recording lesson",
+          "Stale closure retains original revision and requires explicit reload",
+          "Sports form selects named event and hides technical revision",
+          "Named sports form records actual participation",
+          "Sports correction prefills current values and revision",
+          "Concurrent sports change retains submitted revision and draft",
+          "Explicitly reloaded sports correction appends next revision",
+          "Stale sports form did not create a revision or overwrite history",
+          "Named event route retains role and person scope restrictions",
+          "Financial agenda renders filtered paginated read model: club_expenses_admin.php",
+          "Financial agenda renders filtered paginated read model: club_rewards_admin.php"
+        ],
+        "production_mutations": false,
+        "external_sends": false
+      },
+      "source_sha256": "422b716511909449b9cd209e64b79b0cc0ec1c7064637409968fbbf3793619a2"
+    },
+    {
+      "script": "PersonLifeDocumentsHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:09.4054352+02:00",
+      "seconds": 7.81,
+      "log": "PersonLifeDocumentsHttpAcceptance.log",
+      "check_count": 30,
+      "result": {
+        "run": "LOCALHOST NEPLATIT LIFE 6992d38600",
+        "checks": 30,
+        "passed": [
+          "Lifecycle view presents current dependencies and honest membership history",
+          "Lifecycle view includes upcoming calendar participation and bounded lesson horizon",
+          "Opening lifecycle guide does not mutate domains or create a work item",
+          "Lifecycle guide remains registrar-only",
+          "Invalid CSRF cannot create person work item",
+          "Work item requires explicit confirmation of separate domain decisions",
+          "Registrar assigns reasoned person follow-up with review date",
+          "Concurrent follow-up preserves submitted revision and draft",
+          "Closing person work item leaves membership, access, roster and obligations unchanged",
+          "Person follow-up shows retained decision history",
+          "Membership changes only through its existing canonical form",
+          "New lifecycle view reflects actual recorded membership decision",
+          "Membership decision does not silently remove roster",
+          "Coach sees scoped expiry warning without private evidence or foreign persons",
+          "Health evaluation uses chosen activity date",
+          "Invalid activity date is rejected",
+          "Health overview does not grant finance or coach private medical access",
+          "A scoped person does not authorize another coach lesson",
+          "Lesson health context uses actual plan date, ignoring a forged date override",
+          "Assigned coach can inspect health status for owned lesson",
+          "Registrar can inspect group health and reach existing evidence administration",
+          "Authorized guardian sees actionable tasks for own person only",
+          "Delivery notice reflects sandbox mail block, not a hardcoded production claim",
+          "Family guardian task read changes no person dependencies",
+          "Revoked guardian relation removes person tasks on next request",
+          "Authorized self sees actionable tasks for own person only",
+          "Delivery notice reflects sandbox mail block, not a hardcoded production claim",
+          "Family self task read changes no person dependencies",
+          "Revoked self relation removes person tasks on next request",
+          "Revoked coach scope denies previously accessible health context"
+        ],
+        "production_mutations": false,
+        "external_sends": false
+      },
+      "source_sha256": "2593d115729a56ac19535e961fff6862185e61b1e3a14c1e4e267042b982ad89"
+    },
+    {
+      "script": "TrainingClosureHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:17.21915+02:00",
+      "seconds": 2.53,
+      "log": "TrainingClosureHttpAcceptance.log",
+      "check_count": 25,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R26 0a07c34bed",
+        "checks": 25,
+        "passed": [
+          "Actual closure form is readable with Czech UI",
+          "Finance workspace cannot rewrite sporting attendance",
+          "CSRF rejects mutation",
+          "Unassigned coach cannot close foreign attendance",
+          "Direct training URL respects foreign measurement athlete scope",
+          "Closure write cannot bypass measurement athlete scope",
+          "Explicit actual attendance confirmation required",
+          "Future end cannot close attendance",
+          "Paper actual attendance closes after ended lesson",
+          "Actual time and paper provenance stored independently of transcription timestamp",
+          "Canonical history counts actual training once",
+          "Repeated stale version cannot duplicate closure",
+          "Reasoned correction creates new version",
+          "Original approved source duration is immutable",
+          "Approved amount and paid flag remain unchanged",
+          "Correction registers review of existing closed reward period",
+          "Legacy delete cannot erase closed training",
+          "Reasoned invalidation keeps history",
+          "Voided training disappears from current actual totals only",
+          "AJAX move checks trainer overlap",
+          "Existing RSVP prohibits silent date rewrite",
+          "Reschedule retains canceled source and explicit replacement",
+          "Replacement is linked in immutable schedule history",
+          "Offline family generates visible manual-contact task without fake delivery",
+          "Revoked active role blocks stale session on next request"
+        ],
+        "training_id": 51,
+        "production_mutations": false
+      },
+      "source_sha256": "a234173d4b4f6eca7961dff26ecb2f52bc720d7e861f98428bf3a819afc640cf"
+    },
+    {
+      "script": "SportsActivityHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:19.7559547+02:00",
+      "seconds": 2.56,
+      "log": "SportsActivityHttpAcceptance.log",
+      "check_count": 23,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R28 e64e0ed7613a",
+        "checks": 23,
+        "results": [
+          {
+            "scenario": "Sports workspace GET is read-only",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Finance workspace cannot mutate actual sports evidence",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach without explicit scope cannot write foreign athlete",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF writes nothing",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual evidence requires explicit confirmation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Nomination recorded through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated nomination returns same version",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Completed calendar planning and nomination do not imply start",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Accepted nomination is separate factual stage",
+            "status": "PASS"
+          },
+          {
+            "scenario": "External registration remains separate from start",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Future actual date rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "DNS cannot count as a start",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual DNF start recorded after evidence check",
+            "status": "PASS"
+          },
+          {
+            "scenario": "One DNF start counted, unknown value remains null",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP CSV uses exactly the canonical summary and source revision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Verified period frozen as a versioned statement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated period handover deduplicates immutable statement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Stale form cannot overwrite newer actual revision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Correction removes actual count without destroying prior version",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Export of old statement retains original DNF after correction",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Correction visibly flags statement for review",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Foreign coach cannot download another athlete statement directly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked stale lead session cannot download private statement",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "c17549ccab02cc246065fee2cb1759b8168d30b9ae5c511176bdb878c7b5c95d"
+    },
+    {
+      "script": "MedicalClearanceHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:22.3240898+02:00",
+      "seconds": 3.01,
+      "log": "MedicalClearanceHttpAcceptance.log",
+      "check_count": 22,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R29 88f52c2565",
+        "checks": 22,
+        "results": [
+          {
+            "scenario": "Registrar can open medical administration",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach and warehouse cannot access private administration",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Sports lead has dedicated work cases while coach has no club-wide case access",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF cannot approve policy",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Explicit policy records purpose retention and human activity decision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Missing proof registered as unresolved watch",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated monitoring does not duplicate person or purpose",
+            "status": "PASS"
+          },
+          {
+            "scenario": "R12 case has owner next step and date for missing proof",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual multipart scan stored outside webroot",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Scoped coach sees pending status without medical scan metadata",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach and sports lead direct download denied",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Registrar download is checksum-identical and audited",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Separate explicit verification accepts scanned proof",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Expiry date itself remains valid",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Following day is expired at activity date",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Stale form cannot revoke newer verified revision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Personal followup recorded without sending mail",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Verified parent sees own status in existing family portal without scan",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Family cannot use private registrar download",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked parent loses medical and person overview on next request",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked coach scope loses even status-only direct URL",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked registrar stale session cannot download scan",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "9a1df7233090724c3b29c05f87e2396a28a7cebecfd6e73a0e96b1eab69ff9c5"
+    },
+    {
+      "script": "ClubAdministrationHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:25.3328433+02:00",
+      "seconds": 7.31,
+      "log": "ClubAdministrationHttpAcceptance.log",
+      "check_count": 49,
+      "result": {
+        "status": "PASS",
+        "run": "LOCALHOST NEPLATIT EVENT 1e80f4c9c4",
+        "scenarios": 49,
+        "checks": [
+          "Event shows planned roster without converting nomination into actual start",
+          "Read-only event overview creates no sport revision",
+          "Event participant paging reaches the complete roster",
+          "Assigned coach sees only currently scoped persons and no private contact",
+          "Unassigned coach cannot open a known event",
+          "Registrar gains no event operations privilege",
+          "Event date search includes activities later on the last day",
+          "Individual event start uses canonical native form with hidden revision",
+          "Event overview reflects recorded actual start",
+          "Stale result cannot overwrite newer event revision",
+          "Financial case inherits calendar context without guessing legacy linkage",
+          "Forged CSRF cannot create linked financial case",
+          "Case creation returns directly to the new detail",
+          "Calendar case does not create or attach a legacy event",
+          "Coach cannot read financial receipts or balances",
+          "Expense uses named counterparties and structured item table in selected case",
+          "Receipt upload retains case context",
+          "Private receipt upload returns a fixed local expense form",
+          "Uploaded receipt is preselected with original amount",
+          "Incorrect sum is rejected atomically and retains native form values",
+          "Structured expense and private attachment are saved",
+          "Selected identity is resolved server-side and attachment has immutable hash",
+          "Native expense retry creates no duplicate claim",
+          "Receipt download remains finance-only",
+          "Case and expense detail expose outstanding work and full split",
+          "Selected version can be submitted without typing its ID",
+          "Selected form preserves independent-approver requirement",
+          "Second finance manager approves the actual version",
+          "Settlement selects named target and dated real movement",
+          "Mismatched target kind cannot allocate expense to unrelated advance ID",
+          "Canonical settlement links the real payment and clears liability",
+          "Correction prefills original split and preserves prior version reference",
+          "Correction retains historic counterparty snapshot after current name changes",
+          "Correction history remains immutable while prior payment stays attached",
+          "Event status exposes no receipt content, payee or payment reference to coach",
+          "Named advance request returns to specific advance detail",
+          "Independent approver selects actual advance from detail",
+          "Advance detail preselects handoff type without numeric target confusion",
+          "Native advance selection records actual handoff",
+          "Native advance closure refuses unreturned balance",
+          "Outstanding advance prevents whole event settlement",
+          "Actual return clears advance balance through named movement",
+          "Settled advance can close without changing actual money",
+          "Settled event case closes only by explicit canonical action",
+          "Upload to closed case cannot bypass financial evidence lock",
+          "Structured form cannot append expense to a closed case",
+          "Revoked person scope removes participant on next event read",
+          "Revoked event assignment removes event access",
+          "Revoked financial position removes all detail access"
+        ],
+        "production_mutations": false,
+        "browser_visual_uat": false
+      },
+      "source_sha256": "ccea326020fa724410cdc4b7ac50b1c568000d7a9fa258d90bd60bdc5811bcba"
+    },
+    {
+      "script": "ClubExpensesHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:32.6481102+02:00",
+      "seconds": 3.91,
+      "log": "ClubExpensesHttpAcceptance.log",
+      "check_count": 47,
+      "result": {
+        "status": "PASS",
+        "scenarios": 47,
+        "checks": [
+          {
+            "scenario": "Finance dashboard loads",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot read global financial evidence",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Case created through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Expense split accepted 1000 of 1200 through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Identical claim retry idempotent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Expense submitted",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Self approval rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Independent approval accepted",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual ledger pay through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Partial payment allocation through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Partial payment leaves 400 CZK",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated payment allocation creates no duplicate",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual ledger bank-return through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP partial bank return reopens original expense",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP bank return retry is idempotent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP full bank return restores approved expense",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP bank over-return refused",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual ledger bank-repayment through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP replacement payment leaves correct expense balance",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Downward correction creates new immutable version",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Correction submitted",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Correction independently approved",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Lower approved amount creates real receivable of 200 CZK",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Unreturned expense overpayment prevents case closure",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual ledger return through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual income settles expense overpayment",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Receivable clears only after actual income",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance requested through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance independently approved",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Approval alone creates no money",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual ledger advance-out through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual advance handoff linked once",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance expense recorded",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance expense submitted",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance expense approved",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual approved receipt consumes correct advance",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance leaves 800 CZK to return",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Unsettled advance cannot close",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual ledger advance-return-500 through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance actual return 500 linked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual ledger advance-return-300 through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Advance actual return 300 linked",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Zero balance advance closes",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Fully settled financial case closes",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Late addition to closed case rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked finance role fails on next HTTP request",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "9cfe9c1cf150b95fd09e9d65a42dea2a147056d153b1b41db3cb2c150a26146d"
+    },
+    {
+      "script": "ClubRewardsHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:36.5631867+02:00",
+      "seconds": 6.31,
+      "log": "ClubRewardsHttpAcceptance.log",
+      "check_count": 29,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R33-R34 e37705b92e30",
+        "checks": 29,
+        "results": [
+          {
+            "scenario": "Sports lead gets remuneration workspace",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach gets own remuneration workspace",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Finance gets payout workspace",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF cannot create financial rules",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot approve own rate",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Explicit approved rule saved through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Unconfirmed report rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot submit another worker claim",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach submits actual work",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual 90 minutes at explicit 100 CZK gives exact 150 CZK",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated report creates one immutable version",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy direct delete cannot change submitted report",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Finance cannot substitute sporting approval",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Separate sports lead approves immutable report",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Sporting approval does not grant payout permission",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual partial payment linked to canonical movement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated payment does not duplicate allocation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Overpayment refuses whole transaction",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach sees approved amount and remaining actual balance",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Direct reward detail and due filter find partially paid approved claim",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Partial payment is not labelled settled",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP partial bank return restores original approved liability",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP identical bank return is idempotent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP remaining bank return completes original payout return",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP excess bank return refused",
+            "status": "PASS"
+          },
+          {
+            "scenario": "HTTP replacement payment settles unchanged approved claim",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Settled filter finds approved fully paid claim after actual repayment",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Settled claim leaves outstanding list for own coach",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked stale finance role cannot replay payout",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false,
+        "fixture": {
+          "claim_id": 19,
+          "movement_id": 139,
+          "account_id": 44,
+          "coach": 708,
+          "lead": 707
+        }
+      },
+      "source_sha256": "8a55ecf31e91f00fe4bbbf2dcff5e8c8af9e83635ac4dbdd6117b07d1a04d251"
+    },
+    {
+      "script": "SeasonOperationsHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:42.8748718+02:00",
+      "seconds": 3.67,
+      "log": "SeasonOperationsHttpAcceptance.log",
+      "check_count": 41,
+      "result": {
+        "status": "PASS",
+        "run": "LOCALHOST NEPLATIT SEASON 1d7eb5697a",
+        "scenarios": 41,
+        "checks": [
+          "Registrar can prepare standing-group period with named descendants",
+          "Sports lead gets canonical lesson link",
+          "Linked lesson is accessible to sports lead",
+          "Coach cannot inspect club-wide season guide",
+          "Season guide rejects writes",
+          "Season guide rejects invalid dates",
+          "Standing group selectable for communication",
+          "Preview names person requiring personal contact",
+          "Preview has one verified guardian account",
+          "Season and communication previews leave domain data unchanged",
+          "Revoked relationship invalidates queued-message confirmation",
+          "Failed confirmation preserves draft subject and body",
+          "Confirmed synthetic message only enters local queue",
+          "No sender or worker was invoked",
+          "Communication aggregate is private and honest for registrar",
+          "Communication aggregate is private and honest for system_admin",
+          "Communication aggregate is private and honest for order_operator",
+          "Queue overview does not retry or mutate stale message",
+          "Coach denied queue overview",
+          "System admin cannot read registrar message contents",
+          "Registrar cannot read family-summary contents",
+          "Message history reaches oldest page and includes final-date evening",
+          "Family queue supports history paging without displaying message body in list",
+          "Family page does not claim a verified production scheduler",
+          "Native form creates only an isolated transition preparation",
+          "Cutover entry rejects invalid CSRF",
+          "Native source form appends source declaration",
+          "Template prefills workflow without guessing owner or verification",
+          "Selecting transition template is read-only",
+          "Proposed map appends version through canonical registry",
+          "Edit loads current named map and source without copying identifiers",
+          "Map correction appends a new version",
+          "Stale edit preserves original revision and draft without overwriting current version",
+          "Submitting retained stale form cannot bypass concurrent-edit guard",
+          "Map history shows both versions and correction",
+          "Registrar cannot modify transition registry",
+          "Selecting an existing template keeps saved map instead of replacing it with proposal",
+          "Family-summary preview retains search state and historical page",
+          "Summary preview leaves queues and registry unchanged",
+          "Transition runs are searchable without latest-100 cutoff",
+          "Revoked sports-lead role immediately loses season guide"
+        ],
+        "production_mutations": false,
+        "external_sends": false,
+        "browser_visual_uat": false
+      },
+      "source_sha256": "c04e5a5569bb4b5c683fa11ea7c5a6ba5bccf2dfd93b7427ce02ff7fb2b5c062"
+    },
+    {
+      "script": "ShopInventoryHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:46.5484914+02:00",
+      "seconds": 2.1,
+      "log": "ShopInventoryHttpAcceptance.log",
+      "check_count": 21,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R18 5d7190e8ec",
+        "checks": 21,
+        "results": [
+          {
+            "scenario": "Only pre-existing synthetic warehouse policy reused",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Stock GET is read-only",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot activate physical stock",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF creates no opening",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Opening requires explicit confirmation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Fractional garment quantity rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Verified opening saved through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Opening retry returns same evidence without double stock",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Partial physical supplier receipt with blocked garment saved",
+            "status": "PASS"
+          },
+          {
+            "scenario": "P18 B1 A17 displayed without pretending ordered10 arrived",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated receipt POST is idempotent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Catalog alone cannot approve acquisition cost",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Finance records evidenced late acquisition cost",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Cost stored exactly as integer minor units",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Acquisition prices visible only to active finance workspace",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Warehouse starts revision-bound inventory count",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Independent finance approval posts discrepancy without changing money",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Warehouse reads issued physical movement slip",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Foreign sports role cannot read physical stock slip",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Legacy target-quantity editor cannot overwrite managed physical stock",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked stale staff session cannot write stock",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "7b577b6bd20fb6c6d5c8c2d374e2ab27f0f95beada0b25b110069c00676e76c6"
+    },
+    {
+      "script": "ShopFulfillmentHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:48.6573658+02:00",
+      "seconds": 4.36,
+      "log": "ShopFulfillmentHttpAcceptance.log",
+      "check_count": 31,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R21 86faa9de90",
+        "checks": 31,
+        "passed": [
+          "Personal sale shows canonical public price",
+          "Staff sale exposes request identity",
+          "Coach cannot open personal sale",
+          "Bad CSRF cannot create sale",
+          "Staff sale created through actual HTTP without email or fake account",
+          "Sale persists reservation but no fictitious payment",
+          "Repeated HTTP sale creates one order",
+          "Unpaid HTTP issue does not change physical stock",
+          "Operator cannot confirm money in operator workspace",
+          "Finance records actual cash separately through HTTP",
+          "Coach cannot issue by guessing order id",
+          "Bad fulfillment CSRF cannot issue",
+          "Partial physical handoff recorded through HTTP",
+          "Partial issue changes physical and reserve once while preserving availability",
+          "Repeated HTTP handoff does not issue twice",
+          "Old cancel cannot restock already issued units",
+          "Readback exposes printable handoff and named receiver",
+          "Finance configures synthetic issuer for handoff correction proof",
+          "Finance approves test goods classification",
+          "Original invoice draft uses immutable order case",
+          "Original invoice PDF issued before correction",
+          "Finance drafts one unissued cancelled unit",
+          "Draft correction cannot release reservation",
+          "Finance issues immutable correcting PDF",
+          "Issued quantity correction prevents further physical handoff",
+          "Bad CSRF cannot release corrected remainder",
+          "Operator releases unissued remainder against issued correction",
+          "Remainder release replay preserves physical stock without duplicate return",
+          "Remainder release does not falsely claim money was refunded",
+          "Read model reports resolved physical handoff with cancelled remainder and separate finance",
+          "Revoked operator stale session cannot issue remaining stock"
+        ],
+        "order_id": 42,
+        "variant_id": 67,
+        "production_mutations": false
+      },
+      "source_sha256": "1e7cbb601c003e40da8fbd2032983567ce91679136c28945e1ca2f5df61ea57b"
+    },
+    {
+      "script": "ShopReturnsHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:53.0252371+02:00",
+      "seconds": 3.23,
+      "log": "ShopReturnsHttpAcceptance.log",
+      "check_count": 33,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R23 f1f91724c2",
+        "checks": 33,
+        "passed": [
+          "Order operator GET does not mutate",
+          "Stock and finance can open delegated route",
+          "Coach route rejects direct write",
+          "CSRF blocks request without insert",
+          "Explicit confirmation required",
+          "Partial customer request created",
+          "Repeated request is idempotent",
+          "Changed replay payload rejected",
+          "Owned return received through HTTP",
+          "Repeated reception no second movement",
+          "Received return is physically present but blocked",
+          "Order operator cannot approve stock saleability",
+          "Stock inspection releases exact returned lot",
+          "Stock flow cannot confirm finance",
+          "Paid goods return cannot erase financial obligation",
+          "Incomplete financial return cannot close",
+          "Separate claim request created",
+          "Customer-owned claim accepted into custody",
+          "Custody creates no owned stock",
+          "Claim returned to customer without stock move",
+          "Finance confirms declined claim no adjustment",
+          "Completed custody case closes",
+          "Equal-price exchange request created",
+          "Last L reserved for exchange",
+          "Exchange reduces availability without physical issue",
+          "Original M returned blocked",
+          "Equal exchange finance confirmed",
+          "Replacement physically handed over",
+          "Replacement has no fake sale/order",
+          "Replacement issue can open its own later claim",
+          "Chained return uses actual L snapshot and source exchange",
+          "Chained claim custody remains outside owned inventory",
+          "Revoked operator stale session fails closed"
+        ],
+        "order_id": 43,
+        "return_case_id": 30,
+        "exchange_case_id": 32,
+        "production_mutations": false
+      },
+      "source_sha256": "5fa60f755ddbe0720612c4214ad73b6ff91765fa9da2b21a3ed4d69704779f80"
+    },
+    {
+      "script": "AccountingLedgerHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:56.2576474+02:00",
+      "seconds": 2.25,
+      "log": "AccountingLedgerHttpAcceptance.log",
+      "check_count": 17,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R13 a9ba5f8aac",
+        "checks": 17,
+        "results": [
+          {
+            "scenario": "Finance GET is read-only",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach direct account write denied",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Bad CSRF has no account write",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Account opening requires explicit confirmation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Opening cash count recorded through actual HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Scientific or malformed monetary input rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual cash receipt recorded in minor units",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Repeated receipt POST is idempotent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Same receipt request cannot overwrite amount",
+            "status": "PASS"
+          },
+          {
+            "scenario": "100.01 CZK stored exactly as 10001 minor units",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Accounting split mismatch prevents save",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Approved accounting classification independent from allocation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "One-cent physical difference blocks account closure",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Balanced physical count closes account through HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed cash evidence refuses late receipt",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Closed classification cannot be rewritten",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked finance session cannot write money",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "0433fc17ac0eef0ba65050d9c8b16fb2d226cb077cf2c27e0ca3a08f3237a655"
+    },
+    {
+      "script": "AccountingDocumentsHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:00:58.5147413+02:00",
+      "seconds": 2.37,
+      "log": "AccountingDocumentsHttpAcceptance.log",
+      "check_count": 18,
+      "result": {
+        "checks": 18,
+        "passed": [
+          "Finance can open documents",
+          "Coach cannot open document registry",
+          "Bad CSRF cannot configure issuer",
+          "Issuer approved through HTTP",
+          "Accounting rule explicitly approved through HTTP",
+          "Draft created through HTTP without a number",
+          "Draft does not consume number",
+          "Draft cannot be downloaded as issued PDF",
+          "Guarded preview contains Czech beneficiary and draft mark",
+          "Missing confirmation cannot issue",
+          "Document issued through actual HTTP",
+          "Private PDF download has expected immutable hash",
+          "Coach cannot download PDF by guessing ID",
+          "Repeated HTTP issuance preserves number",
+          "Partial correction draft through HTTP",
+          "Correction references original and negative exact amount",
+          "Correction PDF issued through HTTP",
+          "Revoked finance cannot download via stale session"
+        ],
+        "document_id": 20,
+        "correction_id": 21
+      },
+      "source_sha256": "d244912f844326e8de37b10c697b3463a97a9d304b366f42ec4cd2d67526dfab"
+    },
+    {
+      "script": "AccountingAdjustmentsHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:01:00.884316+02:00",
+      "seconds": 1.85,
+      "log": "AccountingAdjustmentsHttpAcceptance.log",
+      "check_count": 18,
+      "result": {
+        "run": "LOCALHOST NEPLATIT R17 d12664256b",
+        "checks": 18,
+        "results": [
+          {
+            "scenario": "Finance GET renders and does not create decisions",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot view or mutate refunds",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF rejected without write",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Explicit confirmation required",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Future decision date rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Decision created through HTTP without money movement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Decision reserves exactly 40 CZK",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Decision double submit is idempotent",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Replay with changed amount rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Partial actual payout through HTTP succeeds",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Payout replay creates no second outgoing movement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Excess payout rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Partially paid decision cannot be cancelled",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Second partial payout completes the decision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Completed payout balances money, reservation and free amount",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Independent overpayment decision created",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Unpaid decision cancellation releases only reservation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked finance role rejected on next HTTP request",
+            "status": "PASS"
+          }
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "912944152b0abded9a613f42428cbb5885de85aad8e259d0abdda7119c24c72a"
+    },
+    {
+      "script": "AccountingStockHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:01:02.732354+02:00",
+      "seconds": 3.74,
+      "log": "AccountingStockHttpAcceptance.log",
+      "check_count": 16,
+      "result": {
+        "status": "PASS",
+        "scenarios": 16,
+        "checks": [
+          {
+            "scenario": "Stock slip preview is accessible",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF archives no PDF",
+            "status": "PASS"
+          },
+          {
+            "scenario": "PDF requires explicit confirmation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "POST archives actual immutable PDF",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual HTTP downloads PDF",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Coach cannot download stock PDF",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Finance creates historical stock export over HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Historical export retains unknown acquisition cost",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Export ZIP opens",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Export bundles exact archived stock slip",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Audited backdated price produces replacement export revision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Replacement snapshot values original physical stock exactly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revision explicitly lists acquisition cost correction",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Old export bytes remain unchanged after cost revision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Original physical PDF bytes remain unchanged",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Double PDF submission creates no second document",
+            "status": "PASS"
+          }
+        ],
+        "pdf_sample": "C:\\Users\\Marek\\AppData\\Local/EvidencePavelB1/finance-b1-20261022/r18-r24-stock-sample.pdf"
+      },
+      "source_sha256": "63d25fcb148ca1e3507c65bbb5203d00d627fdaa866ee7d257f5fdf605cb078f"
+    },
+    {
+      "script": "AccountingExportHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:01:06.4699668+02:00",
+      "seconds": 10.66,
+      "log": "AccountingExportHttpAcceptance.log",
+      "check_count": 64,
+      "result": {
+        "status": "PASS",
+        "scenarios": 64,
+        "archived_pdfs": 32,
+        "checks": [
+          {
+            "scenario": "Finance can view export workspace",
+            "status": "PASS"
+          },
+          {
+            "scenario": "coach cannot access accounting exports",
+            "status": "PASS"
+          },
+          {
+            "scenario": "coach cannot download accounting archive directly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "registrar cannot access accounting exports",
+            "status": "PASS"
+          },
+          {
+            "scenario": "registrar cannot download accounting archive directly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "order_operator cannot access accounting exports",
+            "status": "PASS"
+          },
+          {
+            "scenario": "order_operator cannot download accounting archive directly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "system_admin cannot access accounting exports",
+            "status": "PASS"
+          },
+          {
+            "scenario": "system_admin cannot download accounting archive directly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "GET and forbidden requests create no batch",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF creates no batch",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Explicit confirmation is required",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual finance POST creates immutable export",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Foundation archive cannot masquerade as complete club month",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual HTTP ZIP matches immutable stored digest",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Download is a readable ZIP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: data.json",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: ucetni-podklady.xlsx",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: klubove-vyporadani.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-37.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-38.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-39.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-40.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-41.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-42.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-43.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-49.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: vydaje/V-50.png",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: rozhodnuti/R-1.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: rozhodnuti/R-3.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: rozhodnuti/R-5.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: rozhodnuti/R-7.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: rozhodnuti/R-9.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: rozhodnuti/R-11.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/1.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/2.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/3.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/4.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/5.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/6.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/7.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/8.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/9.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/10.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/11.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/12.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/13.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/14.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/15.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/16.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/17.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/18.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/19.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/20.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: doklady/21.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: sklad/SK-21.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: sklad/SK-22.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: sklad/SK-127.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Archived file integrity: sklad/SK-150.pdf",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Double submit preserves same export row and archive",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Replacement revision can be generated",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revision links its exact predecessor",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Old revision download unchanged after replacement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Downloads are independently audited",
+            "status": "PASS"
+          }
+        ]
+      },
+      "source_sha256": "df28d776ee6d87b4e291cdcaa15801a1b4c27ab04a5e78b4d97e58b3dd383648"
+    },
+    {
+      "script": "ClubAccountingHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:01:17.1385249+02:00",
+      "seconds": 8.13,
+      "log": "ClubAccountingHttpAcceptance.log",
+      "check_count": 34,
+      "result": {
+        "status": "PASS",
+        "scenarios": 34,
+        "archive_files": 44,
+        "checks": [
+          {
+            "scenario": "Finance decision workspace available",
+            "status": "PASS"
+          },
+          {
+            "scenario": "coach cannot read financial decisions",
+            "status": "PASS"
+          },
+          {
+            "scenario": "coach cannot read private decision directly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "registrar cannot read financial decisions",
+            "status": "PASS"
+          },
+          {
+            "scenario": "registrar cannot read private decision directly",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Rejected write created no decision",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Explicit confirmation required",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual multipart POST creates immutable decision with private proof",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Authorized proof download hash verified",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Correction creates replacement version",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Old decision and private attachment immutable",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Stale replacement rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Full club export created over HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Full technical scope does not invent accountant approval",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Snapshot contains club_expenses",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Snapshot contains club_advances",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Snapshot contains club_reward_claims",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Snapshot contains club_decisions",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Snapshot contains club_receivables",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Snapshot contains club_payment_returns",
+            "status": "PASS"
+          },
+          {
+            "scenario": "ZIP download matches immutable stored hash",
+            "status": "PASS"
+          },
+          {
+            "scenario": "ZIP readable",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Every manifest entry hash verified",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Generated club obligation PDF included",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Original decision PDF included unchanged",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Ten-sheet accountant contract preserved",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Expense sheet connected instead of placeholder",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Personal handover recorded without external sending",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Stale handover cannot accept batch",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual accountant acceptance recorded separately",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Handover does not rewrite historical ZIP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked finance role loses proof access on next request",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked finance role loses export access",
+            "status": "PASS"
+          }
+        ]
+      },
+      "source_sha256": "1cc5dd8b48da6e4b77344673457486afa708c95fbabc33e9612ef9458552552f"
+    },
+    {
+      "script": "ClubCutoverHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:01:25.2723388+02:00",
+      "seconds": 5.14,
+      "log": "ClubCutoverHttpAcceptance.log",
+      "check_count": 26,
+      "result": {
+        "status": "PASS",
+        "scenarios": 26,
+        "owned_tables": 326,
+        "checks": [
+          {
+            "scenario": "Technical preparation workspace available",
+            "status": "PASS"
+          },
+          {
+            "scenario": "finance_manager cannot access technical cutover",
+            "status": "PASS"
+          },
+          {
+            "scenario": "coach cannot access technical cutover",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged CSRF cannot create preparation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Rejected form created no run",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual HTTP creates isolated preparation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Source ownership declaration stored",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Stale registry revision rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Secret export URL rejected before storage",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Unowned destination rejected",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Declared owned content URL map stored without redirect activation",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual database checkpoint captured over HTTP",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Capture covers all explicitly owned tables excluding cutover metadata",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Capture includes accounting_movements",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Capture includes payments",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Capture includes club_event_notifications",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Capture includes shop_stock_movements",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Capture includes training_closures",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Actual local Git HEAD read without command execution",
+            "status": "PASS"
+          },
+          {
+            "scenario": "New real synthetic movement blocks simple rollback in actual UI",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Immutable blocked gate and post-checkpoint delta saved",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Forged production approval input cannot grant authorization",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Exact new canonical movement identified in preserved delta",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Original checkpoint remains immutable",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Preparation never rolls back new movement",
+            "status": "PASS"
+          },
+          {
+            "scenario": "Revoked technical role denied on next request",
+            "status": "PASS"
+          }
+        ]
+      },
+      "source_sha256": "0690fe7b5e3dcc9ff26912b3606d0aa5daafe1793478f3947cf0f714b4ec1934"
+    },
+    {
+      "script": "WeeklyReportPrivacyHttpAcceptance",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:01:30.4190301+02:00",
+      "seconds": 1.28,
+      "log": "WeeklyReportPrivacyHttpAcceptance.log",
+      "check_count": 11,
+      "result": {
+        "status": "PASS",
+        "checks": 11,
+        "results": [
+          "Repeated saves preserve separate original files",
+          "PDF stored outside web root",
+          "Real PDF generated",
+          "Authorized actual HTTP download matches PDF checksum",
+          "Private attachment and no-store response",
+          "Other active workspace cannot download: coach",
+          "Other active workspace cannot download: finance_manager",
+          "Anonymous download denied",
+          "Legacy public report directory is denied by local router",
+          "Traversal denied",
+          "Revoked sports lead cannot reuse cached authenticated cookie"
+        ],
+        "private_report_ids": [
+          "2ff2b909415d8b7ce5b3ed02bb603fb3",
+          "7573547e03374868f5de5a9b16edcd20"
+        ],
+        "production_mutations": false
+      },
+      "source_sha256": "1d62fa72d1e435b35d23eec7a987c1fd0e6b0064e6de86d4acd4c0de237b59fc"
+    },
+    {
+      "script": "ClubOperatingMonth",
+      "status": "PASS",
+      "exit_code": 0,
+      "started_at": "2026-10-24T20:01:31.7037819+02:00",
+      "seconds": 5.73,
+      "log": "ClubOperatingMonth.log",
+      "check_count": 13,
+      "result": {
+        "status": "PASS",
+        "synthetic_only": true,
+        "production_mutations": false,
+        "human_uat": false,
+        "period_from": "2026-09-25",
+        "period_to": "2026-10-24",
+        "checks": 13,
+        "scenarios": [
+          "Actual attendance counted once in person history",
+          "Two actual hours at explicit 250 CZK produce 500 CZK claim",
+          "Unreturned 800 CZK blocks closing",
+          "5000 advance = 4200 approved spending + actual 800 return",
+          "Reward retry reuses same payout",
+          "Shared movement settles expense and reward exactly once",
+          "Generic reversal cannot erase assigned expense and reward",
+          "Personal sale reserves one physical garment",
+          "Actual garment issue clears reservation exactly once",
+          "Cash reconciles: 10000 opening -5000 +800 -1100 +100 = 4800 CZK",
+          "One export contains four real movements; consumption and payout produce no duplicate money",
+          "Same export links the month expense and sporting reward",
+          "Synthetic rehearsal cannot declare accountant acceptance or real source completeness"
+        ],
+        "export_id": 35,
+        "export_sha256": "7ca533bcfe7bd8e205c615fb9c92a4d5d628cb6151eba867575fafebab68edea",
+        "account_id": 48,
+        "closing_minor": 480000
+      },
+      "source_sha256": "cb8a9b710b5e9dc313fa96e558c1b5f0cbbb1edabfa7c823dbe5133390b5f74a"
+    }
+  ]
+}

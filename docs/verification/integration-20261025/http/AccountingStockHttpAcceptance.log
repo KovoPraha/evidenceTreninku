@@ -1,0 +1,71 @@
+{
+    "status": "PASS",
+    "scenarios": 16,
+    "checks": [
+        {
+            "scenario": "Stock slip preview is accessible",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Forged CSRF archives no PDF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "PDF requires explicit confirmation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "POST archives actual immutable PDF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Actual HTTP downloads PDF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot download stock PDF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance creates historical stock export over HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Historical export retains unknown acquisition cost",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Export ZIP opens",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Export bundles exact archived stock slip",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Audited backdated price produces replacement export revision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Replacement snapshot values original physical stock exactly",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revision explicitly lists acquisition cost correction",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Old export bytes remain unchanged after cost revision",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Original physical PDF bytes remain unchanged",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Double PDF submission creates no second document",
+            "status": "PASS"
+        }
+    ],
+    "pdf_sample": "C:\/Users\/Marek\/AppData\/Local\/EvidencePavelIntegration20261025\/EvidencePavelB1\/finance-b1-20261022\/r18-r24-stock-sample.pdf"
+}

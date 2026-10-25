@@ -1,0 +1,127 @@
+{
+    "run": "LOCALHOST NEPLATIT R25 79aefdde67",
+    "checks": 30,
+    "results": [
+        {
+            "scenario": "Registrar can open assisted admissions",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Coach cannot create admission",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Admission rejects forged CSRF",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Admission rejects missing paper application and consents",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Changed agreed price cannot be charged",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Payer must be selected explicitly despite two parents",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Paper admission creates canonical order via HTTP",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Explicitly chosen second parent remains payer",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Same admission retry is idempotent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Reused key cannot silently change agreement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Paper reception never forges online parent consent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Unpaid paper admission does not activate roster",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Second order for same person and period is blocked",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Canonical confirmed payment activates dated attendance with paper provenance",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Full physical program capacity rejects another admission before writes",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Offline payer must match approved paper signer",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Offline family admitted without any online account",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Offline payer name and relationship stored without fake account",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Canonical confirmed payment activates offline enrollment with NULL account",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Offline admission creates no account, email verification or online guardian grant",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Offline confirmation never pretends an email was queued or sent",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Monthly preview blocks unspecified payer and amount",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance records explicit period payer through existing form",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Stale payer agreement cannot overwrite history",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Finance approves exact midmonth amount without implicit prorata",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Preview shows exact payer amount and decision evidence",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Canonical fee generation uses approved period amount",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Generated obligation matches explicit agreement",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Repeated monthly run preserves one obligation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revoked registrar cannot replay admission from stale session",
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

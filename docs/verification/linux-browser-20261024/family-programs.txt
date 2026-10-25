@@ -1,0 +1,135 @@
+- navigation "Klubový portál":
+  - link "KOVO Praha – úvodní stránka":
+    - /url: /index.php
+  - list:
+    - link "Domů":
+      - /url: /index.php
+    - link "Kroužky":
+      - /url: /booking/cyklisticke_krouzky.php
+    - link "E-shop":
+      - /url: /booking/eshop.php
+    - link "Tréninky":
+      - /url: /booking/treninky.php
+    - link "Akce a kalendář":
+      - /url: /booking/klubovy_kalendar.php
+    - link "Individuální lekce":
+      - /url: /booking/kalendar.php
+    - link "Velodrom":
+      - /url: /booking/velodrom.php
+  - link " Můj přehled":
+    - /url: /booking/sportovni_prehled.php
+    - generic: 
+    - text: Můj přehled
+  - button " Můj účet":
+    - generic: 
+    - text: Můj účet
+  - link " Evidence":
+    - /url: /index.php
+    - generic: 
+    - text: Evidence
+  - button "Odhlásit"
+- main:
+  - heading "Moje kroužky" [level=1]
+  - generic: Zakoupená období a historie účastí vašich profilů.
+  - link "E-shop":
+    - /url: eshop.php
+  - link "Sportovní přehled":
+    - /url: sportovni_prehled.php
+  - generic: Přihlášky a objednaná období
+  - table:
+    - rowgroup:
+      - row "Program Sportovec Objednávka a platba Stav a další krok":
+        - columnheader "Program"
+        - columnheader "Sportovec"
+        - columnheader "Objednávka a platba"
+        - columnheader "Stav a další krok"
+    - rowgroup:
+      - row "LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence 2026-11-01 – 2027-07-31 LOCALHOST SOUROZENCI23 Bára TEST KP2610238684A82F7F Zaplaceno Účast aktivována Zařazení do soupisky a platnost období najdete níže.":
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence 2026-11-01 – 2027-07-31":
+          - text: LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence
+          - generic: 2026-11-01 – 2027-07-31
+        - cell "LOCALHOST SOUROZENCI23 Bára TEST"
+        - cell "KP2610238684A82F7F Zaplaceno":
+          - link "KP2610238684A82F7F":
+            - /url: objednavka.php?code=KP2610238684A82F7F
+          - generic: Zaplaceno
+        - cell "Účast aktivována Zařazení do soupisky a platnost období najdete níže.":
+          - generic: Účast aktivována
+          - generic: Zařazení do soupisky a platnost období najdete níže.
+      - row "LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence 2026-11-01 – 2027-07-31 LOCALHOST UAT-BROWSER23 Anna TEST KP2610238684A82F7F Zaplaceno Účast aktivována Zařazení do soupisky a platnost období najdete níže.":
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence 2026-11-01 – 2027-07-31":
+          - text: LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence
+          - generic: 2026-11-01 – 2027-07-31
+        - cell "LOCALHOST UAT-BROWSER23 Anna TEST"
+        - cell "KP2610238684A82F7F Zaplaceno":
+          - link "KP2610238684A82F7F":
+            - /url: objednavka.php?code=KP2610238684A82F7F
+          - generic: Zaplaceno
+        - cell "Účast aktivována Zařazení do soupisky a platnost období najdete níže.":
+          - generic: Účast aktivována
+          - generic: Zařazení do soupisky a platnost období najdete níže.
+      - row "LOCALHOST NEPLATIT R25 1eb83e8d71 / LOCALHOST NEPLATIT R25 1eb83e8d71 2026-10-01 – 2027-01-23 LOCALHOST UAT-BROWSER23 Anna TEST KP261023678C565F1E Zaplaceno Účast aktivována Zařazení do soupisky a platnost období najdete níže.":
+        - cell "LOCALHOST NEPLATIT R25 1eb83e8d71 / LOCALHOST NEPLATIT R25 1eb83e8d71 2026-10-01 – 2027-01-23":
+          - text: LOCALHOST NEPLATIT R25 1eb83e8d71 / LOCALHOST NEPLATIT R25 1eb83e8d71
+          - generic: 2026-10-01 – 2027-01-23
+        - cell "LOCALHOST UAT-BROWSER23 Anna TEST"
+        - cell "KP261023678C565F1E Zaplaceno":
+          - link "KP261023678C565F1E":
+            - /url: objednavka.php?code=KP261023678C565F1E
+          - generic: Zaplaceno
+        - cell "Účast aktivována Zařazení do soupisky a platnost období najdete níže.":
+          - generic: Účast aktivována
+          - generic: Zařazení do soupisky a platnost období najdete níže.
+  - generic: Účasti a zařazení do soupisek
+  - table:
+    - rowgroup:
+      - row "Sportovec Program Platnost účasti Soupiska Stav":
+        - columnheader "Sportovec"
+        - columnheader "Program"
+        - columnheader "Platnost účasti"
+        - columnheader "Soupiska"
+        - columnheader "Stav"
+    - rowgroup:
+      - row "LOCALHOST SOUROZENCI23 Bára TEST LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence KP2610238684A82F7F 2026-11-01 – 2027-07-31 LOCALHOST NEPLATIT – kurz pro sourozence Aktivní členství · 2026-11-01 – 2027-07-31 Aktivováno pro budoucí období":
+        - cell "LOCALHOST SOUROZENCI23 Bára TEST"
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence KP2610238684A82F7F":
+          - text: LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence
+          - code: KP2610238684A82F7F
+        - cell "2026-11-01 – 2027-07-31"
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence Aktivní členství · 2026-11-01 – 2027-07-31":
+          - text: LOCALHOST NEPLATIT – kurz pro sourozence
+          - generic: Aktivní členství · 2026-11-01 – 2027-07-31
+        - cell "Aktivováno pro budoucí období"
+      - row "LOCALHOST UAT-BROWSER23 Anna TEST LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence KP2610238684A82F7F 2026-11-01 – 2027-07-31 LOCALHOST NEPLATIT – kurz pro sourozence Aktivní členství · 2026-11-01 – 2027-07-31 Aktivováno pro budoucí období":
+        - cell "LOCALHOST UAT-BROWSER23 Anna TEST"
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence KP2610238684A82F7F":
+          - text: LOCALHOST NEPLATIT – kurz pro sourozence / LOCALHOST NEPLATIT – kurz pro sourozence
+          - code: KP2610238684A82F7F
+        - cell "2026-11-01 – 2027-07-31"
+        - cell "LOCALHOST NEPLATIT – kurz pro sourozence Aktivní členství · 2026-11-01 – 2027-07-31":
+          - text: LOCALHOST NEPLATIT – kurz pro sourozence
+          - generic: Aktivní členství · 2026-11-01 – 2027-07-31
+        - cell "Aktivováno pro budoucí období"
+      - row "LOCALHOST UAT-BROWSER23 Anna TEST LOCALHOST NEPLATIT UAT-BROWSER23 kroužek / LOCALHOST NEPLATIT UAT-BROWSER23 kroužek KP2610232CB836E42F 2026-10-16 – 2026-12-22 LOCALHOST NEPLATIT UAT-BROWSER23 kroužek Aktivní členství · 2026-10-16 – 2026-12-22 Aktivní účast":
+        - cell "LOCALHOST UAT-BROWSER23 Anna TEST"
+        - cell "LOCALHOST NEPLATIT UAT-BROWSER23 kroužek / LOCALHOST NEPLATIT UAT-BROWSER23 kroužek KP2610232CB836E42F":
+          - text: LOCALHOST NEPLATIT UAT-BROWSER23 kroužek / LOCALHOST NEPLATIT UAT-BROWSER23 kroužek
+          - code: KP2610232CB836E42F
+        - cell "2026-10-16 – 2026-12-22"
+        - cell "LOCALHOST NEPLATIT UAT-BROWSER23 kroužek Aktivní členství · 2026-10-16 – 2026-12-22":
+          - text: LOCALHOST NEPLATIT UAT-BROWSER23 kroužek
+          - generic: Aktivní členství · 2026-10-16 – 2026-12-22
+        - cell "Aktivní účast"
+      - row "LOCALHOST UAT-BROWSER23 Anna TEST LOCALHOST NEPLATIT R25 1eb83e8d71 / LOCALHOST NEPLATIT R25 1eb83e8d71 KP261023678C565F1E 2026-10-01 – 2027-01-23 LOCALHOST NEPLATIT R25 1eb83e8d71 Aktivní členství · 2026-10-01 – 2027-01-23 Aktivní účast":
+        - cell "LOCALHOST UAT-BROWSER23 Anna TEST"
+        - cell "LOCALHOST NEPLATIT R25 1eb83e8d71 / LOCALHOST NEPLATIT R25 1eb83e8d71 KP261023678C565F1E":
+          - text: LOCALHOST NEPLATIT R25 1eb83e8d71 / LOCALHOST NEPLATIT R25 1eb83e8d71
+          - code: KP261023678C565F1E
+        - cell "2026-10-01 – 2027-01-23"
+        - cell "LOCALHOST NEPLATIT R25 1eb83e8d71 Aktivní členství · 2026-10-01 – 2027-01-23":
+          - text: LOCALHOST NEPLATIT R25 1eb83e8d71
+          - generic: Aktivní členství · 2026-10-01 – 2027-01-23
+        - cell "Aktivní účast"
+  - paragraph:
+    - link "Moje osoby a žádosti o propojení":
+      - /url: moje_osoby.php

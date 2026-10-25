@@ -1,0 +1,179 @@
+DOM evidence excerpt; long select-option lists omitted.
+- navigation:
+  - link "KOVO Praha – pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+  - text:     
+  - list:
+    - text: 
+    - button "":
+      - generic: 
+    - button "":
+      - generic: 
+    - link "":
+      - /url: /booking/eshop.php
+      - generic: 
+    - button " Superadmin · Trenér":
+      - generic: 
+      - text: Superadmin · Trenér
+    - text:        
+    - generic: 
+    - text: LOCALHOST Kontrola 1
+    - button " Odhlásit":
+      - generic: 
+      - text: Odhlásit
+- complementary "Pracovní nabídka":
+  - link "Pracovní rozcestník":
+    - /url: /pracovni_pozice.php
+    - generic: 
+    - text: Pracovní rozcestník
+  - heading "Moje práce" [level=2]
+  - link "Kalendář klubových akcí":
+    - /url: /club_calendar.php
+    - generic: 
+    - generic: Kalendář klubových akcí
+  - link "Zadat trénink":
+    - /url: /formular.php
+    - generic: 
+    - generic: Zadat trénink
+  - link "Plánovač":
+    - /url: /planovac.php
+    - generic: 
+    - generic: Plánovač
+  - generic "Další nástroje"
+  - link "Moje tréninky":
+    - /url: /moje_treninky.php
+    - generic: 
+    - generic: Moje tréninky
+  - link "Docházka a uzavření":
+    - /url: /training_closure_admin.php
+    - generic: 
+    - generic: Docházka a uzavření
+  - link "Podklady před aktivitou":
+    - /url: /medical_activity_admin.php
+    - generic: 
+    - generic: Podklady před aktivitou
+  - link "Zajištění akce":
+    - /url: /club_event_work_admin.php
+    - generic: 
+    - generic: Zajištění akce
+  - link "Sportovní činnost a podklady":
+    - /url: /sports_activity_admin.php
+    - generic: 
+    - generic: Sportovní činnost a podklady
+  - link "Moje skupiny":
+    - /url: /moje_skupiny.php
+    - generic: 
+    - generic: Moje skupiny
+  - heading "Evidence" [level=2]
+  - generic "Další nástroje"
+  - text:    
+  - heading "Rezervace a nástroje" [level=2]
+  - generic "Další nástroje"
+  - text:   
+  - heading "Navazující agenda" [level=2]
+  - generic "Další nástroje"
+  - text: 
+  - generic: KOVO Praha · KIS
+- text:   
+- main:
+  - heading "Docházka a uzavření" [level=1]
+  - paragraph: Potvrďte skutečně proběhlou lekci, účastníky a trenéry. Odpověď v rozvrhu ani předpokládaná soupiska nepotvrzuje skutečnou účast.
+  - paragraph:
+    - link "Rozvrh a nezapsané lekce":
+      - /url: planovac.php
+    - text: ·
+    - link "Evidence tréninků":
+      - /url: moje_treninky.php
+  - generic: Docházka byla uložena jako verze 1.
+  - heading "Práce s lekcí" [level=2]
+  - text: Najít lekci podle názvu
+  - textbox "Najít lekci podle názvu"
+  - text: Datum lekce
+  - textbox "Datum lekce": 2026-10-24
+  - button "Vyhledat lekce"
+  - paragraph: Nejvýše 50 odpovídajících lekcí. Pro starší termín změňte datum nebo jej vymažte a hledejte podle názvu.
+  - list
+  - paragraph: Žádná odpovídající lekce ve vašem oprávnění. Změňte název nebo datum.
+  - 'heading "Trénink #55 · 2026-10-24" [level=2]'
+  - paragraph: "LOCALHOST NEPLATIT – přejímka E: technika na kole, 75 minut."
+  - paragraph:
+    - text: "Stav:"
+    - strong: Uzavřená docházka, verze 1
+    - text: . Zápis z papíru uchová okamžik přepisu i skutečné konání.
+  - paragraph:
+    - text: "Ověření podkladů k datu lekce:"
+    - 'link "Sportovec #91"':
+      - /url: medical_clearance_status.php?person_id=91&on=2026-10-24
+  - text: Skutečný začátek
+  - textbox "Skutečný začátek": 2026-10-24T16:00
+  - text: Skutečný konec
+  - textbox "Skutečný konec": 2026-10-24T17:15
+  - text: Skutečně přítomní sportovci
+  - listbox "Skutečně přítomní sportovci":
+  - text: Skutečně přítomní trenéři
+  - listbox "Skutečně přítomní trenéři":
+  - text: Podklad
+  - combobox "Podklad":
+  - text: Důvod účasti hostů mimo očekávanou soupisku
+  - textbox "Důvod účasti hostů mimo očekávanou soupisku"
+  - text: Důvod zápisu nebo opravy
+  - textbox "Důvod zápisu nebo opravy"
+  - checkbox "Potvrzuji skutečný konec, účastníky a trenéry. Lekce již skončila."
+  - text: Potvrzuji skutečný konec, účastníky a trenéry. Lekce již skončila.
+  - button "Uložit opravenou verzi"
+  - button "Zneplatnit lekci s uvedeným důvodem"
+  - heading "Historie uzavření" [level=3]
+  - list:
+    - listitem: Verze 1 · 2026-10-24 22:10:03 · closed · LOCALHOST NEPLATIT – pouze syntetická přejímka uzavření tréninku.
+  - heading "Zapsané lekce k uzavření a opravě" [level=2]
+  - paragraph: Neuzavřené lekce jsou první. Chybějící docházka neznamená absenci všech sportovců.
+  - table:
+    - rowgroup:
+      - row "Datum Trénink Stav":
+        - columnheader "Datum"
+        - columnheader "Trénink"
+        - columnheader "Stav"
+        - columnheader
+    - rowgroup:
+      - 'row "2026-10-23 LOCALHOST NEPLATIT UAT-OSOBY23 návrat Zpět po opravě K uzavření Docházka #34"':
+        - cell "2026-10-23"
+        - cell "LOCALHOST NEPLATIT UAT-OSOBY23 návrat Zpět po opravě"
+        - cell "K uzavření"
+        - 'cell "Docházka #34"':
+          - 'link "Docházka #34"':
+            - /url: "?id=34"
+      - 'row "2026-10-23 LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání K uzavření Docházka #33"':
+        - cell "2026-10-23"
+        - cell "LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání"
+        - cell "K uzavření"
+        - 'cell "Docházka #33"':
+          - 'link "Docházka #33"':
+            - /url: "?id=33"
+      - 'row "2026-10-23 LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání K uzavření Docházka #32"':
+        - cell "2026-10-23"
+        - cell "LOCALHOST NEPLATIT UAT-OSOBY23 ochrana odeslání"
+        - cell "K uzavření"
+        - 'cell "Docházka #32"':
+          - 'link "Docházka #32"':
+            - /url: "?id=32"
+      - 'row "2026-10-24 LOCALHOST NEPLATIT – přejímka E: technika na kole, 75 minut. Uzavřeno, verze 1 Docházka #55"':
+        - cell "2026-10-24"
+        - 'cell "LOCALHOST NEPLATIT – přejímka E: technika na kole, 75 minut."'
+        - cell "Uzavřeno, verze 1"
+        - 'cell "Docházka #55"':
+          - 'link "Docházka #55"':
+            - /url: "?id=55"
+      - 'row "2026-10-23 LOCALHOST NEPLATIT UAT-OSOBY23 plán a měření – opraveno Uzavřeno, verze 2 Docházka #31"':
+        - cell "2026-10-23"
+        - cell "LOCALHOST NEPLATIT UAT-OSOBY23 plán a měření – opraveno"
+        - cell "Uzavřeno, verze 2"
+        - 'cell "Docházka #31"':
+          - 'link "Docházka #31"':
+            - /url: "?id=31"
+      - 'row "2026-10-22 LOCALHOST NEPLATIT SIMULACE UAT-BROWSER23 koordinace a technika Uzavřeno, verze 1 Docházka #30"':
+        - cell "2026-10-22"
+        - cell "LOCALHOST NEPLATIT SIMULACE UAT-BROWSER23 koordinace a technika"
+        - cell "Uzavřeno, verze 1"
+        - 'cell "Docházka #30"':
+          - 'link "Docházka #30"':
+            - /url: "?id=30"

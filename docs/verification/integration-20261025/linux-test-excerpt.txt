@@ -1,0 +1,16 @@
+PHPUnit na PHP 8.2	Spustit testy	2026-10-25T11:05:41.5267230Z OK (1717 tests, 34744 assertions)
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-10-25T11:05:42.1278835Z OK (3 tests, 45 assertions)
+MariaDB integrační smoke (MariaDB 11.4)	Ověřit skutečnou Evidence zálohu na MariaDB	2026-10-25T11:05:45.6078068Z MariaDB database backup and restore smoke OK (282 tables)
+MariaDB integrační smoke (MariaDB 11.4)	Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB	2026-10-25T11:05:46.5500019Z     "status": "PASS",
+MariaDB integrační smoke (MariaDB 11.4)	Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB	2026-10-25T11:05:46.5500476Z     "server_version": "11.4.13-MariaDB-ubu2404",
+MariaDB integrační smoke (MariaDB 11.4)	Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB	2026-10-25T11:05:46.5501014Z     "checks": 23,
+MariaDB integrační smoke (MariaDB 11.4)	Ověřit ruční původ katalogu na MariaDB	2026-10-25T11:05:51.7153814Z MariaDB manual catalog origin smoke OK (11.4.13-MariaDB-ubu2404)
+MariaDB integrační smoke (MariaDB 11.4)	Ověřit pracovní pozice a superadmin audit na MariaDB	2026-10-25T11:05:51.7992645Z MariaDB staff workspace smoke OK (11.4.13-MariaDB-ubu2404)
+MariaDB integrační smoke (MariaDB 11.4)	Ověřit zveřejnění registračních textů a souběh na MariaDB	2026-10-25T11:05:52.1191804Z MariaDB registration texts and custom consents smoke OK (11.4.13-MariaDB-ubu2404)
+MariaDB integrační smoke (MariaDB 10.3)	Ověřit skutečnou Evidence zálohu na MariaDB	2026-10-25T11:05:46.2457573Z MariaDB database backup and restore smoke OK (282 tables)
+MariaDB integrační smoke (MariaDB 10.3)	Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB	2026-10-25T11:05:48.2118634Z     "status": "PASS",
+MariaDB integrační smoke (MariaDB 10.3)	Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB	2026-10-25T11:05:48.2119460Z     "server_version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+MariaDB integrační smoke (MariaDB 10.3)	Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB	2026-10-25T11:05:48.2120368Z     "checks": 23,
+MariaDB integrační smoke (MariaDB 10.3)	Ověřit ruční původ katalogu na MariaDB	2026-10-25T11:05:56.4731094Z MariaDB manual catalog origin smoke OK (10.3.39-MariaDB-1:10.3.39+maria~ubu2004)
+MariaDB integrační smoke (MariaDB 10.3)	Ověřit pracovní pozice a superadmin audit na MariaDB	2026-10-25T11:05:56.5898372Z MariaDB staff workspace smoke OK (10.3.39-MariaDB-1:10.3.39+maria~ubu2004)
+MariaDB integrační smoke (MariaDB 10.3)	Ověřit zveřejnění registračních textů a souběh na MariaDB	2026-10-25T11:05:56.9207572Z MariaDB registration texts and custom consents smoke OK (10.3.39-MariaDB-1:10.3.39+maria~ubu2004)

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "different_snapshot_keys": [
+    "predecessor_id",
+    "previous_snapshot_sha256",
+    "revision",
+    "snapshot_at"
+  ],
+  "financial_snapshot_unchanged": true,
+  "archived_original_pdfs_identical": true,
+  "regenerated_pdf": "klubove-vyporadani.pdf"
+}

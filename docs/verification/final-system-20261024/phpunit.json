@@ -1,0 +1,27 @@
+{
+  "status": "PASS_WITH_PLATFORM_SKIPS",
+  "name": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022\\phpunit.xml.dist",
+  "tests": "1709",
+  "assertions": "34494",
+  "errors": "0",
+  "failures": "0",
+  "skipped": "3",
+  "time": "117.209314",
+  "skipped_tests": [
+    {
+      "class": "Tests\\Unit\\PrivateStorageProbeTest",
+      "name": "testCanonicalPublicSymlinkFailsBeforeWriting",
+      "reason": null
+    },
+    {
+      "class": "Tests\\Unit\\PrivateStorageProbeTest",
+      "name": "testCleanupDoesNotFollowOrDeleteReplacementSymlink",
+      "reason": null
+    },
+    {
+      "class": "Tests\\Unit\\ProductionPrivateStorageProvisionTest",
+      "name": "testRefusesSymlinkedDataBeforeChanges",
+      "reason": null
+    }
+  ]
+}

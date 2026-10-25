@@ -1,0 +1,217 @@
+{
+  "status": "PASS",
+  "date": "2026-10-25",
+  "tested_head": "075d92ac19182c8da514a0ca9f56ebbe632ffe7b",
+  "http_started_head": "7fb9e0032ea5fd63ccead0574944d7dee9254239",
+  "application_source_unchanged_since_http_start": true,
+  "application_php_files_sha256_checked": 735,
+  "application_source_changes": [],
+  "runtime": "C:\\Users\\Marek\\AppData\\Local\\EvidencePavelIntegration20261025\\EvidencePavelB1\\finance-b1-20261022",
+  "production_mutations": false,
+  "external_sends": false,
+  "http": {
+    "suites": 26,
+    "checks": 805,
+    "effective_pass": true,
+    "initial_pass": 25,
+    "initial_failed": [
+      {
+        "script": "ClubCutoverHttpAcceptance",
+        "status": "FAIL",
+        "exit_code": 1,
+        "started_at": "2026-10-25T12:05:22.9440136+01:00",
+        "seconds": 16.22,
+        "log": "ClubCutoverHttpAcceptance.log"
+      }
+    ],
+    "retry": [
+      {
+        "script": "ClubCutoverHttpAcceptance",
+        "status": "PASS",
+        "exit_code": 0,
+        "started_at": "2026-10-25T12:06:09.0998005+01:00",
+        "seconds": 5.1,
+        "log": "ClubCutoverHttpAcceptance.log"
+      }
+    ],
+    "retry_reason": "Initial cutover checkpoint HTTP client timeout at 15s during overlapping local read-only hash scan; unchanged suite passed alone in 5.1s. Contention is suspected, not proven."
+  },
+  "concurrency_and_variable_symbol": [
+    {
+      "script": "PaymentVariableSymbolMigrationMariaDb",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 0.69,
+      "checks": 10
+    },
+    {
+      "script": "ShopFulfillmentMariaDbRace",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 2.25,
+      "checks": 6
+    },
+    {
+      "script": "ShopReturnsMariaDbRace",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 1.98,
+      "checks": 19
+    },
+    {
+      "script": "AccountingExportSnapshotMariaDbTest",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 1.3,
+      "checks": 15
+    },
+    {
+      "script": "AccountingStockSnapshotMariaDbTest",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 1.6,
+      "checks": 11
+    },
+    {
+      "script": "TrainingClosureMariaDbRace",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 2.75,
+      "checks": 12
+    },
+    {
+      "script": "MembershipAuthorizationMariaDbRace",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 4.58,
+      "checks": 15
+    }
+  ],
+  "migration_acceptance": {
+    "checks": 17,
+    "synthetic_only": true
+  },
+  "migration_catalog": {
+    "ok": true,
+    "current": true,
+    "reason": "current",
+    "legacy_version": "2.20.2",
+    "legacy_target": "2.20.2",
+    "legacy_state": "current",
+    "ledger_exists": true,
+    "catalog_count": 138,
+    "pending": []
+  },
+  "isolation": {
+    "ok": true,
+    "checked_at": "2026-10-25T12:02:58+01:00",
+    "database": {
+      "db_name": "evidence_b1",
+      "port": 33426,
+      "data_directory": "C:\\Users\\Marek\\AppData\\Local\\EvidencePavelIntegration20261025\\EvidencePavelB1\\finance-b1-20261022\\mysql\\",
+      "version": "10.4.32-MariaDB"
+    },
+    "private_storage": "C:/Users/Marek/AppData/Local/EvidencePavelIntegration20261025/EvidencePavelB1/finance-b1-20261022/private",
+    "session_storage": "C:/Users/Marek/AppData/Local/EvidencePavelIntegration20261025/EvidencePavelB1/finance-b1-20261022/sessions",
+    "external_transports_disabled": true,
+    "integration_flags_disabled": true,
+    "mail_sink_verified": true,
+    "application_root": "C:\\xampp\\htdocs\\evidencePavel-integration-20261025",
+    "note": "Dedicated synthetic server; no source database copied. Use this PHP ini only for web/isolated app execution; HTTP client and race harness need normal CLI process/cURL functions."
+  },
+  "isolation_final": {
+    "status": "PASS",
+    "read_only": true,
+    "checked_at": "2026-10-25T12:09:29+01:00",
+    "database_identity": true,
+    "table_readiness": {
+      "status": "PASS",
+      "readable_owned_tables": 327,
+      "unreadable_tables": [],
+      "missing_required_tables": [],
+      "absent_contract_tables": [
+        "ucto_gs_kategorie",
+        "ucto_gs_link_targets",
+        "ucto_gs_linky"
+      ]
+    },
+    "external_transports_disabled": true,
+    "private_paths_outside_web_root": true,
+    "production_authorized": false
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-25_110808_0de6e3c6.sql.gz",
+    "manifest": "evidence_2026-10-25_110808_0de6e3c6.manifest.json",
+    "sha256": "a6fb670e3f879c767c29e289a696e7c6e38e54b86d6695bed32d580467f1347c",
+    "tables": 327,
+    "triggers": 2,
+    "compressed_bytes": 568012,
+    "location": "C:\\Users\\Marek\\AppData\\Local\\EvidencePavelIntegration20261025\\EvidencePavelB1\\finance-b1-20261022\\backups-r38-r44"
+  },
+  "restore": {
+    "status": "PASS",
+    "stock_variants_reconciled": 6,
+    "closure_revisions_reconciled": 5,
+    "sports_statement_hashes_checked": 1,
+    "offline_admissions_checked": 1,
+    "database": "evidence_b7_restore_2f77e8f3",
+    "tables": 327,
+    "new_owned_tables": 16,
+    "triggers": 2,
+    "private_references_checked": 15,
+    "backup_sha256": "a6fb670e3f879c767c29e289a696e7c6e38e54b86d6695bed32d580467f1347c",
+    "private_storage_restored": true,
+    "private_files_restored": 40,
+    "private_archive_sha256": "e4ee6eb3f8ffb62f28753878e3f72a54e0838f4cef0d4dce0c3fa1c18d6210bd",
+    "administration_owned_tables": 12,
+    "reward_payouts_reconciled": 5,
+    "migration_owned_tables": 9,
+    "migration_maps_reconciled": 4,
+    "cutover_snapshot_hashes_checked": 10,
+    "migration_full_source_hashes_checked": 5,
+    "migration_original_archives_checked": 5,
+    "pre_contract_synthetic_batch_manifests": 0,
+    "payment_return_links_reconciled": 4,
+    "private_weekly_reports_reconciled": 2
+  },
+  "initial_restore": {
+    "status": "PASS",
+    "stock_variants_reconciled": 6,
+    "closure_revisions_reconciled": 4,
+    "sports_statement_hashes_checked": 1,
+    "offline_admissions_checked": 1,
+    "database": "evidence_b7_restore_bbbb695b",
+    "tables": 327,
+    "new_owned_tables": 16,
+    "triggers": 2,
+    "private_references_checked": 15,
+    "backup_sha256": "c28dd0110373db95823ff5c250f120b6db18012bde2b304fc5da2f20548fa173",
+    "private_storage_restored": true,
+    "private_files_restored": 25,
+    "private_archive_sha256": "ba1e736f48284eff8d164cf6f3f77edfe76de8287dc8d2be7a11977ae00ca80e",
+    "administration_owned_tables": 12,
+    "reward_payouts_reconciled": 5,
+    "migration_owned_tables": 9,
+    "migration_maps_reconciled": 0,
+    "cutover_snapshot_hashes_checked": 10,
+    "migration_full_source_hashes_checked": 0,
+    "migration_original_archives_checked": 0,
+    "pre_contract_synthetic_batch_manifests": 0,
+    "payment_return_links_reconciled": 4,
+    "private_weekly_reports_reconciled": 2
+  },
+  "original_runtime": {
+    "path": "C:\\Users\\Marek\\AppData\\Local\\EvidencePavelB1\\finance-b1-20261022",
+    "owner": "C:\\xampp\\htdocs\\evidencePavel-finance-b1-20261022",
+    "data_directory_preserved": true,
+    "private_directory_preserved": true,
+    "action": "Only existing owned processes were gracefully stopped; no old config or database was copied, reset, removed or reassigned."
+  },
+  "scope_limits": [
+    "No real source data imported",
+    "No production or external service contacted",
+    "No human or accountant acceptance inferred",
+    "Linux proof recorded separately by coordinator"
+  ]
+}
