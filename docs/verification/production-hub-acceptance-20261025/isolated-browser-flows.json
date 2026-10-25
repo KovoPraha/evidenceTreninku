@@ -1,0 +1,92 @@
+[
+  {
+    "id": "A01",
+    "result": "PASS",
+    "evidence": "Rodič rodic@localhost.test má děti Sportovec A/B a vlastní profil; žádná cizí osoba."
+  },
+  {
+    "id": "B20",
+    "result": "PARTIAL",
+    "evidence": "UI vytvoření, rotace a revokace ICS; starý odkaz odmítnut. 30denní program zobrazen. Přidání do externího kalendáře neprovedeno."
+  },
+  {
+    "id": "B27",
+    "result": "PASS",
+    "evidence": "UI uložení 3/14/7 dní a vypnutí, bez skutečného odesílání; fronta/outbox kryty technickými testy. UI vytvořilo konkrétní náhled a doručilo 1 zprávu jen do chráněného souborového outboxu."
+  },
+  {
+    "id": "B21",
+    "result": "PARTIAL",
+    "evidence": "UI opt-in/out a přesný náhled 3 rodinných položek, roční přehled prázdný; filtrování zaplacených kryto technickou sadou."
+  },
+  {
+    "id": "A03",
+    "result": "PASS",
+    "evidence": "UI objednávka KP2610259848A23B02: jediný příjemce Sportovec A, 1290 CZK, testovací QR a LOCALHOST NEPLATIT."
+  },
+  {
+    "id": "A04",
+    "result": "PASS",
+    "evidence": "UI potvrzení 1290 CZK s důvodem, jediná aktivní účast, 11/12 volných; sportovní účet potvrdil jednu aktivní školní soupisku 1.9.2026–28.2.2027 a uhrazenou objednávku."
+  },
+  {
+    "id": "A05",
+    "result": "PASS",
+    "evidence": "UI odmítlo druhou věkovou soupisku v téže sezoně; náhled a potvrzení přesunulo osobu #7 do U17 2027 se zachováním identity a kroužku."
+  },
+  {
+    "id": "A06",
+    "result": "PASS",
+    "evidence": "UI 2 přesuny (věk/dráha), 2 ponechání včetně výjimky. Opraven věk demo A i reset po převodu; dva další technické cykly a idempotence ověřeny 7 kontrolami."
+  },
+  {
+    "id": "A02",
+    "result": "PASS",
+    "evidence": "Přihlášení localhost-uat-athlete: vlastní tréninky, soupisky, jediná vlastní platba; bez Sportovec B a rodiče."
+  },
+  {
+    "id": "A08",
+    "result": "PASS",
+    "evidence": "UI vybralo pouze způsobilé dítě A ze dvou soupisek, vznikla jediná přihláška; opětovný výběr A je zakázaný."
+  },
+  {
+    "id": "B14",
+    "result": "PASS",
+    "evidence": "Bezplatná cílená akce: přihlášení A, UI blokace duplicity, storno s důvodem; kapacita obnovena na 2/2."
+  },
+  {
+    "id": "B17",
+    "result": "PARTIAL",
+    "evidence": "UI bezplatná rezervace 3→2 míst, storno 2→3; placený slot vytvořil objednávku KP261025FA0EDD8CAB za 250 CZK s QR NEPLATIT. Admin změnil kapacitu 3→4→3; objednávka stornována a oba termíny opět volné. Potvrzení platby placeného slotu v tomto UI průchodu neprovedeno."
+  },
+  {
+    "id": "A10",
+    "result": "PARTIAL",
+    "evidence": "Časová osa #5 obsahuje aktivaci programu, objednávkové události a změny soupisek s aktérem a zdrojem. Rezervační historie účtu #60 samostatně neověřena."
+  },
+  {
+    "id": "B02",
+    "result": "PASS",
+    "evidence": "Nový izolovaný trénink #20: UI editace náplně, délky 1→1.5h, vzdálenosti 1.5→2.5km; čas 02:13.450 a účastník zachovány. Návrat správně sprava_vsech_treninku.php."
+  },
+  {
+    "id": "B01",
+    "result": "PARTIAL",
+    "evidence": "UI nový trénink #20 s účastníkem, kategorií a km; neplatný čas cca 2 min blokován validací. Posilovna/RPE a další jednotky kryty technickými testy."
+  },
+  {
+    "id": "B15",
+    "result": "PASS",
+    "evidence": "UI kurz A koupen, 1290 CZK potvrzeno, účast 1 aktivní. Storno vytvořilo samostatnou vratku, hospodář uložil testovací referenci; program poté 0 aktivních, 12/12 volných."
+  },
+  {
+    "id": "B10",
+    "result": "PARTIAL",
+    "evidence": "UI nezaplacený velodrom stornován, zaplacený kurz refund_required a potvrzená vratka s referencí. Fyzické skladové zboží kryto izolovanými HTTP sadami."
+  },
+  {
+    "id": "B29",
+    "result": "PASS",
+    "evidence": "UI dashboard, provozní přehled, kvalita sportovních dat a kontrola importu otevřeny v příslušných kontextech; auditní filtr konkrétního trenéra vracel jeho události."
+  }
+]

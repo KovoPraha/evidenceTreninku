@@ -1,0 +1,428 @@
+[
+  {
+    "label": "Administrace",
+    "url": "http://127.0.0.1:18096/admin_dashboard.php",
+    "headings": [
+      "Účty a přístupy",
+      "Bezpečnost a diagnostika",
+      "Administrace: vyžaduje pozornost"
+    ],
+    "error": false
+  },
+  {
+    "label": "Správa trenérů",
+    "url": "http://127.0.0.1:18096/sprava_treneru.php",
+    "headings": [
+      "Účty a přístupy",
+      "Bezpečnost a diagnostika",
+      "Správa pracovních účtů"
+    ],
+    "error": false
+  },
+  {
+    "label": "Nastavení oprávnění",
+    "url": "http://127.0.0.1:18096/nastaveni_opravneni.php",
+    "headings": [
+      "Účty a přístupy",
+      "Bezpečnost a diagnostika",
+      "Nastavení oprávnění"
+    ],
+    "error": false
+  },
+  {
+    "label": "Audit log",
+    "url": "http://127.0.0.1:18096/auditlog/seznam.php",
+    "headings": [
+      "Účty a přístupy",
+      "Bezpečnost a diagnostika",
+      "🕵️ Audit log"
+    ],
+    "error": false
+  },
+  {
+    "label": "Účty a osoby",
+    "url": "http://127.0.0.1:18096/eshop_identity_admin.php",
+    "headings": [
+      "Členové",
+      "KIS a soupisky",
+      "Kontrola",
+      "K dořešení",
+      "Účty, rodiče a sportovci"
+    ],
+    "error": false
+  },
+  {
+    "label": "Soupisky",
+    "url": "http://127.0.0.1:18096/kis_rosters_admin.php",
+    "headings": [
+      "Členové",
+      "KIS a soupisky",
+      "Kontrola",
+      "K dořešení",
+      "KIS – historické sezony a soupisky"
+    ],
+    "error": false
+  },
+  {
+    "label": "Auditní osa osoby",
+    "url": "http://127.0.0.1:18096/person_audit_admin.php",
+    "headings": [
+      "Členové",
+      "KIS a soupisky",
+      "Kontrola",
+      "K dořešení",
+      "Auditní časová osa osoby"
+    ],
+    "error": false
+  },
+  {
+    "label": "Synchronizace evidence",
+    "url": "http://127.0.0.1:18096/sync_evidence.php",
+    "headings": [
+      "Členové",
+      "KIS a soupisky",
+      "Kontrola",
+      "K dořešení",
+      "Synchronizace evidence"
+    ],
+    "error": false
+  },
+  {
+    "label": "KIS centrum",
+    "url": "http://127.0.0.1:18096/kis_sync_center.php",
+    "headings": [
+      "Členové",
+      "KIS a soupisky",
+      "Kontrola",
+      "K dořešení",
+      "KIS synchronizační centrum"
+    ],
+    "error": false
+  },
+  {
+    "label": "Vybrat osoby pro hromadnou akci",
+    "url": "http://127.0.0.1:18096/sprava_sportovcu.php",
+    "headings": [
+      "Členové",
+      "KIS a soupisky",
+      "Kontrola",
+      "K dořešení",
+      "\n                    Správa sportovců\n                "
+    ],
+    "error": false
+  },
+  {
+    "label": "Správa tréninků",
+    "url": "http://127.0.0.1:18096/sprava_vsech_treninku.php",
+    "headings": [
+      "Sportovní provoz",
+      "Kontrola a výstupy",
+      "Navazující agenda",
+      "K dořešení",
+      "Správa tréninků"
+    ],
+    "error": false
+  },
+  {
+    "label": "Přehled trenéra",
+    "url": "http://127.0.0.1:18096/prehled_trenera.php",
+    "headings": [
+      "Sportovní provoz",
+      "Kontrola a výstupy",
+      "Navazující agenda",
+      "K dořešení",
+      "Přehled tréninků"
+    ],
+    "error": false
+  },
+  {
+    "label": "Přehled závodů",
+    "url": "http://127.0.0.1:18096/prehled_zavodu.php",
+    "headings": [
+      "Sportovní provoz",
+      "Kontrola a výstupy",
+      "Navazující agenda",
+      "K dořešení",
+      "Přehled závodů"
+    ],
+    "error": false
+  },
+  {
+    "label": "Nový závod",
+    "url": "http://127.0.0.1:18096/formular_zavod.php",
+    "headings": [
+      "Sportovní provoz",
+      "Kontrola a výstupy",
+      "Navazující agenda",
+      "K dořešení",
+      "\n                    Nový závod\n                "
+    ],
+    "error": false
+  },
+  {
+    "label": "Kvalita sportovních dat",
+    "url": "http://127.0.0.1:18096/sports_data_quality_admin.php",
+    "headings": [
+      "Sportovní provoz",
+      "Kontrola a výstupy",
+      "Navazující agenda",
+      "K dořešení",
+      "Kvalita sportovních dat"
+    ],
+    "error": false
+  },
+  {
+    "label": "Příprava importu",
+    "url": "http://127.0.0.1:18096/sports_import_review_admin.php",
+    "headings": [
+      "Sportovní provoz",
+      "Kontrola a výstupy",
+      "Navazující agenda",
+      "K dořešení",
+      "Příprava importu sportovních dat"
+    ],
+    "error": false
+  },
+  {
+    "label": "Objednávky",
+    "url": "http://127.0.0.1:18096/eshop_orders_admin.php",
+    "headings": [
+      "Objednávky",
+      "Komunikace",
+      "K dořešení",
+      "Objednávky"
+    ],
+    "error": false
+  },
+  {
+    "label": "Členské předpisy",
+    "url": "http://127.0.0.1:18096/member_charges_admin.php",
+    "headings": [
+      "Platby",
+      "Kredity a provoz",
+      "Navazující agenda",
+      "K dořešení",
+      "Členské předpisy",
+      "Nový členský předpis"
+    ],
+    "error": false
+  },
+  {
+    "label": "Připomínky plateb",
+    "url": "http://127.0.0.1:18096/member_charge_reminders_admin.php",
+    "headings": [
+      "Platby",
+      "Kredity a provoz",
+      "Navazující agenda",
+      "K dořešení",
+      "Připomínky členských plateb"
+    ],
+    "error": false
+  },
+  {
+    "label": "Provozní přehled",
+    "url": "http://127.0.0.1:18096/provozni_prehled_admin.php",
+    "headings": [
+      "Platby",
+      "Kredity a provoz",
+      "Navazující agenda",
+      "K dořešení",
+      "Provozní přehled správce",
+      "Případy k dořešení",
+      "Předání účetních podkladů #1 Otevřít agendu",
+      "Předání účetních podkladů #2 Otevřít agendu",
+      "Předání účetních podkladů #3 Otevřít agendu",
+      "Předání účetních podkladů #4 Otevřít agendu",
+      "Předání účetních podkladů #6 Otevřít agendu",
+      "Předání účetních podkladů #7 Otevřít agendu",
+      "Předání účetních podkladů #8 Otevřít agendu",
+      "Předání účetních podkladů #9 Otevřít agendu",
+      "Předání účetních podkladů #10 Otevřít agendu",
+      "Předání účetních podkladů #12 Otevřít agendu"
+    ],
+    "error": false
+  },
+  {
+    "label": "Správa velodromu",
+    "url": "http://127.0.0.1:18096/verejny_velodrom_admin.php",
+    "headings": [
+      "Kroužky",
+      "Akce a sportoviště",
+      "Veřejné hodiny velodromu"
+    ],
+    "error": false
+  },
+  {
+    "label": "Klubové akce a soupisky",
+    "url": "http://127.0.0.1:18096/eshop_events_admin.php",
+    "headings": [
+      "Kroužky",
+      "Akce a sportoviště",
+      "Klubové akce K3",
+      "Přidat termín",
+      "Propojit produkt stejného typu"
+    ],
+    "error": false
+  },
+  {
+    "label": "Kalendář sportovišť",
+    "url": "http://127.0.0.1:18096/kalendar_sportovist.php",
+    "headings": [
+      "Kroužky",
+      "Akce a sportoviště",
+      "Kalendář sportovišť"
+    ],
+    "error": false
+  },
+  {
+    "label": "Nová rezervace",
+    "url": "http://127.0.0.1:18096/rezervovat_sportoviste.php",
+    "headings": [
+      "Kroužky",
+      "Akce a sportoviště",
+      "Nová rezervace sportoviště"
+    ],
+    "error": false
+  },
+  {
+    "label": "Nová lekce",
+    "url": "http://127.0.0.1:18096/individualni_lekce_form.php",
+    "headings": [
+      "Kroužky",
+      "Akce a sportoviště",
+      "\n            \n            Nová individuální lekce        "
+    ],
+    "error": false
+  },
+  {
+    "label": "Správa lekcí",
+    "url": "http://127.0.0.1:18096/individualni_lekce_sprava.php",
+    "headings": [
+      "Kroužky",
+      "Akce a sportoviště",
+      "Individuální lekce"
+    ],
+    "error": false
+  },
+  {
+    "label": "Nový plán",
+    "url": "http://127.0.0.1:18096/planovany_trenink_form.php",
+    "headings": [
+      "Moje práce",
+      "Evidence",
+      "Rezervace a nástroje",
+      "Navazující agenda",
+      "\n            \n            Nový plánovaný trénink        "
+    ],
+    "error": false
+  },
+  {
+    "label": "Plánovač",
+    "url": "http://127.0.0.1:18096/planovac.php",
+    "headings": [
+      "Moje práce",
+      "Evidence",
+      "Rezervace a nástroje",
+      "Navazující agenda",
+      "Plánovač tréninků"
+    ],
+    "error": false
+  },
+  {
+    "label": "Výkaz činností",
+    "url": "http://127.0.0.1:18096/vypis_vykazu.php",
+    "headings": [
+      "Moje práce",
+      "Evidence",
+      "Rezervace a nástroje",
+      "Navazující agenda",
+      "Výkaz činností",
+      "Tréninky",
+      "Další činnosti"
+    ],
+    "error": false
+  },
+  {
+    "label": "Moje tréninky",
+    "url": "http://127.0.0.1:18096/moje_treninky.php",
+    "headings": [
+      "Moje práce",
+      "Evidence",
+      "Rezervace a nástroje",
+      "Navazující agenda",
+      "Moje tréninky"
+    ],
+    "error": false
+  },
+  {
+    "label": "Průvodce A07",
+    "url": "http://127.0.0.1:18096/kis_training_a07_admin.php",
+    "headings": [
+      "Tato stránka patří do jiné pracovní pozice"
+    ],
+    "error": false,
+    "result": "EXPECTED_CONTEXT_DENIAL"
+  },
+  {
+    "label": "Průvodce A07",
+    "url": "http://127.0.0.1:18096/kis_training_a07_admin.php",
+    "headings": [
+      "Členové",
+      "KIS a soupisky",
+      "Kontrola",
+      "K dořešení",
+      "A07 – soupiska, trénink a docházka",
+      "LOCALHOST – trénink pro soupisky"
+    ],
+    "error": false
+  },
+  {
+    "label": "Kontrola importu",
+    "url": "http://127.0.0.1:18096/eshop_admin.php",
+    "headings": [
+      "Katalog",
+      "Ceny a zveřejnění",
+      "Navazující agenda",
+      "Administrace e-shopu"
+    ],
+    "error": false
+  },
+  {
+    "label": "Aktivace katalogu",
+    "url": "http://127.0.0.1:18096/eshop_catalog_publication_admin.php",
+    "headings": [
+      "Katalog",
+      "Ceny a zveřejnění",
+      "Navazující agenda",
+      "Řízená aktivace katalogu"
+    ],
+    "error": false
+  },
+  {
+    "label": "Správa kupónů",
+    "url": "http://127.0.0.1:18096/eshop_coupons_admin.php",
+    "headings": [
+      "Katalog",
+      "Ceny a zveřejnění",
+      "Navazující agenda",
+      "Slevové kupóny K4"
+    ],
+    "error": false
+  },
+  {
+    "label": "Klubové ceny",
+    "url": "http://127.0.0.1:18096/eshop_member_prices_admin.php",
+    "headings": [
+      "Katalog",
+      "Ceny a zveřejnění",
+      "Navazující agenda",
+      "Klubové ceny pro konkrétní soupisky",
+      "Sleva pro všechny zákazníky",
+      "Slevový kód",
+      "Cena jen pro klubovou skupinu",
+      "A. Hromadná sleva kategorie",
+      "B. Přesná cena produktu"
+    ],
+    "error": false
+  }
+]
