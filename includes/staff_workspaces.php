@@ -318,10 +318,10 @@ function staffRouteOwners(): array
             'formular_zavod.php','import_vysledku_zavodu.php','oznameni.php','prehled_zavodu.php',
             'search_sportovci.php','sprava_treninku.php','tydenni_report.php','weekly_report_file.php','ulozit_zavod.php',
             'update_trenink.php','update_zavod.php','verejny_prehled.php','vypis_vsech_vykazu.php',
-            'zavod_detail.php',
+            'zavod_detail.php','zavod_vysledky.php',
         ],
         'registrar' => [
-            'athlete_sensitive_admin.php','hromadne_podskupiny.php','kis_training_a07_admin.php',
+            'athlete_sensitive_admin.php','hromadne_podskupiny.php','kis_training_a07_admin.php','kis_review_admin.php',
             'sportovci_hromadne.php','sportovec_karta.php','paper_registration_file.php',
             'medical_clearance_file.php',
         ],

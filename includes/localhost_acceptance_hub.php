@@ -418,10 +418,10 @@ function localhostAcceptanceScenariosB(string $root): array
             ],
         ],
         [
-            'id' => 'B04', 'role' => 'Trenér', 'area' => 'Závody', 'declared_status' => 'ready',
-            'steps' => ['Založte závod s kategorií a URL výsledků.', 'Přidejte klubového i externího závodníka s pořadím a časem.', 'Přidejte měření k závodu.', 'Otevřete detail a poté závod editujte.'],
-            'expected' => 'Detail ukazuje interní i externí výsledky, měření a soubory; editace nezničí historii.',
-            'note' => '',
+            'id' => 'B04', 'role' => 'Vedoucí sportu', 'area' => 'Závody', 'declared_status' => 'ready',
+            'steps' => ['Založte závod s kategorií a URL výsledků a přihlaste klubovou osobu.', 'V detailu otevřete Správa výsledků: vložte vlastní osobu a dva externí účastníky se stejným jménem, různými klíči a více jízdami.', 'Ověřte chybný čas, potom náhled, uložení konceptu a zveřejnění s důvodem.', 'Opravte výsledky přes CSV a obnovte starší revizi jako nový koncept; ověřte detail, historii a původní měření.'],
+            'expected' => 'Externí účastníci nezakládají členy; koncept nemění publikovanou sadu, opravy a návraty zachovají audit. Neplatný či zastaralý zápis nic nepřepíše.',
+            'note' => 'Zveřejnění je pouze v interním detailu. Historická data se automaticky nemigrují; disciplínu a jízdu potvrzuje správce výsledků.',
             'links' => [
                 ['label' => 'Nový závod', 'path' => 'formular_zavod.php', 'scope' => 'trainer'],
                 ['label' => 'Vybrat závod pro detail a editaci', 'path' => 'prehled_zavodu.php', 'scope' => 'trainer'],
@@ -611,9 +611,9 @@ function localhostAcceptanceScenariosB(string $root): array
         ],
         [
             'id' => 'B23', 'role' => 'Administrátor', 'area' => 'KIS a členství', 'declared_status' => 'ready',
-            'steps' => ['Projděte 4krokový průvodce synchronizace: nahrání tří XLSX, mapování soupisek, náhled, provedení.', 'Zkontrolujte, že osoby mimo import nebyly archivovány.'],
-            'expected' => 'Preview ukazuje nové/aktualizované/beze změny a provedení běží v transakci s mapovanými vazbami.',
-            'note' => '',
+            'steps' => ['Nahrajte tři syntetické XLSX a předejte konkrétní náhled do KIS centra.', 'Otevřete řízené přiřazení: ověřte běh, archiv a fingerprint, podle stabilních KIS ID zvolte existující nebo novou osobu a aktuální soupisky.', 'V izolaci potvrďte náhled s důvodem, zkontrolujte běžnou kartu osoby a soupisky; osoby mimo import ani účty se nemění.', 'Proveďte kompenzační návrat. Změna zdroje či cíle blokuje aplikaci; novější změna osoby nebo jejích vazeb blokuje návrat.'],
+            'expected' => 'Osoby a zvolené aktuální soupisky se zapíší společně a auditovaně, opakování nevytvoří duplicity. Finance, VS a platby zůstanou beze změny.',
+            'note' => 'Kanonický zápis je povolen jen správci v izolaci. Ostrý finanční převod, finální zdroje a termín přechodu čekají na rozhodnutí vlastníka a účetní; původní přímý zápis zůstává vyřazen.',
             'links' => [
                 ['label' => 'Synchronizace evidence', 'path' => 'sync_evidence.php', 'scope' => 'trainer'],
             ],

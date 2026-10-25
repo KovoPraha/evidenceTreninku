@@ -132,3 +132,6 @@ jobs:
 
       - name: Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB
         run: php tests/Support/SportovecEditorMariaDbSmoke.php
+
+      - name: Ověřit revize výsledků a řízený KIS převod na MariaDB
+        run: php tests/Support/RaceKisReviewMariaDbSmoke.php

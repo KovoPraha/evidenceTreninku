@@ -1,5 +1,7 @@
 # Konkrétní řešení B04 a B23
 
+Aktualizace: návrh byl následně implementován a ověřen v izolaci; viz [navazující přejímka B04/B23](../b04-b23-20261025/RESULTS.md). Níže zůstává původní návrh a stav v okamžiku předchozí přejímky. Ostrý a finanční přechod B23 nadále čeká na provozní rozhodnutí.
+
 Oba body zůstávají BLOCKED. Jde o chybějící nebo nahrazenou funkčnost, kterou samotná přejímka nemůže označit za hotovou. Návrh neaktivuje import ani nezasahuje do produkce.
 
 ## B04 — interní i externí závodní výsledky
