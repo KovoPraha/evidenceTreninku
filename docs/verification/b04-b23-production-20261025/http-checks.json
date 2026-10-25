@@ -1,0 +1,44 @@
+[
+  {
+    "path": "/index.php",
+    "status": 200,
+    "location": null,
+    "pass": true
+  },
+  {
+    "path": "/zavod_vysledky.php?id=1",
+    "status": 403,
+    "location": null,
+    "pass": true
+  },
+  {
+    "path": "/kis_review_admin.php?run_id=1",
+    "status": 403,
+    "location": null,
+    "pass": true
+  },
+  {
+    "path": "/kis_sync_center.php",
+    "status": 302,
+    "location": "login.php",
+    "pass": true
+  },
+  {
+    "path": "/booking/eshop.php",
+    "status": 200,
+    "location": null,
+    "pass": true
+  },
+  {
+    "path": "/var/private/kis-person-import.php",
+    "status": 403,
+    "location": null,
+    "pass": true
+  },
+  {
+    "path": "/testovaci_scenare.php",
+    "status": 404,
+    "location": null,
+    "pass": true
+  }
+]

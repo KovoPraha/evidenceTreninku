@@ -1,0 +1,667 @@
+{
+  "ok": true,
+  "read_only": true,
+  "read_only_session": true,
+  "deployment_ready": false,
+  "as_of": "2026-10-26",
+  "month": "2026-10",
+  "complete": true,
+  "checks": {
+    "active_staff_with_coach_position": {
+      "status": "counted",
+      "count": 36,
+      "basis": "explicit_coach_position"
+    },
+    "coaches_without_current_scope_grant": {
+      "status": "counted",
+      "count": 36,
+      "basis": "current_nonrevoked_grant_any_scope"
+    },
+    "published_goods_variants": {
+      "status": "counted",
+      "count": 799,
+      "basis": "active_visible_published_goods"
+    },
+    "published_goods_null_legacy_quantity": {
+      "status": "counted",
+      "count": 0,
+      "basis": "new_checkout_rejects_null_stock_quantity"
+    },
+    "published_goods_without_stock_opening": {
+      "status": "counted",
+      "count": 799,
+      "basis": "no_physical_stock_balance_row"
+    },
+    "active_fee_plans_current_month": {
+      "status": "counted",
+      "count": 1,
+      "basis": "active_plans_overlapping_report_month"
+    },
+    "active_fee_plans_without_any_month_agreement": {
+      "status": "counted",
+      "count": 1,
+      "basis": "no_agreement_overlapping_month_for_any_person"
+    },
+    "active_fee_plans_without_any_month_amount_decision": {
+      "status": "counted",
+      "count": 1,
+      "basis": "no_amount_decision_for_any_person_in_month"
+    },
+    "pending_family_weekly_summaries": {
+      "status": "counted",
+      "count": 0,
+      "basis": "pending_queue"
+    },
+    "pending_family_summaries_without_authorization_snapshot": {
+      "status": "counted",
+      "count": 0,
+      "basis": "worker_will_hold_missing_snapshot"
+    }
+  },
+  "limitations": [
+    "Counts are an impact inventory, not permission to deploy or evidence of complete operating readiness.",
+    "A current coach grant is not proof of coverage of every assigned athlete or historical training.",
+    "A stock balance row is not proof of an approved physical inventory or valid valuation.",
+    "One agreement or amount decision does not prove coverage of all members, all days, or a valid payer; plans with partial coverage need separate review.",
+    "No roles, payers, amounts, stock quantities, or source identities are inferred or changed."
+  ],
+  "private_storage": {
+    "configured": true,
+    "local_fallback": false,
+    "exists": true,
+    "writable": true,
+    "outside_application_tree": true,
+    "public_webroot_not_proven_by_cli": true,
+    "write_probe_performed": false
+  },
+  "release_verification": {
+    "live": {
+      "sha": "5df4b0278129a3d66b62a19657911567d7196dee",
+      "run_id": "40242443325",
+      "deployed_at": "2026-10-25T22:58:51+00:00",
+      "uat_approved": false
+    },
+    "old_source": {
+      "checked": 44,
+      "mismatches": 44,
+      "files": [
+        {
+          "file": "accounting_ledger_admin.php",
+          "match": false
+        },
+        {
+          "file": "assets/app-ui.css",
+          "match": false
+        },
+        {
+          "file": "assets/app-ui.js",
+          "match": false
+        },
+        {
+          "file": "bin/db-backup.php",
+          "match": false
+        },
+        {
+          "file": "bin/seed-local-demo.php",
+          "match": false
+        },
+        {
+          "file": "booking/eshop.php",
+          "match": false
+        },
+        {
+          "file": "booking/moje_objednavky.php",
+          "match": false
+        },
+        {
+          "file": "booking/moje_rezervace.php",
+          "match": false
+        },
+        {
+          "file": "booking/objednavka.php",
+          "match": false
+        },
+        {
+          "file": "booking/sportovni_prehled.php",
+          "match": false
+        },
+        {
+          "file": "booking/velodrom.php",
+          "match": false
+        },
+        {
+          "file": "booking/waiting_list.php",
+          "match": false
+        },
+        {
+          "file": "edit_trenink.php",
+          "match": false
+        },
+        {
+          "file": "edit_zavod_form.php",
+          "match": false
+        },
+        {
+          "file": "eshop_admin.php",
+          "match": false
+        },
+        {
+          "file": "eshop_events_admin.php",
+          "match": false
+        },
+        {
+          "file": "formular.php",
+          "match": false
+        },
+        {
+          "file": "formular_zavod.php",
+          "match": false
+        },
+        {
+          "file": "hlavicka.php",
+          "match": false
+        },
+        {
+          "file": "includes/family_annual_paid_overview.php",
+          "match": false
+        },
+        {
+          "file": "includes/kis_review_handoff.php",
+          "match": false
+        },
+        {
+          "file": "includes/localhost_acceptance_hub.php",
+          "match": false
+        },
+        {
+          "file": "includes/m2_finalization.php",
+          "match": false
+        },
+        {
+          "file": "includes/member_charge_read.php",
+          "match": false
+        },
+        {
+          "file": "includes/public_velodrome.php",
+          "match": false
+        },
+        {
+          "file": "includes/race_results.php",
+          "match": false
+        },
+        {
+          "file": "includes/race_results_table.php",
+          "match": false
+        },
+        {
+          "file": "includes/shop_payment_presentation.php",
+          "match": false
+        },
+        {
+          "file": "includes/staff_workspaces.php",
+          "match": false
+        },
+        {
+          "file": "includes/ui_shell.php",
+          "match": false
+        },
+        {
+          "file": "includes/venue_operations.php",
+          "match": false
+        },
+        {
+          "file": "individualni_lekce_sprava.php",
+          "match": false
+        },
+        {
+          "file": "kis_review_admin.php",
+          "match": false
+        },
+        {
+          "file": "kis_sync_center.php",
+          "match": false
+        },
+        {
+          "file": "member_charges_admin.php",
+          "match": false
+        },
+        {
+          "file": "migrations/20261025230000_race_result_revisions.php",
+          "match": false
+        },
+        {
+          "file": "migrations/20261025231000_kis_review_handoff.php",
+          "match": false
+        },
+        {
+          "file": "planovac.php",
+          "match": false
+        },
+        {
+          "file": "prehled_trenera.php",
+          "match": false
+        },
+        {
+          "file": "shop_returns_admin.php",
+          "match": false
+        },
+        {
+          "file": "sync_evidence.php",
+          "match": false
+        },
+        {
+          "file": "update_trenink.php",
+          "match": false
+        },
+        {
+          "file": "zavod_detail.php",
+          "match": false
+        },
+        {
+          "file": "zavod_vysledky.php",
+          "match": false
+        }
+      ]
+    },
+    "new_source": {
+      "checked": 44,
+      "mismatches": 0,
+      "files": [
+        {
+          "file": "accounting_ledger_admin.php",
+          "match": true
+        },
+        {
+          "file": "assets/app-ui.css",
+          "match": true
+        },
+        {
+          "file": "assets/app-ui.js",
+          "match": true
+        },
+        {
+          "file": "bin/db-backup.php",
+          "match": true
+        },
+        {
+          "file": "bin/seed-local-demo.php",
+          "match": true
+        },
+        {
+          "file": "booking/eshop.php",
+          "match": true
+        },
+        {
+          "file": "booking/moje_objednavky.php",
+          "match": true
+        },
+        {
+          "file": "booking/moje_rezervace.php",
+          "match": true
+        },
+        {
+          "file": "booking/objednavka.php",
+          "match": true
+        },
+        {
+          "file": "booking/sportovni_prehled.php",
+          "match": true
+        },
+        {
+          "file": "booking/velodrom.php",
+          "match": true
+        },
+        {
+          "file": "booking/waiting_list.php",
+          "match": true
+        },
+        {
+          "file": "edit_trenink.php",
+          "match": true
+        },
+        {
+          "file": "edit_zavod_form.php",
+          "match": true
+        },
+        {
+          "file": "eshop_admin.php",
+          "match": true
+        },
+        {
+          "file": "eshop_events_admin.php",
+          "match": true
+        },
+        {
+          "file": "formular.php",
+          "match": true
+        },
+        {
+          "file": "formular_zavod.php",
+          "match": true
+        },
+        {
+          "file": "hlavicka.php",
+          "match": true
+        },
+        {
+          "file": "includes/family_annual_paid_overview.php",
+          "match": true
+        },
+        {
+          "file": "includes/kis_review_handoff.php",
+          "match": true
+        },
+        {
+          "file": "includes/localhost_acceptance_hub.php",
+          "match": true
+        },
+        {
+          "file": "includes/m2_finalization.php",
+          "match": true
+        },
+        {
+          "file": "includes/member_charge_read.php",
+          "match": true
+        },
+        {
+          "file": "includes/public_velodrome.php",
+          "match": true
+        },
+        {
+          "file": "includes/race_results.php",
+          "match": true
+        },
+        {
+          "file": "includes/race_results_table.php",
+          "match": true
+        },
+        {
+          "file": "includes/shop_payment_presentation.php",
+          "match": true
+        },
+        {
+          "file": "includes/staff_workspaces.php",
+          "match": true
+        },
+        {
+          "file": "includes/ui_shell.php",
+          "match": true
+        },
+        {
+          "file": "includes/venue_operations.php",
+          "match": true
+        },
+        {
+          "file": "individualni_lekce_sprava.php",
+          "match": true
+        },
+        {
+          "file": "kis_review_admin.php",
+          "match": true
+        },
+        {
+          "file": "kis_sync_center.php",
+          "match": true
+        },
+        {
+          "file": "member_charges_admin.php",
+          "match": true
+        },
+        {
+          "file": "migrations/20261025230000_race_result_revisions.php",
+          "match": true
+        },
+        {
+          "file": "migrations/20261025231000_kis_review_handoff.php",
+          "match": true
+        },
+        {
+          "file": "planovac.php",
+          "match": true
+        },
+        {
+          "file": "prehled_trenera.php",
+          "match": true
+        },
+        {
+          "file": "shop_returns_admin.php",
+          "match": true
+        },
+        {
+          "file": "sync_evidence.php",
+          "match": true
+        },
+        {
+          "file": "update_trenink.php",
+          "match": true
+        },
+        {
+          "file": "zavod_detail.php",
+          "match": true
+        },
+        {
+          "file": "zavod_vysledky.php",
+          "match": true
+        }
+      ]
+    },
+    "config_sha256": "326c832d891a99d2780099391854a8daee3936adcdacf62c62f0a00b616fb772",
+    "previous_release": {
+      "available": true,
+      "metadata": {
+        "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72",
+        "run_id": "40198413027",
+        "deployed_at": "2026-10-25T13:38:49+00:00",
+        "uat_approved": false
+      },
+      "source": {
+        "checked": 44,
+        "mismatches": 0,
+        "files": [
+          {
+            "file": "accounting_ledger_admin.php",
+            "match": true
+          },
+          {
+            "file": "assets/app-ui.css",
+            "match": true
+          },
+          {
+            "file": "assets/app-ui.js",
+            "match": true
+          },
+          {
+            "file": "bin/db-backup.php",
+            "match": true
+          },
+          {
+            "file": "bin/seed-local-demo.php",
+            "match": true
+          },
+          {
+            "file": "booking/eshop.php",
+            "match": true
+          },
+          {
+            "file": "booking/moje_objednavky.php",
+            "match": true
+          },
+          {
+            "file": "booking/moje_rezervace.php",
+            "match": true
+          },
+          {
+            "file": "booking/objednavka.php",
+            "match": true
+          },
+          {
+            "file": "booking/sportovni_prehled.php",
+            "match": true
+          },
+          {
+            "file": "booking/velodrom.php",
+            "match": true
+          },
+          {
+            "file": "booking/waiting_list.php",
+            "match": true
+          },
+          {
+            "file": "edit_trenink.php",
+            "match": true
+          },
+          {
+            "file": "edit_zavod_form.php",
+            "match": true
+          },
+          {
+            "file": "eshop_admin.php",
+            "match": true
+          },
+          {
+            "file": "eshop_events_admin.php",
+            "match": true
+          },
+          {
+            "file": "formular.php",
+            "match": true
+          },
+          {
+            "file": "formular_zavod.php",
+            "match": true
+          },
+          {
+            "file": "hlavicka.php",
+            "match": true
+          },
+          {
+            "file": "includes/family_annual_paid_overview.php",
+            "match": true
+          },
+          {
+            "file": "includes/kis_review_handoff.php",
+            "match": true
+          },
+          {
+            "file": "includes/localhost_acceptance_hub.php",
+            "match": true
+          },
+          {
+            "file": "includes/m2_finalization.php",
+            "match": true
+          },
+          {
+            "file": "includes/member_charge_read.php",
+            "match": true
+          },
+          {
+            "file": "includes/public_velodrome.php",
+            "match": true
+          },
+          {
+            "file": "includes/race_results.php",
+            "match": true
+          },
+          {
+            "file": "includes/race_results_table.php",
+            "match": true
+          },
+          {
+            "file": "includes/shop_payment_presentation.php",
+            "match": true
+          },
+          {
+            "file": "includes/staff_workspaces.php",
+            "match": true
+          },
+          {
+            "file": "includes/ui_shell.php",
+            "match": true
+          },
+          {
+            "file": "includes/venue_operations.php",
+            "match": true
+          },
+          {
+            "file": "individualni_lekce_sprava.php",
+            "match": true
+          },
+          {
+            "file": "kis_review_admin.php",
+            "match": true
+          },
+          {
+            "file": "kis_sync_center.php",
+            "match": true
+          },
+          {
+            "file": "member_charges_admin.php",
+            "match": true
+          },
+          {
+            "file": "migrations/20261025230000_race_result_revisions.php",
+            "match": true
+          },
+          {
+            "file": "migrations/20261025231000_kis_review_handoff.php",
+            "match": true
+          },
+          {
+            "file": "planovac.php",
+            "match": true
+          },
+          {
+            "file": "prehled_trenera.php",
+            "match": true
+          },
+          {
+            "file": "shop_returns_admin.php",
+            "match": true
+          },
+          {
+            "file": "sync_evidence.php",
+            "match": true
+          },
+          {
+            "file": "update_trenink.php",
+            "match": true
+          },
+          {
+            "file": "zavod_detail.php",
+            "match": true
+          },
+          {
+            "file": "zavod_vysledky.php",
+            "match": true
+          }
+        ]
+      }
+    },
+    "integration_flags": {
+      "FIO_IMPORT_ENABLED": false,
+      "FIO_AUTO_CONFIRM_ENABLED": false,
+      "SUMUP_ENABLED": false,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    },
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "kis_canonical_write_enabled": false,
+    "new_tables": {
+      "race_result_states": 0,
+      "race_participants": 0,
+      "race_result_revisions": 0,
+      "kis_review_plans": 0,
+      "kis_review_events": 0,
+      "kis_review_mutex": 1
+    },
+    "migration_ledger_count": 141,
+    "forward_vs_repair_applied": true,
+    "domain_mutations": false
+  }
+}

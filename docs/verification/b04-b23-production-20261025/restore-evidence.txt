@@ -1,0 +1,3 @@
+2026-10-25T23:01:24.7085648Z evidence_2026-10-25_225734_011e5e09.sql.gz: OK
+2026-10-25T23:02:05.4709402Z Generace 1 obnovena: 330 tabulek, 2 triggeru.
+2026-10-25T23:02:05.4709935Z Izolovana obnova overena pro 1 generaci zaloh.

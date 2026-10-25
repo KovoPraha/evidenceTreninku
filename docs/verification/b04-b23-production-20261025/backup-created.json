@@ -1,0 +1,12 @@
+[
+  {
+    "ok": true,
+    "backup": "evidence_2026-10-25_225734_011e5e09.sql.gz",
+    "manifest": "evidence_2026-10-25_225734_011e5e09.manifest.json",
+    "sha256": "1c886cba16f289cd1355a82a8f32e0195f3b224ec0fd46ea37207971a8ac5e64",
+    "tables": 330,
+    "triggers": 2,
+    "compressed_bytes": 6062527,
+    "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+  }
+]

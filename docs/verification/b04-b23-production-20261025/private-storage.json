@@ -1,0 +1,13 @@
+[
+  {
+    "ok": true,
+    "storage_created": false,
+    "existing_configuration_preserved": true,
+    "config_appended": false,
+    "private_config_backup_verified": false,
+    "cli_write_read_delete_probe": true,
+    "web_runtime_verified": false,
+    "attachments_moved": false,
+    "database_accessed": false
+  }
+]
