@@ -1,0 +1,86 @@
+[
+  {
+    "id": "A10",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "UI časová osa osoby #5 a nová historie lekce #14: aktér, čas, potvrzení i zamítnutí. Rodič vidí potvrzené lekce. Nová HTTP regrese ověřila escapování, cizího trenéra, vynucené vse=1 a čtení bez zápisu.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B05",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "UI dvojklik přejmenoval plán #34, skutečné drag&drop jej přesunulo z 24. na 23. října; zrušení celé série ukončilo #34–36. Kopie týdne #37–38 z předchozího UI průchodu zůstaly plánované. Databázová kontrola potvrdila přesný rozsah.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B06",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "UI založení interní rezervace 5.11. 06–07, zelené lekce #13 a žluté #14. Veřejné přihlášení, ruční potvrzení rodiče a zamítnutí druhé žádosti. Bezplatná lekce správně ukazuje Bez platby.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B07",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "Veřejný formulář obsadil zelený slot ihned; rodič se přidal na plnou čekací listinu. Zrušení aktivní rezervace přes dvoukrokový formulář povýšilo rodiče. Potvrzeno ve správě i Moje rezervace; více čekatelů a shodný čas kryje čerstvá HTTP regrese.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B08",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "Syntetické CSV: CLI dry-run a staging run #2 (import je záměrně nástroj, nikoli upload UI). V prohlížeči ruční klasifikace/schválení, převod do draftu, publikace produktu #42 a kontrola veřejné nabídky za 200 Kč. Účetní kategorie produktu byla testovací předpoklad přes kanonickou lokální funkci.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B10",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "UI neuhrazené storno #32; zaplacení, storno refund_required a potvrzení vratky #33 s bankovní referencí. Navíc #31: položkový výdej, fyzická vratka, posouzení prodejnosti, faktura #13, oprava #14, peněžní příjem #67, uvolnění přídělu, vratka #7 a uzavření případu #13. Rodič vidí obě platby vrácené. Sklad varianty #38: 4 fyzicky, 0 rezervováno, 0 blokováno; každé storno má právě jedno uvolnění.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B11",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "UI kupón FINAL10GOODS: pouze zboží, minimum 100 Kč, sleva 20 Kč. Samotný kurz i akce odmítnuty, zboží 125 Kč vytvořilo objednávku #31 s neměnnou slevou 20 Kč a celkem 105 Kč.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B16",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "UI placená akce #20 s termínem, souhlasem, storno podmínkami a soupiskami #18 a #20. Způsobilé dítě A nabízeno, B vyloučeno. Objednávka #30 za 300 Kč, potvrzená úhrada a přihláška. CSV skutečně stažené prohlížečem: kontrakt m2.event-participants.v1, 1 confirmed, souhlas a obě soupisky. Dvojí stažení na stejné stránce po opravě funguje.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B24",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "CLI vytvoření syntetického preview #1; UI ověření fingerprintu, aplikace dvou záznamů do sandboxu a rollback 2 → 0. Otisky osob, soupisek, objednávek a předpisů před/po jsou stejné. Kanonický import ani produkce nebyly zapnuty.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B30",
+    "result": "pass",
+    "regression_status": "PASS",
+    "observed": "Samostatný běžný trenér má vlastní nástroje bez správy účtů a financí; správce prošel aktuálními pracovními pozicemi. Zkratky N/P/K/?, Esc a D ověřeny skutečnými stisky, světlý režim obnoven. Odkaz veřejného portálu otevřel správnou novou kartu. Rodičovské menu ověřeno při dočasném výpadku Bootstrap i app-ui JS; oba soubory obnoveny. Nápověda již nenabízí neexistující globální hledání.",
+    "remaining": "Pouze syntetický localhost; nejde o produkční přejímku."
+  },
+  {
+    "id": "B04",
+    "result": "blocked",
+    "regression_status": "Guard verified",
+    "observed": "Kanonické ruční zadávání externích závodních výsledků není hotové. Viz BLOCKERS.md, návrh B04.",
+    "remaining": "Kanonické ruční zadávání externích závodních výsledků není hotové. Viz BLOCKERS.md, návrh B04."
+  },
+  {
+    "id": "B23",
+    "result": "blocked",
+    "regression_status": "Guard verified",
+    "observed": "Starý přímý zápis synchronizace je bezpečnostně odstaven. Viz BLOCKERS.md, návrh B23.",
+    "remaining": "Starý přímý zápis synchronizace je bezpečnostně odstaven. Viz BLOCKERS.md, návrh B23."
+  }
+]
