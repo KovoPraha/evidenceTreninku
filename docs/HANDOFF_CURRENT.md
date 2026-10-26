@@ -81,6 +81,7 @@ Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah
 oprávnění, větev, pracovní kopii, dokončené kroky, testy a další krok.
 Před předáním/kompaktací jej obnov a při pokračování znovu přečti.
 Aktuální práce dozoru: [pět balíků a jejich hranice](DOZOR_2026-10-25.md).
+Navazující opravy a důkazy: [F1–F3 po nezávislé přejímce](DOZOR_F1_F3_2026-10-26.md).
 
 ## Co není v GitHubu
 
