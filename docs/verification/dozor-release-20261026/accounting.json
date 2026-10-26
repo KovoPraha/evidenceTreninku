@@ -1,0 +1,195 @@
+{
+  "ok": true,
+  "read_only": true,
+  "stock": {
+    "ok": true,
+    "inventory": {
+      "shop_stock_balances": 0,
+      "shop_stock_movements": 0,
+      "shop_stock_reservations": 0,
+      "shop_stock_lots": 0,
+      "shop_fulfillments": 0,
+      "shop_fulfillment_items": 0,
+      "shop_return_cases": 0,
+      "shop_return_finance_links": 0,
+      "shop_stock_documents": 0,
+      "goods_variants_without_managed_balance": 855
+    },
+    "checks": {
+      "invalid_balance": {
+        "status": "ok",
+        "count": 0
+      },
+      "balance_vs_movements": {
+        "status": "ok",
+        "count": 0
+      },
+      "balance_vs_lots": {
+        "status": "ok",
+        "count": 0
+      },
+      "balance_vs_reservations": {
+        "status": "ok",
+        "count": 0
+      },
+      "catalog_availability": {
+        "status": "ok",
+        "count": 0
+      },
+      "invalid_lot": {
+        "status": "ok",
+        "count": 0
+      },
+      "lot_usage_totals": {
+        "status": "ok",
+        "count": 0
+      },
+      "lot_source_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "invalid_reservation": {
+        "status": "ok",
+        "count": 0
+      },
+      "reservation_order_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "reservation_exchange_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "fulfillment_order_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "returns_exceed_issue": {
+        "status": "ok",
+        "count": 0
+      },
+      "return_movement_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "return_case_order_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "received_return_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "return_finance_links": {
+        "status": "ok",
+        "count": 0
+      },
+      "closed_return_unpaid_refund": {
+        "status": "ok",
+        "count": 0
+      },
+      "stock_pdf_integrity": {
+        "status": "ok",
+        "count": 0
+      },
+      "stock_snapshot_integrity": {
+        "status": "ok",
+        "count": 0
+      }
+    },
+    "pdfs_checked": 0,
+    "limitations": [
+      "Unmanaged catalog variants are an inventory, not an inferred physical count or an automatic migration.",
+      "Empty stock tables do not prove actual warehouse operations; physical inventory remains a human task."
+    ]
+  },
+  "inventory": {
+    "shop_orders": 8,
+    "accounting_documents": 0,
+    "accounting_movements": 0,
+    "accounting_allocations": 0,
+    "accounting_refund_decisions": 0,
+    "accounting_refund_payments": 0,
+    "accounting_export_batches": 0
+  },
+  "checks": {
+    "orphan_order_documents": {
+      "status": "ok",
+      "count": 0
+    },
+    "order_invoice_amount_currency": {
+      "status": "ok",
+      "count": 0
+    },
+    "orphan_correction_documents": {
+      "status": "ok",
+      "count": 0
+    },
+    "orphan_order_allocations": {
+      "status": "ok",
+      "count": 0
+    },
+    "allocation_over_receipt": {
+      "status": "ok",
+      "count": 0
+    },
+    "refund_payment_links": {
+      "status": "ok",
+      "count": 0
+    },
+    "refund_exceeds_decision": {
+      "status": "ok",
+      "count": 0
+    },
+    "export_revision_links": {
+      "status": "ok",
+      "count": 0
+    },
+    "document_snapshot_integrity": {
+      "status": "ok",
+      "count": 0
+    },
+    "document_snapshot_totals": {
+      "status": "ok",
+      "count": 0
+    },
+    "issued_pdf_integrity": {
+      "status": "ok",
+      "count": 0
+    },
+    "export_snapshot_integrity": {
+      "status": "ok",
+      "count": 0
+    },
+    "export_archive_integrity": {
+      "status": "ok",
+      "count": 0
+    },
+    "export_manifest_integrity": {
+      "status": "ok",
+      "count": 0
+    }
+  },
+  "issued_pdfs_checked": 0,
+  "archive_entries_checked": 0,
+  "limitations": [
+    "Empty tables do not prove an end-to-end production transaction.",
+    "No invoices or exports created; accounting methodology and completeness require human acceptance."
+  ],
+  "release": {
+    "sha": "fc0d3779306e70362e013f088f30974725bbf8ff",
+    "run_id": "40330758548",
+    "deployed_at": "2026-10-26T13:30:29+00:00",
+    "uat_approved": false
+  },
+  "runtime_sha256": {
+    "includes/accounting_export.php": "b73936af141024b870e6870ea9589e05fbaf98cf7daa8fe31a8c2b2743435e34",
+    "includes/accounting_adjustments.php": "98e3550bd9a04fc7608e46acc9c2ba96f2292c6a0873f43c74730f942d9a7905",
+    "includes/accounting_ledger.php": "03d73a29204d7b9e7879b48a026815a6d787f3c9cb0b07beafad1c200082ec0a",
+    "includes/shop_inventory.php": "eecf8b42ea762774dfc3219b27502d30747df5e9ca396b8a6d6829060b040816",
+    "includes/shop_fulfillment.php": "3ff547e2bccaff35e084defbe535ea7ef099e3c891d716e56b0908602a68b93b",
+    "includes/shop_returns.php": "cc7ca899797586187682baf480c1c3f1524029e65ef51b51d8d9d0f63d35fbb7",
+    "includes/accounting_stock_export.php": "52d0cbaa7728056d7b3c069e530236d9abd046ee6e7b2c0679aaed0cc4a0d051",
+    "includes/shop_stock_documents.php": "cb3b145a852a11a49c70cab3cbf27b32fd9cabeb0f6ee80a5843e818240adbf3"
+  }
+}

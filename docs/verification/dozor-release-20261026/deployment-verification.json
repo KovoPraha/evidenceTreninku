@@ -1,0 +1,103 @@
+{
+  "sha": "fc0d3779306e70362e013f088f30974725bbf8ff",
+  "run_id": "40330758548",
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-26_132959_603f0a19.sql.gz",
+    "manifest": "evidence_2026-10-26_132959_603f0a19.manifest.json",
+    "sha256": "65a52411198376b1624f7d8fca347227550b919a22b1cd2014893c94cba8551d",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063246
+  },
+  "migrations": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    }
+  ],
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "private_storage": {
+    "ok": true,
+    "storage_created": false,
+    "existing_configuration_preserved": true,
+    "config_appended": false,
+    "private_config_backup_verified": false,
+    "cli_write_read_delete_probe": true,
+    "web_runtime_verified": false,
+    "attachments_moved": false,
+    "database_accessed": false
+  },
+  "cleanup": {
+    "ok": true,
+    "removed": [],
+    "missing": [
+      "admin_panel.php",
+      "index-backup.php",
+      "index3.php",
+      "sync.php",
+      "test.php",
+      "analyze_excel.php",
+      "analyze_uci_form.php",
+      "jizdy/vypis_vykazu (4) - kopie.php",
+      "servis/vypis_vykazu (4) - kopie.php",
+      "uctenky/vypis_vykazu (4) - kopie.php",
+      "udalosti/vypis_vykazu (4) - kopie.php",
+      "vozidla/vypis_vykazu (3) - kopie.php",
+      "vozidla/vypis_vykazu (4) - kopie.php"
+    ]
+  },
+  "private_file_migration": {
+    "candidates": 0,
+    "already_private": 0,
+    "missing": 2,
+    "errors": 0
+  },
+  "catalog_import": false,
+  "archive_key_http": 403,
+  "public_http": 200
+}
