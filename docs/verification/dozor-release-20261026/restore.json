@@ -1,0 +1,12 @@
+{
+  "run_id": "40331688272",
+  "release_sha": "fc0d3779306e70362e013f088f30974725bbf8ff",
+  "backup": "evidence_2026-10-26_132959_603f0a19.sql.gz",
+  "sha256_verified": true,
+  "manifest_verified": true,
+  "row_counts_verified_tables": 336,
+  "trigger_names_verified": 2,
+  "isolated_mariadb": "11.4",
+  "production_restore": false,
+  "temporary_data_cleanup": "success"
+}

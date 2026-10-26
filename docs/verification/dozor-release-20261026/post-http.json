@@ -1,0 +1,159 @@
+{
+  "checks": 24,
+  "passed": 24,
+  "results": [
+    {
+      "path": "/index.php",
+      "expected": 200,
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/login.php",
+      "expected": 200,
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/app-ui.css",
+      "expected": 200,
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/export.php?id=1",
+      "expected": 302,
+      "status": 302,
+      "ok": true,
+      "location": "login.php",
+      "redirect_body_empty": true
+    },
+    {
+      "path": "/export_csv.php?id=1",
+      "expected": 302,
+      "status": 302,
+      "ok": true,
+      "location": "login.php",
+      "redirect_body_empty": true
+    },
+    {
+      "path": "/ajax_update_poznamka.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/jizdy/uloz.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/uctenky/uloz.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/udalosti/uloz.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/udalosti/uzavrit.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/vozidla/uloz.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/ebook.pdf",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/outputs/",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/tools/check-php-style.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/.git/config",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/.phpstan-cache/resultCache.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/.php-cs-fixer.dist.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/.claude/probe.txt",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/.codex-probe/probe.txt",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/.ssh/probe.txt",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/assets/.probe/file.txt",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/%2ephpstan-cache/resultCache.php",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/.well-known/acme-challenge/synthetic-token",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    },
+    {
+      "path": "/phpstan-baseline.neon",
+      "expected": 403,
+      "status": 403,
+      "ok": true
+    }
+  ],
+  "target": "https://kis.kovopraha.cz",
+  "checked_at_utc": "2026-10-26T13:31:40.341915+00:00",
+  "method": "GET",
+  "authenticated": false,
+  "response_bodies_persisted": false
+}

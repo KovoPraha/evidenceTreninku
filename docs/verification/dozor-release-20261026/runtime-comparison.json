@@ -1,0 +1,54 @@
+{
+  "release_sha": "fc0d3779306e70362e013f088f30974725bbf8ff",
+  "checked": 8,
+  "files": [
+    {
+      "path": "includes/accounting_export.php",
+      "expected": "b73936af141024b870e6870ea9589e05fbaf98cf7daa8fe31a8c2b2743435e34",
+      "live": "b73936af141024b870e6870ea9589e05fbaf98cf7daa8fe31a8c2b2743435e34",
+      "matches": true
+    },
+    {
+      "path": "includes/accounting_adjustments.php",
+      "expected": "98e3550bd9a04fc7608e46acc9c2ba96f2292c6a0873f43c74730f942d9a7905",
+      "live": "98e3550bd9a04fc7608e46acc9c2ba96f2292c6a0873f43c74730f942d9a7905",
+      "matches": true
+    },
+    {
+      "path": "includes/accounting_ledger.php",
+      "expected": "03d73a29204d7b9e7879b48a026815a6d787f3c9cb0b07beafad1c200082ec0a",
+      "live": "03d73a29204d7b9e7879b48a026815a6d787f3c9cb0b07beafad1c200082ec0a",
+      "matches": true
+    },
+    {
+      "path": "includes/shop_inventory.php",
+      "expected": "eecf8b42ea762774dfc3219b27502d30747df5e9ca396b8a6d6829060b040816",
+      "live": "eecf8b42ea762774dfc3219b27502d30747df5e9ca396b8a6d6829060b040816",
+      "matches": true
+    },
+    {
+      "path": "includes/shop_fulfillment.php",
+      "expected": "3ff547e2bccaff35e084defbe535ea7ef099e3c891d716e56b0908602a68b93b",
+      "live": "3ff547e2bccaff35e084defbe535ea7ef099e3c891d716e56b0908602a68b93b",
+      "matches": true
+    },
+    {
+      "path": "includes/shop_returns.php",
+      "expected": "cc7ca899797586187682baf480c1c3f1524029e65ef51b51d8d9d0f63d35fbb7",
+      "live": "cc7ca899797586187682baf480c1c3f1524029e65ef51b51d8d9d0f63d35fbb7",
+      "matches": true
+    },
+    {
+      "path": "includes/accounting_stock_export.php",
+      "expected": "52d0cbaa7728056d7b3c069e530236d9abd046ee6e7b2c0679aaed0cc4a0d051",
+      "live": "52d0cbaa7728056d7b3c069e530236d9abd046ee6e7b2c0679aaed0cc4a0d051",
+      "matches": true
+    },
+    {
+      "path": "includes/shop_stock_documents.php",
+      "expected": "cb3b145a852a11a49c70cab3cbf27b32fd9cabeb0f6ee80a5843e818240adbf3",
+      "live": "cb3b145a852a11a49c70cab3cbf27b32fd9cabeb0f6ee80a5843e818240adbf3",
+      "matches": true
+    }
+  ]
+}

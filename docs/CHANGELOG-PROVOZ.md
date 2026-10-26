@@ -5,6 +5,22 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 26. 10. 2026 — opravy dozoru F1–F3 sloučeny a nasazeny
+
+Po výslovném souhlasu vlastníka byly postupně sloučeny PR #196, #199, #197,
+#198 a #200. Nasazen `fc0d3779306e70362e013f088f30974725bbf8ff`,
+[deploy 40330758548](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40330758548), SUCCESS.
+Předchozí živé vydání bylo `d12e7c792ce796260f3fc5d07b25a395c310fcca`
+([deploy 40317875183](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40317875183)).
+Finální obsah main je totožný s prověřeným společným headem `65a61b5b`.
+Linux 1 748 testů / 35 593 assertions, MariaDB 10.3/11.4, PHPStan, sweep,
+CodeQL a dokumentace PASS. Produkce: 24 HTTP, 16 databázových, 14 účetních
+a 20 skladových kontrol PASS, 8 runtime hashů shodných; záloha obnovena
+v izolaci (336 tabulek / 2 triggery). Konfigurace, integrační flags,
+dosavadní VS a 141 záznamů ledgeru beze změny. Žádný import nebo aktivace;
+UAT false, dvě historicky chybějící přílohy nadále otevřené.
+[Protokol a hranice ověření](verification/dozor-release-20261026/RESULTS.md).
+
 <!-- archive {"source": "docs/CURRENT_STATE.md", "part": 0, "sha256": "fb3e50b08bb8825e6fbb0a4e756a147782dcb4aebb5b00874dc41d1c9b772996"} -->
 # Aktuální stav projektu
 

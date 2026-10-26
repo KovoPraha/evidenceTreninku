@@ -1,0 +1,56 @@
+{
+  "pre_run": "40329062828",
+  "post_run": "40331347090",
+  "before_live": {
+    "sha": "d12e7c792ce796260f3fc5d07b25a395c310fcca",
+    "run_id": "40317875183",
+    "deployed_at": "2026-10-26T11:51:31+00:00",
+    "uat_approved": false
+  },
+  "after_live": {
+    "sha": "fc0d3779306e70362e013f088f30974725bbf8ff",
+    "run_id": "40330758548",
+    "deployed_at": "2026-10-26T13:30:29+00:00",
+    "uat_approved": false
+  },
+  "read_only": true,
+  "unchanged_fields": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "new_tables": true,
+    "migration_ledger_count": true,
+    "forward_vs_repair_applied": true,
+    "domain_mutations": true
+  },
+  "after": {
+    "config_sha256": "326c832d891a99d2780099391854a8daee3936adcdacf62c62f0a00b616fb772",
+    "integration_flags": {
+      "FIO_IMPORT_ENABLED": false,
+      "FIO_AUTO_CONFIRM_ENABLED": false,
+      "SUMUP_ENABLED": false,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    },
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "kis_canonical_write_enabled": false,
+    "new_tables": {
+      "race_result_states": 0,
+      "race_participants": 0,
+      "race_result_revisions": 0,
+      "kis_review_plans": 0,
+      "kis_review_events": 0,
+      "kis_review_mutex": 1
+    },
+    "migration_ledger_count": 141,
+    "forward_vs_repair_applied": true,
+    "domain_mutations": false
+  }
+}
