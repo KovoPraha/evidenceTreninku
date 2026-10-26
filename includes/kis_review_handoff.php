@@ -16,9 +16,10 @@ function kisReviewRows(PDO $pdo,string $table,string $where='',array $args=[]):a
 function kisReviewSource(PDO $pdo,int $runId):array{
     $lock=$pdo->inTransaction()&&$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
     $q=$pdo->prepare('SELECT * FROM kis_import_runs WHERE id=?'.$lock);$q->execute([$runId]);$run=$q->fetch(PDO::FETCH_ASSOC);
-    if(!$run||$run['status']!=='preview')throw new DomainException('Importní běh není platný náhled.');
+    if(!$run)throw new DomainException('Tento importní běh neexistuje. Vyberte uložený běh v KIS centru.');
+    if($run['status']!=='preview')throw new DomainException('Tento importní běh není ve stavu Náhled. V KIS centru vyberte běh s dokončeným náhledem.');
     $manifest=json_decode((string)$run['source_manifest_json'],true,32,JSON_THROW_ON_ERROR);
-    $ids=[];foreach(kisSourceKinds() as $kind){if(empty($manifest['sources'][$kind]['artifact_id']))throw new DomainException('Chybí zdroj '.$kind.'.');$ids[$kind]=(int)$manifest['sources'][$kind]['artifact_id'];}
+    $ids=[];foreach(kisSourceKinds() as $kind){if(empty($manifest['sources'][$kind]['artifact_id']))throw new DomainException('Chybí archivovaný export: '.(['users'=>'osoby','payments'=>'platby','rosters'=>'soupisky'][$kind]??$kind).'. Řízené předání vyžaduje všechny tři ověřené exporty. Vraťte se do KIS centra.');$ids[$kind]=(int)$manifest['sources'][$kind]['artifact_id'];}
     $fresh=kisSourceManifest($pdo,$ids);
     if(!hash_equals(kisReviewHash($manifest),kisReviewHash($fresh)))throw new DomainException('Manifest byl změněn.');
     $root=kisSourceArchiveRoot(kisSourceConfiguredArchiveDirectory());
