@@ -1,0 +1,25 @@
+{
+  "scope": "isolated localhost, synthetic fixtures, no production deployment",
+  "phpunit": {
+    "tests": 1723,
+    "assertions": 34914,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 3
+  },
+  "javascript": {
+    "tests": 14,
+    "failures": 0
+  },
+  "http": {
+    "remaining_checks": 34,
+    "history_checks": 7
+  },
+  "browser": {
+    "new_pass": 10,
+    "still_blocked": 2,
+    "overall_pass": 38,
+    "overall_scenarios": 40
+  },
+  "linux_ci": "Must pass for final PR head before merge; see PR checks."
+}

@@ -15,6 +15,7 @@ final class DeploymentExposureTest extends TestCase
             'ebook.pdf', '.phpstan-cache/resultCache.php', '.claude/settings.json',
             '.codex-work/session.txt', '.ssh/id_ed25519', '.git/config',
             '.php-cs-fixer.dist.php', 'assets/.hidden/probe.txt', 'booking/.secret',
+            '.well-known/acme-challenge/synthetic-token', '.well-known/security.txt',
         ] as $path) {
             $denied = false;
             foreach ($rules[1] as $rule) {

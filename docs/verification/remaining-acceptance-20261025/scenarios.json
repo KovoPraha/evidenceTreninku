@@ -1,0 +1,340 @@
+[
+  {
+    "id": "A09",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "PublicVelodromeTest",
+      "PublicVelodromeShopTest",
+      "OneTimeTokenFlowTest"
+    ],
+    "matched_tests": 22,
+    "unmatched_classes": [],
+    "observed": "Nový skutečný HTTP průchod: registrace s datem narození, právě jeden vlastní profil, šifrovaná ověřovací zpráva v místním outboxu a ověření účtu. Volné i placené rezervace ověřeny UI/HTTP a integračně.",
+    "remaining": "Registrace přes HTTP; bez skutečného odeslání e-mailu."
+  },
+  {
+    "id": "A10",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "PersonAuditTimelineTest",
+      "PublicVelodromeTest"
+    ],
+    "matched_tests": 17,
+    "unmatched_classes": [],
+    "observed": "Časová osa osob a rezervační audit. Nový HTTP test ověřil aktéra, čas/důvod a jedinou událost při opakovaném potvrzení.",
+    "remaining": "Samostatný úplný UI průchod rezervační historií rodiče zbývá."
+  },
+  {
+    "id": "B01",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "SportsMeasurementInputTest",
+      "SportsMeasurementWriteTest"
+    ],
+    "matched_tests": 10,
+    "unmatched_classes": [],
+    "observed": "UI trénink #21: 400 m, 2 km, časy, 20 kg × 8 a RPE 8; RPE 0/11 a neplatný čas odmítnuty; znovu otevřeno.",
+    "remaining": ""
+  },
+  {
+    "id": "B03",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "TrainingPlannerViewTest"
+    ],
+    "matched_tests": 3,
+    "unmatched_classes": [],
+    "observed": "UI výkazy 1,5 + 1 = 2,5 h; XLSX a CSV skutečně staženy a otevřeny. Počet kanonických měření opraven na 3.",
+    "remaining": ""
+  },
+  {
+    "id": "B04",
+    "result": "blocked",
+    "regression_status": "PASS",
+    "test_classes": [
+      "SportsMeasurementWriteTest"
+    ],
+    "matched_tests": 1,
+    "unmatched_classes": [],
+    "observed": "UI závod #1 s kategorií, URL a měřením; úprava zachovala měření. Opraven HTTP 403 načtení podskupin.",
+    "remaining": "Formulář neumožňuje zadat interní a externí výsledky podle scénáře. Starý import je záměrně odstaven; nová kanonická editace externích výsledků není implementována."
+  },
+  {
+    "id": "B05",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "TrainingPlannerViewTest",
+      "TrainingClosureTest"
+    ],
+    "matched_tests": 13,
+    "unmatched_classes": [],
+    "observed": "UI série se dvěma soupiskami, přesun tlačítkem a kopie týdne. Nový HTTP test ověřil rename, move, ochranu rezervovaného sportoviště, kopii bez rezervací a zrušení série. JS regrese ověřila aktualizaci počtů dnů.",
+    "remaining": "Skutečné gesto drag&drop a inline dvojklik nebyly prokázány automatizací prohlížeče; endpointy fungují."
+  },
+  {
+    "id": "B06",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "VenueCalendarTest",
+      "IndividualLessonContextMigrationTest"
+    ],
+    "matched_tests": 5,
+    "unmatched_classes": [],
+    "observed": "Nový MariaDB/HTTP test: rezervovaná kapacita, ruční potvrzení, odmítnutí, fronta a audit; podvržené potvrzení čekatele kapacitu neobejde.",
+    "remaining": "Kompletní UI založení interní rezervace a žluté/zelené lekce zbývá."
+  },
+  {
+    "id": "B07",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "OneTimeTokenFlowTest"
+    ],
+    "matched_tests": 3,
+    "unmatched_classes": [],
+    "observed": "Nový MariaDB/HTTP test: FIFO při shodném čase, jedno povýšení, plná kapacita, sjednocený zámek HH:MM/HH:MM:SS a zákaz povýšení zrušené lekce.",
+    "remaining": "Zápis všech kroků veřejným rezervačním formulářem nebyl proveden."
+  },
+  {
+    "id": "B08",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "ShopCatalogStageTest",
+      "ShopCatalogReviewTest",
+      "ShopCatalogPromotionTest",
+      "ShopCatalogPublicationTest",
+      "ShopCatalogOneTimeSyncTest"
+    ],
+    "matched_tests": 34,
+    "unmatched_classes": [],
+    "observed": "Syntetický Shoptet vstup, staging, review, promote, draft/publish, idempotence a oddělení veřejného katalogu.",
+    "remaining": "Celý importní průchod není nový UI důkaz."
+  },
+  {
+    "id": "B09",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "ShopCheckoutTest",
+      "ShopFulfillmentTest"
+    ],
+    "matched_tests": 55,
+    "unmatched_classes": [],
+    "observed": "UI objednávka #28 za 441 Kč s QR; izolované HTTP potvrdilo platbu opakovaně, ready a completed; UI ukázalo Vydáno/Zaplaceno. Sledované sklady navíc prošly HTTP sadou výdejů.",
+    "remaining": "Administrační přechody byly provedeny HTTP, ne klikáním."
+  },
+  {
+    "id": "B10",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "ShopCheckoutTest",
+      "ShopReturnsTest"
+    ],
+    "matched_tests": 60,
+    "unmatched_classes": [],
+    "observed": "Čerstvé transakční a HTTP testy neuhrazeného storna, uhrazeného storna, výdeje, vratek, korekcí a referencí hospodáře. Dřívější UI ověřilo vratku kurzu.",
+    "remaining": "Úplný nový UI průchod vratkou fyzického zboží zbývá."
+  },
+  {
+    "id": "B11",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "ShopCheckoutTest"
+    ],
+    "matched_tests": 39,
+    "unmatched_classes": [],
+    "observed": "Výchozí goods scope, minimum, limit použití, expirace, oddělení zboží/služeb a neměnné slevové snapshoty.",
+    "remaining": "Není nový UI průchod formulářem kupónů."
+  },
+  {
+    "id": "B12",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "ShopMemberPricingTest",
+      "ShopCheckoutTest"
+    ],
+    "matched_tests": 43,
+    "unmatched_classes": [],
+    "observed": "Opravena karta katalogu. UI i nový HTTP test rodič 441 Kč versus anonym 490 Kč; košík a snapshot objednávky 441 Kč.",
+    "remaining": "Pozdější změny pravidla a revokace pokrývají integrační testy."
+  },
+  {
+    "id": "B13",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "ShopStorefrontTest",
+      "ShopProductImageTest"
+    ],
+    "matched_tests": 7,
+    "unmatched_classes": [],
+    "observed": "UI produkt #40: viditelné L/175 Kč a M/150 Kč, skrytá třetí varianta nenabízena, přepnutí na M a košík se správným SKU/150 Kč. Košík následně vyprázdněn. Bezpečnost MIME/EXIF, lokálních obrázků a publikace kryjí integrační testy.",
+    "remaining": "Localhost běží na HTTP; produkční HTTPS nebylo v tomto průchodu testováno. Syntetický produkt používá prázdný obrázek."
+  },
+  {
+    "id": "B16",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "ClubEventRosterTargetTest",
+      "ClubEventRegistrationTest"
+    ],
+    "matched_tests": 28,
+    "unmatched_classes": [],
+    "observed": "Více cílových soupisek, způsobilost účastníků, snapshoty a placené události.",
+    "remaining": "Úplný nový UI průchod placenou akcí a stažením CSV zbývá."
+  },
+  {
+    "id": "B17",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "PublicVelodromeTest",
+      "PublicVelodromeShopTest"
+    ],
+    "matched_tests": 19,
+    "unmatched_classes": [],
+    "observed": "UI objednávka #29/250 Kč; dvojí potvrzení přes izolované HTTP; UI právě jedna Potvrzená/Zaplaceno a 0/1 volno. Po stornu/vratce opět 1/1 volno. Opraven štítek vrácené platby. Po opravě potvrzeno UI „Zrušená · Peníze vráceny“.",
+    "remaining": "Administrační platba a vratka byly provedeny HTTP."
+  },
+  {
+    "id": "B18",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "AccountPersonClaimTest",
+      "OneTimeTokenFlowTest",
+      "PublicVelodromeTest"
+    ],
+    "matched_tests": 23,
+    "unmatched_classes": [],
+    "observed": "Nový HTTP průchod registrace, generické odpovědi při duplicitním e-mailu, ověření tokenu, žádosti o dítě, schválení registrářem a zobrazení vazby žadateli.",
+    "remaining": "Syntetický e-mail z místní šifrované fronty; bez externí doručitelnosti."
+  },
+  {
+    "id": "B19",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "PasswordResetTest",
+      "AuthSessionValidationTest"
+    ],
+    "matched_tests": 10,
+    "unmatched_classes": [],
+    "observed": "Nový HTTP průchod resetu hesla vlastního syntetického účtu, okamžité zneplatnění původní relace a odmítnutí již použitého tokenu. Dětský reset a odvolané vazby navíc integračními testy.",
+    "remaining": "Obnova přes HTTP; heslo skutečného uživatele ani produkce se neměnilo."
+  },
+  {
+    "id": "B20",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "FamilyCalendarFeedTest"
+    ],
+    "matched_tests": 9,
+    "unmatched_classes": [],
+    "observed": "UI vygenerovalo soukromý ICS a soubor byl skutečně stažen. Nezávislý parser icalendar 6.3.2 přijal 9 událostí; unikátní UID a platné termíny. Čerstvé integrační testy rotace/revokace a 30denní agendy.",
+    "remaining": "Přejímka v izolaci; odběr v externím telefonu/Google/Apple kalendáři nebyl zapnut."
+  },
+  {
+    "id": "B21",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "FamilyAnnualPaidOverviewTest",
+      "FamilyCalendarFeedTest"
+    ],
+    "matched_tests": 14,
+    "unmatched_classes": [],
+    "observed": "UI roční přehled po opravě 441 Kč přiřazených dítěti A; vrácené a neuhrazené položky chybí. Nová regrese fallback finančního profilu, cizí položky a revokace; oddělení CZK/EUR.",
+    "remaining": "Opt-in/out a náhled již byly ověřeny dříve; v tomto průchodu doplněny placené položky."
+  },
+  {
+    "id": "B22",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "PublicCalendarFeedTest"
+    ],
+    "matched_tests": 5,
+    "unmatched_classes": [],
+    "observed": "Veřejný ICS načten přes localhost HTTP a zpracován nezávislým parserem: 7 událostí, unikátní UID, platné termíny, bez jmen testovacích dětí/e-mailu. Integrační testy soukromí.",
+    "remaining": "Přejímka souboru v izolaci; externí odběr záměrně nezapnut."
+  },
+  {
+    "id": "B23",
+    "result": "blocked",
+    "regression_status": "PASS",
+    "test_classes": [
+      "KisImportRunTest",
+      "KisImportPreviewIntegrityTest",
+      "KisImportFieldContractStorageTest"
+    ],
+    "matched_tests": 9,
+    "unmatched_classes": [],
+    "observed": "Ověřeny preview/fingerprint a bezpečnost importních kontraktů.",
+    "remaining": "Původní čtvrtý krok přímého zápisu v sync_evidence.php byl bezpečnostně vyřazen. Aktuální UI předává do KIS centra. Původní scénář nelze označit PASS ani přímý zápis znovu povolit."
+  },
+  {
+    "id": "B24",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "KisImportSandboxPromotionTest"
+    ],
+    "matched_tests": 3,
+    "unmatched_classes": [],
+    "observed": "Skutečné izolované promote/rollback/reapply, idempotence, drift preview, audit, atomický rollback a nezměněná kanonická data.",
+    "remaining": "Není nový úplný UI průchod KIS centrem."
+  },
+  {
+    "id": "B25",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "MemberChargeReadTest",
+      "MemberChargeAdminTest"
+    ],
+    "matched_tests": 8,
+    "unmatched_classes": [],
+    "observed": "UI rodiče, omezeného sportovce a hospodáře ukázalo tentýž LOCAL-REMINDER-001 / 1 250 Kč. Doplněna chybějící historie předpisu: UI vlastního předpisu #9 ukázalo založení a zrušení s aktérem, časem a důvodem. HTTP ověřilo escapování, čtení bez zápisu a zákaz přístupu registráře.",
+    "remaining": "Historie předpisu je pro hospodáře; starší importované záznamy mohou být bez auditních událostí. Výpis je omezen na nejnovějších 100 událostí."
+  },
+  {
+    "id": "B28",
+    "result": "pass",
+    "regression_status": "PASS",
+    "test_classes": [
+      "AuthSessionValidationTest",
+      "StaffAccountLifecycleTest"
+    ],
+    "matched_tests": 7,
+    "unmatched_classes": [],
+    "observed": "Nový HTTP test odebral pracovní pozici vlastního syntetického trenéra; stejná session ihned 403. Deaktivace ukončila přístup, testovací nastavení vráceno.",
+    "remaining": "Provedeno HTTP, bez změn produkčních přístupů."
+  },
+  {
+    "id": "B30",
+    "result": "partial",
+    "regression_status": "PASS",
+    "test_classes": [
+      "StaffWorkspaceRegistryTest",
+      "SharedUiShellTest",
+      "ShopPublicNavigationWiringTest"
+    ],
+    "matched_tests": 33,
+    "unmatched_classes": [],
+    "observed": "Čerstvé testy registru pozic, sdíleného shellu a navigace. UI rodiče, sportovce a správce odpovídalo pozici; přepnutí na hospodáře zpřístupnilo finanční agendu. Tmavý/světlý režim a dialog nápovědy fungují, světlý režim obnoven.",
+    "remaining": "Skutečné stisky všech klávesových zkratek a všechny role bez JavaScriptu nejsou doloženy; ovládací rozhraní nepřijalo klávesovou akci."
+  }
+]

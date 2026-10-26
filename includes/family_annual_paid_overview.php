@@ -108,6 +108,11 @@ function familyAnnualPaidOverview(PDO $pdo, int $accountId, int $year): array
         if (familyPortalHasTables($pdo, ['shop_orders', 'shop_order_items', 'payments', 'sportovci'])
             && familyAnnualPaidOverviewColumnExists($pdo, 'shop_order_items', 'beneficiary_sportovec_id')
         ) {
+            // Goods without a per-item participant belong to the explicitly
+            // selected financial profile. Never override a child's line owner.
+            $beneficiary = familyAnnualPaidOverviewColumnExists($pdo, 'shop_orders', 'finance_sportovec_id')
+                ? 'COALESCE(oi.beneficiary_sportovec_id,o.finance_sportovec_id)'
+                : 'oi.beneficiary_sportovec_id';
             $statement = $pdo->prepare(
                 'SELECT oi.id,o.public_code,oi.product_name_snapshot,oi.quantity,'
                 . 'oi.line_amount_minor AS amount_minor,oi.currency,p.paid_at,'
@@ -115,8 +120,8 @@ function familyAnnualPaidOverview(PDO $pdo, int $accountId, int $year): array
                 . 'FROM shop_order_items oi '
                 . 'JOIN shop_orders o ON o.id=oi.order_id '
                 . "JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id AND p.status='paid' "
-                . 'JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id '
-                . "WHERE o.payment_status='paid' AND oi.beneficiary_sportovec_id IN ({$placeholders}) "
+                . 'JOIN sportovci s ON s.id=' . $beneficiary . ' '
+                . "WHERE o.payment_status='paid' AND s.id IN ({$placeholders}) "
                 . 'AND p.paid_at>=? AND p.paid_at<? '
                 . 'ORDER BY p.paid_at DESC,o.id DESC,oi.id ASC'
             );

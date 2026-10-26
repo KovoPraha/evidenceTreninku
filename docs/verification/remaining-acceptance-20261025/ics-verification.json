@@ -1,0 +1,20 @@
+[
+  {
+    "calendar": "family",
+    "status": "PASS",
+    "events": 9,
+    "unique_uids": true,
+    "valid_event_dates": true,
+    "parser": "icalendar 6.3.2",
+    "external_subscription": false
+  },
+  {
+    "calendar": "public",
+    "status": "PASS",
+    "events": 7,
+    "unique_uids": true,
+    "valid_event_dates": true,
+    "parser": "icalendar 6.3.2",
+    "external_subscription": false
+  }
+]

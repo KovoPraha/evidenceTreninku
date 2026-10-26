@@ -13,6 +13,9 @@ Options -Indexes
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://kis.kovopraha.cz%{REQUEST_URI} [R=308,L,NE]
 
+    # Managed TLS uses DNS validation with the current hosting nameservers.
+    # Keep .well-known denied too; see docs/DOZOR_F1_F3_2026-10-26.md before
+    # changing DNS/hosting or introducing an HTTP-01 token-only exception.
     # Also deny old/local tooling directories, including nested dot paths.
     RewriteRule (^|/)\. - [F,L]
     # Rsync exclusions do not remove files from previous releases.
