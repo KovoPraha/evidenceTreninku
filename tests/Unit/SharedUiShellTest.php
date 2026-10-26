@@ -94,10 +94,18 @@ final class SharedUiShellTest extends TestCase
     {
         $including = false;
         foreach (token_get_all($source) as $token) {
-            if ($token === ';') $including = false;
-            if (!is_array($token)) continue;
-            if (in_array($token[0], [T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE], true)) $including = true;
-            if ($including && $token[0] === T_CONSTANT_ENCAPSED_STRING && str_contains($token[1], 'hlavicka.php')) return true;
+            if ($token === ';') {
+                $including = false;
+            }
+            if (!is_array($token)) {
+                continue;
+            }
+            if (in_array($token[0], [T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE], true)) {
+                $including = true;
+            }
+            if ($including && $token[0] === T_CONSTANT_ENCAPSED_STRING && str_contains($token[1], 'hlavicka.php')) {
+                return true;
+            }
         }
         return false;
     }

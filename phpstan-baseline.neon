@@ -163,12 +163,6 @@ parameters:
 			path: bin/club-migration.php
 
 		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: bin/club-release-impact.php
-
-		-
 			message: '#^Call to function token_get_all\(\) on a separate line has no effect\.$#'
 			identifier: function.resultUnused
 			count: 1
@@ -373,12 +367,6 @@ parameters:
 			path: bin/probe-finance-b1-sandbox.php
 
 		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: bin/production-accounting-audit.php
-
-		-
 			message: '#^Result of \|\| is always true\.$#'
 			identifier: booleanOr.alwaysTrue
 			count: 1
@@ -505,12 +493,6 @@ parameters:
 			path: bin/sync-shoptet-catalog-once.php
 
 		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: bin/verify-shop-variable-symbols.php
-
-		-
 			message: '#^Result of \|\| is always true\.$#'
 			identifier: booleanOr.alwaysTrue
 			count: 1
@@ -539,12 +521,6 @@ parameters:
 			identifier: variable.undefined
 			count: 2
 			path: booking/cyklisticke_krouzky.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 32
-			path: booking/eshop.php
 
 		-
 			message: '#^Variable \$freeFormAction in isset\(\) always exists and is not nullable\.$#'
@@ -609,12 +585,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 2
-			path: booking/moje_objednavky.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 5
 			path: booking/moje_osoby.php
 
@@ -657,13 +627,7 @@ parameters:
 		-
 			message: '#^Variable \$order might not be defined\.$#'
 			identifier: variable.undefined
-			count: 58
-			path: booking/objednavka.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 5
+			count: 51
 			path: booking/objednavka.php
 
 		-
@@ -1363,30 +1327,6 @@ parameters:
 			path: identity_reviews_admin.php
 
 		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: includes/accounting_adjustments.php
-
-		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: includes/accounting_ledger.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: includes/athlete_registration_texts.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: includes/athlete_reward_guard.php
-
-		-
 			message: '#^Parameter \#1 \$array \(list\<string\>\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
 			count: 1
@@ -1408,12 +1348,6 @@ parameters:
 			message: '#^Parameter \#1 \$array \(array\{\}\) to function array_values is empty, call has no effect\.$#'
 			identifier: arrayValues.empty
 			count: 1
-			path: includes/auth_rate_limit.php
-
-		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 2
 			path: includes/auth_rate_limit.php
 
 		-
@@ -1441,12 +1375,6 @@ parameters:
 			path: includes/club_catalog_import.php
 
 		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: includes/club_cutover.php
-
-		-
 			message: '#^Parameter \#1 \$array \(list\<int\>\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
 			count: 1
@@ -1457,12 +1385,6 @@ parameters:
 			identifier: arguments.count
 			count: 1
 			path: includes/club_event_shop.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: includes/club_migration.php
 
 		-
 			message: '#^Offset ''opening_minor'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
@@ -1511,12 +1433,6 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: includes/club_program_wizard.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 2
-			path: includes/club_registration_consent_admin.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
@@ -1589,12 +1505,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: includes/kis_import_parity_report.php
-
-		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: includes/kis_import_run_lib.php
 
 		-
 			message: '#^Offset 1 on array\{non\-falsy\-string, '''', '''', non\-falsy\-string&numeric\-string, non\-falsy\-string&numeric\-string\}\|array\{non\-falsy\-string, non\-falsy\-string&numeric\-string, non\-falsy\-string&numeric\-string\} on left side of \?\? always exists and is not nullable\.$#'
@@ -1891,32 +1801,14 @@ parameters:
 			path: includes/shop_checkout.php
 
 		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: includes/shop_checkout.php
-
-		-
 			message: '#^Negated boolean expression is always false\.$#'
 			identifier: booleanNot.alwaysFalse
 			count: 1
 			path: includes/shop_coupon.php
 
 		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: includes/shop_inventory.php
-
-		-
 			message: '#^Comparison operation "\>" between int\<1, 99999\> and 99999 is always false\.$#'
 			identifier: greater.alwaysFalse
-			count: 1
-			path: includes/shop_number_series.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
 			count: 1
 			path: includes/shop_number_series.php
 
@@ -2173,12 +2065,6 @@ parameters:
 			path: includes/training_day_view.php
 
 		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 2
-			path: includes/training_roster_bridge.php
-
-		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
 			count: 1
@@ -2201,12 +2087,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: includes/ui_format.php
-
-		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: includes/unified_account.php
 
 		-
 			message: '#^If condition is always false\.$#'
@@ -2255,12 +2135,6 @@ parameters:
 			identifier: variable.undefined
 			count: 13
 			path: individualni_lekce_form.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 29
-			path: individualni_lekce_sprava.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
@@ -2349,12 +2223,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 12
-			path: kis_sync_center.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 2
 			path: kis_training_a07_admin.php
 
@@ -2409,12 +2277,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 7
-			path: member_charges_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 3
 			path: member_engagement_admin.php
 
@@ -2437,52 +2299,10 @@ parameters:
 			path: member_payer_receipts_admin.php
 
 		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: migrations/20260804235000_club_program_repeat_enrollment.php
-
-		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: migrations/20260804235500_public_profile_token_rotation.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: migrations/20260816200000_shop_manual_catalog_origin.php
-
-		-
 			message: '#^Variable \$row might not be defined\.$#'
 			identifier: variable.undefined
 			count: 2
 			path: migrations/20260922190000_member_fee_standing_orders.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: migrations/20261020230000_athlete_editor_relations.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: migrations/20261021090000_roster_hierarchy_temporal.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: migrations/20261023010100_offline_program_admissions.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: migrations/20261023210000_family_course_cart.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
@@ -3322,10 +3142,4 @@ parameters:
 			message: '#^Strict comparison using \!\=\= between mixed~\(0\|0\.0\|''''\|''0''\|array\{\}\|false\|null\) and ''0'' will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 2
-			path: zavod_detail.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 5
 			path: zavod_detail.php

@@ -20,6 +20,17 @@ parameters:
         - tools/phpstan-bootstrap.php
     scanDirectories:
         - includes
+    stubFiles:
+        - tools/phpstan/Pdo.stub
     # Use PHPStan's default sys_get_temp_dir()/phpstan, outside the webroot.
     parallel:
         maximumNumberOfProcesses: 2
+
+services:
+    -
+        class: Evidence\PHPStan\BootstrapPdoExtension
+        arguments:
+            parser: @defaultAnalysisParser
+            projectRoot: %currentWorkingDirectory%
+        tags:
+            - phpstan.ignoreErrorExtension

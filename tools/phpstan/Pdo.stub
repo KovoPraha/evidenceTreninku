@@ -1,0 +1,11 @@
+<?php
+
+class PDO
+{
+    /**
+     * Transaction state changes after beginTransaction/commit/rollBack, including exceptions.
+     * @phpstan-impure
+     * @return bool
+     */
+    public function inTransaction() {}
+}

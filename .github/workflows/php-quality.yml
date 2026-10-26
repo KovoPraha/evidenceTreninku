@@ -26,6 +26,8 @@ jobs:
       - run: composer install --prefer-dist --no-interaction --no-progress
       - name: PHPStan analysis against the reviewed baseline
         run: composer analyse
+      - name: Verify scoped bootstrap handling and retained negative findings
+        run: php tools/check-phpstan-contract.php
       - name: Verify anonymous inventory after analysis has populated its cache
         run: |
           test ! -e .phpstan-cache
