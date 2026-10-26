@@ -1,0 +1,3 @@
+drill	Obnovit vybrane generace zaloh do izolovane MariaDB	2026-10-26T11:55:19.1074652Z evidence_2026-10-26_115105_bc54d9d0.sql.gz: OK
+drill	Obnovit vybrane generace zaloh do izolovane MariaDB	2026-10-26T11:55:55.4737295Z Generace 1 obnovena: 336 tabulek, 2 triggeru.
+drill	Obnovit vybrane generace zaloh do izolovane MariaDB	2026-10-26T11:55:55.4738105Z Izolovana obnova overena pro 1 generaci zaloh.

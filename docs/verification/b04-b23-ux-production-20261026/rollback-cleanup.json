@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "removed": [
+    "includes/staff_login_return.php",
+    "includes/staff_page_feedback.php"
+  ],
+  "missing": [
+    "admin_panel.php",
+    "index-backup.php",
+    "index3.php",
+    "sync.php",
+    "test.php",
+    "analyze_excel.php",
+    "analyze_uci_form.php",
+    "jizdy/vypis_vykazu (4) - kopie.php",
+    "servis/vypis_vykazu (4) - kopie.php",
+    "uctenky/vypis_vykazu (4) - kopie.php",
+    "udalosti/vypis_vykazu (4) - kopie.php",
+    "vozidla/vypis_vykazu (3) - kopie.php",
+    "vozidla/vypis_vykazu (4) - kopie.php"
+  ],
+  "synthetic_only": true,
+  "preserves_config": true
+}
