@@ -2,18 +2,16 @@
 require_once __DIR__ . '/includes/session_security.php';
 /**
  * login.php
- * Přihlášení do KIS.
+ * Přihlášení trenéra.
  * Přijímá pouze hesla uložená přes password_hash(). Legacy plaintext převádí
  * číslovaná bezpečnostní migrace před aktivací tohoto kódu.
  */
 app_session_start();
 app_session_send_auth_no_store_headers();
-require_once __DIR__ . '/includes/staff_login_return.php';
-$loginReturn = staffLoginReturnTarget($_POST['return_to'] ?? $_GET['return_to'] ?? null);
 
 // Pokud je již přihlášen, přesměruj rovnou
 if (isset($_SESSION['trener_id'])) {
-    header('Location: ' . $loginReturn);
+    header('Location: index.php');
     exit;
 }
 
@@ -100,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 staffWorkspaceRefreshSession($pdo, (int)$uzivatel['id']);
 
-                header('Location: ' . $loginReturn, true, 303);
+                header('Location: pracovni_pozice.php');
                 exit;
             } else {
                 $error = $rateAllowed
@@ -136,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="text-center mb-4">
             <span style="font-size:2.5rem;">🚴</span>
             <h1 class="h4 mt-2 mb-0">Evidence tréninků</h1>
-            <div class="text-muted small">Přihlášení do KIS</div>
+            <div class="text-muted small">Přihlášení trenéra</div>
         </div>
 
         <?php if ($error): ?>
@@ -145,7 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" novalidate>
             <?= csrf_field() ?>
-            <input type="hidden" name="return_to" value="<?= h($loginReturn) ?>">
             <div class="mb-3">
                 <label for="jmeno" class="form-label">Jméno nebo e-mail</label>
                 <input type="text" name="jmeno" id="jmeno" class="form-control"
