@@ -1,5 +1,7 @@
 # Finalizace a lokální akceptační scénáře M2
 
+Aktuální doplnění z 25. 10. 2026: [výsledky zbývajících 26 scénářů A/B](verification/remaining-acceptance-20261025/RESULTS.md). Stav těchto scénářů je 14 PASS, 10 PARTIAL a 2 BLOCKED; automatické regrese jsou oddělené od úplné UI přejímky. Toto ověření je výhradně izolované a neopravňuje k nasazení.
+
 Stránka `testovaci_scenare.php` soustřeďuje scénáře A01–A10 na jednom místě.
 Je určena vlastníkovi produktu pro ruční kontrolu propojení Evidence, e-shopu a KIS.
 

@@ -724,3 +724,8 @@ body { font-family: Arial, Helvetica, sans-serif; font-size: .9rem; }
     .app-form-stack.row > div > :not(.form-label) { grid-column:1; }
     .app-form-stack .app-form-options { padding-left:calc(var(--bs-gutter-x) * .5); }
 }
+
+/* Native account menu remains usable when Bootstrap or JavaScript is unavailable. */
+.app-account-menu > summary { list-style: none; cursor: pointer; }
+.app-account-menu > summary::-webkit-details-marker { display: none; }
+.app-account-menu[open] > .dropdown-menu { display: block; right: 0; left: auto; }

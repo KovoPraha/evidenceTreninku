@@ -1,0 +1,32 @@
+[
+  {
+    "id": "B01",
+    "result": "pass",
+    "evidence": "UI trénink #21: 400 m / 01:15.250, 2 km / 03:20.500, 20 kg × 8 s RPE 8. RPE 0/11 a neplatný čas odmítnuty. Nové načtení zachovalo jednotky, RPE i poznámku cviku. Opraven neukládaný fallback cviku a zavádějící pevný popisek metrů."
+  },
+  {
+    "id": "B03",
+    "result": "pass",
+    "evidence": "UI vlastní výkaz 2 tréninky/2.5h, souhrn i přehled se shodují. XLSX a CSV skutečně staženy a otevřeny; hodnoty 1.5+1=2.5. Opraven nulový počet kanonických měření a odkazy exportů."
+  },
+  {
+    "id": "B09",
+    "status": "pass",
+    "evidence": "UI objednávka KP261025EC6FE0F0A2 za 441 Kč a QR; přes izolované HTTP potvrzena platba opakovaně bez duplicity, ready → completed; UI Moje objednávky ukázalo Vydáno/Zaplaceno. Admin kroky provedeny HTTP, nikoli klikáním."
+  },
+  {
+    "id": "B12",
+    "status": "pass",
+    "evidence": "UI katalog původně chybně 490 Kč, detail/košík/objednávka 441 Kč. Opraven katalog, UI nyní 441 Kč; nový HTTP test porovnal rodiče 441 Kč s anonymním návštěvníkem 490 Kč. Neměnnost snapshotu kryje integrační test."
+  },
+  {
+    "id": "B21",
+    "status": "pass",
+    "evidence": "UI roční přehled po opravě zobrazuje uhrazené zboží 441 Kč pro dítě A. Stornovaná a vrácená objednávka v ročním součtu nejsou. Opt-in/out a náhled ověřen dříve; rozdělení CZK/EUR a cizí/odvolané vazby čerstvě integračně."
+  },
+  {
+    "id": "B17",
+    "status": "pass",
+    "evidence": "UI objednávka KP261025824C522AEE/250 Kč, následné potvrzení přes localhost HTTP dvakrát, UI jediná Potvrzená/Zaplaceno a 0/1 volno. Po izolovaném stornu/vratce UI opět 1/1 volno. Dříve UI zdarma a editace kapacity."
+  }
+]

@@ -694,16 +694,16 @@ if ($step === 3 || $step === 4) {
     <!-- Step indicator -->
     <div class="step-indicator">
         <div class="step-item <?= $step === 1 ? 'active' : ($step > 1 ? 'done' : '') ?>">
-            <i class="bi bi-cloud-upload me-1"></i>1. Upload
+            <i class="bi bi-cloud-upload me-1"></i>1. Nahrání souborů
         </div>
         <div class="step-item <?= $step === 2 ? 'active' : ($step > 2 ? 'done' : '') ?>">
             <i class="bi bi-diagram-3 me-1"></i>2. Soupisky
         </div>
         <div class="step-item <?= $step === 3 ? 'active' : ($step > 3 ? 'done' : '') ?>">
-            <i class="bi bi-eye me-1"></i>3. Preview
+            <i class="bi bi-eye me-1"></i>3. Náhled
         </div>
         <div class="step-item <?= $step === 4 ? 'active' : '' ?>">
-            <i class="bi bi-check2-all me-1"></i>4. Provedení
+            <i class="bi bi-check2-all me-1"></i>4. Řízené předání
         </div>
     </div>
 
@@ -747,7 +747,7 @@ if ($step === 3 || $step === 4) {
                 <?= csrf_field() ?>
                 <input type="hidden" name="action" value="upload">
                 <div class="mb-3">
-                    <label for="users_xlsx" class="form-label req">Uzivatele z KIS (.xlsx)</label>
+                    <label for="users_xlsx" class="form-label req">Uživatelé z KIS (.xlsx)</label>
                     <input type="file" name="users_xlsx" id="users_xlsx" accept=".xlsx,.xls" class="form-control" required>
                 </div>
                 <div class="mb-3">

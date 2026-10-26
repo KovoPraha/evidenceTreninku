@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 require_once dirname(__DIR__,2).'/includes/accounting_adjustments.php';
 require_once dirname(__DIR__,2).'/includes/accounting_ledger.php';
 
+require_once dirname(__DIR__,2).'/includes/shop_payment_presentation.php';
+
 final class AccountingAdjustmentsTest extends TestCase
 {
     private PDO $pdo;
@@ -198,6 +200,24 @@ final class AccountingAdjustmentsTest extends TestCase
         self::assertSame($paid['id'],$this->pay((int)$last['id'],6000,'family-paid-second')['id']);
         self::assertSame(5,(int)$this->pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn());
         self::assertSame(1,(int)$this->pdo->query("SELECT COUNT(*) FROM shop_order_events WHERE action='confirm_refund'")->fetchColumn());
+    }
+
+    public function testCustomerViewShowsOnlyPaidRefundsAndPreservesOperationalState(): void
+    {
+        $order=['id'=>4,'payment_record_status'=>'paid','total_minor'=>10000,'currency'=>'CZK','refund_sent_at'=>null];
+        $decision=$this->decide(10000);
+        self::assertSame('paid',\shopOrderPaymentPresentation($this->pdo,$order)['status']);
+        $this->pay((int)$decision['id'],4000,'view-partial');
+        $view=\shopOrderPaymentPresentation($this->pdo,$order);
+        self::assertSame('partially_refunded',$view['status']);self::assertSame(4000,$view['refunded_minor']);
+        self::assertSame('paid',\shopOrderPaymentPresentation($this->pdo,array_replace($order,['id'=>99]))['status']);
+        self::assertSame('paid',\shopOrderPaymentPresentation($this->pdo,array_replace($order,['currency'=>'EUR']))['status']);
+        $this->pay((int)$decision['id'],6000,'view-complete');
+        $before=$this->pdo->query('SELECT * FROM payments')->fetchAll(PDO::FETCH_ASSOC);
+        $view=\shopOrderPaymentPresentation($this->pdo,$order);
+        self::assertSame('refunded',$view['status']);self::assertSame(10000,$view['refunded_minor']);self::assertSame('2026-01-12',$view['refunded_on']);
+        self::assertSame($before,$this->pdo->query('SELECT * FROM payments')->fetchAll(PDO::FETCH_ASSOC));
+        self::assertSame('paid',$before[0]['status']);
     }
 
     private function correction(int $amount,int $quantity):void

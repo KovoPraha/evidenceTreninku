@@ -1,6 +1,17 @@
 <?php
 declare(strict_types=1);
 
+/** Caller must first authorize the lesson through its normal visible-lesson scope. */
+function venueLessonHistory(PDO $pdo, int $lessonId): array
+{
+    if ($lessonId < 1) throw new InvalidArgumentException('Neplatná lekce.');
+    $statement = $pdo->prepare("SELECT e.id,e.created_at,e.actor_trainer_id,t.jmeno AS actor_name,e.action,e.reason
+        FROM venue_operation_events e LEFT JOIN treneri t ON t.id=e.actor_trainer_id
+        WHERE e.target_type='lesson' AND e.target_id=? ORDER BY e.id DESC LIMIT 100");
+    $statement->execute([$lessonId]);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function venueOperationAudit(
     PDO $pdo,
     string $targetType,

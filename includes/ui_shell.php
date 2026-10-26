@@ -76,8 +76,8 @@ function publicShellNav(string $active = ''): void
           <div class="d-flex flex-column flex-xxl-row align-items-stretch align-items-xxl-center gap-2 ms-xxl-2 pb-2 pb-xxl-0">
             <?php if ($customer): ?>
               <a class="btn btn-outline-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/sportovni_prehled.php')) ?>"><i class="bi bi-person-heart me-1"></i>Můj přehled</a>
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle me-1"></i>Můj účet</button>
+              <details class="dropdown app-account-menu">
+                <summary class="btn btn-outline-secondary btn-sm dropdown-toggle"><i class="bi bi-person-circle me-1"></i>Můj účet</summary>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/verejny_profil.php')) ?>">Profil</a></li>
                   <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/moje_osoby.php')) ?>">Moje osoby</a></li>
@@ -85,7 +85,7 @@ function publicShellNav(string $active = ''): void
                   <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/moje_rezervace.php')) ?>">Rezervace</a></li>
                   <li><a class="dropdown-item" href="<?= publicShellH(appUiUrl('booking/moje_objednavky.php')) ?>">Objednávky</a></li>
                 </ul>
-              </div>
+              </details>
             <?php endif; ?>
             <?php if ($athlete): ?>
               <a class="btn btn-outline-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/muj_sport.php')) ?>"><i class="bi bi-activity me-1"></i>Můj sport</a>
