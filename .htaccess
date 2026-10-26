@@ -13,8 +13,15 @@ Options -Indexes
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://kis.kovopraha.cz%{REQUEST_URI} [R=308,L,NE]
 
-    RewriteRule (^|/)\.git(/|$) - [F,L]
+    # Managed TLS uses DNS validation with the current hosting nameservers.
+    # Keep .well-known denied too; see docs/DOZOR_F1_F3_2026-10-26.md before
+    # changing DNS/hosting or introducing an HTTP-01 token-only exception.
+    # Also deny old/local tooling directories, including nested dot paths.
+    RewriteRule (^|/)\. - [F,L]
+    # Rsync exclusions do not remove files from previous releases.
+    RewriteRule ^ebook\.pdf$ - [F,L,NC]
     RewriteRule ^(?:bin|database|docs|migrations|output|tests|var|vendor)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:outputs|tools)(?:/|$) - [F,L,NC]
     RewriteRule ^reports(?:/|$) - [F,L,NC]
     RewriteRule ^includes(?:/|$) - [F,L,NC]
     RewriteRule ^uploads/(?:uctenky|zatezove_testy|servis|temp)(?:/|$) - [F,L,NC]
