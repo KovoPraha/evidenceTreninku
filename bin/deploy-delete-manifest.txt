@@ -13,3 +13,7 @@ uctenky/vypis_vykazu (4) - kopie.php
 udalosti/vypis_vykazu (4) - kopie.php
 vozidla/vypis_vykazu (3) - kopie.php
 vozidla/vypis_vykazu (4) - kopie.php
+
+# B04/B23 UX rollback: remove only unused helpers from PR 207.
+includes/staff_login_return.php
+includes/staff_page_feedback.php
