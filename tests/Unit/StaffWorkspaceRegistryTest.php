@@ -59,6 +59,7 @@ final class StaffWorkspaceRegistryTest extends TestCase
             foreach ($delegates as $delegate) self::assertArrayHasKey($delegate, $definitions, $route);
         }
         self::assertSame(['coach', 'sports_lead'], \staffRouteAllowedPositions('edit_trenink.php'));
+        self::assertSame(['coach', 'sports_lead'], \staffRouteAllowedPositions('nacti_podskupiny.php'));
         self::assertSame(['sports_lead', 'coach'], \staffRouteAllowedPositions('update_trenink.php'));
         self::assertSame(['coach', 'program_coordinator'], \staffRouteAllowedPositions('kalendar_sportovist.php'));
     }

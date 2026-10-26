@@ -1,0 +1,18 @@
+{
+    "sportovci": {
+        "count": 158,
+        "sha256": "751787f03641620d15e91aa68c1990d2677b566636e5b1a737de0b7935229f17"
+    },
+    "club_roster_members": {
+        "count": 53,
+        "sha256": "2bc3227809a954f17479b6bd3e3ae136f7a35d9d18ae9164dfcd343b5e79e32f"
+    },
+    "shop_orders": {
+        "count": 29,
+        "sha256": "4433143a74e83c9f027d370764ef4eede3d18787103597887b4c2e1634ef1cae"
+    },
+    "club_member_charges": {
+        "count": 9,
+        "sha256": "cfc3f0f43bbc6de05e1edb44f1389c0efd0695834c786d60c263e0669c1086b7"
+    }
+}

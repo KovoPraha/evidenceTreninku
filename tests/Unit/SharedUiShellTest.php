@@ -79,7 +79,7 @@ final class SharedUiShellTest extends TestCase
                 continue;
             }
             $source = (string)file_get_contents($path);
-            if (!str_contains($source, 'hlavicka.php')) {
+            if (!$this->includesSharedHeader($source)) {
                 continue;
             }
             if (!str_contains($source, 'bootstrap.min.css') && !str_contains($source, 'appUiAssets();')) {
@@ -88,6 +88,26 @@ final class SharedUiShellTest extends TestCase
         }
 
         self::assertSame([], $missing, 'Pages including hlavicka.php without their own Bootstrap CSS link: ' . implode(', ', $missing));
+    }
+
+    private function includesSharedHeader(string $source): bool
+    {
+        $including = false;
+        foreach (token_get_all($source) as $token) {
+            if ($token === ';') $including = false;
+            if (!is_array($token)) continue;
+            if (in_array($token[0], [T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE], true)) $including = true;
+            if ($including && $token[0] === T_CONSTANT_ENCAPSED_STRING && str_contains($token[1], 'hlavicka.php')) return true;
+        }
+        return false;
+    }
+
+    public function testHeaderDetectionDistinguishesIncludesFromReleaseManifestAndComments(): void
+    {
+        self::assertTrue($this->includesSharedHeader("<?php require_once __DIR__ . '/hlavicka.php';"));
+        self::assertTrue($this->includesSharedHeader("<?php include('hlavicka.php');"));
+        self::assertFalse($this->includesSharedHeader('<?php $manifest = \'{"hlavicka.php":"sha256"}\'; require "config.php";'));
+        self::assertFalse($this->includesSharedHeader('<?php // include "hlavicka.php";'));
     }
 
     public function testBootstrapJavascriptIsEmittedOnceBySharedAssets(): void
@@ -177,10 +197,11 @@ final class SharedUiShellTest extends TestCase
         );
     }
 
-    public function testPublicAccountMenuUsesBootstrapDropdown(): void
+    public function testPublicAccountMenuWorksWithoutBootstrapJavascript(): void
     {
         $helper = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/ui_shell.php');
-        self::assertStringContainsString('data-bs-toggle="dropdown"', $helper);
+        self::assertStringContainsString('<details class="dropdown app-account-menu">', $helper);
+        self::assertStringContainsString('<summary class="btn btn-outline-secondary btn-sm dropdown-toggle">', $helper);
         self::assertStringContainsString('dropdown-menu dropdown-menu-end', $helper);
         self::assertStringNotContainsString('<details class="acct-menu', $helper);
     }

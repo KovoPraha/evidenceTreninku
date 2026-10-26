@@ -6,6 +6,7 @@ if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
 require_once 'db.php';
 if (!canAccess('zavod_detail')) { header('Location: index.php'); exit; }
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
+require_once __DIR__ . '/includes/race_results.php';
 
 function h($s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -132,6 +133,10 @@ $mereniTypMeta = [
 ];
 
 $canEdit = canAccess('sprava_zavodu');
+$resultState = raceResultsState($pdo, $zavodId);
+$publishedResults = raceResultsRevision($pdo, $zavodId, (int)$resultState['published_revision_id']);
+$raceParticipantCount = $publishedResults ? count(array_unique(array_column($publishedResults['rows'], 'key'))) : count($ucastnici);
+if ($publishedResults) $pocetSVysledky = count(array_unique(array_column(array_filter($publishedResults['rows'], static fn($r) => $r['status'] === 'finished'), 'key')));
 
 // Trenéři pro hero bary (split na badge)
 $trenerList = [];
@@ -240,6 +245,7 @@ $trenerColors = ['primary', 'success', 'danger', 'warning', 'info', 'secondary']
             <!-- Right: action buttons -->
             <div class="hero-btns d-flex flex-wrap gap-2 align-items-start pt-1">
                 <?php if ($canEdit): ?>
+                    <a href="zavod_vysledky.php?id=<?=$zavodId?>" class="btn btn-outline-light btn-sm">Správa výsledků</a>
                 <a href="edit_zavod_form.php?id=<?= $zavodId ?>" class="btn btn-sm btn-outline-light">
                     <i class="bi bi-pencil me-1"></i>Upravit
                 </a>
@@ -254,13 +260,18 @@ $trenerColors = ['primary', 'success', 'danger', 'warning', 'info', 'secondary']
 
 <!-- ════════════════════════════════════════════════════ MAIN CONTENT ═══ -->
 <div class="container mt-4 mb-5" style="max-width:1000px">
+    <?php if ($publishedResults): ?>
+    <section class="card p-3 mb-4"><h2 class="h4">Zveřejněné výsledky · revize <?=(int)$publishedResults['version']?></h2>
+    <?php $displayRows=$publishedResults['rows']; include __DIR__.'/includes/race_results_table.php'; ?>
+    </section>
+    <?php endif; ?>
 
     <!-- ── Stats cards ──────────────────────────────────────────────── -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
             <div class="card stat-card text-center border-0 shadow-sm h-100">
                 <div class="card-body py-3">
-                    <div class="stat-value text-primary"><?= count($ucastnici) ?></div>
+                    <div class="stat-value text-primary"><?= $raceParticipantCount ?></div>
                     <div class="text-muted small mt-1"><i class="bi bi-people me-1"></i>Závodníků</div>
                 </div>
             </div>
@@ -317,7 +328,7 @@ $trenerColors = ['primary', 'success', 'danger', 'warning', 'info', 'secondary']
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white border-bottom d-flex align-items-center gap-2 py-3">
                     <i class="bi bi-list-ol text-primary fs-5"></i>
-                    <h5 class="mb-0">Výsledková listina</h5>
+                    <h5 class="mb-0"><?= $publishedResults ? 'Historické podklady a přihlášení' : 'Výsledková listina' ?></h5>
                     <span class="badge bg-secondary ms-auto"><?= count($ucastnici) ?></span>
                 </div>
                 <div class="card-body p-0">
@@ -590,7 +601,7 @@ $trenerColors = ['primary', 'success', 'danger', 'warning', 'info', 'secondary']
                         <?php endif; ?>
 
                         <dt class="col-5 text-muted fw-normal">Závodníků</dt>
-                        <dd class="col-7 mb-1 fw-semibold"><?= count($ucastnici) ?></dd>
+                        <dd class="col-7 mb-1 fw-semibold"><?= $raceParticipantCount ?></dd>
 
                         <?php if ($pocetSVysledky > 0): ?>
                         <dt class="col-5 text-muted fw-normal">S výsledky</dt>

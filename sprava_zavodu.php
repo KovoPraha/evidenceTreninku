@@ -70,6 +70,7 @@ ORDER BY z.datum DESC
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $zavody = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$hasFilters = (bool)($filterGroup || $filterSub || $filterTr);
 
 // Překlad dnů
 $daysCz = [
@@ -124,6 +125,18 @@ $daysCz = [
     </div>
   </form>
 
+  <?php if (!$zavody): ?>
+    <section class="card p-4" role="status" aria-labelledby="empty-races-title">
+      <h2 class="h4" id="empty-races-title">Žádné závody k zobrazení</h2>
+      <?php if ($hasFilters): ?>
+        <p>Zvoleným filtrům neodpovídá žádný dostupný závod. Zrušte filtry a zobrazte celý seznam.</p>
+        <div><a class="btn btn-primary" href="sprava_zavodu.php">Zrušit filtry</a></div>
+      <?php else: ?>
+        <p>V tomto přehledu zatím nejsou dostupné žádné závody. Správa výsledků se otevírá z detailu konkrétního závodu.</p>
+        <div><a class="btn btn-outline-secondary" href="pracovni_pozice.php">Zpět na pracovní rozcestník</a></div>
+      <?php endif; ?>
+    </section>
+  <?php else: ?>
   <div class="table-responsive">
     <table class="table table-striped table-bordered">
       <thead class="table-dark">
@@ -193,6 +206,7 @@ $daysCz = [
       </tbody>
     </table>
   </div>
+  <?php endif; ?>
 </div>
 
 

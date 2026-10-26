@@ -1,0 +1,40 @@
+{
+  "scope": "isolated localhost only; not production UAT",
+  "phpunit": {
+    "tests": 1721,
+    "assertions": 34824,
+    "skipped": [
+      "Tests\\Unit\\PrivateStorageProbeTest::testCanonicalPublicSymlinkFailsBeforeWriting",
+      "Tests\\Unit\\PrivateStorageProbeTest::testCleanupDoesNotFollowOrDeleteReplacementSymlink",
+      "Tests\\Unit\\ProductionPrivateStorageProvisionTest::testRefusesSymlinkedDataBeforeChanges"
+    ],
+    "errors": 0,
+    "failures": 0
+  },
+  "javascript": {
+    "tests": 10,
+    "pass": 10,
+    "skipped": 0
+  },
+  "existing_http_suites": {
+    "suites": 26,
+    "checks": 821,
+    "pass": true
+  },
+  "remaining_http_suite": {
+    "checks": 34,
+    "pass": true
+  },
+  "requested_26": {
+    "pass": 14,
+    "partial": 10,
+    "blocked": 2
+  },
+  "all_40_hub": {
+    "pass": 28,
+    "partial": 10,
+    "blocked": 2,
+    "not_tested": 0
+  },
+  "production_deployed": false
+}

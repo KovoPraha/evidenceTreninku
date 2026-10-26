@@ -1,0 +1,236 @@
+[
+  {
+    "script": "FinanceB1HttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:18:29.5185570+01:00",
+    "seconds": 2.03,
+    "log": "FinanceB1HttpAcceptance.log",
+    "checks": 58
+  },
+  {
+    "script": "FinanceB1RouterHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:18:31.5983486+01:00",
+    "seconds": 0.25,
+    "log": "FinanceB1RouterHttpAcceptance.log",
+    "checks": 14
+  },
+  {
+    "script": "ClubFoundationHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:18:31.8578752+01:00",
+    "seconds": 13.28,
+    "log": "ClubFoundationHttpAcceptance.log",
+    "checks": 110
+  },
+  {
+    "script": "MemberAdmissionHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:18:45.1534993+01:00",
+    "seconds": 25.42,
+    "log": "MemberAdmissionHttpAcceptance.log",
+    "checks": 30
+  },
+  {
+    "script": "DailyCoachRegistrarHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:10.5837941+01:00",
+    "seconds": 3.78,
+    "log": "DailyCoachRegistrarHttpAcceptance.log",
+    "checks": 35
+  },
+  {
+    "script": "PersonLifeDocumentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:14.3711530+01:00",
+    "seconds": 4.3,
+    "log": "PersonLifeDocumentsHttpAcceptance.log",
+    "checks": 30
+  },
+  {
+    "script": "TrainingClosureHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:18.6721002+01:00",
+    "seconds": 1.42,
+    "log": "TrainingClosureHttpAcceptance.log",
+    "checks": 25
+  },
+  {
+    "script": "MakeupJourneyHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:20.0979677+01:00",
+    "seconds": 1.73,
+    "log": "MakeupJourneyHttpAcceptance.log",
+    "checks": 23
+  },
+  {
+    "script": "SportsActivityHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:21.8327380+01:00",
+    "seconds": 2.61,
+    "log": "SportsActivityHttpAcceptance.log",
+    "checks": 23
+  },
+  {
+    "script": "MedicalClearanceHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:24.4761286+01:00",
+    "seconds": 2.57,
+    "log": "MedicalClearanceHttpAcceptance.log",
+    "checks": 22
+  },
+  {
+    "script": "ClubAdministrationHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:27.0455848+01:00",
+    "seconds": 4.84,
+    "log": "ClubAdministrationHttpAcceptance.log",
+    "checks": 49
+  },
+  {
+    "script": "ClubExpensesHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:31.8896583+01:00",
+    "seconds": 2.56,
+    "log": "ClubExpensesHttpAcceptance.log",
+    "checks": 47
+  },
+  {
+    "script": "ClubRewardsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:34.4527295+01:00",
+    "seconds": 2.61,
+    "log": "ClubRewardsHttpAcceptance.log",
+    "checks": 29
+  },
+  {
+    "script": "SeasonOperationsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:37.0626819+01:00",
+    "seconds": 2.96,
+    "log": "SeasonOperationsHttpAcceptance.log",
+    "checks": 41
+  },
+  {
+    "script": "ShopInventoryHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:40.0299044+01:00",
+    "seconds": 1.51,
+    "log": "ShopInventoryHttpAcceptance.log",
+    "checks": 21
+  },
+  {
+    "script": "ShopFulfillmentHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:41.5462856+01:00",
+    "seconds": 4.28,
+    "log": "ShopFulfillmentHttpAcceptance.log",
+    "checks": 31
+  },
+  {
+    "script": "ShopReturnsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:45.8252592+01:00",
+    "seconds": 2.69,
+    "log": "ShopReturnsHttpAcceptance.log",
+    "checks": 33
+  },
+  {
+    "script": "AccountingLedgerHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:48.5224154+01:00",
+    "seconds": 2.85,
+    "log": "AccountingLedgerHttpAcceptance.log",
+    "checks": 17
+  },
+  {
+    "script": "AccountingDocumentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:51.3765719+01:00",
+    "seconds": 2.57,
+    "log": "AccountingDocumentsHttpAcceptance.log",
+    "checks": 18
+  },
+  {
+    "script": "AccountingAdjustmentsHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:53.9487950+01:00",
+    "seconds": 2.39,
+    "log": "AccountingAdjustmentsHttpAcceptance.log",
+    "checks": 18
+  },
+  {
+    "script": "AccountingStockHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:56.3430704+01:00",
+    "seconds": 3.14,
+    "log": "AccountingStockHttpAcceptance.log",
+    "checks": 16
+  },
+  {
+    "script": "AccountingExportHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:19:59.4823673+01:00",
+    "seconds": 7.93,
+    "log": "AccountingExportHttpAcceptance.log",
+    "checks": 47
+  },
+  {
+    "script": "ClubAccountingHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:20:07.4223309+01:00",
+    "seconds": 4.07,
+    "log": "ClubAccountingHttpAcceptance.log",
+    "checks": 34
+  },
+  {
+    "script": "ClubCutoverHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:20:11.5000653+01:00",
+    "seconds": 3.19,
+    "log": "ClubCutoverHttpAcceptance.log",
+    "checks": 26
+  },
+  {
+    "script": "WeeklyReportPrivacyHttpAcceptance",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:20:14.6875136+01:00",
+    "seconds": 1.33,
+    "log": "WeeklyReportPrivacyHttpAcceptance.log",
+    "checks": 11
+  },
+  {
+    "script": "ClubOperatingMonth",
+    "status": "PASS",
+    "exit_code": 0,
+    "started_at": "2026-10-25T19:20:16.0244707+01:00",
+    "seconds": 3.51,
+    "log": "ClubOperatingMonth.log",
+    "checks": 13
+  }
+]

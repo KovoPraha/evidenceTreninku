@@ -646,13 +646,12 @@ if ($is_logged_in) {
             <div class="modal-body p-3">
                 <table class="table table-sm mb-0">
                     <tbody>
-                        <tr><td><kbd>/</kbd></td><td class="text-muted small">Aktivovat hledání</td></tr>
                         <tr><td><kbd>N</kbd></td><td class="text-muted small">Nový trénink</td></tr>
                         <tr><td><kbd>P</kbd></td><td class="text-muted small">Plánovač</td></tr>
                         <tr><td><kbd>K</kbd></td><td class="text-muted small">Kalendář sportovišť</td></tr>
                         <tr><td><kbd>?</kbd></td><td class="text-muted small">Tato nápověda</td></tr>
                         <tr><td><kbd>Esc</kbd></td><td class="text-muted small">Zavřít / zrušit</td></tr>
-                        <tr><td><kbd>D</kbd></td><td class="text-muted small">Přepnout dark/light</td></tr>
+                        <tr><td><kbd>D</kbd></td><td class="text-muted small">Přepnout světlý / tmavý režim</td></tr>
                     </tbody>
                 </table>
             </div>
