@@ -108,27 +108,19 @@ final class StaffWorkspaceRegistryTest extends TestCase
 
     public function testStaffEntryPointInventoryHasNoOrphanRoute(): void
     {
+        require_once dirname(__DIR__) . '/Support/AnonymousRouteInventory.php';
         $root = dirname(__DIR__, 2);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root));
-        $excludedDirectories = ['vendor/','tests/','migrations/','includes/','bin/','booking/','pdf/','auth/','cron/'];
-        $excludedFiles = [
-            'config.php','config.example.php','csrf_helper.php','db.php','hlavicka.php',
-            'cron_report_tyden.php','cron_upominky.php','report_tyden_lib.php','pub.php',
-            'sportovec_treninky.php','test.php','analyze_excel.php','analyze_uci_form.php',
-        ];
-        $orphans = [];
-        foreach ($iterator as $file) {
-            if (!$file->isFile() || strtolower($file->getExtension()) !== 'php') continue;
-            $relative = \staffNormalizeRoute(substr(str_replace('\\', '/', $file->getPathname()), strlen(str_replace('\\', '/', $root))));
-            if (array_filter($excludedDirectories, static fn(string $prefix): bool => str_starts_with($relative, $prefix)) !== []) continue;
-            if (in_array($relative, $excludedFiles, true) || in_array($relative, \staffSharedRoutes(), true)) continue;
-            $source = file_get_contents($file->getPathname());
-            self::assertIsString($source);
-            if (!str_contains($source, 'trener_id') && !str_contains($source, 'roleAtLeast(') && !str_contains($source, 'canAccess(')) continue;
-            if (\staffRouteOwner($relative) === null) $orphans[] = $relative;
+        $routes = \anonymousEntryPoints($root);
+        foreach (array_keys(\staffRouteOwners()) as $route) {
+            self::assertContains($route, $routes, 'Owned route missing from anonymous sweep: ' . $route);
+            self::assertArrayNotHasKey($route, \anonymousPublicRoutes(), 'Staff route cannot bypass the sweep.');
         }
-        sort($orphans);
-        self::assertSame([], $orphans, 'Staff entry points without one owner: ' . implode(', ', $orphans));
+        foreach (\anonymousPublicRoutes() as $route => $reason) {
+            self::assertContains($route, $routes);
+            self::assertNotSame('', trim($reason));
+        }
+        // Every other route is exercised over HTTP by AnonymousSweep.php in CI.
+        // No heuristic based on trainer/role/actor strings can skip a new page.
     }
 
     public function testStaffHeaderAndLandingPageAreGeneratedFromActivePositionOnly(): void

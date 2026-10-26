@@ -11,6 +11,7 @@ require_once __DIR__ . '/csrf_helper.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if (!isset($_SESSION['trener_id'])) {
+    http_response_code(403);
     echo json_encode(['ok' => false, 'message' => 'Nepřihlášen.']);
     exit;
 }
