@@ -110,35 +110,13 @@ try {
         foreach (anonymousRouteQueries($route) as $query) {
             $provedDenial = false;
             foreach (['GET', 'POST'] as $method) {
-                $requestRoute = $route . $query;
-                $requestMethod = $method;
-                for ($redirect = 0; $redirect < 4; $redirect++) {
-                    $curl = curl_init('http://' . $address . '/' . $requestRoute);
-                    curl_setopt_array($curl, [
-                        CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => false,
-                        CURLOPT_HEADER => true, CURLOPT_TIMEOUT => 15, CURLOPT_PROXY => '',
-                        CURLOPT_CUSTOMREQUEST => $requestMethod,
-                    ]);
-                    $response = curl_exec($curl);
-                    $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
-                    $headerSize = (int) curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-                    $headers = substr((string) $response, 0, $headerSize);
-                    curl_close($curl);
-                    $denied = anonymousResponseProvesDenial((string) parse_url($requestRoute, PHP_URL_PATH), $status, $headers);
-                    if ($denied || !in_array($status, [301, 302, 303, 307, 308], true)) {
-                        break;
-                    }
-                    // Legacy aliases are checked through to their canonical route, never exempted.
-                    $target = anonymousLocalRedirect($requestRoute, $headers);
-                    if ($target === null) {
-                        break;
-                    }
-                    $requestRoute = $target;
-                    $requestMethod = in_array($status, [307, 308], true) ? $requestMethod : 'GET';
-                }
+                $result = anonymousProbeResponse('http://' . $address, $route . $query, $method);
+                $status = $result['status'];
+                $denied = $result['denied'];
                 $provedDenial = $provedDenial || $denied;
                 if (!$denied && $status !== 405) {
-                    $errors[] = $method . ' ' . $route . $query . ': HTTP ' . $status;
+                    $errors[] = $method . ' ' . $route . $query . ': HTTP ' . $status
+                        . ($result['redirectBody'] ? ' (non-empty redirect body)' : '');
                 }
             }
             // Method rejection alone proves no authentication. The other method
