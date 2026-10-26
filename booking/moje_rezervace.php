@@ -127,14 +127,17 @@ $stavBadge = [
                 &nbsp;<i class="bi bi-person me-1"></i><?= h($r['trener_jmeno']) ?>
             </div>
             <?php if ($muzeStoornovat): ?>
-                <form method="post" class="mt-2"
-                      data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onsubmit="return confirm('Opravdu zrušit tuto rezervaci?')">
+                <details class="mt-2">
+                <summary class="text-danger">Zrušit rezervaci</summary>
+                <p class="small mt-2">Opravdu zrušit rezervaci <?= h($r['nazev']) ?>? Uvolněné místo může získat další zájemce.</p>
+                <form method="post">
                     <?= csrf_field() ?>
                     <input type="hidden" name="rezervace_id" value="<?= $r['id'] ?>">
                     <button type="submit" class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-x-circle me-1"></i>Zrušit rezervaci
+                        <i class="bi bi-x-circle me-1"></i>Potvrdit zrušení rezervace
                     </button>
                 </form>
+                </details>
             <?php elseif ($r['datum'] < $minDatum3 && in_array($r['stav'], ['ceka','potvrzena'])): ?>
                 <div class="text-muted small mt-2">
                     <i class="bi bi-lock me-1"></i>Storno již není možné (méně než 3 dny do lekce)

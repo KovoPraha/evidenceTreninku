@@ -34,7 +34,10 @@ try {
 // ── Načtení tréninků ─────────────────────────────────────────────────────────
 $sql = 'SELECT t.id, t.datum, t.delka, t.kategorie, t.napln, t.poznamka,
                (SELECT COUNT(*) FROM trenink_sportovec ts2 WHERE ts2.trenink_id = t.id) AS pocet_sportovcu,
-               (SELECT COUNT(*) FROM mereni m WHERE m.trenink_id = t.id) AS pocet_mereni
+               CASE WHEN EXISTS(SELECT 1 FROM trenink_mereni tm WHERE tm.trenink_id=t.id)
+                    THEN (SELECT COUNT(DISTINCT tm.mereni_id) FROM trenink_mereni tm WHERE tm.trenink_id=t.id)
+                    ELSE (SELECT COUNT(*) FROM mereni m WHERE m.trenink_id=t.id)
+               END AS pocet_mereni
         FROM trenink_trener tt
         JOIN treninky t ON tt.trenink_id = t.id';
 
@@ -140,6 +143,7 @@ $exportUrl = "export_xls.php?mesic={$month}";
         <a href="<?= h($exportUrl) ?>" class="btn btn-success btn-sm">
             <i class="bi bi-file-earmark-excel me-1"></i>Export XLSX
         </a>
+        <a href="export_csv.php?mesic=<?= h(rawurlencode($month)) ?>" class="btn btn-outline-success btn-sm">Export CSV za celý měsíc</a>
     </div>
 
     <!-- Filtr -->

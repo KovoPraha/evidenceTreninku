@@ -163,6 +163,8 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261023100000_club_payment_returns',
                 '20261023210000_family_course_cart',
                 '20261024200000_payment_variable_symbol_index_repair',
+                '20261025230000_race_result_revisions',
+                '20261025231000_kis_review_handoff',
 
             ],
             array_keys($catalog)

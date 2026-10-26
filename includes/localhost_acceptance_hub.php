@@ -407,26 +407,24 @@ function localhostAcceptanceScenariosB(string $root): array
             ],
         ],
         [
-            'id' => 'B03', 'role' => 'Trenér', 'area' => 'Tréninky', 'declared_status' => 'ready',
+            'id' => 'B03', 'role' => 'Trenér + vedoucí sportu', 'area' => 'Tréninky', 'declared_status' => 'ready',
             'steps' => ['Projděte výkaz činností za aktuální měsíc.', 'Stáhněte měsíční XLSX a CSV export.', 'Zkontrolujte přehled trenéra a kalendář skupiny.'],
             'expected' => 'Součty ve výkazu odpovídají zadaným tréninkům; exporty se stáhnou a jdou otevřít.',
             'note' => '',
             'links' => [
                 ['label' => 'Výkaz činností', 'path' => 'vypis_vykazu.php', 'scope' => 'trainer'],
-                ['label' => 'Export XLSX', 'path' => 'export_xls.php', 'scope' => 'trainer'],
-                ['label' => 'Export CSV', 'path' => 'export_csv.php', 'scope' => 'trainer'],
+                ['label' => 'Měsíční exporty (vedoucí sportu)', 'path' => 'prehled_trenera.php', 'scope' => 'trainer'],
                 ['label' => 'Přehled trenéra', 'path' => 'prehled_trenera.php', 'scope' => 'trainer'],
             ],
         ],
         [
-            'id' => 'B04', 'role' => 'Trenér', 'area' => 'Závody', 'declared_status' => 'ready',
-            'steps' => ['Založte závod s kategorií a URL výsledků.', 'Přidejte klubového i externího závodníka s pořadím a časem.', 'Přidejte měření k závodu.', 'Otevřete detail a poté závod editujte.'],
-            'expected' => 'Detail ukazuje interní i externí výsledky, měření a soubory; editace nezničí historii.',
-            'note' => '',
+            'id' => 'B04', 'role' => 'Vedoucí sportu', 'area' => 'Závody', 'declared_status' => 'ready',
+            'steps' => ['Založte závod s kategorií a URL výsledků a přihlaste klubovou osobu.', 'V detailu otevřete Správa výsledků: vložte vlastní osobu a dva externí účastníky se stejným jménem, různými klíči a více jízdami.', 'Ověřte chybný čas, potom náhled, uložení konceptu a zveřejnění s důvodem.', 'Opravte výsledky přes CSV a obnovte starší revizi jako nový koncept; ověřte detail, historii a původní měření.'],
+            'expected' => 'Externí účastníci nezakládají členy; koncept nemění publikovanou sadu, opravy a návraty zachovají audit. Neplatný či zastaralý zápis nic nepřepíše.',
+            'note' => 'Zveřejnění je pouze v interním detailu. Historická data se automaticky nemigrují; disciplínu a jízdu potvrzuje správce výsledků.',
             'links' => [
                 ['label' => 'Nový závod', 'path' => 'formular_zavod.php', 'scope' => 'trainer'],
-                ['label' => 'Detail závodu', 'path' => 'zavod_detail.php', 'scope' => 'trainer'],
-                ['label' => 'Editace závodu', 'path' => 'edit_zavod_form.php', 'scope' => 'trainer'],
+                ['label' => 'Vybrat závod pro detail a editaci', 'path' => 'prehled_zavodu.php', 'scope' => 'trainer'],
                 ['label' => 'Přehled závodů', 'path' => 'prehled_zavodu.php', 'scope' => 'trainer'],
             ],
         ],
@@ -520,7 +518,7 @@ function localhostAcceptanceScenariosB(string $root): array
             'expected' => 'Detail ukazuje jen aktivní publikované varianty, obrázky se načítají přes HTTPS a bez referreru.',
             'note' => '',
             'links' => [
-                ['label' => 'Detail produktu', 'path' => 'booking/produkt.php', 'scope' => 'customer'],
+                ['label' => 'Vybrat produkt a jeho variantu', 'path' => 'booking/eshop.php', 'scope' => 'customer'],
             ],
         ],
         [
@@ -550,7 +548,7 @@ function localhostAcceptanceScenariosB(string $root): array
             'note' => '',
             'links' => [
                 ['label' => 'Klubové akce a soupisky', 'path' => 'eshop_events_admin.php', 'scope' => 'trainer'],
-                ['label' => 'Export účastníků', 'path' => 'club_event_participants_export.php', 'scope' => 'trainer'],
+                ['label' => 'Vybrat akci pro export účastníků', 'path' => 'eshop_events_admin.php', 'scope' => 'trainer'],
             ],
         ],
         [
@@ -580,7 +578,6 @@ function localhostAcceptanceScenariosB(string $root): array
             'note' => '',
             'links' => [
                 ['label' => 'Zapomenuté heslo', 'path' => 'booking/zapomenute_heslo.php', 'scope' => 'customer'],
-                ['label' => 'Nové heslo', 'path' => 'booking/nove_heslo.php', 'scope' => 'customer'],
             ],
         ],
         [
@@ -589,7 +586,7 @@ function localhostAcceptanceScenariosB(string $root): array
             'expected' => 'ICS obsahuje jen oprávněné položky rodiny, rotace zneplatní starý odkaz a program ukazuje správné děti.',
             'note' => '',
             'links' => [
-                ['label' => 'Rodinný kalendář', 'path' => 'booking/rodinny_kalendar.php', 'scope' => 'customer'],
+                ['label' => 'Vytvořit odkaz rodinného kalendáře', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
                 ['label' => 'Sportovní přehled', 'path' => 'booking/sportovni_prehled.php', 'scope' => 'customer'],
             ],
         ],
@@ -614,9 +611,9 @@ function localhostAcceptanceScenariosB(string $root): array
         ],
         [
             'id' => 'B23', 'role' => 'Administrátor', 'area' => 'KIS a členství', 'declared_status' => 'ready',
-            'steps' => ['Projděte 4krokový průvodce synchronizace: nahrání tří XLSX, mapování soupisek, náhled, provedení.', 'Zkontrolujte, že osoby mimo import nebyly archivovány.'],
-            'expected' => 'Preview ukazuje nové/aktualizované/beze změny a provedení běží v transakci s mapovanými vazbami.',
-            'note' => '',
+            'steps' => ['Nahrajte tři syntetické XLSX a předejte konkrétní náhled do KIS centra.', 'Otevřete řízené přiřazení: ověřte běh, archiv a fingerprint, podle stabilních KIS ID zvolte existující nebo novou osobu a aktuální soupisky.', 'V izolaci potvrďte náhled s důvodem, zkontrolujte běžnou kartu osoby a soupisky; osoby mimo import ani účty se nemění.', 'Proveďte kompenzační návrat. Změna zdroje či cíle blokuje aplikaci; novější změna osoby nebo jejích vazeb blokuje návrat.'],
+            'expected' => 'Osoby a zvolené aktuální soupisky se zapíší společně a auditovaně, opakování nevytvoří duplicity. Finance, VS a platby zůstanou beze změny.',
+            'note' => 'Kanonický zápis je povolen jen správci v izolaci. Ostrý finanční převod, finální zdroje a termín přechodu čekají na rozhodnutí vlastníka a účetní; původní přímý zápis zůstává vyřazen.',
             'links' => [
                 ['label' => 'Synchronizace evidence', 'path' => 'sync_evidence.php', 'scope' => 'trainer'],
             ],

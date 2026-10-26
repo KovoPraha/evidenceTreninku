@@ -4,6 +4,7 @@ require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/kis_import_run_lib.php';
 require_once __DIR__ . '/includes/kis_import_sandbox_promotion.php';
 require_once __DIR__ . '/includes/kis_member_charge_promotion.php';
+require_once __DIR__ . '/includes/kis_review_handoff.php';
 
 if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) {
     header('Location: login.php');
@@ -71,6 +72,11 @@ $fieldContractReport = $detail && $detail['run'] ? kisFieldContractStoredReport(
 $parityReport = $detail && $detail['run'] ? kisImportStoredParityReport($detail['run']) : null;
 $sandboxPromotion = $sandboxAllowed && $runId > 0 ? kisImportSandboxPromotionForRun($pdo, $runId) : [];
 $chargePromotion = $sandboxAllowed && $runId > 0 ? kisMemberChargePromotionForRun($pdo, $runId) : [];
+$reviewSource = null; $reviewError = '';
+if ($runId > 0) {
+    try { $reviewSource = kisReviewSource($pdo, $runId); }
+    catch (Throwable $error) { $reviewError = 'Předání vyžaduje úplné a ověřené archivy osob, plateb a soupisek se stabilními KIS ID.'; }
+}
 if (($_GET['preview_report'] ?? '') === 'json' && $previewReport !== null) {
     header('Content-Type: application/json; charset=utf-8');
     header('Content-Disposition: attachment; filename="kis-preview-run-' . $runId . '.json"');
@@ -130,6 +136,10 @@ $attention = [
     </div>
 
     <?php if ($detail && $detail['run']): ?>
+        <section class="card p-3 mb-3"><h2 class="h5">Řízené předání tohoto běhu</h2>
+        <p>Osoby a soupisky se kontrolují samostatně. Finanční parita a schválení účetní zůstávají oddělené.</p>
+        <?php if ($reviewSource): ?><a class="btn btn-outline-primary" href="kis_review_admin.php?run_id=<?=$runId?>&amp;fingerprint=<?=h($reviewSource['fingerprint'])?>">Připravit přiřazení a řízený převod</a>
+        <?php else: ?><div class="text-warning"><?=h($reviewError)?></div><?php endif; ?></section>
         <div class="card border-0 shadow-sm mb-3">
             <div class="card-header bg-white d-flex justify-content-between">
                 <span class="fw-semibold">Detail importu #<?= (int)$detail['run']['id'] ?> · <?= h($detail['run']['status']) ?></span>
