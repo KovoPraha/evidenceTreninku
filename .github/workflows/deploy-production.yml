@@ -284,6 +284,9 @@ jobs:
             --exclude='loga_story/' \
             --exclude='reports/' \
             --exclude='output/' \
+            --exclude='phpstan*.neon*' \
+            --exclude='.phpstan-cache/' \
+            --exclude='.php-cs-fixer*' \
             --exclude='outputs/' \
             --exclude='tools/' \
             --exclude='docs/' \
@@ -384,6 +387,9 @@ jobs:
               --exclude='loga_story/' \\
               --exclude='reports/' \\
               --exclude='output/' \\
+              --exclude='phpstan*.neon*' \\
+              --exclude='.phpstan-cache/' \\
+              --exclude='.php-cs-fixer*' \\
               --exclude='outputs/' \\
               --exclude='tools/' \\
               --exclude='docs/' \\

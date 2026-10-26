@@ -1,0 +1,36 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    phpVersion: 80200
+    paths:
+        - .
+    excludePaths:
+        analyseAndScan:
+            - vendor
+            - tests
+            - docs
+            - output
+            - outputs
+            - .git
+            - .phpstan-cache (?)
+            - config.php (?)
+    bootstrapFiles:
+        - tools/phpstan-bootstrap.php
+    scanDirectories:
+        - includes
+    stubFiles:
+        - tools/phpstan/Pdo.stub
+    # Use PHPStan's default sys_get_temp_dir()/phpstan, outside the webroot.
+    parallel:
+        maximumNumberOfProcesses: 2
+
+services:
+    -
+        class: Evidence\PHPStan\BootstrapPdoExtension
+        arguments:
+            parser: @defaultAnalysisParser
+            projectRoot: %currentWorkingDirectory%
+        tags:
+            - phpstan.ignoreErrorExtension

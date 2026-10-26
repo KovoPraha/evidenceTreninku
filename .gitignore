@@ -43,3 +43,6 @@ Thumbs.db
 /output/uat-accountant-20261023/
 /output/pdf/PRIJIMACI-PRUVODCE-20261023.pdf
 /tools/__pycache__/
+
+/.phpstan-cache/
+/.php-cs-fixer.cache

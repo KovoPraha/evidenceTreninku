@@ -15,15 +15,21 @@
         "dompdf/dompdf": "^3.1.6"
     },
     "require-dev": {
-        "phpunit/phpunit": "^11.5"
+        "phpunit/phpunit": "^11.5",
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.0"
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Evidence\\PHPStan\\": "tools/phpstan/"
         }
     },
     "scripts": {
         "test": "@php vendor/bin/phpunit --configuration phpunit.xml.dist",
-        "test:unit": "@php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite unit"
+        "test:unit": "@php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite unit",
+        "analyse": "@php vendor/bin/phpstan analyse --memory-limit=1G",
+        "style:check": "@php tools/check-php-style.php",
+        "style:fix": "@php tools/check-php-style.php --fix"
     }
 }

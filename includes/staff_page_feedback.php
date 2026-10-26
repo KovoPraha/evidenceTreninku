@@ -1,5 +1,8 @@
 <?php
 // Included in the page scope after authentication; no data is changed here.
+/** @var int $feedbackStatus HTTP status supplied by the authenticated caller. */
+/** @var string $feedbackTitle Plain text supplied by the authenticated caller. */
+/** @var string $feedbackMessage Plain text supplied by the authenticated caller. */
 http_response_code($feedbackStatus);
 header('Cache-Control: no-store, private');
 header('Content-Type: text/html; charset=utf-8');
