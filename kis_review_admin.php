@@ -3,7 +3,19 @@ declare(strict_types=1);
 require_once __DIR__.'/includes/init.php';
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/kis_review_handoff.php';
-if(!isset($_SESSION['trener_id'])||!canAccess('sync_evidence')){http_response_code(403);exit('Pouze pro registráře.');}
+require_once __DIR__.'/includes/staff_login_return.php';
+if (!isset($_SESSION['trener_id'])) {
+    $loginReturn = staffLoginReturnTarget('kis_review_admin.php?' . http_build_query($_GET));
+    header('Location: login.php?return_to=' . rawurlencode($loginReturn), true, 303);
+    exit;
+}
+if (!canAccess('sync_evidence')) {
+    $feedbackStatus = 403;
+    $feedbackTitle = 'Řízené předání není v této pozici dostupné';
+    $feedbackMessage = 'Řízené předání má na starosti Registrář členů a KIS. Vraťte se na pracovní rozcestník a zvolte tuto pozici, pokud ji máte přidělenou.';
+    include __DIR__.'/includes/staff_page_feedback.php';
+    exit;
+}
 header('Cache-Control: no-store, private');
 function krH(mixed $v):string{return htmlspecialchars((string)$v,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
 $runId=(int)($_GET['run_id']??0);$planId=(int)($_GET['plan_id']??0);

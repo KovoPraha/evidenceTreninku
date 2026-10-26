@@ -3,10 +3,28 @@ declare(strict_types=1);
 require_once __DIR__.'/includes/init.php';
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/race_results.php';
-if(!isset($_SESSION['trener_id'])||!canAccess('sprava_zavodu')){http_response_code(403);exit('Správa výsledků je dostupná ve sportovní administrativě.');}
+require_once __DIR__.'/includes/staff_login_return.php';
+if (!isset($_SESSION['trener_id'])) {
+    $loginReturn = staffLoginReturnTarget('zavod_vysledky.php?' . http_build_query($_GET));
+    header('Location: login.php?return_to=' . rawurlencode($loginReturn), true, 303);
+    exit;
+}
+if (!canAccess('sprava_zavodu')) {
+    $feedbackStatus = 403;
+    $feedbackTitle = 'Správa výsledků není v této pozici dostupná';
+    $feedbackMessage = 'Správu výsledků má na starosti Vedoucí sportu. Vraťte se na pracovní rozcestník a zvolte tuto pozici, pokud ji máte přidělenou.';
+    include __DIR__.'/includes/staff_page_feedback.php';
+    exit;
+}
 header('Cache-Control: no-store, private');
 $raceId=(int)($_GET['id']??0);$actor=(int)$_SESSION['trener_id'];
-try{raceResultsAssertAccess($pdo,$raceId,$actor,true);}catch(DomainException){http_response_code(404);exit('Závod není dostupný.');}
+try{raceResultsAssertAccess($pdo,$raceId,$actor,true);}catch(DomainException){
+    $feedbackStatus = 404;
+    $feedbackTitle = 'Závod není dostupný';
+    $feedbackMessage = 'Závod nebyl nalezen nebo k němu nemáte přístup. Vyberte dostupný závod ze seznamu.';
+    include __DIR__.'/includes/staff_page_feedback.php';
+    exit;
+}
 function rrH(mixed $v): string{return htmlspecialchars((string)$v,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
 $state=raceResultsState($pdo,$raceId);$error='';$message='';$preview=null;
 $latest=raceResultsRevision($pdo,$raceId,(int)$state['latest_revision_id']);

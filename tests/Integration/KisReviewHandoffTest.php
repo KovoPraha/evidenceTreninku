@@ -9,6 +9,14 @@ final class KisReviewHandoffTest extends TestCase{
  protected function setUp():void{$this->old=getenv('KIS_SOURCE_ARCHIVE_DIR');$this->archive=sys_get_temp_dir().'/kis-review-'.bin2hex(random_bytes(6));mkdir($this->archive);putenv('KIS_SOURCE_ARCHIVE_DIR='.$this->archive);$this->p=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);\kisReviewFixture($this->p,$this->archive);}
  protected function tearDown():void{foreach(glob($this->archive.'/*.raw') as $f)unlink($f);rmdir($this->archive);putenv($this->old===false?'KIS_SOURCE_ARCHIVE_DIR':'KIS_SOURCE_ARCHIVE_DIR='.$this->old);}
  private function preview():array{return \kisReviewPreview($this->p,1,\kisReviewSource($this->p,1)['fingerprint'],[1=>['target'=>'5','teams'=>[1]],2=>['target'=>'new','teams'=>[1]]],'2026-10-25',7,true);}
+ public function testSourceFeedbackDistinguishesMissingRunWrongStateAndMissingArchive():void{
+  try{\kisReviewSource($this->p,999999);self::fail();}catch(\DomainException $e){self::assertStringContainsString('běh neexistuje',$e->getMessage());}
+  $this->p->exec("UPDATE kis_import_runs SET status='applied' WHERE id=1");
+  try{\kisReviewSource($this->p,1);self::fail();}catch(\DomainException $e){self::assertStringContainsString('není ve stavu Náhled',$e->getMessage());}
+  $this->p->exec("UPDATE kis_import_runs SET status='preview',source_manifest_json='{}' WHERE id=1");
+  try{\kisReviewSource($this->p,1);self::fail();}catch(\DomainException $e){self::assertStringContainsString('Chybí archivovaný export',$e->getMessage());}
+  self::assertSame(0,(int)$this->p->query('SELECT COUNT(*) FROM kis_review_plans')->fetchColumn());
+ }
  public function testApplyRollbackKeepMoneyAccountsAndAuditAndAreIdempotent():void{
   $plan=$this->preview();$finance=\kisReviewRows($this->p,'payments');$r=\kisReviewExecute($this->p,$plan['id'],$plan['fingerprint'],7,true,true,'Syntetická přejímka');
   self::assertSame(2,$r['people']);self::assertTrue(\kisReviewExecute($this->p,$plan['id'],$plan['fingerprint'],7,true,true,'Opakování přejímky')['idempotent']);
