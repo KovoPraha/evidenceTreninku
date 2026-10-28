@@ -94,3 +94,5 @@ Tento protokol dokládá implementaci a testy. Přesné produkční vydání,
 čtecí kontrola konfigurace a měření před/po patří do samostatného protokolu.
 Integrace, importy, členské ceny ani práva nebyly aktivovány či změněny;
 lidské a účetní UAT zůstává samostatně otevřené.
+
+Následné [produkční vydání](../refactoring-wave3-release-20261028/RESULTS.md) dokládá nasazení PR #213 a čtecí kontrolu.
