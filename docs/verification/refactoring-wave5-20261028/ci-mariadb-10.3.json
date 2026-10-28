@@ -1,0 +1,38 @@
+{
+  "database_version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+  "synthetic_only": true,
+  "canonical_rows_equal": true,
+  "shared_capacity_equal": true,
+  "locking_read_fresh": true,
+  "duplicate_fallback_equal": true,
+  "results": [
+    {
+      "programs": 1,
+      "sql_count": 22,
+      "offer_queries": 1,
+      "link_queries": 1,
+      "max_parameters": 1,
+      "native_prepares": false,
+      "output_sha256": "7d408cb4cad582122281d0f4468c734a906829f27c355656d3c9d554b51b0379"
+    },
+    {
+      "programs": 50,
+      "sql_count": 120,
+      "offer_queries": 1,
+      "link_queries": 1,
+      "max_parameters": 50,
+      "native_prepares": false,
+      "output_sha256": "b6ac2bef133213743ed2798726b17938469ee0d9f6d8c9ce9ca677e03ed52ea4"
+    },
+    {
+      "programs": 401,
+      "sql_count": 834,
+      "offer_queries": 2,
+      "link_queries": 2,
+      "max_parameters": 400,
+      "native_prepares": true,
+      "output_sha256": "4bab197e12e5b9b0e9bd4c7839c2b9fbcb0521bb42b6d0b58cdcfdf349a0a138"
+    }
+  ],
+  "ci_run": 40775728422
+}

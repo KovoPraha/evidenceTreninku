@@ -833,15 +833,9 @@ function clubProgramAssertBeneficiaryBirthYear(PDO $pdo, array $offer, int $spor
     // Backwards-compatible no-op: věkové rozpětí už nákup neblokuje.
     clubProgramBeneficiaryBirthYearWarning($pdo, $offer, $sportovecId, $lock);
 }
-/**
- * Capacity has one source of truth: unique athletes enrolled in, or holding a
- * still-payable order for, any offer on the same roster whose dates overlap.
- * A paid quick registration keeps its place while the club reviews identity;
- * payment expiry only applies to unpaid orders.
- * This keeps annual and semester payment options from overselling one group.
- *
+/** Physical roster links, or the primary roster when no links exist.
  * @param array<string,mixed> $offer
- * @return array{active_enrollment_count:int,held_order_count:int,occupied_count:int,available_count:?int}
+ * @return list<int>
  */
 function clubProgramPhysicalTeamIds(PDO $pdo, array $offer, ?ClubProgramReadContext $readContext = null): array
 {
@@ -874,7 +868,11 @@ function clubProgramPhysicalTeamIds(PDO $pdo, array $offer, ?ClubProgramReadCont
     $targets = array_map('intval', $q->fetchAll(PDO::FETCH_COLUMN));
     return $targets !== [] ? $targets : [$primary];
 }
-/** @param array<string,mixed> $offer */
+/** Capacity has one source of truth: unique athletes enrolled in, or holding a
+ * still-payable order for, any offer on the same roster whose dates overlap.
+ * Paid quick registrations keep their place while the club reviews identity.
+ * @param array<string,mixed> $offer
+ */
 function clubProgramOfferCapacityState(PDO $pdo, array $offer, ?DateTimeImmutable $now = null, bool $lock = false, int $excludeHeldSportovecId = 0, ?ClubProgramReadContext $readContext = null): array
 {
     if ($lock) {
