@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -31,7 +32,7 @@ final class UxJourneyWiringTest extends TestCase
         $root = dirname(__DIR__, 2);
         $shop = (string)file_get_contents($root . '/booking/eshop.php');
         self::assertStringContainsString('Co hledáte?', $shop);
-        self::assertStringContainsString('$perPage=12', $shop);
+        self::assertMatchesRegularExpression('/\$perPage\s*=\s*12\s*;/', $shop);
         self::assertStringContainsString('Nakoupit můžete i bez účtu.', $shop);
         $product = (string)file_get_contents($root . '/booking/produkt.php');
         self::assertStringContainsString('app-product-media-sticky', $product);

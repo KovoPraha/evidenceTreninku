@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -30,8 +31,8 @@ final class LoggedInUxWiringTest extends TestCase
 
         self::assertStringContainsString("header('Location: eshop.php#kosik'", $product);
         self::assertStringContainsString("header('Location: eshop.php#kosik'", $shop);
-        self::assertStringContainsString("$" . "cartLineCount>0?'order-first order-lg-last'", $shop);
-        self::assertStringContainsString("$" . "cartLineCount===1?'je':'jsou'", $shop);
+        self::assertMatchesRegularExpression('/\$cartLineCount\s*>\s*0\s*\?\s*\'order-first order-lg-last\'/', $shop);
+        self::assertMatchesRegularExpression('/\$cartLineCount\s*===\s*1\s*\?\s*\'je\'\s*:\s*\'jsou\'/', $shop);
         self::assertStringContainsString('navbar-expand-xxl', $shell);
     }
 }
