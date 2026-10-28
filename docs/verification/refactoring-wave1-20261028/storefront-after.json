@@ -1,0 +1,441 @@
+{
+  "base_sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+  "php": "8.2.12",
+  "engine": "SQLite memory, reduced synthetic schema",
+  "scope": "Function calls only; no HTTP, production latency, program-capacity or MySQL query-plan claim.",
+  "results": [
+    {
+      "origin": "manual_goods",
+      "products": 1,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 2.552
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.627
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.582
+        }
+      ],
+      "median_ms": 0.627
+    },
+    {
+      "origin": "manual_goods",
+      "products": 1,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.484
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.873
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.217
+        }
+      ],
+      "median_ms": 1.217
+    },
+    {
+      "origin": "manual_goods",
+      "products": 50,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.793
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.722
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.77
+        }
+      ],
+      "median_ms": 0.77
+    },
+    {
+      "origin": "manual_goods",
+      "products": 50,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 50,
+          "elapsed_ms": 3.204
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 50,
+          "elapsed_ms": 3.1
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 50,
+          "elapsed_ms": 3.081
+        }
+      ],
+      "median_ms": 3.1
+    },
+    {
+      "origin": "manual_goods",
+      "products": 250,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.929
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.463
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 2.733
+        }
+      ],
+      "median_ms": 1.463
+    },
+    {
+      "origin": "manual_goods",
+      "products": 250,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 250,
+          "elapsed_ms": 11.065
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 250,
+          "elapsed_ms": 12.512
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 250,
+          "elapsed_ms": 11.005
+        }
+      ],
+      "median_ms": 11.065
+    },
+    {
+      "origin": "manual_goods",
+      "products": 1000,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 5.171
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.512
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.685
+        }
+      ],
+      "median_ms": 1.685
+    },
+    {
+      "origin": "manual_goods",
+      "products": 1000,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1000,
+          "elapsed_ms": 47.027
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1000,
+          "elapsed_ms": 45.08
+        },
+        {
+          "queries": 9,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1000,
+          "elapsed_ms": 45.208
+        }
+      ],
+      "median_ms": 45.208
+    },
+    {
+      "origin": "imported_goods",
+      "products": 1,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.638
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.74
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.044
+        }
+      ],
+      "median_ms": 0.74
+    },
+    {
+      "origin": "imported_goods",
+      "products": 1,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.149
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.815
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.096
+        }
+      ],
+      "median_ms": 1.096
+    },
+    {
+      "origin": "imported_goods",
+      "products": 50,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.706
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.723
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.067
+        }
+      ],
+      "median_ms": 0.723
+    },
+    {
+      "origin": "imported_goods",
+      "products": 50,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 50,
+          "elapsed_ms": 2.122
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 50,
+          "elapsed_ms": 2.131
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 50,
+          "elapsed_ms": 2.18
+        }
+      ],
+      "median_ms": 2.131
+    },
+    {
+      "origin": "imported_goods",
+      "products": 250,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.912
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 0.937
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 2.598
+        }
+      ],
+      "median_ms": 0.937
+    },
+    {
+      "origin": "imported_goods",
+      "products": 250,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 250,
+          "elapsed_ms": 8.638
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 250,
+          "elapsed_ms": 7.911
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 250,
+          "elapsed_ms": 9.502
+        }
+      ],
+      "median_ms": 8.638
+    },
+    {
+      "origin": "imported_goods",
+      "products": 1000,
+      "variants_per_product": 1,
+      "operation": "detail",
+      "samples": [
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.549
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 1.445
+        },
+        {
+          "queries": 6,
+          "metadata_queries": 3,
+          "product_rows_fetched": 1,
+          "elapsed_ms": 2.811
+        }
+      ],
+      "median_ms": 1.549
+    },
+    {
+      "origin": "imported_goods",
+      "products": 1000,
+      "variants_per_product": 1,
+      "operation": "navigation",
+      "samples": [
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1000,
+          "elapsed_ms": 34.421
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1000,
+          "elapsed_ms": 35.959
+        },
+        {
+          "queries": 7,
+          "metadata_queries": 2,
+          "product_rows_fetched": 1000,
+          "elapsed_ms": 38.619
+        }
+      ],
+      "median_ms": 35.959
+    }
+  ],
+  "implementation_sha": "000b16a216334ee674a653ba6381a8e5b645937a"
+}

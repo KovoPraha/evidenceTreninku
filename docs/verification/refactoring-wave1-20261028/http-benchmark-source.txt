@@ -1,0 +1,22 @@
+<?php
+// CLI only; read-only requests to the two explicitly isolated synthetic servers.
+if(PHP_SAPI!=='cli')exit(64);
+$samples=[];$menuHashes=[];
+foreach(['detail'=>'/booking/produkt.php?id=900001','catalog'=>'/booking/eshop.php'] as $profile=>$path){
+    for($i=0;$i<35;$i++){
+        foreach(($i%2===0?['before'=>18087,'after'=>18086]:['after'=>18086,'before'=>18087]) as $version=>$port){
+            $curl=curl_init('http://127.0.0.1:'.$port.$path);
+            curl_setopt_array($curl,[CURLOPT_RETURNTRANSFER=>true,CURLOPT_FOLLOWLOCATION=>false,CURLOPT_TIMEOUT=>60,CURLOPT_PROXY=>'',CURLOPT_PROTOCOLS=>CURLPROTO_HTTP]);
+            $body=curl_exec($curl);$status=curl_getinfo($curl,CURLINFO_RESPONSE_CODE);$ms=curl_getinfo($curl,CURLINFO_TOTAL_TIME)*1000;
+            if($status!==200||!is_string($body)||!str_contains($body,'LOCALHOST Dres 0001'))throw new RuntimeException('HTTP benchmark failed: '.$profile.'/'.$version.'/'.$status.'/'.curl_error($curl));
+            curl_close($curl);
+            if(!preg_match('~<nav class="app-shop-nav".*?</nav>~s',$body,$match))throw new RuntimeException('Missing shared menu');
+            $menuHashes[$profile][$version]=hash('sha256',$match[0]);
+            if($i>=5)$samples[$profile][$version][]=$ms;
+        }
+    }
+    if($menuHashes[$profile]['before']!==$menuHashes[$profile]['after'])throw new RuntimeException('Navigation output changed');
+}
+$results=[];
+foreach($samples as $profile=>$versions){foreach($versions as $version=>$times){sort($times);$results[]=['profile'=>$profile,'version'=>$version,'median_ms'=>($times[14]+$times[15])/2,'p95_ms'=>$times[28],'samples_ms'=>$times,'menu_sha256'=>$menuHashes[$profile][$version]];}}
+echo json_encode(['synthetic_only'=>true,'warmup'=>5,'measured'=>30,'active_products'=>51,'total_products'=>1001,'order'=>'alternating before/after','opcache'=>'same php-web.ini; no OPcache extension configured','results'=>$results],JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR).PHP_EOL;

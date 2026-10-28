@@ -1,0 +1,37 @@
+<?php
+if(PHP_SAPI!=='cli')exit(64);
+require getcwd().'/config.php';
+if(DB_HOST!=='127.0.0.1;port=33426'||DB_NAME!=='evidence_b1'||!JE_LOKALNE)throw new RuntimeException('Synthetic sandbox only');
+require_once getcwd().'/includes/account_person_role.php';
+$pdo=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+$jar=tempnam(sys_get_temp_dir(),'wave1-cookie-');$checks=[];
+function request(string $path,?array $post=null):array{
+    $c=curl_init('http://127.0.0.1:18086'.$path);
+    curl_setopt_array($c,[CURLOPT_RETURNTRANSFER=>true,CURLOPT_FOLLOWLOCATION=>false,CURLOPT_TIMEOUT=>60,CURLOPT_PROXY=>'',CURLOPT_COOKIEFILE=>$GLOBALS['jar'],CURLOPT_COOKIEJAR=>$GLOBALS['jar']]);
+    if($post!==null){curl_setopt($c,CURLOPT_POST,true);curl_setopt($c,CURLOPT_POSTFIELDS,http_build_query($post));}
+    $body=curl_exec($c);$status=curl_getinfo($c,CURLINFO_RESPONSE_CODE);curl_close($c);
+    if(!is_string($body)||$status>=500||$status===0)throw new RuntimeException('HTTP failed '.$status.' '.$path);
+    return [$status,$body];
+}
+function check(bool $ok,string $label):void{if(!$ok)throw new RuntimeException('FAIL: '.$label);$GLOBALS['checks'][]=['scenario'=>$label,'status'=>'PASS'];}
+try{
+    $items=(int)$pdo->query('SELECT COUNT(*) FROM shop_cart_items')->fetchColumn();
+    [$status]=request('/booking/eshop.php',['action'=>'add','variant_id'=>900001,'csrf_token'=>'invalid']);
+    check($status===303&&(int)$pdo->query('SELECT COUNT(*) FROM shop_cart_items')->fetchColumn()===$items,'Anonymous direct POST rejected before cart mutation');
+    [, $login]=request('/booking/prihlaseni.php');
+    if(!preg_match('/name="csrf_token" value="([^"]+)"/',$login,$m))throw new RuntimeException('No login token');
+    [$status]=request('/booking/prihlaseni.php',['csrf_token'=>$m[1],'email'=>'rodic@localhost.test','heslo'=>'Localhost123!','redirect'=>'produkt.php?id=900001']);
+    check($status===302,'Synthetic parent login');
+    [, $detail]=request('/booking/produkt.php?id=900001');
+    check(str_contains($detail,'80,00')&&str_contains($detail,'Klubová cena'),'Current guardian receives member price');
+    [, $rejected]=request('/booking/produkt.php?id=900001',['action'=>'add','variant_id'=>900001,'csrf_token'=>'invalid']);
+    check(str_contains($rejected,'Formulář vypršel')&&(int)$pdo->query('SELECT COUNT(*) FROM shop_cart_items')->fetchColumn()===$items,'Invalid CSRF does not mutate cart');
+    $actor=(int)$pdo->query("SELECT id FROM treneri WHERE jmeno='localhost-admin'")->fetchColumn();
+    $relation=(int)$pdo->query("SELECT r.id FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE u.email='rodic@localhost.test' AND s.email='localhost-sportovec-a@localhost.test' AND r.status='approved'")->fetchColumn();
+    check($actor>0&&$relation>0,'Exact synthetic relationship selected');
+    accountPersonRoleRevoke($pdo,$relation,$actor,'LOCALHOST NEPLATIT: Wave1 revocation regression');
+    [, $revoked]=request('/booking/produkt.php?id=900001');
+    check(str_contains($revoked,'100,00')&&!str_contains($revoked,'80,00')&&!str_contains($revoked,'Klubová cena'),'Revocation immediately removes member price in same authenticated session');
+    check((int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn()===0,'No order or payment created');
+    echo json_encode(['synthetic_only'=>true,'checks'=>$checks],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).PHP_EOL;
+}finally{unlink($jar);}

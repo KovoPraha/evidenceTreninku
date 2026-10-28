@@ -11,6 +11,9 @@ require_once __DIR__ . '/StorefrontReadFixture.php';
 $root = $argv[1] ?? dirname(__DIR__, 2);
 require_once $root . '/includes/shop_public_navigation.php';
 $baseline = in_array('--baseline', $argv, true);
+$counts = in_array('--large-only', $argv, true) ? [1000] : [1, 50, 250, 1000];
+$profiles = in_array('--imported-only', $argv, true)
+    ? ['imported_navigation'] : ['detail', 'manual_navigation', 'imported_navigation'];
 $host = getenv('EVIDENCE_MARIADB_SMOKE_HOST') ?: '127.0.0.1';
 $port = getenv('EVIDENCE_MARIADB_SMOKE_PORT') ?: '3306';
 if (!in_array($host, ['127.0.0.1', 'localhost'], true) || !ctype_digit($port) || (int) $port > 65535 || (int) $port < 1) {
@@ -22,11 +25,11 @@ $database = 'wave1_storefront_' . bin2hex(random_bytes(8));
 $admin->exec('CREATE DATABASE `' . $database . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
 $results = [];
 try {
-    foreach ([1, 50, 250, 1000] as $count) {
-        foreach (['detail', 'manual_navigation', 'imported_navigation'] as $profile) {
+    foreach ($counts as $count) {
+        foreach ($profiles as $profile) {
             $pdo = new Tests\Support\StorefrontCountingPdo($dsn . ';dbname=' . $database, 'root', '');
             Tests\Support\storefrontReadFixture($count, $profile === 'imported_navigation', $pdo);
-            // Same lookup indexes as the production table definitions; no application migration.
+            // Lookup indexes on production relationship keys in this reduced fixture; no application migration.
             $pdo->exec('CREATE INDEX idx_variants_product ON shop_variants(product_id)');
             $pdo->exec('CREATE INDEX idx_categories_product ON shop_product_categories(product_id)');
             $pdo->exec('CREATE INDEX idx_images_product ON shop_product_images(product_id)');

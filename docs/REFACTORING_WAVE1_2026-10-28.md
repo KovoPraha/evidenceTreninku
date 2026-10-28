@@ -1,7 +1,32 @@
 # První vlna refaktoringu a optimalizace
 
-Připraveno 28. 10. 2026 (Europe/Prague). Stav: **návrh implementace s ověřeným
-výchozím bodem; aplikační změny dosud neprovedeny**.
+Připraveno a implementováno 28. 10. 2026 (Europe/Prague).
+Stav: **W1-1 až W1-3 implementovány a ověřeny; PR #209, bez merge a nasazení**.
+
+Navazující zadání vlastníka 28. 10. 2026: „pokračuj dle plánu plně autonomně“.
+Provádí se W1-1 až W1-3, místní a CI ověření a předání v PR. Produkční vydání
+a merge zůstávají podle tohoto plánu samostatné rozhodnutí. Historický text
+přípravy níže popisuje výchozí stav, nikoli konečný stav implementace.
+
+## Výsledek implementace
+
+[PR #209](https://github.com/KovoPraha/evidenceTreninku/pull/209) obsahuje cílený
+detail, metadata platná pro jediné čtení a lehkou navigaci s dávkovými vazbami.
+Na MariaDB při 1 000 produktech: detail **1 008 → 6 SQL, 1 000 → 1 produktový
+řádek**, menu ručního zboží **9 011 → 9 SQL**, importované menu **1 011 → 7 SQL**.
+Výstupy všech 12 měřených scénářů jsou shodné. Programové kapacity, termíny,
+souhlasy a kontroly zápisů zůstaly v původních kanonických službách.
+
+CI aplikačního kódu a opraveného locku na `f4bc1f63`: **1 757 testů / 35 705
+assertions**, Linux symlink brána 3/3, MariaDB 10.3 i 11.4, PHP quality a
+dokumentace PASS. [Snapshot](verification/refactoring-wave1-20261028/github-ci-implementation.json).
+Browser/HTTP ověřil katalog, detail, rychlý nákup, zájmový program, členskou
+cenu a její zánik po revokaci. [Důkazy a limity měření](verification/refactoring-wave1-20261028/RESULTS.md#implementace-a-přejímka).
+
+Výjimka proti původnímu předpokladu beze změny locku: první CI odhalilo čtyři
+nově hlášené bezpečnostní advisory pro stávající PhpSpreadsheet 5.8.1.
+Samostatný commit aktualizuje pouze tento balíček na **5.10.0**, kompatibilní
+s projektovým PHP 8.2; audit je čistý. Žádná nová závislost ani migrace.
 
 ## Rozhodnutí a výsledek přípravy
 
@@ -215,10 +240,11 @@ i návrat se řídí [NASAZENI](NASAZENI.md) a konkrétním souhlasem vlastníka
 - [x] Reprodukovatelné syntetické měření detailu a menu, 16 scénářů × 3 opakování.
 - [x] Lokální PHPUnit a kontrola aktuálních GitHub CI jobů.
 - [x] PHPStan level 5 bez nových chyb, kontrola dokumentačních odkazů a syntaxe benchmarku.
-- [ ] Implementace W1-1, následně W1-2 a W1-3.
-- [ ] MariaDB/HTTP/browser měření a finální Linux CI nového kódu.
-- [ ] Případné samostatné rozhodnutí o merge a nasazení.
+- [x] Implementace W1-1, W1-2 a W1-3, behaviorální a výkonové regrese.
+- [x] MariaDB/HTTP/browser měření a Linux CI aplikačního kódu s opraveným lockem.
+- [x] Předání v PR #209; samostatná evidence změn, testů a metodických limitů.
+- [ ] Merge a nasazení — nejsou součástí autorizované první vlny.
 
-Další implementační krok: začít W1-1 jeho charakterizačním testem nad rozšířenou
-fixture, který na současném detailu prokáže načtení nesouvisejících produktů.
-Po každém balíku doplnit skutečný diff, výsledky a případné omezení do tohoto plánu.
+Další krok: review PR #209 a samostatné rozhodnutí o vydání podle NASAZENI.
+Následující optimalizace programových nabídek nebo členských cen vyžaduje
+vlastní měření; tato vlna neslibuje konstantní počet dotazů u programové kapacity.

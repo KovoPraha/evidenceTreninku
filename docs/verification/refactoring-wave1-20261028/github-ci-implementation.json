@@ -1,0 +1,435 @@
+{
+  "verified_head": "f4bc1f6347312fb034b46dfc68583f02df4b89cc",
+  "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/209",
+  "runs": [
+    {
+      "name": "Testy",
+      "id": 40673837348,
+      "conclusion": "success"
+    },
+    {
+      "name": "PHP quality",
+      "id": 40673837346,
+      "conclusion": "success"
+    },
+    {
+      "name": "Current documentation",
+      "id": 40673837350,
+      "conclusion": "success"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 122767070535,
+      "name": "PHPUnit na PHP 8.2",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40673837348,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Stáhnout kód",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Připravit PHP",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Ověřit Composer konfiguraci",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Nainstalovat závislosti",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Ověřit známé zranitelnosti závislostí",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Ověřit anonymní přístup ke všem neveřejným trasám",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Ověřit JavaScript trenérských formulářů a plánovače",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Spustit testy",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Ověřit unixové hranice soukromého úložiště bez přeskočení",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Post Stáhnout kód",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        }
+      ]
+    },
+    {
+      "id": 122767070825,
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40673837348,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Stáhnout kód",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Připravit PHP s MariaDB ovladačem",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Nainstalovat závislosti pro účetní doklady a exporty",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Ověřit přístup sportovce na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Ověřit KIS přechod a idempotenci na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Ověřit skutečnou Evidence zálohu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Ověřit souběžný idempotentní checkout na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Ověřit ruční původ katalogu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Ověřit rozpočet SQL a cílené čtení veřejného katalogu",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Ověřit pracovní pozice a superadmin audit na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Ověřit zveřejnění registračních textů a souběh na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Ověřit systémové e-maily a souběh editorů na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Ověřit číselné řady, souběh nákupů a editorů na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Ověřit M3.5d sportovní import review na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Ověřit úplný import osob, rollback a vazby na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Ověřit historické soupisky a rozhodovací frontu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        },
+        {
+          "name": "Ověřit převod do aktuálních soupisek a rozhodovací frontu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Ověřit revize výsledků a řízený KIS převod na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Stáhnout kód",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 43
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 44
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 45
+        }
+      ]
+    },
+    {
+      "id": 122767070995,
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40673837348,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Stáhnout kód",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Připravit PHP s MariaDB ovladačem",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Nainstalovat závislosti pro účetní doklady a exporty",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Ověřit přístup sportovce na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Ověřit KIS přechod a idempotenci na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Ověřit skutečnou Evidence zálohu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Ověřit souběžný idempotentní checkout na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Ověřit ruční původ katalogu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Ověřit rozpočet SQL a cílené čtení veřejného katalogu",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Ověřit pracovní pozice a superadmin audit na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Ověřit zveřejnění registračních textů a souběh na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Ověřit systémové e-maily a souběh editorů na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Ověřit číselné řady, souběh nákupů a editorů na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Ověřit M3.5d sportovní import review na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Ověřit úplný import osob, rollback a vazby na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Ověřit historické soupisky a rozhodovací frontu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        },
+        {
+          "name": "Ověřit převod do aktuálních soupisek a rozhodovací frontu na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Ověřit revize výsledků a řízený KIS převod na MariaDB",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Stáhnout kód",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 43
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 44
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 45
+        }
+      ]
+    }
+  ],
+  "phpunit": {
+    "tests": 1757,
+    "assertions": 35705,
+    "skipped": 0
+  },
+  "mandatory_linux_symlink_subset": {
+    "tests": 3,
+    "assertions": 45,
+    "skipped": 0
+  }
+}

@@ -1,0 +1,9 @@
+{
+    "counts": {
+        "public": 32,
+        "cli": 2,
+        "protected": 237,
+        "errors": 0
+    },
+    "failures": []
+}

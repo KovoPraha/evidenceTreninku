@@ -1,0 +1,4 @@
+Note: Using configuration file C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-wave1-20261028\phpstan.neon.dist.
+
+ [OK] No errors                                                                                                        
+
