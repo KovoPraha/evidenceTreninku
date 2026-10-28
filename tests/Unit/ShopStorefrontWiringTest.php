@@ -85,7 +85,7 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringNotContainsString('shopStorefrontCatalog', $clubs);
         self::assertStringContainsString('rozcestník kroužků', $clubs);
         $clubLanding = (string)file_get_contents(dirname(__DIR__, 2).'/booking/cyklisticke_krouzky.php');
-        self::assertStringContainsString('clubProgramStorefrontCatalog',$clubLanding);
-        self::assertStringContainsString('rychla_prihlaska.php?product_id=',$clubLanding);
+        self::assertStringContainsString('clubProgramStorefrontCatalog', $clubLanding);
+        self::assertStringContainsString('rychla_prihlaska.php?product_id=', $clubLanding);
     }
 }
