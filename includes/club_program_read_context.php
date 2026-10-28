@@ -69,6 +69,65 @@ final class ClubProgramReadContext
         return $this->states[$variantId] ??= clubProgramVariantSaleState($this->pdo, $variantId, $this->now, false, $this);
     }
 
+    /** Warm published documents for one public projection, never a locking read.
+     * @param list<int> $variantIds
+     */
+    public function warmTermsForVariants(array $variantIds): void
+    {
+        $targets = ['offer' => [], 'program' => []];
+        foreach (array_unique($variantIds) as $variantId) {
+            $offer = $this->offer($variantId);
+            if ($offer && clubProgramOfferSaleState($offer, $this->now)['saleable']) {
+                $targets['offer'][] = (int) $offer['id'];
+                $targets['program'][] = (int) $offer['program_id'];
+            }
+        }
+        if ($targets['offer'] === [] || !clubProgramTermsRegistryAvailable($this->pdo, $this)) {
+            return;
+        }
+        foreach ($targets as $type => $ids) {
+            $this->warmTermsForTargets($type, array_values(array_unique($ids)));
+        }
+    }
+
+    /** @param list<int> $targetIds */
+    private function warmTermsForTargets(string $targetType, array $targetIds): void
+    {
+        // At most 160 SELECT arms / 800 parameters: below SQLite's older limits.
+        foreach (array_chunk($targetIds, 80) as $batch) {
+            $selects = [];
+            $parameters = [];
+            foreach ($batch as $targetId) {
+                [$scopeType, $scopeKey] = clubProgramTermsScope($targetType, $targetId);
+                foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
+                    $key = $targetType . ':' . $targetId . ':' . $purpose;
+                    if (array_key_exists($key, $this->terms)) {
+                        continue;
+                    }
+                    // Bound predicates retain the canonical database collation.
+                    // MAX(id) selects the same last active row as ORDER BY id DESC.
+                    $selects[] = 'SELECT ? AS read_target_id,? AS read_purpose,(SELECT MAX(id) '
+                        . 'FROM club_event_term_versions WHERE scope_type=? AND scope_key=? '
+                        . "AND consent_purpose=? AND status='active') AS term_id";
+                    array_push($parameters, $targetId, $purpose, $scopeType, $scopeKey, $purpose);
+                }
+            }
+            if ($selects === []) {
+                continue;
+            }
+            $sql = 'SELECT requested.read_target_id AS _read_target_id,requested.read_purpose AS _read_purpose,t.* '
+                . 'FROM (' . implode(' UNION ALL ', $selects) . ') requested '
+                . 'LEFT JOIN club_event_term_versions t ON t.id=requested.term_id';
+            $statement = $this->pdo->prepare($sql);
+            $statement->execute($parameters);
+            foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $key = $targetType . ':' . (int) $row['_read_target_id'] . ':' . $row['_read_purpose'];
+                unset($row['_read_target_id'], $row['_read_purpose']);
+                $this->terms[$key] = $row['id'] === null ? false : $row;
+            }
+        }
+    }
+
     /** @return array<string,mixed>|false */
     public function term(string $targetType, int $targetId, string $purpose): array|false
     {

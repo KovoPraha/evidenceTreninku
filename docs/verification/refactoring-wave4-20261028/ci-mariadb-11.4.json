@@ -1,0 +1,45 @@
+{
+  "database_version": "11.4.13-MariaDB-ubu2404",
+  "synthetic_only": true,
+  "canonical_rows_equal": true,
+  "collation_equal": true,
+  "locking_read_fresh": true,
+  "results": [
+    {
+      "programs": 1,
+      "sql_count": 22,
+      "terms_queries": 2,
+      "max_parameters": 10,
+      "output_sha256": "7d408cb4cad582122281d0f4468c734a906829f27c355656d3c9d554b51b0379"
+    },
+    {
+      "programs": 50,
+      "sql_count": 218,
+      "terms_queries": 2,
+      "max_parameters": 500,
+      "output_sha256": "b6ac2bef133213743ed2798726b17938469ee0d9f6d8c9ce9ca677e03ed52ea4"
+    },
+    {
+      "programs": 81,
+      "sql_count": 344,
+      "terms_queries": 4,
+      "max_parameters": 800,
+      "output_sha256": "78a0f0e5dc2834d58574d8e0d3f92841d4f8506f203fd9b2c1275c4e7af52718"
+    }
+  ],
+  "max_lookup_explain": [
+    {
+      "id": 1,
+      "select_type": "SIMPLE",
+      "table": null,
+      "type": null,
+      "possible_keys": null,
+      "key": null,
+      "key_len": null,
+      "ref": null,
+      "rows": null,
+      "Extra": "Select tables optimized away"
+    }
+  ],
+  "ci_run": 40770521904
+}
