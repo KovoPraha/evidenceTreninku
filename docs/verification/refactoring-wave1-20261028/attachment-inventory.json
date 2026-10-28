@@ -1,0 +1,20 @@
+{
+  "base_sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+  "scope": "Tracked document attachments only; file inventory, contents and layout not inspected in this preparation.",
+  "files": [
+    "docs/KIS-kompletni-uzivatelske-testovaci-scenare.docx",
+    "docs/KIS-kompletni-uzivatelske-testovaci-scenare.pdf",
+    "docs/verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-faktura.pdf",
+    "docs/verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-podklady.xlsx",
+    "docs/verification/partial-browser-acceptance-20261025/event-participants.csv",
+    "docs/verification/partial-browser-acceptance-20261025/shoptet-synthetic.csv",
+    "docs/verification/r18-r24/r18-r24-stock-sample.pdf",
+    "output/docx/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx",
+    "output/pdf/JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf",
+    "output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf",
+    "output/pdf/UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf",
+    "outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_APLIKACE.xlsx",
+    "outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx",
+    "outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_APLIKACE.xlsx"
+  ]
+}

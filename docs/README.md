@@ -12,6 +12,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 |---|---|
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
+| [První vlna refaktoringu](REFACTORING_WAVE1_2026-10-28.md) | Příprava z 28. 10. 2026: měření detailu a navigace, tři implementační balíky, přejímací podmínky a dokumentační inventář |
 | [Finanční základ R13–R17](FINANCE_R13_R17_IMPLEMENTATION.md) | Lokální peněžní evidence, účetní doklady, vratky a první export; [ověření](verification/r13-r17/RESULTS.md) |
 | [Produkční nasazení](NASAZENI.md) | Ruční chráněný deploy z GitHub Actions, zálohy a řešení chyb |
 | [Produkční UAT](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) | Identity, brány, testovací data a bezpečný úklid |
@@ -30,7 +31,7 @@ testy, potom `CURRENT_STATE.md` a `HANDOFF_CURRENT.md`.
 | Platby | [Přijetí hotovosti a postup vratky](ORDER_PAYMENTS_2026-10-21.md), [produkční TEST cyklus hotovosti a vratky](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md), [shop-program-payment-verification.md](shop-program-payment-verification.md), [fio-readonly-import-k4.md](fio-readonly-import-k4.md), [stripe-integration-plan.md](stripe-integration-plan.md) |
 | Číselné řady a účetní kategorie | [Návod a implementace](SHOP_NUMBER_SERIES_2026-10-21.md), [produkční vydání a zachování VS](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md), [kontrola před zveřejněním](SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md), [její produkční ověření](SHOP_PUBLICATION_ACCOUNTING_RELEASE_2026-10-22.md) |
 | Akce a soupisky | [club-events-k3.md](club-events-k3.md), [club-event-roster-targets.md](club-event-roster-targets.md), [kis-teams-rosters.md](kis-teams-rosters.md) |
-| Bezpečnost a osoby | [auth-one-time-tokens.md](auth-one-time-tokens.md), [auth-revocation-rate-limit.md](auth-revocation-rate-limit.md), [rodne-cislo-bezpecnost.md](rodne-cislo-bezpecnost.md), [pravidla-shody-osob.md](pravidla-shody-osob.md) |
+| Bezpečnost a osoby | [auth-one-time-tokens.md](auth-one-time-tokens.md), [auth-revocation-rate-limit.md](auth-revocation-rate-limit.md), [rodne-cislo-bezpecnost.md](rodne-cislo-bezpecnost.md), [identita a pravidla shody osob](PERSON_FOUNDATION_R07_R08.md) |
 | Současná testerová vlna | [UAT-OPRAVY-2026-10-07.md](UAT-OPRAVY-2026-10-07.md) |
 | UX navigace a kalendáře | [UX-NAVIGACE-A-KALENDARE-2026-10-08.md](UX-NAVIGACE-A-KALENDARE-2026-10-08.md) |
 | Datové toky a rizika | [grafická mapa XLSX](../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx), [aktuální mapa kódu](../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md), [aktuální nálezy](../outputs/data-flow-audit-2026-10-07/NALEZY_A_RIZIKA.md), [historický audit 24. 8.](../outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md) |
