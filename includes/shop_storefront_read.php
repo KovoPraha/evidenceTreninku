@@ -60,6 +60,13 @@ function shopStorefrontReadRows(
     $statement = $pdo->prepare($sql);
     $statement->execute($productId === null ? [] : [$productId]);
     $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $programVariantIds = [];
+    foreach ($rows as $row) {
+        if ($row['offer_type'] === 'program' && shopVariantIsStructurallySaleable($row)) {
+            $programVariantIds[] = (int) $row['variant_id'];
+        }
+    }
+    $readContext->warmTermsForVariants($programVariantIds);
     $saleable = [];
     // Lazy, operation-local metadata. Program-only reads never probe stock schema.
     $inventoryAvailable = null;
