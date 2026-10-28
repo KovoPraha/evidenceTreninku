@@ -28,3 +28,12 @@ výpočet sdílené kapacity a zamykající checkout neměnit.
 Vlastník výslovně schválil autonomní implementaci, sloučení a nasazení po ověření.
 Bez aktivace importů/integrací a bez změny cen, oprávnění nebo skutečných dat.
 Plné lidské/účetní UAT zůstává otevřené; deploy UAT=false, importovat_krouzky=false.
+
+## Implementace a ověření
+
+[PR #215](https://github.com/KovoPraha/evidenceTreninku/pull/215) implementuje
+dávkové čtení v kontextu jedné veřejné operace. Pro 50 programů SQL 416 → 218,
+podmínky 200 → 2, všech 12 porovnávaných výstupů shodných. Kompletní CI
+1 776 testů / 35 830 assertions, MariaDB 10.3/11.4, PHPStan a style PASS.
+[Výsledky, reprodukce a limity](verification/refactoring-wave4-20261028/RESULTS.md).
+Produkční nasazení a následné čtecí ověření budou doloženy samostatně.
