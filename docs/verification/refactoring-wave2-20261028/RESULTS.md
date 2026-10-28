@@ -3,7 +3,9 @@
 28. 10. 2026, [PR #211](https://github.com/KovoPraha/evidenceTreninku/pull/211).
 Výchozí main `4215eac93dd207142a16dfef57cda1464717cba3`; jeho aplikační kód
 odpovídá nasazenému `20ab8637`. Implementační commit `1463da73bbb1e49816eb632fa536a24d1c7f91c2`.
-Produkce v této vlně nebyla měněna; následující měření používají syntetická data.
+Při dokončení implementace produkce nebyla měněna; následující měření používají
+syntetická data. Následné [produkční vydání a měření](../refactoring-wave2-release-20261028/RESULTS.md)
+dokládá nasazení sloučeného PR #211 dne 28. 10. 2026.
 
 ## Zjištění a změna
 
@@ -120,6 +122,6 @@ Původní checkout s WIP nebyl změněn.
 
 Další samostatný kandidát: dávkové načítání prezentačních informací programů
 v samotné stránce katalogu; katalog po této vlně ještě není konstantní čtení.
-Členské ceny a osobní oprávnění nebyly optimalizovány. Před produkčním vydáním
-ověřit přesný finální head, CI a schválený rozsah podle NASAZENI; technická
+Členské ceny a osobní oprávnění nebyly optimalizovány. Ověření finálního headu,
+CI a rozsahu produkčního vydání je v navazujícím protokolu výše; technická
 optimalizace nenahrazuje lidské a účetní UAT.
