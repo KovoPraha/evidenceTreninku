@@ -36,4 +36,5 @@ dávkové čtení v kontextu jedné veřejné operace. Pro 50 programů SQL 416 
 podmínky 200 → 2, všech 12 porovnávaných výstupů shodných. Kompletní CI
 1 776 testů / 35 830 assertions, MariaDB 10.3/11.4, PHPStan a style PASS.
 [Výsledky, reprodukce a limity](verification/refactoring-wave4-20261028/RESULTS.md).
-Produkční nasazení a následné čtecí ověření budou doloženy samostatně.
+Technické vydání `e40df7d3` proběhlo 28. 10. 2026;
+[produkční protokol](verification/refactoring-wave4-release-20261028/RESULTS.md).

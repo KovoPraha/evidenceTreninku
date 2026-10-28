@@ -2,29 +2,29 @@
 
 Aktualizováno 28. 10. 2026 (Europe/Prague); další vydání musí tento přehled nahradit.
 
-- **Poslední doložené nasazení:** `09510ac6e44cfd01f571b91f5e52bc2d9d6eb9df`,
-  [PR #213](https://github.com/KovoPraha/evidenceTreninku/pull/213),
-  [deploy 40761965370](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40761965370),
+- **Poslední doložené nasazení:** `e40df7d3c532ed933541013f833b8f64e5951c47`,
+  [PR #215](https://github.com/KovoPraha/evidenceTreninku/pull/215),
+  [deploy 40771509403](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771509403),
   28. 10. 2026, SUCCESS; živé SHA a run ID ověřeny následnou čtecí kontrolou.
-  [Protokol vydání a důkazy](verification/refactoring-wave3-release-20261028/RESULTS.md):
+  [Protokol vydání a důkazy](verification/refactoring-wave4-release-20261028/RESULTS.md):
   před i po nasazení 22/22 anonymních HTTP kontrol PASS, schéma current / pending [], VS zachovány.
   Záloha 336 tabulek / 2 triggery vytvořena a ověřena; obnova v tomto vydání neopakována.
 - **CI nasazeného main:**
-  [Testy 40761603743](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40761603743),
-  [PHP quality 40761603769](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40761603769),
-  [CodeQL 40761603485](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40761603485)
-  a [dokumentace 40761603643](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40761603643), PASS.
-  1 769 testů / 35 789 assertions; MariaDB 10.3/11.4, PHPStan a sweep PASS.
-- **Změna:** třetí vlna používá již načtené identity, kategorie a nabídky pro
-  karty programů v katalogu. Pro 50 programů SQL 1 366 → 416, metadata 711 → 11.
-  Bez nové migrace, změny členských cen či checkoutu. [Plán a důkazy](REFACTORING_WAVE3_2026-10-28.md).
-  Produkční medián katalogu 2,92 → 0,32 s; tři vzorky před/po,
+  [Testy 40771201596](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771201596),
+  [PHP quality 40771201654](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771201654),
+  [CodeQL 40771202202](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771202202)
+  a [dokumentace 40771201612](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771201612), PASS.
+  1 776 testů / 35 830 assertions; MariaDB 10.3/11.4, PHPStan a sweep PASS.
+- **Změna:** čtvrtá vlna dávkově načítá zveřejněné podmínky programů.
+  Pro 50 programů SQL 416 → 218, podmínky 200 → 2; výstupy shodné.
+  Bez nové migrace, změny kapacity, členských cen či checkoutu. [Plán a důkazy](REFACTORING_WAVE4_2026-10-28.md).
+  Produkční medián katalogu 0,949 → 0,571 s; tři vzorky před/po,
   orientační měření HTTP včetně sítě, nikoli zátěžový test.
 - **Zapnuté:** společná Evidence/KIS, veřejný katalog, rodinné a sportovní účty,
   klubová, finanční, účetní a skladová implementace; bankovní/ruční platební postup.
 - **Flags ověřené 28. 10. / bez nové aktivace:** Fio import a automatické potvrzování,
   SumUp, Stripe a Velocota vypnuté; Packeta flag není definovaný. KIS canonical writes false.
-  [Živá verze a čtecí kontrola](verification/refactoring-wave3-release-20261028/release-comparison.json).
+  [Živá verze a čtecí kontrola](verification/refactoring-wave4-release-20261028/release-comparison.json).
   Konfigurace, flags a ledger 141 záznamů shodné v čerstvé kontrole před/po vydání.
 - **Blokery ostrého převzetí:** lidská přejímka a pilot, převzetí účetní D12–D14,
   skutečná inventura a ocenění, ověřené rodinné vazby a rozsahy trenérů,
@@ -33,7 +33,7 @@ Aktualizováno 28. 10. 2026 (Europe/Prague); další vydání musí tento přehl
   Technické vydání má souhlas vlastníka; UAT flag zůstává false.
   Historické přejímky se na toto vydání automaticky nepřenášejí.
 - **Další krok:** dokončit lidské/účetní převzetí a doplnit ověřená provozní data;
-  další výkonový kandidát je zbývající kanonické čtení kapacity a podmínek programů.
+  další výkonový kandidát je zbývající kanonické čtení nabídky a kapacity programů.
   Před každým vydáním ověřit společný stav schválených změn, CI a konkrétní souhlas
   vlastníka; po vydání aktualizovat tento přehled včetně SHA a důkazů.
 

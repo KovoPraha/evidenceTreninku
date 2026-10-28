@@ -69,3 +69,5 @@ pro 1/50/81 programů. PHPStan level 5, style a kontrola po naplnění cache
 [40770521901](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40770521901) PASS;
 [aktuální dokumentace 40770522149](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40770522149) PASS.
 Finální dokumentační commit musí před sloučením projít stejným CI.
+
+Následné [produkční vydání](../refactoring-wave4-release-20261028/RESULTS.md) dokládá nasazení PR #215 a čtecí kontrolu.
