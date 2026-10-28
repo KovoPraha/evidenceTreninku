@@ -204,8 +204,8 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString("\$_SESSION['flash_success'] = 'Trénink byl úspěšně uložen.';", $trainingUpdate);
 
         $shop = (string)file_get_contents($this->root . 'booking/eshop.php');
-        self::assertStringContainsString('for="<?=shopPublicH($quantityId)?>">Množství</label>', $shop);
-        self::assertStringContainsString('id="<?=shopPublicH($quantityId)?>"', $shop);
+        self::assertMatchesRegularExpression('/for="<\?=\s*shopPublicH\(\$quantityId\)\s*\?>">Množství<\/label\s*>/u', $shop);
+        self::assertMatchesRegularExpression('/id="<\?=\s*shopPublicH\(\$quantityId\)\s*\?>"/', $shop);
         self::assertStringContainsString('d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3', $shop);
 
         $orders = (string)file_get_contents($this->root . 'eshop_orders_admin.php');

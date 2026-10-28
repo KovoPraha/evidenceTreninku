@@ -115,6 +115,9 @@ jobs:
       - name: Ověřit programové projekce a čerstvou kapacitu při zamčení
         run: php tests/Support/ProgramStorefrontMariaDbSmoke.php
 
+      - name: Ověřit katalogové karty bez opakovaných dotazů
+        run: php tests/Support/CatalogCardsMariaDbSmoke.php
+
       - name: Ověřit pracovní pozice a superadmin audit na MariaDB
         run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
 

@@ -1,0 +1,6 @@
+{
+    "php_ast_identical": true,
+    "inline_html_nonwhitespace_identical": true,
+    "baseline": "After intended helper extraction, before mandatory formatting.",
+    "limit": "HTML whitespace is ignored here; rendered text and controls are verified separately."
+}

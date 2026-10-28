@@ -47,9 +47,12 @@ final class ShopPublicNavigationWiringTest extends TestCase
         $root = dirname(__DIR__, 2);
         foreach (['eshop.php','produkt.php','rychly_nakup.php','rychla_prihlaska.php','objednavka.php','moje_objednavky.php'] as $file) {
             $source = (string)file_get_contents($root.'/booking/'.$file);
-            self::assertStringContainsString("includes/shop_public_navigation.php", $source, $file);
-            self::assertStringContainsString('shopPublicNavigation($pdo', $source, $file);
+            $include = $file === 'eshop.php' ? 'includes/shop_catalog_cards.php' : 'includes/shop_public_navigation.php';
+            self::assertStringContainsString($include, $source, $file);
+            self::assertMatchesRegularExpression('/shopPublicNavigation\(\s*\$pdo/', $source, $file);
         }
+        $cards = (string) file_get_contents($root . '/includes/shop_catalog_cards.php');
+        self::assertStringContainsString("require_once __DIR__ . '/shop_public_navigation.php'", $cards);
         $product = (string)file_get_contents($root.'/booking/produkt.php');
         self::assertStringContainsString('aria-label="Drobečková navigace"', $product);
         self::assertStringContainsString('<a href="eshop.php">E-shop</a>', $product);

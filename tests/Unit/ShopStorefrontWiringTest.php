@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -28,57 +29,63 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringNotContainsString('short_description', $source);
     }
 
-    public function testQuickProgramCheckoutKeepsAgeMismatchAsWarningOnly():void
+    public function testQuickProgramCheckoutKeepsAgeMismatchAsWarningOnly(): void
     {
-        $root=dirname(__DIR__,2);$page=(string)file_get_contents($root.'/booking/rychla_prihlaska.php');$service=(string)file_get_contents($root.'/includes/shop_program_quick_checkout.php');
-        self::assertStringContainsString('quick-age-warning',$page);
-        self::assertStringContainsString('Přihlášení je přesto možné.',$page);
-        self::assertStringContainsString('Objednat a zobrazit platbu',$page);
-        self::assertStringContainsString('athleteRegistrationSubmit',$service);
-        self::assertStringContainsString("'quick_program'",$service);
-        self::assertStringContainsString('clubProgramBirthDateWarning',$service);
-        self::assertStringContainsString('Koho přihlašujete?',$page);
-        self::assertStringContainsString('quick-athlete-name-fields',$page);
-        self::assertStringContainsString("\$_POST['jmeno']=(string)(\$_POST['parent_first_name']",$page);
+        $root = dirname(__DIR__, 2);
+        $page = (string)file_get_contents($root.'/booking/rychla_prihlaska.php');
+        $service = (string)file_get_contents($root.'/includes/shop_program_quick_checkout.php');
+        self::assertStringContainsString('quick-age-warning', $page);
+        self::assertStringContainsString('Přihlášení je přesto možné.', $page);
+        self::assertStringContainsString('Objednat a zobrazit platbu', $page);
+        self::assertStringContainsString('athleteRegistrationSubmit', $service);
+        self::assertStringContainsString("'quick_program'", $service);
+        self::assertStringContainsString('clubProgramBirthDateWarning', $service);
+        self::assertStringContainsString('Koho přihlašujete?', $page);
+        self::assertStringContainsString('quick-athlete-name-fields', $page);
+        self::assertStringContainsString("\$_POST['jmeno']=(string)(\$_POST['parent_first_name']", $page);
     }
 
-    public function testUnavailableCartItemsAreExplainedBeforeCheckout():void
+    public function testUnavailableCartItemsAreExplainedBeforeCheckout(): void
     {
-        $root=dirname(__DIR__,2);$checkout=(string)file_get_contents($root.'/includes/shop_checkout.php');$events=(string)file_get_contents($root.'/includes/club_event_shop.php');$page=(string)file_get_contents($root.'/booking/eshop.php');
-        self::assertStringContainsString("availability_error",$checkout);
-        self::assertStringContainsString("availability_error",$events);
-        self::assertStringContainsString('Objednávku zatím nelze dokončit.',$page);
-        self::assertStringContainsString('button.disabled=true',$page);
+        $root = dirname(__DIR__, 2);
+        $checkout = (string)file_get_contents($root.'/includes/shop_checkout.php');
+        $events = (string)file_get_contents($root.'/includes/club_event_shop.php');
+        $page = (string)file_get_contents($root.'/booking/eshop.php');
+        self::assertStringContainsString("availability_error", $checkout);
+        self::assertStringContainsString("availability_error", $events);
+        self::assertStringContainsString('Objednávku zatím nelze dokončit.', $page);
+        self::assertStringContainsString('button.disabled=true', $page);
     }
 
     public function testStorefrontLinksToProductDetail(): void
     {
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/booking/eshop.php');
         self::assertStringContainsString('produkt.php?id=', $source);
-        self::assertStringContainsString('shopPublicSaleableCatalog', $source);
-        self::assertStringContainsString("\$_GET['kategorie']",$source);
-        $navigation=(string)file_get_contents(dirname(__DIR__,2).'/includes/shop_public_navigation.php');
-        self::assertStringContainsString("rawurlencode(\$path)",$navigation);
-        self::assertStringContainsString('shopPublicNavigation($pdo',$source);
-        self::assertStringContainsString('shopCategoryDescendants',$source);
-        self::assertStringContainsString('shopStorefrontCategoryMenu',$source);
-        self::assertStringContainsString('clubProgramVariantSaleState',$source);
-        self::assertStringContainsString('shopPublicSaleableCatalog($pdo)', $source);
-        self::assertStringNotContainsString('clubProgramOfferIsOnSale($offer)',$source);
-        self::assertStringContainsString("listing_attributes",$source);
-        $detail=(string)file_get_contents(dirname(__DIR__,2).'/booking/produkt.php');
-        self::assertStringContainsString("attributes_detail",$detail);
-        self::assertStringContainsString('clubProgramVariantSaleState',$detail);
+        self::assertStringContainsString('shopPublicCatalogCards($pdo)', $source);
+        self::assertStringContainsString("\$_GET['kategorie']", $source);
+        $navigation = (string)file_get_contents(dirname(__DIR__, 2).'/includes/shop_public_navigation.php');
+        self::assertStringContainsString("rawurlencode(\$path)", $navigation);
+        self::assertMatchesRegularExpression('/shopPublicNavigation\(\s*\$pdo/', $source);
+        self::assertStringContainsString('shopCategoryDescendants', $source);
+        self::assertStringContainsString('shopStorefrontCategoryMenu', $source);
+        self::assertStringContainsString('clubProgramVariantSaleState', $source);
+        $cards = (string) file_get_contents(dirname(__DIR__, 2) . '/includes/shop_catalog_cards.php');
+        self::assertStringContainsString('shopPublicSaleableCatalog($pdo, $readContext)', $cards);
+        self::assertStringNotContainsString('clubProgramOfferIsOnSale($offer)', $source);
+        self::assertStringContainsString("listing_attributes", $source);
+        $detail = (string)file_get_contents(dirname(__DIR__, 2).'/booking/produkt.php');
+        self::assertStringContainsString("attributes_detail", $detail);
+        self::assertStringContainsString('clubProgramVariantSaleState', $detail);
         self::assertStringContainsString('Přihlášení do tohoto kroužku se připravuje.', $detail);
         self::assertStringContainsString('Zanechat zájem o termín', $detail);
         self::assertStringNotContainsString('>Doplnit sportovce</a>', $detail);
-        self::assertStringContainsString("name=\"razeni\"",$source);
-        self::assertStringContainsString('Hledat v názvu a popisu',$source);
-        $clubs=(string)file_get_contents(dirname(__DIR__,2).'/booking/krouzky.php');
-        self::assertStringNotContainsString('shopStorefrontCatalog',$clubs);
-        self::assertStringContainsString('rozcestník kroužků',$clubs);
-        $clubLanding=(string)file_get_contents(dirname(__DIR__,2).'/booking/cyklisticke_krouzky.php');
-        self::assertStringContainsString('clubProgramStorefrontCatalog',$clubLanding);
-        self::assertStringContainsString('rychla_prihlaska.php?product_id=',$clubLanding);
+        self::assertStringContainsString("name=\"razeni\"", $source);
+        self::assertStringContainsString('Hledat v názvu a popisu', $source);
+        $clubs = (string)file_get_contents(dirname(__DIR__, 2).'/booking/krouzky.php');
+        self::assertStringNotContainsString('shopStorefrontCatalog', $clubs);
+        self::assertStringContainsString('rozcestník kroužků', $clubs);
+        $clubLanding = (string)file_get_contents(dirname(__DIR__, 2).'/booking/cyklisticke_krouzky.php');
+        self::assertStringContainsString('clubProgramStorefrontCatalog', $clubLanding);
+        self::assertStringContainsString('rychla_prihlaska.php?product_id=', $clubLanding);
     }
 }
