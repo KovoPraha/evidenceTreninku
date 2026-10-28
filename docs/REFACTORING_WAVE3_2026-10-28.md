@@ -36,4 +36,5 @@ zůstává samostatně otevřené; nasazení s UAT=false a importovat_krouzky=fa
 Pro 50 programů SQL 1 366 → 416, metadata 711 → 11; výstupy shodné
 na MariaDB 10.3/11.4. Šest HTTP scénářů shodných a browser průchod PASS.
 Lokální medián katalogu 5,00 → 0,77 s (30 vzorků, sdílená Windows stanice).
-Technické produkční vydání bude doloženo samostatným protokolem.
+Technické vydání `09510ac6` proběhlo 28. 10. 2026;
+[produkční protokol](verification/refactoring-wave3-release-20261028/RESULTS.md).
