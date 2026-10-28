@@ -1,0 +1,54 @@
+{
+  "synthetic_only": true,
+  "checks": [
+    {
+      "profile": "catalog",
+      "path": "/booking/eshop.php",
+      "before_ms": 14315.67310000537,
+      "after_ms": 2107.8379999962635,
+      "semantic_sha256": "ef8023b8394664a893a23eeb7e2cf7a1fb139b7e7d20d0591319fbe2e3e738bf",
+      "equal": true
+    },
+    {
+      "profile": "program_category",
+      "path": "/booking/eshop.php?kategorie=LOCALHOST%20%3E%20Programy",
+      "before_ms": 12796.983000007458,
+      "after_ms": 1117.5005999975838,
+      "semantic_sha256": "7faa80c8b94021c0c6227cfe9fd3491e94bdbd81f0fbee9ff1a36253d911690c",
+      "equal": true
+    },
+    {
+      "profile": "search",
+      "path": "/booking/eshop.php?q=Program&razeni=name",
+      "before_ms": 13418.38019998977,
+      "after_ms": 3923.212399997283,
+      "semantic_sha256": "e58b1cc057b0f485d49a06b552fadda25e8c5d2bf1b2e78c0f905a52ad1166ba",
+      "equal": true
+    },
+    {
+      "profile": "price_sort",
+      "path": "/booking/eshop.php?razeni=price",
+      "before_ms": 13018.765499989968,
+      "after_ms": 1839.7409999743104,
+      "semantic_sha256": "9be466b1655fdd32c6628137070d248d8c753dea12b690e49a4cb9422d5afa0a",
+      "equal": true
+    },
+    {
+      "profile": "second_page",
+      "path": "/booking/eshop.php?strana=2",
+      "before_ms": 14988.299200020265,
+      "after_ms": 1841.9527999940328,
+      "semantic_sha256": "044e9d2edf88d07513a5917c7525afdb93c65bf96654d99e848a53086218e8c8",
+      "equal": true
+    },
+    {
+      "profile": "empty_search",
+      "path": "/booking/eshop.php?q=not-a-synthetic-product",
+      "before_ms": 11699.60260001244,
+      "after_ms": 1690.2802000404336,
+      "semantic_sha256": "70d245c244b32b123ff95d345010c4d22b6c23b318f8379b48989a7480ec43ea",
+      "equal": true
+    }
+  ],
+  "passed": 6
+}

@@ -28,3 +28,12 @@ prezentační názvy některých importovaných kurzů jsou záměrně přepsan�
 Checkout, platební pravidla, členské ceny, importy a aktivační flags nejsou
 součástí změny. Bez nové migrace či dlouhodobé cache. Plné lidské/účetní UAT
 zůstává samostatně otevřené; nasazení s UAT=false a importovat_krouzky=false.
+
+## Výsledek implementace
+
+[PR #213](https://github.com/KovoPraha/evidenceTreninku/pull/213),
+[výsledky a limity](verification/refactoring-wave3-20261028/RESULTS.md).
+Pro 50 programů SQL 1 366 → 416, metadata 711 → 11; výstupy shodné
+na MariaDB 10.3/11.4. Šest HTTP scénářů shodných a browser průchod PASS.
+Lokální medián katalogu 5,00 → 0,77 s (30 vzorků, sdílená Windows stanice).
+Technické produkční vydání bude doloženo samostatným protokolem.
