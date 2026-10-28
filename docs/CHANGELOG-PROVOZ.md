@@ -5,6 +5,61 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 28. 10. 2026 — druhá vlna refaktoringu sloučena a nasazena
+
+PR #211 byl sloučen jako `331bd97474b676bf4e22f529508a9db434dc64c6`.
+[Deploy 40752209335](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40752209335)
+skončil SUCCESS; 1 764 testů / 35 753 assertions, před i po nasazení 22/22 HTTP PASS.
+Čtecí kontroly bezprostředně před a po vydání potvrdily nové živé SHA/run ID,
+shodnou konfiguraci, integrační flags a migrační ledger. Medián katalogu
+7,95 → 3,32 s, tří detailů 5,2–5,9 → 0,67–1,03 s (jen tři vzorky na cestu).
+[Protokol, důkazy a limity](verification/refactoring-wave2-release-20261028/RESULTS.md).
+Bez importu kroužků a bez plného UAT. Předchozí přehled je zachován celý:
+
+<!-- archive {"source": "docs/CURRENT_STATE.md@2026-10-28-wave1", "part": 0, "sha256": "a4b5b2db031729ed2d4c7a65669bcbeafec6305dacb5a085bb99fa396eeba36d"} -->
+# Aktuální stav projektu
+
+Aktualizováno 28. 10. 2026 (Europe/Prague); další vydání musí tento přehled nahradit.
+
+- **Poslední doložené nasazení:** `20ab863701bfb1b90e3a7f5a7c1357cceda3c30b`,
+  [PR #209](https://github.com/KovoPraha/evidenceTreninku/pull/209),
+  [deploy 40701923049](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40701923049),
+  28. 10. 2026, SUCCESS; živé SHA a run ID ověřeny následnou čtecí kontrolou.
+  [Protokol vydání a důkazy](verification/refactoring-release-20261028/RESULTS.md):
+  14/14 anonymních HTTP kontrol PASS, schéma current / pending [], dosavadní VS zachovány.
+  Záloha 336 tabulek / 2 triggery vytvořena a ověřena; obnova v tomto vydání neopakována.
+- **CI nasazeného main:**
+  [Testy 40701687558](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40701687558),
+  [PHP quality 40701687766](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40701687766),
+  [CodeQL 40701687067](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40701687067)
+  a [dokumentace 40701688066](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40701688066), PASS.
+  1 757 testů / 35 705 assertions; MariaDB 10.3/11.4, PHPStan a sweep PASS.
+- **Změna:** cílené čtení detailu a lehká navigace e-shopu, sdílená strukturální
+  kontrola prodejnosti, PhpSpreadsheet 5.10.0. Žádná nová migrace ani doménový stav.
+  [Plán, měření a navazující backlog](REFACTORING_WAVE1_2026-10-28.md).
+  Produkční katalog/detail v jednom HTTP průchodu 6,8–15,6 s; výkon celé stránky
+  vyžaduje další měření, syntetické SQL zlepšení není produkční benchmark.
+- **Zapnuté:** společná Evidence/KIS, veřejný katalog, rodinné a sportovní účty,
+  klubová, finanční, účetní a skladová implementace; bankovní/ruční platební postup.
+- **Flags ověřené 28. 10. / bez nové aktivace:** Fio import a automatické potvrzování,
+  SumUp, Stripe a Velocota vypnuté; Packeta flag není definovaný. KIS canonical writes false.
+  [Živá verze a čtecí kontrola](verification/refactoring-release-20261028/release-comparison.json).
+  Konfigurace a integrační flags shodné s doloženým stavem z 26. 10.; ledger 141 záznamů.
+- **Blokery ostrého převzetí:** lidská přejímka a pilot, převzetí účetní D12–D14,
+  skutečná inventura a ocenění, ověřené rodinné vazby a rozsahy trenérů,
+  dohody/částky příspěvků a dvě chybějící přílohy účtenek.
+  [Rozhodnutí D01–D20](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
+  Technické vydání má výslovný souhlas vlastníka; UAT flag zůstává false.
+  Historické přejímky se na toto vydání automaticky nepřenášejí.
+- **Další krok:** dokončit lidské/účetní převzetí, doplnit ověřená provozní data
+  a samostatně změřit zbývající náklady programových nabídek a členských cen.
+  Před každým vydáním ověřit společný stav schválených změn, CI a konkrétní souhlas
+  vlastníka; po vydání aktualizovat tento přehled včetně SHA a důkazů.
+
+[Postup převzetí stanice](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+
+<!-- /archive -->
+
 ## 28. 10. 2026 — první vlna refaktoringu sloučena a nasazena
 
 Po výslovném pokynu vlastníka „Takze sloučit a nasadit“ byl sloučen PR #209

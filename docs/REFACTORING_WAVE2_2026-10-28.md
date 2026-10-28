@@ -39,4 +39,5 @@ Výsledek pro 50 programů: navigace 2 608 → 417 SQL, metadata 1 801 → 10.
 Všech 9 MariaDB výstupů shodných. HTTP medián detailu zboží 7,31 → 0,53 s,
 programu 6,53 → 0,86 s, katalogu 8,41 → 2,49 s na syntetické fixture.
 Členské ceny nebyly měněny; další výkonový kandidát je prezentace programů
-v katalogové stránce. Produkční vydání této druhé vlny neproběhlo.
+v katalogové stránce. PR #211 byl sloučen a nasazen 28. 10. 2026 jako `331bd974`;
+[protokol vydání a produkční měření](verification/refactoring-wave2-release-20261028/RESULTS.md).
