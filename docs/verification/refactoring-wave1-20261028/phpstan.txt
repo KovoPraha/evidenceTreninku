@@ -12,5 +12,4 @@ Note: Using configuration file C:\Users\Marek\Documents\Codex\evidencePavel-refa
  750/750 [============================] 100%
 
 
- [OK] No errors                                                                                                        
-
+ [OK] No errors
