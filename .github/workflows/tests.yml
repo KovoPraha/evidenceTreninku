@@ -112,6 +112,9 @@ jobs:
       - name: Ověřit rozpočet SQL a cílené čtení veřejného katalogu
         run: php tests/Support/StorefrontReadMariaDbSmoke.php
 
+      - name: Ověřit programové projekce a čerstvou kapacitu při zamčení
+        run: php tests/Support/ProgramStorefrontMariaDbSmoke.php
+
       - name: Ověřit pracovní pozice a superadmin audit na MariaDB
         run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
 
