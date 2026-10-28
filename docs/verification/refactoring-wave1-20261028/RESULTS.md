@@ -192,9 +192,15 @@ Composer požadavků. Verze vyžaduje PHP 8.2, které je už minimem aplikace.
 Následné úplné CI je zelené. Jde o výslovně zdokumentované rozšíření přípravy
 nezbytné k odstranění zjištěného bezpečnostního problému; auditní gate zůstala zapnutá.
 
-Produkce, její konfigurace a reálná data nebyly touto prací měněny. PR není
-sloučen ani nasazen. Rollback kódu nemá DB krok; bezpečnostní aktualizaci locku
+V okamžiku dokončení implementačního ověření nebyly produkce, její konfigurace
+a reálná data měněny; PR tehdy nebyl sloučen ani nasazen. Rollback kódu nemá DB krok; bezpečnostní aktualizaci locku
 nevracet automaticky spolu s refaktoringem.
 
 [Implementační plán](../../REFACTORING_WAVE1_2026-10-28.md) ·
 [Rozsah dokumentačního čtení](../../REFACTORING_DOCUMENTATION_2026-10-28.md)
+
+## Následné schválené vydání 28. 10. 2026
+
+Na výslovný pokyn vlastníka byl PR #209 sloučen a `20ab8637` nasazen.
+[Samostatný produkční protokol](../refactoring-release-20261028/RESULTS.md)
+odlišuje aktuální čtecí důkazy od syntetické přejímky výše.

@@ -1,0 +1,82 @@
+{
+  "run_id": "40701923049",
+  "job_id": 122863721643,
+  "sha": "20ab863701bfb1b90e3a7f5a7c1357cceda3c30b",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "php": "8.2.35",
+  "tests": 1757,
+  "assertions": 35705,
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-28_140330_0da29596.sql.gz",
+    "manifest": "evidence_2026-10-28_140330_0da29596.manifest.json",
+    "sha256": "3738b63d12173dcb68d16d9707bdcd8fab9c7baee9ab31c2d21d87b3e40dbb50",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063423,
+    "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+  },
+  "migration_checks": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    }
+  ],
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "private_files": {
+    "candidates": 0,
+    "already_private": 0,
+    "missing": 2,
+    "errors": 0
+  },
+  "release_config_copy_removed": true
+}
