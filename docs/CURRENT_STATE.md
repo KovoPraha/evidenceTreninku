@@ -24,7 +24,7 @@ Aktualizováno 28. 10. 2026 (Europe/Prague); další vydání musí tento přehl
   klubová, finanční, účetní a skladová implementace; bankovní/ruční platební postup.
 - **Flags ověřené 28. 10. / bez nové aktivace:** Fio import a automatické potvrzování,
   SumUp, Stripe a Velocota vypnuté; Packeta flag není definovaný. KIS canonical writes false.
-  [Živá verze a čtecí kontrola](verification/refactoring-release-20261028/release-verification.json).
+  [Živá verze a čtecí kontrola](verification/refactoring-release-20261028/release-comparison.json).
   Konfigurace a integrační flags shodné s doloženým stavem z 26. 10.; ledger 141 záznamů.
 - **Blokery ostrého převzetí:** lidská přejímka a pilot, převzetí účetní D12–D14,
   skutečná inventura a ocenění, ověřené rodinné vazby a rozsahy trenérů,
