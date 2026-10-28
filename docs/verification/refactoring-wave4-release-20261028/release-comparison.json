@@ -1,0 +1,46 @@
+{
+  "baseline_note": "Fresh read-only checks before and after this release. Identity uses deployment metadata, not a new runtime file-hash inventory.",
+  "baseline_run": 40770548691,
+  "post_run": 40772479517,
+  "before_live": {
+    "sha": "09510ac6e44cfd01f571b91f5e52bc2d9d6eb9df",
+    "run_id": "40761965370",
+    "deployed_at": "2026-10-28T20:20:22+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "e40df7d3c532ed933541013f833b8f64e5951c47",
+    "run_id": "40771509403",
+    "deployed_at": "2026-10-28T21:27:36+00:00",
+    "uat_approved": false
+  },
+  "read_only": true,
+  "unchanged_fields": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "migration_ledger_count": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "forward_vs_repair_applied": true
+  },
+  "after": {
+    "config_sha256": "326c832d891a99d2780099391854a8daee3936adcdacf62c62f0a00b616fb772",
+    "integration_flags": {
+      "FIO_IMPORT_ENABLED": false,
+      "FIO_AUTO_CONFIRM_ENABLED": false,
+      "SUMUP_ENABLED": false,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    },
+    "migration_ledger_count": 141,
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "kis_canonical_write_enabled": false,
+    "forward_vs_repair_applied": true
+  }
+}

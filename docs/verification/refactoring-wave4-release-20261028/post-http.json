@@ -1,0 +1,225 @@
+{
+  "phase": "post",
+  "product_ids": [
+    "247",
+    "218",
+    "221"
+  ],
+  "checked_at": "2026-10-28T21:30:07.694118+00:00",
+  "base_url": "https://kis.kovopraha.cz",
+  "method": "GET only; anonymous; no cookies or redirects",
+  "checks": 22,
+  "passed": 22,
+  "results": [
+    {
+      "path": "/index.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 187,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 571,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/prihlaseni.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 94,
+      "ok": true
+    },
+    {
+      "path": "/booking/moje_objednavky.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 109,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=moje_objednavky.php"
+    },
+    {
+      "path": "/eshop_orders_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 97,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 463,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 317,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 326,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=2147483647",
+      "expected": [
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 579,
+      "ok": true
+    },
+    {
+      "path": "/includes/shop_storefront_read.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 155,
+      "ok": true
+    },
+    {
+      "path": "/var/deployment.json",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 142,
+      "ok": true
+    },
+    {
+      "path": "/tests/Support/StorefrontReadMariaDbSmoke.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 379,
+      "ok": true
+    },
+    {
+      "path": "/composer.lock",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 187,
+      "ok": true
+    },
+    {
+      "path": "/var/private/kis-person-import.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 196,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 1076,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 881,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 464,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 697,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 553,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 525,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 458,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 408,
+      "ok": true
+    }
+  ]
+}
