@@ -5,6 +5,58 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 28. 10. 2026 — pátá vlna refaktoringu sloučena a nasazena
+
+PR #217 → `a14d1026800822a09ee713a9e6924651be052913`, [deploy 40777286733](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40777286733) SUCCESS.
+1 782 testů / 35 866 assertions, před i po 22/22 HTTP PASS. SQL pro 50 programů 218 → 120.
+Konfigurace, vypnuté integrace a ledger shodné, VS zachovány.
+[Protokol a limity](verification/refactoring-wave5-release-20261028/RESULTS.md).
+Bez importu kroužků a bez plného UAT. Předchozí přehled zachován celý:
+
+<!-- archive {"source": "docs/CURRENT_STATE.md@2026-10-28-wave4", "part": 0, "sha256": "67f2e38d1dc13dba099624e988b5e32f6a7bea9c6baf00db06db4ac5164cba2d"} -->
+# Aktuální stav projektu
+
+Aktualizováno 28. 10. 2026 (Europe/Prague); další vydání musí tento přehled nahradit.
+
+- **Poslední doložené nasazení:** `e40df7d3c532ed933541013f833b8f64e5951c47`,
+  [PR #215](https://github.com/KovoPraha/evidenceTreninku/pull/215),
+  [deploy 40771509403](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771509403),
+  28. 10. 2026, SUCCESS; živé SHA a run ID ověřeny následnou čtecí kontrolou.
+  [Protokol vydání a důkazy](verification/refactoring-wave4-release-20261028/RESULTS.md):
+  před i po nasazení 22/22 anonymních HTTP kontrol PASS, schéma current / pending [], VS zachovány.
+  Záloha 336 tabulek / 2 triggery vytvořena a ověřena; obnova v tomto vydání neopakována.
+- **CI nasazeného main:**
+  [Testy 40771201596](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771201596),
+  [PHP quality 40771201654](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771201654),
+  [CodeQL 40771202202](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771202202)
+  a [dokumentace 40771201612](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771201612), PASS.
+  1 776 testů / 35 830 assertions; MariaDB 10.3/11.4, PHPStan a sweep PASS.
+- **Změna:** čtvrtá vlna dávkově načítá zveřejněné podmínky programů.
+  Pro 50 programů SQL 416 → 218, podmínky 200 → 2; výstupy shodné.
+  Bez nové migrace, změny kapacity, členských cen či checkoutu. [Plán a důkazy](REFACTORING_WAVE4_2026-10-28.md).
+  Produkční medián katalogu 0,949 → 0,571 s; tři vzorky před/po,
+  orientační měření HTTP včetně sítě, nikoli zátěžový test.
+- **Zapnuté:** společná Evidence/KIS, veřejný katalog, rodinné a sportovní účty,
+  klubová, finanční, účetní a skladová implementace; bankovní/ruční platební postup.
+- **Flags ověřené 28. 10. / bez nové aktivace:** Fio import a automatické potvrzování,
+  SumUp, Stripe a Velocota vypnuté; Packeta flag není definovaný. KIS canonical writes false.
+  [Živá verze a čtecí kontrola](verification/refactoring-wave4-release-20261028/release-comparison.json).
+  Konfigurace, flags a ledger 141 záznamů shodné v čerstvé kontrole před/po vydání.
+- **Blokery ostrého převzetí:** lidská přejímka a pilot, převzetí účetní D12–D14,
+  skutečná inventura a ocenění, ověřené rodinné vazby a rozsahy trenérů,
+  dohody/částky příspěvků a dvě chybějící přílohy účtenek.
+  [Rozhodnutí D01–D20](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
+  Technické vydání má souhlas vlastníka; UAT flag zůstává false.
+  Historické přejímky se na toto vydání automaticky nepřenášejí.
+- **Další krok:** dokončit lidské/účetní převzetí a doplnit ověřená provozní data;
+  další výkonový kandidát je zbývající kanonické čtení nabídky a kapacity programů.
+  Před každým vydáním ověřit společný stav schválených změn, CI a konkrétní souhlas
+  vlastníka; po vydání aktualizovat tento přehled včetně SHA a důkazů.
+
+[Postup převzetí stanice](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+
+<!-- /archive -->
+
 ## 28. 10. 2026 — čtvrtá vlna refaktoringu sloučena a nasazena
 
 PR #215 → `e40df7d3c532ed933541013f833b8f64e5951c47`, [deploy 40771509403](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40771509403) SUCCESS.
