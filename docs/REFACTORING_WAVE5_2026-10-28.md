@@ -24,3 +24,13 @@ Vlastník výslovně schválil implementaci, merge a deploy po úspěšném ově
 Bez nové migrace, změny cen, oprávnění nebo skutečných dat. Integrace/importy
 se nezapínají; deploy `uat_schvaleno=false`, `importovat_krouzky=false`.
 Plné lidské/účetní UAT a dosavadní provozní blokery zůstávají otevřené.
+
+## Výsledek
+
+[PR #217](https://github.com/KovoPraha/evidenceTreninku/pull/217) sloučen a nasazen
+jako `a14d1026800822a09ee713a9e6924651be052913`; všechny plánované technické kroky dokončeny.
+[Implementace a limity](verification/refactoring-wave5-20261028/RESULTS.md),
+[produkční vydání](verification/refactoring-wave5-release-20261028/RESULTS.md).
+1 782 testů / 35 866 assertions, MariaDB 10.3/11.4, PHPStan a CodeQL PASS.
+SQL pro 50 programů 218 → 120; před i po vydání 22/22 HTTP PASS.
+Plné lidské/účetní UAT zůstává otevřené.

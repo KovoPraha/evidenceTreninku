@@ -65,8 +65,14 @@ více týmů počet dotazů zvyšuje. Celý katalog nemá konstantní počet SQL
 [Testy 40775728422](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40775728422):
 1 782 testů / 35 866 assertions, POSIX 3/45, anonymní sweep, JS a MariaDB matice PASS.
 Statická analýza odhalila starou chybnou PHPDoc anotaci fyzických týmů jako
-výsledku kapacity. Typ je opraven na seznam ID; odpovídající zastaralé položky
-baseline se odstraňují, nevzniká nové potlačení chyby. Finální commit musí projít
-kompletním CI před sloučením; přesný main znovu před nasazením.
+výsledku kapacity. Typ je opraven na seznam ID; pět zastaralých položek baseline
+(šest nálezů) je odstraněno, nevzniklo nové potlačení chyby. Finální commit
+`c64358d90d46f599bbc0fe85c33dc2ea4858ef60` prošel kompletním CI:
+[Testy 40776372547](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40776372547),
+[PHP quality 40776372617](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40776372617),
+[dokumentace 40776372554](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40776372554).
+Přesný main znovu prošel všemi kontrolami včetně CodeQL před nasazením.
 
 Plné lidské/účetní UAT zůstává otevřené. Importy a integrace se neaktivují.
+
+Následné [produkční vydání](../refactoring-wave5-release-20261028/RESULTS.md) dokládá nasazení PR #217 a čtecí kontrolu.

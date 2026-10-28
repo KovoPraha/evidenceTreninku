@@ -1,0 +1,67 @@
+{
+  "method": "Three sequential GET observations per route, same client and product IDs. Full HTTP response including network, not browser rendering, p95 or load test. Production load and cache are uncontrolled.",
+  "before_checked_at": "2026-10-28T21:54:30.086213+00:00",
+  "after_checked_at": "2026-10-28T22:09:44.037489+00:00",
+  "routes": [
+    {
+      "path": "/booking/eshop.php",
+      "before_ms": [
+        904,
+        475,
+        683
+      ],
+      "after_ms": [
+        771,
+        253,
+        270
+      ],
+      "before_median_ms": 683,
+      "after_median_ms": 270
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "before_ms": [
+        574,
+        1032,
+        1105
+      ],
+      "after_ms": [
+        677,
+        555,
+        692
+      ],
+      "before_median_ms": 1032,
+      "after_median_ms": 677
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "before_ms": [
+        1066,
+        580,
+        791
+      ],
+      "after_ms": [
+        370,
+        534,
+        571
+      ],
+      "before_median_ms": 791,
+      "after_median_ms": 534
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "before_ms": [
+        521,
+        642,
+        535
+      ],
+      "after_ms": [
+        468,
+        282,
+        557
+      ],
+      "before_median_ms": 535,
+      "after_median_ms": 468
+    }
+  ]
+}
