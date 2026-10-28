@@ -1,0 +1,13 @@
+PHP CS Fixer 3.95.27 Adalbertus by Fabien Potencier, Dariusz Ruminski and contributors.
+PHP runtime: 8.2.12
+Loaded config default from ".php-cs-fixer.dist.php".
+Running analysis on 7 cores with 10 files per process.
+Paths from configuration have been overridden by paths provided as command arguments.
+  0/15 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  1/15 [▓░░░░░░░░░░░░░░░░░░░░░░░░░░░]   6%
+  6/15 [▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░]  40%
+ 15/15 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+
+Found 0 of 15 files that can be fixed in 6.429 seconds, 62.00 MB memory used
+Changed PHP files: 15; errors: 0

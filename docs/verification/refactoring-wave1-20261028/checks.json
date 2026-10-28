@@ -1,0 +1,35 @@
+{
+  "base_sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+  "php": "8.2.12",
+  "platform": "Windows",
+  "phpunit": {
+    "exit_code": 0,
+    "tests": 1748,
+    "failures": 0,
+    "assertions": 35544,
+    "skipped": [
+      {
+        "class": "Tests\\Unit\\PrivateStorageProbeTest",
+        "name": "testCanonicalPublicSymlinkFailsBeforeWriting",
+        "reason": null
+      },
+      {
+        "class": "Tests\\Unit\\PrivateStorageProbeTest",
+        "name": "testCleanupDoesNotFollowOrDeleteReplacementSymlink",
+        "reason": null
+      },
+      {
+        "class": "Tests\\Unit\\ProductionPrivateStorageProvisionTest",
+        "name": "testRefusesSymlinkedDataBeforeChanges",
+        "reason": null
+      }
+    ]
+  },
+  "phpstan": {
+    "baseline_entries": 524,
+    "exit_code": 0,
+    "baseline_occurrences": 2413
+  },
+  "composer_install_exit_code": 0,
+  "composer_validate_exit_code": 0
+}

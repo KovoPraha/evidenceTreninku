@@ -1,0 +1,388 @@
+{
+  "scope": "Untracked local Markdown, historical and non-authoritative; inventoried only, not copied into implementation",
+  "root": "C:/xampp/htdocs/evidencePavel",
+  "files": [
+    {
+      "path": "output/BEZPECNOSTNI_UAT_2026-10-18.md",
+      "sha256": "c9ebad72f35ed9f71646ec23efd9b07ac6ac4ecd10d271ddccfa14365ae3bfa8",
+      "bytes": 5739,
+      "headings": [
+        "# Bezpečnostní produkční UAT — 18. 10. 2026",
+        "## Identita releasu",
+        "## Provedené kontroly",
+        "## Přihlášené role a pokusy o nepovolený přístup",
+        "## Hranice a zbývající rizika"
+      ]
+    },
+    {
+      "path": "output/HLOUBKOVY_BEZPECNOSTNI_TEST_2026-10-18.md",
+      "sha256": "85eb2213a5d69cf02cfbf0639df0c2866d34f422cc2658d129dd2a12b3217a06",
+      "bytes": 5888,
+      "headings": [
+        "# Hloubkový bezpečnostní test EvidencePavel — 18. 10. 2026",
+        "## Rozsah a hranice",
+        "## Potvrzené nálezy a opravy",
+        "## Další testované hranice",
+        "## Ověření oprav",
+        "## Co není potvrzeno"
+      ]
+    },
+    {
+      "path": "output/PRODUKCNI_UAT_2026-10-15.md",
+      "sha256": "563b121895c057cb20c9b630c9a58190ea788bd4feb2bc7656259635ebfd9512",
+      "bytes": 6065,
+      "headings": [
+        "# Produkční UAT KIS — 15. 10. 2026",
+        "## Rozsah a důkazy",
+        "## Skutečně provedené průchody v prohlížeči",
+        "## Opravené nálezy",
+        "## Otevřené hranice a návrhy"
+      ]
+    },
+    {
+      "path": "output/PRODUKCNI_UAT_BROWSER_2026-10-16_RELEASE_3204d66.md",
+      "sha256": "5dea42eb46651c01055a1c04ae53a729bf24412b9b4c18b18b7076616f71adac",
+      "bytes": 6709,
+      "headings": [
+        "# Produkční prohlížečové UAT – release 3204d66 (16. 10. 2026)",
+        "## Rozsah a hranice",
+        "## Potvrzené průchody",
+        "## Nálezy a blokované scénáře",
+        "## Stav předání"
+      ]
+    },
+    {
+      "path": "output/PRODUKCNI_UAT_BROWSER_2026-10-17_RELEASE_99d6d63.md",
+      "sha256": "4936087b30078b8c1013b54e275c8869d8c675123ca037a1bed92e1bbbea4eb5",
+      "bytes": 5462,
+      "headings": [
+        "# Produkční prohlížečový UAT – 17. 10. 2026",
+        "## Identita releasu",
+        "## Skutečné kroky v produkčním testovacím prohlížeči",
+        "## Zjištění a omezení"
+      ]
+    },
+    {
+      "path": "output/PRODUKCNI_UAT_RSVP_NAHRADY_2026-10-16.md",
+      "sha256": "9d4ccb59346f9656ad5c8db198845b1cc1571ccf003ab9fb4d94f12a6938694b",
+      "bytes": 7368,
+      "headings": [
+        "# Produkční UAT účasti, omluv a náhrad — 16. 10. 2026",
+        "## Brána a rozsah",
+        "## Pozorováno v prohlížeči",
+        "## Nutné koncové průchody",
+        "## Neuzavřené části a zjištění"
+      ]
+    },
+    {
+      "path": "output/etapa-0-2026-10-22/00_ETAPA_0.md",
+      "sha256": "18bc034774281ce3116e99acd993e41fd9445f01d3fac7475725e4e055b9692c",
+      "bytes": 6330,
+      "headings": [
+        "# Etapa 0 zadání sjednoceného systému oddílu",
+        "## Výstupy",
+        "## Potvrzený rozsah",
+        "## Nejpodstatnější výsledky porovnání",
+        "## Úkoly pro uzavření etapy 0",
+        "## Co je připravené a co zůstává otevřené"
+      ]
+    },
+    {
+      "path": "output/etapa-0-2026-10-22/01_UCETNI_DOKLADY_A_EXPORT.md",
+      "sha256": "22d68f051f39bc893520a484ee1ef5e00c3ae8e83ee4e0e06519247dc4b15e11",
+      "bytes": 23884,
+      "headings": [
+        "# Zadání účetních dokladů a exportu pro oddíl",
+        "## Výchozí stav a rozhodnutí",
+        "## Typy dokumentů a jejich význam",
+        "## Datový obsah dokumentu",
+        "## Pravidla vystavení a oprav",
+        "## Balík pro účetní",
+        "## Přístupy a předání",
+        "## Přejímací scénáře pro budoucí implementaci",
+        "## Implementační návaznosti",
+        "## Opora ve zdrojovém kódu"
+      ]
+    },
+    {
+      "path": "output/etapa-0-2026-10-22/02_PAPIROVE_AGENDY.md",
+      "sha256": "4e92a1d3c704da876fd6edbb1dd1608e918ba14ca9d9a37917d7f79a78e20be7",
+      "bytes": 10352,
+      "headings": [
+        "# Inventura papírových a ručních agend oddílu",
+        "## Potvrzení od uživatele",
+        "## Prioritní inventura",
+        "## Jak inventuru potvrdit",
+        "## Pravidla převodu papíru",
+        "## Podmínka splnění"
+      ]
+    },
+    {
+      "path": "output/etapa-0-2026-10-22/03_EVIDENCE_VS_KIS.md",
+      "sha256": "c8cedc018d5e6f111aca371c4578f65ef4c82376b4b1710de5ba6b5c1d47cfc5",
+      "bytes": 16478,
+      "headings": [
+        "# Porovnání dat původní Evidence a KIS",
+        "## Metodika a hranice důkazu",
+        "## Osoby a kvalita údajů",
+        "## Tréninky a závody",
+        "## Soupisky mají jiný význam než původní skupiny",
+        "## Odměny a provozní finance",
+        "## Rozdělení autority dat",
+        "## Konkrétní zadání převodu",
+        "## Co ještě není datově porovnáno",
+        "## Dopad na další etapy"
+      ]
+    },
+    {
+      "path": "output/etapa-1-2026-10-22/00_ETAPA_1_PLAN.md",
+      "sha256": "75b836519a74bbc6582a486154bdb28fc34d51cbec7e1245677cb046f7f806fa",
+      "bytes": 26087,
+      "headings": [
+        "# Etapa 1 — společný základ systému oddílu",
+        "## Podklady a význam hodnocení",
+        "## Priority a pořadí",
+        "## Konkrétní úkoly",
+        "## Návaznost na etapu 0 a další etapy",
+        "## Co musí etapa 1 předat dál"
+      ]
+    },
+    {
+      "path": "output/etapa-1-2026-10-22/01_PRIJEMKA_A_ZDROJE.md",
+      "sha256": "7d5ef45331a15626b00fb6c10dfe360a66ea48ec25d51f7fba2cc203943101e1",
+      "bytes": 12252,
+      "headings": [
+        "# Etapa 1 — přejímací scénáře a zdrojové podklady",
+        "## Přejímací scénáře",
+        "## Výstupní brány",
+        "## Zdrojové podklady",
+        "## Omezení této přípravy"
+      ]
+    },
+    {
+      "path": "output/etapa-2-2026-10-22/00_ETAPA_2_PLAN.md",
+      "sha256": "2162507d49cd46f235db8cfc492461f93749af7b84b6ac03e700d7f8e0666130",
+      "bytes": 28137,
+      "headings": [
+        "# Etapa 2 — účetní doklady a export pro účetní",
+        "## Rozsah a podklady",
+        "## Co již existuje a kde je mezera",
+        "## Priority, návaznosti a pracovní vlny",
+        "## Konkrétní úkoly",
+        "## Hranice dokončení a návaznosti"
+      ]
+    },
+    {
+      "path": "output/etapa-2-2026-10-22/01_KONTRAKT_EXPORTU_PRIJEMKA_A_ZDROJE.md",
+      "sha256": "8937cd660129b24745d39a98b1fec884b8a45f68f42e56af4f0ab4e9c19eb622",
+      "bytes": 23071,
+      "headings": [
+        "# Etapa 2 — kontrakt exportu a přejímka",
+        "## Rozhodnutí před implementací",
+        "## Oddělené evidence a vazby",
+        "## Mapa existujících zdrojů",
+        "## Návrh účetního balíku",
+        "## Kontroly před označením připraveno k předání",
+        "## Budoucí přejímací scénáře",
+        "## Ověřené zdrojové podklady",
+        "## Co tato příprava změnila"
+      ]
+    },
+    {
+      "path": "output/etapa-3-2026-10-22/00_ETAPA_3_PLAN.md",
+      "sha256": "858e9a4427d8dff43dc7edb817b136530906d997128bafb43e19ea39c53fcd92",
+      "bytes": 27793,
+      "headings": [
+        "# Etapa 3 — sklady, prodej a vratky",
+        "## Podklady a rozsah",
+        "## Co již máme a co chybí",
+        "## Priority a návaznosti",
+        "## Konkrétní úkoly",
+        "## Co zůstává ostatním etapám"
+      ]
+    },
+    {
+      "path": "output/etapa-3-2026-10-22/01_SKLADOVY_MODEL_PRIJEMKA_A_ZDROJE.md",
+      "sha256": "a1e285667bb37d52b81b6e350637fa55ece8bbdf540cec875ef22def2408046e",
+      "bytes": 22111,
+      "headings": [
+        "# Etapa 3 — skladový model a přejímka",
+        "## Rozhodnutí na začátku etapy",
+        "## Navržený význam skladových čísel",
+        "## Události a jejich účinky",
+        "## Minimální obsah evidence",
+        "## Návaznost na etapu 2",
+        "## Budoucí přejímací scénáře",
+        "## Výstupní brány",
+        "## Ověřené zdroje",
+        "## Omezení a skutečně provedená práce"
+      ]
+    },
+    {
+      "path": "output/etapa-4-2026-10-22/00_ETAPA_4_PLAN.md",
+      "sha256": "c0eed9a05b73e1b639c6ff59c354bab9b31209fd0364a9398887df40e57f27c6",
+      "bytes": 28965,
+      "headings": [
+        "# Etapa 4 — členská a sportovní agenda",
+        "## Podklady a hranice",
+        "## Co již máme a co je potřeba doplnit",
+        "## Priority a návaznosti",
+        "## Doporučené pořadí realizace",
+        "## Rozhodnutí pro zahájení implementace"
+      ]
+    },
+    {
+      "path": "output/etapa-4-2026-10-22/01_PRAVIDLA_PRIJEMKA_A_ZDROJE.md",
+      "sha256": "bb219e68820a238d239386100cf9feced35e08b851d354001ab68af3712e51db",
+      "bytes": 30354,
+      "headings": [
+        "# Etapa 4 — pravidla, přejímka a zdrojové podklady",
+        "## 1. Co musí systém rozlišovat",
+        "## 2. Závazná pravidla návazností",
+        "## 3. Převod sportovních dat — požadovaný kontrakt",
+        "## 4. Přejímací scénáře",
+        "## 5. Výstupní brány",
+        "## 6. Zdrojové podklady",
+        "## 7. Omezení tohoto ověření"
+      ]
+    },
+    {
+      "path": "output/etapa-5-2026-10-22/00_ETAPA_5_PLAN.md",
+      "sha256": "cd80bc9d7f378397df93f44ac0dbdc514b1a205443764521cd6c1fc004d9bd86",
+      "bytes": 29796,
+      "headings": [
+        "# Etapa 5 — klubová administrativa, výdaje, zálohy a odměny",
+        "## Rozsah a návaznosti",
+        "## Co už máme a co doplnit",
+        "## Priority a závislosti",
+        "## Doporučené pořadí realizace",
+        "## Rozhodnutí před implementací dotčené části"
+      ]
+    },
+    {
+      "path": "output/etapa-5-2026-10-22/01_PRAVIDLA_PRIJEMKA_A_ZDROJE.md",
+      "sha256": "85bffc9584e55fcc990f7854e8f5a17256a65c21953dd2164ea4a04c0a7ecf34",
+      "bytes": 29949,
+      "headings": [
+        "# Etapa 5 — pravidla, přejímka a zdrojové podklady",
+        "## 1. Významy a rozdělení odpovědností",
+        "## 2. Minimální datové a provozní požadavky",
+        "## 3. Modelové případy pro obsluhu",
+        "## 4. Kontrakt předání do etapy 2",
+        "## 5. Přejímací scénáře",
+        "## 6. Výstupní brány",
+        "## 7. Zdrojové podklady",
+        "## 8. Omezení ověření"
+      ]
+    },
+    {
+      "path": "output/etapa-6-2026-10-22/00_ETAPA_6_PLAN.md",
+      "sha256": "23723592ae360234ea0237e6dc0b468f7687884ac0242e82723e5acb6a6744a9",
+      "bytes": 29283,
+      "headings": [
+        "# Etapa 6 — migrace dat, pilotní provoz a přechod ze starých systémů",
+        "## Podklady a hranice",
+        "## Co již máme a co doplnit",
+        "## Priority a návaznosti",
+        "## Doporučené pořadí",
+        "## Rozhodnutí k uzavření před realizací"
+      ]
+    },
+    {
+      "path": "output/etapa-6-2026-10-22/01_MIGRACE_PILOT_A_PRECHOD.md",
+      "sha256": "46dd5cb56316448cfa652716111712896dd59fdaea790a795f67153c295d480e",
+      "bytes": 17902,
+      "headings": [
+        "# Etapa 6 — migrační pravidla, pilot a postup přechodu",
+        "## 1. Rozhodování o původu a cíli dat",
+        "## 2. Kontrakt migrační dávky",
+        "## 3. Předběžný návrh pilotu",
+        "## 4. Postup ostrého přepnutí",
+        "## 5. Stop podmínky a návrat",
+        "## 6. Dokončení přechodu"
+      ]
+    },
+    {
+      "path": "output/etapa-6-2026-10-22/02_PRIJEMKA_A_ZDROJE.md",
+      "sha256": "d2a09160eeb4419dbd5cea894a2fa7452a01a9bf4017fffbf3d4182bbb1ffdb1",
+      "bytes": 21160,
+      "headings": [
+        "# Etapa 6 — přejímka, rozhodovací brány a zdrojové podklady",
+        "## 1. Rozhodovací brány",
+        "## 2. Přejímací scénáře",
+        "## 3. Předávané výstupy budoucí realizace",
+        "## 4. Zdrojové podklady",
+        "## 5. Omezení přípravy"
+      ]
+    },
+    {
+      "path": "output/integration-20261025/BRANCH_INVENTORY.md",
+      "sha256": "32700c9da6c9f4f6825d3297cdfe4d4f386eb15b1228f621bf329642316e7c0c",
+      "bytes": 40782,
+      "headings": [
+        "# Branch inventory — 2026-10-25",
+        "## Result",
+        "## Classification totals",
+        "## Evidence per ref",
+        "## Specific exclusions"
+      ]
+    },
+    {
+      "path": "output/realizacni-plan-2026-10-22/00_REALIZACNI_PLAN.md",
+      "sha256": "e4e25f28dfcf028f7d304320ea66879c40e8e3864bb5e5179fdee7fa2d74dbe8",
+      "bytes": 37551,
+      "headings": [
+        "# Realizační plán společného systému oddílu",
+        "## 1. Rozsah a význam stavů",
+        "## 2. Jedno pořadí, společné priority",
+        "## 3. Konkrétní realizační úkoly",
+        "## 4. První balík k implementaci: ochrana uzavřené finanční evidence",
+        "## 5. Brány mezi návrhem, pilotem a ostrým provozem",
+        "## 6. Sloučení překryvů a rozhodnutí, která nelze přeskočit",
+        "## 7. Vazba na původních 98 úkolů",
+        "## 8. Podrobné podklady"
+      ]
+    },
+    {
+      "path": "output/security-audit-2026-10-24/AUDIT.md",
+      "sha256": "ec015bbbab27e96d1dfbc8b1c82df5860a3a0485c46cbe2de5b79ff0710a4169",
+      "bytes": 21614,
+      "headings": [
+        "# Bezpečnostní audit Evidence + e-shop + KIS",
+        "## Výsledek",
+        "## Z čeho audit vychází",
+        "## SEC-01 — Kontrola oprávnění používá starý session snapshot",
+        "## SEC-02 — Formula injection v exportu UCI",
+        "## SEC-03 — Vložení HTML z názvu účastníka do formuláře",
+        "## SEC-04 — Nezařazená starší stránka obchází pracovní matici",
+        "## Pokrytí a ověřené ochrany",
+        "## Živé HTTP kontroly",
+        "## Automatické ověření",
+        "## Podmíněná rizika a další provozní ověření",
+        "## Doporučené pořadí oprav a přejímka",
+        "## Důkazní soubory a opakování"
+      ]
+    },
+    {
+      "path": "output/security-fixes-2026-10-24/MERGE_RESULTS.md",
+      "sha256": "99b91dea0900777bf3632584a2e930c465613f758804711a6f68bdb388ea7c77",
+      "bytes": 1129,
+      "headings": [
+        "# Sloučení bezpečnostních oprav — 24. 10. 2026"
+      ]
+    },
+    {
+      "path": "output/security-fixes-2026-10-24/RESULTS.md",
+      "sha256": "69b059bf0808e5d1b2388eed0fc78804d42f086667b45de4b7e3b03c00945fc6",
+      "bytes": 6583,
+      "headings": [
+        "# Opravy bezpečnostního auditu — 24. 10. 2026",
+        "## Linux CI a připravenost PR",
+        "## Opravy",
+        "## Regresní důkazy",
+        "## Plná sada a meze ověření",
+        "## Opakování"
+      ]
+    }
+  ]
+}

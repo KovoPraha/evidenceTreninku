@@ -1,0 +1,89 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "baseline": true,
+    "warmup": 5,
+    "measured": 30,
+    "synthetic_only": true,
+    "results": [
+        {
+            "products": 1000,
+            "profile": "imported_navigation",
+            "sql_count": 1011,
+            "product_rows": 1000,
+            "median_ms": 291.39790000000005,
+            "p95_ms": 650.5017,
+            "peak_bytes": 10485760,
+            "output_sha256": "4e7cdc4cf503f726dad5c14e6809c438e3acaf810ddedd1e677cff1e93c930fc",
+            "samples_ms": [
+                255.0732,
+                255.1449,
+                260.2764,
+                262.9522,
+                265.363,
+                266.1405,
+                267.5292,
+                268.74,
+                273.2801,
+                273.4931,
+                282.8817,
+                282.9918,
+                284.4873,
+                287.8125,
+                288.5357,
+                294.2601,
+                294.952,
+                299.8926,
+                303.0434,
+                305.679,
+                311.9065,
+                313.0042,
+                315.8645,
+                317.7648,
+                338.9571,
+                376.4832,
+                379.022,
+                451.4997,
+                650.5017,
+                668.498
+            ],
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "v",
+                    "type": "ALL",
+                    "possible_keys": "idx_variants_product",
+                    "key": null,
+                    "key_len": null,
+                    "ref": null,
+                    "rows": "1000",
+                    "Extra": "Using where; Using temporary; Using filesort"
+                },
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "pub",
+                    "type": "eq_ref",
+                    "possible_keys": "PRIMARY",
+                    "key": "PRIMARY",
+                    "key_len": "4",
+                    "ref": "wave1_storefront_8b3c75e472d917bc.v.product_id",
+                    "rows": "1",
+                    "Extra": "Using where"
+                },
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "p",
+                    "type": "eq_ref",
+                    "possible_keys": "PRIMARY",
+                    "key": "PRIMARY",
+                    "key_len": "4",
+                    "ref": "wave1_storefront_8b3c75e472d917bc.v.product_id",
+                    "rows": "1",
+                    "Extra": "Using where"
+                }
+            ]
+        }
+    ]
+}

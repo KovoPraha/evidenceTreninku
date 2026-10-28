@@ -1,0 +1,440 @@
+{
+    "base_sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+    "php": "8.2.12",
+    "engine": "SQLite memory, reduced synthetic schema",
+    "scope": "Function calls only; no HTTP, production latency, program-capacity or MySQL query-plan claim.",
+    "results": [
+        {
+            "origin": "manual_goods",
+            "products": 1,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 9,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 2.816
+                },
+                {
+                    "queries": 9,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 0.822
+                },
+                {
+                    "queries": 9,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 0.711
+                }
+            ],
+            "median_ms": 0.822
+        },
+        {
+            "origin": "manual_goods",
+            "products": 1,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 20,
+                    "metadata_queries": 10,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 1.974
+                },
+                {
+                    "queries": 20,
+                    "metadata_queries": 10,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 1.643
+                },
+                {
+                    "queries": 20,
+                    "metadata_queries": 10,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 1.477
+                }
+            ],
+            "median_ms": 1.643
+        },
+        {
+            "origin": "manual_goods",
+            "products": 50,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 58,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 3.087
+                },
+                {
+                    "queries": 58,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 4.327
+                },
+                {
+                    "queries": 58,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 3.048
+                }
+            ],
+            "median_ms": 3.087
+        },
+        {
+            "origin": "manual_goods",
+            "products": 50,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 461,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 21.198
+                },
+                {
+                    "queries": 461,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 16.194
+                },
+                {
+                    "queries": 461,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 20.02
+                }
+            ],
+            "median_ms": 20.02
+        },
+        {
+            "origin": "manual_goods",
+            "products": 250,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 258,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 13.839
+                },
+                {
+                    "queries": 258,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 13.277
+                },
+                {
+                    "queries": 258,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 19.029
+                }
+            ],
+            "median_ms": 13.839
+        },
+        {
+            "origin": "manual_goods",
+            "products": 250,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 2261,
+                    "metadata_queries": 1255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 94.197
+                },
+                {
+                    "queries": 2261,
+                    "metadata_queries": 1255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 83.423
+                },
+                {
+                    "queries": 2261,
+                    "metadata_queries": 1255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 94.271
+                }
+            ],
+            "median_ms": 94.197
+        },
+        {
+            "origin": "manual_goods",
+            "products": 1000,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 1008,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 50.998
+                },
+                {
+                    "queries": 1008,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 44.051
+                },
+                {
+                    "queries": 1008,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 48.066
+                }
+            ],
+            "median_ms": 48.066
+        },
+        {
+            "origin": "manual_goods",
+            "products": 1000,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 9011,
+                    "metadata_queries": 5005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 487.268
+                },
+                {
+                    "queries": 9011,
+                    "metadata_queries": 5005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 487.348
+                },
+                {
+                    "queries": 9011,
+                    "metadata_queries": 5005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 448.837
+                }
+            ],
+            "median_ms": 487.268
+        },
+        {
+            "origin": "imported_goods",
+            "products": 1,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 9,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 0.652
+                },
+                {
+                    "queries": 9,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 0.59
+                },
+                {
+                    "queries": 9,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 0.587
+                }
+            ],
+            "median_ms": 0.59
+        },
+        {
+            "origin": "imported_goods",
+            "products": 1,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 12,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 1.268
+                },
+                {
+                    "queries": 12,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 1.096
+                },
+                {
+                    "queries": 12,
+                    "metadata_queries": 6,
+                    "product_rows_fetched": 1,
+                    "elapsed_ms": 0.999
+                }
+            ],
+            "median_ms": 1.096
+        },
+        {
+            "origin": "imported_goods",
+            "products": 50,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 58,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 2.845
+                },
+                {
+                    "queries": 58,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 2.815
+                },
+                {
+                    "queries": 58,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 2.597
+                }
+            ],
+            "median_ms": 2.815
+        },
+        {
+            "origin": "imported_goods",
+            "products": 50,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 61,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 3.031
+                },
+                {
+                    "queries": 61,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 3.36
+                },
+                {
+                    "queries": 61,
+                    "metadata_queries": 55,
+                    "product_rows_fetched": 50,
+                    "elapsed_ms": 3.694
+                }
+            ],
+            "median_ms": 3.36
+        },
+        {
+            "origin": "imported_goods",
+            "products": 250,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 258,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 12.972
+                },
+                {
+                    "queries": 258,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 12.22
+                },
+                {
+                    "queries": 258,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 12.804
+                }
+            ],
+            "median_ms": 12.804
+        },
+        {
+            "origin": "imported_goods",
+            "products": 250,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 261,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 13.925
+                },
+                {
+                    "queries": 261,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 14.588
+                },
+                {
+                    "queries": 261,
+                    "metadata_queries": 255,
+                    "product_rows_fetched": 250,
+                    "elapsed_ms": 13.712
+                }
+            ],
+            "median_ms": 13.925
+        },
+        {
+            "origin": "imported_goods",
+            "products": 1000,
+            "variants_per_product": 1,
+            "operation": "detail",
+            "samples": [
+                {
+                    "queries": 1008,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 44.674
+                },
+                {
+                    "queries": 1008,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 32.652
+                },
+                {
+                    "queries": 1008,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 28.053
+                }
+            ],
+            "median_ms": 32.652
+        },
+        {
+            "origin": "imported_goods",
+            "products": 1000,
+            "variants_per_product": 1,
+            "operation": "navigation",
+            "samples": [
+                {
+                    "queries": 1011,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 27.445
+                },
+                {
+                    "queries": 1011,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 43.803
+                },
+                {
+                    "queries": 1011,
+                    "metadata_queries": 1005,
+                    "product_rows_fetched": 1000,
+                    "elapsed_ms": 55.949
+                }
+            ],
+            "median_ms": 43.803
+        }
+    ]
+}

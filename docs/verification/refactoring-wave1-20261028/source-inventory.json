@@ -1,0 +1,160 @@
+{
+  "base_sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+  "scope": "Tracked PHP outside tests, migrations, output, outputs and vendor; includes CLI/tools and frozen legacy baseline.",
+  "count": 611,
+  "largest": [
+    {
+      "path": "formular.php",
+      "lines": 1357,
+      "functions": 3
+    },
+    {
+      "path": "includes/shop_checkout.php",
+      "lines": 1291,
+      "functions": 51
+    },
+    {
+      "path": "sync_evidence.php",
+      "lines": 1215,
+      "functions": 10
+    },
+    {
+      "path": "edit_zavod_form.php",
+      "lines": 1153,
+      "functions": 2
+    },
+    {
+      "path": "hlavicka.php",
+      "lines": 1133,
+      "functions": 3
+    },
+    {
+      "path": "sportovec_treninky.php",
+      "lines": 1108,
+      "functions": 7
+    },
+    {
+      "path": "planovac.php",
+      "lines": 1104,
+      "functions": 2
+    },
+    {
+      "path": "sportovec_detail.php",
+      "lines": 1098,
+      "functions": 3
+    },
+    {
+      "path": "edit_trenink.php",
+      "lines": 1060,
+      "functions": 1
+    },
+    {
+      "path": "includes/club_program.php",
+      "lines": 1003,
+      "functions": 52
+    },
+    {
+      "path": "includes/auto_migrace.php",
+      "lines": 984,
+      "functions": 0
+    },
+    {
+      "path": "includes/club_event_registration.php",
+      "lines": 970,
+      "functions": 21
+    },
+    {
+      "path": "bin/db-backup.php",
+      "lines": 934,
+      "functions": 8
+    },
+    {
+      "path": "google_sheets_linky.php",
+      "lines": 915,
+      "functions": 2
+    },
+    {
+      "path": "hromadne_podskupiny.php",
+      "lines": 901,
+      "functions": 3
+    },
+    {
+      "path": "formular_zavod.php",
+      "lines": 864,
+      "functions": 1
+    },
+    {
+      "path": "export_uci.php",
+      "lines": 813,
+      "functions": 5
+    },
+    {
+      "path": "includes/athlete_registration_admin.php",
+      "lines": 730,
+      "functions": 19
+    },
+    {
+      "path": "includes/localhost_acceptance_hub.php",
+      "lines": 712,
+      "functions": 10
+    },
+    {
+      "path": "includes/staff_workspaces.php",
+      "lines": 691,
+      "functions": 26
+    },
+    {
+      "path": "includes/shop_catalog_contract.php",
+      "lines": 674,
+      "functions": 0
+    },
+    {
+      "path": "oznameni.php",
+      "lines": 659,
+      "functions": 6
+    },
+    {
+      "path": "eshop_identity_admin.php",
+      "lines": 641,
+      "functions": 2
+    },
+    {
+      "path": "sprava_sportovcu.php",
+      "lines": 640,
+      "functions": 3
+    },
+    {
+      "path": "zavod_detail.php",
+      "lines": 634,
+      "functions": 3
+    },
+    {
+      "path": "includes/club_makeup.php",
+      "lines": 624,
+      "functions": 34
+    },
+    {
+      "path": "includes/shop_manual_catalog.php",
+      "lines": 584,
+      "functions": 30
+    },
+    {
+      "path": "rezervovat_sportoviste.php",
+      "lines": 561,
+      "functions": 1
+    },
+    {
+      "path": "sprava_segmentu.php",
+      "lines": 536,
+      "functions": 1
+    },
+    {
+      "path": "planovany_trenink_form.php",
+      "lines": 530,
+      "functions": 1
+    }
+  ],
+  "wiring_files": 61,
+  "baseline_entries": 524,
+  "baseline_occurrences": 2413.0
+}

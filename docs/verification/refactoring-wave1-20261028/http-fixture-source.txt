@@ -1,0 +1,25 @@
+<?php
+if(PHP_SAPI!=='cli')exit(64);
+require getcwd().'/config.php';
+if(DB_HOST!=='127.0.0.1;port=33426'||DB_NAME!=='evidence_b1'||!JE_LOKALNE)throw new RuntimeException('Synthetic sandbox only');
+$pdo=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+$actor=(int)$pdo->query("SELECT id FROM treneri WHERE jmeno='localhost-admin'")->fetchColumn();
+$person=(int)$pdo->query("SELECT id FROM sportovci WHERE email='localhost-sportovec-a@localhost.test'")->fetchColumn();
+if(!$actor||!$person)throw new RuntimeException('Synthetic identities missing');
+$pdo->beginTransaction();
+$product=$pdo->prepare("INSERT INTO shop_products(id,origin,created_by_trainer_id,external_product_key,name,offer_type,catalog_status) VALUES(?,'manual',?,?,?,'goods','active')");
+$variant=$pdo->prepare("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(?,?,'manual',?,'{}','fixed',10000,'CZK',1,0,10,1,'active')");
+$publication=$pdo->prepare("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note,activated_by_trainer_id,activated_at) VALUES(?,'active',?,'LOCALHOST NEPLATIT — syntetický výrobek.','Izolovaná výkonnostní fixture',?,NOW())");
+$category=$pdo->prepare("INSERT INTO shop_product_categories(product_id,category_path,is_default,sort_order) VALUES(?,'LOCALHOST > Dresy',1,0)");
+for($i=1;$i<=1000;$i++){
+$id=900000+$i;$name='LOCALHOST Dres '.str_pad((string)$i,4,'0',STR_PAD_LEFT);
+$product->execute([$id,$actor,'manual:wave1:'.$id,$name]);$variant->execute([$id,$id,'LOCALHOST-W1-'.$id]);$publication->execute([$id,$name,$actor]);$category->execute([$id]);
+}
+$pdo->prepare("INSERT INTO shop_products(id,origin,created_by_trainer_id,external_product_key,name,offer_type,catalog_status) VALUES(157,'import',?,'shoptet:pair:157','LOCALHOST zájmový program','goods','active')")->execute([$actor]);
+$variant->execute([157,157,'LOCALHOST-INTEREST']);$publication->execute([157,'LOCALHOST zájmový program',$actor]);$category->execute([157]);
+$pdo->prepare("INSERT INTO club_seasons(code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES('WAVE1','LOCALHOST Wave1','2026-01-01','2026-12-31','active',?)")->execute([$actor]);$season=(int)$pdo->lastInsertId();
+$pdo->prepare("INSERT INTO club_teams(season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(?,'WAVE1','LOCALHOST Wave1','cyklistika','děti','active',?)")->execute([$season,$actor]);$team=(int)$pdo->lastInsertId();
+$pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,source,valid_from,created_by_trainer_id) VALUES(?,?,'manual','2026-01-01',?)")->execute([$team,$person,$actor]);
+$pdo->prepare("INSERT INTO shop_member_product_prices(team_id,product_id,amount_minor,currency,active,created_by_trainer_id) VALUES(?,900001,8000,'CZK',1,?)")->execute([$team,$actor]);
+$pdo->commit();
+echo json_encode(['synthetic_only'=>true,'products'=>1001,'detail_id'=>900001,'interest_id'=>157,'person_id'=>$person,'team_id'=>$team],JSON_PRETTY_PRINT).PHP_EOL;

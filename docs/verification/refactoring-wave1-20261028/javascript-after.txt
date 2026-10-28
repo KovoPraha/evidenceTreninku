@@ -1,0 +1,22 @@
+✔ download form stays usable for a second attachment response (11.2149ms)
+✔ ordinary mutating POST still blocks duplicate submit (5.2589ms)
+✔ participant: Tab to result survives blur; keyboard-generated click adds one chip and hidden ID (256.9683ms)
+✔ participant: pointer click selects once and duplicate selection does not add another chip (6.2493ms)
+✔ participant: leaving suggestions by keyboard closes the list (4.8823ms)
+✔ measurement: keyboard result selection survives blur, preserves ID/label and syncs exactly once (5.3608ms)
+✔ measurement: leaving without a selected identity clears free text, as before (2.8309ms)
+✔ rename rejected restores the title and explains failure (31.3661ms)
+✔ rename network restores the title and explains failure (831.7821ms)
+✔ planner inline JavaScript compiles after PHP rendering (70.9826ms)
+✔ moving the last card refreshes both day counts and empty states without reload (5.7034ms)
+✔ all training edit inline scripts compile (PHP lint does not check JavaScript) (9.5331ms)
+✔ changing measurement search text clears the old athlete identity before any new selection (59.7666ms)
+✔ existing measurement fields prefill safely, including optional missing fields and zero values (140.3108ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6765.7048

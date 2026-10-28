@@ -1,0 +1,28 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-wave1-20261028\phpunit.xml.dist
+
+FFF                                                                 3 / 3 (100%)
+
+Time: 00:00.631, Memory: 56.00 MB
+
+There were 3 failures:
+
+1) Tests\Integration\StorefrontReadPerformanceTest::testDetailReadsOnlyItsOwnVariantsEvenWithLargeUnrelatedCatalog
+Failed asserting that 1000 is identical to 1.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-wave1-20261028\tests\Integration\StorefrontReadPerformanceTest.php:18
+
+2) Tests\Integration\StorefrontReadPerformanceTest::testCatalogSchemaQueriesDoNotGrowWithVariantCount
+Failed asserting that actual size 1008 matches expected size 9.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-wave1-20261028\tests\Integration\StorefrontReadPerformanceTest.php:29
+
+3) Tests\Integration\StorefrontReadPerformanceTest::testNavigationQueryBudgetAndNoDetailPresentationData
+Failed asserting that actual size 9011 matches expected size 20.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-wave1-20261028\tests\Integration\StorefrontReadPerformanceTest.php:41
+
+FAILURES!
+Tests: 3, Assertions: 8, Failures: 3.

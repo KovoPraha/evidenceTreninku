@@ -1,0 +1,11 @@
+{
+    "function_count": 51,
+    "changed_functions": [
+        "shopStorefrontProducts",
+        "shopCheckoutVariantIsSaleable"
+    ],
+    "expected_changes": [
+        "shopStorefrontProducts",
+        "shopCheckoutVariantIsSaleable"
+    ]
+}

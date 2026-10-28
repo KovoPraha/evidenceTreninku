@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-28",
+  "environment": "isolated localhost B1 synthetic sandbox; external transports disabled",
+  "tool": "Playwright CLI skill",
+  "browser_session": "wave1",
+  "checks": [
+    {"scenario": "Anonymous product detail, public price 100 CZK, shared navigation", "status": "PASS"},
+    {"scenario": "Click Buy without account opens quick purchase form with contact, quantity and consent fields", "status": "PASS", "scope": "No order submitted"},
+    {"scenario": "Parent login returns to detail, shows member price 80 CZK and add-to-cart control", "status": "PASS", "screenshot": "browser-member-detail.png"},
+    {"scenario": "Imported interest-only program 157 renders reviewed age-group title and contact form; cannot order or pay", "status": "PASS"},
+    {"scenario": "Catalog renders products and category menu expands to root and child category links", "status": "PASS"}
+  ],
+  "http_authorization_checks": "http-security.json",
+  "console": [{"url": "/favicon.ico", "status": 404, "impact": "Existing missing icon; no application exception observed"}],
+  "limitations": "Synthetic technical acceptance only; no live purchase, payment, notification delivery or operator UAT"
+}

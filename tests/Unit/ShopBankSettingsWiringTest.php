@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -73,8 +74,8 @@ final class ShopBankSettingsWiringTest extends TestCase
         $checkout = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/shop_checkout.php');
         $settings = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/shop_bank_settings.php');
 
-        self::assertStringContainsString("mb_strlen(\$label,'UTF-8')<3", $checkout);
-        self::assertStringContainsString("mb_strlen(\$label,'UTF-8')>120", $checkout);
+        self::assertMatchesRegularExpression('/mb_strlen\(\$label,\s*\x27UTF-8\x27\)\s*<\s*3/', $checkout);
+        self::assertMatchesRegularExpression('/mb_strlen\(\$label,\s*\x27UTF-8\x27\)\s*>\s*120/', $checkout);
         self::assertStringContainsString('shopBankValidateSettings', $settings);
         // Administrace nesmí mít vlastní kopii pravidel.
         self::assertStringNotContainsString('preg_match(\'/^CZ[0-9]{22}$/D\'', $settings);

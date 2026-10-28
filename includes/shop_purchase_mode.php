@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 function shopPurchaseModeTableExists(PDO $pdo, string $table): bool
@@ -16,10 +17,15 @@ function shopPurchaseModeTableExists(PDO $pdo, string $table): bool
 function shopPurchaseModeColumnExists(PDO $pdo, string $table, string $column): bool
 {
     if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
-        $statement=$pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1');
-        $statement->execute([$table,$column]);return$statement->fetchColumn()!==false;
+        $statement = $pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1');
+        $statement->execute([$table,$column]);
+        return$statement->fetchColumn() !== false;
     }
-    foreach($pdo->query('PRAGMA table_info('.$table.')')->fetchAll(PDO::FETCH_ASSOC)as$row)if((string)$row['name']===$column)return true;
+    foreach ($pdo->query('PRAGMA table_info('.$table.')')->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if ((string)$row['name'] === $column) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -28,10 +34,10 @@ function shopPurchaseModeColumnExists(PDO $pdo, string $table, string $column): 
  * approve treating a club registration as ordinary goods at checkout.
  * @param array<string,mixed> $product
  */
-function shopPurchaseModeApprovedShoptetGoods(array$product):bool
+function shopPurchaseModeApprovedShoptetGoods(array$product): bool
 {
-    return(string)($product['offer_type']??'')==='goods'&&(string)($product['origin']??'')==='import'
-        &&preg_match('/^shoptet:(?:pair|sku):/D',(string)($product['external_product_key']??''))===1;
+    return(string)($product['offer_type'] ?? '') === 'goods' && (string)($product['origin'] ?? '') === 'import'
+        && preg_match('/^shoptet:(?:pair|sku):/D', (string)($product['external_product_key'] ?? '')) === 1;
 }
 
 /**
@@ -52,7 +58,9 @@ function shopProductIsInterestOnlyYoungestCourse(array $product): bool
 function shopProductPublicName(array $product): string
 {
     $sourceName = (string)($product['public_name'] ?? '');
-    if (!shopProductIsInterestOnlyYoungestCourse($product)) return $sourceName;
+    if (!shopProductIsInterestOnlyYoungestCourse($product)) {
+        return $sourceName;
+    }
 
     // Imported lesson titles contain a historical weekday/time. These courses
     // open irregularly, so show only their reviewed age groups in public UI.
@@ -71,35 +79,55 @@ function shopProductPublicName(array $product): string
  */
 function shopProductRequiresAthlete(PDO $pdo, int $productId): bool
 {
-    if ($productId < 1) return false;
+    if ($productId < 1) {
+        return false;
+    }
     $hasPublications = shopPurchaseModeTableExists($pdo, 'shop_product_publications');
     $statement = $pdo->prepare($hasPublications
         ? 'SELECT p.*,pub.public_name FROM shop_products p LEFT JOIN shop_product_publications pub ON pub.product_id=p.id WHERE p.id=?'
         : 'SELECT p.*,NULL AS public_name FROM shop_products p WHERE p.id=?');
     $statement->execute([$productId]);
     $product = $statement->fetch(PDO::FETCH_ASSOC);
-    if (!$product) return false;
-    if ((string)$product['offer_type'] === 'program') return true;
-    // The reviewed Shoptet catalogue also places these two non-participation
-    // products in Kroužky. Match both their stable source key and public name:
-    // category membership alone must not turn a shirt or bike storage into
-    // enrollment, and this exception must never reopen other imported clubs.
-    $nonParticipationProducts = [
-        'shoptet:pair:250' => 'Trička',
-        'shoptet:pair:852' => 'Uskladnění kol na školní pololetí',
-    ];
-    $sourceKey = (string)($product['external_product_key'] ?? '');
-    if (shopPurchaseModeApprovedShoptetGoods($product)
-        && isset($nonParticipationProducts[$sourceKey])
-        && trim((string)($product['public_name'] ?? '')) === $nonParticipationProducts[$sourceKey]) {
+    if (!$product) {
         return false;
     }
-    $signals = [(string)($product['public_name'] ?? '')];
-    if (shopPurchaseModeTableExists($pdo, 'shop_product_categories')) {
-        $categories = $pdo->prepare('SELECT category_path FROM shop_product_categories WHERE product_id=?');
-        $categories->execute([$productId]);
-        foreach ($categories->fetchAll(PDO::FETCH_COLUMN) as $category) $signals[] = (string)$category;
+    if ((string)$product['offer_type'] === 'program') {
+        return true;
     }
+    if (shopPurchaseModeNonParticipationGoods($product)) {
+        return false;
+    }
+    $categories = [];
+    if (shopPurchaseModeTableExists($pdo, 'shop_product_categories')) {
+        $statement = $pdo->prepare('SELECT category_path FROM shop_product_categories WHERE product_id=?');
+        $statement->execute([$productId]);
+        $categories = array_map('strval', $statement->fetchAll(PDO::FETCH_COLUMN));
+    }
+    return shopProductRequiresAthleteFromData($product, $categories);
+}
+
+/** @param array<string,mixed> $product */
+function shopPurchaseModeNonParticipationGoods(array $product): bool
+{
+    $names = ['shoptet:pair:250' => 'Trička', 'shoptet:pair:852' => 'Uskladnění kol na školní pololetí'];
+    $key = (string) ($product['external_product_key'] ?? '');
+    return shopPurchaseModeApprovedShoptetGoods($product) && isset($names[$key])
+        && trim((string) ($product['public_name'] ?? '')) === $names[$key];
+}
+
+/** Same classification for canonical PDO callers and an operation-local read projection.
+ * @param array<string,mixed> $product
+ * @param list<string> $categories
+ */
+function shopProductRequiresAthleteFromData(array $product, array $categories): bool
+{
+    if ((string) ($product['offer_type'] ?? '') === 'program') {
+        return true;
+    }
+    if (shopPurchaseModeNonParticipationGoods($product)) {
+        return false;
+    }
+    $signals = [(string) ($product['public_name'] ?? ''), ...$categories];
     $haystack = mb_strtolower(implode("\n", $signals), 'UTF-8');
 
     return preg_match('/(?:^|[\s>\-])(krouž(?:ek|ky|ku)|předpřípravka|kurz(?:y|u)?|členství|člen(?:ství)?\s+v\s+oddílu)(?:$|[\s<\-:(])/u', $haystack) === 1;

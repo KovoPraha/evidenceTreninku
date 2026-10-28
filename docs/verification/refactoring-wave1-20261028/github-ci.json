@@ -1,0 +1,292 @@
+{
+  "base_sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+  "observed_on": "2026-10-28",
+  "runs": [
+    {
+      "id": 40333016390,
+      "name": "Current documentation",
+      "sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40333016390",
+      "jobs_url": "https://api.github.com/repos/KovoPraha/evidenceTreninku/actions/runs/40333016390/jobs"
+    },
+    {
+      "id": 40333016406,
+      "name": "PHP quality",
+      "sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40333016406",
+      "jobs_url": "https://api.github.com/repos/KovoPraha/evidenceTreninku/actions/runs/40333016406/jobs"
+    },
+    {
+      "id": 40333016697,
+      "name": "Testy",
+      "sha": "fa387e5302f54ca901f46233322bc6fb92a10eb9",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40333016697",
+      "jobs_url": "https://api.github.com/repos/KovoPraha/evidenceTreninku/actions/runs/40333016697/jobs"
+    }
+  ],
+  "test_jobs": [
+    {
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40333016697/job/121607082552",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stáhnout kód",
+          "conclusion": "success"
+        },
+        {
+          "name": "Připravit PHP s MariaDB ovladačem",
+          "conclusion": "success"
+        },
+        {
+          "name": "Nainstalovat závislosti pro účetní doklady a exporty",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit přístup sportovce na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit KIS přechod a idempotenci na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit skutečnou Evidence zálohu na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit souběžný idempotentní checkout na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit ruční původ katalogu na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit pracovní pozice a superadmin audit na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit zveřejnění registračních textů a souběh na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit systémové e-maily a souběh editorů na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit číselné řady, souběh nákupů a editorů na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit M3.5d sportovní import review na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit úplný import osob, rollback a vazby na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit historické soupisky a rozhodovací frontu na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit převod do aktuálních soupisek a rozhodovací frontu na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit revize výsledků a řízený KIS převod na MariaDB",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Stáhnout kód",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "conclusion": "failure",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40333016697/job/121607083044",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Stáhnout kód",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Připravit PHP s MariaDB ovladačem",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Nainstalovat závislosti pro účetní doklady a exporty",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit přístup sportovce na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit KIS přechod a idempotenci na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit skutečnou Evidence zálohu na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit opravu indexů VS, upgrade a zachování plateb na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit souběžný idempotentní checkout na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit ruční původ katalogu na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit pracovní pozice a superadmin audit na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit zveřejnění registračních textů a souběh na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit systémové e-maily a souběh editorů na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit číselné řady, souběh nákupů a editorů na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit M3.5d sportovní import review na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit úplný import osob, rollback a vazby na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit historické soupisky a rozhodovací frontu na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit převod do aktuálních soupisek a rozhodovací frontu na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Ověřit revize výsledků a řízený KIS převod na MariaDB",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "PHPUnit na PHP 8.2",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40333016697/job/121607083061",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stáhnout kód",
+          "conclusion": "success"
+        },
+        {
+          "name": "Připravit PHP",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit Composer konfiguraci",
+          "conclusion": "success"
+        },
+        {
+          "name": "Nainstalovat závislosti",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit známé zranitelnosti závislostí",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit anonymní přístup ke všem neveřejným trasám",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit JavaScript trenérských formulářů a plánovače",
+          "conclusion": "success"
+        },
+        {
+          "name": "Spustit testy",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ověřit unixové hranice soukromého úložiště bez přeskočení",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Stáhnout kód",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}
