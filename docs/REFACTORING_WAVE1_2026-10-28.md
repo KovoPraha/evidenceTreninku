@@ -1,11 +1,12 @@
 # První vlna refaktoringu a optimalizace
 
 Připraveno a implementováno 28. 10. 2026 (Europe/Prague).
-Stav: **W1-1 až W1-3 implementovány a ověřeny; PR #209, bez merge a nasazení**.
+Stav: **W1-1 až W1-3 implementovány, ověřeny a nasazeny; PR #209, produkce `20ab8637`**.
 
 Navazující zadání vlastníka 28. 10. 2026: „pokračuj dle plánu plně autonomně“.
 Provádí se W1-1 až W1-3, místní a CI ověření a předání v PR. Produkční vydání
-a merge zůstávají podle tohoto plánu samostatné rozhodnutí. Historický text
+a merge byly následně výslovně schváleny pokynem „Takze sloučit a nasadit“.
+[Protokol produkčního vydání](verification/refactoring-release-20261028/RESULTS.md). Historický text
 přípravy níže popisuje výchozí stav, nikoli konečný stav implementace.
 
 ## Výsledek implementace
@@ -243,8 +244,10 @@ i návrat se řídí [NASAZENI](NASAZENI.md) a konkrétním souhlasem vlastníka
 - [x] Implementace W1-1, W1-2 a W1-3, behaviorální a výkonové regrese.
 - [x] MariaDB/HTTP/browser měření a Linux CI aplikačního kódu s opraveným lockem.
 - [x] Předání v PR #209; samostatná evidence změn, testů a metodických limitů.
-- [ ] Merge a nasazení — nejsou součástí autorizované první vlny.
+- [x] Merge PR #209 a nasazení `20ab8637` po výslovném souhlasu vlastníka; deploy 40701923049 SUCCESS.
 
-Další krok: review PR #209 a samostatné rozhodnutí o vydání podle NASAZENI.
+Další krok: lidské/účetní převzetí a samostatné měření zbývajícího výkonového backlogu.
+Produkční HTTP průchod po vydání zaznamenal katalog/detail 6,8–15,6 s; není to
+párový benchmark a neprokazuje regresi ani procento zrychlení produkce.
 Následující optimalizace programových nabídek nebo členských cen vyžaduje
 vlastní měření; tato vlna neslibuje konstantní počet dotazů u programové kapacity.
