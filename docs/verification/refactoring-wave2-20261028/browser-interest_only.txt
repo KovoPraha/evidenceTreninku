@@ -1,0 +1,67 @@
+- generic [active] [ref=f3e1]:
+  - navigation "Klubový portál" [ref=f3e2]:
+    - generic [ref=f3e3]:
+      - link "KOVO Praha – úvodní stránka" [ref=f3e4] [cursor=pointer]:
+        - /url: /index.php
+      - button "Otevřít hlavní nabídku" [ref=f3e6] [cursor=pointer]
+      - text:  
+  - navigation "Navigace e-shopu" [ref=f3e8]:
+    - generic [ref=f3e9]:
+      - link "E-shop – domů" [ref=f3e10] [cursor=pointer]:
+        - /url: eshop.php
+        - generic [aria-hidden] [ref=f3e11]: 
+      - generic "Kategorie produktů" [ref=f3e13]:
+        - button "LOCALHOST" [ref=f3e15] [cursor=pointer]
+  - main [ref=f3e16]:
+    - navigation "Drobečková navigace" [ref=f3e17]:
+      - list [ref=f3e18]:
+        - listitem [ref=f3e19]:
+          - link "E-shop" [ref=f3e20] [cursor=pointer]:
+            - /url: eshop.php
+        - listitem [ref=f3e21]:
+          - text: /
+          - link "LOCALHOST › Dresy" [ref=f3e22] [cursor=pointer]:
+            - /url: eshop.php?kategorie=LOCALHOST%20%3E%20Dresy
+        - listitem [ref=f3e23]: / Děti 8–14 měsíců
+    - generic [ref=f3e25]:
+      - img "Fotografie produktu zatím není k dispozici" [ref=f3e27]:
+        - generic [aria-hidden] [ref=f3e28]: 
+        - generic [ref=f3e29]: Fotografie produktu se připravuje
+      - generic [ref=f3e31]:
+        - heading "Děti 8–14 měsíců" [level=1] [ref=f3e32]
+        - paragraph [ref=f3e33]: Kurz pro nejmenší děti otevíráme podle zájmu. Termín, rozsah a cenu celého kurzu vám sdělí klub e-mailem.
+        - heading "Informace o kurzu" [level=2] [ref=f3e34]
+        - generic [ref=f3e35]:
+          - text: Tento kroužek otevíráme podle zájmu. Termín, rozsah a cenu celého kurzu vám potvrdí klub e-mailem.
+          - link "Zanechte nám kontakt" [ref=f3e36] [cursor=pointer]:
+            - /url: "#mam-zajem"
+          - text: ; nyní zde nelze kurz objednat ani zaplatit.
+        - generic [ref=f3e38]:
+          - heading "Máte zájem o tento kurz?" [level=2] [ref=f3e39]
+          - paragraph [ref=f3e40]: Zanechte nám e-mail. Klub vám sdělí, zda a kdy kurz otevře, a potvrdí cenu celého kurzu.
+          - generic [ref=f3e41]:
+            - generic [ref=f3e42]:
+              - generic [ref=f3e43]: E-mail
+              - textbox "E-mail" [ref=f3e44]
+            - generic [ref=f3e46]:
+              - checkbox "Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce." [ref=f3e47]
+              - generic [ref=f3e48]: Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.
+            - button "Požádat o informace o kurzu" [ref=f3e50] [cursor=pointer]
+  - contentinfo [ref=f3e51]:
+    - generic [ref=f3e52]:
+      - generic [ref=f3e53]: Klubový portál Kovopraha
+      - generic [ref=f3e54]:
+        - link "Domů" [ref=f3e55] [cursor=pointer]:
+          - /url: /index.php
+        - text: ·
+        - link "Kroužky" [ref=f3e56] [cursor=pointer]:
+          - /url: /booking/cyklisticke_krouzky.php
+        - text: ·
+        - link "Individuální lekce" [ref=f3e57] [cursor=pointer]:
+          - /url: /booking/kalendar.php
+        - text: ·
+        - link "Veřejné tréninky" [ref=f3e58] [cursor=pointer]:
+          - /url: /booking/treninky.php
+        - text: ·
+        - link "E-shop" [ref=f3e59] [cursor=pointer]:
+          - /url: /booking/eshop.php

@@ -1,0 +1,58 @@
+{
+  "synthetic_only": true,
+  "checks": [
+    {
+      "scenario": "catalog",
+      "status": "PASS",
+      "snapshot": "browser-catalog.txt",
+      "sha256": "66ef7abd7de514d9d387c0b6d418de15160f25d5cd4f8445beb712fb740ac49d"
+    },
+    {
+      "scenario": "goods_detail",
+      "status": "PASS",
+      "snapshot": "browser-goods_detail.txt",
+      "sha256": "fe81437fa2f593fe993026c9f84f329367cbdf022418bfc8d111d060d44cd089"
+    },
+    {
+      "scenario": "quick_purchase",
+      "status": "PASS",
+      "snapshot": "browser-quick_purchase.txt",
+      "sha256": "6b34ce416e134f88fa9270e24807f44ab92cf0a25c9f424fcdb1da3fa82b7d06"
+    },
+    {
+      "scenario": "program_category",
+      "status": "PASS",
+      "snapshot": "browser-program_category.txt",
+      "sha256": "d214ea996f6426274fecd06379cd4df808cfcd4f4b9fb4a6766a16fcc81b47bb"
+    },
+    {
+      "scenario": "program_detail",
+      "status": "PASS",
+      "snapshot": "browser-program_detail.txt",
+      "sha256": "6a637b236aa22cbb6eee3b6e9b2425363a9d62f06990795de5a5e559990a812c"
+    },
+    {
+      "scenario": "member_price",
+      "status": "PASS",
+      "snapshot": "browser-member_price.txt",
+      "sha256": "4a2c25398d03cec42da5755ca430d4fe745a9fa8e232acafbba0d12488b89a03"
+    },
+    {
+      "scenario": "after_revocation",
+      "status": "PASS",
+      "snapshot": "browser-after_revocation.txt",
+      "sha256": "a749ae793ad0203dd6d97d318010092b9114c898fa98c0e5a8ab6add97dd96e9"
+    },
+    {
+      "scenario": "interest_only",
+      "status": "PASS",
+      "snapshot": "browser-interest_only.txt",
+      "sha256": "a7ac34283d7a3af0dbcd171c47dfdb4eac1743cc682b1598f417e1d3529632be"
+    }
+  ],
+  "application_js_exceptions": 0,
+  "observed_limitations": [
+    "favicon.ico 404 on local server",
+    "login autocomplete recommendation"
+  ]
+}

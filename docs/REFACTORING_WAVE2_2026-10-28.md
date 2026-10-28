@@ -30,7 +30,13 @@ jinak ponechat samostatnému balíku s regresí revokace rodinné vazby.
 ## Průběžný stav
 
 - [x] Aktuální main, čisté izolované worktree, čtení provozních důkazů a plánu.
-- [ ] Syntetický profil a výchozí regresní test.
-- [ ] Cílená implementace a kompatibilita.
-- [ ] Měření, testy a CI přesného headu.
-- [ ] PR a předání výsledků.
+- [x] Syntetický profil a původně selhávající regresní test (1 801 metadatových dotazů).
+- [x] Cílená implementace a 7 nových regresních testů; zamykání ignoruje starý kontext.
+- [x] MariaDB/HTTP 5+30, browser a Linux CI aplikačního headu `1463da73`, 1 764/35 753 PASS.
+- [x] PR #211, [výsledky a limity](verification/refactoring-wave2-20261028/RESULTS.md).
+
+Výsledek pro 50 programů: navigace 2 608 → 417 SQL, metadata 1 801 → 10.
+Všech 9 MariaDB výstupů shodných. HTTP medián detailu zboží 7,31 → 0,53 s,
+programu 6,53 → 0,86 s, katalogu 8,41 → 2,49 s na syntetické fixture.
+Členské ceny nebyly měněny; další výkonový kandidát je prezentace programů
+v katalogové stránce. Produkční vydání této druhé vlny neproběhlo.

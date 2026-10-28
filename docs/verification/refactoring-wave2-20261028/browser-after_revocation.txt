@@ -1,0 +1,76 @@
+- generic [active] [ref=f2e1]:
+  - navigation "Klubový portál" [ref=f2e2]:
+    - generic [ref=f2e3]:
+      - link "KOVO Praha – úvodní stránka" [ref=f2e4] [cursor=pointer]:
+        - /url: /index.php
+      - button "Otevřít hlavní nabídku" [ref=f2e6] [cursor=pointer]
+      - text:  
+  - navigation "Navigace e-shopu" [ref=f2e8]:
+    - generic [ref=f2e9]:
+      - link "E-shop – domů" [ref=f2e10] [cursor=pointer]:
+        - /url: eshop.php
+        - generic [aria-hidden] [ref=f2e11]: 
+      - generic "Kategorie produktů" [ref=f2e13]:
+        - button "LOCALHOST" [ref=f2e15] [cursor=pointer]
+  - main [ref=f2e16]:
+    - navigation "Drobečková navigace" [ref=f2e17]:
+      - list [ref=f2e18]:
+        - listitem [ref=f2e19]:
+          - link "E-shop" [ref=f2e20] [cursor=pointer]:
+            - /url: eshop.php
+        - listitem [ref=f2e21]:
+          - text: /
+          - link "LOCALHOST › Dresy" [ref=f2e22] [cursor=pointer]:
+            - /url: eshop.php?kategorie=LOCALHOST%20%3E%20Dresy
+        - listitem [ref=f2e23]: / LOCALHOST Dres 0001
+    - generic [ref=f2e25]:
+      - img "Fotografie produktu zatím není k dispozici" [ref=f2e27]:
+        - generic [aria-hidden] [ref=f2e28]: 
+        - generic [ref=f2e29]: Fotografie produktu se připravuje
+      - generic [ref=f2e31]:
+        - heading "LOCALHOST Dres 0001" [level=1] [ref=f2e32]
+        - paragraph [ref=f2e33]: LOCALHOST NEPLATIT — syntetický výrobek.
+        - heading "Vyberte variantu" [level=2] [ref=f2e34]
+        - generic [ref=f2e37]:
+          - generic [ref=f2e38]:
+            - strong [ref=f2e39]: LOCALHOST-W1-900001
+            - generic [ref=f2e40]: SKU LOCALHOST-W1-900001
+            - generic [ref=f2e41]: Skladem
+          - generic [ref=f2e42]:
+            - generic [ref=f2e43]: 100,00 Kč
+            - button "Přidat do košíku" [ref=f2e45] [cursor=pointer]
+        - paragraph [ref=f2e46]: Před potvrzením objednávky znovu zkontrolujeme cenu a dostupnost.
+        - generic [ref=f2e48]:
+          - heading "Chybí vaše velikost nebo varianta?" [level=2] [ref=f2e49]
+          - paragraph [ref=f2e50]: Zanechte nám e-mail. Ozveme se, až bude dostupná vhodná varianta.
+          - generic [ref=f2e51]:
+            - generic [ref=f2e52]:
+              - generic [ref=f2e53]: E-mail
+              - textbox "E-mail" [ref=f2e54]
+            - generic [ref=f2e55]:
+              - generic [ref=f2e56]: Termín / varianta (nepovinné)
+              - combobox "Termín / varianta (nepovinné)" [ref=f2e57]:
+                - option "Obecný zájem o produkt" [selected]
+                - option "LOCALHOST-W1-900001"
+            - generic [ref=f2e59]:
+              - checkbox "Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce." [ref=f2e60]
+              - generic [ref=f2e61]: Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.
+            - button "Chci vědět o další možnosti" [ref=f2e63] [cursor=pointer]
+  - contentinfo [ref=f2e64]:
+    - generic [ref=f2e65]:
+      - generic [ref=f2e66]: Klubový portál Kovopraha
+      - generic [ref=f2e67]:
+        - link "Domů" [ref=f2e68] [cursor=pointer]:
+          - /url: /index.php
+        - text: ·
+        - link "Kroužky" [ref=f2e69] [cursor=pointer]:
+          - /url: /booking/cyklisticke_krouzky.php
+        - text: ·
+        - link "Individuální lekce" [ref=f2e70] [cursor=pointer]:
+          - /url: /booking/kalendar.php
+        - text: ·
+        - link "Veřejné tréninky" [ref=f2e71] [cursor=pointer]:
+          - /url: /booking/treninky.php
+        - text: ·
+        - link "E-shop" [ref=f2e72] [cursor=pointer]:
+          - /url: /booking/eshop.php
