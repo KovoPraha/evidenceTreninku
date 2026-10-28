@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -16,7 +17,7 @@ final class ShopPaymentNotificationWiringTest extends TestCase
             $root . '/migrations/20260816170000_shop_payment_received_notification.php'
         );
 
-        self::assertStringContainsString('shopPaymentNotificationEnqueue($pdo,$orderId)', $checkout);
+        self::assertMatchesRegularExpression('/shopPaymentNotificationEnqueue\(\$pdo,\s*\$orderId\)/', $checkout);
         self::assertStringContainsString("'shop_payment_received'", $service);
         self::assertStringContainsString('club_event_notifications', $service);
         self::assertStringContainsString('uq_shop_payment_notification', $migration);

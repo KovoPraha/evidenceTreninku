@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/shop_checkout.php';
@@ -14,8 +15,15 @@ require_once __DIR__ . '/shop_attribute.php';
  */
 function shopStorefrontCatalog(PDO $pdo): array
 {
-    $products = [];$attributeDefinitions=shopAttributeDefinitions($pdo,true);
-    foreach (shopStorefrontProducts($pdo) as $row) {
+    return shopStorefrontPresentRows($pdo, shopStorefrontProducts($pdo));
+}
+
+/** @param list<array<string,mixed>> $rows @return list<array<string,mixed>> */
+function shopStorefrontPresentRows(PDO $pdo, array $rows): array
+{
+    $products = [];
+    $attributeDefinitions = shopAttributeDefinitions($pdo, true);
+    foreach ($rows as $row) {
         $productId = (int)$row['product_id'];
         if (!isset($products[$productId])) {
             $products[$productId] = [
@@ -35,9 +43,12 @@ function shopStorefrontCatalog(PDO $pdo): array
         $row['in_stock'] = ($row['offer_type'] ?? null) === 'program'
             || $row['stock_quantity_decimal'] === null
             || (float)$row['stock_quantity_decimal'] > 0.0;
-        $row['attributes_detail']=shopAttributePresentation($pdo,(array)($row['attributes']??[]),'detail',$attributeDefinitions);
-        $row['attributes_listing']=shopAttributePresentation($pdo,(array)($row['attributes']??[]),'listing',$attributeDefinitions);
-        foreach($row['attributes_listing']as$attribute){$fingerprint=$attribute['key']."\0".$attribute['formatted_value'];$products[$productId]['listing_attributes'][$fingerprint]=$attribute;}
+        $row['attributes_detail'] = shopAttributePresentation($pdo, (array)($row['attributes'] ?? []), 'detail', $attributeDefinitions);
+        $row['attributes_listing'] = shopAttributePresentation($pdo, (array)($row['attributes'] ?? []), 'listing', $attributeDefinitions);
+        foreach ($row['attributes_listing'] as $attribute) {
+            $fingerprint = $attribute['key']."\0".$attribute['formatted_value'];
+            $products[$productId]['listing_attributes'][$fingerprint] = $attribute;
+        }
         $products[$productId]['variants'][] = $row;
     }
 
@@ -48,22 +59,40 @@ function shopStorefrontCatalog(PDO $pdo): array
                 $products[$productId]['images'] = $urls;
             }
         }
-        $categories=shopStorefrontCategories($pdo,array_keys($products));
-        foreach($categories as$productId=>$paths)if(isset($products[$productId]))$products[$productId]['categories']=$paths;
+        $categories = shopStorefrontCategories($pdo, array_keys($products));
+        foreach ($categories as $productId => $paths) {
+            if (isset($products[$productId])) {
+                $products[$productId]['categories'] = $paths;
+            }
+        }
     }
 
-    foreach($products as&$product)$product['listing_attributes']=array_values($product['listing_attributes']);unset($product);
+    foreach ($products as &$product) {
+        $product['listing_attributes'] = array_values($product['listing_attributes']);
+    }unset($product);
     return array_values($products);
 }
 
 /** @param list<int> $productIds @return array<int,list<string>> */
-function shopStorefrontCategories(PDO $pdo,array $productIds):array
+function shopStorefrontCategories(PDO $pdo, array $productIds): array
 {
-    $productIds=array_values(array_unique(array_filter(array_map('intval',$productIds),static fn(int$id):bool=>$id>0)));
-    if($productIds===[])return[];$marks=implode(',',array_fill(0,count($productIds),'?'));
-    $statement=$pdo->prepare("SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN ($marks) ORDER BY product_id,is_default DESC,sort_order,id");
-    $statement->execute($productIds);$result=[];
-    foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$row){$path=trim((string)$row['category_path']);if($path==='')continue;$id=(int)$row['product_id'];$result[$id]??=[];if(!in_array($path,$result[$id],true))$result[$id][]=$path;}
+    $productIds = array_values(array_unique(array_filter(array_map('intval', $productIds), static fn (int$id): bool => $id > 0)));
+    if ($productIds === []) {
+        return[];
+    }$marks = implode(',', array_fill(0, count($productIds), '?'));
+    $statement = $pdo->prepare("SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN ($marks) ORDER BY product_id,is_default DESC,sort_order,id");
+    $statement->execute($productIds);
+    $result = [];
+    foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $path = trim((string)$row['category_path']);
+        if ($path === '') {
+            continue;
+        }$id = (int)$row['product_id'];
+        $result[$id] ??= [];
+        if (!in_array($path, $result[$id], true)) {
+            $result[$id][] = $path;
+        }
+    }
     return$result;
 }
 
@@ -73,12 +102,7 @@ function shopStorefrontProductDetail(PDO $pdo, int $productId): ?array
     if ($productId < 1) {
         return null;
     }
-    foreach (shopStorefrontCatalog($pdo) as $product) {
-        if ((int)$product['product_id'] === $productId) {
-            return $product;
-        }
-    }
-    return null;
+    return shopStorefrontPresentRows($pdo, shopStorefrontReadRows($pdo, $productId))[0] ?? null;
 }
 
 /**
@@ -89,7 +113,7 @@ function shopStorefrontImages(PDO $pdo, array $productIds): array
 {
     $productIds = array_values(array_unique(array_filter(
         array_map('intval', $productIds),
-        static fn(int $id): bool => $id > 0
+        static fn (int $id): bool => $id > 0
     )));
     if ($productIds === []) {
         return [];
@@ -139,19 +163,23 @@ function shopStorefrontPlaceholderImageUrl(): string
 function shopStorefrontPrimaryImageUrl(array $urls): string
 {
     foreach ($urls as $url) {
-        if (shopStorefrontIsLocalImageUrl((string)$url)) return (string)$url;
+        if (shopStorefrontIsLocalImageUrl((string)$url)) {
+            return (string)$url;
+        }
     }
     return shopStorefrontPlaceholderImageUrl();
 }
 
 function shopStorefrontIsLocalImagePath(string $url): bool
 {
-    return preg_match('~^uploads/shop-products/[a-f0-9]{32}\.jpg$~D',trim($url))===1;
+    return preg_match('~^uploads/shop-products/[a-f0-9]{32}\.jpg$~D', trim($url)) === 1;
 }
 
 function shopStorefrontIsLocalImageUrl(string $url): bool
 {
-    $prefix=appUrl('uploads/shop-products/');
-    if (!str_starts_with($url,$prefix)) return false;
-    return preg_match('~^[a-f0-9]{32}\.jpg$~D',substr($url,strlen($prefix)))===1;
+    $prefix = appUrl('uploads/shop-products/');
+    if (!str_starts_with($url, $prefix)) {
+        return false;
+    }
+    return preg_match('~^[a-f0-9]{32}\.jpg$~D', substr($url, strlen($prefix))) === 1;
 }

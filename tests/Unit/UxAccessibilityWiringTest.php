@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -157,14 +158,22 @@ final class UxAccessibilityWiringTest extends TestCase
         $forbidden = ['JSON objekt', 'platný JSON', 'Technický klíč z JSON', 'volným JSON', 'JSON systém', 'bezpečný JSON report'];
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->root, \FilesystemIterator::SKIP_DOTS));
         foreach ($iterator as $entry) {
-            if (!$entry->isFile() || strtolower($entry->getExtension()) !== 'php') continue;
+            if (!$entry->isFile() || strtolower($entry->getExtension()) !== 'php') {
+                continue;
+            }
             $file = str_replace('\\', '/', substr($entry->getPathname(), strlen($this->root)));
-            if (preg_match('~^(?:vendor|tests|migrations|bin|docs)/~', $file) === 1) continue;
+            if (preg_match('~^(?:vendor|tests|migrations|bin|docs)/~', $file) === 1) {
+                continue;
+            }
             $source = (string)file_get_contents($entry->getPathname());
             foreach ($forbidden as $phrase) {
                 self::assertStringNotContainsString($phrase, $source, $file . ' nesmí uživateli ukazovat technický formát.');
             }
-            self::assertDoesNotMatchRegularExpression('~<(?:textarea|input)(?![^>]*\btype=["\']hidden["\'])[^>]*\bname=["\'][^"\']*json~iu', $source, $file . ' nesmí mít viditelné pole pro technický formát.');
+            self::assertDoesNotMatchRegularExpression(
+                '~<(?:textarea|input)(?![^>]*\btype=["\']hidden["\'])[^>]*\bname=["\'][^"\']*json~iu',
+                $source,
+                $file . ' nesmí mít viditelné pole pro technický formát.'
+            );
             self::assertDoesNotMatchRegularExpression('~(?:zadejte|vyplňte|musí být|parametry)[^\r\n<]{0,80}\bJSON\b~iu', $source, $file . ' nesmí po uživateli požadovat technický formát.');
         }
     }
@@ -207,7 +216,12 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringNotContainsString('<code><?=orderAdminH($order[\'last_event_action\'])?></code>', $orders);
 
         $checkout = (string)file_get_contents($this->root . 'includes/shop_checkout.php');
-        self::assertStringContainsString("function shopOrderAdminList(PDO \$pdo,int \$limit=200,string \$query=''):array", $checkout);
+        require_once $this->root . 'includes/shop_checkout.php';
+        $signature = new \ReflectionFunction('shopOrderAdminList');
+        self::assertSame(['pdo', 'limit', 'query'], array_map(static fn (\ReflectionParameter $parameter): string => $parameter->getName(), $signature->getParameters()));
+        self::assertSame(200, $signature->getParameters()[1]->getDefaultValue());
+        self::assertSame('', $signature->getParameters()[2]->getDefaultValue());
+        self::assertSame('array', (string) $signature->getReturnType());
         self::assertStringContainsString('o.customer_email_snapshot LIKE ?', $checkout);
 
         $child = (string)file_get_contents($this->root . 'booking/muj_sport.php');
