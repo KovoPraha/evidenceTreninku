@@ -1,0 +1,40 @@
+{
+    "includes\/club_program.php": {
+        "function_count": 52,
+        "changed_functions": [
+            "clubProgramRuntimeTableExists",
+            "clubProgramColumnExists",
+            "clubProgramOfferForVariant",
+            "clubProgramPhysicalTeamIds",
+            "clubProgramOfferCapacityState",
+            "clubProgramOfferCapacityStateForTeam",
+            "clubProgramVariantSaleState"
+        ],
+        "expected_changes": [
+            "clubProgramRuntimeTableExists",
+            "clubProgramColumnExists",
+            "clubProgramOfferForVariant",
+            "clubProgramPhysicalTeamIds",
+            "clubProgramOfferCapacityState",
+            "clubProgramOfferCapacityStateForTeam",
+            "clubProgramVariantSaleState"
+        ],
+        "unexpected_changes": false
+    },
+    "includes\/club_program_terms.php": {
+        "function_count": 13,
+        "changed_functions": [
+            "clubProgramTermsColumnExists",
+            "clubProgramTermsRegistryAvailable",
+            "clubProgramTermsCurrent",
+            "clubProgramTermsEffective"
+        ],
+        "expected_changes": [
+            "clubProgramTermsColumnExists",
+            "clubProgramTermsRegistryAvailable",
+            "clubProgramTermsCurrent",
+            "clubProgramTermsEffective"
+        ],
+        "unexpected_changes": false
+    }
+}

@@ -1,0 +1,96 @@
+- generic [active] [ref=f4e1]:
+  - navigation "Klubový portál" [ref=f4e2]:
+    - generic [ref=f4e3]:
+      - link "KOVO Praha – úvodní stránka" [ref=f4e4] [cursor=pointer]:
+        - /url: /index.php
+      - button "Otevřít hlavní nabídku" [ref=f4e6] [cursor=pointer]
+  - navigation "Navigace e-shopu" [ref=f4e8]:
+    - generic [ref=f4e9]:
+      - link "E-shop – domů" [ref=f4e10] [cursor=pointer]:
+        - /url: eshop.php
+        - generic [aria-hidden] [ref=f4e11]: 
+      - generic "Kategorie produktů" [ref=f4e13]:
+        - button "LOCALHOST" [ref=f4e15] [cursor=pointer]
+  - main [ref=f4e16]:
+    - navigation "Drobečková navigace" [ref=f4e17]:
+      - list [ref=f4e18]:
+        - listitem [ref=f4e19]:
+          - link "E-shop" [ref=f4e20] [cursor=pointer]:
+            - /url: eshop.php
+        - listitem [ref=f4e21]:
+          - text: /
+          - link "LOCALHOST › Programy" [ref=f4e22] [cursor=pointer]:
+            - /url: eshop.php?kategorie=LOCALHOST%20%3E%20Programy
+        - listitem [ref=f4e23]: / LOCALHOST Program 1
+    - generic [ref=f4e25]:
+      - img "Fotografie produktu zatím není k dispozici" [ref=f4e27]:
+        - generic [aria-hidden] [ref=f4e28]: 
+        - generic [ref=f4e29]: Fotografie produktu se připravuje
+      - generic [ref=f4e31]:
+        - generic [ref=f4e32]: kroužek
+        - heading "LOCALHOST Program 1" [level=1] [ref=f4e33]
+        - paragraph [ref=f4e34]: LOCALHOST NEPLATIT
+        - heading "Termín a přihlášení" [level=2] [ref=f4e35]
+        - generic [ref=f4e36]:
+          - generic [ref=f4e38]:
+            - strong [ref=f4e39]: Už máte účet?
+            - paragraph [ref=f4e40]: Přihlaste se. Uvidíte své osoby, historii a klubové ceny. Po přihlášení se zobrazí případná klubová cena.
+            - link "Přihlásit se" [ref=f4e41] [cursor=pointer]:
+              - /url: prihlaseni.php?redirect=produkt.php%3Fid%3D920001
+          - generic [ref=f4e43]:
+            - strong [ref=f4e44]: Jste tu poprvé?
+            - paragraph [ref=f4e45]: U vybraného termínu vyplníte jednu krátkou přihlášku a hned se dostanete k platbě. Účet vytvoříme automaticky a e-mail ověříte následně.
+            - text: Vyberte termín níže.
+        - generic [ref=f4e48]:
+          - generic [ref=f4e49]:
+            - strong [ref=f4e50]: Další varianta
+            - generic [ref=f4e51]:
+              - strong [ref=f4e52]: LOCALHOST Program 1
+              - text: "1. 1. 2026 – 31. 12. 2099 bez omezení ročníku Skupina: LOCALHOST Wave1 Volná místa:"
+              - strong [ref=f4e53]: "100"
+              - text: z 100
+            - paragraph [ref=f4e54]: LOCALHOST NEPLATIT
+            - group [ref=f4e55]:
+              - generic "Storno podmínky a souhlas" [ref=f4e56] [cursor=pointer]
+          - generic [ref=f4e57]:
+            - generic [ref=f4e58]: 100,00 Kč
+            - generic [ref=f4e59]:
+              - link "Přihlásit sportovce a zaplatit" [ref=f4e60] [cursor=pointer]:
+                - /url: rychla_prihlaska.php?product_id=920001&variant_id=920001
+              - link "Přihlásit se" [ref=f4e61] [cursor=pointer]:
+                - /url: prihlaseni.php?redirect=produkt.php%3Fid%3D920001%26variant_id%3D920001%23varianta-920001
+        - paragraph [ref=f4e62]: Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.
+        - generic [ref=f4e64]:
+          - heading "Nevyhovuje vám termín?" [level=2] [ref=f4e65]
+          - paragraph [ref=f4e66]: Zanechte nám e-mail. Ozveme se, až vypíšeme další vhodný termín.
+          - generic [ref=f4e67]:
+            - generic [ref=f4e68]:
+              - generic [ref=f4e69]: E-mail
+              - textbox "E-mail" [ref=f4e70]
+            - generic [ref=f4e71]:
+              - generic [ref=f4e72]: Termín / varianta (nepovinné)
+              - combobox "Termín / varianta (nepovinné)" [ref=f4e73]:
+                - option "Obecný zájem o produkt" [selected]
+                - option "Další varianta · 1. 1.–31. 12. 2099"
+            - generic [ref=f4e75]:
+              - checkbox "Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce." [ref=f4e76]
+              - generic [ref=f4e77]: Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.
+            - button "Chci vědět o další možnosti" [ref=f4e79] [cursor=pointer]
+  - contentinfo [ref=f4e80]:
+    - generic [ref=f4e81]:
+      - generic [ref=f4e82]: Klubový portál Kovopraha
+      - generic [ref=f4e83]:
+        - link "Domů" [ref=f4e84] [cursor=pointer]:
+          - /url: /index.php
+        - text: ·
+        - link "Kroužky" [ref=f4e85] [cursor=pointer]:
+          - /url: /booking/cyklisticke_krouzky.php
+        - text: ·
+        - link "Individuální lekce" [ref=f4e86] [cursor=pointer]:
+          - /url: /booking/kalendar.php
+        - text: ·
+        - link "Veřejné tréninky" [ref=f4e87] [cursor=pointer]:
+          - /url: /booking/treninky.php
+        - text: ·
+        - link "E-shop" [ref=f4e88] [cursor=pointer]:
+          - /url: /booking/eshop.php

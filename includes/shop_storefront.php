@@ -13,9 +13,9 @@ require_once __DIR__ . '/shop_attribute.php';
  *
  * @return list<array<string,mixed>>
  */
-function shopStorefrontCatalog(PDO $pdo): array
+function shopStorefrontCatalog(PDO $pdo, ?ClubProgramReadContext $readContext = null): array
 {
-    return shopStorefrontPresentRows($pdo, shopStorefrontProducts($pdo));
+    return shopStorefrontPresentRows($pdo, shopStorefrontReadRows($pdo, null, null, false, $readContext));
 }
 
 /** @param list<array<string,mixed>> $rows @return list<array<string,mixed>> */

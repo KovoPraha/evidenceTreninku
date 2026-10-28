@@ -14,12 +14,15 @@ function shopPublicNavigationH(mixed $value): string
 /** @return list<array<string,mixed>> */
 function shopPublicSaleableCatalog(PDO $pdo): array
 {
-    return shopPublicFilterSaleableProducts($pdo, shopStorefrontCatalog($pdo));
+    $readContext = new ClubProgramReadContext($pdo);
+    return shopPublicFilterSaleableProducts($pdo, shopStorefrontCatalog($pdo, $readContext), $readContext);
 }
 
 /** @param list<array<string,mixed>> $catalog @return list<array<string,mixed>> */
-function shopPublicFilterSaleableProducts(PDO $pdo, array $catalog): array
+function shopPublicFilterSaleableProducts(PDO $pdo, array $catalog, ?ClubProgramReadContext $readContext = null): array
 {
+    $readContext ??= new ClubProgramReadContext($pdo);
+    $readContext->assertConnection($pdo);
     $productIds = [];
     $variantIds = [];
     foreach ($catalog as $product) {
@@ -42,14 +45,14 @@ function shopPublicFilterSaleableProducts(PDO $pdo, array $catalog): array
         }
         $hasProgramOffer = isset($links['products'][(int) $product['product_id']]);
         $isProgram = shopProductRequiresAthleteFromData($product, $product['categories']);
-        $product['variants'] = array_values(array_filter($product['variants'], static function (array $variant) use ($pdo, $hasProgramOffer, $isProgram, $links): bool {
+        $product['variants'] = array_values(array_filter($product['variants'], static function (array $variant) use ($readContext, $hasProgramOffer, $isProgram, $links): bool {
             $variantId = (int) $variant['variant_id'];
             if ($hasProgramOffer) {
-                return clubProgramVariantSaleState($pdo, $variantId)['saleable'];
+                return $readContext->saleState($variantId)['saleable'];
             }
             // A program without an approved offer can collect interest by direct link,
             // but does not belong in the purchasable catalog or its category menu.
-            return !$isProgram && (!isset($links['variants'][$variantId]) || clubProgramOfferForVariant($pdo, $variantId) === false);
+            return !$isProgram && (!isset($links['variants'][$variantId]) || $readContext->offer($variantId) === false);
         }));
         if ($product['variants'] !== []) {
             $products[] = $product;
@@ -61,8 +64,9 @@ function shopPublicFilterSaleableProducts(PDO $pdo, array $catalog): array
 /** @return list<array<string,mixed>> */
 function shopPublicNavigationItems(PDO $pdo): array
 {
+    $readContext = new ClubProgramReadContext($pdo);
     $products = [];
-    foreach (shopStorefrontReadRows($pdo, null, null, true) as $row) {
+    foreach (shopStorefrontReadRows($pdo, null, null, true, $readContext) as $row) {
         $id = (int) $row['product_id'];
         if (!isset($products[$id])) {
             $products[$id] = [
@@ -82,7 +86,7 @@ function shopPublicNavigationItems(PDO $pdo): array
         $product['categories'] = $categories[$id] ?? [];
     }
     unset($product);
-    return shopStorefrontCategoryMenu($pdo, shopPublicFilterSaleableProducts($pdo, array_values($products)));
+    return shopStorefrontCategoryMenu($pdo, shopPublicFilterSaleableProducts($pdo, array_values($products), $readContext));
 }
 
 /** @param list<array<string,mixed>> $items */

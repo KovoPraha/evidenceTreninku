@@ -1,0 +1,33 @@
+{
+    "synthetic_only": true,
+    "checks": [
+        {
+            "scenario": "Anonymous direct POST rejected before cart mutation",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Synthetic parent login",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Current guardian receives member price",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Invalid CSRF does not mutate cart",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Exact synthetic relationship selected",
+            "status": "PASS"
+        },
+        {
+            "scenario": "Revocation immediately removes member price in same authenticated session",
+            "status": "PASS"
+        },
+        {
+            "scenario": "No order or payment created",
+            "status": "PASS"
+        }
+    ]
+}

@@ -29,11 +29,14 @@ function shopStorefrontReadRows(
     PDO $pdo,
     ?int $productId = null,
     ?DateTimeImmutable $now = null,
-    bool $navigation = false
+    bool $navigation = false,
+    ?ClubProgramReadContext $readContext = null
 ): array {
     if ($productId !== null && $productId < 1) {
         return [];
     }
+    $readContext ??= new ClubProgramReadContext($pdo, $now);
+    $readContext->assertConnection($pdo);
     $columns = shopStorefrontReadProductColumns($pdo);
     $sortOrder = isset($columns['sort_order']) ? 'p.sort_order' : '0';
     $origin = isset($columns['origin']) ? 'p.origin' : 'NULL';
@@ -69,7 +72,7 @@ function shopStorefrontReadRows(
             if ($inventoryAvailable && $row['stock_quantity_decimal'] === null) {
                 continue;
             }
-        } elseif (!shopCheckoutVariantIsSaleable($row, $pdo, $now)) {
+        } elseif (!$readContext->saleState((int) $row['variant_id'])['saleable']) {
             continue;
         }
         if (!$navigation) {

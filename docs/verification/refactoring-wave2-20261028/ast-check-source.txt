@@ -1,0 +1,28 @@
+<?php
+require getcwd().'/vendor/autoload.php';
+function normalized($node) {
+    if ($node instanceof PhpParser\Node\Expr\BinaryOp\Concat || $node instanceof PhpParser\Node\Scalar\String_ || $node instanceof PhpParser\Node\Scalar\InterpolatedString) {
+        $parts=stringParts($node);$merged=[];
+        foreach($parts as $p){if(is_string($p)&&is_string(end($merged)))$merged[count($merged)-1].=$p;else $merged[]=$p;}
+        return ['stringParts'=>$merged];
+    }
+    if($node instanceof PhpParser\Node){$r=['type'=>$node->getType()];foreach($node->getSubNodeNames() as $key)$r[$key]=normalized($node->$key);return $r;}
+    return is_array($node)?array_map('normalized',$node):$node;
+}
+function stringParts($node){
+    if($node instanceof PhpParser\Node\Expr\BinaryOp\Concat)return [...stringParts($node->left),...stringParts($node->right)];
+    if($node instanceof PhpParser\Node\Scalar\String_)return [$node->value];
+    if($node instanceof PhpParser\Node\Scalar\InterpolatedString)return array_map(fn($p)=>$p instanceof PhpParser\Node\InterpolatedStringPart?$p->value:normalized($p),$node->parts);
+    return [normalized($node)];
+}
+$parser=(new PhpParser\ParserFactory)->createForHostVersion();
+$expected=['includes/club_program.php'=>['clubProgramRuntimeTableExists','clubProgramColumnExists','clubProgramOfferForVariant','clubProgramPhysicalTeamIds','clubProgramOfferCapacityState','clubProgramOfferCapacityStateForTeam','clubProgramVariantSaleState'],'includes/club_program_terms.php'=>['clubProgramTermsColumnExists','clubProgramTermsRegistryAvailable','clubProgramTermsCurrent','clubProgramTermsEffective']];
+$results=[];
+foreach($expected as $file=>$names){
+ $old=shell_exec('git show 4215eac93dd207142a16dfef57cda1464717cba3:'.$file);$maps=[];
+ foreach([$old,file_get_contents($file)] as $text){$map=[];foreach($parser->parse($text) as $node)if($node instanceof PhpParser\Node\Stmt\Function_)$map[(string)$node->name]=normalized($node);$maps[]=$map;}
+ $changed=[];foreach($maps[0] as $name=>$node)if($node!==($maps[1][$name]??null))$changed[]=$name;
+ if($changed!==$names)throw new RuntimeException('Unexpected changed functions: '.json_encode($changed));
+ $results[$file]=['function_count'=>count($maps[0]),'changed_functions'=>$changed,'expected_changes'=>$names,'unexpected_changes'=>false];
+}
+echo json_encode($results,JSON_PRETTY_PRINT).PHP_EOL;

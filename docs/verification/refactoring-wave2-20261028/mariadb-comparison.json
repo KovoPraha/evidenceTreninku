@@ -1,0 +1,123 @@
+{
+  "comparisons": [
+    {
+      "programs": 1,
+      "profile": "navigation",
+      "before_sql": 60,
+      "after_sql": 25,
+      "before_metadata": 37,
+      "after_metadata": 10,
+      "output_identical": true,
+      "median_before_ms": 150.28269999999998,
+      "median_after_ms": 53.5152,
+      "p95_before_ms": 179.1408,
+      "p95_after_ms": 60.6121
+    },
+    {
+      "programs": 1,
+      "profile": "catalog",
+      "before_sql": 59,
+      "after_sql": 24,
+      "before_metadata": 38,
+      "after_metadata": 11,
+      "output_identical": true,
+      "median_before_ms": 156.5376,
+      "median_after_ms": 46.237700000000004,
+      "p95_before_ms": 217.9879,
+      "p95_after_ms": 66.253
+    },
+    {
+      "programs": 1,
+      "profile": "detail_with_navigation",
+      "before_sql": 91,
+      "after_sql": 47,
+      "before_metadata": 57,
+      "after_metadata": 21,
+      "output_identical": true,
+      "median_before_ms": 224.59300000000002,
+      "median_after_ms": 108.89005,
+      "p95_before_ms": 279.1194,
+      "p95_after_ms": 126.5954
+    },
+    {
+      "programs": 10,
+      "profile": "navigation",
+      "before_sql": 528,
+      "after_sql": 97,
+      "before_metadata": 361,
+      "after_metadata": 10,
+      "output_identical": true,
+      "median_before_ms": 1608.7145500000001,
+      "median_after_ms": 79.46879999999999,
+      "p95_before_ms": 1921.7976,
+      "p95_after_ms": 99.8381
+    },
+    {
+      "programs": 10,
+      "profile": "catalog",
+      "before_sql": 527,
+      "after_sql": 96,
+      "before_metadata": 362,
+      "after_metadata": 11,
+      "output_identical": true,
+      "median_before_ms": 1820.521,
+      "median_after_ms": 65.31755000000001,
+      "p95_before_ms": 2433.6044,
+      "p95_after_ms": 82.0496
+    },
+    {
+      "programs": 10,
+      "profile": "detail_with_navigation",
+      "before_sql": 559,
+      "after_sql": 119,
+      "before_metadata": 381,
+      "after_metadata": 21,
+      "output_identical": true,
+      "median_before_ms": 2442.3496,
+      "median_after_ms": 119.36025000000001,
+      "p95_before_ms": 3094.6436,
+      "p95_after_ms": 154.7416
+    },
+    {
+      "programs": 50,
+      "profile": "navigation",
+      "before_sql": 2608,
+      "after_sql": 417,
+      "before_metadata": 1801,
+      "after_metadata": 10,
+      "output_identical": true,
+      "median_before_ms": 13945.954150000001,
+      "median_after_ms": 160.80599999999998,
+      "p95_before_ms": 20908.5837,
+      "p95_after_ms": 234.9175
+    },
+    {
+      "programs": 50,
+      "profile": "catalog",
+      "before_sql": 2607,
+      "after_sql": 416,
+      "before_metadata": 1802,
+      "after_metadata": 11,
+      "output_identical": true,
+      "median_before_ms": 14694.31075,
+      "median_after_ms": 153.96365,
+      "p95_before_ms": 17450.201,
+      "p95_after_ms": 187.7264
+    },
+    {
+      "programs": 50,
+      "profile": "detail_with_navigation",
+      "before_sql": 2639,
+      "after_sql": 439,
+      "before_metadata": 1821,
+      "after_metadata": 21,
+      "output_identical": true,
+      "median_before_ms": 11053.1011,
+      "median_after_ms": 208.76530000000002,
+      "p95_before_ms": 15463.4065,
+      "p95_after_ms": 276.2487
+    }
+  ],
+  "all_outputs_identical": true,
+  "timing_note": "Windows shared workstation. Local HTTP, browser, and verification overlapped part of baseline; use SQL counts and identical output as primary evidence. Paired HTTP alternated before/after under the same background load."
+}

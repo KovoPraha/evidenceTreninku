@@ -1,0 +1,257 @@
+- generic [active] [ref=f3e1]:
+  - navigation "Klubový portál" [ref=f3e2]:
+    - generic [ref=f3e3]:
+      - link "KOVO Praha – úvodní stránka" [ref=f3e4] [cursor=pointer]:
+        - /url: /index.php
+      - button "Otevřít hlavní nabídku" [ref=f3e6] [cursor=pointer]
+  - navigation "Navigace e-shopu" [ref=f3e8]:
+    - generic [ref=f3e9]:
+      - link "E-shop – domů" [ref=f3e10] [cursor=pointer]:
+        - /url: eshop.php
+        - generic [aria-hidden] [ref=f3e11]: 
+      - generic "Kategorie produktů" [ref=f3e13]:
+        - button "LOCALHOST" [ref=f3e15] [cursor=pointer]
+  - main [ref=f3e16]:
+    - generic [ref=f3e18]:
+      - heading "Klubový e-shop" [level=1] [ref=f3e19]
+      - generic [ref=f3e20]: Zboží, kroužky, členství a klubové služby na jednom místě.
+    - paragraph [ref=f3e21]:
+      - text: Nakoupit můžete i bez účtu.
+      - link "Přihlaste se" [ref=f3e22] [cursor=pointer]:
+        - /url: prihlaseni.php?redirect=eshop.php
+      - text: pro své objednávky a případné klubové ceny.
+    - generic [ref=f3e24]:
+      - search [ref=f3e25]:
+        - generic [ref=f3e26]:
+          - generic [ref=f3e27]:
+            - generic [ref=f3e28]: Hledat v názvu a popisu
+            - textbox "Hledat v názvu a popisu" [ref=f3e29]
+          - generic [ref=f3e30]:
+            - generic [ref=f3e31]: Řazení
+            - combobox "Řazení" [ref=f3e32]:
+              - option "doporučené pořadí" [selected]
+              - option "podle názvu"
+              - option "od nejnižší ceny"
+          - button "Použít" [ref=f3e34] [cursor=pointer]
+      - generic [ref=f3e35]:
+        - 'heading "Kategorie: Programy" [level=2] [ref=f3e36]'
+        - generic [ref=f3e37]: 20 výsledků
+      - generic [ref=f3e38]:
+        - generic [ref=f3e40]:
+          - img "LOCALHOST Program 1" [ref=f3e41]
+          - generic [ref=f3e42]:
+            - generic [ref=f3e43]:
+              - heading "LOCALHOST Program 1" [level=3] [ref=f3e44]
+              - generic [ref=f3e45]: kroužek
+            - paragraph [ref=f3e46]: LOCALHOST NEPLATIT
+            - generic [ref=f3e47]: bez omezení ročníku
+            - generic [ref=f3e49]:
+              - generic [ref=f3e50]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e51]: 1 termín
+            - generic [ref=f3e52]:
+              - strong [ref=f3e53]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e54] [cursor=pointer]:
+                - /url: produkt.php?id=920001
+        - generic [ref=f3e56]:
+          - img "LOCALHOST Program 10" [ref=f3e57]
+          - generic [ref=f3e58]:
+            - generic [ref=f3e59]:
+              - heading "LOCALHOST Program 10" [level=3] [ref=f3e60]
+              - generic [ref=f3e61]: kroužek
+            - paragraph [ref=f3e62]: LOCALHOST NEPLATIT
+            - generic [ref=f3e63]: bez omezení ročníku
+            - generic [ref=f3e65]:
+              - generic [ref=f3e66]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e67]: 1 termín
+            - generic [ref=f3e68]:
+              - strong [ref=f3e69]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e70] [cursor=pointer]:
+                - /url: produkt.php?id=920010
+        - generic [ref=f3e72]:
+          - img "LOCALHOST Program 11" [ref=f3e73]
+          - generic [ref=f3e74]:
+            - generic [ref=f3e75]:
+              - heading "LOCALHOST Program 11" [level=3] [ref=f3e76]
+              - generic [ref=f3e77]: kroužek
+            - paragraph [ref=f3e78]: LOCALHOST NEPLATIT
+            - generic [ref=f3e79]: bez omezení ročníku
+            - generic [ref=f3e81]:
+              - generic [ref=f3e82]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e83]: 1 termín
+            - generic [ref=f3e84]:
+              - strong [ref=f3e85]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e86] [cursor=pointer]:
+                - /url: produkt.php?id=920011
+        - generic [ref=f3e88]:
+          - img "LOCALHOST Program 12" [ref=f3e89]
+          - generic [ref=f3e90]:
+            - generic [ref=f3e91]:
+              - heading "LOCALHOST Program 12" [level=3] [ref=f3e92]
+              - generic [ref=f3e93]: kroužek
+            - paragraph [ref=f3e94]: LOCALHOST NEPLATIT
+            - generic [ref=f3e95]: bez omezení ročníku
+            - generic [ref=f3e97]:
+              - generic [ref=f3e98]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e99]: 1 termín
+            - generic [ref=f3e100]:
+              - strong [ref=f3e101]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e102] [cursor=pointer]:
+                - /url: produkt.php?id=920012
+        - generic [ref=f3e104]:
+          - img "LOCALHOST Program 13" [ref=f3e105]
+          - generic [ref=f3e106]:
+            - generic [ref=f3e107]:
+              - heading "LOCALHOST Program 13" [level=3] [ref=f3e108]
+              - generic [ref=f3e109]: kroužek
+            - paragraph [ref=f3e110]: LOCALHOST NEPLATIT
+            - generic [ref=f3e111]: bez omezení ročníku
+            - generic [ref=f3e113]:
+              - generic [ref=f3e114]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e115]: 1 termín
+            - generic [ref=f3e116]:
+              - strong [ref=f3e117]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e118] [cursor=pointer]:
+                - /url: produkt.php?id=920013
+        - generic [ref=f3e120]:
+          - img "LOCALHOST Program 14" [ref=f3e121]
+          - generic [ref=f3e122]:
+            - generic [ref=f3e123]:
+              - heading "LOCALHOST Program 14" [level=3] [ref=f3e124]
+              - generic [ref=f3e125]: kroužek
+            - paragraph [ref=f3e126]: LOCALHOST NEPLATIT
+            - generic [ref=f3e127]: bez omezení ročníku
+            - generic [ref=f3e129]:
+              - generic [ref=f3e130]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e131]: 1 termín
+            - generic [ref=f3e132]:
+              - strong [ref=f3e133]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e134] [cursor=pointer]:
+                - /url: produkt.php?id=920014
+        - generic [ref=f3e136]:
+          - img "LOCALHOST Program 15" [ref=f3e137]
+          - generic [ref=f3e138]:
+            - generic [ref=f3e139]:
+              - heading "LOCALHOST Program 15" [level=3] [ref=f3e140]
+              - generic [ref=f3e141]: kroužek
+            - paragraph [ref=f3e142]: LOCALHOST NEPLATIT
+            - generic [ref=f3e143]: bez omezení ročníku
+            - generic [ref=f3e145]:
+              - generic [ref=f3e146]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e147]: 1 termín
+            - generic [ref=f3e148]:
+              - strong [ref=f3e149]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e150] [cursor=pointer]:
+                - /url: produkt.php?id=920015
+        - generic [ref=f3e152]:
+          - img "LOCALHOST Program 16" [ref=f3e153]
+          - generic [ref=f3e154]:
+            - generic [ref=f3e155]:
+              - heading "LOCALHOST Program 16" [level=3] [ref=f3e156]
+              - generic [ref=f3e157]: kroužek
+            - paragraph [ref=f3e158]: LOCALHOST NEPLATIT
+            - generic [ref=f3e159]: bez omezení ročníku
+            - generic [ref=f3e161]:
+              - generic [ref=f3e162]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e163]: 1 termín
+            - generic [ref=f3e164]:
+              - strong [ref=f3e165]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e166] [cursor=pointer]:
+                - /url: produkt.php?id=920016
+        - generic [ref=f3e168]:
+          - img "LOCALHOST Program 17" [ref=f3e169]
+          - generic [ref=f3e170]:
+            - generic [ref=f3e171]:
+              - heading "LOCALHOST Program 17" [level=3] [ref=f3e172]
+              - generic [ref=f3e173]: kroužek
+            - paragraph [ref=f3e174]: LOCALHOST NEPLATIT
+            - generic [ref=f3e175]: bez omezení ročníku
+            - generic [ref=f3e177]:
+              - generic [ref=f3e178]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e179]: 1 termín
+            - generic [ref=f3e180]:
+              - strong [ref=f3e181]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e182] [cursor=pointer]:
+                - /url: produkt.php?id=920017
+        - generic [ref=f3e184]:
+          - img "LOCALHOST Program 18" [ref=f3e185]
+          - generic [ref=f3e186]:
+            - generic [ref=f3e187]:
+              - heading "LOCALHOST Program 18" [level=3] [ref=f3e188]
+              - generic [ref=f3e189]: kroužek
+            - paragraph [ref=f3e190]: LOCALHOST NEPLATIT
+            - generic [ref=f3e191]: bez omezení ročníku
+            - generic [ref=f3e193]:
+              - generic [ref=f3e194]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e195]: 1 termín
+            - generic [ref=f3e196]:
+              - strong [ref=f3e197]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e198] [cursor=pointer]:
+                - /url: produkt.php?id=920018
+        - generic [ref=f3e200]:
+          - img "LOCALHOST Program 19" [ref=f3e201]
+          - generic [ref=f3e202]:
+            - generic [ref=f3e203]:
+              - heading "LOCALHOST Program 19" [level=3] [ref=f3e204]
+              - generic [ref=f3e205]: kroužek
+            - paragraph [ref=f3e206]: LOCALHOST NEPLATIT
+            - generic [ref=f3e207]: bez omezení ročníku
+            - generic [ref=f3e209]:
+              - generic [ref=f3e210]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e211]: 1 termín
+            - generic [ref=f3e212]:
+              - strong [ref=f3e213]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e214] [cursor=pointer]:
+                - /url: produkt.php?id=920019
+        - generic [ref=f3e216]:
+          - img "LOCALHOST Program 2" [ref=f3e217]
+          - generic [ref=f3e218]:
+            - generic [ref=f3e219]:
+              - heading "LOCALHOST Program 2" [level=3] [ref=f3e220]
+              - generic [ref=f3e221]: kroužek
+            - paragraph [ref=f3e222]: LOCALHOST NEPLATIT
+            - generic [ref=f3e223]: bez omezení ročníku
+            - generic [ref=f3e225]:
+              - generic [ref=f3e226]: 
+              - text: 1. 1. 2026 – 31. 12. 2099 · 100 volných míst
+            - generic [ref=f3e227]: 1 termín
+            - generic [ref=f3e228]:
+              - strong [ref=f3e229]: 100,00 Kč
+              - link "Detail a přihlášení" [ref=f3e230] [cursor=pointer]:
+                - /url: produkt.php?id=920002
+      - navigation "Stránky produktů" [ref=f3e231]:
+        - list [ref=f3e232]:
+          - listitem [ref=f3e233]:
+            - link "1" [ref=f3e234] [cursor=pointer]:
+              - /url: "?kategorie=LOCALHOST+%3E+Programy&razeni=order&strana=1"
+          - listitem [ref=f3e235]:
+            - link "2" [ref=f3e236] [cursor=pointer]:
+              - /url: "?kategorie=LOCALHOST+%3E+Programy&razeni=order&strana=2"
+  - contentinfo [ref=f3e237]:
+    - generic [ref=f3e238]:
+      - generic [ref=f3e239]: Klubový portál Kovopraha
+      - generic [ref=f3e240]:
+        - link "Domů" [ref=f3e241] [cursor=pointer]:
+          - /url: /index.php
+        - text: ·
+        - link "Kroužky" [ref=f3e242] [cursor=pointer]:
+          - /url: /booking/cyklisticke_krouzky.php
+        - text: ·
+        - link "Individuální lekce" [ref=f3e243] [cursor=pointer]:
+          - /url: /booking/kalendar.php
+        - text: ·
+        - link "Veřejné tréninky" [ref=f3e244] [cursor=pointer]:
+          - /url: /booking/treninky.php
+        - text: ·
+        - link "E-shop" [ref=f3e245] [cursor=pointer]:
+          - /url: /booking/eshop.php

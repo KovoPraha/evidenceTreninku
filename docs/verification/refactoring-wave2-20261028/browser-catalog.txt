@@ -1,0 +1,197 @@
+- generic [active] [ref=e1]:
+  - navigation "Klubový portál" [ref=e2]:
+    - generic [ref=e3]:
+      - link "KOVO Praha – úvodní stránka" [ref=e4] [cursor=pointer]:
+        - /url: /index.php
+      - button "Otevřít hlavní nabídku" [ref=e6] [cursor=pointer]
+  - navigation "Navigace e-shopu" [ref=e8]:
+    - generic [ref=e9]:
+      - link "E-shop – domů" [ref=e10] [cursor=pointer]:
+        - /url: eshop.php
+        - generic [aria-hidden] [ref=e11]: 
+      - generic "Kategorie produktů" [ref=e13]:
+        - button "LOCALHOST" [ref=e15] [cursor=pointer]
+  - main [ref=e16]:
+    - generic [ref=e18]:
+      - heading "Klubový e-shop" [level=1] [ref=e19]
+      - generic [ref=e20]: Zboží, kroužky, členství a klubové služby na jednom místě.
+    - paragraph [ref=e21]:
+      - text: Nakoupit můžete i bez účtu.
+      - link "Přihlaste se" [ref=e22] [cursor=pointer]:
+        - /url: prihlaseni.php?redirect=eshop.php
+      - text: pro své objednávky a případné klubové ceny.
+    - generic [ref=e24]:
+      - search [ref=e25]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: Hledat v názvu a popisu
+            - textbox "Hledat v názvu a popisu" [ref=e29]
+          - generic [ref=e30]:
+            - generic [ref=e31]: Řazení
+            - combobox "Řazení" [ref=e32]:
+              - option "doporučené pořadí" [selected]
+              - option "podle názvu"
+              - option "od nejnižší ceny"
+          - button "Použít" [ref=e34] [cursor=pointer]
+      - generic [ref=e35]:
+        - heading "Aktivní nabídka" [level=2] [ref=e36]
+        - generic [ref=e37]: 71 výsledků
+      - generic [ref=e38]:
+        - generic [ref=e40]:
+          - img "Děti 8–14 měsíců" [ref=e41]
+          - generic [ref=e42]:
+            - heading "Děti 8–14 měsíců" [level=3] [ref=e44]
+            - paragraph [ref=e45]: Kurz otevíráme podle zájmu. Termín, rozsah a cenu celého kurzu potvrdí klub e-mailem.
+            - generic [ref=e46]: Nyní přijímáme pouze kontakt na zájemce.
+            - generic [ref=e47]:
+              - strong [ref=e48]: Cena kurzu na dotaz
+              - link "Zeptat se na kurz" [ref=e49] [cursor=pointer]:
+                - /url: produkt.php?id=157
+        - generic [ref=e51]:
+          - img "LOCALHOST Dres 0001" [ref=e52]
+          - generic [ref=e53]:
+            - heading "LOCALHOST Dres 0001" [level=3] [ref=e55]
+            - paragraph [ref=e56]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e57]: 1 varianta
+            - generic [ref=e58]:
+              - strong [ref=e59]: 100,00 Kč
+              - link "Detail a varianty" [ref=e60] [cursor=pointer]:
+                - /url: produkt.php?id=900001
+        - generic [ref=e62]:
+          - img "LOCALHOST Dres 0002" [ref=e63]
+          - generic [ref=e64]:
+            - heading "LOCALHOST Dres 0002" [level=3] [ref=e66]
+            - paragraph [ref=e67]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e68]: 1 varianta
+            - generic [ref=e69]:
+              - strong [ref=e70]: 100,00 Kč
+              - link "Detail a varianty" [ref=e71] [cursor=pointer]:
+                - /url: produkt.php?id=900002
+        - generic [ref=e73]:
+          - img "LOCALHOST Dres 0003" [ref=e74]
+          - generic [ref=e75]:
+            - heading "LOCALHOST Dres 0003" [level=3] [ref=e77]
+            - paragraph [ref=e78]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e79]: 1 varianta
+            - generic [ref=e80]:
+              - strong [ref=e81]: 100,00 Kč
+              - link "Detail a varianty" [ref=e82] [cursor=pointer]:
+                - /url: produkt.php?id=900003
+        - generic [ref=e84]:
+          - img "LOCALHOST Dres 0004" [ref=e85]
+          - generic [ref=e86]:
+            - heading "LOCALHOST Dres 0004" [level=3] [ref=e88]
+            - paragraph [ref=e89]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e90]: 1 varianta
+            - generic [ref=e91]:
+              - strong [ref=e92]: 100,00 Kč
+              - link "Detail a varianty" [ref=e93] [cursor=pointer]:
+                - /url: produkt.php?id=900004
+        - generic [ref=e95]:
+          - img "LOCALHOST Dres 0005" [ref=e96]
+          - generic [ref=e97]:
+            - heading "LOCALHOST Dres 0005" [level=3] [ref=e99]
+            - paragraph [ref=e100]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e101]: 1 varianta
+            - generic [ref=e102]:
+              - strong [ref=e103]: 100,00 Kč
+              - link "Detail a varianty" [ref=e104] [cursor=pointer]:
+                - /url: produkt.php?id=900005
+        - generic [ref=e106]:
+          - img "LOCALHOST Dres 0006" [ref=e107]
+          - generic [ref=e108]:
+            - heading "LOCALHOST Dres 0006" [level=3] [ref=e110]
+            - paragraph [ref=e111]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e112]: 1 varianta
+            - generic [ref=e113]:
+              - strong [ref=e114]: 100,00 Kč
+              - link "Detail a varianty" [ref=e115] [cursor=pointer]:
+                - /url: produkt.php?id=900006
+        - generic [ref=e117]:
+          - img "LOCALHOST Dres 0007" [ref=e118]
+          - generic [ref=e119]:
+            - heading "LOCALHOST Dres 0007" [level=3] [ref=e121]
+            - paragraph [ref=e122]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e123]: 1 varianta
+            - generic [ref=e124]:
+              - strong [ref=e125]: 100,00 Kč
+              - link "Detail a varianty" [ref=e126] [cursor=pointer]:
+                - /url: produkt.php?id=900007
+        - generic [ref=e128]:
+          - img "LOCALHOST Dres 0008" [ref=e129]
+          - generic [ref=e130]:
+            - heading "LOCALHOST Dres 0008" [level=3] [ref=e132]
+            - paragraph [ref=e133]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e134]: 1 varianta
+            - generic [ref=e135]:
+              - strong [ref=e136]: 100,00 Kč
+              - link "Detail a varianty" [ref=e137] [cursor=pointer]:
+                - /url: produkt.php?id=900008
+        - generic [ref=e139]:
+          - img "LOCALHOST Dres 0009" [ref=e140]
+          - generic [ref=e141]:
+            - heading "LOCALHOST Dres 0009" [level=3] [ref=e143]
+            - paragraph [ref=e144]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e145]: 1 varianta
+            - generic [ref=e146]:
+              - strong [ref=e147]: 100,00 Kč
+              - link "Detail a varianty" [ref=e148] [cursor=pointer]:
+                - /url: produkt.php?id=900009
+        - generic [ref=e150]:
+          - img "LOCALHOST Dres 0010" [ref=e151]
+          - generic [ref=e152]:
+            - heading "LOCALHOST Dres 0010" [level=3] [ref=e154]
+            - paragraph [ref=e155]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e156]: 1 varianta
+            - generic [ref=e157]:
+              - strong [ref=e158]: 100,00 Kč
+              - link "Detail a varianty" [ref=e159] [cursor=pointer]:
+                - /url: produkt.php?id=900010
+        - generic [ref=e161]:
+          - img "LOCALHOST Dres 0011" [ref=e162]
+          - generic [ref=e163]:
+            - heading "LOCALHOST Dres 0011" [level=3] [ref=e165]
+            - paragraph [ref=e166]: LOCALHOST NEPLATIT — syntetický výrobek.
+            - generic [ref=e167]: 1 varianta
+            - generic [ref=e168]:
+              - strong [ref=e169]: 100,00 Kč
+              - link "Detail a varianty" [ref=e170] [cursor=pointer]:
+                - /url: produkt.php?id=900011
+      - navigation "Stránky produktů" [ref=e171]:
+        - list [ref=e172]:
+          - listitem [ref=e173]:
+            - link "1" [ref=e174] [cursor=pointer]:
+              - /url: "?razeni=order&strana=1"
+          - listitem [ref=e175]:
+            - link "2" [ref=e176] [cursor=pointer]:
+              - /url: "?razeni=order&strana=2"
+          - listitem [ref=e177]:
+            - link "3" [ref=e178] [cursor=pointer]:
+              - /url: "?razeni=order&strana=3"
+          - listitem [ref=e179]:
+            - link "4" [ref=e180] [cursor=pointer]:
+              - /url: "?razeni=order&strana=4"
+          - listitem [ref=e181]:
+            - link "5" [ref=e182] [cursor=pointer]:
+              - /url: "?razeni=order&strana=5"
+          - listitem [ref=e183]:
+            - link "6" [ref=e184] [cursor=pointer]:
+              - /url: "?razeni=order&strana=6"
+  - contentinfo [ref=e185]:
+    - generic [ref=e186]:
+      - generic [ref=e187]: Klubový portál Kovopraha
+      - generic [ref=e188]:
+        - link "Domů" [ref=e189] [cursor=pointer]:
+          - /url: /index.php
+        - text: ·
+        - link "Kroužky" [ref=e190] [cursor=pointer]:
+          - /url: /booking/cyklisticke_krouzky.php
+        - text: ·
+        - link "Individuální lekce" [ref=e191] [cursor=pointer]:
+          - /url: /booking/kalendar.php
+        - text: ·
+        - link "Veřejné tréninky" [ref=e192] [cursor=pointer]:
+          - /url: /booking/treninky.php
+        - text: ·
+        - link "E-shop" [ref=e193] [cursor=pointer]:
+          - /url: /booking/eshop.php
