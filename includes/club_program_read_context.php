@@ -14,6 +14,8 @@ final class ClubProgramReadContext
     private array $columns = [];
     /** @var array<int,array<string,mixed>|false> */
     private array $offers = [];
+    /** @var array<int,list<int>> */
+    private array $physicalTeams = [];
     /** @var array<int,array{saleable:bool,reason:string,offer:array<string,mixed>|null}> */
     private array $states = [];
     /** @var array<string,array<string,mixed>|false> */
@@ -63,6 +65,65 @@ final class ClubProgramReadContext
         return $this->offers[$variantId] ??= clubProgramOfferForVariant($this->pdo, $variantId, $this->now, false, $this);
     }
 
+    /** @param list<int> $variantIds */
+    public function warmOffersForVariants(array $variantIds): void
+    {
+        $pending = array_values(array_filter(array_unique($variantIds), fn (int $id): bool => !array_key_exists($id, $this->offers)));
+        foreach (array_chunk($pending, 400) as $batch) {
+            $marks = implode(',', array_fill(0, count($batch), '?'));
+            $statement = $this->pdo->prepare(clubProgramOfferSelectSql($this->pdo, $this)
+                . "WHERE o.variant_id IN ($marks) AND o.status='active' AND p.status='active'");
+            $statement->execute($batch);
+            $byVariant = [];
+            $programIds = [];
+            foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $byVariant[(int) $row['variant_id']][] = $row;
+                if ((int) ($row['team_id'] ?? 0) > 0 && (int) $row['program_id'] > 0) {
+                    $programIds[] = (int) $row['program_id'];
+                }
+            }
+            $this->warmPhysicalTeams($programIds);
+            foreach ($batch as $id) {
+                $rows = $byVariant[$id] ?? [];
+                if (count($rows) > 1) {
+                    // Legacy duplicate links keep the canonical unordered fetch.
+                    $this->offer($id);
+                } elseif ($rows === []) {
+                    $this->offers[$id] = false;
+                } else {
+                    $this->offers[$id] = array_merge($rows[0], clubProgramOfferCapacityState($this->pdo, $rows[0], $this->now, false, 0, $this));
+                }
+            }
+        }
+    }
+
+    /** @return list<int> */
+    public function physicalTeamIds(int $programId): array
+    {
+        $this->warmPhysicalTeams([$programId]);
+        return $this->physicalTeams[$programId] ?? [];
+    }
+
+    /** @param list<int> $programIds */
+    private function warmPhysicalTeams(array $programIds): void
+    {
+        $pending = array_values(array_filter(array_unique($programIds), fn (int $id): bool => !array_key_exists($id, $this->physicalTeams)));
+        if ($pending === [] || !$this->tableExists($this->pdo, 'club_program_physical_teams')) {
+            return;
+        }
+        foreach (array_chunk($pending, 400) as $batch) {
+            $marks = implode(',', array_fill(0, count($batch), '?'));
+            $statement = $this->pdo->prepare("SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN ($marks) ORDER BY team_id");
+            $statement->execute($batch);
+            foreach ($batch as $id) {
+                $this->physicalTeams[$id] = [];
+            }
+            foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $this->physicalTeams[(int) $row['program_id']][] = (int) $row['team_id'];
+            }
+        }
+    }
+
     /** @return array{saleable:bool,reason:string,offer:array<string,mixed>|null} */
     public function saleState(int $variantId): array
     {
@@ -74,6 +135,7 @@ final class ClubProgramReadContext
      */
     public function warmTermsForVariants(array $variantIds): void
     {
+        $this->warmOffersForVariants($variantIds);
         $targets = ['offer' => [], 'program' => []];
         foreach (array_unique($variantIds) as $variantId) {
             $offer = $this->offer($variantId);

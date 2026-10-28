@@ -624,22 +624,27 @@ function clubProgramAdminOffers(PDO $pdo): array
     unset($row);
     return $rows;
 }
+/** Shared row projection; callers retain their own selection and locking. */
+function clubProgramOfferSelectSql(PDO $pdo, ?ClubProgramReadContext $readContext = null): string
+{
+    $readContext?->assertConnection($pdo);
+    $hasRosterContext = clubProgramRuntimeTableExists($pdo, 'club_teams', $readContext) && clubProgramRuntimeTableExists($pdo, 'club_seasons', $readContext);
+    $descriptionSelect = clubProgramColumnExists($pdo, 'club_programs', 'description', $readContext) ? 'p.description' : 'NULL';
+    return "SELECT o.*,p.name AS program_name," .
+         $descriptionSelect .
+         " AS program_description," .
+         ($hasRosterContext ? 't.name AS team_name,s.name AS season_name ' : "NULL AS team_name,NULL AS season_name ") .
+         "FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id " .
+         ($hasRosterContext ? 'JOIN club_teams t ON t.id=o.team_id JOIN club_seasons s ON s.id=o.season_id ' : '');
+}
+
 /** @return array<string,mixed>|false */
 function clubProgramOfferForVariant(PDO $pdo, int $variantId, ?DateTimeImmutable $now = null, bool $lock = false, ?ClubProgramReadContext $readContext = null): array|false
 {
     if ($lock) {
         $readContext = null;
     }
-    $readContext?->assertConnection($pdo);
-    $hasRosterContext = clubProgramRuntimeTableExists($pdo, 'club_teams', $readContext) && clubProgramRuntimeTableExists($pdo, 'club_seasons', $readContext);
-    $descriptionSelect = clubProgramColumnExists($pdo, 'club_programs', 'description', $readContext) ? 'p.description' : 'NULL';
-    $sql = "SELECT o.*,p.name AS program_name," .
-         $descriptionSelect .
-         " AS program_description," .
-         ($hasRosterContext ? 't.name AS team_name,s.name AS season_name ' : "NULL AS team_name,NULL AS season_name ") .
-         "FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id " .
-         ($hasRosterContext ? 'JOIN club_teams t ON t.id=o.team_id JOIN club_seasons s ON s.id=o.season_id ' : '') .
-         "WHERE o.variant_id=? AND o.status='active' AND p.status='active'";
+    $sql = clubProgramOfferSelectSql($pdo, $readContext) . "WHERE o.variant_id=? AND o.status='active' AND p.status='active'";
     if ($lock && (string) $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
         $sql .= ' FOR UPDATE';
     }
@@ -840,6 +845,7 @@ function clubProgramAssertBeneficiaryBirthYear(PDO $pdo, array $offer, int $spor
  */
 function clubProgramPhysicalTeamIds(PDO $pdo, array $offer, ?ClubProgramReadContext $readContext = null): array
 {
+    $readContext?->assertConnection($pdo);
     $primary = (int) ($offer['team_id'] ?? 0);
     if ($primary < 1) {
         return [];
@@ -858,6 +864,10 @@ function clubProgramPhysicalTeamIds(PDO $pdo, array $offer, ?ClubProgramReadCont
     }
     if ($programId < 1) {
         return [$primary];
+    }
+    if ($readContext !== null) {
+        $targets = $readContext->physicalTeamIds($programId);
+        return $targets !== [] ? $targets : [$primary];
     }
     $q = $pdo->prepare('SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id');
     $q->execute([$programId]);
