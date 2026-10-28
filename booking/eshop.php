@@ -7,7 +7,7 @@ require_once dirname(__DIR__) . '/db.php';
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_checkout.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
-require_once dirname(__DIR__) . '/includes/shop_public_navigation.php';
+require_once dirname(__DIR__) . '/includes/shop_catalog_cards.php';
 require_once dirname(__DIR__) . '/includes/shop_purchase_mode.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
 require_once dirname(__DIR__) . '/includes/club_program.php';
@@ -16,172 +16,943 @@ require_once dirname(__DIR__) . '/includes/shop_ppl_widget.php';
 require_once dirname(__DIR__) . '/includes/ui_format.php';
 require_once dirname(__DIR__) . '/includes/public_seo.php';
 
-function shopPublicH(mixed $value): string { return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
-function shopPublicMoney(int $minor, string $currency = 'CZK'): string { return number_format($minor / 100, 2, ',', ' ') . ' ' . shopPublicH($currency === 'CZK' ? 'Kč' : $currency); }
-function shopPublicOfferCountLabel(int $count): string { return $count . ' ' . ($count === 1 ? 'nabídka' : ($count >= 2 && $count <= 4 ? 'nabídky' : 'nabídek')); }
+function shopPublicH(mixed $value): string
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+function shopPublicMoney(int $minor, string $currency = 'CZK'): string
+{
+    return number_format($minor / 100, 2, ',', ' ') . ' ' . shopPublicH($currency === 'CZK' ? 'Kč' : $currency);
+
+}
+function shopPublicOfferCountLabel(int $count): string
+{
+    return $count . ' ' . ($count === 1 ? 'nabídka' : ($count >= 2 && $count <= 4 ? 'nabídky' : 'nabídek'));
+
+}
 
 $isLoggedIn = isset($_SESSION['verejny_uzivatel_id']);
-$accountId = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);$errors = [];
+$accountId = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);
+$errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!$isLoggedIn) { header('Location: prihlaseni.php?redirect=eshop.php',true,303);exit; }
-    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) $errors[] = 'Formulář vypršel. Obnovte stránku.';
-    else try {
-        $action = (string)($_POST['action'] ?? '');
-        if ($action !== 'checkout' && isset($_POST['finance_sportovec_id'])) {
-            $_SESSION['shop_finance_selection'] = (int)$_POST['finance_sportovec_id'];
+    if (!$isLoggedIn) {
+        header('Location: prihlaseni.php?redirect=eshop.php', true, 303);
+        exit;
+    }
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        $errors[] = 'Formulář vypršel. Obnovte stránku.';
+    } else {
+        try {
+            $action = (string)($_POST['action'] ?? '');
+            if ($action !== 'checkout' && isset($_POST['finance_sportovec_id'])) {
+                $_SESSION['shop_finance_selection'] = (int)$_POST['finance_sportovec_id'];
+            }
+            if ($action === 'add') {
+                $variantId = (int)($_POST['variant_id'] ?? 0);
+                $offer = false;
+                if (clubProgramVariantHasOfferLink($pdo, $variantId)) {
+                    $saleState = clubProgramVariantSaleState($pdo, $variantId);
+                    if (!$saleState['saleable']) {
+                        throw new ClubProgramException($saleState['reason']);
+                    }$offer = $saleState['offer'];
+                }
+                $detail = shopCartDetail($pdo, $accountId);
+                $current = 0;
+                foreach ($detail['items'] as $item) {
+                    if ((int)$item['variant_id'] === $variantId) {
+                        $current = (int)$item['quantity'];
+                    }
+                }
+                shopCartSetQuantity($pdo, $accountId, $variantId, $offer ? 1 : min(99, $current + 1), $offer ? (int)($_POST['sportovec_id'] ?? 0) : null);
+
+                $_SESSION['flash_shop'] = $offer ? 'Období kroužku bylo přidáno pro vybrané dítě.' : 'Položka byla přidána do košíku.';
+
+            } elseif ($action === 'quantity') {
+                $variantId = (int)($_POST['variant_id'] ?? 0);
+                $quantity = (int)($_POST['quantity'] ?? 0);
+                if (clubProgramOfferForVariant($pdo, $variantId) && !in_array($quantity, [0,1], true)) {
+                    throw new ClubProgramException('Období kroužku lze koupit pouze jednou pro jedno dítě.');
+
+                }
+                shopCartSetQuantity($pdo, $accountId, $variantId, $quantity, null, (int)($_POST['cart_item_id'] ?? 0));
+
+                $_SESSION['flash_shop'] = 'Košík byl upraven.';
+            } elseif ($action === 'remove_velodrome') {
+                publicVelodromeShopRemoveFromCart($pdo, $accountId, (int)($_POST['cart_item_id'] ?? 0));
+
+                $_SESSION['flash_shop'] = 'Termín velodromu byl z košíku odebrán.';
+            } elseif ($action === 'remove_event') {
+                clubEventShopRemoveFromCart($pdo, $accountId, (int)($_POST['cart_item_id'] ?? 0));
+                $_SESSION['flash_shop'] = 'Klubová událost byla z košíku odebrána.';
+            } elseif ($action === 'beneficiary') {
+                $cartItemId = (int)($_POST['cart_item_id'] ?? 0);
+                $sportovecId = (int)($_POST['sportovec_id'] ?? 0);
+                $matched = false;
+                foreach (shopCartDetail($pdo, $accountId)['items'] as $item) {
+                    if ((int)$item['cart_item_id'] === $cartItemId && clubProgramOfferForVariant(
+                        $pdo,
+                        (int)$item['variant_id']
+                    )) {
+                        $matched = true;
+                    }
+                }
+                if (!$matched || $sportovecId < 1) {
+                    throw new ClubProgramException('Položka programu nebo příjemce nebyli nalezeni.');
+
+                }
+                shopCartSetBeneficiary($pdo, $accountId, $cartItemId, $sportovecId);
+                $_SESSION['flash_shop'] = 'Dítě pro kroužek bylo bezpečně vybráno.';
+            } elseif ($action === 'apply_coupon') {
+                $coupon = shopCouponApplyToCart($pdo, $accountId, (string)($_POST['coupon_code'] ?? ''));
+
+                $_SESSION['flash_shop'] = 'Kupón ' . $coupon['code'] . ' byl použit.';
+            } elseif ($action === 'remove_coupon') {
+                shopCouponRemoveFromCart($pdo, $accountId);
+                $_SESSION['flash_shop'] = 'Kupón byl z košíku odebrán.';
+            } elseif ($action === 'checkout') {
+                foreach (shopCartDetail($pdo, $accountId)['items'] as $item) {
+                    $offer = clubProgramOfferForVariant($pdo, (int)$item['variant_id']);
+                    if ($offer && (!clubProgramVariantSaleState($pdo, (int)$item['variant_id'])['saleable'] ||
+ $item['beneficiary_sportovec_id'] === null)) {
+                        throw new ClubProgramException('Období kroužku už není v prodeji, nemá platné podmínky nebo u něj není vybrané dítě.');
+
+                    }
+                }
+                $key = (string)($_POST['checkout_key'] ?? '');
+                if (!isset($_SESSION['shop_checkout_key']) || !hash_equals(
+                    (string)$_SESSION['shop_checkout_key'],
+                    $key
+                )) {
+                    throw new ShopCheckoutException('Checkout klíč vypršel. Obnovte stránku.');
+                }
+                $accepted = is_array($_POST['program_terms_accept'] ?? null) ? $_POST['program_terms_accept'] : [];
+
+                $order = shopCheckoutPlace(
+                    $pdo,
+                    $accountId,
+                    $key,
+                    shopBankSettingsEffective($pdo),
+                    (string)($_POST['cart_fingerprint'] ?? ''),
+                    $accepted,
+                    isset($_POST['finance_sportovec_id']) ? (int)$_POST['finance_sportovec_id'] : null,
+                    (string)($_POST['delivery_method'] ?? 'personal_pickup'),
+                    (string)($_POST['ppl_access_point_code'] ?? ''),
+                    (string)($_POST['ppl_phone'] ?? $_POST['packeta_phone'] ?? ''),
+                    (int)($_POST['shipping_price_minor'] ?? 0),
+                    null,
+                    (string)($_POST['packeta_point_id'] ?? ''),
+                    (int)($_POST['packeta_shipping_price_minor'] ?? 0),
+                    null,
+                    $_POST
+                );
+                unset($_SESSION['shop_checkout_key'], $_SESSION['shop_finance_selection']);
+                header(
+                    'Location: objednavka.php?code=' . rawurlencode((string)$order['public_code']),
+                    true,
+                    303
+                );
+                exit;
+            } else {
+                throw new InvalidArgumentException('Neplatná akce.');
+            }
+            header('Location: eshop.php#kosik', true, 303);
+            exit;
+        } catch (PDOException $exception) {
+            error_log('booking/eshop.php: ' . $exception->getMessage());
+            $errors[] = 'Databázová operace selhala bez částečného zápisu.';
+        } catch (InvalidArgumentException|ShopCheckoutException|ShopCouponException|ClubProgramException|PublicVelodromeShopException|ClubEventShopException $exception) {
+            $errors[] = $exception->getMessage();
         }
-        if ($action === 'add') {
-            $variantId = (int)($_POST['variant_id'] ?? 0);$offer = false;
-            if(clubProgramVariantHasOfferLink($pdo,$variantId)){$saleState=clubProgramVariantSaleState($pdo,$variantId);if(!$saleState['saleable'])throw new ClubProgramException($saleState['reason']);$offer=$saleState['offer'];}
-            $detail = shopCartDetail($pdo,$accountId);$current = 0;
-            foreach ($detail['items'] as $item) if ((int)$item['variant_id'] === $variantId) $current = (int)$item['quantity'];
-            shopCartSetQuantity($pdo,$accountId,$variantId,$offer?1:min(99,$current+1),$offer?(int)($_POST['sportovec_id']??0):null);
-            $_SESSION['flash_shop'] = $offer ? 'Období kroužku bylo přidáno pro vybrané dítě.' : 'Položka byla přidána do košíku.';
-        } elseif ($action === 'quantity') {
-            $variantId = (int)($_POST['variant_id'] ?? 0);$quantity = (int)($_POST['quantity'] ?? 0);
-            if (clubProgramOfferForVariant($pdo,$variantId) && !in_array($quantity,[0,1],true)) throw new ClubProgramException('Období kroužku lze koupit pouze jednou pro jedno dítě.');
-            shopCartSetQuantity($pdo,$accountId,$variantId,$quantity,null,(int)($_POST['cart_item_id']??0));$_SESSION['flash_shop'] = 'Košík byl upraven.';
-        } elseif ($action === 'remove_velodrome') {
-            publicVelodromeShopRemoveFromCart($pdo,$accountId,(int)($_POST['cart_item_id'] ?? 0));
-            $_SESSION['flash_shop'] = 'Termín velodromu byl z košíku odebrán.';
-        } elseif ($action === 'remove_event') {
-            clubEventShopRemoveFromCart($pdo,$accountId,(int)($_POST['cart_item_id'] ?? 0));
-            $_SESSION['flash_shop'] = 'Klubová událost byla z košíku odebrána.';
-        } elseif ($action === 'beneficiary') {
-            $cartItemId = (int)($_POST['cart_item_id'] ?? 0);$sportovecId = (int)($_POST['sportovec_id'] ?? 0);$matched = false;
-            foreach (shopCartDetail($pdo,$accountId)['items'] as $item) if ((int)$item['cart_item_id'] === $cartItemId && clubProgramOfferForVariant($pdo,(int)$item['variant_id'])) $matched = true;
-            if (!$matched || $sportovecId < 1) throw new ClubProgramException('Položka programu nebo příjemce nebyli nalezeni.');
-            shopCartSetBeneficiary($pdo,$accountId,$cartItemId,$sportovecId);$_SESSION['flash_shop'] = 'Dítě pro kroužek bylo bezpečně vybráno.';
-        } elseif ($action === 'apply_coupon') {
-            $coupon = shopCouponApplyToCart($pdo,$accountId,(string)($_POST['coupon_code'] ?? ''));$_SESSION['flash_shop'] = 'Kupón ' . $coupon['code'] . ' byl použit.';
-        } elseif ($action === 'remove_coupon') {
-            shopCouponRemoveFromCart($pdo,$accountId);$_SESSION['flash_shop'] = 'Kupón byl z košíku odebrán.';
-        } elseif ($action === 'checkout') {
-            foreach (shopCartDetail($pdo,$accountId)['items'] as $item) { $offer=clubProgramOfferForVariant($pdo,(int)$item['variant_id']);if ($offer && (!clubProgramVariantSaleState($pdo,(int)$item['variant_id'])['saleable'] || $item['beneficiary_sportovec_id'] === null)) throw new ClubProgramException('Období kroužku už není v prodeji, nemá platné podmínky nebo u něj není vybrané dítě.'); }
-            $key = (string)($_POST['checkout_key'] ?? '');
-            if (!isset($_SESSION['shop_checkout_key']) || !hash_equals((string)$_SESSION['shop_checkout_key'],$key)) throw new ShopCheckoutException('Checkout klíč vypršel. Obnovte stránku.');
-            $accepted=is_array($_POST['program_terms_accept']??null)?$_POST['program_terms_accept']:[];
-            $order = shopCheckoutPlace($pdo,$accountId,$key,shopBankSettingsEffective($pdo),(string)($_POST['cart_fingerprint'] ?? ''),$accepted,isset($_POST['finance_sportovec_id'])?(int)$_POST['finance_sportovec_id']:null,(string)($_POST['delivery_method']??'personal_pickup'),(string)($_POST['ppl_access_point_code']??''),(string)($_POST['ppl_phone']??$_POST['packeta_phone']??''),(int)($_POST['shipping_price_minor']??0),null,(string)($_POST['packeta_point_id']??''),(int)($_POST['packeta_shipping_price_minor']??0),null,$_POST);unset($_SESSION['shop_checkout_key'], $_SESSION['shop_finance_selection']);
-            header('Location: objednavka.php?code=' . rawurlencode((string)$order['public_code']),true,303);exit;
-        } else throw new InvalidArgumentException('Neplatná akce.');
-        header('Location: eshop.php#kosik',true,303);exit;
-    } catch (PDOException $exception) { error_log('booking/eshop.php: ' . $exception->getMessage());$errors[] = 'Databázová operace selhala bez částečného zápisu.'; }
-    catch (InvalidArgumentException|ShopCheckoutException|ShopCouponException|ClubProgramException|PublicVelodromeShopException|ClubEventShopException $exception) { $errors[] = $exception->getMessage(); }
+    }
 }
-$success = (string)($_SESSION['flash_shop'] ?? '');unset($_SESSION['flash_shop']);
+$success = (string)($_SESSION['flash_shop'] ?? '');
+unset($_SESSION['flash_shop']);
 $products = [];
-foreach (shopPublicSaleableCatalog($pdo) as $product) {
+foreach (shopPublicCatalogCards($pdo) as $product) {
     if ($isLoggedIn) {
-        foreach ($product['variants'] as &$variant) shopMemberPriceApplyToItem($pdo, $accountId, $variant);
+        foreach ($product['variants'] as &$variant) {
+            shopMemberPriceApplyToItem($pdo, $accountId, $variant);
+        }
         unset($variant);
     }
-    $product['has_member_price'] = count(array_filter($product['variants'], static fn(array $variant): bool => ($variant['member_price']['is_member_price'] ?? false) === true)) > 0;
-    $isProgram = shopProductRequiresAthlete($pdo, (int)$product['product_id']);
-    if ($isProgram) $product['images'] = array_values(array_filter(
-        $product['images'],
-        static fn(string $url): bool => shopStorefrontIsLocalImageUrl($url)
-    ));
-    $product['program_restrictions']=[];$product['program_offers']=[];
-    if($isProgram)foreach($product['variants']as$variant){
-        $offer=clubProgramOfferForVariant($pdo,(int)$variant['variant_id']);
-        if($offer){$label=clubProgramBirthYearLabel($offer);if(!in_array($label,$product['program_restrictions'],true))$product['program_restrictions'][]=$label;$product['program_offers'][]=$offer;}
-    }
-    $product['is_program'] = $isProgram;
+    $product['has_member_price'] = count(array_filter($product['variants'], static fn (array $variant): bool => ($variant['member_price']['is_member_price'] ?? false) === true)) > 0;
+
     $product['interest_only_course'] = shopProductIsInterestOnlyYoungestCourse($product);
     $product['min_amount_minor'] = min(array_column($product['variants'], 'amount_minor'));
     $product['max_amount_minor'] = max(array_column($product['variants'], 'amount_minor'));
     $product['currency'] = (string)$product['variants'][0]['currency'];
-    $product['in_stock'] = count(array_filter($product['variants'], static fn(array $variant): bool => (bool)$variant['in_stock'])) > 0;
+    $product['in_stock'] = count(array_filter($product['variants'], static fn (array $variant): bool => (bool)$variant['in_stock'])) > 0;
+
     $products[] = $product;
 }
 $activeCatalogCount = count($products);
 $allProducts = $products;
-$categoryNodes=shopCategoryNodes($pdo);$categoryMenu=shopStorefrontCategoryMenu($pdo,$products);
-$selectedCategory=trim((string)($_GET['kategorie']??''));$selectedCategoryLabel='';
-if($selectedCategory!==''){
-    try{$selectedCategory=shopCategoryPath($selectedCategory);$selectedPaths=shopCategoryDescendants($categoryNodes,$selectedCategory);}
-    catch(InvalidArgumentException){$selectedPaths=[];}
-    $selectedCategoryLabel=(string)($categoryNodes[$selectedCategory]['display_name']??$selectedCategory);
-    $products=array_values(array_filter($products,static fn(array$product):bool=>array_intersect($selectedPaths,$product['categories'])!==[]));
+$categoryNodes = shopCategoryNodes($pdo);
+$categoryMenu = shopStorefrontCategoryMenu($pdo, $products);
+$selectedCategory = trim((string)($_GET['kategorie'] ?? ''));
+$selectedCategoryLabel = '';
+if ($selectedCategory !== '') {
+    try {
+        $selectedCategory = shopCategoryPath($selectedCategory);
+        $selectedPaths = shopCategoryDescendants($categoryNodes, $selectedCategory);
+    } catch (InvalidArgumentException) {
+        $selectedPaths = [];
+    }
+    $selectedCategoryLabel = (string)($categoryNodes[$selectedCategory]['display_name'] ?? $selectedCategory);
+
+    $products = array_values(array_filter($products, static fn (array$product): bool => array_intersect(
+        $selectedPaths,
+        $product['categories']
+    ) !== []));
 }
-$catalogSearch=trim((string)($_GET['q']??''));$catalogSort=(string)($_GET['razeni']??'order');if(!in_array($catalogSort,['order','name','price'],true))$catalogSort='order';
-if($catalogSearch!==''){$needle=mb_strtolower($catalogSearch,'UTF-8');$products=array_values(array_filter($products,static fn(array$product):bool=>str_contains(mb_strtolower((string)$product['public_name'].' '.(string)$product['public_summary'],'UTF-8'),$needle)));}
-usort($products,static function(array$a,array$b)use($catalogSort):int{if($catalogSort==='price')return[(int)$a['min_amount_minor'],mb_strtolower((string)$a['public_name'],'UTF-8'),(int)$a['product_id']]<=>[(int)$b['min_amount_minor'],mb_strtolower((string)$b['public_name'],'UTF-8'),(int)$b['product_id']];if($catalogSort==='name')return[mb_strtolower((string)$a['public_name'],'UTF-8'),(int)$a['product_id']]<=>[mb_strtolower((string)$b['public_name'],'UTF-8'),(int)$b['product_id']];return[(int)($a['sort_order']??0),mb_strtolower((string)$a['public_name'],'UTF-8'),(int)$a['product_id']]<=>[(int)($b['sort_order']??0),mb_strtolower((string)$b['public_name'],'UTF-8'),(int)$b['product_id']];});
-$filteredProductCount=count($products);$perPage=12;$page=max(1,(int)($_GET['strana']??1));$totalPages=max(1,(int)ceil($filteredProductCount/$perPage));$page=min($page,$totalPages);$products=array_slice($products,($page-1)*$perPage,$perPage);
-$topCategories=[];foreach($categoryMenu as$categoryItem){$path=(string)($categoryItem['category_path']??'');if($path===''||str_contains($path,' > '))continue;$count=0;foreach($allProducts as$product){foreach($product['categories']as$productPath){if($productPath===$path||str_starts_with($productPath,$path.' > ')){$count++;break;}}}if($count>0)$topCategories[]=['path'=>$path,'name'=>(string)($categoryItem['display_name']??$categoryItem['menu_label']??$path),'count'=>$count];}
-$cart = $isLoggedIn ? shopCartDetail($pdo,$accountId) : ['items'=>[],'event_items'=>[],'velodrome_items'=>[],'coupon'=>null,'subtotal_minor'=>0,'discount_minor'=>0,'total_minor'=>0,'currency'=>'CZK','fingerprint'=>'','coupon_error'=>null];
-$pplSettings=shopPplSettings($pdo);
-$packetaSettings=shopPacketaSettings($pdo);
-$pplCanShip=$isLoggedIn&&shopPplAvailable($pplSettings)&&shopPplCartEligible($cart['items'])&&$cart['event_items']===[]&&$cart['velodrome_items']===[];
-$packetaCanShip=$isLoggedIn&&shopPacketaAvailable($packetaSettings)&&shopPacketaCartEligible($cart['items'])&&$cart['event_items']===[]&&$cart['velodrome_items']===[];
-$boxDeliveryAvailable=$pplCanShip||$packetaCanShip;
-$pplSettings['_packeta']=$packetaCanShip?$packetaSettings:[];
-$pplCanShip=$boxDeliveryAvailable;
-$deliverySelected=(string)($_POST['delivery_method']??'personal_pickup');
-$cartLineCount=count($cart['items'])+count($cart['event_items'])+count($cart['velodrome_items']);
-$cartBeneficiaries=[];
-foreach(array_merge($cart['items'],$cart['event_items'],$cart['velodrome_items']) as $cartLine){
-    $beneficiaryId=(int)($cartLine['beneficiary_sportovec_id']??0);
-    if($beneficiaryId>0)$cartBeneficiaries[$beneficiaryId]=true;
+$catalogSearch = trim((string)($_GET['q'] ?? ''));
+$catalogSort = (string)($_GET['razeni'] ?? 'order');
+if (!in_array($catalogSort, ['order','name','price'], true)) {
+    $catalogSort = 'order';
 }
-$cartHasMixedBeneficiaries=count($cartBeneficiaries)>1;
-$cartNeedsFinanceSelection=count($cartBeneficiaries)===0 || ($cartHasMixedBeneficiaries && count(array_filter(array_merge($cart['items'],$cart['event_items'],$cart['velodrome_items']),static fn(array $line):bool=>empty($line['beneficiary_sportovec_id'])))>0);
-$cartBlockingErrors=[];
-foreach(array_merge($cart['items'],$cart['event_items'])as$cartItem)if(($cartItem['availability_error']??null)!==null)$cartBlockingErrors[]=['label'=>(string)($cartItem['public_name']??$cartItem['event_name']??'Položka'),'message'=>(string)$cartItem['availability_error']];
-$people = $isLoggedIn ? familyPortalAuthorizedPeople($pdo,$accountId) : [];
-$personLabels=[];foreach($people as $person)$personLabels[(int)$person['sportovec_id']]=$person['jmeno'].' '.$person['prijmeni'];
+if ($catalogSearch !== '') {
+    $needle = mb_strtolower($catalogSearch, 'UTF-8');
+    $products = array_values(array_filter($products, static fn (array$product): bool => str_contains(mb_strtolower((string)$product['public_name'].
+' '.(string)$product['public_summary'], 'UTF-8'), $needle)));
+}
+usort($products, static function (array$a, array$b) use ($catalogSort): int {
+    if ($catalogSort === 'price') {
+        return[(int)$a['min_amount_minor'],mb_strtolower((string)$a['public_name'], 'UTF-8'),(int)$a['product_id']] <=> [(int)$b['min_amount_minor'],
+mb_strtolower((string)$b['public_name'], 'UTF-8'),(int)$b['product_id']];
+    }if ($catalogSort === 'name') {
+        return[mb_strtolower((string)$a['public_name'], 'UTF-8'),(int)$a['product_id']] <=> [mb_strtolower(
+            (string)$b['public_name'],
+            'UTF-8'
+        ),(int)$b['product_id']];
+    }return[(int)($a['sort_order'] ?? 0),mb_strtolower((string)$a['public_name'], 'UTF-8'),(int)$a['product_id']] <=> [(int)($b['sort_order'] ?? 0),
+mb_strtolower((string)$b['public_name'], 'UTF-8'),(int)$b['product_id']];
+});
+$filteredProductCount = count($products);
+$perPage = 12;
+$page = max(1, (int)($_GET['strana'] ?? 1));
+$totalPages = max(1, (int)ceil($filteredProductCount / $perPage));
+$page = min($page, $totalPages);
+$products = array_slice($products, ($page - 1) * $perPage, $perPage);
+$topCategories = [];
+foreach ($categoryMenu as $categoryItem) {
+    $path = (string)($categoryItem['category_path'] ?? '');
+    if ($path === '' || str_contains($path, ' > ')) {
+        continue;
+    }$count = 0;
+    foreach ($allProducts as $product) {
+        foreach ($product['categories'] as $productPath) {
+            if ($productPath === $path || str_starts_with($productPath, $path.' > ')) {
+                $count++;
+                break;
+            }
+        }
+    }if ($count > 0) {
+        $topCategories[] = ['path' => $path,'name' => (string)($categoryItem['display_name'] ?? $categoryItem['menu_label'] ?? $path),
+'count' => $count];
+    }
+}
+$cart = $isLoggedIn ? shopCartDetail($pdo, $accountId) : ['items' => [],'event_items' => [],'velodrome_items' => [],
+'coupon' => null,'subtotal_minor' => 0,'discount_minor' => 0,'total_minor' => 0,'currency' => 'CZK','fingerprint' => '',
+'coupon_error' => null];
+$pplSettings = shopPplSettings($pdo);
+$packetaSettings = shopPacketaSettings($pdo);
+$pplCanShip = $isLoggedIn && shopPplAvailable($pplSettings) && shopPplCartEligible($cart['items']) && $cart['event_items'] === [] &&
+ $cart['velodrome_items'] === [];
+$packetaCanShip = $isLoggedIn && shopPacketaAvailable($packetaSettings) && shopPacketaCartEligible($cart['items']) &&
+ $cart['event_items'] === [] && $cart['velodrome_items'] === [];
+$boxDeliveryAvailable = $pplCanShip || $packetaCanShip;
+$pplSettings['_packeta'] = $packetaCanShip ? $packetaSettings : [];
+$pplCanShip = $boxDeliveryAvailable;
+$deliverySelected = (string)($_POST['delivery_method'] ?? 'personal_pickup');
+$cartLineCount = count($cart['items']) + count($cart['event_items']) + count($cart['velodrome_items']);
+
+$cartBeneficiaries = [];
+foreach (array_merge($cart['items'], $cart['event_items'], $cart['velodrome_items']) as $cartLine) {
+    $beneficiaryId = (int)($cartLine['beneficiary_sportovec_id'] ?? 0);
+    if ($beneficiaryId > 0) {
+        $cartBeneficiaries[$beneficiaryId] = true;
+    }
+}
+$cartHasMixedBeneficiaries = count($cartBeneficiaries) > 1;
+$cartNeedsFinanceSelection = count($cartBeneficiaries) === 0 || ($cartHasMixedBeneficiaries && count(array_filter(array_merge(
+    $cart['items'],
+    $cart['event_items'],
+    $cart['velodrome_items']
+), static fn (array $line): bool => empty($line['beneficiary_sportovec_id']))) > 0);
+
+$cartBlockingErrors = [];
+foreach (array_merge($cart['items'], $cart['event_items']) as $cartItem) {
+    if (($cartItem['availability_error'] ?? null) !== null) {
+        $cartBlockingErrors[] = ['label' => (string)($cartItem['public_name'] ?? $cartItem['event_name'] ?? 'Položka'),
+'message' => (string)$cartItem['availability_error']];
+    }
+}
+$people = $isLoggedIn ? familyPortalAuthorizedPeople($pdo, $accountId) : [];
+$personLabels = [];
+foreach ($people as $person) {
+    $personLabels[(int)$person['sportovec_id']] = $person['jmeno'].' '.$person['prijmeni'];
+}
 $financeSelection = (int)($_POST['finance_sportovec_id'] ?? $_SESSION['shop_finance_selection'] ?? 0);
+
 unset($_SESSION['shop_finance_selection']);
-if (!in_array($financeSelection, array_map(static fn(array $person): int => (int)$person['sportovec_id'], $people), true)) {
+if (!in_array($financeSelection, array_map(
+    static fn (array $person): int => (int)$person['sportovec_id'],
+    $people
+), true)) {
     $financeSelection = 0;
 }
-if(count($cartBeneficiaries)===1)$financeSelection=(int)array_key_first($cartBeneficiaries);
-if ($isLoggedIn && (!isset($_SESSION['shop_checkout_key']) || preg_match('/^[a-f0-9]{32}$/D',(string)$_SESSION['shop_checkout_key']) !== 1)) $_SESSION['shop_checkout_key'] = bin2hex(random_bytes(16));
+if (count($cartBeneficiaries) === 1) {
+    $financeSelection = (int)array_key_first($cartBeneficiaries);
+}
+if ($isLoggedIn && (!isset($_SESSION['shop_checkout_key']) || preg_match('/^[a-f0-9]{32}$/D', (string)$_SESSION['shop_checkout_key']) !== 1)) {
+    $_SESSION['shop_checkout_key'] = bin2hex(random_bytes(16));
+}
+
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=shopPublicH($selectedCategory===''?'E-shop KOVO Praha – cyklistické zboží a klubové služby':$selectedCategoryLabel.' – e-shop KOVO Praha')?></title><?php
-$seoFiltered=$catalogSearch!==''||$catalogSort!=='order'||$page>1||$filteredProductCount===0||($selectedCategory!==''&&$selectedPaths===[]);
-$seoPath='booking/eshop.php'.($selectedCategory!==''?'?kategorie='.rawurlencode($selectedCategory):'');
-publicSeoHead($selectedCategory===''?'E-shop KOVO Praha – cyklistické zboží a klubové služby':$selectedCategoryLabel.' – e-shop KOVO Praha',$selectedCategory===''?'Klubový e-shop KOVO Praha: cyklistické zboží, kroužky a klubové služby. Prohlédněte si aktuálně dostupné nabídky.':'Aktuální nabídka v kategorii '.$selectedCategoryLabel.' v e-shopu KOVO Praha.',$seoPath,null,null,!$seoFiltered);
-appUiAssets(); ?></head><body class="bg-light"><?php publicShellNav('shop');shopPublicNavigation($pdo,$selectedCategory===''?null:$selectedCategory,$selectedCategory==='',$categoryMenu); ?><main class="container py-4">
-<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3"><div><h1 class="h3 mb-0">Klubový e-shop</h1><div class="text-muted">Zboží, kroužky, členství a klubové služby na jednom místě.</div></div><?php if($isLoggedIn):?><div class="d-flex flex-wrap gap-2"><a href="moje_programy.php" class="btn btn-outline-primary btn-sm">Moje kroužky</a><a href="moje_objednavky.php" class="btn btn-outline-success btn-sm">Moje objednávky</a></div><?php endif;?></div>
-<?php foreach ($errors as $error): ?><div class="alert alert-danger"><?=shopPublicH($error)?></div><?php endforeach;?><?php if ($success !== ''): ?><div class="alert alert-success"><?=shopPublicH($success)?></div><?php endif;?>
-<?php if(!$isLoggedIn):?><p class="small mb-3">Nakoupit můžete i bez účtu. <a href="prihlaseni.php?redirect=eshop.php">Přihlaste se</a> pro své objednávky a případné klubové ceny.</p><?php endif;?>
-<?php if($selectedCategory===''&&$catalogSearch===''&&count($topCategories)>1):?><section class="mb-4" aria-labelledby="shop-categories-title"><h2 class="h5" id="shop-categories-title">Co hledáte?</h2><div class="row g-2"><?php foreach($topCategories as$topCategory):?><div class="col-6 col-lg-3"><a class="card card-body h-100 text-decoration-none border-0 shadow-sm" href="eshop.php?kategorie=<?=rawurlencode($topCategory['path'])?>"><i class="bi bi-grid text-primary fs-4 mb-2" aria-hidden="true"></i><strong><?=shopPublicH($topCategory['name'])?></strong><span class="small text-muted"><?=shopPublicOfferCountLabel((int)$topCategory['count'])?></span></a></div><?php endforeach;?></div></section><?php endif;?>
-<div class="row g-4"><section class="<?=$isLoggedIn?'col-lg-8':'col-12'?>"><form method="get" class="card border-0 shadow-sm mb-3" role="search"><div class="card-body row g-2 align-items-end"><?php if($selectedCategory!==''):?><input type="hidden" name="kategorie" value="<?=shopPublicH($selectedCategory)?>"><?php endif;?><div class="col-md-7"><label class="form-label" for="storefront-search">Hledat v názvu a popisu</label><input class="form-control" id="storefront-search" name="q" value="<?=shopPublicH($catalogSearch)?>"></div><div class="col-md-3"><label class="form-label" for="storefront-sort">Řazení</label><select class="form-select" id="storefront-sort" name="razeni"><option value="order" <?=$catalogSort==='order'?'selected':''?>>doporučené pořadí</option><option value="name" <?=$catalogSort==='name'?'selected':''?>>podle názvu</option><option value="price" <?=$catalogSort==='price'?'selected':''?>>od nejnižší ceny</option></select></div><div class="col-md-2 d-grid"><button class="btn btn-primary">Použít</button></div></div></form><div class="d-flex flex-wrap justify-content-between align-items-center gap-2"><h2 class="h5 mb-0"><?=$selectedCategory===''?'Aktivní nabídka':'Kategorie: '.shopPublicH($selectedCategoryLabel)?></h2><span class="small text-muted" aria-live="polite"><?=$filteredProductCount?> <?=$filteredProductCount===1?'výsledek':($filteredProductCount>=2&&$filteredProductCount<=4?'výsledky':'výsledků')?></span></div><div class="row g-3 mt-0">
-<?php foreach ($products as $product): $variantCount=count($product['variants']);$imageUrl=shopStorefrontPrimaryImageUrl($product['images']); ?>
-<div class="col-md-6"><div class="card h-100 border-0 shadow-sm">
-    <img src="<?=shopPublicH($imageUrl)?>" alt="<?=shopPublicH($product['public_name'])?>" class="card-img-top app-product-image p-2" style="height:220px" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onerror="this.onerror=null;this.src='<?=shopPublicH(shopStorefrontPlaceholderImageUrl())?>'">
-    <div class="card-body d-flex flex-column">
-        <div class="d-flex justify-content-between gap-2"><h3 class="h6"><?=shopPublicH($product['public_name'])?></h3><?php if ($product['is_program']): ?><span class="badge text-bg-primary align-self-start">kroužek</span><?php endif;?></div>
-        <?php if ($product['interest_only_course']): ?>
-            <p class="small text-muted">Kurz otevíráme podle zájmu. Termín, rozsah a cenu celého kurzu potvrdí klub e-mailem.</p>
-            <div class="small text-primary mb-2">Nyní přijímáme pouze kontakt na zájemce.</div>
-        <?php else: ?>
-            <p class="small text-muted"><?=nl2br(shopPublicH($product['public_summary']))?></p>
-            <?php if($product['program_restrictions']!==[]):?><div class="small text-primary mb-1"><?=shopPublicH(implode(' · ',$product['program_restrictions']))?></div><?php endif;?>
-            <?php if($product['program_offers']!==[]):?><div class="small mb-2"><?php foreach(array_slice($product['program_offers'],0,2)as$programOffer):?><div><i class="bi bi-calendar3 me-1"></i><?=shopPublicH(uiFormatDate((string)$programOffer['starts_on']).' – '.uiFormatDate((string)$programOffer['ends_on']))?><?php if($programOffer['capacity']!==null):?> · <?= (int)$programOffer['available_count']?> volných míst<?php endif;?></div><?php endforeach;?></div><?php endif;?>
-            <?php if($product['listing_attributes']!==[]):?><div class="d-flex flex-wrap gap-1 mb-2"><?php foreach($product['listing_attributes']as$attribute):?><span class="badge text-bg-light border"><?=shopPublicH($attribute['display_name'].': '.$attribute['formatted_value'])?></span><?php endforeach;?></div><?php endif;?><div class="small text-muted"><?=$variantCount?> <?=$product['is_program']?($variantCount===1?'termín':'termíny'):($variantCount===1?'varianta':($variantCount<=4?'varianty':'variant'))?></div>
-        <?php endif; ?>
-        <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
-            <strong><?= $product['interest_only_course'] ? 'Cena kurzu na dotaz' : (((int)$product['min_amount_minor'] !== (int)$product['max_amount_minor'] ? 'od ' : '') . shopPublicMoney((int)$product['min_amount_minor'],(string)$product['currency'])) ?></strong>
-            <?php if ($product['has_member_price'] && !$product['interest_only_course']): ?><div class="small text-success">Klubové ceny pro váš účet</div><?php endif; ?>
-            <a class="btn btn-sm btn-primary" href="produkt.php?id=<?=(int)$product['product_id']?>"><?=$product['interest_only_course']?'Zeptat se na kurz':($product['is_program']?($product['program_offers']!==[]?'Detail a přihlášení':'Detail a zájem'):($product['in_stock']?'Detail a varianty':'Zobrazit detail'))?></a>
-        </div>
-    </div>
-</div></div>
-<?php endforeach;?>
-<?php if ($products === []): ?><div class="col-12"><div class="alert alert-light border mb-0"><?php if($activeCatalogCount>0):?><h3 class="h6">Žádný produkt neodpovídá zvoleným filtrům.</h3><p class="mb-2"><?php if($catalogSearch!==''):?>Hledaný výraz: <strong><?=shopPublicH($catalogSearch)?></strong>. <?php endif;?>V katalogu je <?=$activeCatalogCount?> aktivních nabídek.</p><a class="btn btn-outline-primary" href="eshop.php">Zrušit filtry</a><?php else:?><h3 class="h6">Aktuálně není zveřejněná žádná nabídka.</h3><p class="mb-2">Můžete si prohlédnout klubové akce nebo se vrátit později.</p><a class="btn btn-outline-primary" href="klubovy_kalendar.php?zobrazeni=register">Akce</a><?php endif;?></div></div><?php endif;?></div><?php if($totalPages>1):?><nav class="mt-4" aria-label="Stránky produktů"><ul class="pagination justify-content-center"><?php for($pageNumber=1;$pageNumber<=$totalPages;$pageNumber++):$pageQuery=http_build_query(array_filter(['kategorie'=>$selectedCategory,'q'=>$catalogSearch,'razeni'=>$catalogSort,'strana'=>$pageNumber],static fn($value):bool=>$value!==''));?><li class="page-item<?=$pageNumber===$page?' active':''?>"><a class="page-link" href="?<?=shopPublicH($pageQuery)?>"<?=$pageNumber===$page?' aria-current="page"':''?>><?=$pageNumber?></a></li><?php endfor;?></ul></nav><?php endif;?></section>
-<?php if($isLoggedIn):?><aside class="col-lg-4 <?=$cartLineCount>0?'order-first order-lg-last':''?>" id="kosik" tabindex="-1"><div class="card border-0 shadow-sm sticky-top app-shop-cart-card" style="top:1rem"><div class="card-header bg-white fw-semibold">Košík</div><div class="card-body">
-<?php if($cartLineCount>0):?><div class="alert alert-info small py-2" role="status"><strong>V objednávce <?=$cartLineCount===1?'je':'jsou'?> <?=$cartLineCount?> <?=$cartLineCount===1?'položka':($cartLineCount<5?'položky':'položek')?> za <?=shopPublicMoney((int)$cart['total_minor'],(string)$cart['currency'])?>.</strong><br>Před odesláním zkontrolujte všechny položky níže, včetně dříve přidaných.</div><?php endif;?>
-<?php foreach ($cart['items'] as $item): $offer = clubProgramOfferForVariant($pdo,(int)$item['variant_id']); $quantityId='cart-quantity-'.(int)$item['cart_item_id']; $ageWarning=$offer&&$item['beneficiary_sportovec_id']!==null?clubProgramBeneficiaryBirthYearWarning($pdo,$offer,(int)$item['beneficiary_sportovec_id']):null; ?><div class="border-bottom pb-3 mb-3"><strong><?=shopPublicH($item['public_name'])?></strong><?php if(!$offer):?><div class="small text-muted"><?=shopPublicH($item['sku'])?></div><?php else:?><div class="small text-primary"><?=shopPublicH($offer['name'].' · '.$offer['starts_on'].' – '.$offer['ends_on'])?><br><?=shopPublicH(clubProgramBirthYearLabel($offer))?></div><?php if($ageWarning!==null):?><div class="alert alert-warning py-1 px-2 small mt-2 mb-0"><i class="bi bi-exclamation-triangle-fill me-1"></i><?=shopPublicH($ageWarning)?></div><?php endif;?><?php endif;?><?php if(($item['member_price']['is_member_price']??false)===true): ?><div class="small text-success">Klubová cena · <?=shopPublicH($item['member_price']['team_name'])?> (veřejně <?=shopPublicMoney((int)$item['public_amount_minor'],(string)$item['currency'])?>)</div><?php endif; ?><?php if($offer):?><form method="post" class="d-flex gap-2 align-items-center mt-1"><?=csrf_field()?><input type="hidden" name="action" value="quantity"><input type="hidden" name="cart_item_id" value="<?=(int)$item['cart_item_id']?>"><input type="hidden" name="variant_id" value="<?=(int)$item['variant_id']?>"><input type="hidden" name="quantity" value="0"><span class="small text-muted"><?=shopPublicH($personLabels[(int)$item['beneficiary_sportovec_id']]??'1 účastník')?></span><button class="btn btn-sm btn-outline-danger">Odebrat</button><span class="ms-auto"><?=shopPublicMoney((int)$item['line_amount_minor'],(string)$item['currency'])?></span></form><?php else:?><form method="post" class="d-flex gap-2 align-items-center mt-1"><?=csrf_field()?><input type="hidden" name="action" value="quantity"><input type="hidden" name="cart_item_id" value="<?=(int)$item['cart_item_id']?>"><input type="hidden" name="variant_id" value="<?=(int)$item['variant_id']?>"><label class="small text-muted mb-0" for="<?=shopPublicH($quantityId)?>">Množství</label><input id="<?=shopPublicH($quantityId)?>" class="form-control form-control-sm" style="width:75px" type="number" name="quantity" min="0" max="99" value="<?=(int)$item['quantity']?>"><button class="btn btn-sm btn-outline-secondary">Uložit</button><span class="ms-auto"><?=shopPublicMoney((int)$item['line_amount_minor'],(string)$item['currency'])?></span></form><?php endif;?>
-<?php if ($offer): ?><a class="small d-inline-block mt-2" href="produkt.php?id=<?=(int)$item['product_id']?>&amp;variant_id=<?=(int)$item['variant_id']?>#varianta-<?=(int)$item['variant_id']?>">Přidat kurz pro další dítě</a><form method="post" class="mt-2"><?=csrf_field()?><input type="hidden" name="action" value="beneficiary"><input type="hidden" name="cart_item_id" value="<?=(int)$item['cart_item_id']?>"><label class="form-label small mb-1">Dítě / účastník</label><div class="input-group input-group-sm"><select class="form-select" name="sportovec_id" required><option value="">Vyberte</option><?php foreach ($people as $person):$personWarning=clubProgramBeneficiaryBirthYearWarning($pdo,$offer,(int)$person['sportovec_id']);?><option value="<?=(int)$person['sportovec_id']?>" <?=(int)($item['beneficiary_sportovec_id']??0)===(int)$person['sportovec_id']?'selected':''?>><?=shopPublicH($person['prijmeni'].' '.$person['jmeno'].($personWarning!==null?' ⚠ mimo doporučený věk':''))?></option><?php endforeach;?></select><button class="btn btn-outline-primary">Potvrdit</button></div></form><?php if ($people === []): ?><div class="small text-danger mt-1">Nejdříve <a href="moje_osoby.php?return=<?=rawurlencode('eshop.php#kosik')?>#propojeni">propojte dítě v části Moje osoby</a>. Košík zůstane uložený.</div><?php endif;?><?php endif;?></div><?php endforeach;?>
-<?php foreach ($cart['event_items'] as $item): ?><div class="border-bottom pb-3 mb-3"><div class="d-flex justify-content-between gap-2"><div><strong><?=shopPublicH($item['event_name'])?></strong><div class="small text-muted">Účastník: <?=shopPublicH($item['prijmeni'].' '.$item['jmeno'])?></div></div><span><?=shopPublicMoney((int)$item['line_amount_minor'],(string)$item['currency'])?></span></div><form method="post" class="mt-2"><?=csrf_field()?><input type="hidden" name="action" value="remove_event"><input type="hidden" name="cart_item_id" value="<?=(int)$item['cart_item_id']?>"><button class="btn btn-sm btn-outline-danger">Odebrat událost</button></form></div><?php endforeach;?>
-<?php foreach ($cart['velodrome_items'] as $item): ?><div class="border-bottom pb-3 mb-3"><div class="d-flex justify-content-between gap-2"><div><strong><?=shopPublicH($item['lesson_name'])?></strong><div class="small text-muted"><?=shopPublicH($item['datum'].' '.substr((string)$item['cas_od'],0,5).'–'.substr((string)$item['cas_do'],0,5))?> · <?=shopPublicH($item['prijmeni'].' '.$item['jmeno'])?></div></div><span><?=shopPublicMoney((int)$item['line_amount_minor'],'CZK')?></span></div><form method="post" class="mt-2"><?=csrf_field()?><input type="hidden" name="action" value="remove_velodrome"><input type="hidden" name="cart_item_id" value="<?=(int)$item['cart_item_id']?>"><button class="btn btn-sm btn-outline-danger">Odebrat termín</button></form></div><?php endforeach;?>
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<!doctype html><html
+ lang="cs"><head
+><meta
+ charset="utf-8"><meta
+ name="viewport" content="width=device-width,initial-scale=1"><title
+><?=
+shopPublicH($selectedCategory === '' ? 'E-shop KOVO Praha – cyklistické zboží a klubové služby' : $selectedCategoryLabel.
+' – e-shop KOVO Praha')
+?></title
+><?php
+$seoFiltered = $catalogSearch !== '' || $catalogSort !== 'order' || $page > 1 || $filteredProductCount === 0 ||
+ ($selectedCategory !== '' && $selectedPaths === []);
+$seoPath = 'booking/eshop.php'.($selectedCategory !== '' ? '?kategorie='.rawurlencode($selectedCategory) : '');
+
+publicSeoHead(
+    $selectedCategory === '' ? 'E-shop KOVO Praha – cyklistické zboží a klubové služby' : $selectedCategoryLabel.
+' – e-shop KOVO Praha',
+    $selectedCategory === '' ? 'Klubový e-shop KOVO Praha: cyklistické zboží, kroužky a klubové služby. Prohlédněte si aktuálně dostupné nabídky.' : 'Aktuální nabídka v kategorii '.
+$selectedCategoryLabel.' v e-shopu KOVO Praha.',
+    $seoPath,
+    null,
+    null,
+    !$seoFiltered
+);
+appUiAssets();
+?></head
+><body
+ class="bg-light"><?php
+publicShellNav('shop');
+shopPublicNavigation(
+    $pdo,
+    $selectedCategory === '' ? null : $selectedCategory,
+    $selectedCategory === '',
+    $categoryMenu
+);
+?><main
+ class="container py-4">
+<div
+ class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3"><div
+><h1
+ class="h3 mb-0">Klubový e-shop</h1
+><div
+ class="text-muted">Zboží, kroužky, členství a klubové služby na jednom místě.</div
+></div
+><?php
+if ($isLoggedIn):
+    ?><div
+ class="d-flex flex-wrap gap-2"><a
+ href="moje_programy.php" class="btn btn-outline-primary btn-sm">Moje kroužky</a
+><a
+ href="moje_objednavky.php" class="btn btn-outline-success btn-sm">Moje objednávky</a
+></div
+><?php
+endif;
+?></div
+>
+<?php
+foreach ($errors as $error):
+    ?><div
+ class="alert alert-danger"><?=
+    shopPublicH($error)
+    ?></div
+><?php
+endforeach;
+?><?php
+if ($success !== ''):
+    ?><div
+ class="alert alert-success"><?=
+    shopPublicH($success)
+    ?></div
+><?php
+endif;
+?>
+<?php
+if (!$isLoggedIn):
+    ?><p
+ class="small mb-3">Nakoupit můžete i bez účtu. <a
+ href="prihlaseni.php?redirect=eshop.php">Přihlaste se</a
+> pro své objednávky a případné klubové ceny.</p
+><?php
+endif;
+?>
+<?php
+if ($selectedCategory === '' && $catalogSearch === '' && count($topCategories) > 1):
+    ?><section
+ class="mb-4" aria-labelledby="shop-categories-title"><h2
+ class="h5" id="shop-categories-title">Co hledáte?</h2
+><div
+ class="row g-2"><?php
+foreach ($topCategories as $topCategory):
+    ?><div
+ class="col-6 col-lg-3"><a
+ class="card card-body h-100 text-decoration-none border-0 shadow-sm" href="eshop.php?kategorie=<?=
+    rawurlencode($topCategory['path'])
+    ?>"><i
+ class="bi bi-grid text-primary fs-4 mb-2" aria-hidden="true"></i
+><strong
+><?=
+    shopPublicH($topCategory['name'])
+    ?></strong
+><span
+ class="small text-muted"><?=
+    shopPublicOfferCountLabel((int)$topCategory['count'])
+    ?></span
+></a
+></div
+><?php
+endforeach;
+    ?></div
+></section
+><?php
+endif;
+?>
+<div
+ class="row g-4"><section
+ class="<?=
+$isLoggedIn ? 'col-lg-8' : 'col-12'
+?>"><form
+ method="get" class="card border-0 shadow-sm mb-3" role="search"><div
+ class="card-body row g-2 align-items-end"><?php
+if ($selectedCategory !== ''):
+    ?><input
+ type="hidden" name="kategorie" value="<?=
+    shopPublicH($selectedCategory)
+    ?>"><?php
+endif;
+?><div
+ class="col-md-7"><label
+ class="form-label" for="storefront-search">Hledat v názvu a popisu</label
+><input
+ class="form-control" id="storefront-search" name="q" value="<?=
+shopPublicH($catalogSearch)
+?>"></div
+><div
+ class="col-md-3"><label
+ class="form-label" for="storefront-sort">Řazení</label
+><select
+ class="form-select" id="storefront-sort" name="razeni"><option
+ value="order" <?=
+$catalogSort === 'order' ? 'selected' : ''
+?>>doporučené pořadí</option
+><option
+ value="name" <?=
+$catalogSort === 'name' ? 'selected' : ''
+?>>podle názvu</option
+><option
+ value="price" <?=
+$catalogSort === 'price' ? 'selected' : ''
+?>>od nejnižší ceny</option
+></select
+></div
+><div
+ class="col-md-2 d-grid"><button
+ class="btn btn-primary">Použít</button
+></div
+></div
+></form
+><div
+ class="d-flex flex-wrap justify-content-between align-items-center gap-2"><h2
+ class="h5 mb-0"><?=
+$selectedCategory === '' ? 'Aktivní nabídka' : 'Kategorie: '.shopPublicH($selectedCategoryLabel)
+?></h2
+><span
+ class="small text-muted" aria-live="polite"><?=
+$filteredProductCount
+?> <?=
+$filteredProductCount === 1 ? 'výsledek' : ($filteredProductCount >= 2 && $filteredProductCount <= 4 ? 'výsledky' : 'výsledků')
+?></span
+></div
+><div
+ class="row g-3 mt-0">
+<?php
+foreach ($products as $product): $variantCount = count($product['variants']);
+    $imageUrl = shopStorefrontPrimaryImageUrl($product['images']);
+    ?>
+<div
+ class="col-md-6"><div
+ class="card h-100 border-0 shadow-sm">
+    <img
+ src="<?=
+    shopPublicH($imageUrl)
+    ?>" alt="<?=
+    shopPublicH($product['public_name'])
+    ?>" class="card-img-top app-product-image p-2" style="height:220px" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-app-csp-handler="<?=
+    htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+    ?>" onerror="this.onerror=null;this.src='<?=
+    shopPublicH(shopStorefrontPlaceholderImageUrl())
+    ?>'">
+    <div
+ class="card-body d-flex flex-column">
+        <div
+ class="d-flex justify-content-between gap-2"><h3
+ class="h6"><?=
+    shopPublicH($product['public_name'])
+    ?></h3
+><?php
+if ($product['is_program']):
+    ?><span
+ class="badge text-bg-primary align-self-start">kroužek</span
+><?php
+endif;
+    ?></div
+>
+        <?php
+if ($product['interest_only_course']):
+    ?>
+            <p
+ class="small text-muted">Kurz otevíráme podle zájmu. Termín, rozsah a cenu celého kurzu potvrdí klub e-mailem.</p
+>
+            <div
+ class="small text-primary mb-2">Nyní přijímáme pouze kontakt na zájemce.</div
+>
+        <?php else:
+            ?>
+            <p
+ class="small text-muted"><?=
+            nl2br(shopPublicH($product['public_summary']))
+            ?></p
+>
+            <?php
+if ($product['program_restrictions'] !== []):
+    ?><div
+ class="small text-primary mb-1"><?=
+    shopPublicH(implode(' · ', $product['program_restrictions']))
+    ?></div
+><?php
+endif;
+    ?>
+            <?php
+if ($product['program_offers'] !== []):
+    ?><div
+ class="small mb-2"><?php
+foreach (array_slice($product['program_offers'], 0, 2) as $programOffer):
+    ?><div
+><i
+ class="bi bi-calendar3 me-1"></i
+><?=
+    shopPublicH(uiFormatDate((string)$programOffer['starts_on']).' – '.uiFormatDate((string)$programOffer['ends_on']))
+    ?><?php
+if ($programOffer['capacity'] !== null):
+    ?> · <?=
+     (int)$programOffer['available_count']
+    ?> volných míst<?php
+endif;
+    ?></div
+><?php
+endforeach;
+    ?></div
+><?php
+endif;
+    ?>
+            <?php
+if ($product['listing_attributes'] !== []):
+    ?><div
+ class="d-flex flex-wrap gap-1 mb-2"><?php
+foreach ($product['listing_attributes'] as $attribute):
+    ?><span
+ class="badge text-bg-light border"><?=
+    shopPublicH($attribute['display_name'].': '.$attribute['formatted_value'])
+    ?></span
+><?php
+endforeach;
+    ?></div
+><?php
+endif;
+    ?><div
+ class="small text-muted"><?=
+    $variantCount
+    ?> <?=
+    $product['is_program'] ? ($variantCount === 1 ? 'termín' : 'termíny') : ($variantCount === 1 ? 'varianta' : ($variantCount <= 4 ? 'varianty' : 'variant'))
+    ?></div
+>
+        <?php
+    endif;
+    ?>
+        <div
+ class="d-flex justify-content-between align-items-center mt-auto pt-3">
+            <strong
+><?=
+     $product['interest_only_course'] ? 'Cena kurzu na dotaz' : (((int)$product['min_amount_minor'] !== (int)$product['max_amount_minor'] ? 'od ' : '') .
+     shopPublicMoney((int)$product['min_amount_minor'], (string)$product['currency']))
+    ?></strong
+>
+            <?php
+if ($product['has_member_price'] && !$product['interest_only_course']):
+    ?><div
+ class="small text-success">Klubové ceny pro váš účet</div
+><?php
+endif;
+    ?>
+            <a
+ class="btn btn-sm btn-primary" href="produkt.php?id=<?=
+    (int)$product['product_id']
+    ?>"><?=
+    $product['interest_only_course'] ? 'Zeptat se na kurz'
+        : ($product['is_program'] ? ($product['program_offers'] !== [] ? 'Detail a přihlášení' : 'Detail a zájem') : ($product['in_stock'] ? 'Detail a varianty'
+                : 'Zobrazit detail'))
+    ?></a
+>
+        </div
+>
+    </div
+>
+</div
+></div
+>
+<?php
+endforeach;
+?>
+<?php
+if ($products === []):
+    ?><div
+ class="col-12"><div
+ class="alert alert-light border mb-0"><?php
+if ($activeCatalogCount > 0):
+    ?><h3
+ class="h6">Žádný produkt neodpovídá zvoleným filtrům.</h3
+><p
+ class="mb-2"><?php
+if ($catalogSearch !== ''):
+    ?>Hledaný výraz: <strong
+><?=
+    shopPublicH($catalogSearch)
+    ?></strong
+>. <?php
+endif;
+    ?>V katalogu je <?=
+    $activeCatalogCount
+    ?> aktivních nabídek.</p
+><a
+ class="btn btn-outline-primary" href="eshop.php">Zrušit filtry</a
+><?php else:
+    ?><h3
+ class="h6">Aktuálně není zveřejněná žádná nabídka.</h3
+><p
+ class="mb-2">Můžete si prohlédnout klubové akce nebo se vrátit později.</p
+><a
+ class="btn btn-outline-primary" href="klubovy_kalendar.php?zobrazeni=register">Akce</a
+><?php
+endif;
+?></div
+></div
+><?php
+endif;
+?></div
+><?php
+if ($totalPages > 1):
+    ?><nav
+ class="mt-4" aria-label="Stránky produktů"><ul
+ class="pagination justify-content-center"><?php
+for ($pageNumber = 1;$pageNumber <= $totalPages;$pageNumber++):$pageQuery = http_build_query(array_filter(['kategorie' => $selectedCategory,
+    'q' => $catalogSearch,'razeni' => $catalogSort,'strana' => $pageNumber], static fn ($value): bool => $value !== ''));
+
+    ?><li
+ class="page-item<?=
+    $pageNumber === $page ? ' active' : ''
+    ?>"><a
+ class="page-link" href="?<?=
+    shopPublicH($pageQuery)
+    ?>"<?=
+    $pageNumber === $page ? ' aria-current="page"' : ''
+    ?>><?=
+    $pageNumber
+    ?></a
+></li
+><?php
+endfor;
+    ?></ul
+></nav
+><?php
+endif;
+?></section
+>
+<?php
+if ($isLoggedIn):
+    ?><aside
+ class="col-lg-4 <?=
+    $cartLineCount > 0 ? 'order-first order-lg-last' : ''
+    ?>" id="kosik" tabindex="-1"><div
+ class="card border-0 shadow-sm sticky-top app-shop-cart-card" style="top:1rem"><div
+ class="card-header bg-white fw-semibold">Košík</div
+><div
+ class="card-body">
+<?php
+if ($cartLineCount > 0):
+    ?><div
+ class="alert alert-info small py-2" role="status"><strong
+>V objednávce <?=
+    $cartLineCount === 1 ? 'je' : 'jsou'
+    ?> <?=
+    $cartLineCount
+    ?> <?=
+    $cartLineCount === 1 ? 'položka' : ($cartLineCount < 5 ? 'položky' : 'položek')
+    ?> za <?=
+    shopPublicMoney((int)$cart['total_minor'], (string)$cart['currency'])
+    ?>.</strong
+><br
+>Před odesláním zkontrolujte všechny položky níže, včetně dříve přidaných.</div
+><?php
+endif;
+    ?>
+<?php
+foreach ($cart['items'] as $item): $offer = clubProgramOfferForVariant($pdo, (int)$item['variant_id']);
+
+    $quantityId = 'cart-quantity-'.(int)$item['cart_item_id'];
+    $ageWarning = $offer && $item['beneficiary_sportovec_id'] !== null ? clubProgramBeneficiaryBirthYearWarning(
+        $pdo,
+        $offer,
+        (int)$item['beneficiary_sportovec_id']
+    ) : null;
+    ?><div
+ class="border-bottom pb-3 mb-3"><strong
+><?=
+    shopPublicH($item['public_name'])
+    ?></strong
+><?php
+if (!$offer):
+    ?><div
+ class="small text-muted"><?=
+    shopPublicH($item['sku'])
+    ?></div
+><?php else:
+    ?><div
+ class="small text-primary"><?=
+    shopPublicH($offer['name'].' · '.$offer['starts_on'].' – '.$offer['ends_on'])
+    ?><br
+><?=
+    shopPublicH(clubProgramBirthYearLabel($offer))
+    ?></div
+><?php
+if ($ageWarning !== null):
+    ?><div
+ class="alert alert-warning py-1 px-2 small mt-2 mb-0"><i
+ class="bi bi-exclamation-triangle-fill me-1"></i
+><?=
+    shopPublicH($ageWarning)
+    ?></div
+><?php
+endif;
+    ?><?php
+    endif;
+    ?><?php
+if (($item['member_price']['is_member_price'] ?? false) === true):
+    ?><div
+ class="small text-success">Klubová cena · <?=
+    shopPublicH($item['member_price']['team_name'])
+    ?> (veřejně <?=
+    shopPublicMoney((int)$item['public_amount_minor'], (string)$item['currency'])
+    ?>)</div
+><?php
+endif;
+    ?><?php
+if ($offer):
+    ?><form
+ method="post" class="d-flex gap-2 align-items-center mt-1"><?=
+    csrf_field()
+    ?><input
+ type="hidden" name="action" value="quantity"><input
+ type="hidden" name="cart_item_id" value="<?=
+    (int)$item['cart_item_id']
+    ?>"><input
+ type="hidden" name="variant_id" value="<?=
+    (int)$item['variant_id']
+    ?>"><input
+ type="hidden" name="quantity" value="0"><span
+ class="small text-muted"><?=
+    shopPublicH($personLabels[(int)$item['beneficiary_sportovec_id']] ?? '1 účastník')
+    ?></span
+><button
+ class="btn btn-sm btn-outline-danger">Odebrat</button
+><span
+ class="ms-auto"><?=
+    shopPublicMoney((int)$item['line_amount_minor'], (string)$item['currency'])
+    ?></span
+></form
+><?php else:
+    ?><form
+ method="post" class="d-flex gap-2 align-items-center mt-1"><?=
+    csrf_field()
+    ?><input
+ type="hidden" name="action" value="quantity"><input
+ type="hidden" name="cart_item_id" value="<?=
+    (int)$item['cart_item_id']
+    ?>"><input
+ type="hidden" name="variant_id" value="<?=
+    (int)$item['variant_id']
+    ?>"><label
+ class="small text-muted mb-0" for="<?=
+    shopPublicH($quantityId)
+    ?>">Množství</label
+><input
+ id="<?=
+    shopPublicH($quantityId)
+    ?>" class="form-control form-control-sm" style="width:75px" type="number" name="quantity" min="0" max="99" value="<?=
+    (int)$item['quantity']
+    ?>"><button
+ class="btn btn-sm btn-outline-secondary">Uložit</button
+><span
+ class="ms-auto"><?=
+    shopPublicMoney((int)$item['line_amount_minor'], (string)$item['currency'])
+    ?></span
+></form
+><?php
+endif;
+    ?>
+<?php
+if ($offer):
+    ?><a
+ class="small d-inline-block mt-2" href="produkt.php?id=<?=
+    (int)$item['product_id']
+    ?>&amp;variant_id=<?=
+    (int)$item['variant_id']
+    ?>#varianta-<?=
+    (int)$item['variant_id']
+    ?>">Přidat kurz pro další dítě</a
+><form
+ method="post" class="mt-2"><?=
+    csrf_field()
+    ?><input
+ type="hidden" name="action" value="beneficiary"><input
+ type="hidden" name="cart_item_id" value="<?=
+    (int)$item['cart_item_id']
+    ?>"><label
+ class="form-label small mb-1">Dítě / účastník</label
+><div
+ class="input-group input-group-sm"><select
+ class="form-select" name="sportovec_id" required><option
+ value="">Vyberte</option
+><?php
+foreach ($people as $person):$personWarning = clubProgramBeneficiaryBirthYearWarning($pdo, $offer, (int)$person['sportovec_id']);
+
+    ?><option
+ value="<?=
+    (int)$person['sportovec_id']
+    ?>" <?=
+    (int)($item['beneficiary_sportovec_id'] ?? 0) === (int)$person['sportovec_id'] ? 'selected' : ''
+    ?>><?=
+    shopPublicH($person['prijmeni'].' '.$person['jmeno'].($personWarning !== null ? ' ⚠ mimo doporučený věk' : ''))
+    ?></option
+><?php
+endforeach;
+    ?></select
+><button
+ class="btn btn-outline-primary">Potvrdit</button
+></div
+></form
+><?php
+if ($people === []):
+    ?><div
+ class="small text-danger mt-1">Nejdříve <a
+ href="moje_osoby.php?return=<?=
+    rawurlencode('eshop.php#kosik')
+    ?>#propojeni">propojte dítě v části Moje osoby</a
+>. Košík zůstane uložený.</div
+><?php
+endif;
+    ?><?php
+endif;
+    ?></div
+><?php
+endforeach;
+?>
+<?php
+foreach ($cart['event_items'] as $item):
+    ?><div
+ class="border-bottom pb-3 mb-3"><div
+ class="d-flex justify-content-between gap-2"><div
+><strong
+><?=
+    shopPublicH($item['event_name'])
+    ?></strong
+><div
+ class="small text-muted">Účastník: <?=
+    shopPublicH($item['prijmeni'].' '.$item['jmeno'])
+    ?></div
+></div
+><span
+><?=
+    shopPublicMoney((int)$item['line_amount_minor'], (string)$item['currency'])
+    ?></span
+></div
+><form
+ method="post" class="mt-2"><?=
+    csrf_field()
+    ?><input
+ type="hidden" name="action" value="remove_event"><input
+ type="hidden" name="cart_item_id" value="<?=
+    (int)$item['cart_item_id']
+    ?>"><button
+ class="btn btn-sm btn-outline-danger">Odebrat událost</button
+></form
+></div
+><?php
+endforeach;
+?>
+<?php
+foreach ($cart['velodrome_items'] as $item):
+    ?><div
+ class="border-bottom pb-3 mb-3"><div
+ class="d-flex justify-content-between gap-2"><div
+><strong
+><?=
+    shopPublicH($item['lesson_name'])
+    ?></strong
+><div
+ class="small text-muted"><?=
+    shopPublicH($item['datum'].' '.substr((string)$item['cas_od'], 0, 5).'–'.substr(
+        (string)$item['cas_do'],
+        0,
+        5
+    ))
+    ?> · <?=
+    shopPublicH($item['prijmeni'].' '.$item['jmeno'])
+    ?></div
+></div
+><span
+><?=
+    shopPublicMoney((int)$item['line_amount_minor'], 'CZK')
+    ?></span
+></div
+><form
+ method="post" class="mt-2"><?=
+    csrf_field()
+    ?><input
+ type="hidden" name="action" value="remove_velodrome"><input
+ type="hidden" name="cart_item_id" value="<?=
+    (int)$item['cart_item_id']
+    ?>"><button
+ class="btn btn-sm btn-outline-danger">Odebrat termín</button
+></form
+></div
+><?php
+endforeach;
+?>
+<script
+ nonce="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">
 document.addEventListener('DOMContentLoaded', () => {
     const selectedAthlete = document.getElementById('finance-sportovec');
     if (!selectedAthlete) return;
-    const previousSelection = <?=json_encode($financeSelection)?>;
+    const previousSelection = <?=
+json_encode($financeSelection)
+?>;
     if (previousSelection > 0 && selectedAthlete.querySelector(`option[value="${previousSelection}"]`)) {
         selectedAthlete.value = String(previousSelection);
     }
@@ -197,7 +968,239 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-</script>
-<?php if($cartBlockingErrors!==[]):?><div class="alert alert-danger py-2 small"><strong>Objednávku zatím nelze dokončit.</strong><ul class="mb-1 mt-1 ps-3"><?php foreach($cartBlockingErrors as$blockingError):?><li><strong><?=shopPublicH($blockingError['label'])?>:</strong> <?=shopPublicH($blockingError['message'])?></li><?php endforeach;?></ul>Odeberte neplatnou položku z košíku; ostatní položky zůstanou zachované.</div><script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">document.addEventListener('DOMContentLoaded',()=>{const checkout=document.querySelector('input[name="action"][value="checkout"]');const button=checkout?.form?.querySelector('button[type="submit"],button:not([type])');if(button){button.disabled=true;button.title='Nejdříve odeberte neplatnou položku z košíku.';}});</script><?php endif;?>
-<?php if($cartHasMixedBeneficiaries):?><div class="alert alert-info small" role="status"><strong>Jedna objednávka pro více dětí.</strong> Zaplatíte celou částku jednou. Každému dítěti přiřadíme jeho položky a přihlášení.</div><?php endif;?>
-<?php if ($cartLineCount === 0): ?><div class="text-muted">Košík je prázdný.</div><?php else: ?><div class="border-bottom pb-3 mb-2"><?php if ($cart['coupon'] !== null): ?><div class="d-flex justify-content-between"><span>Kupón <code><?=shopPublicH($cart['coupon']['code'])?></code></span><form method="post"><?=csrf_field()?><input type="hidden" name="action" value="remove_coupon"><button class="btn btn-sm btn-link text-danger">Odebrat</button></form></div><?php else: ?><form method="post" class="d-flex gap-2"><?=csrf_field()?><input type="hidden" name="action" value="apply_coupon"><input class="form-control form-control-sm" name="coupon_code" maxlength="32" required placeholder="Slevový kupón"><button class="btn btn-sm btn-outline-primary">Použít</button></form><?php endif;?></div><div class="d-flex justify-content-between"><span>Mezisoučet</span><span><?=shopPublicMoney($cart['subtotal_minor'],(string)$cart['currency'])?></span></div><?php if ($cart['discount_minor'] > 0): ?><div class="d-flex justify-content-between text-success"><span>Sleva</span><span>− <?=shopPublicMoney($cart['discount_minor'],(string)$cart['currency'])?></span></div><?php endif;?><div class="d-flex justify-content-between fs-5 mt-2"><strong><?=$pplCanShip?"Položky celkem":"Celkem"?></strong><strong><?=shopPublicMoney($cart['total_minor'],(string)$cart['currency'])?></strong></div><div class="small text-muted my-2"><?=$pplCanShip?"Zvolte způsob předání níže.":"Osobní odběr / rezervace."?> · platba bankovním převodem</div><form method="post" id="shop-checkout-form"><?=csrf_field()?><input type="hidden" name="action" value="checkout"><?php if($pplCanShip)shopPplDeliveryFields("shop-checkout-form",$pplSettings,(int)$cart["total_minor"],$deliverySelected,(string)($_POST["ppl_access_point_code"]??""),(string)($_POST["ppl_phone"]??""));?><?php if(count($people)>1&&$cartNeedsFinanceSelection):?><div class="mb-3"><label class="form-label" for="finance-sportovec">Komu přiřadit položky bez dítěte</label><select class="form-select" id="finance-sportovec" name="finance_sportovec_id" required><option value="">Vyberte sportovce</option><?php foreach($people as$person):?><option value="<?=(int)$person['sportovec_id']?>" <?=$financeSelection===(int)$person['sportovec_id']?'selected':''?>><?=shopPublicH($person['jmeno'].' '.$person['prijmeni'])?></option><?php endforeach;?></select><div class="form-text">Kurzy se přiřadí vybraným dětem. Zboží bez příjemce a doprava se přiřadí tomuto sportovci.</div></div><?php endif;?><input type="hidden" name="checkout_key" value="<?=shopPublicH($_SESSION['shop_checkout_key'])?>"><input type="hidden" name="cart_fingerprint" value="<?=shopPublicH($cart['fingerprint'])?>"><?php foreach($cart['items']as$item):if(($item['offer_type']??null)!=='program')continue;$terms=$item['program_terms']??null;?><div class="border rounded p-2 mb-2 small"><strong>Podmínky: <?=shopPublicH($item['public_name'])?> · <?=shopPublicH($personLabels[(int)$item['beneficiary_sportovec_id']]??'Účastník')?></strong><?php if(is_array($terms)&&clubProgramTermsComplete($terms)):?><details class="mt-1"><summary>Storno podmínky · <?=shopPublicH($terms['program_cancellation']['terms_version'])?></summary><div class="mt-1"><?=nl2br(shopPublicH($terms['program_cancellation']['consent_text_plain']))?></div></details><details class="mt-1"><summary>Souhlas · <?=shopPublicH($terms['program_consent']['terms_version'])?></summary><div class="mt-1"><?=nl2br(shopPublicH($terms['program_consent']['consent_text_plain']))?></div></details><div class="form-check mt-2"><input class="form-check-input" type="checkbox" name="program_terms_accept[item:<?=(int)$item['cart_item_id']?>]" value="1" id="program-terms-<?=(int)$item['cart_item_id']?>" required><label class="form-check-label" for="program-terms-<?=(int)$item['cart_item_id']?>">Četl/a jsem storno podmínky a souhlasím s přihlášením.</label></div><?php else:?><div class="text-danger">Platné podmínky nejsou dostupné. Objednávku nelze odeslat.</div><?php endif;?></div><?php endforeach;?><?php foreach($cart['items'] as $consentItem) if(($consentItem['offer_type']??null)==='program'){clubConsentFields($pdo,$_POST);break;}?><button class="btn btn-success w-100" <?=$cart['coupon_error']!==null?'disabled':''?>>Vytvořit objednávku</button></form><?php endif;?></div></div></aside><?php endif;?></div></main><?php publicShellFooter(); ?></body></html>
+</script
+>
+<?php
+if ($cartBlockingErrors !== []):
+    ?><div
+ class="alert alert-danger py-2 small"><strong
+>Objednávku zatím nelze dokončit.</strong
+><ul
+ class="mb-1 mt-1 ps-3"><?php
+foreach ($cartBlockingErrors as $blockingError):
+    ?><li
+><strong
+><?=
+    shopPublicH($blockingError['label'])
+    ?>:</strong
+> <?=
+    shopPublicH($blockingError['message'])
+    ?></li
+><?php
+endforeach;
+    ?></ul
+>Odeberte neplatnou položku z košíku; ostatní položky zůstanou zachované.</div
+><script
+ nonce="<?=
+    htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+    ?>">document.addEventListener('DOMContentLoaded',()=>{
+const checkout=document.querySelector('input[name="action"][value="checkout"]');
+const button=checkout?.form?.querySelector('button[type="submit"],button:not([type])');
+if(button){button.disabled=true;
+button.title='Nejdříve odeberte neplatnou položku z košíku.';}});</script
+><?php
+endif;
+?>
+<?php
+if ($cartHasMixedBeneficiaries):
+    ?><div
+ class="alert alert-info small" role="status"><strong
+>Jedna objednávka pro více dětí.</strong
+> Zaplatíte celou částku jednou. Každému dítěti přiřadíme jeho položky a přihlášení.</div
+><?php
+endif;
+?>
+<?php
+if ($cartLineCount === 0):
+    ?><div
+ class="text-muted">Košík je prázdný.</div
+><?php else:
+    ?><div
+ class="border-bottom pb-3 mb-2"><?php
+if ($cart['coupon'] !== null):
+    ?><div
+ class="d-flex justify-content-between"><span
+>Kupón <code
+><?=
+    shopPublicH($cart['coupon']['code'])
+    ?></code
+></span
+><form
+ method="post"><?=
+    csrf_field()
+    ?><input
+ type="hidden" name="action" value="remove_coupon"><button
+ class="btn btn-sm btn-link text-danger">Odebrat</button
+></form
+></div
+><?php else:
+    ?><form
+ method="post" class="d-flex gap-2"><?=
+    csrf_field()
+    ?><input
+ type="hidden" name="action" value="apply_coupon"><input
+ class="form-control form-control-sm" name="coupon_code" maxlength="32" required placeholder="Slevový kupón"><button
+ class="btn btn-sm btn-outline-primary">Použít</button
+></form
+><?php
+endif;
+    ?></div
+><div
+ class="d-flex justify-content-between"><span
+>Mezisoučet</span
+><span
+><?=
+    shopPublicMoney($cart['subtotal_minor'], (string)$cart['currency'])
+    ?></span
+></div
+><?php
+if ($cart['discount_minor'] > 0):
+    ?><div
+ class="d-flex justify-content-between text-success"><span
+>Sleva</span
+><span
+>− <?=
+    shopPublicMoney($cart['discount_minor'], (string)$cart['currency'])
+    ?></span
+></div
+><?php
+endif;
+?><div
+ class="d-flex justify-content-between fs-5 mt-2"><strong
+><?=
+$pplCanShip ? "Položky celkem" : "Celkem"
+?></strong
+><strong
+><?=
+shopPublicMoney($cart['total_minor'], (string)$cart['currency'])
+?></strong
+></div
+><div
+ class="small text-muted my-2"><?=
+$pplCanShip ? "Zvolte způsob předání níže." : "Osobní odběr / rezervace."
+?> · platba bankovním převodem</div
+><form
+ method="post" id="shop-checkout-form"><?=
+csrf_field()
+?><input
+ type="hidden" name="action" value="checkout"><?php
+if ($pplCanShip) {
+    shopPplDeliveryFields(
+        "shop-checkout-form",
+        $pplSettings,
+        (int)$cart["total_minor"],
+        $deliverySelected,
+        (string)($_POST["ppl_access_point_code"] ?? ""),
+        (string)($_POST["ppl_phone"] ?? "")
+    );
+}
+?><?php
+if (count($people) > 1 && $cartNeedsFinanceSelection):
+    ?><div
+ class="mb-3"><label
+ class="form-label" for="finance-sportovec">Komu přiřadit položky bez dítěte</label
+><select
+ class="form-select" id="finance-sportovec" name="finance_sportovec_id" required><option
+ value="">Vyberte sportovce</option
+><?php
+foreach ($people as $person):
+    ?><option
+ value="<?=
+    (int)$person['sportovec_id']
+    ?>" <?=
+    $financeSelection === (int)$person['sportovec_id'] ? 'selected' : ''
+    ?>><?=
+    shopPublicH($person['jmeno'].' '.$person['prijmeni'])
+    ?></option
+><?php
+endforeach;
+    ?></select
+><div
+ class="form-text">Kurzy se přiřadí vybraným dětem. Zboží bez příjemce a doprava se přiřadí tomuto sportovci.</div
+></div
+><?php
+endif;
+?><input
+ type="hidden" name="checkout_key" value="<?=
+shopPublicH($_SESSION['shop_checkout_key'])
+?>"><input
+ type="hidden" name="cart_fingerprint" value="<?=
+shopPublicH($cart['fingerprint'])
+?>"><?php
+foreach ($cart['items'] as $item):if (($item['offer_type'] ?? null) !== 'program') {
+    continue;
+}$terms = $item['program_terms'] ?? null;
+    ?><div
+ class="border rounded p-2 mb-2 small"><strong
+>Podmínky: <?=
+    shopPublicH($item['public_name'])
+    ?> · <?=
+    shopPublicH($personLabels[(int)$item['beneficiary_sportovec_id']] ?? 'Účastník')
+    ?></strong
+><?php
+if (is_array($terms) && clubProgramTermsComplete($terms)):
+    ?><details
+ class="mt-1"><summary
+>Storno podmínky · <?=
+    shopPublicH($terms['program_cancellation']['terms_version'])
+    ?></summary
+><div
+ class="mt-1"><?=
+    nl2br(shopPublicH($terms['program_cancellation']['consent_text_plain']))
+    ?></div
+></details
+><details
+ class="mt-1"><summary
+>Souhlas · <?=
+    shopPublicH($terms['program_consent']['terms_version'])
+    ?></summary
+><div
+ class="mt-1"><?=
+    nl2br(shopPublicH($terms['program_consent']['consent_text_plain']))
+    ?></div
+></details
+><div
+ class="form-check mt-2"><input
+ class="form-check-input" type="checkbox" name="program_terms_accept[item:<?=
+    (int)$item['cart_item_id']
+    ?>]" value="1" id="program-terms-<?=
+    (int)$item['cart_item_id']
+    ?>" required><label
+ class="form-check-label" for="program-terms-<?=
+    (int)$item['cart_item_id']
+    ?>">Četl/a jsem storno podmínky a souhlasím s přihlášením.</label
+></div
+><?php else:
+    ?><div
+ class="text-danger">Platné podmínky nejsou dostupné. Objednávku nelze odeslat.</div
+><?php
+endif;
+    ?></div
+><?php
+endforeach;
+?><?php
+foreach ($cart['items'] as $consentItem) {
+    if (($consentItem['offer_type'] ?? null) === 'program') {
+        clubConsentFields($pdo, $_POST);
+        break;
+    }
+}
+?><button
+ class="btn btn-success w-100" <?=
+$cart['coupon_error'] !== null ? 'disabled' : ''
+?>>Vytvořit objednávku</button
+></form
+><?php
+endif;
+?></div
+></div
+></aside
+><?php
+endif;
+?></div
+></main
+><?php
+publicShellFooter();
+?></body
+></html
+>
