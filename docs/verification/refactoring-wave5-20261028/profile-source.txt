@@ -1,0 +1,21 @@
+<?php
+require getcwd() . '/tests/Support/ProgramStorefrontFixture.php';
+require $argv[1] . '/includes/shop_catalog_cards.php';
+$results = [];
+foreach ([1, 10, 50] as $count) {
+    foreach (['navigation', 'catalog', 'cards', 'detail'] as $profile) {
+        $pdo = Tests\Support\programStorefrontFixture($count);
+        $start = hrtime(true);
+        $output = match ($profile) {
+            'navigation' => shopPublicNavigationItems($pdo),
+            'catalog' => shopPublicSaleableCatalog($pdo),
+            'cards' => shopPublicCatalogCards($pdo),
+            'detail' => shopStorefrontProductDetail($pdo, 1),
+        };
+        $results[] = ['programs' => $count, 'profile' => $profile, 'sql_count' => count($pdo->queries),
+            'terms_queries' => count(array_filter($pdo->queries, fn($sql) => str_contains($sql, 'FROM club_event_term_versions'))),
+            'elapsed_ms' => (hrtime(true) - $start) / 1000000,
+            'output_sha256' => hash('sha256', json_encode($output, JSON_THROW_ON_ERROR))];
+    }
+}
+echo json_encode(['driver' => 'SQLite', 'synthetic_only' => true, 'results' => $results], JSON_PRETTY_PRINT) . PHP_EOL;

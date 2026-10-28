@@ -121,6 +121,9 @@ jobs:
       - name: Ověřit dávkové podmínky, kolace a čerstvé zamykající čtení
         run: php tests/Support/ProgramTermsBatchMariaDbSmoke.php
 
+      - name: Ověřit dávkové nabídky a vazby fyzických týmů
+        run: php tests/Support/ProgramOfferBatchMariaDbSmoke.php
+
       - name: Ověřit pracovní pozice a superadmin audit na MariaDB
         run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
 

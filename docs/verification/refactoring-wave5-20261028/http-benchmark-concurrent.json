@@ -1,0 +1,56 @@
+{
+  "synthetic_only": true,
+  "warmup": 5,
+  "measured": 15,
+  "normalization": "Ignore only numeric /assets/ cache versions after checking identical asset bytes in both worktrees.",
+  "order": "alternating before/after",
+  "active_products": 71,
+  "program_products": 20,
+  "metric": "full HTTP body including local network; not browser rendering",
+  "results": [
+    {
+      "version": "before",
+      "median_ms": 560.7766999746673,
+      "samples_ms": [
+        380.3038000478409,
+        489.2177000292577,
+        380.98450005054474,
+        579.6899999841116,
+        543.6231999774463,
+        631.7941999877803,
+        556.2724000192247,
+        662.2345999930985,
+        560.7766999746673,
+        725.211400014814,
+        686.4248000201769,
+        556.3967999769375,
+        627.7010000194423,
+        615.7221999601461,
+        528.9992000325583
+      ],
+      "semantic_sha256": "ef8023b8394664a893a23eeb7e2cf7a1fb139b7e7d20d0591319fbe2e3e738bf"
+    },
+    {
+      "version": "after",
+      "median_ms": 590.9895999939181,
+      "samples_ms": [
+        319.60719998460263,
+        400.1138000166975,
+        463.99179997388273,
+        537.518099998124,
+        680.3787000244483,
+        660.8475999673828,
+        465.43179999571294,
+        712.1501000365242,
+        628.3048000186682,
+        707.5769000221044,
+        723.096500034444,
+        671.8013000208884,
+        526.5629999921657,
+        568.4041999629699,
+        590.9895999939181
+      ],
+      "semantic_sha256": "ef8023b8394664a893a23eeb7e2cf7a1fb139b7e7d20d0591319fbe2e3e738bf"
+    }
+  ]
+}

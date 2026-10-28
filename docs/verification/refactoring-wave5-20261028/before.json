@@ -1,0 +1,102 @@
+{
+    "driver": "SQLite",
+    "synthetic_only": true,
+    "results": [
+        {
+            "programs": 1,
+            "profile": "navigation",
+            "sql_count": 23,
+            "terms_queries": 2,
+            "elapsed_ms": 9.1806,
+            "output_sha256": "495e587d0d6e454b9407b0feb0cedc2173485cddefda270a1bb4aa6e2ab89df8"
+        },
+        {
+            "programs": 1,
+            "profile": "catalog",
+            "sql_count": 22,
+            "terms_queries": 2,
+            "elapsed_ms": 1.4344,
+            "output_sha256": "63dfd3713ae021134edb2baab856949b3986a15538319f7dec2dfb4640d914c7"
+        },
+        {
+            "programs": 1,
+            "profile": "cards",
+            "sql_count": 22,
+            "terms_queries": 2,
+            "elapsed_ms": 1.3185,
+            "output_sha256": "7d408cb4cad582122281d0f4468c734a906829f27c355656d3c9d554b51b0379"
+        },
+        {
+            "programs": 1,
+            "profile": "detail",
+            "sql_count": 20,
+            "terms_queries": 2,
+            "elapsed_ms": 2.2367,
+            "output_sha256": "bfddc9afc174b7b8a0405165fa833ecfa527790139b3a095e3a11b2cb14ee9fd"
+        },
+        {
+            "programs": 10,
+            "profile": "navigation",
+            "sql_count": 59,
+            "terms_queries": 2,
+            "elapsed_ms": 6.784,
+            "output_sha256": "1d601757e156a58e4776b1ed1a167c172cefd8af4b72e8b3f162cba8fe47b906"
+        },
+        {
+            "programs": 10,
+            "profile": "catalog",
+            "sql_count": 58,
+            "terms_queries": 2,
+            "elapsed_ms": 8.2531,
+            "output_sha256": "54366df2293c9ba19f62adc072586d9cdebef00875d1048c72264d390e344646"
+        },
+        {
+            "programs": 10,
+            "profile": "cards",
+            "sql_count": 58,
+            "terms_queries": 2,
+            "elapsed_ms": 6.095,
+            "output_sha256": "baf822a44caf0df8951b6281a3a7d75bfd7cc6f2cb785f392cd0396d1abf1fb1"
+        },
+        {
+            "programs": 10,
+            "profile": "detail",
+            "sql_count": 20,
+            "terms_queries": 2,
+            "elapsed_ms": 1.4779,
+            "output_sha256": "bfddc9afc174b7b8a0405165fa833ecfa527790139b3a095e3a11b2cb14ee9fd"
+        },
+        {
+            "programs": 50,
+            "profile": "navigation",
+            "sql_count": 219,
+            "terms_queries": 2,
+            "elapsed_ms": 38.4208,
+            "output_sha256": "b0092c8699dc301004fbf0b7e4efa46d6f0cca2969a5ebca9dabd5b3365b2b59"
+        },
+        {
+            "programs": 50,
+            "profile": "catalog",
+            "sql_count": 218,
+            "terms_queries": 2,
+            "elapsed_ms": 44.9898,
+            "output_sha256": "8756c15ccfc8ea66ad6158ee6723b48ab6fe482641147b9d1d16e1e08ff82216"
+        },
+        {
+            "programs": 50,
+            "profile": "cards",
+            "sql_count": 218,
+            "terms_queries": 2,
+            "elapsed_ms": 38.8313,
+            "output_sha256": "b6ac2bef133213743ed2798726b17938469ee0d9f6d8c9ce9ca677e03ed52ea4"
+        },
+        {
+            "programs": 50,
+            "profile": "detail",
+            "sql_count": 20,
+            "terms_queries": 2,
+            "elapsed_ms": 1.5339,
+            "output_sha256": "bfddc9afc174b7b8a0405165fa833ecfa527790139b3a095e3a11b2cb14ee9fd"
+        }
+    ]
+}

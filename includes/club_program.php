@@ -624,22 +624,27 @@ function clubProgramAdminOffers(PDO $pdo): array
     unset($row);
     return $rows;
 }
+/** Shared row projection; callers retain their own selection and locking. */
+function clubProgramOfferSelectSql(PDO $pdo, ?ClubProgramReadContext $readContext = null): string
+{
+    $readContext?->assertConnection($pdo);
+    $hasRosterContext = clubProgramRuntimeTableExists($pdo, 'club_teams', $readContext) && clubProgramRuntimeTableExists($pdo, 'club_seasons', $readContext);
+    $descriptionSelect = clubProgramColumnExists($pdo, 'club_programs', 'description', $readContext) ? 'p.description' : 'NULL';
+    return "SELECT o.*,p.name AS program_name," .
+         $descriptionSelect .
+         " AS program_description," .
+         ($hasRosterContext ? 't.name AS team_name,s.name AS season_name ' : "NULL AS team_name,NULL AS season_name ") .
+         "FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id " .
+         ($hasRosterContext ? 'JOIN club_teams t ON t.id=o.team_id JOIN club_seasons s ON s.id=o.season_id ' : '');
+}
+
 /** @return array<string,mixed>|false */
 function clubProgramOfferForVariant(PDO $pdo, int $variantId, ?DateTimeImmutable $now = null, bool $lock = false, ?ClubProgramReadContext $readContext = null): array|false
 {
     if ($lock) {
         $readContext = null;
     }
-    $readContext?->assertConnection($pdo);
-    $hasRosterContext = clubProgramRuntimeTableExists($pdo, 'club_teams', $readContext) && clubProgramRuntimeTableExists($pdo, 'club_seasons', $readContext);
-    $descriptionSelect = clubProgramColumnExists($pdo, 'club_programs', 'description', $readContext) ? 'p.description' : 'NULL';
-    $sql = "SELECT o.*,p.name AS program_name," .
-         $descriptionSelect .
-         " AS program_description," .
-         ($hasRosterContext ? 't.name AS team_name,s.name AS season_name ' : "NULL AS team_name,NULL AS season_name ") .
-         "FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id " .
-         ($hasRosterContext ? 'JOIN club_teams t ON t.id=o.team_id JOIN club_seasons s ON s.id=o.season_id ' : '') .
-         "WHERE o.variant_id=? AND o.status='active' AND p.status='active'";
+    $sql = clubProgramOfferSelectSql($pdo, $readContext) . "WHERE o.variant_id=? AND o.status='active' AND p.status='active'";
     if ($lock && (string) $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
         $sql .= ' FOR UPDATE';
     }
@@ -828,18 +833,13 @@ function clubProgramAssertBeneficiaryBirthYear(PDO $pdo, array $offer, int $spor
     // Backwards-compatible no-op: věkové rozpětí už nákup neblokuje.
     clubProgramBeneficiaryBirthYearWarning($pdo, $offer, $sportovecId, $lock);
 }
-/**
- * Capacity has one source of truth: unique athletes enrolled in, or holding a
- * still-payable order for, any offer on the same roster whose dates overlap.
- * A paid quick registration keeps its place while the club reviews identity;
- * payment expiry only applies to unpaid orders.
- * This keeps annual and semester payment options from overselling one group.
- *
+/** Physical roster links, or the primary roster when no links exist.
  * @param array<string,mixed> $offer
- * @return array{active_enrollment_count:int,held_order_count:int,occupied_count:int,available_count:?int}
+ * @return list<int>
  */
 function clubProgramPhysicalTeamIds(PDO $pdo, array $offer, ?ClubProgramReadContext $readContext = null): array
 {
+    $readContext?->assertConnection($pdo);
     $primary = (int) ($offer['team_id'] ?? 0);
     if ($primary < 1) {
         return [];
@@ -859,12 +859,20 @@ function clubProgramPhysicalTeamIds(PDO $pdo, array $offer, ?ClubProgramReadCont
     if ($programId < 1) {
         return [$primary];
     }
+    if ($readContext !== null) {
+        $targets = $readContext->physicalTeamIds($programId);
+        return $targets !== [] ? $targets : [$primary];
+    }
     $q = $pdo->prepare('SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id');
     $q->execute([$programId]);
     $targets = array_map('intval', $q->fetchAll(PDO::FETCH_COLUMN));
     return $targets !== [] ? $targets : [$primary];
 }
-/** @param array<string,mixed> $offer */
+/** Capacity has one source of truth: unique athletes enrolled in, or holding a
+ * still-payable order for, any offer on the same roster whose dates overlap.
+ * Paid quick registrations keep their place while the club reviews identity.
+ * @param array<string,mixed> $offer
+ */
 function clubProgramOfferCapacityState(PDO $pdo, array $offer, ?DateTimeImmutable $now = null, bool $lock = false, int $excludeHeldSportovecId = 0, ?ClubProgramReadContext $readContext = null): array
 {
     if ($lock) {

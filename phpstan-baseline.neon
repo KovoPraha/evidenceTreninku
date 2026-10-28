@@ -1399,36 +1399,6 @@ parameters:
 			path: includes/club_migration_sports.php
 
 		-
-			message: '#^Comparison operation "\>" between 4 and 1 is always true\.$#'
-			identifier: greater.alwaysTrue
-			count: 1
-			path: includes/club_program.php
-
-		-
-			message: '#^Function clubProgramPhysicalTeamIds\(\) should return array\{active_enrollment_count\: int, held_order_count\: int, occupied_count\: int, available_count\: int\|null\} but returns array\{int\<1, max\>\}\.$#'
-			identifier: return.type
-			count: 2
-			path: includes/club_program.php
-
-		-
-			message: '#^Function clubProgramPhysicalTeamIds\(\) should return array\{active_enrollment_count\: int, held_order_count\: int, occupied_count\: int, available_count\: int\|null\} but returns array\{\}\.$#'
-			identifier: return.type
-			count: 1
-			path: includes/club_program.php
-
-		-
-			message: '#^Offset 0 on array\{active_enrollment_count\: int, held_order_count\: int, occupied_count\: int, available_count\: int\|null\} on left side of \?\? does not exist\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: includes/club_program.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: includes/club_program.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
