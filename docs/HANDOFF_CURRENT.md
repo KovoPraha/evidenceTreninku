@@ -82,9 +82,11 @@ je sloučený v PR #219 a vlastník zahájil autonomní realizaci. Vlny 1–5 js
 dokončené; [první K0/W6.1 balík](REFACTORING_K0_W6_2026-10-29.md) je sloučený
 v PR #220. [W6.2](REFACTORING_WAVE6_2026-10-29.md), oddělení čistého výpočtu
 kapacit, je ověřené a nasazené. [W6.3](REFACTORING_W63_2026-10-29.md) doplnilo
-migrovaný profil a postupné čtení s úsporou paměti; je také nasazené. Navazuje
-K0.2/W7: měření osob, rodin a oprávnění. Dávkování kapacit mezi nabídkami je
-samostatný kandidát. Plošné měření K0.2 zůstává průběžné.
+migrovaný profil a postupné čtení s úsporou paměti; je také nasazené.
+[W7.1a](REFACTORING_W71_2026-10-29.md) nasadilo cílené ověření rodinného přístupu
+s rozpočtem čtyř SQL. Navazuje W7.1b: race test revokace u writerů RSVP/náhrad
+a případná oprava. Plné profily R02–R04 a plošné měření K0.2 zůstávají otevřené;
+dávkování kapacit mezi nabídkami je samostatný kandidát.
 
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah
 oprávnění, větev, pracovní kopii, dokončené kroky, testy a další krok.

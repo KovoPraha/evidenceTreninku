@@ -5,6 +5,14 @@ větev `codex/refactoring-w71-family-reads-20261029`, izolované worktree mimo
 htdocs. Vlastník autorizoval autonomní implementaci, merge a chráněný deploy
 po úspěšném ověření. Cizí `kis_rosters_admin.php` a ostatní WIP zůstávají.
 
+**Dokončeno a nasazeno 29. 10. 2026:** PR #225, release
+`81544542bb40cb96e7141791ea22e4b382531d5e`,
+[deploy 40930536923](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40930536923).
+[Produkční protokol](verification/refactoring-w71-release-20261029/RESULTS.md).
+Linux 1 804 testů / 36 058 assertions, MariaDB 10.3/11.4, před/po 26/26 HTTP PASS.
+U 20 osob SQL 24 → 4, nejvýše jeden datový řádek, stejné autorizační podmínky.
+W7 jako celek zůstává otevřené; následuje W7.1b podle nálezu níže.
+
 ## První řez W7 a zjištění
 
 `familyPortalCanViewPerson` volá seznam celé rodiny a hydratuje členství každé
@@ -58,4 +66,4 @@ revokace během čekání již běžícího writeru. W7.1b má nejprve reproduko
 tuto situaci a podle výsledku upravit kontrolu uvnitř zápisové transakce.
 Není to nově zavedená cache ani tvrzení o dokončeném auditu všech writerů.
 
-[Měření a průběžné výsledky](verification/refactoring-w71-20261029/RESULTS.md).
+[Měření a výsledky](verification/refactoring-w71-20261029/RESULTS.md).

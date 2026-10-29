@@ -1,0 +1,26 @@
+{
+  "sha": "569c30a5b6062cdb3a6945fcfd3cc29041221d56",
+  "runs": [
+    {
+      "id": 40929388702,
+      "name": "Testy",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40929388702"
+    },
+    {
+      "id": 40929388701,
+      "name": "Current documentation",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40929388701"
+    },
+    {
+      "id": 40929388844,
+      "name": "PHP quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40929388844"
+    }
+  ]
+}

@@ -67,3 +67,19 @@ na MariaDB 10.3/11.4. Profil používá 3 warmupy + 15 střídavých vzorků; m�
 Dávkové sdílení mezi nabídkami zůstává kandidát, nikoli hotová implementace.
 Výše uvedené první nálezy jsou historický vstup; příští hlavní krok K0.2/W7
 je měření R02–R04. Ostatní dosud nezměřené profily se tímto neuzavírají.
+
+## Doplnění W7.1a, 29. 10. 2026
+
+Zdroj `81544542bb40cb96e7141791ea22e4b382531d5e`, PR #225.
+[Profil rodinného přístupu](verification/refactoring-w71-20261029/RESULTS.md)
+ověřuje konkrétní službu `familyPortalCanViewPerson` sdílenou rodinnými agendami:
+rodiny 0/1/5/20 osob, vlastní/cizí profil, všech 140 migrací s doplněnými legacy
+membership sloupci, FK a EXPLAIN. U 20 osob SQL 24 → 4, datové řádky 40 → 0/1,
+stejná pravidla přístupu; žádná cache. CI MariaDB 10.3/11.4 a negativní testy PASS.
+Nejde o kompletní HTTP profil R02–R04; ty zůstávají otevřené.
+
+Další priorita W7.1b: race test revokace oprávnění během čekání writerů RSVP
+a náhrad na zámek. Ve zdroji se rodinná kontrola volá před transakcí; W7.1a
+pořadí nezměnilo. Profil potvrzuje čerstvé autocommit čtení po revokaci z druhé
+connection, nikoli bezpečnost už běžícího writeru. Po charakterizaci rozhodnout
+o samostatné opravě, potom pokračovat plnými profily rodiny a registráře.

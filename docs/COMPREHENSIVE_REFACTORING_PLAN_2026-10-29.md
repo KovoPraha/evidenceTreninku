@@ -1,6 +1,6 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav k 29. 10. 2026: K0/W6.1 sloučeno, W6.2 a W6.3 ověřeno a nasazeno.**
+**Stav k 29. 10. 2026: K0/W6.1 sloučeno; W6.2, W6.3 a W7.1a ověřeno a nasazeno.**
 Zadání vlastníka z 29. 10. 2026: připravit komplexní pojetí celé aplikace,
 v dalších krocích autonomně implementovat. Navazující pokyn vlastníka aktivoval
 [první realizační balík](REFACTORING_K0_W6_2026-10-29.md). Původní příprava
@@ -123,7 +123,7 @@ má před výkonovou frontou přednost a dostane vlastní opravný PR.
 | --- | --- | --- | --- |
 | **K0 — průběžná realizace**: měření a kontrakty celé aplikace | K0.1 aktuální mapa route → guard → služba → tabulky → side effect; K0.2 syntetické profily a měřicí prostředí; K0.3 registr zjištění a řazení backlogu | Aktuální main a tento plán | Každá oblast má vlastníka, alespoň hlavní pozitivní/negativní scénář a výchozí měření nebo výslovně popsanou mezeru. |
 | **W6 — W6.2 a W6.3 nasazeno**: obsazenost programů | W6.1 charakterizační testy a profil; W6.2 oddělit načtení podkladů od čistého výpočtu; W6.3 případně dávkové veřejné čtení podle měření | K0 pro katalog, dosavadní W1–5 | Kanonický a nový výstup shodný ve všech scénářích, čerstvé zámky zachované, prokazatelný přínos bez zhoršení DB práce/paměti. |
-| **W7 — W7.1a ověřování**: osoby, rodiny a oprávnění | W7.1 seznamy osob a rodinné přehledy; W7.2 oddělit vstupy/čtení/prezentaci; W7.3 odstranit konkrétní duplicity autorizačních predikátů | K0; bezpečnostní kontrakty před extrakcí | Stabilní stránkování a omezené načítání; stejné výsledky pro self/guardian/trenéra/registráře; okamžité odnětí vazby a souběžná revokace projdou negativními testy. |
+| **W7 — W7.1a nasazeno, další otevřené**: osoby, rodiny a oprávnění | W7.1 seznamy osob a rodinné přehledy; W7.2 oddělit vstupy/čtení/prezentaci; W7.3 odstranit konkrétní duplicity autorizačních predikátů | K0; bezpečnostní kontrakty před extrakcí | Stabilní stránkování a omezené načítání; stejné výsledky pro self/guardian/trenéra/registráře; okamžité odnětí vazby a souběžná revokace projdou negativními testy. |
 | **W8 — kandidáti k měření**: sport a rezervace | W8.1 plánovač, kalendáře a timeline; W8.2 formuláře tréninku/závodu a uzavření účasti; W8.3 rezervace, náhrady, čekací listina | K0 + dotčené kontrakty W7 | SQL neprobíhá po jednom záznamu bez důvodu; shoda časových hranic, účasti a historie; browser klávesnice/mobil a souběžné poslední místo PASS. |
 | **W9 — připravit kontrakty**: obchod a sklad | W9.1 rozdělit čtecí/view část checkoutu; W9.2 izolovat výpočet ceny a validaci bez přesunu transakčních kontrol; W9.3 skladové výpisy, výdej a vratky | K0 + W6/W7 při společných závislostech | Stejné minor-unit částky, stock a VS; idempotentní opakování, souběžná objednávka/vratka a rollback bez vedlejších zápisů. |
 | **W10 — připravit kontrakty**: finance a účetní výstupy | W10.1 přehledy předpisů/sald/ledgeru; W10.2 oddělit čtení od renderování dokladů a exportů; W10.3 cílené extrakce finančních služeb | K0 + stabilní kontrakty W9 | Součty a význam každého řádku shodné, uzavřené snapshoty neměnné; export roste v přijatelných paměťových mezích, zachová konzistentní okamžik čtení a oprávnění. |
@@ -275,7 +275,7 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | K0 + W6.1 | První balík sloučen v PR #220 po úspěšném CI | Migrovaný profil doplnilo W6.3; K0.2 ostatních agend otevřené |
 | W6.2 | [Čistá extrakce](REFACTORING_WAVE6_2026-10-29.md) sloučena a nasazena; [důkazy](verification/refactoring-wave6-release-20261029/RESULTS.md) | Hotovo; zachovat nové kontrakty |
 | W6.3 | [Paměť kapacit](REFACTORING_W63_2026-10-29.md) sloučena a nasazena; [důkazy](verification/refactoring-w63-release-20261029/RESULTS.md) | Hotovo; dávkové sdílení mezi nabídkami zůstává samostatný kandidát, navazuje K0.2/W7 |
-| W7.1a | [Cílený rodinný přístup](REFACTORING_W71_2026-10-29.md), charakterizace a migrovaný profil; ověřování | Rozpočet SQL a autorizační kontrakty; navazuje W7.1b race audit writerů |
+| W7.1a | [Cílený rodinný přístup](REFACTORING_W71_2026-10-29.md) sloučen a nasazen; [důkazy](verification/refactoring-w71-release-20261029/RESULTS.md) | Hotovo; navazuje W7.1b race audit revokace writerů a případná oprava |
 | Zbytek W7 a W8–W15 | Naplánované, další měření otevřené | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 

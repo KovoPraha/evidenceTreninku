@@ -1,0 +1,2733 @@
+{
+    "synthetic_only": true,
+    "phase": "enforced budget",
+    "schema": "checkout legacy bootstrap plus all migrations and four legacy membership columns; FK enabled",
+    "migration_count": 140,
+    "table_definitions": {
+        "sportovci": "CREATE TABLE `sportovci` (\n  `id` int(11) NOT NULL,\n  `jmeno` varchar(100) DEFAULT NULL,\n  `prijmeni` varchar(160) DEFAULT NULL,\n  `narozeni` date DEFAULT NULL,\n  `kis_external_id` varchar(80) DEFAULT NULL,\n  `stav_clenstvi` varchar(20) NOT NULL DEFAULT 'cekajici',\n  `stav_manualni` tinyint(4) NOT NULL DEFAULT 0,\n  `stav_duvod` text DEFAULT NULL,\n  `stav_aktualizovan` datetime DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_sportovci_kis_external_id` (`kis_external_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "verejni_uzivatele": "CREATE TABLE `verejni_uzivatele` (\n  `id` int(11) NOT NULL,\n  `jmeno` varchar(100) DEFAULT NULL,\n  `prijmeni` varchar(160) DEFAULT NULL,\n  `email` varchar(255) DEFAULT NULL,\n  `aktivni` tinyint(4) NOT NULL DEFAULT 1,\n  `email_overeno` tinyint(4) NOT NULL DEFAULT 0,\n  `verifikacni_token` varchar(255) DEFAULT NULL,\n  `registrovan` datetime NOT NULL,\n  `session_version` int(10) unsigned NOT NULL DEFAULT 1,\n  `verifikacni_token_expires_at` datetime DEFAULT NULL,\n  `trener_id` int(11) DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_verejni_uzivatele_trener` (`trener_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "account_person_roles": "CREATE TABLE `account_person_roles` (\n  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n  `account_id` int(11) NOT NULL,\n  `sportovec_id` int(11) NOT NULL,\n  `relation_role` varchar(24) NOT NULL,\n  `status` varchar(24) NOT NULL,\n  `source` varchar(24) NOT NULL DEFAULT 'admin',\n  `valid_from` datetime NOT NULL,\n  `valid_to` datetime DEFAULT NULL,\n  `created_by_trainer_id` int(11) NOT NULL,\n  `approved_by_trainer_id` int(11) DEFAULT NULL,\n  `decision_note` text NOT NULL,\n  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_account_person` (`account_id`,`sportovec_id`),\n  KEY `idx_account_person_active` (`account_id`,`status`,`valid_to`),\n  KEY `idx_person_account_active` (`sportovec_id`,`status`,`valid_to`),\n  KEY `fk_account_person_created_by` (`created_by_trainer_id`),\n  KEY `fk_account_person_approved_by` (`approved_by_trainer_id`),\n  CONSTRAINT `fk_account_person_account` FOREIGN KEY (`account_id`) REFERENCES `verejni_uzivatele` (`id`),\n  CONSTRAINT `fk_account_person_approved_by` FOREIGN KEY (`approved_by_trainer_id`) REFERENCES `treneri` (`id`),\n  CONSTRAINT `fk_account_person_created_by` FOREIGN KEY (`created_by_trainer_id`) REFERENCES `treneri` (`id`),\n  CONSTRAINT `fk_account_person_sportovec` FOREIGN KEY (`sportovec_id`) REFERENCES `sportovci` (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    },
+    "database_version": "11.4.13-MariaDB-ubu2404",
+    "php_version": "8.2.35",
+    "measurement": "plain PDO; 3 warmups + 15 alternating samples; ANALYZE TABLE; separate SQL instrumentation",
+    "revocation": "three committed changes from another connection observed by subsequent autocommit reads; no writer lock race claim",
+    "results": [
+        {
+            "family_size": 0,
+            "target": "own",
+            "allowed": false,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 1.023123,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.972677,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.998206,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.032647,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.005326,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.005597,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.025286,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.008712,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.02107,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.022231,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.012827,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.042792,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.144028,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.017475,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 1.030153,
+                        "incremental_peak_bytes": 39320
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 1.038742,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.931246,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.988916,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.946528,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.969033,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.947591,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.954451,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.955202,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.950214,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.950385,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.962342,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.946959,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 1.00135,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 0.986588,
+                        "incremental_peak_bytes": 39600
+                    },
+                    {
+                        "service_ms": 1.07159,
+                        "incremental_peak_bytes": 39600
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 1.02107,
+                "current": 0.955202
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 39320,
+                "current": 39600
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.151876,
+                        "fetch_ms": 0.003375,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.124846,
+                        "fetch_ms": 0.001392,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.133959,
+                        "fetch_ms": 0.002213,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.194038,
+                        "fetch_ms": 0.001483,
+                        "fetched_rows": 0
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.143323,
+                        "fetch_ms": 0.001603,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.130414,
+                        "fetch_ms": 0.001281,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.146007,
+                        "fetch_ms": 0.001302,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            1
+                        ],
+                        "execute_ms": 0.136974,
+                        "fetch_ms": 0.001082,
+                        "fetched_rows": 0
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.account_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": null,
+                        "type": null,
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": null,
+                        "Extra": "Impossible WHERE noticed after reading const tables"
+                    }
+                ]
+            }
+        },
+        {
+            "family_size": 0,
+            "target": "foreign",
+            "allowed": false,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 1.012197,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.966488,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.951666,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.982743,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.986217,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.945628,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.988331,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.959087,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.957495,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.985607,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.98816,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.973239,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.97472,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.972477,
+                        "incremental_peak_bytes": 39320
+                    },
+                    {
+                        "service_ms": 0.970895,
+                        "incremental_peak_bytes": 39320
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 0.944085,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.904006,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.922823,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.915883,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.897876,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.910405,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.925407,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.92094,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.928492,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.920079,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.916764,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.901182,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.916324,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.925147,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.923624,
+                        "incremental_peak_bytes": 39632
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 0.973239,
+                "current": 0.920079
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 39320,
+                "current": 39632
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.153479,
+                        "fetch_ms": 0.002313,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.175882,
+                        "fetch_ms": 0.001352,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.123013,
+                        "fetch_ms": 0.001492,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.213477,
+                        "fetch_ms": 0.001482,
+                        "fetched_rows": 0
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.135632,
+                        "fetch_ms": 0.001633,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.137404,
+                        "fetch_ms": 0.001382,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.117405,
+                        "fetch_ms": 0.001212,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            120
+                        ],
+                        "execute_ms": 0.15456,
+                        "fetch_ms": 0.001161,
+                        "fetched_rows": 0
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.account_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": null,
+                        "type": null,
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": null,
+                        "Extra": "Impossible WHERE noticed after reading const tables"
+                    }
+                ]
+            }
+        },
+        {
+            "family_size": 1,
+            "target": "own",
+            "allowed": true,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 1.264111,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.245434,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.252293,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.254216,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.24984,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.245203,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.228499,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.25004,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.230101,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.259715,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.238543,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.231012,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.248588,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.247777,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.249941,
+                        "incremental_peak_bytes": 81840
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 0.962673,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.960559,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.957125,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.953489,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.956343,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.968922,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 1.008861,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.929403,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.969063,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.96071,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.96732,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.956914,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.953319,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.954251,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.971606,
+                        "incremental_peak_bytes": 39616
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 1.248588,
+                "current": 0.960559
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 81840,
+                "current": 39616
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.13425,
+                        "fetch_ms": 0.002544,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.12781,
+                        "fetch_ms": 0.000691,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.113799,
+                        "fetch_ms": 0.000421,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.200709,
+                        "fetch_ms": 0.002624,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.113349,
+                        "fetch_ms": 0.002283,
+                        "fetched_rows": 1
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.155,
+                        "fetch_ms": 0.000741,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.115733,
+                        "fetch_ms": 0.000491,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.115272,
+                        "fetch_ms": 0.000451,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            1
+                        ],
+                        "execute_ms": 0.141871,
+                        "fetch_ms": 0.000551,
+                        "fetched_rows": 1
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.account_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "const",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "8",
+                        "ref": "const,const",
+                        "rows": "1",
+                        "Extra": ""
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            }
+        },
+        {
+            "family_size": 1,
+            "target": "foreign",
+            "allowed": false,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 1.238574,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.229911,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.24301,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.219165,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.256641,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.250912,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.258333,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.246085,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.263781,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.242309,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.225715,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.228008,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.219395,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.241227,
+                        "incremental_peak_bytes": 81840
+                    },
+                    {
+                        "service_ms": 1.254357,
+                        "incremental_peak_bytes": 81840
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 0.971947,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.961992,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.962102,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.949513,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.944596,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.943164,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.958897,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.94735,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.929974,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.920019,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.956393,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.943394,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.941741,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.964906,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.943303,
+                        "incremental_peak_bytes": 39632
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 1.242309,
+                "current": 0.94735
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 81840,
+                "current": 39632
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.132768,
+                        "fetch_ms": 0.001493,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.116744,
+                        "fetch_ms": 0.000681,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.115091,
+                        "fetch_ms": 0.000471,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.223272,
+                        "fetch_ms": 0.002364,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.112918,
+                        "fetch_ms": 0.001402,
+                        "fetched_rows": 1
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.128512,
+                        "fetch_ms": 0.000661,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.137074,
+                        "fetch_ms": 0.000751,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.140029,
+                        "fetch_ms": 0.00052,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            120
+                        ],
+                        "execute_ms": 0.135682,
+                        "fetch_ms": 0.00051,
+                        "fetched_rows": 0
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.account_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": null,
+                        "type": null,
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": null,
+                        "Extra": "Impossible WHERE noticed after reading const tables"
+                    }
+                ]
+            }
+        },
+        {
+            "family_size": 5,
+            "target": "own",
+            "allowed": true,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 2.218156,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.059595,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.031634,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.007017,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 1.98241,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.005214,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.053837,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.045755,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.017903,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.066076,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.021038,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.02913,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.077763,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.027337,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.06929,
+                        "incremental_peak_bytes": 92424
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 0.943764,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.930194,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.915773,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.910856,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.913029,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.901862,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.917756,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.905979,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.90651,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.899969,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.917476,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 1.004816,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.924586,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.910044,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.909183,
+                        "incremental_peak_bytes": 39616
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 2.031634,
+                "current": 0.913029
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 92424,
+                "current": 39616
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.157935,
+                        "fetch_ms": 0.002544,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.117214,
+                        "fetch_ms": 0.000891,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.111416,
+                        "fetch_ms": 0.000691,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.232186,
+                        "fetch_ms": 0.005128,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.109292,
+                        "fetch_ms": 0.001983,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            2
+                        ],
+                        "execute_ms": 0.10727,
+                        "fetch_ms": 0.001822,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            3
+                        ],
+                        "execute_ms": 0.119868,
+                        "fetch_ms": 0.002223,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            4
+                        ],
+                        "execute_ms": 0.108682,
+                        "fetch_ms": 0.002204,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            5
+                        ],
+                        "execute_ms": 0.102973,
+                        "fetch_ms": 0.001983,
+                        "fetched_rows": 1
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.122362,
+                        "fetch_ms": 0.000902,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.109994,
+                        "fetch_ms": 0.000711,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.10774,
+                        "fetch_ms": 0.000691,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            1
+                        ],
+                        "execute_ms": 0.137835,
+                        "fetch_ms": 0.000952,
+                        "fetched_rows": 1
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "6",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.account_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "const",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "8",
+                        "ref": "const,const",
+                        "rows": "1",
+                        "Extra": ""
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            }
+        },
+        {
+            "family_size": 5,
+            "target": "foreign",
+            "allowed": false,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 2.021409,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.025976,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.051102,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 1.996832,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.027127,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.048188,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.047367,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.087277,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.074718,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.064012,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.127716,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.142409,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.138232,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.100055,
+                        "incremental_peak_bytes": 92424
+                    },
+                    {
+                        "service_ms": 2.11687,
+                        "incremental_peak_bytes": 92424
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 0.935061,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.911006,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.922713,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.938246,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.910866,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.924516,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.939959,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.919388,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.935041,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.915944,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.986329,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.943494,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.955382,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.939748,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.955401,
+                        "incremental_peak_bytes": 39632
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 2.064012,
+                "current": 0.935061
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 92424,
+                "current": 39632
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.135481,
+                        "fetch_ms": 0.002413,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.118697,
+                        "fetch_ms": 0.001362,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.125157,
+                        "fetch_ms": 0.001232,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.233087,
+                        "fetch_ms": 0.005828,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.11427,
+                        "fetch_ms": 0.003255,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            2
+                        ],
+                        "execute_ms": 0.110985,
+                        "fetch_ms": 0.003134,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            3
+                        ],
+                        "execute_ms": 0.109053,
+                        "fetch_ms": 0.002984,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            4
+                        ],
+                        "execute_ms": 0.109723,
+                        "fetch_ms": 0.003866,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            5
+                        ],
+                        "execute_ms": 0.119898,
+                        "fetch_ms": 0.002974,
+                        "fetched_rows": 1
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.142221,
+                        "fetch_ms": 0.001232,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.116113,
+                        "fetch_ms": 0.001112,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.126649,
+                        "fetch_ms": 0.001132,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            120
+                        ],
+                        "execute_ms": 0.136573,
+                        "fetch_ms": 0.001162,
+                        "fetched_rows": 0
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "6",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.account_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": null,
+                        "type": null,
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": null,
+                        "Extra": "Impossible WHERE noticed after reading const tables"
+                    }
+                ]
+            }
+        },
+        {
+            "family_size": 20,
+            "target": "own",
+            "allowed": true,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 5.364925,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.349903,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 6.263568,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.418935,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.351204,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.351305,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.448949,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.345385,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.4021,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.365846,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.357634,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.32127,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.318296,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.334109,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.510627,
+                        "incremental_peak_bytes": 132296
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 0.968561,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.944666,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 1.005616,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.989263,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 1.004425,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.958427,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.981771,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.968311,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.999378,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.952778,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.98782,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.941131,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.98731,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.937075,
+                        "incremental_peak_bytes": 39616
+                    },
+                    {
+                        "service_ms": 0.981651,
+                        "incremental_peak_bytes": 39616
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 5.357634,
+                "current": 0.981651
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 132296,
+                "current": 39616
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.150454,
+                        "fetch_ms": 0.002324,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.126548,
+                        "fetch_ms": 0.001231,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.117305,
+                        "fetch_ms": 0.001162,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.290422,
+                        "fetch_ms": 0.009715,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.115071,
+                        "fetch_ms": 0.003204,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            2
+                        ],
+                        "execute_ms": 0.113019,
+                        "fetch_ms": 0.003034,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            3
+                        ],
+                        "execute_ms": 0.110915,
+                        "fetch_ms": 0.002974,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            4
+                        ],
+                        "execute_ms": 0.110555,
+                        "fetch_ms": 0.002935,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            5
+                        ],
+                        "execute_ms": 0.116924,
+                        "fetch_ms": 0.003004,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            6
+                        ],
+                        "execute_ms": 0.109923,
+                        "fetch_ms": 0.002884,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            7
+                        ],
+                        "execute_ms": 0.107701,
+                        "fetch_ms": 0.002984,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            8
+                        ],
+                        "execute_ms": 0.10745,
+                        "fetch_ms": 0.002924,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            9
+                        ],
+                        "execute_ms": 0.13437,
+                        "fetch_ms": 0.003145,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            10
+                        ],
+                        "execute_ms": 0.109884,
+                        "fetch_ms": 0.002985,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            11
+                        ],
+                        "execute_ms": 0.108402,
+                        "fetch_ms": 0.002985,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            12
+                        ],
+                        "execute_ms": 0.108181,
+                        "fetch_ms": 0.002935,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            13
+                        ],
+                        "execute_ms": 0.10741,
+                        "fetch_ms": 0.002984,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            14
+                        ],
+                        "execute_ms": 0.112427,
+                        "fetch_ms": 0.003025,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            15
+                        ],
+                        "execute_ms": 0.108161,
+                        "fetch_ms": 0.002994,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            16
+                        ],
+                        "execute_ms": 0.106819,
+                        "fetch_ms": 0.002964,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            17
+                        ],
+                        "execute_ms": 0.106579,
+                        "fetch_ms": 0.003005,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            18
+                        ],
+                        "execute_ms": 0.122812,
+                        "fetch_ms": 0.003084,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            19
+                        ],
+                        "execute_ms": 0.109833,
+                        "fetch_ms": 0.002965,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            20
+                        ],
+                        "execute_ms": 0.10778,
+                        "fetch_ms": 0.002984,
+                        "fetched_rows": 1
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.139287,
+                        "fetch_ms": 0.001251,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.116894,
+                        "fetch_ms": 0.001201,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.117945,
+                        "fetch_ms": 0.001192,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            1
+                        ],
+                        "execute_ms": 0.147409,
+                        "fetch_ms": 0.001222,
+                        "fetched_rows": 1
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "20",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "ALL",
+                        "possible_keys": "PRIMARY",
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "2",
+                        "Extra": "Using where; Using join buffer (flat, BNL join)"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "const",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "8",
+                        "ref": "const,const",
+                        "rows": "1",
+                        "Extra": ""
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            }
+        },
+        {
+            "family_size": 20,
+            "target": "foreign",
+            "allowed": false,
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 5.346427,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.354329,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.39558,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.476261,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.353989,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.332287,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.347008,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.30131,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.569028,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.456887,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.109685,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.227005,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.244556,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.127371,
+                        "incremental_peak_bytes": 132296
+                    },
+                    {
+                        "service_ms": 5.198207,
+                        "incremental_peak_bytes": 132296
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 0.973769,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.949984,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.953118,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.938186,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.970134,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.943975,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.972528,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.942793,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.990845,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.951005,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.925588,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.933374,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.922984,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.927831,
+                        "incremental_peak_bytes": 39632
+                    },
+                    {
+                        "service_ms": 0.934881,
+                        "incremental_peak_bytes": 39632
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 5.346427,
+                "current": 0.943975
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 132296,
+                "current": 39632
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.134731,
+                        "fetch_ms": 0.003115,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.113589,
+                        "fetch_ms": 0.001092,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.109032,
+                        "fetch_ms": 0.000721,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.251024,
+                        "fetch_ms": 0.008383,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.12809,
+                        "fetch_ms": 0.002183,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            2
+                        ],
+                        "execute_ms": 0.104907,
+                        "fetch_ms": 0.001842,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            3
+                        ],
+                        "execute_ms": 0.102743,
+                        "fetch_ms": 0.001833,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            4
+                        ],
+                        "execute_ms": 0.101611,
+                        "fetch_ms": 0.001913,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            5
+                        ],
+                        "execute_ms": 0.102072,
+                        "fetch_ms": 0.001833,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            6
+                        ],
+                        "execute_ms": 0.112237,
+                        "fetch_ms": 0.001923,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            7
+                        ],
+                        "execute_ms": 0.103524,
+                        "fetch_ms": 0.001743,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            8
+                        ],
+                        "execute_ms": 0.098897,
+                        "fetch_ms": 0.001632,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            9
+                        ],
+                        "execute_ms": 0.097796,
+                        "fetch_ms": 0.001752,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            10
+                        ],
+                        "execute_ms": 0.098106,
+                        "fetch_ms": 0.002343,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            11
+                        ],
+                        "execute_ms": 0.119628,
+                        "fetch_ms": 0.002083,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            12
+                        ],
+                        "execute_ms": 0.097785,
+                        "fetch_ms": 0.001783,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            13
+                        ],
+                        "execute_ms": 0.099198,
+                        "fetch_ms": 0.001813,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            14
+                        ],
+                        "execute_ms": 0.098126,
+                        "fetch_ms": 0.002113,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            15
+                        ],
+                        "execute_ms": 0.097375,
+                        "fetch_ms": 0.001743,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            16
+                        ],
+                        "execute_ms": 0.109173,
+                        "fetch_ms": 0.001963,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            17
+                        ],
+                        "execute_ms": 0.10068,
+                        "fetch_ms": 0.001712,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            18
+                        ],
+                        "execute_ms": 0.101511,
+                        "fetch_ms": 0.001753,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            19
+                        ],
+                        "execute_ms": 0.10085,
+                        "fetch_ms": 0.001652,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "parameters": [
+                            20
+                        ],
+                        "execute_ms": 0.099839,
+                        "fetch_ms": 0.001702,
+                        "fetched_rows": 1
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "account_person_roles"
+                        ],
+                        "execute_ms": 0.128771,
+                        "fetch_ms": 0.001101,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "verejni_uzivatele"
+                        ],
+                        "execute_ms": 0.111205,
+                        "fetch_ms": 0.000801,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "parameters": [
+                            "sportovci"
+                        ],
+                        "execute_ms": 0.108151,
+                        "fetch_ms": 0.000681,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "parameters": [
+                            1,
+                            120
+                        ],
+                        "execute_ms": 0.13437,
+                        "fetch_ms": 0.000791,
+                        "fetched_rows": 0
+                    }
+                ]
+            },
+            "explain": {
+                "baseline": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                        "key": "uq_account_person",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "20",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "vu",
+                        "type": "ALL",
+                        "possible_keys": "PRIMARY",
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "2",
+                        "Extra": "Using where; Using join buffer (flat, BNL join)"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "w71_profile_bd73a4ad3b8ff404.r.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ],
+                "current": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": null,
+                        "type": null,
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": null,
+                        "Extra": "Impossible WHERE noticed after reading const tables"
+                    }
+                ]
+            }
+        }
+    ]
+}
