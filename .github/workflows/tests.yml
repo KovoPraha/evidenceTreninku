@@ -124,6 +124,21 @@ jobs:
       - name: Ověřit dávkové nabídky a vazby fyzických týmů
         run: php tests/Support/ProgramOfferBatchMariaDbSmoke.php
 
+      - name: Ověřit charakterizaci kapacity na MariaDB s nativními prepared statements
+        env:
+          EVIDENCE_CAPACITY_MARIADB: '1'
+        run: php vendor/bin/phpunit tests/Integration/ProgramCapacityCharacterizationTest.php
+
+      - name: Profilovat syntetické kapacity a fan-out týmů
+        run: php tests/Support/ProgramCapacityProfile.php > capacity-profile.json
+
+      - name: Uchovat měření kapacity
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: capacity-profile-mariadb-${{ matrix.mariadb-version }}
+          path: capacity-profile.json
+          retention-days: 14
+
       - name: Ověřit pracovní pozice a superadmin audit na MariaDB
         run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
 
