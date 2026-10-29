@@ -1,0 +1,48 @@
+{
+  "sha": "797eb0bb959f6279525ed443bb78e366f5bc3df7",
+  "runs": [
+    {
+      "id": 40938064383,
+      "name": "Current documentation",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40938064383",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "797eb0bb959f6279525ed443bb78e366f5bc3df7"
+    },
+    {
+      "id": 40938064414,
+      "name": "PHP quality",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40938064414",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "797eb0bb959f6279525ed443bb78e366f5bc3df7"
+    },
+    {
+      "id": 40938064423,
+      "name": "Testy",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40938064423",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "797eb0bb959f6279525ed443bb78e366f5bc3df7"
+    },
+    {
+      "id": 40938058044,
+      "name": "PR #227",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40938058044",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "797eb0bb959f6279525ed443bb78e366f5bc3df7"
+    }
+  ],
+  "tests": 1808,
+  "assertions": 36095,
+  "posix": {
+    "tests": 3,
+    "assertions": 45,
+    "skipped": 0
+  },
+  "race_per_mariadb": {
+    "checks": 32,
+    "failures": 0
+  }
+}

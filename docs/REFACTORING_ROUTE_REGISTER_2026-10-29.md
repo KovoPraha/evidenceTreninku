@@ -78,8 +78,14 @@ membership sloupci, FK a EXPLAIN. U 20 osob SQL 24 → 4, datové řádky 40 →
 stejná pravidla přístupu; žádná cache. CI MariaDB 10.3/11.4 a negativní testy PASS.
 Nejde o kompletní HTTP profil R02–R04; ty zůstávají otevřené.
 
-Další priorita W7.1b: race test revokace oprávnění během čekání writerů RSVP
-a náhrad na zámek. Ve zdroji se rodinná kontrola volá před transakcí; W7.1a
-pořadí nezměnilo. Profil potvrzuje čerstvé autocommit čtení po revokaci z druhé
-connection, nikoli bezpečnost už běžícího writeru. Po charakterizaci rozhodnout
-o samostatné opravě, potom pokračovat plnými profily rodiny a registráře.
+Původní kandidát revokace během čekání writeru byl ověřen a opraven v W7.1b.
+
+## Doplnění W7.1b, 29. 10. 2026
+
+PR #227, zdroj `66521929f7e9ce55f7a03d669cb7821f49382f6c`.
+[Souběhový protokol](verification/refactoring-w71b-20261029/RESULTS.md):
+15 nepovolených zápisů před opravou, následně 32/32 PASS na MariaDB 10.3/11.4.
+RSVP, rezervace a storno náhrady kontrolují aktuální oprávnění po doménových
+zámcích před první mutací a drží je do konce transakce. Čtecí helpery beze změny.
+Tím se neuzavírá audit všech writerů ani plné profily R02–R04; navazuje W7.2
+úplným rodinným přehledem R02 a teprve podle měření další optimalizací.
