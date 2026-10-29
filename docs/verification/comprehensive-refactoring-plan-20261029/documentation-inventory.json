@@ -1,0 +1,4109 @@
+{
+  "source_sha": "49daae3a192d8168ed427c7adb4f203c916081d9",
+  "method": "Read and hash all tracked Markdown; headings inventory is not manual review of every line.",
+  "documents": [
+    {
+      "path": "CLAUDE.md",
+      "bytes": 8707,
+      "sha256": "21da4c966a5a8de86ab1ded6e4b8f4303e1af21d2af41787db0d1827482a7770",
+      "headings": [
+        "# Evidence + e-shop + KIS — vývojový kontext",
+        "## Rozsah a technologie",
+        "## Co je implementováno",
+        "## Výslovně otevřené",
+        "## Klíčové soubory a datové oblasti",
+        "## Autentizace a autorizace",
+        "## Vzor nové pracovní stránky",
+        "## Pracovní pravidla"
+      ]
+    },
+    {
+      "path": "README.md",
+      "bytes": 3688,
+      "sha256": "17e78401956f18f4f53b50b003ca12dacbccac2a8ab69a3c6f03493c486aec0e",
+      "headings": [
+        "# EvidencePavel",
+        "## Produkce",
+        "## Převzetí vývoje na novém počítači",
+        "## Vývojová kontrola"
+      ]
+    },
+    {
+      "path": "database/README.md",
+      "bytes": 661,
+      "sha256": "e0febc34c987100bd010df010af83120e827f73c6ca032651e45129da5b6d384",
+      "headings": [
+        "# Databázový podklad pro localhost"
+      ]
+    },
+    {
+      "path": "docs/A10-PERSON-AUDIT-TIMELINE.md",
+      "bytes": 1701,
+      "sha256": "3a56dcf81bb011420e695e31b780ec8b7565387b253bc208e86fd90074ac0622",
+      "headings": [
+        "# A10 – auditní časová osa osoby"
+      ]
+    },
+    {
+      "path": "docs/ACCOUNTING_LEDGER_R13_R16.md",
+      "bytes": 5809,
+      "sha256": "e253e650c696391e85fcc2ad64d73102d833d33a710402fbcc432cf269e77895",
+      "headings": [
+        "# R13 / R16 — průkazné peněžní pohyby",
+        "## Jediná identita peněz",
+        "## Peněžní kniha, rozdělení a členění",
+        "## Lokální ověření"
+      ]
+    },
+    {
+      "path": "docs/ADMIN-PRACOVNI-POZICE.md",
+      "bytes": 5638,
+      "sha256": "135f124c86c652d22a7366f4a550ecf743971285f9e7a092d4366acb212c7378",
+      "headings": [
+        "# Pracovní pozice administrace",
+        "## Pozice a odpovědnosti",
+        "## Superadministrátor",
+        "## Přihlášení a správa",
+        "## Bezpečnostní pravidla",
+        "## Uzavřené pracovní cesty",
+        "## Testovací kontrakt"
+      ]
+    },
+    {
+      "path": "docs/AUDIT-M2-ADVERSARIAL.md",
+      "bytes": 11965,
+      "sha256": "398c1227d5215a12fd45602fab6a42e378f5831b90cba1ce0f3d537199674f6c",
+      "headings": [
+        "# AUDIT M2 — adversariální průchod (aplikace pod tlakem)",
+        "## 1. Manažerské shrnutí",
+        "## 2. Výsledky pod tlakem (vektor → skutečné chování)",
+        "## 3. Nálezy z tohoto úhlu (pouze LOW / doporučení)",
+        "## 4. Přenesený otevřený nález (mimo web vrstvu, stále platí)",
+        "## 5. Metodika a rozsah (poctivě)",
+        "## 6. Text pro vložení zpět do řídicího vlákna (Codex)"
+      ]
+    },
+    {
+      "path": "docs/AUDIT-M2-AI-SIMULACE-RE2.md",
+      "bytes": 18054,
+      "sha256": "4d7c907f178d9986f0dbc941197717a5b51aa1c5f2f4af243ff3e38c81921797",
+      "headings": [
+        "# AUDIT M2 — druhý průchod (re-audit)",
+        "## 1. Co se změnilo od prvního auditu",
+        "## 2. Manažerské shrnutí re‑auditu",
+        "## 3. Nálezy",
+        "### HIGH",
+        "### MEDIUM",
+        "### LOW",
+        "## 4. Co je ověřeno jako v pořádku (nová M2.3 vrstva)",
+        "## 5. Zahozené „nálezy\" z pomocné analýzy (byly to artefakty zastaralé bridge kopie)",
+        "## 6. Stav dříve hlášených nálezů",
+        "## 7. Testy, migrace, git",
+        "## 8. Aktualizovaná procenta (můj realistický odhad vs. `CURRENT_STATE.md`)",
+        "## 9. Oblasti, které nebylo možné ověřit (a proč)",
+        "## 10. Text pro vložení zpět do řídicího vlákna (Codex)"
+      ]
+    },
+    {
+      "path": "docs/AUDIT-M2-AI-SIMULACE.md",
+      "bytes": 28059,
+      "sha256": "0048d82a1f2bc31cc3961b3af811b239702d1f516335efa114f15166652a0f97",
+      "headings": [
+        "# AUDIT M2 — AI simulace a nezávislá revize",
+        "## 1. Manažerské shrnutí",
+        "## 2. Nálezy podle závažnosti",
+        "### CRITICAL",
+        "### HIGH",
+        "### MEDIUM",
+        "### LOW",
+        "### UX",
+        "### Dokumentační drift (souhrn)",
+        "### Náměty do dalšího milníku",
+        "## 3. Stav dříve hlášených nálezů (ověřeno na commitu `12232eb`)",
+        "## 4. Tabulka A01–A10 (živý průchod prohlížečem)",
+        "## 5. Automatické ověření",
+        "## 6. Stav Git pracovního stromu",
+        "## 7. Mutace provedené pouze na localhost syntetických datech",
+        "## 8. Oblasti, které nebylo možné ověřit (a proč)",
+        "## 9. Doporučená aktualizovaná procenta etap",
+        "## 10. Text pro vložení zpět do řídicího vlákna (Codex)"
+      ]
+    },
+    {
+      "path": "docs/AUDIT-PRILEZITOSTI-A-NAPADY.md",
+      "bytes": 11013,
+      "sha256": "30b49dbc57ee9e666c571dabfa9ec0194dd115fb4e3318e8d1330ff2a694195a",
+      "headings": [
+        "# Funkční audit příležitostí — co by aplikace mohla umět navíc",
+        "## Vůdčí myšlenka",
+        "## A. Rychlé výhry (nízké úsilí, využívají existující data)",
+        "## B. Větší sázky (vyšší hodnota, střední úsilí)",
+        "## C. Napojení navenek (integrace)",
+        "## D. Moonshoty (velká vize, delší horizont)",
+        "## Prioritizace (můj návrh pořadí)",
+        "## Jedna věta na závěr"
+      ]
+    },
+    {
+      "path": "docs/AUDIT-PRILEZITOSTI-HLOUBKOVE.md",
+      "bytes": 14352,
+      "sha256": "d50d45d30b482a07509b68f2e8298e364be8e9b51190feec50a6ad758b192aef",
+      "headings": [
+        "# Hloubkový funkční audit příležitostí",
+        "## ČÁST 1 — Datová připravenost (to, co většina auditů přeskočí)",
+        "### 1.1 Co už měříte a v jaké kvalitě",
+        "### 1.2 Dvě datové dluhy, které blokují „chytré\" funkce",
+        "## ČÁST 2 — Tři vlajkové návrhy, promyšlené do hloubky",
+        "### I. Klubová kreditní smyčka (odměna → čerpatelný wallet → e‑shop)",
+        "### II. Vrstva sportovcova pokroku (měření → osobáky, trendy, zátěž)",
+        "### III. Retenční engine (docházka + rollover + oznameni_targets)",
+        "## ČÁST 3 — Strategická sázka: „Club OS\"",
+        "## ČÁST 4 — Sekvenování (co v jakém pořadí a proč — závislosti, ne jen priorita)",
+        "## ČÁST 5 — Rizika a mantinely specifické pro mládežnický sport",
+        "## Jedna věta na závěr"
+      ]
+    },
+    {
+      "path": "docs/AUDITY.md",
+      "bytes": 2519,
+      "sha256": "cf378bf83276154e2dfd075a92e8633f214b79c54a31c4c46c35edb1226a3ca2",
+      "headings": [
+        "# Přehled kontrolních auditů",
+        "## Jak audity používat"
+      ]
+    },
+    {
+      "path": "docs/CHANGELOG-PROVOZ.md",
+      "bytes": 141821,
+      "sha256": "9f3e5213ec74ede23eea3d64d7d4ac28176a16c70095883154fd12febd4e6754",
+      "headings": [
+        "# Provozní historie",
+        "## 28. 10. 2026 — pátá vlna refaktoringu sloučena a nasazena",
+        "# Aktuální stav projektu",
+        "## 28. 10. 2026 — čtvrtá vlna refaktoringu sloučena a nasazena",
+        "# Aktuální stav projektu",
+        "## 28. 10. 2026 — třetí vlna refaktoringu sloučena a nasazena",
+        "# Aktuální stav projektu",
+        "## 28. 10. 2026 — druhá vlna refaktoringu sloučena a nasazena",
+        "# Aktuální stav projektu",
+        "## 28. 10. 2026 — první vlna refaktoringu sloučena a nasazena",
+        "# Aktuální stav projektu",
+        "## 26. 10. 2026 — opravy dozoru F1–F3 sloučeny a nasazeny",
+        "# Aktuální stav projektu",
+        "# Aktuální předání vývoje na další stanici",
+        "## Autorizované vydání Zásilkovny — 22. 10. 2026",
+        "## Veřejný klíč a skutečná mapa — lokální PASS 22. 10. 2026",
+        "## Živý účet Packeta — nastavení po přihlášení vlastníka",
+        "## Lokálně připraven jednoduchý ruční provoz Zásilkovny",
+        "## Historie auditu a předchozího nasazení",
+        "## Pravidlo pro větší změny a pokračování po kompaktaci",
+        "## GitHub a produkce",
+        "## Poslední automatické ověření",
+        "## Ověřený bod předání",
+        "## Nová stanice: čisté převzetí",
+        "## Existující clone: bezpečná synchronizace",
+        "## Zahájení nové práce",
+        "## GitHub pracovní postup",
+        "## Co není v GitHubu",
+        "## Kde hledat aktuální informace",
+        "## Funkční stav po změnách z 9. 10. 2026",
+        "## Důležitá provozní hranice",
+        "## Převzetí práce na jiné stanici",
+        "## Autorita dokumentace"
+      ]
+    },
+    {
+      "path": "docs/CLAUDE_HISTORY.md",
+      "bytes": 37629,
+      "sha256": "641c6b2ad7ad88d4c67d7f1cd860a00440e82d5a0812adf33a145997eee22cee",
+      "headings": [
+        "# Evidence + e-shop + KIS — CLAUDE.md",
+        "## Aktuální produktový rozsah",
+        "## Co je dnes implementováno",
+        "## Výslovně otevřené nebo blokované",
+        "## Povinné hranice pro AI audit",
+        "## Historická kompatibilita Velocota",
+        "## Technologie",
+        "## Klíčové soubory",
+        "## Databáze",
+        "### Hlavní tabulky",
+        "## Autentizace a role",
+        "### Veřejný booking (`booking/`)",
+        "## Vzory kódu",
+        "### Nová stránka (šablona)",
+        "### Admin-only modul v podadresáři",
+        "### Excel export (PhpSpreadsheet)",
+        "### Varování na neuložené změny (formuláře)",
+        "### Povinná pole ve formulářích",
+        "## Export moduly",
+        "## AJAX endpointy",
+        "## Globální CSS v `hlavicka.php`",
+        "## Kategorie tréninků (`treninky.kategorie`)",
+        "## Adresářová struktura",
+        "## Konvence",
+        "## Dokumentace",
+        "### Stats karty (vzor)",
+        "### Kategorie meta (vzor)",
+        "### Toast notifikace (vzor)",
+        "### Migrace DB schématu (vzor)",
+        "### Kategorie závodů (`zavody.kategorie`)",
+        "### Měření v tréninku a závodech (vzor)",
+        "### Synchronizace evidence (vzor)",
+        "### Plánovač tréninků (`planovac.php`)",
+        "### Rezervační systém sportovišť — architektura",
+        "### Upomínky na nezaevidované tréninky",
+        "### Kopírování týdne v plánovači",
+        "### Čekací listina pro individuální lekce",
+        "### UX balík (2.16.0)",
+        "### Nástěnka skupiny v plánovači (2.17.0)",
+        "### Web Push notifikace (2.17.0)",
+        "## Dodatek 2.20.0"
+      ]
+    },
+    {
+      "path": "docs/CLUB_ADMINISTRATION_R31_R37_IMPLEMENTATION.md",
+      "bytes": 5416,
+      "sha256": "87c01cac484ccaabb7d62c5aaca703292e1df1c7efcde477ebf1a7b1859ef8ad",
+      "headings": [
+        "# R31–R37: klubová administrativa a společná přejímka",
+        "## Výsledek podle realizačního plánu",
+        "## Jeden peněžní zdroj",
+        "## Pracovní postupy",
+        "## Izolace a přejímka"
+      ]
+    },
+    {
+      "path": "docs/CLUB_AUTONOMOUS_FOLLOWUP.md",
+      "bytes": 3396,
+      "sha256": "701eaa0d5853168eb46c2c20f2437f32ef2d1fb32a8d12f35b0f81e4a00cdab0",
+      "headings": [
+        "# Navazující kontrola společného systému oddílu",
+        "## Co se změnilo",
+        "## Ověření a předání",
+        "## Co se neuzavírá automaticky"
+      ]
+    },
+    {
+      "path": "docs/CLUB_COMPLETION_DECISIONS.md",
+      "bytes": 20193,
+      "sha256": "e15ddc6d30eec23a18daaad24170b3d5b815d4d737ff4795859c774bf7ac2bea",
+      "headings": [
+        "# Rozhodnutí před ostrým provozem — schválený základ a otevřené podklady",
+        "## Aktuální povolení D15 — 25. 10. 2026",
+        "## Schválený základ — 24. 10. 2026",
+        "## Krátký seznam podkladů od uživatele pro D12–D15",
+        "## Původní registr a historie balíků — stav před schválením základu",
+        "## Doplnění pro balík B — 24. 10. 2026",
+        "## Doplnění pro balík C — 24. 10. 2026",
+        "## Doplnění pro balík D — 24. 10. 2026",
+        "## Doplnění pro balík E — 24. 10. 2026"
+      ]
+    },
+    {
+      "path": "docs/CLUB_FINANCE_BROWSER_UAT_2026-10-15.md",
+      "bytes": 4222,
+      "sha256": "0e13aea3d97a75678c971a5df5f2e1c5ac0271e28033e22ee2bd6b657d65ece2",
+      "headings": [
+        "# UAT finančního salda v prohlížeči – 15. 10. 2026",
+        "## Hranice ověření"
+      ]
+    },
+    {
+      "path": "docs/CLUB_FINANCE_IMPLEMENTATION.md",
+      "bytes": 4316,
+      "sha256": "5b6ccfa77fc78b2fa96efb51a9243028cffc1edc158d5f02c639073e939d5a7a",
+      "headings": [
+        "# Finanční saldo sportovce – implementace 2026-10-15",
+        "## Rozsah",
+        "## Pravidla přihlášek",
+        "## Bezpečnost a provozní podmínky",
+        "## Ověření"
+      ]
+    },
+    {
+      "path": "docs/CLUB_FOUNDATION_R07_R12.md",
+      "bytes": 10921,
+      "sha256": "4bb5b8eb9e9f2a66a5da4328ad9b21fb8d850196b6aa3f58ac28abce788ad9ea",
+      "headings": [
+        "# R07–R12 — společný základ oddílu",
+        "## Dodaný rozsah",
+        "## Pracovní postupy",
+        "## Oprávnění a hranice",
+        "## Schéma, záloha a lokální prostředí",
+        "## Ověření",
+        "## Co musí předcházet případnému nasazení"
+      ]
+    },
+    {
+      "path": "docs/CLUB_IMPLEMENTATION_HANDOFF.md",
+      "bytes": 8116,
+      "sha256": "89378e59da45e0bbea3b50f6061206d77b5e5dec3624035a9e8c0997fdb485e4",
+      "headings": [
+        "# Společný systém oddílu — předání místní implementace",
+        "## Co lze zkontrolovat nyní",
+        "## Podrobné předání a důkazy",
+        "## Odložené body a další postup"
+      ]
+    },
+    {
+      "path": "docs/CLUB_LOCAL_REVIEW.md",
+      "bytes": 4913,
+      "sha256": "fd30440a59085d8dbde1d83c26db9637af4ab42049c97bf311e96f08bb362b75",
+      "headings": [
+        "# Jak později zkontrolovat místní systém",
+        "## Přístup",
+        "## Doporučené pořadí prohlídky",
+        "## Co zbývá posoudit lidmi"
+      ]
+    },
+    {
+      "path": "docs/CLUB_MIGRATION_R38_R44_IMPLEMENTATION.md",
+      "bytes": 6185,
+      "sha256": "6e5608b09bf99f88588f9bac9ed5ac7e127809e8942110d0f420d01fc26e0509",
+      "headings": [
+        "# R38–R44 — migrace a technická příprava přechodu",
+        "## R38 a R41: opakovatelný převod",
+        "## R39: finanční počátky a otevřené případy",
+        "## R40 a R42–R44: příprava přechodu",
+        "## Zpřesnění výdajů, odměn a exportu po křížové kontrole",
+        "## Schéma a ověření"
+      ]
+    },
+    {
+      "path": "docs/CLUB_OPERATIONS_SOURCE_INVENTORY.md",
+      "bytes": 5874,
+      "sha256": "d6997173c4044e078ec9a9afb2ccf11bb8ec135ab516395d64bace78daab8bf4",
+      "headings": [
+        "# R42 — provozní inventura ze zdrojového kódu",
+        "## Místní kontrola bez změn"
+      ]
+    },
+    {
+      "path": "docs/CLUB_PILOT_D12_D14.md",
+      "bytes": 25033,
+      "sha256": "584960b4e361624b23c865229ea05a7d89748e724561180413efd50b101d970b",
+      "headings": [
+        "# Návrh pilotu D12–D14 — jedna tréninková skupina",
+        "## 1. Doporučený rozsah a pořadí",
+        "## 2. Jeden zapisující systém pro každý případ",
+        "## 3. D12 — integrace a automatické úlohy",
+        "## 4. Příprava před stanoveným dnem",
+        "## 5. D13 — obsazení a běh pilotu",
+        "## 6. D14 — přechod a rozhodovací body",
+        "## 7. Návrat při problému",
+        "## 8. Co následuje po úspěšném sportovním pilotu",
+        "## 9. Podklady a stav otevřených bodů"
+      ]
+    },
+    {
+      "path": "docs/CLUB_PRODUCTION_RELEASE_2026-10-23.md",
+      "bytes": 7434,
+      "sha256": "e5808268e9e3996618f9375cc7502f132e2986a8805a262e9761a9fbb1426ef6",
+      "headings": [
+        "# Produkční vydání společného systému a browser přejímka",
+        "## Kandidát a dosavadní produkce",
+        "## Ochrana ostré evidence při testu",
+        "## Kontrola dopadu před aktivací",
+        "## Stav",
+        "## Ověření před prvním nasazením",
+        "## První skutečné nasazení",
+        "## Závěrečný stav tohoto průchodu"
+      ]
+    },
+    {
+      "path": "docs/CLUB_PROGRAM_RECURRENCE_OPERATIONS.md",
+      "bytes": 2372,
+      "sha256": "a1ba4c3e848eaf68226788230a6895f7e97df123fd17e620cd0bed72d8138c1c",
+      "headings": [
+        "# Opakování kroužků po školních rocích"
+      ]
+    },
+    {
+      "path": "docs/CLUB_REWARDS_R33_R34.md",
+      "bytes": 4556,
+      "sha256": "a34929b931ead6a993d380f48b4ab09fe318ebfd31013427e364fdd8fdcc4695",
+      "headings": [
+        "# R33–R34: výkazy a odměny — lokální implementace",
+        "## Dokončený rozsah",
+        "## Ověření",
+        "## Odložené věcné rozhodnutí"
+      ]
+    },
+    {
+      "path": "docs/CLUB_STORAGE_HOSTING_BLOCKER.md",
+      "bytes": 7496,
+      "sha256": "4d1d3653e3d84198bb15ffdcbf47c980f733daed60a816d669cf010ebed6b70a",
+      "headings": [
+        "# Soukromé úložiště: odstranění hostingového omezení",
+        "## Aktuální stav 23. 10. 2026 po změně PHP",
+        "## Historický nález před změnou",
+        "## Potvrzený nález",
+        "## Přesný požadavek pro správce hostingu",
+        "## Ověření po změně",
+        "## Důležitá mez účetního vystavení"
+      ]
+    },
+    {
+      "path": "docs/COACH_SCOPE_R09.md",
+      "bytes": 7580,
+      "sha256": "c5b497e7dcecd0f065614e69770b3807eab4ab73e48a58237fae41974656000e",
+      "headings": [
+        "# R09: pracovní role a rozsah trenéra",
+        "## Matice role × akce × rozsah",
+        "## Přidělení a ukončení",
+        "## Historie a přístupy",
+        "## Důkazy"
+      ]
+    },
+    {
+      "path": "docs/CURRENT_STATE.md",
+      "bytes": 3280,
+      "sha256": "263b555dd18c9662aed7d092d8a15bdbda039a23423846c2516b69cc52d1e37e",
+      "headings": [
+        "# Aktuální stav projektu"
+      ]
+    },
+    {
+      "path": "docs/CUSTOM_CLUB_CONSENTS_2026-10-21.md",
+      "bytes": 3610,
+      "sha256": "e55103a725c51ba73a006177ff36f7844fa55433f4e8a9343101134aa4698ae1",
+      "headings": [
+        "# Vlastní souhlasy při přihlášení do kroužku",
+        "## Postup obsluhy",
+        "## Uložení a kontrola",
+        "## Ověření před nasazením"
+      ]
+    },
+    {
+      "path": "docs/DOZOR_2026-10-25.md",
+      "bytes": 10887,
+      "sha256": "00d3d6024d268316abe44e275989cddf2a1fd6ae5893a4f7589c2e93e5ffd1a2",
+      "headings": [
+        "# Zadání pro vývojové vlákno: opravy po kontrole stavebního dozoru (25. 10. 2026)",
+        "## Kontext a hranice",
+        "## Balík 1 — Co se nasazuje na produkci (priorita vysoká)",
+        "## Balík 2 — Anonymní přístup ke všem neveřejným trasám (priorita vysoká)",
+        "## Balík 3 — Statická analýza a styl kódu (priorita střední)",
+        "## Balík 4 — Dokumentace stavu (priorita střední)",
+        "## Balík 5 — Drobný úklid (priorita nízká)",
+        "## Mimo rozsah vlákna — úkoly pro vlastníka (agent je NEPROVÁDÍ, jen je připomene v závěru)",
+        "## Výstup vlákna"
+      ]
+    },
+    {
+      "path": "docs/DOZOR_F1_F3_2026-10-26.md",
+      "bytes": 7510,
+      "sha256": "3ac3264384f39e32c047e5d70c0acfa260c38cedd992352617b9ca2a1291e35f",
+      "headings": [
+        "# Opravy F1–F3 po nezávislé přejímce (26. 10. 2026)",
+        "## Oprávnění a pracovní plán",
+        "## F2: rozhodnutí podle hostingu",
+        "## F1: redirect s tělem není důkazem ochrany",
+        "## F3: aktuální main a cílená statická analýza",
+        "## Ověřené výsledky implementace"
+      ]
+    },
+    {
+      "path": "docs/DOZOR_OPRAVY_2026-10-25.md",
+      "bytes": 4729,
+      "sha256": "33443e8d12ce6afcfd7efcc4d4a798b255ebe9ced7a1108f2b575fc6dd63745b",
+      "headings": [
+        "# Opravy po nezávislé přejímce 25. 10. 2026",
+        "## Plán a závislosti",
+        "## Výsledky"
+      ]
+    },
+    {
+      "path": "docs/DOZOR_UKLID_2026-10-25.md",
+      "bytes": 28227,
+      "sha256": "f9ca992799878157bf8c7cf4ad61268902e6223bb7064f24bf7919649fe6ffbc",
+      "headings": [
+        "# Dozor 5 — úklid a návrh dalších kroků",
+        "## Export a statické soubory",
+        "## Runtime introspekce schématu",
+        "### Kandidáti po povinných migracích — pouze návrh",
+        "## Wiring testy",
+        "### Co postupně nahradit chováním"
+      ]
+    },
+    {
+      "path": "docs/FINANCE_B1_IMPLEMENTATION.md",
+      "bytes": 9294,
+      "sha256": "4a3e78fc26442d283142386bef40a95abf73afaf2c821d9a3a2f98ce254f88fb",
+      "headings": [
+        "# B1 — ochrana uzavřené finanční evidence",
+        "## Výsledné chování",
+        "## Inventář chráněných zápisů",
+        "## Ověřené výsledky",
+        "### Návaznost na deset přejímacích bodů B1",
+        "## Reprodukce a důkazy",
+        "## Meze balíku a další návaznost"
+      ]
+    },
+    {
+      "path": "docs/FINANCE_B1_SANDBOX.md",
+      "bytes": 4040,
+      "sha256": "398c54d6f2bb65c8d140f268a3cf76e65a047a8dac570136e83226746a74c8d8",
+      "headings": [
+        "# Izolované ověření balíku B1",
+        "## Příprava",
+        "## Ověření a ukončení"
+      ]
+    },
+    {
+      "path": "docs/FINANCE_R13_R17_IMPLEMENTATION.md",
+      "bytes": 7812,
+      "sha256": "18349ddef1e6f17e432633191e434c15dd3b5095f439892f33e61238eb9431bf",
+      "headings": [
+        "# Finanční základ R13–R17",
+        "## Co přibylo",
+        "## Obsluha",
+        "## Význam exportu a jeho hranice",
+        "## Data a obnova",
+        "## Co je nutné před skutečným používáním"
+      ]
+    },
+    {
+      "path": "docs/HANDOFF_2026-08-29.md",
+      "bytes": 4567,
+      "sha256": "355a2d7b38ba1cdb3d26f9e7b3d88836d1f0fb9509847b2790da6e7c06cd219a",
+      "headings": [
+        "# Předání vývoje na další stanici — 29. 8. 2026",
+        "## Co je v předání",
+        "## Co v GitHubu záměrně není",
+        "## Převzetí krok za krokem",
+        "## Syntetické přístupy",
+        "## Ověření po převzetí",
+        "## Omezení a bezpečnostní hranice",
+        "## Jak pokračovat ve vývoji"
+      ]
+    },
+    {
+      "path": "docs/HANDOFF_CURRENT.md",
+      "bytes": 4198,
+      "sha256": "2d0a7ee261c3904a50f79df8aef4aa86a39e0091a0170bb8090a785e4fb3fb11",
+      "headings": [
+        "# Převzetí vývoje na další stanici",
+        "## Nová stanice: čisté převzetí",
+        "## Existující clone: bezpečná synchronizace",
+        "## Zahájení nové práce",
+        "## Pull request a předání",
+        "## Průběžný plán",
+        "## Co není v GitHubu",
+        "## Kde hledat aktuální informace"
+      ]
+    },
+    {
+      "path": "docs/INVENTORY_R18_R24_IMPLEMENTATION.md",
+      "bytes": 7722,
+      "sha256": "67bc8e0c11dd4d40f7427a98de784081760a1f016e59650133784706a1fa247f",
+      "headings": [
+        "# Sklady, prodej a vratky R18–R24",
+        "## Dodaný rozsah",
+        "## Obsluha a hranice agend",
+        "## Datový a transakční kontrakt",
+        "## Ověření a další návaznosti"
+      ]
+    },
+    {
+      "path": "docs/MEMBERSHIP_SPORTS_R25_R30_IMPLEMENTATION.md",
+      "bytes": 9535,
+      "sha256": "d55f7eaccaf6108dd4091abb380b400d3556f69cbadc0eddc4705d71c2818b45",
+      "headings": [
+        "# R25–R30 — členská a sportovní agenda",
+        "## Dodaný rozsah a návaznosti",
+        "## Osobní obsluha a finance",
+        "## Tréninky, náhrady a podklady pro odměny",
+        "## Prohlídky a ochrana podkladů",
+        "## Společné pracovní přehledy",
+        "## Schéma, testování a předání"
+      ]
+    },
+    {
+      "path": "docs/NASAZENI.md",
+      "bytes": 10536,
+      "sha256": "5d2b48d39ec19e607aa15853c933e0010be1bb4c6efe0d2175d8eefe84336f9b",
+      "headings": [
+        "# Nasazení na produkci",
+        "## Běžné nasazení krok za krokem",
+        "## Jednorázové nastavení GitHubu",
+        "## Fronta zpráv soupiskám",
+        "## Fio synchronizace",
+        "### Povinný pepper v produkčním `config.php`",
+        "### Jak připravit `SSH_KNOWN_HOSTS`",
+        "## Co zůstává na serveru",
+        "## Databázová záloha",
+        "## Když workflow zčervená",
+        "## Ruční záloha a omezený shell",
+        "## Soukromé přílohy a kanonická adresa"
+      ]
+    },
+    {
+      "path": "docs/NONSHOP_FUNCTIONAL_ANALYSIS_2026-10-24.md",
+      "bytes": 21050,
+      "sha256": "a3abf749a5a3906b2c67a3ead2e2c0b0f46eada52bff10242922050e7bd9cfd8",
+      "headings": [
+        "# Funkční analýza oddílového systému mimo e-shop",
+        "## Závěr",
+        "## Funkční mapa",
+        "## Konkrétní mezery a navazující úkoly",
+        "### F01 — Práce vedoucího sportu je načtená, ale její seznam není vidět — P1",
+        "### F02 — Přijetí osoby a běžný trénink dokončit jako jeden pracovní postup — P1",
+        "### F03 — Datované členství a řízené ukončení / návrat — P2",
+        "### F04 — Sportovní účast a výsledek zapisovat z konkrétní akce — P1",
+        "### F05 — Dohledatelnost podkladů a zdravotní přehled — P1/P2",
+        "### F06 — Výdaje a zálohy převést na běžné formuláře — P1",
+        "### F07 — Jedna akce od nominace po uzavření — P2",
+        "### F08 — Rodinné požadavky a skutečný stav komunikace — P2/P3",
+        "### F09 — Přechod sezony a náhrada původních webů — P2",
+        "## Doporučené pořadí realizace",
+        "### První doporučený implementační balík A",
+        "## Co není automaticky chybějící základní funkcí",
+        "## Následná implementace balíku D — 24. 10. 2026",
+        "## Následná společná přejímka E — 24. 10. 2026"
+      ]
+    },
+    {
+      "path": "docs/OBNOVA-DATABAZE.md",
+      "bytes": 3332,
+      "sha256": "5a572a65c2c9666fabe4939829f500d80afa8dc1f9f2d534b152556c7672097a",
+      "headings": [
+        "# Ověření a obnova databázové zálohy",
+        "## Bezpečný lokální restore drill",
+        "## Produkční obnova – pouze řízený zásah",
+        "## Známá omezení"
+      ]
+    },
+    {
+      "path": "docs/ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md",
+      "bytes": 5597,
+      "sha256": "1c44fe4f530d0c47c894bce6b3d1fc42035f6c94de93040b5a20e2d66df34cd8",
+      "headings": [
+        "# Produkční test hotovosti a vratky – 21. 10. 2026",
+        "## Izolovaná data",
+        "## Skutečně provedený průchod",
+        "## Důkazy a konečný úklid"
+      ]
+    },
+    {
+      "path": "docs/ORDER_PAYMENTS_2026-10-21.md",
+      "bytes": 8654,
+      "sha256": "3a33ace12587db858654ddc3606e6b3d238a6d1815b667ca6b450cbd8baa261e",
+      "headings": [
+        "# Přijetí hotovosti místo převodu",
+        "## Jak přijmout platbu",
+        "## Jak stornovat zaplacenou objednávku a zaevidovat vratku",
+        "## Pravidla",
+        "## Ověření",
+        "## Předchozí přihlášené ověření formuláře bez zápisu 21. 10. 2026"
+      ]
+    },
+    {
+      "path": "docs/ORDER_STATUS_EMAIL_PLAN_2026-10-21.md",
+      "bytes": 25738,
+      "sha256": "d9c72fc5e797c8f2a3e9a950381a9ab283e01fe4d7089d80b82aeb71042d7b62",
+      "headings": [
+        "# Plán dokončení stavů objednávek a e-mailů",
+        "## Nasazení ruční Zásilkovny — dokončeno 22. 10. 2026",
+        "## Navazující jednoduchý ruční provoz — lokálně hotovo",
+        "## Navazující audit Zásilkovny",
+        "## Aktuální autorizace vydání 21. 10. 2026",
+        "## Schválený rozsah a pracovní bod",
+        "## Lokální implementace",
+        "### 1. Zásilkovna",
+        "### 2. Srozumitelné stavy",
+        "### 3. Systémové e-mailové šablony",
+        "### 4. Ověření a předání",
+        "## Odložené dokončení a fakturace",
+        "## Průběžný záznam",
+        "### Navazující autorizace lokálního browser průchodu",
+        "## Výsledek lokální implementace",
+        "### Dokončené kontroly",
+        "### Lokální prostředí a rozsah důkazu",
+        "### Další krok",
+        "## Úplný lokální browser průchod 21. 10. 2026",
+        "### Prostředí a simulace Zásilkovny",
+        "### Objednávky a sklad",
+        "### Skutečná lokální fronta",
+        "### Lokální důkazy a hranice"
+      ]
+    },
+    {
+      "path": "docs/ORDER_STATUS_EMAIL_RELEASE_2026-10-21.md",
+      "bytes": 5744,
+      "sha256": "c53cd99c6f397913131de58f1f7d6e2591e9e06c46b23e21a4c83fe575ef4ffa",
+      "headings": [
+        "# Produkční předání: stavy objednávek, Zásilkovna a systémové e-maily",
+        "## Vydání a automatické kontroly",
+        "## Živá prohlídka po aktivaci",
+        "## Neměnnost existující fronty",
+        "## Simulace, další provoz a omezení"
+      ]
+    },
+    {
+      "path": "docs/PACKETA_MODULE_AUDIT_2026-10-21.md",
+      "bytes": 40619,
+      "sha256": "14706f455dfb1d6b093c675ea5d381bc5b9f1b05b7202825cfeef0269feee7a7",
+      "headings": [
+        "# Zásilkovna: audit funkčnosti a plán dokončení",
+        "## Postup auditu",
+        "## Výchozí zjištění",
+        "## Závěr a doporučení",
+        "### Autorizace vydání 22. 10. 2026",
+        "### Propojení veřejného klíče a skutečná mapa — dokončeno 22. 10. 2026",
+        "### Živé nastavení klientského účtu Packeta — 21. 10. 2026",
+        "### Schválené zjednodušení od vlastníka — 21. 10. 2026",
+        "### Lokální realizační checklist tohoto zjednodušení",
+        "### Výsledek lokální realizace",
+        "## 1. Co existuje a jak to funguje",
+        "### Co již bylo ověřeno",
+        "## 2. Co zařídit mimo aplikaci: kdo, kde, co",
+        "### Pokud bude KOVO podávat přes Z-BOX",
+        "## 3. Mezery a opravy před zapnutím",
+        "## 4. E-maily a fronta",
+        "## 5. Pořadí dokončení",
+        "### A — Vlastník, účet a expedice",
+        "### B — Dokončení ručního modulu lokálně",
+        "### C — Účet, řízený pilot a aktivace (samostatně povolit)",
+        "### D — Plné API propojení: samostatná etapa vývoje",
+        "## 6. Rozhodnutí potřebná od Marka",
+        "## 7. Akceptační brána",
+        "## 8. Stav analytické práce a návaznost"
+      ]
+    },
+    {
+      "path": "docs/PACKETA_READONLY_PRODUCTION_CHECK.md",
+      "bytes": 1620,
+      "sha256": "daec3fa14df5e7b6c161d76b6f875ee8082da8c69ea527a7793d53e1898c3b94",
+      "headings": [
+        "# Produkční kontrola Packety bez objednávky"
+      ]
+    },
+    {
+      "path": "docs/PACKETA_RELEASE_2026-10-22.md",
+      "bytes": 7313,
+      "sha256": "23f16c3a6459ae1fb931b9e9bb597a5c4409a4dc6d74326937198519ada294a4",
+      "headings": [
+        "# Vydání ručního modulu Zásilkovny — 22. 10. 2026",
+        "## Autorizovaný rozsah",
+        "## Postup a kontrolní body",
+        "## Výchozí důkazy",
+        "## Příprava vydání",
+        "## PR, CI a nasazení",
+        "## Živá čtecí kontrola po aktivaci"
+      ]
+    },
+    {
+      "path": "docs/PACKETA_ZBOX_CHECKOUT.md",
+      "bytes": 2847,
+      "sha256": "d97d035b71fe01979bf9c598b4466f27198879c347583d989e3cf3b1ee8e5277",
+      "headings": [
+        "# Zásilkovna Z-BOX v e-shopu",
+        "## Zákaznický výběr",
+        "## Příprava a podání zásilky",
+        "## Oficiální podklady"
+      ]
+    },
+    {
+      "path": "docs/PARENT_JOURNEY_2026-10-20.md",
+      "bytes": 6133,
+      "sha256": "771b848c40e39a08ece9b807d07c713f60bd7fa535d5f8480b99c4ae38fddc38",
+      "headings": [
+        "# Cesta rodiče — lokální dokončení 20. 10. 2026",
+        "## Opravené návaznosti",
+        "## Akceptační řetězec",
+        "## Co musí následovat před skutečným používáním"
+      ]
+    },
+    {
+      "path": "docs/PARENT_JOURNEY_PRODUCTION_2026-10-20.md",
+      "bytes": 11430,
+      "sha256": "54c42d213f21e7b07336a1cbec6cb87e64b9dae89cb5b4d5c185f253b6d3555a",
+      "headings": [
+        "# Cesta rodiče — produkční ověření 20. 10. 2026",
+        "## Nasazení a rozsah",
+        "## Co bylo ověřeno v prohlížeči",
+        "## Konkrétní chybějící nastavení",
+        "## Testovací účty a meze důkazů"
+      ]
+    },
+    {
+      "path": "docs/PERSON_FOUNDATION_R07_R08.md",
+      "bytes": 5419,
+      "sha256": "30239039595525978d54650668e990e53b56a0707096a3f2996bdfde327efc41",
+      "headings": [
+        "# R07–R08: identita a oddělené stavy osoby",
+        "## Kontrakt identity",
+        "## Autorita údajů a význam stavů",
+        "## Ověření"
+      ]
+    },
+    {
+      "path": "docs/PHP_QUALITY.md",
+      "bytes": 6050,
+      "sha256": "8aff1670df9b5b19063e1e9333d875355857f8bb06c0064079b1c3d58047ef74",
+      "headings": [
+        "# PHPStan a styl změněných souborů",
+        "## Statická analýza",
+        "### Procedurální bootstrap a proměnlivý stav PDO (F3)",
+        "## Styl pouze změněných PHP souborů"
+      ]
+    },
+    {
+      "path": "docs/PPL_BOX_CHECKOUT.md",
+      "bytes": 3244,
+      "sha256": "0ecc2dda06edc585ea10ace9e5031f673ef1ed9cbc954d18bcae5f40e75fbc35",
+      "headings": [
+        "# Doručení do PPL Parcelboxu",
+        "## Co zákazník uvidí",
+        "## Zprovoznění",
+        "## Provoz zásilky",
+        "## Technické reference"
+      ]
+    },
+    {
+      "path": "docs/PRODUKCNI-UAT-UCTY-A-DATA.md",
+      "bytes": 7164,
+      "sha256": "7d29760c3ebb2f4a93191dece69f0759a029897251876f26283534b04df1a46e",
+      "headings": [
+        "# Produkční UAT účty a data",
+        "## Účel a hranice",
+        "## Připravená scénářová data",
+        "## Spuštění a ověření",
+        "## Úklid"
+      ]
+    },
+    {
+      "path": "docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md",
+      "bytes": 10482,
+      "sha256": "d6c9bb68794a6bca6482f373472ceb4cdc0030008be086a8a2f4f3d865920076",
+      "headings": [
+        "# Produkční uživatelské testování",
+        "## Regresní průchody po UX úpravách 16. 10. 2026",
+        "## Testovací osoby a reálné provozní kroky",
+        "## Povinná kontrola před zápisem",
+        "## Produkční průchod oprav z dokumentu testera",
+        "## Testovací identity",
+        "## Schvalovací brány",
+        "## Bezpečný úklid"
+      ]
+    },
+    {
+      "path": "docs/R11_OPERATIONAL_DELIVERY.md",
+      "bytes": 6065,
+      "sha256": "6f4066eefb52e7c1f8c57ca38505a519b23e2f2294aaf3357be07801e0d7ee04",
+      "headings": [
+        "# R11 — provozní zprávy a dohled nad úlohami",
+        "## Dodané chování",
+        "## Dohled",
+        "## Migrace a ověření"
+      ]
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 5473,
+      "sha256": "ff7b0ddfe07d2f6db1c5a0c455f20c8b163f3715863198f947a6def81b8d53ef",
+      "headings": [
+        "# Dokumentace EvidencePavel / KIS",
+        "## Začněte zde",
+        "## Tematická dokumentace",
+        "## Aktuální funkční oblasti",
+        "## Technologie",
+        "## Historické dokumenty"
+      ]
+    },
+    {
+      "path": "docs/REFACTORING_DOCUMENTATION_2026-10-28.md",
+      "bytes": 6886,
+      "sha256": "ee167b9ee193655621eea7639f763d308e5f8314cb7bf3e5c549ca4e5dfdce08",
+      "headings": [
+        "# Dokumentační základ první vlny",
+        "## Úplnost a způsob čtení",
+        "## Autority a dopad na návrh",
+        "## Zjištěné rozdíly v dokumentaci"
+      ]
+    },
+    {
+      "path": "docs/REFACTORING_WAVE1_2026-10-28.md",
+      "bytes": 18043,
+      "sha256": "79ea112a3be5cd5654619d18f19edd3562bfd59f284fb3ff58854a584e75268d",
+      "headings": [
+        "# První vlna refaktoringu a optimalizace",
+        "## Výsledek implementace",
+        "## Rozhodnutí a výsledek přípravy",
+        "## Potvrzené nálezy",
+        "## Měření před změnou",
+        "## W1-1 — cílený detail a oddělení čtecích dotazů",
+        "## W1-2 — metadata jednou pro jednu čtecí operaci",
+        "## W1-3 — navigace bez celého zobrazovacího katalogu",
+        "## Ověření a dokončení vlny",
+        "## Hranice a navazující backlog",
+        "## Stav pro pokračování"
+      ]
+    },
+    {
+      "path": "docs/REFACTORING_WAVE2_2026-10-28.md",
+      "bytes": 2866,
+      "sha256": "3ab871aff45b2c85840404f1708bf506dea302cc3ed8df18f83dedb9bc6b5dd4",
+      "headings": [
+        "# Druhá vlna: programové nabídky ve veřejném e-shopu",
+        "## Rozsah a postup",
+        "## Průběžný stav"
+      ]
+    },
+    {
+      "path": "docs/REFACTORING_WAVE3_2026-10-28.md",
+      "bytes": 2526,
+      "sha256": "c9911f881be6793eaa7a704233aa6ff7ecea0618e3d6b1e1a551035cea93f364",
+      "headings": [
+        "# Třetí vlna — prezentace programů v katalogu",
+        "## Zjištění a rozsah",
+        "## Výsledek implementace"
+      ]
+    },
+    {
+      "path": "docs/REFACTORING_WAVE4_2026-10-28.md",
+      "bytes": 2661,
+      "sha256": "a151d8e20adee88fe51683d6917356b9093de429e0b9c05c3b846143e359e007",
+      "headings": [
+        "# Čtvrtá vlna — dávkové čtení zveřejněných podmínek programů",
+        "## Rozsah a plán ověření",
+        "## Implementace a ověření"
+      ]
+    },
+    {
+      "path": "docs/REFACTORING_WAVE5_2026-10-28.md",
+      "bytes": 2327,
+      "sha256": "1e89266cc8c330297dd5462267fba3ada0d59564399acca2f36406c08230e7d2",
+      "headings": [
+        "# Pátá vlna — dávkové nabídky a vazby fyzických týmů",
+        "## Plán",
+        "## Výsledek"
+      ]
+    },
+    {
+      "path": "docs/REGISTRACE-SPORTOVCE-VZOROVE-INFORMACE.md",
+      "bytes": 2035,
+      "sha256": "e266f9824d41cfa129870834a88a4e0d2937995683240de5b7ecab3399969f2d",
+      "headings": [
+        "# Vzorové informace při registraci sportovce"
+      ]
+    },
+    {
+      "path": "docs/REGISTRATION_TEXTS_ADMIN_2026-10-21.md",
+      "bytes": 5619,
+      "sha256": "68845eda6827178b22d64d1f299d1bbd45fcedc5bdf25c6d2a7fbd60a4a2a443",
+      "headings": [
+        "# Správa registračních textů a souhlasů — 21. 10. 2026",
+        "## Použití",
+        "## Implementační hranice",
+        "## Lokální ověření",
+        "## Produkční stav"
+      ]
+    },
+    {
+      "path": "docs/REGISTRATION_TEXT_TITLES_2026-10-21.md",
+      "bytes": 4387,
+      "sha256": "543f658112470a0a88971d952281b07a3b65bb0372545e1b4a0e6811de8cdc86",
+      "headings": [
+        "# Názvy registračních souhlasů — 21. 10. 2026",
+        "## Uložení a kompatibilita",
+        "## Ověření",
+        "## Produkční stav"
+      ]
+    },
+    {
+      "path": "docs/REMAINING_ADMIN_FORMS_2026-10-20.md",
+      "bytes": 6200,
+      "sha256": "6f15194f9428fe137346153345c6defb0466187a9e20de7282bafcef9c3d5644",
+      "headings": [
+        "# Sjednocení zbývajících formulářů administrace",
+        "## Změny",
+        "## Ověření na localhostu",
+        "## Produkční stav"
+      ]
+    },
+    {
+      "path": "docs/ROSTER_GROUPS_TRAINING_SEASON_IMPLEMENTATION_PLAN_2026-10-20.md",
+      "bytes": 13975,
+      "sha256": "8cf4ee073e0d5db155c14bc4cc29dfb12f4b8d6621ef990f28631ec47e1d278c",
+      "headings": [
+        "# Plán implementace: skupiny, soupisky, tréninky, akce a časové členství",
+        "## Produktová pravidla",
+        "## Realizační kroky",
+        "### 1. Inventura a bezpečný převod současných dat",
+        "### 2. Stálá hierarchie a časová historie",
+        "### 3. Trvalý produkt a opakovaná nabídka kroužku",
+        "### 4. Jeden výběr cílů při plánování i záznamu tréninku",
+        "### 5. Všechny navazující formuláře a přehledy tréninků",
+        "### 6. Jeden výpočet oprávněných sportovců a zobrazení na kartě",
+        "### 7. Akce pro skupiny a soupisky",
+        "### 8. Měsíční příspěvky a stálý VS plátce",
+        "### 9. Kontrolovaná migrace a akceptace",
+        "## Rozhodnutí před implementací",
+        "## Současné technické důvody pro tento rozsah"
+      ]
+    },
+    {
+      "path": "docs/ROSTER_HIERARCHY_IMPLEMENTATION_HANDOFF_2026-10-20.md",
+      "bytes": 4546,
+      "sha256": "9f56f4997fb0fdf3d46863e0192a2d005d03d38b49da8fe3cff819c18544e330",
+      "headings": [
+        "# Skupiny, soupisky a časové členství – implementační předání",
+        "## Co je připraveno",
+        "## Neprovedené kroky a bezpečné uvedení do provozu"
+      ]
+    },
+    {
+      "path": "docs/SEO-ESHOP-A-VEREJNE-STRANKY.md",
+      "bytes": 3712,
+      "sha256": "933007e712bba300ae2243a89afc3429c0c22724128cdb0b5ed172b078b60d90",
+      "headings": [
+        "# SEO připravenost veřejných stránek a e-shopu",
+        "## Výchozí zjištění",
+        "## Implementace",
+        "## Ověření před přijetím releasu"
+      ]
+    },
+    {
+      "path": "docs/SHOP_NUMBER_SERIES_2026-10-21.md",
+      "bytes": 11018,
+      "sha256": "ed9556997833485567c295ceeb3a2249a94090ebdda0a6b0fd5bb88c59f4ddbf",
+      "headings": [
+        "# Číselné řady a účetní kategorie e-shopu",
+        "## Aktuální produkční výsledek",
+        "## Aktuální autorizace vydání 21. 10. 2026",
+        "## Autorizace a pracovní stav",
+        "## Plán",
+        "## Rozhodnutí",
+        "## Průběh",
+        "## Návod pro správce",
+        "## Ověření a hranice"
+      ]
+    },
+    {
+      "path": "docs/SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md",
+      "bytes": 4884,
+      "sha256": "d248439514381b0e82d43b772f66a5dc04d3b48579af4428bdecabd6dddaf171",
+      "headings": [
+        "# Produkční vydání číselných řad – 21. 10. 2026",
+        "## Schválený rozsah",
+        "## Vydání",
+        "## Kontrola zachování VS",
+        "## Prohlídka administrace",
+        "## Předání"
+      ]
+    },
+    {
+      "path": "docs/SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md",
+      "bytes": 4132,
+      "sha256": "8bef40bc5f892364f43fd483477c5df8d48e7fbf35ac35fa3a7498f74d119a84",
+      "headings": [
+        "# Účetní zařazení před zveřejněním produktu",
+        "## Rozsah a autorizace",
+        "## Chování kontroly",
+        "## Ověření"
+      ]
+    },
+    {
+      "path": "docs/SHOP_PUBLICATION_ACCOUNTING_RELEASE_2026-10-22.md",
+      "bytes": 4517,
+      "sha256": "414d70f76d55f51ebfe04e979acb0b77e67383afd6958b03c569b6b222b19870",
+      "headings": [
+        "# Produkční vydání kontroly účetního zařazení — 22. 10. 2026",
+        "## Schválení a zdroj",
+        "## Produkční důkaz",
+        "## Hranice"
+      ]
+    },
+    {
+      "path": "docs/TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md",
+      "bytes": 11971,
+      "sha256": "afb925fd74520bbf032859e194c72e51e0a8010b8ada299564cc8290d8966f8b",
+      "headings": [
+        "# Účast na tréninku a návrh náhradních lekcí",
+        "## 1. Běžný trénink a zpráva trenérovi",
+        "## 2. Náhradní lekce kroužků — implementované pravidlo",
+        "### Základní pravidlo",
+        "### Pravidla vydání a využití",
+        "### Datový a uživatelský tok",
+        "### Akceptační scénáře před nasazením"
+      ]
+    },
+    {
+      "path": "docs/UAT-OPRAVY-2026-09-21.md",
+      "bytes": 3110,
+      "sha256": "ff92b1131cf6b38848afa588907631a95f69d89afeab841678bdaceed59ebc66",
+      "headings": [
+        "# Opravy podle produkčního UAT z 21. 9. 2026",
+        "## Co se mění pro uživatele",
+        "## Databázová změna",
+        "## Co kód záměrně nedělá"
+      ]
+    },
+    {
+      "path": "docs/UAT-OPRAVY-2026-10-07.md",
+      "bytes": 5269,
+      "sha256": "eb3b5f81edeb74e15002535fc1e0e7abd80a1ec5c11d81d665d06179cabe5e97",
+      "headings": [
+        "# Opravy podle zpětné vazby testerů z 7. 10. 2026",
+        "## Druhá vlna oprav podle dokumentu testera",
+        "## Změny pro uživatele v první vlně",
+        "## Databázová změna",
+        "## Ověření",
+        "## Aktuální produkční stav"
+      ]
+    },
+    {
+      "path": "docs/UNIFIED_ADMIN_SHOP_HANDOFF_2026-10-20.md",
+      "bytes": 4591,
+      "sha256": "d006ec3eee6398e032518bf954a57805e2a472a79fdf1f41558a3b9476dca5ec",
+      "headings": [
+        "# Sjednocená administrace a správa e-shopu",
+        "## Výsledná obsluha",
+        "## Ověření",
+        "## Navázání"
+      ]
+    },
+    {
+      "path": "docs/UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md",
+      "bytes": 5452,
+      "sha256": "d149c04d09ff5176c51c5c17a01b3e670a5d62e4b929b8773abd4b9f1941e697",
+      "headings": [
+        "# Sjednocená administrace – produkční ověření",
+        "## Release",
+        "## Prohlížečové ověření",
+        "## Konečný stav testovacích dat"
+      ]
+    },
+    {
+      "path": "docs/UX-AUDIT-KIS-2026-08-10.md",
+      "bytes": 21207,
+      "sha256": "f5f510c5157e134ac2e8ee1ea72c60973fb355b0b84a3a79259a6ffc9e57f595",
+      "headings": [
+        "# Produkční UX a funkční audit KIS — 10. 8. 2026",
+        "## Závěrečná automatizovaná vlna před ruční kontrolou",
+        "### Opravy nalezené a nasazené v této vlně",
+        "### Výsledky",
+        "### Odložené systémové body",
+        "## Doplnění před ruční kontrolou — souběh, obnova a provozní odolnost",
+        "### Nově nalezené a opravené problémy",
+        "### Výsledky této vlny",
+        "## Závěrečný stav po rozšířeném testování",
+        "## Sestava oprav provedených v závěrečné vlně",
+        "## Rozsah a způsob ověření",
+        "## Ověřené funkční scénáře",
+        "### Účet zákazníka",
+        "### Tréninky",
+        "### Sportoviště a rezervace",
+        "### Individuální lekce",
+        "### E-shop",
+        "## Nalezené a opravené problémy",
+        "## Body pro ruční kontrolu / rozhodnutí",
+        "### Blokátor objednávkového procesu",
+        "### Historické duplicitní trenérské účty",
+        "### UX backlog",
+        "## Testovací data a úklid",
+        "## Automatizované ověření"
+      ]
+    },
+    {
+      "path": "docs/UX-NAVIGACE-A-KALENDARE-2026-10-08.md",
+      "bytes": 4247,
+      "sha256": "b8bc9593885fd7f0ddc86e090b8712d603caefce7e1613e1285b171e6468b5eb",
+      "headings": [
+        "# UX navigace, kalendáře a pracovní přehledy",
+        "## Veřejná navigace",
+        "## E-shop",
+        "## Kalendáře",
+        "## Přehled rodiče a trenéra",
+        "## Ověření a provozní hranice"
+      ]
+    },
+    {
+      "path": "docs/UX-UAT-KIS-2026-08-11.md",
+      "bytes": 10270,
+      "sha256": "f7b4157de42d1fbbe7de513042152d04c6958fa5b92dfe2d7865892386df0665",
+      "headings": [
+        "# Uživatelské akceptační testování KIS",
+        "## Výsledek",
+        "## Otestované scénáře",
+        "### Veřejný návštěvník",
+        "### Rodič / zákazník",
+        "### Omezený účet sportovce",
+        "### Trenér / administrátor",
+        "### Projité cíle administrace",
+        "## Mobilní a vizuální kontrola",
+        "## Provedené opravy a jejich ověření",
+        "## Databázové důkazy hlavních toků",
+        "## Automatická regrese",
+        "## Nevyřešené nebo záměrně neprovedené body",
+        "## Další doporučení",
+        "### HIGH",
+        "### MEDIUM",
+        "### LOW",
+        "## Navazující ruční akceptace"
+      ]
+    },
+    {
+      "path": "docs/VERIFICATION_2026-08-29.md",
+      "bytes": 2206,
+      "sha256": "12e32eb4806c6fe6cd3b66730b7443e326fa45fa5012b8aba09a0bd75512b1e4",
+      "headings": [
+        "# Ověření předání — 29. 8. 2026",
+        "## Automatické kontroly",
+        "## Databáze a čistá instalace",
+        "## Lokální HTTP a offline prostředky",
+        "## Bezpečnostní hranice"
+      ]
+    },
+    {
+      "path": "docs/acceptance-20261023/README.md",
+      "bytes": 6366,
+      "sha256": "556f3920e08af8a7f51627fa067ff4cc247a20bb01c56af3b172d4673b464f6c",
+      "headings": [
+        "# Uživatelská přejímka a ukázkové předání účetní",
+        "## Co je hotové",
+        "## Co otevřít",
+        "## Doporučené pracovní bloky",
+        "## Připravená data a odložené body",
+        "## Meze účetní ukázky",
+        "## Ověření a opakovatelnost"
+      ]
+    },
+    {
+      "path": "docs/acceptance-20261023/accountant-sample.md",
+      "bytes": 14723,
+      "sha256": "8214d7353dd385865f984588818f5654640e84a0904cbbf8c0e62eb20d7db782",
+      "headings": [
+        "# Ukázkové předání účetní",
+        "## Co otevřít",
+        "## Identita předání",
+        "## Rozsah a kontrolní součty",
+        "## Souvislý příklad: účet #27",
+        "## Samostatná dokladová ukázka",
+        "## Výjimky, které zůstávají otevřené",
+        "## Checklist pro účetní a hospodáře",
+        "## Technická kontrola provedená při přípravě",
+        "## Záznam lidského převzetí"
+      ]
+    },
+    {
+      "path": "docs/acceptance-20261023/commerce-finance-notes.md",
+      "bytes": 7393,
+      "sha256": "34e67d86899240f785b7a9308655618c7c5c109d5482d242d50452618a4df88b",
+      "headings": [
+        "# Přejímka obchodu, skladu a financí — podklad pro obsluhu",
+        "## Co znamená připravenost",
+        "## Doporučený průchod",
+        "## Otevřené přípravy a hranice UI",
+        "## Co ověřit při práci s účetním vzorem",
+        "## Odložená rozhodnutí"
+      ]
+    },
+    {
+      "path": "docs/acceptance-20261023/fixtures.md",
+      "bytes": 4054,
+      "sha256": "f003b323b19ffffd5eb521b3a3dd43af264d094589cf6381a986024eadee878b",
+      "headings": [
+        "# Připravená místní data pro přejímku",
+        "## Co je skutečně založeno",
+        "## Účty pro dvě různé osoby",
+        "## Co zůstává k přípravě"
+      ]
+    },
+    {
+      "path": "docs/acceptance-20261023/people-sport-notes.md",
+      "bytes": 5427,
+      "sha256": "ef6075c7bd1835bb763cb3898b61ba59ec7bbf4d5df513e21031c0a7850b2bcd",
+      "headings": [
+        "# Přejímka lidí a sportu — podklad pro společný balík",
+        "## Jak scénáře číst",
+        "## Pokrytí a pořadí",
+        "## Technické a datové překážky k přípravě",
+        "## Odložená rozhodnutí",
+        "## Kontrola artefaktu"
+      ]
+    },
+    {
+      "path": "docs/acceptance-20261023/verification.md",
+      "bytes": 2897,
+      "sha256": "62a331ed958fed2895087b765fcfcd21d5a0230f84a042e2a5daead01013563e",
+      "headings": [
+        "# Ověření připraveného balíčku",
+        "## Kontrolní otisky"
+      ]
+    },
+    {
+      "path": "docs/auth-one-time-tokens.md",
+      "bytes": 2438,
+      "sha256": "2519613c34028eeb644f0d1c79e17bf5d7607da583f13ce20028712a725e5954",
+      "headings": [
+        "# Jednorázové tokeny a bezpečné odhlášení",
+        "## Pokryté odkazy",
+        "## Migrace",
+        "## Odhlášení",
+        "## Ověření"
+      ]
+    },
+    {
+      "path": "docs/auth-revocation-rate-limit.md",
+      "bytes": 5427,
+      "sha256": "ce534c86fc275672d63f60fef225a46d94d0dfb0b4d6e7c2d6668dbf137876e5",
+      "headings": [
+        "# Revokace přihlášení a omezení pokusů",
+        "## Pořadí nasazení",
+        "## Revokace session",
+        "## Rate limiting",
+        "## Navazující dokončení M2.5",
+        "## Otevřené body"
+      ]
+    },
+    {
+      "path": "docs/club-event-roster-targets.md",
+      "bytes": 1499,
+      "sha256": "1f2b029a5f8fce39ab907aae518cc3ffb1166d511ace889447585fb90e84df3a",
+      "headings": [
+        "# Cílení událostí na soupisky (M1.6)",
+        "## Bezpečnost a historie"
+      ]
+    },
+    {
+      "path": "docs/club-events-k3.md",
+      "bytes": 7644,
+      "sha256": "bb0eaa0a5a6d66e853f93e01c421752dfd35edf3829069eba246c88ae889c005",
+      "headings": [
+        "# Klubové akce K3",
+        "## Model",
+        "## Přihláška",
+        "## Odesílání oznámení",
+        "## Provozní hranice",
+        "## Nasazení"
+      ]
+    },
+    {
+      "path": "docs/club-programs.md",
+      "bytes": 4738,
+      "sha256": "4045790d9df0933beef0f7fb38e129a4691c5572f72fcf8cb75bcf3aec435b52",
+      "headings": [
+        "# Kroužkové programy, období a účasti (M1.4)",
+        "## Doménový model",
+        "## Bezpečnost aktivace",
+        "## Uživatelský postup",
+        "## Životní cyklus platby, storna a vratky",
+        "## Aktuální provozní model"
+      ]
+    },
+    {
+      "path": "docs/databazove-schema.md",
+      "bytes": 39656,
+      "sha256": "2c22b63875022fd3be239a04bff439f8ee608dbb22f24692f086323bfd678ce9",
+      "headings": [
+        "# Databázové schéma — Evidence Tréninků",
+        "## Obsah",
+        "## 1. Jádro",
+        "### `treneri`",
+        "### `sportovci`",
+        "### `skupiny`",
+        "### `podskupiny`",
+        "### `sportovec_skupina`",
+        "### `sportovec_podskupina`",
+        "## 2. Tréninky a měření",
+        "### `treninky`",
+        "### `trenink_sportovec`",
+        "### `trenink_skupina`",
+        "### `trenink_podskupina`",
+        "### `trenink_trener`",
+        "### `trenink_tag`",
+        "### `tagy`",
+        "### `mereni`",
+        "### `mereni_zaznamy`",
+        "### `trenink_mereni`",
+        "### `cviky`",
+        "### `segmenty`",
+        "### `soupiska_mapping`",
+        "### `opravneni`",
+        "### `dalsi_cinnosti`",
+        "## 3. Závody",
+        "### `zavody`",
+        "### `zavod_skupina`",
+        "### `zavod_podskupina`",
+        "### `zavod_trener`",
+        "### `zavod_sportovec`",
+        "### `zavod_mereni`",
+        "### `zavod_fotka`",
+        "### `zavod_import`",
+        "## 4. Kreditní systém",
+        "### `sportovec_obdobi`",
+        "### `sportovec_poznamka`",
+        "### `sportovec_interni_poznamka`",
+        "## 5. Google Sheets",
+        "### `gs_kategorie`",
+        "### `gs_linky`",
+        "### `gs_link_targets`",
+        "## 6. Story systém",
+        "### `story_nastaveni`",
+        "### `story_vygenerovane`",
+        "## 7. Oznámení",
+        "### `oznameni`",
+        "### `oznameni_targets`",
+        "## 8. Účetní modul (admin-only)",
+        "### `ucto_vozidla`",
+        "### `ucto_jizdy`",
+        "### `ucto_servis`",
+        "### `ucto_tankovani`",
+        "### `ucto_uctenky`",
+        "### `ucto_udalosti`",
+        "### `ucto_audit_log`",
+        "### `ucto_dokumenty`",
+        "### `ucto_gs_kategorie`, `ucto_gs_linky`, `ucto_gs_link_targets`",
+        "## 9. Zátěžové testy",
+        "### `zatezove_testy`",
+        "### `zatezove_testy_soubory`",
+        "## 10. Miniresult systém",
+        "### `miniresult_athletes`",
+        "### `miniresult_categories`",
+        "### `miniresult_events`",
+        "### `miniresult_event_categories`",
+        "### `miniresult_registrations`",
+        "### `miniresult_results`",
+        "### `miniresult_series`",
+        "### `miniresult_series_events`, `miniresult_series_points`",
+        "### `miniresult_startlist_generation`, `miniresult_stripe_events`, `miniresult_users`",
+        "## 11. Ostatní",
+        "### `fotky`",
+        "### `jidlo_kategorie`, `jidlo_produkty`, `jidlo_custom_listky`, `jidlo_custom_listky_produkty`",
+        "### `projects_categories`, `projects_grid`, `projects_notes`",
+        "### `results_*` tabulky",
+        "### `aa_treneri`",
+        "### `sportovci-backup1911`",
+        "### `mikulas_registrations`",
+        "### `nastaveni`",
+        "## 12. Rezervační systém sportovišť",
+        "### `sportovist`",
+        "### `rezervace_sportovist`",
+        "### `verejni_uzivatele`",
+        "### `individualni_lekce`",
+        "### `verejne_rezervace`",
+        "## 13. Plánovač tréninků",
+        "### `planovane_treninky`",
+        "### `planovane_treninky_podskupiny`",
+        "## 14. Web Push notifikace *(přidáno v 2.17.0)*",
+        "### `push_subscriptions`",
+        "## 15. Plánované tabulky *(Fáze 1–2, neimplementováno)*",
+        "## ER diagram — hlavní vztahy",
+        "## Dodatek 2.20.0 - clenska evidence"
+      ]
+    },
+    {
+      "path": "docs/family-weekly-summaries.md",
+      "bytes": 2710,
+      "sha256": "9a7ddac7931b6f6ac25a060c550c144c41a5d4c25c96601c3708a96fe86a0e3d",
+      "headings": [
+        "# Týdenní rodinné souhrny",
+        "## Co uživatel umí",
+        "## Fronta a opakovatelnost",
+        "## Bezpečný localhost test",
+        "## Produkční brána"
+      ]
+    },
+    {
+      "path": "docs/fio-readonly-import-k4.md",
+      "bytes": 6972,
+      "sha256": "1a2bd611d1a65798fe4ae355d4c3a9f47cf70713dab629408ae1449efa876325",
+      "headings": [
+        "# Fio synchronizace a párování plateb",
+        "## Kam uložit token",
+        "## Bankovní komunikace a ochrana dat",
+        "## Automatické potvrzení",
+        "## Doplnění historie po výpadku",
+        "## Provozní zapnutí"
+      ]
+    },
+    {
+      "path": "docs/formulare-tok-dat.md",
+      "bytes": 17497,
+      "sha256": "312f95568ed38dc7fc709fa8252ec668eefd03ac5e3e2f516cf736302094f308",
+      "headings": [
+        "# Formuláře — tok dat a uložení",
+        "## Tréninky",
+        "### `formular.php` → `ulozit_trenink.php`",
+        "### `edit_trenink.php` → `update_trenink.php`",
+        "## Sportovci",
+        "### `sprava_sportovcu.php` (inline CRUD)",
+        "### `sync_evidence.php` — 4-krokový wizard",
+        "## Závody",
+        "### `formular_zavod.php` → `ulozit_zavod.php`",
+        "### `edit_zavod_form.php` → `update_zavod.php`",
+        "## Rezervační systém sportovišť",
+        "### `rezervovat_sportoviste.php`",
+        "### `individualni_lekce_form.php`",
+        "### `individualni_lekce_sprava.php`",
+        "## Plánovač",
+        "### `planovany_trenink_form.php`",
+        "## Booking (zákazníci)",
+        "### `booking/registrace.php`",
+        "### `booking/rezervovat.php`",
+        "### `booking/moje_rezervace.php`",
+        "### `booking/potvrdit.php`",
+        "## Správa dat",
+        "### `sprava_sportovist.php`",
+        "### `nastaveni_opravneni.php`",
+        "### `nastaveni_zadavani.php`",
+        "## Zátěžové testy",
+        "### `zatezovy_test_form.php` → `ulozit_zatezovy_test.php`",
+        "## Story generátor",
+        "### `nastaveni_story.php`",
+        "## Správa segmentů",
+        "### `sprava_segmentu.php`",
+        "## Cviky (posilovna)",
+        "### `cviky.php`",
+        "## Dodatek 2.20.0 - clenska evidence a KIS",
+        "### `sportovec_karta.php` - administrační karta člena",
+        "### `kis_sync_center.php`",
+        "### `sportovci_hromadne.php`"
+      ]
+    },
+    {
+      "path": "docs/identity-email-queue.md",
+      "bytes": 5707,
+      "sha256": "21366b07a4904b378a59dc53c01fb9225330fe7af3d5676a5851e3b41f1c3215",
+      "headings": [
+        "# Ověřovací a obnovovací e-maily",
+        "## Datový tok",
+        "## Kontrola bez odesílání",
+        "## Předprodukční a produkční ověření"
+      ]
+    },
+    {
+      "path": "docs/implementacni-prompt-funkcni-vylepseni-1-8.md",
+      "bytes": 14796,
+      "sha256": "e620e30f16bdeec9acd932bcc59071574234ea796ff2bf4999812e468006a2d6",
+      "headings": [
+        "# Implementacni prompt: funkcni vylepseni 1-8",
+        "## Copy/paste prompt pro dalsi krok",
+        "## Nejdůlezitejsi pravidla",
+        "## Aktualni vychozi stav",
+        "## Navrzeny datovy model",
+        "### Rozsireni `sportovci`",
+        "### `kis_import_runs`",
+        "### `kis_import_rows`",
+        "### `kis_import_matches`",
+        "### `sportovec_history`",
+        "## Implementacni faze",
+        "### Faze 0: Baseline a bezpecnost",
+        "### Faze 1: Migrace a helper knihovny",
+        "### Faze 2: Administracni karta clena",
+        "### Faze 3: KIS synchronizacni centrum",
+        "### Faze 4: Chytre parovani a konflikty",
+        "### Faze 5: Workflow aktivni/neaktivni",
+        "### Faze 6: Import nanecisto",
+        "### Faze 7: Historie zmen u clena",
+        "### Faze 8: Hromadne akce",
+        "### Faze 9: Administracni dashboard",
+        "## UX poznamky",
+        "## Validace a smoke testy",
+        "## Akceptacni kriteria",
+        "## Mimo rozsah tohoto promptu"
+      ]
+    },
+    {
+      "path": "docs/instalace.md",
+      "bytes": 14226,
+      "sha256": "23d0e2d46ec2a4c56703990b34c3b15b60e74ba6610412211e4035a317853664",
+      "headings": [
+        "# Instalační příručka — Evidence tréninků",
+        "## Obsah",
+        "## 1. Požadavky",
+        "## 2. Instalace XAMPP (Windows)",
+        "### 2a) Stáhnout a nainstalovat XAMPP",
+        "# Stáhnout XAMPP installer ze:",
+        "# https://www.apachefriends.org/download.html",
+        "# Vyberte verzi s PHP 8.x",
+        "# Po instalaci spusťte XAMPP Control Panel",
+        "# a klikněte Start u Apache a MySQL",
+        "### 2b) Ověřit PHP",
+        "# Otevřít PowerShell nebo CMD",
+        "# Mělo by se zobrazit: PHP 8.x.x",
+        "# Přidat PHP do PATH (jednorázově na systém):",
+        "# Restartovat PowerShell aby se PATH projevila",
+        "### 2c) Nastavit MySQL",
+        "# XAMPP MySQL defaultně: uživatel root, bez hesla",
+        "# Pro produkci nastavte heslo přes phpMyAdmin nebo:",
+        "## 3. Instalace na Linux (produkce)",
+        "# Ubuntu / Debian",
+        "# Ověření",
+        "# Povolení Apache modulů",
+        "# Zabezpečení MySQL",
+        "# Instalace Composeru",
+        "## 4. Stažení aplikace",
+        "### Windows (XAMPP)",
+        "# Zkopírujte složku aplikace do:",
+        "# C:\\xampp\\htdocs\\evidencePavel\\",
+        "# Nebo naklonujte z git repozitáře (pokud existuje):",
+        "### Linux (produkce)",
+        "# Cílová složka webového serveru",
+        "# Složky kam aplikace zapisuje — musí být zapisovatelné",
+        "## 5. Databáze",
+        "### 5a) Vytvoření databáze",
+        "# Přihlásit se do MySQL",
+        "# V MySQL konzoli:",
+        "### 5b) Základní tabulky (nutné před prvním spuštěním)",
+        "# Pokud máte SQL dump z existující instalace:",
+        "# NEBO vytvořte jen tabulku treneri (minimum pro login):",
+        "### 5c) Nastavení přihlašovacích údajů k DB",
+        "## 6. PHP závislosti (Composer)",
+        "### 6a) Základní závislosti (povinné)",
+        "# Přejděte do složky aplikace",
+        "# nebo",
+        "# Instalace závislostí (PhpSpreadsheet pro Excel exporty)",
+        "# Ověření — měl by existovat soubor vendor/autoload.php",
+        "### 6b) Web Push notifikace (volitelné)",
+        "# Ověření instalace",
+        "## 7. První spuštění a ověření",
+        "### 7a) Spuštění (Windows XAMPP)",
+        "### 7b) Spuštění (Linux)",
+        "# Apache by měl již běžet, ověřte:",
+        "# Aplikace dostupná na:",
+        "# http://vas-server/evidencePavel/",
+        "# nebo přes doménu pokud máte VirtualHost",
+        "### 7c) Databázové migrace",
+        "## 8. Vytvoření prvního administrátora",
+        "# Spusťte PHP skript pro vytvoření admin účtu",
+        "# Windows XAMPP — spusťte z adresáře aplikace:",
+        "## 9. Web Push notifikace (volitelné)",
+        "### 9a) Vygenerování VAPID klíčů",
+        "# Možnost 1 — přes Composer knihovnu (po instalaci minishlink/web-push):",
+        "# Možnost 2 — online generátor:",
+        "# https://vapidkeys.com/",
+        "# Zkopírujte Public Key a Private Key (Base64url formát)",
+        "# Možnost 3 — přes OpenSSL:",
+        "# (pak je třeba převést do Base64url — doporučuji varianty 1 nebo 2)",
+        "### 9b) Uložení klíčů do databáze",
+        "### 9c) Ověření",
+        "# Zkontrolujte uložení klíčů:",
+        "## 10. Cron — automatické upomínky",
+        "### Linux (doporučeno)",
+        "# Otevřít crontab pro www-data nebo root",
+        "# Přidat řádek — spustit každý den v 7:00:",
+        "### Windows (Task Scheduler)",
+        "# Vytvořit naplánovanou úlohu přes PowerShell:",
+        "### Manuální test",
+        "# Otestovat skript ručně (CLI):",
+        "## 11. Produkční checklist",
+        "# ── Bezpečnost ────────────────────────────────────────────────────────────────",
+        "# 1. Nastavit silné DB heslo (viz krok 5a)",
+        "# 2. Nastavit HTTPS (Let's Encrypt):",
+        "# 3. Vypnout zobrazení chyb v PHP (php.ini nebo .htaccess):",
+        "# ── Oprávnění souborů (Linux) ─────────────────────────────────────────────────",
+        "# ── Databáze ──────────────────────────────────────────────────────────────────",
+        "# 5. Zálohy (přidat do crontab):",
+        "# 0 3 * * * mysqldump -u root -pHESLO evidence > /backup/evidence_$(date +\\%Y\\%m\\%d).sql",
+        "# ── Composer ──────────────────────────────────────────────────────────────────",
+        "# 6. Produkční install (bez dev závislostí):",
+        "# ── Ověření všeho ─────────────────────────────────────────────────────────────",
+        "## 12. Řešení problémů",
+        "### Aplikace zobrazí prázdnou stránku nebo 500",
+        "# Zkontrolujte PHP error log:",
+        "# nebo:",
+        "# Zapněte dočasně zobrazení chyb:",
+        "### Auto-migrace nefunguje",
+        "# Ověřte připojení k DB:",
+        "# Zkontrolujte tabulku nastaveni:",
+        "# Bezpečná diagnostika katalogu a čekajících kroků:",
+        "### Composer: „Class not found\"",
+        "# nebo přegenerovat autoloader:",
+        "### PHP rozšíření chybí",
+        "# Zjistit nainstalovaná rozšíření:",
+        "# Doinstalovat (Ubuntu):",
+        "### Nahrávání souborů nefunguje",
+        "# Zkontrolovat upload_max_filesize v php.ini:",
+        "# Pokud je příliš malé, upravte php.ini:",
+        "# upload_max_filesize = 20M",
+        "# post_max_size = 25M"
+      ]
+    },
+    {
+      "path": "docs/integrace-velocota.md",
+      "bytes": 1857,
+      "sha256": "f0a451854c3d2002a8d86a813f92aa5ed9da1fd87bedff279ce6dc2aa404919b",
+      "headings": [
+        "# Hranice Evidence vůči Velocotě",
+        "## Co se neplánuje",
+        "## Jediná možná budoucí vazba",
+        "## Stav legacy kódu"
+      ]
+    },
+    {
+      "path": "docs/kis-current-rosters-2026-27.md",
+      "bytes": 1905,
+      "sha256": "57be821b0478b4e83705d9ab506ea73b944e0dbc348cb41a304c6bd9e907580f",
+      "headings": [
+        "# Převod soupisek starého KIS do školního roku 2026/27"
+      ]
+    },
+    {
+      "path": "docs/kis-full-person-import.md",
+      "bytes": 4584,
+      "sha256": "3bbd50829b301ee1daff40f4b09a65bff9e7ad8180ce79832f62881edda0615f",
+      "headings": [
+        "# Úplný import osob ze starého KIS",
+        "## Zápis",
+        "## Kontrola a další kroky"
+      ]
+    },
+    {
+      "path": "docs/kis-legacy-rosters-2025-26.md",
+      "bytes": 2306,
+      "sha256": "d24f283b2f686d80bea987c1bb39a7d13e3571bff2a906735913eb0eba6eb315",
+      "headings": [
+        "# Soupisky ze starého KIS, sezona 2025/26"
+      ]
+    },
+    {
+      "path": "docs/kis-parity-v1.md",
+      "bytes": 10065,
+      "sha256": "fb1c228062467b77b8459fc9b946cb1b0f79be2eb5d4406f7dd31556fef822ba",
+      "headings": [
+        "# KIS parity v1 – syntetický dry run",
+        "## Spuštění",
+        "## Vstupní kontrakt",
+        "## Výstup a bezpečnostní význam",
+        "## Navazující uložený preview kontrakt M2.3b",
+        "## M2.3d – stabilní identita exportu",
+        "## M2.3e – uložený cutover paritní report",
+        "## M2.3f – cílový model a staging členských předpisů",
+        "## M2.3g – auditovaný testovací přenos předpisů",
+        "## Realistická syntetická fixture W0-G"
+      ]
+    },
+    {
+      "path": "docs/kis-roster-policies.md",
+      "bytes": 2090,
+      "sha256": "15bf0874defb31c4fc4e34436ff42874f1272439de0436166a9a35690f78fe15",
+      "headings": [
+        "# KIS: stabilni serie, sezony a politiky soupisek",
+        "## Datovy model",
+        "## Povolené kombinace",
+        "## Read-only preview",
+        "## Co zamerne chybi"
+      ]
+    },
+    {
+      "path": "docs/kis-roster-rollover-execution.md",
+      "bytes": 1702,
+      "sha256": "95966d2731cb0dadff78e24f980f6384f4e87845a618440cabacb1021daeead5",
+      "headings": [
+        "# M1.5 – skutečné provedení obnovy soupisek",
+        "## Politiky",
+        "## Audit a idempotence"
+      ]
+    },
+    {
+      "path": "docs/kis-teams-rosters.md",
+      "bytes": 1371,
+      "sha256": "74b965713a2212f5275f1aab4897e5e9c1153b1acd72a1f9a498b12c43aebd92",
+      "headings": [
+        "# KIS sezóny, týmy a soupisky",
+        "## Datový kontrakt"
+      ]
+    },
+    {
+      "path": "docs/localhost-acceptance-hub.md",
+      "bytes": 3622,
+      "sha256": "d1108db3a77ef536c9d510e47cf2b902fa97387f0c6ba07c3968260db5167162",
+      "headings": [
+        "# Finalizace a lokální akceptační scénáře M2",
+        "## Bezpečnostní omezení",
+        "## Význam stavů",
+        "## Výsledky prohlídky"
+      ]
+    },
+    {
+      "path": "docs/localhost-testovani.md",
+      "bytes": 5586,
+      "sha256": "82a66da319525a47582d1541fbb944eda1d97ce7d0644d5152851ab41e63f36e",
+      "headings": [
+        "# Kompletní localhost demo",
+        "## První instalace na novém počítači",
+        "## Obnovení již připraveného prostředí",
+        "## Doporučený průchod",
+        "## M2.3 – bezpečný KIS raw archiv"
+      ]
+    },
+    {
+      "path": "docs/mariadb-10.3-compatibility-2026-08-06.md",
+      "bytes": 9329,
+      "sha256": "412fae26e2ff39169be400fccfaba6f007598dd3629f318b9539a000cecf73ab",
+      "headings": [
+        "# Statická kontrola kompatibility s produkční MariaDB 10.3",
+        "## Rozsah a metoda",
+        "## Nálezy podle konstrukce",
+        "### Detaily k nálezům, které vyžadovaly bližší pohled",
+        "## Závěr",
+        "## CI matice 10.3 / 11.4",
+        "## Lokální ověření (jen 10.4, ne 10.3)",
+        "## Zdroje"
+      ]
+    },
+    {
+      "path": "docs/navrh-informacni-architektury.md",
+      "bytes": 28375,
+      "sha256": "7dabcb8170de191d107a40fdcb04aa6cb98705d0dc397d24ea1e421fa6a26769",
+      "headings": [
+        "# Návrh informační architektury",
+        "## 0. Shrnutí problému vlastníka",
+        "## 1. Tři světy aplikace — dnešní navigační vstupy",
+        "## 2. Metodika mapování",
+        "## 3. Úplná mapa aktivních stránek (83 z hlavicka.php + index.php)",
+        "### 3.1 Veřejnost / rodič — `booking/` (10 stránek)",
+        "### 3.2 Sportovec — `booking/`, omezený účet (2 stránky)",
+        "### 3.3 Trenér/správce/admin — Domů (2)",
+        "### 3.4 Vložit (6)",
+        "### 3.5 Přehledy + Exporty + Závodní sekce (15)",
+        "### 3.6 Plánovač (1)",
+        "### 3.7 Rezervace sportovišť (4)",
+        "### 3.8 Nastavení — trenérská úroveň (3)",
+        "### 3.9 Správa dat — správce/hlavní (16)",
+        "### 3.10 Administrace — admin (24, ve 4 přirozených shlucích)",
+        "## 4. Nalezeno navíc: funkční stránky bez vstupu z hlavní navigace",
+        "## 5. Vyřazeno z mapy — technická vrstva a podezřelé soubory",
+        "## 6. Cílová informační architektura",
+        "### 6.1 Princip",
+        "### 6.2 Veřejnost/rodič a Sportovec — beze změny struktury",
+        "### 6.3 Trenér/správce/admin navbar — max 7 položek první úrovně",
+        "### 6.4 Cílová nástěnka (`index.php`, přihlášený stav)",
+        "### 6.5 Dotčené soubory a odhad rozsahu",
+        "## 7. Rychlé výhry (realizovatelné jen úpravou hlavicka.php/index.php)",
+        "## 8. Větší kroky vyžadující rozhodnutí vlastníka",
+        "## 9. Ověření pokrytí",
+        "## 10. Další krok"
+      ]
+    },
+    {
+      "path": "docs/navrh-registrace-sportovce.md",
+      "bytes": 35966,
+      "sha256": "324b8f2f0c2fd6e7b6176267aecbd970eedb906a52050c1f8b0b61f73409cfe5",
+      "headings": [
+        "# Návrh samoobslužné registrace sportovce",
+        "## 1. Ověřený výchozí stav a drift zadání",
+        "## 2. Rozhodnutí návrhu",
+        "## 3. Datový model",
+        "### 3.1 Rozšíření jediné fronty",
+        "### 3.2 `athlete_registration_request_details`",
+        "### 3.3 `osoba_citlive_udaje`",
+        "### 3.4 `osoba_citlive_pristupy`",
+        "### 3.5 `athlete_private_files`",
+        "### 3.6 `athlete_registration_consent_snapshots`",
+        "### 3.7 Rozšíření existujícího K3 registru, ne nový registr",
+        "### 3.8 Volitelné tabulky a sloupce jen pro schválenou B2",
+        "### 3.9 Co záměrně nepřidáváme do `sportovci`",
+        "## 4. Uživatelské a administrátorské toky",
+        "### 4.1 Tok A — samostatná registrace",
+        "### 4.2 Tok B — nákup bez propojené osoby",
+        "### 4.3 Tok C — jedna schvalovací obrazovka",
+        "### 4.4 Tok D — ruční zařazení",
+        "### 4.5 Tok E — členský předpis až po zařazení",
+        "## 5. Rodné číslo",
+        "### 5.1 Právní a produktová brána",
+        "### 5.2 Šifrování a klíče",
+        "### 5.3 Normalizace a validace",
+        "### 5.4 Přístup a zobrazení",
+        "### 5.5 Blind index a duplicity",
+        "### 5.6 Zákaz úniku",
+        "### 5.7 Retence — doporučený výchozí kontrakt ke schválení",
+        "### 5.8 Legacy `sportovci.rc`",
+        "## 6. Fotografie nezletilého",
+        "## 7. Ochrana proti duplicitám",
+        "## 8. Souhlasy a informační texty",
+        "## 9. Bezpečnost, transakce a provoz",
+        "## 10. Implementační řezy po schválení",
+        "## 11. Povinná testovací matice",
+        "## 12. Otevřená rozhodnutí vlastníka",
+        "## 13. Zdroje pro právní a retenční část",
+        "## 14. Schvalovací výrok"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/01-audit-pripravenosti.md",
+      "bytes": 11525,
+      "sha256": "e34187f5e04a62667a7bd4fb4a29a8cfc37bb6ffc6632914ded9b9b5b06a1dd1",
+      "headings": [
+        "# 01 – Audit připravenosti",
+        "## Výsledek",
+        "## Co je prokazatelně připravené",
+        "### Produkční deploy",
+        "### KIS synchronizační základ",
+        "### Členské a provozní moduly",
+        "## Co lokální DB skutečně ukazuje",
+        "## Potvrzené mezery",
+        "### 0. KIS matcher má kritickou chybu závislou na pořadí",
+        "### 1. Lokální Git stav není sjednocený s produkčním main",
+        "### 2. Neexistují projektové automatické testy",
+        "### 2a. Závislosti obsahují známé bezpečnostní chyby",
+        "### 3. Migrace jsou centralizované v jednom request-time runneru",
+        "### 4. Identita je rozštěpená",
+        "### 5. Současný kredit není wallet",
+        "### 6. `ucto_udalosti` je jiná doména",
+        "### 7. Chybí bezpečný integrační provoz",
+        "### 8. Deploy funguje, ale není ještě release-safe",
+        "## Externí integrace – ověřená proveditelnost",
+        "## Foundation gate – podmínky pro „můžeme začít“"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/02-zadani-a-rozhodnuti.md",
+      "bytes": 8788,
+      "sha256": "a8c87349cabb3f973aecd07a5fe5eb6831f18134ff23c57d860a08e40ede282a",
+      "headings": [
+        "# 02 – Zadání a rozhodnutí",
+        "## Produktová vize",
+        "## Uživatelé a jejich potřeby",
+        "## Funkční rozsah",
+        "### A. E-shop",
+        "### B. Členská a týmová evidence",
+        "### C. Společné funkce",
+        "## Rozhodovací log",
+        "## Otevřené otázky pro vlastníka produktu",
+        "## Nefunkční požadavky",
+        "## Co není první MVP",
+        "## Definition of Ready pro implementační úkol"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/03-cilova-architektura.md",
+      "bytes": 9014,
+      "sha256": "b2f3085685fac9b6b610efd6122a105bac45f378771271d5b0b95de3525980e5",
+      "headings": [
+        "# 03 – Cílová architektura",
+        "## Architektonický směr",
+        "## Vlastnictví domén",
+        "## Identita a rodinné vztahy",
+        "## KIS a členský model",
+        "## Klubové akce",
+        "## E-shop",
+        "## Platby a kredit",
+        "### Platební vrstva",
+        "### Kreditní ledger",
+        "## Integrace a asynchronní práce",
+        "## Migrace a konzistence",
+        "## Bezpečnostní hranice"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/04-roadmapa-a-brany.md",
+      "bytes": 8133,
+      "sha256": "252937f67406989b4ea1d43e4f574065609ff4528a4430a9ab20b939105df1f1",
+      "headings": [
+        "# 04 – Roadmapa a brány",
+        "## Přehled závislostí",
+        "## F0 – Bezpečný základ",
+        "## F1 – Identity a společné kontrakty",
+        "## F2 – Členové, týmy, soupisky a KIS parity",
+        "## F3 – Klubové akce a přihlášky",
+        "## F4 – E-shop MVP",
+        "## F5 – Kreditní ledger",
+        "## F6 – Automatizované platby",
+        "## F7 – Packeta a pokročilý checkout",
+        "## F8 – Rozhodnutí o náhradě KIS",
+        "## Průřezová testovací matice",
+        "## Produkční release checklist"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/05-rizeni-vlaken.md",
+      "bytes": 6221,
+      "sha256": "72aa028a6bbc7a8aa9216bce67e7d11d92ce0e8b261dc687def866160c6cb94b",
+      "headings": [
+        "# 05 – Řízení vláken",
+        "## Provozní model",
+        "## Povinné artefakty řídicího tasku",
+        "## Git a pracovní prostor",
+        "## Soubory a oblasti s jediným vlastníkem",
+        "## Doporučené vlny práce",
+        "### Vlna 0 – pouze odstranění blokátorů",
+        "### Vlna 1 – vertikály na společném základu",
+        "### Vlna 2 – peníze",
+        "### Vlna 3 – provoz a cutover",
+        "## Šablona zadání pro pracovní task",
+        "## Předávací protokol",
+        "## Pravidla pro migrace",
+        "## První konkrétní start"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/06-program-board.md",
+      "bytes": 27507,
+      "sha256": "1dd69b230e882fb52d15490d15a7c673b256b1df258eba21459d653be0e0009a",
+      "headings": [
+        "# 06 – Program board",
+        "## Ověřený výchozí stav",
+        "## První paralelní přírůstek M1",
+        "## Druhý paralelní přírůstek M1",
+        "## Třetí paralelní přírůstek M1",
+        "## M1.8 integrovaný akceptační přírůstek",
+        "## M1.9 provozní a akceptační přírůstek",
+        "## Technické dokončení M1",
+        "## Zahájení M2",
+        "## Aktivní rozhodnutí",
+        "## Backlog F0",
+        "## Bezpečný merge order",
+        "## Brána F0 – aktuální checklist",
+        "## Pokyn pro příští řídicí task",
+        "## Podmínka pro změnu boardu"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/07-shop-kis-integrace.md",
+      "bytes": 11117,
+      "sha256": "23a81f0866c46759c52e47154c163ababa26c11e5b12768a2b772116cbc528da",
+      "headings": [
+        "# 07 – Plán napojení e-shopu na členské a KIS funkce",
+        "## Cíl",
+        "## Klíčové oddělení osob",
+        "## Navržený tok pro kroužek",
+        "## Pronájem velodromu a půjčovna",
+        "## Implementační etapy",
+        "### K1 – Kanonický katalog a explicitní převod stagingu",
+        "### K2 – Účty, osoby a rodiče",
+        "### K3 – Klubové akce, termíny a přihlášky",
+        "### K4 – Společná objednávka a platební předpis",
+        "### K5 – KIS shadow mode a cutover",
+        "## Otevřená produktová rozhodnutí",
+        "## Nejbližší implementační pořadí"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/08-milnik-m1-integrovany-prototyp.md",
+      "bytes": 17805,
+      "sha256": "0730d504122ec1cc495efdc5c5629e030c6fec3519d7e7453946eb9a7dc213ea",
+      "headings": [
+        "# M1 – Integrovaný a testovatelný prototyp",
+        "## Smysl milníku",
+        "## Produktové hranice M1",
+        "### Součást M1",
+        "### Záměrně až po M1",
+        "## Vlastnictví dat a integrační kontrakt",
+        "## Sezóny, skupiny a soupisky",
+        "## Cílový uživatelský model",
+        "## Implementační proudy a pořadí",
+        "### M1.1 – Osoba, rodina a finanční příjemce",
+        "### M1.2 – Dvě sezónní soustavy a politiky soupisek",
+        "### M1.3 – Most do stávající Evidence tréninků",
+        "### M1.4 – Kroužkové programy a služby nakupované e-shopem",
+        "### M1.5 – Závodní členství, přechod a roční rollover",
+        "### M1.6 – Události cílené na soupisky",
+        "### M1.7 – Veřejný účastník a rezervace velodromu",
+        "### M1.8 – Integrované portály a akceptační průchod",
+        "## Povinná localhost testovací sada",
+        "## Akceptační prohlídka M1",
+        "## Testovací pyramida a brány každého přírůstku",
+        "## Definition of Done M1",
+        "## Orientační mapa současného stavu",
+        "## Co následuje po M1"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/09-paralelni-vyvoj-m1.md",
+      "bytes": 8033,
+      "sha256": "9d0c7d1560890963687c9e64566974bc83f6b1f49c23c88b53a226e4e5415212",
+      "headings": [
+        "# Paralelní vývoj M1",
+        "## Zásada",
+        "## První paralelní kolo",
+        "## Povinný prompt pracovního tasku",
+        "## Přijetí výsledku",
+        "## Stop podmínky",
+        "## Druhé paralelní kolo",
+        "## Třetí paralelní kolo",
+        "## Čtvrté paralelní kolo – M1.8",
+        "## Další vhodné paralelní kolo",
+        "## Páté paralelní kolo – M1.9"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/10-milnik-m2-provozni-pilot.md",
+      "bytes": 32807,
+      "sha256": "2080fe790f0e3be6ec48bfd7a5eb11ab18910052ca14de10ca57666eff68f858",
+      "headings": [
+        "# 10 – Milník M2: provozní pilot na localhostu",
+        "## Výsledek milníku",
+        "## Aktuální stav M2",
+        "## Implementační pořadí",
+        "### M2.0 – zpětná vazba vlastníka",
+        "### M2.1 – provoz klubové akce",
+        "### M2.2 – chyby a UX z A01–A10",
+        "### M2.3 – bezpečná zkouška jednorázové migrace KIS",
+        "### M2.4 – provozní zkouška e-shopu",
+        "### M2.5 – přístup a obnova účtu",
+        "### M2.6 – integrovaná akceptace",
+        "## Co lze dělat souběžně",
+        "### M2.7 – veřejný a osobní kalendář",
+        "## Výslovně blokované oblasti",
+        "## Brána celého M2"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md",
+      "bytes": 6529,
+      "sha256": "2b2a983830b506b446744f610766d642ae45dbee0bd4e8c322759b59bdac244f",
+      "headings": [
+        "# 11 – Backlog hodnoty pro členy",
+        "## Přijaté principy",
+        "## Zařazené řezy",
+        "## Odložené nebo blokované návrhy",
+        "## M2.7 – kalendář a vracení hodnoty"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/12-milnik-m3-clenska-hodnota.md",
+      "bytes": 12511,
+      "sha256": "0fba0a0245d9f84e53a842e3bdee54a5567cce5879d77e4002e8ca5f0e3e64e1",
+      "headings": [
+        "# 12 – Milník M3: každodenní hodnota pro členy a klub",
+        "## Výsledek milníku",
+        "## Pořadí řezů",
+        "## M3.1 – rodinný program",
+        "## M3.2 – týdenní souhrn",
+        "## M3.3 – roční přehled uhrazených služeb",
+        "## M3.4 – provozní přehled správce",
+        "## M3.5 – datová kvalita sportovního progresu",
+        "## Brány a výslovně odložené oblasti",
+        "## Další konkrétní krok"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/PROMPT-CLAUDE-CODE-REVIZE-M2.md",
+      "bytes": 8912,
+      "sha256": "448715f2a94d04a7fdc4daaf26a01de82d11b09004dd4db17d78403d3dd8a73c",
+      "headings": [
+        "# Prompt pro Claude Code – nezávislá revize M1/M2"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/PROMPT-NOVE-RIDICI-VLAKNO.md",
+      "bytes": 3432,
+      "sha256": "40672c45a3308fe1491f7b04a3eda2b7e3f6d9e1b3a9f4da48fd06b2963eae4c",
+      "headings": [
+        "# Prompt nového řídicího tasku",
+        "## Proč je prompt tak přísný"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/README.md",
+      "bytes": 6047,
+      "sha256": "15a5fd1bcfd92926c2ddb086c494498690fe2c7d0fb1f3b1e785ab962c12958f",
+      "headings": [
+        "# Program rozšíření Evidence: e-shop a týmová evidence",
+        "## Účel",
+        "## Stručný verdikt",
+        "## Dokumenty",
+        "## Rozhodnutí doporučená ke schválení",
+        "## Co tento plán záměrně nedělá",
+        "## Zdroj zadání"
+      ]
+    },
+    {
+      "path": "docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md",
+      "bytes": 266263,
+      "sha256": "43f5470a1a982a80f60272460dbc4f2d4548189e7c4a1a55bf69c4b0238a5373",
+      "headings": [
+        "# Session handoff",
+        "## Produkční účetní kontrola publikace — 22. 10. 2026",
+        "## Autorizované vydání Zásilkovny — 22. 10. 2026",
+        "## Veřejný klíč a skutečná mapa — dokončeno lokálně 22. 10. 2026",
+        "## Aktuální živé nastavení Packety",
+        "## Aktuální lokální stav — jednoduchá ruční Zásilkovna",
+        "## Audit Zásilkovny 21. 10. 2026 — pouze analýza",
+        "## Produkční výsledek 21. 10. 2026 — číselné řady a účetní kategorie",
+        "## Produkční výsledek 21. 10. 2026 — stavy a systémové e-maily",
+        "## Lokální výsledek 21. 10. 2026 — stavy, Zásilkovna a systémové e-maily",
+        "## Pravidlo vlastníka pro větší změny od 21. 10. 2026",
+        "## Aktualizace 21. 8. 2026 — R9 až R12 nasazené na produkci (`c5f638f`)",
+        "### Push, CI a deploy",
+        "### Produkční read-only ověření",
+        "### Zbývající vlastnické kroky",
+        "## Aktualizace 21. 8. 2026 — R12: ověření platebního toku (`4d1e05f`)",
+        "### Dokončený výsledek",
+        "### Důkazy",
+        "### Produkce a úkoly vlastníka",
+        "## Aktualizace 21. 8. 2026 — R11: provozní správa katalogu (`0fd31f2`)",
+        "### Dokončený výsledek",
+        "### Důkazy a úklid",
+        "### Produkce a další krok",
+        "## Aktualizace 21. 8. 2026 — R10: parametry produktů (`93d0286`)",
+        "### Dokončený výsledek",
+        "### Důkazy a úklid",
+        "### Produkce a další krok",
+        "## Aktualizace 21. 8. 2026 — R9: hierarchické kategorie e-shopu (`2173097`)",
+        "### Dokončený výsledek",
+        "### Důkazy a úklid",
+        "### Produkce a další krok",
+        "## Aktualizace 20. 8. 2026 — korekce produkčního bankovního stavu (`cae6694`)",
+        "### Opravená skutečnost",
+        "### Co stále musí ověřit vlastník",
+        "### Brána a další krok",
+        "## Aktualizace 20. 8. 2026 — oprava deploy preflightu proti předchozímu release (`04fe558`)",
+        "### Dokončený výsledek",
+        "### Regrese a brány",
+        "### Provozní hranice a další krok",
+        "## Aktualizace 19. 8. 2026 — bankovní účet e-shopu v administraci (`27b2d8e`, `ff20427`)",
+        "### Dokončený výsledek",
+        "### Neměnnost existujících objednávek — ověřeno, nález nevznikl",
+        "### Kontrakt zálohy a manifest",
+        "### Regrese, živý localhostový průchod a úklid",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 19. 8. 2026 — Prompt E R1–R8 nasazen na produkci (`612c793`)",
+        "### Výsledek nasazení",
+        "### Poinstalační ověření",
+        "### Nastavení bankovního účtu",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 18. 8. 2026 — Prompt E, kontrolní bod R8: diagnostika checkoutu a značka vzoru (`4df4a47`, `f96915b`)",
+        "### Dokončený výsledek",
+        "### Chování zálohy vůči sloupcům, které ve schématu ještě nejsou",
+        "### Kontrakt zálohy — rozhodnutí a načasování",
+        "### Rozšířený rozsah R11",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 18. 8. 2026 — Prompt E R8: transakční průvodce „Vypsat kroužek“ (`c520b35`)",
+        "### Dokončený výsledek",
+        "### Regrese, živý localhostový průchod a úklid",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 17. 8. 2026 — Prompt E R7: verzované podmínky kroužku (`cddad4b`)",
+        "### Dokončený výsledek",
+        "### Regrese, živý localhostový průchod a úklid",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 17. 8. 2026 — Prompt E R6: ročníky a skutečná kapacita (`df0f4e1`)",
+        "### Dokončený výsledek",
+        "### Regrese, živý localhostový průchod a úklid",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 17. 8. 2026 — Prompt E R5: bezpečné obrázky produktu (`3746174`)",
+        "### Dokončený výsledek",
+        "### Regrese, živý localhostový průchod a úklid",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 17. 8. 2026 — Prompt E R4: ruční správa produktu (`049503c`)",
+        "### Dokončený výsledek",
+        "### Regrese a živý localhostový průchod",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 17. 8. 2026 — Prompt E R3: prodejní životní cyklus programu (`79c84bb`)",
+        "### Dokončený výsledek",
+        "### Potvrzené volající a hranice navazujících řezů",
+        "### Živý localhostový průchod a úklid",
+        "### Brány a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 16. 8. 2026 — Prompt E R2: kolizní preflight katalogu (`24cc675`)",
+        "### Dokončený výsledek",
+        "### Ověření nad skutečným Shoptet exportem",
+        "### Regrese a provozní hranice",
+        "### Další krok",
+        "## Aktualizace 16. 8. 2026 — Prompt E R1: původ ručního katalogu (`a0c0d73`)",
+        "### Dokončený výsledek",
+        "### Ověření a provozní hranice",
+        "### Závazné hranice pro R2–R8",
+        "### Další krok",
+        "## Aktualizace 16. 8. 2026 — Prompt F: kompatibilita scoped podmínek (`ff02c40`)",
+        "### Dokončený výsledek",
+        "### Ověření a provozní hranice",
+        "### Potvrzené hranice navazujícího Promptu E",
+        "### Další krok",
+        "## Aktualizace 16. 8. 2026 — Prompt B R6: členský předpis po zařazení (`f352fbc`)",
+        "### Dokončený výsledek",
+        "### Ověření a hranice",
+        "### Další krok",
+        "## Aktualizace 16. 8. 2026 — Prompt B R5: ruční zařazení sportovce (`68498a1`)",
+        "### Dokončený výsledek",
+        "### Ověření a hranice",
+        "### Následující řez",
+        "## Aktualizace 16. 8. 2026 — Prompt B R4: administrátorské schválení registrace (`d5fa74b`)",
+        "### Dokončený výsledek",
+        "### Ověření a hranice",
+        "### Následující řez",
+        "## Aktualizace 16. 8. 2026 — Prompt B R3: samoobslužná registrace sportovce (`3918dc2`)",
+        "### Dokončený výsledek",
+        "### Ověření a hranice",
+        "### Následující řez",
+        "## Aktualizace 16. 8. 2026 — Prompt D: oznámení zákazníkovi po přijetí platby",
+        "### Dokončený výsledek",
+        "### Ověření",
+        "### Produkční hranice a povinná akce vlastníka",
+        "## Aktualizace 16. 8. 2026 — Prompt B R2: citlivé údaje a fotografie (`dadc478`)",
+        "### Dokončený výsledek",
+        "### Ověření a hranice",
+        "### Další rozhodnutí",
+        "## Aktualizace 16. 8. 2026 — Prompt B R1: základ registrace sportovce (`f2985b8`)",
+        "### Dokončený výsledek",
+        "### Produkční preflight před první migrací",
+        "### Ověření a další akce",
+        "## Aktualizace 16. 8. 2026 — Prompt B Fáze 1: návrh registrace sportovce",
+        "### Dokončený výsledek",
+        "### Ověření a pracovní stav",
+        "### Rozhodnutí a další akce",
+        "## Aktualizace 16. 8. 2026 — P1 F8 kalendáře a rezervace (`e0daaa8d84d434c2b9bd849a5ee407a4ddf20826`)",
+        "### Dokončený výsledek",
+        "### Živé ověření a brány",
+        "### Další akce",
+        "## Aktualizace 16. 8. 2026 — P1 F7 přísné zakládání osob (`80bb5231ed6caef5b8a237546de45a830615774d`)",
+        "### Dokončený výsledek",
+        "### Živé ověření a brány",
+        "### Další akce",
+        "## Aktualizace 16. 8. 2026 — P1 F9 politika hesla (`0aacc178dd01c1025078bbc1f98c614ac992206c`)",
+        "### Dokončený výsledek",
+        "### Živé ověření a brány",
+        "### Další akce",
+        "## Aktualizace 16. 8. 2026 — P1 F4–F6 navigace (`77a3a3f006cf9859ea1a41c4356d91bf3b4f564d`)",
+        "### Dokončený výsledek",
+        "### Živé ověření a brány",
+        "### Samostatný nález a další akce",
+        "## Aktualizace 16. 8. 2026 — P0 F3 přihlášení a relace (`75226aa1d31dc225f27feacd9f086abea1c1fb79`)",
+        "### Potvrzená diagnóza a oprava",
+        "### Živé ověření a brány",
+        "### Další akce",
+        "## Aktualizace 16. 8. 2026 — P0 F2 tmavý režim (`cdf16620d8d1ae8025f93567e95318e957786555`)",
+        "### Dokončený výsledek",
+        "### Brány a pracovní stav",
+        "### Otevřené riziko a další akce",
+        "## Aktualizace 16. 8. 2026 — P0 F1 plánovač (`a2833fcdc981ab6931559077140bcca125d4bd08`)",
+        "### Dokončený výsledek",
+        "### Brány a pracovní stav",
+        "### Otevřené riziko a další akce",
+        "## Aktualizace 10. 8. 2026 — závěrečná automatizovaná vlna a provozní drilly (`6993693c7cd133ede8a5c2e666468a2b3cc6c8b1`)",
+        "### Implementované opravy",
+        "### Ověření a produkce",
+        "### Otevřené architektonické body",
+        "## Aktualizace 10. 8. 2026 — dokončený UX/CRUD průchod a produkční nasazení (`34c185b64643e531ced4ac53004b23aa11593cbb`)",
+        "### Výsledek a opravy",
+        "### Ověření",
+        "### Produkce",
+        "### Otevřené body",
+        "## Aktualizace 10. 8. 2026 — autonomní stabilizace, plné E2E a produkční deploy (`e4a5dc07f28570a0a56a9040ce7acc5578276a5a`)",
+        "### Výsledek",
+        "### Opravené priority",
+        "### Dodatečný nalezený a opravený blokér",
+        "### Vědomě neimplementováno",
+        "### Ověření",
+        "### Produkční nasazení a kontrola",
+        "### Co zbývá vlastníkovi",
+        "## Aktualizace 9. 8. 2026 — Stripe slice 1 NASAZENA a OVĚŘENA v test mode (commity `cb2c356`, `080f66a`, `0b1109f`, `f190498`)",
+        "### PŘEDPOKLADY PRO ZAPNUTÍ TEST MODE NA PRODUKCI (nezačínat bez nich)",
+        "### DROBNOST DO NÁSLEDUJÍCÍ SLICE (revize kódu)",
+        "## Aktualizace 9. 8. 2026 — rozšířená akceptační sada B01–B30 (commit `d33ec55`)",
+        "## Aktualizace 8. 8. 2026 — implementace informační architektury (2 commity)",
+        "## Aktualizace 8. 8. 2026 — návrh informační architektury (read-only)",
+        "## Aktualizace 6. 8. 2026 — PRVNÍ PRODUKČNÍ NASAZENÍ kis.kovopraha.cz",
+        "## Aktualizace 6. 8. 2026 — příprava produkce kis.kovopraha.cz",
+        "## Aktualizace 6. 8. 2026 — statická kontrola kompatibility s produkční MariaDB 10.3",
+        "## Aktualizace 5. 8. 2026 — MariaDB smoke pro M3.5d sportovní import review",
+        "## Aktualizace 5. 8. 2026 — doplnění chybějící Bootstrap hlavičky na 4 stránkách",
+        "## Aktualizace 5. 8. 2026 — M3.5e rozpoznávání historické tabulky měření",
+        "## Aktualizace 5. 8. 2026 — M3.5d read-only příprava importu sportovních dat",
+        "## Aktualizace 5. 8. 2026 — M3.5c normalizovaný zápis sportovních dat",
+        "## Aktualizace 5. 8. 2026 — M3.5b sportovní datový kontrakt",
+        "## Aktualizace 5. 8. 2026 — M3.5a kvalita sportovních dat",
+        "## Aktualizace 5. 8. 2026 — dokončení M3.2",
+        "## Aktualizace 5. 8. 2026 — sjednocení uživatelského rozhraní",
+        "## Metadata",
+        "## Stav etap podle akceptačních bran",
+        "## Rychlý aktuální stav pro další task",
+        "## Povinný kontrakt údržby tohoto souboru",
+        "## Pořadí autority",
+        "## Poslední známý důkazní snapshot",
+        "## Povinný resume audit bez mutací",
+        "## Preservation ledger",
+        "## Aktivní práce a vlastnictví",
+        "## Integrační fronta",
+        "## Stop podmínky",
+        "## Checklist před ukončením řídicího tasku"
+      ]
+    },
+    {
+      "path": "docs/public-profile-velodrome-m17.md",
+      "bytes": 3257,
+      "sha256": "52ebf2e814b9f57f178b089ac69c678f5a448513035d2e9746f4464c2a568519",
+      "headings": [
+        "# M1.7 – veřejný účastník a hodina velodromu",
+        "## Veřejný profil",
+        "## Velodrom",
+        "## Finance"
+      ]
+    },
+    {
+      "path": "docs/public-velodrome-shop-m18.md",
+      "bytes": 3427,
+      "sha256": "f3e389c58e6672799dc35cefb3727f3ba68142444ee86f1d302e59913275e1e5",
+      "headings": [
+        "# M1.8 – placený velodrom přes shop objednávku",
+        "## Výsledek",
+        "## Datový kontrakt",
+        "## Transakční pořadí zámků",
+        "## Migrace a nasazení",
+        "## Ověření",
+        "## Zbývající rizika"
+      ]
+    },
+    {
+      "path": "docs/roadmapa-rozsireni.md",
+      "bytes": 15873,
+      "sha256": "22280f261675b25b0d848993b7426b101d7ef79656aaaf07682133f47855b002",
+      "headings": [
+        "# Roadmapa rozšíření — Evidence tréninků",
+        "## Přehled změn",
+        "## Kontextový přehled — výchozí stav",
+        "### Co dnes existuje",
+        "## Změna 1 — Propojení sportovců s veřejnými profily",
+        "### Záměr",
+        "### Architektura",
+        "### DB migrace",
+        "### Auto-vytvoření profilu",
+        "### Dopad na existující kód",
+        "### Session po přihlášení",
+        "## Změna 2 — Kreditní wallet",
+        "### Záměr",
+        "### Vztah ke stávajícímu systému",
+        "### DB migrace",
+        "### Tok kreditů",
+        "### Nové soubory (Fáze 1)",
+        "## Změna 3 — Napojení na externí e-shop (API bridge)",
+        "### Záměr",
+        "### Architektura",
+        "### API endpointy (nové soubory)",
+        "### Autentizace API",
+        "### SSO token pro e-shop",
+        "### SSO tokeny — DB",
+        "### Co e-shop musí implementovat",
+        "## Změna 4 — Jednotný profil (booking + e-shop)",
+        "### Záměr",
+        "### Centrální entita: `verejni_uzivatele`",
+        "### „Můj účet\" — přehled pro uživatele",
+        "### Registrace — rozšíření",
+        "## Fáze implementace",
+        "### Fáze 1 — Profil + Wallet (nezávislé na e-shopu)",
+        "### Fáze 2 — E-shop API (koordinace s e-shop týmem)",
+        "### Fáze 3 — Rozšíření (volitelné)",
+        "## Otevřené otázky (nutné rozhodnout před implementací)",
+        "## Change control — co koordinovat",
+        "## Neměnit bez koordinace (mezisystémové kontrakty)"
+      ]
+    },
+    {
+      "path": "docs/rodne-cislo-bezpecnost.md",
+      "bytes": 5130,
+      "sha256": "e4cd6fd819905f2496aaa8112a97ab1fa9edbb4479410670cea6386f640f7b25",
+      "headings": [
+        "# Rodné číslo — bezpečnostní a provozní kontrakt",
+        "## Kde údaj žije",
+        "## Klíče a fail-closed chování",
+        "## Přístup a audit",
+        "## Validace a cizinec",
+        "## Fotografie",
+        "## Retence a výmaz"
+      ]
+    },
+    {
+      "path": "docs/security-audit-2026-08-04.md",
+      "bytes": 3810,
+      "sha256": "5ec23855a8fd935a7d060ef7922c5fac36084b5070a38182fc4394f8bb6db46c",
+      "headings": [
+        "# Bezpečnostní audit a náprava – 4. 8. 2026",
+        "## Vyhodnocení externího auditu",
+        "## Migrační dopad",
+        "## Ověření",
+        "## Zbývající rizika"
+      ]
+    },
+    {
+      "path": "docs/security-infrastructure-2026-08-05.md",
+      "bytes": 2863,
+      "sha256": "32313981f2f3c74f175fcb351c45dc98d33c2bf42073026f3cff6fef2324d8e1",
+      "headings": [
+        "# Sjednocení bezpečnostní infrastruktury – 5. 8. 2026",
+        "## Uzavřené nálezy",
+        "## Ověření",
+        "## Otevřené navazující řezy",
+        "## Produkční konfigurace souborů"
+      ]
+    },
+    {
+      "path": "docs/session-security.md",
+      "bytes": 5261,
+      "sha256": "170a155d5c72bcb2dda8c0240e77bfd838ab7c9339c688bc60055693056681fa",
+      "headings": [
+        "# Bezpečnost PHP session",
+        "## Vynucená politika",
+        "## Content Security Policy",
+        "## Přechody identity a odhlášení",
+        "## Navazující stav"
+      ]
+    },
+    {
+      "path": "docs/shared-ui-foundation.md",
+      "bytes": 3071,
+      "sha256": "f5a1c9b35ef280819a4242198378d293e74680382fe335b727f710029a609458",
+      "headings": [
+        "# Sdílený vzhled a chování aplikace",
+        "## Jedna aplikace, nikoli tři oddělené moduly",
+        "## Pravidlo pro novou stránku",
+        "## Formuláře a načítání",
+        "## Automatická ochrana"
+      ]
+    },
+    {
+      "path": "docs/shop-account-person-roles.md",
+      "bytes": 2006,
+      "sha256": "2da4972a196dda9aec853fa33cff42f04905ef3864f2a6481835f0c998b37263",
+      "headings": [
+        "# Vazby účtů, rodičů a sportovců",
+        "## Co je nyní možné",
+        "## Co se záměrně neděje",
+        "## Nasazení"
+      ]
+    },
+    {
+      "path": "docs/shop-beneficiaries.md",
+      "bytes": 1969,
+      "sha256": "822fabdf1ecbb31c34c9c4c6ef517fc7f3be04a2b32371a7fa4aa2681fea25a9",
+      "headings": [
+        "# Příjemce položky e-shopu",
+        "## Bezpečnostní pravidla",
+        "## API pro následné zapojení"
+      ]
+    },
+    {
+      "path": "docs/shop-catalog-publication.md",
+      "bytes": 1914,
+      "sha256": "cb2fa86904c82f9e9e003bf5a09caf587fcce2f37d6678871970c57a904905aa",
+      "headings": [
+        "# Řízená aktivace katalogu",
+        "## Bezpečnostní brána",
+        "## Co aktivace nyní neznamená",
+        "## Nasazení"
+      ]
+    },
+    {
+      "path": "docs/shop-checkout-k4.md",
+      "bytes": 7305,
+      "sha256": "3b9e545d83e296898c8c0d10e8e3a1cbb1ad8e219f13b98895808aac0c9f391d",
+      "headings": [
+        "# Checkout e-shopu a programů K4",
+        "## Bezpečnostní a účetní kontrakt",
+        "## Bankovní konfigurace",
+        "## Stránky a stavy",
+        "## Expirace nezaplacených objednávek",
+        "## Slevové kupóny",
+        "## Migrace a provozní hranice"
+      ]
+    },
+    {
+      "path": "docs/shop-program-payment-verification.md",
+      "bytes": 5090,
+      "sha256": "32b9ef5490deb00e165774238fcd4f25b9dbb3618891d84292b97ac801602ca3",
+      "headings": [
+        "# Ověření platebního životního cyklu kroužku (R12)",
+        "## Rozsah a závěr",
+        "## Doložený průchod",
+        "## Automatizované důkazy",
+        "## Úkoly vlastníka"
+      ]
+    },
+    {
+      "path": "docs/shop-shoptet-import.md",
+      "bytes": 16317,
+      "sha256": "b3120f6649583751949cf5b1576381494d8933ee903654b33b6984ec5344f049",
+      "headings": [
+        "# Shoptet katalog – ověření a bezpečný staging",
+        "## Použití",
+        "## Uložení do stagingu",
+        "## Administrátorská kontrola",
+        "## Převod do pracovního katalogu",
+        "## Bezpečnostní hranice",
+        "## Podporovaný kontrakt CSV",
+        "## Normalizace systémového XML exportu",
+        "## Syntetická W0-G contract matrix",
+        "## Návrh typu nabídky",
+        "## Jak export později obnovit ze Shoptetu",
+        "## Jednorázová náhrada původního e-shopu"
+      ]
+    },
+    {
+      "path": "docs/sports-data-quality.md",
+      "bytes": 7011,
+      "sha256": "654610d9bb4c0e79d77e4cba520fa0565a324bf318b2a2eb97533d184218fa81",
+      "headings": [
+        "# Kvalita sportovních dat – M3.5a až M3.5e",
+        "## Účel",
+        "## Zdroje",
+        "## Živý localhost snapshot",
+        "## Zjištěné návrhové dluhy",
+        "## Kontrakt M3.5b–c: `sports-measurement-v1`",
+        "## Kontrakt M3.5e: rozpoznávání historické tabulky `mereni`",
+        "## Pravidlo pro ostrá data"
+      ]
+    },
+    {
+      "path": "docs/stripe-integration-plan.md",
+      "bytes": 7514,
+      "sha256": "d4d78c9c5235a9168952071b1fe6f12d496020f69094aac19cbbba71b328d9e8",
+      "headings": [
+        "# Plán Stripe integrace pro Evidence",
+        "## Rozhodnutí",
+        "## Mapování na data",
+        "## Checkout a webhook",
+        "## Lifecycle, storno, expirace a sklad",
+        "## Refundace — navazující slice",
+        "## Test mode, live mode a nasazení",
+        "## Odpovědnost vlastníka před aktivací"
+      ]
+    },
+    {
+      "path": "docs/technicka-dokumentace.md",
+      "bytes": 67122,
+      "sha256": "885433d406b33a34cb6c8a13d8efa93f743657fe7277cb9be5b706a045f31a14",
+      "headings": [
+        "# Technická dokumentace — Evidence Tréninků",
+        "## Obsah",
+        "## 1. Architektura",
+        "## 2. Adresářová struktura",
+        "## 3. Databáze",
+        "### Připojení",
+        "### Auto-migrace schématu",
+        "### Schéma",
+        "## 4. Autentizace a autorizace",
+        "### Přihlášení (`login.php`)",
+        "### Role systém",
+        "### Session proměnné",
+        "### Autorizace na stránkách",
+        "### Veřejní zákazníci — booking (`booking/`)",
+        "### Admin-only sandbox (firemní evidence)",
+        "## 5. CSRF ochrana",
+        "### `csrf_token(): string`",
+        "### `csrf_field(): string`",
+        "### `csrf_verify(string $token): bool`",
+        "### Použití",
+        "### Pokrytí",
+        "## 6. AJAX endpointy",
+        "### `ajax_sportovci.php` — Vyhledávání sportovců",
+        "### `ajax_podskupiny.php` — Podskupiny podle skupiny",
+        "### `ajax_treninky.php` — Seznam tréninků",
+        "### `ajax_update_poznamka.php` — Aktualizace poznámky",
+        "### `ajax_global_search.php` — Globální vyhledávání",
+        "### `nacti_podskupiny.php` — Podskupiny (alternativa)",
+        "### `ajax_dostupnost_sportovist.php` — Obsazenost sportoviště",
+        "### `ajax_denny_rozvrh.php` — Denní rozvrh sportoviště",
+        "### `ajax_update_plan.php` — Drag-drop přesun / přejmenování plánu",
+        "### `ajax_nova_oznameni.php` — Nové oznámení skupiny",
+        "### `ajax_sportovec_treninky.php` — Tréninky sportovce (veřejný profil)",
+        "### `ajax_sportovec_poznamka.php` — Uložení poznámky k tréninku (veřejný profil)",
+        "## 7. Export systém",
+        "### `export_xls.php` — Měsíční export tréninků",
+        "### `export_draha.php` — Export pro dráhu",
+        "### `export_uci.php` — Export UCI přihlášky",
+        "### `export_seznam.php` — Export seznamu sportovců",
+        "### Vzor použití PhpSpreadsheet",
+        "## 8. Upload souborů",
+        "### Adresáře",
+        "### Konvence pojmenování",
+        "### MIME validace uploadů",
+        "### Soft delete souborů",
+        "### Obrázky tréninků",
+        "## 9. Audit logging",
+        "### Funkce `zapisAuditLog()`",
+        "## 10. Google Sheets integrace",
+        "### Tabulky",
+        "### Viditelnost",
+        "### AJAX endpoint",
+        "## 11. Sync mechanismus",
+        "### 11a. Legacy import — `sync.php`",
+        "### 11b. Synchronizace evidence — `sync_evidence.php`",
+        "## 11c. Správa segmentů — `sprava_segmentu.php`",
+        "## 11d. Měření v tréninku a závodech",
+        "## 11e. Evidence závodů (v2.7.0)",
+        "### Stránky",
+        "### Kategorie závodu",
+        "### Interní vs. externí závodníci",
+        "### Nastavení zadávání tréninků — rolling window",
+        "## 11f. Role a oprávnění",
+        "### 3 úrovně rolí (hierarchické)",
+        "### Funkce v `includes/funkce.php`",
+        "### Tabulka `opravneni`",
+        "### Hardcoded výjimky",
+        "## 12. Kreditní systém",
+        "### Tabulka `sportovec_obdobi`",
+        "### Výpočet (`sprava_sportovec_obdobi.php`)",
+        "### Workflow",
+        "## 13. Story generátor",
+        "### Rozměry",
+        "### Struktura",
+        "### Lookup stylu",
+        "### Nastavení (`story_nastaveni`)",
+        "### Podporované formáty obrázků",
+        "## 14. Email systém",
+        "### Šablona",
+        "### Logování",
+        "## 15. UX a frontendové vzory",
+        "### Globální CSS v `hlavicka.php`",
+        "### Globální searchbar",
+        "### Varování na neuložené změny",
+        "### Kategorie tréninků",
+        "### Stats karty (vzor)",
+        "### Barevné odznaky trenérů",
+        "### Fulltext hledání v tabulkách",
+        "### Toast notifikace",
+        "### URL hash tabs",
+        "## 16. Rezervační systém",
+        "### 16a. Sportoviště (`sportovist`)",
+        "### 16b. Interní rezervace (`rezervace_sportovist`)",
+        "### 16c. Individuální lekce (`individualni_lekce`)",
+        "### 16d. Veřejné rezervace (`verejne_rezervace`)",
+        "### 16e. Email notifikace",
+        "### 16f. Oprávnění rezervačního systému",
+        "## 17. Plánovač tréninků",
+        "### 17a. Architektura",
+        "### 17b. Stránky plánovače",
+        "### 17c. Předvyplnění z plánu",
+        "### 17d. Propojení s rezervací",
+        "### 17e. Veřejný program skupiny",
+        "## 18. Rozšíření plánovače *(2.11.0–2.16.0)*",
+        "### 18a. Více podskupin na jeden plán (2.11.0)",
+        "### 18b. Upomínky na nezaevidované tréninky (2.13.0)",
+        "### 18c. Série opakujících se tréninků (2.16.0)",
+        "### 18d. Drag & Drop a inline editace (2.16.0)",
+        "### 18e. Kopírování týdne (2.16.0)",
+        "### 18f. Nástěnka skupiny (2.17.0)",
+        "## 19. Čekací listina *(2.14.0)*",
+        "### 19a. Stav rezervace",
+        "### 19b. `booking/waiting_list.php` — helper",
+        "### 19c. Booking flow",
+        "## 20. UX balík *(2.16.0)*",
+        "### 20a. Tmavý režim",
+        "### 20b. Klávesové zkratky",
+        "### 20c. Sticky záhlaví tabulek",
+        "### 20d. Empty state CSS",
+        "## 21. Web Push notifikace *(2.17.0)*",
+        "### 21a. Infrastruktura",
+        "### 21b. VAPID klíče",
+        "### 21c. Integrační body",
+        "## 22. Legacy Velocota SSO bridge *(2.18.0)*",
+        "### 22a. Přepínač integrace",
+        "### 22b. SSO bridge",
+        "### 22c. Session kontrakt",
+        "### 22d. DB migrace",
+        "## Dodatek 2.20.0 - KIS provozni centrum"
+      ]
+    },
+    {
+      "path": "docs/thinline-deploy-runbook.md",
+      "bytes": 9715,
+      "sha256": "cffacf320a1a450bfa6c92db3b3dfee324f077bac9f228bec81063ef492637f6",
+      "headings": [
+        "# Runbook: nasazování na Thinline server replikant3544",
+        "## Vlastnosti serveru (empiricky ověřené, ne domněnky)",
+        "## Architektura deploy workflow (`deploy-production.yml`)",
+        "## Rychlá diagnostika bez spouštění CI",
+        "## Bankovní účet e-shopu — databáze má přednost",
+        "## Import Shoptet katalogu do produkce",
+        "## Ponaučení pro další aplikace na tomto serveru"
+      ]
+    },
+    {
+      "path": "docs/training-roster-bridge.md",
+      "bytes": 2391,
+      "sha256": "2b4e11aa73c831c2854b57f86fc200cbc98669f8b4131761c97adee35a8991d5",
+      "headings": [
+        "# M1.3 – propojení soupisek s evidencí tréninků",
+        "## Bezpečný tok dat",
+        "## Kompatibilita",
+        "## Migrace"
+      ]
+    },
+    {
+      "path": "docs/uzivatelska-prirucka.md",
+      "bytes": 47078,
+      "sha256": "5d8501be388af39bac744d2e47b3232e9b5ed18f829982205396c294ffc8ca41",
+      "headings": [
+        "# Uživatelská příručka — Evidence Tréninků",
+        "## Obsah",
+        "## 1. Přihlášení",
+        "### Role uživatelů",
+        "## 2. Nástěnka (Dashboard)",
+        "### Uvítací banner",
+        "### Levý sloupec — Vkládání",
+        "### Levý sloupec — Přehledy",
+        "### Střední sloupec — Závodní sekce",
+        "### Střední sloupec — Nastavení",
+        "### Střední sloupec — Rezervace sportovišť",
+        "### Pravý sloupec — Administrace (pouze hlavní trenér)",
+        "## 3. Navigace",
+        "## 4. Tréninky",
+        "### 4.1 Nový trénink",
+        "### 4.2 Úprava tréninku",
+        "### 4.3 Duplikace tréninku",
+        "### 4.4 Smazání tréninku",
+        "### 4.5 Seznam tréninků (Moje tréninky)",
+        "## 5. Sportovci",
+        "### 5.1 Přehled sportovců",
+        "### 5.2 Detail sportovce",
+        "### 5.3 Veřejný profil sportovce",
+        "## 6. Skupiny a podskupiny",
+        "### 6.1 Správa skupin (pouze hlavní trenér)",
+        "### 6.2 Správa podskupin (pouze hlavní trenér)",
+        "### 6.3 Hromadná správa",
+        "## 7. Přehledy a reporty",
+        "### 7.1 Přehled tréninků (měsíční)",
+        "### 7.2 Kalendář tréninků",
+        "### 7.3 Výkaz činností",
+        "### 7.4 Přehled kreditů (pouze hlavní trenér)",
+        "### 7.5 Správa kreditních období (pouze hlavní trenér)",
+        "## 8. Závody",
+        "### 8.1 Přehled závodů",
+        "### 8.2 Přidání nového závodu",
+        "### 8.3 Detail závodu",
+        "### 8.4 Správa závodů (pouze správce)",
+        "### 8.5 Závodní karta sportovce",
+        "## 9. Exporty",
+        "### 9.1 Export – dráha (XLSX)",
+        "### 9.2 Export – UCI přihláška (XLSX)",
+        "### 9.3 Export – Seznam sportovců (XLSX)",
+        "### 9.4 Export tréninků do Excelu",
+        "## 10. Zátěžové testy",
+        "### Formulář zátěžového testu",
+        "## 11. Story generátor",
+        "### 11.1 Nastavení vzhledu",
+        "### 11.2 Generování story",
+        "## 12. Emaily",
+        "## 13. Oznámení",
+        "### Vytvoření oznámení",
+        "### Správa oznámení",
+        "## 14. Nastavení",
+        "### 14.1 Správa trenérů (pouze hlavní trenér)",
+        "### 14.2 Správa tréninků (pouze hlavní trenér)",
+        "### 14.3 Okno pro zadávání tréninků (pouze hlavní trenér)",
+        "### 14.4 Cviky v posilovně",
+        "### 14.5 Nastavení odměn",
+        "## 15. Účetní modul (firemní evidence — pouze admin)",
+        "### 15.1 Vozidla",
+        "### 15.2 Jízdy",
+        "### 15.3 Servis",
+        "### 15.4 Účtenky",
+        "### 15.5 Události",
+        "### 15.6 Vyúčtování události",
+        "## 16. Audit log",
+        "## 17. Synchronizace evidence (admin)",
+        "## 18. Správa segmentů",
+        "## 19. Role a oprávnění",
+        "### Nastavení oprávnění",
+        "## 20. Rezervace sportovišť",
+        "### 20.1 Kalendář sportovišť",
+        "### 20.2 Nová interní rezervace",
+        "### 20.3 Individuální lekce — vypsání",
+        "### 20.4 Správa individuálních lekcí",
+        "## 21. Veřejný booking — zákazníci",
+        "### 21.1 Registrace zákazníka",
+        "### 21.2 Přihlášení",
+        "### 21.3 Kalendář lekcí",
+        "### 21.4 Rezervace lekce nebo slotu",
+        "### 21.5 Moje rezervace a storno",
+        "## 22. Plánovač tréninků",
+        "### 22.1 Přehled plánů",
+        "### 22.2 Nový plán",
+        "### 22.3 Zadání evidence z plánu",
+        "### 22.4 Veřejný program skupiny",
+        "### 22.5 Kopírování týdne",
+        "### 22.6 Série opakujících se tréninků",
+        "### 22.7 Nástěnka skupiny",
+        "## 23. Čekací listina lekcí *(2.14.0)*",
+        "### 23.1 Pro zákazníky",
+        "### 23.2 Pro trenéry",
+        "## 24. Výjimka třídenního limitu *(2.12.0)*",
+        "## 25. Tmavý režim a klávesové zkratky *(2.16.0)*",
+        "### 25.1 Tmavý režim",
+        "### 25.2 Klávesové zkratky",
+        "## 26. Web Push notifikace *(2.17.0)*",
+        "## Dodatek 2.20.0 - KIS centrum a administrační karta člena"
+      ]
+    },
+    {
+      "path": "docs/verification/R42_LOCAL_OPERATIONS_FOLLOWUP.md",
+      "bytes": 8037,
+      "sha256": "2915c24d0e8d3a4571f2ef17a3085927cc23a373e1a2f807868583a7f8121a03",
+      "headings": [
+        "# R40/R42 — opravy místního předání, 23. 10. 2026",
+        "## Opravené skutečné mezery",
+        "## Důkazy",
+        "### Skutečné zastavení a návrat B1",
+        "### Odhalená chyba engine a izolovaná obnova",
+        "### Zpřísněná readiness po nálezu",
+        "## Zbývající lidská rozhodnutí"
+      ]
+    },
+    {
+      "path": "docs/verification/accountant-handover-20261024/PREDANI_UCETNI.md",
+      "bytes": 2731,
+      "sha256": "1b16ecf0aae53f38dbe1c70d19ca57b725af57777eda17b06403f7556d621956",
+      "headings": [
+        "# Ukázkové předání účetní — LOCALHOST, NEPLATIT",
+        "## Předávaný balík",
+        "## Doporučený postup převzetí",
+        "## Vzor zpětné vazby"
+      ]
+    },
+    {
+      "path": "docs/verification/accountant-handover-20261024/RESULTS.md",
+      "bytes": 7412,
+      "sha256": "36621981d3236d9165d1a3030fe42efcb2d1d3e96f82f6af79cd5508e68454dd",
+      "headings": [
+        "# Předání účetních podkladů — izolovaná technická přejímka",
+        "## Rozsah a izolace",
+        "## Stažení a historie",
+        "## Obsah pro účetní",
+        "## Ochrany a návaznosti",
+        "## Ukázka předání a zbývající rozhodnutí"
+      ]
+    },
+    {
+      "path": "docs/verification/accounting-followup-20261023/RESULTS.md",
+      "bytes": 5900,
+      "sha256": "8b13c1917c60dea0dd4d1bf0a07474546f80506865aa331865e061d242c8e222",
+      "headings": [
+        "# Přejímka objednávek, účetních dokladů a exportů",
+        "## Nalezené a opravené chyby",
+        "## Konkrétní průchod",
+        "## Ověření",
+        "## Co zůstává otevřené"
+      ]
+    },
+    {
+      "path": "docs/verification/accounting-production-20261023/RESULTS.md",
+      "bytes": 5135,
+      "sha256": "ec1a17076fcad89d91cdcab772abfb60666a6d580198c53bf8b854a69df48ed4",
+      "headings": [
+        "# Nasazení účetních oprav a kontrola bez prohlížeče",
+        "## Nasazení",
+        "## Produkce: co bylo skutečně zkontrolováno",
+        "## Izolované ověření návaznosti a nové diagnostiky",
+        "## Meze a další provozní krok"
+      ]
+    },
+    {
+      "path": "docs/verification/autonomous-followup/COMMERCE.md",
+      "bytes": 4032,
+      "sha256": "726951be521dacf62b55454eeafdf01f77c8c463ada790aba57aec0b9013412f",
+      "headings": [
+        "# Následná kontrola skladů, prodeje a vratek — 23. 10. 2026",
+        "## Potvrzené a opravené chyby",
+        "## Ověření"
+      ]
+    },
+    {
+      "path": "docs/verification/autonomous-followup/MEMBERSHIP_AUTHORIZATION.md",
+      "bytes": 5986,
+      "sha256": "ef333012324578c09ca1738871b723b66c7e722ced2f41553a9ce0a66ae61258",
+      "headings": [
+        "# Navazující kontrola členské a sportovní agendy — 23. 10. 2026",
+        "## Potvrzené chyby a oprava",
+        "## Důkazy před opravou a po ní",
+        "## Opakování"
+      ]
+    },
+    {
+      "path": "docs/verification/autonomous-followup/RESULTS.md",
+      "bytes": 5469,
+      "sha256": "cf4d904740abbfa776256afbf71fbc7226b952067f0f1ba4d82cb1df4fcb5d5b",
+      "headings": [
+        "# Následná společná přejímka — 23. 10. 2026",
+        "## Regrese aplikačního kódu",
+        "## Prohlídka rozhraní",
+        "## Obnova prostředí",
+        "## Omezení"
+      ]
+    },
+    {
+      "path": "docs/verification/b04-b23-20261025/RESULTS.md",
+      "bytes": 9013,
+      "sha256": "e932d638236e30fd59d32d8039edaf7551570db72e53a2867f61b3a77246a8a4",
+      "headings": [
+        "# B04 a B23 — implementace a izolovaná přejímka",
+        "## Izolace",
+        "## B04 — výsledky konkrétního závodu",
+        "### Prohlížeč a databázový odečet",
+        "## B23 — řízené předání KIS",
+        "### Prohlížeč a databázový odečet",
+        "## Opravy nalezené při přejímce",
+        "## Reprodukce technických kontrol",
+        "## Odložená rozhodnutí a provozní hranice"
+      ]
+    },
+    {
+      "path": "docs/verification/b04-b23-ux-20261026/RESULTS.md",
+      "bytes": 3783,
+      "sha256": "4d5065c768d6fd7b94ae2a1e61d449efbf44e5eec33525b93481fe0c0fa0f2d4",
+      "headings": [
+        "# B04/B23 – UX opravy 26. 10. 2026",
+        "## Implementováno",
+        "## Ověření",
+        "## Izolace a stav předání"
+      ]
+    },
+    {
+      "path": "docs/verification/browser-acceptance-20261023/RESULTS.md",
+      "bytes": 15351,
+      "sha256": "7c75f83fa5d002c51d663f9a082f5d99688e892f9e115a54aee0acaa4b191737",
+      "headings": [
+        "# Souvislá technická přejímka v prohlížeči — 23. 10. 2026",
+        "## Prostředí a důkazní základ",
+        "## Sklad → prodej → hotovost → výdej → doklady → vratky",
+        "## Stažený účetní export a jeho meze",
+        "## Osoba → papírové podklady → kurz → účast",
+        "## Svěřenci → skutečný trénink → nezávislé schválení odměny",
+        "## Opravy ověřené opakovaným browser průchodem",
+        "## Technické kontroly a zápis do lokální brány",
+        "## Nasazení a dokončení předání"
+      ]
+    },
+    {
+      "path": "docs/verification/browser-acceptance-20261023/acceptance-hub-export.md",
+      "bytes": 3470,
+      "sha256": "cb929e12ec9ec5259f6adb5d3707faefff1b461d01f6f2b7a8758f5eda252f40",
+      "headings": [
+        "# Výsledky localhost akceptace A01–A10"
+      ]
+    },
+    {
+      "path": "docs/verification/browser-acceptance-20261025/DOKONCENI.md",
+      "bytes": 9351,
+      "sha256": "f4ef5c25e6ff151bfda9d1a2c1d098dfd0000add1520b610c8a46a2709a7c614",
+      "headings": [
+        "# Dokončení izolované přejímky — 25. 10. 2026",
+        "## Prostředí a obnova MariaDB",
+        "## Skutečné průchody prohlížečem",
+        "## Opravy aplikace",
+        "## Automatické ověření",
+        "## UX a zbývající hranice"
+      ]
+    },
+    {
+      "path": "docs/verification/daily-coach-registrar-20261024/RESULTS.md",
+      "bytes": 6241,
+      "sha256": "08f6fd824d9607405dbc0ec6b6118216596cae19551d3826a6f96011c77cdca6",
+      "headings": [
+        "# Balík A — Každodenní práce trenéra a registráře",
+        "## Výsledek",
+        "## Izolace a důkazy",
+        "## Ověření",
+        "## Rozsah závěru a navazující práce"
+      ]
+    },
+    {
+      "path": "docs/verification/dozor-release-20261026/RESULTS.md",
+      "bytes": 7278,
+      "sha256": "40e35112e5406e34cdff3e7f47a9f2f694586d5929622e138204c1601ecab747",
+      "headings": [
+        "# Nasazení oprav dozoru F1–F3 — 26. 10. 2026",
+        "## Rozsah a stav",
+        "## Sloučené změny",
+        "## CI finálního main",
+        "## Nasazení",
+        "## Produkční ověření",
+        "## Hranice ověření"
+      ]
+    },
+    {
+      "path": "docs/verification/event-administration-20261024/RESULTS.md",
+      "bytes": 9031,
+      "sha256": "255ad9cb5d1cfc154c2496422cfcacc6e7eedc4c531cdd3f8008d38cb56cd3c1",
+      "headings": [
+        "# Balík C — Akce a klubová administrativa",
+        "## Výsledek pro obsluhu",
+        "### Jedna akce a navazující práce",
+        "### Výdaj, příloha, záloha a vypořádání",
+        "### Přehledy odměn",
+        "## Ověření",
+        "## Odložené rozhodnutí a hranice"
+      ]
+    },
+    {
+      "path": "docs/verification/family-course-20261023/RESULTS.md",
+      "bytes": 8581,
+      "sha256": "c603f9c71b4d6ffa06574cd1b10abd46a3420def0de459542fecba46c6968757",
+      "headings": [
+        "# Rodičovské a sportovní účty, osoby a nákup kurzů — 23. 10. 2026",
+        "## Rozsah a hranice",
+        "## Nalezené a opravené chyby",
+        "## Prohlížečová přejímka",
+        "## Automatizované ověření",
+        "## Přesně odložené části"
+      ]
+    },
+    {
+      "path": "docs/verification/family-course-20261023/acceptance-hub-export.md",
+      "bytes": 7415,
+      "sha256": "b089f84b84fdff6c34b6917cf932df23e271cc0de4d13bdea7ba7c3ed526f668",
+      "headings": [
+        "# Výsledky localhost akceptace A01–A10"
+      ]
+    },
+    {
+      "path": "docs/verification/family-followup-20261023/RESULTS.md",
+      "bytes": 4922,
+      "sha256": "bee065c3d63711c7685693a1e3e578ed10e8af8ac2bbc36030164cae89f0a3f4",
+      "headings": [
+        "# Rozšířená technická přejímka rodinného nákupu – 23. 10. 2026",
+        "## Výsledek a rozsah",
+        "## Provedené kontroly",
+        "### Konkrétní peněžní průchod na MariaDB",
+        "## Důkazy a opakovatelnost",
+        "## Odložené kontroly"
+      ]
+    },
+    {
+      "path": "docs/verification/final-closure-20261024/POKRYTI.md",
+      "bytes": 9690,
+      "sha256": "0bfb9be0e2a43414aa768a36fb99aad74a0e058a47f17157a28c681ef11dce7f",
+      "headings": [
+        "# Technické pokrytí 43 přejímacích scénářů"
+      ]
+    },
+    {
+      "path": "docs/verification/final-closure-20261024/RESULTS.md",
+      "bytes": 7915,
+      "sha256": "ae0636d28bf84cab56789264d9d7e330d377e62fc532a09e22d145bff43c163c",
+      "headings": [
+        "# Závěrečná technická přejímka — sjednocený stav",
+        "## Co bylo nyní dokončeno",
+        "## Nově ověřený souvislý průchod náhrad",
+        "## Aktuální technické brány",
+        "## Co skutečně zbývá",
+        "## Opakování nových kontrol"
+      ]
+    },
+    {
+      "path": "docs/verification/final-system-20261024/RESULTS.md",
+      "bytes": 11548,
+      "sha256": "be54e04bb1efd40ed9d47e6b17e9810794d7dce3af479c9274577a6fef526cc4",
+      "headings": [
+        "# Balík E — společná technická přejímka systému",
+        "## Výsledek a důkazy",
+        "## Společné pracovní postupy",
+        "## Opravené vady",
+        "### Migrace opakovaného variabilního symbolu",
+        "### Historické odměny",
+        "### Přesnost testů",
+        "## Ukázkové předání účetní",
+        "## Co zůstává odložené",
+        "## Opakování technické přejímky"
+      ]
+    },
+    {
+      "path": "docs/verification/integration-20261025/BRANCH_INVENTORY.md",
+      "bytes": 40782,
+      "sha256": "32700c9da6c9f4f6825d3297cdfe4d4f386eb15b1228f621bf329642316e7c0c",
+      "headings": [
+        "# Branch inventory — 2026-10-25",
+        "## Result",
+        "## Classification totals",
+        "## Evidence per ref",
+        "## Specific exclusions"
+      ]
+    },
+    {
+      "path": "docs/verification/integration-20261025/RESULTS.md",
+      "bytes": 9129,
+      "sha256": "4c9a42b5a5ad203e53e6533432436ce00d86eaf549ccf3d2b8852f79745d229c",
+      "headings": [
+        "# Společná integrace — 25. 10. 2026",
+        "## Co bylo spojeno",
+        "## Inventura všech vývojových větví",
+        "## Nové ověření společné verze",
+        "## Izolace a reprodukce",
+        "## Co tento výsledek neuzavírá"
+      ]
+    },
+    {
+      "path": "docs/verification/integration-20261025/VERIFICATION_PLAN.md",
+      "bytes": 2968,
+      "sha256": "dc490bfa2d0980bd2ff2dbfd743d38219f2c8ee172042a9d93499b11376dec67",
+      "headings": [
+        "# Integration isolated verification 2026-10-25",
+        "## Isolation",
+        "## Commands (from new checkout, only after source stable)",
+        "## Linux",
+        "## Sources"
+      ]
+    },
+    {
+      "path": "docs/verification/linux-browser-20261024/RESULTS.md",
+      "bytes": 9325,
+      "sha256": "a70b3d598a7213ad59178433aab411b92d424131bdfa740b1f8194325477f7eb",
+      "headings": [
+        "# Balík E — doplnění Linux CI a přejímky v prohlížeči",
+        "## Rozsah a izolace",
+        "## Linux — dříve přeskočené testy skutečně provedeny",
+        "## Přejímka v prohlížeči",
+        "## Oprava a vizuální důkaz",
+        "## Jedna odložená technická kontrola a meze důkazu"
+      ]
+    },
+    {
+      "path": "docs/verification/multi-child-course-20261023/RESULTS.md",
+      "bytes": 6130,
+      "sha256": "2f4430947ca19a1988e4912230f75429daff785d2772ea654cdcbec6394c654d",
+      "headings": [
+        "# Stejný kurz pro více dětí — 23. 10. 2026",
+        "## Rozsah",
+        "## Implementace a migrace",
+        "## Izolovaný browser B1",
+        "## Automatické ověření"
+      ]
+    },
+    {
+      "path": "docs/verification/multi-child-course-20261023/acceptance-hub-export.md",
+      "bytes": 8061,
+      "sha256": "72f9dc822355305f718fa714fb8a4ba7f37832523646c54423abd20be4e719f5",
+      "headings": [
+        "# Výsledky localhost akceptace A01–A10"
+      ]
+    },
+    {
+      "path": "docs/verification/partial-browser-acceptance-20261025/BLOCKERS.md",
+      "bytes": 6681,
+      "sha256": "fcf891975c413b67346caba6d0d0bf3d0bcab9bdbf064db934f173669d804ac4",
+      "headings": [
+        "# Konkrétní řešení B04 a B23",
+        "## B04 — interní i externí závodní výsledky",
+        "## B23 — bezpečný přechod ze staré synchronizace Evidence"
+      ]
+    },
+    {
+      "path": "docs/verification/partial-browser-acceptance-20261025/RESULTS.md",
+      "bytes": 7076,
+      "sha256": "d9e8c23f6e1a2f2c908c9d1d1e2379e20893b8e59bdd70a1a47fc58807975fac",
+      "headings": [
+        "# Dokončení deseti částečných scénářů — 25. 10. 2026",
+        "## Provedené kroky a důkazy",
+        "### A10 — PASS",
+        "### B05 — PASS",
+        "### B06 — PASS",
+        "### B07 — PASS",
+        "### B08 — PASS",
+        "### B10 — PASS",
+        "### B11 — PASS",
+        "### B16 — PASS",
+        "### B24 — PASS",
+        "### B30 — PASS",
+        "## Opravy z přejímky",
+        "## Ověření a provozní hranice",
+        "## Další doporučení pro UX (neblokují ověřené scénáře)",
+        "## Ukázky"
+      ]
+    },
+    {
+      "path": "docs/verification/people-training-20261023/RESULTS.md",
+      "bytes": 15049,
+      "sha256": "ed13ce2eb5f111ef8ec83e07c1e60e26bdb41a72bead9ff2a287a56af27856b0",
+      "headings": [
+        "# Evidence osob, tréninků a návaznost na e-shop — 23. 10. 2026",
+        "## Rozsah a hranice",
+        "## Nálezy a opravy",
+        "## Skutečný browser průchod — osoby",
+        "## Skutečný browser průchod — kurz, plán a trénink",
+        "## Opakované vytvoření — dodatečně reprodukovaná chyba",
+        "## Testy a meze důkazu",
+        "## Zápis výsledků a produkční ověření",
+        "## Konečný stav vydání"
+      ]
+    },
+    {
+      "path": "docs/verification/people-training-20261023/acceptance-hub-export.md",
+      "bytes": 5055,
+      "sha256": "d349dcbed82674efcd4fdd1d2133429b62fd3cc93002ea83e35aaa1457af010f",
+      "headings": [
+        "# Výsledky localhost akceptace A01–A10"
+      ]
+    },
+    {
+      "path": "docs/verification/people-training-production-20261023/RESULTS.md",
+      "bytes": 7364,
+      "sha256": "c02bc2117d8fef33eb4ada495d8b0099634e893a022e23921c9e2b986f301daa",
+      "headings": [
+        "# Přihlášená produkční prohlídka osob a tréninků — 23. 10. 2026",
+        "## Rozsah a hranice",
+        "## Produkční kontroly před opravou",
+        "## Opravy z tohoto průchodu",
+        "## Izolované ověření",
+        "## Nasazení a opakovaná produkční kontrola",
+        "## Nezaměňovat s dokončenou lidskou přejímkou"
+      ]
+    },
+    {
+      "path": "docs/verification/people-training-production-20261023/acceptance-hub-export.md",
+      "bytes": 6213,
+      "sha256": "8e29792bf2a97aacd14d9521177c1c6534c2e64052cf61e0c5ce821626eb4918",
+      "headings": [
+        "# Výsledky localhost akceptace A01–A10"
+      ]
+    },
+    {
+      "path": "docs/verification/person-life-documents-20261024/RESULTS.md",
+      "bytes": 8795,
+      "sha256": "28975fcafab415e15f1e17512f212d9e10fa0220fe9cbbf94a27780fdfbb2a70",
+      "headings": [
+        "# Balík B — Život osoby a podklady",
+        "## Co se změnilo",
+        "### B1 — Vyřízení osoby a návazné kroky (F02, nezávislá část F03)",
+        "### B2 — Dohledatelnost členství a papírových podkladů (F02/F03)",
+        "### B3 — Zdravotní podklady před aktivitou (F05)",
+        "### B4 — Rodinné úkoly a informace o komunikaci (F08)",
+        "## Odložená rozhodnutí",
+        "## Izolace a ověření"
+      ]
+    },
+    {
+      "path": "docs/verification/private-storage-20261023/RESULTS.md",
+      "bytes": 4962,
+      "sha256": "d4dc2ed610d261b4228c391927d38200e2c41f30b9bcf8404b0622a0c70a8090",
+      "headings": [
+        "# Soukromé úložiště a navazující browser přejímka — 23. 10. 2026",
+        "## Změna hostingu",
+        "## Navazující čtecí kontroly",
+        "## Technická zkouška webového zápisu",
+        "## Ověření implementace",
+        "## Co zůstává otevřené"
+      ]
+    },
+    {
+      "path": "docs/verification/production-club-20261023/RESULTS.md",
+      "bytes": 12467,
+      "sha256": "cb5a6f2676b84622c44bd5285416cbe6b42efd5f7dd21709460007e38ca45cf2",
+      "headings": [
+        "# Produkční nasazení a čtecí browser přejímka — 23. 10. 2026",
+        "## Co bylo skutečně ověřené",
+        "## Otevřené body podle priority",
+        "## Důkazy",
+        "## Jednotlivá pozorování"
+      ]
+    },
+    {
+      "path": "docs/verification/production-hub-acceptance-20261025/RESULTS.md",
+      "bytes": 22605,
+      "sha256": "a6d49bd1052ae446385af26994028ce6981afe091fc1c1ec2f0a61a6bd22d62b",
+      "headings": [
+        "# Produkční přejímka scénářů A01–B30 — 25. 10. 2026",
+        "## Rozsah a stav",
+        "## Co bylo skutečně zapsáno na produkci a uklizeno",
+        "## Nalezené chyby a lokální opravy",
+        "### Návrat po editaci tréninku",
+        "### Příprava demonstračních dat",
+        "### Místní MariaDB a NTFS komprese",
+        "## Stav jednotlivých scénářů v produkčním prohlížeči",
+        "## UX poznatky",
+        "## Důkazy",
+        "## Dokončení oprav a příprava sloučení",
+        "### Nový nález: opakovatelnost A06",
+        "### Čerstvé technické ověření",
+        "### Izolovaný prohlížeč: skutečné výsledky",
+        "### Doplňující kontrola rozcestníku po sloučení PR #201"
+      ]
+    },
+    {
+      "path": "docs/verification/production-integration-20261025/RESULTS.md",
+      "bytes": 8467,
+      "sha256": "e8d9912815b8cab5f1ff536a369bba58c868ae7c9670b351d69b0309f03c31fd",
+      "headings": [
+        "# Integrovaný KIS — produkční nasazení 25. 10. 2026",
+        "## Výsledek a povolený rozsah",
+        "## Sloučení a testy",
+        "## Záloha a návrat",
+        "## Migrace, nastavení a produkční kontroly",
+        "## Co tato přejímka neuzavírá"
+      ]
+    },
+    {
+      "path": "docs/verification/production-integration-20261025/ROLLBACK.md",
+      "bytes": 4791,
+      "sha256": "1b9c2a4dbc114f0b4b3604928676dd89a291a10eaac711a3bdb2704b509b3022",
+      "headings": [
+        "# Návrat integrovaného vydání — 25. 10. 2026",
+        "## Ověřené podklady",
+        "## Proč nepoužít prostý deploy starého commitu",
+        "## Postup při závadě",
+        "## Obnova dat je samostatná větev řešení"
+      ]
+    },
+    {
+      "path": "docs/verification/r07-r12/RESULTS.md",
+      "bytes": 3381,
+      "sha256": "b25545858e0ce720e0276da5348a88a55c494326c14de8bf17468a1bb0e89c23",
+      "headings": [
+        "# Přejímka R07–R12 — 22. 10. 2026"
+      ]
+    },
+    {
+      "path": "docs/verification/r13-r17/RESULTS.md",
+      "bytes": 6309,
+      "sha256": "60899dce9fce0efbc9b663a082183b03d198d4367a3a4a16d56014b7f2c06396",
+      "headings": [
+        "# Přejímka finančního základu R13–R17",
+        "## Co společné ověření opravilo",
+        "## Opakování"
+      ]
+    },
+    {
+      "path": "docs/verification/r18-r24/RESULTS.md",
+      "bytes": 6311,
+      "sha256": "7771eef33e47bbcbee2b97810a51a125f78e5efb507f55d36c349cd813897354",
+      "headings": [
+        "# Přejímka R18–R24 — izolované prostředí",
+        "## Doložené kontroly",
+        "## Opravy z integrace a nezávislé revize",
+        "## Opakování"
+      ]
+    },
+    {
+      "path": "docs/verification/r25-r30/ADMISSIONS_SCOPE.md",
+      "bytes": 5544,
+      "sha256": "5daf295ef5e6f09983b18d7f65d97e629d08bfe7d11856973ed7760ecf871655",
+      "headings": [
+        "# R25 a navazující nabídky R30 — lokální implementace",
+        "## Dodané pracovní postupy",
+        "## Vědomé provozní hranice",
+        "## Zdroje a přejímka"
+      ]
+    },
+    {
+      "path": "docs/verification/r25-r30/R26_R27_SCOPE.md",
+      "bytes": 4748,
+      "sha256": "fb6463b0b5d4baaed2d1870ace6095498bac58eb377f27305662319b20727ba1",
+      "headings": [
+        "# R26–R27: skutečná docházka, plánování a náhrady",
+        "## Implementace",
+        "## Kontrakt pro R30",
+        "## Důkazy",
+        "## Provozní hranice"
+      ]
+    },
+    {
+      "path": "docs/verification/r25-r30/RESULTS.md",
+      "bytes": 6594,
+      "sha256": "34b7a1e34eaa894ff2193980e6a45b7e4f3f009c4846031b027dcfbbe45d1cd5",
+      "headings": [
+        "# R25–R30 — lokální přejímka",
+        "## Výsledek",
+        "## Důkazy",
+        "## Co přejímka ověřila",
+        "## Opakování pouze v označeném sandboxu",
+        "## Meze výsledku"
+      ]
+    },
+    {
+      "path": "docs/verification/r31-r37/R31_R32.md",
+      "bytes": 3681,
+      "sha256": "2c3de46ea2d2f48cbf6890fcbb1ecd45e6653f5ff27d1a9c6dfb746fd7c6c268",
+      "headings": [
+        "# R31–R32 – výdaje, zálohy a vyúčtování",
+        "## Ověření"
+      ]
+    },
+    {
+      "path": "docs/verification/r31-r37/R35_R36.md",
+      "bytes": 2622,
+      "sha256": "692f7be3ec6634ed184003b339ef6faf19f08854dcda63e9b2f017e0aadcded9",
+      "headings": [
+        "# R35–R36: místní implementace a důkazy",
+        "## Ověření",
+        "## Záměrně nepotvrzená provozní tvrzení"
+      ]
+    },
+    {
+      "path": "docs/verification/r31-r37/RESULTS.md",
+      "bytes": 2890,
+      "sha256": "7c92c345927a9ab00bebb5ff2c67a370f988021d808452c2e753e3a376ba0125",
+      "headings": [
+        "# R31–R37 — místní přejímka",
+        "## Co technická přejímka prokazuje",
+        "## Co nebylo převzato jako skutečný provoz"
+      ]
+    },
+    {
+      "path": "docs/verification/r38-r44/FINANCIAL_RETURN_REVIEW.md",
+      "bytes": 3616,
+      "sha256": "ba0cfb5b649b3240c683bb0353c10c73e7402d58ff8fe6bbd631e95a1c7b3c57",
+      "headings": [
+        "# Finanční návraty a historické podklady — závěrečná revize 23. 10. 2026",
+        "## Ověření finálního kódu"
+      ]
+    },
+    {
+      "path": "docs/verification/r38-r44/R36_EXPORT_FOLLOWUP.md",
+      "bytes": 1165,
+      "sha256": "168b9ee0ebfc416fb36f3dbfb133ee84f57f1543ebae57327e5fb5f23427d783",
+      "headings": [
+        "# Doplňující kontrola účetního exportu R36 při R38–R44"
+      ]
+    },
+    {
+      "path": "docs/verification/r38-r44/R38_R41_MIGRATION.md",
+      "bytes": 4349,
+      "sha256": "16553cda4afc8400452488a218fb4bb3ccc8a4f42372ab6dd02afb3e21d9721f",
+      "headings": [
+        "# R38 / R41 — rozsah a ověření převodu",
+        "## Implementace",
+        "## Uzavřené nálezy nezávislé revize",
+        "## Důkazy",
+        "## Záměrné hranice"
+      ]
+    },
+    {
+      "path": "docs/verification/r38-r44/R39_FINANCE.md",
+      "bytes": 5672,
+      "sha256": "3c6bdf026486f797564d325953870ee4fefded3c27e216fb882e9075f9eda4fd",
+      "headings": [
+        "# R39 – finanční a obchodní převodníky",
+        "## Povolené typy",
+        "## Kontrakt kontroly",
+        "## Ověření"
+      ]
+    },
+    {
+      "path": "docs/verification/r38-r44/R40_R44.md",
+      "bytes": 3894,
+      "sha256": "baf4c6cd3ef086fcb1e5faf4aaa362309c3ecfd6dd4433b82bf6496a518cd87e",
+      "headings": [
+        "# R40, R42–R44 — technická příprava přechodu",
+        "## Funkční rozsah",
+        "## Ověření",
+        "## Odložené provozní rozhodnutí"
+      ]
+    },
+    {
+      "path": "docs/verification/r38-r44/RESULTS.md",
+      "bytes": 5353,
+      "sha256": "de02c298e0368e5b9348e81cf1afe83cb6c9904c3e2a16d2a9395c7193eb9d3c",
+      "headings": [
+        "# R38–R44 — závěrečné místní ověření",
+        "## Důkazy",
+        "## Poslední obnova",
+        "## Nepřevzaté provozní části"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-release-20261028/RESULTS.md",
+      "bytes": 5497,
+      "sha256": "365d474bc141fe257c5f4371273eb1b01e57e622f70bf97cb5c82ab72d8543c6",
+      "headings": [
+        "# Produkční vydání první vlny refaktoringu — 28. 10. 2026",
+        "## Rozsah a ověření",
+        "## Hranice ověření",
+        "## Návrat a pracovní stromy"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave1-20261028/RESULTS.md",
+      "bytes": 14297,
+      "sha256": "6a4a3f3e3ccdcbd284b2b139ca450aa6d9010d5ea8c82eead9bfecc8d34b6f85",
+      "headings": [
+        "# První vlna refaktoringu — příprava, implementace a důkazy",
+        "## Skutečně provedeno",
+        "## Reprodukce benchmarku",
+        "## Inventáře",
+        "## Stav na konci přípravy (před implementací)",
+        "## Implementace a přejímka",
+        "## Výkon a jeho meze",
+        "## Nutná bezpečnostní aktualizace závislosti",
+        "## Následné schválené vydání 28. 10. 2026"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave2-20261028/RESULTS.md",
+      "bytes": 7970,
+      "sha256": "83e834b3b069879ca2e14f76e8f28878504971b58335d59ffed2ce029029f125",
+      "headings": [
+        "# Druhá vlna — programy ve veřejném katalogu a navigaci",
+        "## Zjištění a změna",
+        "## Výkon a shoda výstupů",
+        "## Funkční a bezpečnostní ověření",
+        "## Formátování a přezkoumatelnost",
+        "## Reprodukce a další krok"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave2-release-20261028/RESULTS.md",
+      "bytes": 5022,
+      "sha256": "c550a70a2acf106fa22a3d445081eeb727533f33b42d0f7cdd3014303839cb53",
+      "headings": [
+        "# Druhá vlna refaktoringu — produkční vydání",
+        "## Rozsah a ověření před vydáním",
+        "## Nasazení a zachování provozního stavu",
+        "## HTTP a odezvy skutečné produkce",
+        "## Otevřené body"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave3-20261028/RESULTS.md",
+      "bytes": 5914,
+      "sha256": "6b20091394992d3d1c85481b93fe0f29df3b7494efe3923960fde4825ced1922",
+      "headings": [
+        "# Třetí vlna — karty programů v katalogu",
+        "## Změna",
+        "## Regrese a SQL",
+        "## Formátování a úplná kontrola",
+        "## HTTP a browser",
+        "## Hranice"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave3-release-20261028/RESULTS.md",
+      "bytes": 4703,
+      "sha256": "f8537020d06d35692288ecd310ce18ea124e08ff42824d8f2eb2511df91f11f4",
+      "headings": [
+        "# Třetí vlna refaktoringu — produkční vydání",
+        "## Rozsah a kontroly",
+        "## Záloha a provozní stav",
+        "## HTTP a produkční odezvy",
+        "## Otevřené body"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave4-20261028/RESULTS.md",
+      "bytes": 4568,
+      "sha256": "1d34799824daa2c1674fdf1c33f7af372021ea7e8064f6bb5b50ac1141514c2d",
+      "headings": [
+        "# Čtvrtá vlna — dávkové podmínky programů",
+        "## Změna a zachované chování",
+        "## Důkazy",
+        "## Kompletní CI"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave4-release-20261028/RESULTS.md",
+      "bytes": 4549,
+      "sha256": "450f4aa00adc13862512025de4fd34a4acf9eab8c86666bca5b01d5e859b6565",
+      "headings": [
+        "# Čtvrtá vlna refaktoringu — produkční vydání",
+        "## Rozsah a ověření",
+        "## Záloha a provozní stav",
+        "## HTTP a produkční odezvy",
+        "## Otevřené body"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave5-20261028/RESULTS.md",
+      "bytes": 4832,
+      "sha256": "e6d0f438103ad1141bcef5eb11694f4779c4cde463d8346b984c9362eb1b418c",
+      "headings": [
+        "# Pátá vlna — nabídky a fyzické týmy v dávkách",
+        "## Změna",
+        "## Regrese, SQL a databáze",
+        "## HTTP a limity měření",
+        "## Kompletní ověření"
+      ]
+    },
+    {
+      "path": "docs/verification/refactoring-wave5-release-20261028/RESULTS.md",
+      "bytes": 4604,
+      "sha256": "d343e07c7465314adab88e8749c88bc432496acbf3ed9399e7a817bc3a67c5e2",
+      "headings": [
+        "# Pátá vlna refaktoringu — produkční vydání",
+        "## Rozsah a ověření",
+        "## Záloha a provozní stav",
+        "## HTTP a produkční odezvy",
+        "## Otevřené body"
+      ]
+    },
+    {
+      "path": "docs/verification/release-acceptance-20261025/RESULTS.md",
+      "bytes": 9577,
+      "sha256": "151301ed556ceecdba6306f8a20f80a6ef122947235c56b11e4cee9358493a17",
+      "headings": [
+        "# Sjednocení oprav, produkční vydání a úplná automatizovaná přejímka",
+        "## Výsledek a rozsah",
+        "## Automatizované důkazy",
+        "## Čtecí kontrola produkce",
+        "## Záloha a návrat",
+        "## Co zbývá před skutečným provozním převzetím",
+        "## Další automatizované ověřování"
+      ]
+    },
+    {
+      "path": "docs/verification/remaining-acceptance-20261025/RESULTS.md",
+      "bytes": 13514,
+      "sha256": "5bd3035990c10ff07eb5911490d0990f35e77cbc009e6967c4492c61555c6828",
+      "headings": [
+        "# Zbývající přejímka A/B — 25. 10. 2026",
+        "## Opravené problémy",
+        "## Ověření",
+        "## Výsledky jednotlivých scénářů",
+        "## Prostředí, opakovatelnost a testovací data",
+        "## Doklady z prohlížeče"
+      ]
+    },
+    {
+      "path": "docs/verification/season-operations-20261024/MAPA_PRECHODU.md",
+      "bytes": 5485,
+      "sha256": "db9bda49f4107649d56cc032c491ad8c8663ba4ea95faffa4851989a3fe7987b",
+      "headings": [
+        "# Pracovní mapa nahrazení původních postupů",
+        "## Konkrétní postup doplnění každého řádku"
+      ]
+    },
+    {
+      "path": "docs/verification/season-operations-20261024/RESULTS.md",
+      "bytes": 8385,
+      "sha256": "6040be161d79042322f65d4656e140e63131319bd16e6020ff3bd434abe47b94",
+      "headings": [
+        "# Balík D — Sezona, komunikace a náhrada starých postupů",
+        "## Co může obsluha dokončit",
+        "### Příprava dalšího období",
+        "### Komunikace a osobní kontakt",
+        "### Mapa přechodu",
+        "## Ověření a jeho hranice",
+        "## Odložené podklady"
+      ]
+    },
+    {
+      "path": "docs/verification/security-fixes-20261024/RESULTS.md",
+      "bytes": 6692,
+      "sha256": "1e190abe75790ea4ee2ac51fa4f0d7fd03ae8e6df6cf0e81b49c48d5da88a9cc",
+      "headings": [
+        "# Opravy bezpečnostního auditu — 24. 10. 2026",
+        "## Linux CI a připravenost PR",
+        "## Opravy",
+        "## Regresní důkazy",
+        "## Plná sada a meze ověření",
+        "## Opakování"
+      ]
+    },
+    {
+      "path": "docs/verification/stock-followup-20261024/RESULTS.md",
+      "bytes": 6315,
+      "sha256": "5c7f32d7c363231303525a3456f4d85ba9f01bf097e2edd694814f490beda09e",
+      "headings": [
+        "# Sklady, výdeje, vratky a účetní návaznosti — 24. 10. 2026",
+        "## Nalezené a opravené chyby",
+        "## Přejímací scénáře",
+        "## Nový celý průchod na MariaDB",
+        "## Výsledky a důkazy",
+        "## Stav předání"
+      ]
+    },
+    {
+      "path": "docs/verification/stock-production-20261024/RESULTS.md",
+      "bytes": 5904,
+      "sha256": "ad76ac32f258da39d553caca1ae887121516b0480df352a8eeb8907831f90aaf",
+      "headings": [
+        "# Nasazení skladových oprav a čtecí kontrola návazností",
+        "## Co bylo nasazeno",
+        "## Co bylo zjištěno v produkci",
+        "## Izolované ověření diagnostiky a celého procesu",
+        "## Následující provozní krok"
+      ]
+    },
+    {
+      "path": "docs/vyvojarsky-pruvodce.md",
+      "bytes": 35153,
+      "sha256": "c29009c51b5369ad12222b880f37779bd2067c96b383b47c14a013ef5ea2b4bf",
+      "headings": [
+        "# Vývojářský průvodce",
+        "## Obsah",
+        "## 1. Požadavky",
+        "## 2. Instalace",
+        "### 2.1 Klonování / kopírování",
+        "### 2.2 Instalace závislostí",
+        "### 2.3 Import databáze",
+        "### 2.4 Konfigurace db.php a config.php",
+        "### 2.5 Výchozí přihlašovací údaje",
+        "### 2.6 Oprávnění složek",
+        "## 3. Struktura projektu",
+        "## 4. Konvence kódu",
+        "### 4.1 Obecné",
+        "### 4.2 Session pattern",
+        "### 4.3 Autorizace rolí",
+        "### 4.4 Admin-only modul pattern",
+        "### 4.5 Flash zprávy",
+        "### 4.6 HTML výstup",
+        "### 4.7 Povinná pole ve formulářích",
+        "### 4.8 Varování na neuložené změny",
+        "### 4.9 Toast notifikace",
+        "### 4.10 Booking auth pattern (veřejní zákazníci)",
+        "### 4.11 URL hash tabs",
+        "## 5. Přidání nové stránky",
+        "### Krok za krokem",
+        "## 6. Přidání AJAX endpointu",
+        "### Vzor: `ajax_novy.php`",
+        "### Volání z JavaScriptu",
+        "### Existující AJAX endpointy",
+        "## 7. Práce s měřeními",
+        "### Typy měření",
+        "### Architektura ukládání",
+        "### Tok dat (formulář → DB)",
+        "### Formulář měření",
+        "## 8. Export do Excelu",
+        "### Závislost",
+        "### Vzor exportu",
+        "### Export ze šablony",
+        "## 9. Upload souborů",
+        "### Adresáře",
+        "### Konvence pojmenování",
+        "### MIME validace",
+        "### Soft delete",
+        "## 10. Bezpečnost",
+        "### 10.1 CSRF ochrana",
+        "### 10.2 SQL injection",
+        "### 10.3 XSS ochrana",
+        "### 10.4 Session fixation",
+        "### 10.5 Autentizace hesel",
+        "### 10.6 Upload bezpečnost",
+        "### 10.7 Chybové zprávy",
+        "## 11. Správa DB schématu",
+        "### Princip",
+        "### Jak přidat novou migraci",
+        "### Dostupné helper funkce",
+        "### Guard pattern pro ENUM rozšíření",
+        "### Verze schématu",
+        "### Výchozí záznamy `opravneni`",
+        "## 12. Nasazení",
+        "### 12.1 Příprava produkčního prostředí",
+        "### 12.2 Checklist nasazení",
+        "## 13. config.php — samostatná konfigurace Evidence"
+      ]
+    },
+    {
+      "path": "migrations/README.md",
+      "bytes": 1860,
+      "sha256": "9a8d7852f8babdc142a6d90f3c504f5958a4fae2c6e882330d8edc1d396ffa82",
+      "headings": [
+        "# Cislovane databazove migrace",
+        "## Čitelnost nových migrací"
+      ]
+    },
+    {
+      "path": "outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md",
+      "bytes": 26723,
+      "sha256": "c0cb5e0e0d9d15071dfd5e6657810aae6c34eef8d13d740ae14d4a6edc534c5d",
+      "headings": [
+        "# Datové toky aplikace EvidencePavel – technická mapa",
+        "## Implementační aktualizace po mapování",
+        "## 1. Jak tuto mapu číst",
+        "## 2. Rozsah vstupní plochy",
+        "## 3. Hlavní datové identity a hranice oprávnění",
+        "## 4. Autentizace, registrace a osoby",
+        "### A01 – Přihlášení trenéra",
+        "### A02 – Přihlášení veřejného účtu",
+        "### A03 – Registrace a ověření e-mailu",
+        "### A04 – Obnova hesla",
+        "### A05 – Propojení osob a registrace sportovce",
+        "### A06 – Pracovní pozice a oprávnění",
+        "## 5. Tréninky, měření a závody",
+        "### S01 – Nový trénink",
+        "### S02 – Editace tréninku",
+        "### S03 – Smazání tréninku",
+        "### S04 – Veřejná karta a poznámka sportovce",
+        "### S05 – Zátěžový test",
+        "### S06 – Kanonické vytvoření závodu",
+        "### S07 – Kanonická editace závodu",
+        "### S08 – Starší závodní větve",
+        "### S09 – Read-only kontrola kvality sportovních dat",
+        "## 6. Plánování, sportoviště a rezervace",
+        "### P01 – Plánovaný trénink",
+        "### P02 – Rezervace sportoviště",
+        "### P03 – Individuální lekce",
+        "### P04 – Veřejná rezervace lekce",
+        "### P05 – Čekací listina a potvrzení",
+        "### P06 – Veřejný velodrom",
+        "### P07 – Kalendářové výstupy",
+        "## 7. E-shop, katalog a platby",
+        "### E01 – Shoptet katalog",
+        "### E02 – Ruční katalog a metadata",
+        "### E03 – Košík",
+        "### E04 – Checkout",
+        "### E05 – Bankovní platba",
+        "### E06 – Stripe",
+        "### E07 – Storno, expirace, fulfillment a vratka",
+        "### E08 – Oznámení o přijaté platbě",
+        "## 8. Klubové programy, události a soupisky",
+        "### K01 – Program a nabídka",
+        "### K02 – Přihlášení na klubovou událost",
+        "### K03 – Aktivace programu platbou",
+        "### K04 – Soupisky, rollover a přechody",
+        "## 9. Importy KIS a Fio",
+        "### I01 – Upload tří KIS XLSX",
+        "### I02 – Mapování a preview-only wizard",
+        "### I03 – KIS centrum, sandbox a členské předpisy",
+        "### I04 – Fio read-only import",
+        "### I05 – Výsledkové a šablonové importy",
+        "## 10. Komunikace a automatizace",
+        "### N01 – Oznámení",
+        "### N02 – Hromadný e-mail",
+        "### N03 – Upomínky na nezaevidované tréninky",
+        "### N04 – Členské připomínky",
+        "### N05 – Týdenní rodinný souhrn",
+        "### N06 – Web Push",
+        "## 11. Provozní evidence a soubory",
+        "### O01 – Vozidla, jízdy, servis, účtenky a události",
+        "### O02 – Veřejné a soukromé soubory",
+        "### O03 – Exporty a reporty",
+        "## 12. Systémové toky",
+        "### Y01 – Databázové migrace",
+        "### Y02 – Záloha, preflight a deploy helpery",
+        "### Y03 – Auditní události",
+        "## 13. Potvrzené silné kontrolní body",
+        "## 14. Omezení této kontroly"
+      ]
+    },
+    {
+      "path": "outputs/data-flow-audit-2026-08-24/NALEZY_A_RIZIKA.md",
+      "bytes": 15766,
+      "sha256": "d9112967841c608751783bb1155e3ad6a368ad87471dc68be70de5b44d3b35e2",
+      "headings": [
+        "# Nálezy a rizika z kontroly datových toků",
+        "## Implementační aktualizace po auditu",
+        "## Souhrn priorit",
+        "## H1 – Paralelní endpoint `edit_zavod.php` obchází kanonický kontrakt závodu",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## H2 – Starší KIS wizard zapisuje přímo do kanonických osob mimo fingerprintovaný promote tok",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## H3 – Databázová transakce a souborové změny nejsou atomické",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## M1 – XLS/XLSX import závodních výsledků nejprve maže a pak páruje pouze podle jména",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## M2 – Část e-mailů a push notifikací obchází trvalou frontu a UI hlásí úspěch i bez doručení",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## M3 – Tři notifikační odkazy používají starý host místo kanonického `APP_BASE_URL`",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## M4 – UCI upload se na 24 hodin ukládá do webrootu `uploads/temp`",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## M5 – Legacy DDL se stále může spustit v běžném webovém requestu",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## L1 – Veřejný profilový bearer token současně opravňuje ke čtení i zápisu poznámky",
+        "### Důkaz",
+        "### Dopad",
+        "### Doporučení",
+        "## Pozitivní kontroly potvrzené v kódu",
+        "## Doporučené pořadí nápravy"
+      ]
+    },
+    {
+      "path": "outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md",
+      "bytes": 7575,
+      "sha256": "4bb8aad9fa0e20ffa37c766ea92fd07a7e8c6d9c3b6bda6c7028e878c1e0c6b4",
+      "headings": [
+        "# Datové toky EvidencePavel / KIS – aktuální technická mapa",
+        "## 1. Kontrolní inventura",
+        "## 2. Společný kontrakt toku",
+        "## 3. Identity a hranice důvěry",
+        "## 4. Osoby, registrace a přihlášení",
+        "## 5. Sportovní evidence",
+        "## 6. E-shop, produkty a platby",
+        "## 7. Kroužky, členství, soupisky a akce",
+        "## 8. Importy, soubory a migrace",
+        "## 9. Komunikace",
+        "## 10. Produkční důkaz a omezení"
+      ]
+    },
+    {
+      "path": "outputs/data-flow-audit-2026-10-07/NALEZY_A_RIZIKA.md",
+      "bytes": 3270,
+      "sha256": "d6e5fcf8c75633df9aa84c575cbf251fdb6b07406fbe9dc9c2eca4a2e9e15851",
+      "headings": [
+        "# Nálezy a rizika – aktualizace 7. 10. 2026",
+        "## Souhrn",
+        "## Vyřešené položky",
+        "## M2 – starší přímé e-maily mimo trvalou frontu",
+        "## Provozní hranice Fio",
+        "## Pozitivní kontrolní body"
+      ]
+    },
+    {
+      "path": "outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_KOD.md",
+      "bytes": 10875,
+      "sha256": "21e3ba4f220dc6090f80d9da5d57ebde06c0c1fc230d77da85be78868c9e0669",
+      "headings": [
+        "# Datové toky EvidencePavel / KIS — revize 19. 10. 2026",
+        "## Implementační dodatek (lokální pracovní strom, 19. 10. 2026)",
+        "## Jak číst mapu",
+        "## 1. Zdroje a hranice důvěry",
+        "## 2. Cesty člověka a konečné stavy",
+        "## 3. Úložiště, vazby a vedlejší efekty",
+        "## 4. Nově důležité návaznosti oproti auditu 7. 10.",
+        "## 5. Limity důkazu a kontrolní otázky před produkčním závěrem"
+      ]
+    },
+    {
+      "path": "outputs/data-flow-audit-2026-10-19/NALEZY_A_RIZIKA.md",
+      "bytes": 6995,
+      "sha256": "2012a4156479345a51aa39746f0b21a4809397933c1ef535a31729b37eeb6c69",
+      "headings": [
+        "# Nálezy: logika, redundance a slepé cesty — 19. 10. 2026",
+        "## Stav lokální implementace 19. 10. 2026",
+        "## Doporučené pořadí původního auditu",
+        "## Co není nález"
+      ]
+    },
+    {
+      "path": "outputs/localhost-test-2026-08-25/OFFLINE_TESTOVANI.md",
+      "bytes": 13177,
+      "sha256": "0a482162256934160f7558e086bdfbda3da9802266719f233c4418d9776ceb8f",
+      "headings": [
+        "# Offline testování EvidencePavel na localhostu",
+        "## 1. První instalace a další spuštění",
+        "## 2. Testovací účty",
+        "### Administrátor s maximálním oprávněním",
+        "### Rodič / zákazník",
+        "### Sportovec s omezeným přístupem",
+        "## 3. Co nikdy nedělat",
+        "## 4. Rychlá kontrola prostředí",
+        "## 5. Administrátorský průchod",
+        "### Trenér",
+        "### Vedoucí sportu",
+        "### Registrář členů a KIS",
+        "### Koordinátor programů a sportovišť",
+        "### Správce katalogu e-shopu",
+        "### Zákaznická péče a objednávky",
+        "### Hospodář a platby",
+        "### Správce systému",
+        "## 6. Rodičovský průchod",
+        "### Test objednávky bez skutečné platby",
+        "## 7. Průchod sportovce",
+        "## 8. Obnovení čistého demo stavu",
+        "## 9. Co dělat při problému",
+        "### Stránka hlásí 503 nebo nedostupnou databázi",
+        "### Spouštěč hlásí, že port 3308 používá jiná služba",
+        "### Stránka patří do jiné pracovní pozice",
+        "### Vzhled nebo nabídky nejsou správné",
+        "### Zapomenuté nebo změněné heslo",
+        "### Chyba 500, prázdná stránka nebo poškozená data",
+        "## 10. Ověřený technický stav"
+      ]
+    },
+    {
+      "path": "tests/fixtures/kis/README.md",
+      "bytes": 1912,
+      "sha256": "88ea5e54b8f965102f3a4951126974303bab6ede24a7f63ca46594cf6b404b3e",
+      "headings": [
+        "# Syntetické KIS parity fixtures",
+        "## Přehled",
+        "## Scénáře v `parity-realistic.json`"
+      ]
+    }
+  ]
+}
