@@ -171,6 +171,16 @@ jobs:
       - name: Ověřit rozpočet rodinného přístupu na migrovaném schématu
         run: php tests/Support/FamilyPortalReadProfile.php > family-read-profile.json
 
+      - name: Porovnat celou rodinnou stránku, HTML a rozpočet SQL
+        run: php tests/Support/FamilyOverviewPageProfile.php > family-overview-profile.json
+
+      - name: Uchovat profil celého rodinného přehledu
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: family-overview-profile-mariadb-${{ matrix.mariadb-version }}
+          path: family-overview-profile.json
+          retention-days: 14
+
       - name: Uchovat profil rodinného přístupu
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

@@ -48,9 +48,10 @@ function familyPortalApprovedRelationsSql(): string
  *
  * @return list<array<string,mixed>>
  */
-function familyPortalAuthorizedPeople(PDO $pdo, int $accountId): array
+function familyPortalAuthorizedPeople(PDO $pdo, int $accountId, ?int $sportovecId = null): array
 {
     if ($accountId < 1
+        || ($sportovecId !== null && $sportovecId < 1)
         || !familyPortalTableExists($pdo, 'account_person_roles')
         || !familyPortalTableExists($pdo, 'verejni_uzivatele')
         || !familyPortalTableExists($pdo, 'sportovci')
@@ -62,9 +63,10 @@ function familyPortalAuthorizedPeople(PDO $pdo, int $accountId): array
         'SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, '
         . 's.stav_clenstvi, r.relation_role '
         . familyPortalApprovedRelationsSql()
+        . ($sportovecId !== null ? 'AND s.id=? ' : '')
         . 'ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role'
     );
-    $statement->execute([$accountId]);
+    $statement->execute($sportovecId !== null ? [$accountId, $sportovecId] : [$accountId]);
 
     $people = [];
     foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -101,7 +103,8 @@ function familyPortalCanViewPerson(PDO $pdo, int $accountId, int $sportovecId): 
 function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId): array
 {
     $person = null;
-    foreach (familyPortalAuthorizedPeople($pdo, $accountId) as $candidate) {
+    // Re-check current authority for this profile without rehydrating the whole family.
+    foreach (familyPortalAuthorizedPeople($pdo, $accountId, $sportovecId) as $candidate) {
         if ((int)$candidate['sportovec_id'] === $sportovecId) {
             $person = $candidate;
             break;

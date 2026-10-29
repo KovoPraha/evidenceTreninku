@@ -1,0 +1,19 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w72-20261029\phpunit.xml.dist
+
+....F                                                               5 / 5 (100%)
+
+Time: 00:00.138, Memory: 10.00 MB
+
+There was 1 failure:
+
+1) Tests\Integration\FamilyOverviewOptimizationTest::testMembershipHydrationGrowsLinearlyAcrossCompleteOverview
+Only initial family plus current target, not every family for every profile.
+Failed asserting that actual size 420 matches expected size 40.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w72-20261029\tests\Integration\FamilyOverviewOptimizationTest.php:70
+
+FAILURES!
+Tests: 5, Assertions: 16, Failures: 1.
