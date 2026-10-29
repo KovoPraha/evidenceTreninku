@@ -53,3 +53,17 @@ k produkci ani používat pro transportní payloady. Aplikační bootstrap se ne
 
 Nezjištěná latence není nula ani PASS. Tato mapa uzavírá první inventuru K0.1;
 K0.2 celé aplikace a doménové detailní audity zůstávají průběžné.
+
+## Doplnění po W6.3, 29. 10. 2026
+
+Zdroj `3a168a68050be1d44648086bdb190df7c556617e`, PR #223.
+R01 má nyní [profil migrovaného schématu](verification/refactoring-w63-20261029/RESULTS.md)
+se skutečnými indexy, FK a obnovenými statistikami. W6.2 oddělilo čistý výpočet;
+W6.3 odstranilo materializaci rezervovaných řádků v PHP. Shoda stavů a SQL,
+limit přírůstku paměti ≤ 4 MiB / ≤ 60 % baseline při 10 000 položkách PASS
+na MariaDB 10.3/11.4. Profil používá 3 warmupy + 15 střídavých vzorků; měření
+času/paměti běží na běžném PDO odděleně od instrumentace SQL.
+
+Dávkové sdílení mezi nabídkami zůstává kandidát, nikoli hotová implementace.
+Výše uvedené první nálezy jsou historický vstup; příští hlavní krok K0.2/W7
+je měření R02–R04. Ostatní dosud nezměřené profily se tímto neuzavírají.
