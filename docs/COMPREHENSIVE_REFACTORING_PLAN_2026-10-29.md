@@ -122,7 +122,7 @@ má před výkonovou frontou přednost a dostane vlastní opravný PR.
 | Etapa / stav | Konkrétní balíky v pořadí | Vstup / závislost | Hotovo, když |
 | --- | --- | --- | --- |
 | **K0 — průběžná realizace**: měření a kontrakty celé aplikace | K0.1 aktuální mapa route → guard → služba → tabulky → side effect; K0.2 syntetické profily a měřicí prostředí; K0.3 registr zjištění a řazení backlogu | Aktuální main a tento plán | Každá oblast má vlastníka, alespoň hlavní pozitivní/negativní scénář a výchozí měření nebo výslovně popsanou mezeru. |
-| **W6 — W6.2 nasazeno, W6.3 čeká**: obsazenost programů | W6.1 charakterizační testy a profil; W6.2 oddělit načtení podkladů od čistého výpočtu; W6.3 případně dávkové veřejné čtení podle měření | K0 pro katalog, dosavadní W1–5 | Kanonický a nový výstup shodný ve všech scénářích, čerstvé zámky zachované, prokazatelný přínos bez zhoršení DB práce/paměti. |
+| **W6 — W6.2 nasazeno, W6.3 ověřování**: obsazenost programů | W6.1 charakterizační testy a profil; W6.2 oddělit načtení podkladů od čistého výpočtu; W6.3 případně dávkové veřejné čtení podle měření | K0 pro katalog, dosavadní W1–5 | Kanonický a nový výstup shodný ve všech scénářích, čerstvé zámky zachované, prokazatelný přínos bez zhoršení DB práce/paměti. |
 | **W7 — kandidáti k měření**: osoby, rodiny a oprávnění | W7.1 seznamy osob a rodinné přehledy; W7.2 oddělit vstupy/čtení/prezentaci; W7.3 odstranit konkrétní duplicity autorizačních predikátů | K0; bezpečnostní kontrakty před extrakcí | Stabilní stránkování a omezené načítání; stejné výsledky pro self/guardian/trenéra/registráře; okamžité odnětí vazby a souběžná revokace projdou negativními testy. |
 | **W8 — kandidáti k měření**: sport a rezervace | W8.1 plánovač, kalendáře a timeline; W8.2 formuláře tréninku/závodu a uzavření účasti; W8.3 rezervace, náhrady, čekací listina | K0 + dotčené kontrakty W7 | SQL neprobíhá po jednom záznamu bez důvodu; shoda časových hranic, účasti a historie; browser klávesnice/mobil a souběžné poslední místo PASS. |
 | **W9 — připravit kontrakty**: obchod a sklad | W9.1 rozdělit čtecí/view část checkoutu; W9.2 izolovat výpočet ceny a validaci bez přesunu transakčních kontrol; W9.3 skladové výpisy, výdej a vratky | K0 + W6/W7 při společných závislostech | Stejné minor-unit částky, stock a VS; idempotentní opakování, souběžná objednávka/vratka a rollback bez vedlejších zápisů. |
@@ -274,7 +274,8 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | Komplexní plán | Sloučený v PR #219; realizace autorizována | Průběžná aktualizace podle důkazů |
 | K0 + W6.1 | První balík sloučen v PR #220 po úspěšném CI | K0.2 ostatních agend a migrovaný profil pro W6.3 otevřené |
 | W6.2 | [Čistá extrakce](REFACTORING_WAVE6_2026-10-29.md) sloučena a nasazena; [důkazy](verification/refactoring-wave6-release-20261029/RESULTS.md) | Hotovo; zachovat nové kontrakty |
-| W6.3–W15 | Naplánované; nový kód těchto etap nezahájen | Malé PR podle závislostí a skutečných výsledků K0 |
+| W6.3 | [Paměť kapacit](REFACTORING_W63_2026-10-29.md): migrovaný profil a postupné čtení; ověřování | Paměťová mez, stejné SQL/stavy, plné CI a produkční důkazy |
+| W7–W15 | Naplánované; nový kód těchto etap nezahájen | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 
 Každý balík povede protokol `docs/verification/<balik>/RESULTS.md` s: základním

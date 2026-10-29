@@ -10,6 +10,32 @@ require_once dirname(__DIR__, 2) . '/includes/club_program_capacity.php';
 
 final class ProgramCapacityCalculationTest extends TestCase
 {
+    public function testOnePassRowsRetainMaximaAcrossNonAdjacentIdentities(): void
+    {
+        $consumed = 0;
+        $rows = (static function () use (&$consumed): \Generator {
+            foreach ([
+                ['id' => 1, 'beneficiary_sportovec_id' => 10, 'quantity' => 100],
+                ['id' => 2, 'beneficiary_sportovec_id' => 11, 'quantity' => 2],
+                ['id' => 3, 'athlete_registration_request_id' => 11, 'quantity' => 3],
+                ['id' => 4, 'beneficiary_sportovec_id' => 12, 'quantity' => 100],
+                ['id' => 5, 'beneficiary_sportovec_id' => 11, 'quantity' => 4],
+                ['id' => 6, 'quantity' => -1],
+                ['id' => 7, 'quantity' => 2],
+            ] as $row) {
+                $consumed++;
+                yield $row;
+            }
+        })();
+        self::assertSame(0, $consumed);
+        self::assertSame(
+            ['active_enrollment_count' => 1, 'held_order_count' => 9, 'occupied_count' => 10, 'available_count' => 2],
+            \clubProgramCapacityFromRows([10 => true], $rows, true, 12, 12)
+        );
+        self::assertSame(7, $consumed);
+        self::assertFalse($rows->valid());
+    }
+
     public function testOrderAndDuplicateRowsDoNotChangeIdentityMaximaOrMutateInputs(): void
     {
         $active = [50 => true];
