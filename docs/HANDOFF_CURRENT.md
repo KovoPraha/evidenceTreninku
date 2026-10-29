@@ -79,8 +79,9 @@ Merge a produkční deploy jsou samostatná rozhodnutí vlastníka podle
 
 Navazující [komplexní refaktoring celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md)
 je sloučený v PR #219 a vlastník zahájil autonomní realizaci. Vlny 1–5 jsou
-dokončené; probíhá [K0 + W6.1](REFACTORING_K0_W6_2026-10-29.md): mapa cest,
-měřicí základ a kontrakty obsazenosti. Před pokračováním ověř stav balíku.
+dokončené; [první K0/W6.1 balík](REFACTORING_K0_W6_2026-10-29.md) je sloučený
+v PR #220. Probíhá [W6.2](REFACTORING_WAVE6_2026-10-29.md), oddělení čistého
+výpočtu kapacit. Plošné měření K0.2 zůstává průběžné. Ověř aktuální stav balíku.
 
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah
 oprávnění, větev, pracovní kopii, dokončené kroky, testy a další krok.

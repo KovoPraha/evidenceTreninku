@@ -6,6 +6,7 @@ require_once __DIR__ . '/club_program_terms.php';
 require_once __DIR__ . '/club_program_account_status.php';
 require_once __DIR__ . '/roster_hierarchy.php';
 require_once __DIR__ . '/club_program_read_context.php';
+require_once __DIR__ . '/club_program_capacity.php';
 final class ClubProgramException extends RuntimeException
 {
 }
@@ -939,11 +940,10 @@ function clubProgramOfferCapacityStateForTeam(
     foreach ($active->fetchAll(PDO::FETCH_COLUMN) as $personId) {
         $activePeople[(int) $personId] = true;
     }
-    $activeCount = count($activePeople);
     $timezone = new DateTimeZone('Europe/Prague');
     $now = ($now ?? new DateTimeImmutable('now', $timezone))->setTimezone($timezone);
     $hasHoldSchema = clubProgramColumnExists($pdo, 'shop_order_items', 'variant_id', $readContext) && clubProgramColumnExists($pdo, 'shop_orders', 'payment_expires_at', $readContext);
-    $heldCount = 0;
+    $heldRows = [];
     if ($hasHoldSchema) {
         $hasBeneficiary = clubProgramColumnExists($pdo, 'shop_order_items', 'beneficiary_sportovec_id', $readContext);
         $hasRequest = clubProgramColumnExists($pdo, 'shop_order_items', 'athlete_registration_request_id', $readContext);
@@ -987,32 +987,9 @@ function clubProgramOfferCapacityStateForTeam(
              $now->format('Y-m-d H:i:s')] : [$productId,
              $variantId,
              $now->format('Y-m-d H:i:s')]);
-        $heldIdentities = [];
-        foreach ($held->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $personId = (int) ($row['beneficiary_sportovec_id'] ?? 0);
-            if ($personId > 0) {
-                if ($personId === $excludeHeldSportovecId || $shared && isset($activePeople[$personId])) {
-                    continue;
-                }
-                $key = 'person:' . $personId;
-            } elseif ((int) ($row['athlete_registration_request_id'] ?? 0) > 0) {
-                $key = 'request:' . (int) $row['athlete_registration_request_id'];
-            } else {
-                $key = 'item:' . (int) $row['id'];
-            }
-            $heldIdentities[$key] = max((int) ($heldIdentities[$key] ?? 0), (int) $row['quantity']);
-        }
-        $heldCount = array_sum($heldIdentities);
+        $heldRows = $held->fetchAll(PDO::FETCH_ASSOC);
     }
-    $occupied = $activeCount + $heldCount;
-    $capacity = $offer['capacity'] ?? null;
-    return ['active_enrollment_count' => $activeCount,
-         'held_order_count' => $heldCount,
-         'occupied_count' => $occupied,
-         'available_count' => $capacity === null ? null : max(
-             0,
-             (int) $capacity - $occupied
-         )];
+    return clubProgramCapacityFromRows($activePeople, $heldRows, $shared, $excludeHeldSportovecId, $offer['capacity'] ?? null);
 }
 /** @param array<string,mixed> $offer */
 function clubProgramPersonOccupiesSharedCapacity(PDO $pdo, array $offer, int $sportovecId, bool $lock = false): bool

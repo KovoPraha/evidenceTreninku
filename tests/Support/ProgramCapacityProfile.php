@@ -52,19 +52,22 @@ try {
         }
         $pdo->commit();
         $offer = Tests\Support\programCapacityOffer($pdo);
-        $samples = ['canonical' => [], 'context' => []];
+        $modes = function_exists('programCapacityProfileBaseline') ? ['baseline', 'context'] : ['canonical', 'context'];
+        $samples = array_fill_keys($modes, []);
         $details = [];
         $reference = null;
-        // Alternate the existing canonical and operation-local context paths; neither is a new implementation.
+        // Alternate paths, or compare a frozen baseline with the current operation-local context.
         for ($iteration = -5; $iteration < 30; $iteration++) {
-            foreach ($iteration % 2 === 0 ? ['canonical', 'context'] : ['context', 'canonical'] as $mode) {
+            foreach ($iteration % 2 === 0 ? $modes : array_reverse($modes) as $mode) {
                 $pdo->profile = [];
                 $pdo->profiling = true;
                 memory_reset_peak_usage();
                 $memoryStart = memory_get_usage();
                 $start = hrtime(true);
-                $context = $mode === 'context' ? new ClubProgramReadContext($pdo, $now) : null;
-                $state = clubProgramOfferCapacityState($pdo, $offer, $now, false, 0, $context);
+                $context = $mode !== 'canonical' ? new ClubProgramReadContext($pdo, $now) : null;
+                $state = $mode === 'baseline'
+                    ? programCapacityProfileBaseline($pdo, $offer, $now, false, 0, $context)
+                    : clubProgramOfferCapacityState($pdo, $offer, $now, false, 0, $context);
                 $elapsed = (hrtime(true) - $start) / 1e6;
                 $peak = memory_get_peak_usage();
                 $pdo->profiling = false;
@@ -83,6 +86,13 @@ try {
                 unset($context);
             }
         }
+        if (isset($details['baseline'])) {
+            $projection = static fn (array $rows): array => array_map(static fn (array $row): array =>
+                [$row['sql'], $row['parameters'], $row['fetched_rows']], $rows);
+            if ($projection($details['baseline']) !== $projection($details['context'])) {
+                throw new RuntimeException('Baseline SQL, parameters or fetched rows changed.');
+            }
+        }
         $plans = [];
         foreach ($details['context'] as $entry) {
             if (str_starts_with($entry['sql'], 'SELECT e.sportovec_id') || str_starts_with($entry['sql'], 'SELECT oi.id')) {
@@ -98,6 +108,7 @@ try {
     }
     echo json_encode(['synthetic_only' => true, 'schema' => 'reduced-indexed-fixture; not production schema or load',
         'database_version' => $admin->getAttribute(PDO::ATTR_SERVER_VERSION), 'php_version' => PHP_VERSION,
+        'comparison' => function_exists('programCapacityProfileBaseline') ? 'frozen baseline versus current, both with fresh context' : 'existing canonical versus existing context',
         'warmups_per_mode' => 5, 'samples_per_mode' => 30, 'instrumentation' => 'successful execute/fetch only; fetched rows are not rows examined',
         'results' => $results], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR) . PHP_EOL;
 } finally {
