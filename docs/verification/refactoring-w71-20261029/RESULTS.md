@@ -65,3 +65,32 @@ a náhrad, pak případná oprava. Volající mají zdrojově kontrolu před če
 na zámek; tento výkonový řez pořadí nemění. Plný rodinný přehled R02, žádosti
 R03 a registrářské seznamy R04 vyžadují samostatné profily. Technické ověření
 nenahrazuje lidské UAT a neaktivuje integrace/importy.
+
+## Finální ověření a integrace
+
+[PR #225](https://github.com/KovoPraha/evidenceTreninku/pull/225), finální head
+`569c30a5b6062cdb3a6945fcfd3cc29041221d56`, sloučeno jako
+`81544542bb40cb96e7141791ea22e4b382531d5e`.
+[Testy 40929388702](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40929388702),
+[PHP quality 40929388844](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40929388844)
+a [dokumentace 40929388701](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40929388701) PASS.
+Linux **1 804 testů / 36 058 assertions**, navíc POSIX **3 / 45 bez skipů**;
+MariaDB 10.3/11.4, PHPStan bez nové baseline, styl, anonymous sweep a JS PASS.
+Lokální plná sada **1 804 / 36 009**, tři Windows POSIX skipy; PHPStan PASS.
+
+Finální CI profily včetně všech vzorků, SQL a EXPLAIN:
+[MariaDB 10.3](ci-mariadb-10.3.json), [MariaDB 11.4](ci-mariadb-11.4.json).
+Rozpočty a změny oprávnění ověřené na obou databázích; není navržen nový index.
+
+| Rodina 20 osob / cíl | MariaDB 10.3, ms před → po | MariaDB 11.4, ms před → po |
+| --- | ---: | ---: |
+| Vlastní osoba | 7,49 → 1,60 | 5,36 → 0,98 |
+| Cizí osoba | 7,48 → 1,54 | 5,35 → 0,94 |
+
+Přírůstek špičky PHP na obou CI verzích: 132 296 → 39 616 B u vlastní osoby.
+EXPLAIN cílené kontroly používá PRIMARY osob/účtů a existující unikátní
+`uq_account_person`; odhad jednoho řádku, typ const. Počet SQL i výsledků je
+ověřená vlastnost; časy jsou syntetické mediány, nikoli produkční SLA.
+
+[Ověřené produkční vydání](../refactoring-w71-release-20261029/RESULTS.md),
+včetně živé identity, zachované konfigurace a 26/26 HTTP před/po.

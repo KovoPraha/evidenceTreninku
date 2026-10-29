@@ -1,0 +1,706 @@
+[
+  {
+    "source": "before.json",
+    "family_size": 0,
+    "target": "own",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 5.2235,
+      "current": 5.127
+    },
+    "peak_bytes": {
+      "baseline": 43472,
+      "current": 43472
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "before.json",
+    "family_size": 0,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 5.3163,
+      "current": 5.3438
+    },
+    "peak_bytes": {
+      "baseline": 43472,
+      "current": 43472
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "before.json",
+    "family_size": 1,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 6.1875,
+      "current": 6.2018
+    },
+    "peak_bytes": {
+      "baseline": 90160,
+      "current": 90160
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 5
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 5
+    }
+  },
+  {
+    "source": "before.json",
+    "family_size": 1,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 7.0781,
+      "current": 6.7171
+    },
+    "peak_bytes": {
+      "baseline": 90160,
+      "current": 90160
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 5
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 5
+    }
+  },
+  {
+    "source": "before.json",
+    "family_size": 5,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 8.4493,
+      "current": 8.8525
+    },
+    "peak_bytes": {
+      "baseline": 100592,
+      "current": 100592
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 9
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 13
+    }
+  },
+  {
+    "source": "before.json",
+    "family_size": 5,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 8.9579,
+      "current": 8.867
+    },
+    "peak_bytes": {
+      "baseline": 100592,
+      "current": 100592
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 9
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 13
+    }
+  },
+  {
+    "source": "before.json",
+    "family_size": 20,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 20.2284,
+      "current": 20.6325
+    },
+    "peak_bytes": {
+      "baseline": 139912,
+      "current": 139912
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 24
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 43
+    }
+  },
+  {
+    "source": "before.json",
+    "family_size": 20,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 20.811,
+      "current": 21.5303
+    },
+    "peak_bytes": {
+      "baseline": 139912,
+      "current": 139912
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 24
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 43
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 0,
+    "target": "own",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 3.5462,
+      "current": 3.2505
+    },
+    "peak_bytes": {
+      "baseline": 43472,
+      "current": 43736
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 0,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 3.3837,
+      "current": 3.1763
+    },
+    "peak_bytes": {
+      "baseline": 43472,
+      "current": 43768
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 1,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 5.5246,
+      "current": 4.0911
+    },
+    "peak_bytes": {
+      "baseline": 90160,
+      "current": 43760
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 4
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 1,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 4.9536,
+      "current": 4.0423
+    },
+    "peak_bytes": {
+      "baseline": 90160,
+      "current": 43768
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 3
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 5,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 7.6323,
+      "current": 3.5367
+    },
+    "peak_bytes": {
+      "baseline": 100592,
+      "current": 43760
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 4
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 5,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 7.7838,
+      "current": 3.4811
+    },
+    "peak_bytes": {
+      "baseline": 100592,
+      "current": 43768
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 3
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 20,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 18.7672,
+      "current": 3.4563
+    },
+    "peak_bytes": {
+      "baseline": 139912,
+      "current": 43760
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 4
+    }
+  },
+  {
+    "source": "after.json",
+    "family_size": 20,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 21.0551,
+      "current": 3.8438
+    },
+    "peak_bytes": {
+      "baseline": 139912,
+      "current": 43768
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 0,
+    "target": "own",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 1.540021,
+      "current": 1.485351
+    },
+    "peak_bytes": {
+      "baseline": 39320,
+      "current": 39600
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 0,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 1.544973,
+      "current": 1.457674
+    },
+    "peak_bytes": {
+      "baseline": 39320,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 1,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 1.776343,
+      "current": 1.42112
+    },
+    "peak_bytes": {
+      "baseline": 81840,
+      "current": 39616
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 4
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 1,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 1.818789,
+      "current": 1.464581
+    },
+    "peak_bytes": {
+      "baseline": 81840,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 5,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 2.986798,
+      "current": 1.47997
+    },
+    "peak_bytes": {
+      "baseline": 92424,
+      "current": 39616
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 4
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 5,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 3.099707,
+      "current": 1.519111
+    },
+    "peak_bytes": {
+      "baseline": 92424,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 20,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 7.487388,
+      "current": 1.601262
+    },
+    "peak_bytes": {
+      "baseline": 132296,
+      "current": 39616
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 4
+    }
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "family_size": 20,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 7.481383,
+      "current": 1.543223
+    },
+    "peak_bytes": {
+      "baseline": 132296,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 0,
+    "target": "own",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 1.02107,
+      "current": 0.955202
+    },
+    "peak_bytes": {
+      "baseline": 39320,
+      "current": 39600
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 0,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 0.973239,
+      "current": 0.920079
+    },
+    "peak_bytes": {
+      "baseline": 39320,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 4,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 3,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 1,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 1.248588,
+      "current": 0.960559
+    },
+    "peak_bytes": {
+      "baseline": 81840,
+      "current": 39616
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 4
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 1,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 1.242309,
+      "current": 0.94735
+    },
+    "peak_bytes": {
+      "baseline": 81840,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 5,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 5,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 5,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 2.031634,
+      "current": 0.913029
+    },
+    "peak_bytes": {
+      "baseline": 92424,
+      "current": 39616
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 4
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 5,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 2.064012,
+      "current": 0.935061
+    },
+    "peak_bytes": {
+      "baseline": 92424,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 9,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 13,
+      "current": 3
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 20,
+    "target": "own",
+    "allowed": true,
+    "median_ms": {
+      "baseline": 5.357634,
+      "current": 0.981651
+    },
+    "peak_bytes": {
+      "baseline": 132296,
+      "current": 39616
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 4
+    }
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "family_size": 20,
+    "target": "foreign",
+    "allowed": false,
+    "median_ms": {
+      "baseline": 5.346427,
+      "current": 0.943975
+    },
+    "peak_bytes": {
+      "baseline": 132296,
+      "current": 39632
+    },
+    "sql_counts": {
+      "baseline": 24,
+      "current": 4
+    },
+    "fetched_rows": {
+      "baseline": 43,
+      "current": 3
+    }
+  }
+]
