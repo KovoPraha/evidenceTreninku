@@ -34,4 +34,6 @@ Implementován první řez: [registr 16 cest](REFACTORING_ROUTE_REGISTER_2026-10
 [Výsledky a vzorky](verification/refactoring-k0-w6-20261029/RESULTS.md).
 K0.1 je dokončeno; K0.2 celé aplikace zůstává průběžné. První W6.1 profil je
 nad redukovaným schématem. W6.2 bude samostatná čistá extrakce, dávkové W6.3
-vyžaduje další měření na migrovaném schématu. Před merge probíhá finální CI.
+vyžaduje další měření na migrovaném schématu. PR #220 byl po finálním CI
+sloučen. Linux: 1 797 testů / 35 938 assertions, MariaDB 10.3/11.4 a PHP quality PASS.
+Nyní probíhá [samostatné W6.2](REFACTORING_WAVE6_2026-10-29.md).

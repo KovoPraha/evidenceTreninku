@@ -1,0 +1,47 @@
+{
+  "baseline_sha": "9da70c97b3b825ae50459a8663aea5af50dc7982",
+  "identical_sql_parameters_rows_and_state": true,
+  "method": "Same process, PDO and synthetic fixture, fresh context, alternate baseline/current; 5 warmups + 30 samples each. No concurrent local PHP tests. Reduced schema, no performance improvement claim.",
+  "rows": [
+    {
+      "scenario": "empty",
+      "before_ms": 42.58795,
+      "after_ms": 43.158699999999996,
+      "ratio": 1.0134016781742252,
+      "sql": 8,
+      "rows": 20,
+      "before_memory": 98216.0,
+      "after_memory": 98272.0
+    },
+    {
+      "scenario": "small",
+      "before_ms": 47.87325,
+      "after_ms": 45.2716,
+      "ratio": 0.9456554547685816,
+      "sql": 8,
+      "rows": 30,
+      "before_memory": 101112.0,
+      "after_memory": 101456.0
+    },
+    {
+      "scenario": "dense",
+      "before_ms": 72.0188,
+      "after_ms": 77.5497,
+      "ratio": 1.076798002743728,
+      "sql": 8,
+      "rows": 1020,
+      "before_memory": 378208.0,
+      "after_memory": 378208.0
+    },
+    {
+      "scenario": "fanout",
+      "before_ms": 57.54155,
+      "after_ms": 58.0042,
+      "ratio": 1.0080402769824588,
+      "sql": 10,
+      "rows": 2022,
+      "before_memory": 381904.0,
+      "after_memory": 381904.0
+    }
+  ]
+}

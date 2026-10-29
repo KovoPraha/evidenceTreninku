@@ -1,6 +1,6 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav: realizace zahájena 29. 10. 2026; první balík K0 + W6.1 probíhá.**
+**Stav: realizace zahájena 29. 10. 2026; první balík K0/W6.1 sloučen, W6.2 probíhá.**
 Zadání vlastníka z 29. 10. 2026: připravit komplexní pojetí celé aplikace,
 v dalších krocích autonomně implementovat. Navazující pokyn vlastníka aktivoval
 [první realizační balík](REFACTORING_K0_W6_2026-10-29.md). Původní příprava
@@ -271,8 +271,9 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | --- | --- | --- |
 | Vlny 1–5 | Dokončené a doložené | Zachovat regresní rozpočty a chování |
 | Komplexní plán | Sloučený v PR #219; realizace autorizována | Průběžná aktualizace podle důkazů |
-| K0 + W6.1 | K0.1 mapa hotová, charakterizace a první profil implementovány; finální CI před merge | W6.2 čistá extrakce; K0.2 ostatních agend a migrovaný profil pro W6.3 otevřené |
-| W6.2–W15 | Naplánované; žádný nový kód implementován | Malé PR podle závislostí a skutečných výsledků K0 |
+| K0 + W6.1 | První balík sloučen v PR #220 po úspěšném CI | K0.2 ostatních agend a migrovaný profil pro W6.3 otevřené |
+| W6.2 | [Čistá extrakce](REFACTORING_WAVE6_2026-10-29.md) probíhá | Ověření shody, CI a vydání |
+| W6.3–W15 | Naplánované; nový kód těchto etap nezahájen | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 
 Každý balík povede protokol `docs/verification/<balik>/RESULTS.md` s: základním
