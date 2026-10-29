@@ -987,7 +987,12 @@ function clubProgramOfferCapacityStateForTeam(
              $now->format('Y-m-d H:i:s')] : [$productId,
              $variantId,
              $now->format('Y-m-d H:i:s')]);
-        $heldRows = $held->fetchAll(PDO::FETCH_ASSOC);
+        // Keep PDO buffering and locks unchanged; avoid a second complete PHP row array.
+        $heldRows = (static function (PDOStatement $statement): Generator {
+            while (($row = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
+                yield $row;
+            }
+        })($held);
     }
     return clubProgramCapacityFromRows($activePeople, $heldRows, $shared, $excludeHeldSportovecId, $offer['capacity'] ?? null);
 }

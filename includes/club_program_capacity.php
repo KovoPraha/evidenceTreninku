@@ -9,10 +9,10 @@ declare(strict_types=1);
  * therefore active-person suppression applies only to shared capacity.
  *
  * @param array<int,true> $activePeople
- * @param list<array<string,mixed>> $heldRows
+ * @param iterable<array<string,mixed>> $heldRows Consumed once; rows need not be materialized together.
  * @return array{active_enrollment_count:int,held_order_count:int,occupied_count:int,available_count:?int}
  */
-function clubProgramCapacityFromRows(array $activePeople, array $heldRows, bool $shared, int $excludeHeldSportovecId, mixed $capacity): array
+function clubProgramCapacityFromRows(array $activePeople, iterable $heldRows, bool $shared, int $excludeHeldSportovecId, mixed $capacity): array
 {
     $heldIdentities = [];
     foreach ($heldRows as $row) {

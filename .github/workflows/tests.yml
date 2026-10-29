@@ -139,6 +139,16 @@ jobs:
           path: capacity-profile.json
           retention-days: 14
 
+      - name: Ověřit paměť kapacity na kompletně migrovaném schématu
+        run: php tests/Support/ProgramCapacityMigratedProfile.php > capacity-migrated-profile.json
+
+      - name: Uchovat profil migrovaného schématu
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: capacity-migrated-profile-mariadb-${{ matrix.mariadb-version }}
+          path: capacity-migrated-profile.json
+          retention-days: 14
+
       - name: Ověřit pracovní pozice a superadmin audit na MariaDB
         run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
 
