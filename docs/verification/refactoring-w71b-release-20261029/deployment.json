@@ -1,0 +1,92 @@
+{
+  "run_id": 40939479761,
+  "job_id": 123678742403,
+  "sha": "66521929f7e9ce55f7a03d669cb7821f49382f6c",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "tests": 1808,
+  "assertions": 36095,
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-29_192403_2a725d00.sql.gz",
+    "manifest": "evidence_2026-10-29_192403_2a725d00.manifest.json",
+    "sha256": "4671007486e4ba98228f4b8e13c6185eb2159ec010bda5f5b0d44a896ca0fa17",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063508,
+    "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+  },
+  "migration_checks": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    }
+  ],
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "private_storage": {
+    "ok": true,
+    "storage_created": false,
+    "existing_configuration_preserved": true,
+    "config_appended": false,
+    "private_config_backup_verified": false,
+    "cli_write_read_delete_probe": true,
+    "web_runtime_verified": false,
+    "attachments_moved": false,
+    "database_accessed": false
+  },
+  "http_smoke": {
+    "ok": true,
+    "http": 200,
+    "via": "curl"
+  },
+  "http_runner_note": "Runner TCP timeout; existing SSH server-side fallback HTTP 200; independent anonymous GET smoke 26/26",
+  "temporary_config_cleanup": "success"
+}

@@ -26,11 +26,16 @@ ověření. Původní checkout a cizí WIP zůstávají zachované.
 
 ## Stav
 
-Plán uložen před implementací. Výchozí main má čtyři CI workflow SUCCESS.
-Race prokázán: 15 nepovolených zápisů / 24 scénářů před opravou. Po opravě
-32/32 PASS včetně držení oprávnění do konce transakce. Dotčené testy 30/263,
-styl a AST shoda 47 funkcí mimo tři nové guardy PASS. Úplná sada a PHPStan
-probíhají, CI/merge/deploy dosud neprovedeny.
+Plán uložen před implementací. Race prokázán: 15 nepovolených zápisů / 24
+scénářů před opravou; po opravě 32/32 PASS lokálně a v CI MariaDB 10.3/11.4.
+Windows 1808/36046 (3 POSIX skipy), Linux 1808/36095 a POSIX 3/45 bez skipů.
+PHPStan, styl, Composer, dokumentace, anonymous sweep a JS PASS. AST všech
+47 funkcí shodné mimo tři nové guardy. PR #227 sloučen jako
+`66521929f7e9ce55f7a03d669cb7821f49382f6c`. Přesný main CI PASS; nasazeno
+[40939479761](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40939479761).
+[Produkční protokol](verification/refactoring-w71b-release-20261029/RESULTS.md):
+živá identita potvrzena, před/po 26/26 HTTP, záloha 336 tabulek / 2 triggery,
+config/flags/ledger shodné, VS zachovány. UAT/import kroužků false.
 [Konkrétní důkazy](verification/refactoring-w71b-20261029/RESULTS.md).
 Po tomto balíku navazují úplné profily R02–R04 podle
 [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).

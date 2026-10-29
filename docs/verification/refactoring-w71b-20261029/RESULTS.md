@@ -60,6 +60,15 @@ potvrdilo shodnou logiku všech 13 RSVP a 34 makeup funkcí.
 - Nové čtyři testy pokrývají transakční kontrakt, namespace, predikáty,
   časové hranice, rollback a chybějící tabulky; čtecí helper dál nezamyká.
 - Styl změněných PHP, `git diff --check` a dokumentační kontrola PASS.
-- Kompletní sada, PHPStan a MariaDB 10.3/11.4 CI budou doplněny před merge.
+- Windows: **1808 testů / 36046 assertions / 3 POSIX skipy**, 7:25, 96 MB.
+- Linux: **1808 / 36095 PASS**, POSIX zvlášť **3 / 45 bez skipů**.
+- PHPStan lokálně i v CI bez chyb a nové baseline; Composer validate PASS.
+- [CI PR 40938064423](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40938064423)
+  a PHP quality / Current documentation / automatická PR kontrola PASS.
+- [MariaDB 10.3.39](ci-mariadb-10.3.json) a
+  [MariaDB 11.4.13](ci-mariadb-11.4.json): každá **32/32 PASS**.
+  JSON uložen v Gitu nezávisle na 14denní retenci GitHub artefaktů.
+- [PR #227](https://github.com/KovoPraha/evidenceTreninku/pull/227) sloučen jako
+  `66521929f7e9ce55f7a03d669cb7821f49382f6c`. Nasazení má samostatný protokol.
 
 [Plán](../../REFACTORING_W71B_2026-10-29.md).

@@ -275,7 +275,8 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | K0 + W6.1 | První balík sloučen v PR #220 po úspěšném CI | Migrovaný profil doplnilo W6.3; K0.2 ostatních agend otevřené |
 | W6.2 | [Čistá extrakce](REFACTORING_WAVE6_2026-10-29.md) sloučena a nasazena; [důkazy](verification/refactoring-wave6-release-20261029/RESULTS.md) | Hotovo; zachovat nové kontrakty |
 | W6.3 | [Paměť kapacit](REFACTORING_W63_2026-10-29.md) sloučena a nasazena; [důkazy](verification/refactoring-w63-release-20261029/RESULTS.md) | Hotovo; dávkové sdílení mezi nabídkami zůstává samostatný kandidát, navazuje K0.2/W7 |
-| W7.1a | [Cílený rodinný přístup](REFACTORING_W71_2026-10-29.md) sloučen a nasazen; [důkazy](verification/refactoring-w71-release-20261029/RESULTS.md) | Hotovo; navazuje W7.1b race audit revokace writerů a případná oprava |
+| W7.1a | [Cílený rodinný přístup](REFACTORING_W71_2026-10-29.md) sloučen a nasazen; [důkazy](verification/refactoring-w71-release-20261029/RESULTS.md) | Hotovo; souběhovou autorizaci následně řeší W7.1b |
+| W7.1b | [Souběhová autorizace](REFACTORING_W71B_2026-10-29.md) sloučena v PR #227 a nasazena; [důkazy](verification/refactoring-w71b-release-20261029/RESULTS.md) | Hotovo pro RSVP, rezervaci a storno; navazuje W7.2 plný profil R02, pak R03–R04 |
 | Zbytek W7 a W8–W15 | Naplánované, další měření otevřené | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 

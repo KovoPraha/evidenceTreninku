@@ -1,0 +1,37 @@
+{
+  "sha": "66521929f7e9ce55f7a03d669cb7821f49382f6c",
+  "runs": [
+    {
+      "id": 40939142743,
+      "name": "Current documentation",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40939142743",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "66521929f7e9ce55f7a03d669cb7821f49382f6c"
+    },
+    {
+      "id": 40939144235,
+      "name": "Push on main",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40939144235",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "66521929f7e9ce55f7a03d669cb7821f49382f6c"
+    },
+    {
+      "id": 40939142856,
+      "name": "PHP quality",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40939142856",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "66521929f7e9ce55f7a03d669cb7821f49382f6c"
+    },
+    {
+      "id": 40939142879,
+      "name": "Testy",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/40939142879",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "66521929f7e9ce55f7a03d669cb7821f49382f6c"
+    }
+  ]
+}
