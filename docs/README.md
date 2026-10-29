@@ -12,10 +12,10 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 |---|---|
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
-| [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | Realizace zahájena: první K0/W6.1 sloučeno, W6.2 nasazeno; navazuje W6.3 a měření dalších domén |
+| [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | K0/W6.1 sloučeno, W6.2 a W6.3 nasazeno; navazuje K0.2/W7 — osoby, rodiny a oprávnění |
 | [Registr hlavních cest K0.1](REFACTORING_ROUTE_REGISTER_2026-10-29.md) | 16 kritických cest: oprávnění, služby, hlavní tabulky, vedlejší účinky, testy a otevřená měření |
 | [W6.2 — výpočet kapacity](REFACTORING_WAVE6_2026-10-29.md) | Dokončená čistá extrakce, přímé porovnání s původním kódem a ověřené produkční vydání |
-| [W6.3 — paměť kapacity](REFACTORING_W63_2026-10-29.md) | Migrovaný syntetický profil, postupné vyhodnocení řádků a paměťový rozpočet |
+| [W6.3 — paměť kapacity](REFACTORING_W63_2026-10-29.md) | Nasazené postupné vyhodnocení řádků, migrovaný profil a paměťový rozpočet |
 | [První vlna refaktoringu](REFACTORING_WAVE1_2026-10-28.md) | Příprava z 28. 10. 2026: měření detailu a navigace, tři implementační balíky, přejímací podmínky a dokumentační inventář |
 | [Finanční základ R13–R17](FINANCE_R13_R17_IMPLEMENTATION.md) | Lokální peněžní evidence, účetní doklady, vratky a první export; [ověření](verification/r13-r17/RESULTS.md) |
 | [Produkční nasazení](NASAZENI.md) | Ruční chráněný deploy z GitHub Actions, zálohy a řešení chyb |

@@ -4,6 +4,15 @@ Zahájeno 29. 10. 2026 z `8a44d82cc522f89983ea73e66b9d5aa6f5319262`,
 větev `codex/refactoring-w63-capacity-20261029`, izolované worktree mimo htdocs.
 Platí autonomní oprávnění vlastníka včetně merge a nasazení po ověření.
 
+**Dokončeno a nasazeno 29. 10. 2026:** PR #223, release
+`3a168a68050be1d44648086bdb190df7c556617e`,
+[deploy 40914561899](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40914561899).
+[Produkční důkazy](verification/refactoring-w63-release-20261029/RESULTS.md).
+Linux 1 799 testů / 35 956 assertions, MariaDB 10.3/11.4 a paměťová mez PASS;
+před/po 22/22 HTTP PASS. Přírůstek paměťové špičky při 10 000 položkách
+klesl přibližně o 67 %. Časová režie a rozdíl Windows/Linux jsou v protokolu.
+Dávkové sdílení mezi nabídkami nebylo zavedeno; navazuje K0.2/W7.
+
 ## Konkrétní řez a rozhodovací brána
 
 Nejprve změřit kapacitní čtení na nové syntetické localhost databázi se všemi
@@ -34,4 +43,4 @@ nabídek vyhodnotit zvlášť; tento řez neslibuje nižší počet SQL.
 Měření používá syntetickou distribuci dat, není produkční zátěžovou zkouškou.
 Další oblasti K0.2 a W7–W15 zůstávají podle komplexního plánu otevřené.
 
-Implementace a měření: [průběžný protokol](verification/refactoring-w63-20261029/RESULTS.md).
+Implementace a měření: [výsledky a omezení](verification/refactoring-w63-20261029/RESULTS.md).

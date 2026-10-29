@@ -1,0 +1,377 @@
+[
+  {
+    "source": "before.json",
+    "scenario": "empty",
+    "median_ms": {
+      "baseline": 47.2174,
+      "current": 46.7372
+    },
+    "peak_bytes": {
+      "baseline": 101792,
+      "current": 101792
+    },
+    "peak_reduction_percent": 0.0,
+    "sql_count": 8,
+    "fetched_rows": 99
+  },
+  {
+    "source": "before.json",
+    "scenario": "small",
+    "median_ms": {
+      "baseline": 50.619,
+      "current": 51.2857
+    },
+    "peak_bytes": {
+      "baseline": 106904,
+      "current": 106960
+    },
+    "peak_reduction_percent": -0.05,
+    "sql_count": 8,
+    "fetched_rows": 109
+  },
+  {
+    "source": "before.json",
+    "scenario": "dense",
+    "median_ms": {
+      "baseline": 135.6053,
+      "current": 139.4057
+    },
+    "peak_bytes": {
+      "baseline": 5480168,
+      "current": 5480168
+    },
+    "peak_reduction_percent": 0.0,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "before.json",
+    "scenario": "duplicates",
+    "median_ms": {
+      "baseline": 208.1368,
+      "current": 200.5135
+    },
+    "peak_bytes": {
+      "baseline": 4537600,
+      "current": 4537936
+    },
+    "peak_reduction_percent": -0.01,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "before.json",
+    "scenario": "fanout",
+    "median_ms": {
+      "baseline": 117.9748,
+      "current": 123.3743
+    },
+    "peak_bytes": {
+      "baseline": 585560,
+      "current": 585560
+    },
+    "peak_reduction_percent": 0.0,
+    "sql_count": 10,
+    "fetched_rows": 2101
+  },
+  {
+    "source": "after.json",
+    "scenario": "empty",
+    "median_ms": {
+      "baseline": 67.3979,
+      "current": 72.2199
+    },
+    "peak_bytes": {
+      "baseline": 101792,
+      "current": 102200
+    },
+    "peak_reduction_percent": -0.4,
+    "sql_count": 8,
+    "fetched_rows": 99
+  },
+  {
+    "source": "after.json",
+    "scenario": "small",
+    "median_ms": {
+      "baseline": 61.3602,
+      "current": 59.2023
+    },
+    "peak_bytes": {
+      "baseline": 106904,
+      "current": 104512
+    },
+    "peak_reduction_percent": 2.24,
+    "sql_count": 8,
+    "fetched_rows": 109
+  },
+  {
+    "source": "after.json",
+    "scenario": "dense",
+    "median_ms": {
+      "baseline": 225.2774,
+      "current": 238.3575
+    },
+    "peak_bytes": {
+      "baseline": 5480168,
+      "current": 1831240
+    },
+    "peak_reduction_percent": 66.58,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "after.json",
+    "scenario": "duplicates",
+    "median_ms": {
+      "baseline": 214.1598,
+      "current": 227.1509
+    },
+    "peak_bytes": {
+      "baseline": 4537600,
+      "current": 515024
+    },
+    "peak_reduction_percent": 88.65,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "after.json",
+    "scenario": "fanout",
+    "median_ms": {
+      "baseline": 104.226,
+      "current": 114.0944
+    },
+    "peak_bytes": {
+      "baseline": 585560,
+      "current": 227992
+    },
+    "peak_reduction_percent": 61.06,
+    "sql_count": 10,
+    "fetched_rows": 2101
+  },
+  {
+    "source": "after-quiet.json",
+    "scenario": "empty",
+    "median_ms": {
+      "baseline": 43.0867,
+      "current": 43.1399
+    },
+    "peak_bytes": {
+      "baseline": 101792,
+      "current": 102200
+    },
+    "peak_reduction_percent": -0.4,
+    "sql_count": 8,
+    "fetched_rows": 99
+  },
+  {
+    "source": "after-quiet.json",
+    "scenario": "small",
+    "median_ms": {
+      "baseline": 46.2534,
+      "current": 45.9776
+    },
+    "peak_bytes": {
+      "baseline": 106904,
+      "current": 104512
+    },
+    "peak_reduction_percent": 2.24,
+    "sql_count": 8,
+    "fetched_rows": 109
+  },
+  {
+    "source": "after-quiet.json",
+    "scenario": "dense",
+    "median_ms": {
+      "baseline": 134.2263,
+      "current": 156.8327
+    },
+    "peak_bytes": {
+      "baseline": 5480168,
+      "current": 1831240
+    },
+    "peak_reduction_percent": 66.58,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "after-quiet.json",
+    "scenario": "duplicates",
+    "median_ms": {
+      "baseline": 114.9373,
+      "current": 151.5626
+    },
+    "peak_bytes": {
+      "baseline": 4537600,
+      "current": 515024
+    },
+    "peak_reduction_percent": 88.65,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "after-quiet.json",
+    "scenario": "fanout",
+    "median_ms": {
+      "baseline": 61.7355,
+      "current": 70.0936
+    },
+    "peak_bytes": {
+      "baseline": 585560,
+      "current": 227992
+    },
+    "peak_reduction_percent": 61.06,
+    "sql_count": 10,
+    "fetched_rows": 2101
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "scenario": "empty",
+    "median_ms": {
+      "baseline": 4.032268,
+      "current": 4.059178
+    },
+    "peak_bytes": {
+      "baseline": 94176,
+      "current": 94536
+    },
+    "peak_reduction_percent": -0.38,
+    "sql_count": 8,
+    "fetched_rows": 99
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "scenario": "small",
+    "median_ms": {
+      "baseline": 4.032647,
+      "current": 4.014576
+    },
+    "peak_bytes": {
+      "baseline": 99232,
+      "current": 96840
+    },
+    "peak_reduction_percent": 2.41,
+    "sql_count": 8,
+    "fetched_rows": 109
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "scenario": "dense",
+    "median_ms": {
+      "baseline": 28.937769,
+      "current": 29.831641
+    },
+    "peak_bytes": {
+      "baseline": 5472504,
+      "current": 1823576
+    },
+    "peak_reduction_percent": 66.68,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "scenario": "duplicates",
+    "median_ms": {
+      "baseline": 28.523229,
+      "current": 29.571145
+    },
+    "peak_bytes": {
+      "baseline": 4529936,
+      "current": 505344
+    },
+    "peak_reduction_percent": 88.84,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "ci-mariadb-10.3.json",
+    "scenario": "fanout",
+    "median_ms": {
+      "baseline": 5.580311,
+      "current": 5.751249
+    },
+    "peak_bytes": {
+      "baseline": 577896,
+      "current": 220328
+    },
+    "peak_reduction_percent": 61.87,
+    "sql_count": 10,
+    "fetched_rows": 2101
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "scenario": "empty",
+    "median_ms": {
+      "baseline": 4.372905,
+      "current": 4.401708
+    },
+    "peak_bytes": {
+      "baseline": 94176,
+      "current": 94536
+    },
+    "peak_reduction_percent": -0.38,
+    "sql_count": 8,
+    "fetched_rows": 99
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "scenario": "small",
+    "median_ms": {
+      "baseline": 4.39148,
+      "current": 4.443437
+    },
+    "peak_bytes": {
+      "baseline": 99232,
+      "current": 96840
+    },
+    "peak_reduction_percent": 2.41,
+    "sql_count": 8,
+    "fetched_rows": 109
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "scenario": "dense",
+    "median_ms": {
+      "baseline": 26.313866,
+      "current": 27.01218
+    },
+    "peak_bytes": {
+      "baseline": 5472504,
+      "current": 1823576
+    },
+    "peak_reduction_percent": 66.68,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "scenario": "duplicates",
+    "median_ms": {
+      "baseline": 25.414215,
+      "current": 26.131755
+    },
+    "peak_bytes": {
+      "baseline": 4529936,
+      "current": 505344
+    },
+    "peak_reduction_percent": 88.84,
+    "sql_count": 8,
+    "fetched_rows": 10099
+  },
+  {
+    "source": "ci-mariadb-11.4.json",
+    "scenario": "fanout",
+    "median_ms": {
+      "baseline": 11.085854,
+      "current": 11.291675
+    },
+    "peak_bytes": {
+      "baseline": 577896,
+      "current": 220328
+    },
+    "peak_reduction_percent": 61.87,
+    "sql_count": 10,
+    "fetched_rows": 2101
+  }
+]

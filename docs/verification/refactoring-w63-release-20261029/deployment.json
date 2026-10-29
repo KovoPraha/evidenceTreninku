@@ -1,0 +1,91 @@
+{
+  "run_id": 40914561899,
+  "job_id": 123591226725,
+  "sha": "3a168a68050be1d44648086bdb190df7c556617e",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "tests": 1799,
+  "assertions": 35956,
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-29_164652_2e7b4766.sql.gz",
+    "manifest": "evidence_2026-10-29_164652_2e7b4766.manifest.json",
+    "sha256": "1849d6d6a6ee63088e65a30ee9c998ac7c7c77604751b50f0f35e561449c42a8",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063507,
+    "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+  },
+  "migration_checks": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    }
+  ],
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "private_storage": {
+    "ok": true,
+    "storage_created": false,
+    "existing_configuration_preserved": true,
+    "config_appended": false,
+    "private_config_backup_verified": false,
+    "cli_write_read_delete_probe": true,
+    "web_runtime_verified": false,
+    "attachments_moved": false,
+    "database_accessed": false
+  },
+  "http_smoke": {
+    "ok": true,
+    "http": 200,
+    "via": "direct runner curl"
+  },
+  "temporary_config_cleanup": "success"
+}
