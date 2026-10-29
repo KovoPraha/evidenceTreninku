@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/member_charge_read.php';
@@ -28,6 +29,19 @@ function familyPortalTableExists(PDO $pdo, string $table): bool
     return false;
 }
 
+/** Shared authorization predicate; callers bind account ID first. No cached authority. */
+function familyPortalApprovedRelationsSql(): string
+{
+    return 'FROM account_person_roles r '
+        . 'JOIN verejni_uzivatele vu ON vu.id=r.account_id '
+        . 'JOIN sportovci s ON s.id=r.sportovec_id '
+        . "WHERE r.account_id=? AND r.status='approved' "
+        . 'AND r.valid_from<=CURRENT_TIMESTAMP '
+        . 'AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) '
+        . 'AND vu.aktivni=1 AND vu.email_overeno=1 '
+        . "AND r.relation_role IN ('self','guardian') ";
+}
+
 /**
  * Returns only explicitly approved, currently valid links of an active and
  * verified public account. Duplicate relation rows are collapsed by person.
@@ -47,14 +61,7 @@ function familyPortalAuthorizedPeople(PDO $pdo, int $accountId): array
     $statement = $pdo->prepare(
         'SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, '
         . 's.stav_clenstvi, r.relation_role '
-        . 'FROM account_person_roles r '
-        . 'JOIN verejni_uzivatele vu ON vu.id=r.account_id '
-        . 'JOIN sportovci s ON s.id=r.sportovec_id '
-        . "WHERE r.account_id=? AND r.status='approved' "
-        . 'AND r.valid_from<=CURRENT_TIMESTAMP '
-        . 'AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) '
-        . 'AND vu.aktivni=1 AND vu.email_overeno=1 '
-        . "AND r.relation_role IN ('self','guardian') "
+        . familyPortalApprovedRelationsSql()
         . 'ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role'
     );
     $statement->execute([$accountId]);
@@ -80,15 +87,14 @@ function familyPortalAuthorizedPeople(PDO $pdo, int $accountId): array
 
 function familyPortalCanViewPerson(PDO $pdo, int $accountId, int $sportovecId): bool
 {
-    if ($sportovecId < 1) {
+    if ($sportovecId < 1 || $accountId < 1
+        || !familyPortalHasTables($pdo, ['account_person_roles', 'verejni_uzivatele', 'sportovci'])
+    ) {
         return false;
     }
-    foreach (familyPortalAuthorizedPeople($pdo, $accountId) as $person) {
-        if ((int)$person['sportovec_id'] === $sportovecId) {
-            return true;
-        }
-    }
-    return false;
+    $statement = $pdo->prepare('SELECT 1 ' . familyPortalApprovedRelationsSql() . 'AND s.id=? LIMIT 1');
+    $statement->execute([$accountId, $sportovecId]);
+    return (bool)$statement->fetchColumn();
 }
 
 /** @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,member_charges:list<array<string,mixed>>} */
@@ -152,11 +158,20 @@ function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId):
 
     $memberCharges = memberChargeRowsForSportovec($pdo, $sportovecId);
 
-    $summary=sportsActivitySummary($pdo,$sportovecId,date('Y-01-01'),date('Y-m-d'));
-    $confirmed=[];
-    if(function_exists('trainingClosedActivitiesForPerson')&&familyPortalTableExists($pdo,'training_closures'))foreach(trainingClosedActivitiesForPerson($pdo,$sportovecId,'1900-01-01',date('Y-m-d')) as $activity)$confirmed[(int)$activity['training_id']]=$activity;
-    foreach($trainings as &$training){$closure=$confirmed[(int)$training['id']]??null;$training['attendance_confirmed']=$closure!==null;$training['closure_version']=$closure['version']??null;}unset($training);
-    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings, 'member_charges' => $memberCharges,'sports_summary'=>$summary];
+    $summary = sportsActivitySummary($pdo, $sportovecId, date('Y-01-01'), date('Y-m-d'));
+    $confirmed = [];
+    if (function_exists('trainingClosedActivitiesForPerson') && familyPortalTableExists($pdo, 'training_closures')) {
+        foreach (trainingClosedActivitiesForPerson($pdo, $sportovecId, '1900-01-01', date('Y-m-d')) as $activity) {
+            $confirmed[(int)$activity['training_id']] = $activity;
+        }
+    }
+    foreach ($trainings as &$training) {
+        $closure = $confirmed[(int)$training['id']] ?? null;
+        $training['attendance_confirmed'] = $closure !== null;
+        $training['closure_version'] = $closure['version'] ?? null;
+    }
+    unset($training);
+    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings, 'member_charges' => $memberCharges,'sports_summary' => $summary];
 }
 
 /** @return list<array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,member_charges:list<array<string,mixed>>}> */
