@@ -86,8 +86,11 @@ migrovaný profil a postupné čtení s úsporou paměti; je také nasazené.
 [W7.1a](REFACTORING_W71_2026-10-29.md) nasadilo cílené ověření rodinného přístupu
 s rozpočtem čtyř SQL. [W7.1b](REFACTORING_W71B_2026-10-29.md) opravilo
 revokaci během čekání RSVP/náhrad: aktuální zamykající kontrola před zápisem,
-32/32 souběhů v obou MariaDB CI. Navazuje W7.2: úplný profil R02, potom R03–R04;
-plošné měření K0.2 zůstává otevřené;
+32/32 souběhů v obou MariaDB CI. [W7.2](REFACTORING_W72_2026-10-29.md)
+nasadilo cílené načítání jednotlivých profilů: celý GET pro 20 osob má
+2706 → 2326 SQL a shodná data/HTML; CI medián o 10–12 % nižší.
+Navazuje W7.3: rozpad sekcí R02 a 1563 opakovaných kontrol existence tabulek,
+potom R03–R04. Plošné měření K0.2 zůstává otevřené;
 dávkování kapacit mezi nabídkami je samostatný kandidát.
 
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah

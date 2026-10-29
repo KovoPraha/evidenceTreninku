@@ -31,10 +31,16 @@ po ověření. Původní checkout a cizí WIP zachovat.
 
 ## Stav
 
-Plán uložen před implementací. RED doložil 420 místo 40 membership dotazů.
-Implementováno cílení na profil při zachování čerstvé autorizace. Celý GET
-20 osob: 2706 → 2326 SQL a 2953 → 2193 řádků; shodná data i normalizované HTML.
-Šest nových testů / 23 assertions PASS. Místní časové měření je kolísavé
-s horším mediánem current pro 20 osob; před sloučením ověřit CI a klidový běh.
-Úplné testy a PHPStan běží, merge/deploy dosud neprovedeny.
-[Důkazy a meze](verification/refactoring-w72-20261029/RESULTS.md).
+Dokončeno, sloučeno v PR #229 a nasazeno po úspěšném ověření.
+Plán byl uložen před implementací, RED doložil 420 místo 40 membership dotazů.
+Celý GET pro 20 osob: 2706 → 2326 SQL a 2953 → 2193 řádků; shodná data/HTML.
+Čerstvá autorizace zůstává, včetně revokace uprostřed sestavování přehledu.
+Šest nových testů / 23 assertions; Linux plná sada 1814 / 36118 PASS,
+PHPStan, styl, dokumentace, POSIX a MariaDB 10.3/11.4 PASS.
+První místní časový profil kolísal a měl horší medián; zachován v důkazech.
+Klidové opakování −5,3 %, CI 10.3 −10,2 %, CI 11.4 −12,3 %; peak stejný.
+[Měření a meze](verification/refactoring-w72-20261029/RESULTS.md),
+[nasazení a provozní kontroly](verification/refactoring-w72-release-20261029/RESULTS.md).
+
+Navazuje W7.3: náklady sekcí R02, opakované metadata dotazy a širší historie;
+R03/R04 samostatně. UAT, aktivace integrací a lidské převzetí zůstávají otevřené.

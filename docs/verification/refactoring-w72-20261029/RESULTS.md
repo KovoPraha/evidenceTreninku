@@ -61,8 +61,44 @@ stejný počet SQL; u pěti osob 711 → 691. Data i normalizované HTML shodné
 Místní pětivzorkový medián pro 20 osob 4260,77 → 5271,51 ms nebyl zrychlením;
 current vzorky klesaly 6603 → 3997 ms. Paměťový peak zůstal prakticky stejný
 (cca 5,6 MB). Bez dalšího ověření nelze tvrdit stabilní časový přínos.
-Následuje nezávislé CI měření obou MariaDB a klidové přeměření tohoto případu.
+Následné nezávislé CI a klidové přeměření jsou uvedeny níže; původní nepříznivý vzorek zůstává zachován.
 SQL/řádkový rozpočet je deterministický; časová měření nejsou SLA.
-Úplné brány a produkční ověření budou doplněny před uzavřením balíku.
+Úplné brány prošly; produkční vydání dokládá [samostatný protokol](../refactoring-w72-release-20261029/RESULTS.md).
 
 [Plán](../../REFACTORING_W72_2026-10-29.md).
+
+## Nezávislé ověření před sloučením
+
+PR #229, přesný head `26525ef224a4616a3fd5a4a017764ffbd9ba328d`:
+[Testy 40949530705](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40949530705),
+[PHP quality 40949530689](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40949530689),
+[dokumentace 40949530649](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40949530649) PASS.
+Linux 1814 testů / 36118 assertions; samostatně POSIX 3 / 45 bez skipů.
+Místně 1814 / 36069, tři Windows POSIX skipy; PHPStan bez chyb,
+Composer validate strict, styl a dokumentační kontrakt PASS.
+MariaDB 10.3/11.4 prošly včetně dřívějších 32 souběhových autorizačních scénářů.
+
+Medián controller+render, 20 osob, pět střídajících se vzorků na variantu:
+
+| Prostředí | Baseline ms | Current ms | Změna |
+| --- | ---: | ---: | ---: |
+| [CI MariaDB 10.3](ci-mariadb-10.3.json) | 632.87 | 568.36 | -10.2 % |
+| [CI MariaDB 11.4](ci-mariadb-11.4.json) | 1010.11 | 886.11 | -12.3 % |
+| [Místní klidový běh](quiet-20.json) | 4723.25 | 4471.76 | -5.3 % |
+
+Klidový běh následoval po dokončení místní sady i PHPStan. Časový přínos
+v těchto třech bězích podporuje deterministické snížení SQL, ale nevylučuje
+vliv prostředí a nedokládá produkční SLA. Peak zůstává prakticky stejný.
+Obě CI mají pro 0/1/5/20 osob shodná data/HTML a stejné SQL/řádkové rozpočty
+jako místní běh. První `after.json` neobsahuje EXPLAIN, protože původní výběr
+zachytil jiný autorizační dotaz; opravený výběr profilu je v CI i klidovém běhu.
+
+## Podklad pro W7.3
+
+V aktuálním profilu 20 osob tvoří dvě varianty dotazu na existenci tabulek
+1056 + 507 = 1563 SQL, dále 44 dotazů ověřuje sloupce. Samostatné čtení
+členských polí stále činí 160 SQL. Další práce má nejprve přiřadit náklady
+sekcím R02, pokrýt chybějící/tabulkové varianty a větší historii, teprve
+potom navrhnout omezené sdílení metadat během jednoho požadavku. Autorizační
+data nesmějí být cachována a post-lock kontroly writerů zůstávají zachovány.
+R03/R04 ani kompletní browser/UAT a produkční zátěžový profil tento balík neuzavírá.

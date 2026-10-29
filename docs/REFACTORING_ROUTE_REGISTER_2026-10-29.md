@@ -11,7 +11,7 @@ doménové zdroje, nikoli kompletní tranzitivní seznam SQL všech helperů/boo
 | ID / vstup | Identita a rozsah | Služba → hlavní tabulky | Vedlejší účinky / citlivost | Existující ověření; další měření |
 | --- | --- | --- | --- | --- |
 | R01 `booking/eshop.php`, `booking/produkt.php` | Veřejné; pouze zveřejněné nabídky. Členská cena má samostatné podmínky. | `shop_catalog_cards`, `shop_storefront_read`, `club_program` → `shop_products`, `shop_variants`, `shop_product_publications`, `club_program_offers`, `club_program_enrollments`, `shop_order_items` | Projekce; nezveřejnit interní nebo cizí osobní údaje. Kapacita je informativní do zamčeného checkoutu. | `ProgramOfferBatchReadTest`, `ProgramStorefrontReadCompatibilityTest`; vlny 1–5 a nynější profil kapacity. Změřit migrované schéma a různé počty překrývajících se nabídek. |
-| R02 `booking/sportovni_prehled.php` | `verejny_uzivatel_id`; `familyPortalAuthorizedPeople`, aktuální schválená vazba self/guardian. | `family_portal`, `family_tasks`, `family_annual_paid_overview` → `account_person_roles`, `sportovci`, `club_roster_members`, `club_program_enrollments` a finanční zdroje | GET citlivý přehled; POST má CSRF a samostatné doménové akce. Zdravotní/sportovní a finanční údaje. | `FamilyPortalTest`, `FamilyAnnualPaidOverviewTest`; rodiny 1/5/20 osob, včetně odňaté vazby. HTTP/SQL profil dosud nezměřen. |
+| R02 `booking/sportovni_prehled.php` | `verejny_uzivatel_id`; `familyPortalAuthorizedPeople`, aktuální schválená vazba self/guardian. | `family_portal`, `family_tasks`, `family_annual_paid_overview` → `account_person_roles`, `sportovci`, `club_roster_members`, `club_program_enrollments` a finanční zdroje | GET citlivý přehled; POST má CSRF a samostatné doménové akce. Zdravotní/sportovní a finanční údaje. | `FamilyPortalTest`, `FamilyAnnualPaidOverviewTest`; rodiny 1/5/20 osob, včetně odňaté vazby. W7.2 syntetický celý controller+HTML 0/1/5/20 osob, MariaDB 10.3/11.4; 20 osob SQL 2706 → 2326. Skutečný HTTP/browser a rozpad sekcí otevřené. |
 | R03 `booking/moje_osoby.php` | Zákaznická session; žádost o vazbu není schválená vazba. | `account_person_claim`, `athlete_registration` → `account_person_claim_requests`, `account_person_roles`, `sportovci` | Osobní údaje, auditovaná žádost; CSRF. Žádné automatické schválení podle shody jmen. | `AccountPersonClaimTest`, `AccountPersonRoleTest`; pending/rejected/cancelled a počet žádostí. Profil dosud nezměřen. |
 | R04 `sprava_sportovcu.php`, `sportovec_karta.php` | Session trenéra, route owner/aktivní pozice, `canAccess('sprava_sportovcu')`; zápisy přes editor a membership služby. | `sportovec_editor`, `person_state`, `athlete_training_timeline` → `sportovci`, `club_roster_members`, `sportovec_interni_poznamka`, historie | Změna členství, poznámky, soupisky; důvody/revize/CSRF. Identifikační údaje a interní poznámky. | `SportovecEditorTest`, `SportovecEditorDetailsTest`, `SportovecInternalNoteTest`, MariaDB editor smoke; 100/1 000/10 000 osob, filtr i prázdný výsledek. Profil dosud nezměřen. |
 | R05 `planovac.php` | Trenérská session, `canAccess('planovac')`, platné trenérské rozsahy v dotčených službách. | `training_planner_view`, `training_roster_bridge`, `training_rsvp` → `planovane_treninky`, `planovane_treninky_podskupiny`, `treneri`, soupisky | Čtení plánů a POST změny; plán není skutečná účast. Osoby a svěřené týmy. | `TrainingPlannerViewTest`, `PlannerJavascriptSmoke.cjs`; 1/12/52 týdnů a cizí týmy. Opakované SQL je kandidát, čas a řádky dosud nezměřeny. |
@@ -89,3 +89,15 @@ RSVP, rezervace a storno náhrady kontrolují aktuální oprávnění po doméno
 zámcích před první mutací a drží je do konce transakce. Čtecí helpery beze změny.
 Tím se neuzavírá audit všech writerů ani plné profily R02–R04; navazuje W7.2
 úplným rodinným přehledem R02 a teprve podle měření další optimalizací.
+
+## Doplnění W7.2, 29. 10. 2026
+
+[Plný rodinný přehled](REFACTORING_W72_2026-10-29.md) nasazen v PR #229;
+[provozní důkazy](verification/refactoring-w72-release-20261029/RESULTS.md).
+Skutečný GET controller a HTML po syntetickém autentizovaném bootstrapu,
+rodiny 0/1/5/20, původní zmrazené funkce versus cílená hydratace profilu.
+Data/HTML shodné, aktuální oprávnění včetně revokace uprostřed čtení zachována.
+20 osob: 2706 → 2326 SQL, 2953 → 2193 řádků; CI medián o 10–12 % nižší,
+peak stejný. Syntetická fixture není produkční zátěž ani úplný UAT.
+W7.3 má rozdělit zbytek ceny R02 a ověřit kandidáta 1563 kontrol tabulek
+a 44 kontrol sloupců; oprávnění se nesmí cachovat. R03/R04 stále otevřené.
