@@ -62,8 +62,18 @@ bez nové výjimky; cílený scanner 3 testy / 13 assertions PASS. První lokál
 Composer běh také překročil 300 s hostitelského timeoutu. Opakování používá
 lokální `COMPOSER_PROCESS_TIMEOUT=900`, nemění CI limit ani obsah testů.
 
-Finální plná sada, přímé porovnání a CI budou uzavřeny před merge. Produkční
-vydání má vlastní nový protokol; staré release důkazy nejsou jeho náhradou.
+Finální head `f3490bfe451658e4e27e7d69d3eed9e555e767a7` prošel CI:
+[Testy 40876189024](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40876189024),
+[PHP quality 40876189053](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40876189053),
+[dokumentace 40876189044](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40876189044).
+Linux 1 798 testů / 35 952 assertions, POSIX bez skipů, MariaDB 10.3/11.4
+včetně porovnání a souběhu checkoutu, PHPStan/styl, anonymous sweep a JS PASS.
+Lokální opakování: 1 798 testů / 35 903 assertions, 3 Windows POSIX skipy,
+2:45 min. Composer audit bez známých zranitelností.
+PR #221 sloučen jako `330f8bde7a02984e21dc59309a7d8e6fb85bac62`.
+Produkční vydání má vlastní nový protokol; staré důkazy nejsou jeho náhradou.
+[Nový produkční protokol](../refactoring-wave6-release-20261029/RESULTS.md)
+potvrzuje nasazení, zálohu, čtecí shodu před/po a 22/22 HTTP PASS.
 
 ## Další práce
 

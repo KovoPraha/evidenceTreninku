@@ -1,40 +1,34 @@
 # Aktuální stav projektu
 
-Aktualizováno 28. 10. 2026 (Europe/Prague); další vydání musí tento přehled nahradit.
+Aktualizováno 29. 10. 2026 (Europe/Prague); další vydání musí tento přehled nahradit.
 
-- **Poslední doložené nasazení:** `a14d1026800822a09ee713a9e6924651be052913`,
-  [PR #217](https://github.com/KovoPraha/evidenceTreninku/pull/217),
-  [deploy 40777286733](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40777286733),
-  28. 10. 2026, SUCCESS; živé SHA a run ID ověřeny následnou čtecí kontrolou.
-  [Protokol vydání a důkazy](verification/refactoring-wave5-release-20261028/RESULTS.md):
-  před i po nasazení 22/22 anonymních HTTP kontrol PASS, schéma current / pending [], VS zachovány.
-  Záloha 336 tabulek / 2 triggery vytvořena a ověřena; obnova v tomto vydání neopakována.
-- **CI nasazeného main:**
-  [Testy 40776670809](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40776670809),
-  [PHP quality 40776670614](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40776670614),
-  [CodeQL 40776671215](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40776671215)
-  a [dokumentace 40776670646](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40776670646), PASS.
-  1 782 testů / 35 866 assertions; MariaDB 10.3/11.4, PHPStan a sweep PASS.
-- **Změna:** pátá vlna dávkově načítá nabídky a vazby fyzických týmů.
-  Pro 50 programů SQL 218 → 120, nabídky 50 → 1, vazby týmů 50 → 1; výstupy shodné.
-  Bez nové migrace, změny kapacity, členských cen či checkoutu. [Plán a důkazy](REFACTORING_WAVE5_2026-10-28.md).
-  Produkční medián katalogu 0,683 → 0,270 s; tři vzorky před/po,
-  orientační měření HTTP včetně sítě, nikoli zátěžový test.
+- **Poslední doložené nasazení:** `330f8bde7a02984e21dc59309a7d8e6fb85bac62`,
+  [PR #221](https://github.com/KovoPraha/evidenceTreninku/pull/221),
+  [deploy 40877039442](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40877039442), SUCCESS.
+  Živé SHA/run ID ověřeny novou čtecí kontrolou.
+  [Protokol a důkazy](verification/refactoring-wave6-release-20261029/RESULTS.md):
+  před/po 22/22 HTTP PASS, schéma current / pending [], VS zachovány.
+  Ověřená záloha 336 tabulek / 2 triggery; obnova v tomto vydání neopakována.
+- **CI přesného main:** [PHP quality 40876631658](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40876631658), [Push on main 40876631075](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40876631075), [Testy 40876631205](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40876631205), [Current documentation 40876631269](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40876631269).
+  1798 testů / 35952 assertions; MariaDB 10.3/11.4,
+  POSIX bez skipů, PHPStan, styl, anonymous sweep a JS PASS.
+- **Změna:** W6.2 odděluje čistý výpočet kapacity od databázového čtení.
+  Shodné výsledky, SQL, parametry a řádky; zámky a checkout zachovány.
+  Bez migrace, indexu nebo deklarovaného zrychlení. [Plán](REFACTORING_WAVE6_2026-10-29.md).
+  K0/W6.1 přidal mapu 16 cest, charakterizaci a měřicí nástroje.
 - **Zapnuté:** společná Evidence/KIS, veřejný katalog, rodinné a sportovní účty,
   klubová, finanční, účetní a skladová implementace; bankovní/ruční platební postup.
-- **Flags ověřené 28. 10. / bez nové aktivace:** Fio import a automatické potvrzování,
-  SumUp, Stripe a Velocota vypnuté; Packeta flag není definovaný. KIS canonical writes false.
-  [Živá verze a čtecí kontrola](verification/refactoring-wave5-release-20261028/release-comparison.json).
-  Konfigurace, flags a ledger 141 záznamů shodné v čerstvé kontrole před/po vydání.
-- **Blokery ostrého převzetí:** lidská přejímka a pilot, převzetí účetní D12–D14,
-  skutečná inventura a ocenění, ověřené rodinné vazby a rozsahy trenérů,
+- **Flags ověřené 29. 10.:** Fio import/auto-confirm, SumUp, Stripe a Velocota
+  vypnuté; Packeta flag nedefinovaný. KIS canonical writes false.
+  Konfigurace, flags, ledger 141 a stav příloh před/po shodné.
+  [Čtecí porovnání](verification/refactoring-wave6-release-20261029/release-comparison.json).
+- **Blokery ostrého převzetí:** lidská přejímka a pilot, účetní D12–D14,
+  skutečná inventura/ocenění, ověřené rodinné vazby a trenérské rozsahy,
   dohody/částky příspěvků a dvě chybějící přílohy účtenek.
-  [Rozhodnutí D01–D20](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
-  Technické vydání má souhlas vlastníka; UAT flag zůstává false.
-  Historické přejímky se na toto vydání automaticky nepřenášejí.
-- **Další krok:** dokončit lidské/účetní převzetí a doplnit ověřená provozní data;
-  další výkonový kandidát je zbývající kanonické čtení obsazenosti a rezervací.
-  Před každým vydáním ověřit společný stav schválených změn, CI a konkrétní souhlas
-  vlastníka; po vydání aktualizovat tento přehled včetně SHA a důkazů.
+  [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
+  Technické vydání autorizované; UAT false, importy/integrace neaktivovány.
+- **Další krok:** W6.3 profil migrovaného schématu před dávkovou optimalizací;
+  K0.2 dalších agend průběžně podle [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
+  Lidské/účetní převzetí a ověřená provozní data zůstávají samostatné.
 
-[Postup převzetí stanice](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+[Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)

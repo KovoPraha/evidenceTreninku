@@ -6,6 +6,14 @@ Základ `9da70c97b3b825ae50459a8663aea5af50dc7982`, izolované worktree
 větev `codex/refactoring-wave6-capacity-calculation-20261029`.
 Vlastník schválil autonomní práci včetně sloučení a nasazení po ověření.
 
+**Dokončeno a nasazeno 29. 10. 2026:** PR #221, release
+`330f8bde7a02984e21dc59309a7d8e6fb85bac62`,
+[deploy 40877039442](https://github.com/KovoPraha/evidenceTreninku/actions/runs/40877039442).
+[Implementace a měření](verification/refactoring-wave6-20261029/RESULTS.md),
+[produkční protokol](verification/refactoring-wave6-release-20261029/RESULTS.md).
+1 798 testů / 35 952 assertions, MariaDB 10.3/11.4 a CI PASS;
+před i po 22/22 HTTP PASS. Konfigurace, flags, ledger a VS zachovány.
+
 ## Problém a konkrétní změna
 
 `clubProgramOfferCapacityStateForTeam` současně sestavuje SQL, pracuje se zámky

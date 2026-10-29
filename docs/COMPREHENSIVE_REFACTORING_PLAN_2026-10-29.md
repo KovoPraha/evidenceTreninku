@@ -1,6 +1,6 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav: realizace zahájena 29. 10. 2026; první balík K0/W6.1 sloučen, W6.2 probíhá.**
+**Stav k 29. 10. 2026: první balík K0/W6.1 sloučen, W6.2 ověřeno a nasazeno.**
 Zadání vlastníka z 29. 10. 2026: připravit komplexní pojetí celé aplikace,
 v dalších krocích autonomně implementovat. Navazující pokyn vlastníka aktivoval
 [první realizační balík](REFACTORING_K0_W6_2026-10-29.md). Původní příprava
@@ -106,7 +106,8 @@ flowchart TD
 | UI, navigace, API a provoz: `hlavicka.php`, `ui_shell.php`, `assets/app-ui.*`, admin/booking vstupy, workflow | Zachovat URL, role, návratový kontext, české popisky, escaping, přístupnost a mobilní chování. Testy a CLI nesmějí být veřejným vstupem. |
 
 Názvy bez adresáře v tabulce označují helpery v `includes/`, pokud není uvedeno jinak.
-Detailní mapu vlastníků tabulek a endpointů doplní K0; tato tabulka není úplný
+První [registr 16 hlavních cest](REFACTORING_ROUTE_REGISTER_2026-10-29.md) doplnilo K0.1;
+detailní audit vlastníků a endpointů pokračuje po doménách. Tato tabulka není úplný
 seznam cest ani nový návrh vlastnictví historických tabulek.
 
 ## 5. Etapy a pořadí
@@ -120,8 +121,8 @@ má před výkonovou frontou přednost a dostane vlastní opravný PR.
 
 | Etapa / stav | Konkrétní balíky v pořadí | Vstup / závislost | Hotovo, když |
 | --- | --- | --- | --- |
-| **K0 — připravena**: měření a kontrakty celé aplikace | K0.1 aktuální mapa route → guard → služba → tabulky → side effect; K0.2 syntetické profily a měřicí prostředí; K0.3 registr zjištění a řazení backlogu | Aktuální main a tento plán | Každá oblast má vlastníka, alespoň hlavní pozitivní/negativní scénář a výchozí měření nebo výslovně popsanou mezeru. |
-| **W6 — další implementační vlna**: obsazenost programů | W6.1 charakterizační testy a profil; W6.2 oddělit načtení podkladů od čistého výpočtu; W6.3 případně dávkové veřejné čtení podle měření | K0 pro katalog, dosavadní W1–5 | Kanonický a nový výstup shodný ve všech scénářích, čerstvé zámky zachované, prokazatelný přínos bez zhoršení DB práce/paměti. |
+| **K0 — průběžná realizace**: měření a kontrakty celé aplikace | K0.1 aktuální mapa route → guard → služba → tabulky → side effect; K0.2 syntetické profily a měřicí prostředí; K0.3 registr zjištění a řazení backlogu | Aktuální main a tento plán | Každá oblast má vlastníka, alespoň hlavní pozitivní/negativní scénář a výchozí měření nebo výslovně popsanou mezeru. |
+| **W6 — W6.2 nasazeno, W6.3 čeká**: obsazenost programů | W6.1 charakterizační testy a profil; W6.2 oddělit načtení podkladů od čistého výpočtu; W6.3 případně dávkové veřejné čtení podle měření | K0 pro katalog, dosavadní W1–5 | Kanonický a nový výstup shodný ve všech scénářích, čerstvé zámky zachované, prokazatelný přínos bez zhoršení DB práce/paměti. |
 | **W7 — kandidáti k měření**: osoby, rodiny a oprávnění | W7.1 seznamy osob a rodinné přehledy; W7.2 oddělit vstupy/čtení/prezentaci; W7.3 odstranit konkrétní duplicity autorizačních predikátů | K0; bezpečnostní kontrakty před extrakcí | Stabilní stránkování a omezené načítání; stejné výsledky pro self/guardian/trenéra/registráře; okamžité odnětí vazby a souběžná revokace projdou negativními testy. |
 | **W8 — kandidáti k měření**: sport a rezervace | W8.1 plánovač, kalendáře a timeline; W8.2 formuláře tréninku/závodu a uzavření účasti; W8.3 rezervace, náhrady, čekací listina | K0 + dotčené kontrakty W7 | SQL neprobíhá po jednom záznamu bez důvodu; shoda časových hranic, účasti a historie; browser klávesnice/mobil a souběžné poslední místo PASS. |
 | **W9 — připravit kontrakty**: obchod a sklad | W9.1 rozdělit čtecí/view část checkoutu; W9.2 izolovat výpočet ceny a validaci bez přesunu transakčních kontrol; W9.3 skladové výpisy, výdej a vratky | K0 + W6/W7 při společných závislostech | Stejné minor-unit částky, stock a VS; idempotentní opakování, souběžná objednávka/vratka a rollback bez vedlejších zápisů. |
@@ -272,7 +273,7 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | Vlny 1–5 | Dokončené a doložené | Zachovat regresní rozpočty a chování |
 | Komplexní plán | Sloučený v PR #219; realizace autorizována | Průběžná aktualizace podle důkazů |
 | K0 + W6.1 | První balík sloučen v PR #220 po úspěšném CI | K0.2 ostatních agend a migrovaný profil pro W6.3 otevřené |
-| W6.2 | [Čistá extrakce](REFACTORING_WAVE6_2026-10-29.md) probíhá | Ověření shody, CI a vydání |
+| W6.2 | [Čistá extrakce](REFACTORING_WAVE6_2026-10-29.md) sloučena a nasazena; [důkazy](verification/refactoring-wave6-release-20261029/RESULTS.md) | Hotovo; zachovat nové kontrakty |
 | W6.3–W15 | Naplánované; nový kód těchto etap nezahájen | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 

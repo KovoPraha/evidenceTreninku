@@ -1,0 +1,45 @@
+{
+  "before_live": {
+    "sha": "a14d1026800822a09ee713a9e6924651be052913",
+    "run_id": "40777286733",
+    "deployed_at": "2026-10-28T22:08:13+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "330f8bde7a02984e21dc59309a7d8e6fb85bac62",
+    "run_id": "40877039442",
+    "deployed_at": "2026-10-29T12:57:05+00:00",
+    "uat_approved": false
+  },
+  "unchanged": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "migration_ledger_count": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "forward_vs_repair_applied": true
+  },
+  "pre_run": 40874539428,
+  "post_run": 40877996673,
+  "identity_scope": "deployment metadata and workflow; no new runtime file hash inventory",
+  "after": {
+    "config_sha256": "326c832d891a99d2780099391854a8daee3936adcdacf62c62f0a00b616fb772",
+    "integration_flags": {
+      "FIO_IMPORT_ENABLED": false,
+      "FIO_AUTO_CONFIRM_ENABLED": false,
+      "SUMUP_ENABLED": false,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    },
+    "migration_ledger_count": 141,
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "kis_canonical_write_enabled": false,
+    "forward_vs_repair_applied": true
+  }
+}
