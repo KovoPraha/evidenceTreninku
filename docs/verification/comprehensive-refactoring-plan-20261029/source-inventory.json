@@ -1,0 +1,202 @@
+{
+  "source_sha": "49daae3a192d8168ed427c7adb4f203c916081d9",
+  "date": "2026-10-29",
+  "method": "Tracked source metadata; runtime excludes tests/docs/outputs/vendor/migrations/tools. Counts are not performance, coverage or severity measurements.",
+  "counts": {
+    "tracked_files": 2102,
+    "runtime_php_files": 610,
+    "runtime_php_lines": 106892,
+    "markdown_files": 238,
+    "unit_test_files": 160,
+    "integration_test_files": 159,
+    "mariadb_support_files": 43,
+    "http_support_files": 28,
+    "versioned_php_migrations": 140
+  },
+  "largest_runtime_php": [
+    {
+      "path": "includes/shop_checkout.php",
+      "lines": 2182
+    },
+    {
+      "path": "includes/club_program.php",
+      "lines": 1825
+    },
+    {
+      "path": "formular.php",
+      "lines": 1357
+    },
+    {
+      "path": "sync_evidence.php",
+      "lines": 1215
+    },
+    {
+      "path": "booking/eshop.php",
+      "lines": 1206
+    },
+    {
+      "path": "edit_zavod_form.php",
+      "lines": 1153
+    },
+    {
+      "path": "hlavicka.php",
+      "lines": 1133
+    },
+    {
+      "path": "sportovec_treninky.php",
+      "lines": 1108
+    },
+    {
+      "path": "planovac.php",
+      "lines": 1104
+    },
+    {
+      "path": "sportovec_detail.php",
+      "lines": 1098
+    },
+    {
+      "path": "edit_trenink.php",
+      "lines": 1060
+    },
+    {
+      "path": "includes/auto_migrace.php",
+      "lines": 984
+    },
+    {
+      "path": "includes/club_event_registration.php",
+      "lines": 970
+    },
+    {
+      "path": "bin/db-backup.php",
+      "lines": 934
+    },
+    {
+      "path": "google_sheets_linky.php",
+      "lines": 915
+    },
+    {
+      "path": "hromadne_podskupiny.php",
+      "lines": 901
+    },
+    {
+      "path": "formular_zavod.php",
+      "lines": 864
+    },
+    {
+      "path": "export_uci.php",
+      "lines": 813
+    },
+    {
+      "path": "includes/athlete_registration_admin.php",
+      "lines": 730
+    },
+    {
+      "path": "includes/localhost_acceptance_hub.php",
+      "lines": 712
+    },
+    {
+      "path": "includes/staff_workspaces.php",
+      "lines": 691
+    },
+    {
+      "path": "includes/shop_catalog_contract.php",
+      "lines": 674
+    },
+    {
+      "path": "oznameni.php",
+      "lines": 659
+    },
+    {
+      "path": "eshop_identity_admin.php",
+      "lines": 641
+    },
+    {
+      "path": "sprava_sportovcu.php",
+      "lines": 640
+    }
+  ],
+  "phpstan_baseline": {
+    "entries": 519,
+    "occurrences": 2407,
+    "top_files": [
+      {
+        "path": "booking/objednavka.php",
+        "occurrences": 54
+      },
+      {
+        "path": "includes/shop_admin_templates.php",
+        "occurrences": 52
+      },
+      {
+        "path": "planovany_trenink_form.php",
+        "occurrences": 47
+      },
+      {
+        "path": "ulozit_trenink.php",
+        "occurrences": 45
+      },
+      {
+        "path": "update_trenink.php",
+        "occurrences": 45
+      },
+      {
+        "path": "eshop_identity_admin.php",
+        "occurrences": 41
+      },
+      {
+        "path": "planovac.php",
+        "occurrences": 41
+      },
+      {
+        "path": "google_sheets_linky.php",
+        "occurrences": 35
+      },
+      {
+        "path": "booking/sportovni_prehled.php",
+        "occurrences": 34
+      },
+      {
+        "path": "sprava_pracovnich_pozic.php",
+        "occurrences": 32
+      },
+      {
+        "path": "hromadne_podskupiny.php",
+        "occurrences": 31
+      },
+      {
+        "path": "rezervovat_sportoviste.php",
+        "occurrences": 31
+      },
+      {
+        "path": "sportovec_treninky.php",
+        "occurrences": 28
+      },
+      {
+        "path": "sprava_sportovcu.php",
+        "occurrences": 27
+      },
+      {
+        "path": "update_zavod.php",
+        "occurrences": 26
+      }
+    ]
+  },
+  "mail_call_locations": [
+    {
+      "path": "includes/club_event_notification.php",
+      "line": 174
+    },
+    {
+      "path": "includes/family_weekly_delivery.php",
+      "line": 279
+    },
+    {
+      "path": "includes/member_charge_reminder.php",
+      "line": 278
+    },
+    {
+      "path": "includes/roster_message.php",
+      "line": 47
+    }
+  ]
+}
