@@ -157,6 +157,17 @@ jobs:
           EVIDENCE_FAMILY_MARIADB: '1'
         run: php vendor/bin/phpunit tests/Integration/FamilyPortalTargetedReadTest.php
 
+      - name: Ověřit revokaci během skutečného čekání RSVP a náhrad
+        run: php tests/Support/FamilyWriteAuthorizationRace.php > family-write-authorization-race.json
+
+      - name: Uchovat souběhové autorizační kontroly
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: family-write-authorization-mariadb-${{ matrix.mariadb-version }}
+          path: family-write-authorization-race.json
+          retention-days: 14
+
       - name: Ověřit rozpočet rodinného přístupu na migrovaném schématu
         run: php tests/Support/FamilyPortalReadProfile.php > family-read-profile.json
 
