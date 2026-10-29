@@ -1,0 +1,457 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "native_prepares": true,
+    "foreign_keys": 1,
+    "schema": "full migration catalog plus missing legacy bootstrap fields",
+    "production_mutations": false,
+    "checks": 32,
+    "failures": 0,
+    "results": [
+        {
+            "operation": "rsvp",
+            "scenario": "role",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K tomuto sportovnímu profilu nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "rsvp",
+            "scenario": "account",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K tomuto sportovnímu profilu nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "rsvp",
+            "scenario": "email",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K tomuto sportovnímu profilu nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "rsvp",
+            "scenario": "expired",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K tomuto sportovnímu profilu nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "rsvp",
+            "scenario": "athlete",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K tomuto sportovnímu profilu nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "rsvp",
+            "scenario": "rollback",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "rsvp",
+            "scenario": "unchanged",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "rsvp",
+            "scenario": "athlete_independent",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM training_rsvps WHERE plan_id=? AND sportovec_id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "role",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "account",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "email",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "expired",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "athlete",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K profilu nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "rollback",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "unchanged",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "reserve",
+            "scenario": "athlete_independent",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT s.*,p.nazev,p.datum,p.cas_od,p.stav,o.season_id,o.starts_on,o.ends_on,q.enabled FROM club_makeup_slots s JOIN planovane_treninky p ON p.id=s.plan_id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE s.plan_id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "role",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "account",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "email",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "expired",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K dítěti nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "athlete",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "denied",
+                "message": "K profilu nemáte oprávnění.",
+                "cause": null,
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "denied",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "rollback",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "unchanged",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "cancel",
+            "scenario": "athlete_independent",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT r.id,r.credit_id,p.datum,p.cas_od,q.excuse_hours FROM club_makeup_reservations r JOIN planovane_treninky p ON p.id=r.target_plan_id JOIN club_makeup_slots s ON s.plan_id=p.id JOIN club_program_offers o ON o.id=s.offer_id JOIN club_makeup_policies q ON q.program_id=o.program_id AND q.season_id=o.season_id AND q.team_id=o.team_id WHERE r.id=? AND r.sportovec_id=? AND r.status='booked' FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": false,
+            "expected": "ok",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "role_commit",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM account_person_roles WHERE id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "role_rollback",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT * FROM account_person_roles WHERE id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "account_commit",
+            "real_lock_wait": true,
+            "waiting_sql": "UPDATE verejni_uzivatele SET aktivni=0 WHERE id=10",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "account_rollback",
+            "real_lock_wait": true,
+            "waiting_sql": "UPDATE verejni_uzivatele SET aktivni=0 WHERE id=10",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "email_commit",
+            "real_lock_wait": true,
+            "waiting_sql": "UPDATE verejni_uzivatele SET email_overeno=0 WHERE id=10",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "email_rollback",
+            "real_lock_wait": true,
+            "waiting_sql": "UPDATE verejni_uzivatele SET email_overeno=0 WHERE id=10",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "athlete_commit",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT id,active FROM child_access_accounts WHERE id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        },
+        {
+            "operation": "hold_authority",
+            "scenario": "athlete_rollback",
+            "real_lock_wait": true,
+            "waiting_sql": "SELECT id,active FROM child_access_accounts WHERE id=? FOR UPDATE",
+            "worker": {
+                "status": "ok",
+                "transaction_open": false
+            },
+            "domain_unchanged": true,
+            "expected": "revoker waits until transaction end, then access denied",
+            "pass": true
+        }
+    ]
+}
