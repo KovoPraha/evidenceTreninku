@@ -78,9 +78,9 @@ Merge a produkční deploy jsou samostatná rozhodnutí vlastníka podle
 ## Průběžný plán
 
 Navazující [komplexní refaktoring celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md)
-je připravený pro další autonomní kroky. Vlny 1–5 jsou dokončené; dalším
-balíkem je K0 + W6.1 (mapa cest, měření celé aplikace a kontrakty obsazenosti).
-Nová implementace tohoto plánu zatím nezačala. Před pokračováním ověř jeho stav.
+je sloučený v PR #219 a vlastník zahájil autonomní realizaci. Vlny 1–5 jsou
+dokončené; probíhá [K0 + W6.1](REFACTORING_K0_W6_2026-10-29.md): mapa cest,
+měřicí základ a kontrakty obsazenosti. Před pokračováním ověř stav balíku.
 
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah
 oprávnění, větev, pracovní kopii, dokončené kroky, testy a další krok.

@@ -12,6 +12,20 @@ require_once dirname(__DIR__, 2) . '/includes/shop_catalog_cards.php';
 
 final class ProgramOfferBatchReadTest extends TestCase
 {
+    public function testEmptySmallAndExactFullBatch(): void
+    {
+        foreach ([0, 1, 10, 400] as $count) {
+            $pdo = \Tests\Support\programStorefrontFixture($count);
+            $context = new ClubProgramReadContext($pdo);
+            $context->warmOffersForVariants($count === 0 ? [] : range(1, $count));
+            $queries = array_filter($pdo->queries, static fn (string $q): bool => str_contains($q, 'SELECT o.*,p.name AS program_name'));
+            self::assertCount($count === 0 ? 0 : 1, $queries);
+            if ($count > 0) {
+                self::assertSame(\clubProgramOfferForVariant($pdo, $count), $context->offer($count));
+            }
+        }
+    }
+
     public function testCatalogBatchesOffersAndPhysicalLinks(): void
     {
         $pdo = \Tests\Support\programStorefrontFixture(50);

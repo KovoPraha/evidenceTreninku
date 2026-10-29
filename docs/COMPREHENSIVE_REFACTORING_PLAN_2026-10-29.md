@@ -1,9 +1,10 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav: připravený plán; implementace nových etap ještě nezačala.**
+**Stav: realizace zahájena 29. 10. 2026; první balík K0 + W6.1 probíhá.**
 Zadání vlastníka z 29. 10. 2026: připravit komplexní pojetí celé aplikace,
-v dalších krocích autonomně implementovat. Tento krok mění pouze dokumentaci
-a její reprodukovatelné podklady. Navazuje na dokončené vlny 1–5.
+v dalších krocích autonomně implementovat. Navazující pokyn vlastníka aktivoval
+[první realizační balík](REFACTORING_K0_W6_2026-10-29.md). Původní příprava
+plánu měnila pouze dokumentaci; realizace navazuje na dokončené vlny 1–5.
 
 Výchozí zdroj `49daae3a192d8168ed427c7adb4f203c916081d9`, ověřený fetch 29. 10.
 Pracovní větev `codex/comprehensive-refactoring-plan-20261029`, izolované worktree
@@ -269,8 +270,8 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | Položka | Stav k 29. 10. 2026 | Další výstup |
 | --- | --- | --- |
 | Vlny 1–5 | Dokončené a doložené | Zachovat regresní rozpočty a chování |
-| Komplexní plán | Připravený; tento dokument a inventury | Dokumentační revize |
-| K0 + W6.1 | Připraveno k následné autonomní implementaci | Mapa cest, měřené profily, charakterizační testy a rozhodnutí W6.2 |
+| Komplexní plán | Sloučený v PR #219; realizace autorizována | Průběžná aktualizace podle důkazů |
+| K0 + W6.1 | K0.1 mapa hotová, charakterizace a první profil implementovány; finální CI před merge | W6.2 čistá extrakce; K0.2 ostatních agend a migrovaný profil pro W6.3 otevřené |
 | W6.2–W15 | Naplánované; žádný nový kód implementován | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 

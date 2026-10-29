@@ -1,0 +1,3947 @@
+{
+    "synthetic_only": true,
+    "schema": "reduced-indexed-fixture; not production schema or load",
+    "database_version": "10.4.32-MariaDB",
+    "php_version": "8.2.12",
+    "warmups_per_mode": 5,
+    "samples_per_mode": 30,
+    "instrumentation": "successful execute\/fetch only; fetched rows are not rows examined",
+    "results": [
+        {
+            "scenario": "empty",
+            "enrollments": 0,
+            "holds": 0,
+            "physical_teams": 1,
+            "state": {
+                "active_enrollment_count": 0,
+                "held_order_count": 0,
+                "occupied_count": 0,
+                "available_count": 10
+            },
+            "result_bytes": 90,
+            "samples": {
+                "canonical": [
+                    {
+                        "service_ms": 129.0095,
+                        "sql_count": 13,
+                        "sql_execute_ms": 117.30319999999999,
+                        "sql_fetch_ms": 0.1639,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4736984,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 126.0614,
+                        "sql_count": 13,
+                        "sql_execute_ms": 109.5002,
+                        "sql_fetch_ms": 0.147,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4755648,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 146.1969,
+                        "sql_count": 13,
+                        "sql_execute_ms": 122.9034,
+                        "sql_fetch_ms": 0.1557,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4756024,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 122.3647,
+                        "sql_count": 13,
+                        "sql_execute_ms": 109.8066,
+                        "sql_fetch_ms": 0.1565,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4757152,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 131.0322,
+                        "sql_count": 13,
+                        "sql_execute_ms": 111.94959999999998,
+                        "sql_fetch_ms": 0.1656,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4757528,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 148.6364,
+                        "sql_count": 13,
+                        "sql_execute_ms": 123.0252,
+                        "sql_fetch_ms": 0.16649999999999998,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4758656,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 114.2259,
+                        "sql_count": 13,
+                        "sql_execute_ms": 103.01899999999999,
+                        "sql_fetch_ms": 0.1582,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4759032,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 136.4358,
+                        "sql_count": 13,
+                        "sql_execute_ms": 126.85499999999999,
+                        "sql_fetch_ms": 0.1441,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4760160,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 108.3842,
+                        "sql_count": 13,
+                        "sql_execute_ms": 94.41790000000002,
+                        "sql_fetch_ms": 0.1471,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4760536,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 130.1164,
+                        "sql_count": 13,
+                        "sql_execute_ms": 115.57000000000001,
+                        "sql_fetch_ms": 0.15339999999999998,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4761984,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 115.805,
+                        "sql_count": 13,
+                        "sql_execute_ms": 100.2243,
+                        "sql_fetch_ms": 0.15510000000000002,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4762360,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 116.417,
+                        "sql_count": 13,
+                        "sql_execute_ms": 102.68379999999999,
+                        "sql_fetch_ms": 0.15630000000000002,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4763488,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 109.2048,
+                        "sql_count": 13,
+                        "sql_execute_ms": 96.9858,
+                        "sql_fetch_ms": 0.1464,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4763864,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 111.3546,
+                        "sql_count": 13,
+                        "sql_execute_ms": 96.2337,
+                        "sql_fetch_ms": 0.15239999999999998,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4764992,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 103.1349,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.6472,
+                        "sql_fetch_ms": 0.2015,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4765368,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 101.4869,
+                        "sql_count": 13,
+                        "sql_execute_ms": 91.61880000000001,
+                        "sql_fetch_ms": 0.1545,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4766496,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 109.0863,
+                        "sql_count": 13,
+                        "sql_execute_ms": 98.18939999999999,
+                        "sql_fetch_ms": 0.15180000000000002,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4766872,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 97.9736,
+                        "sql_count": 13,
+                        "sql_execute_ms": 87.42989999999999,
+                        "sql_fetch_ms": 0.1419,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4768640,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 118.1967,
+                        "sql_count": 13,
+                        "sql_execute_ms": 107.5758,
+                        "sql_fetch_ms": 0.16969999999999996,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4769016,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 106.4063,
+                        "sql_count": 13,
+                        "sql_execute_ms": 95.8245,
+                        "sql_fetch_ms": 0.14259999999999998,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4770144,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 95.0673,
+                        "sql_count": 13,
+                        "sql_execute_ms": 85.1425,
+                        "sql_fetch_ms": 0.1581,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4770520,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 97.3917,
+                        "sql_count": 13,
+                        "sql_execute_ms": 88.3347,
+                        "sql_fetch_ms": 0.15100000000000002,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4771648,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 165.0028,
+                        "sql_count": 13,
+                        "sql_execute_ms": 145.78570000000002,
+                        "sql_fetch_ms": 0.15499999999999997,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4772024,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 134.2622,
+                        "sql_count": 13,
+                        "sql_execute_ms": 112.6382,
+                        "sql_fetch_ms": 0.15209999999999999,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4773152,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 162.4758,
+                        "sql_count": 13,
+                        "sql_execute_ms": 142.66,
+                        "sql_fetch_ms": 0.14949999999999997,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4773528,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 163.6588,
+                        "sql_count": 13,
+                        "sql_execute_ms": 126.8407,
+                        "sql_fetch_ms": 0.1548,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4774656,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 179.3242,
+                        "sql_count": 13,
+                        "sql_execute_ms": 148.5212,
+                        "sql_fetch_ms": 0.1866,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4775032,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 151.9378,
+                        "sql_count": 13,
+                        "sql_execute_ms": 127.38929999999999,
+                        "sql_fetch_ms": 0.1525,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4776160,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 110.8383,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.8601,
+                        "sql_fetch_ms": 0.2909,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4776536,
+                        "incremental_peak_bytes": 97784
+                    },
+                    {
+                        "service_ms": 103.4822,
+                        "sql_count": 13,
+                        "sql_execute_ms": 93.1859,
+                        "sql_fetch_ms": 0.1501,
+                        "fetched_rows": 10,
+                        "peak_bytes": 4777664,
+                        "incremental_peak_bytes": 97784
+                    }
+                ],
+                "context": [
+                    {
+                        "service_ms": 77.4989,
+                        "sql_count": 8,
+                        "sql_execute_ms": 70.8006,
+                        "sql_fetch_ms": 0.11209999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4748432,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 65.4789,
+                        "sql_count": 8,
+                        "sql_execute_ms": 53.9653,
+                        "sql_fetch_ms": 0.1264,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4755704,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 72.0607,
+                        "sql_count": 8,
+                        "sql_execute_ms": 65.00110000000001,
+                        "sql_fetch_ms": 0.12199999999999998,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4756832,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 51.4804,
+                        "sql_count": 8,
+                        "sql_execute_ms": 43.3747,
+                        "sql_fetch_ms": 0.10679999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4757208,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 81.4126,
+                        "sql_count": 8,
+                        "sql_execute_ms": 63.9017,
+                        "sql_fetch_ms": 0.12359999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4758336,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 92.0105,
+                        "sql_count": 8,
+                        "sql_execute_ms": 75.82209999999999,
+                        "sql_fetch_ms": 0.1257,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4758712,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 52.2637,
+                        "sql_count": 8,
+                        "sql_execute_ms": 45.602599999999995,
+                        "sql_fetch_ms": 0.11899999999999998,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4759840,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 51.024,
+                        "sql_count": 8,
+                        "sql_execute_ms": 45.4381,
+                        "sql_fetch_ms": 0.11280000000000001,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4760216,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 56.5223,
+                        "sql_count": 8,
+                        "sql_execute_ms": 49.083,
+                        "sql_fetch_ms": 0.1201,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4761504,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 80.536,
+                        "sql_count": 8,
+                        "sql_execute_ms": 69.1457,
+                        "sql_fetch_ms": 0.11920000000000001,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4762040,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 50.896,
+                        "sql_count": 8,
+                        "sql_execute_ms": 44.341899999999995,
+                        "sql_fetch_ms": 0.11710000000000001,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4763168,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 61.0459,
+                        "sql_count": 8,
+                        "sql_execute_ms": 54.746500000000005,
+                        "sql_fetch_ms": 0.1159,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4763544,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 66.2101,
+                        "sql_count": 8,
+                        "sql_execute_ms": 59.419200000000004,
+                        "sql_fetch_ms": 0.1195,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4764672,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 102.7925,
+                        "sql_count": 8,
+                        "sql_execute_ms": 92.42790000000001,
+                        "sql_fetch_ms": 0.1227,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4765048,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 58.5981,
+                        "sql_count": 8,
+                        "sql_execute_ms": 51.8024,
+                        "sql_fetch_ms": 0.1168,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4766176,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 51.9456,
+                        "sql_count": 8,
+                        "sql_execute_ms": 46.046800000000005,
+                        "sql_fetch_ms": 0.11870000000000001,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4766552,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 48.5432,
+                        "sql_count": 8,
+                        "sql_execute_ms": 43.049299999999995,
+                        "sql_fetch_ms": 0.1155,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4768000,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 45.3869,
+                        "sql_count": 8,
+                        "sql_execute_ms": 39.748900000000006,
+                        "sql_fetch_ms": 0.10679999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4768696,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 51.9268,
+                        "sql_count": 8,
+                        "sql_execute_ms": 46.2317,
+                        "sql_fetch_ms": 0.11989999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4769824,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 89.4413,
+                        "sql_count": 8,
+                        "sql_execute_ms": 83.6691,
+                        "sql_fetch_ms": 0.11599999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4770200,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 50.4536,
+                        "sql_count": 8,
+                        "sql_execute_ms": 44.546299999999995,
+                        "sql_fetch_ms": 0.1178,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4771328,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 47.8652,
+                        "sql_count": 8,
+                        "sql_execute_ms": 42.391099999999994,
+                        "sql_fetch_ms": 0.1152,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4771704,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 59.0057,
+                        "sql_count": 8,
+                        "sql_execute_ms": 53.3878,
+                        "sql_fetch_ms": 0.11530000000000001,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4772832,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 59.0386,
+                        "sql_count": 8,
+                        "sql_execute_ms": 52.7862,
+                        "sql_fetch_ms": 0.1153,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4773208,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 84.5138,
+                        "sql_count": 8,
+                        "sql_execute_ms": 75.9525,
+                        "sql_fetch_ms": 0.1195,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4774336,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 66.8257,
+                        "sql_count": 8,
+                        "sql_execute_ms": 60.8225,
+                        "sql_fetch_ms": 0.11889999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4774712,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 74.9133,
+                        "sql_count": 8,
+                        "sql_execute_ms": 68.6315,
+                        "sql_fetch_ms": 0.11449999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4775840,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 67.5332,
+                        "sql_count": 8,
+                        "sql_execute_ms": 57.4389,
+                        "sql_fetch_ms": 0.16690000000000002,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4776216,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 76.7148,
+                        "sql_count": 8,
+                        "sql_execute_ms": 71.34740000000001,
+                        "sql_fetch_ms": 0.11489999999999997,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4777344,
+                        "incremental_peak_bytes": 98216
+                    },
+                    {
+                        "service_ms": 69.9726,
+                        "sql_count": 8,
+                        "sql_execute_ms": 64.1121,
+                        "sql_fetch_ms": 0.118,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4777720,
+                        "incremental_peak_bytes": 98216
+                    }
+                ]
+            },
+            "last_query_profiles": {
+                "canonical": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5384,
+                        "fetch_ms": 0.0081,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.6702,
+                        "fetch_ms": 0.0095,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "sportovec_id"
+                        ],
+                        "execute_ms": 11.5357,
+                        "fetch_ms": 0.0127,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.66,
+                        "fetch_ms": 0.0091,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 0.7686,
+                        "fetch_ms": 0.0087,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "variant_id"
+                        ],
+                        "execute_ms": 9.7595,
+                        "fetch_ms": 0.0131,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_orders",
+                            "payment_expires_at"
+                        ],
+                        "execute_ms": 9.5307,
+                        "fetch_ms": 0.0125,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "beneficiary_sportovec_id"
+                        ],
+                        "execute_ms": 12.0203,
+                        "fetch_ms": 0.0128,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "athlete_registration_request_id"
+                        ],
+                        "execute_ms": 13.273,
+                        "fetch_ms": 0.0134,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "club_program_offer_id"
+                        ],
+                        "execute_ms": 11.0892,
+                        "fetch_ms": 0.0124,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests",
+                            "status"
+                        ],
+                        "execute_ms": 11.9307,
+                        "fetch_ms": 0.0123,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "source_order_item_id"
+                        ],
+                        "execute_ms": 10.0627,
+                        "fetch_ms": 0.0132,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.3469,
+                        "fetch_ms": 0.0123,
+                        "fetched_rows": 0
+                    }
+                ],
+                "context": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5454,
+                        "fetch_ms": 0.0077,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4084,
+                        "fetch_ms": 0.0069,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 10.917,
+                        "fetch_ms": 0.0226,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 0.8453,
+                        "fetch_ms": 0.0109,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 11.5151,
+                        "fetch_ms": 0.0244,
+                        "fetched_rows": 8
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 28.5378,
+                        "fetch_ms": 0.0179,
+                        "fetched_rows": 4
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 10.1877,
+                        "fetch_ms": 0.017,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.1554,
+                        "fetch_ms": 0.0106,
+                        "fetched_rows": 0
+                    }
+                ]
+            },
+            "explain_reduced_schema": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ALL",
+                            "possible_keys": "profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w6_profile_ee74f364d5409ef3.e.offer_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "pt",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ALL",
+                            "possible_keys": "profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w6_profile_ee74f364d5409ef3.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w6_profile_ee74f364d5409ef3.oi.club_program_offer_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "e",
+                            "type": "index_subquery",
+                            "possible_keys": "profile_lookup,profile_source",
+                            "key": "profile_source",
+                            "key_len": "38",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "r",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "func",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "pt",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        }
+                    ]
+                }
+            ],
+            "median_ms": {
+                "canonical": 117.30685,
+                "context": 63.2624
+            }
+        },
+        {
+            "scenario": "small",
+            "enrollments": 10,
+            "holds": 10,
+            "physical_teams": 1,
+            "state": {
+                "active_enrollment_count": 5,
+                "held_order_count": 5,
+                "occupied_count": 10,
+                "available_count": 0
+            },
+            "result_bytes": 90,
+            "samples": {
+                "canonical": [
+                    {
+                        "service_ms": 124.2795,
+                        "sql_count": 13,
+                        "sql_execute_ms": 114.0619,
+                        "sql_fetch_ms": 0.17560000000000003,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4838848,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 108.6437,
+                        "sql_count": 13,
+                        "sql_execute_ms": 94.6049,
+                        "sql_fetch_ms": 0.1727,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4857512,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 113.3426,
+                        "sql_count": 13,
+                        "sql_execute_ms": 100.9415,
+                        "sql_fetch_ms": 0.17589999999999997,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4857888,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 114.4221,
+                        "sql_count": 13,
+                        "sql_execute_ms": 103.737,
+                        "sql_fetch_ms": 0.1676,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4859016,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 103.0541,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.4268,
+                        "sql_fetch_ms": 0.1638,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4859392,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 135.634,
+                        "sql_count": 13,
+                        "sql_execute_ms": 125.8374,
+                        "sql_fetch_ms": 0.1794,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4860520,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 96.0647,
+                        "sql_count": 13,
+                        "sql_execute_ms": 87.47499999999998,
+                        "sql_fetch_ms": 0.1641,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4860896,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 103.8081,
+                        "sql_count": 13,
+                        "sql_execute_ms": 93.9496,
+                        "sql_fetch_ms": 0.18370000000000003,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4862024,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 112.1805,
+                        "sql_count": 13,
+                        "sql_execute_ms": 101.10979999999999,
+                        "sql_fetch_ms": 0.1629,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4862400,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 106.0887,
+                        "sql_count": 13,
+                        "sql_execute_ms": 94.7469,
+                        "sql_fetch_ms": 0.17099999999999999,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4863848,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 114.0075,
+                        "sql_count": 13,
+                        "sql_execute_ms": 101.39699999999999,
+                        "sql_fetch_ms": 0.1824,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4864224,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 132.3275,
+                        "sql_count": 13,
+                        "sql_execute_ms": 123.2819,
+                        "sql_fetch_ms": 0.17270000000000005,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4865352,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 105.6979,
+                        "sql_count": 13,
+                        "sql_execute_ms": 96.5906,
+                        "sql_fetch_ms": 0.17020000000000002,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4865728,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 91.16,
+                        "sql_count": 13,
+                        "sql_execute_ms": 82.30140000000002,
+                        "sql_fetch_ms": 0.1569,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4866856,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 102.8982,
+                        "sql_count": 13,
+                        "sql_execute_ms": 91.2311,
+                        "sql_fetch_ms": 0.1629,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4867232,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 108.3274,
+                        "sql_count": 13,
+                        "sql_execute_ms": 98.27139999999999,
+                        "sql_fetch_ms": 0.17830000000000001,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4868360,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 97.9781,
+                        "sql_count": 13,
+                        "sql_execute_ms": 89.0077,
+                        "sql_fetch_ms": 0.17119999999999996,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4868736,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 148.7615,
+                        "sql_count": 13,
+                        "sql_execute_ms": 137.1475,
+                        "sql_fetch_ms": 0.1795,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4870504,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 108.6578,
+                        "sql_count": 13,
+                        "sql_execute_ms": 96.37180000000002,
+                        "sql_fetch_ms": 0.1691,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4870880,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 99.1769,
+                        "sql_count": 13,
+                        "sql_execute_ms": 89.5509,
+                        "sql_fetch_ms": 0.1716,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4872008,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 93.7537,
+                        "sql_count": 13,
+                        "sql_execute_ms": 84.6102,
+                        "sql_fetch_ms": 0.162,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4872384,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 113.3244,
+                        "sql_count": 13,
+                        "sql_execute_ms": 101.06429999999999,
+                        "sql_fetch_ms": 0.17309999999999998,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4873512,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 142.3028,
+                        "sql_count": 13,
+                        "sql_execute_ms": 115.6716,
+                        "sql_fetch_ms": 0.1775,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4873888,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 346.1853,
+                        "sql_count": 13,
+                        "sql_execute_ms": 228.0487,
+                        "sql_fetch_ms": 0.182,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4875016,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 415.811,
+                        "sql_count": 13,
+                        "sql_execute_ms": 264.5484000000001,
+                        "sql_fetch_ms": 0.19450000000000003,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4875392,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 104.5416,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.9577,
+                        "sql_fetch_ms": 0.1927,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4876520,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 136.1732,
+                        "sql_count": 13,
+                        "sql_execute_ms": 126.8631,
+                        "sql_fetch_ms": 0.179,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4876896,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 91.5408,
+                        "sql_count": 13,
+                        "sql_execute_ms": 82.4552,
+                        "sql_fetch_ms": 0.1698,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4878024,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 104.4497,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.3718,
+                        "sql_fetch_ms": 0.1728,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4878400,
+                        "incremental_peak_bytes": 100680
+                    },
+                    {
+                        "service_ms": 102.1386,
+                        "sql_count": 13,
+                        "sql_execute_ms": 91.674,
+                        "sql_fetch_ms": 0.18430000000000002,
+                        "fetched_rows": 20,
+                        "peak_bytes": 4879528,
+                        "incremental_peak_bytes": 100680
+                    }
+                ],
+                "context": [
+                    {
+                        "service_ms": 53.223,
+                        "sql_count": 8,
+                        "sql_execute_ms": 45.97489999999999,
+                        "sql_fetch_ms": 0.1411,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4850296,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 48.0209,
+                        "sql_count": 8,
+                        "sql_execute_ms": 42.54730000000001,
+                        "sql_fetch_ms": 0.1374,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4857568,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 65.4146,
+                        "sql_count": 8,
+                        "sql_execute_ms": 56.149699999999996,
+                        "sql_fetch_ms": 0.14029999999999998,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4858696,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 57.8936,
+                        "sql_count": 8,
+                        "sql_execute_ms": 50.4794,
+                        "sql_fetch_ms": 0.1348,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4859072,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 49.36,
+                        "sql_count": 8,
+                        "sql_execute_ms": 43.5253,
+                        "sql_fetch_ms": 0.1348,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4860200,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 52.3072,
+                        "sql_count": 8,
+                        "sql_execute_ms": 45.6781,
+                        "sql_fetch_ms": 0.1346,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4860576,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 55.2978,
+                        "sql_count": 8,
+                        "sql_execute_ms": 46.312,
+                        "sql_fetch_ms": 0.13849999999999998,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4861704,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 56.9182,
+                        "sql_count": 8,
+                        "sql_execute_ms": 49.69939999999999,
+                        "sql_fetch_ms": 0.14020000000000002,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4862080,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 58.6247,
+                        "sql_count": 8,
+                        "sql_execute_ms": 52.967099999999995,
+                        "sql_fetch_ms": 0.1395,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4863368,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 66.2654,
+                        "sql_count": 8,
+                        "sql_execute_ms": 60.704699999999995,
+                        "sql_fetch_ms": 0.13829999999999998,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4863904,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 57.4042,
+                        "sql_count": 8,
+                        "sql_execute_ms": 50.806400000000004,
+                        "sql_fetch_ms": 0.1641,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4865032,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 53.5469,
+                        "sql_count": 8,
+                        "sql_execute_ms": 48.014700000000005,
+                        "sql_fetch_ms": 0.1408,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4865408,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 50.4674,
+                        "sql_count": 8,
+                        "sql_execute_ms": 44.359300000000005,
+                        "sql_fetch_ms": 0.14250000000000002,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4866536,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 59.0793,
+                        "sql_count": 8,
+                        "sql_execute_ms": 53.106,
+                        "sql_fetch_ms": 0.1429,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4866912,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 72.6956,
+                        "sql_count": 8,
+                        "sql_execute_ms": 62.256600000000006,
+                        "sql_fetch_ms": 0.1492,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4868040,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 56.2972,
+                        "sql_count": 8,
+                        "sql_execute_ms": 48.5554,
+                        "sql_fetch_ms": 0.1602,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4868416,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 53.9669,
+                        "sql_count": 8,
+                        "sql_execute_ms": 48.4328,
+                        "sql_fetch_ms": 0.1324,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4869864,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 57.4748,
+                        "sql_count": 8,
+                        "sql_execute_ms": 51.6961,
+                        "sql_fetch_ms": 0.1378,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4870560,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 56.1269,
+                        "sql_count": 8,
+                        "sql_execute_ms": 48.815,
+                        "sql_fetch_ms": 0.1431,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4871688,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 58.0743,
+                        "sql_count": 8,
+                        "sql_execute_ms": 51.594699999999996,
+                        "sql_fetch_ms": 0.1414,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4872064,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 51.5754,
+                        "sql_count": 8,
+                        "sql_execute_ms": 45.351000000000006,
+                        "sql_fetch_ms": 0.1348,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4873192,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 58.042,
+                        "sql_count": 8,
+                        "sql_execute_ms": 49.7267,
+                        "sql_fetch_ms": 0.1477,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4873568,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 54.049,
+                        "sql_count": 8,
+                        "sql_execute_ms": 46.746700000000004,
+                        "sql_fetch_ms": 0.1493,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4874696,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 81.0027,
+                        "sql_count": 8,
+                        "sql_execute_ms": 66.63080000000001,
+                        "sql_fetch_ms": 0.1491,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4875072,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 60.4901,
+                        "sql_count": 8,
+                        "sql_execute_ms": 52.76579999999999,
+                        "sql_fetch_ms": 0.1452,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4876200,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 66.3168,
+                        "sql_count": 8,
+                        "sql_execute_ms": 59.536,
+                        "sql_fetch_ms": 0.14450000000000002,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4876576,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 45.9084,
+                        "sql_count": 8,
+                        "sql_execute_ms": 40.6435,
+                        "sql_fetch_ms": 0.1307,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4877704,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 48.345,
+                        "sql_count": 8,
+                        "sql_execute_ms": 42.71659999999999,
+                        "sql_fetch_ms": 0.3382,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4878080,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 54.6191,
+                        "sql_count": 8,
+                        "sql_execute_ms": 45.802099999999996,
+                        "sql_fetch_ms": 0.13379999999999997,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4879208,
+                        "incremental_peak_bytes": 101112
+                    },
+                    {
+                        "service_ms": 59.0236,
+                        "sql_count": 8,
+                        "sql_execute_ms": 50.00730000000001,
+                        "sql_fetch_ms": 0.143,
+                        "fetched_rows": 30,
+                        "peak_bytes": 4879584,
+                        "incremental_peak_bytes": 101112
+                    }
+                ]
+            },
+            "last_query_profiles": {
+                "canonical": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.544,
+                        "fetch_ms": 0.0082,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.6372,
+                        "fetch_ms": 0.0074,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "sportovec_id"
+                        ],
+                        "execute_ms": 9.6602,
+                        "fetch_ms": 0.0121,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.7231,
+                        "fetch_ms": 0.0092,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 1.0359,
+                        "fetch_ms": 0.0358,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "variant_id"
+                        ],
+                        "execute_ms": 10.0609,
+                        "fetch_ms": 0.0123,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_orders",
+                            "payment_expires_at"
+                        ],
+                        "execute_ms": 9.8888,
+                        "fetch_ms": 0.0113,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "beneficiary_sportovec_id"
+                        ],
+                        "execute_ms": 13.933,
+                        "fetch_ms": 0.0127,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "athlete_registration_request_id"
+                        ],
+                        "execute_ms": 10.933,
+                        "fetch_ms": 0.0133,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "club_program_offer_id"
+                        ],
+                        "execute_ms": 12.4612,
+                        "fetch_ms": 0.0115,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests",
+                            "status"
+                        ],
+                        "execute_ms": 9.6765,
+                        "fetch_ms": 0.0121,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "source_order_item_id"
+                        ],
+                        "execute_ms": 10.4345,
+                        "fetch_ms": 0.0122,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.6857,
+                        "fetch_ms": 0.0262,
+                        "fetched_rows": 5
+                    }
+                ],
+                "context": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 1.7097,
+                        "fetch_ms": 0.0127,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.9888,
+                        "fetch_ms": 0.0119,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 10.5466,
+                        "fetch_ms": 0.0204,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 1.1389,
+                        "fetch_ms": 0.0166,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 10.6028,
+                        "fetch_ms": 0.0236,
+                        "fetched_rows": 8
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 9.9907,
+                        "fetch_ms": 0.0198,
+                        "fetched_rows": 4
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 13.4116,
+                        "fetch_ms": 0.0164,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.6182,
+                        "fetch_ms": 0.0216,
+                        "fetched_rows": 5
+                    }
+                ]
+            },
+            "explain_reduced_schema": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "38",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id,const",
+                            "rows": "1",
+                            "Extra": "Using index condition"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "5",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w6_profile_ee74f364d5409ef3.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "MATERIALIZED",
+                            "table": "e",
+                            "type": "index",
+                            "possible_keys": "profile_lookup,profile_source",
+                            "key": "profile_source",
+                            "key_len": "38",
+                            "ref": null,
+                            "rows": "10",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                }
+            ],
+            "median_ms": {
+                "canonical": 108.48554999999999,
+                "context": 56.607699999999994
+            }
+        },
+        {
+            "scenario": "dense",
+            "enrollments": 1000,
+            "holds": 1000,
+            "physical_teams": 1,
+            "state": {
+                "active_enrollment_count": 500,
+                "held_order_count": 500,
+                "occupied_count": 1000,
+                "available_count": 0
+            },
+            "result_bytes": 96,
+            "samples": {
+                "canonical": [
+                    {
+                        "service_ms": 123.3879,
+                        "sql_count": 13,
+                        "sql_execute_ms": 107.1282,
+                        "sql_fetch_ms": 1.6381999999999999,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5168288,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 112.0357,
+                        "sql_count": 13,
+                        "sql_execute_ms": 97.6155,
+                        "sql_fetch_ms": 1.1775,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5186952,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 109.2307,
+                        "sql_count": 13,
+                        "sql_execute_ms": 97.6875,
+                        "sql_fetch_ms": 1.5756999999999999,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5187328,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 129.0661,
+                        "sql_count": 13,
+                        "sql_execute_ms": 114.1343,
+                        "sql_fetch_ms": 1.8095999999999999,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5188456,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 111.0384,
+                        "sql_count": 13,
+                        "sql_execute_ms": 99.9652,
+                        "sql_fetch_ms": 1.4995999999999998,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5188832,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 99.2536,
+                        "sql_count": 13,
+                        "sql_execute_ms": 86.54860000000001,
+                        "sql_fetch_ms": 1.1322,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5189960,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 128.7523,
+                        "sql_count": 13,
+                        "sql_execute_ms": 117.9593,
+                        "sql_fetch_ms": 1.5122,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5190336,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 117.2766,
+                        "sql_count": 13,
+                        "sql_execute_ms": 102.0329,
+                        "sql_fetch_ms": 1.6198000000000001,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5191464,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 116.9152,
+                        "sql_count": 13,
+                        "sql_execute_ms": 104.60599999999998,
+                        "sql_fetch_ms": 1.2277,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5191840,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 92.364,
+                        "sql_count": 13,
+                        "sql_execute_ms": 80.0294,
+                        "sql_fetch_ms": 1.5533000000000001,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5193288,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 102.7123,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.0905,
+                        "sql_fetch_ms": 1.566,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5193664,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 112.7201,
+                        "sql_count": 13,
+                        "sql_execute_ms": 101.40790000000001,
+                        "sql_fetch_ms": 1.2174,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5194792,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 136.4284,
+                        "sql_count": 13,
+                        "sql_execute_ms": 124.6882,
+                        "sql_fetch_ms": 1.5369,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5195168,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 106.7109,
+                        "sql_count": 13,
+                        "sql_execute_ms": 95.7791,
+                        "sql_fetch_ms": 1.5926,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5196296,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 108.8008,
+                        "sql_count": 13,
+                        "sql_execute_ms": 96.48149999999998,
+                        "sql_fetch_ms": 1.1784999999999999,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5196672,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 95.9354,
+                        "sql_count": 13,
+                        "sql_execute_ms": 83.08840000000001,
+                        "sql_fetch_ms": 1.5916,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5197800,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 91.9872,
+                        "sql_count": 13,
+                        "sql_execute_ms": 81.7179,
+                        "sql_fetch_ms": 1.1861,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5198176,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 110.5637,
+                        "sql_count": 13,
+                        "sql_execute_ms": 98.93460000000002,
+                        "sql_fetch_ms": 1.5578,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5199944,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 119.71,
+                        "sql_count": 13,
+                        "sql_execute_ms": 108.69439999999999,
+                        "sql_fetch_ms": 1.3136,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5200320,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 101.6652,
+                        "sql_count": 13,
+                        "sql_execute_ms": 90.6157,
+                        "sql_fetch_ms": 1.6822,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5201448,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 95.6781,
+                        "sql_count": 13,
+                        "sql_execute_ms": 84.9338,
+                        "sql_fetch_ms": 1.2664,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5201824,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 92.5709,
+                        "sql_count": 13,
+                        "sql_execute_ms": 81.63449999999999,
+                        "sql_fetch_ms": 1.4439,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5202952,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 108.9223,
+                        "sql_count": 13,
+                        "sql_execute_ms": 95.3481,
+                        "sql_fetch_ms": 1.2263,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5203328,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 95.2048,
+                        "sql_count": 13,
+                        "sql_execute_ms": 84.6235,
+                        "sql_fetch_ms": 1.6101,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5204456,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 92.7021,
+                        "sql_count": 13,
+                        "sql_execute_ms": 81.6177,
+                        "sql_fetch_ms": 1.5633,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5204832,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 101.1645,
+                        "sql_count": 13,
+                        "sql_execute_ms": 89.92429999999999,
+                        "sql_fetch_ms": 1.2005,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5205960,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 102.6518,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.03330000000001,
+                        "sql_fetch_ms": 1.7408000000000001,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5206336,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 112.3364,
+                        "sql_count": 13,
+                        "sql_execute_ms": 96.52869999999999,
+                        "sql_fetch_ms": 1.5568,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5207464,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 111.7312,
+                        "sql_count": 13,
+                        "sql_execute_ms": 95.1429,
+                        "sql_fetch_ms": 1.5887000000000002,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5207840,
+                        "incremental_peak_bytes": 377776
+                    },
+                    {
+                        "service_ms": 103.3262,
+                        "sql_count": 13,
+                        "sql_execute_ms": 92.95530000000002,
+                        "sql_fetch_ms": 1.1941,
+                        "fetched_rows": 1010,
+                        "peak_bytes": 5208968,
+                        "incremental_peak_bytes": 377776
+                    }
+                ],
+                "context": [
+                    {
+                        "service_ms": 65.5691,
+                        "sql_count": 8,
+                        "sql_execute_ms": 55.8837,
+                        "sql_fetch_ms": 1.6218000000000001,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5179736,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 95.6182,
+                        "sql_count": 8,
+                        "sql_execute_ms": 87.1389,
+                        "sql_fetch_ms": 1.7232,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5187008,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 69.7447,
+                        "sql_count": 8,
+                        "sql_execute_ms": 58.5699,
+                        "sql_fetch_ms": 1.6414,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5188136,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 83.0413,
+                        "sql_count": 8,
+                        "sql_execute_ms": 72.3983,
+                        "sql_fetch_ms": 1.6402,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5188512,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 58.7271,
+                        "sql_count": 8,
+                        "sql_execute_ms": 51.0413,
+                        "sql_fetch_ms": 1.5323,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5189640,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 57.2719,
+                        "sql_count": 8,
+                        "sql_execute_ms": 49.9689,
+                        "sql_fetch_ms": 1.188,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5190016,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 65.2876,
+                        "sql_count": 8,
+                        "sql_execute_ms": 57.297799999999995,
+                        "sql_fetch_ms": 1.3553000000000002,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5191144,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 74.0591,
+                        "sql_count": 8,
+                        "sql_execute_ms": 65.8232,
+                        "sql_fetch_ms": 1.5979999999999999,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5191520,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 53.2536,
+                        "sql_count": 8,
+                        "sql_execute_ms": 46.1187,
+                        "sql_fetch_ms": 1.3477,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5192808,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 53.1707,
+                        "sql_count": 8,
+                        "sql_execute_ms": 45.3328,
+                        "sql_fetch_ms": 1.415,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5193344,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 61.3215,
+                        "sql_count": 8,
+                        "sql_execute_ms": 52.448899999999995,
+                        "sql_fetch_ms": 1.6929,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5194472,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 60.0075,
+                        "sql_count": 8,
+                        "sql_execute_ms": 51.6638,
+                        "sql_fetch_ms": 1.7222,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5194848,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 62.2256,
+                        "sql_count": 8,
+                        "sql_execute_ms": 54.929500000000004,
+                        "sql_fetch_ms": 1.5650000000000002,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5195976,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 60.0907,
+                        "sql_count": 8,
+                        "sql_execute_ms": 52.07769999999999,
+                        "sql_fetch_ms": 1.5586000000000002,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5196352,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 61.4836,
+                        "sql_count": 8,
+                        "sql_execute_ms": 55.0352,
+                        "sql_fetch_ms": 1.0064,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5197480,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 57.5541,
+                        "sql_count": 8,
+                        "sql_execute_ms": 50.4747,
+                        "sql_fetch_ms": 1.4433,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5197856,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 45.2161,
+                        "sql_count": 8,
+                        "sql_execute_ms": 38.7005,
+                        "sql_fetch_ms": 1.3397999999999999,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5199304,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 47.9847,
+                        "sql_count": 8,
+                        "sql_execute_ms": 41.6404,
+                        "sql_fetch_ms": 1.3483,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5200000,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 59.9926,
+                        "sql_count": 8,
+                        "sql_execute_ms": 52.1394,
+                        "sql_fetch_ms": 1.4566,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5201128,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 91.0281,
+                        "sql_count": 8,
+                        "sql_execute_ms": 77.51140000000001,
+                        "sql_fetch_ms": 1.6555,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5201504,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 51.6225,
+                        "sql_count": 8,
+                        "sql_execute_ms": 44.266200000000005,
+                        "sql_fetch_ms": 1.361,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5202632,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 48.7092,
+                        "sql_count": 8,
+                        "sql_execute_ms": 42.506,
+                        "sql_fetch_ms": 1.0519,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5203008,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 58.4582,
+                        "sql_count": 8,
+                        "sql_execute_ms": 51.5072,
+                        "sql_fetch_ms": 1.0737,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5204136,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 51.1383,
+                        "sql_count": 8,
+                        "sql_execute_ms": 43.9977,
+                        "sql_fetch_ms": 1.4312,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5204512,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 100.164,
+                        "sql_count": 8,
+                        "sql_execute_ms": 90.77590000000001,
+                        "sql_fetch_ms": 1.3613,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5205640,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 64.6838,
+                        "sql_count": 8,
+                        "sql_execute_ms": 55.7809,
+                        "sql_fetch_ms": 1.6970999999999998,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5206016,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 65.0751,
+                        "sql_count": 8,
+                        "sql_execute_ms": 55.831999999999994,
+                        "sql_fetch_ms": 1.1886,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5207144,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 64.5606,
+                        "sql_count": 8,
+                        "sql_execute_ms": 54.32929999999999,
+                        "sql_fetch_ms": 1.4874,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5207520,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 57.0566,
+                        "sql_count": 8,
+                        "sql_execute_ms": 49.959599999999995,
+                        "sql_fetch_ms": 1.1426,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5208648,
+                        "incremental_peak_bytes": 378208
+                    },
+                    {
+                        "service_ms": 55.0429,
+                        "sql_count": 8,
+                        "sql_execute_ms": 48.1295,
+                        "sql_fetch_ms": 1.1427,
+                        "fetched_rows": 1020,
+                        "peak_bytes": 5209024,
+                        "incremental_peak_bytes": 378208
+                    }
+                ]
+            },
+            "last_query_profiles": {
+                "canonical": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5247,
+                        "fetch_ms": 0.0073,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4012,
+                        "fetch_ms": 0.0053,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "sportovec_id"
+                        ],
+                        "execute_ms": 10.1023,
+                        "fetch_ms": 0.0098,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5454,
+                        "fetch_ms": 0.0069,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 2.5246,
+                        "fetch_ms": 0.2538,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "variant_id"
+                        ],
+                        "execute_ms": 10.0401,
+                        "fetch_ms": 0.0126,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_orders",
+                            "payment_expires_at"
+                        ],
+                        "execute_ms": 11.4654,
+                        "fetch_ms": 0.0131,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "beneficiary_sportovec_id"
+                        ],
+                        "execute_ms": 10.0194,
+                        "fetch_ms": 0.013,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "athlete_registration_request_id"
+                        ],
+                        "execute_ms": 10.2028,
+                        "fetch_ms": 0.0132,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "club_program_offer_id"
+                        ],
+                        "execute_ms": 9.4981,
+                        "fetch_ms": 0.0121,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests",
+                            "status"
+                        ],
+                        "execute_ms": 9.2055,
+                        "fetch_ms": 0.0121,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "source_order_item_id"
+                        ],
+                        "execute_ms": 13.4594,
+                        "fetch_ms": 0.0123,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 4.9664,
+                        "fetch_ms": 0.8226,
+                        "fetched_rows": 500
+                    }
+                ],
+                "context": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.4559,
+                        "fetch_ms": 0.0078,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.349,
+                        "fetch_ms": 0.0072,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 8.9654,
+                        "fetch_ms": 0.0196,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 2.2683,
+                        "fetch_ms": 0.2382,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 8.1502,
+                        "fetch_ms": 0.0212,
+                        "fetched_rows": 8
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 10.3203,
+                        "fetch_ms": 0.0189,
+                        "fetched_rows": 4
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 9.225,
+                        "fetch_ms": 0.0166,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 8.3954,
+                        "fetch_ms": 0.8132,
+                        "fetched_rows": 500
+                    }
+                ]
+            },
+            "explain_reduced_schema": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "38",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id,const",
+                            "rows": "1",
+                            "Extra": "Using index condition"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "5",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w6_profile_ee74f364d5409ef3.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "e",
+                            "type": "index_subquery",
+                            "possible_keys": "profile_lookup,profile_source",
+                            "key": "profile_source",
+                            "key_len": "38",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                }
+            ],
+            "median_ms": {
+                "canonical": 108.86155,
+                "context": 60.049099999999996
+            }
+        },
+        {
+            "scenario": "fanout",
+            "enrollments": 1000,
+            "holds": 1000,
+            "physical_teams": 2,
+            "state": {
+                "active_enrollment_count": 500,
+                "held_order_count": 500,
+                "occupied_count": 1000,
+                "available_count": 0,
+                "physical_team_states": {
+                    "10": {
+                        "active_enrollment_count": 500,
+                        "held_order_count": 500,
+                        "occupied_count": 1000,
+                        "available_count": 0
+                    },
+                    "20": {
+                        "active_enrollment_count": 500,
+                        "held_order_count": 500,
+                        "occupied_count": 1000,
+                        "available_count": 0
+                    }
+                }
+            },
+            "result_bytes": 325,
+            "samples": {
+                "canonical": [
+                    {
+                        "service_ms": 181.907,
+                        "sql_count": 24,
+                        "sql_execute_ms": 159.1746,
+                        "sql_fetch_ms": 3.0525000000000007,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5232096,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 195.2835,
+                        "sql_count": 24,
+                        "sql_execute_ms": 173.04049999999998,
+                        "sql_fetch_ms": 3.1261,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5262136,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 244.2214,
+                        "sql_count": 24,
+                        "sql_execute_ms": 217.5891,
+                        "sql_fetch_ms": 2.72,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5262512,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 198.024,
+                        "sql_count": 24,
+                        "sql_execute_ms": 178.78169999999997,
+                        "sql_fetch_ms": 2.5267,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5263640,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 196.5224,
+                        "sql_count": 24,
+                        "sql_execute_ms": 173.04950000000002,
+                        "sql_fetch_ms": 2.8192999999999997,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5264016,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 235.3589,
+                        "sql_count": 24,
+                        "sql_execute_ms": 213.33730000000003,
+                        "sql_fetch_ms": 2.6245000000000003,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5265144,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 194.6104,
+                        "sql_count": 24,
+                        "sql_execute_ms": 170.44600000000003,
+                        "sql_fetch_ms": 3.3074,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5265520,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 231.65,
+                        "sql_count": 24,
+                        "sql_execute_ms": 206.62080000000003,
+                        "sql_fetch_ms": 3.0902000000000003,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5266648,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 194.9498,
+                        "sql_count": 24,
+                        "sql_execute_ms": 172.85119999999995,
+                        "sql_fetch_ms": 3.0616,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5267024,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 223.9199,
+                        "sql_count": 24,
+                        "sql_execute_ms": 197.30410000000003,
+                        "sql_fetch_ms": 2.3987999999999996,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5268472,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 202.1977,
+                        "sql_count": 24,
+                        "sql_execute_ms": 180.6504,
+                        "sql_fetch_ms": 2.7086,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5268848,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 221.9312,
+                        "sql_count": 24,
+                        "sql_execute_ms": 190.77,
+                        "sql_fetch_ms": 3.1016,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5269976,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 216.3881,
+                        "sql_count": 24,
+                        "sql_execute_ms": 196.86589999999998,
+                        "sql_fetch_ms": 2.981,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5270352,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 165.1209,
+                        "sql_count": 24,
+                        "sql_execute_ms": 148.18970000000002,
+                        "sql_fetch_ms": 2.3433999999999995,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5271480,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 221.2824,
+                        "sql_count": 24,
+                        "sql_execute_ms": 193.8682,
+                        "sql_fetch_ms": 3.088800000000001,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5271856,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 220.8988,
+                        "sql_count": 24,
+                        "sql_execute_ms": 196.0861,
+                        "sql_fetch_ms": 2.9675000000000002,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5272984,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 246.8113,
+                        "sql_count": 24,
+                        "sql_execute_ms": 218.73960000000005,
+                        "sql_fetch_ms": 2.7218,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5273360,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 192.4995,
+                        "sql_count": 24,
+                        "sql_execute_ms": 172.00949999999997,
+                        "sql_fetch_ms": 2.8165,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5275128,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 213.4813,
+                        "sql_count": 24,
+                        "sql_execute_ms": 188.1038,
+                        "sql_fetch_ms": 3.1659999999999995,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5275504,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 227.9979,
+                        "sql_count": 24,
+                        "sql_execute_ms": 205.81899999999996,
+                        "sql_fetch_ms": 2.9209,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5276632,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 183.2305,
+                        "sql_count": 24,
+                        "sql_execute_ms": 164.26700000000002,
+                        "sql_fetch_ms": 2.6855,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5277008,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 198.9234,
+                        "sql_count": 24,
+                        "sql_execute_ms": 178.603,
+                        "sql_fetch_ms": 2.7951999999999995,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5278136,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 293.4935,
+                        "sql_count": 24,
+                        "sql_execute_ms": 268.5901,
+                        "sql_fetch_ms": 2.7406,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5278512,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 223.7683,
+                        "sql_count": 24,
+                        "sql_execute_ms": 194.307,
+                        "sql_fetch_ms": 3.1778000000000004,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5279640,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 193.3498,
+                        "sql_count": 24,
+                        "sql_execute_ms": 171.47989999999996,
+                        "sql_fetch_ms": 3.0253000000000005,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5280016,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 190.8492,
+                        "sql_count": 24,
+                        "sql_execute_ms": 169.7806,
+                        "sql_fetch_ms": 3.1052999999999997,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5281144,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 168.5806,
+                        "sql_count": 24,
+                        "sql_execute_ms": 150.31500000000003,
+                        "sql_fetch_ms": 2.6115999999999993,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5281520,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 213.7648,
+                        "sql_count": 24,
+                        "sql_execute_ms": 192.5376,
+                        "sql_fetch_ms": 2.8552,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5282648,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 206.149,
+                        "sql_count": 24,
+                        "sql_execute_ms": 181.47439999999997,
+                        "sql_fetch_ms": 3.1146000000000003,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5283024,
+                        "incremental_peak_bytes": 386960
+                    },
+                    {
+                        "service_ms": 192.5065,
+                        "sql_count": 24,
+                        "sql_execute_ms": 169.86489999999998,
+                        "sql_fetch_ms": 3.2221,
+                        "fetched_rows": 2021,
+                        "peak_bytes": 5284152,
+                        "incremental_peak_bytes": 386960
+                    }
+                ],
+                "context": [
+                    {
+                        "service_ms": 75.01,
+                        "sql_count": 10,
+                        "sql_execute_ms": 63.00750000000001,
+                        "sql_fetch_ms": 2.9872,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5246488,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 74.1359,
+                        "sql_count": 10,
+                        "sql_execute_ms": 62.43259999999999,
+                        "sql_fetch_ms": 2.9096,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5256704,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 71.9627,
+                        "sql_count": 10,
+                        "sql_execute_ms": 60.54130000000001,
+                        "sql_fetch_ms": 2.8029,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5257832,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 68.1189,
+                        "sql_count": 10,
+                        "sql_execute_ms": 57.495099999999994,
+                        "sql_fetch_ms": 2.4131,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5258208,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 59.3542,
+                        "sql_count": 10,
+                        "sql_execute_ms": 49.039,
+                        "sql_fetch_ms": 2.3718,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5259336,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 57.6454,
+                        "sql_count": 10,
+                        "sql_execute_ms": 47.446600000000004,
+                        "sql_fetch_ms": 2.3484,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5259712,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 82.1844,
+                        "sql_count": 10,
+                        "sql_execute_ms": 69.2972,
+                        "sql_fetch_ms": 3.0083,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5260840,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 87.4748,
+                        "sql_count": 10,
+                        "sql_execute_ms": 70.1102,
+                        "sql_fetch_ms": 3.027,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5261216,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 64.5709,
+                        "sql_count": 10,
+                        "sql_execute_ms": 54.556000000000004,
+                        "sql_fetch_ms": 2.4223999999999997,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5262504,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 68.2406,
+                        "sql_count": 10,
+                        "sql_execute_ms": 59.499300000000005,
+                        "sql_fetch_ms": 2.2456,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5263040,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 74.0381,
+                        "sql_count": 10,
+                        "sql_execute_ms": 63.1564,
+                        "sql_fetch_ms": 2.558,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5264168,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 66.1443,
+                        "sql_count": 10,
+                        "sql_execute_ms": 55.4962,
+                        "sql_fetch_ms": 3.0027,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5264544,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 67.1057,
+                        "sql_count": 10,
+                        "sql_execute_ms": 56.3538,
+                        "sql_fetch_ms": 2.915,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5265672,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 64.9588,
+                        "sql_count": 10,
+                        "sql_execute_ms": 54.3077,
+                        "sql_fetch_ms": 2.6004,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5266048,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 72.5806,
+                        "sql_count": 10,
+                        "sql_execute_ms": 61.22689999999999,
+                        "sql_fetch_ms": 2.5507999999999997,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5267176,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 84.2058,
+                        "sql_count": 10,
+                        "sql_execute_ms": 72.0422,
+                        "sql_fetch_ms": 2.7239000000000004,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5267552,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 73.5565,
+                        "sql_count": 10,
+                        "sql_execute_ms": 61.686099999999996,
+                        "sql_fetch_ms": 2.7619,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5269000,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 75.0544,
+                        "sql_count": 10,
+                        "sql_execute_ms": 63.39269999999999,
+                        "sql_fetch_ms": 2.4871,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5269696,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 68.2274,
+                        "sql_count": 10,
+                        "sql_execute_ms": 57.4355,
+                        "sql_fetch_ms": 2.1061,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5270824,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 59.8852,
+                        "sql_count": 10,
+                        "sql_execute_ms": 49.8716,
+                        "sql_fetch_ms": 2.6424000000000003,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5271200,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 69.6253,
+                        "sql_count": 10,
+                        "sql_execute_ms": 59.0355,
+                        "sql_fetch_ms": 2.443,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5272328,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 63.0995,
+                        "sql_count": 10,
+                        "sql_execute_ms": 52.2336,
+                        "sql_fetch_ms": 3.1011,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5272704,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 85.7308,
+                        "sql_count": 10,
+                        "sql_execute_ms": 72.3848,
+                        "sql_fetch_ms": 3.4161,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5273832,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 99.662,
+                        "sql_count": 10,
+                        "sql_execute_ms": 87.1863,
+                        "sql_fetch_ms": 2.8717,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5274208,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 67.9317,
+                        "sql_count": 10,
+                        "sql_execute_ms": 57.541199999999996,
+                        "sql_fetch_ms": 2.2171,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5275336,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 74.8176,
+                        "sql_count": 10,
+                        "sql_execute_ms": 62.57939999999999,
+                        "sql_fetch_ms": 3.1054999999999997,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5275712,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 54.21,
+                        "sql_count": 10,
+                        "sql_execute_ms": 45.063900000000004,
+                        "sql_fetch_ms": 2.1017,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5276840,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 74.9962,
+                        "sql_count": 10,
+                        "sql_execute_ms": 62.679200000000016,
+                        "sql_fetch_ms": 2.7298999999999998,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5277216,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 73.2506,
+                        "sql_count": 10,
+                        "sql_execute_ms": 62.8831,
+                        "sql_fetch_ms": 2.4909999999999997,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5278344,
+                        "incremental_peak_bytes": 381904
+                    },
+                    {
+                        "service_ms": 58.8784,
+                        "sql_count": 10,
+                        "sql_execute_ms": 49.50899999999999,
+                        "sql_fetch_ms": 2.3084000000000002,
+                        "fetched_rows": 2022,
+                        "peak_bytes": 5278720,
+                        "incremental_peak_bytes": 381904
+                    }
+                ]
+            },
+            "last_query_profiles": {
+                "canonical": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5229,
+                        "fetch_ms": 0.0073,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.3417,
+                        "fetch_ms": 0.0075,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "sportovec_id"
+                        ],
+                        "execute_ms": 7.6545,
+                        "fetch_ms": 0.0104,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5017,
+                        "fetch_ms": 0.007,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 2.7966,
+                        "fetch_ms": 0.2748,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "variant_id"
+                        ],
+                        "execute_ms": 7.4136,
+                        "fetch_ms": 0.011,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_orders",
+                            "payment_expires_at"
+                        ],
+                        "execute_ms": 7.3379,
+                        "fetch_ms": 0.0109,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "beneficiary_sportovec_id"
+                        ],
+                        "execute_ms": 8.0201,
+                        "fetch_ms": 0.0112,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "athlete_registration_request_id"
+                        ],
+                        "execute_ms": 6.838,
+                        "fetch_ms": 0.0126,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "club_program_offer_id"
+                        ],
+                        "execute_ms": 9.0427,
+                        "fetch_ms": 0.0116,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests",
+                            "status"
+                        ],
+                        "execute_ms": 7.7724,
+                        "fetch_ms": 0.0118,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "source_order_item_id"
+                        ],
+                        "execute_ms": 10.0621,
+                        "fetch_ms": 0.0113,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 8.0622,
+                        "fetch_ms": 1.1554,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "sportovec_id"
+                        ],
+                        "execute_ms": 8.7739,
+                        "fetch_ms": 0.0114,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5833,
+                        "fetch_ms": 0.0086,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            20,
+                            20,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 3.6118,
+                        "fetch_ms": 0.3327,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "variant_id"
+                        ],
+                        "execute_ms": 11.4353,
+                        "fetch_ms": 0.0125,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_orders",
+                            "payment_expires_at"
+                        ],
+                        "execute_ms": 9.1123,
+                        "fetch_ms": 0.0094,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "beneficiary_sportovec_id"
+                        ],
+                        "execute_ms": 10.3517,
+                        "fetch_ms": 0.0123,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "athlete_registration_request_id"
+                        ],
+                        "execute_ms": 9.5174,
+                        "fetch_ms": 0.0113,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "shop_order_items",
+                            "club_program_offer_id"
+                        ],
+                        "execute_ms": 11.3066,
+                        "fetch_ms": 0.0124,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests",
+                            "status"
+                        ],
+                        "execute_ms": 10.6454,
+                        "fetch_ms": 0.0119,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments",
+                            "source_order_item_id"
+                        ],
+                        "execute_ms": 10.298,
+                        "fetch_ms": 0.0127,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            20,
+                            20,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 7.8628,
+                        "fetch_ms": 1.2441,
+                        "fetched_rows": 500
+                    }
+                ],
+                "context": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.4624,
+                        "fetch_ms": 0.0084,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.381,
+                        "fetch_ms": 0.0095,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 7.5226,
+                        "fetch_ms": 0.0185,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 2.8278,
+                        "fetch_ms": 0.2066,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 7.1372,
+                        "fetch_ms": 0.0191,
+                        "fetched_rows": 8
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 7.3672,
+                        "fetch_ms": 0.0163,
+                        "fetched_rows": 4
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 8.6313,
+                        "fetch_ms": 0.0113,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            10,
+                            10,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 5.8349,
+                        "fetch_ms": 0.8951,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            20,
+                            20,
+                            "2027-06-30",
+                            "2026-09-01"
+                        ],
+                        "execute_ms": 2.9835,
+                        "fetch_ms": 0.276,
+                        "fetched_rows": 500
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            20,
+                            20,
+                            "2027-06-30",
+                            "2026-09-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 6.3611,
+                        "fetch_ms": 0.8476,
+                        "fetched_rows": 500
+                    }
+                ]
+            },
+            "explain_reduced_schema": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "38",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id,const",
+                            "rows": "1",
+                            "Extra": "Using index condition"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        10,
+                        10,
+                        "2027-06-30",
+                        "2026-09-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "5",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w6_profile_ee74f364d5409ef3.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "e",
+                            "type": "index_subquery",
+                            "possible_keys": "profile_lookup,profile_source",
+                            "key": "profile_source",
+                            "key_len": "38",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        20,
+                        20,
+                        "2027-06-30",
+                        "2026-09-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "38",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id,const",
+                            "rows": "1",
+                            "Extra": "Using index condition"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        20,
+                        20,
+                        "2027-06-30",
+                        "2026-09-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,profile_lookup",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "4",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "profile_lookup",
+                            "key": "profile_lookup",
+                            "key_len": "5",
+                            "ref": "w6_profile_ee74f364d5409ef3.x.id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w6_profile_ee74f364d5409ef3.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "e",
+                            "type": "index_subquery",
+                            "possible_keys": "profile_lookup,profile_source",
+                            "key": "profile_source",
+                            "key_len": "38",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,profile_physical",
+                            "key": "profile_physical",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                }
+            ],
+            "median_ms": {
+                "canonical": 204.17335,
+                "context": 70.794
+            }
+        }
+    ]
+}
