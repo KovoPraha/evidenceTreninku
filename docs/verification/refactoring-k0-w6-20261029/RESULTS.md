@@ -47,11 +47,13 @@ zátěžový výsledek. Z tohoto EXPLAIN nelze zdůvodnit produkční index.
 ## Ověření a omezení
 
 - Cílená finální SQLite sada: 21 testů / 108 assertions PASS.
-- MariaDB 10.4: prvních 12 charakterizačních scénářů / 39 assertions PASS;
-  finální třináctý scénář a obě povinné verze dále ověřuje finální CI.
+- MariaDB 10.4: finálních 13 charakterizačních scénářů / 43 assertions PASS.
 - Composer validate, styl změněných PHP, aktuální dokumentace a diff check PASS.
-- Plný lokální PHPUnit a finální CI jsou před merge povinné; jejich konkrétní
-  výsledky budou doplněny. Windows POSIX skip není úplný Linux PASS.
+- Plný lokální PHPUnit: 1 795 testů / 35 878 assertions, 3 Windows POSIX skipy.
+  Tento běh začal před přidáním posledních dvou metod; finální cílená sada
+  výše je již zahrnuje. Úplný finální head ověřuje Linux CI v
+  [PR #220](https://github.com/KovoPraha/evidenceTreninku/pull/220).
+  Windows POSIX skip není úplný Linux PASS; merge je podmíněn zeleným finálním CI.
 - První běh nového DST testu odhalil chybu testovacího generování času (lokální
   `modify` přes neexistující hodinu). Generátor nyní posouvá UTC okamžik před
   převodem do Prague. Aplikační chování se neměnilo.
