@@ -25,7 +25,7 @@ tento balík neslibuje zrychlení veřejného katalogu.
   13 charakterizačních scénářů / 43 assertions PASS.
 - Nový unit test bez databáze kontroluje pořadí a opakování řádků, přednost
   person před request, nezávislé namespace, původní vstupy a legacy režim.
-- [Archiv původních funkcí](capacity-baseline.php) je pouze CLI benchmark
+- [Archiv původních funkcí](../../../tests/Support/ProgramCapacityBaseline.php) je pouze CLI benchmark
   z uvedeného základního SHA, s přejmenovanými funkcemi. Není druhým runtime
   algoritmem aplikace. `ProgramCapacityComparison.php` porovnává oba kódy nad
   stejným PDO, daty a čerstvými kontexty, střídá pořadí, 5 zahřátí + 30 vzorků.
@@ -38,6 +38,29 @@ souběhu dalších lokálních kontrol po restartu lokální DB. Ukázal vyšš�
 proti staršímu měření K0; nepoužívá se jako kauzální důkaz ani se nezamlčuje.
 Shodné počty SQL/řádků a struktury výsledků nestačí k odvození latence. Následuje
 řízené střídavé porovnání obou implementací na stejném testovacím hostu.
+
+[Finální klidný běh](capacity-comparison-quiet.json),
+[souhrn shody](comparison-summary.json),
+[první přímé porovnání](capacity-comparison-first.json).
+Finální běh proběhl bez souběžných lokálních PHP testů. Oba kódy používají
+stejný kontextový režim; původní K0 porovnání canonical/context není before/after.
+
+| Profil | Medián před / po (ms) | SQL před = po | Řádky před = po | Inkrementální peak před / po (B) |
+| --- | --- | --- | --- | --- |
+| empty | 42,59 / 43,16 | 8 | 20 | 98 216 / 98 272 |
+| small | 47,87 / 45,27 | 8 | 30 | 101 112 / 101 456 |
+| dense | 72,02 / 77,55 | 8 | 1 020 | 378 208 / 378 208 |
+| fanout | 57,54 / 58,00 | 10 | 2 022 | 381 904 / 381 904 |
+
+Výsledky, SQL, parametry a načtené řádky jsou identické. Mediány kolísají mezi
+-5,4 % a +7,7 %, paměť nejvýše +344 B; není podklad pro tvrzení o zrychlení.
+Všechny běhy mají redukované schéma; indexové/zátěžové závěry zůstávají mimo rozsah.
+
+První plná sada zachytila benchmarkový helper uložený v `docs`, které scanner
+dostupnosti globálních funkcí záměrně neprochází. Přesunut do `tests/Support`,
+bez nové výjimky; cílený scanner 3 testy / 13 assertions PASS. První lokální
+Composer běh také překročil 300 s hostitelského timeoutu. Opakování používá
+lokální `COMPOSER_PROCESS_TIMEOUT=900`, nemění CI limit ani obsah testů.
 
 Finální plná sada, přímé porovnání a CI budou uzavřeny před merge. Produkční
 vydání má vlastní nový protokol; staré release důkazy nejsou jeho náhradou.

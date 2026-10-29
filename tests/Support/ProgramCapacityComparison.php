@@ -7,5 +7,5 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
-require_once dirname(__DIR__, 2) . '/docs/verification/refactoring-wave6-20261029/capacity-baseline.php';
+require_once __DIR__ . '/ProgramCapacityBaseline.php';
 require __DIR__ . '/ProgramCapacityProfile.php';
