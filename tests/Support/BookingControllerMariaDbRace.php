@@ -70,12 +70,15 @@ $admin = $pdo;
 $processes = [];
 try {
     $pdo = w72Connection($schema);
-    w72Seed($pdo);
+    w72Seed($pdo, static function (PDO $legacy): void {
+        // MariaDB 10.3 rejects changing a referenced PK even when only adding AUTO_INCREMENT.
+        // Complete the legacy bootstrap before migrations install their foreign keys.
+        $legacy->exec('ALTER TABLE verejne_rezervace MODIFY id INT NOT NULL AUTO_INCREMENT, MODIFY cas_rezervace DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP');
+    });
     w72LegacyColumns($pdo, 'sportovist', ['je_verejne' => 'TINYINT NOT NULL DEFAULT 1']);
     w72LegacyColumns($pdo, 'individualni_lekce', ['trener_id' => 'INT NULL', 'typ' => "VARCHAR(20) NOT NULL DEFAULT 'zelena'",
         'max_osob' => 'INT NOT NULL DEFAULT 1', 'vyjimka_3_dny' => 'TINYINT NOT NULL DEFAULT 0']);
     w72LegacyColumns($pdo, 'verejne_rezervace', ['slot_cas_do' => 'TIME NULL', 'poznamka_klienta' => 'TEXT NULL']);
-    $pdo->exec('ALTER TABLE verejne_rezervace MODIFY id INT NOT NULL AUTO_INCREMENT, MODIFY cas_rezervace DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP');
     $pdo->exec("INSERT INTO sportovist(id,nazev,je_verejne) VALUES(701,'Synthetic',1)");
     $pdo->exec("INSERT INTO individualni_lekce(id,nazev,datum,cas_od,cas_do,sportoviste_id,trener_id,typ,max_osob,stav) "
         . "VALUES(701,'Synthetic',DATE_ADD(CURRENT_DATE,INTERVAL 10 DAY),'10:00','11:00',701,7,'zelena',1,'aktivni')");

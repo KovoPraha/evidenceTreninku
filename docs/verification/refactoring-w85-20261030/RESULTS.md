@@ -91,3 +91,10 @@ tři očekávané POSIX skipy Windows ([záznam](phpunit-windows.txt)).
 PHPStan bez nálezů, styl a dokumentační kontrakt PASS.
 Plná CI výsledného základu a obě MariaDB jsou nutné před sloučením.
 Změna je testovací/CI a neaktivuje žádné služby ani transporty.
+
+První CI běh 41063177780 odhalil kompatibilitu fixture s MariaDB 10.3:
+chyba 1833 při doplnění AUTO_INCREMENT po vytvoření odkazujících FK.
+Legacy sloupce se nyní připravují před katalogem migrací pomocí volitelného
+callbacku fixture. Cizí klíče zůstávají zapnuté. MariaDB 11.4 původním během
+prošla; opravená lokální booking race a PHPStan prošly znovu. Kód produkčních
+rezervací ani migrace se touto opravou nemění.

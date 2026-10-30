@@ -29,9 +29,9 @@ function w72LegacyColumns(PDO $pdo, string $table, array $columns): void
         }
     }
 }
-function w72Seed(PDO $pdo): void
+function w72Seed(PDO $pdo, ?callable $prepareLegacy = null): void
 {
-    Tests\Support\programCapacityMigratedSchema($pdo);
+    Tests\Support\programCapacityMigratedSchema($pdo, $prepareLegacy);
     w72LegacyColumns($pdo, 'sportovci', ['stav_clenstvi' => "VARCHAR(20) DEFAULT 'aktivni'",'stav_manualni' => 'INT DEFAULT 1','stav_duvod' => "TEXT NULL",'stav_aktualizovan' => 'DATETIME NULL']);
     w72LegacyColumns(
         $pdo,
@@ -45,7 +45,15 @@ function w72Seed(PDO $pdo): void
         'trenink_id' => 'INT NULL']
     );
     w72LegacyColumns($pdo, 'treninky', ['datum' => 'DATE NULL','napln' => "TEXT NULL",'delka' => 'DECIMAL(5,2) NULL','kategorie' => "VARCHAR(30) DEFAULT 'draha'"]);
-    w72LegacyColumns($pdo, 'mereni_zaznamy', ['sportovec_id' => 'INT NULL','typ' => 'VARCHAR(100) NULL','vzdalenost' => 'VARCHAR(100) NULL','cas' => 'VARCHAR(100) NULL','rpe' => 'VARCHAR(100) NULL']);
+    w72LegacyColumns(
+        $pdo,
+        'mereni_zaznamy',
+        ['sportovec_id' => 'INT NULL',
+    'typ' => 'VARCHAR(100) NULL',
+    'vzdalenost' => 'VARCHAR(100) NULL',
+    'cas' => 'VARCHAR(100) NULL',
+    'rpe' => 'VARCHAR(100) NULL']
+    );
     w72LegacyColumns($pdo, 'sportovist', ['nazev' => 'VARCHAR(100) NULL']);
     w72LegacyColumns($pdo, 'individualni_lekce', ['sportoviste_id' => 'INT NULL','stav' => "VARCHAR(30) DEFAULT 'aktivni'"]);
     w72LegacyColumns($pdo, 'verejne_rezervace', ['uzivatel_id' => 'INT NULL']);

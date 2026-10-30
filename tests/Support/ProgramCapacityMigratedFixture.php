@@ -12,7 +12,7 @@ use EvidenceMigrationRunner;
 require_once dirname(__DIR__, 2) . '/includes/migration_runner.php';
 
 /** Minimal legacy bootstrap used by checkout smoke, followed by the entire migration catalog. */
-function programCapacityMigratedSchema(PDO $pdo): void
+function programCapacityMigratedSchema(PDO $pdo, ?callable $prepareLegacy = null): void
 {
     $pdo->exec('CREATE TABLE nastaveni(klic VARCHAR(100) PRIMARY KEY,hodnota TEXT NOT NULL) ENGINE=InnoDB');
     $pdo->prepare('INSERT INTO nastaveni(klic,hodnota) VALUES(?,?)')->execute(['schema_version', LEGACY_SCHEMA_VERSION]);
@@ -57,6 +57,9 @@ function programCapacityMigratedSchema(PDO $pdo): void
         'manual')) ENGINE=InnoDB
         SQL);
 
+    if ($prepareLegacy !== null) {
+        $prepareLegacy($pdo);
+    }
     $catalog = EvidenceMigrationCatalog::load(dirname(__DIR__, 2) . '/migrations');
     $result = (new EvidenceMigrationRunner($pdo, $catalog))->apply();
     if (!$result['current']) {
