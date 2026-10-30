@@ -89,8 +89,10 @@ revokaci během čekání RSVP/náhrad: aktuální zamykající kontrola před z
 32/32 souběhů v obou MariaDB CI. [W7.2](REFACTORING_W72_2026-10-29.md)
 nasadilo cílené načítání jednotlivých profilů: celý GET pro 20 osob má
 2706 → 2326 SQL a shodná data/HTML; CI medián o 10–12 % nižší.
-Navazuje W7.3: rozpad sekcí R02 a 1563 opakovaných kontrol existence tabulek,
-potom R03–R04. Plošné měření K0.2 zůstává otevřené;
+[W7.3](REFACTORING_W73_2026-10-30.md) je také nasazené: metadata během GET
+sdílená v rámci PDO, SQL 2244 → 752 a metadata 1590 → 98 pro 20 osob.
+Výstup, historie a aktuální oprávnění zachovány, POST bez cache.
+Navazuje W7.4: cílené čtení členských polí (160 opakovaných čtení), potom R03–R04. Plošné měření K0.2 zůstává otevřené;
 dávkování kapacit mezi nabídkami je samostatný kandidát.
 
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah

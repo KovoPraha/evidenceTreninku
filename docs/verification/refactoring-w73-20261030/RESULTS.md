@@ -93,8 +93,26 @@ nebo lidské UAT. Provozní před/po HTTP jsou anonymní read-only kontroly.
 Styl, PHPStan a dokumentační kontrakt PASS. Kontrola PDO bootstrapu odstranila
 26 dosavadních potlačených hlášení; baseline se zmenšil, žádná nová výjimka.
 Tři zdrojové kontroly UI textů po formátování opraveny zachováním celých textů
-v řetězcích, cílená sada 10 / 57 PASS. Nové plné místní ověření běží.
-CI MariaDB 10.3/11.4 opakuje základní profil, širší historii a POST.
-Merge/deploy a čtecí produkční porovnání budou zaznamenány po ověření.
+v řetězcích, cílená sada 10 / 57 PASS. Plná místní sada 1821 / 36086 PASS (3 POSIX skipy). Linux 1821 / 36135,
+samostatné POSIX 3 / 45 bez skipů; PHPStan a všechny brány PASS.
+CI MariaDB 10.3/11.4 úspěšně zopakovalo základní profil, širší historii a POST.
+Merge/deploy a čtecí produkční porovnání dokládá [produkční protokol](../refactoring-w73-release-20261030/RESULTS.md).
 Navazující kandidáti: 40/160 čtení členství podle sekce, skutečné aplikační
 dotazy a rozsah historie; R03/R04 samostatně. Žádné automatické cachování oprávnění.
+
+## Nezávislá CI měření
+
+Přesný PR head `4bd6326dd3f14c371b13cb92cdc31306ebcc45b2`,
+[Testy 41028469768](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41028469768).
+Obě MariaDB porovnaly 0/1/5/20 osob, širší historii a POST bez aktivní cache.
+Pět střídajících se vzorků, 20 osob:
+
+| Prostředí | Baseline ms | Current ms | Rozdíl | Peak B před → po |
+| --- | ---: | ---: | ---: | --- |
+| [MariaDB 10.3](ci-mariadb-10.3.json) | 547.56 | 187.16 | -65.8 % | 5495840 → 5509136 |
+| [MariaDB 11.4](ci-mariadb-11.4.json) | 888.44 | 344.16 | -61.3 % | 5495840 → 5509136 |
+
+[Historie 10.3](ci-history-10.3.json), [historie 11.4](ci-history-11.4.json),
+[POST 10.3](ci-post-10.3.json), [POST 11.4](ci-post-11.4.json).
+Místní peak 20 osob 5 516 816 → 5 529 600 B (+12 784 B). Jde o malý náklad
+metadata scope, nikoli úsporu paměti. Časy jsou syntetické, bez produkčního SLA.
