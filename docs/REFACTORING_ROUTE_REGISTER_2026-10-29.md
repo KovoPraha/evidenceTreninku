@@ -11,7 +11,7 @@ doménové zdroje, nikoli kompletní tranzitivní seznam SQL všech helperů/boo
 | ID / vstup | Identita a rozsah | Služba → hlavní tabulky | Vedlejší účinky / citlivost | Existující ověření; další měření |
 | --- | --- | --- | --- | --- |
 | R01 `booking/eshop.php`, `booking/produkt.php` | Veřejné; pouze zveřejněné nabídky. Členská cena má samostatné podmínky. | `shop_catalog_cards`, `shop_storefront_read`, `club_program` → `shop_products`, `shop_variants`, `shop_product_publications`, `club_program_offers`, `club_program_enrollments`, `shop_order_items` | Projekce; nezveřejnit interní nebo cizí osobní údaje. Kapacita je informativní do zamčeného checkoutu. | `ProgramOfferBatchReadTest`, `ProgramStorefrontReadCompatibilityTest`; vlny 1–5 a nynější profil kapacity. Změřit migrované schéma a různé počty překrývajících se nabídek. |
-| R02 `booking/sportovni_prehled.php` | `verejny_uzivatel_id`; `familyPortalAuthorizedPeople`, aktuální schválená vazba self/guardian. | `family_portal`, `family_tasks`, `family_annual_paid_overview` → `account_person_roles`, `sportovci`, `club_roster_members`, `club_program_enrollments` a finanční zdroje | GET citlivý přehled; POST má CSRF a samostatné doménové akce. Zdravotní/sportovní a finanční údaje. | `FamilyPortalTest`, `FamilyAnnualPaidOverviewTest`; rodiny 1/5/20 osob, včetně odňaté vazby. W7.2 syntetický celý controller+HTML 0/1/5/20 osob, MariaDB 10.3/11.4; 20 osob SQL 2706 → 2326. Skutečný HTTP/browser a rozpad sekcí otevřené. |
+| R02 `booking/sportovni_prehled.php` | `verejny_uzivatel_id`; `familyPortalAuthorizedPeople`, aktuální schválená vazba self/guardian. | `family_portal`, `family_tasks`, `family_annual_paid_overview` → `account_person_roles`, `sportovci`, `club_roster_members`, `club_program_enrollments` a finanční zdroje | GET citlivý přehled; POST má CSRF a samostatné doménové akce. Zdravotní/sportovní a finanční údaje. | `FamilyPortalTest`, `FamilyAnnualPaidOverviewTest`; rodiny 1/5/20 osob, včetně odňaté vazby. W7.2/W7.3 celý controller+HTML 0/1/5/20 osob a sekce, MariaDB 10.3/11.4; W7.3 SQL 2244 → 752 při 20 osobách, historie +1000 vazeb i POST. Skutečný HTTP/browser UAT otevřené. |
 | R03 `booking/moje_osoby.php` | Zákaznická session; žádost o vazbu není schválená vazba. | `account_person_claim`, `athlete_registration` → `account_person_claim_requests`, `account_person_roles`, `sportovci` | Osobní údaje, auditovaná žádost; CSRF. Žádné automatické schválení podle shody jmen. | `AccountPersonClaimTest`, `AccountPersonRoleTest`; pending/rejected/cancelled a počet žádostí. Profil dosud nezměřen. |
 | R04 `sprava_sportovcu.php`, `sportovec_karta.php` | Session trenéra, route owner/aktivní pozice, `canAccess('sprava_sportovcu')`; zápisy přes editor a membership služby. | `sportovec_editor`, `person_state`, `athlete_training_timeline` → `sportovci`, `club_roster_members`, `sportovec_interni_poznamka`, historie | Změna členství, poznámky, soupisky; důvody/revize/CSRF. Identifikační údaje a interní poznámky. | `SportovecEditorTest`, `SportovecEditorDetailsTest`, `SportovecInternalNoteTest`, MariaDB editor smoke; 100/1 000/10 000 osob, filtr i prázdný výsledek. Profil dosud nezměřen. |
 | R05 `planovac.php` | Trenérská session, `canAccess('planovac')`, platné trenérské rozsahy v dotčených službách. | `training_planner_view`, `training_roster_bridge`, `training_rsvp` → `planovane_treninky`, `planovane_treninky_podskupiny`, `treneri`, soupisky | Čtení plánů a POST změny; plán není skutečná účast. Osoby a svěřené týmy. | `TrainingPlannerViewTest`, `PlannerJavascriptSmoke.cjs`; 1/12/52 týdnů a cizí týmy. Opakované SQL je kandidát, čas a řádky dosud nezměřeny. |
@@ -101,3 +101,16 @@ Data/HTML shodné, aktuální oprávnění včetně revokace uprostřed čtení 
 peak stejný. Syntetická fixture není produkční zátěž ani úplný UAT.
 W7.3 má rozdělit zbytek ceny R02 a ověřit kandidáta 1563 kontrol tabulek
 a 44 kontrol sloupců; oprávnění se nesmí cachovat. R03/R04 stále otevřené.
+
+## Doplnění W7.3, 30. 10. 2026
+
+[Metadata a sekce rodiny](REFACTORING_W73_2026-10-30.md), PR #231 nasazeno;
+[provozní důkazy](verification/refactoring-w73-release-20261030/RESULTS.md).
+Sedm metadata helperů sdílí bool výsledky pouze během GET na jednom PDO,
+s ukončením v finally. POST a ostatní volání se chovají původně. Autorizační
+SQL i aplikační řádky jsou čerstvé. Schéma se uvnitř rozsahu nesmí měnit.
+SQL 20 osob 2244 → 752 (−66,5 %), metadata 1590 → 98 (−93,8 %), nejvíce
+náhrady, profily a finance. Kompletní data/HTML, sekce i širší historie shodné.
+Absolutní baseline se oproti 29. 10. liší podle kalendářového okna fixture;
+závěr vychází z dvojic ve stejném běhu. Další kandidát W7.4: 160 čtení
+členských polí; R03/R04 a lidské UAT zůstávají samostatné.

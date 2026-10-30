@@ -1,6 +1,6 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 29. 10. 2026, Europe/Prague
+Aktualizováno: 30. 10. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
@@ -12,13 +12,14 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 |---|---|
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
-| [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | W6.2, W6.3, W7.1a/b a W7.2 nasazeno; navazuje W7.3 — sekce a metadata R02 |
+| [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | W6.2, W6.3 a W7.1–W7.3 nasazeno; navazuje W7.4 — členská pole R02 |
 | [Registr hlavních cest K0.1](REFACTORING_ROUTE_REGISTER_2026-10-29.md) | 16 kritických cest: oprávnění, služby, hlavní tabulky, vedlejší účinky, testy a otevřená měření |
 | [W6.2 — výpočet kapacity](REFACTORING_WAVE6_2026-10-29.md) | Dokončená čistá extrakce, přímé porovnání s původním kódem a ověřené produkční vydání |
 | [W6.3 — paměť kapacity](REFACTORING_W63_2026-10-29.md) | Nasazené postupné vyhodnocení řádků, migrovaný profil a paměťový rozpočet |
 | [W7.1a — rodinný přístup](REFACTORING_W71_2026-10-29.md) | Nasazená cílená kontrola jedné osoby, stejné autorizační podmínky a čtyři SQL |
 | [W7.1b — souběhová autorizace](REFACTORING_W71B_2026-10-29.md) | Nasazená ochrana RSVP a náhrad po revokaci během čekání na zámek; 32 souběhových scénářů |
 | [W7.2 — celý rodinný přehled](REFACTORING_W72_2026-10-29.md) | Nasazené cílení profilů, porovnání celé stránky v MariaDB 10.3/11.4; SQL −14 %, řádky −25,7 % pro 20 osob |
+| [W7.3 — metadata a sekce](REFACTORING_W73_2026-10-30.md) | Nasazený rozsah metadat pouze pro GET; SQL −66,5 %, metadata −93,8 %, stejné výstupy a historie |
 | [První vlna refaktoringu](REFACTORING_WAVE1_2026-10-28.md) | Příprava z 28. 10. 2026: měření detailu a navigace, tři implementační balíky, přejímací podmínky a dokumentační inventář |
 | [Finanční základ R13–R17](FINANCE_R13_R17_IMPLEMENTATION.md) | Lokální peněžní evidence, účetní doklady, vratky a první export; [ověření](verification/r13-r17/RESULTS.md) |
 | [Produkční nasazení](NASAZENI.md) | Ruční chráněný deploy z GitHub Actions, zálohy a řešení chyb |

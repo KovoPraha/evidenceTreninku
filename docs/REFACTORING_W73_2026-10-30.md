@@ -31,9 +31,13 @@ Vlastník autorizoval implementaci, sloučení a nasazení po úspěšném ově�
 
 ## Stav
 
-Čerstvý main a jeho čtyři CI brány ověřeny, původní WIP zachován.
-Vstupní čtecí audit PASS (41025783698), HTTP 26/26. Implementace hotová,
-13 cílených testů / 63 assertions PASS. Celá stránka 20 osob SQL 2244 → 752,
-metadata 1590 → 98; shodná data/HTML i nemetadata SQL. Širší historie a
-POST PASS. Plná sada, PHPStan a CI před sloučením následují.
-[Měření a meze](verification/refactoring-w73-20261030/RESULTS.md).
+Dokončeno, sloučeno v PR #231 a nasazeno po úspěšných kontrolách.
+Sedm nových testů, RED/GREEN, shodné výstupy/HTML i nemetadata SQL.
+Celý GET 20 osob SQL 2244 → 752, metadata 1590 → 98; historie +1000 vazeb,
+POST a čerstvá revokace zachovány. PHPStan bez chyb, 26 legacy výjimek odstraněno.
+Plná sada 1821 testů, POSIX i obě MariaDB CI PASS. Před/po čtecí audit,
+HTTP 26/26, identita vydání, záloha a shodná konfigurace doloženy.
+[Měření a meze](verification/refactoring-w73-20261030/RESULTS.md),
+[produkční vydání](verification/refactoring-w73-release-20261030/RESULTS.md).
+Navazuje W7.4: 160 opakovaných čtení členských polí, poté R03/R04.
+Lidské UAT, účetní převzetí a aktivace integrací zůstávají otevřené.
