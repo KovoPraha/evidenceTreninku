@@ -1,0 +1,5 @@
+
+Fatal error: Uncaught RuntimeException: Projection equivalence or memory budget failed. in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w103-20261030\tests\Support\AccountingClubReadProfile.php:104
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w103-20261030\tests\Support\AccountingClubReadProfile.php on line 104

@@ -71,6 +71,16 @@ jobs:
           path: accounting-serialization-profile.json
           retention-days: 14
 
+      - name: Verify ordered club financial projections
+        run: php tests/Support/AccountingClubReadProfile.php > accounting-club-read-profile.json
+
+      - name: Preserve club financial projection profile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: accounting-club-read-profile
+          path: accounting-club-read-profile.json
+          retention-days: 14
+
   mariadb-smoke:
     name: MariaDB integrační smoke (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest
@@ -426,4 +436,14 @@ jobs:
         with:
           name: cart-read-profile-mariadb-${{ matrix.mariadb-version }}
           path: cart-read-profile.json
+          retention-days: 14
+
+      - name: Assess ledger and personal financial history on migrated schema
+        run: php tests/Support/FinancialReadAssessment.php > financial-read-assessment.json
+
+      - name: Preserve financial read assessment
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: financial-read-assessment-mariadb-${{ matrix.mariadb-version }}
+          path: financial-read-assessment.json
           retention-days: 14

@@ -1,0 +1,101 @@
+{
+  "sha": "7828758cfe832a99c11ddeafe916b8480e501feb",
+  "checks": [
+    {
+      "id": 124134256208,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568914/job/124134256208"
+    },
+    {
+      "id": 124134256101,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568914/job/124134256101"
+    },
+    {
+      "id": 124134255597,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568914/job/124134255597"
+    },
+    {
+      "id": 124134255134,
+      "name": "PHPStan level 5 and changed-file style",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076571091/job/124134255134"
+    },
+    {
+      "id": 124134248058,
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568814/job/124134248058"
+    },
+    {
+      "id": 124134248043,
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568814/job/124134248043"
+    },
+    {
+      "id": 124134247945,
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568814/job/124134247945"
+    },
+    {
+      "id": 124134247849,
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568814/job/124134247849"
+    },
+    {
+      "id": 124134247697,
+      "name": "PHPUnit na PHP 8.2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568814/job/124134247697"
+    },
+    {
+      "id": 124134247098,
+      "name": "docs",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568762/job/124134247098"
+    }
+  ],
+  "runs": [
+    {
+      "name": "Testy",
+      "id": 41076568814,
+      "conclusion": "success",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568814"
+    },
+    {
+      "name": "PHP quality",
+      "id": 41076571091,
+      "conclusion": "success",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076571091"
+    },
+    {
+      "name": "Current documentation",
+      "id": 41076568762,
+      "conclusion": "success",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568762"
+    },
+    {
+      "name": "Push on main",
+      "id": 41076568914,
+      "conclusion": "success",
+      "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41076568914"
+    }
+  ]
+}

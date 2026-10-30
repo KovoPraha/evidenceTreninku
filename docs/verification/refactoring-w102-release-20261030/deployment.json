@@ -1,0 +1,78 @@
+{
+  "sha": "7828758cfe832a99c11ddeafe916b8480e501feb",
+  "run_id": 41077903487,
+  "job_id": 124138923947,
+  "conclusion": "success",
+  "inputs": {
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "tests": 1848,
+  "assertions": 37639,
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-30_151016_5b2e01e7.sql.gz",
+    "manifest": "evidence_2026-10-30_151016_5b2e01e7.manifest.json",
+    "sha256": "a6841ba405ddddbf9caa4ae79123ab351c1104dedc72a1459f1fa3b336ab2dc4",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063579,
+    "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+  },
+  "migration_checks": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    }
+  ],
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "temporary_config_cleanup": "success",
+  "http_smoke": {
+    "method": "direct runner",
+    "status": 200
+  }
+}
