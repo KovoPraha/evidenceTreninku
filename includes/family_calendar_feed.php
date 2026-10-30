@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+require_once __DIR__ . '/roster_membership_read_projection.php';
 
 require_once __DIR__ . '/family_portal.php';
 require_once __DIR__ . '/public_calendar_feed.php';
@@ -13,7 +15,9 @@ final class FamilyCalendarFeedException extends RuntimeException
 /** @return array<string,mixed>|null */
 function familyCalendarFeedState(PDO $pdo, int $accountId): ?array
 {
-    if ($accountId < 1 || !publicCalendarHasTables($pdo, ['family_calendar_feeds'])) return null;
+    if ($accountId < 1 || !publicCalendarHasTables($pdo, ['family_calendar_feeds'])) {
+        return null;
+    }
     $statement = $pdo->prepare('SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?');
     $statement->execute([$accountId]);
     $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -35,7 +39,9 @@ function familyCalendarFeedIssue(PDO $pdo, int $accountId): array
     $pdo->beginTransaction();
     try {
         $sql = 'SELECT * FROM family_calendar_feeds WHERE account_id=?';
-        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
         $statement = $pdo->prepare($sql);
         $statement->execute([$accountId]);
         $existing = $statement->fetch(PDO::FETCH_ASSOC);
@@ -56,13 +62,23 @@ function familyCalendarFeedIssue(PDO $pdo, int $accountId): array
             $action = 'create';
             $created = true;
         }
-        familyCalendarFeedAudit($pdo, $feedId, $accountId, $action, $hint,
-            $created ? 'Vytvořen rodinný kalendář.' : 'Odkaz rodinného kalendáře byl otočen.');
+        familyCalendarFeedAudit(
+            $pdo,
+            $feedId,
+            $accountId,
+            $action,
+            $hint,
+            $created ? 'Vytvořen rodinný kalendář.' : 'Odkaz rodinného kalendáře byl otočen.'
+        );
         $pdo->commit();
         return compact('token', 'hint', 'created');
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
-        if ($exception instanceof FamilyCalendarFeedException) throw $exception;
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($exception instanceof FamilyCalendarFeedException) {
+            throw $exception;
+        }
         throw new FamilyCalendarFeedException('Odkaz kalendáře se nepodařilo bezpečně vytvořit.', 0, $exception);
     }
 }
@@ -76,7 +92,9 @@ function familyCalendarFeedRevoke(PDO $pdo, int $accountId): array
     $pdo->beginTransaction();
     try {
         $sql = 'SELECT * FROM family_calendar_feeds WHERE account_id=?';
-        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
         $statement = $pdo->prepare($sql);
         $statement->execute([$accountId]);
         $feed = $statement->fetch(PDO::FETCH_ASSOC);
@@ -87,12 +105,20 @@ function familyCalendarFeedRevoke(PDO $pdo, int $accountId): array
         $pdo->prepare(
             'UPDATE family_calendar_feeds SET active=0,revoked_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?'
         )->execute([(int)$feed['id']]);
-        familyCalendarFeedAudit($pdo, (int)$feed['id'], $accountId, 'revoke', (string)$feed['token_hint'],
-            'Rodinný kalendář byl odvolán.');
+        familyCalendarFeedAudit(
+            $pdo,
+            (int)$feed['id'],
+            $accountId,
+            'revoke',
+            (string)$feed['token_hint'],
+            'Rodinný kalendář byl odvolán.'
+        );
         $pdo->commit();
         return ['changed' => true];
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw new FamilyCalendarFeedException('Odkaz kalendáře se nepodařilo bezpečně odvolat.', 0, $exception);
     }
 }
@@ -122,22 +148,20 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
     }
     $people = familyPortalAuthorizedPeople($pdo, $accountId);
     $personIds = array_values(array_unique(array_map(static fn (array $person): int => (int)$person['sportovec_id'], $people)));
-    if ($personIds === []) return [];
+    if ($personIds === []) {
+        return [];
+    }
     $placeholders = implode(',', array_fill(0, count($personIds), '?'));
     $items = [];
 
     $personDetails = [];
     $peopleStatement = $pdo->prepare('SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (' . $placeholders . ')');
     $peopleStatement->execute($personIds);
-    foreach ($peopleStatement->fetchAll(PDO::FETCH_ASSOC) as $person) $personDetails[(int)$person['id']] = $person;
-    $effectiveMembers = [];
-    $membersForTarget = static function (int $teamId, string $date) use ($pdo, &$effectiveMembers): array {
-        $key = $teamId . ':' . $date;
-        if (!isset($effectiveMembers[$key])) {
-            $effectiveMembers[$key] = array_fill_keys(kisRosterEffectiveMemberIds($pdo, $teamId, $date), true);
-        }
-        return $effectiveMembers[$key];
-    };
+    foreach ($peopleStatement->fetchAll(PDO::FETCH_ASSOC) as $person) {
+        $personDetails[(int)$person['id']] = $person;
+    }
+    $membershipRead = new RosterMembershipReadProjection($pdo, $personIds, null, $to);
+    $membersForTarget = $membershipRead->membersForTarget(...);
 
     if (publicCalendarHasTables($pdo, ['training_roster_links', 'club_roster_members', 'planovane_treninky', 'sportovci', 'sportovist', 'skupiny'])) {
         $statement = $pdo->prepare(
@@ -152,16 +176,22 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $members = $membersForTarget((int)$row['team_id'], (string)$row['datum']);
             foreach ($personDetails as $sportovecId => $person) {
-                if (!isset($members[$sportovecId])) continue;
+                if (!isset($members[$sportovecId])) {
+                    continue;
+                }
                 $key = (int)$row['id'] . ':' . $sportovecId;
-                if (isset($seen[$key])) continue;
+                if (isset($seen[$key])) {
+                    continue;
+                }
                 $seen[$key] = true;
                 $item = familyCalendarTrainingItem($row + [
                     'sportovec_id' => $sportovecId,
                     'jmeno' => $person['jmeno'],
                     'prijmeni' => $person['prijmeni'],
                 ]);
-                if ($item !== null) $items[] = $item;
+                if ($item !== null) {
+                    $items[] = $item;
+                }
             }
         }
     }
@@ -180,19 +210,24 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
             $status = familyCalendarRegistrationStatus((string)$row['registration_status']);
             $item = publicCalendarTimedItem(
                 'family-event-' . (int)$row['registration_id'] . '-session-' . (int)$row['session_id'],
-                (string)$row['starts_at'], (string)$row['ends_at'],
+                (string)$row['starts_at'],
+                (string)$row['ends_at'],
                 (string)$row['name'] . ' – ' . trim((string)$row['jmeno'] . ' ' . (string)$row['prijmeni']),
-                (string)$row['location'], 'Stav přihlášky: ' . $status, 'Rodinná akce'
+                (string)$row['location'],
+                'Stav přihlášky: ' . $status,
+                'Rodinná akce'
             );
-            if ($item !== null) $items[] = $item;
+            if ($item !== null) {
+                $items[] = $item;
+            }
         }
     }
 
     // Soupiskový předběžný plán patří do soukromého rodinného kalendáře ještě před přihlášením.
     if (publicCalendarHasTables($pdo, ['club_events','club_event_sessions','club_event_roster_targets','club_roster_members','sportovci'])
-        && publicCalendarColumnExists($pdo,'club_events','visibility')
-        && publicCalendarColumnExists($pdo,'club_events','planning_status')) {
-        $statement=$pdo->prepare(
+        && publicCalendarColumnExists($pdo, 'club_events', 'visibility')
+        && publicCalendarColumnExists($pdo, 'club_events', 'planning_status')) {
+        $statement = $pdo->prepare(
             'SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,'
             . 'rt.team_id FROM club_events e '
             . 'JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id '
@@ -201,26 +236,40 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
             . 'AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id'
         );
         $statement->execute([$toDate->modify('+1 day')->format('Y-m-d 00:00:00'),$from.' 00:00:00']);
-        $registrations=$pdo->prepare(
+        $registrations = $pdo->prepare(
             'SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (' . $placeholders . ") AND status IN ('confirmed','waitlisted','payment_pending')"
         );
         $registrations->execute($personIds);
-        $registered=[];
-        foreach($registrations->fetchAll(PDO::FETCH_ASSOC)as$registration){
-            $registered[(int)$registration['event_id'].':'.(int)$registration['sportovec_id']]=true;
+        $registered = [];
+        foreach ($registrations->fetchAll(PDO::FETCH_ASSOC) as $registration) {
+            $registered[(int)$registration['event_id'].':'.(int)$registration['sportovec_id']] = true;
         }
-        $seenPlans=[];
-        foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$row){
-            $eventDate=substr((string)$row['starts_at'],0,10);
-            $members=$membersForTarget((int)$row['team_id'],$eventDate);
-            foreach($personDetails as$sportovecId=>$person){
-                if(!isset($members[$sportovecId])||isset($registered[(int)$row['event_id'].':'.$sportovecId]))continue;
-                $key=(int)$row['session_id'].':'.$sportovecId;
-                if(isset($seenPlans[$key]))continue;
-                $seenPlans[$key]=true;
-                $state=(string)$row['planning_status']==='planned'?'Předběžný plán – termín se může změnit.':'Potvrzená akce, účast zatím není přihlášená.';
-                $item=publicCalendarTimedItem('family-plan-'.(int)$row['event_id'].'-'.(int)$row['session_id'].'-'.$sportovecId,(string)$row['starts_at'],(string)$row['ends_at'],(string)$row['name'].' – '.trim((string)$person['jmeno'].' '.(string)$person['prijmeni']),(string)$row['location'],$state,'Rodinný plán');
-                if($item!==null)$items[]=$item;
+        $seenPlans = [];
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $eventDate = substr((string)$row['starts_at'], 0, 10);
+            $members = $membersForTarget((int)$row['team_id'], $eventDate);
+            foreach ($personDetails as $sportovecId => $person) {
+                if (!isset($members[$sportovecId]) || isset($registered[(int)$row['event_id'].':'.$sportovecId])) {
+                    continue;
+                }
+                $key = (int)$row['session_id'].':'.$sportovecId;
+                if (isset($seenPlans[$key])) {
+                    continue;
+                }
+                $seenPlans[$key] = true;
+                $state = (string)$row['planning_status'] === 'planned' ? 'Předběžný plán – termín se může změnit.' : 'Potvrzená akce, účast zatím není přihlášená.';
+                $item = publicCalendarTimedItem(
+                    'family-plan-'.(int)$row['event_id'].'-'.(int)$row['session_id'].'-'.$sportovecId,
+                    (string)$row['starts_at'],
+                    (string)$row['ends_at'],
+                    (string)$row['name'].' – '.trim((string)$person['jmeno'].' '.(string)$person['prijmeni']),
+                    (string)$row['location'],
+                    $state,
+                    'Rodinný plán'
+                );
+                if ($item !== null) {
+                    $items[] = $item;
+                }
             }
         }
     }
@@ -241,10 +290,13 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
                 (string)$row['datum'] . ' ' . (string)$row['cas_od'],
                 (string)$row['datum'] . ' ' . (string)$row['cas_do'],
                 (string)$row['nazev'] . ' – ' . trim((string)$row['jmeno'] . ' ' . (string)$row['prijmeni']),
-                (string)$row['sportoviste'], 'Stav rezervace: ' . ((string)$row['stav'] === 'potvrzena' ? 'potvrzená' : 'čeká na potvrzení'),
+                (string)$row['sportoviste'],
+                'Stav rezervace: ' . ((string)$row['stav'] === 'potvrzena' ? 'potvrzená' : 'čeká na potvrzení'),
                 'Rodinná rezervace'
             );
-            if ($item !== null) $items[] = $item;
+            if ($item !== null) {
+                $items[] = $item;
+            }
         }
     }
 
@@ -258,7 +310,9 @@ function familyCalendarItems(PDO $pdo, int $accountId, string $from, string $to)
         $statement->execute([...$personIds, $from, $to]);
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $date = publicCalendarDate((string)$row['due_on']);
-            if ($date === null) continue;
+            if ($date === null) {
+                continue;
+            }
             $items[] = [
                 'uid' => 'family-charge-' . (int)$row['id'], 'start' => $date->format('Y-m-d'),
                 'end' => $date->modify('+1 day')->format('Y-m-d'), 'all_day' => true,
@@ -290,7 +344,9 @@ function familyCalendarAgenda(PDO $pdo, int $accountId, string $from, int $days 
     foreach ($items as &$item) {
         $start = (string)$item['start'];
         $date = publicCalendarDate(substr($start, 0, 10));
-        if ($date === null) throw new FamilyCalendarFeedException('Kalendář obsahuje neplatné datum.');
+        if ($date === null) {
+            throw new FamilyCalendarFeedException('Kalendář obsahuje neplatné datum.');
+        }
         $item['date_label'] = $date->format('d. m. Y');
         $item['time_label'] = $item['all_day']
             ? 'celý den'
@@ -304,7 +360,9 @@ function familyCalendarAgenda(PDO $pdo, int $accountId, string $from, int $days 
 function familyCalendarTrainingItem(array $row): ?array
 {
     $date = publicCalendarDate((string)$row['datum']);
-    if ($date === null) return null;
+    if ($date === null) {
+        return null;
+    }
     $personName = trim((string)$row['jmeno'] . ' ' . (string)$row['prijmeni']);
     $summary = (string)$row['nazev'] . ' – ' . $personName;
     $description = trim((string)($row['team_name_snapshot'] ?? $row['skupina'] ?? ''));
@@ -317,12 +375,19 @@ function familyCalendarTrainingItem(array $row): ?array
     }
     $start = $date->format('Y-m-d') . ' ' . $startTime;
     $startAt = publicCalendarLocalDateTime($start);
-    if ($startAt === null) return null;
+    if ($startAt === null) {
+        return null;
+    }
     $endTime = trim((string)($row['cas_do'] ?? ''));
     $end = $endTime === '' ? $startAt->modify('+1 hour')->format('Y-m-d H:i:s') : $date->format('Y-m-d') . ' ' . $endTime;
     return publicCalendarTimedItem(
         'family-training-' . (int)$row['id'] . '-person-' . (int)$row['sportovec_id'],
-        $start, $end, $summary, (string)($row['sportoviste'] ?? ''), $description, 'Rodinný trénink'
+        $start,
+        $end,
+        $summary,
+        (string)($row['sportoviste'] ?? ''),
+        $description,
+        'Rodinný trénink'
     );
 }
 

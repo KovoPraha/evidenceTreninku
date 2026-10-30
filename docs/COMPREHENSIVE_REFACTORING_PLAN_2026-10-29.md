@@ -290,6 +290,10 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | W8.2 | [Sportovní filtry a kopírovací náhled](REFACTORING_W82_2026-10-30.md), lokálně ověřeno | Roční filtr 1875 → 5 SQL, nižší paměť, shodná data; navazuje CI a release |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 
+[W8.3 — rodinný kalendář](REFACTORING_W83_2026-10-30.md) je lokálně ověřen:
+roční feed 4199 → 39 SQL, shodná historie/ICS a nižší paměť. Připravuje se
+ke společnému vydání s W8.2; další části W8 a W9–W15 zůstávají otevřené.
+
 Každý balík povede protokol `docs/verification/<balik>/RESULTS.md` s: základním
 SHA, hypotézou a měřením, změnou, přesnými příkazy/fixtures, výsledkem před/po,
 omezeními, souběžnými testy, CI finálního headu, release identitou, případným
