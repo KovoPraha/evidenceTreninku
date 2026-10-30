@@ -287,12 +287,13 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | W7.5 | [Registrář](REFACTORING_W75_2026-10-30.md), PR #235 nasazeno; [důkazy](verification/refactoring-w75-release-20261030/RESULTS.md) | Hotovo pro stránkování; 10 003 → 53 řádků, paměť stránky 100 z 36,8 na 0,43 MB; zbývající R03/R04 v W7.6 |
 | Zbytek W7 a W8–W15 | Naplánované, další měření otevřené | Malé PR podle závislostí a skutečných výsledků K0 |
 | W7.6 / W8.1 | [Osobní čtení a časová osa](REFACTORING_W76_W81_2026-10-30.md), PR #237 nasazeno; [důkazy](verification/refactoring-w81-release-20261030/RESULTS.md) | Hotovo v daném rozsahu; roční profil 4176 → 16 SQL, shodná data; finanční historie předána W10 |
-| W8.2 | [Sportovní filtry a kopírovací náhled](REFACTORING_W82_2026-10-30.md), lokálně ověřeno | Roční filtr 1875 → 5 SQL, nižší paměť, shodná data; navazuje CI a release |
+| W8.2 | [Sportovní filtry a kopírovací náhled](REFACTORING_W82_2026-10-30.md), PR #238 nasazeno; [release](verification/refactoring-w82-release-20261030/RESULTS.md) | Roční filtr 1875 → 5 SQL, nižší paměť, shodná data; hotovo v daném rozsahu |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 
-[W8.3 — rodinný kalendář](REFACTORING_W83_2026-10-30.md) je lokálně ověřen:
-roční feed 4199 → 39 SQL, shodná historie/ICS a nižší paměť. Připravuje se
-ke společnému vydání s W8.2; další části W8 a W9–W15 zůstávají otevřené.
+[W8.3 — rodinný kalendář](REFACTORING_W83_2026-10-30.md), PR #240, je
+[nasazen společně s W8.2](verification/refactoring-w82-release-20261030/RESULTS.md):
+roční feed 4199 → 39 SQL, shodná historie/ICS a nižší paměť.
+Další části W8 a W9–W15 zůstávají otevřené.
 
 [W8.5 — sportovní kontrakty](REFACTORING_W85_2026-10-30.md) doplňuje
 skutečné souběhy rezervačního controlleru a přenositelné testy uzavření,
