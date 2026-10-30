@@ -1,0 +1,51 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "migrated_schema": true,
+    "production_mutations": false,
+    "external_sends": 0,
+    "results": {
+        "last_place": {
+            "observed_waiters": 2,
+            "workers": [
+                {
+                    "status": "completed"
+                },
+                {
+                    "status": "completed"
+                }
+            ]
+        },
+        "duplicate": {
+            "observed_waiters": 2,
+            "workers": [
+                {
+                    "status": "completed"
+                },
+                {
+                    "status": "completed"
+                }
+            ]
+        },
+        "waitlist": {
+            "observed_waiters": 2,
+            "workers": [
+                {
+                    "status": "completed"
+                },
+                {
+                    "status": "completed"
+                }
+            ]
+        },
+        "rollback": {
+            "observed_waiters": 1,
+            "workers": [
+                {
+                    "status": "error",
+                    "class": "PDOException",
+                    "message": "SQLSTATE[45000]: <<Unknown error>>: 1644 synthetic_outbox_failure"
+                }
+            ]
+        }
+    }
+}

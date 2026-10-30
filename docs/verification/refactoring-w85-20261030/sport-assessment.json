@@ -1,0 +1,129 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "migrated_schema": true,
+    "foreign_keys": 1,
+    "production_mutations": false,
+    "closures": [
+        {
+            "participants": 10,
+            "read_sql": 52,
+            "write_sql": 26,
+            "reward_locks": 10,
+            "samples": [
+                {
+                    "ms": 15.7842,
+                    "incremental_peak_bytes": 151072
+                },
+                {
+                    "ms": 17.2846,
+                    "incremental_peak_bytes": 151072
+                },
+                {
+                    "ms": 18.1236,
+                    "incremental_peak_bytes": 151072
+                },
+                {
+                    "ms": 19.0031,
+                    "incremental_peak_bytes": 151072
+                },
+                {
+                    "ms": 21.2544,
+                    "incremental_peak_bytes": 151072
+                }
+            ],
+            "immutable_snapshot_and_rewards": true
+        },
+        {
+            "participants": 50,
+            "read_sql": 172,
+            "write_sql": 106,
+            "reward_locks": 50,
+            "samples": [
+                {
+                    "ms": 66.2088,
+                    "incremental_peak_bytes": 164640
+                },
+                {
+                    "ms": 63.2208,
+                    "incremental_peak_bytes": 164640
+                },
+                {
+                    "ms": 55.8739,
+                    "incremental_peak_bytes": 164640
+                },
+                {
+                    "ms": 70.0565,
+                    "incremental_peak_bytes": 164640
+                },
+                {
+                    "ms": 74.1164,
+                    "incremental_peak_bytes": 164640
+                }
+            ],
+            "immutable_snapshot_and_rewards": true
+        },
+        {
+            "participants": 200,
+            "read_sql": 622,
+            "write_sql": 406,
+            "reward_locks": 200,
+            "samples": [
+                {
+                    "ms": 230.4183,
+                    "incremental_peak_bytes": 232112
+                },
+                {
+                    "ms": 252.9978,
+                    "incremental_peak_bytes": 232112
+                },
+                {
+                    "ms": 230.8166,
+                    "incremental_peak_bytes": 232112
+                },
+                {
+                    "ms": 223.7162,
+                    "incremental_peak_bytes": 232112
+                },
+                {
+                    "ms": 225.0793,
+                    "incremental_peak_bytes": 232112
+                }
+            ],
+            "immutable_snapshot_and_rewards": true
+        }
+    ],
+    "medical": [
+        {
+            "watches": 0,
+            "sql": 2,
+            "fetched_rows": 0,
+            "returned": 0,
+            "ms": 1.0413,
+            "incremental_peak_bytes": 70088,
+            "private_fields_absent": true
+        },
+        {
+            "watches": 100,
+            "sql": 2,
+            "fetched_rows": 200,
+            "returned": 25,
+            "ms": 2.9508,
+            "incremental_peak_bytes": 329136,
+            "private_fields_absent": true
+        },
+        {
+            "watches": 1000,
+            "sql": 2,
+            "fetched_rows": 2000,
+            "returned": 25,
+            "ms": 21.3878,
+            "incremental_peak_bytes": 2864320,
+            "private_fields_absent": true
+        }
+    ],
+    "history_1000_and_fresh_revocation": true,
+    "history_profile": {
+        "ms": 5.7892,
+        "incremental_peak_bytes": 673704
+    }
+}

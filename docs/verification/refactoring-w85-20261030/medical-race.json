@@ -1,0 +1,39 @@
+{
+    "database": "evidence_medical_race_83840ac3",
+    "checks": 8,
+    "results": [
+        {
+            "scenario": "verified",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok"
+                },
+                {
+                    "status": "denied",
+                    "message": "Podklad mezitím změnil stav. Obnovte přehled."
+                }
+            ],
+            "one_decision": true,
+            "revision": 2,
+            "status": "PASS"
+        },
+        {
+            "scenario": "revoked",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok"
+                },
+                {
+                    "status": "denied",
+                    "message": "Podklad mezitím změnil stav. Obnovte přehled."
+                }
+            ],
+            "one_decision": true,
+            "revision": 3,
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

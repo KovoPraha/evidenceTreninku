@@ -311,3 +311,23 @@ jobs:
           name: club-calendar-read-profile-mariadb-${{ matrix.mariadb-version }}
           path: club-calendar-read-profile.json
           retention-days: 14
+
+      - name: Ověřit skutečné souběhy rezervací a sportovní historie
+        run: |
+          php tests/Support/BookingControllerMariaDbRace.php > booking-controller-race.json
+          php tests/Support/TrainingClosureMariaDbRace.php > training-closure-race.json
+          php tests/Support/TrainingClosureAuthorizationRace.php > training-authorization-race.json
+          php tests/Support/MedicalClearanceMariaDbRace.php > medical-clearance-race.json
+          php tests/Support/SportReadWriteAssessment.php > sport-read-write-assessment.json
+
+      - name: Uchovat sportovní kontrakty a měření
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sport-contracts-mariadb-${{ matrix.mariadb-version }}
+          path: |
+            booking-controller-race.json
+            training-closure-race.json
+            training-authorization-race.json
+            medical-clearance-race.json
+            sport-read-write-assessment.json
+          retention-days: 14
