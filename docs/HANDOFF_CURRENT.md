@@ -138,3 +138,9 @@ Tyto výjimky jsou bezpečnostní hranice, nikoli chybějící část synchroniz
 Datované dokumenty jako `HANDOFF_2026-08-29.md`, auditní zprávy a implementační
 prompty jsou historické záznamy. Při rozporu nemají přednost před aktuálním
 kódem, `origin/main`, CI ani tímto dokumentem.
+
+### Průběžná W8.3
+
+[W8.3](REFACTORING_W83_2026-10-30.md) lokálně ověřena: rodinný kalendář
+4199 → 39 SQL pro 20 osob/rok. Připravuje se společné vydání s W8.2 po CI.
+[Důkazy](verification/refactoring-w83-20261030/RESULTS.md).

@@ -1,0 +1,18 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w83-20261030\phpunit.xml.dist
+
+F                                                                   1 / 1 (100%)
+
+Time: 00:00.138, Memory: 10.00 MB
+
+There was 1 failure:
+
+1) Tests\Integration\FamilyCalendarReadOptimizationTest::testCalendarMatchesBaselineWithBoundedMembershipReads
+Failed asserting that 208 is equal to 1 or is less than 1.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w83-20261030\tests\Integration\FamilyCalendarReadOptimizationTest.php:45
+
+FAILURES!
+Tests: 1, Assertions: 3, Failures: 1.

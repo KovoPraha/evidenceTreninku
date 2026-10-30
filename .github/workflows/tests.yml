@@ -223,6 +223,20 @@ jobs:
       - name: Ověřit zveřejnění registračních textů a souběh na MariaDB
         run: php tests/Support/RegistrationTextsMariaDbSmoke.php
 
+      - name: Ověřit rodinný kalendář a cílené historické členství
+        env:
+          EVIDENCE_CALENDAR_READ_MARIADB: '1'
+        run: |
+          php vendor/bin/phpunit tests/Integration/FamilyCalendarReadOptimizationTest.php
+          php tests/Support/FamilyCalendarReadProfile.php > family-calendar-read-profile.json
+
+      - name: Uchovat profil rodinného kalendáře
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: family-calendar-read-profile-mariadb-${{ matrix.mariadb-version }}
+          path: family-calendar-read-profile.json
+          retention-days: 14
+
       - name: Ověřit systémové e-maily a souběh editorů na MariaDB
         run: php tests/Support/ShopSystemEmailMariaDbSmoke.php
 

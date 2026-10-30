@@ -1,0 +1,300 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "migrated_schema": true,
+    "foreign_keys": 1,
+    "production_mutations": false,
+    "results": [
+        {
+            "weeks": 0,
+            "teams": 20,
+            "same_data": true,
+            "sha256": "a7999e125cc30492e4f435f103c25e5362fc219c8bf62fab3e474a8380e742dc",
+            "returned": 2,
+            "counts": {
+                "baseline": {
+                    "sql": 16,
+                    "membership_sql": 2,
+                    "fetched_rows": 14
+                },
+                "current": {
+                    "sql": 16,
+                    "membership_sql": 2,
+                    "fetched_rows": 19
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 59.1348,
+                        "incremental_peak_bytes": 136224
+                    },
+                    {
+                        "ms": 58.527,
+                        "incremental_peak_bytes": 136352
+                    },
+                    {
+                        "ms": 44.2516,
+                        "incremental_peak_bytes": 136224
+                    },
+                    {
+                        "ms": 39.5648,
+                        "incremental_peak_bytes": 136352
+                    },
+                    {
+                        "ms": 42.0925,
+                        "incremental_peak_bytes": 136224
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 41.4521,
+                        "incremental_peak_bytes": 141504
+                    },
+                    {
+                        "ms": 36.2793,
+                        "incremental_peak_bytes": 141632
+                    },
+                    {
+                        "ms": 38.8344,
+                        "incremental_peak_bytes": 141504
+                    },
+                    {
+                        "ms": 39.2362,
+                        "incremental_peak_bytes": 141632
+                    },
+                    {
+                        "ms": 38.1281,
+                        "incremental_peak_bytes": 141504
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 136224,
+                "current": 141504
+            },
+            "median_ms": {
+                "baseline": 44.2516,
+                "current": 38.8344
+            }
+        },
+        {
+            "weeks": 1,
+            "teams": 20,
+            "same_data": true,
+            "sha256": "e4ce08c1db6f50e994985c21ba3a3d16b6f7634cfc204670cb32088a8e543d18",
+            "returned": 5,
+            "counts": {
+                "baseline": {
+                    "sql": 96,
+                    "membership_sql": 42,
+                    "fetched_rows": 119
+                },
+                "current": {
+                    "sql": 16,
+                    "membership_sql": 2,
+                    "fetched_rows": 39
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 100.935,
+                        "incremental_peak_bytes": 152648
+                    },
+                    {
+                        "ms": 119.7172,
+                        "incremental_peak_bytes": 152648
+                    },
+                    {
+                        "ms": 125.4651,
+                        "incremental_peak_bytes": 152648
+                    },
+                    {
+                        "ms": 98.0681,
+                        "incremental_peak_bytes": 152648
+                    },
+                    {
+                        "ms": 181.0944,
+                        "incremental_peak_bytes": 152648
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 40.2315,
+                        "incremental_peak_bytes": 146936
+                    },
+                    {
+                        "ms": 41.2326,
+                        "incremental_peak_bytes": 147064
+                    },
+                    {
+                        "ms": 52.4156,
+                        "incremental_peak_bytes": 146936
+                    },
+                    {
+                        "ms": 39.3348,
+                        "incremental_peak_bytes": 147064
+                    },
+                    {
+                        "ms": 63.3448,
+                        "incremental_peak_bytes": 146936
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 152648,
+                "current": 146936
+            },
+            "median_ms": {
+                "baseline": 119.7172,
+                "current": 41.2326
+            }
+        },
+        {
+            "weeks": 12,
+            "teams": 20,
+            "same_data": true,
+            "sha256": "dc6ac89c239669b7521a47c576ce0640db7afcafc33b1623397dc4d6d9804f42",
+            "returned": 38,
+            "counts": {
+                "baseline": {
+                    "sql": 976,
+                    "membership_sql": 482,
+                    "fetched_rows": 1782
+                },
+                "current": {
+                    "sql": 16,
+                    "membership_sql": 2,
+                    "fetched_rows": 459
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 1001.4579,
+                        "incremental_peak_bytes": 366816
+                    },
+                    {
+                        "ms": 903.1447,
+                        "incremental_peak_bytes": 366816
+                    },
+                    {
+                        "ms": 1963.2546,
+                        "incremental_peak_bytes": 366816
+                    },
+                    {
+                        "ms": 1651.8911,
+                        "incremental_peak_bytes": 366816
+                    },
+                    {
+                        "ms": 1298.8401,
+                        "incremental_peak_bytes": 366816
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 67.2106,
+                        "incremental_peak_bytes": 359104
+                    },
+                    {
+                        "ms": 50.6107,
+                        "incremental_peak_bytes": 359104
+                    },
+                    {
+                        "ms": 146.9147,
+                        "incremental_peak_bytes": 359104
+                    },
+                    {
+                        "ms": 151.2697,
+                        "incremental_peak_bytes": 359104
+                    },
+                    {
+                        "ms": 78.4184,
+                        "incremental_peak_bytes": 359104
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 366816,
+                "current": 359104
+            },
+            "median_ms": {
+                "baseline": 1298.8401,
+                "current": 78.4184
+            }
+        },
+        {
+            "weeks": 52,
+            "teams": 20,
+            "same_data": true,
+            "sha256": "926f44e02e35c324615a44c30661946e4d21d8295d921cd353bda9c662d28bf2",
+            "returned": 132,
+            "counts": {
+                "baseline": {
+                    "sql": 4176,
+                    "membership_sql": 2082,
+                    "fetched_rows": 6441
+                },
+                "current": {
+                    "sql": 16,
+                    "membership_sql": 2,
+                    "fetched_rows": 1999
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 4049.4682,
+                        "incremental_peak_bytes": 1327720
+                    },
+                    {
+                        "ms": 3827.4964,
+                        "incremental_peak_bytes": 1327720
+                    },
+                    {
+                        "ms": 4801.5738,
+                        "incremental_peak_bytes": 1327720
+                    },
+                    {
+                        "ms": 5213.6306,
+                        "incremental_peak_bytes": 1327720
+                    },
+                    {
+                        "ms": 4511.5238,
+                        "incremental_peak_bytes": 1327720
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 109.8266,
+                        "incremental_peak_bytes": 1282144
+                    },
+                    {
+                        "ms": 91.1614,
+                        "incremental_peak_bytes": 1282144
+                    },
+                    {
+                        "ms": 158.5439,
+                        "incremental_peak_bytes": 1282144
+                    },
+                    {
+                        "ms": 135.9667,
+                        "incremental_peak_bytes": 1282144
+                    },
+                    {
+                        "ms": 141.8225,
+                        "incremental_peak_bytes": 1282144
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 1327720,
+                "current": 1282144
+            },
+            "median_ms": {
+                "baseline": 4511.5238,
+                "current": 135.9667
+            }
+        }
+    ]
+}
