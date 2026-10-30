@@ -1,0 +1,9 @@
+{
+    "checks": 21,
+    "two_process_claim": "pass",
+    "single_initial_local_outbox_artifact": true,
+    "unknown_delivery_held": true,
+    "process_exit_before_and_after_transport": "pass",
+    "known_rejection_backoff": "pass",
+    "schema": "full catalog, FK enabled, random localhost database, cleanup on exit"
+}

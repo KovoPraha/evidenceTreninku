@@ -1,0 +1,13 @@
+Observed before adding notificationClaimWithRetry, localhost MariaDB 10.4,
+full migrated schema, two independently started PHP workers behind a barrier.
+The following is the tool-captured exception excerpt (not a synthetic assertion):
+
+SQLSTATE[40001]: Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction
+includes/club_event_notification.php:85 PDOStatement->execute(Array)
+includes/club_event_notification.php:132 clubEventNotificationClaim(Object(PDO))
+tests/Support/OperationalDeliveryMariaDbRace.php:33 clubEventNotificationProcessOne(Object(PDO), Object(Closure))
+Parent: RuntimeException: Worker failed at tests/Support/OperationalDeliveryMariaDbRace.php:45.
+
+Exit 1. Owned random database and local files were cleaned by the parent shutdown handler.
+Line numbers are from the pre-format source. Race timing is nondeterministic;
+the unit retry contract additionally proves bounded attempts deterministically.

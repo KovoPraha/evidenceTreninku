@@ -37,3 +37,13 @@ Pokud měření splní rozpočty, zapsat rozhodnutí ponechat ověřený kód.
 Opravit zastaralé provozní návody a přesně oddělit kód/CI od skutečného
 scheduleru a doručení do schránky. Merge/deploy po standardních kontrolách,
 bez změny frekvence rozesílek nebo aktivace transportu. Poté W12–W15.
+
+## W11.1 realizace
+
+[Důkazy](verification/refactoring-w11-20261030/RESULTS.md): přenosný souběh
+na úplném schématu odhalil deadlock claimu; omezený retry se týká pouze
+rollbacknutého převzetí a je sdílený pěti frontami. Testuje skutečný exit
+workeru před/po lokálním transportu a držení nejasného doručení.
+0/100/10 000 čekajících klubových úloh, status a drain mají omezené vrácené
+řádky. Následuje cílené prověření soupiskového příjemce W11.2, poté
+[W12](REFACTORING_W12_2026-10-30.md).
