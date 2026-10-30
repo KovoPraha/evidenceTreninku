@@ -1,0 +1,260 @@
+{
+  "observed_at_before": "2026-10-30T20:51:43+00:00",
+  "system_free_before_pause": 2370215936,
+  "system_total": 21661515776,
+  "pause_at": "2026-10-30T20:53:15+00:00",
+  "targets_disabled": 31,
+  "all_current_shared_disabled": true,
+  "cron_sha256": "d1077c8e893804237e0f499f5f3ca79267d39752796ec8658b57e67027bbde65",
+  "original_cron_sha256": "51d243a1ada28016f326f9ce1e58fc911ae209cb5aafe156800c58df884d6be2",
+  "targets": {
+    "calendar": {
+      "module": "calendar",
+      "release": "109d394a24d3ce4bdbae3b1abc785f1dd6a1dd1c",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "results": {
+      "module": "results",
+      "release": "24ecc5ffffb9e8aa3f695c281fdf49c712ff6ecb",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "motol": {
+      "module": "motol",
+      "release": "24ecc5ffffb9e8aa3f695c281fdf49c712ff6ecb",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "stats": {
+      "module": "stats",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "cz": {
+      "module": "cz",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "fr": {
+      "module": "fr",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "de": {
+      "module": "de",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "pl": {
+      "module": "pl",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "us": {
+      "module": "us",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "ca": {
+      "module": "ca",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "au": {
+      "module": "au",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "uk": {
+      "module": "uk",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "tt": {
+      "module": "tt",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "pt": {
+      "module": "pt",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "sk": {
+      "module": "sk",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "se": {
+      "module": "se",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "ro": {
+      "module": "ro",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "es": {
+      "module": "es",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "ch": {
+      "module": "ch",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "be": {
+      "module": "be",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "it": {
+      "module": "it",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "jp": {
+      "module": "jp",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "nz": {
+      "module": "nz",
+      "release": "c4fbe723e7d2befeda8927d91811ae00323df2da",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "wiki": {
+      "module": "wiki",
+      "release": "bc301900f5f98f42ce38825ec1ed21b0dfec0364",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "mini": {
+      "module": "mini",
+      "release": "359acc33da3b2d411ccce2b1e44445b31a5f674a",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "admin": {
+      "module": "admin",
+      "release": "7ada21fd4540becdb38ef516a08e68d2f7beea55",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "mabe": {
+      "module": "mabe",
+      "release": "a354378b71099fc9dc9cd1596581577f7e4b8904",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "login": {
+      "module": "login",
+      "release": "fb510ea886c7c038f0a77d6bdc0d6002aa23c382",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "timing": {
+      "module": "timing",
+      "release": "68ab1f9108b7b02b566b8355b426b6a7bb764fe6",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "homepage": {
+      "module": "homepage",
+      "release": "3a326176fb0b8e48a703e6ce8781301bce8aacc1",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    },
+    "world": {
+      "module": "world",
+      "release": "3a326176fb0b8e48a703e6ce8781301bce8aacc1",
+      "ui_version": "0.1.12",
+      "core_matches": true,
+      "current_enabled": false,
+      "shared_enabled": false
+    }
+  }
+}

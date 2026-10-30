@@ -1,33 +1,34 @@
 # Aktuální stav projektu
 
-Aktualizováno 30. 10. 2026 (Europe/Prague), po pokusu o nasazení v 17:04 UTC.
+Aktualizováno 30. 10. 2026 (Europe/Prague), po úspěšném finálním nasazení.
 
-- **Implementace W6–W15:** dokončená a sloučená, poslední [PR #255](https://github.com/KovoPraha/evidenceTreninku/pull/255).
-  [Přehled oblastí a omezení](REFACTORING_CLOSURE_2026-10-30.md).
-  Cílové aplikační SHA `2345b648a237973e96593daa5d8588be2a99c28a`.
-- **CI přesného cíle:** [Testy 41094283333](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283333),
-  [PHP quality 41094283244](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283244),
-  [docs 41094283278](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283278),
-  [CodeQL 41094283424](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283424) SUCCESS.
-  Linux 1864 testů / 37843 assertions, POSIX bez skipů, MariaDB 10.3/11.4,
-  typy/styl, JS, souběhy, rozpočty a skutečná izolovaná obnova PASS.
-- **Poslední doložené živé vydání:** W10.2 `7828758cfe832a99c11ddeafe916b8480e501feb`,
-  [deploy 41077903487](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41077903487).
-  [Poslední úspěšné porovnání vydání](verification/refactoring-w102-release-20261030/release-comparison.json).
-  Ověřeno read-only runem 41094301278 před novým pokusem.
-- **Nasazení W10.3–W15 BLOKOVÁNO:** [41095272194](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41095272194)
-  selhalo při záloze, před migrací a aktivací: MariaDB 1021 / disk full v `/tmp`.
-  [Protokol a podklady pro hosting](verification/refactoring-final-release-20261030/RESULTS.md).
-  Následný audit chybu potvrdil 3×. Web vidí 17,9 GB volných; stav DB prostoru,
-  inodeů a kvót tím není prokázán. Nic z rollbacků/záloh nebylo odstraňováno.
-  HTTP před 26/26, po pokusu 13/26: katalog/detail vracejí 500 na původní verzi.
-- **Provozní zásah:** správce hostingu musí prověřit skutečný DB `/tmp`,
-  inody/kvóty a namespace procesu. Po nápravě čerstvý audit + HTTP,
-  nový deploy se zálohou a následný release důkaz. Finální brána není uzavřena.
-- **Poslední úspěšná kontrola flags:** Fio import/auto-confirm, SumUp, Stripe
-  a Velocota false; Packeta nedefinovaná, KIS canonical writes false.
-  Config hash a přílohy odpovídaly W10.2; ledger 141. Nová migrace čeká (cílově 142).
-  Selhaný pokus měl UAT false a import false; integrace nebyly aktivovány.
+- **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
+  [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
+- **Živé vydání:** `d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d`,
+  [deploy 41129311692](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41129311692) SUCCESS.
+  Zahrnuje finální aplikační PR #255 a dokumentační PR #256.
+  [Protokol obnovy a nasazení](verification/db-temp-recovery-20261030/RESULTS.md),
+  [porovnání vydání](verification/db-temp-recovery-20261030/release-comparison.json).
+  Živé SHA/run potvrdil následný read-only audit 41130072050;
+  identita je doložena deployment metadata a workflow, nikoli novou inventurou všech souborů.
+- **Ověření:** přesné main CI Testy 41097723229, PHP quality 41097723222,
+  docs 41097723233 a CodeQL 41097722410 SUCCESS. Linux 1864 testů /
+  37843 assertions, POSIX bez skipů, MariaDB 10.3/11.4 a objemové profily PASS.
+  Deploy znovu provedl 1864/37843; HTTP před i po 26/26.
+- **Záloha a schéma:** čerstvá záloha 336 tabulek / 2 triggery ověřena před
+  migrací. [Izolovaná obnova této zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41130077458)
+  po nasazení PASS. Schéma current / pending [], ledger 141 → 142,
+  dosavadní variabilní symboly beze změny.
+- **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
+  byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
+  následně přibližně 5,6 GB volných na systémovém oddílu. Diskové temporary
+  tables opakovaně fungují. Původní příčina kolísání kapacity není definitivně určena.
+  Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
+  návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
+  [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
+- **Konfigurace a flags:** hash i přílohy před/po shodné; Fio import/auto-confirm,
+  SumUp, Stripe a Velocota false; Packeta nedefinovaná, KIS canonical writes false.
+  UAT false, import false; žádné integrace nebyly aktivovány.
 - **Otevřené provozní převzetí:** lidská/účetní přejímka D12–D14, skutečná
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).

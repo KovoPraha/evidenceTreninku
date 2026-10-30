@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-10-30T19:30:07+01:00",
+  "source": "authenticated hosting operations panel, refreshed",
+  "host": "replikant3544",
+  "filesystems": [
+    {
+      "device": "/dev/sdb1",
+      "mount": "/",
+      "size": "21G",
+      "used": "20G",
+      "available": "0",
+      "use_percent": 100,
+      "inodes_total": 1320000,
+      "inodes_used": 103538,
+      "inodes_free": 1216462
+    },
+    {
+      "device": "/dev/sdd1",
+      "mount": "/home",
+      "size": "39G",
+      "used": "22G",
+      "available": "17G",
+      "use_percent": 56,
+      "inodes_total": 2564096,
+      "inodes_used": 960084,
+      "inodes_free": 1604012
+    }
+  ],
+  "root_reserved_blocks_not_measured": true
+}

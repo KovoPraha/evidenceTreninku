@@ -1,0 +1,44 @@
+[
+    {
+        "at": "2026-10-30T21:12:22+00:00",
+        "read_only": true,
+        "system_free": 5627465728,
+        "system_total": 21661515776,
+        "web_free": 17722982400,
+        "metadata_tables": 250,
+        "disk_temporary_tables_created": 2,
+        "postings": 0,
+        "active_generation": null,
+        "tokenized_generations": 0,
+        "cron_pause_unchanged": true,
+        "ok": true
+    },
+    {
+        "at": "2026-10-30T21:15:03+00:00",
+        "read_only": true,
+        "system_free": 5614923776,
+        "system_total": 21661515776,
+        "web_free": 17723588608,
+        "metadata_tables": 250,
+        "disk_temporary_tables_created": 2,
+        "postings": 0,
+        "active_generation": null,
+        "tokenized_generations": 0,
+        "cron_pause_unchanged": true,
+        "ok": true
+    },
+    {
+        "at": "2026-10-30T21:19:12+00:00",
+        "read_only": true,
+        "system_free": 5598212096,
+        "system_total": 21661515776,
+        "web_free": 17666150400,
+        "metadata_tables": 250,
+        "disk_temporary_tables_created": 2,
+        "postings": 0,
+        "active_generation": null,
+        "tokenized_generations": 0,
+        "cron_pause_unchanged": true,
+        "ok": true
+    }
+]

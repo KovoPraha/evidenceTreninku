@@ -1,6 +1,7 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav k 30. 10. 2026: W6–W15 implementovány, CI PASS a sloučeno; poslední nasazení blokuje DB disk full. Viz [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md).**
+**Stav k 30. 10. 2026: W6–W15 implementovány, CI PASS, sloučeno a nasazeno po ověřené obnově DB kapacity. Viz [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md) a [release důkaz](verification/db-temp-recovery-20261030/RESULTS.md).**
+Průběžné zápisy níže zachycují historii plánu; aktuální stav určuje tento úvod a CURRENT_STATE.
 Vlastník 30. 10. výslovně zadal autonomní pokračování všemi zbývajícími vlnami
 až do technického dokončení, včetně sloučení a nasazení po úspěšném ověření.
 Není nutné nové potvrzení každé vlny. Provozní aktivace integrací, převody

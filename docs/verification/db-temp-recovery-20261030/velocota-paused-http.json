@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-30T20:59:56.299518+00:00",
+  "checks": [
+    {
+      "url": "https://stats.velocota.com/",
+      "status": 200,
+      "bytes": 12727,
+      "ok": true
+    },
+    {
+      "url": "https://stats.velocota.com/search?q=Praha",
+      "status": 200,
+      "bytes": 14340,
+      "ok": true
+    },
+    {
+      "url": "https://cz.velocota.com/",
+      "status": 200,
+      "bytes": 34361,
+      "ok": true
+    },
+    {
+      "url": "https://wiki.velocota.com/",
+      "status": 200,
+      "bytes": 283922,
+      "ok": true
+    },
+    {
+      "url": "https://calendar.velocota.com/",
+      "status": 200,
+      "bytes": 51098,
+      "ok": true
+    },
+    {
+      "url": "https://results.velocota.com/",
+      "status": 200,
+      "bytes": 12058,
+      "ok": true
+    }
+  ],
+  "all_ok": true
+}

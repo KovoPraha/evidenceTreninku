@@ -1,0 +1,253 @@
+{
+  "run_id": 41129311692,
+  "sha": "d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d",
+  "conclusion": "success",
+  "uat_approved": false,
+  "import": false,
+  "tests": {
+    "tests": 1864,
+    "assertions": 37843
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-30_211507_13b2abd3.sql.gz",
+    "manifest": "evidence_2026-10-30_211507_13b2abd3.manifest.json",
+    "sha256": "cbea85ebbc3eb7ed26bf0239e35cb77fc5bd686b5d22a9beb01c4c3306c8fe09",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063619,
+    "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+  },
+  "schema": {
+    "ok": true,
+    "current": true,
+    "reason": "current",
+    "legacy_version": "2.20.2",
+    "legacy_target": "2.20.2",
+    "legacy_state": "current",
+    "ledger_exists": true,
+    "catalog_count": 141,
+    "pending": []
+  },
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "private_storage": {
+    "ok": true,
+    "storage_created": false,
+    "existing_configuration_preserved": true,
+    "config_appended": false,
+    "private_config_backup_verified": false,
+    "cli_write_read_delete_probe": true,
+    "web_runtime_verified": false,
+    "attachments_moved": false,
+    "database_accessed": false
+  },
+  "cleanup": {
+    "ok": true,
+    "removed": [],
+    "missing": [
+      "admin_panel.php",
+      "index-backup.php",
+      "index3.php",
+      "sync.php",
+      "test.php",
+      "analyze_excel.php",
+      "analyze_uci_form.php",
+      "jizdy/vypis_vykazu (4) - kopie.php",
+      "servis/vypis_vykazu (4) - kopie.php",
+      "uctenky/vypis_vykazu (4) - kopie.php",
+      "udalosti/vypis_vykazu (4) - kopie.php",
+      "vozidla/vypis_vykazu (3) - kopie.php",
+      "vozidla/vypis_vykazu (4) - kopie.php"
+    ]
+  },
+  "jobs": {
+    "jobs": [
+      {
+        "id": 124315867772,
+        "name": "Nasazení KIS (kis.kovopraha.cz)",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 41129311692,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Ověřit ruční potvrzení",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Ověřit konfigurační Variables",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Stáhnout kód z main",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Připravit PHP",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Kontrola PHP syntaxe",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Nainstalovat závislosti a spustit testy",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Připravit ověřené SSH spojení",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Předletová kontrola serveru bez změny aplikace",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Nahrát zálohovací nástroj mimo aplikaci",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Vytvořit a ověřit produkční zálohu",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Připravit soukromý klíč archivu KIS a jeho zálohu",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Připravit soukromé úložiště dokumentů",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Připravit kompletní release mimo webroot",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Zachytit otisky dosavadních variabilních symbolů",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          },
+          {
+            "name": "Aplikovat migrace z připraveného release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Ověřit zachování dosavadních variabilních symbolů",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17
+          },
+          {
+            "name": "Aktivovat ověřený release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18
+          },
+          {
+            "name": "Založit produkty kroužků 2026/27 v KIS",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 19
+          },
+          {
+            "name": "Odstranit jen vyjmenované osiřelé soubory a přesunout soukromé přílohy",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Ověřit zákaz HTTP přístupu ke klíči archivu",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21
+          },
+          {
+            "name": "HTTP smoke test bez tajného tokenu",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22
+          },
+          {
+            "name": "Odstranit kopii produkční konfigurace z release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23
+          },
+          {
+            "name": "Post Stáhnout kód z main",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 46
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47
+          }
+        ]
+      }
+    ]
+  }
+}
