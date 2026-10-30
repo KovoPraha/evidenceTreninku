@@ -364,3 +364,8 @@ a měří ledger/osobní historii. Nález 2204 SQL pro 200 čekajících zdrojů
 má samostatný [plán W10.4](REFACTORING_W104_2026-10-30.md).
 
 W10.2 je [nasazená a ověřená](verification/refactoring-w102-release-20261030/RESULTS.md).
+
+[W10.4](REFACTORING_W104_2026-10-30.md) odděluje čtecí orchestrace zdrojů:
+2204 → 1207 SQL, metadata 1002 → 5, stejné výsledky a čerstvé write kontroly.
+Po přijetí a nasazení navazuje [W11](REFACTORING_W11_2026-10-30.md);
+úplné technické scénáře/obnova a browser přejímka zůstávají W12–W15.
