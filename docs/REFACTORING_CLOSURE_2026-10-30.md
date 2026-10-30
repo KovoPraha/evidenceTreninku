@@ -1,8 +1,10 @@
 # Technické uzavření refaktoringu W6–W15
 
-Stav: implementace a cílená místní přejímka dokončeny; konečné CI, sloučení
-a provozní release evidence jsou samostatná závěrečná brána. Aktuální živé
-vydání vždy určuje [CURRENT_STATE](CURRENT_STATE.md).
+Stav: implementace W6–W15, konečné CI a sloučení dokončeny. Produkční
+nasazení posledních W10.3–W15 blokuje opakovaný nedostatek prostoru DB `/tmp`;
+deploy skončil před migrací a aktivací. [Závěrečný protokol](verification/refactoring-final-release-20261030/RESULTS.md)
+obsahuje důkazy, dopad na původní produkci a konkrétní podmínky pokračování.
+Aktuální živé vydání vždy určuje [CURRENT_STATE](CURRENT_STATE.md).
 
 ## Výsledek podle oblastí
 
@@ -33,7 +35,7 @@ zámky, kolace, crash a obnova mají samostatné opakované MariaDB 10.3/11.4
 testy v CI; prohlížeč W13 ověřuje sdílený shell, nikoli veškeré produkční UAT.
 Každá z těchto vrstev je potřebná, žádná nenahrazuje ostatní.
 
-Po úspěšných kontrolách se nasadí přes chráněný main s privátní zálohou,
+Po nápravě provozní příčiny a nových kontrolách se nasadí přes chráněný main s privátní zálohou,
 bez importu a s `uat_schvaleno=false`. Nový index stagingu zvýší počet
 migračních záznamů o 1. Po nasazení se ověří živé SHA/run, katalog/detail,
 neveřejné trasy, config hash, flags, VS a migrační stav. Návrat aplikační změny
@@ -52,4 +54,8 @@ doložena, a proto se incident nevydává za opravenou chybu refaktoringu.
 Nová diagnostika umí při dalším selhání vrátit pouze bezpečné údaje o fázi,
 SQLSTATE a odděleně hostu/webovém prostoru/DB cestách. Protože úspěšný audit
 chybovou větev nespouští, neznáme z něj aktuální volné místo databázového hostu.
-Při opakování je nutné použít tento důkaz; nesmazat rollback ani zálohy odhadem.
+Chyba se opakovala v 17:04 UTC při záloze, ještě před aktivací nového kódu.
+Diagnostika potvrdila stejný hostname webu i DB a přibližně 17,9 GB volných
+v prostoru viditelném PHP. Stav skutečného DB tmp filesystemu, inodeů a kvót
+zůstává neprokázaný; finální release je blokovaný. Podrobnosti a HTTP 13/26
+jsou v závěrečném protokolu. Nesmazat rollback ani zálohy odhadem.

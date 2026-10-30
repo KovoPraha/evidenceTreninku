@@ -1,0 +1,144 @@
+{
+    "schema": "full migrations, FK enabled, random localhost DB",
+    "samples": 1,
+    "transport": "none",
+    "promotion": false,
+    "rollback": "pass",
+    "results": [
+        {
+            "input_rows": 100,
+            "instrumented_single_ms": 56.720411,
+            "extra_peak_bytes": 868128,
+            "report_bytes": 8241,
+            "classified_rows": 100,
+            "fingerprint": "a15d31d7d8c4ea0d7465aca1efd5f6f57773b9b001e5499b98b8fbb176a7b37b",
+            "engine_row_advances": 616,
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "ir",
+                    "type": "ref",
+                    "possible_keys": "idx_run_id",
+                    "key": "idx_run_id",
+                    "key_len": "4",
+                    "ref": "const",
+                    "rows": 100,
+                    "Extra": "Using where; Using index"
+                },
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "im",
+                    "type": "ref",
+                    "possible_keys": "idx_row_id,idx_kis_match_run_row",
+                    "key": "idx_row_id",
+                    "key_len": "4",
+                    "ref": "w12_fixture_6e782b618761e0ac.ir.id",
+                    "rows": 1,
+                    "Extra": "Using where"
+                }
+            ],
+            "prepared_sql": 224,
+            "fetched_rows": 235,
+            "sql_ms": 39.29316399999999,
+            "top_sql_ms": {
+                "INSERT INTO kis_import_rows (run_id,person_key,jmeno,prijmeni,narozeni,email,uciid,oddil,kis_aktivni,kis_platebne_aktivni,kis_neuhrazeno,kis_posledni_uhrada,kis_soupisky,raw_json,kis_external_id,kis_roster_count,kis_payment_paid_count,kis_payment_open_count) VALUES (:run_id,:person_key,:jmeno,:prijmeni,:narozeni,:email,:uciid,:oddil,:kis_aktivni,:kis_platebne_aktivni,:kis_neuhrazeno,:kis_posledni_uhrada,:kis_soupisky,:raw_json,:kis_external_id,:kis_roster_count,:kis_payment_paid_count,:kis_payment_open_count)": 15.40693,
+                "\n        INSERT INTO kis_import_matches\n            (run_id, row_id, sportovec_id, match_status, confidence, reason, candidate_json)\n        VALUES\n            (:run_id, :row_id, :sportovec_id, :match_status, :confidence, :reason, :candidate_json)\n    ": 14.547392999999992,
+                "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?": 4.252129,
+                "SELECT ir.*,im.match_status,im.sportovec_id,s.narozeni AS target_narozeni,s.kis_external_id AS target_kis_external_id,s.kis_aktivni AS target_kis_aktivni,s.kis_platebne_aktivni AS target_kis_platebne_aktivni,s.kis_neuhrazeno AS target_kis_neuhrazeno,s.kis_posledni_uhrada AS target_kis_posledni_uhrada,s.kis_soupisky AS target_kis_soupisky FROM kis_import_rows ir LEFT JOIN kis_import_matches im ON im.row_id=ir.id AND im.run_id=ir.run_id LEFT JOIN sportovci s ON s.id=im.sportovec_id WHERE ir.run_id=? ORDER BY ir.id": 0.746599,
+                "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?": 0.614422
+            }
+        },
+        {
+            "input_rows": 1000,
+            "instrumented_single_ms": 446.735872,
+            "extra_peak_bytes": 7004352,
+            "report_bytes": 79345,
+            "classified_rows": 1000,
+            "fingerprint": "b3af74b391a82969983f10829ccb4619ff1bb2503732e7c94a2ad41cbd5633ac",
+            "engine_row_advances": 4194,
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "ir",
+                    "type": "ref",
+                    "possible_keys": "idx_run_id",
+                    "key": "idx_run_id",
+                    "key_len": "4",
+                    "ref": "const",
+                    "rows": 1000,
+                    "Extra": "Using where; Using index"
+                },
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "im",
+                    "type": "ref",
+                    "possible_keys": "idx_row_id,idx_kis_match_run_row",
+                    "key": "idx_row_id",
+                    "key_len": "4",
+                    "ref": "w12_fixture_6e782b618761e0ac.ir.id",
+                    "rows": 1,
+                    "Extra": "Using where"
+                }
+            ],
+            "prepared_sql": 2023,
+            "fetched_rows": 2014,
+            "sql_ms": 346.26758499999994,
+            "top_sql_ms": {
+                "INSERT INTO kis_import_rows (run_id,person_key,jmeno,prijmeni,narozeni,email,uciid,oddil,kis_aktivni,kis_platebne_aktivni,kis_neuhrazeno,kis_posledni_uhrada,kis_soupisky,raw_json,kis_external_id,kis_roster_count,kis_payment_paid_count,kis_payment_open_count) VALUES (:run_id,:person_key,:jmeno,:prijmeni,:narozeni,:email,:uciid,:oddil,:kis_aktivni,:kis_platebne_aktivni,:kis_neuhrazeno,:kis_posledni_uhrada,:kis_soupisky,:raw_json,:kis_external_id,:kis_roster_count,:kis_payment_paid_count,:kis_payment_open_count)": 165.60440300000013,
+                "\n        INSERT INTO kis_import_matches\n            (run_id, row_id, sportovec_id, match_status, confidence, reason, candidate_json)\n        VALUES\n            (:run_id, :row_id, :sportovec_id, :match_status, :confidence, :reason, :candidate_json)\n    ": 160.02056199999976,
+                "SELECT ir.*,im.match_status,im.sportovec_id,s.narozeni AS target_narozeni,s.kis_external_id AS target_kis_external_id,s.kis_aktivni AS target_kis_aktivni,s.kis_platebne_aktivni AS target_kis_platebne_aktivni,s.kis_neuhrazeno AS target_kis_neuhrazeno,s.kis_posledni_uhrada AS target_kis_posledni_uhrada,s.kis_soupisky AS target_kis_soupisky FROM kis_import_rows ir LEFT JOIN kis_import_matches im ON im.row_id=ir.id AND im.run_id=ir.run_id LEFT JOIN sportovci s ON s.id=im.sportovec_id WHERE ir.run_id=? ORDER BY ir.id": 5.626903,
+                "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?": 4.15819,
+                "SELECT ir.id,ir.jmeno,ir.prijmeni,ir.uciid,im.match_status,im.sportovec_id FROM kis_import_rows ir LEFT JOIN kis_import_matches im ON im.row_id=ir.id AND im.run_id=ir.run_id WHERE ir.run_id=? ORDER BY ir.id": 3.100642
+            }
+        },
+        {
+            "input_rows": 10000,
+            "instrumented_single_ms": 4360.125159,
+            "extra_peak_bytes": 69339392,
+            "report_bytes": 799349,
+            "classified_rows": 10000,
+            "fingerprint": "ac4151f651b820d4e958618d5add5321bcb17a1995c8ffec41dc45163f746e1b",
+            "engine_row_advances": 40194,
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "ir",
+                    "type": "ref",
+                    "possible_keys": "idx_run_id",
+                    "key": "idx_run_id",
+                    "key_len": "4",
+                    "ref": "const",
+                    "rows": 10000,
+                    "Extra": "Using where; Using index"
+                },
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "im",
+                    "type": "ref",
+                    "possible_keys": "idx_row_id,idx_kis_match_run_row",
+                    "key": "idx_row_id",
+                    "key_len": "4",
+                    "ref": "w12_fixture_6e782b618761e0ac.ir.id",
+                    "rows": 1,
+                    "Extra": "Using where"
+                }
+            ],
+            "prepared_sql": 20023,
+            "fetched_rows": 20014,
+            "sql_ms": 3405.1422680000105,
+            "top_sql_ms": {
+                "INSERT INTO kis_import_rows (run_id,person_key,jmeno,prijmeni,narozeni,email,uciid,oddil,kis_aktivni,kis_platebne_aktivni,kis_neuhrazeno,kis_posledni_uhrada,kis_soupisky,raw_json,kis_external_id,kis_roster_count,kis_payment_paid_count,kis_payment_open_count) VALUES (:run_id,:person_key,:jmeno,:prijmeni,:narozeni,:email,:uciid,:oddil,:kis_aktivni,:kis_platebne_aktivni,:kis_neuhrazeno,:kis_posledni_uhrada,:kis_soupisky,:raw_json,:kis_external_id,:kis_roster_count,:kis_payment_paid_count,:kis_payment_open_count)": 1691.8463520000034,
+                "\n        INSERT INTO kis_import_matches\n            (run_id, row_id, sportovec_id, match_status, confidence, reason, candidate_json)\n        VALUES\n            (:run_id, :row_id, :sportovec_id, :match_status, :confidence, :reason, :candidate_json)\n    ": 1608.728675000007,
+                "SELECT ir.*,im.match_status,im.sportovec_id,s.narozeni AS target_narozeni,s.kis_external_id AS target_kis_external_id,s.kis_aktivni AS target_kis_aktivni,s.kis_platebne_aktivni AS target_kis_platebne_aktivni,s.kis_neuhrazeno AS target_kis_neuhrazeno,s.kis_posledni_uhrada AS target_kis_posledni_uhrada,s.kis_soupisky AS target_kis_soupisky FROM kis_import_rows ir LEFT JOIN kis_import_matches im ON im.row_id=ir.id AND im.run_id=ir.run_id LEFT JOIN sportovci s ON s.id=im.sportovec_id WHERE ir.run_id=? ORDER BY ir.id": 47.679297000000005,
+                "SELECT ir.id,ir.jmeno,ir.prijmeni,ir.uciid,im.match_status,im.sportovec_id FROM kis_import_rows ir LEFT JOIN kis_import_matches im ON im.row_id=ir.id AND im.run_id=ir.run_id WHERE ir.run_id=? ORDER BY ir.id": 28.71786,
+                "UPDATE kis_import_runs SET preview_contract_version=?,preview_fingerprint=?,preview_report_json=?,classified_rows=?,blocker_rows=? WHERE id=?": 9.217347
+            }
+        }
+    ]
+}

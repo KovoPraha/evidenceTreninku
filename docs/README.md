@@ -13,7 +13,8 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
 | [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | Aktuální dispozice W6–W15, přijaté změny a důvody nepřijatých kandidátů |
-| [Závěrečná technická přejímka refaktoringu](REFACTORING_CLOSURE_2026-10-30.md) | Propojené toky, měření, bezpečnostní hranice a závěrečná release brána; živé vydání v CURRENT_STATE |
+| [Závěrečná technická přejímka refaktoringu](REFACTORING_CLOSURE_2026-10-30.md) | W6–W15 sloučeno a CI PASS; finální nasazení blokuje DB disk full, živé vydání v CURRENT_STATE |
+| [Finální CI a provozní incident](verification/refactoring-final-release-20261030/RESULTS.md) | Záloha odmítla nasazení před migrací/aktivací, aktuální HTTP dopad a podklady pro hosting |
 | [Registr hlavních cest K0.1](REFACTORING_ROUTE_REGISTER_2026-10-29.md) | 16 kritických cest: oprávnění, služby, hlavní tabulky, vedlejší účinky, testy a otevřená měření |
 | [W6.2 — výpočet kapacity](REFACTORING_WAVE6_2026-10-29.md) | Dokončená čistá extrakce, přímé porovnání s původním kódem a ověřené produkční vydání |
 | [W6.3 — paměť kapacity](REFACTORING_W63_2026-10-29.md) | Nasazené postupné vyhodnocení řádků, migrovaný profil a paměťový rozpočet |
