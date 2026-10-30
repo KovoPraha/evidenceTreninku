@@ -294,6 +294,11 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 roční feed 4199 → 39 SQL, shodná historie/ICS a nižší paměť. Připravuje se
 ke společnému vydání s W8.2; další části W8 a W9–W15 zůstávají otevřené.
 
+[W8.5 — sportovní kontrakty](REFACTORING_W85_2026-10-30.md) doplňuje
+skutečné souběhy rezervačního controlleru a přenositelné testy uzavření,
+náhrad a zdravotních rozhodnutí do obou CI MariaDB. [Měření](verification/refactoring-w85-20261030/RESULTS.md)
+zachovává potřebné transakční zámky; browser přejímka pokračuje W13/W15.
+
 Každý balík povede protokol `docs/verification/<balik>/RESULTS.md` s: základním
 SHA, hypotézou a měřením, změnou, přesnými příkazy/fixtures, výsledkem před/po,
 omezeními, souběžnými testy, CI finálního headu, release identitou, případným
