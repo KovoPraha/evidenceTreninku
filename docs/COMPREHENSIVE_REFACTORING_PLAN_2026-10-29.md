@@ -314,3 +314,11 @@ na současném main / čeká na rozhodnutí**, nikoli neurčité „hotovo“.
 [historické nálezy 19. 10.](../outputs/data-flow-audit-2026-10-19/NALEZY_A_RIZIKA.md),
 [identitní outbox](identity-email-queue.md), [nasazení](NASAZENI.md),
 [migrace](../migrations/README.md).
+
+## Průběžná W8.4 — klubový kalendář
+
+[Plán](REFACTORING_W84_2026-10-30.md) a
+[měření](verification/refactoring-w84-20261030/RESULTS.md): dávkové přílohy
+povolených akcí a vozidel, roční staff seznam 2913 → 9 SQL. Autorizace a
+writeři zachováni. [Navazující kontrakty W8.5](verification/refactoring-w84-20261030/SPORT_FOLLOWUP.md)
+zůstávají otevřené; celý plán W9–W15 tím není uzavřen.
