@@ -81,6 +81,16 @@ jobs:
           path: accounting-club-read-profile.json
           retention-days: 14
 
+      - name: Verify XLSX parser lifecycle and equivalent results
+        run: php tests/Support/KisParserProfile.php > kis-parser-profile.json
+
+      - name: Preserve parser lifecycle profile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kis-parser-profile
+          path: kis-parser-profile.json
+          retention-days: 14
+
   mariadb-smoke:
     name: MariaDB integrační smoke (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest
@@ -462,4 +472,20 @@ jobs:
         with:
           name: financial-read-assessment-mariadb-${{ matrix.mariadb-version }}
           path: financial-read-assessment.json
+          retention-days: 14
+
+      - name: Verify import rollback, export snapshot and complete backup restoration
+        run: |
+          php tests/Support/ImportPreviewProfile.php > import-preview-profile.json
+          php tests/Support/AccountingExportSnapshotMariaDbTest.php > export-snapshot.json
+          php -d memory_limit=512M tests/Support/BackupRestoreProfile.php > backup-restore-profile.json
+
+      - name: Preserve isolated import and recovery evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: import-recovery-mariadb-${{ matrix.mariadb-version }}
+          path: |
+            import-preview-profile.json
+            export-snapshot.json
+            backup-restore-profile.json
           retention-days: 14

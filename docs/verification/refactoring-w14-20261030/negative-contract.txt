@@ -1,0 +1,1 @@
+PHPStan contract PASS: valid imports and transaction state accepted; 10 exact negative findings retained.

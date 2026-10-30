@@ -1,0 +1,67 @@
+{
+    "samples": 1,
+    "comparison": "complete result hash and exact metadata",
+    "missing_header_retained_bytes": 34464,
+    "results": [
+        {
+            "rows": 100,
+            "mode": "baseline",
+            "ms": 65.8247,
+            "incremental_peak_bytes": 1627280,
+            "retained_with_result_bytes": 1597104,
+            "retained_after_result_release_bytes": 1554160,
+            "xlsx_bytes": 8757,
+            "result_sha256": "a609c99539e4531b8303277015001f68eef95d68b29314aa573509fea4e543c4"
+        },
+        {
+            "rows": 100,
+            "mode": "current",
+            "ms": 27.0355,
+            "incremental_peak_bytes": 395856,
+            "retained_with_result_bytes": 131136,
+            "retained_after_result_release_bytes": 70624,
+            "xlsx_bytes": 8757,
+            "result_sha256": "a609c99539e4531b8303277015001f68eef95d68b29314aa573509fea4e543c4"
+        },
+        {
+            "rows": 1000,
+            "mode": "baseline",
+            "ms": 197.6064,
+            "incremental_peak_bytes": 3347672,
+            "retained_with_result_bytes": 3343640,
+            "retained_after_result_release_bytes": 2915576,
+            "xlsx_bytes": 31252,
+            "result_sha256": "c09223c0afa0295f0791bfc76126f3f8532501a6c93a24009a1d385aacdeb95b"
+        },
+        {
+            "rows": 1000,
+            "mode": "current",
+            "ms": 234.2567,
+            "incremental_peak_bytes": 3807344,
+            "retained_with_result_bytes": 1089344,
+            "retained_after_result_release_bytes": 492512,
+            "xlsx_bytes": 31252,
+            "result_sha256": "c09223c0afa0295f0791bfc76126f3f8532501a6c93a24009a1d385aacdeb95b"
+        },
+        {
+            "rows": 10000,
+            "mode": "baseline",
+            "ms": 2077.4324,
+            "incremental_peak_bytes": 33793592,
+            "retained_with_result_bytes": 33789560,
+            "retained_after_result_release_bytes": 29443736,
+            "xlsx_bytes": 260869,
+            "result_sha256": "3f5c0c2b875f980f4dc31c6fa7f4308e311589f4a38141dd79f88e02d37fb84a"
+        },
+        {
+            "rows": 10000,
+            "mode": "current",
+            "ms": 2103.1941,
+            "incremental_peak_bytes": 36940264,
+            "retained_with_result_bytes": 9206112,
+            "retained_after_result_release_bytes": 3179512,
+            "xlsx_bytes": 260869,
+            "result_sha256": "3f5c0c2b875f980f4dc31c6fa7f4308e311589f4a38141dd79f88e02d37fb84a"
+        }
+    ]
+}

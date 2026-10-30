@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -10,8 +11,8 @@ require_once __DIR__ . '/kis_import_field_contract.php';
 function kis_deaccent(string $s): string
 {
     static $map = [
-        'á'=>'a','č'=>'c','ď'=>'d','é'=>'e','ě'=>'e','í'=>'i','ň'=>'n','ó'=>'o','ř'=>'r','š'=>'s','ť'=>'t','ú'=>'u','ů'=>'u','ý'=>'y','ž'=>'z',
-        'Á'=>'A','Č'=>'C','Ď'=>'D','É'=>'E','Ě'=>'E','Í'=>'I','Ň'=>'N','Ó'=>'O','Ř'=>'R','Š'=>'S','Ť'=>'T','Ú'=>'U','Ů'=>'U','Ý'=>'Y','Ž'=>'Z',
+        'á' => 'a','č' => 'c','ď' => 'd','é' => 'e','ě' => 'e','í' => 'i','ň' => 'n','ó' => 'o','ř' => 'r','š' => 's','ť' => 't','ú' => 'u','ů' => 'u','ý' => 'y','ž' => 'z',
+        'Á' => 'A','Č' => 'C','Ď' => 'D','É' => 'E','Ě' => 'E','Í' => 'I','Ň' => 'N','Ó' => 'O','Ř' => 'R','Š' => 'S','Ť' => 'T','Ú' => 'U','Ů' => 'U','Ý' => 'Y','Ž' => 'Z',
     ];
     return strtr($s, $map);
 }
@@ -151,47 +152,51 @@ function kis_find_header_row(Worksheet $sheet, array $requiredKeys, int $maxRows
 function kis_read_rows(string $path, array $requiredKeys, array &$meta): array
 {
     $spreadsheet = IOFactory::load($path);
-    foreach ($spreadsheet->getAllSheets() as $sheet) {
-        $found = kis_find_header_row($sheet, $requiredKeys);
-        if ($found === null) {
-            continue;
-        }
-
-        [$headerRow, $headers] = $found;
-        $highestRow = (int)$sheet->getHighestRow();
-        $highestCol = (string)$sheet->getHighestColumn();
-        $rows = [];
-
-        for ($r = $headerRow + 1; $r <= $highestRow; $r++) {
-            $data = $sheet->rangeToArray("A{$r}:{$highestCol}{$r}", null, true, true, false)[0] ?? [];
-            $nonEmpty = false;
-            foreach ($data as $v) {
-                if (trim((string)$v) !== '') {
-                    $nonEmpty = true;
-                    break;
-                }
-            }
-            if (!$nonEmpty) {
+    try {
+        foreach ($spreadsheet->getAllSheets() as $sheet) {
+            $found = kis_find_header_row($sheet, $requiredKeys);
+            if ($found === null) {
                 continue;
             }
 
-            $row = ['_row' => $r];
-            foreach ($headers as $key => $ci) {
-                $row[$key] = $data[$ci] ?? null;
+            [$headerRow, $headers] = $found;
+            $highestRow = (int)$sheet->getHighestRow();
+            $highestCol = (string)$sheet->getHighestColumn();
+            $rows = [];
+
+            for ($r = $headerRow + 1; $r <= $highestRow; $r++) {
+                $data = $sheet->rangeToArray("A{$r}:{$highestCol}{$r}", null, true, true, false)[0] ?? [];
+                $nonEmpty = false;
+                foreach ($data as $v) {
+                    if (trim((string)$v) !== '') {
+                        $nonEmpty = true;
+                        break;
+                    }
+                }
+                if (!$nonEmpty) {
+                    continue;
+                }
+
+                $row = ['_row' => $r];
+                foreach ($headers as $key => $ci) {
+                    $row[$key] = $data[$ci] ?? null;
+                }
+                $rows[] = $row;
             }
-            $rows[] = $row;
+
+            $meta = [
+                'sheet' => $sheet->getTitle(),
+                'header_row' => $headerRow,
+                'rows' => count($rows),
+                'headers' => array_values(array_keys($headers)),
+            ];
+            return $rows;
         }
 
-        $meta = [
-            'sheet' => $sheet->getTitle(),
-            'header_row' => $headerRow,
-            'rows' => count($rows),
-            'headers' => array_values(array_keys($headers)),
-        ];
-        return $rows;
+        throw new RuntimeException('Nelze najit hlavicku v souboru ' . basename($path));
+    } finally {
+        $spreadsheet->disconnectWorksheets();
     }
-
-    throw new RuntimeException('Nelze najit hlavicku v souboru ' . basename($path));
 }
 
 function kis_upsert_person(array &$people, string $jmeno, string $prijmeni, ?string $narozeni, string $externalId = '', string $externalIdRaw = ''): array
@@ -373,7 +378,9 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
         $dueDate = kis_date_to_mysql($row['datumsplatnosti'] ?? null);
         $statusClass = ($status === 'zaplaceno' || $remaining === 0.0) ? 'paid'
             : (in_array($status, ['zruseno', 'stornovano', 'storno'], true) ? 'cancelled' : 'pending');
-        if ($statusClass === 'paid' && $paidDate === null) $paymentMissingPaidDates++;
+        if ($statusClass === 'paid' && $paidDate === null) {
+            $paymentMissingPaidDates++;
+        }
         if ($prescriptionId['value'] !== '' && $amount !== null && $amount > 0 && ($statusClass !== 'paid' || $paidDate !== null)) {
             $amountMinor = (int)round($amount * 100);
             $outstandingMinor = $remaining === null
@@ -419,7 +426,9 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
     foreach ($paymentsByIdentity as $identityKey => $payment) {
         if (str_starts_with($identityKey, 'external:')) {
             $matches = $peopleByExternal[substr($identityKey, 9)] ?? [];
-            if ($matches === []) $paymentUnmatchedExternalRows++;
+            if ($matches === []) {
+                $paymentUnmatchedExternalRows++;
+            }
         } else {
             $matches = $peopleByName[substr($identityKey, 5)] ?? [];
         }
@@ -430,15 +439,33 @@ function kis_build_import(string $usersPath, string $paymentsPath, string $roste
             $paymentAmbiguousRows++;
         }
     }
-    if ($paymentFallbackRows > 0) $warnings[] = 'PAYMENT_NAME_FALLBACK:' . $paymentFallbackRows;
-    if ($paymentInvalidExternalRows > 0) $warnings[] = 'PAYMENT_EXTERNAL_ID_INVALID:' . $paymentInvalidExternalRows;
-    if ($paymentUnmatchedExternalRows > 0) $warnings[] = 'PAYMENT_EXTERNAL_ID_UNMATCHED:' . $paymentUnmatchedExternalRows;
-    if ($paymentAmbiguousRows > 0) $warnings[] = 'PAYMENT_NAME_AMBIGUOUS:' . $paymentAmbiguousRows;
-    if ($paymentMissingPrescriptionIds > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_ID_MISSING:' . $paymentMissingPrescriptionIds;
-    if ($paymentInvalidPrescriptionIds > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_ID_INVALID:' . $paymentInvalidPrescriptionIds;
-    if ($paymentMissingAmounts > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_MISSING:' . $paymentMissingAmounts;
-    if ($paymentInvalidAmounts > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_INVALID:' . $paymentInvalidAmounts;
-    if ($paymentMissingPaidDates > 0) $warnings[] = 'PAYMENT_PRESCRIPTION_PAID_DATE_MISSING:' . $paymentMissingPaidDates;
+    if ($paymentFallbackRows > 0) {
+        $warnings[] = 'PAYMENT_NAME_FALLBACK:' . $paymentFallbackRows;
+    }
+    if ($paymentInvalidExternalRows > 0) {
+        $warnings[] = 'PAYMENT_EXTERNAL_ID_INVALID:' . $paymentInvalidExternalRows;
+    }
+    if ($paymentUnmatchedExternalRows > 0) {
+        $warnings[] = 'PAYMENT_EXTERNAL_ID_UNMATCHED:' . $paymentUnmatchedExternalRows;
+    }
+    if ($paymentAmbiguousRows > 0) {
+        $warnings[] = 'PAYMENT_NAME_AMBIGUOUS:' . $paymentAmbiguousRows;
+    }
+    if ($paymentMissingPrescriptionIds > 0) {
+        $warnings[] = 'PAYMENT_PRESCRIPTION_ID_MISSING:' . $paymentMissingPrescriptionIds;
+    }
+    if ($paymentInvalidPrescriptionIds > 0) {
+        $warnings[] = 'PAYMENT_PRESCRIPTION_ID_INVALID:' . $paymentInvalidPrescriptionIds;
+    }
+    if ($paymentMissingAmounts > 0) {
+        $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_MISSING:' . $paymentMissingAmounts;
+    }
+    if ($paymentInvalidAmounts > 0) {
+        $warnings[] = 'PAYMENT_PRESCRIPTION_AMOUNT_INVALID:' . $paymentInvalidAmounts;
+    }
+    if ($paymentMissingPaidDates > 0) {
+        $warnings[] = 'PAYMENT_PRESCRIPTION_PAID_DATE_MISSING:' . $paymentMissingPaidDates;
+    }
 
     // Sloučení sezónních variant: "X (2025/2026)" → "X", pokud existuje i základní název.
     // KIS exportuje tutéž soupisku dvakrát (users bez sufixu, soupisky se sufixem sezóny) —

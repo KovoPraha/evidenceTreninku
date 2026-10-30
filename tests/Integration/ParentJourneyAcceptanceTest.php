@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Integration;
@@ -15,13 +16,13 @@ require_once dirname(__DIR__, 2) . '/includes/club_event_notification.php';
 /** No persistent database, external payment provider or real mail transport. */
 final class ParentJourneyAcceptanceTest extends TestCase
 {
-    private const BANK = ['iban'=>'CZ6508000000192000145399','bic'=>'GIBACZPX','account_label'=>'LOCALHOST NEPLATIT','due_days'=>7];
+    private const BANK = ['iban' => 'CZ6508000000192000145399','bic' => 'GIBACZPX','account_label' => 'LOCALHOST NEPLATIT','due_days' => 7];
     private array $sessionBackup;
 
     protected function setUp(): void
     {
         $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = ['trener_id'=>7,'role'=>'admin'];
+        $_SESSION = ['trener_id' => 7,'role' => 'admin'];
     }
 
     protected function tearDown(): void
@@ -82,7 +83,7 @@ final class ParentJourneyAcceptanceTest extends TestCase
         self::assertTrue($replay['replayed']);
         self::assertFalse(\shopOrderAdminConfirmBankPayment($pdo, (int)$order['payment_id'], 7, 'LOCALHOST opakované potvrzení.', true)['changed']);
         $pdo->beginTransaction();
-        self::assertSame(['linked'=>0,'activated'=>0], \clubProgramLinkApprovedAthleteRequestInTransaction($pdo, $requestId, 101, 7));
+        self::assertSame(['linked' => 0,'activated' => 0], \clubProgramLinkApprovedAthleteRequestInTransaction($pdo, $requestId, 101, 7));
         $pdo->commit();
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
@@ -94,12 +95,16 @@ final class ParentJourneyAcceptanceTest extends TestCase
             $sent[] = compact('email', 'subject', 'body');
             return true;
         };
-        while (($result = \clubEventNotificationProcessOne($pdo, $sender)) !== null) self::assertTrue($result);
+        while (($result = \clubEventNotificationProcessOne($pdo, $sender)) !== null) {
+            self::assertTrue($result);
+        }
         self::assertCount(4, $sent, 'Receipt, payment, decision and late activation each have one message.');
         self::assertSame(['parent-acceptance@example.test'], array_values(array_unique(array_column($sent, 'email'))));
         self::assertStringContainsString('sportovec byl zařazen do soupisky', implode("\n", array_column($sent, 'body')));
         self::assertSame(4, (int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE status='sent'")->fetchColumn());
         self::assertNull(\clubEventNotificationProcessOne($pdo, $sender));
+        require_once dirname(__DIR__) . '/Support/ParentJourneyCompletion.php';
+        \parentJourneyComplete($pdo, $accountId, (int) $order['payment_id']);
     }
 
     public function testPaidRejectedApplicationReleasesPlaceAndClearlyRequiresManualRefund(): void
@@ -153,20 +158,22 @@ final class ParentJourneyAcceptanceTest extends TestCase
     private function place(bool $withOfferSnapshot = false): array
     {
         $pdo = ParentJourneyAcceptanceFixture::create();
-        if ($withOfferSnapshot) $pdo->exec('ALTER TABLE shop_order_items ADD COLUMN club_program_offer_id INTEGER NULL');
+        if ($withOfferSnapshot) {
+            $pdo->exec('ALTER TABLE shop_order_items ADD COLUMN club_program_offer_id INTEGER NULL');
+        }
         $programId = (int)\clubProgramCreate($pdo, 7, 'LOCALHOST-ACCEPTANCE', 'LOCALHOST NEPLATIT kroužek')['id'];
         foreach (['program_cancellation','program_consent'] as $purpose) {
             \clubProgramTermsConfigure($pdo, 7, 'program', $programId, $purpose, 'Syntetický schválený text pouze pro izolovaný test.', true);
         }
         $offer = \clubProgramCreateOffer($pdo, 7, $programId, 1, 10, 501, 601, 'LOCALHOST-TERM', 'LOCALHOST období', '2026-09-01', '2027-08-31', null, null, 1, 'active');
         $terms = \clubProgramTermsEffective($pdo, $programId, (int)$offer['id']);
-        $versions = array_map(static fn(array $term): string => $term['version'], \athleteRegistrationCurrentTerms($pdo));
+        $versions = array_map(static fn (array $term): string => $term['version'], \athleteRegistrationCurrentTerms($pdo));
         $input = [
-            'parent_first_name'=>'LOCALHOST','parent_last_name'=>'NEPLATIT','email'=>'parent-acceptance@example.test','contact_phone'=>'+420 777 123 456',
-            'requested_role'=>'guardian','jmeno'=>'Dítě','prijmeni'=>'Jedna','narozeni'=>'2017-04-03','citizenship_country_code'=>'SK',
-            'address_street'=>'LOCALHOST','address_house_number'=>'12','address_orientation_number'=>'','address_city'=>'Praha','address_postcode'=>'19000',
-            'has_czech_birth_number'=>'0','birth_number'=>'','member_data_notice'=>'1','birth_number_legal_notice'=>'1','photo_internal'=>'0','photo_public'=>'0',
-            'program_terms_accepted'=>'1','program_term_version'=>array_map(static fn(array $term): string => $term['terms_version'], $terms),'message'=>'',
+            'parent_first_name' => 'LOCALHOST','parent_last_name' => 'NEPLATIT','email' => 'parent-acceptance@example.test','contact_phone' => '+420 777 123 456',
+            'requested_role' => 'guardian','jmeno' => 'Dítě','prijmeni' => 'Jedna','narozeni' => '2017-04-03','citizenship_country_code' => 'SK',
+            'address_street' => 'LOCALHOST','address_house_number' => '12','address_orientation_number' => '','address_city' => 'Praha','address_postcode' => '19000',
+            'has_czech_birth_number' => '0','birth_number' => '','member_data_notice' => '1','birth_number_legal_notice' => '1','photo_internal' => '0','photo_public' => '0',
+            'program_terms_accepted' => '1','program_term_version' => array_map(static fn (array $term): string => $term['terms_version'], $terms),'message' => '',
         ];
         $key = bin2hex(random_bytes(16));
         $access = bin2hex(random_bytes(32));

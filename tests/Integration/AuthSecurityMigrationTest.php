@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Integration;
@@ -165,6 +166,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261024200000_payment_variable_symbol_index_repair',
                 '20261025230000_race_result_revisions',
                 '20261025231000_kis_review_handoff',
+                '20261030170000_kis_preview_match_index',
 
             ],
             array_keys($catalog)
@@ -206,8 +208,9 @@ final class AuthSecurityMigrationTest extends TestCase
             11,
             (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration'")->fetchColumn()
         );
-        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration' AND terms_version LIKE '%-vzor'")->fetchColumn());
-        self::assertSame(1,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration' AND consent_purpose='csc_birth_number_sharing' AND terms_version='csc-birth-number-sharing-2026-10-20-v1'")->fetchColumn());
+        self::assertSame(2, (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration' AND terms_version LIKE '%-vzor'")->fetchColumn());
+        self::assertSame(1, (int)$pdo->query(('SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type=\'athlete_registration\' AND consent_pu'
+ . 'rpose=\'csc_birth_number_sharing\' AND terms_version=\'csc-birth-number-sharing-2026-10-20-v1\''))->fetchColumn());
         self::assertTrue($this->tableExists($pdo, 'password_reset_tokens'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feeds'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feed_events'));
@@ -291,6 +294,7 @@ final class AuthSecurityMigrationTest extends TestCase
         $pdo->exec('CREATE TABLE treneri (id INTEGER PRIMARY KEY, jmeno TEXT, email TEXT UNIQUE, heslo TEXT, role TEXT, aktivni INTEGER NOT NULL DEFAULT 1)');
         $pdo->exec("INSERT INTO treneri (id,jmeno,email,heslo,role,aktivni) VALUES (1,'Admin','admin@example.test','x','admin',1)");
         $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE kis_import_matches (id INTEGER PRIMARY KEY,run_id INTEGER NOT NULL,row_id INTEGER NOT NULL)');
         $pdo->exec('CREATE TABLE sportovist (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE individualni_lekce (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE mereni_zaznamy (id INTEGER PRIMARY KEY, vzdalenost TEXT, cas TEXT, rpe TEXT)');
@@ -336,10 +340,12 @@ final class AuthSecurityMigrationTest extends TestCase
         return (bool)$statement->fetchColumn();
     }
 
-    private function columnExists(PDO $pdo,string $table,string $column):bool
+    private function columnExists(PDO $pdo, string $table, string $column): bool
     {
-        foreach($pdo->query('PRAGMA table_info('.$table.')')->fetchAll(PDO::FETCH_ASSOC)as$definition){
-            if(($definition['name']??null)===$column)return true;
+        foreach ($pdo->query('PRAGMA table_info('.$table.')')->fetchAll(PDO::FETCH_ASSOC) as $definition) {
+            if (($definition['name'] ?? null) === $column) {
+                return true;
+            }
         }
         return false;
     }

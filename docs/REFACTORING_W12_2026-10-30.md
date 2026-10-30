@@ -1,6 +1,8 @@
 # W12 — importy, exportní snapshot a izolovaná obnova
 
-Naváže na W11. Syntetická localhost data, žádný import skutečných osob.
+Implementace a místní ověření dokončeny, CI/sloučení/nasazení se ověřují
+samostatně. [Výsledky a limity](verification/refactoring-w12-20261030/RESULTS.md).
+Navazuje na W11. Syntetická localhost data, žádný import skutečných osob.
 Nejprve měřit parser a preview na 100/1000/10 000 řádcích; zachovat celé
 výsledky, metadata, fingerprint, mapy a karanténu. Rozlišit načtení XLSX,
 klasifikaci a DB uložení. Kandidát změny musí mít prokázaný přínos.
@@ -21,4 +23,10 @@ Historické B1 skripty s pevnými cestami nespouštět nad původním prostřed�
 
 Preview rollback a opakované potvrzení musí pokrýt existující behaviorální
 testy i MariaDB; aktuální produkční data a integrace zůstávají mimo test.
-Povinné CI, dokumentace a standardní technické nasazení před W13–W15.
+Povinné CI, dokumentace a standardní technické nasazení. Nezávislé ověření
+W13–W14 probíhá souběžně; release lze spojit po úspěšných kontrolách všech změn.
+
+Měření nahradilo redundantní index `(run_id)` indexem `(run_id,row_id)`: běžící
+EXPLAIN prokázal opakované skenování shod celého importu. Nejde o změnu
+matching pravidel, kanonických dat ani aktivaci importu. Parser má explicitní
+uvolnění workbooku, exportní snapshot a úplná obnova jsou přenosné v CI.

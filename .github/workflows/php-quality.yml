@@ -26,6 +26,10 @@ jobs:
       - run: composer install --prefer-dist --no-interaction --no-progress
       - name: PHPStan analysis against the reviewed baseline
         run: composer analyse
+      - name: Reject new or enlarged suppressions
+        env:
+          BASELINE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD^' }}
+        run: php tools/check-phpstan-baseline-budget.php "$BASELINE_REF"
       - name: Verify scoped bootstrap handling and retained negative findings
         run: php tools/check-phpstan-contract.php
       - name: Verify anonymous inventory after analysis has populated its cache

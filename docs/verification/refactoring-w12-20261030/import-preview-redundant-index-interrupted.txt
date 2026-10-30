@@ -1,0 +1,10 @@
+
+Fatal error: Uncaught PDOException: SQLSTATE[70100]: <<Unknown error>>: 1317 Query execution was interrupted in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w12-20261030\tests\Support\QueryProfilePdo.php:50
+Stack trace:
+#0 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w12-20261030\tests\Support\QueryProfilePdo.php(50): PDOStatement->execute(Array)
+#1 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w12-20261030\includes\kis_import_run_lib.php(149): Tests\Support\QueryProfileStatement->execute(Array)
+#2 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w12-20261030\includes\kis_import_run_lib.php(239): kisImportBuildPreviewReport(Object(Tests\Support\QueryProfilePdo), 3)
+#3 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w12-20261030\includes\kis_import_run_lib.php(62): kisImportFinalizePreview(Object(Tests\Support\QueryProfilePdo), 3)
+#4 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w12-20261030\tests\Support\ImportPreviewProfile.php(44): kisImportCreateRun(Object(Tests\Support\QueryProfilePdo), Array, Array, Array, Array, 7, Array)
+#5 {main}
+  thrown in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w12-20261030\tests\Support\QueryProfilePdo.php on line 50

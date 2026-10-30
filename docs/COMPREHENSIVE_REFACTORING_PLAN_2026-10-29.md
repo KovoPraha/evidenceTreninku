@@ -1,6 +1,6 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav k 30. 10. 2026: W7.4 nasazena, navazuje W7.5 (R03/R04).**
+**Stav k 30. 10. 2026: W6–W15 implementovány; závěrečné CI a nasazení viz [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md).**
 Vlastník 30. 10. výslovně zadal autonomní pokračování všemi zbývajícími vlnami
 až do technického dokončení, včetně sloučení a nasazení po úspěšném ověření.
 Není nutné nové potvrzení každé vlny. Provozní aktivace integrací, převody
@@ -123,19 +123,18 @@ W14 je závěrečná systematická konsolidace, ne odklad testování.
 Reprodukovaná chyba ztráty dat, překročení práv nebo nesprávné finanční operace
 má před výkonovou frontou přednost a dostane vlastní opravný PR.
 
-| Etapa / stav | Konkrétní balíky v pořadí | Vstup / závislost | Hotovo, když |
-| --- | --- | --- | --- |
-| **K0 — průběžná realizace**: měření a kontrakty celé aplikace | K0.1 aktuální mapa route → guard → služba → tabulky → side effect; K0.2 syntetické profily a měřicí prostředí; K0.3 registr zjištění a řazení backlogu | Aktuální main a tento plán | Každá oblast má vlastníka, alespoň hlavní pozitivní/negativní scénář a výchozí měření nebo výslovně popsanou mezeru. |
-| **W6 — W6.2 a W6.3 nasazeno**: obsazenost programů | W6.1 charakterizační testy a profil; W6.2 oddělit načtení podkladů od čistého výpočtu; W6.3 případně dávkové veřejné čtení podle měření | K0 pro katalog, dosavadní W1–5 | Kanonický a nový výstup shodný ve všech scénářích, čerstvé zámky zachované, prokazatelný přínos bez zhoršení DB práce/paměti. |
-| **W7 — W7.1a/b, W7.2 a W7.3 nasazeno, další otevřené**: osoby, rodiny a oprávnění | W7.1 cílený přístup a souběhová autorizace; W7.2 cílené profily celého přehledu; W7.3 metadata R02; W7.4 členská pole, poté R03/R04 a oddělení vstupů/čtení/prezentace podle měření | K0; bezpečnostní kontrakty před extrakcí | Stabilní stránkování a omezené načítání; stejné výsledky pro self/guardian/trenéra/registráře; okamžité odnětí vazby a souběžná revokace projdou negativními testy. |
-| **W8 — kandidáti k měření**: sport a rezervace | W8.1 plánovač, kalendáře a timeline; W8.2 formuláře tréninku/závodu a uzavření účasti; W8.3 rezervace, náhrady, čekací listina | K0 + dotčené kontrakty W7 | SQL neprobíhá po jednom záznamu bez důvodu; shoda časových hranic, účasti a historie; browser klávesnice/mobil a souběžné poslední místo PASS. |
-| **W9 — připravit kontrakty**: obchod a sklad | W9.1 rozdělit čtecí/view část checkoutu; W9.2 izolovat výpočet ceny a validaci bez přesunu transakčních kontrol; W9.3 skladové výpisy, výdej a vratky | K0 + W6/W7 při společných závislostech | Stejné minor-unit částky, stock a VS; idempotentní opakování, souběžná objednávka/vratka a rollback bez vedlejších zápisů. |
-| **W10 — připravit kontrakty**: finance a účetní výstupy | W10.1 přehledy předpisů/sald/ledgeru; W10.2 oddělit čtení od renderování dokladů a exportů; W10.3 cílené extrakce finančních služeb | K0 + stabilní kontrakty W9 | Součty a význam každého řádku shodné, uzavřené snapshoty neměnné; export roste v přijatelných paměťových mezích, zachová konzistentní okamžik čtení a oprávnění. |
-| **W11 — prověřit současný stav**: fronty a adaptéry | W11.1 inventura skutečných producentů/workerů/transportů; W11.2 sdílet pouze prokazatelně shodný mechanismus claim/retry/diagnostiky; W11.3 sjednotit klasifikaci chyb a testovací adaptéry | K0; aktuální outbox a provider kontrakty | Žádná ztracená nebo duplicitní zpráva při retry, rollbacku a pádu workeru; tajemství mimo logy; současné vypnuté služby zůstanou vypnuté. |
-| **W12 — kandidáti k měření**: importy, soubory, zálohy | W12.1 streamování/dávky parserů a exportů; W12.2 rozdělit synchronizační orchestrace; W12.3 staging, cleanup a obnova | K0 + identity W7, finance W10 podle typu dat | Stejné preview/fingerprint/mapy/karanténa, opakování bez duplicit, selhání uprostřed dávky obnovitelné; DB i privátní soubory ověřeny v izolované obnově. |
-| **W13 — průběžně, poté konsolidace**: UI a vstupní stránky | W13.1 formuláře a datové modely pro šablony; W13.2 sdílená hlavička/menu/tabulky; W13.3 případné odstranění nepoužitých assetů/aliasů | Stabilní služby dotčených etap + inventura volajících | Stejná URL a role, návraty, filtry, prázdné/chybové stavy, escaping a přístupnost; doložené nepotřebné soubory odstraněny přes přesný seznam. |
-| **W14 — průběžně, poté konsolidace**: typy a testy | W14.1 baseline podle domén, validní PHPDoc a skutečné chyby; W14.2 křehké zdrojové aserce nahradit chováním; W14.3 udržitelné fixtures a cílené zrychlení CI | Změněné domény a měření CI | Baseline neroste; odstraněný nález má vysvětlení/test. Zachována negativní detekce bezpečnostních testů; rychlejší CI nesmí vynechat povinné scénáře. |
-| **W15 — závěrečná technická přejímka**: celé toky a provoz | W15.1 rodina → program → objednávka → platba → účast → export; W15.2 revokace, rollback, fronty, import/obnova; W15.3 release evidence a aktualizace aktivních návodů | Přijaté předchozí balíky | Souvislé syntetické scénáře PASS, opakovatelné měření a obnova, žádné nevysvětlené regrese; skutečné UAT evidované odděleně. |
+| Vlna | Přijatá realizace a důkaz | Dispozice dalších kandidátů |
+| --- | --- | --- |
+| W6 | [Kapacity a migrované schéma](REFACTORING_W63_2026-10-29.md), čistá projekce, omezená materializace. | Zámky a deduplikace zachovány; žádný nový framework ani globální cache. |
+| W7 | [Celý rodinný přehled](REFACTORING_W72_2026-10-29.md), [metadata](REFACTORING_W73_2026-10-30.md), [členská pole](REFACTORING_W74_2026-10-30.md), [registrář](REFACTORING_W75_2026-10-30.md). | R04 finanční historie byla přesunuta do W10; nové autorizační čtení při zápisu se nezkracuje cache. |
+| W8 | [Timeline](REFACTORING_W76_W81_2026-10-30.md), [filtry](REFACTORING_W82_2026-10-30.md), [kopírování/ICS](REFACTORING_W83_2026-10-30.md), [kalendář](REFACTORING_W84_2026-10-30.md), [rezervace/docházka/zdravotní souběhy](REFACTORING_W85_2026-10-30.md). | Transakční guardy a historické revize zůstávají doménově oddělené. |
+| W9 | [Celá skladová stránka](REFACTORING_W9_2026-10-30.md), [košík a skladové souběhy](REFACTORING_W92_2026-10-30.md). | Ceny, VS, kapacity a zámky se počítají kanonicky; žádná plošná přestavba checkout writeru. |
+| W10 | [Indexované projekce](REFACTORING_W10_2026-10-30.md), [100k XLSX](REFACTORING_W102_2026-10-30.md), [klubová salda](REFACTORING_W103_2026-10-30.md), [ledger metadata](REFACTORING_W104_2026-10-30.md). | PDF není streamované; celý ZIP má oddělený objemový důkaz W12. Snapshot, částky a pořadí jsou zachovány. |
+| W11 | [Claim/retry/crash](REFACTORING_W11_2026-10-30.md), [cílená kontrola příjemce](REFACTORING_W112_2026-10-30.md). | Nesjednocovat doménové payloady. Neznámý výsledek odeslání se drží pro kontrolu; nepředstírat exactly-once externí doručení. |
+| W12 | [Parser, index preview, exportní snapshot a úplná obnova](REFACTORING_W12_2026-10-30.md). | Bez změny identity matching pravidel, reálných importů a aktivace providerů; velký součin kandidátů a libovolně velký PDF nemají nový SLA. |
+| W13 | [Sdílené UI a formulářové labely](REFACTORING_W13_2026-10-30.md), čtyři role × desktop/mobil v Chromiu. | Shell byl sjednocen již dříve; další přesuny šablon a mazání assetů bez doloženého přínosu se neprovádějí. |
+| W14 | [Brána PHPStan baseline](REFACTORING_W14_2026-10-30.md), negativní detekce a přenosné fixtures. | Zachováno 515 položek / 2350 legacy nálezů. Technická etapa není tvrzení o nulovém dluhu nebo úplném přepsání aplikace. |
+| W15 | [Propojená technická přejímka](verification/refactoring-w15-20261030/RESULTS.md), invarianty a finální provozní evidence. | Lidské/účetní UAT, skutečná ocenění, identity, přílohy a aktivace integrací zůstávají oddělené. |
 
 Podle K0 se pořadí výkonových kandidátů může změnit: nejprve častá a pomalá cesta
 s doloženou příčinou a zvládnutelným rizikem. Neodkládat ochranu dat kvůli snadnému
