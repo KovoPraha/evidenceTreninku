@@ -21,3 +21,13 @@ zdrojů, skutečné platby, nové migrace nebo aktivace providerů.
 
 Gate jako W10.3, rollback návratem kódu. Po dokončení posoudit W10 jako celek
 a pokračovat W11–W15; metodika a ostré účetní převzetí zůstávají samostatné.
+
+## Implementovaný řez
+
+Veřejné API zdroje a přídělů zůstalo beze změny signatury a bez kontextu.
+Tři čtecí orchestrace jsou oddělené do `accounting_ledger_read.php`; pouze
+interní čtecí varianty přijímají volitelný explicitní kontext. Přehled čekajících
+zdrojů vytvoří jeden objekt a po návratu jej zahodí. Žádný statický registr.
+Na úplném schématu: 2204 → 1207 SQL, metadata 1002 → 5, stejných 800 řádků
+a 74 969 B výstupu. [Měření a testy](verification/refactoring-w104-20261030/RESULTS.md).
+Následuje [W11](REFACTORING_W11_2026-10-30.md).

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/FamilyOverviewPageFixture.php';
+require_once __DIR__ . '/AccountingLedgerReadBaseline.php';
 require_once dirname(__DIR__, 2) . '/includes/accounting_ledger.php';
 require_once dirname(__DIR__, 2) . '/includes/sportovec_editor_details.php';
 
@@ -33,7 +34,8 @@ try {
         $pdo->profiling = true;
         $value = $call($pdo);
         $pdo->profiling = false;
-        $counts = ['sql' => count($pdo->profile), 'rows' => array_sum(array_column($pdo->profile, 'fetched_rows'))];
+        $counts = ['sql' => count($pdo->profile), 'rows' => array_sum(array_column($pdo->profile, 'fetched_rows')),
+            'metadata_sql' => count(array_filter($pdo->profile, static fn (array $q): bool => str_starts_with($q['sql'], 'SELECT 1 FROM ')))];
         $samples = [];
         for ($sample = -2; $sample < 10; $sample++) {
             memory_reset_peak_usage();
@@ -89,8 +91,17 @@ try {
             $results[] = ['size' => $size, 'scope' => 'charges, receipts, allocations; empty orders']
                 + $measure('person_history', static fn (PDO $db): array => sportovecEditorPayments($db, 1));
             // This is a finance-only read, never source adoption or provider activation.
+            if (w104PendingSourcesBaseline($pdo, 200) !== accountingLedgerPendingSources($pdo, 200)) {
+                throw new RuntimeException('Frozen pending-source projection differs.');
+            }
             $results[] = ['size' => $size, 'limit' => 200]
+                + $measure('pending_sources_baseline', static fn (PDO $db): array => w104PendingSourcesBaseline($db, 200));
+            $current = ['size' => $size, 'limit' => 200]
                 + $measure('pending_sources', static fn (PDO $db): array => accountingLedgerPendingSources($db, 200));
+            if ($current['metadata_sql'] > 7) {
+                throw new RuntimeException('Pending-source metadata budget exceeded.');
+            }
+            $results[] = $current;
         }
         $previous = $size;
     }

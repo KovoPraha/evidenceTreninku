@@ -1,0 +1,662 @@
+{
+    "production_mutations": false,
+    "schema": "complete migration catalog; random localhost schema; FK enabled",
+    "results": [
+        {
+            "size": 1000,
+            "label": "ledger",
+            "sql": 2,
+            "rows": 2,
+            "metadata_sql": 0,
+            "bytes": 120,
+            "median_ms": 0.91155,
+            "median_peak_bytes": 44720,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 0.9701,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.9608,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.8875,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.9459,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.9136,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.9095,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.8944,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.9151,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.8951,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 0.8619,
+                    "peak_bytes": 44720
+                }
+            ]
+        },
+        {
+            "size": 1000,
+            "label": "ledger_known_at",
+            "sql": 2,
+            "rows": 2,
+            "metadata_sql": 0,
+            "bytes": 120,
+            "median_ms": 1.0031,
+            "median_peak_bytes": 44992,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 0.9471,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 0.9062,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.0137,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.1789,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.2098,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.0092,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.0224,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 0.997,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 0.9284,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 0.9158,
+                    "peak_bytes": 44992
+                }
+            ]
+        },
+        {
+            "size": 1000,
+            "scope": "charges, receipts, allocations; empty orders",
+            "label": "person_history",
+            "sql": 12,
+            "rows": 1509,
+            "metadata_sql": 8,
+            "bytes": 236520,
+            "median_ms": 18.65365,
+            "median_peak_bytes": 997448,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 19.7952,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 17.8977,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 16.6028,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 16.7987,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 15.7448,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 18.3424,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 19.6489,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 20.4739,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 21.7457,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 18.9649,
+                    "peak_bytes": 997448
+                }
+            ]
+        },
+        {
+            "size": 1000,
+            "limit": 200,
+            "label": "pending_sources_baseline",
+            "sql": 2204,
+            "rows": 800,
+            "metadata_sql": 1002,
+            "bytes": 74969,
+            "median_ms": 403.39355,
+            "median_peak_bytes": 657256,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 420.5229,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 383.2971,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 400.161,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 369.5751,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 443.2924,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 441.1749,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 391.6649,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 406.6261,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 383.9217,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 449.0873,
+                    "peak_bytes": 657256
+                }
+            ]
+        },
+        {
+            "size": 1000,
+            "limit": 200,
+            "label": "pending_sources",
+            "sql": 1207,
+            "rows": 800,
+            "metadata_sql": 5,
+            "bytes": 74969,
+            "median_ms": 317.93305,
+            "median_peak_bytes": 641272,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 332.9426,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 352.4828,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 454.3377,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 330.9384,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 323.9887,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 244.2155,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 257.173,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 311.8774,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 272.7662,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 247.334,
+                    "peak_bytes": 641272
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "label": "ledger",
+            "sql": 2,
+            "rows": 2,
+            "metadata_sql": 0,
+            "bytes": 122,
+            "median_ms": 4.4641,
+            "median_peak_bytes": 44720,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 4.7122,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.9458,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.7289,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.4631,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.4651,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.6199,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.3116,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.2018,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.407,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 4.4294,
+                    "peak_bytes": 44720
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "label": "ledger_known_at",
+            "sql": 2,
+            "rows": 2,
+            "metadata_sql": 0,
+            "bytes": 122,
+            "median_ms": 4.8232,
+            "median_peak_bytes": 44992,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 4.6545,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.8033,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 5.0643,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.9999,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.9218,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.927,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.7581,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.8431,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.5986,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.4887,
+                    "peak_bytes": 44992
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "scope": "charges, receipts, allocations; empty orders",
+            "label": "person_history",
+            "sql": 12,
+            "rows": 15009,
+            "metadata_sql": 8,
+            "bytes": 2392020,
+            "median_ms": 68.7453,
+            "median_peak_bytes": 9615272,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 84.8825,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 63.0616,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 65.6959,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 70.9418,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 66.4713,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 69.3072,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 85.1482,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 68.1834,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 75.443,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 59.9415,
+                    "peak_bytes": 9615272
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "limit": 200,
+            "label": "pending_sources_baseline",
+            "sql": 2204,
+            "rows": 800,
+            "metadata_sql": 1002,
+            "bytes": 74969,
+            "median_ms": 420.79185,
+            "median_peak_bytes": 657256,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 496.0943,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 494.1987,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 465.679,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 418.1503,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 409.5373,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 509.0372,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 405.9687,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 404.4554,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 423.4334,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 415.5317,
+                    "peak_bytes": 657256
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "limit": 200,
+            "label": "pending_sources",
+            "sql": 1207,
+            "rows": 800,
+            "metadata_sql": 5,
+            "bytes": 74969,
+            "median_ms": 274.70950000000005,
+            "median_peak_bytes": 641272,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 274.2359,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 288.6775,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 257.121,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 275.1831,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 366.4664,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 281.3403,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 273.7681,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 273.3008,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 294.3793,
+                    "peak_bytes": 641272
+                },
+                {
+                    "ms": 266.0265,
+                    "peak_bytes": 641272
+                }
+            ]
+        },
+        {
+            "size": 100000,
+            "label": "ledger",
+            "sql": 2,
+            "rows": 2,
+            "metadata_sql": 0,
+            "bytes": 124,
+            "median_ms": 58.20055,
+            "median_peak_bytes": 44720,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 54.9792,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 60.9088,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 89.9843,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 62.7994,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 67.359,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 86.7128,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 55.4923,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 53.8474,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 44.9314,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 48.0823,
+                    "peak_bytes": 44720
+                }
+            ]
+        },
+        {
+            "size": 100000,
+            "label": "ledger_known_at",
+            "sql": 2,
+            "rows": 2,
+            "metadata_sql": 0,
+            "bytes": 124,
+            "median_ms": 86.13024999999999,
+            "median_peak_bytes": 44992,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 54.168,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 64.6169,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 93.1885,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 115.562,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 106.5851,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 81.4695,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 87.0149,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 85.2456,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 107.9572,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 72.7176,
+                    "peak_bytes": 44992
+                }
+            ]
+        }
+    ],
+    "ledger_explain_100000": [
+        {
+            "id": 1,
+            "select_type": "SIMPLE",
+            "table": "accounting_movements",
+            "type": "ref",
+            "possible_keys": "account_id",
+            "key": "account_id",
+            "key_len": "4",
+            "ref": "const",
+            "rows": "50000",
+            "Extra": "Using where"
+        }
+    ]
+}
