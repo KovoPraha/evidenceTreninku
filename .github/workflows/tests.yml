@@ -301,3 +301,13 @@ jobs:
 
       - name: Ověřit revize výsledků a řízený KIS převod na MariaDB
         run: php tests/Support/RaceKisReviewMariaDbSmoke.php
+
+      - name: Ověřit dávkové čtení klubového kalendáře
+        run: php tests/Support/ClubCalendarReadProfile.php > club-calendar-read-profile.json
+
+      - name: Uchovat profil klubového kalendáře
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: club-calendar-read-profile-mariadb-${{ matrix.mariadb-version }}
+          path: club-calendar-read-profile.json
+          retention-days: 14

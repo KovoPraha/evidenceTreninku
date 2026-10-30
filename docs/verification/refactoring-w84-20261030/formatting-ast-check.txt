@@ -1,0 +1,37 @@
+<?php
+require getcwd().'/vendor/autoload.php';
+$parser=(new PhpParser\ParserFactory())->createForNewestSupportedVersion();
+function w75Norm($v) {
+ if($v instanceof PhpParser\Node\Stmt\InlineHTML)return ['type'=>'Stmt_Echo','exprs'=>[['concat'=>[$v->value]]]];
+ if($v instanceof PhpParser\Node\Expr\BinaryOp\Concat||$v instanceof PhpParser\Node\Scalar\InterpolatedString||$v instanceof PhpParser\Node\Scalar\String_||$v instanceof PhpParser\Node\InterpolatedStringPart){
+  $parts=[];$walk=function($e)use(&$walk,&$parts){
+   if($e instanceof PhpParser\Node\Expr\BinaryOp\Concat){$walk($e->left);$walk($e->right);}
+   elseif($e instanceof PhpParser\Node\Scalar\InterpolatedString){foreach($e->parts as$p)$walk($p);}
+   elseif($e instanceof PhpParser\Node\Scalar\String_||$e instanceof PhpParser\Node\InterpolatedStringPart){
+    if($parts&&is_string($parts[array_key_last($parts)]))$parts[array_key_last($parts)].=$e->value;else$parts[]=$e->value;
+   }else{$parts[]=w75Norm($e);}
+  };$walk($v);return ['concat'=>$parts];
+ }
+ if($v instanceof PhpParser\Node){$o=['type'=>$v->getType()];foreach($v->getSubNodeNames()as$k)$o[$k]=w75Norm($v->$k);return $o;}
+ if(is_array($v)){
+  $out=[];
+  foreach($v as$entry){
+   if($entry instanceof PhpParser\Node\Stmt\Nop)continue;
+   $entry=w75Norm($entry);$last=array_key_last($out);
+   if(is_array($entry)&&($entry['type']??'')==='Stmt_Echo'&&$last!==null&&($out[$last]['type']??'')==='Stmt_Echo'){
+    $out[$last]['exprs']=array_merge($out[$last]['exprs'],$entry['exprs']);
+   }else{$out[]=$entry;}
+  }
+  foreach($out as&$entry){if(is_array($entry)&&($entry['type']??'')==='Stmt_Echo'){
+   $parts=[];
+   foreach($entry['exprs']as$expression){foreach($expression['concat']??[$expression]as$part){
+    if(is_string($part)&&$parts&&is_string($parts[array_key_last($parts)]))$parts[array_key_last($parts)].=$part;else$parts[]=$part;
+   }}$entry['exprs']=$parts;
+  }}unset($entry);
+  return$out;
+ }
+ return$v;
+}
+$old=w75Norm($parser->parse(file_get_contents($argv[1])));$new=w75Norm($parser->parse(file_get_contents($argv[2])));
+if($old!==$new){file_put_contents(sys_get_temp_dir().'/w75-ast-old.json',json_encode($old,JSON_PRETTY_PRINT));file_put_contents(sys_get_temp_dir().'/w75-ast-new.json',json_encode($new,JSON_PRETTY_PRINT));throw new RuntimeException('Formatting changed AST or literal HTML.');}
+echo "PASS: page AST and literal HTML identical after folding echo/inline HTML and string concatenation.\n";
