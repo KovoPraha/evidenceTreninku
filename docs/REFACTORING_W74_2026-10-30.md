@@ -31,4 +31,12 @@ Autorizační SQL, zápisy a kontroly po čekání na zámek zůstávají stejn�
    Každá oblast musí mít implementaci s důkazem nebo doložené vyřazení kandidáta;
    samotná absence změny ani zelené HTTP neznamenají dokončení celé aplikace.
 
-Stav: plán uložen, implementace a ověření probíhají. Nasazení zatím neprovedeno.
+## Stav
+
+Dokončeno, [PR #233](https://github.com/KovoPraha/evidenceTreninku/pull/233)
+sloučen a nasazen 30. 10. 2026. Celý GET 20 osob 752 → 619 SQL,
+členské dotazy 160 → 27; shodné výsledky, HTML a řádky, historie i POST PASS.
+Linux 1824 testů / 36200 assertions, obě MariaDB, PHPStan a styl PASS.
+[Měření](verification/refactoring-w74-20261030/RESULTS.md),
+[produkční důkazy](verification/refactoring-w74-release-20261030/RESULTS.md).
+Autonomně navazuje W7.5 a zbytek komplexního plánu; nevyžaduje nový pokyn.
