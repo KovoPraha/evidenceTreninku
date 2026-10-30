@@ -1,0 +1,557 @@
+{
+    "production_mutations": false,
+    "scope": "pure financial rows and exceptions; not SQL or XLSX serialization",
+    "results": [
+        {
+            "size": 1000,
+            "mode": "baseline",
+            "rows": 1001,
+            "sha256": "c55aa3c1e469322dc1b8c26bae77c2644249fc8603b406c72df0d2ec45a57cba",
+            "warmups": 5,
+            "samples": [
+                {
+                    "ms": 167.1872,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 188.314,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 189.4947,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 188.9232,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 190.0641,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 188.3855,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 164.1974,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 164.9843,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 149.5551,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 132.8838,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 133.6302,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 133.3275,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 134.486,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 135.1149,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 134.4686,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 135.2331,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 138.18,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 137.7045,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 140.2272,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 181.2963,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 160.4247,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 146.6913,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 150.5219,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 156.3723,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 155.2686,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 156.0799,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 141.9386,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 132.9524,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 142.4017,
+                    "peak_bytes": 269160
+                },
+                {
+                    "ms": 184.4405,
+                    "peak_bytes": 269160
+                }
+            ],
+            "median_ms": 150.0385,
+            "median_peak_bytes": 269160,
+            "analytical_financial_contract": true
+        },
+        {
+            "size": 1000,
+            "mode": "current",
+            "rows": 1001,
+            "sha256": "c55aa3c1e469322dc1b8c26bae77c2644249fc8603b406c72df0d2ec45a57cba",
+            "warmups": 5,
+            "samples": [
+                {
+                    "ms": 0.7188,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.733,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.74,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.7605,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.7729,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8026,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.788,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.7819,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.7699,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.781,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8352,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8051,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8569,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8112,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8046,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8645,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.862,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8724,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.9067,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.888,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.9023,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8668,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.851,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 1.7493,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 1.4605,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8373,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8254,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8205,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.8295,
+                    "peak_bytes": 546504
+                },
+                {
+                    "ms": 0.9378,
+                    "peak_bytes": 546504
+                }
+            ],
+            "median_ms": 0.82745,
+            "median_peak_bytes": 546504,
+            "analytical_financial_contract": true
+        },
+        {
+            "size": 10000,
+            "mode": "baseline",
+            "rows": 10001,
+            "sha256": "7d273803bf64a419148894c0b8ccc78b1e40d9b1484e09a2d3df7fbedd56c855",
+            "warmups": 0,
+            "samples": [
+                {
+                    "ms": 24149.5393,
+                    "peak_bytes": 2750320
+                }
+            ],
+            "median_ms": 24149.5393,
+            "median_peak_bytes": 2750320,
+            "analytical_financial_contract": true
+        },
+        {
+            "size": 10000,
+            "mode": "current",
+            "rows": 10001,
+            "sha256": "7d273803bf64a419148894c0b8ccc78b1e40d9b1484e09a2d3df7fbedd56c855",
+            "warmups": 5,
+            "samples": [
+                {
+                    "ms": 10.6603,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.5371,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 8.9931,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.0511,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.967,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.6521,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.4653,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.7408,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 10.415,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 11.6948,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 10.2697,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.3174,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.3532,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.0408,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.768,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.8121,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.499,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.3301,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 10.401,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.2004,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.8623,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.592,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.3292,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 10.4987,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 10.0661,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.263,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.9058,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.5453,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 9.6581,
+                    "peak_bytes": 5705544
+                },
+                {
+                    "ms": 10.4395,
+                    "peak_bytes": 5705544
+                }
+            ],
+            "median_ms": 9.655100000000001,
+            "median_peak_bytes": 5705544,
+            "analytical_financial_contract": true
+        },
+        {
+            "size": 100000,
+            "mode": "baseline",
+            "timeout_seconds": 15,
+            "measurement_complete": false,
+            "extrapolated": false
+        },
+        {
+            "size": 100000,
+            "mode": "current",
+            "rows": 100001,
+            "sha256": "58f69ff91b8395515d537d5704cc21e89a2df846bad50cf182bac2d051325e0b",
+            "warmups": 5,
+            "samples": [
+                {
+                    "ms": 163.0625,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 130.9021,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 159.5159,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 167.1482,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 175.3201,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 170.0607,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 136.7052,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 101.4147,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 103.1943,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 103.2332,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 102.4674,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 101.521,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 114.4751,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 137.8441,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 100.3673,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 100.9556,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 102.8785,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 138.4783,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 102.9916,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 100.6516,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 138.4966,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 103.5864,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 100.6075,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 103.9975,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 167.0478,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 146.8541,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 146.7755,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 106.6844,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 104.3011,
+                    "peak_bytes": 63177896
+                },
+                {
+                    "ms": 106.7089,
+                    "peak_bytes": 63177896
+                }
+            ],
+            "median_ms": 106.69665,
+            "median_peak_bytes": 63177896,
+            "analytical_financial_contract": true
+        }
+    ]
+}
