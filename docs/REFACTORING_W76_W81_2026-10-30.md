@@ -53,4 +53,5 @@ další kandidáti mají vlastní rozsah a důkazy.
 
 [Měření a ověření](verification/refactoring-w81-20261030/RESULTS.md).
 Žádné integrační přepínače ani skutečné záznamy se nemění. Lidské UAT zůstává
-samostatné. Nasazení až po úspěšném ověření přesného commitu.
+samostatné. PR #237 sloučen a nasazen po zeleném přesném main;
+[produkční důkazy](verification/refactoring-w81-release-20261030/RESULTS.md).

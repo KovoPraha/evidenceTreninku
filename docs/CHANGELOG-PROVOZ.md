@@ -5,6 +5,50 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 30. 10. 2026 — W7.6 / W8.1 časová osa nasazena
+
+PR #237: historická časová osa, roční profil 4176 → 16 SQL.
+Release `df09eab94ccc6545e57b71a41bc24aa0011850c0`, [deploy 41055183388](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41055183388) SUCCESS.
+1831 testů / 36291 assertions; HTTP před/po 26/26,
+konfigurace, VS a ledger shodné, UAT false.
+[Protokol](verification/refactoring-w81-release-20261030/RESULTS.md). Předchozí stav celý:
+
+<!-- archive {"source": "docs/CURRENT_STATE.md@2026-10-30-w75", "part": 0, "sha256": "8382f9523a4a0356ee9dcde48a3f021c567a721fe83f4a059fdb0a8e3173f1bd"} -->
+# Aktuální stav projektu
+
+Aktualizováno 30. 10. 2026 (Europe/Prague); další vydání musí přehled nahradit.
+
+- **Poslední doložené nasazení:** `c6a260acef86218bb3e429c912d12746f712b75f`,
+  [PR #235](https://github.com/KovoPraha/evidenceTreninku/pull/235),
+  [deploy 41051708252](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41051708252), SUCCESS.
+  Živé SHA/run ID ověřeny novou read-only kontrolou.
+  [Protokol](verification/refactoring-w75-release-20261030/RESULTS.md): HTTP před/po 26/26,
+  schéma current / pending [], VS zachovány, záloha 336 tabulek / 2 triggery.
+- **CI přesného main:** [Current documentation 41051145037](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41051145037), [Push on main 41051145192](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41051145192), [PHP quality 41051145270](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41051145270), [Testy 41051145060](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41051145060).
+  1825 testů / 36217 assertions; MariaDB 10.3/11.4,
+  POSIX bez skipů, PHPStan, styl, anonymous sweep a JS PASS.
+- **Změna:** W7.5 načítá stránku registráře v SQL a zachovává celé statistiky.
+  Pro 10 000 osob stránka 50: 10 003 → 53 řádků; CI stránka 100 paměť
+  36,8 MB → 0,43 MB, shodné výsledky 50 scénářů. Bez změny writerů.
+  [Plán a měření](REFACTORING_W74_2026-10-30.md); nejde o měření produkční latence.
+- **Provoz:** Evidence/KIS, katalog, rodinné/sportovní účty a klubové agendy,
+  finanční/účetní/skladová implementace a bankovní/ruční platební postup.
+- **Flags ověřené 30. 10.:** Fio import/auto-confirm, SumUp, Stripe a Velocota
+  vypnuté; Packeta nedefinovaná, KIS canonical writes false.
+  Konfigurace, flags, ledger 141 a stav příloh před/po shodné.
+  [Porovnání](verification/refactoring-w75-release-20261030/release-comparison.json).
+- **Otevřené provozní body:** lidská/účetní přejímka D12–D14, skutečná
+  inventura/ocenění, ověřené vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
+  [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
+  UAT false; importy, brány ani další integrace nebyly aktivovány.
+- **Další práce:** autonomně W7.6 / W8.1 — zbývající R03/R04 a časová osa,
+  potom W8–W15 podle [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
+  Vlastník autorizoval pokračování včetně sloučení/nasazení po úspěšném ověření.
+
+[Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+
+<!-- /archive -->
+
 ## 30. 10. 2026 — W7.5 stránkování registráře nasazeno
 
 PR #235: stránkování registráře v SQL, 10 003 → 53 načtených řádků.
