@@ -8,7 +8,7 @@ Registrace uloží účet a hash ověřovacího tokenu a ve stejné DB transakci
 
 Obsah zprávy s odkazem je v databázi šifrovaný XChaCha20-Poly1305. Pro podklíč se používá existující `PERSON_RC_KEYRING` a aktivní verze; při rotaci je nutné ponechat staré verze, dokud neodejdou nebo nevyprší všechny zprávy v dané verzi. Indexovací klíč `PERSON_RC_INDEX_KEY` zůstává samostatný. Token v URL je ve fragmentu, aby se nedostal do serverových access logů cílové stránky; prohlížeč jej předá až POST formulářem. Žádný admin náhled plaintextu/tokenů neexistuje.
 
-CLI worker střídá `auth_mail_outbox` a `club_event_notifications` do společného limitu. Před odesláním znovu kontroluje stav tokenu, cílového účtu, e-mailu a u dětského resetu i platnou vazbu rodiče. Po pěti neúspěšných pokusech zůstane zpráva `failed`. Staré/neplatné tokeny se zruší bez odeslání. Pád po předání poště může způsobit duplicitní doručení (at-least-once), nikoli opakované použití tokenu.
+CLI worker střídá `auth_mail_outbox` a `club_event_notifications` do společného limitu. Před odesláním znovu kontroluje stav tokenu, cílového účtu, e-mailu a u dětského resetu i platnou vazbu rodiče. Po pěti známých odmítnutích transportu zůstane zpráva `failed`; mezi pokusy platí prodleva. Staré/neplatné tokeny se zruší bez odeslání. Výjimka transportu, selhání uložení výsledku nebo převzetí starší 15 minut znamenají nejasné doručení: úloha zůstane k ruční kontrole a automaticky se neopakuje. Nejde o garanci doručení právě jednou; před ručním opakováním musí správce ověřit původní výsledek.
 
 Před převzetím první zprávy se ověří struktura obou front; chybějící fronta tedy nezpůsobí částečné odeslání z druhé. Parametry `--limit=1..99`, `--transport=mail|local-outbox` a výstup běžného zpracování zůstávají zachovány.
 
@@ -55,4 +55,9 @@ Nezapojuje aplikační databázi, SMTP ani produkční plán.
 3. Na vyhrazené TEST adrese vytvořit registraci, ověřit `pending → sent`, použít odkaz jednou, opakované použití odmítnout. Ověřit resend a reset, včetně selhání transportu a obnovy.
 4. Zkontrolovat `auth_mail_admin.php?status=failed` a `eshop_notifications_admin.php?status=failed`, čas nejstarší čekající zprávy a skutečné doručení v testovací schránce. Při opakovaném selhání transportu neoznačovat uživateli zprávu za doručenou.
 
-Nezměněné synchronní zprávy z jiných rezervačních cest (`booking/rezervovat.php`, `booking/waiting_list.php`, hromadné `odeslat_emaily.php`) zůstávají samostatným technickým dluhem; jejich šablony a idempotenci je třeba před přesunem inventarizovat. Viz datový audit F10.
+Rezervační cesty již používají producenty fronty; starší audit F10 zachycuje
+historický stav. Aktuální transportní adaptéry `mail()` jsou v klubových
+oznámeních, soupiskových zprávách, rodinných souhrnech a upomínkách.
+Soupiskový worker a jeho plán jsou samostatné. WebPush v rezervaci zůstává
+oddělený best-effort efekt. Inventuru a syntetické kontrakty uvádí
+[W11](REFACTORING_W11_2026-10-30.md); nejsou důkazem skutečného doručení.

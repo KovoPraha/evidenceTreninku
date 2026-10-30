@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__.'/booking_notification.php';
@@ -29,7 +30,8 @@ function clubEventNotificationEnqueuePromotion(PDO $pdo, int $registrationId, in
     $childName = trim((string)$row['child_first_name'] . ' ' . (string)$row['child_last_name']);
     $subject = 'Uvolnilo se místo: ' . (string)$row['name'];
     $body = "Dobrý den" . ($recipientName !== '' ? ' ' . $recipientName : '') . ",\n\n"
-        . "pro " . $childName . " se uvolnilo místo na akci „" . (string)$row['name'] . "“. "
+        . "pro " . $childName . " se uvolnilo místo na akci „" . (string)$row['name']
+    . "“. "
         . "Přihláška byla automaticky potvrzena.\n\nKlub KOVO Praha";
     try {
         $insert = $pdo->prepare(
@@ -38,7 +40,8 @@ function clubEventNotificationEnqueuePromotion(PDO $pdo, int $registrationId, in
             . "VALUES (?,?,'waitlist_promoted',?,?,?,?)"
         );
         $insert->execute([
-            $registrationId, $registrationEventId, (string)$row['email'], $recipientName, $subject, $body,
+            $registrationId, $registrationEventId, (string)$row['email'], $recipientName,
+     $subject, $body,
         ]);
         return (int)$pdo->lastInsertId();
     } catch (PDOException $exception) {
@@ -60,6 +63,12 @@ function clubEventNotificationEnqueuePromotion(PDO $pdo, int $registrationId, in
 /** @return array<string,mixed>|null */
 function clubEventNotificationClaim(PDO $pdo): ?array
 {
+    require_once __DIR__ . "/notification_claim_retry.php";
+    return notificationClaimWithRetry($pdo, static fn (): ?array => clubEventNotificationClaimAttempt($pdo));
+}
+
+function clubEventNotificationClaimAttempt(PDO $pdo): ?array
+{
     $pdo->beginTransaction();
     try {
         $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
@@ -67,7 +76,9 @@ function clubEventNotificationClaim(PDO $pdo): ?array
             ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE'
             : "datetime('now','-15 minutes')";
         // An abandoned claim may already have reached the transport. Never resend it automatically.
-        $pdo->exec("UPDATE club_event_notifications SET status='failed',claim_token=NULL,last_error='delivery_unknown: správce musí ověřit doručení před ručním opakováním.',updated_at=CURRENT_TIMESTAMP WHERE status='processing' AND claimed_at<".$staleExpression);
+        $pdo->exec(('UPDATE club_event_notifications SET status=\'failed\',claim_token=NULL,last_error=\'delivery_unknown: s'
+ . 'právce musí ověřit doručení před ručním opakováním.\',updated_at=CURRENT_TIMESTAMP WHERE status=\'proc'
+ . 'essing\' AND claimed_at<').$staleExpression);
         $sql = "SELECT * FROM club_event_notifications WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP ORDER BY id LIMIT 1";
         if ($mysql) {
             $sql .= ' FOR UPDATE';
@@ -119,7 +130,8 @@ function clubEventNotificationComplete(PDO $pdo, int $id, string $token, bool $s
             'UPDATE club_event_notifications SET status=?,available_at=?,claim_token=NULL,last_error=?,'
             . 'updated_at=CURRENT_TIMESTAMP WHERE id=? AND status=\'processing\' AND claim_token=?'
         );
-        $statement->execute([$terminal ? 'failed' : 'pending', $available, $safeError, $id, $token]);
+        $statement->execute([$terminal ? 'failed' : 'pending', $available, $safeError, $id,
+     $token]);
     }
     if ($statement->rowCount() !== 1) {
         throw new ClubEventNotificationException('Oznámení už nevlastní tento proces.');
@@ -136,7 +148,8 @@ function clubEventNotificationProcessOne(PDO $pdo, callable $sender): ?bool
     try {
         $invalid = bookingNotificationInvalidReason($pdo, $notification);
         if ($invalid !== null) {
-            clubEventNotificationHold($pdo, $notification, 'delivery_blocked: '.$invalid.'; správce rezervací musí zkontrolovat případ.');
+            clubEventNotificationHold($pdo, $notification, 'delivery_blocked: '.$invalid
+    .'; správce rezervací musí zkontrolovat případ.');
             return false;
         }
     } catch (Throwable $exception) {
@@ -195,10 +208,13 @@ function clubEventNotificationAdminList(PDO $pdo, string $status = '', int $limi
         throw new InvalidArgumentException('Neplatný filtr stavu oznámení.');
     }
     $limit = max(1, min(500, $limit));
-    $sql = 'SELECT n.*,(SELECT action FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER BY ne.id DESC LIMIT 1) AS last_action,'
-        . '(SELECT attempts_before FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER BY ne.id DESC LIMIT 1) AS last_action_attempts,'
+    $sql = ('SELECT n.*,(SELECT action FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER'
+ . ' BY ne.id DESC LIMIT 1) AS last_action,')
+        . ('(SELECT attempts_before FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER B'
+ . 'Y ne.id DESC LIMIT 1) AS last_action_attempts,')
         . '(SELECT reason FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER BY ne.id DESC LIMIT 1) AS last_action_reason,'
-        . '(SELECT actor_trainer_id FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER BY ne.id DESC LIMIT 1) AS last_action_actor,'
+        . ('(SELECT actor_trainer_id FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER '
+ . 'BY ne.id DESC LIMIT 1) AS last_action_actor,')
         . 'e.name AS event_name,s.jmeno AS child_first_name,'
         . 's.prijmeni AS child_last_name,o.public_code AS order_public_code '
         . 'FROM club_event_notifications n '
@@ -227,7 +243,7 @@ function clubEventNotificationAdminPreview(PDO $pdo, int $notificationId): array
         throw new InvalidArgumentException('Neplatné oznámení pro náhled.');
     }
     require_once __DIR__.'/shop_system_email.php';
-    $templateColumns=shopSystemEmailTableExists($pdo,'shop_system_email_templates')
+    $templateColumns = shopSystemEmailTableExists($pdo, 'shop_system_email_templates')
         ? 'system_template_key,system_template_version,'
         : 'NULL AS system_template_key,NULL AS system_template_version,';
     $statement = $pdo->prepare(
@@ -279,7 +295,7 @@ function clubEventNotificationAdminRetry(
                 'Oznámení právě vlastní worker. Vyčkejte alespoň 15 minut nebo ověřte jeho stav.'
             );
         }
-        if (bookingNotificationInvalidReason($pdo,$notification)!==null) {
+        if (bookingNotificationInvalidReason($pdo, $notification) !== null) {
             throw new ClubEventNotificationException('Příjemce nebo případ již není platný. Vyřešte kontakt či osobní předání v provozním přehledu.');
         }
         $alreadyReady = $notification['status'] === 'pending'
@@ -316,36 +332,81 @@ function clubEventNotificationAdminRetry(
         ) {
             throw $exception;
         }
-        throw new ClubEventNotificationException('Ruční opakování selhalo bez částečného zápisu.', 0, $exception);
+        throw new ClubEventNotificationException(
+            'Ruční opakování selhalo bez částečného zápisu.',
+            0,
+            $exception
+        );
     }
 }
 
 /** Hold ambiguous delivery for investigation; automatic retries are only for an explicit transport rejection. */
 function clubEventNotificationHold(PDO $pdo, array $row, string $reason): void
 {
-    $q=$pdo->prepare("UPDATE club_event_notifications SET status='failed',claim_token=NULL,last_error=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='processing' AND claim_token=?");
+    $q = $pdo->prepare(('UPDATE club_event_notifications SET status=\'failed\',claim_token=NULL,last_error=?,updated_at=CURRENT'
+ . '_TIMESTAMP WHERE id=? AND status=\'processing\' AND claim_token=?'));
     $q->execute([$reason,(int)$row['id'],(string)$row['claim_token']]);
-    if ($q->rowCount()!==1) throw new ClubEventNotificationException('Oznámení již vlastní jiný proces.');
+    if ($q->rowCount() !== 1) {
+        throw new ClubEventNotificationException('Oznámení již vlastní jiný proces.');
+    }
 }
 
 /** Records personal contact / verified delivery without pretending that the mail transport sent anything. */
-function clubEventNotificationResolveManually(PDO $pdo,int $id,int $actor,string $reason,bool $confirmed): array
-{
-    $reason=trim($reason);
-    if ($id<1 || $actor<1 || !$confirmed || $reason==='' || mb_strlen($reason)>1000) throw new InvalidArgumentException('Uveďte způsob ověření či osobního předání a výslovně potvrďte vyřízení.');
+function clubEventNotificationResolveManually(
+    PDO $pdo,
+    int $id,
+    int $actor,
+    string $reason,
+    bool $confirmed
+): array {
+    $reason = trim($reason);
+    if ($id < 1 || $actor < 1 || !$confirmed || $reason === '' || mb_strlen($reason) > 1000) {
+        throw new InvalidArgumentException('Uveďte způsob ověření či osobního předání a výslovně potvrďte vyřízení.');
+    }
     $pdo->beginTransaction();
     try {
-        $lock=$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
-        $q=$pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);
-        $q->execute([$actor]);if (!$q->fetchColumn()) throw new ClubEventNotificationException('Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek.');
-        $q=$pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='order_operator'".$lock);$q->execute([$actor]);
-        if (!$q->fetchColumn()) {$q=$pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'.$lock);$q->execute([$actor]);if (!$q->fetchColumn()) throw new ClubEventNotificationException('Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek.');}
-        $q=$pdo->prepare('SELECT status,attempts,last_error FROM club_event_notifications WHERE id=?'.$lock);$q->execute([$id]);$row=$q->fetch(PDO::FETCH_ASSOC);
-        if (!$row || $row['status']!=='failed' || !preg_match('/^(manual_contact_required|delivery_blocked|delivery_unknown):/',(string)$row['last_error'])) throw new ClubEventNotificationException('Tento výsledek nelze vyřídit osobním předáním. Nejprve ověřte chybu fronty.');
-        $q=$pdo->prepare('SELECT action,attempts_before FROM club_event_notification_events WHERE notification_id=? ORDER BY id DESC LIMIT 1');$q->execute([$id]);$last=$q->fetch(PDO::FETCH_ASSOC);
-        if ($last && $last['action']==='manual_contact_resolved' && (int)$last['attempts_before']===(int)$row['attempts']) { $pdo->commit();return ['changed'=>false]; }
-        $pdo->prepare("INSERT INTO club_event_notification_events(notification_id,actor_trainer_id,action,from_status,attempts_before,reason) VALUES(?,?,'manual_contact_resolved','failed',?,?)")
+        $lock = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
+        $q = $pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.$lock);
+        $q->execute([$actor]);
+        if (!$q->fetchColumn()) {
+            throw new ClubEventNotificationException('Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek.');
+        }
+        $q = $pdo->prepare("SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code='order_operator'"
+    .$lock);
+        $q->execute([$actor]);
+        if (!$q->fetchColumn()) {
+            $q = $pdo->prepare('SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?'
+    .$lock);
+            $q->execute([$actor]);
+            if (!$q->fetchColumn()) {
+                throw new ClubEventNotificationException('Vyřízení vyžaduje aktivní oprávnění obsluhy objednávek.');
+            }
+        }
+        $q = $pdo->prepare('SELECT status,attempts,last_error FROM club_event_notifications WHERE id=?'
+    .$lock);
+        $q->execute([$id]);
+        $row = $q->fetch(PDO::FETCH_ASSOC);
+        if (!$row || $row['status'] !== 'failed' || !preg_match(
+            '/^(manual_contact_required|delivery_blocked|delivery_unknown):/',
+            (string)$row['last_error']
+        )) {
+            throw new ClubEventNotificationException('Tento výsledek nelze vyřídit osobním předáním. Nejprve ověřte chybu fronty.');
+        }
+        $q = $pdo->prepare('SELECT action,attempts_before FROM club_event_notification_events WHERE notification_id=? ORDER BY id DESC LIMIT 1');
+        $q->execute([$id]);
+        $last = $q->fetch(PDO::FETCH_ASSOC);
+        if ($last && $last['action'] === 'manual_contact_resolved' && (int)$last['attempts_before'] === (int)$row['attempts']) {
+            $pdo->commit();
+            return ['changed' => false];
+        }
+        $pdo->prepare(('INSERT INTO club_event_notification_events(notification_id,actor_trainer_id,action,from_status,attem'
+ . 'pts_before,reason) VALUES(?,?,\'manual_contact_resolved\',\'failed\',?,?)'))
             ->execute([$id,$actor,(int)$row['attempts'],$reason]);
-        $pdo->commit();return ['changed'=>true];
-    } catch(Throwable $error) { if ($pdo->inTransaction()) $pdo->rollBack();throw $error; }
+        $pdo->commit();
+        return ['changed' => true];
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }throw $error;
+    }
 }

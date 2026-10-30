@@ -1,0 +1,301 @@
+{
+    "schema": "full catalog, FK enabled, random localhost DB with cleanup",
+    "results": [
+        {
+            "synthetic_members_added": 100,
+            "mode": "baseline",
+            "sql": 6,
+            "rows": 223,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 15.582,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 22.2834,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 18.1003,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 11.8531,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 9.5782,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 10.4743,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 10.3069,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 19.0712,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 10.6902,
+                    "extra_peak_bytes": 181096
+                },
+                {
+                    "ms": 19.186,
+                    "extra_peak_bytes": 181096
+                }
+            ]
+        },
+        {
+            "synthetic_members_added": 100,
+            "mode": "targeted",
+            "sql": 5,
+            "rows": 4,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 4.8938,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 6.0216,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 7.1681,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 6.3616,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 5.2976,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 6.0948,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.6025,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.1581,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 5.9915,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.9678,
+                    "extra_peak_bytes": 89256
+                }
+            ]
+        },
+        {
+            "synthetic_members_added": 1000,
+            "mode": "baseline",
+            "sql": 6,
+            "rows": 2023,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 40.2827,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 48.4721,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 35.1993,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 42.2072,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 35.5394,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 33.0573,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 35.0292,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 35.5694,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 32.2526,
+                    "extra_peak_bytes": 1323400
+                },
+                {
+                    "ms": 32.9841,
+                    "extra_peak_bytes": 1323400
+                }
+            ]
+        },
+        {
+            "synthetic_members_added": 1000,
+            "mode": "targeted",
+            "sql": 5,
+            "rows": 4,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 5.9203,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.5456,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.8977,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.5992,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.3723,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.5614,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.4454,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.999,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.5298,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 4.5818,
+                    "extra_peak_bytes": 89256
+                }
+            ]
+        },
+        {
+            "synthetic_members_added": 10000,
+            "mode": "baseline",
+            "sql": 6,
+            "rows": 20023,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 586.2882,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 544.717,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 585.8147,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 605.0285,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 552.6866,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 538.093,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 409.5938,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 476.3924,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 450.4366,
+                    "extra_peak_bytes": 13557968
+                },
+                {
+                    "ms": 462.6235,
+                    "extra_peak_bytes": 13557968
+                }
+            ]
+        },
+        {
+            "synthetic_members_added": 10000,
+            "mode": "targeted",
+            "sql": 5,
+            "rows": 4,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 3.4382,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 3.626,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 2.9358,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 2.8821,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 3.6256,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 2.8016,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 2.508,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 2.5415,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 2.8464,
+                    "extra_peak_bytes": 89256
+                },
+                {
+                    "ms": 3.2517,
+                    "extra_peak_bytes": 89256
+                }
+            ]
+        }
+    ],
+    "revocation_each_size": "pass",
+    "transport": "none"
+}
