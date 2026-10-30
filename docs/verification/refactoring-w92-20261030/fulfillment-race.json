@@ -1,0 +1,61 @@
+{
+    "database": "evidence_fulfill_race_153e04d4",
+    "checks": 6,
+    "results": [
+        {
+            "scenario": "repeated partial issue",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "changed": true
+                },
+                {
+                    "status": "ok",
+                    "changed": false
+                }
+            ],
+            "balance": {
+                "variant_id": 1,
+                "mode": "tracked",
+                "physical_quantity": 2,
+                "reserved_quantity": 1,
+                "blocked_quantity": 0,
+                "revision": 3,
+                "opening_evidence": "LOCALHOST signed count",
+                "actor_trainer_id": 7,
+                "recorded_at": "2026-10-30 14:55:51",
+                "available_quantity": 1
+            },
+            "status": "PASS"
+        },
+        {
+            "scenario": "partial issue versus cancellation",
+            "two_real_lock_waits": true,
+            "results": [
+                {
+                    "status": "ok",
+                    "changed": true
+                },
+                {
+                    "status": "denied",
+                    "message": "Objednávka už obsahuje vydané kusy. Použijte položkovou vratku; nevydaný zbytek řešte samostatně."
+                }
+            ],
+            "balance": {
+                "variant_id": 2,
+                "mode": "tracked",
+                "physical_quantity": 2,
+                "reserved_quantity": 1,
+                "blocked_quantity": 0,
+                "revision": 3,
+                "opening_evidence": "LOCALHOST signed count",
+                "actor_trainer_id": 7,
+                "recorded_at": "2026-10-30 14:55:51",
+                "available_quantity": 1
+            },
+            "status": "PASS"
+        }
+    ],
+    "production_mutations": false
+}

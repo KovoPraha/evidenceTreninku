@@ -1,0 +1,9 @@
+
+Fatal error: Uncaught RuntimeException: Fifty program cart terms exceed two bounded queries: {"baseline":{"sql":1762,"rows":1509,"program_metadata":1108,"capacity":100,"terms":400,"bytes":89518},"current":{"sql":1762,"rows":1509,"program_metadata":1108,"capacity":100,"terms":400,"bytes":89518}} in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\tests\Support\ShopCartReadProfile.php:64
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\tests\Support\ShopCartReadProfile.php on line 64
+PHP Fatal error:  Uncaught RuntimeException: Fifty program cart terms exceed two bounded queries: {"baseline":{"sql":1762,"rows":1509,"program_metadata":1108,"capacity":100,"terms":400,"bytes":89518},"current":{"sql":1762,"rows":1509,"program_metadata":1108,"capacity":100,"terms":400,"bytes":89518}} in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\tests\Support\ShopCartReadProfile.php:64
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\tests\Support\ShopCartReadProfile.php on line 64

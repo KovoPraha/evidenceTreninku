@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-/** Portable localhost-only runtime for the historical sports race contracts. */
+/** Portable localhost-only runtime for the historical domain race contracts. */
 function sportRaceRuntime(string $prefix, string $schema, bool $worker): array
 {
-    if (!in_array($prefix, ['evidence_training_race_', 'evidence_training_auth_', 'evidence_medical_race_'], true)
+    if (!in_array($prefix, ['evidence_training_race_', 'evidence_training_auth_', 'evidence_medical_race_',
+        'evidence_stock_race_', 'evidence_r23_returns_', 'evidence_fulfill_race_'], true)
         || !preg_match('/^' . preg_quote($prefix, '/') . '[a-f0-9]{8}$/D', $schema)) {
         throw new RuntimeException('Invalid owned race schema.');
     }
@@ -29,7 +30,7 @@ function sportRaceRuntime(string $prefix, string $schema, bool $worker): array
             if ($pdo instanceof PDO && $pdo->inTransaction()) {
                 $pdo->rollBack();
             }
-            foreach (array_merge($GLOBALS['processes'] ?? [], [$GLOBALS['process'] ?? null]) as $process) {
+            foreach (array_merge($GLOBALS['processes'] ?? [], $GLOBALS['children'] ?? [], [$GLOBALS['process'] ?? null]) as $process) {
                 if (is_resource($process)) {
                     proc_terminate($process);
                     proc_close($process);

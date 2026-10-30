@@ -1,0 +1,23 @@
+
+Fatal error: Uncaught PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php:27
+PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php:27
+Stack trace:
+#0 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(27): PDOStatement->execute(Array)
+#1 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(39): clubProgramTermsColumnExists(Object(PDO), 'club_event_term...', 'status', NULL)
+#2 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(62): clubProgramTermsRegistryAvailable(Object(PDO), NULL)
+#3 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(85): clubProgramTermsCurrent(Object(PDO), 'program', 1, 'program_cancell...', false)
+Stack trace:
+#0 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(27): PDOStatement->execute(Array)
+#1 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(39): clubProgramTermsColumnExists(Object(PDO), 'club_event_term...', 'status', NULL)
+#2 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(62): clubProgramTermsRegistryAvailable(Object(PDO), NULL)
+#3 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php(85): clubProgramTermsCurrent(Object(PDO), 'program', 1, 'program_cancell...', false)
+#4 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program.php(1058): clubProgramTermsEffective(Object(PDO), 1, 35, false, NULL)
+#5 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\shop_checkout.php(142): clubProgramVariantSaleState(Object(PDO), 1033)
+#6 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\tests\Support\ShopCartReadProfile.php(70): shopCartDetail(Object(PDO), 10)
+#7 {main}
+  thrown in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php on line 27
+#4 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program.php(1058): clubProgramTermsEffective(Object(PDO), 1, 35, false, NULL)
+#5 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\shop_checkout.php(142): clubProgramVariantSaleState(Object(PDO), 1033)
+#6 C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\tests\Support\ShopCartReadProfile.php(70): shopCartDetail(Object(PDO), 10)
+#7 {main}
+  thrown in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w92-20261030\includes\club_program_terms.php on line 27

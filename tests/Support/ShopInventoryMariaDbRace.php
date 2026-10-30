@@ -1,15 +1,302 @@
 <?php
+
 declare(strict_types=1);
-if(PHP_SAPI!=='cli'){http_response_code(404);exit;}
-require_once dirname(__DIR__,2).'/includes/shop_inventory.php';
-$runtime=getenv('LOCALAPPDATA').'/EvidencePavelB1/finance-b1-20261022';$d=json_decode((string)file_get_contents($runtime.'/environment.json'),true,512,JSON_THROW_ON_ERROR);if(($d['synthetic_only']??false)!==true||($d['external_sends_disabled']??false)!==true||(int)$d['db_port']!==33426)throw new RuntimeException('Synthetic environment required.');
-$options=[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC];$root=new PDO('mysql:host=127.0.0.1;port=33426;charset=utf8mb4','root','',$options);$identity=$root->query('SELECT @@port port,@@datadir path')->fetch();if((int)$identity['port']!==33426||strtolower(str_replace('\\','/',$identity['path']))!==strtolower(str_replace('\\','/',$runtime.'/mysql/')))throw new RuntimeException('Sandbox database identity mismatch.');
-$worker=($argv[1]??'')==='--worker';$db=$worker?$argv[2]:'evidence_stock_race_'.bin2hex(random_bytes(4));if(!preg_match('/^evidence_stock_race_[a-f0-9]{8}$/D',$db))throw new RuntimeException('Invalid synthetic schema.');if(!$worker){$root->exec('CREATE DATABASE '.$db.' CHARACTER SET utf8mb4');$root->exec("GRANT ALL ON ".$db.".* TO 'b1_app'@'127.0.0.1'");}$pdo=new PDO('mysql:host=127.0.0.1;port=33426;dbname='.$db.';charset=utf8mb4','b1_app','',$options);$pdo->exec('SET SESSION innodb_lock_wait_timeout=20');
-function sirPublish(string $path,array $data):void{$tmp=$path.'.'.getmypid().'.tmp';file_put_contents($tmp,json_encode($data,JSON_THROW_ON_ERROR));if(!rename($tmp,$path))throw new RuntimeException('Barrier publish failed.');}
-function sirWait(string $path):array{$end=microtime(true)+20;do{clearstatcache(true,$path);if(is_file($path))return json_decode((string)file_get_contents($path),true,512,JSON_THROW_ON_ERROR);usleep(20000);}while(microtime(true)<$end);throw new RuntimeException('Barrier timeout '.$path);}
-if($worker){$mode=$argv[3];$path=$argv[4];$item=(int)$argv[5];sirPublish($path.'.ready',['connection'=>(int)$pdo->query('SELECT CONNECTION_ID()')->fetchColumn()]);try{if($mode==='reserve')$r=shopInventoryTransaction($pdo,fn()=>shopInventoryReserveInTransaction($pdo,1,$item,$item,1,'reserve-'.$item));elseif($mode==='return'){$issue=(int)$pdo->query("SELECT MAX(id) FROM shop_stock_movements WHERE kind='issue'")->fetchColumn();$r=shopInventoryTransaction($pdo,fn()=>shopInventoryReturnInTransaction($pdo,$issue,1,'return-'.$item,1,'LOCALHOST concurrent actual return.'));}else$r=shopInventoryReceive($pdo,1,2,['quantity'=>3,'unit_cost_minor'=>100,'supplier'=>'LOCALHOST supplier','supplier_reference'=>'LOCALHOST shared delivery','cost_evidence'=>'LOCALHOST invoice','effective_on'=>date('Y-m-d')],'LOCALHOST repeated receipt race.',true,'same-receipt');sirPublish($path.'.result',['status'=>'ok','id'=>(int)$r['id']]);}catch(ShopInventoryException$e){sirPublish($path.'.result',['status'=>'denied','message'=>$e->getMessage()]);}exit;}
-$pdo->exec('CREATE TABLE treneri(id INT PRIMARY KEY,aktivni INT) ENGINE=InnoDB');$pdo->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code VARCHAR(40)) ENGINE=InnoDB');$pdo->exec('CREATE TABLE staff_superadmins(trainer_id INT) ENGINE=InnoDB');$pdo->exec("INSERT INTO treneri VALUES(1,1);INSERT INTO staff_user_positions VALUES(1,'catalog_manager'),(1,'finance_manager'),(1,'order_operator')");$pdo->exec('CREATE TABLE shop_products(id BIGINT UNSIGNED PRIMARY KEY,name VARCHAR(100),offer_type VARCHAR(20)) ENGINE=InnoDB');$pdo->exec("INSERT INTO shop_products VALUES(1,'LOCALHOST shirt','goods')");$pdo->exec('CREATE TABLE shop_variants(id BIGINT UNSIGNED PRIMARY KEY,product_id BIGINT UNSIGNED,sku VARCHAR(60),unit_code VARCHAR(20),stock_quantity_decimal VARCHAR(30)) ENGINE=InnoDB');$pdo->exec("INSERT INTO shop_variants VALUES(1,1,'LOCALHOST-M','piece',NULL),(2,1,'LOCALHOST-L','piece',NULL)");$pdo->exec('CREATE TABLE shop_orders(id BIGINT UNSIGNED PRIMARY KEY,status VARCHAR(20),payment_status VARCHAR(20)) ENGINE=InnoDB');$pdo->exec('CREATE TABLE shop_order_items(id BIGINT UNSIGNED PRIMARY KEY,order_id BIGINT UNSIGNED,variant_id BIGINT UNSIGNED,quantity INT) ENGINE=InnoDB');$m=require dirname(__DIR__,2).'/migrations/20261022230000_shop_inventory.php';$m['up']($pdo);if(!$m['verify']($pdo))throw new RuntimeException('Migration failed.');shopInventoryConfigure($pdo,1,'LOCALHOST race warehouse','fifo','LOCALHOST explicit methodology','LOCALHOST FIFO test approval.',true);foreach([1=>1,2=>0]as$v=>$quantity)shopInventoryOpen($pdo,1,$v,['physical_quantity'=>$quantity,'unit_cost_minor'=>100,'effective_on'=>date('Y-m-d'),'evidence'=>'LOCALHOST signed opening'],'LOCALHOST verified synthetic count.',true,'open-'.$v);$pdo->exec("INSERT INTO shop_orders VALUES(1,'placed','unpaid'),(2,'placed','unpaid');INSERT INTO shop_order_items VALUES(1,1,1,1),(2,2,1,1)");
-$results=[];$processes=[];try{foreach(['reserve'=>1,'receipt'=>2,'return'=>2]as$mode=>$variant){if($mode==='return'){$pdo->exec("INSERT INTO shop_orders VALUES(3,'placed','paid');INSERT INTO shop_order_items VALUES(3,3,2,1)");shopInventoryTransaction($pdo,fn()=>shopInventoryReserveInTransaction($pdo,2,3,3,1,'reserve-return'));shopInventoryTransaction($pdo,fn()=>shopInventoryIssueInTransaction($pdo,3,1,'issue-return',1,'LOCALHOST original issue.'));}$pdo->beginTransaction();shopInventoryLockBalance($pdo,$variant);$jobs=[];foreach([1,2]as$item){$path=$runtime.'/'.$db.'-'.$mode.'-'.$item;$proc=proc_open([PHP_BINARY,__FILE__,'--worker',$db,$mode,$path,(string)$item],[0=>['pipe','r'],1=>['file',$path.'.out','w'],2=>['file',$path.'.err','w']],$pipes,dirname(__DIR__,2));if(!is_resource($proc))throw new RuntimeException('Worker start failed.');fclose($pipes[0]);$processes[]=$proc;$ready=sirWait($path.'.ready');$jobs[]=['path'=>$path,'proc'=>$proc,'connection'=>$ready['connection']];}
- $ids=array_column($jobs,'connection');$deadline=microtime(true)+12;$observed=false;do{$wait=$root->query('SELECT COUNT(*) FROM information_schema.INNODB_TRX WHERE trx_state=\'LOCK WAIT\' AND trx_mysql_thread_id IN ('.implode(',',$ids).')')->fetchColumn();if((int)$wait===2){$observed=true;break;}usleep(150000);}while(microtime(true)<$deadline);if(!$observed)throw new RuntimeException('Did not observe both real concurrent lock waits.');$pdo->commit();$out=[];foreach($jobs as$job){$out[]=sirWait($job['path'].'.result');if(proc_close($job['proc'])!==0)throw new RuntimeException('Worker failed.');}$ok=count(array_filter($out,static fn($r)=>$r['status']==='ok'));if(in_array($mode,['reserve','return'],true)&&$ok!==1)throw new RuntimeException('Last piece sold more/less than once.');if($mode==='receipt'&&($ok!==2||$out[0]['id']!==$out[1]['id']))throw new RuntimeException('Receipt retry duplicated.');$b=shopInventoryBalance($pdo,$variant);if($mode==='reserve'&&[$b['physical_quantity'],$b['reserved_quantity'],$b['available_quantity']]!==[1,1,0])throw new RuntimeException('Reservation altered physical stock.');if($mode==='receipt'&&$b['physical_quantity']!==3)throw new RuntimeException('Receipt duplicated physical stock.');if($mode==='return'&&[$b['physical_quantity'],$b['blocked_quantity']]!==[3,1])throw new RuntimeException('Return race duplicated owned stock.');$results[]=['scenario'=>$mode,'two_real_lock_waits'=>true,'results'=>$out,'balance'=>$b,'status'=>'PASS'];}}
-finally{if($pdo->inTransaction())$pdo->rollBack();foreach($processes as$p)if(is_resource($p)){proc_terminate($p);proc_close($p);}}
-echo json_encode(['database'=>$db,'checks'=>9,'results'=>$results,'production_mutations'=>false],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).PHP_EOL;
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
+require_once dirname(__DIR__, 2).'/includes/shop_inventory.php';
+require_once __DIR__ . '/SportRaceRuntime.php';
+$worker = ($argv[1] ?? '') === '--worker';
+$db = $worker ? (string) $argv[2] : 'evidence_stock_race_' . bin2hex(random_bytes(4));
+[$root, $pdo, $runtime] = sportRaceRuntime('evidence_stock_race_', $db, $worker);
+function sirPublish(
+    string $path,
+    array $data
+): void {
+    $tmp = $path.'.'.getmypid().'.tmp';
+    file_put_contents(
+        $tmp,
+        json_encode(
+            $data,
+            JSON_THROW_ON_ERROR
+        )
+    );
+    if (!rename(
+        $tmp,
+        $path
+    )) {
+        throw new RuntimeException('Barrier publish failed.');
+    }
+}
+function sirWait(string $path): array
+{
+    $end = microtime(true) + 20;
+    do {
+        clearstatcache(
+            true,
+            $path
+        );
+        if (is_file($path)) {
+            return json_decode(
+                (string)file_get_contents($path),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        }usleep(20000);
+    } while (microtime(true) < $end);
+    throw new RuntimeException('Barrier timeout '.$path);
+}
+if ($worker) {
+    $mode = $argv[3];
+    $path = $argv[4];
+    $item = (int)$argv[5];
+    sirPublish(
+        $path.'.ready',
+        ['connection' => (int)$pdo->query('SELECT CONNECTION_ID()')->fetchColumn()]
+    );
+    try {
+        if ($mode === 'reserve') {
+            $r = shopInventoryTransaction(
+                $pdo,
+                fn () => shopInventoryReserveInTransaction(
+                    $pdo,
+                    1,
+                    $item,
+                    $item,
+                    1,
+                    'reserve-'.$item
+                )
+            );
+        } elseif ($mode === 'return') {
+            $issue = (int)$pdo->query("SELECT MAX(id) FROM shop_stock_movements WHERE kind='issue'")->fetchColumn();
+            $r = shopInventoryTransaction(
+                $pdo,
+                fn () => shopInventoryReturnInTransaction(
+                    $pdo,
+                    $issue,
+                    1,
+                    'return-'.$item,
+                    1,
+                    'LOCALHOST concurrent actual return.'
+                )
+            );
+        } else {
+            $r = shopInventoryReceive(
+                $pdo,
+                1,
+                2,
+                ['quantity' => 3,
+                'unit_cost_minor' => 100,
+                'supplier' => 'LOCALHOST supplier',
+                'supplier_reference' => 'LOCALHOST shared delivery',
+                'cost_evidence' => 'LOCALHOST invoice',
+                'effective_on' => date('Y-m-d')],
+                'LOCALHOST repeated receipt race.',
+                true,
+                'same-receipt'
+            );
+        }sirPublish(
+            $path.'.result',
+            ['status' => 'ok',
+            'id' => (int)$r['id']]
+        );
+    } catch (ShopInventoryException$e) {
+        sirPublish(
+            $path.'.result',
+            ['status' => 'denied',
+            'message' => $e->getMessage()]
+        );
+    }exit;
+}
+$pdo->exec('CREATE TABLE treneri(id INT PRIMARY KEY,aktivni INT) ENGINE=InnoDB');
+$pdo->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code VARCHAR(40)) ENGINE=InnoDB');
+$pdo->exec('CREATE TABLE staff_superadmins(trainer_id INT) ENGINE=InnoDB');
+$pdo->exec("INSERT INTO treneri VALUES(1,1);INSERT INTO staff_user_positions VALUES(1,'catalog_manager'),(1,'finance_manager'),(1,'order_operator')");
+$pdo->exec('CREATE TABLE shop_products(id BIGINT UNSIGNED PRIMARY KEY,name VARCHAR(100),offer_type VARCHAR(20)) ENGINE=InnoDB');
+$pdo->exec("INSERT INTO shop_products VALUES(1,'LOCALHOST shirt','goods')");
+$pdo->exec('CREATE TABLE shop_variants(id BIGINT UNSIGNED PRIMARY KEY,product_id BIGINT UNSIGNED,sku VARCHAR(60),unit_code '
+    . 'VARCHAR(20),stock_quantity_decimal VARCHAR(30)) ENGINE=InnoDB');
+$pdo->exec("INSERT INTO shop_variants VALUES(1,1,'LOCALHOST-M','piece',NULL),(2,1,'LOCALHOST-L','piece',NULL)");
+$pdo->exec('CREATE TABLE shop_orders(id BIGINT UNSIGNED PRIMARY KEY,status VARCHAR(20),payment_status VARCHAR(20)) ENGINE=InnoDB');
+$pdo->exec('CREATE TABLE shop_order_items(id BIGINT UNSIGNED PRIMARY KEY,order_id BIGINT UNSIGNED,variant_id BIGINT '
+    . 'UNSIGNED,quantity INT) ENGINE=InnoDB');
+$m = require dirname(
+    __DIR__,
+    2
+).'/migrations/20261022230000_shop_inventory.php';
+$m['up']($pdo);
+if (!$m['verify']($pdo)) {
+    throw new RuntimeException('Migration failed.');
+}shopInventoryConfigure(
+    $pdo,
+    1,
+    'LOCALHOST race warehouse',
+    'fifo',
+    'LOCALHOST explicit methodology',
+    'LOCALHOST FIFO test approval.',
+    true
+);
+foreach ([1 => 1,
+    2 => 0] as $v => $quantity) {
+    shopInventoryOpen(
+        $pdo,
+        1,
+        $v,
+        ['physical_quantity' => $quantity,
+    'unit_cost_minor' => 100,
+    'effective_on' => date('Y-m-d'),
+    'evidence' => 'LOCALHOST signed opening'],
+        'LOCALHOST verified synthetic count.',
+        true,
+        'open-'.$v
+    );
+}$pdo->exec("INSERT INTO shop_orders VALUES(1,'placed','unpaid'),(2,'placed','unpaid');INSERT INTO shop_order_items VALUES(1,1,1,1),(2,2,1,1)");
+$results = [];
+$processes = [];
+try {
+    foreach (['reserve' => 1,
+        'receipt' => 2,
+        'return' => 2] as $mode => $variant) {
+        if ($mode === 'return') {
+            $pdo->exec("INSERT INTO shop_orders VALUES(3,'placed','paid');INSERT INTO shop_order_items VALUES(3,3,2,1)");
+            shopInventoryTransaction(
+                $pdo,
+                fn () => shopInventoryReserveInTransaction(
+                    $pdo,
+                    2,
+                    3,
+                    3,
+                    1,
+                    'reserve-return'
+                )
+            );
+            shopInventoryTransaction(
+                $pdo,
+                fn () => shopInventoryIssueInTransaction(
+                    $pdo,
+                    3,
+                    1,
+                    'issue-return',
+                    1,
+                    'LOCALHOST original issue.'
+                )
+            );
+        }$pdo->beginTransaction();
+        shopInventoryLockBalance(
+            $pdo,
+            $variant
+        );
+        $jobs = [];
+        foreach ([1,
+        2] as $item) {
+            $path = $runtime.'/'.$db.'-'.$mode.'-'.$item;
+            $proc = proc_open(
+                [PHP_BINARY,
+    __FILE__,
+    '--worker',
+    $db,
+    $mode,
+    $path,
+    (string)$item],
+                [0 => ['pipe',
+    'r'],
+    1 => ['file',
+    $path.'.out',
+    'w'],
+    2 => ['file',
+    $path.'.err',
+    'w']],
+                $pipes,
+                dirname(
+                    __DIR__,
+                    2
+                )
+            );
+            if (!is_resource($proc)) {
+                throw new RuntimeException('Worker start failed.');
+            }fclose($pipes[0]);
+            $processes[] = $proc;
+            $ready = sirWait($path.'.ready');
+            $jobs[] = ['path' => $path,
+            'proc' => $proc,
+            'connection' => $ready['connection']];
+        }
+        $ids = array_column(
+            $jobs,
+            'connection'
+        );
+        $deadline = microtime(true) + 12;
+        $observed = false;
+        do {
+            $wait = $root->query('SELECT COUNT(*) FROM information_schema.INNODB_TRX WHERE trx_state=\'LOCK WAIT\' AND trx_mysql_thread_id IN ('.implode(
+                ',',
+                $ids
+            ).')')->fetchColumn();
+            if ((int)$wait === 2) {
+                $observed = true;
+                break;
+            }usleep(150000);
+        } while (microtime(true) < $deadline);
+        if (!$observed) {
+            throw new RuntimeException('Did not observe both real concurrent lock waits.');
+        }$pdo->commit();
+        $out = [];
+        foreach ($jobs as $job) {
+            $out[] = sirWait($job['path'].'.result');
+            if (proc_close($job['proc']) !== 0) {
+                throw new RuntimeException('Worker failed.');
+            }
+        }$ok = count(array_filter(
+            $out,
+            static fn ($r) => $r['status'] === 'ok'
+        ));
+        if (in_array(
+            $mode,
+            ['reserve',
+    'return'],
+            true
+        ) &&
+           $ok !== 1) {
+            throw new RuntimeException('Last piece sold more/less than once.');
+        }if ($mode === 'receipt' &&
+        ($ok !== 2 ||
+        $out[0]['id'] !== $out[1]['id'])) {
+            throw new RuntimeException('Receipt retry duplicated.');
+        }$b = shopInventoryBalance(
+            $pdo,
+            $variant
+        );
+        if ($mode === 'reserve' &&
+        [$b['physical_quantity'],
+        $b['reserved_quantity'],
+        $b['available_quantity']] !== [1,
+        1,
+        0]) {
+            throw new RuntimeException('Reservation altered physical stock.');
+        }if ($mode === 'receipt' &&
+        $b['physical_quantity'] !== 3) {
+            throw new RuntimeException('Receipt duplicated physical stock.');
+        }if ($mode === 'return' &&
+        [$b['physical_quantity'],
+        $b['blocked_quantity']] !== [3,
+        1]) {
+            throw new RuntimeException('Return race duplicated owned stock.');
+        }$results[] = ['scenario' => $mode,
+        'two_real_lock_waits' => true,
+        'results' => $out,
+        'balance' => $b,
+        'status' => 'PASS'];
+    }
+} finally {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }foreach ($processes as $p) {
+        if (is_resource($p)) {
+            proc_terminate($p);
+            proc_close($p);
+        }
+    }
+}
+echo json_encode(['database' => $db,'checks' => 9,'results' => $results,'production_mutations' => false], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR).PHP_EOL;
