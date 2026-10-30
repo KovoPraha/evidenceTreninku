@@ -1,0 +1,54 @@
+{
+    "production_mutations": false,
+    "php_memory_limit_bytes": 268435456,
+    "incremental_budget_bytes": 67108864,
+    "timeout_seconds": 180,
+    "samples_per_size": 1,
+    "results": [
+        {
+            "size": 1000,
+            "completed": true,
+            "ms": 579.8065,
+            "peak_bytes": 29274528,
+            "incremental_peak_bytes": 26479936,
+            "xlsx_bytes": 176186,
+            "sheet_rows": {
+                "4": 1001,
+                "5": 1001,
+                "6": 1001,
+                "8": 1002
+            },
+            "production_mutations": false
+        },
+        {
+            "size": 10000,
+            "completed": true,
+            "ms": 3676.4842,
+            "peak_bytes": 43330272,
+            "incremental_peak_bytes": 26478376,
+            "xlsx_bytes": 1530627,
+            "sheet_rows": {
+                "4": 10001,
+                "5": 10001,
+                "6": 10001,
+                "8": 10002
+            },
+            "production_mutations": false
+        },
+        {
+            "size": 100000,
+            "completed": true,
+            "ms": 45706.8592,
+            "peak_bytes": 202194688,
+            "incremental_peak_bytes": 39638528,
+            "xlsx_bytes": 15106182,
+            "sheet_rows": {
+                "4": 100001,
+                "5": 100001,
+                "6": 100001,
+                "8": 100002
+            },
+            "production_mutations": false
+        }
+    ]
+}

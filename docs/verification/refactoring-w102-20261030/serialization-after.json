@@ -1,0 +1,51 @@
+{
+  "scope": "complete current XLSX serialization after W10.1 pure projection",
+  "production_mutations": false,
+  "results": [
+    {
+      "size": 1000,
+      "completed": true,
+      "ms": 522.1676,
+      "peak_bytes": 29257448,
+      "incremental_peak_bytes": 26479616,
+      "xlsx_bytes": 176186,
+      "sheet_rows": {
+        "4": 1001,
+        "5": 1001,
+        "6": 1001,
+        "8": 1002
+      },
+      "production_mutations": false
+    },
+    {
+      "size": 10000,
+      "completed": true,
+      "ms": 3582.2703,
+      "peak_bytes": 43313192,
+      "incremental_peak_bytes": 26478056,
+      "xlsx_bytes": 1530627,
+      "sheet_rows": {
+        "4": 10001,
+        "5": 10001,
+        "6": 10001,
+        "8": 10002
+      },
+      "production_mutations": false
+    },
+    {
+      "size": 100000,
+      "completed": true,
+      "ms": 35709.4124,
+      "peak_bytes": 202177624,
+      "incremental_peak_bytes": 39638224,
+      "xlsx_bytes": 15106181,
+      "sheet_rows": {
+        "4": 100001,
+        "5": 100001,
+        "6": 100001,
+        "8": 100002
+      },
+      "production_mutations": false
+    }
+  ]
+}

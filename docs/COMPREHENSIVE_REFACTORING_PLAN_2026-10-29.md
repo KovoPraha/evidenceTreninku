@@ -352,3 +352,8 @@ cross-offer kapacita je posouzena a ponechává per-offer čtení bez sdílení 
 [měření](verification/refactoring-w10-20261030/RESULTS.md): čisté indexované
 projekce nahrazují kvadratické průchody, zachovávají snapshot i celý XLSX.
 Úplná serializace, historie/ledger a další části W10–W15 ještě navazují.
+
+[W10.2](REFACTORING_W102_2026-10-30.md) řeší doložené překročení paměti celé
+serializace XLSX. [Měření](verification/refactoring-w102-20261030/RESULTS.md)
+ověřuje 100 000 pohybů pod 256 MiB při zachování hodnot, typů a formátování.
+W10.3 navazuje finančními projekcemi klubu, historií a ledgerem; W11–W15 otevřené.

@@ -19,6 +19,10 @@ final class AccountingExportTest extends TestCase
         $current = \accountingExportSnapshot($pdo, '2025-10-01', '2025-11-30');
         $current['snapshot_at'] = $baseline['snapshot_at'];
         self::assertSame($baseline, $current);
+        $baseline['movements'][0]['source_reference'] = " \tžluťoučký & <text>\r\n\x01_x0001_ ";
+        $current['movements'][0]['source_reference'] = $baseline['movements'][0]['source_reference'];
+        $baseline['movements'][2]['source_reference'] = '';
+        $current['movements'][2]['source_reference'] = '';
         \w10WorkbookBaseline($baseline, $this->root . '/baseline.xlsx');
         \accountingExportWorkbook($current, $this->root . '/current.xlsx');
         $before = \PhpOffice\PhpSpreadsheet\IOFactory::load($this->root . '/baseline.xlsx');
@@ -28,15 +32,42 @@ final class AccountingExportTest extends TestCase
             foreach ($before->getAllSheets() as $index => $sheet) {
                 $other = $after->getSheet($index);
                 self::assertSame($sheet->toArray(null, false, false), $other->toArray(null, false, false));
+                self::assertSame($sheet->getFreezePane(), $other->getFreezePane());
+                self::assertSame($sheet->getAutoFilter()->getRange(), $other->getAutoFilter()->getRange());
+                foreach ($sheet->getColumnDimensions() as $column => $dimension) {
+                    self::assertSame($dimension->getWidth(), $other->getColumnDimension($column)->getWidth());
+                }
                 foreach ($sheet->getCellCollection()->getCoordinates() as $coordinate) {
                     self::assertSame($sheet->getCell($coordinate)->getDataType(), $other->getCell($coordinate)->getDataType());
                     self::assertSame($sheet->getStyle($coordinate)->getNumberFormat()->getFormatCode(), $other->getStyle($coordinate)->getNumberFormat()->getFormatCode());
+                    self::assertSame($sheet->getStyle($coordinate)->exportArray(), $other->getStyle($coordinate)->exportArray(), $sheet->getTitle() . '!' . $coordinate);
                 }
             }
         } finally {
             $before->disconnectWorksheets();
             $after->disconnectWorksheets();
         }
+        self::assertSame([], glob($this->root . '/.accounting-xlsx-*'));
+    }
+
+    public function testStreamCleansPrivateSpoolWhenProjectionFails(): void
+    {
+        require_once dirname(__DIR__, 2) . '/includes/accounting_xlsx_stream.php';
+        $stream = new \AccountingXlsxStream($this->root . '/failure.xlsx');
+        $rows = (static function (): \Generator {
+            yield ['first'];
+            throw new \DomainException('Synthetic row failure');
+        })();
+        try {
+            $stream->sheet('Test', ['Header'], $rows);
+            self::fail('The row failure must propagate.');
+        } catch (\DomainException $error) {
+            self::assertSame('Synthetic row failure', $error->getMessage());
+        } finally {
+            $stream->close();
+        }
+        self::assertSame([], glob($this->root . '/.accounting-xlsx-*'));
+        self::assertFileDoesNotExist($this->root . '/failure.xlsx');
     }
 
     private string $root;

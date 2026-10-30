@@ -61,6 +61,16 @@ jobs:
           path: accounting-export-read-profile.json
           retention-days: 14
 
+      - name: Verify bounded complete XLSX serialization
+        run: php tests/Support/AccountingSerializationProfile.php > accounting-serialization-profile.json
+
+      - name: Preserve XLSX serialization profile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: accounting-serialization-profile
+          path: accounting-serialization-profile.json
+          retention-days: 14
+
   mariadb-smoke:
     name: MariaDB integrační smoke (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest

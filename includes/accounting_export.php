@@ -148,68 +148,41 @@ function accountingExportSnapshot(PDO $pdo, string $from, string $to): array
 function accountingExportWorkbook(array $snapshot, string $path): void
 {
     require_once dirname(__DIR__).'/vendor/autoload.php';
-    $book = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    $book->removeSheetByIndex(0);
-    $sheet = static function (string $name, array $headers, array $rows, array $numeric = []) use ($book): void {
-        $s = $book->createSheet();
-        $s->setTitle($name);
-        foreach (array_merge([$headers], $rows) as $ri => $row) {
-            foreach (array_values($row) as $ci => $value) {
-                $coord = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ci + 1).($ri + 1);
-                if ($value !== null && $ri > 0 && in_array($ci, $numeric, true)) {
-                    $s->setCellValueExplicit($coord, (float)$value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                } else {
-                    $s->setCellValueExplicit($coord, $value === null ? 'NEZNÁMÉ' : (string)$value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                }
-            }
+    require_once __DIR__ . '/accounting_xlsx_stream.php';
+    $stream = new AccountingXlsxStream($path);
+    try {
+        $sheet = $stream->sheet(...);
+        $meta = [];
+        foreach (['version','period_from','period_to','timezone','snapshot_at','snapshot_timezone','scope','status'] as $k) {
+            $meta[] = [$k,$snapshot[$k]];
         }
-        $last = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($headers));
-        $s->getStyle('A1:'.$last.'1')->getFont()->setBold(true)->getColor()->setARGB('FFFFFFFF');
-        $s->getStyle('A1:'.$last.'1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FF23465C');
-        $s->freezePane('A2');
-        $s->setAutoFilter('A1:'.$last.max(1, count($rows) + 1));
-        $s->getStyle('A1:'.$last.max(1, count($rows) + 1))->getAlignment()->setVertical('top')->setWrapText(true);
-        for ($i = 1;$i <= count($headers);$i++) {
-            $s->getColumnDimension(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($i))->setWidth($name === 'Manifest' ? ($i === 1 ? 28 : 95) : 24);
+        $meta[] = ['Časové pásmo evidence v DB',json_encode($snapshot['recorded_database_timezone'], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)];
+        foreach ($snapshot['limitations'] as $v) {
+            $meta[] = ['Omezení',$v];
+        }foreach ($snapshot['exceptions'] as $v) {
+            $meta[] = ['K dořešení',$v];
         }
-        foreach ($numeric as $ci) {
-            $s->getStyle(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ci + 1).'2:'.\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ci + 1).max(
-                2,
-                count($rows) + 1
-            ))->getNumberFormat()->setFormatCode('#,##0.00;[Red]-#,##0.00');
+        if (isset($snapshot['revision'])) {
+            $meta[] = ['Revize',(string)$snapshot['revision']];
         }
-    };
-    $meta = [];
-    foreach (['version','period_from','period_to','timezone','snapshot_at','snapshot_timezone','scope','status'] as $k) {
-        $meta[] = [$k,$snapshot[$k]];
-    }
-    $meta[] = ['Časové pásmo evidence v DB',json_encode($snapshot['recorded_database_timezone'], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)];
-    foreach ($snapshot['limitations'] as $v) {
-        $meta[] = ['Omezení',$v];
-    }foreach ($snapshot['exceptions'] as $v) {
-        $meta[] = ['K dořešení',$v];
-    }
-    if (isset($snapshot['revision'])) {
-        $meta[] = ['Revize',(string)$snapshot['revision']];
-    }
-    if (isset($snapshot['replacement_mode'])) {
-        $meta[] = ['Režim náhrady',$snapshot['replacement_mode']];
-    }
-    foreach ($snapshot['changes'] ?? [] as $change) {
-        $meta[] = ['Změna proti předchozí revizi',$change['section'].' #'.$change['id'].' '.$change['change']];
-    }
-    foreach ($snapshot['pending_sources'] as $p) {
-        $meta[] = ['Nepřevzatý zdroj',json_encode($p, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)];
-    }
-    $meta[] = ['Význam období','Penize obsahuje i starší reference označené MIMO OBRAT. Do obratu patří jen V OBDOBÍ. Částky jsou v měnových '
-        . 'jednotkách, JSON obsahuje celé haléře.'];
-    $sheet('Manifest', ['Údaj','Hodnota'], $meta);
-    $docs = [];
-    $items = [];
-    $claims = [];
-    foreach ($snapshot['documents'] as $d) {
-        $data = json_decode($d['snapshot_json'], true, 512, JSON_THROW_ON_ERROR);
-        $docs[] = [(string)$d['id'],
+        if (isset($snapshot['replacement_mode'])) {
+            $meta[] = ['Režim náhrady',$snapshot['replacement_mode']];
+        }
+        foreach ($snapshot['changes'] ?? [] as $change) {
+            $meta[] = ['Změna proti předchozí revizi',$change['section'].' #'.$change['id'].' '.$change['change']];
+        }
+        foreach ($snapshot['pending_sources'] as $p) {
+            $meta[] = ['Nepřevzatý zdroj',json_encode($p, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)];
+        }
+        $meta[] = ['Význam období','Penize obsahuje i starší reference označené MIMO OBRAT. Do obratu patří jen V OBDOBÍ. Částky jsou v měnových '
+            . 'jednotkách, JSON obsahuje celé haléře.'];
+        $sheet('Manifest', ['Údaj','Hodnota'], $meta);
+        $docs = [];
+        $items = [];
+        $claims = [];
+        foreach ($snapshot['documents'] as $d) {
+            $data = json_decode($d['snapshot_json'], true, 512, JSON_THROW_ON_ERROR);
+            $docs[] = [(string)$d['id'],
     $d['number'],
     $d['kind'],
     $d['source_type'],
@@ -225,12 +198,12 @@ function accountingExportWorkbook(array $snapshot, string $path): void
     $data['reference'] ?? null,
     $data['variable_symbol'] ?? '',
     $data['due_on'] ?? ''];
-        // Read frozen document metadata, never today's person or catalog records.
-        foreach ($data['lines'] ?? [] as $line) {
-            $period = $line['service_period'] ?? null;
-            $from = is_array($period) ? ($period[0] ?? null) : ($period ?? '');
-            $to = is_array($period) ? ($period[1] ?? null) : ($period ?? '');
-            $items[] = [(string)$d['id'],
+            // Read frozen document metadata, never today's person or catalog records.
+            foreach ($data['lines'] ?? [] as $line) {
+                $period = $line['service_period'] ?? null;
+                $from = is_array($period) ? ($period[0] ?? null) : ($period ?? '');
+                $to = is_array($period) ? ($period[1] ?? null) : ($period ?? '');
+                $items[] = [(string)$d['id'],
     (string)($line['line_key'] ?? ''),
     $line['label'] ?? '',
     (string)($line['quantity'] ?? ''),
@@ -241,14 +214,14 @@ function accountingExportWorkbook(array $snapshot, string $path): void
     $line['beneficiary']['name'] ?? '',
     $from,
     $to];
+            }
+            if ($d['status'] === 'issued' && $d['original_document_id'] === null) {
+                $claims[] = [(string)$d['source_type'],(string)$d['source_id'],(string)$d['id'],'Vazba na původní případ, nikoli nová pohledávka'];
+            }
         }
-        if ($d['status'] === 'issued' && $d['original_document_id'] === null) {
-            $claims[] = [(string)$d['source_type'],(string)$d['source_id'],(string)$d['id'],'Vazba na původní případ, nikoli nová pohledávka'];
-        }
-    }
-    $sheet(
-        'Doklady',
-        ['ID',
+        $sheet(
+            'Doklady',
+            ['ID',
     'Číslo (text)',
     'Druh',
     'Zdroj',
@@ -264,80 +237,86 @@ function accountingExportWorkbook(array $snapshot, string $path): void
     'Reference případu',
     'VS (text)',
     'Splatnost'],
-        $docs,
-        [9]
-    );
-    $sheet('Polozky', ['ID dokladu','Klíč položky','Popis','Množství','Částka','Členění','Činnost','ID účastníka (text)','Účastník','Období od','Období do'], $items, [4]);
-    $money = [];
-    foreach ($snapshot['movements'] as $m) {
-        $money[] = [(string)$m['id'],
-        (string)$m['account_id'],
-        $m['kind'],
-        $m['effective_on'],
-        $m['recorded_at'],
-        (int)$m['amount_minor'] / 100,
-        $m['currency'],
-        $m['source_context'],
-        $m['source_reference'],
-        $m['reversal_of_id'],
-        $m['transfer_key'],
-        $m['effective_on'] >= $snapshot['period_from'] ? 'V OBDOBÍ' : 'MIMO OBRAT'];
-    }
-    $sheet('Penize', ['ID pohybu','Účet','Druh','Skutečné datum','Zapsáno','Částka se znaménkem','Měna','Zdroj','Reference (text)','Původní pohyb','Převod','Obrat'], $money, [5]);
-    $alloc = [];
-    $classification = [];
-    foreach ($snapshot['allocations'] as $a) {
-        $alloc[] = [(string)$a['id'],
-        (string)$a['movement_id'],
-        $a['case_type'],
-        (string)$a['case_id'],
-        (int)$a['amount_minor'] / 100,
-        $a['effective_on'],
-        $a['recorded_at'],
-        $a['reverses_id']];
-    }
-    $latest = [];
-    foreach ($snapshot['classifications'] as $c) {
-        $latest[(int)$c['movement_id']] = $c;
-    }
-    foreach ($snapshot['movements'] as $m) {
-        $c = $latest[(int)$m['id']] ?? null;
-        if (!$c) {
-            continue;
-        }foreach (json_decode(
-            $c['splits_json'],
-            true,
-            512,
-            JSON_THROW_ON_ERROR
-        ) as $part) {
-            $classification[] = [(string)$m['id'],
-            (string)$c['id'],
-            $part['category_code'] ?? null,
-            $part['activity'] ?? null,
-            ((int)$m['amount_minor'] < 0 ? -1 : 1) * (int)$part['amount_minor'] / 100,
-            'Verze členění; ne nové peníze'];
+            $docs,
+            [9]
+        );
+        $sheet('Polozky', ['ID dokladu','Klíč položky','Popis','Množství','Částka','Členění','Činnost','ID účastníka (text)','Účastník','Období od','Období do'], $items, [4]);
+        unset($docs, $items);
+        $money = (static function () use ($snapshot): Generator {
+            foreach ($snapshot['movements'] as $m) {
+                yield [(string)$m['id'],
+                (string)$m['account_id'],
+                $m['kind'],
+                $m['effective_on'],
+                $m['recorded_at'],
+                (int)$m['amount_minor'] / 100,
+                $m['currency'],
+                $m['source_context'],
+                $m['source_reference'],
+                $m['reversal_of_id'],
+                $m['transfer_key'],
+                $m['effective_on'] >= $snapshot['period_from'] ? 'V OBDOBÍ' : 'MIMO OBRAT'];
+            }
+        })();
+        $sheet('Penize', ['ID pohybu','Účet','Druh','Skutečné datum','Zapsáno','Částka se znaménkem','Měna','Zdroj','Reference (text)','Původní pohyb','Převod','Obrat'], $money, [5]);
+        $alloc = (static function () use ($snapshot): Generator {
+            foreach ($snapshot['allocations'] as $a) {
+                yield [(string)$a['id'],
+                (string)$a['movement_id'],
+                $a['case_type'],
+                (string)$a['case_id'],
+                (int)$a['amount_minor'] / 100,
+                $a['effective_on'],
+                $a['recorded_at'],
+                $a['reverses_id']];
+            }
+        })();
+        $classification = (static function () use ($snapshot): Generator {
+            $latest = [];
+            foreach ($snapshot['classifications'] as $c) {
+                $latest[(int)$c['movement_id']] = $c;
+            }
+            foreach ($snapshot['movements'] as $m) {
+                $c = $latest[(int)$m['id']] ?? null;
+                if (!$c) {
+                    continue;
+                }foreach (json_decode(
+                    $c['splits_json'],
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR
+                ) as $part) {
+                    yield [(string)$m['id'],
+                    (string)$c['id'],
+                    $part['category_code'] ?? null,
+                    $part['activity'] ?? null,
+                    ((int)$m['amount_minor'] < 0 ? -1 : 1) * (int)$part['amount_minor'] / 100,
+                    'Verze členění; ne nové peníze'];
+                }
+            }
+        })();
+        $sheet('Parovani', ['ID přídělu','ID pohybu','Případ','ID případu','Částka','Účinné datum','Zapsáno','Ruší příděl'], $alloc, [4]);
+        $sheet('Cleneni_penez', ['ID pohybu','Verze členění','Členění','Činnost','Částka se znaménkem','Význam'], $classification, [4]);
+        foreach ($snapshot['club_receivables'] ?? [] as $r) {
+            $claims[] = [$r['case_type'],
+            (string)$r['case_id'],
+            $r['reference'],
+            $r['label'].'; nominální '.number_format(
+                (int)$r['amount_minor'] / 100,
+                2,
+                ',',
+                ' '
+            ).' '.$r['currency'].'; '.$r['historical_status']];
         }
-    }
-    $sheet('Parovani', ['ID přídělu','ID pohybu','Případ','ID případu','Částka','Účinné datum','Zapsáno','Ruší příděl'], $alloc, [4]);
-    $sheet('Cleneni_penez', ['ID pohybu','Verze členění','Členění','Činnost','Částka se znaménkem','Význam'], $classification, [4]);
-    foreach ($snapshot['club_receivables'] ?? [] as $r) {
-        $claims[] = [$r['case_type'],
-        (string)$r['case_id'],
-        $r['reference'],
-        $r['label'].'; nominální '.number_format(
-            (int)$r['amount_minor'] / 100,
-            2,
-            ',',
-            ' '
-        ).' '.$r['currency'].'; '.$r['historical_status']];
-    }
-    $sheet('Predpisy', ['Zdroj','ID případu','Doklad','Význam'], $claims);
-    $balances = accountingExportFinancialBalanceRows($snapshot);
-    $balances = array_merge($balances, accountingClubBalanceRows($snapshot));
-    $sheet('Saldo', ['Druh','ID','Význam','Počátek','Čistý obrat','Konec','Měna'], $balances, [3,4,5]);
-    $sheet(
-        'Vydaje',
-        ['Druh',
+        $sheet('Predpisy', ['Zdroj','ID případu','Doklad','Význam'], $claims);
+        $balances = (static function () use ($snapshot): Generator {
+            yield from accountingExportFinancialBalanceIterator($snapshot);
+            yield from accountingClubBalanceRows($snapshot);
+        })();
+        $sheet('Saldo', ['Druh','ID','Význam','Počátek','Čistý obrat','Konec','Měna'], $balances, [3,4,5]);
+        $sheet(
+            'Vydaje',
+            ['Druh',
     'ID verze',
     'ID případu',
     'Číslo / verze',
@@ -352,15 +331,15 @@ function accountingExportWorkbook(array $snapshot, string $path): void
     'Zůstatek',
     'Měna',
     'Doložení'],
-        accountingClubExpenseRows($snapshot),
-        [9,
+            accountingClubExpenseRows($snapshot),
+            [9,
     10,
     11,
     12]
-    );
-    $sheet(
-        'Sklad',
-        ['Řádek',
+        );
+        $sheet(
+            'Sklad',
+            ['Řádek',
     'ID',
     'SKU / vazba (text)',
     'Popis',
@@ -372,19 +351,18 @@ function accountingExportWorkbook(array $snapshot, string $path): void
     'Ocenění Kč',
     'Kusy bez ceny',
     'Podklad / význam'],
-        accountingStockWorkbookRows($snapshot),
-        [5,
+            accountingStockWorkbookRows($snapshot),
+            [5,
     6,
     7,
     8,
     9,
     10]
-    );
-    $book->setActiveSheetIndex(0);
-    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($book);
-    $writer->setPreCalculateFormulas(false);
-    $writer->save($path);
-    $book->disconnectWorksheets();
+        );
+        $stream->save($path);
+    } finally {
+        $stream->close();
+    }
 }
 
 function accountingExportGet(PDO $pdo, int $id): array
