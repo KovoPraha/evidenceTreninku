@@ -1,0 +1,269 @@
+{
+  "phase": "pre",
+  "product_ids": [
+    "247",
+    "218",
+    "221"
+  ],
+  "checked_at": "2026-10-30T13:59:52.032872+00:00",
+  "base_url": "https://kis.kovopraha.cz",
+  "method": "GET only; anonymous; no cookies or redirects",
+  "checks": 26,
+  "passed": 26,
+  "results": [
+    {
+      "path": "/index.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 141,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 519,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/prihlaseni.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 116,
+      "ok": true
+    },
+    {
+      "path": "/booking/moje_objednavky.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 119,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=moje_objednavky.php"
+    },
+    {
+      "path": "/eshop_orders_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 101,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/booking/sportovni_prehled.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 104,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=sportovni_prehled.php"
+    },
+    {
+      "path": "/booking/moje_osoby.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 103,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=moje_osoby.php"
+    },
+    {
+      "path": "/booking/nahrady.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 98,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=nahrady.php"
+    },
+    {
+      "path": "/booking/soupiskove_treninky.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 303,
+      "elapsed_ms": 140,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=soupiskove_treninky.php"
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 1365,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 774,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 625,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=2147483647",
+      "expected": [
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 339,
+      "ok": true
+    },
+    {
+      "path": "/includes/shop_storefront_read.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 96,
+      "ok": true
+    },
+    {
+      "path": "/var/deployment.json",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 97,
+      "ok": true
+    },
+    {
+      "path": "/tests/Support/StorefrontReadMariaDbSmoke.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 103,
+      "ok": true
+    },
+    {
+      "path": "/composer.lock",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 107,
+      "ok": true
+    },
+    {
+      "path": "/var/private/kis-person-import.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 108,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 361,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 502,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 333,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 356,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 419,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 562,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 329,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 297,
+      "ok": true
+    }
+  ]
+}

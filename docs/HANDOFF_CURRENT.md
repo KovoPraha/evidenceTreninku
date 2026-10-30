@@ -148,4 +148,6 @@ rodinný kalendář 4199 → 39 SQL pro 20 osob/rok.
 W8.4 klubový kalendář je rovněž
 [nasazen z PR #241](verification/refactoring-w84-release-20261030/RESULTS.md):
 1842 testů / 36744 assertions, HTTP 26/26, živé SHA a beze změny konfigurace.
-Pokračují W8.5 sportovní kontrakty a W9–W15.
+W9.1 skladový přehled je [nasazen z PR #244](verification/refactoring-w91-release-20261030/RESULTS.md):
+1844 testů / 36778 assertions, HTTP 26/26, živé SHA a flags ověřené.
+Součástí jsou i testovací/CI kontrakty W8.5. Pokračují W9.2 a W10–W15.

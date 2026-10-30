@@ -95,6 +95,10 @@ try {
                         }
                     }
                 }
+                if ($samples['current'] !== []
+                    && max(array_column($samples['current'], 'peak_bytes')) > max(array_column($samples['baseline'], 'peak_bytes')) + 1048576) {
+                    throw new RuntimeException('Cart read context exceeds bounded additional memory.');
+                }
                 $results[] = ['size' => $size, 'kind' => $kind, 'member' => $account === 10,
                     'same_result' => true, 'counts' => $counts, 'samples' => $samples];
             }

@@ -336,3 +336,12 @@ zůstávají otevřené; celý plán W9–W15 tím není uzavřen.
 [měření skladu](verification/refactoring-w91-20261030/RESULTS.md): celý výpis
 10 000 variant 20008 → 34 SQL, shodné HTML i data, dávky nejvýše 400 zůstatků.
 Košík, checkout a navazující W10–W15 zůstávají otevřené.
+
+W9.1 je [nasazena a produkčně ověřena](verification/refactoring-w91-release-20261030/RESULTS.md),
+včetně již sloučených testovacích kontraktů W8.5. UAT zůstává samostatné.
+
+[W9.2](REFACTORING_W92_2026-10-30.md) a
+[protokol](verification/refactoring-w92-20261030/RESULTS.md) doplňují
+programový košík (členský 1862 → 275 SQL, shodná data) a přenosné skutečné
+skladové race. Profily čtení získávají samostatný CI job jako časnější část W14;
+cross-offer kapacita je posouzena a ponechává per-offer čtení bez sdílení se zápisy.
