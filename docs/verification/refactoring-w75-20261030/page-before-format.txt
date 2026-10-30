@@ -1,0 +1,563 @@
+<?php
+require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/csrf_helper.php';
+require_once __DIR__ . '/includes/sportovec_status_lib.php';
+require_once __DIR__ . '/includes/person_match.php';
+require_once __DIR__ . '/includes/sportovec_editor.php';
+require_once __DIR__ . '/includes/sportovec_directory_read.php';
+
+if (!isset($_SESSION['trener_id']) || !canAccess('sprava_sportovcu')) {
+    header("Location: login.php");
+    exit;
+}
+
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Database connection unavailable.');
+}
+
+header('Cache-Control: no-store, private, max-age=0');
+header('Pragma: no-cache');
+header('Referrer-Policy: no-referrer');
+$editId = max(0, (int)($_GET['edit_id'] ?? 0));
+$editError = '';
+$editInput = [];
+$revealed = null;
+$birthEditValue = '';
+$editorLastAction = '';
+
+function h($s): string {
+    return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+$createPreview = null;
+$createInput = ['jmeno' => '', 'prijmeni' => '', 'narozeni' => '', 'email' => ''];
+$createError = '';
+$createNotice = '';
+
+// ── POST: uložení změn nebo založení sportovce ──────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+        $_SESSION['flash_error'] = 'Neplatný CSRF token.';
+        header("Location: sprava_sportovcu.php");
+        exit;
+    }
+
+    $akce = $_POST['akce'] ?? '';
+    $editorLastAction = is_string($akce) ? $akce : '';
+
+    if ($akce === 'create') {
+        if (!roleAtLeast('admin')) {
+            http_response_code(403);
+            exit('Tuto akci smí provést pouze administrátor.');
+        }
+        $createInput = [
+            'jmeno' => trim((string)($_POST['jmeno'] ?? '')),
+            'prijmeni' => trim((string)($_POST['prijmeni'] ?? '')),
+            'narozeni' => trim((string)($_POST['narozeni'] ?? '')),
+            'email' => trim((string)($_POST['email'] ?? '')),
+        ];
+        $confirmation = (string)($_POST['create_confirmation'] ?? '');
+        $overrideReason = trim((string)($_POST['override_reason'] ?? ''));
+        try {
+            $birthDate = personMatchV1Date($createInput['narozeni']);
+            if ($createInput['jmeno'] === '' || $createInput['prijmeni'] === '' || $birthDate === null) {
+                throw new InvalidArgumentException('Jméno, příjmení a platné datum narození jsou povinné.');
+            }
+            if (new DateTimeImmutable($birthDate) > new DateTimeImmutable('today')) {
+                throw new InvalidArgumentException('Datum narození nesmí být v budoucnosti.');
+            }
+            $match = personMatchV1($pdo, $createInput);
+            $createPreview = $match;
+            if ($confirmation === '') {
+                if ($match['level'] === PERSON_MATCH_EXACT) {
+                    personMatchV1Audit(
+                        $pdo,
+                        (int)$_SESSION['trener_id'],
+                        'exact_discovery',
+                        $match,
+                        null,
+                        '',
+                        ['source' => 'sprava_sportovcu']
+                    );
+                    $createError = 'Nalezena přesná shoda. Osoba zatím nebyla založena. Použijte existující osobu, nebo zdůvodněte výjimku.';
+                } elseif ($match['level'] === PERSON_MATCH_SIMILARITY) {
+                    personMatchV1Audit(
+                        $pdo,
+                        (int)$_SESSION['trener_id'],
+                        'similarity_discovery',
+                        $match,
+                        null,
+                        '',
+                        ['source' => 'sprava_sportovcu']
+                    );
+                    $createNotice = 'Nalezeny podobné osoby. Osoba zatím nebyla založena. Zkontrolujte výsledky a pokračujte druhým krokem.';
+                } else {
+                    $createNotice = 'Nebyla nalezena žádná shoda. Osoba zatím nebyla založena. Ve druhém kroku potvrďte její vytvoření.';
+                }
+            } elseif ($match['level'] === PERSON_MATCH_EXACT && $confirmation !== 'exact_override') {
+                personMatchV1Audit(
+                    $pdo,
+                    (int)$_SESSION['trener_id'],
+                    'exact_discovery',
+                    $match,
+                    null,
+                    '',
+                    ['source' => 'sprava_sportovcu']
+                );
+                $createError = 'Nalezena přesná shoda. Osoba zatím nebyla založena. Použijte existující osobu, nebo zdůvodněte výjimku.';
+            } elseif ($match['level'] === PERSON_MATCH_EXACT && mb_strlen($overrideReason, 'UTF-8') < 10) {
+                $createError = 'Důvod výjimky musí mít alespoň 10 znaků.';
+            } elseif ($match['level'] === PERSON_MATCH_SIMILARITY && $confirmation !== 'similarity') {
+                personMatchV1Audit(
+                    $pdo,
+                    (int)$_SESSION['trener_id'],
+                    'similarity_discovery',
+                    $match,
+                    null,
+                    '',
+                    ['source' => 'sprava_sportovcu']
+                );
+                $createNotice = 'Nalezeny podobné osoby. Osoba zatím nebyla založena. Zkontrolujte je a založení výslovně potvrďte.';
+            } elseif ($match['level'] !== PERSON_MATCH_EXACT && $match['level'] !== PERSON_MATCH_SIMILARITY && $confirmation !== 'no_match') {
+                $createNotice = 'Kontrola shod skončila. Osoba zatím nebyla založena; potvrďte druhý krok.';
+            } else {
+                $pdo->beginTransaction();
+                $newPersonId = personMatchV1CreateManual($pdo, $createInput);
+                $auditAction = $match['level'] === PERSON_MATCH_EXACT
+                    ? 'override_create'
+                    : ($match['level'] === PERSON_MATCH_SIMILARITY ? 'similarity_create' : 'create');
+                personMatchV1Audit(
+                    $pdo,
+                    (int)$_SESSION['trener_id'],
+                    $auditAction,
+                    $match,
+                    $newPersonId,
+                    $overrideReason,
+                    ['source' => 'sprava_sportovcu']
+                );
+                $pdo->commit();
+                $_SESSION['flash_success'] = 'Osoba ' . $createInput['prijmeni'] . ' ' . $createInput['jmeno'] . ' byla založena jako čekající.';
+                header('Location: sprava_sportovcu.php?q=' . rawurlencode($createInput['prijmeni']));
+                exit;
+            }
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            if ($exception instanceof InvalidArgumentException) {
+                $createError = $exception->getMessage();
+            } else {
+                error_log('sprava_sportovcu create: ' . $exception->getMessage());
+                $createError = 'Osobu se nepodařilo bezpečně založit.';
+            }
+        }
+    } elseif (in_array($akce, ['save', 'reveal_person', 'load_birth_number', 'save_birth_number', 'save_parent', 'unlink_parent', 'attach_account', 'revoke_account', 'add_roster'], true)) {
+        $editId = max(0, (int)($_POST['id'] ?? 0));
+        try {
+            if (!in_array($akce, ['reveal_person','load_birth_number'], true)) {
+                $actor = (int)$_SESSION['trener_id'];
+                $fragment = 'edit-card';
+                if ($akce === 'save') {
+                    sportovecEditorSave($pdo, $editId, $_POST, $actor);
+                    $notice = 'Osobní a kontaktní údaje sportovce byly uloženy.';
+                } elseif ($akce === 'save_birth_number') {
+                    sportovecEditorSaveBirthNumber($pdo, $editId, (string)($_POST['birth_number'] ?? ''), (string)($_POST['birth_date'] ?? ''), (string)($_POST['reason'] ?? ''), $actor, null, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+                    $notice = 'Rodné číslo a odpovídající datum narození byly uloženy.'; $fragment = 'birth-number-title';
+                } elseif ($akce === 'save_parent') {
+                    sportovecEditorSaveParent($pdo, $editId, (string)($_POST['link_key'] ?? ''), $_POST, $actor);
+                    $notice = 'Rodič a jeho kontaktní údaje byly uloženy.'; $fragment = 'parents-title';
+                } elseif ($akce === 'unlink_parent') {
+                    sportovecEditorUnlinkParent($pdo, $editId, (string)($_POST['link_key'] ?? ''), $actor);
+                    $notice = 'Rodič byl odpojen od sportovce.'; $fragment = 'parents-title';
+                } elseif ($akce === 'attach_account') {
+                    sportovecEditorGuardianAccount($pdo, $editId, (int)($_POST['account_id'] ?? 0), $actor, (string)($_POST['reason'] ?? ''), (string)($_POST['contact_key'] ?? ''));
+                    $notice = 'Účet rodiče byl propojen se sportovcem.'; $fragment = 'accounts-title';
+                } elseif ($akce === 'revoke_account') {
+                    sportovecEditorRevokeAccount($pdo, $editId, (int)($_POST['relation_id'] ?? 0), $actor, 'Odpojení rodičovského přístupu z detailu sportovce.');
+                    $notice = 'Přístup účtu rodiče k tomuto sportovci byl odpojen.'; $fragment = 'accounts-title';
+                } else {
+                    sportovecEditorAddRoster($pdo, $editId, (int)($_POST['team_id'] ?? 0), $actor, (string)($_POST['valid_from'] ?? ''), (string)($_POST['reason'] ?? ''));
+                    $notice = 'Zařazení sportovce do soupisky je uložené.'; $fragment = 'rosters-title';
+                }
+                $_SESSION['flash_success'] = $notice;
+                header('Location: sprava_sportovcu.php?' . http_build_query(array_merge(
+                    array_intersect_key($_GET, array_flip(['q','stav','kis','sort','dir','pp','p'])),
+                    ['edit_id' => $editId]
+                )) . '#' . $fragment);
+                exit;
+            }
+            $readResult = sportovecEditorReveal($pdo, $editId, (string)($_POST['reason'] ?? ''), null, (string)($_SERVER['REMOTE_ADDR'] ?? ''));
+            $birthEditValue = $readResult['current_birth_number'];
+            if ($akce === 'reveal_person') $revealed = $readResult;
+        } catch (Throwable $exception) {
+            if ($akce === 'save_birth_number' && is_string($_POST['birth_number'] ?? null)) $birthEditValue = $_POST['birth_number'];
+            if ($akce === 'save') {
+                $editInput = array_intersect_key($_POST, sportovecEditorFields() + ['country' => [], 'contact_address' => [], 'profile_revision' => []]);
+                $editInput = array_filter($editInput, 'is_string');
+                // Never silently rebase a rejected stale draft onto the current record.
+                $editInput['profile_revision'] = is_string($_POST['profile_revision'] ?? null) ? $_POST['profile_revision'] : '';
+            }
+            $editError = $exception instanceof InvalidArgumentException || $exception instanceof PersonSensitiveException || $exception instanceof AccountPersonRoleException || $exception instanceof KisRosterException
+                ? $exception->getMessage()
+                : 'Údaje se nepodařilo bezpečně načíst nebo uložit. Zkuste akci znovu.';
+            if (!$exception instanceof InvalidArgumentException) error_log('sportovec editor: ' . get_class($exception));
+        }
+    }
+}
+
+$editPerson = null;
+$editContext = ['profile' => [], 'parents' => [], 'roles' => [], 'sensitive' => []];
+if ($editId > 0) {
+    try {
+        $editPerson = sportovecEditorPerson($pdo, $editId);
+        $editContext = sportovecEditorContext($pdo, $editId);
+    } catch (Throwable $exception) {
+        $editPerson = null;
+        $editError = $exception instanceof InvalidArgumentException ? $exception->getMessage() : 'Podrobnosti sportovce se nepodařilo načíst.';
+    }
+}
+
+// ── Filtr ────────────────────────────────────────────────────────────────────
+[
+    'q' => $q, 'stavFilter' => $stavFilter, 'kisFilter' => $kisFilter,
+    'sort' => $sort, 'dir' => $dir, 'perPage' => $perPage, 'page' => $page,
+    'pocetStranek' => $pocetStranek, 'sportovciPage' => $sportovciPage,
+    'totalCount' => $totalCount, 'aktivniCount' => $aktivniCount,
+    'kisAktivniCount' => $kisAktivniCount, 'kisDluhCount' => $kisDluhCount,
+] = sportovecDirectoryRead($pdo, $_GET);
+
+/** URL aktuální stránky se změněnými parametry (zachová filtr, řazení, stránku) */
+function spUrl(array $overrides = []): string {
+    $params = array_merge($_GET, $overrides);
+    $params = array_filter($params, fn($v) => $v !== '' && $v !== null);
+    return 'sprava_sportovcu.php' . ($params ? '?' . http_build_query($params) : '');
+}
+
+/** Klikatelná hlavička sloupce se šipkou směru řazení */
+function sortLink(string $key, string $label): string {
+    global $sort, $dir;
+    $nextDir = ($sort === $key && $dir === 'ASC') ? 'desc' : 'asc';
+    $icon = $sort === $key
+        ? ($dir === 'ASC' ? ' <i class="bi bi-caret-up-fill"></i>' : ' <i class="bi bi-caret-down-fill"></i>')
+        : '';
+    return '<a href="' . h(spUrl(['sort' => $key, 'dir' => $nextDir, 'p' => 1]))
+        . '" class="text-white text-decoration-none">' . h($label) . $icon . '</a>';
+}
+
+?>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Správa sportovců – Evidence</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+        .stat-card {
+            border: none; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            text-align: center; padding: 1.1rem;
+        }
+        .stat-card .stat-val { font-size: 1.8rem; font-weight: 700; line-height: 1.1; }
+        .stat-card .stat-label { font-size: .82rem; color: #6c757d; margin-top: .3rem; }
+        .table-wrap { max-height: 520px; overflow-y: auto; }
+        .sticky-head thead th { position: sticky; top: 0; z-index: 5; }
+    </style>
+</head>
+<body>
+<?php include __DIR__ . '/hlavicka.php'; ?>
+
+<div class="container py-4" style="max-width: 1200px;">
+
+    <!-- Hero -->
+    <div class="hero-card card mb-4 p-3 px-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1 class="fw-semibold fs-5 mb-0">
+                    <i class="bi bi-person-lines-fill me-2 opacity-75"></i>Správa sportovců
+                </h1>
+                <div class="opacity-75 small">Osobní údaje, adresy, kontakty, rodiče a původní evidence KIS.</div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="index.php" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-house me-1"></i>Rozcestník
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash zprávy -->
+    <?php if (!empty($_SESSION['flash_success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
+        <i class="bi bi-check-circle-fill me-2"></i><?= h($_SESSION['flash_success']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php unset($_SESSION['flash_success']); endif; ?>
+    <?php if (!empty($_SESSION['flash_error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><?= h($_SESSION['flash_error']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php unset($_SESSION['flash_error']); endif; ?>
+
+    <!-- Statistiky -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card bg-white">
+                <div class="stat-val text-primary"><?= $totalCount ?></div>
+                <div class="stat-label"><i class="bi bi-people me-1"></i><?= $q !== '' ? 'Nalezeno' : 'Celkem sportovců' ?></div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card bg-white">
+                <div class="stat-val text-success"><?= $aktivniCount ?></div>
+                <div class="stat-label"><i class="bi bi-activity me-1"></i><?= $q !== '' ? 'S tréninky' : 'S alespoň 1 tréninkem' ?></div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card bg-white">
+                <div class="stat-val text-info"><?= $kisAktivniCount ?></div>
+                <div class="stat-label"><i class="bi bi-person-check me-1"></i>KIS aktivni</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card bg-white">
+                <div class="stat-val text-warning"><?= $kisDluhCount ?></div>
+                <div class="stat-label"><i class="bi bi-cash-coin me-1"></i>KIS dluh</div>
+            </div>
+        </div>
+    </div>
+
+    <?php if (roleAtLeast('admin')): ?>
+    <div class="card section-card mb-4" id="create-card">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-person-plus-fill me-1"></i>Založit novou osobu
+        </div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Ruční založení má dva jasné kroky: nejdříve kontrolu možných shod a teprve potom potvrzení vytvoření. Nová osoba vznikne ve stavu „čekající“.</p>
+            <ol class="small d-flex flex-wrap gap-4 ps-3" aria-label="Postup založení osoby"><li class="<?= is_array($createPreview) ? 'text-success' : 'fw-semibold' ?>">Zkontrolovat možné shody</li><li class="<?= is_array($createPreview) ? 'fw-semibold' : 'text-muted' ?>">Potvrdit založení osoby</li></ol>
+            <?php if ($createError !== ''): ?><div class="alert alert-warning"><?= h($createError) ?></div><?php endif; ?>
+            <?php if ($createNotice !== ''): ?><div class="alert alert-info"><strong><?= h($createNotice) ?></strong></div><?php endif; ?>
+            <?php if (is_array($createPreview) && $createPreview['candidates'] !== []): ?>
+                <div class="alert <?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'alert-danger' : 'alert-warning' ?>">
+                    <div class="fw-semibold mb-2">
+                        <?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'Přesná shoda – založení je zablokováno' : 'Nalezeny podobné osoby' ?>
+                    </div>
+                    <div class="list-group mb-2">
+                    <?php foreach ($createPreview['candidates'] as $candidate): ?>
+                        <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span>
+                                <strong><?= h($candidate['prijmeni'] . ' ' . $candidate['jmeno']) ?></strong>
+                                · nar. <?= h($candidate['narozeni'] ?? 'neuvedeno') ?>
+                                · pravidlo <?= h(implode(', ', $candidate['rules'])) ?>
+                                <?php if ($candidate['kis_external_id']): ?><span class="badge bg-info text-dark">KIS</span><?php endif; ?>
+                            </span>
+                            <a class="btn btn-sm btn-outline-primary" href="sportovec_karta.php?sportovec_id=<?= (int)$candidate['id'] ?>">
+                                Připojit k této osobě / otevřít kartu
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                    </div>
+                    <span class="small">Zobrazeny jsou všechny nalezené shody a podobnosti.</span>
+                </div>
+            <?php endif; ?>
+            <form method="post" class="row g-3" novalidate>
+                <?= csrf_field() ?>
+                <input type="hidden" name="akce" value="create">
+                <?php if (is_array($createPreview)): ?>
+                    <input type="hidden" name="create_confirmation" value="<?= $createPreview['level'] === PERSON_MATCH_EXACT ? 'exact_override' : ($createPreview['level'] === PERSON_MATCH_SIMILARITY ? 'similarity' : 'no_match') ?>">
+                <?php endif; ?>
+                <div class="col-md-3"><label class="form-label req">Příjmení</label><input class="form-control" name="prijmeni" maxlength="100" required value="<?= h($createInput['prijmeni']) ?>"></div>
+                <div class="col-md-3"><label class="form-label req">Jméno</label><input class="form-control" name="jmeno" maxlength="100" required value="<?= h($createInput['jmeno']) ?>"></div>
+                <div class="col-md-3"><label class="form-label req">Datum narození</label><input class="form-control" type="date" name="narozeni" required value="<?= h($createInput['narozeni']) ?>"></div>
+                <div class="col-md-3"><label class="form-label">E-mail</label><input class="form-control" type="email" name="email" value="<?= h($createInput['email']) ?>"></div>
+                <?php if (is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_EXACT): ?>
+                    <div class="col-12"><label class="form-label req">Důvod, proč jde o jinou osobu</label><textarea class="form-control" name="override_reason" minlength="10" maxlength="1000" required placeholder="Alespoň 10 znaků; důvod se uloží do auditu."></textarea></div>
+                <?php endif; ?>
+                <div class="col-12">
+                    <button class="btn <?= is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_EXACT ? 'btn-danger' : 'btn-success' ?>">
+                        <i class="bi bi-person-plus me-1"></i>
+                        <?= is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_EXACT
+                            ? 'Přesto založit jako novou osobu'
+                            : (is_array($createPreview) && $createPreview['level'] === PERSON_MATCH_SIMILARITY
+                                ? 'Potvrzuji kontrolu a zakládám osobu'
+                                : (is_array($createPreview)
+                                    ? 'Potvrzuji kontrolu a zakládám osobu'
+                                    : '1. Zkontrolovat možné shody')) ?>
+                    </button>
+                </div>
+            </form>
+            <?php if (is_array($createPreview)): ?><script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">document.getElementById('create-card')?.scrollIntoView({behavior:'smooth',block:'start'});</script><?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Filtr -->
+    <div class="card section-card mb-4">
+        <div class="card-body py-2">
+            <form method="GET" class="d-flex gap-2 align-items-center flex-wrap">
+                <i class="bi bi-search text-muted"></i>
+                <input type="text" name="q" class="form-control form-control-sm" style="max-width: 320px;" aria-label="Hledat sportovce"
+                       placeholder="Hledat příjmení, jméno, UCI ID, email…" value="<?= h($q) ?>">
+                <select name="stav" class="form-select form-select-sm" style="max-width: 190px;" aria-label="Filtrovat podle stavu">
+                    <option value="">Vsechny stavy</option>
+                    <option value="aktivni" <?= $stavFilter === 'aktivni' ? 'selected' : '' ?>>Aktivni</option>
+                    <option value="cekajici" <?= $stavFilter === 'cekajici' ? 'selected' : '' ?>>Cekajici</option>
+                    <option value="neaktivni" <?= $stavFilter === 'neaktivni' ? 'selected' : '' ?>>Neaktivni</option>
+                    <option value="archiv" <?= $stavFilter === 'archiv' ? 'selected' : '' ?>>Archiv</option>
+                    <option value="manualni" <?= $stavFilter === 'manualni' ? 'selected' : '' ?>>Rucni stav</option>
+                </select>
+                <select name="kis" class="form-select form-select-sm" style="max-width: 210px;" aria-label="Filtrovat podle KIS">
+                    <option value="">KIS filtr</option>
+                    <option value="kis_aktivni" <?= $kisFilter === 'kis_aktivni' ? 'selected' : '' ?>>KIS aktivni</option>
+                    <option value="dluh" <?= $kisFilter === 'dluh' ? 'selected' : '' ?>>Dluh &gt; 0</option>
+                    <option value="bez_skupiny" <?= $kisFilter === 'bez_skupiny' ? 'selected' : '' ?>>Bez skupiny</option>
+                    <option value="mimo_import" <?= $kisFilter === 'mimo_import' ? 'selected' : '' ?>>Mimo import</option>
+                </select>
+                <select name="pp" class="form-select form-select-sm" style="max-width: 130px;" title="Počet na stránku" aria-label="Počet sportovců na stránku">
+                    <option value="50"  <?= $perPage === 50  ? 'selected' : '' ?>>50 / stránka</option>
+                    <option value="100" <?= $perPage === 100 ? 'selected' : '' ?>>100 / stránka</option>
+                    <option value="500" <?= $perPage === 500 ? 'selected' : '' ?>>500 / stránka</option>
+                    <option value="0"   <?= $perPage === 0   ? 'selected' : '' ?>>Všichni</option>
+                </select>
+                <?php if ($sort !== 'prijmeni'): ?><input type="hidden" name="sort" value="<?= h($sort) ?>"><?php endif; ?>
+                <?php if ($dir === 'DESC'): ?><input type="hidden" name="dir" value="desc"><?php endif; ?>
+                <button type="submit" class="btn btn-sm btn-primary">
+                    <i class="bi bi-search me-1"></i>Hledat
+                </button>
+                <?php if ($q !== '' || $stavFilter !== '' || $kisFilter !== ''): ?>
+                <a href="sprava_sportovcu.php" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-lg me-1"></i>Zrušit filtr
+                </a>
+                <?php endif; ?>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabulka sportovců -->
+    <div class="card section-card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-people-fill me-1"></i>Seznam sportovců <span class="badge bg-light text-primary ms-1"><?= $totalCount ?></span></span>
+        </div>
+        <div class="card-body p-0">
+        <?php if ($totalCount === 0): ?>
+            <div class="p-3 text-muted">
+                <i class="bi bi-info-circle me-2"></i>Žádní sportovci nenalezeni.
+            </div>
+        <?php else: ?>
+            <form method="post" action="sportovci_hromadne.php">
+            <?= csrf_field() ?>
+            <div class="p-2 border-bottom bg-light d-flex gap-2 align-items-center flex-wrap">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-check2-square me-1"></i>Hromadne akce
+                </button>
+                <span class="text-muted small">Pro úpravu jednoho sportovce klikněte na tužku. Zaškrtávátka slouží pro hromadné akce.</span>
+            </div>
+            <div class="table-wrap">
+            <table class="table table-sm table-hover align-middle mb-0 sticky-head">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Vyber</th>
+                        <th><?= sortLink('prijmeni', 'Příjmení') ?></th>
+                        <th><?= sortLink('jmeno', 'Jméno') ?></th>
+                        <th>Stav</th>
+                        <th><?= sortLink('narozeni', 'Nar.') ?></th>
+                        <th><?= sortLink('category', 'Kategorie') ?></th>
+                        <th><?= sortLink('uciid', 'UCI ID') ?></th>
+                        <th>Skupiny</th>
+                        <th><?= sortLink('kis', 'KIS') ?></th>
+                        <th class="text-end"><?= sortLink('treninku', 'Tréninků') ?></th>
+                        <th>Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($sportovciPage as $s): ?>
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input row-check" name="sportovec_ids[]" value="<?= (int)$s['id'] ?>" aria-label="Vybrat <?= h(trim($s['prijmeni'] . ' ' . $s['jmeno'])) ?>"></td>
+                        <td class="fw-semibold"><a href="sportovec_karta.php?sportovec_id=<?= (int)$s['id'] ?>" title="Administrační karta člena"><?= h($s['prijmeni']) ?></a></td>
+                        <td><?= h($s['jmeno']) ?></td>
+                        <td><?= sportovecStatusBadge($s) ?></td>
+                        <td class="text-nowrap"><?= $s['narozeni'] ? h($s['narozeni']) : '<span class="text-muted">—</span>' ?></td>
+                        <td>
+                            <?php if ($s['category']): ?>
+                            <span class="badge bg-info text-dark"><?= h($s['category']) ?></span>
+                            <?php else: ?>
+                            <span class="text-muted">—</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= $s['uciid'] ? h($s['uciid']) : '<span class="text-muted">—</span>' ?></td>
+                        <td class="small"><?= $s['skupiny'] ? h($s['skupiny']) : '<span class="text-muted">—</span>' ?></td>
+                        <td class="small">
+                            <?php if (!empty($s['kis_aktivni'])): ?>
+                                <span class="badge bg-success">aktivni</span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary">neaktivni</span>
+                            <?php endif; ?>
+                            <?php if ((float)($s['kis_neuhrazeno'] ?? 0) > 0): ?>
+                                <span class="badge bg-warning text-dark"><?= number_format((float)$s['kis_neuhrazeno'], 0, ',', ' ') ?> Kc</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-end"><?= (int)$s['pocet_treninku'] ?></td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary edit-btn"
+                               href="<?= h(spUrl(['edit_id' => (int)$s['id']])) ?>#edit-card"
+                               title="Upravit" aria-label="Upravit sportovce">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="sportovec_karta.php?sportovec_id=<?= (int)$s['id'] ?>"
+                               class="btn btn-sm btn-outline-success" title="Administrační karta člena" aria-label="Administrační karta člena">
+                                <i class="bi bi-person-vcard"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            </div>
+            </form>
+            <?php if ($pocetStranek > 1): ?>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-2 border-top">
+                <span class="text-muted small">
+                    Zobrazeno <?= count($sportovciPage) ?> z <?= $totalCount ?>
+                    (stránka <?= $page ?> / <?= $pocetStranek ?>)
+                </span>
+                <nav aria-label="Stránkování">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                            <a class="page-link" href="<?= h(spUrl(['p' => $page - 1])) ?>" aria-label="Předchozí stránka">&laquo;</a>
+                        </li>
+                        <?php
+                        $od = max(1, $page - 3);
+                        $do = min($pocetStranek, $page + 3);
+                        for ($i = $od; $i <= $do; $i++): ?>
+                        <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= h(spUrl(['p' => $i])) ?>"><?= $i ?></a>
+                        </li>
+                        <?php endfor; ?>
+                        <li class="page-item <?= $page >= $pocetStranek ? 'disabled' : '' ?>">
+                            <a class="page-link" href="<?= h(spUrl(['p' => $page + 1])) ?>" aria-label="Další stránka">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <?php endif; ?>
+        <?php endif; ?>
+        </div>
+    </div>
+
+    <?php require __DIR__ . '/includes/sportovec_editor_view.php'; ?>
+
+</div>
+
+
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+const checkAll = document.getElementById('check-all');
+if (checkAll) {
+    checkAll.addEventListener('change', () => {
+        document.querySelectorAll('.row-check').forEach(cb => { cb.checked = checkAll.checked; });
+    });
+}
+</script>
+</body>
+</html>

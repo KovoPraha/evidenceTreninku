@@ -244,5 +244,15 @@ jobs:
       - name: Ověřit editaci rodičů, RČ, soupisek a plateb sportovce na MariaDB
         run: php tests/Support/SportovecEditorMariaDbSmoke.php
 
+      - name: Ověřit stránkování a paměť adresáře registráře
+        run: php tests/Support/SportovecDirectoryProfile.php > sportovec-directory-profile.json
+
+      - name: Uchovat profil adresáře registráře
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sportovec-directory-profile-mariadb-${{ matrix.mariadb-version }}
+          path: sportovec-directory-profile.json
+          retention-days: 14
+
       - name: Ověřit revize výsledků a řízený KIS převod na MariaDB
         run: php tests/Support/RaceKisReviewMariaDbSmoke.php
