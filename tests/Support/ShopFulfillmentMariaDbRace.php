@@ -1,22 +1,386 @@
 <?php
+
 declare(strict_types=1);
-if(PHP_SAPI!=='cli'){http_response_code(404);exit;}require_once dirname(__DIR__,2).'/includes/shop_checkout.php';
-$runtime=getenv('LOCALAPPDATA').'/EvidencePavelB1/finance-b1-20261022';$d=json_decode((string)file_get_contents($runtime.'/environment.json'),true,512,JSON_THROW_ON_ERROR);if(($d['synthetic_only']??false)!==true||($d['external_sends_disabled']??false)!==true||(int)$d['db_port']!==33426)throw new RuntimeException('Synthetic environment required.');
-$options=[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC];$root=new PDO('mysql:host=127.0.0.1;port=33426;charset=utf8mb4','root','',$options);$identity=$root->query('SELECT @@port port,@@datadir path')->fetch();if((int)$identity['port']!==33426||strtolower(str_replace('\\','/',$identity['path']))!==strtolower(str_replace('\\','/',$runtime.'/mysql/')))throw new RuntimeException('Sandbox identity mismatch.');
-$worker=($argv[1]??'')==='--worker';$db=$worker?$argv[2]:'evidence_fulfill_race_'.bin2hex(random_bytes(4));if(!preg_match('/^evidence_fulfill_race_[a-f0-9]{8}$/D',$db))throw new RuntimeException('Invalid synthetic schema.');if(!$worker){$root->exec('CREATE DATABASE '.$db.' CHARACTER SET utf8mb4');$root->exec("GRANT ALL ON ".$db.".* TO 'b1_app'@'127.0.0.1'");}
-$pdo=new PDO('mysql:host=127.0.0.1;port=33426;dbname='.$db.';charset=utf8mb4','b1_app','',$options);$pdo->exec('SET SESSION innodb_lock_wait_timeout=20');
-function sfrPublish(string $path,array $data):void{$tmp=$path.'.'.getmypid().'.tmp';file_put_contents($tmp,json_encode($data,JSON_THROW_ON_ERROR));if(!rename($tmp,$path))throw new RuntimeException('Publish failed.');}
-function sfrWait(string $path):array{$end=microtime(true)+25;do{clearstatcache(true,$path);if(is_file($path))return json_decode((string)file_get_contents($path),true,512,JSON_THROW_ON_ERROR);usleep(20000);}while(microtime(true)<$end);throw new RuntimeException('Barrier timeout '.$path);}
-function sfrInsert(PDO $pdo,string $table,array $data):int{$pdo->prepare('INSERT INTO '.$table.' ('.implode(',',array_keys($data)).') VALUES('.implode(',',array_fill(0,count($data),'?')).')')->execute(array_values($data));return(int)$pdo->lastInsertId();}
-if($worker){if($pdo->query('SELECT marker FROM fixture_owner')->fetchColumn()!=='R21-R22 synthetic')throw new RuntimeException('Unowned fixture.');$mode=$argv[3];$path=$argv[4];$order=(int)$argv[5];$at=$argv[6];sfrPublish($path.'.ready',['connection'=>(int)$pdo->query('SELECT CONNECTION_ID()')->fetchColumn()]);try{$r=$mode==='cancel'?shopOrderAdminCancel($pdo,$order,1,'LOCALHOST race cancel before handoff',true):shopFulfillmentIssue($pdo,$order,[$order=>1],1,'LOCALHOST receiver',$at,'LOCALHOST race handoff','race:issue:'.$order);sfrPublish($path.'.result',['status'=>'ok','changed'=>$r['changed']]);}catch(ShopCheckoutException|ShopInventoryException $e){if($e->getPrevious())throw$e;sfrPublish($path.'.result',['status'=>'denied','message'=>$e->getMessage()]);}exit;}
-$tables=['treneri','staff_user_positions','staff_superadmins','shop_products','shop_variants','shop_orders','shop_order_items','payments','shop_order_events','shop_inventory_movements','shop_stock_policy','shop_stock_balances','shop_stock_movements','shop_stock_reservations','shop_stock_lots','shop_stock_lot_uses','shop_fulfillments','shop_fulfillment_items','accounting_ledger_mutex'];foreach($tables as $table)$pdo->exec('CREATE TABLE '.$table.' LIKE evidence_b1.'.$table);$pdo->exec("CREATE TABLE fixture_owner(marker VARCHAR(40)); INSERT INTO fixture_owner VALUES('R21-R22 synthetic'); INSERT INTO accounting_ledger_mutex VALUES(1,0)");
-sfrInsert($pdo,'treneri',['id'=>1,'jmeno'=>'LOCALHOST race','email'=>'race@example.invalid','heslo'=>'unusable','role'=>'admin','aktivni'=>1]);foreach(['order_operator','catalog_manager','finance_manager']as$role)sfrInsert($pdo,'staff_user_positions',['trainer_id'=>1,'position_code'=>$role,'is_default'=>$role==='order_operator'?1:0]);sfrInsert($pdo,'shop_products',['id'=>1,'external_product_key'=>'LOCALHOST R21 race','name'=>'LOCALHOST race shirt','offer_type'=>'goods','catalog_status'=>'active']);
-foreach([1,2]as$id)sfrInsert($pdo,'shop_variants',['id'=>$id,'product_id'=>1,'sku'=>'LOCALHOST-RACE-'.$id,'attributes_json'=>'{}','price_mode'=>'fixed','amount_minor'=>10000,'currency'=>'CZK','unit_code'=>'piece','stock_quantity_decimal'=>null]);shopInventoryConfigure($pdo,1,'LOCALHOST race','fifo','LOCALHOST approved test','LOCALHOST test accounting approval',true);
-foreach([1,2]as$id){shopInventoryOpen($pdo,1,$id,['physical_quantity'=>3,'unit_cost_minor'=>1000,'effective_on'=>date('Y-m-d'),'evidence'=>'LOCALHOST signed count'],'LOCALHOST synthetic opening',true,'opening-'.$id);sfrInsert($pdo,'shop_orders',['id'=>$id,'public_code'=>'KPRACE'.$id,'checkout_mode'=>'guest','idempotency_key_hash'=>hash('sha256','order-'.$id),'status'=>'processing','payment_status'=>'paid','fulfillment_method'=>'personal_pickup','customer_name_snapshot'=>'LOCALHOST race','customer_email_snapshot'=>'race@example.invalid','subtotal_minor'=>20000,'discount_minor'=>0,'total_minor'=>20000,'currency'=>'CZK','placed_at'=>date('Y-m-d H:i:s')]);sfrInsert($pdo,'shop_order_items',['id'=>$id,'order_id'=>$id,'product_id'=>1,'variant_id'=>$id,'product_name_snapshot'=>'LOCALHOST shirt','sku_snapshot'=>'LOCALHOST-RACE-'.$id,'attributes_json_snapshot'=>'{}','quantity'=>2,'unit_amount_minor'=>10000,'line_amount_minor'=>20000,'currency'=>'CZK']);sfrInsert($pdo,'payments',['id'=>$id,'payable_type'=>'shop_order','payable_id'=>$id,'method'=>'cash','status'=>'paid','amount_minor'=>20000,'currency'=>'CZK','variable_symbol'=>'12345'.$id,'iban_snapshot'=>'CZ7900000000000000000000','account_label_snapshot'=>'LOCALHOST NEPLATIT','spd_payload'=>'LOCALHOST NEPLATIT','due_at'=>date('Y-m-d H:i:s')]);$pdo->beginTransaction();shopInventoryReserveInTransaction($pdo,$id,$id,$id,2,'reserve:'.$id);$pdo->commit();}
-$checks=[];$processes=[];try{foreach([1=>['issue','issue'],2=>['issue','cancel']]as$order=>$modes){$pdo->beginTransaction();$pdo->query('SELECT id FROM payments WHERE id='.$order.' FOR UPDATE')->fetch();$jobs=[];$at=date('Y-m-d H:i:s');foreach($modes as$n=>$mode){$path=$runtime.'/'.$db.'-'.$order.'-'.$n;$proc=proc_open([PHP_BINARY,__FILE__,'--worker',$db,$mode,$path,(string)$order,$at],[0=>['pipe','r'],1=>['file',$path.'.out','w'],2=>['file',$path.'.err','w']],$pipes,dirname(__DIR__,2));if(!is_resource($proc))throw new RuntimeException('Worker start failed.');fclose($pipes[0]);$processes[]=$proc;$ready=sfrWait($path.'.ready');$jobs[]=['path'=>$path,'proc'=>$proc,'connection'=>$ready['connection']];}
-$ids=array_column($jobs,'connection');$deadline=microtime(true)+12;$observed=false;do{$wait=$root->query("SELECT COUNT(*) FROM information_schema.INNODB_TRX WHERE trx_state='LOCK WAIT' AND trx_mysql_thread_id IN (".implode(',',$ids).')')->fetchColumn();if((int)$wait===2){$observed=true;break;}usleep(150000);}while(microtime(true)<$deadline);if(!$observed)throw new RuntimeException('Two real lock waits not observed.');$pdo->commit();$out=[];foreach($jobs as$job){$out[]=sfrWait($job['path'].'.result');if(proc_close($job['proc'])!==0)throw new RuntimeException('Worker failed.');}$b=shopInventoryBalance($pdo,$order);$issued=shopFulfillmentIssuedQuantity($pdo,$order);$ok=count(array_filter($out,static fn($r)=>$r['status']==='ok'));
-if($order===1){if($ok!==2||count(array_filter($out,static fn($r)=>$r['changed']))!==1||$issued!==1||[$b['physical_quantity'],$b['reserved_quantity'],$b['available_quantity']]!==[2,1,1])throw new RuntimeException('Repeated issue duplicated.');}
-else{if($ok!==1)throw new RuntimeException('Issue and cancel both won.');$state=$pdo->query('SELECT status FROM shop_orders WHERE id=2')->fetchColumn();if($issued===1){if($state==='cancelled'||$b['physical_quantity']!==2||$b['reserved_quantity']!==1)throw new RuntimeException('Issued unit restocked by cancellation.');}elseif($state!=='cancelled'||$b['physical_quantity']!==3||$b['reserved_quantity']!==0)throw new RuntimeException('Cancellation/issue result inconsistent.');}
-$checks[]=['scenario'=>$order===1?'repeated partial issue':'partial issue versus cancellation','two_real_lock_waits'=>true,'results'=>$out,'balance'=>$b,'status'=>'PASS'];}}
-finally{if($pdo->inTransaction())$pdo->rollBack();foreach($processes as$p)if(is_resource($p)){proc_terminate($p);proc_close($p);}}
-$report=['database'=>$db,'checks'=>6,'results'=>$checks,'production_mutations'=>false];file_put_contents($runtime.'/r21-r22-race.json',json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));echo json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}require_once dirname(__DIR__, 2).'/includes/shop_checkout.php';
+require_once __DIR__ . '/SportRaceRuntime.php';
+$worker = ($argv[1] ?? '') === '--worker';
+$db = $worker ? (string) $argv[2] : 'evidence_fulfill_race_' . bin2hex(random_bytes(4));
+[$root, $pdo, $runtime] = sportRaceRuntime('evidence_fulfill_race_', $db, $worker);
+function sfrPublish(
+    string $path,
+    array $data
+): void {
+    $tmp = $path.'.'.getmypid().'.tmp';
+    file_put_contents(
+        $tmp,
+        json_encode(
+            $data,
+            JSON_THROW_ON_ERROR
+        )
+    );
+    if (!rename(
+        $tmp,
+        $path
+    )) {
+        throw new RuntimeException('Publish failed.');
+    }
+}
+function sfrWait(string $path): array
+{
+    $end = microtime(true) + 25;
+    do {
+        clearstatcache(
+            true,
+            $path
+        );
+        if (is_file($path)) {
+            return json_decode(
+                (string)file_get_contents($path),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        }usleep(20000);
+    } while (microtime(true) < $end);
+    throw new RuntimeException('Barrier timeout '.$path);
+}
+function sfrInsert(
+    PDO $pdo,
+    string $table,
+    array $data
+): int {
+    $pdo->prepare('INSERT INTO '.$table.' ('.implode(
+        ',',
+        array_keys($data)
+    ).') VALUES('.implode(
+        ',',
+        array_fill(
+            0,
+            count($data),
+            '?'
+        )
+    ).')')->execute(array_values($data));
+    return(int)$pdo->lastInsertId();
+}
+if ($worker) {
+    if ($pdo->query('SELECT marker FROM fixture_owner')->fetchColumn() !== 'R21-R22 synthetic') {
+        throw new RuntimeException('Unowned fixture.');
+    }$mode = $argv[3];
+    $path = $argv[4];
+    $order = (int)$argv[5];
+    $at = $argv[6];
+    sfrPublish(
+        $path.'.ready',
+        ['connection' => (int)$pdo->query('SELECT CONNECTION_ID()')->fetchColumn()]
+    );
+    try {
+        $r = $mode === 'cancel' ? shopOrderAdminCancel(
+            $pdo,
+            $order,
+            7,
+            'LOCALHOST race cancel before handoff',
+            true
+        ) : shopFulfillmentIssue(
+            $pdo,
+            $order,
+            [$order => 1],
+            7,
+            'LOCALHOST receiver',
+            $at,
+            'LOCALHOST race handoff',
+            'race:issue:'.$order
+        );
+        sfrPublish(
+            $path.'.result',
+            ['status' => 'ok',
+            'changed' => $r['changed']]
+        );
+    } catch (ShopCheckoutException|ShopInventoryException $e) {
+        if ($e->getPrevious()) {
+            throw$e;
+        }sfrPublish(
+            $path.'.result',
+            ['status' => 'denied',
+            'message' => $e->getMessage()]
+        );
+    }exit;
+}
+require_once __DIR__ . '/ProgramCapacityMigratedFixture.php';
+Tests\Support\programCapacityMigratedSchema($pdo);
+$pdo->exec("CREATE TABLE fixture_owner(marker VARCHAR(40)); INSERT INTO fixture_owner VALUES('R21-R22 synthetic')");
+sfrInsert(
+    $pdo,
+    'treneri',
+    ['id' => 7,
+    'jmeno' => 'LOCALHOST race',
+    'email' => 'race@example.invalid',
+    'heslo' => 'unusable',
+    'role' => 'admin',
+    'aktivni' => 1]
+);
+foreach (['order_operator',
+    'catalog_manager',
+    'finance_manager'] as $role) {
+    sfrInsert(
+        $pdo,
+        'staff_user_positions',
+        ['trainer_id' => 7,
+    'position_code' => $role,
+    'is_default' => $role === 'order_operator' ? 1 : 0]
+    );
+}sfrInsert(
+    $pdo,
+    'shop_products',
+    ['id' => 1,
+    'origin' => 'manual',
+    'created_by_trainer_id' => 7,
+    'external_product_key' => 'LOCALHOST R21 race',
+    'name' => 'LOCALHOST race shirt',
+    'offer_type' => 'goods',
+    'catalog_status' => 'active']
+);
+foreach ([1,
+    2] as $id) {
+    sfrInsert(
+        $pdo,
+        'shop_variants',
+        ['id' => $id,
+    'origin' => 'manual',
+    'created_by_trainer_id' => 7,
+    'product_id' => 1,
+    'sku' => 'LOCALHOST-RACE-'.$id,
+    'attributes_json' => '{}',
+    'price_mode' => 'fixed',
+    'amount_minor' => 10000,
+    'currency' => 'CZK',
+    'unit_code' => 'piece',
+    'stock_quantity_decimal' => null]
+    );
+}shopInventoryConfigure(
+    $pdo,
+    7,
+    'LOCALHOST race',
+    'fifo',
+    'LOCALHOST approved test',
+    'LOCALHOST test accounting approval',
+    true
+);
+foreach ([1,
+    2] as $id) {
+    shopInventoryOpen(
+        $pdo,
+        7,
+        $id,
+        ['physical_quantity' => 3,
+    'unit_cost_minor' => 1000,
+    'effective_on' => date('Y-m-d'),
+    'evidence' => 'LOCALHOST signed count'],
+        'LOCALHOST synthetic opening',
+        true,
+        'opening-'.$id
+    );
+    sfrInsert(
+        $pdo,
+        'shop_orders',
+        ['id' => $id,
+    'public_code' => 'KPRACE'.$id,
+    'checkout_mode' => 'guest',
+    'idempotency_key_hash' => hash(
+        'sha256',
+        'order-'.$id
+    ),
+    'status' => 'processing',
+    'payment_status' => 'paid',
+    'fulfillment_method' => 'personal_pickup',
+    'customer_name_snapshot' => 'LOCALHOST race',
+    'customer_email_snapshot' => 'race@example.invalid',
+    'subtotal_minor' => 20000,
+    'discount_minor' => 0,
+    'total_minor' => 20000,
+    'currency' => 'CZK',
+    'placed_at' => date('Y-m-d H:i:s')]
+    );
+    sfrInsert(
+        $pdo,
+        'shop_order_items',
+        ['id' => $id,
+    'order_id' => $id,
+    'product_id' => 1,
+    'variant_id' => $id,
+    'product_name_snapshot' => 'LOCALHOST shirt',
+    'sku_snapshot' => 'LOCALHOST-RACE-'.$id,
+    'attributes_json_snapshot' => '{}',
+    'quantity' => 2,
+    'unit_amount_minor' => 10000,
+    'line_amount_minor' => 20000,
+    'currency' => 'CZK']
+    );
+    sfrInsert(
+        $pdo,
+        'payments',
+        ['id' => $id,
+    'payable_type' => 'shop_order',
+    'payable_id' => $id,
+    'method' => 'cash',
+    'status' => 'paid',
+    'amount_minor' => 20000,
+    'currency' => 'CZK',
+    'variable_symbol' => '12345'.$id,
+    'iban_snapshot' => 'CZ7900000000000000000000',
+    'account_label_snapshot' => 'LOCALHOST NEPLATIT',
+    'spd_payload' => 'LOCALHOST NEPLATIT',
+    'due_at' => date('Y-m-d H:i:s')]
+    );
+    $pdo->beginTransaction();
+    shopInventoryReserveInTransaction(
+        $pdo,
+        $id,
+        $id,
+        $id,
+        2,
+        'reserve:'.$id
+    );
+    $pdo->commit();
+}
+$checks = [];
+$processes = [];
+try {
+    foreach ([1 => ['issue',
+        'issue'],
+        2 => ['issue',
+        'cancel']] as $order => $modes) {
+        $pdo->beginTransaction();
+        $pdo->query('SELECT id FROM payments WHERE id='.$order.' FOR UPDATE')->fetch();
+        $jobs = [];
+        $at = date('Y-m-d H:i:s');
+        foreach ($modes as $n => $mode) {
+            $path = $runtime.'/'.$db.'-'.$order.'-'.$n;
+            $proc = proc_open(
+                [PHP_BINARY,
+    __FILE__,
+    '--worker',
+    $db,
+    $mode,
+    $path,
+    (string)$order,
+    $at],
+                [0 => ['pipe',
+    'r'],
+    1 => ['file',
+    $path.'.out',
+    'w'],
+    2 => ['file',
+    $path.'.err',
+    'w']],
+                $pipes,
+                dirname(
+                    __DIR__,
+                    2
+                )
+            );
+            if (!is_resource($proc)) {
+                throw new RuntimeException('Worker start failed.');
+            }fclose($pipes[0]);
+            $processes[] = $proc;
+            $ready = sfrWait($path.'.ready');
+            $jobs[] = ['path' => $path,
+            'proc' => $proc,
+            'connection' => $ready['connection']];
+        }
+        $ids = array_column(
+            $jobs,
+            'connection'
+        );
+        $deadline = microtime(true) + 12;
+        $observed = false;
+        do {
+            $wait = $root->query("SELECT COUNT(*) FROM information_schema.INNODB_TRX WHERE trx_state='LOCK WAIT' AND trx_mysql_thread_id IN (".implode(
+                ',',
+                $ids
+            ).')')->fetchColumn();
+            if ((int)$wait === 2) {
+                $observed = true;
+                break;
+            }usleep(150000);
+        } while (microtime(true) < $deadline);
+        if (!$observed) {
+            throw new RuntimeException('Two real lock waits not observed.');
+        }$pdo->commit();
+        $out = [];
+        foreach ($jobs as $job) {
+            $out[] = sfrWait($job['path'].'.result');
+            if (proc_close($job['proc']) !== 0) {
+                throw new RuntimeException('Worker failed.');
+            }
+        }$b = shopInventoryBalance(
+            $pdo,
+            $order
+        );
+        $issued = shopFulfillmentIssuedQuantity(
+            $pdo,
+            $order
+        );
+        $ok = count(array_filter(
+            $out,
+            static fn ($r) => $r['status'] === 'ok'
+        ));
+        if ($order === 1) {
+            if ($ok !== 2 ||
+                count(array_filter(
+                    $out,
+                    static fn ($r) => $r['changed']
+                )) !== 1 ||
+                $issued !== 1 ||
+                [$b['physical_quantity'],
+                $b['reserved_quantity'],
+                $b['available_quantity']] !== [2,
+                1,
+                1]) {
+                throw new RuntimeException('Repeated issue duplicated.');
+            }
+        } else {
+            if ($ok !== 1) {
+                throw new RuntimeException('Issue and cancel both won.');
+            }$state = $pdo->query('SELECT status FROM shop_orders WHERE id=2')->fetchColumn();
+            if ($issued === 1) {
+                if ($state === 'cancelled' ||
+                $b['physical_quantity'] !== 2 ||
+                $b['reserved_quantity'] !== 1) {
+                    throw new RuntimeException('Issued unit restocked by cancellation.');
+                }
+            } elseif ($state !== 'cancelled' ||
+            $b['physical_quantity'] !== 3 ||
+            $b['reserved_quantity'] !== 0) {
+                throw new RuntimeException('Cancellation/issue result inconsistent.');
+            }
+        }
+        $checks[] = ['scenario' => $order === 1 ? 'repeated partial issue' : 'partial issue versus cancellation','two_real_lock_waits' => true,'results' => $out,'balance' => $b,'status' => 'PASS'];
+    }
+} finally {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }foreach ($processes as $p) {
+        if (is_resource($p)) {
+            proc_terminate($p);
+            proc_close($p);
+        }
+    }
+}
+$report = ['database' => $db,
+    'checks' => 6,
+    'results' => $checks,
+    'production_mutations' => false];
+file_put_contents(
+    $runtime.'/r21-r22-race.json',
+    json_encode(
+        $report,
+        JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
+    )
+);
+echo json_encode(
+    $report,
+    JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
+);

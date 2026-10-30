@@ -305,16 +305,6 @@ jobs:
       - name: Ověřit dávkové čtení klubového kalendáře
         run: php tests/Support/ClubCalendarReadProfile.php > club-calendar-read-profile.json
 
-      - name: Ověřit celou skladovou stránku a dávkové zůstatky
-        run: php tests/Support/InventoryPageProfile.php > inventory-page-profile.json
-
-      - name: Uchovat profil skladové stránky
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: inventory-page-profile-mariadb-${{ matrix.mariadb-version }}
-          path: inventory-page-profile.json
-          retention-days: 14
-
       - name: Uchovat profil klubového kalendáře
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -340,4 +330,80 @@ jobs:
             training-authorization-race.json
             medical-clearance-race.json
             sport-read-write-assessment.json
+          retention-days: 14
+
+      - name: Verify real inventory and fulfillment races
+        run: |
+          php tests/Support/ShopInventoryMariaDbRace.php > inventory-race.json
+          php tests/Support/ShopReturnsMariaDbRace.php > returns-race.json
+          php tests/Support/ShopFulfillmentMariaDbRace.php > fulfillment-race.json
+
+      - name: Preserve stock race evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: stock-races-mariadb-${{ matrix.mariadb-version }}
+          path: |
+            inventory-race.json
+            returns-race.json
+            fulfillment-race.json
+          retention-days: 14
+
+  mariadb-read-profiles:
+    name: MariaDB profily čtení (MariaDB ${{ matrix.mariadb-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # 10.3 = produkční kompatibilní podlaha (replikant3544, viz
+        # docs/mariadb-10.3-compatibility-2026-08-06.md), 11.4 = dosavadní CI
+        # verze. Localhost vývoj běží na 10.4.32, mezi oběma maticovými verzemi.
+        mariadb-version: ['10.3', '11.4']
+
+    services:
+      mariadb:
+        image: mariadb:${{ matrix.mariadb-version }}
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - name: Stáhnout kód
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Připravit PHP s MariaDB ovladačem
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2, verified tag 2026-06-08
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, gd, zip
+          coverage: none
+
+      - name: Nainstalovat závislosti pro účetní doklady a exporty
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Ověřit celou skladovou stránku a dávkové zůstatky
+        run: php tests/Support/InventoryPageProfile.php > inventory-page-profile.json
+
+      - name: Uchovat profil skladové stránky
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: inventory-page-profile-mariadb-${{ matrix.mariadb-version }}
+          path: inventory-page-profile.json
+          retention-days: 14
+
+      - name: Compare complete cart projections and query budgets
+        run: php tests/Support/ShopCartReadProfile.php --enforce > cart-read-profile.json
+
+      - name: Preserve cart read profile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: cart-read-profile-mariadb-${{ matrix.mariadb-version }}
+          path: cart-read-profile.json
           retention-days: 14

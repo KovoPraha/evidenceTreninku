@@ -1,0 +1,345 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "migrated_schema": true,
+    "foreign_keys": 1,
+    "production_mutations": false,
+    "fresh_terms_roles_variant_status": true,
+    "results": [
+        {
+            "size": 1,
+            "kind": "goods",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 19,
+                    "rows": 15,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1219
+                },
+                "current": {
+                    "sql": 19,
+                    "rows": 15,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1219
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 1,
+            "kind": "goods",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 17,
+                    "rows": 13,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1189
+                },
+                "current": {
+                    "sql": 17,
+                    "rows": 13,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1189
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 1,
+            "kind": "program",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 49,
+                    "rows": 41,
+                    "program_metadata": 30,
+                    "capacity": 2,
+                    "terms": 8,
+                    "bytes": 2334
+                },
+                "current": {
+                    "sql": 30,
+                    "rows": 147,
+                    "program_metadata": 17,
+                    "capacity": 2,
+                    "terms": 2,
+                    "bytes": 2334
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 1,
+            "kind": "program",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 47,
+                    "rows": 39,
+                    "program_metadata": 30,
+                    "capacity": 2,
+                    "terms": 8,
+                    "bytes": 2304
+                },
+                "current": {
+                    "sql": 28,
+                    "rows": 145,
+                    "program_metadata": 17,
+                    "capacity": 2,
+                    "terms": 2,
+                    "bytes": 2304
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 10,
+            "kind": "goods",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 82,
+                    "rows": 69,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7473
+                },
+                "current": {
+                    "sql": 82,
+                    "rows": 69,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7473
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 10,
+            "kind": "goods",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 62,
+                    "rows": 49,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7178
+                },
+                "current": {
+                    "sql": 62,
+                    "rows": 49,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7178
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 10,
+            "kind": "program",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 382,
+                    "rows": 329,
+                    "program_metadata": 228,
+                    "capacity": 20,
+                    "terms": 80,
+                    "bytes": 18628
+                },
+                "current": {
+                    "sql": 75,
+                    "rows": 219,
+                    "program_metadata": 17,
+                    "capacity": 20,
+                    "terms": 2,
+                    "bytes": 18628
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 10,
+            "kind": "program",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 362,
+                    "rows": 309,
+                    "program_metadata": 228,
+                    "capacity": 20,
+                    "terms": 80,
+                    "bytes": 18328
+                },
+                "current": {
+                    "sql": 55,
+                    "rows": 199,
+                    "program_metadata": 17,
+                    "capacity": 20,
+                    "terms": 2,
+                    "bytes": 18328
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 50,
+            "kind": "goods",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 362,
+                    "rows": 309,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 35318
+                },
+                "current": {
+                    "sql": 362,
+                    "rows": 309,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 35318
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 50,
+            "kind": "goods",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 262,
+                    "rows": 209,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 33863
+                },
+                "current": {
+                    "sql": 262,
+                    "rows": 209,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 33863
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 50,
+            "kind": "program",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 1862,
+                    "rows": 1609,
+                    "program_metadata": 1108,
+                    "capacity": 100,
+                    "terms": 400,
+                    "bytes": 91118
+                },
+                "current": {
+                    "sql": 275,
+                    "rows": 539,
+                    "program_metadata": 17,
+                    "capacity": 100,
+                    "terms": 2,
+                    "bytes": 91118
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        },
+        {
+            "size": 50,
+            "kind": "program",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 1762,
+                    "rows": 1509,
+                    "program_metadata": 1108,
+                    "capacity": 100,
+                    "terms": 400,
+                    "bytes": 89618
+                },
+                "current": {
+                    "sql": 175,
+                    "rows": 439,
+                    "program_metadata": 17,
+                    "capacity": 100,
+                    "terms": 2,
+                    "bytes": 89618
+                }
+            },
+            "samples": {
+                "baseline": [],
+                "current": []
+            }
+        }
+    ]
+}

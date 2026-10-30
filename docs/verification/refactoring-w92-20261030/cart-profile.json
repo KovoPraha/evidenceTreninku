@@ -1,0 +1,849 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "migrated_schema": true,
+    "foreign_keys": 1,
+    "production_mutations": false,
+    "fresh_terms_roles_variant_status": true,
+    "results": [
+        {
+            "size": 1,
+            "kind": "goods",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 19,
+                    "rows": 15,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1219
+                },
+                "current": {
+                    "sql": 19,
+                    "rows": 15,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1219
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 61.2138,
+                        "peak_bytes": 136888
+                    },
+                    {
+                        "ms": 51.7684,
+                        "peak_bytes": 136888
+                    },
+                    {
+                        "ms": 48.3583,
+                        "peak_bytes": 136888
+                    },
+                    {
+                        "ms": 49.8198,
+                        "peak_bytes": 136888
+                    },
+                    {
+                        "ms": 53.4068,
+                        "peak_bytes": 136888
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 66.5484,
+                        "peak_bytes": 137392
+                    },
+                    {
+                        "ms": 55.6566,
+                        "peak_bytes": 137392
+                    },
+                    {
+                        "ms": 49.3372,
+                        "peak_bytes": 137392
+                    },
+                    {
+                        "ms": 50.2216,
+                        "peak_bytes": 137392
+                    },
+                    {
+                        "ms": 63.3309,
+                        "peak_bytes": 137392
+                    }
+                ]
+            }
+        },
+        {
+            "size": 1,
+            "kind": "goods",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 17,
+                    "rows": 13,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1189
+                },
+                "current": {
+                    "sql": 17,
+                    "rows": 13,
+                    "program_metadata": 10,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 1189
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 62.5379,
+                        "peak_bytes": 136848
+                    },
+                    {
+                        "ms": 48.3225,
+                        "peak_bytes": 136848
+                    },
+                    {
+                        "ms": 53.2123,
+                        "peak_bytes": 136848
+                    },
+                    {
+                        "ms": 47.234,
+                        "peak_bytes": 136848
+                    },
+                    {
+                        "ms": 51.1936,
+                        "peak_bytes": 136848
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 52.9196,
+                        "peak_bytes": 137352
+                    },
+                    {
+                        "ms": 46.2059,
+                        "peak_bytes": 137352
+                    },
+                    {
+                        "ms": 56.0226,
+                        "peak_bytes": 137352
+                    },
+                    {
+                        "ms": 59.7938,
+                        "peak_bytes": 137352
+                    },
+                    {
+                        "ms": 52.1221,
+                        "peak_bytes": 137352
+                    }
+                ]
+            }
+        },
+        {
+            "size": 1,
+            "kind": "program",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 49,
+                    "rows": 41,
+                    "program_metadata": 30,
+                    "capacity": 2,
+                    "terms": 8,
+                    "bytes": 2334
+                },
+                "current": {
+                    "sql": 30,
+                    "rows": 147,
+                    "program_metadata": 17,
+                    "capacity": 2,
+                    "terms": 2,
+                    "bytes": 2334
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 182.8725,
+                        "peak_bytes": 184848
+                    },
+                    {
+                        "ms": 213.8719,
+                        "peak_bytes": 184848
+                    },
+                    {
+                        "ms": 249.1351,
+                        "peak_bytes": 184848
+                    },
+                    {
+                        "ms": 221.3683,
+                        "peak_bytes": 184848
+                    },
+                    {
+                        "ms": 197.5866,
+                        "peak_bytes": 184848
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 81.0516,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 104.6367,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 112.2826,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 121.99,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 99.6423,
+                        "peak_bytes": 198512
+                    }
+                ]
+            }
+        },
+        {
+            "size": 1,
+            "kind": "program",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 47,
+                    "rows": 39,
+                    "program_metadata": 30,
+                    "capacity": 2,
+                    "terms": 8,
+                    "bytes": 2304
+                },
+                "current": {
+                    "sql": 28,
+                    "rows": 145,
+                    "program_metadata": 17,
+                    "capacity": 2,
+                    "terms": 2,
+                    "bytes": 2304
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 172.5234,
+                        "peak_bytes": 184808
+                    },
+                    {
+                        "ms": 181.8919,
+                        "peak_bytes": 184808
+                    },
+                    {
+                        "ms": 161.4338,
+                        "peak_bytes": 184808
+                    },
+                    {
+                        "ms": 140.7832,
+                        "peak_bytes": 184808
+                    },
+                    {
+                        "ms": 140.9153,
+                        "peak_bytes": 184808
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 76.0272,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 93.8954,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 94.2747,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 97.2284,
+                        "peak_bytes": 198512
+                    },
+                    {
+                        "ms": 68.2697,
+                        "peak_bytes": 198512
+                    }
+                ]
+            }
+        },
+        {
+            "size": 10,
+            "kind": "goods",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 82,
+                    "rows": 69,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7473
+                },
+                "current": {
+                    "sql": 82,
+                    "rows": 69,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7473
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 69.119,
+                        "peak_bytes": 155864
+                    },
+                    {
+                        "ms": 120.3728,
+                        "peak_bytes": 155864
+                    },
+                    {
+                        "ms": 135.0813,
+                        "peak_bytes": 155864
+                    },
+                    {
+                        "ms": 111.1834,
+                        "peak_bytes": 155864
+                    },
+                    {
+                        "ms": 172.6163,
+                        "peak_bytes": 155864
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 65.1935,
+                        "peak_bytes": 156368
+                    },
+                    {
+                        "ms": 62.6933,
+                        "peak_bytes": 156368
+                    },
+                    {
+                        "ms": 129.1517,
+                        "peak_bytes": 156368
+                    },
+                    {
+                        "ms": 99.8384,
+                        "peak_bytes": 156368
+                    },
+                    {
+                        "ms": 128.2806,
+                        "peak_bytes": 156368
+                    }
+                ]
+            }
+        },
+        {
+            "size": 10,
+            "kind": "goods",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 62,
+                    "rows": 49,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7178
+                },
+                "current": {
+                    "sql": 62,
+                    "rows": 49,
+                    "program_metadata": 28,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 7178
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 109.8949,
+                        "peak_bytes": 155464
+                    },
+                    {
+                        "ms": 124.6519,
+                        "peak_bytes": 155464
+                    },
+                    {
+                        "ms": 112.5924,
+                        "peak_bytes": 155464
+                    },
+                    {
+                        "ms": 91.9068,
+                        "peak_bytes": 155464
+                    },
+                    {
+                        "ms": 85.3333,
+                        "peak_bytes": 155464
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 133.0663,
+                        "peak_bytes": 155968
+                    },
+                    {
+                        "ms": 120.878,
+                        "peak_bytes": 155968
+                    },
+                    {
+                        "ms": 117.2687,
+                        "peak_bytes": 155968
+                    },
+                    {
+                        "ms": 106.1754,
+                        "peak_bytes": 155968
+                    },
+                    {
+                        "ms": 93.5651,
+                        "peak_bytes": 155968
+                    }
+                ]
+            }
+        },
+        {
+            "size": 10,
+            "kind": "program",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 382,
+                    "rows": 329,
+                    "program_metadata": 228,
+                    "capacity": 20,
+                    "terms": 80,
+                    "bytes": 18628
+                },
+                "current": {
+                    "sql": 75,
+                    "rows": 219,
+                    "program_metadata": 17,
+                    "capacity": 20,
+                    "terms": 2,
+                    "bytes": 18628
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 2191.3915,
+                        "peak_bytes": 240312
+                    },
+                    {
+                        "ms": 2063.5063,
+                        "peak_bytes": 240312
+                    },
+                    {
+                        "ms": 2078.1083,
+                        "peak_bytes": 240312
+                    },
+                    {
+                        "ms": 1948.6934,
+                        "peak_bytes": 240312
+                    },
+                    {
+                        "ms": 1958.1806,
+                        "peak_bytes": 240312
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 218.2858,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 258.8252,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 193.9961,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 254.4355,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 205.4452,
+                        "peak_bytes": 240680
+                    }
+                ]
+            }
+        },
+        {
+            "size": 10,
+            "kind": "program",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 362,
+                    "rows": 309,
+                    "program_metadata": 228,
+                    "capacity": 20,
+                    "terms": 80,
+                    "bytes": 18328
+                },
+                "current": {
+                    "sql": 55,
+                    "rows": 199,
+                    "program_metadata": 17,
+                    "capacity": 20,
+                    "terms": 2,
+                    "bytes": 18328
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 1850.5164,
+                        "peak_bytes": 239912
+                    },
+                    {
+                        "ms": 1966.306,
+                        "peak_bytes": 239912
+                    },
+                    {
+                        "ms": 1690.3689,
+                        "peak_bytes": 239912
+                    },
+                    {
+                        "ms": 1602.0113,
+                        "peak_bytes": 239912
+                    },
+                    {
+                        "ms": 1681.7345,
+                        "peak_bytes": 239912
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 191.0721,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 196.6703,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 198.3624,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 226.5401,
+                        "peak_bytes": 240680
+                    },
+                    {
+                        "ms": 140.8239,
+                        "peak_bytes": 240680
+                    }
+                ]
+            }
+        },
+        {
+            "size": 50,
+            "kind": "goods",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 362,
+                    "rows": 309,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 35318
+                },
+                "current": {
+                    "sql": 362,
+                    "rows": 309,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 35318
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 267.5991,
+                        "peak_bytes": 240408
+                    },
+                    {
+                        "ms": 377.5753,
+                        "peak_bytes": 240408
+                    },
+                    {
+                        "ms": 971.0857,
+                        "peak_bytes": 240408
+                    },
+                    {
+                        "ms": 304.2746,
+                        "peak_bytes": 240408
+                    },
+                    {
+                        "ms": 356.9365,
+                        "peak_bytes": 240408
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 232.1366,
+                        "peak_bytes": 240912
+                    },
+                    {
+                        "ms": 329.1021,
+                        "peak_bytes": 240912
+                    },
+                    {
+                        "ms": 412.5209,
+                        "peak_bytes": 240912
+                    },
+                    {
+                        "ms": 307.8633,
+                        "peak_bytes": 240912
+                    },
+                    {
+                        "ms": 390.9457,
+                        "peak_bytes": 240912
+                    }
+                ]
+            }
+        },
+        {
+            "size": 50,
+            "kind": "goods",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 262,
+                    "rows": 209,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 33863
+                },
+                "current": {
+                    "sql": 262,
+                    "rows": 209,
+                    "program_metadata": 108,
+                    "capacity": 0,
+                    "terms": 0,
+                    "bytes": 33863
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 365.8285,
+                        "peak_bytes": 238408
+                    },
+                    {
+                        "ms": 222.3678,
+                        "peak_bytes": 238408
+                    },
+                    {
+                        "ms": 279.4508,
+                        "peak_bytes": 238408
+                    },
+                    {
+                        "ms": 284.0994,
+                        "peak_bytes": 238408
+                    },
+                    {
+                        "ms": 283.4205,
+                        "peak_bytes": 238408
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 282.4739,
+                        "peak_bytes": 238912
+                    },
+                    {
+                        "ms": 330.7556,
+                        "peak_bytes": 238912
+                    },
+                    {
+                        "ms": 242.4197,
+                        "peak_bytes": 238912
+                    },
+                    {
+                        "ms": 264.221,
+                        "peak_bytes": 238912
+                    },
+                    {
+                        "ms": 246.7635,
+                        "peak_bytes": 238912
+                    }
+                ]
+            }
+        },
+        {
+            "size": 50,
+            "kind": "program",
+            "member": true,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 1862,
+                    "rows": 1609,
+                    "program_metadata": 1108,
+                    "capacity": 100,
+                    "terms": 400,
+                    "bytes": 91118
+                },
+                "current": {
+                    "sql": 275,
+                    "rows": 539,
+                    "program_metadata": 17,
+                    "capacity": 100,
+                    "terms": 2,
+                    "bytes": 91118
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 6723.4183,
+                        "peak_bytes": 487216
+                    },
+                    {
+                        "ms": 7361.0571,
+                        "peak_bytes": 487216
+                    },
+                    {
+                        "ms": 6699.4637,
+                        "peak_bytes": 487216
+                    },
+                    {
+                        "ms": 6231.965,
+                        "peak_bytes": 487216
+                    },
+                    {
+                        "ms": 6233.066,
+                        "peak_bytes": 487216
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 234.5635,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 225.4042,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 231.2691,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 209.1044,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 320.8227,
+                        "peak_bytes": 523424
+                    }
+                ]
+            }
+        },
+        {
+            "size": 50,
+            "kind": "program",
+            "member": false,
+            "same_result": true,
+            "counts": {
+                "baseline": {
+                    "sql": 1762,
+                    "rows": 1509,
+                    "program_metadata": 1108,
+                    "capacity": 100,
+                    "terms": 400,
+                    "bytes": 89618
+                },
+                "current": {
+                    "sql": 175,
+                    "rows": 439,
+                    "program_metadata": 17,
+                    "capacity": 100,
+                    "terms": 2,
+                    "bytes": 89618
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 6429.9048,
+                        "peak_bytes": 485216
+                    },
+                    {
+                        "ms": 6861.6902,
+                        "peak_bytes": 485216
+                    },
+                    {
+                        "ms": 7739.3573,
+                        "peak_bytes": 485216
+                    },
+                    {
+                        "ms": 8122.7726,
+                        "peak_bytes": 485216
+                    },
+                    {
+                        "ms": 6812.8391,
+                        "peak_bytes": 485216
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 202.5594,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 182.4667,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 214.9382,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 173.6457,
+                        "peak_bytes": 523424
+                    },
+                    {
+                        "ms": 218.3507,
+                        "peak_bytes": 523424
+                    }
+                ]
+            }
+        }
+    ]
+}

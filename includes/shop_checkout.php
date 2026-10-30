@@ -123,6 +123,11 @@ function shopCartDetail(PDO $pdo, int $accountId): array
     );
     $statement->execute([(int)$cart['id']]);
     $items = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $programRead = new ClubProgramReadContext($pdo);
+    $programRead->warmTermsForVariants(array_map(
+        static fn (array $item): int => (int) $item['variant_id'],
+        array_values(array_filter($items, static fn (array $item): bool => $item['offer_type'] === 'program' && $item['catalog_status'] === 'active'))
+    ));
     $total = 0;
     $currency = null;
     foreach ($items as &$item) {
@@ -139,7 +144,7 @@ function shopCartDetail(PDO $pdo, int $accountId): array
             continue;
         }
         if (($item['offer_type'] ?? null) === 'program') {
-            $state = clubProgramVariantSaleState($pdo, (int)$item['variant_id']);
+            $state = clubProgramVariantSaleState($pdo, (int)$item['variant_id'], null, false, $programRead);
             $offer = $state['offer'];
             if (!$state['saleable']) {
                 $item['availability_error'] = $state['reason'];
@@ -147,7 +152,7 @@ function shopCartDetail(PDO $pdo, int $accountId): array
                 $item['availability_error'] = 'U kroužku není vybrané dítě nebo účastník.';
             }
             if ($offer) {
-                $item['program_terms'] = clubProgramTermsEffective($pdo, (int)$offer['program_id'], (int)$offer['id']);
+                $item['program_terms'] = clubProgramTermsEffective($pdo, (int)$offer['program_id'], (int)$offer['id'], false, $programRead);
             }
         } elseif (shopProductRequiresAthlete($pdo, (int)$item['product_id'])) {
             $item['availability_error'] = 'Tato nabídka vyžaduje sportovce a řádně vypsaný termín. Odeberte ji z košíku a přejděte na detail nabídky.';
@@ -590,12 +595,14 @@ function shopCheckoutPlace(
             $orderId = (int)$pdo->lastInsertId();
             if ($delivery['method'] === 'ppl_box') {
                 $pdo->prepare('UPDATE shop_orders SET '
-                    . 'fulfillment_method=?,shipping_amount_minor=?,ppl_access_point_code=?,ppl_access_point_name=?,ppl_access_point_address=?,customer_phone_snapshot=? WHERE id=?')->execute([
+                    . ('fulfillment_method=?,shipping_amount_minor=?,ppl_access_point_code=?,ppl_access_point_name=?,ppl_acc'
+ . 'ess_point_address=?,customer_phone_snapshot=? WHERE id=?'))->execute([
                     'ppl_box',$delivery['price_minor'],$delivery['point']['code'],$delivery['point']['name'],$delivery['point']['address'],$delivery['phone'],$orderId,
                 ]);
             } elseif ($delivery['method'] === 'packeta_zbox') {
                 $pdo->prepare('UPDATE shop_orders SET '
-                    . 'fulfillment_method=?,shipping_amount_minor=?,packeta_point_id=?,packeta_point_name=?,packeta_point_address=?,customer_phone_snapshot=? WHERE id=?')->execute([
+                    . ('fulfillment_method=?,shipping_amount_minor=?,packeta_point_id=?,packeta_point_name=?,packeta_point_a'
+ . 'ddress=?,customer_phone_snapshot=? WHERE id=?'))->execute([
                     'packeta_zbox',$delivery['price_minor'],$delivery['point']['id'],$delivery['point']['name'],$delivery['point']['address'],trim($customerPhone),$orderId,
                 ]);
             }
@@ -611,7 +618,8 @@ function shopCheckoutPlace(
                 $physicalStock = ($item['offer_type'] ?? null) === 'goods' && shopInventoryManaged($pdo, (int)$item['id']);
                 $managedStock = ($item['offer_type'] ?? null) !== 'program' && $item['stock_quantity_decimal'] !== null;
                 if ($managedStock && !$physicalStock) {
-                    $reserve = $pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal-?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND stock_quantity_decimal>=?');
+                    $reserve = $pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal-?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND '
+                        . 'stock_quantity_decimal>=?');
                     $reserve->execute([$quantity,(int)$item['id'],$quantity]);
                     if ($reserve->rowCount() !== 1) {
                         throw new ShopCheckoutException('Mezitím se vyprodala položka '.$item['sku'].'. Objednávka nebyla vytvořena.');
@@ -710,14 +718,17 @@ function shopCheckoutPlace(
                     $stock = $pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE id=?');
                     $stock->execute([(int)$item['id']]);
                     $stockAfter = (string)$stock->fetchColumn();
-                    $pdo->prepare('INSERT INTO shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) VALUES (?,?,?,\'reserve\',?,?)')
+                    $pdo->prepare('INSERT INTO '
+                        . 'shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) '
+                        . 'VALUES (?,?,?,\'reserve\',?,?)')
                         ->execute([(int)$item['id'],$orderId,$orderItemId,(string)(-$quantity),$stockAfter]);
                 }
             }
             $eventOrderItems = clubEventShopCreateOrderItemsInTransaction($pdo, $orderId, $accountId, $eventItems);
             $velodromeOrderItems = publicVelodromeShopCreateOrderItemsInTransaction($pdo, $orderId, $accountId, $velodromeItems);
             if ($coupon !== null) {
-                $usage = $pdo->prepare('UPDATE shop_coupons SET usage_count=usage_count+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND (usage_limit_total IS NULL OR usage_count<usage_limit_total)');
+                $usage = $pdo->prepare('UPDATE shop_coupons SET usage_count=usage_count+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND (usage_limit_total IS '
+                    . 'NULL OR usage_count<usage_limit_total)');
                 $usage->execute([(int)$coupon['id']]);
                 if ($usage->rowCount() !== 1) {
                     throw new ShopCheckoutException('Limit použití kupónu byl mezitím vyčerpán.');
@@ -742,7 +753,9 @@ function shopCheckoutPlace(
                     . "VALUES ('shop_order',?,'bank_transfer',?,'pending',?,?,?,?,?,?,?,?)")
                     ->execute([$orderId,$paymentPolicy,$total,$currency,$variableSymbol,$bank['iban'],$bank['bic'] !== '' ? $bank['bic'] : null,$bank['account_label'],$spd,$dueAt]);
             } else {
-                $pdo->prepare('INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at) '
+                $pdo->prepare('INSERT INTO '
+                    . ('payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,b'
+ . 'ic_snapshot,account_label_snapshot,spd_payload,due_at) ')
                     . "VALUES ('shop_order',?,'bank_transfer','pending',?,?,?,?,?,?,?,?)")
                     ->execute([$orderId,$total,$currency,$variableSymbol,$bank['iban'],$bank['bic'] !== '' ? $bank['bic'] : null,$bank['account_label'],$spd,$dueAt]);
             }
@@ -971,11 +984,15 @@ function shopOrderListForAccount(PDO $pdo, int $accountId, int $limit = 100): ar
         ? 'o.customer_status_id,cs.label AS customer_status_label,' : 'NULL AS customer_status_id,NULL AS customer_status_label,';
     $customerJoin = shopCheckoutColumnExists($pdo, 'shop_orders', 'customer_status_id')
         ? ' LEFT JOIN shop_order_status_definitions cs ON cs.id=o.customer_status_id ' : ' ';
-    $statement = $pdo->prepare('SELECT o.id,o.public_code,o.status,o.payment_status,o.total_minor,o.currency,o.placed_at,o.created_at,o.cancelled_at,o.ready_at,o.completed_at,'
+    $statement = $pdo->prepare('SELECT '
+        . 'o.id,o.public_code,o.status,o.payment_status,o.total_minor,o.currency,o.placed_at,o.created_at,o.cancelled_at,o.ready_at,o.completed_at,'
         .$customerStatus
-        .'p.status AS payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS coupon_code_snapshot,'
+        .'p.status AS '
+            . 'payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,r.code_snapshot AS '
+            . 'coupon_code_snapshot,'
         .'((SELECT COUNT(*) FROM shop_order_items oi WHERE oi.order_id=o.id)+'.$eventItemCount.'+'.$velodromeItemCount.') AS item_count '
-        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '.$customerJoin
+        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN '
+            . 'shop_coupon_redemptions r ON r.order_id=o.id '.$customerJoin
         .'WHERE o.account_id=? ORDER BY o.created_at DESC,o.id DESC LIMIT '.$limit);
     $statement->execute([$accountId]);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -1116,7 +1133,8 @@ function shopOrderAdminList(PDO $pdo, int $limit = 200, string $query = ''): arr
         . 'payment_record_status,p.variable_symbol,p.due_at,p.paid_at,p.refund_sent_at,p.refund_reference,p.refund_confirmed_by_trainer_id,'
             . 'p.refund_confirmation_note,r.code_snapshot AS coupon_code_snapshot,'
         .'e.action AS last_event_action,e.actor_id AS last_event_actor_id,e.note AS last_event_note,e.created_at AS last_event_at '
-        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN shop_coupon_redemptions r ON r.order_id=o.id '
+        .'FROM shop_orders o JOIN payments p ON p.payable_type=\'shop_order\' AND p.payable_id=o.id LEFT JOIN '
+            . 'shop_coupon_redemptions r ON r.order_id=o.id '
         .($withCustomerStatus ? 'LEFT JOIN shop_order_status_definitions cs ON cs.id=o.customer_status_id ' : '')
         .'LEFT JOIN shop_order_events e ON e.id=(SELECT MAX(e2.id) FROM shop_order_events e2 WHERE e2.order_id=o.id) ';
     $parameters = [];
@@ -1146,7 +1164,8 @@ function shopOrderAdminItemMap(PDO $pdo, array $orderIds): array
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
     $result = array_fill_keys($ids, []);
     $catalogLineType = clubProgramRuntimeTableExists($pdo, 'club_program_offers')
-        ? "CASE WHEN EXISTS(SELECT 1 FROM club_program_offers co WHERE co.product_id=i.product_id AND co.variant_id=i.variant_id) THEN 'program' ELSE 'catalog' END"
+        ? "CASE WHEN EXISTS(SELECT 1 FROM club_program_offers co WHERE co.product_id=i.product_id AND co.variant_id=i.variant_id) "
+            . "THEN 'program' ELSE 'catalog' END"
         : "'catalog'";
     $queries = [
         "SELECT i.order_id,{$catalogLineType} AS line_type,i.product_name_snapshot AS line_name,i.sku_snapshot AS sku,i.quantity,"
@@ -1190,7 +1209,8 @@ function shopOrderAdminItemMap(PDO $pdo, array $orderIds): array
 function shopOrderExpirationAvailable(PDO $pdo): bool
 {
     if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
-        $statement = $pdo->query("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='shop_orders' AND COLUMN_NAME IN ('payment_expires_at','expired_at')");
+        $statement = $pdo->query("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='shop_orders' AND "
+            . "COLUMN_NAME IN ('payment_expires_at','expired_at')");
         return (int)$statement->fetchColumn() === 2;
     }
     foreach ($pdo->query('PRAGMA table_info(shop_orders)')->fetchAll(PDO::FETCH_ASSOC) as $column) {
@@ -1414,7 +1434,9 @@ function shopOrderConfirmPaymentInTransaction(PDO $pdo, int $paymentId, string $
         }
     }
     $trainerId = $actorType === 'trainer' ? $actorId : null;
-    $pdo->prepare("UPDATE payments SET method=?,payment_source=?,status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
+    $pdo->prepare("UPDATE payments SET "
+        . ('method=?,payment_source=?,status=\'paid\',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirma'
+ . 'tion_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'))
         ->execute([$source,$source,$trainerId,$reason,$paymentId]);
     $pdo->prepare("UPDATE shop_orders SET payment_status='paid',status='processing',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
     $action = match($source) {
@@ -1577,7 +1599,8 @@ function shopOrderCancelStateInTransaction(PDO $pdo, array $payment, array $orde
     $restocked = shopOrderAdminRestock($pdo, $orderId);
     $pdo->prepare('UPDATE payments SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$paymentStatus,(int)$payment['id']]);
     $cancelSql = shopCheckoutColumnExists($pdo, 'shop_orders', 'packeta_consignment_code')
-        ? "UPDATE shop_orders SET status='cancelled',payment_status=?,packeta_consignment_code=NULL,cancelled_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+        ? "UPDATE shop_orders SET "
+            . "status='cancelled',payment_status=?,packeta_consignment_code=NULL,cancelled_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?"
         : "UPDATE shop_orders SET status='cancelled',payment_status=?,cancelled_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?";
     $pdo->prepare($cancelSql)->execute([$paymentStatus,$orderId]);
     $note = $paid ? $reason.' Platba vyžaduje samostatné vrácení zákazníkovi.' : $reason;
@@ -1617,7 +1640,8 @@ function shopOrderCancelLocked(PDO $pdo, array $payment, array $order, string $a
         ->execute([$timestamp,(int)$payment['id']]);
     $pdo->prepare("UPDATE shop_orders SET status='cancelled',payment_status='cancelled',cancelled_at=?,expired_at=?,updated_at=? WHERE id=?")
         ->execute([$timestamp,$timestamp,$timestamp,$orderId]);
-    $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note,created_at) VALUES (?,? ,?,'expire','placed','cancelled',?,?)")
+    $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note,created_at) VALUES (?,? "
+        . ",?,'expire','placed','cancelled',?,?)")
         ->execute([$orderId,$actorType,$actorId,$reason,$timestamp]);
     // Pending orders never activate program enrollment; the pre-mutation assertion above enforces it.
     try {
@@ -1741,11 +1765,13 @@ function shopOrderCompleteRefundInTransaction(PDO $pdo, array $payment, array $o
         throw new ShopCheckoutException($exception->getMessage(), 0, $exception);
     }
     $pdo->prepare("UPDATE payments SET "
-        . "status='refunded',refund_sent_at=COALESCE(?,CURRENT_TIMESTAMP),refund_reference=?,refund_confirmed_by_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")
+        . ('status=\'refunded\',refund_sent_at=COALESCE(?,CURRENT_TIMESTAMP),refund_reference=?,refund_confirmed_b'
+ . 'y_trainer_id=?,refund_confirmation_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'))
         ->execute([$actualRefundAt,$reference,$actorTrainerId,$reason,(int)$payment['id']]);
     $pdo->prepare("UPDATE shop_orders SET payment_status='refunded',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
     $note = ($payment['method'] === 'cash' ? 'Reference vratky hotovostní platby: ' : 'Bankovní reference: ').$reference.'. '.$reason;
-    $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES (?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
+    $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES '
+        . '(?,\'trainer\',?,\'confirm_refund\',\'cancelled\',\'cancelled\',?)')
         ->execute([$orderId,$actorTrainerId,$note]);
 }
 
@@ -1795,7 +1821,8 @@ function shopOrderAdminFulfillmentTransition(
             throw new ShopCheckoutException('Objednávka nebyla nalezena.');
         }
         if (clubProgramRuntimeTableExists($pdo, 'club_program_offers')) {
-            $programItems = $pdo->prepare('SELECT COUNT(*) FROM shop_order_items oi JOIN club_program_offers co ON co.product_id=oi.product_id AND co.variant_id=oi.variant_id WHERE oi.order_id=?');
+            $programItems = $pdo->prepare('SELECT COUNT(*) FROM shop_order_items oi JOIN club_program_offers co ON co.product_id=oi.product_id AND '
+                . 'co.variant_id=oi.variant_id WHERE oi.order_id=?');
             $programItems->execute([$orderId]);
             if ((int)$programItems->fetchColumn() > 0) {
                 throw new ShopCheckoutException('Kroužek nemá výdejový stav. Po platbě a schválení sportovce se aktivuje v soupisce.');
@@ -1870,7 +1897,8 @@ function shopOrderAdminDispatchPpl(PDO $pdo, int $orderId, int $actorTrainerId, 
         }
         shopFulfillmentDispatchManagedInTransaction($pdo, $order, $actorTrainerId, 'PPL', $reason, 'ppl:'.$orderId);
         $pdo->prepare('UPDATE shop_orders SET '
-            . 'status=\'completed\',completed_at=CURRENT_TIMESTAMP,ppl_dispatched_at=CURRENT_TIMESTAMP,ppl_tracking_number=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$trackingNumber,
+            . ('status=\'completed\',completed_at=CURRENT_TIMESTAMP,ppl_dispatched_at=CURRENT_TIMESTAMP,ppl_tracking_n'
+ . 'umber=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'))->execute([$trackingNumber,
             $orderId]);
         $pdo->prepare('INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES '
             . '(?,\'trainer\',?,\'dispatch_ppl\',\'ready\',\'completed\',?)')->execute([$orderId,
@@ -2016,7 +2044,8 @@ function shopOrderAdminDepositPacketa(PDO $pdo, int $orderId, int $actorTrainerI
         }
         shopFulfillmentDispatchManagedInTransaction($pdo, $order, $actorTrainerId, 'Zásilkovna', $reason, 'packeta:'.$orderId);
         $pdo->prepare("UPDATE shop_orders SET "
-            . "status='completed',completed_at=CURRENT_TIMESTAMP,packeta_deposited_at=CURRENT_TIMESTAMP,packeta_consignment_code=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$orderId]);
+            . ('status=\'completed\',completed_at=CURRENT_TIMESTAMP,packeta_deposited_at=CURRENT_TIMESTAMP,packeta_con'
+ . 'signment_code=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?'))->execute([$orderId]);
         $pdo->prepare("INSERT INTO shop_order_events(order_id,actor_type,actor_id,action,from_status,to_status,note) VALUES "
             . "(?,'trainer',?,'deposit_packeta','ready','completed',?)")->execute([$orderId,
             $actorTrainerId,
@@ -2105,14 +2134,17 @@ function shopOrderAdminRestock(PDO $pdo, int $orderId): int
         if ($variant->fetchColumn() === false) {
             throw new ShopCheckoutException('Skladová varianta stornované položky nebyla nalezena.');
         }
-        $update = $pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal+?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND stock_quantity_decimal IS NOT NULL');
+        $update = $pdo->prepare('UPDATE shop_variants SET stock_quantity_decimal=stock_quantity_decimal+?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND '
+            . 'stock_quantity_decimal IS NOT NULL');
         $update->execute([(int)$item['quantity'],(int)$item['variant_id']]);
         if ($update->rowCount() !== 1) {
             throw new ShopCheckoutException('Sklad stornované položky není spravovaný nebo jej nelze vrátit.');
         }
         $stock = $pdo->prepare('SELECT stock_quantity_decimal FROM shop_variants WHERE id=?');
         $stock->execute([(int)$item['variant_id']]);
-        $pdo->prepare('INSERT INTO shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) VALUES (?,?,?,\'restock\',?,?)')
+        $pdo->prepare('INSERT INTO '
+            . 'shop_inventory_movements(variant_id,order_id,order_item_id,movement_type,quantity_delta_decimal,stock_after_decimal) '
+            . 'VALUES (?,?,?,\'restock\',?,?)')
             ->execute([(int)$item['variant_id'],$orderId,(int)$item['order_item_id'],(string)(int)$item['quantity'],(string)$stock->fetchColumn()]);
         $count++;
     }
