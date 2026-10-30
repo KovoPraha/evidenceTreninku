@@ -1,0 +1,892 @@
+{
+    "database_version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+    "migrated_schema": true,
+    "foreign_keys": 1,
+    "production_mutations": false,
+    "results": [
+        {
+            "weeks": 0,
+            "family": 0,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 0,
+            "counts": {
+                "baseline": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                },
+                "current": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                }
+            },
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 0,
+            "family": 1,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 1,
+            "counts": {
+                "baseline": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 1020,
+                    "fetched_rows": 1053
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 1,
+                    "fetched_rows": 36
+                }
+            },
+            "sha256": "92f1f55d877b75c0a5e93005e021d86be4cea43f64a1fe693b2ba14f5fb5c95b",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 14.362651,
+                        "incremental_peak_bytes": 205904
+                    },
+                    {
+                        "ms": 15.021007,
+                        "incremental_peak_bytes": 205904
+                    },
+                    {
+                        "ms": 15.318836,
+                        "incremental_peak_bytes": 205904
+                    },
+                    {
+                        "ms": 15.346025,
+                        "incremental_peak_bytes": 205904
+                    },
+                    {
+                        "ms": 15.149698,
+                        "incremental_peak_bytes": 205904
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 14.884731,
+                        "incremental_peak_bytes": 167536
+                    },
+                    {
+                        "ms": 15.276436,
+                        "incremental_peak_bytes": 167536
+                    },
+                    {
+                        "ms": 15.158345,
+                        "incremental_peak_bytes": 167536
+                    },
+                    {
+                        "ms": 15.063075,
+                        "incremental_peak_bytes": 167536
+                    },
+                    {
+                        "ms": 14.68732,
+                        "incremental_peak_bytes": 167536
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 205904,
+                "current": 167536
+            },
+            "median_ms": {
+                "baseline": 15.149698,
+                "current": 15.063075
+            }
+        },
+        {
+            "weeks": 0,
+            "family": 5,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 5,
+            "counts": {
+                "baseline": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 1020,
+                    "fetched_rows": 1065
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 5,
+                    "fetched_rows": 52
+                }
+            },
+            "sha256": "63be57518bbc2dc7239d58a9a569e317c868a4ef680ff8a894a5876124250ee0",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 0,
+            "family": 20,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 20,
+            "counts": {
+                "baseline": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 1020,
+                    "fetched_rows": 1110
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 20,
+                    "fetched_rows": 112
+                }
+            },
+            "sha256": "0e095d781d9a5cd4d2ebbabd9a28599c159d77a6ea24cc32d5283bb003b6acbb",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 15.831686,
+                        "incremental_peak_bytes": 269632
+                    },
+                    {
+                        "ms": 15.780913,
+                        "incremental_peak_bytes": 269632
+                    },
+                    {
+                        "ms": 15.464357,
+                        "incremental_peak_bytes": 269632
+                    },
+                    {
+                        "ms": 15.767478,
+                        "incremental_peak_bytes": 269632
+                    },
+                    {
+                        "ms": 15.669494,
+                        "incremental_peak_bytes": 269632
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 15.51737,
+                        "incremental_peak_bytes": 240976
+                    },
+                    {
+                        "ms": 15.22013,
+                        "incremental_peak_bytes": 240976
+                    },
+                    {
+                        "ms": 15.092302,
+                        "incremental_peak_bytes": 240976
+                    },
+                    {
+                        "ms": 15.510566,
+                        "incremental_peak_bytes": 240976
+                    },
+                    {
+                        "ms": 15.306771,
+                        "incremental_peak_bytes": 240976
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 269632,
+                "current": 240976
+            },
+            "median_ms": {
+                "baseline": 15.767478,
+                "current": 15.306771
+            }
+        },
+        {
+            "weeks": 1,
+            "family": 0,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 0,
+            "counts": {
+                "baseline": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                },
+                "current": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                }
+            },
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 1,
+            "family": 1,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 3,
+            "counts": {
+                "baseline": {
+                    "sql": 119,
+                    "membership_sql": 21,
+                    "membership_rows": 3060,
+                    "fetched_rows": 3173
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 1,
+                    "fetched_rows": 56
+                }
+            },
+            "sha256": "9bc3e3123d4c60abb83daf6f700f8af563adefe8c5e668f4dfb90f28bd48bbb3",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 41.705117,
+                        "incremental_peak_bytes": 293072
+                    },
+                    {
+                        "ms": 42.109517,
+                        "incremental_peak_bytes": 293072
+                    },
+                    {
+                        "ms": 44.258349,
+                        "incremental_peak_bytes": 293072
+                    },
+                    {
+                        "ms": 42.890461,
+                        "incremental_peak_bytes": 293072
+                    },
+                    {
+                        "ms": 41.290758,
+                        "incremental_peak_bytes": 293072
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 14.439314,
+                        "incremental_peak_bytes": 183816
+                    },
+                    {
+                        "ms": 14.564359,
+                        "incremental_peak_bytes": 183816
+                    },
+                    {
+                        "ms": 14.663275,
+                        "incremental_peak_bytes": 183816
+                    },
+                    {
+                        "ms": 14.742742,
+                        "incremental_peak_bytes": 183816
+                    },
+                    {
+                        "ms": 14.609854,
+                        "incremental_peak_bytes": 183816
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 293072,
+                "current": 183816
+            },
+            "median_ms": {
+                "baseline": 42.109517,
+                "current": 14.609854
+            }
+        },
+        {
+            "weeks": 1,
+            "family": 5,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 15,
+            "counts": {
+                "baseline": {
+                    "sql": 119,
+                    "membership_sql": 21,
+                    "membership_rows": 3060,
+                    "fetched_rows": 3185
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 5,
+                    "fetched_rows": 72
+                }
+            },
+            "sha256": "8c197e714dc3fd52e9682efac5f398eddd6a1bfbee99a39557d6dbf45b91ab06",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 1,
+            "family": 20,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 60,
+            "counts": {
+                "baseline": {
+                    "sql": 119,
+                    "membership_sql": 21,
+                    "membership_rows": 3060,
+                    "fetched_rows": 3230
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 20,
+                    "fetched_rows": 132
+                }
+            },
+            "sha256": "4a3789f6771ba48b268d5f92e97d55d6558171ee83a25d3cc60570d700ddfa9a",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 42.999084,
+                        "incremental_peak_bytes": 398848
+                    },
+                    {
+                        "ms": 42.283422,
+                        "incremental_peak_bytes": 398848
+                    },
+                    {
+                        "ms": 42.170791,
+                        "incremental_peak_bytes": 398848
+                    },
+                    {
+                        "ms": 42.923313,
+                        "incremental_peak_bytes": 398848
+                    },
+                    {
+                        "ms": 42.344184,
+                        "incremental_peak_bytes": 398848
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 15.419695,
+                        "incremental_peak_bytes": 287096
+                    },
+                    {
+                        "ms": 15.481681,
+                        "incremental_peak_bytes": 287096
+                    },
+                    {
+                        "ms": 15.694923,
+                        "incremental_peak_bytes": 287096
+                    },
+                    {
+                        "ms": 16.353969,
+                        "incremental_peak_bytes": 287096
+                    },
+                    {
+                        "ms": 15.974517,
+                        "incremental_peak_bytes": 287096
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 398848,
+                "current": 287096
+            },
+            "median_ms": {
+                "baseline": 42.344184,
+                "current": 15.694923
+            }
+        },
+        {
+            "weeks": 12,
+            "family": 0,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 0,
+            "counts": {
+                "baseline": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                },
+                "current": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                }
+            },
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 12,
+            "family": 1,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 32,
+            "counts": {
+                "baseline": {
+                    "sql": 999,
+                    "membership_sql": 241,
+                    "membership_rows": 32640,
+                    "fetched_rows": 33913
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 1,
+                    "fetched_rows": 276
+                }
+            },
+            "sha256": "11d7fe3adf0ee7316f6671ea00cddd32e63f8e5e82913bea182cd57fd27efde9",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 346.120726,
+                        "incremental_peak_bytes": 1781408
+                    },
+                    {
+                        "ms": 351.682307,
+                        "incremental_peak_bytes": 1781408
+                    },
+                    {
+                        "ms": 339.365544,
+                        "incremental_peak_bytes": 1781408
+                    },
+                    {
+                        "ms": 333.093665,
+                        "incremental_peak_bytes": 1781408
+                    },
+                    {
+                        "ms": 346.69888,
+                        "incremental_peak_bytes": 1781408
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 15.527868,
+                        "incremental_peak_bytes": 422664
+                    },
+                    {
+                        "ms": 15.339695,
+                        "incremental_peak_bytes": 422664
+                    },
+                    {
+                        "ms": 15.708166,
+                        "incremental_peak_bytes": 422664
+                    },
+                    {
+                        "ms": 15.549228,
+                        "incremental_peak_bytes": 422664
+                    },
+                    {
+                        "ms": 16.177278,
+                        "incremental_peak_bytes": 422664
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 1781408,
+                "current": 422664
+            },
+            "median_ms": {
+                "baseline": 346.120726,
+                "current": 15.549228
+            }
+        },
+        {
+            "weeks": 12,
+            "family": 5,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 160,
+            "counts": {
+                "baseline": {
+                    "sql": 999,
+                    "membership_sql": 241,
+                    "membership_rows": 32640,
+                    "fetched_rows": 33925
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 5,
+                    "fetched_rows": 292
+                }
+            },
+            "sha256": "bc543b404e0898c87044196e31ce23c7e3a8b2584d0ad38116dc50bc6461d376",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 12,
+            "family": 20,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 640,
+            "counts": {
+                "baseline": {
+                    "sql": 999,
+                    "membership_sql": 241,
+                    "membership_rows": 32640,
+                    "fetched_rows": 33970
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 20,
+                    "fetched_rows": 352
+                }
+            },
+            "sha256": "c4c7b6f09a36646bd90670e9cf89666dc2871302169a800850bc56e5d010ac35",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 347.731185,
+                        "incremental_peak_bytes": 2499368
+                    },
+                    {
+                        "ms": 342.014696,
+                        "incremental_peak_bytes": 2499368
+                    },
+                    {
+                        "ms": 348.278583,
+                        "incremental_peak_bytes": 2499368
+                    },
+                    {
+                        "ms": 351.411578,
+                        "incremental_peak_bytes": 2499368
+                    },
+                    {
+                        "ms": 344.738748,
+                        "incremental_peak_bytes": 2499368
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 24.562584,
+                        "incremental_peak_bytes": 1158968
+                    },
+                    {
+                        "ms": 23.187834,
+                        "incremental_peak_bytes": 1158968
+                    },
+                    {
+                        "ms": 23.684485,
+                        "incremental_peak_bytes": 1158968
+                    },
+                    {
+                        "ms": 23.898517,
+                        "incremental_peak_bytes": 1158968
+                    },
+                    {
+                        "ms": 22.583841,
+                        "incremental_peak_bytes": 1158968
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 2499368,
+                "current": 1158968
+            },
+            "median_ms": {
+                "baseline": 347.731185,
+                "current": 23.684485
+            }
+        },
+        {
+            "weeks": 52,
+            "family": 0,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 0,
+            "counts": {
+                "baseline": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                },
+                "current": {
+                    "sql": 4,
+                    "membership_sql": 0,
+                    "membership_rows": 0,
+                    "fetched_rows": 3
+                }
+            },
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 52,
+            "family": 1,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 100,
+            "counts": {
+                "baseline": {
+                    "sql": 4199,
+                    "membership_sql": 1041,
+                    "membership_rows": 102000,
+                    "fetched_rows": 106773
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 1,
+                    "fetched_rows": 1076
+                }
+            },
+            "sha256": "306898b8a6cc0ef4a9f72a75d5f88c24090170824f28ed497b1cfe7c7f1b8650",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 1545.658107,
+                        "incremental_peak_bytes": 5648080
+                    },
+                    {
+                        "ms": 1464.606149,
+                        "incremental_peak_bytes": 5648080
+                    },
+                    {
+                        "ms": 1413.854329,
+                        "incremental_peak_bytes": 5648080
+                    },
+                    {
+                        "ms": 1420.319807,
+                        "incremental_peak_bytes": 5648080
+                    },
+                    {
+                        "ms": 1428.509589,
+                        "incremental_peak_bytes": 5648080
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 20.797556,
+                        "incremental_peak_bytes": 1374384
+                    },
+                    {
+                        "ms": 21.140197,
+                        "incremental_peak_bytes": 1374384
+                    },
+                    {
+                        "ms": 19.398574,
+                        "incremental_peak_bytes": 1374384
+                    },
+                    {
+                        "ms": 19.010135,
+                        "incremental_peak_bytes": 1374384
+                    },
+                    {
+                        "ms": 19.249063,
+                        "incremental_peak_bytes": 1374384
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 5648080,
+                "current": 1374384
+            },
+            "median_ms": {
+                "baseline": 1428.509589,
+                "current": 19.398574
+            }
+        },
+        {
+            "weeks": 52,
+            "family": 5,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 500,
+            "counts": {
+                "baseline": {
+                    "sql": 4199,
+                    "membership_sql": 1041,
+                    "membership_rows": 102000,
+                    "fetched_rows": 106785
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 5,
+                    "fetched_rows": 1092
+                }
+            },
+            "sha256": "5e25b16005d6c3757e882c798473c66881dead0a1347062106b3f2114e1e0ee0",
+            "samples": {
+                "baseline": [],
+                "current": []
+            },
+            "median_peak_bytes": {
+                "baseline": null,
+                "current": null
+            },
+            "median_ms": {
+                "baseline": null,
+                "current": null
+            }
+        },
+        {
+            "weeks": 52,
+            "family": 20,
+            "foreign_members": 1000,
+            "same_data": true,
+            "returned": 2000,
+            "counts": {
+                "baseline": {
+                    "sql": 4199,
+                    "membership_sql": 1041,
+                    "membership_rows": 102000,
+                    "fetched_rows": 106830
+                },
+                "current": {
+                    "sql": 39,
+                    "membership_sql": 1,
+                    "membership_rows": 20,
+                    "fetched_rows": 1152
+                }
+            },
+            "sha256": "41f95b5d0e057195f3d69dca55749261d5df5505be9d003002632c66978dbaf4",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 1458.887322,
+                        "incremental_peak_bytes": 7799272
+                    },
+                    {
+                        "ms": 1445.348655,
+                        "incremental_peak_bytes": 7799272
+                    },
+                    {
+                        "ms": 1459.601322,
+                        "incremental_peak_bytes": 7799272
+                    },
+                    {
+                        "ms": 1465.667983,
+                        "incremental_peak_bytes": 7799272
+                    },
+                    {
+                        "ms": 1453.717623,
+                        "incremental_peak_bytes": 7799272
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 42.784565,
+                        "incremental_peak_bytes": 3582808
+                    },
+                    {
+                        "ms": 40.607176,
+                        "incremental_peak_bytes": 3582808
+                    },
+                    {
+                        "ms": 44.815836,
+                        "incremental_peak_bytes": 3582808
+                    },
+                    {
+                        "ms": 43.01595,
+                        "incremental_peak_bytes": 3582808
+                    },
+                    {
+                        "ms": 42.088888,
+                        "incremental_peak_bytes": 3582808
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 7799272,
+                "current": 3582808
+            },
+            "median_ms": {
+                "baseline": 1458.887322,
+                "current": 42.784565
+            }
+        }
+    ],
+    "history_1000": {
+        "same_data": true,
+        "incremental_peak_bytes": 4074776
+    }
+}

@@ -106,9 +106,10 @@ po úspěšném ověření; nový pokyn pro každou vlnu není potřeba.
 Plošné měření K0.2 zůstává otevřené;
 dávkování kapacit mezi nabídkami je samostatný kandidát.
 
-[W8.2](REFACTORING_W82_2026-10-30.md) lokálně ověřila společné historické
-filtry plánů/tréninků a náhled kopírování: roční filtr 1875 → 5 SQL,
-1834 testů / 36614 assertions. Navazuje CI a vydání po W8.1.
+[W8.2](REFACTORING_W82_2026-10-30.md) je nasazena: společné historické
+filtry plánů/tréninků a náhled kopírování, roční filtr 1875 → 5 SQL.
+[Společné vydání s W8.3](verification/refactoring-w82-release-20261030/RESULTS.md)
+prošlo 1839 testy / 36699 assertions a produkčními čtecími kontrolami.
 
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah
 oprávnění, větev, pracovní kopii, dokončené kroky, testy a další krok.
@@ -141,6 +142,10 @@ kódem, `origin/main`, CI ani tímto dokumentem.
 
 ### Průběžná W8.3
 
-[W8.3](REFACTORING_W83_2026-10-30.md) lokálně ověřena: rodinný kalendář
-4199 → 39 SQL pro 20 osob/rok. Připravuje se společné vydání s W8.2 po CI.
-[Důkazy](verification/refactoring-w83-20261030/RESULTS.md).
+[W8.3](REFACTORING_W83_2026-10-30.md) nasazena společně s W8.2:
+rodinný kalendář 4199 → 39 SQL pro 20 osob/rok.
+[Release a čtecí důkazy](verification/refactoring-w82-release-20261030/RESULTS.md).
+W8.4 klubový kalendář je rovněž
+[nasazen z PR #241](verification/refactoring-w84-release-20261030/RESULTS.md):
+1842 testů / 36744 assertions, HTTP 26/26, živé SHA a beze změny konfigurace.
+Pokračují W8.5 sportovní kontrakty a W9–W15.

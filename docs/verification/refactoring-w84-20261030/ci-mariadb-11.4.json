@@ -1,0 +1,885 @@
+{
+    "database_version": "11.4.13-MariaDB-ubu2404",
+    "migrated_schema": true,
+    "foreign_keys": 1,
+    "production_mutations": false,
+    "results": [
+        {
+            "weeks": 0,
+            "role": "staff",
+            "same_data": true,
+            "returned": 0,
+            "counts": {
+                "baseline": {
+                    "sql": 1,
+                    "rows": 0,
+                    "link_sql": 0
+                },
+                "current": {
+                    "sql": 1,
+                    "rows": 0,
+                    "link_sql": 0
+                }
+            },
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 0.746558,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.743814,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.738526,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.739868,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.752107,
+                        "incremental_peak_bytes": 42032
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 0.777183,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.74131,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.742873,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.746047,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.759647,
+                        "incremental_peak_bytes": 42032
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 42032,
+                "current": 42032
+            },
+            "median_ms": {
+                "baseline": 0.743814,
+                "current": 0.746047
+            }
+        },
+        {
+            "weeks": 0,
+            "role": "public",
+            "same_data": true,
+            "returned": 0,
+            "counts": {
+                "baseline": {
+                    "sql": 1,
+                    "rows": 0,
+                    "link_sql": 0
+                },
+                "current": {
+                    "sql": 1,
+                    "rows": 0,
+                    "link_sql": 0
+                }
+            },
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 0.737154,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.68728,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.719989,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.724285,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.719307,
+                        "incremental_peak_bytes": 42032
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 0.73424,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.735231,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.726489,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.710965,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.73425,
+                        "incremental_peak_bytes": 42032
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 42032,
+                "current": 42032
+            },
+            "median_ms": {
+                "baseline": 0.719989,
+                "current": 0.73424
+            }
+        },
+        {
+            "weeks": 0,
+            "role": "family",
+            "same_data": true,
+            "returned": 0,
+            "counts": {
+                "baseline": {
+                    "sql": 1,
+                    "rows": 0,
+                    "link_sql": 0
+                },
+                "current": {
+                    "sql": 1,
+                    "rows": 0,
+                    "link_sql": 0
+                }
+            },
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 0.743313,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.718847,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.733448,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.721291,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.750414,
+                        "incremental_peak_bytes": 42032
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 0.737274,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.719638,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.719638,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.704275,
+                        "incremental_peak_bytes": 42032
+                    },
+                    {
+                        "ms": 0.695522,
+                        "incremental_peak_bytes": 42032
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 42032,
+                "current": 42032
+            },
+            "median_ms": {
+                "baseline": 0.733448,
+                "current": 0.719638
+            }
+        },
+        {
+            "weeks": 1,
+            "role": "staff",
+            "same_data": true,
+            "returned": 8,
+            "counts": {
+                "baseline": {
+                    "sql": 57,
+                    "rows": 88,
+                    "link_sql": 8
+                },
+                "current": {
+                    "sql": 8,
+                    "rows": 44,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "4871fff778fa74d6fb603116efcd75a6298fae049a25f6521c47dc6353ef391f",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 21.461671,
+                        "incremental_peak_bytes": 229384
+                    },
+                    {
+                        "ms": 21.245495,
+                        "incremental_peak_bytes": 229384
+                    },
+                    {
+                        "ms": 21.362884,
+                        "incremental_peak_bytes": 229384
+                    },
+                    {
+                        "ms": 20.56494,
+                        "incremental_peak_bytes": 229384
+                    },
+                    {
+                        "ms": 20.504796,
+                        "incremental_peak_bytes": 229384
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 4.189824,
+                        "incremental_peak_bytes": 200640
+                    },
+                    {
+                        "ms": 3.961104,
+                        "incremental_peak_bytes": 200640
+                    },
+                    {
+                        "ms": 3.962651,
+                        "incremental_peak_bytes": 200640
+                    },
+                    {
+                        "ms": 3.921995,
+                        "incremental_peak_bytes": 200640
+                    },
+                    {
+                        "ms": 4.143675,
+                        "incremental_peak_bytes": 200640
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 229384,
+                "current": 200640
+            },
+            "median_ms": {
+                "baseline": 21.245495,
+                "current": 3.962651
+            }
+        },
+        {
+            "weeks": 1,
+            "role": "public",
+            "same_data": true,
+            "returned": 2,
+            "counts": {
+                "baseline": {
+                    "sql": 11,
+                    "rows": 18,
+                    "link_sql": 2
+                },
+                "current": {
+                    "sql": 6,
+                    "rows": 12,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "2b4368776106db8c02e2c3decbadb15c454ceba4ec7e1f94b5b0ec18aacd54d6",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 4.356866,
+                        "incremental_peak_bytes": 120968
+                    },
+                    {
+                        "ms": 4.256587,
+                        "incremental_peak_bytes": 120968
+                    },
+                    {
+                        "ms": 4.748016,
+                        "incremental_peak_bytes": 120968
+                    },
+                    {
+                        "ms": 6.385456,
+                        "incremental_peak_bytes": 120968
+                    },
+                    {
+                        "ms": 5.2215,
+                        "incremental_peak_bytes": 120968
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 2.626929,
+                        "incremental_peak_bytes": 119672
+                    },
+                    {
+                        "ms": 2.640699,
+                        "incremental_peak_bytes": 119672
+                    },
+                    {
+                        "ms": 3.307014,
+                        "incremental_peak_bytes": 119672
+                    },
+                    {
+                        "ms": 3.511646,
+                        "incremental_peak_bytes": 119672
+                    },
+                    {
+                        "ms": 3.382139,
+                        "incremental_peak_bytes": 119672
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 120968,
+                "current": 119672
+            },
+            "median_ms": {
+                "baseline": 4.748016,
+                "current": 3.307014
+            }
+        },
+        {
+            "weeks": 1,
+            "role": "family",
+            "same_data": true,
+            "returned": 6,
+            "counts": {
+                "baseline": {
+                    "sql": 45,
+                    "rows": 50,
+                    "link_sql": 6
+                },
+                "current": {
+                    "sql": 20,
+                    "rows": 32,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "f09ce60725e64a7a670aeb68f668dad8b8585b58c1fa805c6ae1436355d596de",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 16.098661,
+                        "incremental_peak_bytes": 256856
+                    },
+                    {
+                        "ms": 15.397281,
+                        "incremental_peak_bytes": 256856
+                    },
+                    {
+                        "ms": 15.468587,
+                        "incremental_peak_bytes": 256856
+                    },
+                    {
+                        "ms": 16.196296,
+                        "incremental_peak_bytes": 256856
+                    },
+                    {
+                        "ms": 15.674568,
+                        "incremental_peak_bytes": 256856
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 7.152485,
+                        "incremental_peak_bytes": 227576
+                    },
+                    {
+                        "ms": 7.06828,
+                        "incremental_peak_bytes": 227576
+                    },
+                    {
+                        "ms": 7.22334,
+                        "incremental_peak_bytes": 227576
+                    },
+                    {
+                        "ms": 7.436055,
+                        "incremental_peak_bytes": 227576
+                    },
+                    {
+                        "ms": 7.064414,
+                        "incremental_peak_bytes": 227576
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 256856,
+                "current": 227576
+            },
+            "median_ms": {
+                "baseline": 15.674568,
+                "current": 7.152485
+            }
+        },
+        {
+            "weeks": 12,
+            "role": "staff",
+            "same_data": true,
+            "returned": 96,
+            "counts": {
+                "baseline": {
+                    "sql": 673,
+                    "rows": 1056,
+                    "link_sql": 96
+                },
+                "current": {
+                    "sql": 8,
+                    "rows": 528,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "c6daaa8b63185cc29d7f61e68f36e38534686186dd08802768b26574d571376b",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 240.230802,
+                        "incremental_peak_bytes": 1430360
+                    },
+                    {
+                        "ms": 241.658511,
+                        "incremental_peak_bytes": 1430360
+                    },
+                    {
+                        "ms": 246.930896,
+                        "incremental_peak_bytes": 1430360
+                    },
+                    {
+                        "ms": 246.658943,
+                        "incremental_peak_bytes": 1430360
+                    },
+                    {
+                        "ms": 243.484202,
+                        "incremental_peak_bytes": 1430360
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 7.815619,
+                        "incremental_peak_bytes": 1068680
+                    },
+                    {
+                        "ms": 7.746017,
+                        "incremental_peak_bytes": 1068680
+                    },
+                    {
+                        "ms": 7.921586,
+                        "incremental_peak_bytes": 1068680
+                    },
+                    {
+                        "ms": 7.495964,
+                        "incremental_peak_bytes": 1068680
+                    },
+                    {
+                        "ms": 7.921386,
+                        "incremental_peak_bytes": 1068680
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 1430360,
+                "current": 1068680
+            },
+            "median_ms": {
+                "baseline": 243.484202,
+                "current": 7.815619
+            }
+        },
+        {
+            "weeks": 12,
+            "role": "public",
+            "same_data": true,
+            "returned": 24,
+            "counts": {
+                "baseline": {
+                    "sql": 121,
+                    "rows": 216,
+                    "link_sql": 24
+                },
+                "current": {
+                    "sql": 6,
+                    "rows": 144,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "616f3591344bb4decbd5501ad783784d87e5171bb4c4fcac5a857e1ce999578e",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 42.225216,
+                        "incremental_peak_bytes": 568824
+                    },
+                    {
+                        "ms": 41.987282,
+                        "incremental_peak_bytes": 568824
+                    },
+                    {
+                        "ms": 42.292715,
+                        "incremental_peak_bytes": 568824
+                    },
+                    {
+                        "ms": 41.983807,
+                        "incremental_peak_bytes": 568824
+                    },
+                    {
+                        "ms": 42.471511,
+                        "incremental_peak_bytes": 568824
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 3.731568,
+                        "incremental_peak_bytes": 388488
+                    },
+                    {
+                        "ms": 3.620053,
+                        "incremental_peak_bytes": 388488
+                    },
+                    {
+                        "ms": 3.765669,
+                        "incremental_peak_bytes": 388488
+                    },
+                    {
+                        "ms": 3.587354,
+                        "incremental_peak_bytes": 388488
+                    },
+                    {
+                        "ms": 3.736896,
+                        "incremental_peak_bytes": 388488
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 568824,
+                "current": 388488
+            },
+            "median_ms": {
+                "baseline": 42.225216,
+                "current": 3.731568
+            }
+        },
+        {
+            "weeks": 12,
+            "role": "family",
+            "same_data": true,
+            "returned": 72,
+            "counts": {
+                "baseline": {
+                    "sql": 529,
+                    "rows": 600,
+                    "link_sql": 72
+                },
+                "current": {
+                    "sql": 174,
+                    "rows": 384,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "029cc85604e5c5400ec3a5d40b2d25117cd04a95ac04157de806c44ad8dfbdfc",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 181.988405,
+                        "incremental_peak_bytes": 964328
+                    },
+                    {
+                        "ms": 176.776501,
+                        "incremental_peak_bytes": 964328
+                    },
+                    {
+                        "ms": 180.627467,
+                        "incremental_peak_bytes": 964328
+                    },
+                    {
+                        "ms": 179.106515,
+                        "incremental_peak_bytes": 964328
+                    },
+                    {
+                        "ms": 179.044853,
+                        "incremental_peak_bytes": 964328
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 58.280965,
+                        "incremental_peak_bytes": 678680
+                    },
+                    {
+                        "ms": 58.068679,
+                        "incremental_peak_bytes": 678680
+                    },
+                    {
+                        "ms": 55.881092,
+                        "incremental_peak_bytes": 678680
+                    },
+                    {
+                        "ms": 55.431385,
+                        "incremental_peak_bytes": 678680
+                    },
+                    {
+                        "ms": 58.123951,
+                        "incremental_peak_bytes": 678680
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 964328,
+                "current": 678680
+            },
+            "median_ms": {
+                "baseline": 179.106515,
+                "current": 58.068679
+            }
+        },
+        {
+            "weeks": 52,
+            "role": "staff",
+            "same_data": true,
+            "returned": 416,
+            "counts": {
+                "baseline": {
+                    "sql": 2913,
+                    "rows": 4576,
+                    "link_sql": 416
+                },
+                "current": {
+                    "sql": 9,
+                    "rows": 2288,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "8874d4b0c287ac4b0cf70b1effeadb5b0da37bd6645c73fdf7b32378378720fd",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 1059.540407,
+                        "incremental_peak_bytes": 5806808
+                    },
+                    {
+                        "ms": 1077.58697,
+                        "incremental_peak_bytes": 5806808
+                    },
+                    {
+                        "ms": 1073.558783,
+                        "incremental_peak_bytes": 5806808
+                    },
+                    {
+                        "ms": 1065.185264,
+                        "incremental_peak_bytes": 5806808
+                    },
+                    {
+                        "ms": 1076.280263,
+                        "incremental_peak_bytes": 5806808
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 35.502461,
+                        "incremental_peak_bytes": 4384616
+                    },
+                    {
+                        "ms": 35.032404,
+                        "incremental_peak_bytes": 4384616
+                    },
+                    {
+                        "ms": 35.491805,
+                        "incremental_peak_bytes": 4384616
+                    },
+                    {
+                        "ms": 35.027987,
+                        "incremental_peak_bytes": 4384616
+                    },
+                    {
+                        "ms": 35.703299,
+                        "incremental_peak_bytes": 4384616
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 5806808,
+                "current": 4384616
+            },
+            "median_ms": {
+                "baseline": 1073.558783,
+                "current": 35.491805
+            }
+        },
+        {
+            "weeks": 52,
+            "role": "public",
+            "same_data": true,
+            "returned": 104,
+            "counts": {
+                "baseline": {
+                    "sql": 521,
+                    "rows": 936,
+                    "link_sql": 104
+                },
+                "current": {
+                    "sql": 6,
+                    "rows": 624,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "fe25946e11be7f0508623f2318dcb09bdbe8a5688b1c4574e27dc2c557822a6a",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 186.964108,
+                        "incremental_peak_bytes": 2205944
+                    },
+                    {
+                        "ms": 185.806074,
+                        "incremental_peak_bytes": 2205944
+                    },
+                    {
+                        "ms": 183.563176,
+                        "incremental_peak_bytes": 2205944
+                    },
+                    {
+                        "ms": 183.099117,
+                        "incremental_peak_bytes": 2205944
+                    },
+                    {
+                        "ms": 184.874181,
+                        "incremental_peak_bytes": 2205944
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 7.194668,
+                        "incremental_peak_bytes": 1557128
+                    },
+                    {
+                        "ms": 6.964807,
+                        "incremental_peak_bytes": 1557128
+                    },
+                    {
+                        "ms": 7.269179,
+                        "incremental_peak_bytes": 1557128
+                    },
+                    {
+                        "ms": 6.91992,
+                        "incremental_peak_bytes": 1557128
+                    },
+                    {
+                        "ms": 7.343689,
+                        "incremental_peak_bytes": 1557128
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 2205944,
+                "current": 1557128
+            },
+            "median_ms": {
+                "baseline": 184.874181,
+                "current": 7.194668
+            }
+        },
+        {
+            "weeks": 52,
+            "role": "family",
+            "same_data": true,
+            "returned": 312,
+            "counts": {
+                "baseline": {
+                    "sql": 2289,
+                    "rows": 2600,
+                    "link_sql": 312
+                },
+                "current": {
+                    "sql": 734,
+                    "rows": 1664,
+                    "link_sql": 1
+                }
+            },
+            "sha256": "e6dc9d589abb62653c4438dbcdfb02a128ea63dc1bd1a441062522670c9c6d3a",
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 778.752721,
+                        "incremental_peak_bytes": 3546216
+                    },
+                    {
+                        "ms": 774.367269,
+                        "incremental_peak_bytes": 3546216
+                    },
+                    {
+                        "ms": 779.545149,
+                        "incremental_peak_bytes": 3546216
+                    },
+                    {
+                        "ms": 802.489894,
+                        "incremental_peak_bytes": 3546216
+                    },
+                    {
+                        "ms": 776.652363,
+                        "incremental_peak_bytes": 3546216
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 238.693678,
+                        "incremental_peak_bytes": 2691112
+                    },
+                    {
+                        "ms": 235.017662,
+                        "incremental_peak_bytes": 2691112
+                    },
+                    {
+                        "ms": 233.998684,
+                        "incremental_peak_bytes": 2691112
+                    },
+                    {
+                        "ms": 241.176173,
+                        "incremental_peak_bytes": 2691112
+                    },
+                    {
+                        "ms": 236.186014,
+                        "incremental_peak_bytes": 2691112
+                    }
+                ]
+            },
+            "median_peak_bytes": {
+                "baseline": 3546216,
+                "current": 2691112
+            },
+            "median_ms": {
+                "baseline": 778.752721,
+                "current": 236.186014
+            }
+        }
+    ],
+    "native_changed_state_contract": true
+}
