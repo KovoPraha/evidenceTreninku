@@ -1,0 +1,10 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w102-20261030\phpunit.xml.dist
+
+..............                                                    14 / 14 (100%)
+
+Time: 00:02.583, Memory: 88.00 MB
+
+OK (14 tests, 976 assertions)

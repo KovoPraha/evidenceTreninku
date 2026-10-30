@@ -34,6 +34,12 @@ function accountingExportFinancialExceptions(array $snapshot, string $to): array
 /** Preserve row and arithmetic order, including legacy null/zero identifiers. */
 function accountingExportFinancialBalanceRows(array $snapshot): array
 {
+    return iterator_to_array(accountingExportFinancialBalanceIterator($snapshot), false);
+}
+
+/** Rows retain their arithmetic order while the XLSX writer consumes them incrementally. */
+function accountingExportFinancialBalanceIterator(array $snapshot): Generator
+{
     $byAccount = [];
     $reversals = [];
     foreach ($snapshot['movements'] as $row) {
@@ -54,7 +60,6 @@ function accountingExportFinancialBalanceRows(array $snapshot): array
     foreach ($snapshot['refund_payments'] as $row) {
         $payments[(int) $row['decision_id']][] = (int) $row['amount_minor'];
     }
-    $balances = [];
     foreach ($snapshot['accounts'] as $account) {
         $opening = (int) $account['opening_minor'];
         $turnover = 0;
@@ -68,7 +73,7 @@ function accountingExportFinancialBalanceRows(array $snapshot): array
         $late = $account['opened_on'] > $snapshot['period_from'];
         $meaning = $account['name'] . ($late ? ' — doložený počátek až ' . $account['opened_on'] . ': '
             . number_format((int) $account['opening_minor'] / 100, 2, ',', ' ') . ' ' . $account['currency'] . '; dřívější stav neznámý' : '');
-        $balances[] = ['Účet', (string) $account['id'], $meaning, $late ? null : $opening / 100,
+        yield ['Účet', (string) $account['id'], $meaning, $late ? null : $opening / 100,
             $turnover / 100, ($opening + $turnover) / 100, $account['currency']];
     }
     foreach ($snapshot['movements'] as $movement) {
@@ -82,7 +87,7 @@ function accountingExportFinancialBalanceRows(array $snapshot): array
         foreach ($reversals[(int) $movement['id']] ?? [] as $amount) {
             $net += $amount;
         }
-        $balances[] = ['Nepřiděleno', (string) $movement['id'], 'Příjem po přídělech a skutečných vratkách', null, null, $net / 100, $movement['currency']];
+        yield ['Nepřiděleno', (string) $movement['id'], 'Příjem po přídělech a skutečných vratkách', null, null, $net / 100, $movement['currency']];
     }
     foreach ($snapshot['refund_decisions'] as $decision) {
         $isCancelled = isset($cancelled[(int) $decision['id']]);
@@ -90,9 +95,8 @@ function accountingExportFinancialBalanceRows(array $snapshot): array
         foreach ($payments[(int) $decision['id']] ?? [] as $amount) {
             $paid += $amount;
         }
-        $balances[] = ['Vratka k vyplacení', (string) $decision['id'], ($isCancelled ? 'Zrušeno; ' : '')
+        yield ['Vratka k vyplacení', (string) $decision['id'], ($isCancelled ? 'Zrušeno; ' : '')
             . 'pohyb ' . $decision['original_movement_id'] . '; opravný doklad ' . ($decision['correction_document_id'] ?? 'přeplatek'),
             null, null, ($isCancelled ? 0 : (int) $decision['amount_minor'] - $paid) / 100, $decision['currency']];
     }
-    return $balances;
 }
