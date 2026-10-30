@@ -2761,24 +2761,6 @@ parameters:
 			path: sprava_skupin.php
 
 		-
-			message: '#^Variable \$dir on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.variable
-			count: 1
-			path: sprava_sportovcu.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 25
-			path: sprava_sportovcu.php
-
-		-
-			message: '#^Variable \$sort on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.variable
-			count: 1
-			path: sprava_sportovcu.php
-
-		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
 			count: 8

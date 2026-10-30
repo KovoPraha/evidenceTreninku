@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+
+require_once dirname(__DIR__) . '/Support/JsdelivrSriSource.php';
 
 final class SecurityInfrastructureWiringTest extends TestCase
 {
@@ -168,16 +171,30 @@ final class SecurityInfrastructureWiringTest extends TestCase
             ) {
                 continue;
             }
-            foreach (file($file->getPathname(), FILE_IGNORE_NEW_LINES) ?: [] as $number => $line) {
-                if (str_contains($line, 'cdn.jsdelivr.net')
-                    && (str_contains($line, '<script') || str_contains($line, '<link'))
-                    && (!str_contains($line, 'integrity="sha384-') || !str_contains($line, 'crossorigin="anonymous"'))
-                ) {
-                    $missing[] = substr($path, strlen(str_replace('\\', '/', $root)) + 1) . ':' . ($number + 1);
-                }
+            $source = (string) file_get_contents($file->getPathname());
+            if (!str_contains($source, 'cdn.jsdelivr.net')) {
+                continue;
+            }
+            foreach (\Tests\Support\jsdelivrSriMissingLines($source) as $number) {
+                $missing[] = substr($path, strlen(str_replace('\\', '/', $root)) + 1) . ':' . $number;
             }
         }
         self::assertSame([], $missing, 'CDN assety bez SRI: ' . implode(', ', $missing));
+    }
+
+    public function testSriCheckRetainsNegativeDetectionAcrossLinesAndLiteralConcatenation(): void
+    {
+        $url = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
+        foreach (['', ' integrity="sha384-synthetic"', ' crossorigin="anonymous"'] as $attributes) {
+            $tag = '<link href="' . $url . '"' . $attributes . '>';
+            $literal = '<?php echo ' . var_export(substr($tag, 0, 25), true) . "\n . " . var_export(substr($tag, 25), true) . ';';
+            self::assertCount(1, \Tests\Support\jsdelivrSriMissingLines($tag));
+            self::assertCount(1, \Tests\Support\jsdelivrSriMissingLines($literal));
+        }
+        $tag = '<link href="' . $url . '"' . "\n" . ' integrity="sha384-synthetic" crossorigin="anonymous">';
+        self::assertSame([], \Tests\Support\jsdelivrSriMissingLines($tag));
+        $literal = '<?php echo ' . var_export(substr($tag, 0, 35), true) . "\n . " . var_export(substr($tag, 35), true) . ';';
+        self::assertSame([], \Tests\Support\jsdelivrSriMissingLines($literal));
     }
 
     public function testPushSubscriptionsRejectArbitraryOutboundEndpoints(): void

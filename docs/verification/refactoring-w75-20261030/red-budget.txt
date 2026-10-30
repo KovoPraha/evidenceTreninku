@@ -1,0 +1,5 @@
+
+Fatal error: Uncaught RuntimeException: Directory materialized too many rows: 103 for page 50 in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w75-20261030\tests\Support\SportovecDirectoryProfile.php:83
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w75-20261030\tests\Support\SportovecDirectoryProfile.php on line 83
