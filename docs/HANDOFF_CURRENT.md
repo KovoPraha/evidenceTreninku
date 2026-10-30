@@ -6,8 +6,10 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 
 W9.2 / W10.1 jsou [nasazené a ověřené](verification/refactoring-w92-release-20261030/RESULTS.md).
 W10.2 je [nasazená](verification/refactoring-w102-release-20261030/RESULTS.md).
-Probíhá [W10.3](REFACTORING_W103_2026-10-30.md) a navazuje [W10.4](REFACTORING_W104_2026-10-30.md);
-autonomní pokračování až po W15 je autorizované. Skutečné účetní UAT zůstává oddělené.
+W10.3–W15 jsou zahrnuty v [závěrečné technické přejímce](REFACTORING_CLOSURE_2026-10-30.md).
+Stav sloučení a nasazení ověřte v CURRENT_STATE; samotný lokální PASS není release.
+Skutečné účetní UAT zůstává oddělené. Po nové migraci nevracet starý katalog;
+opravné vydání zachová migrační soubor a ledger, bez mazání dat nebo záloh.
 
 ## Nová stanice: čisté převzetí
 

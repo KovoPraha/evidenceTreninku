@@ -69,6 +69,8 @@ enginu nezávisle na konkrétním názvu plánu a rychlosti stroje.
 
 DDL konsoliduje dva indexy stagingové tabulky; žádný historický migrační soubor
 se nemění. Před release záloha a ověření produkce, po release očekávaný
-přírůstek migračního ledgeru o 1. Při návratu kódu lze neunikátní index
-ponechat; neprovádět automatický DROP ani mazání stagingu. Integrace a import
+přírůstek migračního ledgeru o 1. Návrat aplikační změny musí být dopředné
+opravné vydání, které zachová nový migrační soubor i ledger; starý katalog
+by nový záznam správně odmítl jako neznámý. Neunikátní index ponechat,
+neprovádět automatický DROP ani mazání stagingu. Integrace a import
 zůstávají vypnuté. Nedávný provozní disk-full incident se eviduje odděleně.

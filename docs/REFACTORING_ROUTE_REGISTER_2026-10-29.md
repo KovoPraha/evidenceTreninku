@@ -1,5 +1,29 @@
 # K0.1 — registr cest a měření celé aplikace
 
+## Aktuální dispozice cest, 30. 10. 2026
+
+| Cesty | Doložený výsledek / rozsah |
+| --- | --- |
+| R01 katalog a kapacity | W6 + W9.2: migrovaný profil, dávky, cílená kapacita, skutečné checkout souběhy. |
+| R02 rodinný přehled | W7.1–W7.4: celý GET a jednotlivé sekce, request metadata a členské dávky; zápisová revokace samostatně. |
+| R03 registrář, R04 finanční historie | W7.5 cílená stránka, R04 dokončeno v rámci W10.3/W10.4 měřením finančních čtení. |
+| R05–R07 timeline, filtry, kalendáře | W8.1–W8.4: 1/12/52 týdnů, dávkové filtry, copy a ICS; W8.5 historie a uzavření docházky. |
+| R08 rezervace, R13 zdravotní agenda | W8.5: skutečné izolované MariaDB souběhy, revokace a výkonnostní posouzení. Bez zjednodušení doménových guardů. |
+| R09 košík, R10 sklad | W9.1/W9.2: celé projekce a stránky, role/filtry, fyzický sklad, výdej a vratky pod souběhem. |
+| R11 ledger, R12 dokument/export | W10.1–W10.4: indexované salda, 100k XLSX, metadata; W12 konzistentní snapshot a skutečný ZIP/PDF/XLSX v daném objemu. |
+| R14 notifikace | W11: 0/100/10k fronta, dva workery a skutečné pády, neznámý výsledek držen, příjemce ověřen cíleně a čerstvě. |
+| R15 import | W12: parser 100/1k/10k, zdroje uvolněny; stejný preview fingerprint, složený index a rollback; bez reálné promotion. |
+| R16 záloha/obnova | W12: skutečný CLI gzip, všech 290 syntetických tabulek, FK/trigger a soukromý archiv obnoveny do nové náhodné DB. |
+| Průřez | W13: sdílený shell a labely; W14: nepřibývající baseline; W15: propojený rodinný případ až do exportu a revokace. |
+
+Odkazy na všechny protokoly a důvody nepřijatých kandidátů jsou v
+[technickém uzavření](REFACTORING_CLOSURE_2026-10-30.md). Stav živého vydání
+určuje CURRENT_STATE; samotná tabulka není tvrzení o nasazení ani úplném UAT.
+Následující inventura a doplňky jsou historický postup od výchozího K0.1;
+jejich „dosud nezměřeno“ popisuje tehdejší stav, ne současné otevřené úkoly.
+
+## Historický základ K0.1
+
 Zdroj: `3cc60fb6d7fad4bc6430724529295ef025d75178`, ověřeno 29. 10. 2026.
 Toto je mapa vybraných kritických toků, nikoli úplný seznam URL, bezpečnostní
 certifikace ani měření všech agend. Guard znamená současnou kontrolu v kódu;
