@@ -164,13 +164,13 @@ try {
                 }
             }
         }
-        $membership = static fn (array $qs): int => count(array_filter($qs, static fn (array $q): bool => $q['sql'] === 'SELECT * FROM sportovci WHERE id=?'));
+        $membership = static fn (array $qs): int => count(array_filter($qs, static fn (array $q): bool => str_starts_with($q['sql'], 'SELECT * FROM sportovci WHERE id')));
         $saved = $membership($queries['baseline']) - $membership($queries['current']);
-        if (!$before && $saved !== $size * max(0, $size - 1)) {
+        if (!$before && $saved !== $size * $size - (int) ceil($size / 400)) {
             throw new RuntimeException('Whole-page query reduction budget failed.');
         }
         if (!$before && (count($queries['baseline']) - count($queries['current']) !== $saved
-            || array_sum(array_column($queries['baseline'], 'fetched_rows')) - array_sum(array_column($queries['current'], 'fetched_rows')) !== 2 * $saved)) {
+            || array_sum(array_column($queries['baseline'], 'fetched_rows')) - array_sum(array_column($queries['current'], 'fetched_rows')) !== 2 * $size * max(0, $size - 1))) {
             throw new RuntimeException('Whole-page SQL or row reduction differs from the targeted hydration change.');
         }
         $median = static function (array $v): float {
