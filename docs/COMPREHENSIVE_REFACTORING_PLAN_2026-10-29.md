@@ -286,7 +286,7 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | W7.4 | [Dávkové členství](REFACTORING_W74_2026-10-30.md), PR #233 nasazeno; [důkazy](verification/refactoring-w74-release-20261030/RESULTS.md) | Hotovo; 20 osob 752 → 619 SQL, členství 160 → 27; shodná data/HTML/řádky, čerstvá autorizace |
 | W7.5 | [Registrář](REFACTORING_W75_2026-10-30.md), PR #235 nasazeno; [důkazy](verification/refactoring-w75-release-20261030/RESULTS.md) | Hotovo pro stránkování; 10 003 → 53 řádků, paměť stránky 100 z 36,8 na 0,43 MB; zbývající R03/R04 v W7.6 |
 | Zbytek W7 a W8–W15 | Naplánované, další měření otevřené | Malé PR podle závislostí a skutečných výsledků K0 |
-| W7.6 / W8.1 | [Osobní čtení a časová osa](REFACTORING_W76_W81_2026-10-30.md), lokálně ověřeno | Roční profil 4176 → 16 SQL, shodná data, navazuje CI a release; finanční historie předána W10 |
+| W7.6 / W8.1 | [Osobní čtení a časová osa](REFACTORING_W76_W81_2026-10-30.md), PR #237 nasazeno; [důkazy](verification/refactoring-w81-release-20261030/RESULTS.md) | Hotovo v daném rozsahu; roční profil 4176 → 16 SQL, shodná data; finanční historie předána W10 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 
 Každý balík povede protokol `docs/verification/<balik>/RESULTS.md` s: základním

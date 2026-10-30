@@ -65,5 +65,10 @@ CI opakuje oba profily i kontrakty na MariaDB 10.3/11.4.
 
 [PHPStan](phpstan.txt) bez chyb, baseline beze změny, styl PASS.
 [Plná lokální sada](phpunit-windows.txt): 1831 testů / 36242 assertions,
-3 POSIX skips (Linux je musí provést). CI a nasazení se doplní po ověření.
+3 POSIX skips. Linux 1831 testů / 36291 assertions; oba MariaDB profily PASS:
+[10.3](ci-10.3-timeline-profile.json), [11.4](ci-11.4-timeline-profile.json).
+Roční medián 1390,42 → 10,58 ms (10.3), 1059,23 → 14,09 ms (11.4),
+paměť 1 364 536 → 1 269 960 B. První běh odmítl odsazení YAML; opravený
+head `98c12a2bc68a0ac3223452702d1c953cc6c32b00` prošel všemi kontrolami.
+PR #237 sloučen a nasazen. [Release](../refactoring-w81-release-20261030/RESULTS.md).
 Lidské UAT, reálné finanční převody a aktivace integrací zůstávají oddělené.
