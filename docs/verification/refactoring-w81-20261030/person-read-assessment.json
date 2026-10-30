@@ -1,0 +1,253 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "migrated_schema": true,
+    "production_mutations": false,
+    "r03": [
+        {
+            "historical_claims": 0,
+            "sql": 7,
+            "fetched_rows": 6,
+            "eligible_people": 1,
+            "terms": 5,
+            "foreign_data_absent": true
+        },
+        {
+            "historical_claims": 100,
+            "sql": 7,
+            "fetched_rows": 106,
+            "eligible_people": 1,
+            "terms": 5,
+            "foreign_data_absent": true
+        },
+        {
+            "historical_claims": 1000,
+            "sql": 7,
+            "fetched_rows": 1006,
+            "eligible_people": 1,
+            "terms": 5,
+            "foreign_data_absent": true
+        }
+    ],
+    "fresh_revocation": true,
+    "unverified_account_denied": true,
+    "r04_editor": {
+        "sql": 22,
+        "fetched_rows": 17,
+        "roster_counts": {
+            "current": 1,
+            "planned": 0,
+            "history": 0,
+            "claims": 0,
+            "current_claims": 0,
+            "events": 0,
+            "choices": 2
+        },
+        "payment_counts": {
+            "charges": 0,
+            "orders": 1,
+            "receipts": 0,
+            "allocations": 0
+        },
+        "queries": [
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "club_roster_members"
+                ],
+                "execute_ms": 0.4157,
+                "fetch_ms": 0.0072,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "club_team_edges"
+                ],
+                "execute_ms": 0.2934,
+                "fetch_ms": 0.0064,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT m.*,t.name AS team_name,t.status AS team_status,COALESCE(s.name,'Pr\u016fb\u011b\u017en\u011b') AS season_name,s.starts_on,s.ends_on,s.status AS season_status FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY COALESCE(s.starts_on,'9999-12-31') DESC,t.name,m.id",
+                "parameters": [
+                    8
+                ],
+                "execute_ms": 0.5052,
+                "fetch_ms": 0.0243,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "kis_legacy_roster_claims"
+                ],
+                "execute_ms": 0.2995,
+                "fetch_ms": 0.0048,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT c.*,t.name AS team_name,s.name AS season_name FROM kis_legacy_roster_claims c JOIN club_teams t ON t.id=c.team_id JOIN club_seasons s ON s.id=t.season_id WHERE c.sportovec_id=? AND c.member_id IS NULL ORDER BY s.starts_on DESC,t.name",
+                "parameters": [
+                    8
+                ],
+                "execute_ms": 17.39,
+                "fetch_ms": 0.0077,
+                "fetched_rows": 0
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "kis_current_roster_claims"
+                ],
+                "execute_ms": 0.3919,
+                "fetch_ms": 0.0069,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT c.*,COALESCE(t.name,legacy.legacy_label) AS team_name,s.name AS season_name FROM kis_current_roster_claims c JOIN kis_current_roster_runs run ON run.id=c.run_id JOIN club_seasons s ON s.id=run.season_id LEFT JOIN club_teams t ON t.id=COALESCE(c.target_team_id,c.suggested_team_id) LEFT JOIN kis_legacy_roster_claims legacy ON legacy.id=c.legacy_claim_id WHERE c.sportovec_id=? AND c.member_id IS NULL ORDER BY s.starts_on DESC,c.id",
+                "parameters": [
+                    8
+                ],
+                "execute_ms": 0.7086,
+                "fetch_ms": 0.0053,
+                "fetched_rows": 0
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "club_roster_events"
+                ],
+                "execute_ms": 0.4257,
+                "fetch_ms": 0.0038,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT e.id,e.created_at,e.action,e.note,e.before_json,e.after_json,t.name AS team_name FROM club_roster_events e JOIN club_roster_members m ON m.id=e.roster_member_id JOIN club_teams t ON t.id=e.team_id WHERE m.sportovec_id=? ORDER BY e.created_at DESC,e.id DESC",
+                "parameters": [
+                    8
+                ],
+                "execute_ms": 0.5033,
+                "fetch_ms": 0.0062,
+                "fetched_rows": 0
+            },
+            {
+                "sql": "SELECT t.id,t.name,COALESCE(s.name,'Pr\u016fb\u011b\u017en\u011b') AS season_name,s.starts_on FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id WHERE t.status='active' AND t.team_kind='roster' ORDER BY COALESCE(s.starts_on,'9999-12-31') DESC,t.name",
+                "parameters": [],
+                "execute_ms": 0.408,
+                "fetch_ms": 0.0177,
+                "fetched_rows": 2
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "club_member_charges"
+                ],
+                "execute_ms": 0.3232,
+                "fetch_ms": 0.0053,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "payments"
+                ],
+                "execute_ms": 0.291,
+                "fetch_ms": 0.0048,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT c.id,c.public_code,c.title_snapshot,c.amount_minor,c.currency,c.status,c.period_from,c.period_to,c.due_on,c.source_system,p.id AS payment_id,p.status AS payment_status,p.method,p.variable_symbol,p.paid_at FROM club_member_charges c LEFT JOIN payments p ON p.payable_type='member_charge' AND p.payable_id=c.id WHERE c.sportovec_id=? ORDER BY c.created_at DESC,c.id DESC",
+                "parameters": [
+                    8
+                ],
+                "execute_ms": 0.7297,
+                "fetch_ms": 0.0073,
+                "fetched_rows": 0
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "shop_orders"
+                ],
+                "execute_ms": 0.5349,
+                "fetch_ms": 0.0079,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "shop_order_items"
+                ],
+                "execute_ms": 0.4914,
+                "fetch_ms": 0.0076,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "payments"
+                ],
+                "execute_ms": 0.4898,
+                "fetch_ms": 0.0061,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                "parameters": [
+                    "shop_orders",
+                    "finance_sportovec_id"
+                ],
+                "execute_ms": 20.5606,
+                "fetch_ms": 0.008,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT o.id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,o.placed_at,o.finance_sportovec_id AS owner_id,p.id AS payment_id,p.status AS ledger_status,p.method,p.variable_symbol,p.paid_at,(SELECT SUM(i.line_amount_minor) FROM shop_order_items i WHERE i.order_id=o.id AND i.beneficiary_sportovec_id=?) AS athlete_items_minor FROM shop_orders o LEFT JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id WHERE o.finance_sportovec_id=? OR EXISTS(SELECT 1 FROM shop_order_items i WHERE i.order_id=o.id AND i.beneficiary_sportovec_id=?) ORDER BY o.placed_at DESC,o.id DESC",
+                "parameters": [
+                    8,
+                    8,
+                    8
+                ],
+                "execute_ms": 1.1578,
+                "fetch_ms": 0.0215,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "club_finance_receipts"
+                ],
+                "execute_ms": 0.4404,
+                "fetch_ms": 0.005,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT id,kind,reference,amount_minor,currency,paid_on FROM club_finance_receipts WHERE sportovec_id=? ORDER BY paid_on DESC,id DESC",
+                "parameters": [
+                    8
+                ],
+                "execute_ms": 0.5735,
+                "fetch_ms": 0.006,
+                "fetched_rows": 0
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "parameters": [
+                    "club_finance_allocations"
+                ],
+                "execute_ms": 0.4134,
+                "fetch_ms": 0.006,
+                "fetched_rows": 1
+            },
+            {
+                "sql": "SELECT a.receipt_id,a.charge_id,a.order_id,a.amount_minor FROM club_finance_allocations a JOIN club_finance_receipts r ON r.id=a.receipt_id WHERE r.sportovec_id=? ORDER BY a.receipt_id,a.id",
+                "parameters": [
+                    8
+                ],
+                "execute_ms": 0.5806,
+                "fetch_ms": 0.0068,
+                "fetched_rows": 0
+            }
+        ]
+    }
+}
