@@ -1,9 +1,12 @@
 # Technické uzavření refaktoringu W6–W15
 
-Stav: implementace W6–W15, konečné CI a sloučení dokončeny. Produkční
-nasazení posledních W10.3–W15 blokuje opakovaný nedostatek prostoru DB `/tmp`;
-deploy skončil před migrací a aktivací. [Závěrečný protokol](verification/refactoring-final-release-20261030/RESULTS.md)
-obsahuje důkazy, dopad na původní produkci a konkrétní podmínky pokračování.
+Stav: implementace W6–W15, konečné CI, sloučení a produkční nasazení dokončeny.
+[Původní blokaci DB prostoru](verification/refactoring-final-release-20261030/RESULTS.md)
+vyřešila autorizovaná obnova kapacity: externí záloha a skutečná obnova Search,
+vyprázdnění pouze odvozeného indexu a následné chráněné nasazení.
+[Finální provozní důkazy](verification/db-temp-recovery-20261030/RESULTS.md):
+nová záloha a její izolovaná obnova, HTTP 26/26, ledger 142 a zachované VS/flags.
+Globální hledání Velocoty zůstává dočasně vypnuté. Lidské/účetní UAT je oddělené.
 Aktuální živé vydání vždy určuje [CURRENT_STATE](CURRENT_STATE.md).
 
 ## Výsledek podle oblastí
@@ -35,14 +38,14 @@ zámky, kolace, crash a obnova mají samostatné opakované MariaDB 10.3/11.4
 testy v CI; prohlížeč W13 ověřuje sdílený shell, nikoli veškeré produkční UAT.
 Každá z těchto vrstev je potřebná, žádná nenahrazuje ostatní.
 
-Po nápravě provozní příčiny a nových kontrolách se nasadí přes chráněný main s privátní zálohou,
-bez importu a s `uat_schvaleno=false`. Nový index stagingu zvýší počet
-migračních záznamů o 1. Po nasazení se ověří živé SHA/run, katalog/detail,
-neveřejné trasy, config hash, flags, VS a migrační stav. Návrat aplikační změny
+Nasazení prošlo přes chráněný main s novou privátní zálohou,
+bez importu a s `uat_schvaleno=false`. Nový index stagingu zvýšil počet
+migračních záznamů o 1 na 142. Živé SHA/run, katalog/detail,
+neveřejné trasy, config hash, flags, VS a migrační stav jsou ověřeny. Návrat aplikační změny
 musí zachovat nový migrační soubor i ledger v dopředném opravném vydání;
 starý katalog by nový záznam odmítl. Index ponechat, bez automatického mazání.
 
-## Provozní incident mimo změny
+## Historie incidentu před obnovou kapacity v 21:10 UTC
 
 Před nasazením W10.3/W10.4 katalog vrátil 500 a read-only audit opakovaně
 SQLSTATE HY000 / driver 1021 (MariaDB ER_DISK_FULL). Produkční SHA zůstalo
@@ -59,3 +62,7 @@ Diagnostika potvrdila stejný hostname webu i DB a přibližně 17,9 GB volných
 v prostoru viditelném PHP. Stav skutečného DB tmp filesystemu, inodeů a kvót
 zůstává neprokázaný; finální release je blokovaný. Podrobnosti a HTTP 13/26
 jsou v závěrečném protokolu. Nesmazat rollback ani zálohy odhadem.
+
+Navazující [obnova a úspěšný release](verification/db-temp-recovery-20261030/RESULTS.md)
+uzavřely tuto blokaci nasazení. Původní příčina kolísání kapacity není definitivně
+určena; Search zůstává vypnuté a jeho návrat je samostatný provozní úkol.

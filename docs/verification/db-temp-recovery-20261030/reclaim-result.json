@@ -1,0 +1,28 @@
+{
+    "at": "2026-10-30T21:10:17+00:00",
+    "target": "stats_search_postings",
+    "manifest_sha256": "a5cc809c06256a68ece9da428b0b8575e3a3ca869f30fbd5ac7ba6a8f2ca4118",
+    "tables_before": {
+        "stats_search_runs": 37,
+        "stats_search_state": 1,
+        "stats_search_terms": 48011,
+        "stats_search_documents": 1323147,
+        "stats_search_postings": 18691792
+    },
+    "system_free_before": 2280534016,
+    "backup_files_retained": true,
+    "building_runs_retired": 1,
+    "postings_after": 0,
+    "documents_after": 1323147,
+    "terms_after": 48011,
+    "state_after": [
+        {
+            "id": 1,
+            "active_generation": null
+        }
+    ],
+    "system_free_after": 5631791104,
+    "observed_free_delta": 3351257088,
+    "ok": true,
+    "canonical_tables_mutated": false
+}

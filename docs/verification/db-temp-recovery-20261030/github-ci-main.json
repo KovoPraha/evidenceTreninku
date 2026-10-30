@@ -1,0 +1,26 @@
+[
+  {
+    "id": 41097723229,
+    "name": "Testy",
+    "conclusion": "success",
+    "sha": "d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d"
+  },
+  {
+    "id": 41097723233,
+    "name": "Current documentation",
+    "conclusion": "success",
+    "sha": "d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d"
+  },
+  {
+    "id": 41097723222,
+    "name": "PHP quality",
+    "conclusion": "success",
+    "sha": "d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d"
+  },
+  {
+    "id": 41097722410,
+    "name": "Push on main",
+    "conclusion": "success",
+    "sha": "d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d"
+  }
+]

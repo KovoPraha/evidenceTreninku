@@ -1,0 +1,46 @@
+{
+    "at": "2026-10-30T21:06:34+00:00",
+    "isolation": "127.0.0.1:33430\/search_recovery_20261030",
+    "server_version": "10.3.39-MariaDB",
+    "manifest_sha256": "a5cc809c06256a68ece9da428b0b8575e3a3ca869f30fbd5ac7ba6a8f2ca4118",
+    "tables": {
+        "stats_search_runs": {
+            "rows": 37,
+            "row_sha256": "391b6ce1bf1fc621c2b2e66536345dfc91d859d932ae514118a26b6357bd8458",
+            "rows_match": true,
+            "row_hash_match": true,
+            "archive_sha256_matches": true
+        },
+        "stats_search_state": {
+            "rows": 1,
+            "row_sha256": "d92ad8ad44e8f87485224a5ec8a55d817afc73260b64050718d5947625656fb3",
+            "rows_match": true,
+            "row_hash_match": true,
+            "archive_sha256_matches": true
+        },
+        "stats_search_terms": {
+            "rows": 48011,
+            "row_sha256": "183d29d04b1ecaf28fc0a7b21777c06fce72b45fc1de7256bf706b6373916977",
+            "rows_match": true,
+            "row_hash_match": true,
+            "archive_sha256_matches": true
+        },
+        "stats_search_documents": {
+            "rows": 1323147,
+            "row_sha256": "c9770687abb84a6ded09840da79f2c95cc17f71b2f13c6d723da952b9a8c4fff",
+            "rows_match": true,
+            "row_hash_match": true,
+            "archive_sha256_matches": true
+        },
+        "stats_search_postings": {
+            "rows": 18691792,
+            "row_sha256": "5ee6dbed7041c69ca621f1d5b407f64cdf52069adaf3e0b2b5006e111e2fbcae",
+            "rows_match": true,
+            "row_hash_match": true,
+            "archive_sha256_matches": true
+        }
+    },
+    "orphan_postings": 0,
+    "ok": true,
+    "completed_at": "2026-10-30T21:09:16+00:00"
+}

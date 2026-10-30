@@ -1,0 +1,19 @@
+{
+  "before": {
+    "run_id": 41127231881,
+    "conclusion": "success",
+    "backup": "evidence_2026-10-30_151016_5b2e01e7.sql.gz",
+    "tables": 336,
+    "triggers": 2
+  },
+  "latest": {
+    "run_id": 41130077458,
+    "conclusion": "success",
+    "backup": "evidence_2026-10-30_211507_13b2abd3.sql.gz",
+    "sha256": "cbea85ebbc3eb7ed26bf0239e35cb77fc5bd686b5d22a9beb01c4c3306c8fe09",
+    "tables": 336,
+    "triggers": 2,
+    "restore_engine": "isolated MariaDB 11.4",
+    "checks": "gzip SHA-256 against sidecar/manifest, actual SQL import, per-table row counts and trigger count"
+  }
+}

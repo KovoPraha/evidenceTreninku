@@ -7,9 +7,11 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 W9.2 / W10.1 jsou [nasazené a ověřené](verification/refactoring-w92-release-20261030/RESULTS.md).
 W10.2 je [nasazená](verification/refactoring-w102-release-20261030/RESULTS.md).
 W10.3–W15 jsou zahrnuty v [závěrečné technické přejímce](REFACTORING_CLOSURE_2026-10-30.md).
-Implementace a CI jsou dokončené; [poslední deploy](verification/refactoring-final-release-20261030/RESULTS.md)
-zastavil DB disk full před migrací a aktivací. Nejprve prověřit DB `/tmp`,
-inody/kvóty s hostingem; poté zopakovat audit a chráněné nasazení se zálohou.
+Implementace, CI i finální chráněné nasazení jsou dokončené a technicky ověřené.
+[Původní neúspěšný pokus](verification/refactoring-final-release-20261030/RESULTS.md)
+a [následná obnova DB kapacity a úspěšný release](verification/db-temp-recovery-20261030/RESULTS.md)
+mají oddělené protokoly. Globální Search Velocoty a jeho cron zůstávají
+vypnuté; bez trvalé kapacitní nápravy nebo ověřeného úspornějšího indexu je nezapínat.
 Stav nasazení ověřte v CURRENT_STATE; samotný lokální PASS není release.
 Skutečné účetní UAT zůstává oddělené. Po nové migraci nevracet starý katalog;
 opravné vydání zachová migrační soubor a ledger, bez mazání dat nebo záloh.

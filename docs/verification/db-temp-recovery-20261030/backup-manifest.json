@@ -1,0 +1,109 @@
+{
+    "format": 1,
+    "started_at": "2026-10-30T20:53:59+00:00",
+    "database_mutations": false,
+    "tables": {
+        "stats_search_runs": {
+            "rows": 37,
+            "row_sha256": "391b6ce1bf1fc621c2b2e66536345dfc91d859d932ae514118a26b6357bd8458",
+            "file": "stats_search_runs.sql.gz",
+            "bytes": 1712,
+            "file_sha256": "99fea463d6a14adec82a2c7493e915b3e8e33bb48d54e31c7342a425d2c8bcce",
+            "primary_key": [
+                "id"
+            ],
+            "columns": [
+                "id",
+                "status",
+                "source_position",
+                "cursor_value",
+                "sources_json",
+                "indexed_count",
+                "started_at",
+                "updated_at",
+                "completed_at",
+                "error_code",
+                "tokenized"
+            ],
+            "schema_sha256": "121f29400bd0e35b6afc7dad3fd6c1ae2b9f2ed60f28b0817058b4d241242320"
+        },
+        "stats_search_state": {
+            "rows": 1,
+            "row_sha256": "d92ad8ad44e8f87485224a5ec8a55d817afc73260b64050718d5947625656fb3",
+            "file": "stats_search_state.sql.gz",
+            "bytes": 295,
+            "file_sha256": "f09b70d901c5c61a64bb4bc10ff35b428e888b190bcb72842a0bbb798fac3991",
+            "primary_key": [
+                "id"
+            ],
+            "columns": [
+                "id",
+                "active_generation"
+            ],
+            "schema_sha256": "530cf3b95b464ef13313dc313c36985d8e185faa7118e7678ec78185a13e97de"
+        },
+        "stats_search_terms": {
+            "rows": 48011,
+            "row_sha256": "183d29d04b1ecaf28fc0a7b21777c06fce72b45fc1de7256bf706b6373916977",
+            "file": "stats_search_terms.sql.gz",
+            "bytes": 385180,
+            "file_sha256": "4357f7e3eb404f596c1c0bb6fcd410ec9fb1ecca614c0a0de0e371516caff973",
+            "primary_key": [
+                "id"
+            ],
+            "columns": [
+                "id",
+                "term"
+            ],
+            "schema_sha256": "1a4d65b6a73cb2e5f210246eb9f7add34d03fe6dc6f24652d40d453ce4861269"
+        },
+        "stats_search_documents": {
+            "rows": 1323147,
+            "row_sha256": "c9770687abb84a6ded09840da79f2c95cc17f71b2f13c6d723da952b9a8c4fff",
+            "file": "stats_search_documents.sql.gz",
+            "bytes": 78741500,
+            "file_sha256": "04febe9a057fb4fe90b57d75facb89b1e31065e10458c8a7268a2411720c2f2d",
+            "primary_key": [
+                "id"
+            ],
+            "columns": [
+                "id",
+                "generation",
+                "source",
+                "entity_id",
+                "type",
+                "lang",
+                "source_version",
+                "title",
+                "title_norm",
+                "identifier",
+                "search_text",
+                "excerpt",
+                "metadata_json",
+                "targets_json",
+                "sort_position"
+            ],
+            "schema_sha256": "b25a38e85643658a8f85f9557ada1bded4bc2697f6b5917e5c760ad8e5218ea1"
+        },
+        "stats_search_postings": {
+            "rows": 18691792,
+            "row_sha256": "5ee6dbed7041c69ca621f1d5b407f64cdf52069adaf3e0b2b5006e111e2fbcae",
+            "file": "stats_search_postings.sql.gz",
+            "bytes": 61945188,
+            "file_sha256": "8a1918085cf840a35c6b3bf1a791e51f6bf415463b335cf7879796f3f686fc60",
+            "primary_key": [
+                "generation",
+                "term_id",
+                "document_id"
+            ],
+            "columns": [
+                "generation",
+                "term_id",
+                "document_id"
+            ],
+            "schema_sha256": "66fa435a0bbb457535375645c80ca12259ad90b3d0a11d2f21ecb338ae1fd2b0"
+        }
+    },
+    "completed_at": "2026-10-30T20:56:49+00:00",
+    "ok": true
+}

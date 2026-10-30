@@ -1,0 +1,11 @@
+{
+    "at": "2026-10-30T21:09:29+00:00",
+    "isolated": true,
+    "postings_ibd_before": 2583691264,
+    "postings_after": 0,
+    "documents_after": 1323147,
+    "terms_after": 48011,
+    "active_after": null,
+    "postings_ibd_after": 98304,
+    "ok": true
+}

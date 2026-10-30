@@ -1,5 +1,7 @@
 # W10.3–W15 — implementace a CI dokončeny, nasazení blokuje databázový prostor
 
+**Historický protokol neúspěšného pokusu.** Následná [obnova kapacity a úspěšné nasazení](../db-temp-recovery-20261030/RESULTS.md) dokončily W10.3–W15; níže je zachován původní průběh incidentu.
+
 30. 10. 2026, cílové vydání `2345b648a237973e96593daa5d8588be2a99c28a`.
 [PR #248](https://github.com/KovoPraha/evidenceTreninku/pull/248),
 [#249](https://github.com/KovoPraha/evidenceTreninku/pull/249),
