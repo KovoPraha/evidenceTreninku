@@ -8,20 +8,21 @@ require_once dirname(__DIR__, 2) . '/includes/kis_import_run_lib.php';
 $runtime = new RefactoringFixtureRuntime();
 try {
     $pdo = $runtime->create('', true);
-    w72Seed($pdo);
+    w72Seed($pdo, static function (PDO $legacy): void {
+        // Legacy indexes must exist before applying the numbered migrations.
+        foreach (['kis_import_rows' => ['run_id', 'person_key'],
+            'kis_import_matches' => ['run_id', 'row_id', 'sportovec_id', 'match_status']] as $table => $columns) {
+            foreach ($columns as $column) {
+                $legacy->exec('CREATE INDEX idx_' . $column . ' ON ' . $table . '(' . $column . ')');
+            }
+        }
+    });
     if (in_array('--legacy-indexes', $argv, true)) {
         $pdo->exec('DROP INDEX idx_kis_match_run_row ON kis_import_matches');
+        $pdo->exec('CREATE INDEX idx_run_id ON kis_import_matches(run_id)');
     }
     w72LegacyColumns($pdo, 'sportovci', ['kis_aktivni' => 'INT DEFAULT 0', 'kis_platebne_aktivni' => 'INT DEFAULT 0',
         'kis_neuhrazeno' => 'DECIMAL(12,2) DEFAULT 0', 'kis_posledni_uhrada' => 'DATE NULL', 'kis_soupisky' => 'TEXT NULL']);
-    // These indexes belong to the legacy bootstrap, not the numbered catalog.
-    // Match auto_migrace.php and local-demo-schema.sql instead of profiling a heap fixture.
-    foreach (['kis_import_rows' => ['run_id', 'person_key'],
-        'kis_import_matches' => ['run_id', 'row_id', 'sportovec_id', 'match_status']] as $table => $columns) {
-        foreach ($columns as $column) {
-            $pdo->exec('CREATE INDEX idx_' . $column . ' ON ' . $table . '(' . $column . ')');
-        }
-    }
     $source = $runtime->directory . '/source.json';
     file_put_contents($source, '{"synthetic":true}');
     mkdir($runtime->directory . '/archive', 0700);
@@ -34,6 +35,8 @@ try {
             $people[] = ['jmeno' => 'Synthetic', 'prijmeni' => 'New ' . $i, 'narozeni' => '2010-01-01',
                 'kis_external_id' => 'W12-' . $i];
         }
+        $counterSql = "SHOW SESSION STATUS WHERE Variable_name IN ('Handler_read_next','Handler_read_rnd_next')";
+        $beforeCounters = $pdo->query($counterSql)->fetchAll(PDO::FETCH_KEY_PAIR);
         $pdo->profile = [];
         $pdo->profiling = true;
         memory_reset_peak_usage();
@@ -43,6 +46,8 @@ try {
         $ms = (hrtime(true) - $start) / 1e6;
         $peak = memory_get_peak_usage() - $memory;
         $pdo->profiling = false;
+        $afterCounters = $pdo->query($counterSql)->fetchAll(PDO::FETCH_KEY_PAIR);
+        $rowAdvances = array_sum($afterCounters) - array_sum($beforeCounters);
         $counts = ['prepared_sql' => count($pdo->profile), 'fetched_rows' => array_sum(array_column($pdo->profile, 'fetched_rows'))];
         $sqlTimings = [];
         foreach ($pdo->profile as $entry) {
@@ -60,9 +65,9 @@ try {
             . 'WHERE ir.run_id=' . $run . ' ORDER BY ir.id')->fetchAll();
         $report = kisImportStoredPreviewReport($stored);
         $again = kisImportFinalizePreview($pdo, $run);
-        if (!in_array('--legacy-indexes', $argv, true) && $size === 10000
-            && ($explain[1]['key'] !== 'idx_kis_match_run_row' || (int) $explain[1]['key_len'] !== 8)) {
-            throw new RuntimeException('Preview join must use both indexed identity columns.');
+        if (!in_array('--legacy-indexes', $argv, true) && $size === 10000 && $rowAdvances > $size * 30 + 10000) {
+            throw new RuntimeException('Preview engine row budget exceeded: ' . json_encode([
+                'row_advances' => $rowAdvances, 'ms' => $ms, 'explain' => $explain, 'sql' => $counts], JSON_THROW_ON_ERROR));
         }
         if ($report['summary']['classified_rows'] !== $size || $report['fingerprint'] !== $again['fingerprint']
             || $pdo->query('SELECT COUNT(*) FROM sportovci')->fetchColumn() !== $beforePeople) {
@@ -70,7 +75,7 @@ try {
         }
         $results[] = ['input_rows' => $size, 'instrumented_single_ms' => $ms, 'extra_peak_bytes' => $peak,
             'report_bytes' => strlen($stored['preview_report_json']), 'classified_rows' => $report['summary']['classified_rows'],
-            'fingerprint' => $report['fingerprint'], 'explain' => $explain] + $counts;
+            'fingerprint' => $report['fingerprint'], 'engine_row_advances' => $rowAdvances, 'explain' => $explain] + $counts;
         unset($people, $report, $again, $stored);
     }
     // A failure after partial inserts must roll back the complete preview transaction.

@@ -17,9 +17,10 @@ produkce ani skutečné zdrojové soubory se k měření nepoužily.
    Běžící `SHOW EXPLAIN` doložil lookup `im` jen přes `run_id` a procházení
    stejného importu pro každý řádek; druhý diagnostický běh byl po několika
    minutách ukončen pouze ve vlastní DB, `finally` ji odstranilo.
-   Nová migrace přidává neunikátní `(run_id,row_id)`, zachovává duplicity,
+   Nová migrace nahrazuje přesně ověřený legacy neunikátní `(run_id)`
+   neunikátním `(run_id,row_id)`, zachovává duplicity,
    je opakovatelná a odmítne kolidující nesprávnou definici indexu.
-   Po změně celé preview 15,38 s včetně 20 023 SQL (z toho 20 000 INSERT),
+   První přidání indexu dalo 15,38 s včetně 20 023 SQL (z toho 20 000 INSERT),
    obě části klíče v EXPLAIN, cílový řádek místo celého importu.
    Fingerprint `ac4151f6…46e1b` je stejný, rollback a opakované finalize PASS.
    SQL/řádky i přírůstek paměti 68 775 336 B se nezměnily. Časy jsou jednotlivé
@@ -48,7 +49,25 @@ celý migrační upgrade následně 1/91 PASS. Plná regrese a CI jsou povinné.
 PHPStan bez nových nálezů; styl a AST/literal důkaz parseru zachován.
 CI opakuje parser, preview, snapshot a úplnou obnovu na MariaDB 10.3/11.4.
 
-DDL přidává jediný index stagingové tabulky; žádný historický migrační soubor
+První CI 11.4 odmítlo konkrétní očekávaný název/plnou délku klíče v EXPLAIN.
+To samo neprokazuje pomalé čtení. Fixture nyní zakládá legacy indexy před
+číslovanými migracemi (stejné pořadí jako upgrade) a měří skutečné session
+čítače Handler_read_next + Handler_read_rnd_next kolem celého preview.
+Brána pro 10 000 řádků dovoluje nejvýše 310 000 postupů po řádcích,
+nikoli kvadratické skenování. EXPLAIN zůstává v důkazu; rozhoduje práce
+enginu, nikoli vynucování názvu plánu odlišných verzí optimizeru.
+Oba SHOW STATUS jsou mimo instrumentovaný počet aplikačních SQL.
+Následná reprodukce i na místní MariaDB ukázala, že při studených statistikách
+může ponechaný legacy `(run_id)` skutečně stále vést ke kvadratickému plánu.
+Finální migrace jej proto odstraní až po ověření nového složeného indexu,
+jehož levý prefix všechny původní run lookupy pokrývá. Unikátní nebo jinak
+definovaný vlastní `idx_run_id` se nemaže. Duplicity, idempotence, nesprávná
+definice i zachování vlastního indexu: 4 testy / 101 assertions PASS včetně
+celého migračního upgrade. Finální lokální profil 10k: 6,00 s, 40 194 postupů
+po řádcích (rozpočet 310 000), stejný fingerprint a paměť. Tím se měří práce
+enginu nezávisle na konkrétním názvu plánu a rychlosti stroje.
+
+DDL konsoliduje dva indexy stagingové tabulky; žádný historický migrační soubor
 se nemění. Před release záloha a ověření produkce, po release očekávaný
 přírůstek migračního ledgeru o 1. Při návratu kódu lze neunikátní index
 ponechat; neprovádět automatický DROP ani mazání stagingu. Integrace a import

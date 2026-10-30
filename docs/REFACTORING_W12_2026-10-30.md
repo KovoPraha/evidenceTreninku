@@ -26,7 +26,7 @@ testy i MariaDB; aktuální produkční data a integrace zůstávají mimo test.
 Povinné CI, dokumentace a standardní technické nasazení. Nezávislé ověření
 W13–W14 probíhá souběžně; release lze spojit po úspěšných kontrolách všech změn.
 
-Měření doplnilo jediný index stagingové tabulky `(run_id,row_id)`: běžící
+Měření nahradilo redundantní index `(run_id)` indexem `(run_id,row_id)`: běžící
 EXPLAIN prokázal opakované skenování shod celého importu. Nejde o změnu
 matching pravidel, kanonických dat ani aktivaci importu. Parser má explicitní
 uvolnění workbooku, exportní snapshot a úplná obnova jsou přenosné v CI.
