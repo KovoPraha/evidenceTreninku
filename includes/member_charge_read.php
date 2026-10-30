@@ -1,21 +1,31 @@
 <?php
+
 declare(strict_types=1);
+
+require_once __DIR__.'/family_schema_read_scope.php';
 
 function memberChargeReadTableExists(PDO $pdo, string $table): bool
 {
-    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1) return false;
-    $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-    if ($driver === 'mysql') {
-        $statement = $pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?');
-        $statement->execute([$table]);
-        return (bool)$statement->fetchColumn();
-    }
-    if ($driver === 'sqlite') {
-        $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?");
-        $statement->execute([$table]);
-        return (bool)$statement->fetchColumn();
-    }
-    return false;
+    return FamilySchemaReadScope::remember($pdo, __FUNCTION__ . ':' . strlen($table) . ':' . $table, static function () use (
+        $pdo,
+        $table
+    ): bool {
+        if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1) {
+            return false;
+        }
+        $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'mysql') {
+            $statement = $pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?');
+            $statement->execute([$table]);
+            return (bool)$statement->fetchColumn();
+        }
+        if ($driver === 'sqlite') {
+            $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?");
+            $statement->execute([$table]);
+            return (bool)$statement->fetchColumn();
+        }
+        return false;
+    });
 }
 
 /** @return list<array<string,mixed>> */
@@ -59,13 +69,17 @@ function memberChargeAdminRows(PDO $pdo, string $query = '', string $status = ''
     }
     if ($query !== '') {
         $where[] = '(c.public_code LIKE ? OR c.title_snapshot LIKE ? OR s.jmeno LIKE ? OR s.prijmeni LIKE ?)';
-        foreach (range(1, 4) as $_) $parameters[] = '%' . $query . '%';
+        foreach (range(1, 4) as $_) {
+            $parameters[] = '%' . $query . '%';
+        }
     }
     $sql = 'SELECT c.*,s.jmeno,s.prijmeni,s.narozeni,'
         . 'p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at '
         . 'FROM club_member_charges c JOIN sportovci s ON s.id=c.sportovec_id '
         . "LEFT JOIN payments p ON p.id=(SELECT MAX(p2.id) FROM payments p2 WHERE p2.payable_type='member_charge' AND p2.payable_id=c.id) ";
-    if ($where !== []) $sql .= 'WHERE ' . implode(' AND ', $where) . ' ';
+    if ($where !== []) {
+        $sql .= 'WHERE ' . implode(' AND ', $where) . ' ';
+    }
     $sql .= 'ORDER BY CASE c.status WHEN \'pending\' THEN 0 WHEN \'paid\' THEN 1 ELSE 2 END,'
         . 'COALESCE(c.due_on,c.created_at) DESC,c.id DESC LIMIT ' . $limit;
     $statement = $pdo->prepare($sql);
@@ -78,7 +92,9 @@ function memberChargeAdminRows(PDO $pdo, string $query = '', string $status = ''
  */
 function memberChargeAdminHistory(PDO $pdo, int $chargeId): array
 {
-    if ($chargeId < 1 || !memberChargeReadTableExists($pdo, 'club_member_charge_events')) return [];
+    if ($chargeId < 1 || !memberChargeReadTableExists($pdo, 'club_member_charge_events')) {
+        return [];
+    }
     $statement = $pdo->prepare(
         'SELECT e.id,e.charge_id,e.action,e.from_status,e.to_status,e.actor_type,e.actor_id,'
         . 'e.reason,e.created_at,t.jmeno AS actor_name FROM club_member_charge_events e '

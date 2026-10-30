@@ -775,12 +775,6 @@ parameters:
 			path: booking/sportovni_prehled.php
 
 		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 26
-			path: booking/sportovni_prehled.php
-
-		-
 			message: '#^Variable \$today on left side of \?\?\= always exists and is not nullable\.$#'
 			identifier: nullCoalesce.variable
 			count: 2

@@ -1,0 +1,2898 @@
+{
+    "database_version": "10.4.32-MariaDB",
+    "native_prepares": true,
+    "foreign_keys": 1,
+    "scope": "Actual GET controller and HTML after synthetic authenticated PDO bootstrap; no network\/browser assets or production data",
+    "normalized_volatile_fields": [
+        "CSP nonce",
+        "finance as_of and its displayed observation time"
+    ],
+    "production_mutations": false,
+    "history_trainings_added": 0,
+    "results": [
+        {
+            "family_size": 0,
+            "same_data_and_html": true,
+            "same_business_queries": true,
+            "sections": {
+                "current": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 4,
+                        "metadata": 3,
+                        "fetched_rows": 3
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 1
+                    },
+                    "makeup": {
+                        "sql": 8,
+                        "metadata": 8,
+                        "fetched_rows": 8
+                    },
+                    "agenda": {
+                        "sql": 1,
+                        "metadata": 0,
+                        "fetched_rows": 0
+                    },
+                    "rsvp": {
+                        "sql": 1,
+                        "metadata": 0,
+                        "fetched_rows": 0
+                    },
+                    "weekly": {
+                        "sql": 1,
+                        "metadata": 0,
+                        "fetched_rows": 0
+                    },
+                    "annual": {
+                        "sql": 1,
+                        "metadata": 0,
+                        "fetched_rows": 0
+                    },
+                    "tasks": {
+                        "sql": 14,
+                        "metadata": 10,
+                        "fetched_rows": 12
+                    },
+                    "render": {
+                        "sql": 1,
+                        "metadata": 0,
+                        "fetched_rows": 1
+                    }
+                },
+                "baseline": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 4,
+                        "metadata": 3,
+                        "fetched_rows": 3
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 1
+                    },
+                    "makeup": {
+                        "sql": 8,
+                        "metadata": 8,
+                        "fetched_rows": 8
+                    },
+                    "agenda": {
+                        "sql": 4,
+                        "metadata": 3,
+                        "fetched_rows": 3
+                    },
+                    "rsvp": {
+                        "sql": 4,
+                        "metadata": 3,
+                        "fetched_rows": 3
+                    },
+                    "weekly": {
+                        "sql": 4,
+                        "metadata": 3,
+                        "fetched_rows": 3
+                    },
+                    "annual": {
+                        "sql": 4,
+                        "metadata": 3,
+                        "fetched_rows": 3
+                    },
+                    "tasks": {
+                        "sql": 20,
+                        "metadata": 16,
+                        "fetched_rows": 18
+                    },
+                    "render": {
+                        "sql": 1,
+                        "metadata": 0,
+                        "fetched_rows": 1
+                    }
+                }
+            },
+            "metadata_callers": {
+                "current": {
+                    "{closure}": 13,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "shopBeneficiaryColumnExists": 1,
+                    "adminOperationalTableExists": 9
+                },
+                "baseline": {
+                    "{closure}": 31,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "shopBeneficiaryColumnExists": 1,
+                    "adminOperationalTableExists": 9
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "mode": "baseline",
+                        "render_ms": 71.4321,
+                        "incremental_peak_bytes": 5209104,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 75.6726,
+                        "incremental_peak_bytes": 5209104,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 95.947,
+                        "incremental_peak_bytes": 5209104,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 80.6251,
+                        "incremental_peak_bytes": 5209104,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 79.8948,
+                        "incremental_peak_bytes": 5209104,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    }
+                ],
+                "current": [
+                    {
+                        "mode": "current",
+                        "render_ms": 70.5146,
+                        "incremental_peak_bytes": 5213248,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 70.6597,
+                        "incremental_peak_bytes": 5213248,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 70.5303,
+                        "incremental_peak_bytes": 5213248,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 93.3094,
+                        "incremental_peak_bytes": 5213248,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 85.8837,
+                        "incremental_peak_bytes": 5213248,
+                        "html_bytes": 5903,
+                        "html_sha256": "8ec96c1136c572ea7a656f990c3fa313cfb68dbe186bbf7a63f6c9d5373b9101",
+                        "data_sha256": "4f3cb07b05b20fbdd5d078d0efa0b49096590c4e7eb1edc52de099e99a132f0c",
+                        "people": 0,
+                        "queries": []
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 79.8948,
+                "current": 70.6597
+            },
+            "median_peak_bytes": {
+                "baseline": 5209104,
+                "current": 5213248
+            },
+            "sql_count": {
+                "current": 43,
+                "baseline": 61
+            },
+            "fetched_rows": {
+                "current": 30,
+                "baseline": 48
+            },
+            "membership_queries": {
+                "current": 0,
+                "baseline": 0
+            },
+            "query_groups": {
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 21,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    }
+                ],
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 39,
+                        "fetched_rows": 39
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    }
+                ]
+            },
+            "authorization_explain": {
+                "current": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "ref",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using where; Using temporary; Using filesort"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w73_profile_d593b71fed18a9c4.r.account_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w73_profile_d593b71fed18a9c4.r.sportovec_id",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                },
+                "baseline": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "ref",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using where; Using temporary; Using filesort"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w73_profile_d593b71fed18a9c4.r.account_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "w73_profile_d593b71fed18a9c4.r.sportovec_id",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "family_size": 1,
+            "same_data_and_html": true,
+            "same_business_queries": true,
+            "sections": {
+                "current": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 31,
+                        "metadata": 19,
+                        "fetched_rows": 25
+                    },
+                    "finance": {
+                        "sql": 13,
+                        "metadata": 9,
+                        "fetched_rows": 10
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 2
+                    },
+                    "makeup": {
+                        "sql": 11,
+                        "metadata": 8,
+                        "fetched_rows": 8
+                    },
+                    "agenda": {
+                        "sql": 23,
+                        "metadata": 15,
+                        "fetched_rows": 17
+                    },
+                    "rsvp": {
+                        "sql": 6,
+                        "metadata": 3,
+                        "fetched_rows": 5
+                    },
+                    "weekly": {
+                        "sql": 8,
+                        "metadata": 0,
+                        "fetched_rows": 3
+                    },
+                    "annual": {
+                        "sql": 10,
+                        "metadata": 6,
+                        "fetched_rows": 8
+                    },
+                    "tasks": {
+                        "sql": 26,
+                        "metadata": 12,
+                        "fetched_rows": 22
+                    },
+                    "render": {
+                        "sql": 4,
+                        "metadata": 1,
+                        "fetched_rows": 3
+                    }
+                },
+                "baseline": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 36,
+                        "metadata": 24,
+                        "fetched_rows": 30
+                    },
+                    "finance": {
+                        "sql": 16,
+                        "metadata": 12,
+                        "fetched_rows": 13
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 2
+                    },
+                    "makeup": {
+                        "sql": 43,
+                        "metadata": 40,
+                        "fetched_rows": 40
+                    },
+                    "agenda": {
+                        "sql": 34,
+                        "metadata": 26,
+                        "fetched_rows": 28
+                    },
+                    "rsvp": {
+                        "sql": 11,
+                        "metadata": 8,
+                        "fetched_rows": 10
+                    },
+                    "weekly": {
+                        "sql": 34,
+                        "metadata": 26,
+                        "fetched_rows": 28
+                    },
+                    "annual": {
+                        "sql": 16,
+                        "metadata": 12,
+                        "fetched_rows": 14
+                    },
+                    "tasks": {
+                        "sql": 40,
+                        "metadata": 26,
+                        "fetched_rows": 36
+                    },
+                    "render": {
+                        "sql": 7,
+                        "metadata": 4,
+                        "fetched_rows": 6
+                    }
+                }
+            },
+            "metadata_callers": {
+                "current": {
+                    "{closure}": 62,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "clubEventColumnExists": 1,
+                    "shopBeneficiaryColumnExists": 1,
+                    "familyAnnualPaidOverviewColumnExists": 2,
+                    "adminOperationalTableExists": 9
+                },
+                "baseline": {
+                    "{closure}": 167,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "clubEventColumnExists": 1,
+                    "shopBeneficiaryColumnExists": 1,
+                    "familyAnnualPaidOverviewColumnExists": 2,
+                    "adminOperationalTableExists": 9
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "mode": "baseline",
+                        "render_ms": 214.5043,
+                        "incremental_peak_bytes": 5313296,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 283.8106,
+                        "incremental_peak_bytes": 5313296,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 216.0351,
+                        "incremental_peak_bytes": 5313296,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 212.5257,
+                        "incremental_peak_bytes": 5313296,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 237.851,
+                        "incremental_peak_bytes": 5313296,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    }
+                ],
+                "current": [
+                    {
+                        "mode": "current",
+                        "render_ms": 181.5213,
+                        "incremental_peak_bytes": 5326080,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 192.1903,
+                        "incremental_peak_bytes": 5326080,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 146.3768,
+                        "incremental_peak_bytes": 5326080,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 199.8844,
+                        "incremental_peak_bytes": 5326080,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 183.2567,
+                        "incremental_peak_bytes": 5326080,
+                        "html_bytes": 20786,
+                        "html_sha256": "04c26baa217e2f6350e2c1315336dffa69172ceb385064da90d9077406bcffc4",
+                        "data_sha256": "34fc1271483b0e133c90b6d9db6e4f72e7ef64b5124e0d4e28b1dac3855e351f",
+                        "people": 1,
+                        "queries": []
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 216.0351,
+                "current": 183.2567
+            },
+            "median_peak_bytes": {
+                "baseline": 5313296,
+                "current": 5326080
+            },
+            "sql_count": {
+                "current": 144,
+                "baseline": 249
+            },
+            "fetched_rows": {
+                "current": 108,
+                "baseline": 212
+            },
+            "membership_queries": {
+                "current": 8,
+                "baseline": 8
+            },
+            "query_groups": {
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 34,
+                        "fetched_rows": 33
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 37,
+                        "fetched_rows": 37
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 7
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "count": 8,
+                        "fetched_rows": 8
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, t.id AS team_id, t.code AS team_code, t.name AS team_name, t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, s.starts_on AS season_starts_on, s.ends_on AS season_ends_on FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT r.id, r.status, r.registered_at, r.cancelled_at, e.id AS event_id, e.code AS event_code, e.name AS event_name, e.event_type, e.status AS event_status FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id WHERE r.sportovec_id=? ORDER BY r.registered_at DESC, r.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT t.id, t.datum, t.napln, t.delka, t.kategorie FROM trenink_sportovec ts JOIN treninky t ON t.id=ts.trenink_id WHERE ts.sportovec_id=? ORDER BY t.datum DESC, t.id DESC",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.payer_account_id,c.charge_type,c.title_snapshot,c.period_from,c.period_to,c.amount_minor,c.currency,c.due_on,c.status,c.source_system,c.created_at,p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at FROM club_member_charges c LEFT JOIN payments p ON p.id=(SELECT MAX(p2.id) FROM payments p2 WHERE p2.payable_type='member_charge' AND p2.payable_id=c.id) WHERE c.sportovec_id=? ORDER BY COALESCE(c.due_on,c.created_at) DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.* FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date,r.training_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.*,p.event_id FROM sports_event_participation p JOIN sports_event_revisions r ON r.id=p.current_revision_id WHERE p.sportovec_id=? ORDER BY r.recorded_at DESC,r.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
+                        "count": 3,
+                        "fetched_rows": 3
+                    },
+                    {
+                        "sql": "SELECT DISTINCT m.id,m.typ,m.vzdalenost,m.distance_unit,m.distance_meters,m.cas,m.duration_ms,m.rpe,m.rpe_value,m.contract_version,t.id AS training_id,t.datum AS activity_date FROM mereni_zaznamy m JOIN trenink_mereni tm ON tm.mereni_id=m.id JOIN treninky t ON t.id=tm.trenink_id WHERE m.sportovec_id=? AND t.datum BETWEEN ? AND ? ORDER BY t.datum,m.id,t.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT * FROM club_finance_settings WHERE id=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,COALESCE(a.allocated_minor,0)+COALESCE(pa.allocated_minor,0) AS allocated_minor FROM club_member_charges c  LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY charge_id) pa ON pa.charge_id=c.id WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "count": 4,
+                        "fetched_rows": 4
+                    },
+                    {
+                        "sql": "SELECT o.id,o.account_id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,o.payment_expires_at,o.finance_sportovec_id,p.due_at,COALESCE(a.allocated_minor,0) AS allocated_minor FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id  LEFT JOIN (SELECT order_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE order_id IS NOT NULL GROUP BY order_id) a ON a.order_id=o.id WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending'",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,amount_minor FROM club_finance_receipts WHERE sportovec_id=? AND currency='CZK' ORDER BY paid_on,id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT DISTINCT p.id,p.trenink_id FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='evidovany' AND p.trenink_id IS NOT NULL AND p.datum<=? ORDER BY p.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id,p.nazev,p.datum FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='planovany' ORDER BY p.datum,p.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on,n.name AS carry_offer_name,n.product_id AS carry_product_id,n.variant_id AS carry_variant_id FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id LEFT JOIN club_program_offers n ON n.id=c.carry_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (?)",
+                        "count": 3,
+                        "fetched_rows": 3
+                    },
+                    {
+                        "sql": "SELECT r.id AS registration_id,r.status AS registration_status,r.sportovec_id,e.name,s.id AS session_id,s.starts_at,s.ends_at,s.location,sp.jmeno,sp.prijmeni FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id JOIN club_event_sessions s ON s.event_id=e.id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?) AND r.status IN ('confirmed','waitlisted','payment_pending') AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,rt.team_id FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id WHERE e.visibility='rosters' AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (?) AND status IN ('confirmed','waitlisted','payment_pending')",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.id AS reservation_id,r.stav,r.sportovec_id,il.datum,il.cas_od,il.cas_do,il.nazev,s.nazev AS sportoviste,sp.jmeno,sp.prijmeni FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id JOIN sportovist s ON s.id=il.sportoviste_id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?) AND r.stav IN ('ceka','potvrzena') AND il.stav='aktivni' AND il.datum BETWEEN ? AND ? ORDER BY il.datum,il.cas_od,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.id,c.due_on,c.title_snapshot,c.amount_minor,c.currency,c.sportovec_id,sp.jmeno,sp.prijmeni FROM club_member_charges c JOIN sportovci sp ON sp.id=c.sportovec_id WHERE c.sportovec_id IN (?) AND c.status='pending' AND c.due_on BETWEEN ? AND ? ORDER BY c.due_on,c.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id AS plan_id,p.nazev,p.datum,p.cas_od,p.cas_do,p.popis,p.stav,l.team_id,l.team_name_snapshot FROM training_roster_links l JOIN planovane_treninky p ON p.id=l.plan_id WHERE p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,l.team_id",
+                        "count": 2,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.title_snapshot,c.amount_minor,c.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM club_member_charges c JOIN payments p ON p.payable_type='member_charge' AND p.payable_id=c.id AND p.status='paid' JOIN sportovci s ON s.id=c.sportovec_id WHERE c.status='paid' AND c.sportovec_id IN (?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT oi.id,o.public_code,oi.product_name_snapshot,oi.quantity,oi.line_amount_minor AS amount_minor,oi.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id AND p.status='paid' JOIN sportovci s ON s.id=COALESCE(oi.beneficiary_sportovec_id,o.finance_sportovec_id) WHERE o.payment_status='paid' AND s.id IN (?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,o.id DESC,oi.id ASC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT purpose FROM medical_clearance_watches WHERE sportovec_id=? ORDER BY purpose",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT w.purpose,p.reminder_days FROM medical_clearance_watches w JOIN medical_clearance_policies p ON p.id=w.policy_id WHERE w.sportovec_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,plan_id,sportovec_id,response,member_note,responded_at FROM training_rsvps WHERE plan_id IN (?) AND sportovec_id IN (?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT DISTINCT team_id FROM club_roster_members WHERE sportovec_id=? AND team_id IN (?) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL)",
+                        "count": 1,
+                        "fetched_rows": 1
+                    }
+                ],
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 68,
+                        "fetched_rows": 66
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 106,
+                        "fetched_rows": 106
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 7
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "count": 8,
+                        "fetched_rows": 8
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, t.id AS team_id, t.code AS team_code, t.name AS team_name, t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, s.starts_on AS season_starts_on, s.ends_on AS season_ends_on FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT r.id, r.status, r.registered_at, r.cancelled_at, e.id AS event_id, e.code AS event_code, e.name AS event_name, e.event_type, e.status AS event_status FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id WHERE r.sportovec_id=? ORDER BY r.registered_at DESC, r.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT t.id, t.datum, t.napln, t.delka, t.kategorie FROM trenink_sportovec ts JOIN treninky t ON t.id=ts.trenink_id WHERE ts.sportovec_id=? ORDER BY t.datum DESC, t.id DESC",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.payer_account_id,c.charge_type,c.title_snapshot,c.period_from,c.period_to,c.amount_minor,c.currency,c.due_on,c.status,c.source_system,c.created_at,p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at FROM club_member_charges c LEFT JOIN payments p ON p.id=(SELECT MAX(p2.id) FROM payments p2 WHERE p2.payable_type='member_charge' AND p2.payable_id=c.id) WHERE c.sportovec_id=? ORDER BY COALESCE(c.due_on,c.created_at) DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.* FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date,r.training_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.*,p.event_id FROM sports_event_participation p JOIN sports_event_revisions r ON r.id=p.current_revision_id WHERE p.sportovec_id=? ORDER BY r.recorded_at DESC,r.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
+                        "count": 3,
+                        "fetched_rows": 3
+                    },
+                    {
+                        "sql": "SELECT DISTINCT m.id,m.typ,m.vzdalenost,m.distance_unit,m.distance_meters,m.cas,m.duration_ms,m.rpe,m.rpe_value,m.contract_version,t.id AS training_id,t.datum AS activity_date FROM mereni_zaznamy m JOIN trenink_mereni tm ON tm.mereni_id=m.id JOIN treninky t ON t.id=tm.trenink_id WHERE m.sportovec_id=? AND t.datum BETWEEN ? AND ? ORDER BY t.datum,m.id,t.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT * FROM club_finance_settings WHERE id=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,COALESCE(a.allocated_minor,0)+COALESCE(pa.allocated_minor,0) AS allocated_minor FROM club_member_charges c  LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY charge_id) pa ON pa.charge_id=c.id WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "count": 6,
+                        "fetched_rows": 6
+                    },
+                    {
+                        "sql": "SELECT o.id,o.account_id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,o.payment_expires_at,o.finance_sportovec_id,p.due_at,COALESCE(a.allocated_minor,0) AS allocated_minor FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id  LEFT JOIN (SELECT order_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE order_id IS NOT NULL GROUP BY order_id) a ON a.order_id=o.id WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending'",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,amount_minor FROM club_finance_receipts WHERE sportovec_id=? AND currency='CZK' ORDER BY paid_on,id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT DISTINCT p.id,p.trenink_id FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='evidovany' AND p.trenink_id IS NOT NULL AND p.datum<=? ORDER BY p.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id,p.nazev,p.datum FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='planovany' ORDER BY p.datum,p.id",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on,n.name AS carry_offer_name,n.product_id AS carry_product_id,n.variant_id AS carry_variant_id FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id LEFT JOIN club_program_offers n ON n.id=c.carry_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (?)",
+                        "count": 3,
+                        "fetched_rows": 3
+                    },
+                    {
+                        "sql": "SELECT r.id AS registration_id,r.status AS registration_status,r.sportovec_id,e.name,s.id AS session_id,s.starts_at,s.ends_at,s.location,sp.jmeno,sp.prijmeni FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id JOIN club_event_sessions s ON s.event_id=e.id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?) AND r.status IN ('confirmed','waitlisted','payment_pending') AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,rt.team_id FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id WHERE e.visibility='rosters' AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (?) AND status IN ('confirmed','waitlisted','payment_pending')",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.id AS reservation_id,r.stav,r.sportovec_id,il.datum,il.cas_od,il.cas_do,il.nazev,s.nazev AS sportoviste,sp.jmeno,sp.prijmeni FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id JOIN sportovist s ON s.id=il.sportoviste_id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?) AND r.stav IN ('ceka','potvrzena') AND il.stav='aktivni' AND il.datum BETWEEN ? AND ? ORDER BY il.datum,il.cas_od,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.id,c.due_on,c.title_snapshot,c.amount_minor,c.currency,c.sportovec_id,sp.jmeno,sp.prijmeni FROM club_member_charges c JOIN sportovci sp ON sp.id=c.sportovec_id WHERE c.sportovec_id IN (?) AND c.status='pending' AND c.due_on BETWEEN ? AND ? ORDER BY c.due_on,c.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id AS plan_id,p.nazev,p.datum,p.cas_od,p.cas_do,p.popis,p.stav,l.team_id,l.team_name_snapshot FROM training_roster_links l JOIN planovane_treninky p ON p.id=l.plan_id WHERE p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,l.team_id",
+                        "count": 2,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.title_snapshot,c.amount_minor,c.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM club_member_charges c JOIN payments p ON p.payable_type='member_charge' AND p.payable_id=c.id AND p.status='paid' JOIN sportovci s ON s.id=c.sportovec_id WHERE c.status='paid' AND c.sportovec_id IN (?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT oi.id,o.public_code,oi.product_name_snapshot,oi.quantity,oi.line_amount_minor AS amount_minor,oi.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id AND p.status='paid' JOIN sportovci s ON s.id=COALESCE(oi.beneficiary_sportovec_id,o.finance_sportovec_id) WHERE o.payment_status='paid' AND s.id IN (?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,o.id DESC,oi.id ASC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT purpose FROM medical_clearance_watches WHERE sportovec_id=? ORDER BY purpose",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT w.purpose,p.reminder_days FROM medical_clearance_watches w JOIN medical_clearance_policies p ON p.id=w.policy_id WHERE w.sportovec_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,plan_id,sportovec_id,response,member_note,responded_at FROM training_rsvps WHERE plan_id IN (?) AND sportovec_id IN (?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT DISTINCT team_id FROM club_roster_members WHERE sportovec_id=? AND team_id IN (?) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL)",
+                        "count": 1,
+                        "fetched_rows": 1
+                    }
+                ]
+            },
+            "authorization_explain": {
+                "current": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "const",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "8",
+                            "ref": "const,const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                },
+                "baseline": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "const",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "8",
+                            "ref": "const,const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "family_size": 5,
+            "same_data_and_html": true,
+            "same_business_queries": true,
+            "sections": {
+                "current": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 79,
+                        "metadata": 23,
+                        "fetched_rows": 53
+                    },
+                    "finance": {
+                        "sql": 29,
+                        "metadata": 9,
+                        "fetched_rows": 14
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 6
+                    },
+                    "makeup": {
+                        "sql": 23,
+                        "metadata": 8,
+                        "fetched_rows": 8
+                    },
+                    "agenda": {
+                        "sql": 27,
+                        "metadata": 15,
+                        "fetched_rows": 29
+                    },
+                    "rsvp": {
+                        "sql": 10,
+                        "metadata": 3,
+                        "fetched_rows": 13
+                    },
+                    "weekly": {
+                        "sql": 12,
+                        "metadata": 0,
+                        "fetched_rows": 15
+                    },
+                    "annual": {
+                        "sql": 14,
+                        "metadata": 6,
+                        "fetched_rows": 16
+                    },
+                    "tasks": {
+                        "sql": 54,
+                        "metadata": 12,
+                        "fetched_rows": 50
+                    },
+                    "render": {
+                        "sql": 12,
+                        "metadata": 1,
+                        "fetched_rows": 7
+                    }
+                },
+                "baseline": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 164,
+                        "metadata": 108,
+                        "fetched_rows": 138
+                    },
+                    "finance": {
+                        "sql": 80,
+                        "metadata": 60,
+                        "fetched_rows": 65
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 6
+                    },
+                    "makeup": {
+                        "sql": 183,
+                        "metadata": 168,
+                        "fetched_rows": 168
+                    },
+                    "agenda": {
+                        "sql": 38,
+                        "metadata": 26,
+                        "fetched_rows": 40
+                    },
+                    "rsvp": {
+                        "sql": 15,
+                        "metadata": 8,
+                        "fetched_rows": 18
+                    },
+                    "weekly": {
+                        "sql": 38,
+                        "metadata": 26,
+                        "fetched_rows": 40
+                    },
+                    "annual": {
+                        "sql": 20,
+                        "metadata": 12,
+                        "fetched_rows": 22
+                    },
+                    "tasks": {
+                        "sql": 88,
+                        "metadata": 46,
+                        "fetched_rows": 84
+                    },
+                    "render": {
+                        "sql": 31,
+                        "metadata": 20,
+                        "fetched_rows": 26
+                    }
+                }
+            },
+            "metadata_callers": {
+                "current": {
+                    "{closure}": 62,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "clubEventColumnExists": 5,
+                    "shopBeneficiaryColumnExists": 1,
+                    "familyAnnualPaidOverviewColumnExists": 2,
+                    "adminOperationalTableExists": 9
+                },
+                "baseline": {
+                    "{closure}": 459,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "clubEventColumnExists": 5,
+                    "shopBeneficiaryColumnExists": 1,
+                    "familyAnnualPaidOverviewColumnExists": 2,
+                    "adminOperationalTableExists": 9
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "mode": "baseline",
+                        "render_ms": 433.3085,
+                        "incremental_peak_bytes": 5355144,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 425.6668,
+                        "incremental_peak_bytes": 5355144,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 452.2944,
+                        "incremental_peak_bytes": 5355144,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 371.2129,
+                        "incremental_peak_bytes": 5355144,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 446.0421,
+                        "incremental_peak_bytes": 5355144,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    }
+                ],
+                "current": [
+                    {
+                        "mode": "current",
+                        "render_ms": 268.5604,
+                        "incremental_peak_bytes": 5367928,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 289.043,
+                        "incremental_peak_bytes": 5367928,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 283.8492,
+                        "incremental_peak_bytes": 5367928,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 292.4075,
+                        "incremental_peak_bytes": 5367928,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 271.6038,
+                        "incremental_peak_bytes": 5367928,
+                        "html_bytes": 35526,
+                        "html_sha256": "b48c5e8506eca6e173f62a005892e6d276414a2b12d9fcb9dab0cf5e3b75aa1c",
+                        "data_sha256": "c99412c7b7f075fdf916e43982e1a16be223741ba5127d7d374f083fe89d6110",
+                        "people": 5,
+                        "queries": []
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 433.3085,
+                "current": 283.8492
+            },
+            "median_peak_bytes": {
+                "baseline": 5355144,
+                "current": 5367928
+            },
+            "sql_count": {
+                "current": 272,
+                "baseline": 669
+            },
+            "fetched_rows": {
+                "current": 216,
+                "baseline": 612
+            },
+            "membership_queries": {
+                "current": 40,
+                "baseline": 40
+            },
+            "query_groups": {
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 34,
+                        "fetched_rows": 33
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 37,
+                        "fetched_rows": 37
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 35
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "count": 40,
+                        "fetched_rows": 40
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, t.id AS team_id, t.code AS team_code, t.name AS team_name, t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, s.starts_on AS season_starts_on, s.ends_on AS season_ends_on FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT r.id, r.status, r.registered_at, r.cancelled_at, e.id AS event_id, e.code AS event_code, e.name AS event_name, e.event_type, e.status AS event_status FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id WHERE r.sportovec_id=? ORDER BY r.registered_at DESC, r.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT t.id, t.datum, t.napln, t.delka, t.kategorie FROM trenink_sportovec ts JOIN treninky t ON t.id=ts.trenink_id WHERE ts.sportovec_id=? ORDER BY t.datum DESC, t.id DESC",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.payer_account_id,c.charge_type,c.title_snapshot,c.period_from,c.period_to,c.amount_minor,c.currency,c.due_on,c.status,c.source_system,c.created_at,p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at FROM club_member_charges c LEFT JOIN payments p ON p.id=(SELECT MAX(p2.id) FROM payments p2 WHERE p2.payable_type='member_charge' AND p2.payable_id=c.id) WHERE c.sportovec_id=? ORDER BY COALESCE(c.due_on,c.created_at) DESC,c.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.* FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date,r.training_id",
+                        "count": 10,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.*,p.event_id FROM sports_event_participation p JOIN sports_event_revisions r ON r.id=p.current_revision_id WHERE p.sportovec_id=? ORDER BY r.recorded_at DESC,r.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
+                        "count": 7,
+                        "fetched_rows": 7
+                    },
+                    {
+                        "sql": "SELECT DISTINCT m.id,m.typ,m.vzdalenost,m.distance_unit,m.distance_meters,m.cas,m.duration_ms,m.rpe,m.rpe_value,m.contract_version,t.id AS training_id,t.datum AS activity_date FROM mereni_zaznamy m JOIN trenink_mereni tm ON tm.mereni_id=m.id JOIN treninky t ON t.id=tm.trenink_id WHERE m.sportovec_id=? AND t.datum BETWEEN ? AND ? ORDER BY t.datum,m.id,t.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT * FROM club_finance_settings WHERE id=1",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,COALESCE(a.allocated_minor,0)+COALESCE(pa.allocated_minor,0) AS allocated_minor FROM club_member_charges c  LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY charge_id) pa ON pa.charge_id=c.id WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "count": 4,
+                        "fetched_rows": 4
+                    },
+                    {
+                        "sql": "SELECT o.id,o.account_id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,o.payment_expires_at,o.finance_sportovec_id,p.due_at,COALESCE(a.allocated_minor,0) AS allocated_minor FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id  LEFT JOIN (SELECT order_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE order_id IS NOT NULL GROUP BY order_id) a ON a.order_id=o.id WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending'",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,amount_minor FROM club_finance_receipts WHERE sportovec_id=? AND currency='CZK' ORDER BY paid_on,id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT DISTINCT p.id,p.trenink_id FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='evidovany' AND p.trenink_id IS NOT NULL AND p.datum<=? ORDER BY p.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id,p.nazev,p.datum FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='planovany' ORDER BY p.datum,p.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on,n.name AS carry_offer_name,n.product_id AS carry_product_id,n.variant_id AS carry_variant_id FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id LEFT JOIN club_program_offers n ON n.id=c.carry_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (?,?,?,?,?)",
+                        "count": 3,
+                        "fetched_rows": 15
+                    },
+                    {
+                        "sql": "SELECT r.id AS registration_id,r.status AS registration_status,r.sportovec_id,e.name,s.id AS session_id,s.starts_at,s.ends_at,s.location,sp.jmeno,sp.prijmeni FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id JOIN club_event_sessions s ON s.event_id=e.id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?) AND r.status IN ('confirmed','waitlisted','payment_pending') AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,rt.team_id FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id WHERE e.visibility='rosters' AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (?,?,?,?,?) AND status IN ('confirmed','waitlisted','payment_pending')",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.id AS reservation_id,r.stav,r.sportovec_id,il.datum,il.cas_od,il.cas_do,il.nazev,s.nazev AS sportoviste,sp.jmeno,sp.prijmeni FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id JOIN sportovist s ON s.id=il.sportoviste_id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?) AND r.stav IN ('ceka','potvrzena') AND il.stav='aktivni' AND il.datum BETWEEN ? AND ? ORDER BY il.datum,il.cas_od,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.id,c.due_on,c.title_snapshot,c.amount_minor,c.currency,c.sportovec_id,sp.jmeno,sp.prijmeni FROM club_member_charges c JOIN sportovci sp ON sp.id=c.sportovec_id WHERE c.sportovec_id IN (?,?,?,?,?) AND c.status='pending' AND c.due_on BETWEEN ? AND ? ORDER BY c.due_on,c.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id AS plan_id,p.nazev,p.datum,p.cas_od,p.cas_do,p.popis,p.stav,l.team_id,l.team_name_snapshot FROM training_roster_links l JOIN planovane_treninky p ON p.id=l.plan_id WHERE p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,l.team_id",
+                        "count": 2,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.title_snapshot,c.amount_minor,c.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM club_member_charges c JOIN payments p ON p.payable_type='member_charge' AND p.payable_id=c.id AND p.status='paid' JOIN sportovci s ON s.id=c.sportovec_id WHERE c.status='paid' AND c.sportovec_id IN (?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT oi.id,o.public_code,oi.product_name_snapshot,oi.quantity,oi.line_amount_minor AS amount_minor,oi.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id AND p.status='paid' JOIN sportovci s ON s.id=COALESCE(oi.beneficiary_sportovec_id,o.finance_sportovec_id) WHERE o.payment_status='paid' AND s.id IN (?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,o.id DESC,oi.id ASC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "count": 10,
+                        "fetched_rows": 10
+                    },
+                    {
+                        "sql": "SELECT purpose FROM medical_clearance_watches WHERE sportovec_id=? ORDER BY purpose",
+                        "count": 10,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT w.purpose,p.reminder_days FROM medical_clearance_watches w JOIN medical_clearance_policies p ON p.id=w.policy_id WHERE w.sportovec_id=?",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,plan_id,sportovec_id,response,member_note,responded_at FROM training_rsvps WHERE plan_id IN (?) AND sportovec_id IN (?,?,?,?,?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT DISTINCT team_id FROM club_roster_members WHERE sportovec_id=? AND team_id IN (?) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL)",
+                        "count": 5,
+                        "fetched_rows": 5
+                    }
+                ],
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 152,
+                        "fetched_rows": 150
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 306,
+                        "fetched_rows": 306
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 35
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "count": 40,
+                        "fetched_rows": 40
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, t.id AS team_id, t.code AS team_code, t.name AS team_name, t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, s.starts_on AS season_starts_on, s.ends_on AS season_ends_on FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT r.id, r.status, r.registered_at, r.cancelled_at, e.id AS event_id, e.code AS event_code, e.name AS event_name, e.event_type, e.status AS event_status FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id WHERE r.sportovec_id=? ORDER BY r.registered_at DESC, r.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT t.id, t.datum, t.napln, t.delka, t.kategorie FROM trenink_sportovec ts JOIN treninky t ON t.id=ts.trenink_id WHERE ts.sportovec_id=? ORDER BY t.datum DESC, t.id DESC",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.payer_account_id,c.charge_type,c.title_snapshot,c.period_from,c.period_to,c.amount_minor,c.currency,c.due_on,c.status,c.source_system,c.created_at,p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at FROM club_member_charges c LEFT JOIN payments p ON p.id=(SELECT MAX(p2.id) FROM payments p2 WHERE p2.payable_type='member_charge' AND p2.payable_id=c.id) WHERE c.sportovec_id=? ORDER BY COALESCE(c.due_on,c.created_at) DESC,c.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.* FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date,r.training_id",
+                        "count": 10,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.*,p.event_id FROM sports_event_participation p JOIN sports_event_revisions r ON r.id=p.current_revision_id WHERE p.sportovec_id=? ORDER BY r.recorded_at DESC,r.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
+                        "count": 7,
+                        "fetched_rows": 7
+                    },
+                    {
+                        "sql": "SELECT DISTINCT m.id,m.typ,m.vzdalenost,m.distance_unit,m.distance_meters,m.cas,m.duration_ms,m.rpe,m.rpe_value,m.contract_version,t.id AS training_id,t.datum AS activity_date FROM mereni_zaznamy m JOIN trenink_mereni tm ON tm.mereni_id=m.id JOIN treninky t ON t.id=tm.trenink_id WHERE m.sportovec_id=? AND t.datum BETWEEN ? AND ? ORDER BY t.datum,m.id,t.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT * FROM club_finance_settings WHERE id=1",
+                        "count": 5,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,COALESCE(a.allocated_minor,0)+COALESCE(pa.allocated_minor,0) AS allocated_minor FROM club_member_charges c  LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY charge_id) pa ON pa.charge_id=c.id WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "count": 14,
+                        "fetched_rows": 14
+                    },
+                    {
+                        "sql": "SELECT o.id,o.account_id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,o.payment_expires_at,o.finance_sportovec_id,p.due_at,COALESCE(a.allocated_minor,0) AS allocated_minor FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id  LEFT JOIN (SELECT order_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE order_id IS NOT NULL GROUP BY order_id) a ON a.order_id=o.id WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending'",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,amount_minor FROM club_finance_receipts WHERE sportovec_id=? AND currency='CZK' ORDER BY paid_on,id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 5
+                    },
+                    {
+                        "sql": "SELECT DISTINCT p.id,p.trenink_id FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='evidovany' AND p.trenink_id IS NOT NULL AND p.datum<=? ORDER BY p.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id,p.nazev,p.datum FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='planovany' ORDER BY p.datum,p.id",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on,n.name AS carry_offer_name,n.product_id AS carry_product_id,n.variant_id AS carry_variant_id FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id LEFT JOIN club_program_offers n ON n.id=c.carry_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (?,?,?,?,?)",
+                        "count": 3,
+                        "fetched_rows": 15
+                    },
+                    {
+                        "sql": "SELECT r.id AS registration_id,r.status AS registration_status,r.sportovec_id,e.name,s.id AS session_id,s.starts_at,s.ends_at,s.location,sp.jmeno,sp.prijmeni FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id JOIN club_event_sessions s ON s.event_id=e.id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?) AND r.status IN ('confirmed','waitlisted','payment_pending') AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,rt.team_id FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id WHERE e.visibility='rosters' AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (?,?,?,?,?) AND status IN ('confirmed','waitlisted','payment_pending')",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.id AS reservation_id,r.stav,r.sportovec_id,il.datum,il.cas_od,il.cas_do,il.nazev,s.nazev AS sportoviste,sp.jmeno,sp.prijmeni FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id JOIN sportovist s ON s.id=il.sportoviste_id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?) AND r.stav IN ('ceka','potvrzena') AND il.stav='aktivni' AND il.datum BETWEEN ? AND ? ORDER BY il.datum,il.cas_od,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.id,c.due_on,c.title_snapshot,c.amount_minor,c.currency,c.sportovec_id,sp.jmeno,sp.prijmeni FROM club_member_charges c JOIN sportovci sp ON sp.id=c.sportovec_id WHERE c.sportovec_id IN (?,?,?,?,?) AND c.status='pending' AND c.due_on BETWEEN ? AND ? ORDER BY c.due_on,c.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id AS plan_id,p.nazev,p.datum,p.cas_od,p.cas_do,p.popis,p.stav,l.team_id,l.team_name_snapshot FROM training_roster_links l JOIN planovane_treninky p ON p.id=l.plan_id WHERE p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,l.team_id",
+                        "count": 2,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.title_snapshot,c.amount_minor,c.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM club_member_charges c JOIN payments p ON p.payable_type='member_charge' AND p.payable_id=c.id AND p.status='paid' JOIN sportovci s ON s.id=c.sportovec_id WHERE c.status='paid' AND c.sportovec_id IN (?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT oi.id,o.public_code,oi.product_name_snapshot,oi.quantity,oi.line_amount_minor AS amount_minor,oi.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id AND p.status='paid' JOIN sportovci s ON s.id=COALESCE(oi.beneficiary_sportovec_id,o.finance_sportovec_id) WHERE o.payment_status='paid' AND s.id IN (?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,o.id DESC,oi.id ASC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "count": 10,
+                        "fetched_rows": 10
+                    },
+                    {
+                        "sql": "SELECT purpose FROM medical_clearance_watches WHERE sportovec_id=? ORDER BY purpose",
+                        "count": 10,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT w.purpose,p.reminder_days FROM medical_clearance_watches w JOIN medical_clearance_policies p ON p.id=w.policy_id WHERE w.sportovec_id=?",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,plan_id,sportovec_id,response,member_note,responded_at FROM training_rsvps WHERE plan_id IN (?) AND sportovec_id IN (?,?,?,?,?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+                        "count": 5,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT DISTINCT team_id FROM club_roster_members WHERE sportovec_id=? AND team_id IN (?) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL)",
+                        "count": 5,
+                        "fetched_rows": 5
+                    }
+                ]
+            },
+            "authorization_explain": {
+                "current": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "const",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "8",
+                            "ref": "const,const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                },
+                "baseline": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "const",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "8",
+                            "ref": "const,const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "family_size": 20,
+            "same_data_and_html": true,
+            "same_business_queries": true,
+            "sections": {
+                "current": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 259,
+                        "metadata": 38,
+                        "fetched_rows": 158
+                    },
+                    "finance": {
+                        "sql": 89,
+                        "metadata": 9,
+                        "fetched_rows": 29
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 21
+                    },
+                    "makeup": {
+                        "sql": 68,
+                        "metadata": 8,
+                        "fetched_rows": 8
+                    },
+                    "agenda": {
+                        "sql": 42,
+                        "metadata": 15,
+                        "fetched_rows": 74
+                    },
+                    "rsvp": {
+                        "sql": 25,
+                        "metadata": 3,
+                        "fetched_rows": 43
+                    },
+                    "weekly": {
+                        "sql": 27,
+                        "metadata": 0,
+                        "fetched_rows": 60
+                    },
+                    "annual": {
+                        "sql": 29,
+                        "metadata": 6,
+                        "fetched_rows": 46
+                    },
+                    "tasks": {
+                        "sql": 159,
+                        "metadata": 12,
+                        "fetched_rows": 155
+                    },
+                    "render": {
+                        "sql": 42,
+                        "metadata": 1,
+                        "fetched_rows": 22
+                    }
+                },
+                "baseline": {
+                    "settings": {
+                        "sql": 10,
+                        "metadata": 5,
+                        "fetched_rows": 5
+                    },
+                    "profiles": {
+                        "sql": 644,
+                        "metadata": 423,
+                        "fetched_rows": 543
+                    },
+                    "finance": {
+                        "sql": 320,
+                        "metadata": 240,
+                        "fetched_rows": 260
+                    },
+                    "orders": {
+                        "sql": 2,
+                        "metadata": 1,
+                        "fetched_rows": 21
+                    },
+                    "makeup": {
+                        "sql": 708,
+                        "metadata": 648,
+                        "fetched_rows": 648
+                    },
+                    "agenda": {
+                        "sql": 53,
+                        "metadata": 26,
+                        "fetched_rows": 85
+                    },
+                    "rsvp": {
+                        "sql": 30,
+                        "metadata": 8,
+                        "fetched_rows": 48
+                    },
+                    "weekly": {
+                        "sql": 53,
+                        "metadata": 26,
+                        "fetched_rows": 85
+                    },
+                    "annual": {
+                        "sql": 35,
+                        "metadata": 12,
+                        "fetched_rows": 52
+                    },
+                    "tasks": {
+                        "sql": 268,
+                        "metadata": 121,
+                        "fetched_rows": 264
+                    },
+                    "render": {
+                        "sql": 121,
+                        "metadata": 80,
+                        "fetched_rows": 101
+                    }
+                }
+            },
+            "metadata_callers": {
+                "current": {
+                    "{closure}": 62,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "clubEventColumnExists": 20,
+                    "shopBeneficiaryColumnExists": 1,
+                    "familyAnnualPaidOverviewColumnExists": 2,
+                    "adminOperationalTableExists": 9
+                },
+                "baseline": {
+                    "{closure}": 1554,
+                    "memberChargeReminderTableExists": 2,
+                    "familyWeeklyDeliveryTableExists": 2,
+                    "clubEventColumnExists": 20,
+                    "shopBeneficiaryColumnExists": 1,
+                    "familyAnnualPaidOverviewColumnExists": 2,
+                    "adminOperationalTableExists": 9
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "mode": "baseline",
+                        "render_ms": 1292.0126,
+                        "incremental_peak_bytes": 5516816,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 1274.7385,
+                        "incremental_peak_bytes": 5516816,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 1386.8929,
+                        "incremental_peak_bytes": 5516816,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 1266.763,
+                        "incremental_peak_bytes": 5516816,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "baseline",
+                        "render_ms": 1516.2927,
+                        "incremental_peak_bytes": 5516816,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    }
+                ],
+                "current": [
+                    {
+                        "mode": "current",
+                        "render_ms": 720.4218,
+                        "incremental_peak_bytes": 5529600,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 697.9365,
+                        "incremental_peak_bytes": 5529600,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 684.3496,
+                        "incremental_peak_bytes": 5529600,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 685.2239,
+                        "incremental_peak_bytes": 5529600,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    },
+                    {
+                        "mode": "current",
+                        "render_ms": 690.2554,
+                        "incremental_peak_bytes": 5529600,
+                        "html_bytes": 90832,
+                        "html_sha256": "5237f74a3f14288010c7ea9f001e19911374f6f9dc87f1c808ccac04fcce36bc",
+                        "data_sha256": "9aee4ea38b83c82515ee6d3bec6bafd3083c10f94e295514322af3c7bf67fb7d",
+                        "people": 20,
+                        "queries": []
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 1292.0126,
+                "current": 690.2554
+            },
+            "median_peak_bytes": {
+                "baseline": 5516816,
+                "current": 5529600
+            },
+            "sql_count": {
+                "current": 752,
+                "baseline": 2244
+            },
+            "fetched_rows": {
+                "current": 621,
+                "baseline": 2112
+            },
+            "membership_queries": {
+                "current": 160,
+                "baseline": 160
+            },
+            "query_groups": {
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 34,
+                        "fetched_rows": 33
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 37,
+                        "fetched_rows": 37
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 140
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "count": 160,
+                        "fetched_rows": 160
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, t.id AS team_id, t.code AS team_code, t.name AS team_name, t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, s.starts_on AS season_starts_on, s.ends_on AS season_ends_on FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT r.id, r.status, r.registered_at, r.cancelled_at, e.id AS event_id, e.code AS event_code, e.name AS event_name, e.event_type, e.status AS event_status FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id WHERE r.sportovec_id=? ORDER BY r.registered_at DESC, r.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT t.id, t.datum, t.napln, t.delka, t.kategorie FROM trenink_sportovec ts JOIN treninky t ON t.id=ts.trenink_id WHERE ts.sportovec_id=? ORDER BY t.datum DESC, t.id DESC",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.payer_account_id,c.charge_type,c.title_snapshot,c.period_from,c.period_to,c.amount_minor,c.currency,c.due_on,c.status,c.source_system,c.created_at,p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at FROM club_member_charges c LEFT JOIN payments p ON p.id=(SELECT MAX(p2.id) FROM payments p2 WHERE p2.payable_type='member_charge' AND p2.payable_id=c.id) WHERE c.sportovec_id=? ORDER BY COALESCE(c.due_on,c.created_at) DESC,c.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.* FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date,r.training_id",
+                        "count": 40,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.*,p.event_id FROM sports_event_participation p JOIN sports_event_revisions r ON r.id=p.current_revision_id WHERE p.sportovec_id=? ORDER BY r.recorded_at DESC,r.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
+                        "count": 22,
+                        "fetched_rows": 22
+                    },
+                    {
+                        "sql": "SELECT DISTINCT m.id,m.typ,m.vzdalenost,m.distance_unit,m.distance_meters,m.cas,m.duration_ms,m.rpe,m.rpe_value,m.contract_version,t.id AS training_id,t.datum AS activity_date FROM mereni_zaznamy m JOIN trenink_mereni tm ON tm.mereni_id=m.id JOIN treninky t ON t.id=tm.trenink_id WHERE m.sportovec_id=? AND t.datum BETWEEN ? AND ? ORDER BY t.datum,m.id,t.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT * FROM club_finance_settings WHERE id=1",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,COALESCE(a.allocated_minor,0)+COALESCE(pa.allocated_minor,0) AS allocated_minor FROM club_member_charges c  LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY charge_id) pa ON pa.charge_id=c.id WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "count": 4,
+                        "fetched_rows": 4
+                    },
+                    {
+                        "sql": "SELECT o.id,o.account_id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,o.payment_expires_at,o.finance_sportovec_id,p.due_at,COALESCE(a.allocated_minor,0) AS allocated_minor FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id  LEFT JOIN (SELECT order_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE order_id IS NOT NULL GROUP BY order_id) a ON a.order_id=o.id WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending'",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,amount_minor FROM club_finance_receipts WHERE sportovec_id=? AND currency='CZK' ORDER BY paid_on,id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT DISTINCT p.id,p.trenink_id FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='evidovany' AND p.trenink_id IS NOT NULL AND p.datum<=? ORDER BY p.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id,p.nazev,p.datum FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='planovany' ORDER BY p.datum,p.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on,n.name AS carry_offer_name,n.product_id AS carry_product_id,n.variant_id AS carry_variant_id FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id LEFT JOIN club_program_offers n ON n.id=c.carry_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        "count": 3,
+                        "fetched_rows": 60
+                    },
+                    {
+                        "sql": "SELECT r.id AS registration_id,r.status AS registration_status,r.sportovec_id,e.name,s.id AS session_id,s.starts_at,s.ends_at,s.location,sp.jmeno,sp.prijmeni FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id JOIN club_event_sessions s ON s.event_id=e.id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND r.status IN ('confirmed','waitlisted','payment_pending') AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,rt.team_id FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id WHERE e.visibility='rosters' AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND status IN ('confirmed','waitlisted','payment_pending')",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.id AS reservation_id,r.stav,r.sportovec_id,il.datum,il.cas_od,il.cas_do,il.nazev,s.nazev AS sportoviste,sp.jmeno,sp.prijmeni FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id JOIN sportovist s ON s.id=il.sportoviste_id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND r.stav IN ('ceka','potvrzena') AND il.stav='aktivni' AND il.datum BETWEEN ? AND ? ORDER BY il.datum,il.cas_od,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.id,c.due_on,c.title_snapshot,c.amount_minor,c.currency,c.sportovec_id,sp.jmeno,sp.prijmeni FROM club_member_charges c JOIN sportovci sp ON sp.id=c.sportovec_id WHERE c.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND c.status='pending' AND c.due_on BETWEEN ? AND ? ORDER BY c.due_on,c.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id AS plan_id,p.nazev,p.datum,p.cas_od,p.cas_do,p.popis,p.stav,l.team_id,l.team_name_snapshot FROM training_roster_links l JOIN planovane_treninky p ON p.id=l.plan_id WHERE p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,l.team_id",
+                        "count": 2,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.title_snapshot,c.amount_minor,c.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM club_member_charges c JOIN payments p ON p.payable_type='member_charge' AND p.payable_id=c.id AND p.status='paid' JOIN sportovci s ON s.id=c.sportovec_id WHERE c.status='paid' AND c.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT oi.id,o.public_code,oi.product_name_snapshot,oi.quantity,oi.line_amount_minor AS amount_minor,oi.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id AND p.status='paid' JOIN sportovci s ON s.id=COALESCE(oi.beneficiary_sportovec_id,o.finance_sportovec_id) WHERE o.payment_status='paid' AND s.id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,o.id DESC,oi.id ASC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "count": 40,
+                        "fetched_rows": 40
+                    },
+                    {
+                        "sql": "SELECT purpose FROM medical_clearance_watches WHERE sportovec_id=? ORDER BY purpose",
+                        "count": 40,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT w.purpose,p.reminder_days FROM medical_clearance_watches w JOIN medical_clearance_policies p ON p.id=w.policy_id WHERE w.sportovec_id=?",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,plan_id,sportovec_id,response,member_note,responded_at FROM training_rsvps WHERE plan_id IN (?) AND sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT DISTINCT team_id FROM club_roster_members WHERE sportovec_id=? AND team_id IN (?) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL)",
+                        "count": 20,
+                        "fetched_rows": 20
+                    }
+                ],
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "count": 467,
+                        "fetched_rows": 465
+                    },
+                    {
+                        "sql": "SELECT id,account_id,token_hint,active,created_at,rotated_at,revoked_at FROM family_calendar_feeds WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled,days_before FROM member_charge_reminder_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT enabled FROM family_weekly_summary_preferences WHERE account_id=?",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT status,COUNT(*) AS total FROM family_weekly_summaries WHERE account_id=? GROUP BY status",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                        "count": 1056,
+                        "fetched_rows": 1056
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 7,
+                        "fetched_rows": 140
+                    },
+                    {
+                        "sql": "SELECT * FROM sportovci WHERE id=?",
+                        "count": 160,
+                        "fetched_rows": 160
+                    },
+                    {
+                        "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, t.id AS team_id, t.code AS team_code, t.name AS team_name, t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, s.starts_on AS season_starts_on, s.ends_on AS season_ends_on FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id WHERE m.sportovec_id=? ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT r.id, r.status, r.registered_at, r.cancelled_at, e.id AS event_id, e.code AS event_code, e.name AS event_name, e.event_type, e.status AS event_status FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id WHERE r.sportovec_id=? ORDER BY r.registered_at DESC, r.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT t.id, t.datum, t.napln, t.delka, t.kategorie FROM trenink_sportovec ts JOIN treninky t ON t.id=ts.trenink_id WHERE ts.sportovec_id=? ORDER BY t.datum DESC, t.id DESC",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.payer_account_id,c.charge_type,c.title_snapshot,c.period_from,c.period_to,c.amount_minor,c.currency,c.due_on,c.status,c.source_system,c.created_at,p.status AS payment_status,p.method AS payment_method,p.variable_symbol,p.paid_at FROM club_member_charges c LEFT JOIN payments p ON p.id=(SELECT MAX(p2.id) FROM payments p2 WHERE p2.payable_type='member_charge' AND p2.payable_id=c.id) WHERE c.sportovec_id=? ORDER BY COALESCE(c.due_on,c.created_at) DESC,c.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.* FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date,r.training_id",
+                        "count": 40,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.*,p.event_id FROM sports_event_participation p JOIN sports_event_revisions r ON r.id=p.current_revision_id WHERE p.sportovec_id=? ORDER BY r.recorded_at DESC,r.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
+                        "count": 22,
+                        "fetched_rows": 22
+                    },
+                    {
+                        "sql": "SELECT DISTINCT m.id,m.typ,m.vzdalenost,m.distance_unit,m.distance_meters,m.cas,m.duration_ms,m.rpe,m.rpe_value,m.contract_version,t.id AS training_id,t.datum AS activity_date FROM mereni_zaznamy m JOIN trenink_mereni tm ON tm.mereni_id=m.id JOIN treninky t ON t.id=tm.trenink_id WHERE m.sportovec_id=? AND t.datum BETWEEN ? AND ? ORDER BY t.datum,m.id,t.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT * FROM club_finance_settings WHERE id=1",
+                        "count": 20,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,COALESCE(a.allocated_minor,0)+COALESCE(pa.allocated_minor,0) AS allocated_minor FROM club_member_charges c  LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE charge_id IS NOT NULL GROUP BY charge_id) a ON a.charge_id=c.id LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY charge_id) pa ON pa.charge_id=c.id WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?",
+                        "count": 44,
+                        "fetched_rows": 44
+                    },
+                    {
+                        "sql": "SELECT o.id,o.account_id,o.public_code,o.total_minor,o.currency,o.status,o.payment_status,o.payment_expires_at,o.finance_sportovec_id,p.due_at,COALESCE(a.allocated_minor,0) AS allocated_minor FROM shop_orders o JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id  LEFT JOIN (SELECT order_id,SUM(amount_minor) AS allocated_minor FROM club_finance_allocations WHERE order_id IS NOT NULL GROUP BY order_id) a ON a.order_id=o.id WHERE o.status='placed' AND o.payment_status='pending' AND p.status='pending'",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,amount_minor FROM club_finance_receipts WHERE sportovec_id=? AND currency='CZK' ORDER BY paid_on,id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME='beneficiary_sportovec_id'",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT oi.*,o.public_code,o.account_id AS purchaser_account_id,o.status AS order_status,o.payment_status,o.placed_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name,r.relation_role AS viewer_relation_role FROM account_person_roles r JOIN verejni_uzivatele viewer ON viewer.id=r.account_id AND viewer.aktivni=1 AND viewer.email_overeno=1 JOIN shop_order_items oi ON oi.beneficiary_sportovec_id=r.sportovec_id JOIN shop_orders o ON o.id=oi.order_id JOIN sportovci s ON s.id=oi.beneficiary_sportovec_id WHERE r.account_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) ORDER BY o.created_at DESC,o.id DESC,oi.id ASC LIMIT 200",
+                        "count": 1,
+                        "fetched_rows": 20
+                    },
+                    {
+                        "sql": "SELECT DISTINCT p.id,p.trenink_id FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='evidovany' AND p.trenink_id IS NOT NULL AND p.datum<=? ORDER BY p.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id,p.nazev,p.datum FROM training_rsvps r JOIN planovane_treninky p ON p.id=r.plan_id LEFT JOIN club_makeup_credits c ON c.source_plan_id=p.id AND c.sportovec_id=r.sportovec_id WHERE r.sportovec_id=? AND r.response='not_going' AND r.makeup_excused_at IS NOT NULL AND c.id IS NULL AND p.stav='planovany' ORDER BY p.datum,p.id",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.*,p.datum AS source_date,p.nazev AS source_name,o.name AS offer_name,o.ends_on AS source_ends_on,n.name AS carry_offer_name,n.product_id AS carry_product_id,n.variant_id AS carry_variant_id FROM club_makeup_credits c JOIN planovane_treninky p ON p.id=c.source_plan_id JOIN club_program_offers o ON o.id=c.source_offer_id LEFT JOIN club_program_offers n ON n.id=c.carry_offer_id WHERE c.sportovec_id=? ORDER BY p.datum DESC,c.id DESC",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,jmeno,prijmeni FROM sportovci WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        "count": 3,
+                        "fetched_rows": 60
+                    },
+                    {
+                        "sql": "SELECT r.id AS registration_id,r.status AS registration_status,r.sportovec_id,e.name,s.id AS session_id,s.starts_at,s.ends_at,s.location,sp.jmeno,sp.prijmeni FROM club_event_registrations r JOIN club_events e ON e.id=r.event_id JOIN club_event_sessions s ON s.event_id=e.id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND r.status IN ('confirmed','waitlisted','payment_pending') AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT e.id AS event_id,e.name,e.planning_status,s.id AS session_id,s.starts_at,s.ends_at,s.location,rt.team_id FROM club_events e JOIN club_event_sessions s ON s.event_id=e.id JOIN club_event_roster_targets rt ON rt.event_id=e.id WHERE e.visibility='rosters' AND e.planning_status IN ('planned','confirmed') AND e.status<>'archived' AND s.status='scheduled' AND s.starts_at<? AND s.ends_at>=? ORDER BY s.starts_at,s.id,rt.team_id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT event_id,sportovec_id FROM club_event_registrations WHERE sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND status IN ('confirmed','waitlisted','payment_pending')",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT r.id AS reservation_id,r.stav,r.sportovec_id,il.datum,il.cas_od,il.cas_do,il.nazev,s.nazev AS sportoviste,sp.jmeno,sp.prijmeni FROM verejne_rezervace r JOIN individualni_lekce il ON il.id=r.lekce_id JOIN sportovist s ON s.id=il.sportoviste_id JOIN sportovci sp ON sp.id=r.sportovec_id WHERE r.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND r.stav IN ('ceka','potvrzena') AND il.stav='aktivni' AND il.datum BETWEEN ? AND ? ORDER BY il.datum,il.cas_od,r.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT c.id,c.due_on,c.title_snapshot,c.amount_minor,c.currency,c.sportovec_id,sp.jmeno,sp.prijmeni FROM club_member_charges c JOIN sportovci sp ON sp.id=c.sportovec_id WHERE c.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND c.status='pending' AND c.due_on BETWEEN ? AND ? ORDER BY c.due_on,c.id",
+                        "count": 2,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT p.id AS plan_id,p.nazev,p.datum,p.cas_od,p.cas_do,p.popis,p.stav,l.team_id,l.team_name_snapshot FROM training_roster_links l JOIN planovane_treninky p ON p.id=l.plan_id WHERE p.stav='planovany' AND p.datum BETWEEN ? AND ? ORDER BY p.datum,p.cas_od,p.id,l.team_id",
+                        "count": 2,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT c.id,c.public_code,c.title_snapshot,c.amount_minor,c.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM club_member_charges c JOIN payments p ON p.payable_type='member_charge' AND p.payable_id=c.id AND p.status='paid' JOIN sportovci s ON s.id=c.sportovec_id WHERE c.status='paid' AND c.sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,c.id DESC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT oi.id,o.public_code,oi.product_name_snapshot,oi.quantity,oi.line_amount_minor AS amount_minor,oi.currency,p.paid_at,s.jmeno AS beneficiary_first_name,s.prijmeni AS beneficiary_last_name FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN payments p ON p.payable_type='shop_order' AND p.payable_id=o.id AND p.status='paid' JOIN sportovci s ON s.id=COALESCE(oi.beneficiary_sportovec_id,o.finance_sportovec_id) WHERE o.payment_status='paid' AND s.id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND p.paid_at>=? AND p.paid_at<? ORDER BY p.paid_at DESC,o.id DESC,oi.id ASC",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT 1 FROM verejni_uzivatele WHERE id=? AND aktivni=1 AND email_overeno=1",
+                        "count": 1,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COUNT(*) FROM account_person_claim_requests WHERE account_id=? AND status='pending'",
+                        "count": 2,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? LIMIT 1",
+                        "count": 40,
+                        "fetched_rows": 40
+                    },
+                    {
+                        "sql": "SELECT purpose FROM medical_clearance_watches WHERE sportovec_id=? ORDER BY purpose",
+                        "count": 40,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT w.purpose,p.reminder_days FROM medical_clearance_watches w JOIN medical_clearance_policies p ON p.id=w.policy_id WHERE w.sportovec_id=?",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT id,plan_id,sportovec_id,response,member_note,responded_at FROM training_rsvps WHERE plan_id IN (?) AND sportovec_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        "count": 1,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+                        "count": 20,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT DISTINCT team_id FROM club_roster_members WHERE sportovec_id=? AND team_id IN (?) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL)",
+                        "count": 20,
+                        "fetched_rows": 20
+                    }
+                ]
+            },
+            "authorization_explain": {
+                "current": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "const",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "8",
+                            "ref": "const,const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                },
+                "baseline": {
+                    "sql": "SELECT s.id AS sportovec_id, s.jmeno, s.prijmeni, s.narozeni, s.stav_clenstvi, r.relation_role FROM account_person_roles r JOIN verejni_uzivatele vu ON vu.id=r.account_id JOIN sportovci s ON s.id=r.sportovec_id WHERE r.account_id=? AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND vu.aktivni=1 AND vu.email_overeno=1 AND r.relation_role IN ('self','guardian') AND s.id=? ORDER BY s.prijmeni, s.jmeno, s.id, r.relation_role",
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "s",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "r",
+                            "type": "const",
+                            "possible_keys": "uq_account_person,idx_account_person_active,idx_person_account_active",
+                            "key": "uq_account_person",
+                            "key_len": "8",
+                            "ref": "const,const",
+                            "rows": "1",
+                            "Extra": ""
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "SIMPLE",
+                            "table": "vu",
+                            "type": "const",
+                            "possible_keys": "PRIMARY",
+                            "key": "PRIMARY",
+                            "key_len": "4",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": ""
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

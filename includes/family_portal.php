@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__.'/family_schema_read_scope.php';
+
 require_once __DIR__ . '/member_charge_read.php';
 require_once __DIR__ . '/sportovec_status_lib.php';
 require_once __DIR__ . '/sports_activity.php';
@@ -12,21 +14,26 @@ final class FamilyPortalAccessDenied extends RuntimeException
 
 function familyPortalTableExists(PDO $pdo, string $table): bool
 {
-    $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-    if ($driver === 'mysql') {
-        $statement = $pdo->prepare(
-            'SELECT 1 FROM information_schema.TABLES '
-            . 'WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1'
-        );
-        $statement->execute([$table]);
-        return (bool)$statement->fetchColumn();
-    }
-    if ($driver === 'sqlite') {
-        $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1");
-        $statement->execute([$table]);
-        return (bool)$statement->fetchColumn();
-    }
-    return false;
+    return FamilySchemaReadScope::remember($pdo, __FUNCTION__ . ':' . strlen($table) . ':' . $table, static function () use (
+        $pdo,
+        $table
+    ): bool {
+        $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'mysql') {
+            $statement = $pdo->prepare(
+                'SELECT 1 FROM information_schema.TABLES '
+                . 'WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1'
+            );
+            $statement->execute([$table]);
+            return (bool)$statement->fetchColumn();
+        }
+        if ($driver === 'sqlite') {
+            $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1");
+            $statement->execute([$table]);
+            return (bool)$statement->fetchColumn();
+        }
+        return false;
+    });
 }
 
 /** Shared authorization predicate; callers bind account ID first. No cached authority. */
@@ -174,7 +181,8 @@ function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId):
         $training['closure_version'] = $closure['version'] ?? null;
     }
     unset($training);
-    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings, 'member_charges' => $memberCharges,'sports_summary' => $summary];
+    return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings,
+     'member_charges' => $memberCharges,'sports_summary' => $summary];
 }
 
 /** @return list<array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,member_charges:list<array<string,mixed>>}> */

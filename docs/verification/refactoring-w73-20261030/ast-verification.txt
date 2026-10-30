@@ -1,0 +1,5 @@
+includes/family_portal.php: 7 function ASTs unchanged after unwrapping 1 metadata loaders and folding string concatenation.
+includes/member_charge_read.php: 4 function ASTs unchanged after unwrapping 1 metadata loaders and folding string concatenation.
+includes/club_finance.php: 16 function ASTs unchanged after unwrapping 2 metadata loaders and folding string concatenation.
+includes/public_calendar_feed.php: 12 function ASTs unchanged after unwrapping 2 metadata loaders and folding string concatenation.
+includes/roster_hierarchy.php: 15 function ASTs unchanged after unwrapping 1 metadata loaders and folding string concatenation.
