@@ -75,12 +75,15 @@ function familyPortalAuthorizedPeople(PDO $pdo, int $accountId, ?int $sportovecI
     );
     $statement->execute($sportovecId !== null ? [$accountId, $sportovecId] : [$accountId]);
 
+    $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $personIds = array_values(array_unique(array_map(static fn (array $row): int => (int) $row['sportovec_id'], $rows)));
+    $membership = familyPortalMembershipFieldsForPeople($pdo, $personIds);
     $people = [];
-    foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    foreach ($rows as $row) {
         $personId = (int)$row['sportovec_id'];
         $role = (string)$row['relation_role'];
         if (!isset($people[$personId])) {
-            $row = array_replace($row, sportovecMembershipFields($pdo, $personId));
+            $row = array_replace($row, $membership[$personId] ?? []);
             $row['sportovec_id'] = $personId;
             $row['relation_roles'] = [];
             unset($row['relation_role']);
@@ -92,6 +95,29 @@ function familyPortalAuthorizedPeople(PDO $pdo, int $accountId, ?int $sportovecI
     }
 
     return array_values($people);
+}
+
+/**
+ * Hydrate only the IDs authorized by this invocation. Never retain personal data between calls.
+ * @param list<int> $personIds Distinct IDs from the fresh authorized query.
+ * @return array<int,array<string,mixed>>
+ */
+function familyPortalMembershipFieldsForPeople(PDO $pdo, array $personIds): array
+{
+    if (count($personIds) === 1) {
+        return [$personIds[0] => sportovecMembershipFields($pdo, $personIds[0])];
+    }
+    $fields = array_flip(['stav_clenstvi', 'stav_manualni', 'stav_duvod', 'stav_aktualizovan']);
+    $membership = [];
+    foreach (array_chunk($personIds, 400) as $batch) {
+        // SELECT * retains compatibility with legacy schemas lacking optional membership columns.
+        $statement = $pdo->prepare('SELECT * FROM sportovci WHERE id IN (' . implode(',', array_fill(0, count($batch), '?')) . ')');
+        $statement->execute($batch);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $membership[(int) $row['id']] = array_intersect_key($row, $fields);
+        }
+    }
+    return $membership;
 }
 
 function familyPortalCanViewPerson(PDO $pdo, int $accountId, int $sportovecId): bool

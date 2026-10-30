@@ -85,8 +85,9 @@ final class FamilyOverviewOptimizationTest extends TestCase
         $pdo = $this->database(20);
         $pdo->profiling = true;
         self::assertCount(20, \familyPortalOverview($pdo, 1));
-        $membership = array_filter($pdo->profile, static fn (array $q): bool => $q['sql'] === 'SELECT * FROM sportovci WHERE id=?');
-        self::assertCount(40, $membership, 'Only initial family plus current target, not every family for every profile.');
+        $membership = array_filter($pdo->profile, static fn (array $q): bool => str_starts_with($q['sql'], 'SELECT * FROM sportovci WHERE id'));
+        self::assertCount(21, $membership, 'One initial batch plus fresh membership for each current target.');
+        self::assertSame(40, array_sum(array_column($membership, 'fetched_rows')));
     }
 }
 

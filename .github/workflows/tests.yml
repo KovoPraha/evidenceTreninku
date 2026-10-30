@@ -155,7 +155,7 @@ jobs:
       - name: Ověřit cílený rodinný přístup a revokaci na MariaDB
         env:
           EVIDENCE_FAMILY_MARIADB: '1'
-        run: php vendor/bin/phpunit tests/Integration/FamilyPortalTargetedReadTest.php
+        run: php vendor/bin/phpunit tests/Integration/FamilyPortalTargetedReadTest.php tests/Integration/FamilyMembershipBatchTest.php
 
       - name: Ověřit revokaci během skutečného čekání RSVP a náhrad
         run: php tests/Support/FamilyWriteAuthorizationRace.php > family-write-authorization-race.json
@@ -202,6 +202,22 @@ jobs:
             family-schema-profile.json
             family-schema-history.json
             family-schema-post.json
+          retention-days: 14
+
+      - name: Ověřit dávkové členství ve všech rodinných sekcích
+        run: |
+          php tests/Support/FamilyMembershipPageProfile.php > family-membership-profile.json
+          php tests/Support/FamilyMembershipPageProfile.php --family-size=20 --history > family-membership-history.json
+          php tests/Support/FamilyMembershipPageProfile.php --post > family-membership-post.json
+
+      - name: Uchovat profil dávkového členství
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: family-membership-profile-mariadb-${{ matrix.mariadb-version }}
+          path: |
+            family-membership-profile.json
+            family-membership-history.json
+            family-membership-post.json
           retention-days: 14
 
       - name: Ověřit zveřejnění registračních textů a souběh na MariaDB
