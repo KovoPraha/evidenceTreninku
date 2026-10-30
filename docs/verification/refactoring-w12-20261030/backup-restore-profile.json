@@ -1,0 +1,18 @@
+{
+    "status": "PASS",
+    "rows": 10000,
+    "club_pdf_rows": 100,
+    "tables": 290,
+    "triggers": 1,
+    "foreign_keys_identical_and_enabled": true,
+    "whole_table_digests_equal": true,
+    "private_files_restored": 1,
+    "complete_export_ms": 59458.9198,
+    "export_extra_peak_bytes": 186609592,
+    "export_zip_bytes": 699750,
+    "backup_ms": 3606.3767,
+    "backup_compressed_bytes": 639721,
+    "restore_ms": 7849.6602,
+    "backup_sha256": "ddb404e3bba0b05723f219e8878b3adff57611a26fe9e6d476ba4ea12e154e71",
+    "production_mutations": false
+}

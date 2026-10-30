@@ -1,0 +1,66 @@
+{
+    "samples": 1,
+    "comparison": "complete result hash and exact metadata",
+    "results": [
+        {
+            "rows": 100,
+            "mode": "baseline",
+            "ms": 137.6588,
+            "incremental_peak_bytes": 1627280,
+            "retained_with_result_bytes": 1597104,
+            "retained_after_result_release_bytes": 1554160,
+            "xlsx_bytes": 8757,
+            "result_sha256": "a609c99539e4531b8303277015001f68eef95d68b29314aa573509fea4e543c4"
+        },
+        {
+            "rows": 100,
+            "mode": "current",
+            "ms": 67.2886,
+            "incremental_peak_bytes": 395856,
+            "retained_with_result_bytes": 391824,
+            "retained_after_result_release_bytes": 348112,
+            "xlsx_bytes": 8757,
+            "result_sha256": "a609c99539e4531b8303277015001f68eef95d68b29314aa573509fea4e543c4"
+        },
+        {
+            "rows": 1000,
+            "mode": "baseline",
+            "ms": 472.5755,
+            "incremental_peak_bytes": 3347712,
+            "retained_with_result_bytes": 3343680,
+            "retained_after_result_release_bytes": 2915616,
+            "xlsx_bytes": 31252,
+            "result_sha256": "c09223c0afa0295f0791bfc76126f3f8532501a6c93a24009a1d385aacdeb95b"
+        },
+        {
+            "rows": 1000,
+            "mode": "current",
+            "ms": 545.6309,
+            "incremental_peak_bytes": 3807344,
+            "retained_with_result_bytes": 3803312,
+            "retained_after_result_release_bytes": 3374480,
+            "xlsx_bytes": 31252,
+            "result_sha256": "c09223c0afa0295f0791bfc76126f3f8532501a6c93a24009a1d385aacdeb95b"
+        },
+        {
+            "rows": 10000,
+            "mode": "baseline",
+            "ms": 4654.5869,
+            "incremental_peak_bytes": 33793632,
+            "retained_with_result_bytes": 33789600,
+            "retained_after_result_release_bytes": 29443776,
+            "xlsx_bytes": 260869,
+            "result_sha256": "3f5c0c2b875f980f4dc31c6fa7f4308e311589f4a38141dd79f88e02d37fb84a"
+        },
+        {
+            "rows": 10000,
+            "mode": "current",
+            "ms": 4592.6991,
+            "incremental_peak_bytes": 36940264,
+            "retained_with_result_bytes": 36936232,
+            "retained_after_result_release_bytes": 32589640,
+            "xlsx_bytes": 260869,
+            "result_sha256": "3f5c0c2b875f980f4dc31c6fa7f4308e311589f4a38141dd79f88e02d37fb84a"
+        }
+    ]
+}

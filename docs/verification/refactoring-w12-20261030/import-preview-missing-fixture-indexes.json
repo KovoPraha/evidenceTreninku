@@ -1,0 +1,39 @@
+{
+    "schema": "full migrations, FK enabled, random localhost DB",
+    "samples": 1,
+    "transport": "none",
+    "promotion": false,
+    "rollback": "pass",
+    "results": [
+        {
+            "input_rows": 100,
+            "instrumented_single_ms": 249.0786,
+            "extra_peak_bytes": 872632,
+            "report_bytes": 8241,
+            "classified_rows": 100,
+            "fingerprint": "a15d31d7d8c4ea0d7465aca1efd5f6f57773b9b001e5499b98b8fbb176a7b37b",
+            "prepared_sql": 224,
+            "fetched_rows": 235
+        },
+        {
+            "input_rows": 1000,
+            "instrumented_single_ms": 1192.7957,
+            "extra_peak_bytes": 6945064,
+            "report_bytes": 79345,
+            "classified_rows": 1000,
+            "fingerprint": "b3af74b391a82969983f10829ccb4619ff1bb2503732e7c94a2ad41cbd5633ac",
+            "prepared_sql": 2023,
+            "fetched_rows": 2014
+        },
+        {
+            "input_rows": 10000,
+            "instrumented_single_ms": 44671.115,
+            "extra_peak_bytes": 68775336,
+            "report_bytes": 799349,
+            "classified_rows": 10000,
+            "fingerprint": "ac4151f651b820d4e958618d5add5321bcb17a1995c8ffec41dc45163f746e1b",
+            "prepared_sql": 20023,
+            "fetched_rows": 20014
+        }
+    ]
+}
