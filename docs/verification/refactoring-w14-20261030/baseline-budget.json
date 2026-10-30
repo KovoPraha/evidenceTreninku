@@ -1,0 +1,25 @@
+{
+    "status": "pass",
+    "base": "origin\/main",
+    "before": {
+        "entries": 515,
+        "findings": 2350
+    },
+    "after": {
+        "entries": 515,
+        "findings": 2350
+    },
+    "findings_by_directory": {
+        "auditlog": 3,
+        "bin": 75,
+        "booking": 268,
+        "entrypoints": 1643,
+        "includes": 245,
+        "jizdy": 16,
+        "migrations": 2,
+        "servis": 17,
+        "uctenky": 30,
+        "udalosti": 33,
+        "vozidla": 18
+    }
+}
