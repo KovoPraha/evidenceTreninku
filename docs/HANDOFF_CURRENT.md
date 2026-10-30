@@ -145,4 +145,7 @@ kódem, `origin/main`, CI ani tímto dokumentem.
 [W8.3](REFACTORING_W83_2026-10-30.md) nasazena společně s W8.2:
 rodinný kalendář 4199 → 39 SQL pro 20 osob/rok.
 [Release a čtecí důkazy](verification/refactoring-w82-release-20261030/RESULTS.md).
-Pokračují W8.4 klubový kalendář, W8.5 sportovní kontrakty a W9–W15.
+W8.4 klubový kalendář je rovněž
+[nasazen z PR #241](verification/refactoring-w84-release-20261030/RESULTS.md):
+1842 testů / 36744 assertions, HTTP 26/26, živé SHA a beze změny konfigurace.
+Pokračují W8.5 sportovní kontrakty a W9–W15.

@@ -325,6 +325,7 @@ na současném main / čeká na rozhodnutí**, nikoli neurčité „hotovo“.
 
 [Plán](REFACTORING_W84_2026-10-30.md) a
 [měření](verification/refactoring-w84-20261030/RESULTS.md): dávkové přílohy
-povolených akcí a vozidel, roční staff seznam 2913 → 9 SQL. Autorizace a
-writeři zachováni. [Navazující kontrakty W8.5](verification/refactoring-w84-20261030/SPORT_FOLLOWUP.md)
+povolených akcí a vozidel, roční staff seznam 2913 → 9 SQL. PR #241 je
+[nasazen a ověřen](verification/refactoring-w84-release-20261030/RESULTS.md).
+Autorizace a writeři zachováni. [Navazující kontrakty W8.5](verification/refactoring-w84-20261030/SPORT_FOLLOWUP.md)
 zůstávají otevřené; celý plán W9–W15 tím není uzavřen.
