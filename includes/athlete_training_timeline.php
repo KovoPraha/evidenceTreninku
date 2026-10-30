@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/roster_hierarchy.php';
+require_once __DIR__ . '/athlete_timeline_membership_read.php';
 
 /**
  * Date-sensitive plans and actual trainings for one athlete in one calendar year.
@@ -12,19 +14,15 @@ require_once __DIR__ . '/roster_hierarchy.php';
  */
 function athleteTrainingTimeline(PDO $pdo, int $sportovecId, int $year): array
 {
-    if ($sportovecId < 1 || $year < 1900 || $year > 2100) throw new InvalidArgumentException('Neplatný sportovec nebo rok.');
+    if ($sportovecId < 1 || $year < 1900 || $year > 2100) {
+        throw new InvalidArgumentException('Neplatný sportovec nebo rok.');
+    }
     $from = sprintf('%04d-01-01', $year);
     $to = sprintf('%04d-12-31', $year);
     $rows = [];
     $actualCovered = [];
-    $membershipCache = [];
-    $belongs = static function (int $teamId, string $date) use ($pdo, $sportovecId, &$membershipCache): bool {
-        $key = $teamId . ':' . $date;
-        if (!array_key_exists($key, $membershipCache)) {
-            $membershipCache[$key] = kisRosterPersonTargetIds($pdo, $sportovecId, [$teamId], $date) !== [];
-        }
-        return $membershipCache[$key];
-    };
+    $membershipRead = new AthleteTimelineMembershipRead($pdo, $sportovecId, $year);
+    $belongs = $membershipRead->contains(...);
 
     if (kisRosterHierarchyHasTable($pdo, 'training_roster_links') && kisRosterHierarchyHasTable($pdo, 'planovane_treninky')) {
         $sql = 'SELECT p.id,p.datum,p.cas_od,p.cas_do,p.nazev,p.popis,p.stav,p.trenink_id,'
@@ -34,7 +32,9 @@ function athleteTrainingTimeline(PDO $pdo, int $sportovecId, int $year): array
         $query = $pdo->prepare($sql);
         $query->execute([$from, $to]);
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $plan) {
-            if (!$belongs((int)$plan['team_id'], (string)$plan['datum'])) continue;
+            if (!$belongs((int)$plan['team_id'], (string)$plan['datum'])) {
+                continue;
+            }
             $planId = (int)$plan['id'];
             if (!isset($rows['plan:' . $planId])) {
                 $rows['plan:' . $planId] = [
@@ -46,7 +46,9 @@ function athleteTrainingTimeline(PDO $pdo, int $sportovecId, int $year): array
                 ];
             }
             $rows['plan:' . $planId]['targets'][(int)$plan['team_id']] = (string)$plan['team_name_snapshot'];
-            if ((int)($plan['trenink_id'] ?? 0) > 0) $actualCovered[(int)$plan['trenink_id']] = true;
+            if ((int)($plan['trenink_id'] ?? 0) > 0) {
+                $actualCovered[(int)$plan['trenink_id']] = true;
+            }
         }
     }
 
@@ -54,7 +56,9 @@ function athleteTrainingTimeline(PDO $pdo, int $sportovecId, int $year): array
     if (kisRosterHierarchyHasTable($pdo, 'training_rsvps')) {
         $query = $pdo->prepare('SELECT plan_id,response FROM training_rsvps WHERE sportovec_id=?');
         $query->execute([$sportovecId]);
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $response) $responses[(int)$response['plan_id']] = (string)$response['response'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $response) {
+            $responses[(int)$response['plan_id']] = (string)$response['response'];
+        }
     }
     $attendance = [];
     if (kisRosterHierarchyHasTable($pdo, 'trenink_sportovec')) {
@@ -78,10 +82,14 @@ function athleteTrainingTimeline(PDO $pdo, int $sportovecId, int $year): array
         $actuals->execute([$from, $to]);
         foreach ($actuals->fetchAll(PDO::FETCH_ASSOC) as $actual) {
             $actualId = (int)$actual['id'];
-            if (isset($actualCovered[$actualId])) continue;
+            if (isset($actualCovered[$actualId])) {
+                continue;
+            }
             $attended = isset($attendance[$actualId]);
             $teamId = (int)($actual['team_id'] ?? 0);
-            if (!$attended && ($teamId < 1 || !$belongs($teamId, (string)$actual['datum']))) continue;
+            if (!$attended && ($teamId < 1 || !$belongs($teamId, (string)$actual['datum']))) {
+                continue;
+            }
             $key = 'actual:' . $actualId;
             if (!isset($rows[$key])) {
                 $rows[$key] = [
@@ -95,19 +103,31 @@ function athleteTrainingTimeline(PDO $pdo, int $sportovecId, int $year): array
                 $rows[$key]['targets'][$teamId] = (string)$actual['team_name_snapshot'];
             }
         }
-        foreach ($rows as &$row) if ($row['kind'] === 'actual') $row['targets'] = array_values(array_unique(array_values($row['targets'])));
+        foreach ($rows as &$row) {
+            if ($row['kind'] === 'actual') {
+                $row['targets'] = array_values(array_unique(array_values($row['targets'])));
+            }
+        }
         unset($row);
     }
     // Raw attendance remains visible as evidence but only a closed actual revision
     // confirms attendance. A planned row and its actual training still form one item.
-    if (is_file(__DIR__.'/training_closure.php') && kisRosterHierarchyHasTable($pdo,'training_closures')) {
+    if (is_file(__DIR__.'/training_closure.php') && kisRosterHierarchyHasTable($pdo, 'training_closures')) {
         require_once __DIR__.'/training_closure.php';
-        $closed=[];
-        foreach(trainingClosedActivitiesForPerson($pdo,$sportovecId,$from,$to) as $activity)$closed[(int)$activity['training_id']]=$activity;
-        foreach($rows as &$row){$actualId=(int)$row['actual_id'];$row['attendance_recorded']=$row['attended'];$row['attended']=isset($closed[$actualId]);$row['closure_version']=$closed[$actualId]['version']??null;$row['duration_minutes']=$closed[$actualId]['duration_minutes']??null;}
+        $closed = [];
+        foreach (trainingClosedActivitiesForPerson($pdo, $sportovecId, $from, $to) as $activity) {
+            $closed[(int)$activity['training_id']] = $activity;
+        }
+        foreach ($rows as &$row) {
+            $actualId = (int)$row['actual_id'];
+            $row['attendance_recorded'] = $row['attended'];
+            $row['attended'] = isset($closed[$actualId]);
+            $row['closure_version'] = $closed[$actualId]['version'] ?? null;
+            $row['duration_minutes'] = $closed[$actualId]['duration_minutes'] ?? null;
+        }
         unset($row);
     }
     $result = array_values($rows);
-    usort($result, static fn(array $a, array $b): int => [$b['datum'], $b['cas_od'], $b['id']] <=> [$a['datum'], $a['cas_od'], $a['id']]);
+    usort($result, static fn (array $a, array $b): int => [$b['datum'], $b['cas_od'], $b['id']] <=> [$a['datum'], $a['cas_od'], $a['id']]);
     return $result;
 }

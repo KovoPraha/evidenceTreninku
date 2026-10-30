@@ -1,0 +1,19 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w81-20261030\phpunit.xml.dist
+
+F                                                                   1 / 1 (100%)
+
+Time: 00:00.063, Memory: 12.00 MB
+
+There was 1 failure:
+
+1) Tests\Integration\AthleteTimelineReadOptimizationTest::testMembershipQueriesStayBoundedAcrossWholeYear
+Load historical membership and hierarchy once per projection.
+Failed asserting that 1040 is equal to 2 or is less than 2.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w81-20261030\tests\Integration\AthleteTimelineReadOptimizationTest.php:42
+
+FAILURES!
+Tests: 1, Assertions: 3, Failures: 1.

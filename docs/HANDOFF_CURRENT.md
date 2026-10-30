@@ -97,7 +97,9 @@ celý GET 752 → 619 SQL, stejné výsledky a čerstvá autorizace.
 [W7.5](REFACTORING_W75_2026-10-30.md) je nasazena: stránka 50 z 10 000 osob
 načítá 53 místo 10 003 řádků; CI paměť stránky 100 klesla z 36,8 na 0,43 MB.
 [Provozní důkazy](verification/refactoring-w75-release-20261030/RESULTS.md).
-Navazuje W7.6 / W8.1: zbývající R03/R04 a časová osa. Vlastník autorizoval
+[W7.6 / W8.1](REFACTORING_W76_W81_2026-10-30.md) je lokálně ověřena:
+roční časová osa 4176 → 16 SQL, shodný výstup; následuje CI a vydání.
+R03 nemá N+1, finanční historie editoru pokračuje ve W10. Vlastník autorizoval
 autonomní pokračování až do technického dokončení W15 včetně sloučení a nasazení
 po úspěšném ověření; nový pokyn pro každou vlnu není potřeba.
 Plošné měření K0.2 zůstává otevřené;
