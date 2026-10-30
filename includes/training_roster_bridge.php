@@ -1,8 +1,12 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/roster_hierarchy.php';
+require_once __DIR__ . '/training_roster_filter_read.php';
 
-final class TrainingRosterBridgeException extends RuntimeException {}
+final class TrainingRosterBridgeException extends RuntimeException
+{
+}
 
 /** @return list<array<string,mixed>> */
 function trainingRosterBridgeEligibleTeams(PDO $pdo, string $date): array
@@ -42,79 +46,51 @@ function trainingRosterBridgeTrainingTeamIds(PDO $pdo, int $trainingId): array
  */
 function trainingRosterBridgeFilterTrainingRows(PDO $pdo, array $rows, int $filterTeamId): array
 {
-    if ($filterTeamId < 1 || $rows === []) return $rows;
-    $ids = array_values(array_unique(array_map(static fn(array $row): int => (int)$row['id'], $rows)));
-    $links = [];
-    foreach (array_chunk($ids, 500) as $chunk) {
-        $marks = implode(',', array_fill(0, count($chunk), '?'));
-        $stmt = $pdo->prepare("SELECT trenink_id,team_id FROM training_roster_links WHERE trenink_id IN ($marks)");
-        $stmt->execute($chunk);
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $link) $links[(int)$link['trenink_id']][] = (int)$link['team_id'];
-    }
-    $cache = [];
-    return array_values(array_filter($rows, static function (array $row) use ($pdo, $filterTeamId, $links, &$cache): bool {
-        $date = (string)$row['datum'];
-        $filterDescendants = $cache[$filterTeamId][$date] ??= kisRosterDescendantIds($pdo, $filterTeamId, $date);
-        foreach ($links[(int)$row['id']] ?? [] as $targetId) {
-            $targetDescendants = $cache[$targetId][$date] ??= kisRosterDescendantIds($pdo, $targetId, $date);
-            if (in_array($targetId, $filterDescendants, true) || in_array($filterTeamId, $targetDescendants, true)) return true;
-        }
-        return false;
-    }));
+    return TrainingRosterFilterRead::filter($pdo, $rows, $filterTeamId, 'trenink_id');
 }
 
 /** @param list<array<string,mixed>> $rows @return list<array<string,mixed>> */
 function trainingRosterBridgeFilterPlanRows(PDO $pdo, array $rows, int $filterTeamId): array
 {
-    if ($filterTeamId < 1 || $rows === []) return $rows;
-    $ids = array_values(array_unique(array_map(static fn(array $row): int => (int)$row['id'], $rows)));
-    $links = [];
-    foreach (array_chunk($ids, 500) as $chunk) {
-        $marks = implode(',', array_fill(0, count($chunk), '?'));
-        $stmt = $pdo->prepare("SELECT plan_id,team_id FROM training_roster_links WHERE plan_id IN ($marks)");
-        $stmt->execute($chunk);
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $link) $links[(int)$link['plan_id']][] = (int)$link['team_id'];
-    }
-    $cache = [];
-    return array_values(array_filter($rows, static function (array $row) use ($pdo, $filterTeamId, $links, &$cache): bool {
-        $date = (string)$row['datum'];
-        $filterDescendants = $cache[$filterTeamId][$date] ??= kisRosterDescendantIds($pdo, $filterTeamId, $date);
-        foreach ($links[(int)$row['id']] ?? [] as $targetId) {
-            $targetDescendants = $cache[$targetId][$date] ??= kisRosterDescendantIds($pdo, $targetId, $date);
-            if (in_array($targetId, $filterDescendants, true) || in_array($filterTeamId, $targetDescendants, true)) return true;
-        }
-        return false;
-    }));
+    return TrainingRosterFilterRead::filter($pdo, $rows, $filterTeamId, 'plan_id');
 }
 
 /** @param list<array<string,mixed>> $rows @return array<int,string> */
 function trainingRosterBridgeTrainingLabels(PDO $pdo, array $rows): array
 {
-    if ($rows === []) return [];
-    $ids = array_values(array_unique(array_map(static fn(array $row): int => (int)$row['id'], $rows)));
+    if ($rows === []) {
+        return [];
+    }
+    $ids = array_values(array_unique(array_map(static fn (array $row): int => (int)$row['id'], $rows)));
     $names = [];
     foreach (array_chunk($ids, 500) as $chunk) {
         $marks = implode(',', array_fill(0, count($chunk), '?'));
         $stmt = $pdo->prepare("SELECT trenink_id,team_name_snapshot FROM training_roster_links WHERE trenink_id IN ($marks) ORDER BY team_name_snapshot");
         $stmt->execute($chunk);
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) $names[(int)$row['trenink_id']][] = (string)$row['team_name_snapshot'];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $names[(int)$row['trenink_id']][] = (string)$row['team_name_snapshot'];
+        }
     }
-    return array_map(static fn(array $labels): string => implode(', ', array_values(array_unique($labels))), $names);
+    return array_map(static fn (array $labels): string => implode(', ', array_values(array_unique($labels))), $names);
 }
 
 /** @param list<array<string,mixed>> $rows @return array<int,string> */
 function trainingRosterBridgePlanLabels(PDO $pdo, array $rows): array
 {
-    if ($rows === []) return [];
-    $ids = array_values(array_unique(array_map(static fn(array $row): int => (int)$row['id'], $rows)));
+    if ($rows === []) {
+        return [];
+    }
+    $ids = array_values(array_unique(array_map(static fn (array $row): int => (int)$row['id'], $rows)));
     $names = [];
     foreach (array_chunk($ids, 500) as $chunk) {
         $marks = implode(',', array_fill(0, count($chunk), '?'));
         $stmt = $pdo->prepare("SELECT plan_id,team_name_snapshot FROM training_roster_links WHERE plan_id IN ($marks) ORDER BY team_name_snapshot");
         $stmt->execute($chunk);
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) $names[(int)$row['plan_id']][] = (string)$row['team_name_snapshot'];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $names[(int)$row['plan_id']][] = (string)$row['team_name_snapshot'];
+        }
     }
-    return array_map(static fn(array $labels): string => implode(', ', array_values(array_unique($labels))), $names);
+    return array_map(static fn (array $labels): string => implode(', ', array_values(array_unique($labels))), $names);
 }
 
 /**
@@ -154,7 +130,7 @@ function trainingRosterBridgeExpectedForPlan(PDO $pdo, int $planId): array
         );
     }
     $statement->execute([$planId]);
-    return array_map(static fn(array $row): array => ['id' => (int)$row['id'], 'label' => (string)$row['label']], $statement->fetchAll(PDO::FETCH_ASSOC));
+    return array_map(static fn (array $row): array => ['id' => (int)$row['id'], 'label' => (string)$row['label']], $statement->fetchAll(PDO::FETCH_ASSOC));
 }
 
 /**
@@ -163,43 +139,119 @@ function trainingRosterBridgeExpectedForPlan(PDO $pdo, int $planId): array
  *
  * @return array{link_count:int,expected_count:int}
  */
-function trainingRosterBridgeCopyPlanToTraining(PDO $pdo,int $planId,int $trainingId,int $actorId):array
+function trainingRosterBridgeCopyPlanToTraining(PDO $pdo, int $planId, int $trainingId, int $actorId): array
 {
-    if($planId<1||$trainingId<1||$actorId<1)throw new InvalidArgumentException('Neplatný plán, trénink nebo aktér.');
-    $ownsTransaction=!$pdo->inTransaction();if($ownsTransaction)$pdo->beginTransaction();
-    try{
-        $plan=$pdo->prepare('SELECT id FROM planovane_treninky WHERE id=?');$plan->execute([$planId]);
-        $training=$pdo->prepare('SELECT id FROM treninky WHERE id=?');$training->execute([$trainingId]);
-        if(!$plan->fetchColumn()||!$training->fetchColumn())throw new TrainingRosterBridgeException('Plán nebo skutečný trénink nebyl nalezen.');
-        $old=$pdo->prepare('SELECT id FROM training_roster_links WHERE trenink_id=?');$old->execute([$trainingId]);$oldIds=array_map('intval',$old->fetchAll(PDO::FETCH_COLUMN));
-        if($oldIds!==[])$pdo->prepare('DELETE FROM training_roster_expected WHERE link_id IN ('.implode(',',array_fill(0,count($oldIds),'?')).')')->execute($oldIds);
-        $pdo->prepare('DELETE FROM training_roster_links WHERE trenink_id=?')->execute([$trainingId]);
-        $links=$pdo->prepare('SELECT id,team_id,target_date,team_code_snapshot,team_name_snapshot FROM training_roster_links WHERE plan_id=? ORDER BY id');$links->execute([$planId]);$links=$links->fetchAll(PDO::FETCH_ASSOC);
-        $insertLink=$pdo->prepare('INSERT INTO training_roster_links(plan_id,trenink_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_trainer_id) VALUES(NULL,?,?,?,?,?,?)');
-        $expected=$pdo->prepare('SELECT sportovec_id,roster_member_id,member_valid_from_snapshot,member_valid_to_snapshot FROM training_roster_expected WHERE link_id=? ORDER BY id');
-        $insertExpected=$pdo->prepare('INSERT INTO training_roster_expected(link_id,sportovec_id,roster_member_id,member_valid_from_snapshot,member_valid_to_snapshot) VALUES(?,?,?,?,?)');
-        $people=[];
-        foreach($links as$link){
-            $insertLink->execute([$trainingId,(int)$link['team_id'],(string)$link['target_date'],(string)$link['team_code_snapshot'],(string)$link['team_name_snapshot'],$actorId]);$newLinkId=(int)$pdo->lastInsertId();
-            $expected->execute([(int)$link['id']]);foreach($expected->fetchAll(PDO::FETCH_ASSOC)as$row){$insertExpected->execute([$newLinkId,(int)$row['sportovec_id'],$row['roster_member_id']!==null?(int)$row['roster_member_id']:null,(string)$row['member_valid_from_snapshot'],$row['member_valid_to_snapshot']]);$people[(int)$row['sportovec_id']]=true;}
+    if ($planId < 1 || $trainingId < 1 || $actorId < 1) {
+        throw new InvalidArgumentException('Neplatný plán, trénink nebo aktér.');
+    }
+    $ownsTransaction = !$pdo->inTransaction();
+    if ($ownsTransaction) {
+        $pdo->beginTransaction();
+    }
+    try {
+        $plan = $pdo->prepare('SELECT id FROM planovane_treninky WHERE id=?');
+        $plan->execute([$planId]);
+        $training = $pdo->prepare('SELECT id FROM treninky WHERE id=?');
+        $training->execute([$trainingId]);
+        if (!$plan->fetchColumn() || !$training->fetchColumn()) {
+            throw new TrainingRosterBridgeException('Plán nebo skutečný trénink nebyl nalezen.');
         }
-        if($ownsTransaction)$pdo->commit();return['link_count'=>count($links),'expected_count'=>count($people)];
-    }catch(Throwable$exception){if($ownsTransaction&&$pdo->inTransaction())$pdo->rollBack();if($exception instanceof InvalidArgumentException||$exception instanceof TrainingRosterBridgeException)throw$exception;throw new TrainingRosterBridgeException('Očekávání soupisek se nepodařilo přenést bez částečného zápisu.',0,$exception);}
+        $old = $pdo->prepare('SELECT id FROM training_roster_links WHERE trenink_id=?');
+        $old->execute([$trainingId]);
+        $oldIds = array_map('intval', $old->fetchAll(PDO::FETCH_COLUMN));
+        if ($oldIds !== []) {
+            $pdo->prepare('DELETE FROM training_roster_expected WHERE link_id IN ('.implode(',', array_fill(0, count($oldIds), '?')).')')->execute($oldIds);
+        }
+        $pdo->prepare('DELETE FROM training_roster_links WHERE trenink_id=?')->execute([$trainingId]);
+        $links = $pdo->prepare('SELECT id,team_id,target_date,team_code_snapshot,team_name_snapshot FROM training_roster_links WHERE plan_id=? ORDER BY id');
+        $links->execute([$planId]);
+        $links = $links->fetchAll(PDO::FETCH_ASSOC);
+        $insertLink = $pdo->prepare('INSERT INTO '
+            . 'training_roster_links(plan_id,trenink_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_trainer_id) VALUES(NULL,?,?,?,?,?,?)');
+        $expected = $pdo->prepare('SELECT sportovec_id,roster_member_id,member_valid_from_snapshot,member_valid_to_snapshot FROM training_roster_expected '
+            . 'WHERE link_id=? ORDER BY id');
+        $insertExpected = $pdo->prepare('INSERT INTO '
+            . 'training_roster_expected(link_id,sportovec_id,roster_member_id,member_valid_from_snapshot,member_valid_to_snapshot) '
+            . 'VALUES(?,?,?,?,?)');
+        $people = [];
+        foreach ($links as $link) {
+            $insertLink->execute([$trainingId,(int)$link['team_id'],(string)$link['target_date'],(string)$link['team_code_snapshot'],(string)$link['team_name_snapshot'],$actorId]);
+            $newLinkId = (int)$pdo->lastInsertId();
+            $expected->execute([(int)$link['id']]);
+            foreach ($expected->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $insertExpected->execute([$newLinkId,
+    (int)$row['sportovec_id'],
+    $row['roster_member_id'] !== null ? (int)$row['roster_member_id'] : null,
+    (string)$row['member_valid_from_snapshot'],
+    $row['member_valid_to_snapshot']]);
+                $people[(int)$row['sportovec_id']] = true;
+            }
+        }
+        if ($ownsTransaction) {
+            $pdo->commit();
+        }return['link_count' => count($links),'expected_count' => count($people)];
+    } catch (Throwable$exception) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($exception instanceof InvalidArgumentException || $exception instanceof TrainingRosterBridgeException) {
+            throw$exception;
+        }throw new TrainingRosterBridgeException('Očekávání soupisek se nepodařilo přenést bez částečného zápisu.', 0, $exception);
+    }
 }
 
 /** @return array<string,mixed> */
-function trainingRosterBridgePlanAttendanceComparison(PDO $pdo,int $planId):array
+function trainingRosterBridgePlanAttendanceComparison(PDO $pdo, int $planId): array
 {
-    if($planId<1)throw new InvalidArgumentException('Neplatný plán tréninku.');
-    $statement=$pdo->prepare('SELECT id,nazev,datum,cas_od,cas_do,stav,trenink_id,trener_id FROM planovane_treninky WHERE id=?');$statement->execute([$planId]);$plan=$statement->fetch(PDO::FETCH_ASSOC);
-    if(!$plan)throw new TrainingRosterBridgeException('Plánovaný trénink nebyl nalezen.');
-    $teams=$pdo->prepare('SELECT team_id,team_code_snapshot,team_name_snapshot,target_date FROM training_roster_links WHERE plan_id=? ORDER BY team_name_snapshot,team_id');$teams->execute([$planId]);$teams=$teams->fetchAll(PDO::FETCH_ASSOC);
-    $expected=trainingRosterBridgeExpectedForPlan($pdo,$planId);$expectedById=[];foreach($expected as$row)$expectedById[(int)$row['id']]=$row;
-    $actual=[];$trainingId=(int)($plan['trenink_id']??0);
-    if($trainingId>0){$attendance=$pdo->prepare("SELECT sp.id,sp.jmeno,sp.prijmeni FROM trenink_sportovec ts JOIN sportovci sp ON sp.id=ts.sportovec_id WHERE ts.trenink_id=? ORDER BY sp.prijmeni,sp.jmeno,sp.id");$attendance->execute([$trainingId]);foreach($attendance->fetchAll(PDO::FETCH_ASSOC)as$row)$actual[(int)$row['id']]=['id'=>(int)$row['id'],'label'=>trim((string)$row['prijmeni'].' '.(string)$row['jmeno'])];}
-    $attendedExpected=[];$missing=[];foreach($expectedById as$id=>$row){if(isset($actual[$id]))$attendedExpected[]=$row;else$missing[]=$row;}
-    $unexpected=[];foreach($actual as$id=>$row)if(!isset($expectedById[$id]))$unexpected[]=$row;
-    return['plan'=>$plan,'teams'=>$teams,'expected'=>array_values($expectedById),'actual'=>array_values($actual),'attended_expected'=>$attendedExpected,'missing'=>$missing,'unexpected'=>$unexpected];
+    if ($planId < 1) {
+        throw new InvalidArgumentException('Neplatný plán tréninku.');
+    }
+    $statement = $pdo->prepare('SELECT id,nazev,datum,cas_od,cas_do,stav,trenink_id,trener_id FROM planovane_treninky WHERE id=?');
+    $statement->execute([$planId]);
+    $plan = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$plan) {
+        throw new TrainingRosterBridgeException('Plánovaný trénink nebyl nalezen.');
+    }
+    $teams = $pdo->prepare('SELECT team_id,team_code_snapshot,team_name_snapshot,target_date FROM training_roster_links WHERE plan_id=? ORDER BY '
+        . 'team_name_snapshot,team_id');
+    $teams->execute([$planId]);
+    $teams = $teams->fetchAll(PDO::FETCH_ASSOC);
+    $expected = trainingRosterBridgeExpectedForPlan($pdo, $planId);
+    $expectedById = [];
+    foreach ($expected as $row) {
+        $expectedById[(int)$row['id']] = $row;
+    }
+    $actual = [];
+    $trainingId = (int)($plan['trenink_id'] ?? 0);
+    if ($trainingId > 0) {
+        $attendance = $pdo->prepare("SELECT sp.id,sp.jmeno,sp.prijmeni FROM trenink_sportovec ts JOIN sportovci sp ON sp.id=ts.sportovec_id WHERE "
+            . "ts.trenink_id=? ORDER BY sp.prijmeni,sp.jmeno,sp.id");
+        $attendance->execute([$trainingId]);
+        foreach ($attendance->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $actual[(int)$row['id']] = ['id' => (int)$row['id'],'label' => trim((string)$row['prijmeni'].' '.(string)$row['jmeno'])];
+        }
+    }
+    $attendedExpected = [];
+    $missing = [];
+    foreach ($expectedById as $id => $row) {
+        if (isset($actual[$id])) {
+            $attendedExpected[] = $row;
+        } else {
+            $missing[] = $row;
+        }
+    }
+    $unexpected = [];
+    foreach ($actual as $id => $row) {
+        if (!isset($expectedById[$id])) {
+            $unexpected[] = $row;
+        }
+    }
+    return['plan' => $plan,
+    'teams' => $teams,
+    'expected' => array_values($expectedById),
+    'actual' => array_values($actual),
+    'attended_expected' => $attendedExpected,
+    'missing' => $missing,
+    'unexpected' => $unexpected];
 }
 
 /** @param list<int|string> $teamIds @return array{link_count:int,expected_count:int} */
@@ -208,17 +260,21 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
     if (!in_array($kind, ['plan', 'training'], true) || $entityId < 1 || $actorId < 1) {
         throw new InvalidArgumentException('Neplatná vazba tréninku nebo aktér.');
     }
-    $ids = array_values(array_unique(array_filter(array_map('intval', $teamIds), static fn(int $id): bool => $id > 0)));
+    $ids = array_values(array_unique(array_filter(array_map('intval', $teamIds), static fn (int $id): bool => $id > 0)));
     $ownerColumn = $kind === 'plan' ? 'plan_id' : 'trenink_id';
     $ownerTable = $kind === 'plan' ? 'planovane_treninky' : 'treninky';
     $dateColumn = 'datum';
     $ownsTransaction = !$pdo->inTransaction();
-    if ($ownsTransaction) $pdo->beginTransaction();
+    if ($ownsTransaction) {
+        $pdo->beginTransaction();
+    }
     try {
         $owner = $pdo->prepare("SELECT {$dateColumn} target_date FROM {$ownerTable} WHERE id=?");
         $owner->execute([$entityId]);
         $date = $owner->fetchColumn();
-        if (!is_string($date) || $date === '') throw new TrainingRosterBridgeException('Trénink nebyl nalezen.');
+        if (!is_string($date) || $date === '') {
+            throw new TrainingRosterBridgeException('Trénink nebyl nalezen.');
+        }
         trainingRosterBridgeAssertDate($date);
 
         $teams = [];
@@ -228,7 +284,9 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
                 "SELECT t.id,t.code,t.name FROM club_teams t WHERE t.id IN ({$placeholders}) AND t.status='active'"
             );
             $query->execute($ids);
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $team) $teams[(int)$team['id']] = $team;
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $team) {
+                $teams[(int)$team['id']] = $team;
+            }
             if (count($teams) !== count($ids)) {
                 throw new TrainingRosterBridgeException('Některá soupiska neexistuje, není aktivní nebo neplatí v den tréninku.');
             }
@@ -248,7 +306,9 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
             . 'VALUES(?,?,?,?,?,?,?)'
         );
         $expectedInsert = $pdo->prepare(
-            'INSERT INTO training_roster_expected(link_id,sportovec_id,roster_member_id,member_valid_from_snapshot,member_valid_to_snapshot) VALUES(?,?,?,?,?)'
+            'INSERT INTO '
+                . 'training_roster_expected(link_id,sportovec_id,roster_member_id,member_valid_from_snapshot,member_valid_to_snapshot) '
+                . 'VALUES(?,?,?,?,?)'
         );
         $expectedPeople = [];
         foreach ($ids as $teamId) {
@@ -266,9 +326,13 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
             $sourceByPerson = [];
             $descendants = kisRosterDescendantIds($pdo, $teamId, $date);
             $marks = implode(',', array_fill(0, count($descendants), '?'));
-            $sourceStmt = $pdo->prepare("SELECT id,sportovec_id,valid_from,valid_to FROM club_roster_members WHERE team_id IN ($marks) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL) ORDER BY id");
+            $sourceStmt = $pdo->prepare("SELECT id,sportovec_id,valid_from,valid_to FROM club_roster_members WHERE team_id IN ($marks) "
+                . "AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' "
+                . "AND (status<>'removed' OR valid_to IS NOT NULL) ORDER BY id");
             $sourceStmt->execute([...$descendants, $date, $date]);
-            foreach ($sourceStmt->fetchAll(PDO::FETCH_ASSOC) as $source) $sourceByPerson[(int)$source['sportovec_id']] ??= $source;
+            foreach ($sourceStmt->fetchAll(PDO::FETCH_ASSOC) as $source) {
+                $sourceByPerson[(int)$source['sportovec_id']] ??= $source;
+            }
             foreach (kisRosterEffectiveMemberIds($pdo, $teamId, $date) as $personId) {
                 // An expectation is an immutable snapshot; attendance is entered separately.
                 // The source interval can be in any descendant and may later be closed.
@@ -277,11 +341,17 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
                 $expectedPeople[(int)$personId] = true;
             }
         }
-        if ($ownsTransaction) $pdo->commit();
+        if ($ownsTransaction) {
+            $pdo->commit();
+        }
         return ['link_count' => count($ids), 'expected_count' => count($expectedPeople)];
     } catch (Throwable $exception) {
-        if ($ownsTransaction && $pdo->inTransaction()) $pdo->rollBack();
-        if ($exception instanceof InvalidArgumentException || $exception instanceof TrainingRosterBridgeException) throw $exception;
+        if ($ownsTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($exception instanceof InvalidArgumentException || $exception instanceof TrainingRosterBridgeException) {
+            throw $exception;
+        }
         throw new TrainingRosterBridgeException('Vazby soupisek se nepodařilo uložit bez částečného zápisu.', 0, $exception);
     }
 }
@@ -289,5 +359,7 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
 function trainingRosterBridgeAssertDate(string $date): void
 {
     $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
-    if (!$parsed || $parsed->format('Y-m-d') !== $date) throw new InvalidArgumentException('Neplatné datum tréninku.');
+    if (!$parsed || $parsed->format('Y-m-d') !== $date) {
+        throw new InvalidArgumentException('Neplatné datum tréninku.');
+    }
 }

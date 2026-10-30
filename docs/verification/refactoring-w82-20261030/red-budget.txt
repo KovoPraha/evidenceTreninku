@@ -1,0 +1,19 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w82-20261030\phpunit.xml.dist
+
+F                                                                   1 / 1 (100%)
+
+Time: 00:00.044, Memory: 10.00 MB
+
+There was 1 failure:
+
+1) Tests\Integration\TrainingRosterFilterReadTest::testFiltersMatchHistoricalBaselineAndQueryBudget
+Historical edges loaded once per filter.
+Failed asserting that 18 is equal to 1 or is less than 1.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w82-20261030\tests\Integration\TrainingRosterFilterReadTest.php:33
+
+FAILURES!
+Tests: 1, Assertions: 73, Failures: 1.

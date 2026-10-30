@@ -271,5 +271,19 @@ jobs:
           path: sportovec-directory-profile.json
           retention-days: 14
 
+      - name: Ověřit historické filtry a náhled kopírování
+        env:
+          EVIDENCE_ROSTER_READ_MARIADB: '1'
+        run: |
+          php vendor/bin/phpunit tests/Integration/TrainingRosterFilterReadTest.php tests/Integration/PlannerCopyCountTest.php
+          php tests/Support/TrainingRosterFilterProfile.php > training-roster-filter-profile.json
+
+      - name: Uchovat profil sportovních filtrů
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: training-roster-filter-profile-mariadb-${{ matrix.mariadb-version }}
+          path: training-roster-filter-profile.json
+          retention-days: 14
+
       - name: Ověřit revize výsledků a řízený KIS převod na MariaDB
         run: php tests/Support/RaceKisReviewMariaDbSmoke.php
