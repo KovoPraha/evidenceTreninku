@@ -305,6 +305,16 @@ jobs:
       - name: Ověřit dávkové čtení klubového kalendáře
         run: php tests/Support/ClubCalendarReadProfile.php > club-calendar-read-profile.json
 
+      - name: Ověřit celou skladovou stránku a dávkové zůstatky
+        run: php tests/Support/InventoryPageProfile.php > inventory-page-profile.json
+
+      - name: Uchovat profil skladové stránky
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: inventory-page-profile-mariadb-${{ matrix.mariadb-version }}
+          path: inventory-page-profile.json
+          retention-days: 14
+
       - name: Uchovat profil klubového kalendáře
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
