@@ -19,6 +19,7 @@
 
     function ensureAccessibleFieldNames() {
         var nextFieldId = 0;
+        var occupiedIds;
         var fieldLabels = {
             q: 'Hledat', status: 'Stav', code: 'Kód', event_type: 'Typ akce', name: 'Název',
             audience_label: 'Cílová skupina', description_plain: 'Popis', min_age: 'Věk od', max_age: 'Věk do',
@@ -45,7 +46,13 @@
                 label = (sibling.textContent || '').trim();
                 if (document.body.classList.contains('app-admin-shell') && !sibling.htmlFor && !sibling.querySelector('input,select,textarea')) {
                     if (!field.id) {
-                        do { field.id = 'app-admin-field-' + (++nextFieldId); } while (document.querySelectorAll('[id="' + field.id + '"]').length > 1);
+                        if (!occupiedIds) {
+                            occupiedIds = new Set(Array.from(document.querySelectorAll('[id]'), function (element) { return element.id; }));
+                        }
+                        var candidate;
+                        do { candidate = 'app-admin-field-' + (++nextFieldId); } while (occupiedIds.has(candidate));
+                        field.id = candidate;
+                        occupiedIds.add(candidate);
                     }
                     sibling.htmlFor = field.id;
                 }

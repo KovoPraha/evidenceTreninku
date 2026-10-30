@@ -41,7 +41,7 @@ jobs:
         run: php tests/Support/AnonymousSweep.php
 
       - name: Ověřit JavaScript trenérských formulářů a plánovače
-        run: node --test tests/Support/PlannerJavascriptSmoke.cjs tests/Support/TrainingEditJavascriptSmoke.cjs tests/Support/FormularAutocompleteKeyboardSmoke.cjs tests/Support/AppUiSubmissionSmoke.cjs
+        run: node --test tests/Support/PlannerJavascriptSmoke.cjs tests/Support/TrainingEditJavascriptSmoke.cjs tests/Support/FormularAutocompleteKeyboardSmoke.cjs tests/Support/AppUiSubmissionSmoke.cjs tests/Support/AppUiFieldNamesSmoke.cjs
 
       - name: Spustit testy
         run: composer test
