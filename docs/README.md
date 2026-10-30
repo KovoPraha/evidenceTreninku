@@ -12,7 +12,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 |---|---|
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
-| [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | W6.2, W6.3 a W7.1–W7.4 nasazeno; autonomně navazuje W7.5 — R03/R04 a další vlny |
+| [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | W6.2, W6.3 a W7.1–W7.5 nasazeno; autonomně navazuje W7.6 / W8.1 a další vlny |
 | [Registr hlavních cest K0.1](REFACTORING_ROUTE_REGISTER_2026-10-29.md) | 16 kritických cest: oprávnění, služby, hlavní tabulky, vedlejší účinky, testy a otevřená měření |
 | [W6.2 — výpočet kapacity](REFACTORING_WAVE6_2026-10-29.md) | Dokončená čistá extrakce, přímé porovnání s původním kódem a ověřené produkční vydání |
 | [W6.3 — paměť kapacity](REFACTORING_W63_2026-10-29.md) | Nasazené postupné vyhodnocení řádků, migrovaný profil a paměťový rozpočet |
@@ -21,6 +21,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [W7.2 — celý rodinný přehled](REFACTORING_W72_2026-10-29.md) | Nasazené cílení profilů, porovnání celé stránky v MariaDB 10.3/11.4; SQL −14 %, řádky −25,7 % pro 20 osob |
 | [W7.3 — metadata a sekce](REFACTORING_W73_2026-10-30.md) | Nasazený rozsah metadat pouze pro GET; SQL −66,5 %, metadata −93,8 %, stejné výstupy a historie |
 | [W7.4 — dávkové členství](REFACTORING_W74_2026-10-30.md) | Nasazeno, celý GET 752 → 619 SQL; členské dotazy 160 → 27, čerstvá autorizace |
+| [W7.5 — stránkování registráře](REFACTORING_W75_2026-10-30.md) | Nasazeno, stránka 50 z 10 000 osob načte 53 místo 10 003 řádků |
 | [První vlna refaktoringu](REFACTORING_WAVE1_2026-10-28.md) | Příprava z 28. 10. 2026: měření detailu a navigace, tři implementační balíky, přejímací podmínky a dokumentační inventář |
 | [Finanční základ R13–R17](FINANCE_R13_R17_IMPLEMENTATION.md) | Lokální peněžní evidence, účetní doklady, vratky a první export; [ověření](verification/r13-r17/RESULTS.md) |
 | [Produkční nasazení](NASAZENI.md) | Ruční chráněný deploy z GitHub Actions, zálohy a řešení chyb |

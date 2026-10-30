@@ -1,0 +1,1024 @@
+{
+    "database_version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+    "migrated_schema": true,
+    "foreign_keys": 1,
+    "production_mutations": false,
+    "results": [
+        {
+            "size": 0,
+            "input": {
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 3,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 0,
+            "input": {
+                "pp": 100,
+                "p": 999
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 3,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 0,
+            "input": {
+                "q": "missing"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 2,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 0,
+            "input": {
+                "pp": 0
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 3,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 100,
+            "input": {
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "pp": 100,
+                "p": 999
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "missing"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 2,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 100,
+            "input": {
+                "pp": 0
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 100,
+            "input": {
+                "pp": 500
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 100,
+            "input": {
+                "pp": 37,
+                "p": -2,
+                "sort": "invalid",
+                "dir": "invalid"
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "prijmeni",
+                "dir": "asc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "prijmeni",
+                "dir": "desc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "jmeno",
+                "dir": "asc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "jmeno",
+                "dir": "desc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "narozeni",
+                "dir": "asc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "narozeni",
+                "dir": "desc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "category",
+                "dir": "asc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "category",
+                "dir": "desc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "uciid",
+                "dir": "asc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "uciid",
+                "dir": "desc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "treninku",
+                "dir": "asc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "treninku",
+                "dir": "desc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "kis",
+                "dir": "asc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "sort": "kis",
+                "dir": "desc",
+                "pp": 50,
+                "p": 2
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "stav": "aktivni",
+                "q": "Person"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 22,
+            "sql": 4,
+            "fetched_rows": 23,
+            "returned_people": 20
+        },
+        {
+            "size": 100,
+            "input": {
+                "stav": "cekajici",
+                "q": "Person"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 42,
+            "sql": 4,
+            "fetched_rows": 43,
+            "returned_people": 40
+        },
+        {
+            "size": 100,
+            "input": {
+                "stav": "neaktivni",
+                "q": "Person"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 22,
+            "sql": 4,
+            "fetched_rows": 23,
+            "returned_people": 20
+        },
+        {
+            "size": 100,
+            "input": {
+                "stav": "archiv",
+                "q": "Person"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 22,
+            "sql": 4,
+            "fetched_rows": 23,
+            "returned_people": 20
+        },
+        {
+            "size": 100,
+            "input": {
+                "stav": "manualni",
+                "q": "Person"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 52,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "stav": "invalid",
+                "q": "Person"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 102,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 100,
+            "input": {
+                "kis": "kis_aktivni",
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 70,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "kis": "dluh",
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 78,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "kis": "bez_skupiny",
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 46,
+            "sql": 4,
+            "fetched_rows": 46,
+            "returned_people": 43
+        },
+        {
+            "size": 100,
+            "input": {
+                "kis": "mimo_import",
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 53,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "kis": "invalid",
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 103,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "%01"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 13,
+            "sql": 4,
+            "fetched_rows": 14,
+            "returned_people": 11
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "_"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 102,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "@example.test"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 102,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "Synthetic"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 100,
+            "sql": 4,
+            "fetched_rows": 101,
+            "returned_people": 98
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "\u017daneta"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 4,
+            "sql": 4,
+            "fetched_rows": 5,
+            "returned_people": 2
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "stastna"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 4,
+            "sql": 4,
+            "fetched_rows": 5,
+            "returned_people": 2
+        },
+        {
+            "size": 100,
+            "input": {
+                "q": "' OR 1=1 --"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 2,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 1000,
+            "input": {
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 1003,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 1000,
+            "input": {
+                "pp": 100,
+                "p": 999
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 1003,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 1000,
+            "input": {
+                "q": "missing"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 2,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 1000,
+            "input": {
+                "pp": 0
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 1003,
+            "sql": 4,
+            "fetched_rows": 1003,
+            "returned_people": 1000
+        },
+        {
+            "size": 10000,
+            "input": {
+                "pp": 50
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 10003,
+            "sql": 4,
+            "fetched_rows": 53,
+            "returned_people": 50
+        },
+        {
+            "size": 10000,
+            "input": {
+                "pp": 100,
+                "p": 999
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 10003,
+            "sql": 4,
+            "fetched_rows": 103,
+            "returned_people": 100
+        },
+        {
+            "size": 10000,
+            "input": {
+                "q": "missing"
+            },
+            "same_data": true,
+            "baseline_sql": 3,
+            "baseline_rows": 2,
+            "sql": 4,
+            "fetched_rows": 3,
+            "returned_people": 0
+        },
+        {
+            "size": 10000,
+            "input": {
+                "pp": 0
+            },
+            "same_data": true,
+            "baseline_sql": 4,
+            "baseline_rows": 10003,
+            "sql": 4,
+            "fetched_rows": 10003,
+            "returned_people": 10000
+        }
+    ],
+    "measurements": [
+        {
+            "size": 0,
+            "per_page": 100,
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 0.235073,
+                        "incremental_peak_bytes": 51616
+                    },
+                    {
+                        "ms": 0.220932,
+                        "incremental_peak_bytes": 51616
+                    },
+                    {
+                        "ms": 0.238969,
+                        "incremental_peak_bytes": 51616
+                    },
+                    {
+                        "ms": 0.227582,
+                        "incremental_peak_bytes": 51616
+                    },
+                    {
+                        "ms": 0.224517,
+                        "incremental_peak_bytes": 51616
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 0.573822,
+                        "incremental_peak_bytes": 78576
+                    },
+                    {
+                        "ms": 0.536266,
+                        "incremental_peak_bytes": 78576
+                    },
+                    {
+                        "ms": 0.530317,
+                        "incremental_peak_bytes": 78576
+                    },
+                    {
+                        "ms": 0.529366,
+                        "incremental_peak_bytes": 78576
+                    },
+                    {
+                        "ms": 0.529897,
+                        "incremental_peak_bytes": 78576
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 0.227582,
+                "current": 0.530317
+            },
+            "median_peak_bytes": {
+                "baseline": 51616,
+                "current": 78576
+            }
+        },
+        {
+            "size": 100,
+            "per_page": 100,
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 0.303837,
+                        "incremental_peak_bytes": 427040
+                    },
+                    {
+                        "ms": 0.30615,
+                        "incremental_peak_bytes": 427040
+                    },
+                    {
+                        "ms": 0.286711,
+                        "incremental_peak_bytes": 427040
+                    },
+                    {
+                        "ms": 0.307482,
+                        "incremental_peak_bytes": 427040
+                    },
+                    {
+                        "ms": 0.307572,
+                        "incremental_peak_bytes": 427040
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 0.642526,
+                        "incremental_peak_bytes": 434744
+                    },
+                    {
+                        "ms": 0.622045,
+                        "incremental_peak_bytes": 434744
+                    },
+                    {
+                        "ms": 0.628094,
+                        "incremental_peak_bytes": 434744
+                    },
+                    {
+                        "ms": 0.613752,
+                        "incremental_peak_bytes": 434744
+                    },
+                    {
+                        "ms": 0.678199,
+                        "incremental_peak_bytes": 434744
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 0.30615,
+                "current": 0.628094
+            },
+            "median_peak_bytes": {
+                "baseline": 427040,
+                "current": 434744
+            }
+        },
+        {
+            "size": 1000,
+            "per_page": 100,
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 6.828322,
+                        "incremental_peak_bytes": 3727560
+                    },
+                    {
+                        "ms": 6.736384,
+                        "incremental_peak_bytes": 3727560
+                    },
+                    {
+                        "ms": 6.656244,
+                        "incremental_peak_bytes": 3727560
+                    },
+                    {
+                        "ms": 6.805338,
+                        "incremental_peak_bytes": 3727560
+                    },
+                    {
+                        "ms": 6.985718,
+                        "incremental_peak_bytes": 3727560
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 0.782667,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.644239,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.726001,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.631719,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.728074,
+                        "incremental_peak_bytes": 434800
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 6.805338,
+                "current": 0.726001
+            },
+            "median_peak_bytes": {
+                "baseline": 3727560,
+                "current": 434800
+            }
+        },
+        {
+            "size": 10000,
+            "per_page": 100,
+            "samples": {
+                "baseline": [
+                    {
+                        "ms": 79.863676,
+                        "incremental_peak_bytes": 36833768
+                    },
+                    {
+                        "ms": 78.890453,
+                        "incremental_peak_bytes": 36833768
+                    },
+                    {
+                        "ms": 77.571142,
+                        "incremental_peak_bytes": 36833768
+                    },
+                    {
+                        "ms": 76.177096,
+                        "incremental_peak_bytes": 36833768
+                    },
+                    {
+                        "ms": 78.291545,
+                        "incremental_peak_bytes": 36833768
+                    }
+                ],
+                "current": [
+                    {
+                        "ms": 0.965461,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.719972,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.93103,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.67205,
+                        "incremental_peak_bytes": 434800
+                    },
+                    {
+                        "ms": 0.962677,
+                        "incremental_peak_bytes": 434800
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 78.291545,
+                "current": 0.93103
+            },
+            "median_peak_bytes": {
+                "baseline": 36833768,
+                "current": 434800
+            }
+        }
+    ],
+    "plans_at_10000": [
+        {
+            "sql": "SELECT COUNT(*) AS total_count, (SELECT COUNT(DISTINCT sportovec_id) FROM trenink_sportovec) AS active_count FROM sportovci s",
+            "fetched_rows": 1,
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "PRIMARY",
+                    "table": "s",
+                    "type": "index",
+                    "possible_keys": null,
+                    "key": "uq_sportovci_kis_external_id",
+                    "key_len": "323",
+                    "ref": null,
+                    "rows": 10000,
+                    "Extra": "Using index"
+                },
+                {
+                    "id": 2,
+                    "select_type": "SUBQUERY",
+                    "table": "trenink_sportovec",
+                    "type": "range",
+                    "possible_keys": null,
+                    "key": "fk_ts_sportovci",
+                    "key_len": "4",
+                    "ref": null,
+                    "rows": 10001,
+                    "Extra": "Using index for group-by (scanning)"
+                }
+            ]
+        },
+        {
+            "sql": "SELECT s.*, (SELECT COUNT(*) FROM trenink_sportovec ts WHERE ts.sportovec_id = s.id) AS pocet_treninku, (SELECT GROUP_CONCAT(sk.nazev ORDER BY sk.nazev SEPARATOR ', ') FROM sportovec_skupina ss JOIN skupiny sk ON sk.id = ss.skupina_id WHERE ss.sportovec_id = s.id) AS skupiny FROM sportovci s ORDER BY s.prijmeni ASC, s.jmeno ASC, s.id ASC LIMIT 100 OFFSET 0",
+            "fetched_rows": 100,
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "PRIMARY",
+                    "table": "s",
+                    "type": "ALL",
+                    "possible_keys": null,
+                    "key": null,
+                    "key_len": null,
+                    "ref": null,
+                    "rows": 10000,
+                    "Extra": "Using filesort"
+                },
+                {
+                    "id": 3,
+                    "select_type": "DEPENDENT SUBQUERY",
+                    "table": "sk",
+                    "type": "ALL",
+                    "possible_keys": "PRIMARY",
+                    "key": null,
+                    "key_len": null,
+                    "ref": null,
+                    "rows": 2,
+                    "Extra": ""
+                },
+                {
+                    "id": 3,
+                    "select_type": "DEPENDENT SUBQUERY",
+                    "table": "ss",
+                    "type": "eq_ref",
+                    "possible_keys": "PRIMARY,idx_skupina",
+                    "key": "PRIMARY",
+                    "key_len": "8",
+                    "ref": "w75_directory_61be4f741ac8acae.s.id,w75_directory_61be4f741ac8acae.sk.id",
+                    "rows": 1,
+                    "Extra": "Using index"
+                },
+                {
+                    "id": 2,
+                    "select_type": "DEPENDENT SUBQUERY",
+                    "table": "ts",
+                    "type": "ref",
+                    "possible_keys": "fk_ts_sportovci",
+                    "key": "fk_ts_sportovci",
+                    "key_len": "4",
+                    "ref": "w75_directory_61be4f741ac8acae.s.id",
+                    "rows": 1,
+                    "Extra": "Using index"
+                }
+            ]
+        },
+        {
+            "sql": "SELECT COUNT(*) FROM sportovci WHERE kis_aktivni = 1",
+            "fetched_rows": 1,
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "sportovci",
+                    "type": "ALL",
+                    "possible_keys": null,
+                    "key": null,
+                    "key_len": null,
+                    "ref": null,
+                    "rows": 10000,
+                    "Extra": "Using where"
+                }
+            ]
+        },
+        {
+            "sql": "SELECT COUNT(*) FROM sportovci WHERE kis_neuhrazeno > 0",
+            "fetched_rows": 1,
+            "explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "sportovci",
+                    "type": "ALL",
+                    "possible_keys": null,
+                    "key": null,
+                    "key_len": null,
+                    "ref": null,
+                    "rows": 10000,
+                    "Extra": "Using where"
+                }
+            ]
+        }
+    ]
+}

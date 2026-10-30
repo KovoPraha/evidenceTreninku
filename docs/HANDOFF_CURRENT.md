@@ -94,7 +94,10 @@ sdílená v rámci PDO, SQL 2244 → 752 a metadata 1590 → 98 pro 20 osob.
 Výstup, historie a aktuální oprávnění zachovány, POST bez cache.
 [W7.4](REFACTORING_W74_2026-10-30.md) je nasazena: členské dotazy 160 → 27,
 celý GET 752 → 619 SQL, stejné výsledky a čerstvá autorizace.
-Navazuje W7.5: R03/R04, především stránkování registráře. Vlastník autorizoval
+[W7.5](REFACTORING_W75_2026-10-30.md) je nasazena: stránka 50 z 10 000 osob
+načítá 53 místo 10 003 řádků; CI paměť stránky 100 klesla z 36,8 na 0,43 MB.
+[Provozní důkazy](verification/refactoring-w75-release-20261030/RESULTS.md).
+Navazuje W7.6 / W8.1: zbývající R03/R04 a časová osa. Vlastník autorizoval
 autonomní pokračování až do technického dokončení W15 včetně sloučení a nasazení
 po úspěšném ověření; nový pokyn pro každou vlnu není potřeba.
 Plošné měření K0.2 zůstává otevřené;

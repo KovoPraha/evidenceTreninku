@@ -1,0 +1,92 @@
+{
+  "run_id": 41051708252,
+  "job_id": 124049115846,
+  "sha": "c6a260acef86218bb3e429c912d12746f712b75f",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "tests": 1825,
+  "assertions": 36217,
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-30_115853_00c262fd.sql.gz",
+    "manifest": "evidence_2026-10-30_115853_00c262fd.manifest.json",
+    "sha256": "1745d1500f2f60939faef64442ca7a250caafadf8ccde2ed6dbf5b4166d133c7",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063580,
+    "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+  },
+  "migration_checks": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 140,
+      "pending": []
+    }
+  ],
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "private_storage": {
+    "ok": true,
+    "storage_created": false,
+    "existing_configuration_preserved": true,
+    "config_appended": false,
+    "private_config_backup_verified": false,
+    "cli_write_read_delete_probe": true,
+    "web_runtime_verified": false,
+    "attachments_moved": false,
+    "database_accessed": false
+  },
+  "http_smoke": {
+    "ok": true,
+    "http": 200,
+    "via": "curl"
+  },
+  "http_runner_note": "Přímé TCP spojení z GitHub runneru opakovaně timeout; fallback přes SSH potvrdil HTTP 200. Nezávislé GET kontroly jsou doloženy zvlášť.",
+  "temporary_config_cleanup": "success"
+}

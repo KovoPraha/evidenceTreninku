@@ -44,4 +44,5 @@ Přidána charakterizace smíšených kolací, paměťové brány a přesná sho
 Nutné formátování stránky ověřeno AST a doslovným HTML. Test SRI byl zpřesněn
 pro konstantní konkatenace, s negativní detekcí chybějících atributů.
 [Měření a stav kontrol](verification/refactoring-w75-20261030/RESULTS.md).
-Lokální kontroly PASS; sloučení a nasazení následují až po zeleném CI.
+Lokální kontroly i obě MariaDB PASS; PR #235 sloučen a nasazen po zeleném
+CI přesného main. [Produkční důkazy](verification/refactoring-w75-release-20261030/RESULTS.md).

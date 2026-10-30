@@ -284,7 +284,7 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | W7.2 | [Celý rodinný přehled](REFACTORING_W72_2026-10-29.md), PR #229, nasazeno; [důkazy](verification/refactoring-w72-release-20261029/RESULTS.md) | Hotovo; 20 osob SQL 2706 → 2326, řádky 2953 → 2193, shodná data/HTML, čerstvá autorizace |
 | W7.3 | [Metadata a sekce](REFACTORING_W73_2026-10-30.md), PR #231, nasazeno 30. 10.; [důkazy](verification/refactoring-w73-release-20261030/RESULTS.md) | Hotovo; GET 20 osob SQL 2244 → 752, metadata 1590 → 98. Shodná data/HTML, nemetadata SQL a historie; POST bez cache |
 | W7.4 | [Dávkové členství](REFACTORING_W74_2026-10-30.md), PR #233 nasazeno; [důkazy](verification/refactoring-w74-release-20261030/RESULTS.md) | Hotovo; 20 osob 752 → 619 SQL, členství 160 → 27; shodná data/HTML/řádky, čerstvá autorizace |
-| W7.5 | R03/R04, příprava a realizace | Registrář materializuje celý seznam před stránkováním; přesunout čtení stránky do SQL, zachovat statistiky a stabilní pořadí; ostatní kandidáty nejprve změřit |
+| W7.5 | [Registrář](REFACTORING_W75_2026-10-30.md), PR #235 nasazeno; [důkazy](verification/refactoring-w75-release-20261030/RESULTS.md) | Hotovo pro stránkování; 10 003 → 53 řádků, paměť stránky 100 z 36,8 na 0,43 MB; zbývající R03/R04 v W7.6 |
 | Zbytek W7 a W8–W15 | Naplánované, další měření otevřené | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 
