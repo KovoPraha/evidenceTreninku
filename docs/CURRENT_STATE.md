@@ -13,6 +13,7 @@ Aktualizováno 30. 10. 2026 (Europe/Prague), po pokusu o nasazení v 17:04 UTC.
   typy/styl, JS, souběhy, rozpočty a skutečná izolovaná obnova PASS.
 - **Poslední doložené živé vydání:** W10.2 `7828758cfe832a99c11ddeafe916b8480e501feb`,
   [deploy 41077903487](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41077903487).
+  [Poslední úspěšné porovnání vydání](verification/refactoring-w102-release-20261030/release-comparison.json).
   Ověřeno read-only runem 41094301278 před novým pokusem.
 - **Nasazení W10.3–W15 BLOKOVÁNO:** [41095272194](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41095272194)
   selhalo při záloze, před migrací a aktivací: MariaDB 1021 / disk full v `/tmp`.
