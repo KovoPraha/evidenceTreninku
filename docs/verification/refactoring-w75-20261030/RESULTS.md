@@ -70,7 +70,11 @@ kódu; negativní testy dál odmítají chybějící integrity nebo crossorigin.
 3 POSIX skips. [PHPStan](phpstan.txt) bez chyb; odstraněno 27 legacy výjimek
 (PDO guard a přesný návratový tvar), žádné nové výjimky. Styl a dokumentace PASS.
 CI zahrnuje profil na MariaDB 10.3/11.4 a všechny dosavadní kontrakty.
-Nasazení a výsledky CI budou doplněny po ověření přesného commitu.
+CI obou MariaDB PASS: [10.3](ci-10.3-directory-profile.json) a
+[11.4](ci-11.4-directory-profile.json). Pro 10 000 osob stránka 100:
+medián 78,29 → 0,93 ms (10.3) a 60,68 → 7,77 ms (11.4), paměť
+36 833 768 → 434 800 B. PR #235 sloučen a nasazen; Linux 1825 testů /
+36217 assertions. [Produkční důkazy](../refactoring-w75-release-20261030/RESULTS.md).
 
 R03, cílené `accountPersonCanManage`, detail R04 a další vlny zůstávají
 samostatné navazující práce; W7 jako celek zde není uzavřena. UAT a skutečné
