@@ -377,6 +377,59 @@ function integrationReleaseEvidence(PDO $pdo, string $root): array
     return $result;
 }
 
+/** Bounded read-only inventory; web free space does not prove remote DB free space. */
+function clubReleaseStorageInventory(string $root, ?PDO $pdo): array
+{
+    $report = ['web_host' => gethostname(), 'web_free_bytes' => @disk_free_space($root),
+        'web_total_bytes' => @disk_total_space($root), 'php_temp_free_bytes' => @disk_free_space(sys_get_temp_dir()),
+        'database' => null, 'release_directories' => [], 'backup_files' => 0, 'backup_bytes' => 0,
+        'inventory_complete' => true, 'mutations' => false];
+    if ($pdo !== null) {
+        try {
+            $report['database'] = $pdo->query('SELECT @@hostname AS host,@@datadir AS data_directory,@@tmpdir AS temp_directory')->fetch(PDO::FETCH_ASSOC);
+        } catch (Throwable) {
+            $report['database'] = ['identity_unavailable' => true];
+        }
+    }
+    $base = dirname($root) . '/data';
+    $deadline = microtime(true) + 5;
+    $visited = 0;
+    $directories = glob($base . '/.kis-deploy/releases/*', GLOB_ONLYDIR) ?: [];
+    $report['release_directory_count'] = count($directories);
+    foreach ($directories as $directory) {
+        if (is_link($directory)) {
+            continue;
+        }
+        $entry = ['name' => basename($directory), 'mtime' => filemtime($directory), 'files' => 0, 'bytes' => 0, 'complete' => true];
+        try {
+            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS));
+            foreach ($files as $file) {
+                if (++$visited > 200000 || microtime(true) > $deadline) {
+                    $entry['complete'] = $report['inventory_complete'] = false;
+                    break;
+                }
+                if ($file->isFile() && !$file->isLink()) {
+                    $entry['files']++;
+                    $entry['bytes'] += $file->getSize();
+                }
+            }
+        } catch (Throwable) {
+            $entry['complete'] = $report['inventory_complete'] = false;
+        }
+        $report['release_directories'][] = $entry;
+        if (microtime(true) > $deadline || $visited > 200000) {
+            break;
+        }
+    }
+    foreach (glob($base . '/.kis-backups/*') ?: [] as $file) {
+        if (is_file($file) && !is_link($file)) {
+            $report['backup_files']++;
+            $report['backup_bytes'] += filesize($file);
+        }
+    }
+    return $report;
+}
+
 function clubReleaseImpactMain(): int
 {
     if (PHP_SAPI !== 'cli') {
@@ -453,7 +506,8 @@ function clubReleaseImpactMain(): int
 
             'line' => $exception->getLine(),'sqlstate' => $exception instanceof PDOException ? (string)$exception->getCode() : null,
 
-            'driver_code' => $exception instanceof PDOException ? ($exception->errorInfo[1] ?? null) : null],
+            'driver_code' => $exception instanceof PDOException ? ($exception->errorInfo[1] ?? null) : null,
+            'storage' => clubReleaseStorageInventory($root, isset($pdo) ? $pdo : null)],
             JSON_THROW_ON_ERROR
         )."\n";
         return 2;
