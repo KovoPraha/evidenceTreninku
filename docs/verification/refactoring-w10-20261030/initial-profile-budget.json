@@ -1,0 +1,10 @@
+{
+  "scope": "pure financial projection and exceptions",
+  "mode": "baseline",
+  "size": 10000,
+  "requested_warmups": 5,
+  "requested_samples": 30,
+  "worker_timeout_seconds": 300,
+  "completed": false,
+  "reason": "Parent runtime budget stopped the repeated quadratic baseline; no completed timing claim."
+}

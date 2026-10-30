@@ -51,6 +51,16 @@ jobs:
           php -r 'if (PHP_OS_FAMILY !== "Linux") { exit(1); }'
           vendor/bin/phpunit --colors=never --fail-on-skipped --testdox --filter 'testCanonicalPublicSymlinkFailsBeforeWriting|testCleanupDoesNotFollowOrDeleteReplacementSymlink|testRefusesSymlinkedDataBeforeChanges'
 
+      - name: Verify indexed financial export projection
+        run: php tests/Support/AccountingExportReadProfile.php > accounting-export-read-profile.json
+
+      - name: Preserve financial projection profile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: accounting-export-read-profile
+          path: accounting-export-read-profile.json
+          retention-days: 14
+
   mariadb-smoke:
     name: MariaDB integrační smoke (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest

@@ -345,3 +345,10 @@ včetně již sloučených testovacích kontraktů W8.5. UAT zůstává samostat
 programový košík (členský 1862 → 275 SQL, shodná data) a přenosné skutečné
 skladové race. Profily čtení získávají samostatný CI job jako časnější část W14;
 cross-offer kapacita je posouzena a ponechává per-offer čtení bez sdílení se zápisy.
+
+## Průběžná W10.1 — finanční řádky exportu
+
+[Plán W10](REFACTORING_W10_2026-10-30.md) a
+[měření](verification/refactoring-w10-20261030/RESULTS.md): čisté indexované
+projekce nahrazují kvadratické průchody, zachovávají snapshot i celý XLSX.
+Úplná serializace, historie/ledger a další části W10–W15 ještě navazují.
