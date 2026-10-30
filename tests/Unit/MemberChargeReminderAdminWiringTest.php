@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -23,7 +24,7 @@ final class MemberChargeReminderAdminWiringTest extends TestCase
         self::assertStringContainsString("c.status AS charge_status", $service);
         self::assertStringContainsString("p.enabled", $service);
         self::assertStringContainsString("'manual_retry'", $service);
-        self::assertStringContainsString("'trainer', \$actorTrainerId", $service);
+        self::assertMatchesRegularExpression('/\'trainer\',\s+\$actorTrainerId/', $service);
         self::assertStringContainsString('member_charge_reminders_admin.php', $header);
         self::assertStringContainsString("header('Cache-Control: no-store, private')", $page);
         self::assertStringContainsString('memberChargeReminderAdminPreview', $page);

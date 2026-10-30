@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__.'/notification_delivery_guard.php';
 
@@ -11,7 +12,9 @@ final class MemberChargeReminderException extends RuntimeException
 
 function memberChargeReminderTableExists(PDO $pdo, string $table): bool
 {
-    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1) return false;
+    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1) {
+        return false;
+    }
     $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
     if ($driver === 'mysql') {
         $statement = $pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?');
@@ -43,11 +46,15 @@ function memberChargeReminderPreference(PDO $pdo, int $accountId): array
 function memberChargeReminderAccountSummary(PDO $pdo, int $accountId): array
 {
     $summary = ['pending' => 0, 'processing' => 0, 'sent' => 0, 'failed' => 0, 'cancelled' => 0];
-    if ($accountId < 1 || !memberChargeReminderTableExists($pdo, 'member_charge_reminders')) return $summary;
+    if ($accountId < 1 || !memberChargeReminderTableExists($pdo, 'member_charge_reminders')) {
+        return $summary;
+    }
     $statement = $pdo->prepare('SELECT status,COUNT(*) AS total FROM member_charge_reminders WHERE account_id=? GROUP BY status');
     $statement->execute([$accountId]);
     foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (array_key_exists((string)$row['status'], $summary)) $summary[(string)$row['status']] = (int)$row['total'];
+        if (array_key_exists((string)$row['status'], $summary)) {
+            $summary[(string)$row['status']] = (int)$row['total'];
+        }
     }
     return $summary;
 }
@@ -63,7 +70,9 @@ function memberChargeReminderSavePreference(PDO $pdo, int $accountId, bool $enab
     }
     $current = memberChargeReminderPreference($pdo, $accountId);
     $changed = $current['enabled'] !== $enabled || $current['days_before'] !== $daysBefore;
-    if (!$changed) return ['enabled' => $enabled, 'days_before' => $daysBefore, 'changed' => false];
+    if (!$changed) {
+        return ['enabled' => $enabled, 'days_before' => $daysBefore, 'changed' => false];
+    }
     $pdo->beginTransaction();
     try {
         $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -83,6 +92,7 @@ function memberChargeReminderSavePreference(PDO $pdo, int $accountId, bool $enab
             . 'VALUES(NULL,?,?,?,?,?,?,?)'
         )->execute([
             $accountId, 'account', $accountId, 'preference_change', $current['enabled'] ? 'enabled' : 'disabled',
+
             $enabled ? 'enabled' : 'disabled', 'Předstih: ' . $daysBefore . ' dní.',
         ]);
         if (!$enabled && memberChargeReminderTableExists($pdo, 'member_charge_reminders')) {
@@ -93,14 +103,30 @@ function memberChargeReminderSavePreference(PDO $pdo, int $accountId, bool $enab
                     "UPDATE member_charge_reminders SET status='cancelled',cancelled_at=CURRENT_TIMESTAMP,"
                     . 'updated_at=CURRENT_TIMESTAMP WHERE id=?'
                 )->execute([(int)$row['id']]);
-                memberChargeReminderAudit($pdo, (int)$row['id'], $accountId, 'cancel_opt_out', (string)$row['status'], 'cancelled', 'Uživatel vypnul připomínky.', 'account', $accountId);
+                memberChargeReminderAudit(
+                    $pdo,
+                    (int)$row['id'],
+                    $accountId,
+                    'cancel_opt_out',
+                    (string)$row['status'],
+                    'cancelled',
+                    'Uživatel vypnul připomínky.',
+                    'account',
+                    $accountId
+                );
             }
         }
         $pdo->commit();
         return ['enabled' => $enabled, 'days_before' => $daysBefore, 'changed' => true];
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
-        throw new MemberChargeReminderException('Nastavení připomínek se nepodařilo uložit.', 0, $exception);
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw new MemberChargeReminderException(
+            'Nastavení připomínek se nepodařilo uložit.',
+            0,
+            $exception
+        );
     }
 }
 
@@ -109,8 +135,11 @@ function memberChargeReminderGenerate(PDO $pdo, ?DateTimeImmutable $today = null
 {
     $today ??= new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
     foreach (['member_charge_reminder_preferences', 'member_charge_reminders', 'member_charge_reminder_events',
+
         'club_member_charges', 'account_person_roles', 'verejni_uzivatele', 'sportovci'] as $table) {
-        if (!memberChargeReminderTableExists($pdo, $table)) return ['queued' => 0, 'existing' => 0, 'skipped' => 0];
+        if (!memberChargeReminderTableExists($pdo, $table)) {
+            return ['queued' => 0, 'existing' => 0, 'skipped' => 0];
+        }
     }
     $statement = $pdo->prepare(
         'SELECT DISTINCT p.account_id,p.days_before,a.email,a.jmeno AS account_first_name,a.prijmeni AS account_last_name,'
@@ -142,17 +171,32 @@ function memberChargeReminderGenerate(PDO $pdo, ?DateTimeImmutable $today = null
                 'INSERT INTO member_charge_reminders(charge_id,account_id,reminder_type,recipient_email,recipient_name,subject_plain,body_plain) '
                 . "VALUES(?,?,'due_soon',?,?,?,?)"
             );
-            $insert->execute([$chargeId, $accountId, (string)$row['email'], $message['recipient_name'], $message['subject'], $message['body']]);
+            $insert->execute([$chargeId, $accountId, (string)$row['email'], $message['recipient_name'],
+     $message['subject'], $message['body']]);
             $id = (int)$pdo->lastInsertId();
-            memberChargeReminderAudit($pdo, $id, $accountId, 'enqueue', null, 'pending', 'Připomínka byla idempotentně zařazena.');
+            memberChargeReminderAudit(
+                $pdo,
+                $id,
+                $accountId,
+                'enqueue',
+                null,
+                'pending',
+                'Připomínka byla idempotentně zařazena.'
+            );
             $pdo->commit();
             $queued++;
         } catch (PDOException $exception) {
-            if ($pdo->inTransaction()) $pdo->rollBack();
-            if ((string)$exception->getCode() !== '23000') throw $exception;
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            if ((string)$exception->getCode() !== '23000') {
+                throw $exception;
+            }
             $existing++;
         } catch (Throwable $exception) {
-            if ($pdo->inTransaction()) $pdo->rollBack();
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             throw $exception;
         }
     }
@@ -162,31 +206,50 @@ function memberChargeReminderGenerate(PDO $pdo, ?DateTimeImmutable $today = null
 /** @param array<string,mixed> $row @return array{recipient_name:string,subject:string,body:string} */
 function memberChargeReminderComposeMessage(array $row): array
 {
-    $dueOn = DateTimeImmutable::createFromFormat('!Y-m-d', (string)($row['due_on'] ?? ''), new DateTimeZone('Europe/Prague'));
-    if (!$dueOn) throw new InvalidArgumentException('Připomínka nemá platnou splatnost.');
+    $dueOn = DateTimeImmutable::createFromFormat(
+        '!Y-m-d',
+        (string)($row['due_on'] ?? ''),
+        new DateTimeZone('Europe/Prague')
+    );
+    if (!$dueOn) {
+        throw new InvalidArgumentException('Připomínka nemá platnou splatnost.');
+    }
     $recipientName = trim((string)($row['account_first_name'] ?? '') . ' ' . (string)($row['account_last_name'] ?? ''));
     $childName = trim((string)($row['child_first_name'] ?? '') . ' ' . (string)($row['child_last_name'] ?? ''));
     $title = (string)($row['title_snapshot'] ?? '');
-    $amount = number_format(((int)($row['amount_minor'] ?? 0)) / 100, 2, ',', ' ') . ' ' . (string)($row['currency'] ?? '');
+    $amount = number_format(((int)($row['amount_minor'] ?? 0)) / 100, 2, ',', ' ') . ' '
+    . (string)($row['currency'] ?? '');
     return [
         'recipient_name' => $recipientName,
         'subject' => 'Připomínka platby: ' . $title,
         'body' => 'Dobrý den' . ($recipientName !== '' ? ' ' . $recipientName : '') . ",\n\n"
-            . 'připomínáme blížící se splatnost „' . $title . '“ pro ' . $childName . ".\n"
+            . 'připomínáme blížící se splatnost „' . $title . '“ pro ' . $childName
+    . ".\n"
             . 'Splatnost: ' . $dueOn->format('d. m. Y') . "\nČástka: " . $amount . "\n\n"
-            . 'Přehled plateb po přihlášení: ' . memberChargeReminderAccountUrl() . "\n\nKlub KOVO Praha",
+            . 'Přehled plateb po přihlášení: ' . memberChargeReminderAccountUrl()
+    . "\n\nKlub KOVO Praha",
     ];
 }
 
 /** @return array<string,mixed>|null */
 function memberChargeReminderClaim(PDO $pdo, string $actorType = 'system', ?int $actorId = null): ?array
 {
+    require_once __DIR__ . "/notification_claim_retry.php";
+    return notificationClaimWithRetry($pdo, static fn (): ?array => memberChargeReminderClaimAttempt(
+        $pdo,
+        $actorType,
+        $actorId
+    ));
+}
+
+function memberChargeReminderClaimAttempt(PDO $pdo, string $actorType = 'system', ?int $actorId = null): ?array
+{
     $pdo->beginTransaction();
     try {
         $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
         $stale = $mysql ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE' : "datetime('now','-15 minutes')";
         $recent = $mysql ? 'CURRENT_TIMESTAMP - INTERVAL 20 HOUR' : "datetime('now','-20 hours')";
-        notificationQueueHoldStale($pdo,'member_charge_reminders',$stale);
+        notificationQueueHoldStale($pdo, 'member_charge_reminders', $stale);
         $sql = 'SELECT n.* FROM member_charge_reminders n '
             . 'JOIN member_charge_reminder_preferences p ON p.account_id=n.account_id '
             . 'JOIN club_member_charges c ON c.id=n.charge_id '
@@ -194,9 +257,12 @@ function memberChargeReminderClaim(PDO $pdo, string $actorType = 'system', ?int 
             . "AND NOT EXISTS(SELECT 1 FROM member_charge_reminders sent WHERE sent.account_id=n.account_id "
             . "AND sent.status='sent' AND sent.sent_at>" . $recent . ') '
             . "AND NOT EXISTS(SELECT 1 FROM member_charge_reminders busy WHERE busy.account_id=n.account_id "
-            . "AND busy.id<>n.id AND busy.status='processing' AND busy.claimed_at>=" . $stale . ') '
+            . "AND busy.id<>n.id AND busy.status='processing' AND busy.claimed_at>=" . $stale
+    . ') '
             . 'ORDER BY n.available_at,n.id LIMIT 1';
-        if ($mysql) $sql .= ' FOR UPDATE';
+        if ($mysql) {
+            $sql .= ' FOR UPDATE';
+        }
         $row = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         if (!$row) {
             $pdo->commit();
@@ -207,72 +273,142 @@ function memberChargeReminderClaim(PDO $pdo, string $actorType = 'system', ?int 
             "UPDATE member_charge_reminders SET status='processing',attempts=attempts+1,claimed_at=CURRENT_TIMESTAMP,"
             . 'claim_token=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
         )->execute([$token, (int)$row['id']]);
-        memberChargeReminderAudit($pdo, (int)$row['id'], (int)$row['account_id'], 'claim', (string)$row['status'], 'processing', 'Zprávu převzal worker.', $actorType, $actorId);
+        memberChargeReminderAudit(
+            $pdo,
+            (int)$row['id'],
+            (int)$row['account_id'],
+            'claim',
+            (string)$row['status'],
+            'processing',
+            'Zprávu převzal worker.',
+            $actorType,
+            $actorId
+        );
         $pdo->commit();
         $row['claim_token'] = $token;
         $row['attempts'] = (int)$row['attempts'] + 1;
         return $row;
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw $exception;
     }
 }
 
-function memberChargeReminderComplete(PDO $pdo, int $id, string $token, bool $sent, ?string $error = null, string $actorType = 'system', ?int $actorId = null): void
-{
-    if ($id < 1 || preg_match('/^[a-f0-9]{32}$/D', $token) !== 1) throw new InvalidArgumentException('Neplatné převzetí připomínky.');
+function memberChargeReminderComplete(
+    PDO $pdo,
+    int $id,
+    string $token,
+    bool $sent,
+    ?string $error = null,
+    string $actorType = 'system',
+    ?int $actorId = null
+): void {
+    if ($id < 1 || preg_match('/^[a-f0-9]{32}$/D', $token) !== 1) {
+        throw new InvalidArgumentException('Neplatné převzetí připomínky.');
+    }
     $pdo->beginTransaction();
     try {
         $statement = $pdo->prepare('SELECT account_id,status,attempts FROM member_charge_reminders WHERE id=? AND claim_token=?');
         $statement->execute([$id, $token]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
-        if (!$row || (string)$row['status'] !== 'processing') throw new MemberChargeReminderException('Připomínku již nevlastní tento proces.');
+        if (!$row || (string)$row['status'] !== 'processing') {
+            throw new MemberChargeReminderException('Připomínku již nevlastní tento proces.');
+        }
         if ($sent) {
             $pdo->prepare(
-                "UPDATE member_charge_reminders SET status='sent',sent_at=CURRENT_TIMESTAMP,claim_token=NULL,last_error=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+                ('UPDATE member_charge_reminders SET status=\'sent\',sent_at=CURRENT_TIMESTAMP,claim_token=NULL,last_err'
+ . 'or=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?')
             )->execute([$id]);
-            memberChargeReminderAudit($pdo, $id, (int)$row['account_id'], 'sent', 'processing', 'sent', 'Transport potvrdil odeslání.', $actorType, $actorId);
+            memberChargeReminderAudit(
+                $pdo,
+                $id,
+                (int)$row['account_id'],
+                'sent',
+                'processing',
+                'sent',
+                'Transport potvrdil odeslání.',
+                $actorType,
+                $actorId
+            );
         } else {
             $terminal = (int)$row['attempts'] >= 5;
             $next = $terminal ? 'failed' : 'pending';
-            $available = (new DateTimeImmutable('now +' . min(3600, 300 * max(1, (int)$row['attempts'])) . ' seconds'))->format('Y-m-d H:i:s');
+            $available = (new DateTimeImmutable('now +' . min(3600, 300 * max(1, (int)$row['attempts']))
+    . ' seconds'))->format('Y-m-d H:i:s');
             $safeError = mb_substr(trim((string)$error), 0, 500, 'UTF-8');
             $pdo->prepare(
                 'UPDATE member_charge_reminders SET status=?,available_at=?,claim_token=NULL,last_error=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
             )->execute([$next, $available, $safeError, $id]);
-            memberChargeReminderAudit($pdo, $id, (int)$row['account_id'], 'send_failed', 'processing', $next, $safeError !== '' ? $safeError : 'Transport odmítl zprávu.', $actorType, $actorId);
+            memberChargeReminderAudit(
+                $pdo,
+                $id,
+                (int)$row['account_id'],
+                'send_failed',
+                'processing',
+                $next,
+                $safeError !== '' ? $safeError : 'Transport odmítl zprávu.',
+                $actorType,
+                $actorId
+            );
         }
         $pdo->commit();
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw $exception;
     }
 }
 
 /** @param callable(string,string,string):bool $sender */
-function memberChargeReminderProcessOne(PDO $pdo, callable $sender, string $actorType = 'system', ?int $actorId = null): ?bool
-{
+function memberChargeReminderProcessOne(
+    PDO $pdo,
+    callable $sender,
+    string $actorType = 'system',
+    ?int $actorId = null
+): ?bool {
     $row = memberChargeReminderClaim($pdo, $actorType, $actorId);
-    if ($row === null) return null;
+    if ($row === null) {
+        return null;
+    }
     try {
-        $q=$pdo->prepare("SELECT 1 FROM club_member_charges c JOIN account_person_roles r ON r.sportovec_id=c.sportovec_id JOIN verejni_uzivatele a ON a.id=r.account_id WHERE c.id=? AND r.account_id=? AND a.email=? AND a.aktivni=1 AND a.email_overeno=1 AND c.status='pending' AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP)");
+        $q = $pdo->prepare(('SELECT 1 FROM club_member_charges c JOIN account_person_roles r ON r.sportovec_id=c.sportovec_id JOI'
+ . 'N verejni_uzivatele a ON a.id=r.account_id WHERE c.id=? AND r.account_id=? AND a.email=? AND a.aktiv'
+ . 'ni=1 AND a.email_overeno=1 AND c.status=\'pending\' AND r.status=\'approved\' AND r.relation_role IN (\'s'
+ . 'elf\',\'guardian\') AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_T'
+ . 'IMESTAMP)'));
         $q->execute([(int)$row['charge_id'],(int)$row['account_id'],$row['recipient_email']]);
         if (!$q->fetchColumn()) {
-            notificationQueueHold($pdo,'member_charge_reminders',$row,'delivery_blocked: oprávnění, kontakt nebo předpis se změnily.');
+            notificationQueueHold($pdo, 'member_charge_reminders', $row, 'delivery_blocked: oprávnění, kontakt nebo předpis se změnily.');
             return false;
         }
-        $sent = $sender((string)$row['recipient_email'], (string)$row['subject_plain'], (string)$row['body_plain']);
-        memberChargeReminderComplete($pdo, (int)$row['id'], (string)$row['claim_token'], $sent, $sent ? null : 'Transport odmítl zprávu.', $actorType, $actorId);
+        $sent = $sender(
+            (string)$row['recipient_email'],
+            (string)$row['subject_plain'],
+            (string)$row['body_plain']
+        );
+        memberChargeReminderComplete(
+            $pdo,
+            (int)$row['id'],
+            (string)$row['claim_token'],
+            $sent,
+            $sent ? null : 'Transport odmítl zprávu.',
+            $actorType,
+            $actorId
+        );
         return $sent;
     } catch (Throwable $exception) {
-        notificationQueueHold($pdo,'member_charge_reminders',$row,'delivery_unknown: ověřit oprávnění a doručení před opakováním.');
+        notificationQueueHold($pdo, 'member_charge_reminders', $row, 'delivery_unknown: ověřit oprávnění a doručení před opakováním.');
         return false;
     }
 }
 
 function memberChargeReminderMailSender(string $recipient, string $subject, string $body): bool
 {
-    if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $recipient . $subject) === 1) {
+    if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $recipient
+    . $subject) === 1) {
         throw new MemberChargeReminderException('Připomínka obsahuje neplatnou e-mailovou hlavičku.');
     }
     return mail($recipient, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, "Content-Type: text/plain; charset=UTF-8\r\n");
@@ -283,7 +419,11 @@ function memberChargeReminderLocalOutboxSender(string $appHost, ?string $directo
 {
     $directory ??= dirname(__DIR__) . '/var/member-charge-reminder-outbox';
     try {
-        $sender = localMessageOutboxSender($appHost, 'member-charge-reminder-local-outbox-v1', $directory);
+        $sender = localMessageOutboxSender(
+            $appHost,
+            'member-charge-reminder-local-outbox-v1',
+            $directory
+        );
     } catch (Throwable $exception) {
         throw new MemberChargeReminderException($exception->getMessage(), 0, $exception);
     }
@@ -306,9 +446,13 @@ function memberChargeReminderAccountUrl(): string
 function memberChargeReminderAdminSummary(PDO $pdo): array
 {
     $summary = ['pending' => 0, 'processing' => 0, 'sent' => 0, 'failed' => 0, 'cancelled' => 0];
-    if (!memberChargeReminderTableExists($pdo, 'member_charge_reminders')) return $summary;
+    if (!memberChargeReminderTableExists($pdo, 'member_charge_reminders')) {
+        return $summary;
+    }
     foreach ($pdo->query('SELECT status,COUNT(*) AS total FROM member_charge_reminders GROUP BY status')->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (array_key_exists((string)$row['status'], $summary)) $summary[(string)$row['status']] = (int)$row['total'];
+        if (array_key_exists((string)$row['status'], $summary)) {
+            $summary[(string)$row['status']] = (int)$row['total'];
+        }
     }
     return $summary;
 }
@@ -316,7 +460,11 @@ function memberChargeReminderAdminSummary(PDO $pdo): array
 /** @return list<array<string,mixed>> */
 function memberChargeReminderAdminList(PDO $pdo, string $status = '', int $limit = 100): array
 {
-    if (!in_array($status, ['', 'pending', 'processing', 'sent', 'failed', 'cancelled'], true)) {
+    if (!in_array(
+        $status,
+        ['', 'pending', 'processing', 'sent', 'failed', 'cancelled'],
+        true
+    )) {
         throw new InvalidArgumentException('Neplatný filtr stavu připomínek.');
     }
     $limit = max(1, min(250, $limit));
@@ -336,7 +484,9 @@ function memberChargeReminderAdminList(PDO $pdo, string $status = '', int $limit
 /** @return array<string,mixed> */
 function memberChargeReminderAdminPreview(PDO $pdo, int $id): array
 {
-    if ($id < 1) throw new InvalidArgumentException('Neplatná připomínka pro náhled.');
+    if ($id < 1) {
+        throw new InvalidArgumentException('Neplatná připomínka pro náhled.');
+    }
     $statement = $pdo->prepare(
         'SELECT n.id,n.status,n.recipient_email,n.recipient_name,n.subject_plain,n.body_plain,n.created_at,'
         . 'c.public_code,c.title_snapshot,c.due_on,s.jmeno AS child_first_name,s.prijmeni AS child_last_name '
@@ -345,18 +495,27 @@ function memberChargeReminderAdminPreview(PDO $pdo, int $id): array
     );
     $statement->execute([$id]);
     $row = $statement->fetch(PDO::FETCH_ASSOC);
-    if (!$row) throw new MemberChargeReminderException('Připomínka pro náhled nebyla nalezena.');
+    if (!$row) {
+        throw new MemberChargeReminderException('Připomínka pro náhled nebyla nalezena.');
+    }
     return $row;
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function memberChargeReminderAdminRetry(PDO $pdo, int $id, int $actorTrainerId, string $reason, bool $confirmed): array
-{
+function memberChargeReminderAdminRetry(
+    PDO $pdo,
+    int $id,
+    int $actorTrainerId,
+    string $reason,
+    bool $confirmed
+): array {
     $reason = mb_substr(trim($reason), 0, 1000, 'UTF-8');
     if ($id < 1 || $actorTrainerId < 1 || $reason === '') {
         throw new InvalidArgumentException('Vyplňte důvod ručního opakování.');
     }
-    if (!$confirmed) throw new InvalidArgumentException('Ruční opakování musíte výslovně potvrdit.');
+    if (!$confirmed) {
+        throw new InvalidArgumentException('Ruční opakování musíte výslovně potvrdit.');
+    }
     $pdo->beginTransaction();
     try {
         $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
@@ -368,13 +527,19 @@ function memberChargeReminderAdminRetry(PDO $pdo, int $id, int $actorTrainerId, 
         );
         $statement->execute([$id]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
-        if (!$row) throw new MemberChargeReminderException('Připomínka nebyla nalezena.');
+        if (!$row) {
+            throw new MemberChargeReminderException('Připomínka nebyla nalezena.');
+        }
         $status = (string)$row['status'];
         if (!in_array($status, ['pending', 'failed'], true)) {
             throw new MemberChargeReminderException('Tento stav připomínky nelze ručně opakovat.');
         }
-        if ((int)$row['enabled'] !== 1) throw new MemberChargeReminderException('Uživatel nemá připomínky povolené.');
-        if ((string)$row['charge_status'] !== 'pending') throw new MemberChargeReminderException('Předpis již nečeká na úhradu.');
+        if ((int)$row['enabled'] !== 1) {
+            throw new MemberChargeReminderException('Uživatel nemá připomínky povolené.');
+        }
+        if ((string)$row['charge_status'] !== 'pending') {
+            throw new MemberChargeReminderException('Předpis již nečeká na úhradu.');
+        }
         $alreadyQueued = $status === 'pending' && (int)$row['attempts'] === 0
             && strtotime((string)$row['available_at']) <= time();
         if (!$alreadyQueued) {
@@ -383,21 +548,45 @@ function memberChargeReminderAdminRetry(PDO $pdo, int $id, int $actorTrainerId, 
                 . 'claimed_at=NULL,claim_token=NULL,last_error=NULL,cancelled_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?'
             )->execute([$id]);
             memberChargeReminderAudit(
-                $pdo, $id, (int)$row['account_id'], 'manual_retry', $status, 'pending',
-                'Administrátor vrátil zprávu do fronty. Důvod: ' . $reason, 'trainer', $actorTrainerId
+                $pdo,
+                $id,
+                (int)$row['account_id'],
+                'manual_retry',
+                $status,
+                'pending',
+                'Administrátor vrátil zprávu do fronty. Důvod: ' . $reason,
+                'trainer',
+                $actorTrainerId
             );
         }
         $pdo->commit();
         return ['id' => $id, 'changed' => !$alreadyQueued, 'status' => 'pending'];
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw $exception;
     }
 }
 
-function memberChargeReminderAudit(PDO $pdo, ?int $reminderId, int $accountId, string $action, ?string $from, ?string $to, string $note, string $actorType = 'system', ?int $actorId = null): void
-{
+function memberChargeReminderAudit(
+    PDO $pdo,
+    ?int $reminderId,
+    int $accountId,
+    string $action,
+    ?string $from,
+    ?string $to,
+    string $note,
+    string $actorType = 'system',
+    ?int $actorId = null
+): void {
     $pdo->prepare(
-        'INSERT INTO member_charge_reminder_events(reminder_id,account_id,actor_type,actor_id,action,from_status,to_status,note) VALUES(?,?,?,?,?,?,?,?)'
-    )->execute([$reminderId, $accountId, $actorType, $actorId, $action, $from, $to, mb_substr($note, 0, 500, 'UTF-8')]);
+        ('INSERT INTO member_charge_reminder_events(reminder_id,account_id,actor_type,actor_id,action,from_sta'
+ . 'tus,to_status,note) VALUES(?,?,?,?,?,?,?,?)')
+    )->execute([$reminderId, $accountId, $actorType, $actorId, $action, $from, $to, mb_substr(
+        $note,
+        0,
+        500,
+        'UTF-8'
+    )]);
 }

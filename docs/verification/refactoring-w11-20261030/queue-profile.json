@@ -1,0 +1,232 @@
+{
+    "schema": "full migrations, FK enabled, owned random localhost DB",
+    "transport": "test callback only; no network",
+    "count_scope": "prepared\/query statements; exec and transaction control excluded",
+    "results": [
+        {
+            "rows_per_queue": 0,
+            "status": {
+                "prepared_sql": 9,
+                "fetched_rows": 2,
+                "warmups": 2,
+                "samples": [
+                    {
+                        "ms": 5.7595,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 5.7746,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 5.9167,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 6.0259,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 6.7374,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 5.9432,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 5.9646,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 17.099,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 9.2547,
+                        "extra_peak_bytes": 44848
+                    },
+                    {
+                        "ms": 18.8768,
+                        "extra_peak_bytes": 44848
+                    }
+                ]
+            },
+            "drain": {
+                "processed": 0,
+                "sent": 0,
+                "failed": 0,
+                "cancelled": 0,
+                "auth_processed": 0,
+                "event_processed": 0,
+                "instrumented_single_ms": 17.8189,
+                "prepared_sql": 6,
+                "fetched_rows": 0
+            },
+            "claim_explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "club_event_notifications",
+                    "type": "index",
+                    "possible_keys": "idx_club_event_notification_queue",
+                    "key": "PRIMARY",
+                    "key_len": "8",
+                    "ref": null,
+                    "rows": "1",
+                    "Extra": "Using where"
+                }
+            ]
+        },
+        {
+            "rows_per_queue": 100,
+            "status": {
+                "prepared_sql": 9,
+                "fetched_rows": 4,
+                "warmups": 2,
+                "samples": [
+                    {
+                        "ms": 7.0423,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.5151,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.38,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.4623,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.2229,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.3974,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.3967,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.0992,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.6334,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 7.6533,
+                        "extra_peak_bytes": 45632
+                    }
+                ]
+            },
+            "drain": {
+                "processed": 20,
+                "sent": 20,
+                "failed": 0,
+                "cancelled": 0,
+                "auth_processed": 0,
+                "event_processed": 20,
+                "instrumented_single_ms": 137.7554,
+                "prepared_sql": 74,
+                "fetched_rows": 20
+            },
+            "claim_explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "club_event_notifications",
+                    "type": "ref",
+                    "possible_keys": "idx_club_event_notification_queue",
+                    "key": "idx_club_event_notification_queue",
+                    "key_len": "1",
+                    "ref": "const",
+                    "rows": "80",
+                    "Extra": "Using index condition; Using where; Using filesort"
+                }
+            ]
+        },
+        {
+            "rows_per_queue": 10000,
+            "status": {
+                "prepared_sql": 9,
+                "fetched_rows": 4,
+                "warmups": 2,
+                "samples": [
+                    {
+                        "ms": 66.6152,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 91.0534,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 74.8712,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 60.0012,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 54.4964,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 64.1222,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 60.0182,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 49.7672,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 54.492,
+                        "extra_peak_bytes": 45632
+                    },
+                    {
+                        "ms": 50.214,
+                        "extra_peak_bytes": 45632
+                    }
+                ]
+            },
+            "drain": {
+                "processed": 20,
+                "sent": 20,
+                "failed": 0,
+                "cancelled": 0,
+                "auth_processed": 0,
+                "event_processed": 20,
+                "instrumented_single_ms": 1225.8993,
+                "prepared_sql": 74,
+                "fetched_rows": 20
+            },
+            "claim_explain": [
+                {
+                    "id": 1,
+                    "select_type": "SIMPLE",
+                    "table": "club_event_notifications",
+                    "type": "ref",
+                    "possible_keys": "idx_club_event_notification_queue",
+                    "key": "idx_club_event_notification_queue",
+                    "key_len": "1",
+                    "ref": "const",
+                    "rows": "5000",
+                    "Extra": "Using index condition; Using where; Using filesort"
+                }
+            ]
+        }
+    ]
+}

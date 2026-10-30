@@ -441,6 +441,20 @@ jobs:
       - name: Assess ledger and personal financial history on migrated schema
         run: php tests/Support/FinancialReadAssessment.php > financial-read-assessment.json
 
+      - name: Verify notification races and bounded queue processing
+        run: |
+          php tests/Support/OperationalDeliveryMariaDbRace.php > notification-delivery-race.json
+          php tests/Support/NotificationQueueProfile.php > notification-queue-profile.json
+
+      - name: Preserve notification contracts and profile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: notification-contracts-mariadb-${{ matrix.mariadb-version }}
+          path: |
+            notification-delivery-race.json
+            notification-queue-profile.json
+          retention-days: 14
+
       - name: Preserve financial read assessment
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
