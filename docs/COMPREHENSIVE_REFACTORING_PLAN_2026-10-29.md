@@ -329,3 +329,10 @@ povolených akcí a vozidel, roční staff seznam 2913 → 9 SQL. PR #241 je
 [nasazen a ověřen](verification/refactoring-w84-release-20261030/RESULTS.md).
 Autorizace a writeři zachováni. [Navazující kontrakty W8.5](verification/refactoring-w84-20261030/SPORT_FOLLOWUP.md)
 zůstávají otevřené; celý plán W9–W15 tím není uzavřen.
+
+## Průběžná W9.1 — skladový přehled
+
+[Plán W9](REFACTORING_W9_2026-10-30.md) a
+[měření skladu](verification/refactoring-w91-20261030/RESULTS.md): celý výpis
+10 000 variant 20008 → 34 SQL, shodné HTML i data, dávky nejvýše 400 zůstatků.
+Košík, checkout a navazující W10–W15 zůstávají otevřené.

@@ -1,0 +1,1 @@
+PASS: page AST and literal HTML identical after folding echo/inline HTML and string concatenation.

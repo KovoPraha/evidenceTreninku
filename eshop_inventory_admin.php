@@ -3,52 +3,402 @@ declare(strict_types=1);
 require_once __DIR__.'/includes/init.php';
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/shop_inventory.php';
+require_once __DIR__.'/includes/shop_inventory_read.php';
 require_once __DIR__.'/includes/ui_shell.php';
 header('Cache-Control: no-store, private');
-if(!isset($_SESSION['trener_id'])){header('Location: login.php');exit;}
-staffWorkspaceRefreshSession($pdo,(int)$_SESSION['trener_id']);
-$position=staffActivePosition();if(!in_array($position,['catalog_manager','finance_manager'],true)){http_response_code(403);exit('Sklad vyžaduje správce katalogu nebo hospodáře.');}
-$actor=(int)$_SESSION['trener_id'];$finance=$position==='finance_manager';$error=null;$message=isset($_GET['saved'])?'Úkon byl uložen; ověřte záznam v historii.':null;
-function stockPrice(string $value):int{if(!preg_match('/^[0-9]{1,8}(?:[.,][0-9]{1,2})?$/D',trim($value)))throw new ShopInventoryException('Pořizovací cenu zadejte v Kč, nejvýše dvě desetinná místa.');$parts=explode('.',str_replace(',','.',trim($value)));return (int)$parts[0]*100+(int)str_pad($parts[1]??'',2,'0');}
-function stockH(mixed $v):string{return htmlspecialchars((string)$v,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
-$q=trim((string)($_POST['q']??$_GET['q']??''));
-if(($_SERVER['REQUEST_METHOD']??'GET')==='POST')try {
- if(!csrf_verify((string)($_POST['csrf_token']??''))){http_response_code(403);exit('Formulář vypršel. Obnovte stránku.');}
- $action=(string)($_POST['action']??'');$reason=(string)($_POST['reason']??'');$confirmed=($_POST['confirmed']??'')==='1';$variant=(int)($_POST['variant_id']??0);$key=(string)($_POST['request_key']??'');
- if(in_array($action,['configure','correct_cost','approve_count'],true)!==$finance)throw new ShopInventoryException('Přepněte do odpovídajícího pracovního místa.');
- $result=match($action){
- 'configure'=>shopInventoryConfigure($pdo,$actor,(string)($_POST['warehouse_name']??''),'fifo',(string)($_POST['evidence']??''),$reason,$confirmed),
- 'open'=>shopInventoryOpen($pdo,$actor,$variant,['physical_quantity'=>$_POST['quantity']??null,'blocked_quantity'=>$_POST['blocked_quantity']??0,'unit_cost_minor'=>null,'effective_on'=>$_POST['effective_on']??'','evidence'=>$_POST['evidence']??'','reservations'=>(array)($_POST['reservations']??[])],$reason,$confirmed,$key),
- 'receive'=>shopInventoryReceive($pdo,$actor,$variant,['quantity'=>$_POST['quantity']??null,'expected_quantity'=>$_POST['expected_quantity']??null,'blocked_quantity'=>$_POST['blocked_quantity']??0,'unit_cost_minor'=>null,'supplier'=>$_POST['supplier']??'','supplier_reference'=>$_POST['supplier_reference']??'','cost_evidence'=>$_POST['evidence']??'','effective_on'=>$_POST['effective_on']??''],$reason,$confirmed,$key),
- 'block','unblock','writeoff','internal_issue','supplier_return'=>shopInventoryDisposition($pdo,$actor,$variant,shopInventoryQuantity($_POST['quantity']??null),$action,$reason,$confirmed,$key,array_filter(['source_movement_id'=>(int)($_POST['source_movement_id']??0),'blocked'=>($_POST['from_blocked']??'')==='1','purpose'=>$_POST['purpose']??'','effective_on'=>$_POST['effective_on']??''])),
- 'count'=>shopInventoryCountStart($pdo,$actor,$variant,(string)($_POST['evidence']??''),$reason,$confirmed),
- 'approve_count'=>shopInventoryCountApprove($pdo,$actor,(int)($_POST['count_id']??0),shopInventoryQuantity($_POST['quantity']??null,true),shopInventoryQuantity($_POST['blocked_quantity']??null,true),$reason,$confirmed),
- 'correct_cost'=>shopInventoryCorrectCost($pdo,$actor,(int)($_POST['lot_id']??0),stockPrice((string)($_POST['unit_cost_czk']??'')),(string)($_POST['effective_on']??''),(string)($_POST['evidence']??''),$reason,$confirmed,$key),
- default=>throw new ShopInventoryException('Neznámý skladový úkon.')};header('Location: eshop_inventory_admin.php?'.http_build_query(['saved'=>(int)($result['id']??$variant),'variant_id'=>(int)($_POST['variant_id']??$_GET['variant_id']??0),'q'=>$q],'','&',PHP_QUERY_RFC3986),true,303);exit;
-}catch(ShopInventoryException|InvalidArgumentException|JsonException $e){$error=$e->getMessage();http_response_code(422);}catch(Throwable $e){error_log('Inventory admin: '.$e->getMessage());$error='Zápis selhal; zkontrolujte historii před opakováním.';http_response_code(500);}
-$policy=shopInventoryPolicy($pdo);$variants=$pdo->query("SELECT v.id,v.sku,v.stock_quantity_decimal,p.name FROM shop_variants v JOIN shop_products p ON p.id=v.product_id WHERE p.offer_type='goods' ORDER BY p.name,v.sku")->fetchAll(PDO::FETCH_ASSOC);
-if($q!=='')$variants=array_values(array_filter($variants,static fn($v)=>mb_stripos($v['sku'].' '.$v['name'],$q)!==false));
-$selectedVariant=(int)($_POST['variant_id']??$_GET['variant_id']??($variants[0]['id']??0));
-if(!in_array($selectedVariant,array_map(static fn($v)=>(int)$v['id'],$variants),true))$selectedVariant=0;
-$openItems=$pdo->prepare("SELECT i.id,i.quantity,o.public_code FROM shop_order_items i JOIN shop_orders o ON o.id=i.order_id WHERE i.variant_id=? AND o.status IN ('placed','processing','ready') ORDER BY i.id");$openItems->execute([$selectedVariant]);$openingItems=$openItems->fetchAll(PDO::FETCH_ASSOC);
-$counts=$pdo->query("SELECT * FROM shop_stock_counts WHERE status='draft' ORDER BY id DESC LIMIT 100")->fetchAll(PDO::FETCH_ASSOC);
-$moves=$pdo->query('SELECT id,variant_id,kind,physical_delta,reserved_delta,blocked_delta,effective_on,reason FROM shop_stock_movements ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
-$lots=$finance?$pdo->query('SELECT * FROM shop_stock_lots ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC):[];
-?><!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fyzický sklad</title><?php appUiAssets();?></head><body><?php require __DIR__.'/hlavicka.php';?><main class="container py-4"><h1>Fyzický sklad</h1>
-<p><?=stockH($policy['warehouse_name']??'Sklad není schválen')?> · dostupné = fyzicky − rezervováno − blokováno. Kusy se vydávají přes objednávku; peníze se zde nepotvrzují.</p>
+if (!isset($_SESSION['trener_id'])) {
+    header('Location: login.php');
+    exit;
+}
+staffWorkspaceRefreshSession($pdo, (int)$_SESSION['trener_id']);
+$position = staffActivePosition();
+if (!in_array($position, ['catalog_manager','finance_manager'], true)) {
+    http_response_code(403);
+    exit('Sklad vyžaduje správce katalogu nebo hospodáře.');
+}
+$actor = (int)$_SESSION['trener_id'];
+$finance = $position === 'finance_manager';
+$error = null;
+$message = isset($_GET['saved']) ? 'Úkon byl uložen; ověřte záznam v historii.' : null;
+function stockPrice(string $value): int
+{
+    if (!preg_match(
+        '/^[0-9]{1,8}(?:[.,][0-9]{1,2})?$/D',
+        trim($value)
+    )) {
+        throw new ShopInventoryException('Pořizovací cenu zadejte v Kč, nejvýše dvě desetinná místa.');
+    }$parts = explode(
+        '.',
+        str_replace(
+            ',',
+            '.',
+            trim($value)
+        )
+    );
+    return (int)$parts[0] * 100 + (int)str_pad(
+        $parts[1] ?? '',
+        2,
+        '0'
+    );
+}
+function stockH(mixed $v): string
+{
+    return htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+$q = trim((string)($_POST['q'] ?? $_GET['q'] ?? ''));
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    try {
+        if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+            http_response_code(403);
+            exit('Formulář vypršel. Obnovte stránku.');
+        }
+        $action = (string)($_POST['action'] ?? '');
+        $reason = (string)($_POST['reason'] ?? '');
+        $confirmed = ($_POST['confirmed'] ?? '') === '1';
+        $variant = (int)($_POST['variant_id'] ?? 0);
+        $key = (string)($_POST['request_key'] ?? '');
+        if (in_array($action, ['configure','correct_cost','approve_count'], true) !== $finance) {
+            throw new ShopInventoryException('Přepněte do odpovídajícího pracovního místa.');
+        }
+        $result = match($action) {
+            'configure' => shopInventoryConfigure($pdo, $actor, (string)($_POST['warehouse_name'] ?? ''), 'fifo', (string)($_POST['evidence'] ?? ''), $reason, $confirmed),
+            'open' => shopInventoryOpen(
+                $pdo,
+                $actor,
+                $variant,
+                ['physical_quantity' => $_POST['quantity'] ?? null,
+    'blocked_quantity' => $_POST['blocked_quantity'] ?? 0,
+    'unit_cost_minor' => null,
+    'effective_on' => $_POST['effective_on'] ?? '',
+    'evidence' => $_POST['evidence'] ?? '',
+    'reservations' => (array)($_POST['reservations'] ?? [])],
+                $reason,
+                $confirmed,
+                $key
+            ),
+
+            'receive' => shopInventoryReceive(
+                $pdo,
+                $actor,
+                $variant,
+                ['quantity' => $_POST['quantity'] ?? null,
+    'expected_quantity' => $_POST['expected_quantity'] ?? null,
+    'blocked_quantity' => $_POST['blocked_quantity'] ?? 0,
+    'unit_cost_minor' => null,
+    'supplier' => $_POST['supplier'] ?? '',
+    'supplier_reference' => $_POST['supplier_reference'] ?? '',
+    'cost_evidence' => $_POST['evidence'] ?? '',
+    'effective_on' => $_POST['effective_on'] ?? ''],
+                $reason,
+                $confirmed,
+                $key
+            ),
+
+            'block',
+            'unblock',
+            'writeoff',
+            'internal_issue',
+            'supplier_return' => shopInventoryDisposition(
+                $pdo,
+                $actor,
+                $variant,
+                shopInventoryQuantity($_POST['quantity'] ?? null),
+                $action,
+                $reason,
+                $confirmed,
+                $key,
+                array_filter(['source_movement_id' => (int)($_POST['source_movement_id'] ?? 0),
+    'blocked' => ($_POST['from_blocked'] ?? '') === '1',
+    'purpose' => $_POST['purpose'] ?? '',
+    'effective_on' => $_POST['effective_on'] ?? ''])
+            ),
+
+            'count' => shopInventoryCountStart($pdo, $actor, $variant, (string)($_POST['evidence'] ?? ''), $reason, $confirmed),
+            'approve_count' => shopInventoryCountApprove(
+                $pdo,
+                $actor,
+                (int)($_POST['count_id'] ?? 0),
+                shopInventoryQuantity(
+                    $_POST['quantity'] ?? null,
+                    true
+                ),
+                shopInventoryQuantity(
+                    $_POST['blocked_quantity'] ?? null,
+                    true
+                ),
+                $reason,
+                $confirmed
+            ),
+
+            'correct_cost' => shopInventoryCorrectCost(
+                $pdo,
+                $actor,
+                (int)($_POST['lot_id'] ?? 0),
+                stockPrice((string)($_POST['unit_cost_czk'] ?? '')),
+                (string)($_POST['effective_on'] ?? ''),
+                (string)($_POST['evidence'] ?? ''),
+                $reason,
+                $confirmed,
+                $key
+            ),
+
+            default => throw new ShopInventoryException('Neznámý skladový úkon.')
+        };
+        header(
+            'Location: eshop_inventory_admin.php?'.http_build_query(
+                ['saved' => (int)($result['id'] ?? $variant),
+    'variant_id' => (int)($_POST['variant_id'] ?? $_GET['variant_id'] ?? 0),
+    'q' => $q],
+                '',
+                '&',
+                PHP_QUERY_RFC3986
+            ),
+            true,
+            303
+        );
+        exit;
+    } catch (ShopInventoryException|InvalidArgumentException|JsonException $e) {
+        $error = $e->getMessage();
+        http_response_code(422);
+    } catch (Throwable $e) {
+        error_log('Inventory admin: '.$e->getMessage());
+        $error = 'Zápis selhal; zkontrolujte historii před opakováním.';
+        http_response_code(500);
+    }
+}
+$policy = shopInventoryPolicy($pdo);
+$variants = shopInventoryReadVariants($pdo, $q);
+$selectedVariant = (int)($_POST['variant_id'] ?? $_GET['variant_id'] ?? ($variants[0]['id'] ?? 0));
+if (!in_array($selectedVariant, array_map(static fn ($v) => (int)$v['id'], $variants), true)) {
+    $selectedVariant = 0;
+}
+$openItems = $pdo->prepare("SELECT i.id,i.quantity,o.public_code FROM shop_order_items i JOIN shop_orders o ON o.id=i.order_id WHERE i.variant_id=? "
+    . "AND o.status IN ('placed','processing','ready') ORDER BY i.id");
+$openItems->execute([$selectedVariant]);
+$openingItems = $openItems->fetchAll(PDO::FETCH_ASSOC);
+$counts = $pdo->query("SELECT * FROM shop_stock_counts WHERE status='draft' ORDER BY id DESC LIMIT 100")->fetchAll(PDO::FETCH_ASSOC);
+$moves = $pdo->query('SELECT id,variant_id,kind,physical_delta,reserved_delta,blocked_delta,effective_on,reason FROM shop_stock_movements '
+    . 'ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
+$lots = $finance ? $pdo->query('SELECT * FROM shop_stock_lots ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC) : [];
+
+?><!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fyzický sklad</title><?php
+appUiAssets();
+?></head><body><?php
+require __DIR__.'/hlavicka.php';
+?><main class="container py-4"><h1>Fyzický sklad</h1>
+<p><?=stockH($policy['warehouse_name'] ?? 'Sklad není schválen')?> · dostupné = fyzicky − rezervováno − blokováno. Kusy se vydávají přes objednávku; peníze se zde nepotvrzují.</p>
 <p><a href="eshop_sklad_admin.php">Katalog a varianty</a> · <a href="accounting_exports_admin.php">Účetní exporty</a></p>
-<?php if($error):?><div class="alert alert-danger"><?=stockH($error)?></div><?php endif;?><?php if($message):?><div class="alert alert-success"><?=stockH($message)?></div><?php endif;?>
-<form method="get" class="d-flex gap-2 mb-3"><?php if($selectedVariant>0):?><input type="hidden" name="variant_id" value="<?=$selectedVariant?>"><?php endif;?><label for="stock-search">Varianta / velikost</label><input id="stock-search" name="q" value="<?=stockH($q)?>"><button>Vyhledat</button></form>
-<div class="table-responsive"><table class="table"><thead><tr><th>Varianta</th><th>Režim</th><th>Fyzicky</th><th>Rezervováno</th><th>Blokováno</th><th>Dostupné</th></tr></thead><tbody><?php foreach($variants as$v):$b=shopInventoryBalance($pdo,(int)$v['id']);?><tr><td>#<?=(int)$v['id']?> <?=stockH($v['name'].' · '.$v['sku'])?></td><td><?=$b?'Ověřený fyzický sklad':($v['stock_quantity_decimal']===null?'Neověřeno — neprodávat':'Starší dostupnost; převod čeká')?></td><td><?=$b?(int)$b['physical_quantity']:'—'?></td><td><?=$b?(int)$b['reserved_quantity']:'—'?></td><td><?=$b?(int)$b['blocked_quantity']:'—'?></td><td><?=$b?(int)$b['available_quantity']:stockH($v['stock_quantity_decimal']??'neznámé')?></td></tr><?php endforeach;?></tbody></table></div>
-<h2 class="h4"><?=$finance?'Ocenění a schválení':'Skladový úkon'?></h2>
-<?php if(!$finance):?><form method="get" id="stock-variant-picker" class="mb-3"><input type="hidden" name="q" value="<?=stockH($q)?>"><label class="form-label" for="stock-variant">Varianta</label><select id="stock-variant" name="variant_id" class="form-select" required><option value=""<?=$selectedVariant===0?' selected':''?>>Vyberte variantu</option><?php foreach($variants as$v):?><option value="<?=(int)$v['id']?>"<?=($selectedVariant===(int)$v['id'])?' selected':''?>>#<?=(int)$v['id']?> <?=stockH($v['name'].' / '.$v['sku'])?></option><?php endforeach;?></select><button class="btn btn-outline-secondary mt-2">Vybrat variantu</button></form><script nonce="<?=stockH(app_csp_nonce())?>">document.getElementById('stock-variant').addEventListener('change',function(){this.form.requestSubmit();});</script><?php endif;?>
-<form method="post" class="border rounded p-3 mb-4"><?=csrf_field()?><input type="hidden" name="q" value="<?=stockH($q)?>"><input type="hidden" name="variant_id" value="<?=$selectedVariant?>"><input type="hidden" name="request_key" value="<?=stockH($_POST['request_key']??'stock-ui:'.bin2hex(random_bytes(18)))?>">
-<div class="row g-3"><div class="col-md-6"><label class="form-label">Úkon</label><select class="form-select" name="action"><?php foreach($finance?['configure'=>'Schválit hlavní sklad a FIFO','correct_cost'=>'Doložit / opravit pořizovací cenu','approve_count'=>'Schválit spočítanou inventuru']:['receive'=>'Příjem od dodavatele','open'=>'Ověřit počáteční stav varianty','block'=>'Blokovat volné vlastní kusy','unblock'=>'Uvolnit zkontrolované kusy','writeoff'=>'Odepsat blokované kusy','internal_issue'=>'Výdej pro vlastní spotřebu','supplier_return'=>'Vrátit původní příjem dodavateli','count'=>'Založit inventurní soupis'] as$key=>$label):?><option value="<?=$key?>"<?=($_POST['action']??'')===$key?' selected':''?>><?=stockH($label)?></option><?php endforeach;?></select></div>
-<?php $fields=$finance?['warehouse_name'=>'Název hlavního skladu (schválení)','lot_id'=>'ID příjmové dávky (ocenění)','unit_cost_czk'=>'Doložená pořizovací cena jednoho kusu (Kč)','count_id'=>'ID inventurního soupisu','quantity'=>'Napočítáno fyzicky (včetně rezervací)','blocked_quantity'=>'Z toho blokované kusy']:['quantity'=>'Skutečné celé kusy','blocked_quantity'=>'Z toho blokované kusy (příjem / počátek)','expected_quantity'=>'Očekávaná dodávka (příjem)','supplier'=>'Dodavatel','supplier_reference'=>'Dodavatelský doklad / dodací list','source_movement_id'=>'ID původní příjemky (vratka dodavateli)','purpose'=>'Účel / příjemce interního výdeje'];foreach($fields as$name=>$label):?><div class="col-md-6"><label class="form-label" for="stock-<?=$name?>"><?=stockH($label)?></label><input class="form-control" id="stock-<?=$name?>" name="<?=$name?>" value="<?=stockH($_POST[$name]??($name==='blocked_quantity'?'0':''))?>"></div><?php endforeach;?>
-<div class="col-md-6"><label class="form-label">Datum skutečného úkonu</label><input class="form-control" type="date" name="effective_on" value="<?=stockH($_POST['effective_on']??date('Y-m-d'))?>" max="<?=date('Y-m-d')?>"></div>
-<?php if(!$finance):?><div class="col-md-6"><label><input type="checkbox" name="from_blocked" value="1"> Vratka dodavateli z blokovaných kusů</label></div><div class="col-12"><p class="form-label">Počátek: otevřené položky vybrané varianty</p><?php foreach($openingItems as$oi):?><label class="d-block"><input type="checkbox" name="reservations[<?=(int)$oi['id']?>]" value="<?=(int)$oi['quantity']?>"> Objednávka <?=stockH($oi['public_code'])?> · <?=(int)$oi['quantity']?> ks — ověřeno jako skutečně nevydané</label><?php endforeach;?><?php if($openingItems===[]):?><p>Žádné otevřené objednávky této varianty.</p><?php endif;?><small>Počáteční převod vyžaduje ověření všech otevřených položek. Již předané kusy nejprve samostatně vypořádejte; historické rezervace se nepřičítají.</small></div><?php endif;?>
-<div class="col-12"><label class="form-label">Podklad (inventura, dodání, schválení metody nebo ocenění)</label><input class="form-control" name="evidence" maxlength="1000" value="<?=stockH($_POST['evidence']??'')?>"></div><div class="col-12"><label class="form-label">Důvod úkonu</label><input class="form-control" name="reason" minlength="10" maxlength="1000" required value="<?=stockH($_POST['reason']??'')?>"></div><div class="col-12"><label><input type="checkbox" name="confirmed" value="1" required> Ověřil/a jsem skutečnost a potvrzuji zápis</label></div><div class="col-12"><button class="btn btn-primary">Potvrdit úkon</button></div></div></form>
-<p class="text-muted">Příjem bez doložené ceny zůstane neoceněný. Cenu doplní hospodář; neznámá hodnota není nula. Inventurní soupis zachycuje revizi skladu: po dalším pohybu je nutný nový soupis. Schválení provádí jiná osoba, rezervace se inventurou neruší. Evidence je pro jeden hlavní sklad; přesuny na další místa zatím nejsou povoleny.</p>
-<h2 class="h4">Otevřené inventurní soupisy</h2><table class="table"><tr><th>ID / varianta</th><th>Stav v okamžiku soupisu P / R / B</th><th>Podklad</th></tr><?php foreach($counts as$c):?><tr><td>#<?=(int)$c['id']?> / #<?=(int)$c['variant_id']?></td><td><?=(int)$c['expected_physical']?> / <?=(int)$c['expected_reserved']?> / <?=(int)$c['expected_blocked']?></td><td><?=stockH($c['evidence'])?></td></tr><?php endforeach;?></table>
-<?php if($finance):?><h2 class="h4">Příjmové dávky a ocenění</h2><table class="table"><tr><th>Dávka / pohyb / varianta</th><th>Zbývá</th><th>Cena za kus</th><th>Podklad</th></tr><?php foreach($lots as$l):?><tr><td>#<?=(int)$l['id']?> / #<?=(int)$l['source_movement_id']?> / #<?=(int)$l['variant_id']?></td><td><?=(int)$l['remaining_quantity']?></td><td><?=$l['unit_cost_minor']===null?'NEOCENĚNO':stockH(number_format((int)$l['unit_cost_minor']/100,2,',',' ')).' Kč'?></td><td><?=stockH($l['cost_evidence'])?></td></tr><?php endforeach;?></table><?php endif;?>
-<h2 class="h4">Poslední pohyby</h2><table class="table"><tr><th>Doklad</th><th>Datum / typ</th><th>Δ fyzicky / rezervováno / blokováno</th><th>Důvod</th></tr><?php foreach($moves as$m):?><tr><td><a href="shop_stock_document.php?id=<?=(int)$m['id']?>">#<?=(int)$m['id']?></a> / varianta #<?=(int)$m['variant_id']?></td><td><?=stockH($m['effective_on'].' / '.$m['kind'])?></td><td><?=(int)$m['physical_delta']?> / <?=(int)$m['reserved_delta']?> / <?=(int)$m['blocked_delta']?></td><td><?=stockH($m['reason'])?></td></tr><?php endforeach;?></table></main></body></html>
+<?php if ($error):?><div class="alert alert-danger"><?=stockH($error)?></div><?php endif;?><?php if ($message):?><div class="alert alert-success"><?=stockH($message)?></div><?php endif;?>
+<form method="get" class="d-flex gap-2 mb-3"><?php
+if ($selectedVariant > 0):
+    ?><input type="hidden" name="variant_id" value="<?=
+    $selectedVariant
+    ?>"><?php
+endif;
+?><label for="stock-search">Varianta / velikost</label><input id="stock-search" name="q" value="<?=
+stockH($q)
+?>"><button>Vyhledat</button></form>
+<div class="table-responsive"><table class="table"><thead><tr><th>Varianta</th><th>Režim</th><th>Fyzicky</th><th>Rezervováno</th><th>Blokováno</th><th>Dostupné</th></tr></thead><tbody><?php
+foreach (shopInventoryReadRows($pdo,
+    $variants) as $inventoryRow):$v = $inventoryRow['variant'];
+    $b = $inventoryRow['balance'];
+    ?><tr><td>#<?=
+    (int)$v['id']
+    ?> <?=
+    stockH($v['name'].' · '.$v['sku'])
+    ?></td><td><?=
+    $b ? 'Ověřený fyzický sklad' : ($v['stock_quantity_decimal'] === null ? 'Neověřeno — neprodávat' : 'Starší dostupnost; převod čeká')
+    ?></td><td><?=
+    $b ? (int)$b['physical_quantity'] : '—'
+    ?></td><td><?=
+    $b ? (int)$b['reserved_quantity'] : '—'
+    ?></td><td><?=
+    $b ? (int)$b['blocked_quantity'] : '—'
+    ?></td><td><?=
+    $b ? (int)$b['available_quantity'] : stockH($v['stock_quantity_decimal'] ?? 'neznámé')
+    ?></td></tr><?php
+endforeach;
+?></tbody></table></div>
+<h2 class="h4"><?=$finance ? 'Ocenění a schválení' : 'Skladový úkon'?></h2>
+<?php
+if (!$finance):
+    ?><form method="get" id="stock-variant-picker" class="mb-3"><input type="hidden" name="q" value="<?=
+    stockH($q)
+    ?>"><label class="form-label" for="stock-variant">Varianta</label><select id="stock-variant" name="variant_id" class="form-select" required><option value=""<?=
+    $selectedVariant === 0 ? ' selected' : ''
+    ?>>Vyberte variantu</option><?php
+foreach ($variants as $v):
+    ?><option value="<?=
+    (int)$v['id']
+    ?>"<?=
+    ($selectedVariant === (int)$v['id']) ? ' selected' : ''
+    ?>>#<?=
+    (int)$v['id']
+    ?> <?=
+    stockH($v['name'].' / '.$v['sku'])
+    ?></option><?php
+endforeach;
+    ?></select><button class="btn btn-outline-secondary mt-2">Vybrat variantu</button></form><script nonce="<?=
+    stockH(app_csp_nonce())
+    ?>">document.getElementById('stock-variant').addEventListener('change',function(){this.form.requestSubmit();});</script><?php
+endif;
+?>
+<form method="post" class="border rounded p-3 mb-4"><?=
+csrf_field()
+?><input type="hidden" name="q" value="<?=
+stockH($q)
+?>"><input type="hidden" name="variant_id" value="<?=
+$selectedVariant
+?>"><input type="hidden" name="request_key" value="<?=
+stockH($_POST['request_key'] ?? 'stock-ui:'.bin2hex(random_bytes(18)))
+?>">
+<div class="row g-3"><div class="col-md-6"><label class="form-label">Úkon</label><select class="form-select" name="action"><?php
+foreach ($finance ? ['configure' => 'Schválit hlavní sklad a FIFO',
+    'correct_cost' => 'Doložit / opravit pořizovací cenu',
+    'approve_count' => 'Schválit spočítanou inventuru'] : ['receive' => 'Příjem od dodavatele',
+    'open' => 'Ověřit počáteční stav varianty',
+    'block' => 'Blokovat volné vlastní kusy',
+    'unblock' => 'Uvolnit zkontrolované kusy',
+    'writeoff' => 'Odepsat blokované kusy',
+    'internal_issue' => 'Výdej pro vlastní spotřebu',
+    'supplier_return' => 'Vrátit původní příjem dodavateli',
+    'count' => 'Založit inventurní soupis'] as $key => $label):
+    ?><option value="<?=
+    $key
+    ?>"<?=
+    ($_POST['action'] ?? '') === $key ? ' selected' : ''
+    ?>><?=
+    stockH($label)
+    ?></option><?php
+endforeach;
+?></select></div>
+<?php
+$fields = $finance ? ['warehouse_name' => 'Název hlavního skladu (schválení)',
+    'lot_id' => 'ID příjmové dávky (ocenění)',
+    'unit_cost_czk' => 'Doložená pořizovací cena jednoho kusu (Kč)',
+    'count_id' => 'ID inventurního soupisu',
+    'quantity' => 'Napočítáno fyzicky (včetně rezervací)',
+    'blocked_quantity' => 'Z toho blokované kusy'] : ['quantity' => 'Skutečné celé kusy',
+    'blocked_quantity' => 'Z toho blokované kusy (příjem / počátek)',
+    'expected_quantity' => 'Očekávaná dodávka (příjem)',
+    'supplier' => 'Dodavatel',
+    'supplier_reference' => 'Dodavatelský doklad / dodací list',
+    'source_movement_id' => 'ID původní příjemky (vratka dodavateli)',
+    'purpose' => 'Účel / příjemce interního výdeje'];
+foreach ($fields as $name => $label):
+    ?><div class="col-md-6"><label class="form-label" for="stock-<?=
+    $name
+    ?>"><?=
+    stockH($label)
+    ?></label><input class="form-control" id="stock-<?=
+    $name
+    ?>" name="<?=
+    $name
+    ?>" value="<?=
+    stockH($_POST[$name] ?? ($name === 'blocked_quantity' ? '0' : ''))
+    ?>"></div><?php
+endforeach;
+?>
+<div class="col-md-6"><label class="form-label">Datum skutečného úkonu</label><input class="form-control" type="date" name="effective_on" value="<?=
+stockH($_POST['effective_on'] ?? date('Y-m-d'))
+?>" max="<?=
+date('Y-m-d')
+?>"></div>
+<?php
+if (!$finance):
+    ?><?php echo '<div class="col-md-6"><label><input type="checkbox" name="from_blocked" value="1"> Vratka dodavateli'
+     . ' z blokovaných kusů</label></div><div class="col-12"><p class="form-label">Počátek: otevřené položky'
+     . ' vybrané varianty</p>'; ?><?php
+foreach ($openingItems as $oi):
+    ?><label class="d-block"><input type="checkbox" name="reservations[<?=
+    (int)$oi['id']
+    ?>]" value="<?=
+    (int)$oi['quantity']
+    ?>"> Objednávka <?=
+    stockH($oi['public_code'])
+    ?> · <?=
+    (int)$oi['quantity']
+    ?> ks — ověřeno jako skutečně nevydané</label><?php
+endforeach;
+    ?><?php
+if ($openingItems === []):
+    ?><p>Žádné otevřené objednávky této varianty.</p><?php
+endif;
+    ?><small>Počáteční převod vyžaduje ověření všech otevřených položek. Již předané kusy nejprve samostatně vypořádejte; historické rezervace se nepřičítají.</small></div><?php
+endif;
+?>
+<div class="col-12"><label class="form-label">Podklad (inventura, dodání, schválení metody nebo ocenění)</label><input class="form-control" name="evidence" maxlength="1000" value="<?=
+stockH($_POST['evidence'] ?? '')
+?>"></div><div class="col-12"><label class="form-label">Důvod úkonu</label><input class="form-control" name="reason" minlength="10" maxlength="1000" required value="<?=
+stockH($_POST['reason'] ?? '')
+?><?php echo '"></div><div class="col-12"><label><input type="checkbox" name="confirmed" value="1" required> Ověři'
+ . 'l/a jsem skutečnost a potvrzuji zápis</label></div><div class="col-12"><button class="btn btn-primar'
+ . 'y">Potvrdit úkon</button></div></div></form>
+'; ?><?php echo '<p class="text-muted">Příjem bez doložené ceny zůstane neoceněný. Cenu doplní hospodář; neznámá hodn'
+ . 'ota není nula. Inventurní soupis zachycuje revizi skladu: po dalším pohybu je nutný nový soupis. Sch'
+ . 'válení provádí jiná osoba, rezervace se inventurou neruší. Evidence je pro jeden hlavní sklad; přesu'
+ . 'ny na další místa zatím nejsou povoleny.</p>
+'; ?><h2 class="h4">Otevřené inventurní soupisy</h2><table class="table"><tr><th>ID / varianta</th><th>Stav v okamžiku soupisu P / R / B</th><th>Podklad</th></tr><?php
+foreach ($counts as $c):
+    ?><tr><td>#<?=
+    (int)$c['id']
+    ?> / #<?=
+    (int)$c['variant_id']
+    ?></td><td><?=
+    (int)$c['expected_physical']
+    ?> / <?=
+    (int)$c['expected_reserved']
+    ?> / <?=
+    (int)$c['expected_blocked']
+    ?></td><td><?=
+    stockH($c['evidence'])
+    ?></td></tr><?php
+endforeach;
+?></table>
+<?php
+if ($finance):
+    ?><h2 class="h4">Příjmové dávky a ocenění</h2><table class="table"><tr><th>Dávka / pohyb / varianta</th><th>Zbývá</th><th>Cena za kus</th><th>Podklad</th></tr><?php
+foreach ($lots as $l):
+    ?><tr><td>#<?=
+    (int)$l['id']
+    ?> / #<?=
+    (int)$l['source_movement_id']
+    ?> / #<?=
+    (int)$l['variant_id']
+    ?></td><td><?=
+    (int)$l['remaining_quantity']
+    ?></td><td><?=
+    $l['unit_cost_minor'] === null ? 'NEOCENĚNO' : stockH(number_format(
+        (int)$l['unit_cost_minor'] / 100,
+        2,
+        ',',
+        ' '
+    )).' Kč'
+    ?></td><td><?=
+    stockH($l['cost_evidence'])
+    ?></td></tr><?php
+endforeach;
+    ?></table><?php
+endif;
+?>
+<h2 class="h4">Poslední pohyby</h2><table class="table"><tr><th>Doklad</th><th>Datum / typ</th><th>Δ fyzicky / rezervováno / blokováno</th><th>Důvod</th></tr><?php
+foreach ($moves as $m):
+    ?><tr><td><a href="shop_stock_document.php?id=<?=
+    (int)$m['id']
+    ?>">#<?=
+    (int)$m['id']
+    ?></a> / varianta #<?=
+    (int)$m['variant_id']
+    ?></td><td><?=
+    stockH($m['effective_on'].' / '.$m['kind'])
+    ?></td><td><?=
+    (int)$m['physical_delta']
+    ?> / <?=
+    (int)$m['reserved_delta']
+    ?> / <?=
+    (int)$m['blocked_delta']
+    ?></td><td><?=
+    stockH($m['reason'])
+    ?></td></tr><?php
+endforeach;
+?></table></main></body></html>
