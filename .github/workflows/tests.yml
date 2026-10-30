@@ -445,6 +445,7 @@ jobs:
         run: |
           php tests/Support/OperationalDeliveryMariaDbRace.php > notification-delivery-race.json
           php tests/Support/NotificationQueueProfile.php > notification-queue-profile.json
+          php tests/Support/RosterMessageRecipientProfile.php > roster-message-recipient-profile.json
 
       - name: Preserve notification contracts and profile
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -453,6 +454,7 @@ jobs:
           path: |
             notification-delivery-race.json
             notification-queue-profile.json
+            roster-message-recipient-profile.json
           retention-days: 14
 
       - name: Preserve financial read assessment

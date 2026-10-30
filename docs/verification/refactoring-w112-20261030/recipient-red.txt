@@ -1,0 +1,18 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w112-20261030\phpunit.xml.dist
+
+F.                                                                  2 / 2 (100%)
+
+Time: 00:00.051, Memory: 10.00 MB
+
+There was 1 failure:
+
+1) Tests\Integration\RosterMessageRecipientReadTest::testOneRecipientDoesNotFetchTheWholeAudience
+Failed asserting that 2005 is equal to 10 or is less than 10.
+
+C:\Users\Marek\Documents\Codex\evidencePavel-refactoring-w112-20261030\tests\Integration\RosterMessageRecipientReadTest.php:22
+
+FAILURES!
+Tests: 2, Assertions: 37, Failures: 1.

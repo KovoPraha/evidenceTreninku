@@ -200,18 +200,8 @@ function rosterMessageProcessOne(PDO$pdo, callable$sender): ?bool
     if ($row === null) {
         return null;
     }try {
-        $preview = rosterMessagePreview(
-            $pdo,
-            (int)$row['team_id'],
-            (string)$row['subject_plain'],
-            (string)$row['body_plain']
-        );
-        $allowed = false;
-        foreach ($preview['recipients'] as $recipient) {
-            if ((int)$recipient['account_id'] === (int)$row['account_id'] && $recipient['email'] === $row['recipient_email']) {
-                $allowed = true;
-            }
-        }if (!$allowed) {
+        require_once __DIR__ . '/roster_message_recipient.php';
+        if (!rosterMessageRecipientAllowed($pdo, $row)) {
             notificationQueueHold($pdo, 'roster_message_recipients', $row, 'delivery_blocked: příjemce již není oprávněn.');
             return false;
         }$sent = $sender(
