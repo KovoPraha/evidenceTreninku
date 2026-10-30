@@ -1,0 +1,12 @@
+✔ 1000 legacy labels keep names and collision-free IDs with one document ID scan (23.1547ms)
+✔ public fields receive their existing accessible fallback without admin IDs (2.4971ms)
+✔ download form stays usable for a second attachment response (8.6896ms)
+✔ ordinary mutating POST still blocks duplicate submit (3.0953ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 341.2615
