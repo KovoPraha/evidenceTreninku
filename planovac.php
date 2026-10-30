@@ -1,10 +1,16 @@
 <?php
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
-if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
+if (!isset($_SESSION['trener_id'])) {
+    header('Location: login.php');
+    exit;
+}
 require_once 'includes/funkce.php';
 require_once 'db.php';
-if (!canAccess('planovac')) { header('Location: index.php'); exit; }
+if (!canAccess('planovac')) {
+    header('Location: index.php');
+    exit;
+}
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
@@ -12,8 +18,12 @@ require_once __DIR__ . '/includes/training_rsvp.php';
 require_once __DIR__ . '/includes/club_makeup.php';
 require_once __DIR__ . '/includes/training_closure.php';
 require_once __DIR__ . '/includes/training_planner_view.php';
+require_once __DIR__ . '/includes/training_planner_read.php';
 
-function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function h(string $s): string
+{
+    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
 
 $trenerId = (int)$_SESSION['trener_id'];
 
@@ -24,33 +34,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'zrusi
         $zrSerie = !empty($_POST['zrusit_serii']);
         try {
             $pdo->beginTransaction();
-            $select=$pdo->prepare('SELECT id,serie_id,trener_id FROM planovane_treninky WHERE id=?');$select->execute([$zrId]);$selected=$select->fetch(PDO::FETCH_ASSOC);
-            if (!$selected || (!roleAtLeast('hlavni') && (int)$selected['trener_id']!==$trenerId)) throw new ClubMakeupException('Trénink nelze zrušit.');
-            $targetIds=[$zrId];
-            if ($zrSerie && (int)$selected['serie_id']>0) {
-                $series=$pdo->prepare("SELECT id FROM planovane_treninky WHERE serie_id=? AND stav='planovany'");
-                $series->execute([(int)$selected['serie_id']]);$targetIds=array_map('intval',$series->fetchAll(PDO::FETCH_COLUMN));
+            $select = $pdo->prepare('SELECT id,serie_id,trener_id FROM planovane_treninky WHERE id=?');
+            $select->execute([$zrId]);
+            $selected = $select->fetch(PDO::FETCH_ASSOC);
+            if (!$selected || (!roleAtLeast('hlavni') && (int)$selected['trener_id'] !== $trenerId)) {
+                throw new ClubMakeupException('Trénink nelze zrušit.');
+            }
+            $targetIds = [$zrId];
+            if ($zrSerie && (int)$selected['serie_id'] > 0) {
+                $series = $pdo->prepare("SELECT id FROM planovane_treninky WHERE serie_id=? AND stav='planovany'");
+                $series->execute([(int)$selected['serie_id']]);
+                $targetIds = array_map('intval', $series->fetchAll(PDO::FETCH_COLUMN));
             }
             foreach ($targetIds as $targetId) {
-                if(trainingClosureReady($pdo)) trainingScheduleCancel($pdo,$targetId,$trenerId,trim((string)($_POST['cancel_reason']??'')),(int)($_POST['replacement_plan_id']??0)?:null);
-                else {$update=$pdo->prepare("UPDATE planovane_treninky SET stav='zruseny' WHERE id=? AND stav='planovany'");$update->execute([$targetId]);if($update->rowCount()>0)clubMakeupCancelPlannedTarget($pdo,$targetId,$trenerId);}
+                if (trainingClosureReady($pdo)) {
+                    trainingScheduleCancel($pdo, $targetId, $trenerId, trim((string)($_POST['cancel_reason'] ?? '')), (int)($_POST['replacement_plan_id'] ?? 0) ?: null);
+                } else {
+                    $update = $pdo->prepare("UPDATE planovane_treninky SET stav='zruseny' WHERE id=? AND stav='planovany'");
+                    $update->execute([$targetId]);
+                    if ($update->rowCount() > 0) {
+                        clubMakeupCancelPlannedTarget($pdo, $targetId, $trenerId);
+                    }
+                }
             }
             $pdo->commit();
-            $_SESSION['flash_success']=$zrSerie?'Celá série plánovaných tréninků zrušena.':'Plánovaný trénink zrušen.';
-        } catch(Throwable $exception) {
-            if($pdo->inTransaction())$pdo->rollBack();
+            $_SESSION['flash_success'] = $zrSerie ? 'Celá série plánovaných tréninků zrušena.' : 'Plánovaný trénink zrušen.';
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             error_log('planovac makeup cancellation: '.$exception->getMessage());
-            $_SESSION['flash_error']=$exception instanceof TrainingClosureException?$exception->getMessage():'Trénink se nepodařilo bezpečně zrušit.';
+            $_SESSION['flash_error'] = $exception instanceof TrainingClosureException ? $exception->getMessage() : 'Trénink se nepodařilo bezpečně zrušit.';
         }
     }
-    header('Location: ' . $_SERVER['REQUEST_URI']); exit;
+    header('Location: ' . $_SERVER['REQUEST_URI']);
+    exit;
 }
 
 // ── Kopírování týdne ──────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopirovat_tyden') {
     if (!csrf_verify($_POST['csrf_token'] ?? '')) {
         $_SESSION['flash_error'] = 'Neplatný CSRF token.';
-        header('Location: ' . $_SERVER['REQUEST_URI']); exit;
+        header('Location: ' . $_SERVER['REQUEST_URI']);
+        exit;
     }
 
     $kopOd = $_POST['kopirovat_od'] ?? '';
@@ -70,11 +96,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
     $kWhere  = ["pt.datum BETWEEN ? AND ?", "pt.stav = 'planovany'"];
     $kParams = [$kopOd, $kopDo];
     if ($kopJenMoje) {
-        $kWhere[] = 'pt.trener_id = ?'; $kParams[] = $trenerId;
+        $kWhere[] = 'pt.trener_id = ?';
+        $kParams[] = $trenerId;
     } elseif ($kopTrener) {
-        $kWhere[] = 'pt.trener_id = ?'; $kParams[] = $kopTrener;
+        $kWhere[] = 'pt.trener_id = ?';
+        $kParams[] = $kopTrener;
     }
-    if ($kopSkupina) { $kWhere[] = 'pt.skupina_id = ?'; $kParams[] = $kopSkupina; }
+    if ($kopSkupina) {
+        $kWhere[] = 'pt.skupina_id = ?';
+        $kParams[] = $kopSkupina;
+    }
 
     $stKop = $pdo->prepare("
         SELECT pt.*
@@ -84,7 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
     ");
     $stKop->execute($kParams);
     $zdrojePlany = $stKop->fetchAll(PDO::FETCH_ASSOC);
-    if ($kopTeam > 0) $zdrojePlany = trainingRosterBridgeFilterPlanRows($pdo, $zdrojePlany, $kopTeam);
+    if ($kopTeam > 0) {
+        $zdrojePlany = trainingRosterBridgeFilterPlanRows($pdo, $zdrojePlany, $kopTeam);
+    }
 
     $pocet = 0;
     $pdo->beginTransaction();
@@ -104,7 +137,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
 
         foreach ($zdrojePlany as $zp) {
             $noveDatum = (new DateTime($zp['datum']))->modify('+7 days')->format('Y-m-d');
-            trainingScheduleAssertAvailable($pdo,$trenerId,(int)$zp['trener_id'],$noveDatum,$zp['cas_od'],$zp['cas_do'],(int)$zp['sportoviste_id']?:null,trainingRosterBridgePlanTeamIds($pdo,(int)$zp['id']));
+            trainingScheduleAssertAvailable(
+                $pdo,
+                $trenerId,
+                (int)$zp['trener_id'],
+                $noveDatum,
+                $zp['cas_od'],
+                $zp['cas_do'],
+                (int)$zp['sportoviste_id'] ?: null,
+                trainingRosterBridgePlanTeamIds(
+                    $pdo,
+                    (int)$zp['id']
+                )
+            );
             $stInsert->execute([
                 $zp['trener_id'], $zp['nazev'], $zp['kategorie'],
                 $zp['skupina_id'], $zp['podskupina_id'],
@@ -139,22 +184,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'kopir
         $redirectParams = http_build_query([
             'datum'      => $cilDatum,
             'jen_moje'   => $kopJenMoje ? '1' : '0',
-            'trener_id'  => $kopTrener  ?: '',
+            'trener_id'  => $kopTrener ?: '',
             'skupina_id' => $kopSkupina ?: '',
             'team_id' => $kopTeam ?: '',
         ]);
-        header('Location: planovac.php?' . $redirectParams); exit;
+        header('Location: planovac.php?' . $redirectParams);
+        exit;
 
     } catch (Exception $e) {
         $pdo->rollBack();
         $_SESSION['flash_error'] = 'Chyba při kopírování: ' . $e->getMessage();
-        header('Location: ' . $_SERVER['REQUEST_URI']); exit;
+        header('Location: ' . $_SERVER['REQUEST_URI']);
+        exit;
     }
 }
 
 // ── Datum + týden ─────────────────────────────────────────────────────────────
 $datumParam = $_GET['datum'] ?? date('Y-m-d');
-try { $datumBase = new DateTime($datumParam); } catch (Exception $e) { $datumBase = new DateTime(); }
+try {
+    $datumBase = new DateTime($datumParam);
+} catch (Exception $e) {
+    $datumBase = new DateTime();
+}
 $dow    = (int)$datumBase->format('N');
 $monday = (clone $datumBase)->modify('-' . ($dow - 1) . ' days');
 $sunday = (clone $monday)->modify('+6 days');
@@ -185,11 +236,16 @@ $sportIdx   = array_column($sportovist, 'nazev', 'id');
 // ── Plánované tréninky v týdnu ────────────────────────────────────────────────
 $params = [$monday->format('Y-m-d'), $sunday->format('Y-m-d')];
 $where  = ['pt.datum BETWEEN ? AND ?', "pt.stav != 'zruseny'"];
-if ($filterSkupina) { $where[] = 'pt.skupina_id = ?'; $params[] = $filterSkupina; }
+if ($filterSkupina) {
+    $where[] = 'pt.skupina_id = ?';
+    $params[] = $filterSkupina;
+}
 if ($filterJenMoje) {
-    $where[] = 'pt.trener_id = ?'; $params[] = $trenerId;
+    $where[] = 'pt.trener_id = ?';
+    $params[] = $trenerId;
 } elseif ($filterTrener) {
-    $where[] = 'pt.trener_id = ?'; $params[] = $filterTrener;
+    $where[] = 'pt.trener_id = ?';
+    $params[] = $filterTrener;
 }
 
 $stPlan = $pdo->prepare("
@@ -210,22 +266,31 @@ $stPlan = $pdo->prepare("
 ");
 $stPlan->execute($params);
 $plany = $stPlan->fetchAll(PDO::FETCH_ASSOC);
-if ($filterTeam > 0) $plany = trainingRosterBridgeFilterPlanRows($pdo, $plany, $filterTeam);
+if ($filterTeam > 0) {
+    $plany = trainingRosterBridgeFilterPlanRows($pdo, $plany, $filterTeam);
+}
 $canonicalPlanLabels = trainingRosterBridgePlanLabels($pdo, $plany);
-$rsvpSummaries = trainingRsvpPlanSummaries($pdo, array_map(static fn(array $plan): int => (int)$plan['id'], $plany));
+$rsvpSummaries = trainingRsvpPlanSummaries($pdo, array_map(static fn (array $plan): int => (int)$plan['id'], $plany));
 
 // Indexovat dle data
 $planyDne = [];
-foreach ($plany as $p) { $planyDne[$p['datum']][] = $p; }
+foreach ($plany as $p) {
+    $planyDne[$p['datum']][] = $p;
+}
 
 // ── Stats (plánováno / evidováno / čeká) ─────────────────────────────────────
 $statsWhere  = ['pt.datum BETWEEN ? AND ?'];
 $statsParams = [$monday->format('Y-m-d'), $sunday->format('Y-m-d')];
-if ($filterSkupina) { $statsWhere[] = 'pt.skupina_id = ?'; $statsParams[] = $filterSkupina; }
+if ($filterSkupina) {
+    $statsWhere[] = 'pt.skupina_id = ?';
+    $statsParams[] = $filterSkupina;
+}
 if ($filterJenMoje) {
-    $statsWhere[] = 'pt.trener_id = ?'; $statsParams[] = $trenerId;
+    $statsWhere[] = 'pt.trener_id = ?';
+    $statsParams[] = $trenerId;
 } elseif ($filterTrener) {
-    $statsWhere[] = 'pt.trener_id = ?'; $statsParams[] = $filterTrener;
+    $statsWhere[] = 'pt.trener_id = ?';
+    $statsParams[] = $filterTrener;
 }
 $stStats = $pdo->prepare("
     SELECT stav, COUNT(*) AS cnt FROM planovane_treninky pt
@@ -235,28 +300,47 @@ $stStats = $pdo->prepare("
 $stStats->execute($statsParams);
 $statsRaw = $stStats->fetchAll(PDO::FETCH_ASSOC);
 $stats = ['planovany' => 0, 'evidovany' => 0];
-foreach ($statsRaw as $row) { $stats[$row['stav']] = (int)$row['cnt']; }
+foreach ($statsRaw as $row) {
+    $stats[$row['stav']] = (int)$row['cnt'];
+}
 if ($filterTeam > 0) {
     $stats = ['planovany' => 0, 'evidovany' => 0];
-    foreach ($plany as $plan) if (isset($stats[$plan['stav']])) $stats[$plan['stav']]++;
+    foreach ($plany as $plan) {
+        if (isset($stats[$plan['stav']])) {
+            $stats[$plan['stav']]++;
+        }
+    }
 }
 $statsCelkem = $stats['planovany'] + $stats['evidovany'];
+$kCount = trainingPlannerCopyCount(
+    $pdo,
+    $monday->format('Y-m-d'),
+    $sunday->format('Y-m-d'),
+    $filterJenMoje,
+    $trenerId,
+    $filterTrener,
+    $filterSkupina,
+    $filterTeam
+);
+
 
 // ── Metadata kategorií ────────────────────────────────────────────────────────
 $kategorieMeta = [
-    'silnice'   => ['label'=>'Silnice',    'color'=>'success',  'icon'=>'bi-bicycle'],
-    'mtb'       => ['label'=>'MTB',        'color'=>'warning',  'icon'=>'bi-tree'],
-    'draha'     => ['label'=>'Dráha',      'color'=>'primary',  'icon'=>'bi-stopwatch'],
-    'cyklokros' => ['label'=>'Cyklokros',  'color'=>'orange',   'icon'=>'bi-tornado'],
-    'posilovna' => ['label'=>'Posilovna',  'color'=>'danger',   'icon'=>'bi-trophy'],
-    'atletika'  => ['label'=>'Atletika',   'color'=>'info',     'icon'=>'bi-person-walking'],
-    'cviceni'   => ['label'=>'Cvičení',    'color'=>'secondary','icon'=>'bi-heart-pulse'],
-    'plavani'   => ['label'=>'Plavání',    'color'=>'teal',     'icon'=>'bi-water'],
+    'silnice'   => ['label' => 'Silnice',    'color' => 'success',  'icon' => 'bi-bicycle'],
+    'mtb'       => ['label' => 'MTB',        'color' => 'warning',  'icon' => 'bi-tree'],
+    'draha'     => ['label' => 'Dráha',      'color' => 'primary',  'icon' => 'bi-stopwatch'],
+    'cyklokros' => ['label' => 'Cyklokros',  'color' => 'orange',   'icon' => 'bi-tornado'],
+    'posilovna' => ['label' => 'Posilovna',  'color' => 'danger',   'icon' => 'bi-trophy'],
+    'atletika'  => ['label' => 'Atletika',   'color' => 'info',     'icon' => 'bi-person-walking'],
+    'cviceni'   => ['label' => 'Cvičení',    'color' => 'secondary','icon' => 'bi-heart-pulse'],
+    'plavani'   => ['label' => 'Plavání',    'color' => 'teal',     'icon' => 'bi-water'],
 ];
 
 $dayNames = ['Po','Út','St','Čt','Pá','So','Ne'];
-$flashSuccess = $_SESSION['flash_success'] ?? ''; unset($_SESSION['flash_success']);
-$flashError   = $_SESSION['flash_error']   ?? ''; unset($_SESSION['flash_error']);
+$flashSuccess = $_SESSION['flash_success'] ?? '';
+unset($_SESSION['flash_success']);
+$flashError   = $_SESSION['flash_error']   ?? '';
+unset($_SESSION['flash_error']);
 
 // ── Nástěnka skupiny ──────────────────────────────────────────────────────────
 $nastenkOznameni = [];
@@ -278,7 +362,9 @@ try {
         $stN->execute($nastenkIds);
         $nastenkOznameni = $stN->fetchAll(PDO::FETCH_ASSOC);
     }
-} catch (PDOException $e) { $nastenkOznameni = []; }
+} catch (PDOException $e) {
+    $nastenkOznameni = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -286,8 +372,10 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Plánovač tréninků</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<?php echo '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="styles'
+ . 'heet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigi'
+ . 'n="anonymous">
+'; ?>    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .plan-card {
             border-left: 4px solid #6b7280;
             transition: box-shadow .15s;
@@ -345,7 +433,7 @@ try {
                   . ($filterTeam ? '&team_id='.$filterTeam : '')
                   . '&jen_moje=' . ($filterJenMoje ? '1' : '0')
                   . (!$filterJenMoje && $filterTrener ? '&trener_id='.$filterTrener : '');
-        ?>
+?>
         <div class="btn-group btn-group-sm">
             <a href="?datum=<?= $prevWeek . $qFilters ?>" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i></a>
             <a href="?datum=<?= $today    . $qFilters ?>" class="btn btn-outline-secondary">Dnes</a>
@@ -475,17 +563,27 @@ try {
     <!-- Varování na nezaevidované minulé tréninky -->
     <?php
     $wWhere  = ["pt.stav = 'planovany'", "pt.datum < ?"];
-    $wParams = [$today];
-    if ($filterJenMoje) { $wWhere[] = 'pt.trener_id = ?'; $wParams[] = $trenerId; }
-    elseif ($filterTrener) { $wWhere[] = 'pt.trener_id = ?'; $wParams[] = $filterTrener; }
-    if ($filterSkupina) { $wWhere[] = 'pt.skupina_id = ?'; $wParams[] = $filterSkupina; }
-    $stWarn = $pdo->prepare("SELECT pt.id,pt.datum FROM planovane_treninky pt WHERE " . implode(' AND ', $wWhere));
-    $stWarn->execute($wParams);
-    $warningPlans = $stWarn->fetchAll(PDO::FETCH_ASSOC);
-    if ($filterTeam > 0) $warningPlans = trainingRosterBridgeFilterPlanRows($pdo,$warningPlans,$filterTeam);
-    $pocetNezaevidovanych = count($warningPlans);
-    $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
-    ?>
+$wParams = [$today];
+if ($filterJenMoje) {
+    $wWhere[] = 'pt.trener_id = ?';
+    $wParams[] = $trenerId;
+} elseif ($filterTrener) {
+    $wWhere[] = 'pt.trener_id = ?';
+    $wParams[] = $filterTrener;
+}
+if ($filterSkupina) {
+    $wWhere[] = 'pt.skupina_id = ?';
+    $wParams[] = $filterSkupina;
+}
+$stWarn = $pdo->prepare("SELECT pt.id,pt.datum FROM planovane_treninky pt WHERE " . implode(' AND ', $wWhere));
+$stWarn->execute($wParams);
+$warningPlans = $stWarn->fetchAll(PDO::FETCH_ASSOC);
+if ($filterTeam > 0) {
+    $warningPlans = trainingRosterBridgeFilterPlanRows($pdo, $warningPlans, $filterTeam);
+}
+$pocetNezaevidovanych = count($warningPlans);
+$oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
+?>
     <?php if ($pocetNezaevidovanych > 0): ?>
     <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 py-2">
         <div>
@@ -494,7 +592,14 @@ try {
             Ověřte, zda se uskutečnily, a doplňte evidenci nebo zrušení.
         </div>
         <div class="d-flex gap-2 flex-wrap">
-            <a href="?datum=<?= h((string)$oldestPendingDate) ?>&<?= h(http_build_query(['jen_moje' => $filterJenMoje ? 1 : 0, 'trener_id' => $filterTrener, 'skupina_id' => $filterSkupina, 'team_id' => $filterTeam])) ?>"
+            <a href="?datum=<?=
+ h((string)$oldestPendingDate)
+        ?>&<?=
+         h(http_build_query(['jen_moje' => $filterJenMoje ? 1 : 0,
+             'trener_id' => $filterTrener,
+             'skupina_id' => $filterSkupina,
+             'team_id' => $filterTeam]))
+        ?>"
                class="btn btn-warning btn-sm">
                 <i class="bi bi-arrow-left me-1"></i>Zobrazit nejstarší nezapsanou lekci
             </a>
@@ -535,7 +640,7 @@ try {
     <div class="row g-3">
     <?php foreach ($dneTydne as $i => $dt): ?>
         <?php
-        $d   = $dt->format('Y-m-d');
+            $d   = $dt->format('Y-m-d');
         $dne = $planyDne[$d] ?? [];
         $isPast   = $d < $today;
         $isToday  = $d === $today;
@@ -555,14 +660,16 @@ try {
             <?php foreach ($dne as $p): ?>
                 <?php
                 $isEvidovano = $p['stav'] === 'evidovany';
-                $rsvpSummary = $rsvpSummaries[(int)$p['id']] ?? ['expected'=>0,'going'=>0,'not_going'=>0,'pending'=>0];
+                $rsvpSummary = $rsvpSummaries[(int)$p['id']] ?? ['expected' => 0,'going' => 0,'not_going' => 0,'pending' => 0];
                 $meta = $kategorieMeta[$p['kategorie'] ?? ''] ?? null;
                 $cardCls = $isEvidovano ? 'evidovano' : 'planovano';
                 $canDrag = !$isEvidovano && ($p['trener_id'] == $trenerId || roleAtLeast('hlavni'));
                 $cas = '';
                 if ($p['cas_od']) {
-                    $cas = substr($p['cas_od'],0,5);
-                    if ($p['cas_do']) $cas .= '–' . substr($p['cas_do'],0,5);
+                    $cas = substr($p['cas_od'], 0, 5);
+                    if ($p['cas_do']) {
+                        $cas .= '–' . substr($p['cas_do'], 0, 5);
+                    }
                 }
                 ?>
                 <div class="card plan-card <?= $cardCls ?> mb-2 shadow-sm<?= $canDrag ? ' draggable-card' : '' ?>"
@@ -663,9 +770,13 @@ try {
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="action" value="zrusit">
                                         <input type="hidden" name="plan_id" value="<?= (int)$p['id'] ?>">
-                                        <input name="cancel_reason" required minlength="10" maxlength="1000" placeholder="Důvod zrušení lekce" aria-label="Důvod zrušení lekce" class="form-control form-control-sm">
-                                        <input type="number" min="1" name="replacement_plan_id" placeholder="Číslo nového termínu při přesunu" aria-label="Číslo náhradní lekce" class="form-control form-control-sm">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
+<?php echo '                                        <input name="cancel_reason" required minlength="10" maxlengt'
+ . 'h="1000" placeholder="Důvod zrušení lekce" aria-label="Důvod zrušení lekce" class="form-control form'
+ . '-control-sm">
+'; ?><?php echo '                                        <input type="number" min="1" name="replacement_plan_id" plac'
+ . 'eholder="Číslo nového termínu při přesunu" aria-label="Číslo náhradní lekce" class="form-control for'
+ . 'm-control-sm">
+'; ?>                                        <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
                                                 style="font-size:.75rem" title="Zrušit tento trénink">
                                             <i class="bi bi-x"></i>
                                         </button>
@@ -677,8 +788,10 @@ try {
                                         <input type="hidden" name="action" value="zrusit">
                                         <input type="hidden" name="plan_id" value="<?= (int)$p['id'] ?>">
                                         <input type="hidden" name="zrusit_serii" value="1">
-                                        <input name="cancel_reason" required minlength="10" maxlength="1000" placeholder="Důvod zrušení série" aria-label="Důvod zrušení série" class="form-control form-control-sm">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
+<?php echo '                                        <input name="cancel_reason" required minlength="10" maxlengt'
+ . 'h="1000" placeholder="Důvod zrušení série" aria-label="Důvod zrušení série" class="form-control form'
+ . '-control-sm">
+'; ?>                                        <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
                                                 style="font-size:.75rem" title="Zrušit celou sérii">
                                             <i class="bi bi-arrow-repeat"></i><i class="bi bi-x-sm"></i>
                                         </button>
@@ -798,25 +911,6 @@ try {
                     </div>
 
                     <div id="kopirovatStats" class="mb-3">
-                        <?php
-                        // Počet plánů k okopírování (stejné filtry jako aktuální zobrazení)
-                        $kStatsWhere  = ["datum BETWEEN ? AND ?", "stav = 'planovany'"];
-                        $kStatsParams = [$monday->format('Y-m-d'), $sunday->format('Y-m-d')];
-                        if ($filterJenMoje) { $kStatsWhere[] = 'trener_id = ?'; $kStatsParams[] = $trenerId; }
-                        elseif ($filterTrener) { $kStatsWhere[] = 'trener_id = ?'; $kStatsParams[] = $filterTrener; }
-                        if ($filterSkupina) { $kStatsWhere[] = 'skupina_id = ?'; $kStatsParams[] = $filterSkupina; }
-                        $kCount = (int)$pdo->prepare("SELECT COUNT(*) FROM planovane_treninky WHERE " . implode(' AND ', $kStatsWhere))
-                                            ->execute($kStatsParams) ? $pdo->query("SELECT FOUND_ROWS()")->fetchColumn() : 0;
-                        // Přímý count
-                        $stKC = $pdo->prepare("SELECT COUNT(*) FROM planovane_treninky WHERE " . implode(' AND ', $kStatsWhere));
-                        $stKC->execute($kStatsParams);
-                        $kCount = (int)$stKC->fetchColumn();
-                        if ($filterTeam > 0) {
-                            $countQuery = $pdo->prepare("SELECT id,datum FROM planovane_treninky WHERE " . implode(' AND ', $kStatsWhere));
-                            $countQuery->execute($kStatsParams);
-                            $kCount = count(trainingRosterBridgeFilterPlanRows($pdo,$countQuery->fetchAll(PDO::FETCH_ASSOC),$filterTeam));
-                        }
-                        ?>
                         <div class="d-flex align-items-center gap-2">
                             <span class="fs-3 fw-bold text-primary"><?= $kCount ?></span>
                             <span class="text-muted">plánovaných tréninků bude zkopírováno</span>
@@ -824,7 +918,12 @@ try {
                         <?php if ($filterJenMoje): ?>
                             <div class="text-muted small"><i class="bi bi-person me-1"></i>Pouze vaše tréninky</div>
                         <?php elseif ($filterTrener): ?>
-                            <?php $trJm = ''; foreach($treneri as $tr) { if($tr['id'] == $filterTrener) $trJm = $tr['jmeno']; } ?>
+                            <?php $trJm = '';
+                            foreach ($treneri as $tr) {
+                                if ($tr['id'] == $filterTrener) {
+                                    $trJm = $tr['jmeno'];
+                                }
+                            } ?>
                             <div class="text-muted small"><i class="bi bi-person me-1"></i>Trenér: <?= h($trJm) ?></div>
                         <?php else: ?>
                             <div class="text-muted small"><i class="bi bi-people me-1"></i>Všichni trenéři</div>

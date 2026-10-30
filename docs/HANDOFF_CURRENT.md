@@ -106,6 +106,10 @@ po úspěšném ověření; nový pokyn pro každou vlnu není potřeba.
 Plošné měření K0.2 zůstává otevřené;
 dávkování kapacit mezi nabídkami je samostatný kandidát.
 
+[W8.2](REFACTORING_W82_2026-10-30.md) lokálně ověřila společné historické
+filtry plánů/tréninků a náhled kopírování: roční filtr 1875 → 5 SQL,
+1834 testů / 36614 assertions. Navazuje CI a vydání po W8.1.
+
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah
 oprávnění, větev, pracovní kopii, dokončené kroky, testy a další krok.
 Před předáním/kompaktací jej obnov a při pokračování znovu přečti.
