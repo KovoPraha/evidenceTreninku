@@ -45,6 +45,24 @@ metadata scope dál porovnává shodné ostatní SQL: 2111 → 619 SQL.
 
 [PHPUnit Windows](phpunit-windows.txt): 1824 testů / 36151 assertions,
 3 POSIX skips. [PHPStan](phpstan.txt) bez chyb, baseline nezvětšena.
-Styl a aktuální dokumentace PASS. Linux a MariaDB 10.3/11.4 jsou součástí CI;
-jejich výsledky a produkční důkazy budou doplněny po dokončení.
+Styl a aktuální dokumentace PASS. Linux: 1824 testů / 36200 assertions,
+POSIX samostatně 3 testy / 45 assertions, bez skipů. MariaDB 10.3/11.4 PASS,
+včetně dávek 1000 osob, historie, POSTu a souběžné revokace.
+
+## Opakované časy v CI
+
+Pět střídavých vzorků plain PDO, instrumentace mimo čas. Pro 20 osob:
+
+| MariaDB | Medián před → po | Změna | Přírůstek peak paměti |
+| --- | --- | --- | --- |
+| 10.3 | 284,92 → 247,60 ms | −13,1 % | +5 528 B |
+| 11.4 | 350,77 → 308,84 ms | −12,0 % | +5 528 B |
+
+[10.3 celý GET](ci-10.3-family-membership-profile.json),
+[11.4 celý GET](ci-11.4-family-membership-profile.json),
+[10.3 historie](ci-10.3-family-membership-history.json),
+[11.4 historie](ci-11.4-family-membership-history.json),
+[10.3 POST](ci-10.3-family-membership-post.json),
+[11.4 POST](ci-11.4-family-membership-post.json).
+Jde o syntetické měření kontroleru s renderem, nikoli produkční latenci.
 Ověření není lidské UAT a nezapíná žádnou integraci.

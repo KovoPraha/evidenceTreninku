@@ -1,6 +1,6 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav k 30. 10. 2026: W7.3 nasazena, W7.4 v realizaci.**
+**Stav k 30. 10. 2026: W7.4 nasazena, navazuje W7.5 (R03/R04).**
 Vlastník 30. 10. výslovně zadal autonomní pokračování všemi zbývajícími vlnami
 až do technického dokončení, včetně sloučení a nasazení po úspěšném ověření.
 Není nutné nové potvrzení každé vlny. Provozní aktivace integrací, převody
@@ -283,7 +283,8 @@ zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 | W7.1b | [Souběhová autorizace](REFACTORING_W71B_2026-10-29.md) sloučena v PR #227 a nasazena; [důkazy](verification/refactoring-w71b-release-20261029/RESULTS.md) | Hotovo pro RSVP, rezervaci a storno; plný profil R02 následně doplnilo W7.2 |
 | W7.2 | [Celý rodinný přehled](REFACTORING_W72_2026-10-29.md), PR #229, nasazeno; [důkazy](verification/refactoring-w72-release-20261029/RESULTS.md) | Hotovo; 20 osob SQL 2706 → 2326, řádky 2953 → 2193, shodná data/HTML, čerstvá autorizace |
 | W7.3 | [Metadata a sekce](REFACTORING_W73_2026-10-30.md), PR #231, nasazeno 30. 10.; [důkazy](verification/refactoring-w73-release-20261030/RESULTS.md) | Hotovo; GET 20 osob SQL 2244 → 752, metadata 1590 → 98. Shodná data/HTML, nemetadata SQL a historie; POST bez cache |
-| W7.4 | [Plán dávkového členství](REFACTORING_W74_2026-10-30.md), implementace a ověřování | 160 čtení členských polí v profilu 20 osob; čerstvá autorizace, bez cache osob; R03/R04 poté samostatně |
+| W7.4 | [Dávkové členství](REFACTORING_W74_2026-10-30.md), PR #233 nasazeno; [důkazy](verification/refactoring-w74-release-20261030/RESULTS.md) | Hotovo; 20 osob 752 → 619 SQL, členství 160 → 27; shodná data/HTML/řádky, čerstvá autorizace |
+| W7.5 | R03/R04, příprava a realizace | Registrář materializuje celý seznam před stránkováním; přesunout čtení stránky do SQL, zachovat statistiky a stabilní pořadí; ostatní kandidáty nejprve změřit |
 | Zbytek W7 a W8–W15 | Naplánované, další měření otevřené | Malé PR podle závislostí a skutečných výsledků K0 |
 | Lidské/účetní převzetí, aktivace a ostré převody | Otevřené podle konkrétních rozhodnutí | Samostatné podklady a provozní přejímka |
 

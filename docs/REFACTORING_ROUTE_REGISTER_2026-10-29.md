@@ -114,3 +114,14 @@ náhrady, profily a finance. Kompletní data/HTML, sekce i širší historie sho
 Absolutní baseline se oproti 29. 10. liší podle kalendářového okna fixture;
 závěr vychází z dvojic ve stejném běhu. Další kandidát W7.4: 160 čtení
 členských polí; R03/R04 a lidské UAT zůstávají samostatné.
+
+## Doplnění W7.4, 30. 10. 2026
+
+[Dávkové členství](REFACTORING_W74_2026-10-30.md), PR #233 nasazeno;
+[provozní důkazy](verification/refactoring-w74-release-20261030/RESULTS.md).
+Čerstvě autorizovaná ID se načítají po nejvýše 400 během jediného volání,
+bez cache osob nebo oprávnění. Celý R02 pro 20 osob 752 → 619 SQL,
+členství 160 → 27. Shodná data/HTML, ostatní SQL a počet řádků.
+CI MariaDB 10.3/11.4 medián −13,1 % / −12,0 %, syntetický kontroler s renderem;
+nejde o produkční latenci. Historie i POST PASS. Autonomně navazuje R03/R04
+a W8–W15; lidské UAT není součástí tohoto výkonového důkazu.

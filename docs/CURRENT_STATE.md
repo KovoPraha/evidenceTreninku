@@ -1,34 +1,32 @@
 # Aktuální stav projektu
 
-Aktualizováno 30. 10. 2026 (Europe/Prague); další vydání musí tento přehled nahradit.
+Aktualizováno 30. 10. 2026 (Europe/Prague); další vydání musí přehled nahradit.
 
-- **Poslední doložené nasazení:** `4628845c9e0a7b61e2f2e24b4a6362c27fa70e55`,
-  [PR #231](https://github.com/KovoPraha/evidenceTreninku/pull/231),
-  [deploy 41029345885](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41029345885), SUCCESS.
-  Živé SHA/run ID ověřeny novou čtecí kontrolou.
-  [Protokol a důkazy](verification/refactoring-w73-release-20261030/RESULTS.md):
-  před/po 26/26 HTTP PASS, schéma current / pending [], VS zachovány.
-  Ověřená záloha 336 tabulek / 2 triggery; obnova v tomto vydání neopakována.
-- **CI přesného main:** [Current documentation 41028951282](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41028951282), [Push on main 41028951254](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41028951254), [PHP quality 41028951333](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41028951333), [Testy 41028951249](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41028951249).
-  1821 testů / 36135 assertions; MariaDB 10.3/11.4,
+- **Poslední doložené nasazení:** `a3fae123cf6dcb2a4ce5ffe37ddd892874e436fe`,
+  [PR #233](https://github.com/KovoPraha/evidenceTreninku/pull/233),
+  [deploy 41047950067](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41047950067), SUCCESS.
+  Živé SHA/run ID ověřeny novou read-only kontrolou.
+  [Protokol](verification/refactoring-w74-release-20261030/RESULTS.md): HTTP před/po 26/26,
+  schéma current / pending [], VS zachovány, záloha 336 tabulek / 2 triggery.
+- **CI přesného main:** [Current documentation 41047505501](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41047505501), [PHP quality 41047505574](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41047505574), [Push on main 41047505219](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41047505219), [Testy 41047505559](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41047505559).
+  1824 testů / 36200 assertions; MariaDB 10.3/11.4,
   POSIX bez skipů, PHPStan, styl, anonymous sweep a JS PASS.
-- **Změna:** W7.3 sdílí metadata jen během GET rodinného přehledu. U 20 osob
-  celá stránka 2244 → 752 SQL, metadata 1590 → 98; shodná data/HTML.
-  Čerstvá autorizace zachována, bez změny W7.1b writerů; POST bez cache.
-  [Plán a měření](REFACTORING_W73_2026-10-30.md). Časové závěry mají meze profilu.
-- **Zapnuté:** společná Evidence/KIS, veřejný katalog, rodinné a sportovní účty,
-  klubová, finanční, účetní a skladová implementace; bankovní/ruční platební postup.
+- **Změna:** W7.4 načítá členská pole v dávkách uvnitř jednoho čerstvě
+  autorizovaného volání. Celý GET 20 osob 752 → 619 SQL, členství 160 → 27.
+  Data, HTML, ostatní SQL i řádky zachovány. Bez cache osob a změny writerů.
+  [Plán a měření](REFACTORING_W74_2026-10-30.md); nejde o měření produkční latence.
+- **Provoz:** Evidence/KIS, katalog, rodinné/sportovní účty a klubové agendy,
+  finanční/účetní/skladová implementace a bankovní/ruční platební postup.
 - **Flags ověřené 30. 10.:** Fio import/auto-confirm, SumUp, Stripe a Velocota
-  vypnuté; Packeta flag nedefinovaný. KIS canonical writes false.
+  vypnuté; Packeta nedefinovaná, KIS canonical writes false.
   Konfigurace, flags, ledger 141 a stav příloh před/po shodné.
-  [Čtecí porovnání](verification/refactoring-w73-release-20261030/release-comparison.json).
-- **Blokery ostrého převzetí:** lidská přejímka a pilot, účetní D12–D14,
-  skutečná inventura/ocenění, ověřené rodinné vazby a trenérské rozsahy,
-  dohody/částky příspěvků a dvě chybějící přílohy účtenek.
+  [Porovnání](verification/refactoring-w74-release-20261030/release-comparison.json).
+- **Otevřené provozní body:** lidská/účetní přejímka D12–D14, skutečná
+  inventura/ocenění, ověřené vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
-  Technické vydání autorizované; UAT false, importy/integrace neaktivovány.
-- **Další krok:** W7.4 — opakované čtení členských polí v R02,
-  následně R03–R04 podle [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
-  Lidské/účetní převzetí a ověřená provozní data zůstávají samostatné.
+  UAT false; importy, brány ani další integrace nebyly aktivovány.
+- **Další práce:** autonomně W7.5 — stránkování registráře a R03/R04,
+  potom W8–W15 podle [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
+  Vlastník autorizoval pokračování včetně sloučení/nasazení po úspěšném ověření.
 
 [Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
