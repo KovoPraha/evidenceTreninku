@@ -311,7 +311,8 @@ function accountingExportWorkbook(array $snapshot, string $path): void
         $sheet('Predpisy', ['Zdroj','ID případu','Doklad','Význam'], $claims);
         $balances = (static function () use ($snapshot): Generator {
             yield from accountingExportFinancialBalanceIterator($snapshot);
-            yield from accountingClubBalanceRows($snapshot);
+            require_once __DIR__ . '/accounting_club_read.php';
+            yield from accountingClubBalanceIterator($snapshot);
         })();
         $sheet('Saldo', ['Druh','ID','Význam','Počátek','Čistý obrat','Konec','Měna'], $balances, [3,4,5]);
         $sheet(

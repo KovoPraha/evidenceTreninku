@@ -5,6 +5,84 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 30. 10. 2026 - W10.2 release
+
+PR #247; deploy 41077903487 SUCCESS. [Evidence](verification/refactoring-w102-release-20261030/RESULTS.md).
+
+<!-- archive {"source": "docs/CURRENT_STATE.md@2026-10-30-w92", "part": 0, "sha256": "a771c065d2aa87abadd5f1418a4b3d4eb5ec49667f7dcbcfbf6acdb891b6224c"} -->
+# Aktuální stav projektu
+
+Aktualizováno 30. 10. 2026 (Europe/Prague); další vydání musí přehled nahradit.
+
+- **Poslední doložené nasazení:** `360355fd30238c11fc7bdd608b7c30f5a0140c0c`,
+  [PR #245](https://github.com/KovoPraha/evidenceTreninku/pull/245) / [#246](https://github.com/KovoPraha/evidenceTreninku/pull/246),
+  [deploy 41074968191](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41074968191), SUCCESS.
+  Živé SHA/run ID ověřeny novou read-only kontrolou.
+  [Protokol](verification/refactoring-w92-release-20261030/RESULTS.md): HTTP před/po 26/26,
+  schéma current / pending [], VS zachovány, záloha 336 tabulek / 2 triggery.
+- **CI přesného main:** [Current documentation 41073944566](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41073944566), [PHP quality 41073944540](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41073944540), [Testy 41073944651](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41073944651), [Push on main 41073944352](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41073944352).
+  1847 testů / 37281 assertions; MariaDB 10.3/11.4,
+  POSIX bez skipů, PHPStan, styl, anonymous sweep a JS PASS.
+- **Změna:** W9.2 dávkuje podmínky programového košíku, 1862 → 275 SQL;
+  W10.1 indexuje finanční projekce při zachování snapshotu a XLSX.
+  [W9.2](REFACTORING_W92_2026-10-30.md), [W10](REFACTORING_W10_2026-10-30.md).
+- **Provoz:** Evidence/KIS, katalog, rodinné/sportovní účty a klubové agendy,
+  finanční/účetní/skladová implementace a bankovní/ruční platební postup.
+- **Flags ověřené 30. 10.:** Fio import/auto-confirm, SumUp, Stripe a Velocota
+  vypnuté; Packeta nedefinovaná, KIS canonical writes false.
+  Konfigurace, flags, ledger 141 a stav příloh před/po shodné.
+  [Porovnání](verification/refactoring-w92-release-20261030/release-comparison.json).
+- **Otevřené provozní body:** lidská/účetní přejímka D12–D14, skutečná
+  inventura/ocenění, ověřené vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
+  [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
+  UAT false; importy, brány ani další integrace nebyly aktivovány.
+- **Další práce:** autonomně W10.2 / W10.3 a W11–W15 podle
+  [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
+  Vlastník autorizoval pokračování včetně sloučení/nasazení po úspěšném ověření.
+
+[Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+
+<!-- /archive -->
+
+## 30. 10. 2026 - W9.2 / W10.1 release
+
+PR #245 / #246; deploy 41074968191 SUCCESS. [Evidence](verification/refactoring-w92-release-20261030/RESULTS.md).
+
+<!-- archive {"source": "docs/CURRENT_STATE.md@2026-10-30-w91", "part": 0, "sha256": "b4098aad18947a62a573026e60377695b25df85b5c45bcdd4e199016a5e050e4"} -->
+# Aktuální stav projektu
+
+Aktualizováno 30. 10. 2026 (Europe/Prague); další vydání musí přehled nahradit.
+
+- **Poslední doložené nasazení:** `a9906d6552e56f20471016a23ff98cc6535ed254`,
+  [PR #244](https://github.com/KovoPraha/evidenceTreninku/pull/244),
+  [deploy 41070277597](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41070277597), SUCCESS.
+  Živé SHA/run ID ověřeny novou read-only kontrolou.
+  [Protokol](verification/refactoring-w91-release-20261030/RESULTS.md): HTTP před/po 26/26,
+  schéma current / pending [], VS zachovány, záloha 336 tabulek / 2 triggery.
+- **CI přesného main:** [Current documentation 41068909919](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41068909919), [PHP quality 41068909820](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41068909820), [Testy 41068909842](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41068909842), [Push on main 41068909367](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41068909367).
+  1844 testů / 36778 assertions; MariaDB 10.3/11.4,
+  POSIX bez skipů, PHPStan, styl, anonymous sweep a JS PASS.
+- **Změna:** W9.1 dávkuje zůstatky skladu, 10000 variant 20008 → 34 SQL;
+  stejné HTML, data a role. Filtrované čtení omezuje PHP paměť.
+  [W9](REFACTORING_W9_2026-10-30.md); W8.5 přidává sportovní souběhy do CI.
+- **Provoz:** Evidence/KIS, katalog, rodinné/sportovní účty a klubové agendy,
+  finanční/účetní/skladová implementace a bankovní/ruční platební postup.
+- **Flags ověřené 30. 10.:** Fio import/auto-confirm, SumUp, Stripe a Velocota
+  vypnuté; Packeta nedefinovaná, KIS canonical writes false.
+  Konfigurace, flags, ledger 141 a stav příloh před/po shodné.
+  [Porovnání](verification/refactoring-w91-release-20261030/release-comparison.json).
+- **Otevřené provozní body:** lidská/účetní přejímka D12–D14, skutečná
+  inventura/ocenění, ověřené vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
+  [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
+  UAT false; importy, brány ani další integrace nebyly aktivovány.
+- **Další práce:** autonomně W9.2 a W10–W15 podle
+  [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
+  Vlastník autorizoval pokračování včetně sloučení/nasazení po úspěšném ověření.
+
+[Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+
+<!-- /archive -->
+
 ## 30. 10. 2026 — W9.1 skladový přehled nasazen
 
 PR #244, release `a9906d6552e56f20471016a23ff98cc6535ed254`, deploy 41070277597 SUCCESS.

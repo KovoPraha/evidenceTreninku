@@ -357,3 +357,10 @@ projekce nahrazují kvadratické průchody, zachovávají snapshot i celý XLSX.
 serializace XLSX. [Měření](verification/refactoring-w102-20261030/RESULTS.md)
 ověřuje 100 000 pohybů pod 256 MiB při zachování hodnot, typů a formátování.
 W10.3 navazuje finančními projekcemi klubu, historií a ledgerem; W11–W15 otevřené.
+
+W9.2 / W10.1 jsou [nasazené a ověřené](verification/refactoring-w92-release-20261030/RESULTS.md).
+[W10.3](REFACTORING_W103_2026-10-30.md) indexuje klubové finanční projekce
+a měří ledger/osobní historii. Nález 2204 SQL pro 200 čekajících zdrojů
+má samostatný [plán W10.4](REFACTORING_W104_2026-10-30.md).
+
+W10.2 je [nasazená a ověřená](verification/refactoring-w102-release-20261030/RESULTS.md).

@@ -1,0 +1,544 @@
+{
+    "production_mutations": false,
+    "schema": "complete migration catalog; random localhost schema; FK enabled",
+    "results": [
+        {
+            "size": 1000,
+            "label": "ledger",
+            "sql": 2,
+            "rows": 2,
+            "bytes": 120,
+            "median_ms": 1.262,
+            "median_peak_bytes": 44720,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 1.2041,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.4188,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.2681,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.2022,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.2559,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.3301,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.1661,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.1895,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.3177,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 1.3784,
+                    "peak_bytes": 44720
+                }
+            ]
+        },
+        {
+            "size": 1000,
+            "label": "ledger_known_at",
+            "sql": 2,
+            "rows": 2,
+            "bytes": 120,
+            "median_ms": 1.3884,
+            "median_peak_bytes": 44992,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 1.3963,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.3805,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.2525,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.4376,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.2879,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.3456,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.3568,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.9818,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.6662,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 1.5543,
+                    "peak_bytes": 44992
+                }
+            ]
+        },
+        {
+            "size": 1000,
+            "scope": "charges, receipts, allocations; empty orders",
+            "label": "person_history",
+            "sql": 12,
+            "rows": 1509,
+            "bytes": 236520,
+            "median_ms": 16.0787,
+            "median_peak_bytes": 997448,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 18.5728,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 17.5099,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 17.2607,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 15.8316,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 30.1229,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 14.2716,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 15.6158,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 15.8059,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 14.846,
+                    "peak_bytes": 997448
+                },
+                {
+                    "ms": 16.3258,
+                    "peak_bytes": 997448
+                }
+            ]
+        },
+        {
+            "size": 1000,
+            "limit": 200,
+            "label": "pending_sources",
+            "sql": 2204,
+            "rows": 800,
+            "bytes": 74969,
+            "median_ms": 471.58035,
+            "median_peak_bytes": 657256,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 467.1616,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 487.7534,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 507.7549,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 459.2157,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 446.3116,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 523.1753,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 559.515,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 459.5338,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 453.7389,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 475.9991,
+                    "peak_bytes": 657256
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "label": "ledger",
+            "sql": 2,
+            "rows": 2,
+            "bytes": 122,
+            "median_ms": 5.7158999999999995,
+            "median_peak_bytes": 44720,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 5.5995,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.8185,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 6.0527,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.7343,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.6517,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.7942,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.6975,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.8913,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.5414,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 5.1553,
+                    "peak_bytes": 44720
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "label": "ledger_known_at",
+            "sql": 2,
+            "rows": 2,
+            "bytes": 122,
+            "median_ms": 5.18065,
+            "median_peak_bytes": 44992,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 6.05,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 5.6247,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 5.4319,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 5.4335,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.9275,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.7912,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 5.0444,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.8484,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 4.5921,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 5.3169,
+                    "peak_bytes": 44992
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "scope": "charges, receipts, allocations; empty orders",
+            "label": "person_history",
+            "sql": 12,
+            "rows": 15009,
+            "bytes": 2392020,
+            "median_ms": 83.20035,
+            "median_peak_bytes": 9615272,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 72.4151,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 63.8793,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 89.6804,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 110.2608,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 65.7669,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 74.6324,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 93.8198,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 109.0987,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 81.0204,
+                    "peak_bytes": 9615272
+                },
+                {
+                    "ms": 85.3803,
+                    "peak_bytes": 9615272
+                }
+            ]
+        },
+        {
+            "size": 10000,
+            "limit": 200,
+            "label": "pending_sources",
+            "sql": 2204,
+            "rows": 800,
+            "bytes": 74969,
+            "median_ms": 490.5277,
+            "median_peak_bytes": 657256,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 565.1734,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 478.2399,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 470.8054,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 539.3415,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 587.2461,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 440.6504,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 478.0399,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 470.725,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 614.2632,
+                    "peak_bytes": 657256
+                },
+                {
+                    "ms": 502.8155,
+                    "peak_bytes": 657256
+                }
+            ]
+        },
+        {
+            "size": 100000,
+            "label": "ledger",
+            "sql": 2,
+            "rows": 2,
+            "bytes": 124,
+            "median_ms": 45.819900000000004,
+            "median_peak_bytes": 44720,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 36.3811,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 45.5907,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 44.6298,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 45.0866,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 52.96,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 57.9681,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 61.5422,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 48.5646,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 35.9706,
+                    "peak_bytes": 44720
+                },
+                {
+                    "ms": 46.0491,
+                    "peak_bytes": 44720
+                }
+            ]
+        },
+        {
+            "size": 100000,
+            "label": "ledger_known_at",
+            "sql": 2,
+            "rows": 2,
+            "bytes": 124,
+            "median_ms": 50.328,
+            "median_peak_bytes": 44992,
+            "warmups": 2,
+            "samples": [
+                {
+                    "ms": 107.3951,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 66.5195,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 49.3339,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 58.862,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 52.8865,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 43.8195,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 51.3221,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 48.8747,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 45.4635,
+                    "peak_bytes": 44992
+                },
+                {
+                    "ms": 47.9077,
+                    "peak_bytes": 44992
+                }
+            ]
+        }
+    ],
+    "ledger_explain_100000": [
+        {
+            "id": 1,
+            "select_type": "SIMPLE",
+            "table": "accounting_movements",
+            "type": "ref",
+            "possible_keys": "account_id",
+            "key": "account_id",
+            "key_len": "4",
+            "ref": "const",
+            "rows": "50000",
+            "Extra": "Using where"
+        }
+    ]
+}

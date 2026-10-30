@@ -4,6 +4,11 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+W9.2 / W10.1 jsou [nasazené a ověřené](verification/refactoring-w92-release-20261030/RESULTS.md).
+W10.2 je [nasazená](verification/refactoring-w102-release-20261030/RESULTS.md).
+Probíhá [W10.3](REFACTORING_W103_2026-10-30.md) a navazuje [W10.4](REFACTORING_W104_2026-10-30.md);
+autonomní pokračování až po W15 je autorizované. Skutečné účetní UAT zůstává oddělené.
+
 ## Nová stanice: čisté převzetí
 
 ```powershell
@@ -150,4 +155,5 @@ W8.4 klubový kalendář je rovněž
 1842 testů / 36744 assertions, HTTP 26/26, živé SHA a beze změny konfigurace.
 W9.1 skladový přehled je [nasazen z PR #244](verification/refactoring-w91-release-20261030/RESULTS.md):
 1844 testů / 36778 assertions, HTTP 26/26, živé SHA a flags ověřené.
-Součástí jsou i testovací/CI kontrakty W8.5. Pokračují W9.2 a W10–W15.
+Součástí jsou i testovací/CI kontrakty W8.5. Navazující W9.2 / W10.1 mají
+vlastní [release důkazy](verification/refactoring-w92-release-20261030/RESULTS.md).
