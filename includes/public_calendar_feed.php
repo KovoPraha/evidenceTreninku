@@ -1,38 +1,55 @@
 <?php
+
 declare(strict_types=1);
+
+require_once __DIR__.'/family_schema_read_scope.php';
 
 function publicCalendarTableExists(PDO $pdo, string $table): bool
 {
-    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1) return false;
-    $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-    if ($driver === 'mysql') {
-        $statement = $pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?');
-        $statement->execute([$table]);
-        return (bool)$statement->fetchColumn();
-    }
-    if ($driver === 'sqlite') {
-        $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?");
-        $statement->execute([$table]);
-        return (bool)$statement->fetchColumn();
-    }
-    return false;
+    return FamilySchemaReadScope::remember($pdo, __FUNCTION__ . ':' . strlen($table) . ':' . $table, static function () use (
+        $pdo,
+        $table
+    ): bool {
+        if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1) {
+            return false;
+        }
+        $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'mysql') {
+            $statement = $pdo->prepare('SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?');
+            $statement->execute([$table]);
+            return (bool)$statement->fetchColumn();
+        }
+        if ($driver === 'sqlite') {
+            $statement = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?");
+            $statement->execute([$table]);
+            return (bool)$statement->fetchColumn();
+        }
+        return false;
+    });
 }
 
 function publicCalendarColumnExists(PDO $pdo, string $table, string $column): bool
 {
-    if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1 || preg_match('/^[a-z0-9_]+$/D', $column) !== 1) return false;
-    $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-    if ($driver === 'mysql') {
-        $statement = $pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?');
-        $statement->execute([$table, $column]);
-        return (bool)$statement->fetchColumn();
-    }
-    if ($driver === 'sqlite') {
-        foreach ($pdo->query('PRAGMA table_info(' . $table . ')')->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ((string)$row['name'] === $column) return true;
-        }
-    }
-    return false;
+    return FamilySchemaReadScope::remember($pdo, __FUNCTION__ . ':' . strlen($table) . ':' . $table .
+     ':' . $column, static function () use ($pdo, $table, $column): bool {
+         if (preg_match('/^[a-z0-9_]+$/D', $table) !== 1 || preg_match('/^[a-z0-9_]+$/D', $column) !== 1) {
+             return false;
+         }
+         $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+         if ($driver === 'mysql') {
+             $statement = $pdo->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?');
+             $statement->execute([$table, $column]);
+             return (bool)$statement->fetchColumn();
+         }
+         if ($driver === 'sqlite') {
+             foreach ($pdo->query('PRAGMA table_info(' . $table . ')')->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                 if ((string)$row['name'] === $column) {
+                     return true;
+                 }
+             }
+         }
+         return false;
+     });
 }
 
 /** @return list<array{uid:string,start:string,end:string,all_day:bool,summary:string,location:string,description:string,category:string}> */
@@ -57,7 +74,9 @@ function publicCalendarItems(PDO $pdo, string $from, string $to): array
         $statement->execute([$from, $to]);
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $item = publicCalendarTrainingItem($row);
-            if ($item !== null) $items[] = $item;
+            if ($item !== null) {
+                $items[] = $item;
+            }
         }
     }
     if (publicCalendarHasTables($pdo, ['club_events', 'club_event_sessions'])) {
@@ -80,7 +99,9 @@ function publicCalendarItems(PDO $pdo, string $from, string $to): array
                 (string)($row['audience_label'] ?? ''),
                 'Klubová akce'
             );
-            if ($item !== null) $items[] = $item;
+            if ($item !== null) {
+                $items[] = $item;
+            }
         }
     }
     if (publicCalendarHasTables($pdo, ['individualni_lekce', 'sportovist'])) {
@@ -101,7 +122,9 @@ function publicCalendarItems(PDO $pdo, string $from, string $to): array
                 'Veřejný rezervační termín.',
                 'Velodrom'
             );
-            if ($item !== null) $items[] = $item;
+            if ($item !== null) {
+                $items[] = $item;
+            }
         }
     }
     usort($items, static fn (array $a, array $b): int => [$a['start'], $a['uid']] <=> [$b['start'], $b['uid']]);
@@ -113,11 +136,11 @@ function publicCalendarRender(
     array $items,
     ?DateTimeImmutable $generatedAt = null,
     string $calendarName = 'Kovopraha – veřejný program'
-): string
-{
+): string {
     $generatedAt ??= new DateTimeImmutable('now', new DateTimeZone('UTC'));
     $lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//TJ Kovo Praha//Verejny kalendar//CS',
         'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:' . publicCalendarEscape($calendarName),
+
         'X-WR-TIMEZONE:Europe/Prague'];
     foreach ($items as $item) {
         $lines[] = 'BEGIN:VEVENT';
@@ -131,15 +154,21 @@ function publicCalendarRender(
             $lines[] = 'DTEND:' . publicCalendarUtc($item['end']);
         }
         $lines[] = 'SUMMARY:' . publicCalendarEscape($item['summary']);
-        if ($item['location'] !== '') $lines[] = 'LOCATION:' . publicCalendarEscape($item['location']);
-        if ($item['description'] !== '') $lines[] = 'DESCRIPTION:' . publicCalendarEscape($item['description']);
+        if ($item['location'] !== '') {
+            $lines[] = 'LOCATION:' . publicCalendarEscape($item['location']);
+        }
+        if ($item['description'] !== '') {
+            $lines[] = 'DESCRIPTION:' . publicCalendarEscape($item['description']);
+        }
         $lines[] = 'CATEGORIES:' . publicCalendarEscape($item['category']);
         $lines[] = 'TRANSP:OPAQUE';
         $lines[] = 'END:VEVENT';
     }
     $lines[] = 'END:VCALENDAR';
     $folded = [];
-    foreach ($lines as $line) array_push($folded, ...publicCalendarFoldLine($line));
+    foreach ($lines as $line) {
+        array_push($folded, ...publicCalendarFoldLine($line));
+    }
     return implode("\r\n", $folded) . "\r\n";
 }
 
@@ -147,7 +176,9 @@ function publicCalendarRender(
 function publicCalendarTrainingItem(array $row): ?array
 {
     $date = publicCalendarDate((string)($row['datum'] ?? ''));
-    if ($date === null) return null;
+    if ($date === null) {
+        return null;
+    }
     $startTime = trim((string)($row['cas_od'] ?? ''));
     $endTime = trim((string)($row['cas_do'] ?? ''));
     $description = trim(implode(' · ', array_filter([(string)($row['skupina'] ?? ''), (string)($row['kategorie'] ?? '')])));
@@ -159,19 +190,38 @@ function publicCalendarTrainingItem(array $row): ?array
     }
     $start = $date->format('Y-m-d') . ' ' . $startTime;
     $parsedStart = publicCalendarLocalDateTime($start);
-    if ($parsedStart === null) return null;
+    if ($parsedStart === null) {
+        return null;
+    }
     $end = $endTime !== '' ? $date->format('Y-m-d') . ' ' . $endTime : $parsedStart->modify('+1 hour')->format('Y-m-d H:i:s');
-    return publicCalendarTimedItem('training-' . (int)$row['id'], $start, $end, (string)$row['nazev'],
-        (string)($row['sportoviste'] ?? ''), $description, 'Trénink');
+    return publicCalendarTimedItem(
+        'training-' . (int)$row['id'],
+        $start,
+        $end,
+        (string)$row['nazev'],
+        (string)($row['sportoviste'] ?? ''),
+        $description,
+        'Trénink'
+    );
 }
 
 /** @return array{uid:string,start:string,end:string,all_day:bool,summary:string,location:string,description:string,category:string}|null */
-function publicCalendarTimedItem(string $uid, string $start, string $end, string $summary, string $location, string $description, string $category): ?array
-{
+function publicCalendarTimedItem(
+    string $uid,
+    string $start,
+    string $end,
+    string $summary,
+    string $location,
+    string $description,
+    string $category
+): ?array {
     $startAt = publicCalendarLocalDateTime($start);
     $endAt = publicCalendarLocalDateTime($end);
-    if ($startAt === null || $endAt === null || $endAt <= $startAt || trim($summary) === '') return null;
+    if ($startAt === null || $endAt === null || $endAt <= $startAt || trim($summary) === '') {
+        return null;
+    }
     return ['uid' => $uid, 'start' => $startAt->format('Y-m-d H:i:s'), 'end' => $endAt->format('Y-m-d H:i:s'),
+
         'all_day' => false, 'summary' => trim($summary), 'location' => trim($location),
         'description' => trim($description), 'category' => $category];
 }
@@ -186,7 +236,9 @@ function publicCalendarLocalDateTime(string $value): ?DateTimeImmutable
 {
     foreach (['!Y-m-d H:i:s', '!Y-m-d H:i'] as $format) {
         $date = DateTimeImmutable::createFromFormat($format, trim($value), new DateTimeZone('Europe/Prague'));
-        if ($date !== false && $date->format(str_contains($format, ':s') ? 'Y-m-d H:i:s' : 'Y-m-d H:i') === trim($value)) return $date;
+        if ($date !== false && $date->format(str_contains($format, ':s') ? 'Y-m-d H:i:s' : 'Y-m-d H:i') === trim($value)) {
+            return $date;
+        }
     }
     return null;
 }
@@ -194,7 +246,9 @@ function publicCalendarLocalDateTime(string $value): ?DateTimeImmutable
 function publicCalendarUtc(string $value): string
 {
     $date = publicCalendarLocalDateTime($value);
-    if ($date === null) throw new InvalidArgumentException('Neplatný termín kalendáře.');
+    if ($date === null) {
+        throw new InvalidArgumentException('Neplatný termín kalendáře.');
+    }
     return $date->setTimezone(new DateTimeZone('UTC'))->format('Ymd\THis\Z');
 }
 
@@ -223,6 +277,10 @@ function publicCalendarFoldLine(string $line): array
 /** @param list<string> $tables */
 function publicCalendarHasTables(PDO $pdo, array $tables): bool
 {
-    foreach ($tables as $table) if (!publicCalendarTableExists($pdo, $table)) return false;
+    foreach ($tables as $table) {
+        if (!publicCalendarTableExists($pdo, $table)) {
+            return false;
+        }
+    }
     return true;
 }

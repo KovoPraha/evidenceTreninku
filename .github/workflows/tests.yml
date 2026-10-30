@@ -188,6 +188,22 @@ jobs:
           path: family-read-profile.json
           retention-days: 14
 
+      - name: Ověřit metadata a sekce rodinného přehledu
+        run: |
+          php tests/Support/FamilySchemaPageProfile.php > family-schema-profile.json
+          php tests/Support/FamilySchemaPageProfile.php --family-size=20 --history > family-schema-history.json
+          php tests/Support/FamilySchemaPageProfile.php --post > family-schema-post.json
+
+      - name: Uchovat profil metadat a historie rodiny
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: family-schema-profile-mariadb-${{ matrix.mariadb-version }}
+          path: |
+            family-schema-profile.json
+            family-schema-history.json
+            family-schema-post.json
+          retention-days: 14
+
       - name: Ověřit zveřejnění registračních textů a souběh na MariaDB
         run: php tests/Support/RegistrationTextsMariaDbSmoke.php
 

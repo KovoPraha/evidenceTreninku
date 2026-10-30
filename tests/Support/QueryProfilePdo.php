@@ -12,6 +12,8 @@ final class QueryProfilePdo extends PDO
 {
     public bool $profiling = false;
     public array $profile = [];
+    public bool $traceCallers = false;
+    public string $section = '';
 
     public function __construct(string $dsn, ?string $user = null, ?string $password = null)
     {
@@ -50,6 +52,11 @@ final class QueryProfileStatement extends PDOStatement
             $this->profileIndex = count($this->connection->profile);
             $this->connection->profile[] = ['sql' => $this->queryString, 'parameters' => $params ?? [],
                 'execute_ms' => (hrtime(true) - $start) / 1e6, 'fetch_ms' => 0.0, 'fetched_rows' => 0];
+            if ($this->connection->traceCallers) {
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
+                $this->connection->profile[$this->profileIndex]['caller'] = $trace[1]['function'] ?? '';
+                $this->connection->profile[$this->profileIndex]['section'] = $this->connection->section;
+            }
         }
         return $ok;
     }
