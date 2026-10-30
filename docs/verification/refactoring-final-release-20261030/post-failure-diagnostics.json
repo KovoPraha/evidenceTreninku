@@ -1,0 +1,392 @@
+{
+  "verification_run": 41095685511,
+  "conclusion": "failure",
+  "attempts": [
+    {
+      "ok": false,
+      "error": "impact_probe_failed",
+      "phase": "domain_impact",
+      "exception_class": "PDOException",
+      "source": "club-release-impact.php",
+      "line": 71,
+      "sqlstate": "HY000",
+      "driver_code": 1021,
+      "storage": {
+        "web_host": "replikant3544",
+        "web_free_bytes": 17864929280,
+        "web_total_bytes": 40959762432,
+        "php_temp_free_bytes": 17864929280,
+        "database": {
+          "host": "replikant3544",
+          "data_directory": "/var/lib/mysql/",
+          "temp_directory": "/tmp"
+        },
+        "release_directories": [
+          {
+            "name": "00bf6c6bf8d7c3af207b0ca8a794109417ac45c6-32472693942",
+            "mtime": 1787308112,
+            "files": 2523,
+            "bytes": 27760511,
+            "complete": true
+          },
+          {
+            "name": "0135e34e47243ba983ee9239ab67087a5b6f35f1-35729597409",
+            "mtime": 1790081567,
+            "files": 2595,
+            "bytes": 29374748,
+            "complete": true
+          },
+          {
+            "name": "01fcd420d2986d75ad1866e9c70a9726ee089d40-35769331436",
+            "mtime": 1790102924,
+            "files": 2609,
+            "bytes": 30012200,
+            "complete": true
+          },
+          {
+            "name": "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93-40085679569",
+            "mtime": 1792837645,
+            "files": 3482,
+            "bytes": 61928475,
+            "complete": true
+          },
+          {
+            "name": "080f66a650e794af8c02f9cfffd6bf4799230ef4-31309163626",
+            "mtime": 1786272610,
+            "files": 2469,
+            "bytes": 26602454,
+            "complete": true
+          },
+          {
+            "name": "09510ac6e44cfd01f571b91f5e52bc2d9d6eb9df-40761965370",
+            "mtime": 1793218864,
+            "files": 3187,
+            "bytes": 47175146,
+            "complete": true
+          },
+          {
+            "name": "098a921946fab8365aba76b8d572891b43fc1312-39245446439",
+            "mtime": 1792409707,
+            "files": 2706,
+            "bytes": 45179743,
+            "complete": true
+          },
+          {
+            "name": "0a8ce5fbb364ee4ce1aad0850f44bba2a60348c8-36025894371",
+            "mtime": 1790266569,
+            "files": 2627,
+            "bytes": 34971177,
+            "complete": true
+          },
+          {
+            "name": "0b03b564dfa6b20817478848fa8721fea09ca082-39922198281",
+            "mtime": 1792742900,
+            "files": 397,
+            "bytes": 1979376,
+            "complete": false
+          }
+        ],
+        "backup_files": 60,
+        "backup_bytes": 121627705,
+        "inventory_complete": false,
+        "mutations": false,
+        "release_directory_count": 184
+      }
+    },
+    {
+      "ok": false,
+      "error": "impact_probe_failed",
+      "phase": "domain_impact",
+      "exception_class": "PDOException",
+      "source": "club-release-impact.php",
+      "line": 71,
+      "sqlstate": "HY000",
+      "driver_code": 1021,
+      "storage": {
+        "web_host": "replikant3544",
+        "web_free_bytes": 17864888320,
+        "web_total_bytes": 40959762432,
+        "php_temp_free_bytes": 17864888320,
+        "database": {
+          "host": "replikant3544",
+          "data_directory": "/var/lib/mysql/",
+          "temp_directory": "/tmp"
+        },
+        "release_directories": [
+          {
+            "name": "00bf6c6bf8d7c3af207b0ca8a794109417ac45c6-32472693942",
+            "mtime": 1787308112,
+            "files": 2523,
+            "bytes": 27760511,
+            "complete": true
+          },
+          {
+            "name": "0135e34e47243ba983ee9239ab67087a5b6f35f1-35729597409",
+            "mtime": 1790081567,
+            "files": 2595,
+            "bytes": 29374748,
+            "complete": true
+          },
+          {
+            "name": "01fcd420d2986d75ad1866e9c70a9726ee089d40-35769331436",
+            "mtime": 1790102924,
+            "files": 2609,
+            "bytes": 30012200,
+            "complete": true
+          },
+          {
+            "name": "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93-40085679569",
+            "mtime": 1792837645,
+            "files": 3482,
+            "bytes": 61928475,
+            "complete": true
+          },
+          {
+            "name": "080f66a650e794af8c02f9cfffd6bf4799230ef4-31309163626",
+            "mtime": 1786272610,
+            "files": 2469,
+            "bytes": 26602454,
+            "complete": true
+          },
+          {
+            "name": "09510ac6e44cfd01f571b91f5e52bc2d9d6eb9df-40761965370",
+            "mtime": 1793218864,
+            "files": 3187,
+            "bytes": 47175146,
+            "complete": true
+          },
+          {
+            "name": "098a921946fab8365aba76b8d572891b43fc1312-39245446439",
+            "mtime": 1792409707,
+            "files": 2706,
+            "bytes": 45179743,
+            "complete": true
+          },
+          {
+            "name": "0a8ce5fbb364ee4ce1aad0850f44bba2a60348c8-36025894371",
+            "mtime": 1790266569,
+            "files": 2627,
+            "bytes": 34971177,
+            "complete": true
+          },
+          {
+            "name": "0b03b564dfa6b20817478848fa8721fea09ca082-39922198281",
+            "mtime": 1792742900,
+            "files": 3407,
+            "bytes": 58721451,
+            "complete": true
+          },
+          {
+            "name": "0cce35a3136cdc6129fc99881f7cc56751b9ea35-32642425656",
+            "mtime": 1787491762,
+            "files": 2539,
+            "bytes": 27965247,
+            "complete": true
+          },
+          {
+            "name": "0ce72d314fa92ee65f043f99d7b6cda8c7243a9d-31436854302",
+            "mtime": 1786399659,
+            "files": 2474,
+            "bytes": 26677971,
+            "complete": true
+          },
+          {
+            "name": "0d20a2cc807c2f4a06c6cc92972c47946bb87716-37701308547",
+            "mtime": 1791415111,
+            "files": 2657,
+            "bytes": 45070693,
+            "complete": true
+          },
+          {
+            "name": "0db2a09229800bd037f3a30c937f8b087d980d01-39425486301",
+            "mtime": 1792500839,
+            "files": 2752,
+            "bytes": 45513241,
+            "complete": true
+          },
+          {
+            "name": "0e43a8bbccde14bccff47dcd85710f58526ba697-31966862633",
+            "mtime": 1786907594,
+            "files": 2495,
+            "bytes": 27328676,
+            "complete": true
+          },
+          {
+            "name": "0f7098cb33c31091384b58f71860368d86fd099d-39273282949",
+            "mtime": 1792421904,
+            "files": 2715,
+            "bytes": 45266548,
+            "complete": true
+          },
+          {
+            "name": "115a617d3660bc9e3cba48891737b56fc6ab068f-40189517120",
+            "mtime": 1792928439,
+            "files": 575,
+            "bytes": 2382226,
+            "complete": false
+          }
+        ],
+        "backup_files": 60,
+        "backup_bytes": 121627705,
+        "inventory_complete": false,
+        "mutations": false,
+        "release_directory_count": 184
+      }
+    },
+    {
+      "ok": false,
+      "error": "impact_probe_failed",
+      "phase": "domain_impact",
+      "exception_class": "PDOException",
+      "source": "club-release-impact.php",
+      "line": 71,
+      "sqlstate": "HY000",
+      "driver_code": 1021,
+      "storage": {
+        "web_host": "replikant3544",
+        "web_free_bytes": 17864826880,
+        "web_total_bytes": 40959762432,
+        "php_temp_free_bytes": 17864826880,
+        "database": {
+          "host": "replikant3544",
+          "data_directory": "/var/lib/mysql/",
+          "temp_directory": "/tmp"
+        },
+        "release_directories": [
+          {
+            "name": "00bf6c6bf8d7c3af207b0ca8a794109417ac45c6-32472693942",
+            "mtime": 1787308112,
+            "files": 2523,
+            "bytes": 27760511,
+            "complete": true
+          },
+          {
+            "name": "0135e34e47243ba983ee9239ab67087a5b6f35f1-35729597409",
+            "mtime": 1790081567,
+            "files": 2595,
+            "bytes": 29374748,
+            "complete": true
+          },
+          {
+            "name": "01fcd420d2986d75ad1866e9c70a9726ee089d40-35769331436",
+            "mtime": 1790102924,
+            "files": 2609,
+            "bytes": 30012200,
+            "complete": true
+          },
+          {
+            "name": "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93-40085679569",
+            "mtime": 1792837645,
+            "files": 3482,
+            "bytes": 61928475,
+            "complete": true
+          },
+          {
+            "name": "080f66a650e794af8c02f9cfffd6bf4799230ef4-31309163626",
+            "mtime": 1786272610,
+            "files": 2469,
+            "bytes": 26602454,
+            "complete": true
+          },
+          {
+            "name": "09510ac6e44cfd01f571b91f5e52bc2d9d6eb9df-40761965370",
+            "mtime": 1793218864,
+            "files": 3187,
+            "bytes": 47175146,
+            "complete": true
+          },
+          {
+            "name": "098a921946fab8365aba76b8d572891b43fc1312-39245446439",
+            "mtime": 1792409707,
+            "files": 2706,
+            "bytes": 45179743,
+            "complete": true
+          },
+          {
+            "name": "0a8ce5fbb364ee4ce1aad0850f44bba2a60348c8-36025894371",
+            "mtime": 1790266569,
+            "files": 2627,
+            "bytes": 34971177,
+            "complete": true
+          },
+          {
+            "name": "0b03b564dfa6b20817478848fa8721fea09ca082-39922198281",
+            "mtime": 1792742900,
+            "files": 3407,
+            "bytes": 58721451,
+            "complete": true
+          },
+          {
+            "name": "0cce35a3136cdc6129fc99881f7cc56751b9ea35-32642425656",
+            "mtime": 1787491762,
+            "files": 2539,
+            "bytes": 27965247,
+            "complete": true
+          },
+          {
+            "name": "0ce72d314fa92ee65f043f99d7b6cda8c7243a9d-31436854302",
+            "mtime": 1786399659,
+            "files": 2474,
+            "bytes": 26677971,
+            "complete": true
+          },
+          {
+            "name": "0d20a2cc807c2f4a06c6cc92972c47946bb87716-37701308547",
+            "mtime": 1791415111,
+            "files": 2657,
+            "bytes": 45070693,
+            "complete": true
+          },
+          {
+            "name": "0db2a09229800bd037f3a30c937f8b087d980d01-39425486301",
+            "mtime": 1792500839,
+            "files": 2752,
+            "bytes": 45513241,
+            "complete": true
+          },
+          {
+            "name": "0e43a8bbccde14bccff47dcd85710f58526ba697-31966862633",
+            "mtime": 1786907594,
+            "files": 2495,
+            "bytes": 27328676,
+            "complete": true
+          },
+          {
+            "name": "0f7098cb33c31091384b58f71860368d86fd099d-39273282949",
+            "mtime": 1792421904,
+            "files": 2715,
+            "bytes": 45266548,
+            "complete": true
+          },
+          {
+            "name": "115a617d3660bc9e3cba48891737b56fc6ab068f-40189517120",
+            "mtime": 1792928439,
+            "files": 3631,
+            "bytes": 65685037,
+            "complete": true
+          },
+          {
+            "name": "11f7b1fe883b16b3ccd2d35fe0f4f674fb405647-32775632074",
+            "mtime": 1787604405,
+            "files": 2543,
+            "bytes": 28094671,
+            "complete": true
+          },
+          {
+            "name": "126164927da819fe0a26b0eeadf50dae1731d5f4-37602884881",
+            "mtime": 1791366543,
+            "files": 1668,
+            "bytes": 10923306,
+            "complete": false
+          }
+        ],
+        "backup_files": 60,
+        "backup_bytes": 121627705,
+        "inventory_complete": false,
+        "mutations": false,
+        "release_directory_count": 184
+      }
+    }
+  ],
+  "scope": "Read-only, bounded inventory; PHP/web free space does not establish space, inode or quota availability in the MariaDB process namespace."
+}

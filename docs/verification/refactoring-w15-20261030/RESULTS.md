@@ -23,3 +23,8 @@ skipped testy; závěrečná Linux brána je musí provést bez skipů.
 Finální přehled oblastí, důvodů nepřijatých kandidátů a hranic přejímky:
 [technické uzavření](../../REFACTORING_CLOSURE_2026-10-30.md).
 Technické dokončení a lidská/účetní přejímka jsou různé stavy.
+
+Konečný spojený Linux CI: 1864 testů / 37843 assertions, bez skipů,
+obě MariaDB a všechny objemové profily PASS. Implementace je sloučena;
+nasazení zastavila záloha na opakovaném DB disk full před migrací/aktivací.
+[Finální release protokol a podmínky pokračování](../refactoring-final-release-20261030/RESULTS.md).

@@ -1,6 +1,6 @@
 # Komplexní plán refaktoringu a optimalizace Evidence / KIS
 
-**Stav k 30. 10. 2026: W6–W15 implementovány; závěrečné CI a nasazení viz [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md).**
+**Stav k 30. 10. 2026: W6–W15 implementovány, CI PASS a sloučeno; poslední nasazení blokuje DB disk full. Viz [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md).**
 Vlastník 30. 10. výslovně zadal autonomní pokračování všemi zbývajícími vlnami
 až do technického dokončení, včetně sloučení a nasazení po úspěšném ověření.
 Není nutné nové potvrzení každé vlny. Provozní aktivace integrací, převody
@@ -269,7 +269,13 @@ nadále drží skutečné inventury/ocenění, rodinné vazby, trenérské rozsa
 finanční dohody, převzetí účetní a dvě chybějící přílohy. Refaktoring může
 zlepšit diagnostiku a zpracování, nesmí tyto skutečnosti doplnit odhadem.
 
-## 11. Evidence a průběžný stav
+## 11. Historické průběžné zápisy realizace
+
+Následující tabulka a dodatky zachovávají stav při dokončení jednotlivých
+vln. Formulace o tehdy otevřených navazujících vlnách nejsou aktuální backlog.
+Konečné rozhodnutí pro všechny oblasti shrnuje
+[technické uzavření](REFACTORING_CLOSURE_2026-10-30.md); živé vydání a zbývající
+provozní převzetí určuje [CURRENT_STATE](CURRENT_STATE.md).
 
 | Položka | Stav k 29. 10. 2026 | Další výstup |
 | --- | --- | --- |

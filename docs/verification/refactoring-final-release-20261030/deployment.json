@@ -1,0 +1,26 @@
+{
+  "sha": "2345b648a237973e96593daa5d8588be2a99c28a",
+  "run_id": 41095272194,
+  "job_id": 124199280789,
+  "conclusion": "failure",
+  "failed_step": "Vytvořit a ověřit produkční zálohu",
+  "sqlstate": "HY000",
+  "driver_code": 1021,
+  "database_temp_path": "/tmp",
+  "inputs": {
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "tests": 1864,
+  "assertions": 37843,
+  "verified_backup_created": false,
+  "migrations_executed": false,
+  "release_activated": false,
+  "temporary_config_cleanup": "success",
+  "last_verified_live": {
+    "sha": "7828758cfe832a99c11ddeafe916b8480e501feb",
+    "run_id": "41077903487",
+    "deployed_at": "2026-10-30T15:10:53+00:00",
+    "uat_approved": false
+  }
+}

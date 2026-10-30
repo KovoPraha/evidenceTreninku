@@ -1,0 +1,43 @@
+{
+  "sha": "2345b648a237973e96593daa5d8588be2a99c28a",
+  "tests": 1864,
+  "assertions": 37843,
+  "posix_skips": 0,
+  "runs": [
+    {
+      "name": "Produkcni provozni drill",
+      "id": 41094301278,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094301278"
+    },
+    {
+      "name": "Current documentation",
+      "id": 41094283278,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283278"
+    },
+    {
+      "name": "Push on main",
+      "id": 41094283424,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283424"
+    },
+    {
+      "name": "PHP quality",
+      "id": 41094283244,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283244"
+    },
+    {
+      "name": "Testy",
+      "id": 41094283333,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41094283333"
+    }
+  ]
+}
