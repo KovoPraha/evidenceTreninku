@@ -197,6 +197,7 @@ function clubReleaseImpactMain(): int
         $config[$key]=constant($key);
     }
     if (!clubReleaseImpactIdentity($host, $config)) { echo "{\"ok\":false,\"error\":\"impact_identity_mismatch\"}\n"; return 2; }
+    $phase='connection';
     try {
         $pdo = new PDO('mysql:host='.$config['DB_HOST'].';dbname='.$config['DB_NAME'].';charset=utf8mb4', $config['DB_USER'], $config['DB_PASS'],
             [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES=>false]);
@@ -204,14 +205,23 @@ function clubReleaseImpactMain(): int
             $identity=$pdo->query('SELECT @@port AS port,DATABASE() AS db')->fetch(PDO::FETCH_ASSOC);
             if ((int)$identity['port'] !== 33426 || $identity['db'] !== 'evidence_b1') throw new RuntimeException('impact_wrong_local_database');
         }
+        $phase='domain_impact';
         $report=clubReleaseImpact($pdo, (new DateTimeImmutable('now', new DateTimeZone('Europe/Prague')))->format('Y-m-d'));
+        $phase='private_storage';
         $storage = getenv('APP_PRIVATE_STORAGE_ROOT');
         if ($storage === false || trim($storage) === '') $storage = defined('APP_PRIVATE_STORAGE_ROOT') ? constant('APP_PRIVATE_STORAGE_ROOT') : null;
         $report['private_storage']=clubReleaseImpactPrivateStorage($root, $storage, $config['JE_LOKALNE'] === true);
+        $phase='release_evidence';
         $report['release_verification']=integrationReleaseEvidence($pdo,$root);
         echo json_encode($report, JSON_THROW_ON_ERROR|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)."\n";
         return 0;
-    } catch (Throwable) { echo "{\"ok\":false,\"error\":\"impact_probe_failed\"}\n"; return 2; }
+    } catch (Throwable $exception) {
+        echo json_encode(['ok'=>false,'error'=>'impact_probe_failed','phase'=>$phase,
+            'exception_class'=>get_class($exception),'source'=>basename($exception->getFile()),
+            'line'=>$exception->getLine(),'sqlstate'=>$exception instanceof PDOException?(string)$exception->getCode():null,
+            'driver_code'=>$exception instanceof PDOException?($exception->errorInfo[1]??null):null],JSON_THROW_ON_ERROR)."\n";
+        return 2;
+    }
 }
 
 if (realpath((string)($_SERVER['SCRIPT_FILENAME'] ?? '')) === __FILE__) exit(clubReleaseImpactMain());
