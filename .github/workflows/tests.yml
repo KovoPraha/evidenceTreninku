@@ -247,22 +247,22 @@ jobs:
       - name: Ověřit stránkování a paměť adresáře registráře
         run: php tests/Support/SportovecDirectoryProfile.php > sportovec-directory-profile.json
 
-        - name: Ověřit historickou časovou osu a rozpočet dotazů
-          env:
-            EVIDENCE_TIMELINE_MARIADB: '1'
-          run: |
-            php vendor/bin/phpunit tests/Integration/AthleteTimelineReadOptimizationTest.php
-            php tests/Support/AthleteTimelineProfile.php > athlete-timeline-profile.json
-            php tests/Support/PersonReadAssessment.php > person-read-assessment.json
+      - name: Ověřit historickou časovou osu a rozpočet dotazů
+        env:
+          EVIDENCE_TIMELINE_MARIADB: '1'
+        run: |
+          php vendor/bin/phpunit tests/Integration/AthleteTimelineReadOptimizationTest.php
+          php tests/Support/AthleteTimelineProfile.php > athlete-timeline-profile.json
+          php tests/Support/PersonReadAssessment.php > person-read-assessment.json
 
-        - name: Uchovat profil časové osy
-          uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-          with:
-            name: athlete-timeline-profile-mariadb-${{ matrix.mariadb-version }}
-            path: |
-              athlete-timeline-profile.json
-              person-read-assessment.json
-            retention-days: 14
+      - name: Uchovat profil časové osy
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: athlete-timeline-profile-mariadb-${{ matrix.mariadb-version }}
+          path: |
+            athlete-timeline-profile.json
+            person-read-assessment.json
+          retention-days: 14
 
       - name: Uchovat profil adresáře registráře
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
