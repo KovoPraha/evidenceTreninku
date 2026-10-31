@@ -88,7 +88,7 @@ jobs:
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
           sha256sum bin/trainer-pilot-operations.php includes/trainer_pilot.php > /tmp/trainer-pilot-source-local.txt
-          "${SSH[@]}" "cd '$REMOTE_DIR' && sha256sum bin/trainer-pilot-operations.php includes/trainer_pilot.php" > /tmp/trainer-pilot-source-remote.txt
+          "${SSH[@]}" "cd '$REMOTE_DIR' && php -r 'foreach (array_slice(\$argv, 1) as \$file) { if (!is_file(\$file)) { exit(1); } echo hash_file(\"sha256\", \$file), \"  \", \$file, PHP_EOL; }' bin/trainer-pilot-operations.php includes/trainer_pilot.php" > /tmp/trainer-pilot-source-remote.txt
           diff /tmp/trainer-pilot-source-local.txt /tmp/trainer-pilot-source-remote.txt
           cat > /tmp/run-trainer-pilot.php <<EOF
           <?php
