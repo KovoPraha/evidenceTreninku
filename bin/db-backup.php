@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -21,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.3';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-31.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -144,7 +145,7 @@ function ownedColumnsPresentInSnapshot(array $columns): array
         $actual = array_column($columns[$table], 'name');
         $found = array_values(array_filter(
             $contractColumns,
-            static fn(string $column): bool => in_array($column, $actual, true)
+            static fn (string $column): bool => in_array($column, $actual, true)
         ));
         if ($found !== []) {
             $present[$table] = $found;
@@ -387,6 +388,7 @@ const EVIDENCE_TABLES = [
     'oznameni_targets',
     'payments',
     'password_reset_tokens',
+    'trainer_password_reset_tokens',
     'planovane_treninky',
     'planovane_treninky_podskupiny',
     'podskupiny',
@@ -817,7 +819,7 @@ try {
                 $rowCounts[$table] = 0;
                 continue;
             }
-            $quotedColumns = array_map(static fn(array $column): string => quoteIdentifier($column['name']), $columnMeta);
+            $quotedColumns = array_map(static fn (array $column): string => quoteIdentifier($column['name']), $columnMeta);
             $columnSql = implode(',', $quotedColumns);
             $statement = $pdo->query("SELECT {$columnSql} FROM {$quotedTable}");
             $batch = [];

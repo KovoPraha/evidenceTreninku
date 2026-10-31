@@ -612,11 +612,6 @@ parameters:
 			count: 12
 			path: booking/nahrady.php
 
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: booking/nove_heslo.php
 
 		-
 			message: '#^Variable \$isGuestAccess might not be defined\.$#'
@@ -834,11 +829,6 @@ parameters:
 			count: 3
 			path: booking/verejny_profil.php
 
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: booking/zapomenute_heslo.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'

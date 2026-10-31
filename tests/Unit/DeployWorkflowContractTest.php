@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -154,7 +155,7 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-23.3'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-31.1'",
             $backup
         );
         foreach (['source_candidate_id', 'source_run_id', 'origin', 'created_by_trainer_id'] as $column) {
@@ -163,10 +164,84 @@ final class DeployWorkflowContractTest extends TestCase
         foreach (['position_code', 'is_default', 'assigned_by_trainer_id'] as $column) {
             self::assertStringContainsString("'{$column}'", $backup);
         }
-        foreach (['shop_orders', 'shop_catalog_admin_events', 'shop_attribute_definitions', 'shop_attribute_choices', 'shop_attribute_definition_events', 'shop_category_meta', 'shop_category_meta_events', 'club_events', 'club_event_links', 'club_event_people', 'club_event_planned_participants', 'club_event_vehicle_reservations', 'account_person_roles', 'fio_account_movements', 'club_roster_members', 'club_team_series', 'club_program_physical_teams', 'training_roster_links', 'training_rsvps', 'training_rsvp_events', 'club_program_enrollments', 'club_program_events', 'club_program_presentations', 'club_program_schedule_slots', 'club_program_images', 'club_event_roster_targets', 'club_roster_rollover_runs', 'public_self_profiles', 'public_velodrome_reservation_events', 'child_access_accounts', 'child_access_events', 'public_velodrome_cart_items', 'public_velodrome_order_items', 'club_event_cart_items', 'club_event_order_items', 'kis_import_source_artifacts', 'password_reset_tokens', 'club_member_charges', 'club_member_charge_events', 'kis_import_payment_rows', 'kis_import_sandbox_promotions', 'kis_import_sandbox_items', 'kis_import_sandbox_events', 'kis_import_charge_promotions', 'kis_import_charge_promotion_items', 'kis_import_charge_promotion_events', 'shop_member_category_rules', 'shop_member_product_prices', 'shop_member_price_events', 'family_calendar_feeds', 'family_calendar_feed_events', 'family_weekly_summary_preferences', 'family_weekly_summaries', 'family_weekly_summary_events', 'member_charge_reminder_preferences', 'member_charge_reminders', 'member_charge_reminder_events', 'stripe_webhook_events', 'sumup_webhook_events', 'athlete_registration_request_details', 'athlete_registration_consent_snapshots', 'athlete_private_files', 'osoba_citlive_udaje', 'osoba_citlive_pristupy'] as $table) {
+        foreach ([
+            'shop_orders',
+            'shop_catalog_admin_events',
+            'shop_attribute_definitions',
+            'shop_attribute_choices',
+            'shop_attribute_definition_events',
+            'shop_category_meta',
+            'shop_category_meta_events',
+            'club_events',
+            'club_event_links',
+            'club_event_people',
+            'club_event_planned_participants',
+            'club_event_vehicle_reservations',
+            'account_person_roles',
+            'fio_account_movements',
+            'club_roster_members',
+            'club_team_series',
+            'club_program_physical_teams',
+            'training_roster_links',
+            'training_rsvps',
+            'training_rsvp_events',
+            'club_program_enrollments',
+            'club_program_events',
+            'club_program_presentations',
+            'club_program_schedule_slots',
+            'club_program_images',
+            'club_event_roster_targets',
+            'club_roster_rollover_runs',
+            'public_self_profiles',
+            'public_velodrome_reservation_events',
+            'child_access_accounts',
+            'child_access_events',
+            'public_velodrome_cart_items',
+            'public_velodrome_order_items',
+            'club_event_cart_items',
+            'club_event_order_items',
+            'kis_import_source_artifacts',
+            'password_reset_tokens',
+            'club_member_charges',
+            'club_member_charge_events',
+            'kis_import_payment_rows',
+            'kis_import_sandbox_promotions',
+            'kis_import_sandbox_items',
+            'kis_import_sandbox_events',
+            'kis_import_charge_promotions',
+            'kis_import_charge_promotion_items',
+            'kis_import_charge_promotion_events',
+            'shop_member_category_rules',
+            'shop_member_product_prices',
+            'shop_member_price_events',
+            'family_calendar_feeds',
+            'family_calendar_feed_events',
+            'family_weekly_summary_preferences',
+            'family_weekly_summaries',
+            'family_weekly_summary_events',
+            'member_charge_reminder_preferences',
+            'member_charge_reminders',
+            'member_charge_reminder_events',
+            'stripe_webhook_events',
+            'sumup_webhook_events',
+            'athlete_registration_request_details',
+            'athlete_registration_consent_snapshots',
+            'athlete_private_files',
+            'osoba_citlive_udaje',
+            'osoba_citlive_pristupy',
+        ] as $table) {
             self::assertStringContainsString("'{$table}'", $backup);
         }
-        foreach (['club_makeup_config_events','club_makeup_credits','club_makeup_events','club_makeup_excuse_rules','club_makeup_offer_periods','club_makeup_policies','club_makeup_reservations','club_makeup_slots'] as $table) {
+        foreach ([
+            'club_makeup_config_events',
+            'club_makeup_credits',
+            'club_makeup_events',
+            'club_makeup_excuse_rules',
+            'club_makeup_offer_periods',
+            'club_makeup_policies',
+            'club_makeup_reservations',
+            'club_makeup_slots',
+        ] as $table) {
             self::assertStringContainsString("'{$table}'", $backup);
         }
     }
@@ -209,8 +284,12 @@ final class DeployWorkflowContractTest extends TestCase
             // name is interpolated; dynamic tables have an explicit contract test.
             preg_match_all('/CREATE TABLE(?> IF NOT EXISTS)?\\s+`?(?!IF\\b)([A-Za-z0-9_]+)/i', $source, $createdMatches);
             foreach ($createdMatches[1] as $table) {
-                if (str_ends_with($table, '_next')) continue;
-                if (!isset($owned[$table])) $missing[$table] = basename($migration);
+                if (str_ends_with($table, '_next')) {
+                    continue;
+                }
+                if (!isset($owned[$table])) {
+                    $missing[$table] = basename($migration);
+                }
             }
         }
         self::assertSame([], $missing, 'Migrační tabulky chybí v EVIDENCE_TABLES: ' . json_encode($missing));
@@ -310,14 +389,16 @@ final class DeployWorkflowContractTest extends TestCase
 
     public function testAccountingAuditUsesReadOnlyTransactionWithoutApplicationBootstrap(): void
     {
-        $source=$this->source('bin/production-accounting-audit.php');
-        $workflow=$this->source('.github/workflows/production-drills.yml');
-        self::assertStringContainsString('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY',$source);
-        self::assertStringContainsString('KIS_ACCOUNTING_AUDIT_CONFIRM=OVERIT-UCETNI-VAZBY',$workflow);
-        self::assertStringContainsString('ZipArchive::RDONLY',$source);
-        self::assertStringContainsString("PHP_SAPI !== 'cli'",$source);
-        foreach (['INSERT ','UPDATE ','DELETE ','CREATE TABLE','db.php','accountingExportCreate(','accountingDocumentDownload('] as $forbidden) self::assertStringNotContainsString($forbidden,$source);
-        self::assertStringContainsString("always() && inputs.operace == 'overit-ucetni-vazby'",$workflow);
+        $source = $this->source('bin/production-accounting-audit.php');
+        $workflow = $this->source('.github/workflows/production-drills.yml');
+        self::assertStringContainsString('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY', $source);
+        self::assertStringContainsString('KIS_ACCOUNTING_AUDIT_CONFIRM=OVERIT-UCETNI-VAZBY', $workflow);
+        self::assertStringContainsString('ZipArchive::RDONLY', $source);
+        self::assertStringContainsString("PHP_SAPI !== 'cli'", $source);
+        foreach (['INSERT ','UPDATE ','DELETE ','CREATE TABLE','db.php','accountingExportCreate(','accountingDocumentDownload('] as $forbidden) {
+            self::assertStringNotContainsString($forbidden, $source);
+        }
+        self::assertStringContainsString("always() && inputs.operace == 'overit-ucetni-vazby'", $workflow);
     }
 
     public function testDeployPublishesPrivateReleaseEvidenceAndUatDrillIsReadOnly(): void
@@ -338,17 +419,17 @@ final class DeployWorkflowContractTest extends TestCase
 
     public function testPrivateHttpProbeFallbackKeepsForbiddenStatusRequirement(): void
     {
-        $workflow=$this->source('.github/workflows/deploy-production.yml');
-        $start=strpos($workflow,'- name: Ověřit zákaz HTTP přístupu ke klíči archivu');
-        $end=strpos($workflow,'- name: HTTP smoke test bez tajného tokenu',$start);
-        $probe=substr($workflow,$start,$end-$start);
-        self::assertStringContainsString('if [ "$KOD" = \'0\' ] || [ "$KOD" = \'000\' ]; then',$probe);
-        self::assertStringContainsString(".ok == true and (.http == 403 or .http == 404)",$probe);
-        self::assertStringContainsString('if [ "$KOD" != \'403\' ] && [ "$KOD" != \'404\' ]; then',$probe);
-        self::assertStringContainsString("SMOKE_URL=\$WEB_URL/var/private/kis-person-import.php",$probe);
-        self::assertStringContainsString('production_retry_capture',$probe);
-        self::assertStringContainsString("'\$DEPLOY_BASE/run-private-http-probe.php'",$workflow);
-        self::assertStringNotContainsString('|| true',$probe);
+        $workflow = $this->source('.github/workflows/deploy-production.yml');
+        $start = strpos($workflow, '- name: Ověřit zákaz HTTP přístupu ke klíči archivu');
+        $end = strpos($workflow, '- name: HTTP smoke test bez tajného tokenu', $start);
+        $probe = substr($workflow, $start, $end - $start);
+        self::assertStringContainsString('if [ "$KOD" = \'0\' ] || [ "$KOD" = \'000\' ]; then', $probe);
+        self::assertStringContainsString(".ok == true and (.http == 403 or .http == 404)", $probe);
+        self::assertStringContainsString('if [ "$KOD" != \'403\' ] && [ "$KOD" != \'404\' ]; then', $probe);
+        self::assertStringContainsString("SMOKE_URL=\$WEB_URL/var/private/kis-person-import.php", $probe);
+        self::assertStringContainsString('production_retry_capture', $probe);
+        self::assertStringContainsString("'\$DEPLOY_BASE/run-private-http-probe.php'", $workflow);
+        self::assertStringNotContainsString('|| true', $probe);
     }
 
     public function testPrivateStorageProvisionFollowsBackupAndPrecedesReleaseConfigCopy(): void
