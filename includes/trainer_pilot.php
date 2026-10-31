@@ -134,7 +134,8 @@ function trainerPilotCreate(PDO $pdo, string $ownerName, string $email): array
             throw new RuntimeException('pilot_identity_collision');
         }
         $pdo->prepare('INSERT INTO nastaveni(klic,hodnota) VALUES(?,?)')->execute([TRAINER_PILOT_KEY, '{}']);
-        $now = new DateTimeImmutable('today', new DateTimeZone('Europe/Prague'));
+        // Scope predicates use the database clock; do not mix it with PHP's timezone.
+        $now = new DateTimeImmutable((string)$pdo->query('SELECT CURRENT_TIMESTAMP')->fetchColumn(), new DateTimeZone('UTC'));
         $from = $now->format('Y-m-d');
         $to = $now->modify('+14 days')->format('Y-m-d');
         $hash = trainer_password_hash(bin2hex(random_bytes(32)));
@@ -184,7 +185,7 @@ function trainerPilotCreate(PDO $pdo, string $ownerName, string $email): array
             );
         }
         $grant = ['trainer_id' => $trainerId, 'scope_kind' => 'team', 'scope_id' => (int)$team['id'],
-            'valid_from' => $from . ' 00:00:00', 'valid_to' => $to . ' 00:00:00', 'reason' => TRAINER_PILOT_REASON];
+            'valid_from' => $now->format('Y-m-d H:i:s'), 'valid_to' => $now->modify('+14 days')->format('Y-m-d H:i:s'), 'reason' => TRAINER_PILOT_REASON];
         $pdo->prepare('INSERT INTO coach_scope_grants(trainer_id,scope_kind,scope_id,valid_from,valid_to,reason,created_by_trainer_id) VALUES(?,?,?,?,?,?,?)')
             ->execute([...array_values($grant), $owner['id']]);
         $grantId = (int)$pdo->lastInsertId();

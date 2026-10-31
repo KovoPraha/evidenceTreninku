@@ -39,6 +39,7 @@ final class TrainerPilotTest extends TestCase
         self::assertTrue($result['scope_ready']);
         self::assertTrue($result['reset_eligible']);
         self::assertSame(2, $result['visible_test_people']);
+        self::assertSame(14 * 86400, strtotime($result['valid_to']) - strtotime($result['valid_from']));
         self::assertFalse($result['outside_scope_visible']);
         self::assertSame('unchanged-owner-hash', $pdo->query('SELECT heslo FROM treneri WHERE id=1')->fetchColumn());
         self::assertSame(['coach'], $pdo->query('SELECT position_code FROM staff_user_positions WHERE trainer_id=' . $result['trainer_id'])->fetchAll(PDO::FETCH_COLUMN));
