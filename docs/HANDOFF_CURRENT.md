@@ -8,6 +8,12 @@ Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její
 [produkční přejímka](verification/trainer-recovery-20261031/RESULTS.md).
 Odesílání trenérských odkazů zajišťuje [ověřený minutový cron hostingu](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
 Vlastník potvrdil doručení a zvolil [samostatný syntetický pilot](TRAINER_PILOT_2026-10-31.md).
+Jeho nástroj je nasazen a [technicky ověřen](verification/trainer-pilot-20261031/RESULTS.md);
+účet ani skupina ještě nevznikly. Čeká se na samostatný e-mail v otevřené otázce.
+Po doplnění použít chráněné workflow `trainer-pilot-production.yml` na main:
+nejprve `status` s potvrzeným jménem vlastníka, potom `create` s e-mailem a
+`confirm=VYTVORIT-TEST-PILOT`. Provést pouze při jednoznačném oprávněném účtu.
+První kontrola narazila na chybějící `sha256sum` v chrootu; PR #262 používá PHP.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.
 
 W9.2 / W10.1 jsou [nasazené a ověřené](verification/refactoring-w92-release-20261030/RESULTS.md).

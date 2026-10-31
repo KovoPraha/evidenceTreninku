@@ -1,0 +1,18 @@
+{
+  "run_id": 41195348796,
+  "conclusion": "success",
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-10-31_110013_9afd9f49.sql.gz",
+    "manifest": "evidence_2026-10-31_110013_9afd9f49.manifest.json",
+    "sha256": "255f56014073013ff8d562f65743797b16367da9a75726203ed754f90d997fc4",
+    "tables": 337,
+    "triggers": 2,
+    "compressed_bytes": 6064031
+  },
+  "sha256_verified": true,
+  "actual_isolated_import": true,
+  "table_counts_verified": 337,
+  "triggers_verified": 2,
+  "production_writes": false
+}

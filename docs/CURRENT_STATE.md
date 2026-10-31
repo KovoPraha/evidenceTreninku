@@ -1,32 +1,33 @@
 # Aktuální stav projektu
 
-Aktualizováno 31. 10. 2026 (Europe/Prague), po nasazení trenérské obnovy hesla.
+Aktualizováno 31. 10. 2026 (Europe/Prague), po nasazení přípravy odděleného pilotu.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
   28 z 36 aktivních pracovních účtů splňuje podmínky obnovy; 8 je blokováno
   e-mailem nebo explicitní vazbou. Všech 36 účtů má pozici trenéra, ale žádný
-  aktuální explicitní rozsah. Vlastník zvolil [oddělený syntetický pilot](TRAINER_PILOT_2026-10-31.md), připravuje se.
+  aktuální explicitní rozsah. Nástroj pro [oddělený syntetický pilot](TRAINER_PILOT_2026-10-31.md) je nasazen;
+  účet ani skupina zatím nevznikly, čeká se na samostatný e-mail vlastníka.
   Jediný schválený testovací e-mail transport přijal a příjemce 31. 10.
   [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json). Hostingový minutový cron ověřen dvěma úspěšnými
   běhy 09:23:03 a 09:24:03 UTC. Tři staré klubové zprávy nedotčeny.
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `4eb54d210e3c4deb1e0ec398139503318ddc9482`,
-  [deploy 41188114928](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188114928) SUCCESS.
-  Zahrnuje PR #258, provozní opravu #260 a dříve nasazené W6–W15.
-  [Protokol](verification/trainer-recovery-20261031/RESULTS.md),
-  [porovnání vydání](verification/trainer-recovery-20261031/scheduler/release-comparison.json).
-  Živé SHA/run potvrdil následný read-only audit 41188444769;
+- **Živé vydání:** `256744513ecc1201ee5ae3071f30cbd4a637be58`,
+  [deploy 41194869109](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41194869109) SUCCESS.
+  Zahrnuje přípravu pilotu PR #261, obnovu hesla #258/#260 a W6–W15.
+  [Protokol](verification/trainer-pilot-20261031/RESULTS.md),
+  [porovnání vydání](verification/trainer-pilot-20261031/release-comparison.json).
+  Živé SHA/run potvrdil následný read-only audit 41195290750;
   identita je doložena deployment metadata a workflow, nikoli novou inventurou všech souborů.
 - **Ověření:** všech 11 PR kontrol PASS, sloučený strom shodný s ověřeným,
-  Linux 1878 testů / 37987 assertions,
+  Linux 1885 testů / 38032 assertions,
   POSIX bez skipů, MariaDB 10.3/11.4 a objemové profily PASS.
-  Deploy znovu provedl 1878/37987; HTTP před i po 26/26, trenérské stránky 3/3.
+  Deploy znovu provedl 1885/38032; HTTP před i po 26/26, trenérské stránky 3/3.
   Izolovaný HTTP průchod prokázal reset, přihlášení a odvolání původní relace.
 - **Záloha a schéma:** čerstvá záloha 337 tabulek / 2 triggery včetně tokenové
-  tabulky. [Izolovaná obnova této zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188508579)
+  tabulky. [Izolovaná obnova této zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41195348796)
   po nasazení PASS. Schéma current / pending [], ledger 143 beze změny,
   dosavadní variabilní symboly beze změny.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search

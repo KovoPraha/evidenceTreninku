@@ -31,3 +31,21 @@ neukládá se do zdrojů ani důkazů v Gitu.
 - Konec čtrnáctidenního grantu omezí přístup ke sportovcům. Není automatickým
   smazáním účtu ani dat; případné ukončení se provede samostatně.
 - EvidencePavel zůstává oddělená od Velocoty. Integrační přepínače se nemění.
+
+## Předání testujícímu po založení účtu
+
+1. Na trenérském přihlášení zvolit „Zapomenuté heslo“, zadat výhradně e-mail
+   samostatného testovacího účtu a otevřít doručený odkaz. Nastavit vlastní heslo;
+   heslo ani odkaz neposílat vývojáři. Odkaz je jednorázový a platí 60 minut.
+2. Přihlásit se jménem `TEST - Trenérský pilot 20261031`. Pracovní pozice má
+   být pouze Trenér. Ověřit testovací soupisku a osoby TEST Alfa a TEST Beta.
+3. Vyzkoušet dostupné trenérské obrazovky a práci se syntetickými daty.
+   Zaznamenat očekávaný a skutečný výsledek, adresu stránky a čas chyby.
+4. Ověřit, že se nezobrazují skuteční sportovci ani syntetická osoba
+   TEST Mimo rozsah. Administrace a finanční agendy musejí zůstat nepřístupné.
+5. Novou obnovou hesla ověřit nové přihlášení a odvolání starší relace.
+   Nepředávat účet dalším trenérům; další účastníci potřebují vlastní identitu.
+
+Tyto kroky jsou plán lidského UAT, nikoli tvrzení, že již proběhly.
+Před založením účtu nelze tento postup provést. Přesný aktuální stav a doklady
+nasazení jsou v [CURRENT_STATE](CURRENT_STATE.md).
