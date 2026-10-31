@@ -192,6 +192,9 @@ jobs:
       - name: Ověřit pracovní pozice a superadmin audit na MariaDB
         run: php tests/Support/StaffWorkspaceMariaDbSmoke.php
 
+      - name: Ověřit oddělený trenérský pilot na migrovaném schématu
+        run: php tests/Support/TrainerPilotMariaDbSmoke.php
+
       - name: Ověřit cílený rodinný přístup a revokaci na MariaDB
         env:
           EVIDENCE_FAMILY_MARIADB: '1'

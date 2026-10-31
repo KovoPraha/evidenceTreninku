@@ -6,9 +6,9 @@ Aktualizováno 31. 10. 2026 (Europe/Prague), po nasazení trenérské obnovy hes
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
   28 z 36 aktivních pracovních účtů splňuje podmínky obnovy; 8 je blokováno
   e-mailem nebo explicitní vazbou. Všech 36 účtů má pozici trenéra, ale žádný
-  aktuální explicitní rozsah. Konkrétní trenéry/skupiny musí určit vlastník.
-  Jediný schválený testovací e-mail transport přijal; doručení do schránky
-  ještě nepotvrdil příjemce. Hostingový minutový cron ověřen dvěma úspěšnými
+  aktuální explicitní rozsah. Vlastník zvolil [oddělený syntetický pilot](TRAINER_PILOT_2026-10-31.md), připravuje se.
+  Jediný schválený testovací e-mail transport přijal a příjemce 31. 10.
+  [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json). Hostingový minutový cron ověřen dvěma úspěšnými
   běhy 09:23:03 a 09:24:03 UTC. Tři staré klubové zprávy nedotčeny.
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**

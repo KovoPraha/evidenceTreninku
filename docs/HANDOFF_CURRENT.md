@@ -7,8 +7,8 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její
 [produkční přejímka](verification/trainer-recovery-20261031/RESULTS.md).
 Odesílání trenérských odkazů zajišťuje [ověřený minutový cron hostingu](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
-Před pilotem doplnit vlastníkem určené trenéry a jejich rozsahy, vyřešit
-blokované e-maily/vazby a potvrdit skutečné doručení. Rozsahy nepřiřazovat odhadem.
+Vlastník potvrdil doručení a zvolil [samostatný syntetický pilot](TRAINER_PILOT_2026-10-31.md).
+Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.
 
 W9.2 / W10.1 jsou [nasazené a ověřené](verification/refactoring-w92-release-20261030/RESULTS.md).
 W10.2 je [nasazená](verification/refactoring-w102-release-20261030/RESULTS.md).
