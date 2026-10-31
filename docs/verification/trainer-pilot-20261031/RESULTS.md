@@ -35,7 +35,10 @@ se zastavil ještě před spuštěním nástroje: chroot nemá `sha256sum`.
 [PR #262](https://github.com/KovoPraha/evidenceTreninku/pull/262) počítá vzdálené
 SHA-256 přes PHP a stále porovnává oba nasazené soubory s ověřeným zdrojem.
 Aplikační soubory nemění, opětovný deploy proto není potřebný.
-Skutečný stav vlastníka musí potvrdit následný `status`; první pokus jej neověřil.
+Navazující běh 41195976435 odhalil zákaz PHP parametrů `-r`. Kontrola proto
+používá soukromý PHP soubor spouštěný bez parametrů stejně jako existující worker;
+po operaci se tento pomocný soubor odstraní. Oba pokusy skončily před čtením
+účtu a bez změny databáze. Skutečný stav vlastníka musí potvrdit následný `status`.
 
 Po doplnění e-mailu provést chráněné vytvoření, které před zápisem vytvoří novou
 zálohu, v jediné transakci založí coach-only účet a dvě syntetické osoby v jeho
