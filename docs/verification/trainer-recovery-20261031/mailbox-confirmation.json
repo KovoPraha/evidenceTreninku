@@ -1,0 +1,8 @@
+{
+  "probe": "EP-TRENER-20261031",
+  "mailbox_delivery_verified": true,
+  "verification_method": "recipient explicitly confirmed receipt in this chat",
+  "confirmed_on": "2026-10-31",
+  "additional_messages_sent": 0,
+  "scope": "delivery of the single authorized transport test; not a real-account password reset"
+}

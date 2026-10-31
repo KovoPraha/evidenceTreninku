@@ -19,7 +19,8 @@ samotné čtení bez práva spuštění by hostingový cron neaktivovalo.
 GitHub workflow zůstává pro chráněnou instalaci, diagnostiku a ruční zpracování.
 Dva úspěšné hostingové běhy 31. 10. v 09:23:03 a 09:24:03 UTC jsou
 [doložené](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
-To potvrzuje plánovač trenérské fronty; příjemce ještě nepotvrdil skutečné doručení testu.
+To potvrzuje plánovač trenérské fronty; příjemce 31. 10. potvrdil skutečné doručení testu.
+Navazuje [schválený samostatný pilot](TRAINER_PILOT_2026-10-31.md) se syntetickými sportovci.
 
 - Odkaz „Zapomenuté heslo“ na trenérském přihlášení vede na samostatný režim
   `booking/zapomenute_heslo.php?pro=trener`; spotřebování odkazu a návrat na

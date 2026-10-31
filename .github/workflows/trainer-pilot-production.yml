@@ -1,0 +1,148 @@
+name: Oddělený trenérský pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Pouze kontrola, nebo vytvoření vyhrazeného pilotu
+        type: choice
+        default: status
+        options: [status, create]
+      owner_name:
+        description: Přesné jméno existujícího vlastníka s oprávněním vedoucího sportu nebo superadmina
+        type: string
+        required: true
+      email:
+        description: Samostatný e-mail nového testovacího trenéra, pro kontrolu může být prázdný
+        type: string
+      confirm:
+        description: Pro vytvoření napište VYTVORIT-TEST-PILOT
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Stáhnout ověřený zdroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit ověřené SSH a soukromý vstup
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+          PILOT_ACTION: ${{ inputs.action }}
+          PILOT_OWNER: ${{ inputs.owner_name }}
+          PILOT_EMAIL: ${{ inputs.email }}
+          PILOT_CONFIRM: ${{ inputs.confirm }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$GITHUB_REF" = refs/heads/main
+          test "$APP_HOST" = kis.kovopraha.cz
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]]
+          case "$REMOTE_DIR" in /*|*..*) exit 2;; esac
+          case "$PILOT_ACTION" in status) ;; create) test "$PILOT_CONFIRM" = VYTVORIT-TEST-PILOT;test -n "$PILOT_EMAIL";; *) exit 2;; esac
+          for variable in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET PILOT_OWNER; do test -n "${!variable}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET";else LOOKUP="[$SSH_HOST_SECRET]:$PORT";fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+          python3 - <<'PY'
+          import json, os
+          data = {"action": os.environ["PILOT_ACTION"], "owner_name": os.environ["PILOT_OWNER"],
+                  "email": os.environ["PILOT_EMAIL"], "confirm": os.environ["PILOT_CONFIRM"]}
+          for name, payload in [("apply", data), ("status", dict(data, action="status"))]:
+              with open("/tmp/trainer-pilot-" + name + ".json", "w") as stream:
+                  json.dump(payload, stream)
+          PY
+
+      - name: Ověřit nasazený nástroj a přečíst stav vlastníka
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          sha256sum bin/trainer-pilot-operations.php includes/trainer_pilot.php > /tmp/trainer-pilot-source-local.txt
+          "${SSH[@]}" "cd '$REMOTE_DIR' && sha256sum bin/trainer-pilot-operations.php includes/trainer_pilot.php" > /tmp/trainer-pilot-source-remote.txt
+          diff /tmp/trainer-pilot-source-local.txt /tmp/trainer-pilot-source-remote.txt
+          cat > /tmp/run-trainer-pilot.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('TRAINER_RESET_OPERATIONS_DIR=' . __DIR__);
+          require '$REMOTE_DIR/bin/trainer-pilot-operations.php';
+          EOF
+          "${SCP[@]}" /tmp/run-trainer-pilot.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-trainer-pilot.php"
+          "${SCP[@]}" /tmp/trainer-pilot-status.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/trainer-pilot-input.json"
+          "${SSH[@]}" "chmod 600 '$DEPLOY_BASE/run-trainer-pilot.php' '$DEPLOY_BASE/trainer-pilot-input.json';php '$DEPLOY_BASE/run-trainer-pilot.php'" | tee /tmp/trainer-pilot-before.json
+          jq -e '.read_only == true and .owner.unique_active == true' /tmp/trainer-pilot-before.json >/dev/null
+
+      - name: Záloha před vytvořením pilotu
+        if: inputs.action == 'create'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          jq -e '.owner.can_provision == true' /tmp/trainer-pilot-before.json >/dev/null
+          cat > /tmp/run-trainer-pilot-backup.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('DEPLOY_GIT_SHA=$GITHUB_SHA');
+          putenv('DEPLOY_RUN_ID=$GITHUB_RUN_ID');
+          putenv('BACKUP_APP_ROOT=$REMOTE_DIR');
+          putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BACKUP_KEEP=20');
+          putenv('BACKUP_JSON=1');
+          require '$REMOTE_DIR/bin/db-backup.php';
+          EOF
+          "${SCP[@]}" /tmp/run-trainer-pilot-backup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-trainer-pilot-backup.php"
+          "${SSH[@]}" "chmod 600 '$DEPLOY_BASE/run-trainer-pilot-backup.php';php '$DEPLOY_BASE/run-trainer-pilot-backup.php'" | tee /tmp/trainer-pilot-backup.json
+          jq -e '.ok == true and .tables > 0 and (.sha256|length) == 64' /tmp/trainer-pilot-backup.json >/dev/null
+
+      - name: Vytvořit pouze oddělený pilot a ověřit rozsah
+        if: inputs.action == 'create'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          "${SCP[@]}" /tmp/trainer-pilot-apply.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/trainer-pilot-input.json"
+          "${SSH[@]}" "chmod 600 '$DEPLOY_BASE/trainer-pilot-input.json';php '$DEPLOY_BASE/run-trainer-pilot.php'" | tee /tmp/trainer-pilot-created.json
+          jq -e '.created == true and .scope_ready == true and .outside_scope_visible == false and .reset_eligible == true' /tmp/trainer-pilot-created.json >/dev/null
+          "${SCP[@]}" /tmp/trainer-pilot-status.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/trainer-pilot-input.json"
+          "${SSH[@]}" "chmod 600 '$DEPLOY_BASE/trainer-pilot-input.json';php '$DEPLOY_BASE/run-trainer-pilot.php'" | tee /tmp/trainer-pilot-after.json
+          jq -e '.read_only == true and .scope_ready == true and .owner.changed == false and .visible_test_people == 2' /tmp/trainer-pilot-after.json >/dev/null
+
+      - name: Odstranit soukromý vstup a pomocné soubory
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-trainer-pilot.php' '$DEPLOY_BASE/run-trainer-pilot-backup.php' '$DEPLOY_BASE/trainer-pilot-input.json'"
+          fi
+          rm -f /tmp/trainer-pilot-*.json /tmp/trainer-pilot-source-*.txt /tmp/run-trainer-pilot.php /tmp/run-trainer-pilot-backup.php
