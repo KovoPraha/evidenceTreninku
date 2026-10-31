@@ -7,6 +7,16 @@ zůstává v [CURRENT_STATE](CURRENT_STATE.md).
 
 ## Implementace po schválení vlastníkem
 
+**Navazující provozní oprava:** intervaly skutečných běhů existujícího GitHub
+plánovače byly několik hodin (31. 10. 00:39 a 06:18 UTC), což nelze použít
+jako spolehlivý transport hodinových resetovacích odkazů. Připravuje se proto
+minutový cron hostingu, výhradně pro trenérské obnovy. Instalátor smí vytvořit
+jen vlastní nový soubor v existujícím zapisovatelném `CRON.1minuta`; cizí obsah
+nepřepisuje. Stav se dokládá aktuálním heartbeat skutečného hostitelského běhu,
+nikoli jen konfigurací. Worker má společný zámek pro cron i ruční běh.
+GitHub workflow zůstává pro chráněnou instalaci, diagnostiku a ruční zpracování.
+Dokud není živý heartbeat ověřen, automatické doručování nelze označit za připravené.
+
 - Odkaz „Zapomenuté heslo“ na trenérském přihlášení vede na samostatný režim
   `booking/zapomenute_heslo.php?pro=trener`; spotřebování odkazu a návrat na
   `login.php` zachovávají trenérský kontext. Veřejná obnova zůstává oddělená.
@@ -23,10 +33,11 @@ zůstává v [CURRENT_STATE](CURRENT_STATE.md).
 - Nová migrace přidává `trainer_password_reset_tokens`; její vlastnictví je
   součástí zálohování. SQLite rozšíření CHECK fronty zachovává zprávy i auditní
   vazby a je ověřeno opakováním. Existující MySQL frontu migrace nepřestavuje.
-- `trainer-access-production.yml` spouští chráněný worker po pěti minutách.
+- `trainer-access-production.yml` původně plánovalo worker po pěti minutách;
+  navazující oprava výše přesouvá plánování na hosting.
   Zpracovává jen `kind=reset,target_type=trainer`, nejvýše 20 zpráv za běh.
   Veřejné žádosti ani historická klubová oznámení tím nejsou aktivována.
-  GitHub plán může mít zpoždění; skutečný běh je nutné doložit workflow výsledkem.
+  Skutečný běh je nutné doložit heartbeat, ruční spuštění jej nenahrazuje.
 - Ruční `action=status` provádí pouze čtení: souhrn způsobilých účtů,
   trenérů bez aktuálního rozsahu a stav front. Výstup neobsahuje osobní údaje.
   Počty rozsahů nenahrazují lidské potvrzení správných skupin a členů.

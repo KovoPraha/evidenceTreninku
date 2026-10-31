@@ -1,15 +1,13 @@
 name: Obnova hesel trenérů
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       action:
         description: Kontrola, zpracování trenérských žádostí nebo jednorázový schválený test
         type: choice
         default: status
-        options: [status, process, probe]
+        options: [status, process, probe, install]
 
 permissions:
   contents: read
@@ -48,12 +46,15 @@ jobs:
 
       - name: Provést vybranou operaci
         env:
-          TRAINER_ACTION: ${{ github.event_name == 'schedule' && 'process' || inputs.action }}
+          TRAINER_ACTION: ${{ inputs.action }}
         run: |
           set -euo pipefail
-          case "$TRAINER_ACTION" in status|process|probe) ;; *) exit 2;; esac
+          case "$TRAINER_ACTION" in status|process|probe|install) ;; *) exit 2;; esac
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          if [ "$TRAINER_ACTION" = status ]; then
+            "${SSH[@]}" "test -d 'CRON.1minuta' && test -w 'CRON.1minuta' && echo hosting_minute_directory_available"
+          fi
           "${SSH[@]}" "set -eu;umask 077;test -s '$REMOTE_DIR/config.php';test -s '$REMOTE_DIR/bin/trainer-access-operations.php';mkdir -p 'data/.kis-deploy'"
           # Omezený hosting zahazuje shellové prostředí před spuštěním PHP.
           # Bootstrap proto nastaví hodnoty v PHP procesu a spustí worker bez CLI parametrů.
