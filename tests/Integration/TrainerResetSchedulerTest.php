@@ -90,6 +90,9 @@ final class TrainerResetSchedulerTest extends TestCase
 
     public function testOperationsMustStayInTheSameHostingAccount(): void
     {
+        self::assertTrue(\trainerResetSchedulerIdentity('kis.kovopraha.cz', 'https://kis.kovopraha.cz'));
+        self::assertFalse(\trainerResetSchedulerIdentity('kis.kovopraha.cz', 'http://localhost'));
+        self::assertFalse(\trainerResetSchedulerIdentity('velocota.com', 'https://kis.kovopraha.cz'));
         $this->expectException(\RuntimeException::class);
         \trainerResetSchedulerPaths($this->paths['root'], sys_get_temp_dir());
     }

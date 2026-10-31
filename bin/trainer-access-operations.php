@@ -22,7 +22,7 @@ try {
     require $root . '/config.php';
     require $root . '/includes/trainer_access_readiness.php';
     require $root . '/includes/trainer_reset_scheduler.php';
-    if ($host !== 'kis.kovopraha.cz' || APP_BASE_URL !== 'https://kis.kovopraha.cz') {
+    if (!trainerResetSchedulerIdentity($host, defined('APP_BASE_URL') ? APP_BASE_URL : null)) {
         throw new RuntimeException('Unexpected operations target.');
     }
     $schedulerPaths = trainerResetSchedulerPaths($root, (string)getenv('TRAINER_RESET_OPERATIONS_DIR'));

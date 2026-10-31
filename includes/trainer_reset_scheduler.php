@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+function trainerResetSchedulerIdentity(string $host, mixed $configuredBaseUrl): bool
+{
+    return $host === 'kis.kovopraha.cz' && $configuredBaseUrl === 'https://kis.kovopraha.cz';
+}
+
 /** Hosting-owned minute directory; never create a new scheduler directory or replace unrelated jobs. */
 function trainerResetSchedulerPaths(string $root, string $operations): array
 {
