@@ -43,6 +43,10 @@ final class TrainerResetSchedulerTest extends TestCase
         self::assertFalse(\trainerResetSchedulerStatus($this->paths)['installed_expected_source']);
         self::assertSame(['installed' => true, 'changed' => true], \trainerResetSchedulerInstall($this->paths));
         self::assertSame(['installed' => true, 'changed' => false], \trainerResetSchedulerInstall($this->paths));
+        if (PHP_OS_FAMILY !== 'Windows') {
+            self::assertSame(0700, fileperms($this->paths['cron']) & 0777);
+            self::assertTrue(\trainerResetSchedulerStatus($this->paths)['executable']);
+        }
         $source = (string)file_get_contents($this->paths['cron']);
         self::assertStringContainsString('TRAINER_RESET_TRIGGER=hosting_cron', $source);
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $source);

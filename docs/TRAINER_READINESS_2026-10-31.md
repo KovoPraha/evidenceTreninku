@@ -14,6 +14,8 @@ minutový cron hostingu, výhradně pro trenérské obnovy. Instalátor smí vyt
 jen vlastní nový soubor v existujícím zapisovatelném `CRON.1minuta`; cizí obsah
 nepřepisuje. Stav se dokládá aktuálním heartbeat skutečného hostitelského běhu,
 nikoli jen konfigurací. Worker má společný zámek pro cron i ruční běh.
+Spouštěcí soubor má práva `0700` podle [dokumentace hostingu](https://www.cesky-hosting.cz/napoveda/skripty-na-serveru/cron/);
+samotné čtení bez práva spuštění by hostingový cron neaktivovalo.
 GitHub workflow zůstává pro chráněnou instalaci, diagnostiku a ruční zpracování.
 Dokud není živý heartbeat ověřen, automatické doručování nelze označit za připravené.
 

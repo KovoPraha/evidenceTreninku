@@ -50,6 +50,7 @@ function trainerResetSchedulerStatus(array $paths): array
     return [
         'hosting_directory_available' => is_dir(dirname($paths['cron'])) && is_writable(dirname($paths['cron'])),
         'installed_expected_source' => $installed,
+        'executable' => $installed && is_executable($paths['cron']),
         'last_hosting_run' => $heartbeat,
         'recent_successful_hosting_run' => $installed && ($heartbeat['ok'] ?? false) === true
             && $timestamp !== false && $timestamp <= time() && $timestamp >= time() - 180,
@@ -77,7 +78,7 @@ function trainerResetSchedulerInstall(array $paths): array
         $source = trainerResetSchedulerSource($paths);
         $temporary = tempnam($paths['operations'], 'trainer-cron-');
         if ($temporary === false || file_put_contents($temporary, $source) !== strlen($source)
-            || !chmod($temporary, 0600) || !rename($temporary, $paths['cron'])) {
+            || !chmod($temporary, 0700) || !rename($temporary, $paths['cron'])) {
             throw new RuntimeException('Cannot install trainer scheduler atomically.');
         }
         $temporary = null;
