@@ -8,11 +8,17 @@ if (PHP_SAPI !== 'cli') {
 }
 umask(0077);
 try {
+    $host = (string)getenv('APP_HOST');
+    if ($host !== 'kis.kovopraha.cz') {
+        throw new RuntimeException('pilot_target_invalid');
+    }
+    $_SERVER['HTTP_HOST'] = $host;
+    $_SERVER['SERVER_NAME'] = $host;
     $root = dirname(__DIR__);
     require $root . '/config.php';
     require $root . '/includes/trainer_reset_scheduler.php';
     require $root . '/includes/trainer_pilot.php';
-    if (!trainerResetSchedulerIdentity((string)getenv('APP_HOST'), defined('APP_BASE_URL') ? APP_BASE_URL : null)) {
+    if (!trainerResetSchedulerIdentity($host, defined('APP_BASE_URL') ? APP_BASE_URL : null)) {
         throw new RuntimeException('pilot_target_invalid');
     }
     $paths = trainerResetSchedulerPaths($root, (string)getenv('TRAINER_RESET_OPERATIONS_DIR'));
