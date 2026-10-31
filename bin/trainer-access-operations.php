@@ -6,9 +6,12 @@ if (PHP_SAPI !== 'cli') {
     http_response_code(404);
     exit;
 }
+umask(0077);
+$workerLock = null;
+$schedulerPaths = null;
 $host = (string)getenv('APP_HOST');
 $action = (string)getenv('TRAINER_RESET_ACTION');
-if (!preg_match('/^[a-z0-9.-]+$/D', $host) || !in_array($action, ['status', 'process', 'probe'], true)) {
+if (!preg_match('/^[a-z0-9.-]+$/D', $host) || !in_array($action, ['status', 'process', 'probe', 'install'], true)) {
     fwrite(STDERR, "trainer_access_invalid_configuration\n");
     exit(2);
 }
@@ -18,6 +21,11 @@ $root = dirname(__DIR__);
 try {
     require $root . '/config.php';
     require $root . '/includes/trainer_access_readiness.php';
+    require $root . '/includes/trainer_reset_scheduler.php';
+    if (!trainerResetSchedulerIdentity($host, defined('APP_BASE_URL') ? APP_BASE_URL : null)) {
+        throw new RuntimeException('Unexpected operations target.');
+    }
+    $schedulerPaths = trainerResetSchedulerPaths($root, (string)getenv('TRAINER_RESET_OPERATIONS_DIR'));
     $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -28,10 +36,18 @@ try {
         try {
             $result = trainerAccessReadiness($pdo, $host);
             $result['at'] = gmdate(DATE_ATOM);
+            $result['scheduler'] = trainerResetSchedulerStatus($schedulerPaths);
         } finally {
             $pdo->rollBack();
         }
+    } elseif ($action === 'install') {
+        $result = trainerResetSchedulerInstall($schedulerPaths);
     } elseif ($action === 'process') {
+        $workerLock = fopen($schedulerPaths['operations'] . '/trainer-reset-worker.lock', 'c');
+        if ($workerLock === false || !flock($workerLock, LOCK_EX | LOCK_NB)) {
+            echo "{\"skipped\":\"worker_already_running\"}\n";
+            exit(0);
+        }
         // No public-account or club-event backlog is picked up by this trainer-only worker.
         transactionalNotificationAssertQueues($pdo);
         personSensitiveConfig();
@@ -43,6 +59,9 @@ try {
             }
             $result['processed']++;
             $result[$status]++;
+        }
+        if (getenv('TRAINER_RESET_TRIGGER') === 'hosting_cron') {
+            trainerResetSchedulerHeartbeat($schedulerPaths, $result, $result['failed'] === 0);
         }
     } else {
         // Owner authorized exactly one transport probe to this address on 2026-10-31.
@@ -67,6 +86,13 @@ try {
     echo json_encode($result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
     exit(($result['failed'] ?? 0) > 0 || ($result['transport_accepted'] ?? true) === false ? 1 : 0);
 } catch (Throwable) {
+    if (is_array($schedulerPaths) && is_resource($workerLock) && getenv('TRAINER_RESET_TRIGGER') === 'hosting_cron') {
+        try {
+            trainerResetSchedulerHeartbeat($schedulerPaths, ['error' => 'worker_failed'], false);
+        } catch (Throwable) {
+            // Keep the previous heartbeat stale rather than claim a successful run.
+        }
+    }
     fwrite(STDERR, "trainer_access_operation_failed\n");
     exit(1);
 }
