@@ -1,31 +1,38 @@
 # Aktuální stav projektu
 
-Aktualizováno 30. 10. 2026 (Europe/Prague), po úspěšném finálním nasazení.
+Aktualizováno 31. 10. 2026 (Europe/Prague), po nasazení trenérské obnovy hesla.
 
-- **Navazující práce 31. 10.:** [trenérská obnova hesla a pilot](TRAINER_READINESS_2026-10-31.md)
-  implementovány ve větvi; nasazení a doručení zatím nejsou potvrzeny.
+- **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
+  odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
+  28 z 36 aktivních pracovních účtů splňuje podmínky obnovy; 8 je blokováno
+  e-mailem nebo explicitní vazbou. Všech 36 účtů má pozici trenéra, ale žádný
+  aktuální explicitní rozsah. Konkrétní trenéry/skupiny musí určit vlastník.
+  Jediný schválený testovací e-mail transport přijal; doručení do schránky
+  ještě nepotvrdil příjemce. Hostingový minutový cron ověřen dvěma úspěšnými
+  běhy 09:23:03 a 09:24:03 UTC. Tři staré klubové zprávy nedotčeny.
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d`,
-  [deploy 41129311692](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41129311692) SUCCESS.
-  Zahrnuje finální aplikační PR #255 a dokumentační PR #256.
-  [Protokol obnovy a nasazení](verification/db-temp-recovery-20261030/RESULTS.md),
-  [porovnání vydání](verification/db-temp-recovery-20261030/release-comparison.json).
-  Živé SHA/run potvrdil následný read-only audit 41130072050;
+- **Živé vydání:** `4eb54d210e3c4deb1e0ec398139503318ddc9482`,
+  [deploy 41188114928](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188114928) SUCCESS.
+  Zahrnuje PR #258, provozní opravu #260 a dříve nasazené W6–W15.
+  [Protokol](verification/trainer-recovery-20261031/RESULTS.md),
+  [porovnání vydání](verification/trainer-recovery-20261031/scheduler/release-comparison.json).
+  Živé SHA/run potvrdil následný read-only audit 41188444769;
   identita je doložena deployment metadata a workflow, nikoli novou inventurou všech souborů.
-- **Ověření:** přesné main CI Testy 41097723229, PHP quality 41097723222,
-  docs 41097723233 a CodeQL 41097722410 SUCCESS. Linux 1864 testů /
-  37843 assertions, POSIX bez skipů, MariaDB 10.3/11.4 a objemové profily PASS.
-  Deploy znovu provedl 1864/37843; HTTP před i po 26/26.
-- **Záloha a schéma:** čerstvá záloha 336 tabulek / 2 triggery ověřena před
-  migrací. [Izolovaná obnova této zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41130077458)
-  po nasazení PASS. Schéma current / pending [], ledger 141 → 142,
+- **Ověření:** všech 11 PR kontrol PASS, sloučený strom shodný s ověřeným,
+  Linux 1878 testů / 37987 assertions,
+  POSIX bez skipů, MariaDB 10.3/11.4 a objemové profily PASS.
+  Deploy znovu provedl 1878/37987; HTTP před i po 26/26, trenérské stránky 3/3.
+  Izolovaný HTTP průchod prokázal reset, přihlášení a odvolání původní relace.
+- **Záloha a schéma:** čerstvá záloha 337 tabulek / 2 triggery včetně tokenové
+  tabulky. [Izolovaná obnova této zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188508579)
+  po nasazení PASS. Schéma current / pending [], ledger 143 beze změny,
   dosavadní variabilní symboly beze změny.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
-  následně přibližně 5,6 GB volných na systémovém oddílu. Diskové temporary
-  tables opakovaně fungují. Původní příčina kolísání kapacity není definitivně určena.
+  31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu.
+  Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena.
   Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).

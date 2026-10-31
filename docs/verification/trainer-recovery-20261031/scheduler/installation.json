@@ -1,0 +1,10 @@
+{
+  "run_id": 41188398125,
+  "job_id": 124499919544,
+  "conclusion": "success",
+  "installed": true,
+  "changed": true,
+  "at": "2026-10-31T09:22:06Z",
+  "file": "CRON.1minuta/evidence-trainer-password-reset.php",
+  "hosting_account": "kovopraha.cz"
+}

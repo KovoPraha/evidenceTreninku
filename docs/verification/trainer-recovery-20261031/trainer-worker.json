@@ -1,0 +1,10 @@
+{
+  "processed": 0,
+  "sent": 0,
+  "failed": 0,
+  "cancelled": 0,
+  "trainer_only": true,
+  "run_id": 41186231179,
+  "trigger": "workflow_dispatch",
+  "scheduled_run_verified": false
+}

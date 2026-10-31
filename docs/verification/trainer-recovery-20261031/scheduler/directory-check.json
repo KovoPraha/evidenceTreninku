@@ -1,0 +1,10 @@
+{
+  "run_id": 41188081603,
+  "job_id": 124498989584,
+  "conclusion": "success",
+  "hosting_directory_available": true,
+  "confirmed_at": "2026-10-31T09:17:30Z",
+  "application_version_at_check": "3d19aae6f9e0c9e008fe4c80e7229faa07b09cf1",
+  "read_only": true,
+  "script_installed": false
+}

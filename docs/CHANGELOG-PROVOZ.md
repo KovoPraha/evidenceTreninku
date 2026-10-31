@@ -5,6 +5,21 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 31. 10. 2026 — obnova trenérských hesel
+
+Navazující PR #260 a deploy 41188114928 SUCCESS: místo opožděného GitHub
+schedule samostatný minutový cron KOVO. Dva automatické heartbeat PASS,
+Linux 1878/37987, nová záloha a skutečná obnova 337 tabulek / 2 triggerů.
+[Protokol plánovače](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
+
+PR #258, deploy 41185815825 SUCCESS. Trenérský reset přes jednoznačný e-mail,
+odvolání relací, šifrovaná fronta a samostatný worker. Linux 1873/37959,
+MariaDB 10.3/11.4, izolovaný HTTP průchod a obnova zálohy PASS.
+Produkční read-only inventura: 28/36 pracovních účtů způsobilých k obnově,
+8 blokovaných; 36 trenérských pozic bez explicitního rozsahu. Jednorázový
+testovací e-mail přijat transportem, příjemce dosud nepotvrdil doručení.
+[Protokol a limity](verification/trainer-recovery-20261031/RESULTS.md).
+
 ## 30. 10. 2026 — obnova DB kapacity a nasazení W10.3–W15
 
 Deploy 41129311692 SUCCESS; nová záloha a její izolovaná obnova, HTTP 26/26, ledger 142. [Protokol](verification/db-temp-recovery-20261030/RESULTS.md).

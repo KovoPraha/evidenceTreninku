@@ -1,0 +1,80 @@
+{
+  "source_head": "de8023c8790048afb954c6fc2e6afe830dbb28c8",
+  "merged_release": "3d19aae6f9e0c9e008fe4c80e7229faa07b09cf1",
+  "merged_tree_equals_checked_head": true,
+  "pr": 258,
+  "tests_run": 41185340551,
+  "tests": 1873,
+  "assertions": 37959,
+  "posix_tests": 3,
+  "posix_assertions": 45,
+  "all_checks_passed": true,
+  "checks": [
+    {
+      "name": "CodeQL",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/runs/124491123074"
+    },
+    {
+      "name": "PHPStan level 5 and changed-file style",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185340545/job/124491020082"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185340551/job/124491019975"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185340551/job/124491019963"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185340551/job/124491019836"
+    },
+    {
+      "name": "docs",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185340574/job/124491019827"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185340551/job/124491019814"
+    },
+    {
+      "name": "PHPUnit na PHP 8.2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185340551/job/124491019743"
+    },
+    {
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185338087/job/124491015316"
+    },
+    {
+      "name": "Analyze (python)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185338087/job/124491015312"
+    },
+    {
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41185338087/job/124491015114"
+    }
+  ]
+}

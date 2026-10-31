@@ -1,0 +1,14 @@
+{
+  "run_id": 41186359964,
+  "status": "success",
+  "backup": "evidence_2026-10-31_084609_21ea6ef9.sql.gz",
+  "sha256": "2b91d108496d1851666a90e90ec03abed1524d76f5d54d0abc5053218bcfe3ba",
+  "engine": "MariaDB 11.4 isolated container",
+  "tables": 336,
+  "triggers": 2,
+  "gzip_sha256_verified": true,
+  "sql_import_verified": true,
+  "all_table_counts_verified": true,
+  "trigger_names_verified": true,
+  "scope": "Pre-migration backup; trainer token table is created by the retained new migration."
+}

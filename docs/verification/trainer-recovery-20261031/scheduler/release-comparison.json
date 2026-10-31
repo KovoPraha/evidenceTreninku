@@ -1,0 +1,29 @@
+{
+  "before_live": {
+    "sha": "3d19aae6f9e0c9e008fe4c80e7229faa07b09cf1",
+    "run_id": "41185815825",
+    "deployed_at": "2026-10-31T08:46:40+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "4eb54d210e3c4deb1e0ec398139503318ddc9482",
+    "run_id": "41188114928",
+    "deployed_at": "2026-10-31T09:20:41+00:00",
+    "uat_approved": false
+  },
+  "pre_run": 41187571621,
+  "post_run": 41188444769,
+  "unchanged": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "forward_vs_repair_applied": true
+  },
+  "migration_ledger": {
+    "before": 143,
+    "after": 143,
+    "expected_delta": 0
+  },
+  "identity_scope": "deployment metadata, successful protected workflow and actual installed scheduler source; no full runtime file hash inventory"
+}
