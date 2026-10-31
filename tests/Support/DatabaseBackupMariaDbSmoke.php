@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/includes/migration_runner.php';
@@ -28,14 +29,24 @@ $appRoot = $temporaryRoot . DIRECTORY_SEPARATOR . 'app';
 $backupRoot = $temporaryRoot . DIRECTORY_SEPARATOR . 'backups';
 
 $removeTree = static function (string $path) use (&$removeTree, $temporaryRoot): void {
-    if (!str_starts_with($path, $temporaryRoot)) throw new RuntimeException('Unsafe smoke cleanup path.');
-    if (!file_exists($path)) return;
-    if (is_file($path) || is_link($path)) {
-        if (!unlink($path)) throw new RuntimeException('Cannot remove smoke file.');
+    if (!str_starts_with($path, $temporaryRoot)) {
+        throw new RuntimeException('Unsafe smoke cleanup path.');
+    }
+    if (!file_exists($path)) {
         return;
     }
-    foreach (new FilesystemIterator($path) as $item) $removeTree($item->getPathname());
-    if (!rmdir($path)) throw new RuntimeException('Cannot remove smoke directory.');
+    if (is_file($path) || is_link($path)) {
+        if (!unlink($path)) {
+            throw new RuntimeException('Cannot remove smoke file.');
+        }
+        return;
+    }
+    foreach (new FilesystemIterator($path) as $item) {
+        $removeTree($item->getPathname());
+    }
+    if (!rmdir($path)) {
+        throw new RuntimeException('Cannot remove smoke directory.');
+    }
 };
 
 $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);
@@ -52,7 +63,14 @@ try {
     // AUTO_INCREMENT odpovídá skutečnému legacy schématu; migrace veřejného
     // velodromu vkládá systémového trenéra bez explicitního id a v CI běží
     // MariaDB se strict mode (na rozdíl od výchozího XAMPP).
-    $pdo->exec('CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,jmeno VARCHAR(100),email VARCHAR(255) UNIQUE,heslo VARCHAR(255),role VARCHAR(30),aktivni TINYINT NOT NULL DEFAULT 1) ENGINE=InnoDB');
+    $pdo->exec(<<<'SQL'
+        CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,
+        jmeno VARCHAR(100),
+        email VARCHAR(255) UNIQUE,
+        heslo VARCHAR(255),
+        role VARCHAR(30),
+        aktivni TINYINT NOT NULL DEFAULT 1) ENGINE=InnoDB
+        SQL);
     $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE sportovist(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE individualni_lekce(id INT PRIMARY KEY) ENGINE=InnoDB');
@@ -61,15 +79,76 @@ try {
     $pdo->exec('CREATE TABLE mereni_zaznamy(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE zavod_sportovec(zavod_id INT NOT NULL,sportovec_id INT NULL) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE verejni_uzivatele(id INT PRIMARY KEY,aktivni TINYINT NOT NULL DEFAULT 1,verifikacni_token VARCHAR(255) NULL,registrovan DATETIME NOT NULL) ENGINE=InnoDB');
-    $pdo->exec("CREATE TABLE verejne_rezervace(id INT PRIMARY KEY,lekce_id INT NULL,stav VARCHAR(30) NOT NULL DEFAULT 'ceka',slot_cas_od TIME NULL,potvrzovaci_token VARCHAR(255) NULL,cas_rezervace DATETIME NOT NULL) ENGINE=InnoDB");
-    $pdo->exec("CREATE TABLE kis_import_runs(id INT AUTO_INCREMENT PRIMARY KEY,created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,created_by INT NULL,status ENUM('preview','applied','failed','cancelled') NOT NULL DEFAULT 'preview',source_users VARCHAR(255),source_payments VARCHAR(255),source_rosters VARCHAR(255),stats_json LONGTEXT,warnings_json LONGTEXT,applied_at DATETIME,note TEXT) ENGINE=InnoDB");
-    $pdo->exec('CREATE TABLE kis_import_rows(id INT AUTO_INCREMENT PRIMARY KEY,run_id INT NOT NULL,person_key VARCHAR(180) NOT NULL,jmeno VARCHAR(100) NOT NULL,prijmeni VARCHAR(160) NOT NULL,narozeni DATE,email VARCHAR(255),uciid VARCHAR(80),oddil VARCHAR(160),kis_aktivni TINYINT NOT NULL DEFAULT 0,kis_platebne_aktivni TINYINT NOT NULL DEFAULT 0,kis_neuhrazeno DECIMAL(10,2) NOT NULL DEFAULT 0,kis_posledni_uhrada DATE,kis_soupisky TEXT,raw_json LONGTEXT) ENGINE=InnoDB');
-    $pdo->exec("CREATE TABLE kis_import_matches(id INT AUTO_INCREMENT PRIMARY KEY,run_id INT NOT NULL,row_id INT NOT NULL,sportovec_id INT,match_status ENUM('new','matched','ambiguous','conflict','ignored') NOT NULL,confidence TINYINT UNSIGNED NOT NULL DEFAULT 0,reason VARCHAR(255),candidate_json LONGTEXT,resolved_by INT,resolved_at DATETIME,resolved_action ENUM('create','update','link','ignore','manual')) ENGINE=InnoDB");
+    $pdo->exec(<<<'SQL'
+        CREATE TABLE verejne_rezervace(id INT PRIMARY KEY,
+        lekce_id INT NULL,
+        stav VARCHAR(30) NOT NULL DEFAULT 'ceka',
+        slot_cas_od TIME NULL,
+        potvrzovaci_token VARCHAR(255) NULL,
+        cas_rezervace DATETIME NOT NULL) ENGINE=InnoDB
+        SQL);
+    $pdo->exec(<<<'SQL'
+        CREATE TABLE kis_import_runs(id INT AUTO_INCREMENT PRIMARY KEY,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        created_by INT NULL,
+        status ENUM('preview',
+        'applied',
+        'failed',
+        'cancelled') NOT NULL DEFAULT 'preview',
+        source_users VARCHAR(255),
+        source_payments VARCHAR(255),
+        source_rosters VARCHAR(255),
+        stats_json LONGTEXT,
+        warnings_json LONGTEXT,
+        applied_at DATETIME,
+        note TEXT) ENGINE=InnoDB
+        SQL);
+    $pdo->exec(<<<'SQL'
+        CREATE TABLE kis_import_rows(id INT AUTO_INCREMENT PRIMARY KEY,
+        run_id INT NOT NULL,
+        person_key VARCHAR(180) NOT NULL,
+        jmeno VARCHAR(100) NOT NULL,
+        prijmeni VARCHAR(160) NOT NULL,
+        narozeni DATE,
+        email VARCHAR(255),
+        uciid VARCHAR(80),
+        oddil VARCHAR(160),
+        kis_aktivni TINYINT NOT NULL DEFAULT 0,
+        kis_platebne_aktivni TINYINT NOT NULL DEFAULT 0,
+        kis_neuhrazeno DECIMAL(10,
+        2) NOT NULL DEFAULT 0,
+        kis_posledni_uhrada DATE,
+        kis_soupisky TEXT,
+        raw_json LONGTEXT) ENGINE=InnoDB
+        SQL);
+    $pdo->exec(<<<'SQL'
+        CREATE TABLE kis_import_matches(id INT AUTO_INCREMENT PRIMARY KEY,
+        run_id INT NOT NULL,
+        row_id INT NOT NULL,
+        sportovec_id INT,
+        match_status ENUM('new',
+        'matched',
+        'ambiguous',
+        'conflict',
+        'ignored') NOT NULL,
+        confidence TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        reason VARCHAR(255),
+        candidate_json LONGTEXT,
+        resolved_by INT,
+        resolved_at DATETIME,
+        resolved_action ENUM('create',
+        'update',
+        'link',
+        'ignore',
+        'manual')) ENGINE=InnoDB
+        SQL);
 
     $catalog = EvidenceMigrationCatalog::load(dirname(__DIR__, 2) . '/migrations');
     $runner = new EvidenceMigrationRunner($pdo, $catalog);
     $result = $runner->apply();
-    if (!$result['current']) throw new RuntimeException('MariaDB migration catalog is not current before backup smoke.');
+    if (!$result['current']) {
+        throw new RuntimeException('MariaDB migration catalog is not current before backup smoke.');
+    }
 
     if (!mkdir($appRoot, 0700, true) || !mkdir($backupRoot, 0700, true)) {
         throw new RuntimeException('Cannot create backup smoke directories.');
@@ -90,20 +169,26 @@ try {
         . ' --keep=1 --json';
     $pipes = [];
     $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
-    if (!is_resource($process)) throw new RuntimeException('Cannot start database backup smoke process.');
+    if (!is_resource($process)) {
+        throw new RuntimeException('Cannot start database backup smoke process.');
+    }
     fclose($pipes[0]);
     $stdout = stream_get_contents($pipes[1]);
     $stderr = stream_get_contents($pipes[2]);
     fclose($pipes[1]);
     fclose($pipes[2]);
     $exitCode = proc_close($process);
-    if ($exitCode !== 0) throw new RuntimeException('Database backup smoke failed: ' . trim((string)$stderr . ' ' . (string)$stdout));
+    if ($exitCode !== 0) {
+        throw new RuntimeException('Database backup smoke failed: ' . trim((string)$stderr . ' ' . (string)$stdout));
+    }
     $payload = json_decode((string)$stdout, true, 512, JSON_THROW_ON_ERROR);
-    if (($payload['ok'] ?? false) !== true) throw new RuntimeException('Database backup smoke did not return success.');
+    if (($payload['ok'] ?? false) !== true) {
+        throw new RuntimeException('Database backup smoke did not return success.');
+    }
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-10-23.3') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-10-31.1') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -232,9 +317,13 @@ try {
     if (isset($delimiterParts[1])) {
         $triggerParts = explode("DELIMITER ;\n", $delimiterParts[1], 2);
         foreach (explode("$$\n", $triggerParts[0]) as $triggerStatement) {
-            if (trim($triggerStatement) !== '') $restore->exec($triggerStatement);
+            if (trim($triggerStatement) !== '') {
+                $restore->exec($triggerStatement);
+            }
         }
-        if (isset($triggerParts[1]) && trim($triggerParts[1]) !== '') $restore->exec($triggerParts[1]);
+        if (isset($triggerParts[1]) && trim($triggerParts[1]) !== '') {
+            $restore->exec($triggerParts[1]);
+        }
     }
 
     foreach ($manifest['tables'] as $table => $expectedRows) {
@@ -255,5 +344,7 @@ try {
 } finally {
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedRestoreDatabase);
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);
-    if (file_exists($temporaryRoot)) $removeTree($temporaryRoot);
+    if (file_exists($temporaryRoot)) {
+        $removeTree($temporaryRoot);
+    }
 }
